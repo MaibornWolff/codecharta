@@ -93,6 +93,33 @@ test.describe("DomainView", () => {
         await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(1)
     })
 
+    test("should drop a hidden word from the cloud and the word list, and bring it back", async ({ page }) => {
+        // Arrange — word mode open beside a settled cloud.
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await page.getByTestId("explorer-mode-words").click()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+        const wordCountBeforeHiding = await page.locator("cc-domain-word-row").count()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act — hide the largest word through the cloud's word menu.
+        const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
+        await page.mouse.click(cloud!.x + cloud!.width / 2, cloud!.y + cloud!.height / 2, { button: "right" })
+        await expect(page.getByTestId("domain-word-menu")).toBeVisible()
+        const hiddenWord = (await page.getByTestId("domain-word-menu").locator("div").first().innerText()).trim()
+        await page.getByText("Hide word").click()
+
+        // Assert — the word left the list, and the bar counts it.
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(wordCountBeforeHiding - 1)
+        await expect(page.getByTestId("domain-bar-hidden-words-segment")).toContainText("1 word")
+
+        // Act — bring it back from the bar.
+        await page.getByTestId("domain-bar-hidden-words-cog").click()
+        await page.getByTestId(`domain-bar-restore-${hiddenWord}`).click()
+
+        // Assert
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(wordCountBeforeHiding)
+    })
+
     test("should reorder the word list from the sort control", async ({ page }) => {
         // Arrange
         const viewSwitcher = new ViewSwitcherPageObject(page)

@@ -1,5 +1,8 @@
 import { setEdgeAttributeTypes } from "../../../stores/dependencyLensSource/dependencyLensSource.write.facade"
 import {
+    hideDomainWord,
+    restoreAllDomainWords,
+    restoreDomainWord,
     setDomainStateDrawOutOfBound,
     setDomainStateGridSize,
     setDomainStateRotationRange,
@@ -125,6 +128,9 @@ const metricsLensSaveActions = [setAttributeTypes, setAttributeDescriptors]
 const dependencyLensSaveActions = [setEdgeAttributeTypes]
 
 const domainStateSaveActions = [
+    hideDomainWord,
+    restoreDomainWord,
+    restoreAllDomainWords,
     setDomainStateShape,
     setDomainStateSizeRange,
     setDomainStateRotationRange,

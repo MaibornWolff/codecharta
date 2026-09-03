@@ -13,6 +13,14 @@
         </cc-context-menu-item>
 
         <cc-context-menu-item
+            icon="fa-solid fa-eye-slash"
+            hoverHint="Drop this word from the cloud and the word list"
+            (itemClick)="hideThisWord()"
+        >
+            Hide word
+        </cc-context-menu-item>
+
+        <cc-context-menu-item
             [icon]="wasWordCopied() ? 'fa-solid fa-check text-success' : 'fa-regular fa-copy'"
             hoverHint="Copy the word to the clipboard"
             (itemClick)="copyWord()"

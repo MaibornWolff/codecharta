@@ -1,5 +1,11 @@
 export { setDomainStateDrawOutOfBound } from "./store/drawOutOfBound/drawOutOfBound.actions"
 export { setDomainStateGridSize } from "./store/gridSize/gridSize.actions"
+export {
+    hideDomainWord,
+    restoreAllDomainWords,
+    restoreDomainWord,
+    setDomainStateHiddenWords
+} from "./store/hiddenWords/hiddenWords.actions"
 export { setDomainStateRotationRange } from "./store/rotationRange/rotationRange.actions"
 export { setDomainStateRotationStep } from "./store/rotationStep/rotationStep.actions"
 export { setDomainStateSearchPattern } from "./store/searchPattern/searchPattern.actions"

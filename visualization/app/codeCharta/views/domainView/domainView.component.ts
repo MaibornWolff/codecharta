@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
-import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
+import { DomainBarComponent, DomainBarReadStore, HiddenWordsWriteStore } from "../../features/domainBar/facade"
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
 import { DomainWordListComponent } from "../../features/domainWordOccurrences/facade"
@@ -101,6 +101,7 @@ export class DomainViewComponent {
     private readonly domainWordInspectionStore = inject(DomainWordInspectionStore)
     private readonly domainWordQueryStore = inject(DomainWordQueryStore)
     private readonly domainWordSortStore = inject(DomainWordSortStore)
+    private readonly hiddenWordsWriteStore = inject(HiddenWordsWriteStore)
     private readonly clipboard = inject(CopyToClipboardService)
 
     readonly settings = this.domainBarReadStore.settings
@@ -126,6 +127,15 @@ export class DomainViewComponent {
 
     toggleInspectedWord(word: string) {
         this.domainWordInspectionStore.toggle(word)
+    }
+
+    /** A hidden word leaves the cloud and the list alike, so an inspection of it would have nothing left
+     * to point at. */
+    hideWord(word: string) {
+        if (this.inspectedWord() === word) {
+            this.domainWordInspectionStore.toggle(word)
+        }
+        this.hiddenWordsWriteStore.hide(word)
     }
 
     closeWordMenu() {

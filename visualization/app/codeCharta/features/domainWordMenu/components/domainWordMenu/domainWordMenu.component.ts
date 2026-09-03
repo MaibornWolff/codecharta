@@ -15,6 +15,7 @@ export class DomainWordMenuComponent {
     readonly rightClickedWord = input<RightClickedWord | null>(null)
 
     readonly showOccurrences = output<string>()
+    readonly hideWord = output<string>()
     readonly closed = output<void>()
 
     protected readonly anchor = computed(() => {
@@ -27,6 +28,14 @@ export class DomainWordMenuComponent {
         const rightClickedWord = this.rightClickedWord()
         if (rightClickedWord) {
             this.showOccurrences.emit(rightClickedWord.word)
+        }
+        this.close()
+    }
+
+    protected hideThisWord(): void {
+        const rightClickedWord = this.rightClickedWord()
+        if (rightClickedWord) {
+            this.hideWord.emit(rightClickedWord.word)
         }
         this.close()
     }

@@ -2,6 +2,7 @@ import { combineReducers } from "@ngrx/store"
 import { DomainState } from "../../../model/codeCharta.model"
 import { defaultDrawOutOfBound, drawOutOfBound } from "./drawOutOfBound/drawOutOfBound.reducer"
 import { defaultGridSize, gridSize } from "./gridSize/gridSize.reducer"
+import { defaultHiddenWords, hiddenWords } from "./hiddenWords/hiddenWords.reducer"
 import { defaultRotationRange, rotationRange } from "./rotationRange/rotationRange.reducer"
 import { defaultRotationStep, rotationStep } from "./rotationStep/rotationStep.reducer"
 import { defaultSearchPattern, searchPattern } from "./searchPattern/searchPattern.reducer"
@@ -25,7 +26,8 @@ export const domainState = combineReducers({
     drawOutOfBound,
     sortingOrder,
     sortingOrderAscending,
-    searchPattern
+    searchPattern,
+    hiddenWords
 })
 
 export const defaultDomainState: DomainState = {
@@ -40,5 +42,6 @@ export const defaultDomainState: DomainState = {
     drawOutOfBound: defaultDrawOutOfBound,
     sortingOrder: defaultSortingOrder,
     sortingOrderAscending: defaultSortingOrderAscending,
-    searchPattern: defaultSearchPattern
+    searchPattern: defaultSearchPattern,
+    hiddenWords: defaultHiddenWords
 }

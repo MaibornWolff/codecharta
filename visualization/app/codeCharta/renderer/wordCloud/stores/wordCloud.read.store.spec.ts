@@ -10,8 +10,8 @@ describe("WordCloudReadStore", () => {
     const rootWords: DomainWord[] = [{ text: "invoice", frequency: 12 }]
     const leafWords: DomainWord[] = [{ text: "payment", frequency: 5 }]
 
-    function setup(words: Record<string, DomainWord[]>) {
-        const state: CcState = { ...STATE, domainLensSource: { words } }
+    function setup(words: Record<string, DomainWord[]>, hiddenWords: string[] = []) {
+        const state: CcState = { ...STATE, domainLensSource: { words }, domainState: { ...STATE.domainState, hiddenWords } }
         TestBed.configureTestingModule({
             providers: [provideMockStore({ initialState: state })]
         })
@@ -39,6 +39,17 @@ describe("WordCloudReadStore", () => {
 
         // Assert
         expect(result).toEqual(rootWords)
+    })
+
+    it("should leave a hidden word out of the cloud", async () => {
+        // Arrange
+        const readStore = setup({ "/root/leaf": [...leafWords, { text: "invoice", frequency: 3 }] }, ["invoice"])
+
+        // Act
+        const result = await firstValueFrom(readStore.wordsForSelectedNode("/root/leaf"))
+
+        // Assert
+        expect(result).toEqual(leafWords)
     })
 
     it("should name the root for a null path and the leaf name for a path", () => {
