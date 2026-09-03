@@ -19,7 +19,7 @@ export interface FloatingMenuAnchor {
         "(contextmenu)": "$event.preventDefault()",
         "(document:pointerdown)": "dismissWhenOutside($event)",
         "(document:wheel)": "dismissWhenOutside($event)",
-        "(window:resize)": "dismissed.emit()"
+        "(window:resize)": "dismissWhenOnScreen()"
     }
 })
 export class FloatingMenuComponent {
@@ -40,10 +40,24 @@ export class FloatingMenuComponent {
     }
 
     protected dismissWhenOutside(event: Event): void {
-        if (event.target instanceof Node && this.hostElement.nativeElement.contains(event.target)) {
+        if (this.isOffScreen() || (event.target instanceof Node && this.hostElement.nativeElement.contains(event.target))) {
             return
         }
         this.dismissed.emit()
+    }
+
+    protected dismissWhenOnScreen(): void {
+        if (this.isOffScreen()) {
+            return
+        }
+        this.dismissed.emit()
+    }
+
+    /** A view the router keeps alive off screen holds on to whatever it had rendered, this menu
+     * included. Its document listeners still run, and every pointer event is "outside" an element
+     * nobody can see — so without this it would dismiss the menu of the view that is on screen. */
+    private isOffScreen(): boolean {
+        return !this.hostElement.nativeElement.isConnected
     }
 
     private clampOnceTheMenuIsRendered(anchor: FloatingMenuAnchor): void {

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **Context menu actions were swallowed after a view switch**: once a view had been left with its node context menu open, the router kept that view — and its rendered menu — alive off screen, where it closed the menu of the view on screen on the first click. Picking an entry there did nothing, so "Show in Domain" appeared to be ignored. A menu that is off screen no longer dismisses anything.
 - **Endless spinner on the first visit to the metric view**: starting the app on the domain view and then switching to the metric view left its loading spinner up for the rest of the session, with the map never drawn. The deferred map build ran before the view had mounted the canvas the floor labels measure, and the resulting error ended the render stream that both the map and the spinner hang off. The build now waits for that canvas, reads the current map data rather than the last data-plus-action pair, and reports a failed render instead of ending the stream.
 
 ## [2.0.0] - 2026-09-02

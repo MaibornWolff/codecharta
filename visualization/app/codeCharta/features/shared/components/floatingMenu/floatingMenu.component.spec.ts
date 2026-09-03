@@ -87,4 +87,28 @@ describe("FloatingMenuComponent", () => {
         // Assert
         expect(contextMenuEvent.defaultPrevented).toBe(true)
     })
+
+    it("should not dismiss while its view is kept alive off screen", async () => {
+        // Arrange — the router detaches a view it keeps alive, taking the rendered menu with it
+        const { host, fixture } = await setup()
+        fixture.nativeElement.remove()
+
+        // Act — a pointer event that belongs to whatever view is on screen now
+        await userEvent.click(document.body)
+
+        // Assert — an element nobody can see must not close the menu of the view that is shown
+        expect(host.dismissed).not.toHaveBeenCalled()
+    })
+
+    it("should not dismiss on a resize while its view is kept alive off screen", async () => {
+        // Arrange
+        const { host, fixture } = await setup()
+        fixture.nativeElement.remove()
+
+        // Act
+        window.dispatchEvent(new Event("resize"))
+
+        // Assert
+        expect(host.dismissed).not.toHaveBeenCalled()
+    })
 })
