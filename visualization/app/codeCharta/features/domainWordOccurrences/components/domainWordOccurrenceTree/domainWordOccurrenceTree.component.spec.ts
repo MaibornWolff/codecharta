@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { structureTreeSelector } from "../../../../lenses/structure/structure.facade"
 import { STATE } from "../../../../mocks/dataMocks"
 import { CcState, DomainLensData, NodeType } from "../../../../model/codeCharta.model"
+import { EXPLORER_CONTEXT_MENU, ExplorerContextMenu, provideViewScopedExplorerState } from "../../../sidebarExplorer/facade"
 import { DomainWordOccurrenceTreeComponent } from "./domainWordOccurrenceTree.component"
 
 const TREE = {
@@ -41,9 +42,16 @@ function listedNamesOf(container: Element): string[] {
 
 describe("DomainWordOccurrenceTreeComponent", () => {
     const nodeClicked = jest.fn()
+    let contextMenu: ExplorerContextMenu
 
-    async function setup(words: DomainLensData = WORDS, selectedNodePath: string | null = null) {
+    async function setup(words: DomainLensData = WORDS, selectedNodePath: string | null = null, markedNodePath: string | null = null) {
         jest.clearAllMocks()
+        contextMenu = {
+            isEnabledFor: () => true,
+            isMarked: nodePath => nodePath === markedNodePath,
+            open: jest.fn(),
+            close: jest.fn()
+        }
         const state = { ...STATE, domainLensSource: { words } } as CcState
         return render(DomainWordOccurrenceTreeComponent, {
             inputs: { word: "invoice", selectedNodePath },
@@ -52,7 +60,9 @@ describe("DomainWordOccurrenceTreeComponent", () => {
                 provideMockStore({
                     initialState: state,
                     selectors: [{ selector: structureTreeSelector, value: { map: TREE, fileMeta: {}, settings: { fileSettings: {} } } }]
-                })
+                }),
+                { provide: EXPLORER_CONTEXT_MENU, useValue: contextMenu },
+                ...provideViewScopedExplorerState("domain")
             ]
         })
     }
@@ -103,6 +113,26 @@ describe("DomainWordOccurrenceTreeComponent", () => {
         // Assert
         const selectedNames = [...container.querySelectorAll(".selected .node-name")].map(name => name.textContent?.trim())
         expect(selectedNames).toEqual(["api"])
+    })
+
+    it("should offer the view's node context menu on an occurrence, the way a file tree row does", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        await userEvent.pointer({ keys: "[MouseRight]", target: screen.getByText("api") })
+
+        // Assert
+        expect(contextMenu.open).toHaveBeenCalledWith("/root/api", expect.any(Number), expect.any(Number))
+    })
+
+    it("should mark the occurrence the open menu is anchored to", async () => {
+        // Arrange & Act
+        const { container } = await setup(WORDS, null, "/root/api")
+
+        // Assert
+        const markedNames = [...container.querySelectorAll(".marked .node-name")].map(name => name.textContent?.trim())
+        expect(markedNames).toEqual(["api"])
     })
 
     it("should explain that the word occurs nowhere", async () => {

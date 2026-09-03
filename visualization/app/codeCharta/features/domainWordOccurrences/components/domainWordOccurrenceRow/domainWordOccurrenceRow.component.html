@@ -1,4 +1,4 @@
-<cc-explorer-row [isSelected]="isSelected()" [barShare]="node().share" [decoration]="decoration()">
+<cc-explorer-row [isSelected]="isSelected()" [isMarked]="isMarked()" [barShare]="node().share" [decoration]="decoration()">
     <cc-explorer-tree-item-icon [isFolder]="node().isFolder" [isOpen]="isExpanded()"></cc-explorer-tree-item-icon>
     <span class="node-name ml-1 flex-1 truncate">{{ node().name }}</span>
 </cc-explorer-row>
