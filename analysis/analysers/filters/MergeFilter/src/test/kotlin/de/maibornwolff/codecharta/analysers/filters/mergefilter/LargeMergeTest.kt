@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -85,14 +86,31 @@ class LargeMergeTest {
     }
 
     @Test
-    fun `should fail loudly when a populated domain lens cannot be re-pathed`() {
-        // Arrange
-        val project = rootProject(lenses = LensSet(domain = DomainLens(mapOf("node-id" to DomainNode(listOf(DomainWord("order", 4)))))))
+    fun `should re-key a populated domain lens onto the wrapped paths`() {
+        // Arrange: words on the file that wrapping is about to move to /root/alpha/file.kt.
+        val words = listOf(DomainWord("order", 4))
+        val fileId = NodeId.fromSegments(listOf("file.kt"), NodeType.File)
+        val project = rootProject(lenses = LensSet(domain = DomainLens(mapOf(fileId to DomainNode(words)))))
 
-        // Act & Assert
-        assertFailsWith(IllegalArgumentException::class) {
-            LargeMerge.wrapProjectInFolder(project, "alpha")
-        }
+        // Act
+        val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
+
+        // Assert: the words follow the file rather than being refused or orphaned.
+        val wrappedFileId = NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File)
+        assertEquals(words, wrapped.lenses.domain!!.nodes[wrappedFileId]!!.words)
+    }
+
+    @Test
+    fun `should keep the root entry of a domain lens when wrapping`() {
+        // Arrange: the root aggregate still covers everything below it after wrapping.
+        val rootId = NodeId.fromSegments(emptyList(), NodeType.Folder)
+        val project = rootProject(lenses = LensSet(domain = DomainLens(mapOf(rootId to DomainNode(listOf(DomainWord("order", 4)))))))
+
+        // Act
+        val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
+
+        // Assert
+        assertEquals(setOf(rootId), wrapped.lenses.domain!!.nodes.keys)
     }
 
     @Test
