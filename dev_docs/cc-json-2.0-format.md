@@ -42,8 +42,8 @@ backend and a frontend built separately, or a coverage report rooted by package)
 
 - **`files`** is the identity layer: exactly one root folder, nested `children`, each node carrying a
   stable `id` and an optional `contentHash`. No metrics live on the node.
-- **`lenses`** are additive overlays joined to `files` by `id`. `metrics` and `dependency` are
-  concrete; `clusters` is optional and fully defined by the schema but has no producer or
+- **`lenses`** are additive overlays joined to `files` by `id`. `metrics`, `dependency` and `domain`
+  are concrete; `clusters` is optional and fully defined by the schema but has no producer or
   visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
   definition and merge semantics; `domain` carries a `nodes` map from node id to that node's entry, each
   entry holding a `words` bank (each word carrying `text`, `frequency` and an optional `tfidf`) — the

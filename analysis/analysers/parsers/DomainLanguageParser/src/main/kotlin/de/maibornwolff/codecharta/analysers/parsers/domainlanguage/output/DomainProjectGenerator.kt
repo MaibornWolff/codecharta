@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.model.LensSet
+import de.maibornwolff.codecharta.model.DomainLens
+import de.maibornwolff.codecharta.model.DomainNode
+import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
@@ -17,7 +17,7 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
         addFilesAsNodes(result.filePaths)
         val project =
             projectBuilder
-                .withOpaqueLenses(mapOf(LensSet.DOMAIN_KEY to buildDomainLens(result)))
+                .withDomainLens(buildDomainLens(result))
                 .build()
 
         return if (pipedProject != null) MergeFilter.mergePipedWithCurrentProject(pipedProject, project) else project
@@ -33,58 +33,28 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
         }
     }
 
-    private fun buildDomainLens(result: DomainAnalysisResult): JsonObject {
-        val domainLens = JsonObject()
-        domainLens.add(NODES_KEY, buildDomainNodes(result))
-        return domainLens
-    }
-
-    private fun buildDomainNodes(result: DomainAnalysisResult): JsonObject {
+    private fun buildDomainLens(result: DomainAnalysisResult): DomainLens {
         val fileKeys = result.filePaths.toSet()
-        val domainNodes = JsonObject()
+        val nodes = LinkedHashMap<String, DomainNode>()
 
         result.wordsByPath.entries
             .map { (path, words) ->
                 val segments = segmentsOf(path)
                 val type = if (path in fileKeys) NodeType.File else NodeType.Folder
-                DomainNode(NodeId.fromSegments(segments, type), segments, words)
+                NodeEntry(NodeId.fromSegments(segments, type), segments, words)
             }.sortedWith(compareBy({ it.segments.size }, { it.segments.joinToString(SEGMENT_SEPARATOR) }))
-            .forEach { node -> domainNodes.add(node.id, toDomainNodeObject(node.words)) }
+            .forEach { entry -> nodes[entry.id] = DomainNode(entry.words.map(::toDomainWord)) }
 
-        return domainNodes
+        return DomainLens(nodes)
     }
 
-    private fun toDomainNodeObject(words: List<WordFrequency>): JsonObject {
-        val domainNode = JsonObject()
-        domainNode.add(WORDS_KEY, toWordArray(words))
-        return domainNode
-    }
-
-    private fun toWordArray(words: List<WordFrequency>): JsonArray {
-        val array = JsonArray()
-        words.forEach { word ->
-            val wordObject = JsonObject()
-            wordObject.addProperty(TEXT_KEY, word.text)
-            wordObject.addProperty(FREQUENCY_KEY, word.frequency)
-            if (word.tfidf != null) {
-                wordObject.addProperty(TFIDF_KEY, word.tfidf)
-            }
-            array.add(wordObject)
-        }
-        return array
-    }
+    private fun toDomainWord(word: WordFrequency): DomainWord = DomainWord(word.text, word.frequency, word.tfidf)
 
     private fun segmentsOf(path: String): List<String> = PathFactory.extractOSIndependentPath(path).edgesList
 
-    private data class DomainNode(val id: String, val segments: List<String>, val words: List<WordFrequency>)
+    private data class NodeEntry(val id: String, val segments: List<String>, val words: List<WordFrequency>)
 
     companion object {
         private const val SEGMENT_SEPARATOR = "/"
-
-        private const val NODES_KEY = "nodes"
-        private const val WORDS_KEY = "words"
-        private const val TEXT_KEY = "text"
-        private const val FREQUENCY_KEY = "frequency"
-        private const val TFIDF_KEY = "tfidf"
     }
 }

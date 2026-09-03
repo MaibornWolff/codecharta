@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
@@ -14,10 +15,11 @@ class LargeMerge {
             require(project.rootNode.name == ROOT_NODE_NAME) {
                 "Input project structure doesn't have '/root/' as a base folder. If that's intended open an issue."
             }
-            val dataBearingOpaqueLenses = project.lenses.dataBearingOpaqueLensNames
-            require(dataBearingOpaqueLenses.isEmpty()) {
-                "Cannot '--large' merge '${project.projectName}': opaque lens(es) ${dataBearingOpaqueLenses.joinToString()} " +
-                    "may reference node ids that re-pathing into a subfolder would invalidate. " +
+            val invalidatedLenses = project.lenses.dataBearingOpaqueLensNames +
+                if (project.lenses.domain?.carriesData == true) setOf(LensSet.DOMAIN_KEY) else emptySet()
+            require(invalidatedLenses.isEmpty()) {
+                "Cannot '--large' merge '${project.projectName}': lens(es) ${invalidatedLenses.joinToString()} " +
+                    "reference node ids that re-pathing into a subfolder would invalidate. " +
                     "Merge without '--large' or open an issue."
             }
             val rePathedDependency = project.lenses.dependency.copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))

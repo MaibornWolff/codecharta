@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Chore 👨‍💻 👩‍💻
+
+- The `domain` lens is now a typed part of the model alongside `metrics` and `dependency` instead of an opaque JSON payload, so
+  filters can read and rewrite it rather than pass it through blindly. The emitted `.cc.json` is unchanged, except that a run
+  that found no words at all now writes the reserved empty `"domain": {}` instead of `"domain": {"nodes": {}}` — the two always
+  meant the same thing, and only the latter used to count as carrying data.
+
 ## [2.0.0] - 2026-09-02
 
 ### Added 🚀

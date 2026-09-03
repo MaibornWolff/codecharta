@@ -49,6 +49,7 @@ object CcJsonV2ToProjectMapper {
                         attributeTypes = dto.lenses.dependency.attributeTypes,
                         attributeDescriptors = dto.lenses.dependency.attributeDescriptors
                     ),
+                domain = dto.lenses.domain,
                 opaqueLenses = dto.lenses.opaqueLenses
             )
 

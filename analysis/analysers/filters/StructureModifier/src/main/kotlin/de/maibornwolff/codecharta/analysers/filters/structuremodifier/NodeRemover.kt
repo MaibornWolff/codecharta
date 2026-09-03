@@ -27,10 +27,8 @@ class NodeRemover(private val project: Project) {
         return ProjectBuilder
             .fromLenses(
                 removeNodes(pathSegments),
-                project.lenses.metrics,
-                project.lenses.dependency.copy(edges = removeEdges(paths)),
+                project.lenses.copy(dependency = project.lenses.dependency.copy(edges = removeEdges(paths))),
                 removeBlacklistItems(paths),
-                opaqueLenses = project.lenses.opaqueLenses,
                 commitHash = project.commitHash
             ).build(cleanAttributeDescriptors = true)
     }
