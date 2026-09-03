@@ -140,7 +140,11 @@ describe("nodeContextMenu component", () => {
 
     it("should offer nothing but the path where the view has no map to shape", async () => {
         // Arrange & Act
-        const { container } = await renderMenu({ node: folderNode, origin: "explorer", capabilities: { showMapActions: false } })
+        const { container } = await renderMenu({
+            node: folderNode,
+            origin: "explorer",
+            capabilities: { showMapActions: false, jumpTargetView: null }
+        })
 
         // Assert
         expect(screen.getByText("…/src")).not.toBe(null)
@@ -148,6 +152,7 @@ describe("nodeContextMenu component", () => {
         expect(screen.queryByText("Keep Highlight")).toBe(null)
         expect(screen.queryByText("Flatten")).toBe(null)
         expect(screen.queryByText("Exclude")).toBe(null)
+        expect(screen.queryByText("Show in Domain")).toBe(null)
         expect(container.querySelector(".colorButton")).toBe(null)
     })
 
