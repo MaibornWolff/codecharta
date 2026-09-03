@@ -54,10 +54,10 @@ test.describe("DomainView", () => {
         // Act — the explorer browses files by default, so the words are one toggle away
         await page.getByTestId("explorer-mode-words").click()
 
-        // Assert — the node tree and its sort options give way to the word list
+        // Assert — the node tree gives way to the word list, which the sort control now orders
         await expect(page.locator("cc-domain-word-list cc-domain-word-row").first()).toBeVisible()
         await expect(page.locator("cc-sidebar-explorer cc-explorer-tree")).toHaveCount(0)
-        await expect(page.locator("cc-sidebar-explorer cc-explorer-sort-control")).toHaveCount(0)
+        await expect(page.getByTestId("explorer-sort-trigger")).toContainText("Occurrences")
 
         // Act — the search box now searches words instead of paths
         const mostFrequentWord = (await page.locator("cc-domain-word-row").first().innerText()).split("\n")[0]
@@ -71,6 +71,23 @@ test.describe("DomainView", () => {
 
         // Assert — the breakdown that used to occupy the right-hand panel now hangs under the word
         await expect(page.locator("cc-domain-word-occurrence-tree [data-testid='domain-word-occurrences-tree']")).toBeVisible()
+    })
+
+    test("should reorder the word list from the sort control", async ({ page }) => {
+        // Arrange
+        const viewSwitcher = new ViewSwitcherPageObject(page)
+        await viewSwitcher.switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.getByTestId("explorer-mode-words").click()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+
+        // Act — words open most frequent first, so sorting by name has to move them
+        await page.getByTestId("explorer-sort-trigger").click()
+        await page.getByRole("button", { name: "Name", exact: true }).click()
+
+        // Assert
+        const wordsByName = await page.locator("cc-domain-word-row .node-name").allInnerTexts()
+        expect(wordsByName).toEqual([...wordsByName].sort((one, other) => one.localeCompare(other)))
     })
 
     test("should select a node from the word breakdown, so the cloud scopes to it", async ({ page }) => {

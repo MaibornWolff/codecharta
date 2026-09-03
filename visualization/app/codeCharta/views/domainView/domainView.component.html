@@ -23,6 +23,7 @@
     <cc-domain-word-list
         modeBody
         [query]="wordQuery()"
+        [sorting]="wordSorting()"
         [expandedWord]="inspectedWord()"
         [selectedNodePath]="selectedNodePath()"
         (wordToggled)="toggleInspectedWord($event)"

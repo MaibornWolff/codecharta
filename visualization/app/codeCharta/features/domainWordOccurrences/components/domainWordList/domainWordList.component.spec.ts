@@ -6,6 +6,7 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { STATE } from "../../../../mocks/dataMocks"
 import { CcState, DomainLensData } from "../../../../model/codeCharta.model"
+import { WordSorting, WordSortingOption } from "../../util/sortWords"
 import { DomainWordRowComponent } from "../domainWordRow/domainWordRow.component"
 import { DomainWordListComponent } from "./domainWordList.component"
 
@@ -32,7 +33,10 @@ describe("DomainWordListComponent", () => {
     const wordToggled = jest.fn()
     const nodeClicked = jest.fn()
 
-    async function setup(inputs: { query?: string; expandedWord?: string | null } = {}, words: DomainLensData = WORDS) {
+    async function setup(
+        inputs: { query?: string; expandedWord?: string | null; sorting?: WordSorting } = {},
+        words: DomainLensData = WORDS
+    ) {
         jest.clearAllMocks()
         TestBed.overrideComponent(DomainWordListComponent, { set: { imports: [DomainWordRowComponent, StubOccurrenceTreeComponent] } })
         return render(DomainWordListComponent, {
@@ -58,6 +62,14 @@ describe("DomainWordListComponent", () => {
         expect(screen.getByText("74% / 40")).toBeTruthy()
         expect(screen.getByText("19% / 10")).toBeTruthy()
         expect(screen.getByText("7% / 4")).toBeTruthy()
+    })
+
+    it("should order the words the way the sort control asks for", async () => {
+        // Arrange & Act
+        await setup({ sorting: { option: WordSortingOption.NAME, ascending: true } })
+
+        // Assert
+        expect(listedWords()).toEqual(["invoice", "payment", "prepayment"])
     })
 
     it("should keep only the words the query matches", async () => {

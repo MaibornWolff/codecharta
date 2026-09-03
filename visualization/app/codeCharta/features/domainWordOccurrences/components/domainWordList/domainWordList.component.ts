@@ -4,6 +4,7 @@ import { DomainWord } from "../../../../model/codeCharta.model"
 import { scrollRowIntoViewWhenRendered } from "../../../sidebarExplorer/facade"
 import { DomainWordOccurrencesReadStore } from "../../stores/domainWordOccurrences.read.store"
 import { matchingWords } from "../../util/matchingWords"
+import { sortWords, WordSorting, WordSortingOption } from "../../util/sortWords"
 import { DomainWordOccurrenceTreeComponent } from "../domainWordOccurrenceTree/domainWordOccurrenceTree.component"
 import { DomainWordRowComponent, domainWordRowId } from "../domainWordRow/domainWordRow.component"
 
@@ -18,6 +19,7 @@ export class DomainWordListComponent {
     private readonly readStore = inject(DomainWordOccurrencesReadStore)
 
     readonly query = input("")
+    readonly sorting = input<WordSorting>({ option: WordSortingOption.OCCURRENCES, ascending: false })
     readonly expandedWord = input<string | null>(null)
     readonly selectedNodePath = input<string | null>(null)
 
@@ -26,7 +28,7 @@ export class DomainWordListComponent {
 
     private readonly projectWords = toSignal(this.readStore.projectWords$, { requireSync: true })
 
-    protected readonly visibleWords = computed(() => matchingWords(this.projectWords(), this.query()))
+    protected readonly visibleWords = computed(() => sortWords(matchingWords(this.projectWords(), this.query()), this.sorting()))
     protected readonly emptyHint = computed(() =>
         this.projectWords().length === 0 ? "This project carries no words." : `No word contains "${this.query().trim()}".`
     )

@@ -3,19 +3,33 @@ import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BehaviorSubject } from "rxjs"
 import { SortingOption } from "../../../../model/codeCharta.model"
+import { ExplorerMode, FILES_EXPLORER_MODE } from "../../explorerModes"
 import { createExplorerSortMock, provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
-import { EXPLORER_SORT, ExplorerSort } from "../../explorerSort.port"
+import { EXPLORER_SORT, EXPLORER_WORD_SORT, ExplorerSort } from "../../explorerSort.port"
 import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerSortControlComponent } from "./explorerSortControl.component"
+
+const WORDS_MODE: ExplorerMode = {
+    id: "words",
+    label: "Words",
+    icon: "fa-solid fa-font",
+    searchPlaceholder: "",
+    searchAriaLabel: ""
+}
 
 describe("ExplorerSortControlComponent", () => {
     let sort: ExplorerSort
 
-    const configure = (options?: { sort?: ExplorerSort }) => {
+    const configure = (options?: { sort?: ExplorerSort; wordSort?: ExplorerSort }) => {
         sort = options?.sort ?? createExplorerSortMock()
         TestBed.configureTestingModule({
             imports: [ExplorerSortControlComponent],
-            providers: [{ provide: EXPLORER_SORT, useValue: sort }, provideExplorerCapabilitiesMock(), ExplorerModeService]
+            providers: [
+                { provide: EXPLORER_SORT, useValue: sort },
+                ...(options?.wordSort ? [{ provide: EXPLORER_WORD_SORT, useValue: options.wordSort }] : []),
+                provideExplorerCapabilitiesMock({ modes: [FILES_EXPLORER_MODE, WORDS_MODE] }),
+                ExplorerModeService
+            ]
         })
     }
 
@@ -95,6 +109,29 @@ describe("ExplorerSortControlComponent", () => {
 
         // Assert
         expect(sort.toggleAscending).toHaveBeenCalledTimes(1)
+    })
+
+    it("should sort what the active mode browses, not always the file tree", async () => {
+        // Arrange — the explorer browses words, which sort by their own options
+        TestBed.resetTestingModule()
+        const wordSort = createExplorerSortMock({
+            options: ["Occurrences", "Relevance"],
+            option$: new BehaviorSubject("Occurrences"),
+            ascending$: new BehaviorSubject(false)
+        })
+        configure({ wordSort })
+        const { container, detectChanges } = await render(ExplorerSortControlComponent)
+
+        // Act
+        TestBed.inject(ExplorerModeService).activate(WORDS_MODE.id)
+        detectChanges()
+        await userEvent.click(screen.getByText("Relevance"))
+
+        // Assert
+        expect(container.querySelector("[data-testid='explorer-sort-trigger']")?.textContent).toContain("Occurrences")
+        expect(screen.queryByText(SortingOption.AREA_SIZE)).toBeNull()
+        expect(wordSort.setOption).toHaveBeenCalledWith("Relevance")
+        expect(sort.setOption).not.toHaveBeenCalled()
     })
 
     it("should close the menu after acting on it", async () => {
