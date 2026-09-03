@@ -4,7 +4,7 @@ import { formatCompactNumber } from "../../../../util/formatCompactNumber"
 import { ExplorerRowComponent } from "../../../sidebarExplorer/facade"
 import { formatShare } from "../../util/formatShare"
 
-export const domainWordRowId = (word: string) => `domain-word-row-${word}`
+const domainWordRowId = (word: string) => `domain-word-row-${word}`
 
 @Component({
     selector: "cc-domain-word-row",
