@@ -112,7 +112,7 @@ test.describe("DomainView", () => {
         const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
         await page.mouse.click(cloud!.x + cloud!.width / 2, cloud!.y + cloud!.height / 2, { button: "right" })
         await expect(page.getByTestId("domain-word-menu")).toBeVisible()
-        const hiddenWord = (await page.getByTestId("domain-word-menu").locator("div").first().innerText()).trim()
+        const hiddenWord = (await page.getByTestId("domain-word-menu-copy").innerText()).trim()
         await page.getByText("Hide word").click()
 
         // Assert — the word left the list, and the explorer's chip counts it.

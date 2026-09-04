@@ -1,7 +1,7 @@
 ---
 name: Domain view manual QA findings
 issue: <#issueid>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -54,9 +54,21 @@ the word menu does not read like the node menu.
 - [x] Complete Task 2: hover emphasis survives
 - [x] Complete Task 3: cloud click opens the word in the list
 - [x] Complete Task 4: hidden-words chip in the explorer header
-- [ ] Complete Task 5: word menu header line
+- [x] Complete Task 5: word menu header line
 
 ## Notes
 
 - Tasks 2 and 3 are regressions from `0d299fc2`; task 1 predates this branch.
 - Each task is tested and committed on its own.
+- The header chip could not be projected through `cc-explorer-header`: content re-projected into a child
+  component's selected slot never arrived. The explorer takes the slot in its own template instead.
+- The word menu's first line mirrors the node context menu exactly — copy glyph first, then the word —
+  rather than putting the copy button at the right end.
+
+## Verification performed
+
+- 419 unit suites (2854 tests), `tsc`, dependency-cruiser, knip, style lint, and all 75 e2e tests green.
+- In a browser: the inspector closes for a folder; a hovered word keeps its emphasis while the open word
+  keeps its mark; a click from the file tree switches to word mode, searches and breaks the word down
+  without scrolling the tree; the Hidden chip counts and its popover opens under the chip; the word menu
+  reads like the node menu.
