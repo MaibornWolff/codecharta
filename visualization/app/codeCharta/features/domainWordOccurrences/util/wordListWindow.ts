@@ -26,7 +26,7 @@ const OVERSCAN_ROWS = 6
  * one open breakdown; it is handled as a single block of extra height sitting after its row.
  */
 export function wordListWindow(geometry: WordListGeometry): WordListWindow {
-    const { rowCount, rowHeight, scrolledPast, viewportHeight, expandedIndex, expandedHeight } = geometry
+    const { rowCount, rowHeight, scrolledPast, viewportHeight } = geometry
     if (rowCount === 0 || rowHeight <= 0 || viewportHeight <= 0) {
         return everyRow(geometry)
     }
