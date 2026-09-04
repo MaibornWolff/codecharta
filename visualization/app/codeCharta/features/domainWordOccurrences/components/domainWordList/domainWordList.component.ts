@@ -1,15 +1,4 @@
-import {
-    afterNextRender,
-    ChangeDetectionStrategy,
-    Component,
-    computed,
-    ElementRef,
-    effect,
-    inject,
-    input,
-    OnDestroy,
-    output
-} from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, input, OnDestroy, output } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DomainWord } from "../../../../model/codeCharta.model"
 import { ExplorerScrollHostService } from "../../../sidebarExplorer/facade"

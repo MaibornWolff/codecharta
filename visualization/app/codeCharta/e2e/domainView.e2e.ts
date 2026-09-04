@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, type Page, test } from "@playwright/test"
 import { CC_URL, clearIndexedDB, collapseExplorer, goto, waitForCcStatePersisted } from "../../playwright.helper"
 import sample1 from "../assets/sample1.cc.json"
 import { DomainBarPageObject } from "../features/domainBar/domainBar.po"
@@ -19,6 +19,15 @@ const MANY_WORDS_FILE = "./app/codeCharta/resources/sample_with_many_domain_word
 // A screenful plus the window's overscan — far fewer than the 300 words the file carries, and loose
 // enough to survive a row's worth of chrome moving in or out of the panel.
 const MOST_ROWS_A_WINDOW_RENDERS = 40
+
+/** The cloud lays its largest word out at the centre, which is the only word a test can aim at. */
+async function clickTheLargestWord(page: Page, button: "left" | "right" = "left") {
+    const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
+    if (!cloud) {
+        throw new Error("The word cloud has not been laid out")
+    }
+    await page.mouse.click(cloud.x + cloud.width / 2, cloud.y + cloud.height / 2, { button })
+}
 
 test.describe("DomainView", () => {
     test.beforeEach(async ({ page }) => {
@@ -91,8 +100,7 @@ test.describe("DomainView", () => {
         await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
 
         // Act — the cloud lays its largest word out at the centre.
-        const cloud = await canvas.boundingBox()
-        await page.mouse.click(cloud!.x + cloud!.width / 2, cloud!.y + cloud!.height / 2)
+        await clickTheLargestWord(page)
 
         // Assert — a click does what the menu's "Show occurrences" does: word mode, searched, broken down.
         await expect(page.getByTestId("explorer-mode-words")).toHaveAttribute("aria-pressed", "true")
@@ -109,8 +117,7 @@ test.describe("DomainView", () => {
         await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
 
         // Act — hide the largest word through the cloud's word menu.
-        const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
-        await page.mouse.click(cloud!.x + cloud!.width / 2, cloud!.y + cloud!.height / 2, { button: "right" })
+        await clickTheLargestWord(page, "right")
         await expect(page.getByTestId("domain-word-menu")).toBeVisible()
         const hiddenWord = (await page.getByTestId("domain-word-menu-copy").innerText()).trim()
         await page.getByText("Hide word").click()

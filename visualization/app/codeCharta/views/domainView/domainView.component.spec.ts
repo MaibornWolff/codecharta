@@ -5,8 +5,8 @@ import { provideRouter } from "@angular/router"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { firstValueFrom } from "rxjs"
-import { DomainBarReadStore, HiddenWordsWriteStore } from "../../features/domainBar/facade"
-import { WordSorting, WordSortingOption } from "../../features/domainWordOccurrences/facade"
+import { DomainBarReadStore } from "../../features/domainBar/facade"
+import { HiddenWordsWriteStore, WordSorting, WordSortingOption } from "../../features/domainWordOccurrences/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES, NodeContextMenuForExplorer } from "../../features/nodeContextMenu/facade"
 import {
     EXPLORER_CAPABILITIES,
@@ -333,6 +333,33 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordCloud(fixture).inspectedWord()).toBe("invoice")
+    })
+
+    it("should hide the word the menu asks to hide", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        const hiddenWordsStore = fixture.debugElement.injector.get(HiddenWordsWriteStore)
+        const hide = jest.spyOn(hiddenWordsStore, "hide")
+
+        // Act
+        fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.hideWord.emit("invoice")
+        detectChanges()
+
+        // Assert
+        expect(hide).toHaveBeenCalledWith("invoice")
+    })
+
+    it("should stop inspecting a word that is hidden, since it has left both the cloud and the list", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        inspectWordThroughTheMenu(fixture, detectChanges)
+
+        // Act
+        fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.hideWord.emit("invoice")
+        detectChanges()
+
+        // Assert
+        expect(wordList(fixture).expandedWord()).toBeNull()
     })
 
     it("should collapse an expanded word when its row is toggled again", async () => {
