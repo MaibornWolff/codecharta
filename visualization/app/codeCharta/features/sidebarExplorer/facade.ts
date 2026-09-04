@@ -1,3 +1,4 @@
+export { ExplorerCountChipComponent } from "./components/explorerCountChip/explorerCountChip.component"
 export { ExplorerRowComponent } from "./components/explorerRow/explorerRow.component"
 export { ExplorerSearchBarComponent } from "./components/explorerSearchBar/explorerSearchBar.component"
 export { ExplorerTreeItemIconComponent } from "./components/explorerTreeItemIcon/explorerTreeItemIcon.component"

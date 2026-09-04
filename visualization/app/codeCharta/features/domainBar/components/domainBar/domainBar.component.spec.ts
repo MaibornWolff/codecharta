@@ -7,20 +7,17 @@ import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { SETTINGS_INPUT_DEBOUNCE_MS } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainBarWriteStore } from "../../stores/domainBar.write.store"
-import { HiddenWordsReadStore } from "../../stores/hiddenWords.read.store"
-import { HiddenWordsWriteStore } from "../../stores/hiddenWords.write.store"
 import { DomainBarComponent } from "./domainBar.component"
 
 describe("DomainBarComponent", () => {
     let writeStore: jest.Mocked<Partial<DomainBarWriteStore>>
     let hasTfidfData: ReturnType<typeof signal<boolean>>
-    let hiddenWordsWriteStore: jest.Mocked<Partial<HiddenWordsWriteStore>>
 
     afterEach(() => {
         jest.useRealTimers()
     })
 
-    async function setup(settings = defaultWordCloudSettings, hiddenWords: string[] = []) {
+    async function setup(settings = defaultWordCloudSettings) {
         writeStore = {
             setShape: jest.fn(),
             setSizingMode: jest.fn(),
@@ -33,15 +30,12 @@ describe("DomainBarComponent", () => {
             setDrawOutOfBound: jest.fn()
         }
         hasTfidfData = signal(false)
-        hiddenWordsWriteStore = { restore: jest.fn(), restoreAll: jest.fn() }
         return render(DomainBarComponent, {
             providers: [
                 provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: DomainBarReadStore, useValue: { settings: signal(settings), hasTfidfData } },
-                { provide: DomainBarWriteStore, useValue: writeStore },
-                { provide: HiddenWordsReadStore, useValue: { hiddenWords: signal(hiddenWords) } },
-                { provide: HiddenWordsWriteStore, useValue: hiddenWordsWriteStore }
+                { provide: DomainBarWriteStore, useValue: writeStore }
             ]
         })
     }
@@ -59,48 +53,6 @@ describe("DomainBarComponent", () => {
         expect(screen.getByTestId("domain-bar-shape-segment")).not.toBeNull()
         expect(screen.getByTestId("domain-bar-word-sizing-segment")).not.toBeNull()
         expect(screen.getByTestId("domain-bar-rotation-segment")).not.toBeNull()
-        expect(screen.getByTestId("domain-bar-hidden-words-segment")).not.toBeNull()
-    })
-
-    it("should count the hidden words on the bar", async () => {
-        // Arrange & Act
-        await setup(defaultWordCloudSettings, ["invoice", "payment"])
-
-        // Assert
-        expect(screen.getByTestId("domain-bar-hidden-words-segment").textContent).toContain("2 words")
-    })
-
-    it("should say how to hide a word while none is hidden", async () => {
-        // Arrange & Act
-        await setup()
-
-        // Assert
-        expect(screen.getByTestId("domain-bar-hidden-words-empty")).not.toBeNull()
-        expect(screen.queryByTestId("domain-bar-hidden-words-list")).toBeNull()
-    })
-
-    it("should list the hidden words alphabetically and restore the one that is picked", async () => {
-        // Arrange
-        await setup(defaultWordCloudSettings, ["payment", "invoice"])
-
-        // Act
-        const listedWords = screen.getByTestId("domain-bar-hidden-words-list").textContent
-        fireEvent.click(screen.getByTestId("domain-bar-restore-payment"))
-
-        // Assert
-        expect(listedWords?.indexOf("invoice")).toBeLessThan(listedWords?.indexOf("payment") ?? 0)
-        expect(hiddenWordsWriteStore.restore).toHaveBeenCalledWith("payment")
-    })
-
-    it("should restore every hidden word at once", async () => {
-        // Arrange
-        await setup(defaultWordCloudSettings, ["invoice"])
-
-        // Act
-        fireEvent.click(screen.getByTestId("domain-bar-restore-all-words"))
-
-        // Assert
-        expect(hiddenWordsWriteStore.restoreAll).toHaveBeenCalled()
     })
 
     it("should reset each settings area on its own", async () => {
