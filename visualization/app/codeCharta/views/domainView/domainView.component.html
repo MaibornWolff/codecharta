@@ -37,7 +37,7 @@
         [selectedNodePath]="selectedNodePath()"
         [inspectedWord]="inspectedWord()"
         (clearSelection)="clearSelection()"
-        (wordClicked)="toggleInspectedWord($event)"
+        (wordClicked)="showWordOccurrences($event)"
         (wordRightClicked)="rightClickedWord.set($event)"
     ></cc-word-cloud>
     <cc-domain-toolbox class="absolute right-[10px] top-[10px] z-10 flex"></cc-domain-toolbox>

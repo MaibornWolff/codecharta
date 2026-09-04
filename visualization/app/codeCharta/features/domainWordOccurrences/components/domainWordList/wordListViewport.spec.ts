@@ -95,6 +95,32 @@ describe("WordListViewport", () => {
         expect(viewport.geometry().viewportHeight).toBe(800)
     })
 
+    it("should stay unmeasured while the list is not inside the panel, so the file tree is left alone", () => {
+        // Arrange: browsing files leaves this list built but outside the panel the tree scrolls in.
+        list.remove()
+        const viewport = new WordListViewport()
+
+        // Act
+        viewport.attachTo(list, panel)
+
+        // Assert
+        expect(viewport.geometry().viewportHeight).toBe(0)
+    })
+
+    it("should not scroll the panel while the list is not inside it", () => {
+        // Arrange
+        panel.scrollTop = 0
+        const viewport = new WordListViewport()
+        viewport.attachTo(list, panel)
+        list.remove()
+
+        // Act
+        viewport.scrollTo(1200)
+
+        // Assert
+        expect(panel.scrollTop).toBe(0)
+    })
+
     it("should take the row height from a rendered row, so a restyled row does not misplace the window", () => {
         // Arrange
         list.append(elementOfHeight("cc-domain-word-row", 42))

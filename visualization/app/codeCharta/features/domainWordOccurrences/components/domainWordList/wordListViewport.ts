@@ -82,6 +82,12 @@ export class WordListViewport {
         if (!host || !scrollHost) {
             return
         }
+        // While the explorer browses files, this list is still built but sits outside the panel. Measuring
+        // it there would read the file tree's geometry — and scrolling it would scroll the file tree.
+        if (!scrollHost.contains(host)) {
+            this.measured.set(UNMEASURED)
+            return
+        }
         const renderedBreakdownHeight = host.querySelector<HTMLElement>(BREAKDOWN_SELECTOR)?.offsetHeight
         if (renderedBreakdownHeight !== undefined) {
             this.openBreakdownHeight = renderedBreakdownHeight
@@ -97,7 +103,7 @@ export class WordListViewport {
     /** Scrolls the panel to an offset within the list, so a row that is not rendered can still be reached. */
     scrollTo(offsetWithinTheList: number): void {
         const { host, scrollHost } = this
-        if (!host || !scrollHost) {
+        if (!host || !scrollHost || !scrollHost.contains(host)) {
             return
         }
         const listTopWithinScrollHost = host.getBoundingClientRect().top - scrollHost.getBoundingClientRect().top + scrollHost.scrollTop

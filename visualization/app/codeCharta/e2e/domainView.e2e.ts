@@ -82,20 +82,20 @@ test.describe("DomainView", () => {
         await expect(page.locator("cc-domain-word-occurrence-tree [data-testid='domain-word-occurrences-tree']")).toBeVisible()
     })
 
-    test("should expand the word that was clicked in the cloud, so the explorer follows the picture", async ({ page }) => {
-        // Arrange — word mode open beside the cloud, with the layout settled.
+    test("should show the occurrences of a word clicked in the cloud, from the file tree too", async ({ page }) => {
+        // Arrange — the explorer is on its file tree, which is where it opens.
         await new ViewSwitcherPageObject(page).switchToDomain()
-        await page.getByTestId("explorer-mode-words").click()
         const canvas = page.locator("cc-word-cloud canvas")
         await expect(canvas).toBeVisible()
-        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
         await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
 
         // Act — the cloud lays its largest word out at the centre.
         const cloud = await canvas.boundingBox()
         await page.mouse.click(cloud!.x + cloud!.width / 2, cloud!.y + cloud!.height / 2)
 
-        // Assert — the clicked word is the one the list broke down.
+        // Assert — a click does what the menu's "Show occurrences" does: word mode, searched, broken down.
+        await expect(page.getByTestId("explorer-mode-words")).toHaveAttribute("aria-pressed", "true")
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(1)
         await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(1)
     })
 
