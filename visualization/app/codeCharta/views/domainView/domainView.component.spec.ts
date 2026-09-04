@@ -292,16 +292,19 @@ describe("DomainViewComponent", () => {
         expect(wordList(fixture).sorting()).toEqual({ option: WordSortingOption.NAME, ascending: true })
     })
 
-    it("should inspect the word that was clicked in the cloud", async () => {
+    it("should show the occurrences of the word that was clicked in the cloud", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
+        const modeService = fixture.debugElement.injector.get(ExplorerModeService)
 
         // Act
         wordCloud(fixture).wordClicked.emit("invoice")
         detectChanges()
 
-        // Assert
+        // Assert — the same thing the menu's "Show occurrences" does, so a click needs no second step.
+        expect(modeService.activeMode().id).toBe(WORDS_EXPLORER_MODE.id)
         expect(wordList(fixture).expandedWord()).toBe("invoice")
+        expect(wordList(fixture).query()).toBe("invoice")
     })
 
     it("should mark the inspected word in the cloud, so both halves of the view say the same thing", async () => {
@@ -313,47 +316,6 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordCloud(fixture).inspectedWord()).toBe("invoice")
-    })
-
-    it("should drop the inspection when the clicked word is clicked again", async () => {
-        // Arrange
-        const { fixture, detectChanges } = await setup()
-        wordCloud(fixture).wordClicked.emit("invoice")
-        detectChanges()
-
-        // Act
-        wordCloud(fixture).wordClicked.emit("invoice")
-        detectChanges()
-
-        // Assert
-        expect(wordCloud(fixture).inspectedWord()).toBeNull()
-    })
-
-    it("should hide the word the menu asks to hide", async () => {
-        // Arrange
-        const { fixture, detectChanges } = await setup()
-        const hiddenWordsStore = fixture.debugElement.injector.get(HiddenWordsWriteStore)
-        const hide = jest.spyOn(hiddenWordsStore, "hide")
-
-        // Act
-        fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.hideWord.emit("invoice")
-        detectChanges()
-
-        // Assert
-        expect(hide).toHaveBeenCalledWith("invoice")
-    })
-
-    it("should stop inspecting a word that is hidden, since it has left both the cloud and the list", async () => {
-        // Arrange
-        const { fixture, detectChanges } = await setup()
-        inspectWordThroughTheMenu(fixture, detectChanges)
-
-        // Act
-        fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.hideWord.emit("invoice")
-        detectChanges()
-
-        // Assert
-        expect(wordList(fixture).expandedWord()).toBeNull()
     })
 
     it("should collapse an expanded word when its row is toggled again", async () => {

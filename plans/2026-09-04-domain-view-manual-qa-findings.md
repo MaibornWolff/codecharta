@@ -52,7 +52,7 @@ the word menu does not read like the node menu.
 
 - [x] Complete Task 1: inspector closes for a node without a building
 - [x] Complete Task 2: hover emphasis survives
-- [ ] Complete Task 3: cloud click opens the word in the list
+- [x] Complete Task 3: cloud click opens the word in the list
 - [ ] Complete Task 4: hidden-words chip in the explorer header
 - [ ] Complete Task 5: word menu header line
 
