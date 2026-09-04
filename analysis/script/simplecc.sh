@@ -55,7 +55,12 @@ ANALYSIS STEPS:
     3. Tokei            - Language statistics (requires: tokei)
     4. GitLogParser     - Git commit history metrics (requires: git, git repo)
     5. RawTextParser    - Raw text metrics (requires: ccsh)
-    6. DomainLanguage   - Domain vocabulary lens (requires: ccsh)
+    6. DomainLanguage   - Domain vocabulary lens (requires: ccsh), tuned to
+                          surface domain terms: identifiers weighted above
+                          comments above strings, bigrams on, tests and
+                          technical words filtered out. Put project-specific
+                          noise words (product names, tech terms) in a
+                          .dlcignore file in the analysed folder to drop them.
     7. SonarImporter    - SonarQube metrics (requires: sonar-scanner, token)
 
     Only ccsh is mandatory. All other tools are optional.
@@ -445,7 +450,18 @@ run_domain_language_analysis() {
         return
     fi
 
-    if ccsh domainlanguageparser . -o "$TEMP_DIR/domain.${FILE_EXTENSION}"; then
+    # Identifiers are where developers commit to a name, strings are the noisiest source
+    # (log messages, SQL, i18n keys). Bigrams carry the domain phrases; they roughly double
+    # the lens payload, and they only show up once the word list is short enough - browse
+    # folders and files rather than the project root to see them.
+    if ccsh domainlanguageparser . \
+        --exclude-tests \
+        --ngrams=2 \
+        --stop-word-level=MODERATE \
+        --identifier-weight=5 \
+        --comment-weight=3 \
+        --string-weight=1 \
+        -o "$TEMP_DIR/domain.${FILE_EXTENSION}"; then
         GENERATED_FILES+=("$TEMP_DIR/domain.${FILE_EXTENSION}")
         echo "   Generated domain.${FILE_EXTENSION}"
     else
@@ -530,6 +546,7 @@ print_summary() {
         echo "  - Area Metric: rloc"
         echo "  - Height Metric: whitespace_complexity"
         echo "  - Color Metric: number_of_commits or weeks_with_commits"
+        echo "  - Domain view: size and sort words by TF-IDF (Relevance)"
     else
         echo "Error: Failed to create output file."
     fi
