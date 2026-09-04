@@ -14,6 +14,7 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 })
 export class CodeMapComponent implements AfterViewInit, OnDestroy {
     isLoadingFile$ = this.fileStoreReadWindow.isLoadingFile$
+    isContextLost$ = this.threeViewerService.isContextLost$
 
     constructor(
         public inspectorVisibilityService: InspectorVisibilityService,

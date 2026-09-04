@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
+import { firstValueFrom, of } from "rxjs"
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { MapControls } from "three/addons/controls/MapControls.js"
 import { ThreeCameraService } from "./threeCamera.service"
@@ -47,7 +48,7 @@ describe("ThreeViewerService", () => {
         threeRendererService = {
             render: jest.fn(),
             renderer: {
-                domElement: { height: 1, width: 1 },
+                domElement: { height: 1, width: 1, remove: jest.fn() },
                 setSize: jest.fn(),
                 dispose: jest.fn(),
                 getContext: jest.fn(),
@@ -57,7 +58,10 @@ describe("ThreeViewerService", () => {
                 domElement: document.createElement("div"),
                 setSize: jest.fn()
             },
-            init: jest.fn()
+            init: jest.fn(),
+            setSize: jest.fn(),
+            destroy: jest.fn(),
+            isContextLost$: of(false)
         } as unknown as ThreeRendererService
 
         threeMapControlsService = {
@@ -149,10 +153,10 @@ describe("ThreeViewerService", () => {
             expect(threeSceneService.scene.updateMatrixWorld).toHaveBeenCalledWith(false)
         })
 
-        it("should call renderer.setSize", () => {
+        it("should resize through the renderer service, so the pixel ratio budget is re-applied", () => {
             threeViewerService.onWindowResize()
 
-            expect(threeRendererService.renderer.setSize).toHaveBeenCalledWith(window.innerWidth, window.innerHeight)
+            expect(threeRendererService.setSize).toHaveBeenCalledWith(window.innerWidth, window.innerHeight)
         })
 
         it("should set camera.aspect correctly", () => {
@@ -205,6 +209,22 @@ describe("ThreeViewerService", () => {
             threeViewerService.animateStats()
 
             expect(threeStatsService.updateStats).toHaveBeenCalled()
+        })
+    })
+
+    describe("isContextLost$", () => {
+        it("should re-expose the renderer's context state", async () => {
+            expect(await firstValueFrom(threeViewerService.isContextLost$)).toBe(false)
+        })
+    })
+
+    describe("destroy", () => {
+        it("should let the renderer service detach its context listeners", () => {
+            threeViewerService.init(element)
+
+            threeViewerService.destroy()
+
+            expect(threeRendererService.destroy).toHaveBeenCalled()
         })
     })
 
