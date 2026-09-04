@@ -9,6 +9,10 @@ git log --numstat --raw --topo-order --reverse -m > temp_dir/git.log
 
 cd temp_dir || exit
 CCSH=../analysis/build/install/codecharta-analysis/bin/ccsh
+# Identifiers are where developers commit to a name, strings are the noisiest source (log
+# messages, SQL, i18n keys). Bigrams carry the domain phrases; they surface per file and folder
+# in the Domain view, where the word list is short enough for them to rank.
+DOMAIN_OPTS="--exclude-tests --ngrams=2 --stop-word-level=MODERATE --identifier-weight=5 --comment-weight=3 --string-weight=1"
 
 # Data for for both visualization and analysis
 $CCSH gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o codecharta_git.cc.json -nc
@@ -19,7 +23,7 @@ $CCSH unifiedparser ../visualization -o codecharta_unified_visualization.cc.json
 $CCSH sonarimport -nc -o codecharta_sonar_visualization.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization
 # Domain lens, so the demo map offers the Domain view. Parsed on the unmodified tree: its node ids are
 # path hashes, which `ccsh modify` would invalidate.
-$CCSH domainlanguageparser ../visualization -o codecharta_domain_visualization.cc.json -nc
+$CCSH domainlanguageparser ../visualization $DOMAIN_OPTS -o codecharta_domain_visualization.cc.json -nc
 # Create one zipped map for pipeline build
 $CCSH merge -o ../visualization/dist/bundler/browser/codecharta_visualization.cc.json codecharta_sonar_visualization.cc.json codecharta_unified_visualization.cc.json codecharta_domain_visualization.cc.json codecharta_git_mod.cc.json
 
@@ -27,7 +31,7 @@ $CCSH merge -o ../visualization/dist/bundler/browser/codecharta_visualization.cc
 $CCSH modify --set-root root/analysis -o codecharta_git_mod.cc.json codecharta_git.cc.json
 $CCSH unifiedparser ../analysis -o codecharta_unified_analysis.cc.json -nc
 $CCSH sonarimport -nc -o codecharta_sonar_analysis.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_analysis
-$CCSH domainlanguageparser ../analysis -o codecharta_domain_analysis.cc.json -nc
+$CCSH domainlanguageparser ../analysis $DOMAIN_OPTS -o codecharta_domain_analysis.cc.json -nc
 # Create one zipped map for pipeline build
 $CCSH merge -o ../visualization/dist/bundler/browser/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_unified_analysis.cc.json codecharta_domain_analysis.cc.json codecharta_git_mod.cc.json
 
