@@ -1,0 +1,212 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "application",
+          "CreatureFacade"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\application\\CreatureFacade.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "ArmorClass"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "Creature"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "CreatureId"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "CreatureType"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "HitPoints"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "Speed"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "SpeedType"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "service",
+              "CreatureService"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "Map"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "UUID"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "application"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "var",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureType",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "UUID",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "HitPoints",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Map",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "SpeedType",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Creature",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureId",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureService",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Speed",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "ArmorClass",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "int",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "void",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

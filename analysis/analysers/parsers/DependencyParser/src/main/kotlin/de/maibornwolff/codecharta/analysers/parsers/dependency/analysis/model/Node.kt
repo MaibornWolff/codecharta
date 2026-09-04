@@ -46,6 +46,9 @@ data class Node(
 
     fun name() = pathWithName.parts.last()
 
+    // Kept so tests can hang a builder off it, the way the generated serializer companion used to serve.
+    companion object {}
+
     private fun Type.toResolvedType(projectDictionary: Map<String, List<Path>>, languageDictionary: Map<String, Path>): Type {
         val resolvedPath = resolveTypeImport(name, projectDictionary, languageDictionary)
         return copy(

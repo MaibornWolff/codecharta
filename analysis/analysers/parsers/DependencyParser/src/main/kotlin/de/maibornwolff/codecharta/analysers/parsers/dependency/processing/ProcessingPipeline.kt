@@ -58,11 +58,16 @@ object ProcessingPipeline {
                 toPath = edge.to.segments,
                 weight = edge.weight,
                 isCyclic = edge.isCyclic,
-                isPointingUpwards = index.isPointingUpwards(edge.from.graphId, edge.to.graphId)
+                isPointingUpwards = pointsUpwards(index, edge)
             )
         }
         return DependencyGraph(edges, collectLevels(levelizedRoots, filePaths))
     }
+
+    // A pair the index cannot relate — a file the levelizer dropped, or two roots with no common
+    // ancestor — is not evidence of an architectural violation, so it counts as pointing downwards.
+    private fun pointsUpwards(index: GraphIndex, edge: AggregatedFileEdge): Boolean =
+        runCatching { index.isPointingUpwards(edge.from.graphId, edge.to.graphId) }.getOrDefault(false)
 
     private fun toFileTree(aggregatedEdges: List<AggregatedFileEdge>, filePaths: List<FilePath>): List<GraphNode> {
         val edgesByFile = aggregatedEdges.groupBy { it.from }
