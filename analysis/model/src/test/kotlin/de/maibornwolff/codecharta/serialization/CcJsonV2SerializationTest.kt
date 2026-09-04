@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.DomainNode
 import de.maibornwolff.codecharta.model.DomainWord
@@ -763,6 +765,83 @@ class CcJsonV2SerializationTest {
 
         assertTrue(reSerialized.getAsJsonObject("lenses").has("experimental"))
         assertEquals("bar", reSerialized.getAsJsonObject("lenses").getAsJsonObject("experimental").get("foo").asString)
+    }
+
+    @Test
+    fun `should omit the graph flags and node levels of a project that carries none`() {
+        // Guards the additive promise: a producer that never sets them writes exactly what it wrote before.
+        val dependencyLens =
+            JsonParser
+                .parseString(ProjectSerializer.serializeToString(sampleProject()))
+                .asJsonObject
+                .getAsJsonObject("lenses")
+                .getAsJsonObject("dependency")
+
+        assertFalse(dependencyLens.has("nodes"))
+        assertFalse(dependencyLens.getAsJsonArray("edges").first().asJsonObject.has("isCyclic"))
+        assertFalse(dependencyLens.getAsJsonArray("edges").first().asJsonObject.has("isPointingUpwards"))
+    }
+
+    @Test
+    fun `should round-trip the graph flags and node levels of a levelized project`() {
+        // Arrange
+        val levelizedProject = levelizedProject()
+
+        // Act
+        val readBack = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(levelizedProject))
+
+        // Assert
+        val edge = readBack.lenses.dependency.edges.single()
+        assertTrue(edge.isCyclic)
+        assertTrue(edge.isPointingUpwards)
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        assertEquals(DependencyNode(2), readBack.lenses.dependency.nodes[appId])
+    }
+
+    @Test
+    fun `should drop a dependency-lens node entry whose id resolves to no file node`() {
+        // Arrange: an id that names no node in the tree, as a hand-authored 2.0 file could carry.
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(levelizedProject())).asJsonObject
+        with20
+            .getAsJsonObject("lenses")
+            .getAsJsonObject("dependency")
+            .getAsJsonObject("nodes")
+            .add("ghost-id", JsonParser.parseString("""{"level":9}"""))
+
+        // Act
+        val readBack = ProjectDeserializer.deserializeProject(with20.toString())
+
+        // Assert
+        assertFalse(readBack.lenses.dependency.nodes.containsKey("ghost-id"))
+    }
+
+    private fun levelizedProject(): Project {
+        val appNode = Node("App.kt", NodeType.File, mapOf("rloc" to 120.0), "", setOf())
+        val otherNode = Node("Other.kt", NodeType.File, mapOf("rloc" to 30.0), "", setOf())
+        val root =
+            Node("root", NodeType.Folder, emptyMap(), "", setOf(Node("src", NodeType.Folder, emptyMap(), "", setOf(appNode, otherNode))))
+        val lenses =
+            LensSet(
+                dependency =
+                    DependencyLens(
+                        edges =
+                            listOf(
+                                Edge(
+                                    "/root/src/App.kt",
+                                    "/root/src/Other.kt",
+                                    mapOf("dependencies" to 3.0),
+                                    isCyclic = true,
+                                    isPointingUpwards = true
+                                )
+                            ),
+                        nodes =
+                            mapOf(
+                                NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File) to DependencyNode(2),
+                                NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File) to DependencyNode(0)
+                            )
+                    )
+            )
+        return Project("levelized", listOf(root), Project.API_VERSION, lenses)
     }
 
     @Test

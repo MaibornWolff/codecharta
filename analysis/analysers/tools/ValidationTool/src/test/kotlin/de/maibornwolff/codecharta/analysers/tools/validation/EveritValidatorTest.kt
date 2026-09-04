@@ -3,9 +3,11 @@ package de.maibornwolff.codecharta.analysers.tools.validation
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.LegacyFileException
@@ -107,14 +109,22 @@ class EveritValidatorTest {
     @Test
     fun `should keep the bundled and published 2_0 schemas in sync with a representative project`() {
         // Arrange: a 2.0 project exercising meta.commitHash, per-node contentHash, node + edge metrics,
-        // attribute types and descriptors, and an opaque domain lens. Because the strict 2.0 schema forbids
-        // unknown properties, a new field on the CcJsonV2 DTO would serialize here and fail both validations
-        // until the schemas catch up.
+        // attribute types and descriptors, the dependency lens's graph flags and node levels, and an opaque
+        // domain lens. Because the strict 2.0 schema forbids unknown properties, a new field on the CcJsonV2
+        // DTO would serialize here and fail both validations until the schemas catch up.
         val appNode = Node("App.kt", NodeType.File, mapOf("rloc" to 120.0, "mcc" to 8.0), "", setOf(), checksum = "abc123")
         val otherNode = Node("Other.kt", NodeType.File, mapOf("rloc" to 30.0), "", setOf(), checksum = "def456")
         val srcNode = Node("src", NodeType.Folder, emptyMap(), "", setOf(appNode, otherNode))
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
-        val edges = listOf(Edge("/root/src/App.kt", "/root/src/Other.kt", mapOf("pairingRate" to 42.0)))
+        val edges =
+            listOf(
+                Edge("/root/src/App.kt", "/root/src/Other.kt", mapOf("pairingRate" to 42.0), isCyclic = true, isPointingUpwards = true)
+            )
+        val dependencyNodes =
+            mapOf(
+                NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File) to DependencyNode(2),
+                NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File) to DependencyNode(0)
+            )
         val attributeTypes =
             mapOf(
                 "nodes" to mutableMapOf("rloc" to AttributeType.ABSOLUTE),
@@ -133,6 +143,7 @@ class EveritValidatorTest {
                 Project.API_VERSION,
                 LensSet
                     .fromLegacy(edges, attributeTypes, attributeDescriptors)
+                    .let { it.copy(dependency = it.dependency.copy(nodes = dependencyNodes)) }
                     .copy(opaqueLenses = mapOf("domain" to JsonParser.parseString(domainLens))),
                 commitHash = "a1b2c3d"
             )

@@ -43,6 +43,8 @@ open class ProjectBuilder(
 
     private var domainLens: DomainLens? = null
 
+    private var dependencyNodes: Map<String, DependencyNode> = emptyMap()
+
     private var commitHash: String? = null
 
     fun withOpaqueLenses(opaqueLenses: Map<String, JsonElement>): ProjectBuilder {
@@ -52,6 +54,11 @@ open class ProjectBuilder(
 
     fun withDomainLens(domainLens: DomainLens): ProjectBuilder {
         this.domainLens = domainLens
+        return this
+    }
+
+    fun withDependencyNodes(dependencyNodes: Map<String, DependencyNode>): ProjectBuilder {
+        this.dependencyNodes = dependencyNodes
         return this
     }
 
@@ -82,7 +89,13 @@ open class ProjectBuilder(
             removeUnusedAttributeDescriptors()
         }
         val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
-        return assembleProject(baseLenses.copy(domain = domainLens, opaqueLenses = opaqueLenses))
+        return assembleProject(
+            baseLenses.copy(
+                dependency = baseLenses.dependency.copy(nodes = dependencyNodes),
+                domain = domainLens,
+                opaqueLenses = opaqueLenses
+            )
+        )
     }
 
     fun buildFromLenses(lenses: LensSet): Project {
@@ -324,6 +337,7 @@ open class ProjectBuilder(
                     blacklist
                 ).withOpaqueLenses(lenses.opaqueLenses)
                     .withCommitHash(commitHash)
+                    .withDependencyNodes(lenses.dependency.nodes)
             return lenses.domain?.let { builder.withDomainLens(it) } ?: builder
         }
     }
