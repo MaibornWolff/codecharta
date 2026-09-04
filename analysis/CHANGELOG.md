@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.0.1] - 2026-09-04
+
 ### Fixed 🐞
 
 - **Two domain maps can now be merged.** `ccsh merge` refused any pair of inputs that both carried domain words
