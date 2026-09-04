@@ -12,8 +12,8 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
 
     fun asEdge(): Edge {
         val rootNode = "/root/"
-        val fromNodeName = rootNode + allColumns.get("entity")
-        val toNodeName = rootNode + allColumns.get("coupled")
+        val fromNodeName = rootNode + allColumns["entity"]
+        val toNodeName = rootNode + allColumns["coupled"]
 
         return Edge(fromNodeName, toNodeName, attributes)
     }

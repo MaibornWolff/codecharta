@@ -61,23 +61,25 @@ class InputHelper {
         }
 
         private fun isInputValidFolderOrAnyFile(inputResource: File, canInputContainFolders: Boolean): Boolean {
-            if (canInputContainFolders) {
-                if (inputResource.isDirectory && getFilesInFolder(inputResource).isEmpty()) {
-                    Logger.error {
-                        "The specified path `${inputResource.path}` exists but is empty!"
-                    }
-                    return false
-                }
-                return true
-            } else {
-                if (inputResource.isDirectory) {
-                    Logger.error {
-                        "Input folder where only files are allowed!"
-                    }
-                    return false
-                }
+            if (!inputResource.isDirectory) {
                 return true
             }
+
+            if (!canInputContainFolders) {
+                Logger.error {
+                    "Input folder where only files are allowed!"
+                }
+                return false
+            }
+
+            if (getFilesInFolder(inputResource).isEmpty()) {
+                Logger.error {
+                    "The specified path `${inputResource.path}` exists but is empty!"
+                }
+                return false
+            }
+
+            return true
         }
 
         private fun areInputResourcesValid(inputResources: Array<File>, canInputContainFolders: Boolean): Boolean {
