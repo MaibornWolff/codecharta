@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.importers.dependacharta.DependaChart
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
+import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
@@ -69,6 +70,7 @@ class PicocliAnalyserRepositoryTest {
         CodeMaatImporter(),
         TokeiImporter(), DependaChartaImporter(),
         RawTextParser(), DomainLanguageParser(),
+        DependencyParser(),
         ValidationTool(), InspectionTool()
     )
 
@@ -99,6 +101,7 @@ class PicocliAnalyserRepositoryTest {
             listOf(DependaChartaImporter.NAME, " - " + DependaChartaImporter.DESCRIPTION),
             listOf(RawTextParser.NAME, " - " + RawTextParser.DESCRIPTION),
             listOf(DomainLanguageParser.NAME, " - " + DomainLanguageParser.DESCRIPTION),
+            listOf(DependencyParser.NAME, " - " + DependencyParser.DESCRIPTION),
             listOf(ValidationTool.NAME, " - " + ValidationTool.DESCRIPTION),
             listOf(InspectionTool.NAME, " - " + InspectionTool.DESCRIPTION)
         )

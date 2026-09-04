@@ -32,7 +32,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
   ],
   "lenses": {
     "metrics":    { "attributes": { "<id>": { "rloc": 120, "mcc": 8 } }, "attributeDescriptors": {}, "attributeTypes": {} },
-    "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "pairingRate": 42 } } ], "attributeTypes": {}, "attributeDescriptors": {} },
+    "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true } ], "nodes": { "<id>": { "level": 2 } }, "attributeTypes": {}, "attributeDescriptors": {} },
     "clusters":   { "clusterings": { "author-ownership": { "title": "Author ownership", "membership": "weighted", "weightBasis": "rloc", "analyzers": ["gitlogparser"], "clusters": [ { "id": "author-a", "name": "Author A", "members": [ { "nodeId": "<id>", "weight": 0.62 } ] } ] } } },
     "domain":     { "nodes": { "<id>": { "words": [ { "text": "invoice", "frequency": 12, "tfidf": 0.42 } ] } } },
     "security":   {}
@@ -45,13 +45,42 @@ backend and a frontend built separately, or a coverage report rooted by package)
 - **`lenses`** are additive overlays joined to `files` by `id`. `metrics`, `dependency` and `domain`
   are concrete; `clusters` is optional and fully defined by the schema but has no producer or
   visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
-  definition and merge semantics; `domain` carries a `nodes` map from node id to that node's entry, each
+  definition and merge semantics; `dependency` carries the graph — `edges` between node ids, plus an
+  optional `nodes` map giving each file and folder the `level` it sits on (see
+  [the dependency graph](#the-dependency-graph-in-the-dependency-lens)); `domain` carries a `nodes` map from node id to that node's entry, each
   entry holding a `words` bank (each word carrying `text`, `frequency` and an optional `tfidf`) — the
   envelope keeps room for lens-wide data beside `nodes` and per-node data beside `words`, and an unused
   lens slot stays `{}`; `security` is reserved. **Unknown top-level lenses
   are preserved verbatim** on round-trip, so a newer tool's lens survives an older tool.
 - **`meta.checksum`** is an MD5 over the serialized `files` + `lenses` payload (folded into `meta`,
   unlike the 1.5 `{ checksum, data }` wrapper). `commitHash` is an optional short git SHA.
+
+## The dependency graph in the `dependency` lens
+
+An `Edge` carries its weight as an ordinary numeric attribute (`dependencies`: how many individual
+code-level references the edge stands for), so it works with the existing edge-metric machinery,
+`attributeTypes` and descriptors. Two optional booleans describe the edge's place in the graph:
+
+- **`isCyclic`** — the edge takes part in a dependency cycle.
+- **`isPointingUpwards`** — the edge runs against the levelized flow, i.e. its target sits at the same
+  level as or above its source.
+
+Both default to `false` and are **omitted when false**, so a producer that sets neither writes exactly
+what producers wrote before the fields existed. The four edge types are a pure function of the pair and
+are therefore **derived where they are consumed, never stored**: regular (neither), cyclic (`isCyclic`),
+container-level feedback (`isPointingUpwards`), leaf-level feedback (both).
+
+**`nodes`** maps a node id to that node's `DependencyNode`, currently just its `level`: the node's
+levelization depth within its parent — 0 for a node that depends on nothing, *n* for one that depends
+only on nodes below level *n*. It is an object rather than a bare number so per-node facts (declaration
+kind, detected language) can be added later without a break, and it is optional so an unused lens slot
+stays `{}` — the form `carriesData()` treats as carrying nothing.
+
+Both halves are keyed by node id, so a filter that re-paths the tree re-keys `nodes` along with it
+(`DependencyLens.rekeyed`) while the edges are re-pathed by the restructuring itself. Merging two
+levelized projects takes the **higher** level of a node both describe; that is a conservative
+reconciliation, not a recomputation — levels are only meaningful within one producer's graph, so exact
+levels for a merged tree mean re-running the parser on it.
 
 ## Identity: the `id` and the canonical path
 

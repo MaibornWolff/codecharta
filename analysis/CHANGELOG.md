@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **`ccsh dependencyparser` extracts a project's dependency graph.** A port of DependaCharta's analysis: tree-sitter
+  dependency extraction for Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi and Rust,
+  plus cycle detection and levelization. The result lands in the `dependency` lens — a file-to-file edge per
+  dependency, carrying its weight (`dependencies`), whether it takes part in a cycle (`isCyclic`) and whether it runs
+  against the architectural flow (`isPointingUpwards`), plus the level every file and folder sits on. Per-file
+  `outgoing_dependencies` and `incoming_dependencies` go into the metrics lens. Imports resolve through each
+  language's own rules plus tsconfig/jsconfig path aliases, bundler aliases and Module Federation remotes.
+  Test files are excluded by default (`--include-tests` opts back in), because a test depends on everything it
+  exercises and nothing depends on it, which moves every level and cycle. `--omit-graph-analysis` skips cycles and
+  levels for a repository where they do not finish, and `--file-timeout` bounds a single file's parse.
+
+- **The `dependency` lens carries the whole graph, not just edges.** `Edge` gains the optional booleans `isCyclic`
+  and `isPointingUpwards`, and the lens gains an optional `nodes` map giving each file and folder its level. Both
+  additions are optional and omitted when unset, so files written by earlier producers stay byte-identical and every
+  existing reader keeps working. The four DependaCharta edge types are a pure function of the two booleans and are
+  derived where they are consumed rather than stored.
+
+### Fixed 🐞
+
+- **`FileExtension` recognizes `.cts` and `.kts`.** The TypeScript entry listed `cts` without its leading dot, so no
+  `.cts` file ever matched, and Kotlin script files had no entry at all. Both are now analysed by `unifiedparser`
+  as well.
+
 ## [2.0.1] - 2026-09-04
 
 ### Fixed 🐞
