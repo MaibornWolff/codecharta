@@ -69,14 +69,14 @@ describe("DomainWordMenuComponent", () => {
         expect(closed).toHaveBeenCalled()
     })
 
-    it("should copy the word without closing, so the feedback stays visible", async () => {
+    it("should copy the word from its header line without closing, so the feedback stays visible", async () => {
         // Arrange
         const writeText = jest.fn().mockResolvedValue(undefined)
         Object.assign(navigator, { clipboard: { writeText } })
         await setup()
 
         // Act
-        await userEvent.click(screen.getByText("Copy word"))
+        await userEvent.click(screen.getByTestId("domain-word-menu-copy"))
 
         // Assert
         expect(writeText).toHaveBeenCalledWith("invoice")
