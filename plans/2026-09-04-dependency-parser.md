@@ -213,12 +213,12 @@ Verify: `./gradlew build ktlintCheck`, then `./gradlew installDist && ./gradlew 
 
 - [x] Complete Task 1: Grow the `dependency` lens — schema (all three copies), model, edge copy
       helper, DTOs, mappers, merge, rekey, TS types and the `dependencyLevels` slot
-- [ ] Complete Task 2: `DependencyParser` module skeleton, gradle deps (ccsh list, grammar pins,
+- [x] Complete Task 2: `DependencyParser` module skeleton, gradle deps (ccsh list, grammar pins,
       Gson instead of the serialization plugin), CLI, dialog, registration, ccsh tests
-- [ ] Complete Task 3: Port the extraction layer onto CodeCharta infrastructure (scanner, tests
+- [x] Complete Task 3: Port the extraction layer onto CodeCharta infrastructure (scanner, tests
       excluded by default, `FileExtension` fix)
-- [ ] Complete Task 4: Port cycle detection and levelization, levelized on the folder tree, indexed
-- [ ] Complete Task 5: File-level aggregation, lens emission, metrics-lens counts
+- [x] Complete Task 4: Port cycle detection and levelization, levelized on the folder tree, indexed
+- [x] Complete Task 5: File-level aggregation, lens emission, metrics-lens counts
 - [ ] Complete Task 6: Contract suite, golden test, README/gh-pages/format doc, simplecc, CHANGELOG
 
 ## Notes

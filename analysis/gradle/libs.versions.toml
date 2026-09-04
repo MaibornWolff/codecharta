@@ -16,6 +16,14 @@ kotlinx-serialization-json = "1.7.3"
 kotter = "1.2.1"
 picocli = "4.7.7"
 tree-sitter-excavation-site = "v0.12.0"
+# Grammar bindings the dependency parser queries directly. They already arrive on the runtime
+# classpath through TreeSitterExcavationSite; these pins only make them compile-visible and MUST
+# match the versions TSE resolves, or the ccsh fat jar carries two conflicting sets of natives.
+tree-sitter-go = "0.23.3"
+tree-sitter-javascript = "0.23.1"
+tree-sitter-php = "0.23.11"
+tree-sitter-python = "0.23.4"
+tree-sitter-vue = "0.2.1a"
 slf4j = "2.0.17"
 sonarqube = "7.2.2.6593"
 univocity-parsers = "2.9.1"
@@ -56,6 +64,11 @@ commons-text = { group = "org.apache.commons", name = "commons-text", version = 
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
 appmattus-crypto = { group = "com.appmattus.crypto", name = "cryptohash", version.ref = "appmattus-crypto"}
 tree-sitter-excavation-site = { group = "com.github.MaibornWolff", name = "TreeSitterExcavationSite", version.ref = "tree-sitter-excavation-site" }
+tree-sitter-go = { group = "io.github.bonede", name = "tree-sitter-go", version.ref = "tree-sitter-go" }
+tree-sitter-javascript = { group = "io.github.bonede", name = "tree-sitter-javascript", version.ref = "tree-sitter-javascript" }
+tree-sitter-php = { group = "io.github.bonede", name = "tree-sitter-php", version.ref = "tree-sitter-php" }
+tree-sitter-python = { group = "io.github.bonede", name = "tree-sitter-python", version.ref = "tree-sitter-python" }
+tree-sitter-vue = { group = "io.github.bonede", name = "tree-sitter-vue", version.ref = "tree-sitter-vue" }
 kasechange = { group = "net.pearx.kasechange", name = "kasechange", version.ref = "kasechange" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 
