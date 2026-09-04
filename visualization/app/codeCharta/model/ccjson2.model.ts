@@ -52,12 +52,25 @@ interface DependencyLensData {
     edges: DependencyEdge[]
     attributeTypes: Record<string, AttributeTypeValue>
     attributeDescriptors: AttributeDescriptors
+    /** Optional so an unused lens slot stays `{}`, the form the analysis side treats as carrying nothing. */
+    nodes?: Record<string, DependencyLensNode>
 }
 
+interface DependencyLensNode {
+    level: number
+}
+
+/*
+ * `isCyclic` and `isPointingUpwards` place the edge in the dependency graph; the four edge types
+ * (regular, cyclic, container-level feedback, leaf-level feedback) are a pure function of that pair
+ * and are derived where they are consumed. Absent means false.
+ */
 interface DependencyEdge {
     fromId: string
     toId: string
     attributes: Record<string, number>
+    isCyclic?: boolean
+    isPointingUpwards?: boolean
 }
 
 /*

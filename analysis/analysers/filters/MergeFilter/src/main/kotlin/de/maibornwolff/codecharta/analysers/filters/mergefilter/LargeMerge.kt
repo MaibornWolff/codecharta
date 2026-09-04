@@ -21,7 +21,9 @@ class LargeMerge {
                     "may reference node ids that re-pathing into a subfolder would invalidate. " +
                     "Merge without '--large' or open an issue."
             }
-            val rePathedDependency = project.lenses.dependency.copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
+            val rePathedDependency = project.lenses.dependency
+                .copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
+                .rekeyed(project.rootNode, movedIntoFolder(prefix))
             val rePathedDomain = project.lenses.domain?.rekeyed(project.rootNode, movedIntoFolder(prefix))
             return Project(
                 projectName = project.projectName,
@@ -49,10 +51,9 @@ class LargeMerge {
         }
 
         private fun addFolderToEdgePaths(edges: List<Edge>, folderName: String): List<Edge> = edges.map { edge ->
-            Edge(
+            edge.withEndpoints(
                 fromNodeName = insertFolderIntoPath(edge.fromNodeName, folderName),
-                toNodeName = insertFolderIntoPath(edge.toNodeName, folderName),
-                attributes = edge.attributes
+                toNodeName = insertFolderIntoPath(edge.toNodeName, folderName)
             )
         }
 

@@ -68,11 +68,14 @@ object ProjectToCcJsonV2Mapper {
                         EdgeDto(
                             edgeEndpointId(it.fromNodeName, typeByCanonicalPath),
                             edgeEndpointId(it.toNodeName, typeByCanonicalPath),
-                            it.attributes
+                            it.attributes,
+                            it.isCyclic.orNullWhenFalse(),
+                            it.isPointingUpwards.orNullWhenFalse()
                         )
                     },
                 attributeTypes = project.lenses.dependency.attributeTypes,
-                attributeDescriptors = project.lenses.dependency.attributeDescriptors
+                attributeDescriptors = project.lenses.dependency.attributeDescriptors,
+                nodes = project.lenses.dependency.nodes.takeIf { it.isNotEmpty() }
             )
         return files to
             LensesDto(
@@ -82,6 +85,8 @@ object ProjectToCcJsonV2Mapper {
                 opaqueLenses = project.lenses.opaqueLenses
             )
     }
+
+    private fun Boolean.orNullWhenFalse(): Boolean? = takeIf { it }
 
     private fun buildMeta(project: Project, checksum: String, commitHash: String?): MetaDto = MetaDto(
         projectName = project.projectName,

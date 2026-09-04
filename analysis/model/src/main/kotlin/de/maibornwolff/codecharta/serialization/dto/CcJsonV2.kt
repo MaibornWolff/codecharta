@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.serialization.dto
 import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.DomainLens
 
 class CcJsonV2(val meta: MetaDto, val files: List<FileDto>, val lenses: LensesDto)
@@ -36,7 +37,18 @@ class MetricsLensDto(
 class DependencyLensDto(
     val edges: List<EdgeDto> = emptyList(),
     val attributeTypes: Map<String, AttributeType> = emptyMap(),
-    val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap()
+    val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap(),
+    // Keyed by node id on the wire exactly as in the model, so it needs no DTO of its own. Null rather
+    // than empty so a lens without per-node data stays byte-identical to what earlier writers emitted.
+    val nodes: Map<String, DependencyNode>? = null
 )
 
-class EdgeDto(val fromId: String, val toId: String, val attributes: Map<String, Any> = emptyMap())
+// The graph flags are nullable rather than defaulted to false so GSON omits them unless they are set:
+// an edge that is neither cyclic nor upward-pointing serializes exactly as it did before the flags existed.
+class EdgeDto(
+    val fromId: String,
+    val toId: String,
+    val attributes: Map<String, Any> = emptyMap(),
+    val isCyclic: Boolean? = null,
+    val isPointingUpwards: Boolean? = null
+)
