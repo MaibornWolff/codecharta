@@ -16,6 +16,8 @@ export class ThreeViewerService {
      * labels measure it — has to wait for a view that is only created when it is first shown. */
     readonly isMapCanvasMounted$ = this.isMapCanvasMounted.pipe(distinctUntilChanged())
 
+    readonly isContextLost$ = this.threeRendererService.isContextLost$
+
     constructor(
         private readonly threeSceneService: ThreeSceneService,
         private readonly threeCameraService: ThreeCameraService,
@@ -50,8 +52,7 @@ export class ThreeViewerService {
 
     onWindowResize = () => {
         this.threeSceneService.scene.updateMatrixWorld(false)
-        this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
-        this.threeRendererService.labelRenderer.setSize(window.innerWidth, window.innerHeight)
+        this.threeRendererService.setSize(window.innerWidth, window.innerHeight)
         this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
         this.threeCameraService.camera.updateProjectionMatrix()
         this.animate()
@@ -112,6 +113,7 @@ export class ThreeViewerService {
         window.removeEventListener("resize", this.onWindowResize)
         window.removeEventListener("focusin", this.onFocusIn)
         window.removeEventListener("focusout", this.onFocusOut)
+        this.threeRendererService.destroy()
         this.dispose()
         this.threeStatsService.destroy()
         this.getRenderCanvas().remove()

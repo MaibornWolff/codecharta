@@ -1,3 +1,13 @@
 <div id="codeMap" class="fixed left-0 top-[var(--cc-bars-height,49px)] z-0 h-full w-full" [class.hidden]="isLoadingFile$ | async">
     <cc-view-cube [class.sideBarVisible]="inspectorVisibilityService.isVisible()"></cc-view-cube>
 </div>
+@if (isContextLost$ | async) {
+    <div class="pointer-events-none fixed inset-0 z-[1000] flex items-center justify-center p-4">
+        <div class="alert alert-error pointer-events-auto max-w-md" role="alert">
+            <span>
+                The graphics card stopped rendering the map, usually because it ran out of memory. Reload the page, and try a smaller
+                map or a smaller browser window.
+            </span>
+        </div>
+    </div>
+}

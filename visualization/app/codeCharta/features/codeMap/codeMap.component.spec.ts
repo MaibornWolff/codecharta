@@ -1,5 +1,5 @@
 import { ElementRef } from "@angular/core"
-import { EMPTY } from "rxjs"
+import { EMPTY, firstValueFrom, of } from "rxjs"
 import { InspectorVisibilityService } from "../../features/sidebarInspector/facade"
 import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.service"
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
@@ -15,20 +15,24 @@ describe("CodeMapComponent", () => {
     } as unknown as FileStoreReadWindow
 
     beforeEach(() => {
-        mockedThreeViewService = { init: jest.fn() } as unknown as ThreeViewerService
+        mockedThreeViewService = { init: jest.fn(), isContextLost$: of(true) } as unknown as ThreeViewerService
         mockedCodeMapMouseEventService = { start: jest.fn() } as unknown as CodeMapMouseEventService
         mockedElementReference = { nativeElement: { querySelector: jest.fn() } }
     })
 
-    it("should init threeViewerService and start codeMapMouseService after view init", () => {
-        // Arrange
-        const codeMapComponent = new CodeMapComponent(
+    function createComponent() {
+        return new CodeMapComponent(
             { isVisible: () => true } as unknown as InspectorVisibilityService,
             mockedFileStoreReadWindow,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
             mockedElementReference
         )
+    }
+
+    it("should init threeViewerService and start codeMapMouseService after view init", () => {
+        // Arrange
+        const codeMapComponent = createComponent()
 
         // Act
         codeMapComponent.ngAfterViewInit()
@@ -36,5 +40,16 @@ describe("CodeMapComponent", () => {
         // Assert
         expect(mockedThreeViewService.init).toHaveBeenCalled()
         expect(mockedCodeMapMouseEventService.start).toHaveBeenCalled()
+    })
+
+    it("should expose a lost graphics context, so the blank map is explained instead of silent", async () => {
+        // Arrange
+        const codeMapComponent = createComponent()
+
+        // Act
+        const isContextLost = await firstValueFrom(codeMapComponent.isContextLost$)
+
+        // Assert
+        expect(isContextLost).toBe(true)
     })
 })
