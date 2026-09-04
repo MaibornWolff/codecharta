@@ -1,3 +1,6 @@
 export { DomainWordListComponent } from "./components/domainWordList/domainWordList.component"
+export { HiddenWordsPopoverComponent } from "./components/hiddenWordsPopover/hiddenWordsPopover.component"
+export { HiddenWordsReadStore } from "./stores/hiddenWords.read.store"
+export { HiddenWordsWriteStore } from "./stores/hiddenWords.write.store"
 export type { WordSorting } from "./util/sortWords"
 export { WordSortingOption } from "./util/sortWords"

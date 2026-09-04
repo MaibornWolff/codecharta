@@ -42,6 +42,21 @@ class StubWordCloudComponent {
     readonly wordClicked = output<string>()
 }
 
+@Component({ selector: "cc-explorer-count-chip", template: "", standalone: true })
+class StubCountChipComponent {
+    readonly label = input.required<string>()
+    readonly count = input.required<number>()
+    readonly popoverId = input<string | undefined>()
+    readonly anchorName = input<string | undefined>()
+    readonly tooltip = input<string | undefined>()
+}
+
+@Component({ selector: "cc-hidden-words-popover", template: "", standalone: true })
+class StubHiddenWordsPopoverComponent {
+    readonly popoverId = input.required<string>()
+    readonly anchorName = input.required<string>()
+}
+
 @Component({ selector: "cc-domain-word-menu", template: "", standalone: true })
 class StubWordMenuComponent {
     readonly rightClickedWord = input<RightClickedWord | null>(null)
@@ -100,7 +115,9 @@ describe("DomainViewComponent", () => {
                     StubBottomBarComponent,
                     StubWordMenuComponent,
                     StubWordListComponent,
-                    StubNodeContextMenuComponent
+                    StubNodeContextMenuComponent,
+                    StubCountChipComponent,
+                    StubHiddenWordsPopoverComponent
                 ]
             }
         })

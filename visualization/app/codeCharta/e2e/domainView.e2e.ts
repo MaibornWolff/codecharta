@@ -16,8 +16,9 @@ const WORD_CLOUD_LAYOUT_MS = 2500
 
 const MANY_WORDS_FILE = "./app/codeCharta/resources/sample_with_many_domain_words.cc.json"
 
-// The panel fits 17 rows, and the window carries 6 overscan rows below them.
-const RENDERED_ROWS_OF_A_LONG_LIST = 23
+// A screenful plus the window's overscan — far fewer than the 300 words the file carries, and loose
+// enough to survive a row's worth of chrome moving in or out of the panel.
+const MOST_ROWS_A_WINDOW_RENDERS = 40
 
 test.describe("DomainView", () => {
     test.beforeEach(async ({ page }) => {
@@ -114,13 +115,13 @@ test.describe("DomainView", () => {
         const hiddenWord = (await page.getByTestId("domain-word-menu").locator("div").first().innerText()).trim()
         await page.getByText("Hide word").click()
 
-        // Assert — the word left the list, and the bar counts it.
+        // Assert — the word left the list, and the explorer's chip counts it.
         await expect(page.locator("cc-domain-word-row")).toHaveCount(wordCountBeforeHiding - 1)
-        await expect(page.getByTestId("domain-bar-hidden-words-segment")).toContainText("1 word")
+        await expect(page.locator("cc-explorer-count-chip")).toContainText("1")
 
-        // Act — bring it back from the bar.
-        await page.getByTestId("domain-bar-hidden-words-cog").click()
-        await page.getByTestId(`domain-bar-restore-${hiddenWord}`).click()
+        // Act — bring it back from the chip.
+        await page.locator("cc-explorer-count-chip button").click()
+        await page.getByTestId(`domain-restore-${hiddenWord}`).click()
 
         // Assert
         await expect(page.locator("cc-domain-word-row")).toHaveCount(wordCountBeforeHiding)
@@ -139,7 +140,9 @@ test.describe("DomainView", () => {
         await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
 
         // Assert — a fraction of the 300 rows is rendered, while the panel still scrolls the whole list.
-        await expect(page.locator("cc-domain-word-row")).toHaveCount(RENDERED_ROWS_OF_A_LONG_LIST)
+        const renderedRows = await page.locator("cc-domain-word-row").count()
+        expect(renderedRows).toBeGreaterThan(0)
+        expect(renderedRows).toBeLessThan(MOST_ROWS_A_WINDOW_RENDERS)
         const panel = page.locator("cc-sidebar-explorer .overflow-auto")
         expect(await panel.evaluate(element => element.scrollHeight)).toBeGreaterThan(300 * 20)
     })
@@ -158,7 +161,9 @@ test.describe("DomainView", () => {
         await page.getByTestId("explorer-expand-button").click()
 
         // Assert
-        await expect(page.locator("cc-domain-word-row")).toHaveCount(RENDERED_ROWS_OF_A_LONG_LIST)
+        const renderedRows = await page.locator("cc-domain-word-row").count()
+        expect(renderedRows).toBeGreaterThan(0)
+        expect(renderedRows).toBeLessThan(MOST_ROWS_A_WINDOW_RENDERS)
     })
 
     test("should reorder the word list from the sort control", async ({ page }) => {

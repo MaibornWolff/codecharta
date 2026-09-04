@@ -1,0 +1,47 @@
+<div
+    class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-72"
+    popover
+    #popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+>
+    <div class="flex items-center justify-between border-b border-base-300 pb-1 mb-1">
+        <span class="text-sm font-semibold uppercase tracking-wide">Hidden Words</span>
+        <button
+            type="button"
+            class="btn btn-ghost btn-xs btn-square"
+            (click)="closePopover()"
+            title="Close"
+            data-testid="domain-hidden-words-close-button"
+        >
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+
+    @if (hiddenWords().length === 0) {
+        <div class="px-2 py-3 text-xs opacity-60" data-testid="domain-hidden-words-empty">
+            Right-click a word in the cloud to drop it from the cloud and the word list.
+        </div>
+    } @else {
+        <ul class="m-0 flex max-h-[60vh] list-none flex-col overflow-y-auto p-0" data-testid="domain-hidden-words-list">
+            @for (word of hiddenWords(); track word) {
+                <li class="flex items-center gap-2 rounded py-1 pl-2 pr-1 hover:bg-base-200">
+                    <span class="min-w-0 flex-1 truncate text-sm">{{ word }}</span>
+                    <button
+                        type="button"
+                        class="btn btn-ghost btn-xs btn-square"
+                        [title]="'Show ' + word + ' again'"
+                        [attr.aria-label]="'Show ' + word + ' again'"
+                        [attr.data-testid]="'domain-restore-' + word"
+                        (click)="restore(word)"
+                    >
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </li>
+            }
+        </ul>
+        <button type="button" class="btn btn-sm btn-block mt-1" data-testid="domain-restore-all-words" (click)="restoreAll()">
+            Show all words again
+        </button>
+    }
+</div>

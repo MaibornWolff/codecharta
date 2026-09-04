@@ -1,10 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
-import { DomainBarComponent, DomainBarReadStore, HiddenWordsWriteStore } from "../../features/domainBar/facade"
+import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
-import { DomainWordListComponent } from "../../features/domainWordOccurrences/facade"
+import {
+    DomainWordListComponent,
+    HiddenWordsPopoverComponent,
+    HiddenWordsReadStore,
+    HiddenWordsWriteStore
+} from "../../features/domainWordOccurrences/facade"
 import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuCapabilities,
@@ -21,6 +26,7 @@ import {
     EXPLORER_WORD_SEARCH,
     EXPLORER_WORD_SORT,
     ExplorerCollapseService,
+    ExplorerCountChipComponent,
     ExplorerModeService,
     ExplorerWidthService,
     provideExplorerSearch,
@@ -54,6 +60,8 @@ import { DomainWordSortStore } from "./stores/domainWordSort.store"
         DomainWordMenuComponent,
         NodeContextMenuComponent,
         DomainWordListComponent,
+        HiddenWordsPopoverComponent,
+        ExplorerCountChipComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent
     ],
@@ -101,6 +109,7 @@ export class DomainViewComponent {
     private readonly domainWordInspectionStore = inject(DomainWordInspectionStore)
     private readonly domainWordQueryStore = inject(DomainWordQueryStore)
     private readonly domainWordSortStore = inject(DomainWordSortStore)
+    private readonly hiddenWordsReadStore = inject(HiddenWordsReadStore)
     private readonly hiddenWordsWriteStore = inject(HiddenWordsWriteStore)
     private readonly clipboard = inject(CopyToClipboardService)
 
@@ -111,6 +120,11 @@ export class DomainViewComponent {
     readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
 
     readonly cloudLeftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
+
+    readonly hiddenWordCount = computed(() => this.hiddenWordsReadStore.hiddenWords().length)
+    readonly hiddenWordsTooltip = computed(() =>
+        this.hiddenWordCount() === 0 ? "No word is hidden" : `${this.hiddenWordCount()} hidden from the cloud and the word list`
+    )
 
     readonly rightClickedWord = signal<RightClickedWord | null>(null)
     readonly inspectedWord = this.domainWordInspectionStore.inspectedWord

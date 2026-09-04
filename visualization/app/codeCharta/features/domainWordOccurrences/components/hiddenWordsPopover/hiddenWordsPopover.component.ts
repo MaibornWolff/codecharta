@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
-import { SettingsPopoverShellComponent } from "../../../shared/facade"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, viewChild } from "@angular/core"
 import { HiddenWordsReadStore } from "../../stores/hiddenWords.read.store"
 import { HiddenWordsWriteStore } from "../../stores/hiddenWords.write.store"
 
@@ -7,8 +6,7 @@ import { HiddenWordsWriteStore } from "../../stores/hiddenWords.write.store"
     selector: "cc-hidden-words-popover",
     templateUrl: "./hiddenWordsPopover.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "contents" },
-    imports: [SettingsPopoverShellComponent]
+    host: { class: "contents" }
 })
 export class HiddenWordsPopoverComponent {
     private readonly readStore = inject(HiddenWordsReadStore)
@@ -18,6 +16,12 @@ export class HiddenWordsPopoverComponent {
     readonly anchorName = input.required<string>()
 
     protected readonly hiddenWords = computed(() => [...this.readStore.hiddenWords()].sort((a, b) => a.localeCompare(b)))
+
+    private readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")
+
+    protected closePopover() {
+        this.popover().nativeElement.hidePopover()
+    }
 
     protected restore(word: string) {
         this.writeStore.restore(word)

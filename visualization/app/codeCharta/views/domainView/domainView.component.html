@@ -1,6 +1,21 @@
 <cc-loading-file-progress-spinner view="domain"></cc-loading-file-progress-spinner>
 
 <cc-sidebar-explorer>
+    <div headerChips class="flex items-stretch border border-base-300 mx-2 mt-2 rounded-md overflow-hidden">
+        <cc-explorer-count-chip
+            label="Hidden"
+            [count]="hiddenWordCount()"
+            [tooltip]="hiddenWordsTooltip()"
+            popoverId="domain-hidden-words"
+            anchorName="domain-hidden-words-chip"
+        ></cc-explorer-count-chip>
+    </div>
+    <cc-hidden-words-popover
+        explorerPopovers
+        popoverId="domain-hidden-words"
+        anchorName="domain-hidden-words-chip"
+    ></cc-hidden-words-popover>
+
     <div collapsedContent class="flex flex-1 min-w-0 items-center gap-1">
         @if (selectedNodePath()) {
             <span class="flex-1 min-w-0 truncate text-xs opacity-70" [title]="selectedNodePath()" data-testid="explorer-collapsed-path">

@@ -14,6 +14,7 @@
     </div>
 } @else {
     <cc-explorer-header></cc-explorer-header>
+    <ng-content select="[headerChips]"></ng-content>
     @if (capabilities.showSearch) {
         <cc-explorer-search-bar></cc-explorer-search-bar>
     }
@@ -25,6 +26,7 @@
             <ng-content select="[modeBody]"></ng-content>
         }
     </div>
+    <ng-content select="[explorerPopovers]"></ng-content>
     @if (capabilities.showRules) {
         <cc-rules-popover kind="flatten" popoverId="explorer-flatten-rules" anchorName="explorer-flat-chip"></cc-rules-popover>
         <cc-rules-popover kind="exclude" popoverId="explorer-hidden-rules" anchorName="explorer-hidden-chip"></cc-rules-popover>
