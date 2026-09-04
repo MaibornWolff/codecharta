@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.1.0] - 2026-09-04
+
 ### Added 🚀
 
 - **The word list carries a big vocabulary**: The explorer's word list rendered every word the project has. It now draws only the rows on screen, so a map with thousands of words opens and scrolls as fast as a small one, while the scrollbar still measures the whole list. Picking a word that is far outside the visible stretch scrolls to it.
