@@ -48,6 +48,7 @@ export class WordCloudChartHost {
     private renderTimeout?: ReturnType<typeof setTimeout>
     private drawnCountTimeout?: ReturnType<typeof setTimeout>
     private highlightedWord: string | null = null
+    private mustRestoreHighlightAfterLayout = false
 
     private readonly measuredContainerSize = signal(
         { width: 0, height: 0 },
@@ -74,8 +75,7 @@ export class WordCloudChartHost {
         this.chart = echarts.init(container)
         this.chart.on("finished", () => {
             this.handlers.onLayoutFinished()
-            // A fresh layout draws every word unemphasised, so the highlight has to be put back on.
-            this.applyHighlight()
+            this.restoreTheHighlightALayoutWiped()
             this.scheduleDrawnCountUpdate()
         })
         this.chart.on("click", (params: unknown) => this.reportClickedWord(params as EchartsClickParams))
@@ -100,6 +100,17 @@ export class WordCloudChartHost {
      * word would jump to a new place just because a different one was picked. */
     highlightWord(word: string | null): void {
         this.highlightedWord = word
+        this.applyHighlight()
+    }
+
+    /** Echarts reports a finished layout for its own hover renders too, and dropping the emphasis there
+     * would wipe the highlight off the word under the pointer a moment after it appeared. Only a layout
+     * this host asked for wipes what it emphasised, so only that one is restored. */
+    private restoreTheHighlightALayoutWiped(): void {
+        if (!this.mustRestoreHighlightAfterLayout) {
+            return
+        }
+        this.mustRestoreHighlightAfterLayout = false
         this.applyHighlight()
     }
 
@@ -133,6 +144,7 @@ export class WordCloudChartHost {
             this.chart?.clear()
             this.chart?.resize()
             this.chart?.setOption(option as unknown as echarts.EChartsCoreOption, true)
+            this.mustRestoreHighlightAfterLayout = true
             onRendered()
         }, RENDER_DEBOUNCE_MS)
     }

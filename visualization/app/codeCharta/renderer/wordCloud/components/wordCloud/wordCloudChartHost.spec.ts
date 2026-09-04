@@ -20,6 +20,16 @@ jest.mock("echarts/renderers", () => ({ CanvasRenderer: {} }))
 jest.mock("echarts/components", () => ({ TooltipComponent: {}, AriaComponent: {} }))
 jest.mock("echarts-wordcloud", () => ({}))
 
+const RENDER_DEBOUNCE_MS = 150
+const SOME_OPTION = {} as never
+
+function measurableContainer(): HTMLElement {
+    const container = document.createElement("div")
+    Object.defineProperty(container, "clientWidth", { value: 800, configurable: true })
+    Object.defineProperty(container, "clientHeight", { value: 600, configurable: true })
+    return container
+}
+
 class ResizeObserverMock {
     observe() {}
     unobserve() {}
@@ -33,12 +43,17 @@ describe("WordCloudChartHost", () => {
 
     beforeEach(() => {
         jest.clearAllMocks()
+        jest.useFakeTimers()
         window.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
         host = new WordCloudChartHost(new WordCloudChartRegistry(), {
             onLayoutFinished: () => undefined,
             onWordRightClicked: onWordRightClicked,
             onWordClicked: onWordClicked
         })
+    })
+
+    afterEach(() => {
+        jest.useRealTimers()
     })
 
     it("should report a clicked word, so the explorer can follow the cloud", () => {
@@ -89,10 +104,13 @@ describe("WordCloudChartHost", () => {
         expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "downplay", seriesIndex: 0 })
     })
 
-    it("should re-apply the highlight once a new layout has been drawn", () => {
-        // Arrange: a layout wipes the emphasis, so the word the explorer expanded has to be marked again.
-        host.attachTo(document.createElement("div"))
+    it("should re-apply the highlight once a layout it asked for has been drawn", () => {
+        // Arrange: drawing a fresh layout wipes the emphasis, so the marked word has to be marked again.
+        const container = measurableContainer()
+        host.attachTo(container)
         host.highlightWord("invoice")
+        host.render(SOME_OPTION, () => undefined)
+        jest.advanceTimersByTime(RENDER_DEBOUNCE_MS)
         mockChart.dispatchAction.mockClear()
         const [, handleFinished] = mockChart.on.mock.calls.find(([eventName]) => eventName === "finished")
 
@@ -101,6 +119,22 @@ describe("WordCloudChartHost", () => {
 
         // Assert
         expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "invoice" })
+    })
+
+    it("should leave the emphasis alone when a layout it did not ask for finishes", () => {
+        // Arrange: hovering a word makes echarts draw and report a finished layout of its own. Dropping
+        // the emphasis there would wipe the highlight off the word under the pointer a moment after it
+        // appeared.
+        host.attachTo(measurableContainer())
+        host.highlightWord("invoice")
+        mockChart.dispatchAction.mockClear()
+        const [, handleFinished] = mockChart.on.mock.calls.find(([eventName]) => eventName === "finished")
+
+        // Act
+        handleFinished()
+
+        // Assert
+        expect(mockChart.dispatchAction).not.toHaveBeenCalled()
     })
 
     it("should keep the chart when attaching to the same container again", () => {
