@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Radial treemap map layout**: choose "Radial TreeMap" to see the folder you are in ring by ring as in the sunburst, with each folder's files packed as a treemap instead of thin slices, and click your way in and out.
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its highest, lowest or middle file, and tints folders by it or keeps them a neutral grey.
 - **Levels in the radial layouts**: a slider in the layout picker sets how many folder levels, from 1 to 10, the sunburst and radial treemap show around the centre.
+- **The cc.json 2.0 reader understands the grown `dependency` lens.** An edge now carries the optional `isCyclic` and
+  `isPointingUpwards` flags through to the viz model, and a file's `dependencyLevels` hold the level each node sits
+  on. Nothing renders them yet — this lands the data layer so a visualization can be built on it, and so the vendored
+  schema accepts files from `ccsh dependencyparser`.
 
 ### Changed
 

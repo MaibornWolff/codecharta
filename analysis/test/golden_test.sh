@@ -245,6 +245,25 @@ check_dependacharta() {
   validate "${ACTUAL_DEPENDACHARTA_JSON}"
 }
 
+check_dependencyparser() {
+  echo " -- expect DependencyParser to produce a valid cc.json carrying the whole dependency graph"
+  ACTUAL_DEPENDENCYPARSER_JSON="${TEMP_DIR}/actual_dependencyparser.cc.json"
+  "${CCSH}" dependencyparser "${DATA}/dependencyproject" -o "${ACTUAL_DEPENDENCYPARSER_JSON}" -nc
+  validate "${ACTUAL_DEPENDENCYPARSER_JSON}"
+  # An empty dependency lens is also legal, so assert the sample really produced edges, per-node levels
+  # and all four edge types: regular (neither flag), cyclic, container-level feedback (upward only) and
+  # leaf-level feedback (both).
+  if ! grep -q '"edges":\[{"fromId"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"nodes":{' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"isCyclic":true' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"isPointingUpwards":true' "${ACTUAL_DEPENDENCYPARSER_JSON}"; then
+    exit_with_err "${ACTUAL_DEPENDENCYPARSER_JSON} does not carry a levelized dependency graph"
+  fi
+  if ! grep -q '"outgoing_dependencies"' "${ACTUAL_DEPENDENCYPARSER_JSON}"; then
+    exit_with_err "${ACTUAL_DEPENDENCYPARSER_JSON} does not carry the per-file dependency counts"
+  fi
+}
+
 check_convert() {
   echo " -- expect convert to upgrade a legacy 1.x file to a valid 2.0 cc.json file"
   ACTUAL_CONVERT_JSON="${TEMP_DIR}/actual_convert.cc.json"
@@ -326,6 +345,7 @@ run_tests() {
   check_domainlanguage
   check_domainlanguage_merge
   check_dependacharta
+  check_dependencyparser
   check_convert
 
   check_pipe

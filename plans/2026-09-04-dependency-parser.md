@@ -1,7 +1,7 @@
 ---
 name: Port DependaCharta's analysis as the dependency parser
 issue: <#issueid>
-state: progress
+state: complete
 version: 2
 ---
 
@@ -219,7 +219,7 @@ Verify: `./gradlew build ktlintCheck`, then `./gradlew installDist && ./gradlew 
       excluded by default, `FileExtension` fix)
 - [x] Complete Task 4: Port cycle detection and levelization, levelized on the folder tree, indexed
 - [x] Complete Task 5: File-level aggregation, lens emission, metrics-lens counts
-- [ ] Complete Task 6: Contract suite, golden test, README/gh-pages/format doc, simplecc, CHANGELOG
+- [x] Complete Task 6: Contract suite, golden test, README/gh-pages/format doc, simplecc, CHANGELOG
 
 ## Notes
 
@@ -271,11 +271,9 @@ the existing contract suite, docs pages, simplecc, release order, the `FileExten
 
 ### Open
 
-- **Resumability.** DependaCharta writes per-file results into a `dependacharta_temp` directory so an
-  interrupted analysis of a large repo can continue (`analysis/synchronization/AnalysisSynchronizer`).
-  This plan assumes it is dropped, since CodeCharta's incremental story is `--base-file` plus
-  `contentHash`. Confirm before starting Task 3 — it is the one capability the infrastructure swap
-  actually removes.
+- **Resumability** — confirmed dropped (2026-09-04). CodeCharta's incremental story is `--base-file`
+  plus `contentHash`; `--file-timeout` and `--omit-graph-analysis` cover the large-repo cases the temp
+  directory was there for.
 - **Levels after a merge.** Levels are only meaningful within one producer's tree; merging two
   levelized projects yields levels that should really be recomputed. Max-wins in
   `DependencyLens.merge` is a placeholder, not a correct reconciliation.

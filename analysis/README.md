@@ -18,6 +18,7 @@ Components that generate metrics from a given source, e.g. source code or log fi
 | Source Code / Text | [RawTextParser](analysers/parsers/RawTextParser/README.md) |
 | Source Code        | [UnifiedParser](analysers/parsers/UnifiedParser/README.md) |
 | Domain Language    | [DomainLanguageParser](analysers/parsers/DomainLanguageParser/README.md) |
+| Dependencies       | [DependencyParser](analysers/parsers/DependencyParser/README.md) |
 | SVN log            | [SVNLogParser](analysers/parsers/SVNLogParser/README.md)   |
 
 ### Importer

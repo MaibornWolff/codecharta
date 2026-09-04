@@ -249,6 +249,9 @@ main() {
     # --- DomainLanguageParser (optional, needs a ccsh that ships it) ---
     run_domain_language_analysis
 
+    # --- DependencyParser (optional, needs a ccsh that ships it) ---
+    run_dependency_analysis
+
     # --- SonarImporter (optional) ---
     run_sonar_import
 
@@ -466,6 +469,30 @@ run_domain_language_analysis() {
         echo "   Generated domain.${FILE_EXTENSION}"
     else
         skip_step "Domain Language Analysis" "ccsh domainlanguageparser failed"
+    fi
+}
+
+run_dependency_analysis() {
+    echo ""
+    echo "Dependency Analysis"
+    echo "==================="
+
+    # The dependency graph is a newer analyser; older ccsh installations do not ship it.
+    if ! ccsh dependencyparser --help >/dev/null 2>&1; then
+        skip_step "Dependency Analysis" "ccsh does not provide dependencyparser (update ccsh)"
+        return
+    fi
+
+    # Tests are excluded by default: a test depends on everything it exercises and nothing depends
+    # on it, which moves every level and cycle. The per-file timeout keeps one pathological file
+    # (a generated parser, a vendored bundle) from stalling the whole run.
+    if ccsh dependencyparser . \
+        --file-timeout=30 \
+        -o "$TEMP_DIR/dependency.${FILE_EXTENSION}"; then
+        GENERATED_FILES+=("$TEMP_DIR/dependency.${FILE_EXTENSION}")
+        echo "   Generated dependency.${FILE_EXTENSION}"
+    else
+        skip_step "Dependency Analysis" "ccsh dependencyparser failed"
     fi
 }
 
