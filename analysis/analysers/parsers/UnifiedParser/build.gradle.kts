@@ -9,7 +9,7 @@ dependencies {
     implementation(libs.kotter.test)
 
     // TreesitterLibrary provides all TreeSitter dependencies and metric calculation
-    implementation("com.github.MaibornWolff:TreeSitterExcavationSite:v0.12.0")
+    implementation(libs.tree.sitter.excavation.site)
 
     testImplementation(libs.jsonassert)
 }
