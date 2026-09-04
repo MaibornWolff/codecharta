@@ -1,0 +1,18 @@
+{
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\adapter\\persistence\\CreatureEntity.java": "4f066d91-0f20-41cc-8324-b2160ca7b4bd",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\adapter\\persistence\\CreatureJpaRepository.java": "5f9a1112-6fc6-4afd-9ef7-40bb90d2cf7d",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\adapter\\persistence\\PersistedCreatures.java": "49d70dab-94a5-44f1-bf92-b76e5202c788",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\application\\CreatureFacade.java": "0e1802d8-22c2-4aab-9d9e-11d1e5f6cea7",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\application\\CreatureUtil.java": "677a7794-4c91-4f3f-99f4-cab5eeb59f41",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\ArmorClass.java": "5c30ac52-1162-48c2-bc90-9c75383e2361",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\Creature.java": "514a1a2a-941a-42ec-b15c-bbf3cf9d1fad",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\CreatureId.java": "8681f5d9-4235-413f-a95a-51b3fbb5045d",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\CreatureType.java": "6735b628-23db-4f44-8498-3693b9b575b4",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\Fightable.java": "8944541c-2519-4408-9f7f-8ae8a570e067",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\HitPoints.java": "58cc838a-abfc-495b-925c-d0ab8139c73a",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\NoSuchCreatureException.java": "14423f03-83fc-4e7b-91fa-ffc1ea3fa015",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\Speed.java": "1284eadf-4ac2-49da-a6f8-b9e11bba5fe1",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\SpeedType.java": "091c1c83-c210-41a7-9024-ff5dce88fb3b",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\service\\Creatures.java": "e10c3f3d-5e7f-4678-a388-9b179af1f34e",
+  "exampleProjects\\JavaExample\\src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\service\\CreatureService.java": "45c17472-d4da-4136-881e-33041427f045"
+}

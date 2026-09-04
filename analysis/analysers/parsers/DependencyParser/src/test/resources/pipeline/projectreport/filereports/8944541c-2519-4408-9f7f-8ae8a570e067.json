@@ -1,0 +1,65 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "domain",
+          "model",
+          "Fightable"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\Fightable.java",
+      "nodeType": "ANNOTATION",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "java",
+              "lang",
+              "annotation",
+              "ElementType"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "java",
+              "lang",
+              "annotation",
+              "Target"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "Target",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "ElementType",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "adapter",
+          "persistence",
+          "CreatureEntity"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\adapter\\persistence\\CreatureEntity.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "UUID"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "adapter",
+              "persistence"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "UUID",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

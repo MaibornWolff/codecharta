@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "maibornwolff"
+        ]
+      },
+      "physicalPath": "de/maibornwolff",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [],
+      "methods": [],
+      "fields": [],
+      "usedTypes": []
+    }
+  ]
+}

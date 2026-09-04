@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "application",
+          "CreatureUtil"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\application\\CreatureUtil.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "CreatureType"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "application"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "String",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

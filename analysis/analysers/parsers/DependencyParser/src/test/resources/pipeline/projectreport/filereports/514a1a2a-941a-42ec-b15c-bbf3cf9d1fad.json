@@ -1,0 +1,106 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "domain",
+          "model",
+          "Creature"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\Creature.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "application",
+              "CreatureFacade"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "Map"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "Fightable",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureFacade",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureId",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureType",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "ArmorClass",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Map",
+          "usageSource": "usage",
+          "genericTypes": [
+            {
+              "name": "SpeedType",
+              "usageSource": "usage",
+              "genericTypes": []
+            },
+            {
+              "name": "Speed",
+              "usageSource": "usage",
+              "genericTypes": []
+            }
+          ]
+        },
+        {
+          "name": "HitPoints",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "void",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

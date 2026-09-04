@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "domain",
+          "service",
+          "CreatureService"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\service\\CreatureService.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "Creature"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "service"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "Creatures",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Creature",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "void",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

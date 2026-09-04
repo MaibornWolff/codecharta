@@ -11,7 +11,6 @@ class FileScanner(
     private val excludeTests: Boolean = true
 ) {
     private val fileFilter = FileFilter(allowedExtensions)
-    private val testFileDetector = TestFileDetector()
 
     fun scan(inputPath: String, bypassGitignore: Boolean = false, onFileFound: (() -> Unit)? = null): List<File> {
         val input = File(inputPath)
@@ -19,24 +18,27 @@ class FileScanner(
             Logger.warn { "Input does not exist: $inputPath" }
             return emptyList()
         }
+        // A single file's own directory is the project it is judged against, so a lone `FooTest.java`
+        // is still recognized as a test.
+        val testFileDetector = TestFileDetector(if (input.isFile) input.absoluteFile.parentFile else input)
         if (input.isFile) {
-            return scanSingleFile(input, onFileFound)
+            return scanSingleFile(input, testFileDetector, onFileFound)
         }
 
         return if (bypassGitignore) {
-            scanWithoutGitignore(input, onFileFound)
+            scanWithoutGitignore(input, testFileDetector, onFileFound)
         } else {
-            scanWithGitignore(input, onFileFound)
+            scanWithGitignore(input, testFileDetector, onFileFound)
         }
     }
 
-    private fun scanSingleFile(file: File, onFileFound: (() -> Unit)?): List<File> {
-        if (!isAnalysable(file)) return emptyList()
+    private fun scanSingleFile(file: File, testFileDetector: TestFileDetector, onFileFound: (() -> Unit)?): List<File> {
+        if (!isAnalysable(file, testFileDetector)) return emptyList()
         onFileFound?.invoke()
         return listOf(file)
     }
 
-    private fun isAnalysable(file: File): Boolean = fileFilter.matchesExtension(file) &&
+    private fun isAnalysable(file: File, testFileDetector: TestFileDetector): Boolean = fileFilter.matchesExtension(file) &&
         !isGenerated(file) &&
         !exceedsFileSizeLimit(file) &&
         (!excludeTests || !testFileDetector.isTestFile(file))
@@ -53,14 +55,15 @@ class FileScanner(
         return true
     }
 
-    private fun scanWithoutGitignore(directory: File, onFileFound: (() -> Unit)?): List<File> = directory
-        .walkTopDown()
-        .filter { it.isFile }
-        .filter { file -> isAnalysable(file) }
-        .onEach { onFileFound?.invoke() }
-        .toList()
+    private fun scanWithoutGitignore(directory: File, testFileDetector: TestFileDetector, onFileFound: (() -> Unit)?): List<File> =
+        directory
+            .walkTopDown()
+            .filter { it.isFile }
+            .filter { file -> isAnalysable(file, testFileDetector) }
+            .onEach { onFileFound?.invoke() }
+            .toList()
 
-    private fun scanWithGitignore(rootDirectory: File, onFileFound: (() -> Unit)?): List<File> {
+    private fun scanWithGitignore(rootDirectory: File, testFileDetector: TestFileDetector, onFileFound: (() -> Unit)?): List<File> {
         val gitignoreHandler = GitignoreHandler(rootDirectory)
 
         return rootDirectory
@@ -68,7 +71,7 @@ class FileScanner(
             .onEnter { dir -> !gitignoreHandler.shouldExclude(dir) }
             .filter { it.isFile }
             .filter { file -> !gitignoreHandler.shouldExclude(file) }
-            .filter { file -> isAnalysable(file) }
+            .filter { file -> isAnalysable(file, testFileDetector) }
             .onEach { onFileFound?.invoke() }
             .toList()
     }
@@ -87,7 +90,7 @@ class FileScanner(
     companion object {
         const val NO_FILE_SIZE_LIMIT = 0
 
-        private const val BYTE_ORDER_MARK = "﻿"
+        private const val BYTE_ORDER_MARK = "\uFEFF"
         private const val BYTES_PER_KILOBYTE = 1024
         private val GENERATED_SUFFIXES = listOf(".min.js", ".min.ts", ".bundle.js")
     }

@@ -1,0 +1,34 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "domain",
+          "model",
+          "SpeedType"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\domain\\model\\SpeedType.java",
+      "nodeType": "ENUM",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": []
+    }
+  ]
+}
