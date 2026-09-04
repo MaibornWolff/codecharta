@@ -12,6 +12,8 @@ import {
 import { CcState, CodeMapNode, LayoutAlgorithm } from "../../model/codeCharta.model"
 import { setEnableFloorLabels, setLayoutAlgorithm, setScaling } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
+import { selectedBuildingIdSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { setSelectedBuildingId } from "../../stores/sharedView/sharedView.write.facade"
 import { idToNodeSelector } from "../renderModel/renderModel.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { IdToBuildingService } from "./idToBuilding.service"
@@ -61,6 +63,33 @@ describe("ThreeSceneService", () => {
                 threeSceneService["constantHighlight"]
             )
             expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled()
+        })
+    })
+
+    describe("clearSelection", () => {
+        it("should clear a selection that no building was drawn for, so the inspector can be closed", () => {
+            // Arrange: a node picked in the explorer selects it whether or not the map drew a building —
+            // a folder, or a file with no area in the current metric, has none.
+            threeSceneService["mapMesh"].clearSelection = jest.fn()
+            store.dispatch(setSelectedBuildingId({ value: "a-node-without-a-building" }))
+
+            // Act
+            threeSceneService.clearSelection()
+
+            // Assert
+            expect(selectedBuildingIdSelector(state.getValue())).toBeNull()
+        })
+
+        it("should leave the store alone when there was nothing selected at all", () => {
+            // Arrange: clicking empty map space clears the selection on every click.
+            threeSceneService["mapMesh"].clearSelection = jest.fn()
+            const dispatch = jest.spyOn(store, "dispatch")
+
+            // Act
+            threeSceneService.clearSelection()
+
+            // Assert
+            expect(dispatch).not.toHaveBeenCalled()
         })
     })
 

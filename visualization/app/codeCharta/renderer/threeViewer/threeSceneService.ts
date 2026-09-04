@@ -298,8 +298,14 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     clearSelection() {
+        // A node picked in the explorer is selected whether or not the map drew a building for it — a
+        // folder, or a file with no area in the current metric, has none. Clearing only what the scene
+        // holds would leave such a selection in the store, and the inspector open on it for good.
+        const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedBuildingId() !== null
         if (this.selected) {
             this.getMapMesh().clearSelection(this.selected)
+        }
+        if (hadSelection) {
             this.threeSceneStore.setSelectedBuildingId(null)
             this.eventEmitter.emit("onBuildingDeselected")
         }

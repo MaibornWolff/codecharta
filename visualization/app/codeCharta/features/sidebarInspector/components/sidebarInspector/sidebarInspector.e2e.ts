@@ -28,6 +28,21 @@ test.describe("SidebarInspector", () => {
         await inspector.waitUntilClosed()
     })
 
+    test("should close for a node the map drew no building for", async ({ page }) => {
+        // Arrange — a folder has no building of its own, so the scene holds nothing to deselect.
+        const explorerTreeLevel = new ExplorerTreeLevelPageObject(page)
+        const inspector = new SidebarInspectorPageObject(page)
+        await explorerTreeLevel.openFolder("/root/sample1.cc.json")
+        await explorerTreeLevel.selectNode("/root/sample1.cc.json/ParentLeaf")
+        await inspector.waitUntilOpen()
+
+        // Act
+        await inspector.close()
+
+        // Assert
+        await inspector.waitUntilClosed()
+    })
+
     test("should reopen with the data of a newly selected building after closing manually", async ({ page }) => {
         const explorerTreeLevel = new ExplorerTreeLevelPageObject(page)
         const inspector = new SidebarInspectorPageObject(page)
