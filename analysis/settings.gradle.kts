@@ -21,7 +21,8 @@ include(
     "analysers:parsers:GitLogParser",
     "analysers:parsers:SVNLogParser",
     "analysers:parsers:UnifiedParser",
-    "analysers:parsers:DomainLanguageParser"
+    "analysers:parsers:DomainLanguageParser",
+    "analysers:parsers:DependencyParser"
 )
 include("analysers:exporters:CSVExporter")
 include(
