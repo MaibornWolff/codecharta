@@ -56,22 +56,18 @@ class DependencyExtractor(val fileInfo: FileInfo, private val rootNode: TSNode) 
         return singleUsages.map { extractPathFromNamespace(it) }
     }
 
-    private fun pathFromGroupedUsages(fromUsages: List<TSNode>): List<Path> {
-        val groupedUsages = fromUsages.flatMap {
-            namespaceQueries.getGroupedUsages(it)
+    // The query captures every grouped use as a (namespace, group) pair of nodes, in file order.
+    private fun pathFromGroupedUsages(fromUsages: List<TSNode>): List<Path> = fromUsages
+        .flatMap { namespaceQueries.getGroupedUsages(it) }
+        .chunked(GROUPED_USAGE_CAPTURES)
+        .filter { it.size == GROUPED_USAGE_CAPTURES }
+        .flatMap { (namespaceNode, groupNode) ->
+            val prefix = extractPathFromNamespace(namespaceNode)
+            nodeAsString(groupNode, fileInfo.content)
+                .trim('{', '}')
+                .split(",")
+                .map { prefix + it.trim() }
         }
-        if (groupedUsages.isEmpty()) {
-            return emptyList()
-        }
-
-        val prefix = extractPathFromNamespace(groupedUsages.first())
-        val types = nodeAsString(groupedUsages[1], fileInfo.content)
-            .trim('{', '}')
-            .split(",")
-            .map { it.trim() }
-
-        return types.map { prefix + it }
-    }
 
     private fun pathFromAliasUsages(node: TSNode): List<Path> {
         val aliasUsages = namespaceQueries.getAliasUsage(node)
@@ -124,5 +120,9 @@ class DependencyExtractor(val fileInfo: FileInfo, private val rootNode: TSNode) 
     private fun extractPathFromNamespace(node: TSNode): Path {
         val namespace = nodeAsString(node, fileInfo.content)
         return Path(namespace.split('\\'))
+    }
+
+    companion object {
+        private const val GROUPED_USAGE_CAPTURES = 2
     }
 }

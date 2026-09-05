@@ -41,36 +41,27 @@ class FederationConfigResolver {
     }
 
     /**
-     * Find a producer module by its federation name in a monorepo.
-     * Searches sibling directories of the consumer module.
+     * Finds a producer module among the siblings of the consumer module. A sibling whose federation name
+     * matches wins over one whose directory merely carries the name; siblings are visited in name order
+     * so the result does not depend on how the file system lists them.
      */
     fun findProducerModule(consumerModuleDir: File, producerModuleName: String): FederationConfigResult? {
         val modulesDir = consumerModuleDir.parentFile ?: return null
+        val exposingSiblings = modulesDir
+            .listFiles { file -> file.isDirectory }
+            .orEmpty()
+            .sortedBy { it.name }
+            .mapNotNull { siblingDir -> exposingModuleIn(siblingDir) }
+        return exposingSiblings.firstOrNull { it.data.name == producerModuleName }
+            ?: exposingSiblings.firstOrNull { it.moduleDir.name == producerModuleName }
+    }
 
-        // Search sibling directories for a module with matching federation.name
-        val siblingDirs = modulesDir.listFiles { file -> file.isDirectory } ?: return null
-
-        for (siblingDir in siblingDirs) {
-            val packageJson = siblingDir.resolve(PACKAGE_JSON)
-            if (!packageJson.exists()) {
-                continue
-            }
-
-            val data = getCachedOrParse(packageJson) ?: continue
-
-            // Match by federation.name or directory name
-            if (data.name == producerModuleName || siblingDir.name == producerModuleName) {
-                if (data.hasExposes()) {
-                    return FederationConfigResult(
-                        data = data,
-                        packageJsonFile = packageJson,
-                        moduleDir = siblingDir
-                    )
-                }
-            }
-        }
-
-        return null
+    private fun exposingModuleIn(moduleDir: File): FederationConfigResult? {
+        val packageJson = moduleDir.resolve(PACKAGE_JSON)
+        if (!packageJson.exists()) return null
+        val data = getCachedOrParse(packageJson) ?: return null
+        if (!data.hasExposes()) return null
+        return FederationConfigResult(data = data, packageJsonFile = packageJson, moduleDir = moduleDir)
     }
 
     private fun findPackageJsonWithFederation(sourceFile: File): File? {

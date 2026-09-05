@@ -67,20 +67,20 @@ data class Node(
         // Exclude self-references to prevent REEXPORT nodes from depending on themselves
         val possibleImports = projectDictionary[plainTypeName]?.filter { it != pathWithName }
 
-        // First check if this type is in the same package
+        // An explicit import shadows a same-package type of the same name, as Java's single-type import does.
+        val directImports = dependencies
+            .filter { it.isWildcard.not() && it.isDotImport.not() && it.path.parts.lastOrNull() == plainTypeName }
+            .filter { possibleImports?.contains(it.path) ?: true }
+        if (directImports.isNotEmpty()) {
+            return directImports.first().path
+        }
+
         if (possibleImports != null) {
             val currentPackage = pathWithName.withoutName()
             val samePackageType = possibleImports.find { it.withoutName() == currentPackage }
             if (samePackageType != null) {
                 return samePackageType
             }
-        }
-
-        val directImports = dependencies
-            .filter { it.isWildcard.not() && it.isDotImport.not() && it.path.parts.lastOrNull() == plainTypeName }
-            .filter { possibleImports?.contains(it.path) ?: true }
-        if (directImports.isNotEmpty()) {
-            return directImports.first().path
         }
         if (possibleImports != null) {
             // Check dot imports first - they make unqualified types available

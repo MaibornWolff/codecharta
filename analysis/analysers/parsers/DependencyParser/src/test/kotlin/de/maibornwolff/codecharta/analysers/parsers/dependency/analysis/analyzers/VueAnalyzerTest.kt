@@ -412,4 +412,28 @@ class VueAnalyzerTest {
         assertThat(dependencyPaths).noneMatch { it.endsWith("DEFAULT_EXPORT") }
         assertThat(node.usedTypes.map { it.name }).contains("TitleBuilder")
     }
+
+    @Test
+    fun `should analyse every script block of a component`() {
+        // Arrange
+        val vueCode = """
+            <script lang="ts">
+            import { Foo } from './Foo'
+            export default { name: 'Pair' }
+            </script>
+
+            <script setup lang="ts">
+            import { Bar } from './Bar'
+            </script>
+        """.trimIndent()
+        val fileInfo = FileInfo(language = SupportedLanguage.VUE, physicalPath = "src/components/Pair.vue", content = vueCode)
+
+        // Act
+        val result = VueAnalyzer(fileInfo).analyze()
+
+        // Assert
+        val dependencyPaths = result.nodes.single().dependencies.map { it.path.withDots() }
+        assertThat(dependencyPaths).anyMatch { it.startsWith("src.components.Foo") }
+        assertThat(dependencyPaths).anyMatch { it.startsWith("src.components.Bar") }
+    }
 }

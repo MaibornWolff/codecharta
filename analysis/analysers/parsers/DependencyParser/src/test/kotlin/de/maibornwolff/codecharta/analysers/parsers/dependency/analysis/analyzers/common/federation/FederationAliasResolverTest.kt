@@ -163,4 +163,40 @@ class FederationAliasResolverTest {
         // Then
         assertThat(result).isNull()
     }
+
+    @Test
+    fun `should prefer the producer whose federation name matches over one whose directory is named alike`() {
+        // Arrange
+        val modulesDir = tempDir.resolve("modules").apply { mkdir() }
+        val consumerDir = modulesDir.resolve("app-main").apply { mkdir() }
+        modulesDir
+            .resolve("shared")
+            .apply {
+                mkdirs()
+                resolve("src").mkdir()
+            }.resolve("package.json")
+            .writeText(
+                """{ "name": "legacy", "federation": { "name": "legacy", "exposes": { "./Utils": "./src/utils.js" } } }"""
+            )
+        modulesDir
+            .resolve("ui")
+            .apply {
+                mkdirs()
+                resolve("src").mkdir()
+            }.resolve("package.json")
+            .writeText(
+                """{ "name": "ui", "federation": { "name": "shared", "exposes": { "./Utils": "./src/utils.js" } } }"""
+            )
+        val consumerConfig = FederationConfigResult(
+            data = FederationConfigData(name = "appMain", remotes = mapOf("Shared" to "shared@/app/shared/remoteEntry.js")),
+            packageJsonFile = consumerDir.resolve("package.json"),
+            moduleDir = consumerDir
+        )
+
+        // Act
+        val result = FederationAliasResolver.resolve(DirectImport("Shared/Utils"), consumerConfig, FederationConfigResolver(), tempDir)
+
+        // Assert
+        assertThat(result).isEqualTo(Path(listOf("modules", "ui", "src", "utils")))
+    }
 }
