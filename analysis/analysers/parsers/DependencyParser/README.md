@@ -106,6 +106,15 @@ one **self-edge** (`HitPoints` → `HitPoints`), which DependaCharta keeps and f
 and this parser drops: an edge from a declaration to itself says nothing about the architecture, and the
 file-level projection has never carried one either.
 
+`script/compare_dependency_parsers.py` produces this comparison for any project: it runs both tools (or
+takes two existing output files) and diffs declarations, declaration edges, namespace levels and file
+edges by key, ignoring the self-edges unless asked to keep them. It needs the DependaCharta fat jar,
+found via `--dependacharta-jar` or `DEPENDACHARTA_JAR`, and a locally installed `ccsh`.
+
+```
+./script/compare_dependency_parsers.py path/to/project --dependacharta-jar dependacharta.jar
+```
+
 ## How it works
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
