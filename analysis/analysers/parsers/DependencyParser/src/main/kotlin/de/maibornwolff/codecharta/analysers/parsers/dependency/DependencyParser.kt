@@ -73,7 +73,7 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
 
     companion object {
         const val NAME = "dependencyparser"
-        const val DESCRIPTION = "generates cc.json with a file-level dependency lens from source code"
+        const val DESCRIPTION = "generates cc.json with a file- and declaration-level dependency lens from source code"
     }
 
     override fun call(): Unit? {

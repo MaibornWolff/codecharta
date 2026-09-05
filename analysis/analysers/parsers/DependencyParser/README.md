@@ -18,7 +18,8 @@ infrastructure and writing into the cc.json 2.0 **`dependency` lens** instead of
 }
 ```
 
-- `dependencies` is the edge weight: how many individual code-level references the edge stands for.
+- `dependencies` is the edge weight: how many declaration-level dependencies the edge stands for. A
+  declaration that uses another counts once, however many times it references it, as in DependaCharta.
 - `isCyclic` — the edge takes part in a dependency cycle.
 - `isPointingUpwards` — the edge runs against the levelized flow, i.e. its target sits at the same
   level as or above its source.
@@ -36,7 +37,8 @@ Both flags are absent when false. Together they name the four edge types Dependa
 something that depends on nothing, *n* for something that depends only on nodes below level *n*.
 
 **Metrics.** `outgoing_dependencies` and `incoming_dependencies` per file, in the metrics lens — the
-summed weights of the edges leaving and entering that file.
+summed weights of the edges leaving and entering that file, i.e. how many declarations it depends on and
+how many depend on it.
 
 **The logical layer.** The same analysis a second time, at declaration level — the model DependaCharta
 works in. `leaves` are the individual declarations, `namespaces` the packages containing them, and
@@ -60,8 +62,10 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   segment and that escaping is not reversible.
 - **`nodeId`** is the id of the file node the declaration lives in — the one join from the logical layer
   back onto the file tree, and the only thing a re-pathing filter has to rewrite.
-- **`usage`** lists every way the source declaration uses the target: `usage`, `inheritance`,
-  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. **Only PHP reports
+- **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
+  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
+  kind, the first the extractor found, because a used type is identified by its name alone — the same
+  rule DependaCharta applies, and why a pair always weighs 1 at declaration level. **Only PHP reports
   more than `usage` today**, because `PhpAnalyzer` runs its own tree-sitter queries and classifies types by
   the clause they appear in. Every other language goes through `TreeSitterExcavationSite`, which already
   makes the same distinction internally — its per-language `UsedTypeExtractor` has separate

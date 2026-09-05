@@ -20,7 +20,8 @@ dependencies run in circles, and which of them point against the architectural f
 }
 ```
 
-- `dependencies` is the edge weight: how many individual code-level references the edge stands for.
+- `dependencies` is the edge weight: how many declaration-level dependencies the edge stands for. A
+  declaration that uses another counts once, however many times it references it, as in DependaCharta.
 - `isCyclic` — the edge takes part in a dependency cycle.
 - `isPointingUpwards` — the edge runs against the levelized flow, i.e. its target sits at the same level
   as or above its source.
@@ -59,9 +60,10 @@ declarations:
 
 - Both tables are keyed by the dotted logical path, so a namespace's parent is its id's prefix.
 - `nodeId` is the id of the file node the declaration lives in — the one join back onto the file tree.
-- `usage` lists every way the source uses the target: `usage`, `inheritance`, `implementation`,
-  `instantiation`, `argument`, `return_value`, `constant_access`. Only PHP reports more than `usage`
-  today; see [known issues](#known-issues).
+- `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
+  `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
+  extractor found, as in DependaCharta. Only PHP reports more than `usage` today; see
+  [known issues](#known-issues).
 - A declaration split across files — a C# partial class, a Go function name reused within a package — is
   one leaf, joined to the first of its files as the scan lists them (path order), and its `leafEdges` are the union of every
   part's dependencies. In the physical layer each part's dependencies count for the file they are written

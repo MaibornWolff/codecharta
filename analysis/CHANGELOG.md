@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   result was discarded. The `dependency` lens gains three optional tables, keyed by dotted logical path: `leaves`
   (every declaration with its kind, its level and the id of the file node it lives in), `namespaces` (each package's
   level) and `leafEdges` (the dependencies between declarations, with their weight, the two graph flags and `usage` —
-  every way the source uses the target). This carries the two signals the file-level view cannot: a dependency
+  how the source uses the target). This carries the two signals the file-level view cannot: a dependency
   between two declarations of the *same* file, and the kind of use each dependency is. `edges`, `nodes` and the
   per-file metrics are unchanged byte for byte, so every existing reader keeps working; a file without a logical
   layer is unchanged too, since the tables are omitted when empty. Levelization now runs twice, once per projection,

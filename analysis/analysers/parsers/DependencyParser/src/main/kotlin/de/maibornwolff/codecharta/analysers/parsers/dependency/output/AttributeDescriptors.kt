@@ -12,7 +12,7 @@ fun dependencyAttributeDescriptors(): Map<String, AttributeDescriptor> = mapOf(
     DEPENDENCIES to
         AttributeDescriptor(
             title = "Dependencies",
-            description = "Number of code-level dependency links between two files",
+            description = "Number of declaration-level dependencies between two files",
             hintLowValue = "Few dependencies between the files",
             hintHighValue = "Many dependencies between the files",
             link = "",
@@ -22,7 +22,7 @@ fun dependencyAttributeDescriptors(): Map<String, AttributeDescriptor> = mapOf(
     OUTGOING_DEPENDENCIES to
         AttributeDescriptor(
             title = "Outgoing Dependencies",
-            description = "Number of code-level dependency links from this file to other files",
+            description = "Number of declaration-level dependencies from this file to other files",
             hintLowValue = "This file depends on little other code",
             hintHighValue = "This file depends on much other code",
             link = "",
@@ -32,7 +32,7 @@ fun dependencyAttributeDescriptors(): Map<String, AttributeDescriptor> = mapOf(
     INCOMING_DEPENDENCIES to
         AttributeDescriptor(
             title = "Incoming Dependencies",
-            description = "Number of code-level dependency links from other files to this file",
+            description = "Number of declaration-level dependencies from other files to this file",
             hintLowValue = "Few files depend on this file",
             hintHighValue = "Many files depend on this file",
             link = "",
