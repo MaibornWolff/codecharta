@@ -40,4 +40,10 @@ object Logger {
             value()
         }
     }
+
+    fun debug(throwable: Throwable, value: () -> String) {
+        logger.debug(throwable) {
+            value()
+        }
+    }
 }

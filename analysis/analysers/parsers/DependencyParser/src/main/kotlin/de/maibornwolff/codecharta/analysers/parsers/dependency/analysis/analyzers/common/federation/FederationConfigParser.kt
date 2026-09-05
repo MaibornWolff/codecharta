@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.google.gson.Strictness
 import com.google.gson.stream.JsonReader
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.StringReader
 
@@ -23,6 +24,8 @@ object FederationConfigParser {
                 .fromJson(JsonParser.parseReader(reader), PackageJsonData::class.java)
                 ?.federation
                 ?.toFederationConfigData()
+        }.onFailure { failure ->
+            Logger.warn { "Could not parse ${packageJsonFile.path} (${failure.message}); the federation remotes it defines are ignored" }
         }.getOrNull()
     }
 }
