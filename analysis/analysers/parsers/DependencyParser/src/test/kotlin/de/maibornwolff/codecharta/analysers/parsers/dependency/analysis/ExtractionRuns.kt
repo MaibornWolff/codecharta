@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.SilentProgressReporter
 import java.io.File
@@ -14,6 +14,6 @@ import java.io.File
  */
 fun extractFrom(rootDirectory: String, vararg languages: SupportedLanguage): List<FileReport> {
     val suffixes = languages.flatMap { it.suffixes }.ifEmpty { SupportedLanguage.allSuffixes() }
-    val scanner = FileScanner(allowedExtensions = suffixes, excludeTests = false)
+    val scanner = SourceFileScanner(allowedExtensions = suffixes)
     return ExtractionPipeline(scanner, SilentProgressReporter).run(File(rootDirectory), bypassGitignore = true)
 }

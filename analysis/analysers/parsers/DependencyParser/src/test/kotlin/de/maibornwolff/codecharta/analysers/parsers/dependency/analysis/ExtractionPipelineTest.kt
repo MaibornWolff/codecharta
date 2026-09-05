@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.FileScanner
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.SilentProgressReporter
 import org.assertj.core.api.Assertions.assertThat
@@ -12,8 +12,11 @@ class ExtractionPipelineTest {
     @TempDir
     lateinit var projectDirectory: File
 
-    private fun pipeline(fileTimeoutSeconds: Int = ExtractionPipeline.NO_FILE_TIMEOUT) =
-        ExtractionPipeline(FileScanner(SupportedLanguage.allSuffixes()), SilentProgressReporter, fileTimeoutSeconds = fileTimeoutSeconds)
+    private fun pipeline(fileTimeoutSeconds: Int = ExtractionPipeline.NO_FILE_TIMEOUT) = ExtractionPipeline(
+        SourceFileScanner(SupportedLanguage.allSuffixes()),
+        SilentProgressReporter,
+        fileTimeoutSeconds = fileTimeoutSeconds
+    )
 
     private fun writeSources() {
         File(projectDirectory, "Item.kt").writeText("package shop\n\nclass Item")

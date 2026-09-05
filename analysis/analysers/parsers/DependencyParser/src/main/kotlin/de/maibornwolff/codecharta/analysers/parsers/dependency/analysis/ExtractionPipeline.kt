@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzerFactory
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.ProgressReporter
 import de.maibornwolff.codecharta.util.Logger
@@ -24,14 +24,14 @@ import java.io.File
  * and the types they use. Nothing is resolved across files here; that is [ProcessingPipeline]'s job.
  */
 class ExtractionPipeline(
-    private val fileScanner: FileScanner,
+    private val fileScanner: SourceFileScanner,
     private val progressReporter: ProgressReporter,
     private val maxConcurrency: Int = Runtime.getRuntime().availableProcessors(),
     private val fileTimeoutSeconds: Int = NO_FILE_TIMEOUT
 ) {
     /** [input] is a project directory or a single source file; see [analysisRootOf] for what it is judged against. */
     fun run(input: File, bypassGitignore: Boolean): List<FileReport> {
-        val sourceFiles = fileScanner.scan(input.path, bypassGitignore)
+        val sourceFiles = fileScanner.scan(input, useGitignore = !bypassGitignore)
         if (sourceFiles.isEmpty()) {
             Logger.warn { "No supported source files found under ${input.path}" }
             return emptyList()

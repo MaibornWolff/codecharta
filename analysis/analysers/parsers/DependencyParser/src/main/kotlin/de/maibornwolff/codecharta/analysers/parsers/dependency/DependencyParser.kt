@@ -3,9 +3,9 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ExtractionPipeline
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.output.DependencyProjectGenerator
 import de.maibornwolff.codecharta.analysers.parsers.dependency.output.dependencyAttributeDescriptors
@@ -47,7 +47,7 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
         names = ["--max-file-size"],
         description = ["skip files of at least this size in KB (default: no limit)"]
     )
-    private var maxFileSizeKb: Int = FileScanner.NO_FILE_SIZE_LIMIT
+    private var maxFileSizeKb: Int = SourceFileScanner.NO_FILE_SIZE_LIMIT
 
     @CommandLine.Option(
         names = ["--file-timeout"],
@@ -102,11 +102,11 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
 
     private fun analyse(input: File): Project {
         val scanner =
-            FileScanner(
+            SourceFileScanner(
                 allowedExtensions = fileExtensionsToAnalyse.ifEmpty { SupportedLanguage.allSuffixes() },
+                excludePatterns = determineExclusionPatterns(ExtractionPipeline.analysisRootOf(input), !bypassGitignore),
                 maxFileSizeKb = maxFileSizeKb,
-                excludeTests = !includeTests,
-                excludePatterns = determineExclusionPatterns(ExtractionPipeline.analysisRootOf(input), !bypassGitignore)
+                excludeTests = !includeTests
             )
 
         return ProgressReporterFactory.create(quiet = false).use { progressReporter ->
