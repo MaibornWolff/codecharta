@@ -165,15 +165,18 @@ object ProcessingPipeline {
      *
      * Two declarations can resolve to the same path — a partial class split across files, a name a
      * language allows twice. Keeping the last one silently would make the leaf point at an arbitrary
-     * file, so the first is kept and the collision reported, the way a duplicate node id is handled on read.
+     * file, so the first is kept and the collision reported, the way a duplicate node id is handled on
+     * read. The file is the one [FileLevelAggregator] points file edges at, so both projections agree on
+     * where a split declaration lives; its leaf edges are the union of every part's dependencies.
      */
     private fun declarationsById(resolvedNodes: Collection<Node>): Map<String, Declaration> {
+        val filePathByDeclaration = FileLevelAggregator.firstFilePathByDeclaration(resolvedNodes)
         val declarations = LinkedHashMap<String, Declaration>()
         val duplicateIds = mutableListOf<String>()
         resolvedNodes.forEach { node ->
             val declarationId = node.pathWithName.withDots()
             val declaration =
-                Declaration(declarationId, node.name(), node.nodeType.name, FileLevelAggregator.filePathOf(node).segments)
+                Declaration(declarationId, node.name(), node.nodeType.name, filePathByDeclaration.getValue(declarationId).segments)
             if (declarations.putIfAbsent(declarationId, declaration) != null) duplicateIds.add(declarationId)
         }
         if (duplicateIds.isNotEmpty()) {

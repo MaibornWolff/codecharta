@@ -197,6 +197,26 @@ class ProcessingPipelineTest {
     }
 
     @Test
+    fun `should join a declaration split across files to the same file in both projections`() {
+        // Arrange: a partial class in two files, and a class that depends on it.
+        val sampleDirectory = createTempDirectory("split-declaration").toFile()
+        sampleDirectory.deleteOnExit()
+        File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
+        File(sampleDirectory, "FooB.cs").writeText("namespace N { public partial class Foo { } }")
+        File(sampleDirectory, "Bar.cs").writeText("namespace N { public class Bar { private Foo foo; } }")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.C_SHARP), omitGraphAnalysis = false)
+
+        // Assert: the leaf joins to FooA.cs, and so does every file edge that targets Foo.
+        val foo = graph.declarations.single { it.id == "N.Foo" }
+        assertThat(foo.filePath).containsExactly("FooA.cs")
+        val edgesIntoFoo = graph.edges.filter { it.fromPath == listOf("Bar.cs") }
+        assertThat(edgesIntoFoo).extracting("toPath").containsExactly(listOf("FooA.cs"))
+        assertThat(graph.edges.map { it.fromPath to it.toPath }).contains(listOf("FooA.cs") to listOf("Bar.cs"))
+    }
+
+    @Test
     fun `should keep the dependencies but skip cycles and levels when graph analysis is omitted`() {
         // Act
         val graph = graphOfJavaSample(omitGraphAnalysis = true)
