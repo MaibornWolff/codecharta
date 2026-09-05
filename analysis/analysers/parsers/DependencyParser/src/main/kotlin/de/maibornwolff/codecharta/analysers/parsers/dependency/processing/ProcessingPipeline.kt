@@ -31,8 +31,7 @@ object ProcessingPipeline {
         if (resolvedNodes.isEmpty()) {
             Logger.warn {
                 "No analyzable declarations were found, so the dependency lens stays empty. This usually means no " +
-                    "supported source files were found, or every file failed to parse. Re-run with --verbose=false " +
-                    "for per-file details."
+                    "supported source files were found, or every file was skipped; see the warnings above."
             }
             return DependencyGraph()
         }
@@ -192,8 +191,10 @@ object ProcessingPipeline {
     }
 
     /**
-     * Folds the resolved declaration dependencies into one edge per ordered pair: the weight counts the
-     * individual references, and [DeclarationEdge.usage] collects every way the source uses the target.
+     * Folds the resolved declaration dependencies into one edge per ordered pair. A used type is identified
+     * by its name, so a pair arrives once per node and weighs 1 as in DependaCharta; the fold sums anyway in
+     * case a merged node reports a pair twice, and [DeclarationEdge.usage] collects every way the source uses
+     * the target.
      */
     private fun toDeclarationEdges(
         resolvedNodes: Collection<Node>,
