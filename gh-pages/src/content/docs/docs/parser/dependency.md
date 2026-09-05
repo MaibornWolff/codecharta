@@ -119,10 +119,11 @@ in the background.
 
 ### Known issues
 
-**Usage kinds are only extracted for PHP.** The `usage` list on a leaf edge can name seven kinds, but the
-underlying extraction (`TreeSitterExcavationSite`) reports a used type without the syntactic position it
-appeared in, so every language but PHP — which runs its own queries — can only say `usage`. DependaCharta
-has the same limitation.
+**Usage kinds are only reported for PHP.** The `usage` list on a leaf edge can name seven kinds, but every
+language except PHP — which runs its own queries — reports only `usage`. The underlying extraction
+(`TreeSitterExcavationSite`) does separate used types by the position they appear in, but flattens that
+away in the type it hands back, so the distinction is lost before this parser sees it. DependaCharta has
+the same gap.
 
 ### Examples
 
