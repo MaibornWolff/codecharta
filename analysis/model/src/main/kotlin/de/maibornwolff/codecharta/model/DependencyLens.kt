@@ -103,16 +103,21 @@ data class DependencyLens(
             .mapNotNull { (leafId, leaf) ->
                 newIdByOldId[leaf.nodeId]?.let { newNodeId -> leafId to leaf.copy(nodeId = newNodeId) }
             }.toMap()
+        val inhabitedNamespaces = namespacesOf(rekeyedLeaves.keys)
         return copy(
             nodes = nodes.rekeyedBy(newIdByOldId),
-            namespaces = namespaces.filterKeys { leaves.isEmpty() || rekeyedLeaves.keys.any { leafId -> leafId.isInNamespace(it) } },
+            namespaces = namespaces.filterKeys { leaves.isEmpty() || it in inhabitedNamespaces },
             leaves = rekeyedLeaves,
             leafEdges = leafEdges.filter { leaves.isEmpty() || (it.fromLeaf in rekeyedLeaves && it.toLeaf in rekeyedLeaves) }
         )
     }
 
-    // With dotted ids a namespace contains a leaf exactly when it is a proper prefix of the leaf's id.
-    private fun String.isInNamespace(namespaceId: String): Boolean = startsWith("$namespaceId.")
+    // With dotted ids the namespaces a leaf lives in are every proper prefix of its id, split on the dots.
+    private fun namespacesOf(leafIds: Collection<String>): Set<String> = leafIds
+        .flatMapTo(HashSet()) { leafId ->
+            val segments = leafId.split('.')
+            (1 until segments.size).map { depth -> segments.take(depth).joinToString(".") }
+        }
 }
 
 /**

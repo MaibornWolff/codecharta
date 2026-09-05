@@ -28,7 +28,7 @@ a handful of smaller model, reader and documentation gaps.
 
 ### 3. Duplicate declaration ids
 - `FileLevelAggregator` takes the source file from the node itself and the target file from the first
-  declaration of an id, matching `declarationsById`; the dropped duplicate's edges are dropped with it.
+  declaration of an id, matching `declarationsById`; the leaf's edges are the union of every part's.
 
 ### 4. Model and reader
 - `LeafEdge` and `Edge` DTOs tolerate a missing `attributes`.

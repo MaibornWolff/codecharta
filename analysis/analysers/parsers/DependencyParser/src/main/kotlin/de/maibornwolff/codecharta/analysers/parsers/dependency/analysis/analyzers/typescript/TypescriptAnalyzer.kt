@@ -90,7 +90,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         if (sourceFiles.isEmpty()) return listOf(wildcardNode)
         return sourceFiles.flatMap { sourceFile ->
             val sourceRelPath = toRelativePath(sourceFile, analysisRoot, stripExtension = true).parts
-            val srcLanguage = if (sourceFile.name.endsWith(".tsx")) Language.TSX else Language.TYPESCRIPT
+            val srcLanguage = if (sourceFile.name.endsWith(".$TSX_EXTENSION", ignoreCase = true)) Language.TSX else Language.TYPESCRIPT
             val sourceTseResult = TreeSitterDependencies.analyze(sourceFile.readText(), srcLanguage)
             sourceTseResult.declarations
                 .filter { decl -> decl.name !in ownNames }
@@ -127,6 +127,6 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     companion object {
         private const val TSX_EXTENSION = "tsx"
-        private val SOURCE_FILE_SUFFIXES = listOf(".ts", ".tsx", "/index.ts", "/index.tsx")
+        private val SOURCE_FILE_SUFFIXES = listOf(".ts", ".tsx", ".mts", ".cts", "/index.ts", "/index.tsx", "/index.mts", "/index.cts")
     }
 }

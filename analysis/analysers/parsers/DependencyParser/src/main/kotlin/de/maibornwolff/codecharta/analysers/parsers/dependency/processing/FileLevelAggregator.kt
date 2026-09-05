@@ -28,7 +28,8 @@ data class FilePath(val segments: List<String>) {
  * A declaration split across files (a C# partial class, a Go function name reused in a package) is one
  * logical leaf but several nodes. Each node's dependencies count for the file they are written in, while
  * a dependency *on* the split declaration points at the file [firstFilePathByDeclaration] reports — the
- * same one the logical layer joins the leaf to.
+ * same one the logical layer joins the leaf to. Cycles are found per logical leaf, so when two parts in
+ * different files reference the same cyclic target, both file edges count as cyclic.
  */
 object FileLevelAggregator {
     fun aggregate(resolvedNodes: Collection<Node>, cyclicEdgesByDeclaration: Map<String, Set<String>>): List<AggregatedFileEdge> {

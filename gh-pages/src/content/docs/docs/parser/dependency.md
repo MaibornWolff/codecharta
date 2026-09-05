@@ -63,7 +63,7 @@ declarations:
   `instantiation`, `argument`, `return_value`, `constant_access`. Only PHP reports more than `usage`
   today; see [known issues](#known-issues).
 - A declaration split across files — a C# partial class, a Go function name reused within a package — is
-  one leaf, joined to the first of its files in path order, and its `leafEdges` are the union of every
+  one leaf, joined to the first of its files as the scan lists them (path order), and its `leafEdges` are the union of every
   part's dependencies. In the physical layer each part's dependencies count for the file they are written
   in, while a dependency *on* the split declaration points at the same first file the leaf reports.
 - `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
@@ -104,13 +104,14 @@ aliases (webpack, vite, vue.config) and Module Federation remotes.
 
 `--base-file` and `--local-changes` are rejected: the dependency graph needs every file of the project, so
 there is no per-file result to skip or reuse. A single file is a legal input; it is analysed alone, with its
-directory as the project root.
+directory as the project root. It is still judged by extension, size and the test-file rule, while `.gitignore`
+and the exclude patterns only apply to a directory walk.
 
 ### Tests are excluded by default
 
 A test depends on everything it exercises and nothing depends on it, so including tests shifts every
 level and every cycle. `--include-tests` opts back in. Test files are recognized by directory (`test`,
-`tests`, `__tests__`, matched on the path *inside* the project) and by each language's
+`tests`, `__tests__`, `spec`, `specs`, matched on the path *inside* the project) and by each language's
 naming convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, …).
 
 ### When the analysis does not finish
