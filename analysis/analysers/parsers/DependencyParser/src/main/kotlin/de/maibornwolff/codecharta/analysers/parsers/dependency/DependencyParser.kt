@@ -84,9 +84,14 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
             "Input invalid file for DependencyParser, stopping execution..."
         }
 
+        require(baseFile == null && !localChanges) {
+            "--base-file and --local-changes are not supported by the DependencyParser: " +
+                "the dependency graph needs every file of the project, stopping execution..."
+        }
+
         val context = resolveEffectiveInput(inputFile)
         try {
-            val project = analyse(analysisRootOf(context.inputDir))
+            val project = analyse(context.inputDir)
             ProjectSerializer.serializeToFileOrStream(project, context.resolveOutputFile(outputFile), output, compress)
         } finally {
             context.worktreeManager?.cleanup()
@@ -95,18 +100,19 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
         return null
     }
 
-    private fun analyse(analysisRoot: File): Project {
+    private fun analyse(input: File): Project {
         val scanner =
             FileScanner(
                 allowedExtensions = fileExtensionsToAnalyse.ifEmpty { SupportedLanguage.allSuffixes() },
                 maxFileSizeKb = maxFileSizeKb,
-                excludeTests = !includeTests
+                excludeTests = !includeTests,
+                excludePatterns = determineExclusionPatterns(ExtractionPipeline.analysisRootOf(input), !bypassGitignore)
             )
 
         return ProgressReporterFactory.create(quiet = false).use { progressReporter ->
             val fileReports =
                 ExtractionPipeline(scanner, progressReporter, fileTimeoutSeconds = fileTimeoutSeconds)
-                    .run(analysisRoot, bypassGitignore)
+                    .run(input, bypassGitignore)
             val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis)
             DependencyProjectGenerator().generate(graph, analysedFilePaths(fileReports), resolvePipedProject())
         }
@@ -122,10 +128,6 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
         .distinct()
         .map { PathFactory.extractOSIndependentPath(it).edgesList }
         .filter { it.isNotEmpty() }
-
-    // A single file is a legal input, but the directory around it still defines the analysis: tsconfig
-    // and bundler configs are looked up from it, and the paths nodes are keyed by are relative to it.
-    private fun analysisRootOf(input: File): File = if (input.isFile) input.absoluteFile.parentFile else input
 
     private fun resolvePipedProject(): Project? {
         if (!shouldProcessPipedInput(inputFiles)) return null

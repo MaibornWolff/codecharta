@@ -8,10 +8,21 @@ import java.nio.charset.Charset
 class FileScanner(
     private val allowedExtensions: List<String>,
     private val maxFileSizeKb: Int = NO_FILE_SIZE_LIMIT,
-    private val excludeTests: Boolean = true
+    private val excludeTests: Boolean = true,
+    excludePatterns: List<String> = emptyList()
 ) {
     private val fileFilter = FileFilter(allowedExtensions)
 
+    // One alternation over every pattern, matched against the path inside the project the way
+    // UnifiedParser's ProjectScanner does, so `-e` behaves the same for every parser.
+    private val excludePatternRegex: Regex? =
+        excludePatterns.takeIf { it.isNotEmpty() }?.joinToString(separator = "|", prefix = "(", postfix = ")")?.toRegex()
+
+    /**
+     * The analysable files under [inputPath], or [inputPath] itself when it is a file, in path order so
+     * that everything downstream — edge order, cycle breaking — is independent of how the file system
+     * happens to list a directory.
+     */
     fun scan(inputPath: String, bypassGitignore: Boolean = false, onFileFound: (() -> Unit)? = null): List<File> {
         val input = File(inputPath)
         if (!input.exists()) {
@@ -25,11 +36,13 @@ class FileScanner(
             return scanSingleFile(input, testFileDetector, onFileFound)
         }
 
-        return if (bypassGitignore) {
-            scanWithoutGitignore(input, testFileDetector, onFileFound)
-        } else {
-            scanWithGitignore(input, testFileDetector, onFileFound)
-        }
+        val files =
+            if (bypassGitignore) {
+                scanWithoutGitignore(input, testFileDetector)
+            } else {
+                scanWithGitignore(input, testFileDetector)
+            }
+        return files.sortedBy { it.path }.onEach { onFileFound?.invoke() }
     }
 
     private fun scanSingleFile(file: File, testFileDetector: TestFileDetector, onFileFound: (() -> Unit)?): List<File> {
@@ -55,25 +68,33 @@ class FileScanner(
         return true
     }
 
-    private fun scanWithoutGitignore(directory: File, testFileDetector: TestFileDetector, onFileFound: (() -> Unit)?): List<File> =
-        directory
-            .walkTopDown()
-            .filter { it.isFile }
-            .filter { file -> isAnalysable(file, testFileDetector) }
-            .onEach { onFileFound?.invoke() }
-            .toList()
+    private fun scanWithoutGitignore(rootDirectory: File, testFileDetector: TestFileDetector): List<File> = rootDirectory
+        .walkTopDown()
+        .onEnter { directory -> !isExcludedByPattern(directory, rootDirectory) }
+        .filter { it.isFile }
+        .filter { file -> !isExcludedByPattern(file, rootDirectory) && isAnalysable(file, testFileDetector) }
+        .toList()
 
-    private fun scanWithGitignore(rootDirectory: File, testFileDetector: TestFileDetector, onFileFound: (() -> Unit)?): List<File> {
+    private fun scanWithGitignore(rootDirectory: File, testFileDetector: TestFileDetector): List<File> {
         val gitignoreHandler = GitignoreHandler(rootDirectory)
 
         return rootDirectory
             .walkTopDown()
-            .onEnter { dir -> !gitignoreHandler.shouldExclude(dir) }
+            .onEnter { directory -> !gitignoreHandler.shouldExclude(directory) && !isExcludedByPattern(directory, rootDirectory) }
             .filter { it.isFile }
-            .filter { file -> !gitignoreHandler.shouldExclude(file) }
+            .filter { file -> !gitignoreHandler.shouldExclude(file) && !isExcludedByPattern(file, rootDirectory) }
             .filter { file -> isAnalysable(file, testFileDetector) }
-            .onEach { onFileFound?.invoke() }
             .toList()
+    }
+
+    // Directories are matched with a trailing slash so a folder pattern such as `/node_modules/` prunes
+    // the walk at the folder instead of testing every file below it.
+    private fun isExcludedByPattern(candidate: File, rootDirectory: File): Boolean {
+        val regex = excludePatternRegex ?: return false
+        if (candidate == rootDirectory) return false
+        val relativePath = candidate.toRelativeString(rootDirectory).replace(File.separatorChar, '/')
+        val pathInsideProject = if (candidate.isDirectory) "/$relativePath/" else "/$relativePath"
+        return regex.containsMatchIn(pathInsideProject)
     }
 
     fun readFileContent(file: File, charset: Charset = Charsets.UTF_8): Result<String> = runCatching {
@@ -90,7 +111,7 @@ class FileScanner(
     companion object {
         const val NO_FILE_SIZE_LIMIT = 0
 
-        private const val BYTE_ORDER_MARK = "\uFEFF"
+        private const val BYTE_ORDER_MARK = "﻿"
         private const val BYTES_PER_KILOBYTE = 1024
         private val GENERATED_SUFFIXES = listOf(".min.js", ".min.ts", ".bundle.js")
     }

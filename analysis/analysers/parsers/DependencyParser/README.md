@@ -138,8 +138,6 @@ Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi an
 | `-ibf, --include-build-folders`           | include build and common resource folders                                                            |
 | `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion                                                    |
 | `--commit=<ref>`                          | analyze the codebase at a specific git commit/tag/branch (creates a temporary worktree)              |
-| `--local-changes`                         | only analyze files that differ from the remote tracking branch                                       |
-| `-bf, --base-file=<baseFile>`             | base cc.json file with checksums to skip unchanged files                                             |
 | `--verbose`                               | verbose mode                                                                                         |
 | `--include-tests`                         | analyse test files too (excluded by default)                                                         |
 | `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                                           |
@@ -147,12 +145,16 @@ Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi an
 | `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                              |
 | `-h, --help`                              | displays this help and exits                                                                         |
 
+`--base-file` and `--local-changes` are rejected: the dependency graph needs every file of the project, so
+there is no per-file result to skip or reuse. A single file is a legal input; it is analysed alone, with its
+directory as the project root.
+
 ### Tests are excluded by default
 
 A test depends on everything it exercises and nothing depends on it, so including tests shifts every
 level and every cycle. DependaCharta's results are calibrated on production code, and this parser keeps
 that default; `--include-tests` opts back in. Test files are recognized by directory (`test`, `tests`,
-`__tests__`, `spec`, `specs`, matched on the path *inside* the project) and by each language's naming
+`__tests__`, matched on the path *inside* the project) and by each language's naming
 convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, …).
 
 ### When the analysis does not finish
