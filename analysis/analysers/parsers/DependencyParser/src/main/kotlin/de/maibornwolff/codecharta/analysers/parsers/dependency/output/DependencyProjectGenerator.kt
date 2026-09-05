@@ -66,8 +66,8 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
 
     /**
      * Outgoing and incoming counts are metrics about a file, not lens structure, so they go on the node
-     * itself. Both count dependency links, i.e. the summed edge weights, so a file that references
-     * another one five times counts five.
+     * itself. Both sum the weights of the edges leaving and entering the file, i.e. the number of
+     * declaration-level dependencies behind them.
      */
     private fun countLinksPerFile(graph: DependencyGraph, analysedFilePaths: List<List<String>>): Map<List<String>, Map<String, Any>> {
         val outgoing = HashMap<List<String>, Int>()

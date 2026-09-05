@@ -29,9 +29,7 @@ class GoAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     private val functionQuery = GoFunctionQuery(golang)
     private val variableQuery = GoVariableQuery(golang)
 
-    override fun analyze(): FileReport = analyzeWithTransitiveDependencies(false)
-
-    fun analyzeWithTransitiveDependencies(resolveTransitive: Boolean = true): FileReport {
+    override fun analyze(): FileReport {
         val rootNode = parseCode(fileInfo.content)
         val packageResult = packageQuery.execute(rootNode, fileInfo.content)
         val packagePath = packageQuery.derivePackagePathFromFilePath(fileInfo.physicalPath, packageResult)
@@ -51,11 +49,7 @@ class GoAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
         aggregateMethodsIntoReceiverTypes(nodes, methodDeclarations)
 
-        return if (resolveTransitive) {
-            FileReport(resolveTransitiveDependencies(nodes))
-        } else {
-            FileReport(nodes)
-        }
+        return FileReport(nodes)
     }
 
     private fun extractNodeFromDeclaration(packagePath: List<String>, imports: List<Dependency>, declaration: TSNode): Node {
@@ -179,74 +173,5 @@ class GoAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
             return nodeAsString(underlyingType, fileInfo.content)
         }
         return null
-    }
-
-    private fun resolveTransitiveDependencies(nodes: List<Node>): List<Node> {
-        val callGraph = buildCallGraph(nodes)
-        val publicNodes = filterPublicNodes(nodes)
-        val privateNodeNames = extractPrivateNodeNames(nodes)
-
-        return publicNodes.map { node ->
-            val nodeName = node.pathWithName.parts.last()
-            val transitivePublicDeps = computeTransitivePublicDependencies(
-                nodeName,
-                callGraph,
-                privateNodeNames
-            )
-
-            node.copy(
-                usedTypes = transitivePublicDeps.map { Type.simple(it) }.toSet()
-            )
-        }
-    }
-
-    private fun buildCallGraph(nodes: List<Node>): Map<String, MutableSet<String>> {
-        val callGraph = mutableMapOf<String, MutableSet<String>>()
-        nodes.forEach { node ->
-            val nodeName = node.pathWithName.parts.last()
-            callGraph[nodeName] = node.usedTypes.map { it.name }.toMutableSet()
-        }
-        return callGraph
-    }
-
-    private fun filterPublicNodes(nodes: List<Node>): List<Node> = nodes.filter { node ->
-        val name = node.pathWithName.parts.last()
-        name.isNotEmpty() && name[0].isUpperCase()
-    }
-
-    private fun extractPrivateNodeNames(nodes: List<Node>): Set<String> = nodes
-        .filter { node ->
-            val name = node.pathWithName.parts.last()
-            name.isNotEmpty() && name[0].isLowerCase()
-        }.map { it.pathWithName.parts.last() }
-        .toSet()
-
-    private fun computeTransitivePublicDependencies(
-        startNode: String,
-        callGraph: Map<String, Set<String>>,
-        privateNodeNames: Set<String>
-    ): Set<String> {
-        val visited = mutableSetOf<String>()
-        val publicDependencies = mutableSetOf<String>()
-        val stack = ArrayDeque<String>()
-        stack.add(startNode)
-
-        while (stack.isNotEmpty()) {
-            val current = stack.removeLast()
-            if (current in visited) continue
-
-            visited.add(current)
-
-            val dependencies = callGraph[current] ?: emptySet()
-            for (dep in dependencies) {
-                if (dep !in privateNodeNames && dep != current) {
-                    publicDependencies.add(dep)
-                } else if (dep in privateNodeNames && dep !in visited) {
-                    stack.add(dep)
-                }
-            }
-        }
-
-        return publicDependencies
     }
 }

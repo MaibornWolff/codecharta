@@ -110,6 +110,24 @@ one **self-edge** (`HitPoints` → `HitPoints`), which DependaCharta keeps and f
 and this parser drops: an edge from a declaration to itself says nothing about the architecture, and the
 file-level projection has never carried one either.
 
+Beyond the self-edge, the parser deliberately deviates from DependaCharta where the original loses
+edges on common project layouts; every item below is a bug in DependaCharta that this port fixes:
+
+- A tsconfig `baseUrl` and `paths` inherited through `extends` are read relative to the config that
+  defines them, as TypeScript does; DependaCharta reads them relative to the child. An `extends`
+  without `.json` finds its parent, and the longest matching `paths` prefix wins.
+- tsconfig and bundler alias targets drop their source extension, so `src/core/index.ts` joins onto
+  the node `src.core.index`.
+- A wildcard re-export from a file with a dot in its name (`export * from './user.service'`) is
+  expanded; DependaCharta probes for `user_service.ts` and gives up.
+- A Vue component pairing a plain `<script>` with a `<script setup>` has both blocks analysed.
+- An explicit import wins over a same-package type of the same name, as Java's single-type import does.
+- Every PHP grouped `use` contributes, not only the first in the file.
+- A Module Federation producer is looked up in name order, preferring a federation-name match over a
+  directory-name match, so the result does not depend on how the file system lists directories.
+- A file that fails to parse or exceeds `--file-timeout` is reported in one warning naming the files;
+  a tsconfig or package.json that fails to parse is warned about as well.
+
 `script/compare_dependency_parsers.py` produces this comparison for any project: it runs both tools (or
 takes two existing output files) and diffs declarations, declaration edges, namespace levels and file
 edges by key, ignoring the self-edges unless asked to keep them. It needs the DependaCharta fat jar,

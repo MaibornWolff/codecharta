@@ -18,8 +18,6 @@ class Path {
 
     operator fun plus(it: String): Path = Path(parts + it)
 
-    operator fun plus(it: List<String>): Path = Path(parts.union(it).toList())
-
     operator fun plus(it: Path): Path = Path(parts + it.parts)
 
     fun withoutName() = parts.slice(0 until parts.lastIndex)
