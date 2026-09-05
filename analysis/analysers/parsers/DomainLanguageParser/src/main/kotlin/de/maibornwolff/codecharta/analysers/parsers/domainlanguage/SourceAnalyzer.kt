@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.rootDirectoryOf
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DirectoryWordAggregator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainAnalysisResult
@@ -19,7 +19,7 @@ import java.io.File
 
 class SourceAnalyzer(
     private val config: AnalysisConfiguration,
-    private val fileScanner: FileScanner,
+    private val fileScanner: SourceFileScanner,
     private val fileAnalyzer: FileAnalyzer,
     private val fileProcessor: FileProcessor,
     private val tfIdfCalculator: TfIdfCalculator,
@@ -47,7 +47,7 @@ class SourceAnalyzer(
 
     private fun scanFiles(directoryPath: String): List<File> {
         progressReporter.startPhase("Scanning files", totalItems = null)
-        val files = fileScanner.scan(directoryPath, config.bypassGitignore, config.excludeTests) { progressReporter.advance() }
+        val files = fileScanner.scan(File(directoryPath), useGitignore = !config.bypassGitignore) { progressReporter.advance() }
         progressReporter.completePhase()
         return files
     }

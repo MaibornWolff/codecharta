@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainAnalysisResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.WordFrequency
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
@@ -373,7 +373,7 @@ class SourceAnalyzerTest {
             }
 
         val config = AnalysisConfiguration(allowedExtensions = listOf("kt"))
-        val fileScanner = FileScanner(config.allowedExtensions)
+        val fileScanner = SourceFileScanner(config.allowedExtensions, excludeTests = config.excludeTests)
         val stopWordFilter =
             StopWordFilter(
                 globalKeywords = emptyList(),

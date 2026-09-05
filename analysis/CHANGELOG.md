@@ -44,6 +44,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- **One file scanner for `domainlanguageparser` and `dependencyparser`.** Both walked the tree with their own copy
+  of the same scanner; the shared one lives next to the gitignore handling in `AnalyserInterface`. For
+  `domainlanguageparser` this means `-e/--exclude` and `-ibf/--include-build-folders` now work as in every other
+  parser (they were accepted and ignored), minified bundles (`*.min.js`, `*.bundle.js`) are skipped, test
+  directories are judged by the path inside the project rather than the absolute one, and files arrive in path
+  order.
+
 - **`ccsh dependachartaimport` is deprecated.** `ccsh dependencyparser` runs DependaCharta's analysis on the source
   itself and now emits everything the importer receives and more — declaration kinds, levels, cycles and upward flags,
   at both file and declaration granularity — where the importer flattens all of it into edge and node attributes. It
