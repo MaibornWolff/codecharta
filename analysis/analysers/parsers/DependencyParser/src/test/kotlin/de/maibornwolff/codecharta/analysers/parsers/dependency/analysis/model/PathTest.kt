@@ -18,7 +18,7 @@ class PathTest {
 
     @Test
     fun `should replace dots in parts with underscores`() {
-        // Arrange, when
+        // Act
         val path = Path(listOf("com.example.Node"))
 
         // Assert
@@ -39,7 +39,7 @@ class PathTest {
 
     @Test
     fun `should return unknown path`() {
-        // Arrange, when
+        // Act
         val path = Path.unknown("type")
 
         // Assert
@@ -60,7 +60,7 @@ class PathTest {
 
     @Test
     fun `should create path from string with dots`() {
-        // Arrange, when
+        // Act
         val path = Path.fromStringWithDots("com.example.Node")
 
         // Assert

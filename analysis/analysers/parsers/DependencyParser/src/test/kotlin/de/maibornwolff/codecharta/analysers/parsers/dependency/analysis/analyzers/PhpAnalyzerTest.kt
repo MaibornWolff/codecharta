@@ -279,7 +279,7 @@ class PhpAnalyzerTest {
     }
 
     @Test
-    fun `import and usage of constant declared on namespace level should create dependency on constant and add constant to used types`() {
+    fun `should create a dependency on a namespace-level constant and add it to the used types when it is imported and used`() {
         // Arrange
         val code = """
             <?php
@@ -317,7 +317,7 @@ class PhpAnalyzerTest {
     }
 
     @Test
-    fun `usage of constant declared in another class should create type in node`() {
+    fun `should add a type to the node when a constant declared in another class is used`() {
         // Arrange
         val code = """
 <?php

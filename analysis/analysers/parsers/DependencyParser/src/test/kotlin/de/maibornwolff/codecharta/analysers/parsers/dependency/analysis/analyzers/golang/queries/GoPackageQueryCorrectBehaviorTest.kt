@@ -8,7 +8,7 @@ class GoPackageQueryCorrectBehaviorTest {
     private val goPackageQuery = GoPackageQuery(TreeSitterGo())
 
     @Test
-    fun `main packages must use directory path to prevent collisions`() {
+    fun `should use the directory path for main packages to prevent collisions`() {
         // Act
         val serverMain = goPackageQuery.derivePackagePathFromFilePath("cmd/server/main.go", listOf("main"))
         val ccMain = goPackageQuery.derivePackagePathFromFilePath("cmd/cc/main.go", listOf("main"))
@@ -20,7 +20,7 @@ class GoPackageQueryCorrectBehaviorTest {
     }
 
     @Test
-    fun `regular packages should use directory for consistency with imports`() {
+    fun `should use the directory path for regular packages for consistency with imports`() {
         // Act
         val result = goPackageQuery.derivePackagePathFromFilePath("project/internal/utils/helper.go", listOf("utils"))
 
@@ -29,7 +29,7 @@ class GoPackageQueryCorrectBehaviorTest {
     }
 
     @Test
-    fun `root level files need special handling`() {
+    fun `should use the package name for root level files`() {
         // Act
         val mainInRoot = goPackageQuery.derivePackagePathFromFilePath("main.go", listOf("main"))
         val pkgInRoot = goPackageQuery.derivePackagePathFromFilePath("utils.go", listOf("utils"))
@@ -40,7 +40,7 @@ class GoPackageQueryCorrectBehaviorTest {
     }
 
     @Test
-    fun `the old behavior would cause collisions - this test shows why it was wrong`() {
+    fun `should derive distinct paths for main packages in different directories`() {
         // Arrange
         val paths = listOf(
             "cmd/server/main.go",

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class FileReportMultiLanguageTypeResolutionTest {
     @Test
-    fun `C# should handle qualified types with namespace prefix`() {
+    fun `should handle C# qualified types with a namespace prefix`() {
         // Arrange - C# uses namespace.Type syntax
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("MyProject", "Models", "User")))
@@ -33,7 +33,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `C# should handle fully qualified namespace types`() {
+    fun `should handle C# fully qualified namespace types`() {
         // Arrange - C# with full namespace qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("MyProject", "Domain", "Models", "User")))
@@ -61,7 +61,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `Java should handle qualified types with package prefix`() {
+    fun `should handle Java qualified types with a package prefix`() {
         // Arrange - Java with qualified reference
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("com", "example", "models", "User")))
@@ -88,7 +88,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `Java should handle inner class references`() {
+    fun `should handle Java inner class references`() {
         // Arrange - Java inner classes use $ but might appear as dots in source
         val projectDictionary = mapOf(
             "InnerClass" to listOf(Path(listOf("com", "example", "models", "User", "InnerClass")))
@@ -114,7 +114,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `PHP should handle namespaced types`() {
+    fun `should handle PHP namespaced types`() {
         // Arrange - PHP with namespace qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("App", "Models", "User")))
@@ -141,7 +141,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `PHP should handle fully qualified namespace`() {
+    fun `should handle PHP fully qualified namespaces`() {
         // Arrange - PHP fully qualified namespace
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("App", "Domain", "Models", "User")))
@@ -167,7 +167,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `Python should handle module qualified types`() {
+    fun `should handle Python module qualified types`() {
         // Arrange - Python with package qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("myproject", "domain", "models", "User")))
@@ -194,7 +194,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `Python should handle package qualified types`() {
+    fun `should handle Python package qualified types`() {
         // Arrange - Python with package qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("myproject", "domain", "models", "User")))
@@ -220,7 +220,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `TypeScript should handle namespace qualified types`() {
+    fun `should handle TypeScript namespace qualified types`() {
         // Arrange - TypeScript with namespace qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("src", "models", "User")))
@@ -247,7 +247,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `TypeScript should handle module qualified types`() {
+    fun `should handle TypeScript module qualified types`() {
         // Arrange - TypeScript module imports with qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("src", "app", "models", "User")))
@@ -273,7 +273,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `TypeScript should handle complex namespace paths`() {
+    fun `should handle TypeScript complex namespace paths`() {
         // Arrange - TypeScript with complex namespace structure
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("src", "domain", "entities", "User")))
@@ -299,7 +299,7 @@ class FileReportMultiLanguageTypeResolutionTest {
     }
 
     @Test
-    fun `all languages should handle qualified types uniformly`() {
+    fun `should handle qualified types uniformly across all languages`() {
         // Arrange - This test demonstrates the universal nature of the generic approach
         val languagesWithTypes = listOf(
             SupportedLanguage.GO to "models.User",

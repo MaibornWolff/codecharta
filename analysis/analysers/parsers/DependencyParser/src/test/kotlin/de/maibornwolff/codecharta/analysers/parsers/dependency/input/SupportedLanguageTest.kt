@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class SupportedLanguageTest {
     @Test
     fun `should detect a language from a file name`() {
-        // Act + Assert
+        // Act & Assert
         assertThat(SupportedLanguage.ofFileName("Main.kt")).isEqualTo(SupportedLanguage.KOTLIN)
         assertThat(SupportedLanguage.ofFileName("main.go")).isEqualTo(SupportedLanguage.GO)
         assertThat(SupportedLanguage.ofFileName("App.vue")).isEqualTo(SupportedLanguage.VUE)
@@ -15,20 +15,20 @@ class SupportedLanguageTest {
 
     @Test
     fun `should detect a language regardless of how the extension is cased`() {
-        // Act + Assert
+        // Act & Assert
         assertThat(SupportedLanguage.ofFileName("Main.KT")).isEqualTo(SupportedLanguage.KOTLIN)
     }
 
     @Test
     fun `should detect no language for an unsupported or missing extension`() {
-        // Act + Assert
+        // Act & Assert
         assertThat(SupportedLanguage.ofFileName("README.md")).isNull()
         assertThat(SupportedLanguage.ofFileName("Makefile")).isNull()
     }
 
     @Test
     fun `should group the extensions CodeCharta splits by grammar but dependency analysis treats as one language`() {
-        // Assert: TSX has its own grammar entry, C has its own — both are analysed by the sibling language.
+        // Act & Assert: TSX has its own grammar entry, C has its own — both are analysed by the sibling language.
         assertThat(SupportedLanguage.ofFileName("Component.tsx")).isEqualTo(SupportedLanguage.TYPESCRIPT)
         assertThat(SupportedLanguage.ofFileName("legacy.c")).isEqualTo(SupportedLanguage.CPP)
         assertThat(SupportedLanguage.ofFileName("legacy.h")).isEqualTo(SupportedLanguage.CPP)
@@ -36,7 +36,7 @@ class SupportedLanguageTest {
 
     @Test
     fun `should carry every extension of the FileExtension entries it is built from`() {
-        // Assert: the enum is the single source of extensions, so a new one there reaches the scanner.
+        // Act & Assert: the enum is the single source of extensions, so a new one there reaches the scanner.
         assertThat(SupportedLanguage.TYPESCRIPT.suffixes)
             .containsExactlyInAnyOrderElementsOf(
                 (
@@ -48,7 +48,7 @@ class SupportedLanguageTest {
 
     @Test
     fun `should expose every suffix without a leading dot`() {
-        // Assert
+        // Act & Assert
         assertThat(SupportedLanguage.allSuffixes()).allSatisfy { suffix -> assertThat(suffix).doesNotStartWith(".") }
     }
 
@@ -57,7 +57,7 @@ class SupportedLanguageTest {
         // Arrange
         val allSuffixes = SupportedLanguage.entries.flatMap { it.suffixes }
 
-        // Assert: an ambiguous suffix would make language detection order-dependent.
+        // Act & Assert: an ambiguous suffix would make language detection order-dependent.
         assertThat(allSuffixes).doesNotHaveDuplicates()
     }
 }

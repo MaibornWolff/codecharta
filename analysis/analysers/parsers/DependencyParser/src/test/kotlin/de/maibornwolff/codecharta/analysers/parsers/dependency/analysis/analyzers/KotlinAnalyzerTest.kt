@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 class KotlinAnalyzerTest {
     @Test
     fun `should extract property types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -23,8 +24,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("Int"))
@@ -33,6 +36,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract function return types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -47,8 +51,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("Int"))
@@ -57,6 +63,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract function parameter types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -69,8 +76,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("Int"))
@@ -79,14 +88,17 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract constructor parameter types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
             class KotlinAnalyzerTest(val name: String, var age: Int)
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("Int"))
@@ -95,6 +107,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract used annotation types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -109,8 +122,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("Deprecated"), Type.simple("Suppress"))
@@ -119,6 +134,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should create node for each class and interface in a given file`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -129,8 +145,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
         assertEquals("KotlinAnalyzerTest", nodes[0].pathWithName.parts.last())
@@ -139,6 +157,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should create node for object declaration`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -147,8 +166,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals("MySingleton", nodes[0].pathWithName.parts.last())
@@ -157,6 +178,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract types of generics correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -166,8 +188,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -179,6 +203,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should parse imports and add them to the node's dependencies`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -191,8 +216,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(3, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -204,6 +231,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should add implicit dependency on the class's package`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -211,8 +239,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(1, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -222,6 +252,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract the superclass of a class correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -229,8 +260,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SuperClass")
@@ -239,6 +272,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract the interfaces of a class correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -246,8 +280,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("Interface1"), Type.simple("Interface2"))
@@ -256,6 +292,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract superclass and interfaces together`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -263,8 +300,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("SuperClass"), Type.simple("Interface1"), Type.simple("Interface2"))
@@ -273,6 +312,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract constructor calls to usedTypes correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -283,8 +323,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SomeClass")
@@ -293,6 +335,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract static method calls to usedTypes correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -303,8 +346,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SomeClass")
@@ -313,6 +358,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract companion object access to usedTypes correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -323,8 +369,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SomeClass")
@@ -333,6 +381,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle nullable types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -342,8 +391,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("Int"))
@@ -352,14 +403,17 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle data class correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
             data class Person(val name: String, val age: Int)
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals("Person", nodes[0].pathWithName.parts.last())
@@ -373,6 +427,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle wildcard imports correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -382,8 +437,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(
             Dependency(Path.fromStringWithDots("kotlin.collections"), true)
@@ -392,6 +449,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should detect interface node type correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -400,8 +458,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals(NodeType.INTERFACE, nodes[0].nodeType)
@@ -409,6 +469,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle generic inheritance correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -416,8 +477,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.generic("BaseClass", listOf(Type.simple("String")))
@@ -426,6 +489,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle multiple classes in one file`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -438,8 +502,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         assertEquals(2, report.nodes.size)
 
         val classA = report.nodes[0]
@@ -453,6 +519,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should set correct language for nodes`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -460,13 +527,16 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         assertEquals(SupportedLanguage.KOTLIN, report.nodes.first().language)
     }
 
     @Test
     fun `should set correct physical path for nodes`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -474,24 +544,30 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./my/path/File.kt", kotlinCode)).analyze()
 
+        // Assert
         assertEquals("./my/path/File.kt", report.nodes.first().physicalPath)
     }
 
     @Test
     fun `should handle empty file without declarations`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         assertEquals(0, report.nodes.size)
     }
 
     @Test
     fun `should extract nested generic types correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -500,8 +576,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.generic(
@@ -516,6 +594,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle enum class correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -524,8 +603,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(
@@ -539,6 +620,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle enum class implementing interface`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -547,8 +629,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.generic("Comparable", listOf(Type.simple("Status")))
@@ -557,6 +641,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle sealed class correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -566,8 +651,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(3, nodes.size)
         assertThat(nodes.map { it.pathWithName.parts.last() })
@@ -575,7 +662,8 @@ class KotlinAnalyzerTest {
     }
 
     @Test
-    fun `sealed class nested types should include parent class in path`() {
+    fun `should include parent class in path for sealed class nested types`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.excavation.extraction
 
@@ -585,8 +673,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(3, nodes.size)
 
@@ -601,6 +691,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle nested class correctly`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -611,8 +702,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
         assertThat(nodes.map { it.pathWithName.parts.last() })
@@ -621,6 +714,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle inner class with dependency on outer`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -631,8 +725,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
 
@@ -643,6 +739,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle function type properties`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -652,8 +749,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals("FunctionHolder", nodes[0].pathWithName.parts.last())
@@ -661,14 +760,17 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle file without package declaration`() {
+        // Arrange
         val kotlinCode = """
             class NoPackageClass {
                 val name: String = ""
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals("NoPackageClass", nodes[0].pathWithName.parts.last())
@@ -678,6 +780,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle class with companion object`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -689,8 +792,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals("WithCompanion", nodes[0].pathWithName.parts.last())
@@ -698,6 +803,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle function without return type`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -712,8 +818,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -721,6 +829,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle property without explicit type`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -731,14 +840,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle suspend functions`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -749,8 +861,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -758,6 +872,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle extension functions`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -766,14 +881,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle class annotation without parameters`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -782,8 +900,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("Deprecated"))
@@ -791,6 +911,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle class with init block`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -803,8 +924,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -812,6 +935,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle lateinit property`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -820,8 +944,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -829,6 +955,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle by lazy property`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -837,8 +964,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -846,6 +975,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle vararg parameter`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -854,8 +984,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -863,6 +995,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle star projection in generics`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -871,14 +1004,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle type alias usage`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -887,8 +1023,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(
@@ -898,6 +1036,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle abstract class`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -907,8 +1046,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals(NodeType.CLASS, nodes[0].nodeType)
@@ -916,6 +1057,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle interface with default implementation`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -925,8 +1067,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals(NodeType.INTERFACE, nodes[0].nodeType)
@@ -934,6 +1078,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle class with secondary constructor`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -946,8 +1091,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).containsAll(
@@ -957,6 +1104,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle value class`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -964,8 +1112,10 @@ class KotlinAnalyzerTest {
             value class Password(val value: String)
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -973,6 +1123,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle operator overloading`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -981,8 +1132,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).containsAll(
@@ -992,6 +1145,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle infix function`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1000,8 +1154,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).containsAll(
@@ -1011,6 +1167,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle reified type parameter`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1019,14 +1176,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle expression body function`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1036,8 +1196,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).containsAll(
@@ -1047,6 +1209,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle generic class with constraints`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1055,14 +1218,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle delegation pattern`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1075,14 +1241,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
     }
 
     @Test
     fun `should handle multiple annotations on same element`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1094,8 +1263,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).containsAll(
@@ -1105,6 +1276,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle class delegation with by keyword`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1119,8 +1291,10 @@ class KotlinAnalyzerTest {
             class DelegatingClass(delegate: Printable) : Printable by delegate
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(3, nodes.size)
         assertThat(nodes.map { it.pathWithName.parts.last() })
@@ -1129,6 +1303,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle functional interface`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1137,8 +1312,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals(NodeType.INTERFACE, nodes[0].nodeType)
@@ -1146,14 +1323,17 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle annotation class`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
             annotation class MyAnnotation(val message: String)
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertEquals(NodeType.ANNOTATION, nodes[0].nodeType)
@@ -1161,6 +1341,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle open class`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1173,8 +1354,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
         assertThat(nodes[1].usedTypes).contains(Type.simple("OpenClass"))
@@ -1182,6 +1365,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle property with getter and setter`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1194,8 +1378,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).contains(Type.simple("String"))
@@ -1203,6 +1389,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should handle class with type parameters`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1211,14 +1398,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle crossinline and noinline lambdas`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1230,14 +1420,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle expect and actual declarations stub`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1246,14 +1439,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle out and in variance`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1266,14 +1462,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
     }
 
     @Test
     fun `should handle where clause constraints`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1282,14 +1481,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle destructuring declarations`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1302,14 +1504,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
     }
 
     @Test
     fun `should handle context receivers`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1318,14 +1523,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle typealias`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1334,14 +1542,17 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
     }
 
     @Test
     fun `should handle backing property pattern`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1352,8 +1563,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val nodes = report.nodes
         assertEquals(1, nodes.size)
         assertThat(nodes[0].usedTypes).containsAll(
@@ -1366,6 +1579,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract qualified nested type constructor call`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1376,8 +1590,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         val typeNames = usedTypes.map { it.name }
         assertThat(typeNames).contains("ExtractionStrategy.AllChildrenByType")
@@ -1386,6 +1602,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract qualified nested type in map value - real world case`() {
+        // Arrange
         // This reproduces the exact pattern from JavaExtractionDictionary.kt:
         // INFERRED_PARAMETERS to ExtractionStrategy.AllChildrenByType(IDENTIFIER)
         val kotlinCode = """
@@ -1403,8 +1620,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         val typeNames = usedTypes.map { it.name }
         // Must extract the qualified nested type
@@ -1413,6 +1632,7 @@ class KotlinAnalyzerTest {
 
     @Test
     fun `should extract qualified nested type property access`() {
+        // Arrange
         val kotlinCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers
 
@@ -1423,8 +1643,10 @@ class KotlinAnalyzerTest {
             }
         """.trimIndent()
 
+        // Act
         val report = KotlinAnalyzer(FileInfo(SupportedLanguage.KOTLIN, "./path", kotlinCode)).analyze()
 
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         val typeNames = usedTypes.map { it.name }
         // MyEnum.Entry.CONSTANT should extract MyEnum.Entry as the type

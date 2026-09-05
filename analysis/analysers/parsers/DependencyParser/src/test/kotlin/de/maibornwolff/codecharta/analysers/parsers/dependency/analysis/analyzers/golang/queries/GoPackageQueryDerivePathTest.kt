@@ -54,15 +54,13 @@ class GoPackageQueryDerivePathTest {
 
     @Test
     fun `should handle edge cases`() {
-        // Act/Then - empty package name uses directory
+        // Act & Assert
         assertThat(goPackageQuery.derivePackagePathFromFilePath("some/path/file.go", emptyList()))
             .isEqualTo(listOf("some", "path"))
 
-        // Act/Then - root file with package uses package name
         assertThat(goPackageQuery.derivePackagePathFromFilePath("file.go", listOf("mypackage")))
             .isEqualTo(listOf("mypackage"))
 
-        // Act/Then - directory without extension
         assertThat(goPackageQuery.derivePackagePathFromFilePath("some/path", listOf("mypackage")))
             .isEqualTo(listOf("some", "path"))
     }

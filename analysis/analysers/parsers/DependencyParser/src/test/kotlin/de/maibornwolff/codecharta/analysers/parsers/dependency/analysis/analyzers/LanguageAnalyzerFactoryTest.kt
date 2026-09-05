@@ -103,8 +103,8 @@ class LanguageAnalyzerFactoryTest {
 
     @ParameterizedTest
     @MethodSource("getFileInfoToAnalyzer")
-    fun `returns the language of the analyzer`(fileInfo: FileInfo, expected: LanguageAnalyzer) {
-        // Arrange & when
+    fun `should create the analyzer for the language of the file`(fileInfo: FileInfo, expected: LanguageAnalyzer) {
+        // Act
         val analyzer = LanguageAnalyzerFactory.createAnalyzer(fileInfo)
 
         // Assert
