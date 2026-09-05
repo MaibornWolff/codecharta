@@ -31,6 +31,7 @@ import {
     migrateCcStateRecordToV17,
     migrateCcStateRecordToV18,
     migrateCcStateRecordToV19,
+    migrateCcStateRecordToV20,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -789,6 +790,49 @@ describe("migrateCcStateRecordToV19 (domain words backfill on persisted files)",
     it("should pass a nullish blob through unchanged", () => {
         // Arrange & Act & Assert
         expect(migrateCcStateRecordToV19(null)).toBeNull()
+    })
+})
+
+describe("migrateCcStateRecordToV20 (dependency levels backfill on persisted files)", () => {
+    it("should seed empty dependency levels on a file state persisted before the dependency lens grew levels", () => {
+        // Arrange
+        const fileSettings = { attributeTypes: {}, attributeDescriptors: {}, blacklist: [], markedPackages: [], domainWords: {} }
+        const oldShapeState = { files: [{ selectedAs: "Partial", file: { settings: { fileSettings } } }] }
+
+        // Act
+        const migrated = migrateCcStateRecordToV20(oldShapeState) as unknown as {
+            files: Array<{ selectedAs: string; file: { settings: { fileSettings: { dependencyLevels: unknown; domainWords: unknown } } } }>
+        }
+
+        // Assert
+        expect(migrated.files[0].file.settings.fileSettings.dependencyLevels).toEqual({})
+        expect(migrated.files[0].file.settings.fileSettings.domainWords).toEqual({})
+        expect(migrated.files[0].selectedAs).toBe("Partial")
+    })
+
+    it("should leave existing dependency levels untouched", () => {
+        // Arrange
+        const dependencyLevels = { "node-id": { level: 2 } }
+        const alreadyMigrated = { files: [{ file: { settings: { fileSettings: { dependencyLevels } } } }] }
+
+        // Act
+        const migrated = migrateCcStateRecordToV20(alreadyMigrated) as unknown as {
+            files: Array<{ file: { settings: { fileSettings: { dependencyLevels: unknown } } } }>
+        }
+
+        // Assert
+        expect(migrated.files[0].file.settings.fileSettings.dependencyLevels).toBe(dependencyLevels)
+    })
+
+    it("should pass a blob without files through unchanged", () => {
+        // Arrange
+        const withoutFiles = { domainState: { topN: 25 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV20(withoutFiles)
+
+        // Assert
+        expect(migrated).toBe(withoutFiles)
     })
 })
 

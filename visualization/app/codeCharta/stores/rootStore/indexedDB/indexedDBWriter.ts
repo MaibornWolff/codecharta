@@ -9,7 +9,7 @@ import { defaultPreferences, defaultSorting } from "../../preferences/preference
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 19
+export const DB_VERSION = 20
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -415,6 +415,15 @@ export function migrateCcStateRecordToV18<T>(state: T): T {
 
 // v19: file states persisted before the domain lens carry no fileSettings.domainWords
 export function migrateCcStateRecordToV19<T>(state: T): T {
+    return seedFileSettingIfAbsent(state, "domainWords")
+}
+
+// v20: file states persisted before the dependency lens grew levels carry no fileSettings.dependencyLevels
+export function migrateCcStateRecordToV20<T>(state: T): T {
+    return seedFileSettingIfAbsent(state, "dependencyLevels")
+}
+
+function seedFileSettingIfAbsent<T>(state: T, key: string): T {
     if (!state || typeof state !== "object") {
         return state
     }
@@ -423,14 +432,14 @@ export function migrateCcStateRecordToV19<T>(state: T): T {
     if (!Array.isArray(files)) {
         return state
     }
-    return { ...record, files: files.map(withSeededDomainWords) } as T
+    return { ...record, files: files.map(fileState => withSeededFileSetting(fileState, key)) } as T
 }
 
 type PersistedFileState = { file?: { settings?: { fileSettings?: Record<string, unknown> } } }
 
-function withSeededDomainWords(fileState: unknown): unknown {
+function withSeededFileSetting(fileState: unknown, key: string): unknown {
     const fileSettings = (fileState as PersistedFileState)?.file?.settings?.fileSettings
-    if (!fileSettings || typeof fileSettings !== "object" || fileSettings["domainWords"]) {
+    if (!fileSettings || typeof fileSettings !== "object" || fileSettings[key]) {
         return fileState
     }
     const state = fileState as Record<string, unknown>
@@ -438,7 +447,7 @@ function withSeededDomainWords(fileState: unknown): unknown {
     const settings = file["settings"] as Record<string, unknown>
     return {
         ...state,
-        file: { ...file, settings: { ...settings, fileSettings: { ...fileSettings, domainWords: {} } } }
+        file: { ...file, settings: { ...settings, fileSettings: { ...fileSettings, [key]: {} } } }
     }
 }
 
@@ -486,7 +495,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 16, migrate: migrateCcStateRecordToV16 },
     { version: 17, migrate: migrateCcStateRecordToV17 },
     { version: 18, migrate: migrateCcStateRecordToV18 },
-    { version: 19, migrate: migrateCcStateRecordToV19 }
+    { version: 19, migrate: migrateCcStateRecordToV19 },
+    { version: 20, migrate: migrateCcStateRecordToV20 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

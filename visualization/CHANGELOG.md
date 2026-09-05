@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **The cc.json 2.0 reader understands the grown `dependency` lens.** An edge now carries the optional `isCyclic` and
   `isPointingUpwards` flags through to the viz model, and a file's `dependencyLevels` hold the level each node sits
   on. Nothing renders them yet — this lands the data layer so a visualization can be built on it, and so the vendored
-  schema accepts files from `ccsh dependencyparser`.
+  schema accepts files from `ccsh dependencyparser`. A session persisted before this change is migrated to carry the
+  new slot.
 
 - **The vendored cc.json 2.0 schema accepts the logical package/declaration layer.** `ccsh dependencyparser` now also
   writes the graph as the code declares it: `leaves` (declarations), `namespaces` (packages) and `leafEdges`
