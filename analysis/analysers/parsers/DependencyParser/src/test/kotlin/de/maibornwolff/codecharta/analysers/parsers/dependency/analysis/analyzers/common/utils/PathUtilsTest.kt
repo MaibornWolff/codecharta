@@ -88,4 +88,13 @@ class PathUtilsTest {
         // Then
         assertThat(result.parts).containsExactly("views", "Home")
     }
+
+    @Test
+    fun `should strip every source file extension regardless of case`() {
+        // Act
+        val stripped = listOf("a.ts", "b.MTS", "c.cts", "d.mjs", "e.cjs", "f.jsx", "g.vue", "h.css").map { it.stripSourceFileExtension() }
+
+        // Assert
+        assertThat(stripped).containsExactly("a", "b", "c", "d", "e", "f", "g", "h.css")
+    }
 }

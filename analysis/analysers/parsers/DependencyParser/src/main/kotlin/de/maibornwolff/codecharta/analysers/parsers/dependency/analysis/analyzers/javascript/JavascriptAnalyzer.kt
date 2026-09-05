@@ -21,7 +21,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.JAVASCRIPT
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
-        val extension = if (fileInfo.physicalPath.endsWith(".jsx")) "jsx" else "js"
+        val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
         return fileInfo.physicalPathAsPath().withoutFileSuffix(extension) + localExportName(declaration.name)
     }
 

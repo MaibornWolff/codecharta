@@ -640,4 +640,22 @@ class JavascriptAnalyzerTest {
                 tuple(NodeType.VARIABLE, Path(listOf("config", "data", "settingsObject")))
             )
     }
+
+    @Test
+    fun `should strip the module extensions mjs and cjs from node and dependency paths`() {
+        // given
+        val javascriptCode = """
+            import { helper } from './helper.cjs'
+
+            export class App {}
+        """.trimIndent()
+
+        // when
+        val report = JavascriptAnalyzer(FileInfo(SupportedLanguage.JAVASCRIPT, "src/app.mjs", javascriptCode)).analyze()
+
+        // then
+        val node = report.nodes.single()
+        assertThat(node.pathWithName).isEqualTo(Path(listOf("src", "app", "App")))
+        assertThat(node.dependencies).contains(Dependency(path = Path(listOf("src", "helper", "helper"))))
+    }
 }
