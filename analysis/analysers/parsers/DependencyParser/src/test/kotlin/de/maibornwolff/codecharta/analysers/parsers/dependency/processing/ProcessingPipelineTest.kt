@@ -269,6 +269,38 @@ class ProcessingPipelineTest {
         assertThat(graph.edges).isEmpty()
     }
 
+    @Test
+    fun `should weigh a declaration that uses one target in several ways once, as DependaCharta does`() {
+        // Arrange: PHP is the one language that tells usage kinds apart, so it is where the weights could drift.
+        File(sampleDirectory, "Base.php").writeText(
+            """
+            <?php
+            namespace App;
+            class Base {}
+            """.trimIndent()
+        )
+        File(sampleDirectory, "Child.php").writeText(
+            """
+            <?php
+            namespace App;
+            class Child extends Base {
+                public function make(): Base { return new Base(); }
+            }
+            """.trimIndent()
+        )
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.PHP), omitGraphAnalysis = false)
+
+        // Assert: one dependency of weight one in both projections. A used type is identified by name alone,
+        // so the pair keeps the first usage kind the extractor found rather than all three.
+        assertThat(graph.declarationEdges).hasSize(1)
+        assertThat(graph.declarationEdges.single().weight).isEqualTo(1)
+        assertThat(graph.declarationEdges.single().usage).hasSize(1)
+        assertThat(graph.edges).hasSize(1)
+        assertThat(graph.edges.single().weight).isEqualTo(1)
+    }
+
     private fun cppNode(
         pathWithName: String,
         physicalPath: String,
