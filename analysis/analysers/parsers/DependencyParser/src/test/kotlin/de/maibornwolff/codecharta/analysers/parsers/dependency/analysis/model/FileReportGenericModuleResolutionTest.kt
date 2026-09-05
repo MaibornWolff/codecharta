@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test
 
 class FileReportGenericModuleResolutionTest {
     @Test
-    fun `generic module resolution works for all languages with complex import patterns`() {
+    fun `should resolve modules generically for all languages with complex import patterns`() {
+        // Arrange
         val testCases = listOf(
             Triple(
                 SupportedLanguage.GO,
@@ -77,7 +78,7 @@ class FileReportGenericModuleResolutionTest {
     }
 
     @Test
-    fun `module resolution patterns work correctly`() {
+    fun `should resolve modules by exact and by suffix match`() {
         // Arrange - Test the two valid resolution patterns: exact and suffix match
         val exactMatchTest = mapOf(
             "User" to listOf(Path(listOf("exact", "match", "User")))
@@ -120,7 +121,7 @@ class FileReportGenericModuleResolutionTest {
     }
 
     @Test
-    fun `suffix matching should not match when class package has different prefix`() {
+    fun `should not suffix match when the class package has a different prefix`() {
         // This test verifies that a class with package "A.B.Problem"
         // does NOT match a dependency import "Foo.Problem"
         // The suffix matching logic should require the import path to end with the type package
@@ -162,9 +163,8 @@ class FileReportGenericModuleResolutionTest {
     }
 
     @Test
-    fun `realistic Go import scenarios - comprehensive test`() {
-        // Test realistic Go import scenarios that should and shouldn't match
-
+    fun `should resolve realistic Go import scenarios only when the import path ends with the type package`() {
+        // Arrange
         val projectDictionary = mapOf(
             // Scenario 1: Valid suffix match - fully qualified import
             "User" to listOf(Path(listOf("internal", "domain", "models", "User"))),
@@ -219,9 +219,11 @@ class FileReportGenericModuleResolutionTest {
                 usedTypes = setOf(Type.simple(testCase.typeName))
             )
 
+            // Act
             val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
             val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
 
+            // Assert
             assertThat(resolvedPath?.withDots())
                 .withFailMessage("${testCase.description}: Expected '${testCase.expectedPath}' but got '${resolvedPath?.withDots()}'")
                 .isEqualTo(testCase.expectedPath)

@@ -109,7 +109,7 @@ class DependencyResolverServiceTest {
     }
 
     @Test
-    fun `Transforms lists of nodes to correct dictionary`() {
+    fun `should transform a list of nodes into the correct dictionary`() {
         // Arrange
         val node1 = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
@@ -130,7 +130,7 @@ class DependencyResolverServiceTest {
     }
 
     @Test
-    fun `Transforms lists of nodes to correct known paths`() {
+    fun `should transform a list of nodes into the correct known paths`() {
         // Arrange
         val node1 = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
@@ -151,7 +151,7 @@ class DependencyResolverServiceTest {
     }
 
     @Test
-    fun `Correctly resolves nodes with dictionary and known paths`() {
+    fun `should resolve nodes with the dictionary and known paths`() {
         // Arrange
         val node1 = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
@@ -304,7 +304,7 @@ class DependencyResolverServiceTest {
     }
 
     @Test
-    fun `Maps Node to NodeInformation`() {
+    fun `should map a node to its node information`() {
         // Arrange
         val node = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),

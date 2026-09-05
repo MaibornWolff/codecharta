@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class FileReportTest {
     @Test
-    fun `resolveTypes should find project and filter out language dependencies`() {
+    fun `should find project dependencies and filter out language dependencies`() {
         // Arrange
         val projectDictionary = mapOf(
             "TypeA" to listOf(Path(listOf("com", "example", "TypeA"))),
@@ -39,7 +39,7 @@ class FileReportTest {
     }
 
     @Test
-    fun `resolveTypes should differentiate between internal and external dependencies`() {
+    fun `should differentiate between internal and external dependencies`() {
         // Arrange
         val internalPathTypeA = Path(listOf("com", "example", "TypeA"))
         val internalPathTypeB = Path(listOf("com", "example", "TypeB"))
@@ -80,7 +80,7 @@ class FileReportTest {
     }
 
     @Test
-    fun `resolveTypes with unknown type should create only unknown type dependency`() {
+    fun `should create only an unknown type dependency for an unknown type`() {
         // Arrange
         val unknownType = "UnknownType"
         val projectDictionary = emptyMap<String, List<Path>>()

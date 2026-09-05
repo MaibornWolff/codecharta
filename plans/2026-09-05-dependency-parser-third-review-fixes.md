@@ -44,7 +44,7 @@ the README's parity section must say.
 
 ### 7. Quality
 - Stale weight comments in `ProcessingPipeline` and `DependencyProjectGenerator`
-- Dead code: `PythonUtils`, `TSNode.getChildren`, `Path.plus(List)`, the Go transitive resolution
+- Dead code: `PythonUtils`, `Path.plus(List)`, the Go transitive resolution (`TSNode.getChildren` gained a caller in the Vue query)
 - Changelog notes for `.kts`/`.cts` in `unifiedparser` and the `domainlanguageparser` scanner change
 
 ### 8. Test conventions
@@ -52,13 +52,13 @@ the README's parity section must say.
 
 ## Steps
 
-- [ ] Complete Task 1: tsconfig resolution
-- [ ] Complete Task 2: alias targets and wildcard re-exports
-- [ ] Complete Task 3: Vue
-- [ ] Complete Task 4: resolution details
-- [ ] Complete Task 5: visible failures
-- [ ] Complete Task 6: merge --large
-- [ ] Complete Task 7: quality
+- [x] Complete Task 1: tsconfig resolution
+- [x] Complete Task 2: alias targets and wildcard re-exports
+- [x] Complete Task 3: Vue
+- [x] Complete Task 4: resolution details
+- [x] Complete Task 5: visible failures
+- [x] Complete Task 6: merge --large
+- [x] Complete Task 7: quality
 - [ ] Complete Task 8: test conventions
 
 ## Notes

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 class VueAnalyzerTest {
     @Test
-    fun `analyzes Vue SFC with TypeScript script`() {
+    fun `should analyze a Vue SFC with a TypeScript script`() {
         // Arrange
         val vueCode = """
             <template>
@@ -47,7 +47,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `analyzes Vue SFC with JavaScript script`() {
+    fun `should analyze a Vue SFC with a JavaScript script`() {
         // Arrange
         val vueCode = """
             <template>
@@ -85,7 +85,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `analyzes Vue SFC with script setup syntax`() {
+    fun `should analyze a Vue SFC with script setup syntax`() {
         // Arrange
         val vueCode = """
             <template>
@@ -119,7 +119,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `analyzes template-only Vue component`() {
+    fun `should analyze a template-only Vue component`() {
         // Arrange
         val vueCode = """
             <template>
@@ -149,7 +149,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `tracks imports from script section`() {
+    fun `should track imports from the script section`() {
         // Arrange
         val vueCode = """
             <template>
@@ -183,7 +183,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `tracks component usage from template section`() {
+    fun `should track component usage from the template section`() {
         // Arrange
         val vueCode = """
             <template>
@@ -218,7 +218,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `handles Vue SFC with TSX script`() {
+    fun `should handle a Vue SFC with a TSX script`() {
         // Arrange
         val vueCode = """
             <script lang="tsx">
@@ -253,7 +253,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `handles Vue SFC with JSX script`() {
+    fun `should handle a Vue SFC with a JSX script`() {
         // Arrange
         val vueCode = """
             <script lang="jsx">
@@ -287,7 +287,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `tracks named imports from both module alias and relative paths`() {
+    fun `should track named imports from both module alias and relative paths`() {
         // Arrange
         val vueCode = """
             <template>
@@ -333,7 +333,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `strips vue extension from dependency paths to match node paths`() {
+    fun `should strip the vue extension from dependency paths to match node paths`() {
         // Arrange
         val vueCode = """
             <template>
@@ -378,7 +378,7 @@ class VueAnalyzerTest {
     }
 
     @Test
-    fun `resolves a script default import to its binding name instead of the DEFAULT_EXPORT marker`() {
+    fun `should resolve a script default import to its binding name instead of the DEFAULT_EXPORT marker`() {
         // Arrange
         val vueCode = """
             <template>

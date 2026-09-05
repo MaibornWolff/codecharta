@@ -273,7 +273,7 @@ class IsPointingUpwardsTest {
         val sourceNode = findNodeById(tree1, "tree1.nodeA")!!
         val targetNode = findNodeById(tree2, "tree2.nodeB")!!
 
-        // Act/Then: Should throw exception (matching TypeScript behavior)
+        // Act & Assert: Should throw exception (matching TypeScript behavior)
         assertThrows<IllegalStateException> {
             checkIsPointingUpwards(sourceNode, targetNode, tree1)
         }

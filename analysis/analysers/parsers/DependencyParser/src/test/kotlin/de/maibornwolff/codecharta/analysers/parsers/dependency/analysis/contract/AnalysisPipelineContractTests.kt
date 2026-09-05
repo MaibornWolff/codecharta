@@ -16,7 +16,7 @@ abstract class AnalysisPipelineContractTests {
     abstract val language: SupportedLanguage
 
     @Test
-    fun `result of analyzed files should match expected`() {
+    fun `should match the expected result for every analyzed file`() {
         // given
         val expectedNodesFromAllFiles = nodesBuilder.build()
 

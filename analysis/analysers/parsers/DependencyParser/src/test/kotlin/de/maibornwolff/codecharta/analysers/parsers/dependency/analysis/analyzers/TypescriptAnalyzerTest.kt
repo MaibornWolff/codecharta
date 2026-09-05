@@ -529,7 +529,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `resulting node should be named after alias`() {
+    fun `should name the resulting node after the alias`() {
         val typescriptCode = """
              export { MyReexportedClass as MRC } from './MyInternalClass'
         """.trimIndent()
@@ -1383,7 +1383,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `wildcard re-export REEXPORT nodes should depend on source nodes not themselves`() {
+    fun `should make wildcard re-export REEXPORT nodes depend on the source nodes instead of themselves`() {
         // Arrange - Test resources with real file structure
         val testRoot = File("src/test/resources/typescript-wildcard")
         assumeTrue(testRoot.exists())
@@ -1436,7 +1436,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `wildcard re-export should not create duplicate REEXPORT node for name already declared in own file`() {
+    fun `should not create a duplicate REEXPORT node for a wildcard re-export of a name already declared in the own file`() {
         // Arrange - a file that exports its own FOO and also re-exports * from constants (which also exports FOO)
         val testRoot = File("src/test/resources/typescript-wildcard")
         assumeTrue(testRoot.exists())

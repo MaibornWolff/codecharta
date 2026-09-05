@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 class DepthFirstSearchCycleDetectionTest {
     @Test
-    fun `detects cycle`() {
+    fun `should detect a cycle`() {
         // Arrange
         val edges = listOf(NumberEdge(1, 2), NumberEdge(2, 3), NumberEdge(3, 1))
         val testee = DepthFirstSearchCycleDetection(edges, limitCycleLength = false)
@@ -19,7 +19,7 @@ class DepthFirstSearchCycleDetectionTest {
     }
 
     @Test
-    fun `returns empty set if there is no cycle`() {
+    fun `should return an empty set when there is no cycle`() {
         // Arrange
         val edges = listOf(NumberEdge(1, 2))
         val testee = DepthFirstSearchCycleDetection(edges, limitCycleLength = false)
@@ -32,7 +32,7 @@ class DepthFirstSearchCycleDetectionTest {
     }
 
     @Test
-    fun `only returns edges which are part of the cycle`() {
+    fun `should return only the edges that are part of the cycle`() {
         // Arrange
         val cyclicEdges = listOf(NumberEdge(1, 2), NumberEdge(2, 1))
         val nonCyclicEdges = listOf(NumberEdge(3, 2))
@@ -46,7 +46,7 @@ class DepthFirstSearchCycleDetectionTest {
     }
 
     @Test
-    fun `detects multiple cycles`() {
+    fun `should detect multiple cycles`() {
         // Arrange
         val cycle1 = listOf(NumberEdge(1, 2), NumberEdge(2, 1))
         val cycle2 = listOf(NumberEdge(3, 4), NumberEdge(4, 3))
@@ -62,7 +62,7 @@ class DepthFirstSearchCycleDetectionTest {
     }
 
     @Test
-    fun `detects only cycles up to a maximum length`() {
+    fun `should detect only cycles up to a maximum length`() {
         // Arrange
         val cycleLongerThanMaximumLength = listOf(
             NumberEdge(1, 2),
@@ -88,7 +88,7 @@ class DepthFirstSearchCycleDetectionTest {
     }
 
     @Test
-    fun `only detects one cycle`() {
+    fun `should detect only one cycle`() {
         // Arrange
         val cyclicEdges = listOf(NumberEdge(1, 2), NumberEdge(2, 1), NumberEdge(1, 3), NumberEdge(3, 2))
         val testee = DepthFirstSearchCycleDetection(cyclicEdges, limitCycleLength = false)

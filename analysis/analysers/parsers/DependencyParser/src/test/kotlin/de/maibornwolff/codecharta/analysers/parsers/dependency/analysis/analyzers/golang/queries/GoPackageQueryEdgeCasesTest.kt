@@ -9,22 +9,20 @@ class GoPackageQueryEdgeCasesTest {
 
     @Test
     fun `should handle package name different from directory name`() {
-        // Act/Then
+        // Act & Assert
         val result = goPackageQuery.derivePackagePathFromFilePath("api/v2/handler.go", listOf("v2"))
         assertThat(result).isEqualTo(listOf("api", "v2"))
 
-        // Act/Then - package name doesn't match directory
         val result2 = goPackageQuery.derivePackagePathFromFilePath("utils/strings/helper.go", listOf("stringutil"))
         assertThat(result2).isEqualTo(listOf("utils", "strings"))
     }
 
     @Test
     fun `should handle test files`() {
-        // Act/Then - test files with _test suffix
+        // Act & Assert
         val result = goPackageQuery.derivePackagePathFromFilePath("pkg/utils/helper_test.go", listOf("utils_test"))
         assertThat(result).isEqualTo(listOf("pkg", "utils"))
 
-        // Act/Then - regular test files
         val result2 = goPackageQuery.derivePackagePathFromFilePath("pkg/utils/helper_test.go", listOf("utils"))
         assertThat(result2).isEqualTo(listOf("pkg", "utils"))
     }
@@ -91,33 +89,30 @@ class GoPackageQueryEdgeCasesTest {
 
     @Test
     fun `should handle example and testdata directories`() {
-        // Act/Then - examples
+        // Act & Assert
         val result1 = goPackageQuery.derivePackagePathFromFilePath("examples/basic/main.go", listOf("main"))
         assertThat(result1).isEqualTo(listOf("examples", "basic"))
 
-        // Act/Then - testdata
         val result2 = goPackageQuery.derivePackagePathFromFilePath("testdata/golden/expected.go", listOf("golden"))
         assertThat(result2).isEqualTo(listOf("testdata", "golden"))
     }
 
     @Test
     fun `should handle build-tagged files`() {
-        // Act/Then - Linux build tag
+        // Act & Assert
         val result1 = goPackageQuery.derivePackagePathFromFilePath("pkg/os/file_linux.go", listOf("os"))
         assertThat(result1).isEqualTo(listOf("pkg", "os"))
 
-        // Act/Then - Windows build tag
         val result2 = goPackageQuery.derivePackagePathFromFilePath("pkg/os/file_windows.go", listOf("os"))
         assertThat(result2).isEqualTo(listOf("pkg", "os"))
     }
 
     @Test
     fun `should handle case sensitivity consistently`() {
-        // Act/Then - uppercase path
+        // Act & Assert
         val result1 = goPackageQuery.derivePackagePathFromFilePath("API/v1/Handler.go", listOf("v1"))
         assertThat(result1).isEqualTo(listOf("API", "v1"))
 
-        // Act/Then - mixed case
         val result2 = goPackageQuery.derivePackagePathFromFilePath("api/V1/handler.go", listOf("V1"))
         assertThat(result2).isEqualTo(listOf("api", "V1"))
     }

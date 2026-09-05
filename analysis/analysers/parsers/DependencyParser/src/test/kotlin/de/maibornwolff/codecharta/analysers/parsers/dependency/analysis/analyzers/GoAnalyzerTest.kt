@@ -585,7 +585,7 @@ class GoAnalyzerTest {
             resolvedNode
         }
 
-        // Check results
+        // Assert
         val mainNode = resolvedNodes.find { it.pathWithName.parts.last() == "main" }
         assertThat(mainNode).isNotNull()
 
@@ -715,7 +715,7 @@ class GoAnalyzerTest {
             resolvedNode
         }
 
-        // Check results
+        // Assert
         val mainNode = resolvedNodes.find { it.pathWithName.parts.last() == "main" }
         assertThat(mainNode).isNotNull()
 

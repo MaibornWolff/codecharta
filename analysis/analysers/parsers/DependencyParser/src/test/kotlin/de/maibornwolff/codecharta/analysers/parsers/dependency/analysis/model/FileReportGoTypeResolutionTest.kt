@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class FileReportGoTypeResolutionTest {
     @Test
-    fun `resolveTypes should handle Go qualified types with package prefix`() {
+    fun `should resolve Go qualified types with a package prefix`() {
         // Arrange
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
@@ -33,7 +33,7 @@ class FileReportGoTypeResolutionTest {
     }
 
     @Test
-    fun `resolveTypes should handle Go qualified types with complex module imports`() {
+    fun `should resolve Go qualified types with complex module imports`() {
         // Arrange
         val projectDictionary = mapOf(
             "Response" to listOf(Path(listOf("github", "com", "gin-gonic", "gin", "Response")))
@@ -60,7 +60,7 @@ class FileReportGoTypeResolutionTest {
     }
 
     @Test
-    fun `resolveTypes should handle simple Go types with wildcard imports`() {
+    fun `should resolve simple Go types with wildcard imports`() {
         // Arrange
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
@@ -87,7 +87,7 @@ class FileReportGoTypeResolutionTest {
     }
 
     @Test
-    fun `resolveTypes should handle complex Go qualified types with full module paths`() {
+    fun `should resolve complex Go qualified types with full module paths`() {
         // Arrange - This demonstrates the power of the generic approach
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
@@ -114,7 +114,7 @@ class FileReportGoTypeResolutionTest {
     }
 
     @Test
-    fun `resolveTypes should handle Go dot imports with unqualified types`() {
+    fun `should resolve Go dot imports with unqualified types`() {
         // Arrange - Go dot import: import . "github.com/myproject/models"
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
@@ -142,7 +142,7 @@ class FileReportGoTypeResolutionTest {
     }
 
     @Test
-    fun `resolveTypes should handle Go dot imports with multiple packages`() {
+    fun `should resolve Go dot imports with multiple packages`() {
         // Arrange - Multiple dot imports: import . "math"; import . "github.com/myproject/models"
         val projectDictionary = mapOf(
             "Sin" to listOf(Path(listOf("math", "Sin"))), // Built-in math package
@@ -184,7 +184,7 @@ class FileReportGoTypeResolutionTest {
     }
 
     @Test
-    fun `resolveTypes should handle Go unknown qualified types`() {
+    fun `should resolve unknown Go qualified types to the unknown path`() {
         // Arrange
         val projectDictionary = mapOf<String, List<Path>>()
         val languageDictionary = emptyMap<String, Path>()

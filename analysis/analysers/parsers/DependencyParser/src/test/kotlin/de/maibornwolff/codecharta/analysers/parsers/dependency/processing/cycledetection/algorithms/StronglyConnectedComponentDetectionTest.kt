@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 
 class StronglyConnectedComponentDetectionTest {
     @Test
-    fun `returns two strongly connected components for two isolated nodes`() {
+    fun `should return two strongly connected components for two isolated nodes`() {
         // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf())
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf())
@@ -20,7 +20,7 @@ class StronglyConnectedComponentDetectionTest {
     }
 
     @Test
-    fun `returns one strongly connected component for two nodes connected to each other`() {
+    fun `should return one strongly connected component for two nodes connected to each other`() {
         // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf("node1"))
@@ -34,7 +34,7 @@ class StronglyConnectedComponentDetectionTest {
     }
 
     @Test
-    fun `returns two strongly connected component for two nodes connected to each other`() {
+    fun `should return two strongly connected components for two nodes connected to each other`() {
         // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf("node1"))
