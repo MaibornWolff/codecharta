@@ -250,19 +250,20 @@ def report_dropped_self_edges(dependacharta_count, codecharta_count):
         )
 
 
+# Both tools run with the work directory as their cwd, so every path they receive is made absolute first.
 def run_dependacharta(jar, project, work_dir, extra_args):
-    output_dir = work_dir / "dependacharta"
-    command = ["java", "-jar", str(jar), "-d", str(project), "-o", str(output_dir), "-f", "analysis", "-c", *extra_args]
+    output_dir = (work_dir / "dependacharta").resolve()
+    command = ["java", "-jar", str(jar), "-d", str(project.resolve()), "-o", str(output_dir), "-f", "analysis", "-c", *extra_args]
     run_tool(command, cwd=work_dir)
     return output_dir / "analysis.cg.json"
 
 
 def run_codecharta(ccsh, project, work_dir, extra_args):
-    output = work_dir / "codecharta.cc.json"
+    output = (work_dir / "codecharta.cc.json").resolve()
     command = [
         str(ccsh),
         "dependencyparser",
-        str(project),
+        str(project.resolve()),
         "-o",
         str(output),
         "-nc",

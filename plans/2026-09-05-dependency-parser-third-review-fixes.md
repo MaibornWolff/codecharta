@@ -1,7 +1,7 @@
 ---
 name: Fix the findings of the third dependency parser review
 issue: <#issueid>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -59,9 +59,12 @@ the README's parity section must say.
 - [x] Complete Task 5: visible failures
 - [x] Complete Task 6: merge --large
 - [x] Complete Task 7: quality
-- [ ] Complete Task 8: test conventions
+- [x] Complete Task 8: test conventions
 
 ## Notes
 
 - Not done, by decision: splitting the 27 methods over 25 lines.
 - `merge --large` prefixes logical ids rather than refusing the merge or keeping the first leaf.
+- Verified: module tests, ktlint and the golden integration test pass; the DependaCharta comparison
+  script agrees on the `java` and `csharp` samples and differs on `cpp` only in how a merged
+  header/source pair is labelled (fixed the script's relative output path on the way).

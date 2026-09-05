@@ -110,6 +110,10 @@ one **self-edge** (`HitPoints` → `HitPoints`), which DependaCharta keeps and f
 and this parser drops: an edge from a declaration to itself says nothing about the architecture, and the
 file-level projection has never carried one either.
 
+On the `cpp` sample the *file* edges also differ in name only: DependaCharta labels a merged
+header/source pair `Creature.cpp/.h` under the logical package path, while this parser keeps the
+physical path of the first file of the pair, `src/.../Creature.cpp`; the pairs themselves are the same.
+
 Beyond the self-edge, the parser deliberately deviates from DependaCharta where the original loses
 edges on common project layouts; every item below is a bug in DependaCharta that this port fixes:
 
