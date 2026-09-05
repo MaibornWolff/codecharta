@@ -1,7 +1,12 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.extractFrom
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -215,6 +220,71 @@ class ProcessingPipelineTest {
         assertThat(edgesIntoFoo).extracting("toPath").containsExactly(listOf("FooA.cs"))
         assertThat(graph.edges.map { it.fromPath to it.toPath }).contains(listOf("FooA.cs") to listOf("Bar.cs"))
     }
+
+    @Test
+    fun `should fold a C++ type declared in a header and defined in a source file into one declaration`() {
+        // Arrange: MyType arrives twice, once per translation unit; only the source half uses UsedType.
+        val root = cppNode("cpp/example/Root", "cpp/example/Root.cpp", usedTypes = setOf(Type.simple("MyType")))
+        val definition =
+            cppNode(
+                "cpp/example/MyType",
+                "cpp/example/MyType.cpp",
+                dependencies = setOf(Dependency.simple("cpp", "different", "UsedType_h")),
+                usedTypes = setOf(Type.simple("UsedType"))
+            )
+        val declaration = cppNode("cpp/example/MyType", "cpp/example/MyType.h")
+        val usedType = cppNode("cpp/different/UsedType", "cpp/different/UsedType.h")
+        val fileReports = listOf(FileReport(listOf(root, definition)), FileReport(listOf(declaration, usedType)))
+
+        // Act
+        val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
+
+        // Assert: one leaf, joined to the source file (first in path order), keeping the source half's dependency.
+        assertThat(
+            graph.declarations.map { it.id }
+        ).containsExactlyInAnyOrder("cpp.example.Root", "cpp.example.MyType", "cpp.different.UsedType")
+        assertThat(graph.declarations.single { it.id == "cpp.example.MyType" }.filePath).containsExactly("cpp", "example", "MyType.cpp")
+        assertThat(graph.declarationEdges.map { it.fromId to it.toId }).contains("cpp.example.MyType" to "cpp.different.UsedType")
+        assertThat(graph.edges.map { it.fromPath to it.toPath })
+            .doesNotContain(listOf("cpp", "example", "MyType.cpp") to listOf("cpp", "example", "MyType.h"))
+    }
+
+    @Test
+    fun `should drop an edge from a declaration to itself`() {
+        // Arrange: a class that names itself, e.g. a builder returning its own type.
+        val source =
+            """
+            package de.sots;
+
+            public class Builder {
+                public Builder with() { return this; }
+            }
+            """.trimIndent()
+        val sampleDirectory = createTempDirectory("self-edge").toFile()
+        sampleDirectory.deleteOnExit()
+        File(sampleDirectory, "Builder.java").writeText(source)
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.JAVA), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarationEdges).isEmpty()
+        assertThat(graph.edges).isEmpty()
+    }
+
+    private fun cppNode(
+        pathWithName: String,
+        physicalPath: String,
+        dependencies: Set<Dependency> = emptySet(),
+        usedTypes: Set<Type> = emptySet()
+    ) = Node(
+        pathWithName = Path.fromPhysicalPath(pathWithName).withAlias(Path.fromPhysicalPath(physicalPath)),
+        physicalPath = physicalPath,
+        nodeType = NodeType.CLASS,
+        language = SupportedLanguage.CPP,
+        dependencies = dependencies,
+        usedTypes = usedTypes
+    )
 
     @Test
     fun `should keep the dependencies but skip cycles and levels when graph analysis is omitted`() {
