@@ -1,7 +1,7 @@
 ---
 name: Fix the findings of the dependency parser format review
 issue: <#issueid>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -24,18 +24,19 @@ documented as something it is not, and PHP weights deviate from DependaCharta. N
   a leaf-to-leaf weight of 1 and only sums when edges collapse onto a namespace or file
 - Reword the README, the gh-pages page and the three attribute descriptors
 
-### 3. Match DependaCharta's PHP weight
-- PHP records one `Dependency` per usage kind, so a pair with two kinds weighs 2 here and 1 in
-  DependaCharta; fold per target before weighting in both the declaration and the file projection
+### 3. Guard the PHP weight against DependaCharta
+- Suspected deviation: PHP records one `Dependency` per usage kind, so a pair with two kinds would
+  weigh 2. It does not happen: a used type is identified by name alone, in both tools, so a pair keeps
+  the first kind found and weighs 1. A pipeline test over a PHP sample pins that, and the docs say it
 
 ### 4. Mention the logical layer in the command summary
 
 ## Steps
 
 - [x] Complete Task 1: prune-aware rekeying
-- [ ] Complete Task 2: weight wording
-- [ ] Complete Task 3: PHP weight parity
-- [ ] Complete Task 4: command summary
+- [x] Complete Task 2: weight wording
+- [x] Complete Task 3: PHP weight parity
+- [x] Complete Task 4: command summary
 
 ## Notes
 
