@@ -216,4 +216,28 @@ class TsConfigParserTest {
         assertThat(result?.compilerOptions?.paths?.get("@lib/*"))
             .containsExactly("lib/src/*", "lib/dist/*")
     }
+
+    @Test
+    fun `should drop the null a trailing comma in a paths array reads as`() {
+        // given
+        val tsconfig = tempDir.resolve("tsconfig.json")
+        tsconfig.writeText(
+            """
+            {
+              // comments are allowed too
+              "compilerOptions": {
+                "paths": {
+                  "core/*": ["core/*",]
+                }
+              }
+            }
+            """.trimIndent()
+        )
+
+        // when
+        val result = TsConfigParser.parse(tsconfig)
+
+        // then
+        assertThat(result?.compilerOptions?.paths?.get("core/*")).containsExactly("core/*")
+    }
 }

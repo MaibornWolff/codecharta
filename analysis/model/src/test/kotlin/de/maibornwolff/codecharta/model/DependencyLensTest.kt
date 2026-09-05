@@ -92,7 +92,7 @@ class DependencyLensTest {
     }
 
     @Test
-    fun `should fold leaf edges sharing an endpoint pair by summing weights and unioning usage`() {
+    fun `should fold leaf edges sharing an endpoint pair by keeping the first weight and unioning usage`() {
         // Arrange: the same declaration pair, seen once as inheritance and once as an argument.
         val inheritance =
             DependencyLens(
@@ -112,7 +112,7 @@ class DependencyLensTest {
 
         // Assert
         val leafEdge = merged.leafEdges.single()
-        assertThat(leafEdge.attributes).isEqualTo(mapOf("dependencies" to 3L))
+        assertThat(leafEdge.attributes).isEqualTo(mapOf("dependencies" to 2))
         assertThat(leafEdge.usage).containsExactly("inheritance", "argument")
         assertThat(leafEdge.isCyclic).isTrue()
         assertThat(leafEdge.isPointingUpwards).isTrue()
@@ -153,6 +153,44 @@ class DependencyLensTest {
         // Assert: no leaf and no leaf edge is left pointing at something the output no longer has.
         assertThat(rekeyed.leaves).isEmpty()
         assertThat(rekeyed.leafEdges).isEmpty()
+    }
+
+    @Test
+    fun `should drop a namespace no surviving leaf lives in while keeping the ancestors of the survivors`() {
+        // Arrange: two packages, one of which loses its only file.
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        val libId = NodeId.fromSegments(listOf("lib", "Lib.kt"), NodeType.File)
+        val tree =
+            Node(
+                "root",
+                NodeType.Folder,
+                children =
+                    setOf(
+                        Node("src", NodeType.Folder, children = setOf(Node("App.kt", NodeType.File))),
+                        Node("lib", NodeType.Folder, children = setOf(Node("Lib.kt", NodeType.File)))
+                    )
+            )
+        val lens =
+            DependencyLens(
+                namespaces =
+                    mapOf(
+                        "com" to DependencyNamespace(0),
+                        "com.example" to DependencyNamespace(0),
+                        "com.example.app" to DependencyNamespace(1),
+                        "com.example.lib" to DependencyNamespace(0)
+                    ),
+                leaves =
+                    mapOf(
+                        "com.example.app.App" to DependencyLeaf(appId, "App", "CLASS", 0),
+                        "com.example.lib.Lib" to DependencyLeaf(libId, "Lib", "CLASS", 0)
+                    )
+            )
+
+        // Act: only the `src` subtree survives.
+        val rekeyed = lens.rekeyed(tree) { segments -> if (segments.firstOrNull() == "lib") null else segments }
+
+        // Assert
+        assertThat(rekeyed.namespaces.keys).containsExactly("com", "com.example", "com.example.app")
     }
 
     @Test

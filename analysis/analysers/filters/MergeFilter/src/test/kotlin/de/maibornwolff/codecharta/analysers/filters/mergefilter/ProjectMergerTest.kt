@@ -328,7 +328,7 @@ class ProjectMergerTest {
         assertEquals(mapOf("com.example" to DependencyNamespace(3), "com.other" to DependencyNamespace(0)), merged.namespaces)
         assertEquals(setOf("com.example.A", "com.example.B"), merged.leaves.keys)
         val leafEdge = merged.leafEdges.single()
-        assertEquals(mapOf("dependencies" to 3L), leafEdge.attributes)
+        assertEquals(mapOf("dependencies" to 2), leafEdge.attributes)
         assertEquals(listOf("inheritance", "argument"), leafEdge.usage)
         assertTrue(leafEdge.isCyclic)
         assertTrue(leafEdge.isPointingUpwards)

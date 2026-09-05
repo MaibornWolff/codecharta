@@ -52,10 +52,12 @@ class DependencyLensDto(
 
 // The graph flags are nullable rather than defaulted to false so GSON omits them unless they are set:
 // an edge that is neither cyclic nor upward-pointing serializes exactly as it did before the flags existed.
+// `attributes` is optional in the schema, and GSON bypasses the Kotlin default when the key is absent, so
+// it is nullable here and defaulted on read.
 class EdgeDto(
     val fromId: String,
     val toId: String,
-    val attributes: Map<String, Any> = emptyMap(),
+    val attributes: Map<String, Any>? = null,
     val isCyclic: Boolean? = null,
     val isPointingUpwards: Boolean? = null
 )
@@ -65,7 +67,7 @@ class EdgeDto(
 class LeafEdgeDto(
     val fromLeaf: String,
     val toLeaf: String,
-    val attributes: Map<String, Any> = emptyMap(),
+    val attributes: Map<String, Any>? = null,
     val usage: List<String>? = null,
     val isCyclic: Boolean? = null,
     val isPointingUpwards: Boolean? = null
