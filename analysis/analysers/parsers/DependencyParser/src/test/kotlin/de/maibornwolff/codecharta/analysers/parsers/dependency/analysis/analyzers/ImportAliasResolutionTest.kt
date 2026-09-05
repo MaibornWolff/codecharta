@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 /**
@@ -80,5 +81,34 @@ class ImportAliasResolutionTest {
         assertThat(node.dependencies).contains(
             Dependency(path = Path(listOf("src", "utils", "calculator", "Calculator")))
         )
+    }
+
+    @Test
+    fun `should resolve a path alias inherited from a workspace root tsconfig`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange - an Nx-style workspace: the root defines the aliases, the app only extends it
+        analysisRoot
+            .resolve(
+                "tsconfig.base.json"
+            ).writeText("""{ "compilerOptions": { "baseUrl": ".", "paths": { "@org/ui/*": ["libs/ui/src/*"] } } }""")
+        analysisRoot.resolve("apps/web/src").mkdirs()
+        analysisRoot.resolve("apps/web/tsconfig.json").writeText("""{ "extends": "../../tsconfig.base.json" }""")
+        analysisRoot.resolve("libs/ui/src").mkdirs()
+        analysisRoot.resolve("libs/ui/src/button.ts").writeText("export class Button {}")
+
+        // Act
+        val report = TypescriptAnalyzer(
+            FileInfo(
+                SupportedLanguage.TYPESCRIPT,
+                "apps/web/src/main.ts",
+                "import { Button } from '@org/ui/button'\nexport class Main { private button = new Button() }",
+                analysisRoot = analysisRoot
+            )
+        ).analyze()
+
+        // Assert
+        val node = report.nodes.first { it.pathWithName.getName() == "Main" }
+        assertThat(node.dependencies).contains(Dependency(path = Path(listOf("libs", "ui", "src", "button", "Button"))))
     }
 }
