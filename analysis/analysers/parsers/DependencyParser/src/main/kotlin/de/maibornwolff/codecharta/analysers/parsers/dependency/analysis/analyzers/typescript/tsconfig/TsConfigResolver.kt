@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig
 
+import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.util.Collections
 import java.util.Optional
@@ -17,6 +18,8 @@ class TsConfigResolver {
     companion object {
         private const val TSCONFIG_FILENAME = "tsconfig.json"
         private const val JSCONFIG_FILENAME = "jsconfig.json"
+        private const val JSON_EXTENSION = ".json"
+        private const val CURRENT_DIRECTORY = "."
     }
 
     fun findTsConfig(sourceFile: File): TsConfigResult? {
@@ -61,6 +64,12 @@ class TsConfigResolver {
         }
     }
 
+    /**
+     * The merged config is expressed relative to [tsconfigFile]'s directory, the way TypeScript reads it:
+     * `baseUrl` is relative to the config that defines it, and `paths` are relative to the effective
+     * `baseUrl` or, without one, to the config that defines them. An inherited entry is therefore
+     * rebased onto the child before merging.
+     */
     private fun resolveWithInheritance(tsconfigFile: File): TsConfigData? {
         val config = getCachedOrParse(tsconfigFile) ?: return null
 
@@ -69,48 +78,42 @@ class TsConfigResolver {
         }
 
         val parentFile = resolveExtendsPath(tsconfigFile, config.extends)
-        if (!parentFile.exists()) {
+        if (parentFile == null) {
+            Logger.warn { "${tsconfigFile.path} extends '${config.extends}', which was not found; its path aliases are ignored" }
             return config
         }
 
         val parentConfig = resolveWithInheritance(parentFile) ?: return config
-
-        return mergeConfigs(parentConfig, config)
+        return mergeConfigs(parentConfig, parentFile.parentFile, config, tsconfigFile.parentFile)
     }
 
-    private fun resolveExtendsPath(tsconfigFile: File, extendsPath: String): File = if (File(extendsPath).isAbsolute) {
-        File(extendsPath)
-    } else {
-        tsconfigFile.parentFile.resolve(extendsPath)
+    // TypeScript appends `.json` when the named file does not exist, so `"extends": "./tsconfig.base"` works.
+    private fun resolveExtendsPath(tsconfigFile: File, extendsPath: String): File? {
+        val named = if (File(extendsPath).isAbsolute) File(extendsPath) else tsconfigFile.parentFile.resolve(extendsPath)
+        if (named.exists()) return named
+        val withJsonExtension = File(named.path + JSON_EXTENSION)
+        return withJsonExtension.takeIf { !named.path.endsWith(JSON_EXTENSION) && it.exists() }
     }
 
-    private fun mergeConfigs(parent: TsConfigData, child: TsConfigData): TsConfigData {
-        val parentOptions = parent.compilerOptions
-        val childOptions = child.compilerOptions
+    private fun mergeConfigs(parent: TsConfigData, parentDir: File, child: TsConfigData, childDir: File): TsConfigData {
+        val parentOptions = parent.compilerOptions ?: return child
+        val childOptions = child.compilerOptions ?: CompilerOptions()
 
-        if (parentOptions == null) {
-            return child
+        val baseUrl = childOptions.baseUrl ?: parentOptions.baseUrl?.let { rebase(it, parentDir, childDir) }
+        val parentPaths = parentOptions.paths.orEmpty().mapValues { (_, targets) ->
+            if (baseUrl == null) targets.map { rebase(it, parentDir, childDir) } else targets
         }
-
-        if (childOptions == null) {
-            return TsConfigData(
-                compilerOptions = parentOptions,
-                extends = null
-            )
-        }
-
-        val mergedPaths = mutableMapOf<String, List<String>>()
-        parentOptions.paths?.let { mergedPaths.putAll(it) }
-        childOptions.paths?.let { mergedPaths.putAll(it) }
-
-        val mergedCompilerOptions = CompilerOptions(
-            baseUrl = childOptions.baseUrl ?: parentOptions.baseUrl,
-            paths = if (mergedPaths.isEmpty()) null else mergedPaths
-        )
+        val mergedPaths = parentPaths + childOptions.paths.orEmpty()
 
         return TsConfigData(
-            compilerOptions = mergedCompilerOptions,
+            compilerOptions = CompilerOptions(baseUrl = baseUrl, paths = mergedPaths.ifEmpty { null }),
             extends = null
         )
+    }
+
+    private fun rebase(path: String, from: File, to: File): String {
+        val absolute = from.absoluteFile.resolve(path).normalize()
+        val relative = absolute.relativeToOrNull(to.absoluteFile.normalize())?.invariantSeparatorsPath ?: return absolute.path
+        return relative.ifEmpty { CURRENT_DIRECTORY }
     }
 }

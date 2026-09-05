@@ -198,8 +198,8 @@ class TsConfigResolverTest {
         // when
         val merged = resolver.findTsConfig(sourceFile)
 
-        // then
-        assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo(".")
+        // then - the parent's baseUrl points at the parent's own directory, expressed relative to the child
+        assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo("config")
         assertThat(merged?.data?.compilerOptions?.paths).containsKey("core/*")
     }
 
@@ -319,5 +319,55 @@ class TsConfigResolverTest {
         // Then
         assertThat(result?.data?.compilerOptions?.baseUrl).isEqualTo("ts-base")
         assertThat(result?.file?.name).isEqualTo("tsconfig.json")
+    }
+
+    @Test
+    fun `should resolve an inherited baseUrl relative to the config that defines it`() {
+        // Arrange
+        tempDir
+            .resolve(
+                "tsconfig.base.json"
+            ).writeText("""{ "compilerOptions": { "baseUrl": ".", "paths": { "@org/ui/*": ["libs/ui/src/*"] } } }""")
+        val appDir = tempDir.resolve("apps/web").apply { mkdirs() }
+        appDir.resolve("tsconfig.json").writeText("""{ "extends": "../../tsconfig.base.json" }""")
+
+        // Act
+        val merged = resolver.findTsConfig(appDir.resolve("src/main.ts"))
+
+        // Assert
+        assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo("../..")
+        assertThat(merged?.data?.compilerOptions?.paths).containsEntry("@org/ui/*", listOf("libs/ui/src/*"))
+    }
+
+    @Test
+    fun `should resolve inherited paths without a baseUrl relative to the config that defines them`() {
+        // Arrange
+        tempDir.resolve("tsconfig.base.json").writeText("""{ "compilerOptions": { "paths": { "@org/ui/*": ["libs/ui/src/*"] } } }""")
+        val appDir = tempDir.resolve("apps/web").apply { mkdirs() }
+        appDir
+            .resolve(
+                "tsconfig.json"
+            ).writeText("""{ "extends": "../../tsconfig.base.json", "compilerOptions": { "paths": { "@app/*": ["src/*"] } } }""")
+
+        // Act
+        val merged = resolver.findTsConfig(appDir.resolve("src/main.ts"))
+
+        // Assert
+        assertThat(merged?.data?.compilerOptions?.baseUrl).isNull()
+        assertThat(merged?.data?.compilerOptions?.paths).containsEntry("@org/ui/*", listOf("../../libs/ui/src/*"))
+        assertThat(merged?.data?.compilerOptions?.paths).containsEntry("@app/*", listOf("src/*"))
+    }
+
+    @Test
+    fun `should find the parent of an extends that omits the json extension`() {
+        // Arrange
+        tempDir.resolve("tsconfig.base.json").writeText("""{ "compilerOptions": { "baseUrl": "." } }""")
+        tempDir.resolve("tsconfig.json").writeText("""{ "extends": "./tsconfig.base" }""")
+
+        // Act
+        val merged = resolver.findTsConfig(tempDir.resolve("src/index.ts"))
+
+        // Assert
+        assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo(".")
     }
 }

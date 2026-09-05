@@ -1,11 +1,13 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.tsconfig
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.DirectImport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import java.io.File
 
 object PathAliasResolver {
     private val SOURCE_EXTENSIONS = listOf(".ts", ".tsx", ".js", ".jsx", ".vue", ".json")
+    private const val WILDCARD_SUFFIX = "/*"
 
     // Main entry point: resolves "@app/models" with paths config to Path(["src", "app", "models"])
     fun resolve(import: DirectImport, config: TsConfigData, tsconfigDir: File, analysisRoot: File): Path? {
@@ -19,7 +21,7 @@ object PathAliasResolver {
             return null
         }
 
-        return convertToRelativePath(absolutePath, analysisRoot)
+        return toRelativePath(absolutePath, analysisRoot, stripExtension = true)
     }
 
     private data class ResolveResult(val resolvedPath: String, val isBaseUrlFallback: Boolean)
@@ -57,47 +59,20 @@ object PathAliasResolver {
         return tsconfigDir.resolve(fullPath).canonicalFile
     }
 
-    // Converts absolute path to project-relative Path object
-    // Example: "/project/src/app/models" relative to "/project" -> Path(["src", "app", "models"])
-    private fun convertToRelativePath(absolutePath: File, analysisRoot: File): Path {
-        val relativePath = makeRelativeToAnalysisRoot(absolutePath, analysisRoot)
-        return Path(relativePath.split("/").filter { it.isNotEmpty() })
-    }
-
-    // Finds first matching path mapping for import path
-    // Example: "@app/models" with "@app/*" -> "src/app/*" returns "src/app/models"
+    // An exact pattern wins, then the wildcard pattern with the longest prefix, as TypeScript matches them.
     private fun findMatchingPath(importPath: String, paths: Map<String, List<String>>?): String? {
-        if (paths == null) {
-            return null
-        }
-
-        for ((pattern, mappings) in paths) {
-            val matched = tryMatchPattern(importPath, pattern, mappings)
-            if (matched != null) {
-                return matched
-            }
-        }
-
-        return null
-    }
-
-    // Routes to exact match or wildcard match based on pattern
-    // Example: "core" with pattern "core" -> exact match, "core/models" with "core/*" -> wildcard
-    private fun tryMatchPattern(importPath: String, pattern: String, mappings: List<String>): String? {
-        if (pattern == importPath) {
-            return mappings.firstOrNull()
-        }
-
-        if (pattern.endsWith("/*")) {
-            return tryWildcardMatch(importPath, pattern, mappings)
-        }
-
-        return null
+        if (paths == null) return null
+        paths[importPath]?.let { return it.firstOrNull() }
+        return paths.entries
+            .filter { (pattern, _) ->
+                pattern.endsWith(WILDCARD_SUFFIX) && matchesPrefix(importPath, pattern.removeSuffix(WILDCARD_SUFFIX))
+            }.sortedByDescending { (pattern, _) -> pattern.length }
+            .firstNotNullOfOrNull { (pattern, mappings) -> tryWildcardMatch(importPath, pattern, mappings) }
     }
 
     // Handles wildcard pattern matching: "@app/models" with "@app/*" -> "src/app/*" = "src/app/models"
     private fun tryWildcardMatch(importPath: String, pattern: String, mappings: List<String>): String? {
-        val prefix = pattern.removeSuffix("/*")
+        val prefix = pattern.removeSuffix(WILDCARD_SUFFIX)
 
         if (!matchesPrefix(importPath, prefix)) {
             return null
@@ -106,7 +81,7 @@ object PathAliasResolver {
         val suffix = extractSuffix(importPath, prefix)
         val mapping = mappings.firstOrNull() ?: return null
 
-        if (mapping.endsWith("/*")) {
+        if (mapping.endsWith(WILDCARD_SUFFIX)) {
             return substituteWildcard(mapping, suffix)
         }
 
@@ -131,23 +106,11 @@ object PathAliasResolver {
 
     // Substitutes wildcard: "src/app/*" with "models/user" -> "src/app/models/user"
     private fun substituteWildcard(mapping: String, suffix: String): String {
-        val baseMapping = mapping.removeSuffix("/*")
+        val baseMapping = mapping.removeSuffix(WILDCARD_SUFFIX)
         return if (suffix.isNotEmpty()) {
             "$baseMapping/$suffix"
         } else {
             baseMapping
-        }
-    }
-
-    private fun makeRelativeToAnalysisRoot(absolutePath: File, analysisRoot: File): String {
-        val canonicalRoot = analysisRoot.canonicalFile
-        val path = absolutePath.invariantSeparatorsPath
-        val root = canonicalRoot.invariantSeparatorsPath
-
-        return if (path.startsWith(root)) {
-            path.substring(root.length).removePrefix("/")
-        } else {
-            path.removePrefix("/")
         }
     }
 }

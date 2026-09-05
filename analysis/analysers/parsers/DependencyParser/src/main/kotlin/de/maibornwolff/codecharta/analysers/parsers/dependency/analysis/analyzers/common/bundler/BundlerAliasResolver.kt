@@ -12,7 +12,7 @@ import java.io.File
 object BundlerAliasResolver {
     fun resolve(import: DirectImport, config: BundlerConfigData, analysisRoot: File): Path? {
         val resolved = resolveAlias(import.directPath, config.aliases) ?: return null
-        return toRelativePath(resolved, analysisRoot)
+        return toRelativePath(resolved, analysisRoot, stripExtension = true)
     }
 
     private fun resolveAlias(importPath: String, aliases: Map<String, String>): File? {

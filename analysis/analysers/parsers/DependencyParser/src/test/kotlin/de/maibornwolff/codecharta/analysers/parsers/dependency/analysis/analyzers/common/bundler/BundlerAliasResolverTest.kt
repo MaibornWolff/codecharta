@@ -107,4 +107,16 @@ class BundlerAliasResolverTest {
         // Then
         assertThat(result).isNull()
     }
+
+    @Test
+    fun `should strip the source extension of an alias target`() {
+        // Arrange
+        val config = BundlerConfigData(aliases = mapOf("@core" to tempDir.resolve("src/core/index.ts").absolutePath))
+
+        // Act
+        val result = BundlerAliasResolver.resolve(DirectImport("@core"), config, tempDir)
+
+        // Assert
+        assertThat(result).isEqualTo(Path(listOf("src", "core", "index")))
+    }
 }

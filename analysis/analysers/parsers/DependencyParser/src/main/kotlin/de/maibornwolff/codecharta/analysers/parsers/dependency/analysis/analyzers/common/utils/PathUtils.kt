@@ -110,11 +110,11 @@ fun toRelativePath(absolutePath: File, analysisRoot: File, stripExtension: Boole
 
 private fun makeRelativeToAnalysisRoot(absolutePath: File, analysisRoot: File): String {
     val path = absolutePath.invariantSeparatorsPath
-    val root = analysisRoot.invariantSeparatorsPath
+    val root = analysisRoot.invariantSeparatorsPath.removeSuffix("/")
 
-    return if (path.startsWith(root)) {
-        path.substring(root.length).removePrefix("/")
-    } else {
-        path.removePrefix("/")
+    return when {
+        path == root -> ""
+        path.startsWith("$root/") -> path.substring(root.length + 1)
+        else -> path.removePrefix("/")
     }
 }

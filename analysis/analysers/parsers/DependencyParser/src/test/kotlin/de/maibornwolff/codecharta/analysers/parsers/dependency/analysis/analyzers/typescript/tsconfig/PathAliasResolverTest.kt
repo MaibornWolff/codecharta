@@ -169,7 +169,7 @@ class PathAliasResolverTest {
     }
 
     @Test
-    fun `should prefer first matching path pattern`() {
+    fun `should use the first target of a matching path mapping`() {
         // given
         val config = TsConfigData(
             compilerOptions = CompilerOptions(
@@ -298,5 +298,40 @@ class PathAliasResolverTest {
         assertThat(resolved).isNotNull
         assertThat(resolved).isEqualTo(Path(listOf("src", "app", "components")))
         assertThat(resolved.toString()).doesNotContain("//")
+    }
+
+    @Test
+    fun `should prefer the longest matching prefix over an earlier shorter one`() {
+        // Arrange
+        val config = TsConfigData(
+            compilerOptions = CompilerOptions(
+                baseUrl = ".",
+                paths = mapOf(
+                    "@app/*" to listOf("src/app/*"),
+                    "@app/core/*" to listOf("libs/core/*")
+                )
+            )
+        )
+        val import = DirectImport("@app/core/x")
+
+        // Act
+        val resolved = PathAliasResolver.resolve(import, config, File("/project"), File("/project"))
+
+        // Assert
+        assertThat(resolved).isEqualTo(Path(listOf("libs", "core", "x")))
+    }
+
+    @Test
+    fun `should strip the source extension of an alias target`() {
+        // Arrange
+        val config = TsConfigData(
+            compilerOptions = CompilerOptions(baseUrl = ".", paths = mapOf("@core" to listOf("src/core/index.ts")))
+        )
+
+        // Act
+        val resolved = PathAliasResolver.resolve(DirectImport("@core"), config, File("/project"), File("/project"))
+
+        // Assert
+        assertThat(resolved).isEqualTo(Path(listOf("src", "core", "index")))
     }
 }
