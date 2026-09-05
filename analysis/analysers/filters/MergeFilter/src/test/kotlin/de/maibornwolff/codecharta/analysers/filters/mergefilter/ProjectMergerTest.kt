@@ -2,11 +2,14 @@ package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.DomainNode
 import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
@@ -266,6 +269,69 @@ class ProjectMergerTest {
         // Assert — the edge descriptor stays on the dependency lens and is not relocated to metrics.
         assertEquals("coupling", merged.lenses.dependency.attributeDescriptors["coupling"]!!.title)
         assertTrue(merged.lenses.metrics.attributeDescriptors.isEmpty())
+    }
+
+    @Test
+    fun `should merge the logical layer of two projects that each analysed part of the graph`() {
+        // Arrange: both inputs saw the same declaration pair, one as inheritance and one as an argument.
+        val backend =
+            Project(
+                "a",
+                apiVersion = "2.0",
+                lenses =
+                    LensSet(
+                        dependency =
+                            DependencyLens(
+                                namespaces = mapOf("com.example" to DependencyNamespace(1)),
+                                leaves = mapOf("com.example.A" to DependencyLeaf("node-a", "A", "CLASS", 2)),
+                                leafEdges =
+                                    listOf(
+                                        LeafEdge(
+                                            "com.example.A",
+                                            "com.example.B",
+                                            mapOf("dependencies" to 2),
+                                            listOf("inheritance"),
+                                            isCyclic = true
+                                        )
+                                    )
+                            )
+                    )
+            )
+        val frontend =
+            Project(
+                "b",
+                apiVersion = "2.0",
+                lenses =
+                    LensSet(
+                        dependency =
+                            DependencyLens(
+                                namespaces = mapOf("com.example" to DependencyNamespace(3), "com.other" to DependencyNamespace(0)),
+                                leaves = mapOf("com.example.B" to DependencyLeaf("node-b", "B", "INTERFACE", 0)),
+                                leafEdges =
+                                    listOf(
+                                        LeafEdge(
+                                            "com.example.A",
+                                            "com.example.B",
+                                            mapOf("dependencies" to 1),
+                                            listOf("argument"),
+                                            isPointingUpwards = true
+                                        )
+                                    )
+                            )
+                    )
+            )
+
+        // Act
+        val merged = ProjectMerger(listOf(backend, frontend), nodeMergerStrategy).merge().lenses.dependency
+
+        // Assert
+        assertEquals(mapOf("com.example" to DependencyNamespace(3), "com.other" to DependencyNamespace(0)), merged.namespaces)
+        assertEquals(setOf("com.example.A", "com.example.B"), merged.leaves.keys)
+        val leafEdge = merged.leafEdges.single()
+        assertEquals(mapOf("dependencies" to 3L), leafEdge.attributes)
+        assertEquals(listOf("inheritance", "argument"), leafEdge.usage)
+        assertTrue(leafEdge.isCyclic)
+        assertTrue(leafEdge.isPointingUpwards)
     }
 
     @Test

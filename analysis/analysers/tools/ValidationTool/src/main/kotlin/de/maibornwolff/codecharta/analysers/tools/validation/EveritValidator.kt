@@ -60,13 +60,26 @@ class EveritValidator(private var schemaPath: String) : Validator {
             }
         }
 
-        lenses.optJSONObject("dependency")?.optJSONArray("edges")?.let { edges ->
+        val dependency = lenses.optJSONObject("dependency")
+
+        dependency?.optJSONArray("edges")?.let { edges ->
             for (index in 0 until edges.length()) {
                 val edge = edges.getJSONObject(index)
                 val fromId = edge.optString("fromId")
                 val toId = edge.optString("toId")
                 if (fromId !in nodeIds) danglingReferences.add("edge with unknown fromId '$fromId'")
                 if (toId !in nodeIds) danglingReferences.add("edge with unknown toId '$toId'")
+            }
+        }
+
+        // A leaf joins the logical layer onto the file tree through its nodeId, the only node reference the
+        // logical tables carry; one that resolves to nothing would be dropped silently on read.
+        dependency?.optJSONObject("leaves")?.let { leaves ->
+            leaves.keySet().forEach { leafId ->
+                val nodeId = leaves.getJSONObject(leafId).optString("nodeId")
+                if (nodeId !in nodeIds) {
+                    danglingReferences.add("dependency-lens leaf '$leafId' with unknown nodeId '$nodeId'")
+                }
             }
         }
 
