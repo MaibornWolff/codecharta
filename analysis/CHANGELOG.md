@@ -26,6 +26,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   existing reader keeps working. The four DependaCharta edge types are a pure function of the two booleans and are
   derived where they are consumed rather than stored.
 
+- **`ccsh dependencyparser` emits the logical package/declaration layer beside the file-level one.** Resolution,
+  cycle detection and levelization all run at declaration level already; until now everything but the file-collapsed
+  result was discarded. The `dependency` lens gains three optional tables, keyed by dotted logical path: `leaves`
+  (every declaration with its kind, its level and the id of the file node it lives in), `namespaces` (each package's
+  level) and `leafEdges` (the dependencies between declarations, with their weight, the two graph flags and `usage` —
+  every way the source uses the target). This carries the two signals the file-level view cannot: a dependency
+  between two declarations of the *same* file, and the kind of use each dependency is. `edges`, `nodes` and the
+  per-file metrics are unchanged byte for byte, so every existing reader keeps working; a file without a logical
+  layer is unchanged too, since the tables are omitted when empty. Levelization now runs twice, once per projection,
+  and `--omit-graph-analysis` skips both. Uncompressed output roughly quadruples; it is gzipped by default.
+  `MergeFilter`, `StructureModifier` and `EdgeFilter` carry the new tables through: namespaces merge max-wins, leaves
+  union first-wins, leaf edges fold by endpoint pair, and a restructuring re-points `leaves[].nodeId` at the file's
+  new id — dropping a leaf, and the edges touching it, when its file did not survive. `ccsh check` rejects a leaf
+  whose `nodeId` resolves to no node, the way it already rejects a dangling edge endpoint or metrics key.
+
+### Changed
+
+- **`ccsh dependachartaimport` is deprecated.** `ccsh dependencyparser` runs DependaCharta's analysis on the source
+  itself and now emits everything the importer receives and more — declaration kinds, levels, cycles and upward flags,
+  at both file and declaration granularity — where the importer flattens all of it into edge and node attributes. It
+  also declares `.dc.json` while DependaCharta emits `.cg.json`, so it never matched real output. The command still
+  works and now says so on every run; it will be removed.
+
 ### Fixed 🐞
 
 - **`FileExtension` recognizes `.cts` and `.kts`.** The TypeScript entry listed `cts` without its leading dot, so no

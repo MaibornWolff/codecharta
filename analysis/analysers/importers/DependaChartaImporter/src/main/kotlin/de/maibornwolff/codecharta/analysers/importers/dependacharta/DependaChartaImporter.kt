@@ -11,11 +11,18 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.PrintStream
 
+/**
+ * Deprecated: `ccsh dependencyparser` runs the same analysis on source code and emits strictly more —
+ * declaration kinds, levels, cycles and upward flags, at both file and declaration granularity — while
+ * this importer flattens all of that into edge and node attributes. It also declares `.dc.json` where
+ * DependaCharta emits `.cg.json`, so it never matches real output.
+ */
 @CommandLine.Command(
     name = DependaChartaImporter.NAME,
     description = [DependaChartaImporter.DESCRIPTION],
@@ -41,7 +48,12 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
 
     companion object {
         const val NAME = "dependachartaimport"
-        const val DESCRIPTION = "generates cc.json from DependaCharta .dc.json files"
+        const val DESCRIPTION = "[deprecated: use dependencyparser] generates cc.json from DependaCharta .dc.json files"
+
+        const val DEPRECATION_HINT =
+            "'$NAME' is deprecated and will be removed. Run 'ccsh dependencyparser <source folder>' instead: it runs " +
+                "DependaCharta's analysis on the source itself and keeps the declaration kinds, levels, cycles and " +
+                "upward flags this importer flattens away."
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -51,6 +63,7 @@ class DependaChartaImporter(private val output: PrintStream = System.out) :
 
     @Throws(IOException::class)
     override fun call(): Unit? {
+        Logger.warn { DEPRECATION_HINT }
         require(InputHelper.isInputValid(arrayOf(inputFile!!), canInputContainFolders = false)) {
             "Input invalid file for DependaChartaImporter, stopping execution..."
         }
