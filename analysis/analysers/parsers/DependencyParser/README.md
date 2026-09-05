@@ -61,7 +61,13 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`nodeId`** is the id of the file node the declaration lives in — the one join from the logical layer
   back onto the file tree, and the only thing a re-pathing filter has to rewrite.
 - **`usage`** lists every way the source declaration uses the target: `usage`, `inheritance`,
-  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`.
+  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. **Only PHP reports
+  more than `usage` today** — `TreeSitterExcavationSite`'s `UsedType` carries no usage kind and no source
+  position, so every language it extracts is limited to `usage`, while `PhpAnalyzer` runs its own
+  tree-sitter queries and classifies types by the clause they appear in. DependaCharta has the same
+  limitation. The field is in the format because the classification belongs to the edge, not because it is
+  complete; a language gains real kinds when its types are classified by syntactic position, in TSE or
+  here.
 - `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
   `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `Edge` addresses file nodes by
