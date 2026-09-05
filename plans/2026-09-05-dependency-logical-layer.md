@@ -1,7 +1,7 @@
 ---
 name: Emit the logical package/declaration layer next to the physical one
 issue: <#issueid>
-state: todo
+state: complete
 version: 1
 ---
 
@@ -155,6 +155,9 @@ Verify: `./gradlew :analysers:filters:MergeFilter:test :analysers:filters:Struct
   (`src/test/resources/analysis/contract/examples/{java,csharp,cpp}`) and compare leaf count, edge count
   and cycle count. Record the numbers in the module README; where they differ, explain why rather than
   chasing byte parity.
+  *Result:* 16/16 declarations, 6/6 cycles and every declaration pair identical in all three samples;
+  the one difference per sample is a `HitPoints` → `HitPoints` self-edge DependaCharta keeps and this
+  parser drops (29 vs 30 edges, 2 vs 3 upward-pointing).
 - Golden test: extend `check_dependencyparser` in `analysis/test/golden_test.sh` to assert the logical
   tables are present alongside the physical ones.
 - Docs: module `README.md`, `gh-pages/src/content/docs/docs/parser/dependency.md`,
@@ -173,15 +176,16 @@ decision for whoever picks this up, but it should not be left as a third, worse 
 
 ## Steps
 
-- [ ] Complete Task 1: grow the `dependency` lens — `namespaces`, `leaves`, `leafEdges` across model,
+- [x] Complete Task 1: grow the `dependency` lens — `namespaces`, `leaves`, `leafEdges` across model,
       DTO, both mappers, three schema copies and the viz types
-- [ ] Complete Task 2: stop discarding the declaration layer; levelize the namespace tree with the
+- [x] Complete Task 2: stop discarding the declaration layer; levelize the namespace tree with the
       already-ported `toGraphNodes()`; warn on duplicate leaf ids
-- [ ] Complete Task 3: emit both projections from one run, leaving the physical half untouched
-- [ ] Complete Task 4: merge and re-key the logical layer through `MergeFilter`, `StructureModifier`
+- [x] Complete Task 3: emit both projections from one run, leaving the physical half untouched
+- [x] Complete Task 4: merge and re-key the logical layer through `MergeFilter`, `StructureModifier`
       and `EdgeFilter`
-- [ ] Complete Task 5: tests, DependaCharta parity check, golden test, documentation
-- [ ] Complete Task 6: deprecate or remove `DependaChartaImporter`
+- [x] Complete Task 5: tests, DependaCharta parity check, golden test, documentation
+- [x] Complete Task 6: deprecate `DependaChartaImporter` — the command still works and now points at
+      `dependencyparser` on every run
 
 ## Notes
 
