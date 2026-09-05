@@ -26,9 +26,9 @@ data class DomainLens(val nodes: Map<String, DomainNode> = emptyMap()) : Lens {
     }
 
     /** Re-key the lens onto a restructured tree; see [nodeIdRemapping] for how ids are recovered. */
-    fun rekeyed(treeBeforeRestructuring: Node, remapSegments: SegmentRemapping): DomainLens {
+    fun rekeyed(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): DomainLens {
         if (nodes.isEmpty()) return this
-        return DomainLens(nodes.rekeyedBy(nodeIdRemapping(treeBeforeRestructuring, remapSegments)))
+        return DomainLens(nodes.rekeyedBy(nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)))
     }
 }
 

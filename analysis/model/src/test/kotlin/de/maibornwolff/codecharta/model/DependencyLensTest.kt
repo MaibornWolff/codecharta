@@ -59,7 +59,14 @@ class DependencyLensTest {
         val lens = DependencyLens(nodes = mapOf(fileId to DependencyNode(3)))
 
         // Act: everything moves into a new top-level folder.
-        val rekeyed = lens.rekeyed(tree) { segments -> if (segments.isEmpty()) segments else listOf("alpha") + segments }
+        val rekeyed = lens.rekeyed(tree, movedInto("alpha", tree)) { segments ->
+            if (segments.isEmpty()) {
+                segments
+            } else {
+                listOf("alpha") +
+                    segments
+            }
+        }
 
         // Assert
         assertThat(rekeyed.nodes.keys).containsExactly(NodeId.fromSegments(listOf("alpha", "src", "App.kt"), NodeType.File))
@@ -127,7 +134,14 @@ class DependencyLensTest {
         val lens = DependencyLens(leaves = mapOf("com.example.App" to DependencyLeaf(fileId, "App", "CLASS", 1)))
 
         // Act
-        val rekeyed = lens.rekeyed(tree) { segments -> if (segments.isEmpty()) segments else listOf("alpha") + segments }
+        val rekeyed = lens.rekeyed(tree, movedInto("alpha", tree)) { segments ->
+            if (segments.isEmpty()) {
+                segments
+            } else {
+                listOf("alpha") +
+                    segments
+            }
+        }
 
         // Assert: the package did not move, the file did.
         assertThat(rekeyed.leaves.keys).containsExactly("com.example.App")
@@ -148,7 +162,7 @@ class DependencyLensTest {
             )
 
         // Act: nothing survives.
-        val rekeyed = lens.rekeyed(tree) { null }
+        val rekeyed = lens.rekeyed(tree, Node("root", NodeType.Folder)) { null }
 
         // Assert: no leaf and no leaf edge is left pointing at something the output no longer has.
         assertThat(rekeyed.leaves).isEmpty()
@@ -187,7 +201,7 @@ class DependencyLensTest {
             )
 
         // Act: only the `src` subtree survives.
-        val rekeyed = lens.rekeyed(tree) { segments -> if (segments.firstOrNull() == "lib") null else segments }
+        val rekeyed = lens.rekeyed(tree, without("lib", tree)) { segments -> if (segments.firstOrNull() == "lib") null else segments }
 
         // Assert
         assertThat(rekeyed.namespaces.keys).containsExactly("com", "com.example", "com.example.app")
@@ -202,9 +216,40 @@ class DependencyLensTest {
         val lens = DependencyLens(nodes = mapOf(fileId to DependencyNode(3)))
 
         // Act: nothing survives.
-        val rekeyed = lens.rekeyed(tree) { null }
+        val rekeyed = lens.rekeyed(tree, Node("root", NodeType.Folder)) { null }
 
         // Assert: no key is left pointing at a node the output no longer has.
         assertThat(rekeyed.nodes).isEmpty()
     }
+
+    @Test
+    fun `should drop a node entry for a folder the restructuring emptied and pruned`() {
+        // Arrange: the file moves out of src, so src is left empty and the tree no longer has it.
+        val folderId = NodeId.fromSegments(listOf("src"), NodeType.Folder)
+        val fileId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        val treeBefore =
+            Node("root", NodeType.Folder, children = setOf(Node("src", NodeType.Folder, children = setOf(Node("App.kt", NodeType.File)))))
+        val treeAfter = Node("root", NodeType.Folder, children = setOf(Node("App.kt", NodeType.File)))
+        val lens = DependencyLens(nodes = mapOf(folderId to DependencyNode(0), fileId to DependencyNode(2)))
+
+        // Act: only the file moves; the folder's own path is unchanged.
+        val rekeyed = lens.rekeyed(treeBefore, treeAfter) { segments ->
+            if (segments ==
+                listOf("src", "App.kt")
+            ) {
+                listOf("App.kt")
+            } else {
+                segments
+            }
+        }
+
+        // Assert: no key is left pointing at the pruned folder.
+        assertThat(rekeyed.nodes.keys).containsExactly(NodeId.fromSegments(listOf("App.kt"), NodeType.File))
+    }
+
+    private fun movedInto(folderName: String, tree: Node): Node =
+        Node(tree.name, NodeType.Folder, children = setOf(Node(folderName, NodeType.Folder, children = tree.children)))
+
+    private fun without(childName: String, tree: Node): Node =
+        Node(tree.name, NodeType.Folder, children = tree.children.filterNot { it.name == childName }.toSet())
 }

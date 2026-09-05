@@ -157,8 +157,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
             apiVersion = project.apiVersion,
             lenses =
                 project.lenses.copy(
-                    dependency = dependency.rekeyed(treeBeforeRestructuring, remapping),
-                    domain = domain?.rekeyed(treeBeforeRestructuring, remapping)
+                    dependency = dependency.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
+                    domain = domain?.rekeyed(treeBeforeRestructuring, project.rootNode, remapping)
                 ),
             blacklist = project.blacklist,
             commitHash = project.commitHash

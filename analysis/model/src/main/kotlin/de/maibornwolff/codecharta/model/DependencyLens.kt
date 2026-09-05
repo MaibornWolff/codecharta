@@ -96,9 +96,9 @@ data class DependencyLens(
      * only follows its file; one whose file did not survive has nothing left to join onto, so it goes,
      * and with it every leaf edge that touched it and every namespace no surviving leaf lives in.
      */
-    fun rekeyed(treeBeforeRestructuring: Node, remapSegments: SegmentRemapping): DependencyLens {
+    fun rekeyed(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): DependencyLens {
         if (!carriesNodeData) return this
-        val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, remapSegments)
+        val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)
         val rekeyedLeaves = leaves
             .mapNotNull { (leafId, leaf) ->
                 newIdByOldId[leaf.nodeId]?.let { newNodeId -> leafId to leaf.copy(nodeId = newNodeId) }
