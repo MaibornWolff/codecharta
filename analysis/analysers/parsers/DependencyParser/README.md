@@ -69,6 +69,10 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   passes — but flattens it into a public `UsedType` of `(name, genericTypes, namespacePrefix)`. Carrying
   the position on `UsedType` upstream would light all of these up at once; `TseMappings.toType()` is the
   only place here that would change. DependaCharta has the same gap for the same reason.
+- A declaration split across files — a C# partial class, a Go function name reused within a package — is
+  one leaf, joined to the first of its files in path order, and its `leafEdges` are the union of every
+  part's dependencies. In the physical layer each part's dependencies count for the file they are written
+  in, while a dependency *on* the split declaration points at the same first file the leaf reports.
 - `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
   `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `Edge` addresses file nodes by

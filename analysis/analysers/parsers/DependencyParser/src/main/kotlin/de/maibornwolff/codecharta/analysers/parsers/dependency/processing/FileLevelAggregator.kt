@@ -24,17 +24,22 @@ data class FilePath(val segments: List<String>) {
  * weights of the declaration edges behind it and is cyclic if any of them is — the rule DependaCharta
  * already applies when a namespace collapses. Edges between two declarations in the same file
  * disappear, since a file cannot depend on itself.
+ *
+ * A declaration split across files (a C# partial class, a Go function name reused in a package) is one
+ * logical leaf but several nodes. Each node's dependencies count for the file they are written in, while
+ * a dependency *on* the split declaration points at the file [firstFilePathByDeclaration] reports — the
+ * same one the logical layer joins the leaf to.
  */
 object FileLevelAggregator {
     fun aggregate(resolvedNodes: Collection<Node>, cyclicEdgesByDeclaration: Map<String, Set<String>>): List<AggregatedFileEdge> {
-        val filePathByDeclaration = resolvedNodes.associate { it.pathWithName.withDots() to filePathOf(it) }
+        val filePathByDeclaration = firstFilePathByDeclaration(resolvedNodes)
 
         val weightByEndpoints = LinkedHashMap<Pair<FilePath, FilePath>, Int>()
         val cyclicEndpoints = HashSet<Pair<FilePath, FilePath>>()
 
         resolvedNodes.forEach { node ->
             val declarationId = node.pathWithName.withDots()
-            val sourceFile = filePathByDeclaration.getValue(declarationId)
+            val sourceFile = filePathOf(node)
             val cyclicTargets = cyclicEdgesByDeclaration[declarationId].orEmpty()
 
             node.resolvedNodeDependencies.internalDependencies.forEach { dependency ->
@@ -53,6 +58,13 @@ object FileLevelAggregator {
         return weightByEndpoints.map { (endpoints, weight) ->
             AggregatedFileEdge(endpoints.first, endpoints.second, weight, endpoints in cyclicEndpoints)
         }
+    }
+
+    /** The file each logical path is joined to: the first declaration's, in the order the nodes arrive. */
+    fun firstFilePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
+        val filePathByDeclaration = LinkedHashMap<String, FilePath>()
+        resolvedNodes.forEach { node -> filePathByDeclaration.putIfAbsent(node.pathWithName.withDots(), filePathOf(node)) }
+        return filePathByDeclaration
     }
 
     private const val CURRENT_DIRECTORY = "."

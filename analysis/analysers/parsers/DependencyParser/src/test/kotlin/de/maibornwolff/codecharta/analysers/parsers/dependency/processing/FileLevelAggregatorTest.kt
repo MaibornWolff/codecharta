@@ -132,4 +132,39 @@ class FileLevelAggregatorTest {
         assertThat(edge.from.segments).containsExactly("src", "app", "First.kt")
         assertThat(edge.from.graphId).isEqualTo("src.app.First_kt")
     }
+
+    @Test
+    fun `should count a split declaration's dependencies for the file each part is written in`() {
+        // Arrange: a partial class whose second part holds the only reference to Bar.
+        val nodes =
+            listOf(
+                declaration("app.Foo", "app/FooA.kt"),
+                declaration("app.Foo", "app/FooB.kt", listOf("app.Bar")),
+                declaration("app.Bar", "app/Bar.kt")
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().from.segments).containsExactly("app", "FooB.kt")
+    }
+
+    @Test
+    fun `should point a dependency on a split declaration at the first file, the one the logical layer joins it to`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("app.Foo", "app/FooA.kt"),
+                declaration("app.Foo", "app/FooB.kt"),
+                declaration("app.Bar", "app/Bar.kt", listOf("app.Foo"))
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().to.segments).containsExactly("app", "FooA.kt")
+        assertThat(FileLevelAggregator.firstFilePathByDeclaration(nodes).getValue("app.Foo").segments).containsExactly("app", "FooA.kt")
+    }
 }

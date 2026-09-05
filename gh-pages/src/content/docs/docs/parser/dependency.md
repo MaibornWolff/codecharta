@@ -62,6 +62,10 @@ declarations:
 - `usage` lists every way the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. Only PHP reports more than `usage`
   today; see [known issues](#known-issues).
+- A declaration split across files — a C# partial class, a Go function name reused within a package — is
+  one leaf, joined to the first of its files in path order, and its `leafEdges` are the union of every
+  part's dependencies. In the physical layer each part's dependencies count for the file they are written
+  in, while a dependency *on* the split declaration points at the same first file the leaf reports.
 - `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
   `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
 
