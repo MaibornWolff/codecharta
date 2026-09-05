@@ -288,4 +288,22 @@ class NodeTest {
         val internalDeps = resolvedNode.resolvedNodeDependencies.internalDependencies
         Assertions.assertThat(internalDeps).isEmpty()
     }
+
+    @Test
+    fun `should prefer an explicit import over a same-package type of the same name`() {
+        // Arrange
+        val importedFoo = Path(listOf("com", "b", "Foo"))
+        val projectDictionary = mapOf("Foo" to listOf(Path(listOf("com", "a", "Foo")), importedFoo))
+        val node = Node.build(
+            pathWithName = Path(listOf("com", "a", "Bar")),
+            dependencies = setOf(Dependency(importedFoo)),
+            usedTypes = setOf(Type.simple("Foo"))
+        )
+
+        // Act
+        val resolved = node.resolveTypes(projectDictionary, emptyMap(), setOf())
+
+        // Assert
+        Assertions.assertThat(resolved.usedTypes.single().resolvedPath).isEqualTo(importedFoo)
+    }
 }

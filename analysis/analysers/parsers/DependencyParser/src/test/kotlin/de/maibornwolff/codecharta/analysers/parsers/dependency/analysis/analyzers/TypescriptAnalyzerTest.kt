@@ -1547,4 +1547,23 @@ class TypescriptAnalyzerTest {
         assertThat(reexport.nodeType).isEqualTo(NodeType.REEXPORT)
         assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path }).containsExactly(Path(listOf("util", "FOO")))
     }
+
+    @Test
+    fun `should expand a wildcard re-export whose source file name contains a dot`(
+        @TempDir analysisRoot: File
+    ) {
+        // Arrange
+        File(analysisRoot, "user.service.ts").writeText("export class UserService {}")
+
+        // Act
+        val report = TypescriptAnalyzer(
+            FileInfo(SupportedLanguage.TYPESCRIPT, "index.ts", "export * from './user.service'", analysisRoot = analysisRoot)
+        ).analyze()
+
+        // Assert
+        val reexport = report.nodes.single { it.pathWithName.getName() == "UserService" }
+        assertThat(reexport.nodeType).isEqualTo(NodeType.REEXPORT)
+        assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path })
+            .containsExactly(Path(listOf("user.service", "UserService")))
+    }
 }

@@ -949,4 +949,29 @@ class ArmorClass
         val node = report.nodes.first()
         assertThat(node.usedTypes).containsAll(expectedUsedTypes)
     }
+
+    @Test
+    fun `should import every grouped use declaration`() {
+        // Arrange
+        val code = """
+            <?php
+            namespace php\import;
+            use php\vertebrates\{Dog, Cat};
+            use php\invertebrates\{Bee, Ant};
+
+            class Zoo {
+            }
+        """.trimIndent()
+
+        // Act
+        val report = PhpAnalyzer(FileInfo(SupportedLanguage.PHP, "Zoo.php", code)).analyze()
+
+        // Assert
+        assertThat(report.nodes.first().dependencies).contains(
+            Dependency(Path(listOf("php", "vertebrates", "Dog"))),
+            Dependency(Path(listOf("php", "vertebrates", "Cat"))),
+            Dependency(Path(listOf("php", "invertebrates", "Bee"))),
+            Dependency(Path(listOf("php", "invertebrates", "Ant")))
+        )
+    }
 }

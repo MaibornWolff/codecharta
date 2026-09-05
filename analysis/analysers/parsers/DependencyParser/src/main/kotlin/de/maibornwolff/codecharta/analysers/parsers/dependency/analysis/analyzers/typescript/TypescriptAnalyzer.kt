@@ -29,6 +29,10 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     private val isTsx = extension == TSX_EXTENSION
     private val physicalFilePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(extension) }
 
+    // A Path escapes the dots of a file name, which is not reversible, so the segments a wildcard import
+    // resolved to are kept as written for the lookup on disk (`./user.service` must find `user.service.ts`).
+    private val unescapedSegmentsByPath = HashMap<Path, List<String>>()
+
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path {
@@ -77,6 +81,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override fun convertImport(import: ImportDeclaration): Set<Dependency> {
         val resolvedPath = resolveImportPath(import.defaultImportPath())
         val primary = Dependency(path = Path(resolvedPath), isWildcard = import.isWildcard)
+        if (import.isWildcard) unescapedSegmentsByPath[primary.path] = resolvedPath
         val index = buildIndexDependency(resolvedPath, import.isWildcard)
         return if (index != null) setOf(primary, index) else setOf(primary)
     }
@@ -86,7 +91,13 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     // not used because there is no ImportDeclaration/UsedType/DeclarationType to map from.
     private fun expandWildcardReexport(wildcardNode: Node, currentFilePath: Path, analysisRoot: File, ownNames: Set<String>): List<Node> {
         val wildcardDeps = wildcardNode.dependencies.filter { it.isWildcard }
-        val sourceFiles = wildcardDeps.mapNotNull { resolveSourceFile(it.path.parts, analysisRoot) }.toSet()
+        val sourceFiles = wildcardDeps
+            .mapNotNull {
+                resolveSourceFile(
+                    unescapedSegmentsByPath[it.path] ?: it.path.parts,
+                    analysisRoot
+                )
+            }.toSet()
         if (sourceFiles.isEmpty()) return listOf(wildcardNode)
         return sourceFiles.flatMap { sourceFile ->
             val sourceRelPath = toRelativePath(sourceFile, analysisRoot, stripExtension = true).parts

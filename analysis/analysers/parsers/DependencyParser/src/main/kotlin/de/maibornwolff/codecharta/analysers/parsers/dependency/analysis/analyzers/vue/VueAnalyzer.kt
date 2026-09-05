@@ -35,14 +35,12 @@ class VueAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val rootNode = parseCode(fileInfo.content)
         val componentPath = fileInfo.physicalPathAsPath().withoutFileSuffix("vue")
 
-        val scriptBlock = scriptExtractorQuery.execute(rootNode, fileInfo.content)
+        val scriptBlocks = scriptExtractorQuery.execute(rootNode, fileInfo.content).filter { it.content.isNotEmpty() }
         val templateComponents = templateComponentUsageQuery.execute(rootNode, fileInfo.content)
 
-        val (scriptDependencies, scriptUsedTypes) = if (scriptBlock != null && scriptBlock.content.isNotEmpty()) {
-            analyzeScript(scriptBlock)
-        } else {
-            Pair(emptySet(), emptySet())
-        }
+        val scriptResults = scriptBlocks.map { analyzeScript(it) }
+        val scriptDependencies = scriptResults.flatMap { (dependencies, _) -> dependencies }.toSet()
+        val scriptUsedTypes = scriptResults.flatMap { (_, usedTypes) -> usedTypes }.toSet()
 
         val templateDependencies = templateComponents
             .map { componentName ->
