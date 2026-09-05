@@ -38,7 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   and `--omit-graph-analysis` skips both. Uncompressed output roughly quadruples; it is gzipped by default.
   `MergeFilter`, `StructureModifier` and `EdgeFilter` carry the new tables through: namespaces merge max-wins, leaves
   union first-wins, leaf edges fold by endpoint pair, and a restructuring re-points `leaves[].nodeId` at the file's
-  new id — dropping a leaf, and the edges touching it, when its file did not survive. `ccsh check` rejects a leaf
+  new id — dropping a leaf, and the edges touching it, when its file did not survive. `merge --large` prefixes the
+  logical ids with the wrapping folder, the way it prefixes edge paths, so two inputs declaring the same package
+  stay apart. `ccsh check` rejects a leaf
   whose `nodeId` resolves to no node, a `nodes` key that names no node and a leaf edge whose endpoint the leaf table
   does not declare, the way it already rejects a dangling edge endpoint or metrics key.
 
@@ -47,9 +49,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **One file scanner for `domainlanguageparser` and `dependencyparser`.** Both walked the tree with their own copy
   of the same scanner; the shared one lives next to the gitignore handling in `AnalyserInterface`. For
   `domainlanguageparser` this means `-e/--exclude` and `-ibf/--include-build-folders` now work as in every other
-  parser (they were accepted and ignored), minified bundles (`*.min.js`, `*.bundle.js`) are skipped, test
-  directories are judged by the path inside the project rather than the absolute one, and files arrive in path
-  order.
+  parser (they were accepted and ignored), the common build folders are excluded when the root has no `.gitignore`
+  (unless `-ibf` is given), minified bundles (`*.min.js`, `*.bundle.js`) are skipped, test directories are judged by
+  the path inside the project rather than the absolute one, and files arrive in path order.
 
 - **`ccsh dependachartaimport` is deprecated.** `ccsh dependencyparser` runs DependaCharta's analysis on the source
   itself and now emits everything the importer receives and more — declaration kinds, levels, cycles and upward flags,

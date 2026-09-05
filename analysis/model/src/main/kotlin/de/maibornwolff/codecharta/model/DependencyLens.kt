@@ -9,8 +9,9 @@ import de.maibornwolff.codecharta.util.Logger
  * graph ([nodes]); it is keyed by node id, so a filter that re-paths the tree has to re-key the lens
  * along with it — see [rekeyed]. The logical projection is the graph as the code declares it: [leaves]
  * are the declarations, [namespaces] the packages containing them, and [leafEdges] the dependencies
- * between declarations. Its tables are keyed by dotted logical path, which no filter moves; only
- * [DependencyLeaf.nodeId], the join back onto the file tree, is re-keyed.
+ * between declarations. Its tables are keyed by dotted logical path, which a restructuring of one
+ * project's files never moves — only [DependencyLeaf.nodeId], the join back onto the file tree, is
+ * re-keyed. Wrapping a whole project into a folder is the exception, see [underNamespace].
  */
 data class DependencyLens(
     val edges: List<Edge> = emptyList(),
@@ -112,12 +113,32 @@ data class DependencyLens(
         )
     }
 
+    /**
+     * Prefixes every logical id with [segment], the way `merge --large` prefixes the file paths with the
+     * folder a project is wrapped in: two inputs declaring the same package must stay apart in the logical
+     * projection as they do in the physical one. A dot in the segment is escaped the way the parser
+     * escapes dots inside a logical path segment.
+     */
+    fun underNamespace(segment: String): DependencyLens {
+        val prefix = segment.replace(LOGICAL_SEPARATOR, ESCAPED_LOGICAL_SEPARATOR) + LOGICAL_SEPARATOR
+        return copy(
+            namespaces = namespaces.mapKeys { (namespaceId, _) -> prefix + namespaceId },
+            leaves = leaves.mapKeys { (leafId, _) -> prefix + leafId },
+            leafEdges = leafEdges.map { it.copy(fromLeaf = prefix + it.fromLeaf, toLeaf = prefix + it.toLeaf) }
+        )
+    }
+
     // With dotted ids the namespaces a leaf lives in are every proper prefix of its id, split on the dots.
     private fun namespacesOf(leafIds: Collection<String>): Set<String> = leafIds
         .flatMapTo(HashSet()) { leafId ->
             val segments = leafId.split('.')
             (1 until segments.size).map { depth -> segments.take(depth).joinToString(".") }
         }
+
+    companion object {
+        private const val LOGICAL_SEPARATOR = "."
+        private const val ESCAPED_LOGICAL_SEPARATOR = "_"
+    }
 }
 
 /**

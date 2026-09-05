@@ -252,4 +252,22 @@ class DependencyLensTest {
 
     private fun without(childName: String, tree: Node): Node =
         Node(tree.name, NodeType.Folder, children = tree.children.filterNot { it.name == childName }.toSet())
+
+    @Test
+    fun `should prefix every logical id with the namespace a project is wrapped into`() {
+        // Arrange
+        val lens = DependencyLens(
+            namespaces = mapOf("com.example" to DependencyNamespace(0)),
+            leaves = mapOf("com.example.App" to DependencyLeaf("id", "App", "CLASS", 1)),
+            leafEdges = listOf(LeafEdge("com.example.App", "com.example.Lib"))
+        )
+
+        // Act
+        val wrapped = lens.underNamespace("my.app")
+
+        // Assert: the dot of the folder name is escaped so the prefix stays one segment.
+        assertThat(wrapped.namespaces.keys).containsExactly("my_app.com.example")
+        assertThat(wrapped.leaves.keys).containsExactly("my_app.com.example.App")
+        assertThat(wrapped.leafEdges).containsExactly(LeafEdge("my_app.com.example.App", "my_app.com.example.Lib"))
+    }
 }
