@@ -67,6 +67,29 @@ If the integration tests fail on macOS, it is likely because the `timeout` comma
 - `gradlew.bat ktLintCheck` or `./gradlew ktLintCheck` to check code style
 - `gradlew.bat ktLintFormat` or `./gradlew ktLintFormat` to format code
 
+### Known issues
+
+**`DialogProviderTest > directoryNavigator should provide repeated auto-completion` is flaky.** It asserts
+that the `dialogProvider` module contains exactly the directories `build/` and `src/`, so it depends on the
+state of the working tree rather than on fixtures. It fails after a `clean` that has not been followed by a
+compile, and on any checkout carrying an extra directory in that module. Re-run the module's tests; if it
+keeps failing, check for stray directories in `dialogProvider/`.
+
+**Declaration usage kinds are only extracted for PHP.** `ccsh dependencyparser` writes a `usage` list on
+every leaf edge — `inheritance`, `implementation`, `instantiation`, `argument`, `return_value`,
+`constant_access` — but `TreeSitterExcavationSite`'s `UsedType` carries no usage kind and no source
+position, so for every language it extracts (all but PHP, which runs its own tree-sitter queries) the only
+value that can be reported is `usage`. DependaCharta has the same limitation. Fixing it means classifying
+types by the syntactic position they appear in, either in TSE or per language here.
+
+**Building on a mounted filesystem.** If the checkout lives on a filesystem that does not give the build a
+coherent view of files it has just written — a VM or container mount (virtiofs, 9p), or a network share —
+Gradle fails while snapshotting its own outputs (`Cannot access output property ... NoSuchFileException`
+naming a class file, test result or report it just wrote), and Kotlin's incremental compilation corrupts
+its caches (`Could not close incremental caches`, then phantom `Unresolved reference` errors on the next
+build). Put the build directories on local disk, and set `kotlin.incremental=false` in your
+`~/.gradle/gradle.properties`.
+
 ### Intellij Gradle Integration for Building and Testing
 
 Multiple gradle tasks can be directly executed in the IntelliJ interface, this is especially useful when trying to build and test the project.

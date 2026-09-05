@@ -97,7 +97,8 @@ the same graph as the *code* declares it — packages and declarations rather th
 - **`leafEdges`** are the dependencies between declarations, addressed by those same dotted paths, with
   the edge weight in `attributes`, the same two graph flags as an `Edge`, and `usage`: every way the
   source uses the target (`usage`, `inheritance`, `implementation`, `instantiation`, `argument`,
-  `return_value`, `constant_access`).
+  `return_value`, `constant_access`). The format defines all seven; a reader must not assume a producer
+  fills them in, and `ccsh dependencyparser` currently reports more than `usage` for PHP only.
 
 Ids here are the dotted logical path **verbatim** rather than a hash. Node ids are hashed to canonicalize
 *paths* — separator, Unicode form, `.`/`..` — and a dotted namespace has none of that variance, so

@@ -51,6 +51,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **`./gradlew clean` no longer breaks every following ktlint task.** ktlint-gradle writes
+  `intermediates/ktLint/reporters.bin` but never registers it as an output of `loadKtlintReporters`, so
+  `clean` deleted the file while the task stayed `UP-TO-DATE`, and every ktlint task then failed with
+  "specifies file ... which doesn't exist". The build now declares the output, so `clean` invalidates its
+  producer. CI never saw this because it builds fresh checkouts rather than cleaning an existing one.
+
 - **`FileExtension` recognizes `.cts` and `.kts`.** The TypeScript entry listed `cts` without its leading dot, so no
   `.cts` file ever matched, and Kotlin script files had no entry at all. Both are now analysed by `unifiedparser`
   as well.

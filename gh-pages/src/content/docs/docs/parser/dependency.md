@@ -60,7 +60,8 @@ declarations:
 - Both tables are keyed by the dotted logical path, so a namespace's parent is its id's prefix.
 - `nodeId` is the id of the file node the declaration lives in — the one join back onto the file tree.
 - `usage` lists every way the source uses the target: `usage`, `inheritance`, `implementation`,
-  `instantiation`, `argument`, `return_value`, `constant_access`.
+  `instantiation`, `argument`, `return_value`, `constant_access`. Only PHP reports more than `usage`
+  today; see [known issues](#known-issues).
 - `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
   `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
 
@@ -115,6 +116,13 @@ dependencies and their weights alone, leaving every edge unflagged and the lens 
 `--file-timeout` bounds a single file's parse. The parse itself is a blocking native call, so the
 timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to completion
 in the background.
+
+### Known issues
+
+**Usage kinds are only extracted for PHP.** The `usage` list on a leaf edge can name seven kinds, but the
+underlying extraction (`TreeSitterExcavationSite`) reports a used type without the syntactic position it
+appeared in, so every language but PHP — which runs its own queries — can only say `usage`. DependaCharta
+has the same limitation.
 
 ### Examples
 
