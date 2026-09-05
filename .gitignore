@@ -4,6 +4,8 @@ auth.txt
 .cache
 # brand reference — internal corporate palette, must not be committed
 Ideas/brand.png
+# local checkout of the DependaCharta repository, the dependency parser's port source — a separate project
+Ideas/DC/
 # call-graph exports (e.g. analysis.cg.json) — large, generated
 *.cg.json
 # analyser output written at the analysis root (e.g. dlc.cc.json.gz) — generated, not a tracked fixture
