@@ -24,6 +24,7 @@ class LargeMerge {
             val movedNodes = moveNodesIntoFolder(project.rootNode, prefix)
             val rePathedDependency = project.lenses.dependency
                 .copy(edges = addFolderToEdgePaths(project.lenses.dependency.edges, prefix))
+                .underNamespace(prefix)
                 .rekeyed(project.rootNode, movedNodes.single(), movedIntoFolder(prefix))
             val rePathedDomain = project.lenses.domain?.rekeyed(project.rootNode, movedNodes.single(), movedIntoFolder(prefix))
             return Project(

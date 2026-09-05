@@ -30,7 +30,7 @@ class LargeMergeTest {
     )
 
     @Test
-    fun `should re-point a leaf at the wrapped file while keeping its logical key and namespaces`() {
+    fun `should move the logical layer under the folder and re-point a leaf at the wrapped file`() {
         // Arrange
         val fileId = NodeId.fromSegments(listOf("file.kt"), NodeType.File)
         val project = rootProject(
@@ -46,14 +46,15 @@ class LargeMergeTest {
         // Act
         val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
 
-        // Assert: the package did not move into the folder, the file did.
+        // Assert: the package and the file both moved into the folder, so a second project declaring
+        // com.example.File stays apart from this one.
         val dependency = wrapped.lenses.dependency
-        assertEquals(mapOf("com.example" to DependencyNamespace(0)), dependency.namespaces)
+        assertEquals(mapOf("alpha.com.example" to DependencyNamespace(0)), dependency.namespaces)
         assertEquals(
             NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File),
-            dependency.leaves.getValue("com.example.File").nodeId
+            dependency.leaves.getValue("alpha.com.example.File").nodeId
         )
-        assertEquals(1, dependency.leafEdges.size)
+        assertEquals(listOf(LeafEdge("alpha.com.example.File", "alpha.com.example.File")), dependency.leafEdges)
     }
 
     @Test

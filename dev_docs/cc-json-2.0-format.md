@@ -104,6 +104,9 @@ Ids here are the dotted logical path **verbatim** rather than a hash. Node ids a
 *paths* — separator, Unicode form, `.`/`..` — and a dotted namespace has none of that variance, so
 hashing would buy nothing but cost readability. Every table is optional and omitted when empty, so a file
 carrying only the physical projection is byte-identical to what producers wrote before they existed.
+A restructuring within one project moves files, not packages, so it re-points a leaf's `nodeId` and leaves
+the logical ids alone; `merge --large`, which wraps each input in a folder, prefixes the logical ids with
+that folder (dots escaped to `_`) so two inputs declaring the same package stay apart in both projections.
 
 `leafEdges` is a list of its own rather than a widened `Edge`, because `Edge` requires `fromId`/`toId`
 and the edge-metric machinery, `edgefilter` and the 3D map all read `edges`. It carries the two signals
