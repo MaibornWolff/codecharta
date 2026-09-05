@@ -4,8 +4,11 @@ import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DependencyGraph
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
+import de.maibornwolff.codecharta.model.DependencyLeaf
+import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
@@ -14,8 +17,9 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
 /**
- * Writes the file-level dependency graph into a project: the files as the tree, the dependencies as
- * the dependency lens, and the per-file link counts as ordinary metrics.
+ * Writes both projections of the dependency graph into one project: the files as the tree, the
+ * file-level dependencies and the declaration-level ones as the dependency lens, and the per-file link
+ * counts as ordinary metrics.
  */
 class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuilder()) {
     fun generate(graph: DependencyGraph, analysedFilePaths: List<List<String>>, pipedProject: Project? = null): Project {
@@ -45,8 +49,12 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
                         NODE_ATTRIBUTE_TYPE
                     )
                 ).addAttributeDescriptions(dependencyAttributeDescriptors())
-                .withDependencyNodes(toDependencyNodes(graph))
-                .build()
+                .withDependencyLens(
+                    nodes = toDependencyNodes(graph),
+                    namespaces = graph.namespaceLevels.mapValues { (_, level) -> DependencyNamespace(level) },
+                    leaves = toDependencyLeaves(graph),
+                    leafEdges = toLeafEdges(graph)
+                ).build()
 
         return if (pipedProject != null) MergeFilter.mergePipedWithCurrentProject(pipedProject, project) else project
     }
@@ -81,6 +89,16 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
     private fun toDependencyNodes(graph: DependencyGraph): Map<String, DependencyNode> = graph.levels.associate { levelizedPath ->
         val type = if (levelizedPath.isFile) NodeType.File else NodeType.Folder
         NodeId.fromSegments(levelizedPath.path, type) to DependencyNode(levelizedPath.level)
+    }
+
+    // A leaf joins onto the file tree through the very id the tree above computed for that file, so the
+    // join is exact by construction rather than by matching path strings.
+    private fun toDependencyLeaves(graph: DependencyGraph): Map<String, DependencyLeaf> = graph.declarations.associate {
+        it.id to DependencyLeaf(NodeId.fromSegments(it.filePath, NodeType.File), it.name, it.kind, it.level)
+    }
+
+    private fun toLeafEdges(graph: DependencyGraph): List<LeafEdge> = graph.declarationEdges.map {
+        LeafEdge(it.fromId, it.toId, mapOf(DEPENDENCIES to it.weight), it.usage, it.isCyclic, it.isPointingUpwards)
     }
 
     companion object {

@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.io.File
+import kotlin.io.path.createTempDirectory
 
 /**
  * Drives the whole processing chain over the "cellars and centaurs" sample, the same one the extraction
@@ -83,17 +85,136 @@ class ProcessingPipelineTest {
     }
 
     @Test
+    fun `should produce declaration-to-declaration edges addressed by dotted logical path`() {
+        // Act
+        val graph = graphOfJavaSample()
+
+        // Assert
+        val declarationIds = graph.declarations.map { it.id }
+        assertThat(graph.declarationEdges).isNotEmpty
+        assertThat(graph.declarationEdges).allSatisfy { edge ->
+            assertThat(declarationIds).contains(edge.fromId, edge.toId)
+            assertThat(edge.weight).isGreaterThanOrEqualTo(1)
+        }
+    }
+
+    @Test
+    fun `should record every declaration with the file it was declared in`() {
+        // Act
+        val graph = graphOfJavaSample()
+
+        // Assert
+        assertThat(graph.declarations).isNotEmpty
+        assertThat(graph.declarations).allSatisfy { declaration ->
+            assertThat(declaration.filePath.last()).endsWith(".java")
+            assertThat(declaration.name).isNotEmpty()
+            assertThat(declaration.kind).isNotEmpty()
+        }
+    }
+
+    @Test
+    fun `should assign a level to every declaration and to every namespace above it`() {
+        // Act
+        val graph = graphOfJavaSample()
+
+        // Assert
+        assertThat(graph.declarations).allSatisfy { declaration -> assertThat(declaration.level).isNotNull() }
+        assertThat(graph.namespaceLevels).isNotEmpty
+        assertThat(graph.namespaceLevels.values).allSatisfy { level -> assertThat(level).isGreaterThanOrEqualTo(0) }
+    }
+
+    @Test
+    fun `should find cyclic and upward-pointing edges at declaration level too`() {
+        // Act
+        val graph = graphOfJavaSample()
+
+        // Assert
+        assertThat(graph.declarationEdges.filter { it.isCyclic }).isNotEmpty
+        assertThat(graph.declarationEdges.filter { it.isPointingUpwards }).isNotEmpty
+    }
+
+    @Test
+    fun `should record how each declaration uses the one it depends on`() {
+        // Act
+        val graph = graphOfJavaSample()
+
+        // Assert
+        assertThat(graph.declarationEdges).allSatisfy { edge -> assertThat(edge.usage).isNotEmpty() }
+    }
+
+    @Test
+    fun `should carry all four edge types at declaration level`() {
+        // Act
+        val graph = graphOfJavaSample()
+
+        // Assert: regular, cyclic, container-level feedback and leaf-level feedback all occur in the sample.
+        val edgeTypes = graph.declarationEdges.map { it.isCyclic to it.isPointingUpwards }.toSet()
+        assertThat(edgeTypes).containsExactlyInAnyOrder(false to false, true to false, false to true, true to true)
+    }
+
+    @Test
+    fun `should agree with the file-level projection on every edge that crosses a file boundary`() {
+        // Arrange
+        val graph = graphOfJavaSample()
+        val fileByDeclaration = graph.declarations.associate { it.id to it.filePath }
+        val filePairsWithAnEdge = graph.edges.map { it.fromPath to it.toPath }.toSet()
+
+        // Act
+        val crossFileLeafEdges = graph.declarationEdges
+            .map { fileByDeclaration.getValue(it.fromId) to fileByDeclaration.getValue(it.toId) }
+            .filter { (fromFile, toFile) -> fromFile != toFile }
+
+        // Assert: the file graph is the leaf graph folded onto files, so it can lose only the edges
+        // between two declarations of one file.
+        assertThat(crossFileLeafEdges).isNotEmpty
+        assertThat(filePairsWithAnEdge).containsAll(crossFileLeafEdges)
+    }
+
+    @Test
+    fun `should keep an edge between two declarations of one file that the file projection cannot carry`() {
+        // Arrange: two classes in one file, one using the other. This is the signal the physical view loses.
+        val source =
+            """
+            package de.sots;
+
+            public class Outer {
+                private Inner inner = new Inner();
+            }
+
+            class Inner {
+            }
+            """.trimIndent()
+        val sampleDirectory = createTempDirectory("intra-file-dependency").toFile()
+        sampleDirectory.deleteOnExit()
+        File(sampleDirectory, "Outer.java").writeText(source)
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.JAVA), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarationEdges.map { it.fromId to it.toId }).contains("de.sots.Outer" to "de.sots.Inner")
+        assertThat(graph.edges).isEmpty()
+    }
+
+    @Test
     fun `should keep the dependencies but skip cycles and levels when graph analysis is omitted`() {
         // Act
         val graph = graphOfJavaSample(omitGraphAnalysis = true)
 
-        // Assert
+        // Assert: both projections lose their flags and levels, since both levelizations are skipped.
         assertThat(graph.edges).isNotEmpty
         assertThat(graph.edges).allSatisfy { edge ->
             assertThat(edge.isCyclic).isFalse()
             assertThat(edge.isPointingUpwards).isFalse()
         }
         assertThat(graph.levels).isEmpty()
+        assertThat(graph.declarationEdges).isNotEmpty
+        assertThat(graph.declarationEdges).allSatisfy { edge ->
+            assertThat(edge.isCyclic).isFalse()
+            assertThat(edge.isPointingUpwards).isFalse()
+        }
+        assertThat(graph.declarations).allSatisfy { declaration -> assertThat(declaration.level).isNull() }
+        assertThat(graph.namespaceLevels).isEmpty()
     }
 
     @Test
@@ -104,6 +225,8 @@ class ProcessingPipelineTest {
         // Assert
         assertThat(graph.edges).isEmpty()
         assertThat(graph.levels).isEmpty()
+        assertThat(graph.declarations).isEmpty()
+        assertThat(graph.declarationEdges).isEmpty()
     }
 
     @Test
@@ -127,5 +250,8 @@ class ProcessingPipelineTest {
         // Assert
         assertThat(second.edges).isEqualTo(first.edges)
         assertThat(second.levels).isEqualTo(first.levels)
+        assertThat(second.declarations).isEqualTo(first.declarations)
+        assertThat(second.declarationEdges).isEqualTo(first.declarationEdges)
+        assertThat(second.namespaceLevels).isEqualTo(first.namespaceLevels)
     }
 }

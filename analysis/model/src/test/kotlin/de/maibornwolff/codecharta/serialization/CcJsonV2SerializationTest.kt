@@ -5,12 +5,15 @@ import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.BlacklistItem
 import de.maibornwolff.codecharta.model.BlacklistType
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.DomainNode
 import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
@@ -780,6 +783,109 @@ class CcJsonV2SerializationTest {
         assertFalse(dependencyLens.has("nodes"))
         assertFalse(dependencyLens.getAsJsonArray("edges").first().asJsonObject.has("isCyclic"))
         assertFalse(dependencyLens.getAsJsonArray("edges").first().asJsonObject.has("isPointingUpwards"))
+    }
+
+    @Test
+    fun `should omit the logical layer of a project that carries only the physical one`() {
+        // Guards the additive promise for the logical tables: a producer that emits only the file-collapsed
+        // graph writes exactly what it wrote before they existed, hence the pinned checksum above still holds.
+        val dependencyLens =
+            JsonParser
+                .parseString(ProjectSerializer.serializeToString(sampleProject()))
+                .asJsonObject
+                .getAsJsonObject("lenses")
+                .getAsJsonObject("dependency")
+
+        assertFalse(dependencyLens.has("namespaces"))
+        assertFalse(dependencyLens.has("leaves"))
+        assertFalse(dependencyLens.has("leafEdges"))
+    }
+
+    @Test
+    fun `should round-trip the logical layer of a project that carries both projections`() {
+        // Act
+        val readBack = ProjectDeserializer.deserializeProject(ProjectSerializer.serializeToString(logicalLayerProject()))
+
+        // Assert
+        val dependency = readBack.lenses.dependency
+        assertEquals(mapOf("com.example.domain" to DependencyNamespace(0)), dependency.namespaces)
+        assertEquals(
+            DependencyLeaf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), "Creature", "CLASS", 2),
+            dependency.leaves["com.example.domain.Creature"]
+        )
+        val leafEdge = dependency.leafEdges.single()
+        assertEquals("com.example.domain.Creature", leafEdge.fromLeaf)
+        assertEquals(listOf("inheritance"), leafEdge.usage)
+        assertTrue(leafEdge.isCyclic)
+        assertTrue(leafEdge.isPointingUpwards)
+    }
+
+    @Test
+    fun `should omit the graph flags and the usage of a leaf edge that carries none`() {
+        val plainLeafEdge =
+            JsonParser
+                .parseString(ProjectSerializer.serializeToString(logicalLayerProject(usage = emptyList(), flagged = false)))
+                .asJsonObject
+                .getAsJsonObject("lenses")
+                .getAsJsonObject("dependency")
+                .getAsJsonArray("leafEdges")
+                .first()
+                .asJsonObject
+
+        assertFalse(plainLeafEdge.has("usage"))
+        assertFalse(plainLeafEdge.has("isCyclic"))
+        assertFalse(plainLeafEdge.has("isPointingUpwards"))
+    }
+
+    @Test
+    fun `should drop a leaf whose node id resolves to no file node, and the leaf edges that touched it`() {
+        // Arrange: a leaf pointing at an id no node carries, as a hand-authored 2.0 file could hold.
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(logicalLayerProject())).asJsonObject
+        with20
+            .getAsJsonObject("lenses")
+            .getAsJsonObject("dependency")
+            .getAsJsonObject("leaves")
+            .add("com.example.domain.Ghost", JsonParser.parseString("""{"nodeId":"ghost-id","name":"Ghost","kind":"CLASS"}"""))
+
+        // Act
+        val readBack = ProjectDeserializer.deserializeProject(with20.toString())
+
+        // Assert
+        assertFalse(readBack.lenses.dependency.leaves.containsKey("com.example.domain.Ghost"))
+        assertEquals(2, readBack.lenses.dependency.leaves.size)
+    }
+
+    private fun logicalLayerProject(usage: List<String> = listOf("inheritance"), flagged: Boolean = true): Project {
+        val appNode = Node("App.kt", NodeType.File, mapOf("rloc" to 120.0), "", setOf())
+        val otherNode = Node("Other.kt", NodeType.File, mapOf("rloc" to 30.0), "", setOf())
+        val root =
+            Node("root", NodeType.Folder, emptyMap(), "", setOf(Node("src", NodeType.Folder, emptyMap(), "", setOf(appNode, otherNode))))
+        val lenses =
+            LensSet(
+                dependency =
+                    DependencyLens(
+                        namespaces = mapOf("com.example.domain" to DependencyNamespace(0)),
+                        leaves =
+                            mapOf(
+                                "com.example.domain.Creature" to
+                                    DependencyLeaf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), "Creature", "CLASS", 2),
+                                "com.example.domain.HitPoints" to
+                                    DependencyLeaf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File), "HitPoints", "CLASS", 0)
+                            ),
+                        leafEdges =
+                            listOf(
+                                LeafEdge(
+                                    "com.example.domain.Creature",
+                                    "com.example.domain.HitPoints",
+                                    mapOf("dependencies" to 1L),
+                                    usage,
+                                    isCyclic = flagged,
+                                    isPointingUpwards = flagged
+                                )
+                            )
+                    )
+            )
+        return Project("logical", listOf(root), Project.API_VERSION, lenses)
     }
 
     @Test

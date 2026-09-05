@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.EdgeDto
 import de.maibornwolff.codecharta.serialization.dto.FileDto
+import de.maibornwolff.codecharta.serialization.dto.LeafEdgeDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
@@ -75,7 +76,22 @@ object ProjectToCcJsonV2Mapper {
                     },
                 attributeTypes = project.lenses.dependency.attributeTypes,
                 attributeDescriptors = project.lenses.dependency.attributeDescriptors,
-                nodes = project.lenses.dependency.nodes.takeIf { it.isNotEmpty() }
+                nodes = project.lenses.dependency.nodes.takeIf { it.isNotEmpty() },
+                namespaces = project.lenses.dependency.namespaces.takeIf { it.isNotEmpty() },
+                leaves = project.lenses.dependency.leaves.takeIf { it.isNotEmpty() },
+                leafEdges =
+                    project.lenses.dependency.leafEdges
+                        .takeIf { it.isNotEmpty() }
+                        ?.map {
+                            LeafEdgeDto(
+                                it.fromLeaf,
+                                it.toLeaf,
+                                it.attributes,
+                                it.usage.takeIf { usage -> usage.isNotEmpty() },
+                                it.isCyclic.orNullWhenFalse(),
+                                it.isPointingUpwards.orNullWhenFalse()
+                            )
+                        }
             )
         return files to
             LensesDto(
