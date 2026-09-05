@@ -221,7 +221,38 @@
         }
       ],
       "attributeTypes": {},
-      "attributeDescriptors": {}
+      "attributeDescriptors": {},
+      "namespaces": {
+        "com.example": {
+          "level": 0
+        }
+      },
+      "leaves": {
+        "com.example.File1": {
+          "nodeId": "2f6cb0760e30e5d6",
+          "name": "File1",
+          "kind": "CLASS",
+          "level": 1
+        },
+        "com.example.File2": {
+          "nodeId": "59690b3e49b79bb1",
+          "name": "File2",
+          "kind": "CLASS",
+          "level": 0
+        }
+      },
+      "leafEdges": [
+        {
+          "fromLeaf": "com.example.File1",
+          "toLeaf": "com.example.File2",
+          "attributes": {
+            "dependencies": 1
+          },
+          "usage": [
+            "inheritance"
+          ]
+        }
+      ]
     },
     "domain": {
       "nodes": {

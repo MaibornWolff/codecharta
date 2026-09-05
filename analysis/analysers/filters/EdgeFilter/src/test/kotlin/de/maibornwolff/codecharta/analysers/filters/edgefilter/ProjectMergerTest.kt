@@ -3,9 +3,13 @@ package de.maibornwolff.codecharta.analysers.filters.edgefilter
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.DependencyLeaf
+import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -45,6 +49,38 @@ class ProjectMergerTest {
             assertEquals(getAttributeValue(curLeaf.attributes, "pairingRate"), expectedPairingRates[i])
             assertEquals(getAttributeValue(curLeaf.attributes, "avgCommits"), expectedAvgCommits[i])
         }
+    }
+
+    @Test
+    fun `should carry the logical layer through untouched`() {
+        // Arrange: edgefilter reads `edges` only, and re-paths nothing, so the logical tables must survive
+        // its rebuild of the tree byte for byte.
+        val originalProject =
+            ProjectDeserializer.deserializeProject(
+                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)!!)
+            )
+        val leafFileNodeId = NodeId.fromSegments(listOf("leaf 1"), NodeType.File)
+        val logical =
+            originalProject.lenses.dependency.copy(
+                namespaces = mapOf("com.example" to DependencyNamespace(1)),
+                leaves = mapOf("com.example.Leaf" to DependencyLeaf(leafFileNodeId, "Leaf", "CLASS", 2)),
+                leafEdges = listOf(LeafEdge("com.example.Leaf", "com.example.Leaf", mapOf("dependencies" to 2), listOf("usage")))
+            )
+        val projectWithLogicalLayer =
+            Project(
+                originalProject.projectName,
+                listOf(originalProject.rootNode),
+                originalProject.apiVersion,
+                originalProject.lenses.copy(dependency = logical)
+            )
+
+        // Act
+        val project = EdgeProjectBuilder(projectWithLogicalLayer, '/').merge()
+
+        // Assert
+        assertEquals(logical.namespaces, project.lenses.dependency.namespaces)
+        assertEquals(logical.leaves, project.lenses.dependency.leaves)
+        assertEquals(logical.leafEdges, project.lenses.dependency.leafEdges)
     }
 
     @Test

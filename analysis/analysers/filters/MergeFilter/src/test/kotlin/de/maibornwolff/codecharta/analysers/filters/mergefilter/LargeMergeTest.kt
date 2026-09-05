@@ -1,11 +1,14 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.DomainNode
 import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
@@ -25,6 +28,33 @@ class LargeMergeTest {
         apiVersion = "2.0",
         lenses = lenses
     )
+
+    @Test
+    fun `should re-point a leaf at the wrapped file while keeping its logical key and namespaces`() {
+        // Arrange
+        val fileId = NodeId.fromSegments(listOf("file.kt"), NodeType.File)
+        val project = rootProject(
+            lenses = LensSet(
+                dependency = DependencyLens(
+                    namespaces = mapOf("com.example" to DependencyNamespace(0)),
+                    leaves = mapOf("com.example.File" to DependencyLeaf(fileId, "File", "CLASS", 1)),
+                    leafEdges = listOf(LeafEdge("com.example.File", "com.example.File"))
+                )
+            )
+        )
+
+        // Act
+        val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
+
+        // Assert: the package did not move into the folder, the file did.
+        val dependency = wrapped.lenses.dependency
+        assertEquals(mapOf("com.example" to DependencyNamespace(0)), dependency.namespaces)
+        assertEquals(
+            NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File),
+            dependency.leaves.getValue("com.example.File").nodeId
+        )
+        assertEquals(1, dependency.leafEdges.size)
+    }
 
     @Test
     fun `should wrap nodes under the prefix folder and re-path edges while keeping node attributes`() {
