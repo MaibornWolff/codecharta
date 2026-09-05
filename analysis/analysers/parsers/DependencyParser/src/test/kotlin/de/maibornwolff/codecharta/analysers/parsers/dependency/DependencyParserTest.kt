@@ -179,6 +179,85 @@ class DependencyParserTest {
     }
 
     @Test
+    fun `should analyse only that file when the input is a single file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        dependingFiles(tempDir)
+
+        // Act
+        val output = runParser(tempDir.resolve("InventoryService.kt").toString())
+
+        // Assert
+        assertThat(output).contains("InventoryService.kt")
+        assertThat(output).doesNotContain("InventoryItem.kt")
+    }
+
+    @Test
+    fun `should exclude files matching the exclude patterns`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+
+        // Act
+        val output = runParser(projectDir, "-e", "Item")
+
+        // Assert
+        assertThat(output).contains("InventoryService.kt")
+        assertThat(output).doesNotContain("InventoryItem.kt")
+    }
+
+    @Test
+    fun `should exclude build folders when the project has no gitignore`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+        tempDir.resolve("build").createDirectories()
+        tempDir.resolve("build/Generated.kt").writeText("package shop\n\nclass Generated")
+
+        // Act
+        val output = runParser(projectDir)
+
+        // Assert
+        assertThat(output).contains("InventoryService.kt")
+        assertThat(output).doesNotContain("Generated.kt")
+    }
+
+    @Test
+    fun `should include build folders when asked to`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+        tempDir.resolve("build").createDirectories()
+        tempDir.resolve("build/Generated.kt").writeText("package shop\n\nclass Generated")
+
+        // Act
+        val output = runParser(projectDir, "--include-build-folders")
+
+        // Assert
+        assertThat(output).contains("Generated.kt")
+    }
+
+    @Test
+    fun `should refuse the options that only make sense for a per-file analysis`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+
+        // Act
+        val baseFileExitCode = CommandLine(DependencyParser()).execute(projectDir, "--base-file", "base.cc.json")
+        val localChangesExitCode = CommandLine(DependencyParser()).execute(projectDir, "--local-changes")
+
+        // Assert
+        assertThat(baseFileExitCode).isNotZero()
+        assertThat(localChangesExitCode).isNotZero()
+    }
+
+    @Test
     fun `should warn and continue when the piped project cannot be deserialized`(
         @TempDir tempDir: Path
     ) {

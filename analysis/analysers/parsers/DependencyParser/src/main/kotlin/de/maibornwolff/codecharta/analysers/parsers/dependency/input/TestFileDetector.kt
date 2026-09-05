@@ -42,6 +42,6 @@ class TestFileDetector(private val analysisRoot: File) {
     }
 
     companion object {
-        private val TEST_DIRECTORIES = setOf("test", "tests", "__tests__", "spec", "specs")
+        private val TEST_DIRECTORIES = setOf("test", "tests", "__tests__")
     }
 }

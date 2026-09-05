@@ -29,12 +29,14 @@ class ExtractionPipeline(
     private val maxConcurrency: Int = Runtime.getRuntime().availableProcessors(),
     private val fileTimeoutSeconds: Int = NO_FILE_TIMEOUT
 ) {
-    fun run(analysisRoot: File, bypassGitignore: Boolean): List<FileReport> {
-        val sourceFiles = fileScanner.scan(analysisRoot.path, bypassGitignore)
+    /** [input] is a project directory or a single source file; see [analysisRootOf] for what it is judged against. */
+    fun run(input: File, bypassGitignore: Boolean): List<FileReport> {
+        val sourceFiles = fileScanner.scan(input.path, bypassGitignore)
         if (sourceFiles.isEmpty()) {
-            Logger.warn { "No supported source files found under ${analysisRoot.path}" }
+            Logger.warn { "No supported source files found under ${input.path}" }
             return emptyList()
         }
+        val analysisRoot = analysisRootOf(input)
 
         progressReporter.startPhase("Extracting dependencies", sourceFiles.size.toLong())
         val reports = runBlocking { analyzeInParallel(sourceFiles, analysisRoot) }
@@ -84,12 +86,17 @@ class ExtractionPipeline(
         )
     }
 
-    // A single-file input has no path relative to its own directory, so the file name stands in for it.
     private fun relativePathOf(sourceFile: File, analysisRoot: File): String =
-        sourceFile.toRelativeString(analysisRoot).ifEmpty { sourceFile.name }
+        sourceFile.absoluteFile.toRelativeString(analysisRoot.absoluteFile)
 
     companion object {
         const val NO_FILE_TIMEOUT = 0
+
+        /**
+         * A single file is a legal input, but the directory around it still defines the analysis: tsconfig
+         * and bundler configs are looked up from it, and the paths nodes are keyed by are relative to it.
+         */
+        fun analysisRootOf(input: File): File = if (input.isFile) input.absoluteFile.parentFile else input
 
         private const val MILLIS_PER_SECOND = 1000L
     }

@@ -11,10 +11,49 @@ class FileScannerTest {
         directory: String = "",
         extensions: List<String> = SupportedLanguage.allSuffixes(),
         maxFileSizeKb: Int = FileScanner.NO_FILE_SIZE_LIMIT,
-        excludeTests: Boolean = true
-    ): List<String> = FileScanner(extensions, maxFileSizeKb, excludeTests)
+        excludeTests: Boolean = true,
+        excludePatterns: List<String> = emptyList()
+    ): List<String> = FileScanner(extensions, maxFileSizeKb, excludeTests, excludePatterns)
         .scan(File(fixtures, directory).path, bypassGitignore = true)
         .map { it.name }
+
+    @Test
+    fun `should exclude files whose path inside the project matches an exclude pattern`() {
+        // Act
+        val found = scan(directory = "custom-exclusions", excludePatterns = listOf("/generated/", "Vendor"))
+
+        // Assert
+        assertThat(found).containsExactly("App.java")
+    }
+
+    @Test
+    fun `should not enter a directory that matches an exclude pattern`() {
+        // Act
+        val found = scan(directory = "ignoreddirectories", excludePatterns = listOf("/node_modules/"), excludeTests = false)
+
+        // Assert
+        assertThat(found).containsExactly("Test.ts")
+    }
+
+    @Test
+    fun `should match exclude patterns against the path inside the project, not the absolute one`() {
+        // Arrange: the fixture root itself lives under `src/test/resources`, which this pattern would match.
+
+        // Act
+        val found = scan(directory = "custom-exclusions", excludePatterns = listOf("/resources/"))
+
+        // Assert
+        assertThat(found).containsExactlyInAnyOrder("App.java", "Gen.java", "Vendor.java")
+    }
+
+    @Test
+    fun `should return files in path order so results do not depend on the directory listing`() {
+        // Act
+        val found = FileScanner(SupportedLanguage.allSuffixes()).scan(fixtures.path, bypassGitignore = true).map { it.path }
+
+        // Assert
+        assertThat(found).hasSizeGreaterThan(1).isSorted()
+    }
 
     @Test
     fun `should find only files of a supported language`() {
