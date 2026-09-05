@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class NodeTest {
     @Test
     fun `should resolve types of usedTypes correctly`() {
-        // given
+        // Arrange
         val bookPath = Path(listOf("de", "maibornwolff", "dependacharta", "analysis", "Model", "Book"))
         val stringPath = Path(listOf("java", "lang", "String"))
         val intPath = Path(listOf("int"))
@@ -34,10 +34,10 @@ class NodeTest {
             )
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val usedTypes = resolvedNode.usedTypes
         val paths = usedTypes.mapNotNull { it.resolvedPath }
         Assertions.assertThat(paths).containsExactlyInAnyOrder(stringPath, intPath, bookPath)
@@ -45,7 +45,7 @@ class NodeTest {
 
     @Test
     fun `should resolve scoped types of usedTypes correctly`() {
-        // given
+        // Arrange
         val bookPath = Path(listOf("de", "maibornwolff", "dependacharta", "analysis", "Model", "Book"))
         val stringPath = Path(listOf("java", "lang", "String"))
         val intPath = Path(listOf("int"))
@@ -72,10 +72,10 @@ class NodeTest {
             )
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val usedTypes = resolvedNode.usedTypes
         val paths = usedTypes.mapNotNull { it.resolvedPath }
         Assertions.assertThat(paths).containsExactlyInAnyOrder(stringPath, intPath, bookPath)
@@ -84,7 +84,7 @@ class NodeTest {
 
     @Test
     fun `should resolve fully qualified types of usedTypes correctly`() {
-        // given
+        // Arrange
         val bookPath = Path("analysis.Model.Book".split("."))
         val anotherBookPath = Path("analysis.OtherModel.Book".split("."))
         val projectDictionary = mapOf("Book" to listOf(bookPath, anotherBookPath))
@@ -99,11 +99,11 @@ class NodeTest {
             )
         )
 
-        // when
+        // Act
         val languageDictionary = emptyMap<String, Path>()
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val usedTypes = resolvedNode.usedTypes
         val paths = usedTypes.mapNotNull { it.resolvedPath }
         Assertions.assertThat(paths).containsExactlyInAnyOrder(bookPath)
@@ -112,7 +112,7 @@ class NodeTest {
 
     @Test
     fun `should resolve partly qualified types of usedTypes correctly`() {
-        // given
+        // Arrange
         val bookPath = Path("analysis.Model.Book".split("."))
         val anotherBookPath = Path("analysis.OtherModel.Book".split("."))
         val analysisPath = Path("analysis".split("."))
@@ -128,11 +128,11 @@ class NodeTest {
             )
         )
 
-        // when
+        // Act
         val languageDictionary = emptyMap<String, Path>()
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val usedTypes = resolvedNode.usedTypes
         val paths = usedTypes.mapNotNull { it.resolvedPath }
         Assertions.assertThat(paths).containsExactlyInAnyOrder(anotherBookPath)
@@ -166,14 +166,14 @@ class NodeTest {
             )
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(
             projectDictionary,
             languageDictionary,
             setOf(parentPath.withDots(), nestedPath.withDots())
         )
 
-        // then
+        // Assert
         val internalDeps = resolvedNode.resolvedNodeDependencies.internalDependencies
         // Should resolve both the parent and nested class as dependencies
         Assertions.assertThat(internalDeps.map { it.path }).containsExactlyInAnyOrder(parentPath, nestedPath)
@@ -200,14 +200,14 @@ class NodeTest {
             usedTypes = setOf(Type.simple("Parent.Nested"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(
             projectDictionary,
             languageDictionary,
             setOf(parentPath.withDots(), nestedPath.withDots())
         )
 
-        // then
+        // Assert
         val internalDeps = resolvedNode.resolvedNodeDependencies.internalDependencies
         Assertions.assertThat(internalDeps.map { it.path }).contains(nestedPath)
     }
@@ -244,14 +244,14 @@ class NodeTest {
             )
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(
             projectDictionary,
             languageDictionary,
             setOf(extractionStrategyPath.withDots(), allChildrenByTypePath.withDots())
         )
 
-        // then
+        // Assert
         val internalDeps = resolvedNode.resolvedNodeDependencies.internalDependencies
 
         // Should resolve BOTH ExtractionStrategy AND AllChildrenByType as dependencies
@@ -263,7 +263,7 @@ class NodeTest {
 
     @Test
     fun `should filter out self-references when resolving types`() {
-        // given
+        // Arrange
         val hitPointsPath = Path(listOf("de", "domain", "model", "HitPoints"))
         val packagePath = Path(listOf("de", "domain", "model"))
 
@@ -281,10 +281,10 @@ class NodeTest {
             usedTypes = setOf(Type.simple("HitPoints"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf(hitPointsPath.withDots()))
 
-        // then
+        // Assert
         val internalDeps = resolvedNode.resolvedNodeDependencies.internalDependencies
         Assertions.assertThat(internalDeps).isEmpty()
     }

@@ -49,14 +49,14 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should name a node after its file with a script suffix when the file declares nothing`() {
-        // given
+        // Arrange
         val code = """
             <?php
             use php\fancy\namespace;
             echo "Hello World!";
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -65,7 +65,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -75,7 +75,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert physical path to correct path with names`() {
-        // given
+        // Arrange
         val code = """
             <?php
             class Person {
@@ -84,7 +84,7 @@ class PhpAnalyzerTest {
         """.trimIndent()
         val physicalPath = File("MyExample/Path/PhpAnalyzerTest.php").path
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -93,7 +93,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("pathWithName")
             .containsExactly(
@@ -103,7 +103,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert namespace to correct path instead of physical path if namespace is present`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace de\analyzer\php;
@@ -113,7 +113,7 @@ class PhpAnalyzerTest {
         """.trimIndent()
         val physicalPath = File("MyExample/Path/PhpAnalyzerTest.php").path
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -122,7 +122,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("pathWithName")
             .containsExactly(
@@ -132,14 +132,14 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert function outside of class body to node with type FUNCTION`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\function;
             function myGreatFunction() {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -148,7 +148,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -158,7 +158,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert interface to node with type INTERFACE`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\interface;
@@ -167,7 +167,7 @@ class PhpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -176,7 +176,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -186,7 +186,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert enum to node with type ENUM`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\enum;
@@ -197,7 +197,7 @@ class PhpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -206,7 +206,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -216,7 +216,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert constant declared by define function to node with type VARIABLE`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\variable;
@@ -226,7 +226,7 @@ class PhpAnalyzerTest {
             shouldNotBeIncluded("argument1", "argument2");
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -235,7 +235,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactlyInAnyOrder(
@@ -247,7 +247,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `should convert constant to node with type VARIABLE only when declaration is outside of class body`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\variable;
@@ -259,7 +259,7 @@ class PhpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -268,7 +268,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactlyInAnyOrder(
@@ -280,7 +280,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `import and usage of constant declared on namespace level should create dependency on constant and add constant to used types`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\import;
@@ -291,7 +291,7 @@ class PhpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -300,7 +300,7 @@ class PhpAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(
                 path = Path(listOf("php", "variable", "MY_CONSTANT"))
@@ -318,7 +318,7 @@ class PhpAnalyzerTest {
 
     @Test
     fun `usage of constant declared in another class should create type in node`() {
-        // given
+        // Arrange
         val code = """
 <?php
 
@@ -337,7 +337,7 @@ class ArmorClass
 }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -346,7 +346,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("ArmorUtilClass", TypeOfUsage.CONSTANT_ACCESS)
         )
@@ -357,7 +357,7 @@ class ArmorClass
 
     @Test
     fun `should add own namespace to dependencies with wildcard`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\import;
@@ -367,7 +367,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -376,7 +376,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(
                 path = Path(listOf("php", "import")),
@@ -393,7 +393,7 @@ class ArmorClass
 
     @Test
     fun `should add namespace usages to dependencies of a node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\import;
@@ -404,7 +404,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -413,7 +413,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(
                 path = Path(listOf("php", "vertebrates", "Cat"))
@@ -432,7 +432,7 @@ class ArmorClass
 
     @Test
     fun `should add original type of aliased namespace usage to dependencies of a node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\import;
@@ -442,7 +442,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -451,7 +451,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(
                 path = Path(listOf("php", "invertebrates", "Bee"))
@@ -464,7 +464,7 @@ class ArmorClass
 
     @Test
     fun `should add original type of aliased namespace usage to usedTypes of a node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\import;
@@ -478,7 +478,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -487,7 +487,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedUsedTypes = listOf(
             Type.simple("Bee", TypeOfUsage.INHERITANCE),
             Type.simple("Dog", TypeOfUsage.INHERITANCE)
@@ -499,7 +499,7 @@ class ArmorClass
 
     @Test
     fun `should add require statements with relative path of node to dependencies of a node`() {
-        // given
+        // Arrange
         val code = """
              <?php
             require_once '../../../model/Creature.php';
@@ -510,7 +510,7 @@ class ArmorClass
 
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -519,7 +519,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(Path(listOf("src", "de", "model", "Creature"))),
             Dependency(Path(listOf("src", "de", "sots", "domain", "model", "OtherCreature")))
@@ -531,7 +531,7 @@ class ArmorClass
 
     @Test
     fun `should add require statements with relative path of namespace if present to dependencies of a node`() {
-        // given
+        // Arrange
         val code = """
              <?php
             namespace de\sots\adapter\persistence;
@@ -543,7 +543,7 @@ class ArmorClass
 
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -552,7 +552,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(Path(listOf("de", "model", "Creature"))),
             Dependency(Path(listOf("de", "sots", "domain", "model", "OtherCreature")))
@@ -564,7 +564,7 @@ class ArmorClass
 
     @Test
     fun `should add include statements with relative path to dependencies of a node`() {
-        // given
+        // Arrange
         val code = """
              <?php
             include_once '../../../domain/model/Creature.php';
@@ -575,7 +575,7 @@ class ArmorClass
 
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -584,7 +584,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(Path(listOf("php", "domain", "model", "Creature"))),
             Dependency(Path(listOf("php", "test", "domain", "model", "OtherCreature")))
@@ -596,7 +596,7 @@ class ArmorClass
 
     @Test
     fun `should add used type of class property to usedTypes of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -609,7 +609,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -618,7 +618,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedUsedTypes = setOf(
             Type.simple("Cat"),
             Type.simple("Bee")
@@ -629,7 +629,7 @@ class ArmorClass
     }
 
     @Test fun `should add inherited type to used types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -639,7 +639,7 @@ class ArmorClass
             class Person extends Human{
             }
         """.trimIndent()
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -648,7 +648,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Human", TypeOfUsage.INHERITANCE)
         )
@@ -658,7 +658,7 @@ class ArmorClass
     }
 
     @Test fun `should add implemented type to used types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -668,7 +668,7 @@ class ArmorClass
             class Person implements Human, Animal{
             }
         """.trimIndent()
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -677,7 +677,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Human", TypeOfUsage.IMPLEMENTATION),
             Type.simple("Animal", TypeOfUsage.IMPLEMENTATION)
@@ -688,7 +688,7 @@ class ArmorClass
     }
 
     @Test fun `should add inherited and implemented types to used types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -698,7 +698,7 @@ class ArmorClass
             class Person extends Animal implements Human, {
             }
         """.trimIndent()
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -707,7 +707,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Human", TypeOfUsage.IMPLEMENTATION),
             Type.simple("Animal", TypeOfUsage.INHERITANCE)
@@ -719,7 +719,7 @@ class ArmorClass
 
     @Test
     fun `should add types of new statements to types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -740,7 +740,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -749,7 +749,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Cat", TypeOfUsage.INSTANTIATION),
             Type.simple("Dog", TypeOfUsage.INSTANTIATION),
@@ -762,7 +762,7 @@ class ArmorClass
 
     @Test
     fun `should add types of function arguments to types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -781,7 +781,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -790,7 +790,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Cat", TypeOfUsage.ARGUMENT),
             Type.simple("Dog", TypeOfUsage.ARGUMENT),
@@ -803,7 +803,7 @@ class ArmorClass
 
     @Test
     fun `should add return types of function to types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -825,7 +825,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -834,7 +834,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Cat", TypeOfUsage.RETURN_VALUE),
             Type.simple("Dog", TypeOfUsage.RETURN_VALUE),
@@ -847,7 +847,7 @@ class ArmorClass
 
     @Test
     fun `should add static function access to used types of a Node`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\test\analyzer;
@@ -873,7 +873,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -882,7 +882,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedInheritedTypes = setOf(
             Type.simple("Animal")
         )
@@ -893,7 +893,7 @@ class ArmorClass
 
     @Test
     fun `should convert traits to node with type CLASS`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\traits;
@@ -902,7 +902,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -911,7 +911,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -921,7 +921,7 @@ class ArmorClass
 
     @Test
     fun `should add trait to used types of a Node if its used inside of a class`() {
-        // given
+        // Arrange
         val code = """
             <?php
             namespace php\traits;
@@ -932,7 +932,7 @@ class ArmorClass
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = PhpAnalyzer(
             FileInfo(
                 SupportedLanguage.PHP,
@@ -941,7 +941,7 @@ class ArmorClass
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedUsedTypes = setOf(
             Type.simple("MyTrait")
         )

@@ -6,49 +6,49 @@ import org.junit.jupiter.api.Test
 class FileUtilsTest {
     @Test
     fun `should split unix-style path into parts`() {
-        // Given
+        // Arrange
         val path = "src/main/kotlin/MyFile.kt"
 
-        // When
+        // Act
         val parts = splitNameToParts(path)
 
-        // Then
+        // Assert
         assertThat(parts).containsExactly("src", "main", "kotlin", "MyFile.kt")
     }
 
     @Test
     fun `should split single filename without directory`() {
-        // Given
+        // Arrange
         val path = "MyFile.kt"
 
-        // When
+        // Act
         val parts = splitNameToParts(path)
 
-        // Then
+        // Assert
         assertThat(parts).containsExactly("MyFile.kt")
     }
 
     @Test
     fun `should handle path with trailing slash`() {
-        // Given
+        // Arrange
         val path = "src/main/"
 
-        // When
+        // Act
         val parts = splitNameToParts(path)
 
-        // Then
+        // Assert
         assertThat(parts).containsExactly("src", "main")
     }
 
     @Test
     fun `should handle empty string`() {
-        // Given
+        // Arrange
         val path = ""
 
-        // When
+        // Act
         val parts = splitNameToParts(path)
 
-        // Then
+        // Assert
         assertThat(parts).isEmpty()
     }
 }

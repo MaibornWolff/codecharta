@@ -9,7 +9,7 @@ class GoPackageQueryDerivePathTest {
 
     @Test
     fun `should use directory structure for main packages`() {
-        // Given
+        // Arrange
         val testCases = listOf(
             Triple("cmd/server/main.go", listOf("main"), listOf("cmd", "server")),
             Triple("cmd/cc/main.go", listOf("main"), listOf("cmd", "cc")),
@@ -20,10 +20,10 @@ class GoPackageQueryDerivePathTest {
         )
 
         testCases.forEach { (filePath, packageName, expected) ->
-            // When
+            // Act
             val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-            // Then
+            // Assert
             assertThat(result)
                 .withFailMessage("For filePath='$filePath' and packageName=$packageName, expected $expected but got $result")
                 .isEqualTo(expected)
@@ -32,7 +32,7 @@ class GoPackageQueryDerivePathTest {
 
     @Test
     fun `should use directory structure for non-main packages`() {
-        // Given
+        // Arrange
         val testCases = listOf(
             Triple("cleaner/module.go", listOf("cleaner"), listOf("cleaner")),
             Triple("internal/core/utils.go", listOf("core"), listOf("internal", "core")),
@@ -42,10 +42,10 @@ class GoPackageQueryDerivePathTest {
         )
 
         testCases.forEach { (filePath, packageName, expected) ->
-            // When
+            // Act
             val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-            // Then
+            // Assert
             assertThat(result)
                 .withFailMessage("For filePath='$filePath' and packageName=$packageName, expected $expected but got $result")
                 .isEqualTo(expected)
@@ -54,31 +54,31 @@ class GoPackageQueryDerivePathTest {
 
     @Test
     fun `should handle edge cases`() {
-        // When/Then - empty package name uses directory
+        // Act/Then - empty package name uses directory
         assertThat(goPackageQuery.derivePackagePathFromFilePath("some/path/file.go", emptyList()))
             .isEqualTo(listOf("some", "path"))
 
-        // When/Then - root file with package uses package name
+        // Act/Then - root file with package uses package name
         assertThat(goPackageQuery.derivePackagePathFromFilePath("file.go", listOf("mypackage")))
             .isEqualTo(listOf("mypackage"))
 
-        // When/Then - directory without extension
+        // Act/Then - directory without extension
         assertThat(goPackageQuery.derivePackagePathFromFilePath("some/path", listOf("mypackage")))
             .isEqualTo(listOf("some", "path"))
     }
 
     @Test
     fun `should handle Windows-style paths`() {
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath("cmd\\server\\main.go", listOf("main"))
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("cmd", "server"))
     }
 
     @Test
     fun `should trim leading dots and slashes`() {
-        // Given
+        // Arrange
         val testCases = listOf(
             "./cmd/server/main.go" to listOf("cmd", "server"),
             "../cmd/server/main.go" to listOf("cmd", "server"),
@@ -86,10 +86,10 @@ class GoPackageQueryDerivePathTest {
         )
 
         testCases.forEach { (filePath, expected) ->
-            // When
+            // Act
             val result = goPackageQuery.derivePackagePathFromFilePath(filePath, listOf("main"))
 
-            // Then
+            // Assert
             assertThat(result)
                 .withFailMessage("For filePath='$filePath', expected $expected but got $result")
                 .isEqualTo(expected)
@@ -98,11 +98,11 @@ class GoPackageQueryDerivePathTest {
 
     @Test
     fun `should ensure unique paths for different main packages`() {
-        // When
+        // Act
         val server = goPackageQuery.derivePackagePathFromFilePath("cmd/server/main.go", listOf("main"))
         val cc = goPackageQuery.derivePackagePathFromFilePath("cmd/cc/main.go", listOf("main"))
 
-        // Then
+        // Assert
         assertThat(server).isNotEqualTo(cc)
         assertThat(server).isEqualTo(listOf("cmd", "server"))
         assertThat(cc).isEqualTo(listOf("cmd", "cc"))

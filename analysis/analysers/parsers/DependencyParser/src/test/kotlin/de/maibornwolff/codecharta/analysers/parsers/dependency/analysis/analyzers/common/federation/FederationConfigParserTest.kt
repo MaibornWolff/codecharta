@@ -11,7 +11,7 @@ class FederationConfigParserTest {
 
     @Test
     fun `should parse package json with federation remotes`() {
-        // Given
+        // Arrange
         val packageJson = tempDir.resolve("package.json")
         packageJson.writeText(
             """
@@ -28,10 +28,10 @@ class FederationConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = FederationConfigParser.parse(packageJson)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.name).isEqualTo("appMain")
         assertThat(result?.remotes).containsEntry("Shared", "shared@/app/shared/remoteEntry.js")
@@ -40,7 +40,7 @@ class FederationConfigParserTest {
 
     @Test
     fun `should parse package json with federation exposes`() {
-        // Given
+        // Arrange
         val packageJson = tempDir.resolve("package.json")
         packageJson.writeText(
             """
@@ -57,10 +57,10 @@ class FederationConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = FederationConfigParser.parse(packageJson)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.name).isEqualTo("shared")
         assertThat(result?.exposes).containsEntry("./Utils", "./src/utils.js")
@@ -69,7 +69,7 @@ class FederationConfigParserTest {
 
     @Test
     fun `should return null for package json without federation`() {
-        // Given
+        // Arrange
         val packageJson = tempDir.resolve("package.json")
         packageJson.writeText(
             """
@@ -80,35 +80,35 @@ class FederationConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = FederationConfigParser.parse(packageJson)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should return null for non-existent file`() {
-        // Given
+        // Arrange
         val packageJson = tempDir.resolve("nonexistent.json")
 
-        // When
+        // Act
         val result = FederationConfigParser.parse(packageJson)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should return null for malformed JSON`() {
-        // Given
+        // Arrange
         val packageJson = tempDir.resolve("package.json")
         packageJson.writeText("{ invalid json }")
 
-        // When
+        // Act
         val result = FederationConfigParser.parse(packageJson)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 }

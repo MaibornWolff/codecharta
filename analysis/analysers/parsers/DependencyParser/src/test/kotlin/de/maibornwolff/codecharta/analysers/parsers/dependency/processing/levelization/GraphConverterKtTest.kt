@@ -10,17 +10,17 @@ import org.junit.jupiter.api.Test
 class GraphConverterKtTest {
     @Test
     fun `should create correct tree out of flat nodes`() {
-        // given
+        // Arrange
         val nodes = listOf<Node>(
             createNode("de", "maibornwolff", "class"),
             createNode("de", "maibornwolff", "otherClass"),
             createNode("de", "deutschebahn")
         )
 
-        // when
+        // Act
         val graphNodes = nodes.toGraphNodes()
 
-        // then
+        // Assert
         assertThat(graphNodes.map { it.id }).containsExactlyInAnyOrder("de")
         val de = graphNodes.find { it.id == "de" }
         assertThat(de?.children?.map { it.id }).containsExactlyInAnyOrder("de.maibornwolff", "de.deutschebahn")
@@ -32,25 +32,25 @@ class GraphConverterKtTest {
 
     @Test
     fun `should handle empty list of nodes`() {
-        // given
+        // Arrange
         val nodes = emptyList<Node>()
 
-        // when
+        // Act
         val graphNodes = nodes.toGraphNodes()
 
-        // then
+        // Assert
         assertThat(graphNodes).isEmpty()
     }
 
     @Test
     fun `should handle single node`() {
-        // given
+        // Arrange
         val nodes = listOf(createNode("de"))
 
-        // when
+        // Act
         val graphNodes = nodes.toGraphNodes()
 
-        // then
+        // Assert
         assertThat(graphNodes.map { it.id }).containsExactly("de")
         assertThat(graphNodes.find { it.id == "de" }?.children).isEmpty()
     }

@@ -13,7 +13,7 @@ class BundlerAliasResolverTest {
 
     @Test
     fun `should resolve exact alias match`() {
-        // Given
+        // Arrange
         val sharedDir = tempDir.resolve("shared/src")
         sharedDir.mkdirs()
 
@@ -22,16 +22,16 @@ class BundlerAliasResolverTest {
         )
         val import = DirectImport("Shared")
 
-        // When
+        // Act
         val result = BundlerAliasResolver.resolve(import, config, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(Path(listOf("shared", "src")))
     }
 
     @Test
     fun `should resolve prefix alias with subpath`() {
-        // Given
+        // Arrange
         val sharedDir = tempDir.resolve("shared/src")
         sharedDir.mkdirs()
 
@@ -40,46 +40,46 @@ class BundlerAliasResolverTest {
         )
         val import = DirectImport("Shared/Utils")
 
-        // When
+        // Act
         val result = BundlerAliasResolver.resolve(import, config, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(Path(listOf("shared", "src", "Utils")))
     }
 
     @Test
     fun `should return null for unmatched alias`() {
-        // Given
+        // Arrange
         val config = BundlerConfigData(
             aliases = mapOf("Shared" to "/some/path")
         )
         val import = DirectImport("Utils")
 
-        // When
+        // Act
         val result = BundlerAliasResolver.resolve(import, config, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should not match partial alias names`() {
-        // Given
+        // Arrange
         val config = BundlerConfigData(
             aliases = mapOf("Shared" to "/some/path")
         )
         val import = DirectImport("SharedUtils")
 
-        // When
+        // Act
         val result = BundlerAliasResolver.resolve(import, config, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should resolve deeply nested subpath`() {
-        // Given
+        // Arrange
         val srcDir = tempDir.resolve("src")
         srcDir.mkdirs()
 
@@ -88,23 +88,23 @@ class BundlerAliasResolverTest {
         )
         val import = DirectImport("@/components/Button/index")
 
-        // When
+        // Act
         val result = BundlerAliasResolver.resolve(import, config, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(Path(listOf("src", "components", "Button", "index")))
     }
 
     @Test
     fun `should return null for empty config`() {
-        // Given
+        // Arrange
         val config = BundlerConfigData.EMPTY
         val import = DirectImport("Shared")
 
-        // When
+        // Act
         val result = BundlerAliasResolver.resolve(import, config, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 

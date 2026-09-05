@@ -16,7 +16,7 @@ import kotlin.test.assertTrue
 class JavaAnalyzerTest {
     @Test
     fun `should extract field types correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -26,10 +26,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("int"))
@@ -38,7 +38,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract method return types correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -53,10 +53,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("int"))
@@ -65,7 +65,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract method parameter types correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -78,10 +78,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("int"))
@@ -90,7 +90,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract constructor parameter types correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -100,10 +100,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("String"), Type.simple("int"))
@@ -112,7 +112,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract used annotation types correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -127,10 +127,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(Type.simple("Override"), Type.simple("SuppressWarnings"))
@@ -139,7 +139,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should create node for each class, enum, record, annotation and interface in a given file`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -159,10 +159,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val nodes = report.nodes
         assertEquals(5, nodes.size)
         assertEquals("JavaAnalyzerTest", nodes[0].pathWithName.parts.last())
@@ -174,7 +174,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should create node for each class and detect their usages of each other but not the resolved dependencies`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -188,10 +188,10 @@ class JavaAnalyzerTest {
             
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val classA = report.nodes[0]
         assertContains(classA.usedTypes, Type("B", TypeOfUsage.USAGE, emptyList()))
         // Resolving happens in a later step of the processing pipeline.
@@ -204,7 +204,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract types of generics correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -214,10 +214,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -229,7 +229,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should parse imports and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -242,10 +242,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(3, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -257,7 +257,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should add implicit dependency on the class's package`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -265,10 +265,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(1, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -278,7 +278,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract types of throws clauses`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -291,10 +291,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("IllegalArgumentException"),
@@ -304,7 +304,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract the superclass of a class correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -312,10 +312,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("SuperClass")
@@ -324,7 +324,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract the interfaces of a class correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -332,10 +332,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("Interface1"),
@@ -345,7 +345,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract the extends clause of an interface correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -353,10 +353,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("Interface1"),
@@ -366,7 +366,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract constructor calls to usedTypes correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -377,10 +377,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SomeClass")
@@ -389,7 +389,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract static field accesses to usedTypes correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -400,10 +400,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SomeClass")
@@ -412,7 +412,7 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should extract static method accesses to usedTypes correctly`() {
-        // given
+        // Arrange
         val javaCode = """
             package de.maibornwolff.dependacharta.analysis.analyzers;
             
@@ -423,10 +423,10 @@ class JavaAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.simple("SomeClass")
@@ -435,17 +435,17 @@ class JavaAnalyzerTest {
 
     @Test
     fun `should not add empty-path wildcard dependency for package-less file`() {
-        // given
+        // Arrange
         val javaCode = """
             public class NoPackageClass {
                 private String name;
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = JavaAnalyzer(FileInfo(SupportedLanguage.JAVA, "./path", javaCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).noneMatch { it.path.parts.isEmpty() }
     }

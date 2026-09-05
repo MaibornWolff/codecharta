@@ -15,184 +15,184 @@ class GoPackageQueryTest {
 
     @Test
     fun `derivePackagePathFromFilePath should return directory path when packageName is main`() {
-        // Given
+        // Arrange
         val filePath = "some/path/to/file.go"
         val packageName = listOf("main")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("some", "path", "to"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should return dirParts when packageName is not main and dirParts exist`() {
-        // Given
+        // Arrange
         val filePath = "project/internal/config/file.go"
         val packageName = listOf("config")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "config"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should return packageName when dirParts empty and packageName not empty and not main`() {
-        // Given
+        // Arrange
         val filePath = "file.go" // no directory structure
         val packageName = listOf("somepackage")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("somepackage"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should return unknown when both dirParts and packageName are empty`() {
-        // Given
+        // Arrange
         val filePath = "file.go" // no directory structure
         val packageName = emptyList<String>()
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("unknown"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should return unknown when dirParts empty and packageName empty despite having a path`() {
-        // Given
+        // Arrange
         val filePath = "" // empty path
         val packageName = emptyList<String>()
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("unknown"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle complex nested paths`() {
-        // Given
+        // Arrange
         val filePath = "github.com/myuser/myproject/internal/service/handler/user.go"
         val packageName = listOf("handler")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("github.com", "myuser", "myproject", "internal", "service", "handler"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle Windows-style paths`() {
-        // Given
+        // Arrange
         val filePath = "project\\internal\\config\\file.go"
         val packageName = listOf("config")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "config"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle packageName with multiple elements but not main`() {
-        // Given
+        // Arrange
         val filePath = "file.go" // no directory structure
         val packageName = listOf("complex", "package", "name")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("complex", "package", "name"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should NOT prioritize main over dirParts to avoid collisions`() {
-        // Given
+        // Arrange
         val filePath = "some/complex/path/file.go"
         val packageName = listOf("main")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isNotEqualTo(listOf("main"))
         assertThat(result).isEqualTo(listOf("some", "complex", "path"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle invalid package name that starts with main`() {
-        // Given
+        // Arrange
         val filePath = "some/path/file.go"
         val packageName = listOf("main", "extra")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("some", "path"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle file with no extension`() {
-        // Given
+        // Arrange
         val filePath = "some/path/to/file"
         val packageName = listOf("config")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("some", "path", "to", "file"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle single directory with file`() {
-        // Given
+        // Arrange
         val filePath = "config/file.go"
         val packageName = listOf("config")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("config"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should handle absolute path`() {
-        // Given
+        // Arrange
         val filePath = "/usr/local/src/project/internal/config/file.go"
         val packageName = listOf("config")
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("usr", "local", "src", "project", "internal", "config"))
     }
 
     @Test
     fun `derivePackagePathFromFilePath should use directory structure when package name is empty but directory exists`() {
-        // Given
+        // Arrange
         val filePath = "project/internal/config/file.go"
         val packageName = emptyList<String>()
 
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "config"))
     }
 }

@@ -9,11 +9,11 @@ class GoPackageQueryCorrectBehaviorTest {
 
     @Test
     fun `main packages must use directory path to prevent collisions`() {
-        // When
+        // Act
         val serverMain = goPackageQuery.derivePackagePathFromFilePath("cmd/server/main.go", listOf("main"))
         val ccMain = goPackageQuery.derivePackagePathFromFilePath("cmd/cc/main.go", listOf("main"))
 
-        // Then
+        // Assert
         assertThat(serverMain).isNotEqualTo(ccMain)
         assertThat(serverMain).isEqualTo(listOf("cmd", "server"))
         assertThat(ccMain).isEqualTo(listOf("cmd", "cc"))
@@ -21,27 +21,27 @@ class GoPackageQueryCorrectBehaviorTest {
 
     @Test
     fun `regular packages should use directory for consistency with imports`() {
-        // When
+        // Act
         val result = goPackageQuery.derivePackagePathFromFilePath("project/internal/utils/helper.go", listOf("utils"))
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "utils"))
     }
 
     @Test
     fun `root level files need special handling`() {
-        // When
+        // Act
         val mainInRoot = goPackageQuery.derivePackagePathFromFilePath("main.go", listOf("main"))
         val pkgInRoot = goPackageQuery.derivePackagePathFromFilePath("utils.go", listOf("utils"))
 
-        // Then
+        // Assert
         assertThat(mainInRoot).isEqualTo(listOf("main"))
         assertThat(pkgInRoot).isEqualTo(listOf("utils"))
     }
 
     @Test
     fun `the old behavior would cause collisions - this test shows why it was wrong`() {
-        // Given
+        // Arrange
         val paths = listOf(
             "cmd/server/main.go",
             "cmd/cli/main.go",
@@ -49,12 +49,12 @@ class GoPackageQueryCorrectBehaviorTest {
             "examples/basic/main.go"
         )
 
-        // When
+        // Act
         val results = paths.map { path ->
             goPackageQuery.derivePackagePathFromFilePath(path, listOf("main"))
         }
 
-        // Then
+        // Assert
         assertThat(results.distinct()).hasSize(results.size)
         assertThat(results).containsExactly(
             listOf("cmd", "server"),

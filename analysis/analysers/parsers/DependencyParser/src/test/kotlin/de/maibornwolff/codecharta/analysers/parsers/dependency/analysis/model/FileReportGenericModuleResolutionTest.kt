@@ -62,10 +62,10 @@ class FileReportGenericModuleResolutionTest {
                 usedTypes = setOf(Type.simple(typeName))
             )
 
-            // when
+            // Act
             val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-            // then - Generic module resolution should work for all languages
+            // Assert - Generic module resolution should work for all languages
             val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
             val expectedPath = Path(typePath)
 
@@ -78,7 +78,7 @@ class FileReportGenericModuleResolutionTest {
 
     @Test
     fun `module resolution patterns work correctly`() {
-        // given - Test the two valid resolution patterns: exact and suffix match
+        // Arrange - Test the two valid resolution patterns: exact and suffix match
         val exactMatchTest = mapOf(
             "User" to listOf(Path(listOf("exact", "match", "User")))
         )
@@ -108,10 +108,10 @@ class FileReportGenericModuleResolutionTest {
                 usedTypes = setOf(Type.simple("User"))
             )
 
-            // when
+            // Act
             val resolvedNode = node.resolveTypes(projectDict, languageDictionary, setOf())
 
-            // then
+            // Assert
             val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
             assertThat(resolvedPath)
                 .withFailMessage("$testName: Expected $expectedPath but got $resolvedPath")
@@ -125,7 +125,7 @@ class FileReportGenericModuleResolutionTest {
         // does NOT match a dependency import "Foo.Problem"
         // The suffix matching logic should require the import path to end with the type package
 
-        // given - Class "MyClass" in package "A.B.Problem"
+        // Arrange - Class "MyClass" in package "A.B.Problem"
         val projectDictionary = mapOf(
             "MyClass" to listOf(Path(listOf("A", "B", "Problem", "MyClass")))
         )
@@ -142,10 +142,10 @@ class FileReportGenericModuleResolutionTest {
             usedTypes = setOf(Type.simple("MyClass"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - The class should NOT be resolved because "Foo.Problem" does not match "A.B.Problem"
+        // Assert - The class should NOT be resolved because "Foo.Problem" does not match "A.B.Problem"
         // The suffix matching logic should require the full package path to match, not just the suffix
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
 

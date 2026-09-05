@@ -11,7 +11,7 @@ class TsConfigParserTest {
 
     @Test
     fun `should parse tsconfig with baseUrl and paths`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -27,10 +27,10 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.compilerOptions?.baseUrl).isEqualTo("src")
         assertThat(result?.compilerOptions?.paths).containsKeys("core/*", "models/*")
@@ -39,7 +39,7 @@ class TsConfigParserTest {
 
     @Test
     fun `should parse tsconfig with only baseUrl`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -51,10 +51,10 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.compilerOptions?.baseUrl).isEqualTo("./src")
         assertThat(result?.compilerOptions?.paths).isNull()
@@ -62,7 +62,7 @@ class TsConfigParserTest {
 
     @Test
     fun `should parse tsconfig with only paths`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -76,10 +76,10 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.compilerOptions?.baseUrl).isNull()
         assertThat(result?.compilerOptions?.paths).containsKey("@app/*")
@@ -87,7 +87,7 @@ class TsConfigParserTest {
 
     @Test
     fun `should parse tsconfig with extends field`() {
-        // given
+        // Arrange
         val parentTsconfig = tempDir.resolve("tsconfig.base.json")
         parentTsconfig.writeText(
             """
@@ -113,10 +113,10 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.extends).isEqualTo("./tsconfig.base.json")
         assertThat(result?.compilerOptions?.paths).containsKey("core/*")
@@ -124,19 +124,19 @@ class TsConfigParserTest {
 
     @Test
     fun `should return null for non-existent file`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("nonexistent.json")
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should return null for malformed JSON`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -148,23 +148,23 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should parse empty tsconfig`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText("{}")
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.compilerOptions).isNull()
         assertThat(result?.extends).isNull()
@@ -172,7 +172,7 @@ class TsConfigParserTest {
 
     @Test
     fun `should parse tsconfig without compilerOptions`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -183,17 +183,17 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.compilerOptions).isNull()
     }
 
     @Test
     fun `should handle multiple path mappings for same pattern`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -208,10 +208,10 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.compilerOptions?.paths?.get("@lib/*"))
             .containsExactly("lib/src/*", "lib/dist/*")
@@ -219,7 +219,7 @@ class TsConfigParserTest {
 
     @Test
     fun `should drop the null a trailing comma in a paths array reads as`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -234,10 +234,10 @@ class TsConfigParserTest {
             """.trimIndent()
         )
 
-        // when
+        // Act
         val result = TsConfigParser.parse(tsconfig)
 
-        // then
+        // Assert
         assertThat(result?.compilerOptions?.paths?.get("core/*")).containsExactly("core/*")
     }
 }

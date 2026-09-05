@@ -17,7 +17,7 @@ import java.io.File
 class TypescriptAnalyzerTest {
     @Test
     fun `should convert path to correct path with names`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export class Person {
                 private name: string
@@ -26,7 +26,7 @@ class TypescriptAnalyzerTest {
         """.trimIndent()
         val physicalPath = File("MyExample/Path/TypescriptAnalyzerTest.ts").path
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -35,7 +35,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("pathWithName").containsExactly(
             Path(listOf("MyExample", "Path", "TypescriptAnalyzerTest", "Person"))
         )
@@ -43,12 +43,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported class to node with type CLASS`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export class MyGreatClass {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -57,7 +57,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -67,12 +67,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported function to node with type FUNCTION`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export function myGreatFunction() {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -81,7 +81,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -91,12 +91,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported interface to node with type INTERFACE`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export interface MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -105,7 +105,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -115,12 +115,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported enum to node with type ENUM`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export enum MyGreatEnum {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -129,7 +129,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -139,12 +139,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported type to node with type CLASS`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export type MyGreatType = {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -153,7 +153,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -163,12 +163,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported variable to node with type VARIABLE`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export var myGreatVariable = ""
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -177,7 +177,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -187,12 +187,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should convert exported constant to node with type VARIABLE`() {
-        // given
+        // Arrange
         val typescriptCode = """            
             export const MY_GREAT_CONSTANT = ""
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -201,7 +201,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -211,14 +211,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add named imports to dependencies of a node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyGreatInterface, AnotherGreatInterface } from './MyGreatInterface';
             
             export class MyGreatClass implements MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -227,7 +227,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(
                 path = Path(listOf("MyDirectory", "MyGreatInterface", "MyGreatInterface"))
@@ -242,14 +242,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add default import to dependencies of a node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import MyGreatInterface from 'MyGreatInterface';
 
             export class MyGreatClass implements MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -258,7 +258,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         // A default import (`import Foo from './bar'`) binds the imported default export to the
         // local name `Foo`. The dependency must end in that binding name so it can resolve to the
         // exported declaration (which is keyed by its real name), not the internal DEFAULT_EXPORT marker.
@@ -275,14 +275,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve default import used as a base class to the exported declaration`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import BoundingBox from './boundingBox';
 
             export default class House extends BoundingBox {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -291,7 +291,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         // The dependency must point at street/boundingBox/BoundingBox - the real exported class -
         // so it matches the BoundingBox declaration's node during dependency resolution.
         val node = report.nodes.first { it.usedTypes.contains(Type.simple("BoundingBox")) }
@@ -303,14 +303,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve relative import on same directory`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyGreatInterface } from './MyGreatInterface';
             
             export class MyGreatClass implements MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -319,7 +319,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyDirectory", "MyGreatInterface", "MyGreatInterface"))
         )
@@ -331,14 +331,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve relative import on nested directory`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyGreatInterface } from '../MyGreatInterface';
             
             export class MyGreatClass implements MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -347,7 +347,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyRoot", "MyGreatInterface", "MyGreatInterface"))
         )
@@ -359,14 +359,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should trim file endings in imports`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyGreatInterface } from 'MyGreatInterface.ts';
             
             export class MyGreatClass implements MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -375,7 +375,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyGreatInterface", "MyGreatInterface"))
         )
@@ -385,12 +385,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should handle index ts`() {
-        // given
+        // Arrange
         val typescriptCode = """
              export { MyReexportedClass } from './MyInternalClass'
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -399,7 +399,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyDirectory", "MyInternalClass", "MyReexportedClass"))
         )
@@ -411,13 +411,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should handle multiple reexports of same file in index ts`() {
-        // given
+        // Arrange
         val typescriptCode = """
              export { AClass, AnotherClass } from './MyInternalModule'
              export { AThirdClass } from './AnotherInternalModule'
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -426,7 +426,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency1 = Dependency(path = Path(listOf("MyDirectory", "MyInternalModule", "AClass")))
         val expectedDependency2 = Dependency(path = Path(listOf("MyDirectory", "MyInternalModule", "AnotherClass")))
         val expectedDependency3 = Dependency(path = Path(listOf("MyDirectory", "AnotherInternalModule", "AThirdClass")))
@@ -450,13 +450,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should keep dependency for aliased named re-export`() {
-        // Given - a named re-export that renames the imported binding: the source module's `Foo`
+        // Arrange - a named re-export that renames the imported binding: the source module's `Foo`
         // is re-exported locally as `Bar`
         val typescriptCode = """
             export { Foo as Bar } from './MyModule'
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -465,7 +465,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then - the re-export node is named after the alias `Bar` but must still depend on the
+        // Assert - the re-export node is named after the alias `Bar` but must still depend on the
         // source module's original `Foo` binding (selectImports filters imports by re-export name,
         // so a mismatch between the alias and the imported name would silently drop this edge)
         val node = report.nodes.first { it.pathWithName.parts.last() == "Bar" }
@@ -476,14 +476,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should handle reexports from non-index barrel file`() {
-        // Given
+        // Arrange
         val typescriptCode = """
             export { default as validationMixin } from './mixins/validation.mixin'
             export { required, maxLength } from './validators'
             export { default as helperMixin } from './mixins/helper.mixin'
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -492,7 +492,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then
+        // Assert
         assertThat(report.nodes).hasSize(4)
         assertThat(report.nodes)
             .extracting("nodeType")
@@ -501,14 +501,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add implicit dependency on index`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyGreatInterface } from 'MyGreatInterface';
             
             export class MyGreatClass implements MyGreatInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -517,7 +517,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependencies = listOf(
             Dependency(path = Path(listOf("MyGreatInterface", "MyGreatInterface"))),
             Dependency(path = Path(listOf("MyGreatInterface", "index", "MyGreatInterface")))
@@ -534,7 +534,7 @@ class TypescriptAnalyzerTest {
              export { MyReexportedClass as MRC } from './MyInternalClass'
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -543,7 +543,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyDirectory", "MyInternalClass", "MyReexportedClass"))
         )
@@ -555,14 +555,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add used type identifiers to usedTypes of a Node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export class MyClass {
                 private myType: MyType
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -571,14 +571,14 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val node = report.nodes[0]
         assertThat(node.usedTypes).contains(Type.simple("MyType"))
     }
 
     @Test
     fun `should only include types that are used in a Node in it`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export class MyFirstClass {
                 private myType: MyFirstType
@@ -588,7 +588,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -597,7 +597,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("pathWithName", "usedTypes").containsExactlyInAnyOrder(
             tuple(Path(listOf("MyClasses", "MyFirstClass")), setOf(Type.simple("MyFirstType"))),
             tuple(Path(listOf("MyClasses", "MySecondClass")), setOf(Type.simple("MySecondType")))
@@ -606,7 +606,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add used type identifier with alias to usedTypes of a Node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyType as MyRenamedType } from './MyType'
             export class MyClass {
@@ -614,7 +614,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -623,7 +623,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("MyType")
         )
@@ -633,12 +633,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add constructor type to usedTypes of a Node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export const myConst = new MyConst()
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -647,7 +647,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("MyConst")
         )
@@ -657,12 +657,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add constant type to usedTypes of a Node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export const myConst = Utils.someRandomConst
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -671,7 +671,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("Utils")
         )
@@ -681,12 +681,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add implemented interface to usedTypes of a node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export class MyInterfaceImplementation implements MyInterface {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -695,7 +695,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("MyInterface")
         )
@@ -705,12 +705,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add extended type to usedTypes of a node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export class MyExtendedClass extends MyClass {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -719,7 +719,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("MyClass")
         )
@@ -729,7 +729,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add imported identifiers to used types of a node`() {
-        // given
+        // Arrange
         val typescriptCode = """
         import { SCT } from 'bla'
         export class Creature {
@@ -743,7 +743,7 @@ class TypescriptAnalyzerTest {
         }        
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -752,7 +752,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(Type.simple("SCT"))
         val node = report.nodes[0]
         assertThat(node.usedTypes).containsAll(expectedTypes)
@@ -761,12 +761,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add default export of a file as separate node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export default MyDefaultExport;      
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -775,7 +775,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val node = report.nodes[0]
         assertThat(node.dependencies).containsExactly(
             Dependency(
@@ -789,12 +789,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add non-exported class as a node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             class MyPrivateClass {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -803,19 +803,19 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val node = report.nodes[0]
         assertThat(node.pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "MyPrivateClass")))
     }
 
     @Test
     fun `should not add the node itself to used types`() {
-        // given
+        // Arrange
         val typescriptCode = """
             class MyPrivateClass {}      
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -824,14 +824,14 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val node = report.nodes[0]
         assertThat(node.usedTypes).isEmpty()
     }
 
     @Test
     fun `should not add a node for declarations inside other declarations`() {
-        // given
+        // Arrange
         val typescriptCode = """
             class MyOuterClass {
                 myFunction() {
@@ -840,7 +840,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -849,21 +849,21 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).hasSize(1)
         assertThat(report.nodes[0].pathWithName).isEqualTo(Path(listOf("MyDirectory", "MyClass", "MyOuterClass")))
     }
 
     @Test
     fun `should add default imports and named imports from same file to node dependencies`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import MyGreatInterface, { SomeNamedImport } from 'MyGreatInterface';
             
             export class MyGreatClass implements MyGreatInterface<SomeNamedImport> {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -872,7 +872,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         // The default binding resolves under its local name; the named import keeps its own name.
         assertThat(report.nodes[0].dependencies).contains(
             Dependency(Path(listOf("MyGreatInterface", "MyGreatInterface"))),
@@ -883,13 +883,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add commonjs imports to node dependencies`() {
-        // given
+        // Arrange
         val typescriptCode = """
             const myModule = require('myModule');
             export class MyGreatClass {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -898,7 +898,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         // A default `require` binding resolves under its local name, not the DEFAULT_EXPORT marker.
         assertThat(report.nodes[0].dependencies).contains(
             Dependency(Path(listOf("myModule", "myModule")))
@@ -907,13 +907,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add named commonjs imports to node dependencies`() {
-        // given
+        // Arrange
         val typescriptCode = """
             const { myMethod } = require('myModule');
             export class MyGreatClass {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -922,13 +922,13 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes[0].dependencies).contains(Dependency(Path(listOf("myModule", "myMethod"))))
     }
 
     @Test
     fun `should add alias for named commonjs imports to node dependencies`() {
-        // given
+        // Arrange
         val typescriptCode = """
             const { myMethod: alias } = require('myModule');
             export class MyGreatClass {
@@ -936,7 +936,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -945,19 +945,19 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes[0].dependencies).contains(Dependency(Path(listOf("myModule", "myMethod"))))
         assertThat(report.nodes[0].usedTypes).contains(Type.simple("myMethod"))
     }
 
     @Test
     fun `should not crash on declare module statement`() {
-        // given
+        // Arrange
         val typescriptCode = """
             declare module "*.md" {}   
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -966,20 +966,20 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).isEmpty()
     }
 
     @Test
     fun `should create node for exported function in declare module`() {
-        // given
+        // Arrange
         val typescriptCode = """
             declare module "MyModule" {
                 export function myFunction(): void;
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -988,7 +988,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         // Ambient module declarations use only the module name (no file path prefix)
         // so that imports like `from "MyModule"` can resolve correctly
         assertThat(report.nodes)
@@ -1000,14 +1000,14 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should create node for exported class in declare module`() {
-        // given
+        // Arrange
         val typescriptCode = """
             declare module "MyModule" {
                 export class MyClass {}
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1016,7 +1016,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -1026,7 +1026,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should create nodes for multiple exports in declare module`() {
-        // given
+        // Arrange
         val typescriptCode = """
             declare module "MyModule" {
                 export function myFunction(): void;
@@ -1035,7 +1035,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1044,7 +1044,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactlyInAnyOrder(
@@ -1056,7 +1056,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should add identifiers used in an annotation on an exported node to usedTypes of that node`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { MyComponentImport } from './MyComponentImport';
             
@@ -1066,7 +1066,7 @@ class TypescriptAnalyzerTest {
             export class MyClass {}
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1075,7 +1075,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedTypes = listOf(
             Type.simple("MyComponentImport")
         )
@@ -1085,7 +1085,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should analyze TSX file with React component`() {
-        // given
+        // Arrange
         val tsxCode = """
             import React from 'react';
 
@@ -1094,7 +1094,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1103,7 +1103,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes)
             .extracting("nodeType", "pathWithName")
             .containsExactly(
@@ -1113,13 +1113,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should handle TSX file path correctly`() {
-        // given
+        // Arrange
         val tsxCode = """
             export class MyReactClass {}
         """.trimIndent()
         val physicalPath = File("MyExample/Path/MyComponent.tsx").path
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1128,7 +1128,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("pathWithName").containsExactly(
             Path(listOf("MyExample", "Path", "MyComponent", "MyReactClass"))
         )
@@ -1136,7 +1136,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should handle imports in TSX files`() {
-        // given
+        // Arrange
         val tsxCode = """
             import { MyInterface } from './MyInterface';
 
@@ -1145,7 +1145,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1154,7 +1154,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyDirectory", "MyInterface", "MyInterface"))
         )
@@ -1165,12 +1165,12 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should handle index tsx reexports`() {
-        // given
+        // Arrange
         val tsxCode = """
              export { MyReactComponent } from './MyReactComponent'
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1179,7 +1179,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then
+        // Assert
         val expectedDependency = Dependency(
             path = Path(listOf("MyDirectory", "MyReactComponent", "MyReactComponent"))
         )
@@ -1191,7 +1191,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should detect JSX elements as dependencies in React components`() {
-        // Given - Routes is used only in JSX, not in TS code
+        // Arrange - Routes is used only in JSX, not in TS code
         val tsxCode = """
             import { loadUser, logout } from './Auth';
             import { Routes } from './routes';
@@ -1203,7 +1203,7 @@ class TypescriptAnalyzerTest {
             };
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1212,7 +1212,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then - All three imports should be detected as dependencies
+        // Assert - All three imports should be detected as dependencies
         val loadUserDep = Dependency(path = Path(listOf("Auth", "loadUser")))
         val logoutDep = Dependency(path = Path(listOf("Auth", "logout")))
         val routesDep = Dependency(path = Path(listOf("routes", "Routes")))
@@ -1235,7 +1235,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should detect JSX member expressions as dependencies`() {
-        // Given - JSX member expression like <Form.Input />
+        // Arrange - JSX member expression like <Form.Input />
         val tsxCode = """
             import { Form } from './Form';
 
@@ -1244,7 +1244,7 @@ class TypescriptAnalyzerTest {
             };
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1253,7 +1253,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then - Form should be detected as a dependency
+        // Assert - Form should be detected as a dependency
         val formDep = Dependency(path = Path(listOf("Form", "Form")))
         val componentNode = report.nodes[0]
 
@@ -1268,7 +1268,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should detect Routes in JSX even with complex component structure`() {
-        // Given - Closer to the real App.tsx with useEffect and props destructuring
+        // Arrange - Closer to the real App.tsx with useEffect and props destructuring
         val tsxCode = """
             import React, { useEffect } from 'react';
             import { loadUser, logout } from 'src/components/Auth/Auth_thunks';
@@ -1290,7 +1290,7 @@ class TypescriptAnalyzerTest {
             export const App = _App;
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1299,7 +1299,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then - Find the _App node
+        // Assert - Find the _App node
         val appNode = report.nodes.find { it.pathWithName.toString().contains("_App") }
         assertThat(appNode).isNotNull
 
@@ -1315,7 +1315,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should extract regular exports from index tsx files`() {
-        // Given - Index file with regular export (not a re-export)
+        // Arrange - Index file with regular export (not a re-export)
         val tsxCode = """
             import React from 'react';
 
@@ -1324,7 +1324,7 @@ class TypescriptAnalyzerTest {
             };
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1333,7 +1333,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then - Regular exports from index files should create nodes
+        // Assert - Regular exports from index files should create nodes
         assertThat(report.nodes)
             .withFailMessage("Index files with regular exports should create nodes for those exports")
             .isNotEmpty()
@@ -1349,13 +1349,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should create REEXPORT nodes for wildcard re-exports with file resolution`() {
-        // given - Test resources with real file structure
+        // Arrange - Test resources with real file structure
         val testRoot = File("src/test/resources/typescript-wildcard")
         assumeTrue(testRoot.exists())
 
         val fileContent = "export * from './constants'"
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1365,7 +1365,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then - Should create REEXPORT nodes for discovered exports
+        // Assert - Should create REEXPORT nodes for discovered exports
         assertThat(report.nodes)
             .isNotEmpty()
             .allMatch { it.nodeType == NodeType.REEXPORT }
@@ -1384,13 +1384,13 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `wildcard re-export REEXPORT nodes should depend on source nodes not themselves`() {
-        // given - Test resources with real file structure
+        // Arrange - Test resources with real file structure
         val testRoot = File("src/test/resources/typescript-wildcard")
         assumeTrue(testRoot.exists())
 
         val fileContent = "export * from './constants'"
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1400,7 +1400,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then - REEXPORT nodes should depend on source nodes, not themselves
+        // Assert - REEXPORT nodes should depend on source nodes, not themselves
         val fooReexport = report.nodes.find { it.pathWithName.getName() == "FOO" }
         assertThat(fooReexport).isNotNull
         assertThat(fooReexport!!.nodeType).isEqualTo(NodeType.REEXPORT)
@@ -1437,7 +1437,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `wildcard re-export should not create duplicate REEXPORT node for name already declared in own file`() {
-        // Given - a file that exports its own FOO and also re-exports * from constants (which also exports FOO)
+        // Arrange - a file that exports its own FOO and also re-exports * from constants (which also exports FOO)
         val testRoot = File("src/test/resources/typescript-wildcard")
         assumeTrue(testRoot.exists())
 
@@ -1446,7 +1446,7 @@ class TypescriptAnalyzerTest {
             export * from './constants'
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1456,7 +1456,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // Then - exactly one FOO node, which is the own declaration (not a REEXPORT)
+        // Assert - exactly one FOO node, which is the own declaration (not a REEXPORT)
         val fooNodes = report.nodes.filter { it.pathWithName.getName() == "FOO" }
         assertThat(fooNodes).hasSize(1)
         assertThat(fooNodes.first().nodeType).isNotEqualTo(NodeType.REEXPORT)
@@ -1469,7 +1469,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should resolve namespace alias constructor call to module dependency`() {
-        // given - Logger is only used via new types.Logger() with no type annotation
+        // Arrange - Logger is only used via new types.Logger() with no type annotation
         val typescriptCode = """
             import * as types from './types'
 
@@ -1480,7 +1480,7 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -1489,7 +1489,7 @@ class TypescriptAnalyzerTest {
             )
         ).analyze()
 
-        // then - Logger is captured as usedType (extracted from new types.Logger() constructor call)
+        // Assert - Logger is captured as usedType (extracted from new types.Logger() constructor call)
         // and the wildcard dep on the types module is recorded for project-wide resolution
         val node = report.nodes.first { it.pathWithName.getName() == "Consumer" }
         assertThat(node.usedTypes).contains(Type.simple("Logger"))
@@ -1498,7 +1498,7 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should strip the module extensions mts and mjs from node and dependency paths`() {
-        // given
+        // Arrange
         val typescriptCode = """
             import { Util } from './util.mjs'
 
@@ -1507,10 +1507,10 @@ class TypescriptAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "src/app.mts", typescriptCode)).analyze()
 
-        // then
+        // Assert
         val node = report.nodes.single()
         assertThat(node.pathWithName).isEqualTo(Path(listOf("src", "app", "App")))
         assertThat(node.dependencies).contains(Dependency(path = Path(listOf("src", "util", "Util"))))
@@ -1518,15 +1518,15 @@ class TypescriptAnalyzerTest {
 
     @Test
     fun `should recognize the tsx extension whatever its case`() {
-        // given
+        // Arrange
         val typescriptCode = """
             export const Button = () => <button>Click</button>
         """.trimIndent()
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "src/Button.TSX", typescriptCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("pathWithName").containsExactly(Path(listOf("src", "Button", "Button")))
     }
 
@@ -1534,15 +1534,15 @@ class TypescriptAnalyzerTest {
     fun `should expand a wildcard re-export whose source is a module with the mts extension`(
         @TempDir analysisRoot: File
     ) {
-        // given
+        // Arrange
         File(analysisRoot, "util.mts").writeText("export const FOO = 1")
 
-        // when
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(SupportedLanguage.TYPESCRIPT, "index.ts", "export * from './util'", analysisRoot = analysisRoot)
         ).analyze()
 
-        // then
+        // Assert
         val reexport = report.nodes.single { it.pathWithName.getName() == "FOO" }
         assertThat(reexport.nodeType).isEqualTo(NodeType.REEXPORT)
         assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path }).containsExactly(Path(listOf("util", "FOO")))

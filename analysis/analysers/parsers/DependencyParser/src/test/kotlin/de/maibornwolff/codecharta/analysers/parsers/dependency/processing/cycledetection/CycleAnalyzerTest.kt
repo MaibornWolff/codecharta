@@ -11,27 +11,27 @@ import org.junit.jupiter.api.Test
 class CycleAnalyzerTest {
     @Test
     fun `should return empty when there is no cycle`() {
-        // given
+        // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf())
 
-        // when
+        // Act
         val cycles = CycleAnalyzer.determineCycles(setOf(node1, node2))
 
-        // then
+        // Assert
         assertThat(cycles).isEmpty()
     }
 
     @Test
     fun `should find cycles`() {
-        // given
+        // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf("node1"))
 
-        // when
+        // Act
         val cycles = CycleAnalyzer.determineCycles(setOf(node1, node2))
 
-        // then
+        // Assert
         val expectedCycle = Cycle(listOf(Edge("node2", "node1"), Edge("node1", "node2")))
 
         assertThat(cycles).containsExactly(expectedCycle)
@@ -39,57 +39,57 @@ class CycleAnalyzerTest {
 
     @Test
     fun `should return empty when there is only a cycle with one node`() {
-        // given
+        // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node1"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf())
 
-        // when
+        // Act
         val cycles = CycleAnalyzer.determineCycles(setOf(node1, node2))
 
-        // then
+        // Assert
         assertThat(cycles).isEmpty()
     }
 
     @Test
     fun `should return one cycle for a singleCycle search of a component that holds several`() {
-        // given
+        // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2", "node3"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf("node1"))
         val node3 = NodeInformation.build(id = "node3", dependencies = setOf("node1"))
 
-        // when
+        // Act
         val cycles = CycleAnalyzer.determineCycles(setOf(node1, node2, node3), true)
 
-        // then
+        // Assert
         assertThat(cycles).hasSize(1)
     }
 
     @Test
     fun `should return all cycles when there is more than one cycle in the strongly connected component`() {
-        // given
+        // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2", "node3"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf("node1"))
         val node3 = NodeInformation.build(id = "node3", dependencies = setOf("node1"))
 
-        // when
+        // Act
         val cycles = CycleAnalyzer.determineCycles(setOf(node1, node2, node3), false)
 
-        // then
+        // Assert
         assertThat(cycles).hasSize(2)
     }
 
     @Test
     fun `should group cycles per leaf`() {
-        // given
+        // Arrange
         val node1 = NodeInformation.build(id = "node1", dependencies = setOf("node2", "node3"))
         val node2 = NodeInformation.build(id = "node2", dependencies = setOf("node1"))
         val node3 = NodeInformation.build(id = "node3", dependencies = setOf("node1"))
         val cycles = CycleAnalyzer.determineCycles(setOf(node1, node2, node3), false)
 
-        // when
+        // Act
         val cyclicEdgesByLeaf = cycles.groupByLeafs()
 
-        // then
+        // Assert
         assertThat(cyclicEdgesByLeaf).hasSize(3)
         assertThat(cyclicEdgesByLeaf[node1.id]).isEqualTo(setOf("node2", "node3"))
         assertThat(cyclicEdgesByLeaf[node2.id]).isEqualTo(setOf("node1"))

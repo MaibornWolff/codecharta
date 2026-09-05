@@ -6,64 +6,64 @@ import org.junit.jupiter.api.Test
 class PathTest {
     @Test
     fun `should return path with dots`() {
-        // given
+        // Arrange
         val path = Path(listOf("com", "example", "Node"))
 
-        // when
+        // Act
         val result = path.withDots()
 
-        // then
+        // Assert
         assertThat(result).isEqualTo("com.example.Node")
     }
 
     @Test
     fun `should replace dots in parts with underscores`() {
-        // given, when
+        // Arrange, when
         val path = Path(listOf("com.example.Node"))
 
-        // then
+        // Assert
         assertThat(path.parts).containsExactly("com_example_Node")
     }
 
     @Test
     fun `should remove name`() {
-        // given
+        // Arrange
         val path = Path(listOf("com", "example", "Node"))
 
-        // when
+        // Act
         val result = path.withoutName()
 
-        // then
+        // Assert
         assertThat(result).containsExactly("com", "example")
     }
 
     @Test
     fun `should return unknown path`() {
-        // given, when
+        // Arrange, when
         val path = Path.unknown("type")
 
-        // then
+        // Assert
         assertThat(path.parts).containsExactly("<unknown>", "type")
     }
 
     @Test
     fun `should add part to path`() {
-        // given
+        // Arrange
         val path = Path(listOf("com", "example"))
 
-        // when
+        // Act
         val result = path + "Node"
 
-        // then
+        // Assert
         assertThat(result.parts).containsExactly("com", "example", "Node")
     }
 
     @Test
     fun `should create path from string with dots`() {
-        // given, when
+        // Arrange, when
         val path = Path.fromStringWithDots("com.example.Node")
 
-        // then
+        // Assert
         assertThat(path.parts).containsExactly("com", "example", "Node")
     }
 }

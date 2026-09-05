@@ -23,7 +23,7 @@ import org.junit.jupiter.api.assertThrows
 class IsPointingUpwardsTest {
     @Test
     fun `should return false when source level is higher than target level - normal dependency flow`() {
-        // Given: A typical dependency where higher level depends on lower level
+        // Arrange: A typical dependency where higher level depends on lower level
         // Structure:
         //   root
         //   ├── application (level 1)
@@ -51,18 +51,18 @@ class IsPointingUpwardsTest {
             .withChildren(application, domain)
             .build()
 
-        // When: Checking if edge points upwards
+        // Act: Checking if edge points upwards
         val sourceNode = findNodeById(root, "root.application.service")!!
         val targetNode = findNodeById(root, "root.domain.model")!!
         val isPointingUpwards = checkIsPointingUpwards(sourceNode, targetNode, root)
 
-        // Then: Should be false (normal flow: higher → lower)
+        // Assert: Should be false (normal flow: higher → lower)
         assertThat(isPointingUpwards).isFalse
     }
 
     @Test
     fun `should return true when source level equals target level - same level dependency`() {
-        // Given: Dependencies between nodes at the same level
+        // Arrange: Dependencies between nodes at the same level
         // Structure:
         //   root
         //   ├── moduleA (level 0)
@@ -90,18 +90,18 @@ class IsPointingUpwardsTest {
             .withChildren(moduleA, moduleB)
             .build()
 
-        // When: Checking if edge points upwards
+        // Act: Checking if edge points upwards
         val sourceNode = findNodeById(root, "root.moduleA.classA")!!
         val targetNode = findNodeById(root, "root.moduleB.classB")!!
         val isPointingUpwards = checkIsPointingUpwards(sourceNode, targetNode, root)
 
-        // Then: Should be true (same level is considered upward)
+        // Assert: Should be true (same level is considered upward)
         assertThat(isPointingUpwards).isTrue
     }
 
     @Test
     fun `should return true when source level is lower than target level - architectural violation`() {
-        // Given: An architectural violation where lower level depends on higher level
+        // Arrange: An architectural violation where lower level depends on higher level
         // Structure:
         //   root
         //   ├── domain (level 0)
@@ -129,18 +129,18 @@ class IsPointingUpwardsTest {
             .withChildren(domain, application)
             .build()
 
-        // When: Checking if edge points upwards
+        // Act: Checking if edge points upwards
         val sourceNode = findNodeById(root, "root.domain.model")!!
         val targetNode = findNodeById(root, "root.application.service")!!
         val isPointingUpwards = checkIsPointingUpwards(sourceNode, targetNode, root)
 
-        // Then: Should be true (upward flow: lower → higher)
+        // Assert: Should be true (upward flow: lower → higher)
         assertThat(isPointingUpwards).isTrue
     }
 
     @Test
     fun `should compare levels of siblings under common ancestor not absolute levels`() {
-        // Given: A complex hierarchy where absolute levels differ from sibling levels
+        // Arrange: A complex hierarchy where absolute levels differ from sibling levels
         // Structure:
         //   root
         //   └── parent (level 0)
@@ -175,18 +175,18 @@ class IsPointingUpwardsTest {
             .withChildren(parent)
             .build()
 
-        // When: Checking if edge points upwards
+        // Act: Checking if edge points upwards
         val sourceNode = findNodeById(root, "root.parent.childA.leafA")!!
         val targetNode = findNodeById(root, "root.parent.childB.leafB")!!
         val isPointingUpwards = checkIsPointingUpwards(sourceNode, targetNode, root)
 
-        // Then: Should be false (childA level 1 > childB level 0, normal flow)
+        // Assert: Should be false (childA level 1 > childB level 0, normal flow)
         assertThat(isPointingUpwards).isFalse
     }
 
     @Test
     fun `should handle deeply nested structures correctly`() {
-        // Given: A deeply nested structure
+        // Arrange: A deeply nested structure
         // Structure:
         //   root
         //   └── layer1
@@ -224,18 +224,18 @@ class IsPointingUpwardsTest {
             .withChildren(layer1)
             .build()
 
-        // When: Checking if edge points upwards
+        // Act: Checking if edge points upwards
         val sourceNode = findNodeById(root, "root.layer1.layer2.moduleA.classA")!!
         val targetNode = findNodeById(root, "root.layer1.layer2.moduleB.classB")!!
         val isPointingUpwards = checkIsPointingUpwards(sourceNode, targetNode, root)
 
-        // Then: Should be false (moduleA level 1 > moduleB level 0)
+        // Assert: Should be false (moduleA level 1 > moduleB level 0)
         assertThat(isPointingUpwards).isFalse
     }
 
     @Test
     fun `should handle edge between direct siblings`() {
-        // Given: Direct siblings at the same level
+        // Arrange: Direct siblings at the same level
         // Structure:
         //   root
         //   ├── siblingA (level 0)
@@ -248,18 +248,18 @@ class IsPointingUpwardsTest {
                 GraphNodeBuilder(id = "siblingB", parent = "root", level = 0).build()
             ).build()
 
-        // When: Checking if edge points upwards
+        // Act: Checking if edge points upwards
         val sourceNode = findNodeById(root, "root.siblingA")!!
         val targetNode = findNodeById(root, "root.siblingB")!!
         val isPointingUpwards = checkIsPointingUpwards(sourceNode, targetNode, root)
 
-        // Then: Should be true (same level)
+        // Assert: Should be true (same level)
         assertThat(isPointingUpwards).isTrue
     }
 
     @Test
     fun `should throw exception when nodes have no common ancestor`() {
-        // Given: Two separate trees with no common ancestor
+        // Arrange: Two separate trees with no common ancestor
         val tree1 = GraphNodeBuilder(id = "tree1")
             .withChildren(
                 GraphNodeBuilder(id = "nodeA", parent = "tree1", level = 0).build()
@@ -273,7 +273,7 @@ class IsPointingUpwardsTest {
         val sourceNode = findNodeById(tree1, "tree1.nodeA")!!
         val targetNode = findNodeById(tree2, "tree2.nodeB")!!
 
-        // When/Then: Should throw exception (matching TypeScript behavior)
+        // Act/Then: Should throw exception (matching TypeScript behavior)
         assertThrows<IllegalStateException> {
             checkIsPointingUpwards(sourceNode, targetNode, tree1)
         }
@@ -281,7 +281,7 @@ class IsPointingUpwardsTest {
 
     @Test
     fun `should detect container level feedback edges between multiple top-level roots - reproduces RootFolderBug`() {
-        // Given: Multiple top-level roots representing the structure when analyzing src/frontend/src/
+        // Arrange: Multiple top-level roots representing the structure when analyzing src/frontend/src/
         // This reproduces the bug where core → store dependency is NOT marked as container level feedback edge
         //
         // Structure (what the bug creates - multiple separate roots):
@@ -324,13 +324,13 @@ class IsPointingUpwardsTest {
                     ).build()
             ).build()
 
-        // When: both roots are wrapped in the virtual root, so they have a common ancestor to compare under
+        // Act: both roots are wrapped in the virtual root, so they have a common ancestor to compare under
         val (_, virtualRoot) = GraphNode.wrapInVirtualRootIfNeeded(listOf(coreRoot, storeRoot))
 
         val isPointingUpwards =
             GraphIndex(virtualRoot).isPointingUpwards("core.models.hydrate.actions.hydrate", "store.createStore.RootState")
 
-        // Then: the edge crosses from core (level 0) to store (level 1), so it is a container level feedback edge
+        // Assert: the edge crosses from core (level 0) to store (level 1), so it is a container level feedback edge
         assertThat(isPointingUpwards)
             .describedAs(
                 "Edge from core (level 0) to store (level 1) should be a container level feedback edge (isPointingUpwards=true), " +
@@ -340,7 +340,7 @@ class IsPointingUpwardsTest {
 
     @Test
     fun `should handle real-world example from Java codebase`() {
-        // Given: The actual structure from the Java example
+        // Arrange: The actual structure from the Java example
         // Structure (simplified):
         //   de.sots.cellarsandcentaurs
         //   ├── application (level 1)
@@ -384,7 +384,7 @@ class IsPointingUpwardsTest {
             .withChildren(application, domain)
             .build()
 
-        // When: Checking architectural violations
+        // Act: Checking architectural violations
         val armorClass = findNodeById(root, "de.sots.cellarsandcentaurs.domain.model.ArmorClass")!!
         val creatureUtil = findNodeById(root, "de.sots.cellarsandcentaurs.application.CreatureUtil")!!
         val isArmorClassViolation = checkIsPointingUpwards(armorClass, creatureUtil, root)
@@ -393,7 +393,7 @@ class IsPointingUpwardsTest {
         val creatureFacade = findNodeById(root, "de.sots.cellarsandcentaurs.application.CreatureFacade")!!
         val isCreatureViolation = checkIsPointingUpwards(creature, creatureFacade, root)
 
-        // Then: Both should be architectural violations (pointing upwards)
+        // Assert: Both should be architectural violations (pointing upwards)
         assertThat(isArmorClassViolation).isTrue
         assertThat(isCreatureViolation).isTrue
     }

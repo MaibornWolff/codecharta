@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class FileReportTest {
     @Test
     fun `resolveTypes should find project and filter out language dependencies`() {
-        // given
+        // Arrange
         val projectDictionary = mapOf(
             "TypeA" to listOf(Path(listOf("com", "example", "TypeA"))),
             "TypeB" to listOf(Path(listOf("com", "example", "TypeB")))
@@ -27,10 +27,10 @@ class FileReportTest {
             usedTypes = setOf(Type.simple("TypeA"), Type.simple("TypeB"), Type.simple("TypeC"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         assertThat(resolvedNode.dependencies).containsExactlyInAnyOrder(
             Dependency(Path(listOf("com", "example", "TypeA"))),
             Dependency(Path(listOf("com", "example", "TypeB"))),
@@ -40,7 +40,7 @@ class FileReportTest {
 
     @Test
     fun `resolveTypes should differentiate between internal and external dependencies`() {
-        // given
+        // Arrange
         val internalPathTypeA = Path(listOf("com", "example", "TypeA"))
         val internalPathTypeB = Path(listOf("com", "example", "TypeB"))
         val projectDictionary = mapOf(
@@ -62,14 +62,14 @@ class FileReportTest {
             usedTypes = setOf(Type.simple("TypeA"), Type.simple("TypeB"), Type.simple("TypeC"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(
             projectDictionary,
             languageDictionary,
             setOf(internalPathTypeA.withDots(), internalPathTypeB.withDots())
         )
 
-        // then
+        // Assert
         assertThat(resolvedNode.resolvedNodeDependencies.internalDependencies).containsExactlyInAnyOrder(
             Dependency(internalPathTypeA),
             Dependency(internalPathTypeB)
@@ -81,7 +81,7 @@ class FileReportTest {
 
     @Test
     fun `resolveTypes with unknown type should create only unknown type dependency`() {
-        // given
+        // Arrange
         val unknownType = "UnknownType"
         val projectDictionary = emptyMap<String, List<Path>>()
         val languageDictionary = emptyMap<String, Path>()
@@ -94,10 +94,10 @@ class FileReportTest {
             usedTypes = setOf(Type.simple(unknownType))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         assertThat(resolvedNode.dependencies).containsExactly(Dependency(Path.unknown(unknownType)))
         assertThat(resolvedNode.usedTypes).containsExactly(
             Type.simple(unknownType).copy(resolvedPath = Path.unknown(unknownType))

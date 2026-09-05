@@ -19,7 +19,7 @@ class TsConfigResolverTest {
 
     @Test
     fun `should find tsconfig without extends field`() {
-        // given
+        // Arrange
         val srcDir = tempDir.resolve("src").apply { mkdirs() }
         val tsconfig = srcDir.resolve("tsconfig.json")
         tsconfig.writeText(
@@ -34,16 +34,16 @@ class TsConfigResolverTest {
 
         val sourceFile = srcDir.resolve("index.ts")
 
-        // when
+        // Act
         val result = resolver.findTsConfig(sourceFile)
 
-        // then
+        // Assert
         assertThat(result?.data?.compilerOptions?.baseUrl).isEqualTo(".")
     }
 
     @Test
     fun `should prefer nearest tsconfig in monorepo`() {
-        // given
+        // Arrange
         val rootTsconfig = tempDir.resolve("tsconfig.json")
         rootTsconfig.writeText(
             """
@@ -69,29 +69,29 @@ class TsConfigResolverTest {
 
         val sourceFile = packagesDir.resolve("src/index.ts")
 
-        // when
+        // Act
         val result = resolver.findTsConfig(sourceFile)
 
-        // then
+        // Assert
         assertThat(result?.data?.compilerOptions?.baseUrl).isEqualTo("src")
     }
 
     @Test
     fun `should return null when no tsconfig found`() {
-        // given
+        // Arrange
         val srcDir = tempDir.resolve("src").apply { mkdirs() }
         val sourceFile = srcDir.resolve("index.ts")
 
-        // when
+        // Act
         val result = resolver.findTsConfig(sourceFile)
 
-        // then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should resolve extends to merged configuration`() {
-        // given
+        // Arrange
         val baseTsconfig = tempDir.resolve("tsconfig.base.json")
         baseTsconfig.writeText(
             """
@@ -122,17 +122,17 @@ class TsConfigResolverTest {
 
         val sourceFile = tempDir.resolve("src/index.ts")
 
-        // when
+        // Act
         val merged = resolver.findTsConfig(sourceFile)
 
-        // then
+        // Assert
         assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo(".")
         assertThat(merged?.data?.compilerOptions?.paths).containsKeys("core/*", "utils/*")
     }
 
     @Test
     fun `should override parent baseUrl with child baseUrl`() {
-        // given
+        // Arrange
         val baseTsconfig = tempDir.resolve("tsconfig.base.json")
         baseTsconfig.writeText(
             """
@@ -158,16 +158,16 @@ class TsConfigResolverTest {
 
         val sourceFile = tempDir.resolve("index.ts")
 
-        // when
+        // Act
         val merged = resolver.findTsConfig(sourceFile)
 
-        // then
+        // Assert
         assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo("src")
     }
 
     @Test
     fun `should handle extends with absolute path`() {
-        // given
+        // Arrange
         val baseTsconfig = tempDir.resolve("config/tsconfig.base.json").apply { parentFile.mkdirs() }
         baseTsconfig.writeText(
             """
@@ -195,17 +195,17 @@ class TsConfigResolverTest {
 
         val sourceFile = tempDir.resolve("src/index.ts")
 
-        // when
+        // Act
         val merged = resolver.findTsConfig(sourceFile)
 
-        // then - the parent's baseUrl points at the parent's own directory, expressed relative to the child
+        // Assert - the parent's baseUrl points at the parent's own directory, expressed relative to the child
         assertThat(merged?.data?.compilerOptions?.baseUrl).isEqualTo("config")
         assertThat(merged?.data?.compilerOptions?.paths).containsKey("core/*")
     }
 
     @Test
     fun `should return null for extends with non-existent file`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -217,16 +217,16 @@ class TsConfigResolverTest {
 
         val sourceFile = tempDir.resolve("src/index.ts")
 
-        // when
+        // Act
         val merged = resolver.findTsConfig(sourceFile)
 
-        // then
+        // Assert
         assertThat(merged?.data?.compilerOptions).isNull()
     }
 
     @Test
     fun `should cache tsconfig lookups for performance`() {
-        // given
+        // Arrange
         val tsconfig = tempDir.resolve("tsconfig.json")
         tsconfig.writeText(
             """
@@ -241,17 +241,17 @@ class TsConfigResolverTest {
         val file1 = tempDir.resolve("src/file1.ts")
         val file2 = tempDir.resolve("src/file2.ts")
 
-        // when
+        // Act
         val result1 = resolver.findTsConfig(file1)
         val result2 = resolver.findTsConfig(file2)
 
-        // then
+        // Assert
         assertThat(result1?.data).isSameAs(result2?.data)
     }
 
     @Test
     fun `should find jsconfig when tsconfig does not exist`() {
-        // Given
+        // Arrange
         val srcDir = tempDir.resolve("src").apply { mkdirs() }
         val jsconfig = srcDir.resolve("jsconfig.json")
         jsconfig.writeText(
@@ -269,10 +269,10 @@ class TsConfigResolverTest {
 
         val sourceFile = srcDir.resolve("index.js")
 
-        // When
+        // Act
         val result = resolver.findTsConfig(sourceFile)
 
-        // Then
+        // Assert
         assertThat(result?.data?.compilerOptions?.baseUrl).isEqualTo("./")
         assertThat(result?.data?.compilerOptions?.paths).containsKey("@/*")
         assertThat(
@@ -286,7 +286,7 @@ class TsConfigResolverTest {
 
     @Test
     fun `should prefer tsconfig over jsconfig when both exist`() {
-        // Given
+        // Arrange
         val srcDir = tempDir.resolve("src").apply { mkdirs() }
 
         val jsconfig = srcDir.resolve("jsconfig.json")
@@ -313,10 +313,10 @@ class TsConfigResolverTest {
 
         val sourceFile = srcDir.resolve("index.ts")
 
-        // When
+        // Act
         val result = resolver.findTsConfig(sourceFile)
 
-        // Then
+        // Assert
         assertThat(result?.data?.compilerOptions?.baseUrl).isEqualTo("ts-base")
         assertThat(result?.file?.name).isEqualTo("tsconfig.json")
     }

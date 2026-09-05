@@ -13,33 +13,33 @@ import org.junit.jupiter.api.Test
 class GoAnalyzerTest {
     @Test
     fun `should parse go code without throwing exceptions`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         assertThat(report.nodes).isNotNull()
     }
 
     @Test
     fun `should extract package name`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         if (report.nodes.isNotEmpty()) {
             val node = report.nodes.first()
             assertEquals("path", node.pathWithName.parts[0])
@@ -49,17 +49,17 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract function declaration`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         assertEquals(1, report.nodes.size)
         assertEquals(
             "main",
@@ -72,7 +72,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract struct declaration`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -82,10 +82,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         assertEquals(1, report.nodes.size)
         assertEquals(
             "User",
@@ -98,7 +98,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract interface declaration`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -107,10 +107,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         assertEquals(1, report.nodes.size)
         assertEquals(
             "Writer",
@@ -123,7 +123,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract simple import`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -132,17 +132,17 @@ class GoAnalyzerTest {
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("fmt"))))
     }
 
     @Test
     fun `should extract multiple imports`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -155,10 +155,10 @@ class GoAnalyzerTest {
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).containsAll(
             listOf(
@@ -171,17 +171,17 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract function parameter types`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
             func processUser(name string, age int) {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -193,7 +193,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract function return types`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -202,10 +202,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -217,7 +217,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract struct field types`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -228,10 +228,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -243,7 +243,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract qualified type names`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -252,17 +252,17 @@ class GoAnalyzerTest {
             func processContext(ctx context.Context) {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(Type.simple("Context"))
     }
 
     @Test
     fun `should create nodes for multiple declarations`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -275,10 +275,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         assertEquals(2, report.nodes.size)
         val names = report.nodes.map { it.pathWithName.parts.last() }
         assertThat(names).containsAll(listOf("User", "getUser"))
@@ -286,7 +286,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should set correct node types`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -303,10 +303,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val nodesByName = report.nodes.associateBy { it.pathWithName.parts.last() }
         assertEquals("CLASS", nodesByName["User"]?.nodeType?.name)
         assertEquals("INTERFACE", nodesByName["Writer"]?.nodeType?.name)
@@ -315,7 +315,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should extract dot import as wildcard`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -324,17 +324,17 @@ class GoAnalyzerTest {
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("fmt")), isWildcard = true, isDotImport = true))
     }
 
     @Test
     fun `should extract import alias`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -343,17 +343,17 @@ class GoAnalyzerTest {
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("github_com", "example", "package"))))
     }
 
     @Test
     fun `should extract blank import`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -362,17 +362,17 @@ class GoAnalyzerTest {
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("github_com", "lib", "pq"))))
     }
 
     @Test
     fun `should extract method receivers`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -389,10 +389,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         // Methods should not be separate nodes - they should be aggregated into the User type
         assertEquals(1, report.nodes.size)
         val userNode = report.nodes.first()
@@ -405,7 +405,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should analyze config file dependencies`() {
-        // Given
+        // Arrange
         val goCode = """
             package config
 
@@ -444,10 +444,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./config.go", goCode)).analyze()
 
-        // Then
+        // Assert
         // Check that we have the expected components
         val nodeNames = report.nodes.map { it.pathWithName.parts.last() }
         assertThat(nodeNames).containsAll(listOf("CommentConfig", "Config", "New", "loadConfigFile"))
@@ -473,7 +473,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should detect cross package type usage`() {
-        // Given - Simulate usage of types from another package
+        // Arrange - Simulate usage of types from another package
         val goCode = """
             package main
 
@@ -493,10 +493,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./main.go", goCode)).analyze()
 
-        // Then
+        // Assert
         println("Found ${report.nodes.size} nodes:")
         report.nodes.forEach { node ->
             println("Node: ${node.pathWithName.parts.last()}")
@@ -516,7 +516,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should resolve cross package dependencies after dependency resolution`() {
-        // Given - Simulate config package
+        // Arrange - Simulate config package
         val configCode = """
             package config
 
@@ -529,7 +529,7 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // Given - Simulate main package that uses config
+        // Arrange - Simulate main package that uses config
         val mainCode = """
             package main
 
@@ -545,7 +545,7 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When - Analyze both packages
+        // Act - Analyze both packages
         val configReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./config/config.go", configCode)).analyze()
         val mainReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./main.go", mainCode)).analyze()
 
@@ -601,7 +601,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should debug real module imports`() {
-        // Given
+        // Arrange
         val realGoCode = """
             package main
 
@@ -628,10 +628,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./cmd/nocmt/main.go", realGoCode)).analyze()
 
-        // Then
+        // Assert
         println("Found ${report.nodes.size} nodes:")
         report.nodes.forEach { node ->
             println("Node: ${node.pathWithName.parts.last()}")
@@ -651,7 +651,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should resolve Go module dependencies end to end`() {
-        // Given - Simulate the config package
+        // Arrange - Simulate the config package
         val configCode = """
             package config
 
@@ -664,7 +664,7 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // Given - Simulate the main package using the config
+        // Arrange - Simulate the main package using the config
         val mainCode = """
             package main
 
@@ -676,7 +676,7 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When - Analyze both files
+        // Act - Analyze both files
         val configReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "internal/config/config.go", configCode)).analyze()
         val mainReport = GoAnalyzer(FileInfo(SupportedLanguage.GO, "cmd/nocmt/main.go", mainCode)).analyze()
 
@@ -731,7 +731,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should handle all Go import types correctly`() {
-        // Given - All types of Go imports in one test
+        // Arrange - All types of Go imports in one test
         val goCode = """
             package main
             
@@ -747,10 +747,10 @@ class GoAnalyzerTest {
             func main() {}
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
 
         // Standard imports
@@ -772,7 +772,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should handle standard import with qualified type usage`() {
-        // Given - Standard import with qualified type usage
+        // Arrange - Standard import with qualified type usage
         val goCode = """
             package main
             
@@ -787,10 +787,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("fmt"))))
 
@@ -801,7 +801,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should handle remote import with qualified type usage`() {
-        // Given - Remote import with qualified type usage
+        // Arrange - Remote import with qualified type usage
         val goCode = """
             package main
             
@@ -816,10 +816,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("github_com", "user", "repo"))))
 
@@ -833,7 +833,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should handle named import with alias usage`() {
-        // Given - Named import with alias usage
+        // Arrange - Named import with alias usage
         val goCode = """
             package main
             
@@ -844,10 +844,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(Dependency(Path(listOf("encoding", "json"))))
 
@@ -858,7 +858,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should handle blank import for side effects only`() {
-        // Given - Blank import for side effects (no direct usage)
+        // Arrange - Blank import for side effects (no direct usage)
         val goCode = """
             package main
             
@@ -870,10 +870,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
 
         // Should have blank import dependency (for side effects)
@@ -889,7 +889,7 @@ class GoAnalyzerTest {
 
     @Test
     fun `should handle dot import with unqualified access`() {
-        // Given - Dot import allowing unqualified access
+        // Arrange - Dot import allowing unqualified access
         val goCode = """
             package main
             
@@ -904,10 +904,10 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./path", goCode)).analyze()
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
 
         // Should have dot import with both flags set
@@ -929,7 +929,7 @@ class GoAnalyzerTest {
         // before checking imports, ensuring dependencies between types in the same
         // Go package are correctly captured.
 
-        // Given - Multiple types and functions in the same package that reference each other
+        // Arrange - Multiple types and functions in the same package that reference each other
         val goCode = """
             package models
             
@@ -966,7 +966,7 @@ class GoAnalyzerTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = GoAnalyzer(FileInfo(SupportedLanguage.GO, "./models/models.go", goCode)).analyze()
 
         // Create project dictionary for dependency resolution
@@ -979,7 +979,7 @@ class GoAnalyzerTest {
             node.resolveTypes(projectDictionary, languageDictionary, knownNodePaths)
         }
 
-        // Then - Verify that types are correctly resolved within the same package
+        // Assert - Verify that types are correctly resolved within the same package
 
         // 1. User struct should have resolved dependency on Address
         val userNode = resolvedNodes.find { it.pathWithName.parts.last() == "User" }

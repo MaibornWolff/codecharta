@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class VueAnalyzerTest {
     @Test
     fun `analyzes Vue SFC with TypeScript script`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>Hello World</div>
@@ -35,10 +35,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         val node = result.nodes.first()
         assertThat(node.pathWithName.toString()).isEqualTo("src.components.HelloWorld")
@@ -48,7 +48,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `analyzes Vue SFC with JavaScript script`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>{{ message }}</div>
@@ -71,10 +71,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         assertThat(
             result.nodes
@@ -86,7 +86,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `analyzes Vue SFC with script setup syntax`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>{{ message }}</div>
@@ -105,10 +105,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         assertThat(
             result.nodes
@@ -120,7 +120,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `analyzes template-only Vue component`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <button class="btn">Click me</button>
@@ -137,10 +137,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         val node = result.nodes.first()
         assertThat(node.pathWithName.toString()).isEqualTo("src.components.SimpleButton")
@@ -150,7 +150,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `tracks imports from script section`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>Content</div>
@@ -173,10 +173,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         val node = result.nodes.first()
         assertThat(node.dependencies).isNotEmpty()
@@ -184,7 +184,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `tracks component usage from template section`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>
@@ -208,10 +208,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         val node = result.nodes.first()
         assertThat(node.dependencies).isNotEmpty()
@@ -219,7 +219,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `handles Vue SFC with TSX script`() {
-        // Given
+        // Arrange
         val vueCode = """
             <script lang="tsx">
             import { defineComponent } from 'vue'
@@ -239,10 +239,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         assertThat(
             result.nodes
@@ -254,7 +254,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `handles Vue SFC with JSX script`() {
-        // Given
+        // Arrange
         val vueCode = """
             <script lang="jsx">
             import ChildComponent from './ChildComponent.vue'
@@ -273,10 +273,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         assertThat(
             result.nodes
@@ -288,7 +288,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `tracks named imports from both module alias and relative paths`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>
@@ -314,10 +314,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         val node = result.nodes.first()
 
@@ -334,7 +334,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `strips vue extension from dependency paths to match node paths`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>
@@ -360,10 +360,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         assertThat(result.nodes).hasSize(1)
         val node = result.nodes.first()
         assertThat(node.pathWithName.toString()).isEqualTo("src.parent.ParentComponent")
@@ -379,7 +379,7 @@ class VueAnalyzerTest {
 
     @Test
     fun `resolves a script default import to its binding name instead of the DEFAULT_EXPORT marker`() {
-        // Given
+        // Arrange
         val vueCode = """
             <template>
               <div>{{ title }}</div>
@@ -400,10 +400,10 @@ class VueAnalyzerTest {
             content = vueCode
         )
 
-        // When
+        // Act
         val result = VueAnalyzer(fileInfo).analyze()
 
-        // Then
+        // Assert
         // The default import binds to TitleBuilder; both the dependency and the usedType must carry that
         // binding name so the dependency can resolve to the exported declaration, not a DEFAULT_EXPORT marker.
         val node = result.nodes.first()

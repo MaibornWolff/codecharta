@@ -15,7 +15,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should extract dotted unit name as package path`() {
-        // Given
+        // Arrange
         val code = """
             unit MyCo.Utils;
             interface
@@ -26,10 +26,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val parts = report.nodes
             .first()
             .pathWithName.parts
@@ -38,7 +38,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should extract uses clause entries as dependencies`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Main;
             interface
@@ -52,10 +52,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(
             Dependency(Path.fromStringWithDots("System.SysUtils")),
@@ -65,7 +65,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should add implicit wildcard dependency for own unit package`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Services;
             interface
@@ -76,10 +76,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertThat(dependencies).contains(
             Dependency(Path.fromStringWithDots("MyApp.Services"), true)
@@ -88,7 +88,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should create node for each class in a given file`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Multiple;
             interface
@@ -103,10 +103,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val nodes = report.nodes
         assertEquals(3, nodes.size)
         val names = nodes.map { it.pathWithName.parts.last() }
@@ -118,7 +118,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should extract class, interface, record, and enum declaration types`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Types;
             interface
@@ -134,17 +134,17 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val names = report.nodes.map { it.pathWithName.parts.last() }
         assertThat(names).contains("TMyClass", "IMyInterface", "TMyRecord", "TMyEnum")
     }
 
     @Test
     fun `should extract inheritance types`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Derived;
             interface
@@ -155,17 +155,17 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).anyMatch { it.name == "TBase" }
     }
 
     @Test
     fun `should extract field types`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Entity;
             interface
@@ -178,10 +178,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).anyMatch { it.name == "TName" }
         assertThat(usedTypes).anyMatch { it.name == "TCounter" }
@@ -189,7 +189,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should extract types of generics correctly`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Generics;
             interface
@@ -201,10 +201,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
             Type.generic("TList", listOf(Type.simple("TItem")))
@@ -213,7 +213,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should extract method parameter and return types`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Service;
             interface
@@ -225,10 +225,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).anyMatch { it.name == "TId" }
         assertThat(usedTypes).anyMatch { it.name == "TName" }
@@ -236,7 +236,7 @@ class DelphiAnalyzerTest {
 
     @Test
     fun `should include parent class chain in nested type path`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Nested;
             interface
@@ -251,17 +251,17 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val innerNode = report.nodes.first { it.pathWithName.parts.last() == "TInner" }
         assertThat(innerNode.pathWithName.parts).containsExactly("MyApp", "Nested", "TOuter", "TInner")
     }
 
     @Test
     fun `should return empty report for empty file`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Empty;
             interface
@@ -269,16 +269,16 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         assertThat(report.nodes).isEmpty()
     }
 
     @Test
     fun `should extract constructor calls to usedTypes correctly`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Service;
             interface
@@ -294,34 +294,34 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).anyMatch { it.name == "THelper" }
     }
 
     @Test
     fun `should not add empty-path wildcard dependency for package-less file`() {
-        // Given
+        // Arrange
         val code = """
             type
               TStandalone = class
               end;
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val dependencies = report.nodes.flatMap { it.dependencies }
         assertThat(dependencies).noneMatch { it.path.parts.isEmpty() }
     }
 
     @Test
     fun `should set correct language and physical path for nodes`() {
-        // Given
+        // Arrange
         val code = """
             unit MyApp.Path;
             interface
@@ -332,10 +332,10 @@ class DelphiAnalyzerTest {
             end.
         """.trimIndent()
 
-        // When
+        // Act
         val report = analyze(code)
 
-        // Then
+        // Assert
         val node = report.nodes.first()
         assertEquals(SupportedLanguage.DELPHI, node.language)
         assertEquals("./path", node.physicalPath)

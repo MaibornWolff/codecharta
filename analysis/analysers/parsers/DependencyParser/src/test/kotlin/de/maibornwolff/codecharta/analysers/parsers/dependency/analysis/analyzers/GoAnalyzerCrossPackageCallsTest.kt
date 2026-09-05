@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class GoAnalyzerCrossPackageCallsTest {
     @Test
     fun `should detect resources LoadConfigFile function call from schema package`() {
-        // Given - schema package calling resources.LoadConfigFile()
+        // Arrange - schema package calling resources.LoadConfigFile()
         val schemaFileContent = """
             package schema
 
@@ -63,11 +63,11 @@ class GoAnalyzerCrossPackageCallsTest {
             content = schemaFileContent
         )
 
-        // When
+        // Act
         val analyzer = GoAnalyzer(fileInfo)
         val fileReport = analyzer.analyze()
 
-        // Then
+        // Assert
         // innerLoadLicensePolicies is a private method, so it should be aggregated into LicensePolicyConfig
         val licensePolicyConfigNode = findNodeByName(fileReport.nodes, "LicensePolicyConfig")
         assertNotNull(licensePolicyConfigNode, "LicensePolicyConfig type should be found")
@@ -86,7 +86,7 @@ class GoAnalyzerCrossPackageCallsTest {
 
     @Test
     fun `should detect log FormatIndentedInterfaceAsJson function call from cmd package`() {
-        // Given - cmd package calling log.FormatIndentedInterfaceAsJson()
+        // Arrange - cmd package calling log.FormatIndentedInterfaceAsJson()
         val cmdFileContent = """
             package cmd
 
@@ -135,11 +135,11 @@ class GoAnalyzerCrossPackageCallsTest {
             content = cmdFileContent
         )
 
-        // When
+        // Act
         val analyzer = GoAnalyzer(fileInfo)
         val fileReport = analyzer.analyze()
 
-        // Then
+        // Assert
         // formatResultMap is a private method, so it should be aggregated into ValidationErrorResult
         val validationErrorResultNode = findNodeByName(fileReport.nodes, "ValidationErrorResult")
         assertNotNull(validationErrorResultNode, "ValidationErrorResult type should be found")
@@ -158,7 +158,7 @@ class GoAnalyzerCrossPackageCallsTest {
 
     @Test
     fun `should detect both FormatIndentedInterfaceAsJson and FormatIndentedInterfaceAsColorizedJson function calls`() {
-        // Given - cmd package calling both log functions
+        // Arrange - cmd package calling both log functions
         val cmdFileContent = """
             package cmd
 
@@ -194,11 +194,11 @@ class GoAnalyzerCrossPackageCallsTest {
             content = cmdFileContent
         )
 
-        // When
+        // Act
         val analyzer = GoAnalyzer(fileInfo)
         val fileReport = analyzer.analyze()
 
-        // Then
+        // Assert
         // formatResultMap is a private method, so it should be aggregated into ValidationErrorResult
         val validationErrorResultNode = findNodeByName(fileReport.nodes, "ValidationErrorResult")
         assertNotNull(validationErrorResultNode, "ValidationErrorResult type should be found")

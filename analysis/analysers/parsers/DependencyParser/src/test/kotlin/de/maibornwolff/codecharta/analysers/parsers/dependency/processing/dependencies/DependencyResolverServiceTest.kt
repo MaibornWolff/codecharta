@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 class DependencyResolverServiceTest {
     @Test
     fun `should resolve used type from same file`() {
-        // given
+        // Arrange
         val aClass = Node.build(
             pathWithName = Path(listOf("de", "mw", "A")),
             physicalPath = "de/mw/A.java",
@@ -45,10 +45,10 @@ class DependencyResolverServiceTest {
             nodes = listOf(aClass, bClass)
         )
 
-        // when
+        // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(report))
 
-        // then
+        // Assert
         val expected = aClass.copy(
             resolvedNodeDependencies = NodeDependencies(
                 internalDependencies = setOf(Dependency(bClass.pathWithName)),
@@ -62,7 +62,7 @@ class DependencyResolverServiceTest {
 
     @Test
     fun `should resolve used type from relative wildcard dependency`() {
-        // given
+        // Arrange
         val address = Node.build(
             pathWithName = Path(listOf("cpu", "aarch64", "assembler_aarch64_inline_hpp", "Address")),
             physicalPath = "cpu/aarch64/assembler_aarch64.inline.hpp",
@@ -93,10 +93,10 @@ class DependencyResolverServiceTest {
             nodes = listOf(anotherAssembler, address, assembler)
         )
 
-        // when
+        // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(report))
 
-        // then
+        // Assert
         val expected = address.copy(
             resolvedNodeDependencies = NodeDependencies(
                 internalDependencies = setOf(Dependency(assembler.pathWithName)),
@@ -110,7 +110,7 @@ class DependencyResolverServiceTest {
 
     @Test
     fun `Transforms lists of nodes to correct dictionary`() {
-        // given
+        // Arrange
         val node1 = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
             physicalPath = "de/maibornwolff/main"
@@ -121,17 +121,17 @@ class DependencyResolverServiceTest {
             physicalPath = "de/maibornwolff/helper"
         )
 
-        // when
+        // Act
         val dictionary = DependencyResolverService.getDictionary(listOf(node1, node2))
 
-        // then
+        // Assert
         val expectedDictionary = mapOf("main" to listOf(node1.pathWithName), "helper" to listOf(node2.pathWithName))
         assertThat(dictionary).isEqualTo(expectedDictionary)
     }
 
     @Test
     fun `Transforms lists of nodes to correct known paths`() {
-        // given
+        // Arrange
         val node1 = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
             physicalPath = "de/maibornwolff/main"
@@ -142,17 +142,17 @@ class DependencyResolverServiceTest {
             physicalPath = "de/maibornwolff/helper"
         )
 
-        // when
+        // Act
         val dictionary = DependencyResolverService.getKnownNodePaths(listOf(node1, node2))
 
-        // then
+        // Assert
         val expectedDictionary = setOf(node1.pathWithName.withDots(), node2.pathWithName.withDots())
         assertThat(dictionary).isEqualTo(expectedDictionary)
     }
 
     @Test
     fun `Correctly resolves nodes with dictionary and known paths`() {
-        // given
+        // Arrange
         val node1 = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
             physicalPath = "de/maibornwolff/main"
@@ -166,10 +166,10 @@ class DependencyResolverServiceTest {
         val fileReport1 = FileReport(listOf(node1))
         val fileReport2 = FileReport(listOf(node2))
 
-        // when
+        // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(fileReport1, fileReport2))
 
-        // then
+        // Assert
         val expectedResolvedNodes = resolvedNodes.map { it.pathWithName }
         assertThat(resolvedNodes).hasSize(2)
         assertThat(expectedResolvedNodes).containsExactlyInAnyOrder(node1.pathWithName, node2.pathWithName)
@@ -177,7 +177,7 @@ class DependencyResolverServiceTest {
 
     @Test
     fun `should resolve Kotlin node and filter out standard library types`() {
-        // given
+        // Arrange
         val kotlinClass = Node.build(
             pathWithName = Path(listOf("com", "example", "MyClass")),
             physicalPath = "com/example/MyClass.kt",
@@ -208,10 +208,10 @@ class DependencyResolverServiceTest {
             nodes = listOf(kotlinClass, otherClass)
         )
 
-        // when
+        // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(report))
 
-        // then
+        // Assert
         val myClassResolved = resolvedNodes.first { it.pathWithName.parts.last() == "MyClass" }
         assertThat(myClassResolved.resolvedNodeDependencies.internalDependencies)
             .containsExactly(Dependency(otherClass.pathWithName))
@@ -305,7 +305,7 @@ class DependencyResolverServiceTest {
 
     @Test
     fun `Maps Node to NodeInformation`() {
-        // given
+        // Arrange
         val node = Node.build(
             pathWithName = Path(listOf("de", "maibornwolff", "main")),
             resolvedNodeDependencies = NodeDependencies(
@@ -314,10 +314,10 @@ class DependencyResolverServiceTest {
             )
         )
 
-        // when
+        // Act
         val nodeInformation = DependencyResolverService.mapNodeInfo(node)
 
-        // then
+        // Assert
         val expected = NodeInformation(
             id = "de.maibornwolff.main",
             dependencies = setOf("de.maibornwolff.helper")
