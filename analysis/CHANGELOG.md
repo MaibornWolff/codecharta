@@ -39,7 +39,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   `MergeFilter`, `StructureModifier` and `EdgeFilter` carry the new tables through: namespaces merge max-wins, leaves
   union first-wins, leaf edges fold by endpoint pair, and a restructuring re-points `leaves[].nodeId` at the file's
   new id — dropping a leaf, and the edges touching it, when its file did not survive. `ccsh check` rejects a leaf
-  whose `nodeId` resolves to no node, the way it already rejects a dangling edge endpoint or metrics key.
+  whose `nodeId` resolves to no node, a `nodes` key that names no node and a leaf edge whose endpoint the leaf table
+  does not declare, the way it already rejects a dangling edge endpoint or metrics key.
 
 ### Changed
 

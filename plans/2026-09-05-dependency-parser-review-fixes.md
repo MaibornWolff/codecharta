@@ -1,7 +1,7 @@
 ---
 name: Fix the pre-push review findings of the dependency parser
 issue: <#issueid>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -47,16 +47,18 @@ a handful of smaller model, reader and documentation gaps.
 
 ## Steps
 
-- [ ] Complete Task 1: input layer
-- [ ] Complete Task 2: extension handling
-- [ ] Complete Task 3: duplicate declaration ids
-- [ ] Complete Task 4: model and reader
-- [ ] Complete Task 5: visualization
-- [ ] Complete Task 6: tests and docs
+- [x] Complete Task 1: input layer
+- [x] Complete Task 2: extension handling
+- [x] Complete Task 3: duplicate declaration ids
+- [x] Complete Task 4: model and reader
+- [x] Complete Task 5: visualization
+- [x] Complete Task 6: tests and docs
 
 ## Notes
 
 - Merge semantics of `edges` (first weight wins) predate this branch; `leafEdges` follow them rather
   than the other way round, so merging a project with itself does not double-count.
-- `--bypass-gitignore` now also triggers the build-folder fallback, as its help text promises
-  ("use regex-based exclusion instead"); `UnifiedParser` and `RawTextParser` keep their behaviour.
+- The build-folder fallback follows the rule `UnifiedParser` and `RawTextParser` already apply (no root
+  `.gitignore` and no `-ibf`), now shared in `CommonAnalyserParameters`, so the three parsers agree.
+- Not done, by decision: `-bf`/`--local-changes` are rejected rather than implemented, since a
+  dependency graph over a subset of files is meaningless; the branch name keeps its form.
