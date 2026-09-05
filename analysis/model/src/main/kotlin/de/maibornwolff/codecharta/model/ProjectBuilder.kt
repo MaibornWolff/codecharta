@@ -43,7 +43,9 @@ open class ProjectBuilder(
 
     private var domainLens: DomainLens? = null
 
-    private var dependencyNodes: Map<String, DependencyNode> = emptyMap()
+    // Only the tables the builder itself fills; edges, attribute types and descriptors come from the
+    // legacy fields above and are joined onto this in build().
+    private var dependencyTables: DependencyLens = DependencyLens()
 
     private var commitHash: String? = null
 
@@ -57,8 +59,13 @@ open class ProjectBuilder(
         return this
     }
 
-    fun withDependencyNodes(dependencyNodes: Map<String, DependencyNode>): ProjectBuilder {
-        this.dependencyNodes = dependencyNodes
+    fun withDependencyLens(
+        nodes: Map<String, DependencyNode>,
+        namespaces: Map<String, DependencyNamespace> = emptyMap(),
+        leaves: Map<String, DependencyLeaf> = emptyMap(),
+        leafEdges: List<LeafEdge> = emptyList()
+    ): ProjectBuilder {
+        this.dependencyTables = DependencyLens(nodes = nodes, namespaces = namespaces, leaves = leaves, leafEdges = leafEdges)
         return this
     }
 
@@ -91,7 +98,13 @@ open class ProjectBuilder(
         val baseLenses = LensSet.fromLegacy(edges.toList(), attributeTypes.toMap(), attributeDescriptors.toMap())
         return assembleProject(
             baseLenses.copy(
-                dependency = baseLenses.dependency.copy(nodes = dependencyNodes),
+                dependency =
+                    baseLenses.dependency.copy(
+                        nodes = dependencyTables.nodes,
+                        namespaces = dependencyTables.namespaces,
+                        leaves = dependencyTables.leaves,
+                        leafEdges = dependencyTables.leafEdges
+                    ),
                 domain = domainLens,
                 opaqueLenses = opaqueLenses
             )
@@ -337,7 +350,12 @@ open class ProjectBuilder(
                     blacklist
                 ).withOpaqueLenses(lenses.opaqueLenses)
                     .withCommitHash(commitHash)
-                    .withDependencyNodes(lenses.dependency.nodes)
+                    .withDependencyLens(
+                        lenses.dependency.nodes,
+                        lenses.dependency.namespaces,
+                        lenses.dependency.leaves,
+                        lenses.dependency.leafEdges
+                    )
             return lenses.domain?.let { builder.withDomainLens(it) } ?: builder
         }
     }

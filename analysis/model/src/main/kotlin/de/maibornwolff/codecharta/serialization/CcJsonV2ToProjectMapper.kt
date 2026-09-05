@@ -1,8 +1,10 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.MetricsLens
 import de.maibornwolff.codecharta.model.Node
@@ -37,6 +39,7 @@ object CcJsonV2ToProjectMapper {
                 Edge(from, to, edge.attributes, edge.isCyclic == true, edge.isPointingUpwards == true)
             }
 
+        val leaves = resolveLeaves(dto, idToEndpoint.keys)
         val lenses =
             LensSet(
                 metrics =
@@ -49,7 +52,10 @@ object CcJsonV2ToProjectMapper {
                         edges = edges,
                         attributeTypes = dto.lenses.dependency.attributeTypes,
                         attributeDescriptors = dto.lenses.dependency.attributeDescriptors,
-                        nodes = resolveDependencyNodes(dto, idToEndpoint.keys)
+                        nodes = resolveDependencyNodes(dto, idToEndpoint.keys),
+                        namespaces = dto.lenses.dependency.namespaces.orEmpty(),
+                        leaves = leaves,
+                        leafEdges = resolveLeafEdges(dto, leaves.keys)
                     ),
                 domain = dto.lenses.domain,
                 opaqueLenses = dto.lenses.opaqueLenses
@@ -72,6 +78,38 @@ object CcJsonV2ToProjectMapper {
             .filterNot { it in knownNodeIds }
             .forEach { orphanId -> Logger.warn { "Dropping dependency-lens entry with unresolved node id: $orphanId" } }
         return declared.filterKeys { it in knownNodeIds }
+    }
+
+    // A leaf joins onto the file tree through its nodeId; one that names no file node has nothing to join
+    // onto, so it is dropped with a warning like an unresolved edge endpoint.
+    private fun resolveLeaves(dto: CcJsonV2, knownNodeIds: Set<String>): Map<String, DependencyLeaf> {
+        val declared = dto.lenses.dependency.leaves ?: return emptyMap()
+        val (resolvable, orphans) = declared.entries.partition { it.value.nodeId in knownNodeIds }
+        orphans.forEach { orphan ->
+            Logger.warn { "Dropping dependency-lens leaf '${orphan.key}' with unresolved node id: ${orphan.value.nodeId}" }
+        }
+        return resolvable.associate { it.key to it.value }
+    }
+
+    // Leaf edges address leaves, so an edge whose endpoint the leaf table does not declare — or whose leaf
+    // was just dropped — points at nothing. A file that carries leaf edges without any leaves declares no
+    // endpoints at all, so nothing can be checked and every edge is kept.
+    private fun resolveLeafEdges(dto: CcJsonV2, knownLeafIds: Set<String>): List<LeafEdge> {
+        val declared = dto.lenses.dependency.leafEdges ?: return emptyList()
+        return declared.mapNotNull { edge ->
+            if (knownLeafIds.isNotEmpty() && (edge.fromLeaf !in knownLeafIds || edge.toLeaf !in knownLeafIds)) {
+                Logger.warn { "Dropping leaf edge with unresolved leaf(s): fromLeaf=${edge.fromLeaf}, toLeaf=${edge.toLeaf}" }
+                return@mapNotNull null
+            }
+            LeafEdge(
+                edge.fromLeaf,
+                edge.toLeaf,
+                edge.attributes,
+                edge.usage.orEmpty(),
+                edge.isCyclic == true,
+                edge.isPointingUpwards == true
+            )
+        }
     }
 
     private fun toNode(fileDto: FileDto, metricsByNodeId: Map<String, Map<String, Any>>): Node {

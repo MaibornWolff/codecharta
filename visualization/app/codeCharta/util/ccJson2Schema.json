@@ -89,7 +89,7 @@
       }
     },
     "DependencyLens": {
-      "description": "The dependency graph: edges between nodes (by id) with their attribute types and descriptors, plus `nodes`, each node's place in that graph. `nodes` is optional so an unused lens slot stays `{}`.",
+      "description": "The dependency graph in both of its projections. The physical one is `edges` between file nodes (by id) with their attribute types and descriptors, plus `nodes`, each node's place in that graph. The logical one is the graph as the code declares it, keyed by dotted logical path: `leaves` are the declarations, `namespaces` the packages containing them, and `leafEdges` the dependencies between declarations. Every table is optional, so a file that carries only the physical projection omits the logical one and an unused lens slot stays `{}`.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -101,6 +101,21 @@
           "description": "Map of node id -> that node's dependency-graph entry.",
           "type": "object",
           "additionalProperties": { "$ref": "#/definitions/DependencyNode" }
+        },
+        "namespaces": {
+          "description": "Map of dotted namespace path -> that namespace's entry in the logical graph.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/DependencyNamespace" }
+        },
+        "leaves": {
+          "description": "Map of dotted declaration path -> that declaration's entry in the logical graph.",
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/DependencyLeaf" }
+        },
+        "leafEdges": {
+          "description": "The dependencies between declarations — the signal the file-collapsed `edges` cannot carry, because an edge between two declarations of one file disappears there.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/LeafEdge" }
         },
         "attributeDescriptors": {
           "type": "object",
@@ -141,6 +156,66 @@
           "description": "The node's levelization depth relative to its containing folder: 0 for a node that depends on nothing, n for one that depends only on nodes below level n.",
           "type": "integer",
           "minimum": 0
+        }
+      }
+    },
+    "DependencyNamespace": {
+      "description": "One package's place in the logical dependency graph. It needs no parent: with dotted ids the parent is the id's prefix.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level"],
+      "properties": {
+        "level": {
+          "description": "The namespace's levelization depth relative to its containing namespace, on the same scale as DependencyNode.level.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "DependencyLeaf": {
+      "description": "One declaration — a class, interface, function, ... — as the logical layer sees it. `nodeId` is the id of the file node the declaration lives in, and the only join from the logical layer back onto the file tree. `name` is kept rather than derived from the key because the logical path escapes dots inside a segment and that escaping is not reversible.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeId", "name", "kind"],
+      "properties": {
+        "nodeId": { "type": "string" },
+        "name": { "type": "string" },
+        "kind": {
+          "description": "The kind of declaration this leaf stands for.",
+          "enum": ["CLASS", "VALUECLASS", "INTERFACE", "ANNOTATION", "ENUM", "FUNCTION", "VARIABLE", "REEXPORT", "SCRIPT", "UNKNOWN"],
+          "type": "string"
+        },
+        "level": {
+          "description": "The declaration's levelization depth within its namespace. Absent when the producer skipped levelization.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "LeafEdge": {
+      "description": "A dependency between two declarations, addressed by their dotted logical paths. A list of its own rather than a widened Edge, because Edge addresses file nodes by id and is what the edge-metric machinery, `edgefilter` and the 3D map read.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fromLeaf", "toLeaf"],
+      "properties": {
+        "fromLeaf": { "type": "string" },
+        "toLeaf": { "type": "string" },
+        "attributes": { "type": "object" },
+        "usage": {
+          "description": "Every way the source declaration uses the target; folding two edges of one pair unions the ways rather than picking one.",
+          "type": "array",
+          "items": {
+            "enum": ["usage", "inheritance", "implementation", "instantiation", "argument", "return_value", "constant_access"],
+            "type": "string"
+          }
+        },
+        "isCyclic": {
+          "description": "Whether this leaf edge takes part in a dependency cycle. Absent means false.",
+          "type": "boolean"
+        },
+        "isPointingUpwards": {
+          "description": "Whether this leaf edge runs against the levelized flow of the namespace tree. Absent means false.",
+          "type": "boolean"
         }
       }
     },

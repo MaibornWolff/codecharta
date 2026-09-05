@@ -38,6 +38,63 @@ something that depends on nothing, *n* for something that depends only on nodes 
 **Metrics.** `outgoing_dependencies` and `incoming_dependencies` per file, in the metrics lens — the
 summed weights of the edges leaving and entering that file.
 
+**The logical layer.** The same analysis a second time, at declaration level — the model DependaCharta
+works in. `leaves` are the individual declarations, `namespaces` the packages containing them, and
+`leafEdges` the dependencies between declarations:
+
+```json
+"dependency": {
+  "namespaces": { "com.example.domain": { "level": 0 } },
+  "leaves": {
+    "com.example.domain.Creature": { "nodeId": "<file node id>", "name": "Creature", "kind": "CLASS", "level": 2 }
+  },
+  "leafEdges": [
+    { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints",
+      "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true }
+  ]
+}
+```
+
+- Both tables are keyed by the **dotted logical path** verbatim, so a namespace's parent is its id's
+  prefix and needs no field of its own. `name` is kept because the logical path escapes dots inside a
+  segment and that escaping is not reversible.
+- **`nodeId`** is the id of the file node the declaration lives in — the one join from the logical layer
+  back onto the file tree, and the only thing a re-pathing filter has to rewrite.
+- **`usage`** lists every way the source declaration uses the target: `usage`, `inheritance`,
+  `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`.
+- `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
+  `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
+- `leafEdges` is a list of its own rather than a widened `Edge`, because `Edge` addresses file nodes by
+  id and is what the edge-metric machinery, `edgefilter` and the 3D map read. Leaving `edges` untouched
+  is what keeps the physical view working unchanged.
+
+Both projections ship on every run. The logical one carries the two signals the physical one cannot: a
+dependency between two declarations of the *same* file (which disappears when edges fold onto files) and
+the kind of use each dependency is. Levels of the two disagree by design where a language's packages and
+folders diverge — folder levels are not a projection of namespace levels, so both are levelized
+separately.
+
+Size on `visualization/app` (921 files, 2150 declarations, 3986 declaration edges): 376 KB → 1.7 MB
+uncompressed, 65 KB → 166 KB gzipped. Output is gzipped by default, so the cost lands mostly in viewer
+memory. `--omit-graph-analysis` skips both levelizations and both cycle passes, leaving both projections
+without levels and with every edge unflagged.
+
+### Parity with DependaCharta
+
+Both tools run over the three contract samples in
+`src/test/resources/analysis/contract/examples/{java,csharp,cpp}`:
+
+| Sample   | Declarations (DC / ccsh) | Declaration edges | Cyclic edges | Upward-pointing edges |
+| -------- | ------------------------ | ----------------- | ------------ | --------------------- |
+| `java`   | 16 / 16                  | 30 / 29           | 6 / 6        | 3 / 2                 |
+| `csharp` | 16 / 16                  | 29 / 28           | 6 / 6        | 3 / 2                 |
+| `cpp`    | 16 / 16                  | 29 / 28           | 6 / 6        | 3 / 2                 |
+
+Every declaration and every declaration pair matches exactly. The single difference in each sample is
+one **self-edge** (`HitPoints` → `HitPoints`), which DependaCharta keeps and flags as upward-pointing
+and this parser drops: an edge from a declaration to itself says nothing about the architecture, and the
+file-level projection has never carried one either.
+
 ## How it works
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
@@ -50,12 +107,13 @@ summed weights of the edges leaving and entering that file.
    genuinely reference each other.
 4. **Aggregate onto files.** Declaration edges fold onto the file they live in: weights sum, `isCyclic`
    ORs, and an edge between two declarations of the same file disappears.
-5. **Levelize.** The physical folder tree is levelized bottom-up, breaking cycles at the edge into the
-   node with the least incoming weight, and `isPointingUpwards` follows from the resulting levels.
+5. **Levelize, twice.** The namespace tree and the physical folder tree are each levelized bottom-up,
+   breaking cycles at the edge into the node with the least incoming weight; `isPointingUpwards` follows
+   from the resulting levels, once per projection.
 
-Levelizing the *folder* tree means levels join straight onto ids the cc.json file tree already has.
-Where a language's packages and folders diverge (Java, C#, Go), the result therefore differs from
-DependaCharta's namespace levelization.
+Levelizing the *folder* tree means the physical levels join straight onto ids the cc.json file tree
+already has. Where a language's packages and folders diverge (Java, C#, Go), those levels therefore
+differ from the namespace levels in the logical layer — which are DependaCharta's.
 
 ## Supported languages
 
@@ -79,7 +137,7 @@ Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi an
 | `--include-tests`                         | analyse test files too (excluded by default)                                                         |
 | `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                                           |
 | `--file-timeout=<seconds>`                | give up on a file after this many seconds (default: no timeout)                                      |
-| `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and levelization                                    |
+| `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                              |
 | `-h, --help`                              | displays this help and exits                                                                         |
 
 ### Tests are excluded by default
@@ -92,9 +150,10 @@ convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, …).
 
 ### When the analysis does not finish
 
-Cycle detection and levelization are both superlinear in the size of the graph. On a repository where
-they do not finish, `--omit-graph-analysis` emits the dependencies and their weights alone, leaving
-every edge unflagged and the lens without levels.
+Cycle detection and levelization are both superlinear in the size of the graph, and levelization now
+runs twice — once per projection. On a repository where they do not finish, `--omit-graph-analysis`
+emits the dependencies and their weights alone, leaving every edge unflagged and the lens without
+levels.
 
 `--file-timeout` bounds a single file's parse. The parse itself is a blocking native call, so the
 timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to
