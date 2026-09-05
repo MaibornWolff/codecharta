@@ -11,6 +11,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class TypescriptAnalyzerTest {
@@ -1496,7 +1497,7 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
-    fun `should strip the module extensions mts and cts from node and dependency paths`() {
+    fun `should strip the module extensions mts and mjs from node and dependency paths`() {
         // given
         val typescriptCode = """
             import { Util } from './util.mjs'
@@ -1527,5 +1528,23 @@ class TypescriptAnalyzerTest {
 
         // then
         assertThat(report.nodes).extracting("pathWithName").containsExactly(Path(listOf("src", "Button", "Button")))
+    }
+
+    @Test
+    fun `should expand a wildcard re-export whose source is a module with the mts extension`(
+        @TempDir analysisRoot: File
+    ) {
+        // given
+        File(analysisRoot, "util.mts").writeText("export const FOO = 1")
+
+        // when
+        val report = TypescriptAnalyzer(
+            FileInfo(SupportedLanguage.TYPESCRIPT, "index.ts", "export * from './util'", analysisRoot = analysisRoot)
+        ).analyze()
+
+        // then
+        val reexport = report.nodes.single { it.pathWithName.getName() == "FOO" }
+        assertThat(reexport.nodeType).isEqualTo(NodeType.REEXPORT)
+        assertThat(reexport.dependencies.filter { !it.isWildcard }.map { it.path }).containsExactly(Path(listOf("util", "FOO")))
     }
 }

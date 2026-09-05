@@ -10,8 +10,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ty
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import kotlin.io.path.createTempDirectory
 
 /**
  * Drives the whole processing chain over the "cellars and centaurs" sample, the same one the extraction
@@ -19,6 +19,9 @@ import kotlin.io.path.createTempDirectory
  * exercises every edge type the lens can carry.
  */
 class ProcessingPipelineTest {
+    @TempDir
+    lateinit var sampleDirectory: File
+
     private val javaSample = "src/test/resources/analysis/contract/examples/java"
 
     private fun graphOfJavaSample(omitGraphAnalysis: Boolean = false): DependencyGraph =
@@ -189,8 +192,6 @@ class ProcessingPipelineTest {
             class Inner {
             }
             """.trimIndent()
-        val sampleDirectory = createTempDirectory("intra-file-dependency").toFile()
-        sampleDirectory.deleteOnExit()
         File(sampleDirectory, "Outer.java").writeText(source)
 
         // Act
@@ -204,8 +205,6 @@ class ProcessingPipelineTest {
     @Test
     fun `should join a declaration split across files to the same file in both projections`() {
         // Arrange: a partial class in two files, and a class that depends on it.
-        val sampleDirectory = createTempDirectory("split-declaration").toFile()
-        sampleDirectory.deleteOnExit()
         File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
         File(sampleDirectory, "FooB.cs").writeText("namespace N { public partial class Foo { } }")
         File(sampleDirectory, "Bar.cs").writeText("namespace N { public class Bar { private Foo foo; } }")
@@ -260,8 +259,6 @@ class ProcessingPipelineTest {
                 public Builder with() { return this; }
             }
             """.trimIndent()
-        val sampleDirectory = createTempDirectory("self-edge").toFile()
-        sampleDirectory.deleteOnExit()
         File(sampleDirectory, "Builder.java").writeText(source)
 
         // Act

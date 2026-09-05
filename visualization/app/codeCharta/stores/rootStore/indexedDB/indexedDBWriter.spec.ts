@@ -836,7 +836,7 @@ describe("migrateCcStateRecordToV20 (dependency levels backfill on persisted fil
     })
 })
 
-describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 transforms)", () => {
+describe("openCodeChartaDB upgrade (v2 blob → every chained transform up to DB_VERSION)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
         const v2Database = await openDB(DB_NAME, 2, {
