@@ -18,7 +18,7 @@ class GoDeclarationsQueryTest {
 
     @Test
     fun `should detect function declarations`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -26,11 +26,11 @@ class GoDeclarationsQueryTest {
             func helper() {}
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val declarations = query.execute(rootNode)
 
-        // Then
+        // Assert
         assertEquals(2, declarations.size)
         val declarationTypes = declarations.map { it.type }
         assertTrue(declarationTypes.all { it == "function_declaration" })
@@ -38,7 +38,7 @@ class GoDeclarationsQueryTest {
 
     @Test
     fun `should detect type declarations`() {
-        // Given
+        // Arrange
         val goCode = """
             package main
             
@@ -51,11 +51,11 @@ class GoDeclarationsQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val declarations = query.execute(rootNode)
 
-        // Then
+        // Assert
         assertEquals(2, declarations.size)
         val declarationTypes = declarations.map { it.type }
         assertTrue(declarationTypes.all { it == "type_declaration" })
@@ -63,7 +63,7 @@ class GoDeclarationsQueryTest {
 
     @Test
     fun `should detect method declarations`() {
-        // Given - This test should FAIL initially
+        // Arrange - This test should FAIL initially
         val goCode = """
             package main
             
@@ -80,11 +80,11 @@ class GoDeclarationsQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val declarations = query.execute(rootNode)
 
-        // Then
+        // Assert
         // Should find: 1 type_declaration + 2 method_declarations = 3 total
         assertEquals(3, declarations.size, "Should detect type declaration AND method declarations")
 
@@ -99,7 +99,7 @@ class GoDeclarationsQueryTest {
 
     @Test
     fun `should detect mixed declarations`() {
-        // Given - This test should FAIL initially
+        // Arrange - This test should FAIL initially
         val goCode = """
             package main
             
@@ -120,11 +120,11 @@ class GoDeclarationsQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val declarations = query.execute(rootNode)
 
-        // Then
+        // Assert
         // Should find: 1 type + 1 function + 2 methods = 4 total
         assertEquals(4, declarations.size, "Should detect all declaration types")
 

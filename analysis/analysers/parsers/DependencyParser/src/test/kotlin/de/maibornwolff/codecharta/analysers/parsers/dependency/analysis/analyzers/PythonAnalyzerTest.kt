@@ -16,16 +16,16 @@ import java.io.File
 class PythonAnalyzerTest {
     @Test
     fun `should convert variable definition to correct type and correct path with names`() {
-        // given
+        // Arrange
         val pythonCode = """            
 TEST = "test"
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("nodeType", "pathWithName").containsExactly(
             tuple(NodeType.VARIABLE, Path(listOf("MyExample", "Path", "PythonAnalyzerTest", "TEST")))
         )
@@ -33,17 +33,17 @@ TEST = "test"
 
     @Test
     fun `should convert function definition to correct type and correct path with names`() {
-        // given
+        // Arrange
         val pythonCode = """            
 def doSomething():
     pass
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("nodeType", "pathWithName").containsExactly(
             tuple(NodeType.FUNCTION, Path(listOf("MyExample", "Path", "PythonAnalyzerTest", "doSomething")))
         )
@@ -51,17 +51,17 @@ def doSomething():
 
     @Test
     fun `should convert class definition to correct type and correct path with names`() {
-        // given
+        // Arrange
         val pythonCode = """            
 class TestClass():
     pass
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("nodeType", "pathWithName").containsExactly(
             tuple(NodeType.CLASS, Path(listOf("MyExample", "Path", "PythonAnalyzerTest", "TestClass")))
         )
@@ -69,7 +69,7 @@ class TestClass():
 
     @Test
     fun `should convert a decorated class definition to correct type and correct path with names`() {
-        // given
+        // Arrange
         val pythonCode = """            
 @testDecorator
 class TestClass():
@@ -77,10 +77,10 @@ class TestClass():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).extracting("nodeType", "pathWithName").containsExactly(
             tuple(NodeType.CLASS, Path(listOf("MyExample", "Path", "PythonAnalyzerTest", "TestClass")))
         )
@@ -88,17 +88,17 @@ class TestClass():
 
     @Test
     fun `should convert imports in __init__ to nodes`() {
-        // given
+        // Arrange
         val pythonCode = """            
 from .creature import Creature
 from de.sots.cellarsandcentaurs.domain.models.speed import Speed
         """
         val physicalPath = File("de/sots/cellarsandcentaurs/domain/models/__init__.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val nodes = report.nodes
         assertEquals(2, nodes.size)
         assertThat(report.nodes).extracting("nodeType", "pathWithName").containsExactlyInAnyOrder(
@@ -115,7 +115,7 @@ from de.sots.cellarsandcentaurs.domain.models.speed import Speed
 
     @Test
     fun `should parse from imports and add them to the node's dependencies and add used types`() {
-        // given
+        // Arrange
         val pythonCode = """
 from de.sots.cellarsandcentaurs.domain.models import Creature, Speed
 
@@ -125,10 +125,10 @@ class TestClass():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(4, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -151,7 +151,7 @@ class TestClass():
 
     @Test
     fun `should parse from wildcard imports and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val pythonCode = """
 from de.sots.cellarsandcentaurs.domain.models import *
 
@@ -161,10 +161,10 @@ class TestClass():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(2, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -175,7 +175,7 @@ class TestClass():
 
     @Test
     fun `should parse relative from imports and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val pythonCode = """
 from .creature_service import Creature_Service
 from ..models import *
@@ -186,10 +186,10 @@ class TestClass():
         """
         val physicalPath = File("de/sots/cellarsandcentaurs/domain/services/creatures.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(6, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -204,7 +204,7 @@ class TestClass():
 
     @Test
     fun `should parse aliased from imports and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val pythonCode = """
 from de.sots.cellarsandcentaurs.domain.services.creature_service import Creature_Service as cs
 
@@ -214,10 +214,10 @@ class TestClass():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(2, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -238,7 +238,7 @@ class TestClass():
 
     @Test
     fun `should not add dependencies for unused imports`() {
-        // given
+        // Arrange
         val pythonCode = """
 from de.sots.cellarsandcentaurs.domain.models.creature import Creature as crt
 
@@ -248,10 +248,10 @@ class TestClass():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(0, dependencies.size)
         val usedTypes = report.nodes.first().usedTypes
@@ -265,7 +265,7 @@ class TestClass():
 
     @Test
     fun `should parse imports and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val pythonCode = """
 import de.sots.cellarsandcentaurs.domain.models
 
@@ -274,10 +274,10 @@ def doSomething():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(2, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -300,7 +300,7 @@ def doSomething():
 
     @Test
     fun `should parse aliased imports and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val pythonCode = """
 import de.sots.cellarsandcentaurs.domain.models as md
 
@@ -309,10 +309,10 @@ def doSomething():
         """
         val physicalPath = File("MyExample/Path/PythonAnalyzerTest.py").path
 
-        // when
+        // Act
         val report = PythonAnalyzer(FileInfo(SupportedLanguage.PYTHON, physicalPath, pythonCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(2, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(

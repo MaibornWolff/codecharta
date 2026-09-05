@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 class LevelizerTest {
     @Test
     fun `should levelize correctly and remove cycle of application-domain`() {
-        // given
+        // Arrange
         val rootPackage = "de.sots.cellarsandcentaurs"
         val adapterNode = GraphNodeBuilder(id = "adapter", parent = rootPackage)
             .withEdge("$rootPackage.domain", 1)
@@ -24,10 +24,10 @@ class LevelizerTest {
             .withChildren(adapterNode, applicationNode, domainNode)
             .build()
 
-        // when
+        // Act
         val leveledNodes = levelize(listOf(cellarsandcentaursNode))
 
-        // then
+        // Assert
         val cellarsandcentaurs = leveledNodes.first()
         assertThat(cellarsandcentaurs.level).isEqualTo(0)
 
@@ -43,7 +43,7 @@ class LevelizerTest {
 
     @Test
     fun `should level a class at zero when it only depends on classes in other packages`() {
-        // given
+        // Arrange
         val rootPackage = "de.sots.cellarsandcentaurs"
         val creatureFacade = GraphNodeBuilder(id = "CreatureFacade", parent = "$rootPackage.application")
             .withEdge("$rootPackage.domain.model", 3)
@@ -59,10 +59,10 @@ class LevelizerTest {
             .withChildren(applicationNode, domainNode)
             .build()
 
-        // when
+        // Act
         val leveledNodes = levelize(listOf(cellarsandcentaursNode))
 
-        // then
+        // Assert
         val cellarsandcentaurs = leveledNodes.first()
         val domain = cellarsandcentaurs.children.first { it.id.contains("domain") }
         assertThat(domain.level).isEqualTo(0)
@@ -74,7 +74,7 @@ class LevelizerTest {
 
     @Test
     fun `should break a cycle at the edge into the node with the least incoming weight`() {
-        // given
+        // Arrange
         val rootPackage = "de.sots.cellarsandcentaurs"
         val applicationNode = GraphNodeBuilder(id = "application", parent = rootPackage)
             .withEdge("$rootPackage.domain", 8)
@@ -86,10 +86,10 @@ class LevelizerTest {
             .withChildren(applicationNode, domainNode)
             .build()
 
-        // when
+        // Act
         val leveledNodes = levelize(listOf(cellarsandcentaursNode))
 
-        // then
+        // Assert
         val domain = leveledNodes.first().children.first { it.id.contains("domain") }
         assertThat(domain.level).isEqualTo(0)
 
@@ -99,28 +99,28 @@ class LevelizerTest {
 
     @Test
     fun `should handle empty input`() {
-        // given
+        // Arrange
         val rootNodes = emptyList<GraphNode>()
 
-        // when
+        // Act
         val leveledNodes = levelize(rootNodes)
 
-        // then
+        // Assert
         assertThat(leveledNodes).isEmpty()
     }
 
     @Test
     fun `should handle multiple root nodes`() {
-        // given
+        // Arrange
         val rootNode1 = GraphNodeBuilder(id = "root1").build()
         val rootNode2 = GraphNodeBuilder(id = "root2")
             .withEdge("root1", 1)
             .build()
 
-        // when
+        // Act
         val leveledNodes = levelize(listOf(rootNode1, rootNode2))
 
-        // then
+        // Assert
         assertThat(leveledNodes)
             .extracting({ it.id }, { it.level })
             .containsExactlyInAnyOrder(

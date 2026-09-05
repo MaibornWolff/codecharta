@@ -11,7 +11,7 @@ class BundlerConfigParserTest {
 
     @Test
     fun `should parse webpack config with CommonJS module exports`() {
-        // Given
+        // Arrange
         val webpackConfig = tempDir.resolve("webpack.config.js")
         webpackConfig.writeText(
             """
@@ -28,10 +28,10 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(webpackConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.aliases).containsEntry("@", "./src")
         assertThat(result?.aliases).containsEntry("Shared", "./shared/src")
@@ -39,7 +39,7 @@ class BundlerConfigParserTest {
 
     @Test
     fun `should parse vite config with ES module export default`() {
-        // Given
+        // Arrange
         val viteConfig = tempDir.resolve("vite.config.js")
         viteConfig.writeText(
             """
@@ -56,10 +56,10 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(viteConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.aliases).containsEntry("@", "/src")
         assertThat(result?.aliases).containsEntry("components", "/src/components")
@@ -67,7 +67,7 @@ class BundlerConfigParserTest {
 
     @Test
     fun `should parse vue config with configureWebpack`() {
-        // Given
+        // Arrange
         val vueConfig = tempDir.resolve("vue.config.js")
         vueConfig.writeText(
             """
@@ -83,17 +83,17 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(vueConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.aliases).containsEntry("Shared", "./shared/src")
     }
 
     @Test
     fun `should resolve path resolve with dirname`() {
-        // Given
+        // Arrange
         val webpackConfig = tempDir.resolve("webpack.config.js")
         webpackConfig.writeText(
             """
@@ -109,10 +109,10 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(webpackConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         val expectedPath = tempDir.resolve("src").canonicalPath
         assertThat(result?.aliases?.get("@")).isEqualTo(expectedPath)
@@ -120,7 +120,7 @@ class BundlerConfigParserTest {
 
     @Test
     fun `should resolve path resolve with multiple segments`() {
-        // Given
+        // Arrange
         val webpackConfig = tempDir.resolve("webpack.config.js")
         webpackConfig.writeText(
             """
@@ -136,10 +136,10 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(webpackConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         val expectedPath = tempDir.resolve("packages/shared/src").canonicalPath
         assertThat(result?.aliases?.get("Shared")).isEqualTo(expectedPath)
@@ -147,19 +147,19 @@ class BundlerConfigParserTest {
 
     @Test
     fun `should return null for non-existent file`() {
-        // Given
+        // Arrange
         val webpackConfig = tempDir.resolve("nonexistent.js")
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(webpackConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should return null for config without aliases`() {
-        // Given
+        // Arrange
         val webpackConfig = tempDir.resolve("webpack.config.js")
         webpackConfig.writeText(
             """
@@ -172,16 +172,16 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(webpackConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should handle quoted property keys`() {
-        // Given
+        // Arrange
         val webpackConfig = tempDir.resolve("webpack.config.js")
         webpackConfig.writeText(
             """
@@ -196,10 +196,10 @@ class BundlerConfigParserTest {
             """.trimIndent()
         )
 
-        // When
+        // Act
         val result = BundlerConfigParser.parse(webpackConfig)
 
-        // Then
+        // Assert
         assertThat(result).isNotNull
         assertThat(result?.aliases).containsEntry("@components", "./src/components")
         assertThat(result?.aliases).containsEntry("shared-utils", "./shared/utils")

@@ -6,64 +6,64 @@ import org.junit.jupiter.api.Test
 class DepthFirstSearchCycleDetectionTest {
     @Test
     fun `detects cycle`() {
-        // given
+        // Arrange
         val edges = listOf(NumberEdge(1, 2), NumberEdge(2, 3), NumberEdge(3, 1))
         val testee = DepthFirstSearchCycleDetection(edges, limitCycleLength = false)
 
-        // when
+        // Act
         val cycles = testee.detectAllCycles()
 
-        // then
+        // Assert
         assertThat(cycles).hasSize(1)
         assertThat(cycles).containsExactly(edges)
     }
 
     @Test
     fun `returns empty set if there is no cycle`() {
-        // given
+        // Arrange
         val edges = listOf(NumberEdge(1, 2))
         val testee = DepthFirstSearchCycleDetection(edges, limitCycleLength = false)
 
-        // when
+        // Act
         val cycles = testee.detectAllCycles()
 
-        // then
+        // Assert
         assertThat(cycles).hasSize(0)
     }
 
     @Test
     fun `only returns edges which are part of the cycle`() {
-        // given
+        // Arrange
         val cyclicEdges = listOf(NumberEdge(1, 2), NumberEdge(2, 1))
         val nonCyclicEdges = listOf(NumberEdge(3, 2))
         val testee = DepthFirstSearchCycleDetection(cyclicEdges + nonCyclicEdges, limitCycleLength = false)
 
-        // when
+        // Act
         val cycles = testee.detectAllCycles()
 
-        // then
+        // Assert
         assertThat(cycles).containsExactly(cyclicEdges)
     }
 
     @Test
     fun `detects multiple cycles`() {
-        // given
+        // Arrange
         val cycle1 = listOf(NumberEdge(1, 2), NumberEdge(2, 1))
         val cycle2 = listOf(NumberEdge(3, 4), NumberEdge(4, 3))
         val cyclicEdges = cycle1 + cycle2
         val testee = DepthFirstSearchCycleDetection(cyclicEdges, limitCycleLength = false)
 
-        // when
+        // Act
         val cycles = testee.detectAllCycles()
 
-        // then
+        // Assert
         assertThat(cycles).hasSize(2)
         assertThat(cycles).containsExactlyInAnyOrder(cycle1, cycle2)
     }
 
     @Test
     fun `detects only cycles up to a maximum length`() {
-        // given
+        // Arrange
         val cycleLongerThanMaximumLength = listOf(
             NumberEdge(1, 2),
             NumberEdge(2, 3),
@@ -80,23 +80,23 @@ class DepthFirstSearchCycleDetectionTest {
         )
         val testee = DepthFirstSearchCycleDetection(cycleLongerThanMaximumLength, limitCycleLength = true)
 
-        // when
+        // Act
         val cycles = testee.detectAllCycles()
 
-        // then
+        // Assert
         assertThat(cycles).isEmpty()
     }
 
     @Test
     fun `only detects one cycle`() {
-        // given
+        // Arrange
         val cyclicEdges = listOf(NumberEdge(1, 2), NumberEdge(2, 1), NumberEdge(1, 3), NumberEdge(3, 2))
         val testee = DepthFirstSearchCycleDetection(cyclicEdges, limitCycleLength = false)
 
-        // when
+        // Act
         val cycles = testee.detectSingleCycle()
 
-        // then
+        // Assert
         assertThat(cycles).hasSize(1)
     }
 }

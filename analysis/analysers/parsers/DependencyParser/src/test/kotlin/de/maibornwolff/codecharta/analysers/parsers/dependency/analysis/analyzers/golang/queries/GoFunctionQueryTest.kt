@@ -19,7 +19,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect function calls in function body`() {
-        // Given - This test should FAIL initially
+        // Arrange - This test should FAIL initially
         val goCode = """
             package main
 
@@ -30,7 +30,7 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         // Find the function declaration
         val functionNode = findFunctionNode(rootNode, goCode, "processData")
@@ -38,7 +38,7 @@ class GoFunctionQueryTest {
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -54,7 +54,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect function calls in method body`() {
-        // Given - This test should FAIL initially
+        // Arrange - This test should FAIL initially
         val goCode = """
             package schema
 
@@ -72,7 +72,7 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         // Find the method declaration
         val methodNode = findMethodNode(rootNode, goCode, "LoadSettings")
@@ -80,7 +80,7 @@ class GoFunctionQueryTest {
 
         val usedTypes = query.execute(methodNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -96,7 +96,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect all function calls including private ones`() {
-        // Given - Updated test to reflect new behavior
+        // Arrange - Updated test to reflect new behavior
         val goCode = """
             package main
 
@@ -113,14 +113,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processData")
         assertNotNull(functionNode, "Function 'processData' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         // Should detect public functions (capitalized)
@@ -148,7 +148,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect nested function calls`() {
-        // Given - This test should FAIL initially
+        // Arrange - This test should FAIL initially
         val goCode = """
             package main
 
@@ -163,14 +163,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "complexProcessing")
         assertNotNull(functionNode, "Function 'complexProcessing' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -191,7 +191,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect method chaining calls`() {
-        // Given - Critical edge case for method chaining
+        // Arrange - Critical edge case for method chaining
         val goCode = """
             package main
 
@@ -206,14 +206,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processChainedCalls")
         assertNotNull(functionNode, "Function 'processChainedCalls' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         // Should detect all public methods in chain
@@ -256,7 +256,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect struct field method calls`() {
-        // Given - Critical edge case for struct field access
+        // Arrange - Critical edge case for struct field access
         val goCode = """
             package main
 
@@ -273,14 +273,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processFieldMethods")
         assertNotNull(functionNode, "Function 'processFieldMethods' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -312,7 +312,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect interface method calls`() {
-        // Given - Interface method calls through interface variables
+        // Arrange - Interface method calls through interface variables
         val goCode = """
             package main
 
@@ -339,14 +339,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processWithInterface")
         assertNotNull(functionNode, "Function 'processWithInterface' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -372,7 +372,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect variadic function calls with multiple arguments`() {
-        // Given - Variadic function calls with various argument patterns
+        // Arrange - Variadic function calls with various argument patterns
         val goCode = """
             package main
 
@@ -393,14 +393,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processVariadicCalls")
         assertNotNull(functionNode, "Function 'processVariadicCalls' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -431,7 +431,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect generic function calls`() {
-        // Given - Generic function calls (Go 1.18+ syntax)
+        // Arrange - Generic function calls (Go 1.18+ syntax)
         val goCode = """
             package main
 
@@ -455,14 +455,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processGenericCalls")
         assertNotNull(functionNode, "Function 'processGenericCalls' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         assertTrue(
@@ -503,7 +503,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect function calls in variable assignments`() {
-        // Given - Test for the exact case from task.md
+        // Arrange - Test for the exact case from task.md
         val goCode = """
             package main
 
@@ -517,7 +517,7 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
 
         // Test NewQueryFromClauseError
@@ -532,7 +532,7 @@ class GoFunctionQueryTest {
         val formatTypes = query.execute(formatNode!!, goCode)
         val formatTypeNames = formatTypes.map { it.name }
 
-        // Then
+        // Assert
         assertTrue(
             queryErrorTypeNames.contains("NewQueryError"),
             "Should detect NewQueryError in variable assignment. Found types: $queryErrorTypeNames"
@@ -547,7 +547,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect direct function calls without selector`() {
-        // Given - Test for direct function calls like NewQueryError()
+        // Arrange - Test for direct function calls like NewQueryError()
         val goCode = """
             package main
 
@@ -562,14 +562,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processErrors")
         assertNotNull(functionNode, "Function 'processErrors' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         // This test should FAIL initially - direct calls are not detected
@@ -597,7 +597,7 @@ class GoFunctionQueryTest {
 
     @Test
     fun `should detect function calls as arguments to other functions`() {
-        // Given - Function calls used as arguments to other functions
+        // Arrange - Function calls used as arguments to other functions
         val goCode = """
             package main
 
@@ -628,14 +628,14 @@ class GoFunctionQueryTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val rootNode = parseGoCode(goCode)
         val functionNode = findFunctionNode(rootNode, goCode, "processNestedFunctionCalls")
         assertNotNull(functionNode, "Function 'processNestedFunctionCalls' should be found")
 
         val usedTypes = query.execute(functionNode!!, goCode)
 
-        // Then
+        // Assert
         val typeNames = usedTypes.map { it.name }
 
         // First level function calls

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class FileReportMultiLanguageTypeResolutionTest {
     @Test
     fun `C# should handle qualified types with namespace prefix`() {
-        // given - C# uses namespace.Type syntax
+        // Arrange - C# uses namespace.Type syntax
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("MyProject", "Models", "User")))
         )
@@ -23,10 +23,10 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("Models.User")) // C# qualified type
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach should resolve this correctly
+        // Assert - Generic approach should resolve this correctly
         val expectedPath = Path(listOf("MyProject", "Models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedPath))
@@ -34,7 +34,7 @@ class FileReportMultiLanguageTypeResolutionTest {
 
     @Test
     fun `C# should handle fully qualified namespace types`() {
-        // given - C# with full namespace qualification
+        // Arrange - C# with full namespace qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("MyProject", "Domain", "Models", "User")))
         )
@@ -50,10 +50,10 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("MyProject.Domain.Models.User")) // Fully qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
         println("C# fully qualified resolved to: $resolvedPath")
 
@@ -62,7 +62,7 @@ class FileReportMultiLanguageTypeResolutionTest {
 
     @Test
     fun `Java should handle qualified types with package prefix`() {
-        // given - Java with qualified reference
+        // Arrange - Java with qualified reference
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("com", "example", "models", "User")))
         )
@@ -78,10 +78,10 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("models.User")) // Qualified reference
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach should resolve this correctly
+        // Assert - Generic approach should resolve this correctly
         val expectedPath = Path(listOf("com", "example", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedPath))
@@ -89,7 +89,7 @@ class FileReportMultiLanguageTypeResolutionTest {
 
     @Test
     fun `Java should handle inner class references`() {
-        // given - Java inner classes use $ but might appear as dots in source
+        // Arrange - Java inner classes use $ but might appear as dots in source
         val projectDictionary = mapOf(
             "InnerClass" to listOf(Path(listOf("com", "example", "models", "User", "InnerClass")))
         )
@@ -105,17 +105,17 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("User.InnerClass")) // Inner class reference
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
         println("Java inner class resolved to: $resolvedPath")
     }
 
     @Test
     fun `PHP should handle namespaced types`() {
-        // given - PHP with namespace qualification
+        // Arrange - PHP with namespace qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("App", "Models", "User")))
         )
@@ -131,10 +131,10 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("Models.User")) // Converted from Models\User
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach should resolve this correctly
+        // Assert - Generic approach should resolve this correctly
         val expectedPath = Path(listOf("App", "Models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedPath))
@@ -142,7 +142,7 @@ class FileReportMultiLanguageTypeResolutionTest {
 
     @Test
     fun `PHP should handle fully qualified namespace`() {
-        // given - PHP fully qualified namespace
+        // Arrange - PHP fully qualified namespace
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("App", "Domain", "Models", "User")))
         )
@@ -158,17 +158,17 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("App.Domain.Models.User")) // Fully qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
         println("PHP fully qualified resolved to: $resolvedPath")
     }
 
     @Test
     fun `Python should handle module qualified types`() {
-        // given - Python with package qualification
+        // Arrange - Python with package qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("myproject", "domain", "models", "User")))
         )
@@ -184,10 +184,10 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("models.User")) // Package qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach should resolve this correctly
+        // Assert - Generic approach should resolve this correctly
         val expectedPath = Path(listOf("myproject", "domain", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedPath))
@@ -195,7 +195,7 @@ class FileReportMultiLanguageTypeResolutionTest {
 
     @Test
     fun `Python should handle package qualified types`() {
-        // given - Python with package qualification
+        // Arrange - Python with package qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("myproject", "domain", "models", "User")))
         )
@@ -211,17 +211,17 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("models.User")) // Package qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
         println("Python models.User resolved to: $resolvedPath")
     }
 
     @Test
     fun `TypeScript should handle namespace qualified types`() {
-        // given - TypeScript with namespace qualification
+        // Arrange - TypeScript with namespace qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("src", "models", "User")))
         )
@@ -237,10 +237,10 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("Models.User")) // Namespace qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach should resolve this correctly
+        // Assert - Generic approach should resolve this correctly
         val expectedPath = Path(listOf("src", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedPath))
@@ -248,7 +248,7 @@ class FileReportMultiLanguageTypeResolutionTest {
 
     @Test
     fun `TypeScript should handle module qualified types`() {
-        // given - TypeScript module imports with qualification
+        // Arrange - TypeScript module imports with qualification
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("src", "app", "models", "User")))
         )
@@ -264,17 +264,17 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("models.User")) // Module qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
         println("TypeScript models.User resolved to: $resolvedPath")
     }
 
     @Test
     fun `TypeScript should handle complex namespace paths`() {
-        // given - TypeScript with complex namespace structure
+        // Arrange - TypeScript with complex namespace structure
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("src", "domain", "entities", "User")))
         )
@@ -290,17 +290,17 @@ class FileReportMultiLanguageTypeResolutionTest {
             usedTypes = setOf(Type.simple("Domain.Entities.User")) // Complex qualified
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val resolvedPath = resolvedNode.usedTypes.first().resolvedPath
         println("TypeScript complex qualified resolved to: $resolvedPath")
     }
 
     @Test
     fun `all languages should handle qualified types uniformly`() {
-        // given - This test demonstrates the universal nature of the generic approach
+        // Arrange - This test demonstrates the universal nature of the generic approach
         val languagesWithTypes = listOf(
             SupportedLanguage.GO to "models.User",
             SupportedLanguage.C_SHARP to "Models.User",
@@ -326,10 +326,10 @@ class FileReportMultiLanguageTypeResolutionTest {
                 usedTypes = setOf(Type.simple(qualifiedType))
             )
 
-            // when
+            // Act
             val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-            // then - All languages should resolve the same way
+            // Assert - All languages should resolve the same way
             val expectedPath = Path(listOf("project", "models", "User"))
             assertThat(resolvedNode.usedTypes.first().resolvedPath)
                 .withFailMessage("Failed for ${language.name} with type $qualifiedType")

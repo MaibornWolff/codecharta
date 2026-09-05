@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class CSharpAnalyzerTest {
     @Test
     fun `should extract field types correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
             using System;
 
@@ -27,10 +27,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -42,7 +42,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract method return types correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
             using System;
 
@@ -64,10 +64,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -79,7 +79,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract method parameter types correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
             using System;
 
@@ -100,10 +100,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -115,7 +115,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract constructor parameter types correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
             using System;
 
@@ -130,10 +130,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -145,7 +145,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract used attributes correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
             using System;
 
@@ -162,10 +162,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("Obsolete"),
@@ -181,7 +181,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should create node for each class, enum, record, annotation and interface in a given file`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -208,10 +208,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val nodes = report.nodes
         assertEquals(6, nodes.size)
         assertEquals("TestClass", nodes[0].pathWithName.parts.last())
@@ -224,7 +224,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract generic types correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -237,10 +237,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -252,7 +252,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should parse imports correctly and add them to the node's dependencies`() {
-        // given
+        // Arrange
         val cSharpCode = """
             using System;
             using System.Collections.Generic;
@@ -270,10 +270,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(4, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -286,7 +286,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should add namespace specific imports only to the nodes of that namespace`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers1 
             {
@@ -310,10 +310,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).hasSize(2)
         val node1 = report.nodes[0]
         assertThat(node1.dependencies).containsExactlyInAnyOrder(
@@ -330,7 +330,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should add namespace specific imports only to the nodes of that simple namespace`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace Simple 
             {
@@ -354,10 +354,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes).hasSize(2)
         val node1 = report.nodes[0]
         assertThat(node1.dependencies).containsExactlyInAnyOrder(
@@ -374,7 +374,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should add the path of the classes package as an implicit wildcard dependency`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -384,10 +384,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes.first().dependencies
         assertEquals(1, dependencies.size)
         assertThat(dependencies).containsExactlyInAnyOrder(
@@ -397,7 +397,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract inheritance of a class to the usedTypes field`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -407,10 +407,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes[0].usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("ParentClass")
@@ -419,7 +419,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract constructor calls to the usedTypes field`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -433,10 +433,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes[0].usedTypes
         assertThat(usedTypes).containsExactlyInAnyOrder(
             Type.simple("ParentClass")
@@ -445,7 +445,7 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should extract static member accesses to the usedTypes field`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -459,10 +459,10 @@ class CSharpAnalyzerTest {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes[0].usedTypes
         assertThat(usedTypes).contains(
             Type.simple("ParentClass")
@@ -471,39 +471,39 @@ class CSharpAnalyzerTest {
 
     @Test
     fun `should parse file scoped simple namespace declaration correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
 namespace MyNameSpace;
 public class TestClass(){ }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val node = report.nodes.first()
         assertThat(node.pathWithName.parts).containsExactly("MyNameSpace", "TestClass")
     }
 
     @Test
     fun `should parse file qualified namespaces declaration correctly`() {
-        // given
+        // Arrange
         val cSharpCode = """
 namespace My.Name.Space;
 public class TestClass(){ }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val node = report.nodes.first()
         assertThat(node.pathWithName.parts).containsExactly("My", "Name", "Space", "TestClass")
     }
 
     @Test
     fun `should overwrite file scoped namespace declaration with class scoped namespace declaration`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers;
             
@@ -515,10 +515,10 @@ public class TestClass(){ }
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val node = report.nodes.first()
         assertThat(
             node.pathWithName.parts
@@ -527,7 +527,7 @@ public class TestClass(){ }
 
     @Test
     fun `should test generic type parameter`() {
-        // given
+        // Arrange
         val cSharpCode = """
             namespace De.Maibornwolff.DependaCharta.Analysis.Analyzers
             {
@@ -538,10 +538,10 @@ public class TestClass(){ }
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CSharpAnalyzer(FileInfo(SupportedLanguage.C_SHARP, "./path", cSharpCode)).analyze()
 
-        // then
+        // Assert
         val node = report.nodes.first()
         assertThat(node.usedTypes).containsExactlyInAnyOrder(Type.simple("TFoo"), Type.simple("IFoobar"))
     }

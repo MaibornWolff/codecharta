@@ -13,7 +13,7 @@ class FederationAliasResolverTest {
 
     @Test
     fun `should resolve federated import to producer module`() {
-        // Given - monorepo structure with consumer and producer modules
+        // Arrange - monorepo structure with consumer and producer modules
         val modulesDir = tempDir.resolve("modules")
         modulesDir.mkdir()
 
@@ -64,16 +64,16 @@ class FederationAliasResolverTest {
         val resolver = FederationConfigResolver()
         val import = DirectImport("Shared/Utils")
 
-        // When
+        // Act
         val result = FederationAliasResolver.resolve(import, consumerConfig, resolver, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isEqualTo(Path(listOf("modules", "shared", "src", "utils")))
     }
 
     @Test
     fun `should return null for unknown remote`() {
-        // Given
+        // Arrange
         val modulesDir = tempDir.resolve("modules")
         modulesDir.mkdir()
 
@@ -92,16 +92,16 @@ class FederationAliasResolverTest {
         val resolver = FederationConfigResolver()
         val import = DirectImport("Unknown/Utils")
 
-        // When
+        // Act
         val result = FederationAliasResolver.resolve(import, consumerConfig, resolver, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should return null for import without slash`() {
-        // Given
+        // Arrange
         val consumerDir = tempDir.resolve("app-main")
         consumerDir.mkdir()
 
@@ -117,16 +117,16 @@ class FederationAliasResolverTest {
         val resolver = FederationConfigResolver()
         val import = DirectImport("Shared")
 
-        // When
+        // Act
         val result = FederationAliasResolver.resolve(import, consumerConfig, resolver, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 
     @Test
     fun `should return null when producer module not found`() {
-        // Given - only consumer, no producer
+        // Arrange - only consumer, no producer
         val modulesDir = tempDir.resolve("modules")
         modulesDir.mkdir()
 
@@ -157,10 +157,10 @@ class FederationAliasResolverTest {
         val resolver = FederationConfigResolver()
         val import = DirectImport("Shared/Utils")
 
-        // When
+        // Act
         val result = FederationAliasResolver.resolve(import, consumerConfig, resolver, tempDir)
 
-        // Then
+        // Assert
         assertThat(result).isNull()
     }
 

@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 class CppAnalyzerTest {
     @Test
     fun `should extract constructed type from each C++ constructor invocation form`() {
-        // given
+        // Arrange
         val cppCode = """
 
 class Foo{
@@ -55,10 +55,10 @@ class Foo{
 
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -79,7 +79,7 @@ class Foo{
 
     @Test
     fun `should keep generic-wrapped target type nested when constructing via smart pointer`() {
-        // given
+        // Arrange
         val cppCode = """
 class Foo {
     std::unique_ptr<UniqueTarget> uptr = std::make_unique<UniqueTarget>(123, "smart");
@@ -87,10 +87,10 @@ class Foo {
 };
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then — the wrapped target type is recorded inside the smart-pointer's generics,
+        // Assert — the wrapped target type is recorded inside the smart-pointer's generics,
         // not as a standalone entry; resolution-time flattening is the resolver's job.
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).contains(
@@ -103,17 +103,17 @@ class Foo {
 
     @Test
     fun `should recognize type of static function call correctly`() {
-        // given
+        // Arrange
         val cppCode = """
 inline bool Address::doSomething() {
     return Assembler::is_uimm12(offset >> shift);
 }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first { it.name() == "Address" }.usedTypes
         assertThat(usedTypes).contains(
             Type.simple("Assembler")
@@ -122,16 +122,16 @@ inline bool Address::doSomething() {
 
     @Test
     fun `should recognize types of function parameters correctly`() {
-        // given
+        // Arrange
         val cppCode = """
 inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first { it.name() == "Address" }.usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -143,24 +143,24 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 
     @Test
     fun `should set path of node to file path with file name if there is no namespace it resides in`() {
-        // given
+        // Arrange
         val cppCode = """
             class Foo {
                 // This class is just a placeholder to test the include statement
             };
         """.trimIndent()
 
-        // when
+        // Act
         val report =
             CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./foo/bar/classes/DummyClasses.cpp", cppCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes.first().pathWithName).isEqualTo(Path.fromStringWithDots("foo.bar.classes.DummyClasses_cpp.Foo"))
     }
 
     @Test
     fun `should set path of node to namespace if there is a namespace it resides in`() {
-        // given
+        // Arrange
         val cppCode = """
             namespace de::maibornwolff::codecharta::analysers::parsers::dependency::analysis {
                 class DummyClass {
@@ -169,10 +169,10 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./foo/bar/classes", cppCode)).analyze()
 
-        // then
+        // Assert
         assertThat(
             report.nodes.first().pathWithName
         ).isEqualTo(Path.fromStringWithDots("de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.DummyClass"))
@@ -180,7 +180,7 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 
     @Test
     fun `should recognize include statements with file path as dependencies`() {
-        // given
+        // Arrange
         val cppCode = """
             #include "dir/subdir/CreatureRepository.h"
             #include"dir/subdir/AnotherCreatureRepository.h"
@@ -189,9 +189,9 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
                 // This class is just a placeholder to test the include statement
             };
         """
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
-        // then
+        // Assert
         assertThat(report.nodes.first().dependencies).contains(
             Dependency(Path.fromStringWithDots("dir.subdir.CreatureRepository_h"), isWildcard = false),
             Dependency(Path.fromStringWithDots("dir.subdir.AnotherCreatureRepository_h"), isWildcard = false)
@@ -200,7 +200,7 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 
     @Test
     fun `should set path of node to namespace it resides in, even when namespace is nested`() {
-        // given
+        // Arrange
         val cppCode = """
             namespace de::maibornwolff::codecharta::analysers::parsers::dependency::analysis {
                 class FooClass {
@@ -212,10 +212,10 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         assertThat(
             report.nodes.first().pathWithName
         ).isEqualTo(Path.fromStringWithDots("de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.FooClass"))
@@ -226,7 +226,7 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 
     @Test
     fun `should handle nested namespaces`() {
-        // given
+        // Arrange
         val cppCode = """
             namespace de::maibornwolff::codecharta::analysers::parsers::dependency {
                 namespace analysis {
@@ -238,10 +238,10 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         assertThat(
             report.nodes.first().pathWithName
         ).isEqualTo(Path.fromStringWithDots("de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.DummyClass"))
@@ -252,7 +252,7 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
      */
     @Test
     fun `should recognize include statements with angle brackets`() {
-        // given
+        // Arrange
         val cppCode = """
                 #include <vector>
                 #include <myproject/MyHeader.h>
@@ -264,10 +264,10 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
                 };
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val dependencies = report.nodes
             .first()
             .dependencies
@@ -284,7 +284,7 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 
     @Test
     fun `should recognize multiline include statements`() {
-        // given
+        // Arrange
         val cppCode = """
                 #include "dir/subdir/CreatureRepository.h"
                 #include "dir/\
@@ -295,10 +295,10 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
                 };
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes.first().dependencies).contains(
             Dependency(Path.fromStringWithDots("dir.subdir.CreatureRepository_h"), isWildcard = false),
             Dependency(Path.fromStringWithDots("dir.subdir.AnotherCreatureRepository_h"), isWildcard = false)
@@ -307,7 +307,7 @@ inline bool Address::offset_ok_for_immed(int64_t offset, uint shift) {
 
     @Test
     fun `should extract types from templated class fields and method bodies`() {
-        // given
+        // Arrange
         val cppCode = """
            #include "CreatureRepository.h"
 
@@ -358,10 +358,10 @@ public:
 // such as TEntity with uuid_t as the Id member, similar to the CreatureEntity class.
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         val sharedPtr = Type.generic("shared_ptr", listOf(Type.simple("TEntity")))
 
@@ -375,7 +375,7 @@ public:
 
     @Test
     fun `should extract types from a multi-method implementation file`() {
-        // given
+        // Arrange
         val cppCode = """
            #include "PersistedCreatures.h"
 
@@ -399,10 +399,10 @@ Creature PersistedCreatures::Find(const CreatureId& id) {
 } // namespace de::sots::cellarsandcentaurs::adapter::persistence
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -428,7 +428,7 @@ Creature PersistedCreatures::Find(const CreatureId& id) {
 
     @Test
     fun `should extract constructor parameter types correctly`() {
-        // given
+        // Arrange
         val cppCode = """
         #include "Creature.h"
 
@@ -490,10 +490,10 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
 } // namespace de::sots::cellarsandcentaurs::domain::model
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         val usedTypes = report.nodes.first().usedTypes
         assertThat(usedTypes).containsAll(
             listOf(
@@ -519,17 +519,17 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
 
     @Test
     fun `should recognize unsigned statement as unsigned`() {
-        // given
+        // Arrange
         val cppCode = """
             class A {
                 unsigned foo() {}
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         assertEquals(
             report.nodes
                 .first()
@@ -542,17 +542,17 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
 
     @Test
     fun `should recognize signed statement as signed`() {
-        // given
+        // Arrange
         val cppCode = """
             class B {
                 signed bar() {}
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         assertEquals(
             report.nodes
                 .first()
@@ -565,7 +565,7 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
 
     @Test
     fun `should recognize type declared inside of class as own node and with namespace of declared class`() {
-        // given
+        // Arrange
         val cppCode = """
             class B {
                 enum Foo {
@@ -575,10 +575,10 @@ void Creature::SetSpeed(SpeedType speedType, const Speed& speed) {
             }
         """.trimIndent()
 
-        // when
+        // Act
         val report = CppAnalyzer(FileInfo(SupportedLanguage.CPP, "./path", cppCode)).analyze()
 
-        // then
+        // Assert
         assertThat(report.nodes.map { it.name() }).containsExactlyInAnyOrder("Foo", "B")
         val fooNode = report.nodes.first { it.name() == "Foo" }
         assertThat(fooNode.pathWithName.withoutName().last()).isEqualTo("B")

@@ -9,14 +9,14 @@ import java.io.File
 class PathUtilsTest {
     @Test
     fun `should resolve relative import on same directory`() {
-        // given
+        // Arrange
         val import = "./MyImport".toImport()
         val relativePath = Path("test/utils/PathUtilsTest.kt".split('/'))
 
-        // when
+        // Act
         val resolvedPath = resolveRelativePath(import, relativePath)
 
-        // then
+        // Assert
         val expected = listOf("test", "utils", "MyImport")
         assertThat(resolvedPath.parts)
             .containsExactlyElementsOf(expected)
@@ -24,14 +24,14 @@ class PathUtilsTest {
 
     @Test
     fun `should resolve relative import on nested directory`() {
-        // given
+        // Arrange
         val import = "../MyImport".toImport()
         val relativePath = Path("test/utils/PathUtilsTest.kt".split('/'))
 
-        // when
+        // Act
         val resolvedPath = resolveRelativePath(import, relativePath)
 
-        // then
+        // Assert
         val expected = listOf("test", "MyImport")
         assertThat(resolvedPath.parts)
             .containsExactlyElementsOf(expected)
@@ -39,53 +39,53 @@ class PathUtilsTest {
 
     @Test
     fun `should convert absolute path to relative path using unix-style separators`() {
-        // Given
+        // Arrange
         val analysisRoot = File("src/test/resources/rootdirectorywalker")
         val absolutePath = File(analysisRoot, "subdir/MyFile.java")
 
-        // When
+        // Act
         val result = toRelativePath(absolutePath, analysisRoot)
 
-        // Then
+        // Assert
         assertThat(result.parts).containsExactly("subdir", "MyFile_java")
     }
 
     @Test
     fun `should strip extension when converting to relative path`() {
-        // Given
+        // Arrange
         val analysisRoot = File("src/test/resources/rootdirectorywalker")
         val absolutePath = File(analysisRoot, "components/App.ts")
 
-        // When
+        // Act
         val result = toRelativePath(absolutePath, analysisRoot, stripExtension = true)
 
-        // Then
+        // Assert
         assertThat(result.parts).containsExactly("components", "App")
     }
 
     @Test
     fun `should produce relative path for file in root`() {
-        // Given
+        // Arrange
         val analysisRoot = File("src/test/resources/rootdirectorywalker")
         val absolutePath = File(analysisRoot, "Sample.java")
 
-        // When
+        // Act
         val result = toRelativePath(absolutePath, analysisRoot)
 
-        // Then
+        // Assert
         assertThat(result.parts).containsExactly("Sample_java")
     }
 
     @Test
     fun `should strip vue extension when converting to relative path`() {
-        // Given
+        // Arrange
         val analysisRoot = File("src/test/resources/rootdirectorywalker")
         val absolutePath = File(analysisRoot, "views/Home.vue")
 
-        // When
+        // Act
         val result = toRelativePath(absolutePath, analysisRoot, stripExtension = true)
 
-        // Then
+        // Assert
         assertThat(result.parts).containsExactly("views", "Home")
     }
 

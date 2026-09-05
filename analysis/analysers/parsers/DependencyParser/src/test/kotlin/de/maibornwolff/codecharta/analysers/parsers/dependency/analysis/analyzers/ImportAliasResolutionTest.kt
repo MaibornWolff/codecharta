@@ -22,7 +22,7 @@ import java.io.File
 class ImportAliasResolutionTest {
     @Test
     fun `should resolve tsconfig path alias imports to internal module paths`() {
-        // Given - a project root containing tsconfig.json with `paths` aliases
+        // Arrange - a project root containing tsconfig.json with `paths` aliases
         val analysisRoot = File("src/test/resources/typescript-alias")
         assumeTrue(analysisRoot.exists())
         val typescriptCode = """
@@ -35,7 +35,7 @@ class ImportAliasResolutionTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -45,7 +45,7 @@ class ImportAliasResolutionTest {
             )
         ).analyze()
 
-        // Then - "@shared/*" -> "src/shared/*" and "@app/*" -> "src/app/*" resolve to real modules
+        // Assert - "@shared/*" -> "src/shared/*" and "@app/*" -> "src/app/*" resolve to real modules
         val node = report.nodes.first { it.pathWithName.getName() == "AliasConsumer" }
         assertThat(node.dependencies).contains(
             Dependency(path = Path(listOf("src", "shared", "logger", "SharedLogger"))),
@@ -55,7 +55,7 @@ class ImportAliasResolutionTest {
 
     @Test
     fun `should resolve webpack bundler alias imports to internal module paths`() {
-        // Given - a project root containing webpack.config.js with a resolve.alias mapping
+        // Arrange - a project root containing webpack.config.js with a resolve.alias mapping
         val analysisRoot = File("src/test/resources/bundler-alias")
         assumeTrue(analysisRoot.exists())
         val typescriptCode = """
@@ -66,7 +66,7 @@ class ImportAliasResolutionTest {
             }
         """.trimIndent()
 
-        // When
+        // Act
         val report = TypescriptAnalyzer(
             FileInfo(
                 SupportedLanguage.TYPESCRIPT,
@@ -76,7 +76,7 @@ class ImportAliasResolutionTest {
             )
         ).analyze()
 
-        // Then - "@utils" -> "<root>/src/utils" resolves to the real module
+        // Assert - "@utils" -> "<root>/src/utils" resolves to the real module
         val node = report.nodes.first { it.pathWithName.getName() == "BundlerConsumer" }
         assertThat(node.dependencies).contains(
             Dependency(path = Path(listOf("src", "utils", "calculator", "Calculator")))

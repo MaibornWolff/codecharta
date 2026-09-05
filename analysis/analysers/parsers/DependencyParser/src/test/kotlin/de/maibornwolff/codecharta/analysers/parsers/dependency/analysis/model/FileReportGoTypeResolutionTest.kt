@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class FileReportGoTypeResolutionTest {
     @Test
     fun `resolveTypes should handle Go qualified types with package prefix`() {
-        // given
+        // Arrange
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
         )
@@ -23,10 +23,10 @@ class FileReportGoTypeResolutionTest {
             usedTypes = setOf(Type.simple("models.User"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val expectedUserPath = Path(listOf("github", "com", "myproject", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedUserPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedUserPath))
@@ -34,7 +34,7 @@ class FileReportGoTypeResolutionTest {
 
     @Test
     fun `resolveTypes should handle Go qualified types with complex module imports`() {
-        // given
+        // Arrange
         val projectDictionary = mapOf(
             "Response" to listOf(Path(listOf("github", "com", "gin-gonic", "gin", "Response")))
         )
@@ -50,10 +50,10 @@ class FileReportGoTypeResolutionTest {
             usedTypes = setOf(Type.simple("gin.Response"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val expectedResponsePath = Path(listOf("github", "com", "gin-gonic", "gin", "Response"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedResponsePath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedResponsePath))
@@ -61,7 +61,7 @@ class FileReportGoTypeResolutionTest {
 
     @Test
     fun `resolveTypes should handle simple Go types with wildcard imports`() {
-        // given
+        // Arrange
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
         )
@@ -77,10 +77,10 @@ class FileReportGoTypeResolutionTest {
             usedTypes = setOf(Type.simple("User")) // No package qualifier
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then
+        // Assert
         val expectedUserPath = Path(listOf("github", "com", "myproject", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedUserPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedUserPath))
@@ -88,7 +88,7 @@ class FileReportGoTypeResolutionTest {
 
     @Test
     fun `resolveTypes should handle complex Go qualified types with full module paths`() {
-        // given - This demonstrates the power of the generic approach
+        // Arrange - This demonstrates the power of the generic approach
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
         )
@@ -104,10 +104,10 @@ class FileReportGoTypeResolutionTest {
             usedTypes = setOf(Type.simple("github.com.myproject.models.User"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach extracts "User" and resolves it correctly
+        // Assert - Generic approach extracts "User" and resolves it correctly
         val expectedUserPath = Path(listOf("github", "com", "myproject", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedUserPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedUserPath))
@@ -115,7 +115,7 @@ class FileReportGoTypeResolutionTest {
 
     @Test
     fun `resolveTypes should handle Go dot imports with unqualified types`() {
-        // given - Go dot import: import . "github.com/myproject/models"
+        // Arrange - Go dot import: import . "github.com/myproject/models"
         val projectDictionary = mapOf(
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
         )
@@ -132,10 +132,10 @@ class FileReportGoTypeResolutionTest {
             usedTypes = setOf(Type.simple("User")) // Unqualified usage due to dot import
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Should resolve User to models.User even though it's unqualified
+        // Assert - Should resolve User to models.User even though it's unqualified
         val expectedUserPath = Path(listOf("github", "com", "myproject", "models", "User"))
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(expectedUserPath)
         assertThat(resolvedNode.dependencies).contains(Dependency(expectedUserPath))
@@ -143,7 +143,7 @@ class FileReportGoTypeResolutionTest {
 
     @Test
     fun `resolveTypes should handle Go dot imports with multiple packages`() {
-        // given - Multiple dot imports: import . "math"; import . "github.com/myproject/models"
+        // Arrange - Multiple dot imports: import . "math"; import . "github.com/myproject/models"
         val projectDictionary = mapOf(
             "Sin" to listOf(Path(listOf("math", "Sin"))), // Built-in math package
             "User" to listOf(Path(listOf("github", "com", "myproject", "models", "User")))
@@ -168,10 +168,10 @@ class FileReportGoTypeResolutionTest {
             )
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Should resolve both types correctly via their respective dot imports
+        // Assert - Should resolve both types correctly via their respective dot imports
         val resolvedTypes = resolvedNode.usedTypes.associateBy { it.name }
 
         // Sin should resolve to language built-in (not project type due to language dictionary priority)
@@ -185,7 +185,7 @@ class FileReportGoTypeResolutionTest {
 
     @Test
     fun `resolveTypes should handle Go unknown qualified types`() {
-        // given
+        // Arrange
         val projectDictionary = mapOf<String, List<Path>>()
         val languageDictionary = emptyMap<String, Path>()
         val node = Node.build(
@@ -197,10 +197,10 @@ class FileReportGoTypeResolutionTest {
             usedTypes = setOf(Type.simple("unknown.UnknownType"))
         )
 
-        // when
+        // Act
         val resolvedNode = node.resolveTypes(projectDictionary, languageDictionary, setOf())
 
-        // then - Generic approach extracts "UnknownType" and creates unknown type
+        // Assert - Generic approach extracts "UnknownType" and creates unknown type
         assertThat(resolvedNode.usedTypes.first().resolvedPath).isEqualTo(Path.unknown("UnknownType"))
         assertThat(resolvedNode.dependencies).contains(Dependency(Path.unknown("UnknownType")))
     }
