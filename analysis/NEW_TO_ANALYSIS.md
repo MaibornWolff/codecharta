@@ -75,12 +75,16 @@ state of the working tree rather than on fixtures. It fails after a `clean` that
 compile, and on any checkout carrying an extra directory in that module. Re-run the module's tests; if it
 keeps failing, check for stray directories in `dialogProvider/`.
 
-**Declaration usage kinds are only extracted for PHP.** `ccsh dependencyparser` writes a `usage` list on
+**Declaration usage kinds are only reported for PHP.** `ccsh dependencyparser` writes a `usage` list on
 every leaf edge — `inheritance`, `implementation`, `instantiation`, `argument`, `return_value`,
-`constant_access` — but `TreeSitterExcavationSite`'s `UsedType` carries no usage kind and no source
-position, so for every language it extracts (all but PHP, which runs its own tree-sitter queries) the only
-value that can be reported is `usage`. DependaCharta has the same limitation. Fixing it means classifying
-types by the syntactic position they appear in, either in TSE or per language here.
+`constant_access` — but everything except PHP, which runs its own tree-sitter queries, reports only
+`usage`. The information is *not* missing: `TreeSitterExcavationSite` already separates used types by the
+position they appear in (`UsedTypeExtractor.extractInheritanceTypes`, `extractParameterTypes`,
+`extractReturnTypes`, `extractObjectCreationTypes`, … for Java, Kotlin, C#, Rust, Delphi, JavaScript, and
+the `cpp/extractors/usedtypes` split for C++). Its public `UsedType` is `(name, genericTypes,
+namespacePrefix)`, so the distinction is flattened away at the API boundary. The fix is upstream and
+small — carry the position each extractor already knows on `UsedType`; `TseMappings.toType()` here then
+maps it straight onto `TypeOfUsage`. DependaCharta has the same gap for the same reason.
 
 **Building on a mounted filesystem.** If the checkout lives on a filesystem that does not give the build a
 coherent view of files it has just written — a VM or container mount (virtiofs, 9p), or a network share —
