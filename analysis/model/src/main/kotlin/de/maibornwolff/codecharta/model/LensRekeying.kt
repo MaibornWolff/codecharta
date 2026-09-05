@@ -7,17 +7,26 @@ package de.maibornwolff.codecharta.model
 typealias SegmentRemapping = (List<String>) -> List<String>?
 
 /**
- * Map every node id in [treeBeforeRestructuring] to the id the node has after [remapSegments] moved it.
+ * Map every node id in [treeBeforeRestructuring] to the id the node has in [treeAfterRestructuring]
+ * after [remapSegments] moved it.
  *
  * A node id is a hash of the node's canonical path and cannot be reversed into it, so the tree as it was
  * *before* the restructuring is walked to recover which path each id stood for. A node that did not
  * survive is absent from the result, so a lens keyed by node id can drop its entry rather than leave a
- * key pointing at nothing.
+ * key pointing at nothing. Survival is checked against the restructured tree itself, not only against
+ * the remapping: a folder the move emptied keeps its path but is pruned, so its id is gone too.
  */
-fun nodeIdRemapping(treeBeforeRestructuring: Node, remapSegments: SegmentRemapping): Map<String, String> {
+fun nodeIdRemapping(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): Map<String, String> {
     val newIdByOldId = mutableMapOf<String, String>()
     collectIdMapping(treeBeforeRestructuring, emptyList(), remapSegments, newIdByOldId)
-    return newIdByOldId
+    val survivingIds = HashSet<String>()
+    collectIds(treeAfterRestructuring, emptyList(), survivingIds)
+    return newIdByOldId.filterValues { it in survivingIds }
+}
+
+private fun collectIds(node: Node, segments: List<String>, into: MutableSet<String>) {
+    into.add(NodeId.fromSegments(segments, node.type ?: NodeType.File))
+    node.children.forEach { child -> collectIds(child, segments + child.name, into) }
 }
 
 // The root node carries no segment of its own, matching how ProjectToCcJsonV2Mapper assigns ids.
