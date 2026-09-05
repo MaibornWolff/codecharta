@@ -40,6 +40,37 @@ something that depends on nothing, *n* for something that depends only on nodes 
 **Metrics**: `outgoing_dependencies` and `incoming_dependencies` per file, the summed weights of the
 edges leaving and entering it.
 
+**The logical layer**: the same analysis a second time, at declaration level. `leaves` are the individual
+declarations, `namespaces` the packages containing them, and `leafEdges` the dependencies between
+declarations:
+
+```json
+"dependency": {
+  "namespaces": { "com.example.domain": { "level": 0 } },
+  "leaves": {
+    "com.example.domain.Creature": { "nodeId": "<file node id>", "name": "Creature", "kind": "CLASS", "level": 2 }
+  },
+  "leafEdges": [
+    { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints",
+      "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true }
+  ]
+}
+```
+
+- Both tables are keyed by the dotted logical path, so a namespace's parent is its id's prefix.
+- `nodeId` is the id of the file node the declaration lives in — the one join back onto the file tree.
+- `usage` lists every way the source uses the target: `usage`, `inheritance`, `implementation`,
+  `instantiation`, `argument`, `return_value`, `constant_access`.
+- `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
+  `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
+
+Both projections ship on every run. The logical one carries the two signals the file-level one cannot: a
+dependency between two declarations of the *same* file, and the kind of use each dependency is. Their
+levels disagree by design where a language's packages and folders diverge — folder levels are not a
+projection of namespace levels, so both trees are levelized separately. The file roughly quadruples in
+size uncompressed (376 KB to 1.7 MB on this project's own frontend) and about doubles gzipped; output is
+gzipped by default.
+
 ### Supported Languages
 
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi and Rust.
@@ -65,7 +96,7 @@ aliases (webpack, vite, vue.config) and Module Federation remotes.
 | `--include-tests`                         | analyse test files too (excluded by default)                                            |
 | `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                              |
 | `--file-timeout=<seconds>`                | give up on a file after this many seconds (default: no timeout)                         |
-| `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and levelization                       |
+| `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                 |
 | `-h, --help`                              | displays this help and exits                                                            |
 
 ### Tests are excluded by default
@@ -77,9 +108,9 @@ naming convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, 
 
 ### When the analysis does not finish
 
-Cycle detection and levelization are both superlinear in the size of the graph. On a repository where
-they do not finish, `--omit-graph-analysis` emits the dependencies and their weights alone, leaving
-every edge unflagged and the lens without levels.
+Cycle detection and levelization are both superlinear in the size of the graph, and levelization runs
+twice — once per projection. On a repository where they do not finish, `--omit-graph-analysis` emits the
+dependencies and their weights alone, leaving every edge unflagged and the lens without levels.
 
 `--file-timeout` bounds a single file's parse. The parse itself is a blocking native call, so the
 timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to completion

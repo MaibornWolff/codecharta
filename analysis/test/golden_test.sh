@@ -262,6 +262,16 @@ check_dependencyparser() {
   if ! grep -q '"outgoing_dependencies"' "${ACTUAL_DEPENDENCYPARSER_JSON}"; then
     exit_with_err "${ACTUAL_DEPENDENCYPARSER_JSON} does not carry the per-file dependency counts"
   fi
+  # The same analysis is emitted a second time at declaration level, so assert the logical tables are
+  # there alongside the physical ones: the namespaces, the declarations with their kind and the file they
+  # join onto, and the declaration-level edges with the way each dependency is used.
+  if ! grep -q '"namespaces":{' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"leaves":{' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"leafEdges":\[{"fromLeaf"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"kind":"CLASS"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"usage":\["' "${ACTUAL_DEPENDENCYPARSER_JSON}"; then
+    exit_with_err "${ACTUAL_DEPENDENCYPARSER_JSON} does not carry the logical package/declaration layer"
+  fi
 }
 
 check_convert() {

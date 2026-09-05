@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   on. Nothing renders them yet — this lands the data layer so a visualization can be built on it, and so the vendored
   schema accepts files from `ccsh dependencyparser`.
 
+- **The vendored cc.json 2.0 schema accepts the logical package/declaration layer.** `ccsh dependencyparser` now also
+  writes the graph as the code declares it: `leaves` (declarations), `namespaces` (packages) and `leafEdges`
+  (dependencies between declarations, with the way each is used). The schema and the `CcJson2` types know all three,
+  so a released viz reads the parser's output instead of rejecting it. Nothing renders them yet.
+
 ### Changed
 
 - **Flatten & decolor**: the context menu names what flattening a node does, since it also greys the node out.
