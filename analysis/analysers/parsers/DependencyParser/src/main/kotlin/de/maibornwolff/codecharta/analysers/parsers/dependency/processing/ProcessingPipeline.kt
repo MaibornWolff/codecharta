@@ -100,8 +100,11 @@ object ProcessingPipeline {
 
     // A pair the index cannot relate — a node the levelizer dropped, or two roots with no common ancestor
     // — is not evidence of an architectural violation, so it counts as pointing downwards.
-    private fun pointsUpwards(index: GraphIndex, sourceGraphId: String, targetGraphId: String): Boolean =
-        runCatching { index.isPointingUpwards(sourceGraphId, targetGraphId) }.getOrDefault(false)
+    private fun pointsUpwards(index: GraphIndex, sourceGraphId: String, targetGraphId: String): Boolean = try {
+        index.isPointingUpwards(sourceGraphId, targetGraphId)
+    } catch (unrelated: IllegalStateException) {
+        false
+    }
 
     private fun toFileTree(aggregatedEdges: List<AggregatedFileEdge>, filePaths: List<FilePath>): List<GraphNode> {
         val edgesByFile = aggregatedEdges.groupBy { it.from }

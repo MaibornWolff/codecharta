@@ -55,30 +55,33 @@ data class DependencyLens(
     // conservative reconciliation, not a recomputation — merging levelized projects and expecting exact
     // levels means re-running the parser on the merged tree.
     private fun mergeNodes(otherNodes: Map<String, DependencyNode>): Map<String, DependencyNode> =
-        mergeByKey(nodes, otherNodes) { existing, incoming -> existing.merge(incoming) }
+        mergeByKey(nodes, otherNodes) { _, existing, incoming -> existing.merge(incoming) }
 
     private fun mergeNamespaces(otherNamespaces: Map<String, DependencyNamespace>): Map<String, DependencyNamespace> =
-        mergeByKey(namespaces, otherNamespaces) { existing, incoming -> existing.merge(incoming) }
+        mergeByKey(namespaces, otherNamespaces) { _, existing, incoming -> existing.merge(incoming) }
 
     // A leaf describes where a declaration lives, not a measurement of it, so there is nothing to
     // reconcile: the first description wins and the conflict is reported, the way CcJsonV2ToProjectMapper
     // handles two file nodes claiming one id.
     private fun mergeLeaves(otherLeaves: Map<String, DependencyLeaf>): Map<String, DependencyLeaf> =
-        mergeByKey(leaves, otherLeaves) { existing, incoming ->
+        mergeByKey(leaves, otherLeaves) { leafId, existing, incoming ->
             if (existing != incoming) {
-                Logger.warn { "Two inputs describe the leaf differently; keeping the first and ignoring the second." }
+                Logger.warn {
+                    "Two inputs describe the leaf '$leafId' differently (node ids ${existing.nodeId} and ${incoming.nodeId}); " +
+                        "keeping the first and ignoring the second."
+                }
             }
             existing
         }
 
-    private fun <T> mergeByKey(own: Map<String, T>, other: Map<String, T>, reconcile: (T, T) -> T): Map<String, T> {
+    private fun <T> mergeByKey(own: Map<String, T>, other: Map<String, T>, reconcile: (String, T, T) -> T): Map<String, T> {
         if (own.isEmpty()) return other
         if (other.isEmpty()) return own
 
         val merged = LinkedHashMap(own)
         other.forEach { (key, entry) ->
             val existing = merged[key]
-            merged[key] = if (existing == null) entry else reconcile(existing, entry)
+            merged[key] = if (existing == null) entry else reconcile(key, existing, entry)
         }
         return merged
     }
@@ -91,7 +94,7 @@ data class DependencyLens(
      * Re-key the entries that address a file node onto a restructured tree; see [nodeIdRemapping] for how
      * ids are recovered. A leaf keeps its logical key — a restructuring moves files, not packages — and
      * only follows its file; one whose file did not survive has nothing left to join onto, so it goes,
-     * and with it every leaf edge that touched it.
+     * and with it every leaf edge that touched it and every namespace no surviving leaf lives in.
      */
     fun rekeyed(treeBeforeRestructuring: Node, remapSegments: SegmentRemapping): DependencyLens {
         if (!carriesNodeData) return this
@@ -102,10 +105,14 @@ data class DependencyLens(
             }.toMap()
         return copy(
             nodes = nodes.rekeyedBy(newIdByOldId),
+            namespaces = namespaces.filterKeys { leaves.isEmpty() || rekeyedLeaves.keys.any { leafId -> leafId.isInNamespace(it) } },
             leaves = rekeyedLeaves,
             leafEdges = leafEdges.filter { leaves.isEmpty() || (it.fromLeaf in rekeyedLeaves && it.toLeaf in rekeyedLeaves) }
         )
     }
+
+    // With dotted ids a namespace contains a leaf exactly when it is a proper prefix of the leaf's id.
+    private fun String.isInNamespace(namespaceId: String): Boolean = startsWith("$namespaceId.")
 }
 
 /**
@@ -148,25 +155,16 @@ data class LeafEdge(
     val isCyclic: Boolean = false,
     val isPointingUpwards: Boolean = false
 ) {
+    // Attributes fold the way [Edge]s do in [DependencyLens.merge]: the first edge's value wins on a
+    // conflicting key. Two inputs carrying the same pair describe the same references, not disjoint ones,
+    // so adding the weights would double-count a project merged with itself, and the physical projection
+    // of the same dependency would disagree with the logical one.
     fun merge(other: LeafEdge): LeafEdge = LeafEdge(
         fromLeaf = fromLeaf,
         toLeaf = toLeaf,
-        attributes = sumNumericAttributes(other.attributes),
+        attributes = other.attributes + attributes,
         usage = (usage + other.usage).distinct(),
         isCyclic = isCyclic || other.isCyclic,
         isPointingUpwards = isPointingUpwards || other.isPointingUpwards
     )
-
-    // The one attribute a leaf edge carries is `dependencies`, a count of code-level references, so two
-    // edges of the same pair describe disjoint references and their counts add. A non-numeric attribute
-    // has no such rule, so the first edge's value wins.
-    private fun sumNumericAttributes(otherAttributes: Map<String, Any>): Map<String, Any> {
-        val summed = LinkedHashMap<String, Any>(attributes)
-        otherAttributes.forEach { (metric, value) ->
-            val existing = summed[metric]
-            summed[metric] =
-                if (existing is Number && value is Number) existing.toLong() + value.toLong() else existing ?: value
-        }
-        return summed
-    }
 }

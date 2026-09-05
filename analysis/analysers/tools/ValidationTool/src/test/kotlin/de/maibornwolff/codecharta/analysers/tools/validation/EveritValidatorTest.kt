@@ -370,6 +370,39 @@ class EveritValidatorTest {
     }
 
     @Test
+    fun `should reject a 2_0 file whose dependency-lens node entry references an unknown node id`() {
+        // Schema-valid, but the level is keyed by an id no node carries — the reader would drop it with a warning.
+        val danglingNode =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"dependency":{"nodes":{"ghost-id":{"level":1}}}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingNode.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("node entry").contains("ghost-id")
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose leaf edge references a leaf the leaf table does not declare`() {
+        // Schema-valid, but toLeaf names no declared leaf — the reader would drop the edge with a warning.
+        val danglingLeafEdge =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"dependency":{"leaves":{"com.example.App":{"nodeId":"app-id","name":"App","kind":"CLASS"}},""" +
+                """"leafEdges":[{"fromLeaf":"com.example.App","toLeaf":"com.example.Ghost"}]}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingLeafEdge.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("toLeaf").contains("com.example.Ghost")
+    }
+
+    @Test
     fun `should accept a 2_0 file whose domain lens maps node ids to word banks`() {
         // Arrange: the shape DomainProjectGenerator emits — node ids live under `nodes`, each carrying a
         // `words` bank whose entries always have text + frequency and optionally tfidf.

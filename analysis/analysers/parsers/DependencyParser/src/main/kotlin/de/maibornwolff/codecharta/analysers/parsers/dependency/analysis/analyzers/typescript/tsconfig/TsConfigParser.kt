@@ -11,9 +11,9 @@ object TsConfigParser {
     private val gson = Gson()
 
     /**
-     * A `tsconfig.json` is JSON with comments and trailing commas, which strict JSON rejects; GSON's
-     * lenient reader accepts both. A file that still fails to parse yields null, so the caller falls
-     * back to leaving the import unresolved rather than aborting the analysis.
+     * A `tsconfig.json` may carry comments, which GSON's lenient reader accepts. A trailing comma in an
+     * object still fails the parse (yielding null, so the caller leaves the import unresolved rather than
+     * aborting the analysis), while one in a `paths` array reads as a null element, which is dropped.
      */
     fun parse(tsconfigFile: File): TsConfigData? {
         if (!tsconfigFile.exists()) return null
@@ -21,7 +21,13 @@ object TsConfigParser {
         return runCatching {
             val reader = JsonReader(StringReader(tsconfigFile.readText()))
             reader.strictness = Strictness.LENIENT
-            gson.fromJson<TsConfigData>(JsonParser.parseReader(reader), TsConfigData::class.java)
+            gson.fromJson<TsConfigData>(JsonParser.parseReader(reader), TsConfigData::class.java).withoutNullPathTargets()
         }.getOrNull()
+    }
+
+    private fun TsConfigData.withoutNullPathTargets(): TsConfigData {
+        val options = compilerOptions ?: return this
+        val paths = options.paths ?: return this
+        return copy(compilerOptions = options.copy(paths = paths.mapValues { (_, targets) -> targets.filterNotNull() }))
     }
 }

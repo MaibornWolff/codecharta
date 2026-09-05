@@ -36,7 +36,7 @@ object CcJsonV2ToProjectMapper {
                     Logger.warn { "Dropping edge with unresolved endpoint(s): fromId=${edge.fromId}, toId=${edge.toId}" }
                     return@mapNotNull null
                 }
-                Edge(from, to, edge.attributes, edge.isCyclic == true, edge.isPointingUpwards == true)
+                Edge(from, to, edge.attributes.orEmpty(), edge.isCyclic == true, edge.isPointingUpwards == true)
             }
 
         val leaves = resolveLeaves(dto, idToEndpoint.keys)
@@ -104,7 +104,7 @@ object CcJsonV2ToProjectMapper {
             LeafEdge(
                 edge.fromLeaf,
                 edge.toLeaf,
-                edge.attributes,
+                edge.attributes.orEmpty(),
                 edge.usage.orEmpty(),
                 edge.isCyclic == true,
                 edge.isPointingUpwards == true

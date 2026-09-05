@@ -112,10 +112,11 @@ of use each dependency is.
 
 **Merge and re-key.** `namespaces` merges max-wins on `level`, like `nodes`. `leaves` unions, first
 description winning on a conflicting key with a warning, since a leaf describes where a declaration lives
-rather than measuring it. `leafEdges` fold by endpoint pair: weights sum, the flags OR, `usage` unions.
+rather than measuring it. `leafEdges` fold by endpoint pair the way `edges` do: the first weight wins, the flags OR, `usage` unions.
 Re-keying touches only **`leaves[].nodeId`** — the one node reference the logical layer holds; a leaf
-whose file did not survive a restructuring is dropped, and with it every leaf edge that touched it. The
-logical keys themselves never move: a restructuring moves files, not packages.
+whose file did not survive a restructuring is dropped, and with it every leaf edge that touched it and
+every namespace no surviving leaf lives in. The logical keys themselves never move: a restructuring moves
+files, not packages.
 
 **The two projections can disagree, by design.** Folder levels are not a projection of namespace levels,
 so both trees are levelized separately. Where a language's packages and folders diverge — Java, C#, Go —

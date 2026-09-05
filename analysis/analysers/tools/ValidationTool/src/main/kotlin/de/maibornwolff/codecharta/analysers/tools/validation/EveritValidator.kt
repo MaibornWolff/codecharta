@@ -72,20 +72,35 @@ class EveritValidator(private var schemaPath: String) : Validator {
             }
         }
 
+        dependency?.optJSONObject("nodes")?.keySet()?.forEach { nodeId ->
+            if (nodeId !in nodeIds) danglingReferences.add("dependency-lens node entry for unknown node id '$nodeId'")
+        }
+
         // A leaf joins the logical layer onto the file tree through its nodeId, the only node reference the
         // logical tables carry; one that resolves to nothing would be dropped silently on read.
-        dependency?.optJSONObject("leaves")?.let { leaves ->
-            leaves.keySet().forEach { leafId ->
-                val nodeId = leaves.getJSONObject(leafId).optString("nodeId")
-                if (nodeId !in nodeIds) {
-                    danglingReferences.add("dependency-lens leaf '$leafId' with unknown nodeId '$nodeId'")
-                }
+        val leaves = dependency?.optJSONObject("leaves")
+        leaves?.keySet()?.forEach { leafId ->
+            val nodeId = leaves.getJSONObject(leafId).optString("nodeId")
+            if (nodeId !in nodeIds) {
+                danglingReferences.add("dependency-lens leaf '$leafId' with unknown nodeId '$nodeId'")
+            }
+        }
+
+        // Leaf edges address leaves; without a leaf table there are no endpoints to check them against.
+        val leafIds = leaves?.keySet().orEmpty()
+        dependency?.optJSONArray("leafEdges")?.takeIf { leafIds.isNotEmpty() }?.let { leafEdges ->
+            for (index in 0 until leafEdges.length()) {
+                val leafEdge = leafEdges.getJSONObject(index)
+                val fromLeaf = leafEdge.optString("fromLeaf")
+                val toLeaf = leafEdge.optString("toLeaf")
+                if (fromLeaf !in leafIds) danglingReferences.add("leaf edge with unknown fromLeaf '$fromLeaf'")
+                if (toLeaf !in leafIds) danglingReferences.add("leaf edge with unknown toLeaf '$toLeaf'")
             }
         }
 
         if (danglingReferences.isNotEmpty()) {
             throw ReferentialIntegrityException(
-                "This cc.json has references that do not resolve to a file-tree node id: " +
+                "This cc.json has references that do not resolve to a node id or leaf it declares: " +
                     danglingReferences.joinToString("; ") + "."
             )
         }
