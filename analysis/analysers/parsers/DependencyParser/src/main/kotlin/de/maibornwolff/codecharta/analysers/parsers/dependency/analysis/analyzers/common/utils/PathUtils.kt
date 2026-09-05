@@ -48,7 +48,7 @@ fun Path.withoutFileSuffix(fileSuffix: String): Path {
     val suffixWithDot = ".$fileSuffix"
     this
         .getName()
-        .endsWith(suffixWithDot)
+        .endsWith(suffixWithDot, ignoreCase = true)
         .let {
             val fileNameWithoutSuffix = if (it) this.parts.last().dropLast(suffixWithDot.length) else this.parts.last()
             return Path(this.parts.dropLast(1) + fileNameWithoutSuffix)
@@ -61,14 +61,12 @@ fun Path.withoutFileSuffix(fileSuffix: String): Path {
  *
  * @return The path with the extension removed if it was a known source extension
  */
-fun String.stripSourceFileExtension(): String = when {
-    this.endsWith(".vue") -> this.dropLast(4)
-    this.endsWith(".tsx") -> this.dropLast(4)
-    this.endsWith(".jsx") -> this.dropLast(4)
-    this.endsWith(".ts") -> this.dropLast(3)
-    this.endsWith(".js") -> this.dropLast(3)
-    else -> this
+fun String.stripSourceFileExtension(): String {
+    val extension = SOURCE_FILE_EXTENSIONS.firstOrNull { endsWith(it, ignoreCase = true) } ?: return this
+    return dropLast(extension.length)
 }
+
+private val SOURCE_FILE_EXTENSIONS = listOf(".vue", ".tsx", ".jsx", ".mts", ".cts", ".mjs", ".cjs", ".ts", ".js")
 
 /**
  * Resolves a TSE import path (List<String>) to a flat list of path segments.

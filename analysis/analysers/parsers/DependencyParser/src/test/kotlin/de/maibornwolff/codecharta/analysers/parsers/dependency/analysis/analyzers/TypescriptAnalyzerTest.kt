@@ -1494,4 +1494,38 @@ class TypescriptAnalyzerTest {
         assertThat(node.usedTypes).contains(Type.simple("Logger"))
         assertThat(node.dependencies).contains(Dependency(path = Path(listOf("types")), isWildcard = true))
     }
+
+    @Test
+    fun `should strip the module extensions mts and cts from node and dependency paths`() {
+        // given
+        val typescriptCode = """
+            import { Util } from './util.mjs'
+
+            export class App {
+                util: Util = new Util()
+            }
+        """.trimIndent()
+
+        // when
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "src/app.mts", typescriptCode)).analyze()
+
+        // then
+        val node = report.nodes.single()
+        assertThat(node.pathWithName).isEqualTo(Path(listOf("src", "app", "App")))
+        assertThat(node.dependencies).contains(Dependency(path = Path(listOf("src", "util", "Util"))))
+    }
+
+    @Test
+    fun `should recognize the tsx extension whatever its case`() {
+        // given
+        val typescriptCode = """
+            export const Button = () => <button>Click</button>
+        """.trimIndent()
+
+        // when
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "src/Button.TSX", typescriptCode)).analyze()
+
+        // then
+        assertThat(report.nodes).extracting("pathWithName").containsExactly(Path(listOf("src", "Button", "Button")))
+    }
 }

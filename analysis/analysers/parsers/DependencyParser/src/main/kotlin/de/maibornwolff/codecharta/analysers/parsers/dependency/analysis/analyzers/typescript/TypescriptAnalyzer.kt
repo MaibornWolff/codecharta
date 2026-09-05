@@ -24,8 +24,9 @@ import java.io.File
 class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     override val language = SupportedLanguage.TYPESCRIPT
 
-    private val isTsx = fileInfo.physicalPath.endsWith(".tsx")
-    private val extension = if (isTsx) "tsx" else "ts"
+    // The extension is taken from the file as spelled, so `.mts`, `.cts` and `Foo.TSX` strip cleanly.
+    private val extension = fileInfo.physicalPath.substringAfterLast('.', "").lowercase()
+    private val isTsx = extension == TSX_EXTENSION
     private val physicalFilePath by lazy { fileInfo.physicalPathAsPath().withoutFileSuffix(extension) }
 
     override fun tseLanguage(): Language = if (isTsx) Language.TSX else Language.TYPESCRIPT
@@ -125,6 +126,7 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     companion object {
+        private const val TSX_EXTENSION = "tsx"
         private val SOURCE_FILE_SUFFIXES = listOf(".ts", ".tsx", "/index.ts", "/index.tsx")
     }
 }
