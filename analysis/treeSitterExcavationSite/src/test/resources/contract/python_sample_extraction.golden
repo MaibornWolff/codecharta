@@ -1,0 +1,97 @@
+# Identifiers
+ACTIVE
+COMPLETED
+MAX_RETRIES
+PENDING
+Sample
+Status
+__init__
+a
+args
+b
+c
+calculate
+chained_call
+classmethod
+cls
+count
+create_default
+d
+e
+filter_items
+format_by_type
+func
+get_counter
+i
+i
+input_str
+item
+item
+items
+items
+kwargs
+label
+label
+label
+label
+logged
+logged
+process_data
+result
+self
+self
+self
+self
+self
+self
+self
+staticmethod
+total
+type_id
+validate
+value
+wrapper
+
+# Comments
+A comprehensive sample module demonstrating various Python features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+    This tests long_method detection (15+ lines).
+A sample class with various method types.
+Calculate sum with validation and control flow
+Class method example
+Class-level constant
+Decorator for testing
+Demonstrates match expression usage.
+
+        Args:
+            type_id: the type identifier
+
+        Returns:
+            formatted result string
+Enum for testing enum extraction
+List comprehension example
+Method chaining example (triggers message_chains metric)
+Simple getter with no complexity.
+Static method example
+
+# Strings
+
+ total: {count}
+A
+B
+Default: 
+Hello, 
+Sample
+X
+Y
+active
+completed
+empty
+error
+one
+pending
+three
+two
+unknown
+{self.prefix}{label}

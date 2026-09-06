@@ -143,6 +143,8 @@ fabric.properties
 # Package Files #
 *.jar
 !gradle-wrapper.jar
+# tree-sitter-tsx and tree-sitter-pascal are not published to Maven Central
+!analysis/treeSitterExcavationSite/libs/*.jar
 *.war
 *.ear
 *.zip
