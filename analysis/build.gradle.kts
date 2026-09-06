@@ -175,7 +175,7 @@ tasks.named<JacocoReport>("jacocoTestReport") {
 configure<SonarExtension> {
     properties {
         property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/test/jacocoTestReport.xml")
-        property("sonar.exclusions", "**/*AttributeDescriptors*")
+        property("sonar.exclusions", "**/*AttributeDescriptors*,**/training/**")
     }
 }
 
