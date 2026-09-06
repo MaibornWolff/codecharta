@@ -9,9 +9,9 @@ dependencies {
     implementation(libs.kotter.test)
     implementation(libs.gson)
 
-    implementation(libs.tree.sitter.excavation.site)
+    implementation(project(":treeSitterExcavationSite"))
     // Queried directly for Go, PHP, Python, the Vue SFC blocks and the JavaScript bundler configs,
-    // none of which TSE's dependency API covers; pinned to the versions TSE itself resolves.
+    // none of which the module's dependency API covers; pinned to the versions the module declares.
     implementation(libs.tree.sitter.go)
     implementation(libs.tree.sitter.javascript)
     implementation(libs.tree.sitter.php)
