@@ -23,6 +23,14 @@ A simple way to only import the analysis is to clone the whole repository and th
 
 - Consumes a cc.json and creates another cc.json. A common use case is merging two cc.jsons
 
+#### Library module
+
+- Carries shared code instead of a CLI command: `model` the cc.json data model, `dialogProvider` the
+  interactive dialogs and `treeSitterExcavationSite` the TreeSitter grammars together with the metric,
+  extraction and dependency queries that `unifiedparser`, `domainlanguageparser` and `dependencyparser`
+  build on. The last module was developed at https://github.com/MaibornWolff/TreeSitterExcavationSite up
+  to `v0.12.0` and lives here since.
+
 ### Technologies
 
 - Kotlin
@@ -32,6 +40,7 @@ A simple way to only import the analysis is to clone the whole repository and th
 - Assertj
 - MockK
 - Gson
+- TreeSitter
 - Sonar-Plugins to create our own parsers
 
 ### Concepts

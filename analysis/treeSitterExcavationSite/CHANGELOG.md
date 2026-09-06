@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+This log ends at the standalone library. Later changes are part of the CodeCharta analysis and are
+recorded in `analysis/CHANGELOG.md`.
+
 ## [Unreleased]
 
 ### Added
