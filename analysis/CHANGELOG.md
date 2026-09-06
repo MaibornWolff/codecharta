@@ -71,6 +71,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   `.cts` file ever matched, and Kotlin script files had no entry at all. Both are now analysed by `unifiedparser`
   as well.
 
+### Chore 👨‍💻 👩‍💻
+
+- **TreeSitterExcavationSite is now a module of the analysis build instead of an external library.** The code of
+  `v0.12.0` moved into `analysis/treeSitterExcavationSite` unchanged, so the three parsers that use it compile
+  against `project(":treeSitterExcavationSite")` rather than a JitPack artifact and its grammar versions are
+  pinned in the analysis version catalog. Parser output is byte-identical.
+
 ## [2.0.1] - 2026-09-04
 
 ### Fixed 🐞

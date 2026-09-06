@@ -12,18 +12,16 @@ A Kotlin library for calculating code metrics and extracting text from source co
 ## Requirements
 
 - Java 17 or higher
-- Gradle 8.x (wrapper included)
 
 ## Installation
 
-### Gradle (Composite Build) Not yet on maven
-```kotlin
-// settings.gradle.kts
-includeBuild("/path/to/TreeSitterLibrary")
+A module of the CodeCharta analysis build, not a published artifact. Depend on it from another module of
+that build:
 
+```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("de.maibornwolff.treesitter.excavationsite:treesitter-excavationsite:0.9.1")
+    implementation(project(":treeSitterExcavationSite"))
 }
 ```
 
@@ -162,23 +160,22 @@ Aggregations (max, min, mean, median) for:
 
 ## Development
 
+Run from `analysis/`:
+
 ```bash
 # Build
-./gradlew build
+./gradlew :treeSitterExcavationSite:build
 
 # Run tests
-./gradlew test
+./gradlew :treeSitterExcavationSite:test
 
 # Run specific tests
-./gradlew test --tests "JavaMetricsTest"
-./gradlew test --tests "*ExtractionTest"
+./gradlew :treeSitterExcavationSite:test --tests "JavaMetricsTest"
+./gradlew :treeSitterExcavationSite:test --tests "*ExtractionTest"
 
 # Code style
-./gradlew ktlintCheck
-./gradlew ktlintFormat
-
-# Publish locally
-./gradlew publishToMavenLocal
+./gradlew :treeSitterExcavationSite:ktlintCheck
+./gradlew :treeSitterExcavationSite:ktlintFormat
 ```
 
 ## Project Structure
