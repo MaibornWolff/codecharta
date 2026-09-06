@@ -1,0 +1,86 @@
+# Identifiers
+MAX_RETRIES
+PREFIX
+STATUS_ACTIVE
+STATUS_COMPLETED
+STATUS_PENDING
+a
+arr
+b
+c
+calculate
+count
+count
+d
+d
+date
+e
+format_by_type
+get_counter
+greet
+i
+i
+item
+item
+items
+label
+label
+label
+label
+name
+process_array
+process_data
+result
+result
+result
+result
+result
+result
+result
+sum
+sum
+sum
+type
+
+# Comments
+!/bin/bash
+A comprehensive sample script demonstrating various Bash features.
+A long function that processes data with nested logic.
+Array example
+Calculate sum with validation and control flow
+Command substitution example
+Constants
+Demonstrates case statement usage
+Simple function with no complexity
+Status values
+This tests long_method detection (15+ lines).
+Used for golden file contract testing.
+
+# Strings
+
+
+ total: $count
+$@
+$COUNTER
+$item
+$item
+$item 
+$result
+$result
+${PREFIX}${label}
+${arr[@]}
+${item:0:5}
+${items[@]}
+Hello, 
+Hello, $name! Today is $date
+active
+completed
+empty
+one
+one
+pending
+three
+three
+two
+two
+unknown

@@ -1,0 +1,77 @@
+# Identifiers
+Active
+Calculate
+ChainedCall
+Completed
+CreateMultiplier
+Exception
+FilterItems
+FormatByType
+GetCounter
+IProcessable
+MaxRetries
+Pending
+Process
+Process
+ProcessData
+Sample
+Sample
+Status
+_counter
+_prefix
+a
+b
+c
+count
+d
+e
+factor
+i
+i
+input
+item
+item
+items
+items
+label
+prefix
+result
+sum
+type
+x
+
+# Comments
+</summary>
+<param name="type">the type identifier</param>
+<returns>formatted result string</returns>
+<summary>
+<summary>Simple getter with no complexity</summary>
+A comprehensive sample class demonstrating various C# features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression usage.
+Enum for testing
+Interface for testing
+Interface implementation
+LINQ example
+Lambda expression example
+Method chaining example (triggers message_chains metric)
+
+# Strings
+
+ total: {count}
+A
+B
+Hello, 
+X
+Y
+empty
+error
+one
+processed
+three
+two
+unknown
