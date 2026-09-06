@@ -9,7 +9,7 @@ dependencies {
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
-    implementation(libs.tree.sitter.excavation.site)
+    implementation(project(":treeSitterExcavationSite"))
 
     implementation(libs.kasechange)
 
