@@ -1,0 +1,12 @@
+{
+  "name": "cellars-and-centaurs",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/de/sots/cellarsandcentaurs/application/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "winston": "^3.11.0"
+  }
+}

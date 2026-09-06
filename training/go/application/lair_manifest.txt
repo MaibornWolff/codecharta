@@ -1,0 +1,2 @@
+north cellar: 2 stalls
+south cellar: 3 stalls
