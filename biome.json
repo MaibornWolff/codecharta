@@ -43,7 +43,8 @@
       "!**/binScripts/**",
       "!**/gh-pages/**",
       "!**/*.gradle.kts",
-      "!**/*.toml"
+      "!**/*.toml",
+      "!**/training/**"
     ]
   },
   "formatter": {
@@ -197,7 +198,7 @@
         "noWith": "error"
       }
     },
-    "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js"]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js", "!**/training/**"]
   },
   "css": {
     "parser": {
