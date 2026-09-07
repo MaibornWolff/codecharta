@@ -17,10 +17,11 @@ export class ThreeRendererService {
 
     /** A phone reports a device pixel ratio of 3 and, lacking a viewport meta tag, a ~980px layout
      * viewport, so its raw ratio asks for a ~15 megapixel buffer — antialiasing then quadruples the
-     * colour and depth storage of it, and the mobile GPU drops the context. Both caps together keep
-     * the buffer affordable there while leaving a normal desktop viewport at its native ratio. */
+     * colour and depth storage of it, and the mobile GPU drops the context. The area budget puts a
+     * phone back near the ratio of 1 that the removed quality setting used to default to, which is
+     * the footprint its GPU coped with; a 1080p desktop stays at its native ratio. */
     static readonly MAX_PIXEL_RATIO = 2
-    static readonly MAX_DRAWING_BUFFER_PIXELS = 4_000_000
+    static readonly MAX_DRAWING_BUFFER_PIXELS = 2_000_000
 
     clearColor = ThreeRendererService.BACKGROUND_COLOR.normal
 
