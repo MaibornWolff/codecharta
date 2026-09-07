@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.1.1] - 2026-09-07
+
 ### Fixed 🐞
 
 - **Phone tab still died while a map loaded**: the floor labels drew one map-sized 2D canvas per folder level, sized four times the drawing-buffer width, so a phone allocated three canvases of 6128 pixels squared, about 450 MB, plus the same again as textures, and iOS killed the tab before the map appeared. Each label is now its own small texture, the pattern the three.js manual documents, so label memory scales with the number of labels instead of the map: a few hundred kilobytes for the demo map, down from hundreds of megabytes on a desktop too.
