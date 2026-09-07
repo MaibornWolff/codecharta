@@ -1,9 +1,14 @@
 "use strict"
 
-import { BackSide, CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Vector3 } from "three"
+import { CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry, Vector3 } from "three"
 import { Node, Scaling } from "../../../model/codeCharta.model"
 import { getFloorLabelPadding } from "../algorithm/treeMapLayout/treeMapGenerator"
 import { FloorLabelHelper } from "./floorLabelHelper"
+
+interface FittedLabel {
+    labelText: string
+    fontSize: number
+}
 
 export class FloorLabelDrawer {
     // White glyphs on a transparent canvas fade to semi-transparent gray once mipmaps average
@@ -11,21 +16,23 @@ export class FloorLabelDrawer {
     private static readonly LABEL_OUTLINE_COLOR = "rgba(0, 0, 0, 0.5)"
     private static readonly LABEL_OUTLINE_WIDTH_RATIO = 1 / 16
     private static readonly MIN_LABEL_OUTLINE_WIDTH = 2
+    /** Every label is rasterized at this font size whatever the map or display, so a texture holds
+     * one name at a fixed sharpness instead of the whole map at the display's resolution. */
+    private static readonly TEXTURE_FONT_SIZE = 64
+    private static readonly LINE_HEIGHT_RATIO = 1.3
+    private static readonly LIFT_TO_PREVENT_Z_FIGHTING = 2
+    private static readonly FONT_FAMILY = "Arial"
 
     private readonly floorLabelPlanes: Mesh[] = []
-    private readonly rootNode: Node
+    private readonly floorLabelPlaneLevel = new Map<Mesh, number>()
+    private readonly labelNodes: Node[]
     private readonly mapSize: number
     private readonly scaling: Vector3
     private readonly maxAnisotropy: number
     readonly folderGeometryHeight: number = 2.01
-    private lastScaling: Scaling = new Vector3(1, 1, 1)
-    private readonly floorLabelPlaneLevel: Map<Mesh, number> = new Map<Mesh, number>()
-
-    private readonly floorLabelsPerLevel = new Map()
 
     constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean, maxAnisotropy = 1) {
-        this.collectLabelsPerLevel(nodes)
-        this.rootNode = rootNode
+        this.labelNodes = nodes.filter(node => FloorLabelHelper.isLabelNode(node))
         this.mapSize = mapSize
         this.scaling = scaling
         this.maxAnisotropy = maxAnisotropy
@@ -34,145 +41,107 @@ export class FloorLabelDrawer {
             : 2.01
     }
 
-    private collectLabelsPerLevel(nodes: Node[]) {
-        for (const node of nodes) {
-            if (FloorLabelHelper.isLabelNode(node)) {
-                if (!this.floorLabelsPerLevel.has(node.mapNodeDepth)) {
-                    this.floorLabelsPerLevel.set(node.mapNodeDepth, [])
-                }
-                this.floorLabelsPerLevel.get(node.mapNodeDepth).push(node)
+    draw() {
+        for (const labelNode of this.labelNodes) {
+            const plane = this.drawLabel(labelNode)
+            if (plane) {
+                this.floorLabelPlanes.push(plane)
+                this.floorLabelPlaneLevel.set(plane, labelNode.mapNodeDepth)
             }
         }
-    }
-
-    draw() {
-        const { width: rootNodeWidth, length: rootNodeHeight } = this.rootNode
-        const mapResolutionScaling = FloorLabelHelper.getMapResolutionScaling(rootNodeWidth)
-
-        const scaledMapWidth = rootNodeWidth * mapResolutionScaling
-        const scaledMapHeight = rootNodeHeight * mapResolutionScaling
-
-        for (const [floorLevel, floorNodesPerLevel] of this.floorLabelsPerLevel) {
-            const { textCanvas, context } = FloorLabelDrawer.createLabelPlaneCanvas(scaledMapWidth, scaledMapHeight)
-            this.writeLabelsOnCanvas(context, floorNodesPerLevel, mapResolutionScaling)
-            this.drawLevelPlaneGeometry(textCanvas, scaledMapWidth, scaledMapHeight, floorLevel, mapResolutionScaling)
-        }
-
         return this.floorLabelPlanes
     }
 
     translatePlaneCanvases(scale: Scaling) {
-        const defaultFolderHeight = 2
         for (const plane of this.floorLabelPlanes) {
-            const level = this.floorLabelPlaneLevel.get(plane) + 1
-            const difference = level * this.lastScaling.y - level * scale.y
-            plane.geometry.translate(0, 0, defaultFolderHeight * difference)
+            plane.position.y = this.floorHeightOfLevel(this.floorLabelPlaneLevel.get(plane), scale.y)
         }
-        this.lastScaling = scale
     }
 
-    private static createLabelPlaneCanvas(scaledMapWidth: number, scaledMapHeight: number) {
+    private floorHeightOfLevel(level: number, heightScaling: number) {
+        return this.folderGeometryHeight * heightScaling * (level + 1) + FloorLabelDrawer.LIFT_TO_PREVENT_Z_FIGHTING
+    }
+
+    private drawLabel(labelNode: Node): Mesh | undefined {
+        const pixelsPerMapUnit = FloorLabelDrawer.TEXTURE_FONT_SIZE / FloorLabelDrawer.fontSizeInMapUnits(labelNode)
         const textCanvas = document.createElement("canvas")
-
-        let textCanvasWidth = scaledMapWidth
-        let textCanvasHeight = scaledMapHeight
-
-        if (scaledMapWidth > scaledMapHeight) {
-            textCanvasWidth = scaledMapHeight
-            textCanvasHeight = scaledMapWidth
-        }
-
-        textCanvas.width = textCanvasWidth
-        textCanvas.height = textCanvasHeight
-
         const context = textCanvas.getContext("2d")
+        const fitted = FloorLabelDrawer.getLabelAndSetContextFont(labelNode, context, pixelsPerMapUnit, FloorLabelDrawer.TEXTURE_FONT_SIZE)
+        if (fitted.labelText.length === 0) {
+            return undefined
+        }
+        const outlineWidth = Math.max(
+            FloorLabelDrawer.MIN_LABEL_OUTLINE_WIDTH,
+            fitted.fontSize * FloorLabelDrawer.LABEL_OUTLINE_WIDTH_RATIO
+        )
+        textCanvas.width = Math.ceil(context.measureText(fitted.labelText).width + 2 * outlineWidth)
+        textCanvas.height = Math.ceil(fitted.fontSize * FloorLabelDrawer.LINE_HEIGHT_RATIO + 2 * outlineWidth)
+        FloorLabelDrawer.writeLabelOnCanvas(context, textCanvas, fitted, outlineWidth)
+        return this.createLabelPlane(textCanvas, labelNode, fitted.fontSize / pixelsPerMapUnit, pixelsPerMapUnit)
+    }
 
+    private static fontSizeInMapUnits(labelNode: Node) {
+        // The label has to fit into the padding strip that the treemap layout reserved for it,
+        // which is proportional to the folder itself (see getFloorLabelPadding).
+        const reservedLabelStrip = getFloorLabelPadding(labelNode.width, labelNode.depth)
+        const fontSize =
+            labelNode.depth === 0 ? Math.max(Math.floor(labelNode.width * 0.03), 120) : Math.max(Math.floor(labelNode.width * 0.023), 95)
+        return Math.max(Math.floor(Math.min(fontSize, reservedLabelStrip)), 1)
+    }
+
+    private static writeLabelOnCanvas(
+        context: CanvasRenderingContext2D,
+        textCanvas: HTMLCanvasElement,
+        fitted: FittedLabel,
+        outlineWidth: number
+    ) {
+        // Resizing a canvas resets its context, so every setting comes after the size.
+        context.font = `${fitted.fontSize}px ${FloorLabelDrawer.FONT_FAMILY}`
         context.fillStyle = "white"
         context.strokeStyle = FloorLabelDrawer.LABEL_OUTLINE_COLOR
         context.lineJoin = "round"
+        context.lineWidth = outlineWidth
         context.textAlign = "center"
         context.textBaseline = "middle"
-
-        return { textCanvas, context }
+        const centreX = textCanvas.width / 2
+        const centreY = textCanvas.height / 2
+        context.strokeText(fitted.labelText, centreX, centreY)
+        context.fillText(fitted.labelText, centreX, centreY)
     }
 
-    private writeLabelsOnCanvas(context: CanvasRenderingContext2D, floorNodesOfCurrentLevel: Node[], mapResolutionScaling: number) {
-        const { length: rootNodeHeight } = this.rootNode
-
-        for (const floorNode of floorNodesOfCurrentLevel) {
-            // The label has to fit into the padding strip that the treemap layout reserved for it,
-            // which is proportional to the folder itself (see getFloorLabelPadding).
-            const reservedLabelStrip = getFloorLabelPadding(floorNode.width, floorNode.depth)
-            let fontSize =
-                floorNode.depth === 0
-                    ? Math.max(Math.floor(floorNode.width * 0.03), 120)
-                    : Math.max(Math.floor(floorNode.width * 0.023), 95)
-            fontSize = Math.max(Math.floor(Math.min(fontSize, reservedLabelStrip)), 1)
-            fontSize = fontSize * mapResolutionScaling
-
-            context.font = `${fontSize}px Arial`
-
-            const textToFill = FloorLabelDrawer.getLabelAndSetContextFont(floorNode, context, mapResolutionScaling, fontSize)
-
-            const labelX = (rootNodeHeight - floorNode.y0 - floorNode.length / 2) * mapResolutionScaling
-            const labelY = (floorNode.x0 + floorNode.width) * mapResolutionScaling - textToFill.fontSize / 2
-
-            context.lineWidth = Math.max(
-                FloorLabelDrawer.MIN_LABEL_OUTLINE_WIDTH,
-                textToFill.fontSize * FloorLabelDrawer.LABEL_OUTLINE_WIDTH_RATIO
-            )
-            context.strokeText(textToFill.labelText, labelX, labelY)
-            context.fillText(textToFill.labelText, labelX, labelY)
-        }
-    }
-
-    private drawLevelPlaneGeometry(textCanvas, scaledMapWidth, scaledMapHeight, floorLevel, mapResolutionScaling) {
+    private createLabelPlane(textCanvas: HTMLCanvasElement, labelNode: Node, fontSizeInMapUnits: number, pixelsPerMapUnit: number) {
         const labelTexture = new CanvasTexture(textCanvas)
-        labelTexture.wrapS = RepeatWrapping
-        labelTexture.wrapT = RepeatWrapping
-        labelTexture.repeat.x = -1
         // The label plane is viewed at a glancing angle; without anisotropic filtering the GPU
         // over-blurs the minified text along the view direction.
         labelTexture.anisotropy = this.maxAnisotropy
-        labelTexture.needsUpdate = true
-        labelTexture.rotation = (90 * Math.PI) / 180
 
-        const plane = new PlaneGeometry(scaledMapWidth, scaledMapHeight)
-        const material = new MeshBasicMaterial({
-            side: BackSide,
-            map: labelTexture,
-            transparent: true
-        })
-
+        const plane = new PlaneGeometry(textCanvas.width / pixelsPerMapUnit, textCanvas.height / pixelsPerMapUnit)
+        const material = new MeshBasicMaterial({ map: labelTexture, transparent: true })
         const planeMesh = new Mesh(plane, material)
 
-        planeMesh.rotateX((90 * Math.PI) / 180)
-
-        const liftToPreventZFighting = 2
-
-        plane.translate(
-            scaledMapWidth / 2,
-            scaledMapHeight / 2,
-            -this.folderGeometryHeight * this.scaling.y * (floorLevel + 1) - liftToPreventZFighting
+        // The label sits in the strip the layout reserved at the folder's far edge, centred along its length.
+        const centreX = labelNode.x0 + labelNode.width - fontSizeInMapUnits / 2
+        const centreZ = labelNode.y0 + labelNode.length / 2
+        planeMesh.position.set(
+            this.scaling.x * (centreX - this.mapSize),
+            this.floorHeightOfLevel(labelNode.mapNodeDepth, this.scaling.y),
+            this.scaling.z * (centreZ - this.mapSize)
         )
-
-        planeMesh.scale.set(this.scaling.x / mapResolutionScaling, this.scaling.z / mapResolutionScaling, 1)
-        planeMesh.position.set(-this.mapSize * this.scaling.x, 0, -this.mapSize * this.scaling.z)
-
-        this.floorLabelPlanes.push(planeMesh)
-        this.floorLabelPlaneLevel.set(planeMesh, floorLevel)
+        planeMesh.rotation.set(-Math.PI / 2, 0, Math.PI / 2)
+        planeMesh.scale.set(this.scaling.z, this.scaling.x, 1)
+        return planeMesh
     }
 
     private static getLabelAndSetContextFont(
         labelNode: Node,
         context: CanvasRenderingContext2D,
-        mapResolutionScaling: number,
+        pixelsPerMapUnit: number,
         fontSize: number
-    ) {
+    ): FittedLabel {
         const labelText = labelNode.name
-        const floorWidth = labelNode.length * mapResolutionScaling
+        const floorWidth = labelNode.length * pixelsPerMapUnit
 
-        context.font = `${fontSize}px Arial`
+        context.font = `${fontSize}px ${FloorLabelDrawer.FONT_FAMILY}`
 
         const textMetrics = context.measureText(labelText)
         const fontScaleFactor = FloorLabelDrawer.getFontScaleFactor(floorWidth, textMetrics.width)
@@ -180,15 +149,15 @@ export class FloorLabelDrawer {
             // Font will be to small.
             // So scale text not smaller than 0.5 and shorten it as well
             fontSize = fontSize * 0.5
-            fontSize = Math.floor(Math.min(fontSize, labelNode.width * mapResolutionScaling))
-            context.font = `${fontSize}px Arial`
+            fontSize = Math.floor(Math.min(fontSize, labelNode.width * pixelsPerMapUnit))
+            context.font = `${fontSize}px ${FloorLabelDrawer.FONT_FAMILY}`
             return {
                 labelText: FloorLabelDrawer.getFittingLabelText(context, floorWidth, labelText),
                 fontSize
             }
         }
-        fontSize = Math.floor(Math.min(fontSize * fontScaleFactor, labelNode.width * mapResolutionScaling))
-        context.font = `${fontSize}px Arial`
+        fontSize = Math.floor(Math.min(fontSize * fontScaleFactor, labelNode.width * pixelsPerMapUnit))
+        context.font = `${fontSize}px ${FloorLabelDrawer.FONT_FAMILY}`
         return { labelText, fontSize }
     }
 
@@ -201,7 +170,6 @@ export class FloorLabelDrawer {
         let textSplitIndex = Math.floor((labelText.length * canvasWidth) / width)
         let abbreviatedText = `${labelText.slice(0, textSplitIndex)}…`
 
-        // TODO: Check if this is expensive. If it is, let's use a logarithmic algorithm instead.
         // This is needed for non monospaced fonts, imagine the following example in a non monospaced font: "WWWIII"
         while (context.measureText(abbreviatedText).width >= canvasWidth && textSplitIndex > 1) {
             // textSplitIndex > 1 to ensure it contains at least one char

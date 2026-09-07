@@ -46,7 +46,7 @@ describe("FloorLabelDrawer", () => {
             font: "",
             measureText: jest.fn((labelText: string) => {
                 return labelText === "text_to_be_shortened_to_fit_onto_the_floor"
-                    ? ({ width: 500 } as TextMetrics)
+                    ? ({ width: widthOfTextTooLongForItsFloor } as TextMetrics)
                     : ({ width: 40 } as TextMetrics)
             }),
             fillText: jest.fn(),
@@ -75,9 +75,11 @@ describe("FloorLabelDrawer", () => {
 
     const mapSize = 500
     const scaling: Vector3 = { x: 1, y: 1, z: 1 } as Vector3
+    // Labels are rasterized at a 64px font, so this is a name about thirty glyph heights wide
+    const widthOfTextTooLongForItsFloor = 2000
 
     describe("draw", () => {
-        it("should draw simple and shortened labels on three levels", () => {
+        it("should draw one plane per labelled folder, shortening a name that does not fit its floor", () => {
             initMapCanvas()
 
             const rootNode = createFakeNode("root", 500, 500, false, 0)
@@ -99,9 +101,14 @@ describe("FloorLabelDrawer", () => {
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(2, "simpleLabelNode1", expect.any(Number), expect.any(Number))
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(3, "simpleLabelNode2", expect.any(Number), expect.any(Number))
             expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(4, "simpleLabelNode3", expect.any(Number), expect.any(Number))
-            expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(5, "text…", expect.any(Number), expect.any(Number))
+            expect(canvasContextMock.fillText).toHaveBeenNthCalledWith(
+                5,
+                expect.stringMatching(/^text.+…$/),
+                expect.any(Number),
+                expect.any(Number)
+            )
 
-            expect(floorLabelPlanes.length).toBe(3)
+            expect(floorLabelPlanes.length).toBe(5)
         })
 
         it("should draw an outline behind each label so it stays readable at distance", () => {
@@ -162,10 +169,10 @@ describe("FloorLabelDrawer", () => {
 
             expect(floorLabelDrawer.folderGeometryHeight).toBe(68)
 
-            expect(floorLabelPlanes.length).toBe(3)
+            expect(floorLabelPlanes.length).toBe(5)
         })
 
-        it("should not draw on more than three levels'", () => {
+        it("should not label folders below the third level", () => {
             initMapCanvas()
 
             const rootNode = createFakeNode("root", 500, 500, false, 0)
@@ -184,10 +191,10 @@ describe("FloorLabelDrawer", () => {
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(4)
-            expect(floorLabelPlanes.length).toBe(3)
+            expect(floorLabelPlanes.length).toBe(4)
         })
 
-        it("should not draw on more levels than needed'", () => {
+        it("should not label leaves", () => {
             initMapCanvas()
 
             const rootNode = createFakeNode("root", 500, 500, false, 0)
@@ -208,34 +215,38 @@ describe("FloorLabelDrawer", () => {
     })
 
     describe("translatePlaneCanvases", () => {
-        it("should translate floor label of root on multiple scaleHeight", () => {
+        it("should lift every label to its level's floor height when the map is rescaled", () => {
+            // Arrange
             initMapCanvas()
-
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [
                 rootNode,
                 createFakeNode("simpleLabelNode1", 400, 400, false, 1),
                 createFakeNode("unlabeledNode", 100, 100, true, 1)
             ]
-
             const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
-            const floorLabelPlanes = floorLabelDrawer.draw()
+            const [rootLabel, childLabel] = floorLabelDrawer.draw()
+            const liftToPreventZFighting = 2
 
-            const geometryPositions = floorLabelPlanes[0].geometry.attributes.position.array
+            // Act
+            floorLabelDrawer.translatePlaneCanvases(new Vector3(1, 1.5, 1))
 
-            assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1, 1.5)
-            assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1.5, 1.6)
-            assertFloorLabelTranslation(floorLabelDrawer, geometryPositions[2], 1.6, 1.4)
+            // Assert
+            expect(rootLabel.position.y).toBeCloseTo(2.01 * 1.5 + liftToPreventZFighting, 5)
+            expect(childLabel.position.y).toBeCloseTo(2.01 * 1.5 * 2 + liftToPreventZFighting, 5)
         })
 
-        function assertFloorLabelTranslation(floorLabelDrawer, startPosition, lastScaling, translateY) {
-            floorLabelDrawer.translatePlaneCanvases(new Vector3(1, translateY, 1))
+        it("should place a label at its level's floor height before any rescaling", () => {
+            // Arrange
+            initMapCanvas()
+            const rootNode = createFakeNode("root", 500, 500, false, 0)
+            const floorLabelDrawer = new FloorLabelDrawer([rootNode], rootNode, mapSize, scaling, false)
 
-            const expectedDifference = lastScaling - translateY
-            const additivePositionDelta = 2 * expectedDifference
+            // Act
+            const [rootLabel] = floorLabelDrawer.draw()
 
-            const translatedPostion = floorLabelDrawer["floorLabelPlanes"][0].geometry.attributes.position.array[2]
-            expect(translatedPostion).toBeCloseTo(startPosition + additivePositionDelta, 5)
-        }
+            // Assert
+            expect(rootLabel.position.y).toBeCloseTo(2.01 + 2, 5)
+        })
     })
 })
