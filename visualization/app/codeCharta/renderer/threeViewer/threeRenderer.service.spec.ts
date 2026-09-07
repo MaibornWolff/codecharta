@@ -146,6 +146,18 @@ describe("threeRendererService", () => {
             expect(ratio).toBeLessThan(ThreeRendererService.MAX_PIXEL_RATIO)
         })
 
+        it("should put a phone back near the ratio of one that its GPU coped with before the quality setting was removed", () => {
+            // Arrange — a phone's 980x1669 layout viewport at ratio 3
+            withDevicePixelRatio(3)
+
+            // Act
+            threeRendererService["initGL"](980, 1669)
+
+            // Assert
+            const ratio = (threeRendererService.renderer.setPixelRatio as jest.Mock).mock.calls[0][0]
+            expect(ratio).toBeLessThanOrEqual(1.2)
+        })
+
         it("should never drop below a ratio of one, so a huge viewport stays sharp as it can be", () => {
             // Arrange
             withDevicePixelRatio(3)
