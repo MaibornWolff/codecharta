@@ -68,6 +68,13 @@ subprojects {
         dependsOn(tasks.named("test"))
     }
 
+    // ktlint-gradle 14.0.1 writes intermediates/ktLint/reporters.bin but never registers it as an output
+    // of loadKtlintReporters, so `clean` deletes the file while the task stays UP-TO-DATE and every later
+    // ktlint task fails on the missing input. Declaring it makes `clean` invalidate the producer again.
+    tasks.matching { it.name == "loadKtlintReporters" }.configureEach {
+        outputs.file(layout.buildDirectory.file("intermediates/ktLint/reporters.bin"))
+    }
+
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(17)
     }
@@ -168,7 +175,7 @@ tasks.named<JacocoReport>("jacocoTestReport") {
 configure<SonarExtension> {
     properties {
         property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/build/reports/jacoco/test/jacocoTestReport.xml")
-        property("sonar.exclusions", "**/*AttributeDescriptors*")
+        property("sonar.exclusions", "**/*AttributeDescriptors*,**/training/**")
     }
 }
 

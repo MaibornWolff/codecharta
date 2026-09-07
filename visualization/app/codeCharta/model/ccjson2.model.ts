@@ -48,16 +48,80 @@ interface MetricsLensData {
     attributeTypes: Record<string, AttributeTypeValue>
 }
 
+/*
+ * The dependency graph in both of its projections: the physical one (`edges` between file nodes, plus
+ * each node's place in that graph) and the logical one the code declares (`leaves` are the declarations,
+ * `namespaces` the packages containing them, `leafEdges` the dependencies between declarations). The
+ * logical tables are keyed by dotted logical path; a leaf joins back onto the file tree through `nodeId`.
+ */
 interface DependencyLensData {
     edges: DependencyEdge[]
     attributeTypes: Record<string, AttributeTypeValue>
     attributeDescriptors: AttributeDescriptors
+    /** Optional so an unused lens slot stays `{}`, the form the analysis side treats as carrying nothing. */
+    nodes?: Record<string, DependencyLensNode>
+    namespaces?: Record<string, DependencyLensNamespace>
+    leaves?: Record<string, DependencyLensLeaf>
+    leafEdges?: DependencyLeafEdge[]
 }
 
+interface DependencyLensNode {
+    level: number
+}
+
+interface DependencyLensNamespace {
+    level: number
+}
+
+/*
+ * `name` is carried rather than derived from the key because the logical path escapes dots inside a
+ * segment and that escaping is not reversible. `level` is absent when the producer skipped levelization.
+ */
+interface DependencyLensLeaf {
+    nodeId: string
+    name: string
+    kind: DeclarationKind
+    level?: number
+}
+
+type DeclarationKind =
+    | "CLASS"
+    | "VALUECLASS"
+    | "INTERFACE"
+    | "ANNOTATION"
+    | "ENUM"
+    | "FUNCTION"
+    | "VARIABLE"
+    | "REEXPORT"
+    | "SCRIPT"
+    | "UNKNOWN"
+
+type TypeOfUsage = "usage" | "inheritance" | "implementation" | "instantiation" | "argument" | "return_value" | "constant_access"
+
+/*
+ * A dependency between two declarations. Separate from `edges` because an edge addresses file nodes by
+ * id; an edge between two declarations of the same file has no file-level counterpart at all.
+ */
+interface DependencyLeafEdge {
+    fromLeaf: string
+    toLeaf: string
+    attributes: Record<string, number>
+    usage?: TypeOfUsage[]
+    isCyclic?: boolean
+    isPointingUpwards?: boolean
+}
+
+/*
+ * `isCyclic` and `isPointingUpwards` place the edge in the dependency graph; the four edge types
+ * (regular, cyclic, container-level feedback, leaf-level feedback) are a pure function of that pair
+ * and are derived where they are consumed. Absent means false.
+ */
 interface DependencyEdge {
     fromId: string
     toId: string
     attributes: Record<string, number>
+    isCyclic?: boolean
+    isPointingUpwards?: boolean
 }
 
 /*

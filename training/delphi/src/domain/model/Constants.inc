@@ -1,0 +1,2 @@
+const
+  MAX_LAIR_TREASURE = 5000;

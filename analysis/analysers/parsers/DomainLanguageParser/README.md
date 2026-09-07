@@ -63,7 +63,8 @@ ccsh domainlanguageparser foo/bar/project --ngrams=3 --exclude-tests -o out.cc.j
 
 If a project is piped into the DomainLanguageParser, the results and the piped project are merged.
 
-> The infrastructure options `-e/--exclude`, `-bf/--base-file`, `--local-changes` and
-> `-ibf/--include-build-folders` are inherited from the common analyser parameters but do not affect
-> domain-vocabulary analysis and are ignored.
+> `-e/--exclude` and `-ibf/--include-build-folders` work as in every other parser: exclude patterns are
+> matched against the path inside the project, and the common build folders are skipped as a fallback
+> when the project has no root `.gitignore`. `-bf/--base-file` and `--local-changes` are inherited from
+> the common analyser parameters but do not affect domain-vocabulary analysis and are ignored.
 

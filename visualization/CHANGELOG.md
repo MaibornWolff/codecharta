@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **The cc.json 2.0 reader understands the grown `dependency` lens.** An edge now carries the optional `isCyclic` and
+  `isPointingUpwards` flags through to the viz model, and a file's `dependencyLevels` hold the level each node sits
+  on. Nothing renders them yet — this lands the data layer so a visualization can be built on it, and so the vendored
+  schema accepts files from `ccsh dependencyparser`. A session persisted before this change is migrated to carry the
+  new slot.
+
+- **The vendored cc.json 2.0 schema accepts the logical package/declaration layer.** `ccsh dependencyparser` now also
+  writes the graph as the code declares it: `leaves` (declarations), `namespaces` (packages) and `leafEdges`
+  (dependencies between declarations, with the way each is used). The schema and the `CcJson2` types know all three,
+  so a released viz reads the parser's output instead of rejecting it. Nothing renders them yet.
+
 ### Fixed 🐞
 
 - **Map no longer renders on phones**: removing the display quality setting left the renderer taking the device's raw pixel ratio, which is what the old "Best" mode did — but the default had been "High", which rendered at ratio 1. On a phone that asks for a roughly 15 megapixel drawing buffer, seven times the desktop workload, and the mobile GPU drops the WebGL context. The pixel ratio is now capped, both as a ratio and against a total buffer budget, and re-applied when the window resizes, so a phone renders at about 4 megapixels while a normal desktop viewport is untouched at its native ratio. A lost graphics context is also no longer a silently blank map: it is reported, and a restored context re-renders.

@@ -1,0 +1,42 @@
+program CellarsAndCentaurs;
+
+{$APPTYPE CONSOLE}
+
+uses
+  System.SysUtils,
+  de.sots.cellarsandcentaurs.domain.model.Fightable in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.Fightable.pas',
+  de.sots.cellarsandcentaurs.domain.model.CreatureId in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.CreatureId.pas',
+  de.sots.cellarsandcentaurs.domain.model.CreatureType in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.CreatureType.pas',
+  de.sots.cellarsandcentaurs.domain.model.SpeedType in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.SpeedType.pas',
+  de.sots.cellarsandcentaurs.domain.model.Speed in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.Speed.pas',
+  de.sots.cellarsandcentaurs.domain.model.HitPoints in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.HitPoints.pas',
+  de.sots.cellarsandcentaurs.domain.model.ArmorClass in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.ArmorClass.pas',
+  de.sots.cellarsandcentaurs.domain.model.NoSuchCreatureException in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.NoSuchCreatureException.pas',
+  de.sots.cellarsandcentaurs.domain.model.Creature in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.Creature.pas',
+  de.sots.cellarsandcentaurs.domain.model.Centaur in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.Centaur.pas',
+  de.sots.cellarsandcentaurs.domain.model.Dice in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.Dice.pas',
+  de.sots.cellarsandcentaurs.domain.service.Creatures in 'src\domain\service\de.sots.cellarsandcentaurs.domain.service.Creatures.pas',
+  de.sots.cellarsandcentaurs.domain.service.CreatureService in 'src\domain\service\de.sots.cellarsandcentaurs.domain.service.CreatureService.pas',
+  de.sots.cellarsandcentaurs.adapter.persistence.Mapping in 'src\adapter\persistence\de.sots.cellarsandcentaurs.adapter.persistence.Mapping.pas',
+  de.sots.cellarsandcentaurs.adapter.persistence.CreatureEntity in 'src\adapter\persistence\de.sots.cellarsandcentaurs.adapter.persistence.CreatureEntity.pas',
+  de.sots.cellarsandcentaurs.adapter.persistence.Repository in 'src\adapter\persistence\de.sots.cellarsandcentaurs.adapter.persistence.Repository.pas',
+  de.sots.cellarsandcentaurs.adapter.persistence.CreatureRepository in 'src\adapter\persistence\de.sots.cellarsandcentaurs.adapter.persistence.CreatureRepository.pas',
+  de.sots.cellarsandcentaurs.adapter.persistence.PersistedCreatures in 'src\adapter\persistence\de.sots.cellarsandcentaurs.adapter.persistence.PersistedCreatures.pas',
+  de.sots.cellarsandcentaurs.application.dto.Creature in 'src\application\dto\de.sots.cellarsandcentaurs.application.dto.Creature.pas',
+  de.sots.cellarsandcentaurs.application.CreatureFacade in 'src\application\de.sots.cellarsandcentaurs.application.CreatureFacade.pas',
+  de.sots.cellarsandcentaurs.application.CreatureUtil in 'src\application\de.sots.cellarsandcentaurs.application.CreatureUtil.pas',
+  de.sots.cellarsandcentaurs.application.Api in 'src\application\de.sots.cellarsandcentaurs.application.Api.pas';
+
+var
+  Repository: TCreatureRepository;
+  Service: TCreatureService;
+  Facade: TCreatureFacade;
+  Creature: TCreature;
+begin
+  Repository := TCreatureRepository.Create;
+  Service := TCreatureService.Create(TPersistedCreatures.Create(Repository), nil);
+  Facade := TCreatureFacade.Create(Service);
+  Creature := Facade.CreateCreature(ctDragon, TSpeed.Create(30), TSpeed.Create(60), TSpeed.Create(20),
+    TSpeed.Create(0), TSpeed.Create(30), TArmorClass.Create(15, 2), 120);
+  Writeln(Creature.Id.Value);
+end.

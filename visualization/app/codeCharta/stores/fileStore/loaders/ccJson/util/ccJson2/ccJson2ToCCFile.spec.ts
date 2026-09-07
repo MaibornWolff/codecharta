@@ -83,6 +83,44 @@ describe("mapCcJson2ToCCFile", () => {
         ])
     })
 
+    it("should carry the graph flags of a dependency edge", () => {
+        // Arrange
+        ;(file.lenses.dependency.edges[0] as Record<string, unknown>).isCyclic = true
+        ;(file.lenses.dependency.edges[0] as Record<string, unknown>).isPointingUpwards = true
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.edges[0].isCyclic).toBe(true)
+        expect(result.settings.fileSettings.edges[0].isPointingUpwards).toBe(true)
+    })
+
+    it("should re-key dependency levels from node id to node path", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).dependency = {
+            ...file.lenses.dependency,
+            nodes: { "/root": { level: 0 }, "/root/big.ts": { level: 2 } }
+        }
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.dependencyLevels).toEqual({ "/root": 0, "/root/big.ts": 2 })
+    })
+
+    it("should drop a dependency level whose node id does not resolve to a path", () => {
+        // Arrange
+        ;(file.lenses as Record<string, unknown>).dependency = { ...file.lenses.dependency, nodes: { "ghost-id": { level: 4 } } }
+
+        // Act
+        const result = mapCcJson2ToCCFile(file, nameDataPair(file))
+
+        // Assert
+        expect(result.settings.fileSettings.dependencyLevels).toEqual({})
+    })
+
     it("should re-key domain words from node id to node path", () => {
         // Arrange
         ;(file.lenses as Record<string, unknown>).domain = {

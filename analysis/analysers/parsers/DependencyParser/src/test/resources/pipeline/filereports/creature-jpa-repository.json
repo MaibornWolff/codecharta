@@ -1,0 +1,72 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "adapter",
+          "persistence",
+          "CreatureJpaRepository"
+        ]
+      },
+      "physicalPath": "/Users/moritz.suckow/learning/dependacharta/./JavaExample/src/main/java/de/sots/cellarsandcentaurs/adapter/persistence/CreatureJpaRepository.java",
+      "nodeType": "INTERFACE",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "org",
+              "springframework",
+              "data",
+              "jpa",
+              "repository",
+              "JpaRepository"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "UUID"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "adapter",
+              "persistence"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "JpaRepository",
+          "usageSource": "usage",
+          "genericTypes": [
+            {
+              "name": "CreatureEntity",
+              "usageSource": "usage",
+              "genericTypes": []
+            },
+            {
+              "name": "UUID",
+              "usageSource": "usage",
+              "genericTypes": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

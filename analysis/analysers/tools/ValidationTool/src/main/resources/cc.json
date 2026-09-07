@@ -454,6 +454,12 @@
         },
         "attributes": {
           "type": "object"
+        },
+        "isCyclic": {
+          "type": "boolean"
+        },
+        "isPointingUpwards": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -499,6 +505,30 @@
           },
           "type": "array"
         },
+        "nodes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/DependencyNode"
+          },
+          "type": "object"
+        },
+        "namespaces": {
+          "additionalProperties": {
+            "$ref": "#/definitions/DependencyNamespace"
+          },
+          "type": "object"
+        },
+        "leaves": {
+          "additionalProperties": {
+            "$ref": "#/definitions/DependencyLeaf"
+          },
+          "type": "object"
+        },
+        "leafEdges": {
+          "items": {
+            "$ref": "#/definitions/LeafEdge"
+          },
+          "type": "array"
+        },
         "attributeDescriptors": {
           "additionalProperties": {
             "$ref": "#/definitions/AttributeDescriptor"
@@ -516,6 +546,108 @@
           "type": "object"
         }
       },
+      "type": "object"
+    },
+    "DependencyNode": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "level"
+      ],
+      "type": "object"
+    },
+    "DependencyNamespace": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "level"
+      ],
+      "type": "object"
+    },
+    "DependencyLeaf": {
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "CLASS",
+            "VALUECLASS",
+            "INTERFACE",
+            "ANNOTATION",
+            "ENUM",
+            "FUNCTION",
+            "VARIABLE",
+            "REEXPORT",
+            "SCRIPT",
+            "UNKNOWN"
+          ],
+          "type": "string"
+        },
+        "level": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "nodeId",
+        "name",
+        "kind"
+      ],
+      "type": "object"
+    },
+    "LeafEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "fromLeaf": {
+          "type": "string"
+        },
+        "toLeaf": {
+          "type": "string"
+        },
+        "attributes": {
+          "type": "object"
+        },
+        "usage": {
+          "items": {
+            "enum": [
+              "usage",
+              "inheritance",
+              "implementation",
+              "instantiation",
+              "argument",
+              "return_value",
+              "constant_access"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "isCyclic": {
+          "type": "boolean"
+        },
+        "isPointingUpwards": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "fromLeaf",
+        "toLeaf"
+      ],
       "type": "object"
     },
     "ClusterMember": {

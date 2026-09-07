@@ -144,7 +144,10 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
     }
 
     private fun buildConfiguration(directoryPath: String): AnalysisConfiguration {
-        val config = ConfigurationBuilder().build(buildParsedArguments(directoryPath))
+        val config =
+            ConfigurationBuilder()
+                .build(buildParsedArguments(directoryPath))
+                .copy(excludePatterns = determineExclusionPatterns(File(directoryPath), !bypassGitignore))
         return if (fileExtensionsToAnalyse.isEmpty()) config else config.copy(allowedExtensions = fileExtensionsToAnalyse)
     }
 

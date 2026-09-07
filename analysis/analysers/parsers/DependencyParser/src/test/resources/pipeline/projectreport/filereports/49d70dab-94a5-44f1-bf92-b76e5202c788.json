@@ -1,0 +1,123 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "adapter",
+          "persistence",
+          "PersistedCreatures"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\adapter\\persistence\\PersistedCreatures.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "Creature"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "CreatureId"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "model",
+              "NoSuchCreatureException"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "domain",
+              "service",
+              "Creatures"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "adapter",
+              "persistence"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "Creatures",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureEntity",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Override",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "NoSuchCreatureException",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Creature",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureId",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "CreatureJpaRepository",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "void",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

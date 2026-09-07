@@ -32,7 +32,8 @@ dependencies {
             ":dialogProvider",
             ":analysers:importers:SourceMonitorImporter",
             ":analysers:importers:DependaChartaImporter",
-            ":analysers:parsers:DomainLanguageParser"
+            ":analysers:parsers:DomainLanguageParser",
+            ":analysers:parsers:DependencyParser"
         )
 
     projects.forEach {
@@ -59,6 +60,9 @@ tasks.jar {
     }
     isZip64 = true
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+    // The `from` below unpacks the resolved files, which carry no task provenance, so the modules whose
+    // jars end up inside the fat jar have to be declared as producers here.
+    dependsOn(configurations.runtimeClasspath)
     from({
         configurations.runtimeClasspath.get().filter { it.isDirectory }.plus(
             configurations.runtimeClasspath.get().files.map { zipTree(it) }

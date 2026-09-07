@@ -18,7 +18,9 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean) {
                         : oldEdge.fromNodeName,
                     toNodeName: withUpdatedPath ? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
                     attributes: clone(oldEdge.attributes),
-                    visible: oldEdge.visible
+                    visible: oldEdge.visible,
+                    isCyclic: oldEdge.isCyclic,
+                    isPointingUpwards: oldEdge.isPointingUpwards
                 }
                 const equalEdgeItem = edges.get(`${edge.fromNodeName}|${edge.toNodeName}`)
 

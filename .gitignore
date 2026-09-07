@@ -2,8 +2,8 @@
 codecharta-analyse.sonargraph
 auth.txt
 .cache
-# brand reference — internal corporate palette, must not be committed
-Ideas/brand.png
+# scratch space: brand references, local checkouts of other projects — nothing in it belongs in the repo
+Ideas/
 # call-graph exports (e.g. analysis.cg.json) — large, generated
 *.cg.json
 # analyser output written at the analysis root (e.g. dlc.cc.json.gz) — generated, not a tracked fixture
@@ -143,6 +143,8 @@ fabric.properties
 # Package Files #
 *.jar
 !gradle-wrapper.jar
+# tree-sitter-tsx and tree-sitter-pascal are not published to Maven Central
+!analysis/treeSitterExcavationSite/libs/*.jar
 *.war
 *.ear
 *.zip

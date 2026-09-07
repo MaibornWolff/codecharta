@@ -1,11 +1,14 @@
 package de.maibornwolff.codecharta.analysers.filters.mergefilter
 
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.DependencyNamespace
 import de.maibornwolff.codecharta.model.DomainLens
 import de.maibornwolff.codecharta.model.DomainNode
 import de.maibornwolff.codecharta.model.DomainWord
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeId
@@ -25,6 +28,34 @@ class LargeMergeTest {
         apiVersion = "2.0",
         lenses = lenses
     )
+
+    @Test
+    fun `should move the logical layer under the folder and re-point a leaf at the wrapped file`() {
+        // Arrange
+        val fileId = NodeId.fromSegments(listOf("file.kt"), NodeType.File)
+        val project = rootProject(
+            lenses = LensSet(
+                dependency = DependencyLens(
+                    namespaces = mapOf("com.example" to DependencyNamespace(0)),
+                    leaves = mapOf("com.example.File" to DependencyLeaf(fileId, "File", "CLASS", 1)),
+                    leafEdges = listOf(LeafEdge("com.example.File", "com.example.File"))
+                )
+            )
+        )
+
+        // Act
+        val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
+
+        // Assert: the package and the file both moved into the folder, so a second project declaring
+        // com.example.File stays apart from this one.
+        val dependency = wrapped.lenses.dependency
+        assertEquals(mapOf("alpha.com.example" to DependencyNamespace(0)), dependency.namespaces)
+        assertEquals(
+            NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File),
+            dependency.leaves.getValue("alpha.com.example.File").nodeId
+        )
+        assertEquals(listOf(LeafEdge("alpha.com.example.File", "alpha.com.example.File")), dependency.leafEdges)
+    }
 
     @Test
     fun `should wrap nodes under the prefix folder and re-path edges while keeping node attributes`() {

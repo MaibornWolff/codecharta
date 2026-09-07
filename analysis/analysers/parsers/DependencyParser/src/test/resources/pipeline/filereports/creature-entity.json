@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "adapter",
+          "persistence",
+          "CreatureEntity"
+        ]
+      },
+      "physicalPath": "/Users/moritz.suckow/learning/dependacharta/./JavaExample/src/main/java/de/sots/cellarsandcentaurs/adapter/persistence/CreatureEntity.java",
+      "nodeType": "CLASS",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "jakarta",
+              "persistence",
+              "Entity"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "jakarta",
+              "persistence",
+              "Id"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "UUID"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "adapter",
+              "persistence"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": [
+        {
+          "name": "Entity",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "Id",
+          "usageSource": "usage",
+          "genericTypes": []
+        },
+        {
+          "name": "UUID",
+          "usageSource": "usage",
+          "genericTypes": []
+        }
+      ]
+    }
+  ]
+}

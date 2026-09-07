@@ -1,0 +1,43 @@
+{
+  "nodes": [
+    {
+      "pathWithName": {
+        "parts": [
+          "de",
+          "sots",
+          "cellarsandcentaurs",
+          "adapter",
+          "persistence",
+          "CreatureJpaRepository"
+        ]
+      },
+      "physicalPath": "src\\main\\java\\de\\sots\\cellarsandcentaurs\\adapter\\persistence\\CreatureJpaRepository.java",
+      "nodeType": "INTERFACE",
+      "language": "JAVA",
+      "dependencies": [
+        {
+          "path": {
+            "parts": [
+              "java",
+              "util",
+              "UUID"
+            ]
+          }
+        },
+        {
+          "path": {
+            "parts": [
+              "de",
+              "sots",
+              "cellarsandcentaurs",
+              "adapter",
+              "persistence"
+            ]
+          },
+          "isWildcard": true
+        }
+      ],
+      "usedTypes": []
+    }
+  ]
+}

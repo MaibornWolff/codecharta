@@ -142,25 +142,6 @@ class RawTextParser(
         }
     }
 
-    private fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
-        val excludePatterns = specifiedExcludePatterns.toMutableList()
-        val rootGitignoreExists = File(inputFile, ".gitignore").exists()
-
-        // Always exclude the repository's own .git store, even under --bypass-gitignore (no gitignore
-        // handler consulted) or when a root .gitignore suppresses the build-folder fallback below.
-        excludePatterns.add(CodeChartaConstants.GIT_DIRECTORY_EXCLUDE_PATTERN)
-
-        if (useGitignore && !rootGitignoreExists) {
-            Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
-        }
-
-        if (!includeBuildFolders && !rootGitignoreExists) {
-            excludePatterns.addAll(CodeChartaConstants.BUILD_FOLDERS)
-        }
-
-        return excludePatterns
-    }
-
     private fun reportNotFoundFileExtensions(projectMetrics: ProjectMetrics) {
         val notFoundFileExtensions = mutableListOf<String>()
         for (fileExtension in fileExtensionsToAnalyse) {

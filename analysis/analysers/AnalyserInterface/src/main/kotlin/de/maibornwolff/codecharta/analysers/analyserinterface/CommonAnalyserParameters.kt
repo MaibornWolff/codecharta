@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.commit.GitWorktree
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.FileExtensionConverter
+import de.maibornwolff.codecharta.util.CodeChartaConstants
+import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 
@@ -104,6 +106,28 @@ abstract class CommonAnalyserParameters {
         val worktreeDir = manager.createWorktree(resolvedCommit)
         val effectiveInput = File(worktreeDir, relativePath.toString())
         return CommitAnalysisContext(effectiveInput, manager, shortHash)
+    }
+
+    /**
+     * The regex patterns a file walk excludes: the user's `-e` patterns, always the repository's own
+     * `.git` store, and the common build folders as a fallback when the root has no `.gitignore` to
+     * do that job (unless `-ibf` asks for them).
+     */
+    protected fun determineExclusionPatterns(inputFile: File, useGitignore: Boolean): List<String> {
+        val excludePatterns = specifiedExcludePatterns.toMutableList()
+        val rootGitignoreExists = File(inputFile, ".gitignore").exists()
+
+        excludePatterns.add(CodeChartaConstants.GIT_DIRECTORY_EXCLUDE_PATTERN)
+
+        if (useGitignore && !rootGitignoreExists) {
+            Logger.warn { "No .gitignore found at root level, excluding common build folders as fallback..." }
+        }
+
+        if (!includeBuildFolders && !rootGitignoreExists) {
+            excludePatterns.addAll(CodeChartaConstants.BUILD_FOLDERS)
+        }
+
+        return excludePatterns
     }
 
     private fun findGitRoot(startDir: File): File {

@@ -103,6 +103,7 @@ export default defineConfig({
 								{ label: 'Unified', slug: 'docs/parser/unified' },
 								{ label: 'Raw Text', slug: 'docs/parser/raw-text' },
 								{ label: 'Domain Language', slug: 'docs/parser/domain-language' },
+								{ label: 'Dependency', slug: 'docs/parser/dependency' },
 								{ label: 'Git Log', slug: 'docs/parser/git-log' },
 								{ label: 'SVN Log', slug: 'docs/parser/svn-log' },
 							],

@@ -159,6 +159,24 @@ class DependaChartaImporterTest {
     }
 
     @Test
+    fun `should point at the dependency parser when run`() {
+        // Arrange: the parser runs the same analysis on source and keeps what this importer flattens away.
+        val inputFilePath = "${testResourceBaseFolder}simple.dc.json"
+        val outputFilePath = "${testResourceBaseFolder}deprecation-output.cc.json"
+        File(outputFilePath).deleteOnExit()
+        System.setErr(PrintStream(errContent))
+
+        // Act
+        main(arrayOf(inputFilePath, "-nc", "-o=$outputFilePath"))
+
+        // Assert
+        assertThat(errContent.toString()).contains("deprecated").contains("ccsh dependencyparser")
+
+        // clean up
+        System.setErr(originalErr)
+    }
+
+    @Test
     fun `should stop execution if input file is invalid`() {
         // Arrange
         val nonExistentInputFilePath = "thisDoesNotExist.dc.json"

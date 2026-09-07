@@ -3,9 +3,14 @@ package de.maibornwolff.codecharta.analysers.tools.validation
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.DependencyLeaf
+import de.maibornwolff.codecharta.model.DependencyNamespace
+import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.LegacyFileException
@@ -107,14 +112,41 @@ class EveritValidatorTest {
     @Test
     fun `should keep the bundled and published 2_0 schemas in sync with a representative project`() {
         // Arrange: a 2.0 project exercising meta.commitHash, per-node contentHash, node + edge metrics,
-        // attribute types and descriptors, and an opaque domain lens. Because the strict 2.0 schema forbids
-        // unknown properties, a new field on the CcJsonV2 DTO would serialize here and fail both validations
-        // until the schemas catch up.
+        // attribute types and descriptors, the dependency lens's graph flags, node levels and whole logical
+        // layer, and an opaque domain lens. Because the strict 2.0 schema forbids unknown properties, a new
+        // field on the CcJsonV2 DTO would serialize here and fail both validations until the schemas catch up.
         val appNode = Node("App.kt", NodeType.File, mapOf("rloc" to 120.0, "mcc" to 8.0), "", setOf(), checksum = "abc123")
         val otherNode = Node("Other.kt", NodeType.File, mapOf("rloc" to 30.0), "", setOf(), checksum = "def456")
         val srcNode = Node("src", NodeType.Folder, emptyMap(), "", setOf(appNode, otherNode))
         val root = Node("root", NodeType.Folder, emptyMap(), "", setOf(srcNode))
-        val edges = listOf(Edge("/root/src/App.kt", "/root/src/Other.kt", mapOf("pairingRate" to 42.0)))
+        val edges =
+            listOf(
+                Edge("/root/src/App.kt", "/root/src/Other.kt", mapOf("pairingRate" to 42.0), isCyclic = true, isPointingUpwards = true)
+            )
+        val dependencyNodes =
+            mapOf(
+                NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File) to DependencyNode(2),
+                NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File) to DependencyNode(0)
+            )
+        val namespaces = mapOf("com.example.domain" to DependencyNamespace(0))
+        val leaves =
+            mapOf(
+                "com.example.domain.Creature" to
+                    DependencyLeaf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), "Creature", "CLASS", 2),
+                "com.example.domain.HitPoints" to
+                    DependencyLeaf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File), "HitPoints", "VALUECLASS", 0)
+            )
+        val leafEdges =
+            listOf(
+                LeafEdge(
+                    "com.example.domain.Creature",
+                    "com.example.domain.HitPoints",
+                    mapOf("dependencies" to 1),
+                    listOf("inheritance"),
+                    isCyclic = true,
+                    isPointingUpwards = true
+                )
+            )
         val attributeTypes =
             mapOf(
                 "nodes" to mutableMapOf("rloc" to AttributeType.ABSOLUTE),
@@ -133,7 +165,17 @@ class EveritValidatorTest {
                 Project.API_VERSION,
                 LensSet
                     .fromLegacy(edges, attributeTypes, attributeDescriptors)
-                    .copy(opaqueLenses = mapOf("domain" to JsonParser.parseString(domainLens))),
+                    .let {
+                        it.copy(
+                            dependency =
+                                it.dependency.copy(
+                                    nodes = dependencyNodes,
+                                    namespaces = namespaces,
+                                    leaves = leaves,
+                                    leafEdges = leafEdges
+                                )
+                        )
+                    }.copy(opaqueLenses = mapOf("domain" to JsonParser.parseString(domainLens))),
                 commitHash = "a1b2c3d"
             )
         val json = ProjectSerializer.serializeToString(project)
@@ -309,6 +351,55 @@ class EveritValidatorTest {
                 validator.validate(ByteArrayInputStream(multipleDangling.toByteArray()))
             }
         Assertions.assertThat(thrown.message).contains("ghost-metric").contains("ghost-edge")
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose dependency-lens leaf references an unknown node id`() {
+        // Schema-valid, but the leaf's nodeId resolves to no node — the reader would silently drop the leaf.
+        val danglingLeaf =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"dependency":{"leaves":{"com.example.Ghost":{"nodeId":"ghost-id","name":"Ghost","kind":"CLASS"}}}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingLeaf.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("com.example.Ghost").contains("ghost-id")
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose dependency-lens node entry references an unknown node id`() {
+        // Schema-valid, but the level is keyed by an id no node carries — the reader would drop it with a warning.
+        val danglingNode =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"dependency":{"nodes":{"ghost-id":{"level":1}}}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingNode.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("node entry").contains("ghost-id")
+    }
+
+    @Test
+    fun `should reject a 2_0 file whose leaf edge references a leaf the leaf table does not declare`() {
+        // Schema-valid, but toLeaf names no declared leaf — the reader would drop the edge with a warning.
+        val danglingLeafEdge =
+            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
+                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+                """"lenses":{"dependency":{"leaves":{"com.example.App":{"nodeId":"app-id","name":"App","kind":"CLASS"}},""" +
+                """"leafEdges":[{"fromLeaf":"com.example.App","toLeaf":"com.example.Ghost"}]}}}"""
+
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) {
+                validator.validate(ByteArrayInputStream(danglingLeafEdge.toByteArray()))
+            }
+        Assertions.assertThat(thrown.message).contains("toLeaf").contains("com.example.Ghost")
     }
 
     @Test

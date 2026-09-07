@@ -1,0 +1,26 @@
+# File Metrics
+comment_lines=22.0
+comment_ratio=0.19
+complexity=26.0
+excessive_comments=1.0
+loc=151.0
+logic_complexity=14.0
+long_method=2.0
+long_parameter_list=1.0
+message_chains=1.0
+number_of_functions=10.0
+rloc=116.0
+
+# Per-Function Metrics
+max_complexity_per_function=6.0
+max_parameters_per_function=5.0
+max_rloc_per_function=34.0
+mean_complexity_per_function=1.6
+mean_parameters_per_function=1.1
+mean_rloc_per_function=6.7
+median_complexity_per_function=0.5
+median_parameters_per_function=1.0
+median_rloc_per_function=1.5
+min_complexity_per_function=0.0
+min_parameters_per_function=0.0
+min_rloc_per_function=0.0

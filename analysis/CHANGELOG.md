@@ -7,6 +7,77 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **`ccsh dependencyparser` extracts a project's dependency graph.** A port of DependaCharta's analysis: tree-sitter
+  dependency extraction for Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi and Rust,
+  plus cycle detection and levelization. The result lands in the `dependency` lens — a file-to-file edge per
+  dependency, carrying its weight (`dependencies`), whether it takes part in a cycle (`isCyclic`) and whether it runs
+  against the architectural flow (`isPointingUpwards`), plus the level every file and folder sits on. Per-file
+  `outgoing_dependencies` and `incoming_dependencies` go into the metrics lens. Imports resolve through each
+  language's own rules plus tsconfig/jsconfig path aliases, bundler aliases and Module Federation remotes.
+  Test files are excluded by default (`--include-tests` opts back in), because a test depends on everything it
+  exercises and nothing depends on it, which moves every level and cycle. `--omit-graph-analysis` skips cycles and
+  levels for a repository where they do not finish, and `--file-timeout` bounds a single file's parse.
+
+- **The `dependency` lens carries the whole graph, not just edges.** `Edge` gains the optional booleans `isCyclic`
+  and `isPointingUpwards`, and the lens gains an optional `nodes` map giving each file and folder its level. Both
+  additions are optional and omitted when unset, so files written by earlier producers stay byte-identical and every
+  existing reader keeps working. The four DependaCharta edge types are a pure function of the two booleans and are
+  derived where they are consumed rather than stored.
+
+- **`ccsh dependencyparser` emits the logical package/declaration layer beside the file-level one.** Resolution,
+  cycle detection and levelization all run at declaration level already; until now everything but the file-collapsed
+  result was discarded. The `dependency` lens gains three optional tables, keyed by dotted logical path: `leaves`
+  (every declaration with its kind, its level and the id of the file node it lives in), `namespaces` (each package's
+  level) and `leafEdges` (the dependencies between declarations, with their weight, the two graph flags and `usage` —
+  how the source uses the target). This carries the two signals the file-level view cannot: a dependency
+  between two declarations of the *same* file, and the kind of use each dependency is. `edges`, `nodes` and the
+  per-file metrics are unchanged byte for byte, so every existing reader keeps working; a file without a logical
+  layer is unchanged too, since the tables are omitted when empty. Levelization now runs twice, once per projection,
+  and `--omit-graph-analysis` skips both. Uncompressed output roughly quadruples; it is gzipped by default.
+  `MergeFilter`, `StructureModifier` and `EdgeFilter` carry the new tables through: namespaces merge max-wins, leaves
+  union first-wins, leaf edges fold by endpoint pair, and a restructuring re-points `leaves[].nodeId` at the file's
+  new id — dropping a leaf, and the edges touching it, when its file did not survive. `merge --large` prefixes the
+  logical ids with the wrapping folder, the way it prefixes edge paths, so two inputs declaring the same package
+  stay apart. `ccsh check` rejects a leaf
+  whose `nodeId` resolves to no node, a `nodes` key that names no node and a leaf edge whose endpoint the leaf table
+  does not declare, the way it already rejects a dangling edge endpoint or metrics key.
+
+### Changed
+
+- **One file scanner for `domainlanguageparser` and `dependencyparser`.** Both walked the tree with their own copy
+  of the same scanner; the shared one lives next to the gitignore handling in `AnalyserInterface`. For
+  `domainlanguageparser` this means `-e/--exclude` and `-ibf/--include-build-folders` now work as in every other
+  parser (they were accepted and ignored), the common build folders are excluded when the root has no `.gitignore`
+  (unless `-ibf` is given), minified bundles (`*.min.js`, `*.bundle.js`) are skipped, test directories are judged by
+  the path inside the project rather than the absolute one, and files arrive in path order.
+
+- **`ccsh dependachartaimport` is deprecated.** `ccsh dependencyparser` runs DependaCharta's analysis on the source
+  itself and now emits everything the importer receives and more — declaration kinds, levels, cycles and upward flags,
+  at both file and declaration granularity — where the importer flattens all of it into edge and node attributes. It
+  also declares `.dc.json` while DependaCharta emits `.cg.json`, so it never matched real output. The command still
+  works and now says so on every run; it will be removed.
+
+### Fixed 🐞
+
+- **`./gradlew clean` no longer breaks every following ktlint task.** ktlint-gradle writes
+  `intermediates/ktLint/reporters.bin` but never registers it as an output of `loadKtlintReporters`, so
+  `clean` deleted the file while the task stayed `UP-TO-DATE`, and every ktlint task then failed with
+  "specifies file ... which doesn't exist". The build now declares the output, so `clean` invalidates its
+  producer. CI never saw this because it builds fresh checkouts rather than cleaning an existing one.
+
+- **`FileExtension` recognizes `.cts` and `.kts`.** The TypeScript entry listed `cts` without its leading dot, so no
+  `.cts` file ever matched, and Kotlin script files had no entry at all. Both are now analysed by `unifiedparser`
+  as well.
+
+### Chore 👨‍💻 👩‍💻
+
+- **TreeSitterExcavationSite is now a module of the analysis build instead of an external library.** The code of
+  `v0.12.0` moved into `analysis/treeSitterExcavationSite` unchanged, so the three parsers that use it compile
+  against `project(":treeSitterExcavationSite")` rather than a JitPack artifact and its grammar versions are
+  pinned in the analysis version catalog. Parser output is byte-identical.
+
 ## [2.0.1] - 2026-09-04
 
 ### Fixed 🐞

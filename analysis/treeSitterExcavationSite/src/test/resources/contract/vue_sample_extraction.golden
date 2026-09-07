@@ -1,0 +1,36 @@
+# Identifiers
+MAX_ITEMS
+c
+calculate
+chainedCall
+count
+data
+doubleCounter
+e
+formatByType
+getCounter
+handleClick
+i
+i
+item
+label
+processItems
+result
+sum
+
+# Comments
+A comprehensive sample Vue component demonstrating various features.
+Used for golden file contract testing.
+A method that processes data with nested logic.
+This tests complexity metrics.
+Calculate sum with validation and control flow
+Component-level constant
+Demonstrates switch statement usage.
+@param {number} type - the type identifier
+@returns {string} formatted result string
+Event handler for click
+Method chaining example (triggers message_chains metric)
+Simple computed property
+Simple method with no complexity
+
+# Strings

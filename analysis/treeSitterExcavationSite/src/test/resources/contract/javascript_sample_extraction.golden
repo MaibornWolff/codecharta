@@ -1,0 +1,49 @@
+# Identifiers
+MAX_RETRIES
+Sample
+c
+calculate
+chainedCall
+count
+e
+formatByType
+getCounter
+greet
+i
+i
+item
+label
+processData
+result
+sum
+transform
+
+# Comments
+A comprehensive sample class demonstrating various JavaScript features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Arrow function example
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression usage.
+@param {number} type - the type identifier
+@returns {string} formatted result string
+Method chaining example (triggers message_chains metric)
+Simple getter with no complexity
+Utility function with template literal
+
+# Strings
+
+
+
+ 
+ total: ${count}
+Hello, 
+Hello, ${name}!
+empty
+error
+one
+three
+two
+unknown

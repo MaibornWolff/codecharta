@@ -1,0 +1,72 @@
+# Identifiers
+Active
+Completed
+MAX_RETRIES
+Pending
+Sample
+Sample
+Status
+T
+a
+applyLambda
+b
+c
+calculate
+chainedCall
+count
+counter
+d
+e
+factor
+formatByType
+getCounter
+greet
+i
+i
+input
+item
+items
+label
+multiplier
+name
+prefix
+processData
+result
+result
+sample
+sum
+transform
+type
+value
+value
+x
+
+# Comments
+A comprehensive sample class demonstrating various C++ features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression usage.
+@param type the type identifier
+@return formatted result string
+Enum for testing
+Free function
+Lambda example
+Method chaining example
+Simple getter with no complexity
+Template method example
+namespace sample
+
+# Strings
+ total: 
+!
+Hello, 
+Hello, 
+empty
+error
+one
+three
+two
+unknown
