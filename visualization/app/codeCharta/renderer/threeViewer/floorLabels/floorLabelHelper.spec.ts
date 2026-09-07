@@ -21,17 +21,39 @@ describe("FloorLabelHelper", () => {
             expect(FloorLabelHelper.getMapResolutionScaling(5000)).toBeLessThan(1)
         })
 
-        it("should not scale since map width is smaller than scaling threshold (four times the width of 2560px=FullHD+)", () => {
+        it("should not scale since map width is smaller than the canvas edge cap", () => {
             appendMapCanvas(1000)
 
             expect(FloorLabelHelper.getMapResolutionScaling(400)).toBe(1)
         })
 
-        it("should scale since map width is greater than scaling threshold (four times the width of 2560px=FullHD+)", () => {
-            const fullHdPlusWidth = 2560
-            appendMapCanvas(fullHdPlusWidth * 5)
+        it("should scale since map width is greater than the canvas edge cap on a wide display", () => {
+            appendMapCanvas(2560)
 
-            expect(FloorLabelHelper.getMapResolutionScaling(fullHdPlusWidth * 6)).toBeLessThan(1)
+            expect(FloorLabelHelper.getMapResolutionScaling(FloorLabelHelper.MAX_LABEL_CANVAS_EDGE * 2)).toBe(0.5)
+        })
+
+        it("should cap the label canvas edge, because a phone cannot afford three map-sized canvases", () => {
+            // Arrange — a phone's budgeted drawing buffer is 1532px wide, four times that is 6128
+            appendMapCanvas(1532)
+            const mapWidth = 20_000
+
+            // Act
+            const scaling = FloorLabelHelper.getMapResolutionScaling(mapWidth)
+
+            // Assert
+            expect(mapWidth * scaling).toBe(FloorLabelHelper.MAX_LABEL_CANVAS_EDGE)
+        })
+
+        it("should keep four times the display width when that stays under the cap", () => {
+            // Arrange
+            appendMapCanvas(500)
+
+            // Act
+            const scaling = FloorLabelHelper.getMapResolutionScaling(20_000)
+
+            // Assert
+            expect(20_000 * scaling).toBe(2000)
         })
     })
 

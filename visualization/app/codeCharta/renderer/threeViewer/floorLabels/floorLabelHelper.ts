@@ -4,6 +4,11 @@ import { Node } from "../../../model/codeCharta.model"
 import { HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY } from "../algorithm/treeMapLayout/treeMapGenerator"
 
 export class FloorLabelHelper {
+    /** One canvas of this edge per labelled folder level. Four times a phone's budgeted drawing
+     * buffer is 6128, and three such canvases plus their textures is what makes iOS kill the tab. */
+    static readonly MAX_LABEL_CANVAS_EDGE = 4096
+    private static readonly SHARPNESS_FACTOR = 4
+
     static getMapResolutionScaling(mapWidth: number) {
         const { width: displayWidth } = <HTMLCanvasElement>document.getElementById("codeMapScene")
 
@@ -13,8 +18,7 @@ export class FloorLabelHelper {
     }
 
     private static getScalingThreshold(displayWidth: number) {
-        const fullHdPlusWidth = 2560
-        return Math.min(displayWidth * 4, fullHdPlusWidth * 4)
+        return Math.min(displayWidth * FloorLabelHelper.SHARPNESS_FACTOR, FloorLabelHelper.MAX_LABEL_CANVAS_EDGE)
     }
 
     static isLabelNode(node: Node) {
