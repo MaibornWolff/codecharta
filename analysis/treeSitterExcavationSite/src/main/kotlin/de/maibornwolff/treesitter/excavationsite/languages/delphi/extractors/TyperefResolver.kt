@@ -85,17 +85,22 @@ internal object TyperefResolver {
     fun toUsedType(node: TSNode, sourceCode: String): UsedType? {
         if (node.isNull) return null
         return when (node.type) {
-            TYPEREF -> typerefWrapper(node, sourceCode)
+            TYPEREF, TYPEREF_PTR -> unwrapInnerType(node, sourceCode)
             TYPEREF_TPL -> genericTemplate(node, sourceCode)
             TYPEREF_DOT -> qualifiedName(node, sourceCode)
-            TYPEREF_PTR -> pointerTarget(node, sourceCode)
             IDENTIFIER -> UsedType(name = TreeTraversal.getNodeText(node, sourceCode).trim())
             else -> null
         }
     }
 
-    private fun typerefWrapper(node: TSNode, sourceCode: String): UsedType? {
-        // `typeref` wraps one of: identifier, typerefDot, typerefTpl, typerefPtr, …
+    /**
+     * `typeref` wraps one of: identifier, typerefDot, typerefTpl, typerefPtr, …
+     *
+     * `typerefPtr` is an anonymous pointer type (`^TFoo`) whose operand is one of the same
+     * shapes (not wrapped in `typeref`); pointer indirection doesn't introduce a distinct
+     * used type, so both are resolved by unwrapping to the inner type.
+     */
+    private fun unwrapInnerType(node: TSNode, sourceCode: String): UsedType? {
         val inner = node.children().firstOrNull { it.type in INNER_TYPES } ?: return null
         return toUsedType(inner, sourceCode)
     }
@@ -123,17 +128,6 @@ internal object TyperefResolver {
         val rhs = node.getChildByFieldName(RHS_FIELD)
         val name = if (!rhs.isNull) rightmostName(rhs, sourceCode) else ""
         return UsedType(name = name)
-    }
-
-    /**
-     * `typerefPtr` is an anonymous pointer type (`^TFoo`). We unwrap the pointed-to type and
-     * capture it — pointer indirection doesn't introduce a distinct used type. Per the
-     * grammar, the operand is one of identifier / typerefDot / typerefTpl / typerefPtr
-     * (not wrapped in `typeref`).
-     */
-    private fun pointerTarget(node: TSNode, sourceCode: String): UsedType? {
-        val inner = node.children().firstOrNull { it.type in INNER_TYPES } ?: return null
-        return toUsedType(inner, sourceCode)
     }
 
     /**

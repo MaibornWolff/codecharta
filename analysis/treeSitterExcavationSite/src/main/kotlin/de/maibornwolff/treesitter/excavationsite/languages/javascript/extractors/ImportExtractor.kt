@@ -152,8 +152,7 @@ internal object ImportExtractor {
     private fun extractDynamicImports(rootNode: TSNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, CALL_EXPRESSION)
         .mapNotNull { callNode ->
-            val callee = callNode.children().firstOrNull { it.type == IMPORT_KEYWORD }
-                ?: return@mapNotNull null
+            if (callNode.children().none { it.type == IMPORT_KEYWORD }) return@mapNotNull null
             val args = callNode.children().firstOrNull { it.type == ARGUMENTS }
                 ?: return@mapNotNull null
             val pathText = extractStringText(args, sourceCode) ?: return@mapNotNull null

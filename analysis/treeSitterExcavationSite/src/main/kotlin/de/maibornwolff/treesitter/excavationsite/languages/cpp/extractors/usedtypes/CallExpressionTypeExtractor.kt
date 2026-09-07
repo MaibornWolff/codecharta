@@ -36,46 +36,50 @@ internal object CallExpressionTypeExtractor {
         val throwCallees = buckets[THROW_STATEMENT].orEmpty().mapNotNull { throwStmt ->
             throwStmt.namedChildren().firstOrNull { it.type == CALL_EXPRESSION }
         }
-        val callTypes = (buckets[CALL_EXPRESSION].orEmpty() + throwCallees).flatMap { call ->
-            val function = call.getChildByFieldName(FUNCTION_FIELD).takeIf { !it.isNull } ?: return@flatMap emptyList()
-            val parentType = call.parent.takeIf { !it.isNull }?.type
-            val isInThrow = parentType == THROW_STATEMENT
-            val isInArgList = parentType == ARGUMENT_LIST
-            when (function.type) {
-                TEMPLATE_FUNCTION -> {
-                    val generics = extractTemplateArgumentTypes(function, sourceCode)
-                    if (isInThrow) {
-                        val name = function
-                            .getChildByFieldName(NAME_FIELD)
-                            .takeIf { !it.isNull }
-                            ?.let { TreeTraversal.getNodeText(it, sourceCode).trim() }
-                            .orEmpty()
-                        if (name.isEmpty()) generics else generics + UsedType(name = name, genericTypes = generics)
-                    } else {
-                        generics
-                    }
-                }
-
-                QUALIFIED_IDENTIFIER -> listOfNotNull(
-                    CppTypeHelper.extractRightmostSegment(function, sourceCode),
-                    CppTypeHelper.extractSingleSegmentScope(function, sourceCode)
-                )
-                /*
-                Bare-name UsedType for nested-call arg-list and throw-statement contexts:
-                mirrors DC's empty-namespace-wildcard fallthrough so a free function used
-                as `someCall(helper(...))` or `throw helper(...)` still emits `helper`.
-                 */
-                IDENTIFIER -> if (isInThrow || isInArgList) {
-                    val text = TreeTraversal.getNodeText(function, sourceCode).trim()
-                    if (text.isEmpty()) emptyList() else listOf(UsedType(name = text))
-                } else {
-                    emptyList()
-                }
-
-                else -> emptyList()
-            }
-        }
+        val callTypes = (buckets[CALL_EXPRESSION].orEmpty() + throwCallees).flatMap { extractCallTypes(it, sourceCode) }
         return newTypes + callTypes
+    }
+
+    private fun extractCallTypes(call: TSNode, sourceCode: String): List<UsedType> {
+        val function = call.getChildByFieldName(FUNCTION_FIELD).takeIf { !it.isNull } ?: return emptyList()
+        val parentType = call.parent.takeIf { !it.isNull }?.type
+        return when (function.type) {
+            TEMPLATE_FUNCTION -> extractTemplateFunctionTypes(function, sourceCode, isInThrow = parentType == THROW_STATEMENT)
+
+            QUALIFIED_IDENTIFIER -> listOfNotNull(
+                CppTypeHelper.extractRightmostSegment(function, sourceCode),
+                CppTypeHelper.extractSingleSegmentScope(function, sourceCode)
+            )
+
+            IDENTIFIER -> extractBareFunctionName(
+                function,
+                sourceCode,
+                isNestedOrThrown = parentType == THROW_STATEMENT || parentType == ARGUMENT_LIST
+            )
+
+            else -> emptyList()
+        }
+    }
+
+    private fun extractTemplateFunctionTypes(function: TSNode, sourceCode: String, isInThrow: Boolean): List<UsedType> {
+        val generics = extractTemplateArgumentTypes(function, sourceCode)
+        if (!isInThrow) return generics
+        val name = function
+            .getChildByFieldName(NAME_FIELD)
+            .takeIf { !it.isNull }
+            ?.let { TreeTraversal.getNodeText(it, sourceCode).trim() }
+            .orEmpty()
+        return if (name.isEmpty()) generics else generics + UsedType(name = name, genericTypes = generics)
+    }
+
+    /*
+    Mirrors DC's empty-namespace-wildcard fallthrough so a free function used as
+    `someCall(helper(...))` or `throw helper(...)` still emits `helper`.
+     */
+    private fun extractBareFunctionName(function: TSNode, sourceCode: String, isNestedOrThrown: Boolean): List<UsedType> {
+        if (!isNestedOrThrown) return emptyList()
+        val text = TreeTraversal.getNodeText(function, sourceCode).trim()
+        return if (text.isEmpty()) emptyList() else listOf(UsedType(name = text))
     }
 
     fun extractConstructorInitializerTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =

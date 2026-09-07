@@ -2,6 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depen
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 
-interface StandardLibrary {
+fun interface StandardLibrary {
     fun get(): Map<String, Path>
 }

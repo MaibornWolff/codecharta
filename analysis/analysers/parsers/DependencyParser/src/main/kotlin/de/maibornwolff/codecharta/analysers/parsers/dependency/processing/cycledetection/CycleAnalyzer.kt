@@ -29,15 +29,14 @@ class CycleAnalyzer {
             .mapValues { it.value.toSet() }
 
         private fun findCycleInComponent(cycle: StronglyConnectedComponent, singleCycle: Boolean): List<Cycle> {
-            val nodes = cycle.nodes
+            val nodes = cycle.nodes.toList()
             val nodeIdToNumber = nodes
                 .mapIndexed { index, nodeInformationDto -> nodeInformationDto.id to index }
                 .toMap()
-            val numberToNodeId = nodeIdToNumber.map { it.value to it.key }.toMap()
-            val edges = nodes.flatMap { node ->
-                node.dependencies
-                    .filter { dependency -> nodeIdToNumber.containsKey(dependency) }
-                    .map { NumberEdge(nodeIdToNumber[node.id]!!, nodeIdToNumber[it]!!) }
+            val edges = nodes.flatMapIndexed { fromNumber, node ->
+                node.dependencies.mapNotNull { dependency ->
+                    nodeIdToNumber[dependency]?.let { toNumber -> NumberEdge(fromNumber, toNumber) }
+                }
             }
 
             val result = if (singleCycle) {
@@ -46,7 +45,7 @@ class CycleAnalyzer {
                 DepthFirstSearchCycleDetection(edges, limitCycleLength = true).detectAllCycles()
             }
 
-            return result.map { Cycle(it.map { edge -> Edge(numberToNodeId[edge.from]!!, numberToNodeId[edge.to]!!) }) }
+            return result.map { Cycle(it.map { edge -> Edge(nodes[edge.from].id, nodes[edge.to].id) }) }
         }
     }
 }

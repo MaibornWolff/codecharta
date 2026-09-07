@@ -17,6 +17,9 @@ object BundlerConfigParser {
     private const val CONFIGURE_WEBPACK = "configureWebpack"
     private const val PATH_RESOLVE = "path.resolve"
     private const val DIRNAME = "__dirname"
+    private const val EXPORT_STATEMENT = "export_statement"
+    private const val ES_DEFAULT_EXPORT_PREFIX = "export default"
+    private val EXPORTED_VALUE_TYPES = setOf("object", "call_expression", "identifier")
 
     fun parse(configFile: File): BundlerConfigData? {
         if (!configFile.exists()) {
@@ -74,26 +77,15 @@ object BundlerConfigParser {
         return text == "module.exports"
     }
 
-    private fun findEsDefaultExport(rootNode: TSNode, content: String): TSNode? {
-        for (child in rootNode.getNamedChildren()) {
-            if (child.type == "export_statement") {
-                // Check for "export default" by looking at the export statement text
-                val exportText = nodeAsString(child, content)
-                if (exportText.startsWith("export default")) {
-                    // The exported value can be object, call_expression, or identifier
-                    for (subchild in child.getNamedChildren()) {
-                        if (subchild.type == "object" ||
-                            subchild.type == "call_expression" ||
-                            subchild.type == "identifier"
-                        ) {
-                            return subchild
-                        }
-                    }
-                }
-            }
+    private fun findEsDefaultExport(rootNode: TSNode, content: String): TSNode? = rootNode
+        .getNamedChildren()
+        .filter { isEsDefaultExport(it, content) }
+        .firstNotNullOfOrNull { exportStatement ->
+            exportStatement.getNamedChildren().firstOrNull { it.type in EXPORTED_VALUE_TYPES }
         }
-        return null
-    }
+
+    private fun isEsDefaultExport(node: TSNode, content: String): Boolean =
+        node.type == EXPORT_STATEMENT && nodeAsString(node, content).startsWith(ES_DEFAULT_EXPORT_PREFIX)
 
     private fun extractAliases(configObject: TSNode, content: String, configDir: File): Map<String, String> {
         if (configObject.type != "object") {

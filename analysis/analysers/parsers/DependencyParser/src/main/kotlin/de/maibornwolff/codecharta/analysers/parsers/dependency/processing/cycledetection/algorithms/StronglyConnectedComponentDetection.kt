@@ -17,19 +17,11 @@ class StronglyConnectedComponentDetection {
 
     private fun convertToTarjanNodes(nodeInformations: Set<NodeInformation>): Map<String, TarjanNode> {
         val result = mutableMapOf<String, TarjanNode>()
-        var index = 0
+        var nextNodeIndex = 0
         nodeInformations.forEach { node ->
-            if (!result.containsKey(node.id)) {
-                result[node.id] = TarjanNode(index)
-                index++
-            }
-            val tarjanNode = result[node.id]!!
+            val tarjanNode = result.getOrPut(node.id) { TarjanNode(nextNodeIndex++) }
             node.dependencies.forEach { dependency ->
-                if (!result.containsKey(dependency)) {
-                    result[dependency] = TarjanNode(index)
-                    index++
-                }
-                tarjanNode.neighbors.add(result[dependency]!!)
+                tarjanNode.neighbors.add(result.getOrPut(dependency) { TarjanNode(nextNodeIndex++) })
             }
         }
         return result
@@ -45,22 +37,21 @@ class StronglyConnectedComponentDetection {
     }
 
     private fun strongConnect(node: TarjanNode) {
-        indexMap[node] = index
-        lowLinkMap[node] = index
+        val nodeIndex = index
+        indexMap[node] = nodeIndex
+        lowLinkMap[node] = nodeIndex
         index++
         stack.add(node)
         onStack.add(node)
 
+        var lowLink = nodeIndex
         node.neighbors.forEach { successor ->
-            if (!indexMap.containsKey(successor)) {
-                strongConnect(successor)
-                lowLinkMap[node] = minOf(lowLinkMap[node]!!, lowLinkMap[successor]!!)
-            } else if (onStack.contains(successor)) {
-                lowLinkMap[node] = minOf(lowLinkMap[node]!!, indexMap[successor]!!)
-            }
+            val reachableIndex = lowestIndexReachableThrough(successor) ?: return@forEach
+            lowLink = minOf(lowLink, reachableIndex)
+            lowLinkMap[node] = lowLink
         }
 
-        if (lowLinkMap[node] == indexMap[node]) {
+        if (lowLink == nodeIndex) {
             val stronglyConnectedNodes = mutableSetOf<TarjanNode>()
             var poppedNode: TarjanNode
             do {
@@ -70,6 +61,15 @@ class StronglyConnectedComponentDetection {
             } while (poppedNode != node)
             sccs.add(StronglyConnectedTarjanComponent(stronglyConnectedNodes))
         }
+    }
+
+    // Null when the successor belongs to an already completed component: it cannot lower this node's low link.
+    private fun lowestIndexReachableThrough(successor: TarjanNode): Int? {
+        if (!indexMap.containsKey(successor)) {
+            strongConnect(successor)
+            return lowLinkMap[successor]
+        }
+        return if (onStack.contains(successor)) indexMap[successor] else null
     }
 }
 

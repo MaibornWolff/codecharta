@@ -16,11 +16,11 @@ class DependencyExtractor(val fileInfo: FileInfo, private val rootNode: TSNode) 
     fun extract(): Set<DependencyWrapper> {
         if (dependencies.isNotEmpty()) return dependencies
 
-        dependencies = getDependencies()
+        dependencies = computeDependencies()
         return dependencies
     }
 
-    private fun getDependencies(): Set<DependencyWrapper> {
+    private fun computeDependencies(): Set<DependencyWrapper> {
         val fromUsages = namespaceQueries.getUsages(rootNode)
         val singleUsages = pathFromSingleUsages(fromUsages)
         val groupedUsages = pathFromGroupedUsages(fromUsages)

@@ -107,7 +107,6 @@ data class Node(
 
             if (fullPath.hasOnlyName()) {
                 wildcards.forEach { wildcard ->
-                    // TODO: i think contains is not enough or might lead to false positives. It would be better to move the wildcard as a sliding window over the possibleimport
                     possibleImports
                         .firstOrNull { it.withDots().contains(wildcard.withDots()) }
                         ?.let { return@resolveTypeImport it }

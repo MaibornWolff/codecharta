@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Fi
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.ProgressReporter
 import de.maibornwolff.codecharta.util.Logger
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
@@ -30,7 +31,8 @@ class ExtractionPipeline(
     private val progressReporter: ProgressReporter,
     private val maxConcurrency: Int = Runtime.getRuntime().availableProcessors(),
     private val fileTimeoutSeconds: Int = NO_FILE_TIMEOUT,
-    private val createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer
+    private val createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
+    private val parseDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     /** [input] is a project directory or a single source file; see [analysisRootOf] for what it is judged against. */
     fun run(input: File, bypassGitignore: Boolean): List<FileReport> {
@@ -91,9 +93,9 @@ class ExtractionPipeline(
     }
 
     private suspend fun <T> withOptionalTimeout(block: () -> T): T = if (fileTimeoutSeconds <= NO_FILE_TIMEOUT) {
-        withContext(Dispatchers.IO) { block() }
+        withContext(parseDispatcher) { block() }
     } else {
-        withTimeout(fileTimeoutSeconds * MILLIS_PER_SECOND) { withContext(Dispatchers.IO) { block() } }
+        withTimeout(fileTimeoutSeconds * MILLIS_PER_SECOND) { withContext(parseDispatcher) { block() } }
     }
 
     private fun toFileInfo(sourceFile: File, analysisRoot: File): FileInfo? {
