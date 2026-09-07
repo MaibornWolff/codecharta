@@ -18,35 +18,30 @@ data class GraphNode(
          * @return Pair of (nodes with updated parent, unified root for analysis)
          */
         fun wrapInVirtualRootIfNeeded(nodes: List<GraphNode>): Pair<List<GraphNode>, GraphNode> {
-            if (nodes.isEmpty()) {
-                throw IllegalArgumentException("Cannot wrap empty node list")
-            }
+            require(nodes.isNotEmpty()) { "Cannot wrap empty node list" }
 
-            return if (nodes.size > 1) {
-                // Validate that all nodes are true roots (parent = null)
-                val nodesWithParents = nodes.filter { it.parent != null }
-                if (nodesWithParents.isNotEmpty()) {
-                    throw IllegalStateException(
-                        "Expected root nodes with parent=null, but found ${nodesWithParents.size} nodes with parents: " +
-                            nodesWithParents.joinToString(", ") { "${it.id} (parent=${it.parent})" }
-                    )
-                }
-
-                val virtualRootId = "__virtual_root__"
-                val nodesWithParent = nodes.map { it.copy(parent = virtualRootId) }
-                val virtualRoot = GraphNode(
-                    id = virtualRootId,
-                    parent = null,
-                    children = nodesWithParent,
-                    level = null,
-                    dependencies = emptySet(),
-                    edges = emptySet()
-                )
-                Pair(nodesWithParent, virtualRoot)
-            } else {
+            if (nodes.size == 1) {
                 val singleRoot = nodes.first()
-                Pair(listOf(singleRoot), singleRoot)
+                return Pair(listOf(singleRoot), singleRoot)
             }
+
+            val nodesWithParents = nodes.filter { it.parent != null }
+            check(nodesWithParents.isEmpty()) {
+                "Expected root nodes with parent=null, but found ${nodesWithParents.size} nodes with parents: " +
+                    nodesWithParents.joinToString(", ") { "${it.id} (parent=${it.parent})" }
+            }
+
+            val virtualRootId = "__virtual_root__"
+            val nodesWithParent = nodes.map { it.copy(parent = virtualRootId) }
+            val virtualRoot = GraphNode(
+                id = virtualRootId,
+                parent = null,
+                children = nodesWithParent,
+                level = null,
+                dependencies = emptySet(),
+                edges = emptySet()
+            )
+            return Pair(nodesWithParent, virtualRoot)
         }
     }
 }

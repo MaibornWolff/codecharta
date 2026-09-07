@@ -1,11 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
-data class Type(
-    val name: String,
-    val usageSource: TypeOfUsage,
-    val genericTypes: List<Type>, // TODO: rename to typeParameters
-    val resolvedPath: Path? = null
-) {
+data class Type(val name: String, val usageSource: TypeOfUsage, val genericTypes: List<Type>, val resolvedPath: Path? = null) {
     companion object {
         fun generic(name: String, genericTypes: List<Type>) = Type(name.trim(), TypeOfUsage.USAGE, genericTypes)
 

@@ -152,15 +152,11 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         aliasedImportsFrom: Map<String, String>,
         mutableDependencies: MutableList<Dependency>
     ): String {
-        if (type in aliasedImportsFrom) {
-            val aliasedImport = aliasedImportsFrom[type]!!.split(".")
-            val aliasedType = aliasedImport.last()
-            mutableDependencies.add(Dependency(Path(aliasedImport)))
-            mutableDependencies.add(Dependency(Path(aliasedImport.dropLast(1) + listOf("__init__", aliasedType))))
-            return aliasedType
-        }
-
-        return type
+        val aliasedImport = aliasedImportsFrom[type]?.split(".") ?: return type
+        val aliasedType = aliasedImport.last()
+        mutableDependencies.add(Dependency(Path(aliasedImport)))
+        mutableDependencies.add(Dependency(Path(aliasedImport.dropLast(1) + listOf("__init__", aliasedType))))
+        return aliasedType
     }
 
     private fun buildImportDependencies(
@@ -169,27 +165,27 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         definitionNode: TSNode,
         nodeBody: String
     ): Set<Dependency> {
-        val dependencies = mutableSetOf<Dependency>()
-        if (imports.isNotEmpty() || aliasedImports.isNotEmpty()) {
-            val attributes = attributeQuery.execute(definitionNode, nodeBody)
-            attributes.forEach { attribute ->
-                val attributeList = attribute.split(".").toMutableList()
-                if (attributeList.size >= 2) {
-                    val attributeType = attributeList.removeLast()
-                    val attributeIdentifier = attributeList.joinToString(".")
-                    if (attributeIdentifier in imports) {
-                        dependencies.add(Dependency(Path(attributeList + listOf(attributeType)), false))
-                        dependencies.add(Dependency(Path(attributeList + listOf("__init__", attributeType)), false))
-                    } else if (attributeIdentifier in aliasedImports) {
-                        val aliasedPath = Path(aliasedImports[attributeIdentifier]!!.split(".") + listOf(attributeType))
-                        dependencies.add(Dependency(aliasedPath, false))
-                        val aliasedInitPath =
-                            Path(aliasedImports[attributeIdentifier]!!.split(".") + listOf("__init__", attributeType))
-                        dependencies.add(Dependency(aliasedInitPath, false))
-                    }
-                }
-            }
+        if (imports.isEmpty() && aliasedImports.isEmpty()) return emptySet()
+        return attributeQuery
+            .execute(definitionNode, nodeBody)
+            .flatMap { attribute -> attributeDependencies(attribute, imports, aliasedImports) }
+            .toSet()
+    }
+
+    private fun attributeDependencies(attribute: String, imports: List<String>, aliasedImports: Map<String, String>): List<Dependency> {
+        val attributeSegments = attribute.split(".")
+        if (attributeSegments.size < 2) return emptyList()
+        val attributeType = attributeSegments.last()
+        val identifierSegments = attributeSegments.dropLast(1)
+        val attributeIdentifier = identifierSegments.joinToString(".")
+        val importedSegments = if (attributeIdentifier in imports) {
+            identifierSegments
+        } else {
+            aliasedImports[attributeIdentifier]?.split(".") ?: return emptyList()
         }
-        return dependencies
+        return listOf(
+            Dependency(Path(importedSegments + listOf(attributeType)), false),
+            Dependency(Path(importedSegments + listOf("__init__", attributeType)), false)
+        )
     }
 }
