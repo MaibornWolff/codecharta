@@ -47,7 +47,7 @@ export class WordCloudChartHost {
     private resizeObserver?: ResizeObserver
     private renderTimeout?: ReturnType<typeof setTimeout>
     private layoutSettleTimeout?: ReturnType<typeof setTimeout>
-    private highlightedWord: string | null = null
+    private highlightedWords: readonly string[] = []
     private mustRestoreHighlightAfterLayout = false
 
     private readonly measuredContainerSize = signal(
@@ -94,11 +94,12 @@ export class WordCloudChartHost {
         this.handlers.onWordRightClicked(name, nativeEvent.clientX, nativeEvent.clientY)
     }
 
-    /** Marks one word as the one the explorer is showing the breakdown of. Emphasis is dispatched rather
-     * than rendered into the option, because re-rendering would lay the whole cloud out again and every
-     * word would jump to a new place just because a different one was picked. */
-    highlightWord(word: string | null): void {
-        this.highlightedWord = word
+    /** Marks the words the explorer is pointing at — the one it broke down, and everything its search
+     * matched. Emphasis is dispatched rather than rendered into the option, because re-rendering would
+     * lay the whole cloud out again and every word would jump to a new place just because a different
+     * one was picked. */
+    highlightWords(words: readonly string[]): void {
+        this.highlightedWords = words
         this.applyHighlight()
     }
 
@@ -120,8 +121,8 @@ export class WordCloudChartHost {
             return
         }
         this.chart.dispatchAction({ type: "downplay", seriesIndex: 0 })
-        if (this.highlightedWord !== null) {
-            this.chart.dispatchAction({ type: "highlight", seriesIndex: 0, name: this.highlightedWord })
+        if (this.highlightedWords.length > 0) {
+            this.chart.dispatchAction({ type: "highlight", seriesIndex: 0, name: [...this.highlightedWords] })
         }
     }
 

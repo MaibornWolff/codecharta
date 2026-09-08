@@ -81,24 +81,39 @@ describe("WordCloudChartHost", () => {
         expect(onWordClicked).not.toHaveBeenCalled()
     })
 
-    it("should emphasise the highlighted word and drop the emphasis of everything else", () => {
+    it("should emphasise every marked word and drop the emphasis of everything else", () => {
         // Arrange
         host.attachTo(document.createElement("div"))
 
         // Act
-        host.highlightWord("invoice")
+        host.highlightWords(["invoice"])
 
         // Assert
         expect(mockChart.dispatchAction).toHaveBeenNthCalledWith(1, { type: "downplay", seriesIndex: 0 })
-        expect(mockChart.dispatchAction).toHaveBeenNthCalledWith(2, { type: "highlight", seriesIndex: 0, name: "invoice" })
+        expect(mockChart.dispatchAction).toHaveBeenNthCalledWith(2, { type: "highlight", seriesIndex: 0, name: ["invoice"] })
     })
 
-    it("should drop every emphasis when no word is highlighted", () => {
+    it("should emphasise all the words a search matched in one dispatch", () => {
         // Arrange
         host.attachTo(document.createElement("div"))
 
         // Act
-        host.highlightWord(null)
+        host.highlightWords(["payment", "prepaid"])
+
+        // Assert
+        expect(mockChart.dispatchAction).toHaveBeenNthCalledWith(2, {
+            type: "highlight",
+            seriesIndex: 0,
+            name: ["payment", "prepaid"]
+        })
+    })
+
+    it("should drop every emphasis when no word is marked", () => {
+        // Arrange
+        host.attachTo(document.createElement("div"))
+
+        // Act
+        host.highlightWords([])
 
         // Assert
         expect(mockChart.dispatchAction).toHaveBeenCalledTimes(1)
@@ -109,7 +124,7 @@ describe("WordCloudChartHost", () => {
         // Arrange: drawing a fresh layout wipes the emphasis, so the marked word has to be marked again.
         const container = measurableContainer()
         host.attachTo(container)
-        host.highlightWord("invoice")
+        host.highlightWords(["invoice"])
         host.render(SOME_OPTION, () => undefined)
         jest.advanceTimersByTime(RENDER_DEBOUNCE_MS)
         mockChart.dispatchAction.mockClear()
@@ -120,14 +135,14 @@ describe("WordCloudChartHost", () => {
         jest.advanceTimersByTime(LAYOUT_SETTLE_MS)
 
         // Assert
-        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "invoice" })
+        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: ["invoice"] })
     })
 
     it("should wait for the last chunk of a progressive layout before it marks the word", () => {
         // Arrange: a big cloud is drawn in chunks and reports each one finished. The first report
         // lands while the marked word is not drawn yet, so emphasising on it reaches nothing.
         host.attachTo(measurableContainer())
-        host.highlightWord("invoice")
+        host.highlightWords(["invoice"])
         host.render(SOME_OPTION, () => undefined)
         jest.advanceTimersByTime(RENDER_DEBOUNCE_MS)
         mockChart.dispatchAction.mockClear()
@@ -142,7 +157,7 @@ describe("WordCloudChartHost", () => {
 
         // Assert
         expect(dispatchesBeforeTheLastChunk).toBe(0)
-        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "invoice" })
+        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: ["invoice"] })
     })
 
     it("should leave the emphasis alone when a layout it did not ask for finishes", () => {
@@ -150,7 +165,7 @@ describe("WordCloudChartHost", () => {
         // the emphasis there would wipe the highlight off the word under the pointer a moment after it
         // appeared.
         host.attachTo(measurableContainer())
-        host.highlightWord("invoice")
+        host.highlightWords(["invoice"])
         mockChart.dispatchAction.mockClear()
         const [, handleFinished] = mockChart.on.mock.calls.find(([eventName]) => eventName === "finished")
 
