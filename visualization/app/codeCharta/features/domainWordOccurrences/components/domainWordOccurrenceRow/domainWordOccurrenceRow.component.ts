@@ -20,6 +20,7 @@ export class DomainWordOccurrenceRowComponent {
     private readonly contextMenu = inject(ExplorerRowContextMenuService)
 
     readonly node = input.required<WordOccurrenceNode>()
+    readonly word = input.required<string>()
     readonly isExpanded = input(false)
     readonly isSelected = input(false)
 
@@ -27,8 +28,11 @@ export class DomainWordOccurrenceRowComponent {
 
     protected readonly isExpandable = computed(() => this.node().children.length > 0)
     protected readonly isMarked = computed(() => this.contextMenu.isMarked(this.node().path))
-    /** The share reads like the metric explorer's row decoration, so both lists say "part / amount". */
-    protected readonly decoration = computed(() => `${formatShare(this.node().share)} / ${formatCompactNumber(this.node().count)}`)
+    /** Part of this one word's occurrences, not of the project's words — the word row above states that
+     * one, and only naming both keeps the two percentages apart. */
+    protected readonly decoration = computed(
+        () => `${formatShare(this.node().share)} of "${this.word()}" · ${formatCompactNumber(this.node().count)}`
+    )
 
     protected openContextMenu(event: MouseEvent): void {
         this.contextMenu.openFor(this.node().path, event)

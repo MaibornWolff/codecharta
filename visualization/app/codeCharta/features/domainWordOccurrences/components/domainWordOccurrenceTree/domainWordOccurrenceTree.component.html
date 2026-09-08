@@ -10,6 +10,7 @@
     @for (occurrence of occurrences; track occurrence.path) {
         <cc-domain-word-occurrence-row
             [node]="occurrence"
+            [word]="word()"
             [isExpanded]="isExpanded(occurrence.path)"
             [isSelected]="occurrence.path === selectedNodePath()"
             (clicked)="clickRow(occurrence)"

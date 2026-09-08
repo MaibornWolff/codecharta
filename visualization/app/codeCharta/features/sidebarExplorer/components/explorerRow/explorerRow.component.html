@@ -5,7 +5,7 @@
     [title]="hint()"
 >
     @if (barPercent() > 0) {
-        <div class="pointer-events-none absolute inset-y-0 left-0 bg-primary/10" [style.width.%]="barPercent()"></div>
+        <div class="pointer-events-none absolute inset-y-0 left-0" [ngClass]="barClass()" [style.width.%]="barPercent()"></div>
     }
     <div class="relative flex min-w-0 flex-1 items-center">
         <ng-content></ng-content>
