@@ -55,14 +55,14 @@ describe("DomainWordListComponent", () => {
         expect(listedWords()).toEqual(["payment", "invoice", "prepayment"])
     })
 
-    it("should state each word's share of all occurrences and its count, like a metric explorer row does", async () => {
+    it("should name what each word's percentage is a share of, so the breakdown's cannot be read as the same scale", async () => {
         // Arrange & Act
         await setup()
 
         // Assert — 40, 10 and 4 of 54 occurrences
-        expect(screen.getByText("74% / 40")).toBeTruthy()
-        expect(screen.getByText("19% / 10")).toBeTruthy()
-        expect(screen.getByText("7% / 4")).toBeTruthy()
+        expect(screen.getByText("74% of all words · 40")).toBeTruthy()
+        expect(screen.getByText("19% of all words · 10")).toBeTruthy()
+        expect(screen.getByText("7% of all words · 4")).toBeTruthy()
     })
 
     it("should order the words the way the sort control asks for", async () => {

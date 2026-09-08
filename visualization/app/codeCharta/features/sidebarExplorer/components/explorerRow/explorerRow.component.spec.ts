@@ -58,6 +58,15 @@ describe("ExplorerRowComponent", () => {
         expect((rowOf(container).querySelector(".bg-primary\\/10") as HTMLElement).style.width).toBe("42%")
     })
 
+    it("should tint the bar of a row measured against another total", async () => {
+        // Arrange & Act — a word's breakdown states a share of that word, not of the project's words
+        const { container } = await render(ExplorerRowComponent, { inputs: { barShare: 0.42, barTone: "neutral" } })
+
+        // Assert
+        expect(rowOf(container).querySelector(".bg-primary\\/10")).toBe(null)
+        expect((rowOf(container).querySelector(".bg-neutral\\/15") as HTMLElement).style.width).toBe("42%")
+    })
+
     it("should leave the bar out of a row without a share", async () => {
         // Arrange & Act
         const { container } = await render(ExplorerRowComponent, { inputs: { decoration: "8" } })

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Both domain percentages now say what they are a share of**: a word row's percentage is the word's share of every word occurrence in the project, a breakdown row's is that node's share of *that word* — and both read as "x% / count" with the same bar, which made one scale out of two. They now read "2% of all words · 42" and "62% of \"invoice\" · 26", and a breakdown row's bar is tinted apart from a word row's.
+
 ### Added 🚀
 
 - **Every searched word is marked on the cloud**: searching words in the domain explorer used to narrow the list only. The cloud now emphasises every word the search matched, alongside the word whose occurrences the explorer is showing. The word search is out of sight while the explorer browses files, so it marks nothing there.

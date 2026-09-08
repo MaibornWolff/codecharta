@@ -75,13 +75,13 @@ describe("DomainWordOccurrenceTreeComponent", () => {
         expect(listedNamesOf(container)).toEqual(["billing", "api"])
     })
 
-    it("should state each node's share of the word and its count, the way a metric explorer row does", async () => {
+    it("should name the word each node's percentage is a share of, so it cannot be read as a share of the project", async () => {
         // Arrange & Act
         await setup()
 
         // Assert
-        expect(screen.getByText("80% / 8")).toBeTruthy()
-        expect(screen.getAllByText("20% / 2").length).toBe(1)
+        expect(screen.getByText('80% of "invoice" · 8')).toBeTruthy()
+        expect(screen.getAllByText('20% of "invoice" · 2').length).toBe(1)
     })
 
     it("should list a folder's children when the folder row is clicked, the way the file tree opens one", async () => {

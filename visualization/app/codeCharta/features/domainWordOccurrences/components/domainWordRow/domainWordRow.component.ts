@@ -21,12 +21,15 @@ const domainWordRowId = (word: string) => `domain-word-row-${word}`
 })
 export class DomainWordRowComponent {
     readonly word = input.required<DomainWord>()
-    /** Part of all word occurrences in the project, stated like a metric explorer row's decoration. */
+    /** Part of all word occurrences in the project. The breakdown below the row states a share of this
+     * one word instead, so both decorations name what they are a share of. */
     readonly share = input(0)
     readonly isExpanded = input(false)
 
     readonly toggled = output<void>()
 
     protected readonly rowId = computed(() => domainWordRowId(this.word().text))
-    protected readonly decoration = computed(() => `${formatShare(this.share())} / ${formatCompactNumber(this.word().frequency)}`)
+    protected readonly decoration = computed(
+        () => `${formatShare(this.share())} of all words · ${formatCompactNumber(this.word().frequency)}`
+    )
 }
