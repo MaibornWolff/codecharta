@@ -21,6 +21,7 @@ jest.mock("echarts/components", () => ({ TooltipComponent: {}, AriaComponent: {}
 jest.mock("echarts-wordcloud", () => ({}))
 
 const RENDER_DEBOUNCE_MS = 150
+const LAYOUT_SETTLE_MS = 200
 const SOME_OPTION = {} as never
 
 function measurableContainer(): HTMLElement {
@@ -104,7 +105,7 @@ describe("WordCloudChartHost", () => {
         expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "downplay", seriesIndex: 0 })
     })
 
-    it("should re-apply the highlight once a layout it asked for has been drawn", () => {
+    it("should re-apply the highlight once a layout it asked for has settled", () => {
         // Arrange: drawing a fresh layout wipes the emphasis, so the marked word has to be marked again.
         const container = measurableContainer()
         host.attachTo(container)
@@ -116,8 +117,31 @@ describe("WordCloudChartHost", () => {
 
         // Act
         handleFinished()
+        jest.advanceTimersByTime(LAYOUT_SETTLE_MS)
 
         // Assert
+        expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "invoice" })
+    })
+
+    it("should wait for the last chunk of a progressive layout before it marks the word", () => {
+        // Arrange: a big cloud is drawn in chunks and reports each one finished. The first report
+        // lands while the marked word is not drawn yet, so emphasising on it reaches nothing.
+        host.attachTo(measurableContainer())
+        host.highlightWord("invoice")
+        host.render(SOME_OPTION, () => undefined)
+        jest.advanceTimersByTime(RENDER_DEBOUNCE_MS)
+        mockChart.dispatchAction.mockClear()
+        const [, handleFinished] = mockChart.on.mock.calls.find(([eventName]) => eventName === "finished")
+
+        // Act
+        handleFinished()
+        jest.advanceTimersByTime(LAYOUT_SETTLE_MS / 2)
+        const dispatchesBeforeTheLastChunk = mockChart.dispatchAction.mock.calls.length
+        handleFinished()
+        jest.advanceTimersByTime(LAYOUT_SETTLE_MS)
+
+        // Assert
+        expect(dispatchesBeforeTheLastChunk).toBe(0)
         expect(mockChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "invoice" })
     })
 
@@ -132,6 +156,7 @@ describe("WordCloudChartHost", () => {
 
         // Act
         handleFinished()
+        jest.advanceTimersByTime(LAYOUT_SETTLE_MS)
 
         // Assert
         expect(mockChart.dispatchAction).not.toHaveBeenCalled()

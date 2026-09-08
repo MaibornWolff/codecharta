@@ -12,7 +12,7 @@ import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudOption } from "../../util/wordCloudOption.model"
 
 const RENDER_DEBOUNCE_MS = 150
-const DRAWN_COUNT_SETTLE_MS = 200
+const LAYOUT_SETTLE_MS = 200
 
 export interface WordCloudChartHandlers {
     onLayoutFinished: () => void
@@ -46,7 +46,7 @@ export class WordCloudChartHost {
     private attachedContainer?: HTMLElement
     private resizeObserver?: ResizeObserver
     private renderTimeout?: ReturnType<typeof setTimeout>
-    private drawnCountTimeout?: ReturnType<typeof setTimeout>
+    private layoutSettleTimeout?: ReturnType<typeof setTimeout>
     private highlightedWord: string | null = null
     private mustRestoreHighlightAfterLayout = false
 
@@ -75,8 +75,7 @@ export class WordCloudChartHost {
         this.chart = echarts.init(container)
         this.chart.on("finished", () => {
             this.handlers.onLayoutFinished()
-            this.restoreTheHighlightALayoutWiped()
-            this.scheduleDrawnCountUpdate()
+            this.scheduleLayoutSettled()
         })
         this.chart.on("click", (params: unknown) => this.reportClickedWord(params as EchartsClickParams))
         this.chart.on("contextmenu", (params: unknown) => this.reportRightClickedWord(params as EchartsContextMenuParams))
@@ -103,9 +102,11 @@ export class WordCloudChartHost {
         this.applyHighlight()
     }
 
-    /** Echarts reports a finished layout for its own hover renders too, and dropping the emphasis there
-     * would wipe the highlight off the word under the pointer a moment after it appeared. Only a layout
-     * this host asked for wipes what it emphasised, so only that one is restored. */
+    /** A big cloud is laid out in chunks, and echarts reports a finished layout after every one of them
+     * — the first while a single word is drawn, long before the emphasised one is. Emphasising on that
+     * report reaches nothing, so the highlight waits until the reports stop coming. Echarts reports its
+     * own hover renders too, and dropping the emphasis there would wipe the highlight off the word under
+     * the pointer, so only a layout this host asked for is restored. */
     private restoreTheHighlightALayoutWiped(): void {
         if (!this.mustRestoreHighlightAfterLayout) {
             return
@@ -165,8 +166,8 @@ export class WordCloudChartHost {
         this.resizeObserver?.disconnect()
         this.resizeObserver = undefined
         this.cancelPendingRender()
-        if (this.drawnCountTimeout !== undefined) {
-            clearTimeout(this.drawnCountTimeout)
+        if (this.layoutSettleTimeout !== undefined) {
+            clearTimeout(this.layoutSettleTimeout)
         }
         this.drawnWords.set(null)
         if (this.chart) {
@@ -184,14 +185,17 @@ export class WordCloudChartHost {
         this.resizeObserver.observe(container)
     }
 
-    private scheduleDrawnCountUpdate(): void {
-        if (this.drawnCountTimeout !== undefined) {
-            clearTimeout(this.drawnCountTimeout)
+    /** Every chunk of a progressive layout reports itself finished, so the layout has settled only once
+     * the reports stop. Both the drawn count and the highlight need the finished cloud. */
+    private scheduleLayoutSettled(): void {
+        if (this.layoutSettleTimeout !== undefined) {
+            clearTimeout(this.layoutSettleTimeout)
         }
-        this.drawnCountTimeout = setTimeout(() => {
-            this.drawnCountTimeout = undefined
+        this.layoutSettleTimeout = setTimeout(() => {
+            this.layoutSettleTimeout = undefined
             this.drawnWords.set(this.countWordsWithAGraphicElement())
-        }, DRAWN_COUNT_SETTLE_MS)
+            this.restoreTheHighlightALayoutWiped()
+        }, LAYOUT_SETTLE_MS)
     }
 
     private countWordsWithAGraphicElement(): number | null {
