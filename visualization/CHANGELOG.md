@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Every searched word is marked on the cloud**: searching words in the domain explorer used to narrow the list only. The cloud now emphasises every word the search matched, alongside the word whose occurrences the explorer is showing. The word search is out of sight while the explorer browses files, so it marks nothing there.
+
 ### Fixed 🐞
 
 - **Cloud lost its mark on a word when a folder was picked**: a cloud of a few hundred words is laid out in chunks, and echarts reports a finished layout after every one of them. The mark was re-applied on the first report, while a single word was drawn and the marked one was not, so it reached nothing and was never retried. Picking a word in the explorer still marked it, but drilling into the folders below it did not. The mark now waits until the reports stop coming.

@@ -73,8 +73,9 @@ export class WordCloudComponent implements OnDestroy {
 
     readonly selectedNodePath = input<string | null>(null)
 
-    /** The word whose occurrences the explorer is showing; the cloud marks it so both say the same thing. */
-    readonly inspectedWord = input<string | null>(null)
+    /** The words the explorer is pointing at — the one it broke down and the ones its search matched.
+     * The cloud marks them so both say the same thing. */
+    readonly markedWords = input<readonly string[]>([])
 
     readonly clearSelection = output<void>()
 
@@ -115,7 +116,7 @@ export class WordCloudComponent implements OnDestroy {
     constructor() {
         this.loadMaskImageAndKeepCircleFallbackOnFailure()
         effect(() => this.renderIntoTheChartOnceTheContainerIsMeasured())
-        effect(() => this.chartHost.highlightWord(this.inspectedWord()))
+        effect(() => this.chartHost.highlightWords(this.markedWords()))
     }
 
     ngOnDestroy(): void {

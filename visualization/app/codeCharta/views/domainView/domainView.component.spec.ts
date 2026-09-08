@@ -4,9 +4,14 @@ import { By } from "@angular/platform-browser"
 import { provideRouter } from "@angular/router"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { firstValueFrom } from "rxjs"
+import { firstValueFrom, of } from "rxjs"
 import { DomainBarReadStore } from "../../features/domainBar/facade"
-import { HiddenWordsWriteStore, WordSorting, WordSortingOption } from "../../features/domainWordOccurrences/facade"
+import {
+    DomainWordOccurrencesReadStore,
+    HiddenWordsWriteStore,
+    WordSorting,
+    WordSortingOption
+} from "../../features/domainWordOccurrences/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES, NodeContextMenuForExplorer } from "../../features/nodeContextMenu/facade"
 import {
     EXPLORER_CAPABILITIES,
@@ -17,11 +22,12 @@ import {
     EXPLORER_WORD_SORT,
     ExplorerCollapseService,
     ExplorerModeService,
-    ExplorerWidthService
+    ExplorerWidthService,
+    FILES_EXPLORER_MODE
 } from "../../features/sidebarExplorer/facade"
 import { viewIndependentTreeSelector } from "../../lenses/structure/structure.facade"
 import { provideMockState } from "../../mocks/state.mocks"
-import { CodeMapNode, NodeType, SortingOption } from "../../model/codeCharta.model"
+import { CodeMapNode, DomainWord, NodeType, SortingOption } from "../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordCloud.model"
 import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.facade"
 import { RightClickedWord } from "../../renderer/wordCloud/wordCloud.facade"
@@ -36,7 +42,7 @@ class StubExplorerComponent {}
 class StubWordCloudComponent {
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
     readonly selectedNodePath = input<string | null>(null)
-    readonly inspectedWord = input<string | null>(null)
+    readonly markedWords = input<readonly string[]>([])
     readonly clearSelection = output<void>()
     readonly wordRightClicked = output<RightClickedWord>()
     readonly wordClicked = output<string>()
@@ -104,6 +110,12 @@ function wordCloud(fixture: { debugElement: DebugElement }) {
     return fixture.debugElement.query(By.directive(StubWordCloudComponent)).componentInstance
 }
 
+const PROJECT_WORDS: DomainWord[] = [
+    { text: "payment", frequency: 30 },
+    { text: "prepaid", frequency: 12 },
+    { text: "invoice", frequency: 42 }
+]
+
 describe("DomainViewComponent", () => {
     async function setup(settings = defaultWordCloudSettings) {
         TestBed.overrideComponent(DomainViewComponent, {
@@ -132,7 +144,8 @@ describe("DomainViewComponent", () => {
                         { selector: accumulatedDataSelector, value: { unifiedMapNode: RENDER_MODEL_ROOT } }
                     ]
                 }),
-                { provide: DomainBarReadStore, useValue: { settings: signal(settings) } }
+                { provide: DomainBarReadStore, useValue: { settings: signal(settings) } },
+                { provide: DomainWordOccurrencesReadStore, useValue: { projectWords$: of(PROJECT_WORDS) } }
             ]
         })
     }
@@ -324,6 +337,34 @@ describe("DomainViewComponent", () => {
         expect(wordList(fixture).query()).toBe("invoice")
     })
 
+    it("should mark every word the explorer's search matched, not just the inspected one", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        fixture.debugElement.injector.get(ExplorerModeService).activate(WORDS_EXPLORER_MODE.id)
+
+        // Act
+        fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("pa")
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).markedWords()).toEqual(["payment", "prepaid"])
+    })
+
+    it("should stop marking the search matches once the explorer browses files, where the query is out of sight", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        fixture.debugElement.injector.get(ExplorerModeService).activate(WORDS_EXPLORER_MODE.id)
+        fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("pa")
+        detectChanges()
+
+        // Act
+        fixture.debugElement.injector.get(ExplorerModeService).activate(FILES_EXPLORER_MODE.id)
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).markedWords()).toEqual([])
+    })
+
     it("should mark the inspected word in the cloud, so both halves of the view say the same thing", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
@@ -332,7 +373,7 @@ describe("DomainViewComponent", () => {
         inspectWordThroughTheMenu(fixture, detectChanges)
 
         // Assert
-        expect(wordCloud(fixture).inspectedWord()).toBe("invoice")
+        expect(wordCloud(fixture).markedWords()).toContain("invoice")
     })
 
     it("should hide the word the menu asks to hide", async () => {

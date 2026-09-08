@@ -6,6 +6,7 @@ import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
 import {
     DomainWordListComponent,
+    DomainWordOccurrencesReadStore,
     HiddenWordsPopoverComponent,
     HiddenWordsReadStore,
     HiddenWordsWriteStore
@@ -48,6 +49,7 @@ import { DomainSelectionStore } from "./stores/domainSelection.store"
 import { DomainWordInspectionStore } from "./stores/domainWordInspection.store"
 import { DomainWordQueryStore } from "./stores/domainWordQuery.store"
 import { DomainWordSortStore } from "./stores/domainWordSort.store"
+import { wordsToMark } from "./wordMarking"
 
 @Component({
     selector: "cc-domain-view",
@@ -109,6 +111,7 @@ export class DomainViewComponent {
     private readonly domainWordInspectionStore = inject(DomainWordInspectionStore)
     private readonly domainWordQueryStore = inject(DomainWordQueryStore)
     private readonly domainWordSortStore = inject(DomainWordSortStore)
+    private readonly wordOccurrencesReadStore = inject(DomainWordOccurrencesReadStore)
     private readonly hiddenWordsReadStore = inject(HiddenWordsReadStore)
     private readonly hiddenWordsWriteStore = inject(HiddenWordsWriteStore)
     private readonly clipboard = inject(CopyToClipboardService)
@@ -130,6 +133,11 @@ export class DomainViewComponent {
     readonly inspectedWord = this.domainWordInspectionStore.inspectedWord
     readonly wordQuery = toSignal(this.domainWordQueryStore.pattern$, { requireSync: true })
     readonly wordSorting = toSignal(this.domainWordSortStore.sorting$, { requireSync: true })
+
+    private readonly projectWords = toSignal(this.wordOccurrencesReadStore.projectWords$, { requireSync: true })
+    readonly markedWords = computed(() =>
+        wordsToMark(this.inspectedWord(), this.projectWords(), this.wordQuery(), !this.explorerModeService.isFilesMode())
+    )
 
     /** Searching for the word narrows the list to it, which says why the list is short and needs no scrolling. */
     showWordOccurrences(word: string) {
