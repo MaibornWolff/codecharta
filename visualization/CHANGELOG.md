@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- **Cloud lost its mark on a word when a folder was picked**: a cloud of a few hundred words is laid out in chunks, and echarts reports a finished layout after every one of them. The mark was re-applied on the first report, while a single word was drawn and the marked one was not, so it reached nothing and was never retried. Picking a word in the explorer still marked it, but drilling into the folders below it did not. The mark now waits until the reports stop coming.
+
 ## [2.1.1] - 2026-09-07
 
 ### Fixed 🐞
