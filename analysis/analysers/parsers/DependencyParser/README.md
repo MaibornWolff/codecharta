@@ -141,6 +141,16 @@ found via `--dependacharta-jar` or `DEPENDACHARTA_JAR`, and a locally installed 
 ./script/compare_dependency_parsers.py path/to/project --dependacharta-jar dependacharta.jar
 ```
 
+`script/ccjson_to_cgjson.py` converts the dependency lens of a cc.json back into a `.cg.json`, so the
+same graph can be opened in DependaCharta's Web Studio and compared by eye:
+
+```
+./script/ccjson_to_cgjson.py out.cc.json -o out.cg.json
+```
+
+The tree it writes is deduplicated, where DependaCharta emits one node per declaration *occurrence*,
+and `.cg.json` records a single usage kind per pair where `leafEdges` may carry several.
+
 ## How it works
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
