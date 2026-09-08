@@ -1,7 +1,7 @@
 ---
 name: Domain view — keep the cloud's mark, mark searched words, name every share
 issue: -
-state: todo
+state: complete
 version: vis 2.1.2
 ---
 
@@ -49,10 +49,10 @@ reads as one scale.
 
 ## Steps
 
-- [ ] Complete Task 1: keep the cloud's mark through a progressive layout
-- [ ] Complete Task 2: mark every searched word on the cloud
-- [ ] Complete Task 3: name what each percentage is a share of
-- [ ] CHANGELOG entry per commit, `npm test` green, biome clean
+- [x] Complete Task 1: keep the cloud's mark through a progressive layout
+- [x] Complete Task 2: mark every searched word on the cloud
+- [x] Complete Task 3: name what each percentage is a share of
+- [x] CHANGELOG entry per commit, `npm test` green, biome clean
 
 ## Notes
 
@@ -62,3 +62,8 @@ reads as one scale.
 - Clicking a word in the cloud sets the word query to that word, so after Task 2 a word that
   contains another word's text is marked alongside it. That follows from "mark what is in the
   search" and is left as is.
+- `bg-secondary/20` renders magenta in the running app — daisyUI's own palette wins over the theme
+  variables in `tailwind.css` — which collided with the pink of a selected row. The breakdown bar
+  uses `bg-neutral/15` instead.
+- Verified in the browser at every step: the mark now survives a folder and a file click, a search
+  marks every match, and the mark clears on the file tab. 2880 unit tests and 75 e2e tests green.
