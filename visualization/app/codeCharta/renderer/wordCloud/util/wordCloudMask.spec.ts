@@ -1,4 +1,4 @@
-import { loadWordCloudMaskImage, WORD_CLOUD_M_MASK_DATA_URI } from "./wordCloudMask"
+import { loadMaskImage, WORD_CLOUD_M_MASK_DATA_URI } from "./wordCloudMask"
 
 describe("wordCloudMask", () => {
     const decodedSvg = decodeURIComponent(WORD_CLOUD_M_MASK_DATA_URI.replace("data:image/svg+xml,", ""))
@@ -30,7 +30,7 @@ describe("wordCloudMask", () => {
         ;(globalThis as { Image?: unknown }).Image = undefined
 
         // Act & Assert
-        await expect(loadWordCloudMaskImage()).rejects.toThrow("Image is not available")
+        await expect(loadMaskImage(WORD_CLOUD_M_MASK_DATA_URI)).rejects.toThrow("Image is not available")
 
         globalThis.Image = originalImage
     })

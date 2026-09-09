@@ -19,7 +19,7 @@ import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
 import { selectTopWords } from "../../util/topWords"
-import { loadWordCloudMaskImage } from "../../util/wordCloudMask"
+import { loadMaskImage, WORD_CLOUD_M_MASK_DATA_URI } from "../../util/wordCloudMask"
 import { buildWordCloudOption } from "../../util/wordCloudOption.builder"
 import { WordCloudChartHost } from "./wordCloudChartHost"
 import { describeDroppedWords, describeWordCloud, SCREEN_READER_WORD_COUNT } from "./wordCloudDescription"
@@ -73,6 +73,9 @@ export class WordCloudComponent implements OnDestroy {
 
     readonly selectedNodePath = input<string | null>(null)
 
+    /** The shape to lay the words out inside, as a data URI, while the custom shape is picked. */
+    readonly customShapeMask = input<string | null>(null)
+
     /** The words the explorer is pointing at — the one it broke down and the ones its search matched.
      * The cloud marks them so both say the same thing. */
     readonly markedWords = input<readonly string[]>([])
@@ -113,12 +116,14 @@ export class WordCloudComponent implements OnDestroy {
 
     private readonly prefersReducedMotion = typeof matchMedia === "function" && matchMedia(REDUCED_MOTION_QUERY).matches
 
-    private readonly maskImage = signal<HTMLImageElement | null>(null)
+    private readonly logoMaskImage = signal<HTMLImageElement | null>(null)
+    private readonly customMaskImage = signal<HTMLImageElement | null>(null)
 
     private lastRenderedInputs: WordCloudRenderInputs | null = null
 
     constructor() {
-        this.loadMaskImageAndKeepCircleFallbackOnFailure()
+        this.loadTheLogoMaskAndKeepTheCircleFallbackOnFailure()
+        effect(() => this.loadTheUploadedShapeAndKeepTheCircleFallbackOnFailure())
         effect(() => this.renderIntoTheChartOnceTheContainerIsMeasured())
         effect(() => this.chartHost.highlightWords(this.markedWords()))
     }
@@ -144,7 +149,7 @@ export class WordCloudComponent implements OnDestroy {
     private renderIntoTheChartOnceTheContainerIsMeasured(): void {
         const words = this.words()
         const settings = this.settings()
-        const maskImage = settings.shape === WordCloudShape.logoM ? (this.maskImage() ?? undefined) : undefined
+        const maskImage = this.maskImageFor(settings.shape)
         const container = this.canvasRef()?.nativeElement
         if (!container) {
             this.disposeChart()
@@ -176,9 +181,32 @@ export class WordCloudComponent implements OnDestroy {
         )
     }
 
-    private loadMaskImageAndKeepCircleFallbackOnFailure(): void {
-        loadWordCloudMaskImage()
-            .then(image => this.maskImage.set(image))
+    /** A shape laid out inside a mask falls back to a plain circle while its mask is missing — because
+     * it is still loading, because it failed to, or because an uploaded one did not survive a reload. */
+    private maskImageFor(shape: WordCloudShape): HTMLImageElement | undefined {
+        if (shape === WordCloudShape.logoM) {
+            return this.logoMaskImage() ?? undefined
+        }
+        if (shape === WordCloudShape.custom) {
+            return this.customMaskImage() ?? undefined
+        }
+        return undefined
+    }
+
+    private loadTheLogoMaskAndKeepTheCircleFallbackOnFailure(): void {
+        loadMaskImage(WORD_CLOUD_M_MASK_DATA_URI)
+            .then(image => this.logoMaskImage.set(image))
             .catch(() => undefined)
+    }
+
+    private loadTheUploadedShapeAndKeepTheCircleFallbackOnFailure(): void {
+        const dataUri = this.customShapeMask()
+        if (dataUri === null) {
+            this.customMaskImage.set(null)
+            return
+        }
+        loadMaskImage(dataUri)
+            .then(image => this.customMaskImage.set(image))
+            .catch(() => this.customMaskImage.set(null))
     }
 }

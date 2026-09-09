@@ -43,6 +43,7 @@ class StubExplorerComponent {}
 class StubWordCloudComponent {
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
     readonly selectedNodePath = input<string | null>(null)
+    readonly customShapeMask = input<string | null>(null)
     readonly markedWords = input<readonly string[]>([])
     readonly clearSelection = output<void>()
     readonly backgroundClicked = output<void>()

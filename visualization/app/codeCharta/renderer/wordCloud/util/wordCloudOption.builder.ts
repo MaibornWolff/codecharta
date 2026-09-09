@@ -65,7 +65,7 @@ function resolveLayoutShape(
     configuredShape: WordCloudShape,
     maskImage: object | undefined
 ): { shape: string; maskImage?: object; keepAspect: boolean } {
-    const laysWordsOutInsideMask = configuredShape === WordCloudShape.logoM
+    const laysWordsOutInsideMask = configuredShape === WordCloudShape.logoM || configuredShape === WordCloudShape.custom
     if (!laysWordsOutInsideMask) {
         return { shape: configuredShape, maskImage: undefined, keepAspect: false }
     }

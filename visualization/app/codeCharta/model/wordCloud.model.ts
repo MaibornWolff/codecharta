@@ -14,7 +14,8 @@ export enum WordCloudShape {
     triangle = "triangle",
     pentagon = "pentagon",
     star = "star",
-    logoM = "logoM"
+    logoM = "logoM",
+    custom = "custom"
 }
 
 export const wordCloudShapeLabels: Record<WordCloudShape, string> = {
@@ -24,7 +25,8 @@ export const wordCloudShapeLabels: Record<WordCloudShape, string> = {
     [WordCloudShape.triangle]: "Triangle",
     [WordCloudShape.pentagon]: "Pentagon",
     [WordCloudShape.star]: "Star",
-    [WordCloudShape.logoM]: "M"
+    [WordCloudShape.logoM]: "M",
+    [WordCloudShape.custom]: "Custom SVG"
 }
 
 export enum WordCloudSizingMode {
