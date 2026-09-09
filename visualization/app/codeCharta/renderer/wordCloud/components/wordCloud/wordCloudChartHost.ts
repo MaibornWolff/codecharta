@@ -18,6 +18,7 @@ export interface WordCloudChartHandlers {
     onLayoutFinished: () => void
     onWordRightClicked: (word: string, clientX: number, clientY: number) => void
     onWordClicked: (word: string) => void
+    onBackgroundClicked: () => void
 }
 
 interface EchartsContextMenuParams {
@@ -27,6 +28,10 @@ interface EchartsContextMenuParams {
 
 interface EchartsClickParams {
     name?: string
+}
+
+interface ZrenderClickEvent {
+    target?: unknown
 }
 
 function suppressBrowserMenu(event: Event): void {
@@ -78,6 +83,7 @@ export class WordCloudChartHost {
             this.scheduleLayoutSettled()
         })
         this.chart.on("click", (params: unknown) => this.reportClickedWord(params as EchartsClickParams))
+        this.chart.getZr().on("click", (event: unknown) => this.reportClickBesideEveryWord(event as ZrenderClickEvent))
         this.chart.on("contextmenu", (params: unknown) => this.reportRightClickedWord(params as EchartsContextMenuParams))
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
@@ -129,6 +135,14 @@ export class WordCloudChartHost {
     private reportClickedWord({ name }: EchartsClickParams): void {
         if (name) {
             this.handlers.onWordClicked(name)
+        }
+    }
+
+    /** The chart reports a click on a word; the canvas below it reports every click, including the ones
+     * that hit no word at all. Those are the empty cloud, which the reader clicks to let a word go. */
+    private reportClickBesideEveryWord({ target }: ZrenderClickEvent): void {
+        if (!target) {
+            this.handlers.onBackgroundClicked()
         }
     }
 

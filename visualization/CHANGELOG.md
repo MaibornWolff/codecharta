@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- **Clicking the cloud beside every word lets a selection go**: a click where no word is drawn now drops the word whose breakdown is open and the node the cloud was scoped to, so the cloud goes back to the whole project — the same gesture the map already answers by clearing the selected building. The search box is left alone, so whatever it matches stays marked; only the box itself clears those.
 - **Clicking a word no longer types it into the word search**: it opened the explorer on that word and wrote the word into the search box, which narrowed the list to a single row and left a search behind that nobody had typed. It now opens the explorer, breaks the word down and scrolls the list to it, leaving the search box as you left it and the rest of the list a scroll away.
 - **Both domain percentages now say what they are a share of**: a word row's percentage is the word's share of every word occurrence in the project, a breakdown row's is that node's share of *that word* — and both read as "x% / count" with the same bar, which made one scale out of two. They now read "2% of all words · 42" and "62% of \"invoice\" · 26", and a breakdown row's bar is tinted apart from a word row's.
 
