@@ -9,51 +9,46 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Every searched word is marked on the cloud**: searching words in the domain explorer used to narrow the list only. The cloud now emphasises every word the search matched, alongside the word whose occurrences the explorer is showing. The word search is out of sight while the explorer browses files, so it marks nothing there.
+- **Search marks the cloud**: searching words in the domain explorer marks every match in the word cloud.
+- **Click the empty cloud to let go**: clicking the cloud where no word is drawn unpins the open word and puts the cloud back on the whole project.
 
 ### Changed
 
-- **The cloud's word menu searches for a word instead of opening it**: "Show occurrences" did exactly what a left click on the word already does, so the menu offered nothing the click did not. It is now "Search word", which puts the word into the explorer's word search — the cloud marks every match and nothing is pinned. Opening a word stays a left click.
-- **The word you open is pinned above the list**: it used to sit at its own rank among the words, where a search could filter it out of sight while the cloud went on marking it. It now lifts into a pinned strip that stays at the top of the explorer while the list scrolls, with its breakdown under it and a button to let it go. The list below holds every other word and is filtered by the search as before, so what the cloud marks is always something you can see.
-- **Clicking the cloud beside every word lets a selection go**: a click where no word is drawn now drops the word whose breakdown is open and the node the cloud was scoped to, so the cloud goes back to the whole project — the same gesture the map already answers by clearing the selected building. The search box is left alone, so whatever it matches stays marked; only the box itself clears those.
-- **Clicking a word no longer types it into the word search**: it opened the explorer on that word and wrote the word into the search box, which narrowed the list to a single row and left a search behind that nobody had typed. It now opens the explorer, breaks the word down and scrolls the list to it, leaving the search box as you left it and the rest of the list a scroll away.
-- **Both domain percentages now say what they are a share of**: a word row's percentage is the word's share of every word occurrence in the project, a breakdown row's is that node's share of *that word* — and both read as "x% / count" with the same bar, which made one scale out of two. They now read "2% of all words · 42" and "62% of \"invoice\" · 26", and a breakdown row's bar is tinted apart from a word row's.
+- **Pinned word**: the word you open stays in a strip at the top of the domain explorer, with its breakdown and a button to unpin it.
+- **Clicking a word keeps your search**: opening a word from the cloud no longer replaces the explorer's word search with it.
+- **Search word**: the cloud's right-click menu offers **Search word**, which puts the word into the explorer's word search, in place of **Show occurrences**.
+- **Domain percentages name their total**: a word reads "2% of all words · 42" and a row of its breakdown "62% of \"invoice\" · 26", with the breakdown's bar tinted apart from the word's.
 
 ### Fixed 🐞
 
-- **Cloud lost its mark on a word when a folder was picked**: a cloud of a few hundred words is laid out in chunks, and echarts reports a finished layout after every one of them. The mark was re-applied on the first report, while a single word was drawn and the marked one was not, so it reached nothing and was never retried. Picking a word in the explorer still marked it, but drilling into the folders below it did not. The mark now waits until the reports stop coming.
+- **Cloud lost its mark on a word**: the word you opened stopped being marked in the cloud once you picked a folder below it.
 
 ## [2.1.1] - 2026-09-07
 
 ### Fixed 🐞
 
-- **Phone tab still died while a map loaded**: the floor labels drew one map-sized 2D canvas per folder level, sized four times the drawing-buffer width, so a phone allocated three canvases of 6128 pixels squared, about 450 MB, plus the same again as textures, and iOS killed the tab before the map appeared. Each label is now its own small texture, the pattern the three.js manual documents, so label memory scales with the number of labels instead of the map: a few hundred kilobytes for the demo map, down from hundreds of megabytes on a desktop too.
-- **Map no longer renders on phones**: removing the display quality setting left the renderer taking the device's raw pixel ratio, which is what the old "Best" mode did — but the default had been "High", which rendered at ratio 1. On a phone that asks for a roughly 15 megapixel drawing buffer, seven times the desktop workload, and the mobile GPU drops the WebGL context. The pixel ratio is now capped, both as a ratio and against a total buffer budget, and re-applied when the window resizes, so a phone renders at about 2 megapixels, close to the ratio of 1 the removed setting defaulted to, while a 1080p desktop viewport is untouched at its native ratio. A lost graphics context is also no longer a silently blank map: it is reported, and a restored context re-renders.
+- **Map did not render on phones**: a phone asked for a drawing buffer far larger than its GPU allows, so the map stayed blank; a lost graphics context is now reported and re-rendered instead of leaving a silently empty map.
+- **Phone tab died while a map loaded**: the floor labels claimed hundreds of megabytes on a map of any size, and the browser tab was killed before the map appeared.
 
 ## [2.1.0] - 2026-09-04
 
 ### Added 🚀
 
-- **The word list carries a big vocabulary**: The explorer's word list rendered every word the project has. It now draws only the rows on screen, so a map with thousands of words opens and scrolls as fast as a small one, while the scrollbar still measures the whole list. Picking a word that is far outside the visible stretch scrolls to it.
-- **Hide a word**: Right-clicking a word in the cloud now offers **Hide word**, which drops it from the cloud and from the explorer's word list alike — the way to get a noisy word out of the picture without re-running the parser with a `.dlcignore`. A **Hidden** chip in the explorer's header counts what is hidden and lists it — the way the metric view's explorer counts its flattening and exclusion rules — with a button to show one word again or all of them at once. Hidden words survive a reload like the other domain settings.
-- **The cloud and the explorer point at each other**: Clicking a word in the cloud now does what **Show occurrences** does in its right-click menu — the explorer switches to word mode, searches for that word and breaks it down — instead of doing nothing. The word the list has expanded is marked in the cloud, so the picture and the list always say the same thing.
-- **Jump between the views from a node**: Right-clicking a folder or file in the domain view's file explorer now opens the same node context menu the metric view has, reduced to what the word cloud can answer for: the node's path, which copies on click, and **Show in Metrics**, which switches to the 3D map with that node selected and revealed in its explorer. The metric view's menu — both on the map and in its explorer — gained the reciprocal **Show in Domain**, offered whenever the loaded file carries domain data.
-- **Word occurrences in the domain view**: The explorer now browses either **Files** or **Words**, switched with a toggle in its header. In word mode it lists every word of the project with its share of all word occurrences and its count, most frequent first, and its search box searches words instead of paths — each mode keeps its own search text. Expanding a word breaks it down over the file tree, most frequent first, each entry stating the word's share there and its count. Every row carries a bar as long as the share it states, so a list can be read by its bars alone. The words and their occurrences are rendered as explorer rows, so they read exactly like the file tree beside them: a folder opens and closes on click, and clicking any node selects it, which scopes the word cloud to it. Right-clicking a word in the cloud names the word on its first line, which copies it on click the way the node menu's path does, and offers **Show occurrences**, which switches the explorer to word mode, searches for that word so the list narrows to it, and expands its breakdown. Jumping to the domain view from a node — **Show in Domain** — puts the explorer back on its file tree, so the node it hands over is on screen.
-- **Sort the explorer's word list**: The explorer's sort control stays up while it browses words and orders them by **Occurrences**, **Name** or **Relevance** (the word cloud's TF-IDF reading, falling back to a word's count when the project carries none). A picked option starts in the direction it reads best in — A to Z for names, the biggest number first for the other two — and the same toggle flips it. Words still open most frequent first.
-- **Node actions in a word's breakdown**: Right-clicking a file or folder under an expanded word now opens the same node context menu the domain view's file explorer offers — the node's path, which copies on click, and **Show in Metrics** — and marks the row it belongs to, so a word can be followed straight to the map. The menu closes when the list scrolls, as it does over the file tree.
-- **Domain view marks nodes without domain words**: Folders and files the domain lens has no words for are now greyed out and italicised in the domain view's file explorer, the same way the metric view marks nodes without area for the chosen metric, with a "No domain words" hint on hover. They stay selectable.
+- **Browse a project's words**: the domain explorer switches between **Files** and **Words**; word mode lists every word with its share of all occurrences and its count, and opening one breaks it down over the file tree.
+- **Sort the word list**: by **Occurrences**, **Name** or **Relevance**, in either direction.
+- **A big vocabulary opens fast**: a project with thousands of words opens and scrolls like a small one.
+- **Hide a word**: the cloud's right-click menu drops a word from the cloud and the word list, and a **Hidden** chip in the explorer lists what is hidden and brings words back.
+- **The cloud and the explorer point at each other**: clicking a word in the cloud opens it in the explorer, and the word the explorer has open is marked in the cloud.
+- **Jump between the views from a node**: the domain view's file explorer offers **Show in Metrics**, and the metric view offers **Show in Domain** whenever the loaded file carries domain data.
+- **Node actions in a word's breakdown**: right-clicking a file or folder under an opened word offers the same node menu the file explorer does.
+- **Nodes without domain words are marked**: the domain view's file explorer greys them out, with a hint on hover.
 
 ### Fixed 🐞
 
-- **Hovering a word in the cloud lost its highlight**: the word under the pointer lit up and went dark again a split second later. Marking the word whose breakdown is open was re-applied on every layout the chart reported — including the ones echarts draws for its own hover — and dropped the hover emphasis with it. Hovering now keeps its highlight, alongside the mark on the open word.
-- **Inspector could not be closed for a node without a building**: Selecting a folder — or a file with no area in the chosen metric — in the metric view's explorer opened the inspector, but its close button did nothing, because closing only cleared what the 3D scene held and such a node has no building drawn for it. The selection itself is now cleared, whether or not a building was drawn.
-- **Map screenshot showed the top bar's drawer handle**: the small handle hanging below the center of the top bar was captured in map screenshots, and — sitting at the very top of the image — it also kept a wide empty band above the map when the screenshot was cropped. The top bar is now left out of the capture as a whole, so nothing overhanging it can end up in the image. The domain view's word-cloud screenshot was never affected.
-- **Context menu actions were swallowed after a view switch**: once a view had been left with its node context menu open, the router kept that view — and its rendered menu — alive off screen, where it closed the menu of the view on screen on the first click. Picking an entry there did nothing, so "Show in Domain" appeared to be ignored. A menu that is off screen no longer dismisses anything.
-- **Endless spinner on the first visit to the metric view**: starting the app on the domain view and then switching to the metric view left its loading spinner up for the rest of the session, with the map never drawn. The deferred map build ran before the view had mounted the canvas the floor labels measure, and the resulting error ended the render stream that both the map and the spinner hang off. The build now waits for that canvas, reads the current map data rather than the last data-plus-action pair, and reports a failed render instead of ending the stream.
-
-### Chore 👨‍💻 👩‍💻
-
-- **Type check passes again**: the node context menu's spec configured a view without the menu's `jumpTargetView`, so `tsc` failed on the test sources while Jest ran fine. The case now states that such a view offers no jump at all, and asserts it.
+- **Inspector could not be closed for a node without a building**: its close button did nothing for a folder, or for a file with no area in the chosen metric.
+- **Map screenshot showed the top bar's drawer handle**: the handle hanging below the top bar was captured in map screenshots, leaving an empty band above the map.
+- **Context menu actions were swallowed after a view switch**: leaving a view with its node context menu open made the next click on a menu entry do nothing.
+- **Endless spinner on the first visit to the metric view**: switching to the metric view from the domain view left its spinner up and the map undrawn.
 
 ## [2.0.0] - 2026-09-02
 
