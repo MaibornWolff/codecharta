@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - **Scenario files**: a scenario exported from this version needs this version to open it; files exported by earlier versions still import.
-- **Apply a scenario setting by setting**: the apply dialog lists a scenario's settings grouped the way the metrics bar groups its controls, so its colors can be taken without its margins.
+- **Apply a scenario setting by setting**: the apply dialog lists a scenario's settings grouped the way the metrics bar groups its controls, so its colors can be taken without its margins — or **Apply all** takes the scenario whole, camera included.
 - **Pinned word**: the word you open stays in a strip at the top of the domain explorer, with its breakdown and a button to unpin it.
 - **Clicking a word keeps your search**: opening a word from the cloud no longer replaces the explorer's word search with it.
 - **Search word**: the cloud's right-click menu offers **Search word**, which puts the word into the explorer's word search, in place of **Show occurrences**.

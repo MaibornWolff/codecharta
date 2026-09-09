@@ -17,6 +17,7 @@ import { getAvailableSettingKeys, Scenario } from "../../model/scenario.model"
 import { pickScenarioSettings, SCENARIO_SETTINGS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ScenarioSettingsPickerComponent } from "../scenarioSettingsPicker/scenarioSettingsPicker.component"
+import { settingCountLabel } from "../scenarioSettingsPicker/settingCountLabel"
 
 @Component({
     selector: "cc-apply-scenario-dialog",
@@ -44,6 +45,7 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     )
     readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
     readonly hasAnySelected = computed(() => this.selectedKeys().size > 0)
+    readonly applySelectedLabel = computed(() => `Apply ${settingCountLabel(this.selectedKeys().size)}`)
 
     private readonly destroyRef = inject(DestroyRef)
 
@@ -58,9 +60,17 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     }
 
     async apply() {
-        const selectedKeys = this.selectedKeys()
+        await this.applyKeys(this.selectedKeys())
+    }
+
+    /** Applies what the scenario holds whole, the camera along with it, whatever is ticked. */
+    async applyAll() {
+        await this.applyKeys(new Set(this.availableKeys()))
+    }
+
+    private async applyKeys(keys: ReadonlySet<ScenarioSettingKey>) {
         this.dialogElement().nativeElement.close()
-        await this.scenarioApplier.applyScenario(this.scenario(), selectedKeys, this.metricData())
+        await this.scenarioApplier.applyScenario(this.scenario(), keys, this.metricData())
     }
 
     close() {

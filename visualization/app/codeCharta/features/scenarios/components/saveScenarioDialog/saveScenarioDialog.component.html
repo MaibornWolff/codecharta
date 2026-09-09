@@ -64,7 +64,14 @@
 
 		<div class="modal-action">
 			<button class="btn" (click)="close()">Cancel</button>
-			<button class="btn btn-primary" [disabled]="!nameValid() || selectedKeys().size === 0" (click)="save()">Save</button>
+			<button
+				class="btn btn-primary"
+				[disabled]="!nameValid() || selectedKeys().size === 0"
+				data-testid="save-scenario-submit"
+				(click)="save()"
+			>
+				{{ saveLabel() }}
+			</button>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">

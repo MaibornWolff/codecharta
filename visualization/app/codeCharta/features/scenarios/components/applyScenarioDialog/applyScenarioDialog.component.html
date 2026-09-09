@@ -38,7 +38,22 @@
 
 		<div class="modal-action">
 			<button class="btn" (click)="close()">Cancel</button>
-			<button class="btn btn-primary" [disabled]="!hasAnySelected()" (click)="apply()">Apply</button>
+			<button
+				class="btn btn-outline"
+				title="Apply everything this scenario holds, the camera included"
+				data-testid="apply-scenario-all"
+				(click)="applyAll()"
+			>
+				Apply all
+			</button>
+			<button
+				class="btn btn-primary"
+				[disabled]="!hasAnySelected()"
+				data-testid="apply-scenario-selected"
+				(click)="apply()"
+			>
+				{{ applySelectedLabel() }}
+			</button>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">

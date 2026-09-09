@@ -124,6 +124,37 @@ describe("ApplyScenarioDialogComponent", () => {
         )
     })
 
+    it("should name the number of settings its apply button carries", () => {
+        // Act
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin", "colorRange"]))
+
+        // Assert
+        expect(component.applySelectedLabel()).toBe("Apply 2 settings")
+    })
+
+    it("should name a single setting in the singular", () => {
+        // Act
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+
+        // Assert
+        expect(component.applySelectedLabel()).toBe("Apply 1 setting")
+    })
+
+    it("should apply everything the scenario holds, the camera included, when applying all", async () => {
+        // Arrange
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+
+        // Act
+        await component.applyAll()
+
+        // Assert
+        expect(scenarioApplier.applyScenario).toHaveBeenCalledWith(
+            component.scenario(),
+            new Set(component.availableKeys()),
+            metricDataWithMetrics
+        )
+    })
+
     it("should report nothing selected when every setting is deselected", () => {
         // Act
         component.selectedKeys.set(new Set<ScenarioSettingKey>())

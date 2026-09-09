@@ -90,6 +90,21 @@ test.describe("Scenarios", () => {
         await expect(metricsBar.selectedAreaMetricName()).toHaveText("rloc")
     })
 
+    test("should apply everything a scenario holds from the apply-all button", async ({ page }) => {
+        const scenarios = new ScenariosPageObject(page)
+        const metricsBar = new MetricsBarPageObject(page)
+
+        await metricsBar.openAreaMetricSelect()
+        await metricsBar.selectAreaMetricOption("sonar_complexity")
+
+        await scenarios.openScenarioList()
+        await scenarios.clickScenarioByName("Real Lines of Code")
+        await expect(scenarios.applySelectedButton()).toContainText("Apply 7 settings")
+        await scenarios.applyWholeScenario()
+
+        await expect(metricsBar.selectedAreaMetricName()).toHaveText("rloc")
+    })
+
     test("should filter scenarios by search term", async ({ page }) => {
         const scenarios = new ScenariosPageObject(page)
 

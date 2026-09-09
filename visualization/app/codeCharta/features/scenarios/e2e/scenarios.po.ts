@@ -46,8 +46,17 @@ export class ScenariosPageObject {
     }
 
     async applyScenario() {
-        await this.applyDialog().getByRole("button", { name: "Apply" }).click()
+        await this.applyDialog().locator("[data-testid='apply-scenario-selected']").click()
         await this.applyDialog().waitFor({ state: "detached", timeout: 10_000 })
+    }
+
+    async applyWholeScenario() {
+        await this.applyDialog().locator("[data-testid='apply-scenario-all']").click()
+        await this.applyDialog().waitFor({ state: "detached", timeout: 10_000 })
+    }
+
+    applySelectedButton(): Locator {
+        return this.applyDialog().locator("[data-testid='apply-scenario-selected']")
     }
 
     async openExtendedSaveSettings() {
@@ -65,7 +74,7 @@ export class ScenariosPageObject {
     }
 
     saveButton(): Locator {
-        return this.page.getByRole("dialog", { name: "Save Scenario" }).getByRole("button", { name: "Save" })
+        return this.page.getByRole("dialog", { name: "Save Scenario" }).locator("[data-testid='save-scenario-submit']")
     }
 
     async toggleSaveSettingGroup(groupKey: string) {
@@ -84,7 +93,7 @@ export class ScenariosPageObject {
         if (description) {
             await dialog.locator("#scenario-description").fill(description)
         }
-        await dialog.getByRole("button", { name: "Save" }).click()
+        await dialog.locator("[data-testid='save-scenario-submit']").click()
         await dialog.waitFor({ state: "detached", timeout: 10_000 })
     }
 

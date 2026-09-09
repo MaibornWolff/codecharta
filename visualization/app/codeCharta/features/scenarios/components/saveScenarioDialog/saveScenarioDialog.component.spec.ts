@@ -86,6 +86,14 @@ describe("SaveScenarioDialogComponent", () => {
         expect(component.selectionSummary()).toBe(`${component.availableKeys.length - 1} of ${component.availableKeys.length} settings`)
     })
 
+    it("should name the number of settings its save button carries", () => {
+        // Act
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin", "colorRange"]))
+
+        // Assert
+        expect(component.saveLabel()).toBe("Save 2 settings")
+    })
+
     it("should offer every setting of the registry", () => {
         // Assert
         expect(component.availableKeys).toEqual(Object.keys(SCENARIO_SETTINGS))
