@@ -102,10 +102,12 @@ test.describe("DomainView", () => {
         // Act — the cloud lays its largest word out at the centre.
         await clickTheLargestWord(page)
 
-        // Assert — a click does what the menu's "Show occurrences" does: word mode, searched, broken down.
+        // Assert — a click does what the menu's "Show occurrences" does: word mode, broken down. The
+        // search box is left alone, so the rest of the list stays a scroll away.
         await expect(page.getByTestId("explorer-mode-words")).toHaveAttribute("aria-pressed", "true")
-        await expect(page.locator("cc-domain-word-row")).toHaveCount(1)
         await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(1)
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+        await expect(page.getByLabel("Search words")).toHaveValue("")
     })
 
     test("should drop a hidden word from the cloud and the word list, and bring it back", async ({ page }) => {
@@ -152,6 +154,28 @@ test.describe("DomainView", () => {
         expect(renderedRows).toBeLessThan(MOST_ROWS_A_WINDOW_RENDERS)
         const panel = page.locator("cc-sidebar-explorer .overflow-auto")
         expect(await panel.evaluate(element => element.scrollHeight)).toBeGreaterThan(300 * 20)
+    })
+
+    test("should scroll a long word list to the word clicked in the cloud, without narrowing the list", async ({ page }) => {
+        // Arrange — 300 words, the list scrolled away from the one the cloud draws largest.
+        await new NavBarFolderButtonPageObject(page).openFiles([MANY_WORDS_FILE])
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+        await page.getByTestId("explorer-mode-words").click()
+        await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
+        const largestWord = (await page.locator("cc-domain-word-row").first().innerText()).split("\n")[0]
+        const panel = page.locator("cc-sidebar-explorer .overflow-auto")
+        await panel.evaluate(element => element.scrollTo(0, 4000))
+        await expect(page.getByTestId(`domain-word-row-${largestWord}`)).toHaveCount(0)
+
+        // Act
+        await clickTheLargestWord(page)
+
+        // Assert — the row is back in sight and the rest of the list is still there to scroll through
+        await expect(page.getByTestId(`domain-word-row-${largestWord}`)).toBeVisible()
+        await expect(page.getByLabel("Search words")).toHaveValue("")
+        expect(await page.locator("cc-domain-word-row").count()).toBeGreaterThan(1)
     })
 
     test("should keep rendering only a slice after the explorer is collapsed and re-opened", async ({ page }) => {

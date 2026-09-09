@@ -286,8 +286,8 @@ describe("DomainViewComponent", () => {
         expect(collapseService.isCollapsed()).toBe(false)
     })
 
-    it("should search for the word the menu asks about, so the list narrows to it", async () => {
-        // Arrange — whatever was searched before must not keep the word out of the list
+    it("should leave the search box as the reader left it when the menu asks about a word", async () => {
+        // Arrange — writing the word into the box would mark it for a search nobody typed
         const { fixture, detectChanges } = await setup()
         fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("billing")
 
@@ -295,7 +295,7 @@ describe("DomainViewComponent", () => {
         inspectWordThroughTheMenu(fixture, detectChanges)
 
         // Assert
-        expect(wordList(fixture).query()).toBe("invoice")
+        expect(wordList(fixture).query()).toBe("billing")
     })
 
     it("should filter the word list by the explorer's word search", async () => {
@@ -331,10 +331,11 @@ describe("DomainViewComponent", () => {
         wordCloud(fixture).wordClicked.emit("invoice")
         detectChanges()
 
-        // Assert — the same thing the menu's "Show occurrences" does, so a click needs no second step.
+        // Assert — the same thing the menu's "Show occurrences" does, so a click needs no second step,
+        // and the search box is left alone so the whole list stays in reach.
         expect(modeService.activeMode().id).toBe(WORDS_EXPLORER_MODE.id)
         expect(wordList(fixture).expandedWord()).toBe("invoice")
-        expect(wordList(fixture).query()).toBe("invoice")
+        expect(wordList(fixture).query()).toBe("")
     })
 
     it("should mark every word the explorer's search matched, not just the inspected one", async () => {
