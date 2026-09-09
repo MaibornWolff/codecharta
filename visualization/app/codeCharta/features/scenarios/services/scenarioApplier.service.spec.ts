@@ -21,7 +21,7 @@ const testSettings: ScenarioSettings = {
     isColorMetricLinkedToHeightMetric: true,
     colorRange: { from: 1, to: 10 },
     colorMode: ColorMode.weightedGradient,
-    mapColors: { positive: "#69AE40", neutral: "#ddcc00", negative: "#820E0E" },
+    mapColors: { positive: "#69AE40", neutral: "#ddcc00", negative: "#820E0E", markingColors: ["#FF1D8E"] },
     markedPackages: [{ path: "/root/src", color: "#FF0000" }],
     edgeMetric: "pairingRate",
     amountOfEdgePreviews: 7,
@@ -132,6 +132,7 @@ describe("ScenarioApplierService", () => {
                 positive: "#69AE40",
                 neutral: "#ddcc00",
                 negative: "#820E0E",
+                markingColors: ["#FF1D8E"],
                 outgoingEdge: "#FF1D8E",
                 incomingEdge: "#1d8eff"
             })

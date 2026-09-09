@@ -67,7 +67,7 @@ describe("ApplyScenarioDialogComponent", () => {
         component = createComponent(createTestScenario())
     })
 
-    it("should offer every setting the scenario carries, all selected", () => {
+    it("should offer every setting the scenario carries, all but the camera selected", () => {
         // Assert
         expect(component.availableKeys()).toEqual([
             "areaMetric",
@@ -80,7 +80,7 @@ describe("ApplyScenarioDialogComponent", () => {
             "camera",
             "blacklist"
         ])
-        expect(component.selectedKeys()).toEqual(new Set(component.availableKeys()))
+        expect(component.selectedKeys()).toEqual(new Set(component.availableKeys().filter(key => key !== "camera")))
         expect(component.hasAnySelected()).toBe(true)
     })
 

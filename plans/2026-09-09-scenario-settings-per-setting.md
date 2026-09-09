@@ -97,6 +97,9 @@ global configuration dialog, not the bar — out of scope.
 
 - Decisions taken with the user: groups mirror the bar, selection is per setting, the save picker is
   collapsed with everything checked, Camera starts unchecked.
+- The camera also starts unchecked in the apply dialog, for the reason the user gave for the save
+  default: opening a scenario should never move the view unasked — and every scenario migrated from
+  an earlier version carries a camera nobody chose to save.
 - The model, the two dialogs and the picker landed in one commit: the registry replaces the section
   shape they are typed against, so neither compiles without the other.
 - Verified: full unit suite (424 suites, 2926 tests) green with the 80% gate, production build green,

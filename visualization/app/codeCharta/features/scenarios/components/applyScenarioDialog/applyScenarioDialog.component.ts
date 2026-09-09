@@ -14,7 +14,7 @@ import {
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../model/codeCharta.model"
 import { getAvailableSettingKeys, Scenario } from "../../model/scenario.model"
-import { METRIC_SELECTION_SETTING_KEYS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
+import { METRIC_SELECTION_SETTING_KEYS, SCENARIO_SETTINGS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ScenarioSettingsPickerComponent } from "../scenarioSettingsPicker/scenarioSettingsPicker.component"
 
@@ -33,7 +33,10 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
 
     readonly availableKeys = computed(() => getAvailableSettingKeys(this.scenario()))
 
-    readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(() => new Set(this.availableKeys()))
+    /** The camera starts unchecked, so opening a scenario never moves the view unless it is asked for. */
+    readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(
+        () => new Set(this.availableKeys().filter(key => SCENARIO_SETTINGS[key].group !== "camera"))
+    )
 
     readonly missingMetrics = computed(() => this.scenarioApplier.getMissingMetrics(this.scenario().settings, this.metricData()))
     readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
