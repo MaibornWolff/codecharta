@@ -1,5 +1,8 @@
+import { RuleWithCount } from "../../../features/sidebarExplorer/facade"
 import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./explorerRules.selectors"
+
+const pathRules = (rules: RuleWithCount[]) => rules.filter(rule => rule.kind !== "METRIC")
 
 const makeLeaf = (path: string, attributes: Record<string, number> = { unary: 1, rloc: 1 }): CodeMapNode => ({
     name: path.split("/").pop() ?? path,
@@ -22,7 +25,7 @@ describe("explorerRules.selectors", () => {
             const blacklist: BlacklistItem[] = [{ type: "flatten", path: "!alpha" }]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
 
             // Assert
             expect(result).toHaveLength(1)
@@ -34,7 +37,7 @@ describe("explorerRules.selectors", () => {
             const blacklist: BlacklistItem[] = [{ type: "flatten", path: "alpha" }]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
 
             // Assert
             expect(result[0].affectedCount).toBe(2)
@@ -48,11 +51,11 @@ describe("explorerRules.selectors", () => {
             ]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
 
             // Assert
-            expect(result.find(rule => rule.item.path === "*.spec.ts*").kind).toBe("RULE")
-            expect(result.find(rule => rule.item.path === "/root/src/alpha.kt").kind).toBe("MANUAL")
+            expect(pathRules(result).find(rule => rule.item.path === "*.spec.ts*").kind).toBe("RULE")
+            expect(pathRules(result).find(rule => rule.item.path === "/root/src/alpha.kt").kind).toBe("MANUAL")
         })
 
         it("should not include exclude items", () => {
@@ -63,11 +66,11 @@ describe("explorerRules.selectors", () => {
             ]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves)
+            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
 
             // Assert
             expect(result).toHaveLength(1)
-            expect(result[0].item.type).toBe("flatten")
+            expect(pathRules(result)[0].item.type).toBe("flatten")
         })
     })
 
@@ -82,11 +85,11 @@ describe("explorerRules.selectors", () => {
             ]
 
             // Act
-            const result = excludeRulesWithCountSelector.projector(blacklist, allLeaves)
+            const result = excludeRulesWithCountSelector.projector(blacklist, allLeaves, [])
 
             // Assert
             expect(result).toHaveLength(1)
-            expect(result[0].item.path).toBe("*node_modules*")
+            expect(pathRules(result)[0].item.path).toBe("*node_modules*")
             expect(result[0].affectedCount).toBe(1)
         })
     })

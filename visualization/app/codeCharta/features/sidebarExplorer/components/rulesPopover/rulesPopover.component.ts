@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { EXPLORER_METRIC_RULES } from "../../explorerMetricRules.port"
 import { EXPLORER_RULES } from "../../explorerRules.port"
 import { RuleRowComponent } from "../ruleRow/ruleRow.component"
 
@@ -21,6 +22,10 @@ export class RulesPopoverComponent {
 
     readonly rulesOfKind = computed(() => (this.kind() === "flatten" ? this.flattenRules() : this.excludeRules()))
     readonly title = computed(() => (this.kind() === "flatten" ? "Flattening Rules" : "Hidden Rules"))
+
+    readonly hasMetricRules = inject(EXPLORER_METRIC_RULES, { optional: true }) !== null
+
+    readonly editorPopoverId = computed(() => (this.kind() === "flatten" ? "explorer-flatten-metric-rule" : "explorer-exclude-metric-rule"))
 
     readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")
 

@@ -37,6 +37,11 @@ describe("describeMetricRule", () => {
         expect(describeMetricRule(rule({ operator: "between", value: 5, upperValue: 20 }))).toBe("mcc 5…20")
     })
 
+    it("should describe a between rule that has no upper bound yet as a single value", () => {
+        // Arrange & Act & Assert
+        expect(describeMetricRule(rule({ operator: "between", value: 5 }))).toBe("mcc 5…5")
+    })
+
     it("should order the bounds of a between rule that was entered the wrong way round", () => {
         // Arrange & Act & Assert
         expect(describeMetricRule(rule({ operator: "between", value: 20, upperValue: 5 }))).toBe("mcc 5…20")

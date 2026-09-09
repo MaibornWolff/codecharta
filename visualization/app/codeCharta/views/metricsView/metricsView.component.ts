@@ -15,6 +15,7 @@ import {
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
     EXPLORER_COUNTS,
+    EXPLORER_METRIC_RULES,
     EXPLORER_ROW,
     EXPLORER_RULES,
     EXPLORER_SELECTION,
@@ -28,6 +29,7 @@ import {
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
+import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
 import { MetricsExplorerRow } from "./explorer/metricsExplorerRow"
 import { MetricsExplorerRules } from "./explorer/metricsExplorerRules"
 import { METRICS_EXPLORER_SEARCH } from "./explorer/metricsExplorerSearch"
@@ -65,6 +67,8 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         { provide: EXPLORER_COUNTS, useExisting: MetricsExplorerCounts },
         MetricsExplorerRules,
         { provide: EXPLORER_RULES, useExisting: MetricsExplorerRules },
+        MetricsExplorerMetricRules,
+        { provide: EXPLORER_METRIC_RULES, useExisting: MetricsExplorerMetricRules },
         provideExplorerSort(METRICS_EXPLORER_SORT),
         provideExplorerSearch(METRICS_EXPLORER_SEARCH),
         { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES },

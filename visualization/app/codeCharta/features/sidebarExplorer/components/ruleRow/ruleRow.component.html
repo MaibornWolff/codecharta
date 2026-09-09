@@ -1,7 +1,9 @@
 <span
     class="text-[10px] uppercase tracking-wide font-semibold border rounded px-1.5 py-0.5 shrink-0"
-    [class.border-primary]="kind() === 'RULE'"
+    [class.border-primary]="kind() !== 'MANUAL'"
     [class.text-primary]="kind() === 'RULE'"
+    [class.bg-primary]="kind() === 'METRIC'"
+    [class.text-primary-content]="kind() === 'METRIC'"
     [class.border-warning]="kind() === 'MANUAL'"
     [class.text-warning]="kind() === 'MANUAL'"
 >

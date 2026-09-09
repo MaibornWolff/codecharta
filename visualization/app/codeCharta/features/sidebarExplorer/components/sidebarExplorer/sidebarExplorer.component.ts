@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, OnDestroy, viewChild } from "@angular/core"
 import { CSS_VARIABLE_HOST } from "../../../shared/facade"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
+import { EXPLORER_METRIC_RULES } from "../../explorerMetricRules.port"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
@@ -9,6 +10,7 @@ import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.compon
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
 import { ExplorerSortControlComponent } from "../explorerSortControl/explorerSortControl.component"
 import { ExplorerTreeComponent } from "../explorerTree/explorerTree.component"
+import { MetricRuleEditorComponent } from "../metricRuleEditor/metricRuleEditor.component"
 import { RulesPopoverComponent } from "../rulesPopover/rulesPopover.component"
 
 export const COLLAPSED_STRIP_WIDTH_PX = 300
@@ -22,6 +24,7 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
         ExplorerSearchBarComponent,
         ExplorerSortControlComponent,
         ExplorerTreeComponent,
+        MetricRuleEditorComponent,
         RulesPopoverComponent
     ],
     host: {
@@ -44,6 +47,9 @@ export class SidebarExplorerComponent implements OnDestroy {
     private readonly scrollHost = viewChild<ElementRef<HTMLElement>>("scrollHost")
 
     readonly capabilities = inject(EXPLORER_CAPABILITIES)
+
+    /** Only views that provide metric values can offer the metric rule editor. */
+    readonly hasMetricRules = inject(EXPLORER_METRIC_RULES, { optional: true }) !== null
 
     readonly isCollapsed = this.collapseService.isCollapsed
     readonly isFilesMode = this.modeService.isFilesMode

@@ -6,6 +6,7 @@ import { UNARY_METRIC } from "../../util/metric/unaryMetric"
 import { DEFAULT_EXPLORER_CAPABILITIES, EXPLORER_CAPABILITIES, ExplorerCapabilities } from "./explorerCapabilities"
 import { EXPLORER_CONTEXT_MENU, ExplorerContextMenu } from "./explorerContextMenu"
 import { EXPLORER_COUNTS, ExplorerCounts, ExplorerCountsSource } from "./explorerCounts.port"
+import { ExplorerMetricRules, MetricValues } from "./explorerMetricRules.port"
 import { EXPLORER_ROW, ExplorerRow } from "./explorerRow"
 import { EXPLORER_RULES, ExplorerRules } from "./explorerRules.port"
 import { EXPLORER_SEARCH, EXPLORER_WORD_SEARCH, ExplorerSearch, ExplorerSearchInput } from "./explorerSearch.port"
@@ -110,6 +111,14 @@ export function createExplorerRulesMock(overrides: Partial<ExplorerRules> = {}):
         isExcludePatternDisabled$: of(true),
         removeRule: jest.fn(),
         ruleFromSearchPattern: jest.fn(),
+        ...overrides
+    }
+}
+
+export function createExplorerMetricRulesMock(overrides: Partial<ExplorerMetricRules> = {}): ExplorerMetricRules {
+    return {
+        metricValues$: of(new Map() as MetricValues),
+        addRule: jest.fn(),
         ...overrides
     }
 }

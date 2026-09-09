@@ -6,6 +6,7 @@ import { codeMapNodesSelector } from "../../../renderer/renderModel/renderModel.
 import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { addRulePatternsToEngine, returnIgnore, transformPath } from "../../../util/blacklist/blacklistMatcher"
 import { isPatternRule } from "./isPattern"
+import { excludeMetricRulesWithCountSelector, flattenMetricRulesWithCountSelector } from "./metricRulesWithCount.selector"
 
 type RuleEvaluation = {
     item: BlacklistItem
@@ -74,10 +75,18 @@ function incrementRulesMatching(rules: RuleEvaluation[], path: string, shouldMat
     }
 }
 
-export const flattenRulesWithCountSelector = createSelector(blacklistSelector, codeMapNodesSelector, (blacklist, allLeaves) =>
-    buildRulesWithCount(blacklist, allLeaves, "flatten")
+// Metric rules lead the list: they are the broadest strokes, and reading them first tells you why
+// most of what is missing is missing.
+export const flattenRulesWithCountSelector = createSelector(
+    blacklistSelector,
+    codeMapNodesSelector,
+    flattenMetricRulesWithCountSelector,
+    (blacklist, allLeaves, metricRules) => [...metricRules, ...buildRulesWithCount(blacklist, allLeaves, "flatten")]
 )
 
-export const excludeRulesWithCountSelector = createSelector(blacklistSelector, codeMapNodesSelector, (blacklist, allLeaves) =>
-    buildRulesWithCount(blacklist, allLeaves, "exclude")
+export const excludeRulesWithCountSelector = createSelector(
+    blacklistSelector,
+    codeMapNodesSelector,
+    excludeMetricRulesWithCountSelector,
+    (blacklist, allLeaves, metricRules) => [...metricRules, ...buildRulesWithCount(blacklist, allLeaves, "exclude")]
 )

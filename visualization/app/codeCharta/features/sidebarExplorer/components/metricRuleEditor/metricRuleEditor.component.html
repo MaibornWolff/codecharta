@@ -1,0 +1,94 @@
+<div
+    class="dropdown p-2 rounded-box bg-base-100 shadow-lg w-96"
+    popover
+    #popover
+    [id]="popoverId()"
+    [style.position-anchor]="'--' + anchorName()"
+    [attr.data-testid]="'metric-rule-editor-' + type()"
+>
+    <div class="flex items-center justify-between border-b border-base-300 pb-1 mb-2">
+        <span class="text-sm font-semibold uppercase tracking-wide">{{ title() }}</span>
+        <button
+            type="button"
+            class="btn btn-ghost btn-xs btn-square"
+            (click)="closePopover()"
+            title="Close"
+            data-testid="metric-rule-editor-close-button"
+        >
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+
+    @if (availableMetrics().length === 0) {
+        <div class="text-xs opacity-60 px-2 py-3">Load a map to filter it by a metric</div>
+    } @else {
+        <label class="text-[10px] uppercase tracking-wide opacity-70">Condition</label>
+        <div class="flex items-center gap-1.5 mt-1">
+            <select
+                class="select select-sm select-bordered flex-1 min-w-0"
+                aria-label="Metric"
+                data-testid="metric-rule-editor-metric"
+                (change)="setMetric($event)"
+            >
+                @for (option of availableMetrics(); track option) {
+                    <option [value]="option" [selected]="option === metric()">{{ option }}</option>
+                }
+            </select>
+            <select
+                class="select select-sm select-bordered w-28 shrink-0"
+                aria-label="Comparison"
+                data-testid="metric-rule-editor-operator"
+                (change)="setOperator($event)"
+            >
+                @for (option of operatorOptions; track option.value) {
+                    <option [value]="option.value" [selected]="option.value === operator()">{{ option.label }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="flex items-center gap-1.5 mt-1.5">
+            <input
+                type="number"
+                class="input input-sm input-bordered w-24 text-center"
+                aria-label="Threshold"
+                data-testid="metric-rule-editor-value"
+                [value]="value()"
+                (input)="setValue($event)"
+            />
+            @if (isRangeOperator()) {
+                <span class="text-xs opacity-60">and</span>
+                <input
+                    type="number"
+                    class="input input-sm input-bordered w-24 text-center"
+                    aria-label="Upper threshold"
+                    data-testid="metric-rule-editor-upper-value"
+                    [value]="upperValue()"
+                    (input)="setUpperValue($event)"
+                />
+            }
+        </div>
+
+        <div class="mt-2">
+            <cc-metric-distribution [distribution]="distribution()" [metric]="metric() ?? ''"></cc-metric-distribution>
+        </div>
+
+        <div class="mt-2 rounded-md bg-base-200 px-2 py-1.5 text-xs" data-testid="metric-rule-editor-match-count">
+            <span class="font-semibold">{{ matchCount() }}</span>
+            of {{ fileCount() }} files with a {{ metric() }} value
+        </div>
+
+        <div class="flex items-center gap-1.5 mt-2">
+            <button
+                type="button"
+                class="btn btn-primary btn-sm flex-1"
+                [disabled]="isSubmitDisabled()"
+                (click)="addRule()"
+                data-testid="metric-rule-editor-submit"
+            >
+                {{ submitLabel() }}
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="closePopover()">Cancel</button>
+        </div>
+        <p class="text-[10px] opacity-60 mt-1.5 text-center m-0">Re-applies whenever the loaded files or metrics change.</p>
+    }
+</div>

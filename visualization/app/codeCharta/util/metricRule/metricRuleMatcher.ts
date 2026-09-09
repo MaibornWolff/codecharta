@@ -1,6 +1,9 @@
 import { KeyValuePair, MetricRule } from "../../model/codeCharta.model"
 
-export interface MetricRuleClassification {
+/** Just the condition of a rule — what a draft in the editor has before it is added. */
+export type MetricRuleCondition = Pick<MetricRule, "operator" | "value" | "upperValue">
+
+interface MetricRuleClassification {
     isFlattened: boolean
     isExcluded: boolean
 }
@@ -30,7 +33,7 @@ export function createMetricRuleMatcher(rules: MetricRule[]): MetricRuleMatcher 
             let isFlattened = false
             let isExcluded = false
             for (const rule of rules) {
-                if (!matches(rule, attributes[rule.metric])) {
+                if (!matchesMetricRule(rule, attributes[rule.metric])) {
                     continue
                 }
                 if (rule.type === "flatten") {
@@ -44,7 +47,7 @@ export function createMetricRuleMatcher(rules: MetricRule[]): MetricRuleMatcher 
     }
 }
 
-function matches(rule: MetricRule, value: number | undefined): boolean {
+export function matchesMetricRule(rule: MetricRuleCondition, value: number | undefined): boolean {
     if (typeof value !== "number" || Number.isNaN(value)) {
         return false
     }
@@ -64,7 +67,7 @@ function matches(rule: MetricRule, value: number | undefined): boolean {
     }
 }
 
-function matchesRange(rule: MetricRule, value: number): boolean {
+function matchesRange(rule: MetricRuleCondition, value: number): boolean {
     if (typeof rule.upperValue !== "number" || Number.isNaN(rule.upperValue)) {
         return false
     }
