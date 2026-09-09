@@ -60,7 +60,7 @@ interface LegacyScenarioFile extends Omit<ScenarioFile, "schemaVersion" | "setti
     readonly settings?: ScenarioSettings
 }
 
-export function toScenarioSettings(stored: { sections?: LegacyScenarioSections; settings?: ScenarioSettings }): ScenarioSettings {
+function toScenarioSettings(stored: { sections?: LegacyScenarioSections; settings?: ScenarioSettings }): ScenarioSettings {
     return stored.settings ?? migrateLegacySections(stored.sections ?? {})
 }
 

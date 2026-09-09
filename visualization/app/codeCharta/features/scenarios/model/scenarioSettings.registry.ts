@@ -23,7 +23,7 @@ export interface ScenarioCamera {
 
 export type ScenarioBandColors = Partial<Omit<MapColors, "outgoingEdge" | "incomingEdge">>
 
-export interface ScenarioEdgeColors {
+interface ScenarioEdgeColors {
     readonly outgoingEdge?: string
     readonly incomingEdge?: string
 }

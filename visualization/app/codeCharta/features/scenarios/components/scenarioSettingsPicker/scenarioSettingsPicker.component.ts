@@ -8,7 +8,7 @@ import {
     ScenarioSettingKey
 } from "../../model/scenarioSettings.registry"
 
-export interface PickerSetting {
+interface PickerSetting {
     readonly key: ScenarioSettingKey
     readonly label: string
     readonly selected: boolean
