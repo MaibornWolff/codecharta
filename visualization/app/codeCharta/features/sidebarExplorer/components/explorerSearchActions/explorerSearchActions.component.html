@@ -44,4 +44,22 @@
             Exclude
         </button>
     </li>
+    @if (hasMetricRules) {
+        <li class="border-t border-base-300 mt-1 pt-1">
+            <button
+                type="button"
+                data-testid="search-bar-flatten-by-metric-button"
+                popovertarget="explorer-flatten-metric-rule"
+            >
+                <i class="fa-solid fa-arrows-down-to-line"></i>
+                Flatten by metric&hellip;
+            </button>
+        </li>
+        <li>
+            <button type="button" data-testid="search-bar-exclude-by-metric-button" popovertarget="explorer-exclude-metric-rule">
+                <i class="fa fa-ban"></i>
+                Exclude by metric&hellip;
+            </button>
+        </li>
+    }
 </ul>

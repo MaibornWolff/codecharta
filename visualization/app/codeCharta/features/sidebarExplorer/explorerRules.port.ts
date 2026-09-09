@@ -1,21 +1,21 @@
 import { InjectionToken } from "@angular/core"
 import { Observable } from "rxjs"
-import { BlacklistItem, BlacklistType } from "../../model/codeCharta.model"
-
-export type ExplorerRuleKind = "RULE" | "MANUAL"
+import { BlacklistItem, BlacklistType, MetricRule } from "../../model/codeCharta.model"
 
 /**
  * One row of a rules popover. `label` is what the row shows and `id` identifies it for tracking;
  * the variant carries whatever the port needs to remove it, so a row never has to be resolved
  * back to its source.
  */
-export type RuleWithCount = {
+interface RuleRow {
     id: string
     label: string
     affectedCount: number
-    kind: ExplorerRuleKind
-    item: BlacklistItem
 }
+
+export type RuleWithCount =
+    | (RuleRow & { kind: "RULE" | "MANUAL"; item: BlacklistItem })
+    | (RuleRow & { kind: "METRIC"; metricRule: MetricRule })
 
 export interface ExplorerRules {
     readonly flattenRules$: Observable<RuleWithCount[]>

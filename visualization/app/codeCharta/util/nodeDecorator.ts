@@ -1,9 +1,9 @@
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData, MetricRule } from "../model/codeCharta.model"
 import { createBlacklistMatcher } from "./blacklist/blacklistMatcher"
-import { createMetricRuleMatcher } from "./metricRule/metricRuleMatcher"
 import { isLeaf } from "./codeMapHelper"
 import { UNARY_METRIC } from "./metric/unaryMetric"
+import { createMetricRuleMatcher } from "./metricRule/metricRuleMatcher"
 
 const enum MedianSelectors {
     MEDIAN = "MEDIAN",

@@ -5,8 +5,8 @@ import { firstValueFrom } from "rxjs"
 import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../features/shared/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
 import { BlacklistItem, CcState } from "../../../model/codeCharta.model"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
-import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { addBlacklistItems, setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
+import { blacklistSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { addBlacklistItems, addMetricRule, setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
 import { resultsInEmptyMap } from "../../../util/blacklist/resultsInEmptyMap"
 import { BlacklistSearchPatternEffect } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { MetricsExplorerRules } from "./metricsExplorerRules"
@@ -60,6 +60,18 @@ describe("MetricsExplorerRules", () => {
 
         // Assert
         expect(await blacklistOfType("flatten")).toEqual([])
+    })
+
+    it("should remove a metric rule from the map's rules", async () => {
+        // Arrange
+        const rule = { id: "rule-1", metric: "mcc" as const, operator: "gt" as const, value: 10, type: "flatten" as const }
+        TestBed.inject(Store).dispatch(addMetricRule({ rule }))
+
+        // Act
+        rules.removeRule({ id: rule.id, label: "mcc > 10", affectedCount: 1, kind: "METRIC", metricRule: rule })
+
+        // Assert
+        expect(await firstValueFrom(TestBed.inject<Store<CcState>>(Store).select(metricRulesSelector))).toEqual([])
     })
 
     it("should report the pattern as unusable while the map's search is empty", async () => {

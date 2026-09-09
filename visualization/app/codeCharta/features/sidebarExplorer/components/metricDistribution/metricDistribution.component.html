@@ -1,0 +1,15 @@
+@if (hasBars()) {
+    <div class="flex flex-col gap-1" [attr.aria-label]="'Distribution of ' + metric()" data-testid="metric-distribution">
+        <div class="flex h-12 items-end gap-px">
+            @for (bar of bars(); track $index) {
+                <span class="flex-1 flex flex-col justify-end rounded-t-sm bg-base-300" [style.height.%]="bar.heightPercent" [title]="bar.tooltip">
+                    <span class="w-full rounded-t-sm bg-primary" [style.height.%]="bar.matchedPercent"></span>
+                </span>
+            }
+        </div>
+        <div class="flex justify-between text-[10px] opacity-60 tabular-nums">
+            <span>{{ minLabel() }}</span>
+            <span>{{ maxLabel() }}</span>
+        </div>
+    </div>
+}

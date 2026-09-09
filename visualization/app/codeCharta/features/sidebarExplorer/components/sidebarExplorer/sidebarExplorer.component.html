@@ -31,6 +31,18 @@
         <cc-rules-popover kind="flatten" popoverId="explorer-flatten-rules" anchorName="explorer-flat-chip"></cc-rules-popover>
         <cc-rules-popover kind="exclude" popoverId="explorer-hidden-rules" anchorName="explorer-hidden-chip"></cc-rules-popover>
     }
+    @if (capabilities.showRules && hasMetricRules) {
+        <cc-metric-rule-editor
+            type="flatten"
+            popoverId="explorer-flatten-metric-rule"
+            anchorName="explorer-search-actions"
+        ></cc-metric-rule-editor>
+        <cc-metric-rule-editor
+            type="exclude"
+            popoverId="explorer-exclude-metric-rule"
+            anchorName="explorer-search-actions"
+        ></cc-metric-rule-editor>
+    }
     <div
         class="absolute right-0 top-0 h-full w-1.5 cursor-col-resize select-none hover:bg-primary/40 active:bg-primary/60"
         (pointerdown)="startResize($event)"

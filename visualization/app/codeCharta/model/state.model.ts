@@ -1,6 +1,5 @@
 import {
     BlacklistItem,
-    MetricRule,
     CCFile,
     ColorLabelOptions,
     ColorMode,
@@ -12,6 +11,7 @@ import {
     LayoutAlgorithm,
     MapColors,
     MarkedPackage,
+    MetricRule,
     MetricsLensSource,
     PrimaryMetrics,
     Scaling,

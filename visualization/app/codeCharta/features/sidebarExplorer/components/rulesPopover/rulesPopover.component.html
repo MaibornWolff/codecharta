@@ -28,4 +28,17 @@
             }
         </ul>
     }
+    @if (hasMetricRules) {
+        <div class="border-t border-base-300 mt-1 pt-1">
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs w-full justify-start text-primary"
+                [attr.popovertarget]="editorPopoverId()"
+                data-testid="rules-popover-add-metric-rule-button"
+            >
+                <i class="fa fa-plus"></i>
+                {{ kind() === "flatten" ? "Flatten by metric…" : "Exclude by metric…" }}
+            </button>
+        </div>
+    }
 </div>
