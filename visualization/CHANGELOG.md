@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.2.0] - 2026-09-09
+
 ### Added 🚀
 
 - **Custom cloud shape**: the shape picker takes an uploaded SVG and lays the words out inside it, for as long as the tab is open.
