@@ -1,65 +1,11 @@
 import {
-    BlacklistItem,
-    ColorLabelOptions,
-    ColorMode,
-    ColorRange,
-    LabelMode,
-    MapColors,
-    MarkedPackage
-} from "../../../model/codeCharta.model"
-
-export interface PlainPosition {
-    readonly x: number
-    readonly y: number
-    readonly z: number
-}
-
-export interface MetricsSection {
-    readonly areaMetric: string
-    readonly heightMetric: string
-    readonly colorMetric: string
-    readonly edgeMetric?: string
-    readonly distributionMetric?: string
-    readonly isColorMetricLinkedToHeightMetric?: boolean
-}
-
-export interface ColorsSection {
-    readonly colorRange: ColorRange
-    readonly colorMode?: ColorMode
-    readonly mapColors?: Partial<MapColors>
-}
-
-interface CameraSection {
-    readonly position: PlainPosition
-    readonly target: PlainPosition
-}
-
-export interface FiltersSection {
-    readonly blacklist: readonly BlacklistItem[]
-    readonly focusedNodePath: readonly string[]
-}
-
-export interface LabelsAndFoldersSection {
-    readonly amountOfTopLabels: number
-    readonly labelSize: number
-    readonly showMetricLabelNameValue: boolean
-    readonly showMetricLabelNodeName: boolean
-    readonly enableFloorLabels: boolean
-    readonly colorLabels: ColorLabelOptions
-    readonly labelMode: LabelMode
-    readonly groupLabelCollisions: boolean
-    readonly markedPackages: readonly MarkedPackage[]
-}
-
-export type ScenarioSectionKey = "metrics" | "colors" | "camera" | "filters" | "labelsAndFolders"
-
-export interface ScenarioSections {
-    readonly metrics?: MetricsSection
-    readonly colors?: ColorsSection
-    readonly camera?: CameraSection
-    readonly filters?: FiltersSection
-    readonly labelsAndFolders?: LabelsAndFoldersSection
-}
+    SCENARIO_GROUP_KEYS,
+    SCENARIO_SETTING_KEYS,
+    SCENARIO_SETTINGS,
+    ScenarioGroupKey,
+    ScenarioSettingKey,
+    ScenarioSettings
+} from "./scenarioSettings.registry"
 
 export interface Scenario {
     readonly id: string
@@ -68,47 +14,37 @@ export interface Scenario {
     readonly mapFileNames?: readonly string[]
     readonly createdAt: number
     readonly isBuiltIn?: boolean
-    readonly sections: ScenarioSections
-}
-
-export function getAvailableSectionKeys(scenario: Scenario): ScenarioSectionKey[] {
-    const allKeys: ScenarioSectionKey[] = ["metrics", "colors", "camera", "filters", "labelsAndFolders"]
-    return allKeys.filter(key => scenario.sections[key] !== undefined)
-}
-
-export const SCENARIO_SECTION_LABELS: Record<ScenarioSectionKey, string> = {
-    metrics: "Metrics",
-    colors: "Colors",
-    camera: "Camera",
-    filters: "Filters",
-    labelsAndFolders: "Labels & Folders"
-}
-
-export const SCENARIO_SECTION_ICONS: Record<ScenarioSectionKey, string> = {
-    metrics: "fa-bar-chart",
-    colors: "fa-paint-brush",
-    camera: "fa-video-camera",
-    filters: "fa-filter",
-    labelsAndFolders: "fa-tags"
+    readonly settings: ScenarioSettings
 }
 
 export const CCSCENARIO_EXTENSION = ".ccscenario"
 
+export const SCENARIO_SCHEMA_VERSION = 2
+
 export interface ScenarioFile {
-    readonly schemaVersion: 1
+    readonly schemaVersion: typeof SCENARIO_SCHEMA_VERSION
     readonly name: string
     readonly description?: string
     readonly mapFileNames?: readonly string[]
-    readonly sections: ScenarioSections
+    readonly settings: ScenarioSettings
+}
+
+export function getAvailableSettingKeys(scenario: Scenario): ScenarioSettingKey[] {
+    return SCENARIO_SETTING_KEYS.filter(key => scenario.settings[key] !== undefined)
+}
+
+export function getAvailableGroupKeys(scenario: Scenario): ScenarioGroupKey[] {
+    const availableGroups = new Set(getAvailableSettingKeys(scenario).map(key => SCENARIO_SETTINGS[key].group))
+    return SCENARIO_GROUP_KEYS.filter(group => availableGroups.has(group))
 }
 
 export function toScenarioFile(scenario: Scenario): ScenarioFile {
     return {
-        schemaVersion: 1,
+        schemaVersion: SCENARIO_SCHEMA_VERSION,
         name: scenario.name,
         ...(scenario.description ? { description: scenario.description } : {}),
         ...(scenario.mapFileNames?.length > 0 ? { mapFileNames: scenario.mapFileNames } : {}),
-        sections: scenario.sections
+        settings: scenario.settings
     }
 }
 
@@ -119,6 +55,6 @@ export function fromScenarioFile(file: ScenarioFile): Scenario {
         description: file.description,
         mapFileNames: file.mapFileNames,
         createdAt: Date.now(),
-        sections: file.sections
+        settings: file.settings
     }
 }

@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../playwright.helper"
+import { MetricsBarPageObject } from "../../metricsBar/components/metricsBar/metricsBar.po"
 import { ScenariosPageObject } from "./scenarios.po"
 
 test.describe("Scenarios", () => {
@@ -31,7 +32,7 @@ test.describe("Scenarios", () => {
         await expect(scenarios.scenarioListItem("My Test Scenario")).toBeVisible()
     })
 
-    test("should open apply dialog with section checkboxes when clicking a scenario", async ({ page }) => {
+    test("should open apply dialog with setting checkboxes when clicking a scenario", async ({ page }) => {
         const scenarios = new ScenariosPageObject(page)
 
         await scenarios.openScenarioList()
@@ -39,6 +40,69 @@ test.describe("Scenarios", () => {
 
         await expect(scenarios.applyDialog()).toBeVisible()
         await expect(scenarios.applyDialogTitle()).toHaveText("Apply: Real Lines of Code")
+        await expect(scenarios.applySettingCheckbox("areaMetric")).toBeChecked()
+    })
+
+    test("should leave out the settings that were unchecked while saving", async ({ page }) => {
+        const scenarios = new ScenariosPageObject(page)
+
+        await scenarios.openSaveDialog()
+        await scenarios.openExtendedSaveSettings()
+        await scenarios.toggleSaveSettingGroup("color")
+        await scenarios.saveScenario("Without colors")
+
+        await scenarios.openScenarioList()
+        await scenarios.clickScenarioByName("Without colors")
+
+        await expect(scenarios.applySettingCheckbox("margin")).toBeChecked()
+        await expect(scenarios.applySettingCheckbox("colorRange")).toHaveCount(0)
+    })
+
+    test("should turn every setting off and back to the default selection", async ({ page }) => {
+        const scenarios = new ScenariosPageObject(page)
+
+        await scenarios.openSaveDialog()
+        await scenarios.openExtendedSaveSettings()
+        await scenarios.clickSaveSettingsToggle("select-none")
+
+        await expect(scenarios.saveButton()).toBeDisabled()
+
+        await scenarios.clickSaveSettingsToggle("reset")
+        await page.getByRole("dialog", { name: "Save Scenario" }).locator("#scenario-name").fill("Reset scenario")
+
+        await expect(scenarios.saveButton()).toBeEnabled()
+        await expect(scenarios.applySettingCheckboxInSaveDialog("margin")).toBeChecked()
+        await expect(scenarios.applySettingCheckboxInSaveDialog("camera")).not.toBeChecked()
+    })
+
+    test("should apply the settings a scenario carries", async ({ page }) => {
+        const scenarios = new ScenariosPageObject(page)
+        const metricsBar = new MetricsBarPageObject(page)
+
+        await metricsBar.openAreaMetricSelect()
+        await metricsBar.selectAreaMetricOption("sonar_complexity")
+        expect(await metricsBar.getSelectedAreaMetricName()).toBe("sonar_complexity")
+
+        await scenarios.openScenarioList()
+        await scenarios.clickScenarioByName("Real Lines of Code")
+        await scenarios.applyScenario()
+
+        await expect(metricsBar.selectedAreaMetricName()).toHaveText("rloc")
+    })
+
+    test("should apply everything a scenario holds from the apply-all button", async ({ page }) => {
+        const scenarios = new ScenariosPageObject(page)
+        const metricsBar = new MetricsBarPageObject(page)
+
+        await metricsBar.openAreaMetricSelect()
+        await metricsBar.selectAreaMetricOption("sonar_complexity")
+
+        await scenarios.openScenarioList()
+        await scenarios.clickScenarioByName("Real Lines of Code")
+        await expect(scenarios.applySelectedButton()).toContainText("Apply 7 settings")
+        await scenarios.applyWholeScenario()
+
+        await expect(metricsBar.selectedAreaMetricName()).toHaveText("rloc")
     })
 
     test("should filter scenarios by search term", async ({ page }) => {

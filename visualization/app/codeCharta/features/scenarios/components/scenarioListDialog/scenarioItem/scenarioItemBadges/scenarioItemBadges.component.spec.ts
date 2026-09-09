@@ -8,14 +8,14 @@ const createTestView = (overrides: Partial<ScenarioView> = {}): ScenarioView => 
         id: "test-id",
         name: "Test Scenario",
         createdAt: Date.now(),
-        sections: { metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" } }
+        settings: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" }
     }
     return {
         scenario,
         warning: false,
         mapMismatch: false,
         mapBound: false,
-        sectionKeys: ["metrics"],
+        groupKeys: ["area"],
         formattedDate: "1/1/2024",
         ...overrides
     }
@@ -81,13 +81,13 @@ describe("ScenarioItemBadgesComponent", () => {
         expect(pinBadge).toBeTruthy()
     })
 
-    it("should render section icons for each section key", () => {
+    it("should render a group icon for each group the scenario carries settings for", () => {
         // Arrange
         TestBed.configureTestingModule({ imports: [ScenarioItemBadgesComponent] })
         const fixture = TestBed.createComponent(ScenarioItemBadgesComponent)
 
         // Act
-        fixture.componentRef.setInput("view", createTestView({ sectionKeys: ["metrics", "colors"] }))
+        fixture.componentRef.setInput("view", createTestView({ groupKeys: ["height", "color"] }))
         fixture.detectChanges()
 
         // Assert

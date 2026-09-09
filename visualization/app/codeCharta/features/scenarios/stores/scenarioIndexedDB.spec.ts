@@ -14,51 +14,19 @@ const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
     id: `test-id-${++idCounter}`,
     name: "Test Scenario",
     createdAt: Date.now(),
-    sections: {
-        metrics: {
-            areaMetric: "rloc",
-            heightMetric: "mcc",
-            colorMetric: "mcc",
-            edgeMetric: "pairingRate",
-            distributionMetric: "rloc"
-        },
-        colors: {
-            colorRange: { from: 1, to: 10 },
-            colorMode: ColorMode.weightedGradient,
-            mapColors: {
-                positive: "#69AE40",
-                neutral: "#ddcc00",
-                negative: "#820E0E",
-                selected: "#EB8319",
-                positiveDelta: "#69FF40",
-                negativeDelta: "#ff0E0E",
-                base: "#666666",
-                flat: "#AAAAAA",
-                markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff"],
-                outgoingEdge: "#FF1D8E",
-                incomingEdge: "#1d8eff",
-                labelColorAndAlpha: { rgb: "#000000", alpha: 0.7 }
-            }
-        },
-        camera: {
-            position: { x: 0, y: 300, z: 1000 },
-            target: { x: 0, y: 0, z: 0 }
-        },
-        filters: {
-            blacklist: [],
-            focusedNodePath: []
-        },
-        labelsAndFolders: {
-            amountOfTopLabels: 1,
-            labelSize: 1,
-            showMetricLabelNameValue: true,
-            showMetricLabelNodeName: true,
-            enableFloorLabels: false,
-            colorLabels: { positive: false, negative: false, neutral: false },
-            labelMode: LabelMode.Height,
-            groupLabelCollisions: false,
-            markedPackages: []
-        }
+    settings: {
+        areaMetric: "rloc",
+        heightMetric: "mcc",
+        colorMetric: "mcc",
+        edgeMetric: "pairingRate",
+        colorRange: { from: 1, to: 10 },
+        colorMode: ColorMode.weightedGradient,
+        mapColors: { positive: "#69AE40", neutral: "#ddcc00", negative: "#820E0E" },
+        edgeColors: { outgoingEdge: "#FF1D8E", incomingEdge: "#1d8eff" },
+        labelMode: LabelMode.Height,
+        camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
+        blacklist: [],
+        focusedNodePath: []
     },
     ...overrides
 })
@@ -87,6 +55,25 @@ describe("ScenarioIndexedDBService", () => {
 
             // Assert
             expect(result.find(s => s.id === scenario.id)).toEqual(scenario)
+        })
+
+        it("should read a scenario stored by an earlier version as settings", async () => {
+            // Arrange
+            const legacyScenario = {
+                id: `legacy-id-${++idCounter}`,
+                name: "Legacy Scenario",
+                createdAt: Date.now(),
+                sections: { metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" } }
+            }
+            await service.add(legacyScenario as unknown as Scenario)
+
+            // Act
+            const result = await service.readAll()
+
+            // Assert
+            const found = result.find(scenario => scenario.id === legacyScenario.id)
+            expect(found?.settings).toEqual({ areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" })
+            expect(found).not.toHaveProperty("sections")
         })
 
         it("should throw when adding a duplicate id", async () => {

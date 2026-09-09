@@ -7,78 +7,44 @@ import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } fro
 import { setIsLoadingFile } from "../../../stores/fileStore/store/isLoadingFile/isLoadingFile.actions"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
-import { MetricsSection, Scenario, ScenarioSectionKey, ScenarioSections } from "../model/scenario.model"
+import { Scenario } from "../model/scenario.model"
+import { ScenarioSettingKey, ScenarioSettings } from "../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "./scenarioApplier.service"
 
-const testSections: ScenarioSections = {
-    metrics: {
-        areaMetric: "rloc",
-        heightMetric: "mcc",
-        colorMetric: "mcc",
-        edgeMetric: "pairingRate",
-        distributionMetric: "rloc",
-        isColorMetricLinkedToHeightMetric: true
-    },
-    colors: {
-        colorRange: { from: 1, to: 10 },
-        colorMode: ColorMode.weightedGradient,
-        mapColors: {
-            positive: "#69AE40",
-            neutral: "#ddcc00",
-            negative: "#820E0E",
-            selected: "#EB8319",
-            positiveDelta: "#69FF40",
-            negativeDelta: "#ff0E0E",
-            base: "#666666",
-            flat: "#AAAAAA",
-            markingColors: ["#FF1D8E"],
-            outgoingEdge: "#FF1D8E",
-            incomingEdge: "#1d8eff",
-            labelColorAndAlpha: { rgb: "#000000", alpha: 0.7 }
-        }
-    },
-    camera: {
-        position: { x: 100, y: 200, z: 300 },
-        target: { x: 10, y: 0, z: 20 }
-    },
-    filters: {
-        blacklist: [{ path: "/root/file.ts", type: "exclude" }],
-        focusedNodePath: ["/root/src"]
-    },
-    labelsAndFolders: {
-        amountOfTopLabels: 5,
-        labelSize: 1.5,
-        showMetricLabelNameValue: true,
-        showMetricLabelNodeName: false,
-        enableFloorLabels: true,
-        colorLabels: { positive: true, negative: false, neutral: false },
-        labelMode: LabelMode.Color,
-        groupLabelCollisions: true,
-        markedPackages: [{ path: "/root/src", color: "#FF0000" }]
-    }
+const testSettings: ScenarioSettings = {
+    areaMetric: "rloc",
+    margin: 30,
+    invertArea: true,
+    heightMetric: "mcc",
+    heightScaling: 3,
+    colorMetric: "mcc",
+    isColorMetricLinkedToHeightMetric: true,
+    colorRange: { from: 1, to: 10 },
+    colorMode: ColorMode.weightedGradient,
+    mapColors: { positive: "#69AE40", neutral: "#ddcc00", negative: "#820E0E", markingColors: ["#FF1D8E"] },
+    markedPackages: [{ path: "/root/src", color: "#FF0000" }],
+    edgeMetric: "pairingRate",
+    amountOfEdgePreviews: 7,
+    edgeHeight: 5,
+    showOnlyBuildingsWithEdges: true,
+    edgeColors: { outgoingEdge: "#FF1D8E", incomingEdge: "#1d8eff" },
+    amountOfTopLabels: 5,
+    labelsPerMap: true,
+    labelMode: LabelMode.Color,
+    groupLabelCollisions: true,
+    camera: { position: { x: 100, y: 200, z: 300 }, target: { x: 10, y: 0, z: 20 } },
+    blacklist: [{ path: "/root/file.ts", type: "exclude" }],
+    focusedNodePath: ["/root/src"]
 }
 
-function mergePatches(patches: RecursivePartial<CcState>[]): RecursivePartial<CcState> {
-    const merged: RecursivePartial<CcState> = {}
-    for (const patch of patches) {
-        if (patch.sharedView) {
-            merged.sharedView = { ...merged.sharedView, ...patch.sharedView }
-        }
-        if (patch.preferences) {
-            merged.preferences = { ...merged.preferences, ...patch.preferences }
-        }
-        if (patch.mapState) {
-            merged.mapState = { ...merged.mapState, ...patch.mapState }
-        }
-    }
-    return merged
-}
+/** The keys the test scenario carries — not every key of the registry. */
+const carriedKeys = new Set(Object.keys(testSettings) as ScenarioSettingKey[])
 
-const createTestScenario = (): Scenario => ({
+const createTestScenario = (settings: ScenarioSettings = testSettings): Scenario => ({
     id: "test-id",
     name: "Test",
     createdAt: Date.now(),
-    sections: testSections
+    settings
 })
 
 describe("ScenarioApplierService", () => {
@@ -114,169 +80,156 @@ describe("ScenarioApplierService", () => {
     })
 
     describe("buildOrderedStatePatches", () => {
-        it("should produce metrics patch first when metrics is selected", () => {
+        it("should patch the metric selections first", () => {
             // Arrange
-            const keys = new Set<ScenarioSectionKey>(["metrics"])
+            const keys = new Set<ScenarioSettingKey>(["areaMetric", "heightMetric", "colorRange"])
 
             // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSettings, keys)
+
+            // Assert
+            expect(patches).toHaveLength(2)
+            expect(patches[0].mapState).toEqual({ areaMetric: "rloc", heightMetric: "mcc" })
+            expect(patches[1].mapState).toEqual({ colorRange: { from: 1, to: 10 } })
+        })
+
+        it("should patch a single patch when only metric selections are selected", () => {
+            // Arrange
+            const keys = new Set<ScenarioSettingKey>(["areaMetric", "edgeMetric"])
+
+            // Act
+            const patches = service.buildOrderedStatePatches(testSettings, keys)
 
             // Assert
             expect(patches).toHaveLength(1)
-            expect(patches[0].mapState?.areaMetric).toBe("rloc")
-            expect(patches[0].mapState?.heightMetric).toBe("mcc")
-            expect(patches[0].preferences?.isColorMetricLinkedToHeightMetric).toBe(true)
+            expect(patches[0].mapState).toEqual({ areaMetric: "rloc", edgeMetric: "pairingRate" })
         })
 
-        it("should produce metrics before colors as separate patches", () => {
-            // Arrange
-            const keys = new Set<ScenarioSectionKey>(["metrics", "colors"])
-
+        it("should patch every selected setting into its state home", () => {
             // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys)
-
-            // Assert — metrics is patch 0, colors is patch 1
-            expect(patches).toHaveLength(2)
-            expect(patches[0].mapState?.areaMetric).toBe("rloc")
-            expect(patches[0].mapState?.colorRange).toBeUndefined()
-            expect(patches[1].mapState?.colorRange).toEqual({ from: 1, to: 10 })
-            expect(patches[1].mapState?.mapColors).toEqual(testSections.colors.mapColors)
-        })
-
-        it("should apply filters and labels in a third patch", () => {
-            // Arrange
-            const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "filters", "labelsAndFolders"])
-
-            // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSettings, carriedKeys)
 
             // Assert
-            expect(patches).toHaveLength(3)
-            expect(patches[2].sharedView?.blacklist).toEqual(testSections.filters.blacklist)
-            expect(patches[2].sharedView?.focusedNodePath).toEqual(["/root/src"])
-            expect(patches[2].mapState?.amountOfTopLabels).toBe(5)
-            expect(patches[2].mapState?.labelMode).toBe(LabelMode.Color)
-            expect(patches[2].mapState?.groupLabelCollisions).toBe(true)
-            expect(patches[2].sharedView?.markedPackages).toEqual(testSections.labelsAndFolders.markedPackages)
+            const settingsPatch = patches[1]
+            expect(settingsPatch.mapState?.margin).toBe(30)
+            expect(settingsPatch.mapState?.invertArea).toBe(true)
+            expect(settingsPatch.mapState?.scaling).toEqual({ y: 3 })
+            expect(settingsPatch.mapState?.amountOfEdgePreviews).toBe(7)
+            expect(settingsPatch.mapState?.labelsPerMap).toBe(true)
+            expect(settingsPatch.sharedView?.blacklist).toEqual(testSettings.blacklist)
+            expect(settingsPatch.sharedView?.markedPackages).toEqual(testSettings.markedPackages)
         })
 
-        it("should apply all sections correctly when merged", () => {
-            // Arrange
-            const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
+        it("should patch the color-follows-height link with the metric selections", () => {
+            // Arrange — the link makes an effect re-select the color metric, which re-derives the color range
+            const keys = new Set<ScenarioSettingKey>(["isColorMetricLinkedToHeightMetric", "colorRange"])
 
             // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys)
-            const merged = mergePatches(patches)
+            const patches = service.buildOrderedStatePatches(testSettings, keys)
 
             // Assert
-            expect(merged.mapState?.areaMetric).toBe("rloc")
-            expect(merged.mapState?.colorRange).toEqual({ from: 1, to: 10 })
-            expect(merged.sharedView?.blacklist).toHaveLength(1)
-            expect(merged.mapState?.amountOfTopLabels).toBe(5)
+            expect(patches[0].preferences).toEqual({ isColorMetricLinkedToHeightMetric: true })
+            expect(patches[1].mapState).toEqual({ colorRange: { from: 1, to: 10 } })
         })
 
-        it("should return empty array when no keys are selected", () => {
+        it("should merge band colors and edge colors into one map colors patch", () => {
             // Arrange
-            const keys = new Set<ScenarioSectionKey>()
+            const keys = new Set<ScenarioSettingKey>(["mapColors", "edgeColors"])
 
             // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSettings, keys)
+
+            // Assert
+            expect(patches[0].mapState?.mapColors).toEqual({
+                positive: "#69AE40",
+                neutral: "#ddcc00",
+                negative: "#820E0E",
+                markingColors: ["#FF1D8E"],
+                outgoingEdge: "#FF1D8E",
+                incomingEdge: "#1d8eff"
+            })
+        })
+
+        it("should patch nothing when nothing is selected", () => {
+            // Act
+            const patches = service.buildOrderedStatePatches(testSettings, new Set<ScenarioSettingKey>())
 
             // Assert
             expect(patches).toHaveLength(0)
         })
 
-        it("should skip unavailable metrics when metricData is provided", () => {
+        it("should patch nothing for the camera, which the camera services move", () => {
+            // Act
+            const patches = service.buildOrderedStatePatches(testSettings, new Set<ScenarioSettingKey>(["camera"]))
+
+            // Assert
+            expect(patches).toHaveLength(0)
+        })
+
+        it("should skip settings the scenario does not carry", () => {
             // Arrange
-            const keys = new Set<ScenarioSectionKey>(["metrics"])
+            const scenarioSettings: ScenarioSettings = { areaMetric: "rloc" }
+
+            // Act
+            const patches = service.buildOrderedStatePatches(scenarioSettings, carriedKeys)
+
+            // Assert
+            expect(patches).toHaveLength(1)
+            expect(patches[0].mapState).toEqual({ areaMetric: "rloc" })
+        })
+
+        it("should skip metrics the current map does not have", () => {
+            // Arrange
             const metricData: MetricData = {
                 nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
                 edgeMetricData: []
             }
 
             // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys, metricData)
+            const patches = service.buildOrderedStatePatches(testSettings, carriedKeys, metricData)
 
             // Assert — rloc is available, mcc and pairingRate are not
-            expect(patches[0].mapState?.areaMetric).toBe("rloc")
-            expect(patches[0].mapState?.distributionMetric).toBe("rloc")
-            expect(patches[0].mapState?.heightMetric).toBeUndefined()
-            expect(patches[0].mapState?.colorMetric).toBeUndefined()
-            expect(patches[0].mapState?.edgeMetric).toBeUndefined()
+            expect(patches[0].mapState).toEqual({ areaMetric: "rloc" })
         })
 
-        it("should apply all metrics when metricData is not provided", () => {
-            // Arrange
-            const keys = new Set<ScenarioSectionKey>(["metrics"])
-
+        it("should apply every metric when the available metrics are unknown", () => {
             // Act
-            const patches = service.buildOrderedStatePatches(testSections, keys)
+            const patches = service.buildOrderedStatePatches(testSettings, carriedKeys)
 
             // Assert
-            expect(patches[0].mapState?.areaMetric).toBe("rloc")
-            expect(patches[0].mapState?.heightMetric).toBe("mcc")
-            expect(patches[0].mapState?.edgeMetric).toBe("pairingRate")
+            expect(patches[0].mapState).toEqual({
+                areaMetric: "rloc",
+                heightMetric: "mcc",
+                colorMetric: "mcc",
+                edgeMetric: "pairingRate"
+            })
         })
 
-        it("should handle partial metrics section (built-in scenario)", () => {
+        it("should apply an empty edge metric, which means no edge metric at all", () => {
             // Arrange
-            const partialSections: ScenarioSections = {
-                metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
-                colors: { colorRange: { from: 250, to: 500 } }
-            }
-            const keys = new Set<ScenarioSectionKey>(["metrics", "colors"])
+            const metricData: MetricData = { nodeMetricData: [], edgeMetricData: [] }
 
             // Act
-            const patches = service.buildOrderedStatePatches(partialSections, keys)
+            const patches = service.buildOrderedStatePatches({ edgeMetric: "" }, new Set<ScenarioSettingKey>(["edgeMetric"]), metricData)
 
             // Assert
-            expect(patches).toHaveLength(2)
-            expect(patches[0].mapState?.areaMetric).toBe("rloc")
-            expect(patches[0].mapState?.edgeMetric).toBeUndefined()
-            expect(patches[0].mapState?.distributionMetric).toBeUndefined()
-            expect(patches[0].preferences?.isColorMetricLinkedToHeightMetric).toBeUndefined()
-            expect(patches[1].mapState?.colorRange).toEqual({ from: 250, to: 500 })
-            expect(patches[1].mapState?.colorMode).toBeUndefined()
-            expect(patches[1].preferences).toBeUndefined()
-        })
-
-        it("should skip undefined sections even if selected", () => {
-            // Arrange
-            const partialSections: ScenarioSections = {
-                metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" }
-            }
-            const keys = new Set<ScenarioSectionKey>(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
-
-            // Act
-            const patches = service.buildOrderedStatePatches(partialSections, keys)
-
-            // Assert — only metrics patch, no colors/filters/labels
-            expect(patches).toHaveLength(1)
-            expect(patches[0].mapState?.areaMetric).toBe("rloc")
+            expect(patches[0].mapState).toEqual({ edgeMetric: "" })
         })
     })
 
     describe("getCameraVectors", () => {
         it("should reconstruct Vector3 objects from plain positions", () => {
             // Act
-            const result = service.getCameraVectors(testSections)
+            const result = service.getCameraVectors(testSettings)
 
             // Assert
-            expect(result).toBeDefined()
-            expect(result?.position.x).toBe(100)
-            expect(result?.position.y).toBe(200)
-            expect(result?.position.z).toBe(300)
-            expect(result?.target.x).toBe(10)
-            expect(result?.target.y).toBe(0)
-            expect(result?.target.z).toBe(20)
+            expect(result?.position.toArray()).toEqual([100, 200, 300])
+            expect(result?.target.toArray()).toEqual([10, 0, 20])
         })
 
-        it("should return undefined when camera section is missing", () => {
-            // Arrange
-            const noCamera: ScenarioSections = { metrics: testSections.metrics }
-
+        it("should return undefined when the scenario has no camera", () => {
             // Act
-            const result = service.getCameraVectors(noCamera)
+            const result = service.getCameraVectors({ areaMetric: "rloc" })
 
             // Assert
             expect(result).toBeUndefined()
@@ -291,8 +244,7 @@ describe("ScenarioApplierService", () => {
             const subscription = isApplyingScenario$.subscribe(value => flags.push(value))
 
             // Act
-            const promise = service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
-            await promise
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["areaMetric"]))
             subscription.unsubscribe()
 
             // Assert — applying a scenario is not a file load, so it raises its own flag
@@ -305,53 +257,67 @@ describe("ScenarioApplierService", () => {
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["areaMetric"]))
 
             // Assert
             expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: true }))
             expect(dispatchSpy).not.toHaveBeenCalledWith(setIsLoadingFile({ value: false }))
         })
 
-        it("should dispatch setState for metrics section", async () => {
+        it("should dispatch the selected settings as a state patch", async () => {
             // Arrange
             const scenario = createTestScenario()
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["areaMetric"]))
 
             // Assert
             expect(dispatchSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     value: expect.objectContaining({
-                        mapState: expect.objectContaining({
-                            areaMetric: scenario.sections.metrics.areaMetric
-                        })
+                        mapState: expect.objectContaining({ areaMetric: "rloc" })
                     })
                 })
             )
         })
 
-        it("should apply camera position when camera section is selected", async () => {
+        it("should apply the camera position when the camera is selected", async () => {
             // Arrange
             const scenario = createTestScenario()
 
             // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["camera"]))
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["camera"]))
 
             // Assert
+            expect(threeCameraService.camera.position.toArray()).toEqual([100, 200, 300])
             expect(threeCameraService.camera.lookAt).toHaveBeenCalled()
             expect(threeCameraService.camera.updateProjectionMatrix).toHaveBeenCalled()
             expect(threeMapControlsService.setControlTarget).toHaveBeenCalled()
             expect(threeMapControlsService.updateControls).toHaveBeenCalled()
         })
 
-        it("should not apply camera when camera section is not selected", async () => {
+        it("should turn the camera reset off while it moves the camera and back on afterwards", async () => {
+            // Arrange
+            const scenario = createTestScenario()
+            const dispatchSpy = jest.spyOn(store, "dispatch")
+
+            // Act
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["camera", "margin"]))
+            await new Promise<void>(resolve => setTimeout(resolve))
+
+            // Assert — autoFit would otherwise overwrite the camera the scenario carries
+            const patches = dispatchSpy.mock.calls.map(([action]) => (action as unknown as { value: RecursivePartial<CcState> }).value)
+            expect(patches[0].preferences?.resetCameraIfNewFileIsLoaded).toBe(false)
+            expect(patches.at(-1)?.preferences?.resetCameraIfNewFileIsLoaded).toBe(true)
+        })
+
+        it("should not apply the camera when it is not selected", async () => {
             // Arrange
             const scenario = createTestScenario()
 
             // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["areaMetric"]))
 
             // Assert
             expect(threeCameraService.camera.lookAt).not.toHaveBeenCalled()
@@ -362,7 +328,7 @@ describe("ScenarioApplierService", () => {
             const scenario = createTestScenario()
 
             // Act
-            await service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))
+            await service.applyScenario(scenario, new Set<ScenarioSettingKey>(["areaMetric"]))
 
             // Assert
             expect(threeRendererService.render).toHaveBeenCalled()
@@ -378,7 +344,7 @@ describe("ScenarioApplierService", () => {
             const subscription = isApplyingScenario$.subscribe(value => flags.push(value))
 
             // Act
-            await expect(service.applyScenario(scenario, new Set<ScenarioSectionKey>(["metrics"]))).rejects.toThrow("render failed")
+            await expect(service.applyScenario(scenario, new Set<ScenarioSettingKey>(["areaMetric"]))).rejects.toThrow("render failed")
             subscription.unsubscribe()
 
             // Assert
@@ -387,12 +353,11 @@ describe("ScenarioApplierService", () => {
     })
 
     describe("getMissingMetrics", () => {
-        const metricsSection: MetricsSection = {
+        const metricSettings: ScenarioSettings = {
             areaMetric: "rloc",
             heightMetric: "mcc",
             colorMetric: "mcc",
-            edgeMetric: "pairingRate",
-            distributionMetric: "rloc"
+            edgeMetric: "pairingRate"
         }
 
         it("should return no missing metrics when all are available", () => {
@@ -406,7 +371,7 @@ describe("ScenarioApplierService", () => {
             }
 
             // Act
-            const result = service.getMissingMetrics(metricsSection, metricData)
+            const result = service.getMissingMetrics(metricSettings, metricData)
 
             // Assert
             expect(result.nodeMetrics).toEqual([])
@@ -422,7 +387,7 @@ describe("ScenarioApplierService", () => {
             }
 
             // Act
-            const result = service.getMissingMetrics(metricsSection, metricData)
+            const result = service.getMissingMetrics(metricSettings, metricData)
 
             // Assert
             expect(result.nodeMetrics).toEqual(["mcc"])
@@ -440,7 +405,7 @@ describe("ScenarioApplierService", () => {
             }
 
             // Act
-            const result = service.getMissingMetrics(metricsSection, metricData)
+            const result = service.getMissingMetrics(metricSettings, metricData)
 
             // Assert
             expect(result.edgeMetrics).toEqual(["pairingRate"])
@@ -449,59 +414,27 @@ describe("ScenarioApplierService", () => {
 
         it("should deduplicate node metrics that appear in multiple roles", () => {
             // Arrange
-            const section: MetricsSection = {
-                areaMetric: "rloc",
-                heightMetric: "rloc",
-                colorMetric: "rloc",
-                edgeMetric: "",
-                distributionMetric: "rloc"
-            }
-            const metricData: MetricData = {
-                nodeMetricData: [],
-                edgeMetricData: []
-            }
+            const settings: ScenarioSettings = { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", edgeMetric: "" }
+            const metricData: MetricData = { nodeMetricData: [], edgeMetricData: [] }
 
             // Act
-            const result = service.getMissingMetrics(section, metricData)
+            const result = service.getMissingMetrics(settings, metricData)
 
             // Assert
             expect(result.nodeMetrics).toEqual(["rloc"])
-        })
-
-        it("should handle partial metrics section with no optional fields", () => {
-            // Arrange
-            const section: MetricsSection = {
-                areaMetric: "rloc",
-                heightMetric: "complexity",
-                colorMetric: "complexity"
-            }
-            const metricData: MetricData = {
-                nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
-                edgeMetricData: []
-            }
-
-            // Act
-            const result = service.getMissingMetrics(section, metricData)
-
-            // Assert
-            expect(result.nodeMetrics).toEqual(["complexity"])
             expect(result.edgeMetrics).toEqual([])
         })
 
-        it("should not flag undefined optional metrics as missing", () => {
+        it("should not flag settings a scenario does not carry as missing", () => {
             // Arrange
-            const section: MetricsSection = {
-                areaMetric: "rloc",
-                heightMetric: "rloc",
-                colorMetric: "rloc"
-            }
+            const settings: ScenarioSettings = { areaMetric: "rloc" }
             const metricData: MetricData = {
                 nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0, values: [] }],
                 edgeMetricData: []
             }
 
             // Act
-            const result = service.getMissingMetrics(section, metricData)
+            const result = service.getMissingMetrics(settings, metricData)
 
             // Assert
             expect(result.nodeMetrics).toEqual([])

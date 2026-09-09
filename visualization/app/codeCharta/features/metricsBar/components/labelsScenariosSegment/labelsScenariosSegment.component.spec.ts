@@ -13,9 +13,12 @@ const createScenario = (name: string, id = "id-1"): Scenario => ({
     name,
     createdAt: 0,
     isBuiltIn: true,
-    sections: {
-        metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
-        colors: { colorRange: { from: 1, to: 10 }, colorMode: ColorMode.weightedGradient }
+    settings: {
+        areaMetric: "rloc",
+        heightMetric: "rloc",
+        colorMetric: "rloc",
+        colorRange: { from: 1, to: 10 },
+        colorMode: ColorMode.weightedGradient
     }
 })
 

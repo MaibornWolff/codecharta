@@ -1,4 +1,12 @@
-import { fromScenarioFile, Scenario, ScenarioFile, toScenarioFile } from "./scenario.model"
+import {
+    fromScenarioFile,
+    getAvailableGroupKeys,
+    getAvailableSettingKeys,
+    SCENARIO_SCHEMA_VERSION,
+    Scenario,
+    ScenarioFile,
+    toScenarioFile
+} from "./scenario.model"
 
 describe("scenario file conversion", () => {
     const testScenario: Scenario = {
@@ -8,9 +16,11 @@ describe("scenario file conversion", () => {
         mapFileNames: ["project.cc.json"],
         createdAt: 1700000000000,
         isBuiltIn: false,
-        sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" },
-            colors: { colorRange: { from: 1, to: 10 } }
+        settings: {
+            areaMetric: "rloc",
+            heightMetric: "mcc",
+            colorMetric: "mcc",
+            colorRange: { from: 1, to: 10 }
         }
     }
 
@@ -25,15 +35,15 @@ describe("scenario file conversion", () => {
             expect(file).not.toHaveProperty("isBuiltIn")
         })
 
-        it("should set schemaVersion to 1", () => {
+        it("should set the current schema version", () => {
             // Act
             const file = toScenarioFile(testScenario)
 
             // Assert
-            expect(file.schemaVersion).toBe(1)
+            expect(file.schemaVersion).toBe(SCENARIO_SCHEMA_VERSION)
         })
 
-        it("should preserve name, description, mapFileNames, and sections", () => {
+        it("should preserve name, description, mapFileNames, and settings", () => {
             // Act
             const file = toScenarioFile(testScenario)
 
@@ -41,7 +51,7 @@ describe("scenario file conversion", () => {
             expect(file.name).toBe("My Scenario")
             expect(file.description).toBe("A test scenario")
             expect(file.mapFileNames).toEqual(["project.cc.json"])
-            expect(file.sections).toEqual(testScenario.sections)
+            expect(file.settings).toEqual(testScenario.settings)
         })
 
         it("should omit description when not present", () => {
@@ -69,13 +79,11 @@ describe("scenario file conversion", () => {
 
     describe("fromScenarioFile", () => {
         const testFile: ScenarioFile = {
-            schemaVersion: 1,
+            schemaVersion: SCENARIO_SCHEMA_VERSION,
             name: "Imported Scenario",
             description: "Imported description",
             mapFileNames: ["file.cc.json"],
-            sections: {
-                metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" }
-            }
+            settings: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" }
         }
 
         it("should generate a new id", () => {
@@ -99,7 +107,7 @@ describe("scenario file conversion", () => {
             expect(scenario.createdAt).toBeLessThanOrEqual(Date.now())
         })
 
-        it("should preserve name, description, mapFileNames, and sections", () => {
+        it("should preserve name, description, mapFileNames, and settings", () => {
             // Act
             const scenario = fromScenarioFile(testFile)
 
@@ -107,7 +115,7 @@ describe("scenario file conversion", () => {
             expect(scenario.name).toBe("Imported Scenario")
             expect(scenario.description).toBe("Imported description")
             expect(scenario.mapFileNames).toEqual(["file.cc.json"])
-            expect(scenario.sections).toEqual(testFile.sections)
+            expect(scenario.settings).toEqual(testFile.settings)
         })
 
         it("should not set isBuiltIn", () => {
@@ -120,11 +128,53 @@ describe("scenario file conversion", () => {
 
         it("should generate different ids for each call", () => {
             // Act
-            const scenario1 = fromScenarioFile(testFile)
-            const scenario2 = fromScenarioFile(testFile)
+            const first = fromScenarioFile(testFile)
+            const second = fromScenarioFile(testFile)
 
             // Assert
-            expect(scenario1.id).not.toBe(scenario2.id)
+            expect(first.id).not.toBe(second.id)
+        })
+    })
+
+    describe("getAvailableSettingKeys", () => {
+        it("should list the settings a scenario carries in registry order", () => {
+            // Act
+            const keys = getAvailableSettingKeys(testScenario)
+
+            // Assert
+            expect(keys).toEqual(["areaMetric", "heightMetric", "colorMetric", "colorRange"])
+        })
+
+        it("should list nothing for a scenario without settings", () => {
+            // Act
+            const keys = getAvailableSettingKeys({ ...testScenario, settings: {} })
+
+            // Assert
+            expect(keys).toEqual([])
+        })
+    })
+
+    describe("getAvailableGroupKeys", () => {
+        it("should list the groups a scenario has settings for", () => {
+            // Act
+            const groupKeys = getAvailableGroupKeys(testScenario)
+
+            // Assert
+            expect(groupKeys).toEqual(["area", "height", "color"])
+        })
+
+        it("should list the camera group for a scenario carrying only a camera", () => {
+            // Arrange
+            const scenario: Scenario = {
+                ...testScenario,
+                settings: { camera: { position: { x: 1, y: 2, z: 3 }, target: { x: 0, y: 0, z: 0 } } }
+            }
+
+            // Act
+            const groupKeys = getAvailableGroupKeys(scenario)
+
+            // Assert
+            expect(groupKeys).toEqual(["camera"])
         })
     })
 })

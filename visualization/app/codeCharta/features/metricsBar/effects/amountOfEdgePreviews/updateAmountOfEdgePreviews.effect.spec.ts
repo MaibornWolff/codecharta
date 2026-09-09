@@ -57,6 +57,13 @@ describe("UpdateAmountOfEdgePreviewsEffect", () => {
         expect(await getLastAction(store)).toEqual({ type: "SET_AMOUNT_OF_EDGE_PREVIEWS", value: 3 })
     })
 
+    it("should clamp a preview amount a scenario carried over from a larger map", async () => {
+        store.overrideSelector(amountOfEdgePreviewsSelector, 50)
+        store.refreshState()
+
+        expect(await getLastAction(store)).toEqual({ type: "SET_AMOUNT_OF_EDGE_PREVIEWS", value: 10 })
+    })
+
     it("should not reset preview amount when it is 0", async () => {
         store.overrideSelector(amountOfEdgePreviewsSelector, 0)
         store.refreshState()

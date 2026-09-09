@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core"
 import { openCodeChartaDB, SCENARIOS_STORE_NAME } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { Scenario } from "../model/scenario.model"
+import { fromStoredScenario } from "../model/scenarioMigration"
 
 @Injectable({ providedIn: "root" })
 export class ScenarioIndexedDBService {
     async readAll(): Promise<Scenario[]> {
         const database = await openCodeChartaDB()
         const all = await database.getAll(SCENARIOS_STORE_NAME)
-        return all as Scenario[]
+        return all.map(fromStoredScenario)
     }
 
     async add(scenario: Scenario): Promise<void> {

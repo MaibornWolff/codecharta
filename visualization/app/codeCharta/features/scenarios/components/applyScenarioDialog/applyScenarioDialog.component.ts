@@ -7,25 +7,22 @@ import {
     ElementRef,
     inject,
     input,
+    linkedSignal,
     output,
-    signal,
     viewChild
 } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../model/codeCharta.model"
-import {
-    getAvailableSectionKeys,
-    SCENARIO_SECTION_ICONS,
-    SCENARIO_SECTION_LABELS,
-    Scenario,
-    ScenarioSectionKey
-} from "../../model/scenario.model"
+import { getAvailableSettingKeys, Scenario } from "../../model/scenario.model"
+import { pickScenarioSettings, SCENARIO_SETTINGS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+import { ScenarioSettingsPickerComponent } from "../scenarioSettingsPicker/scenarioSettingsPicker.component"
+import { settingCountLabel } from "../scenarioSettingsPicker/settingCountLabel"
 
 @Component({
     selector: "cc-apply-scenario-dialog",
     templateUrl: "./applyScenarioDialog.component.html",
-    imports: [FormsModule],
+    imports: [FormsModule, ScenarioSettingsPickerComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplyScenarioDialogComponent implements AfterViewInit {
@@ -35,25 +32,20 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
 
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    readonly sectionLabels = SCENARIO_SECTION_LABELS
-    readonly sectionIcons = SCENARIO_SECTION_ICONS
+    readonly availableKeys = computed(() => getAvailableSettingKeys(this.scenario()))
 
-    readonly availableSectionKeys = computed(() => getAvailableSectionKeys(this.scenario()))
+    /** The camera starts unchecked, so opening a scenario never moves the view unless it is asked for. */
+    readonly defaultKeys = computed(() => this.availableKeys().filter(key => SCENARIO_SETTINGS[key].group !== "camera"))
 
-    readonly selectedSections = signal<Record<ScenarioSectionKey, boolean>>({
-        metrics: true,
-        colors: true,
-        camera: true,
-        filters: true,
-        labelsAndFolders: true
-    })
+    readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(() => new Set(this.defaultKeys()))
 
-    readonly missingMetrics = computed(() => {
-        const metrics = this.scenario().sections.metrics
-        return metrics ? this.scenarioApplier.getMissingMetrics(metrics, this.metricData()) : { nodeMetrics: [], edgeMetrics: [] }
-    })
+    /** Only the metrics that are actually about to be applied can be missing from the current map. */
+    readonly missingMetrics = computed(() =>
+        this.scenarioApplier.getMissingMetrics(pickScenarioSettings(this.scenario().settings, this.selectedKeys()), this.metricData())
+    )
     readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
-    readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
+    readonly hasAnySelected = computed(() => this.selectedKeys().size > 0)
+    readonly applySelectedLabel = computed(() => `Apply ${settingCountLabel(this.selectedKeys().size)}`)
 
     private readonly destroyRef = inject(DestroyRef)
 
@@ -67,14 +59,18 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
         dialog.showModal()
     }
 
-    toggleSection(key: ScenarioSectionKey, checked: boolean) {
-        this.selectedSections.update(current => ({ ...current, [key]: checked }))
+    async apply() {
+        await this.applyKeys(this.selectedKeys())
     }
 
-    async apply() {
-        const selectedKeys = new Set<ScenarioSectionKey>(this.availableSectionKeys().filter(key => this.selectedSections()[key]))
+    /** Applies what the scenario holds whole, the camera along with it, whatever is ticked. */
+    async applyAll() {
+        await this.applyKeys(new Set(this.availableKeys()))
+    }
+
+    private async applyKeys(keys: ReadonlySet<ScenarioSettingKey>) {
         this.dialogElement().nativeElement.close()
-        await this.scenarioApplier.applyScenario(this.scenario(), selectedKeys, this.metricData())
+        await this.scenarioApplier.applyScenario(this.scenario(), keys, this.metricData())
     }
 
     close() {

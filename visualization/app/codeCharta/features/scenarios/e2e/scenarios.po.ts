@@ -41,6 +41,47 @@ export class ScenariosPageObject {
         return this.page.locator("cc-apply-scenario-dialog h2")
     }
 
+    applySettingCheckbox(settingKey: string): Locator {
+        return this.applyDialog().locator(`[data-testid='scenario-setting-${settingKey}']`)
+    }
+
+    async applyScenario() {
+        await this.applyDialog().locator("[data-testid='apply-scenario-selected']").click()
+        await this.applyDialog().waitFor({ state: "detached", timeout: 10_000 })
+    }
+
+    async applyWholeScenario() {
+        await this.applyDialog().locator("[data-testid='apply-scenario-all']").click()
+        await this.applyDialog().waitFor({ state: "detached", timeout: 10_000 })
+    }
+
+    applySelectedButton(): Locator {
+        return this.applyDialog().locator("[data-testid='apply-scenario-selected']")
+    }
+
+    async openExtendedSaveSettings() {
+        const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
+        await dialog.locator("[data-testid='save-scenario-extended-settings']").click()
+    }
+
+    async clickSaveSettingsToggle(action: "select-all" | "select-none" | "reset") {
+        const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
+        await dialog.locator(`[data-testid='scenario-settings-${action}']`).click()
+    }
+
+    applySettingCheckboxInSaveDialog(settingKey: string): Locator {
+        return this.page.getByRole("dialog", { name: "Save Scenario" }).locator(`[data-testid='scenario-setting-${settingKey}']`)
+    }
+
+    saveButton(): Locator {
+        return this.page.getByRole("dialog", { name: "Save Scenario" }).locator("[data-testid='save-scenario-submit']")
+    }
+
+    async toggleSaveSettingGroup(groupKey: string) {
+        const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
+        await dialog.locator(`[data-testid='scenario-group-${groupKey}']`).click()
+    }
+
     async closeScenarioList() {
         const dialog = this.page.getByRole("dialog", { name: "Scenarios" })
         await dialog.locator(".fa-close").click()
@@ -52,7 +93,7 @@ export class ScenariosPageObject {
         if (description) {
             await dialog.locator("#scenario-description").fill(description)
         }
-        await dialog.getByRole("button", { name: "Save" }).click()
+        await dialog.locator("[data-testid='save-scenario-submit']").click()
         await dialog.waitFor({ state: "detached", timeout: 10_000 })
     }
 

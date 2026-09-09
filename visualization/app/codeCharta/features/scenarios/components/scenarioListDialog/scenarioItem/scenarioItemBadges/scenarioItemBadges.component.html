@@ -11,8 +11,8 @@
 		</span>
 	}
 	<span class="flex gap-1.5 text-[11px] text-base-content/40">
-		@for (key of view().sectionKeys; track key) {
-			<i class="fa {{ sectionIcons[key] }}" [title]="sectionLabels[key]"></i>
+		@for (key of view().groupKeys; track key) {
+			<i class="fa {{ groupIcons[key] }}" [title]="groupLabels[key]"></i>
 		}
 	</span>
 </div>

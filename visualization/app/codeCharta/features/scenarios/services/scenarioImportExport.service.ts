@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, toScenarioFile } from "../model/scenario.model"
+import { parseScenarioFile } from "../model/scenarioMigration"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { ScenariosService } from "./scenarios.service"
 
@@ -28,15 +29,15 @@ export class ScenarioImportExportService {
         const existing = this.scenariosService.scenarios$.getValue()
         const result: ScenarioImportResult = { imported: 0, duplicates: [], invalid: [], parseErrors: [] }
         for (const file of files) {
-            let parsed: ScenarioFile
+            let parsed: ScenarioFile | undefined
             try {
                 const text = await file.text()
-                parsed = JSON.parse(text) as ScenarioFile
+                parsed = parseScenarioFile(JSON.parse(text))
             } catch {
                 result.parseErrors.push(file.name)
                 continue
             }
-            if (parsed.schemaVersion !== 1 || !parsed.name || !parsed.sections) {
+            if (!parsed) {
                 result.invalid.push(file.name)
                 continue
             }
@@ -56,6 +57,6 @@ export class ScenarioImportExportService {
     }
 
     private isDuplicate(file: ScenarioFile, existing: Scenario[]): boolean {
-        return existing.some(s => s.name === file.name && JSON.stringify(s.sections) === JSON.stringify(file.sections))
+        return existing.some(scenario => scenario.name === file.name && JSON.stringify(scenario.settings) === JSON.stringify(file.settings))
     }
 }

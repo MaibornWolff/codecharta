@@ -1,42 +1,28 @@
 import { TestBed } from "@angular/core/testing"
-import { ColorMode, LabelMode, MetricData } from "../../../../model/codeCharta.model"
+import { ColorMode, MetricData } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { Scenario, ScenarioSectionKey } from "../../model/scenario.model"
+import { Scenario } from "../../model/scenario.model"
+import { ScenarioSettingKey, ScenarioSettings } from "../../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ApplyScenarioDialogComponent } from "./applyScenarioDialog.component"
 
-const createTestScenario = (): Scenario => ({
+const testSettings: ScenarioSettings = {
+    areaMetric: "rloc",
+    margin: 30,
+    heightMetric: "mcc",
+    colorMetric: "mcc",
+    colorRange: { from: 1, to: 10 },
+    colorMode: ColorMode.weightedGradient,
+    mapColors: defaultState.mapState.mapColors,
+    camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
+    blacklist: []
+}
+
+const createTestScenario = (settings: ScenarioSettings = testSettings): Scenario => ({
     id: "test-id",
     name: "Test Scenario",
     createdAt: Date.now(),
-    sections: {
-        metrics: {
-            areaMetric: "rloc",
-            heightMetric: "mcc",
-            colorMetric: "mcc",
-            edgeMetric: "",
-            distributionMetric: "rloc",
-            isColorMetricLinkedToHeightMetric: false
-        },
-        colors: {
-            colorRange: { from: 1, to: 10 },
-            colorMode: ColorMode.weightedGradient,
-            mapColors: defaultState.mapState.mapColors
-        },
-        camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
-        filters: { blacklist: [], focusedNodePath: [] },
-        labelsAndFolders: {
-            amountOfTopLabels: 1,
-            labelSize: 1,
-            showMetricLabelNameValue: true,
-            showMetricLabelNodeName: true,
-            enableFloorLabels: false,
-            colorLabels: { positive: false, negative: false, neutral: false },
-            labelMode: LabelMode.Height,
-            groupLabelCollisions: false,
-            markedPackages: []
-        }
-    }
+    settings
 })
 
 const metricDataWithMetrics: MetricData = {
@@ -51,6 +37,14 @@ describe("ApplyScenarioDialogComponent", () => {
     let component: ApplyScenarioDialogComponent
     let scenarioApplier: Pick<ScenarioApplierService, "getMissingMetrics" | "hasMissingMetrics" | "getAvailableMetricNames"> & {
         applyScenario: jest.Mock
+    }
+
+    function createComponent(scenario: Scenario, metricData: MetricData = metricDataWithMetrics) {
+        const fixture = TestBed.createComponent(ApplyScenarioDialogComponent)
+        fixture.componentRef.setInput("scenario", scenario)
+        fixture.componentRef.setInput("metricData", metricData)
+        fixture.detectChanges()
+        return fixture.componentInstance
     }
 
     beforeEach(() => {
@@ -70,19 +64,24 @@ describe("ApplyScenarioDialogComponent", () => {
             providers: [{ provide: ScenarioApplierService, useValue: scenarioApplier }]
         })
 
-        const fixture = TestBed.createComponent(ApplyScenarioDialogComponent)
-        fixture.componentRef.setInput("scenario", createTestScenario())
-        fixture.componentRef.setInput("metricData", metricDataWithMetrics)
-        fixture.detectChanges()
-        component = fixture.componentInstance
+        component = createComponent(createTestScenario())
     })
 
-    it("should have all available sections selected by default", () => {
+    it("should offer every setting the scenario carries, all but the camera selected", () => {
         // Assert
+        expect(component.availableKeys()).toEqual([
+            "areaMetric",
+            "margin",
+            "heightMetric",
+            "colorMetric",
+            "colorRange",
+            "colorMode",
+            "mapColors",
+            "camera",
+            "blacklist"
+        ])
+        expect(component.selectedKeys()).toEqual(new Set(component.availableKeys().filter(key => key !== "camera")))
         expect(component.hasAnySelected()).toBe(true)
-        expect(component.selectedSections().metrics).toBe(true)
-        expect(component.selectedSections().camera).toBe(true)
-        expect(component.availableSectionKeys()).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
     })
 
     it("should detect no missing metrics when all are available", () => {
@@ -91,40 +90,74 @@ describe("ApplyScenarioDialogComponent", () => {
     })
 
     it("should detect missing metrics", () => {
-        // Arrange
-        const fixture = TestBed.createComponent(ApplyScenarioDialogComponent)
-        fixture.componentRef.setInput("scenario", createTestScenario())
-        fixture.componentRef.setInput("metricData", { nodeMetricData: [], edgeMetricData: [] })
-        fixture.detectChanges()
-
         // Act
-        const result = fixture.componentInstance.hasMissing()
+        const withoutMetrics = createComponent(createTestScenario(), { nodeMetricData: [], edgeMetricData: [] })
 
         // Assert
-        expect(result).toBe(true)
+        expect(withoutMetrics.hasMissing()).toBe(true)
+        expect(withoutMetrics.missingMetrics().nodeMetrics).toEqual(["rloc", "mcc"])
     })
 
-    it("should call applyScenario with only selected sections", () => {
+    it("should not warn about a missing metric the reader has unchecked", () => {
         // Arrange
-        component.toggleSection("camera", false)
-        component.toggleSection("filters", false)
+        const withoutMetrics = createComponent(createTestScenario(), { nodeMetricData: [], edgeMetricData: [] })
 
         // Act
-        component.apply()
+        withoutMetrics.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+
+        // Assert
+        expect(withoutMetrics.hasMissing()).toBe(false)
+    })
+
+    it("should apply only the selected settings", async () => {
+        // Arrange
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin", "colorRange"]))
+
+        // Act
+        await component.apply()
 
         // Assert
         expect(scenarioApplier.applyScenario).toHaveBeenCalledWith(
             component.scenario(),
-            new Set<ScenarioSectionKey>(["metrics", "colors", "labelsAndFolders"]),
+            new Set<ScenarioSettingKey>(["margin", "colorRange"]),
             metricDataWithMetrics
         )
     })
 
-    it("should report hasAnySelected as false when all deselected", () => {
+    it("should name the number of settings its apply button carries", () => {
+        // Act
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin", "colorRange"]))
+
+        // Assert
+        expect(component.applySelectedLabel()).toBe("Apply 2 settings")
+    })
+
+    it("should name a single setting in the singular", () => {
+        // Act
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+
+        // Assert
+        expect(component.applySelectedLabel()).toBe("Apply 1 setting")
+    })
+
+    it("should apply everything the scenario holds, the camera included, when applying all", async () => {
         // Arrange
-        for (const key of component.availableSectionKeys()) {
-            component.toggleSection(key, false)
-        }
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+
+        // Act
+        await component.applyAll()
+
+        // Assert
+        expect(scenarioApplier.applyScenario).toHaveBeenCalledWith(
+            component.scenario(),
+            new Set(component.availableKeys()),
+            metricDataWithMetrics
+        )
+    })
+
+    it("should report nothing selected when every setting is deselected", () => {
+        // Act
+        component.selectedKeys.set(new Set<ScenarioSettingKey>())
 
         // Assert
         expect(component.hasAnySelected()).toBe(false)
@@ -134,41 +167,33 @@ describe("ApplyScenarioDialogComponent", () => {
         let partialComponent: ApplyScenarioDialogComponent
 
         beforeEach(() => {
-            const partialScenario: Scenario = {
+            partialComponent = createComponent({
                 id: "built-in-rloc",
                 name: "RLOC",
                 createdAt: 0,
                 isBuiltIn: true,
-                sections: {
-                    metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
-                    colors: { colorRange: { from: 250, to: 500 } }
-                }
-            }
-            const fixture = TestBed.createComponent(ApplyScenarioDialogComponent)
-            fixture.componentRef.setInput("scenario", partialScenario)
-            fixture.componentRef.setInput("metricData", metricDataWithMetrics)
-            fixture.detectChanges()
-            partialComponent = fixture.componentInstance
+                settings: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", colorRange: { from: 250, to: 500 } }
+            })
         })
 
-        it("should only expose available section keys", () => {
+        it("should only offer the settings the scenario carries", () => {
             // Assert
-            expect(partialComponent.availableSectionKeys()).toEqual(["metrics", "colors"])
+            expect(partialComponent.availableKeys()).toEqual(["areaMetric", "heightMetric", "colorMetric", "colorRange"])
         })
 
-        it("should not report missing metrics for undefined optional fields", () => {
+        it("should not report missing metrics for settings the scenario does not carry", () => {
             // Assert
             expect(partialComponent.hasMissing()).toBe(false)
         })
 
-        it("should apply only available sections", () => {
+        it("should apply the settings it carries", async () => {
             // Act
-            partialComponent.apply()
+            await partialComponent.apply()
 
             // Assert
             expect(scenarioApplier.applyScenario).toHaveBeenCalledWith(
                 partialComponent.scenario(),
-                new Set(["metrics", "colors"]),
+                new Set<ScenarioSettingKey>(["areaMetric", "heightMetric", "colorMetric", "colorRange"]),
                 metricDataWithMetrics
             )
         })

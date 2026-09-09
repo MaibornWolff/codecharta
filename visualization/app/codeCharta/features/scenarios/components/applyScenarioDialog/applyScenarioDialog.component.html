@@ -11,22 +11,15 @@
 			</div>
 		}
 
-		<p class="text-sm text-base-content/60 mb-3">Select which sections to apply:</p>
+		<p class="text-sm text-base-content/60 mb-3">Select which settings to apply:</p>
 
-		@for (key of availableSectionKeys(); track key) {
-			<label class="flex items-center gap-2 py-1 cursor-pointer">
-				<input
-					type="checkbox"
-					class="checkbox checkbox-sm"
-					[checked]="selectedSections()[key]"
-					(change)="toggleSection(key, $any($event.target).checked)"
-				/>
-				<i class="fa {{ sectionIcons[key] }} w-4 text-center"></i>
-				<span>{{ sectionLabels[key] }}</span>
-			</label>
-		}
+		<cc-scenario-settings-picker
+			[availableKeys]="availableKeys()"
+			[defaultKeys]="defaultKeys()"
+			[(selectedKeys)]="selectedKeys"
+		></cc-scenario-settings-picker>
 
-		@if (hasMissing() && selectedSections().metrics) {
+		@if (hasMissing()) {
 			<div class="alert alert-warning mt-4 text-sm">
 				<i class="fa fa-exclamation-triangle"></i>
 				<div>
@@ -45,7 +38,22 @@
 
 		<div class="modal-action">
 			<button class="btn" (click)="close()">Cancel</button>
-			<button class="btn btn-primary" [disabled]="!hasAnySelected()" (click)="apply()">Apply</button>
+			<button
+				class="btn btn-outline"
+				title="Apply everything this scenario holds, the camera included"
+				data-testid="apply-scenario-all"
+				(click)="applyAll()"
+			>
+				Apply all
+			</button>
+			<button
+				class="btn btn-primary"
+				[disabled]="!hasAnySelected()"
+				data-testid="apply-scenario-selected"
+				(click)="apply()"
+			>
+				{{ applySelectedLabel() }}
+			</button>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
