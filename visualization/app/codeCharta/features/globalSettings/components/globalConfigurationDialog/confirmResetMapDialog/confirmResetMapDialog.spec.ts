@@ -69,14 +69,13 @@ describe("ConfirmResetMapDialogComponent", () => {
 
     it("should close dialog when abort is selected", async () => {
         // Arrange
-        const { fixture } = await renderAndOpen()
-        const closeSpy = jest.spyOn(fixture.componentInstance, "close")
+        await renderAndOpen()
 
         // Act
         await userEvent.click(screen.getByText("No"))
 
         // Assert
-        expect(closeSpy).toHaveBeenCalled()
+        expect(HTMLDialogElement.prototype.close).toHaveBeenCalled()
         expect(mockedLoadFilesUseCase.reloadAfterReset).not.toHaveBeenCalled()
     })
 })

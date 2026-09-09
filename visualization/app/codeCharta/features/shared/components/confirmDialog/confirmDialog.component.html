@@ -1,0 +1,13 @@
+<dialog #dialog class="modal" [attr.aria-label]="title()" [attr.data-testid]="testId()">
+    <div class="modal-box">
+        <h2 class="text-lg font-bold mb-2">{{ title() }}</h2>
+        <p class="py-2">{{ message() }}</p>
+        <div class="modal-action">
+            <button class="btn" (click)="close()" data-testid="confirm-dialog-no">No</button>
+            <button class="btn btn-primary" (click)="confirm()" data-testid="confirm-dialog-yes">Yes</button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
