@@ -68,7 +68,7 @@ class StubHiddenWordsPopoverComponent {
 @Component({ selector: "cc-domain-word-menu", template: "", standalone: true })
 class StubWordMenuComponent {
     readonly rightClickedWord = input<RightClickedWord | null>(null)
-    readonly showOccurrences = output<string>()
+    readonly searchWord = output<string>()
     readonly hideWord = output<string>()
     readonly closed = output<void>()
 }
@@ -99,8 +99,13 @@ const SOME_NODE = { name: "a.ts", path: "/root/a.ts", id: 1, type: NodeType.FILE
 const VIEW_INDEPENDENT_ROOT = { name: "root", path: "/root", type: NodeType.FOLDER, attributes: {}, children: [] } as CodeMapNode
 const RENDER_MODEL_ROOT = { name: "map", path: "/map", type: NodeType.FOLDER, attributes: {}, children: [] } as CodeMapNode
 
-function inspectWordThroughTheMenu(fixture: { debugElement: DebugElement }, detectChanges: () => void) {
-    fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.showOccurrences.emit("invoice")
+function openWordFromTheCloud(fixture: { debugElement: DebugElement }, detectChanges: () => void) {
+    wordCloud(fixture).wordClicked.emit("invoice")
+    detectChanges()
+}
+
+function searchWordThroughTheMenu(fixture: { debugElement: DebugElement }, detectChanges: () => void) {
+    fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.searchWord.emit("invoice")
     detectChanges()
 }
 
@@ -252,49 +257,49 @@ describe("DomainViewComponent", () => {
         expect(wordList(fixture).expandedWord()).toBeNull()
     })
 
-    it("should expand the word the menu asks about in the explorer's word list", async () => {
+    it("should expand the word clicked in the cloud in the explorer's word list", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
 
         // Act
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Assert
         expect(wordList(fixture).expandedWord()).toBe("invoice")
     })
 
-    it("should switch the explorer to its word mode when the menu asks about a word", async () => {
+    it("should switch the explorer to its word mode when a word is clicked in the cloud", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
         const modeService = fixture.debugElement.injector.get(ExplorerModeService)
 
         // Act
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Assert
         expect(modeService.activeMode()).toBe(WORDS_EXPLORER_MODE)
     })
 
-    it("should expand a collapsed explorer when the menu asks about a word, so the list is in sight", async () => {
+    it("should expand a collapsed explorer when a word is clicked in the cloud, so the list is in sight", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
         const collapseService = fixture.debugElement.injector.get(ExplorerCollapseService)
         collapseService.toggle()
 
         // Act
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Assert
         expect(collapseService.isCollapsed()).toBe(false)
     })
 
-    it("should leave the search box as the reader left it when the menu asks about a word", async () => {
+    it("should leave the search box as the reader left it when a word is clicked in the cloud", async () => {
         // Arrange — writing the word into the box would mark it for a search nobody typed
         const { fixture, detectChanges } = await setup()
         fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("billing")
 
         // Act
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Assert
         expect(wordList(fixture).query()).toBe("billing")
@@ -333,8 +338,8 @@ describe("DomainViewComponent", () => {
         wordCloud(fixture).wordClicked.emit("invoice")
         detectChanges()
 
-        // Assert — the same thing the menu's "Show occurrences" does, so a click needs no second step,
-        // and the search box is left alone so the whole list stays in reach.
+        // Assert — the click opens the word on its own, and the search box is left alone so the whole
+        // list stays in reach.
         expect(modeService.activeMode().id).toBe(WORDS_EXPLORER_MODE.id)
         expect(wordList(fixture).expandedWord()).toBe("invoice")
         expect(wordList(fixture).query()).toBe("")
@@ -371,7 +376,7 @@ describe("DomainViewComponent", () => {
     it("should let the broken-down word and the scoped node go when the cloud is clicked beside every word", async () => {
         // Arrange — a word broken down and the cloud scoped to a node, the state a click builds up
         const { fixture, detectChanges } = await setup()
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
         fixture.debugElement.injector.get(DomainSelectionStore).select("/root/ParentLeaf")
         detectChanges()
 
@@ -404,10 +409,45 @@ describe("DomainViewComponent", () => {
         const { fixture, detectChanges } = await setup()
 
         // Act
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Assert
         expect(wordCloud(fixture).markedWords()).toContain("invoice")
+    })
+
+    it("should search for the word the menu asks to search, so the list narrows to it", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        searchWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        expect(wordList(fixture).query()).toBe("invoice")
+    })
+
+    it("should not pin the word the menu searches for, since searching is not opening", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        searchWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        expect(wordList(fixture).expandedWord()).toBeNull()
+    })
+
+    it("should switch the explorer to its word mode when the menu searches for a word", async () => {
+        // Arrange — the search box filters paths while the explorer browses files, so the query would
+        // land where nobody can see it
+        const { fixture, detectChanges } = await setup()
+        const modeService = fixture.debugElement.injector.get(ExplorerModeService)
+
+        // Act
+        searchWordThroughTheMenu(fixture, detectChanges)
+
+        // Assert
+        expect(modeService.activeMode()).toBe(WORDS_EXPLORER_MODE)
     })
 
     it("should hide the word the menu asks to hide", async () => {
@@ -427,7 +467,7 @@ describe("DomainViewComponent", () => {
     it("should stop inspecting a word that is hidden, since it has left both the cloud and the list", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Act
         fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.hideWord.emit("invoice")
@@ -440,7 +480,7 @@ describe("DomainViewComponent", () => {
     it("should collapse an expanded word when its row is toggled again", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Act
         wordList(fixture).wordToggled.emit("invoice")
@@ -453,7 +493,7 @@ describe("DomainViewComponent", () => {
     it("should select the node the word list was clicked on, so the cloud scopes to it", async () => {
         // Arrange
         const { fixture, detectChanges } = await setup()
-        inspectWordThroughTheMenu(fixture, detectChanges)
+        openWordFromTheCloud(fixture, detectChanges)
 
         // Act
         wordList(fixture).nodeClicked.emit("/root/billing")

@@ -148,6 +148,14 @@ export class DomainViewComponent {
         this.domainWordInspectionStore.inspect(word)
     }
 
+    /** The word search only exists while the explorer browses words, so searching for one takes the
+     * explorer there. Nothing is pinned: the word is searched for, not opened. */
+    searchForWord(word: string) {
+        this.explorerModeService.activate(WORDS_EXPLORER_MODE.id)
+        this.explorerCollapseService.expand()
+        this.domainWordQueryStore.setPattern(word)
+    }
+
     toggleInspectedWord(word: string) {
         this.domainWordInspectionStore.toggle(word)
     }
