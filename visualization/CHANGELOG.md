@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.2.0] - 2026-09-09
+
 ### Added 🚀
 
 - **Search marks the cloud**: searching words in the domain explorer marks every match in the word cloud.
