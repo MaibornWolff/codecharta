@@ -2,7 +2,10 @@ import * as echarts from "echarts/core"
 import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudChartHost } from "./wordCloudChartHost"
 
+const mockZrender = { on: jest.fn() }
+
 const mockChart = {
+    getZr: jest.fn(() => mockZrender),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
     resize: jest.fn(),
@@ -41,6 +44,7 @@ describe("WordCloudChartHost", () => {
     let host: WordCloudChartHost
     const onWordRightClicked = jest.fn()
     const onWordClicked = jest.fn()
+    const onBackgroundClicked = jest.fn()
 
     beforeEach(() => {
         jest.clearAllMocks()
@@ -49,7 +53,8 @@ describe("WordCloudChartHost", () => {
         host = new WordCloudChartHost(new WordCloudChartRegistry(), {
             onLayoutFinished: () => undefined,
             onWordRightClicked: onWordRightClicked,
-            onWordClicked: onWordClicked
+            onWordClicked: onWordClicked,
+            onBackgroundClicked: onBackgroundClicked
         })
     })
 
@@ -67,6 +72,30 @@ describe("WordCloudChartHost", () => {
 
         // Assert
         expect(onWordClicked).toHaveBeenCalledWith("invoice")
+    })
+
+    it("should report a click that landed beside every word, so a selection can be let go", () => {
+        // Arrange — the canvas below the chart reports every click, the chart only those on a word
+        host.attachTo(document.createElement("div"))
+        const [, handleCanvasClick] = mockZrender.on.mock.calls.find(([eventName]) => eventName === "click")
+
+        // Act
+        handleCanvasClick({})
+
+        // Assert
+        expect(onBackgroundClicked).toHaveBeenCalled()
+    })
+
+    it("should keep a click that landed on a word off the background", () => {
+        // Arrange
+        host.attachTo(document.createElement("div"))
+        const [, handleCanvasClick] = mockZrender.on.mock.calls.find(([eventName]) => eventName === "click")
+
+        // Act
+        handleCanvasClick({ target: { type: "text" } })
+
+        // Assert
+        expect(onBackgroundClicked).not.toHaveBeenCalled()
     })
 
     it("should ignore a click that did not land on a word", () => {

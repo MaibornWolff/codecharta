@@ -1,7 +1,11 @@
 @if (words().length === 0) {
-    <div class="flex h-full w-full flex-col items-center justify-center gap-3 px-6 text-center">
+    <div
+        class="flex h-full w-full flex-col items-center justify-center gap-3 px-6 text-center"
+        data-testid="word-cloud-empty-state"
+        (click)="backgroundClicked.emit()"
+    >
         <p class="text-sm opacity-60">No domain words for {{ selectedNodeName() }}. Select a folder or another file in the explorer.</p>
-        <button type="button" class="btn btn-sm btn-primary" (click)="showWholeMap()">Show whole map</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="showWholeMap($event)">Show whole map</button>
     </div>
 } @else {
     <figure class="h-full w-full">

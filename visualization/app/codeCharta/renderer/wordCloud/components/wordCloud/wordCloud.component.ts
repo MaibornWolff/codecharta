@@ -79,6 +79,9 @@ export class WordCloudComponent implements OnDestroy {
 
     readonly clearSelection = output<void>()
 
+    /** A click on the cloud beside every word, which lets go of what a click picked out. */
+    readonly backgroundClicked = output<void>()
+
     readonly wordRightClicked = output<RightClickedWord>()
 
     readonly wordClicked = output<string>()
@@ -88,7 +91,8 @@ export class WordCloudComponent implements OnDestroy {
     private readonly chartHost = new WordCloudChartHost(inject(WordCloudChartRegistry), {
         onLayoutFinished: () => this.viewReadinessStore.markReady("domain"),
         onWordRightClicked: (word, clientX, clientY) => this.wordRightClicked.emit({ word, clientX, clientY }),
-        onWordClicked: word => this.wordClicked.emit(word)
+        onWordClicked: word => this.wordClicked.emit(word),
+        onBackgroundClicked: () => this.backgroundClicked.emit()
     })
 
     protected readonly words = toSignal(
@@ -130,7 +134,10 @@ export class WordCloudComponent implements OnDestroy {
         this.lastRenderedInputs = null
     }
 
-    protected showWholeMap(): void {
+    /** The button sits inside the empty state, whose own clicks let a word go; only one of the two can
+     * answer a click on it. */
+    protected showWholeMap(event: MouseEvent): void {
+        event.stopPropagation()
         this.clearSelection.emit()
     }
 

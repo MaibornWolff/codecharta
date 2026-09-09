@@ -34,6 +34,7 @@ import { RightClickedWord } from "../../renderer/wordCloud/wordCloud.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
 import { DomainViewComponent } from "./domainView.component"
 import { DOMAIN_EXPLORER_MODES, WORDS_EXPLORER_MODE } from "./explorer/domainExplorerModes"
+import { DomainSelectionStore } from "./stores/domainSelection.store"
 
 @Component({ selector: "cc-sidebar-explorer", template: "<ng-content></ng-content>", standalone: true })
 class StubExplorerComponent {}
@@ -44,6 +45,7 @@ class StubWordCloudComponent {
     readonly selectedNodePath = input<string | null>(null)
     readonly markedWords = input<readonly string[]>([])
     readonly clearSelection = output<void>()
+    readonly backgroundClicked = output<void>()
     readonly wordRightClicked = output<RightClickedWord>()
     readonly wordClicked = output<string>()
 }
@@ -364,6 +366,37 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordCloud(fixture).markedWords()).toEqual([])
+    })
+
+    it("should let the broken-down word and the scoped node go when the cloud is clicked beside every word", async () => {
+        // Arrange — a word broken down and the cloud scoped to a node, the state a click builds up
+        const { fixture, detectChanges } = await setup()
+        inspectWordThroughTheMenu(fixture, detectChanges)
+        fixture.debugElement.injector.get(DomainSelectionStore).select("/root/ParentLeaf")
+        detectChanges()
+
+        // Act
+        wordCloud(fixture).backgroundClicked.emit()
+        detectChanges()
+
+        // Assert
+        expect(wordList(fixture).expandedWord()).toBe(null)
+        expect(wordCloud(fixture).selectedNodePath()).toBe(null)
+    })
+
+    it("should keep marking what the search matched when the cloud is clicked beside every word", async () => {
+        // Arrange — the search box still says "pa", so its matches are the reader's own state
+        const { fixture, detectChanges } = await setup()
+        fixture.debugElement.injector.get(ExplorerModeService).activate(WORDS_EXPLORER_MODE.id)
+        fixture.debugElement.injector.get(EXPLORER_WORD_SEARCH).setPattern("pa")
+        detectChanges()
+
+        // Act
+        wordCloud(fixture).backgroundClicked.emit()
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).markedWords()).toEqual(["payment", "prepaid"])
     })
 
     it("should mark the inspected word in the cloud, so both halves of the view say the same thing", async () => {

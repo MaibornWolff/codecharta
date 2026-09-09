@@ -52,6 +52,7 @@
         [selectedNodePath]="selectedNodePath()"
         [markedWords]="markedWords()"
         (clearSelection)="clearSelection()"
+        (backgroundClicked)="deselect()"
         (wordClicked)="showWordOccurrences($event)"
         (wordRightClicked)="rightClickedWord.set($event)"
     ></cc-word-cloud>

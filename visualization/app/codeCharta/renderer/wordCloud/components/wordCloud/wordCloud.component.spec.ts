@@ -21,6 +21,7 @@ const mockChart = {
             finishedCallback = callback
         }
     }),
+    getZr: jest.fn(() => ({ on: jest.fn() })),
     getModel: jest.fn()
 }
 

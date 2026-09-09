@@ -20,6 +20,16 @@ const MANY_WORDS_FILE = "./app/codeCharta/resources/sample_with_many_domain_word
 // enough to survive a row's worth of chrome moving in or out of the panel.
 const MOST_ROWS_A_WINDOW_RENDERS = 40
 
+/** The cloud fills its centre and leaves the corners bare, so the top left corner is empty canvas.
+ * The toolbox sits in the opposite corner, out of the way. */
+async function clickBesideEveryWord(page: Page) {
+    const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
+    if (!cloud) {
+        throw new Error("The word cloud has not been laid out")
+    }
+    await page.mouse.click(cloud.x + 4, cloud.y + 4)
+}
+
 /** The cloud lays its largest word out at the centre, which is the only word a test can aim at. */
 async function clickTheLargestWord(page: Page, button: "left" | "right" = "left") {
     const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
@@ -253,6 +263,43 @@ test.describe("DomainView", () => {
         // Assert
         await expect(page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")).toHaveText(occurrenceName)
         await expect(occurrenceRow.locator(".selected")).toBeVisible()
+    })
+
+    test("should let the word and the node go when the cloud is clicked beside every word", async ({ page }) => {
+        // Arrange — a word broken down and the cloud scoped to a node below it
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.getByTestId("explorer-mode-words").click()
+        await page.locator("cc-domain-word-row").first().click()
+        await page.locator("cc-domain-word-occurrence-row").first().click()
+        const currentCrumb = page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")
+        await expect(currentCrumb).not.toHaveText("root")
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act
+        await clickBesideEveryWord(page)
+
+        // Assert — the breakdown closes and the cloud is back on the whole project
+        await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(0)
+        await expect(currentCrumb).toHaveText("root")
+    })
+
+    test("should keep a word the search matched marked after the cloud is clicked beside every word", async ({ page }) => {
+        // Arrange — a search the reader typed, which only the search box itself may clear
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.getByTestId("explorer-mode-words").click()
+        const searchedWord = (await page.locator("cc-domain-word-row").first().innerText()).split("\n")[0]
+        await page.getByLabel("Search words").fill(searchedWord)
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(1)
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act
+        await clickBesideEveryWord(page)
+
+        // Assert — the click takes nothing away from the search box
+        await expect(page.getByLabel("Search words")).toHaveValue(searchedWord)
+        await expect(page.locator("cc-domain-word-row")).toHaveCount(1)
     })
 
     test("should apply a settings change from the domain bar to the state that drives the cloud", async ({ page }) => {
