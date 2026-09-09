@@ -1,5 +1,6 @@
 import {
     BlacklistItem,
+    MetricRule,
     CCFile,
     ColorLabelOptions,
     ColorMode,
@@ -62,6 +63,7 @@ export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
     blacklist: BlacklistItem[]
+    metricRules: MetricRule[]
     markedPackages: MarkedPackage[]
     hoveredNodeId: string | null
     selectedBuildingId: string | null

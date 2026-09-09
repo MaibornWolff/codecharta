@@ -4,6 +4,7 @@ export { blacklistMatcherSelector } from "./store/blacklist/blacklistMatcher.sel
 export { currentFocusedNodePathSelector } from "./store/focusedNodePath/currentFocused.selector"
 export { focusedNodePathSelector } from "./store/focusedNodePath/focusedNodePath.selector"
 export { hoveredNodeIdSelector } from "./store/hoveredNodeId/hoveredNodeId.selector"
+export { metricRulesSelector } from "./store/metricRules/metricRules.selector"
 export { markedPackagesSelector } from "./store/markedPackages/markedPackages.selector"
 export { findIndexOfMarkedPackageOrParent } from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"
 export { rightClickedNodeDataSelector } from "./store/rightClickedNodeData/rightClickedNodeData.selector"

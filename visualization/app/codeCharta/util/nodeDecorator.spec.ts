@@ -54,6 +54,85 @@ describe("nodeDecorator", () => {
         return count === ids.size
     }
 
+    describe("decorateMap with metric rules", () => {
+        const leavesOf = (decorated: CodeMapNode) =>
+            hierarchy(decorated)
+                .descendants()
+                .map(({ data }) => data)
+                .filter(node => node.children === undefined || node.children.length === 0)
+
+        it("should flatten every file matching a flatten rule", () => {
+            // Arrange
+            const rules = [{ id: "r1", metric: "rloc", operator: "gt" as const, value: 50, type: "flatten" as const }]
+
+            // Act
+            NodeDecorator.decorateMap(map, metricData, [], rules)
+
+            // Assert
+            const leaves = leavesOf(map)
+            expect(leaves.some(leaf => leaf.isFlattened)).toBe(true)
+            for (const leaf of leaves) {
+                expect(leaf.isFlattened).toBe((leaf.attributes?.["rloc"] ?? 0) > 50)
+            }
+        })
+
+        it("should exclude every file matching an exclude rule", () => {
+            // Arrange
+            const rules = [{ id: "r1", metric: "rloc", operator: "gt" as const, value: 50, type: "exclude" as const }]
+
+            // Act
+            NodeDecorator.decorateMap(map, metricData, [], rules)
+
+            // Assert
+            const excluded = leavesOf(map).filter(leaf => leaf.isExcluded)
+            expect(excluded.length).toBeGreaterThan(0)
+            for (const leaf of excluded) {
+                expect(leaf.attributes?.["rloc"]).toBeGreaterThan(50)
+            }
+        })
+
+        it("should not match a file that has no value for the metric", () => {
+            // Arrange
+            const rules = [{ id: "r1", metric: "notInAnyFile", operator: "lt" as const, value: 10, type: "flatten" as const }]
+
+            // Act
+            NodeDecorator.decorateMap(map, metricData, [], rules)
+
+            // Assert
+            expect(leavesOf(map).some(leaf => leaf.isFlattened)).toBe(false)
+        })
+
+        it("should leave folders untouched, because their metrics are aggregates", () => {
+            // Arrange
+            const rules = [{ id: "r1", metric: "rloc", operator: "gte" as const, value: 0, type: "flatten" as const }]
+
+            // Act
+            NodeDecorator.decorateMap(map, metricData, [], rules)
+
+            // Assert
+            const folders = hierarchy(map)
+                .descendants()
+                .map(({ data }) => data)
+                .filter(node => node.children !== undefined && node.children.length > 0)
+            expect(folders.length).toBeGreaterThan(0)
+            for (const folder of folders) {
+                expect(folder.isFlattened).toBe(false)
+            }
+        })
+
+        it("should keep a file flattened by a path rule when no metric rule matches it", () => {
+            // Arrange
+            const someLeafPath = leavesOf(clone(map))[0].path
+            const rules = [{ id: "r1", metric: "rloc", operator: "gt" as const, value: 999_999, type: "flatten" as const }]
+
+            // Act
+            NodeDecorator.decorateMap(map, metricData, [{ path: someLeafPath, type: "flatten" }], rules)
+
+            // Assert
+            expect(leavesOf(map).find(leaf => leaf.path === someLeafPath)?.isFlattened).toBe(true)
+        })
+    })
+
     describe("decorateMap", () => {
         it("nodes should have all metrics", () => {
             nodeMetricData.push({ name: "some", maxValue: 999_999, minValue: 1, values: [1, 999_999] })

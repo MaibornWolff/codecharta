@@ -5,7 +5,7 @@ import { structureTreeSelector } from "../../../lenses/structure/structure.facad
 import { CodeMapNode, FileMeta } from "../../../model/codeCharta.model"
 import { fileStatesAvailable, isDeltaState } from "../../../model/files/files.helper"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
-import { blacklistSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { blacklistSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { edgeMetricNamesSelector } from "../edgeMetricData/edgeMetricData.selector"
@@ -27,14 +27,15 @@ export const accumulatedDataSelector = createSelector(
     nodeAttributeTypesSelector,
     edgeAttributeTypesSelector,
     blacklistSelector,
+    metricRulesSelector,
     edgeMetricNamesSelector,
-    (metricData, fileStates, structureTree, nodeAttributeTypes, edgeAttributeTypes, blacklist, edgeMetricNames) => {
+    (metricData, fileStates, structureTree, nodeAttributeTypes, edgeAttributeTypes, blacklist, metricRules, edgeMetricNames) => {
         if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData || !structureTree?.map) {
             return accumulatedDataFallback
         }
 
         const data = clone(structureTree)
-        NodeDecorator.decorateMap(data.map, metricData, blacklist)
+        NodeDecorator.decorateMap(data.map, metricData, blacklist, metricRules)
         addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, edgeMetricNames)
         NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), {
             nodes: nodeAttributeTypes,

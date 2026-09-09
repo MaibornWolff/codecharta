@@ -48,6 +48,7 @@ describe("FileExtensionBarSegment", () => {
             focusedNodePath: [],
             searchPattern: "",
             blacklist: [],
+            metricRules: [],
             markedPackages: [],
             hoveredNodeId: null,
             selectedBuildingId: null,

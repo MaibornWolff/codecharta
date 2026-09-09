@@ -228,6 +228,24 @@ export interface BlacklistItem {
 
 export type BlacklistType = "flatten" | "exclude"
 
+export type MetricRuleOperator = "gt" | "gte" | "lt" | "lte" | "eq" | "between"
+
+/**
+ * A flatten or exclude rule stated as a condition on a metric rather than a path. It stays a
+ * condition in state and is re-evaluated on every render, so it keeps meaning the same thing when
+ * newer data is loaded. It addresses files only — a folder's metrics are aggregates of its
+ * contents, which is a different question from the one this rule asks.
+ */
+export interface MetricRule {
+    id: string
+    metric: string
+    operator: MetricRuleOperator
+    value: number
+    /** The inclusive upper bound, set only when the operator is `between`. */
+    upperValue?: number
+    type: BlacklistType
+}
+
 export interface MarkedPackage {
     path: string
     color: string

@@ -101,6 +101,7 @@ describe("BlackListExtensionService", () => {
             focusedNodePath: [],
             searchPattern: "",
             blacklist: mockBlacklist,
+            metricRules: [],
             markedPackages: [],
             hoveredNodeId: null,
             selectedBuildingId: null,
