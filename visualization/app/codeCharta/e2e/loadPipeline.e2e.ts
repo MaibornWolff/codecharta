@@ -114,7 +114,7 @@ test.describe("load pipeline", () => {
         // Act — Global Configuration → Reset map to default → Yes
         await page.locator('button[title="Global Configuration"]').click()
         await page.getByRole("button", { name: "Reset map" }).click()
-        await page.getByText("Yes").click()
+        await page.getByTestId("confirm-reset-map-dialog").getByTestId("confirm-dialog-yes").click()
         await page.locator("#loading-gif-file").waitFor({ state: "hidden", timeout: 60_000 })
 
         // Assert — the button promises to reset the selected metrics, so it must
