@@ -110,6 +110,7 @@ export function createExplorerRulesMock(overrides: Partial<ExplorerRules> = {}):
         isFlattenPatternDisabled$: of(true),
         isExcludePatternDisabled$: of(true),
         removeRule: jest.fn(),
+        clearRules: jest.fn(),
         ruleFromSearchPattern: jest.fn(),
         ...overrides
     }

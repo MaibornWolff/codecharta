@@ -1,0 +1,20 @@
+<button
+    type="button"
+    class="btn btn-outline btn-primary gap-2"
+    title="Remove every flatten and hide rule, leaving the rest of the map as it is"
+    aria-label="Reset filters"
+    [disabled]="!hasRules()"
+    (click)="requestReset()"
+    data-testid="reset-filters-button"
+>
+    <i class="fa fa-undo"></i>
+    <span>Reset filters</span>
+</button>
+
+<cc-confirm-dialog
+    #confirmDialog
+    title="Confirm reset filters"
+    [message]="confirmMessage()"
+    testId="reset-filters-confirm"
+    (confirmed)="confirmReset()"
+></cc-confirm-dialog>

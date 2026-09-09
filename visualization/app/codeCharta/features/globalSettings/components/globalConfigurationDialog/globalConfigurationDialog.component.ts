@@ -5,6 +5,7 @@ import { PreferencesReadWindow } from "../../../../stores/preferences/preference
 import { GlobalSettingsWriteStore } from "../../stores/globalSettings.write.store"
 import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
 import { MapLayoutSelectionComponent } from "./mapLayoutSelection/mapLayoutSelection.component"
+import { ResetFiltersButtonComponent } from "./resetFiltersButton/resetFiltersButton.component"
 import { ResetMapButtonComponent } from "./resetMapButton/resetMapButton.component"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton/resetSettingsButton.component"
 import { SettingToggleComponent } from "./settingToggle/settingToggle.component"
@@ -14,6 +15,7 @@ import { SettingToggleComponent } from "./settingToggle/settingToggle.component"
     templateUrl: "./globalConfigurationDialog.component.html",
     imports: [
         MapLayoutSelectionComponent,
+        ResetFiltersButtonComponent,
         ResetMapButtonComponent,
         ResetSettingsButtonComponent,
         SettingToggleComponent,

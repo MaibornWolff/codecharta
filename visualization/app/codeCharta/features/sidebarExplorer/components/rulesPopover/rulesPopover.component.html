@@ -28,17 +28,38 @@
             }
         </ul>
     }
-    @if (hasMetricRules) {
-        <div class="border-t border-base-300 mt-1 pt-1">
-            <button
-                type="button"
-                class="btn btn-ghost btn-xs w-full justify-start text-primary"
-                [attr.popovertarget]="editorPopoverId()"
-                data-testid="rules-popover-add-metric-rule-button"
-            >
-                <i class="fa fa-plus"></i>
-                {{ kind() === "flatten" ? "Flatten by metric…" : "Exclude by metric…" }}
-            </button>
+    @if (hasMetricRules || rulesOfKind().length > 0) {
+        <div class="border-t border-base-300 mt-1 pt-1 flex flex-col gap-0.5">
+            @if (hasMetricRules) {
+                <button
+                    type="button"
+                    class="btn btn-ghost btn-xs w-full justify-start text-primary"
+                    [attr.popovertarget]="editorPopoverId()"
+                    data-testid="rules-popover-add-metric-rule-button"
+                >
+                    <i class="fa fa-plus"></i>
+                    {{ kind() === "flatten" ? "Flatten by metric…" : "Exclude by metric…" }}
+                </button>
+            }
+            @if (rulesOfKind().length > 0) {
+                <button
+                    type="button"
+                    class="btn btn-ghost btn-xs w-full justify-start text-error"
+                    (click)="requestClear()"
+                    data-testid="rules-popover-clear-button"
+                >
+                    <i class="fa fa-undo"></i>
+                    {{ clearLabel() }}
+                </button>
+            }
         </div>
     }
 </div>
+
+<cc-confirm-dialog
+    #confirmDialog
+    [title]="confirmTitle()"
+    [message]="confirmMessage()"
+    [testId]="confirmTestId()"
+    (confirmed)="confirmClear()"
+></cc-confirm-dialog>

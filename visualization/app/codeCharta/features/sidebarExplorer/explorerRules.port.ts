@@ -23,6 +23,8 @@ export interface ExplorerRules {
     readonly isFlattenPatternDisabled$: Observable<boolean>
     readonly isExcludePatternDisabled$: Observable<boolean>
     removeRule(rule: RuleWithCount): void
+    /** Empties one list: its metric, pattern and hand-picked rules alike. */
+    clearRules(type: BlacklistType): void
     ruleFromSearchPattern(type: BlacklistType): void
 }
 

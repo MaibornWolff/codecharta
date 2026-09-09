@@ -46,6 +46,11 @@ every file above 10.
 - Editor popover: metric, operator, value(s), live count, histogram, add
 - Entry points: the search row's menu and the empty rules popover
 
+### 7. Clearing rules
+- A `Clear all N rules` in each list's footer, removing its metric, pattern and hand-picked rules
+- `Reset filters` in Global Configuration, clearing both lists and nothing else
+- Both behind the house confirmation, which is now one shared component
+
 ### 6. Distribution histogram
 - Bucketing helper over the leaves' values for the chosen metric
 - Small component: buckets, the matched range tinted, threshold marker
@@ -59,6 +64,7 @@ every file above 10.
 - [x] Complete Task 5: the editor
 - [x] Complete Task 6: distribution histogram
 - [x] Changelog entry
+- [x] Complete Task 7: clearing rules (a Clear all per list, Reset filters in Global Configuration)
 
 ## Notes
 
@@ -72,3 +78,6 @@ every file above 10.
   unit test for it in `store.spec.ts`.
 - Verified in the running app: `rloc > 50` on the sample files moves the chips from Shown 8 /
   Flattened 0 to Shown 2 / Flattened 6 and lists as `METRIC rloc > 50` with count 6.
+- Several confirmation dialogs now live in the DOM at once, all descendants of the open Global
+  Configuration dialog, so a test selector has to name the dialog it means — `dialog[open]` is not
+  specific enough and `getByText("Yes")` is ambiguous.

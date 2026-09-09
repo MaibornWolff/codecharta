@@ -5,6 +5,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { defaultSharedView } from "../../../../stores/sharedView/sharedView.read.facade"
 import { GlobalSettingsWriteStore } from "../../stores/globalSettings.write.store"
 import { GlobalConfigurationDialogComponent } from "./globalConfigurationDialog.component"
 
@@ -33,7 +34,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             imports: [GlobalConfigurationDialogComponent],
             providers: [
                 provideMockStore({
-                    initialState: { preferences: defaultPreferences, mapState: defaultMapState }
+                    initialState: { preferences: defaultPreferences, mapState: defaultMapState, sharedView: defaultSharedView }
                 }),
                 { provide: State, useValue: mockState },
                 { provide: GlobalSettingsWriteStore, useValue: mockGlobalSettingsWriteStore },

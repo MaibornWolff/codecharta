@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { ExplorerRules, RuleWithCount } from "../../../features/sidebarExplorer/facade"
 import { BlacklistType, CcState } from "../../../model/codeCharta.model"
-import { removeBlacklistItem, removeMetricRule } from "../../../stores/sharedView/sharedView.write.facade"
+import { clearRulesOfType, removeBlacklistItem, removeMetricRule } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { blacklistSearchPattern } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./explorerRules.selectors"
@@ -23,6 +23,10 @@ export class MetricsExplorerRules implements ExplorerRules {
             return
         }
         dispatchAfterPaint(this.store, removeBlacklistItem({ item: rule.item }))
+    }
+
+    clearRules(type: BlacklistType) {
+        dispatchAfterPaint(this.store, clearRulesOfType({ blacklistType: type }))
     }
 
     ruleFromSearchPattern(type: BlacklistType) {

@@ -7,6 +7,7 @@ import userEvent from "@testing-library/user-event"
 import { LoadFileService } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultPreferences } from "../../../../stores/preferences/preferences.read.facade"
+import { defaultSharedView } from "../../../../stores/sharedView/sharedView.read.facade"
 import { GlobalConfigurationDialogComponent } from "../../../globalSettings/components/globalConfigurationDialog/globalConfigurationDialog.component"
 import { SettingsButtonComponent } from "./settingsButton.component"
 
@@ -23,7 +24,9 @@ describe("SettingsButtonComponent", () => {
         TestBed.configureTestingModule({
             imports: [SettingsButtonComponent],
             providers: [
-                provideMockStore({ initialState: { preferences: defaultPreferences, mapState: defaultMapState } }),
+                provideMockStore({
+                    initialState: { preferences: defaultPreferences, mapState: defaultMapState, sharedView: defaultSharedView }
+                }),
                 { provide: State, useValue: { getValue: () => ({ preferences: defaultPreferences, mapState: defaultMapState }) } },
                 { provide: LoadFileService, useValue: { loadFiles: jest.fn() } },
                 { provide: HttpClient, useValue: {} }
