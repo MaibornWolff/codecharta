@@ -30,7 +30,15 @@ export interface PickerGroup {
 })
 export class ScenarioSettingsPickerComponent {
     readonly availableKeys = input.required<readonly ScenarioSettingKey[]>()
+    /** What "Reset" goes back to — the selection the dialog opens with. */
+    readonly defaultKeys = input.required<readonly ScenarioSettingKey[]>()
     readonly selectedKeys = model.required<ReadonlySet<ScenarioSettingKey>>()
+
+    readonly isDefaultSelection = computed(() => {
+        const selected = this.selectedKeys()
+        const defaults = this.defaultKeys()
+        return selected.size === defaults.length && defaults.every(key => selected.has(key))
+    })
 
     readonly groups = computed<PickerGroup[]>(() => {
         const selected = this.selectedKeys()
@@ -39,6 +47,18 @@ export class ScenarioSettingsPickerComponent {
             group => group.settings.length > 0
         )
     })
+
+    selectAll() {
+        this.selectedKeys.set(new Set(this.availableKeys()))
+    }
+
+    selectNone() {
+        this.selectedKeys.set(new Set())
+    }
+
+    resetSelection() {
+        this.selectedKeys.set(new Set(this.defaultKeys()))
+    }
 
     toggleSetting(key: ScenarioSettingKey, isSelected: boolean) {
         this.selectedKeys.update(current => withSelection(current, [key], isSelected))

@@ -3,6 +3,7 @@ import { ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenarioSettingsPickerComponent } from "./scenarioSettingsPicker.component"
 
 const availableKeys: ScenarioSettingKey[] = ["areaMetric", "margin", "heightMetric", "camera"]
+const defaultKeys: ScenarioSettingKey[] = ["areaMetric", "margin"]
 
 describe("ScenarioSettingsPickerComponent", () => {
     let fixture: ComponentFixture<ScenarioSettingsPickerComponent>
@@ -13,6 +14,7 @@ describe("ScenarioSettingsPickerComponent", () => {
 
         fixture = TestBed.createComponent(ScenarioSettingsPickerComponent)
         fixture.componentRef.setInput("availableKeys", availableKeys)
+        fixture.componentRef.setInput("defaultKeys", defaultKeys)
         fixture.componentRef.setInput("selectedKeys", new Set<ScenarioSettingKey>(["areaMetric", "margin"]))
         fixture.detectChanges()
         component = fixture.componentInstance
@@ -71,6 +73,57 @@ describe("ScenarioSettingsPickerComponent", () => {
         // Assert
         expect(component.selectedKeys()).toEqual(new Set<ScenarioSettingKey>())
         expect(component.groups()[0].someSelected).toBe(false)
+    })
+
+    it("should select every available setting at once", () => {
+        // Act
+        component.selectAll()
+
+        // Assert
+        expect(component.selectedKeys()).toEqual(new Set(availableKeys))
+    })
+
+    it("should deselect every setting at once", () => {
+        // Act
+        component.selectNone()
+
+        // Assert
+        expect(component.selectedKeys()).toEqual(new Set<ScenarioSettingKey>())
+    })
+
+    it("should reset to the selection the dialog opened with", () => {
+        // Arrange
+        component.selectNone()
+
+        // Act
+        component.resetSelection()
+
+        // Assert
+        expect(component.selectedKeys()).toEqual(new Set(defaultKeys))
+    })
+
+    it("should offer resetting only while the selection differs from the default one", () => {
+        // Act
+        const isDefaultAtStart = component.isDefaultSelection()
+        component.toggleSetting("camera", true)
+
+        // Assert
+        expect(isDefaultAtStart).toBe(true)
+        expect(component.isDefaultSelection()).toBe(false)
+    })
+
+    it("should reset the selection when the reset button is clicked", () => {
+        // Arrange
+        const resetButton = fixture.nativeElement.querySelector("[data-testid='scenario-settings-reset']") as HTMLButtonElement
+        component.selectAll()
+        fixture.detectChanges()
+
+        // Act
+        resetButton.click()
+        fixture.detectChanges()
+
+        // Assert
+        expect(component.selectedKeys()).toEqual(new Set(defaultKeys))
     })
 
     it("should render a checkbox per group and per setting", () => {

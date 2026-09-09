@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Scenarios carry the whole metrics bar**: margins, inversions, height scaling and every edge setting are saved and applied alongside the metrics, colors, labels, filters and camera.
-- **Choose what a scenario saves**: the save dialog's extended settings drop single settings or whole groups before saving, and leave the camera out unless you ask for it.
+- **Choose what a scenario saves**: the save dialog's extended settings drop single settings or whole groups before saving — or switch them all on, all off, or back to the default — and leave the camera out unless you ask for it.
 - **Search marks the cloud**: searching words in the domain explorer marks every match in the word cloud.
 - **Click the empty cloud to let go**: clicking the cloud where no word is drawn unpins the open word and puts the cloud back on the whole project.
 

@@ -34,9 +34,9 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
     readonly availableKeys = computed(() => getAvailableSettingKeys(this.scenario()))
 
     /** The camera starts unchecked, so opening a scenario never moves the view unless it is asked for. */
-    readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(
-        () => new Set(this.availableKeys().filter(key => SCENARIO_SETTINGS[key].group !== "camera"))
-    )
+    readonly defaultKeys = computed(() => this.availableKeys().filter(key => SCENARIO_SETTINGS[key].group !== "camera"))
+
+    readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(() => new Set(this.defaultKeys()))
 
     readonly missingMetrics = computed(() => this.scenarioApplier.getMissingMetrics(this.scenario().settings, this.metricData()))
     readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))

@@ -58,6 +58,23 @@ test.describe("Scenarios", () => {
         await expect(scenarios.applySettingCheckbox("colorRange")).toHaveCount(0)
     })
 
+    test("should turn every setting off and back to the default selection", async ({ page }) => {
+        const scenarios = new ScenariosPageObject(page)
+
+        await scenarios.openSaveDialog()
+        await scenarios.openExtendedSaveSettings()
+        await scenarios.clickSaveSettingsToggle("select-none")
+
+        await expect(scenarios.saveButton()).toBeDisabled()
+
+        await scenarios.clickSaveSettingsToggle("reset")
+        await page.getByRole("dialog", { name: "Save Scenario" }).locator("#scenario-name").fill("Reset scenario")
+
+        await expect(scenarios.saveButton()).toBeEnabled()
+        await expect(scenarios.applySettingCheckboxInSaveDialog("margin")).toBeChecked()
+        await expect(scenarios.applySettingCheckboxInSaveDialog("camera")).not.toBeChecked()
+    })
+
     test("should apply the settings a scenario carries", async ({ page }) => {
         const scenarios = new ScenariosPageObject(page)
         const metricsBar = new MetricsBarPageObject(page)

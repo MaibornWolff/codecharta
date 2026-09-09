@@ -26,6 +26,7 @@ export class SaveScenarioDialogComponent {
     readonly nameValid = computed(() => this.name().trim().length > 0)
 
     readonly availableKeys = SCENARIO_SETTING_KEYS
+    readonly defaultKeys = DEFAULT_SELECTED_KEYS
     readonly selectedKeys = signal<ReadonlySet<ScenarioSettingKey>>(new Set(DEFAULT_SELECTED_KEYS))
     readonly selectionSummary = computed(() => `${this.selectedKeys().size} of ${this.availableKeys.length} settings`)
 

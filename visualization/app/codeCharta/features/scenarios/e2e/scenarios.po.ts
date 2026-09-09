@@ -55,6 +55,19 @@ export class ScenariosPageObject {
         await dialog.locator("[data-testid='save-scenario-extended-settings']").click()
     }
 
+    async clickSaveSettingsToggle(action: "select-all" | "select-none" | "reset") {
+        const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
+        await dialog.locator(`[data-testid='scenario-settings-${action}']`).click()
+    }
+
+    applySettingCheckboxInSaveDialog(settingKey: string): Locator {
+        return this.page.getByRole("dialog", { name: "Save Scenario" }).locator(`[data-testid='scenario-setting-${settingKey}']`)
+    }
+
+    saveButton(): Locator {
+        return this.page.getByRole("dialog", { name: "Save Scenario" }).getByRole("button", { name: "Save" })
+    }
+
     async toggleSaveSettingGroup(groupKey: string) {
         const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
         await dialog.locator(`[data-testid='scenario-group-${groupKey}']`).click()

@@ -1,3 +1,33 @@
+<div class="mb-1 flex items-center justify-between gap-2">
+	<span class="text-xs uppercase tracking-wide opacity-60">Toggle all</span>
+	<div class="join">
+		<button
+			type="button"
+			class="btn btn-xs join-item"
+			data-testid="scenario-settings-select-all"
+			(click)="selectAll()"
+		>
+			On
+		</button>
+		<button
+			type="button"
+			class="btn btn-xs join-item"
+			data-testid="scenario-settings-select-none"
+			(click)="selectNone()"
+		>
+			Off
+		</button>
+		<button
+			type="button"
+			class="btn btn-xs join-item"
+			data-testid="scenario-settings-reset"
+			[disabled]="isDefaultSelection()"
+			(click)="resetSelection()"
+		>
+			Reset
+		</button>
+	</div>
+</div>
 <div class="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
 	@for (group of groups(); track group.key) {
 		<div class="flex flex-col gap-1">

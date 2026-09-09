@@ -295,7 +295,7 @@ describe("ScenarioApplierService", () => {
             await new Promise<void>(resolve => setTimeout(resolve))
 
             // Assert — autoFit would otherwise overwrite the camera the scenario carries
-            const patches = dispatchSpy.mock.calls.map(([action]) => (action as { value: RecursivePartial<CcState> }).value)
+            const patches = dispatchSpy.mock.calls.map(([action]) => (action as unknown as { value: RecursivePartial<CcState> }).value)
             expect(patches[0].preferences?.resetCameraIfNewFileIsLoaded).toBe(false)
             expect(patches.at(-1)?.preferences?.resetCameraIfNewFileIsLoaded).toBe(true)
         })
