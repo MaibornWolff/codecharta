@@ -28,12 +28,14 @@ const buildRulesWithCount = (blacklist: BlacklistItem[], allLeaves: CodeMapNode[
     return rules
         .map(
             ({ item, affectedCount }): RuleWithCount => ({
+                id: `${item.type}/${item.path}`,
+                label: item.path,
                 item,
                 affectedCount,
                 kind: isPatternRule(item.path) ? "RULE" : "MANUAL"
             })
         )
-        .sort((a, b) => a.item.path.localeCompare(b.item.path))
+        .sort((a, b) => a.label.localeCompare(b.label))
 }
 
 function buildRuleEnginesMatchingNodeDecorator(items: BlacklistItem[]) {

@@ -6,11 +6,25 @@ import { EXPLORER_RULES, RuleWithCount } from "../../explorerRules.port"
 import { RulesPopoverComponent } from "./rulesPopover.component"
 
 const FLATTEN_RULES: RuleWithCount[] = [
-    { item: { type: "flatten", path: "**/*.spec.ts" }, affectedCount: 4, kind: "RULE" },
-    { item: { type: "flatten", path: "apps/foo" }, affectedCount: 1, kind: "MANUAL" }
+    {
+        id: "flatten/**/*.spec.ts",
+        label: "**/*.spec.ts",
+        affectedCount: 4,
+        kind: "RULE",
+        item: { type: "flatten", path: "**/*.spec.ts" }
+    },
+    { id: "flatten/apps/foo", label: "apps/foo", affectedCount: 1, kind: "MANUAL", item: { type: "flatten", path: "apps/foo" } }
 ]
 
-const EXCLUDE_RULES: RuleWithCount[] = [{ item: { type: "exclude", path: "node_modules" }, affectedCount: 5, kind: "MANUAL" }]
+const EXCLUDE_RULES: RuleWithCount[] = [
+    {
+        id: "exclude/node_modules",
+        label: "node_modules",
+        affectedCount: 5,
+        kind: "MANUAL",
+        item: { type: "exclude", path: "node_modules" }
+    }
+]
 
 describe("RulesPopoverComponent", () => {
     beforeEach(() => {

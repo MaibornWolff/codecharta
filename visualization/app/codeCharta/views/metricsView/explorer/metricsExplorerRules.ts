@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { ExplorerRules } from "../../../features/sidebarExplorer/facade"
-import { BlacklistItem, BlacklistType, CcState } from "../../../model/codeCharta.model"
+import { ExplorerRules, RuleWithCount } from "../../../features/sidebarExplorer/facade"
+import { BlacklistType, CcState } from "../../../model/codeCharta.model"
 import { removeBlacklistItem } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 import { blacklistSearchPattern } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
@@ -17,8 +17,8 @@ export class MetricsExplorerRules implements ExplorerRules {
     readonly isFlattenPatternDisabled$ = this.store.select(isFlattenPatternDisabledSelector)
     readonly isExcludePatternDisabled$ = this.store.select(isExcludePatternDisabledSelector)
 
-    removeRule(item: BlacklistItem) {
-        dispatchAfterPaint(this.store, removeBlacklistItem({ item }))
+    removeRule(rule: RuleWithCount) {
+        dispatchAfterPaint(this.store, removeBlacklistItem({ item: rule.item }))
     }
 
     ruleFromSearchPattern(type: BlacklistType) {

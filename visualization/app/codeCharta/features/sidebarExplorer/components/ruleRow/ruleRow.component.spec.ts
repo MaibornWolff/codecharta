@@ -1,13 +1,24 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { BlacklistItem } from "../../../../model/codeCharta.model"
 import { createExplorerRulesMock } from "../../explorerPorts.mocks"
-import { EXPLORER_RULES, ExplorerRules } from "../../explorerRules.port"
+import { EXPLORER_RULES, ExplorerRules, RuleWithCount } from "../../explorerRules.port"
 import { RuleRowComponent } from "./ruleRow.component"
 
-const flattenItem: BlacklistItem = { type: "flatten", path: "**/*.spec.ts" }
-const manualItem: BlacklistItem = { type: "flatten", path: "apps/foo" }
+const patternRule: RuleWithCount = {
+    id: "flatten/**/*.spec.ts",
+    label: "**/*.spec.ts",
+    affectedCount: 6,
+    kind: "RULE",
+    item: { type: "flatten", path: "**/*.spec.ts" }
+}
+const manualRule: RuleWithCount = {
+    id: "flatten/apps/foo",
+    label: "apps/foo",
+    affectedCount: 2,
+    kind: "MANUAL",
+    item: { type: "flatten", path: "apps/foo" }
+}
 
 describe("RuleRowComponent", () => {
     let rules: ExplorerRules
@@ -20,10 +31,10 @@ describe("RuleRowComponent", () => {
         })
     })
 
-    it("should render the path, count and kind badge", async () => {
+    it("should render the label, count and kind badge", async () => {
         // Arrange & Act
         await render(RuleRowComponent, {
-            inputs: { item: flattenItem, affectedCount: 6, kind: "RULE" }
+            inputs: { rule: patternRule }
         })
 
         // Assert
@@ -35,7 +46,7 @@ describe("RuleRowComponent", () => {
     it("should render MANUAL badge for concrete paths", async () => {
         // Arrange & Act
         await render(RuleRowComponent, {
-            inputs: { item: manualItem, affectedCount: 2, kind: "MANUAL" }
+            inputs: { rule: manualRule }
         })
 
         // Assert
@@ -45,13 +56,13 @@ describe("RuleRowComponent", () => {
     it("should ask the rules port to remove the rule when the remove button is clicked", async () => {
         // Arrange
         await render(RuleRowComponent, {
-            inputs: { item: flattenItem, affectedCount: 6, kind: "RULE" }
+            inputs: { rule: patternRule }
         })
 
         // Act
         await userEvent.click(screen.getByTestId("rule-row-remove-button"))
 
         // Assert
-        expect(rules.removeRule).toHaveBeenCalledWith(flattenItem)
+        expect(rules.removeRule).toHaveBeenCalledWith(patternRule)
     })
 })
