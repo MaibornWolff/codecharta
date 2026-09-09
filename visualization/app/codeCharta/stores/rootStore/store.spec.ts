@@ -58,6 +58,22 @@ describe("_applyPartialState", () => {
         ])
     })
 
+    it("should replace metric rules wholesale rather than merging them into an object", () => {
+        // Arrange
+        const partialState = {
+            sharedView: {
+                metricRules: [{ id: "rule-1", metric: "mcc", operator: "gt", value: 10, type: "flatten" }]
+            }
+        }
+
+        // Act
+        const newState = _applyPartialState(clone(defaultState), partialState)
+
+        // Assert
+        expect(Array.isArray(newState.sharedView.metricRules)).toBe(true)
+        expect(newState.sharedView.metricRules).toEqual([{ id: "rule-1", metric: "mcc", operator: "gt", value: 10, type: "flatten" }])
+    })
+
     it("should keep sharedView.focusedNodePath as an array instead of deep-merging it into an object", () => {
         const partialState = {
             sharedView: {
