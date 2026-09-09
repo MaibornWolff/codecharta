@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **Custom cloud shape**: the shape picker takes an uploaded SVG and lays the words out inside it, for as long as the tab is open.
 - **Search marks the cloud**: searching words in the domain explorer marks every match in the word cloud.
 - **Click the empty cloud to let go**: clicking the cloud where no word is drawn unpins the open word and puts the cloud back on the whole project.
 
