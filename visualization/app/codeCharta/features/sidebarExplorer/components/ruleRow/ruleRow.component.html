@@ -7,7 +7,7 @@
 >
     {{ kind() }}
 </span>
-<span class="flex-1 truncate text-xs font-mono" [title]="item().path">{{ item().path }}</span>
+<span class="flex-1 truncate text-xs font-mono" [title]="label()">{{ label() }}</span>
 <span class="text-xs font-semibold bg-neutral text-neutral-content rounded px-1.5 py-0.5 shrink-0 min-w-[1.5rem] text-center">
     {{ affectedCount() }}
 </span>
@@ -15,7 +15,7 @@
     type="button"
     class="btn btn-ghost btn-xs btn-square shrink-0"
     (click)="remove()"
-    [title]="'Remove rule ' + item().path"
+    [title]="'Remove rule ' + label()"
     data-testid="rule-row-remove-button"
 >
     <i class="fa fa-times"></i>

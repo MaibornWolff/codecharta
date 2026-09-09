@@ -56,7 +56,7 @@ describe("MetricsExplorerRules", () => {
         TestBed.inject(Store).dispatch(addBlacklistItems({ items: [item] }))
 
         // Act
-        rules.removeRule(item)
+        rules.removeRule({ id: `flatten/${item.path}`, label: item.path, affectedCount: 1, kind: "RULE", item })
 
         // Assert
         expect(await blacklistOfType("flatten")).toEqual([])

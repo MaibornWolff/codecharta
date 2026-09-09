@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core"
-import { BlacklistItem } from "../../../../model/codeCharta.model"
-import { EXPLORER_RULES } from "../../explorerRules.port"
+import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
+import { EXPLORER_RULES, RuleWithCount } from "../../explorerRules.port"
 
 @Component({
     selector: "cc-rule-row",
@@ -11,11 +10,13 @@ import { EXPLORER_RULES } from "../../explorerRules.port"
 export class RuleRowComponent {
     private readonly rules = inject(EXPLORER_RULES)
 
-    readonly item = input.required<BlacklistItem>()
-    readonly affectedCount = input.required<number>()
-    readonly kind = input.required<"RULE" | "MANUAL">()
+    readonly rule = input.required<RuleWithCount>()
+
+    readonly label = computed(() => this.rule().label)
+    readonly kind = computed(() => this.rule().kind)
+    readonly affectedCount = computed(() => this.rule().affectedCount)
 
     remove() {
-        this.rules.removeRule(this.item())
+        this.rules.removeRule(this.rule())
     }
 }
