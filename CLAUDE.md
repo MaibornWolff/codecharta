@@ -283,7 +283,27 @@ Example: `feat(visualization): add dark mode toggle (#123)`
 - Add appropriate labels
 - All tests must pass before merge
 - Prefer rebase over squash merge for clean history
-- Update CHANGELOG.md with changes (follow https://keepachangelog.com)
+- Update the CHANGELOG with the change (see below)
+
+### Changelog
+
+Applies to `visualization/CHANGELOG.md` and `analysis/CHANGELOG.md`, both following
+https://keepachangelog.com. They are release notes for users, not a record of the work.
+
+- **One entry is a bold title and one sentence**: what the change does for the user. No cause, no
+  mechanism, no before-and-after narration, no file, symbol or option names the UI does not show.
+- **Only what the release actually changes**: a bug introduced and fixed inside the same unreleased
+  work gets no entry, because nobody outside ever saw it. The same goes for anything invisible to a
+  user — a broken test, a type error, a refactor.
+- **One entry per change, kept current**: when a later commit changes behaviour an unreleased entry
+  already describes, rewrite that entry instead of adding a second one, and delete an entry the work
+  has since made untrue. The unreleased section always reads as the finished result.
+- Sections in the order the file's header lists them: Added 🚀, Changed, Removed, Fixed 🐞, Chore.
+
+```markdown
+- **Pinned word**: the word you open stays in a strip at the top of the domain explorer, with its
+  breakdown and a button to unpin it.
+```
 
 ### Code Style
 
