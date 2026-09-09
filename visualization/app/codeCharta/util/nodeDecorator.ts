@@ -1,6 +1,7 @@
 import { hierarchy } from "d3-hierarchy"
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData } from "../model/codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData, MetricRule } from "../model/codeCharta.model"
 import { createBlacklistMatcher } from "./blacklist/blacklistMatcher"
+import { createMetricRuleMatcher } from "./metricRule/metricRuleMatcher"
 import { isLeaf } from "./codeMapHelper"
 import { UNARY_METRIC } from "./metric/unaryMetric"
 
@@ -16,13 +17,25 @@ const enum EdgeAttributeType {
     OUTGOING = "outgoing"
 }
 
+const NOTHING_MATCHED_BY_METRIC = { isFlattened: false, isExcluded: false }
+
 export const NodeDecorator = {
-    decorateMap(map: CodeMapNode, metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">, blacklist: BlacklistItem[]) {
+    decorateMap(
+        map: CodeMapNode,
+        metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">,
+        blacklist: BlacklistItem[],
+        metricRules: MetricRule[] = []
+    ) {
         const matcher = createBlacklistMatcher(blacklist)
+        // Runs before decorateMapWithMetricData defaults absent metrics to 0, so a file with no
+        // value for a rule's metric is still recognisably without one and stays unmatched.
+        const metricRuleMatcher = createMetricRuleMatcher(metricRules)
         for (const { data } of hierarchy(map)) {
-            const { isFlattened, isExcluded } = matcher.classify(data.path, isLeaf(data))
-            data.isFlattened = isFlattened
-            data.isExcluded = isExcluded
+            const isLeafNode = isLeaf(data)
+            const { isFlattened, isExcluded } = matcher.classify(data.path, isLeafNode)
+            const byMetric = isLeafNode ? metricRuleMatcher.classify(data.attributes) : NOTHING_MATCHED_BY_METRIC
+            data.isFlattened = isFlattened || byMetric.isFlattened
+            data.isExcluded = isExcluded || byMetric.isExcluded
         }
         map.isExcluded = false
         this.decorateMapWithMetricData(map, metricData)

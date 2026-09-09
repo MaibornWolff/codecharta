@@ -80,7 +80,13 @@ import {
     setSortingOption
 } from "../stores/preferences/preferences.write.facade"
 import { SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
-import { setAllFocusedNodes, setBlacklist, setMarkedPackages, setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
+import {
+    setAllFocusedNodes,
+    setBlacklist,
+    setMarkedPackages,
+    setMetricRules,
+    setSearchPattern
+} from "../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class LoadInitialFileStore {
@@ -318,6 +324,9 @@ export class LoadInitialFileStore {
                 break
             case "markedPackages":
                 this.store.dispatch(setMarkedPackages({ value }))
+                break
+            case "metricRules":
+                this.store.dispatch(setMetricRules({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

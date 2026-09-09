@@ -34,7 +34,7 @@ function runProjector(structureTree: CCFile) {
         nodeEdgeMetricsMap: new Map() as NodeEdgeMetricsMap
     }
     const fileStates = [{ selectedAs: FileSelectionState.Partial } as FileState]
-    return accumulatedDataSelector.projector(metricData, fileStates, structureTree, {}, {}, [], [])
+    return accumulatedDataSelector.projector(metricData, fileStates, structureTree, {}, {}, [], [], [])
 }
 
 describe("accumulatedDataSelector", () => {
