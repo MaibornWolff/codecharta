@@ -4,7 +4,13 @@ import { CcState, MetricData, RecursivePartial } from "../../../model/codeCharta
 import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
 import { Scenario } from "../model/scenario.model"
-import { isMetricSelectionKey, SCENARIO_SETTINGS, ScenarioSettingKey, ScenarioSettings } from "../model/scenarioSettings.registry"
+import {
+    isAppliedFirst,
+    isMetricSelectionKey,
+    SCENARIO_SETTINGS,
+    ScenarioSettingKey,
+    ScenarioSettings
+} from "../model/scenarioSettings.registry"
 import { ScenariosStore } from "../stores/scenarios.store"
 
 export interface MissingMetrics {
@@ -45,9 +51,9 @@ export class ScenarioApplierService {
     }
 
     /**
-     * Metric selections come first: effects derive from them — changing the color metric recalculates
-     * the color range, changing the edge metric clamps the amount of edge previews — so the settings a
-     * scenario saved for those must be patched afterwards to win.
+     * Metric selections and the color-follows-height link come first: effects derive from them —
+     * linking re-selects the color metric, which re-derives the color range — so the values a scenario
+     * saved for what they derive must be patched afterwards to win.
      */
     buildOrderedStatePatches(
         settings: ScenarioSettings,
@@ -57,10 +63,10 @@ export class ScenarioApplierService {
         const applicableKeys = this.getApplicableKeys(settings, selectedKeys, metricData)
 
         return [
-            this.mergePatchesOf(settings, applicableKeys.filter(isMetricSelectionKey)),
+            this.mergePatchesOf(settings, applicableKeys.filter(isAppliedFirst)),
             this.mergePatchesOf(
                 settings,
-                applicableKeys.filter(key => !isMetricSelectionKey(key))
+                applicableKeys.filter(key => !isAppliedFirst(key))
             )
         ].filter(patch => Object.keys(patch).length > 0)
     }
@@ -92,9 +98,8 @@ export class ScenarioApplierService {
                 patches[0].preferences = { ...patches[0].preferences, resetCameraIfNewFileIsLoaded: false }
             }
 
-            // Dispatch patches with macrotask delays so effects triggered by
-            // earlier patches (e.g. resetColorRange after metric change)
-            // settle before subsequent patches override their values.
+            // Dispatch patches with macrotask delays so the effects an earlier
+            // patch triggers settle before the next patch overrides their values.
             for (const patch of patches) {
                 this.scenariosStore.setStatePatch(patch)
                 await new Promise<void>(resolve => setTimeout(resolve))
@@ -107,13 +112,14 @@ export class ScenarioApplierService {
                 this.threeCameraService.camera.lookAt(target)
                 this.threeCameraService.camera.updateProjectionMatrix()
                 this.threeMapControlsService.updateControls()
+            }
 
-                // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed.
-                if (previousResetCamera) {
-                    setTimeout(() => {
-                        this.scenariosStore.setStatePatch({ preferences: { resetCameraIfNewFileIsLoaded: true } })
-                    })
-                }
+            // Restore resetCameraIfNewFileIsLoaded after autoFit window has passed — also when there was
+            // no camera to move, so the preference is never left switched off.
+            if (previousResetCamera) {
+                setTimeout(() => {
+                    this.scenariosStore.setStatePatch({ preferences: { resetCameraIfNewFileIsLoaded: true } })
+                })
             }
 
             this.threeRendererService.render()

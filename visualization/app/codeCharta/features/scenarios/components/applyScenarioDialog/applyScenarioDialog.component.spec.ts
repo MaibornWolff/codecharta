@@ -95,15 +95,18 @@ describe("ApplyScenarioDialogComponent", () => {
 
         // Assert
         expect(withoutMetrics.hasMissing()).toBe(true)
-        expect(withoutMetrics.isMetricSelected()).toBe(true)
+        expect(withoutMetrics.missingMetrics().nodeMetrics).toEqual(["rloc", "mcc"])
     })
 
-    it("should not report a metric selection when none is selected", () => {
+    it("should not warn about a missing metric the reader has unchecked", () => {
+        // Arrange
+        const withoutMetrics = createComponent(createTestScenario(), { nodeMetricData: [], edgeMetricData: [] })
+
         // Act
-        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+        withoutMetrics.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
 
         // Assert
-        expect(component.isMetricSelected()).toBe(false)
+        expect(withoutMetrics.hasMissing()).toBe(false)
     })
 
     it("should apply only the selected settings", async () => {

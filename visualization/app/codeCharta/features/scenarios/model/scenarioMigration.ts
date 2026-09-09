@@ -99,7 +99,7 @@ function migrateLegacySections(sections: LegacyScenarioSections): ScenarioSettin
         isColorMetricLinkedToHeightMetric: metrics?.isColorMetricLinkedToHeightMetric,
         colorRange: colors?.colorRange,
         colorMode: colors?.colorMode,
-        mapColors: colors?.mapColors ? bandColors : undefined,
+        mapColors: Object.keys(bandColors).length > 0 ? bandColors : undefined,
         markedPackages: labelsAndFolders?.markedPackages,
         edgeMetric: metrics?.edgeMetric,
         edgeColors: hasEdgeColors ? { outgoingEdge, incomingEdge } : undefined,

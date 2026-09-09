@@ -75,8 +75,14 @@ export interface ScenarioSettingsSource {
 interface ScenarioSettingDefinition<Key extends ScenarioSettingKey> {
     readonly group: ScenarioGroupKey
     readonly label: string
-    /** Metric selections are applied before the settings whose effects derive from them. */
+    /** Names a metric, so it is left out when the current map does not have that metric. */
     readonly isMetricSelection?: boolean
+    /**
+     * Applied in the first of the two patches, ahead of the settings that effects derive from it:
+     * a metric selection, or the link that makes an effect re-select the color metric — which in
+     * turn re-derives the color range a scenario may carry.
+     */
+    readonly isAppliedFirst?: boolean
     readonly read: (source: ScenarioSettingsSource) => ScenarioSettings[Key]
     /** Absent for the camera, which the camera services move instead of the store. */
     readonly patch?: (settings: ScenarioSettings) => RecursivePartial<CcState>
@@ -90,6 +96,7 @@ export const SCENARIO_SETTINGS: ScenarioSettingRegistry = {
         group: "area",
         label: "Area metric",
         isMetricSelection: true,
+        isAppliedFirst: true,
         read: source => source.state.mapState.areaMetric,
         patch: settings => ({ mapState: { areaMetric: settings.areaMetric } })
     },
@@ -115,6 +122,7 @@ export const SCENARIO_SETTINGS: ScenarioSettingRegistry = {
         group: "height",
         label: "Height metric",
         isMetricSelection: true,
+        isAppliedFirst: true,
         read: source => source.state.mapState.heightMetric,
         patch: settings => ({ mapState: { heightMetric: settings.heightMetric } })
     },
@@ -134,12 +142,14 @@ export const SCENARIO_SETTINGS: ScenarioSettingRegistry = {
         group: "color",
         label: "Color metric",
         isMetricSelection: true,
+        isAppliedFirst: true,
         read: source => source.state.mapState.colorMetric,
         patch: settings => ({ mapState: { colorMetric: settings.colorMetric } })
     },
     isColorMetricLinkedToHeightMetric: {
         group: "color",
         label: "Color follows height metric",
+        isAppliedFirst: true,
         read: source => source.state.preferences.isColorMetricLinkedToHeightMetric,
         patch: settings => ({ preferences: { isColorMetricLinkedToHeightMetric: settings.isColorMetricLinkedToHeightMetric } })
     },
@@ -171,6 +181,7 @@ export const SCENARIO_SETTINGS: ScenarioSettingRegistry = {
         group: "edge",
         label: "Edge metric",
         isMetricSelection: true,
+        isAppliedFirst: true,
         read: source => source.state.mapState.edgeMetric,
         patch: settings => ({ mapState: { edgeMetric: settings.edgeMetric } })
     },
@@ -293,8 +304,7 @@ function readBandColors(mapColors: MapColors): ScenarioBandColors {
 
 export const SCENARIO_SETTING_KEYS = Object.keys(SCENARIO_SETTINGS) as ScenarioSettingKey[]
 
-export const SCENARIO_GROUP_KEYS: readonly ScenarioGroupKey[] = ["area", "height", "color", "edge", "labels", "camera", "filters"]
-
+/** Declaration order is display order, and the record's type keeps the groups exhaustive. */
 export const SCENARIO_GROUP_LABELS: Record<ScenarioGroupKey, string> = {
     area: "Area",
     height: "Height",
@@ -304,6 +314,8 @@ export const SCENARIO_GROUP_LABELS: Record<ScenarioGroupKey, string> = {
     camera: "Camera",
     filters: "Filters"
 }
+
+export const SCENARIO_GROUP_KEYS = Object.keys(SCENARIO_GROUP_LABELS) as ScenarioGroupKey[]
 
 export const SCENARIO_GROUP_ICONS: Record<ScenarioGroupKey, string> = {
     area: "fa-th-large",
@@ -323,8 +335,16 @@ export function isMetricSelectionKey(key: ScenarioSettingKey): key is ScenarioMe
 
 export const METRIC_SELECTION_SETTING_KEYS = SCENARIO_SETTING_KEYS.filter(isMetricSelectionKey)
 
+export function isAppliedFirst(key: ScenarioSettingKey): boolean {
+    return Boolean(SCENARIO_SETTINGS[key].isAppliedFirst)
+}
+
 export function getSettingKeysOfGroup(group: ScenarioGroupKey): ScenarioSettingKey[] {
     return SCENARIO_SETTING_KEYS.filter(key => SCENARIO_SETTINGS[key].group === group)
+}
+
+export function pickScenarioSettings(settings: ScenarioSettings, keys: ReadonlySet<ScenarioSettingKey>): ScenarioSettings {
+    return Object.fromEntries(Object.entries(settings).filter(([key]) => keys.has(key as ScenarioSettingKey))) as ScenarioSettings
 }
 
 export function readScenarioSettings(source: ScenarioSettingsSource, selectedKeys: ReadonlySet<ScenarioSettingKey>): ScenarioSettings {

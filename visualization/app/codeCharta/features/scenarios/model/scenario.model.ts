@@ -34,8 +34,8 @@ export function getAvailableSettingKeys(scenario: Scenario): ScenarioSettingKey[
 }
 
 export function getAvailableGroupKeys(scenario: Scenario): ScenarioGroupKey[] {
-    const availableKeys = new Set(getAvailableSettingKeys(scenario))
-    return SCENARIO_GROUP_KEYS.filter(group => [...availableKeys].some(key => SCENARIO_SETTINGS[key].group === group))
+    const availableGroups = new Set(getAvailableSettingKeys(scenario).map(key => SCENARIO_SETTINGS[key].group))
+    return SCENARIO_GROUP_KEYS.filter(group => availableGroups.has(group))
 }
 
 export function toScenarioFile(scenario: Scenario): ScenarioFile {

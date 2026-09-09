@@ -37,7 +37,8 @@ const testSettings: ScenarioSettings = {
     focusedNodePath: ["/root/src"]
 }
 
-const allKeys = new Set(Object.keys(testSettings) as ScenarioSettingKey[])
+/** The keys the test scenario carries — not every key of the registry. */
+const carriedKeys = new Set(Object.keys(testSettings) as ScenarioSettingKey[])
 
 const createTestScenario = (settings: ScenarioSettings = testSettings): Scenario => ({
     id: "test-id",
@@ -106,7 +107,7 @@ describe("ScenarioApplierService", () => {
 
         it("should patch every selected setting into its state home", () => {
             // Act
-            const patches = service.buildOrderedStatePatches(testSettings, allKeys)
+            const patches = service.buildOrderedStatePatches(testSettings, carriedKeys)
 
             // Assert
             const settingsPatch = patches[1]
@@ -115,9 +116,20 @@ describe("ScenarioApplierService", () => {
             expect(settingsPatch.mapState?.scaling).toEqual({ y: 3 })
             expect(settingsPatch.mapState?.amountOfEdgePreviews).toBe(7)
             expect(settingsPatch.mapState?.labelsPerMap).toBe(true)
-            expect(settingsPatch.preferences?.isColorMetricLinkedToHeightMetric).toBe(true)
             expect(settingsPatch.sharedView?.blacklist).toEqual(testSettings.blacklist)
             expect(settingsPatch.sharedView?.markedPackages).toEqual(testSettings.markedPackages)
+        })
+
+        it("should patch the color-follows-height link with the metric selections", () => {
+            // Arrange — the link makes an effect re-select the color metric, which re-derives the color range
+            const keys = new Set<ScenarioSettingKey>(["isColorMetricLinkedToHeightMetric", "colorRange"])
+
+            // Act
+            const patches = service.buildOrderedStatePatches(testSettings, keys)
+
+            // Assert
+            expect(patches[0].preferences).toEqual({ isColorMetricLinkedToHeightMetric: true })
+            expect(patches[1].mapState).toEqual({ colorRange: { from: 1, to: 10 } })
         })
 
         it("should merge band colors and edge colors into one map colors patch", () => {
@@ -159,7 +171,7 @@ describe("ScenarioApplierService", () => {
             const scenarioSettings: ScenarioSettings = { areaMetric: "rloc" }
 
             // Act
-            const patches = service.buildOrderedStatePatches(scenarioSettings, allKeys)
+            const patches = service.buildOrderedStatePatches(scenarioSettings, carriedKeys)
 
             // Assert
             expect(patches).toHaveLength(1)
@@ -174,7 +186,7 @@ describe("ScenarioApplierService", () => {
             }
 
             // Act
-            const patches = service.buildOrderedStatePatches(testSettings, allKeys, metricData)
+            const patches = service.buildOrderedStatePatches(testSettings, carriedKeys, metricData)
 
             // Assert — rloc is available, mcc and pairingRate are not
             expect(patches[0].mapState).toEqual({ areaMetric: "rloc" })
@@ -182,7 +194,7 @@ describe("ScenarioApplierService", () => {
 
         it("should apply every metric when the available metrics are unknown", () => {
             // Act
-            const patches = service.buildOrderedStatePatches(testSettings, allKeys)
+            const patches = service.buildOrderedStatePatches(testSettings, carriedKeys)
 
             // Assert
             expect(patches[0].mapState).toEqual({

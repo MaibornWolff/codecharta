@@ -102,5 +102,11 @@ global configuration dialog, not the bar — out of scope.
   an earlier version carries a camera nobody chose to save.
 - The model, the two dialogs and the picker landed in one commit: the registry replaces the section
   shape they are typed against, so neither compiles without the other.
-- Verified: full unit suite (424 suites, 2926 tests) green with the 80% gate, production build green,
-  8 scenario e2e tests green — among them applying a scenario and saving with a group unchecked.
+- Review by a second agent found the ordering defect this branch introduced: the color-follows-height
+  link was patched in the second pass, so switching it on re-derived the color range *after* the
+  scenario's own range was written — every built-in lost its range on the first apply of a session.
+  Settings now carry an `isAppliedFirst` flag and the link travels with the metric selections; a spec
+  running the real reducers plus both metrics-bar effects pins it.
+- Verified: full unit suite (425 suites, 2935 tests) green with the 80% gate, production build green,
+  the whole Playwright suite green (85 tests) — among them applying a scenario, saving with a group
+  unchecked, and switching every setting off and back to the default.

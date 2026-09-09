@@ -14,7 +14,7 @@ import {
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../model/codeCharta.model"
 import { getAvailableSettingKeys, Scenario } from "../../model/scenario.model"
-import { METRIC_SELECTION_SETTING_KEYS, SCENARIO_SETTINGS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
+import { pickScenarioSettings, SCENARIO_SETTINGS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
 import { ScenarioSettingsPickerComponent } from "../scenarioSettingsPicker/scenarioSettingsPicker.component"
 
@@ -38,9 +38,11 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
 
     readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(() => new Set(this.defaultKeys()))
 
-    readonly missingMetrics = computed(() => this.scenarioApplier.getMissingMetrics(this.scenario().settings, this.metricData()))
+    /** Only the metrics that are actually about to be applied can be missing from the current map. */
+    readonly missingMetrics = computed(() =>
+        this.scenarioApplier.getMissingMetrics(pickScenarioSettings(this.scenario().settings, this.selectedKeys()), this.metricData())
+    )
     readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
-    readonly isMetricSelected = computed(() => METRIC_SELECTION_SETTING_KEYS.some(key => this.selectedKeys().has(key)))
     readonly hasAnySelected = computed(() => this.selectedKeys().size > 0)
 
     private readonly destroyRef = inject(DestroyRef)
