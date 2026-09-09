@@ -6,6 +6,7 @@ export {
     BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
     BarShellDirective
 } from "./components/barShell/barShell.directive"
+export { ConfirmDialogComponent } from "./components/confirmDialog/confirmDialog.component"
 export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMenuItem.component"
 export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.component"
 export { FloatingMenuComponent } from "./components/floatingMenu/floatingMenu.component"
