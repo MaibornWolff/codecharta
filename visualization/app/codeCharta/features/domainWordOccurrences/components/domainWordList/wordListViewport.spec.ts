@@ -107,20 +107,6 @@ describe("WordListViewport", () => {
         expect(viewport.geometry().viewportHeight).toBe(0)
     })
 
-    it("should not scroll the panel while the list is not inside it", () => {
-        // Arrange
-        panel.scrollTop = 0
-        const viewport = new WordListViewport()
-        viewport.attachTo(list, panel)
-        list.remove()
-
-        // Act
-        viewport.scrollTo(1200)
-
-        // Assert
-        expect(panel.scrollTop).toBe(0)
-    })
-
     it("should take the row height from a rendered row, so a restyled row does not misplace the window", () => {
         // Arrange
         list.append(elementOfHeight("cc-domain-word-row", 42))
@@ -131,75 +117,6 @@ describe("WordListViewport", () => {
 
         // Assert
         expect(viewport.geometry().rowHeight).toBe(42)
-    })
-
-    it("should measure the open breakdown, which sits between its row and the next one", () => {
-        // Arrange
-        list.append(elementOfHeight("div", 360, "data-word-breakdown"))
-        const viewport = new WordListViewport()
-        viewport.attachTo(list, panel)
-
-        // Act
-        viewport.trackOpenBreakdown("invoice")
-
-        // Assert
-        expect(viewport.geometry().expandedHeight).toBe(360)
-    })
-
-    it("should remember an open breakdown's height once its own row scrolls out of the window", () => {
-        // Arrange: the breakdown is rendered only while its row is, so it leaves the DOM as that row does.
-        const breakdown = elementOfHeight("div", 360, "data-word-breakdown")
-        list.append(breakdown)
-        const viewport = new WordListViewport()
-        viewport.attachTo(list, panel)
-        viewport.trackOpenBreakdown("invoice")
-
-        // Act
-        breakdown.remove()
-        viewport.measure()
-
-        // Assert: reading it as zero would pull every row below it upwards mid-scroll.
-        expect(viewport.geometry().expandedHeight).toBe(360)
-    })
-
-    it("should forget the height when the breakdown is closed", () => {
-        // Arrange
-        list.append(elementOfHeight("div", 360, "data-word-breakdown"))
-        const viewport = new WordListViewport()
-        viewport.attachTo(list, panel)
-        viewport.trackOpenBreakdown("invoice")
-
-        // Act
-        viewport.trackOpenBreakdown(null)
-
-        // Assert
-        expect(viewport.geometry().expandedHeight).toBe(0)
-    })
-
-    it("should scroll the panel to an offset within the list, so an unrendered row can be reached", () => {
-        // Arrange
-        panel.scrollTop = 0
-        const viewport = new WordListViewport()
-        viewport.attachTo(list, panel)
-
-        // Act
-        viewport.scrollTo(1200)
-
-        // Assert
-        expect(panel.scrollTop).toBe(1200)
-    })
-
-    it("should not scroll above the start of the list when centring an early row", () => {
-        // Arrange
-        panel.scrollTop = 0
-        const viewport = new WordListViewport()
-        viewport.attachTo(list, panel)
-
-        // Act
-        viewport.scrollTo(-200)
-
-        // Assert
-        expect(panel.scrollTop).toBe(0)
     })
 
     it("should stop measuring once it is disposed", () => {

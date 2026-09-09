@@ -1,7 +1,7 @@
 ---
 name: Domain view — pin the opened word above the word list
 issue: -
-state: todo
+state: complete
 version: vis 2.1.2
 ---
 
@@ -38,8 +38,8 @@ irregular row, and nothing has to be scrolled into view.
 
 ## Steps
 
-- [ ] Complete Task 1: pin the opened word
-- [ ] Complete Task 2: drop what the pin makes dead
+- [x] Complete Task 1: pin the opened word
+- [x] Complete Task 2: drop what the pin makes dead
 
 ## Notes
 
@@ -47,3 +47,8 @@ irregular row, and nothing has to be scrolled into view.
   click on the empty cloud unpins without touching the search.
 - The pinned block is sticky inside the explorer's scroll host, which is the panel's own
   `overflow-auto` div — the list is a direct child of it, so `position: sticky` holds.
+- The pin's own breakdown uses `overflow-y-auto`, not `overflow-auto`: the e2e locates the panel by
+  `cc-sidebar-explorer .overflow-auto`, which a second `overflow-auto` inside the list made
+  ambiguous.
+- Verified in the browser: the pin holds its place while the list scrolls under it, survives a search
+  that filters everything below it, and the word is never listed twice. 28 domain e2e tests green.
