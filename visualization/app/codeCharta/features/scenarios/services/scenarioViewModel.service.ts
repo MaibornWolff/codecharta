@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { MetricData } from "../../../model/codeCharta.model"
-import { getAvailableSectionKeys, Scenario } from "../model/scenario.model"
+import { getAvailableGroupKeys, Scenario } from "../model/scenario.model"
 import { ScenarioView } from "../model/scenarioView.model"
 import { ScenarioApplierService } from "./scenarioApplier.service"
 
@@ -42,15 +42,13 @@ export class ScenarioViewModelService {
     toScenarioView(scenario: Scenario, visibleFileNames: Set<string>, metricData: MetricData): ScenarioView {
         const mapBound = (scenario.mapFileNames?.length ?? 0) > 0
         const mapMismatch = mapBound && !scenario.mapFileNames.some(name => visibleFileNames.has(name))
-        const warning = scenario.sections.metrics
-            ? this.scenarioApplier.hasMissingMetrics(this.scenarioApplier.getMissingMetrics(scenario.sections.metrics, metricData))
-            : false
+        const warning = this.scenarioApplier.hasMissingMetrics(this.scenarioApplier.getMissingMetrics(scenario.settings, metricData))
         return {
             scenario,
             warning,
             mapMismatch,
             mapBound,
-            sectionKeys: getAvailableSectionKeys(scenario),
+            groupKeys: getAvailableGroupKeys(scenario),
             formattedDate: new Date(scenario.createdAt).toLocaleDateString()
         }
     }

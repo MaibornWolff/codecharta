@@ -41,6 +41,25 @@ export class ScenariosPageObject {
         return this.page.locator("cc-apply-scenario-dialog h2")
     }
 
+    applySettingCheckbox(settingKey: string): Locator {
+        return this.applyDialog().locator(`[data-testid='scenario-setting-${settingKey}']`)
+    }
+
+    async applyScenario() {
+        await this.applyDialog().getByRole("button", { name: "Apply" }).click()
+        await this.applyDialog().waitFor({ state: "detached", timeout: 10_000 })
+    }
+
+    async openExtendedSaveSettings() {
+        const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
+        await dialog.locator("[data-testid='save-scenario-extended-settings']").click()
+    }
+
+    async toggleSaveSettingGroup(groupKey: string) {
+        const dialog = this.page.getByRole("dialog", { name: "Save Scenario" })
+        await dialog.locator(`[data-testid='scenario-group-${groupKey}']`).click()
+    }
+
     async closeScenarioList() {
         const dialog = this.page.getByRole("dialog", { name: "Scenarios" })
         await dialog.locator(".fa-close").click()

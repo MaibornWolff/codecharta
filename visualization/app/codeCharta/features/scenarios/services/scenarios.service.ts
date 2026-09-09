@@ -1,133 +1,120 @@
 import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
-import { CcState, ColorMode } from "../../../model/codeCharta.model"
+import { ColorMode, ColorRange } from "../../../model/codeCharta.model"
 import { ThreeCameraService, ThreeMapControlsService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { PlainPosition, Scenario, ScenarioSections } from "../model/scenario.model"
+import { Scenario } from "../model/scenario.model"
+import {
+    readScenarioSettings,
+    ScenarioBandColors,
+    ScenarioCamera,
+    ScenarioSettingKey,
+    ScenarioSettingsSource
+} from "../model/scenarioSettings.registry"
 import { ScenarioIndexedDBService } from "../stores/scenarioIndexedDB"
 import { ScenariosStore } from "../stores/scenarios.store"
 
-const DEFAULT_MAP_COLORS = {
+export interface ScenarioDraft {
+    readonly name: string
+    readonly description?: string
+    readonly mapFileNames?: readonly string[]
+    readonly selectedKeys: ReadonlySet<ScenarioSettingKey>
+}
+
+const DEFAULT_CAMERA: ScenarioCamera = { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } }
+
+const DEFAULT_MAP_COLORS: ScenarioBandColors = {
     positive: "#69AE40",
     neutral: "#ddcc00",
     negative: "#820E0E"
 }
 
-const INVERTED_MAP_COLORS = {
+const INVERTED_MAP_COLORS: ScenarioBandColors = {
     positive: DEFAULT_MAP_COLORS.negative,
     neutral: DEFAULT_MAP_COLORS.neutral,
     negative: DEFAULT_MAP_COLORS.positive,
     isColorRangeInverted: true
 }
 
-const BUILT_IN_SCENARIOS: Scenario[] = [
+interface BuiltInScenarioDefinition {
+    readonly id: string
+    readonly name: string
+    readonly description: string
+    readonly metric: string
+    readonly colorRange: ColorRange
+    readonly colorMode?: ColorMode
+    readonly mapColors?: ScenarioBandColors
+}
+
+const BUILT_IN_DEFINITIONS: BuiltInScenarioDefinition[] = [
     {
         id: "built-in-rloc",
         name: "Real Lines of Code",
         description: "Visualize code size using real lines of code",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", isColorMetricLinkedToHeightMetric: true },
-            colors: { colorRange: { from: 250, to: 500 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
-        }
+        metric: "rloc",
+        colorRange: { from: 250, to: 500 }
     },
     {
         id: "built-in-complexity",
         name: "Complexity",
         description: "Visualize cyclomatic complexity",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: {
-                areaMetric: "rloc",
-                heightMetric: "complexity",
-                colorMetric: "complexity",
-                isColorMetricLinkedToHeightMetric: true
-            },
-            colors: { colorRange: { from: 50, to: 100 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
-        }
+        metric: "complexity",
+        colorRange: { from: 50, to: 100 }
     },
     {
         id: "built-in-comment-lines",
         name: "Comment Lines",
         description: "Visualize comment density",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: {
-                areaMetric: "rloc",
-                heightMetric: "comment_lines",
-                colorMetric: "comment_lines",
-                isColorMetricLinkedToHeightMetric: true
-            },
-            colors: { colorRange: { from: 50, to: 100 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
-        }
+        metric: "comment_lines",
+        colorRange: { from: 50, to: 100 }
     },
     {
         id: "built-in-code-smells",
         name: "Code Smells",
         description: "Visualize code smell density",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: {
-                areaMetric: "rloc",
-                heightMetric: "sonar_code_smells",
-                colorMetric: "sonar_code_smells",
-                isColorMetricLinkedToHeightMetric: true
-            },
-            colors: { colorRange: { from: 10, to: 50 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
-        }
+        metric: "sonar_code_smells",
+        colorRange: { from: 10, to: 50 }
     },
     {
         id: "built-in-logic-complexity",
         name: "Logic Complexity",
         description: "Visualize cognitive/logic complexity",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: {
-                areaMetric: "rloc",
-                heightMetric: "logic_complexity",
-                colorMetric: "logic_complexity",
-                isColorMetricLinkedToHeightMetric: true
-            },
-            colors: { colorRange: { from: 40, to: 80 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
-        }
+        metric: "logic_complexity",
+        colorRange: { from: 40, to: 80 }
     },
     {
         id: "built-in-max-complexity-per-function",
         name: "Max Complexity per Function",
         description: "Visualize maximum complexity per function",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: {
-                areaMetric: "rloc",
-                heightMetric: "max_complexity_per_function",
-                colorMetric: "max_complexity_per_function",
-                isColorMetricLinkedToHeightMetric: true
-            },
-            colors: { colorRange: { from: 10, to: 20 }, colorMode: ColorMode.weightedGradient, mapColors: DEFAULT_MAP_COLORS }
-        }
+        metric: "max_complexity_per_function",
+        colorRange: { from: 10, to: 20 }
     },
     {
         id: "built-in-authors",
         name: "Authors",
         description: "Visualize the number of authors per file",
-        createdAt: 0,
-        isBuiltIn: true,
-        sections: {
-            metrics: {
-                areaMetric: "rloc",
-                heightMetric: "number_of_authors",
-                colorMetric: "number_of_authors",
-                isColorMetricLinkedToHeightMetric: true
-            },
-            colors: { colorRange: { from: 2, to: 3 }, colorMode: ColorMode.absolute, mapColors: INVERTED_MAP_COLORS }
-        }
+        metric: "number_of_authors",
+        colorRange: { from: 2, to: 3 },
+        colorMode: ColorMode.absolute,
+        mapColors: INVERTED_MAP_COLORS
     }
 ]
+
+const BUILT_IN_SCENARIOS: Scenario[] = BUILT_IN_DEFINITIONS.map(definition => ({
+    id: definition.id,
+    name: definition.name,
+    description: definition.description,
+    createdAt: 0,
+    isBuiltIn: true,
+    settings: {
+        areaMetric: "rloc",
+        heightMetric: definition.metric,
+        colorMetric: definition.metric,
+        isColorMetricLinkedToHeightMetric: true,
+        colorRange: definition.colorRange,
+        colorMode: definition.colorMode ?? ColorMode.weightedGradient,
+        mapColors: definition.mapColors ?? DEFAULT_MAP_COLORS
+    }
+}))
 
 @Injectable({ providedIn: "root" })
 export class ScenariosService {
@@ -151,18 +138,8 @@ export class ScenariosService {
         }
     }
 
-    async saveScenario(name: string, description?: string, mapFileNames?: string[]): Promise<Scenario> {
-        const cameraPosition = this.threeCameraService.camera?.position
-        const cameraTarget = this.threeMapControlsService.controls?.target
-
-        const scenario = this.buildScenario(
-            name,
-            this.scenariosStore.getValue(),
-            cameraPosition ? { x: cameraPosition.x, y: cameraPosition.y, z: cameraPosition.z } : { x: 0, y: 300, z: 1000 },
-            cameraTarget ? { x: cameraTarget.x, y: cameraTarget.y, z: cameraTarget.z } : { x: 0, y: 0, z: 0 },
-            description,
-            mapFileNames
-        )
+    async saveScenario(draft: ScenarioDraft): Promise<Scenario> {
+        const scenario = this.buildScenario(draft, this.readCurrentSource())
 
         try {
             await this.db.add(scenario)
@@ -182,58 +159,27 @@ export class ScenariosService {
         }
     }
 
-    buildScenarioSections(state: CcState, cameraPosition: PlainPosition, cameraTarget: PlainPosition): ScenarioSections {
+    buildScenario(draft: ScenarioDraft, source: ScenarioSettingsSource): Scenario {
         return {
-            metrics: {
-                areaMetric: state.mapState.areaMetric,
-                heightMetric: state.mapState.heightMetric,
-                colorMetric: state.mapState.colorMetric,
-                edgeMetric: state.mapState.edgeMetric,
-                distributionMetric: state.mapState.distributionMetric,
-                isColorMetricLinkedToHeightMetric: state.preferences.isColorMetricLinkedToHeightMetric
-            },
-            colors: {
-                colorRange: { ...state.mapState.colorRange },
-                colorMode: state.mapState.colorMode,
-                mapColors: { ...state.mapState.mapColors }
-            },
-            camera: {
-                position: { ...cameraPosition },
-                target: { ...cameraTarget }
-            },
-            filters: {
-                blacklist: [...state.sharedView.blacklist],
-                focusedNodePath: [...state.sharedView.focusedNodePath]
-            },
-            labelsAndFolders: {
-                amountOfTopLabels: state.mapState.amountOfTopLabels,
-                labelSize: state.mapState.labelSize,
-                showMetricLabelNameValue: state.mapState.showMetricLabelNameValue,
-                showMetricLabelNodeName: state.mapState.showMetricLabelNodeName,
-                enableFloorLabels: state.mapState.enableFloorLabels,
-                colorLabels: { ...state.mapState.colorLabels },
-                labelMode: state.mapState.labelMode,
-                groupLabelCollisions: state.mapState.groupLabelCollisions,
-                markedPackages: [...state.sharedView.markedPackages]
-            }
+            id: crypto.randomUUID(),
+            name: draft.name,
+            description: draft.description,
+            mapFileNames: draft.mapFileNames,
+            createdAt: Date.now(),
+            settings: readScenarioSettings(source, draft.selectedKeys)
         }
     }
 
-    buildScenario(
-        name: string,
-        state: CcState,
-        cameraPosition: PlainPosition,
-        cameraTarget: PlainPosition,
-        description?: string,
-        mapFileNames?: string[]
-    ): Scenario {
+    private readCurrentSource(): ScenarioSettingsSource {
+        return { state: this.scenariosStore.getValue(), camera: this.readCurrentCamera() }
+    }
+
+    private readCurrentCamera(): ScenarioCamera {
+        const position = this.threeCameraService.camera?.position
+        const target = this.threeMapControlsService.controls?.target
         return {
-            id: crypto.randomUUID(),
-            name,
-            description,
-            mapFileNames,
-            createdAt: Date.now(),
-            sections: this.buildScenarioSections(state, cameraPosition, cameraTarget)
+            position: position ? { x: position.x, y: position.y, z: position.z } : DEFAULT_CAMERA.position,
+            target: target ? { x: target.x, y: target.y, z: target.z } : DEFAULT_CAMERA.target
         }
     }
 }

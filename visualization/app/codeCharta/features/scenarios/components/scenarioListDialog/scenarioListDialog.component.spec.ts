@@ -17,33 +17,18 @@ const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[
     name,
     mapFileNames,
     createdAt: Date.now(),
-    sections: {
-        metrics: {
-            areaMetric: "rloc",
-            heightMetric: "mcc",
-            colorMetric: "mcc",
-            edgeMetric: "",
-            distributionMetric: "rloc",
-            isColorMetricLinkedToHeightMetric: false
-        },
-        colors: {
-            colorRange: { from: 1, to: 10 },
-            colorMode: ColorMode.weightedGradient,
-            mapColors: defaultState.mapState.mapColors
-        },
+    settings: {
+        areaMetric: "rloc",
+        heightMetric: "mcc",
+        colorMetric: "mcc",
+        edgeMetric: "",
+        colorRange: { from: 1, to: 10 },
+        colorMode: ColorMode.weightedGradient,
+        mapColors: defaultState.mapState.mapColors,
+        labelMode: LabelMode.Height,
         camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
-        filters: { blacklist: [], focusedNodePath: [] },
-        labelsAndFolders: {
-            amountOfTopLabels: 1,
-            labelSize: 1,
-            showMetricLabelNameValue: true,
-            showMetricLabelNodeName: true,
-            enableFloorLabels: false,
-            colorLabels: { positive: false, negative: false, neutral: false },
-            labelMode: LabelMode.Height,
-            groupLabelCollisions: false,
-            markedPackages: []
-        }
+        blacklist: [],
+        focusedNodePath: []
     }
 })
 
@@ -52,10 +37,7 @@ const createBuiltInScenario = (name: string, id: string): Scenario => ({
     name,
     createdAt: 0,
     isBuiltIn: true,
-    sections: {
-        metrics: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc" },
-        colors: { colorRange: { from: 250, to: 500 } }
-    }
+    settings: { areaMetric: "rloc", heightMetric: "rloc", colorMetric: "rloc", colorRange: { from: 250, to: 500 } }
 })
 
 const createFileState = (fileName: string): FileState => ({
@@ -371,7 +353,7 @@ describe("ScenarioListDialogComponent", () => {
             expect(view.mapMismatch).toBe(true)
         })
 
-        it("should precompute sectionKeys on scenario views", () => {
+        it("should precompute the setting groups on scenario views", () => {
             // Arrange
             const full = createTestScenario("Full", "id-1")
             const builtIn = createBuiltInScenario("Built-In", "id-2")
@@ -383,8 +365,8 @@ describe("ScenarioListDialogComponent", () => {
             const builtInView = groups.flatMap(g => g.scenarios).find(v => v.scenario.name === "Built-In")
 
             // Assert
-            expect(fullView?.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
-            expect(builtInView?.sectionKeys).toEqual(["metrics", "colors"])
+            expect(fullView?.groupKeys).toEqual(["area", "height", "color", "edge", "labels", "camera", "filters"])
+            expect(builtInView?.groupKeys).toEqual(["area", "height", "color"])
         })
     })
 
@@ -482,9 +464,9 @@ describe("ScenarioListDialogComponent", () => {
     })
 
     describe("toScenarioView", () => {
-        it("should set warning to false when no metrics section", () => {
+        it("should set warning to false when the scenario carries no metric selection", () => {
             // Arrange
-            const scenario: Scenario = { id: "id-1", name: "NoMetrics", createdAt: 0, sections: {} }
+            const scenario: Scenario = { id: "id-1", name: "NoMetrics", createdAt: 0, settings: {} }
 
             // Act
             const view = helpers.toScenarioView(scenario, new Set(), emptyMetricData)
@@ -549,7 +531,7 @@ describe("ScenarioListDialogComponent", () => {
             expect(typeof view.formattedDate).toBe("string")
         })
 
-        it("should compute sectionKeys from available sections", () => {
+        it("should compute the groups from the settings a scenario carries", () => {
             // Arrange
             const full = createTestScenario("Full", "id-1")
             const builtIn = createBuiltInScenario("Built-In", "id-2")
@@ -559,8 +541,8 @@ describe("ScenarioListDialogComponent", () => {
             const builtInView = helpers.toScenarioView(builtIn, new Set(), emptyMetricData)
 
             // Assert
-            expect(fullView.sectionKeys).toEqual(["metrics", "colors", "camera", "filters", "labelsAndFolders"])
-            expect(builtInView.sectionKeys).toEqual(["metrics", "colors"])
+            expect(fullView.groupKeys).toEqual(["area", "height", "color", "edge", "labels", "camera", "filters"])
+            expect(builtInView.groupKeys).toEqual(["area", "height", "color"])
         })
     })
 })

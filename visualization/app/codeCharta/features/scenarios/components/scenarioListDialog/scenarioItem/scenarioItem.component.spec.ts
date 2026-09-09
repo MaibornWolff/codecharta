@@ -8,14 +8,14 @@ const createTestView = (overrides: Partial<ScenarioView> = {}): ScenarioView => 
         id: "test-id",
         name: "Test Scenario",
         createdAt: Date.now(),
-        sections: { metrics: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" } }
+        settings: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc" }
     }
     return {
         scenario,
         warning: false,
         mapMismatch: false,
         mapBound: false,
-        sectionKeys: ["metrics"],
+        groupKeys: ["area"],
         formattedDate: "1/1/2024",
         ...overrides
     }

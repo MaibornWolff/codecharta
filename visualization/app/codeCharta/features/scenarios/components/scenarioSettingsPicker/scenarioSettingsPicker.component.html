@@ -1,0 +1,32 @@
+<div class="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
+	@for (group of groups(); track group.key) {
+		<div class="flex flex-col gap-1">
+			<label class="flex items-center gap-2 cursor-pointer">
+				<input
+					type="checkbox"
+					class="checkbox checkbox-sm checkbox-primary"
+					[checked]="group.allSelected"
+					[indeterminate]="group.someSelected && !group.allSelected"
+					[attr.data-testid]="'scenario-group-' + group.key"
+					(change)="toggleGroup(group, $any($event.target).checked)"
+				/>
+				<i class="fa {{ group.icon }} w-4 text-center opacity-60"></i>
+				<span class="text-sm font-semibold">{{ group.label }}</span>
+			</label>
+			<div class="flex flex-col gap-0.5 pl-7">
+				@for (setting of group.settings; track setting.key) {
+					<label class="flex items-center gap-2 cursor-pointer">
+						<input
+							type="checkbox"
+							class="checkbox checkbox-xs checkbox-primary"
+							[checked]="setting.selected"
+							[attr.data-testid]="'scenario-setting-' + setting.key"
+							(change)="toggleSetting(setting.key, $any($event.target).checked)"
+						/>
+						<span class="text-xs">{{ setting.label }}</span>
+					</label>
+				}
+			</div>
+		</div>
+	}
+</div>

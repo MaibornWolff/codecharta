@@ -7,25 +7,21 @@ import {
     ElementRef,
     inject,
     input,
+    linkedSignal,
     output,
-    signal,
     viewChild
 } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { MetricData } from "../../../../model/codeCharta.model"
-import {
-    getAvailableSectionKeys,
-    SCENARIO_SECTION_ICONS,
-    SCENARIO_SECTION_LABELS,
-    Scenario,
-    ScenarioSectionKey
-} from "../../model/scenario.model"
+import { getAvailableSettingKeys, Scenario } from "../../model/scenario.model"
+import { METRIC_SELECTION_SETTING_KEYS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenarioApplierService } from "../../services/scenarioApplier.service"
+import { ScenarioSettingsPickerComponent } from "../scenarioSettingsPicker/scenarioSettingsPicker.component"
 
 @Component({
     selector: "cc-apply-scenario-dialog",
     templateUrl: "./applyScenarioDialog.component.html",
-    imports: [FormsModule],
+    imports: [FormsModule, ScenarioSettingsPickerComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplyScenarioDialogComponent implements AfterViewInit {
@@ -35,25 +31,14 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
 
     readonly dialogElement = viewChild.required<ElementRef<HTMLDialogElement>>("dialog")
 
-    readonly sectionLabels = SCENARIO_SECTION_LABELS
-    readonly sectionIcons = SCENARIO_SECTION_ICONS
+    readonly availableKeys = computed(() => getAvailableSettingKeys(this.scenario()))
 
-    readonly availableSectionKeys = computed(() => getAvailableSectionKeys(this.scenario()))
+    readonly selectedKeys = linkedSignal<ReadonlySet<ScenarioSettingKey>>(() => new Set(this.availableKeys()))
 
-    readonly selectedSections = signal<Record<ScenarioSectionKey, boolean>>({
-        metrics: true,
-        colors: true,
-        camera: true,
-        filters: true,
-        labelsAndFolders: true
-    })
-
-    readonly missingMetrics = computed(() => {
-        const metrics = this.scenario().sections.metrics
-        return metrics ? this.scenarioApplier.getMissingMetrics(metrics, this.metricData()) : { nodeMetrics: [], edgeMetrics: [] }
-    })
+    readonly missingMetrics = computed(() => this.scenarioApplier.getMissingMetrics(this.scenario().settings, this.metricData()))
     readonly hasMissing = computed(() => this.scenarioApplier.hasMissingMetrics(this.missingMetrics()))
-    readonly hasAnySelected = computed(() => this.availableSectionKeys().some(key => this.selectedSections()[key]))
+    readonly isMetricSelected = computed(() => METRIC_SELECTION_SETTING_KEYS.some(key => this.selectedKeys().has(key)))
+    readonly hasAnySelected = computed(() => this.selectedKeys().size > 0)
 
     private readonly destroyRef = inject(DestroyRef)
 
@@ -67,12 +52,8 @@ export class ApplyScenarioDialogComponent implements AfterViewInit {
         dialog.showModal()
     }
 
-    toggleSection(key: ScenarioSectionKey, checked: boolean) {
-        this.selectedSections.update(current => ({ ...current, [key]: checked }))
-    }
-
     async apply() {
-        const selectedKeys = new Set<ScenarioSectionKey>(this.availableSectionKeys().filter(key => this.selectedSections()[key]))
+        const selectedKeys = this.selectedKeys()
         this.dialogElement().nativeElement.close()
         await this.scenarioApplier.applyScenario(this.scenario(), selectedKeys, this.metricData())
     }

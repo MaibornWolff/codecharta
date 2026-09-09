@@ -1,10 +1,11 @@
-import { Scenario, ScenarioSectionKey } from "./scenario.model"
+import { Scenario } from "./scenario.model"
+import { ScenarioGroupKey } from "./scenarioSettings.registry"
 
 export interface ScenarioView {
     scenario: Scenario
     warning: boolean
     mapMismatch: boolean
     mapBound: boolean
-    sectionKeys: ScenarioSectionKey[]
+    groupKeys: ScenarioGroupKey[]
     formattedDate: string
 }

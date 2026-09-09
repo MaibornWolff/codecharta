@@ -47,9 +47,23 @@
 			</label>
 		</div>
 
+		<details class="mb-4 rounded-md border border-base-300 p-2">
+			<summary class="cursor-pointer text-sm" data-testid="save-scenario-extended-settings">
+				Extended settings
+				<span class="text-xs opacity-60">({{ selectionSummary() }})</span>
+			</summary>
+			<p class="m-0 mt-2 text-xs opacity-60">Uncheck what this scenario should not carry.</p>
+			<div class="mt-2">
+				<cc-scenario-settings-picker
+					[availableKeys]="availableKeys"
+					[(selectedKeys)]="selectedKeys"
+				></cc-scenario-settings-picker>
+			</div>
+		</details>
+
 		<div class="modal-action">
 			<button class="btn" (click)="close()">Cancel</button>
-			<button class="btn btn-primary" [disabled]="!nameValid()" (click)="save()">Save</button>
+			<button class="btn btn-primary" [disabled]="!nameValid() || selectedKeys().size === 0" (click)="save()">Save</button>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">

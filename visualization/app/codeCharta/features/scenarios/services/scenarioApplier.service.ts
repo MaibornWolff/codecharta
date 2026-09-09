@@ -3,15 +3,8 @@ import { Vector3 } from "three"
 import { CcState, MetricData, RecursivePartial } from "../../../model/codeCharta.model"
 import { ThreeCameraService, ThreeMapControlsService, ThreeRendererService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
-import {
-    ColorsSection,
-    FiltersSection,
-    LabelsAndFoldersSection,
-    MetricsSection,
-    Scenario,
-    ScenarioSectionKey,
-    ScenarioSections
-} from "../model/scenario.model"
+import { Scenario } from "../model/scenario.model"
+import { isMetricSelectionKey, SCENARIO_SETTINGS, ScenarioSettingKey, ScenarioSettings } from "../model/scenarioSettings.registry"
 import { ScenariosStore } from "../stores/scenarios.store"
 
 export interface MissingMetrics {
@@ -19,7 +12,7 @@ export interface MissingMetrics {
     edgeMetrics: string[]
 }
 
-const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric", "distributionMetric"] as const
+const NODE_METRIC_KEYS = ["areaMetric", "heightMetric", "colorMetric"] as const
 
 @Injectable({ providedIn: "root" })
 export class ScenarioApplierService {
@@ -32,62 +25,64 @@ export class ScenarioApplierService {
 
     getAvailableMetricNames(metricData: MetricData): { nodeMetrics: Set<string>; edgeMetrics: Set<string> } {
         return {
-            nodeMetrics: new Set(metricData.nodeMetricData.map(m => m.name)),
-            edgeMetrics: new Set(metricData.edgeMetricData.map(m => m.name))
+            nodeMetrics: new Set(metricData.nodeMetricData.map(metric => metric.name)),
+            edgeMetrics: new Set(metricData.edgeMetricData.map(metric => metric.name))
         }
     }
 
-    getMissingMetrics(metricsSection: MetricsSection, metricData: MetricData): MissingMetrics {
+    getMissingMetrics(settings: ScenarioSettings, metricData: MetricData): MissingMetrics {
         const available = this.getAvailableMetricNames(metricData)
+        const requiredNodeMetrics = NODE_METRIC_KEYS.map(key => settings[key]).filter((metric): metric is string => Boolean(metric))
 
-        const requiredNodeMetrics = [
-            metricsSection.areaMetric,
-            metricsSection.heightMetric,
-            metricsSection.colorMetric,
-            metricsSection.distributionMetric
-        ].filter((m): m is string => !!m)
-
-        const nodeMetrics = [...new Set(requiredNodeMetrics.filter(m => !available.nodeMetrics.has(m)))]
-        const edgeMetrics =
-            metricsSection.edgeMetric && !available.edgeMetrics.has(metricsSection.edgeMetric) ? [metricsSection.edgeMetric] : []
-
-        return { nodeMetrics, edgeMetrics }
+        return {
+            nodeMetrics: [...new Set(requiredNodeMetrics.filter(metric => !available.nodeMetrics.has(metric)))],
+            edgeMetrics: settings.edgeMetric && !available.edgeMetrics.has(settings.edgeMetric) ? [settings.edgeMetric] : []
+        }
     }
 
     hasMissingMetrics(missing: MissingMetrics): boolean {
         return missing.nodeMetrics.length > 0 || missing.edgeMetrics.length > 0
     }
 
+    /**
+     * Metric selections come first: effects derive from them — changing the color metric recalculates
+     * the color range, changing the edge metric clamps the amount of edge previews — so the settings a
+     * scenario saved for those must be patched afterwards to win.
+     */
     buildOrderedStatePatches(
-        sections: ScenarioSections,
-        selectedKeys: Set<ScenarioSectionKey>,
+        settings: ScenarioSettings,
+        selectedKeys: ReadonlySet<ScenarioSettingKey>,
         metricData?: MetricData
     ): RecursivePartial<CcState>[] {
+        const applicableKeys = this.getApplicableKeys(settings, selectedKeys, metricData)
+
         return [
-            selectedKeys.has("metrics") && sections.metrics ? this.buildMetricsPatch(sections, metricData) : undefined,
-            selectedKeys.has("colors") && sections.colors ? this.buildColorsPatch(sections.colors) : undefined,
-            this.buildFiltersAndLabelsPatch(sections, selectedKeys)
-        ].filter((patch): patch is RecursivePartial<CcState> => patch !== undefined)
+            this.mergePatchesOf(settings, applicableKeys.filter(isMetricSelectionKey)),
+            this.mergePatchesOf(
+                settings,
+                applicableKeys.filter(key => !isMetricSelectionKey(key))
+            )
+        ].filter(patch => Object.keys(patch).length > 0)
     }
 
-    getCameraVectors(sections: ScenarioSections): { position: Vector3; target: Vector3 } | undefined {
-        if (!sections.camera) {
+    getCameraVectors(settings: ScenarioSettings): { position: Vector3; target: Vector3 } | undefined {
+        if (!settings.camera) {
             return undefined
         }
-        const { position, target } = sections.camera
+        const { position, target } = settings.camera
         return {
             position: new Vector3(position.x, position.y, position.z),
             target: new Vector3(target.x, target.y, target.z)
         }
     }
 
-    async applyScenario(scenario: Scenario, selectedKeys: Set<ScenarioSectionKey>, metricData?: MetricData): Promise<void> {
+    async applyScenario(scenario: Scenario, selectedKeys: ReadonlySet<ScenarioSettingKey>, metricData?: MetricData): Promise<void> {
         setIsApplyingScenario(true)
 
         try {
-            const cameraVectors = selectedKeys.has("camera") ? this.getCameraVectors(scenario.sections) : undefined
+            const cameraVectors = selectedKeys.has("camera") ? this.getCameraVectors(scenario.settings) : undefined
             const applyCamera = cameraVectors !== undefined
-            const patches = this.buildOrderedStatePatches(scenario.sections, selectedKeys, metricData)
+            const patches = this.buildOrderedStatePatches(scenario.settings, selectedKeys, metricData)
 
             // When applying camera, temporarily disable autoFit so it doesn't
             // overwrite our camera position after the render cycle completes.
@@ -127,101 +122,58 @@ export class ScenarioApplierService {
         }
     }
 
-    private buildMetricsPatch(sections: ScenarioSections, metricData?: MetricData): RecursivePartial<CcState> {
-        if (!sections.metrics) {
-            return {}
-        }
-
+    private getApplicableKeys(
+        settings: ScenarioSettings,
+        selectedKeys: ReadonlySet<ScenarioSettingKey>,
+        metricData?: MetricData
+    ): ScenarioSettingKey[] {
         const availableMetricNames = metricData ? this.getAvailableMetricNames(metricData) : undefined
-        const metricOverrides: Record<string, string | undefined> = {}
 
-        for (const key of NODE_METRIC_KEYS) {
-            const value = sections.metrics[key]
-            if (value !== undefined && (!availableMetricNames || availableMetricNames.nodeMetrics.has(value))) {
-                metricOverrides[key] = value
+        return [...selectedKeys].filter(
+            key =>
+                settings[key] !== undefined &&
+                SCENARIO_SETTINGS[key].patch !== undefined &&
+                this.isMetricAvailable(key, settings, availableMetricNames)
+        )
+    }
+
+    private isMetricAvailable(
+        key: ScenarioSettingKey,
+        settings: ScenarioSettings,
+        availableMetricNames?: { nodeMetrics: Set<string>; edgeMetrics: Set<string> }
+    ): boolean {
+        if (!availableMetricNames || !isMetricSelectionKey(key)) {
+            return true
+        }
+        const metricName = settings[key] ?? ""
+        return key === "edgeMetric"
+            ? metricName === "" || availableMetricNames.edgeMetrics.has(metricName)
+            : availableMetricNames.nodeMetrics.has(metricName)
+    }
+
+    private mergePatchesOf(settings: ScenarioSettings, keys: ScenarioSettingKey[]): RecursivePartial<CcState> {
+        let merged: RecursivePartial<CcState> = {}
+        for (const key of keys) {
+            const patch = SCENARIO_SETTINGS[key].patch
+            if (patch) {
+                merged = mergePatch(merged, patch(settings))
             }
         }
-
-        const edgeMetric = sections.metrics.edgeMetric
-        if (edgeMetric !== undefined && (!availableMetricNames || !edgeMetric || availableMetricNames.edgeMetrics.has(edgeMetric))) {
-            metricOverrides.edgeMetric = edgeMetric
-        }
-
-        const hasMetricOverrides = Object.keys(metricOverrides).length > 0
-        if (!hasMetricOverrides && sections.metrics.isColorMetricLinkedToHeightMetric === undefined) {
-            return {}
-        }
-
-        const patch: RecursivePartial<CcState> = {}
-        if (hasMetricOverrides) {
-            // Slice 7: metric selection now lives under mapState (was dynamicSettings).
-            patch.mapState = { ...metricOverrides }
-            if (sections.metrics.isColorMetricLinkedToHeightMetric !== undefined) {
-                // Slice 10b: isColorMetricLinkedToHeightMetric now lives under the preferences home (was appSettings).
-                patch.preferences = { isColorMetricLinkedToHeightMetric: sections.metrics.isColorMetricLinkedToHeightMetric }
-            }
-        }
-        return patch
+        return merged
     }
+}
 
-    private buildColorsPatch(colors: ColorsSection): RecursivePartial<CcState> {
-        const mapState: RecursivePartial<CcState["mapState"]> = { colorRange: colors.colorRange }
-        if (colors.colorMode !== undefined) {
-            mapState.colorMode = colors.colorMode
-        }
-        if (colors.mapColors !== undefined) {
-            mapState.mapColors = colors.mapColors
-        }
-        return { mapState }
-    }
+type PatchRecord = Record<string, unknown>
 
-    private buildFiltersPatch(filters: FiltersSection): RecursivePartial<CcState> {
-        return {
-            // Slice 8: focusedNodePath and Slice 9b: blacklist now both live under the sharedView home
-            // (blacklist was under fileSettings, focusedNodePath under dynamicSettings).
-            sharedView: { blacklist: [...filters.blacklist], focusedNodePath: [...filters.focusedNodePath] }
-        }
+function mergePatch<T extends PatchRecord>(target: T, source: PatchRecord): T {
+    const merged: PatchRecord = { ...target }
+    for (const [key, value] of Object.entries(source)) {
+        const current = merged[key]
+        merged[key] = isMergeableObject(value) && isMergeableObject(current) ? mergePatch({ ...current }, value) : value
     }
+    return merged as T
+}
 
-    private buildLabelsAndFoldersPatch(labelsAndFolders: LabelsAndFoldersSection): RecursivePartial<CcState> {
-        return {
-            mapState: {
-                amountOfTopLabels: labelsAndFolders.amountOfTopLabels,
-                labelSize: labelsAndFolders.labelSize,
-                showMetricLabelNameValue: labelsAndFolders.showMetricLabelNameValue,
-                showMetricLabelNodeName: labelsAndFolders.showMetricLabelNodeName,
-                enableFloorLabels: labelsAndFolders.enableFloorLabels,
-                colorLabels: labelsAndFolders.colorLabels,
-                labelMode: labelsAndFolders.labelMode,
-                groupLabelCollisions: labelsAndFolders.groupLabelCollisions
-            },
-            // Slice 9c: markedPackages now lives under the sharedView home (was fileSettings).
-            sharedView: { markedPackages: [...labelsAndFolders.markedPackages] }
-        }
-    }
-
-    private mergePatches(a: RecursivePartial<CcState>, b: RecursivePartial<CcState>): RecursivePartial<CcState> {
-        return {
-            ...a,
-            ...b,
-            ...(a.preferences || b.preferences ? { preferences: { ...a.preferences, ...b.preferences } } : {}),
-            ...(a.mapState || b.mapState ? { mapState: { ...a.mapState, ...b.mapState } } : {}),
-            ...(a.sharedView || b.sharedView ? { sharedView: { ...a.sharedView, ...b.sharedView } } : {})
-        }
-    }
-
-    private buildFiltersAndLabelsPatch(
-        sections: ScenarioSections,
-        selectedKeys: Set<ScenarioSectionKey>
-    ): RecursivePartial<CcState> | undefined {
-        const filtersPatch = selectedKeys.has("filters") && sections.filters ? this.buildFiltersPatch(sections.filters) : undefined
-        const labelsPatch =
-            selectedKeys.has("labelsAndFolders") && sections.labelsAndFolders
-                ? this.buildLabelsAndFoldersPatch(sections.labelsAndFolders)
-                : undefined
-        if (filtersPatch && labelsPatch) {
-            return this.mergePatches(filtersPatch, labelsPatch)
-        }
-        return filtersPatch ?? labelsPatch
-    }
+function isMergeableObject(value: unknown): value is PatchRecord {
+    return typeof value === "object" && value !== null && !Array.isArray(value)
 }

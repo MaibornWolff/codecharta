@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from "@angular/core"
-import { SCENARIO_SECTION_ICONS, SCENARIO_SECTION_LABELS } from "../../../../model/scenario.model"
+import { SCENARIO_GROUP_ICONS, SCENARIO_GROUP_LABELS } from "../../../../model/scenarioSettings.registry"
 import { ScenarioView } from "../../../../model/scenarioView.model"
 
 @Component({
@@ -11,6 +11,6 @@ import { ScenarioView } from "../../../../model/scenarioView.model"
 export class ScenarioItemBadgesComponent {
     readonly view = input.required<ScenarioView>()
 
-    readonly sectionLabels = SCENARIO_SECTION_LABELS
-    readonly sectionIcons = SCENARIO_SECTION_ICONS
+    readonly groupLabels = SCENARIO_GROUP_LABELS
+    readonly groupIcons = SCENARIO_GROUP_ICONS
 }

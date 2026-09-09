@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **Scenarios carry the whole metrics bar**: margins, inversions, height scaling and every edge setting are saved and applied alongside the metrics, colors, labels, filters and camera.
+- **Choose what a scenario saves**: the save dialog's extended settings drop single settings or whole groups before saving, and leave the camera out unless you ask for it.
 - **Search marks the cloud**: searching words in the domain explorer marks every match in the word cloud.
 - **Click the empty cloud to let go**: clicking the cloud where no word is drawn unpins the open word and puts the cloud back on the whole project.
 
 ### Changed
 
+- **Apply a scenario setting by setting**: the apply dialog lists a scenario's settings grouped the way the metrics bar groups its controls, so its colors can be taken without its margins.
 - **Pinned word**: the word you open stays in a strip at the top of the domain explorer, with its breakdown and a button to unpin it.
 - **Clicking a word keeps your search**: opening a word from the cloud no longer replaces the explorer's word search with it.
 - **Search word**: the cloud's right-click menu offers **Search word**, which puts the word into the explorer's word search, in place of **Show occurrences**.

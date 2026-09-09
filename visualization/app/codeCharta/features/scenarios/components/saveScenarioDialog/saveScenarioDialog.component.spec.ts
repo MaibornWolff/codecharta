@@ -4,6 +4,7 @@ import { provideMockState } from "../../../../mocks/state.mocks"
 import { NodeType } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { SCENARIO_SETTINGS, ScenarioSettingKey } from "../../model/scenarioSettings.registry"
 import { ScenariosService } from "../../services/scenarios.service"
 import { SaveScenarioDialogComponent } from "./saveScenarioDialog.component"
 
@@ -67,7 +68,53 @@ describe("SaveScenarioDialogComponent", () => {
         await component.save()
 
         // Assert
-        expect(scenariosService.saveScenario).toHaveBeenCalledWith("My Scenario", "A description", undefined)
+        expect(scenariosService.saveScenario).toHaveBeenCalledWith({
+            name: "My Scenario",
+            description: "A description",
+            mapFileNames: undefined,
+            selectedKeys: component.selectedKeys()
+        })
+    })
+
+    it("should select every setting but the camera by default", () => {
+        // Act
+        const selected = component.selectedKeys()
+
+        // Assert
+        expect(selected.has("margin")).toBe(true)
+        expect(selected.has("camera")).toBe(false)
+        expect(component.selectionSummary()).toBe(`${component.availableKeys.length - 1} of ${component.availableKeys.length} settings`)
+    })
+
+    it("should offer every setting of the registry", () => {
+        // Assert
+        expect(component.availableKeys).toEqual(Object.keys(SCENARIO_SETTINGS))
+    })
+
+    it("should save only the selected settings", async () => {
+        // Arrange
+        component.name.set("Margin only")
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
+
+        // Act
+        await component.save()
+
+        // Assert
+        expect(scenariosService.saveScenario).toHaveBeenCalledWith(
+            expect.objectContaining({ selectedKeys: new Set<ScenarioSettingKey>(["margin"]) })
+        )
+    })
+
+    it("should not save when no setting is selected", async () => {
+        // Arrange
+        component.name.set("Nothing selected")
+        component.selectedKeys.set(new Set<ScenarioSettingKey>())
+
+        // Act
+        await component.save()
+
+        // Assert
+        expect(scenariosService.saveScenario).not.toHaveBeenCalled()
     })
 
     it("should not call saveScenario when name is invalid", async () => {
@@ -87,7 +134,7 @@ describe("SaveScenarioDialogComponent", () => {
         await component.save()
 
         // Assert
-        expect(scenariosService.saveScenario).toHaveBeenCalledWith("Test", undefined, undefined)
+        expect(scenariosService.saveScenario).toHaveBeenCalledWith(expect.objectContaining({ name: "Test", description: undefined }))
     })
 
     it("should have no files when files state is empty", () => {
@@ -119,7 +166,9 @@ describe("SaveScenarioDialogComponent", () => {
         await component.save()
 
         // Assert
-        expect(scenariosService.saveScenario).toHaveBeenCalledWith("Bound Scenario", undefined, ["project.cc.json", "other.cc.json"])
+        expect(scenariosService.saveScenario).toHaveBeenCalledWith(
+            expect.objectContaining({ name: "Bound Scenario", mapFileNames: ["project.cc.json", "other.cc.json"] })
+        )
     })
 
     it("should not pass mapFileNames when bindToMap is unchecked", async () => {
@@ -132,17 +181,21 @@ describe("SaveScenarioDialogComponent", () => {
         await component.save()
 
         // Assert
-        expect(scenariosService.saveScenario).toHaveBeenCalledWith("Global Scenario", undefined, undefined)
+        expect(scenariosService.saveScenario).toHaveBeenCalledWith(
+            expect.objectContaining({ name: "Global Scenario", mapFileNames: undefined })
+        )
     })
 
-    it("should reset bindToMap on open", () => {
+    it("should reset bindToMap and the selection on open", () => {
         // Arrange
         component.bindToMap.set(true)
+        component.selectedKeys.set(new Set<ScenarioSettingKey>(["margin"]))
 
         // Act
         component.open()
 
         // Assert
         expect(component.bindToMap()).toBe(false)
+        expect(component.selectedKeys().size).toBe(component.availableKeys.length - 1)
     })
 })
