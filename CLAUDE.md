@@ -366,6 +366,10 @@ https://keepachangelog.com. They are release notes for users, not a record of th
 5. Commit
 6. Repeat
 
+**Coverage**: 80% or above — statements, branches, functions and lines alike. `jestUnit.config.json`
+gates the suite on it, so a drop fails the run rather than passing quietly. New code arrives at 80+;
+if a change pushes an existing file below, bring it back up in the same commit rather than after.
+
 **Test Structure**: Always use Arrange-Act-Assert pattern with comments:
 ```typescript
 test('should calculate total when cart has multiple items', () => {
