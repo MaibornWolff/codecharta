@@ -14,7 +14,7 @@ export class DomainWordMenuComponent {
 
     readonly rightClickedWord = input<RightClickedWord | null>(null)
 
-    readonly showOccurrences = output<string>()
+    readonly searchWord = output<string>()
     readonly hideWord = output<string>()
     readonly closed = output<void>()
 
@@ -24,10 +24,10 @@ export class DomainWordMenuComponent {
     })
     protected readonly wasWordCopied = this.clipboard.copied
 
-    protected inspectWord(): void {
+    protected searchForThisWord(): void {
         const rightClickedWord = this.rightClickedWord()
         if (rightClickedWord) {
-            this.showOccurrences.emit(rightClickedWord.word)
+            this.searchWord.emit(rightClickedWord.word)
         }
         this.close()
     }

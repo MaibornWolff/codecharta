@@ -112,12 +112,31 @@ test.describe("DomainView", () => {
         // Act — the cloud lays its largest word out at the centre.
         await clickTheLargestWord(page)
 
-        // Assert — a click does what the menu's "Show occurrences" does: word mode, broken down. The
-        // search box is left alone, so the rest of the list stays a scroll away.
+        // Assert — the click opens the word: word mode, pinned, broken down. The search box is left
+        // alone, so the rest of the list stays in reach.
         await expect(page.getByTestId("explorer-mode-words")).toHaveAttribute("aria-pressed", "true")
         await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(1)
         await expect(page.locator("cc-domain-word-row").first()).toBeVisible()
         await expect(page.getByLabel("Search words")).toHaveValue("")
+    })
+
+    test("should search for a word from its cloud menu, without pinning it", async ({ page }) => {
+        // Arrange — the explorer opens on its file tree, where the search box filters paths
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act
+        await clickTheLargestWord(page, "right")
+        await expect(page.getByTestId("domain-word-menu")).toBeVisible()
+        const menuWord = (await page.getByTestId("domain-word-menu-copy").innerText()).trim()
+        await page.getByText("Search word").click()
+
+        // Assert — the word lands in the word search, and nothing is pinned by it
+        await expect(page.getByTestId("explorer-mode-words")).toHaveAttribute("aria-pressed", "true")
+        await expect(page.getByLabel("Search words")).toHaveValue(menuWord)
+        await expect(page.getByTestId("domain-word-pin")).toHaveCount(0)
+        await expect(page.getByTestId(`domain-word-row-${menuWord}`)).toBeVisible()
     })
 
     test("should drop a hidden word from the cloud and the word list, and bring it back", async ({ page }) => {

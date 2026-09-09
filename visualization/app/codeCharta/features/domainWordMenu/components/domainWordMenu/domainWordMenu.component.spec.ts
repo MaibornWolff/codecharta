@@ -4,7 +4,7 @@ import { CopyToClipboardService } from "../../../../util/copyToClipboard.service
 import { DomainWordMenuComponent } from "./domainWordMenu.component"
 
 describe("DomainWordMenuComponent", () => {
-    const showOccurrences = jest.fn()
+    const searchWord = jest.fn()
     const hideWord = jest.fn()
     const closed = jest.fn()
 
@@ -14,7 +14,7 @@ describe("DomainWordMenuComponent", () => {
         jest.clearAllMocks()
         return render(DomainWordMenuComponent, {
             inputs: { rightClickedWord },
-            on: { showOccurrences, hideWord, closed },
+            on: { searchWord, hideWord, closed },
             providers: [CopyToClipboardService]
         })
     }
@@ -50,10 +50,10 @@ describe("DomainWordMenuComponent", () => {
         await setup()
 
         // Act
-        await userEvent.click(screen.getByText("Show occurrences"))
+        await userEvent.click(screen.getByText("Search word"))
 
         // Assert
-        expect(showOccurrences).toHaveBeenCalledWith("invoice")
+        expect(searchWord).toHaveBeenCalledWith("invoice")
         expect(closed).toHaveBeenCalled()
     })
 
