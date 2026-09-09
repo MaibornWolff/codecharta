@@ -108,6 +108,57 @@ describe("DomainWordListComponent", () => {
         expect(wordToggled).toHaveBeenCalledWith("invoice")
     })
 
+    it("should lift the opened word into the pin above the list", async () => {
+        // Arrange & Act
+        const { fixture } = await setup({ expandedWord: "invoice" })
+
+        // Assert — the pin carries the word and its breakdown
+        const pin = fixture.nativeElement.querySelector("[data-testid='domain-word-pin']")
+        expect(pin).toBeTruthy()
+        expect(pin.querySelector("[data-testid='domain-word-row-invoice']")).toBeTruthy()
+        expect(pin.querySelector("cc-domain-word-occurrence-tree")).toBeTruthy()
+    })
+
+    it("should list every word but the pinned one, so it is never listed twice", async () => {
+        // Arrange & Act
+        const { fixture } = await setup({ expandedWord: "invoice" })
+
+        // Assert
+        expect(listedWords()).toEqual(["invoice", "payment", "prepayment"])
+        const namesBelowThePin = [...fixture.nativeElement.querySelectorAll("cc-domain-word-row .node-name")]
+            .filter((name: HTMLElement) => !name.closest("[data-testid='domain-word-pin']"))
+            .map((name: HTMLElement) => name.textContent?.trim())
+        expect(namesBelowThePin).toEqual(["payment", "prepayment"])
+    })
+
+    it("should let the pinned word go when its unpin button is clicked", async () => {
+        // Arrange
+        await setup({ expandedWord: "invoice" })
+
+        // Act
+        await userEvent.click(screen.getByTestId("domain-word-unpin"))
+
+        // Assert
+        expect(wordToggled).toHaveBeenCalledWith("invoice")
+    })
+
+    it("should keep the pin when the search matches nothing else, and say nothing about the search", async () => {
+        // Arrange & Act — the search matched the pinned word, so the list below it is empty on purpose
+        const { fixture } = await setup({ expandedWord: "invoice", query: "invoice" })
+
+        // Assert
+        expect(fixture.nativeElement.querySelector("[data-testid='domain-word-pin']")).toBeTruthy()
+        expect(screen.queryByTestId("domain-word-list-empty")).toBeNull()
+    })
+
+    it("should still explain a search that matched no word at all", async () => {
+        // Arrange & Act
+        await setup({ expandedWord: "invoice", query: "invoicing" })
+
+        // Assert
+        expect(screen.getByTestId("domain-word-list-empty").textContent).toContain('No word contains "invoicing"')
+    })
+
     it("should break down only the expanded word", async () => {
         // Arrange & Act
         const { fixture } = await setup({ expandedWord: "invoice" })

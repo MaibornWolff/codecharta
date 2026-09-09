@@ -166,7 +166,7 @@ test.describe("DomainView", () => {
         expect(await panel.evaluate(element => element.scrollHeight)).toBeGreaterThan(300 * 20)
     })
 
-    test("should scroll a long word list to the word clicked in the cloud, without narrowing the list", async ({ page }) => {
+    test("should pin the word clicked in the cloud above a long list, without narrowing the list", async ({ page }) => {
         // Arrange — 300 words, the list scrolled away from the one the cloud draws largest.
         await new NavBarFolderButtonPageObject(page).openFiles([MANY_WORDS_FILE])
         await new ViewSwitcherPageObject(page).switchToDomain()
@@ -182,8 +182,11 @@ test.describe("DomainView", () => {
         // Act
         await clickTheLargestWord(page)
 
-        // Assert — the row is back in sight and the rest of the list is still there to scroll through
-        await expect(page.getByTestId(`domain-word-row-${largestWord}`)).toBeVisible()
+        // Assert — the word sits in the pin, in sight even though the list stayed scrolled down, and
+        // the rest of the list is still there to scroll through
+        const pin = page.getByTestId("domain-word-pin")
+        await expect(pin.getByTestId(`domain-word-row-${largestWord}`)).toBeVisible()
+        await expect(pin.locator("cc-domain-word-occurrence-tree")).toBeVisible()
         await expect(page.getByLabel("Search words")).toHaveValue("")
         expect(await page.locator("cc-domain-word-row").count()).toBeGreaterThan(1)
     })
@@ -300,6 +303,62 @@ test.describe("DomainView", () => {
         // Assert — the click takes nothing away from the search box
         await expect(page.getByLabel("Search words")).toHaveValue(searchedWord)
         await expect(page.locator("cc-domain-word-row")).toHaveCount(1)
+    })
+
+    test("should keep the pinned word in sight while a search filters the list below it", async ({ page }) => {
+        // Arrange — a word opened from the cloud, which the search about to be typed does not match
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+        await clickTheLargestWord(page)
+        const pin = page.getByTestId("domain-word-pin")
+        const pinnedWord = (await pin.locator("cc-domain-word-row .node-name").innerText()).trim()
+
+        // Act — a search that cannot match the pinned word
+        await page.getByLabel("Search words").fill("pay")
+
+        // Assert — the pin survives the filter, and the word is not listed a second time below it
+        await expect(pin.getByTestId(`domain-word-row-${pinnedWord}`)).toBeVisible()
+        await expect(page.locator(`cc-domain-word-row[data-testid='domain-word-row-${pinnedWord}']`)).toHaveCount(1)
+        await expect(page.getByLabel("Search words")).toHaveValue("pay")
+    })
+
+    test("should replace the pinned word with one picked from the list below it", async ({ page }) => {
+        // Arrange
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+        await clickTheLargestWord(page)
+        const pin = page.getByTestId("domain-word-pin")
+        const firstPinned = (await pin.locator("cc-domain-word-row .node-name").innerText()).trim()
+        const nextWord = (
+            await page.locator(`cc-domain-word-row:not([data-testid='domain-word-row-${firstPinned}']) .node-name`).first().innerText()
+        ).trim()
+
+        // Act
+        await page.getByTestId(`domain-word-row-${nextWord}`).click()
+
+        // Assert — the new word takes the pin and the old one drops back into the list
+        await expect(pin.getByTestId(`domain-word-row-${nextWord}`)).toBeVisible()
+        await expect(pin.getByTestId(`domain-word-row-${firstPinned}`)).toHaveCount(0)
+        await expect(page.getByTestId(`domain-word-row-${firstPinned}`)).toBeVisible()
+    })
+
+    test("should let the pinned word go from its unpin button, leaving the search alone", async ({ page }) => {
+        // Arrange
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+        await clickTheLargestWord(page)
+        await page.getByLabel("Search words").fill("pay")
+        await expect(page.getByTestId("domain-word-pin")).toBeVisible()
+
+        // Act
+        await page.getByTestId("domain-word-unpin").click()
+
+        // Assert
+        await expect(page.getByTestId("domain-word-pin")).toHaveCount(0)
+        await expect(page.getByLabel("Search words")).toHaveValue("pay")
     })
 
     test("should apply a settings change from the domain bar to the state that drives the cloud", async ({ page }) => {

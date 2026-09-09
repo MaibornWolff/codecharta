@@ -1,23 +1,41 @@
+@if (pinnedWord(); as pinned) {
+    <div class="sticky top-0 z-10 mb-1 rounded-md border border-base-300 bg-base-100 shadow-sm" data-testid="domain-word-pin">
+        <div class="flex items-center gap-1 px-2 pt-1">
+            <span class="flex-1 text-[10px] uppercase tracking-wide opacity-60">Pinned</span>
+            <button
+                type="button"
+                class="btn btn-ghost btn-xs btn-square shrink-0"
+                title="Unpin this word"
+                data-testid="domain-word-unpin"
+                (click)="wordToggled.emit(pinned.text)"
+            >
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <cc-domain-word-row
+            [word]="pinned"
+            [share]="shareOf(pinned)"
+            [isExpanded]="true"
+            (toggled)="wordToggled.emit(pinned.text)"
+        ></cc-domain-word-row>
+        <div class="max-h-64 overflow-y-auto pl-3">
+            <cc-domain-word-occurrence-tree
+                [word]="pinned.text"
+                [selectedNodePath]="selectedNodePath()"
+                (nodeClicked)="nodeClicked.emit($event)"
+            ></cc-domain-word-occurrence-tree>
+        </div>
+    </div>
+}
+
 @if (visibleWords().length === 0) {
-    <p class="px-3 py-4 text-sm opacity-60" data-testid="domain-word-list-empty">{{ emptyHint() }}</p>
+    @if (emptyHint(); as hint) {
+        <p class="px-3 py-4 text-sm opacity-60" data-testid="domain-word-list-empty">{{ hint }}</p>
+    }
 } @else {
     <div [style.height.px]="window().topSpacerHeight"></div>
     @for (word of renderedWords(); track word.text) {
-        <cc-domain-word-row
-            [word]="word"
-            [share]="shareOf(word)"
-            [isExpanded]="isExpanded(word)"
-            (toggled)="wordToggled.emit(word.text)"
-        ></cc-domain-word-row>
-        @if (isExpanded(word)) {
-            <div class="pl-3" data-word-breakdown>
-                <cc-domain-word-occurrence-tree
-                    [word]="word.text"
-                    [selectedNodePath]="selectedNodePath()"
-                    (nodeClicked)="nodeClicked.emit($event)"
-                ></cc-domain-word-occurrence-tree>
-            </div>
-        }
+        <cc-domain-word-row [word]="word" [share]="shareOf(word)" (toggled)="wordToggled.emit(word.text)"></cc-domain-word-row>
     }
     <div [style.height.px]="window().bottomSpacerHeight"></div>
 }

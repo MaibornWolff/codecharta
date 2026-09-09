@@ -33,10 +33,25 @@ export class DomainWordListComponent implements OnDestroy {
 
     private readonly projectWords = toSignal(this.readStore.projectWords$, { requireSync: true })
 
-    protected readonly visibleWords = computed(() => sortWords(matchingWords(this.projectWords(), this.query()), this.sorting()))
-    protected readonly emptyHint = computed(() =>
-        this.projectWords().length === 0 ? "This project carries no words." : `No word contains "${this.query().trim()}".`
+    /** The opened word is lifted out of the rows into the pin above them, so it is never listed twice. */
+    protected readonly pinnedWord = computed(() => this.projectWords().find(word => word.text === this.expandedWord()) ?? null)
+
+    private readonly matchedWords = computed(() => matchingWords(this.projectWords(), this.query()))
+
+    protected readonly visibleWords = computed(() =>
+        sortWords(
+            this.matchedWords().filter(word => word.text !== this.expandedWord()),
+            this.sorting()
+        )
     )
+
+    /** The hint answers for the search, so a search whose only match is pinned has nothing to explain. */
+    protected readonly emptyHint = computed(() => {
+        if (this.projectWords().length === 0) {
+            return "This project carries no words."
+        }
+        return this.matchedWords().length === 0 ? `No word contains "${this.query().trim()}".` : null
+    })
 
     private readonly expandedIndex = computed(() => this.visibleWords().findIndex(word => word.text === this.expandedWord()))
 
