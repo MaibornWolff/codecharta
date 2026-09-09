@@ -1,7 +1,7 @@
 ---
 name: metric-threshold-rules
 issue: <none>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -52,13 +52,13 @@ every file above 10.
 
 ## Steps
 
-- [ ] Complete Task 1: generalise the rules list
-- [ ] Complete Task 2: model and state
-- [ ] Complete Task 3: matching and decoration
-- [ ] Complete Task 4: rules in the explorer lists
-- [ ] Complete Task 5: the editor
-- [ ] Complete Task 6: distribution histogram
-- [ ] Changelog entry
+- [x] Complete Task 1: generalise the rules list
+- [x] Complete Task 2: model and state
+- [x] Complete Task 3: matching and decoration
+- [x] Complete Task 4: rules in the explorer lists
+- [x] Complete Task 5: the editor
+- [x] Complete Task 6: distribution histogram
+- [x] Changelog entry
 
 ## Notes
 
@@ -66,3 +66,9 @@ every file above 10.
 - Explorer counts read `leaf.isFlattened` / `leaf.isExcluded`, so they update for free once the
   decorator applies the rules
 - Mockups: https://claude.ai/code/artifact/6dd42353-c1ab-46a9-ac2f-e1ee0624bf43
+- An array in the state tree must be listed in `objectWithDynamicKeysInStore`
+  (`stores/rootStore/state.manager.ts`) or the partial-state deep merge turns it into an object with
+  numeric keys. Missing it broke "reset map" and was caught only by the e2e suite; there is now a
+  unit test for it in `store.spec.ts`.
+- Verified in the running app: `rloc > 50` on the sample files moves the chips from Shown 8 /
+  Flattened 0 to Shown 2 / Flattened 6 and lists as `METRIC rloc > 50` with count 6.
