@@ -5,7 +5,7 @@ import { ExplorerScrollHostService } from "../../../sidebarExplorer/facade"
 import { DomainWordOccurrencesReadStore } from "../../stores/domainWordOccurrences.read.store"
 import { matchingWords } from "../../util/matchingWords"
 import { sortWords, WordSorting, WordSortingOption } from "../../util/sortWords"
-import { isRowOnScreen, offsetThatCentres, wordListWindow } from "../../util/wordListWindow"
+import { wordListWindow } from "../../util/wordListWindow"
 import { DomainWordOccurrenceTreeComponent } from "../domainWordOccurrenceTree/domainWordOccurrenceTree.component"
 import { DomainWordRowComponent } from "../domainWordRow/domainWordRow.component"
 import { WordListViewport } from "./wordListViewport"
@@ -53,12 +53,9 @@ export class DomainWordListComponent implements OnDestroy {
         return this.matchedWords().length === 0 ? `No word contains "${this.query().trim()}".` : null
     })
 
-    private readonly expandedIndex = computed(() => this.visibleWords().findIndex(word => word.text === this.expandedWord()))
-
     private readonly geometry = computed(() => ({
         ...this.viewport.geometry(),
-        rowCount: this.visibleWords().length,
-        expandedIndex: this.expandedIndex()
+        rowCount: this.visibleWords().length
     }))
 
     /** A project can carry thousands of words, so only the slice on screen is rendered. */
@@ -69,52 +66,18 @@ export class DomainWordListComponent implements OnDestroy {
         return this.visibleWords().slice(firstIndex, lastIndex + 1)
     })
 
-    private lastWordScrolledTo: string | null = null
-
     private readonly totalOccurrences = computed(() => this.projectWords().reduce((total, word) => total + word.frequency, 0))
 
     constructor() {
         effect(() => this.viewport.attachTo(this.hostElement.nativeElement, this.scrollHostService.element()))
-        effect(() => this.viewport.trackOpenBreakdown(this.expandedWord()))
-        effect(() => this.scrollTheExpandedWordIntoView())
     }
 
     ngOnDestroy(): void {
         this.viewport.dispose()
     }
 
-    protected isExpanded(word: DomainWord): boolean {
-        return word.text === this.expandedWord()
-    }
-
     protected shareOf(word: DomainWord): number {
         const totalOccurrences = this.totalOccurrences()
         return totalOccurrences > 0 ? word.frequency / totalOccurrences : 0
-    }
-
-    /**
-     * Brings a newly expanded word into view. A row outside the rendered slice has no element to scroll to,
-     * so the list is scrolled by geometry. Only a *newly* expanded word is followed: reacting to the
-     * geometry itself would drag the list back every time the reader scrolled the open word out of sight.
-     */
-    private scrollTheExpandedWordIntoView(): void {
-        const expandedWord = this.expandedWord()
-        const geometry = this.geometry()
-        if (expandedWord === null) {
-            this.lastWordScrolledTo = null
-            return
-        }
-        // Nothing can be scrolled to before the panel has been measured; this runs again once it is.
-        if (expandedWord === this.lastWordScrolledTo || geometry.viewportHeight === 0) {
-            return
-        }
-        const expandedIndex = this.expandedIndex()
-        if (expandedIndex < 0) {
-            return
-        }
-        this.lastWordScrolledTo = expandedWord
-        if (!isRowOnScreen(expandedIndex, geometry)) {
-            this.viewport.scrollTo(offsetThatCentres(expandedIndex, geometry))
-        }
     }
 }
