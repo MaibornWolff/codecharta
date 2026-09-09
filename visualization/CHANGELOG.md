@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.2.0] - 2026-09-09
+
 ### Added 🚀
 
 - **Scenarios carry the whole metrics bar**: margins, inversions, height scaling and every edge setting are saved and applied alongside the metrics, colors, labels, filters and camera.
 - **Choose what a scenario saves**: the save dialog's extended settings drop single settings or whole groups before saving — or switch them all on, all off, or back to the default — and leave the camera out unless you ask for it.
+- **Custom cloud shape**: the shape picker takes an uploaded SVG and lays the words out inside it, for as long as the tab is open.
 - **Search marks the cloud**: searching words in the domain explorer marks every match in the word cloud.
 - **Click the empty cloud to let go**: clicking the cloud where no word is drawn unpins the open word and puts the cloud back on the whole project.
 

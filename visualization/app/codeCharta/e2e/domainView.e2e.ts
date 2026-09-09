@@ -16,6 +16,9 @@ const WORD_CLOUD_LAYOUT_MS = 2500
 
 const MANY_WORDS_FILE = "./app/codeCharta/resources/sample_with_many_domain_words.cc.json"
 
+const HEART_SHAPE_FILE = "./app/codeCharta/resources/shape_mask_heart.svg"
+const SCRIPTED_SHAPE_FILE = "./app/codeCharta/resources/shape_mask_with_script.svg"
+
 // A screenful plus the window's overscan — far fewer than the 300 words the file carries, and loose
 // enough to survive a row's worth of chrome moving in or out of the panel.
 const MOST_ROWS_A_WINDOW_RENDERS = 40
@@ -405,6 +408,37 @@ test.describe("DomainView", () => {
         // Assert
         await expect(domainBar.topNValue()).toHaveText(`${defaultWordCloudSettings.topN} words`)
         await expect(domainBar.shapeSelect()).toHaveValue(defaultWordCloudSettings.shape)
+    })
+
+    test("should lay the cloud out inside an uploaded SVG shape", async ({ page }) => {
+        // Arrange
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
+
+        // Act — the shape is picked first, and the cloud says it stays round until a file arrives
+        await new DomainBarPageObject(page).selectShape(WordCloudShape.custom)
+        await expect(page.getByTestId("domain-bar-shape-hint")).toBeVisible()
+        await page.getByTestId("domain-bar-shape-upload").setInputFiles(HEART_SHAPE_FILE)
+
+        // Assert
+        await expect(page.getByTestId("domain-bar-shape-file")).toContainText("shape_mask_heart.svg")
+        await expect(page.getByTestId("domain-bar-shape-rejection")).toHaveCount(0)
+    })
+
+    test("should refuse an SVG carrying a script, without running it", async ({ page }) => {
+        // Arrange
+        await new ViewSwitcherPageObject(page).switchToDomain()
+        await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
+        await new DomainBarPageObject(page).selectShape(WordCloudShape.custom)
+
+        // Act
+        await page.getByTestId("domain-bar-shape-upload").setInputFiles(SCRIPTED_SHAPE_FILE)
+
+        // Assert — refused with its reason, and the script inside it never ran
+        await expect(page.getByTestId("domain-bar-shape-rejection")).toContainText("<script>")
+        await expect(page.getByTestId("domain-bar-shape-file")).toHaveCount(0)
+        expect(await page.evaluate(() => (window as unknown as { __pwned?: boolean }).__pwned ?? false)).toBe(false)
     })
 
     test("should keep the metrics map rendered after switching to domain and back", async ({ page }) => {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
-import { DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
+import { CustomShapeMaskStore, DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
 import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
 import {
@@ -104,6 +104,7 @@ import { wordsToMark } from "./wordMarking"
 })
 export class DomainViewComponent {
     private readonly domainBarReadStore = inject(DomainBarReadStore)
+    private readonly customShapeMaskStore = inject(CustomShapeMaskStore)
     private readonly explorerWidthService = inject(ExplorerWidthService)
     private readonly explorerCollapseService = inject(ExplorerCollapseService)
     private readonly explorerModeService = inject(ExplorerModeService)
@@ -117,6 +118,7 @@ export class DomainViewComponent {
     private readonly clipboard = inject(CopyToClipboardService)
 
     readonly settings = this.domainBarReadStore.settings
+    readonly customShapeMask = this.customShapeMaskStore.dataUri
     readonly copied = this.clipboard.copied
 
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath

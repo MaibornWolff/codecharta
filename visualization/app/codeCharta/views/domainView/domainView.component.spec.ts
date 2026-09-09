@@ -32,6 +32,7 @@ import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordClo
 import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.facade"
 import { RightClickedWord } from "../../renderer/wordCloud/wordCloud.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
+import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { DomainViewComponent } from "./domainView.component"
 import { DOMAIN_EXPLORER_MODES, WORDS_EXPLORER_MODE } from "./explorer/domainExplorerModes"
 import { DomainSelectionStore } from "./stores/domainSelection.store"
@@ -43,6 +44,7 @@ class StubExplorerComponent {}
 class StubWordCloudComponent {
     readonly settings = input<WordCloudSettings>(defaultWordCloudSettings)
     readonly selectedNodePath = input<string | null>(null)
+    readonly customShapeMask = input<string | null>(null)
     readonly markedWords = input<readonly string[]>([])
     readonly clearSelection = output<void>()
     readonly backgroundClicked = output<void>()
@@ -448,6 +450,61 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(modeService.activeMode()).toBe(WORDS_EXPLORER_MODE)
+    })
+
+    it("should close the word menu when it dismisses itself", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.closed.emit()
+        detectChanges()
+
+        // Act
+        const rightClickedWord = fixture.debugElement.query(By.directive(StubWordMenuComponent)).componentInstance.rightClickedWord()
+
+        // Assert
+        expect(rightClickedWord).toBeNull()
+    })
+
+    it("should put the cloud back on the whole project when it asks to show the whole map", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        fixture.debugElement.injector.get(DomainSelectionStore).select("/root/ParentLeaf")
+        detectChanges()
+
+        // Act
+        wordCloud(fixture).clearSelection.emit()
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).selectedNodePath()).toBeNull()
+    })
+
+    it("should copy the selected node's path", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        const clipboard = fixture.debugElement.injector.get(CopyToClipboardService)
+        const copy = jest.spyOn(clipboard, "copy").mockResolvedValue()
+        fixture.debugElement.injector.get(DomainSelectionStore).select("/root/ParentLeaf")
+        detectChanges()
+
+        // Act
+        await fixture.componentInstance.copySelectedPath()
+
+        // Assert
+        expect(copy).toHaveBeenCalledWith("/root/ParentLeaf")
+    })
+
+    it("should copy nothing while no node is selected", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        const clipboard = fixture.debugElement.injector.get(CopyToClipboardService)
+        const copy = jest.spyOn(clipboard, "copy").mockResolvedValue()
+
+        // Act
+        await fixture.componentInstance.copySelectedPath()
+
+        // Assert
+        expect(copy).not.toHaveBeenCalled()
     })
 
     it("should hide the word the menu asks to hide", async () => {

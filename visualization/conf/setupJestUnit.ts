@@ -28,6 +28,20 @@ if (typeof globalThis.fetch === "undefined") {
     ) as any
 }
 
+// JSDOM implements neither Blob.text() nor File.text(), which every browser the app runs in has had
+// for years, so reading an uploaded file would reject in tests alone. FileReader is implemented, so
+// it stands in.
+if (typeof Blob.prototype.text === "undefined") {
+    Blob.prototype.text = function (this: Blob) {
+        return new Promise<string>((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(String(reader.result))
+            reader.onerror = () => reject(reader.error)
+            reader.readAsText(this)
+        })
+    }
+}
+
 // JSDOM (nwsapi) does not implement the native Popover API or the :popover-open selector.
 // Without zone.js swallowing the thrown error, components calling popover.matches(":popover-open")
 // would fail tests. Make the selector match nothing and stub the popover methods.

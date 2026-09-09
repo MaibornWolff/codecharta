@@ -6,7 +6,9 @@ const MAIBORNWOLFF_M_MASK_SVG =
 
 export const WORD_CLOUD_M_MASK_DATA_URI = `data:image/svg+xml,${encodeURIComponent(MAIBORNWOLFF_M_MASK_SVG)}`
 
-export function loadWordCloudMaskImage(): Promise<HTMLImageElement> {
+/** An uploaded shape is only ever loaded here, into an image, and never inserted into the page, so
+ * script inside an uploaded SVG cannot run. */
+export function loadMaskImage(dataUri: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
         if (typeof Image === "undefined") {
             reject(new Error("Image is not available in this environment"))
@@ -15,6 +17,6 @@ export function loadWordCloudMaskImage(): Promise<HTMLImageElement> {
         const image = new Image()
         image.onload = () => resolve(image)
         image.onerror = () => reject(new Error("Failed to load the word-cloud mask image"))
-        image.src = WORD_CLOUD_M_MASK_DATA_URI
+        image.src = dataUri
     })
 }
