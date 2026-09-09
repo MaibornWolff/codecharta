@@ -139,11 +139,12 @@ export class DomainViewComponent {
         wordsToMark(this.inspectedWord(), this.projectWords(), this.wordQuery(), !this.explorerModeService.isFilesMode())
     )
 
-    /** Searching for the word narrows the list to it, which says why the list is short and needs no scrolling. */
+    /** The search box stays as the reader left it. Writing the word into it would narrow the list to
+     * that one word, and the cloud would then go on marking it for a search the reader never typed —
+     * the list scrolls the expanded word into view on its own, so nothing is lost by leaving it. */
     showWordOccurrences(word: string) {
         this.explorerModeService.activate(WORDS_EXPLORER_MODE.id)
         this.explorerCollapseService.expand()
-        this.domainWordQueryStore.setPattern(word)
         this.domainWordInspectionStore.inspect(word)
     }
 
