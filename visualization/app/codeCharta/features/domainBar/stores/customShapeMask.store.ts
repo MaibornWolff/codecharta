@@ -17,8 +17,4 @@ export class CustomShapeMaskStore {
     accept(mask: UploadedShapeMask): void {
         this.uploaded.set(mask)
     }
-
-    clear(): void {
-        this.uploaded.set(null)
-    }
 }

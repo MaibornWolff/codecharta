@@ -6,6 +6,7 @@ import { DomainWord } from "../../../../model/codeCharta.model"
 import { defaultWordCloudSettings, WordCloudSettings, WordCloudShape, WordCloudSizingMode } from "../../../../model/wordCloud.model"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
+import { WORD_CLOUD_M_MASK_DATA_URI } from "../../util/wordCloudMask"
 import { WordCloudComponent } from "./wordCloud.component"
 
 let finishedCallback: (() => void) | undefined
@@ -43,6 +44,17 @@ jest.mock("echarts/core", () => ({
 jest.mock("echarts/renderers", () => ({ CanvasRenderer: {} }))
 jest.mock("echarts/components", () => ({ TooltipComponent: {}, AriaComponent: {} }))
 jest.mock("echarts-wordcloud", () => ({}))
+
+const loadedMaskImages: string[] = []
+jest.mock("../../util/wordCloudMask", () => ({
+    ...jest.requireActual("../../util/wordCloudMask"),
+    // JSDOM never decodes an image, so a real load would never resolve and every mask would read as
+    // missing. The data URI it was asked for is recorded so a test can say which mask was fetched.
+    loadMaskImage: jest.fn((dataUri: string) => {
+        loadedMaskImages.push(dataUri)
+        return Promise.resolve({ dataUri } as unknown as HTMLImageElement)
+    })
+}))
 
 let resizeCallback: (() => void) | undefined
 class ResizeObserverMock {
@@ -93,9 +105,9 @@ describe("WordCloudComponent", () => {
         selectedNodeName = "billing"
     })
 
-    async function setup(settingsOverrides: Partial<WordCloudSettings> = {}) {
+    async function setup(settingsOverrides: Partial<WordCloudSettings> = {}, customShapeMask: string | null = null) {
         return render(WordCloudComponent, {
-            inputs: { settings: { ...defaultWordCloudSettings, ...settingsOverrides } },
+            inputs: { settings: { ...defaultWordCloudSettings, ...settingsOverrides }, customShapeMask },
             providers: [
                 {
                     provide: WordCloudReadStore,
@@ -112,6 +124,65 @@ describe("WordCloudComponent", () => {
         // Assert
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         expect(require("echarts").init).toHaveBeenCalledTimes(1)
+    })
+
+    it("should lay the words out inside the uploaded shape while the custom shape is picked", async () => {
+        // Arrange & Act
+        await setup({ shape: WordCloudShape.custom }, "data:image/svg+xml,%3Csvg%2F%3E")
+        await settle()
+
+        // Assert — a masked shape is laid out inside a circle carrying the mask
+        const lastOption = mockChart.setOption.mock.calls.at(-1)[0]
+        expect(lastOption.series[0].maskImage).toEqual({ dataUri: "data:image/svg+xml,%3Csvg%2F%3E" })
+        expect(lastOption.series[0].keepAspect).toBe(true)
+    })
+
+    it("should lay the words out inside the logo while the M shape is picked", async () => {
+        // Arrange & Act
+        await setup({ shape: WordCloudShape.logoM })
+        await settle()
+
+        // Assert
+        const lastOption = mockChart.setOption.mock.calls.at(-1)[0]
+        expect(lastOption.series[0].maskImage).toEqual({ dataUri: WORD_CLOUD_M_MASK_DATA_URI })
+    })
+
+    it("should stay round while the custom shape is picked but nothing was uploaded", async () => {
+        // Arrange & Act — an uploaded shape does not survive a reload, so the picked shape can outlive it
+        await setup({ shape: WordCloudShape.custom }, null)
+        await settle()
+
+        // Assert
+        const lastOption = mockChart.setOption.mock.calls.at(-1)[0]
+        expect(lastOption.series[0].maskImage).toBeUndefined()
+        expect(lastOption.series[0].shape).toBe(WordCloudShape.circle)
+    })
+
+    it("should carry no mask for a shape echarts draws itself", async () => {
+        // Arrange & Act
+        await setup({ shape: WordCloudShape.star })
+        await settle()
+
+        // Assert
+        const lastOption = mockChart.setOption.mock.calls.at(-1)[0]
+        expect(lastOption.series[0].maskImage).toBeUndefined()
+        expect(lastOption.series[0].shape).toBe(WordCloudShape.star)
+    })
+
+    it("should report a click that landed beside every word, so a selection can be let go", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        const backgroundClicked = jest.fn()
+        fixture.componentInstance.backgroundClicked.subscribe(backgroundClicked)
+        const [, handleCanvasClick] = mockChart.getZr.mock.results[0].value.on.mock.calls.find(
+            ([eventName]: [string]) => eventName === "click"
+        )
+
+        // Act
+        handleCanvasClick({})
+
+        // Assert
+        expect(backgroundClicked).toHaveBeenCalled()
     })
 
     it("should render the current words into the chart option", async () => {

@@ -24,6 +24,51 @@ describe("wordCloudMask", () => {
         expect(decodedSvg).toContain('viewBox="58.7 0 64 56.3"')
     })
 
+    it("should resolve with the image once the shape has been rasterized", async () => {
+        // Arrange — JSDOM never decodes an image, so the load is driven by hand
+        const originalImage = globalThis.Image
+        let loadedImage: { src?: string; onload?: () => void; onerror?: () => void } = {}
+        ;(globalThis as { Image?: unknown }).Image = class {
+            src?: string
+            onload?: () => void
+            onerror?: () => void
+            constructor() {
+                loadedImage = this
+            }
+        }
+
+        // Act
+        const image = loadMaskImage(WORD_CLOUD_M_MASK_DATA_URI)
+        loadedImage.onload?.()
+
+        // Assert
+        await expect(image).resolves.toBe(loadedImage)
+        expect(loadedImage.src).toBe(WORD_CLOUD_M_MASK_DATA_URI)
+        globalThis.Image = originalImage
+    })
+
+    it("should reject a shape the browser could not rasterize", async () => {
+        // Arrange
+        const originalImage = globalThis.Image
+        let loadedImage: { onerror?: () => void } = {}
+        ;(globalThis as { Image?: unknown }).Image = class {
+            src?: string
+            onload?: () => void
+            onerror?: () => void
+            constructor() {
+                loadedImage = this
+            }
+        }
+
+        // Act
+        const image = loadMaskImage("data:image/svg+xml,broken")
+        loadedImage.onerror?.()
+
+        // Assert
+        await expect(image).rejects.toThrow("Failed to load the word-cloud mask image")
+        globalThis.Image = originalImage
+    })
+
     it("should reject loading when the environment cannot rasterize images", async () => {
         // Arrange — simulate a DOM without Image (e.g. a headless context)
         const originalImage = globalThis.Image
