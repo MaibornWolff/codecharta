@@ -22,28 +22,24 @@
     @if (availableMetrics().length === 0) {
         <div class="text-xs opacity-60 px-2 py-3">Load a map to filter it by a metric</div>
     } @else {
-        <label class="text-[10px] uppercase tracking-wide opacity-70">Condition</label>
+        <span class="text-[10px] uppercase tracking-wide opacity-70">Condition</span>
         <div class="flex items-center gap-1.5 mt-1">
-            <select
-                class="select select-sm select-bordered flex-1 min-w-0"
-                aria-label="Metric"
-                data-testid="metric-rule-editor-metric"
-                (change)="setMetric($event)"
-            >
-                @for (option of availableMetrics(); track option) {
-                    <option [value]="option" [selected]="option === metric()">{{ option }}</option>
-                }
-            </select>
-            <select
-                class="select select-sm select-bordered w-28 shrink-0"
-                aria-label="Comparison"
-                data-testid="metric-rule-editor-operator"
-                (change)="setOperator($event)"
-            >
-                @for (option of operatorOptions; track option.value) {
-                    <option [value]="option.value" [selected]="option.value === operator()">{{ option.label }}</option>
-                }
-            </select>
+            <label class="flex-1 min-w-0">
+                <span class="sr-only">Metric</span>
+                <select class="select select-sm select-bordered w-full" data-testid="metric-rule-editor-metric" (change)="setMetric($event)">
+                    @for (option of availableMetrics(); track option) {
+                        <option [value]="option" [selected]="option === metric()">{{ option }}</option>
+                    }
+                </select>
+            </label>
+            <label class="w-28 shrink-0">
+                <span class="sr-only">Comparison</span>
+                <select class="select select-sm select-bordered w-full" data-testid="metric-rule-editor-operator" (change)="setOperator($event)">
+                    @for (option of operatorOptions; track option.value) {
+                        <option [value]="option.value" [selected]="option.value === operator()">{{ option.label }}</option>
+                    }
+                </select>
+            </label>
         </div>
 
         <div class="flex items-center gap-1.5 mt-1.5">
