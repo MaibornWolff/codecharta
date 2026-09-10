@@ -18,5 +18,5 @@ export class MetricsExplorerMetricRules implements ExplorerMetricRules {
 }
 
 function createRuleId(): string {
-    return `metric-rule-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+    return `metric-rule-${crypto.randomUUID()}`
 }
