@@ -1,4 +1,5 @@
 import "fake-indexeddb/auto"
+import { IDBFactory } from "fake-indexeddb"
 import { openDB } from "idb"
 import { AttributeTypeValue, ColorMode, LayoutAlgorithm } from "../../../model/codeCharta.model"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
@@ -31,6 +32,7 @@ import {
     migrateCcStateRecordToV17,
     migrateCcStateRecordToV18,
     migrateCcStateRecordToV19,
+    migrateCcStateRecordToV20,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcState
@@ -792,6 +794,50 @@ describe("migrateCcStateRecordToV19 (domain words backfill on persisted files)",
     })
 })
 
+describe("migrateCcStateRecordToV20 (metric rules seed on the persisted shared view)", () => {
+    it("should seed empty metric rules on a shared view persisted before metric rules", () => {
+        // Arrange
+        const oldShapeState = { sharedView: { searchPattern: "needle", blacklist: [] } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV20(oldShapeState) as unknown as {
+            sharedView: { searchPattern: string; metricRules: unknown }
+        }
+
+        // Assert
+        expect(migrated.sharedView.metricRules).toEqual([])
+        expect(migrated.sharedView.searchPattern).toBe("needle")
+    })
+
+    it("should leave existing metric rules untouched", () => {
+        // Arrange
+        const metricRules = [{ id: "rule", metric: "rloc", operator: ">", threshold: 100, action: "exclude" }]
+        const alreadyMigrated = { sharedView: { metricRules } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV20(alreadyMigrated) as unknown as { sharedView: { metricRules: unknown } }
+
+        // Assert
+        expect(migrated.sharedView.metricRules).toBe(metricRules)
+    })
+
+    it("should pass a blob without a shared view through unchanged", () => {
+        // Arrange
+        const withoutSharedView = { domainState: { topN: 25 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV20(withoutSharedView)
+
+        // Assert
+        expect(migrated).toBe(withoutSharedView)
+    })
+
+    it("should pass a nullish blob through unchanged", () => {
+        // Arrange & Act & Assert
+        expect(migrateCcStateRecordToV20(null)).toBeNull()
+    })
+})
+
 describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
@@ -911,6 +957,41 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // now persists only the flat map it owns)
         expect(migratedState.metricsLensSource.attributeTypes).toEqual({ rloc: AttributeTypeValue.absolute })
         expect(migratedState.dependencyLensSource.attributeTypes).toEqual({})
+    })
+})
+
+describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
+    const sharedFactory = globalThis.indexedDB
+
+    beforeEach(() => {
+        globalThis.indexedDB = new IDBFactory()
+    })
+
+    afterEach(() => {
+        globalThis.indexedDB = sharedFactory
+    })
+
+    it("should restore a session saved before metric rules with no metric rules", async () => {
+        // Arrange
+        const v19Database = await openDB(DB_NAME, 19, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        const v19SharedView = { ...defaultSharedView }
+        delete (v19SharedView as { metricRules?: unknown }).metricRules
+        await v19Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, sharedView: v19SharedView }
+        })
+        v19Database.close()
+
+        // Act
+        const migratedState = await readCcState()
+
+        // Assert
+        expect(migratedState.sharedView.metricRules).toEqual([])
     })
 })
 
