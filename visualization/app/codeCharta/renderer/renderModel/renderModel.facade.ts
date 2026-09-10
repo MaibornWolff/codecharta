@@ -7,6 +7,7 @@ export { selectedColorMetricDataSelector } from "./accumulatedData/metricData/se
 export { pathToNodeSelector } from "./accumulatedData/pathToNode.selector"
 export { rootUnarySelector } from "./accumulatedData/rootUnary.selector"
 export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
+export { attributeTypesSelector } from "./attributeTypes.selector"
 export { edgeMetricDataSelector } from "./edgeMetricData/edgeMetricData.selector"
 export { sortedNodeEdgeMetricsMapSelector } from "./edgeMetricData/sortedNodeEdgeMetricsMap.selector"
 export { hoveredNodeSelector } from "./hoveredNode.selector"
