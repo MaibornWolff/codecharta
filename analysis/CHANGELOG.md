@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Node 22.19 or newer**: installing the CodeCharta Shell from npm needs Node 22.19 or later, and the Docker
+  image ships Node 24.
+
 ## [2.0.1] - 2026-09-04
 
 ### Fixed 🐞
