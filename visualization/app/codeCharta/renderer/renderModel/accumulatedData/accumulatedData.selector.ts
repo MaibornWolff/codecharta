@@ -1,6 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { edgeAttributeTypesSelector } from "../../../lenses/dependency/dependencyLens.facade"
-import { nodeAttributeTypesSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { structureTreeSelector } from "../../../lenses/structure/structure.facade"
 import { CodeMapNode, FileMeta } from "../../../model/codeCharta.model"
 import { fileStatesAvailable, isDeltaState } from "../../../model/files/files.helper"
@@ -8,6 +6,7 @@ import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.f
 import { blacklistSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
+import { attributeTypesSelector } from "../attributeTypes.selector"
 import { edgeMetricNamesSelector } from "../edgeMetricData/edgeMetricData.selector"
 import { metricDataSelector } from "./metricData/metricData.selector"
 import { addEdgeMetricsForLeaves } from "./utils/addEdgeMetricsForLeaves"
@@ -24,12 +23,11 @@ export const accumulatedDataSelector = createSelector(
     metricDataSelector,
     visibleFileStatesSelector,
     structureTreeSelector,
-    nodeAttributeTypesSelector,
-    edgeAttributeTypesSelector,
+    attributeTypesSelector,
     blacklistSelector,
     metricRulesSelector,
     edgeMetricNamesSelector,
-    (metricData, fileStates, structureTree, nodeAttributeTypes, edgeAttributeTypes, blacklist, metricRules, edgeMetricNames) => {
+    (metricData, fileStates, structureTree, attributeTypes, blacklist, metricRules, edgeMetricNames) => {
         if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData || !structureTree?.map) {
             return accumulatedDataFallback
         }
@@ -37,10 +35,7 @@ export const accumulatedDataSelector = createSelector(
         const data = clone(structureTree)
         NodeDecorator.decorateMap(data.map, metricData, blacklist, metricRules)
         addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, edgeMetricNames)
-        NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), {
-            nodes: nodeAttributeTypes,
-            edges: edgeAttributeTypes
-        })
+        NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), attributeTypes)
 
         return {
             unifiedMapNode: data.map,
