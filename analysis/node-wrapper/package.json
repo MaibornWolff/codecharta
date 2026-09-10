@@ -12,7 +12,7 @@
   "name": "codecharta-analysis",
   "version": "2.0.1",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.19"
   },
   "description": "MaibornWolff CodeCharta Analysis Tools",
   "scripts": {

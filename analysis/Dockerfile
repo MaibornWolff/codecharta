@@ -29,7 +29,7 @@ RUN wget -qO codemaat.jar https://github.com/adamtornhill/code-maat/releases/dow
     mkdir --parents /opt/codemaat; \
     mv codemaat.jar /opt/codemaat/;
 
-RUN curl -sL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh; \
+RUN curl -sL https://deb.nodesource.com/setup_24.x -o /tmp/nodesource_setup.sh; \
     bash /tmp/nodesource_setup.sh; \
     apt-get install nodejs make gcc build-essential -y;
 
