@@ -40,7 +40,7 @@ To install our [CodeCharta Shell](/docs/analysis/codecharta-shell), which is use
 
 #### Requirements
 
-- Node **>= 20**
+- Node **>= 22.19**
 - Java **>= 11**
 
 ```bash

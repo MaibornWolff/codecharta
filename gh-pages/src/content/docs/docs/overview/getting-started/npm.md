@@ -7,7 +7,7 @@ The CodeCharta Shell (CCSH) is published on npm, so you can install it globally 
 
 ## Prerequisites
 
-- Node **>= 20**
+- Node **>= 22.19**
 - Java **>= 11**
 
 ## Install the CodeCharta Shell

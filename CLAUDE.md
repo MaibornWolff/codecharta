@@ -12,7 +12,7 @@ CodeCharta is a code visualization tool that generates 3D treemap visualizations
 ## Requirements
 
 - Java >= 11, <= 21
-- Node >= 20
+- Node >= 22.19
 - Git (with bash utilities for Windows)
 
 ## Common Development Commands

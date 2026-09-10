@@ -8,7 +8,7 @@
   "name": "codecharta",
   "version": "0.0.2",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.19"
   },
   "description": "MaibornWolff CodeCharta placeholder",
   "license": "BSD-3-Clause",
