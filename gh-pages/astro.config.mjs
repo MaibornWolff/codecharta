@@ -2,10 +2,13 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import rehypeExternalLinks from 'rehype-external-links';
+import { unified } from '@astrojs/markdown-remark';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://codecharta.com',
+	// Astro 7's default ('jsx') drops the spaces between inline elements in Starlight's header and sidebar.
+	compressHTML: true,
 	integrations: [
 		starlight({
 			title: 'CodeCharta',
@@ -139,9 +142,11 @@ export default defineConfig({
 		}),
 	],
 	markdown: {
-		rehypePlugins: [
-			[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
-		],
+		processor: unified({
+			rehypePlugins: [
+				[rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
+			],
+		}),
 	},
 	// Legacy Jekyll permalinks preserved for SEO (collected from `redirect_from`).
 	redirects: {

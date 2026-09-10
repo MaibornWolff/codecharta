@@ -4,7 +4,7 @@ Source for the CodeCharta user documentation published at **[codecharta.com](htt
 
 ## Requirements
 
-- Node **>= 22.12** (Astro 6)
+- Node **>= 22.19**
 
 ## Commands
 
