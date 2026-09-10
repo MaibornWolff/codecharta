@@ -65,6 +65,15 @@ every file above 10.
 - [x] Complete Task 6: distribution histogram
 - [x] Changelog entry
 - [x] Complete Task 7: clearing rules (a Clear all per list, Reset filters in Global Configuration)
+- [x] Address CodeRabbit review on #4537
+
+## Review Feedback Addressed
+
+1. **`bucketValues`**: `Math.min(...values)` throws on very large maps; bounds are found in one loop
+2. **Editor thresholds**: a cleared input read as `0`; it now reads as no number and blocks submit
+3. **Editor metric**: a chosen metric the reloaded map no longer has falls back to the first loaded one
+4. **`metricRuleLeavesSelector` empty folders**: not changed — `NodeDecorator` applies rules by the
+   same `isLeaf`, so filtering only the selector would make the counts disagree with the map
 
 ## Notes
 

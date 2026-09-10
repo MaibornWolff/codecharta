@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { of } from "rxjs"
+import { BehaviorSubject, Observable, of } from "rxjs"
 import { EXPLORER_METRIC_RULES, ExplorerMetricRules, MetricValues } from "../../explorerMetricRules.port"
 import { createExplorerMetricRulesMock } from "../../explorerPorts.mocks"
 import { MetricRuleEditorComponent } from "./metricRuleEditor.component"
@@ -20,8 +20,8 @@ const inputsFor = (type: "flatten" | "exclude") => ({
 describe("MetricRuleEditorComponent", () => {
     let metricRules: ExplorerMetricRules
 
-    const setUp = (values: MetricValues = METRIC_VALUES) => {
-        metricRules = createExplorerMetricRulesMock({ metricValues$: of(values) })
+    const setUp = (metricValues$: Observable<MetricValues> = of(METRIC_VALUES)) => {
+        metricRules = createExplorerMetricRulesMock({ metricValues$ })
         TestBed.configureTestingModule({
             imports: [MetricRuleEditorComponent],
             providers: [{ provide: EXPLORER_METRIC_RULES, useValue: metricRules }]
@@ -136,10 +136,53 @@ describe("MetricRuleEditorComponent", () => {
         expect(metricRules.addRule).not.toHaveBeenCalled()
     })
 
+    it("should refuse to add a rule while the threshold is empty", async () => {
+        // Arrange
+        await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+
+        // Act — read as 0, an empty threshold would be "greater than 0", which every mcc value matches
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-value"))
+        await userEvent.click(screen.getByTestId("metric-rule-editor-submit"))
+
+        // Assert
+        expect(metricRules.addRule).not.toHaveBeenCalled()
+    })
+
+    it("should refuse to add a between rule while its upper bound is empty", async () => {
+        // Arrange
+        await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+        await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-operator"), "between")
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-value"))
+        await userEvent.type(screen.getByTestId("metric-rule-editor-value"), "2")
+
+        // Act — read as 0, an empty upper bound would be "between 0 and 2", which mcc 1 and 2 match
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-upper-value"))
+        await userEvent.click(screen.getByTestId("metric-rule-editor-submit"))
+
+        // Assert
+        expect(metricRules.addRule).not.toHaveBeenCalled()
+    })
+
+    it("should fall back to a loaded metric when the chosen one is no longer loaded", async () => {
+        // Arrange
+        const metricValues$ = new BehaviorSubject<MetricValues>(METRIC_VALUES)
+        TestBed.resetTestingModule()
+        setUp(metricValues$)
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+        await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-metric"), "rloc")
+
+        // Act
+        metricValues$.next(new Map([["mcc", [1, 2, 4, 12, 30]]]))
+        fixture.detectChanges()
+
+        // Assert
+        expect(screen.getByTestId("metric-rule-editor-match-count").textContent).toContain("with a mcc value")
+    })
+
     it("should add nothing when there is no metric to build a rule from", async () => {
         // Arrange
         TestBed.resetTestingModule()
-        setUp(new Map())
+        setUp(of(new Map()))
         const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
 
         // Act
@@ -152,7 +195,7 @@ describe("MetricRuleEditorComponent", () => {
     it("should say so when there is nothing loaded to filter", async () => {
         // Arrange
         TestBed.resetTestingModule()
-        setUp(new Map())
+        setUp(of(new Map()))
 
         // Act
         await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })

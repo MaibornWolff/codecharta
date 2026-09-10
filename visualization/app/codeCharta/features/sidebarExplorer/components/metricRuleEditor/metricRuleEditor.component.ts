@@ -46,7 +46,10 @@ export class MetricRuleEditorComponent {
     readonly value = signal(0)
     readonly upperValue = signal(0)
 
-    readonly metric = computed(() => this.chosenMetric() ?? this.availableMetrics()[0] ?? null)
+    readonly metric = computed(() => {
+        const chosenMetric = this.chosenMetric()
+        return chosenMetric !== null && this.metricValues().has(chosenMetric) ? chosenMetric : (this.availableMetrics()[0] ?? null)
+    })
     readonly isRangeOperator = computed(() => this.operator() === "between")
 
     readonly title = computed(() => (this.type() === "flatten" ? "Flatten by metric" : "Exclude by metric"))
@@ -81,11 +84,11 @@ export class MetricRuleEditorComponent {
     }
 
     setValue(event: Event) {
-        this.value.set(Number((event.target as HTMLInputElement).value))
+        this.value.set((event.target as HTMLInputElement).valueAsNumber)
     }
 
     setUpperValue(event: Event) {
-        this.upperValue.set(Number((event.target as HTMLInputElement).value))
+        this.upperValue.set((event.target as HTMLInputElement).valueAsNumber)
     }
 
     addRule() {
