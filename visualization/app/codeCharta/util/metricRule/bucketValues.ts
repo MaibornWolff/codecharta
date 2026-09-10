@@ -28,8 +28,7 @@ export function bucketValues(
     if (values.length === 0 || bucketCount < 1) {
         return EMPTY_DISTRIBUTION
     }
-    const min = Math.min(...values)
-    const max = Math.max(...values)
+    const { min, max } = boundsOf(values)
     if (min === max) {
         return { buckets: [countInto({ from: min, to: max }, values, isMatched)], min, max }
     }
@@ -49,6 +48,16 @@ export function bucketValues(
         }
     }
     return { buckets, min, max }
+}
+
+function boundsOf(values: number[]): { min: number; max: number } {
+    let min = values[0]
+    let max = values[0]
+    for (const value of values) {
+        min = Math.min(min, value)
+        max = Math.max(max, value)
+    }
+    return { min, max }
 }
 
 function countInto(bounds: { from: number; to: number }, values: number[], isMatched: (value: number) => boolean): ValueBucket {

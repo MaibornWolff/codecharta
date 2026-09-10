@@ -61,6 +61,19 @@ describe("bucketValues", () => {
         expect(distribution.buckets[0].matchedCount).toBe(2)
     })
 
+    it("should find the range of more values than a function call takes as arguments", () => {
+        // Arrange
+        const valueCount = 500_000
+        const values = Array.from({ length: valueCount }, (_unused, index) => index)
+
+        // Act
+        const distribution = bucketValues(values, 4)
+
+        // Assert
+        expect(distribution.min).toBe(0)
+        expect(distribution.max).toBe(valueCount - 1)
+    })
+
     it("should return nothing when asked for less than one bucket", () => {
         // Arrange & Act
         const distribution = bucketValues([1, 2], 0)
