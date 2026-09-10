@@ -7,6 +7,7 @@ import {
     LabelMode,
     MapColors,
     MarkedPackage,
+    MetricRule,
     RecursivePartial
 } from "../../../model/codeCharta.model"
 
@@ -60,6 +61,7 @@ export interface ScenarioSettings {
     readonly colorLabels?: ColorLabelOptions
     readonly camera?: ScenarioCamera
     readonly blacklist?: readonly BlacklistItem[]
+    readonly metricRules?: readonly MetricRule[]
     readonly focusedNodePath?: readonly string[]
 }
 
@@ -288,6 +290,12 @@ export const SCENARIO_SETTINGS: ScenarioSettingRegistry = {
         label: "Excluded and hidden nodes",
         read: source => [...source.state.sharedView.blacklist],
         patch: settings => ({ sharedView: { blacklist: [...settings.blacklist] } })
+    },
+    metricRules: {
+        group: "filters",
+        label: "Flattened and hidden by metric",
+        read: source => [...source.state.sharedView.metricRules],
+        patch: settings => ({ sharedView: { metricRules: [...settings.metricRules] } })
     },
     focusedNodePath: {
         group: "filters",

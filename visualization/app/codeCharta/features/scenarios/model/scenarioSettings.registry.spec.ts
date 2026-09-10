@@ -96,6 +96,19 @@ describe("scenario settings registry", () => {
             expect(bandPatch).toEqual({ mapState: { mapColors: { positive: "#00FF00" } } })
             expect(edgePatch).toEqual({ mapState: { mapColors: { outgoingEdge: "#FF1D8E" } } })
         })
+
+        it("should patch the metric rules as a whole list", () => {
+            // Arrange
+            const metricRules: ScenarioSettings["metricRules"] = [
+                { id: "rule-1", metric: "mcc", operator: ">", value: 10, type: "flatten" }
+            ]
+
+            // Act
+            const patch = patchOf("metricRules", { metricRules })
+
+            // Assert
+            expect(patch).toEqual({ sharedView: { metricRules } })
+        })
     })
 
     describe("groups", () => {
@@ -104,6 +117,7 @@ describe("scenario settings registry", () => {
             expect(SCENARIO_GROUP_KEYS).toEqual(["area", "height", "color", "edge", "labels", "camera", "filters"])
             expect(getSettingKeysOfGroup("height")).toEqual(["heightMetric", "heightScaling", "invertHeight"])
             expect(getSettingKeysOfGroup("camera")).toEqual(["camera"])
+            expect(getSettingKeysOfGroup("filters")).toEqual(["blacklist", "metricRules", "focusedNodePath"])
         })
 
         it("should assign every setting to a group that has a label and an icon", () => {
