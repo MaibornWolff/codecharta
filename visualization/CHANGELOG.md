@@ -7,17 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
-## [2.3.1] - 2026-09-11
-
-### Changed
-
-- **Metric rules include files without a value**: a file with no value for the rule's metric counts as 0, so `mcc < 1` also flattens or hides files that have no mcc, including in rules you saved earlier.
-
 ### Fixed 🐞
 
 - **Flattened buildings stay flat**: a flattened building always has the lowest building height, whatever the height metric and whether height is inverted.
 - **Flattening keeps the map in place**: flattening or unflattening buildings changes only their height and colour, and every building stays where it was.
 - **No loading flash on quick changes**: the loading overlay only appears when a change takes a moment, so adding or removing a rule, or flattening or excluding a single building or file extension, no longer makes the map blink.
+
+## [2.3.1] - 2026-09-11
+
+### Changed
+
+- **Metric rules include files without a value**: a file with no value for the rule's metric counts as 0, so `mcc < 1` also flattens or hides files that have no mcc, including in rules you saved earlier.
 
 ## [2.3.0] - 2026-09-10
 
