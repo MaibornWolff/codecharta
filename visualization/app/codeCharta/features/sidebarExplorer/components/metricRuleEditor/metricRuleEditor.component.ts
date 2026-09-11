@@ -53,6 +53,8 @@ export class MetricRuleEditorComponent {
     readonly operator = signal<MetricRuleOperator>("gt")
     readonly value = signal(0)
     readonly upperValue = signal(0)
+    readonly valueText = computed(() => inputTextOf(this.value()))
+    readonly upperValueText = computed(() => inputTextOf(this.upperValue()))
 
     readonly metric = computed(() => {
         const chosenMetric = this.chosenMetric()
@@ -117,6 +119,10 @@ export class MetricRuleEditorComponent {
     closePopover() {
         this.popover().nativeElement.hidePopover()
     }
+}
+
+function inputTextOf(threshold: number): string {
+    return Number.isNaN(threshold) ? "" : String(threshold)
 }
 
 function highestValue(values: number[]): number {

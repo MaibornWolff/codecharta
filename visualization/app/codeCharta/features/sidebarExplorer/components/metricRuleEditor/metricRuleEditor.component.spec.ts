@@ -194,6 +194,29 @@ describe("MetricRuleEditorComponent", () => {
         expect(metricRules.addRule).not.toHaveBeenCalled()
     })
 
+    it("should keep a cleared threshold empty instead of writing NaN into it", async () => {
+        // Arrange
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+
+        // Act
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-value"))
+
+        // Assert
+        expect(fixture.componentInstance.valueText()).toBe("")
+    })
+
+    it("should keep a cleared upper threshold empty instead of writing NaN into it", async () => {
+        // Arrange
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+        await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-operator"), "between")
+
+        // Act
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-upper-value"))
+
+        // Assert
+        expect(fixture.componentInstance.upperValueText()).toBe("")
+    })
+
     it("should fall back to a loaded metric when the chosen one is no longer loaded", async () => {
         // Arrange
         const metricValues$ = new BehaviorSubject<MetricValues>(METRIC_VALUES)

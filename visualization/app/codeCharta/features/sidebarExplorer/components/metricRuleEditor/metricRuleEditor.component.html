@@ -51,7 +51,7 @@
                 class="input input-sm input-bordered w-24 text-center"
                 aria-label="Threshold"
                 data-testid="metric-rule-editor-value"
-                [value]="value()"
+                [value]="valueText()"
                 (input)="setValue($event)"
             />
             @if (isRangeOperator()) {
@@ -61,7 +61,7 @@
                     class="input input-sm input-bordered w-24 text-center"
                     aria-label="Upper threshold"
                     data-testid="metric-rule-editor-upper-value"
-                    [value]="upperValue()"
+                    [value]="upperValueText()"
                     (input)="setUpperValue($event)"
                 />
             }
