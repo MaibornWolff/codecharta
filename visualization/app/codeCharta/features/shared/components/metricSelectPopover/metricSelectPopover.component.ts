@@ -1,26 +1,10 @@
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    Component,
-    computed,
-    ElementRef,
-    inject,
-    input,
-    OnDestroy,
-    output,
-    signal,
-    viewChild
-} from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, input, OnDestroy, output, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { MetricsLensFacade } from "../../../../lenses/metrics/metricsLens.facade"
-import { EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
-import { SettingsPopoverShellComponent } from "../../../shared/facade"
-import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
+import { AttributeDescriptors } from "../../../../model/codeCharta.model"
+import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
+import { MetricOption } from "./metricOption"
 import { MetricSelectOptionComponent } from "./metricSelectOption.component"
-
-export type MetricSelectKind = "node" | "edge"
 
 @Component({
     selector: "cc-metric-select-popover",
@@ -30,13 +14,11 @@ export type MetricSelectKind = "node" | "edge"
     imports: [FormsModule, FilterMetricDataBySearchTermPipe, SettingsPopoverShellComponent, MetricSelectOptionComponent]
 })
 export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
-    private readonly metricsBarReadStore = inject(MetricsBarReadStore)
-    private readonly metricsLensFacade = inject(MetricsLensFacade)
-
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
     readonly placeholder = input("Search metric")
-    readonly kind = input<MetricSelectKind>("node")
+    readonly options = input.required<readonly MetricOption[]>()
+    readonly descriptors = input<AttributeDescriptors>({})
     readonly selected = input<string | null>(null)
     readonly metricSelected = output<string>()
 
@@ -50,16 +32,6 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     readonly searchTerm = signal("")
     readonly activeIndex = signal(0)
     readonly isOpen = signal(false)
-
-    private readonly metricDataState = toSignal(this.metricsBarReadStore.metricData$, {
-        initialValue: { nodeMetricData: [], edgeMetricData: [], nodeEdgeMetricsMap: new Map() }
-    })
-    readonly attributeDescriptors = toSignal(this.metricsLensFacade.descriptors$, { initialValue: {} })
-
-    readonly metricData = computed<NodeMetricData[] | EdgeMetricData[]>(() => {
-        const data = this.metricDataState()
-        return this.kind() === "edge" ? data.edgeMetricData : data.nodeMetricData
-    })
 
     private readonly toggleListener = (event: Event) => {
         const customEvent = event as ToggleEvent
@@ -79,7 +51,7 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
         if (!selected) {
             return 0
         }
-        const index = this.metricData().findIndex(metric => metric.name === selected)
+        const index = this.options().findIndex(metric => metric.name === selected)
         return index === -1 ? 0 : index
     }
 

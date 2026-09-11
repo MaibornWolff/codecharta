@@ -1,0 +1,9 @@
+<cc-metric-select-popover
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    [placeholder]="placeholder()"
+    [options]="options()"
+    [descriptors]="descriptors()"
+    [selected]="selected()"
+    (metricSelected)="metricSelected.emit($event)"
+></cc-metric-select-popover>
