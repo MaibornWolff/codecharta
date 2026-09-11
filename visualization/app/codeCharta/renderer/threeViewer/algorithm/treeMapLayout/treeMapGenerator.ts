@@ -212,15 +212,15 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
 
 function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
     let totalNodes = 0
-    let blacklistedNodes = 0
+    let excludedNodes = 0
     hierarchyNode.each(({ data }) => {
-        if (data.isExcluded || data.isFlattened) {
-            blacklistedNodes++
+        if (data.isExcluded) {
+            excludedNodes++
         }
         totalNodes++
     })
 
-    return 2 * Math.sqrt(totalNodes - blacklistedNodes)
+    return 2 * Math.sqrt(totalNodes - excludedNodes)
 }
 
 function isOnlyVisibleInComparisonMap(node: CodeMapNode, mapState: MapState) {
