@@ -91,7 +91,21 @@ describe("nodeDecorator", () => {
             }
         })
 
-        it("should not match a file that has no value for the metric", () => {
+        it("should match a file without a value for a metric on the map as if it were 0", () => {
+            // Arrange
+            const fileWithoutMcc = leavesOf(map)[0]
+            delete fileWithoutMcc.attributes.mcc
+            const rules = [{ id: "r1", metric: "mcc", operator: "lt" as const, value: 1, type: "flatten" as const }]
+
+            // Act
+            NodeDecorator.decorateMap(map, metricData, [], rules)
+
+            // Assert
+            expect(fileWithoutMcc.isFlattened).toBe(true)
+            expect(fileWithoutMcc.attributes.mcc).toBe(0)
+        })
+
+        it("should match no file for a metric the map does not have", () => {
             // Arrange
             const rules = [{ id: "r1", metric: "notInAnyFile", operator: "lt" as const, value: 10, type: "flatten" as const }]
 

@@ -27,9 +27,8 @@ export const NodeDecorator = {
         metricRules: MetricRule[] = []
     ) {
         const matcher = createBlacklistMatcher(blacklist)
-        // Runs before decorateMapWithMetricData defaults absent metrics to 0, so a file with no
-        // value for a rule's metric is still recognisably without one and stays unmatched.
-        const metricRuleMatcher = createMetricRuleMatcher(metricRules)
+        const metricsOnMap = new Set(metricData.nodeMetricData.map(({ name }) => name))
+        const metricRuleMatcher = createMetricRuleMatcher(metricRules, metricsOnMap)
         for (const { data } of hierarchy(map)) {
             const isLeafNode = isLeaf(data)
             const { isFlattened, isExcluded } = matcher.classify(data.path, isLeafNode)

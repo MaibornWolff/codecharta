@@ -19,7 +19,7 @@ describe("metricValuesSelector", () => {
 
         // Assert
         expect(values.get("mcc")).toEqual([3, 9])
-        expect(values.get("rloc")).toEqual([40])
+        expect(values.get("rloc")).toEqual([40, 0])
     })
 
     it("should leave out the synthetic unary metric", () => {
@@ -33,7 +33,7 @@ describe("metricValuesSelector", () => {
         expect(values.has(UNARY_METRIC)).toBe(false)
     })
 
-    it("should contribute nothing for a file without a value", () => {
+    it("should count a file without a value as 0, the way the map shows it", () => {
         // Arrange
         const leaves = [leaf("a.ts", { mcc: 3 }), leaf("b.ts", { rloc: 1 })]
 
@@ -41,7 +41,8 @@ describe("metricValuesSelector", () => {
         const values = metricValuesSelector.projector(leaves)
 
         // Assert
-        expect(values.get("mcc")).toEqual([3])
+        expect(values.get("mcc")).toEqual([3, 0])
+        expect(values.get("rloc")).toEqual([0, 1])
     })
 
     it("should ignore a broken attribute value", () => {

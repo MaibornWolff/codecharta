@@ -15,25 +15,19 @@ export interface MetricRuleMatcher {
 
 const NOTHING_MATCHED: MetricRuleClassification = { isFlattened: false, isExcluded: false }
 
-/**
- * Evaluates metric rules against one file's attributes. A file with no value for a rule's metric is
- * never matched: the decorator runs this before missing metrics are defaulted to 0, so "no data"
- * cannot be read as "zero" and quietly hide a whole language's files.
- */
-export function createMetricRuleMatcher(rules: MetricRule[]): MetricRuleMatcher {
+/** A file without a value for a metric on the map is read as 0, the value the map shows for it. */
+export function createMetricRuleMatcher(rules: MetricRule[], metricsOnMap: ReadonlySet<string>): MetricRuleMatcher {
     if (rules.length === 0) {
         return { classify: () => NOTHING_MATCHED }
     }
 
     return {
         classify: attributes => {
-            if (attributes === undefined) {
-                return NOTHING_MATCHED
-            }
             let isFlattened = false
             let isExcluded = false
             for (const rule of rules) {
-                if (!matchesMetricRule(rule, attributes[rule.metric])) {
+                const value = metricsOnMap.has(rule.metric) ? (attributes?.[rule.metric] ?? 0) : undefined
+                if (!matchesMetricRule(rule, value)) {
                     continue
                 }
                 if (rule.type === "flatten") {
