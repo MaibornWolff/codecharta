@@ -276,6 +276,24 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 
 Example: `feat(visualization): add dark mode toggle (#123)`
 
+### Checks Before Committing
+
+Run the whole set before every commit and before every push, not only the tests. CI fails on each of
+the first three, and none of them covers another:
+
+```bash
+# repo root: Biome formatting AND lint rules for the whole repo (`biome format` skips the lint rules)
+npm run format:check
+
+# visualization/
+npm test                            # unit tests with the coverage gate
+npm run lint                        # dependency-cruiser, component styles, knip
+npx tsc --noEmit -p tsconfig.json   # neither Jest nor the build type-checks spec files
+
+# analysis/, when Kotlin changed
+./gradlew ktlintCheck test
+```
+
 ### Pull Requests
 
 - Name PR like branch name
