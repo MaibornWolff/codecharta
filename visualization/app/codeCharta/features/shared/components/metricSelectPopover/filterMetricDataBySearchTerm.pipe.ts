@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core"
-import { EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
+import { MetricOption } from "./metricOption"
 
 const METRIC_ALIASES = new Map<string, string[]>([
     ["complexity", ["formerly mcc"]],
@@ -11,7 +11,7 @@ const METRIC_ALIASES = new Map<string, string[]>([
     standalone: true
 })
 export class FilterMetricDataBySearchTermPipe implements PipeTransform {
-    transform(metricData: NodeMetricData[] | EdgeMetricData[], searchTerm: string) {
+    transform<Option extends MetricOption>(metricData: readonly Option[], searchTerm: string): Option[] {
         const normalizedSearchTerm = this.normalizeString(searchTerm.trim())
         const searchWords = this.splitIntoWords(normalizedSearchTerm)
 

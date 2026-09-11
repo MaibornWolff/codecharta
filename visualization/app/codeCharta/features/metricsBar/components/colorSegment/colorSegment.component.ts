@@ -5,15 +5,15 @@ import { PreferencesReadWindow } from "../../../../stores/preferences/preference
 import { AxisCardComponent } from "../../../shared/facade"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSettingsPopover.component"
+import { MetricBarSelectPopoverComponent } from "../metricBarSelectPopover/metricBarSelectPopover.component"
 import { MetricMetaValueComponent } from "../metricMetaValue/metricMetaValue.component"
-import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelectPopover.component"
 
 @Component({
     selector: "cc-color-segment",
     templateUrl: "./colorSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [AxisCardComponent, MetricSelectPopoverComponent, MetricMetaValueComponent, ColorSettingsPopoverComponent]
+    imports: [AxisCardComponent, MetricBarSelectPopoverComponent, MetricMetaValueComponent, ColorSettingsPopoverComponent]
 })
 export class ColorSegmentComponent {
     constructor(

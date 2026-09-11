@@ -20,14 +20,14 @@
     </div>
 </cc-axis-card>
 
-<cc-metric-select-popover
+<cc-metric-bar-select-popover
     [popoverId]="searchPopoverId"
     [anchorName]="searchAnchorName"
     placeholder="Edge Metric (highest value)"
     kind="edge"
     [selected]="edgeMetric()"
     (metricSelected)="handleMetricSelected($event)"
-></cc-metric-select-popover>
+></cc-metric-bar-select-popover>
 
 <cc-edge-settings-popover
     [popoverId]="settingsPopoverId"

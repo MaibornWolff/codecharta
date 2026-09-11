@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
 import { PrimaryMetrics } from "../../../../model/codeCharta.model"
 import { AxisCardComponent } from "../../../shared/facade"
+import { MetricBarSelectPopoverComponent } from "../metricBarSelectPopover/metricBarSelectPopover.component"
 import { MetricMetaValueComponent } from "../metricMetaValue/metricMetaValue.component"
-import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelectPopover.component"
 
 @Component({
     selector: "cc-metric-segment",
     templateUrl: "./metricSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [AxisCardComponent, MetricMetaValueComponent, MetricSelectPopoverComponent]
+    imports: [AxisCardComponent, MetricMetaValueComponent, MetricBarSelectPopoverComponent]
 })
 export class MetricSegmentComponent {
     readonly label = input.required<string>()

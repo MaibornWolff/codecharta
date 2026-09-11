@@ -6,18 +6,20 @@ import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { attributeDescriptorsSelector } from "../../../../lenses/metrics/metricsLens.facade"
 import { metricDataSelector } from "../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { MetricSelectPopoverComponent } from "./metricSelectPopover.component"
+import { MetricBarSelectPopoverComponent } from "./metricBarSelectPopover.component"
 
-describe("MetricSelectPopoverComponent", () => {
+describe("MetricBarSelectPopoverComponent", () => {
     const nodeMetricData = [
         { name: "rloc", maxValue: 100, minValue: 0 },
-        { name: "mcc", maxValue: 50, minValue: 0 },
-        { name: "complexity", maxValue: 30, minValue: 0 }
+        { name: "mcc", maxValue: 50, minValue: 0 }
     ]
     const edgeMetricData = [{ name: "pairingRate", maxValue: 10, minValue: 0 }]
+    const descriptors = {
+        rloc: { title: "Real lines of code", description: "Lines without comments", hintLowValue: "", hintHighValue: "", link: "" }
+    }
 
     async function setup(inputs: Record<string, unknown> = {}) {
-        const renderResult = await render(MetricSelectPopoverComponent, {
+        const renderResult = await render(MetricBarSelectPopoverComponent, {
             inputs: {
                 popoverId: "metric-select-popover-area",
                 anchorName: "metric-segment-area",
@@ -31,7 +33,7 @@ describe("MetricSelectPopoverComponent", () => {
                             selector: metricDataSelector,
                             value: { nodeMetricData, edgeMetricData, nodeEdgeMetricsMap: new Map() }
                         },
-                        { selector: attributeDescriptorsSelector, value: {} }
+                        { selector: attributeDescriptorsSelector, value: descriptors }
                     ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -54,7 +56,7 @@ describe("MetricSelectPopoverComponent", () => {
         return renderResult
     }
 
-    it("should render the node metric options by default", async () => {
+    it("should offer the node metrics by default", async () => {
         // Arrange & Act
         await setup()
 
@@ -64,7 +66,7 @@ describe("MetricSelectPopoverComponent", () => {
         expect(screen.queryByText("pairingRate")).toBeNull()
     })
 
-    it("should render edge metric options when kind is edge", async () => {
+    it("should offer the edge metrics when kind is edge", async () => {
         // Arrange & Act
         await setup({ kind: "edge" })
 
@@ -73,45 +75,15 @@ describe("MetricSelectPopoverComponent", () => {
         expect(screen.queryByText("rloc")).toBeNull()
     })
 
-    it("should filter the metric list by the search term", async () => {
-        // Arrange
-        const { container } = await setup()
-        const searchInput = container.querySelector("input") as HTMLInputElement
-
-        // Act
-        fireEvent.input(searchInput, { target: { value: "rloc" } })
+    it("should describe a metric with its attribute descriptor", async () => {
+        // Arrange & Act
+        await setup()
 
         // Assert
-        expect(screen.getByText("rloc")).not.toBeNull()
-        expect(screen.queryByText("mcc")).toBeNull()
+        expect(screen.getByText("Lines without comments")).not.toBeNull()
     })
 
-    it("should update the bound search term signal when typing", async () => {
-        // Arrange
-        const { fixture, container } = await setup()
-        const searchInput = container.querySelector("input") as HTMLInputElement
-
-        // Act
-        fireEvent.input(searchInput, { target: { value: "compl" } })
-
-        // Assert
-        expect(fixture.componentInstance.searchTerm()).toBe("compl")
-        expect(fixture.componentInstance.activeIndex()).toBe(0)
-    })
-
-    it("should show the empty placeholder when no metric matches the search term", async () => {
-        // Arrange
-        const { container } = await setup()
-        const searchInput = container.querySelector("input") as HTMLInputElement
-
-        // Act
-        fireEvent.input(searchInput, { target: { value: "doesNotExist" } })
-
-        // Assert
-        expect(screen.getByText("No metrics found")).not.toBeNull()
-    })
-
-    it("should emit the selected metric name when an option is clicked", async () => {
+    it("should pass the chosen metric on", async () => {
         // Arrange
         const { fixture } = await setup()
         const emitted: string[] = []

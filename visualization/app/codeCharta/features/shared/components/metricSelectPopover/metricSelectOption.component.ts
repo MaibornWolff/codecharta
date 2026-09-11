@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
-import { AttributeDescriptor, EdgeMetricData, NodeMetricData } from "../../../../model/codeCharta.model"
+import { AttributeDescriptor } from "../../../../model/codeCharta.model"
 import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attributeDescriptorTooltip.pipe"
+import { MetricOption } from "./metricOption"
 
 @Component({
     selector: "cc-metric-select-option",
@@ -10,7 +11,7 @@ import { AttributeDescriptorTooltipPipe } from "../../../../util/pipes/attribute
     imports: [AttributeDescriptorTooltipPipe]
 })
 export class MetricSelectOptionComponent {
-    readonly option = input.required<NodeMetricData | EdgeMetricData>()
+    readonly option = input.required<MetricOption>()
     readonly isActive = input(false)
     readonly isSelected = input(false)
     readonly descriptor = input<AttributeDescriptor | null>(null)
