@@ -34,7 +34,7 @@ const testSettings: ScenarioSettings = {
     groupLabelCollisions: true,
     camera: { position: { x: 100, y: 200, z: 300 }, target: { x: 10, y: 0, z: 20 } },
     blacklist: [{ path: "/root/file.ts", type: "exclude" }],
-    metricRules: [{ id: "rule-1", metric: "mcc", operator: ">", value: 10, type: "flatten" }],
+    metricRules: [{ id: "rule-1", metric: "mcc", operator: "gt", value: 10, type: "flatten" }],
     focusedNodePath: ["/root/src"]
 }
 
