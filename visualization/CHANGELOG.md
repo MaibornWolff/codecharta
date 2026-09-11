@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.3.2] - 2026-09-11
+
 ### Fixed 🐞
 
 - **Flattened buildings stay flat**: a flattened building always has the lowest building height, whatever the height metric and whether height is inverted.
