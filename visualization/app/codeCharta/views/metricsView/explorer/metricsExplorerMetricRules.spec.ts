@@ -45,4 +45,12 @@ describe("MetricsExplorerMetricRules", () => {
         // Assert
         expect(values.size).toBe(0)
     })
+
+    it("should expose no metric descriptors while no map is loaded", async () => {
+        // Act
+        const descriptors = await firstValueFrom(metricRules.descriptors$)
+
+        // Assert
+        expect(descriptors).toEqual({})
+    })
 })

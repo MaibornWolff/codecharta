@@ -116,4 +116,54 @@ describe("SettingsPopoverShellComponent", () => {
         // Assert
         expect(shell.getAttribute("data-testid")).toBe("settings-popover-shell")
     })
+
+    it("should open on the side of its anchor it is asked for", async () => {
+        // Arrange & Act
+        const renderResult = await render(SettingsPopoverShellComponent, {
+            inputs: { popoverId: "id", anchorName: "anchor", positionArea: "bottom span-right" }
+        })
+        const shell = renderResult.container.querySelector("[popover]") as HTMLElement
+
+        // Assert
+        expect(shell.style.getPropertyValue("position-area")).toBe("bottom span-right")
+    })
+
+    describe("without CSS anchor positioning", () => {
+        const ANCHOR_TOP = 100
+        const ANCHOR_BOTTOM = 132
+
+        async function openNextToAnchor(positionArea: "top span-right" | "bottom span-right") {
+            const anchor = document.createElement("div")
+            anchor.dataset.anchorName = "fallback-anchor"
+            jest.spyOn(anchor, "getBoundingClientRect").mockReturnValue({ top: ANCHOR_TOP, bottom: ANCHOR_BOTTOM, left: 50 } as DOMRect)
+            document.body.appendChild(anchor)
+            const renderResult = await render(SettingsPopoverShellComponent, {
+                inputs: { popoverId: "id", anchorName: "fallback-anchor", positionArea }
+            })
+            const shell = renderResult.container.querySelector("[popover]") as HTMLElement
+            const toggleEvent = new Event("toggle")
+            Object.assign(toggleEvent, { newState: "open" })
+            shell.dispatchEvent(toggleEvent)
+            anchor.remove()
+            return shell
+        }
+
+        it("should place itself above its anchor by default", async () => {
+            // Arrange & Act
+            const shell = await openNextToAnchor("top span-right")
+
+            // Assert
+            expect(shell.style.bottom).toBe(`${window.innerHeight - ANCHOR_TOP}px`)
+            expect(shell.style.maxHeight).toBe(`${ANCHOR_TOP - 8}px`)
+        })
+
+        it("should place itself below its anchor when it opens downward", async () => {
+            // Arrange & Act
+            const shell = await openNextToAnchor("bottom span-right")
+
+            // Assert
+            expect(shell.style.top).toBe(`${ANCHOR_BOTTOM}px`)
+            expect(shell.style.maxHeight).toBe(`${window.innerHeight - ANCHOR_BOTTOM - 8}px`)
+        })
+    })
 })

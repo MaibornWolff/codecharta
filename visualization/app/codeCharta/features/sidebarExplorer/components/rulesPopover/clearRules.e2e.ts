@@ -12,7 +12,8 @@ async function addMetricRule(page: import("@playwright/test").Page, kind: "flatt
     await entry.click()
 
     const editor = page.getByTestId(`metric-rule-editor-${kind}`)
-    await editor.getByTestId("metric-rule-editor-metric").selectOption(metric)
+    await editor.getByTestId("metric-rule-editor-metric").click()
+    await editor.locator(`button[data-metric-name='${metric}']`).click()
     await editor.getByTestId("metric-rule-editor-operator").selectOption("gt")
     await editor.getByTestId("metric-rule-editor-value").fill(value)
     await editor.getByTestId("metric-rule-editor-submit").click()

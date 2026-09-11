@@ -1,6 +1,6 @@
 import { InjectionToken } from "@angular/core"
 import { Observable } from "rxjs"
-import { MetricRule } from "../../model/codeCharta.model"
+import { AttributeDescriptors, MetricRule } from "../../model/codeCharta.model"
 
 /**
  * The values a metric actually has, per metric, across the files of the loaded maps — a file with
@@ -11,6 +11,7 @@ export type MetricValues = ReadonlyMap<string, number[]>
 
 export interface ExplorerMetricRules {
     readonly metricValues$: Observable<MetricValues>
+    readonly descriptors$: Observable<AttributeDescriptors>
     addRule(rule: Omit<MetricRule, "id">): void
 }
 

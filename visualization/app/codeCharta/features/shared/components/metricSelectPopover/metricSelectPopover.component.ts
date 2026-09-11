@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, input, OnDestroy, output, signal, viewChild } from "@angular/core"
 import { FormsModule } from "@angular/forms"
 import { AttributeDescriptors } from "../../../../model/codeCharta.model"
-import { SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
+import { PopoverPositionArea, SettingsPopoverShellComponent } from "../settingsPopoverShell/settingsPopoverShell.component"
 import { FilterMetricDataBySearchTermPipe } from "./filterMetricDataBySearchTerm.pipe"
 import { MetricOption } from "./metricOption"
 import { MetricSelectOptionComponent } from "./metricSelectOption.component"
@@ -17,6 +17,7 @@ export class MetricSelectPopoverComponent implements AfterViewInit, OnDestroy {
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
     readonly placeholder = input("Search metric")
+    readonly positionArea = input<PopoverPositionArea>("top span-right")
     readonly options = input.required<readonly MetricOption[]>()
     readonly descriptors = input<AttributeDescriptors>({})
     readonly selected = input<string | null>(null)

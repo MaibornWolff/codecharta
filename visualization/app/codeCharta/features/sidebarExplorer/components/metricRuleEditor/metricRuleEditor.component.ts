@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { BlacklistType, MetricRuleOperator } from "../../../../model/codeCharta.model"
 import { bucketValues } from "../../../../util/metricRule/bucketValues"
 import { matchesMetricRule } from "../../../../util/metricRule/metricRuleMatcher"
+import { MetricOption, MetricSelectPopoverComponent } from "../../../shared/facade"
 import { EXPLORER_METRIC_RULES } from "../../explorerMetricRules.port"
 import { MetricDistributionComponent } from "../metricDistribution/metricDistribution.component"
 
@@ -26,7 +27,7 @@ const OPERATOR_OPTIONS: OperatorOption[] = [
     selector: "cc-metric-rule-editor",
     templateUrl: "./metricRuleEditor.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MetricDistributionComponent]
+    imports: [MetricDistributionComponent, MetricSelectPopoverComponent]
 })
 export class MetricRuleEditorComponent {
     private readonly metricRules = inject(EXPLORER_METRIC_RULES)
@@ -40,6 +41,13 @@ export class MetricRuleEditorComponent {
     private readonly metricValues = toSignal(this.metricRules.metricValues$, { initialValue: new Map<string, number[]>() })
 
     readonly availableMetrics = computed(() => [...this.metricValues().keys()].sort((a, b) => a.localeCompare(b)))
+    readonly metricOptions = computed<MetricOption[]>(() =>
+        this.availableMetrics().map(name => ({ name, maxValue: highestValue(this.metricValues().get(name) ?? []) }))
+    )
+    readonly descriptors = toSignal(this.metricRules.descriptors$, { initialValue: {} })
+
+    readonly metricPickerPopoverId = computed(() => `${this.popoverId()}-metric-picker`)
+    readonly metricPickerAnchorName = computed(() => `${this.popoverId()}-metric`)
 
     private readonly chosenMetric = signal<string | null>(null)
     readonly operator = signal<MetricRuleOperator>("gt")
@@ -75,8 +83,8 @@ export class MetricRuleEditorComponent {
 
     readonly popover = viewChild.required<ElementRef<HTMLElement>>("popover")
 
-    setMetric(event: Event) {
-        this.chosenMetric.set((event.target as HTMLSelectElement).value)
+    setMetric(metric: string) {
+        this.chosenMetric.set(metric)
     }
 
     setOperator(event: Event) {
@@ -109,4 +117,8 @@ export class MetricRuleEditorComponent {
     closePopover() {
         this.popover().nativeElement.hidePopover()
     }
+}
+
+function highestValue(values: number[]): number {
+    return values.reduce((highest, value) => Math.max(highest, value), values[0] ?? 0)
 }
