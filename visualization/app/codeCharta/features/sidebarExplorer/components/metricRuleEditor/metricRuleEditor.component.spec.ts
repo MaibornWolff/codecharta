@@ -176,7 +176,7 @@ describe("MetricRuleEditorComponent", () => {
         fixture.detectChanges()
 
         // Assert
-        expect(screen.getByTestId("metric-rule-editor-match-count").textContent).toContain("with a mcc value")
+        expect(screen.getByTestId("metric-rule-editor-match-count").textContent).toContain("of 5 files")
     })
 
     it("should add nothing when there is no metric to build a rule from", async () => {

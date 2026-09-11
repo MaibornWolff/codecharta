@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Metric rules include files without a value**: a file with no value for the rule's metric counts as 0, so `mcc < 1` also flattens or hides files that have no mcc, including in rules you saved earlier.
+
 ## [2.3.0] - 2026-09-10
 
 ### Added 🚀
