@@ -78,9 +78,11 @@ function buildNodeFrom(
     const { x0, x1, y0, y1, data } = squaredNode
     const isNodeLeaf = isLeaf(squaredNode)
     const flattened = isNodeFlat(data, state)
-    const heightValue = getHeightValue(state, data, maxHeight, flattened)
     const depth = data.path.split("/").length - 2
-    const height = isNodeLeaf ? resolveHeightValue(heightValue, heightScale, data, state) * mapSizeResolutionScaling : FOLDER_HEIGHT
+    const leafHeight = flattened
+        ? MIN_BUILDING_HEIGHT
+        : resolveHeightValue(getHeightValue(state, data, maxHeight), heightScale, data, state)
+    const height = isNodeLeaf ? leafHeight * mapSizeResolutionScaling : FOLDER_HEIGHT
     const width = x1 - x0
     const length = y1 - y0
     const z0 = squaredNode.depth * FOLDER_HEIGHT
@@ -114,12 +116,8 @@ function buildNodeFrom(
     }
 }
 
-function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number, flattened: boolean) {
+function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number) {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
-
-    if (flattened) {
-        return MIN_BUILDING_HEIGHT
-    }
 
     let heightValue = squaredNode.attributes[state.mapState.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
     heightValue *= mapSizeResolutionScaling
