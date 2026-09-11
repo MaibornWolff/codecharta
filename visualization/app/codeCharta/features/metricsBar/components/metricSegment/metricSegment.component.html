@@ -14,13 +14,13 @@
     </div>
 </cc-axis-card>
 
-<cc-metric-select-popover
+<cc-metric-bar-select-popover
     [popoverId]="searchPopoverId()"
     [anchorName]="searchAnchorName()"
     [placeholder]="placeholder()"
     kind="node"
     [selected]="metricName()"
     (metricSelected)="metricSelected.emit($event)"
-></cc-metric-select-popover>
+></cc-metric-bar-select-popover>
 
 <ng-content></ng-content>

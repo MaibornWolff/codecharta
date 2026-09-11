@@ -1,5 +1,5 @@
-import { TestBed } from "@angular/core/testing"
-import { render, screen } from "@testing-library/angular"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { BehaviorSubject, Observable, of } from "rxjs"
 import { EXPLORER_METRIC_RULES, ExplorerMetricRules, MetricValues } from "../../explorerMetricRules.port"
@@ -17,6 +17,21 @@ const inputsFor = (type: "flatten" | "exclude") => ({
     anchorName: "explorer-search-actions"
 })
 
+// the picker renders its options lazily, so simulate the popover opening
+function openMetricPicker(fixture: ComponentFixture<MetricRuleEditorComponent>): HTMLElement {
+    const picker = screen.getByTestId(`metric-select-popover-${fixture.componentInstance.metricPickerAnchorName()}`)
+    const toggleEvent = new Event("toggle")
+    Object.assign(toggleEvent, { newState: "open" })
+    picker.dispatchEvent(toggleEvent)
+    fixture.detectChanges()
+    return picker
+}
+
+async function chooseMetric(fixture: ComponentFixture<MetricRuleEditorComponent>, metric: string) {
+    const picker = openMetricPicker(fixture)
+    await userEvent.click(picker.querySelector(`[data-metric-name='${metric}']`) as HTMLElement)
+}
+
 describe("MetricRuleEditorComponent", () => {
     let metricRules: ExplorerMetricRules
 
@@ -32,13 +47,29 @@ describe("MetricRuleEditorComponent", () => {
         setUp()
     })
 
-    it("should offer every metric that some file has a value for", async () => {
-        // Arrange & Act
-        await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+    it("should offer every metric that some file has a value for, with its highest value", async () => {
+        // Arrange
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+
+        // Act
+        const picker = openMetricPicker(fixture)
 
         // Assert
-        const options = [...screen.getByTestId("metric-rule-editor-metric").querySelectorAll("option")]
-        expect(options.map(option => option.textContent?.trim())).toEqual(["mcc", "rloc"])
+        const options = [...picker.querySelectorAll("[data-metric-name]")]
+        expect(options.map(option => option.getAttribute("data-metric-name"))).toEqual(["mcc", "rloc"])
+        expect(within(picker).getByText("(300)")).not.toBe(null)
+    })
+
+    it("should show the chosen metric on the picker button", async () => {
+        // Arrange
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+
+        // Act
+        await chooseMetric(fixture, "rloc")
+
+        // Assert
+        expect(screen.getByTestId("metric-rule-editor-metric").textContent?.trim()).toBe("rloc")
+        expect(screen.getByTestId("metric-rule-editor-match-count").textContent).toContain("of 3 files")
     })
 
     it("should name the action it is about to take", async () => {
@@ -75,8 +106,8 @@ describe("MetricRuleEditorComponent", () => {
 
     it("should add the rule that was configured", async () => {
         // Arrange
-        await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
-        await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-metric"), "rloc")
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+        await chooseMetric(fixture, "rloc")
         await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-operator"), "lt")
         await userEvent.clear(screen.getByTestId("metric-rule-editor-value"))
         await userEvent.type(screen.getByTestId("metric-rule-editor-value"), "50")
@@ -163,13 +194,36 @@ describe("MetricRuleEditorComponent", () => {
         expect(metricRules.addRule).not.toHaveBeenCalled()
     })
 
+    it("should keep a cleared threshold empty instead of writing NaN into it", async () => {
+        // Arrange
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+
+        // Act
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-value"))
+
+        // Assert
+        expect(fixture.componentInstance.valueText()).toBe("")
+    })
+
+    it("should keep a cleared upper threshold empty instead of writing NaN into it", async () => {
+        // Arrange
+        const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
+        await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-operator"), "between")
+
+        // Act
+        await userEvent.clear(screen.getByTestId("metric-rule-editor-upper-value"))
+
+        // Assert
+        expect(fixture.componentInstance.upperValueText()).toBe("")
+    })
+
     it("should fall back to a loaded metric when the chosen one is no longer loaded", async () => {
         // Arrange
         const metricValues$ = new BehaviorSubject<MetricValues>(METRIC_VALUES)
         TestBed.resetTestingModule()
         setUp(metricValues$)
         const { fixture } = await render(MetricRuleEditorComponent, { inputs: inputsFor("flatten") })
-        await userEvent.selectOptions(screen.getByTestId("metric-rule-editor-metric"), "rloc")
+        await chooseMetric(fixture, "rloc")
 
         // Act
         metricValues$.next(new Map([["mcc", [1, 2, 4, 12, 30]]]))

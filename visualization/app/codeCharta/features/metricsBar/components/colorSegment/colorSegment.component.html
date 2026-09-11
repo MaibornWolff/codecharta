@@ -15,14 +15,14 @@
     </div>
 </cc-axis-card>
 
-<cc-metric-select-popover
+<cc-metric-bar-select-popover
     [popoverId]="searchPopoverId"
     [anchorName]="searchAnchorName"
     placeholder="Color Metric (highest value)"
     kind="node"
     [selected]="colorMetric()"
     (metricSelected)="handleMetricSelected($event)"
-></cc-metric-select-popover>
+></cc-metric-bar-select-popover>
 
 <cc-color-settings-popover
     [popoverId]="settingsPopoverId"

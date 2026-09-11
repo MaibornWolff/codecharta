@@ -119,6 +119,7 @@ export function createExplorerRulesMock(overrides: Partial<ExplorerRules> = {}):
 export function createExplorerMetricRulesMock(overrides: Partial<ExplorerMetricRules> = {}): ExplorerMetricRules {
     return {
         metricValues$: of(new Map() as MetricValues),
+        descriptors$: of({}),
         addRule: jest.fn(),
         ...overrides
     }

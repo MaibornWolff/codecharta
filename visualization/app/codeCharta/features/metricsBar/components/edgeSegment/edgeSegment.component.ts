@@ -5,15 +5,15 @@ import { AxisCardComponent } from "../../../shared/facade"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { EdgeSettingsPopoverComponent } from "../edgeSettingsPopover/edgeSettingsPopover.component"
+import { MetricBarSelectPopoverComponent } from "../metricBarSelectPopover/metricBarSelectPopover.component"
 import { MetricChooserTypeComponent } from "../metricMetaValue/metricChooserType.component"
-import { MetricSelectPopoverComponent } from "../metricSelectPopover/metricSelectPopover.component"
 
 @Component({
     selector: "cc-edge-segment",
     templateUrl: "./edgeSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [AxisCardComponent, MetricChooserTypeComponent, MetricSelectPopoverComponent, EdgeSettingsPopoverComponent]
+    imports: [AxisCardComponent, MetricChooserTypeComponent, MetricBarSelectPopoverComponent, EdgeSettingsPopoverComponent]
 })
 export class EdgeSegmentComponent {
     private readonly mapStateReadWindow = inject(MapStateReadWindow)

@@ -12,6 +12,8 @@ export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.compo
 export { FloatingMenuComponent } from "./components/floatingMenu/floatingMenu.component"
 export { InlineColorPickerComponent } from "./components/inlineColorPicker/inlineColorPicker.component"
 export { LoadingFileProgressSpinnerComponent } from "./components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
+export { MetricOption } from "./components/metricSelectPopover/metricOption"
+export { MetricSelectPopoverComponent } from "./components/metricSelectPopover/metricSelectPopover.component"
 export { HEIGHT_CSS_VARIABLE, PublishesHeightDirective } from "./components/publishesHeight/publishesHeight.directive"
 export { ResetSettingsButtonComponent } from "./components/resetSettingsButton/resetSettingsButton.component"
 export { SettingsPopoverShellComponent } from "./components/settingsPopoverShell/settingsPopoverShell.component"

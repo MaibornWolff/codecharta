@@ -11,7 +11,7 @@
     [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel()"
     [id]="popoverId()"
     [style.position-anchor]="'--' + anchorName()"
-    [style.position-area]="'top span-right'"
+    [style.position-area]="positionArea()"
     [attr.data-testid]="testId()"
 >
     <ng-content></ng-content>
