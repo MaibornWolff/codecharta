@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Flattened buildings stay flat**: a flattened building always has the lowest building height, whatever the height metric and whether height is inverted.
+- **Flattening keeps the map in place**: flattening or unflattening buildings changes only their height and colour, and every building stays where it was.
 
 ## [2.3.0] - 2026-09-10
 

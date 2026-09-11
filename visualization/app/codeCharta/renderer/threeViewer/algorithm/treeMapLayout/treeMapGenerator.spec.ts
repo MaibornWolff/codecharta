@@ -16,6 +16,20 @@ import { getCCFile } from "../../../../stores/fileStore/fileStore.facade"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
+function flattenLeaves(node: CodeMapNode) {
+    if (!node.children?.length) {
+        node.isFlattened = true
+        return
+    }
+    for (const child of node.children) {
+        flattenLeaves(child)
+    }
+}
+
+function footprintsOf(nodes: Node[]) {
+    return nodes.map(({ path, x0, y0, width, length }) => ({ path, x0, y0, width, length }))
+}
+
 describe("treeMapGenerator", () => {
     let map: CodeMapNode
     let state: CcState
@@ -136,6 +150,31 @@ describe("treeMapGenerator", () => {
                 expect(nodesWithFloorLabel.width).not.toEqual(nodes[index].width)
             }
             expect(nodes).toMatchSnapshot()
+        })
+
+        it("should keep every footprint in place when buildings are flattened", () => {
+            // Arrange
+            const unflattenedNodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+            flattenLeaves(map)
+
+            // Act
+            const flattenedNodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+            // Assert
+            expect(footprintsOf(flattenedNodes)).toEqual(footprintsOf(unflattenedNodes))
+        })
+
+        it("should keep every footprint in place when buildings in fixed folders are flattened", () => {
+            // Arrange
+            map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE.map)
+            const unflattenedNodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+            flattenLeaves(map)
+
+            // Act
+            const flattenedNodes = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+            // Assert
+            expect(footprintsOf(flattenedNodes)).toEqual(footprintsOf(unflattenedNodes))
         })
     })
 
