@@ -1,38 +1,29 @@
 import { createSelector } from "@ngrx/store"
-import { RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { BlacklistType, CodeMapNode, MetricRule } from "../../../model/codeCharta.model"
+import { MetricValues, RuleWithCount } from "../../../features/sidebarExplorer/facade"
+import { BlacklistType, MetricRule } from "../../../model/codeCharta.model"
 import { metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { describeMetricRule } from "../../../util/metricRule/describeMetricRule"
-import { createMetricRuleMatcher } from "../../../util/metricRule/metricRuleMatcher"
-import { metricRuleLeavesSelector } from "./metricRuleLeaves.selector"
+import { matchesMetricRule } from "../../../util/metricRule/metricRuleMatcher"
+import { metricValuesSelector } from "./metricValues.selector"
 
-const countFilesMatching = (rule: MetricRule, leaves: CodeMapNode[]): number => {
-    const matcher = createMetricRuleMatcher([rule])
-    let count = 0
-    for (const leaf of leaves) {
-        const { isFlattened, isExcluded } = matcher.classify(leaf.attributes)
-        if (isFlattened || isExcluded) {
-            count++
-        }
-    }
-    return count
-}
+const countFilesMatching = (rule: MetricRule, metricValues: MetricValues): number =>
+    (metricValues.get(rule.metric) ?? []).filter(value => matchesMetricRule(rule, value)).length
 
-const buildMetricRulesWithCount = (rules: MetricRule[], leaves: CodeMapNode[], type: BlacklistType): RuleWithCount[] =>
+const buildMetricRulesWithCount = (rules: MetricRule[], metricValues: MetricValues, type: BlacklistType): RuleWithCount[] =>
     rules
         .filter(rule => rule.type === type)
         .map(rule => ({
             id: rule.id,
             label: describeMetricRule(rule),
-            affectedCount: countFilesMatching(rule, leaves),
+            affectedCount: countFilesMatching(rule, metricValues),
             kind: "METRIC" as const,
             metricRule: rule
         }))
 
-export const flattenMetricRulesWithCountSelector = createSelector(metricRulesSelector, metricRuleLeavesSelector, (rules, leaves) =>
-    buildMetricRulesWithCount(rules, leaves, "flatten")
+export const flattenMetricRulesWithCountSelector = createSelector(metricRulesSelector, metricValuesSelector, (rules, metricValues) =>
+    buildMetricRulesWithCount(rules, metricValues, "flatten")
 )
 
-export const excludeMetricRulesWithCountSelector = createSelector(metricRulesSelector, metricRuleLeavesSelector, (rules, leaves) =>
-    buildMetricRulesWithCount(rules, leaves, "exclude")
+export const excludeMetricRulesWithCountSelector = createSelector(metricRulesSelector, metricValuesSelector, (rules, metricValues) =>
+    buildMetricRulesWithCount(rules, metricValues, "exclude")
 )
