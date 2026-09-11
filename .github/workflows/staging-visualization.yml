@@ -61,7 +61,7 @@ jobs:
 
       # Deploy to GitHub Pages staging environment
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.8.0
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           branch: gh-pages
