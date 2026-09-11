@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Flattened buildings stay flat**: a flattened building always has the lowest building height, whatever the height metric and whether height is inverted.
 - **Flattening keeps the map in place**: flattening or unflattening buildings changes only their height and colour, and every building stays where it was.
+- **No loading flash on quick changes**: the loading overlay only appears when a change takes a moment, so adding or removing a rule no longer makes the map blink.
 
 ## [2.3.0] - 2026-09-10
 
