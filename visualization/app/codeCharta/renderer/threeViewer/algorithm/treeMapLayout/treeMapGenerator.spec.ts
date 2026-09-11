@@ -17,7 +17,7 @@ import { NodeDecorator } from "../../../../util/nodeDecorator"
 import * as SquarifiedLayoutGenerator from "./treeMapGenerator"
 
 function flattenLeaves(node: CodeMapNode) {
-    if (!node.children?.length) {
+    if (!node.children || node.children.length === 0) {
         node.isFlattened = true
         return
     }
