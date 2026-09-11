@@ -24,14 +24,17 @@
     } @else {
         <span class="text-[10px] uppercase tracking-wide opacity-70">Condition</span>
         <div class="flex items-center gap-1.5 mt-1">
-            <label class="flex-1 min-w-0">
-                <span class="sr-only">Metric</span>
-                <select class="select select-sm select-bordered w-full" data-testid="metric-rule-editor-metric" (change)="setMetric($event)">
-                    @for (option of availableMetrics(); track option) {
-                        <option [value]="option" [selected]="option === metric()">{{ option }}</option>
-                    }
-                </select>
-            </label>
+            <button
+                type="button"
+                class="select select-sm select-bordered flex-1 min-w-0 items-center text-left"
+                aria-label="Metric"
+                [attr.popovertarget]="metricPickerPopoverId()"
+                [style.anchor-name]="'--' + metricPickerAnchorName()"
+                [attr.data-anchor-name]="metricPickerAnchorName()"
+                data-testid="metric-rule-editor-metric"
+            >
+                <span class="truncate">{{ metric() }}</span>
+            </button>
             <label class="w-28 shrink-0">
                 <span class="sr-only">Comparison</span>
                 <select class="select select-sm select-bordered w-full" data-testid="metric-rule-editor-operator" (change)="setOperator($event)">
@@ -86,5 +89,15 @@
             <button type="button" class="btn btn-ghost btn-sm" (click)="closePopover()">Cancel</button>
         </div>
         <p class="text-[10px] opacity-60 mt-1.5 text-center m-0">Re-applies whenever the loaded files or metrics change.</p>
+
+        <cc-metric-select-popover
+            [popoverId]="metricPickerPopoverId()"
+            [anchorName]="metricPickerAnchorName()"
+            positionArea="bottom span-right"
+            [options]="metricOptions()"
+            [descriptors]="descriptors()"
+            [selected]="metric()"
+            (metricSelected)="setMetric($event)"
+        ></cc-metric-select-popover>
     }
 </div>
