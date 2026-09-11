@@ -100,7 +100,7 @@ describe("scenario settings registry", () => {
         it("should patch the metric rules as a whole list", () => {
             // Arrange
             const metricRules: ScenarioSettings["metricRules"] = [
-                { id: "rule-1", metric: "mcc", operator: ">", value: 10, type: "flatten" }
+                { id: "rule-1", metric: "mcc", operator: "gt", value: 10, type: "flatten" }
             ]
 
             // Act
