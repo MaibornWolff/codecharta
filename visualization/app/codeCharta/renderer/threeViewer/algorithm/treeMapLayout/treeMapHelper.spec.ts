@@ -104,6 +104,47 @@ describe("TreeMapHelper", () => {
             expect(buildNode().heightDelta).toBe(-33)
         })
 
+        describe("flattened building", () => {
+            const largeHeightScale = 10
+
+            beforeEach(() => {
+                codeMapNode.isFlattened = true
+            })
+
+            it("should build a flattened building at the minimum height whatever its height metric value", () => {
+                // Arrange
+                state.mapState.invertHeight = false
+
+                // Act
+                const node = TreeMapHelper.buildNodeFrom(squaredNode, largeHeightScale, maxHeight, state, isDeltaState)
+
+                // Assert
+                expect(node.height).toBe(TreeMapHelper.MIN_BUILDING_HEIGHT)
+            })
+
+            it("should build a flattened building at the minimum height when the height is inverted", () => {
+                // Arrange
+                state.mapState.invertHeight = true
+
+                // Act
+                const node = TreeMapHelper.buildNodeFrom(squaredNode, largeHeightScale, maxHeight, state, isDeltaState)
+
+                // Assert
+                expect(node.height).toBe(TreeMapHelper.MIN_BUILDING_HEIGHT)
+            })
+
+            it("should keep the height delta of a flattened building", () => {
+                // Arrange
+                codeMapNode.deltas = { theHeight: 33 }
+
+                // Act
+                const node = TreeMapHelper.buildNodeFrom(squaredNode, largeHeightScale, maxHeight, state, true)
+
+                // Assert
+                expect(node.heightDelta).toBe(33 * largeHeightScale)
+            })
+        })
+
         it("should set lowest possible height caused by other visible edge pairs", () => {
             ;(edgesSelector as unknown as jest.Mock).mockReturnValue([
                 {
