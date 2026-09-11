@@ -5,12 +5,6 @@ import { debounceTime, filter, map, merge, skip, tap } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { filesLoaded, setIsLoadingFile, visibleFileStatesSelector } from "../../../../stores/fileStore/fileStore.facade"
-import {
-    addBlacklistItem,
-    addBlacklistItems,
-    removeBlacklistItem,
-    removeBlacklistItems
-} from "../../../../stores/sharedView/sharedView.write.facade"
 import { RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
 
 export const RENDER_QUIET_PERIOD_MS = 350
@@ -33,11 +27,7 @@ export class LoadingIndicatorEffect {
 
     markViewsStaleOnDataChange$ = createEffect(
         () =>
-            merge(
-                this.store.select(visibleFileStatesSelector).pipe(skip(1)),
-                this.actions$.pipe(ofType(filesLoaded)),
-                this.actions$.pipe(ofType(addBlacklistItem, addBlacklistItems, removeBlacklistItem, removeBlacklistItems))
-            ).pipe(
+            merge(this.store.select(visibleFileStatesSelector).pipe(skip(1)), this.actions$.pipe(ofType(filesLoaded))).pipe(
                 tap(() => {
                     this.viewReadinessStore.markAllStale()
                 })

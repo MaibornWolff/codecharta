@@ -117,8 +117,8 @@ describe("LoadingIndicatorEffect", () => {
         expect(viewReadinessStore.isStale("domain")).toBe(false)
     })
 
-    it("should mark every view stale when a node is excluded, so the hidden view rebuilds on switch", () => {
-        // Arrange
+    it("should not mark views stale when a path entry changes", () => {
+        // Arrange — only the metrics view can change path entries, and the domain view does not read them
         viewReadinessStore.markReady("metrics")
         viewReadinessStore.markReady("domain")
 
@@ -126,8 +126,8 @@ describe("LoadingIndicatorEffect", () => {
         actions$.next(addBlacklistItem({ item: { path: "/root/foo", type: "exclude" } }))
 
         // Assert
-        expect(viewReadinessStore.isStale("metrics")).toBe(true)
-        expect(viewReadinessStore.isStale("domain")).toBe(true)
+        expect(viewReadinessStore.isStale("metrics")).toBe(false)
+        expect(viewReadinessStore.isStale("domain")).toBe(false)
     })
 
     it("should mark the metrics view ready only after the render burst settles", async () => {
