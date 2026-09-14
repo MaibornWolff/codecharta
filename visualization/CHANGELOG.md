@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.4.0] - 2026-09-14
+
 ### Changed
 
 - **Searchable metric list for metric rules**: flatten by metric and exclude by metric pick their metric from the same searchable list as the metric bar, with each metric's description and highest value.
