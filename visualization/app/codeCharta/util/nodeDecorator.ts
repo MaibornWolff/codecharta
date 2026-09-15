@@ -137,32 +137,24 @@ export const NodeDecorator = {
 }
 
 function decorateNodeWithMetricData(data: CodeMapNode, nodeMetricData: NodeMetricData[], edgeMetricData: EdgeMetricData[]) {
-    if (data.attributes === undefined) {
-        data.attributes = {}
-    }
+    data.attributes ??= {}
 
     if (isLeaf(data)) {
         data.attributes[UNARY_METRIC] = 1
     }
 
     for (const metric of nodeMetricData) {
-        if (data.attributes[metric.name] === undefined) {
-            data.attributes[metric.name] = 0
-        }
+        data.attributes[metric.name] ??= 0
 
-        if (data.deltas !== undefined && data.deltas[metric.name] === undefined) {
-            data.deltas[metric.name] = 0
+        if (data.deltas !== undefined) {
+            data.deltas[metric.name] ??= 0
         }
     }
 
-    if (data.edgeAttributes === undefined) {
-        data.edgeAttributes = {}
-    }
+    data.edgeAttributes ??= {}
 
     for (const metric of edgeMetricData) {
-        if (data.edgeAttributes[metric.name] === undefined) {
-            data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
-        }
+        data.edgeAttributes[metric.name] ??= { incoming: 0, outgoing: 0 }
     }
 }
 

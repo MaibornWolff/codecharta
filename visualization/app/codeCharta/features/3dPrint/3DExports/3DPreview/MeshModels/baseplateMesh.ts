@@ -25,7 +25,7 @@ export class BaseplateMesh extends GeneralMesh implements GeneralSizeChangeMesh 
         this.material = shaderMaterial
 
         this.updateColor(geometryOptions.numberOfColors)
-        return Promise.resolve(this)
+        return this
     }
 
     changeSize(geometryOptions: GeometryOptions): void {
