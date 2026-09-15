@@ -1,4 +1,4 @@
-<div class="join mx-2 mt-2 flex" role="group" aria-label="Explorer mode">
+<fieldset class="join mx-2 mt-2 flex" aria-label="Explorer mode">
     @for (mode of modes; track mode.id) {
         <button
             type="button"
@@ -12,4 +12,4 @@
             <span class="text-xs">{{ mode.label }}</span>
         </button>
     }
-</div>
+</fieldset>

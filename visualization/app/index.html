@@ -2,11 +2,15 @@
 <html lang="en" data-theme="codecharta">
     <head>
         <title>CodeCharta</title>
+        <!-- The sha256 allows Angular's critical-CSS handler onload="this.media='all'"; if the build changes it,
+             regenerate with: printf "%s" "<handler>" | openssl dgst -sha256 -binary | base64 -->
         <meta
             charset="utf-8"
             http-equiv="Content-Security-Policy"
-            content="default-src 'self' 'unsafe-inline' 'unsafe-eval';
-					 img-src 'self' https://* data:;"
+            content="default-src 'self';
+					 script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=';
+					 style-src 'self' 'unsafe-inline';
+					 img-src 'self' data: https://github.com https://user-images.githubusercontent.com https://github-production-user-asset-6210df.s3.amazonaws.com;"
         />
         <base href="./" />
         <link rel="icon" type="image/x-icon" href="codeCharta/assets/favicon.ico" />

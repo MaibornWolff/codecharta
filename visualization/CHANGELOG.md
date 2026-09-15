@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- **Screen reader labels**: sliders, number fields, text fields and file pickers in the label settings, global configuration, 3D print and scenario dialogs announce what they control.
+
 ## [2.4.0] - 2026-09-14
 
 ### Changed

@@ -1,6 +1,4 @@
-<cc-action-icon
-    icon="history"
-    title="Show Changelog"
-    (click)="showChangelog()"
-/>
+<button title="Show Changelog" (click)="showChangelog()">
+    <cc-action-icon icon="history" />
+</button>
 <cc-changelog-dialog #changelogDialog />

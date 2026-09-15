@@ -12,7 +12,7 @@
 			</div>
 		</div>
 
-		<input #fileInput type="file" class="hidden" [accept]="acceptExtensions" multiple (change)="handleImportFiles($event)" />
+		<input #fileInput type="file" class="hidden" aria-label="Import scenarios" [accept]="acceptExtensions" multiple (change)="handleImportFiles($event)" />
 
 		<input
 			class="input input-bordered w-full mb-4"
@@ -29,7 +29,7 @@
 		<div class="max-h-[60vh] overflow-y-auto">
 			@for (group of groupedScenarios(); track group.label; let first = $first) {
 				<div class="collapse collapse-arrow border border-base-300" [class.mt-1]="!first">
-					<input type="radio" name="scenario-accordion" [checked]="first" />
+					<input type="radio" name="scenario-accordion" [attr.aria-label]="group.label" [checked]="first" />
 					<div class="collapse-title font-semibold text-sm bg-primary text-primary-content">
 						<i class="fa {{ group.icon }} mr-2"></i>
 						{{ group.label }}
