@@ -98,9 +98,6 @@ export const NodeDecorator = {
 
     decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
         const medians: Map<string, number[]> = new Map()
-        // TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
-        // remove the Object.keys calls from then on. They are identical to the
-        // `nodeMetricData` and `edgeMetricData` names.
         const attributeKeys = Object.keys(map.attributes)
 
         const edgeKeys = Object.keys(map.edgeAttributes)
@@ -300,7 +297,6 @@ function setMediansToParents(medians: Map<string, number[]>, parentSelector: str
 }
 
 function collectMedians(medians: Map<string, number[]>, selector: string, child: CodeMapNode, value: number) {
-    // TODO: Check if this should be set if it's not a leaf.
     const median = medians.get(selector)
     if (median === undefined) {
         medians.set(selector, [value])
@@ -309,9 +305,6 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
     }
 }
 
-// TODO: Evaluate if sorting in `getMedian` is not better than using a
-// pre-sorted array. It's a lot less code and should roughly have the same
-// performance.
 function getMedian(numbers: number[]) {
     if (numbers === undefined || numbers.length === 0) {
         return 0

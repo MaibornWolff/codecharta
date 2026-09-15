@@ -59,10 +59,6 @@ export class DeltaGenerator {
                 const { deltaList, differenceExists } = this.compareAttributeValues(referenceNode.attributes, comparisonNode.attributes)
                 referenceNode.deltas = deltaList
                 const changed = differenceExists ? 1 : 0
-                // TODO: The attributes have to be consolidated to have a single set of
-                // attributes instead of conflicting attributes. This applies to all
-                // attributes and is not specific about the attributes from the
-                // reference node.
                 referenceNode.attributes = comparisonNode.attributes
                 referenceNode.fileCount = { added: 0, removed: 0, changed }
             } else {
@@ -125,10 +121,6 @@ export class DeltaGenerator {
             const attributeDelta = compAttribute - referenceAttribute
             deltaList[key] = attributeDelta
         }
-
-        // TODO: All entries should have the combined attributes and deltas set,
-        // even if they do not exist on one side. Calculate these attributes up
-        // front. This operation is otherwise costly.
         return { deltaList, differenceExists }
     }
 

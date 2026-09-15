@@ -20,7 +20,7 @@ export class Preview3DPrintMesh {
         private mapMesh: MapMesh = new MapMesh()
     ) {
         this.printMesh = new Mesh()
-        this.printMesh.name = "PrintMesh" //TODO: rename to PrintPreview
+        this.printMesh.name = "PrintMesh"
     }
 
     async initialize() {

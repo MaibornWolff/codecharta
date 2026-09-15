@@ -5,7 +5,7 @@ import { PerspectiveCamera, Vector3 } from "three"
 export class ThreeCameraService {
     static VIEW_ANGLE = 45
     static NEAR = 50
-    static FAR = 200_000 //TODO optimize renderer for far objects
+    static FAR = 200_000
     camera: PerspectiveCamera
 
     init(containerWidth: number, containerHeight: number) {

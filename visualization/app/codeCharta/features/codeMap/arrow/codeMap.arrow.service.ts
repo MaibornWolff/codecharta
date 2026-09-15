@@ -121,9 +121,6 @@ export class CodeMapArrowService implements OnDestroy {
             const originNode = this.map.get(edge.fromNodeName)
             const targetNode = this.map.get(edge.toNodeName)
             if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
-                //TODO It seems originNode or targetNode might be undefined here,
-                // I think it results from the method being called multiple times when it might not be available yet
-                // I changed that back to avoid console errors and re-enable the edge-metric, however we should investigate why this is happening
                 const curveScale = 100 * this.codeMapStore.getMapState().edgeHeight
                 const curve = this.createCurve(originNode, targetNode, curveScale)
                 this.previewMode(curve, edge.visible)
@@ -182,9 +179,6 @@ export class CodeMapArrowService implements OnDestroy {
                 continue
             }
             const originNode = this.map.get(edge.fromNodeName)
-            // TODO: Maps should only have valid edges. If that's not the case, the
-            // internal decoration is likely faulty. Check if only test data is not
-            // correct or what the root cause of these checks actually is.
             if (originNode === undefined) {
                 continue
             }
@@ -195,9 +189,6 @@ export class CodeMapArrowService implements OnDestroy {
             if (showOutgoingEdges && node.has(originNode.path)) {
                 this.addArrow(originNode, targetNode, true)
                 this.threeSceneService.applyHighlights()
-                // TODO: Check if the second part ot the second if case is actually necessary. Edges should
-                // always have valid origin and target paths. The test data is likely
-                // faulty and should be improved.
             } else if (showIncomingEdges && node.has(targetNode.path)) {
                 this.addArrow(originNode, targetNode, false)
                 this.threeSceneService.applyHighlights()

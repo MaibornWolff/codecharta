@@ -42,7 +42,6 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], matcher:
 
     const metricData: NodeMetricData[] = []
 
-    // TODO: Remove the unary metric.
     metricMaxValues.set(UNARY_METRIC, 1)
     metricMinValues.set(UNARY_METRIC, 1)
 

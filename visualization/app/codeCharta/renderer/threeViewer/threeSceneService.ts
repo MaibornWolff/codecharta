@@ -250,7 +250,6 @@ export class ThreeSceneService implements OnDestroy {
         if (!building) {
             return
         }
-        // TODO: This check shouldn't be necessary. When investing into model we should investigate why and remove the need.
         if (building.id !== this.selected?.id) {
             if (this.selected) {
                 this.getMapMesh().clearSelection(this.selected)
