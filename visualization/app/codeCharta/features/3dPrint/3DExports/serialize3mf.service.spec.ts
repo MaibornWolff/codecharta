@@ -248,7 +248,7 @@ describe("serialize3mf service", () => {
                 expect(vertices).toHaveLength(9)
                 expect(triangles).toHaveLength(16)
                 expect(vertexToNewVertexIndex.size).toBe(9)
-                expect(volumeCount).toBe(1) // TODO: verify this number
+                expect(volumeCount).toBe(1)
                 expect(colorToExtruder.size).toBe(2)
                 expect(colorToExtruder.keys()).toContain("c0ffee")
                 expect(colorToExtruder.keys()).toContain("ffffff")

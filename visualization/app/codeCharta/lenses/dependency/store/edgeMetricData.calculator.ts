@@ -18,7 +18,6 @@ export function calculateEdgeMetricData(visibleFileStates: FileState[], matcher:
     for (const fileState of visibleFileStates) {
         for (const edge of fileState.file.settings.fileSettings.edges) {
             if (bothNodesAssociatedAreVisible(edge, allFilePaths, matcher)) {
-                // TODO: We likely only need the attributes once per file.
                 for (const edgeMetric of Object.keys(edge.attributes)) {
                     const edgeMetricEntry = updateEntryForMetric(nodeEdgeMetricsMap, edgeMetric)
                     addEdgeToNodes(

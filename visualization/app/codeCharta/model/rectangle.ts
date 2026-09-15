@@ -13,7 +13,6 @@ export default class Rectangle {
         this.height = height
     }
 
-    // TODO rename
     shorterSide(): number {
         return this.width > this.height ? this.height : this.width
     }

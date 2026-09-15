@@ -91,7 +91,6 @@ export class ThreeMapControlsService {
     private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {
         const cameraReference = this.threeCameraService.camera
 
-        //TODO: Scale Factor for object to camera ratio
         const scale = 1.3 // object size / display size
         const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 

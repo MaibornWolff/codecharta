@@ -35,7 +35,6 @@ export function pathToNodeName(path: string | null, fallback: string): string {
 
 export function getParent<T>(hashMap: Map<string, T>, path: string): T {
     do {
-        // TODO: Check what happens with Windows paths.
         path = path.slice(0, path.lastIndexOf("/"))
 
         const node = hashMap.get(path)

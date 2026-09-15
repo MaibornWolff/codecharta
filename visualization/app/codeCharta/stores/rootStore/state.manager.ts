@@ -37,7 +37,7 @@ const objectWithDynamicKeysInStore = new Set([
     "sharedView.focusedNodePath",
     // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
     "mapState.mapColors.markingColors",
-    "files" // ToDo; this should be a Map with an unique id
+    "files"
 ])
 
 export function _applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
