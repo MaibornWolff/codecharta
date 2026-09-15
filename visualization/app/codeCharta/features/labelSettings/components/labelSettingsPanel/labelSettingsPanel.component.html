@@ -1,10 +1,10 @@
 <div [title]="topLabelsTitle()">
     <span class="text-sm">Top Labels</span>
     <div class="flex items-center gap-2">
-        <input type="range" class="range range-primary range-sm flex-1"
+        <input type="range" class="range range-primary range-sm flex-1" aria-label="Top Labels"
             min="0" max="50" [value]="amountOfTopLabels()"
             (input)="handleTopLabelsInput($event)" />
-        <input type="number" class="input input-sm input-bordered w-16 text-center"
+        <input type="number" class="input input-sm input-bordered w-16 text-center" aria-label="Top Labels"
             min="0" max="50" [value]="amountOfTopLabels()"
             (input)="handleTopLabelsInput($event)" />
     </div>
@@ -29,10 +29,10 @@
 <div title="Scale floating label font size">
     <span class="text-sm">Label Size</span>
     <div class="flex items-center gap-2">
-        <input type="range" class="range range-primary range-sm flex-1"
+        <input type="range" class="range range-primary range-sm flex-1" aria-label="Label Size"
             [min]="MIN_LABEL_SIZE" [max]="MAX_LABEL_SIZE" [step]="LABEL_SIZE_STEP" [value]="labelSize()"
             (input)="handleLabelSizeInput($event)" />
-        <input type="number" class="input input-sm input-bordered w-16 text-center"
+        <input type="number" class="input input-sm input-bordered w-16 text-center" aria-label="Label Size"
             [min]="MIN_LABEL_SIZE" [max]="MAX_LABEL_SIZE" [step]="LABEL_SIZE_STEP" [value]="labelSize()"
             (input)="handleLabelSizeInput($event)" />
     </div>
