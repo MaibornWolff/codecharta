@@ -10,27 +10,27 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean) {
     }
 
     for (const inputFile of inputFiles) {
-        if (inputFile.settings.fileSettings.edges) {
-            for (const oldEdge of inputFile.settings.fileSettings.edges) {
-                const edge: Edge = {
-                    fromNodeName: withUpdatedPath
-                        ? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
-                        : oldEdge.fromNodeName,
-                    toNodeName: withUpdatedPath ? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
-                    attributes: clone(oldEdge.attributes),
-                    visible: oldEdge.visible
-                }
-                const equalEdgeItem = edges.get(`${edge.fromNodeName}|${edge.toNodeName}`)
+        for (const oldEdge of inputFile.settings.fileSettings.edges ?? []) {
+            const edge = copyEdge(oldEdge, inputFile.fileMeta.fileName, withUpdatedPath)
+            const equalEdgeItem = edges.get(`${edge.fromNodeName}|${edge.toNodeName}`)
 
-                if (equalEdgeItem !== undefined) {
-                    for (const key of Object.keys(edge.attributes)) {
-                        equalEdgeItem.attributes[key] = edge.attributes[key]
-                    }
-                } else {
-                    edges.set(`${edge.fromNodeName}|${edge.toNodeName}`, edge)
+            if (equalEdgeItem !== undefined) {
+                for (const key of Object.keys(edge.attributes)) {
+                    equalEdgeItem.attributes[key] = edge.attributes[key]
                 }
+            } else {
+                edges.set(`${edge.fromNodeName}|${edge.toNodeName}`, edge)
             }
         }
     }
     return [...edges.values()]
+}
+
+function copyEdge(edge: Edge, fileName: string, withUpdatedPath: boolean): Edge {
+    return {
+        fromNodeName: withUpdatedPath ? getUpdatedPath(fileName, edge.fromNodeName) : edge.fromNodeName,
+        toNodeName: withUpdatedPath ? getUpdatedPath(fileName, edge.toNodeName) : edge.toNodeName,
+        attributes: clone(edge.attributes),
+        visible: edge.visible
+    }
 }

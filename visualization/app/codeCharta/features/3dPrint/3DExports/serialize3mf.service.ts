@@ -60,10 +60,9 @@ function extractMeshData(mesh: Mesh): {
     const volumes: Volume[] = []
     const vertexToNewVertexIndex: Map<string, number> = new Map()
     const colorToExtruder: Map<string, number> = new Map()
-    const volumeCount = 1
 
     for (const child of mesh.children as Mesh[]) {
-        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes)
+        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, colorToExtruder, volumes)
     }
 
     return { vertices, triangles, volumes }
@@ -74,7 +73,6 @@ function extractChildMeshData(
     vertices: string[],
     triangles: string[],
     vertexToNewVertexIndex: Map<string, number>,
-    volumeCount: number,
     colorToExtruder: Map<string, number>,
     volumes: Volume[],
     parentMatrix: Matrix4 = undefined
@@ -88,11 +86,12 @@ function extractChildMeshData(
         if (parentMatrix) {
             newParentMatrix = parentMatrix.clone().multiply(mesh.matrix)
         }
-        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, volumeCount, colorToExtruder, volumes, newParentMatrix)
+        extractChildMeshData(child, vertices, triangles, vertexToNewVertexIndex, colorToExtruder, volumes, newParentMatrix)
     }
 
     const colorToVertexIndices = groupMeshVerticesByColor(mesh)
     const vertexIndexToNewVertexIndex: Map<number, number> = new Map()
+    let volumeCount = 1
 
     for (const [color, vertexIndexes] of colorToVertexIndices.entries()) {
         const firstTriangleId = triangles.length

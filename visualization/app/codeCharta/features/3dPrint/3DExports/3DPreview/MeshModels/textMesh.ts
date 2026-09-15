@@ -1,4 +1,4 @@
-import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrintColorChangeStrategy"
+import { ColorChangeStrategy } from "../ColorChangeStrategies/colorChangeStrategy"
 import { CreateTextGeometryStrategy, CreateTextGeometryStrategyOptions } from "../CreateGeometryStrategies/createTextGeometryStrategy"
 import { GeometryOptions } from "../geometryOptions"
 import { CustomVisibilityMesh } from "./customVisibilityMesh"
@@ -6,7 +6,7 @@ import { CustomVisibilityMesh } from "./customVisibilityMesh"
 export class TextMesh extends CustomVisibilityMesh {
     constructor(
         name: string,
-        colorChangeStrategy = new BackPrintColorChangeStrategy(),
+        colorChangeStrategy: ColorChangeStrategy,
         minScale: number,
         manualVisibility: boolean,
         public createTextGeometryOptions: CreateTextGeometryStrategyOptions,

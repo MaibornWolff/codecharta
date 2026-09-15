@@ -8,12 +8,12 @@ import { isWhiteBackgroundSelector } from "../../stores/mapState/mapState.read.f
 
 @Injectable({ providedIn: "root" })
 export class ThreeRendererService {
-    static BACKGROUND_COLOR = {
+    static readonly BACKGROUND_COLOR = {
         white: 0xff_ff_ff,
         normal: 0xf4_f4_eb
     }
 
-    static CLEAR_ALPHA = 1
+    static readonly CLEAR_ALPHA = 1
 
     /** A phone reports a device pixel ratio of 3 and, lacking a viewport meta tag, a ~980px layout
      * viewport, so its raw ratio asks for a ~15 megapixel buffer — antialiasing then quadruples the

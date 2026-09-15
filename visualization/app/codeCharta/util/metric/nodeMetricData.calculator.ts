@@ -1,6 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
 
-import { NodeMetricData } from "../../model/codeCharta.model"
+import { KeyValuePair, NodeMetricData } from "../../model/codeCharta.model"
 import { FileState } from "../../model/files/files"
 import { BlacklistMatcher } from "../blacklist/blacklistMatcher"
 import { isLeaf } from "../codeMapHelper"
@@ -19,23 +19,7 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], matcher:
     for (const { file } of visibleFileStates) {
         for (const node of hierarchy(file.map)) {
             if (isLeaf(node) && node.data.path && !matcher.isExcludedLeaf(node.data.path)) {
-                for (const metric of Object.keys(node.data.attributes)) {
-                    const maxValue = metricMaxValues.get(metric)
-                    const minValue = metricMinValues.get(metric)
-
-                    if (!metricValues.get(metric)) {
-                        metricValues.set(metric, [])
-                    }
-                    metricValues.get(metric).push(node.data.attributes[metric])
-
-                    if (minValue === undefined || minValue >= node.data.attributes[metric]) {
-                        metricMinValues.set(metric, node.data.attributes[metric])
-                    }
-
-                    if (maxValue === undefined || maxValue <= node.data.attributes[metric]) {
-                        metricMaxValues.set(metric, node.data.attributes[metric])
-                    }
-                }
+                collectMetricValues(node.data.attributes, metricValues, metricMinValues, metricMaxValues)
             }
         }
     }
@@ -56,4 +40,29 @@ export const calculateNodeMetricData = (visibleFileStates: FileState[], matcher:
 
     sortByMetricName(metricData)
     return metricData
+}
+
+function collectMetricValues(
+    attributes: KeyValuePair,
+    metricValues: Map<string, number[]>,
+    metricMinValues: Map<string, number>,
+    metricMaxValues: Map<string, number>
+) {
+    for (const metric of Object.keys(attributes)) {
+        const maxValue = metricMaxValues.get(metric)
+        const minValue = metricMinValues.get(metric)
+
+        if (!metricValues.get(metric)) {
+            metricValues.set(metric, [])
+        }
+        metricValues.get(metric).push(attributes[metric])
+
+        if (minValue === undefined || minValue >= attributes[metric]) {
+            metricMinValues.set(metric, attributes[metric])
+        }
+
+        if (maxValue === undefined || maxValue <= attributes[metric]) {
+            metricMaxValues.set(metric, attributes[metric])
+        }
+    }
 }

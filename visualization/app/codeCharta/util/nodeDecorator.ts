@@ -1,5 +1,15 @@
 import { hierarchy } from "d3-hierarchy"
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, CCFile, CodeMapNode, MetricData, MetricRule } from "../model/codeCharta.model"
+import {
+    AttributeTypes,
+    AttributeTypeValue,
+    BlacklistItem,
+    CCFile,
+    CodeMapNode,
+    EdgeMetricData,
+    MetricData,
+    MetricRule,
+    NodeMetricData
+} from "../model/codeCharta.model"
 import { createBlacklistMatcher } from "./blacklist/blacklistMatcher"
 import { isLeaf } from "./codeMapHelper"
 import { UNARY_METRIC } from "./metric/unaryMetric"
@@ -59,33 +69,7 @@ export const NodeDecorator = {
         const { nodeMetricData, edgeMetricData } = metricData
         this.decorateMapWithStructure(map)
         for (const { data } of hierarchy(map)) {
-            if (data.attributes === undefined) {
-                data.attributes = {}
-            }
-
-            if (isLeaf(data)) {
-                data.attributes[UNARY_METRIC] = 1
-            }
-
-            for (const metric of nodeMetricData) {
-                if (data.attributes[metric.name] === undefined) {
-                    data.attributes[metric.name] = 0
-                }
-
-                if (data.deltas !== undefined && data.deltas[metric.name] === undefined) {
-                    data.deltas[metric.name] = 0
-                }
-            }
-
-            if (data.edgeAttributes === undefined) {
-                data.edgeAttributes = {}
-            }
-
-            for (const metric of edgeMetricData) {
-                if (data.edgeAttributes[metric.name] === undefined) {
-                    data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
-                }
-            }
+            decorateNodeWithMetricData(data, nodeMetricData, edgeMetricData)
         }
     },
 
@@ -129,49 +113,7 @@ export const NodeDecorator = {
             }
 
             for (const name of edgeKeys) {
-                const value = data.edgeAttributes[name]
-
-                if (!value) {
-                    continue
-                }
-
-                const selector = `${name}${data.path}`
-                const parentSelector = `${name}${parent.data.path}`
-                if (attributeTypes.edges[name] === AttributeTypeValue.relative) {
-                    setEdgeMediansToParent(
-                        medians,
-                        `${MedianSelectors.INCOMING}${selector}`,
-                        `${MedianSelectors.INCOMING}${parentSelector}`,
-                        data,
-                        name,
-                        EdgeAttributeType.INCOMING
-                    )
-                    setEdgeMediansToParent(
-                        medians,
-                        `${MedianSelectors.OUTGOING}${selector}`,
-                        `${MedianSelectors.OUTGOING}${parentSelector}`,
-                        data,
-                        name,
-                        EdgeAttributeType.OUTGOING
-                    )
-                    collectEdgeMediansOnParent(
-                        medians,
-                        `${MedianSelectors.INCOMING}${parentSelector}`,
-                        data,
-                        name,
-                        EdgeAttributeType.INCOMING
-                    )
-                    collectEdgeMediansOnParent(
-                        medians,
-                        `${MedianSelectors.OUTGOING}${parentSelector}`,
-                        data,
-                        name,
-                        EdgeAttributeType.OUTGOING
-                    )
-                } else {
-                    parent.data.edgeAttributes[name].incoming += value.incoming
-                    parent.data.edgeAttributes[name].outgoing += value.outgoing
-                }
+                aggregateEdgeAttribute(medians, data, parent.data, name, attributeTypes)
             }
         })
 
@@ -191,6 +133,76 @@ export const NodeDecorator = {
                 }
             }
         }
+    }
+}
+
+function decorateNodeWithMetricData(data: CodeMapNode, nodeMetricData: NodeMetricData[], edgeMetricData: EdgeMetricData[]) {
+    if (data.attributes === undefined) {
+        data.attributes = {}
+    }
+
+    if (isLeaf(data)) {
+        data.attributes[UNARY_METRIC] = 1
+    }
+
+    for (const metric of nodeMetricData) {
+        if (data.attributes[metric.name] === undefined) {
+            data.attributes[metric.name] = 0
+        }
+
+        if (data.deltas !== undefined && data.deltas[metric.name] === undefined) {
+            data.deltas[metric.name] = 0
+        }
+    }
+
+    if (data.edgeAttributes === undefined) {
+        data.edgeAttributes = {}
+    }
+
+    for (const metric of edgeMetricData) {
+        if (data.edgeAttributes[metric.name] === undefined) {
+            data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
+        }
+    }
+}
+
+function aggregateEdgeAttribute(
+    medians: Map<string, number[]>,
+    child: CodeMapNode,
+    parent: CodeMapNode,
+    name: string,
+    attributeTypes: AttributeTypes
+) {
+    const value = child.edgeAttributes[name]
+
+    if (!value) {
+        return
+    }
+
+    const selector = `${name}${child.path}`
+    const parentSelector = `${name}${parent.path}`
+    if (attributeTypes.edges[name] === AttributeTypeValue.relative) {
+        setEdgeMediansToParent(
+            medians,
+            `${MedianSelectors.INCOMING}${selector}`,
+            `${MedianSelectors.INCOMING}${parentSelector}`,
+            child,
+            name,
+            EdgeAttributeType.INCOMING
+        )
+        setEdgeMediansToParent(
+            medians,
+            `${MedianSelectors.OUTGOING}${selector}`,
+            `${MedianSelectors.OUTGOING}${parentSelector}`,
+            child,
+            name,
+            EdgeAttributeType.OUTGOING
+        )
+        collectEdgeMediansOnParent(medians, `${MedianSelectors.INCOMING}${parentSelector}`, child, name, EdgeAttributeType.INCOMING)
+        collectEdgeMediansOnParent(medians, `${MedianSelectors.OUTGOING}${parentSelector}`, child, name, EdgeAttributeType.OUTGOING)
+    } else {
+        parent.edgeAttributes[name].incoming += value.incoming
+        parent.edgeAttributes[name].outgoing += value.outgoing
     }
 }
 

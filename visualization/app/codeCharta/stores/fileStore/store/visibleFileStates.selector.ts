@@ -46,7 +46,7 @@ function compareDeltaState(fileStates1: FileState[], fileStates2: FileState[]): 
     const comparisonFile2 = fileStates2.find(file => file.selectedAs === FileSelectionState.Comparison)
     if (
         comparisonFile1?.file.fileMeta.fileChecksum !== comparisonFile2?.file.fileMeta.fileChecksum ||
-        !comparisonFile1 !== !comparisonFile2
+        Boolean(comparisonFile1) !== Boolean(comparisonFile2)
     ) {
         return false
     }

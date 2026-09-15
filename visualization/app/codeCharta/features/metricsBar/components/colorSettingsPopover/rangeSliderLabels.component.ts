@@ -32,7 +32,7 @@ export class RangeSliderLabelsComponent implements AfterViewChecked {
     rightLabel: number
     combinedCurrentLeftRightLabelLeftPosition: number
 
-    constructor(private changeDetector: ChangeDetectorRef) {}
+    constructor(private readonly changeDetector: ChangeDetectorRef) {}
 
     ngAfterViewChecked(): void {
         this.updateLabelDisplays()

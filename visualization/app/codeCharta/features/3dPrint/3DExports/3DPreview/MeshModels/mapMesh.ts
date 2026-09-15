@@ -4,6 +4,10 @@ import { BackPrintColorChangeStrategy } from "../ColorChangeStrategies/backPrint
 import { GeometryOptions } from "../geometryOptions"
 import { CustomVisibilityMesh } from "./customVisibilityMesh"
 
+function isGrey(colorR: number, colorG: number, colorB: number) {
+    return colorR === colorB && colorR === colorG && colorG === colorB
+}
+
 export class MapMesh extends CustomVisibilityMesh {
     private originalColors: BufferAttribute | InterleavedBufferAttribute
 
@@ -50,27 +54,30 @@ export class MapMesh extends CustomVisibilityMesh {
             const colorR = originalColors.getX(index)
             const colorG = originalColors.getY(index)
             const colorB = originalColors.getZ(index)
-            let newColor: number[]
-
-            if (colorR === colorB && colorR === colorG && colorG === colorB) {
-                //all grey values
-                newColor = numberOfColors === 1 ? [1, 1, 1] : [0.5, 0.5, 0.5]
-            } else if (colorR > 0.75 && colorG > 0.75) {
-                //yellow
-                newColor = numberOfColors < 4 ? [1, 1, 1] : [1, 1, 0]
-            } else if (colorR > 0.45 && colorG < 0.1) {
-                //red
-                newColor = numberOfColors < 4 ? [1, 1, 1] : [1, 0, 0]
-            } else if (colorR < 5 && colorG > 0.6) {
-                //green
-                newColor = numberOfColors < 4 ? [1, 1, 1] : [0, 1, 0]
-            } else {
-                console.error("Unknown color")
-                newColor = [1, 1, 1]
-            }
-            newColors.push(...newColor)
+            newColors.push(...this.getPrintColor(colorR, colorG, colorB, numberOfColors))
         }
         previewMap.setAttribute("color", new Float32BufferAttribute(newColors, 3))
+    }
+
+    private getPrintColor(colorR: number, colorG: number, colorB: number, numberOfColors: number): number[] {
+        if (isGrey(colorR, colorG, colorB)) {
+            //all grey values
+            return numberOfColors === 1 ? [1, 1, 1] : [0.5, 0.5, 0.5]
+        }
+        if (colorR > 0.75 && colorG > 0.75) {
+            //yellow
+            return numberOfColors < 4 ? [1, 1, 1] : [1, 1, 0]
+        }
+        if (colorR > 0.45 && colorG < 0.1) {
+            //red
+            return numberOfColors < 4 ? [1, 1, 1] : [1, 0, 0]
+        }
+        if (colorR < 5 && colorG > 0.6) {
+            //green
+            return numberOfColors < 4 ? [1, 1, 1] : [0, 1, 0]
+        }
+        console.error("Unknown color")
+        return [1, 1, 1]
     }
 
     private addBottomFaces(geometry: BufferGeometry) {

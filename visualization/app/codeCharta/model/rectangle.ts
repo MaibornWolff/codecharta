@@ -14,7 +14,7 @@ export default class Rectangle {
     }
 
     shorterSide(): number {
-        return this.width > this.height ? this.height : this.width
+        return Math.min(this.width, this.height)
     }
 
     isVertical(): boolean {

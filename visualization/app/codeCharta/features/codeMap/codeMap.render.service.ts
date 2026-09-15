@@ -43,19 +43,21 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
         private readonly colorCategoryCountsStore: ColorCategoryCountsStore
     ) {
-        this.subscription = this.fileStoreReadWindow.isLoadingFile$.pipe(tap(this.onIsLoadingFileChanged)).subscribe()
+        this.subscription = this.fileStoreReadWindow.isLoadingFile$
+            .pipe(tap(isLoadingFile => (isLoadingFile ? this.onFileLoadingStarted() : this.onFileLoadingFinished())))
+            .subscribe()
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe()
     }
 
-    onIsLoadingFileChanged = (isLoadingFile: boolean) => {
-        if (isLoadingFile) {
-            this.threeSceneService?.dispose()
-        } else {
-            this.threeStatsService?.resetPanels()
-        }
+    onFileLoadingStarted() {
+        this.threeSceneService?.dispose()
+    }
+
+    onFileLoadingFinished() {
+        this.threeStatsService?.resetPanels()
     }
 
     // The RendererEngine `load` seam (Slice 14b): compose + lay out the render model. The render effect

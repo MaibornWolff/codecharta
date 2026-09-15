@@ -6,7 +6,7 @@ export function removeItemFromArray<T>(array: T[], searchItem: T) {
 }
 
 export function removeItemsFromArray<T>(array: T[], searchItems: T[]) {
-    return array.filter(entry => !searchItems.find(it => dequal(entry, it)))
+    return array.filter(entry => !searchItems.some(it => dequal(entry, it)))
 }
 
 export function removeEntryAtIndexFromArray<T>(array: T[], index: number): T[] {

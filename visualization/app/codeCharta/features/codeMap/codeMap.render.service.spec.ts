@@ -182,15 +182,17 @@ describe("codeMapRenderService", () => {
         Object.defineProperty(codeMapRenderService, "threeStatsService", { value: threeStatsService })
     }
 
-    describe("onIsLoadingFileChanged", () => {
+    describe("onFileLoadingStarted", () => {
         it("should call threeSceneService dispose", () => {
-            codeMapRenderService["onIsLoadingFileChanged"](true)
+            codeMapRenderService.onFileLoadingStarted()
 
             expect(threeSceneService.dispose).toHaveBeenCalledWith()
         })
+    })
 
+    describe("onFileLoadingFinished", () => {
         it("should call threeStatsService resetPanels", () => {
-            codeMapRenderService["onIsLoadingFileChanged"](false)
+            codeMapRenderService.onFileLoadingFinished()
 
             expect(threeStatsService.resetPanels).toHaveBeenCalledWith()
         })

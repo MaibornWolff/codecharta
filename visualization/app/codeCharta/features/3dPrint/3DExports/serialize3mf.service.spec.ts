@@ -166,8 +166,6 @@ describe("serialize3mf service", () => {
             let vertexToNewVertexIndex: Map<string, number>
             let colorToExtruder: Map<string, number>
 
-            let volumeCount: number
-
             let parentMatrix: Matrix4
 
             const testPositionArrayChildAndMatrix = [
@@ -180,23 +178,12 @@ describe("serialize3mf service", () => {
                 vertexToNewVertexIndex = new Map()
                 colorToExtruder = new Map()
 
-                volumeCount = 1
-
                 parentMatrix = new Matrix4()
             })
 
             it("should not return if mesh not visible", () => {
                 testMesh.visible = false
-                extractChildMeshData(
-                    testMesh,
-                    vertices,
-                    triangles,
-                    vertexToNewVertexIndex,
-                    volumeCount,
-                    colorToExtruder,
-                    volumes,
-                    parentMatrix
-                )
+                extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, colorToExtruder, volumes, parentMatrix)
 
                 expect(vertices).toHaveLength(0)
                 expect(triangles).toHaveLength(0)
@@ -206,21 +193,11 @@ describe("serialize3mf service", () => {
             })
 
             it("should add entries to data collection", () => {
-                extractChildMeshData(
-                    testMesh,
-                    vertices,
-                    triangles,
-                    vertexToNewVertexIndex,
-                    volumeCount,
-                    colorToExtruder,
-                    volumes,
-                    parentMatrix
-                )
+                extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, colorToExtruder, volumes, parentMatrix)
 
                 expect(vertices).toHaveLength(8)
                 expect(triangles).toHaveLength(12)
                 expect(vertexToNewVertexIndex.size).toBe(8)
-                expect(volumeCount).toBe(1)
                 expect(colorToExtruder.size).toBe(1)
                 expect(volumes).toHaveLength(1)
                 expect(volumes[0].lastTriangleId).toBe(11)
@@ -234,21 +211,11 @@ describe("serialize3mf service", () => {
                 testMesh.matrix.makeScale(2, 2, 2)
                 parentMatrix = parentMatrix.makeTranslation(1, 1, 1)
 
-                extractChildMeshData(
-                    testMesh,
-                    vertices,
-                    triangles,
-                    vertexToNewVertexIndex,
-                    volumeCount,
-                    colorToExtruder,
-                    volumes,
-                    parentMatrix
-                )
+                extractChildMeshData(testMesh, vertices, triangles, vertexToNewVertexIndex, colorToExtruder, volumes, parentMatrix)
 
                 expect(vertices).toHaveLength(9)
                 expect(triangles).toHaveLength(16)
                 expect(vertexToNewVertexIndex.size).toBe(9)
-                expect(volumeCount).toBe(1)
                 expect(colorToExtruder.size).toBe(2)
                 expect(colorToExtruder.keys()).toContain("c0ffee")
                 expect(colorToExtruder.keys()).toContain("ffffff")
