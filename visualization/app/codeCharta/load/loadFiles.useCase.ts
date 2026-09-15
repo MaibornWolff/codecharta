@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import stringify from "safe-stable-stringify"
+import { dequal } from "dequal"
 import { CcState } from "../model/codeCharta.model"
 import { FileState } from "../model/files/files"
 import {
@@ -317,7 +317,7 @@ export class LoadFilesUseCase {
     private describeTheSameFiles(left: NameDataPair[], right: NameDataPair[]): boolean {
         const leftChecksums = left.map(pair => getContentChecksum(pair.content))
         const rightChecksums = right.map(pair => getContentChecksum(pair.content))
-        return stringify(leftChecksums) === stringify(rightChecksums)
+        return dequal(leftChecksums, rightChecksums)
     }
 
     // ───────────────────────────── errors ─────────────────────────────

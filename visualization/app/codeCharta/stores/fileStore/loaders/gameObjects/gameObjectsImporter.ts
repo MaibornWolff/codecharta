@@ -1,4 +1,3 @@
-import md5 from "md5"
 import { ExportWrappedCCFile } from "../../../../model/codeCharta.api.model"
 import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, FixedPosition, NodeType } from "../../../../model/codeCharta.model"
 
@@ -19,10 +18,15 @@ interface Cycle {
     to: string
 }
 
+export interface GameObjectsFile {
+    gameObjectPositions: GameObject[]
+    cycles?: Cycle[]
+}
+
 const BASE_NAME = "base"
 
-export function parseGameObjectsFile(data): ExportWrappedCCFile {
-    const { gameObjectPositions: gameObjects, cycles = [] } = JSON.parse(data)
+export function parseGameObjectsFile(gameObjectsFile: GameObjectsFile): ExportWrappedCCFile {
+    const { gameObjectPositions: gameObjects, cycles = [] } = gameObjectsFile
 
     const codeChartaJson: ExportWrappedCCFile = {
         checksum: "",
@@ -51,7 +55,6 @@ export function parseGameObjectsFile(data): ExportWrappedCCFile {
     codeChartaJson.data.nodes = nodes
     codeChartaJson.data.edges = cycles.map(cycle => createEdge(cycle))
     codeChartaJson.data.attributeTypes = createAttributeTypes()
-    codeChartaJson.checksum = md5(JSON.stringify(codeChartaJson.data))
     return codeChartaJson
 }
 

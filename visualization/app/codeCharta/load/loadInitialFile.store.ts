@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import stringify from "safe-stable-stringify"
+import { dequal } from "dequal"
 import {
     DependencyLensSource,
     DomainLensSource,
@@ -216,7 +216,7 @@ export class LoadInitialFileStore {
                 continue
             }
             const savedValue = savedSlice[key]
-            if (stringify(currentValue) !== stringify(savedValue)) {
+            if (!dequal(currentValue, savedValue)) {
                 dispatchKey(key as keyof Slice, savedValue)
             }
         }

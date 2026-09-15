@@ -22,6 +22,7 @@ export interface CCFileValidationResult {
 
 export const ERROR_MESSAGES = {
     fileIsInvalid: "File is empty or invalid.",
+    checksumUnavailable: "File has no checksum, and the browser can only compute one when CodeCharta is opened via https or localhost.",
     apiVersionIsInvalid: "API Version is empty or invalid.",
     majorApiVersionIsOutdated: "API Version Outdated: Update CodeCharta API Version to match cc.json.",
     minorApiVersionOutdated: "Minor API Version Outdated.",
@@ -118,6 +119,15 @@ function collectFileNodeIds(node: FileNode, into: Set<string>) {
 }
 
 export function checkErrors(file: CcFileContent): string[] {
+    const errors = checkContentErrors(file)
+    return errors.length === 0 && !hasChecksum(file) ? [ERROR_MESSAGES.checksumUnavailable] : errors
+}
+
+function hasChecksum(file: ExportCCFile | CcJson2): boolean {
+    return Boolean(isCcJson2(file) ? file.meta.checksum : file.fileChecksum)
+}
+
+function checkContentErrors(file: CcFileContent): string[] {
     if (isCcJson2(file)) {
         return checkErrors2_0(file)
     }

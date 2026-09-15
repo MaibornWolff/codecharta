@@ -2,7 +2,7 @@
 
 exports[`GameObjectsImporter should parse gameObjects json to cc.json 1`] = `
 {
-  "checksum": "64ba632559688f092d2adf0dee446d7e",
+  "checksum": "",
   "data": {
     "apiVersion": "1.3",
     "attributeTypes": {

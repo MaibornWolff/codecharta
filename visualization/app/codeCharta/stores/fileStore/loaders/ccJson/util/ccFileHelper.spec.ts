@@ -1,18 +1,15 @@
-import md5 from "md5"
+import { createHash } from "crypto"
+import { gzip } from "pako"
 import { TEST_ATTRIBUTE_DESCRIPTORS_HALF_FILLED, TEST_FILE_CONTENT } from "../../../../../mocks/dataMocks"
-import { CcJson2 } from "../../../../../model/ccjson2.model"
 import { ExportBlacklistType, ExportCCFile, NameDataPair } from "../../../../../model/codeCharta.api.model"
 import { AttributeTypeValue } from "../../../../../model/codeCharta.model"
 import { clone } from "../../../../../util/clone"
-import { getCCFile, getCCFileAndDecorateFileChecksum } from "./ccFileHelper"
-import { isCcJson2 } from "./fileValidator"
+import { parseGameObjectsFile } from "../../gameObjects/gameObjectsImporter"
+import { TEST_GAMEOBJECTS_FILE } from "../../gameObjects/gameObjectsMocks"
+import { getCCFile, parseCcFileBytes } from "./ccFileHelper"
 
-function asExportCCFile(content: ExportCCFile | CcJson2 | null): ExportCCFile {
-    if (content === null || isCcJson2(content)) {
-        throw new Error("expected a resolved 1.x ExportCCFile")
-    }
-    return content
-}
+const bytesOf = (text: string) => new TextEncoder().encode(text)
+const sha256Of = (text: string) => createHash("sha256").update(text).digest("hex")
 
 describe("ccFileHelper", () => {
     let fileContent: ExportCCFile
@@ -93,81 +90,123 @@ describe("ccFileHelper", () => {
         })
     })
 
-    describe("getCCFileAndDecorateFileChecksum", () => {
-        it("should resolve a json string in version 1.3 and higher and decorate checksum", () => {
-            const expectedMD5 = md5('{"apiVersion":"1.3"}')
-            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"checksum":"","data":{"apiVersion":"1.3"}}'))
-
-            expect(ccFile.apiVersion).toBe("1.3")
-            expect(ccFile.fileChecksum).toBe(expectedMD5)
+    describe("parseCcFileBytes", () => {
+        afterEach(() => {
+            jest.restoreAllMocks()
         })
 
-        it("should resolve a json string in version 1.3 and higher and does not decorate checksum", () => {
-            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"checksum":"fake-checksum","data":{"apiVersion":"1.3"}}'))
+        it("should leave a missing checksum empty when the browser offers no Web Crypto", async () => {
+            // Arrange
+            jest.replaceProperty(globalThis.crypto, "subtle", undefined as unknown as SubtleCrypto)
 
-            expect(ccFile.apiVersion).toBe("1.3")
-            expect(ccFile.fileChecksum).toBe("fake-checksum")
+            // Act
+            const content = await parseCcFileBytes(bytesOf('{"checksum":"","data":{"apiVersion":"1.3"}}'))
+
+            // Assert
+            expect(content).toEqual({ apiVersion: "1.3", fileChecksum: "" })
         })
 
-        it("should resolve a json string in version less than 1.3 and decorate checksum", () => {
-            const expectedMD5 = md5('{"apiVersion":"1.2"}')
-            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"apiVersion":"1.2"}'))
+        it("should unwrap a 1.3 file and fill its missing checksum with the SHA-256 of its bytes", async () => {
+            // Arrange
+            const text = '{"checksum":"","data":{"apiVersion":"1.3"}}'
 
-            expect(ccFile.apiVersion).toBe("1.2")
-            expect(ccFile.fileChecksum).toBe(expectedMD5)
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ apiVersion: "1.3", fileChecksum: sha256Of(text) })
         })
 
-        it("should resolve a json string in version less than 1.3 and does not decorate checksum", () => {
-            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum('{"fileChecksum":"fake-checksum","apiVersion":"1.2"}'))
+        it("should keep the checksum a wrapped 1.3 file carries", async () => {
+            // Arrange
+            const text = '{"checksum":"fake-checksum","data":{"apiVersion":"1.3"}}'
 
-            expect(ccFile.apiVersion).toBe("1.2")
-            expect(ccFile.fileChecksum).toBe("fake-checksum")
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ apiVersion: "1.3", fileChecksum: "fake-checksum" })
         })
 
-        it("should resolve a json object in version 1.3 and higher and decorate checksum", () => {
-            const expectedMD5 = md5('{"apiVersion":"1.3"}')
-            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum({ checksum: "", data: { apiVersion: "1.3" } as ExportCCFile }))
+        it("should fill the missing checksum of a file before 1.3", async () => {
+            // Arrange
+            const text = '{"apiVersion":"1.2"}'
 
-            expect(ccFile.apiVersion).toBe("1.3")
-            expect(ccFile.fileChecksum).toBe(expectedMD5)
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ apiVersion: "1.2", fileChecksum: sha256Of(text) })
         })
 
-        it("should resolve a json object in version 1.3 and higher and does not decorate checksum", () => {
-            const ccFile = asExportCCFile(
-                getCCFileAndDecorateFileChecksum({
-                    checksum: "fake-checksum",
-                    data: { apiVersion: "1.3" } as ExportCCFile
-                })
-            )
+        it("should keep the checksum a file before 1.3 carries", async () => {
+            // Arrange
+            const text = '{"fileChecksum":"fake-checksum","apiVersion":"1.2"}'
 
-            expect(ccFile.apiVersion).toBe("1.3")
-            expect(ccFile.fileChecksum).toBe("fake-checksum")
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ apiVersion: "1.2", fileChecksum: "fake-checksum" })
         })
 
-        it("should resolve a json object in version less than 1.3 and decorate checksum", () => {
-            const expectedMD5 = md5('{"apiVersion":"1.2"}')
-            const ccFile = asExportCCFile(getCCFileAndDecorateFileChecksum({ apiVersion: "1.2" } as ExportCCFile))
+        it("should fill the missing checksum of a 2.0 file", async () => {
+            // Arrange
+            const text = '{"meta":{"projectName":"p","apiVersion":"2.0","checksum":""},"files":[]}'
 
-            expect(ccFile.apiVersion).toBe("1.2")
-            expect(ccFile.fileChecksum).toBe(expectedMD5)
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ meta: { projectName: "p", apiVersion: "2.0", checksum: sha256Of(text) }, files: [] })
         })
 
-        it("should resolve a json object in version less than 1.2 and does not decorate checksum", () => {
-            const ccFile = asExportCCFile(
-                getCCFileAndDecorateFileChecksum({
-                    fileChecksum: "fake-checksum",
-                    apiVersion: "1.2"
-                } as ExportCCFile)
-            )
+        it("should keep the checksum a 2.0 file carries", async () => {
+            // Arrange
+            const text = '{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"fake-checksum"},"files":[]}'
 
-            expect(ccFile.apiVersion).toBe("1.2")
-            expect(ccFile.fileChecksum).toBe("fake-checksum")
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ meta: { projectName: "p", apiVersion: "2.0", checksum: "fake-checksum" }, files: [] })
         })
 
-        it("should return null on invalid input data", () => {
-            const ccFile = getCCFileAndDecorateFileChecksum("broken json")
+        it("should read gzipped bytes as the file they contain", async () => {
+            // Arrange
+            const text = '{"apiVersion":"1.2"}'
 
-            expect(ccFile).toBeNull()
+            // Act
+            const content = await parseCcFileBytes(gzip(text))
+
+            // Assert
+            expect(content).toEqual({ apiVersion: "1.2", fileChecksum: sha256Of(text) })
+        })
+
+        it("should convert a gameObjects file into a cc.json file checksummed by its own bytes", async () => {
+            // Arrange
+            const text = JSON.stringify(TEST_GAMEOBJECTS_FILE)
+            const { data: convertedFile } = parseGameObjectsFile(clone(TEST_GAMEOBJECTS_FILE))
+
+            // Act
+            const content = await parseCcFileBytes(bytesOf(text))
+
+            // Assert
+            expect(content).toEqual({ ...convertedFile, fileChecksum: sha256Of(text) })
+        })
+
+        it.each([
+            ["not valid JSON", "broken json"],
+            ["not a JSON object", "42"]
+        ])("should return null when the bytes are %s", async (_, text) => {
+            // Arrange
+            const bytes = bytesOf(text)
+
+            // Act
+            const content = await parseCcFileBytes(bytes)
+
+            // Assert
+            expect(content).toBeNull()
         })
     })
 })

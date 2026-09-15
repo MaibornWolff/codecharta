@@ -1,7 +1,13 @@
 import { HttpClient } from "@angular/common/http"
+import { createHash } from "crypto"
 import { gzip } from "pako"
 import { of } from "rxjs"
 import { UrlExtractor } from "./urlExtractor"
+
+const bytesOf = (text: string) => new TextEncoder().encode(text)
+const sha256Of = (text: string) => createHash("sha256").update(text).digest("hex")
+const responseOf = (bytes: Uint8Array, status = 200) =>
+    of({ body: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), status })
 
 describe("urlExtractor", () => {
     let urlExtractor: UrlExtractor
@@ -14,7 +20,7 @@ describe("urlExtractor", () => {
         ;(window as any).location = new URL("http://localhost")
 
         mockedHttpClient = {
-            get: () => of({ body: { checksum: "fake-md5", data: { apiVersion: 1.3, nodes: [] } }, status: 200 })
+            get: jest.fn(() => responseOf(bytesOf('{"checksum":"fake-md5","data":{"apiVersion":1.3,"nodes":[]}}')))
         } as unknown as HttpClient
 
         urlExtractor = new UrlExtractor(mockedHttpClient)
@@ -49,90 +55,85 @@ describe("urlExtractor", () => {
             return expect(urlExtractor.getFileDataFromFile("")).rejects.toEqual(new Error("Filename is missing"))
         })
 
-        it("should resolve data string of version 1.3 and return an object with content and fileName", async () => {
-            const expected = {
+        it("should request the file as bytes", async () => {
+            // Act
+            await urlExtractor.getFileDataFromFile("test.json")
+
+            // Assert
+            expect(mockedHttpClient.get).toHaveBeenCalledWith("test.json", { responseType: "arraybuffer", observe: "response" })
+        })
+
+        it("should resolve a wrapped 1.3 file with its checksum and byte size", async () => {
+            // Arrange
+            const text = '{"checksum":"fake-md5","data":{"apiVersion":1.3,"nodes":[]}}'
+
+            // Act
+            const nameDataPair = await urlExtractor.getFileDataFromFile("test.json")
+
+            // Assert
+            expect(nameDataPair).toEqual({
                 content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] },
                 fileName: "test.json",
-                fileSize: 15
-            }
-            return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+                fileSize: bytesOf(text).byteLength
+            })
         })
 
-        it("should resolve data object of version 1.3 and return an object with content and fileName", async () => {
-            mockedHttpClient.get = jest.fn().mockImplementation(() => {
-                return of({ body: { checksum: "", data: { apiVersion: 1.3, nodes: [] } }, status: 200 })
-            })
-            const expected = {
-                content: { apiVersion: 1.3, fileChecksum: "e59723b38e81becf997a191ca8e4a169", nodes: [] },
-                fileName: "test.json",
-                fileSize: 15
-            }
-            return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+        it("should fill a missing checksum with the SHA-256 of the file", async () => {
+            // Arrange
+            const text = '{"apiVersion":1.2,"nodes":[]}'
+            mockedHttpClient.get = jest.fn().mockImplementation(() => responseOf(bytesOf(text)))
+
+            // Act
+            const nameDataPair = await urlExtractor.getFileDataFromFile("test.json")
+
+            // Assert
+            expect(nameDataPair.content).toEqual({ apiVersion: 1.2, fileChecksum: sha256Of(text), nodes: [] })
         })
 
-        it("should resolve data from compressed file", async () => {
-            const mockFile = {
-                checksum: "fake-md5",
-                data: { apiVersion: 1.3, nodes: [] }
-            }
-            const compressedSample = gzip(JSON.stringify(mockFile))
+        it("should resolve a gzipped file with its compressed byte size", async () => {
+            // Arrange
+            const compressedFile = gzip('{"checksum":"fake-md5","data":{"apiVersion":1.3,"nodes":[]}}')
+            mockedHttpClient.get = jest.fn().mockImplementation(() => responseOf(compressedFile))
 
-            mockedHttpClient.get = jest.fn().mockImplementation(() => {
-                return of({ body: compressedSample, status: 200 })
-            })
-            const expected = {
-                content: {
-                    apiVersion: 1.3,
-                    fileChecksum: "fake-md5",
-                    nodes: []
-                },
+            // Act
+            const nameDataPair = await urlExtractor.getFileDataFromFile("file.json.gz")
+
+            // Assert
+            expect(nameDataPair).toEqual({
+                content: { apiVersion: 1.3, fileChecksum: "fake-md5", nodes: [] },
                 fileName: "file.json.gz",
-                fileSize: 13
-            }
-            const readContent = await urlExtractor.getFileDataFromFile("file.json.gz")
-            expect(readContent).toEqual(expected)
+                fileSize: compressedFile.byteLength
+            })
         })
 
         it("should return NameDataPair object with project name as file name when a project name is given", async () => {
-            mockedHttpClient.get = jest.fn().mockImplementation(() => {
-                return of({
-                    body: { checksum: "", data: { apiVersion: 1.3, nodes: [], projectName: "test project" } },
-                    status: 200
-                })
-            })
-            const actualNameDataPair = await urlExtractor.getFileDataFromFile("test.json")
+            // Arrange
+            mockedHttpClient.get = jest
+                .fn()
+                .mockImplementation(() =>
+                    responseOf(bytesOf('{"checksum":"","data":{"apiVersion":1.3,"nodes":[],"projectName":"test project"}}'))
+                )
 
-            return expect(actualNameDataPair.fileName).toBe("test project")
+            // Act
+            const nameDataPair = await urlExtractor.getFileDataFromFile("test.json")
+
+            // Assert
+            expect(nameDataPair.fileName).toBe("test project")
         })
 
-        it("should resolve data string of version 1.2 and return an object with content and fileName", async () => {
-            mockedHttpClient.get = jest.fn().mockImplementation(() => {
-                return of({ body: '{"apiVersion":1.2,"nodes":[]}', status: 200 })
-            })
-            const expected = {
-                content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
-                fileName: "test.json",
-                fileSize: 15
-            }
-            return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
-        })
+        it("should keep the requested file name and hand over no content when the file is not valid JSON", async () => {
+            // Arrange
+            mockedHttpClient.get = jest.fn().mockImplementation(() => responseOf(bytesOf("broken json")))
 
-        it("should resolve data object of version 1.2 and return an object with content and fileName", async () => {
-            mockedHttpClient.get = jest.fn().mockImplementation(() => {
-                return of({ body: { apiVersion: 1.2, nodes: [] }, status: 200 })
-            })
-            const expected = {
-                content: { apiVersion: 1.2, fileChecksum: "d0278536ce00e4fc7dbab39072ae43f6", nodes: [] },
-                fileName: "test.json",
-                fileSize: 15
-            }
-            return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
+            // Act
+            const nameDataPair = await urlExtractor.getFileDataFromFile("folder/test.json")
+
+            // Assert
+            expect(nameDataPair).toEqual({ content: null, fileName: "test.json", fileSize: bytesOf("broken json").byteLength })
         })
 
         it("should reject if statuscode is not 2xx", async () => {
-            mockedHttpClient.get = jest.fn().mockImplementation(() => {
-                return of({ body: "some data", status: 301 })
-            })
+            mockedHttpClient.get = jest.fn().mockImplementation(() => responseOf(bytesOf("some data"), 301))
 
             return expect(urlExtractor.getFileDataFromFile("test.json")).rejects.toEqual(new Error(`Could not load file "test.json"`))
         })
