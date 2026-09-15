@@ -63,7 +63,7 @@ export class ChangelogParserService {
     }
 
     private findVersionLine(lines: string[], version: string): number {
-        const versionPattern = new RegExp(`\\[${version}]`)
+        const versionPattern = new RegExp(String.raw`\[${version}]`)
         return lines.findIndex(line => versionPattern.test(line))
     }
 

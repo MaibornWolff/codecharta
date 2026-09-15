@@ -11,24 +11,7 @@ export const getPartialDefaultState = (settingKeys: string[], state: CcState) =>
     let settingsCounter = 0
 
     for (const token of settingKeys) {
-        const steps = token.split(".")
-        let defaultSettingsPointer = defaultState
-        let updatedSettingsPointer = updatedSettings
-
-        for (const [index, step] of steps.entries()) {
-            if (defaultSettingsPointer[step] !== undefined) {
-                if (!updatedSettingsPointer[step]) {
-                    updatedSettingsPointer[step] = {}
-                    settingsCounter++
-                }
-                if (index === steps.length - 1) {
-                    updatedSettingsPointer[step] = defaultSettingsPointer[step]
-                } else {
-                    defaultSettingsPointer = defaultSettingsPointer[step]
-                    updatedSettingsPointer = updatedSettingsPointer[step]
-                }
-            }
-        }
+        settingsCounter += applyDefaultSetting(token.split("."), updatedSettings)
     }
 
     if (settingsCounter !== 0) {
@@ -40,4 +23,26 @@ export const getPartialDefaultState = (settingKeys: string[], state: CcState) =>
     }
 
     return updatedSettings
+}
+
+function applyDefaultSetting(steps: string[], updatedSettings: RecursivePartial<Settings>) {
+    let createdSettingsCounter = 0
+    let defaultSettingsPointer = defaultState
+    let updatedSettingsPointer = updatedSettings
+
+    for (const [index, step] of steps.entries()) {
+        if (defaultSettingsPointer[step] !== undefined) {
+            if (!updatedSettingsPointer[step]) {
+                updatedSettingsPointer[step] = {}
+                createdSettingsCounter++
+            }
+            if (index === steps.length - 1) {
+                updatedSettingsPointer[step] = defaultSettingsPointer[step]
+            } else {
+                defaultSettingsPointer = defaultSettingsPointer[step]
+                updatedSettingsPointer = updatedSettingsPointer[step]
+            }
+        }
+    }
+    return createdSettingsCounter
 }

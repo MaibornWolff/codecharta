@@ -211,7 +211,7 @@ function checkJsonSchema(file: ExportCCFile) {
 function isValidApiVersion(file: ExportCCFile) {
     const { apiVersion } = file
     const hasApiVersion = apiVersion !== undefined
-    const versionRegExp = /\d+\.\d+/
+    const versionRegExp = /\d\.\d/
     const isValidVersion = versionRegExp.test(apiVersion)
     return hasApiVersion && isValidVersion
 }
@@ -300,16 +300,20 @@ function checkChildNodes(
                 outOfBounds.push(getFoundFolderMessage(node))
             }
 
-            for (const node2 of childNodes) {
-                if (
-                    node2.fixedPosition !== undefined &&
-                    node !== node2 &&
-                    rectanglesIntersect(node.fixedPosition, node2.fixedPosition) &&
-                    !intersections.has(`${getFoundFolderMessage(node2)} and ${getFoundFolderMessage(node)}`)
-                ) {
-                    intersections.add(`${getFoundFolderMessage(node)} and ${getFoundFolderMessage(node2)}`)
-                }
-            }
+            collectIntersections(node, childNodes, intersections)
+        }
+    }
+}
+
+function collectIntersections(node: CodeMapNode, childNodes: CodeMapNode[], intersections: Set<string>) {
+    for (const node2 of childNodes) {
+        if (
+            node2.fixedPosition !== undefined &&
+            node !== node2 &&
+            rectanglesIntersect(node.fixedPosition, node2.fixedPosition) &&
+            !intersections.has(`${getFoundFolderMessage(node2)} and ${getFoundFolderMessage(node)}`)
+        ) {
+            intersections.add(`${getFoundFolderMessage(node)} and ${getFoundFolderMessage(node2)}`)
         }
     }
 }

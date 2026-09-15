@@ -10,27 +10,13 @@ export const readFiles = (files: FileList): Promise<string>[] => {
     return readFilesPromises
 }
 
-const readFile = async (file: File): Promise<string> =>
-    new Promise(resolve => {
-        const isCompressed = file.name.endsWith(".gz")
-        const reader = new FileReader()
-        if (isCompressed) {
-            reader.readAsArrayBuffer(file)
-        } else {
-            reader.readAsText(file, "utf8")
-        }
-
-        let content: string
-
-        reader.onload = event => {
-            const result = event.target.result.toString()
-            content = isCompressed ? ungzip(event.target.result, { to: "string" }) : result
-            if (result.includes("gameObjectPositions") && validateGameObjects(result)) {
-                content = JSON.stringify(parseGameObjectsFile(result))
-            }
-        }
-
-        reader.onloadend = () => {
-            resolve(content)
-        }
-    })
+const readFile = async (file: File): Promise<string> => {
+    if (file.name.endsWith(".gz")) {
+        return ungzip(new Uint8Array(await file.arrayBuffer()), { to: "string" })
+    }
+    const content = await file.text()
+    if (content.includes("gameObjectPositions") && validateGameObjects(content)) {
+        return JSON.stringify(parseGameObjectsFile(content))
+    }
+    return content
+}

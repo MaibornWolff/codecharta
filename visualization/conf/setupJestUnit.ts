@@ -28,9 +28,9 @@ if (typeof globalThis.fetch === "undefined") {
     ) as any
 }
 
-// JSDOM implements neither Blob.text() nor File.text(), which every browser the app runs in has had
-// for years, so reading an uploaded file would reject in tests alone. FileReader is implemented, so
-// it stands in.
+// JSDOM implements neither Blob.text()/arrayBuffer() nor their File counterparts, which every browser
+// the app runs in has had for years, so reading an uploaded file would reject in tests alone.
+// FileReader is implemented, so it stands in.
 if (typeof Blob.prototype.text === "undefined") {
     Blob.prototype.text = function (this: Blob) {
         return new Promise<string>((resolve, reject) => {
@@ -38,6 +38,17 @@ if (typeof Blob.prototype.text === "undefined") {
             reader.onload = () => resolve(String(reader.result))
             reader.onerror = () => reject(reader.error)
             reader.readAsText(this)
+        })
+    }
+}
+
+if (typeof Blob.prototype.arrayBuffer === "undefined") {
+    Blob.prototype.arrayBuffer = function (this: Blob) {
+        return new Promise<ArrayBuffer>((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => resolve(reader.result as ArrayBuffer)
+            reader.onerror = () => reject(reader.error)
+            reader.readAsArrayBuffer(this)
         })
     }
 }

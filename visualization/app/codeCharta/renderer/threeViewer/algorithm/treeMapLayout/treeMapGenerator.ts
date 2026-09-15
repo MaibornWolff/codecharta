@@ -4,6 +4,14 @@ import { getMapResolutionScaleFactor, isLeaf } from "../../../../util/codeMapHel
 import { TreeMapHelper, treeMapSize } from "./treeMapHelper"
 
 type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
+type TreeMapScaling = {
+    state: CcState
+    heightScale: number
+    maxHeight: number
+    maxWidth: number
+    isDeltaState: boolean
+    mapSizeResolutionScaling: number
+}
 
 const PADDING_SCALING_FACTOR = 0.4
 const DEFAULT_PADDING_FLOOR_LABEL_FROM_LEVEL_1 = 120
@@ -12,7 +20,7 @@ const DEFAULT_ROOT_FLOOR_LABEL_SCALING = 0.035
 const DEFAULT_SUB_FLOOR_LABEL_SCALING = 0.028
 // Maps the margin setting to a fraction of the average child footprint side,
 // so that gaps scale with the buildings they separate instead of being absolute.
-const MARGIN_TO_CHILD_SIZE_FRACTION = 0.000_5
+const MARGIN_TO_CHILD_SIZE_FRACTION = 0.0005
 const FLOOR_LABEL_MAX_FRACTION_OF_FOLDER = 0.15
 export const HIERARCHY_LEVELS_WITH_LABLES_UPPER_BOUNDARY = 3
 
@@ -44,19 +52,14 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
 
         return [
             ...nodes,
-            ...buildSquarifiedTreeMapsForFixedFolders(
-                hierarchyNode,
+            ...buildSquarifiedTreeMapsForFixedFolders(hierarchyNode, scaleLength, scaleWidth, 0, 0, {
                 state,
-                scaleLength,
-                scaleWidth,
-                0,
-                0,
                 heightScale,
                 maxHeight,
                 maxWidth,
                 isDeltaState,
                 mapSizeResolutionScaling
-            )
+            })
         ]
     }
 
@@ -70,17 +73,13 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
 
 function buildSquarifiedTreeMapsForFixedFolders(
     hierarchyNode: HierarchyNode<CodeMapNode>,
-    state: CcState,
     scaleLength: number,
     scaleWidth: number,
     offsetX0: number,
     offsetY0: number,
-    heightScale: number,
-    maxHeight: number,
-    maxWidth: number,
-    isDeltaState: boolean,
-    mapSizeResolutionScaling: number
+    scaling: TreeMapScaling
 ) {
+    const { state, heightScale, maxHeight, maxWidth, isDeltaState, mapSizeResolutionScaling } = scaling
     const nodes = []
 
     for (const fixedFolder of hierarchyNode.children) {
@@ -112,16 +111,11 @@ function buildSquarifiedTreeMapsForFixedFolders(
                     nodes,
                     buildSquarifiedTreeMapsForFixedFolders(
                         fixedFolder,
-                        state,
                         childRelativeLengthScale,
                         childRelativeWidthScale,
                         squarifiedNode.x0,
                         squarifiedNode.y0,
-                        heightScale,
-                        maxHeight,
-                        maxWidth,
-                        isDeltaState,
-                        mapSizeResolutionScaling
+                        scaling
                     )
                 )
 

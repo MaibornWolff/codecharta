@@ -12,13 +12,12 @@ export const parseBlacklistItems = (blacklistType: BlacklistType, searchPattern:
             }
         }
     } else {
-        for (let path of paths) {
+        for (const path of paths) {
+            if (path.startsWith("!")) {
+                break
+            }
             if (path.length > 0) {
-                if (path.startsWith("!")) {
-                    break
-                }
-                path = unifyWildCard(path)
-                blacklistItems.push({ path, type: blacklistType })
+                blacklistItems.push({ path: unifyWildCard(path), type: blacklistType })
             }
         }
     }

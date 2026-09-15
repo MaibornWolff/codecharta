@@ -63,5 +63,5 @@ export function _applyPartialState<T>(applyTo: T, toBeApplied: unknown, composed
 }
 
 function isKeyOf<T>(of: T, key: PropertyKey): key is keyof T {
-    return Object.prototype.hasOwnProperty.call(of, key)
+    return Object.hasOwn(of as object, key)
 }

@@ -53,14 +53,7 @@ export class DeltaGenerator {
         for (const { data: comparisonNode } of hierarchy(comparisonMap)) {
             const referenceNode = referenceNodesByPath.get(comparisonNode.path)
             if (referenceNode) {
-                if (referenceNode.children || comparisonNode.children) {
-                    referenceNode.children = []
-                }
-                const { deltaList, differenceExists } = this.compareAttributeValues(referenceNode.attributes, comparisonNode.attributes)
-                referenceNode.deltas = deltaList
-                const changed = differenceExists ? 1 : 0
-                referenceNode.attributes = comparisonNode.attributes
-                referenceNode.fileCount = { added: 0, removed: 0, changed }
+                this.applyComparisonToReferenceNode(referenceNode, comparisonNode)
             } else {
                 if (comparisonNode.children) {
                     comparisonNode.children = []
@@ -78,6 +71,17 @@ export class DeltaGenerator {
             deltaNodesByPath.set(node.path, node)
             referenceNodesByPath.delete(node.path)
         }
+    }
+
+    private static applyComparisonToReferenceNode(referenceNode: CodeMapNode, comparisonNode: CodeMapNode) {
+        if (referenceNode.children || comparisonNode.children) {
+            referenceNode.children = []
+        }
+        const { deltaList, differenceExists } = this.compareAttributeValues(referenceNode.attributes, comparisonNode.attributes)
+        referenceNode.deltas = deltaList
+        const changed = differenceExists ? 1 : 0
+        referenceNode.attributes = comparisonNode.attributes
+        referenceNode.fileCount = { added: 0, removed: 0, changed }
     }
 
     private static addDeletedNodesToDeltaMap(referenceNodesByPath: Map<string, CodeMapNode>, deltaNodesByPath: Map<string, CodeMapNode>) {

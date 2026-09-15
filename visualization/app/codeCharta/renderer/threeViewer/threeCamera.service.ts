@@ -3,9 +3,9 @@ import { PerspectiveCamera, Vector3 } from "three"
 
 @Injectable({ providedIn: "root" })
 export class ThreeCameraService {
-    static VIEW_ANGLE = 45
-    static NEAR = 50
-    static FAR = 200_000
+    static readonly VIEW_ANGLE = 45
+    static readonly NEAR = 50
+    static readonly FAR = 200_000
     camera: PerspectiveCamera
 
     init(containerWidth: number, containerHeight: number) {

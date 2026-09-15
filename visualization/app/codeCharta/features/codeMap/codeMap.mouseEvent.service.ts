@@ -182,36 +182,37 @@ export class CodeMapMouseEventService implements OnDestroy {
 
                 this.intersectedBuilding = mapMesh.checkMouseRayMeshIntersection(mouseCoordinates, camera)
 
-                const from = this.threeSceneService.getHighlightedBuilding()
-                const to = this.intersectedBuilding
+                this.updateHighlight(this.threeSceneService.getHighlightedBuilding(), this.intersectedBuilding)
+            }
+        }
+    }
 
-                if (from?.id !== to?.id) {
-                    this.tooltipService.hide()
-                    this.labelSettingsFacade.restoreSuppressedLabel()
-                    if (from && to && !this.isGrabbingOrMoving()) {
-                        // Differential path: transition directly from one highlight to another
-                        this.threeSceneService.prepareHighlightTransition()
-                        this.showTooltipForBuilding(to)
-                        this.hoverBuilding(to)
-                    } else {
-                        this.unhoverBuilding()
-                        if (to && !this.isGrabbingOrMoving()) {
-                            this.showTooltipForBuilding(to)
-                            this.hoverBuilding(to)
-                        }
-                    }
-                } else if (!to && this.codeMapStore.getHoveredNodeId() !== null) {
-                    // The highlight was cleared out-of-band (e.g. a click or a scroll that never re-raycasts)
-                    // while the store still points at a building, so the from/to ids both read as undefined and
-                    // the transition above is skipped. Force an unhover so the edge preview is restored instead
-                    // of staying blank until the cursor leaves the canvas.
-                    this.tooltipService.hide()
-                    this.labelSettingsFacade.restoreSuppressedLabel()
-                    this.unhoverBuilding()
-                } else if (to && this.tooltipService.isVisible()) {
-                    this.tooltipService.updatePosition(this.mouse.x, this.mouse.y)
+    private updateHighlight(from: CodeMapBuilding, to: CodeMapBuilding) {
+        if (from?.id !== to?.id) {
+            this.tooltipService.hide()
+            this.labelSettingsFacade.restoreSuppressedLabel()
+            if (from && to && !this.isGrabbingOrMoving()) {
+                // Differential path: transition directly from one highlight to another
+                this.threeSceneService.prepareHighlightTransition()
+                this.showTooltipForBuilding(to)
+                this.hoverBuilding(to)
+            } else {
+                this.unhoverBuilding()
+                if (to && !this.isGrabbingOrMoving()) {
+                    this.showTooltipForBuilding(to)
+                    this.hoverBuilding(to)
                 }
             }
+        } else if (!to && this.codeMapStore.getHoveredNodeId() !== null) {
+            // The highlight was cleared out-of-band (e.g. a click or a scroll that never re-raycasts)
+            // while the store still points at a building, so the from/to ids both read as undefined and
+            // the transition above is skipped. Force an unhover so the edge preview is restored instead
+            // of staying blank until the cursor leaves the canvas.
+            this.tooltipService.hide()
+            this.labelSettingsFacade.restoreSuppressedLabel()
+            this.unhoverBuilding()
+        } else if (to && this.tooltipService.isVisible()) {
+            this.tooltipService.updatePosition(this.mouse.x, this.mouse.y)
         }
     }
 

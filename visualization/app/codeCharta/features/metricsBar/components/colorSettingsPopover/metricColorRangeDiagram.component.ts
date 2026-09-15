@@ -263,11 +263,10 @@ export class MetricColorRangeDiagramComponent implements OnChanges, AfterViewIni
                     .axisLeft(y)
                     .ticks(5)
                     .tickFormat(function (d) {
-                        return (d as number) >= 10_000
-                            ? `${d3.format(".0f")((d as number) / 1000)}k`
-                            : (d as number) >= 1000
-                              ? `${d3.format(".1f")((d as number) / 1000)}k`
-                              : d.toString()
+                        if ((d as number) >= 10_000) {
+                            return `${d3.format(".0f")((d as number) / 1000)}k`
+                        }
+                        return (d as number) >= 1000 ? `${d3.format(".1f")((d as number) / 1000)}k` : d.toString()
                     })
             )
             .attr("font-size", "13px")
