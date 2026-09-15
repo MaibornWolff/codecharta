@@ -31,6 +31,29 @@ describe("FileValidator", () => {
         expect(checkErrors(null)).toEqual(expectedErrors)
     })
 
+    it("should report that no checksum could be computed for an otherwise valid 1.x file without one", () => {
+        // Arrange
+        file.fileChecksum = ""
+
+        // Act
+        const errors = checkErrors(file)
+
+        // Assert
+        expect(errors).toEqual([ERROR_MESSAGES.checksumUnavailable])
+    })
+
+    it("should report that no checksum could be computed for an otherwise valid 2.0 file without one", () => {
+        // Arrange
+        const ccJson2File: CcJson2 = clone(TEST_FILE_CONTENT_CC_JSON_2)
+        ccJson2File.meta.checksum = ""
+
+        // Act
+        const errors = checkErrors(ccJson2File)
+
+        // Assert
+        expect(errors).toEqual([ERROR_MESSAGES.checksumUnavailable])
+    })
+
     it("should throw when higher Major API", () => {
         const nameDataPair: NameDataPair = {
             fileName: "fileName",

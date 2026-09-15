@@ -149,6 +149,27 @@ describe("LoadInitialFileStore", () => {
             expect(dispatchedActions()).toEqual([])
         })
 
+        it("should dispatch nothing when an unchanged word bank is too large to serialize into one string", () => {
+            // Arrange
+            const oneMebibyteText = "x".repeat(2 ** 20)
+            const wordsBeyondTheStringLimit = () => ({
+                "/root": Array.from({ length: 600 }, () => ({ text: oneMebibyteText, frequency: 1 }))
+            })
+            setup([
+                {
+                    provide: DomainLensSourceReadWindow,
+                    useValue: { getDomainLensSource: () => ({ words: wordsBeyondTheStringLimit() }) }
+                }
+            ])
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyDomainLensSource({ words: wordsBeyondTheStringLimit() })
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([])
+        })
+
         it("should report words as missing when the persisted state predates the domain lens", () => {
             // Arrange
             setup()

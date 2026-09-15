@@ -12,7 +12,7 @@ describe("GameObjectsValidator", () => {
         const gameObjectsFile = clone(TEST_GAMEOBJECTS_FILE)
 
         // Act
-        const isValid = validateGameObjects(JSON.stringify(gameObjectsFile))
+        const isValid = validateGameObjects(gameObjectsFile)
 
         // Assert
         expect(isValid).toBeTruthy()
@@ -25,7 +25,7 @@ describe("GameObjectsValidator", () => {
         gameObjectsFile.gameObjectPositions[0].scale = {}
 
         // Act
-        const isValid = validateGameObjects(JSON.stringify(gameObjectsFile))
+        const isValid = validateGameObjects(gameObjectsFile)
 
         // Assert
         expect(isValid).toBeFalsy()

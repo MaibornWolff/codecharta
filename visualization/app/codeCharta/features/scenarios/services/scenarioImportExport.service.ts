@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core"
+import { dequal } from "dequal"
 import { FileDownloader } from "../../../util/fileDownloader"
 import { CCSCENARIO_EXTENSION, fromScenarioFile, Scenario, ScenarioFile, toScenarioFile } from "../model/scenario.model"
 import { parseScenarioFile } from "../model/scenarioMigration"
@@ -57,6 +58,6 @@ export class ScenarioImportExportService {
     }
 
     private isDuplicate(file: ScenarioFile, existing: Scenario[]): boolean {
-        return existing.some(scenario => scenario.name === file.name && JSON.stringify(scenario.settings) === JSON.stringify(file.settings))
+        return existing.some(scenario => scenario.name === file.name && dequal(scenario.settings, file.settings))
     }
 }

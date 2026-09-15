@@ -20,7 +20,7 @@ import { appReducers, setStateMiddleware } from "../../../../rootStore/store"
 import { FilesRepo } from "../../../repos/files.repo"
 import { setCurrentFilesAreSampleFiles } from "../../../store/currentFilesAreSampleFiles/currentFilesAreSampleFiles.actions"
 import { removeFiles, setStandard } from "../../../store/files.actions"
-import { getCCFileAndDecorateFileChecksum } from "../util/ccFileHelper"
+import { parseCcFileBytes } from "../util/ccFileHelper"
 import { CCFileValidationResult, ERROR_MESSAGES } from "../util/fileValidator"
 import { FILES_ALREADY_LOADED_ERROR_MESSAGE, LoadFileService } from "./loadFile.service"
 import { loadFilesValidationToErrorDialog } from "./loadFilesValidationToErrorDialog"
@@ -621,18 +621,18 @@ describe("loadFileService", () => {
         })
     })
 
-    it("should load files ignoring the authors attribute", () => {
-        const testJsonWithAuthors = JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS)
+    it("should load files ignoring the authors attribute", async () => {
+        const testJsonWithAuthors = new TextEncoder().encode(JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS))
         const expectedFileContentWithoutAuthors = TEST_FILE_CONTENT_WITHOUT_AUTHORS
-        const ccFile = getCCFileAndDecorateFileChecksum(testJsonWithAuthors)
+        const ccFile = await parseCcFileBytes(testJsonWithAuthors)
 
         codeChartaService.loadFiles([{ fileName: "FirstFile", content: ccFile, fileSize: 42 }])
 
         expect(ccFile).toEqual(expectedFileContentWithoutAuthors)
     })
 
-    it("should show warnings for files containing the authors attribute", () => {
-        const testJsonWithAuthors = JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS)
+    it("should show warnings for files containing the authors attribute", async () => {
+        const testJsonWithAuthors = new TextEncoder().encode(JSON.stringify(TEST_FILE_CONTENT_WITH_AUTHORS))
         const expectedFileValidationResult: CCFileValidationResult[] = [
             {
                 fileName: "FirstFile",
@@ -643,7 +643,7 @@ describe("loadFileService", () => {
                 ]
             }
         ]
-        const ccFile = getCCFileAndDecorateFileChecksum(testJsonWithAuthors)
+        const ccFile = await parseCcFileBytes(testJsonWithAuthors)
 
         codeChartaService.loadFiles([{ fileName: "FirstFile", content: ccFile, fileSize: 42 }])
 
