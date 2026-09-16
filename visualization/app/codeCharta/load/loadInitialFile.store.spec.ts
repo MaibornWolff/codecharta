@@ -170,15 +170,15 @@ describe("LoadInitialFileStore", () => {
             expect(dispatchedActions()).toEqual([])
         })
 
-        it("should report words as missing when the persisted state predates the domain lens", () => {
+        it("should treat a persisted state without the word bank as complete, because the bank is derived", () => {
             // Arrange
             setup()
 
-            // Act
+            // Act — the bank is rebuilt from the loaded files, so it is deliberately never persisted
             const missingKeys = loadInitialFileStore.applyDomainLensSource({} as DomainLensSource)
 
             // Assert
-            expect(missingKeys).toEqual(["words"])
+            expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([])
         })
 
@@ -200,15 +200,15 @@ describe("LoadInitialFileStore", () => {
     })
 
     describe("missingKeysOfDomainLensSource", () => {
-        it("should report the domain lens keys the persisted state does not have without dispatching", () => {
+        it("should not report the word bank the persisted state deliberately leaves out", () => {
             // Arrange
             setup()
 
             // Act
             const missingKeys = loadInitialFileStore.missingKeysOfDomainLensSource({} as DomainLensSource)
 
-            // Assert
-            expect(missingKeys).toEqual(["words"])
+            // Assert — reporting it would tell the reader their session came back only partly restored
+            expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([])
         })
     })

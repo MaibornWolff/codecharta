@@ -27,7 +27,10 @@ jest.mock("../../../stores/rootStore/indexedDB/indexedDBWriter", () => {
 })
 
 describe("SaveCcStateEffect", () => {
-    const state = {}
+    // The snapshot the effect reads carries the merged word bank; what it writes must not, because the
+    // reconciliation rebuilds that bank from the files on every load.
+    const state = { domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } } }
+    const persistedState = { domainLensSource: { words: {} } }
     let actions$: Subject<Action>
 
     beforeEach(async () => {
@@ -50,21 +53,21 @@ describe("SaveCcStateEffect", () => {
         actions$.next(setFiles({ value: [] }))
         store.refreshState()
         await waitFor(() => expect(writeCcState).toHaveBeenCalledTimes(1))
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on setShowIncomingEdges (previously missing from the save-trigger union)", async () => {
         const store = TestBed.inject(MockStore)
         actions$.next(setShowIncomingEdges({ value: true }))
         store.refreshState()
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on removeBlacklistItems (previously missing from the save-trigger union)", async () => {
         const store = TestBed.inject(MockStore)
         actions$.next(removeBlacklistItems({ items: [] }))
         store.refreshState()
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on domain-bar settings actions", async () => {
@@ -76,7 +79,7 @@ describe("SaveCcStateEffect", () => {
         store.refreshState()
 
         // Assert
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on setDomainStateDrawOutOfBound (previously missing from the save-trigger union)", async () => {
@@ -88,7 +91,7 @@ describe("SaveCcStateEffect", () => {
         store.refreshState()
 
         // Assert
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on setDomainStateShrinkToFit (previously missing from the save-trigger union)", async () => {
@@ -100,7 +103,7 @@ describe("SaveCcStateEffect", () => {
         store.refreshState()
 
         // Assert
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on setDomainStateSortingOrder (previously missing from the save-trigger union)", async () => {
@@ -112,7 +115,7 @@ describe("SaveCcStateEffect", () => {
         store.refreshState()
 
         // Assert
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 
     it("should save cc-state on setDomainStateSortingOrderAscending (previously missing from the save-trigger union)", async () => {
@@ -124,7 +127,21 @@ describe("SaveCcStateEffect", () => {
         store.refreshState()
 
         // Assert
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
+    })
+
+    it("should not write the derived word bank, which a save would otherwise copy on the main thread", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setDomainStateTopN({ value: 42 }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledTimes(1))
+        const [written] = (writeCcState as jest.Mock).mock.calls[0]
+        expect(written.domainLensSource.words).toEqual({})
     })
 
     it("should debounce save cc-state on multiple actions requiring saving cc-state", async () => {
@@ -133,6 +150,6 @@ describe("SaveCcStateEffect", () => {
         actions$.next(setMarkedPackages({ value: [] }))
         store.refreshState()
         await waitFor(() => expect(writeCcState).toHaveBeenCalledTimes(1))
-        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+        await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(persistedState))
     })
 })
