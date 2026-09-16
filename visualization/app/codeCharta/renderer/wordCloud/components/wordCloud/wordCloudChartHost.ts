@@ -54,6 +54,7 @@ export class WordCloudChartHost {
     private layoutSettleTimeout?: ReturnType<typeof setTimeout>
     private highlightedWords: readonly string[] = []
     private mustRestoreHighlightAfterLayout = false
+    private hasDrawnACloud = false
 
     private readonly measuredContainerSize = signal(
         { width: 0, height: 0 },
@@ -151,18 +152,29 @@ export class WordCloudChartHost {
      * inside the debounce window, and a render that never happened would otherwise be skipped forever. */
     render(option: WordCloudOption, onRendered: () => void): void {
         this.cancelPendingRender()
+        // The debounce exists to coalesce a burst of changes into one layout. The first cloud has no
+        // drawn layout to protect, and waiting only delays the view's first draw, so it is drawn at once.
+        if (!this.hasDrawnACloud) {
+            this.draw(option, onRendered)
+            return
+        }
         this.renderTimeout = setTimeout(() => {
             this.renderTimeout = undefined
-            if (!this.hasMeasurableContainer()) {
-                return
-            }
-            this.drawnWords.set(null)
-            this.chart?.clear()
-            this.chart?.resize()
-            this.chart?.setOption(option as unknown as echarts.EChartsCoreOption, true)
-            this.mustRestoreHighlightAfterLayout = true
-            onRendered()
+            this.draw(option, onRendered)
         }, RENDER_DEBOUNCE_MS)
+    }
+
+    private draw(option: WordCloudOption, onRendered: () => void): void {
+        if (!this.hasMeasurableContainer()) {
+            return
+        }
+        this.hasDrawnACloud = true
+        this.drawnWords.set(null)
+        this.chart?.clear()
+        this.chart?.resize()
+        this.chart?.setOption(option as unknown as echarts.EChartsCoreOption, true)
+        this.mustRestoreHighlightAfterLayout = true
+        onRendered()
     }
 
     cancelPendingRender(): void {
@@ -185,6 +197,7 @@ export class WordCloudChartHost {
             clearTimeout(this.layoutSettleTimeout)
         }
         this.drawnWords.set(null)
+        this.hasDrawnACloud = false
         if (this.chart) {
             this.chartRegistry.unregister(this.chart)
         }
