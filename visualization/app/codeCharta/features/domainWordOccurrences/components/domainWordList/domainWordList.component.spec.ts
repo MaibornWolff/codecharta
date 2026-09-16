@@ -189,6 +189,19 @@ describe("DomainWordListComponent", () => {
         expect(nodeClicked).toHaveBeenCalledWith("/root/billing")
     })
 
+    it("should render only a first slice of a large vocabulary, so opening the word list stays quick", async () => {
+        // Arrange
+        const manyWords: DomainLensData = {
+            "/root": Array.from({ length: 1000 }, (_, index) => ({ text: `word${index}`, frequency: 1000 - index }))
+        }
+
+        // Act — no scroll host is registered, so the list renders unmeasured, as it does when first opened
+        await setup({}, manyWords)
+
+        // Assert
+        expect(document.querySelectorAll("cc-domain-word-row").length).toBeLessThanOrEqual(50)
+    })
+
     it("should give each word a bar as long as its share, so the list can be read by its bars", async () => {
         // Arrange & Act
         await setup()
