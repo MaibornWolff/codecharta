@@ -48,10 +48,9 @@ describe("buildWordCloudOption", () => {
         expect(option.series[0].data[0].value).toBe(7)
     })
 
-    it("should keep only the top-N words ranked by value", () => {
-        // Arrange
+    it("should draw exactly the words it was handed, in the order they were ranked", () => {
+        // Arrange — the caller ranks and truncates to the top-N; the builder only maps what it is given
         const words: DomainWord[] = [
-            { text: "low", frequency: 1 },
             { text: "high", frequency: 100 },
             { text: "mid", frequency: 50 }
         ]
@@ -63,7 +62,7 @@ describe("buildWordCloudOption", () => {
         expect(option.series[0].data.map(datum => datum.name)).toEqual(["high", "mid"])
     })
 
-    it("should not mutate the input words array when sorting", () => {
+    it("should not mutate the words it was given", () => {
         // Arrange
         const words: DomainWord[] = [
             { text: "a", frequency: 1 },

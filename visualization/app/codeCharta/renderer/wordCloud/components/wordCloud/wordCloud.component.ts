@@ -170,7 +170,7 @@ export class WordCloudComponent implements OnDestroy {
             return
         }
         this.chartHost.render(
-            buildWordCloudOption(words, settings, {
+            buildWordCloudOption(this.renderedWords(), settings, {
                 layoutAnimation: !this.prefersReducedMotion,
                 containerWidth,
                 maskImage
