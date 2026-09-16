@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **Metric range follows what the map shows**: hiding files by a metric rule, or hiding them with several maps loaded, now also narrows each metric's range, so the colour range, the metric list and the inspector's bars match the map.
 - **Screen reader labels**: sliders, number fields, text fields and file pickers in the label settings, global configuration, 3D print and scenario dialogs announce what they control.
 - **Very large maps load**: cc.json files that unpack to more than about 500 MB open, whether uploaded or linked, instead of being reported as empty or invalid.
 - **Linked maps match uploaded ones**: a map opened from a link is drawn at the same level of detail as the same file uploaded.
