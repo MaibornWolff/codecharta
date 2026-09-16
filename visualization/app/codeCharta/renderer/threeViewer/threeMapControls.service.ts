@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { BehaviorSubject } from "rxjs"
 import { Box3, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
 import { MapControls } from "three/addons/controls/MapControls.js"
+import { bottomBarsInsetInPixels } from "../../util/barLayout"
 import { EventEmitter } from "../../util/EventEmitter"
 import { ThreeMapControlsStore } from "./stores/threeMapControls.store"
 import { ThreeCameraService } from "./threeCamera.service"
@@ -88,6 +89,45 @@ export class ThreeMapControlsService {
         this.onInput(this.threeCameraService.camera)
 
         this.setZoomPercentage(this.preferredCenterMapZoom())
+        this.liftMapAboveBottomBars()
+    }
+
+    // The bars float over the canvas, so a map centred on the canvas is partly hidden behind them.
+    // Moving camera and target together keeps the view direction and distance and lands the map in
+    // the middle of the strip the bars leave visible.
+    private liftMapAboveBottomBars() {
+        const canvas = this.threeRendererService.renderer?.domElement
+        if (!canvas) {
+            return
+        }
+        const canvasBounds = canvas.getBoundingClientRect()
+        const shiftInPixels = this.verticalShiftIntoVisibleStrip(canvasBounds, bottomBarsInsetInPixels(canvas))
+        if (shiftInPixels <= 0 || canvasBounds.height <= 0) {
+            return
+        }
+
+        const camera = this.threeCameraService.camera
+        camera.updateMatrixWorld()
+        const distanceToTarget = camera.position.distanceTo(this.controls.target)
+        const visibleWorldHeight = 2 * distanceToTarget * Math.tan((camera.fov * Math.PI) / 360)
+        const screenUp = new Vector3().setFromMatrixColumn(camera.matrixWorld, 1)
+        const offset = screenUp.multiplyScalar((-visibleWorldHeight * shiftInPixels) / canvasBounds.height)
+
+        camera.position.add(offset)
+        this.controls.target.add(offset)
+        this.updateControls()
+
+        this.threeRendererService.render()
+        this.onInput(camera)
+    }
+
+    private verticalShiftIntoVisibleStrip(canvasBounds: DOMRect, bottomInset: number): number {
+        const visibleTop = Math.max(canvasBounds.top, 0)
+        const visibleBottom = Math.min(canvasBounds.bottom, window.innerHeight - bottomInset)
+        if (visibleBottom <= visibleTop) {
+            return 0
+        }
+        return (canvasBounds.top + canvasBounds.bottom) / 2 - (visibleTop + visibleBottom) / 2
     }
 
     private preferredCenterMapZoom(): number {
