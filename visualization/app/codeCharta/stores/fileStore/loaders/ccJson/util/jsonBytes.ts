@@ -9,7 +9,10 @@ const OPEN_BRACE = 0x7b
 const CLOSE_BRACE = 0x7d
 const OPEN_BRACKET = 0x5b
 const CLOSE_BRACKET = 0x5d
-const LAST_WHITESPACE = 0x20
+const SPACE = 0x20
+const TAB = 0x09
+const LINE_FEED = 0x0a
+const CARRIAGE_RETURN = 0x0d
 
 const textDecoder = new TextDecoder()
 
@@ -91,11 +94,15 @@ function closingQuoteIndex(bytes: Uint8Array, openingQuote: number): number {
 
 function trim(bytes: Uint8Array, slice: Slice): Slice {
     let { start, end } = slice
-    while (start < end && bytes[start] <= LAST_WHITESPACE) {
+    while (start < end && isJsonWhitespace(bytes[start])) {
         start++
     }
-    while (end > start && bytes[end - 1] <= LAST_WHITESPACE) {
+    while (end > start && isJsonWhitespace(bytes[end - 1])) {
         end--
     }
     return { start, end }
+}
+
+function isJsonWhitespace(byte: number): boolean {
+    return byte === SPACE || byte === TAB || byte === LINE_FEED || byte === CARRIAGE_RETURN
 }
