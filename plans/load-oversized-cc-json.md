@@ -40,6 +40,8 @@ without serializing content into strings.
 - [x] Complete Task 4: One load path from bytes
 - [x] Complete Task 5: Verify in the real app
 - [x] CHANGELOG entry
+- [x] Review follow-up: read uploaded files one after another, not all at once
+- [x] Review follow-up: trim only JSON whitespace, so control bytes are still rejected
 
 ## Notes
 

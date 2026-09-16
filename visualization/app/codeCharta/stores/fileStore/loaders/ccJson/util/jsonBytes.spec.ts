@@ -2,6 +2,7 @@ import { parseJsonBytes } from "./jsonBytes"
 
 const bytesOf = (text: string) => new TextEncoder().encode(text)
 const SMALL_SLICE_BYTES = 8
+const SPACE_TAB_LINE_FEED_CARRIAGE_RETURN = String.fromCodePoint(0x20, 0x09, 0x0a, 0x0d)
 
 describe("jsonBytes", () => {
     describe("parseJsonBytes", () => {
@@ -50,6 +51,18 @@ describe("jsonBytes", () => {
             expect(parsed).toEqual({ object: {}, array: [] })
         })
 
+        it("should skip every kind of JSON whitespace around members larger than a slice", () => {
+            // Arrange
+            const whitespace = SPACE_TAB_LINE_FEED_CARRIAGE_RETURN
+            const json = `{${whitespace}"numbers"${whitespace}:${whitespace}[${whitespace}1${whitespace},${whitespace}2${whitespace}]${whitespace}}`
+
+            // Act
+            const parsed = parseJsonBytes(bytesOf(json), SMALL_SLICE_BYTES)
+
+            // Assert
+            expect(parsed).toEqual(JSON.parse(json))
+        })
+
         it("should keep a __proto__ key as an own property", () => {
             // Arrange
             const json = '{"__proto__":{"polluted":true},"other":[1,2,3]}'
@@ -67,7 +80,8 @@ describe("jsonBytes", () => {
             ["a trailing comma", '{"key":[1,2,3],}'],
             ["a mismatched closing bracket", '{"key":[1,2,3]]'],
             ["a missing colon", '{"key" [1,2,3]}'],
-            ["an unquoted key", "{key:[1,2,3,4]}"]
+            ["an unquoted key", "{key:[1,2,3,4]}"],
+            ["a control character in place of whitespace", `[1,${String.fromCodePoint(1)}2,3,4,5,6]`]
         ])("should throw a SyntaxError on %s larger than a slice", (_, json) => {
             // Arrange
             const bytes = bytesOf(json)

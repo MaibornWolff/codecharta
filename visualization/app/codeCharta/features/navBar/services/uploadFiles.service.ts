@@ -28,12 +28,15 @@ export class UploadFilesService {
     }
 
     private async readNameDataPairs(fileList: FileList): Promise<NameDataPair[]> {
-        return Promise.all(
-            Array.from(fileList, async file => ({
+        // Sequential on purpose: reading files in parallel keeps every unpacked file in memory at once.
+        const nameDataPairs: NameDataPair[] = []
+        for (const file of Array.from(fileList)) {
+            nameDataPairs.push({
                 fileName: file.name,
                 fileSize: file.size,
                 content: await parseCcFileBytes(new Uint8Array(await file.arrayBuffer()))
-            }))
-        )
+            })
+        }
+        return nameDataPairs
     }
 }

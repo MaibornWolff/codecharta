@@ -53,6 +53,34 @@ describe("UploadFilesService", () => {
         _loadFileService = TestBed.inject(LoadFileService)
     }
 
+    async function flushMicrotasks() {
+        await new Promise(resolve => setTimeout(resolve, 0))
+    }
+
+    it("should read the next file only after the previous one is parsed", async () => {
+        // Arrange
+        const contentBytes = new TextEncoder().encode(stringify(TEST_FILE_CONTENT)).buffer
+        let resolveFirstFile: (bytes: ArrayBuffer) => void
+        const firstFile = {
+            name: "first.cc.json",
+            size: 1,
+            arrayBuffer: jest.fn(() => new Promise<ArrayBuffer>(resolve => (resolveFirstFile = resolve)))
+        }
+        const secondFile = { name: "second.cc.json", size: 1, arrayBuffer: jest.fn(async () => contentBytes) }
+        const fileInput = { ...mockFileInput, files: [firstFile, secondFile] } as unknown as HTMLInputElement
+
+        // Act
+        const upload = uploadFilesService["uploadFilesOnEvent"](fileInput)
+        await flushMicrotasks()
+        const secondFileReadBeforeFirstParsed = secondFile.arrayBuffer.mock.calls.length
+        resolveFirstFile(contentBytes)
+        await upload
+
+        // Assert
+        expect(secondFileReadBeforeFirstParsed).toBe(0)
+        expect(secondFile.arrayBuffer).toHaveBeenCalledTimes(1)
+    })
+
     it("should upload file", async () => {
         uploadFilesService.uploadFiles()
 
