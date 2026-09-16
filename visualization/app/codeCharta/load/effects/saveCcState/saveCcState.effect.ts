@@ -6,6 +6,7 @@ import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
+import { withoutDerivedDomainWords } from "./withoutDerivedDomainWords"
 
 @Injectable()
 export class SaveCcStateEffect {
@@ -22,7 +23,7 @@ export class SaveCcStateEffect {
                 debounceTime(500),
                 tap(async () => {
                     const state: CcState = this.ccStateSnapshot.get()
-                    await writeCcState(state)
+                    await writeCcState(withoutDerivedDomainWords(state))
                 })
             ),
         { dispatch: false }
