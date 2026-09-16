@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject, output } from "@angular/core"
 import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
+import { FloatingMenuAnchor } from "../../../shared/facade"
 
 @Component({
     selector: "cc-toolbox-center-map-button",
@@ -8,4 +9,10 @@ import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeV
 })
 export class CenterMapButtonComponent {
     protected readonly mapControls = inject(ThreeMapControlsService)
+    readonly zoomMenuRequested = output<FloatingMenuAnchor>()
+
+    protected requestZoomMenu(event: MouseEvent) {
+        event.preventDefault()
+        this.zoomMenuRequested.emit({ x: event.clientX, y: event.clientY })
+    }
 }

@@ -71,6 +71,7 @@ import { MetricsLensSourceReadWindow } from "../stores/metricsLensSource/metrics
 import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLensSource/metricsLensSource.write.facade"
 import { PreferencesReadWindow } from "../stores/preferences/preferences.read.facade"
 import {
+    setCenterMapZoom,
     setExperimentalFeaturesEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
     setMaxTreeMapFiles,
@@ -341,6 +342,9 @@ export class LoadInitialFileStore {
                 break
             case "resetCameraIfNewFileIsLoaded":
                 this.store.dispatch(setResetCameraIfNewFileIsLoaded({ value }))
+                break
+            case "centerMapZoom":
+                this.store.dispatch(setCenterMapZoom({ value }))
                 break
             case "maxTreeMapFiles":
                 this.store.dispatch(setMaxTreeMapFiles({ value }))

@@ -1,3 +1,4 @@
+import { setCenterMapZoom } from "./centerMapZoom/centerMapZoom.actions"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import {
@@ -14,6 +15,7 @@ export const preferencesActions = [
     setPresentationMode,
     setResetCameraIfNewFileIsLoaded,
     toggleSortingOrderAscending,
+    setCenterMapZoom,
     setMaxTreeMapFiles,
     setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,

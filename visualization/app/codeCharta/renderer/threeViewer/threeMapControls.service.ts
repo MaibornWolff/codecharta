@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs"
 import { Box3, MOUSE, PerspectiveCamera, Sphere, Vector3 } from "three"
 import { MapControls } from "three/addons/controls/MapControls.js"
 import { EventEmitter } from "../../util/EventEmitter"
+import { ThreeMapControlsStore } from "./stores/threeMapControls.store"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeRendererService } from "./threeRenderer.service"
 import { ThreeSceneService } from "./threeSceneService"
@@ -26,7 +27,8 @@ export class ThreeMapControlsService {
     constructor(
         private readonly threeCameraService: ThreeCameraService,
         private readonly threeSceneService: ThreeSceneService,
-        private readonly threeRendererService: ThreeRendererService
+        private readonly threeRendererService: ThreeRendererService,
+        private readonly threeMapControlsStore: ThreeMapControlsStore
     ) {}
 
     setControlTarget(cameraTarget: Vector3) {
@@ -85,7 +87,11 @@ export class ThreeMapControlsService {
         this.threeRendererService.render()
         this.onInput(this.threeCameraService.camera)
 
-        this.setZoomPercentage(140)
+        this.setZoomPercentage(this.preferredCenterMapZoom())
+    }
+
+    private preferredCenterMapZoom(): number {
+        return Math.min(Math.max(this.threeMapControlsStore.getCenterMapZoom(), this.MIN_ZOOM), this.MAX_ZOOM)
     }
 
     private cameraPerspectiveLengthCalculation(boundingSphere: Sphere) {

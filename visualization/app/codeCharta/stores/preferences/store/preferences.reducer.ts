@@ -1,4 +1,5 @@
 import { combineReducers } from "@ngrx/store"
+import { centerMapZoom, defaultCenterMapZoom } from "./centerMapZoom/centerMapZoom.reducer"
 import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import {
     defaultExperimentalFeaturesEnabled,
@@ -19,6 +20,7 @@ import { defaultSorting, sorting } from "./sorting/sorting.reducer"
 export const preferences = combineReducers({
     isPresentationMode,
     resetCameraIfNewFileIsLoaded,
+    centerMapZoom,
     maxTreeMapFiles,
     experimentalFeaturesEnabled,
     screenshotToClipboardEnabled,
@@ -29,6 +31,7 @@ export const preferences = combineReducers({
 export const defaultPreferences = {
     isPresentationMode: defaultIsPresentationMode,
     resetCameraIfNewFileIsLoaded: defaultResetCameraIfNewFileIsLoaded,
+    centerMapZoom: defaultCenterMapZoom,
     maxTreeMapFiles: defaultMaxTreeMapFiles,
     experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
     screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,

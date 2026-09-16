@@ -1,3 +1,4 @@
+export { setCenterMapZoom } from "./store/centerMapZoom/centerMapZoom.actions"
 export { setScreenshotToClipboardEnabled } from "./store/enableClipboard/screenshotToClipboardEnabled.actions"
 export { setExperimentalFeaturesEnabled } from "./store/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 export {

@@ -5,11 +5,11 @@ import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource
 import { defaultDomainState } from "../../domainState/domainState.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
-import { defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
+import { defaultCenterMapZoom, defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 20
+export const DB_VERSION = 21
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -455,6 +455,19 @@ export function migrateCcStateRecordToV20<T>(state: T): T {
     return { ...record, sharedView: { ...sharedView, metricRules: defaultSharedView.metricRules } } as T
 }
 
+// v21: preferences persisted before the centre-map zoom was configurable carry no centerMapZoom
+export function migrateCcStateRecordToV21<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"]
+    if (!preferences || typeof preferences !== "object" || "centerMapZoom" in preferences) {
+        return state
+    }
+    return { ...record, preferences: { ...preferences, centerMapZoom: defaultCenterMapZoom } } as T
+}
+
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
@@ -500,7 +513,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 17, migrate: migrateCcStateRecordToV17 },
     { version: 18, migrate: migrateCcStateRecordToV18 },
     { version: 19, migrate: migrateCcStateRecordToV19 },
-    { version: 20, migrate: migrateCcStateRecordToV20 }
+    { version: 20, migrate: migrateCcStateRecordToV20 },
+    { version: 21, migrate: migrateCcStateRecordToV21 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

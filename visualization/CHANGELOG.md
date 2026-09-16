@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Your own center-map zoom**: right-click the compass to pick the zoom level the center button uses, and it stays that way for you.
+
 ### Fixed 🐞
 
 - **Labels survive clicking through buildings**: selecting buildings keeps every label the map already showed, and the building under the cursor keeps its tooltip instead of its label.

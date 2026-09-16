@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
 import { CcState, Preferences } from "../../../model/codeCharta.model"
+import { centerMapZoomSelector } from "./centerMapZoom/centerMapZoom.selector"
 import { screenshotToClipboardEnabledSelector } from "./enableClipboard/screenshotToClipboardEnabled.selector"
 import { experimentalFeaturesEnabledSelector } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 import { isColorMetricLinkedToHeightMetricSelector } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
@@ -23,6 +24,7 @@ export class PreferencesReadWindow {
     readonly screenshotToClipboardEnabled$ = this.store.select(screenshotToClipboardEnabledSelector)
     readonly experimentalFeaturesEnabled$ = this.store.select(experimentalFeaturesEnabledSelector)
     readonly resetCameraIfNewFileIsLoaded$ = this.store.select(resetCameraIfNewFileIsLoadedSelector)
+    readonly centerMapZoom$ = this.store.select(centerMapZoomSelector)
     readonly maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
     readonly sortingOrder$ = this.store.select(sortingOrderSelector)
     readonly sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)

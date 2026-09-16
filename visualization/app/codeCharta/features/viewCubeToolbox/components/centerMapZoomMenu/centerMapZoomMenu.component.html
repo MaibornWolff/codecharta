@@ -1,0 +1,16 @@
+<cc-floating-menu [anchor]="anchor()" (dismissed)="dismissed.emit()">
+    <div class="flex w-64 flex-col gap-2 px-3 py-2" data-testid="center-map-zoom-menu">
+        <span class="text-sm font-semibold">Center map zoom</span>
+        <cc-slider-number-input
+            ariaLabel="Center map zoom in percent"
+            [min]="minZoom"
+            [max]="maxZoom"
+            [value]="centerMapZoom()"
+            (valueChange)="previewAndStore($event)"
+        ></cc-slider-number-input>
+        <div class="flex gap-2">
+            <button type="button" class="btn btn-xs flex-1" (click)="useCurrentZoom()">Use current zoom</button>
+            <button type="button" class="btn btn-ghost btn-xs" (click)="resetCenterMapZoom()">Reset</button>
+        </div>
+    </div>
+</cc-floating-menu>
