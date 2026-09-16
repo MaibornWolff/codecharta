@@ -2,7 +2,14 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
-import { AxisCardComponent, BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR, BarShellDirective } from "../../../shared/facade"
+import { METRICS_BAR_HEIGHT_CSS_VARIABLE } from "../../../../util/barLayout"
+import {
+    AxisCardComponent,
+    BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
+    BarShellDirective,
+    HEIGHT_CSS_VARIABLE,
+    PublishesHeightDirective
+} from "../../../shared/facade"
 import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
 import { AreaSegmentComponent } from "../areaSegment/areaSegment.component"
 import { ColorSegmentComponent } from "../colorSegment/colorSegment.component"
@@ -26,7 +33,8 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
         LabelsScenariosSegmentComponent,
         LinkColorHeightButtonComponent
     ],
-    hostDirectives: [BarShellDirective],
+    hostDirectives: [BarShellDirective, PublishesHeightDirective],
+    providers: [{ provide: HEIGHT_CSS_VARIABLE, useValue: METRICS_BAR_HEIGHT_CSS_VARIABLE }],
     host: { "[style.bottom]": "barBottom" }
 })
 export class MetricsBarComponent {

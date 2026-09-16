@@ -62,6 +62,17 @@ describe("ThreeMapControlsService", () => {
         threeMapControlsService.controls.addEventListener = jest.fn()
     }
 
+    function withMockedCanvas({ metricsBarHeight }: { metricsBarHeight: string }) {
+        const canvas = document.createElement("canvas")
+        canvas.style.setProperty("--cc-bottom-bar-height", "32px")
+        canvas.style.setProperty("--cc-file-extension-bar-height", "17px")
+        canvas.style.setProperty("--cc-metrics-bar-height", metricsBarHeight)
+        canvas.getBoundingClientRect = () => ({ top: 0, bottom: 720, height: 720 }) as DOMRect
+        document.body.append(canvas)
+        threeRendererService.renderer = { domElement: canvas } as unknown as typeof threeRendererService.renderer
+        threeRendererService.render = jest.fn()
+    }
+
     function rebuildService() {
         threeMapControlsService = new ThreeMapControlsService(
             threeCameraService,
@@ -200,6 +211,36 @@ describe("ThreeMapControlsService", () => {
 
             // Assert
             expect(setZoomPercentageSpy).toHaveBeenCalledWith(threeMapControlsService.MAX_ZOOM)
+        })
+
+        it("should lift the map out of the strip the bottom bars cover", async () => {
+            // Arrange
+            const fitAndGetTarget = async () => {
+                threeMapControlsService.autoFitTo()
+                await wait(0)
+                return threeMapControlsService.controls.target.clone()
+            }
+            const targetWithoutBars = await fitAndGetTarget()
+            withMockedCanvas({ metricsBarHeight: "108px" })
+
+            // Act
+            const targetWithBars = await fitAndGetTarget()
+
+            // Assert
+            expect(targetWithBars.equals(targetWithoutBars)).toBe(false)
+        })
+
+        it("should keep the camera distance when lifting the map", async () => {
+            // Arrange
+            withMockedCanvas({ metricsBarHeight: "108px" })
+            threeMapControlsService.autoFitTo()
+            await wait(0)
+
+            // Act
+            const distanceToTarget = threeCameraService.camera.position.distanceTo(threeMapControlsService.controls.target)
+
+            // Assert
+            expect(distanceToTarget).toBeCloseTo(threeMapControlsService.getDistanceFromZoomPercentage(140), 5)
         })
 
         it("should return early if boundingSphere.radius is -1", async () => {
