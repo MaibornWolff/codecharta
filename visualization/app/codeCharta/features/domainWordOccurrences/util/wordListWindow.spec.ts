@@ -41,14 +41,31 @@ describe("wordListWindow", () => {
         expect(window.topSpacerHeight).toBe((100 - OVERSCAN_ROWS) * ROW_HEIGHT)
     })
 
-    it("should render everything while the list has not been measured yet", () => {
+    it("should render only a first slice while the list has not been measured yet", () => {
+        // Arrange & Act — rendering the whole list would build one row per word in the project
+        const window = wordListWindow(geometry({ rowCount: 5000, viewportHeight: 0 }))
+
+        // Assert
+        expect(window.firstIndex).toBe(0)
+        expect(window.lastIndex).toBeLessThan(100)
+        expect(window.topSpacerHeight).toBe(0)
+    })
+
+    it("should keep an unmeasured list's whole height in the bottom spacer", () => {
+        // Arrange & Act
+        const window = wordListWindow(geometry({ rowCount: 5000, viewportHeight: 0 }))
+
+        // Assert
+        const renderedHeight = (window.lastIndex - window.firstIndex + 1) * ROW_HEIGHT
+        expect(window.topSpacerHeight + renderedHeight + window.bottomSpacerHeight).toBe(5000 * ROW_HEIGHT)
+    })
+
+    it("should render a short unmeasured list completely", () => {
         // Arrange & Act
         const window = wordListWindow(geometry({ rowCount: 40, viewportHeight: 0 }))
 
         // Assert
-        expect(window.firstIndex).toBe(0)
         expect(window.lastIndex).toBe(39)
-        expect(window.topSpacerHeight).toBe(0)
         expect(window.bottomSpacerHeight).toBe(0)
     })
 
