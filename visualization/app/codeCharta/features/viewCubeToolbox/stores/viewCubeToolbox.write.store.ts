@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { setPresentationMode } from "../../../stores/preferences/preferences.write.facade"
+import { setCenterMapZoom, setPresentationMode } from "../../../stores/preferences/preferences.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class ViewCubeToolboxWriteStore {
@@ -9,5 +9,9 @@ export class ViewCubeToolboxWriteStore {
 
     setPresentationMode(value: boolean) {
         this.store.dispatch(setPresentationMode({ value }))
+    }
+
+    setCenterMapZoom(value: number) {
+        this.store.dispatch(setCenterMapZoom({ value }))
     }
 }

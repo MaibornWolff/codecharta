@@ -9,7 +9,7 @@ export {
 export { ConfirmDialogComponent } from "./components/confirmDialog/confirmDialog.component"
 export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMenuItem.component"
 export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.component"
-export { FloatingMenuComponent } from "./components/floatingMenu/floatingMenu.component"
+export { FloatingMenuAnchor, FloatingMenuComponent } from "./components/floatingMenu/floatingMenu.component"
 export { InlineColorPickerComponent } from "./components/inlineColorPicker/inlineColorPicker.component"
 export { LoadingFileProgressSpinnerComponent } from "./components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 export { MetricOption } from "./components/metricSelectPopover/metricOption"

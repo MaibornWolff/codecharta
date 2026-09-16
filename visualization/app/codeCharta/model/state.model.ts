@@ -52,6 +52,7 @@ export interface Settings {
 export interface Preferences {
     isPresentationMode: boolean
     resetCameraIfNewFileIsLoaded: boolean
+    centerMapZoom: number
     maxTreeMapFiles: number
     experimentalFeaturesEnabled: boolean
     screenshotToClipboardEnabled: boolean

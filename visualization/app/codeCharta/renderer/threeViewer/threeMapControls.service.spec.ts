@@ -5,6 +5,7 @@ import { BoxGeometry, Group, Mesh, MOUSE, PerspectiveCamera, Sphere, Vector3 } f
 import { MapControls } from "three/addons/controls/MapControls.js"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
 import { wait } from "../../util/testUtils/wait"
+import { ThreeMapControlsStore } from "./stores/threeMapControls.store"
 import { ThreeCameraService } from "./threeCamera.service"
 import { ThreeMapControlsService } from "./threeMapControls.service"
 import { ThreeRendererService } from "./threeRenderer.service"
@@ -15,6 +16,7 @@ describe("ThreeMapControlsService", () => {
     let threeCameraService: ThreeCameraService
     let threeSceneService: ThreeSceneService
     let threeRendererService: ThreeRendererService
+    let threeMapControlsStore: ThreeMapControlsStore
 
     let vector: Vector3
 
@@ -33,6 +35,7 @@ describe("ThreeMapControlsService", () => {
         threeCameraService = TestBed.inject(ThreeCameraService)
         threeSceneService = TestBed.inject(ThreeSceneService)
         threeRendererService = TestBed.inject(ThreeRendererService)
+        threeMapControlsStore = TestBed.inject(ThreeMapControlsStore)
 
         vector = new Vector3(5.711_079_128_159_569, 5.711_079_128_159_569, 0)
     }
@@ -60,7 +63,12 @@ describe("ThreeMapControlsService", () => {
     }
 
     function rebuildService() {
-        threeMapControlsService = new ThreeMapControlsService(threeCameraService, threeSceneService, threeRendererService)
+        threeMapControlsService = new ThreeMapControlsService(
+            threeCameraService,
+            threeSceneService,
+            threeRendererService,
+            threeMapControlsStore
+        )
     }
 
     describe("init", () => {
@@ -165,6 +173,33 @@ describe("ThreeMapControlsService", () => {
 
             // Assert
             expect(refitDirection.distanceTo(canonicalDirection)).toBeLessThan(1e-6)
+        })
+
+        it("should fit at the zoom level the preference holds", async () => {
+            // Arrange
+            const preferredZoom = 165
+            jest.spyOn(threeMapControlsStore, "getCenterMapZoom").mockReturnValue(preferredZoom)
+            const setZoomPercentageSpy = jest.spyOn(threeMapControlsService, "setZoomPercentage")
+
+            // Act
+            threeMapControlsService.autoFitTo()
+            await wait(0)
+
+            // Assert
+            expect(setZoomPercentageSpy).toHaveBeenCalledWith(preferredZoom)
+        })
+
+        it("should clamp a preference beyond the zoom bounds", async () => {
+            // Arrange
+            jest.spyOn(threeMapControlsStore, "getCenterMapZoom").mockReturnValue(5000)
+            const setZoomPercentageSpy = jest.spyOn(threeMapControlsService, "setZoomPercentage")
+
+            // Act
+            threeMapControlsService.autoFitTo()
+            await wait(0)
+
+            // Assert
+            expect(setZoomPercentageSpy).toHaveBeenCalledWith(threeMapControlsService.MAX_ZOOM)
         })
 
         it("should return early if boundingSphere.radius is -1", async () => {

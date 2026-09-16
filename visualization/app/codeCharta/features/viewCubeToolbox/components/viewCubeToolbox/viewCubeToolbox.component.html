@@ -1,5 +1,9 @@
 <div class="join shadow-md absolute top-0 left-1/2 -translate-x-1/2 bg-base-100 rounded">
-    <cc-toolbox-center-map-button></cc-toolbox-center-map-button>
+    <cc-toolbox-center-map-button (zoomMenuRequested)="zoomMenuAnchor.set($event)"></cc-toolbox-center-map-button>
     <cc-toolbox-screenshot-button view="metrics"></cc-toolbox-screenshot-button>
     <cc-toolbox-presentation-mode-button></cc-toolbox-presentation-mode-button>
 </div>
+
+@if (zoomMenuAnchor(); as anchor) {
+    <cc-center-map-zoom-menu [anchor]="anchor" (dismissed)="zoomMenuAnchor.set(null)"></cc-center-map-zoom-menu>
+}

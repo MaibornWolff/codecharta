@@ -1,9 +1,10 @@
 <button
     type="button"
     class="join-item btn btn-sm btn-square"
-    title="Center map"
+    title="Center map — right-click to set the zoom level it uses"
     aria-label="Center map"
     (click)="mapControls.autoFitTo()"
+    (contextmenu)="requestZoomMenu($event)"
 >
     <i class="fa fa-compass"></i>
 </button>

@@ -2089,6 +2089,7 @@ export const STATE: CcState = {
         resetCameraIfNewFileIsLoaded: true,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
+        centerMapZoom: 140,
         maxTreeMapFiles: 200,
         sorting: { option: SortingOption.NAME, orderAscending: false }
     },
@@ -2156,6 +2157,7 @@ export const DEFAULT_STATE: CcState = {
         resetCameraIfNewFileIsLoaded: true,
         experimentalFeaturesEnabled: false,
         screenshotToClipboardEnabled: false,
+        centerMapZoom: 140,
         maxTreeMapFiles: 100,
         sorting: { option: SortingOption.NAME, orderAscending: true }
     },
