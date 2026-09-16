@@ -85,8 +85,9 @@ from those benchmarks, not estimates.
   aggregated subtree vocabularies. A prebuilt word index costs 355 ms to save 6 ms — not worth it.
 - The echarts layout is ~100 ms and flat in codebase size; `gridSize` and `shrinkToFit` barely move it.
 - Task 3 halves the freeze but cannot remove it: the per-file banks must stay persisted because
-  `getMergedDomainWords` re-derives the merged one from them. ~1.4 s per settings save remains. The
-  real fix is writing `files` to its own IndexedDB record, touched only by file actions — needs a
-  `DB_VERSION` bump, a migration and a reader split. Deliberately out of scope here.
+  `getMergedDomainWords` re-derives the merged one from them. Measured on the benchmark project, a save
+  goes from 2851 ms to 1508 ms, so about 1.5 s per settings save remains. Removing the rest means
+  writing `files` to its own IndexedDB record, touched only by file actions — needs a `DB_VERSION` bump,
+  a migration and a reader split. Deliberately out of scope here.
 - Clicking a word in the cloud expands the explorer, which resizes the cloud container and triggers a
   full echarts relayout. By design, but worth revisiting.
