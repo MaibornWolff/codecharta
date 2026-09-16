@@ -93,7 +93,7 @@ describe("LabelCreationService", () => {
             expect(threeSceneService.labels.children.length).toBe(1)
         })
 
-        it("should not add label if both show options are false and enforceLabel is false", () => {
+        it("should not add label if both show options are false", () => {
             // Arrange
             store.dispatch(setShowMetricLabelNameValue({ value: false }))
             store.dispatch(setShowMetricLabelNodeName({ value: false }))
@@ -103,18 +103,6 @@ describe("LabelCreationService", () => {
 
             // Assert
             expect(labelCreationService.getLabels().length).toBe(0)
-        })
-
-        it("should add label with enforceLabel even when show options are false", () => {
-            // Arrange
-            store.dispatch(setShowMetricLabelNameValue({ value: false }))
-            store.dispatch(setShowMetricLabelNodeName({ value: false }))
-
-            // Act
-            labelCreationService.addLeafLabel(sampleLeaf, 0, true)
-
-            // Assert
-            expect(labelCreationService.getLabels().length).toBe(1)
         })
 
         it("should store node reference in userData", () => {
@@ -191,33 +179,61 @@ describe("LabelCreationService", () => {
         })
     })
 
-    describe("clearTemporaryLabel", () => {
-        it("should clear label for the correct node only", () => {
+    describe("clearSelectionLabel", () => {
+        it("should clear the selection label only", () => {
             // Arrange
             store.dispatch(setShowMetricLabelNodeName({ value: true }))
             labelCreationService.addLeafLabel(sampleLeaf, 0)
-            labelCreationService.addLeafLabel(otherSampleLeaf, 0)
+            labelCreationService.addSelectionLabel(otherSampleLeaf)
             expect(labelCreationService.getLabels().length).toBe(2)
 
             // Act
-            labelCreationService.clearTemporaryLabel(sampleLeaf)
-
-            // Assert
-            expect(labelCreationService.getLabels().length).toBe(1)
-            expect(labelCreationService.getLabels()[0].node).toEqual(otherSampleLeaf)
-        })
-
-        it("should not clear if no label exists for a given node", () => {
-            // Arrange
-            store.dispatch(setShowMetricLabelNodeName({ value: true }))
-            labelCreationService.addLeafLabel(sampleLeaf, 0)
-
-            // Act
-            labelCreationService.clearTemporaryLabel(otherSampleLeaf)
+            labelCreationService.clearSelectionLabel()
 
             // Assert
             expect(labelCreationService.getLabels().length).toBe(1)
             expect(labelCreationService.getLabels()[0].node).toEqual(sampleLeaf)
+        })
+
+        it("should keep a persistent label of a previously selected node", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            labelCreationService.addLeafLabel(sampleLeaf, 0)
+
+            // Act
+            labelCreationService.clearSelectionLabel()
+
+            // Assert
+            expect(labelCreationService.getLabels().length).toBe(1)
+            expect(labelCreationService.getLabels()[0].node).toEqual(sampleLeaf)
+        })
+
+        it("should drop the suppression when the suppressed label is the selection label", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: true }))
+            labelCreationService.addSelectionLabel(sampleLeaf)
+            labelCreationService.suppressLabelForNode(sampleLeaf)
+
+            // Act
+            labelCreationService.clearSelectionLabel()
+
+            // Assert
+            expect(labelCreationService.getSuppressedLabel()).toBeNull()
+            expect(threeSceneService.labels.children.length).toBe(0)
+        })
+    })
+
+    describe("addSelectionLabel", () => {
+        it("should add a label even when both show options are false", () => {
+            // Arrange
+            store.dispatch(setShowMetricLabelNodeName({ value: false }))
+            store.dispatch(setShowMetricLabelNameValue({ value: false }))
+
+            // Act
+            labelCreationService.addSelectionLabel(sampleLeaf)
+
+            // Assert
+            expect(labelCreationService.getLabels().length).toBe(1)
         })
     })
 
