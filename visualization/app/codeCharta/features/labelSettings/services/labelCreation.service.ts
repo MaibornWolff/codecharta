@@ -10,6 +10,7 @@ export interface InternalLabel {
     node: Node
     buildingTop: Vector3
     appliedOffset: number
+    isSelectionLabel: boolean
 }
 
 @Injectable({ providedIn: "root" })
@@ -30,14 +31,22 @@ export class LabelCreationService {
         return this.suppressedLabel
     }
 
-    addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
+    addLeafLabel(node: Node, highestNodeInSet: number) {
+        this.createLabel(node, highestNodeInSet, false)
+    }
+
+    addSelectionLabel(node: Node) {
+        this.createLabel(node, 0, true)
+    }
+
+    private createLabel(node: Node, highestNodeInSet: number, isSelectionLabel: boolean) {
         const { mapState } = this.stateAccessStore.getValue()
         const { scaling, showMetricLabelNodeName, showMetricLabelNameValue, labelMode, labelSize } = mapState
         const { heightMetric, colorMetric } = mapState
         const multiplier = new Vector3(scaling.x, scaling.y, scaling.z)
 
         let nameText = ""
-        if (showMetricLabelNodeName || (enforceLabel && !showMetricLabelNameValue)) {
+        if (showMetricLabelNodeName || (isSelectionLabel && !showMetricLabelNameValue)) {
             nameText = node.name
         } else if (!showMetricLabelNameValue) {
             return
@@ -64,7 +73,7 @@ export class LabelCreationService {
         const buildingTop = new Vector3(x, (node.z0 + actualHeight) * multiplier.y, z)
 
         this.threeSceneService.labels.add(cssObject)
-        this.labels.push({ labelElement, node, buildingTop, appliedOffset: 0 })
+        this.labels.push({ labelElement, node, buildingTop, appliedOffset: 0, isSelectionLabel })
     }
 
     clearLabels() {
@@ -73,16 +82,17 @@ export class LabelCreationService {
         this.suppressedLabel = null
     }
 
-    clearTemporaryLabel(hoveredNode: Node) {
-        const index = this.labels.findIndex(({ node }) => node === hoveredNode)
-        if (index > -1) {
-            const label = this.labels[index]
-            if (label === this.suppressedLabel) {
-                this.suppressedLabel = null
-            }
-            this.threeSceneService.labels.remove(label.labelElement.cssObject)
-            this.labels.splice(index, 1)
+    clearSelectionLabel() {
+        const index = this.labels.findIndex(label => label.isSelectionLabel)
+        if (index === -1) {
+            return
         }
+
+        const [label] = this.labels.splice(index, 1)
+        if (label === this.suppressedLabel) {
+            this.suppressedLabel = null
+        }
+        this.threeSceneService.labels.remove(label.labelElement.cssObject)
     }
 
     hasLabelForNode(node: Node): boolean {

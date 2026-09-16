@@ -17,8 +17,12 @@ export class LabelSettingsFacade {
         private readonly connectorDrawingService: ConnectorDrawingService
     ) {}
 
-    addLeafLabel(node: Node, highestNodeInSet: number, enforceLabel = false) {
-        this.labelCreationService.addLeafLabel(node, highestNodeInSet, enforceLabel)
+    addLeafLabel(node: Node, highestNodeInSet: number) {
+        this.labelCreationService.addLeafLabel(node, highestNodeInSet)
+    }
+
+    addSelectionLabel(node: Node) {
+        this.labelCreationService.addSelectionLabel(node)
     }
 
     clearLabels() {
@@ -26,8 +30,8 @@ export class LabelSettingsFacade {
         this.connectorDrawingService.clearConnectors()
     }
 
-    clearTemporaryLabel(hoveredNode: Node) {
-        this.labelCreationService.clearTemporaryLabel(hoveredNode)
+    clearSelectionLabel() {
+        this.labelCreationService.clearSelectionLabel()
     }
 
     hasLabelForNode(node: Node): boolean {

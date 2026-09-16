@@ -3,7 +3,7 @@ import { hierarchy } from "d3-hierarchy"
 import { tap } from "rxjs"
 import { Raycaster, Vector2 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { BlacklistItem, Node } from "../../model/codeCharta.model"
+import { BlacklistItem } from "../../model/codeCharta.model"
 import {
     CodeMapBuilding,
     CodeMapTooltipService,
@@ -44,7 +44,6 @@ export class CodeMapMouseEventService implements OnDestroy {
     private isGrabbing = false
     private isMoving = false
     private readonly raycaster = new Raycaster()
-    private labelSelectedBuilding: Node | null = null
     private readonly subscriptions = [
         this.fileStoreReadWindow.visibleFileStates$.pipe(tap(() => this.onFilesSelectionChanged())).subscribe(),
         this.sharedViewReadWindow.blacklist$.pipe(tap(blacklist => this.onBlacklistChanged(blacklist))).subscribe(),
@@ -219,17 +218,13 @@ export class CodeMapMouseEventService implements OnDestroy {
     drawLabelSelectedBuilding(codeMapBuilding: CodeMapBuilding) {
         this.tooltipService.hide()
         this.labelSettingsFacade.restoreSuppressedLabel()
-        if (this.labelSelectedBuilding !== null) {
-            this.labelSettingsFacade.clearTemporaryLabel(this.labelSelectedBuilding)
-        }
-        if (!codeMapBuilding?.node?.isLeaf) {
+        this.labelSettingsFacade.clearSelectionLabel()
+
+        if (!codeMapBuilding?.node?.isLeaf || this.labelSettingsFacade.hasLabelForNode(codeMapBuilding.node)) {
             return
         }
 
-        if (!this.labelSettingsFacade.hasLabelForNode(codeMapBuilding.node)) {
-            this.labelSettingsFacade.addLeafLabel(codeMapBuilding.node, 0, true)
-        }
-        this.labelSelectedBuilding = codeMapBuilding.node
+        this.labelSettingsFacade.addSelectionLabel(codeMapBuilding.node)
     }
 
     private showTooltipForBuilding(building: CodeMapBuilding) {
@@ -237,13 +232,6 @@ export class CodeMapMouseEventService implements OnDestroy {
             this.labelSettingsFacade.suppressLabelForNode(building.node)
         }
         this.tooltipService.show(building.node, this.mouse.x, this.mouse.y)
-    }
-
-    private clearLabelSelectedBuilding() {
-        if (this.labelSelectedBuilding !== null) {
-            this.labelSettingsFacade.clearTemporaryLabel(this.labelSelectedBuilding)
-            this.labelSelectedBuilding = null
-        }
     }
 
     private enableOrbitalsRotation(isRotation: boolean) {
@@ -301,7 +289,6 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
         this.labelSettingsFacade.setSuppressLayout(true)
         this.tooltipService.hide()
-        this.labelSettingsFacade.restoreSuppressedLabel()
         this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
         ;(document.activeElement as HTMLElement).blur()
     }
@@ -342,9 +329,10 @@ export class CodeMapMouseEventService implements OnDestroy {
             if (this.intersectedBuilding) {
                 this.threeSceneService.selectBuilding(this.intersectedBuilding)
                 this.drawLabelSelectedBuilding(this.intersectedBuilding)
+                this.showTooltipForBuilding(this.intersectedBuilding)
             } else {
                 this.threeSceneService.clearSelection()
-                this.clearLabelSelectedBuilding()
+                this.labelSettingsFacade.clearSelectionLabel()
             }
             this.threeSceneService.clearConstantHighlight()
         }

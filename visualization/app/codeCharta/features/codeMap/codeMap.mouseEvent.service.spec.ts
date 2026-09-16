@@ -874,50 +874,81 @@ describe("codeMapMouseEventService", () => {
 
     describe("labelForSelectedBuilding", () => {
         it("should create a label when selecting a building", () => {
-            labelSettingsFacade.addLeafLabel = jest.fn()
+            // Arrange
+            labelSettingsFacade.addSelectionLabel = jest.fn()
+            labelSettingsFacade.clearSelectionLabel = jest.fn()
             labelSettingsFacade.hasLabelForNode = jest.fn().mockReturnValue(false)
             labelSettingsFacade.restoreSuppressedLabel = jest.fn()
 
+            // Act
             codeMapMouseEventService.drawLabelSelectedBuilding(codeMapBuilding)
 
+            // Assert
             expect(tooltipService.hide).toHaveBeenCalled()
-            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(codeMapBuilding.node, 0, true)
-            expect(codeMapMouseEventService["labelSelectedBuilding"]).toEqual(codeMapBuilding.node)
+            expect(labelSettingsFacade.addSelectionLabel).toHaveBeenCalledWith(codeMapBuilding.node)
         })
 
-        it("should remove the label when a previously selected building is unselected", () => {
-            labelSettingsFacade.clearTemporaryLabel = jest.fn()
-            labelSettingsFacade.hasLabelForNode = jest.fn().mockReturnValue(false)
-            labelSettingsFacade.addLeafLabel = jest.fn()
+        it("should not create a label when the building already has a persistent one", () => {
+            // Arrange
+            labelSettingsFacade.addSelectionLabel = jest.fn()
+            labelSettingsFacade.clearSelectionLabel = jest.fn()
+            labelSettingsFacade.hasLabelForNode = jest.fn().mockReturnValue(true)
             labelSettingsFacade.restoreSuppressedLabel = jest.fn()
+
+            // Act
             codeMapMouseEventService.drawLabelSelectedBuilding(codeMapBuilding)
 
-            codeMapMouseEventService["clearLabelSelectedBuilding"]()
+            // Assert
+            expect(labelSettingsFacade.addSelectionLabel).not.toHaveBeenCalled()
+        })
 
-            expect(labelSettingsFacade.clearTemporaryLabel).toHaveBeenCalledWith(codeMapBuilding.node)
-            expect(codeMapMouseEventService["labelSelectedBuilding"]).toBeNull()
+        it("should remove the label when no building is selected anymore", () => {
+            // Arrange
+            labelSettingsFacade.clearSelectionLabel = jest.fn()
+            codeMapMouseEventService["intersectedBuilding"] = undefined
+
+            // Act
+            codeMapMouseEventService["onLeftClick"]()
+
+            // Assert
+            expect(labelSettingsFacade.clearSelectionLabel).toHaveBeenCalled()
+        })
+
+        it("should keep the label hidden while the clicked building stays hovered", () => {
+            // Arrange
+            labelSettingsFacade.clearSelectionLabel = jest.fn()
+            labelSettingsFacade.addSelectionLabel = jest.fn()
+            labelSettingsFacade.restoreSuppressedLabel = jest.fn()
+            labelSettingsFacade.suppressLabelForNode = jest.fn()
+            labelSettingsFacade.hasLabelForNode = jest.fn().mockReturnValue(true)
+            codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
+
+            // Act
+            codeMapMouseEventService["onLeftClick"]()
+
+            // Assert
+            expect(labelSettingsFacade.suppressLabelForNode).toHaveBeenCalledWith(codeMapBuilding.node)
+            expect(tooltipService.show).toHaveBeenCalledWith(codeMapBuilding.node, expect.any(Number), expect.any(Number))
         })
 
         it("should remove the old and create the new label when selected building is changed", () => {
-            const oldSelection = codeMapBuilding
+            // Arrange
             const newSelection = CODE_MAP_BUILDING_TS_NODE
-
-            labelSettingsFacade.clearTemporaryLabel = jest.fn()
-            labelSettingsFacade.addLeafLabel = jest.fn()
+            labelSettingsFacade.clearSelectionLabel = jest.fn()
+            labelSettingsFacade.addSelectionLabel = jest.fn()
             labelSettingsFacade.hasLabelForNode = jest.fn().mockReturnValue(false)
             labelSettingsFacade.restoreSuppressedLabel = jest.fn()
-
             codeMapMouseEventService.drawLabelSelectedBuilding(codeMapBuilding)
 
+            // Act
             codeMapMouseEventService["intersectedBuilding"] = newSelection
             codeMapMouseEventService["onLeftClick"]()
 
-            expect(codeMapMouseEventService["labelSelectedBuilding"]).not.toEqual(oldSelection.node)
-            expect(codeMapMouseEventService["labelSelectedBuilding"]).toEqual(newSelection.node)
-            expect(labelSettingsFacade.clearTemporaryLabel).toHaveBeenCalledWith(codeMapBuilding.node)
-            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(oldSelection.node, 0, true)
-            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledWith(newSelection.node, 0, true)
-            expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
+            // Assert
+            expect(labelSettingsFacade.clearSelectionLabel).toHaveBeenCalledTimes(2)
+            expect(labelSettingsFacade.addSelectionLabel).toHaveBeenCalledWith(codeMapBuilding.node)
+            expect(labelSettingsFacade.addSelectionLabel).toHaveBeenCalledWith(newSelection.node)
+            expect(labelSettingsFacade.addSelectionLabel).toHaveBeenCalledTimes(2)
         })
     })
 })
