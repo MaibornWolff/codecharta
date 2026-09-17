@@ -1,6 +1,7 @@
 import { Action, Store } from "@ngrx/store"
 import { BehaviorSubject } from "rxjs"
 import { CcState } from "../model/codeCharta.model"
+import { isRunningInTests } from "./isRunningInTests"
 
 export const isPendingHeavyDispatch$ = new BehaviorSubject<boolean>(false)
 
@@ -35,10 +36,6 @@ export function dispatchAfterPaint(store: Store<CcState>, action: Action | Actio
 
 function afterSpinnerHasBeenPainted(dispatch: () => void): void {
     requestAnimationFrame(() => requestAnimationFrame(dispatch))
-}
-
-function isRunningInTests(): boolean {
-    return (globalThis as unknown as { __TEST_ENVIRONMENT__?: boolean }).__TEST_ENVIRONMENT__ === true
 }
 
 function dispatchAll(store: Store<CcState>, actions: Action[]): void {
