@@ -483,7 +483,7 @@ export async function writeCcState(state: CcState) {
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
-        state: withoutFiles(state)
+        state: toPersistedSettings(withoutFiles(state))
     })
     await tx.done
 }
@@ -519,6 +519,30 @@ export async function deleteCcState() {
 function withoutFiles(state: CcState): Omit<CcState, "files"> {
     const { files, ...settings } = state
     return settings
+}
+
+/**
+ * The settings as they are persisted: without the merged domain word bank, which is derived state. The
+ * post-load reconciliation rebuilds it from the loaded files on every load, so persisting it writes a
+ * second copy of a bank the files already carry — and a large project's bank holds millions of entries,
+ * every one of them structured-cloned on the main thread.
+ *
+ * The key is OMITTED, never emptied. The restore applies the persisted lens source on top of the freshly
+ * merged bank, because persisted beats file-derived — so a `words: {}` that is present in the blob gets
+ * applied over the rebuilt bank and wipes it, while a key that is absent is skipped. Both the write path
+ * and the v22 migration shape the record through here, so the two cannot drift apart.
+ */
+function toPersistedSettings<T>(settings: T): T {
+    if (!settings || typeof settings !== "object") {
+        return settings
+    }
+    const record = settings as Record<string, unknown>
+    const domainLensSource = record["domainLensSource"]
+    if (!domainLensSource || typeof domainLensSource !== "object" || !("words" in domainLensSource)) {
+        return settings
+    }
+    const { words, ...withoutWords } = domainLensSource as Record<string, unknown>
+    return { ...record, domainLensSource: withoutWords } as T
 }
 
 /**
@@ -582,7 +606,7 @@ export async function openCodeChartaDB() {
                 if (record?.state) {
                     const migrated = migrateCcStateRecord(record.state, oldVersion)
                     const { settings, files } = splitPersistedFiles(migrated)
-                    await store.put({ ...record, state: settings })
+                    await store.put({ ...record, state: toPersistedSettings(settings) })
                     if (files !== undefined) {
                         await store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files })
                     }

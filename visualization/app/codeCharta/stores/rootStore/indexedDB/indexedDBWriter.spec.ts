@@ -1060,6 +1060,29 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         // Assert
         expect(migratedState.files).toEqual(loadedFiles)
     })
+
+    it("should drop the derived word bank a session saved before the split still carries", async () => {
+        // Arrange — up to v21 the settings record held the merged bank too
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } } }
+        })
+        v21Database.close()
+
+        // Act
+        await readCcState()
+
+        // Assert — the migrated record must have the shape the new code writes, or the stale bank is
+        // applied over the freshly merged one on the next restore
+        const result = await stubReadCcState()
+        expect(result.state.domainLensSource).not.toHaveProperty("words")
+    })
 })
 
 describe("IndexedDBWriter", () => {
@@ -1090,6 +1113,22 @@ describe("IndexedDBWriter", () => {
             // Assert
             const restored = await readCcState()
             expect(restored.files).toEqual(loadedFiles)
+        })
+
+        it("should leave the derived word bank out of the record entirely, rather than persisting it empty", async () => {
+            // Arrange — the bank is rebuilt from the loaded files on every load
+            const stateWithMergedBank = {
+                ...defaultState,
+                domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } }
+            }
+
+            // Act
+            await writeCcState(stateWithMergedBank)
+
+            // Assert — an empty bank that is PRESENT would be applied over the rebuilt one on restore,
+            // because persisted beats file-derived, and would wipe it
+            const result = await stubReadCcState()
+            expect(result.state.domainLensSource).not.toHaveProperty("words")
         })
 
         it("should commit the write with strict durability so a confirmed save survives a storage-process crash", async () => {

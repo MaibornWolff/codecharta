@@ -9,7 +9,6 @@ import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.fa
 import { beginPendingSave, endPendingSave } from "../../../util/busy/isPendingSave"
 import { runWhenIdle } from "../../../util/runWhenIdle"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
-import { withoutDerivedDomainWords } from "./withoutDerivedDomainWords"
 
 const SAVE_DEBOUNCE_MS = 500
 
@@ -29,7 +28,7 @@ export class SaveCcStateEffect {
                 filter(action => action.type !== setHoveredNodeId.type),
                 ofType(...actionsRequiringSaveCcState),
                 debounceTime(SAVE_DEBOUNCE_MS),
-                tap(() => this.saveWhenIdle(() => writeCcState(withoutDerivedDomainWords(this.ccStateSnapshot.get()))))
+                tap(() => this.saveWhenIdle(() => writeCcState(this.ccStateSnapshot.get())))
             ),
         { dispatch: false }
     )
