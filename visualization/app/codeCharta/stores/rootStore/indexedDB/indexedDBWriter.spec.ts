@@ -34,6 +34,7 @@ import {
     migrateCcStateRecordToV19,
     migrateCcStateRecordToV20,
     migrateCcStateRecordToV21,
+    openCodeChartaDB,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcFiles,
@@ -1081,6 +1082,31 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         // Assert — the stale bank must not reach the restore, which would apply it over the bank the
         // reconciliation just rebuilt from the files
         expect(restored.domainLensSource).not.toHaveProperty("words")
+    })
+
+    it("should not even read the session when no transform applies to it", async () => {
+        // Arrange — a v21 record needs only the files split, which the read path handles on its own
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: [{ file: { fileMeta: { fileName: "big.cc.json" } }, selectedAs: "Partial" }] }
+        })
+        v21Database.close()
+        const getSpy = jest.spyOn(IDBObjectStore.prototype, "get")
+
+        // Act
+        const database = await openCodeChartaDB()
+        database.close()
+
+        // Assert — reading it would deserialize the whole session a second time during boot, beside the
+        // copy the load itself builds
+        expect(getSpy).not.toHaveBeenCalled()
+        getSpy.mockRestore()
     })
 
     it("should not rewrite the persisted record when a session only predates the files split", async () => {

@@ -597,7 +597,12 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            if (oldVersion > 0 && oldVersion < DB_VERSION) {
+            // Reading the record costs a full deserialize of the session — on a large project that is a
+            // second copy of it in memory, beside the one the load is about to build, and both are alive
+            // when the first save clones it again. A version no transform applies to has nothing to
+            // migrate, so it must not be read at all.
+            const needsRecordMigration = CCSTATE_RECORD_MIGRATIONS.some(({ version }) => oldVersion < version)
+            if (oldVersion > 0 && needsRecordMigration) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
                 const migrated = record?.state ? migrateCcStateRecord(record.state, oldVersion) : undefined
