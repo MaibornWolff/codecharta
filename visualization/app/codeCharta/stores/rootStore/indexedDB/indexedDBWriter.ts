@@ -481,6 +481,12 @@ export async function writeCcState(state: CcState) {
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
     // browser storage-process crash right after a save can silently lose the whole persisted session.
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
+    // A session persisted before the split keeps its files in the settings record until something saves
+    // them into their own. Dropping them here while that record does not exist yet would lose the whole
+    // session, so this one save writes both. `getKey` answers that without reading the files back.
+    if ((await tx.store.getKey(CCSTATE_FILES_ID)) === undefined) {
+        await tx.store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files: state.files })
+    }
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
         state: toPersistedSettings(withoutFiles(state))
@@ -505,7 +511,10 @@ export async function readCcState(): Promise<CcState | null> {
         return null
     }
     const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
-    return { ...settingsRecord.state, files: filesRecord?.files ?? settingsRecord.state.files ?? [] }
+    // A record written before the split still carries its files and the derived word bank. Dropping the
+    // bank as it is read is what keeps a stale one from being applied over the bank the post-load
+    // reconciliation rebuilds from the files — persisted beats file-derived, so a stale bank would win.
+    return { ...toPersistedSettings(settingsRecord.state), files: filesRecord?.files ?? settingsRecord.state.files ?? [] }
 }
 
 export async function deleteCcState() {
@@ -543,18 +552,6 @@ function toPersistedSettings<T>(settings: T): T {
     }
     const { words, ...withoutWords } = domainLensSource as Record<string, unknown>
     return { ...record, domainLensSource: withoutWords } as T
-}
-
-/**
- * v22: the loaded files move out of the settings record into their own. A record-level split rather
- * than a state-shape change, so it sits beside the vN transforms instead of among them.
- */
-function splitPersistedFiles(state: unknown): { settings: unknown; files: unknown } {
-    if (!state || typeof state !== "object" || !("files" in state)) {
-        return { settings: state, files: undefined }
-    }
-    const { files, ...settings } = state as Record<string, unknown>
-    return { settings, files }
 }
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
@@ -603,13 +600,17 @@ export async function openCodeChartaDB() {
             if (oldVersion > 0 && oldVersion < DB_VERSION) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
-                if (record?.state) {
-                    const migrated = migrateCcStateRecord(record.state, oldVersion)
-                    const { settings, files } = splitPersistedFiles(migrated)
-                    await store.put({ ...record, state: toPersistedSettings(settings) })
-                    if (files !== undefined) {
-                        await store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files })
-                    }
+                const migrated = record?.state ? migrateCcStateRecord(record.state, oldVersion) : undefined
+                // Only a shape transform earns a write, and a record that merely predates the files split
+                // needs none: every transform is a no-op for it, so `migrated` is the very object read.
+                //
+                // Splitting the files out here instead would structured-clone the whole session during
+                // boot. On a large project that is over a gigabyte of copies, landing on top of what the
+                // load already holds and before the collector gets a chance to run — the reader's tab dies
+                // with "Aw, Snap!", the upgrade is rolled back, and every reload retries it. The read path
+                // understands a record that still carries its files, and the next save writes the split.
+                if (migrated !== undefined && migrated !== record.state) {
+                    await store.put({ ...record, state: migrated })
                 }
             }
         }

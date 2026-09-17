@@ -1076,12 +1076,58 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         v21Database.close()
 
         // Act
+        const restored = await readCcState()
+
+        // Assert — the stale bank must not reach the restore, which would apply it over the bank the
+        // reconciliation just rebuilt from the files
+        expect(restored.domainLensSource).not.toHaveProperty("words")
+    })
+
+    it("should not rewrite the persisted record when a session only predates the files split", async () => {
+        // Arrange
+        const loadedFiles = [{ file: { fileMeta: { fileName: "untouched.cc.json" } }, selectedAs: "Partial" }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act
         await readCcState()
 
-        // Assert — the migrated record must have the shape the new code writes, or the stale bank is
-        // applied over the freshly merged one on the next restore
+        // Assert — rewriting it would copy the whole session during boot, which is what exhausts the
+        // heap on a large project; the record is left as it is and the next save writes the split
         const result = await stubReadCcState()
-        expect(result.state.domainLensSource).not.toHaveProperty("words")
+        expect(result.state.files).toEqual(loadedFiles)
+    })
+
+    it("should keep the files of a session that predates the split when a setting is saved first", async () => {
+        // Arrange — the settings record still holds the files, and no files record exists yet
+        const loadedFiles = [{ file: { fileMeta: { fileName: "kept-on-first-save.cc.json" } }, selectedAs: "Partial" }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act — a settings save strips the files out of that record
+        await writeCcState({ ...defaultState, files: loadedFiles } as never)
+
+        // Assert — so it has to put them in their own record first, or the session is gone
+        const restored = await readCcState()
+        expect(restored.files).toEqual(loadedFiles)
     })
 })
 
@@ -1160,7 +1206,8 @@ describe("IndexedDBWriter", () => {
             await stubWriteCcState()
             const state = await readCcState()
 
-            expect(state).toEqual(defaultState)
+            // everything but the derived word bank, which the restore rebuilds from the loaded files
+            expect(state).toEqual({ ...defaultState, domainLensSource: {} })
         })
 
         it("should return null if the state cannot be read", async () => {

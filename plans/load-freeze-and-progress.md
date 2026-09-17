@@ -91,10 +91,25 @@ main thread. It is the only long task after the spinner clears, and it starts th
                                      migration v21 -> v22       1477-1887 ms, all before the spinner
   ```
 
-  The migration reads the old combined record (deserialize ~540 ms) and writes the files back out
-  (~920 ms clone) inside the upgrade transaction. It costs every existing reader roughly two seconds
-  once, on the first load after the update, and it is covered by the spinner. `scratchpad/`
-  `profileMigration.mjs` seeds a v21 database from a real state to reproduce it.
+  The migration reads the old combined record and writes the files back out inside the upgrade
+  transaction, and it is covered by the spinner. `scratchpad/profileMigration.mjs` seeds a v21
+  database from a real state to reproduce it.
+
+- **The migration is a memory problem on a big project, not just a slow one.** Measured on
+  `netbeans.cc.json` (830 MB, 37,393 word-bank entries), first boot against a v21 database:
+
+  ```
+  migration            8867 ms, ~1.5 GB of copies left uncollected
+  peak JS heap         3909 MB of a 4295 MB limit (91%), at 26.5 s
+  where the peak is    NOT the migration — the app's own post-load save (6227 ms files clone)
+                       lands on top of the migration's garbage before GC runs (it frees at 35 s)
+  same file, no migration   peak 2441 MB
+  ```
+
+  So the migration does not crash on its own; it raises the floor by ~1.5 GB so that the save that
+  follows it hits the ceiling. A reader on a large project gets "Aw, Snap!", and because the aborted
+  upgrade leaves the database at v21, every reload retries it — which is why reloading makes it worse.
+  Unresolved: see the options in the crash section of the report.
 
 - Reproduced with `scratchpad/profileLoad.mjs`, which instruments `IDBObjectStore.put`/`get` and marks
   when the spinner hides. It verifies the load end to end, so it is worth re-running after any change
