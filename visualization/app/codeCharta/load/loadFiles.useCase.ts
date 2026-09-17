@@ -19,7 +19,9 @@ import {
     setIsLoadingFile,
     UrlExtractor
 } from "../stores/fileStore/fileStore.facade"
+import { clearLoadPhase, setLoadPhase } from "../util/busy/loadPhase"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
+import { nextPaint } from "../util/nextPaint"
 import { NO_URL_METRICS, UrlMetricSelection } from "../util/queryParameter/queryParameter"
 import { QueryParamsService } from "../util/queryParameter/queryParams.service"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
@@ -29,6 +31,9 @@ const URL_LOAD_ERROR_TITLE = "File(s) could not be loaded from the given file UR
 const INDEXED_DB_LOAD_ERROR_TITLE = "Previously loaded files and settings could not be restored. Loaded sample files instead."
 const MISSING_PROPERTIES_ERROR_TITLE =
     "The previous state could not be fully restored after loading the page. The following properties were not restored."
+
+const RESTORING_SESSION_PHASE = "Restoring your session"
+const BUILDING_MAP_PHASE = "Building the map"
 
 /**
  * The single entry point for loading files. Every source — the ?file= URL, IndexedDB, the sample
@@ -53,6 +58,7 @@ export class LoadFilesUseCase {
     /** Boot. Reads the persisted state exactly once and never rejects. */
     async loadOnBoot(): Promise<void> {
         this.store.dispatch(setIsLoadingFile({ value: true }))
+        setLoadPhase(RESTORING_SESSION_PHASE)
 
         const persisted = await this.ccStatePersistence.read()
 
@@ -72,10 +78,15 @@ export class LoadFilesUseCase {
                 this.store.dispatch(setIsLoadingFile({ value: false }))
                 return
             }
+            // Building the map runs as one synchronous block, so the phase has to reach the screen
+            // before it starts — afterwards there is no frame left to paint it in.
+            setLoadPhase(BUILDING_MAP_PHASE)
+            await nextPaint()
             this.commit(nameDataPairs, this.provenance("upload", { areSampleFiles: false }))
         } catch {
             // Nothing reached the store, so no render will come to clear the indicator.
             this.store.dispatch(setIsLoadingFile({ value: false }))
+            clearLoadPhase()
         }
     }
 
@@ -180,6 +191,7 @@ export class LoadFilesUseCase {
         }
 
         this.store.dispatch(filesLoaded(provenance))
+        clearLoadPhase()
     }
 
     private loadSampleFiles(

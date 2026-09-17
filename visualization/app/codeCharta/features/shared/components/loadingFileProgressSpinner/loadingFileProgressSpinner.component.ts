@@ -1,6 +1,7 @@
 import { AsyncPipe } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
 import { ViewId } from "../../../../routing/routePaths"
+import { loadPhase$ } from "../../../../util/busy/loadPhase"
 import { LoadingFileProgressSpinnerService } from "../../services/loadingFileProgressSpinner.service"
 
 @Component({
@@ -15,4 +16,6 @@ export class LoadingFileProgressSpinnerComponent {
     readonly view = input.required<ViewId>()
 
     protected readonly isLoadingStream = computed(() => this.loadingFileProgressSpinnerService.isLoading$(this.view()))
+
+    protected readonly loadPhase$ = loadPhase$
 }
