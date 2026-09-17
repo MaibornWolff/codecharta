@@ -1,4 +1,5 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
+import { FileState } from "app/codeCharta/model/files/files"
 import { openDB } from "idb"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource.read.facade"
@@ -9,11 +10,13 @@ import { defaultCenterMapZoom, defaultPreferences, defaultSorting } from "../../
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 21
+export const DB_VERSION = 22
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
 export const CCSTATE_STATE_ID = 1001
+/** The loaded files live in their own record, so saving a setting does not re-write every loaded map. */
+const CCSTATE_FILES_ID = 1002
 
 // v3: map-view settings → mapState (was appSettings)
 export function migrateCcStateRecordToV3<T>(state: T): T {
@@ -468,6 +471,11 @@ export function migrateCcStateRecordToV21<T>(state: T): T {
     return { ...record, preferences: { ...preferences, centerMapZoom: defaultCenterMapZoom } } as T
 }
 
+/**
+ * The session's settings, without the loaded files. An IndexedDB write structured-clones its value on
+ * the main thread, so leaving the files out is what keeps changing a setting from re-cloning every
+ * loaded map — the files are written on their own, only when they actually change.
+ */
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
@@ -475,22 +483,54 @@ export async function writeCcState(state: CcState) {
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
-        state
+        state: withoutFiles(state)
+    })
+    await tx.done
+}
+
+export async function writeCcFiles(files: FileState[]) {
+    const database = await openCodeChartaDB()
+    const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
+    await tx.store.put({
+        [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID,
+        files
     })
     await tx.done
 }
 
 export async function readCcState(): Promise<CcState | null> {
     const database = await openCodeChartaDB()
-    const record = await database.get(CCSTATE_STORE_NAME, CCSTATE_STATE_ID)
-    return record?.state || null
+    const settingsRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_STATE_ID)
+    if (!settingsRecord?.state) {
+        return null
+    }
+    const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
+    return { ...settingsRecord.state, files: filesRecord?.files ?? settingsRecord.state.files ?? [] }
 }
 
 export async function deleteCcState() {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
     await tx.store.delete(CCSTATE_STATE_ID)
+    await tx.store.delete(CCSTATE_FILES_ID)
     await tx.done
+}
+
+function withoutFiles(state: CcState): Omit<CcState, "files"> {
+    const { files, ...settings } = state
+    return settings
+}
+
+/**
+ * v22: the loaded files move out of the settings record into their own. A record-level split rather
+ * than a state-shape change, so it sits beside the vN transforms instead of among them.
+ */
+function splitPersistedFiles(state: unknown): { settings: unknown; files: unknown } {
+    if (!state || typeof state !== "object" || !("files" in state)) {
+        return { settings: state, files: undefined }
+    }
+    const { files, ...settings } = state as Record<string, unknown>
+    return { settings, files }
 }
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
@@ -541,7 +581,11 @@ export async function openCodeChartaDB() {
                 const record = await store.get(CCSTATE_STATE_ID)
                 if (record?.state) {
                     const migrated = migrateCcStateRecord(record.state, oldVersion)
-                    await store.put({ ...record, state: migrated })
+                    const { settings, files } = splitPersistedFiles(migrated)
+                    await store.put({ ...record, state: settings })
+                    if (files !== undefined) {
+                        await store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files })
+                    }
                 }
             }
         }
