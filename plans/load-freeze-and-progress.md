@@ -95,21 +95,28 @@ main thread. It is the only long task after the spinner clears, and it starts th
   transaction, and it is covered by the spinner. `scratchpad/profileMigration.mjs` seeds a v21
   database from a real state to reproduce it.
 
-- **The migration is a memory problem on a big project, not just a slow one.** Measured on
-  `netbeans.cc.json` (830 MB, 37,393 word-bank entries), first boot against a v21 database:
+- **Boot on a big project runs close to the heap ceiling, and the save is what puts it there.**
+  Measured on `netbeans.cc.json` (830 MB, 37,393 word-bank entries), first boot against a v21 database,
+  three variants:
 
   ```
-  migration            8867 ms, ~1.5 GB of copies left uncollected
-  peak JS heap         3909 MB of a 4295 MB limit (91%), at 26.5 s
-  where the peak is    NOT the migration — the app's own post-load save (6227 ms files clone)
-                       lands on top of the migration's garbage before GC runs (it frees at 35 s)
-  same file, no migration   peak 2441 MB
+                                          boot work        peak JS heap (limit 4295 MB)
+  splitting migration (as first written)   8867 ms          3909 MB
+  no split, record still read              ~6 s less        3910 MB
+  no split, record not read either         ~9 s less        3907 MB
   ```
 
-  So the migration does not crash on its own; it raises the floor by ~1.5 GB so that the save that
-  follows it hits the ceiling. A reader on a large project gets "Aw, Snap!", and because the aborted
-  upgrade leaves the database at v21, every reload retries it — which is why reloading makes it worse.
-  Unresolved: see the options in the crash section of the report.
+  The peak does not move. It is not the migration: those copies are garbage by the time it matters and
+  the collector takes them (the heap drops to 1489 MB moments later). The peak is the post-load save
+  structured-cloning the whole file set (~6.3 s, ~940 MB) on top of a boot that already holds ~2.97 GB.
+  A v21 boot carries a higher baseline than a plain reload (2441 MB) because the old record still holds
+  the 631 MB word bank, which is dropped on read but not yet collected.
+
+  So the two boot commits are worth keeping — they remove real copies and ~9 s of work — but neither is
+  demonstrably the crash fix, and the crash itself never reproduced: the renderer survived four runs at
+  91% of the ceiling. **Not yet done:** a restore writes the files record straight back with the very
+  files it just read out of it. Skipping that save would remove the ~940 MB clone from every reload,
+  which is the only measured lever left on the peak.
 
 - Reproduced with `scratchpad/profileLoad.mjs`, which instruments `IDBObjectStore.put`/`get` and marks
   when the spinner hides. It verifies the load end to end, so it is worth re-running after any change
