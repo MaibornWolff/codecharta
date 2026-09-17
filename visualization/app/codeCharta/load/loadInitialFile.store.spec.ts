@@ -1,3 +1,4 @@
+import "fake-indexeddb/auto"
 import { TestBed } from "@angular/core/testing"
 import { Action, Store, StoreModule } from "@ngrx/store"
 import { CcState, DomainLensSource, DomainState } from "../model/codeCharta.model"
@@ -16,6 +17,8 @@ import {
     setDomainStateSizingMode,
     setDomainStateTopN
 } from "../stores/domainState/domainState.write.facade"
+import { readCcState, writeCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
+import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
 
@@ -178,6 +181,29 @@ describe("LoadInitialFileStore", () => {
             const missingKeys = loadInitialFileStore.applyDomainLensSource({} as DomainLensSource)
 
             // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([])
+        })
+
+        it("should dispatch nothing for a state that came back through IndexedDB, so the rebuilt bank survives", async () => {
+            // Arrange — by the time this runs the reconciliation has rebuilt the bank from the loaded
+            // files, so the CURRENT bank is full. That is the case the wipe needed: against the default
+            // empty bank an empty persisted one compares equal and the bug stays invisible.
+            const mergedBank = { "/root": [{ text: "invoice", frequency: 10 }] }
+            setup([
+                {
+                    provide: DomainLensSourceReadWindow,
+                    useValue: { getDomainLensSource: () => ({ words: mergedBank }) }
+                }
+            ])
+            await writeCcState({ ...defaultState, domainLensSource: { words: mergedBank } })
+            const restored = await readCcState()
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyDomainLensSource(restored.domainLensSource)
+
+            // Assert — persisted beats file-derived, so anything dispatched here lands on top of the
+            // rebuilt bank: the domain view goes empty and a reload does not bring it back
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([])
         })
