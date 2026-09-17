@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Your own center-map zoom**: right-click the compass to pick the zoom level the center button uses, and it stays that way for you.
+- **The loader says what it is doing**: while a map loads, the spinner names the file being read, counts it off against the rest, and says when the map itself is being built.
 
 ### Fixed 🐞
 
 - **The word list opens at once**: switching the domain explorer to its words no longer takes seconds on a project that carries a large vocabulary.
-- **Domain settings answer immediately**: changing the word cloud's shape, size or word count no longer freezes the view for a moment afterwards.
+- **Settings answer immediately**: changing a setting no longer freezes the view for a moment afterwards, however large the loaded project.
+- **The map is ready when the spinner goes**: a freshly loaded map answers the mouse the moment the spinner disappears, instead of standing still for a few seconds first.
 - **Centering clears the metric bar**: centering the map frames it in the space the bars leave free, so its lower edge is no longer hidden behind the metric bar.
 - **Labels survive clicking through buildings**: selecting buildings keeps every label the map already showed, and the building under the cursor keeps its tooltip instead of its label.
 - **Metric range follows what the map shows**: hiding files by a metric rule, or hiding them with several maps loaded, now also narrows each metric's range, so the colour range, the metric list and the inspector's bars match the map.
