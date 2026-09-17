@@ -39,6 +39,10 @@ main thread. It is the only long task after the spinner clears, and it starts th
 - Schedule the write through `requestIdleCallback` with a timeout fallback, so it lands in a gap
   rather than the moment the reader first reaches for the map. Bypass it under test, the way
   `dispatchAfterPaint` already does.
+- Measured, this does **less than it sounds**: on a loading page `requestIdleCallback` fires after
+  1 ms (`didTimeout=false`), so the write lands in the middle of the load, not after it. It is worth
+  keeping for the small settings saves during normal use, but it is tasks 1 and 3 that actually keep
+  the freeze away from the reader. Do not credit this one for the result.
 
 ### 3. Keep the spinner up while a save is still in flight
 
@@ -78,6 +82,19 @@ main thread. It is the only long task after the spinner clears, and it starts th
   ```
 
   The spinner is up longer because it now covers work it used to hand to the reader as a frozen map.
+
+- The other two paths, measured the same way after the fact:
+
+  ```
+  reload, restoring from IndexedDB   spinner hidden @ 2928 ms   0 long tasks after it
+  first boot on a v21 database       spinner hidden @ 4388 ms   0 long tasks after it
+                                     migration v21 -> v22       1477-1887 ms, all before the spinner
+  ```
+
+  The migration reads the old combined record (deserialize ~540 ms) and writes the files back out
+  (~920 ms clone) inside the upgrade transaction. It costs every existing reader roughly two seconds
+  once, on the first load after the update, and it is covered by the spinner. `scratchpad/`
+  `profileMigration.mjs` seeds a v21 database from a real state to reproduce it.
 
 - Reproduced with `scratchpad/profileLoad.mjs`, which instruments `IDBObjectStore.put`/`get` and marks
   when the spinner hides. It verifies the load end to end, so it is worth re-running after any change
