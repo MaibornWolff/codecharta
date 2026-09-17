@@ -4,6 +4,7 @@ import { ViewId } from "../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
+import { isPendingSave$ } from "../../../util/busy/isPendingSave"
 import { isPendingHeavyDispatch$ } from "../../../util/dispatchAfterPaint"
 
 @Injectable({
@@ -20,7 +21,9 @@ export class LoadingFileProgressSpinnerService {
             this.viewReadinessStore.isStale$(view),
             this.fileStoreReadWindow.isLoadingFile$,
             isPendingHeavyDispatch$,
-            isApplyingScenario$
+            isApplyingScenario$,
+            // Writing the session copies it on the main thread, so the map cannot answer while it runs.
+            isPendingSave$
         ]).pipe(map(sources => sources.some(Boolean)))
     }
 }
