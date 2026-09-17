@@ -36,6 +36,7 @@ import {
     migrateCcStateRecordToV21,
     readCcState,
     SCENARIOS_STORE_NAME,
+    writeCcFiles,
     writeCcState
 } from "./indexedDBWriter"
 
@@ -1037,6 +1038,28 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         // Assert
         expect(migratedState.sharedView.metricRules).toEqual([])
     })
+
+    it("should restore the files of a session saved before they had a record of their own", async () => {
+        // Arrange — up to v21 the files sat inside the settings record
+        const loadedFiles = [{ file: { fileMeta: { fileName: "before-the-split.cc.json" } }, selectedAs: "Partial" }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act
+        const migratedState = await readCcState()
+
+        // Assert
+        expect(migratedState.files).toEqual(loadedFiles)
+    })
 })
 
 describe("IndexedDBWriter", () => {
@@ -1045,12 +1068,28 @@ describe("IndexedDBWriter", () => {
     })
 
     describe("writeCcState", () => {
-        it("should successfully write state to the database", async () => {
+        it("should write the settings without the loaded files, which have a record of their own", async () => {
+            // Act
             await writeCcState(defaultState)
 
+            // Assert — an IndexedDB write copies its value on the main thread, so a setting must not
+            // carry every loaded map along with it
             const result = await stubReadCcState()
+            expect(result.state).not.toHaveProperty("files")
+            expect(result.state.mapState).toEqual(defaultState.mapState)
+        })
 
-            expect(result.state).toEqual(defaultState)
+        it("should leave the loaded files alone", async () => {
+            // Arrange
+            const loadedFiles = [{ file: { fileMeta: { fileName: "kept.cc.json" } }, selectedAs: "Partial" }] as never
+
+            // Act
+            await writeCcFiles(loadedFiles)
+            await writeCcState(defaultState)
+
+            // Assert
+            const restored = await readCcState()
+            expect(restored.files).toEqual(loadedFiles)
         })
 
         it("should commit the write with strict durability so a confirmed save survives a storage-process crash", async () => {
