@@ -7,7 +7,8 @@ import {
     hasDomainDataSelector,
     hasTfidfDataSelector,
     isLoadedFileSetWithoutDomainLensSelector,
-    pathsWithDomainWordsSelector
+    pathsWithDomainWordsSelector,
+    projectWordsSelector
 } from "./domain.selectors"
 
 describe("domain lens selectors", () => {
@@ -77,15 +78,15 @@ describe("domain lens selectors", () => {
             expect(result).toEqual(new Set(["/root", "/root/nodeA"]))
         })
 
-        it("should not list a path whose word list is empty", () => {
-            // Arrange
+        it("should not list a folder whose files carry no words", () => {
+            // Arrange - "/root" is derived from the files beneath it, which hold nothing
             const state = stateWithWords({ "/root": rootWords, "/root/nodeA": [] })
 
             // Act
             const result = pathsWithDomainWordsSelector(state)
 
             // Assert
-            expect(result).toEqual(new Set(["/root"]))
+            expect(result).toEqual(new Set())
         })
     })
 
@@ -113,7 +114,38 @@ describe("domain lens selectors", () => {
         })
     })
 
+    describe("projectWordsSelector", () => {
+        it("should sum the whole project, which a file-level bank never records itself", () => {
+            // Arrange
+            fileRoot.updateRoot("root")
+            const state = stateWithWords({
+                "/root/billing/invoice.ts": [{ text: "invoice", frequency: 6 }],
+                "/root/api/client.ts": [{ text: "invoice", frequency: 4 }]
+            })
+
+            // Act
+            const result = projectWordsSelector(state)
+
+            // Assert
+            expect(result).toEqual([{ text: "invoice", frequency: 10 }])
+        })
+    })
+
     describe("createWordsForSelectedNodeSelector", () => {
+        it("should sum the files beneath a selected folder", () => {
+            // Arrange
+            const state = stateWithWords({
+                "/root/billing/invoice.ts": [{ text: "invoice", frequency: 6 }],
+                "/root/billing/dunning.ts": [{ text: "invoice", frequency: 3 }]
+            })
+
+            // Act
+            const result = createWordsForSelectedNodeSelector("/root/billing")(state)
+
+            // Assert
+            expect(result).toEqual([{ text: "invoice", frequency: 9 }])
+        })
+
         it("should return the selected node's words when an id is given", () => {
             // Arrange
             const state = stateWithWords({ "/root/leaf": leafWords })

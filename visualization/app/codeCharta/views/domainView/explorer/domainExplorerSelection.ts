@@ -3,10 +3,10 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { DomainBarReadStore } from "../../../features/domainBar/facade"
 import { ExplorerSelection } from "../../../features/sidebarExplorer/facade"
+import { domainWordIndexSelector } from "../../../lenses/domain/domainLens.facade"
 import { CodeMapNode, DomainWord } from "../../../model/codeCharta.model"
 import { WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
 import { selectTopWords } from "../../../renderer/wordCloud/wordCloud.facade"
-import { domainWordsSelector } from "../../../stores/domainLensSource/domainLensSource.read.facade"
 import { HoverTooltipService } from "../../../util/hoverTooltip.service"
 import { DomainSelectionStore } from "../stores/domainSelection.store"
 
@@ -20,7 +20,7 @@ export class DomainExplorerSelection implements ExplorerSelection {
     private readonly domainBarReadStore = inject(DomainBarReadStore)
     private readonly hoverTooltipService = inject(HoverTooltipService)
 
-    private readonly domainWords = toSignal(this.store.select(domainWordsSelector), { requireSync: true })
+    private readonly domainWordIndex = toSignal(this.store.select(domainWordIndexSelector), { requireSync: true })
 
     readonly clearsSelectionOnCollapse = false
 
@@ -62,6 +62,6 @@ export class DomainExplorerSelection implements ExplorerSelection {
     }
 
     private topWords(path: string, sizingMode: WordCloudSizingMode): DomainWord[] {
-        return selectTopWords(this.domainWords()[path] ?? [], sizingMode, TOOLTIP_WORD_COUNT)
+        return selectTopWords(this.domainWordIndex().wordsOf(path), sizingMode, TOOLTIP_WORD_COUNT)
     }
 }

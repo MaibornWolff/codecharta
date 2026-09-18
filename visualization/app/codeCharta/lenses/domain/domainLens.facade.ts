@@ -1,6 +1,7 @@
 export {
     createWordOccurrencesSelector,
     createWordsForSelectedNodeSelector,
+    domainWordIndexSelector,
     hasDomainDataSelector,
     hasTfidfDataSelector,
     isLoadedFileSetWithoutDomainLensSelector,

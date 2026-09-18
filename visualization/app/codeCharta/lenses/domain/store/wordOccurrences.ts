@@ -30,12 +30,11 @@ interface CountedNode {
     children: CountedNode[]
 }
 
-/** A producer may record a folder's aggregate, only its files, or both. Falling back to the children
- * keeps a file-only lens from showing empty folders, while a recorded aggregate stays authoritative. */
+/** A bank records the words of files, so a folder counts what its files hold. An aggregate an older
+ * producer recorded on the folder is ignored, the way a folder's word list is derived rather than read. */
 function countOccurrences(node: CodeMapNode, words: DomainLensData, word: string): CountedNode {
     const children = (node.children ?? []).map(child => countOccurrences(child, words, word))
-    const recordedCount = frequencyOf(words[node.path], word)
-    const count = recordedCount > 0 ? recordedCount : sumOf(children)
+    const count = isLeaf(node) ? frequencyOf(words[node.path], word) : sumOf(children)
     return { node, count, children }
 }
 
