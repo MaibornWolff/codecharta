@@ -1,7 +1,7 @@
 ---
 name: lens-data-and-graph-copies
 issue: <none>
-state: progress
+state: complete
 version: unreleased
 ---
 
@@ -52,14 +52,31 @@ inside every one of them, so metrics pays this tax without contributing much dat
 
 ## Steps
 
-- [ ] Complete Task 1: Stop writing back the files that were just restored
-- [ ] Complete Task 2: Remove the redundant structure-tree clone
-- [ ] Complete Task 3: Do not build a node graph on restore that is then discarded
-- [ ] Complete Task 4: Write down the rule
-- [ ] Re-measure boot heap on the 830 MB project and record the result here
-- [ ] Full gate green: `npm run format:check`, `npm test`, `npm run lint`, `npx tsc --noEmit`
+- [x] Complete Task 1: Stop writing back the files that were just restored
+- [x] Complete Task 2: Remove the redundant structure-tree clone
+- [x] Complete Task 3: Do not build a node graph on restore that is then discarded
+- [x] Complete Task 4: Write down the rule
+- [x] Re-measure boot heap on the 830 MB project and record the result here
+- [x] Full gate green: `npm run format:check`, `npm test`, `npm run lint`, `npx tsc --noEmit`
 
 ## Notes
+
+- Result on `netbeans.cc.json` (830 MB), reloading a persisted session — the everyday path:
+
+  ```
+                        before        after
+  spinner clears        16687 ms      10570 ms
+  files write           6201 ms       none (0 ms settings write only)
+  peak JS heap          3909 MB       3362 MB   of a 4295 MB limit (91% -> 78%)
+  ```
+
+- **First boot against a database from before the split still peaks at 3817 MB.** The files record does
+  not exist yet, so that boot has to write it once — the 6.8 s clone is real work, not waste. Every
+  reload after it takes the path measured above. The domain view came back with its words on both.
+
+- The identity check for task 1 has to compare **file states, not the array**: the files reducer sorts a
+  copy on every `setFiles`, so the array in the store is never the array that was read. Comparing arrays
+  silently did nothing, and the first measurement after the change still showed the full 6.2 s write.
 
 - Copies of the graph that exist by construction, before this work: the store's own files, the
   `structureTree` result, the `accumulatedData` clone and the `viewIndependentTree` clone. The last two
