@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Your own center-map zoom**: right-click the compass to pick the zoom level the center button uses, and it stays that way for you.
-- **The loader says what it is doing**: while a map loads, the spinner names the file being read, counts it off against the rest, and says when the map itself is being built.
+- **The loader says what it is doing**: the spinner names the file being read, counts it off against the rest, and keeps saying what it is waiting for — building the map, drawing it, saving your session — until it disappears.
 
 ### Fixed 🐞
 
