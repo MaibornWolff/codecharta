@@ -29,7 +29,8 @@ export function selectTopWords(words: DomainWord[], sizingMode: WordCloudSizingM
             siftDown(worstFirst, 0)
         }
     }
-    return worstFirst.sort((one, other) => (ranksAbove(one, other) ? -1 : 1)).map(({ word }) => word)
+    worstFirst.sort((one, other) => (ranksAbove(one, other) ? -1 : 1))
+    return worstFirst.map(({ word }) => word)
 }
 
 /** Higher value first; equal values keep the caller's order, so the cut-off never depends on the heap. */
