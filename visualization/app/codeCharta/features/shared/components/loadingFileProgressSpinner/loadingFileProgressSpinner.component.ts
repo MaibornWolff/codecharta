@@ -15,12 +15,8 @@ export class LoadingFileProgressSpinnerComponent {
 
     readonly view = input.required<ViewId>()
 
-    /**
-     * The fade is delayed so that a change taking only a moment does not make the view blink. A spinner
-     * that is mounted into a load already under way has no such moment to hide: it takes over from the
-     * boot indicator, and fading in would show the half-built application first. So only a load that
-     * starts while the spinner is already on screen fades in.
-     */
+    /** Only a load starting while the spinner is on screen fades in: one mounted into a load already
+     * under way would show the half-built application through the delay. */
     protected readonly loadingStateStream = computed(() =>
         this.loadingFileProgressSpinnerService
             .isLoading$(this.view())

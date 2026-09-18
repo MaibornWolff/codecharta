@@ -1,10 +1,6 @@
 import { BehaviorSubject, Observable } from "rxjs"
 
-/**
- * What the loader is busy with, shown under the spinner. A large project spends seconds behind that
- * spinner, and an unlabelled one says only that something is happening — not what, nor how far along.
- * Null whenever nothing is loading.
- */
+/** What the loader is busy with, shown under the spinner. Null whenever nothing is loading. */
 const loadPhaseSubject = new BehaviorSubject<string | null>(null)
 
 export const loadPhase$: Observable<string | null> = loadPhaseSubject.asObservable()

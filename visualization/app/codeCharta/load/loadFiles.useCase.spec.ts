@@ -321,8 +321,7 @@ describe("LoadFilesUseCase", () => {
             // Act
             await loadFilesUseCase.loadOnBoot()
 
-            // Assert — restored files are already parsed and decorated, so they are set directly rather
-            // than sent back through the parser to build a copy of every map that is then replaced
+            // Assert — restored files are already parsed and decorated, so they are set directly
             expect(loadFileService.loadFiles).not.toHaveBeenCalled()
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             // asserted as a plain action literal (not the setAmountOfTopLabels creator): amountOfTopLabels
@@ -553,8 +552,7 @@ describe("LoadFilesUseCase", () => {
             // Act
             await loadFilesUseCase.loadOnBoot()
 
-            // Assert — nothing else sets it outside delta mode, and the root path keys the domain words,
-            // the blacklist and every node lookup
+            // Assert — the root path keys the domain words, the blacklist and every node lookup
             expect(updateRootSpy).toHaveBeenCalledWith(FILE_STATES[0].file.map.name)
             updateRootSpy.mockRestore()
         })

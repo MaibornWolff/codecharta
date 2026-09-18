@@ -31,8 +31,7 @@ jest.mock("../../../stores/rootStore/indexedDB/indexedDBWriter", () => {
 })
 
 describe("SaveCcStateEffect", () => {
-    // What the record leaves out — the files, the derived word bank — is the writer's business; the
-    // effect hands it the whole snapshot.
+    // What the record leaves out is the writer's business; the effect hands it the whole snapshot.
     const state = { domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } }, files: [] }
     let actions$: Subject<Action>
 
@@ -172,8 +171,7 @@ describe("SaveCcStateEffect", () => {
     })
 
     it("should report a failed save and stop waiting for it", async () => {
-        // Arrange - nobody awaits the write, so a rejected one would otherwise pass silently and leave
-        // the session marked as still saving
+        // Arrange - nobody awaits the write, so a rejected one would pass silently
         const store = TestBed.inject(MockStore)
         const failure = new Error("the quota is exhausted")
         ;(writeCcState as jest.Mock).mockRejectedValueOnce(failure)

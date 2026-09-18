@@ -325,8 +325,7 @@ describe("WordCloudComponent", () => {
         await settle()
         jest.clearAllMocks()
 
-        // Act — a new word queues a debounced layout, the view is left inside that window, and comes
-        // back to the very same box
+        // Act — a debounced layout is queued, then the view leaves and returns to the very same box
         words$.next([{ text: "payment", frequency: 40 }])
         fixture.detectChanges()
         measuredContainerWidth = 0

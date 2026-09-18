@@ -73,8 +73,7 @@ describe("structureTreeSelector", () => {
             expect(accumulatedData.map.path).toBe("/root1")
         })
 
-        // The selector is memoized and no longer copies up front, because every copy duplicates each node
-        // of each loaded map. These two pin what makes that safe.
+        // These two pin what makes it safe to hand out a memoized result that was never copied up front.
         it("should not mutate the given file states in delta mode", () => {
             // Arrange — matching map names, so a delta is built instead of an aggregation
             const reference = fileStateNamed("reference", FileSelectionState.Reference)

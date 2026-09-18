@@ -1,10 +1,7 @@
 import { BehaviorSubject, distinctUntilChanged, map, Observable } from "rxjs"
 
-/**
- * Whether a session save is still waiting to run or running. Writing the session copies it on the main
- * thread, so the map is not usable while it happens — the spinner stays up rather than inviting the
- * reader to drag a map that cannot answer yet.
- */
+/** Whether a save is waiting or running. It copies the session on the main thread, so the map is not
+ * usable while it happens. */
 const pendingSaves = new BehaviorSubject(0)
 
 export const isPendingSave$: Observable<boolean> = pendingSaves.pipe(

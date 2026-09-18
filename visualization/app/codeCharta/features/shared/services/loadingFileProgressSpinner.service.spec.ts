@@ -82,8 +82,7 @@ describe("LoadingFileProgressSpinnerService", () => {
     })
 
     it("should stay up across a momentary gap between the work it waits for", async () => {
-        // Arrange — the end of a load: the map finishes drawing a moment before the save it triggered
-        // is scheduled, and each of those is a separate signal
+        // Arrange — the end of a load: the draw finishes a moment before the save it triggered starts
         viewReadinessStore.markAllStale()
         const reported: boolean[] = []
         const subscription = service.isLoading$("metrics").subscribe(isLoading => reported.push(isLoading))

@@ -97,8 +97,7 @@ export class LoadInitialFileStore {
 
     private static readonly optionalDomainStateKeys = new Set(["sortingOrder", "sortingOrderAscending", "searchPattern", "hiddenWords"])
 
-    // The merged word bank is derived from the loaded files and deliberately not persisted, so a blob
-    // without it is complete rather than damaged and must not be reported as partly restored.
+    // The merged word bank is derived and deliberately not persisted, so a blob without it is complete.
     private static readonly optionalDomainLensSourceKeys = new Set(["words"])
 
     // transient interaction ids; never restored from a previous session's persisted state.
@@ -199,8 +198,7 @@ export class LoadInitialFileStore {
         )
     }
 
-    /** Which keys of the current slice the persisted one does not have at all, bar the ones it is never
-     * expected to carry. Dispatches nothing. */
+    /** Which keys of the current slice the persisted one lacks, bar those it never carries. Dispatches nothing. */
     private missingKeysOf<Slice extends object>(
         currentSlice: Slice,
         savedSlice: Slice,

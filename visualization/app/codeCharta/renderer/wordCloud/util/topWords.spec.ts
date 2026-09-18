@@ -100,9 +100,8 @@ describe("selectTopWords", () => {
     })
 
     it("should pick what a full sort would, from a heap deep enough to sink through", () => {
-        // Arrange — the cases above hold at most two words, so a word never sinks more than one level.
-        // 200 words over 20 frequencies build a heap several levels deep, full of ties that decide the
-        // cut-off; the seed is fixed so a failure is always the same case.
+        // Arrange — the cases above hold at most two words, so nothing sinks more than one level there.
+        // 200 words over 20 frequencies build a deep heap full of ties; the seed keeps it reproducible.
         const nextRandom = seededRandom(20_260_918)
         const words: DomainWord[] = Array.from({ length: 200 }, (_, index) => ({
             text: `word${index}`,

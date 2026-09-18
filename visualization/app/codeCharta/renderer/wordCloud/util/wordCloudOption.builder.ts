@@ -11,8 +11,7 @@ const EMPHASIS_SHADOW_COLOR = "#333"
 const WORD_FONT_FAMILY = 'Roboto, "Helvetica Neue", sans-serif'
 const BLURRED_WORD_OPACITY = 0.55
 
-/** Takes the words already ranked and truncated to the top-N: ranking a whole vocabulary is expensive
- * enough that the caller does it once and hands the result to everything that needs it. */
+/** Takes the words already ranked and truncated: the caller ranks once for everything that needs it. */
 export function buildWordCloudOption(
     topWords: DomainWord[],
     settings: WordCloudSettings,

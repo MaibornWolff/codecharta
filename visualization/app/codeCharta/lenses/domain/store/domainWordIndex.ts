@@ -4,12 +4,8 @@ import { sumFrequenciesAndKeepStrongestTfidf } from "../../../util/domainWord.co
 const PATH_SEPARATOR = "/"
 
 /**
- * A bank records the words of files. A folder's words are the sum of the files beneath it, derived here
- * on first use and kept, rather than written into the bank: a producer that records them too would make
- * the same project carry its whole vocabulary once per ancestor.
- *
- * A recorded folder entry is ignored for that reason. Loading a file an older producer wrote next to a
- * newer one would otherwise show one folder's numbers as a recorded roll-up and its neighbour's as a sum.
+ * A folder's words are summed from the files beneath it on first use, never read from the bank. A folder
+ * entry an older producer recorded is ignored, so one tree cannot mix recorded and summed numbers.
  */
 export interface DomainWordIndex {
     readonly pathsWithWords: ReadonlySet<string>

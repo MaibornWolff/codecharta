@@ -186,9 +186,8 @@ describe("LoadInitialFileStore", () => {
         })
 
         it("should dispatch nothing for a state that came back through IndexedDB, so the rebuilt bank survives", async () => {
-            // Arrange — by the time this runs the reconciliation has rebuilt the bank from the loaded
-            // files, so the CURRENT bank is full. That is the case the wipe needed: against the default
-            // empty bank an empty persisted one compares equal and the bug stays invisible.
+            // Arrange — the CURRENT bank is full, as the reconciliation leaves it: against an empty one
+            // an empty persisted bank compares equal and the wipe stays invisible.
             const mergedBank = { "/root": [{ text: "invoice", frequency: 10 }] }
             setup([
                 {
@@ -202,8 +201,7 @@ describe("LoadInitialFileStore", () => {
             // Act
             const missingKeys = loadInitialFileStore.applyDomainLensSource(restored.domainLensSource)
 
-            // Assert — persisted beats file-derived, so anything dispatched here lands on top of the
-            // rebuilt bank: the domain view goes empty and a reload does not bring it back
+            // Assert — persisted beats file-derived, so anything dispatched here wipes the rebuilt bank
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([])
         })

@@ -51,8 +51,7 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
 
     private fun toDomainWord(word: WordFrequency): DomainWord = DomainWord(word.text, word.frequency, word.tfidf?.let(::roundedScore))
 
-    // A score belongs to the word and the corpus, so the same value is written on every file that uses
-    // the word. At full double precision that repetition is about a third of the lens.
+    // The same score is written on every file that uses the word; at full precision that is a third of the lens.
     private fun roundedScore(score: Double): Double = round(score * SCORE_PRECISION) / SCORE_PRECISION
 
     private fun segmentsOf(path: String): List<String> = PathFactory.extractOSIndependentPath(path).edgesList
