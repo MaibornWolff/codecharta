@@ -500,10 +500,23 @@ export async function writeCcState(state: CcState) {
  * this record, and the save that the restore itself triggers would then clone every loaded map to write
  * back what is already there — the single most expensive thing a reload does.
  */
-let persistedFiles: FileState[] | null = null
+let persistedFiles: readonly FileState[] | null = null
+
+/**
+ * Whether these are the file states the record already holds. The comparison is per file state, not on
+ * the array: the store sorts a copy on every `setFiles`, so the array it holds is never the one that was
+ * read — while the file states inside it stay the very same objects until one of them actually changes.
+ */
+function holdsThePersistedFileStates(files: FileState[]): boolean {
+    const persisted = persistedFiles
+    if (persisted === null || persisted.length !== files.length) {
+        return false
+    }
+    return files.every(file => persisted.includes(file))
+}
 
 export async function writeCcFiles(files: FileState[]) {
-    if (files === persistedFiles) {
+    if (holdsThePersistedFileStates(files)) {
         return
     }
     const database = await openCodeChartaDB()

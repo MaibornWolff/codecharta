@@ -1224,9 +1224,9 @@ describe("IndexedDBWriter", () => {
             const restored = await readCcState()
             const putSpy = jest.spyOn(IDBObjectStore.prototype, "put")
 
-            // Act — a restore puts the very array it read into the store, and the save it triggers hands
-            // that same array straight back
-            await writeCcFiles(restored.files)
+            // Act — the store sorts a copy of what it is given, so the save hands back a different array
+            // holding the same file states, exactly as a restore does
+            await writeCcFiles([...restored.files])
 
             // Assert — writing it would structured-clone every loaded map on the main thread to store
             // what is already stored, which is the most expensive thing a reload does
