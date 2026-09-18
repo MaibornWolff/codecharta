@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Much smaller domain files**: the domain parser records a word once, on the file it came from, instead of
+  repeating it on every folder above it, and writes tf-idf scores to three decimals — a parsed project takes
+  about a third of the space it did, and the visualization adds a folder's words up as you open it.
+
 ## [2.0.2] - 2026-09-10
 
 ### Changed

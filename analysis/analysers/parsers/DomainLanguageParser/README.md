@@ -6,7 +6,8 @@ This parser extracts the *domain vocabulary* of a codebase: it tokenizes identif
 string literals across the supported languages, filters out programming-language keywords and
 technical stop words, and counts how often each (optionally n-gram) word occurs. The resulting
 word-frequency data is written into the reserved cc.json 2.0 **`domain` lens**, keyed by node id, for
-every file and aggregated for every folder (and the project root).
+every file. Folders carry no entry of their own: a reader sums the files beneath one, which keeps a
+project from repeating its whole vocabulary on every level of the tree.
 
 The `domain` lens payload keys its entries under `nodes`:
 `{ "nodes": { "<nodeId>": { "words": [{ "text", "frequency", "tfidf"? }, ...] } } }`.

@@ -34,8 +34,7 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
     @CommandLine.Option(
         names = ["--limit"],
         description = [
-            "limit each node to its top X words (all words if not set); a folder aggregates the words that " +
-                "survived each of its files' limit, so its frequencies are not full corpus totals"
+            "limit each file to its top X words (all words if not set)"
         ]
     )
     private var limit: Int? = null

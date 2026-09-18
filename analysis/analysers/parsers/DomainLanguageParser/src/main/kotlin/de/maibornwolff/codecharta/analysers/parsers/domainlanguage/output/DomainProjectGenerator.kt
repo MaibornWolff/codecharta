@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import kotlin.math.round
 
 class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = ProjectBuilder()) {
     fun generate(result: DomainAnalysisResult, pipedProject: Project? = null): Project {
@@ -48,7 +49,11 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
         return DomainLens(nodes)
     }
 
-    private fun toDomainWord(word: WordFrequency): DomainWord = DomainWord(word.text, word.frequency, word.tfidf)
+    private fun toDomainWord(word: WordFrequency): DomainWord = DomainWord(word.text, word.frequency, word.tfidf?.let(::roundedScore))
+
+    // A score belongs to the word and the corpus, so the same value is written on every file that uses
+    // the word. At full double precision that repetition is about a third of the lens.
+    private fun roundedScore(score: Double): Double = round(score * SCORE_PRECISION) / SCORE_PRECISION
 
     private fun segmentsOf(path: String): List<String> = PathFactory.extractOSIndependentPath(path).edgesList
 
@@ -56,5 +61,6 @@ class DomainProjectGenerator(private val projectBuilder: ProjectBuilder = Projec
 
     companion object {
         private const val SEGMENT_SEPARATOR = "/"
+        private const val SCORE_PRECISION = 1000.0
     }
 }

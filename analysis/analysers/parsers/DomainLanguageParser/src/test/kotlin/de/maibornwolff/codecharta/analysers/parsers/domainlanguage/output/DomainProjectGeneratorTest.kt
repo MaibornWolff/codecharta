@@ -121,6 +121,29 @@ class DomainProjectGeneratorTest {
     }
 
     @Test
+    fun `should round tfidf to three decimals`() {
+        // Arrange - the extremes a real corpus produces: a word in one file of many, and one in all but one
+        val result = DomainAnalysisResult(
+            filePaths = listOf("App.kt"),
+            wordsByPath =
+                mapOf(
+                    "App.kt" to
+                        listOf(
+                            WordFrequency("rare", 15848, 109618.90836377426),
+                            WordFrequency("common", 1, 0.4342944819032518)
+                        )
+                )
+        )
+
+        // Act
+        val words = wordsOf(serialize(DomainProjectGenerator().generate(result)), NodeId.fromSegments(listOf("App.kt"), NodeType.File))
+
+        // Assert
+        assertEquals("109618.908", words[0].asJsonObject.get("tfidf").asString)
+        assertEquals("0.434", words[1].asJsonObject.get("tfidf").asString)
+    }
+
+    @Test
     fun `should produce identical output across runs for the same input`() {
         // Arrange
         val result = sampleResult()
