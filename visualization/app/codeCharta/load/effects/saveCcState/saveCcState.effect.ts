@@ -33,10 +33,8 @@ export class SaveCcStateEffect {
         { dispatch: false }
     )
 
-    /**
-     * The loaded files are written on their own, and only when they can have changed. They are by far
-     * the largest thing the session holds, so a colour or metric change must not carry them along.
-     */
+    /** The files are written on their own, only when they can have changed: they are by far the largest
+     * thing the session holds. */
     saveCcFiles$ = createEffect(
         () =>
             this.actions$.pipe(
@@ -50,8 +48,7 @@ export class SaveCcStateEffect {
     private saveWhenIdle(write: () => Promise<void>): void {
         beginPendingSave()
         runWhenIdle(() => {
-            // Nobody awaits the write, so a failed save has to report itself here or pass silently -
-            // and `finally` alone would re-throw it as an unhandled rejection.
+            // Nobody awaits the write: unreported it passes silently, and `finally` alone re-throws.
             void write()
                 .catch(error => console.error("Failed to persist the session:", error))
                 .finally(endPendingSave)

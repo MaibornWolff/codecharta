@@ -30,7 +30,6 @@ export class UploadFilesService {
 
     private async readNameDataPairs(fileList: FileList): Promise<NameDataPair[]> {
         // Sequential on purpose: reading files in parallel keeps every unpacked file in memory at once.
-        // Which also means the reader can be told which file is being read, and how many are left.
         const pickedFiles = Array.from(fileList)
         const nameDataPairs: NameDataPair[] = []
         for (let index = 0; index < pickedFiles.length; index++) {

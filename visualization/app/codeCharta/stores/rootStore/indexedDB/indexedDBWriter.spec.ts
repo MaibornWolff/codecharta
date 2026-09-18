@@ -1079,8 +1079,7 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         // Act
         const restored = await readCcState()
 
-        // Assert — the stale bank must not reach the restore, which would apply it over the bank the
-        // reconciliation just rebuilt from the files
+        // Assert — a stale bank reaching the restore would be applied over the rebuilt one
         expect(restored.domainLensSource).not.toHaveProperty("words")
     })
 
@@ -1103,8 +1102,7 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         const database = await openCodeChartaDB()
         database.close()
 
-        // Assert — reading it would deserialize the whole session a second time during boot, beside the
-        // copy the load itself builds
+        // Assert — reading it would deserialize the whole session a second time during boot
         expect(getSpy).not.toHaveBeenCalled()
         getSpy.mockRestore()
     })
@@ -1127,8 +1125,7 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         // Act
         await readCcState()
 
-        // Assert — rewriting it would copy the whole session during boot, which is what exhausts the
-        // heap on a large project; the record is left as it is and the next save writes the split
+        // Assert — rewriting it would copy the whole session during boot and exhaust the heap
         const result = await stubReadCcState()
         expect(result.state.files).toEqual(loadedFiles)
     })
@@ -1167,8 +1164,7 @@ describe("IndexedDBWriter", () => {
             // Act
             await writeCcState(defaultState)
 
-            // Assert — an IndexedDB write copies its value on the main thread, so a setting must not
-            // carry every loaded map along with it
+            // Assert — a write copies its value on the main thread, so a setting must not carry the maps
             const result = await stubReadCcState()
             expect(result.state).not.toHaveProperty("files")
             expect(result.state.mapState).toEqual(defaultState.mapState)
@@ -1197,8 +1193,7 @@ describe("IndexedDBWriter", () => {
             // Act
             await writeCcState(stateWithMergedBank)
 
-            // Assert — an empty bank that is PRESENT would be applied over the rebuilt one on restore,
-            // because persisted beats file-derived, and would wipe it
+            // Assert — an empty bank that is PRESENT would be applied over the rebuilt one and wipe it
             const result = await stubReadCcState()
             expect(result.state.domainLensSource).not.toHaveProperty("words")
         })
@@ -1224,12 +1219,10 @@ describe("IndexedDBWriter", () => {
             const restored = await readCcState()
             const putSpy = jest.spyOn(IDBObjectStore.prototype, "put")
 
-            // Act — the store sorts a copy of what it is given, so the save hands back a different array
-            // holding the same file states, exactly as a restore does
+            // Act — the store sorts a copy, so the save hands back a different array of the same states
             await writeCcFiles([...restored.files])
 
-            // Assert — writing it would structured-clone every loaded map on the main thread to store
-            // what is already stored, which is the most expensive thing a reload does
+            // Assert — writing it would clone every loaded map to store what is already stored
             expect(putSpy).not.toHaveBeenCalled()
             putSpy.mockRestore()
         })

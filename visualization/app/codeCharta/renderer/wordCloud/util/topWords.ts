@@ -8,11 +8,8 @@ interface RankedWord {
     index: number
 }
 
-/**
- * The highest ranked `topN` words, best first. A project can carry hundreds of thousands of words while
- * the cloud draws a few hundred of them, so the ranking keeps a heap of the best it has seen instead of
- * sorting everything: sorting a 300k word vocabulary costs about 44 ms, and this runs on every render.
- */
+/** The highest ranked `topN` words, best first. A heap of the best seen so far, rather than a full sort:
+ * this runs on every render, and sorting a 300k word vocabulary costs about 44 ms. */
 export function selectTopWords(words: DomainWord[], sizingMode: WordCloudSizingMode, topN: number): DomainWord[] {
     if (topN <= 0) {
         return []

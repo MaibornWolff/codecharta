@@ -50,8 +50,7 @@ describe("LoadingFileProgressSpinnerComponent", () => {
     })
 
     it("should appear at once when it is mounted into a load already under way", async () => {
-        // Arrange — the boot indicator hands over mid-load, and a delayed fade would show the
-        // half-built application in between
+        // Arrange — the boot indicator hands over mid-load; a delayed fade would show what is behind
         isLoading$.next(true)
 
         // Act

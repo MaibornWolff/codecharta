@@ -79,8 +79,7 @@ export class LoadFilesUseCase {
                 this.store.dispatch(setIsLoadingFile({ value: false }))
                 return
             }
-            // Building the map runs as one synchronous block, so the phase has to reach the screen
-            // before it starts — afterwards there is no frame left to paint it in.
+            // The phase has to reach the screen first: the build that follows runs as one blocking step.
             setLoadPhase(BUILDING_MAP_PHASE)
             await nextPaint()
             this.commit(nameDataPairs, this.provenance("upload", { areSampleFiles: false }))
@@ -259,11 +258,9 @@ export class LoadFilesUseCase {
     }
 
     /**
-     * Restored files are what a previous load already produced: parsed, validated and decorated with the
-     * paths everything else is keyed on. Sending them back through the parser builds a second copy of
-     * every map and then replaces it with these — on a large project the most expensive avoidable step
-     * of a reload — so they are set directly, keeping `commit`'s contract that `filesLoaded` is
-     * dispatched last and synchronously.
+     * Restored files were already parsed, validated and decorated by the load that produced them, so they
+     * are set directly: re-parsing would build a second copy of every map only to replace it with these.
+     * Keeps `commit`'s contract that `filesLoaded` is dispatched last and synchronously.
      */
     private commitRestoredFiles(savedFileStates: FileState[], provenance: FilesLoadedPayload): void {
         if (savedFileStates.length === 0) {
@@ -271,8 +268,8 @@ export class LoadFilesUseCase {
             throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
         }
 
-        // LoadFileService does this from the file it has just parsed. Nothing else does it outside delta
-        // mode, and the root path keys the domain words, the blacklist and every node lookup.
+        // Only LoadFileService does this otherwise, from the file it parses — and the root path keys the
+        // domain words, the blacklist and every node lookup.
         fileRoot.updateRoot(savedFileStates[0].file.map.name)
         this.loadInitialFileStore.setFiles(savedFileStates)
         this.store.dispatch(filesLoaded(provenance))

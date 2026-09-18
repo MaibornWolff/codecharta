@@ -14,13 +14,8 @@ const DRAWING_PHASE_OF_VIEW: Record<ViewId, string> = {
 }
 const SAVING_SESSION_PHASE = "Saving your session"
 
-/**
- * How long the spinner stays up after everything it waits for has stopped.
- *
- * A load hands over between signals rather than ending at one: the map finishes drawing a moment before
- * the save it triggered is scheduled. Without this the spinner drops into that gap and comes back with a
- * fresh delayed fade, which reads as a flash followed by a second spinner.
- */
+/** How long the spinner stays up after the last thing it waits for stops. A load hands over between
+ * signals, and without the hold that gap reads as a flash followed by a second spinner. */
 const SETTLE_HOLD_MS = 400
 
 @Injectable({
@@ -43,8 +38,7 @@ export class LoadingFileProgressSpinnerService {
         ]).pipe(
             map(sources => sources.some(Boolean)),
             distinctUntilChanged(),
-            // Busy takes effect at once; idle has to hold, so that work picking up again within the hold
-            // never shows as the spinner going away and coming back.
+            // Busy takes effect at once, idle waits out the hold, so work picking up again shows no gap.
             switchMap(isLoading => (isLoading ? of(true) : timer(SETTLE_HOLD_MS).pipe(map(() => false)))),
             distinctUntilChanged()
         )
@@ -61,8 +55,7 @@ export class LoadingFileProgressSpinnerService {
         )
     }
 
-    // A pending save outranks the draw although the draw comes first: the save blocks the main thread
-    // for as long as it copies the session, while the draw only waits for the next frames.
+    // The save outranks the draw: it blocks the main thread, while the draw only waits for frames.
     private phaseOfRemainingWork(view: ViewId, isDrawing: boolean, isSavePending: boolean): string | null {
         if (isSavePending) {
             return SAVING_SESSION_PHASE

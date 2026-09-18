@@ -16,10 +16,7 @@ export interface WordListWindow {
 
 const OVERSCAN_ROWS = 6
 
-/** How much of the list to render before it has been measured. The viewport is always unmeasured on the
- * very first render: the scroll host only exists once the word list is on screen, and it is measured in
- * an effect that runs after that render. Rendering the whole list instead would build one row per word
- * in the project, which a large vocabulary makes cost seconds before the first measurement corrects it. */
+/** How much to render before the viewport is measured, which cannot happen until the list is on screen. */
 const UNMEASURED_ROWS = 50
 
 /**

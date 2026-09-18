@@ -152,8 +152,7 @@ export class WordCloudChartHost {
      * inside the debounce window, and a render that never happened would otherwise be skipped forever. */
     render(option: WordCloudOption, onRendered: () => void): void {
         this.cancelPendingRender()
-        // The debounce exists to coalesce a burst of changes into one layout. The first cloud has no
-        // drawn layout to protect, and waiting only delays the view's first draw, so it is drawn at once.
+        // The first cloud has no drawn layout for the debounce to protect, only a first draw to delay.
         if (!this.hasDrawnACloud) {
             this.draw(option, onRendered)
             return

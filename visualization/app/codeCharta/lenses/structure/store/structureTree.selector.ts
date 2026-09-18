@@ -8,13 +8,9 @@ import { clone } from "../../../util/clone"
 import { getDeltaFile } from "../../../util/getDeltaFile"
 
 /**
- * Copies are made where they are needed rather than up front, because each one duplicates every node of
- * every loaded map — on a large project that is hundreds of megabytes per copy, and this selector is
- * memoized, so what it returns is handed to every recompute and must never be mutated in place.
- *
- * `AggregationGenerator` already copies what it is given, so the aggregation paths need nothing. The
- * delta path does: `DeltaGenerator` writes deltas, file counts and zeroed attributes straight into the
- * nodes it walks, and those would be the store's own.
+ * Copies are made where they are needed, not up front: each duplicates every node of every loaded map.
+ * Only the delta path needs one, because `DeltaGenerator` writes into the nodes it walks — and what this
+ * memoized selector returns must never be mutated.
  */
 export const _getUndecoratedAccumulatedData = (fileStates: FileState[]): CCFile | undefined => {
     if (isPartialState(fileStates)) {
@@ -31,9 +27,8 @@ export const _getUndecoratedAccumulatedData = (fileStates: FileState[]): CCFile 
     return getDeltaFile(clone(fileStates))
 }
 
-// The domain word bank is no part of the structure: nothing downstream of this selector reads it. It is
-// dropped before the deep clone rather than after, so neither this clone nor the ones further down the
-// chain ever copy it — a bank can hold millions of entries and dominates every recompute it rides through.
+// Dropped before the deep clone, not after: nothing downstream reads the bank, and it can hold millions
+// of entries that every clone in the chain would otherwise copy.
 const withoutDomainWords = (fileState: FileState): FileState => ({
     ...fileState,
     file: {

@@ -30,8 +30,7 @@ interface CountedNode {
     children: CountedNode[]
 }
 
-/** A bank records the words of files, so a folder counts what its files hold. An aggregate an older
- * producer recorded on the folder is ignored, the way a folder's word list is derived rather than read. */
+/** A folder counts what its files hold; an aggregate an older producer recorded on it is ignored. */
 function countOccurrences(node: CodeMapNode, words: DomainLensData, word: string): CountedNode {
     const children = (node.children ?? []).map(child => countOccurrences(child, words, word))
     const count = isLeaf(node) ? frequencyOf(words[node.path], word) : sumOf(children)
