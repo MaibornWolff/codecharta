@@ -81,6 +81,22 @@ describe("LoadingFileProgressSpinnerService", () => {
         expect(await firstValueFrom(service.isLoading$("domain"))).toBe(false)
     })
 
+    it("should stay up across a momentary gap between the work it waits for", async () => {
+        // Arrange — the end of a load: the map finishes drawing a moment before the save it triggered
+        // is scheduled, and each of those is a separate signal
+        viewReadinessStore.markAllStale()
+        const reported: boolean[] = []
+        const subscription = service.isLoading$("metrics").subscribe(isLoading => reported.push(isLoading))
+
+        // Act
+        viewReadinessStore.markReady("metrics")
+        beginPendingSave()
+
+        // Assert — going down and up again here is what the reader sees as a flash and a second spinner
+        expect(reported).toEqual([true])
+        subscription.unsubscribe()
+    })
+
     it("should report busy while a scenario is being applied", async () => {
         // Arrange — a scenario rewrites the settings behind every view at once
         viewReadinessStore.markReady("domain")
