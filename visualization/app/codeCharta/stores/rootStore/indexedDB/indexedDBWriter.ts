@@ -484,15 +484,20 @@ export async function writeCcState(state: CcState) {
     // A session persisted before the split keeps its files in the settings record until something saves
     // them into their own. Dropping them here while that record does not exist yet would lose the whole
     // session, so this one save writes both. `getKey` answers that without reading the files back.
-    if ((await tx.store.getKey(CCSTATE_FILES_ID)) === undefined) {
+    const writesTheFilesRecordToo = (await tx.store.getKey(CCSTATE_FILES_ID)) === undefined
+    if (writesTheFilesRecordToo) {
         await tx.store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files: state.files })
-        persistedFiles = state.files
     }
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
         state: toPersistedSettings(withoutFiles(state))
     })
     await tx.done
+    // Only once the transaction committed: a cache claiming files that were never written would make
+    // the next save skip them, and nothing would write them again.
+    if (writesTheFilesRecordToo) {
+        persistedFiles = state.files
+    }
 }
 
 /**
@@ -509,7 +514,7 @@ let persistedFiles: readonly FileState[] | null = null
  */
 function holdsThePersistedFileStates(files: FileState[]): boolean {
     const persisted = persistedFiles
-    if (persisted === null || persisted.length !== files.length) {
+    if (persisted?.length !== files.length) {
         return false
     }
     return files.every(file => persisted.includes(file))
