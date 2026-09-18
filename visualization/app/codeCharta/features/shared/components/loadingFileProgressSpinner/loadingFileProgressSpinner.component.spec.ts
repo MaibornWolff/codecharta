@@ -83,7 +83,7 @@ describe("LoadingFileProgressSpinnerComponent", () => {
         const phaseText = await renderPhaseText()
 
         // Assert
-        expect(phaseText.textContent).toBe("Saving your session")
+        expect(phaseText.textContent.trim()).toBe("Saving your session")
     })
 
     it("should say nothing while there is no phase to name", async () => {
