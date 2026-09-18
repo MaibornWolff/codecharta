@@ -1,7 +1,7 @@
 ---
 name: loader-covers-the-whole-boot
 issue: <none>
-state: progress
+state: complete
 version: unreleased
 ---
 
@@ -50,16 +50,20 @@ live.
   into a load that is already under way has no such moment to hide, so it appears at once; only a load
   starting while the spinner is on screen fades in.
 - Give both overlays the same background as well, so nothing about the swap is visible.
+- There is a second gap, at the other end of the load, found by sampling opacity rather than visibility:
+  the map finishes drawing a moment before the save it triggered is scheduled, so every signal is briefly
+  false. The spinner hid there and came back with a fresh fade. Busy has to take effect at once while
+  idle waits out a short hold, so that work picking up again inside it never shows as a second spinner.
 
 ## Steps
 
 - [x] Complete Task 1: Paint something before Angular has booted
 - [x] Complete Task 2: Keep the indicator up through the boot load
 - [x] Complete Task 3: Cover the whole application while loading
-- [ ] Complete Task 4: Hand over to the view's spinner without a flash
+- [x] Complete Task 4: Hand over to the view's spinner without a flash
 - [x] Update `visualization/CHANGELOG.md` (rewrite the existing unreleased loader entry)
 - [x] Full gate green: `npm run format:check`, `npm test`, `npm run lint`, `npx tsc --noEmit`
-- [ ] Re-verify the hand-over in a browser, sampling opacity and not only visibility
+- [x] Re-verify the hand-over in a browser, sampling opacity and not only visibility
 
 ## Notes
 
@@ -85,3 +89,8 @@ live.
   view spinner       until the map is ready            (top 0, full viewport height)
   samples with nothing on screen: 0
   ```
+
+- The first run of that check reported no gap although one was there: it sampled `visibility`, which a
+  delayed fade leaves untouched while holding the element at opacity 0. Sampling opacity as well found
+  both gaps — the hand-over, and the one at the end of the load. After task 4, with the same 1.5 s
+  bundle delay, the whole load runs with something on screen at every sample.
