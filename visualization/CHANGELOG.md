@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.5.0] - 2026-09-16
+
 ### Added 🚀
 
 - **Your own center-map zoom**: right-click the compass to pick the zoom level the center button uses, and it stays that way for you.
