@@ -1,0 +1,7 @@
+<div id="boot-loading-indicator" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white text-center">
+    <div class="h-24 w-24 animate-spin rounded-full border-4 border-base-300 [border-top-color:var(--color-primary)]"></div>
+    @let loadPhase = loadPhaseStream | async;
+    @if (loadPhase) {
+        <p class="mt-4 text-sm opacity-70" data-testid="boot-loading-phase">{{ loadPhase }}</p>
+    }
+</div>
