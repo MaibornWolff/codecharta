@@ -1,5 +1,5 @@
 import { DomainWord } from "../../../model/codeCharta.model"
-import { WordCloudSizingMode } from "../../../model/wordCloud.model"
+import { WordCloudSizingMode, wordSizingValue } from "../../../model/wordCloud.model"
 import { selectTopWords } from "./topWords"
 
 describe("selectTopWords", () => {
@@ -98,4 +98,38 @@ describe("selectTopWords", () => {
         // Assert
         expect(words.map(word => word.text)).toEqual(["low", "high"])
     })
+
+    it("should pick what a full sort would, from a heap deep enough to sink through", () => {
+        // Arrange — the cases above hold at most two words, so a word never sinks more than one level.
+        // 200 words over 20 frequencies build a heap several levels deep, full of ties that decide the
+        // cut-off; the seed is fixed so a failure is always the same case.
+        const nextRandom = seededRandom(20_260_918)
+        const words: DomainWord[] = Array.from({ length: 200 }, (_, index) => ({
+            text: `word${index}`,
+            frequency: Math.floor(nextRandom() * 20)
+        }))
+
+        // Act
+        const topWords = selectTopWords(words, WordCloudSizingMode.frequency, 25)
+
+        // Assert
+        expect(topWords.map(word => word.text)).toEqual(bestBySorting(words, WordCloudSizingMode.frequency, 25))
+    })
 })
+
+/** What the ranking must agree with: sort everything, keep the order given for equal values, truncate. */
+function bestBySorting(words: DomainWord[], sizingMode: WordCloudSizingMode, topN: number): string[] {
+    return words
+        .map((word, index) => ({ word, value: wordSizingValue(word, sizingMode), index }))
+        .sort((one, other) => other.value - one.value || one.index - other.index)
+        .slice(0, topN)
+        .map(({ word }) => word.text)
+}
+
+function seededRandom(seed: number): () => number {
+    let state = seed
+    return () => {
+        state = (state * 1_103_515_245 + 12_345) % 2_147_483_648
+        return state / 2_147_483_648
+    }
+}

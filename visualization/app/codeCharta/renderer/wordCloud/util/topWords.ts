@@ -52,16 +52,8 @@ function siftUp(heap: RankedWord[], startIndex: number): void {
 
 function siftDown(heap: RankedWord[], startIndex: number): void {
     let index = startIndex
-    for (;;) {
-        const left = 2 * index + 1
-        const right = left + 1
-        let worst = index
-        if (left < heap.length && ranksAbove(heap[worst], heap[left])) {
-            worst = left
-        }
-        if (right < heap.length && ranksAbove(heap[worst], heap[right])) {
-            worst = right
-        }
+    while (hasChild(heap, index)) {
+        const worst = worstOfNodeAndChildren(heap, index)
         if (worst === index) {
             return
         }
@@ -69,6 +61,23 @@ function siftDown(heap: RankedWord[], startIndex: number): void {
         index = worst
     }
 }
+
+const hasChild = (heap: RankedWord[], index: number): boolean => leftChildOf(index) < heap.length
+
+function worstOfNodeAndChildren(heap: RankedWord[], index: number): number {
+    const left = leftChildOf(index)
+    const right = left + 1
+    let worst = index
+    if (ranksAbove(heap[worst], heap[left])) {
+        worst = left
+    }
+    if (right < heap.length && ranksAbove(heap[worst], heap[right])) {
+        worst = right
+    }
+    return worst
+}
+
+const leftChildOf = (index: number): number => 2 * index + 1
 
 function swap(heap: RankedWord[], one: number, other: number): void {
     const swapped = heap[one]
