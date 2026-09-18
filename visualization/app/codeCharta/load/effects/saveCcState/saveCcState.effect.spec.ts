@@ -18,6 +18,7 @@ import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.fa
 import { writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setState } from "../../../stores/rootStore/state.actions"
 import { removeBlacklistItems, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
+import { isPendingSave$ } from "../../../util/busy/isPendingSave"
 import { SaveCcStateEffect } from "./saveCcState.effect"
 
 // Both resolve: the effect chains off the write to report when the save is no longer pending.
@@ -168,6 +169,29 @@ describe("SaveCcStateEffect", () => {
 
         // Assert
         await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
+    })
+
+    it("should report a failed save and stop waiting for it", async () => {
+        // Arrange - nobody awaits the write, so a rejected one would otherwise pass silently and leave
+        // the session marked as still saving
+        const store = TestBed.inject(MockStore)
+        const failure = new Error("the quota is exhausted")
+        ;(writeCcState as jest.Mock).mockRejectedValueOnce(failure)
+        const reportedErrors = jest.spyOn(console, "error").mockImplementation(() => undefined)
+        let isPending = true
+        const pendingSaves = isPendingSave$.subscribe(value => {
+            isPending = value
+        })
+
+        // Act
+        actions$.next(setShowIncomingEdges({ value: true }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(reportedErrors).toHaveBeenCalledWith("Failed to persist the session:", failure))
+        await waitFor(() => expect(isPending).toBe(false))
+        pendingSaves.unsubscribe()
+        reportedErrors.mockRestore()
     })
 
     it("should debounce save cc-state on multiple actions requiring saving cc-state", async () => {

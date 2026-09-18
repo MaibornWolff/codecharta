@@ -50,7 +50,11 @@ export class SaveCcStateEffect {
     private saveWhenIdle(write: () => Promise<void>): void {
         beginPendingSave()
         runWhenIdle(() => {
-            void write().finally(endPendingSave)
+            // Nobody awaits the write, so a failed save has to report itself here or pass silently -
+            // and `finally` alone would re-throw it as an unhandled rejection.
+            void write()
+                .catch(error => console.error("Failed to persist the session:", error))
+                .finally(endPendingSave)
         })
     }
 }
