@@ -1,9 +1,9 @@
-@let isLoading = isLoadingStream() | async;
+@let loadingState = loadingStateStream() | async;
 <div
     id="loading-gif-file"
     class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white/80 text-center"
-    [class.animate-fade-in-delayed]="isLoading"
-    [style.visibility]="isLoading ? 'visible' : 'hidden'"
+    [class.animate-fade-in-delayed]="loadingState?.fadesIn"
+    [style.visibility]="loadingState?.isLoading ? 'visible' : 'hidden'"
 >
     <div class="h-24 w-24 animate-spin rounded-full border-4 border-base-300 [border-top-color:var(--color-primary)]"></div>
     @let loadPhase = loadPhaseStream() | async;
