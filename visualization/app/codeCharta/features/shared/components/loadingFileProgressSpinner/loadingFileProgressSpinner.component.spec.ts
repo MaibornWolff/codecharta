@@ -24,20 +24,34 @@ describe("LoadingFileProgressSpinnerComponent", () => {
     })
 
     async function renderSpinner() {
-        const { container } = await render(LoadingFileProgressSpinnerComponent, { componentInputs: { view: "metrics" } })
-        return container
+        return render(LoadingFileProgressSpinnerComponent, { componentInputs: { view: "metrics" } })
     }
 
     async function renderOverlay() {
-        return (await renderSpinner()).querySelector<HTMLElement>("#loading-gif-file")
+        return (await renderSpinner()).container.querySelector<HTMLElement>("#loading-gif-file")
     }
 
     async function renderPhaseText() {
-        return (await renderSpinner()).querySelector<HTMLElement>('[data-testid="loading-phase"]')
+        return (await renderSpinner()).container.querySelector<HTMLElement>('[data-testid="loading-phase"]')
     }
 
-    it("should fade the overlay in when loading", async () => {
+    it("should fade the overlay in when a load starts while it is on screen", async () => {
         // Arrange
+        const { container, detectChanges } = await renderSpinner()
+
+        // Act
+        isLoading$.next(true)
+        detectChanges()
+
+        // Assert
+        const overlay = container.querySelector<HTMLElement>("#loading-gif-file")
+        expect(overlay.style.visibility).toBe("visible")
+        expect(overlay.classList).toContain(FADE_IN_CLASS)
+    })
+
+    it("should appear at once when it is mounted into a load already under way", async () => {
+        // Arrange — the boot indicator hands over mid-load, and a delayed fade would show the
+        // half-built application in between
         isLoading$.next(true)
 
         // Act
@@ -45,7 +59,7 @@ describe("LoadingFileProgressSpinnerComponent", () => {
 
         // Assert
         expect(overlay.style.visibility).toBe("visible")
-        expect(overlay.classList).toContain(FADE_IN_CLASS)
+        expect(overlay.classList).not.toContain(FADE_IN_CLASS)
     })
 
     it("should hide the overlay without a fade when not loading", async () => {

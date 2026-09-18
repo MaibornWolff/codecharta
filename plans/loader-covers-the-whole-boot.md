@@ -39,13 +39,27 @@ live.
   the old top offset needed.
 - Only the geometry changes. When the spinner appears and disappears is deliberate and stays untouched.
 
+### 4. Hand over to the view's spinner without a flash
+
+- Reported after the first three tasks landed: the boot indicator shows, then a short flash of the
+  application, then a spinner again. The boot indicator is opaque and unmounts the moment the shell
+  renders, while the view's spinner mounts with `animate-fade-in-delayed` — 200 ms at opacity 0 before
+  it fades in. The half-built application shows through that gap, and the spinner arriving afterwards
+  reads as a second one.
+- The delay is there so a change taking only a moment does not make the view blink. A spinner mounted
+  into a load that is already under way has no such moment to hide, so it appears at once; only a load
+  starting while the spinner is on screen fades in.
+- Give both overlays the same background as well, so nothing about the swap is visible.
+
 ## Steps
 
 - [x] Complete Task 1: Paint something before Angular has booted
 - [x] Complete Task 2: Keep the indicator up through the boot load
 - [x] Complete Task 3: Cover the whole application while loading
+- [ ] Complete Task 4: Hand over to the view's spinner without a flash
 - [x] Update `visualization/CHANGELOG.md` (rewrite the existing unreleased loader entry)
 - [x] Full gate green: `npm run format:check`, `npm test`, `npm run lint`, `npx tsc --noEmit`
+- [ ] Re-verify the hand-over in a browser, sampling opacity and not only visibility
 
 ## Notes
 
