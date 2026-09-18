@@ -1,4 +1,4 @@
-import { DomainWord } from "../../../../model/codeCharta.model"
+import { DomainWord } from "../model/codeCharta.model"
 
 export function keepLaterWord(_mergedWord: DomainWord, word: DomainWord): DomainWord {
     return { ...word }
