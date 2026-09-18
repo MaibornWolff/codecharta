@@ -1,11 +1,18 @@
 import { Injectable } from "@angular/core"
-import { combineLatest, map, Observable } from "rxjs"
+import { combineLatest, distinctUntilChanged, map, Observable } from "rxjs"
 import { ViewId } from "../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
 import { isPendingSave$ } from "../../../util/busy/isPendingSave"
+import { loadPhase$ } from "../../../util/busy/loadPhase"
 import { isPendingHeavyDispatch$ } from "../../../util/dispatchAfterPaint"
+
+const DRAWING_PHASE_OF_VIEW: Record<ViewId, string> = {
+    metrics: "Drawing the map",
+    domain: "Drawing the word cloud"
+}
+const SAVING_SESSION_PHASE = "Saving your session"
 
 @Injectable({
     providedIn: "root"
@@ -25,5 +32,25 @@ export class LoadingFileProgressSpinnerService {
             // Writing the session copies it on the main thread, so the map cannot answer while it runs.
             isPendingSave$
         ]).pipe(map(sources => sources.some(Boolean)))
+    }
+
+    /** What the spinner is waiting for once the load has stopped announcing its own phases. */
+    phase$(view: ViewId): Observable<string | null> {
+        return combineLatest([loadPhase$, this.viewReadinessStore.isStale$(view), isPendingHeavyDispatch$, isPendingSave$]).pipe(
+            map(
+                ([announcedPhase, isViewStale, isDispatchPending, isSavePending]) =>
+                    announcedPhase ?? this.phaseOfRemainingWork(view, isViewStale || isDispatchPending, isSavePending)
+            ),
+            distinctUntilChanged()
+        )
+    }
+
+    // A pending save outranks the draw although the draw comes first: the save blocks the main thread
+    // for as long as it copies the session, while the draw only waits for the next frames.
+    private phaseOfRemainingWork(view: ViewId, isDrawing: boolean, isSavePending: boolean): string | null {
+        if (isSavePending) {
+            return SAVING_SESSION_PHASE
+        }
+        return isDrawing ? DRAWING_PHASE_OF_VIEW[view] : null
     }
 }
