@@ -43,6 +43,7 @@ import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
 import { defaultSharedView, SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
+import { fileRoot } from "../util/fileRoot"
 import { NO_URL_METRICS, UrlMetricSelection } from "../util/queryParameter/queryParameter"
 import { QueryParamsService } from "../util/queryParameter/queryParams.service"
 import { LoadFilesUseCase } from "./loadFiles.useCase"
@@ -320,19 +321,20 @@ describe("LoadFilesUseCase", () => {
             // Act
             await loadFilesUseCase.loadOnBoot()
 
-            // Assert
-            expect(loadFileService.loadFiles).toHaveBeenCalledWith(mockedNameDataPairs)
+            // Assert — restored files are already parsed and decorated, so they are set directly rather
+            // than sent back through the parser to build a copy of every map that is then replaced
+            expect(loadFileService.loadFiles).not.toHaveBeenCalled()
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
             // asserted as a plain action literal (not the setAmountOfTopLabels creator): amountOfTopLabels
             // now lives in the appearance module, which fileStore must not import (filestore-has-no-upward-deps)
             expect(dispatchSpy).toHaveBeenCalledWith({ type: "SET_AMOUNT_OF_TOP_LABELS", value: AMOUNT_OF_TOP_LABELS })
             expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: mockedState.files }))
-            // the persisted map state is applied BEFORE the files are committed, the persisted files right after
+            // the persisted map state is applied BEFORE the files, and filesLoaded stays last
             expect(dispatchedTypes(dispatchSpy)).toEqual([
                 setIsLoadingFile.type,
                 "SET_AMOUNT_OF_TOP_LABELS",
-                filesLoaded.type,
-                setFiles.type
+                setFiles.type,
+                filesLoaded.type
             ])
         })
 
@@ -456,9 +458,7 @@ describe("LoadFilesUseCase", () => {
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.files = FILE_STATES
             mockUrlWithoutFile()
-            mockPersistedState(defaultState)
-            const savedFileStates = defaultState.files
-            const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
+            mockPersistedState(mockedState)
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             // Act
@@ -466,8 +466,9 @@ describe("LoadFilesUseCase", () => {
 
             // Assert
             expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
-            expect(loadFileService.loadFiles).toHaveBeenCalledWith(savedNameDataPairs)
-            expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: savedFileStates }))
+            // restored files are already parsed and decorated, so they go straight into the store
+            expect(loadFileService.loadFiles).not.toHaveBeenCalled()
+            expect(dispatchSpy).toHaveBeenCalledWith(setFiles({ value: FILE_STATES }))
             // The persisted view slices travel on the provenance; the reconciliation applies them AFTER
             // its file-derived merge, because persisted beats file-derived.
             expect(dispatchSpy).toHaveBeenCalledWith(
@@ -530,7 +531,7 @@ describe("LoadFilesUseCase", () => {
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
             mockedState.files = FILE_STATES
             mockUrlWithoutFile()
-            mockPersistedState(defaultState)
+            mockPersistedState(mockedState)
             const dispatchSpy = jest.spyOn(store, "dispatch")
 
             // Act
@@ -539,6 +540,23 @@ describe("LoadFilesUseCase", () => {
             // Assert
             expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: true }))
             expect(dispatchSpy).not.toHaveBeenCalledWith(setCurrentFilesAreSampleFiles({ value: false }))
+        })
+
+        it("should point the file root at the restored map", async () => {
+            // Arrange — LoadFileService does this from the file it parses, and a restore no longer parses
+            const mockedState = JSON.parse(stringify(defaultState)) as CcState
+            mockedState.files = FILE_STATES
+            mockUrlWithoutFile()
+            mockPersistedState(mockedState)
+            const updateRootSpy = jest.spyOn(fileRoot, "updateRoot")
+
+            // Act
+            await loadFilesUseCase.loadOnBoot()
+
+            // Assert — nothing else sets it outside delta mode, and the root path keys the domain words,
+            // the blacklist and every node lookup
+            expect(updateRootSpy).toHaveBeenCalledWith(FILE_STATES[0].file.map.name)
+            updateRootSpy.mockRestore()
         })
 
         it("should show an error dialog when the persisted state misses properties the current state has", async () => {
