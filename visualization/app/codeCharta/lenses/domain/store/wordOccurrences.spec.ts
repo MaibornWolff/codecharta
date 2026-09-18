@@ -28,9 +28,9 @@ describe("buildWordOccurrenceTree", () => {
     it("should report each node's share of the word's occurrences in scope", () => {
         // Arrange
         const words: DomainLensData = {
-            "/root": [{ text: "invoice", frequency: 10 }],
-            "/root/billing": [{ text: "invoice", frequency: 8 }],
-            "/root/api": [{ text: "invoice", frequency: 2 }]
+            "/root/billing/invoice.ts": [{ text: "invoice", frequency: 6 }],
+            "/root/billing/dunning.ts": [{ text: "invoice", frequency: 2 }],
+            "/root/api/client.ts": [{ text: "invoice", frequency: 2 }]
         }
 
         // Act
@@ -48,7 +48,7 @@ describe("buildWordOccurrenceTree", () => {
         })
     })
 
-    it("should sum a folder's children when the producer recorded no folder aggregate", () => {
+    it("should count a folder as the sum of its files", () => {
         // Arrange
         const words: DomainLensData = {
             "/root/billing/invoice.ts": [{ text: "invoice", frequency: 6 }],
@@ -69,8 +69,8 @@ describe("buildWordOccurrenceTree", () => {
         })
     })
 
-    it("should prefer a folder's own aggregate over the sum of its children", () => {
-        // Arrange
+    it("should ignore an aggregate an older producer recorded on a folder", () => {
+        // Arrange - the recorded roll-up disagrees with the files it was built from
         const words: DomainLensData = {
             "/root/billing": [{ text: "invoice", frequency: 20 }],
             "/root/billing/invoice.ts": [{ text: "invoice", frequency: 6 }]
@@ -80,7 +80,7 @@ describe("buildWordOccurrenceTree", () => {
         const occurrences = buildWordOccurrenceTree(tree, words, "/root", "invoice")
 
         // Assert
-        expect(occurrences?.children[0]).toMatchObject({ path: "/root/billing", count: 20 })
+        expect(occurrences?.children[0]).toMatchObject({ path: "/root/billing", count: 6 })
     })
 
     it("should keep the files of a folder as its children", () => {
@@ -114,8 +114,8 @@ describe("buildWordOccurrenceTree", () => {
     it("should sort equally frequent nodes by name", () => {
         // Arrange
         const words: DomainLensData = {
-            "/root/billing": [{ text: "invoice", frequency: 4 }],
-            "/root/api": [{ text: "invoice", frequency: 4 }]
+            "/root/billing/invoice.ts": [{ text: "invoice", frequency: 4 }],
+            "/root/api/client.ts": [{ text: "invoice", frequency: 4 }]
         }
 
         // Act
