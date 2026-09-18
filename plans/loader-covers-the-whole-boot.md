@@ -90,6 +90,12 @@ live.
   samples with nothing on screen: 0
   ```
 
+- Reported after task 4: the ring jumps up and down. It is the same ring in all three overlays, but each
+  centred it together with its caption, so it moved whenever the caption appeared, changed length or went
+  away — and the placeholder's hardcoded colours were not the theme's either, so the ring changed colour
+  at the hand-over as well. The caption now hangs below the ring, out of the flow. Measured afterwards:
+  one vertical position (500 px) and one ring size (96 px) across all three.
+
 - The first run of that check reported no gap although one was there: it sampled `visibility`, which a
   delayed fade leaves untouched while holding the element at opacity 0. Sampling opacity as well found
   both gaps — the hand-over, and the one at the end of the load. After task 4, with the same 1.5 s
