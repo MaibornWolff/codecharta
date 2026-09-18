@@ -1,7 +1,7 @@
 import { CCFile, DomainLensData } from "../../../../model/codeCharta.model"
+import { keepLaterWord, sumFrequenciesAndKeepStrongestTfidf } from "../../../../util/domainWord.combiners"
 import { fileRoot } from "../../../../util/fileRoot"
 import { getUpdatedPath } from "../../../../util/nodePathHelper"
-import { keepLaterWord, sumFrequenciesAndKeepStrongestTfidf } from "./domainWord.combiners"
 import { DomainWordBankAccumulator } from "./domainWordBank.accumulator"
 
 export function getMergedDomainWords(inputFiles: CCFile[], withUpdatedPath: boolean): DomainLensData {
