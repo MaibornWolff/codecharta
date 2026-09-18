@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisC
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.rootDirectoryOf
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DirectoryWordAggregator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainAnalysisResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.WordFrequency
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
@@ -104,19 +103,12 @@ class SourceAnalyzer(
         tfidfScores: Map<String, Double>,
         limit: Int?,
         sortBy: SortBy
-    ): Map<String, List<WordFrequency>> {
-        val fileWords =
-            perFileWordCounts.mapValues { (_, wordCounts) ->
-                val frequencies =
-                    wordCounts.map { (word, count) ->
-                        WordFrequency.withScore(word, count, tfidfScores)
-                    }
-                sortAndLimit(frequencies, sortBy, limit)
+    ): Map<String, List<WordFrequency>> = perFileWordCounts.mapValues { (_, wordCounts) ->
+        val frequencies =
+            wordCounts.map { (word, count) ->
+                WordFrequency.withScore(word, count, tfidfScores)
             }
-
-        val wordsPerPath = DirectoryWordAggregator.aggregateDirectories(fileWords, tfidfScores)
-
-        return wordsPerPath.mapValues { (_, words) -> sortAndLimit(words, sortBy, limit) }
+        sortAndLimit(frequencies, sortBy, limit)
     }
 
     private fun sortAndLimit(frequencies: List<WordFrequency>, sortBy: SortBy, limit: Int?): List<WordFrequency> {

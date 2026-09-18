@@ -22,13 +22,11 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-private const val ROOT_KEY = "."
-
 private fun DomainAnalysisResult.allWords(): List<WordFrequency> = wordsByPath.values.flatten()
 
 private fun DomainAnalysisResult.hasWord(text: String): Boolean = allWords().any { it.text == text }
 
-private fun DomainAnalysisResult.rootWordOrder(): List<String> = (wordsByPath[ROOT_KEY] ?: emptyList()).map { it.text }
+private fun DomainAnalysisResult.wordOrderIn(filePath: String): List<String> = (wordsByPath[filePath] ?: emptyList()).map { it.text }
 
 private fun writeWithByteOrderMark(file: File, sourceCode: String) =
     file.writeBytes("\uFEFF".toByteArray(Charsets.UTF_8) + sourceCode.toByteArray(Charsets.UTF_8))
@@ -151,20 +149,25 @@ class SourceAnalyzerTest {
     ) {
         // Arrange
         val dir = tempDir.toFile()
-        File(dir, "file1.kt").writeText("class Apple {}")
-        File(dir, "file2.kt").writeText("class Apple {}")
-        File(dir, "file3.kt").writeText("class Apple {}")
-        File(dir, "file4.kt").writeText("class Banana {}")
-        File(dir, "file5.kt").writeText("class Banana {}")
-        File(dir, "file6.kt").writeText("class Cherry {}")
+        File(dir, "basket.kt").writeText(
+            """
+            class AppleBasket {
+                fun appleCount() {}
+                fun applePrice() {}
+                fun bananaCount() {}
+                fun bananaPrice() {}
+                fun cherryCount() {}
+            }
+            """.trimIndent()
+        )
 
         val analyzer = SourceAnalyzerFactory.create(AnalysisConfiguration(allowedExtensions = listOf("kt")))
 
         // Act
         val result = analyzer.analyze(dir.absolutePath)
 
-        // Assert - apple appears 3x, banana 2x, cherry 1x aggregated at the root
-        val order = result.rootWordOrder()
+        // Assert - apple appears 3x, banana 2x, cherry 1x in the file
+        val order = result.wordOrderIn("basket.kt")
         val appleIndex = order.indexOf("apple")
         val bananaIndex = order.indexOf("banana")
         val cherryIndex = order.indexOf("cherry")
@@ -174,6 +177,24 @@ class SourceAnalyzerTest {
         assertTrue(cherryIndex >= 0, "cherry should be present")
         assertTrue(appleIndex < bananaIndex, "apple should come before banana")
         assertTrue(bananaIndex < cherryIndex, "banana should come before cherry")
+    }
+
+    @Test
+    fun `should record a word only on the file it came from`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val dir = tempDir.toFile()
+        File(dir, "src").mkdirs()
+        File(dir, "src/InvoiceService.kt").writeText("class InvoiceService {}")
+        File(dir, "Customer.kt").writeText("class Customer {}")
+        val analyzer = SourceAnalyzerFactory.create(AnalysisConfiguration(allowedExtensions = listOf("kt")))
+
+        // Act
+        val result = analyzer.analyze(dir.absolutePath)
+
+        // Assert - no entry for "src" or for the project root, which would repeat their files' words
+        assertEquals(result.filePaths.toSet(), result.wordsByPath.keys)
     }
 
     @Test
@@ -642,8 +663,8 @@ class SourceAnalyzerTest {
         // Act
         val result = analyzer.analyze(dir.absolutePath)
 
-        // Assert - "rare" should appear before "common" when sorted by TF-IDF at the root
-        val order = result.rootWordOrder()
+        // Assert - "rare" is unique to this file while "common" is in all of them, so it scores 0
+        val order = result.wordOrderIn("file1.kt")
         val rareIndex = order.indexOf("rare")
         val commonIndex = order.indexOf("common")
         assertTrue(rareIndex >= 0, "rare should be present")
