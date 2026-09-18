@@ -1216,6 +1216,41 @@ describe("IndexedDBWriter", () => {
         })
     })
 
+    describe("writeCcFiles", () => {
+        it("should not write back the files it has just read", async () => {
+            // Arrange
+            await stubWriteCcState()
+            await writeCcFiles([{ file: { fileMeta: { fileName: "restored.cc.json" } }, selectedAs: "Partial" }] as never)
+            const restored = await readCcState()
+            const putSpy = jest.spyOn(IDBObjectStore.prototype, "put")
+
+            // Act — a restore puts the very array it read into the store, and the save it triggers hands
+            // that same array straight back
+            await writeCcFiles(restored.files)
+
+            // Assert — writing it would structured-clone every loaded map on the main thread to store
+            // what is already stored, which is the most expensive thing a reload does
+            expect(putSpy).not.toHaveBeenCalled()
+            putSpy.mockRestore()
+        })
+
+        it("should write the files when they are not the ones it last persisted", async () => {
+            // Arrange
+            await stubWriteCcState()
+            await writeCcFiles([{ file: { fileMeta: { fileName: "first.cc.json" } }, selectedAs: "Partial" }] as never)
+            const putSpy = jest.spyOn(IDBObjectStore.prototype, "put")
+
+            // Act
+            await writeCcFiles([{ file: { fileMeta: { fileName: "second.cc.json" } }, selectedAs: "Partial" }] as never)
+
+            // Assert
+            expect(putSpy).toHaveBeenCalled()
+            putSpy.mockRestore()
+            const restored = await readCcState()
+            expect(restored.files[0].file.fileMeta.fileName).toBe("second.cc.json")
+        })
+    })
+
     describe("deleteCcState", () => {
         it("should successfully delete state from the database", async () => {
             await stubWriteCcState()

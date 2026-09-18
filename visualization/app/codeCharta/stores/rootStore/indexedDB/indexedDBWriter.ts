@@ -486,6 +486,7 @@ export async function writeCcState(state: CcState) {
     // session, so this one save writes both. `getKey` answers that without reading the files back.
     if ((await tx.store.getKey(CCSTATE_FILES_ID)) === undefined) {
         await tx.store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files: state.files })
+        persistedFiles = state.files
     }
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
@@ -494,7 +495,17 @@ export async function writeCcState(state: CcState) {
     await tx.done
 }
 
+/**
+ * The files as they were last read or written. A restore hands the store the very array it read out of
+ * this record, and the save that the restore itself triggers would then clone every loaded map to write
+ * back what is already there — the single most expensive thing a reload does.
+ */
+let persistedFiles: FileState[] | null = null
+
 export async function writeCcFiles(files: FileState[]) {
+    if (files === persistedFiles) {
+        return
+    }
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
     await tx.store.put({
@@ -502,6 +513,7 @@ export async function writeCcFiles(files: FileState[]) {
         files
     })
     await tx.done
+    persistedFiles = files
 }
 
 export async function readCcState(): Promise<CcState | null> {
@@ -511,10 +523,12 @@ export async function readCcState(): Promise<CcState | null> {
         return null
     }
     const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
+    const files = filesRecord?.files ?? settingsRecord.state.files ?? []
+    persistedFiles = files
     // A record written before the split still carries its files and the derived word bank. Dropping the
     // bank as it is read is what keeps a stale one from being applied over the bank the post-load
     // reconciliation rebuilds from the files — persisted beats file-derived, so a stale bank would win.
-    return { ...toPersistedSettings(settingsRecord.state), files: filesRecord?.files ?? settingsRecord.state.files ?? [] }
+    return { ...toPersistedSettings(settingsRecord.state), files }
 }
 
 export async function deleteCcState() {
@@ -523,6 +537,7 @@ export async function deleteCcState() {
     await tx.store.delete(CCSTATE_STATE_ID)
     await tx.store.delete(CCSTATE_FILES_ID)
     await tx.done
+    persistedFiles = null
 }
 
 function withoutFiles(state: CcState): Omit<CcState, "files"> {
