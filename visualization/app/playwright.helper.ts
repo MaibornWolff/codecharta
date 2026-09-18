@@ -81,8 +81,10 @@ export async function clearIndexedDB(page: Page) {
  * stale record and machine speed.
  *
  * Mirrors the constants in stores/rootStore/indexedDB/indexedDBWriter.ts (DB "CodeCharta", store
- * "ccstate", key 1001, record shape { id, state }); the persisted file name is
- * `state.files[].file.fileMeta.fileName`.
+ * "ccstate"): the loaded files live in their own record, key 1002 as `{ id, files }`, so that saving a
+ * setting does not re-write every loaded map. Key 1001 holds the settings and no longer carries them —
+ * a database written before that split still does, and is read as a fallback. The persisted file name is
+ * `files[].file.fileMeta.fileName`.
  */
 export async function waitForCcStatePersisted(page: Page, expectedFileName: string) {
     // page.evaluate is what makes this a real wait: waitForFunction does not await a promise the
@@ -101,13 +103,16 @@ function readPersistedFileNames(page: Page): Promise<string[]> {
                         database.close()
                         return resolve([])
                     }
-                    const record = database.transaction("ccstate", "readonly").objectStore("ccstate").get(1001)
-                    record.onsuccess = () => {
+                    const transaction = database.transaction("ccstate", "readonly")
+                    const store = transaction.objectStore("ccstate")
+                    const filesRecord = store.get(1002)
+                    const settingsRecord = store.get(1001)
+                    transaction.oncomplete = () => {
                         database.close()
-                        const files = record.result?.state?.files ?? []
+                        const files = filesRecord.result?.files ?? settingsRecord.result?.state?.files ?? []
                         resolve(files.map((fileState: any) => fileState?.file?.fileMeta?.fileName))
                     }
-                    record.onerror = () => {
+                    transaction.onerror = () => {
                         database.close()
                         resolve([])
                     }
