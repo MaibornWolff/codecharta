@@ -97,6 +97,10 @@ export class LoadInitialFileStore {
 
     private static readonly optionalDomainStateKeys = new Set(["sortingOrder", "sortingOrderAscending", "searchPattern", "hiddenWords"])
 
+    // The merged word bank is derived from the loaded files and deliberately not persisted, so a blob
+    // without it is complete rather than damaged and must not be reported as partly restored.
+    private static readonly optionalDomainLensSourceKeys = new Set(["words"])
+
     // transient interaction ids; never restored from a previous session's persisted state.
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
         "hoveredNodeId",
@@ -143,8 +147,11 @@ export class LoadInitialFileStore {
     }
 
     applyDomainLensSource(savedDomainLensSource: DomainLensSource) {
-        return this.applySlice(this.domainLensSourceReadWindow.getDomainLensSource(), savedDomainLensSource, (key, value) =>
-            this.mapDomainLensSourceToAction(key, value)
+        return this.applySlice(
+            this.domainLensSourceReadWindow.getDomainLensSource(),
+            savedDomainLensSource,
+            (key, value) => this.mapDomainLensSourceToAction(key, value),
+            LoadInitialFileStore.optionalDomainLensSourceKeys
         )
     }
 
@@ -185,12 +192,21 @@ export class LoadInitialFileStore {
     }
 
     missingKeysOfDomainLensSource(savedDomainLensSource: DomainLensSource): string[] {
-        return this.missingKeysOf(this.domainLensSourceReadWindow.getDomainLensSource(), savedDomainLensSource)
+        return this.missingKeysOf(
+            this.domainLensSourceReadWindow.getDomainLensSource(),
+            savedDomainLensSource,
+            LoadInitialFileStore.optionalDomainLensSourceKeys
+        )
     }
 
-    /** Which keys of the current slice the persisted one does not have at all. Dispatches nothing. */
-    private missingKeysOf<Slice extends object>(currentSlice: Slice, savedSlice: Slice): string[] {
-        return Object.keys(currentSlice).filter(key => !(key in savedSlice))
+    /** Which keys of the current slice the persisted one does not have at all, bar the ones it is never
+     * expected to carry. Dispatches nothing. */
+    private missingKeysOf<Slice extends object>(
+        currentSlice: Slice,
+        savedSlice: Slice,
+        optionalKeys: ReadonlySet<string> = LoadInitialFileStore.noOptionalKeys
+    ): string[] {
+        return Object.keys(currentSlice).filter(key => !(key in savedSlice) && !optionalKeys.has(key))
     }
 
     /**

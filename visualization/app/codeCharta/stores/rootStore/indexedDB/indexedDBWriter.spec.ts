@@ -34,8 +34,10 @@ import {
     migrateCcStateRecordToV19,
     migrateCcStateRecordToV20,
     migrateCcStateRecordToV21,
+    openCodeChartaDB,
     readCcState,
     SCENARIOS_STORE_NAME,
+    writeCcFiles,
     writeCcState
 } from "./indexedDBWriter"
 
@@ -1037,6 +1039,122 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         // Assert
         expect(migratedState.sharedView.metricRules).toEqual([])
     })
+
+    it("should restore the files of a session saved before they had a record of their own", async () => {
+        // Arrange — up to v21 the files sat inside the settings record
+        const loadedFiles = [{ file: { fileMeta: { fileName: "before-the-split.cc.json" } }, selectedAs: "Partial" }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act
+        const migratedState = await readCcState()
+
+        // Assert
+        expect(migratedState.files).toEqual(loadedFiles)
+    })
+
+    it("should drop the derived word bank a session saved before the split still carries", async () => {
+        // Arrange — up to v21 the settings record held the merged bank too
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } } }
+        })
+        v21Database.close()
+
+        // Act
+        const restored = await readCcState()
+
+        // Assert — the stale bank must not reach the restore, which would apply it over the bank the
+        // reconciliation just rebuilt from the files
+        expect(restored.domainLensSource).not.toHaveProperty("words")
+    })
+
+    it("should not even read the session when no transform applies to it", async () => {
+        // Arrange — a v21 record needs only the files split, which the read path handles on its own
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: [{ file: { fileMeta: { fileName: "big.cc.json" } }, selectedAs: "Partial" }] }
+        })
+        v21Database.close()
+        const getSpy = jest.spyOn(IDBObjectStore.prototype, "get")
+
+        // Act
+        const database = await openCodeChartaDB()
+        database.close()
+
+        // Assert — reading it would deserialize the whole session a second time during boot, beside the
+        // copy the load itself builds
+        expect(getSpy).not.toHaveBeenCalled()
+        getSpy.mockRestore()
+    })
+
+    it("should not rewrite the persisted record when a session only predates the files split", async () => {
+        // Arrange
+        const loadedFiles = [{ file: { fileMeta: { fileName: "untouched.cc.json" } }, selectedAs: "Partial" }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act
+        await readCcState()
+
+        // Assert — rewriting it would copy the whole session during boot, which is what exhausts the
+        // heap on a large project; the record is left as it is and the next save writes the split
+        const result = await stubReadCcState()
+        expect(result.state.files).toEqual(loadedFiles)
+    })
+
+    it("should keep the files of a session that predates the split when a setting is saved first", async () => {
+        // Arrange — the settings record still holds the files, and no files record exists yet
+        const loadedFiles = [{ file: { fileMeta: { fileName: "kept-on-first-save.cc.json" } }, selectedAs: "Partial" }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act — a settings save strips the files out of that record
+        await writeCcState({ ...defaultState, files: loadedFiles } as never)
+
+        // Assert — so it has to put them in their own record first, or the session is gone
+        const restored = await readCcState()
+        expect(restored.files).toEqual(loadedFiles)
+    })
 })
 
 describe("IndexedDBWriter", () => {
@@ -1045,12 +1163,44 @@ describe("IndexedDBWriter", () => {
     })
 
     describe("writeCcState", () => {
-        it("should successfully write state to the database", async () => {
+        it("should write the settings without the loaded files, which have a record of their own", async () => {
+            // Act
             await writeCcState(defaultState)
 
+            // Assert — an IndexedDB write copies its value on the main thread, so a setting must not
+            // carry every loaded map along with it
             const result = await stubReadCcState()
+            expect(result.state).not.toHaveProperty("files")
+            expect(result.state.mapState).toEqual(defaultState.mapState)
+        })
 
-            expect(result.state).toEqual(defaultState)
+        it("should leave the loaded files alone", async () => {
+            // Arrange
+            const loadedFiles = [{ file: { fileMeta: { fileName: "kept.cc.json" } }, selectedAs: "Partial" }] as never
+
+            // Act
+            await writeCcFiles(loadedFiles)
+            await writeCcState(defaultState)
+
+            // Assert
+            const restored = await readCcState()
+            expect(restored.files).toEqual(loadedFiles)
+        })
+
+        it("should leave the derived word bank out of the record entirely, rather than persisting it empty", async () => {
+            // Arrange — the bank is rebuilt from the loaded files on every load
+            const stateWithMergedBank = {
+                ...defaultState,
+                domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } }
+            }
+
+            // Act
+            await writeCcState(stateWithMergedBank)
+
+            // Assert — an empty bank that is PRESENT would be applied over the rebuilt one on restore,
+            // because persisted beats file-derived, and would wipe it
+            const result = await stubReadCcState()
+            expect(result.state.domainLensSource).not.toHaveProperty("words")
         })
 
         it("should commit the write with strict durability so a confirmed save survives a storage-process crash", async () => {
@@ -1063,6 +1213,41 @@ describe("IndexedDBWriter", () => {
             // Assert
             expect(transactionSpy).toHaveBeenCalledWith(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
             transactionSpy.mockRestore()
+        })
+    })
+
+    describe("writeCcFiles", () => {
+        it("should not write back the files it has just read", async () => {
+            // Arrange
+            await stubWriteCcState()
+            await writeCcFiles([{ file: { fileMeta: { fileName: "restored.cc.json" } }, selectedAs: "Partial" }] as never)
+            const restored = await readCcState()
+            const putSpy = jest.spyOn(IDBObjectStore.prototype, "put")
+
+            // Act — the store sorts a copy of what it is given, so the save hands back a different array
+            // holding the same file states, exactly as a restore does
+            await writeCcFiles([...restored.files])
+
+            // Assert — writing it would structured-clone every loaded map on the main thread to store
+            // what is already stored, which is the most expensive thing a reload does
+            expect(putSpy).not.toHaveBeenCalled()
+            putSpy.mockRestore()
+        })
+
+        it("should write the files when they are not the ones it last persisted", async () => {
+            // Arrange
+            await stubWriteCcState()
+            await writeCcFiles([{ file: { fileMeta: { fileName: "first.cc.json" } }, selectedAs: "Partial" }] as never)
+            const putSpy = jest.spyOn(IDBObjectStore.prototype, "put")
+
+            // Act
+            await writeCcFiles([{ file: { fileMeta: { fileName: "second.cc.json" } }, selectedAs: "Partial" }] as never)
+
+            // Assert
+            expect(putSpy).toHaveBeenCalled()
+            putSpy.mockRestore()
+            const restored = await readCcState()
+            expect(restored.files[0].file.fileMeta.fileName).toBe("second.cc.json")
         })
     })
 
@@ -1082,7 +1267,8 @@ describe("IndexedDBWriter", () => {
             await stubWriteCcState()
             const state = await readCcState()
 
-            expect(state).toEqual(defaultState)
+            // everything but the derived word bank, which the restore rebuilds from the loaded files
+            expect(state).toEqual({ ...defaultState, domainLensSource: {} })
         })
 
         it("should return null if the state cannot be read", async () => {

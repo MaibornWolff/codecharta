@@ -72,5 +72,63 @@ describe("structureTreeSelector", () => {
             const accumulatedData = _getUndecoratedAccumulatedData([fileState1])
             expect(accumulatedData.map.path).toBe("/root1")
         })
+
+        // The selector is memoized and no longer copies up front, because every copy duplicates each node
+        // of each loaded map. These two pin what makes that safe.
+        it("should not mutate the given file states in delta mode", () => {
+            // Arrange — matching map names, so a delta is built instead of an aggregation
+            const reference = fileStateNamed("reference", FileSelectionState.Reference)
+            const comparison = fileStateNamed("comparison", FileSelectionState.Comparison)
+
+            // Act
+            _getUndecoratedAccumulatedData([reference, comparison])
+
+            // Assert — the delta is written into the very nodes it walks, and those would be the store's
+            expect(reference.file.map).not.toHaveProperty("deltas")
+            expect(reference.file.map.attributes).toEqual({ rloc: 170 })
+            expect(reference.file.map.children[0].path).toBe("/root/child")
+        })
+
+        it("should not mutate the given file states when aggregating them", () => {
+            // Arrange — two files are wrapped in a shared root, which rewrites every node's path
+            const first = fileStateNamed("first", FileSelectionState.Partial, "root1")
+            const second = fileStateNamed("second", FileSelectionState.Partial, "root2")
+
+            // Act
+            _getUndecoratedAccumulatedData([first, second])
+
+            // Assert — the aggregation copies what it is handed, which is why this selector need not
+            expect(first.file.map.path).toBe("/root1")
+            expect(first.file.map.children[0].path).toBe("/root1/child")
+        })
+
+        function fileStateNamed(fileName: string, selectedAs: FileSelectionState, mapName = "root"): FileState {
+            return {
+                selectedAs,
+                file: {
+                    fileMeta: {
+                        fileName,
+                        fileChecksum: `md5-${fileName}`,
+                        projectName: "Sample Project",
+                        apiVersion: packageJson.codecharta.apiVersion,
+                        exportedFileSize: 300_000
+                    },
+                    map: {
+                        name: mapName,
+                        type: NodeType.FOLDER,
+                        path: `/${mapName}`,
+                        attributes: { rloc: 170 },
+                        children: [
+                            {
+                                name: "child",
+                                type: NodeType.FILE,
+                                path: `/${mapName}/child`,
+                                attributes: { rloc: 170 }
+                            }
+                        ]
+                    }
+                }
+            } as unknown as FileState
+        }
     })
 })

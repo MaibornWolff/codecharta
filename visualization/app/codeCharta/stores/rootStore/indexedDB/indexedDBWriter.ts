@@ -1,4 +1,5 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
+import { FileState } from "app/codeCharta/model/files/files"
 import { openDB } from "idb"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource.read.facade"
@@ -9,11 +10,13 @@ import { defaultCenterMapZoom, defaultPreferences, defaultSorting } from "../../
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 21
+export const DB_VERSION = 22
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
 export const CCSTATE_STATE_ID = 1001
+/** The loaded files live in their own record, so saving a setting does not re-write every loaded map. */
+const CCSTATE_FILES_ID = 1002
 
 // v3: map-view settings → mapState (was appSettings)
 export function migrateCcStateRecordToV3<T>(state: T): T {
@@ -468,29 +471,115 @@ export function migrateCcStateRecordToV21<T>(state: T): T {
     return { ...record, preferences: { ...preferences, centerMapZoom: defaultCenterMapZoom } } as T
 }
 
+/**
+ * The session's settings, without the loaded files. An IndexedDB write structured-clones its value on
+ * the main thread, so leaving the files out is what keeps changing a setting from re-cloning every
+ * loaded map — the files are written on their own, only when they actually change.
+ */
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
     // browser storage-process crash right after a save can silently lose the whole persisted session.
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
+    // A session persisted before the split keeps its files in the settings record until something saves
+    // them into their own. Dropping them here while that record does not exist yet would lose the whole
+    // session, so this one save writes both. `getKey` answers that without reading the files back.
+    if ((await tx.store.getKey(CCSTATE_FILES_ID)) === undefined) {
+        await tx.store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files: state.files })
+        persistedFiles = state.files
+    }
     await tx.store.put({
         [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
-        state
+        state: toPersistedSettings(withoutFiles(state))
     })
     await tx.done
 }
 
+/**
+ * The files as they were last read or written. A restore hands the store the very array it read out of
+ * this record, and the save that the restore itself triggers would then clone every loaded map to write
+ * back what is already there — the single most expensive thing a reload does.
+ */
+let persistedFiles: readonly FileState[] | null = null
+
+/**
+ * Whether these are the file states the record already holds. The comparison is per file state, not on
+ * the array: the store sorts a copy on every `setFiles`, so the array it holds is never the one that was
+ * read — while the file states inside it stay the very same objects until one of them actually changes.
+ */
+function holdsThePersistedFileStates(files: FileState[]): boolean {
+    const persisted = persistedFiles
+    if (persisted === null || persisted.length !== files.length) {
+        return false
+    }
+    return files.every(file => persisted.includes(file))
+}
+
+export async function writeCcFiles(files: FileState[]) {
+    if (holdsThePersistedFileStates(files)) {
+        return
+    }
+    const database = await openCodeChartaDB()
+    const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
+    await tx.store.put({
+        [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID,
+        files
+    })
+    await tx.done
+    persistedFiles = files
+}
+
 export async function readCcState(): Promise<CcState | null> {
     const database = await openCodeChartaDB()
-    const record = await database.get(CCSTATE_STORE_NAME, CCSTATE_STATE_ID)
-    return record?.state || null
+    const settingsRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_STATE_ID)
+    if (!settingsRecord?.state) {
+        return null
+    }
+    const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
+    const files = filesRecord?.files ?? settingsRecord.state.files ?? []
+    persistedFiles = files
+    // A record written before the split still carries its files and the derived word bank. Dropping the
+    // bank as it is read is what keeps a stale one from being applied over the bank the post-load
+    // reconciliation rebuilds from the files — persisted beats file-derived, so a stale bank would win.
+    return { ...toPersistedSettings(settingsRecord.state), files }
 }
 
 export async function deleteCcState() {
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite")
     await tx.store.delete(CCSTATE_STATE_ID)
+    await tx.store.delete(CCSTATE_FILES_ID)
     await tx.done
+    persistedFiles = null
+}
+
+function withoutFiles(state: CcState): Omit<CcState, "files"> {
+    const { files, ...settings } = state
+    return settings
+}
+
+/**
+ * The settings as they are persisted: without the merged domain word bank, which is derived state. The
+ * post-load reconciliation rebuilds it from the loaded files on every load, so persisting it writes a
+ * second copy of a bank the files already carry — and a large project's bank holds millions of entries,
+ * every one of them structured-cloned on the main thread.
+ *
+ * The key is OMITTED, never emptied. The restore applies the persisted lens source on top of the freshly
+ * merged bank, because persisted beats file-derived — so a `words: {}` that is present in the blob gets
+ * applied over the rebuilt bank and wipes it, while a key that is absent is skipped. Both the write path
+ * and the v22 migration shape the record through here, so the two cannot drift apart.
+ */
+function toPersistedSettings<T>(settings: T): T {
+    if (!settings || typeof settings !== "object") {
+        return settings
+    }
+    const record = settings as Record<string, unknown>
+    const domainLensSource = record["domainLensSource"]
+    if (!domainLensSource || typeof domainLensSource !== "object" || !("words" in domainLensSource)) {
+        return settings
+    }
+    const { words, ...withoutWords } = domainLensSource as Record<string, unknown>
+    return { ...record, domainLensSource: withoutWords } as T
 }
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
@@ -536,11 +625,24 @@ export async function openCodeChartaDB() {
             if (!database.objectStoreNames.contains(SCENARIOS_STORE_NAME)) {
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
-            if (oldVersion > 0 && oldVersion < DB_VERSION) {
+            // Reading the record costs a full deserialize of the session — on a large project that is a
+            // second copy of it in memory, beside the one the load is about to build, and both are alive
+            // when the first save clones it again. A version no transform applies to has nothing to
+            // migrate, so it must not be read at all.
+            const needsRecordMigration = CCSTATE_RECORD_MIGRATIONS.some(({ version }) => oldVersion < version)
+            if (oldVersion > 0 && needsRecordMigration) {
                 const store = transaction.objectStore(CCSTATE_STORE_NAME)
                 const record = await store.get(CCSTATE_STATE_ID)
-                if (record?.state) {
-                    const migrated = migrateCcStateRecord(record.state, oldVersion)
+                const migrated = record?.state ? migrateCcStateRecord(record.state, oldVersion) : undefined
+                // Only a shape transform earns a write, and a record that merely predates the files split
+                // needs none: every transform is a no-op for it, so `migrated` is the very object read.
+                //
+                // Splitting the files out here instead would structured-clone the whole session during
+                // boot. On a large project that is over a gigabyte of copies, landing on top of what the
+                // load already holds and before the collector gets a chance to run — the reader's tab dies
+                // with "Aw, Snap!", the upgrade is rolled back, and every reload retries it. The read path
+                // understands a record that still carries its files, and the next save writes the split.
+                if (migrated !== undefined && migrated !== record.state) {
                     await store.put({ ...record, state: migrated })
                 }
             }

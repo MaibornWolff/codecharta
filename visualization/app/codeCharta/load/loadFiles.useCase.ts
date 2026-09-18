@@ -19,7 +19,10 @@ import {
     setIsLoadingFile,
     UrlExtractor
 } from "../stores/fileStore/fileStore.facade"
+import { clearLoadPhase, setLoadPhase } from "../util/busy/loadPhase"
 import { ErrorDialogService } from "../util/errorDialog/errorDialog.service"
+import { fileRoot } from "../util/fileRoot"
+import { nextPaint } from "../util/nextPaint"
 import { NO_URL_METRICS, UrlMetricSelection } from "../util/queryParameter/queryParameter"
 import { QueryParamsService } from "../util/queryParameter/queryParams.service"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
@@ -29,6 +32,9 @@ const URL_LOAD_ERROR_TITLE = "File(s) could not be loaded from the given file UR
 const INDEXED_DB_LOAD_ERROR_TITLE = "Previously loaded files and settings could not be restored. Loaded sample files instead."
 const MISSING_PROPERTIES_ERROR_TITLE =
     "The previous state could not be fully restored after loading the page. The following properties were not restored."
+
+const RESTORING_SESSION_PHASE = "Restoring your session"
+const BUILDING_MAP_PHASE = "Building the map"
 
 /**
  * The single entry point for loading files. Every source — the ?file= URL, IndexedDB, the sample
@@ -53,6 +59,7 @@ export class LoadFilesUseCase {
     /** Boot. Reads the persisted state exactly once and never rejects. */
     async loadOnBoot(): Promise<void> {
         this.store.dispatch(setIsLoadingFile({ value: true }))
+        setLoadPhase(RESTORING_SESSION_PHASE)
 
         const persisted = await this.ccStatePersistence.read()
 
@@ -72,10 +79,15 @@ export class LoadFilesUseCase {
                 this.store.dispatch(setIsLoadingFile({ value: false }))
                 return
             }
+            // Building the map runs as one synchronous block, so the phase has to reach the screen
+            // before it starts — afterwards there is no frame left to paint it in.
+            setLoadPhase(BUILDING_MAP_PHASE)
+            await nextPaint()
             this.commit(nameDataPairs, this.provenance("upload", { areSampleFiles: false }))
         } catch {
             // Nothing reached the store, so no render will come to clear the indicator.
             this.store.dispatch(setIsLoadingFile({ value: false }))
+            clearLoadPhase()
         }
     }
 
@@ -123,7 +135,7 @@ export class LoadFilesUseCase {
             const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
 
             if (this.describeTheSameFiles(urlNameDataPairs, savedNameDataPairs)) {
-                this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs, "url", urlMetrics)
+                this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, "url", urlMetrics)
             } else {
                 // The old path only forced a fit when it restored the SAME files; a differing file
                 // set goes through the normal resetCameraIfNewFileIsLoaded gate.
@@ -151,10 +163,7 @@ export class LoadFilesUseCase {
                 return
             }
 
-            const savedFileStates = savedCcState.files
-            const savedNameDataPairs = savedFileStates.map(fileState => getNameDataPair(fileState.file))
-
-            this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, savedNameDataPairs, "indexedDB", NO_URL_METRICS)
+            this.applySettingsAndFilesFromSavedState(savedCcState.files, savedCcState, "indexedDB", NO_URL_METRICS)
         } catch (error) {
             this.handleIndexedDbLoadError(error as Error, persisted.state)
         }
@@ -180,6 +189,7 @@ export class LoadFilesUseCase {
         }
 
         this.store.dispatch(filesLoaded(provenance))
+        clearLoadPhase()
     }
 
     private loadSampleFiles(
@@ -206,7 +216,6 @@ export class LoadFilesUseCase {
     private applySettingsAndFilesFromSavedState(
         savedFileStates: FileState[],
         savedCcState: CcState,
-        savedNameDataPairs: NameDataPair[],
         source: FilesLoadedSource,
         urlMetrics: UrlMetricSelection
     ): void {
@@ -241,10 +250,33 @@ export class LoadFilesUseCase {
             ...this.loadInitialFileStore.missingKeysOfDomainLensSource(savedCcState.domainLensSource)
         )
 
-        this.commit(savedNameDataPairs, this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings }))
-        this.loadInitialFileStore.setFiles(savedFileStates)
+        this.commitRestoredFiles(
+            savedFileStates,
+            this.provenance(source, { areSampleFiles: false, urlMetrics, forceAutoFit, restoredSettings })
+        )
 
         this.showMissingPropertiesDialog(missingProperties)
+    }
+
+    /**
+     * Restored files are what a previous load already produced: parsed, validated and decorated with the
+     * paths everything else is keyed on. Sending them back through the parser builds a second copy of
+     * every map and then replaces it with these — on a large project the most expensive avoidable step
+     * of a reload — so they are set directly, keeping `commit`'s contract that `filesLoaded` is
+     * dispatched last and synchronously.
+     */
+    private commitRestoredFiles(savedFileStates: FileState[], provenance: FilesLoadedPayload): void {
+        if (savedFileStates.length === 0) {
+            // Nothing reached the store. The caller falls back to the sample files.
+            throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
+        }
+
+        // LoadFileService does this from the file it has just parsed. Nothing else does it outside delta
+        // mode, and the root path keys the domain words, the blacklist and every node lookup.
+        fileRoot.updateRoot(savedFileStates[0].file.map.name)
+        this.loadInitialFileStore.setFiles(savedFileStates)
+        this.store.dispatch(filesLoaded(provenance))
+        clearLoadPhase()
     }
 
     private applyAllSettings(savedCcState: CcState): void {

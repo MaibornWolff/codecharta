@@ -1,0 +1,16 @@
+<!-- Same geometry and background as the view's spinner: the two swap places when the application appears,
+     and any difference between them reads as a second spinner rather than the same one carrying on. -->
+<div id="boot-loading-indicator" class="fixed inset-0 z-[1000] flex items-center justify-center bg-white/80 text-center">
+    <div class="relative flex items-center justify-center">
+        <div class="h-24 w-24 animate-spin rounded-full border-4 border-base-300 [border-top-color:var(--color-primary)]"></div>
+        @let loadPhase = loadPhaseStream | async;
+        @if (loadPhase) {
+            <p
+                class="absolute left-1/2 top-full mt-4 -translate-x-1/2 whitespace-nowrap text-sm opacity-70"
+                data-testid="boot-loading-phase"
+            >
+                {{ loadPhase }}
+            </p>
+        }
+    </div>
+</div>

@@ -320,11 +320,15 @@ describe("WordCloudComponent", () => {
     })
 
     it("should lay the cloud out on the way back when the view was left before the layout ran", async () => {
-        // Arrange — no settling, so the debounced layout is still queued when the view is left
+        // Arrange — the first cloud is drawn and settled, so the layout that follows is a debounced one
         const { fixture } = await setup()
+        await settle()
         jest.clearAllMocks()
 
-        // Act — detached (0x0) inside the debounce window, then back to the very same box
+        // Act — a new word queues a debounced layout, the view is left inside that window, and comes
+        // back to the very same box
+        words$.next([{ text: "payment", frequency: 40 }])
+        fixture.detectChanges()
         measuredContainerWidth = 0
         measuredContainerHeight = 0
         resizeCallback?.()
@@ -336,7 +340,7 @@ describe("WordCloudComponent", () => {
         fixture.detectChanges()
         await settle()
 
-        // Assert — nothing ever reached the canvas, so the return may not be treated as unchanged
+        // Assert — that layout never reached the canvas, so the return may not be treated as unchanged
         expect(mockChart.setOption).toHaveBeenCalled()
     })
 

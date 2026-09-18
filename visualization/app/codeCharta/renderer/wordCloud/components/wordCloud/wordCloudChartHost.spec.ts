@@ -206,6 +206,32 @@ describe("WordCloudChartHost", () => {
         expect(mockChart.dispatchAction).not.toHaveBeenCalled()
     })
 
+    it("should draw the first cloud at once, so entering the view does not wait the debounce out", () => {
+        // Arrange
+        host.attachTo(measurableContainer())
+
+        // Act — no timer is advanced, so only an immediate draw can reach the chart
+        host.render(SOME_OPTION, () => undefined)
+
+        // Assert
+        expect(mockChart.setOption).toHaveBeenCalled()
+    })
+
+    it("should debounce every cloud after the first, so a burst of changes is laid out once", () => {
+        // Arrange — the first render is the one drawn at once
+        host.attachTo(measurableContainer())
+        host.render(SOME_OPTION, () => undefined)
+        mockChart.setOption.mockClear()
+
+        // Act
+        host.render(SOME_OPTION, () => undefined)
+
+        // Assert
+        expect(mockChart.setOption).not.toHaveBeenCalled()
+        jest.advanceTimersByTime(RENDER_DEBOUNCE_MS)
+        expect(mockChart.setOption).toHaveBeenCalled()
+    })
+
     it("should keep the chart when attaching to the same container again", () => {
         // Arrange
         const container = document.createElement("div")

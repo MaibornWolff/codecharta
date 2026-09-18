@@ -2,6 +2,8 @@ import { BehaviorSubject, firstValueFrom } from "rxjs"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
+import { beginPendingSave, endPendingSave } from "../../../util/busy/isPendingSave"
+import { clearLoadPhase, setLoadPhase } from "../../../util/busy/loadPhase"
 import { isPendingHeavyDispatch$ } from "../../../util/dispatchAfterPaint"
 import { LoadingFileProgressSpinnerService } from "./loadingFileProgressSpinner.service"
 
@@ -21,6 +23,8 @@ describe("LoadingFileProgressSpinnerService", () => {
     afterEach(() => {
         isPendingHeavyDispatch$.next(false)
         setIsApplyingScenario(false)
+        endPendingSave()
+        clearLoadPhase()
     })
 
     it("should report a view busy while it is still stale", async () => {
@@ -77,6 +81,22 @@ describe("LoadingFileProgressSpinnerService", () => {
         expect(await firstValueFrom(service.isLoading$("domain"))).toBe(false)
     })
 
+    it("should stay up across a momentary gap between the work it waits for", async () => {
+        // Arrange — the end of a load: the map finishes drawing a moment before the save it triggered
+        // is scheduled, and each of those is a separate signal
+        viewReadinessStore.markAllStale()
+        const reported: boolean[] = []
+        const subscription = service.isLoading$("metrics").subscribe(isLoading => reported.push(isLoading))
+
+        // Act
+        viewReadinessStore.markReady("metrics")
+        beginPendingSave()
+
+        // Assert — going down and up again here is what the reader sees as a flash and a second spinner
+        expect(reported).toEqual([true])
+        subscription.unsubscribe()
+    })
+
     it("should report busy while a scenario is being applied", async () => {
         // Arrange — a scenario rewrites the settings behind every view at once
         viewReadinessStore.markReady("domain")
@@ -86,5 +106,62 @@ describe("LoadingFileProgressSpinnerService", () => {
 
         // Assert
         expect(await firstValueFrom(service.isLoading$("domain"))).toBe(true)
+    })
+
+    it("should name the phase the loader announced", async () => {
+        // Arrange
+        viewReadinessStore.markReady("metrics")
+
+        // Act
+        setLoadPhase("Reading project.cc.json")
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("metrics"))).toBe("Reading project.cc.json")
+    })
+
+    it("should say the map is being drawn once the loader has handed it over", async () => {
+        // Arrange & Act — the commit cleared the announced phase and left every view stale
+        clearLoadPhase()
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("metrics"))).toBe("Drawing the map")
+    })
+
+    it("should say the word cloud is being drawn on the domain view", async () => {
+        // Arrange & Act
+        clearLoadPhase()
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("domain"))).toBe("Drawing the word cloud")
+    })
+
+    it("should say the map is being drawn while a heavy dispatch is in flight", async () => {
+        // Arrange
+        viewReadinessStore.markReady("metrics")
+
+        // Act
+        isPendingHeavyDispatch$.next(true)
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("metrics"))).toBe("Drawing the map")
+    })
+
+    it("should say the session is being saved while the save is still in flight", async () => {
+        // Arrange — the view is still waiting to be drawn, so this says which of the two wins
+        viewReadinessStore.markAllStale()
+
+        // Act
+        beginPendingSave()
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("metrics"))).toBe("Saving your session")
+    })
+
+    it("should say nothing once the view is drawn and nothing is being saved", async () => {
+        // Arrange & Act
+        viewReadinessStore.markReady("metrics")
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("metrics"))).toBeNull()
     })
 })

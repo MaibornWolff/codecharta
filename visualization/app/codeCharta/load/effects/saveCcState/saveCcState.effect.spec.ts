@@ -15,19 +15,24 @@ import {
 } from "../../../stores/domainState/domainState.write.facade"
 import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.facade"
-import { writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
+import { writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
+import { setState } from "../../../stores/rootStore/state.actions"
 import { removeBlacklistItems, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
 import { SaveCcStateEffect } from "./saveCcState.effect"
 
+// Both resolve: the effect chains off the write to report when the save is no longer pending.
 jest.mock("../../../stores/rootStore/indexedDB/indexedDBWriter", () => {
     return {
         __esModule: true,
-        writeCcState: jest.fn()
+        writeCcState: jest.fn(() => Promise.resolve()),
+        writeCcFiles: jest.fn(() => Promise.resolve())
     }
 })
 
 describe("SaveCcStateEffect", () => {
-    const state = {}
+    // What the record leaves out — the files, the derived word bank — is the writer's business; the
+    // effect hands it the whole snapshot.
+    const state = { domainLensSource: { words: { "/root": [{ text: "invoice", frequency: 10 }] } }, files: [] }
     let actions$: Subject<Action>
 
     beforeEach(async () => {
@@ -43,6 +48,44 @@ describe("SaveCcStateEffect", () => {
         // Clear the module-level writeCcState mock so each test's call count is independent (the
         // debounce test asserts an exact count and must not see saves triggered by earlier tests).
         ;(writeCcState as jest.Mock).mockClear()
+        ;(writeCcFiles as jest.Mock).mockClear()
+    })
+
+    it("should write the loaded files when a file action changed them", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setFiles({ value: [] }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcFiles).toHaveBeenCalledWith(state.files))
+    })
+
+    it("should not write the loaded files when only a setting changed", async () => {
+        // Arrange — the files are the largest thing the session holds; a setting must not re-write them
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setShowIncomingEdges({ value: true }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcState).toHaveBeenCalled())
+        expect(writeCcFiles).not.toHaveBeenCalled()
+    })
+
+    it("should write the loaded files when a map reset replaced the whole state", async () => {
+        // Arrange — a reset dispatches the default state, files included, through setState
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        actions$.next(setState({ value: {} }))
+        store.refreshState()
+
+        // Assert
+        await waitFor(() => expect(writeCcFiles).toHaveBeenCalledWith(state.files))
     })
 
     it("should save cc-state on actions requiring saving cc-state", async () => {

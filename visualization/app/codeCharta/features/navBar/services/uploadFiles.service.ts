@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { LoadFilesUseCase } from "../../../load/load.facade"
 import { NameDataPair, parseCcFileBytes } from "../../../stores/fileStore/fileStore.facade"
+import { describeFileBeingRead, setLoadPhase } from "../../../util/busy/loadPhase"
 import { createCCFileInput } from "./createCCFileInput"
 
 @Injectable({ providedIn: "root" })
@@ -29,8 +30,12 @@ export class UploadFilesService {
 
     private async readNameDataPairs(fileList: FileList): Promise<NameDataPair[]> {
         // Sequential on purpose: reading files in parallel keeps every unpacked file in memory at once.
+        // Which also means the reader can be told which file is being read, and how many are left.
+        const pickedFiles = Array.from(fileList)
         const nameDataPairs: NameDataPair[] = []
-        for (const file of Array.from(fileList)) {
+        for (let index = 0; index < pickedFiles.length; index++) {
+            const file = pickedFiles[index]
+            setLoadPhase(describeFileBeingRead(file.name, index + 1, pickedFiles.length))
             nameDataPairs.push({
                 fileName: file.name,
                 fileSize: file.size,

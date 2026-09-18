@@ -1,7 +1,6 @@
 import { DomainWord } from "../../../model/codeCharta.model"
 import { WordCloudSettings, WordCloudShape, wordSizingValue } from "../../../model/wordCloud.model"
 import { getWordCloudColors } from "./color.util"
-import { selectTopWords } from "./topWords"
 import { WordCloudDatum, WordCloudOption, WordCloudRenderContext } from "./wordCloudOption.model"
 import { CANVAS_FILL_RATIO, fitSizeRangeToContainer } from "./wordCloudSizeRange"
 import { buildTooltipFormatter } from "./wordCloudTooltip"
@@ -12,12 +11,13 @@ const EMPHASIS_SHADOW_COLOR = "#333"
 const WORD_FONT_FAMILY = 'Roboto, "Helvetica Neue", sans-serif'
 const BLURRED_WORD_OPACITY = 0.55
 
+/** Takes the words already ranked and truncated to the top-N: ranking a whole vocabulary is expensive
+ * enough that the caller does it once and hands the result to everything that needs it. */
 export function buildWordCloudOption(
-    words: DomainWord[],
+    topWords: DomainWord[],
     settings: WordCloudSettings,
     context: WordCloudRenderContext = {}
 ): WordCloudOption {
-    const topWords = selectTopWords(words, settings.sizingMode, settings.topN)
     const sizeRange = fitSizeRangeToContainer(settings.sizeRange, topWords, settings.drawOutOfBound, context.containerWidth)
     const { shape, maskImage, keepAspect } = resolveLayoutShape(settings.shape, context.maskImage)
 
