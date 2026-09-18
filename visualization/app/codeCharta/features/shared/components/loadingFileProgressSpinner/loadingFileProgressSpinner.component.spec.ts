@@ -8,17 +8,32 @@ const FADE_IN_CLASS = "animate-fade-in-delayed"
 
 describe("LoadingFileProgressSpinnerComponent", () => {
     let isLoading$: BehaviorSubject<boolean>
+    let phase$: BehaviorSubject<string | null>
 
     beforeEach(() => {
         isLoading$ = new BehaviorSubject(false)
+        phase$ = new BehaviorSubject<string | null>(null)
         TestBed.configureTestingModule({
-            providers: [{ provide: LoadingFileProgressSpinnerService, useValue: { isLoading$: () => isLoading$ } }]
+            providers: [
+                {
+                    provide: LoadingFileProgressSpinnerService,
+                    useValue: { isLoading$: () => isLoading$, phase$: () => phase$ }
+                }
+            ]
         })
     })
 
-    async function renderOverlay() {
+    async function renderSpinner() {
         const { container } = await render(LoadingFileProgressSpinnerComponent, { componentInputs: { view: "metrics" } })
-        return container.querySelector<HTMLElement>("#loading-gif-file")
+        return container
+    }
+
+    async function renderOverlay() {
+        return (await renderSpinner()).querySelector<HTMLElement>("#loading-gif-file")
+    }
+
+    async function renderPhaseText() {
+        return (await renderSpinner()).querySelector<HTMLElement>('[data-testid="loading-phase"]')
     }
 
     it("should fade the overlay in when loading", async () => {
@@ -43,5 +58,29 @@ describe("LoadingFileProgressSpinnerComponent", () => {
         // Assert
         expect(overlay.style.visibility).toBe("hidden")
         expect(overlay.classList).not.toContain(FADE_IN_CLASS)
+    })
+
+    it("should say what the spinner is waiting for", async () => {
+        // Arrange
+        isLoading$.next(true)
+        phase$.next("Saving your session")
+
+        // Act
+        const phaseText = await renderPhaseText()
+
+        // Assert
+        expect(phaseText.textContent).toBe("Saving your session")
+    })
+
+    it("should say nothing while there is no phase to name", async () => {
+        // Arrange
+        isLoading$.next(true)
+        phase$.next(null)
+
+        // Act
+        const phaseText = await renderPhaseText()
+
+        // Assert
+        expect(phaseText).toBeNull()
     })
 })
