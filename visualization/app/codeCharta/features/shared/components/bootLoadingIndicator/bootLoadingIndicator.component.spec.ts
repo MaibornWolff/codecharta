@@ -21,7 +21,7 @@ describe("BootLoadingIndicatorComponent", () => {
         const phaseText = await renderPhaseText()
 
         // Assert
-        expect(phaseText.textContent).toBe("Restoring your session")
+        expect(phaseText.textContent.trim()).toBe("Restoring your session")
     })
 
     it("should say nothing while the boot has not named a phase", async () => {

@@ -35,24 +35,42 @@
                     position: fixed;
                     inset: 0;
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
                     background: #fff;
                     font-family: system-ui, sans-serif;
                 "
             >
-                <div
-                    style="
-                        width: 6rem;
-                        height: 6rem;
-                        border: 4px solid #d6dbe1;
-                        border-top-color: #2f7ed8;
-                        border-radius: 9999px;
-                        animation: cc-boot-spin 1s linear infinite;
-                    "
-                ></div>
-                <p style="margin-top: 1rem; font-size: 0.875rem; opacity: 0.7">Starting CodeCharta</p>
+                <!-- Geometry and colours match the application's own spinner: this one hands over to it,
+                     and any difference reads as a second spinner rather than the same one carrying on.
+                     The ring is 6rem with a 4px border, base-300 (#d1d5db) with a primary (#1b9cfc) top,
+                     and the caption hangs below it instead of sharing a column, so the ring never moves. -->
+                <div style="position: relative; display: flex; align-items: center; justify-content: center">
+                    <div
+                        style="
+                            width: 6rem;
+                            height: 6rem;
+                            border: 4px solid #d1d5db;
+                            border-top-color: #1b9cfc;
+                            border-radius: 9999px;
+                            animation: cc-boot-spin 1s linear infinite;
+                        "
+                    ></div>
+                    <p
+                        style="
+                            position: absolute;
+                            left: 50%;
+                            top: 100%;
+                            margin-top: 1rem;
+                            transform: translateX(-50%);
+                            white-space: nowrap;
+                            font-size: 0.875rem;
+                            opacity: 0.7;
+                        "
+                    >
+                        Starting CodeCharta
+                    </p>
+                </div>
             </div>
         </cc-code-charta>
     </body>
