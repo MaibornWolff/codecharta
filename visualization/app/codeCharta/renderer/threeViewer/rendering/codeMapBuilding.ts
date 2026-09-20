@@ -6,7 +6,7 @@ export class CodeMapBuilding {
     private readonly _id: number
     private readonly _boundingBox: Box3
     private _color: string
-    private readonly _defaultColor: string
+    private _defaultColor: string
     private _deltaColor: string
     private _defaultDeltaColor: string
     private _node: Node
@@ -28,6 +28,23 @@ export class CodeMapBuilding {
         if (color) {
             this._computeCachedColorVectors()
         }
+    }
+
+    /** Move this building onto the node a new layout produced. Used when a change moved buildings
+     *  but added or removed none, so the mesh keeps the buffers it already has. */
+    relayout(node: Node, boundingBox: Box3, color: string) {
+        this._node = node
+        this._boundingBox.copy(boundingBox)
+        this.resetDefaultColor(color)
+    }
+
+    /** Take the colour a rebuild would have given this building. Lets a colour-only change repaint
+     *  the mesh in place instead of laying the map out again; the delta colour follows the height
+     *  metric, which cannot change without a rebuild, so it is left alone. */
+    resetDefaultColor(color: string) {
+        this._defaultColor = color
+        this._color = color
+        this._computeCachedColorVectors()
     }
 
     private _computeCachedColorVectors() {

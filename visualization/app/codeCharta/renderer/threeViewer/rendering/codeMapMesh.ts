@@ -68,7 +68,7 @@ export class CodeMapMesh {
     private material: ShaderMaterial
     private readonly geomGen: GeometryGenerator
     private readonly mapGeomDesc: CodeMapGeometricDescription
-    private readonly nodes: Node[]
+    private nodes: Node[]
     private dirtyRange: DirtyRange | null = null
     private _prevHighlightedIds: Set<number> | null = null
     private _prevSelectedId: number | null = null
@@ -106,6 +106,45 @@ export class CodeMapMesh {
     clearSelection(selected: CodeMapBuilding) {
         selected.resetColor()
         this.setInstanceColor(selected.id, selected.getDefaultColorVector(), selected.getDefaultDeltaColorVector())
+        this.updateVertices()
+    }
+
+    /**
+     * True when `nodes` holds the same buildings, in the same order, as the mesh was built with — so
+     * a new layout can be written into the buffers already on the GPU instead of allocating new
+     * ones. The layout drops nodes whose footprint rounds to nothing, so a metric change can alter
+     * the set even though no file was added or removed; that case has to fall back to a rebuild.
+     */
+    canUpdateInPlace(nodes: Node[]) {
+        if (nodes.length !== this.nodes.length) {
+            return false
+        }
+        return this.nodes.every((node, index) => node.path === nodes[index].path)
+    }
+
+    /** Re-place every building onto a new layout, reusing the buffers already on the GPU. */
+    updateBuildings(nodes: Node[], state: CcState, isDeltaState: boolean) {
+        this.geomGen.update(nodes, this.threeMesh, this.mapGeomDesc, state, isDeltaState)
+        this.nodes = nodes
+        this.forgetHighlightCache()
+        this.initDeltaColorsOnMesh(state)
+    }
+
+    private forgetHighlightCache() {
+        this._prevHighlightedIds = null
+        this._prevSelectedId = null
+        this._prevIsPresentationMode = null
+    }
+
+    /** Repaint every building from the colours its node now carries, reusing the buffers already on
+     *  the GPU. The caller must have recomputed those colours on the very nodes this mesh was built
+     *  from, so instance order still holds. */
+    recolorBuildings() {
+        this.geomGen.recolorBuildings(this.nodes, this.mapGeomDesc.buildings)
+        for (const building of this.mapGeomDesc.buildings) {
+            this.setInstanceColor(building.id, building.getColorVector(), building.getDeltaColorVector())
+        }
+        this.forgetHighlightCache()
         this.updateVertices()
     }
 

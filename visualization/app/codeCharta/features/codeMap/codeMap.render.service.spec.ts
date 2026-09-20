@@ -41,6 +41,7 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { CodeMapRenderService } from "./codeMap.render.service"
+import { FULL_INVALIDATION, propagate } from "./effects/renderCodeMapEffect/renderInvalidation"
 import { CodeMapStore } from "./stores/codeMap.store"
 
 const mockedMetricDataSelector = metricDataSelector as unknown as jest.Mock
@@ -149,7 +150,10 @@ describe("codeMapRenderService", () => {
             }),
             dispose: jest.fn(),
             forceRerender: jest.fn(),
-            setMapMesh: jest.fn()
+            setMapMesh: jest.fn(),
+            getMapMesh: jest.fn().mockReturnValue(undefined),
+            updateMapMeshInPlace: jest.fn(),
+            recolorMapMesh: jest.fn()
         })()
         Object.defineProperty(codeMapRenderService, "threeSceneService", { value: threeSceneService })
     }
@@ -200,17 +204,71 @@ describe("codeMapRenderService", () => {
 
     describe("render", () => {
         it("should call all render specific methods", () => {
+            // Arrange — labels are drawn against the scaled map, so they belong to load(), not render()
             codeMapRenderService["setNewMapMesh"] = jest.fn()
             codeMapRenderService["setLabels"] = jest.fn()
             codeMapRenderService["setArrows"] = jest.fn()
-            codeMapRenderService["scaleMap"] = jest.fn()
-            codeMapRenderService.render(map)
 
+            // Act
+            codeMapRenderService.load(map)
+
+            // Assert
             const nodes = codeMapRenderService["getNodes"](map)
-
             expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalledWith(nodes, expect.any(Array))
             expect(codeMapRenderService["setLabels"]).toHaveBeenCalled()
             expect(codeMapRenderService["setArrows"]).toHaveBeenCalled()
+        })
+
+        it("should only redraw the labels when only a label setting changed", () => {
+            // Arrange
+            codeMapRenderService.load(map)
+            codeMapRenderService["setNewMapMesh"] = jest.fn()
+            codeMapRenderService["setArrows"] = jest.fn()
+            codeMapRenderService["setLabels"] = jest.fn()
+
+            // Act
+            codeMapRenderService.load(map, propagate({ labels: true }))
+
+            // Assert
+            expect(codeMapRenderService["setNewMapMesh"]).not.toHaveBeenCalled()
+            expect(codeMapRenderService["setArrows"]).not.toHaveBeenCalled()
+            expect(codeMapRenderService["setLabels"]).toHaveBeenCalled()
+        })
+
+        it("should repaint without laying the map out again when only the colors changed", () => {
+            // Arrange
+            codeMapRenderService.load(map)
+            codeMapRenderService["setNewMapMesh"] = jest.fn()
+
+            // Act
+            codeMapRenderService.load(map, propagate({ colors: true }))
+
+            // Assert
+            expect(codeMapRenderService["setNewMapMesh"]).not.toHaveBeenCalled()
+            expect(threeSceneService.recolorMapMesh).toHaveBeenCalled()
+        })
+
+        it("should lay the map out again when the geometry changed", () => {
+            // Arrange
+            codeMapRenderService.load(map)
+            codeMapRenderService["setNewMapMesh"] = jest.fn()
+
+            // Act
+            codeMapRenderService.load(map, propagate({ geometry: true }))
+
+            // Assert
+            expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalled()
+        })
+
+        it("should lay the map out on the first render whatever the invalidation says", () => {
+            // Arrange
+            codeMapRenderService["setNewMapMesh"] = jest.fn()
+
+            // Act
+            codeMapRenderService.load(map, propagate({ labels: true }))
+
+            // Assert
+            expect(codeMapRenderService["setNewMapMesh"]).toHaveBeenCalled()
         })
 
         it("should call getNodesMatchingColorSelector", () => {
@@ -239,7 +297,7 @@ describe("codeMapRenderService", () => {
             codeMapRenderService.load(map)
 
             // Assert
-            expect(codeMapRenderService["render"]).toHaveBeenCalledWith(map)
+            expect(codeMapRenderService["render"]).toHaveBeenCalledWith(map, FULL_INVALIDATION)
             expect(codeMapRenderService["scaleMap"]).toHaveBeenCalledTimes(1)
         })
     })
@@ -361,14 +419,14 @@ describe("codeMapRenderService", () => {
 
         it("should not generate labels for flattened nodes", () => {
             codeMapRenderService["getNodes"] = () => [{ ...TEST_NODE_ROOT, flat: true }]
-            codeMapRenderService.render(null)
+            codeMapRenderService.load(null)
 
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(0)
         })
 
         it("should generate labels for not-flattened nodes", () => {
             codeMapRenderService["getNodes"] = jest.fn().mockReturnValue(nodes)
-            codeMapRenderService.render(null)
+            codeMapRenderService.load(null)
 
             expect(labelSettingsFacade.addLeafLabel).toHaveBeenCalledTimes(2)
         })

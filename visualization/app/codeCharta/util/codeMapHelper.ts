@@ -15,7 +15,7 @@ export function getAllNodes(root: CodeMapNode): CodeMapNode[] {
     return filtered
 }
 
-export function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string | void {
+export function getMarkingColor(node: Pick<CodeMapNode, "path">, markedPackages: MarkedPackage[]): string | void {
     if (!markedPackages) {
         return
     }
