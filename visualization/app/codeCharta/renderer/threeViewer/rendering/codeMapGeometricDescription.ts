@@ -41,6 +41,7 @@ export class CodeMapGeometricDescription {
     private scaledBoxes: Box3[] = []
     private readonly boxTranslation = new Vector3()
     private readonly _intersectTarget = new Vector3()
+    private boxesDirty = true
 
     // BVH data
     private bvhNodes: Float32Array | null = null
@@ -55,14 +56,26 @@ export class CodeMapGeometricDescription {
     add(building: CodeMapBuilding) {
         this._buildings.push(building)
         this.buildingsByPath.set(building.node.path, building)
+        this.boxesDirty = true
+    }
+
+    /** The buildings moved, so the scaled boxes and the BVH built from them no longer describe them. */
+    markBuildingsChanged() {
+        this.boxesDirty = true
     }
 
     get buildings() {
         return this._buildings
     }
 
+    // Rebuilding the scaled boxes and the BVH costs a pass over every building, and the render
+    // pipeline asks for the scale on every pass whether or not anything moved.
     setScales(scales: Scaling) {
+        if (!this.boxesDirty && this.scales.x === scales.x && this.scales.y === scales.y && this.scales.z === scales.z) {
+            return
+        }
         this.scales = new Vector3(scales.x, scales.y, scales.z)
+        this.boxesDirty = false
         this.rebuildScaledBoxes()
     }
 

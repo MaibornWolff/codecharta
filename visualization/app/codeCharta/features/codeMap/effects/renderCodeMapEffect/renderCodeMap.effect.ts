@@ -2,7 +2,7 @@ import { ErrorHandler, Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects"
 import { Store } from "@ngrx/store"
 import { asyncScheduler, combineLatest, filter, map, merge, share, switchMap, take, tap, throttleTime, withLatestFrom } from "rxjs"
-import { CcState } from "../../../../model/codeCharta.model"
+import { CcState, CodeMapNode } from "../../../../model/codeCharta.model"
 import { AccumulatedData, accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { ThreeRendererService, ThreeViewerService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
@@ -10,6 +10,7 @@ import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { clearPendingHeavyDispatch } from "../../../../util/dispatchAfterPaint"
 import { CodeMapRenderService } from "../../codeMap.render.service"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
+import { FULL_INVALIDATION, invalidationForAction, mergeInvalidations, RenderInvalidation } from "./renderInvalidation"
 
 export const maxFPS = 1000 / 60
 
@@ -26,7 +27,20 @@ export class RenderCodeMapEffect {
         private readonly errorHandler: ErrorHandler
     ) {}
 
-    private readonly actionsRequiringRender$ = this.actions$.pipe(ofType(...actionsRequiringRerender))
+    // What the actions seen since the last render made stale. Several actions can land inside one
+    // throttle window, so they are merged rather than overwritten, and the render consumes it.
+    private pendingInvalidation: RenderInvalidation | null = null
+    private lastRenderedMapNode: CodeMapNode | null = null
+
+    private readonly actionsRequiringRender$ = this.actions$.pipe(
+        ofType(...actionsRequiringRerender),
+        tap(action => {
+            const invalidation = invalidationForAction(action)
+            this.pendingInvalidation = this.pendingInvalidation
+                ? mergeInvalidations([this.pendingInvalidation, invalidation])
+                : invalidation
+        })
+    )
 
     private readonly mapDataChange$ = combineLatest([this.store.select(accumulatedDataSelector), this.actionsRequiringRender$]).pipe(
         map(([accumulatedData]) => accumulatedData)
@@ -66,12 +80,21 @@ export class RenderCodeMapEffect {
     // a failing render is reported and left behind instead of ending it.
     private renderMap(accumulatedData: AccumulatedData): void {
         try {
-            this.codeMapRenderService.load(accumulatedData.unifiedMapNode)
+            this.codeMapRenderService.load(accumulatedData.unifiedMapNode, this.consumeInvalidation(accumulatedData.unifiedMapNode))
             this.threeRendererService.render()
         } catch (error) {
             this.errorHandler.handleError(error)
         } finally {
             clearPendingHeavyDispatch()
         }
+    }
+
+    // A map node the last render did not draw invalidates every stage, whatever the actions said —
+    // a freshly loaded file reaches the effect through the data, not through an action.
+    private consumeInvalidation(mapNode: CodeMapNode): RenderInvalidation {
+        const pending = mapNode === this.lastRenderedMapNode ? this.pendingInvalidation : null
+        this.pendingInvalidation = null
+        this.lastRenderedMapNode = mapNode
+        return pending ?? FULL_INVALIDATION
     }
 }

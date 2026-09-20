@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Label and colour changes answer at once**: changing a label setting, an edge setting or the colour metric no longer redraws the whole map, so it responds immediately however large the project.
+
 ### Fixed 🐞
 
 - **A long session stays light**: the memory the map holds no longer grows with every metric, label or scaling change, so a large project survives an afternoon of adjusting it.

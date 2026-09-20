@@ -17,6 +17,7 @@ import { blacklistMatcherSelector } from "../../stores/sharedView/sharedView.rea
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { FULL_INVALIDATION, RenderInvalidation } from "./effects/renderCodeMapEffect/renderInvalidation"
 import { RendererEngine } from "./rendererEngine.contract"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { CodeMapStore } from "./stores/codeMap.store"
@@ -31,6 +32,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         negative: []
     }
     private unflattenedNodes
+    private visibleSortedNodes: Node[] | undefined
     private readonly subscription: Subscription
 
     constructor(
@@ -63,20 +65,43 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     // The RendererEngine `load` seam (Slice 14b): compose + lay out the render model. The render effect
     // calls this, then requests a frame via ThreeRendererService — the frame scheduler is the driver's
     // concern, not the engine's.
-    load(model: CodeMapNode) {
-        this.render(model)
-        this.scaleMap()
+    load(model: CodeMapNode, invalidation: RenderInvalidation = FULL_INVALIDATION) {
+        this.render(model, invalidation)
+        this.scaleMap(invalidation)
     }
 
-    render(map: CodeMapNode) {
+    /**
+     * Run only the stages the change made stale. The buildings come first because the colour
+     * categories are read off them and the labels are picked per category, so the order of the
+     * stages is fixed even when some of them are skipped.
+     */
+    render(map: CodeMapNode, invalidation: RenderInvalidation = FULL_INVALIDATION) {
+        if (invalidation.geometry || this.visibleSortedNodes === undefined) {
+            this.rebuildBuildings(map)
+        } else if (invalidation.colors) {
+            this.threeSceneService.recolorMapMesh(this.codeMapStore.getState() as CcState)
+        }
+
+        if (invalidation.colors) {
+            this.getNodesMatchingColorSelector(this.unflattenedNodes)
+        }
+        if (invalidation.arrows) {
+            this.setArrows(this.visibleSortedNodes)
+        }
+    }
+
+    private rebuildBuildings(map: CodeMapNode) {
         const nodes = this.getNodes(map)
         const visibleSortedNodes = this.sortVisibleNodesByHeightDescending(nodes)
+        this.visibleSortedNodes = visibleSortedNodes
         this.unflattenedNodes = visibleSortedNodes.filter(({ flat }) => !flat)
 
+        const state = this.codeMapStore.getState() as CcState
+        if (this.threeSceneService.getMapMesh()?.canUpdateInPlace(visibleSortedNodes)) {
+            this.threeSceneService.updateMapMeshInPlace(nodes, visibleSortedNodes, state, isDeltaState(state.files))
+            return
+        }
         this.setNewMapMesh(nodes, visibleSortedNodes)
-        this.getNodesMatchingColorSelector(this.unflattenedNodes)
-        this.setLabels(this.unflattenedNodes)
-        this.setArrows(visibleSortedNodes)
     }
 
     private setNewMapMesh(allMeshNodes, visibleSortedNodes) {
@@ -85,12 +110,16 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         this.threeSceneService.setMapMesh(allMeshNodes, mapMesh)
     }
 
-    scaleMap() {
+    // Labels are placed against the scaled map, so they are drawn after the scale is applied rather
+    // than in render().
+    scaleMap(invalidation: RenderInvalidation = FULL_INVALIDATION) {
         this.codeMapMouseEventService.unhoverNode()
         this.codeMapArrowService.scale()
         this.threeSceneService.scaleHeight()
-        this.labelSettingsFacade.clearLabels()
-        this.setLabels(this.unflattenedNodes)
+        if (invalidation.labels) {
+            this.labelSettingsFacade.clearLabels()
+            this.setLabels(this.unflattenedNodes)
+        }
     }
 
     getNodes(map: CodeMapNode) {

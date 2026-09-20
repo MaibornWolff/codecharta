@@ -199,7 +199,7 @@ function isNodeNonSearched(squaredNode: CodeMapNode, state: CcState) {
 }
 
 export function getBuildingColor(
-    node: CodeMapNode,
+    node: Pick<CodeMapNode, "attributes">,
     { mapState }: CcState,
     nodeMetricDataRange: MetricMinMax,
     isDeltaState: boolean,

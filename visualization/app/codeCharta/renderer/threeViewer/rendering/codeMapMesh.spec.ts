@@ -7,6 +7,41 @@ import { CodeMapMesh } from "./codeMapMesh"
 describe("codeMapMesh", () => {
     const testNodes: Node[] = [TEST_NODE_ROOT] // no need for 2 files
 
+    describe("canUpdateInPlace", () => {
+        it("should allow an in-place update for the same buildings in the same order", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+
+            // Act
+            const canUpdate = mesh.canUpdateInPlace([{ ...TEST_NODE_ROOT }])
+
+            // Assert
+            expect(canUpdate).toBe(true)
+        })
+
+        it("should refuse an in-place update when a building was added", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+
+            // Act
+            const canUpdate = mesh.canUpdateInPlace([TEST_NODE_ROOT, { ...TEST_NODE_ROOT, path: "/root/other" } as Node])
+
+            // Assert
+            expect(canUpdate).toBe(false)
+        })
+
+        it("should refuse an in-place update when a building was replaced by another", () => {
+            // Arrange
+            const mesh = new CodeMapMesh([TEST_NODE_ROOT], STATE, false)
+
+            // Act
+            const canUpdate = mesh.canUpdateInPlace([{ ...TEST_NODE_ROOT, path: "/root/somewhere-else" } as Node])
+
+            // Assert
+            expect(canUpdate).toBe(false)
+        })
+    })
+
     describe("setNewDeltaColor", () => {
         let codeMapBuilding: CodeMapBuilding
         const {

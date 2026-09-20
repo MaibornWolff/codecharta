@@ -2,11 +2,14 @@ import { Injectable, OnDestroy } from "@angular/core"
 import { hierarchy } from "d3-hierarchy"
 import { Subject } from "rxjs"
 import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
-import { CodeMapNode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
+import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
+import { isDeltaState } from "../../model/files/files.helper"
+import { getMarkingColor } from "../../util/codeMapHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { EventEmitter } from "../../util/EventEmitter"
 import { FileExtensionCalculator, NO_EXTENSION } from "../../util/fileExtension/fileExtensionCalculator"
-import { treeMapSize } from "./algorithm/treeMapLayout/treeMapHelper"
+import { selectedColorMetricDataSelector } from "../renderModel/renderModel.facade"
+import { getBuildingColor, treeMapSize } from "./algorithm/treeMapLayout/treeMapHelper"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { IdToBuildingService } from "./idToBuilding.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
@@ -369,6 +372,36 @@ export class ThreeSceneService implements OnDestroy {
             this.threeSceneStore.setSelectedBuildingId(null)
             this.eventEmitter.emit("onBuildingDeselected")
         }
+    }
+
+    /** Move the buildings onto a new layout without replacing the mesh. Mirrors `setMapMesh` for the
+     *  case where the node set did not change. */
+    updateMapMeshInPlace(nodes: Node[], laidOutNodes: Node[], state: CcState, isDeltaState: boolean) {
+        this.mapMesh.updateBuildings(laidOutNodes, state, isDeltaState)
+        this.initFloorLabels(nodes)
+        this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
+        this.remapSelectedBuilding()
+        this.mapMeshChanged$.next()
+    }
+
+    /** Recompute every building's colour and repaint it, without replacing the mesh. Selection and
+     *  highlighting sit on top of the default colours, so both are re-applied once the defaults are
+     *  back. */
+    recolorMapMesh(state: CcState) {
+        if (!this.mapMesh) {
+            return
+        }
+        const colorMetricRange = selectedColorMetricDataSelector(state)
+        const deltaState = isDeltaState(state.files)
+        for (const node of this.mapMesh.getNodes()) {
+            node.color = getBuildingColor(node, state, colorMetricRange, deltaState, node.flat)
+            node.markingColor = getMarkingColor(node, state.sharedView.markedPackages)
+        }
+        this.mapMesh.recolorBuildings()
+        if (this.selected) {
+            this.mapMesh.selectBuilding(this.selected, this.folderLabelColorSelected)
+        }
+        this.applyHighlights()
     }
 
     getMapMesh() {

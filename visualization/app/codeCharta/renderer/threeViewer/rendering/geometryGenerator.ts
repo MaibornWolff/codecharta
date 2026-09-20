@@ -11,6 +11,13 @@ export interface BuildResult {
     desc: CodeMapGeometricDescription
 }
 
+interface InstanceData {
+    measures: BoxMeasures
+    color: string
+    normalizedDelta: number
+    isLeaf: number
+}
+
 interface BuildContext {
     desc: CodeMapGeometricDescription
     instanceColors: Float32Array
@@ -83,40 +90,87 @@ export class GeometryGenerator {
         return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
     }
 
-    private fillInstance(index: number, node: Node, state: CcState, isDeltaState: boolean, ctx: BuildContext) {
-        if (!node.isLeaf) {
-            const color = this.getMarkingColorWithGradient(node)
-            const measures = this.mapNodeToLocalBox(node)
-            this.fillInstanceBase(index, measures, node, color, 0, 0, ctx)
-        } else {
-            const measures = this.mapNodeToLocalBox(node)
-            measures.height = this.ensureMinHeightUnlessDeltaIsNegative(node.height, node.heightDelta)
+    /**
+     * Re-place the buildings the last `build()` produced onto a new layout, reusing the buffers
+     * already on the GPU. Only valid when the new layout holds the same nodes in the same order —
+     * `CodeMapMesh.canUpdateInPlace` is the caller's check.
+     */
+    update(nodes: Node[], mesh: InstancedMesh, desc: CodeMapGeometricDescription, state: CcState, isDeltaState: boolean) {
+        this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
-            let renderDelta = 0
+        const { geometry } = mesh
+        const ctx: BuildContext = {
+            desc,
+            instanceColors: attributeArray(geometry, "color"),
+            instanceDeltaColors: attributeArray(geometry, "deltaColor"),
+            instanceDeltas: attributeArray(geometry, "delta"),
+            instanceIsLeaf: attributeArray(geometry, "isLeaf"),
+            matrix: new Matrix4(),
+            position: new Vector3(),
+            scale: new Vector3(),
+            mesh
+        }
 
-            if (isDeltaState && node.deltas?.[state.mapState.heightMetric] && node.heightDelta) {
-                renderDelta = node.heightDelta
+        const boundingBox = new Box3()
+        for (const [index, node] of nodes.entries()) {
+            const instance = this.instanceDataFor(node, state, isDeltaState)
+            const { measures } = instance
+            boundingBox.min.set(measures.x, measures.y, measures.z)
+            boundingBox.max.set(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
+            desc.buildings[index].relayout(node, boundingBox, instance.color)
+            this.writeInstance(index, instance, ctx)
+        }
 
-                if (!node.flat && renderDelta < 0) {
-                    measures.height += Math.abs(renderDelta)
-                }
-            }
-
-            const normalizedDelta = measures.height > 0 ? renderDelta / measures.height : 0
-            this.fillInstanceBase(index, measures, node, node.color, normalizedDelta, 1, ctx)
+        desc.markBuildingsChanged()
+        mesh.instanceMatrix.needsUpdate = true
+        for (const name of ["color", "deltaColor", "delta", "isLeaf"]) {
+            const attribute = geometry.getAttribute(name) as InstancedBufferAttribute
+            attribute.clearUpdateRanges()
+            attribute.needsUpdate = true
         }
     }
 
-    private fillInstanceBase(
-        index: number,
-        measures: BoxMeasures,
-        node: Node,
-        color: string,
-        normalizedDelta: number,
-        isLeaf: number,
-        ctx: BuildContext
-    ) {
-        this.addBuildingToDesc(index, measures, node, color, ctx.desc)
+    /** Repaint buildings the last `build()` produced, for a change that moved none of them. */
+    recolorBuildings(nodes: Node[], buildings: CodeMapBuilding[]) {
+        this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
+        for (const building of buildings) {
+            building.resetDefaultColor(this.colorForNode(nodes[building.id]))
+        }
+    }
+
+    private colorForNode(node: Node) {
+        return node.isLeaf ? node.color : this.getMarkingColorWithGradient(node)
+    }
+
+    private fillInstance(index: number, node: Node, state: CcState, isDeltaState: boolean, ctx: BuildContext) {
+        const instance = this.instanceDataFor(node, state, isDeltaState)
+        this.addBuildingToDesc(index, instance.measures, node, instance.color, ctx.desc)
+        this.writeInstance(index, instance, ctx)
+    }
+
+    private instanceDataFor(node: Node, state: CcState, isDeltaState: boolean): InstanceData {
+        const measures = this.mapNodeToLocalBox(node)
+
+        if (!node.isLeaf) {
+            return { measures, color: this.colorForNode(node), normalizedDelta: 0, isLeaf: 0 }
+        }
+
+        measures.height = this.ensureMinHeightUnlessDeltaIsNegative(node.height, node.heightDelta)
+
+        let renderDelta = 0
+        if (isDeltaState && node.deltas?.[state.mapState.heightMetric] && node.heightDelta) {
+            renderDelta = node.heightDelta
+
+            if (!node.flat && renderDelta < 0) {
+                measures.height += Math.abs(renderDelta)
+            }
+        }
+
+        const normalizedDelta = measures.height > 0 ? renderDelta / measures.height : 0
+        return { measures, color: node.color, normalizedDelta, isLeaf: 1 }
+    }
+
+    private writeInstance(index: number, { measures, color, normalizedDelta, isLeaf }: InstanceData, ctx: BuildContext) {
         this.setInstanceTransform(index, measures, ctx)
         this.setInstanceColor(index, color, ctx.instanceColors)
         this.setInstanceColor(index, color, ctx.instanceDeltaColors)
@@ -172,4 +226,8 @@ export class GeometryGenerator {
         target[index * 3 + 1] = rgb[1]
         target[index * 3 + 2] = rgb[2]
     }
+}
+
+function attributeArray(geometry: InstancedMesh["geometry"], name: string): Float32Array {
+    return geometry.getAttribute(name).array as Float32Array
 }
