@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Fixed 🐞
+
+- **A long session stays light**: the memory the map holds no longer grows with every metric, label or scaling change, so a large project survives an afternoon of adjusting it.
+
 ## [2.5.0] - 2026-09-16
 
 ### Added 🚀

@@ -360,6 +360,7 @@ export class CodeMapMesh {
 
     private disposeMesh() {
         this.threeMesh?.geometry?.dispose()
+        this.threeMesh?.dispose()
     }
 
     private disposeMaterial() {

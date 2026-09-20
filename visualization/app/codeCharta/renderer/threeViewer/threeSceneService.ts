@@ -335,6 +335,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     setMapMesh(nodes: Node[], mesh: CodeMapMesh) {
+        this.mapMesh?.dispose()
         this.mapMesh = mesh
 
         this.initFloorLabels(nodes)
