@@ -32,6 +32,10 @@ for (const lockfile of LOCKFILES) {
     if (!head) {
         continue
     }
+    if (!head.packages) {
+        problems.push(`${lockfile} has no "packages" section (lockfileVersion ${head.lockfileVersion}); regenerate it with npm >= 7`)
+        continue
+    }
     const base = readBaseLockfile(baseRef, lockfile)
     collectForeignRegistries(lockfile, head, problems)
     for (const [name, version] of newlyAddedPackages(base, head)) {
