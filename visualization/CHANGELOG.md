@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.5.1] - 2026-09-21
+
 ### Changed
 
 - **Flattening no longer interrupts you**: flattening or unflattening — a node, a metric rule, a search pattern or a file extension — changes only how the map looks, without the loading spinner a rebuild used to bring.
