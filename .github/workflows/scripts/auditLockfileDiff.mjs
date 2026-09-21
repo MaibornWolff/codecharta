@@ -12,12 +12,7 @@ import { readFileSync } from "node:fs"
 
 const PUBLIC_REGISTRY_HOST = "registry.npmjs.org"
 const REGISTRY_KEYS_URL = `https://${PUBLIC_REGISTRY_HOST}/-/npm/v1/keys`
-const LOCKFILES = [
-    "package-lock.json",
-    "visualization/package-lock.json",
-    "gh-pages/package-lock.json",
-    "analysis/node-wrapper/package-lock.json"
-]
+const LOCKFILE_NAME = "package-lock.json"
 
 const baseRef = process.argv[2]
 if (!baseRef) {
@@ -27,7 +22,7 @@ if (!baseRef) {
 const problems = []
 const addedPackages = new Map()
 
-for (const lockfile of LOCKFILES) {
+for (const lockfile of trackedLockfiles()) {
     const head = readHeadLockfile(lockfile)
     if (!head) {
         continue
@@ -170,6 +165,13 @@ async function fetchPublishDate(packageUrl, version) {
     const packument = await fetchJson(packageUrl)
     const published = packument?.time?.[version]
     return published ? new Date(published) : undefined
+}
+
+/** Discovered, not listed: the workflow fires for a lockfile anywhere, so a new one must not slip past unread. */
+function trackedLockfiles() {
+    return execFileSync("git", ["ls-files", "-z"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 })
+        .split("\0")
+        .filter(path => path === LOCKFILE_NAME || path.endsWith(`/${LOCKFILE_NAME}`))
 }
 
 function readHeadLockfile(lockfile) {
