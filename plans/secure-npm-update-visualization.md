@@ -1,7 +1,7 @@
 ---
 name: Secure dependency update for the visualization
 issue: <none>
-state: todo
+state: progress
 version: 1
 ---
 
@@ -151,7 +151,7 @@ for us. Small PR, separate from the dependency work.
 
 ## Steps
 
-- [ ] Complete Task 0: Prerequisites (node floor, CI fallback, review gate)
+- [x] Complete Task 0: Prerequisites (node floor, CI fallback, review gate)
 - [ ] Complete Task 1: In-range refresh — audit 21 → 6
 - [ ] Complete Task 2: Electron 44 + packager 20 + get 5, drop the yauzl override
 - [ ] Complete Task 3: cyclonedx-npm 6 — audit 6 → 2
