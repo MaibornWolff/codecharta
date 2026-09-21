@@ -1,0 +1,61 @@
+name: Visualization Packaging
+
+# The desktop matrix was only ever built during a release, so a target that stops existing upstream —
+# Electron 44 dropped win32/ia32 and linux/armv7l — and a wrong icon path that skipped the app icon on
+# every platform both survived for a long time. Package on the PR that changes any of it instead.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'visualization/script/**'
+      - 'visualization/electron/**'
+      - 'visualization/public/codeCharta/assets/**'
+      - 'visualization/package.json'
+      - 'visualization/package-lock.json'
+      - '.github/workflows/test_packaging.yml'
+
+jobs:
+  package_visualization:
+    name: Package All Targets (Visualization)
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./visualization
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install node
+        run: npm ci
+        working-directory: ${{env.working-directory}}
+
+      - name: Build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: npm run build
+        working-directory: ${{env.working-directory}}
+
+      - name: Package every target
+        # pipefail because the default shell reports tee's exit code, which would hide a failed build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run package 2>&1 | tee packaging.log
+        working-directory: ${{env.working-directory}}
+
+      - name: Fail on a skipped icon
+        # packager only warns when it cannot find an icon, so the run stays green while every artifact
+        # ships the default Electron one.
+        run: |
+          if grep -q 'Could not find icon .* with extension "\.\(ico\|icns\|png\)"' packaging.log; then
+            echo "❌ An application icon was skipped — check the icon path in script/appBuild.js:"
+            grep 'Could not find icon' packaging.log
+            exit 1
+          fi
+          echo "✅ Every target got its application icon."
+        working-directory: ${{env.working-directory}}
