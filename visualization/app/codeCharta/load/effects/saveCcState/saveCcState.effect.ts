@@ -6,7 +6,6 @@ import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setState } from "../../../stores/rootStore/state.actions"
 import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
-import { beginPendingSave, endPendingSave } from "../../../util/busy/isPendingSave"
 import { runWhenIdle } from "../../../util/runWhenIdle"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
 
@@ -45,13 +44,12 @@ export class SaveCcStateEffect {
         { dispatch: false }
     )
 
+    // The writers raise the spinner themselves, for the one write that copies the loaded maps — from
+    // here a settings save and a file save look alike.
     private saveWhenIdle(write: () => Promise<void>): void {
-        beginPendingSave()
         runWhenIdle(() => {
-            // Nobody awaits the write: unreported it passes silently, and `finally` alone re-throws.
-            void write()
-                .catch(error => console.error("Failed to persist the session:", error))
-                .finally(endPendingSave)
+            // Nobody awaits the write: unreported it passes silently.
+            void write().catch(error => console.error("Failed to persist the session:", error))
         })
     }
 }

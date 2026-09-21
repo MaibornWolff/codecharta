@@ -2,6 +2,7 @@ import "fake-indexeddb/auto"
 import { IDBFactory } from "fake-indexeddb"
 import { openDB } from "idb"
 import { AttributeTypeValue, ColorMode, LayoutAlgorithm } from "../../../model/codeCharta.model"
+import { isPendingSave$ } from "../../../util/busy/isPendingSave"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
@@ -1208,6 +1209,79 @@ describe("IndexedDBWriter", () => {
             // Assert
             expect(transactionSpy).toHaveBeenCalledWith(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
             transactionSpy.mockRestore()
+        })
+    })
+
+    describe("the spinner the save raises", () => {
+        const pendingSavesDuring = async (write: () => Promise<void>) => {
+            let wasPending = false
+            const subscription = isPendingSave$.subscribe(isPending => {
+                wasPending ||= isPending
+            })
+            await write()
+            subscription.unsubscribe()
+            return wasPending
+        }
+
+        it("should stay down while a settings change is written", async () => {
+            // Arrange — the files have a record already, so this write carries no map
+            await writeCcFiles([{ file: { fileMeta: { fileName: "loaded.cc.json" } }, selectedAs: "Partial" }] as never)
+
+            // Act
+            const raisedSpinner = await pendingSavesDuring(() => writeCcState(defaultState))
+
+            // Assert — a settings write is a handful of names and flags; a spinner over it reads as a cost
+            expect(raisedSpinner).toBe(false)
+        })
+
+        it("should go up while the loaded maps are written", async () => {
+            // Arrange
+            const addedMap = [{ file: { fileMeta: { fileName: "added.cc.json" } }, selectedAs: "Partial" }] as never
+
+            // Act
+            const raisedSpinner = await pendingSavesDuring(() => writeCcFiles(addedMap))
+
+            // Assert — putting the maps structured-clones every one of them on the main thread
+            expect(raisedSpinner).toBe(true)
+        })
+
+        it("should go up when a settings write has to move the loaded maps into their own record", async () => {
+            // Arrange — a fresh database, so no files record exists yet: a session persisted before
+            // the files got a record of their own
+            const sharedFactory = globalThis.indexedDB
+            globalThis.indexedDB = new IDBFactory()
+            const stateHoldingFiles = {
+                ...defaultState,
+                files: [{ file: { fileMeta: { fileName: "unsplit.cc.json" } }, selectedAs: "Partial" }]
+            } as never
+
+            // Act
+            const raisedSpinner = await pendingSavesDuring(() => writeCcState(stateHoldingFiles))
+
+            // Assert — this one settings write does copy the maps, so it earns the spinner
+            globalThis.indexedDB = sharedFactory
+            expect(raisedSpinner).toBe(true)
+        })
+
+        it("should put the spinner back down when the write fails", async () => {
+            // Arrange
+            const putSpy = jest.spyOn(IDBObjectStore.prototype, "put").mockImplementation(() => {
+                throw new Error("the quota is exhausted")
+            })
+            let isPending = true
+            const subscription = isPendingSave$.subscribe(value => {
+                isPending = value
+            })
+
+            // Act
+            await expect(
+                writeCcFiles([{ file: { fileMeta: { fileName: "doomed.cc.json" } }, selectedAs: "Partial" }] as never)
+            ).rejects.toThrow()
+
+            // Assert
+            expect(isPending).toBe(false)
+            subscription.unsubscribe()
+            putSpy.mockRestore()
         })
     })
 
