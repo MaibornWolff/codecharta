@@ -29,7 +29,7 @@
     <ng-content select="[explorerPopovers]"></ng-content>
     @if (capabilities.showRules) {
         <cc-rules-popover kind="flatten" popoverId="explorer-flatten-rules" anchorName="explorer-flat-chip"></cc-rules-popover>
-        <cc-rules-popover kind="exclude" popoverId="explorer-hidden-rules" anchorName="explorer-hidden-chip"></cc-rules-popover>
+        <cc-rules-popover kind="exclude" popoverId="explorer-excluded-rules" anchorName="explorer-excluded-chip"></cc-rules-popover>
     }
     @if (capabilities.showRules && hasMetricRules) {
         <cc-metric-rule-editor

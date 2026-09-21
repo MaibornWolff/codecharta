@@ -93,7 +93,7 @@ describe("ExplorerTreeItemNameComponent", () => {
         // Arrange & Act
         const { container } = await render(ExplorerTreeItemNameComponent, {
             inputs: {
-                node: { path: "/x", type: NodeType.FILE, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode,
+                node: { path: "/x", type: NodeType.FILE, attributes: { rloc: 1 } } as unknown as CodeMapNode,
                 isFlattened: true
             }
         })
@@ -106,8 +106,7 @@ describe("ExplorerTreeItemNameComponent", () => {
         // Arrange & Act
         const { container } = await render(ExplorerTreeItemNameComponent, {
             inputs: {
-                node: { path: "/x", type: NodeType.FOLDER, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode,
-                isFlattened: true
+                node: { path: "/x", type: NodeType.FOLDER, isFlattened: true, attributes: { rloc: 1 } } as unknown as CodeMapNode
             }
         })
 

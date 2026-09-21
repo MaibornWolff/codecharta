@@ -6,7 +6,7 @@ import { ExplorerCollapseService } from "../../services/explorerCollapse.service
 import { ExplorerCountChipComponent } from "../explorerCountChip/explorerCountChip.component"
 import { ExplorerModeToggleComponent } from "../explorerModeToggle/explorerModeToggle.component"
 
-const NO_COUNTS: ExplorerCounts = { shown: 0, flattened: 0, hidden: 0, noArea: 0 }
+const NO_COUNTS: ExplorerCounts = { shown: 0, flattened: 0, excluded: 0, noArea: 0 }
 
 @Component({
     selector: "cc-explorer-header",
@@ -28,7 +28,7 @@ export class ExplorerHeaderComponent {
 
     readonly shown = computed(() => this.counts().shown)
     readonly flattened = computed(() => this.counts().flattened)
-    readonly hidden = computed(() => this.counts().hidden)
+    readonly excluded = computed(() => this.counts().excluded)
     readonly noArea = computed(() => this.counts().noArea)
     readonly shownTooltip = computed(() => `${this.shown()} visible · ${this.noArea()} with no area in current metric`)
 

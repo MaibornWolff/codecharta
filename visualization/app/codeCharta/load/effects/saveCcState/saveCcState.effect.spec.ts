@@ -17,7 +17,7 @@ import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.facade"
 import { writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setState } from "../../../stores/rootStore/state.actions"
-import { removeBlacklistItems, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
+import { removeExcludedNodes, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
 import { isPendingSave$ } from "../../../util/busy/isPendingSave"
 import { SaveCcStateEffect } from "./saveCcState.effect"
 
@@ -103,9 +103,9 @@ describe("SaveCcStateEffect", () => {
         await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
     })
 
-    it("should save cc-state on removeBlacklistItems (previously missing from the save-trigger union)", async () => {
+    it("should save cc-state on removeExcludedNodes (previously missing from the save-trigger union)", async () => {
         const store = TestBed.inject(MockStore)
-        actions$.next(removeBlacklistItems({ items: [] }))
+        actions$.next(removeExcludedNodes({ items: [] }))
         store.refreshState()
         await waitFor(() => expect(writeCcState).toHaveBeenCalledWith(state))
     })

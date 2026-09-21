@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store"
 import { ExplorerRow } from "../../../features/sidebarExplorer/facade"
 import { ExplorerRowProjection, projectExplorerRow } from "../../../lenses/explorerRow/explorerRowLens.facade"
 import { CodeMapNode } from "../../../model/codeCharta.model"
-import { rootUnarySelector } from "../../../renderer/renderModel/renderModel.facade"
+import { flattenPredicateSelector, rootUnarySelector } from "../../../renderer/renderModel/renderModel.facade"
 import { IdToBuildingService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
@@ -20,13 +20,14 @@ export class MetricsExplorerRow implements ExplorerRow {
     private readonly buildingIds = toSignal(this.idToBuildingService.buildingIds$, { requireSync: true })
     private readonly rootUnary = toSignal(this.store.select(rootUnarySelector), { requireSync: true })
     private readonly markedPackages = toSignal(this.sharedViewReadWindow.markedPackages$, { requireSync: true })
+    private readonly isFlattened = toSignal(this.store.select(flattenPredicateSelector), { requireSync: true })
 
     project(node: CodeMapNode): ExplorerRowProjection {
         return projectExplorerRow(node, {
             areaMetric: this.areaMetric(),
             buildingIds: this.buildingIds(),
             rootUnary: this.rootUnary(),
-            showsFlattenedState: true,
+            isFlattened: this.isFlattened(),
             hidesExcludedNodes: true,
             markedPackages: this.markedPackages()
         })

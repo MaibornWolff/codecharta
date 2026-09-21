@@ -11,7 +11,7 @@ import { defaultCenterMapZoom, defaultPreferences, defaultSorting } from "../../
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 22
+export const DB_VERSION = 23
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -596,6 +596,33 @@ function toPersistedSettings<T>(settings: T): T {
 
 // The persisted CcState record is migrated forward one version at a time: each vN transform reshapes a
 // (v(N-1))-shaped blob into vN. A blob written at oldVersion runs every transform whose target version it
+/**
+ * v22: the one blacklist, whose entries said what they did, becomes the two lists the app now keeps
+ * them in. Exclusion decides which nodes the map holds; flattening only changes how a subtree looks.
+ */
+export function migrateCcStateRecordToV22<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const sharedView = record["sharedView"]
+    if (!sharedView || typeof sharedView !== "object" || !("blacklist" in sharedView)) {
+        return state
+    }
+    const { blacklist, ...sharedViewWithoutBlacklist } = sharedView as Record<string, unknown>
+    const nodeRules = Array.isArray(blacklist) ? (blacklist as { path: string; type?: string; nodeType?: string }[]) : []
+    const withoutEffect = ({ path, nodeType }: { path: string; nodeType?: string }) => (nodeType ? { path, nodeType } : { path })
+
+    return {
+        ...record,
+        sharedView: {
+            ...sharedViewWithoutBlacklist,
+            excludedNodes: nodeRules.filter(rule => rule.type !== "flatten").map(withoutEffect),
+            flattenedNodes: nodeRules.filter(rule => rule.type === "flatten").map(withoutEffect)
+        }
+    } as T
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -615,7 +642,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 18, migrate: migrateCcStateRecordToV18 },
     { version: 19, migrate: migrateCcStateRecordToV19 },
     { version: 20, migrate: migrateCcStateRecordToV20 },
-    { version: 21, migrate: migrateCcStateRecordToV21 }
+    { version: 21, migrate: migrateCcStateRecordToV21 },
+    { version: 22, migrate: migrateCcStateRecordToV22 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

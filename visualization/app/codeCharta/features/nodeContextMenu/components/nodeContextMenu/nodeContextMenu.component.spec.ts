@@ -5,14 +5,15 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
+import { flattenPredicateSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { routeLinks } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
-    addBlacklistItem,
-    addBlacklistItemsIfNotResultsInEmptyMap,
+    addExcludedNodesIfNotResultsInEmptyMap,
+    addFlattenedNodes,
     focusNode,
     setRightClickedNodeData,
     unfocusAllNodes
@@ -33,8 +34,7 @@ describe("nodeContextMenu component", () => {
         name: "RatingBean.java",
         path: "/root/src/RatingBean.java",
         type: NodeType.FILE,
-        attributes: {},
-        isFlattened: false
+        attributes: {}
     } as CodeMapNode
 
     const folderNode = {
@@ -43,7 +43,6 @@ describe("nodeContextMenu component", () => {
         path: "/root/src",
         type: NodeType.FOLDER,
         attributes: {},
-        isFlattened: false,
         children: [fileNode]
     } as CodeMapNode
 
@@ -68,6 +67,7 @@ describe("nodeContextMenu component", () => {
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
         hasDomainData?: boolean
+        isFlattened?: (node: CodeMapNode) => boolean
     }
 
     async function renderMenu({
@@ -76,7 +76,8 @@ describe("nodeContextMenu component", () => {
         focusedNodePath,
         previousFocusedNodePath,
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
-        hasDomainData = true
+        hasDomainData = true,
+        isFlattened = () => false
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -88,6 +89,7 @@ describe("nodeContextMenu component", () => {
                 provideMockState(),
                 provideMockStore({
                     selectors: [
+                        { selector: flattenPredicateSelector, value: isFlattened },
                         { selector: rightClickedNodeDataSelector, value: rightClickedNodeData },
                         { selector: rightClickedCodeMapNodeSelector, value: node },
                         { selector: currentFocusedNodePathSelector, value: focusedNodePath },
@@ -304,13 +306,13 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(
-            addBlacklistItem({ item: { path: "/root/src/RatingBean.java", type: "flatten", nodeType: NodeType.FILE } })
+            addFlattenedNodes({ items: [{ path: "/root/src/RatingBean.java", nodeType: NodeType.FILE }] })
         )
     })
 
     it("should offer to show a flattened node again", async () => {
-        // Arrange & Act
-        await renderMenu({ node: { ...fileNode, isFlattened: true } })
+        // Arrange & Act — flatness is answered by the map, not by a flag on the node
+        await renderMenu({ node: { ...fileNode }, isFlattened: () => true })
 
         // Assert
         expect(screen.queryByText("Flatten")).toBe(null)
@@ -326,8 +328,8 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(
-            addBlacklistItemsIfNotResultsInEmptyMap({
-                items: [{ path: "/root/src/RatingBean.java", type: "exclude", nodeType: NodeType.FILE }]
+            addExcludedNodesIfNotResultsInEmptyMap({
+                items: [{ path: "/root/src/RatingBean.java", nodeType: NodeType.FILE }]
             })
         )
     })

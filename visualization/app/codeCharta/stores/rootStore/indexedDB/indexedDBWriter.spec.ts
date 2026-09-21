@@ -35,6 +35,7 @@ import {
     migrateCcStateRecordToV19,
     migrateCcStateRecordToV20,
     migrateCcStateRecordToV21,
+    migrateCcStateRecordToV22,
     openCodeChartaDB,
     readCcState,
     SCENARIOS_STORE_NAME,
@@ -307,17 +308,20 @@ describe("migrateCcStateRecordToV8 (Slice 9b re-home transform)", () => {
         expect(migrated.fileSettings.markedPackages).toEqual([])
     })
 
-    it("should fill sharedView blacklist with its default when absent from the old blob", () => {
+    it("should fill the sharedView rule lists with their defaults when absent from the old blob", () => {
         const migrated = migrateCcStateRecordToV8({ fileSettings: {} }) as unknown as { sharedView: Record<string, unknown> }
 
-        expect(migrated.sharedView.blacklist).toEqual(defaultSharedView.blacklist)
+        // the v8 shape seeds the sharedView from the defaults, which now hold the two split lists
+        expect(migrated.sharedView.blacklist).toBeUndefined()
+        expect(migrated.sharedView.excludedNodes).toEqual([])
+        expect(migrated.sharedView.flattenedNodes).toEqual([])
     })
 
-    it("should return the record untouched when it is null, and build a default sharedView blacklist when there is no fileSettings", () => {
+    it("should return the record untouched when it is null, and build a default sharedView when there is no fileSettings", () => {
         expect(migrateCcStateRecordToV8(null)).toBeNull()
         const migrated = migrateCcStateRecordToV8({ files: [] }) as unknown as { files: unknown[]; sharedView: Record<string, unknown> }
         expect(migrated.files).toEqual([])
-        expect(migrated.sharedView.blacklist).toEqual(defaultSharedView.blacklist)
+        expect(migrated.sharedView.excludedNodes).toEqual([])
     })
 })
 
@@ -974,8 +978,9 @@ describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 +
         // v7 re-home (attributeTypes/descriptors out of fileSettings into a brand-new metricsLensSource root; the
         // attributeTypes container is unwrapped again by v16 below)
         expect(migratedState.metricsLensSource.attributeDescriptors).toEqual({ rloc: { title: "Lines of Code" } })
-        // v8 re-home (blacklist out of fileSettings into the existing sharedView root)
-        expect(migratedState.sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
+        // v8 re-home (blacklist out of fileSettings into the existing sharedView root), then the v22 split
+        expect(migratedState.sharedView.excludedNodes).toEqual([{ path: "/root/excluded" }])
+        expect(migratedState.sharedView.flattenedNodes).toEqual([])
         // v9 re-home (markedPackages out of fileSettings into the existing sharedView root)
         expect(migratedState.sharedView.markedPackages).toEqual([{ path: "/root/src", color: "#FF0000" }])
         // v10 re-home (file-provenance flags out of appSettings/appStatus into their own top-level roots; appStatus deleted)
@@ -1085,8 +1090,8 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
     })
 
     it("should not even read the session when no transform applies to it", async () => {
-        // Arrange — a v21 record needs only the files split, which the read path handles on its own
-        const v21Database = await openDB(DB_NAME, 21, {
+        // Arrange — a v22 record needs only the files split, which the read path handles on its own
+        const v21Database = await openDB(DB_NAME, 22, {
             upgrade(database) {
                 database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
@@ -1382,3 +1387,43 @@ async function stubWriteCcState() {
     await transaction.done
     database.close()
 }
+
+describe("migrateCcStateRecordToV22 (blacklist split into excluded and flattened nodes)", () => {
+    it("should split the one list into the two the app now keeps", () => {
+        // Arrange
+        const record = {
+            sharedView: {
+                blacklist: [
+                    { path: "/root/a.ts", type: "exclude" },
+                    { path: "/root/b.ts", type: "flatten", nodeType: "File" }
+                ],
+                searchPattern: "keep me"
+            }
+        }
+
+        // Act
+        const migrated = migrateCcStateRecordToV22(record) as unknown as { sharedView: Record<string, unknown> }
+
+        // Assert — the effect moves from the entry to the list it sits in
+        expect(migrated.sharedView.excludedNodes).toEqual([{ path: "/root/a.ts" }])
+        expect(migrated.sharedView.flattenedNodes).toEqual([{ path: "/root/b.ts", nodeType: "File" }])
+        expect(migrated.sharedView.blacklist).toBeUndefined()
+        expect(migrated.sharedView.searchPattern).toBe("keep me")
+    })
+
+    it("should leave a record that has already been split untouched", () => {
+        // Arrange
+        const record = { sharedView: { excludedNodes: [{ path: "/root/a.ts" }], flattenedNodes: [] } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV22(record)
+
+        // Assert
+        expect(migrated).toBe(record)
+    })
+
+    it("should return the record untouched when it is null", () => {
+        // Act & Assert
+        expect(migrateCcStateRecordToV22(null)).toBeNull()
+    })
+})

@@ -25,7 +25,7 @@ const createTestScenario = (overrides: Partial<Scenario> = {}): Scenario => ({
         edgeColors: { outgoingEdge: "#FF1D8E", incomingEdge: "#1d8eff" },
         labelMode: LabelMode.Height,
         camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
-        blacklist: [],
+        excludedNodes: [],
         focusedNodePath: []
     },
     ...overrides

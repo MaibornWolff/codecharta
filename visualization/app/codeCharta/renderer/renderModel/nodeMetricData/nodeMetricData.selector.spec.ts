@@ -1,11 +1,11 @@
 import { TEST_DELTA_MAP_A } from "../../../mocks/dataMocks"
 import { CCFile, MetricRule } from "../../../model/codeCharta.model"
-import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { clone } from "../../../util/clone"
 import { rangeOfMetric } from "../../../util/metric/metricRange"
 import { calculateNodeMetricData } from "../../../util/metric/nodeMetricData.calculator"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 import { NodeDecorator } from "../../../util/nodeDecorator"
+import { createExcludeMatcher } from "../../../util/nodeRules/excludeMatcher"
 import { metricRangeSelector, nodeMetricDataSelector } from "./nodeMetricData.selector"
 
 describe("derived nodeMetricData selectors", () => {
@@ -19,7 +19,7 @@ describe("derived nodeMetricData selectors", () => {
     describe("nodeMetricDataSelector", () => {
         it("should project the same node metrics as calculateNodeMetricData for the visible selection", () => {
             // Arrange
-            const matcher = createBlacklistMatcher([])
+            const matcher = createExcludeMatcher([])
 
             // Act
             const result = nodeMetricDataSelector.projector(structureTree, matcher, [])
@@ -38,21 +38,21 @@ describe("derived nodeMetricData selectors", () => {
             const excludeBigLeaf = { id: "rule", metric: "rloc", operator: "gt", value: 90, type: "exclude" } as MetricRule
 
             // Act
-            const result = nodeMetricDataSelector.projector(structureTree, createBlacklistMatcher([]), [excludeBigLeaf])
+            const result = nodeMetricDataSelector.projector(structureTree, createExcludeMatcher([]), [excludeBigLeaf])
 
             // Assert
             expect(result.find(metric => metric.name === "rloc")).toEqual({ maxValue: 70, minValue: 30, name: "rloc", values: [30, 70] })
         })
 
         it("should return an empty array for an empty selection", () => {
-            expect(nodeMetricDataSelector.projector(undefined, createBlacklistMatcher([]), [])).toEqual([])
+            expect(nodeMetricDataSelector.projector(undefined, createExcludeMatcher([]), [])).toEqual([])
         })
     })
 
     describe("metricRangeSelector / rangeOfMetric", () => {
         it("should return the values, min and max of the color metric", () => {
             // Arrange
-            const nodeMetricData = calculateNodeMetricData(structureTree.map, createBlacklistMatcher([]))
+            const nodeMetricData = calculateNodeMetricData(structureTree.map, createExcludeMatcher([]))
             const colorMetric = "rloc"
 
             // Act
@@ -64,7 +64,7 @@ describe("derived nodeMetricData selectors", () => {
         })
 
         it("should fall back to the empty range for a missing metric", () => {
-            const nodeMetricData = calculateNodeMetricData(structureTree.map, createBlacklistMatcher([]))
+            const nodeMetricData = calculateNodeMetricData(structureTree.map, createExcludeMatcher([]))
 
             expect(rangeOfMetric(nodeMetricData, "does_not_exist")).toEqual({ values: [], minValue: 0, maxValue: 0 })
         })
@@ -78,7 +78,7 @@ describe("derived nodeMetricData selectors", () => {
     describe("rangeOf parity (blacklist lift)", () => {
         it.each([[[]], [["/root/BigLeaf"]]])("should equal calculateNodeMetricData ∘ rangeOfMetric for blacklist %j", blacklist => {
             // Arrange
-            const matcher = createBlacklistMatcher(blacklist.map(path => ({ path, type: "flatten" as const })))
+            const matcher = createExcludeMatcher(blacklist.map(path => ({ path, type: "flatten" as const })))
             const colorMetric = "rloc"
 
             // Act

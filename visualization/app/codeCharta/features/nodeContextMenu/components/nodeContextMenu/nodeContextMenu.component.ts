@@ -57,6 +57,13 @@ export class NodeContextMenuComponent {
         }
     })
     readonly menuNode = computed(() => this.openMenu()?.node ?? null)
+    // The map answers flatness while it lays itself out, so the menu asks the same question rather
+    // than reading a flag off the node.
+    private readonly isFlattened = toSignal(this.readStore.isFlattened$, { requireSync: true })
+    readonly isMenuNodeFlattened = computed(() => {
+        const node = this.menuNode()
+        return node !== null && this.isFlattened()(node)
+    })
     private readonly hasDomainData = toSignal(this.readStore.hasDomainData$, { requireSync: true })
     readonly jumpTarget = computed(() => {
         const view = this.capabilities.jumpTargetView

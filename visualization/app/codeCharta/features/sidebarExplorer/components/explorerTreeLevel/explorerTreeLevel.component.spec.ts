@@ -156,9 +156,9 @@ describe("ExplorerTreeLevelComponent", () => {
         configureWithPorts({
             row: createExplorerRowMock(() => ({
                 isSelectable: false,
+                isFlattened: false,
                 isInactive: false,
                 isItalic: false,
-                isFlattened: false,
                 isHidden: false,
                 title: "",
                 decoration: null,
@@ -252,9 +252,9 @@ describe("ExplorerTreeLevelComponent", () => {
         configureWithPorts({
             row: createExplorerRowMock(node => ({
                 isSelectable: true,
+                isFlattened: false,
                 isInactive: false,
                 isItalic: false,
-                isFlattened: false,
                 isHidden: false,
                 title: "",
                 decoration: node.name === "root" ? "42% / 2" : null,
@@ -276,9 +276,9 @@ describe("ExplorerTreeLevelComponent", () => {
         configureWithPorts({
             row: createExplorerRowMock(node => ({
                 isSelectable: true,
+                isFlattened: false,
                 isInactive: false,
                 isItalic: false,
-                isFlattened: false,
                 isHidden: node.name === "bigLeaf",
                 title: "",
                 decoration: null,
@@ -300,9 +300,9 @@ describe("ExplorerTreeLevelComponent", () => {
         configureWithPorts({
             row: createExplorerRowMock(() => ({
                 isSelectable: true,
+                isFlattened: false,
                 isInactive: true,
                 isItalic: true,
-                isFlattened: false,
                 isHidden: false,
                 title: "No Node Area for Chosen Metric",
                 decoration: null,

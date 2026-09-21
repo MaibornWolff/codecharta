@@ -1,13 +1,14 @@
 import { Injectable, inject } from "@angular/core"
 import { createSelector, Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { blacklistSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { excludedNodesSelector, flattenedNodesSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { clearRulesOfType } from "../../../stores/sharedView/sharedView.write.facade"
 
 const ruleCountSelector = createSelector(
-    blacklistSelector,
+    excludedNodesSelector,
+    flattenedNodesSelector,
     metricRulesSelector,
-    (blacklist, metricRules) => blacklist.length + metricRules.length
+    (excludedNodes, flattenedNodes, metricRules) => excludedNodes.length + flattenedNodes.length + metricRules.length
 )
 
 /**
@@ -21,7 +22,7 @@ export class FiltersResetStore {
     readonly ruleCount$ = this.store.select(ruleCountSelector)
 
     resetFilters() {
-        this.store.dispatch(clearRulesOfType({ blacklistType: "flatten" }))
-        this.store.dispatch(clearRulesOfType({ blacklistType: "exclude" }))
+        this.store.dispatch(clearRulesOfType({ ruleEffect: "flatten" }))
+        this.store.dispatch(clearRulesOfType({ ruleEffect: "exclude" }))
     }
 }

@@ -6,7 +6,7 @@ import { defaultState } from "../../../stores/rootStore/state.manager"
 import { explorerCountsSelector } from "./explorerCounts.selector"
 import { MetricsExplorerCounts } from "./metricsExplorerCounts"
 
-const COUNTS: ExplorerCounts = { shown: 3, flattened: 2, hidden: 1, noArea: 0 }
+const COUNTS: ExplorerCounts = { shown: 3, flattened: 2, excluded: 1, noArea: 0 }
 
 describe("MetricsExplorerCounts", () => {
     it("should report the map's explorer counts", async () => {

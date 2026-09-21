@@ -1,6 +1,7 @@
 import { combineReducers } from "@ngrx/store"
 import { SharedView } from "../../../model/codeCharta.model"
-import { blacklist, defaultBlacklist } from "./blacklist/blacklist.reducer"
+import { defaultExcludedNodes, excludedNodes } from "./excludedNodes/excludedNodes.reducer"
+import { defaultFlattenedNodes, flattenedNodes } from "./flattenedNodes/flattenedNodes.reducer"
 import { defaultFocusedNodePath, focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
 import { defaultHoveredNodeId, hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
 import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
@@ -12,7 +13,8 @@ import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildin
 export const sharedView = combineReducers({
     focusedNodePath,
     searchPattern,
-    blacklist,
+    excludedNodes,
+    flattenedNodes,
     metricRules,
     markedPackages,
     hoveredNodeId,
@@ -23,7 +25,8 @@ export const sharedView = combineReducers({
 export const defaultSharedView: SharedView = {
     focusedNodePath: defaultFocusedNodePath,
     searchPattern: defaultSearchPattern,
-    blacklist: defaultBlacklist,
+    excludedNodes: defaultExcludedNodes,
+    flattenedNodes: defaultFlattenedNodes,
     metricRules: defaultMetricRules,
     markedPackages: defaultMarkedPackages,
     hoveredNodeId: defaultHoveredNodeId,

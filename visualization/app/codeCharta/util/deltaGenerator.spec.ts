@@ -31,7 +31,6 @@ describe("deltaGenerator", () => {
             attributes: {},
             path: "/root/onlyA",
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "special",
@@ -39,31 +38,27 @@ describe("deltaGenerator", () => {
                     attributes: {},
                     path: "/root/onlyA/special",
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "unicorn",
                             type: NodeType.FILE,
                             attributes: { special: 42 },
                             path: "/root/onlyA/special/unicorn",
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         },
                         {
                             name: "2ndUnicorn",
                             type: NodeType.FILE,
                             attributes: { special: 10 },
                             path: "/root/onlyA/special/2ndunicorn",
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         },
                         {
                             name: "Cthulhu",
                             type: NodeType.FILE,
                             attributes: { monster: 1 },
                             path: "/root/onlyA/special/Cthulhu",
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }
@@ -76,7 +71,6 @@ describe("deltaGenerator", () => {
             attributes: {},
             path: "/root/onlyA",
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "special",
@@ -84,23 +78,20 @@ describe("deltaGenerator", () => {
                     attributes: {},
                     path: "/root/onlyA/special",
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "Narwal",
                             type: NodeType.FILE,
                             attributes: { monster: 42 },
                             path: "/root/onlyA/special/Narwal",
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         },
                         {
                             name: "Cthulhu",
                             type: NodeType.FILE,
                             attributes: { monster: 666 },
                             path: "/root/onlyA/special/Cthulhu",
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }

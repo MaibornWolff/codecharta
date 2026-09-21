@@ -3,13 +3,13 @@ import { Store, StoreModule } from "@ngrx/store"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { firstValueFrom } from "rxjs"
-import { BlacklistItem, CcState, MetricRule } from "../../../../../model/codeCharta.model"
+import { CcState, MetricRule, NodeRule } from "../../../../../model/codeCharta.model"
 import { appReducers, setStateMiddleware } from "../../../../../stores/rootStore/store"
-import { blacklistSelector, metricRulesSelector } from "../../../../../stores/sharedView/sharedView.read.facade"
-import { addBlacklistItems, addMetricRule } from "../../../../../stores/sharedView/sharedView.write.facade"
+import { excludedNodesSelector, metricRulesSelector } from "../../../../../stores/sharedView/sharedView.read.facade"
+import { addExcludedNodes, addMetricRule } from "../../../../../stores/sharedView/sharedView.write.facade"
 import { ResetFiltersButtonComponent } from "./resetFiltersButton.component"
 
-const flattenItem: BlacklistItem = { path: "**/*.spec.ts", type: "flatten" }
+const flattenItem: NodeRule = { path: "**/*.spec.ts" }
 const excludeRule: MetricRule = { id: "a", metric: "rloc", operator: "lt", value: 5, type: "exclude" }
 
 const storeOf = () => TestBed.inject<Store<CcState>>(Store)
@@ -24,7 +24,7 @@ describe("ResetFiltersButtonComponent", () => {
     })
 
     const addBothKindsOfRule = () => {
-        storeOf().dispatch(addBlacklistItems({ items: [flattenItem] }))
+        storeOf().dispatch(addExcludedNodes({ items: [flattenItem] }))
         storeOf().dispatch(addMetricRule({ rule: excludeRule }))
     }
 
@@ -63,7 +63,7 @@ describe("ResetFiltersButtonComponent", () => {
     it("should name a single rule in the singular", async () => {
         // Arrange
         await render(ResetFiltersButtonComponent)
-        storeOf().dispatch(addBlacklistItems({ items: [flattenItem] }))
+        storeOf().dispatch(addExcludedNodes({ items: [flattenItem] }))
 
         // Act
         await userEvent.click(screen.getByTestId("reset-filters-button"))
@@ -82,7 +82,7 @@ describe("ResetFiltersButtonComponent", () => {
         await userEvent.click(screen.getByTestId("confirm-dialog-yes"))
 
         // Assert
-        expect(await firstValueFrom(storeOf().select(blacklistSelector))).toEqual([])
+        expect(await firstValueFrom(storeOf().select(excludedNodesSelector))).toEqual([])
         expect(await firstValueFrom(storeOf().select(metricRulesSelector))).toEqual([])
     })
 
@@ -96,6 +96,6 @@ describe("ResetFiltersButtonComponent", () => {
         await userEvent.click(screen.getByTestId("confirm-dialog-no"))
 
         // Assert
-        expect(await firstValueFrom(storeOf().select(blacklistSelector))).toEqual([flattenItem])
+        expect(await firstValueFrom(storeOf().select(excludedNodesSelector))).toEqual([flattenItem])
     })
 })

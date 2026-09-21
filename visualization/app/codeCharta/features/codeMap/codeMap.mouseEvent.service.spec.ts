@@ -5,7 +5,7 @@ import { klona } from "klona"
 import { Box3 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../mocks/dataMocks"
-import { BlacklistItem, CcState, CodeMapNode, Node } from "../../model/codeCharta.model"
+import { CcState, CodeMapNode, Node, NodeRule } from "../../model/codeCharta.model"
 import { idToNodeSelector } from "../../renderer/renderModel/renderModel.facade"
 import { CodeMapTooltipService } from "../../renderer/threeViewer/codeMap.tooltip.service"
 import { CursorType, changeCursorIndicator } from "../../renderer/threeViewer/cursorIndicator"
@@ -266,25 +266,25 @@ describe("codeMapMouseEventService", () => {
         })
     })
 
-    describe("onBlacklistChanged", () => {
+    describe("onExcludedNodesChanged", () => {
         it("should deselect the building when the selected building is excluded", () => {
-            const blacklist: BlacklistItem[] = [{ path: CODE_MAP_BUILDING.node.path, type: "exclude" }]
+            const excludedNodes: NodeRule[] = [{ path: CODE_MAP_BUILDING.node.path }]
 
-            codeMapMouseEventService.onBlacklistChanged(blacklist)
+            codeMapMouseEventService.onExcludedNodesChanged(excludedNodes)
 
             expect(threeSceneService.clearSelection).toHaveBeenCalled()
         })
 
         it("should deselect the building when the selected building is hidden", () => {
-            const blacklist: BlacklistItem[] = [{ path: CODE_MAP_BUILDING.node.path, type: "flatten" }]
+            const excludedNodes: NodeRule[] = [{ path: CODE_MAP_BUILDING.node.path }]
 
-            codeMapMouseEventService.onBlacklistChanged(blacklist)
+            codeMapMouseEventService.onExcludedNodesChanged(excludedNodes)
 
             expect(threeSceneService.clearSelection).toHaveBeenCalled()
         })
 
         it("should not deselect the building when the selected building is not blacklisted", () => {
-            codeMapMouseEventService.onBlacklistChanged([])
+            codeMapMouseEventService.onExcludedNodesChanged([])
 
             expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
         })
@@ -292,7 +292,7 @@ describe("codeMapMouseEventService", () => {
         it("should not deselect the building when no building is selected", () => {
             threeSceneService.getSelectedBuilding = jest.fn()
 
-            codeMapMouseEventService.onBlacklistChanged([])
+            codeMapMouseEventService.onExcludedNodesChanged([])
 
             expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
         })

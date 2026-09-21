@@ -33,7 +33,7 @@ const testSettings: ScenarioSettings = {
     labelMode: LabelMode.Color,
     groupLabelCollisions: true,
     camera: { position: { x: 100, y: 200, z: 300 }, target: { x: 10, y: 0, z: 20 } },
-    blacklist: [{ path: "/root/file.ts", type: "exclude" }],
+    excludedNodes: [{ path: "/root/file.ts" }],
     metricRules: [{ id: "rule-1", metric: "mcc", operator: "gt", value: 10, type: "flatten" }],
     focusedNodePath: ["/root/src"]
 }
@@ -117,7 +117,7 @@ describe("ScenarioApplierService", () => {
             expect(settingsPatch.mapState?.scaling).toEqual({ y: 3 })
             expect(settingsPatch.mapState?.amountOfEdgePreviews).toBe(7)
             expect(settingsPatch.mapState?.labelsPerMap).toBe(true)
-            expect(settingsPatch.sharedView?.blacklist).toEqual(testSettings.blacklist)
+            expect(settingsPatch.sharedView?.excludedNodes).toEqual(testSettings.excludedNodes)
             expect(settingsPatch.sharedView?.metricRules).toEqual(testSettings.metricRules)
             expect(settingsPatch.sharedView?.markedPackages).toEqual(testSettings.markedPackages)
         })

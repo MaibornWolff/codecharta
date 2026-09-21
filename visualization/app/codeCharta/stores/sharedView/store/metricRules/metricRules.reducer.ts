@@ -10,5 +10,5 @@ export const metricRules = createReducer(
     on(setMetricRules, setState(defaultMetricRules)),
     on(addMetricRule, (state, action) => (state.some(rule => rule.id === action.rule.id) ? state : [...state, action.rule])),
     on(removeMetricRule, (state, action) => state.filter(rule => rule.id !== action.id)),
-    on(clearRulesOfType, (state, action) => state.filter(rule => rule.type !== action.blacklistType))
+    on(clearRulesOfType, (state, action) => state.filter(rule => rule.type !== action.ruleEffect))
 )

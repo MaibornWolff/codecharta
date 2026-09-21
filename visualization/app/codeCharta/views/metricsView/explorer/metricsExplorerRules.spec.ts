@@ -2,21 +2,21 @@ import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import { firstValueFrom } from "rxjs"
-import { AddBlacklistItemsIfNotResultsInEmptyMapEffect } from "../../../features/shared/effects/addBlacklistItemsIfNotResultsInEmptyMap/addBlacklistItemsIfNotResultsInEmptyMap.effect"
-import { BlacklistItem, CcState } from "../../../model/codeCharta.model"
+import { AddExcludedNodesIfNotResultsInEmptyMapEffect } from "../../../features/shared/effects/addExcludedNodesIfNotResultsInEmptyMap/addExcludedNodesIfNotResultsInEmptyMap.effect"
+import { CcState, NodeRule } from "../../../model/codeCharta.model"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
-import { blacklistSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { addBlacklistItems, addMetricRule, setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
-import { resultsInEmptyMap } from "../../../util/blacklist/resultsInEmptyMap"
-import { BlacklistSearchPatternEffect } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
+import { excludedNodesSelector, flattenedNodesSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { addFlattenedNodes, addMetricRule, setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
+import { resultsInEmptyMap } from "../../../util/nodeRules/resultsInEmptyMap"
+import { RuleFromSearchPatternEffect } from "../effects/ruleFromSearchPattern/ruleFromSearchPattern.effect"
 import { MetricsExplorerRules } from "./metricsExplorerRules"
 
-jest.mock("../../../util/blacklist/resultsInEmptyMap", () => ({
+jest.mock("../../../util/nodeRules/resultsInEmptyMap", () => ({
     resultsInEmptyMap: jest.fn()
 }))
 
-const blacklistOfType = async (type: "flatten" | "exclude") =>
-    (await firstValueFrom(TestBed.inject<Store<CcState>>(Store).select(blacklistSelector))).filter(item => item.type === type)
+const rulesOfEffect = async (effect: "flatten" | "exclude") =>
+    firstValueFrom(TestBed.inject<Store<CcState>>(Store).select(effect === "flatten" ? flattenedNodesSelector : excludedNodesSelector))
 
 describe("MetricsExplorerRules", () => {
     let rules: MetricsExplorerRules
@@ -26,7 +26,7 @@ describe("MetricsExplorerRules", () => {
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
-                EffectsModule.forRoot([BlacklistSearchPatternEffect, AddBlacklistItemsIfNotResultsInEmptyMapEffect])
+                EffectsModule.forRoot([RuleFromSearchPatternEffect, AddExcludedNodesIfNotResultsInEmptyMapEffect])
             ],
             providers: [MetricsExplorerRules]
         })
@@ -39,7 +39,7 @@ describe("MetricsExplorerRules", () => {
         rules.ruleFromSearchPattern("flatten")
 
         // Assert
-        expect(await blacklistOfType("flatten")).toEqual([{ path: "*needle*", type: "flatten" }])
+        expect(await rulesOfEffect("flatten")).toEqual([{ path: "*needle*" }])
     })
 
     it("should turn the map's search pattern into an exclude rule", async () => {
@@ -47,19 +47,19 @@ describe("MetricsExplorerRules", () => {
         rules.ruleFromSearchPattern("exclude")
 
         // Assert
-        expect(await blacklistOfType("exclude")).toEqual([{ path: "*needle*", type: "exclude" }])
+        expect(await rulesOfEffect("exclude")).toEqual([{ path: "*needle*" }])
     })
 
     it("should remove a rule from the map's blacklist", async () => {
         // Arrange
-        const item: BlacklistItem = { type: "flatten", path: "*needle*" }
-        TestBed.inject(Store).dispatch(addBlacklistItems({ items: [item] }))
+        const item: NodeRule = { path: "*needle*" }
+        TestBed.inject(Store).dispatch(addFlattenedNodes({ items: [item] }))
 
         // Act
-        rules.removeRule({ id: `flatten/${item.path}`, label: item.path, affectedCount: 1, kind: "RULE", item })
+        rules.removeRule({ id: `flatten/${item.path}`, label: item.path, affectedCount: 1, kind: "RULE", item, effect: "flatten" })
 
         // Assert
-        expect(await blacklistOfType("flatten")).toEqual([])
+        expect(await rulesOfEffect("flatten")).toEqual([])
     })
 
     it("should remove a metric rule from the map's rules", async () => {

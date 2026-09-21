@@ -27,7 +27,7 @@ const createTestScenario = (name: string, id = "test-id", mapFileNames?: string[
         mapColors: defaultState.mapState.mapColors,
         labelMode: LabelMode.Height,
         camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
-        blacklist: [],
+        excludedNodes: [],
         focusedNodePath: []
     }
 })
@@ -44,7 +44,9 @@ const createFileState = (fileName: string): FileState => ({
     file: {
         fileMeta: { fileName, fileChecksum: "abc", apiVersion: "1.3", projectName: "test", exportedFileSize: 100 },
         map: { name: "root", type: NodeType.FOLDER, children: [], attributes: {} },
-        settings: { fileSettings: { edges: [], blacklist: [], attributeTypes: {}, attributeDescriptors: {}, markedPackages: [] } as any }
+        settings: {
+            fileSettings: { edges: [], excludedNodes: [], attributeTypes: {}, attributeDescriptors: {}, markedPackages: [] } as any
+        }
     },
     selectedAs: FileSelectionState.Partial
 })

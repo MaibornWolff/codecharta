@@ -13,7 +13,7 @@ import {
     ThreeStatsService
 } from "../../renderer/threeViewer/threeViewer.facade"
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
-import { blacklistMatcherSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { excludeMatcherSelector } from "../../stores/sharedView/sharedView.read.facade"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
@@ -133,13 +133,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         switch (layoutAlgorithm) {
             case LayoutAlgorithm.StreetMap:
             case LayoutAlgorithm.TreeMapStreet:
-                return StreetLayoutGenerator.createStreetLayoutNodes(
-                    map,
-                    state,
-                    nodeMetricData,
-                    blacklistMatcherSelector(state),
-                    deltaState
-                )
+                return StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, excludeMatcherSelector(state), deltaState)
             case LayoutAlgorithm.SquarifiedTreeMap:
                 return createTreemapNodes(map, state, nodeMetricData, deltaState)
             default:

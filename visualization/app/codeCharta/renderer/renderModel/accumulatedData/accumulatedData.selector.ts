@@ -3,7 +3,7 @@ import { structureTreeSelector } from "../../../lenses/structure/structure.facad
 import { CodeMapNode, FileMeta } from "../../../model/codeCharta.model"
 import { fileStatesAvailable, isDeltaState } from "../../../model/files/files.helper"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
-import { blacklistSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { excludedNodesSelector, excludeMetricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { clone } from "../../../util/clone"
 import { NodeDecorator } from "../../../util/nodeDecorator"
 import { attributeTypesSelector } from "../attributeTypes.selector"
@@ -19,21 +19,22 @@ const accumulatedDataFallback: AccumulatedData = Object.freeze({
 export type AccumulatedData = { unifiedMapNode: CodeMapNode | undefined; unifiedFileMeta: FileMeta | undefined }
 
 // The structure tree is cloned before decoration: the selector is memoized, so its instance is shared across recomputes and must not be mutated in place.
+// Only exclusion is an input: a flatten rule changes how a subtree looks, not which nodes the map holds, and is applied while it is laid out instead.
 export const accumulatedDataSelector = createSelector(
     metricDataSelector,
     visibleFileStatesSelector,
     structureTreeSelector,
     attributeTypesSelector,
-    blacklistSelector,
-    metricRulesSelector,
+    excludedNodesSelector,
+    excludeMetricRulesSelector,
     edgeMetricNamesSelector,
-    (metricData, fileStates, structureTree, attributeTypes, blacklist, metricRules, edgeMetricNames) => {
+    (metricData, fileStates, structureTree, attributeTypes, excludedNodes, excludeMetricRules, edgeMetricNames) => {
         if (!fileStatesAvailable(fileStates) || !metricData.nodeMetricData || !structureTree?.map) {
             return accumulatedDataFallback
         }
 
         const data = clone(structureTree)
-        NodeDecorator.decorateMap(data.map, metricData, blacklist, metricRules)
+        NodeDecorator.decorateMap(data.map, metricData, excludedNodes, excludeMetricRules)
         addEdgeMetricsForLeaves(metricData.nodeEdgeMetricsMap, data.map, edgeMetricNames)
         NodeDecorator.decorateParentNodesWithAggregatedAttributes(data.map, isDeltaState(fileStates), attributeTypes)
 

@@ -1,12 +1,12 @@
 import { klona } from "klona"
 import { METRIC_DATA, STATE, VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
 import { CodeMapNode, LayoutAlgorithm } from "../../../../model/codeCharta.model"
-import { createBlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
+import { createExcludeMatcher } from "../../../../util/nodeRules/excludeMatcher"
 import { StreetLayoutGenerator } from "./streetLayoutGenerator"
 
 describe("horizontalStreet", () => {
     let codeMapNode: CodeMapNode
-    const matcher = createBlacklistMatcher([])
+    const matcher = createExcludeMatcher([])
 
     beforeEach(() => {
         codeMapNode = klona(VALID_NODE_WITH_PATH)

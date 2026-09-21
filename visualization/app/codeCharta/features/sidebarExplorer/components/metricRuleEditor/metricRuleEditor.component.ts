@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { BlacklistType, MetricRuleOperator } from "../../../../model/codeCharta.model"
+import { MetricRuleOperator, RuleEffect } from "../../../../model/codeCharta.model"
 import { bucketValues } from "../../../../util/metricRule/bucketValues"
 import { matchesMetricRule } from "../../../../util/metricRule/metricRuleMatcher"
 import { MetricOption, MetricSelectPopoverComponent } from "../../../shared/facade"
@@ -32,7 +32,7 @@ const OPERATOR_OPTIONS: OperatorOption[] = [
 export class MetricRuleEditorComponent {
     private readonly metricRules = inject(EXPLORER_METRIC_RULES)
 
-    readonly type = input.required<BlacklistType>()
+    readonly type = input.required<RuleEffect>()
     readonly popoverId = input.required<string>()
     readonly anchorName = input.required<string>()
 

@@ -5,11 +5,11 @@ import { CcState, CodeMapNode } from "../../../model/codeCharta.model"
 import { routeLinks, ViewId } from "../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../routing/viewHandoff.store"
 import {
-    addBlacklistItem,
-    addBlacklistItemsIfNotResultsInEmptyMap,
+    addExcludedNodesIfNotResultsInEmptyMap,
+    addFlattenedNodes,
     focusNode,
     markPackages,
-    removeBlacklistItem,
+    removeFlattenedNodes,
     setRightClickedNodeData,
     unfocusAllNodes,
     unfocusNode,
@@ -17,7 +17,7 @@ import {
 } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
 
-type BlacklistableNode = Pick<CodeMapNode, "path" | "type">
+type RuleableNode = Pick<CodeMapNode, "path" | "type">
 
 @Injectable({
     providedIn: "root"
@@ -45,19 +45,16 @@ export class NodeContextMenuWriteStore {
         this.store.dispatch(unfocusAllNodes())
     }
 
-    flattenNode(node: BlacklistableNode) {
-        dispatchAfterPaint(this.store, addBlacklistItem({ item: { path: node.path, type: "flatten", nodeType: node.type } }))
+    flattenNode(node: RuleableNode) {
+        this.store.dispatch(addFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
     }
 
-    unflattenNode(node: BlacklistableNode) {
-        dispatchAfterPaint(this.store, removeBlacklistItem({ item: { path: node.path, type: "flatten", nodeType: node.type } }))
+    unflattenNode(node: RuleableNode) {
+        this.store.dispatch(removeFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
     }
 
-    excludeNode(node: BlacklistableNode) {
-        dispatchAfterPaint(
-            this.store,
-            addBlacklistItemsIfNotResultsInEmptyMap({ items: [{ path: node.path, type: "exclude", nodeType: node.type }] })
-        )
+    excludeNode(node: RuleableNode) {
+        dispatchAfterPaint(this.store, addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: node.path, nodeType: node.type }] }))
     }
 
     markFolder(path: string, color: string) {

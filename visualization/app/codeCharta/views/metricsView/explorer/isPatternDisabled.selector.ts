@@ -1,17 +1,17 @@
-import { createSelector } from "@ngrx/store"
-import { BlacklistType } from "../../../model/codeCharta.model"
-import { blacklistSelector, searchPatternSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { isPatternBlacklisted } from "../../../util/blacklist/isPatternBlacklisted"
+import { createSelector, MemoizedSelector } from "@ngrx/store"
+import { CcState, NodeRule } from "../../../model/codeCharta.model"
+import { excludedNodesSelector, flattenedNodesSelector, searchPatternSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { isPatternInRules } from "../../../util/nodeRules/isPatternInRules"
 import { isSearchPatternEmptySelector } from "./isSearchPatternEmpty.selector"
 
-const createIsPatternDisabledSelector = (type: BlacklistType) =>
+const createIsPatternDisabledSelector = (nodeRulesSelector: MemoizedSelector<CcState, NodeRule[]>) =>
     createSelector(
         searchPatternSelector,
         isSearchPatternEmptySelector,
-        blacklistSelector,
-        (searchPattern, isSearchPatternEmpty, blacklist) => isSearchPatternEmpty || isPatternBlacklisted(blacklist, type, searchPattern)
+        nodeRulesSelector,
+        (searchPattern, isSearchPatternEmpty, nodeRules) => isSearchPatternEmpty || isPatternInRules(nodeRules, searchPattern)
     )
 
-export const isFlattenPatternDisabledSelector = createIsPatternDisabledSelector("flatten")
+export const isFlattenPatternDisabledSelector = createIsPatternDisabledSelector(flattenedNodesSelector)
 
-export const isExcludePatternDisabledSelector = createIsPatternDisabledSelector("exclude")
+export const isExcludePatternDisabledSelector = createIsPatternDisabledSelector(excludedNodesSelector)

@@ -4,7 +4,7 @@ import { Observable } from "rxjs"
 export interface ExplorerCounts {
     shown: number
     flattened: number
-    hidden: number
+    excluded: number
     noArea: number
 }
 

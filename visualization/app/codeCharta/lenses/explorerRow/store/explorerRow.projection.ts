@@ -21,7 +21,9 @@ export interface ExplorerRowInputs {
     pathsWithDomainWords?: ReadonlySet<string>
     buildingIds?: ReadonlySet<number>
     rootUnary?: number | null
-    showsFlattenedState?: boolean
+    /** Flattening is not decorated onto the tree — the map answers it while it lays itself out —
+     *  so the view has to hand the lens the question rather than the lens reading a flag. */
+    isFlattened?: (node: CodeMapNode) => boolean
     hidesExcludedNodes?: boolean
     markedPackages?: MarkedPackage[]
 }
@@ -34,7 +36,7 @@ export function projectExplorerRow(node: CodeMapNode, inputs: ExplorerRowInputs)
         isSelectable,
         isInactive,
         isItalic: isInactive || !isSelectable,
-        isFlattened: Boolean(inputs.showsFlattenedState && node.isFlattened),
+        isFlattened: Boolean(inputs.isFlattened?.(node)),
         isHidden: Boolean(inputs.hidesExcludedNodes && node.isExcluded),
         title: inactiveHint,
         decoration: computeDecoration(node, inputs.rootUnary),

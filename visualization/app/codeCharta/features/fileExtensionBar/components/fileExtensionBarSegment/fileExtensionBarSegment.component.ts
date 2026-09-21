@@ -14,7 +14,7 @@ import {
 } from "@angular/core"
 import { Subscription } from "rxjs"
 import { MetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
-import { BlackListExtensionService } from "../../services/blackListExtension.service"
+import { ExtensionRulesService } from "../../services/extensionRules.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 
 const MENU_WIDTH_PX = 192
@@ -45,7 +45,7 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     private flattenSubscription: Subscription
 
     constructor(
-        private readonly blackListExtensionService: BlackListExtensionService,
+        private readonly blackListExtensionService: ExtensionRulesService,
         private readonly highlightBuildingsByFileExtensionService: HighlightBuildingsByFileExtensionService
     ) {}
 

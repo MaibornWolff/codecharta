@@ -6,8 +6,6 @@ import { APIVersions, ExportCCFile } from "../model/codeCharta.api.model"
 import {
     AttributeDescriptors,
     AttributeTypeValue,
-    BlacklistItem,
-    BlacklistType,
     CCFile,
     CcState,
     CodeMapNode,
@@ -15,7 +13,9 @@ import {
     Edge,
     EdgeMetricData,
     EdgeVisibility,
+    ExcludedNode,
     FileMeta,
+    FlattenedNode,
     LabelMode,
     LayoutAlgorithm,
     MarkedPackage,
@@ -42,7 +42,6 @@ const DEFAULT_FILE_MAP: CodeMapNode = {
     type: NodeType.FOLDER,
     attributes: {},
     isExcluded: false,
-    isFlattened: false,
     children: []
 }
 
@@ -73,7 +72,7 @@ export const VALID_EDGES: Edge[] = [
     }
 ]
 
-const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType.FOLDER, isExcluded: false, isFlattened: false }
+const DEFAULT_ROOT: CodeMapNode = { name: "root", attributes: {}, type: NodeType.FOLDER, isExcluded: false }
 
 export const DEFAULT_SETTINGS = {
     fileSettings: {
@@ -162,7 +161,6 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1 },
             isExcluded: false,
-            isFlattened: false,
             link: "https://www.google.de",
             path: "/root/big leaf"
         },
@@ -171,7 +169,6 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: {},
             isExcluded: false,
-            isFlattened: false,
             path: "/root/Parent Leaf",
             children: [
                 {
@@ -179,7 +176,6 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
                     isExcluded: false,
-                    isFlattened: false,
                     path: "/root/Parent Leaf/small leaf"
                 },
                 {
@@ -187,7 +183,6 @@ export const VALID_NODE_WITH_MCC: CodeMapNode = {
                     type: NodeType.FILE,
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
                     isExcluded: false,
-                    isFlattened: false,
                     path: "/root/Parent Leaf/other small leaf"
                 }
             ]
@@ -203,7 +198,6 @@ export const VALID_NODE_WITH_COMPLEXITY: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1 },
             isExcluded: false,
-            isFlattened: false,
             link: "https://www.google.de"
         },
         {
@@ -211,21 +205,18 @@ export const VALID_NODE_WITH_COMPLEXITY: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: {},
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "other small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         }
@@ -294,15 +285,13 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "Folder1",
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 60 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -310,7 +299,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 40 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -318,14 +306,12 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 160 },
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         }
@@ -342,14 +328,12 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 160 },
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         },
@@ -358,7 +342,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 40 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -366,7 +349,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 60 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -374,8 +356,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     ]
 }
@@ -390,14 +371,12 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 160 },
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         },
@@ -406,7 +385,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 60 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -414,7 +392,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 40 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -422,8 +399,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     ]
 }
@@ -438,7 +414,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 60 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -446,7 +421,6 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 40 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -454,14 +428,12 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 160 },
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         },
@@ -470,8 +442,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     ]
 }
@@ -486,7 +457,6 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 60 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -494,28 +464,24 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 160 },
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "File2a",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "File2á",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "File2b",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         },
@@ -524,7 +490,6 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 40 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -532,8 +497,7 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     ]
 }
@@ -548,15 +512,13 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
             type: NodeType.FILE,
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "Folder1",
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 60 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -564,7 +526,6 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 40 },
             isExcluded: false,
-            isFlattened: false,
             children: []
         },
         {
@@ -572,28 +533,24 @@ export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
             type: NodeType.FOLDER,
             attributes: { [UNARY_METRIC]: 160 },
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "File2a",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "File2b",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "File2á",
                     type: NodeType.FILE,
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         }
@@ -606,7 +563,6 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
     type: NodeType.FOLDER,
     path: "/root",
     isExcluded: false,
-    isFlattened: false,
     children: [
         {
             name: "big leaf",
@@ -614,8 +570,7 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
             path: "/root/big leaf",
             attributes: { rloc: 100, functions: 10, mcc: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "Parent Leaf",
@@ -623,23 +578,20 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
             attributes: {},
             path: "/root/Parent Leaf",
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     path: "/root/Parent Leaf/small leaf",
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "other small leaf",
                     type: NodeType.FILE,
                     path: "/root/Parent Leaf/other small leaf",
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "empty folder",
@@ -647,7 +599,6 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
                     path: "/root/Parent Leaf/empty folder",
                     attributes: {},
                     isExcluded: false,
-                    isFlattened: false,
                     children: []
                 }
             ]
@@ -662,8 +613,7 @@ export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
     path: "/root/big leaf",
     attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
     link: "https://www.google.de",
-    isExcluded: false,
-    isFlattened: false
+    isExcluded: false
 }
 
 export const VALID_NODES_WITH_ID: CodeMapNode = {
@@ -675,7 +625,6 @@ export const VALID_NODES_WITH_ID: CodeMapNode = {
     path: "/root",
     link: "NO_LINK",
     isExcluded: false,
-    isFlattened: false,
     children: [VALID_FILE_NODE_WITH_ID]
 }
 
@@ -683,7 +632,6 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
     name: "root",
     type: NodeType.FOLDER,
     isExcluded: false,
-    isFlattened: false,
     path: "/root",
     attributes: { [UNARY_METRIC]: 2 },
     children: [
@@ -692,16 +640,14 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
             type: NodeType.FILE,
             path: "/root/first leaf",
             attributes: { [UNARY_METRIC]: 1, functions: 10, mcc: 1 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "second leaf",
             type: NodeType.FILE,
             path: "/root/second leaf",
             attributes: { [UNARY_METRIC]: 1, functions: 5, mcc: 1 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     ]
 }
@@ -710,7 +656,6 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
     name: "root",
     type: NodeType.FOLDER,
     isExcluded: false,
-    isFlattened: false,
     path: "/root",
     attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 5 },
     children: [
@@ -720,8 +665,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
             path: "/root/big leaf",
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             link: "https://www.google.de",
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "Parent Leaf",
@@ -729,15 +673,13 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
             attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
             path: "/root/Parent Leaf",
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf",
                     type: NodeType.FILE,
                     path: "/root/Parent Leaf/small leaf",
                     attributes: { rloc: 30, functions: 100, mcc: 100, [UNARY_METRIC]: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "other small leaf",
@@ -745,8 +687,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
                     path: "/root/Parent Leaf/other small leaf",
                     attributes: { rloc: 70, functions: 1000, mcc: 10, [UNARY_METRIC]: 1 },
                     edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         }
@@ -964,7 +905,6 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
         path: "/root",
         attributes: {},
         isExcluded: false,
-        isFlattened: false,
         children: [
             {
                 name: "src",
@@ -1172,7 +1112,6 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
         path: "/root",
         attributes: {},
         isExcluded: false,
-        isFlattened: false,
         children: [
             {
                 name: "folder_1_red",
@@ -1280,23 +1219,20 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
     type: NodeType.FOLDER,
     path: "/root",
     isExcluded: false,
-    isFlattened: false,
     children: [
         {
             name: "big leaf.jpg",
             type: NodeType.FILE,
             path: "/root/big leaf.jpg",
             attributes: { rloc: 100, functions: 10, mcc: 1 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "another big leaf.java",
             type: NodeType.FILE,
             path: "/root/another big leaf.java",
             attributes: { rloc: 120, functions: 20, mcc: 2 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "Parent Leaf",
@@ -1304,23 +1240,20 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
             attributes: {},
             path: "/root/Parent Leaf",
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf.jpg",
                     type: NodeType.FILE,
                     path: "/root/Parent Leaf/small leaf.json",
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "other small leaf.json",
                     type: NodeType.FILE,
                     path: "/root/Parent Leaf/other small leaf.json",
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "another leaf.java",
@@ -1328,7 +1261,6 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
                     path: "/root/Parent Leaf/another leaf.java",
                     attributes: { rloc: 42, functions: 330, mcc: 45 },
                     isExcluded: false,
-                    isFlattened: false,
                     children: []
                 },
                 {
@@ -1337,7 +1269,6 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
                     path: "/root/Parent Leaf/leaf without extension",
                     attributes: { rloc: 15, functions: 23, mcc: 33 },
                     isExcluded: false,
-                    isFlattened: false,
                     children: []
                 }
             ]
@@ -1383,7 +1314,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
                 removed: 0,
                 changed: 1
             },
-            isFlattened: false,
             isExcluded: false,
             id: 1,
             edgeAttributes: {
@@ -1434,7 +1364,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
                         removed: 0,
                         changed: 1
                     },
-                    isFlattened: false,
                     isExcluded: false,
                     id: 4,
                     edgeAttributes: {
@@ -1473,7 +1402,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
                         removed: 0,
                         changed: 1
                     },
-                    isFlattened: false,
                     isExcluded: false,
                     id: 5,
                     edgeAttributes: {
@@ -1513,7 +1441,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
                         removed: 0,
                         changed: 0
                     },
-                    isFlattened: false,
                     isExcluded: false,
                     id: 6,
                     edgeAttributes: {}
@@ -1533,7 +1460,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
                 removed: 0,
                 changed: 2
             },
-            isFlattened: false,
             isExcluded: false,
             id: 2,
             edgeAttributes: {
@@ -1573,7 +1499,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
                 removed: 1,
                 changed: 0
             },
-            isFlattened: false,
             isExcluded: false,
             id: 3,
             edgeAttributes: {
@@ -1602,7 +1527,6 @@ export const VALID_BIG_NODE_WITH_DELTAS: CodeMapNode = {
         removed: 1,
         changed: 3
     },
-    isFlattened: false,
     isExcluded: false,
     id: 0,
     edgeAttributes: {
@@ -1625,7 +1549,6 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
     type: NodeType.FOLDER,
     path: "/root",
     isExcluded: false,
-    isFlattened: false,
     children: [
         {
             name: "big leaf.jpg",
@@ -1634,8 +1557,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
             attributes: { rloc: 100, functions: 10, mcc: 1 },
             deltas: { rloc: 300, functions: -15, mcc: 12 },
             fileCount: { added: 0, removed: 1, changed: 0 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "another big leaf.java",
@@ -1644,8 +1566,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
             attributes: { rloc: 120, functions: 20, mcc: 2 },
             deltas: { rloc: -150, functions: 9, mcc: 33 },
             fileCount: { added: 0, removed: 1, changed: 0 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "leaf.java with changes",
@@ -1654,8 +1575,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
             attributes: { rloc: 0, functions: 0, mcc: 0 },
             deltas: { rloc: 0, functions: 0, mcc: 0 },
             fileCount: { added: 0, removed: 0, changed: 1 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "Parent Leaf",
@@ -1665,7 +1585,6 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
             fileCount: { added: 0, removed: 0, changed: 0 },
             path: "/root/Parent Leaf",
             isExcluded: false,
-            isFlattened: false,
             children: [
                 {
                     name: "small leaf.jpg",
@@ -1674,8 +1593,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
                     attributes: { rloc: 30, functions: 100, mcc: 100 },
                     deltas: { rloc: -55, functions: 38, mcc: -40 },
                     fileCount: { added: 0, removed: 1, changed: 0 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "leaf.jpg with changes",
@@ -1684,8 +1602,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
                     attributes: { rloc: 0, functions: 0, mcc: 0 },
                     deltas: { rloc: 0, functions: 0, mcc: 0 },
                     fileCount: { added: 0, removed: 0, changed: 1 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "other small leaf.json",
@@ -1694,8 +1611,7 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
                     attributes: { rloc: 70, functions: 1000, mcc: 10 },
                     deltas: { rloc: 200, functions: -27, mcc: 65 },
                     fileCount: { added: 1, removed: 0, changed: 0 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
         }
@@ -1708,23 +1624,20 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
     type: NodeType.FOLDER,
     path: "/root",
     isExcluded: false,
-    isFlattened: false,
     children: [
         {
             name: "big leaf.jpg",
             type: NodeType.FILE,
             path: "/root/big leaf.jpg",
             attributes: { rloc: 0, functions: 10, mcc: 1 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         },
         {
             name: "another big leaf.java",
             type: NodeType.FILE,
             path: "/root/another big leaf.java",
             attributes: { rloc: 0, functions: 20, mcc: 2 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     ]
 }
@@ -1743,29 +1656,25 @@ export const TEST_DELTA_MAP_A: CCFile = {
                 type: NodeType.FILE,
                 attributes: { rloc: 100, functions: 10, mcc: 1 },
                 link: "https://www.google.de",
-                isExcluded: false,
-                isFlattened: false
+                isExcluded: false
             },
             {
                 name: "Parent Leaf",
                 type: NodeType.FOLDER,
                 attributes: {},
                 isExcluded: false,
-                isFlattened: false,
                 children: [
                     {
                         name: "small leaf",
                         type: NodeType.FILE,
                         attributes: { rloc: 30, functions: 100, mcc: 100 },
-                        isExcluded: false,
-                        isFlattened: false
+                        isExcluded: false
                     },
                     {
                         name: "other small leaf",
                         type: NodeType.FILE,
                         attributes: { rloc: 70, functions: 1000, mcc: 10 },
-                        isExcluded: false,
-                        isFlattened: false
+                        isExcluded: false
                     }
                 ]
             }
@@ -1788,45 +1697,39 @@ export const TEST_DELTA_MAP_B: CCFile = {
                 type: NodeType.FILE,
                 attributes: { rloc: 20, functions: 10, mcc: 1 },
                 link: "https://www.google.de",
-                isExcluded: false,
-                isFlattened: false
+                isExcluded: false
             },
             {
                 name: "additional leaf",
                 type: NodeType.FILE,
                 attributes: { rloc: 10, functions: 11, mcc: 5 },
                 link: "https://www.google.de",
-                isExcluded: false,
-                isFlattened: false
+                isExcluded: false
             },
             {
                 name: "Parent Leaf",
                 type: NodeType.FOLDER,
                 attributes: {},
                 isExcluded: false,
-                isFlattened: false,
                 children: [
                     {
                         name: "small leaf",
                         type: NodeType.FILE,
                         attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 },
-                        isExcluded: false,
-                        isFlattened: false
+                        isExcluded: false
                     },
                     {
                         name: "other small leaf",
                         type: NodeType.FILE,
                         attributes: { rloc: 70, functions: 1000 },
-                        isExcluded: false,
-                        isFlattened: false
+                        isExcluded: false
                     },
                     {
                         name: "big leaf",
                         type: NodeType.FILE,
                         attributes: { rloc: 20, functions: 10, mcc: 1 },
                         link: "https://www.google.de",
-                        isExcluded: false,
-                        isFlattened: false
+                        isExcluded: false
                     }
                 ]
             }
@@ -2076,7 +1979,8 @@ export const STATE: CcState = {
     sharedView: {
         focusedNodePath: ["/root/ParentLeaf"],
         searchPattern: "",
-        blacklist: [],
+        excludedNodes: [],
+        flattenedNodes: [],
         metricRules: [],
         markedPackages: [],
         hoveredNodeId: null,
@@ -2216,7 +2120,8 @@ export const DEFAULT_STATE: CcState = {
     sharedView: {
         focusedNodePath: [],
         searchPattern: "",
-        blacklist: [],
+        excludedNodes: [],
+        flattenedNodes: [],
         metricRules: [],
         markedPackages: [],
         hoveredNodeId: null,
@@ -2449,20 +2354,9 @@ export const DIFFERENT_NODE: Node = {
     outgoingEdgePoint: new Vector3(1, 2, 3)
 }
 
-export const BLACKLIST: BlacklistItem[] = [
-    {
-        path: "/my/path",
-        type: "flatten"
-    },
-    {
-        path: "/my/different/path",
-        type: "exclude"
-    },
-    {
-        path: "/my/first/path",
-        type: "exclude"
-    }
-]
+export const FLATTENED_NODES: FlattenedNode[] = [{ path: "/my/path" }]
+
+export const EXCLUDED_NODES: ExcludedNode[] = [{ path: "/my/different/path" }, { path: "/my/first/path" }]
 
 export const MARKED_PACKAGES: MarkedPackage[] = [
     {
@@ -2483,20 +2377,12 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
     }
 ]
 
-export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
+export function setIsExcluded(paths: string[], map: CodeMapNode) {
     const pathsSet = new Set(paths)
     for (const node of hierarchy(map)) {
         if (isLeaf(node) && pathsSet.has(node.data.path)) {
-            setBlacklistFlagByType(node.data, type, true)
+            node.data.isExcluded = true
         }
-    }
-}
-
-function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {
-    if (type === "exclude") {
-        node.isExcluded = flag
-    } else {
-        node.isFlattened = flag
     }
 }
 

@@ -1,6 +1,6 @@
 import { CcJson2WithCarryover, FileNodeWithCarryover } from "../../../../../../model/ccjson2.model"
 import { ExportBlacklistItem, ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "../../../../../../model/codeCharta.api.model"
-import { AttributeTypes, BlacklistItem, CodeMapNode } from "../../../../../../model/codeCharta.model"
+import { AttributeTypes, CodeMapNode, ImportedNodeRule } from "../../../../../../model/codeCharta.model"
 
 // 1.x allows a File and a Folder with the same name under one parent; ids include the type to keep them distinct.
 export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2WithCarryover {
@@ -32,7 +32,7 @@ export function normalizeExportCCFileToCcJson2(file: ExportCCFile): CcJson2WithC
                 attributeDescriptors: {}
             }
         },
-        blacklist: toBlacklistItems(file.blacklist),
+        blacklist: toImportedNodeRules(file.blacklist),
         markedPackages: file.markedPackages ?? []
     }
 }
@@ -74,7 +74,7 @@ function normalizeAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTy
     return { nodes: attributeTypes.nodes ?? {}, edges: attributeTypes.edges ?? {} }
 }
 
-function toBlacklistItems(blacklist: ExportBlacklistItem[] = []): BlacklistItem[] {
+function toImportedNodeRules(blacklist: ExportBlacklistItem[] = []): ImportedNodeRule[] {
     return blacklist.map(entry => ({
         path: entry.path,
         type: entry.type === ExportBlacklistType.hide ? "flatten" : "exclude"

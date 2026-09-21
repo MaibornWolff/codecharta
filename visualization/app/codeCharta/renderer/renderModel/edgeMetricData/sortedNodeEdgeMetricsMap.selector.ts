@@ -4,12 +4,12 @@ import { EdgeMetricCount, EdgeMetricCountMap, NodeEdgeMetricsMap } from "../../.
 import { FileState } from "../../../model/files/files"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { showIncomingEdgesSelector, showOutgoingEdgesSelector } from "../../../stores/mapState/mapState.read.facade"
-import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
+import { excludeMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { ExcludeMatcher } from "../../../util/nodeRules/excludeMatcher"
 
 export const sortedNodeEdgeMetricsMapSelector = createSelector(
     visibleFileStatesSelector,
-    blacklistMatcherSelector,
+    excludeMatcherSelector,
     showIncomingEdgesSelector,
     showOutgoingEdgesSelector,
     sortNodeEdgeMetricsMap
@@ -17,7 +17,7 @@ export const sortedNodeEdgeMetricsMapSelector = createSelector(
 
 function sortNodeEdgeMetricsMap(
     visibleFileStates: FileState[],
-    matcher: BlacklistMatcher,
+    matcher: ExcludeMatcher,
     showIncomingEdges: boolean,
     showOutgoingEdges: boolean
 ): NodeEdgeMetricsMap {

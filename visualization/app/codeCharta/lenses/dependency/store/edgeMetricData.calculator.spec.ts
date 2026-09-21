@@ -1,10 +1,10 @@
 import { FILE_STATES, FILE_STATES_TWO_FILES, VALID_NODE_WITH_PATH } from "../../../mocks/dataMocks"
 import { FileState } from "../../../model/files/files"
-import { createBlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { clone } from "../../../util/clone"
+import { createExcludeMatcher } from "../../../util/nodeRules/excludeMatcher"
 import { calculateEdgeMetricData, calculateNodePath } from "./edgeMetricData.calculator"
 
-const emptyMatcher = createBlacklistMatcher([])
+const emptyMatcher = createExcludeMatcher([])
 
 describe("edgeMetricDataCalculator", () => {
     let fileStates: FileState[]

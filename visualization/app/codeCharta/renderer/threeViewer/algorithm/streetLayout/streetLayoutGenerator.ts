@@ -1,7 +1,7 @@
 import { Vector2 } from "three"
 import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../../model/codeCharta.model"
-import { BlacklistMatcher } from "../../../../util/blacklist/blacklistMatcher"
 import { getMapResolutionScaleFactor, isLeaf } from "../../../../util/codeMapHelper"
+import { ExcludeMatcher } from "../../../../util/nodeRules/excludeMatcher"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
 import BoundingBox from "./boundingBox"
 import HorizontalStreet from "./horizontalStreet"
@@ -18,7 +18,7 @@ export class StreetLayoutGenerator {
         map: CodeMapNode,
         state: CcState,
         metricData: NodeMetricData[],
-        matcher: BlacklistMatcher,
+        matcher: ExcludeMatcher,
         isDeltaState: boolean
     ): Node[] {
         const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
@@ -48,7 +48,7 @@ export class StreetLayoutGenerator {
         node: CodeMapNode,
         metricName: string,
         state: CcState,
-        matcher: BlacklistMatcher,
+        matcher: ExcludeMatcher,
         orientation: StreetOrientation,
         depth: number,
         maxTreeMapFiles: number

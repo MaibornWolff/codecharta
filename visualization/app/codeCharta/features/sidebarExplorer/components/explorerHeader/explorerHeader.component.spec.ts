@@ -14,7 +14,7 @@ describe("ExplorerHeaderComponent", () => {
             providers: [
                 {
                     provide: EXPLORER_COUNTS,
-                    useValue: createExplorerCountsMock({ shown: 47, flattened: 12, hidden: 5, noArea: 3 })
+                    useValue: createExplorerCountsMock({ shown: 47, flattened: 12, excluded: 5, noArea: 3 })
                 },
                 provideExplorerCapabilitiesMock({ showCounts }),
                 ...provideViewScopedExplorerState("metrics")
@@ -42,13 +42,13 @@ describe("ExplorerHeaderComponent", () => {
         // Assert
         expect(screen.getByText("Shown")).not.toBe(null)
         expect(screen.getByText("Flattened")).not.toBe(null)
-        expect(screen.getByText("Hidden")).not.toBe(null)
+        expect(screen.getByText("Excluded")).not.toBe(null)
         expect(screen.getByText("47")).not.toBe(null)
         expect(screen.getByText("12")).not.toBe(null)
         expect(screen.getByText("5")).not.toBe(null)
     })
 
-    it("should wire flattened/hidden chips to their popovers and leave shown chip non-interactive", async () => {
+    it("should wire flattened/excluded chips to their popovers and leave shown chip non-interactive", async () => {
         // Arrange & Act
         const { container } = await render(ExplorerHeaderComponent)
         const chips = container.querySelectorAll("cc-explorer-count-chip")
@@ -60,7 +60,7 @@ describe("ExplorerHeaderComponent", () => {
         const hiddenChip = chips[2]
         expect(shownChip.querySelector("[popovertarget]")).toBe(null)
         expect(flattenedChip.querySelector("[popovertarget='explorer-flatten-rules']")).not.toBe(null)
-        expect(hiddenChip.querySelector("[popovertarget='explorer-hidden-rules']")).not.toBe(null)
+        expect(hiddenChip.querySelector("[popovertarget='explorer-excluded-rules']")).not.toBe(null)
     })
 
     it("should hide the count chips when the view does not want them", async () => {

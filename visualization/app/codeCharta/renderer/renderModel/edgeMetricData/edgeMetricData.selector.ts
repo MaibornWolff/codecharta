@@ -1,10 +1,10 @@
 import { createSelector } from "@ngrx/store"
 import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLens.facade"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
-import { blacklistMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { excludeMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
 
 // Lives outside the dependency lens: a lens must not read mutable view state (blacklistMatcher).
-const edgeMetricDataResultSelector = createSelector(visibleFileStatesSelector, blacklistMatcherSelector, calculateEdgeMetricData)
+const edgeMetricDataResultSelector = createSelector(visibleFileStatesSelector, excludeMatcherSelector, calculateEdgeMetricData)
 
 export const edgeMetricDataSelector = createSelector(edgeMetricDataResultSelector, result => result.edgeMetricData)
 

@@ -543,7 +543,7 @@ describe("loadFileService", () => {
         })
 
         it("should convert old blacklist type", () => {
-            validFileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.hide }]
+            validFileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.exclude }]
 
             codeChartaService.loadFiles([
                 {
@@ -553,7 +553,7 @@ describe("loadFileService", () => {
                 }
             ])
 
-            const blacklist = [{ path: "foo", type: "flatten" }]
+            const blacklist = [{ path: "foo", type: "exclude" }]
             expect(getCCFiles(state.getValue().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
         })
 

@@ -117,7 +117,7 @@ describe("scenario settings registry", () => {
             expect(SCENARIO_GROUP_KEYS).toEqual(["area", "height", "color", "edge", "labels", "camera", "filters"])
             expect(getSettingKeysOfGroup("height")).toEqual(["heightMetric", "heightScaling", "invertHeight"])
             expect(getSettingKeysOfGroup("camera")).toEqual(["camera"])
-            expect(getSettingKeysOfGroup("filters")).toEqual(["blacklist", "metricRules", "focusedNodePath"])
+            expect(getSettingKeysOfGroup("filters")).toEqual(["excludedNodes", "flattenedNodes", "metricRules", "focusedNodePath"])
         })
 
         it("should assign every setting to a group that has a label and an icon", () => {

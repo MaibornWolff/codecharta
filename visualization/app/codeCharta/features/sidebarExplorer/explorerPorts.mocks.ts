@@ -97,7 +97,7 @@ export function createExplorerSortMock(overrides: Partial<ExplorerSort> = {}): E
     }
 }
 
-const NO_COUNTS: ExplorerCounts = { shown: 0, flattened: 0, hidden: 0, noArea: 0 }
+const NO_COUNTS: ExplorerCounts = { shown: 0, flattened: 0, excluded: 0, noArea: 0 }
 
 export function createExplorerCountsMock(counts: ExplorerCounts = NO_COUNTS): ExplorerCountsSource {
     return { counts$: of(counts) }

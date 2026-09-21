@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import { AttributeDescriptors, BlacklistItem, ColorRange, NodeMetricData } from "../../../model/codeCharta.model"
+import { AttributeDescriptors, ColorRange, ExcludedNode, NodeMetricData } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import { accumulatedDataSelector, nodeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
@@ -42,8 +42,8 @@ export class Print3DStateAccessStore {
         return nodeMetricDataSelector(this.ccStateSnapshot.get())
     }
 
-    getBlacklist(): BlacklistItem[] {
-        return this.sharedViewReadWindow.getBlacklist()
+    getExcludedNodes(): ExcludedNode[] {
+        return this.sharedViewReadWindow.getExcludedNodes()
     }
 
     getFiles(): FileState[] {
