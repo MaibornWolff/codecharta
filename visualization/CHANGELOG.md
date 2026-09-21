@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **"Hidden" is now "Excluded"**: the explorer calls the nodes it leaves out of the map excluded, the same word the menu that creates them uses, and the search bar says what its menu does instead of "Add to Blacklist".
 - **Label and colour changes answer at once**: changing a label setting, an edge setting or the colour metric no longer redraws the whole map, so it responds immediately however large the project.
 
+### Removed
+
+- **32-bit Windows and ARMv7 Linux downloads**: the desktop app is no longer built for those two platforms, which the browser engine it bundles stopped supporting.
+
 ### Fixed 🐞
 
 - **Domain words are shown as text**: a word from a loaded file appears literally in its word-cloud tooltip, instead of being interpreted as markup.
