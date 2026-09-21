@@ -1,6 +1,7 @@
 import { CcState } from "app/codeCharta/model/codeCharta.model"
 import { FileState } from "app/codeCharta/model/files/files"
 import { openDB } from "idb"
+import { beginPendingSave, endPendingSave } from "../../../util/busy/isPendingSave"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource.read.facade"
 import { defaultDomainState } from "../../domainState/domainState.read.facade"
@@ -481,17 +482,38 @@ export async function writeCcState(state: CcState) {
     // A session persisted before the split still keeps its files in the settings record, so dropping them
     // before their own record exists would lose them. `getKey` checks that without reading them back.
     const writesTheFilesRecordToo = (await tx.store.getKey(CCSTATE_FILES_ID)) === undefined
-    if (writesTheFilesRecordToo) {
-        await tx.store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files: state.files })
-    }
-    await tx.store.put({
-        [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
-        state: toPersistedSettings(withoutFiles(state))
+
+    await whileCopyingTheLoadedMaps(writesTheFilesRecordToo, async () => {
+        if (writesTheFilesRecordToo) {
+            await tx.store.put({ [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID, files: state.files })
+        }
+        await tx.store.put({
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: toPersistedSettings(withoutFiles(state))
+        })
+        await tx.done
+        // Only once committed: a cache claiming unwritten files would make every later save skip them.
+        if (writesTheFilesRecordToo) {
+            persistedFiles = state.files
+        }
     })
-    await tx.done
-    // Only once committed: a cache claiming unwritten files would make every later save skip them.
-    if (writesTheFilesRecordToo) {
-        persistedFiles = state.files
+}
+
+/**
+ * Raise the spinner only for a write that carries the loaded maps: putting them structured-clones
+ * every one of them on the main thread, which a reader feels. The settings are a handful of names
+ * and flags — writing them is imperceptible, and a spinner over it reads as if a metric change had
+ * cost something.
+ */
+async function whileCopyingTheLoadedMaps(copiesTheLoadedMaps: boolean, write: () => Promise<void>) {
+    if (!copiesTheLoadedMaps) {
+        return write()
+    }
+    beginPendingSave()
+    try {
+        await write()
+    } finally {
+        endPendingSave()
     }
 }
 
@@ -515,12 +537,14 @@ export async function writeCcFiles(files: FileState[]) {
     }
     const database = await openCodeChartaDB()
     const tx = database.transaction(CCSTATE_STORE_NAME, "readwrite", { durability: "strict" })
-    await tx.store.put({
-        [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID,
-        files
+    await whileCopyingTheLoadedMaps(true, async () => {
+        await tx.store.put({
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_FILES_ID,
+            files
+        })
+        await tx.done
+        persistedFiles = files
     })
-    await tx.done
-    persistedFiles = files
 }
 
 export async function readCcState(): Promise<CcState | null> {

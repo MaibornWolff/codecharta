@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **No spinner for a settings change**: changing a metric, a label or a colour no longer flashes the loading spinner — it now appears only while a loaded map is being written.
 - **The map cannot be tilted under itself again**: tilting stops when the camera reaches the map's floor, instead of letting you look at its underside.
 - **A long session stays light**: the memory the map holds no longer grows with every metric, label or scaling change, so a large project survives an afternoon of adjusting it.
 
