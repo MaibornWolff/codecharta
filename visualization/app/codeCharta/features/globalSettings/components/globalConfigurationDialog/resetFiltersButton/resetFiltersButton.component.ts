@@ -17,7 +17,7 @@ export class ResetFiltersButtonComponent {
 
     readonly confirmMessage = computed(() => {
         const count = this.ruleCount()
-        const rules = count === 1 ? "The 1 flatten or hide rule is" : `All ${count} flatten and hide rules are`
+        const rules = count === 1 ? "The 1 flatten or exclude rule is" : `All ${count} flatten and exclude rules are`
         return `${rules} removed and every file comes back onto the map. Metrics, colors and the camera are left alone.`
     })
 

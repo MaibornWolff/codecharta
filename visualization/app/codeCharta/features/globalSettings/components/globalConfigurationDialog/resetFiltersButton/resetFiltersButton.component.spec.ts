@@ -5,11 +5,11 @@ import userEvent from "@testing-library/user-event"
 import { firstValueFrom } from "rxjs"
 import { CcState, MetricRule, NodeRule } from "../../../../../model/codeCharta.model"
 import { appReducers, setStateMiddleware } from "../../../../../stores/rootStore/store"
-import { excludedNodesSelector, metricRulesSelector } from "../../../../../stores/sharedView/sharedView.read.facade"
-import { addExcludedNodes, addMetricRule } from "../../../../../stores/sharedView/sharedView.write.facade"
+import { flattenedNodesSelector, metricRulesSelector } from "../../../../../stores/sharedView/sharedView.read.facade"
+import { addFlattenedNodes, addMetricRule } from "../../../../../stores/sharedView/sharedView.write.facade"
 import { ResetFiltersButtonComponent } from "./resetFiltersButton.component"
 
-const flattenItem: NodeRule = { path: "**/*.spec.ts" }
+const flattenedNode: NodeRule = { path: "**/*.spec.ts" }
 const excludeRule: MetricRule = { id: "a", metric: "rloc", operator: "lt", value: 5, type: "exclude" }
 
 const storeOf = () => TestBed.inject<Store<CcState>>(Store)
@@ -24,7 +24,7 @@ describe("ResetFiltersButtonComponent", () => {
     })
 
     const addBothKindsOfRule = () => {
-        storeOf().dispatch(addExcludedNodes({ items: [flattenItem] }))
+        storeOf().dispatch(addFlattenedNodes({ items: [flattenedNode] }))
         storeOf().dispatch(addMetricRule({ rule: excludeRule }))
     }
 
@@ -42,7 +42,7 @@ describe("ResetFiltersButtonComponent", () => {
 
         // Act
         addBothKindsOfRule()
-        await screen.findByTitle(/Remove every flatten and hide rule/)
+        await screen.findByTitle(/Remove every flatten and exclude rule/)
 
         // Assert
         expect(screen.getByTestId<HTMLButtonElement>("reset-filters-button").disabled).toBe(false)
@@ -57,19 +57,19 @@ describe("ResetFiltersButtonComponent", () => {
         await userEvent.click(screen.getByTestId("reset-filters-button"))
 
         // Assert
-        expect(screen.getByText(/All 2 flatten and hide rules are removed/)).not.toBe(null)
+        expect(screen.getByText(/All 2 flatten and exclude rules are removed/)).not.toBe(null)
     })
 
     it("should name a single rule in the singular", async () => {
         // Arrange
         await render(ResetFiltersButtonComponent)
-        storeOf().dispatch(addExcludedNodes({ items: [flattenItem] }))
+        storeOf().dispatch(addFlattenedNodes({ items: [flattenedNode] }))
 
         // Act
         await userEvent.click(screen.getByTestId("reset-filters-button"))
 
         // Assert
-        expect(screen.getByText(/The 1 flatten or hide rule is removed/)).not.toBe(null)
+        expect(screen.getByText(/The 1 flatten or exclude rule is removed/)).not.toBe(null)
     })
 
     it("should remove both kinds of rule when the reset is confirmed", async () => {
@@ -82,7 +82,7 @@ describe("ResetFiltersButtonComponent", () => {
         await userEvent.click(screen.getByTestId("confirm-dialog-yes"))
 
         // Assert
-        expect(await firstValueFrom(storeOf().select(excludedNodesSelector))).toEqual([])
+        expect(await firstValueFrom(storeOf().select(flattenedNodesSelector))).toEqual([])
         expect(await firstValueFrom(storeOf().select(metricRulesSelector))).toEqual([])
     })
 
@@ -96,6 +96,6 @@ describe("ResetFiltersButtonComponent", () => {
         await userEvent.click(screen.getByTestId("confirm-dialog-no"))
 
         // Assert
-        expect(await firstValueFrom(storeOf().select(excludedNodesSelector))).toEqual([flattenItem])
+        expect(await firstValueFrom(storeOf().select(flattenedNodesSelector))).toEqual([flattenedNode])
     })
 })
