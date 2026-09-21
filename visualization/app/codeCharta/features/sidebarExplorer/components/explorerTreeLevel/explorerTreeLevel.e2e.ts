@@ -12,7 +12,7 @@ test.describe("ExplorerTreeLevel", () => {
         await clearIndexedDB(page)
     })
 
-    test.describe("Blacklist", () => {
+    test.describe("Excluding", () => {
         test("excluding a building should exclude it from the tree-view as well", async ({ page }) => {
             const explorerTreeLevel = new ExplorerTreeLevelPageObject(page)
             const nodeContextMenu = new NodeContextMenuPageObject(page)

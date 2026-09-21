@@ -243,13 +243,13 @@ describe("treeMapGenerator", () => {
     })
 
     describe("calculateAreaValue", () => {
-        it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
+        it("should return 0 if node has children, not excluded and not only visible in comparison map", () => {
             const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400, false)
 
             expect(actual).toBe(0)
         })
 
-        it("should return 0.5 if experimentalFeaturesEnabled is true and node has children, not blacklisted and not only visible in comparison map", () => {
+        it("should return 0.5 if experimentalFeaturesEnabled is true and node has children, not excluded and not only visible in comparison map", () => {
             const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400, true)
 
             expect(actual).toBe(0.5)

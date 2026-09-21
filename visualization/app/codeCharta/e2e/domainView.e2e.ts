@@ -63,7 +63,7 @@ test.describe("DomainView", () => {
         await expect(page.locator("cc-domain-bar")).toBeVisible()
     })
 
-    test("should search files and folders in the domain view, but without the map-only blacklist rules", async ({ page }) => {
+    test("should search files and folders in the domain view, but without the map-only rules", async ({ page }) => {
         // Arrange
         const viewSwitcher = new ViewSwitcherPageObject(page)
 

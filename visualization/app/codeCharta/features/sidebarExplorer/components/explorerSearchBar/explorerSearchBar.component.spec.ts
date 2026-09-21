@@ -88,7 +88,7 @@ describe("ExplorerSearchBarComponent", () => {
         expect(search.setPattern).not.toHaveBeenCalled()
     })
 
-    it("should offer the blacklist actions for a view that owns flatten and exclude rules", async () => {
+    it("should offer the rule actions for a view that owns flatten and exclude rules", async () => {
         // Arrange & Act
         const { container } = await render(ExplorerSearchBarComponent)
 
@@ -96,7 +96,7 @@ describe("ExplorerSearchBarComponent", () => {
         expect(container.querySelector("cc-explorer-search-actions")).not.toBe(null)
     })
 
-    it("should hide the blacklist actions for a view without flatten and exclude rules", async () => {
+    it("should hide the rule actions for a view without flatten and exclude rules", async () => {
         // Arrange
         TestBed.resetTestingModule()
         configure({ showRules: false })

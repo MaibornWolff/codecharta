@@ -7,7 +7,7 @@ import { CcState, NodeRule, RuleEffect } from "../../../../model/codeCharta.mode
 import { addExcludedNodes, addFlattenedNodes } from "../../../../stores/sharedView/sharedView.write.facade"
 import { ExtensionRuleEffect, ruleForExtensionsPattern } from "./extensionRule.effect"
 
-describe("BlackListExtensionEffect", () => {
+describe("ExtensionRuleEffect", () => {
     let effect: ExtensionRuleEffect
     let actions$: Subject<Action>
     let store: MockStore<CcState>

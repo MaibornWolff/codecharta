@@ -50,7 +50,7 @@ import { getMergedNodeRules } from "./utils/nodeRules.merger"
  */
 type FileSetTrigger = { kind: "fileSet"; provenance: FilesLoadedPayload | null }
 
-/** The derived metric data changed without a file-set change — a blacklist edit removed a metric. */
+/** The derived metric data changed without a file-set change — an exclude rule removed a metric. */
 type MetricDataTrigger = { kind: "metricData" }
 
 type ReconcileTrigger = FileSetTrigger | MetricDataTrigger
@@ -63,7 +63,7 @@ type ReconcileTrigger = FileSetTrigger | MetricDataTrigger
  *
  *   1. merge the file settings (blacklist / markedPackages / attributeTypes / attributeDescriptors)
  *   1b. point the file root at the reference file
- *   2. derive the metric data — AFTER step 1, so it already sees the merged blacklist
+ *   2. derive the metric data — AFTER step 1, so it already sees the merged rules
  *   3. resolve the metric selection, precedence URL > persisted > computed default
  *   4. derive the color range from the resolved color metric — once
  *   5. unfocus the nodes, lower the top-label count to what the new map can carry
@@ -133,9 +133,9 @@ export class ReconcileAfterLoadEffect {
     )
 
     /**
-     * A blacklist edit can remove the metric that is currently selected. It changes the derived metric
+     * An exclude rule can remove the metric that is currently selected. It changes the derived metric
      * data without changing the file set, so it re-runs steps 2-4 only: it must NOT unfocus nodes or
-     * reset the top-label count, neither of which the old effects did on a blacklist edit.
+     * reset the top-label count, neither of which the old effects did on a rule change.
      *
      * On a load this fires too, right after the file-set trigger — and dispatches nothing, because the
      * sequence is idempotent: the metrics are already resolved, so nothing has changed.

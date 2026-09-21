@@ -10,7 +10,7 @@ type MetricStats = { values: number[]; minValue: number; maxValue: number }
 
 /**
  * The range of every metric over the files the map shows. It reads the tree the map is built from,
- * because only there does a leaf carry the path a blacklist item addresses — the raw files of an
+ * because only there does a leaf carry the path an exclude rule addresses — the raw files of an
  * aggregated selection lack the file-name segment those paths contain.
  */
 export const calculateNodeMetricData = (

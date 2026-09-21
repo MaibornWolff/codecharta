@@ -552,7 +552,7 @@ describe("LoadFilesUseCase", () => {
             // Act
             await loadFilesUseCase.loadOnBoot()
 
-            // Assert — the root path keys the domain words, the blacklist and every node lookup
+            // Assert — the root path keys the domain words, the exclusions and every node lookup
             expect(updateRootSpy).toHaveBeenCalledWith(FILE_STATES[0].file.map.name)
             updateRootSpy.mockRestore()
         })

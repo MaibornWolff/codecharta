@@ -3,7 +3,7 @@ import { calculateEdgeMetricData } from "../../../lenses/dependency/dependencyLe
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { excludeMatcherSelector } from "../../../stores/sharedView/sharedView.read.facade"
 
-// Lives outside the dependency lens: a lens must not read mutable view state (blacklistMatcher).
+// Lives outside the dependency lens: a lens must not read mutable view state (the exclude matcher).
 const edgeMetricDataResultSelector = createSelector(visibleFileStatesSelector, excludeMatcherSelector, calculateEdgeMetricData)
 
 export const edgeMetricDataSelector = createSelector(edgeMetricDataResultSelector, result => result.edgeMetricData)

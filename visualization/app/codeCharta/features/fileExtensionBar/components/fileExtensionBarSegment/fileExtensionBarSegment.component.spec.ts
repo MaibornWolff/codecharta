@@ -272,7 +272,7 @@ describe("FileExtensionBarSegment", () => {
         it.each<[string, RuleEffect]>([
             ["excludeBuilding", "exclude"],
             ["flattenBuilding", "flatten"]
-        ])("should add all other extensions to blacklist when clicking %s on 'other'", (dataTestId, action) => {
+        ])("should add a rule for all other extensions when clicking %s on 'other'", (dataTestId, action) => {
             const mockedDistribution: CategorizedMetricDistribution = {
                 visible: [
                     {

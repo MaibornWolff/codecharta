@@ -55,7 +55,7 @@ describe("AddExcludedNodesIfNotResultsInEmptyMapEffect", () => {
         expect(mockedErrorDialogService.open).not.toHaveBeenCalled()
     })
 
-    it("should not blacklist items if it would lead to an empty map but show error dialog", () => {
+    it("should not exclude the nodes if it would lead to an empty map but show error dialog", () => {
         actions$.next(addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: "foo/bar" }] }))
         store.refreshState()
         expect(mockedErrorDialogService.open).toHaveBeenCalledTimes(1)
@@ -73,7 +73,7 @@ describe("AddExcludedNodesIfNotResultsInEmptyMapEffect", () => {
         expect(isPendingHeavyDispatch$.value).toBe(false)
     })
 
-    it("should blacklist items if it doesn't lead to an empty map", async () => {
+    it("should exclude the nodes if it doesn't lead to an empty map", async () => {
         store.overrideSelector(visibleFileStatesSelector, FILE_STATES_JAVA)
         store.refreshState()
         actions$.next(addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: "/root/src/main/file1.java" }] }))

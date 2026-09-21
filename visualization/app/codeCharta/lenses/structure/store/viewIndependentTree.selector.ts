@@ -8,7 +8,7 @@ import { NodeDecorator } from "../../../util/nodeDecorator"
 import { structureTreeSelector } from "./structureTree.selector"
 
 // The tree as the loaded files describe it: stable ids, merged folder chains and file counts, but
-// none of the map's view state. Views that must not inherit the map's blacklist read this instead of
+// none of the map's view state. Views that must not inherit the map's exclusions read this instead of
 // the decorated render model.
 export const viewIndependentTreeSelector = createSelector(structureTreeSelector, structureTree => {
     if (!structureTree?.map) {

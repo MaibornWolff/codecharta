@@ -1,6 +1,6 @@
 import { fileRoot } from "./fileRoot"
 
-export function getUpdatedBlacklistItemPath(fileName: string, path: string) {
+export function getUpdatedRulePath(fileName: string, path: string) {
     if (isAbsoluteRootPath(path)) {
         return getUpdatedPath(fileName, path)
     }
