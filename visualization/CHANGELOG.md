@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.5.1] - 2026-09-21
+
 ### Changed
 
 - **Desktop app on a supported Electron**: the desktop version runs on a current Electron release again, carrying the browser-engine security fixes of the four releases it had fallen behind.
