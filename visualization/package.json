@@ -81,7 +81,7 @@
     "d3": "^7.9.0",
     "d3-hierarchy": "^3.1.2",
     "dequal": "^2.0.3",
-    "echarts": "5.6.0",
+    "echarts": "6.1.0",
     "echarts-wordcloud": "2.1.0",
     "electron": "44.4.2",
     "fake-indexeddb": "^6.2.5",
@@ -130,6 +130,11 @@
     "patch-package": "^8.0.1",
     "postcss": "^8.5.9",
     "typescript": "6.0.3"
+  },
+  "overrides": {
+    "echarts-wordcloud": {
+      "echarts": "$echarts"
+    }
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.24.2"
