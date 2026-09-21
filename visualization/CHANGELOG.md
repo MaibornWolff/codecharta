@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - **Desktop app on a supported Electron**: the desktop version runs on a current Electron release again, carrying the browser-engine security fixes of the four releases it had fallen behind.
-- **Node 22.22.3 or newer**: installing CodeCharta Visualization from npm needs Node 22.22.3, 24.15 or later.
+- **Node 22.22.3, 24.15 or 26**: installing CodeCharta Visualization from npm needs Node 22 from 22.22.3, Node 24 from 24.15, or Node 26 and later.
 - **Flattening no longer interrupts you**: flattening or unflattening — a node, a metric rule, a search pattern or a file extension — changes only how the map looks, without the loading spinner a rebuild used to bring.
 - **"Hidden" is now "Excluded"**: the explorer calls the nodes it leaves out of the map excluded, the same word the menu that creates them uses, and the search bar says what its menu does instead of "Add to Blacklist".
 - **Label and colour changes answer at once**: changing a label setting, an edge setting or the colour metric no longer redraws the whole map, so it responds immediately however large the project.
