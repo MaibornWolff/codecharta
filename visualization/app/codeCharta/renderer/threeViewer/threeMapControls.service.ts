@@ -20,6 +20,8 @@ export class ThreeMapControlsService {
     private static readonly MAX_AUTO_FIT_FRAMES = 10
     MAX_ZOOM = 200
     MIN_ZOOM = 10
+    // The map's floor sits on y = 0: mapGeometry is positioned and scaled around that plane.
+    private static readonly MAP_FLOOR_Y = 0
 
     controls: MapControls
     private readonly eventEmitter = new EventEmitter<CameraChangeEvents>()
@@ -209,7 +211,24 @@ export class ThreeMapControlsService {
 
     onInput(camera: PerspectiveCamera) {
         this.setControlTarget(this.controls.target)
+        this.limitTiltToMapFloor()
         this.eventEmitter.emit("onCameraChanged", { camera })
+    }
+
+    // maxPolarAngle stops the camera level with the *target*, so a flat 90° only keeps it above the
+    // map while the target sits on the floor. The fit drops the target below the floor to lift the
+    // map clear of the bottom bars, which let the camera dip under the map and look at its
+    // underside. Derive the angle that puts the camera exactly on the floor plane instead.
+    private limitTiltToMapFloor() {
+        const { target } = this.controls
+        const distanceToTarget = this.threeCameraService.camera.position.distanceTo(target)
+        if (distanceToTarget === 0) {
+            return
+        }
+
+        const cosineAtFloor = (ThreeMapControlsService.MAP_FLOOR_Y - target.y) / distanceToTarget
+        const angleAtFloor = Math.acos(Math.min(Math.max(cosineAtFloor, -1), 1))
+        this.controls.maxPolarAngle = Math.min(angleAtFloor, Math.PI / 2)
     }
 
     subscribe<Key extends keyof CameraChangeEvents>(key: Key, callback: CameraChangeEvents[Key]) {

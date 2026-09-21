@@ -52,6 +52,56 @@ describe("ThreeMapControlsService", () => {
         threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
     }
 
+    describe("tilt limit", () => {
+        const tiltAfterInput = (target: Vector3, cameraPosition: Vector3) => {
+            threeMapControlsService.controls = {
+                target,
+                minDistance: 100,
+                maxDistance: 1_000_000,
+                maxPolarAngle: Math.PI / 2,
+                update: jest.fn()
+            } as unknown as MapControls
+            threeCameraService.camera.position.copy(cameraPosition)
+
+            threeMapControlsService.onInput(threeCameraService.camera)
+
+            return threeMapControlsService.controls.maxPolarAngle
+        }
+
+        it("should stop the camera at the horizon when the target sits on the map floor", () => {
+            // Arrange
+            const targetOnFloor = new Vector3(0, 0, 0)
+
+            // Act
+            const maxPolarAngle = tiltAfterInput(targetOnFloor, new Vector3(0, 100, 0))
+
+            // Assert
+            expect(maxPolarAngle).toBeCloseTo(Math.PI / 2)
+        })
+
+        it("should stop the camera above the horizon when the target sits below the map floor", () => {
+            // Arrange — the fit drops the target to lift the map clear of the bottom bars
+            const targetBelowFloor = new Vector3(0, -50, 0)
+
+            // Act
+            const maxPolarAngle = tiltAfterInput(targetBelowFloor, new Vector3(0, 50, 0))
+
+            // Assert — acos(50 / 100) = 60 degrees, so the camera never reaches the floor plane
+            expect(maxPolarAngle).toBeCloseTo(Math.PI / 3)
+        })
+
+        it("should not let a target above the map floor widen the tilt past the horizon", () => {
+            // Arrange
+            const targetAboveFloor = new Vector3(0, 50, 0)
+
+            // Act
+            const maxPolarAngle = tiltAfterInput(targetAboveFloor, new Vector3(0, 150, 0))
+
+            // Assert
+            expect(maxPolarAngle).toBeCloseTo(Math.PI / 2)
+        })
+    })
+
     function withMockedControlService() {
         threeMapControlsService.controls = {
             target: new Vector3(1, 1, 1),

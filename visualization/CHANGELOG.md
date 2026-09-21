@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **The map cannot be tilted under itself again**: tilting stops when the camera reaches the map's floor, instead of letting you look at its underside.
 - **A long session stays light**: the memory the map holds no longer grows with every metric, label or scaling change, so a large project survives an afternoon of adjusting it.
 
 ## [2.5.0] - 2026-09-16
