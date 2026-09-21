@@ -124,7 +124,7 @@
     "jest": "^30.3.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.3.0",
-    "jest-preset-angular": "16.1.1",
+    "jest-preset-angular": "17.0.0",
     "knip": "^6.25.0",
     "marked": "^17.0.6",
     "patch-package": "^8.0.1",
