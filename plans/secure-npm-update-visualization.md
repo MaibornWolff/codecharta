@@ -153,8 +153,8 @@ for us. Small PR, separate from the dependency work.
 
 - [x] Complete Task 0: Prerequisites (node floor, CI fallback, review gate)
 - [x] Complete Task 1: In-range refresh — audit 21 → 6
-- [ ] Complete Task 2: Electron 44 + packager 20 + get 5, drop the yauzl override
-- [ ] Complete Task 3: cyclonedx-npm 6 — audit 6 → 2
+- [x] Complete Task 2: Electron 44 + packager 20 + get 5, drop the yauzl override
+- [x] Complete Task 3: cyclonedx-npm 6 — audit 6 → 2
 - [ ] Complete Task 4: Remaining dev majors (optional, one PR each)
 - [ ] Complete Task 5: Angular 22 + ngrx 22 + TypeScript 6.0.3
 - [x] Complete Task 7: Escape the wordcloud tooltip name
