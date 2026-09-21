@@ -1,6 +1,6 @@
 import { Action, Store } from "@ngrx/store"
 import { BehaviorSubject } from "rxjs"
-import { CcState } from "../model/codeCharta.model"
+import { CcState, RuleEffect } from "../model/codeCharta.model"
 import { isRunningInTests } from "./isRunningInTests"
 
 export const isPendingHeavyDispatch$ = new BehaviorSubject<boolean>(false)
@@ -42,4 +42,17 @@ function dispatchAll(store: Store<CcState>, actions: Action[]): void {
     for (const action of actions) {
         store.dispatch(action)
     }
+}
+
+/**
+ * Flattening changes how a subtree looks, never which nodes the map holds, so it costs a redraw and
+ * nothing more — the spinner an exclusion's rebuild earns would only read as a cost that is not
+ * there. Exclusion re-decorates the whole tree, so it keeps the wait.
+ */
+export function dispatchRuleChange(store: Store<CcState>, effect: RuleEffect, action: Action | Action[]): void {
+    if (effect === "exclude") {
+        dispatchAfterPaint(store, action)
+        return
+    }
+    dispatchAll(store, Array.isArray(action) ? action : [action])
 }

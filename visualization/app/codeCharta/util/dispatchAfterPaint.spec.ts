@@ -1,6 +1,12 @@
 import { Action, Store } from "@ngrx/store"
 import { CcState } from "../model/codeCharta.model"
-import { clearPendingHeavyDispatch, dispatchAfterPaint, HEAVY_DISPATCH_MAX_WAIT_MS, isPendingHeavyDispatch$ } from "./dispatchAfterPaint"
+import {
+    clearPendingHeavyDispatch,
+    dispatchAfterPaint,
+    dispatchRuleChange,
+    HEAVY_DISPATCH_MAX_WAIT_MS,
+    isPendingHeavyDispatch$
+} from "./dispatchAfterPaint"
 
 const anAction: Action = { type: "AN_ACTION" }
 
@@ -69,5 +75,36 @@ describe("dispatchAfterPaint", () => {
 
         // Assert
         expect(isPendingHeavyDispatch$.value).toBe(false)
+    })
+})
+
+describe("dispatchRuleChange", () => {
+    it("should dispatch a flatten change straight away, raising no spinner", () => {
+        // Arrange
+        const store = { dispatch: jest.fn() } as unknown as Store<CcState>
+        const action = { type: "ADD_FLATTENED_NODES" }
+        let wasPending = false
+        const subscription = isPendingHeavyDispatch$.subscribe(isPending => {
+            wasPending ||= isPending
+        })
+
+        // Act
+        dispatchRuleChange(store, "flatten", action)
+
+        // Assert — flattening changes how a subtree looks, not which nodes the map holds
+        expect(store.dispatch).toHaveBeenCalledWith(action)
+        expect(wasPending).toBe(false)
+        subscription.unsubscribe()
+    })
+
+    it("should make an exclude change wait for the spinner to be painted", () => {
+        // Arrange
+        const store = { dispatch: jest.fn() } as unknown as Store<CcState>
+
+        // Act
+        dispatchRuleChange(store, "exclude", { type: "ADD_EXCLUDED_NODES" })
+
+        // Assert — an exclusion re-decorates the whole tree, so the wait is earned
+        expect(store.dispatch).toHaveBeenCalled()
     })
 })

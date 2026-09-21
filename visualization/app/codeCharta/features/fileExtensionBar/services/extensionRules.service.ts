@@ -63,21 +63,21 @@ export class ExtensionRulesService {
             const flattenedItemsMap = this.createFlattenedItemsMap(ctx.flattenedItems)
             const itemsToRemove = extensionPatterns.map(pattern => flattenedItemsMap.get(pattern))
 
-            this.blackListExtensionStore.dispatchAfterPaint(removeFlattenedNodes({ items: itemsToRemove }))
+            this.blackListExtensionStore.dispatchRuleChange("flatten", removeFlattenedNodes({ items: itemsToRemove }))
         })
     }
 
     exclude(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            this.blackListExtensionStore.dispatchAfterPaint(ruleForExtensionsPattern("exclude", ...extensionPatterns))
+            this.blackListExtensionStore.dispatchRuleChange("exclude", ruleForExtensionsPattern("exclude", ...extensionPatterns))
         })
     }
 
     flatten(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            this.blackListExtensionStore.dispatchAfterPaint(ruleForExtensionsPattern("flatten", ...extensionPatterns))
+            this.blackListExtensionStore.dispatchRuleChange("flatten", ruleForExtensionsPattern("flatten", ...extensionPatterns))
         })
     }
 
