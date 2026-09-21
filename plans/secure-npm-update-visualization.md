@@ -184,6 +184,11 @@ runs), `changeDetection: ChangeDetectionStrategy.Eager` on ~20 test stub compone
 `provideHttpClient(withXhr(), …)` is kept — Angular 22 switches HttpClient's default backend to fetch,
 and that is a real behaviour change worth not taking blind.
 
+The packaged desktop app was launched on the Angular 22 bundle as well — `main-X44ERUKA.js` inside the
+asar, booting with no console error and rendering a screenshot byte-identical to the Angular 21 one. That
+path matters because the shell loads `index.html` over `file://`, which e2e does not cover, and both
+changed Angular defaults (HttpClient backend, OnPush) sit on it.
+
 ### The gate, run on every wave
 
 ```bash
