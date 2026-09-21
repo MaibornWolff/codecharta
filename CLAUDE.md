@@ -12,7 +12,7 @@ CodeCharta is a code visualization tool that generates 3D treemap visualizations
 ## Requirements
 
 - Java >= 11, <= 21
-- Node >= 22.19
+- Node >= 22.19 (working on the visualization needs >= 22.22.3 or >= 24.15)
 - Git (with bash utilities for Windows)
 
 ## Common Development Commands
@@ -544,6 +544,12 @@ Workflows in `.github/workflows/`:
 - Renovate auto-merges non-major updates and security patches
 - Manual review required if auto-merge fails
 - Assign to developer after completing non-dependency work
+- `.npmrc` disables install scripts and quarantines releases younger than 3 days. The quarantine is
+  **silently ignored by npm < 11.10** — check `npm -v` before running an update
+- Every PR that touches a lockfile runs `.github/workflows/scripts/auditLockfileDiff.mjs`: it fails on a
+  tarball served from anywhere but the public registry, and on a newly added package whose signing key had
+  already expired when it was published. It also lists the added package names — put those in the PR
+  description
 
 ## Docker
 

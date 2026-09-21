@@ -35,7 +35,7 @@ jobs:
 
     - name: Install node
       run: |
-        npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
+        npm ci
       working-directory: ${{env.working-directory}}
 
     - name: Check formatting and linting
