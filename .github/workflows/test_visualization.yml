@@ -46,7 +46,7 @@ jobs:
 
     - name: Install node
       run: |
-        npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
+        npm ci
       working-directory: ${{env.working-directory}}
 
     - name: Check architecture
@@ -107,7 +107,7 @@ jobs:
 
     - name: Install node
       run: |
-        npm ci || (echo "npm ci failed, regenerating lock file and retrying..." && npm install --package-lock-only && npm ci)
+        npm ci
       working-directory: ${{env.working-directory}}
 
     - name: Build and run e2e tests

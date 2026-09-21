@@ -1,0 +1,25 @@
+name: Lockfile Audit
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**/package-lock.json'
+
+jobs:
+  audit_lockfile_diff:
+    name: Audit Lockfile Diff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Audit the lockfile diff
+        run: node .github/workflows/scripts/auditLockfileDiff.mjs ${{ github.event.pull_request.base.sha }}
