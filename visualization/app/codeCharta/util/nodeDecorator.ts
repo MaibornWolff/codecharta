@@ -51,7 +51,7 @@ export const NodeDecorator = {
     },
 
     // The view-state-INDEPENDENT structure pass (Slice 14e-3): assign the ordinal id and merge
-    // single-child folder chains. It reads nothing but the tree shape (no blacklist, no metrics), so
+    // single-child folder chains. It reads nothing but the tree shape (no rules, no metrics), so
     // it is deterministic — the structure lens runs it on its own undecorated tree to own `id -> node`
     // resolution (`structureIdToNode`) without reaching up to the composing layer or any view state,
     // which is what structurally breaks the CF #1 cycle. `decorateMapWithMetricData` runs it first so

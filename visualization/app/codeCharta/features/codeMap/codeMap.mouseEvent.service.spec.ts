@@ -283,7 +283,7 @@ describe("codeMapMouseEventService", () => {
             expect(threeSceneService.clearSelection).toHaveBeenCalled()
         })
 
-        it("should not deselect the building when the selected building is not blacklisted", () => {
+        it("should not deselect the building when the selected building is not excluded", () => {
             codeMapMouseEventService.onExcludedNodesChanged([])
 
             expect(threeSceneService.clearSelection).not.toHaveBeenCalled()

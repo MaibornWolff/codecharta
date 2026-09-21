@@ -5,7 +5,7 @@ import { ExplorerTree, sortNodesInPlace } from "../../../features/sidebarExplore
 import { viewIndependentTreeSelector } from "../../../lenses/structure/structure.facade"
 import { CcState, SortingOption } from "../../../model/codeCharta.model"
 
-// The domain view reads the view-independent tree, so the map's blacklist neither hides its nodes nor
+// The domain view reads the view-independent tree, so the map's exclusions neither hide its nodes nor
 // skews the file counts it sorts by.
 const createDomainExplorerTreeSelector = (sortingOrder: SortingOption, sortingOrderAscending: boolean) =>
     createSelector(viewIndependentTreeSelector, tree => sortNodesInPlace(klona(tree), sortingOrder, sortingOrderAscending))

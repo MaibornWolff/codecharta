@@ -70,15 +70,18 @@ describe("derived nodeMetricData selectors", () => {
         })
     })
 
-    // Slice 7 P0-1 parity: after lifting the blacklist filter into these derived selectors, the
+    // Slice 7 P0-1 parity: after lifting the exclude filter into these derived selectors, the
     // parameterized rangeOf path must value-equal the composed metricRangeSelector — and both must
-    // equal calculateNodeMetricData ∘ rangeOfMetric with the SAME blacklist matcher (so the filter
-    // lift changed WHERE the blacklist is read, not WHAT range is emitted). Guards the deletion of
+    // equal calculateNodeMetricData ∘ rangeOfMetric with the SAME exclude matcher (so the filter
+    // lift changed WHERE the exclusions are read, not WHAT range is emitted). Guards the deletion of
     // the old lens-side read.
-    describe("rangeOf parity (blacklist lift)", () => {
-        it.each([[[]], [["/root/BigLeaf"]]])("should equal calculateNodeMetricData ∘ rangeOfMetric for blacklist %j", blacklist => {
+    describe("rangeOf parity (exclude lift)", () => {
+        it.each([
+            [[]],
+            [["/root/BigLeaf"]]
+        ])("should equal calculateNodeMetricData ∘ rangeOfMetric for excluded nodes %j", excludedNodes => {
             // Arrange
-            const matcher = createExcludeMatcher(blacklist.map(path => ({ path, type: "flatten" as const })))
+            const matcher = createExcludeMatcher(excludedNodes.map(path => ({ path })))
             const colorMetric = "rloc"
 
             // Act

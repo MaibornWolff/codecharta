@@ -64,7 +64,7 @@ describe("DomainExplorerRow", () => {
         expect(projection.isSelectable).toBe(true)
     })
 
-    it("should keep a node excluded by the metrics blacklist visible, since the domain view cannot manage exclusions", () => {
+    it("should keep a node excluded in the metrics view visible, since the domain view cannot manage exclusions", () => {
         // Arrange & Act
         const projection = row.project(EXCLUDED_LEAF_WITH_WORDS)
 

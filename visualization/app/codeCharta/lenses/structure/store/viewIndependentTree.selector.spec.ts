@@ -38,7 +38,7 @@ const findNode = (node: CodeMapNode, path: string): CodeMapNode => {
 }
 
 describe("viewIndependentTreeSelector", () => {
-    it("should count every file, since it knows nothing of the map's blacklist", () => {
+    it("should count every file, since it knows nothing of the map's exclusions", () => {
         // Arrange & Act
         const tree = viewIndependentTreeSelector.projector(buildStructureTree())
 

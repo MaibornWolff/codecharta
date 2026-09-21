@@ -31,7 +31,7 @@ describe("nodeMetricDataCalculator", () => {
         expect(result).toEqual(expected)
     })
 
-    it("should ignore blacklisted nodes", () => {
+    it("should ignore excluded nodes", () => {
         const expected = [
             { maxValue: 1000, minValue: 100, name: "functions", values: [100, 1000] },
             { maxValue: 100, minValue: 10, name: "mcc", values: [100, 10] },
@@ -83,7 +83,7 @@ describe("nodeMetricDataCalculator", () => {
     })
 
     it("should exclude a file by its aggregated path when several maps are loaded", () => {
-        // Arrange — with several maps every path carries the file name, and so does the blacklist item
+        // Arrange — with several maps every path carries the file name, and so does the exclude rule
         const otherFile = clone(TEST_DELTA_MAP_B)
         NodeDecorator.decorateMapWithPathAttribute(otherFile)
         const aggregated = AggregationGenerator.calculateAggregationFile([{ file }, { file: otherFile }])

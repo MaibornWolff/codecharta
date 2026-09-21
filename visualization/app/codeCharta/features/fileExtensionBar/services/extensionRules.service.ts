@@ -43,10 +43,10 @@ interface MetricDistributionNodeContext {
 })
 export class ExtensionRulesService {
     private readonly operationContext$: Observable<MetricDistributionNodeContext> = combineLatest([
-        this.blackListExtensionStore.hoveredNodeMetricDistribution$,
-        this.blackListExtensionStore.hoveredNode$,
-        this.blackListExtensionStore.selectedNode$,
-        this.blackListExtensionStore.flattenedItems$
+        this.extensionRulesStore.hoveredNodeMetricDistribution$,
+        this.extensionRulesStore.hoveredNode$,
+        this.extensionRulesStore.selectedNode$,
+        this.extensionRulesStore.flattenedItems$
     ]).pipe(
         map(([distribution, hoveredNode, selectedNode, flattenedItems]) => ({
             distribution,
@@ -55,7 +55,7 @@ export class ExtensionRulesService {
         }))
     )
 
-    constructor(private readonly blackListExtensionStore: ExtensionRulesStore) {}
+    constructor(private readonly extensionRulesStore: ExtensionRulesStore) {}
 
     show(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
@@ -63,21 +63,21 @@ export class ExtensionRulesService {
             const flattenedItemsMap = this.createFlattenedItemsMap(ctx.flattenedItems)
             const itemsToRemove = extensionPatterns.map(pattern => flattenedItemsMap.get(pattern))
 
-            this.blackListExtensionStore.dispatchRuleChange("flatten", removeFlattenedNodes({ items: itemsToRemove }))
+            this.extensionRulesStore.dispatchRuleChange("flatten", removeFlattenedNodes({ items: itemsToRemove }))
         })
     }
 
     exclude(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            this.blackListExtensionStore.dispatchRuleChange("exclude", ruleForExtensionsPattern("exclude", ...extensionPatterns))
+            this.extensionRulesStore.dispatchRuleChange("exclude", ruleForExtensionsPattern("exclude", ...extensionPatterns))
         })
     }
 
     flatten(fileExtension: string) {
         this.operationContext$.pipe(take(1)).subscribe(ctx => {
             const extensionPatterns = buildGlobPatterns(fileExtension, ctx.distribution, ctx.node)
-            this.blackListExtensionStore.dispatchRuleChange("flatten", ruleForExtensionsPattern("flatten", ...extensionPatterns))
+            this.extensionRulesStore.dispatchRuleChange("flatten", ruleForExtensionsPattern("flatten", ...extensionPatterns))
         })
     }
 

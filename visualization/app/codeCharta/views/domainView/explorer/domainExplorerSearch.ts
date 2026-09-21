@@ -6,7 +6,7 @@ import { setDomainStateSearchPattern } from "../../../stores/domainState/domainS
 import { getNodesByGitignorePath } from "../../../util/nodeRules/getNodesByGitignorePath"
 
 // Matched against the same view-independent tree the domain explorer renders, so the metrics pipeline's
-// blacklist and metric data cannot decide what the domain search finds.
+// exclusions and metric data cannot decide what the domain search finds.
 const domainSearchedNodePathsSelector = createSelector(
     viewIndependentTreeSelector,
     domainStateSearchPatternSelector,

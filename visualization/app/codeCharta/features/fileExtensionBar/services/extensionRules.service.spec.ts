@@ -61,7 +61,7 @@ describe("ExtensionRulesService", () => {
         new NodeRuleBuilder().withPath("*.a").build(),
         new NodeRuleBuilder().withPath("*.b").build()
     ]
-    const mockBlacklist: NodeRule[] = [mockFlattenedTypescriptItem, ...mockFlattenedOtherItems]
+    const mockFlattenedNodes: NodeRule[] = [mockFlattenedTypescriptItem, ...mockFlattenedOtherItems]
 
     const initialState: Partial<CcState> = {
         currentFilesAreSampleFiles: false,
@@ -95,7 +95,7 @@ describe("ExtensionRulesService", () => {
             focusedNodePath: [],
             searchPattern: "",
             excludedNodes: [],
-            flattenedNodes: mockBlacklist,
+            flattenedNodes: mockFlattenedNodes,
             metricRules: [],
             markedPackages: [],
             hoveredNodeId: null,
@@ -176,7 +176,7 @@ describe("ExtensionRulesService", () => {
         })
     })
 
-    describe("Scoped blacklist operations", () => {
+    describe("Scoped flatten operations", () => {
         const mockHoveredNode: CodeMapNode = {
             name: "src",
             path: "/root/src",
@@ -301,7 +301,7 @@ describe("ExtensionRulesService", () => {
     })
 
     describe("getIsFlattenedByFileExtension", () => {
-        it("should return false when hovering folder without scoped blacklist item for that folder", done => {
+        it("should return false when hovering folder without a scoped flatten rule for that folder", done => {
             const folderB: CodeMapNode = {
                 name: "components",
                 path: "/root/components",

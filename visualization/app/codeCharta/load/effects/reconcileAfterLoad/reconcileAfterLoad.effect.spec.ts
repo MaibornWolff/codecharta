@@ -355,9 +355,9 @@ describe("ReconcileAfterLoadEffect", () => {
         expect(state.getValue().sharedView.focusedNodePath).toEqual([])
     })
 
-    // ── replaces ResetChosenMetricsEffect / ResetSelectedEdgeMetric… on a blacklist edit ─
+    // ── replaces ResetChosenMetricsEffect / ResetSelectedEdgeMetric… on an exclude rule ─
 
-    it("should re-resolve the metric selection when a blacklist edit removes the chosen metric", async () => {
+    it("should re-resolve the metric selection when an exclude rule removes the chosen metric", async () => {
         // Arrange
         await loadFileAndSignal()
         dispatchSpy.mockClear()

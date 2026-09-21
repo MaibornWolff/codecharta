@@ -45,12 +45,12 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     private flattenSubscription: Subscription
 
     constructor(
-        private readonly blackListExtensionService: ExtensionRulesService,
+        private readonly extensionRulesService: ExtensionRulesService,
         private readonly highlightBuildingsByFileExtensionService: HighlightBuildingsByFileExtensionService
     ) {}
 
     ngOnInit(): void {
-        this.flattenSubscription = this.blackListExtensionService
+        this.flattenSubscription = this.extensionRulesService
             .getIsFlattenedByFileExtension(this.fileExtension())
             .subscribe(isFlattened => this.isFlattened.set(isFlattened))
     }
@@ -94,17 +94,17 @@ export class FileExtensionBarSegmentComponent implements OnInit, OnDestroy {
     }
 
     flatten(fileExtension: string) {
-        this.blackListExtensionService.flatten(fileExtension)
+        this.extensionRulesService.flatten(fileExtension)
         this.closeContextMenu()
     }
 
     exclude(fileExtension: string) {
-        this.blackListExtensionService.exclude(fileExtension)
+        this.extensionRulesService.exclude(fileExtension)
         this.closeContextMenu()
     }
 
     show(fileExtension: string) {
-        this.blackListExtensionService.show(fileExtension)
+        this.extensionRulesService.show(fileExtension)
         this.closeContextMenu()
     }
 

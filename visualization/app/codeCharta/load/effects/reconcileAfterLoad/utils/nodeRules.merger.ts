@@ -1,5 +1,5 @@
 import { CCFile, ExcludedNode, FlattenedNode, ImportedNodeRule } from "../../../../model/codeCharta.model"
-import { getUpdatedBlacklistItemPath } from "../../../../util/nodePathHelper"
+import { getUpdatedRulePath } from "../../../../util/nodePathHelper"
 
 /**
  * The node rules the loaded files carried, split into the two lists the app keeps them in. A cc.json
@@ -12,7 +12,7 @@ export function getMergedNodeRules(inputFiles: CCFile[], withUpdatedPath: boolea
         for (const importedRule of inputFile.settings.fileSettings.blacklist ?? []) {
             const path =
                 withUpdatedPath && inputFiles.length > 1
-                    ? getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, importedRule.path)
+                    ? getUpdatedRulePath(inputFile.fileMeta.fileName, importedRule.path)
                     : importedRule.path
             rulesByKey.set(`${path}|${importedRule.type}`, { path, type: importedRule.type })
         }

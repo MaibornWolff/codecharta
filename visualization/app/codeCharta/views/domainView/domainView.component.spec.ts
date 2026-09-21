@@ -187,7 +187,7 @@ describe("DomainViewComponent", () => {
         expect(contextMenu.isEnabledFor(SOME_NODE.path)).toBe(true)
     })
 
-    it("should read the view-independent tree, so the map's blacklist cannot shape the domain explorer", async () => {
+    it("should read the view-independent tree, so the map's exclusions cannot shape the domain explorer", async () => {
         // Arrange
         const { fixture } = await setup()
         const explorerTree = fixture.debugElement.injector.get(EXPLORER_TREE)

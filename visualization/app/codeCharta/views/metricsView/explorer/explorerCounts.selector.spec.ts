@@ -30,7 +30,7 @@ describe("explorerCounts.selector", () => {
             makeLeaf("/root/test/beta.spec.ts")
         ]
 
-        it("should return shown=all, flattened=0, excluded=0, noArea=0 with empty blacklist and valid metric", () => {
+        it("should return shown=all, flattened=0, excluded=0, noArea=0 with no rules and a valid metric", () => {
             // Arrange
             const excludedNodes: ExcludedNode[] = []
             const flattenedNodes: FlattenedNode[] = []

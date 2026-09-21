@@ -50,7 +50,7 @@ describe("MetricsExplorerRules", () => {
         expect(await rulesOfEffect("exclude")).toEqual([{ path: "*needle*" }])
     })
 
-    it("should remove a rule from the map's blacklist", async () => {
+    it("should remove a rule from the map's flatten list", async () => {
         // Arrange
         const item: NodeRule = { path: "*needle*" }
         TestBed.inject(Store).dispatch(addFlattenedNodes({ items: [item] }))

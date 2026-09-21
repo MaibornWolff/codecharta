@@ -269,7 +269,7 @@ export class LoadFilesUseCase {
         }
 
         // Only LoadFileService does this otherwise, from the file it parses — and the root path keys the
-        // domain words, the blacklist and every node lookup.
+        // domain words, the exclusions and every node lookup.
         fileRoot.updateRoot(savedFileStates[0].file.map.name)
         this.loadInitialFileStore.setFiles(savedFileStates)
         this.store.dispatch(filesLoaded(provenance))

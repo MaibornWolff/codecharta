@@ -36,7 +36,7 @@ export const ERROR_MESSAGES = {
     fixedFoldersOverlapped: "Folders may not overlap.",
     fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2.",
     fileAlreadyExists: "File already exists.",
-    blacklistError: "Excluding all buildings is not possible.",
+    excludesEveryBuilding: "Excluding all buildings is not possible.",
     fileContainsAuthorsAttribute:
         "File contains unsupported 'authors' attribute. This attribute will be ignored. Node containing the attribute: "
 }

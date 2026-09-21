@@ -34,7 +34,7 @@ describe("DomainExplorerTree", () => {
         expect(rootNode.children.map(child => child.name)).toEqual(["a", "z"])
     })
 
-    it("should sort by the file counts of the view-independent tree, which no blacklist can skew", async () => {
+    it("should sort by the file counts of the view-independent tree, which no exclusion can skew", async () => {
         // Act
         const rootNode = await firstValueFrom(tree.rootNodeFor(SortingOption.NUMBER_OF_FILES, false))
 
