@@ -83,7 +83,7 @@
     "dequal": "^2.0.3",
     "echarts": "5.6.0",
     "echarts-wordcloud": "2.1.0",
-    "electron": "40.6.1",
+    "electron": "44.4.2",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.2",
     "hotkeys-js": "^4.0.3",
@@ -109,8 +109,8 @@
     "@angular/compiler": "^21.1.2",
     "@angular/compiler-cli": "^21.2.8",
     "@cyclonedx/cyclonedx-npm": "^4.2.1",
-    "@electron/get": "^4.0.3",
-    "@electron/packager": "^19.1.0",
+    "@electron/get": "^5.1.0",
+    "@electron/packager": "^20.3.0",
     "@playwright/test": "^1.59.1",
     "@testing-library/angular": "^19.2.1",
     "@testing-library/user-event": "^14.6.1",
@@ -133,10 +133,5 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.24.2"
-  },
-  "overrides": {
-    "extract-zip": {
-      "yauzl": "^3.4.0"
-    }
   }
 }
