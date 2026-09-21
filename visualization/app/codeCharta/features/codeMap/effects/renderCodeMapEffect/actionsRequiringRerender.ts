@@ -33,10 +33,20 @@ import {
 import { setMaxTreeMapFiles } from "../../../../stores/preferences/preferences.write.facade"
 import { setState } from "../../../../stores/rootStore/state.actions"
 import {
+    addExcludedNodes,
+    addFlattenedNodes,
+    addMetricRule,
+    clearRulesOfType,
     focusNode,
     markPackages,
+    removeExcludedNodes,
+    removeFlattenedNodes,
+    removeMetricRule,
     setAllFocusedNodes,
+    setExcludedNodes,
+    setFlattenedNodes,
     setMarkedPackages,
+    setMetricRules,
     setSearchPattern,
     unfocusAllNodes,
     unfocusNode,
@@ -44,6 +54,18 @@ import {
 } from "../../../../stores/sharedView/sharedView.write.facade"
 
 export const actionsRequiringRerender = [
+    // The node rules used to reach the map only because they rebuilt the decorated tree. Flattening
+    // no longer does, so the actions have to ask for the re-render themselves.
+    setExcludedNodes,
+    addExcludedNodes,
+    removeExcludedNodes,
+    setFlattenedNodes,
+    addFlattenedNodes,
+    removeFlattenedNodes,
+    setMetricRules,
+    addMetricRule,
+    removeMetricRule,
+    clearRulesOfType,
     setColorLabels,
     setMapColors,
     invertColorRange,

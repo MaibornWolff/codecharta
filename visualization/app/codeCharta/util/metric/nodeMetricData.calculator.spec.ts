@@ -1,9 +1,9 @@
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, VALID_NODE_WITH_ROOT_UNARY } from "../../mocks/dataMocks"
 import { CCFile, MetricRule } from "../../model/codeCharta.model"
 import { AggregationGenerator } from "../aggregationGenerator"
-import { createBlacklistMatcher } from "../blacklist/blacklistMatcher"
 import { clone } from "../clone"
 import { NodeDecorator } from "../nodeDecorator"
+import { createExcludeMatcher } from "../nodeRules/excludeMatcher"
 import { calculateNodeMetricData } from "./nodeMetricData.calculator"
 import { UNARY_METRIC } from "./unaryMetric"
 
@@ -26,7 +26,7 @@ describe("nodeMetricDataCalculator", () => {
             { maxValue: 1, minValue: 1, name: UNARY_METRIC, values: [] }
         ]
 
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([]))
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([]))
 
         expect(result).toEqual(expected)
     })
@@ -39,7 +39,7 @@ describe("nodeMetricDataCalculator", () => {
             { maxValue: 1, minValue: 1, name: UNARY_METRIC, values: [] }
         ]
 
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([{ path: "root/big leaf", type: "exclude" }]))
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([{ path: "root/big leaf" }]))
 
         expect(result).toEqual(expected)
     })
@@ -49,21 +49,21 @@ describe("nodeMetricDataCalculator", () => {
         const excludeBigLeaf = rule({ metric: "rloc", operator: "gt", value: 90 })
 
         // Act
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([]), [excludeBigLeaf])
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([]), [excludeBigLeaf])
 
         // Assert — the same range as excluding that file by path
-        expect(result).toEqual(calculateNodeMetricData(file.map, createBlacklistMatcher([{ path: "root/big leaf", type: "exclude" }])))
+        expect(result).toEqual(calculateNodeMetricData(file.map, createExcludeMatcher([{ path: "root/big leaf" }])))
     })
 
-    it("should not let a flatten metric rule change the range", () => {
-        // Arrange
-        const flattenBigLeaf = rule({ metric: "rloc", operator: "gt", value: 90, type: "flatten" })
+    it("should not let a flatten rule reach it at all", () => {
+        // Arrange — the caller hands it only the exclude rules now, so a flatten rule never arrives
+        const noRules: MetricRule[] = []
 
         // Act
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([]), [flattenBigLeaf])
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([]), noRules)
 
         // Assert
-        expect(result).toEqual(calculateNodeMetricData(file.map, createBlacklistMatcher([])))
+        expect(result).toEqual(calculateNodeMetricData(file.map, createExcludeMatcher([])))
     })
 
     it("should keep a metric whose every file a metric rule excludes", () => {
@@ -71,7 +71,7 @@ describe("nodeMetricDataCalculator", () => {
         const excludeEveryFile = rule({ metric: "rloc", operator: "gte", value: 0 })
 
         // Act
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([]), [excludeEveryFile])
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([]), [excludeEveryFile])
 
         // Assert — the names stay, so the rule keeps matching on the map; only their range is empty
         expect(result).toEqual([
@@ -87,7 +87,7 @@ describe("nodeMetricDataCalculator", () => {
         const otherFile = clone(TEST_DELTA_MAP_B)
         NodeDecorator.decorateMapWithPathAttribute(otherFile)
         const aggregated = AggregationGenerator.calculateAggregationFile([{ file }, { file: otherFile }])
-        const matcher = createBlacklistMatcher([{ path: "/root/fileA/big leaf", type: "exclude" }])
+        const matcher = createExcludeMatcher([{ path: "/root/fileA/big leaf" }])
 
         // Act
         const rloc = calculateNodeMetricData(aggregated.map, matcher).find(metric => metric.name === "rloc")
@@ -98,7 +98,7 @@ describe("nodeMetricDataCalculator", () => {
     })
 
     it("should always add unary metric if it's not included yet", () => {
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([]))
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([]))
 
         expect(result.filter(metric => metric.name === UNARY_METRIC)).toHaveLength(1)
     })
@@ -106,13 +106,13 @@ describe("nodeMetricDataCalculator", () => {
     it("should not add unary metric a second time if the cc.json already contains unary", () => {
         file.map = VALID_NODE_WITH_ROOT_UNARY
 
-        const result = calculateNodeMetricData(file.map, createBlacklistMatcher([]))
+        const result = calculateNodeMetricData(file.map, createExcludeMatcher([]))
 
         expect(result.filter(metric => metric.name === UNARY_METRIC).length).toBe(1)
     })
 
     it("should return empty metricData when there is no map. If it would contain default metrics someone might falsely assume all parsing was already done", () => {
-        const result = calculateNodeMetricData(undefined, createBlacklistMatcher([]))
+        const result = calculateNodeMetricData(undefined, createExcludeMatcher([]))
         expect(result.length).toBe(0)
     })
 })

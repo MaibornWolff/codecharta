@@ -38,10 +38,9 @@ describe("_applyPartialState", () => {
                 }
             },
             sharedView: {
-                blacklist: [
+                excludedNodes: [
                     {
-                        path: "excludedNode",
-                        type: "exclude"
+                        path: "excludedNode"
                     }
                 ]
             }
@@ -50,10 +49,9 @@ describe("_applyPartialState", () => {
         const newState = _applyPartialState(clone(defaultState), partialState)
 
         expect(newState.metricsLensSource.attributeTypes.nodes["rloc"]).toBe("absolute")
-        expect(newState.sharedView.blacklist).toEqual([
+        expect(newState.sharedView.excludedNodes).toEqual([
             {
-                path: "excludedNode",
-                type: "exclude"
+                path: "excludedNode"
             }
         ])
     })

@@ -1,11 +1,10 @@
 export {
-    addBlacklistItem,
-    addBlacklistItems,
-    addBlacklistItemsIfNotResultsInEmptyMap,
-    removeBlacklistItem,
-    removeBlacklistItems,
-    setBlacklist
-} from "./store/blacklist/blacklist.actions"
+    addExcludedNodes,
+    addExcludedNodesIfNotResultsInEmptyMap,
+    removeExcludedNodes,
+    setExcludedNodes
+} from "./store/excludedNodes/excludedNodes.actions"
+export { addFlattenedNodes, removeFlattenedNodes, setFlattenedNodes } from "./store/flattenedNodes/flattenedNodes.actions"
 export { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./store/focusedNodePath/focusedNodePath.actions"
 export { setHoveredNodeId } from "./store/hoveredNodeId/hoveredNodeId.actions"
 export { markPackages, setMarkedPackages, unmarkPackage } from "./store/markedPackages/markedPackages.actions"

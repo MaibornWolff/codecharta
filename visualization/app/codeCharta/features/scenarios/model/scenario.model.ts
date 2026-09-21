@@ -19,7 +19,7 @@ export interface Scenario {
 
 export const CCSCENARIO_EXTENSION = ".ccscenario"
 
-export const SCENARIO_SCHEMA_VERSION = 2
+export const SCENARIO_SCHEMA_VERSION = 3
 
 export interface ScenarioFile {
     readonly schemaVersion: typeof SCENARIO_SCHEMA_VERSION

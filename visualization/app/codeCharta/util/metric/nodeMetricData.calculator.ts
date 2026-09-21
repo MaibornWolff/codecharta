@@ -1,8 +1,8 @@
 import { hierarchy } from "d3-hierarchy"
 import { CodeMapNode, MetricRule, NodeMetricData } from "../../model/codeCharta.model"
-import { BlacklistMatcher } from "../blacklist/blacklistMatcher"
 import { isLeaf } from "../codeMapHelper"
 import { createMetricRuleMatcher } from "../metricRule/metricRuleMatcher"
+import { ExcludeMatcher } from "../nodeRules/excludeMatcher"
 import { sortByMetricName } from "./sortByMetricName"
 import { UNARY_METRIC } from "./unaryMetric"
 
@@ -15,7 +15,7 @@ type MetricStats = { values: number[]; minValue: number; maxValue: number }
  */
 export const calculateNodeMetricData = (
     map: CodeMapNode | undefined,
-    matcher: BlacklistMatcher,
+    matcher: ExcludeMatcher,
     metricRules: MetricRule[] = []
 ): NodeMetricData[] => {
     if (!map) {
@@ -25,7 +25,7 @@ export const calculateNodeMetricData = (
     const includedLeaves = getIncludedLeaves(map, matcher)
     const metricNames = collectMetricNames(includedLeaves)
     const metricRuleMatcher = createMetricRuleMatcher(metricRules, metricNames)
-    const leavesTheRulesKeep = includedLeaves.filter(leaf => !metricRuleMatcher.classify(leaf.attributes).isExcluded)
+    const leavesTheRulesKeep = includedLeaves.filter(leaf => !metricRuleMatcher.matches(leaf.attributes))
     const statsByMetric = collectStatsByMetric(leavesTheRulesKeep)
 
     // Every metric keeps its entry, even when a rule excludes all of its files: the NodeDecorator reads
@@ -35,7 +35,7 @@ export const calculateNodeMetricData = (
     return metricData
 }
 
-const getIncludedLeaves = (map: CodeMapNode, matcher: BlacklistMatcher): CodeMapNode[] =>
+const getIncludedLeaves = (map: CodeMapNode, matcher: ExcludeMatcher): CodeMapNode[] =>
     hierarchy(map)
         .descendants()
         .map(({ data }) => data)

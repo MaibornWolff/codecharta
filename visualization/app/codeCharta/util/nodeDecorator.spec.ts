@@ -61,21 +61,6 @@ describe("nodeDecorator", () => {
                 .map(({ data }) => data)
                 .filter(node => node.children === undefined || node.children.length === 0)
 
-        it("should flatten every file matching a flatten rule", () => {
-            // Arrange
-            const rules = [{ id: "r1", metric: "rloc", operator: "gt" as const, value: 50, type: "flatten" as const }]
-
-            // Act
-            NodeDecorator.decorateMap(map, metricData, [], rules)
-
-            // Assert
-            const leaves = leavesOf(map)
-            expect(leaves.some(leaf => leaf.isFlattened)).toBe(true)
-            for (const leaf of leaves) {
-                expect(leaf.isFlattened).toBe((leaf.attributes?.["rloc"] ?? 0) > 50)
-            }
-        })
-
         it("should exclude every file matching an exclude rule", () => {
             // Arrange
             const rules = [{ id: "r1", metric: "rloc", operator: "gt" as const, value: 50, type: "exclude" as const }]
@@ -91,34 +76,9 @@ describe("nodeDecorator", () => {
             }
         })
 
-        it("should match a file without a value for a metric on the map as if it were 0", () => {
-            // Arrange
-            const fileWithoutMcc = leavesOf(map)[0]
-            delete fileWithoutMcc.attributes.mcc
-            const rules = [{ id: "r1", metric: "mcc", operator: "lt" as const, value: 1, type: "flatten" as const }]
-
-            // Act
-            NodeDecorator.decorateMap(map, metricData, [], rules)
-
-            // Assert
-            expect(fileWithoutMcc.isFlattened).toBe(true)
-            expect(fileWithoutMcc.attributes.mcc).toBe(0)
-        })
-
-        it("should match no file for a metric the map does not have", () => {
-            // Arrange
-            const rules = [{ id: "r1", metric: "notInAnyFile", operator: "lt" as const, value: 10, type: "flatten" as const }]
-
-            // Act
-            NodeDecorator.decorateMap(map, metricData, [], rules)
-
-            // Assert
-            expect(leavesOf(map).some(leaf => leaf.isFlattened)).toBe(false)
-        })
-
         it("should leave folders untouched, because their metrics are aggregates", () => {
             // Arrange
-            const rules = [{ id: "r1", metric: "rloc", operator: "gte" as const, value: 0, type: "flatten" as const }]
+            const rules = [{ id: "r1", metric: "rloc", operator: "gte" as const, value: 0, type: "exclude" as const }]
 
             // Act
             NodeDecorator.decorateMap(map, metricData, [], rules)
@@ -130,20 +90,8 @@ describe("nodeDecorator", () => {
                 .filter(node => node.children !== undefined && node.children.length > 0)
             expect(folders.length).toBeGreaterThan(0)
             for (const folder of folders) {
-                expect(folder.isFlattened).toBe(false)
+                expect(folder.isExcluded).toBeFalsy()
             }
-        })
-
-        it("should keep a file flattened by a path rule when no metric rule matches it", () => {
-            // Arrange
-            const someLeafPath = leavesOf(clone(map))[0].path
-            const rules = [{ id: "r1", metric: "rloc", operator: "gt" as const, value: 999_999, type: "flatten" as const }]
-
-            // Act
-            NodeDecorator.decorateMap(map, metricData, [{ path: someLeafPath, type: "flatten" }], rules)
-
-            // Assert
-            expect(leavesOf(map).find(leaf => leaf.path === someLeafPath)?.isFlattened).toBe(true)
         })
     })
 
@@ -183,21 +131,18 @@ describe("nodeDecorator", () => {
                     type: NodeType.FOLDER,
                     attributes: {},
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "a",
                             type: NodeType.FILE,
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         },
                         {
                             name: "b",
                             type: NodeType.FILE,
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }
@@ -221,21 +166,18 @@ describe("nodeDecorator", () => {
                     attributes: {},
                     link: "link1",
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "a",
                             type: NodeType.FILE,
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         },
                         {
                             name: "b",
                             type: NodeType.FILE,
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }
@@ -256,23 +198,20 @@ describe("nodeDecorator", () => {
                     type: NodeType.FOLDER,
                     attributes: {},
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "a",
                             type: NodeType.FILE,
                             path: "/root/middle/a",
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         },
                         {
                             name: "b",
                             type: NodeType.FILE,
                             path: "/root/middle/b",
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }
@@ -290,14 +229,12 @@ describe("nodeDecorator", () => {
                     type: NodeType.FOLDER,
                     attributes: {},
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "singleLeaf",
                             type: NodeType.FILE,
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }
@@ -318,35 +255,30 @@ describe("nodeDecorator", () => {
                     type: NodeType.FOLDER,
                     attributes: {},
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
                         {
                             name: "middle",
                             type: NodeType.FOLDER,
                             attributes: {},
                             isExcluded: false,
-                            isFlattened: false,
                             children: [
                                 {
                                     name: "middle2",
                                     type: NodeType.FOLDER,
                                     attributes: {},
                                     isExcluded: false,
-                                    isFlattened: false,
                                     children: [
                                         {
                                             name: "a",
                                             type: NodeType.FILE,
                                             attributes: {},
-                                            isExcluded: false,
-                                            isFlattened: false
+                                            isExcluded: false
                                         },
                                         {
                                             name: "b",
                                             type: NodeType.FILE,
                                             attributes: {},
-                                            isExcluded: false,
-                                            isFlattened: false
+                                            isExcluded: false
                                         }
                                     ]
                                 }
@@ -356,8 +288,7 @@ describe("nodeDecorator", () => {
                             name: "c",
                             type: NodeType.FILE,
                             attributes: {},
-                            isExcluded: false,
-                            isFlattened: false
+                            isExcluded: false
                         }
                     ]
                 }
@@ -427,10 +358,9 @@ describe("nodeDecorator", () => {
                     type: NodeType.FOLDER,
                     attributes: {},
                     isExcluded: false,
-                    isFlattened: false,
                     children: [
-                        { name: "a", type: NodeType.FILE, attributes: {}, isExcluded: false, isFlattened: false },
-                        { name: "b", type: NodeType.FILE, attributes: {}, isExcluded: false, isFlattened: false }
+                        { name: "a", type: NodeType.FILE, attributes: {}, isExcluded: false },
+                        { name: "b", type: NodeType.FILE, attributes: {}, isExcluded: false }
                     ]
                 }
             ]
@@ -598,15 +528,14 @@ describe("nodeDecorator", () => {
         })
     })
 
-    describe("blacklist", () => {
-        it("should calculate flatten and exclude state for every node", () => {
-            NodeDecorator.decorateMap(file.map, { nodeMetricData: [], edgeMetricData: [] }, [
-                { type: "flatten", path: "small leaf" },
-                { type: "exclude", path: "other small leaf" }
-            ])
+    describe("excluded nodes", () => {
+        it("should calculate exclude state for every node", () => {
+            // Act — a flatten rule has no place here any more: it is answered while the map is laid out
+            NodeDecorator.decorateMap(file.map, { nodeMetricData: [], edgeMetricData: [] }, [{ path: "other small leaf" }])
+
+            // Assert
             expect(file.map.children[0].isExcluded).toBe(false)
-            expect(file.map.children[0].isFlattened).toBe(false)
-            expect(file.map.children[1].children[0].isFlattened).toBe(true)
+            expect(file.map.children[1].children[0].isExcluded).toBe(false)
             expect(file.map.children[1].children[1].isExcluded).toBe(true)
         })
     })

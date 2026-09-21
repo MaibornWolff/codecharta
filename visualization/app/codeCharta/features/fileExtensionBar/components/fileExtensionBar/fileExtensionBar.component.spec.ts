@@ -3,11 +3,11 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { screen, waitFor } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { provideMockState } from "../../../../mocks/state.mocks"
-import { BlacklistItem } from "../../../../model/codeCharta.model"
+import { NodeRule } from "../../../../model/codeCharta.model"
 import { accumulatedDataSelector } from "../../../../renderer/renderModel/accumulatedData/accumulatedData.selector"
 import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
-import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import { excludedNodesSelector, flattenedNodesSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { hoveredNodeIdSelector } from "../../../../stores/sharedView/store/hoveredNodeId/hoveredNodeId.selector"
 import { selectedBuildingIdSelector } from "../../../../stores/sharedView/store/selectedBuildingId/selectedBuildingId.selector"
 import { CategorizedMetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
@@ -64,7 +64,8 @@ describe("FileExtensionBarComponent", () => {
                                 others: []
                             } as CategorizedMetricDistribution
                         },
-                        { selector: blacklistSelector, value: [] as BlacklistItem[] }
+                        { selector: excludedNodesSelector, value: [] as NodeRule[] },
+                        { selector: flattenedNodesSelector, value: [] as NodeRule[] }
                     ]
                 }),
                 {

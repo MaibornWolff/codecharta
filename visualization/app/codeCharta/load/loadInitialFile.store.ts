@@ -83,7 +83,8 @@ import {
 import { SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
 import {
     setAllFocusedNodes,
-    setBlacklist,
+    setExcludedNodes,
+    setFlattenedNodes,
     setMarkedPackages,
     setMetricRules,
     setSearchPattern
@@ -334,8 +335,11 @@ export class LoadInitialFileStore {
             case "searchPattern":
                 this.store.dispatch(setSearchPattern({ value }))
                 break
-            case "blacklist":
-                this.store.dispatch(setBlacklist({ value }))
+            case "excludedNodes":
+                this.store.dispatch(setExcludedNodes({ value }))
+                break
+            case "flattenedNodes":
+                this.store.dispatch(setFlattenedNodes({ value }))
                 break
             case "markedPackages":
                 this.store.dispatch(setMarkedPackages({ value }))

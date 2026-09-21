@@ -1,3 +1,3 @@
-import { BlacklistSearchPatternEffect } from "./blacklistSearchPattern/blacklistSearchPattern.effect"
+import { RuleFromSearchPatternEffect } from "./ruleFromSearchPattern/ruleFromSearchPattern.effect"
 
-export const metricsViewEffects = [BlacklistSearchPatternEffect]
+export const metricsViewEffects = [RuleFromSearchPatternEffect]

@@ -1,6 +1,6 @@
 import { InjectionToken } from "@angular/core"
 import { Observable } from "rxjs"
-import { BlacklistItem, BlacklistType, MetricRule } from "../../model/codeCharta.model"
+import { MetricRule, NodeRule, RuleEffect } from "../../model/codeCharta.model"
 
 /**
  * One row of a rules popover. `label` is what the row shows and `id` identifies it for tracking;
@@ -14,7 +14,7 @@ interface RuleRow {
 }
 
 export type RuleWithCount =
-    | (RuleRow & { kind: "RULE" | "MANUAL"; item: BlacklistItem })
+    | (RuleRow & { kind: "RULE" | "MANUAL"; item: NodeRule; effect: RuleEffect })
     | (RuleRow & { kind: "METRIC"; metricRule: MetricRule })
 
 export interface ExplorerRules {
@@ -24,8 +24,8 @@ export interface ExplorerRules {
     readonly isExcludePatternDisabled$: Observable<boolean>
     removeRule(rule: RuleWithCount): void
     /** Empties one list: its metric, pattern and hand-picked rules alike. */
-    clearRules(type: BlacklistType): void
-    ruleFromSearchPattern(type: BlacklistType): void
+    clearRules(effect: RuleEffect): void
+    ruleFromSearchPattern(effect: RuleEffect): void
 }
 
 export const EXPLORER_RULES = new InjectionToken<ExplorerRules>("EXPLORER_RULES")

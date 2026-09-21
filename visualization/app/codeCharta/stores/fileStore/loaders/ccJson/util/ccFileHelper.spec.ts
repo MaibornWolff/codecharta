@@ -27,12 +27,12 @@ describe("ccFileHelper", () => {
         })
 
         it("should convert old blacklist type", () => {
-            fileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.hide }]
+            fileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.exclude }]
 
             const nameDataPair: NameDataPair = { content: fileContent, fileName: "fileName", fileSize: 30 }
             const result = getCCFile(nameDataPair)
 
-            expect(result.settings.fileSettings.blacklist).toEqual([{ path: "foo", type: "flatten" }])
+            expect(result.settings.fileSettings.blacklist).toEqual([{ path: "foo", type: "exclude" }])
         })
 
         it("should ignore old attribute types", () => {

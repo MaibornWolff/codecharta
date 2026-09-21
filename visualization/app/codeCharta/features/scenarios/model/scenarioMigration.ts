@@ -1,8 +1,8 @@
 import {
-    BlacklistItem,
     ColorLabelOptions,
     ColorMode,
     ColorRange,
+    ExcludedNode,
     LabelMode,
     MapColors,
     MarkedPackage
@@ -33,7 +33,7 @@ interface LegacyScenarioSections {
         readonly target: PlainPosition
     }
     readonly filters?: {
-        readonly blacklist?: readonly BlacklistItem[]
+        readonly blacklist?: readonly (ExcludedNode & { type?: string })[]
         readonly focusedNodePath?: readonly string[]
     }
     readonly labelsAndFolders?: {
@@ -61,7 +61,25 @@ interface LegacyScenarioFile extends Omit<ScenarioFile, "schemaVersion" | "setti
 }
 
 function toScenarioSettings(stored: { sections?: LegacyScenarioSections; settings?: ScenarioSettings }): ScenarioSettings {
-    return stored.settings ?? migrateLegacySections(stored.sections ?? {})
+    return stored.settings ? splitStoredNodeRules(stored.settings) : migrateLegacySections(stored.sections ?? {})
+}
+
+/**
+ * A scenario written at schema 2 kept one `blacklist`, whose entries said what they did. Schema 3
+ * keeps the two lists apart, so a stored one is split on the way in — dropping it would silently
+ * lose the exclusions a saved scenario carries.
+ */
+function splitStoredNodeRules(settings: ScenarioSettings): ScenarioSettings {
+    const stored = settings as ScenarioSettings & { blacklist?: readonly (ExcludedNode & { type?: string })[] }
+    if (!stored.blacklist) {
+        return settings
+    }
+    const { blacklist, ...withoutBlacklist } = stored
+    return withoutAbsentSettings({
+        ...withoutBlacklist,
+        excludedNodes: blacklist.filter(rule => rule.type !== "flatten").map(({ path }) => ({ path })),
+        flattenedNodes: blacklist.filter(rule => rule.type === "flatten").map(({ path }) => ({ path }))
+    })
 }
 
 export function fromStoredScenario(stored: LegacyScenario): Scenario {
@@ -69,9 +87,12 @@ export function fromStoredScenario(stored: LegacyScenario): Scenario {
     return { ...scenario, settings: toScenarioSettings(stored) }
 }
 
+/** Every schema this build can still read, migrating it forward as it goes. */
+const ACCEPTED_SCHEMA_VERSIONS = new Set([1, 2, SCENARIO_SCHEMA_VERSION])
+
 export function parseScenarioFile(raw: unknown): ScenarioFile | undefined {
     const file = raw as LegacyScenarioFile
-    if (!file?.name || (file.schemaVersion !== 1 && file.schemaVersion !== SCENARIO_SCHEMA_VERSION)) {
+    if (!file?.name || !ACCEPTED_SCHEMA_VERSIONS.has(file.schemaVersion)) {
         return undefined
     }
     if (!file.sections && !file.settings) {
@@ -111,7 +132,8 @@ function migrateLegacySections(sections: LegacyScenarioSections): ScenarioSettin
         groupLabelCollisions: labelsAndFolders?.groupLabelCollisions,
         colorLabels: labelsAndFolders?.colorLabels,
         camera,
-        blacklist: filters?.blacklist,
+        excludedNodes: filters?.blacklist?.filter(rule => rule.type !== "flatten"),
+        flattenedNodes: filters?.blacklist?.filter(rule => rule.type === "flatten"),
         focusedNodePath: filters?.focusedNodePath
     })
 }

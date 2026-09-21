@@ -10,7 +10,7 @@ import { filesLoaded } from "../../../stores/fileStore/store/filesLoaded/filesLo
 import { defaultMetricsLensSource } from "../../../stores/metricsLensSource/metricsLensSource.read.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { defaultSharedView } from "../../../stores/sharedView/sharedView.read.facade"
-import { addBlacklistItem, setAllFocusedNodes } from "../../../stores/sharedView/sharedView.write.facade"
+import { addExcludedNodes, setAllFocusedNodes } from "../../../stores/sharedView/sharedView.write.facade"
 import { clone } from "../../../util/clone"
 import { ErrorDialogService } from "../../../util/errorDialog/errorDialog.service"
 import { fileRoot } from "../../../util/fileRoot"
@@ -122,7 +122,7 @@ describe("ReconcileAfterLoadEffect", () => {
         expect(dispatchedActionsOfType("SET_STATE")[0]).toEqual(
             expect.objectContaining({
                 value: expect.objectContaining({
-                    sharedView: expect.objectContaining({ blacklist: expect.any(Array), markedPackages: expect.any(Array) }),
+                    sharedView: expect.objectContaining({ excludedNodes: expect.any(Array), markedPackages: expect.any(Array) }),
                     metricsLensSource: expect.objectContaining({ attributeTypes: expect.anything() }),
                     dependencyLensSource: expect.objectContaining({ attributeTypes: expect.anything() }),
                     domainLensSource: expect.objectContaining({ words: expect.anything() })
@@ -307,17 +307,17 @@ describe("ReconcileAfterLoadEffect", () => {
     // INSIDE setFiles, i.e. before the persisted state was restored, so the restore won. The sequence runs
     // one macrotask later, so it has to apply the restored session last, or it would erase all three.
 
-    it("should keep the restored blacklist when files are loaded from a persisted session", async () => {
+    it("should keep the restored excluded nodes when files are loaded from a persisted session", async () => {
         // Arrange
         const restoredSettings = aRestoredSettings({
-            blacklist: [{ path: "/root/excluded", type: "exclude" }]
+            excludedNodes: [{ path: "/root/excluded" }]
         })
 
         // Act
         await loadFileAndSignal(NO_URL_METRICS, restoredSettings)
 
         // Assert
-        expect(state.getValue().sharedView.blacklist).toEqual([{ path: "/root/excluded", type: "exclude" }])
+        expect(state.getValue().sharedView.excludedNodes).toEqual([{ path: "/root/excluded" }])
     })
 
     it("should keep the restored marked packages when files are loaded from a persisted session", async () => {
@@ -363,7 +363,7 @@ describe("ReconcileAfterLoadEffect", () => {
         dispatchSpy.mockClear()
 
         // Act — exclude everything, so the chosen metrics can no longer be derived
-        store.dispatch(addBlacklistItem({ item: { path: "/root", type: "exclude" } }))
+        store.dispatch(addExcludedNodes({ items: [{ path: "/root" }] }))
         await flushDebounce()
 
         // Assert — the sequence ran, but did not touch what only a file-set change may touch

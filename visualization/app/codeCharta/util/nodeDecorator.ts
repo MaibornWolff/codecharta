@@ -2,18 +2,18 @@ import { hierarchy } from "d3-hierarchy"
 import {
     AttributeTypes,
     AttributeTypeValue,
-    BlacklistItem,
     CCFile,
     CodeMapNode,
     EdgeMetricData,
+    ExcludedNode,
     MetricData,
     MetricRule,
     NodeMetricData
 } from "../model/codeCharta.model"
-import { createBlacklistMatcher } from "./blacklist/blacklistMatcher"
 import { isLeaf } from "./codeMapHelper"
 import { UNARY_METRIC } from "./metric/unaryMetric"
 import { createMetricRuleMatcher } from "./metricRule/metricRuleMatcher"
+import { createExcludeMatcher } from "./nodeRules/excludeMatcher"
 
 const enum MedianSelectors {
     MEDIAN = "MEDIAN",
@@ -27,24 +27,24 @@ const enum EdgeAttributeType {
     OUTGOING = "outgoing"
 }
 
-const NOTHING_MATCHED_BY_METRIC = { isFlattened: false, isExcluded: false }
-
 export const NodeDecorator = {
+    /**
+     * Only exclusion is decorated onto the tree: it decides which nodes the map holds, so everything
+     * downstream has to see it. Flattening is answered while the map is laid out instead — see
+     * `flattenPredicateSelector` — so that flattening a node does not rebuild this tree.
+     */
     decorateMap(
         map: CodeMapNode,
         metricData: Pick<MetricData, "nodeMetricData" | "edgeMetricData">,
-        blacklist: BlacklistItem[],
-        metricRules: MetricRule[] = []
+        excludedNodes: ExcludedNode[],
+        excludeMetricRules: MetricRule[] = []
     ) {
-        const matcher = createBlacklistMatcher(blacklist)
+        const matcher = createExcludeMatcher(excludedNodes)
         const metricsOnMap = new Set(metricData.nodeMetricData.map(({ name }) => name))
-        const metricRuleMatcher = createMetricRuleMatcher(metricRules, metricsOnMap)
+        const metricRuleMatcher = createMetricRuleMatcher(excludeMetricRules, metricsOnMap)
         for (const { data } of hierarchy(map)) {
             const isLeafNode = isLeaf(data)
-            const { isFlattened, isExcluded } = matcher.classify(data.path, isLeafNode)
-            const byMetric = isLeafNode ? metricRuleMatcher.classify(data.attributes) : NOTHING_MATCHED_BY_METRIC
-            data.isFlattened = isFlattened || byMetric.isFlattened
-            data.isExcluded = isExcluded || byMetric.isExcluded
+            data.isExcluded = isLeafNode && (matcher.isExcludedLeaf(data.path) || metricRuleMatcher.matches(data.attributes))
         }
         map.isExcluded = false
         this.decorateMapWithMetricData(map, metricData)

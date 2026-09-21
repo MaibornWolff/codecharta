@@ -1,5 +1,5 @@
 import { RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { BlacklistItem, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
+import { CodeMapNode, NodeRule, NodeType } from "../../../model/codeCharta.model"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./explorerRules.selectors"
 
 const pathRules = (rules: RuleWithCount[]) => rules.filter(rule => rule.kind !== "METRIC")
@@ -22,10 +22,10 @@ describe("explorerRules.selectors", () => {
 
         it("should count leaves affected by a negated rule instead of returning zero", () => {
             // Arrange: "!alpha" flattens the two leaves that do not contain "alpha"
-            const blacklist: BlacklistItem[] = [{ type: "flatten", path: "!alpha" }]
+            const nodeRules: NodeRule[] = [{ path: "!alpha" }]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
+            const result = flattenRulesWithCountSelector.projector(nodeRules, allLeaves, [])
 
             // Assert
             expect(result).toHaveLength(1)
@@ -34,10 +34,10 @@ describe("explorerRules.selectors", () => {
 
         it("should count a bare rule as a substring match", () => {
             // Arrange
-            const blacklist: BlacklistItem[] = [{ type: "flatten", path: "alpha" }]
+            const nodeRules: NodeRule[] = [{ path: "alpha" }]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
+            const result = flattenRulesWithCountSelector.projector(nodeRules, allLeaves, [])
 
             // Assert
             expect(result[0].affectedCount).toBe(2)
@@ -45,51 +45,43 @@ describe("explorerRules.selectors", () => {
 
         it("should mark wildcard paths as RULE and concrete paths as MANUAL", () => {
             // Arrange
-            const blacklist: BlacklistItem[] = [
-                { type: "flatten", path: "*.spec.ts*" },
-                { type: "flatten", path: "/root/src/alpha.kt" }
-            ]
+            const nodeRules: NodeRule[] = [{ path: "*.spec.ts*" }, { path: "/root/src/alpha.kt" }]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
+            const result = flattenRulesWithCountSelector.projector(nodeRules, allLeaves, [])
 
             // Assert
             expect(pathRules(result).find(rule => rule.item.path === "*.spec.ts*").kind).toBe("RULE")
             expect(pathRules(result).find(rule => rule.item.path === "/root/src/alpha.kt").kind).toBe("MANUAL")
         })
 
-        it("should not include exclude items", () => {
-            // Arrange
-            const blacklist: BlacklistItem[] = [
-                { type: "flatten", path: "*alpha*" },
-                { type: "exclude", path: "*node_modules*" }
-            ]
+        it("should mark every row with the effect of the list it came from", () => {
+            // Arrange — the list a rule sits in now says what it does, so there is nothing to filter
+            const flattenedNodes: NodeRule[] = [{ path: "*alpha*" }, { path: "*node_modules*" }]
 
             // Act
-            const result = flattenRulesWithCountSelector.projector(blacklist, allLeaves, [])
+            const result = flattenRulesWithCountSelector.projector(flattenedNodes, allLeaves, [])
 
             // Assert
-            expect(result).toHaveLength(1)
-            expect(pathRules(result)[0].item.type).toBe("flatten")
+            expect(result).toHaveLength(2)
+            expect(pathRules(result).every(rule => rule.effect === "flatten")).toBe(true)
         })
     })
 
     describe("excludeRulesWithCountSelector", () => {
         const allLeaves: CodeMapNode[] = [makeLeaf("/root/src/alpha.kt"), makeLeaf("/root/node_modules/beta.kt")]
 
-        it("should only include exclude items", () => {
+        it("should count the leaves each exclude rule affects", () => {
             // Arrange
-            const blacklist: BlacklistItem[] = [
-                { type: "flatten", path: "*alpha*" },
-                { type: "exclude", path: "*node_modules*" }
-            ]
+            const excludedNodes: NodeRule[] = [{ path: "*node_modules*" }]
 
             // Act
-            const result = excludeRulesWithCountSelector.projector(blacklist, allLeaves, [])
+            const result = excludeRulesWithCountSelector.projector(excludedNodes, allLeaves, [])
 
             // Assert
             expect(result).toHaveLength(1)
             expect(pathRules(result)[0].item.path).toBe("*node_modules*")
+            expect(pathRules(result)[0].effect).toBe("exclude")
             expect(result[0].affectedCount).toBe(1)
         })
     })

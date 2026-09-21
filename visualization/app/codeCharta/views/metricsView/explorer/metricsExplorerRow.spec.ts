@@ -4,7 +4,7 @@ import { of } from "rxjs"
 import { ExplorerRowProjection, projectExplorerRow } from "../../../lenses/explorerRow/explorerRowLens.facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { rootUnarySelector } from "../../../renderer/renderModel/renderModel.facade"
+import { flattenPredicateSelector, rootUnarySelector } from "../../../renderer/renderModel/renderModel.facade"
 import { IdToBuildingService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { markedPackagesSelector } from "../../../stores/sharedView/sharedView.read.facade"
@@ -16,9 +16,9 @@ jest.mock("../../../lenses/explorerRow/explorerRowLens.facade", () => ({
 
 const LENS_RESULT: ExplorerRowProjection = {
     isSelectable: true,
+    isFlattened: false,
     isInactive: false,
     isItalic: false,
-    isFlattened: false,
     isHidden: false,
     title: "",
     decoration: null,
@@ -38,6 +38,7 @@ describe("MetricsExplorerRow", () => {
                 provideMockState(),
                 provideMockStore({
                     selectors: [
+                        { selector: flattenPredicateSelector, value: () => false },
                         { selector: areaMetricSelector, value: "rloc" },
                         { selector: rootUnarySelector, value: 10 },
                         { selector: markedPackagesSelector, value: MARKED_PACKAGES }
@@ -58,7 +59,7 @@ describe("MetricsExplorerRow", () => {
             areaMetric: "rloc",
             buildingIds: new Set([1, 2]),
             rootUnary: 10,
-            showsFlattenedState: true,
+            isFlattened: expect.any(Function),
             hidesExcludedNodes: true,
             markedPackages: MARKED_PACKAGES
         })

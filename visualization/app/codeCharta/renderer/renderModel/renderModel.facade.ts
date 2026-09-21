@@ -10,6 +10,7 @@ export { amountOfBuildingsWithSelectedEdgeMetricSelector } from "./amountOfBuild
 export { attributeTypesSelector } from "./attributeTypes.selector"
 export { edgeMetricDataSelector } from "./edgeMetricData/edgeMetricData.selector"
 export { sortedNodeEdgeMetricsMapSelector } from "./edgeMetricData/sortedNodeEdgeMetricsMap.selector"
+export { type FlattenPredicate, flattenPredicateSelector } from "./flatness/flattenPredicate.selector"
 export { hoveredNodeSelector } from "./hoveredNode.selector"
 export { labelsPerMapActiveSelector } from "./labelsPerMapActive.selector"
 export { createNodeByPathSelector } from "./nodeByPath.selector"

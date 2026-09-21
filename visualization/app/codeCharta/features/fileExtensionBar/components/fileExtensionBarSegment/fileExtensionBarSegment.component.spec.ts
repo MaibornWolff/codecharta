@@ -2,14 +2,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
-import { BlacklistItem, BlacklistType, CcState, SortingOption } from "../../../../model/codeCharta.model"
+import { CcState, NodeRule, RuleEffect, SortingOption } from "../../../../model/codeCharta.model"
 import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
-import { blacklistSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import { sortedFlattenedNodesSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
 import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
-import { addPrefixWildcard, BlackListExtensionService } from "../../services/blackListExtension.service"
+import { addPrefixWildcard, ExtensionRulesService } from "../../services/extensionRules.service"
 import { HighlightBuildingsByFileExtensionService } from "../../services/highlightBuildingsByFileExtension.service"
 import { FileExtensionBarSegmentComponent } from "./fileExtensionBarSegment.component"
 
@@ -48,7 +48,8 @@ describe("FileExtensionBarSegment", () => {
         sharedView: {
             focusedNodePath: [],
             searchPattern: "",
-            blacklist: [],
+            excludedNodes: [],
+            flattenedNodes: [],
             metricRules: [],
             markedPackages: [],
             hoveredNodeId: null,
@@ -74,7 +75,7 @@ describe("FileExtensionBarSegment", () => {
                         clearHighlightingOnFileExtensions: jest.fn()
                     }
                 },
-                BlackListExtensionService,
+                ExtensionRulesService,
                 { provide: ThreeSceneService, useValue: {} },
                 provideMockStore({ initialState })
             ]
@@ -111,11 +112,11 @@ describe("FileExtensionBarSegment", () => {
         flattenButton.nativeElement.click()
 
         expect(dispatchSpy).toHaveBeenCalledWith({
-            action: { type: "flatten" },
+            action: { effect: "flatten" },
             extensions: [addPrefixWildcard(mockItem.fileExtension)],
-            type: "BlacklistExtensionAction"
+            type: "ExtensionRuleAction"
         })
-        updateStoreWithBlacklistedItems(store, { path: "*.ts", type: "flatten" })
+        updateStoreWithFlattenedNodes(store, { path: "*.ts" })
 
         expect(fixture.componentInstance.isFlattened()).toBeTruthy()
     })
@@ -195,9 +196,8 @@ describe("FileExtensionBarSegment", () => {
             dispatchSpy = jest.spyOn(store, "dispatch")
         })
 
-        const itemToFlatten: BlacklistItem = {
-            path: "*.ts",
-            type: "flatten"
+        const itemToFlatten: NodeRule = {
+            path: "*.ts"
         }
 
         it("should show context menu with flatten and exclude when extension is shown", async () => {
@@ -209,7 +209,7 @@ describe("FileExtensionBarSegment", () => {
         })
 
         it("should show context menu with show and exclude when extension is flattened", async () => {
-            updateStoreWithBlacklistedItems(store, itemToFlatten)
+            updateStoreWithFlattenedNodes(store, itemToFlatten)
             openContextMenu()
 
             expect(screen.queryByText("Exclude")).toBeTruthy()
@@ -229,15 +229,15 @@ describe("FileExtensionBarSegment", () => {
         })
 
         it("should update store and show extension when clicking on show", () => {
-            updateStoreWithBlacklistedItems(store, itemToFlatten)
+            updateStoreWithFlattenedNodes(store, itemToFlatten)
 
             openContextMenu()
             const flattenButton = fixture.debugElement.query(By.css('[data-test-id="showBuilding"]'))
             flattenButton.nativeElement.click()
 
-            expect(dispatchSpy).toHaveBeenCalledWith({ items: [{ path: "*.ts", type: "flatten" }], type: "REMOVE_BLACKLIST_ITEMS" })
+            expect(dispatchSpy).toHaveBeenCalledWith({ items: [{ path: "*.ts" }], type: "REMOVE_FLATTENED_NODES" })
 
-            updateStoreWithBlacklistedItems(store)
+            updateStoreWithFlattenedNodes(store)
             openContextMenu()
 
             expect(screen.queryByText("Flatten")).toBeTruthy()
@@ -261,7 +261,7 @@ describe("FileExtensionBarSegment", () => {
         })
 
         it("should show 'Show' instead of 'Flatten' when extension is already flattened", async () => {
-            updateStoreWithBlacklistedItems(store, itemToFlatten)
+            updateStoreWithFlattenedNodes(store, itemToFlatten)
 
             openContextMenu()
 
@@ -269,7 +269,7 @@ describe("FileExtensionBarSegment", () => {
             expect(screen.queryByText("Flatten")).toBeFalsy()
         })
 
-        it.each<[string, BlacklistType]>([
+        it.each<[string, RuleEffect]>([
             ["excludeBuilding", "exclude"],
             ["flattenBuilding", "flatten"]
         ])("should add all other extensions to blacklist when clicking %s on 'other'", (dataTestId, action) => {
@@ -318,9 +318,9 @@ describe("FileExtensionBarSegment", () => {
             flattenButton.nativeElement.click()
 
             expect(dispatchSpy).toHaveBeenCalledWith({
-                action: { type: action },
+                action: { effect: action },
                 extensions: otherFileExtensionsWithWildcards,
-                type: "BlacklistExtensionAction"
+                type: "ExtensionRuleAction"
             })
         })
     })
@@ -361,7 +361,7 @@ describe("FileExtensionBarSegment", () => {
     }
 })
 
-function updateStoreWithBlacklistedItems(mockStore: MockStore, ...blackListItems: BlacklistItem[]) {
-    mockStore.overrideSelector(blacklistSelector, blackListItems)
+function updateStoreWithFlattenedNodes(mockStore: MockStore, ...flattenedNodes: NodeRule[]) {
+    mockStore.overrideSelector(sortedFlattenedNodesSelector, flattenedNodes)
     mockStore.refreshState()
 }

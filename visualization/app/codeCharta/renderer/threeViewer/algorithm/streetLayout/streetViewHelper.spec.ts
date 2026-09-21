@@ -62,7 +62,7 @@ describe("StreetViewHelper", () => {
             state = clone(STATE)
             state.mapState.heightMetric = "rloc"
             state.sharedView.focusedNodePath = []
-            leafNode.isFlattened = true
+            state.sharedView.flattenedNodes = [{ path: leafNode.path }]
             leafNode.rect = new Rectangle(new Vector2(0, 0), 10, 10)
             leafNode.zOffset = 1
         })

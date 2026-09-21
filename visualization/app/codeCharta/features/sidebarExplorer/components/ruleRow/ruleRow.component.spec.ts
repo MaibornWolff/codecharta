@@ -10,14 +10,16 @@ const patternRule: RuleWithCount = {
     label: "**/*.spec.ts",
     affectedCount: 6,
     kind: "RULE",
-    item: { type: "flatten", path: "**/*.spec.ts" }
+    item: { path: "**/*.spec.ts" },
+    effect: "flatten"
 }
 const manualRule: RuleWithCount = {
     id: "flatten/apps/foo",
     label: "apps/foo",
     affectedCount: 2,
     kind: "MANUAL",
-    item: { type: "flatten", path: "apps/foo" }
+    item: { path: "apps/foo" },
+    effect: "flatten"
 }
 
 describe("RuleRowComponent", () => {

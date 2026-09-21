@@ -10,7 +10,7 @@ function exportFile(): ExportCCFile {
         attributeTypes: { nodes: { rloc: AttributeTypeValue.absolute }, edges: { coupling: AttributeTypeValue.relative } },
         attributeDescriptors: { rloc: { title: "RLOC", description: "", hintLowValue: "", hintHighValue: "", link: "" } },
         edges: [{ fromNodeName: "/root/a.ts", toNodeName: "/root/b.ts", attributes: { coupling: 3 } }],
-        blacklist: [{ path: "/root/a.ts", type: ExportBlacklistType.hide }],
+        blacklist: [{ path: "/root/a.ts", type: ExportBlacklistType.exclude }],
         markedPackages: [{ path: "/root", color: "#000000" }],
         nodes: [
             {
@@ -72,7 +72,7 @@ describe("normalizeExportCCFileToCcJson2", () => {
     it("should carry the deprecated 1.x-only fields: blacklist (hide -> flatten), markedPackages and fixedPosition", () => {
         const result = normalizeExportCCFileToCcJson2(exportFile())
 
-        expect(result.blacklist).toEqual([{ path: "/root/a.ts", type: "flatten" }])
+        expect(result.blacklist).toEqual([{ path: "/root/a.ts", type: "exclude" }])
         expect(result.markedPackages).toEqual([{ path: "/root", color: "#000000" }])
         expect(result.files[0].fixedPosition).toEqual({ left: 1, top: 2, width: 3, height: 4 })
     })

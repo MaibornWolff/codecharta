@@ -3,7 +3,7 @@ import { hierarchy } from "d3-hierarchy"
 import { tap } from "rxjs"
 import { Raycaster, Vector2 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
-import { BlacklistItem } from "../../model/codeCharta.model"
+import { ExcludedNode } from "../../model/codeCharta.model"
 import {
     CodeMapBuilding,
     CodeMapTooltipService,
@@ -17,8 +17,8 @@ import {
 } from "../../renderer/threeViewer/threeViewer.facade"
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
-import { isPathHiddenOrExcluded } from "../../util/blacklist/blacklistMatcher"
 import { debounce } from "../../util/debounce"
+import { createExcludeMatcher } from "../../util/nodeRules/excludeMatcher"
 import { ViewCubeMouseEventsService } from "../viewCube/facade"
 import { CodeMapStore } from "./stores/codeMap.store"
 
@@ -46,7 +46,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     private readonly raycaster = new Raycaster()
     private readonly subscriptions = [
         this.fileStoreReadWindow.visibleFileStates$.pipe(tap(() => this.onFilesSelectionChanged())).subscribe(),
-        this.sharedViewReadWindow.blacklist$.pipe(tap(blacklist => this.onBlacklistChanged(blacklist))).subscribe(),
+        this.sharedViewReadWindow.excludedNodes$.pipe(tap(excludedNodes => this.onExcludedNodesChanged(excludedNodes))).subscribe(),
         this.sharedViewReadWindow.hoveredNodeId$
             .pipe(
                 tap(hoveredNodeId => {
@@ -142,13 +142,13 @@ export class CodeMapMouseEventService implements OnDestroy {
         this.tooltipService.hide()
     }
 
-    onBlacklistChanged(blacklist: BlacklistItem[]) {
+    onExcludedNodesChanged(excludedNodes: ExcludedNode[]) {
         const selectedBuilding = this.threeSceneService.getSelectedBuilding()
         this.tooltipService.hide()
         if (selectedBuilding) {
-            const isSelectedBuildingBlacklisted = isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
+            const isSelectedBuildingExcluded = createExcludeMatcher(excludedNodes).isExcludedLeaf(selectedBuilding.node.path)
 
-            if (isSelectedBuildingBlacklisted) {
+            if (isSelectedBuildingExcluded) {
                 this.threeSceneService.clearSelection()
             }
         }

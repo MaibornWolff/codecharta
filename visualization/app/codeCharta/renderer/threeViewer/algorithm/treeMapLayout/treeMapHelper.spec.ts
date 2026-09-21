@@ -12,8 +12,7 @@ jest.mock("../../../renderModel/accumulatedData/accumulatedData.selector", () =>
             path: "/root/Anode",
             type: "File",
             attributes: { theHeight: 100 },
-            isExcluded: false,
-            isFlattened: false
+            isExcluded: false
         }
     })
 }))
@@ -41,8 +40,7 @@ describe("TreeMapHelper", () => {
                 path: "/root/Anode",
                 type: NodeType.FILE,
                 attributes: { theHeight: 100 },
-                isExcluded: false,
-                isFlattened: false
+                isExcluded: false
             }
 
             squaredNode = {
@@ -108,7 +106,7 @@ describe("TreeMapHelper", () => {
             const largeHeightScale = 10
 
             beforeEach(() => {
-                codeMapNode.isFlattened = true
+                state.sharedView.flattenedNodes = [{ path: squaredNode.data.path }]
             })
 
             it("should build a flattened building at the minimum height whatever its height metric value", () => {
@@ -204,8 +202,7 @@ describe("TreeMapHelper", () => {
                     type: NodeType.FILE,
                     attributes: {},
                     edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
 
                 squaredNode = {
@@ -264,15 +261,14 @@ describe("TreeMapHelper", () => {
                 expect(buildNode().flat).toBeFalsy()
             })
 
-            it("should be flat if node is flattened in blacklist", () => {
-                state.sharedView.blacklist = [{ path: "*Anode", type: "flatten" }]
-                squaredNode.data.isFlattened = true
+            it("should be flat when a flatten rule matches the node", () => {
+                state.sharedView.flattenedNodes = [{ path: "*Anode" }]
 
                 expect(buildNode().flat).toBeTruthy()
             })
 
-            it("should not be flat if node is not blacklisted", () => {
-                state.sharedView.blacklist = []
+            it("should not be flat when no rule matches the node", () => {
+                state.sharedView.flattenedNodes = []
 
                 expect(buildNode().flat).toBeFalsy()
             })
@@ -305,8 +301,7 @@ describe("TreeMapHelper", () => {
                 })
 
                 it("creates flat colored building", () => {
-                    state.sharedView.blacklist = [{ path: "*Anode", type: "flatten" }]
-                    squaredNode.data.isFlattened = true
+                    state.sharedView.flattenedNodes = [{ path: "*Anode" }]
 
                     expect(buildNode().color).toBe(state.mapState.mapColors.flat)
                 })

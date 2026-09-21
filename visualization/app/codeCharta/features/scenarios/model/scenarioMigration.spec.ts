@@ -74,7 +74,7 @@ describe("scenario migration", () => {
 
             // Assert
             expect(settings.camera).toEqual(legacySections.camera)
-            expect(settings.blacklist).toEqual(legacySections.filters.blacklist)
+            expect(settings.excludedNodes).toEqual([{ path: "/root/file.ts", type: "exclude" }])
             expect(settings.focusedNodePath).toEqual(["/root/src"])
             expect(settings.amountOfTopLabels).toBe(5)
             expect(settings.enableFloorLabels).toBe(true)
@@ -178,5 +178,36 @@ describe("scenario migration", () => {
             // Assert
             expect(file).toBeUndefined()
         })
+    })
+})
+
+describe("a scenario stored at schema 2", () => {
+    it("should split the one rule list it kept into the two the app now keeps", () => {
+        // Arrange
+        const storedAtSchema2 = {
+            schemaVersion: 2,
+            name: "stored",
+            settings: {
+                areaMetric: "rloc",
+                blacklist: [
+                    { path: "/root/a.ts", type: "exclude" },
+                    { path: "/root/b.ts", type: "flatten" }
+                ]
+            }
+        }
+
+        // Act
+        const parsed = parseScenarioFile(storedAtSchema2)
+
+        // Assert — dropping the list would silently lose the rules a saved scenario carries
+        expect(parsed.settings.excludedNodes).toEqual([{ path: "/root/a.ts" }])
+        expect(parsed.settings.flattenedNodes).toEqual([{ path: "/root/b.ts" }])
+        expect(parsed.settings).not.toHaveProperty("blacklist")
+        expect(parsed.settings.areaMetric).toBe("rloc")
+    })
+
+    it("should be rejected when its schema is one this build does not know", () => {
+        // Act & Assert
+        expect(parseScenarioFile({ schemaVersion: 99, name: "from the future", settings: {} })).toBeUndefined()
     })
 })

@@ -1,4 +1,12 @@
-import { AttributeDescriptors, AttributeTypeValue, BlacklistItem, DomainWord, FixedPosition, MarkedPackage, NodeType } from "./domain.model"
+import {
+    AttributeDescriptors,
+    AttributeTypeValue,
+    DomainWord,
+    FixedPosition,
+    ImportedNodeRule,
+    MarkedPackage,
+    NodeType
+} from "./domain.model"
 
 export interface CcJson2 {
     meta: Meta2
@@ -72,6 +80,6 @@ export interface FileNodeWithCarryover extends FileNode {
 
 export type CcJson2WithCarryover = Omit<CcJson2, "files"> & {
     files: FileNodeWithCarryover[]
-    blacklist?: BlacklistItem[]
+    blacklist?: ImportedNodeRule[]
     markedPackages?: MarkedPackage[]
 }

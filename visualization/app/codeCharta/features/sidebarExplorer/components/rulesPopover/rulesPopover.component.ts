@@ -26,7 +26,7 @@ export class RulesPopoverComponent {
     private readonly counts = toSignal(this.countsSource?.counts$ ?? EMPTY, { initialValue: null })
 
     readonly rulesOfKind = computed(() => (this.kind() === "flatten" ? this.flattenRules() : this.excludeRules()))
-    readonly title = computed(() => (this.kind() === "flatten" ? "Flattening Rules" : "Hidden Rules"))
+    readonly title = computed(() => (this.kind() === "flatten" ? "Flattening Rules" : "Exclusion Rules"))
 
     readonly hasMetricRules = inject(EXPLORER_METRIC_RULES, { optional: true }) !== null
 
@@ -51,7 +51,7 @@ export class RulesPopoverComponent {
 
     private describeAffectedFiles() {
         const counts = this.counts()
-        const affected = this.kind() === "flatten" ? counts?.flattened : counts?.hidden
+        const affected = this.kind() === "flatten" ? counts?.flattened : counts?.excluded
         const outcome = this.kind() === "flatten" ? "drawn at full height again" : "back on the map"
         if (affected === undefined) {
             return `every file they affect is ${outcome}`

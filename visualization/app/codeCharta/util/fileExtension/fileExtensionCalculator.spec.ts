@@ -1,4 +1,4 @@
-import { setIsBlacklisted, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "../../mocks/dataMocks"
+import { setIsExcluded, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "../../mocks/dataMocks"
 import { CodeMapNode, NodeType } from "../../model/codeCharta.model"
 import { clone } from "../clone"
 import { CategorizedMetricDistribution, FileExtensionCalculator } from "./fileExtensionCalculator"
@@ -55,53 +55,8 @@ describe("FileExtensionCalculator", () => {
             expect(result).toEqual(expected)
         })
 
-        it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
-            setIsBlacklisted([map.children[0].path], map, "flatten")
-
-            const expected: CategorizedMetricDistribution = {
-                visible: [
-                    {
-                        fileExtension: "java",
-                        absoluteMetricValue: 162,
-                        relativeMetricValue: 42.970_822_281_167_11,
-                        color: "hsl(58, 60%, 50%)"
-                    },
-                    {
-                        fileExtension: "jpg",
-                        absoluteMetricValue: 130,
-                        relativeMetricValue: 34.482_758_620_689_66,
-                        color: "hsl(321, 60%, 50%)"
-                    },
-                    {
-                        fileExtension: "json",
-                        absoluteMetricValue: 70,
-                        relativeMetricValue: 18.567_639_257_294_43,
-                        color: "hsl(232, 60%, 50%)"
-                    },
-                    {
-                        fileExtension: "None",
-                        absoluteMetricValue: 15,
-                        relativeMetricValue: 3.978_779_840_848_806_4,
-                        color: "#676867"
-                    }
-                ],
-                none: [
-                    {
-                        fileExtension: "None",
-                        absoluteMetricValue: 15,
-                        relativeMetricValue: 3.978_779_840_848_806_4,
-                        color: "#676867"
-                    }
-                ],
-                others: []
-            }
-            const result: CategorizedMetricDistribution = FileExtensionCalculator.getMetricDistribution(map, "rloc")
-
-            expect(result).toEqual(expected)
-        })
-
         it("should get correct absolute distribution of file-extensions for given metric with excluded node", () => {
-            setIsBlacklisted([map.children[0].path], map, "exclude")
+            setIsExcluded([map.children[0].path], map)
 
             const expected: CategorizedMetricDistribution = {
                 visible: [
@@ -147,7 +102,7 @@ describe("FileExtensionCalculator", () => {
         })
 
         it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
-            setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, "exclude")
+            setIsExcluded(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map)
 
             const expected: CategorizedMetricDistribution = {
                 visible: [
@@ -265,32 +220,28 @@ describe("FileExtensionCalculator", () => {
                     type: NodeType.FILE,
                     path: "/root/child1.txt",
                     attributes: { rloc: 2 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "child2.kt",
                     type: NodeType.FILE,
                     path: "/root/child2.kt",
                     attributes: { rloc: 4 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "child3.ts",
                     type: NodeType.FILE,
                     path: "/root/child3.ts",
                     attributes: { rloc: 6 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 },
                 {
                     name: "child4.xml",
                     type: NodeType.FILE,
                     path: "/root/child4.xml",
                     attributes: { rloc: 8 },
-                    isExcluded: false,
-                    isFlattened: false
+                    isExcluded: false
                 }
             ]
             map.children.push(...additionalChildren)

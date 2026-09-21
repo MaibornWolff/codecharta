@@ -19,7 +19,7 @@ export interface CCFile {
         fileSettings: FileSettings & {
             attributeTypes: AttributeTypes
             attributeDescriptors: AttributeDescriptors
-            blacklist: Array<BlacklistItem>
+            blacklist: Array<ImportedNodeRule>
             markedPackages: Array<MarkedPackage>
             domainWords: DomainLensData
         }
@@ -46,7 +46,6 @@ interface SquarifiedNode {
     link?: string
     path?: string
     isExcluded?: boolean
-    isFlattened?: boolean
     deltas?: {
         [key: string]: number
     }
@@ -220,13 +219,32 @@ export interface EdgeMetricCount {
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 
-export interface BlacklistItem {
+/**
+ * A rule matching nodes by path, in gitignore syntax. The list it belongs to says what it does to
+ * the nodes it matches, so it carries no type of its own.
+ */
+export interface NodeRule {
     path: string
-    type: BlacklistType
     nodeType?: NodeType
 }
 
-export type BlacklistType = "flatten" | "exclude"
+/** A node the map leaves out entirely. */
+export type ExcludedNode = NodeRule
+
+/** A node the map draws short and grey, in the place it would otherwise occupy. */
+export type FlattenedNode = NodeRule
+
+/**
+ * A node rule as a loaded cc.json carried it. The file format calls the list a blacklist and types
+ * each entry, so the type survives here; the app splits the entries into its own two lists on load.
+ */
+export interface ImportedNodeRule extends NodeRule {
+    type: RuleEffect
+}
+
+/** What a rule does to the nodes it matches. Only metric rules still carry this: they live in one
+ *  list because they are edited as one list. */
+export type RuleEffect = "flatten" | "exclude"
 
 export type MetricRuleOperator = "gt" | "gte" | "lt" | "lte" | "eq" | "between"
 
@@ -243,7 +261,7 @@ export interface MetricRule {
     value: number
     /** The inclusive upper bound, set only when the operator is `between`. */
     upperValue?: number
-    type: BlacklistType
+    type: RuleEffect
 }
 
 export interface MarkedPackage {

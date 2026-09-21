@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core"
 import { State, Store } from "@ngrx/store"
-import { BlacklistItem, CcState, SharedView } from "../../../model/codeCharta.model"
-import { blacklistSelector } from "./blacklist/blacklist.selector"
-import { blacklistMatcherSelector } from "./blacklist/blacklistMatcher.selector"
+import { CcState, ExcludedNode, FlattenedNode, SharedView } from "../../../model/codeCharta.model"
+import { excludedNodesSelector } from "./excludedNodes/excludedNodes.selector"
+import { excludeMatcherSelector } from "./excludedNodes/excludeMatcher.selector"
+import { flattenedNodesSelector } from "./flattenedNodes/flattenedNodes.selector"
 import { currentFocusedNodePathSelector } from "./focusedNodePath/currentFocused.selector"
 import { focusedNodePathSelector } from "./focusedNodePath/focusedNodePath.selector"
 import { hoveredNodeIdSelector } from "./hoveredNodeId/hoveredNodeId.selector"
@@ -20,8 +21,9 @@ export class SharedViewReadWindow {
         private readonly state: State<CcState>
     ) {}
 
-    readonly blacklist$ = this.store.select(blacklistSelector)
-    readonly blacklistMatcher$ = this.store.select(blacklistMatcherSelector)
+    readonly excludedNodes$ = this.store.select(excludedNodesSelector)
+    readonly flattenedNodes$ = this.store.select(flattenedNodesSelector)
+    readonly excludeMatcher$ = this.store.select(excludeMatcherSelector)
     readonly focusedNodePath$ = this.store.select(focusedNodePathSelector)
     readonly currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     readonly hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
@@ -34,8 +36,12 @@ export class SharedViewReadWindow {
         return this.state.getValue().sharedView
     }
 
-    getBlacklist(): BlacklistItem[] {
-        return this.state.getValue().sharedView.blacklist
+    getExcludedNodes(): ExcludedNode[] {
+        return this.state.getValue().sharedView.excludedNodes
+    }
+
+    getFlattenedNodes(): FlattenedNode[] {
+        return this.state.getValue().sharedView.flattenedNodes
     }
 
     getHoveredNodeId(): string | null {

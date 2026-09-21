@@ -14,9 +14,10 @@ const FLATTEN_RULES: RuleWithCount[] = [
         label: "**/*.spec.ts",
         affectedCount: 4,
         kind: "RULE",
-        item: { type: "flatten", path: "**/*.spec.ts" }
+        item: { path: "**/*.spec.ts" },
+        effect: "flatten"
     },
-    { id: "flatten/apps/foo", label: "apps/foo", affectedCount: 1, kind: "MANUAL", item: { type: "flatten", path: "apps/foo" } }
+    { id: "flatten/apps/foo", label: "apps/foo", affectedCount: 1, kind: "MANUAL", item: { path: "apps/foo" }, effect: "flatten" }
 ]
 
 const EXCLUDE_RULES: RuleWithCount[] = [
@@ -25,7 +26,8 @@ const EXCLUDE_RULES: RuleWithCount[] = [
         label: "node_modules",
         affectedCount: 5,
         kind: "MANUAL",
-        item: { type: "exclude", path: "node_modules" }
+        item: { path: "node_modules" },
+        effect: "flatten"
     }
 ]
 
@@ -41,7 +43,7 @@ describe("RulesPopoverComponent", () => {
             imports: [RulesPopoverComponent],
             providers: [
                 { provide: EXPLORER_RULES, useValue: rules },
-                { provide: EXPLORER_COUNTS, useValue: { counts$: of({ shown: 100, flattened: 5, hidden: 9, noArea: 0 }) } }
+                { provide: EXPLORER_COUNTS, useValue: { counts$: of({ shown: 100, flattened: 5, excluded: 9, noArea: 0 }) } }
             ]
         })
     })
@@ -56,14 +58,14 @@ describe("RulesPopoverComponent", () => {
         expect(screen.getByText("Flattening Rules")).not.toBe(null)
     })
 
-    it("should display hidden rules title for exclude kind", async () => {
+    it("should display the exclusion rules title for exclude kind", async () => {
         // Arrange & Act
         await render(RulesPopoverComponent, {
-            inputs: { kind: "exclude", popoverId: "explorer-hidden-rules", anchorName: "explorer-hidden-chip" }
+            inputs: { kind: "exclude", popoverId: "explorer-excluded-rules", anchorName: "explorer-excluded-chip" }
         })
 
         // Assert
-        expect(screen.getByText("Hidden Rules")).not.toBe(null)
+        expect(screen.getByText("Exclusion Rules")).not.toBe(null)
     })
 
     it("should render one row per flatten rule", async () => {
@@ -79,7 +81,7 @@ describe("RulesPopoverComponent", () => {
     it("should render one row per exclude rule", async () => {
         // Arrange & Act
         const { container } = await render(RulesPopoverComponent, {
-            inputs: { kind: "exclude", popoverId: "explorer-hidden-rules", anchorName: "explorer-hidden-chip" }
+            inputs: { kind: "exclude", popoverId: "explorer-excluded-rules", anchorName: "explorer-excluded-chip" }
         })
 
         // Assert
@@ -133,7 +135,7 @@ describe("RulesPopoverComponent", () => {
     it("should name the one rule in the singular", async () => {
         // Arrange & Act
         await render(RulesPopoverComponent, {
-            inputs: { kind: "exclude", popoverId: "explorer-hidden-rules", anchorName: "explorer-hidden-chip" }
+            inputs: { kind: "exclude", popoverId: "explorer-excluded-rules", anchorName: "explorer-excluded-chip" }
         })
 
         // Assert
@@ -143,7 +145,7 @@ describe("RulesPopoverComponent", () => {
     it("should ask before clearing, saying how many files come back", async () => {
         // Arrange
         await render(RulesPopoverComponent, {
-            inputs: { kind: "exclude", popoverId: "explorer-hidden-rules", anchorName: "explorer-hidden-chip" }
+            inputs: { kind: "exclude", popoverId: "explorer-excluded-rules", anchorName: "explorer-excluded-chip" }
         })
 
         // Act
@@ -227,7 +229,7 @@ describe("RulesPopoverComponent", () => {
             imports: [RulesPopoverComponent],
             providers: [
                 { provide: EXPLORER_RULES, useValue: createExplorerRulesMock({ flattenRules$: of(FLATTEN_RULES) }) },
-                { provide: EXPLORER_COUNTS, useValue: { counts$: of({ shown: 3, flattened: 1, hidden: 0, noArea: 0 }) } }
+                { provide: EXPLORER_COUNTS, useValue: { counts$: of({ shown: 3, flattened: 1, excluded: 0, noArea: 0 }) } }
             ]
         })
         await render(RulesPopoverComponent, {

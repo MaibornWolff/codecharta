@@ -1,9 +1,10 @@
 import {
-    BlacklistItem,
     CcState,
     ColorLabelOptions,
     ColorMode,
     ColorRange,
+    ExcludedNode,
+    FlattenedNode,
     LabelMode,
     MapColors,
     MarkedPackage,
@@ -60,7 +61,8 @@ export interface ScenarioSettings {
     readonly groupLabelCollisions?: boolean
     readonly colorLabels?: ColorLabelOptions
     readonly camera?: ScenarioCamera
-    readonly blacklist?: readonly BlacklistItem[]
+    readonly excludedNodes?: readonly ExcludedNode[]
+    readonly flattenedNodes?: readonly FlattenedNode[]
     readonly metricRules?: readonly MetricRule[]
     readonly focusedNodePath?: readonly string[]
 }
@@ -285,15 +287,21 @@ export const SCENARIO_SETTINGS: ScenarioSettingRegistry = {
         label: "Position and zoom",
         read: source => ({ position: { ...source.camera.position }, target: { ...source.camera.target } })
     },
-    blacklist: {
+    excludedNodes: {
         group: "filters",
-        label: "Excluded and hidden nodes",
-        read: source => [...source.state.sharedView.blacklist],
-        patch: settings => ({ sharedView: { blacklist: [...settings.blacklist] } })
+        label: "Excluded nodes",
+        read: source => [...source.state.sharedView.excludedNodes],
+        patch: settings => ({ sharedView: { excludedNodes: [...settings.excludedNodes] } })
+    },
+    flattenedNodes: {
+        group: "filters",
+        label: "Flattened nodes",
+        read: source => [...source.state.sharedView.flattenedNodes],
+        patch: settings => ({ sharedView: { flattenedNodes: [...settings.flattenedNodes] } })
     },
     metricRules: {
         group: "filters",
-        label: "Flattened and hidden by metric",
+        label: "Flattened and excluded by metric",
         read: source => [...source.state.sharedView.metricRules],
         patch: settings => ({ sharedView: { metricRules: [...settings.metricRules] } })
     },

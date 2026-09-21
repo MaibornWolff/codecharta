@@ -1,10 +1,15 @@
 import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { ExplorerRules, RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { BlacklistType, CcState } from "../../../model/codeCharta.model"
-import { clearRulesOfType, removeBlacklistItem, removeMetricRule } from "../../../stores/sharedView/sharedView.write.facade"
+import { CcState, RuleEffect } from "../../../model/codeCharta.model"
+import {
+    clearRulesOfType,
+    removeExcludedNodes,
+    removeFlattenedNodes,
+    removeMetricRule
+} from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
-import { blacklistSearchPattern } from "../effects/blacklistSearchPattern/blacklistSearchPattern.effect"
+import { ruleFromSearchPattern } from "../effects/ruleFromSearchPattern/ruleFromSearchPattern.effect"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./explorerRules.selectors"
 import { isExcludePatternDisabledSelector, isFlattenPatternDisabledSelector } from "./isPatternDisabled.selector"
 
@@ -22,14 +27,16 @@ export class MetricsExplorerRules implements ExplorerRules {
             dispatchAfterPaint(this.store, removeMetricRule({ id: rule.metricRule.id }))
             return
         }
-        dispatchAfterPaint(this.store, removeBlacklistItem({ item: rule.item }))
+        const removeRuleAction =
+            rule.effect === "flatten" ? removeFlattenedNodes({ items: [rule.item] }) : removeExcludedNodes({ items: [rule.item] })
+        dispatchAfterPaint(this.store, removeRuleAction)
     }
 
-    clearRules(type: BlacklistType) {
-        dispatchAfterPaint(this.store, clearRulesOfType({ blacklistType: type }))
+    clearRules(effect: RuleEffect) {
+        dispatchAfterPaint(this.store, clearRulesOfType({ ruleEffect: effect }))
     }
 
-    ruleFromSearchPattern(type: BlacklistType) {
-        dispatchAfterPaint(this.store, blacklistSearchPattern(type))
+    ruleFromSearchPattern(effect: RuleEffect) {
+        dispatchAfterPaint(this.store, ruleFromSearchPattern(effect))
     }
 }

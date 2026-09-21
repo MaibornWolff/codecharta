@@ -40,9 +40,9 @@ import { LoadInitialFileStore } from "../../loadInitialFile.store"
 import { MetricSelection, resolveMetricSelection } from "./resolveMetricSelection"
 import { getMergedAttributeDescriptors } from "./utils/attributeDescriptors.merger"
 import { getMergedAttributeTypes } from "./utils/attributeTypes.merger"
-import { getMergedBlacklist } from "./utils/blacklist.merger"
 import { getMergedDomainWords } from "./utils/domainWords.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
+import { getMergedNodeRules } from "./utils/nodeRules.merger"
 
 /**
  * A file set arrived (a load, or a file-panel change: delta switch, file removal, re-selection).
@@ -228,7 +228,7 @@ export class ReconcileAfterLoadEffect {
             setState({
                 value: {
                     sharedView: {
-                        blacklist: getMergedBlacklist(visibleFiles, withUpdatedPath),
+                        ...getMergedNodeRules(visibleFiles, withUpdatedPath),
                         markedPackages: getMergedMarkedPackages(visibleFiles, withUpdatedPath)
                     },
                     metricsLensSource: {

@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { MetricValues, RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { BlacklistType, MetricRule } from "../../../model/codeCharta.model"
+import { MetricRule, RuleEffect } from "../../../model/codeCharta.model"
 import { metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { describeMetricRule } from "../../../util/metricRule/describeMetricRule"
 import { matchesMetricRule } from "../../../util/metricRule/metricRuleMatcher"
@@ -9,7 +9,7 @@ import { metricValuesSelector } from "./metricValues.selector"
 const countFilesMatching = (rule: MetricRule, metricValues: MetricValues): number =>
     (metricValues.get(rule.metric) ?? []).filter(value => matchesMetricRule(rule, value)).length
 
-const buildMetricRulesWithCount = (rules: MetricRule[], metricValues: MetricValues, type: BlacklistType): RuleWithCount[] =>
+const buildMetricRulesWithCount = (rules: MetricRule[], metricValues: MetricValues, type: RuleEffect): RuleWithCount[] =>
     rules
         .filter(rule => rule.type === type)
         .map(rule => ({

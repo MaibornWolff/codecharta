@@ -1,10 +1,10 @@
 import { hierarchy } from "d3-hierarchy"
 import { Edge, EdgeMetricCountMap, EdgeMetricData, NodeEdgeMetricsMap } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
-import { BlacklistMatcher } from "../../../util/blacklist/blacklistMatcher"
 import { sortByMetricName } from "../../../util/metric/sortByMetricName"
+import { ExcludeMatcher } from "../../../util/nodeRules/excludeMatcher"
 
-export function calculateEdgeMetricData(visibleFileStates: FileState[], matcher: BlacklistMatcher) {
+export function calculateEdgeMetricData(visibleFileStates: FileState[], matcher: ExcludeMatcher) {
     const nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
     const allFilePaths: Set<string> = new Set()
@@ -44,7 +44,7 @@ export function calculateNodePath(visibleFiles: number, fileState: FileState, no
     return nodeName
 }
 
-function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, matcher: BlacklistMatcher) {
+function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, matcher: ExcludeMatcher) {
     if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
         return !matcher.isExcludedLeaf(edge.fromNodeName) && !matcher.isExcludedLeaf(edge.toNodeName)
     }

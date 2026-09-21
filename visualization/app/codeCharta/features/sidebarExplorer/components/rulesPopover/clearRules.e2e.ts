@@ -41,14 +41,14 @@ test.describe("Clearing rules", () => {
         await page.getByTestId("rules-popover-clear-confirm-flatten").getByTestId("confirm-dialog-yes").click()
 
         // Assert
-        await expect.poll(async () => await chipCounts(page)).toEqual(["SHOWN 4", "FLATTENED 0", "HIDDEN 4"])
+        await expect.poll(async () => await chipCounts(page)).toEqual(["SHOWN 4", "FLATTENED 0", "EXCLUDED 4"])
     })
 
     test("should put every file back with reset filters", async ({ page }) => {
         // Arrange
         await addMetricRule(page, "flatten", "rloc", "50")
         await addMetricRule(page, "exclude", "sonar_complexity", "60")
-        await expect.poll(async () => (await chipCounts(page))[2]).toBe("HIDDEN 4")
+        await expect.poll(async () => (await chipCounts(page))[2]).toBe("EXCLUDED 4")
 
         // Act
         await page.keyboard.press("Escape")
@@ -57,6 +57,6 @@ test.describe("Clearing rules", () => {
         await page.getByTestId("reset-filters-confirm").getByTestId("confirm-dialog-yes").click()
 
         // Assert
-        await expect.poll(async () => await chipCounts(page)).toEqual(["SHOWN 8", "FLATTENED 0", "HIDDEN 0"])
+        await expect.poll(async () => await chipCounts(page)).toEqual(["SHOWN 8", "FLATTENED 0", "EXCLUDED 0"])
     })
 })

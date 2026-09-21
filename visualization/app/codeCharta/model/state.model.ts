@@ -1,12 +1,13 @@
 import {
-    BlacklistItem,
     CCFile,
     ColorLabelOptions,
     ColorMode,
     ColorRange,
     DependencyLensSource,
     DomainLensSource,
+    ExcludedNode,
     FileSettings,
+    FlattenedNode,
     LabelMode,
     LayoutAlgorithm,
     MapColors,
@@ -63,7 +64,8 @@ export interface Preferences {
 export interface SharedView {
     focusedNodePath: string[]
     searchPattern: string
-    blacklist: BlacklistItem[]
+    excludedNodes: ExcludedNode[]
+    flattenedNodes: FlattenedNode[]
     metricRules: MetricRule[]
     markedPackages: MarkedPackage[]
     hoveredNodeId: string | null

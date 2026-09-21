@@ -1,4 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
+import { FILE_STATES, STATE } from "../../../mocks/dataMocks"
 import { CCFile, CodeMapNode, FileSelectionState, FileState, NodeType } from "../../../model/codeCharta.model"
 import { NodeEdgeMetricsMap } from "../../../model/domain.model"
 import { NodeDecorator } from "../../../util/nodeDecorator"
@@ -82,5 +83,39 @@ describe("accumulatedDataSelector", () => {
             .descendants()
             .map(d => d.data.id)
         expect([...idToNode.keys()].sort((a, b) => a - b)).toEqual([...treeIds].sort((a, b) => a - b))
+    })
+})
+
+describe("accumulatedDataSelector memoization", () => {
+    it("should not rebuild the map when a node is only flattened", () => {
+        // Arrange
+        const stateWithAMap = { ...STATE, files: FILE_STATES }
+        const beforeFlatten = accumulatedDataSelector(stateWithAMap)
+        expect(beforeFlatten.unifiedMapNode).toBeDefined()
+
+        // Act — flattening changes how a subtree looks, never which nodes the map holds
+        const afterFlatten = accumulatedDataSelector({
+            ...stateWithAMap,
+            sharedView: { ...STATE.sharedView, flattenedNodes: [{ path: "/root/ParentLeaf" }] }
+        })
+
+        // Assert — rebuilding clones and re-decorates every node, which is what made a flatten cost
+        // as much as an exclude
+        expect(afterFlatten.unifiedMapNode).toBe(beforeFlatten.unifiedMapNode)
+    })
+
+    it("should rebuild the map when a node is excluded", () => {
+        // Arrange
+        const stateWithAMap = { ...STATE, files: FILE_STATES }
+        const beforeExclude = accumulatedDataSelector(stateWithAMap)
+
+        // Act — exclusion decides which nodes the map holds, so the decorated tree really is stale
+        const afterExclude = accumulatedDataSelector({
+            ...stateWithAMap,
+            sharedView: { ...STATE.sharedView, excludedNodes: [{ path: "/root/ParentLeaf" }] }
+        })
+
+        // Assert
+        expect(afterExclude.unifiedMapNode).not.toBe(beforeExclude.unifiedMapNode)
     })
 })

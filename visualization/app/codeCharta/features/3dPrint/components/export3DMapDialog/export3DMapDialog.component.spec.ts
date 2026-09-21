@@ -37,7 +37,6 @@ const TestNodeMap: CodeMapNode = {
     attributes: { a: 20, b: 15, mcc: 5 },
     type: NodeType.FOLDER,
     isExcluded: false,
-    isFlattened: false,
     children: [
         {
             name: "big leaf.ts",

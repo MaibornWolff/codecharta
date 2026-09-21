@@ -15,7 +15,7 @@ const testSettings: ScenarioSettings = {
     colorMode: ColorMode.weightedGradient,
     mapColors: defaultState.mapState.mapColors,
     camera: { position: { x: 0, y: 300, z: 1000 }, target: { x: 0, y: 0, z: 0 } },
-    blacklist: []
+    excludedNodes: []
 }
 
 const createTestScenario = (settings: ScenarioSettings = testSettings): Scenario => ({
@@ -78,7 +78,7 @@ describe("ApplyScenarioDialogComponent", () => {
             "colorMode",
             "mapColors",
             "camera",
-            "blacklist"
+            "excludedNodes"
         ])
         expect(component.selectedKeys()).toEqual(new Set(component.availableKeys().filter(key => key !== "camera")))
         expect(component.hasAnySelected()).toBe(true)

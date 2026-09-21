@@ -5,7 +5,11 @@ import { CcState, CodeMapNode, Node } from "../../../../model/codeCharta.model"
 import { getMapResolutionScaleFactor, getMarkingColor, isLeaf } from "../../../../util/codeMapHelper"
 import { getColorByMetricValue } from "../../../../util/color/gradientCalculator"
 import { MetricMinMax } from "../../../../util/metric/metricRange"
-import { searchedNodePathsSelector, selectedColorMetricDataSelector } from "../../../renderModel/renderModel.facade"
+import {
+    flattenPredicateSelector,
+    searchedNodePathsSelector,
+    selectedColorMetricDataSelector
+} from "../../../renderModel/renderModel.facade"
 
 export const treeMapSize = 250
 
@@ -169,7 +173,9 @@ function getOutgoingEdgePoint(width: number, height: number, length: number, vec
 }
 
 export function isNodeFlat(codeMapNode: CodeMapNode, state: CcState) {
-    if (codeMapNode.isFlattened) {
+    // The rules come first: a node the user flattened by hand or by metric stays flat whatever the
+    // search pattern and the edge filter say about it.
+    if (flattenPredicateSelector(state)(codeMapNode)) {
         return true
     }
 

@@ -8,7 +8,7 @@ import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { filesLoaded, setIsLoadingFile } from "../../../../stores/fileStore/fileStore.facade"
 import { visibleFileStatesSelector } from "../../../../stores/fileStore/store/visibleFileStates.selector"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { addBlacklistItem } from "../../../../stores/sharedView/sharedView.write.facade"
+import { addExcludedNodes } from "../../../../stores/sharedView/sharedView.write.facade"
 import { NO_URL_METRICS } from "../../../../util/queryParameter/queryParameter"
 import { wait } from "../../../../util/testUtils/wait"
 import { maxFPS, RenderCodeMapEffect } from "../renderCodeMapEffect/renderCodeMap.effect"
@@ -123,7 +123,7 @@ describe("LoadingIndicatorEffect", () => {
         viewReadinessStore.markReady("domain")
 
         // Act
-        actions$.next(addBlacklistItem({ item: { path: "/root/foo", type: "exclude" } }))
+        actions$.next(addExcludedNodes({ items: [{ path: "/root/foo" }] }))
 
         // Assert
         expect(viewReadinessStore.isStale("metrics")).toBe(false)
