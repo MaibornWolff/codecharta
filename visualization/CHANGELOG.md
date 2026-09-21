@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- **Flattening no longer interrupts you**: flattening or unflattening a node changes only how it looks, without the loading spinner a rebuild used to bring.
+- **Flattening no longer interrupts you**: flattening or unflattening — a node, a metric rule, a search pattern or a file extension — changes only how the map looks, without the loading spinner a rebuild used to bring.
 - **"Hidden" is now "Excluded"**: the explorer calls the nodes it leaves out of the map excluded, the same word the menu that creates them uses.
 - **Label and colour changes answer at once**: changing a label setting, an edge setting or the colour metric no longer redraws the whole map, so it responds immediately however large the project.
 

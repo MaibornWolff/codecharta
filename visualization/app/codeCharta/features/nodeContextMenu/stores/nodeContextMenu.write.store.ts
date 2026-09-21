@@ -15,7 +15,7 @@ import {
     unfocusNode,
     unmarkPackage
 } from "../../../stores/sharedView/sharedView.write.facade"
-import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
+import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
 
 type RuleableNode = Pick<CodeMapNode, "path" | "type">
 
@@ -46,15 +46,19 @@ export class NodeContextMenuWriteStore {
     }
 
     flattenNode(node: RuleableNode) {
-        this.store.dispatch(addFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
+        dispatchRuleChange(this.store, "flatten", addFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
     }
 
     unflattenNode(node: RuleableNode) {
-        this.store.dispatch(removeFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
+        dispatchRuleChange(this.store, "flatten", removeFlattenedNodes({ items: [{ path: node.path, nodeType: node.type }] }))
     }
 
     excludeNode(node: RuleableNode) {
-        dispatchAfterPaint(this.store, addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: node.path, nodeType: node.type }] }))
+        dispatchRuleChange(
+            this.store,
+            "exclude",
+            addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: node.path, nodeType: node.type }] })
+        )
     }
 
     markFolder(path: string, color: string) {

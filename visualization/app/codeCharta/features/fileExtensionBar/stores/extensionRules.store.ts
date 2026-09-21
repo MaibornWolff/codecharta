@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Action, Store } from "@ngrx/store"
-import { CcState } from "../../../model/codeCharta.model"
+import { CcState, RuleEffect } from "../../../model/codeCharta.model"
 import { hoveredNodeSelector, selectedNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { sortedFlattenedNodesSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { dispatchAfterPaint } from "../../../util/dispatchAfterPaint"
+import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
 
 @Injectable({
@@ -17,7 +17,7 @@ export class ExtensionRulesStore {
     readonly selectedNode$ = this.store.select(selectedNodeSelector)
     readonly flattenedItems$ = this.store.select(sortedFlattenedNodesSelector)
 
-    dispatchAfterPaint(action: Action | Action[]) {
-        dispatchAfterPaint(this.store, action)
+    dispatchRuleChange(effect: RuleEffect, action: Action | Action[]) {
+        dispatchRuleChange(this.store, effect, action)
     }
 }
