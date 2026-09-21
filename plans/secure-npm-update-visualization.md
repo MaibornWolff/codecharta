@@ -80,12 +80,12 @@ the full gate below.
 
 Electron 40 reached **end of life on 2026-06-30**; 41 followed on 2026-08-25. Supported majors are 42/43/44,
 so 40 gets no further Chromium backports — it is a forced major, not an optional one. 34 Electron advisories
-are open against the pinned `40.6.1`.
+are open against the pinned `40.6.1`, and one of them (GHSA-9f4c-93c8-jc8g) has no fix anywhere in the 40 line.
 
 In the same PR, because they are the same subsystem and share the `extract-zip` finding (which has *no* fixed
 version of its own):
 
-- `electron` `40.6.1 → 44.4.3` (exact pin, as today)
+- `electron` `40.6.1 → 44.4.2` (exact pin, as today — 44.4.3 was under three days old and `min-release-age` refused it)
 - `@electron/packager` `^19 → ^20`
 - `@electron/get` `^4 → ^5`
 - drop the now-pointless `overrides.extract-zip.yauzl` — verified: with packager 20 the finding disappears
@@ -152,12 +152,12 @@ for us. Small PR, separate from the dependency work.
 ## Steps
 
 - [x] Complete Task 0: Prerequisites (node floor, CI fallback, review gate)
-- [ ] Complete Task 1: In-range refresh — audit 21 → 6
+- [x] Complete Task 1: In-range refresh — audit 21 → 6
 - [ ] Complete Task 2: Electron 44 + packager 20 + get 5, drop the yauzl override
 - [ ] Complete Task 3: cyclonedx-npm 6 — audit 6 → 2
 - [ ] Complete Task 4: Remaining dev majors (optional, one PR each)
 - [ ] Complete Task 5: Angular 22 + ngrx 22 + TypeScript 6.0.3
-- [ ] Complete Task 7: Escape the wordcloud tooltip name
+- [x] Complete Task 7: Escape the wordcloud tooltip name
 
 ## Notes
 
