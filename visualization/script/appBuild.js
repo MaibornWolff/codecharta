@@ -10,7 +10,7 @@ async function bundleElectronApp(options) {
     return packager({
         ...options,
         asar: true,
-        icon: "app/codeCharta/assets/icon",
+        icon: "public/codeCharta/assets/icon",
         tmpdir: paths.tempPath
     })
 }
