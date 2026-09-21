@@ -62,12 +62,30 @@ about", so try the upgrade:
 
 If the word cloud breaks, stop and record the risk acceptance instead — do not carry a half-working chart.
 
-### 5. schema:generate has been broken since 2020
+### 5. schema:generate — investigated, and it is not a dependency problem
 
-`npm run schema:generate` passes a `.ts` file rather than a tsconfig, so `typescript-json-schema` compiles
-at its default target and dies on `Map`/`Set` iteration. Nothing in CI runs it and
-`generatedSchema.json` has not changed since 2020. Either point it at `tsconfig.json` and regenerate, or
-delete the script and the stale output. Decide by whether anything still reads that schema.
+Three separate things are wrong with `npm run schema:generate`, and the third is why this is left open.
+
+1. It passes a `.ts` file rather than a tsconfig, so `typescript-json-schema` compiles with default
+   options and dies on `Map`/`Set` iteration. Fixed by passing `tsconfig.json`.
+2. It asks for `ExportCCFile` in `model/codeCharta.model.ts`, but the type moved to
+   `model/codeCharta.api.model.ts`. Fixed by pointing at the new file.
+3. `typescript-json-schema@0.67.1` pins TypeScript `~5.5`, which predates the generic `Uint8Array` the
+   codebase now uses, so it cannot parse the project at all. 0.68.0 pins `~5.9` and does work.
+
+With all three addressed the script runs — **and its output must not be adopted.** The regenerated schema
+makes `fileChecksum` a required property, and `generatedSchema.json` is what `fileValidator.ts` validates
+every loaded file against. Measured with ajv: a cc.json without a checksum is valid under the committed
+schema and **invalid** under the regenerated one, which would reject files that load today and pre-empt the
+friendly "File has no checksum" message the validator already produces for exactly that case. The
+regenerated `CodeMapNode` also drops `isFlattened` and gains `fileCount`, `rect`, `value` and `zOffset` —
+render-time fields that accumulated on the internal type the schema is generated from.
+
+So the model has drifted from what the viz actually accepts: `ExportCCFile.fileChecksum` is declared
+non-optional while the app deliberately handles its absence, and `CodeMapNode` is the internal type rather
+than an export shape. Decide what those two types should mean for validation first; regenerating before
+that would silently narrow what users can open. The dependency bump is reverted — on its own it fixes
+nothing, and a script that runs and emits a schema nobody should install is worse than one that fails.
 
 ### 6. Renovate is not running
 
@@ -77,11 +95,11 @@ its dashboard. Investigate; it is the reason all of this was needed at once.
 
 ## Steps
 
-- [ ] Complete Task 1: root and node-wrapper lockfiles
-- [ ] Complete Task 2: both icon paths
-- [ ] Complete Task 3: CI packaging job
-- [ ] Complete Task 4: echarts 6, or a recorded risk acceptance
-- [ ] Complete Task 5: schema:generate fixed or deleted
+- [x] Complete Task 1: root and node-wrapper lockfiles
+- [x] Complete Task 2: both icon paths
+- [x] Complete Task 3: CI packaging job
+- [x] Complete Task 4: echarts 6 — repo-wide audit is now clean
+- [x] Complete Task 5: schema:generate investigated — needs a model decision, not a dependency fix
 - [ ] Complete Task 6: Renovate (needs GitHub access — report only)
 
 ## Notes
