@@ -1,5 +1,5 @@
 import { LocationStrategy } from "@angular/common"
-import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from "@angular/common/http"
 import { APP_INITIALIZER, ApplicationConfig } from "@angular/core"
 import { provideRouter, RouteReuseStrategy, Routes } from "@angular/router"
 import { provideEffects } from "@ngrx/effects"
@@ -35,7 +35,7 @@ export const routerProviders = [provideRouter(routes), locationStrategyProvider]
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
 
         provideStore(appReducers, { metaReducers: [setStateMiddleware] }),
 

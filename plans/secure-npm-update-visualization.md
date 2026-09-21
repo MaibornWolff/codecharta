@@ -1,7 +1,7 @@
 ---
 name: Secure dependency update for the visualization
 issue: <none>
-state: progress
+state: complete
 version: 1
 ---
 
@@ -155,11 +155,34 @@ for us. Small PR, separate from the dependency work.
 - [x] Complete Task 1: In-range refresh — audit 21 → 6
 - [x] Complete Task 2: Electron 44 + packager 20 + get 5, drop the yauzl override
 - [x] Complete Task 3: cyclonedx-npm 6 — audit 6 → 2
-- [ ] Complete Task 4: Remaining dev majors (optional, one PR each)
-- [ ] Complete Task 5: Angular 22 + ngrx 22 + TypeScript 6.0.3
+- [x] Complete Task 4: dependency-cruiser 18 (typescript-json-schema skipped — `schema:generate` is already broken on main)
+- [x] Complete Task 5: Angular 22 + ngrx 22 + TypeScript 6.0.3
 - [x] Complete Task 7: Escape the wordcloud tooltip name
 
 ## Notes
+
+### What wave 5 actually needed
+
+`ng update` refuses to start while `jest-preset-angular@16` is installed (its peer range stops at Angular
+22), so that bump goes first, alone. The migration then moves Angular, ngrx and TypeScript 6.0.3 itself.
+
+TypeScript 6 cost three fixes, all in configuration:
+
+- `baseUrl` is deprecated and goes away in TS 7. It was load-bearing — 29 files import via `app/...` —
+  so it becomes `"paths": { "app/*": ["./app/*"] }` rather than an `ignoreDeprecations` that only defers
+  the same failure.
+- TS 6 defaults `types` to `[]`, so the spec files lost their ambient jest globals under the base
+  tsconfig. `"types": ["jest", "node"]` restores exactly what is needed, narrower than the old implicit
+  "every @types package".
+- The jsdom popover shim in `conf/setupJestUnit.ts` assigns to `Element.prototype.matches`, whose TS 6
+  DOM signature is an overload set with type predicates a function literal cannot satisfy.
+
+Three of the CLI's own changes were reverted after checking they were unnecessary: the
+`istanbul-lib-instrument` dependency (added because `angular.json` still declares a Karma target nothing
+runs), `changeDetection: ChangeDetectionStrategy.Eager` on ~20 test stub components, and the
+`extendedDiagnostics` suppressions in `tsconfig.spec.json`. The suite is green without all three.
+`provideHttpClient(withXhr(), …)` is kept — Angular 22 switches HttpClient's default backend to fetch,
+and that is a real behaviour change worth not taking blind.
 
 ### The gate, run on every wave
 

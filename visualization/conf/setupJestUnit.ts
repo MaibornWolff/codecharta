@@ -57,12 +57,14 @@ if (typeof Blob.prototype.arrayBuffer === "undefined") {
 // Without zone.js swallowing the thrown error, components calling popover.matches(":popover-open")
 // would fail tests. Make the selector match nothing and stub the popover methods.
 const originalElementMatches = Element.prototype.matches
-Element.prototype.matches = function (selectors: string): boolean {
+// Cast because the native signature is a set of overloads that narrow the receiver, and a function
+// literal cannot express a type predicate — the shim stands in for all of them.
+Element.prototype.matches = function (this: Element, selectors: string): boolean {
     if (selectors === ":popover-open") {
         return false
     }
     return originalElementMatches.call(this, selectors)
-}
+} as typeof Element.prototype.matches
 if (typeof HTMLElement.prototype.showPopover === "undefined") {
     HTMLElement.prototype.showPopover = function () {}
 }
