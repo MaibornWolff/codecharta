@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **The desktop app has its icon back**: the packaged app shows the CodeCharta icon in the taskbar, dock and window instead of the default Electron one.
 - **Domain words are shown as text**: a word from a loaded file appears literally in its word-cloud tooltip, instead of being interpreted as markup.
 - **No spinner for a settings change**: changing a metric, a label or a colour no longer flashes the loading spinner — it now appears only while a loaded map is being written.
 - **The map cannot be tilted under itself again**: tilting stops when the camera reaches the map's floor, instead of letting you look at its underside.
