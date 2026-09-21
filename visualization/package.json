@@ -119,7 +119,7 @@
     "@types/three": "^0.182.0",
     "bestzip": "^2.2.3",
     "daisyui": "^5.5.19",
-    "dependency-cruiser": "^17.3.10",
+    "dependency-cruiser": "^18.3.1",
     "fast-xml-parser": "^5.5.12",
     "jest": "^30.3.0",
     "jest-canvas-mock": "^2.5.2",
