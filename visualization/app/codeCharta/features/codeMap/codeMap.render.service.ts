@@ -119,6 +119,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         if (invalidation.labels) {
             this.labelSettingsFacade.clearLabels()
             this.setLabels(this.unflattenedNodes)
+            this.codeMapMouseEventService.drawLabelSelectedBuilding(this.threeSceneService.getSelectedBuilding())
         }
     }
 
@@ -267,5 +268,9 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
         this.codeMapArrowService.clearArrows()
         this.codeMapArrowService.addEdgeMapBasedOnNodes(sortedNodes)
         this.codeMapArrowService.addEdgePreview()
+        const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+        if (selectedBuilding) {
+            this.codeMapArrowService.onBuildingSelected({ building: selectedBuilding })
+        }
     }
 }

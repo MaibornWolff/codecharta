@@ -61,10 +61,11 @@ export class SunburstChartHost {
         if (!this.chart) {
             return
         }
-        this.attachedContainer.setAttribute("aria-busy", "true")
+        this.attachedContainer?.setAttribute("aria-busy", "true")
         this.chart.resize()
         this.chart.setOption(option as unknown as echarts.EChartsCoreOption)
-        this.pathUnderPointer = null
+        // The segments the pointer knew are gone, and ECharts reports a hover again only once it moves.
+        this.reportPointerLeft()
         this.applyHighlight()
     }
 
@@ -78,6 +79,7 @@ export class SunburstChartHost {
 
     dispose(): void {
         this.cancelPointerLeave()
+        this.reportPointerLeft()
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
         this.containerSizeObserver.disconnect()
         if (this.chart) {
@@ -113,9 +115,16 @@ export class SunburstChartHost {
         this.cancelPointerLeave()
         this.pointerLeaveTimeout = setTimeout(() => {
             this.pointerLeaveTimeout = undefined
-            this.pathUnderPointer = null
-            this.handlers.onNodeHovered(null)
+            this.reportPointerLeft()
         }, POINTER_LEAVE_GRACE_MS)
+    }
+
+    private reportPointerLeft(): void {
+        if (this.pathUnderPointer === null) {
+            return
+        }
+        this.pathUnderPointer = null
+        this.handlers.onNodeHovered(null)
     }
 
     private cancelPointerLeave(): void {

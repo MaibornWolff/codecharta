@@ -51,14 +51,28 @@ describe("SceneSelectionSyncService", () => {
         // Arrange
         isMapShown$.next(false)
         selectedNodePath$.next("/root/scripts")
-        const callsWhileHidden = threeSceneService.showSelection.mock.calls.length
+
+        // Assert — nothing was painted while the map was hidden
+        expect(threeSceneService.showSelection).not.toHaveBeenCalledWith("/root/scripts")
 
         // Act
         isMapShown$.next(true)
 
         // Assert
-        expect(callsWhileHidden).toBe(1)
         expect(threeSceneService.showSelection).toHaveBeenLastCalledWith("/root/scripts")
+    })
+
+    it("should not paint again when the 3D map itself made the selection", () => {
+        // Arrange — a click on a building paints the scene first, then writes the store
+        selectedBuilding = { node: { path: "/root/clicked.ts" } }
+        threeSceneService.showSelection.mockImplementationOnce(() => {})
+
+        // Act
+        selectedNodePath$.next("/root/clicked.ts")
+
+        // Assert
+        expect(codeMapMouseEventService.drawLabelSelectedBuilding).not.toHaveBeenCalled()
+        expect(threeRendererService.render).not.toHaveBeenCalled()
     })
 
     it("should not redraw when the map already shows the selection", () => {

@@ -387,9 +387,9 @@ export class ThreeSceneService implements OnDestroy {
         const selectedPath = this.threeSceneStore.getSelectedNodePath()
         const buildingOnNewMesh = selectedPath === null ? undefined : this.mapMesh.getBuildingByPath(selectedPath)
         this.clearStaleSelectionColor(previouslySelected, selectedPath)
-        this.selected = buildingOnNewMesh ?? null
+        this.selected = null
         if (buildingOnNewMesh) {
-            this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
+            this.paintSelection(buildingOnNewMesh)
             return
         }
         if (previouslySelected?.node.path === selectedPath) {
@@ -399,8 +399,8 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     private clearStaleSelectionColor(previouslySelected: CodeMapBuilding | null, selectedPath: string | null) {
-        const staleBuilding = previouslySelected && previouslySelected.node.path !== selectedPath
-        const buildingOnMesh = staleBuilding ? this.mapMesh.getBuildingByPath(previouslySelected.node.path) : undefined
+        const hasStaleSelection = previouslySelected !== null && previouslySelected.node.path !== selectedPath
+        const buildingOnMesh = hasStaleSelection ? this.mapMesh.getBuildingByPath(previouslySelected.node.path) : undefined
         if (buildingOnMesh) {
             this.mapMesh.clearSelection(buildingOnMesh)
         }

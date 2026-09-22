@@ -70,7 +70,6 @@ export class SunburstMapComponent {
     }
 
     protected selectFolder(path: string): void {
-        this.writeStore.hoverNode(null)
         this.writeStore.selectNode(path)
     }
 

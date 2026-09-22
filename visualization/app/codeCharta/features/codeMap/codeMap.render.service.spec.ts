@@ -150,6 +150,7 @@ describe("codeMapRenderService", () => {
             }),
             dispose: jest.fn(),
             forceRerender: jest.fn(),
+            getSelectedBuilding: jest.fn(),
             setMapMesh: jest.fn(),
             getMapMesh: jest.fn().mockReturnValue(undefined),
             updateMapMeshInPlace: jest.fn(),
@@ -160,7 +161,8 @@ describe("codeMapRenderService", () => {
 
     function withMockedCodeMapMouseEventService() {
         codeMapMouseEventService = jest.fn().mockReturnValue({
-            unhoverNode: jest.fn()
+            unhoverNode: jest.fn(),
+            drawLabelSelectedBuilding: jest.fn()
         })()
         Object.defineProperty(codeMapRenderService, "codeMapMouseEventService", { value: codeMapMouseEventService })
     }
@@ -307,6 +309,18 @@ describe("codeMapRenderService", () => {
             codeMapRenderService["scaleMap"]()
 
             expect(codeMapMouseEventService.unhoverNode).toHaveBeenCalledWith()
+        })
+
+        it("should draw the selection label again, which laying the map out clears", () => {
+            // Arrange
+            const selectedBuilding = { node: TEST_NODE_LEAF }
+            threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(selectedBuilding)
+
+            // Act
+            codeMapRenderService["scaleMap"]()
+
+            // Assert
+            expect(codeMapMouseEventService.drawLabelSelectedBuilding).toHaveBeenCalledWith(selectedBuilding)
         })
 
         it("should call codeMapArrowService.scale", () => {
@@ -625,6 +639,19 @@ describe("codeMapRenderService", () => {
             sortedNodes = TEST_NODES
             codeMapArrowService.clearArrows = jest.fn()
             codeMapArrowService["addEdgePreview"] = jest.fn()
+        })
+
+        it("should show the edges of the selected building again after the map was laid out", () => {
+            // Arrange
+            const selectedBuilding = { node: TEST_NODE_LEAF }
+            threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(selectedBuilding)
+            codeMapArrowService.onBuildingSelected = jest.fn()
+
+            // Act
+            codeMapRenderService["setArrows"](sortedNodes)
+
+            // Assert
+            expect(codeMapArrowService.onBuildingSelected).toHaveBeenCalledWith({ building: selectedBuilding })
         })
 
         it("should call codeMapArrowService.clearArrows", () => {

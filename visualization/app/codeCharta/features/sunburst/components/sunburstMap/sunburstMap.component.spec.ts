@@ -1,6 +1,6 @@
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { render, screen, waitFor } from "@testing-library/angular"
+import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { SunburstNode } from "../../../../renderer/sunburst/sunburst.facade"
 import {
@@ -18,11 +18,11 @@ import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fi
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import {
     currentFocusedNodePathSelector,
-    hoveredNodeIdSelector,
+    hoveredNodePathSelector,
     selectedNodePathSelector
 } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
-    setHoveredNodeId,
+    setHoveredNodePath,
     setRightClickedNodeData,
     setSelectedNodePath,
     unfocusNode
@@ -53,7 +53,7 @@ async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, f
                     { selector: sunburstTreeSelector, value: tree },
                     { selector: sunburstMetricsSelector, value: { areaMetric: "rloc", colorMetric: "mcc" } },
                     { selector: sunburstColoringSelector, value: TEST_COLORING },
-                    { selector: hoveredNodeIdSelector, value: null },
+                    { selector: hoveredNodePathSelector, value: null },
                     { selector: selectedNodePathSelector, value: selectedPath },
                     { selector: isDeltaStateSelector, value: isDeltaState },
                     { selector: currentFocusedNodePathSelector, value: focusedNodePath }
@@ -168,17 +168,6 @@ describe("SunburstMapComponent", () => {
         expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/src" }))
     })
 
-    it("should let go of the hovered folder when drilling, since it moves away from under the pointer", async () => {
-        // Arrange
-        const { store } = await setup()
-
-        // Act
-        fireChartEvent("click", { data: { name: "/root/src", isCentre: false } })
-
-        // Assert
-        expect(store.dispatch).toHaveBeenNthCalledWith(1, setHoveredNodeId({ value: null }))
-    })
-
     it("should select the parent folder when the centre is clicked", async () => {
         // Arrange
         const { store } = await setup({ selectedPath: "/root/src/app" })
@@ -234,11 +223,9 @@ describe("SunburstMapComponent", () => {
 
         // Act
         fireChartEvent("mouseover", { data: { name: "/root/src" } })
-        fireChartEvent("mouseout")
 
         // Assert
-        expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodeId({ value: "/root/src" }))
-        await waitFor(() => expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodeId({ value: null })))
+        expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodePath({ value: "/root/src" }))
     })
 
     it("should explain instead of drawing while two maps are compared", async () => {

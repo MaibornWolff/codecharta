@@ -70,35 +70,41 @@ describe("ThreeSceneService", () => {
     describe("selection after the mesh was rebuilt", () => {
         const LEAF_PATH = "/root/big leaf"
 
-        function selectInStore(path: string) {
-            store.dispatch(setSelectedNodePath({ value: path }))
+        beforeEach(() => {
+            // a layout without floor labels keeps the rebuild to the mesh this describe is about
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
+        })
+
+        function rebuildMeshWith(nodes = TEST_NODES) {
+            threeSceneService.setMapMesh(nodes, new CodeMapMesh(nodes, state.getValue(), false))
         }
 
         function sceneSelectionPath() {
             return threeSceneService.getSelectedBuilding()?.node.path ?? null
         }
 
-        it("should select what another view selected while the map was not drawn", () => {
+        it("should select what another view selected while the map was not drawn, and announce it", () => {
             // Arrange
-            threeSceneService["selected"] = threeSceneService.getMapMesh().getBuildingByPath("/root")
-            selectInStore(LEAF_PATH)
+            const selectedBuildings: string[] = []
+            threeSceneService.subscribe("onBuildingSelected", ({ building }) => selectedBuildings.push(building.node.path))
+            store.dispatch(setSelectedNodePath({ value: LEAF_PATH }))
 
             // Act
-            threeSceneService["remapSelectedBuilding"]()
+            rebuildMeshWith()
 
             // Assert
             expect(sceneSelectionPath()).toBe(LEAF_PATH)
             expect(selectedNodePathSelector(state.getValue())).toBe(LEAF_PATH)
+            expect(selectedBuildings).toEqual([LEAF_PATH])
         })
 
         it("should drop the selection when the building it had selected is gone", () => {
             // Arrange
-            selectInStore(LEAF_PATH)
-            threeSceneService["selected"] = threeSceneService.getMapMesh().getBuildingByPath(LEAF_PATH)
-            threeSceneService["mapMesh"] = new CodeMapMesh([TEST_NODE_ROOT], state.getValue(), false)
+            store.dispatch(setSelectedNodePath({ value: LEAF_PATH }))
+            rebuildMeshWith()
 
             // Act
-            threeSceneService["remapSelectedBuilding"]()
+            rebuildMeshWith([TEST_NODE_ROOT])
 
             // Assert
             expect(sceneSelectionPath()).toBeNull()
@@ -107,55 +113,14 @@ describe("ThreeSceneService", () => {
 
         it("should keep a selection the map draws no building for, such as a folder", () => {
             // Arrange
-            selectInStore("/root/a folder")
+            store.dispatch(setSelectedNodePath({ value: "/root/a folder" }))
 
             // Act
-            threeSceneService["remapSelectedBuilding"]()
+            rebuildMeshWith()
 
             // Assert
             expect(sceneSelectionPath()).toBeNull()
             expect(selectedNodePathSelector(state.getValue())).toBe("/root/a folder")
-        })
-    })
-
-    describe("showSelection", () => {
-        const LEAF_PATH = "/root/big leaf"
-
-        it("should paint the selection another view made without writing it back", () => {
-            // Arrange
-            const dispatch = jest.spyOn(store, "dispatch")
-
-            // Act
-            threeSceneService.showSelection(LEAF_PATH)
-
-            // Assert
-            expect(threeSceneService.getSelectedBuilding().node.path).toBe(LEAF_PATH)
-            expect(dispatch).not.toHaveBeenCalled()
-        })
-
-        it("should drop the painted selection for a path the map draws no building for, without touching the store", () => {
-            // Arrange
-            threeSceneService.showSelection(LEAF_PATH)
-            const dispatch = jest.spyOn(store, "dispatch")
-
-            // Act
-            threeSceneService.showSelection("/root/a folder")
-
-            // Assert
-            expect(threeSceneService.getSelectedBuilding()).toBeNull()
-            expect(dispatch).not.toHaveBeenCalled()
-        })
-
-        it("should leave the scene alone when it already shows the path", () => {
-            // Arrange
-            threeSceneService.showSelection(LEAF_PATH)
-            const paint = jest.spyOn(threeSceneService.getMapMesh(), "selectBuilding")
-
-            // Act
-            threeSceneService.showSelection(LEAF_PATH)
-
-            // Assert
-            expect(paint).not.toHaveBeenCalled()
         })
     })
 
