@@ -1,6 +1,4 @@
-import { Locator, Page } from "@playwright/test"
-
-const RING_ANIMATION_MS = 800
+import { expect, Locator, Page } from "@playwright/test"
 
 export class MetricsSunburstPageObject {
     constructor(private readonly page: Page) {}
@@ -16,7 +14,7 @@ export class MetricsSunburstPageObject {
     }
 
     async clickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {
-        await this.page.waitForTimeout(RING_ANIMATION_MS)
+        await expect(this.chart()).toHaveAttribute("aria-busy", "false")
         const box = await this.chart().boundingBox()
         const radius = Math.min(box.width, box.height) / 2
         const angle = (degreesClockwiseFromTop * Math.PI) / 180

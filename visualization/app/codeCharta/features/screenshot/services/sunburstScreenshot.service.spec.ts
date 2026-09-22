@@ -1,13 +1,23 @@
 import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
+import { createPNGFileName } from "../../../model/files/files.helper"
 import { SunburstChartRegistry } from "../../../renderer/sunburst/sunburstRegistry.facade"
 import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
+import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { SunburstScreenshotService } from "./sunburstScreenshot.service"
+
+jest.mock("./clipboardWriter", () => ({
+    setToClipboard: jest.fn(),
+    checkWriteToClipboardAllowed: jest.fn(() => true)
+}))
 
 describe("SunburstScreenshotService", () => {
     function configure(hasChart: boolean) {
         const renderedCanvas = document.createElement("canvas")
+        renderedCanvas.width = 4
+        renderedCanvas.height = 4
         jest.spyOn(renderedCanvas, "toDataURL").mockReturnValue("data:image/png;base64,aGk=")
+        jest.spyOn(renderedCanvas, "toBlob").mockImplementation(callback => callback(new Blob([], { type: "image/png" })))
         TestBed.configureTestingModule({
             providers: [
                 SunburstScreenshotService,
@@ -21,16 +31,28 @@ describe("SunburstScreenshotService", () => {
         return TestBed.inject(SunburstScreenshotService)
     }
 
-    it("should be available only while a sunburst chart is drawn", () => {
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
+
+    it("should be available while a sunburst chart is drawn", () => {
+        // Act
+        const service = configure(true)
+
+        // Assert
+        expect(service.isCaptureAvailable()).toBe(true)
+        expect(service.subject).toBe("sunburst")
+    })
+
+    it("should not be available while no sunburst chart is drawn", () => {
         // Act
         const service = configure(false)
 
         // Assert
         expect(service.isCaptureAvailable()).toBe(false)
-        expect(service.subject).toBe("sunburst")
     })
 
-    it("should download the sunburst as a map screenshot", async () => {
+    it("should download the sunburst under the metric map's file name", async () => {
         // Arrange
         const service = configure(true)
         const downloadNames: string[] = []
@@ -42,6 +64,19 @@ describe("SunburstScreenshotService", () => {
         await service.makeScreenshotToFile()
 
         // Assert
-        expect(downloadNames[0]).toContain("map")
+        expect(downloadNames).toEqual([createPNGFileName([], "map")])
+    })
+
+    it("should copy the sunburst to the clipboard as a png", async () => {
+        // Arrange
+        const service = configure(true)
+
+        // Act
+        await service.makeScreenshotToClipboard()
+
+        // Assert
+        expect(checkWriteToClipboardAllowed).toHaveBeenCalled()
+        expect(setToClipboard).toHaveBeenCalledTimes(1)
+        expect((setToClipboard as jest.Mock).mock.calls[0][0].type).toBe("image/png")
     })
 })

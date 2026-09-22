@@ -7,9 +7,25 @@ describe("isSunburstLayoutSelector", () => {
         return { ...defaultState, mapState: { ...defaultState.mapState, layoutAlgorithm } }
     }
 
-    it("should tell whether the map is shown as a sunburst", () => {
+    it("should report the sunburst layout", () => {
+        // Arrange
+        const state = stateWith(LayoutAlgorithm.Sunburst)
+
+        // Act
+        const isSunburst = isSunburstLayoutSelector(state)
+
         // Assert
-        expect(isSunburstLayoutSelector(stateWith(LayoutAlgorithm.Sunburst))).toBe(true)
-        expect(isSunburstLayoutSelector(stateWith(LayoutAlgorithm.SquarifiedTreeMap))).toBe(false)
+        expect(isSunburst).toBe(true)
+    })
+
+    it("should not report a 3D layout as the sunburst", () => {
+        // Arrange
+        const state = stateWith(LayoutAlgorithm.SquarifiedTreeMap)
+
+        // Act
+        const isSunburst = isSunburstLayoutSelector(state)
+
+        // Assert
+        expect(isSunburst).toBe(false)
     })
 })

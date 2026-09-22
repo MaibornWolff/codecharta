@@ -61,15 +61,19 @@ describe("ScreenshotService", () => {
         jest.clearAllMocks()
     })
 
-    it("should capture the 3D map for every layout but the sunburst, which captures itself", () => {
-        // Arrange
-        configure()
-        const treeMapCapture = service
-        TestBed.resetTestingModule()
+    it("should capture the 3D map in a 3D layout", () => {
+        // Act
+        configure(LayoutAlgorithm.SquarifiedTreeMap)
+
+        // Assert
+        expect(service.isCaptureAvailable()).toBe(true)
+    })
+
+    it("should leave the capture to the sunburst while the map is shown as one", () => {
+        // Act
         configure(LayoutAlgorithm.Sunburst)
 
         // Assert
-        expect(treeMapCapture.isCaptureAvailable()).toBe(true)
         expect(service.isCaptureAvailable()).toBe(false)
     })
 

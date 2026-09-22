@@ -64,9 +64,13 @@ describe("linkHeightAndColorMetricEffect", () => {
     })
 
     it("should leave the color metric free while the sunburst is shown, and link it again for the 3D map", () => {
+        // Arrange
+        const heightMetric = "rloc"
+        const isLinkedByTheUser = true
+
         // Act
-        const inSunburst = heightAndLinkedSelector.projector("rloc", true, true)
-        const inTreeMap = heightAndLinkedSelector.projector("rloc", true, false)
+        const inSunburst = heightAndLinkedSelector.projector(heightMetric, isLinkedByTheUser, true)
+        const inTreeMap = heightAndLinkedSelector.projector(heightMetric, isLinkedByTheUser, false)
 
         // Assert
         expect(inSunburst).toEqual({ heightMetric: "rloc", isLinked: false })

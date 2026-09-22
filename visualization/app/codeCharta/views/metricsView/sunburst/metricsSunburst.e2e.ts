@@ -27,6 +27,7 @@ test.describe("Sunburst layout", () => {
         // Assert
         await expect(sunburst.chart()).toBeVisible()
         await expect(page.locator("#codeMap")).toBeHidden()
+        await expect(page.locator("cc-view-cube")).toBeHidden()
         await expect(page.getByRole("button", { name: "3D Print" })).toHaveCount(0)
         await expect(page.getByTestId("metric-segment-height")).toHaveCount(0)
     })
