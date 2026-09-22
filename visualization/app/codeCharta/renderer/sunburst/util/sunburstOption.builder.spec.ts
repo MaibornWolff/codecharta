@@ -1,34 +1,21 @@
-import { ColorMode } from "../../../model/codeCharta.model"
-import { defaultMapColors } from "../../../stores/mapState/store/mapColors/mapColors.reducer"
-import { SunburstColoring } from "./sunburstColor"
+import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
+import { folderNode, TEST_COLORING } from "../testing/sunburstChart.stub"
 import { buildSunburstOption, SunburstOptionInputs, VISIBLE_RING_COUNT } from "./sunburstOption.builder"
 import { SunburstNode } from "./sunburstTree"
-
-const COLORING: SunburstColoring = {
-    colorMetric: "mcc",
-    colorRange: { from: 10, to: 20 },
-    colorMode: ColorMode.absolute,
-    mapColors: defaultMapColors,
-    colorMetricRange: { minValue: 0, maxValue: 100 }
-}
-
-function folder(path: string, children: SunburstNode[] = [], overrides: Partial<SunburstNode> = {}): SunburstNode {
-    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children, ...overrides }
-}
 
 function inputs(centre: SunburstNode, overrides: Partial<SunburstOptionInputs> = {}): SunburstOptionInputs {
     return {
         centre,
         isMapRoot: false,
         metrics: { areaMetric: "rloc", colorMetric: "mcc" },
-        coloring: COLORING,
+        coloring: TEST_COLORING,
         chartSizeInPixels: 800,
         ...overrides
     }
 }
 
 function nestedFolders(depth: number, path = "/root"): SunburstNode {
-    return folder(path, depth > 0 ? [nestedFolders(depth - 1, `${path}/level${depth}`)] : [])
+    return folderNode(path, depth > 0 ? [nestedFolders(depth - 1, `${path}/level${depth}`)] : [])
 }
 
 function depthOf(datum: { children: unknown[] }): number {
@@ -39,7 +26,7 @@ function depthOf(datum: { children: unknown[] }): number {
 describe("buildSunburstOption", () => {
     it("should put the centre folder in the middle, keyed by its path and labelled by its name", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root/src", [], { area: 42 })))
+        const option = buildSunburstOption(inputs(folderNode("/root/src", [], { area: 42 })))
 
         // Assert
         const [centre] = option.series[0].data
@@ -70,7 +57,7 @@ describe("buildSunburstOption", () => {
 
     it("should still draw one ring for a folder without sub folders", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root")))
+        const option = buildSunburstOption(inputs(folderNode("/root")))
 
         // Assert
         expect(option.series[0].levels).toHaveLength(1 + 1 + 1)
@@ -78,7 +65,7 @@ describe("buildSunburstOption", () => {
 
     it("should tell files from folders so a click on a file does not drill", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root", [folder("/root/a.ts", [], { isFile: true })])))
+        const option = buildSunburstOption(inputs(folderNode("/root", [folderNode("/root/a.ts", [], { isFile: true })])))
 
         // Assert
         const [fileDatum] = option.series[0].data[0].children
@@ -88,7 +75,9 @@ describe("buildSunburstOption", () => {
 
     it("should write file names in bold and leave folder names to the ring's style", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root", [folder("/root/a.ts", [], { isFile: true }), folder("/root/src")])))
+        const option = buildSunburstOption(
+            inputs(folderNode("/root", [folderNode("/root/a.ts", [], { isFile: true }), folderNode("/root/src")]))
+        )
 
         // Assert
         const [fileDatum, folderDatum] = option.series[0].data[0].children
@@ -98,7 +87,7 @@ describe("buildSunburstOption", () => {
 
     it("should fade the hover in and out gently and only dim the rest of the chart", () => {
         // Act
-        const [series] = buildSunburstOption(inputs(folder("/root"))).series
+        const [series] = buildSunburstOption(inputs(folderNode("/root"))).series
 
         // Assert
         expect(series.stateAnimation.duration).toBeGreaterThanOrEqual(500)
@@ -107,7 +96,7 @@ describe("buildSunburstOption", () => {
 
     it("should leave drilling to the caller instead of letting ECharts zoom", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root")))
+        const option = buildSunburstOption(inputs(folderNode("/root")))
 
         // Assert
         expect(option.series[0].nodeClick).toBe(false)
@@ -115,7 +104,7 @@ describe("buildSunburstOption", () => {
 
     it("should colour each segment by the folder's value and pick a readable label colour", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root", [folder("/root/hot", [], { colorValue: 50 })])))
+        const option = buildSunburstOption(inputs(folderNode("/root", [folderNode("/root/hot", [], { colorValue: 50 })])))
 
         // Assert
         const [hot] = option.series[0].data[0].children
@@ -125,7 +114,7 @@ describe("buildSunburstOption", () => {
 
     it("should label a segment with the folder name", () => {
         // Arrange
-        const option = buildSunburstOption(inputs(folder("/root/src")))
+        const option = buildSunburstOption(inputs(folderNode("/root/src")))
 
         // Act
         const label = option.series[0].label.formatter({ data: option.series[0].data[0] })
@@ -136,7 +125,9 @@ describe("buildSunburstOption", () => {
 
     it("should list the path, area and colour value in the tooltip, escaped", () => {
         // Arrange
-        const option = buildSunburstOption(inputs(folder("/root", [folder("/root/<b>", [], { area: 1234.567, colorValue: undefined })])))
+        const option = buildSunburstOption(
+            inputs(folderNode("/root", [folderNode("/root/<b>", [], { area: 1234.567, colorValue: undefined })]))
+        )
         const [child] = option.series[0].data[0].children
 
         // Act
@@ -151,8 +142,8 @@ describe("buildSunburstOption", () => {
 
     it("should tell in the tooltip that clicking the centre goes up, unless it is the top of the map", () => {
         // Arrange
-        const nested = buildSunburstOption(inputs(folder("/root/src")))
-        const top = buildSunburstOption(inputs(folder("/root"), { isMapRoot: true }))
+        const nested = buildSunburstOption(inputs(folderNode("/root/src")))
+        const top = buildSunburstOption(inputs(folderNode("/root"), { isMapRoot: true }))
 
         // Act
         const nestedTooltip = nested.tooltip.formatter({ data: nested.series[0].data[0] })
@@ -165,7 +156,7 @@ describe("buildSunburstOption", () => {
 
     it("should show nothing for a tooltip without data", () => {
         // Act
-        const option = buildSunburstOption(inputs(folder("/root")))
+        const option = buildSunburstOption(inputs(folderNode("/root")))
 
         // Assert
         expect(option.tooltip.formatter({})).toBe("")

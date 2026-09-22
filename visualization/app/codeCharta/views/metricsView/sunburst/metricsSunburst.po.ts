@@ -15,33 +15,6 @@ export class MetricsSunburstPageObject {
         await this.page.keyboard.press("Escape")
     }
 
-    persistedLayout(): Promise<string | undefined> {
-        return this.page.evaluate(
-            () =>
-                new Promise<string | undefined>(resolve => {
-                    const open = indexedDB.open("CodeCharta")
-                    open.onerror = () => resolve(undefined)
-                    open.onsuccess = () => {
-                        const database = open.result
-                        if (!database.objectStoreNames.contains("ccstate")) {
-                            database.close()
-                            resolve(undefined)
-                            return
-                        }
-                        const settingsRecord = database.transaction("ccstate", "readonly").objectStore("ccstate").get(1001)
-                        settingsRecord.onsuccess = () => {
-                            database.close()
-                            resolve(settingsRecord.result?.state?.mapState?.layoutAlgorithm)
-                        }
-                        settingsRecord.onerror = () => {
-                            database.close()
-                            resolve(undefined)
-                        }
-                    }
-                })
-        )
-    }
-
     async clickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {
         await this.page.waitForTimeout(RING_ANIMATION_MS)
         const box = await this.chart().boundingBox()

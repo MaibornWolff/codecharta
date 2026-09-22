@@ -3,47 +3,30 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import { of } from "rxjs"
 import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
-import { ColorMode } from "../../../model/codeCharta.model"
 import { SunburstNode } from "../../../renderer/sunburst/sunburst.facade"
+import {
+    fileNode,
+    fireChartEvent,
+    folderNode,
+    lastDrawnOption,
+    resetStubbedChart,
+    stubbedChart,
+    stubElementSize,
+    stubResizeObserver,
+    TEST_COLORING
+} from "../../../renderer/sunburst/testing/sunburstChart.stub"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
-import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setRightClickedNodeData, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsSunburstComponent } from "./metricsSunburst.component"
 import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
-type EventHandler = (event: unknown) => void
+jest.mock("echarts/core", () => jest.requireActual("../../../renderer/sunburst/testing/sunburstChart.stub").echartsCoreStub)
 
-const chartEventHandlers = new Map<string, EventHandler>()
-
-const mockChart = {
-    setOption: jest.fn(),
-    dispatchAction: jest.fn(),
-    resize: jest.fn(),
-    dispose: jest.fn(),
-    on: jest.fn((eventName: string, handler: EventHandler) => chartEventHandlers.set(eventName, handler))
-}
-
-jest.mock("echarts/core", () => ({
-    init: jest.fn(() => mockChart),
-    use: jest.fn()
-}))
-
-class ResizeObserverMock {
-    observe() {}
-    disconnect() {}
-}
-
-function folder(path: string, children: SunburstNode[] = []): SunburstNode {
-    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children }
-}
-
-function file(path: string): SunburstNode {
-    return { ...folder(path), isFile: true }
-}
-
-const FOLDERS = folder("/root", [folder("/root/src", [folder("/root/src/app", [file("/root/src/app/deep.ts")]), file("/root/src/b.ts")])])
+const TREE = folderNode("/root", [
+    folderNode("/root/src", [folderNode("/root/src/app", [fileNode("/root/src/app/deep.ts")]), fileNode("/root/src/b.ts")])
+])
 
 interface Setup {
     tree?: SunburstNode | null
@@ -51,7 +34,7 @@ interface Setup {
     isDeltaState?: boolean
 }
 
-async function setup({ tree = FOLDERS, selectedPath = null, isDeltaState = false }: Setup = {}) {
+async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }: Setup = {}) {
     const rendered = await render(MetricsSunburstComponent, {
         providers: [
             provideMockStore({
@@ -59,16 +42,7 @@ async function setup({ tree = FOLDERS, selectedPath = null, isDeltaState = false
                 selectors: [
                     { selector: sunburstTreeSelector, value: tree },
                     { selector: sunburstMetricsSelector, value: { areaMetric: "rloc", colorMetric: "mcc" } },
-                    {
-                        selector: sunburstColoringSelector,
-                        value: {
-                            colorMetric: "mcc",
-                            colorRange: { from: 10, to: 20 },
-                            colorMode: ColorMode.absolute,
-                            mapColors: defaultMapColors,
-                            colorMetricRange: { minValue: 0, maxValue: 100 }
-                        }
-                    },
+                    { selector: sunburstColoringSelector, value: TEST_COLORING },
                     { selector: hoveredNodeIdSelector, value: null },
                     { selector: selectedBuildingIdSelector, value: selectedPath },
                     { selector: isDeltaStateSelector, value: isDeltaState }
@@ -84,26 +58,24 @@ async function setup({ tree = FOLDERS, selectedPath = null, isDeltaState = false
     return { ...rendered, store }
 }
 
-function lastDrawnCentre() {
-    const [option] = mockChart.setOption.mock.calls.at(-1)
-    return option.series[0].data[0].name
+function lastDrawnCentre(): string {
+    return lastDrawnOption().series[0].data[0].name
 }
 
 describe("MetricsSunburstComponent", () => {
+    let restoreElementSize: () => void
+
     beforeAll(() => {
-        Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => 800 })
-        Object.defineProperty(HTMLElement.prototype, "clientHeight", { configurable: true, get: () => 600 })
+        restoreElementSize = stubElementSize(() => ({ width: 800, height: 600 }))
     })
 
     afterAll(() => {
-        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth
-        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientHeight
+        restoreElementSize()
     })
 
     beforeEach(() => {
-        jest.clearAllMocks()
-        chartEventHandlers.clear()
-        globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
+        resetStubbedChart()
+        stubResizeObserver()
     })
 
     it("should centre on the top of the map while nothing is selected", async () => {
@@ -135,7 +107,7 @@ describe("MetricsSunburstComponent", () => {
         const { store, fixture } = await setup()
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root/src/b.ts", isCentre: false, isFile: true } })
+        fireChartEvent("click", { data: { name: "/root/src/b.ts", isCentre: false, isFile: true } })
         store.overrideSelector(selectedBuildingIdSelector, "/root/src/b.ts")
         store.refreshState()
         fixture.detectChanges()
@@ -179,7 +151,7 @@ describe("MetricsSunburstComponent", () => {
         const { store } = await setup()
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root/src", isCentre: false } })
+        fireChartEvent("click", { data: { name: "/root/src", isCentre: false } })
 
         // Assert
         expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src" }))
@@ -190,7 +162,7 @@ describe("MetricsSunburstComponent", () => {
         const { store } = await setup()
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root/src", isCentre: false } })
+        fireChartEvent("click", { data: { name: "/root/src", isCentre: false } })
 
         // Assert
         expect(store.dispatch).toHaveBeenNthCalledWith(1, setHoveredNodeId({ value: null }))
@@ -201,7 +173,7 @@ describe("MetricsSunburstComponent", () => {
         const { store } = await setup({ selectedPath: "/root/src/app" })
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root/src/app", isCentre: true } })
+        fireChartEvent("click", { data: { name: "/root/src/app", isCentre: true } })
 
         // Assert
         expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src" }))
@@ -212,7 +184,7 @@ describe("MetricsSunburstComponent", () => {
         const { store } = await setup()
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root", isCentre: true } })
+        fireChartEvent("click", { data: { name: "/root", isCentre: true } })
 
         // Assert
         expect(store.dispatch).not.toHaveBeenCalled()
@@ -223,7 +195,7 @@ describe("MetricsSunburstComponent", () => {
         const { store } = await setup()
 
         // Act
-        chartEventHandlers.get("contextmenu")({ data: { name: "/root/src" }, event: { event: { clientX: 7, clientY: 8 } } })
+        fireChartEvent("contextmenu", { data: { name: "/root/src" }, event: { event: { clientX: 7, clientY: 8 } } })
 
         // Assert
         expect(store.dispatch).toHaveBeenCalledWith(
@@ -238,8 +210,8 @@ describe("MetricsSunburstComponent", () => {
         const { store } = await setup()
 
         // Act
-        chartEventHandlers.get("mouseover")({ data: { name: "/root/src" } })
-        chartEventHandlers.get("mouseout")({})
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+        fireChartEvent("mouseout")
 
         // Assert
         expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodeId({ value: "/root/src" }))
@@ -252,7 +224,7 @@ describe("MetricsSunburstComponent", () => {
 
         // Assert
         expect(screen.getByRole("status").textContent).toContain("single map")
-        expect(mockChart.setOption).not.toHaveBeenCalled()
+        expect(stubbedChart.setOption).not.toHaveBeenCalled()
     })
 
     it("should explain instead of drawing when no file has an area", async () => {

@@ -16,6 +16,10 @@ export interface SunburstColoring {
 const DARK_TEXT = "#1f2937"
 const LIGHT_TEXT = "#ffffff"
 const LUMINANCE_THRESHOLD_FOR_DARK_TEXT = 0.5
+const RED_LUMA_WEIGHT = 0.299
+const GREEN_LUMA_WEIGHT = 0.587
+const BLUE_LUMA_WEIGHT = 0.114
+const MAX_CHANNEL_VALUE = 255
 
 export function nodeColor({ colorValue, isFlat }: Pick<SunburstNode, "colorValue" | "isFlat">, coloring: SunburstColoring): string {
     const { mapColors } = coloring
@@ -33,6 +37,6 @@ export function nodeColor({ colorValue, isFlat }: Pick<SunburstNode, "colorValue
 
 export function readableTextColor(backgroundHex: string): string {
     const [red, green, blue] = convert.hex.rgb(backgroundHex)
-    const relativeLuminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255
+    const relativeLuminance = (RED_LUMA_WEIGHT * red + GREEN_LUMA_WEIGHT * green + BLUE_LUMA_WEIGHT * blue) / MAX_CHANNEL_VALUE
     return relativeLuminance > LUMINANCE_THRESHOLD_FOR_DARK_TEXT ? DARK_TEXT : LIGHT_TEXT
 }

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MetricData } from "../../../../model/codeCharta.model"
-import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { LabelSettingsPanelComponent } from "../../../labelSettings/facade"
 import {
     ApplyScenarioDialogComponent,
@@ -10,7 +9,7 @@ import {
     ScenarioListDialogComponent,
     ScenariosService
 } from "../../../scenarios/facade"
-import { SettingsPopoverShellComponent } from "../../../shared/facade"
+import { injectIsSunburstLayout, SettingsPopoverShellComponent } from "../../../shared/facade"
 
 @Component({
     selector: "cc-labels-scenarios-segment",
@@ -27,7 +26,7 @@ import { SettingsPopoverShellComponent } from "../../../shared/facade"
 })
 export class LabelsScenariosSegmentComponent implements OnInit {
     private readonly scenariosService = inject(ScenariosService)
-    readonly isSunburst = toSignal(inject(MapStateReadWindow).isSunburstLayout$, { requireSync: true })
+    readonly isSunburst = injectIsSunburstLayout()
 
     readonly listDialog = viewChild.required<ScenarioListDialogComponent>("listDialog")
     readonly saveDialog = viewChild.required<SaveScenarioDialogComponent>("saveDialog")

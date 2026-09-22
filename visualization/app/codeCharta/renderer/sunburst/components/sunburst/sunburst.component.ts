@@ -13,7 +13,7 @@ import {
 import { SunburstChartRegistry } from "../../services/sunburstChart.registry"
 import { SunburstColoring } from "../../util/sunburstColor"
 import { buildSunburstOption, VISIBLE_RING_COUNT } from "../../util/sunburstOption.builder"
-import { findClosestNode, findFolder, isInside, SunburstMetrics, SunburstNode } from "../../util/sunburstTree"
+import { findClosestNode, isInside, SunburstMetrics, SunburstNode } from "../../util/sunburstTree"
 import { SunburstChartHost } from "./sunburstChartHost"
 
 export interface RightClickedNode {
@@ -30,7 +30,7 @@ export interface RightClickedNode {
 })
 export class SunburstComponent implements OnDestroy {
     readonly tree = input.required<SunburstNode>()
-    readonly centrePath = input.required<string>()
+    readonly centre = input.required<SunburstNode>()
     readonly hoveredPath = input<string | null>(null)
     readonly metrics = input.required<SunburstMetrics>()
     readonly coloring = input.required<SunburstColoring>()
@@ -50,8 +50,6 @@ export class SunburstComponent implements OnDestroy {
         onNodeHovered: path => this.nodeHovered.emit(path),
         onNodeRightClicked: (path, clientX, clientY) => this.nodeRightClicked.emit({ path, clientX, clientY })
     })
-
-    private readonly centre = computed(() => findFolder(this.tree(), this.centrePath()) ?? this.tree())
 
     private readonly highlightedPath = computed(() => {
         const hoveredPath = this.hoveredPath()

@@ -1,8 +1,9 @@
-import { signal } from "@angular/core"
 import { SunburstChart } from "echarts/charts"
 import { AriaComponent, TooltipComponent } from "echarts/components"
 import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
+import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
+import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { SunburstChartRegistry } from "../../services/sunburstChart.registry"
 import { SunburstDatum, SunburstOption } from "../../util/sunburstOption.builder"
 
@@ -21,26 +22,18 @@ interface EchartsSegmentEvent {
     event?: { event?: MouseEvent }
 }
 
-const POINTER_LEAVE_GRACE_MS = 120
-
-function suppressBrowserMenu(event: Event): void {
-    event.preventDefault()
-}
+export const POINTER_LEAVE_GRACE_MS = 120
 
 export class SunburstChartHost {
     private chart?: echarts.ECharts
     private attachedContainer?: HTMLElement
-    private resizeObserver?: ResizeObserver
     private highlightedPath: string | null = null
     private pathUnderPointer: string | null = null
     private pointerLeaveTimeout?: ReturnType<typeof setTimeout>
 
-    private readonly measuredContainerSize = signal(
-        { width: 0, height: 0 },
-        { equal: (a, b) => a.width === b.width && a.height === b.height }
-    )
+    private readonly containerSizeObserver = new ContainerSizeObserver()
 
-    readonly containerSize = this.measuredContainerSize.asReadonly()
+    readonly containerSize = this.containerSizeObserver.size
 
     constructor(
         private readonly chartRegistry: SunburstChartRegistry,
@@ -60,9 +53,7 @@ export class SunburstChartHost {
         this.chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as EchartsSegmentEvent))
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
-        this.measureContainer()
-        this.resizeObserver = new ResizeObserver(() => this.measureContainer())
-        this.resizeObserver.observe(container)
+        this.containerSizeObserver.observe(container)
     }
 
     render(option: SunburstOption): void {
@@ -85,8 +76,7 @@ export class SunburstChartHost {
     dispose(): void {
         this.cancelPointerLeave()
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
-        this.resizeObserver?.disconnect()
-        this.resizeObserver = undefined
+        this.containerSizeObserver.disconnect()
         if (this.chart) {
             this.chartRegistry.unregister(this.chart)
             this.chart.dispose()
@@ -146,12 +136,6 @@ export class SunburstChartHost {
         this.chart.dispatchAction({ type: "downplay", seriesIndex: 0 })
         if (this.highlightedPath !== null) {
             this.chart.dispatchAction({ type: "highlight", seriesIndex: 0, name: this.highlightedPath })
-        }
-    }
-
-    private measureContainer(): void {
-        if (this.attachedContainer) {
-            this.measuredContainerSize.set({ width: this.attachedContainer.clientWidth, height: this.attachedContainer.clientHeight })
         }
     }
 }

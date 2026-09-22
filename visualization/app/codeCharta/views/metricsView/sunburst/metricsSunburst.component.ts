@@ -6,7 +6,6 @@ import { CcState } from "../../../model/codeCharta.model"
 import {
     findClosestFolder,
     findClosestNode,
-    findFolder,
     parentPath,
     type RightClickedNode,
     SunburstComponent,
@@ -15,7 +14,22 @@ import {
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setRightClickedNodeData, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import {
+    BAR_GAP_PX,
+    BOTTOM_BAR_HEIGHT_CSS_VARIABLE,
+    DEFAULT_BOTTOM_BAR_HEIGHT_PX,
+    DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX,
+    FILE_EXTENSION_BAR_HEIGHT_CSS_VARIABLE,
+    METRICS_BAR_HEIGHT_CSS_VARIABLE
+} from "../../../util/barLayout"
 import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
+
+const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
+    `var(${BOTTOM_BAR_HEIGHT_CSS_VARIABLE}, ${DEFAULT_BOTTOM_BAR_HEIGHT_PX}px)`,
+    `var(${FILE_EXTENSION_BAR_HEIGHT_CSS_VARIABLE}, ${DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX}px)`,
+    `var(${METRICS_BAR_HEIGHT_CSS_VARIABLE}, 0px)`,
+    `${BAR_GAP_PX}px`
+].join(" + ")})`
 
 @Component({
     selector: "cc-metrics-sunburst",
@@ -24,11 +38,13 @@ import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: SunburstScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
-        class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)] bottom-[calc(var(--cc-bottom-bar-height,32px)+var(--cc-file-extension-bar-height,17px)+var(--cc-metrics-bar-height,0px)+12px)]",
+        class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)]",
+        "[style.bottom]": "bottomInset",
         "[class.hidden]": "isLoadingFile()"
     }
 })
 export class MetricsSunburstComponent {
+    protected readonly bottomInset = BOTTOM_INSET_ABOVE_THE_BARS
     private readonly store = inject<Store<CcState>>(Store)
 
     protected readonly tree = toSignal(this.store.select(sunburstTreeSelector), { requireSync: true })
@@ -41,13 +57,13 @@ export class MetricsSunburstComponent {
 
     private readonly requestedCentrePath = signal<string | null>(null)
 
-    protected readonly centrePath = computed(() => {
+    protected readonly view = computed(() => {
         const tree = this.tree()
-        const requestedCentrePath = this.requestedCentrePath()
         if (!tree) {
             return null
         }
-        return requestedCentrePath === null ? tree.path : findClosestFolder(tree, requestedCentrePath).path
+        const requestedCentrePath = this.requestedCentrePath()
+        return { tree, centre: requestedCentrePath === null ? tree : findClosestFolder(tree, requestedCentrePath) }
     })
 
     constructor() {
@@ -60,11 +76,11 @@ export class MetricsSunburstComponent {
     }
 
     protected goUp(): void {
-        const centrePath = this.centrePath()
-        if (centrePath === null || centrePath === this.tree().path) {
+        const view = this.view()
+        if (!view || view.centre === view.tree) {
             return
         }
-        this.selectFolder(parentPath(centrePath))
+        this.selectFolder(parentPath(view.centre.path))
     }
 
     protected selectFile(path: string): void {
@@ -93,12 +109,11 @@ export class MetricsSunburstComponent {
     }
 
     private isFileShownAroundTheCentre(path: string): boolean {
-        const tree = this.tree()
-        const centrePath = this.centrePath()
-        if (!tree || centrePath === null) {
+        const view = this.view()
+        if (!view) {
             return false
         }
-        const shownNode = findClosestNode(findFolder(tree, centrePath) ?? tree, path, VISIBLE_RING_COUNT)
+        const shownNode = findClosestNode(view.centre, path, VISIBLE_RING_COUNT)
         return shownNode.isFile && shownNode.path === path
     }
 }

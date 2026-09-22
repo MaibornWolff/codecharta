@@ -4,10 +4,10 @@
             <span>The sunburst shows a single map. Switch to another map layout to compare two maps.</span>
         </div>
     </div>
-} @else if (tree(); as tree) {
+} @else if (view(); as view) {
     <cc-sunburst
-        [tree]="tree"
-        [centrePath]="centrePath() ?? tree.path"
+        [tree]="view.tree"
+        [centre]="view.centre"
         [hoveredPath]="hoveredPath()"
         [metrics]="metrics()"
         [coloring]="coloring()"

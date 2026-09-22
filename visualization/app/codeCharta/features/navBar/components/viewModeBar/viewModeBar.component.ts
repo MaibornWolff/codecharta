@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core"
 import { RouterLink, RouterLinkActive } from "@angular/router"
 import { routeLinks, ViewId } from "../../../../routing/routePaths"
-import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { injectIsSunburstLayout } from "../../../shared/facade"
 import { ModeToggleComponent } from "../modeToggle/modeToggle.component"
 import { Print3DButtonComponent } from "../print3DButton/print3DButton.component"
 
@@ -24,5 +23,5 @@ export class ViewModeBarComponent {
     readonly routeLinks = routeLinks
     readonly groupLabel = computed(() => groupLabels[this.view()])
 
-    readonly isSunburst = toSignal(inject(MapStateReadWindow).isSunburstLayout$, { requireSync: true })
+    readonly isSunburst = injectIsSunburstLayout()
 }

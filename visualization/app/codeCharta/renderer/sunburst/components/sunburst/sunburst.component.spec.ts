@@ -1,107 +1,63 @@
 import { render } from "@testing-library/angular"
-import { ColorMode } from "../../../../model/codeCharta.model"
-import { defaultMapColors } from "../../../../stores/mapState/store/mapColors/mapColors.reducer"
-import { SunburstColoring } from "../../util/sunburstColor"
+import {
+    fireChartEvent,
+    folderNode,
+    lastDrawnOption,
+    lastHighlightedPath,
+    resetStubbedChart,
+    stubbedChart,
+    stubElementSize,
+    stubResizeObserver,
+    TEST_COLORING
+} from "../../testing/sunburstChart.stub"
 import { SunburstNode } from "../../util/sunburstTree"
 import { SunburstComponent } from "./sunburst.component"
 
-type EventHandler = (event: unknown) => void
+jest.mock("echarts/core", () => jest.requireActual("../../testing/sunburstChart.stub").echartsCoreStub)
 
-const chartEventHandlers = new Map<string, EventHandler>()
-
-const mockChart = {
-    setOption: jest.fn(),
-    dispatchAction: jest.fn(),
-    resize: jest.fn(),
-    dispose: jest.fn(),
-    on: jest.fn((eventName: string, handler: EventHandler) => chartEventHandlers.set(eventName, handler))
-}
-
-jest.mock("echarts/core", () => ({
-    init: jest.fn(() => mockChart),
-    use: jest.fn()
-}))
-
-class ResizeObserverMock {
-    observe() {}
-    disconnect() {}
-}
-
-const COLORING: SunburstColoring = {
-    colorMetric: "mcc",
-    colorRange: { from: 10, to: 20 },
-    colorMode: ColorMode.absolute,
-    mapColors: defaultMapColors,
-    colorMetricRange: { minValue: 0, maxValue: 100 }
-}
-
-function folder(path: string, children: SunburstNode[] = []): SunburstNode {
-    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children }
-}
-
-const FOLDERS = folder("/root", [
-    folder("/root/src", [folder("/root/src/app", [folder("/root/src/app/a", [folder("/root/src/app/a/b")])])])
-])
+const DEEPEST = folderNode("/root/src/app/a/b")
+const APP = folderNode("/root/src/app", [folderNode("/root/src/app/a", [DEEPEST])])
+const SRC = folderNode("/root/src", [APP])
+const ROOT = folderNode("/root", [SRC])
 
 let measuredSize = { width: 800, height: 600 }
 
-async function renderSunburst(inputs: Partial<{ centrePath: string; hoveredPath: string | null }> = {}) {
+async function renderSunburst(inputs: Partial<{ centre: SunburstNode; hoveredPath: string | null }> = {}) {
     return render(SunburstComponent, {
         inputs: {
-            tree: FOLDERS,
-            centrePath: "/root",
+            tree: ROOT,
+            centre: ROOT,
             hoveredPath: null,
             metrics: { areaMetric: "rloc", colorMetric: "mcc" },
-            coloring: COLORING,
+            coloring: TEST_COLORING,
             ...inputs
         }
     })
 }
 
-function lastDrawnCentre() {
-    const [option] = mockChart.setOption.mock.calls.at(-1)
-    return option.series[0].data[0]
-}
-
-function lastHighlight() {
-    return mockChart.dispatchAction.mock.calls
-        .map(([action]) => action)
-        .filter(action => action.type === "highlight")
-        .at(-1)
-}
-
 describe("SunburstComponent", () => {
+    let restoreElementSize: () => void
+
     beforeAll(() => {
-        Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => measuredSize.width })
-        Object.defineProperty(HTMLElement.prototype, "clientHeight", { configurable: true, get: () => measuredSize.height })
+        restoreElementSize = stubElementSize(() => measuredSize)
     })
 
     afterAll(() => {
-        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth
-        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientHeight
+        restoreElementSize()
     })
 
     beforeEach(() => {
-        jest.clearAllMocks()
-        chartEventHandlers.clear()
+        resetStubbedChart()
+        stubResizeObserver()
         measuredSize = { width: 800, height: 600 }
-        globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
     })
 
     it("should draw the folder it is centred on", async () => {
         // Act
-        await renderSunburst({ centrePath: "/root/src" })
+        await renderSunburst({ centre: SRC })
 
         // Assert
-        expect(lastDrawnCentre().name).toBe("/root/src")
-    })
-
-    it("should fall back to the top of the map when the centre is no longer in it", async () => {
-        // Act
-        await renderSunburst({ centrePath: "/root/gone" })
-
-        // Assert
-        expect(lastDrawnCentre().name).toBe("/root")
+        expect(lastDrawnOption().series[0].data[0].name).toBe("/root/src")
     })
 
     it("should not draw into a container that has no size yet", async () => {
@@ -112,7 +68,7 @@ describe("SunburstComponent", () => {
         await renderSunburst()
 
         // Assert
-        expect(mockChart.setOption).not.toHaveBeenCalled()
+        expect(stubbedChart.setOption).not.toHaveBeenCalled()
     })
 
     it("should highlight the drawn folder that holds the hovered path", async () => {
@@ -120,28 +76,28 @@ describe("SunburstComponent", () => {
         await renderSunburst({ hoveredPath: "/root/src/app/a/b/deep.ts" })
 
         // Assert
-        expect(lastHighlight()).toEqual({ type: "highlight", seriesIndex: 0, name: "/root/src/app/a" })
+        expect(lastHighlightedPath()).toBe("/root/src/app/a")
     })
 
     it("should highlight nothing for a hovered path outside the drawn folders", async () => {
         // Act
-        await renderSunburst({ centrePath: "/root/src/app", hoveredPath: "/root/other.ts" })
+        await renderSunburst({ centre: APP, hoveredPath: "/root/other.ts" })
 
         // Assert
-        expect(lastHighlight()).toBeUndefined()
+        expect(lastHighlightedPath()).toBeUndefined()
     })
 
     it("should not highlight the centre, which would dim every ring around it", async () => {
         // Act
-        await renderSunburst({ centrePath: "/root/src", hoveredPath: "/root/src/file.ts" })
+        await renderSunburst({ centre: SRC, hoveredPath: "/root/src/file.ts" })
 
         // Assert
-        expect(lastHighlight()).toBeUndefined()
+        expect(lastHighlightedPath()).toBeUndefined()
     })
 
     it("should pass clicks and hovers on to its outputs", async () => {
         // Arrange
-        const { fixture } = await renderSunburst({ centrePath: "/root/src" })
+        const { fixture } = await renderSunburst({ centre: SRC })
         const folderClicked = jest.fn()
         const centreClicked = jest.fn()
         const nodeHovered = jest.fn()
@@ -150,9 +106,9 @@ describe("SunburstComponent", () => {
         fixture.componentInstance.nodeHovered.subscribe(nodeHovered)
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root/src/app", isCentre: false } })
-        chartEventHandlers.get("click")({ data: { name: "/root/src", isCentre: true } })
-        chartEventHandlers.get("mouseover")({ data: { name: "/root/src/app" } })
+        fireChartEvent("click", { data: { name: "/root/src/app", isCentre: false } })
+        fireChartEvent("click", { data: { name: "/root/src", isCentre: true } })
+        fireChartEvent("mouseover", { data: { name: "/root/src/app" } })
 
         // Assert
         expect(folderClicked).toHaveBeenCalledWith("/root/src/app")
@@ -167,7 +123,7 @@ describe("SunburstComponent", () => {
         fixture.componentInstance.fileClicked.subscribe(fileClicked)
 
         // Act
-        chartEventHandlers.get("click")({ data: { name: "/root/a.ts", isCentre: false, isFile: true } })
+        fireChartEvent("click", { data: { name: "/root/a.ts", isCentre: false, isFile: true } })
 
         // Assert
         expect(fileClicked).toHaveBeenCalledWith("/root/a.ts")
@@ -180,7 +136,7 @@ describe("SunburstComponent", () => {
         fixture.componentInstance.nodeRightClicked.subscribe(nodeRightClicked)
 
         // Act
-        chartEventHandlers.get("contextmenu")({ data: { name: "/root/src" }, event: { event: { clientX: 5, clientY: 6 } } })
+        fireChartEvent("contextmenu", { data: { name: "/root/src" }, event: { event: { clientX: 5, clientY: 6 } } })
 
         // Assert
         expect(nodeRightClicked).toHaveBeenCalledWith({ path: "/root/src", clientX: 5, clientY: 6 })
@@ -194,6 +150,6 @@ describe("SunburstComponent", () => {
         fixture.destroy()
 
         // Assert
-        expect(mockChart.dispose).toHaveBeenCalled()
+        expect(stubbedChart.dispose).toHaveBeenCalled()
     })
 })

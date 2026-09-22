@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, goto, withDiskBackedPage } from "../../../../playwright.helper"
+import { clearIndexedDB, goto, readPersistedLayoutAlgorithm, withDiskBackedPage } from "../../../../playwright.helper"
 import { ExplorerTreeLevelPageObject } from "../../../features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { SidebarInspectorPageObject } from "../../../features/sidebarInspector/components/sidebarInspector/sidebarInspector.po"
 import { MetricsSunburstPageObject } from "./metricsSunburst.po"
@@ -100,7 +100,7 @@ test.describe("Sunburst layout", () => {
             const inspector = new SidebarInspectorPageObject(page)
             await goto(page)
             await sunburst.switchLayoutTo("Sunburst")
-            await expect.poll(() => sunburst.persistedLayout(), { timeout: 30_000 }).toBe("Sunburst")
+            await expect.poll(() => readPersistedLayoutAlgorithm(page), { timeout: 30_000 }).toBe("Sunburst")
 
             // Act
             await goto(page)

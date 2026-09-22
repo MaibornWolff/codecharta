@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
-import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { METRICS_BAR_HEIGHT_CSS_VARIABLE } from "../../../../util/barLayout"
 import {
     AxisCardComponent,
     BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
     BarShellDirective,
     HEIGHT_CSS_VARIABLE,
+    injectIsSunburstLayout,
     PublishesHeightDirective
 } from "../../../shared/facade"
 import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
@@ -49,7 +49,7 @@ export class MetricsBarComponent {
         initialValue: false
     })
 
-    readonly isSunburst = toSignal(inject(MapStateReadWindow).isSunburstLayout$, { requireSync: true })
+    readonly isSunburst = injectIsSunburstLayout()
 
     readonly showColorMetricSegment = computed(() => !this.isDeltaState())
 

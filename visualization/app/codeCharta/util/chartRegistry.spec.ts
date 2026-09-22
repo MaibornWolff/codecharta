@@ -1,14 +1,14 @@
-import { WordCloudChartHandle, WordCloudChartRegistry } from "./wordCloudChart.registry"
+import { ChartHandle, ChartRegistry } from "./chartRegistry"
 
-function chartHandle(): WordCloudChartHandle {
+function chartHandle(): ChartHandle {
     return { getRenderedCanvas: () => document.createElement("canvas") }
 }
 
-describe("WordCloudChartRegistry", () => {
-    let registry: WordCloudChartRegistry
+describe("ChartRegistry", () => {
+    let registry: ChartRegistry
 
     beforeEach(() => {
-        registry = new WordCloudChartRegistry()
+        registry = new ChartRegistry()
     })
 
     it("should hold no chart initially", () => {

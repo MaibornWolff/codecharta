@@ -1,0 +1,86 @@
+import { ColorMode } from "../../../model/codeCharta.model"
+import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
+import { SunburstColoring } from "../util/sunburstColor"
+import { SunburstNode } from "../util/sunburstTree"
+
+type ChartEventHandler = (event: unknown) => void
+
+const chartEventHandlers = new Map<string, ChartEventHandler>()
+
+export const stubbedChart = {
+    setOption: jest.fn(),
+    dispatchAction: jest.fn(),
+    resize: jest.fn(),
+    dispose: jest.fn(),
+    on: jest.fn((eventName: string, handler: ChartEventHandler) => chartEventHandlers.set(eventName, handler))
+}
+
+/** @public Reached from `jest.mock` factories through `jest.requireActual`, which knip cannot follow. */
+export const echartsCoreStub = {
+    init: jest.fn(() => stubbedChart),
+    use: jest.fn()
+}
+
+export function fireChartEvent(eventName: string, event: unknown = {}): void {
+    chartEventHandlers.get(eventName)(event)
+}
+
+export function resetStubbedChart(): void {
+    jest.clearAllMocks()
+    chartEventHandlers.clear()
+}
+
+export function lastDrawnOption() {
+    return stubbedChart.setOption.mock.calls.at(-1)?.[0]
+}
+
+export function lastHighlightedPath(): string | undefined {
+    return stubbedChart.dispatchAction.mock.calls
+        .map(([action]) => action)
+        .filter(action => action.type === "highlight")
+        .at(-1)?.name
+}
+
+export class ResizeObserverStub {
+    static latestCallback: () => void
+    static readonly disconnect = jest.fn()
+
+    constructor(callback: () => void) {
+        ResizeObserverStub.latestCallback = callback
+    }
+
+    observe() {}
+
+    disconnect() {
+        ResizeObserverStub.disconnect()
+    }
+}
+
+export function stubResizeObserver(): void {
+    globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver
+}
+
+export function stubElementSize(size: () => { width: number; height: number }): () => void {
+    Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => size().width })
+    Object.defineProperty(HTMLElement.prototype, "clientHeight", { configurable: true, get: () => size().height })
+    return () => {
+        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth
+        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientHeight
+    }
+}
+
+export const TEST_COLORING: SunburstColoring = {
+    colorMetric: "mcc",
+    colorRange: { from: 10, to: 20 },
+    colorMode: ColorMode.absolute,
+    mapColors: defaultMapColors,
+    colorMetricRange: { minValue: 0, maxValue: 100 }
+}
+
+export function folderNode(path: string, children: SunburstNode[] = [], overrides: Partial<SunburstNode> = {}): SunburstNode {
+    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children, ...overrides }
+}
+
+export function fileNode(path: string, overrides: Partial<SunburstNode> = {}): SunburstNode {
+    return folderNode(path, [], { isFile: true, ...overrides })
+}

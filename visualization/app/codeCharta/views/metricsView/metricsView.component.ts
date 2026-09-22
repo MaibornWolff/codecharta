@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { CodeMapComponent } from "../../features/codeMap/facade"
 import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facade"
@@ -10,7 +9,7 @@ import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuComponent
 } from "../../features/nodeContextMenu/facade"
-import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
+import { injectIsSunburstLayout, LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
     EXPLORER_CAPABILITIES,
@@ -28,7 +27,6 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
-import { MapStateReadWindow } from "../../stores/mapState/mapState.read.facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
 import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
@@ -84,5 +82,5 @@ import { MetricsSunburstComponent } from "./sunburst/metricsSunburst.component"
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsViewComponent {
-    protected readonly isSunburst = toSignal(inject(MapStateReadWindow).isSunburstLayout$, { requireSync: true })
+    protected readonly isSunburst = injectIsSunburstLayout()
 }

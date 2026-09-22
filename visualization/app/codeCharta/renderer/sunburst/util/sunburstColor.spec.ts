@@ -1,19 +1,11 @@
-import { ColorMode } from "../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../stores/mapState/store/mapColors/mapColors.reducer"
-import { nodeColor, readableTextColor, SunburstColoring } from "./sunburstColor"
+import { TEST_COLORING } from "../testing/sunburstChart.stub"
+import { nodeColor, readableTextColor } from "./sunburstColor"
 
 describe("nodeColor", () => {
-    const coloring: SunburstColoring = {
-        colorMetric: "mcc",
-        colorRange: { from: 10, to: 20 },
-        colorMode: ColorMode.absolute,
-        mapColors: defaultMapColors,
-        colorMetricRange: { minValue: 0, maxValue: 100 }
-    }
-
     it("should classify a value on the map's colour range unchanged, just like a building", () => {
         // Act
-        const colors = [5, 15, 25].map(colorValue => nodeColor({ colorValue, isFlat: false }, coloring))
+        const colors = [5, 15, 25].map(colorValue => nodeColor({ colorValue, isFlat: false }, TEST_COLORING))
 
         // Assert
         expect(colors).toEqual([defaultMapColors.positive, defaultMapColors.neutral, defaultMapColors.negative])
@@ -21,7 +13,7 @@ describe("nodeColor", () => {
 
     it("should use the base colour for a node without a colour value", () => {
         // Act
-        const color = nodeColor({ colorValue: undefined, isFlat: false }, coloring)
+        const color = nodeColor({ colorValue: undefined, isFlat: false }, TEST_COLORING)
 
         // Assert
         expect(color).toBe(defaultMapColors.base)
@@ -29,7 +21,7 @@ describe("nodeColor", () => {
 
     it("should use the flat colour for a flattened node", () => {
         // Act
-        const color = nodeColor({ colorValue: 25, isFlat: true }, coloring)
+        const color = nodeColor({ colorValue: 25, isFlat: true }, TEST_COLORING)
 
         // Assert
         expect(color).toBe(defaultMapColors.flat)
@@ -37,7 +29,7 @@ describe("nodeColor", () => {
 
     it("should colour every node positive for the unary colour metric", () => {
         // Act
-        const color = nodeColor({ colorValue: 25, isFlat: false }, { ...coloring, colorMetric: "unary" })
+        const color = nodeColor({ colorValue: 25, isFlat: false }, { ...TEST_COLORING, colorMetric: "unary" })
 
         // Assert
         expect(color).toBe(defaultMapColors.positive)

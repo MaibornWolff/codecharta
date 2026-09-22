@@ -1,17 +1,13 @@
 import { inject, Signal } from "@angular/core"
 import { createPNGFileName } from "../../../model/files/files.helper"
 import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
+import { ChartRegistry } from "../../../util/chartRegistry"
 import { ScreenshotCapture } from "../screenshotCapture"
 import { cropTransparentMargins } from "./canvasCrop"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { downloadPng } from "./pngScreenshot"
 
 const PNG_MIME_TYPE = "image/png"
-
-export interface ChartRegistry {
-    readonly hasChart: Signal<boolean>
-    current(): { getRenderedCanvas(options: { pixelRatio: number; backgroundColor: string }): HTMLCanvasElement } | null
-}
 
 export abstract class ChartScreenshotService implements ScreenshotCapture {
     private readonly filesRepo = inject(FilesRepo)

@@ -1,3 +1,4 @@
+import { escapeHtml } from "../../../util/escapeHtml"
 import { nodeColor, readableTextColor, SunburstColoring } from "./sunburstColor"
 import { SunburstMetrics, SunburstNode } from "./sunburstTree"
 
@@ -8,6 +9,8 @@ const OUTER_RADIUS_PERCENT = 95
 const MIN_LABEL_ANGLE_DEGREES = 5
 const LABEL_PADDING_PX = 8
 const SEGMENT_BORDER_COLOR = "#ffffff"
+const SEGMENT_BORDER_WIDTH_PX = 1
+const RING_TRANSITION_MS = 400
 const HOVER_FADE = { duration: 500, easing: "cubicOut" }
 const DIMMED_OPACITY = 0.45
 const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
@@ -32,7 +35,7 @@ export interface SunburstDatum {
     children: SunburstDatum[]
 }
 
-interface SunburstTooltipParams {
+interface SunburstFormatterParams {
     data?: SunburstDatum
 }
 
@@ -50,9 +53,9 @@ export function buildSunburstOption(inputs: SunburstOptionInputs) {
                 emphasis: { focus: "ancestor" },
                 blur: { itemStyle: { opacity: DIMMED_OPACITY }, label: { opacity: DIMMED_OPACITY } },
                 stateAnimation: HOVER_FADE,
-                itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: 1 },
+                itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: SEGMENT_BORDER_WIDTH_PX },
                 label: { formatter: labelOf },
-                animationDurationUpdate: 400,
+                animationDurationUpdate: RING_TRANSITION_MS,
                 levels: levelsAround(inputs.centre, inputs.chartSizeInPixels / 2)
             }
         ]
@@ -109,12 +112,12 @@ function toDatum(node: SunburstNode, coloring: SunburstColoring, ringsLeft: numb
     }
 }
 
-function labelOf({ data }: SunburstTooltipParams): string {
+function labelOf({ data }: SunburstFormatterParams): string {
     return data?.displayName ?? ""
 }
 
 function buildTooltipFormatter(metrics: SunburstMetrics, isMapRoot: boolean) {
-    return ({ data }: SunburstTooltipParams): string => {
+    return ({ data }: SunburstFormatterParams): string => {
         if (!data) {
             return ""
         }
@@ -128,16 +131,4 @@ function buildTooltipFormatter(metrics: SunburstMetrics, isMapRoot: boolean) {
         }
         return rows.join("<br/>")
     }
-}
-
-const HTML_ESCAPES: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-}
-
-function escapeHtml(text: string): string {
-    return text.replaceAll(/[&<>"']/g, character => HTML_ESCAPES[character])
 }
