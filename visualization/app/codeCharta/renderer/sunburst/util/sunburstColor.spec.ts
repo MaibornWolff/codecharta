@@ -29,7 +29,7 @@ describe("nodeColor", () => {
 
     it("should colour every node positive for the unary colour metric", () => {
         // Act
-        const color = nodeColor({ colorValue: 25, isFlat: false }, { ...TEST_COLORING, colorMetric: "unary" })
+        const color = nodeColor({ colorValue: 25, isFlat: false }, { ...TEST_COLORING, isUnaryMetric: true })
 
         // Assert
         expect(color).toBe(defaultMapColors.positive)
@@ -37,9 +37,19 @@ describe("nodeColor", () => {
 })
 
 describe("readableTextColor", () => {
-    it("should pick dark text on a light background and light text on a dark one", () => {
+    it("should pick dark text on a light background", () => {
+        // Act
+        const color = readableTextColor("#ffff00")
+
         // Assert
-        expect(readableTextColor("#ffff00")).toBe("#1f2937")
-        expect(readableTextColor("#820e0e")).toBe("#ffffff")
+        expect(color).toBe("#1f2937")
+    })
+
+    it("should pick light text on a dark background", () => {
+        // Act
+        const color = readableTextColor("#820e0e")
+
+        // Assert
+        expect(color).toBe("#ffffff")
     })
 })

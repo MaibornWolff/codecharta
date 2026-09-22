@@ -1,4 +1,7 @@
 import { ColorMode } from "../../../model/codeCharta.model"
+
+export { elementOfSize, resizeObserverDisconnect, stubElementSize, stubResizeObserver } from "../../../util/testUtils/domStubs"
+
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { SunburstColoring } from "../util/sunburstColor"
 import { SunburstNode } from "../util/sunburstTree"
@@ -38,33 +41,8 @@ export function lastHighlightedPath(): string | undefined {
     return stubbedChart.dispatchAction.mock.calls.map(([action]) => action).findLast(action => action.type === "highlight")?.name
 }
 
-class ResizeObserverStub {
-    observe() {
-        // the chart host only needs a size once; a resize is never reported to it in a test
-    }
-
-    disconnect() {
-        resizeObserverDisconnect()
-    }
-}
-
-export const resizeObserverDisconnect = jest.fn()
-
-export function stubResizeObserver(): void {
-    globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver
-}
-
-export function stubElementSize(size: () => { width: number; height: number }): () => void {
-    Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => size().width })
-    Object.defineProperty(HTMLElement.prototype, "clientHeight", { configurable: true, get: () => size().height })
-    return () => {
-        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth
-        delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientHeight
-    }
-}
-
 export const TEST_COLORING: SunburstColoring = {
-    colorMetric: "mcc",
+    isUnaryMetric: false,
     colorRange: { from: 10, to: 20 },
     colorMode: ColorMode.absolute,
     mapColors: defaultMapColors,

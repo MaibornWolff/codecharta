@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildSunburstTree, findClosestFolder, findClosestNode, findFolder, findParentFolder, isInside } from "./sunburstTree"
+import { buildSunburstTree, findClosestFolder, findClosestNode, findParentFolder, isInside } from "./sunburstTree"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -130,30 +130,6 @@ describe("node lookup", () => {
         METRICS,
         NOTHING_IS_FLAT
     )
-
-    it("should find a folder by its path", () => {
-        // Act
-        const result = findFolder(tree, "/root/src/app")
-
-        // Assert
-        expect(result.path).toBe("/root/src/app")
-    })
-
-    it("should not mistake a folder for another one that merely starts with the same name", () => {
-        // Act
-        const result = findFolder(tree, "/root/srcOther")
-
-        // Assert
-        expect(result.path).toBe("/root/srcOther")
-    })
-
-    it("should find no folder for a file's path", () => {
-        // Act
-        const result = findFolder(tree, "/root/src/app/a.ts")
-
-        // Assert
-        expect(result).toBeUndefined()
-    })
 
     it("should find the deepest folder containing a path, never a file", () => {
         // Assert

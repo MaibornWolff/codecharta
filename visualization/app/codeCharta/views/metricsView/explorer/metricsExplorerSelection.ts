@@ -13,14 +13,14 @@ export class MetricsExplorerSelection implements ExplorerSelection {
     private readonly codeMapTooltipService = inject(CodeMapTooltipService)
 
     private readonly selectedNodePath = toSignal(this.sharedViewReadWindow.selectedNodePath$, { requireSync: true })
-    private readonly hoveredNodeId = toSignal(this.sharedViewReadWindow.hoveredNodeId$, { requireSync: true })
+    private readonly hoveredNodePath = toSignal(this.sharedViewReadWindow.hoveredNodePath$, { requireSync: true })
 
     isSelected(node: CodeMapNode): boolean {
         return this.selectedNodePath() === node.path
     }
 
     isHovered(node: CodeMapNode): boolean {
-        return this.hoveredNodeId() === node.path
+        return this.hoveredNodePath() === node.path
     }
 
     select(node: CodeMapNode): void {
@@ -37,7 +37,7 @@ export class MetricsExplorerSelection implements ExplorerSelection {
     }
 
     hoverEnd(): void {
-        this.nodeInteraction.clearHover()
+        this.nodeInteraction.hoverNode(null)
         this.codeMapTooltipService.hide()
     }
 }

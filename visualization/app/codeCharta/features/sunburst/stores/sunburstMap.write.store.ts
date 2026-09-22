@@ -15,11 +15,7 @@ export class SunburstMapWriteStore {
     }
 
     hoverNode(path: string | null) {
-        if (path === null) {
-            this.nodeInteraction.clearHover()
-        } else {
-            this.nodeInteraction.hoverNode(path)
-        }
+        this.nodeInteraction.hoverNode(path)
     }
 
     openContextMenu(path: string, clientX: number, clientY: number) {

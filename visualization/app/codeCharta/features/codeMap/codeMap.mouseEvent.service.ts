@@ -11,6 +11,7 @@ import {
     changeCursorIndicator,
     IdToBuildingService,
     ThreeCameraService,
+    ThreeMapVisibilityStore,
     ThreeRendererService,
     ThreeSceneService,
     ThreeViewerService
@@ -47,11 +48,11 @@ export class CodeMapMouseEventService implements OnDestroy {
     private readonly subscriptions = [
         this.fileStoreReadWindow.visibleFileStates$.pipe(tap(() => this.onFilesSelectionChanged())).subscribe(),
         this.sharedViewReadWindow.excludedNodes$.pipe(tap(excludedNodes => this.onExcludedNodesChanged(excludedNodes))).subscribe(),
-        this.sharedViewReadWindow.hoveredNodeId$
+        this.sharedViewReadWindow.hoveredNodePath$
             .pipe(
-                tap(hoveredNodeId => {
-                    if (hoveredNodeId !== null) {
-                        this.hoverNode(hoveredNodeId)
+                tap(hoveredNodePath => {
+                    if (hoveredNodePath !== null) {
+                        this.hoverNode(hoveredNodePath)
                     } else {
                         this.unhoverNode(false)
                     }
@@ -67,6 +68,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         private readonly codeMapStore: CodeMapStore,
         private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly sharedViewReadWindow: SharedViewReadWindow,
+        private readonly threeMapVisibilityStore: ThreeMapVisibilityStore,
         private readonly labelSettingsFacade: LabelSettingsFacade,
         private readonly tooltipService: CodeMapTooltipService,
         private readonly viewCubeMouseEvents: ViewCubeMouseEventsService,
@@ -100,7 +102,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     hoverNode(path: string) {
-        if (this.isGrabbingOrMoving() || !this.codeMapStore.isMapShown()) {
+        if (this.isGrabbingOrMoving() || !this.threeMapVisibilityStore.isMapShown()) {
             return
         }
 
@@ -118,7 +120,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     unhoverNode(updateStore = true) {
-        if (!this.codeMapStore.isMapShown()) {
+        if (!this.threeMapVisibilityStore.isMapShown()) {
             return
         }
         this.unhoverBuilding(updateStore)
@@ -149,7 +151,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     onExcludedNodesChanged(excludedNodes: ExcludedNode[]) {
-        const selectedPath = this.codeMapStore.getSelectedNodePath()
+        const selectedPath = this.sharedViewReadWindow.getSelectedNodePath()
         this.tooltipService.hide()
         if (selectedPath !== null && createExcludeMatcher(excludedNodes).isExcludedLeaf(selectedPath)) {
             this.threeSceneService.clearSelection()
@@ -204,7 +206,7 @@ export class CodeMapMouseEventService implements OnDestroy {
                     this.hoverBuilding(to)
                 }
             }
-        } else if (!to && this.codeMapStore.getHoveredNodeId() !== null) {
+        } else if (!to && this.sharedViewReadWindow.getHoveredNodePath() !== null) {
             // The highlight was cleared out-of-band (e.g. a click or a scroll that never re-raycasts)
             // while the store still points at a building, so the from/to ids both read as undefined and
             // the transition above is skipped. Force an unhover so the edge preview is restored instead
@@ -398,7 +400,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
 
         if (updateStore) {
-            this.codeMapStore.clearHover()
+            this.codeMapStore.hoverNode(null)
         }
     }
 }

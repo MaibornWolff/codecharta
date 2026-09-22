@@ -24,30 +24,30 @@ const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
 
 describe("sunburstTreeSelector", () => {
-    it("should build the folders of the whole map when nothing is focused", () => {
+    it("should build the tree of the whole map when nothing is focused", () => {
         // Act
-        const folders = sunburstTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+        const tree = sunburstTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
 
         // Assert
-        expect(folders.path).toBe("/root")
-        expect(folders.area).toBe(7)
+        expect(tree.path).toBe("/root")
+        expect(tree.area).toBe(7)
     })
 
     it("should start at the focused folder", () => {
         // Act
-        const folders = sunburstTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, "/root/src", METRICS, NOTHING_IS_FLAT)
+        const tree = sunburstTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, "/root/src", METRICS, NOTHING_IS_FLAT)
 
         // Assert
-        expect(folders.path).toBe("/root/src")
-        expect(folders.area).toBe(3)
+        expect(tree.path).toBe("/root/src")
+        expect(tree.area).toBe(3)
     })
 
-    it("should have no folders before a map is loaded", () => {
+    it("should have no tree before a map is loaded", () => {
         // Act
-        const folders = sunburstTreeSelector.projector(accumulatedData(undefined), new Map(), undefined, METRICS, NOTHING_IS_FLAT)
+        const tree = sunburstTreeSelector.projector(accumulatedData(undefined), new Map(), undefined, METRICS, NOTHING_IS_FLAT)
 
         // Assert
-        expect(folders).toBeNull()
+        expect(tree).toBeNull()
     })
 })
 
@@ -60,6 +60,18 @@ describe("sunburst metrics and coloring", () => {
         expect(metrics).toEqual({ areaMetric: "rloc", colorMetric: "mcc" })
     })
 
+    it("should mark the unary metric, which colours every node the same", () => {
+        // Act
+        const coloring = sunburstColoringSelector.projector("unary", { from: 1, to: 2 }, ColorMode.absolute, defaultMapColors, {
+            minValue: 0,
+            maxValue: 3,
+            values: []
+        })
+
+        // Assert
+        expect(coloring.isUnaryMetric).toBe(true)
+    })
+
     it("should gather what colouring a folder needs", () => {
         // Arrange
         const colorRange = { from: 1, to: 2 }
@@ -70,7 +82,7 @@ describe("sunburst metrics and coloring", () => {
 
         // Assert
         expect(coloring).toEqual({
-            colorMetric: "mcc",
+            isUnaryMetric: false,
             colorRange,
             colorMode: ColorMode.absolute,
             mapColors: defaultMapColors,

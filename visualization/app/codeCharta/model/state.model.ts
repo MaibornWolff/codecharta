@@ -68,7 +68,7 @@ export interface SharedView {
     flattenedNodes: FlattenedNode[]
     metricRules: MetricRule[]
     markedPackages: MarkedPackage[]
-    hoveredNodeId: string | null
+    hoveredNodePath: string | null
     selectedNodePath: string | null
     rightClickedNodeData: {
         nodeId: string

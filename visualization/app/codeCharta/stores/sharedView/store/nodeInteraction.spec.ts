@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { setHoveredNodeId } from "./hoveredNodeId/hoveredNodeId.actions"
+import { setHoveredNodePath } from "./hoveredNodePath/hoveredNodePath.actions"
 import { NodeInteraction } from "./nodeInteraction"
 import { setSelectedNodePath } from "./selectedNodePath/selectedNodePath.actions"
 
@@ -27,10 +27,10 @@ describe("NodeInteraction", () => {
     it("should hover a node and clear the hover", () => {
         // Act
         nodeInteraction.hoverNode("/root/src")
-        nodeInteraction.clearHover()
+        nodeInteraction.hoverNode(null)
 
         // Assert
-        expect(dispatch).toHaveBeenNthCalledWith(1, setHoveredNodeId({ value: "/root/src" }))
-        expect(dispatch).toHaveBeenNthCalledWith(2, setHoveredNodeId({ value: null }))
+        expect(dispatch).toHaveBeenNthCalledWith(1, setHoveredNodePath({ value: "/root/src" }))
+        expect(dispatch).toHaveBeenNthCalledWith(2, setHoveredNodePath({ value: null }))
     })
 })

@@ -14,6 +14,7 @@ import {
     mapColorsSelector
 } from "../../../stores/mapState/mapState.read.facade"
 import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 
 export const sunburstMetricsSelector = createSelector(
     areaMetricSelector,
@@ -40,7 +41,7 @@ export const sunburstColoringSelector = createSelector(
     mapColorsSelector,
     metricRangeSelector,
     (colorMetric, colorRange, colorMode, mapColors, colorMetricRange): SunburstColoring => ({
-        colorMetric,
+        isUnaryMetric: colorMetric === UNARY_METRIC,
         colorRange,
         colorMode,
         mapColors,

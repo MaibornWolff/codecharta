@@ -74,6 +74,22 @@ test.describe("Sunburst layout", () => {
         await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")
     })
 
+    test("should offer the node menu on a right-clicked segment, without the entries the sunburst cannot show", async ({ page }) => {
+        // Arrange
+        const sunburst = new SunburstMapPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+
+        // Act
+        await sunburst.rightClickAt(INNER_RING)
+
+        // Assert
+        const menu = page.locator("#codemap-context-menu")
+        await expect(menu).toBeVisible()
+        await expect(menu).toContainText("Exclude")
+        await expect(menu).toContainText("Focus")
+        await expect(menu).not.toContainText("Keep Highlight")
+    })
+
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {
         // Arrange
         const sunburst = new SunburstMapPageObject(page)

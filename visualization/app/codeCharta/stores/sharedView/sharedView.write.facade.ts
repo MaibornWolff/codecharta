@@ -6,7 +6,7 @@ export {
 } from "./store/excludedNodes/excludedNodes.actions"
 export { addFlattenedNodes, removeFlattenedNodes, setFlattenedNodes } from "./store/flattenedNodes/flattenedNodes.actions"
 export { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./store/focusedNodePath/focusedNodePath.actions"
-export { setHoveredNodeId } from "./store/hoveredNodeId/hoveredNodeId.actions"
+export { setHoveredNodePath } from "./store/hoveredNodePath/hoveredNodePath.actions"
 export { markPackages, setMarkedPackages, unmarkPackage } from "./store/markedPackages/markedPackages.actions"
 export { addMetricRule, removeMetricRule, setMetricRules } from "./store/metricRules/metricRules.actions"
 export { NodeInteraction } from "./store/nodeInteraction"

@@ -2,11 +2,11 @@ import convert from "color-convert"
 import { ColorMode, ColorRange, MapColors } from "../../../model/codeCharta.model"
 import { getColorByMetricValue } from "../../../util/color/gradientCalculator"
 import { MetricMinMax } from "../../../util/metric/metricRange"
-import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 import { SunburstNode } from "./sunburstTree"
 
 export interface SunburstColoring {
-    colorMetric: string
+    /** The unary metric counts nodes rather than measuring them, so every node shows as good. */
+    isUnaryMetric: boolean
     colorRange: ColorRange
     colorMode: ColorMode
     mapColors: MapColors
@@ -29,7 +29,7 @@ export function nodeColor({ colorValue, isFlat }: Pick<SunburstNode, "colorValue
     if (isFlat) {
         return mapColors.flat
     }
-    if (coloring.colorMetric === UNARY_METRIC) {
+    if (coloring.isUnaryMetric) {
         return mapColors.positive
     }
     return getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, colorValue)

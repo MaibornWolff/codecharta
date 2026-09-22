@@ -12,6 +12,7 @@ import {
 } from "../../../renderer/threeViewer/rendering/codeMapBuilding.mocks"
 import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
+import { ThreeMapVisibilityStore } from "../../../renderer/threeViewer/threeViewer.facade"
 import {
     setEdgeMetric,
     setHeightMetric,
@@ -22,7 +23,7 @@ import {
 } from "../../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
+import { setHoveredNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { clone } from "../../../util/clone"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { wait } from "../../../util/testUtils/wait"
@@ -50,7 +51,12 @@ describe("CodeMapArrowService", () => {
         state = TestBed.inject(State)
         const codeMapStore = TestBed.inject(CodeMapStore)
         const sharedViewReadWindow = TestBed.inject(SharedViewReadWindow)
-        codeMapArrowService = new CodeMapArrowService(codeMapStore, sharedViewReadWindow, threeSceneService)
+        codeMapArrowService = new CodeMapArrowService(
+            codeMapStore,
+            sharedViewReadWindow,
+            threeSceneService,
+            TestBed.inject(ThreeMapVisibilityStore)
+        )
     })
 
     function withMockedThreeSceneService() {
@@ -443,13 +449,13 @@ describe("CodeMapArrowService", () => {
     describe("hover while the 3D map is not on screen", () => {
         it("should not recompute edges for a building nobody can see", () => {
             // Arrange
-            jest.spyOn(codeMapArrowService["codeMapStore"], "isMapShown").mockReturnValue(false)
+            jest.spyOn(codeMapArrowService["threeMapVisibilityStore"], "isMapShown").mockReturnValue(false)
             codeMapArrowService.onBuildingHovered = jest.fn()
             codeMapArrowService.onBuildingUnhovered = jest.fn()
 
             // Act
-            store.dispatch(setHoveredNodeId({ value: "/root/sample1.cc.json" }))
-            store.dispatch(setHoveredNodeId({ value: null }))
+            store.dispatch(setHoveredNodePath({ value: "/root/sample1.cc.json" }))
+            store.dispatch(setHoveredNodePath({ value: null }))
 
             // Assert
             expect(codeMapArrowService.onBuildingHovered).not.toHaveBeenCalled()

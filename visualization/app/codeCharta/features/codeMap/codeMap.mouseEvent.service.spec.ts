@@ -19,6 +19,7 @@ import {
 import { ThreeCameraService } from "../../renderer/threeViewer/threeCamera.service"
 import { ThreeRendererService } from "../../renderer/threeViewer/threeRenderer.service"
 import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
+import { ThreeMapVisibilityStore } from "../../renderer/threeViewer/threeViewer.facade"
 import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.service"
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
@@ -127,6 +128,7 @@ describe("codeMapMouseEventService", () => {
             codeMapStore,
             fileStoreReadWindow,
             sharedViewReadWindow,
+            TestBed.inject(ThreeMapVisibilityStore),
             labelSettingsFacade,
             tooltipService,
             viewCubeMouseEventsService,
@@ -268,7 +270,7 @@ describe("codeMapMouseEventService", () => {
 
     describe("onExcludedNodesChanged", () => {
         function withSelectedPath(path: string | null) {
-            jest.spyOn(codeMapMouseEventService["codeMapStore"], "getSelectedNodePath").mockReturnValue(path)
+            jest.spyOn(codeMapMouseEventService["sharedViewReadWindow"], "getSelectedNodePath").mockReturnValue(path)
         }
 
         it("should deselect the selected node when it is excluded, even if the 3D map drew no building for it", () => {
@@ -461,7 +463,7 @@ describe("codeMapMouseEventService", () => {
         it("should force an unhover over empty area when the highlight was cleared but the store still hovers a building", () => {
             // Arrange — the highlight was nulled out-of-band (e.g. by a click or a scroll that never re-raycasts)
             // while the store still points at a building, and the cursor is now over empty map area
-            jest.spyOn(codeMapMouseEventService["codeMapStore"], "getHoveredNodeId").mockReturnValue(codeMapBuilding.node.path)
+            jest.spyOn(codeMapMouseEventService["sharedViewReadWindow"], "getHoveredNodePath").mockReturnValue(codeMapBuilding.node.path)
             threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
             threeSceneService.getMapMesh = jest.fn().mockReturnValue({
                 checkMouseRayMeshIntersection: jest.fn().mockReturnValue(undefined)
@@ -816,7 +818,7 @@ describe("codeMapMouseEventService", () => {
 
     describe("while the 3D map is not on screen", () => {
         beforeEach(() => {
-            jest.spyOn(codeMapMouseEventService["codeMapStore"], "isMapShown").mockReturnValue(false)
+            jest.spyOn(codeMapMouseEventService["threeMapVisibilityStore"], "isMapShown").mockReturnValue(false)
         })
 
         it("should neither highlight nor redraw the hidden 3D map on hover", () => {
@@ -832,7 +834,7 @@ describe("codeMapMouseEventService", () => {
     })
 
     describe("hoverNode", () => {
-        it("should do nothing when no 3D map has been built, as while the sunburst is shown", () => {
+        it("should do nothing when no 3D map has been built yet", () => {
             // Arrange
             threeSceneService.getMapMesh = jest.fn().mockReturnValue(undefined)
 

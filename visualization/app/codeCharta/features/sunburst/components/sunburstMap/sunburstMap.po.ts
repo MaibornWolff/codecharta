@@ -13,14 +13,19 @@ export class SunburstMapPageObject {
         await this.page.keyboard.press("Escape")
     }
 
-    async clickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {
+    async rightClickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {
+        await this.clickAt(distanceFromCentreInRadii, degreesClockwiseFromTop, "right")
+    }
+
+    async clickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90, button: "left" | "right" = "left") {
         await expect(this.chart()).toHaveAttribute("aria-busy", "false")
         const box = await this.chart().boundingBox()
         const radius = Math.min(box.width, box.height) / 2
         const angle = (degreesClockwiseFromTop * Math.PI) / 180
         await this.page.mouse.click(
             box.x + box.width / 2 + radius * distanceFromCentreInRadii * Math.sin(angle),
-            box.y + box.height / 2 - radius * distanceFromCentreInRadii * Math.cos(angle)
+            box.y + box.height / 2 - radius * distanceFromCentreInRadii * Math.cos(angle),
+            { button }
         )
     }
 }

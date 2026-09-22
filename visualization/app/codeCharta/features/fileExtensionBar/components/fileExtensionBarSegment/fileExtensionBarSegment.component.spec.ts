@@ -52,7 +52,7 @@ describe("FileExtensionBarSegment", () => {
             flattenedNodes: [],
             metricRules: [],
             markedPackages: [],
-            hoveredNodeId: null,
+            hoveredNodePath: null,
             selectedNodePath: null,
             rightClickedNodeData: null
         }

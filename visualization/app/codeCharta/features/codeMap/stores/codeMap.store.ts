@@ -3,7 +3,6 @@ import { Store } from "@ngrx/store"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
 import { idToNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { ThreeMapVisibilityStore } from "../../../renderer/threeViewer/threeViewer.facade"
 import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
@@ -18,8 +17,7 @@ export class CodeMapStore {
         private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly mapStateReadWindow: MapStateReadWindow,
         private readonly sharedViewReadWindow: SharedViewReadWindow,
-        private readonly nodeInteraction: NodeInteraction,
-        private readonly threeMapVisibilityStore: ThreeMapVisibilityStore
+        private readonly nodeInteraction: NodeInteraction
     ) {}
 
     getState(): CcState {
@@ -38,28 +36,12 @@ export class CodeMapStore {
         return edgeVisibilitySelector(this.ccStateSnapshot.get())
     }
 
-    getHoveredNodeId(): string | null {
-        return this.sharedViewReadWindow.getHoveredNodeId()
-    }
-
-    getSelectedNodePath(): string | null {
-        return this.sharedViewReadWindow.getSelectedNodePath()
-    }
-
-    isMapShown(): boolean {
-        return this.threeMapVisibilityStore.isMapShown()
-    }
-
     getIdToNode() {
         return idToNodeSelector(this.ccStateSnapshot.get())
     }
 
-    hoverNode(path: string) {
+    hoverNode(path: string | null) {
         this.nodeInteraction.hoverNode(path)
-    }
-
-    clearHover() {
-        this.nodeInteraction.clearHover()
     }
 
     setRightClickedNodeData(value: CcState["sharedView"]["rightClickedNodeData"]) {

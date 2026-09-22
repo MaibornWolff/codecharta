@@ -102,7 +102,11 @@ export class LoadInitialFileStore {
     private static readonly optionalDomainLensSourceKeys = new Set(["words"])
 
     // Transient interaction state: never restored, so a persisted blob without it is complete.
-    private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>(["hoveredNodeId", "selectedNodePath", "rightClickedNodeData"])
+    private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
+        "hoveredNodePath",
+        "selectedNodePath",
+        "rightClickedNodeData"
+    ])
 
     constructor(
         private readonly store: Store,

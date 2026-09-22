@@ -43,11 +43,6 @@ function describe(node: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat) {
     return { path: node.path, name: node.name, colorValue: node.attributes?.[metrics.colorMetric], isFlat: isFlat(node) }
 }
 
-export function findFolder(root: SunburstNode, path: string): SunburstNode | undefined {
-    const node = findClosestNode(root, path)
-    return node.path === path && !node.isFile ? node : undefined
-}
-
 export function findClosestFolder(root: SunburstNode, path: string): SunburstNode {
     const child = root.children.find(candidate => !candidate.isFile && isInside(path, candidate.path))
     return child ? findClosestFolder(child, path) : root

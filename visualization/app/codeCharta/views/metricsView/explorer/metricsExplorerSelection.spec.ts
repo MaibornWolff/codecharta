@@ -4,8 +4,8 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { CodeMapTooltipService } from "../../../renderer/threeViewer/threeViewer.facade"
-import { hoveredNodeIdSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
+import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { setHoveredNodePath, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsExplorerSelection } from "./metricsExplorerSelection"
 
 const LEAF = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
@@ -13,7 +13,7 @@ const LEAF = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE,
 describe("MetricsExplorerSelection", () => {
     const codeMapTooltipService = { show: jest.fn(), hide: jest.fn() }
 
-    function setup(selectedNodePath: string | null = null, hoveredNodeId: string | null = null) {
+    function setup(selectedNodePath: string | null = null, hoveredNodePath: string | null = null) {
         TestBed.configureTestingModule({
             providers: [
                 MetricsExplorerSelection,
@@ -21,7 +21,7 @@ describe("MetricsExplorerSelection", () => {
                 provideMockStore({
                     selectors: [
                         { selector: selectedNodePathSelector, value: selectedNodePath },
-                        { selector: hoveredNodeIdSelector, value: hoveredNodeId }
+                        { selector: hoveredNodePathSelector, value: hoveredNodePath }
                     ]
                 }),
                 { provide: CodeMapTooltipService, useValue: codeMapTooltipService }
@@ -66,7 +66,7 @@ describe("MetricsExplorerSelection", () => {
         selection.hover(LEAF, { right: 200, top: 100 } as DOMRect)
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: LEAF.path }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodePath({ value: LEAF.path }))
         expect(codeMapTooltipService.show).toHaveBeenCalledWith(LEAF, 200, 100)
     })
 
@@ -78,7 +78,7 @@ describe("MetricsExplorerSelection", () => {
         selection.hoverEnd()
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setHoveredNodePath({ value: null }))
         expect(codeMapTooltipService.hide).toHaveBeenCalled()
     })
 

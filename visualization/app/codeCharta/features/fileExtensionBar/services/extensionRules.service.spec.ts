@@ -98,7 +98,7 @@ describe("ExtensionRulesService", () => {
             flattenedNodes: mockFlattenedNodes,
             metricRules: [],
             markedPackages: [],
-            hoveredNodeId: null,
+            hoveredNodePath: null,
             selectedNodePath: null,
             rightClickedNodeData: null
         }

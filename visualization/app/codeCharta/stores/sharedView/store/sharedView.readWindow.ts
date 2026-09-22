@@ -6,7 +6,7 @@ import { excludeMatcherSelector } from "./excludedNodes/excludeMatcher.selector"
 import { flattenedNodesSelector } from "./flattenedNodes/flattenedNodes.selector"
 import { currentFocusedNodePathSelector } from "./focusedNodePath/currentFocused.selector"
 import { focusedNodePathSelector } from "./focusedNodePath/focusedNodePath.selector"
-import { hoveredNodeIdSelector } from "./hoveredNodeId/hoveredNodeId.selector"
+import { hoveredNodePathSelector } from "./hoveredNodePath/hoveredNodePath.selector"
 import { markedPackagesSelector } from "./markedPackages/markedPackages.selector"
 import { rightClickedNodeDataSelector } from "./rightClickedNodeData/rightClickedNodeData.selector"
 import { searchPatternSelector } from "./searchPattern/searchPattern.selector"
@@ -26,7 +26,7 @@ export class SharedViewReadWindow {
     readonly excludeMatcher$ = this.store.select(excludeMatcherSelector)
     readonly focusedNodePath$ = this.store.select(focusedNodePathSelector)
     readonly currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
-    readonly hoveredNodeId$ = this.store.select(hoveredNodeIdSelector)
+    readonly hoveredNodePath$ = this.store.select(hoveredNodePathSelector)
     readonly markedPackages$ = this.store.select(markedPackagesSelector)
     readonly rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
     readonly searchPattern$ = this.store.select(searchPatternSelector)
@@ -44,8 +44,8 @@ export class SharedViewReadWindow {
         return this.state.getValue().sharedView.flattenedNodes
     }
 
-    getHoveredNodeId(): string | null {
-        return this.state.getValue().sharedView.hoveredNodeId
+    getHoveredNodePath(): string | null {
+        return this.state.getValue().sharedView.hoveredNodePath
     }
 
     getSelectedNodePath(): string | null {

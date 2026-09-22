@@ -3,7 +3,7 @@ import { SharedView } from "../../../model/codeCharta.model"
 import { defaultExcludedNodes, excludedNodes } from "./excludedNodes/excludedNodes.reducer"
 import { defaultFlattenedNodes, flattenedNodes } from "./flattenedNodes/flattenedNodes.reducer"
 import { defaultFocusedNodePath, focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
-import { defaultHoveredNodeId, hoveredNodeId } from "./hoveredNodeId/hoveredNodeId.reducer"
+import { defaultHoveredNodePath, hoveredNodePath } from "./hoveredNodePath/hoveredNodePath.reducer"
 import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
 import { defaultMetricRules, metricRules } from "./metricRules/metricRules.reducer"
 import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
@@ -17,7 +17,7 @@ export const sharedView = combineReducers({
     flattenedNodes,
     metricRules,
     markedPackages,
-    hoveredNodeId,
+    hoveredNodePath,
     selectedNodePath,
     rightClickedNodeData
 })
@@ -29,7 +29,7 @@ export const defaultSharedView: SharedView = {
     flattenedNodes: defaultFlattenedNodes,
     metricRules: defaultMetricRules,
     markedPackages: defaultMarkedPackages,
-    hoveredNodeId: defaultHoveredNodeId,
+    hoveredNodePath: defaultHoveredNodePath,
     selectedNodePath: defaultSelectedNodePath,
     rightClickedNodeData: defaultRightClickedNodeData
 }
