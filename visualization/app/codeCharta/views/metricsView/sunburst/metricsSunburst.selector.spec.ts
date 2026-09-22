@@ -1,4 +1,5 @@
 import { CodeMapNode, ColorMode, NodeType } from "../../../model/codeCharta.model"
+import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { sunburstColoringSelector, sunburstFoldersSelector, sunburstMetricsSelector } from "./metricsSunburst.selector"
 
@@ -15,13 +16,17 @@ const PATH_TO_NODE = new Map([
     ["/root", MAP],
     ["/root/src", MAP.children[0]]
 ])
+function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedData {
+    return { unifiedMapNode, unifiedFileMeta: undefined }
+}
+
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
 
 describe("sunburstFoldersSelector", () => {
     it("should build the folders of the whole map when nothing is focused", () => {
         // Act
-        const folders = sunburstFoldersSelector.projector({ unifiedMapNode: MAP }, PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+        const folders = sunburstFoldersSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(folders.path).toBe("/root")
@@ -30,7 +35,7 @@ describe("sunburstFoldersSelector", () => {
 
     it("should start at the focused folder", () => {
         // Act
-        const folders = sunburstFoldersSelector.projector({ unifiedMapNode: MAP }, PATH_TO_NODE, "/root/src", METRICS, NOTHING_IS_FLAT)
+        const folders = sunburstFoldersSelector.projector(accumulatedData(MAP), PATH_TO_NODE, "/root/src", METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(folders.path).toBe("/root/src")
@@ -39,7 +44,7 @@ describe("sunburstFoldersSelector", () => {
 
     it("should have no folders before a map is loaded", () => {
         // Act
-        const folders = sunburstFoldersSelector.projector({ unifiedMapNode: undefined }, new Map(), undefined, METRICS, NOTHING_IS_FLAT)
+        const folders = sunburstFoldersSelector.projector(accumulatedData(undefined), new Map(), undefined, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(folders).toBeNull()
