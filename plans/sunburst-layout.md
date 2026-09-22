@@ -1,6 +1,6 @@
 ---
 name: Sunburst map layout (prototype)
-issue: <#issueid>
+issue: none
 state: complete
 version: 1
 ---

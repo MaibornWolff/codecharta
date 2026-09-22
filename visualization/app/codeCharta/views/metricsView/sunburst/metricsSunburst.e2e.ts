@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, goto } from "../../../../playwright.helper"
+import { clearIndexedDB, goto, withDiskBackedPage } from "../../../../playwright.helper"
+import { ExplorerTreeLevelPageObject } from "../../../features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { SidebarInspectorPageObject } from "../../../features/sidebarInspector/components/sidebarInspector/sidebarInspector.po"
 import { MetricsSunburstPageObject } from "./metricsSunburst.po"
 
@@ -61,5 +62,40 @@ test.describe("Sunburst layout", () => {
         // Assert
         await expect(sunburst.chart()).toHaveCount(0)
         await expect(page.locator("#codeMap")).toBeVisible()
+    })
+
+    test("should come back as a sunburst after a reload and still hand the map back to 3D", async () => {
+        // A second boot needs a disk-backed page and the headroom its extra browser launch brings.
+        test.setTimeout(60_000)
+        await withDiskBackedPage(async page => {
+            // Arrange
+            const errors: string[] = []
+            page.on("pageerror", error => errors.push(error.message))
+            page.on("console", message => message.type() === "error" && errors.push(message.text()))
+            const sunburst = new MetricsSunburstPageObject(page)
+            const explorer = new ExplorerTreeLevelPageObject(page)
+            const inspector = new SidebarInspectorPageObject(page)
+            await goto(page)
+            await sunburst.switchLayoutTo("Sunburst")
+            await expect.poll(() => sunburst.persistedLayout(), { timeout: 30_000 }).toBe("Sunburst")
+
+            // Act
+            await goto(page)
+            await explorer.openFolder("/root/sample1.cc.json")
+            await explorer.hoverNode("/root/sample1.cc.json/ParentLeaf")
+            await explorer.selectNode("/root/sample1.cc.json/ParentLeaf")
+
+            // Assert
+            await expect(sunburst.chart()).toBeVisible()
+            await inspector.waitUntilOpen()
+            await expect(inspector.nodeName()).toHaveText("ParentLeaf")
+
+            // Act
+            await sunburst.switchLayoutTo("Squarified TreeMap")
+
+            // Assert
+            await expect(page.locator("#codeMap").getByText("bigLeaf.ts").first()).toBeVisible()
+            expect(errors).toEqual([])
+        })
     })
 })

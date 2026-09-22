@@ -10,7 +10,7 @@ import { CodeMapStore } from "../stores/codeMap.store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
-    private map: Map<string, Node>
+    private map = new Map<string, Node>()
     private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
     private readonly HIGHLIGHT_BUILDING_DELAY = 1

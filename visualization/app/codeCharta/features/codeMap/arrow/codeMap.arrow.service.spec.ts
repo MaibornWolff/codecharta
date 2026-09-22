@@ -439,6 +439,20 @@ describe("CodeMapArrowService", () => {
         })
     })
 
+    describe("addEdgePreview before any map was laid out", () => {
+        it("should draw no preview instead of failing, as when the app starts in the sunburst layout", () => {
+            // Arrange
+            jest.spyOn(codeMapArrowService["codeMapStore"], "getEdgeVisibility").mockReturnValue(clone(VALID_EDGES_DECORATED))
+            codeMapArrowService["previewMode"] = jest.fn()
+
+            // Act
+            codeMapArrowService.addEdgePreview()
+
+            // Assert
+            expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
+        })
+    })
+
     describe("addEdgePreview", () => {
         beforeEach(() => {
             codeMapArrowService["map"] = new Map<string, Node>()
