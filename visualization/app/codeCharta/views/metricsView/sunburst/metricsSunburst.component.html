@@ -1,0 +1,27 @@
+@if (isDeltaState()) {
+    <div class="flex h-full items-center justify-center p-4">
+        <div class="alert max-w-md" role="status">
+            <span>The sunburst shows a single map. Switch to another map layout to compare two maps.</span>
+        </div>
+    </div>
+} @else if (folders(); as folders) {
+    <cc-sunburst
+        [folders]="folders"
+        [centrePath]="centrePath() ?? folders.path"
+        [hoveredPath]="hoveredPath()"
+        [metrics]="metrics()"
+        [coloring]="coloring()"
+        (folderClicked)="selectFolder($event)"
+        (centreClicked)="goUp()"
+        (folderHovered)="hover($event)"
+    ></cc-sunburst>
+    <div class="join absolute right-[10px] top-[10px] rounded bg-base-100 shadow-md">
+        <cc-toolbox-screenshot-button view="metrics"></cc-toolbox-screenshot-button>
+    </div>
+} @else {
+    <div class="flex h-full items-center justify-center p-4">
+        <div class="alert max-w-md" role="status">
+            <span>There are no folders with an area to show.</span>
+        </div>
+    </div>
+}

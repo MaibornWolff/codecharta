@@ -1,0 +1,138 @@
+import { folderColor, readableTextColor, SunburstColoring } from "./sunburstColor"
+import { SunburstFolder, SunburstMetrics } from "./sunburstFolders"
+
+export const VISIBLE_RING_COUNT = 3
+
+const CENTRE_RADIUS_PERCENT = 20
+const OUTER_RADIUS_PERCENT = 95
+const MIN_LABEL_ANGLE_DEGREES = 5
+const LABEL_PADDING_PX = 8
+const SEGMENT_BORDER_COLOR = "#ffffff"
+const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
+
+export interface SunburstOptionInputs {
+    centre: SunburstFolder
+    isMapRoot: boolean
+    metrics: SunburstMetrics
+    coloring: SunburstColoring
+    chartSizeInPixels: number
+}
+
+export interface SunburstDatum {
+    name: string
+    value: number
+    displayName: string
+    colorValue: number | undefined
+    isCentre: boolean
+    itemStyle: { color: string }
+    label: { color: string }
+    children: SunburstDatum[]
+}
+
+interface SunburstTooltipParams {
+    data?: SunburstDatum
+}
+
+export function buildSunburstOption(inputs: SunburstOptionInputs) {
+    const radiusInPixels = inputs.chartSizeInPixels / 2
+    const ringCount = Math.max(1, depthBelow(inputs.centre, VISIBLE_RING_COUNT))
+    const ringWidthPercent = (OUTER_RADIUS_PERCENT - CENTRE_RADIUS_PERCENT) / ringCount
+    const ringWidthInPixels = (radiusInPixels * ringWidthPercent) / 100
+    const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / 100
+
+    return {
+        aria: { enabled: true },
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
+        series: [
+            {
+                type: "sunburst",
+                data: [toDatum(inputs.centre, inputs.coloring, VISIBLE_RING_COUNT, true)],
+                radius: ["0%", `${OUTER_RADIUS_PERCENT}%`],
+                nodeClick: false,
+                sort: "desc",
+                emphasis: { focus: "ancestor" },
+                itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: 1 },
+                label: { formatter: labelOf },
+                animationDurationUpdate: 400,
+                levels: [
+                    {},
+                    {
+                        r0: "0%",
+                        r: `${CENTRE_RADIUS_PERCENT}%`,
+                        label: { rotate: 0, fontWeight: "bold", overflow: "truncate", width: centreDiameterInPixels - LABEL_PADDING_PX }
+                    },
+                    ...ringLevels(ringCount, ringWidthPercent, ringWidthInPixels)
+                ]
+            }
+        ]
+    }
+}
+
+export type SunburstOption = ReturnType<typeof buildSunburstOption>
+
+function depthBelow(folder: SunburstFolder, maxDepth: number): number {
+    if (maxDepth === 0 || folder.children.length === 0) {
+        return 0
+    }
+    return 1 + Math.max(...folder.children.map(child => depthBelow(child, maxDepth - 1)))
+}
+
+function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixels: number) {
+    return Array.from({ length: ringCount }, (_, ringIndex) => ({
+        r0: `${CENTRE_RADIUS_PERCENT + ringIndex * ringWidthPercent}%`,
+        r: `${CENTRE_RADIUS_PERCENT + (ringIndex + 1) * ringWidthPercent}%`,
+        label: {
+            rotate: "radial",
+            minAngle: MIN_LABEL_ANGLE_DEGREES,
+            overflow: "truncate",
+            width: ringWidthInPixels - LABEL_PADDING_PX
+        }
+    }))
+}
+
+function toDatum(folder: SunburstFolder, coloring: SunburstColoring, ringsLeft: number, isCentre: boolean): SunburstDatum {
+    const color = folderColor(folder, coloring)
+    return {
+        name: folder.path,
+        value: folder.area,
+        displayName: folder.name,
+        colorValue: folder.colorValue,
+        isCentre,
+        itemStyle: { color },
+        label: { color: readableTextColor(color) },
+        children: ringsLeft > 0 ? folder.children.map(child => toDatum(child, coloring, ringsLeft - 1, false)) : []
+    }
+}
+
+function labelOf({ data }: SunburstTooltipParams): string {
+    return data?.displayName ?? ""
+}
+
+function buildTooltipFormatter(metrics: SunburstMetrics, isMapRoot: boolean) {
+    return ({ data }: SunburstTooltipParams): string => {
+        if (!data) {
+            return ""
+        }
+        const rows = [
+            `<b>${escapeHtml(data.name)}</b>`,
+            `${escapeHtml(metrics.areaMetric)}: ${numberFormatter.format(data.value)}`,
+            `${escapeHtml(metrics.colorMetric)} (area-weighted average): ${data.colorValue === undefined ? "–" : numberFormatter.format(data.colorValue)}`
+        ]
+        if (data.isCentre && !isMapRoot) {
+            rows.push("<i>Click to go up one folder</i>")
+        }
+        return rows.join("<br/>")
+    }
+}
+
+const HTML_ESCAPES: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+}
+
+function escapeHtml(text: string): string {
+    return text.replaceAll(/[&<>"']/g, character => HTML_ESCAPES[character])
+}

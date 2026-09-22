@@ -511,6 +511,20 @@ module.exports = {
                 ]
             }
         },
+        {
+            name: "sunburst-external-access-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code may touch the sunburst engine (renderer/sunburst/ — the ECharts sunburst host, its pure folder and option builders) ONLY through renderer/sunburst/sunburst.facade.ts (the engine, including the component) and renderer/sunburst/sunburstRegistry.facade.ts (the chart handle alone, kept echarts-free for the eagerly loaded screenshot service). Mirrors wordcloud-external-access-only-via-facade. The layer's own files and spec/e2e are exempt.",
+            from: { path: "^app/", pathNot: ["^app/codeCharta/renderer/sunburst/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/renderer/sunburst/",
+                pathNot: [
+                    "^app/codeCharta/renderer/sunburst/sunburst\\.facade\\.ts$",
+                    "^app/codeCharta/renderer/sunburst/sunburstRegistry\\.facade\\.ts$"
+                ]
+            }
+        },
 
         /* ───────────────────────────────── util — the leaf kernel ───────────────────────────────── */
         {

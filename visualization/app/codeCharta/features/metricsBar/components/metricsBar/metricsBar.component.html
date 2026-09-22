@@ -1,8 +1,12 @@
 <cc-area-segment></cc-area-segment>
-<cc-height-segment></cc-height-segment>
+@if (!isSunburst()) {
+    <cc-height-segment></cc-height-segment>
+}
 
 @if (showColorMetricSegment()) {
-    <cc-link-color-height-button></cc-link-color-height-button>
+    @if (!isSunburst()) {
+        <cc-link-color-height-button></cc-link-color-height-button>
+    }
     <cc-color-segment></cc-color-segment>
 } @else {
     <cc-axis-card
@@ -20,7 +24,7 @@
     ></cc-color-settings-popover>
 }
 
-@if (hasEdgeMetric()) {
+@if (hasEdgeMetric() && !isSunburst()) {
     <cc-edge-segment></cc-edge-segment>
 }
 

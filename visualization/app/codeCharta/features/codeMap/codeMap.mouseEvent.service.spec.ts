@@ -806,6 +806,20 @@ describe("codeMapMouseEventService", () => {
         })
     })
 
+    describe("hoverNode", () => {
+        it("should do nothing when no 3D map has been built, as while the sunburst is shown", () => {
+            // Arrange
+            threeSceneService.getMapMesh = jest.fn().mockReturnValue(undefined)
+
+            // Act
+            codeMapMouseEventService.hoverNode("/root/a")
+
+            // Assert
+            expect(threeSceneService.addBuildingsToHighlightingList).not.toHaveBeenCalled()
+            expect(threeRendererService.render).not.toHaveBeenCalled()
+        })
+    })
+
     describe("hoverBuilding", () => {
         beforeEach(() => {
             mockedIdToNodeSelector.mockImplementation(() => {

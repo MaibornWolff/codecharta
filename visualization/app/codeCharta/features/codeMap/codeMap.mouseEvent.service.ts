@@ -104,8 +104,11 @@ export class CodeMapMouseEventService implements OnDestroy {
             return
         }
 
-        const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
-        for (const building of buildings) {
+        const mapMesh = this.threeSceneService.getMapMesh()
+        if (!mapMesh) {
+            return
+        }
+        for (const building of mapMesh.getMeshDescription().buildings) {
             if (building.node.path === path) {
                 this.hoverBuilding(building, false)
                 break

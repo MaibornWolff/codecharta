@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { CodeMapComponent } from "../../features/codeMap/facade"
 import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facade"
@@ -27,6 +28,7 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
+import { MapStateReadWindow } from "../../stores/mapState/mapState.read.facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
 import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
@@ -38,6 +40,7 @@ import { METRICS_EXPLORER_SORT } from "./explorer/metricsExplorerSort"
 import { MetricsExplorerTree } from "./explorer/metricsExplorerTree"
 import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelectedNodeAfterLoad.directive"
 import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
+import { MetricsSunburstComponent } from "./sunburst/metricsSunburst.component"
 
 @Component({
     selector: "cc-metrics-view",
@@ -52,7 +55,8 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         CodeMapComponent,
         LegendPanelComponent,
         BottomBarComponent,
-        LoadingFileProgressSpinnerComponent
+        LoadingFileProgressSpinnerComponent,
+        MetricsSunburstComponent
     ],
     providers: [
         MetricsExplorerRow,
@@ -79,4 +83,6 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
     hostDirectives: [RevealsSelectedNodeAfterLoadDirective, ShowsHandedOverNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MetricsViewComponent {}
+export class MetricsViewComponent {
+    protected readonly isSunburst = toSignal(inject(MapStateReadWindow).isSunburstLayout$, { requireSync: true })
+}

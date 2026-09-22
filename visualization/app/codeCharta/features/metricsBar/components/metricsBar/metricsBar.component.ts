@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/c
 import { toSignal } from "@angular/core/rxjs-interop"
 import { map } from "rxjs"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { METRICS_BAR_HEIGHT_CSS_VARIABLE } from "../../../../util/barLayout"
 import {
     AxisCardComponent,
@@ -47,6 +48,8 @@ export class MetricsBarComponent {
     readonly hasEdgeMetric = toSignal(this.metricsBarReadStore.metricData$.pipe(map(metricData => metricData.edgeMetricData.length > 0)), {
         initialValue: false
     })
+
+    readonly isSunburst = toSignal(inject(MapStateReadWindow).isSunburstLayout$, { requireSync: true })
 
     readonly showColorMetricSegment = computed(() => !this.isDeltaState())
 

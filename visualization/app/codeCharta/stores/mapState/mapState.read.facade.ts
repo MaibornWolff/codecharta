@@ -15,7 +15,7 @@ export { invertHeightSelector } from "./store/invertHeight/invertHeight.selector
 export { isEdgeMetricVisibleSelector } from "./store/isEdgeMetricVisible/isEdgeMetricVisible.selector"
 export { isWhiteBackgroundSelector } from "./store/isWhiteBackground/isWhiteBackground.selector"
 export { labelsPerMapSelector } from "./store/labelsPerMap/labelsPerMap.selector"
-export { layoutAlgorithmSelector } from "./store/layoutAlgorithm/layoutAlgorithm.selector"
+export { isSunburstLayoutSelector, layoutAlgorithmSelector } from "./store/layoutAlgorithm/layoutAlgorithm.selector"
 export { defaultMapColors } from "./store/mapColors/mapColors.reducer"
 export { mapColorsSelector } from "./store/mapColors/mapColors.selector"
 export { MapStateReadWindow } from "./store/mapState.readWindow"

@@ -20,6 +20,7 @@
     "^echarts/core$": "<rootDir>/mocks/echartsMock.js",
     "^echarts/renderers$": "<rootDir>/mocks/echartsRenderersMock.js",
     "^echarts/components$": "<rootDir>/mocks/echartsComponentsMock.js",
+    "^echarts/charts$": "<rootDir>/mocks/echartsChartsMock.js",
     "^echarts-wordcloud$": "<rootDir>/mocks/echartsWordcloudMock.js"
   },
   "roots": ["<rootDir>/app"],
