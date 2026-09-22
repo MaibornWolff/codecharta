@@ -253,13 +253,33 @@ export class ThreeSceneService implements OnDestroy {
         if (!building) {
             return
         }
-        if (building.id !== this.selected?.id) {
-            if (this.selected) {
-                this.getMapMesh().clearSelection(this.selected)
-            }
+        const isNewSelection = building.id !== this.selected?.id
+        this.paintSelection(building)
+        if (isNewSelection) {
             this.threeSceneStore.selectNode(building.node.path)
         }
+    }
 
+    /** Shows a selection another view made, without writing it back to the store. */
+    showSelection(path: string | null) {
+        if (!this.mapMesh || (this.selected?.node.path ?? null) === path) {
+            return
+        }
+        const building = path === null ? undefined : this.mapMesh.getBuildingByPath(path)
+        if (building) {
+            this.paintSelection(building)
+            return
+        }
+        if (this.selected) {
+            this.paintNoSelection()
+            this.eventEmitter.emit("onBuildingDeselected")
+        }
+    }
+
+    private paintSelection(building: CodeMapBuilding) {
+        if (this.selected && this.selected.id !== building.id) {
+            this.getMapMesh().clearSelection(this.selected)
+        }
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
         this.selected = building
         this.applyHighlights()
@@ -304,12 +324,16 @@ export class ThreeSceneService implements OnDestroy {
         // folder, or a file with no area in the current metric, has none. Clearing only what the scene
         // holds would leave such a selection in the store, and the inspector open on it for good.
         const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedNodePath() !== null
-        if (this.selected) {
-            this.getMapMesh().clearSelection(this.selected)
-        }
+        this.paintNoSelection()
         if (hadSelection) {
             this.threeSceneStore.clearNodeSelection()
             this.eventEmitter.emit("onBuildingDeselected")
+        }
+    }
+
+    private paintNoSelection() {
+        if (this.selected) {
+            this.getMapMesh().clearSelection(this.selected)
         }
         // null before repainting: the highlight pass must not treat the
         // just-deselected building as still selected

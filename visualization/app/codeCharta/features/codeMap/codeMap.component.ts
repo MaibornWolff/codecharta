@@ -5,6 +5,7 @@ import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.facad
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { ViewCubeComponent } from "../viewCube/facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { SceneSelectionSyncService } from "./sceneSelectionSync.service"
 
 @Component({
     selector: "cc-code-map",
@@ -21,12 +22,14 @@ export class CodeMapComponent implements AfterViewInit, OnDestroy {
         private readonly fileStoreReadWindow: FileStoreReadWindow,
         private readonly threeViewerService: ThreeViewerService,
         private readonly codeMapMouseEventService: CodeMapMouseEventService,
+        private readonly sceneSelectionSyncService: SceneSelectionSyncService,
         private readonly elementReference: ElementRef
     ) {}
 
     ngAfterViewInit(): void {
         this.threeViewerService.init(this.elementReference.nativeElement.querySelector("#codeMap"))
         this.codeMapMouseEventService.start()
+        this.sceneSelectionSyncService.start()
     }
 
     ngOnDestroy(): void {

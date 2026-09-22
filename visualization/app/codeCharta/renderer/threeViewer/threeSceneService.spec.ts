@@ -118,6 +118,47 @@ describe("ThreeSceneService", () => {
         })
     })
 
+    describe("showSelection", () => {
+        const LEAF_PATH = "/root/big leaf"
+
+        it("should paint the selection another view made without writing it back", () => {
+            // Arrange
+            const dispatch = jest.spyOn(store, "dispatch")
+
+            // Act
+            threeSceneService.showSelection(LEAF_PATH)
+
+            // Assert
+            expect(threeSceneService.getSelectedBuilding().node.path).toBe(LEAF_PATH)
+            expect(dispatch).not.toHaveBeenCalled()
+        })
+
+        it("should drop the painted selection for a path the map draws no building for, without touching the store", () => {
+            // Arrange
+            threeSceneService.showSelection(LEAF_PATH)
+            const dispatch = jest.spyOn(store, "dispatch")
+
+            // Act
+            threeSceneService.showSelection("/root/a folder")
+
+            // Assert
+            expect(threeSceneService.getSelectedBuilding()).toBeNull()
+            expect(dispatch).not.toHaveBeenCalled()
+        })
+
+        it("should leave the scene alone when it already shows the path", () => {
+            // Arrange
+            threeSceneService.showSelection(LEAF_PATH)
+            const paint = jest.spyOn(threeSceneService.getMapMesh(), "selectBuilding")
+
+            // Act
+            threeSceneService.showSelection(LEAF_PATH)
+
+            // Assert
+            expect(paint).not.toHaveBeenCalled()
+        })
+    })
+
     describe("clearSelection", () => {
         it("should clear a selection that no building was drawn for, so the inspector can be closed", () => {
             // Arrange: a node picked in the explorer selects it whether or not the map drew a building —

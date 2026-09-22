@@ -5,10 +5,12 @@ import { ThreeViewerService } from "../../renderer/threeViewer/threeViewer.servi
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
 import { CodeMapComponent } from "./codeMap.component"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { SceneSelectionSyncService } from "./sceneSelectionSync.service"
 
 describe("CodeMapComponent", () => {
     let mockedThreeViewService: ThreeViewerService
     let mockedCodeMapMouseEventService: CodeMapMouseEventService
+    let mockedSceneSelectionSyncService: SceneSelectionSyncService
     let mockedElementReference: ElementRef
     const mockedFileStoreReadWindow = {
         isLoadingFile$: EMPTY
@@ -17,6 +19,7 @@ describe("CodeMapComponent", () => {
     beforeEach(() => {
         mockedThreeViewService = { init: jest.fn(), isContextLost$: of(true) } as unknown as ThreeViewerService
         mockedCodeMapMouseEventService = { start: jest.fn() } as unknown as CodeMapMouseEventService
+        mockedSceneSelectionSyncService = { start: jest.fn() } as unknown as SceneSelectionSyncService
         mockedElementReference = { nativeElement: { querySelector: jest.fn() } }
     })
 
@@ -26,11 +29,12 @@ describe("CodeMapComponent", () => {
             mockedFileStoreReadWindow,
             mockedThreeViewService,
             mockedCodeMapMouseEventService,
+            mockedSceneSelectionSyncService,
             mockedElementReference
         )
     }
 
-    it("should init threeViewerService and start codeMapMouseService after view init", () => {
+    it("should init threeViewerService and start the mouse handling and the selection sync after view init", () => {
         // Arrange
         const codeMapComponent = createComponent()
 
@@ -40,6 +44,7 @@ describe("CodeMapComponent", () => {
         // Assert
         expect(mockedThreeViewService.init).toHaveBeenCalled()
         expect(mockedCodeMapMouseEventService.start).toHaveBeenCalled()
+        expect(mockedSceneSelectionSyncService.start).toHaveBeenCalled()
     })
 
     it("should expose a lost graphics context, so the blank map is explained instead of silent", async () => {
