@@ -69,7 +69,7 @@ export interface SharedView {
     metricRules: MetricRule[]
     markedPackages: MarkedPackage[]
     hoveredNodeId: string | null
-    selectedBuildingId: string | null
+    selectedNodePath: string | null
     rightClickedNodeData: {
         nodeId: string
         xPositionOfRightClickEvent: number

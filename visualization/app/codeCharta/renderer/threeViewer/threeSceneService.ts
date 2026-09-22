@@ -257,7 +257,7 @@ export class ThreeSceneService implements OnDestroy {
             if (this.selected) {
                 this.getMapMesh().clearSelection(this.selected)
             }
-            this.threeSceneStore.setSelectedBuildingId(building.node.path)
+            this.threeSceneStore.setSelectedNodePath(building.node.path)
         }
 
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
@@ -303,12 +303,12 @@ export class ThreeSceneService implements OnDestroy {
         // A node picked in the explorer is selected whether or not the map drew a building for it — a
         // folder, or a file with no area in the current metric, has none. Clearing only what the scene
         // holds would leave such a selection in the store, and the inspector open on it for good.
-        const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedBuildingId() !== null
+        const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedNodePath() !== null
         if (this.selected) {
             this.getMapMesh().clearSelection(this.selected)
         }
         if (hadSelection) {
-            this.threeSceneStore.setSelectedBuildingId(null)
+            this.threeSceneStore.setSelectedNodePath(null)
             this.eventEmitter.emit("onBuildingDeselected")
         }
         // null before repainting: the highlight pass must not treat the
@@ -360,7 +360,7 @@ export class ThreeSceneService implements OnDestroy {
     // The store owns the selection: another view can change it while this mesh is not drawn.
     private remapSelectedBuilding() {
         const previouslySelected = this.selected
-        const selectedPath = this.threeSceneStore.getSelectedBuildingId()
+        const selectedPath = this.threeSceneStore.getSelectedNodePath()
         const buildingOnNewMesh = selectedPath === null ? undefined : this.mapMesh.getBuildingByPath(selectedPath)
         this.clearStaleSelectionColor(previouslySelected, selectedPath)
         this.selected = buildingOnNewMesh ?? null
@@ -369,7 +369,7 @@ export class ThreeSceneService implements OnDestroy {
             return
         }
         if (previouslySelected && previouslySelected.node.path === selectedPath) {
-            this.threeSceneStore.setSelectedBuildingId(null)
+            this.threeSceneStore.setSelectedNodePath(null)
             this.eventEmitter.emit("onBuildingDeselected")
         }
     }

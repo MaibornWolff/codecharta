@@ -12,4 +12,4 @@ export { addMetricRule, removeMetricRule, setMetricRules } from "./store/metricR
 export { setRightClickedNodeData } from "./store/rightClickedNodeData/rightClickedNodeData.actions"
 export { clearRulesOfType } from "./store/rules/rules.actions"
 export { setSearchPattern } from "./store/searchPattern/searchPattern.actions"
-export { setSelectedBuildingId } from "./store/selectedBuildingId/selectedBuildingId.actions"
+export { setSelectedNodePath } from "./store/selectedNodePath/selectedNodePath.actions"

@@ -4,8 +4,8 @@ import { CcState } from "../../../model/codeCharta.model"
 import { MapStateReadWindow, mapColorsSelector } from "../../../stores/mapState/mapState.read.facade"
 import { PreferencesReadWindow } from "../../../stores/preferences/preferences.read.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
-import { selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import { selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { idToNodeSelector } from "../../renderModel/renderModel.facade"
 
 @Injectable({ providedIn: "root" })
@@ -35,11 +35,11 @@ export class ThreeSceneStore {
         return idToNodeSelector(this.ccStateSnapshot.get())
     }
 
-    getSelectedBuildingId(): string | null {
-        return selectedBuildingIdSelector(this.ccStateSnapshot.get())
+    getSelectedNodePath(): string | null {
+        return selectedNodePathSelector(this.ccStateSnapshot.get())
     }
 
-    setSelectedBuildingId(value: string | null) {
-        this.store.dispatch(setSelectedBuildingId({ value }))
+    setSelectedNodePath(value: string | null) {
+        this.store.dispatch(setSelectedNodePath({ value }))
     }
 }

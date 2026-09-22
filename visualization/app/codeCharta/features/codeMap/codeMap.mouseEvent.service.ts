@@ -149,7 +149,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     onExcludedNodesChanged(excludedNodes: ExcludedNode[]) {
-        const selectedPath = this.codeMapStore.getSelectedBuildingId()
+        const selectedPath = this.codeMapStore.getSelectedNodePath()
         this.tooltipService.hide()
         if (selectedPath !== null && createExcludeMatcher(excludedNodes).isExcludedLeaf(selectedPath)) {
             this.threeSceneService.clearSelection()

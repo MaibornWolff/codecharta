@@ -11,7 +11,7 @@ import {
     ThreeSceneService
 } from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import { setHoveredNodeId, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable()
 export class MetricsExplorerSelection implements ExplorerSelection {
@@ -23,11 +23,11 @@ export class MetricsExplorerSelection implements ExplorerSelection {
     private readonly codeMapMouseEventService = inject(CodeMapMouseEventService)
     private readonly codeMapTooltipService = inject(CodeMapTooltipService)
 
-    private readonly selectedBuildingId = toSignal(this.sharedViewReadWindow.selectedBuildingId$, { requireSync: true })
+    private readonly selectedNodePath = toSignal(this.sharedViewReadWindow.selectedNodePath$, { requireSync: true })
     private readonly hoveredNodeId = toSignal(this.sharedViewReadWindow.hoveredNodeId$, { requireSync: true })
 
     isSelected(node: CodeMapNode): boolean {
-        return this.selectedBuildingId() === node.path
+        return this.selectedNodePath() === node.path
     }
 
     isHovered(node: CodeMapNode): boolean {
@@ -35,7 +35,7 @@ export class MetricsExplorerSelection implements ExplorerSelection {
     }
 
     select(node: CodeMapNode): void {
-        this.store.dispatch(setSelectedBuildingId({ value: node.path }))
+        this.store.dispatch(setSelectedNodePath({ value: node.path }))
         const building = this.idToBuildingService.get(node.id)
         this.codeMapMouseEventService.drawLabelSelectedBuilding(building)
         this.threeSceneService.selectBuilding(building)
@@ -44,7 +44,7 @@ export class MetricsExplorerSelection implements ExplorerSelection {
     }
 
     deselect(): void {
-        this.store.dispatch(setSelectedBuildingId({ value: null }))
+        this.store.dispatch(setSelectedNodePath({ value: null }))
         this.threeSceneService.clearSelection()
         this.threeSceneService.clearConstantHighlight()
         this.threeRendererService.render()

@@ -101,12 +101,8 @@ export class LoadInitialFileStore {
     // The merged word bank is derived and deliberately not persisted, so a blob without it is complete.
     private static readonly optionalDomainLensSourceKeys = new Set(["words"])
 
-    // transient interaction ids; never restored from a previous session's persisted state.
-    private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
-        "hoveredNodeId",
-        "selectedBuildingId",
-        "rightClickedNodeData"
-    ])
+    // Transient interaction state: never restored, so a persisted blob without it is complete.
+    private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>(["hoveredNodeId", "selectedNodePath", "rightClickedNodeData"])
 
     constructor(
         private readonly store: Store,
@@ -156,8 +152,11 @@ export class LoadInitialFileStore {
     }
 
     applySharedView(savedSharedView: SharedView) {
-        return this.applySlice(this.sharedViewReadWindow.getSharedView(), savedSharedView, (key, value) =>
-            this.mapSharedViewToAction(key, value)
+        return this.applySlice(
+            this.sharedViewReadWindow.getSharedView(),
+            savedSharedView,
+            (key, value) => this.mapSharedViewToAction(key, value),
+            LoadInitialFileStore.ignoredSharedViewKeys
         )
     }
 
@@ -180,7 +179,7 @@ export class LoadInitialFileStore {
     }
 
     missingKeysOfSharedView(savedSharedView: SharedView): string[] {
-        return this.missingKeysOf(this.sharedViewReadWindow.getSharedView(), savedSharedView)
+        return this.missingKeysOf(this.sharedViewReadWindow.getSharedView(), savedSharedView, LoadInitialFileStore.ignoredSharedViewKeys)
     }
 
     missingKeysOfMetricsLensSource(savedMetricsLensSource: MetricsLensSource): string[] {

@@ -8,7 +8,7 @@ import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPa
 import { defaultMetricRules, metricRules } from "./metricRules/metricRules.reducer"
 import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
 import { defaultSearchPattern, searchPattern } from "./searchPattern/searchPattern.reducer"
-import { defaultSelectedBuildingId, selectedBuildingId } from "./selectedBuildingId/selectedBuildingId.reducer"
+import { defaultSelectedNodePath, selectedNodePath } from "./selectedNodePath/selectedNodePath.reducer"
 
 export const sharedView = combineReducers({
     focusedNodePath,
@@ -18,7 +18,7 @@ export const sharedView = combineReducers({
     metricRules,
     markedPackages,
     hoveredNodeId,
-    selectedBuildingId,
+    selectedNodePath,
     rightClickedNodeData
 })
 
@@ -30,6 +30,6 @@ export const defaultSharedView: SharedView = {
     metricRules: defaultMetricRules,
     markedPackages: defaultMarkedPackages,
     hoveredNodeId: defaultHoveredNodeId,
-    selectedBuildingId: defaultSelectedBuildingId,
+    selectedNodePath: defaultSelectedNodePath,
     rightClickedNodeData: defaultRightClickedNodeData
 }

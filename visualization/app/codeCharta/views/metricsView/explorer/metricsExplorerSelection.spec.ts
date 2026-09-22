@@ -10,8 +10,8 @@ import {
     ThreeRendererService,
     ThreeSceneService
 } from "../../../renderer/threeViewer/threeViewer.facade"
-import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import { hoveredNodeIdSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { setHoveredNodeId, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsExplorerSelection } from "./metricsExplorerSelection"
 
 const LEAF = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
@@ -34,7 +34,7 @@ describe("MetricsExplorerSelection", () => {
                 provideMockState(),
                 provideMockStore({
                     selectors: [
-                        { selector: selectedBuildingIdSelector, value: null },
+                        { selector: selectedNodePathSelector, value: null },
                         { selector: hoveredNodeIdSelector, value: null }
                     ]
                 }),
@@ -54,7 +54,7 @@ describe("MetricsExplorerSelection", () => {
         selection.select(LEAF)
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setSelectedBuildingId({ value: LEAF.path }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setSelectedNodePath({ value: LEAF.path }))
         expect(codeMapMouseEventService.drawLabelSelectedBuilding).toHaveBeenCalledWith(building)
         expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(building)
         expect(threeSceneService.clearConstantHighlight).toHaveBeenCalledTimes(1)
@@ -66,7 +66,7 @@ describe("MetricsExplorerSelection", () => {
         selection.deselect()
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(setSelectedBuildingId({ value: null }))
+        expect(dispatchSpy).toHaveBeenCalledWith(setSelectedNodePath({ value: null }))
         expect(threeSceneService.clearSelection).toHaveBeenCalledTimes(1)
         expect(threeSceneService.selectBuilding).not.toHaveBeenCalled()
         expect(threeSceneService.clearConstantHighlight).toHaveBeenCalledTimes(1)
@@ -105,7 +105,7 @@ describe("MetricsExplorerSelection reading the shared view", () => {
                 provideMockState(),
                 provideMockStore({
                     selectors: [
-                        { selector: selectedBuildingIdSelector, value: LEAF.path },
+                        { selector: selectedNodePathSelector, value: LEAF.path },
                         { selector: hoveredNodeIdSelector, value: LEAF.path }
                     ]
                 }),

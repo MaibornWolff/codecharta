@@ -16,12 +16,12 @@ import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileS
 import {
     currentFocusedNodePathSelector,
     hoveredNodeIdSelector,
-    selectedBuildingIdSelector
+    selectedNodePathSelector
 } from "../../../stores/sharedView/sharedView.read.facade"
 import {
     setHoveredNodeId,
     setRightClickedNodeData,
-    setSelectedBuildingId,
+    setSelectedNodePath,
     unfocusNode
 } from "../../../stores/sharedView/sharedView.write.facade"
 import {
@@ -63,7 +63,7 @@ export class MetricsSunburstComponent {
     protected readonly hoveredPath = toSignal(this.store.select(hoveredNodeIdSelector), { requireSync: true })
     protected readonly isDeltaState = toSignal(this.store.select(isDeltaStateSelector), { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
-    private readonly selectedPath = toSignal(this.store.select(selectedBuildingIdSelector), { requireSync: true })
+    private readonly selectedPath = toSignal(this.store.select(selectedNodePathSelector), { requireSync: true })
     protected readonly isFocused = toSignal(this.store.select(currentFocusedNodePathSelector).pipe(map(Boolean)), { requireSync: true })
 
     private readonly requestedCentrePath = signal<string | null>(null)
@@ -83,7 +83,7 @@ export class MetricsSunburstComponent {
 
     protected selectFolder(path: string): void {
         this.hover(null)
-        this.store.dispatch(setSelectedBuildingId({ value: path }))
+        this.store.dispatch(setSelectedNodePath({ value: path }))
     }
 
     protected goUp(): void {
@@ -95,7 +95,7 @@ export class MetricsSunburstComponent {
     }
 
     protected selectFile(path: string): void {
-        this.store.dispatch(setSelectedBuildingId({ value: path }))
+        this.store.dispatch(setSelectedNodePath({ value: path }))
     }
 
     protected openContextMenu({ path, clientX, clientY }: RightClickedNode): void {

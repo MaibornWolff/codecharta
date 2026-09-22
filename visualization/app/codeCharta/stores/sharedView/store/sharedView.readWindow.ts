@@ -10,7 +10,7 @@ import { hoveredNodeIdSelector } from "./hoveredNodeId/hoveredNodeId.selector"
 import { markedPackagesSelector } from "./markedPackages/markedPackages.selector"
 import { rightClickedNodeDataSelector } from "./rightClickedNodeData/rightClickedNodeData.selector"
 import { searchPatternSelector } from "./searchPattern/searchPattern.selector"
-import { selectedBuildingIdSelector } from "./selectedBuildingId/selectedBuildingId.selector"
+import { selectedNodePathSelector } from "./selectedNodePath/selectedNodePath.selector"
 
 @Injectable({
     providedIn: "root"
@@ -30,7 +30,7 @@ export class SharedViewReadWindow {
     readonly markedPackages$ = this.store.select(markedPackagesSelector)
     readonly rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
     readonly searchPattern$ = this.store.select(searchPatternSelector)
-    readonly selectedBuildingId$ = this.store.select(selectedBuildingIdSelector)
+    readonly selectedNodePath$ = this.store.select(selectedNodePathSelector)
 
     getSharedView(): SharedView {
         return this.state.getValue().sharedView

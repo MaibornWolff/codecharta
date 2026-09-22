@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto"
 import { TestBed } from "@angular/core/testing"
 import { Action, Store, StoreModule } from "@ngrx/store"
-import { CcState, DomainLensSource, DomainState } from "../model/codeCharta.model"
+import { CcState, DomainLensSource, DomainState, SharedView } from "../model/codeCharta.model"
 import { WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
 import { DomainLensSourceReadWindow, defaultDomainLensSource } from "../stores/domainLensSource/domainLensSource.read.facade"
 import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
@@ -232,6 +232,36 @@ describe("LoadInitialFileStore", () => {
             const missingKeys = loadInitialFileStore.missingKeysOfDomainLensSource({} as DomainLensSource)
 
             // Assert — reporting it would tell the reader their session came back only partly restored
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([])
+        })
+    })
+
+    describe("persisted shared view without the interaction state", () => {
+        const sharedViewSavedBeforeTheSelectionRename = () => {
+            const { selectedNodePath, ...withoutSelection } = defaultState.sharedView
+            return { ...withoutSelection, selectedBuildingId: "/root/a.ts" } as unknown as SharedView
+        }
+
+        it("should not report the never restored selection as missing", () => {
+            // Arrange
+            setup()
+
+            // Act
+            const missingKeys = loadInitialFileStore.missingKeysOfSharedView(sharedViewSavedBeforeTheSelectionRename())
+
+            // Assert
+            expect(missingKeys).toEqual([])
+        })
+
+        it("should restore nothing from it and not fail on the old selection key", () => {
+            // Arrange
+            setup()
+
+            // Act
+            const missingKeys = loadInitialFileStore.applySharedView(sharedViewSavedBeforeTheSelectionRename())
+
+            // Assert
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([])
         })

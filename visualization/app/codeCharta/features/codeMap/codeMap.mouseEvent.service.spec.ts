@@ -268,7 +268,7 @@ describe("codeMapMouseEventService", () => {
 
     describe("onExcludedNodesChanged", () => {
         function withSelectedPath(path: string | null) {
-            jest.spyOn(codeMapMouseEventService["codeMapStore"], "getSelectedBuildingId").mockReturnValue(path)
+            jest.spyOn(codeMapMouseEventService["codeMapStore"], "getSelectedNodePath").mockReturnValue(path)
         }
 
         it("should deselect the selected node when it is excluded, even if the 3D map drew no building for it", () => {

@@ -21,7 +21,7 @@ export class RevealsSelectedNodeAfterLoadDirective {
             .pipe(
                 ofType(filesLoaded),
                 switchMap(() =>
-                    this.sharedViewReadWindow.selectedBuildingId$.pipe(
+                    this.sharedViewReadWindow.selectedNodePath$.pipe(
                         filter(Boolean),
                         take(1),
                         takeUntil(timer(AWAIT_RESTORED_SELECTION_MS))

@@ -13,8 +13,8 @@ import {
 import { CcState, CodeMapNode, LayoutAlgorithm } from "../../model/codeCharta.model"
 import { setEnableFloorLabels, setLayoutAlgorithm, setScaling } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
-import { selectedBuildingIdSelector } from "../../stores/sharedView/sharedView.read.facade"
-import { setSelectedBuildingId } from "../../stores/sharedView/sharedView.write.facade"
+import { selectedNodePathSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { setSelectedNodePath } from "../../stores/sharedView/sharedView.write.facade"
 import { idToNodeSelector } from "../renderModel/renderModel.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { IdToBuildingService } from "./idToBuilding.service"
@@ -71,7 +71,7 @@ describe("ThreeSceneService", () => {
         const LEAF_PATH = "/root/big leaf"
 
         function selectInStore(path: string) {
-            store.dispatch(setSelectedBuildingId({ value: path }))
+            store.dispatch(setSelectedNodePath({ value: path }))
         }
 
         function sceneSelectionPath() {
@@ -88,7 +88,7 @@ describe("ThreeSceneService", () => {
 
             // Assert
             expect(sceneSelectionPath()).toBe(LEAF_PATH)
-            expect(selectedBuildingIdSelector(state.getValue())).toBe(LEAF_PATH)
+            expect(selectedNodePathSelector(state.getValue())).toBe(LEAF_PATH)
         })
 
         it("should drop the selection when the building it had selected is gone", () => {
@@ -102,7 +102,7 @@ describe("ThreeSceneService", () => {
 
             // Assert
             expect(sceneSelectionPath()).toBeNull()
-            expect(selectedBuildingIdSelector(state.getValue())).toBeNull()
+            expect(selectedNodePathSelector(state.getValue())).toBeNull()
         })
 
         it("should keep a selection the map draws no building for, such as a folder", () => {
@@ -114,7 +114,7 @@ describe("ThreeSceneService", () => {
 
             // Assert
             expect(sceneSelectionPath()).toBeNull()
-            expect(selectedBuildingIdSelector(state.getValue())).toBe("/root/a folder")
+            expect(selectedNodePathSelector(state.getValue())).toBe("/root/a folder")
         })
     })
 
@@ -123,13 +123,13 @@ describe("ThreeSceneService", () => {
             // Arrange: a node picked in the explorer selects it whether or not the map drew a building —
             // a folder, or a file with no area in the current metric, has none.
             threeSceneService["mapMesh"].clearSelection = jest.fn()
-            store.dispatch(setSelectedBuildingId({ value: "a-node-without-a-building" }))
+            store.dispatch(setSelectedNodePath({ value: "a-node-without-a-building" }))
 
             // Act
             threeSceneService.clearSelection()
 
             // Assert
-            expect(selectedBuildingIdSelector(state.getValue())).toBeNull()
+            expect(selectedNodePathSelector(state.getValue())).toBeNull()
         })
 
         it("should leave the store alone when there was nothing selected at all", () => {

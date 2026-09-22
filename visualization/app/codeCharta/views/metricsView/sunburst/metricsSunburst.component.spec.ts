@@ -20,12 +20,12 @@ import { defaultState } from "../../../stores/rootStore/state.manager"
 import {
     currentFocusedNodePathSelector,
     hoveredNodeIdSelector,
-    selectedBuildingIdSelector
+    selectedNodePathSelector
 } from "../../../stores/sharedView/sharedView.read.facade"
 import {
     setHoveredNodeId,
     setRightClickedNodeData,
-    setSelectedBuildingId,
+    setSelectedNodePath,
     unfocusNode
 } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsSunburstComponent } from "./metricsSunburst.component"
@@ -54,7 +54,7 @@ async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, f
                     { selector: sunburstMetricsSelector, value: { areaMetric: "rloc", colorMetric: "mcc" } },
                     { selector: sunburstColoringSelector, value: TEST_COLORING },
                     { selector: hoveredNodeIdSelector, value: null },
-                    { selector: selectedBuildingIdSelector, value: selectedPath },
+                    { selector: selectedNodePathSelector, value: selectedPath },
                     { selector: isDeltaStateSelector, value: isDeltaState },
                     { selector: currentFocusedNodePathSelector, value: focusedNodePath }
                 ]
@@ -104,7 +104,7 @@ describe("MetricsSunburstComponent", () => {
         const centredOnFolder = lastDrawnCentre()
 
         // Act
-        store.overrideSelector(selectedBuildingIdSelector, "/root/src/app/file.ts")
+        store.overrideSelector(selectedNodePathSelector, "/root/src/app/file.ts")
         store.refreshState()
         fixture.detectChanges()
 
@@ -119,24 +119,24 @@ describe("MetricsSunburstComponent", () => {
 
         // Act
         fireChartEvent("click", { data: { name: "/root/src/b.ts", isCentre: false, isFile: true } })
-        store.overrideSelector(selectedBuildingIdSelector, "/root/src/b.ts")
+        store.overrideSelector(selectedNodePathSelector, "/root/src/b.ts")
         store.refreshState()
         fixture.detectChanges()
 
         // Assert
-        expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src/b.ts" }))
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/src/b.ts" }))
         expect(lastDrawnCentre()).toBe("/root")
     })
 
     it("should centre on the folder of a file selected elsewhere that the rings do not show", async () => {
         // Arrange
         const { store, fixture } = await setup({ selectedPath: "/root/src/app" })
-        store.overrideSelector(selectedBuildingIdSelector, null)
+        store.overrideSelector(selectedNodePathSelector, null)
         store.refreshState()
         fixture.detectChanges()
 
         // Act
-        store.overrideSelector(selectedBuildingIdSelector, "/root/src/b.ts")
+        store.overrideSelector(selectedNodePathSelector, "/root/src/b.ts")
         store.refreshState()
         fixture.detectChanges()
 
@@ -149,7 +149,7 @@ describe("MetricsSunburstComponent", () => {
         const { store, fixture } = await setup({ selectedPath: "/root/src" })
 
         // Act
-        store.overrideSelector(selectedBuildingIdSelector, null)
+        store.overrideSelector(selectedNodePathSelector, null)
         store.refreshState()
         fixture.detectChanges()
 
@@ -165,7 +165,7 @@ describe("MetricsSunburstComponent", () => {
         fireChartEvent("click", { data: { name: "/root/src", isCentre: false } })
 
         // Assert
-        expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src" }))
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/src" }))
     })
 
     it("should let go of the hovered folder when drilling, since it moves away from under the pointer", async () => {
@@ -187,7 +187,7 @@ describe("MetricsSunburstComponent", () => {
         fireChartEvent("click", { data: { name: "/root/src/app", isCentre: true } })
 
         // Assert
-        expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src" }))
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/src" }))
     })
 
     it("should go up to the real parent of a merged folder chain", async () => {
@@ -199,7 +199,7 @@ describe("MetricsSunburstComponent", () => {
         fireChartEvent("click", { data: { name: "/root/src/main", isCentre: true } })
 
         // Assert
-        expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root" }))
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root" }))
     })
 
     it("should not go above the top of the map", async () => {

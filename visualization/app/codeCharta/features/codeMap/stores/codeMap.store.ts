@@ -39,8 +39,8 @@ export class CodeMapStore {
         return this.sharedViewReadWindow.getHoveredNodeId()
     }
 
-    getSelectedBuildingId(): string | null {
-        return this.ccStateSnapshot.get().sharedView.selectedBuildingId
+    getSelectedNodePath(): string | null {
+        return this.ccStateSnapshot.get().sharedView.selectedNodePath
     }
 
     isSunburstLayout(): boolean {
