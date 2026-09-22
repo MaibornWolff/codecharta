@@ -34,12 +34,6 @@ interface SunburstTooltipParams {
 }
 
 export function buildSunburstOption(inputs: SunburstOptionInputs) {
-    const radiusInPixels = inputs.chartSizeInPixels / 2
-    const ringCount = Math.max(1, depthBelow(inputs.centre, VISIBLE_RING_COUNT))
-    const ringWidthPercent = (OUTER_RADIUS_PERCENT - CENTRE_RADIUS_PERCENT) / ringCount
-    const ringWidthInPixels = (radiusInPixels * ringWidthPercent) / 100
-    const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / 100
-
     return {
         aria: { enabled: true },
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
@@ -54,21 +48,26 @@ export function buildSunburstOption(inputs: SunburstOptionInputs) {
                 itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: 1 },
                 label: { formatter: labelOf },
                 animationDurationUpdate: 400,
-                levels: [
-                    {},
-                    {
-                        r0: "0%",
-                        r: `${CENTRE_RADIUS_PERCENT}%`,
-                        label: { rotate: 0, fontWeight: "bold", overflow: "truncate", width: centreDiameterInPixels - LABEL_PADDING_PX }
-                    },
-                    ...ringLevels(ringCount, ringWidthPercent, ringWidthInPixels)
-                ]
+                levels: levelsAround(inputs.centre, inputs.chartSizeInPixels / 2)
             }
         ]
     }
 }
 
 export type SunburstOption = ReturnType<typeof buildSunburstOption>
+
+function levelsAround(centre: SunburstFolder, radiusInPixels: number) {
+    const ringCount = Math.max(1, depthBelow(centre, VISIBLE_RING_COUNT))
+    const ringWidthPercent = (OUTER_RADIUS_PERCENT - CENTRE_RADIUS_PERCENT) / ringCount
+    const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / 100
+    const virtualRootLevel = {}
+    const centreLevel = {
+        r0: "0%",
+        r: `${CENTRE_RADIUS_PERCENT}%`,
+        label: { rotate: 0, fontWeight: "bold", overflow: "truncate", width: centreDiameterInPixels - LABEL_PADDING_PX }
+    }
+    return [virtualRootLevel, centreLevel, ...ringLevels(ringCount, ringWidthPercent, (radiusInPixels * ringWidthPercent) / 100)]
+}
 
 function depthBelow(folder: SunburstFolder, maxDepth: number): number {
     if (maxDepth === 0 || folder.children.length === 0) {
