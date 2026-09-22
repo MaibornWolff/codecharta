@@ -20,7 +20,7 @@ export class CodeMapArrowService implements OnDestroy {
     )
     private readonly hoveredNodeSubscription = this.sharedViewReadWindow.hoveredNodeId$
         .pipe(
-            filter(() => !this.codeMapStore.isSunburstLayout()),
+            filter(() => this.codeMapStore.isMapShown()),
             tap(hoveredNodeId => {
                 if (hoveredNodeId !== null) {
                     const hoveredBuilding = this.threeSceneService.getMapMesh()?.getMeshDescription().getBuildingByPath(hoveredNodeId)

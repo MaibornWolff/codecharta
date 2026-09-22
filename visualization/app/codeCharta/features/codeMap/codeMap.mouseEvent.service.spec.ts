@@ -814,9 +814,9 @@ describe("codeMapMouseEventService", () => {
         })
     })
 
-    describe("while the map is shown as a sunburst", () => {
+    describe("while the 3D map is not on screen", () => {
         beforeEach(() => {
-            jest.spyOn(codeMapMouseEventService["codeMapStore"], "isSunburstLayout").mockReturnValue(true)
+            jest.spyOn(codeMapMouseEventService["codeMapStore"], "isMapShown").mockReturnValue(false)
         })
 
         it("should neither highlight nor redraw the hidden 3D map on hover", () => {

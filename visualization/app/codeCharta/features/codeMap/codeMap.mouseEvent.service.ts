@@ -100,7 +100,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     hoverNode(path: string) {
-        if (this.isGrabbingOrMoving() || this.codeMapStore.isSunburstLayout()) {
+        if (this.isGrabbingOrMoving() || !this.codeMapStore.isMapShown()) {
             return
         }
 
@@ -118,7 +118,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     unhoverNode(updateStore = true) {
-        if (this.codeMapStore.isSunburstLayout()) {
+        if (!this.codeMapStore.isMapShown()) {
             return
         }
         this.unhoverBuilding(updateStore)

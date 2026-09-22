@@ -3,7 +3,8 @@ import { Store } from "@ngrx/store"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
 import { idToNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { isSunburstLayoutSelector, MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
+import { ThreeMapVisibilityStore } from "../../../renderer/threeViewer/threeViewer.facade"
+import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
@@ -17,7 +18,8 @@ export class CodeMapStore {
         private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly mapStateReadWindow: MapStateReadWindow,
         private readonly sharedViewReadWindow: SharedViewReadWindow,
-        private readonly nodeInteraction: NodeInteraction
+        private readonly nodeInteraction: NodeInteraction,
+        private readonly threeMapVisibilityStore: ThreeMapVisibilityStore
     ) {}
 
     getState(): CcState {
@@ -44,8 +46,8 @@ export class CodeMapStore {
         return this.sharedViewReadWindow.getSelectedNodePath()
     }
 
-    isSunburstLayout(): boolean {
-        return isSunburstLayoutSelector(this.ccStateSnapshot.get())
+    isMapShown(): boolean {
+        return this.threeMapVisibilityStore.isMapShown()
     }
 
     getIdToNode() {

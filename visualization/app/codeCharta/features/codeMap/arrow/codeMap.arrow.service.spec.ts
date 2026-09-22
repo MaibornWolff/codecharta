@@ -440,10 +440,10 @@ describe("CodeMapArrowService", () => {
         })
     })
 
-    describe("hover while the map is shown as a sunburst", () => {
+    describe("hover while the 3D map is not on screen", () => {
         it("should not recompute edges for a building nobody can see", () => {
             // Arrange
-            jest.spyOn(codeMapArrowService["codeMapStore"], "isSunburstLayout").mockReturnValue(true)
+            jest.spyOn(codeMapArrowService["codeMapStore"], "isMapShown").mockReturnValue(false)
             codeMapArrowService.onBuildingHovered = jest.fn()
             codeMapArrowService.onBuildingUnhovered = jest.fn()
 

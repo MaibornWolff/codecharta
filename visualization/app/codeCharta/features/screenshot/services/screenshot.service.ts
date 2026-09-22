@@ -1,11 +1,16 @@
-import { computed, Injectable, inject } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import html2canvas from "html2canvas-pro"
 import { Color, WebGLRenderer } from "three"
 import { FileState } from "../../../model/files/files"
 import { createPNGFileName } from "../../../model/files/files.helper"
-import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import {
+    ThreeCameraService,
+    ThreeMapVisibilityStore,
+    ThreeRendererService,
+    ThreeSceneService
+} from "../../../renderer/threeViewer/threeViewer.facade"
 import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
-import { injectIsSunburstLayout } from "../../shared/facade"
 import { ScreenshotCapture } from "../screenshotCapture"
 import { cropTransparentMargins } from "./canvasCrop"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
@@ -17,11 +22,10 @@ export class ScreenshotService implements ScreenshotCapture {
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly threeCameraService = inject(ThreeCameraService)
     private readonly filesRepo = inject(FilesRepo)
-    private readonly isSunburstLayout = injectIsSunburstLayout()
 
     readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
     readonly subject = "map"
-    readonly isCaptureAvailable = computed(() => !this.isSunburstLayout())
+    readonly isCaptureAvailable = toSignal(inject(ThreeMapVisibilityStore).isMapShown$, { initialValue: false })
 
     async makeScreenshotToFile(): Promise<void> {
         const renderer = this.threeRendererService.renderer

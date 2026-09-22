@@ -12,7 +12,7 @@ import { ThreeViewerService } from "../../../../renderer/threeViewer/threeViewer
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { ViewId } from "../../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
-import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { isThreeDimensionalLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setInvertArea } from "../../../../stores/mapState/mapState.write.facade"
 import { wait } from "../../../../util/testUtils/wait"
 import { CodeMapRenderService } from "../../codeMap.render.service"
@@ -50,7 +50,7 @@ describe("renderCodeMapEffect", () => {
                 provideMockStore({
                     selectors: [
                         { selector: accumulatedDataSelector, value: NO_MAP_DATA },
-                        { selector: isSunburstLayoutSelector, value: false }
+                        { selector: isThreeDimensionalLayoutSelector, value: true }
                     ]
                 }),
                 provideMockActions(() => actions$)
@@ -84,9 +84,9 @@ describe("renderCodeMapEffect", () => {
         expect(threeRendererService.render).toHaveBeenCalledTimes(1)
     })
 
-    it("should leave the 3D map alone while the map is shown as a sunburst, and still report the render", async () => {
+    it("should leave the 3D map alone while another layout is shown, and still report the render", async () => {
         // Arrange
-        store.overrideSelector(isSunburstLayoutSelector, true)
+        store.overrideSelector(isThreeDimensionalLayoutSelector, false)
         store.refreshState()
         const reportedRenders: unknown[] = []
         TestBed.inject(RenderCodeMapEffect).renderCodeMap$.subscribe(rendered => reportedRenders.push(rendered))

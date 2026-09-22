@@ -7,7 +7,7 @@ import { AccumulatedData, accumulatedDataSelector } from "../../../../renderer/r
 import { ThreeRendererService, ThreeViewerService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
-import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { isThreeDimensionalLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { clearPendingHeavyDispatch } from "../../../../util/dispatchAfterPaint"
 import { CodeMapRenderService } from "../../codeMap.render.service"
 import { actionsRequiringRerender } from "./actionsRequiringRerender"
@@ -71,8 +71,8 @@ export class RenderCodeMapEffect {
             merge(this.dataChangedWhileMetricsViewIsShown$, this.switchedToStaleMetricsView$).pipe(
                 filter((accumulatedData: AccumulatedData) => Boolean(accumulatedData.unifiedMapNode)),
                 throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
-                withLatestFrom(this.store.select(isSunburstLayoutSelector)),
-                tap(([accumulatedData, isSunburstShown]) => this.renderMap(accumulatedData, isSunburstShown)),
+                withLatestFrom(this.store.select(isThreeDimensionalLayoutSelector)),
+                tap(([accumulatedData, isThreeDimensionalLayout]) => this.renderMap(accumulatedData, isThreeDimensionalLayout)),
                 map(([accumulatedData]) => accumulatedData),
                 share()
             ),
@@ -81,9 +81,9 @@ export class RenderCodeMapEffect {
 
     // Every later render, and the readiness that clears the view's spinner, hang off this stream — so
     // a failing render is reported and left behind instead of ending it.
-    private renderMap(accumulatedData: AccumulatedData, isSunburstShown: boolean): void {
+    private renderMap(accumulatedData: AccumulatedData, isThreeDimensionalLayout: boolean): void {
         try {
-            if (isSunburstShown) {
+            if (!isThreeDimensionalLayout) {
                 return
             }
             this.codeMapRenderService.load(accumulatedData.unifiedMapNode, this.consumeInvalidation(accumulatedData.unifiedMapNode))

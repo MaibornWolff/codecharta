@@ -8,3 +8,5 @@ export const isSunburstLayoutSelector = createSelector(
     layoutAlgorithmSelector,
     layoutAlgorithm => layoutAlgorithm === LayoutAlgorithm.Sunburst
 )
+
+export const isThreeDimensionalLayoutSelector = createSelector(isSunburstLayoutSelector, isSunburst => !isSunburst)
