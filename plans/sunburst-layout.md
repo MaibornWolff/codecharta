@@ -54,3 +54,7 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
   selection after a mesh swap, exclude checks the store's selection, sunburst hover no longer drives the hidden 3D
   map, and in Sunburst every node menu offers Focus/Flatten but not Keep Highlight/marking. Shared chart registry,
   size observer, escapeHtml and test stub; e2e waits on `aria-busy` instead of a fixed delay
+- Decoupling round (2026-09-22): selection is `sharedView.selectedNodePath` (never restored, so older sessions load
+  without a migration), written only through `NodeInteraction`; the 3D scene follows it via
+  `SceneSelectionSyncService` whenever `ThreeMapVisibilityStore.isMapShown` (metrics view + 3D layout), so codeMap
+  no longer mentions the sunburst; the container moved to `features/sunburst` with read/write stores
