@@ -6,6 +6,7 @@ import { MetricsSunburstPageObject } from "./metricsSunburst.po"
 
 const INNER_RING = 0.35
 const CENTRE = 0
+const JUST_PAST_THE_TOP = 15
 
 test.describe("Sunburst layout", () => {
     test.beforeEach(async ({ page }) => {
@@ -48,6 +49,28 @@ test.describe("Sunburst layout", () => {
 
         // Assert
         await expect(inspector.nodeName()).toHaveText("root")
+    })
+
+    test("should select a clicked file without stepping into anything", async ({ page }) => {
+        // Arrange
+        const sunburst = new MetricsSunburstPageObject(page)
+        const explorer = new ExplorerTreeLevelPageObject(page)
+        const inspector = new SidebarInspectorPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await explorer.selectNode("/root/sample1.cc.json")
+        await inspector.waitUntilOpen()
+
+        // Act
+        await sunburst.clickAt(INNER_RING, JUST_PAST_THE_TOP)
+
+        // Assert
+        await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")
+
+        // Act
+        await sunburst.clickAt(INNER_RING, JUST_PAST_THE_TOP)
+
+        // Assert
+        await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")
     })
 
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {

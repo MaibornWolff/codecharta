@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Sunburst map layout**: choose "Sunburst" as the map layout to see your folders as rings around the folder you are in, sized by the area metric and coloured by the colour metric, and click a ring to step into that folder or the centre to step back out.
+- **Sunburst map layout**: choose "Sunburst" as the map layout to see your folders and files as rings around the folder you are in, sized by the area metric and coloured by the colour metric, and click a folder to step into it or the centre to step back out.
 
 ## [2.5.3] - 2026-09-22
 

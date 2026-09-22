@@ -17,11 +17,7 @@ const DARK_TEXT = "#1f2937"
 const LIGHT_TEXT = "#ffffff"
 const LUMINANCE_THRESHOLD_FOR_DARK_TEXT = 0.5
 
-export function folderColor(
-    { colorValue, isFlat }: Pick<SunburstNode, "colorValue" | "isFlat">,
-    coloring: SunburstColoring,
-    folderColorValueRange: MetricMinMax
-): string {
+export function nodeColor({ colorValue, isFlat }: Pick<SunburstNode, "colorValue" | "isFlat">, coloring: SunburstColoring): string {
     const { mapColors } = coloring
     if (colorValue === undefined) {
         return mapColors.base
@@ -32,14 +28,7 @@ export function folderColor(
     if (coloring.colorMetric === UNARY_METRIC) {
         return mapColors.positive
     }
-    const valueOnFileScale = rescale(colorValue, folderColorValueRange, coloring.colorMetricRange)
-    return getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, valueOnFileScale)
-}
-
-function rescale(value: number, from: MetricMinMax, to: MetricMinMax): number {
-    const fromSpan = from.maxValue - from.minValue
-    const share = fromSpan === 0 ? 0 : (value - from.minValue) / fromSpan
-    return to.minValue + share * (to.maxValue - to.minValue)
+    return getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, colorValue)
 }
 
 export function readableTextColor(backgroundHex: string): string {

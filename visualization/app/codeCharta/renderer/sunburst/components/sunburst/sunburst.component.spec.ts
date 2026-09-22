@@ -36,7 +36,7 @@ const COLORING: SunburstColoring = {
 }
 
 function folder(path: string, children: SunburstNode[] = []): SunburstNode {
-    return { path, name: path.split("/").at(-1), area: 10, colorValue: 5, isFlat: false, children }
+    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children }
 }
 
 const FOLDERS = folder("/root", [
@@ -144,10 +144,10 @@ describe("SunburstComponent", () => {
         const { fixture } = await renderSunburst({ centrePath: "/root/src" })
         const folderClicked = jest.fn()
         const centreClicked = jest.fn()
-        const folderHovered = jest.fn()
+        const nodeHovered = jest.fn()
         fixture.componentInstance.folderClicked.subscribe(folderClicked)
         fixture.componentInstance.centreClicked.subscribe(centreClicked)
-        fixture.componentInstance.folderHovered.subscribe(folderHovered)
+        fixture.componentInstance.nodeHovered.subscribe(nodeHovered)
 
         // Act
         chartEventHandlers.get("click")({ data: { name: "/root/src/app", isCentre: false } })
@@ -157,7 +157,20 @@ describe("SunburstComponent", () => {
         // Assert
         expect(folderClicked).toHaveBeenCalledWith("/root/src/app")
         expect(centreClicked).toHaveBeenCalled()
-        expect(folderHovered).toHaveBeenCalledWith("/root/src/app")
+        expect(nodeHovered).toHaveBeenCalledWith("/root/src/app")
+    })
+
+    it("should report a click on a file separately from a click on a folder", async () => {
+        // Arrange
+        const { fixture } = await renderSunburst()
+        const fileClicked = jest.fn()
+        fixture.componentInstance.fileClicked.subscribe(fileClicked)
+
+        // Act
+        chartEventHandlers.get("click")({ data: { name: "/root/a.ts", isCentre: false, isFile: true } })
+
+        // Assert
+        expect(fileClicked).toHaveBeenCalledWith("/root/a.ts")
     })
 
     it("should dispose the chart when destroyed", async () => {

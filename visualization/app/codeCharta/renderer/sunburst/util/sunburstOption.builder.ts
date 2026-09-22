@@ -1,5 +1,4 @@
-import { MetricMinMax } from "../../../util/metric/metricRange"
-import { folderColor, readableTextColor, SunburstColoring } from "./sunburstColor"
+import { nodeColor, readableTextColor, SunburstColoring } from "./sunburstColor"
 import { SunburstMetrics, SunburstNode } from "./sunburstTree"
 
 export const VISIBLE_RING_COUNT = 3
@@ -16,7 +15,6 @@ export interface SunburstOptionInputs {
     isMapRoot: boolean
     metrics: SunburstMetrics
     coloring: SunburstColoring
-    folderColorValueRange: MetricMinMax
     chartSizeInPixels: number
 }
 
@@ -26,6 +24,7 @@ export interface SunburstDatum {
     displayName: string
     colorValue: number | undefined
     isCentre: boolean
+    isFile: boolean
     itemStyle: { color: string }
     label: { color: string }
     children: SunburstDatum[]
@@ -42,14 +41,7 @@ export function buildSunburstOption(inputs: SunburstOptionInputs) {
         series: [
             {
                 type: "sunburst",
-                data: [
-                    toDatum(
-                        inputs.centre,
-                        folder => folderColor(folder, inputs.coloring, inputs.folderColorValueRange),
-                        VISIBLE_RING_COUNT,
-                        true
-                    )
-                ],
+                data: [toDatum(inputs.centre, inputs.coloring, VISIBLE_RING_COUNT, true)],
                 radius: ["0%", `${OUTER_RADIUS_PERCENT}%`],
                 nodeClick: false,
                 sort: "desc",
@@ -98,17 +90,18 @@ function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixe
     }))
 }
 
-function toDatum(folder: SunburstNode, colorOf: (folder: SunburstNode) => string, ringsLeft: number, isCentre: boolean): SunburstDatum {
-    const color = colorOf(folder)
+function toDatum(node: SunburstNode, coloring: SunburstColoring, ringsLeft: number, isCentre: boolean): SunburstDatum {
+    const color = nodeColor(node, coloring)
     return {
-        name: folder.path,
-        value: folder.area,
-        displayName: folder.name,
-        colorValue: folder.colorValue,
+        name: node.path,
+        value: node.area,
+        displayName: node.name,
+        colorValue: node.colorValue,
         isCentre,
+        isFile: node.isFile,
         itemStyle: { color },
         label: { color: readableTextColor(color) },
-        children: ringsLeft > 0 ? folder.children.map(child => toDatum(child, colorOf, ringsLeft - 1, false)) : []
+        children: ringsLeft > 0 ? node.children.map(child => toDatum(child, coloring, ringsLeft - 1, false)) : []
     }
 }
 

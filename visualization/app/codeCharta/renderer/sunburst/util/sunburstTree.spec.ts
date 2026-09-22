@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildSunburstTree, colorValueRange, findClosestFolder, findFolder, isInside, parentPath } from "./sunburstTree"
+import { buildSunburstTree, findClosestFolder, findClosestNode, findFolder, isInside, parentPath } from "./sunburstTree"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -13,13 +13,13 @@ function folder(path: string, children: CodeMapNode[], attributes: Record<string
 }
 
 describe("buildSunburstTree", () => {
-    it("should keep only folders and size each one by the area of all files below it", () => {
+    it("should keep folders and files, sizing each folder by the area of all files below it", () => {
         // Arrange
         const root = folder("/root", [
-            file("/root/a.ts", { rloc: 10, mcc: 1 }),
+            file("/root/a.ts", { rloc: 10 }),
             folder("/root/src", [
-                file("/root/src/b.ts", { rloc: 30, mcc: 1 }),
-                folder("/root/src/deep", [file("/root/src/deep/c.ts", { rloc: 5, mcc: 1 })])
+                file("/root/src/b.ts", { rloc: 30 }),
+                folder("/root/src/deep", [file("/root/src/deep/c.ts", { rloc: 5 })])
             ])
         ])
 
@@ -28,13 +28,14 @@ describe("buildSunburstTree", () => {
 
         // Assert
         expect(result.area).toBe(45)
-        expect(result.children.map(child => child.path)).toEqual(["/root/src"])
-        expect(result.children[0].area).toBe(35)
-        expect(result.children[0].children[0].area).toBe(5)
-        expect(result.children[0].children[0].children).toEqual([])
+        expect(result.children.map(child => [child.path, child.isFile, child.area])).toEqual([
+            ["/root/a.ts", true, 10],
+            ["/root/src", false, 35]
+        ])
+        expect(result.children[1].children[1].children[0]).toEqual(expect.objectContaining({ path: "/root/src/deep/c.ts", isFile: true }))
     })
 
-    it("should colour a folder by its own colour value, the one the inspector shows", () => {
+    it("should give a folder the summed colour value of its files and a file its own", () => {
         // Arrange
         const root = folder("/root", [folder("/root/src", [file("/root/src/a.ts", { rloc: 10, mcc: 40 })], { mcc: 40 })], { mcc: 55 })
 
@@ -44,50 +45,53 @@ describe("buildSunburstTree", () => {
         // Assert
         expect(result.colorValue).toBe(55)
         expect(result.children[0].colorValue).toBe(40)
+        expect(result.children[0].children[0].colorValue).toBe(40)
     })
 
-    it("should leave excluded files out of the size", () => {
+    it("should leave out excluded files", () => {
         // Arrange
-        const root = folder("/root", [
-            file("/root/a.ts", { rloc: 10, mcc: 2 }),
-            file("/root/excluded.ts", { rloc: 90, mcc: 100 }, { isExcluded: true })
-        ])
+        const root = folder("/root", [file("/root/a.ts", { rloc: 10 }), file("/root/excluded.ts", { rloc: 90 }, { isExcluded: true })])
 
         // Act
         const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.area).toBe(10)
+        expect(result.children.map(child => child.path)).toEqual(["/root/a.ts"])
     })
 
-    it("should drop folders without any area", () => {
+    it("should leave out files and folders without any area", () => {
         // Arrange
         const root = folder("/root", [
-            file("/root/a.ts", { rloc: 10, mcc: 1 }),
-            folder("/root/empty", [file("/root/empty/b.ts", { rloc: 0, mcc: 1 })])
+            file("/root/a.ts", { rloc: 10 }),
+            file("/root/noArea.ts", { mcc: 3 }),
+            folder("/root/empty", [file("/root/empty/b.ts", { rloc: 0 })])
         ])
 
         // Act
         const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
-        expect(result.children).toEqual([])
+        expect(result.children.map(child => child.path)).toEqual(["/root/a.ts"])
     })
 
-    it("should mark flattened folders", () => {
+    it("should mark flattened folders and files", () => {
         // Arrange
-        const root = folder("/root", [folder("/root/flatFolder", [file("/root/flatFolder/b.ts", { rloc: 5 })])])
-        const isFlat = (node: CodeMapNode) => node.path === "/root/flatFolder"
+        const root = folder("/root", [
+            folder("/root/flatFolder", [file("/root/flatFolder/b.ts", { rloc: 5 })]),
+            file("/root/flat.ts", { rloc: 1 })
+        ])
+        const isFlat = (node: CodeMapNode) => node.path === "/root/flatFolder" || node.path === "/root/flat.ts"
 
         // Act
         const result = buildSunburstTree(root, METRICS, isFlat)
 
         // Assert
         expect(result.isFlat).toBe(false)
-        expect(result.children[0].isFlat).toBe(true)
+        expect(result.children.map(child => child.isFlat)).toEqual([true, true])
     })
 
-    it("should have no colour value for a folder without the colour metric", () => {
+    it("should have no colour value for a node without the colour metric", () => {
         // Arrange
         const root = folder("/root", [file("/root/a.ts", { rloc: 10 })])
 
@@ -96,71 +100,32 @@ describe("buildSunburstTree", () => {
 
         // Assert
         expect(result.colorValue).toBeUndefined()
-    })
-
-    it("should treat a missing area metric as no area", () => {
-        // Arrange
-        const root = folder("/root", [file("/root/a.ts", { mcc: 3 }), file("/root/b.ts", { rloc: 4, mcc: 1 })])
-
-        // Act
-        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
-
-        // Assert
-        expect(result.area).toBe(4)
+        expect(result.children[0].colorValue).toBeUndefined()
     })
 
     it("should return null for a map that is a single file", () => {
-        // Arrange
-        const root = file("/root", { rloc: 10 })
-
         // Act
-        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(file("/root", { rloc: 10 }), METRICS, NOTHING_IS_FLAT)
+
+        // Assert
+        expect(result).toBeNull()
+    })
+
+    it("should return null for a map without any area", () => {
+        // Act
+        const result = buildSunburstTree(folder("/root", [file("/root/a.ts", { rloc: 0 })]), METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result).toBeNull()
     })
 })
 
-describe("colorValueRange", () => {
-    it("should span the colour values of every folder in the tree", () => {
-        // Arrange
-        const tree = buildSunburstTree(
-            folder(
-                "/root",
-                [
-                    folder("/root/a", [file("/root/a/x.ts", { rloc: 1 })], { mcc: 3 }),
-                    folder("/root/b", [file("/root/b/y.ts", { rloc: 1 })], { mcc: 9 })
-                ],
-                { mcc: 12 }
-            ),
-            METRICS,
-            NOTHING_IS_FLAT
-        )
-
-        // Act
-        const range = colorValueRange(tree)
-
-        // Assert
-        expect(range).toEqual({ minValue: 3, maxValue: 12 })
-    })
-
-    it("should have no range when no folder carries the colour metric", () => {
-        // Arrange
-        const tree = buildSunburstTree(folder("/root", [file("/root/a.ts", { rloc: 1 })]), METRICS, NOTHING_IS_FLAT)
-
-        // Act
-        const range = colorValueRange(tree)
-
-        // Assert
-        expect(range).toBeNull()
-    })
-})
-
-describe("folder lookup", () => {
+describe("node lookup", () => {
     const tree = buildSunburstTree(
         folder("/root", [
             folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", { rloc: 1 })])]),
-            folder("/root/srcOther", [file("/root/srcOther/b.ts", { rloc: 1 })])
+            folder("/root/srcOther", [file("/root/srcOther/b.ts", { rloc: 1 })]),
+            file("/root/src.ts", { rloc: 1 })
         ]),
         METRICS,
         NOTHING_IS_FLAT
@@ -182,7 +147,7 @@ describe("folder lookup", () => {
         expect(result.path).toBe("/root/srcOther")
     })
 
-    it("should find nothing for a path that is not a folder in the tree", () => {
+    it("should find no folder for a file's path", () => {
         // Act
         const result = findFolder(tree, "/root/src/app/a.ts")
 
@@ -190,20 +155,16 @@ describe("folder lookup", () => {
         expect(result).toBeUndefined()
     })
 
-    it("should find the deepest folder containing a path", () => {
-        // Act
-        const result = findClosestFolder(tree, "/root/src/app/a.ts")
-
+    it("should find the deepest folder containing a path, never a file", () => {
         // Assert
-        expect(result.path).toBe("/root/src/app")
+        expect(findClosestFolder(tree, "/root/src/app/a.ts").path).toBe("/root/src/app")
+        expect(findClosestFolder(tree, "/root/src.ts").path).toBe("/root")
     })
 
-    it("should stop looking deeper than the given number of levels", () => {
-        // Act
-        const result = findClosestFolder(tree, "/root/src/app/a.ts", 1)
-
+    it("should find the deepest node containing a path, files included", () => {
         // Assert
-        expect(result.path).toBe("/root/src")
+        expect(findClosestNode(tree, "/root/src/app/a.ts").path).toBe("/root/src/app/a.ts")
+        expect(findClosestNode(tree, "/root/src/app/a.ts", 1).path).toBe("/root/src")
     })
 
     it("should fall back to the root for a path outside the tree", () => {

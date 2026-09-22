@@ -5,7 +5,14 @@ import { SCREENSHOT_CAPTURE, ScreenshotButtonComponent, SunburstScreenshotServic
 import { ExplorerCollapseService, ExplorerWidthService } from "../../../features/sidebarExplorer/facade"
 import { InspectorVisibilityService } from "../../../features/sidebarInspector/facade"
 import { CcState } from "../../../model/codeCharta.model"
-import { findClosestFolder, parentPath, SunburstComponent } from "../../../renderer/sunburst/sunburst.facade"
+import {
+    findClosestFolder,
+    findClosestNode,
+    findFolder,
+    parentPath,
+    SunburstComponent,
+    VISIBLE_RING_COUNT
+} from "../../../renderer/sunburst/sunburst.facade"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
@@ -69,14 +76,30 @@ export class MetricsSunburstComponent {
         this.selectFolder(parentPath(centrePath))
     }
 
+    protected selectFile(path: string): void {
+        this.store.dispatch(setSelectedBuildingId({ value: path }))
+    }
+
     protected hover(path: string | null): void {
         this.store.dispatch(setHoveredNodeId({ value: path }))
     }
 
     private centreOnTheSelection(): void {
         const selectedPath = this.selectedPath()
-        if (selectedPath !== null) {
-            untracked(() => this.requestedCentrePath.set(selectedPath))
+        untracked(() => {
+            if (selectedPath !== null && !this.isFileShownAroundTheCentre(selectedPath)) {
+                this.requestedCentrePath.set(selectedPath)
+            }
+        })
+    }
+
+    private isFileShownAroundTheCentre(path: string): boolean {
+        const tree = this.tree()
+        const centrePath = this.centrePath()
+        if (!tree || centrePath === null) {
+            return false
         }
+        const shownNode = findClosestNode(findFolder(tree, centrePath) ?? tree, path, VISIBLE_RING_COUNT)
+        return shownNode.isFile && shownNode.path === path
     }
 }

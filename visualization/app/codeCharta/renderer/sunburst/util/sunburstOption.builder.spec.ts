@@ -13,7 +13,7 @@ const COLORING: SunburstColoring = {
 }
 
 function folder(path: string, children: SunburstNode[] = [], overrides: Partial<SunburstNode> = {}): SunburstNode {
-    return { path, name: path.split("/").at(-1), area: 10, colorValue: 5, isFlat: false, children, ...overrides }
+    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children, ...overrides }
 }
 
 function inputs(centre: SunburstNode, overrides: Partial<SunburstOptionInputs> = {}): SunburstOptionInputs {
@@ -22,7 +22,6 @@ function inputs(centre: SunburstNode, overrides: Partial<SunburstOptionInputs> =
         isMapRoot: false,
         metrics: { areaMetric: "rloc", colorMetric: "mcc" },
         coloring: COLORING,
-        folderColorValueRange: { minValue: 0, maxValue: 100 },
         chartSizeInPixels: 800,
         ...overrides
     }
@@ -75,6 +74,16 @@ describe("buildSunburstOption", () => {
 
         // Assert
         expect(option.series[0].levels).toHaveLength(1 + 1 + 1)
+    })
+
+    it("should tell files from folders so a click on a file does not drill", () => {
+        // Act
+        const option = buildSunburstOption(inputs(folder("/root", [folder("/root/a.ts", [], { isFile: true })])))
+
+        // Assert
+        const [fileDatum] = option.series[0].data[0].children
+        expect(fileDatum.isFile).toBe(true)
+        expect(option.series[0].data[0].isFile).toBe(false)
     })
 
     it("should leave drilling to the caller instead of letting ECharts zoom", () => {

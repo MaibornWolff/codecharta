@@ -47,7 +47,7 @@ describe("SunburstChartHost", () => {
         chartEventHandlers.clear()
         globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
         registry = new SunburstChartRegistry()
-        handlers = { onFolderClicked: jest.fn(), onCentreClicked: jest.fn(), onFolderHovered: jest.fn() }
+        handlers = { onFolderClicked: jest.fn(), onFileClicked: jest.fn(), onCentreClicked: jest.fn(), onNodeHovered: jest.fn() }
         host = new SunburstChartHost(registry, handlers)
     })
 
@@ -102,6 +102,18 @@ describe("SunburstChartHost", () => {
         expect(handlers.onFolderClicked).not.toHaveBeenCalled()
     })
 
+    it("should report a click on a file as a file click, which does not drill", () => {
+        // Arrange
+        host.attachTo(containerOfSize(800, 600))
+
+        // Act
+        chartEventHandlers.get("click")({ data: { name: "/root/a.ts", isCentre: false, isFile: true } })
+
+        // Assert
+        expect(handlers.onFileClicked).toHaveBeenCalledWith("/root/a.ts")
+        expect(handlers.onFolderClicked).not.toHaveBeenCalled()
+    })
+
     it("should ignore clicks that hit no segment", () => {
         // Arrange
         host.attachTo(containerOfSize(800, 600))
@@ -124,9 +136,9 @@ describe("SunburstChartHost", () => {
         chartEventHandlers.get("mouseout")({})
 
         // Assert
-        expect(handlers.onFolderHovered).toHaveBeenNthCalledWith(1, "/root/src")
-        expect(handlers.onFolderHovered).toHaveBeenNthCalledWith(2, null)
-        expect(handlers.onFolderHovered).toHaveBeenNthCalledWith(3, null)
+        expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(1, "/root/src")
+        expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(2, null)
+        expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(3, null)
     })
 
     it("should draw the option and keep the highlighted folder highlighted", () => {

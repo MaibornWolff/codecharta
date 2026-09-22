@@ -42,10 +42,14 @@ export class MetricsSunburstPageObject {
         )
     }
 
-    async clickAt(distanceFromCentreInRadii: number) {
+    async clickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {
         await this.page.waitForTimeout(RING_ANIMATION_MS)
         const box = await this.chart().boundingBox()
         const radius = Math.min(box.width, box.height) / 2
-        await this.page.mouse.click(box.x + box.width / 2 + radius * distanceFromCentreInRadii, box.y + box.height / 2)
+        const angle = (degreesClockwiseFromTop * Math.PI) / 180
+        await this.page.mouse.click(
+            box.x + box.width / 2 + radius * distanceFromCentreInRadii * Math.sin(angle),
+            box.y + box.height / 2 - radius * distanceFromCentreInRadii * Math.cos(angle)
+        )
     }
 }

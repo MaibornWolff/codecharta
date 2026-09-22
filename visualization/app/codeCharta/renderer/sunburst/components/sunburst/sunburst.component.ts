@@ -13,10 +13,8 @@ import {
 import { SunburstChartRegistry } from "../../services/sunburstChart.registry"
 import { SunburstColoring } from "../../util/sunburstColor"
 import { buildSunburstOption, VISIBLE_RING_COUNT } from "../../util/sunburstOption.builder"
-import { colorValueRange, findClosestFolder, findFolder, isInside, SunburstMetrics, SunburstNode } from "../../util/sunburstTree"
+import { findClosestNode, findFolder, isInside, SunburstMetrics, SunburstNode } from "../../util/sunburstTree"
 import { SunburstChartHost } from "./sunburstChartHost"
-
-const NO_COLOR_VALUES = { minValue: 0, maxValue: 0 }
 
 @Component({
     selector: "cc-sunburst",
@@ -32,35 +30,35 @@ export class SunburstComponent implements OnDestroy {
     readonly coloring = input.required<SunburstColoring>()
 
     readonly folderClicked = output<string>()
+    readonly fileClicked = output<string>()
     readonly centreClicked = output<void>()
-    readonly folderHovered = output<string | null>()
+    readonly nodeHovered = output<string | null>()
 
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
 
     private readonly chartHost = new SunburstChartHost(inject(SunburstChartRegistry), {
         onFolderClicked: path => this.folderClicked.emit(path),
+        onFileClicked: path => this.fileClicked.emit(path),
         onCentreClicked: () => this.centreClicked.emit(),
-        onFolderHovered: path => this.folderHovered.emit(path)
+        onNodeHovered: path => this.nodeHovered.emit(path)
     })
 
     private readonly centre = computed(() => findFolder(this.tree(), this.centrePath()) ?? this.tree())
 
-    private readonly folderColorValueRange = computed(() => colorValueRange(this.tree()) ?? NO_COLOR_VALUES)
-
-    private readonly highlightedFolderPath = computed(() => {
+    private readonly highlightedPath = computed(() => {
         const hoveredPath = this.hoveredPath()
         const centre = this.centre()
         if (hoveredPath === null || !isInside(hoveredPath, centre.path)) {
             return null
         }
-        const displayedFolder = findClosestFolder(centre, hoveredPath, VISIBLE_RING_COUNT)
-        return displayedFolder === centre ? null : displayedFolder.path
+        const displayedNode = findClosestNode(centre, hoveredPath, VISIBLE_RING_COUNT)
+        return displayedNode === centre ? null : displayedNode.path
     })
 
     constructor() {
         effect(() => this.chartHost.attachTo(this.chartContainer().nativeElement))
         effect(() => this.renderOnceTheContainerIsMeasured())
-        effect(() => this.chartHost.highlight(this.highlightedFolderPath()))
+        effect(() => this.chartHost.highlight(this.highlightedPath()))
     }
 
     ngOnDestroy(): void {
@@ -78,7 +76,6 @@ export class SunburstComponent implements OnDestroy {
                 isMapRoot: this.centre() === this.tree(),
                 metrics: this.metrics(),
                 coloring: this.coloring(),
-                folderColorValueRange: this.folderColorValueRange(),
                 chartSizeInPixels: Math.min(width, height)
             })
         )

@@ -17,9 +17,9 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
 - 3D pipeline skips work while the sunburst is active
 
 ### 2. Sunburst data
-- Folders only; angle = area metric summed over the folder's files
-- Colour = the folder's summed colour value (as in the inspector), placed on the map's colour range by its position
-  between the smallest and largest folder value
+- Folders and files; angle = area metric summed over the folder's files
+- Files are leaves in the rings; clicking a file selects it without moving the centre
+- Colour = the folder's summed colour value (as when hovering it), on the map's colour range unchanged, like a building
 - Respects exclude/flatten/focus like the 3D map
 
 ### 3. Sunburst view
@@ -44,8 +44,8 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
 
 - Decisions from the Q&A: folders only, click = drill + select, hover syncs explorer, metrics bar/legend/extension
   bar/sidebars stay, delta out of scope, names + tooltip, 3D controls hidden, screenshot supported
-- Revised after review: the colour first used an area-weighted average of the files; it now uses the folder's own
-  summed value on a range built from the folders. A height/colour link is ignored while the sunburst is shown
+- Revised after review: the colour went from an area-weighted average, over a range rescaled to the folders, to the
+  plain summed value on the map's range; files were added as leaves. A height/colour link is ignored in the sunburst
 - Rings shrink to the depth that exists below the centre (at most three), so shallow maps get wider, readable rings
 - The centre follows the selection (a file centres on its folder); clearing the selection keeps the centre
 - ECharts is only in lazy chunks (`@defer` + `sunburstRegistry.facade.ts`); the initial bundle grows by about 20 KB

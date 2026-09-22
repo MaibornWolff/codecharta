@@ -10,8 +10,9 @@ echarts.use([SunburstChart, CanvasRenderer, TooltipComponent, AriaComponent])
 
 export interface SunburstChartHandlers {
     onFolderClicked: (path: string) => void
+    onFileClicked: (path: string) => void
     onCentreClicked: () => void
-    onFolderHovered: (path: string | null) => void
+    onNodeHovered: (path: string | null) => void
 }
 
 interface EchartsSegmentEvent {
@@ -44,8 +45,8 @@ export class SunburstChartHost {
         this.attachedContainer = container
         this.chart = echarts.init(container)
         this.chart.on("click", (event: unknown) => this.reportClick(event as EchartsSegmentEvent))
-        this.chart.on("mouseover", (event: unknown) => this.handlers.onFolderHovered((event as EchartsSegmentEvent).data?.name ?? null))
-        this.chart.on("mouseout", () => this.handlers.onFolderHovered(null))
+        this.chart.on("mouseover", (event: unknown) => this.handlers.onNodeHovered((event as EchartsSegmentEvent).data?.name ?? null))
+        this.chart.on("mouseout", () => this.handlers.onNodeHovered(null))
         this.chartRegistry.register(this.chart)
         this.measureContainer()
         this.resizeObserver = new ResizeObserver(() => this.measureContainer())
@@ -83,9 +84,11 @@ export class SunburstChartHost {
         }
         if (data.isCentre) {
             this.handlers.onCentreClicked()
-            return
+        } else if (data.isFile) {
+            this.handlers.onFileClicked(data.name)
+        } else {
+            this.handlers.onFolderClicked(data.name)
         }
-        this.handlers.onFolderClicked(data.name)
     }
 
     private applyHighlight(): void {

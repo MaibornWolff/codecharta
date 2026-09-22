@@ -39,10 +39,14 @@ class ResizeObserverMock {
 }
 
 function folder(path: string, children: SunburstNode[] = []): SunburstNode {
-    return { path, name: path.split("/").at(-1), area: 10, colorValue: 5, isFlat: false, children }
+    return { path, name: path.split("/").at(-1), isFile: false, area: 10, colorValue: 5, isFlat: false, children }
 }
 
-const FOLDERS = folder("/root", [folder("/root/src", [folder("/root/src/app")])])
+function file(path: string): SunburstNode {
+    return { ...folder(path), isFile: true }
+}
+
+const FOLDERS = folder("/root", [folder("/root/src", [folder("/root/src/app", [file("/root/src/app/deep.ts")]), file("/root/src/b.ts")])])
 
 interface Setup {
     tree?: SunburstNode | null
@@ -140,6 +144,37 @@ describe("MetricsSunburstComponent", () => {
         expect(lastDrawnCentre()).toBe("/root/src/app")
     })
 
+    it("should select a clicked file without moving the centre", async () => {
+        // Arrange
+        const { store, fixture } = await setup()
+
+        // Act
+        chartEventHandlers.get("click")({ data: { name: "/root/src/b.ts", isCentre: false, isFile: true } })
+        store.overrideSelector(selectedBuildingIdSelector, "/root/src/b.ts")
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src/b.ts" }))
+        expect(lastDrawnCentre()).toBe("/root")
+    })
+
+    it("should centre on the folder of a file selected elsewhere that the rings do not show", async () => {
+        // Arrange
+        const { store, fixture } = await setup({ selectedPath: "/root/src/app" })
+        store.overrideSelector(selectedBuildingIdSelector, null)
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Act
+        store.overrideSelector(selectedBuildingIdSelector, "/root/src/b.ts")
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(lastDrawnCentre()).toBe("/root/src")
+    })
+
     it("should keep its centre when the selection is cleared", async () => {
         // Arrange
         const { store, fixture } = await setup({ selectedPath: "/root/src" })
@@ -219,12 +254,12 @@ describe("MetricsSunburstComponent", () => {
         expect(mockChart.setOption).not.toHaveBeenCalled()
     })
 
-    it("should explain instead of drawing when no folder has an area", async () => {
+    it("should explain instead of drawing when no file has an area", async () => {
         // Act
         await setup({ tree: null })
 
         // Assert
-        expect(screen.getByRole("status").textContent).toContain("no folders")
+        expect(screen.getByRole("status").textContent).toContain("no files")
     })
 
     it("should keep clear of the open explorer and inspector", async () => {
