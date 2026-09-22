@@ -12,17 +12,19 @@
             <span class="cc-current-underline"></span>
         }
     </button>
-    <button
-        type="button"
-        role="tab"
-        [attr.aria-selected]="isDeltaState()"
-        class="btn btn-ghost btn-sm relative"
-        [class.font-bold]="isDeltaState()"
-        (click)="selectCompare()"
-    >
-        Compare
-        @if (isDeltaState()) {
-            <span class="cc-current-underline"></span>
-        }
-    </button>
+    @if (isCompareOffered()) {
+        <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="isDeltaState()"
+            class="btn btn-ghost btn-sm relative"
+            [class.font-bold]="isDeltaState()"
+            (click)="selectCompare()"
+        >
+            Compare
+            @if (isDeltaState()) {
+                <span class="cc-current-underline"></span>
+            }
+        </button>
+    }
 </div>

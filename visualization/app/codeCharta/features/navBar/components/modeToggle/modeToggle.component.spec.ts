@@ -5,6 +5,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { routeLinks, routePaths } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
+import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { ModeToggleComponent } from "./modeToggle.component"
@@ -156,5 +157,38 @@ describe("ModeToggleComponent", () => {
         // Assert
         expect(navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics)
         expect(fileSelectionModeService.toggle).toHaveBeenCalledTimes(1)
+    })
+
+    async function renderInSunburst(isDeltaState: boolean) {
+        await render(ModeToggleComponent, {
+            providers: [
+                provideMockStore({
+                    initialState: defaultState,
+                    selectors: [
+                        { selector: isDeltaStateSelector, value: isDeltaState },
+                        { selector: isSunburstLayoutSelector, value: true }
+                    ]
+                }),
+                { provide: State, useValue: { getValue: () => defaultState } },
+                provideRouter([{ path: routePaths.metrics, children: [] }])
+            ]
+        })
+    }
+
+    it("should not offer Compare while the map is shown as a sunburst", async () => {
+        // Arrange & Act
+        await renderInSunburst(false)
+
+        // Assert
+        expect(screen.getByRole("tab", { name: "Explore" })).not.toBeNull()
+        expect(screen.queryByRole("tab", { name: "Compare" })).toBeNull()
+    })
+
+    it("should keep showing an active Compare in the sunburst, so the current mode stays visible", async () => {
+        // Arrange & Act
+        await renderInSunburst(true)
+
+        // Assert
+        expect(screen.getByRole("tab", { name: "Compare" }).getAttribute("aria-selected")).toBe("true")
     })
 })
