@@ -50,3 +50,7 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
 - The centre follows the selection (a file centres on its folder); clearing the selection keeps the centre
 - ECharts is only in lazy chunks (`@defer` + `sunburstRegistry.facade.ts`); the initial bundle grows by about 20 KB
 - Verified: unit gate, lint, tsc, 94/94 e2e on local Chromium, manual run on the junit5 showcase map
+- Review round (2026-09-22): going up uses the tree parent (merged chains), the 3D scene mirrors the store's
+  selection after a mesh swap, exclude checks the store's selection, sunburst hover no longer drives the hidden 3D
+  map, and in Sunburst every node menu offers Focus/Flatten but not Keep Highlight/marking. Shared chart registry,
+  size observer, escapeHtml and test stub; e2e waits on `aria-busy` instead of a fixed delay
