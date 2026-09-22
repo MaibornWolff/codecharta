@@ -8,6 +8,8 @@ const OUTER_RADIUS_PERCENT = 95
 const MIN_LABEL_ANGLE_DEGREES = 5
 const LABEL_PADDING_PX = 8
 const SEGMENT_BORDER_COLOR = "#ffffff"
+const HOVER_FADE = { duration: 500, easing: "cubicOut" }
+const DIMMED_OPACITY = 0.45
 const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
 
 export interface SunburstOptionInputs {
@@ -46,6 +48,8 @@ export function buildSunburstOption(inputs: SunburstOptionInputs) {
                 nodeClick: false,
                 sort: "desc",
                 emphasis: { focus: "ancestor" },
+                blur: { itemStyle: { opacity: DIMMED_OPACITY }, label: { opacity: DIMMED_OPACITY } },
+                stateAnimation: HOVER_FADE,
                 itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: 1 },
                 label: { formatter: labelOf },
                 animationDurationUpdate: 400,

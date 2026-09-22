@@ -20,6 +20,7 @@ jest.mock("echarts/core", () => ({
 }))
 
 const SOME_OPTION = {} as never
+const POINTER_LEAVE_GRACE_MS = 120
 
 class ResizeObserverMock {
     static latestCallback: () => void
@@ -149,19 +150,50 @@ describe("SunburstChartHost", () => {
         expect(handlers.onFolderClicked).not.toHaveBeenCalled()
     })
 
-    it("should report hovering a segment and leaving it", () => {
+    it("should report hovering a segment and, a moment after the pointer left, leaving it", () => {
         // Arrange
+        jest.useFakeTimers()
         host.attachTo(containerOfSize(800, 600))
 
         // Act
         chartEventHandlers.get("mouseover")({ data: { name: "/root/src" } })
-        chartEventHandlers.get("mouseover")({})
         chartEventHandlers.get("mouseout")({})
+        jest.advanceTimersByTime(POINTER_LEAVE_GRACE_MS)
 
         // Assert
         expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(1, "/root/src")
         expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(2, null)
-        expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(3, null)
+        jest.useRealTimers()
+    })
+
+    it("should not report the gap while the pointer moves from one segment to the next", () => {
+        // Arrange
+        jest.useFakeTimers()
+        host.attachTo(containerOfSize(800, 600))
+        chartEventHandlers.get("mouseover")({ data: { name: "/root/src" } })
+
+        // Act
+        chartEventHandlers.get("mouseout")({})
+        chartEventHandlers.get("mouseover")({ data: { name: "/root/test" } })
+        jest.advanceTimersByTime(POINTER_LEAVE_GRACE_MS)
+
+        // Assert
+        expect(handlers.onNodeHovered).not.toHaveBeenCalledWith(null)
+        expect(handlers.onNodeHovered).toHaveBeenLastCalledWith("/root/test")
+        jest.useRealTimers()
+    })
+
+    it("should leave the segment under the pointer to the chart's own emphasis instead of emphasising it again", () => {
+        // Arrange
+        host.attachTo(containerOfSize(800, 600))
+        chartEventHandlers.get("mouseover")({ data: { name: "/root/src" } })
+        mockChart.dispatchAction.mockClear()
+
+        // Act
+        host.highlight("/root/src")
+
+        // Assert
+        expect(mockChart.dispatchAction).not.toHaveBeenCalled()
     })
 
     it("should draw the option and keep the highlighted folder highlighted", () => {

@@ -21,6 +21,8 @@ interface EchartsSegmentEvent {
     event?: { event?: MouseEvent }
 }
 
+const POINTER_LEAVE_GRACE_MS = 120
+
 function suppressBrowserMenu(event: Event): void {
     event.preventDefault()
 }
@@ -30,6 +32,8 @@ export class SunburstChartHost {
     private attachedContainer?: HTMLElement
     private resizeObserver?: ResizeObserver
     private highlightedPath: string | null = null
+    private pathUnderPointer: string | null = null
+    private pointerLeaveTimeout?: ReturnType<typeof setTimeout>
 
     private readonly measuredContainerSize = signal(
         { width: 0, height: 0 },
@@ -51,8 +55,8 @@ export class SunburstChartHost {
         this.attachedContainer = container
         this.chart = echarts.init(container)
         this.chart.on("click", (event: unknown) => this.reportClick(event as EchartsSegmentEvent))
-        this.chart.on("mouseover", (event: unknown) => this.handlers.onNodeHovered((event as EchartsSegmentEvent).data?.name ?? null))
-        this.chart.on("mouseout", () => this.handlers.onNodeHovered(null))
+        this.chart.on("mouseover", (event: unknown) => this.reportPointerEntered((event as EchartsSegmentEvent).data?.name ?? null))
+        this.chart.on("mouseout", () => this.reportPointerLeftAfterGrace())
         this.chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as EchartsSegmentEvent))
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
@@ -72,10 +76,14 @@ export class SunburstChartHost {
 
     highlight(path: string | null): void {
         this.highlightedPath = path
+        if (path !== null && path === this.pathUnderPointer) {
+            return
+        }
         this.applyHighlight()
     }
 
     dispose(): void {
+        this.cancelPointerLeave()
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
         this.resizeObserver?.disconnect()
         this.resizeObserver = undefined
@@ -97,6 +105,30 @@ export class SunburstChartHost {
             this.handlers.onFileClicked(data.name)
         } else {
             this.handlers.onFolderClicked(data.name)
+        }
+    }
+
+    private reportPointerEntered(path: string | null): void {
+        this.cancelPointerLeave()
+        this.pathUnderPointer = path
+        this.handlers.onNodeHovered(path)
+    }
+
+    // Moving from one segment to the next leaves the first before entering the second; reporting that
+    // gap would drop the hover everywhere for a frame and make the whole chart flash.
+    private reportPointerLeftAfterGrace(): void {
+        this.cancelPointerLeave()
+        this.pointerLeaveTimeout = setTimeout(() => {
+            this.pointerLeaveTimeout = undefined
+            this.pathUnderPointer = null
+            this.handlers.onNodeHovered(null)
+        }, POINTER_LEAVE_GRACE_MS)
+    }
+
+    private cancelPointerLeave(): void {
+        if (this.pointerLeaveTimeout !== undefined) {
+            clearTimeout(this.pointerLeaveTimeout)
+            this.pointerLeaveTimeout = undefined
         }
     }
 

@@ -96,6 +96,15 @@ describe("buildSunburstOption", () => {
         expect(folderDatum.label.fontWeight).toBeUndefined()
     })
 
+    it("should fade the hover in and out gently and only dim the rest of the chart", () => {
+        // Act
+        const [series] = buildSunburstOption(inputs(folder("/root"))).series
+
+        // Assert
+        expect(series.stateAnimation.duration).toBeGreaterThanOrEqual(500)
+        expect(series.blur.itemStyle.opacity).toBeGreaterThan(0.2)
+    })
+
     it("should leave drilling to the caller instead of letting ECharts zoom", () => {
         // Act
         const option = buildSunburstOption(inputs(folder("/root")))

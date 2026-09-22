@@ -1,7 +1,7 @@
 import { signal } from "@angular/core"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { render, screen } from "@testing-library/angular"
+import { render, screen, waitFor } from "@testing-library/angular"
 import { of } from "rxjs"
 import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
 import { ExplorerCollapseService, ExplorerWidthService } from "../../../features/sidebarExplorer/facade"
@@ -257,7 +257,7 @@ describe("MetricsSunburstComponent", () => {
 
         // Assert
         expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodeId({ value: "/root/src" }))
-        expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodeId({ value: null }))
+        await waitFor(() => expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodeId({ value: null })))
     })
 
     it("should explain instead of drawing while two maps are compared", async () => {
