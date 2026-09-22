@@ -55,6 +55,17 @@ describe("buildSunburstOption", () => {
         expect(levels[2]).toEqual(expect.objectContaining({ r0: "20%", r: "95%" }))
     })
 
+    it("should count the rings of a folder with a very large number of children", () => {
+        // Arrange
+        const children = Array.from({ length: 200_000 }, (_, index) => folderNode(`/root/file${index}`))
+
+        // Act
+        const option = buildSunburstOption(inputs(folderNode("/root", children)))
+
+        // Assert
+        expect(option.series[0].levels).toHaveLength(1 + 1 + 1)
+    })
+
     it("should still draw one ring for a folder without sub folders", () => {
         // Act
         const option = buildSunburstOption(inputs(folderNode("/root")))

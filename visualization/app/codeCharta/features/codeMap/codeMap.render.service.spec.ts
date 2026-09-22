@@ -18,7 +18,7 @@ import {
     TEST_NODES,
     VALID_EDGES
 } from "../../mocks/dataMocks"
-import { CcState, CodeMapNode, LabelMode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
+import { CcState, CodeMapNode, LabelMode, Node } from "../../model/codeCharta.model"
 import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
 import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
@@ -32,7 +32,6 @@ import {
     setHeightMetric,
     setLabelMode,
     setLabelsPerMap,
-    setLayoutAlgorithm,
     setShowMetricLabelNameValue,
     setShowMetricLabelNodeName
 } from "../../stores/mapState/mapState.write.facade"
@@ -300,20 +299,6 @@ describe("codeMapRenderService", () => {
             // Assert
             expect(codeMapRenderService["render"]).toHaveBeenCalledWith(map, FULL_INVALIDATION)
             expect(codeMapRenderService["scaleMap"]).toHaveBeenCalledTimes(1)
-        })
-
-        it("should leave the 3D map untouched while the sunburst layout is shown", () => {
-            // Arrange
-            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.Sunburst }))
-            codeMapRenderService["render"] = jest.fn()
-            codeMapRenderService["scaleMap"] = jest.fn()
-
-            // Act
-            codeMapRenderService.load(map)
-
-            // Assert
-            expect(codeMapRenderService["render"]).not.toHaveBeenCalled()
-            expect(codeMapRenderService["scaleMap"]).not.toHaveBeenCalled()
         })
     })
 

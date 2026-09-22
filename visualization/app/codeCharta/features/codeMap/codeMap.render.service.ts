@@ -13,7 +13,6 @@ import {
     ThreeStatsService
 } from "../../renderer/threeViewer/threeViewer.facade"
 import { FileStoreReadWindow } from "../../stores/fileStore/fileStore.facade"
-import { isSunburstLayoutSelector } from "../../stores/mapState/mapState.read.facade"
 import { excludeMatcherSelector } from "../../stores/sharedView/sharedView.read.facade"
 import { getTopLevelMapName } from "../../util/nodePathHelper"
 import { CodeMapArrowService } from "./arrow/codeMap.arrow.service"
@@ -67,9 +66,6 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     // calls this, then requests a frame via ThreeRendererService — the frame scheduler is the driver's
     // concern, not the engine's.
     load(model: CodeMapNode, invalidation: RenderInvalidation = FULL_INVALIDATION) {
-        if (isSunburstLayoutSelector(this.codeMapStore.getState() as CcState)) {
-            return
-        }
         this.render(model, invalidation)
         this.scaleMap(invalidation)
     }

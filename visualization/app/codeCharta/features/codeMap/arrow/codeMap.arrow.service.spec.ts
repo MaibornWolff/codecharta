@@ -22,6 +22,7 @@ import {
 } from "../../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
+import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
 import { clone } from "../../../util/clone"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { wait } from "../../../util/testUtils/wait"
@@ -436,6 +437,23 @@ describe("CodeMapArrowService", () => {
             codeMapArrowService.clearArrows()
 
             expect(threeSceneService.edgeArrows.children.length).toBe(0)
+        })
+    })
+
+    describe("hover while the map is shown as a sunburst", () => {
+        it("should not recompute edges for a building nobody can see", () => {
+            // Arrange
+            jest.spyOn(codeMapArrowService["codeMapStore"], "isSunburstLayout").mockReturnValue(true)
+            codeMapArrowService.onBuildingHovered = jest.fn()
+            codeMapArrowService.onBuildingUnhovered = jest.fn()
+
+            // Act
+            store.dispatch(setHoveredNodeId({ value: "/root/sample1.cc.json" }))
+            store.dispatch(setHoveredNodeId({ value: null }))
+
+            // Assert
+            expect(codeMapArrowService.onBuildingHovered).not.toHaveBeenCalled()
+            expect(codeMapArrowService.onBuildingUnhovered).not.toHaveBeenCalled()
         })
     })
 

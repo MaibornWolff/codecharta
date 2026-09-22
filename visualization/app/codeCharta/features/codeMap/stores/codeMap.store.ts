@@ -3,7 +3,7 @@ import { Store } from "@ngrx/store"
 import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState, ColorLabelOptions } from "../../../model/codeCharta.model"
 import { idToNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
-import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
+import { isSunburstLayoutSelector, MapStateReadWindow } from "../../../stores/mapState/mapState.read.facade"
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
@@ -37,6 +37,14 @@ export class CodeMapStore {
 
     getHoveredNodeId(): string | null {
         return this.sharedViewReadWindow.getHoveredNodeId()
+    }
+
+    getSelectedBuildingId(): string | null {
+        return this.ccStateSnapshot.get().sharedView.selectedBuildingId
+    }
+
+    isSunburstLayout(): boolean {
+        return isSunburstLayoutSelector(this.ccStateSnapshot.get())
     }
 
     getIdToNode() {

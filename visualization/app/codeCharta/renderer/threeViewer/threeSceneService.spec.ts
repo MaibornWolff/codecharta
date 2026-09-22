@@ -5,6 +5,7 @@ import {
     TEST_LEAF_NODE_WITHOUT_EXTENSION,
     TEST_NODE_LEAF,
     TEST_NODE_LEAF_0_LENGTH,
+    TEST_NODE_ROOT,
     TEST_NODES,
     VALID_FILE_NODE_WITH_ID,
     VALID_NODES_WITH_ID
@@ -63,6 +64,57 @@ describe("ThreeSceneService", () => {
                 threeSceneService["constantHighlight"]
             )
             expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled()
+        })
+    })
+
+    describe("selection after the mesh was rebuilt", () => {
+        const LEAF_PATH = "/root/big leaf"
+
+        function selectInStore(path: string) {
+            store.dispatch(setSelectedBuildingId({ value: path }))
+        }
+
+        function sceneSelectionPath() {
+            return threeSceneService.getSelectedBuilding()?.node.path ?? null
+        }
+
+        it("should select what another view selected while the map was not drawn", () => {
+            // Arrange
+            threeSceneService["selected"] = threeSceneService.getMapMesh().getBuildingByPath("/root")
+            selectInStore(LEAF_PATH)
+
+            // Act
+            threeSceneService["remapSelectedBuilding"]()
+
+            // Assert
+            expect(sceneSelectionPath()).toBe(LEAF_PATH)
+            expect(selectedBuildingIdSelector(state.getValue())).toBe(LEAF_PATH)
+        })
+
+        it("should drop the selection when the building it had selected is gone", () => {
+            // Arrange
+            selectInStore(LEAF_PATH)
+            threeSceneService["selected"] = threeSceneService.getMapMesh().getBuildingByPath(LEAF_PATH)
+            threeSceneService["mapMesh"] = new CodeMapMesh([TEST_NODE_ROOT], state.getValue(), false)
+
+            // Act
+            threeSceneService["remapSelectedBuilding"]()
+
+            // Assert
+            expect(sceneSelectionPath()).toBeNull()
+            expect(selectedBuildingIdSelector(state.getValue())).toBeNull()
+        })
+
+        it("should keep a selection the map draws no building for, such as a folder", () => {
+            // Arrange
+            selectInStore("/root/a folder")
+
+            // Act
+            threeSceneService["remapSelectedBuilding"]()
+
+            // Assert
+            expect(sceneSelectionPath()).toBeNull()
+            expect(selectedBuildingIdSelector(state.getValue())).toBe("/root/a folder")
         })
     })
 

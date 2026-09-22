@@ -51,6 +51,7 @@ export class SunburstChartHost {
         this.chart.on("mouseover", (event: unknown) => this.reportPointerEntered((event as EchartsSegmentEvent).data?.name ?? null))
         this.chart.on("mouseout", () => this.reportPointerLeftAfterGrace())
         this.chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as EchartsSegmentEvent))
+        this.chart.on("finished", () => container.setAttribute("aria-busy", "false"))
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
         this.containerSizeObserver.observe(container)
@@ -60,8 +61,10 @@ export class SunburstChartHost {
         if (!this.chart) {
             return
         }
+        this.attachedContainer.setAttribute("aria-busy", "true")
         this.chart.resize()
         this.chart.setOption(option as unknown as echarts.EChartsCoreOption)
+        this.pathUnderPointer = null
         this.applyHighlight()
     }
 

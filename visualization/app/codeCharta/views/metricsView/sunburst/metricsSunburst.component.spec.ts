@@ -179,6 +179,18 @@ describe("MetricsSunburstComponent", () => {
         expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root/src" }))
     })
 
+    it("should go up to the real parent of a merged folder chain", async () => {
+        // Arrange
+        const mergedChain = folderNode("/root", [folderNode("/root/src/main", [fileNode("/root/src/main/a.ts")])])
+        const { store } = await setup({ tree: mergedChain, selectedPath: "/root/src/main" })
+
+        // Act
+        fireChartEvent("click", { data: { name: "/root/src/main", isCentre: true } })
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedBuildingId({ value: "/root" }))
+    })
+
     it("should not go above the top of the map", async () => {
         // Arrange
         const { store } = await setup()

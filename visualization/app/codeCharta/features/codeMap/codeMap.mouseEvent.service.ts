@@ -100,7 +100,7 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     hoverNode(path: string) {
-        if (this.isGrabbingOrMoving()) {
+        if (this.isGrabbingOrMoving() || this.codeMapStore.isSunburstLayout()) {
             return
         }
 
@@ -118,6 +118,9 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     unhoverNode(updateStore = true) {
+        if (this.codeMapStore.isSunburstLayout()) {
+            return
+        }
         this.unhoverBuilding(updateStore)
         this.threeRendererService.render()
     }
@@ -146,14 +149,10 @@ export class CodeMapMouseEventService implements OnDestroy {
     }
 
     onExcludedNodesChanged(excludedNodes: ExcludedNode[]) {
-        const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+        const selectedPath = this.codeMapStore.getSelectedBuildingId()
         this.tooltipService.hide()
-        if (selectedBuilding) {
-            const isSelectedBuildingExcluded = createExcludeMatcher(excludedNodes).isExcludedLeaf(selectedBuilding.node.path)
-
-            if (isSelectedBuildingExcluded) {
-                this.threeSceneService.clearSelection()
-            }
+        if (selectedPath !== null && createExcludeMatcher(excludedNodes).isExcludedLeaf(selectedPath)) {
+            this.threeSceneService.clearSelection()
         }
         this.unhoverBuilding()
     }

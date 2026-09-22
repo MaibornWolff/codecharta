@@ -357,20 +357,28 @@ export class ThreeSceneService implements OnDestroy {
         this.mapMeshChanged$.next()
     }
 
-    // The selection must not survive a mesh swap pointing at a building of the old
-    // mesh: remap it onto the new mesh by path, or drop it when the building is gone.
+    // The store owns the selection: another view can change it while this mesh is not drawn.
     private remapSelectedBuilding() {
-        if (!this.selected) {
+        const previouslySelected = this.selected
+        const selectedPath = this.threeSceneStore.getSelectedBuildingId()
+        const buildingOnNewMesh = selectedPath === null ? undefined : this.mapMesh.getBuildingByPath(selectedPath)
+        this.clearStaleSelectionColor(previouslySelected, selectedPath)
+        this.selected = buildingOnNewMesh ?? null
+        if (buildingOnNewMesh) {
+            this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
             return
         }
-        const buildingOnNewMesh = this.mapMesh.getBuildingByPath(this.selected.node.path)
-        if (buildingOnNewMesh) {
-            this.selected = buildingOnNewMesh
-            this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
-        } else {
-            this.selected = null
+        if (previouslySelected && previouslySelected.node.path === selectedPath) {
             this.threeSceneStore.setSelectedBuildingId(null)
             this.eventEmitter.emit("onBuildingDeselected")
+        }
+    }
+
+    private clearStaleSelectionColor(previouslySelected: CodeMapBuilding | null, selectedPath: string | null) {
+        const staleBuilding = previouslySelected && previouslySelected.node.path !== selectedPath
+        const buildingOnMesh = staleBuilding ? this.mapMesh.getBuildingByPath(previouslySelected.node.path) : undefined
+        if (buildingOnMesh) {
+            this.mapMesh.clearSelection(buildingOnMesh)
         }
     }
 

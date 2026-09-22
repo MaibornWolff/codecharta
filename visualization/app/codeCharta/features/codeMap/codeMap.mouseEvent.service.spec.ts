@@ -267,33 +267,41 @@ describe("codeMapMouseEventService", () => {
     })
 
     describe("onExcludedNodesChanged", () => {
-        it("should deselect the building when the selected building is excluded", () => {
-            const excludedNodes: NodeRule[] = [{ path: CODE_MAP_BUILDING.node.path }]
+        function withSelectedPath(path: string | null) {
+            jest.spyOn(codeMapMouseEventService["codeMapStore"], "getSelectedBuildingId").mockReturnValue(path)
+        }
 
-            codeMapMouseEventService.onExcludedNodesChanged(excludedNodes)
+        it("should deselect the selected node when it is excluded, even if the 3D map drew no building for it", () => {
+            // Arrange
+            withSelectedPath("/root/selectedInTheSunburst.ts")
+            threeSceneService.getSelectedBuilding = jest.fn()
 
+            // Act
+            codeMapMouseEventService.onExcludedNodesChanged([{ path: "/root/selectedInTheSunburst.ts" }])
+
+            // Assert
             expect(threeSceneService.clearSelection).toHaveBeenCalled()
         })
 
-        it("should deselect the building when the selected building is hidden", () => {
-            const excludedNodes: NodeRule[] = [{ path: CODE_MAP_BUILDING.node.path }]
+        it("should not deselect the selected node when it is not excluded", () => {
+            // Arrange
+            withSelectedPath(CODE_MAP_BUILDING.node.path)
 
-            codeMapMouseEventService.onExcludedNodesChanged(excludedNodes)
+            // Act
+            codeMapMouseEventService.onExcludedNodesChanged([{ path: "/root/somethingElse.ts" }])
 
-            expect(threeSceneService.clearSelection).toHaveBeenCalled()
-        })
-
-        it("should not deselect the building when the selected building is not excluded", () => {
-            codeMapMouseEventService.onExcludedNodesChanged([])
-
+            // Assert
             expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
         })
 
-        it("should not deselect the building when no building is selected", () => {
-            threeSceneService.getSelectedBuilding = jest.fn()
+        it("should not deselect anything when nothing is selected", () => {
+            // Arrange
+            withSelectedPath(null)
 
-            codeMapMouseEventService.onExcludedNodesChanged([])
+            // Act
+            codeMapMouseEventService.onExcludedNodesChanged([{ path: CODE_MAP_BUILDING.node.path }])
 
+            // Assert
             expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
         })
     })
@@ -803,6 +811,23 @@ describe("codeMapMouseEventService", () => {
             codeMapMouseEventService["unhoverBuilding"]()
 
             expect(codeMapMouseEventService["threeSceneService"].clearHoverHighlight).toHaveBeenCalled()
+        })
+    })
+
+    describe("while the map is shown as a sunburst", () => {
+        beforeEach(() => {
+            jest.spyOn(codeMapMouseEventService["codeMapStore"], "isSunburstLayout").mockReturnValue(true)
+        })
+
+        it("should neither highlight nor redraw the hidden 3D map on hover", () => {
+            // Act
+            codeMapMouseEventService.hoverNode("/root/a")
+            codeMapMouseEventService.unhoverNode()
+
+            // Assert
+            expect(threeSceneService.addBuildingsToHighlightingList).not.toHaveBeenCalled()
+            expect(threeSceneService.clearHighlight).not.toHaveBeenCalled()
+            expect(threeRendererService.render).not.toHaveBeenCalled()
         })
     })
 

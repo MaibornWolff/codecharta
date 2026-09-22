@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildSunburstTree, findClosestFolder, findClosestNode, findFolder, isInside, parentPath } from "./sunburstTree"
+import { buildSunburstTree, findClosestFolder, findClosestNode, findFolder, findParentFolder, isInside } from "./sunburstTree"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -182,8 +182,26 @@ describe("node lookup", () => {
         expect(isInside("/root/srcOther", "/root/src")).toBe(false)
     })
 
-    it("should give the parent of a path", () => {
+    it("should find the parent folder in the tree, not by cutting the path", () => {
+        // Arrange
+        const mergedChain = buildSunburstTree(
+            folder("/root", [folder("/root/src/main", [file("/root/src/main/a.ts", { rloc: 1 })])]),
+            METRICS,
+            NOTHING_IS_FLAT
+        )
+
+        // Act
+        const parent = findParentFolder(mergedChain, "/root/src/main")
+
         // Assert
-        expect(parentPath("/root/src/a.ts")).toBe("/root/src")
+        expect(parent.path).toBe("/root")
+    })
+
+    it("should find no parent for the top of the tree", () => {
+        // Act
+        const parent = findParentFolder(tree, "/root")
+
+        // Assert
+        expect(parent).toBeUndefined()
     })
 })

@@ -174,6 +174,35 @@ describe("SunburstChartHost", () => {
         expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "/root/src" })
     })
 
+    it("should emphasise a hovered path again after a redraw replaced the segment that was under the pointer", () => {
+        // Arrange
+        host.attachTo(measurableContainer())
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+        host.render(SOME_OPTION)
+        stubbedChart.dispatchAction.mockClear()
+
+        // Act
+        host.highlight("/root/src")
+
+        // Assert
+        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "/root/src" })
+    })
+
+    it("should mark the chart busy while it draws and settled once the chart reports it finished", () => {
+        // Arrange
+        const container = measurableContainer()
+        host.attachTo(container)
+
+        // Act
+        host.render(SOME_OPTION)
+        const busyWhileDrawing = container.getAttribute("aria-busy")
+        fireChartEvent("finished")
+
+        // Assert
+        expect(busyWhileDrawing).toBe("true")
+        expect(container.getAttribute("aria-busy")).toBe("false")
+    })
+
     it("should only take the highlight away when nothing is hovered", () => {
         // Arrange
         host.attachTo(measurableContainer())

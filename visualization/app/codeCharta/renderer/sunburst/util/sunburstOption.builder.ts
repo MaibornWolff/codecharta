@@ -81,7 +81,7 @@ function depthBelow(folder: SunburstNode, maxDepth: number): number {
     if (maxDepth === 0 || folder.children.length === 0) {
         return 0
     }
-    return 1 + Math.max(...folder.children.map(child => depthBelow(child, maxDepth - 1)))
+    return 1 + folder.children.reduce((deepest, child) => Math.max(deepest, depthBelow(child, maxDepth - 1)), 0)
 }
 
 function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixels: number) {

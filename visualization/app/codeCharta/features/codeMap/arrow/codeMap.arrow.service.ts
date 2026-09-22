@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { tap } from "rxjs"
+import { filter, tap } from "rxjs"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { EdgeVisibility, Node } from "../../../model/codeCharta.model"
 import { CodeMapBuilding, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
@@ -20,6 +20,7 @@ export class CodeMapArrowService implements OnDestroy {
     )
     private readonly hoveredNodeSubscription = this.sharedViewReadWindow.hoveredNodeId$
         .pipe(
+            filter(() => !this.codeMapStore.isSunburstLayout()),
             tap(hoveredNodeId => {
                 if (hoveredNodeId !== null) {
                     const hoveredBuilding = this.threeSceneService.getMapMesh()?.getMeshDescription().getBuildingByPath(hoveredNodeId)

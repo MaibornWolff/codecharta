@@ -62,6 +62,10 @@ export function isInside(path: string, folderPath: string): boolean {
     return path === folderPath || path.startsWith(`${folderPath}/`)
 }
 
-export function parentPath(path: string): string {
-    return path.slice(0, path.lastIndexOf("/"))
+export function findParentFolder(root: SunburstNode, path: string): SunburstNode | undefined {
+    const child = root.children.find(candidate => isInside(path, candidate.path))
+    if (!child) {
+        return undefined
+    }
+    return child.path === path ? root : findParentFolder(child, path)
 }

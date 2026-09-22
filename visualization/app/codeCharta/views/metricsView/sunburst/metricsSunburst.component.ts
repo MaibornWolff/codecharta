@@ -6,7 +6,7 @@ import { CcState } from "../../../model/codeCharta.model"
 import {
     findClosestFolder,
     findClosestNode,
-    parentPath,
+    findParentFolder,
     type RightClickedNode,
     SunburstComponent,
     VISIBLE_RING_COUNT
@@ -77,10 +77,10 @@ export class MetricsSunburstComponent {
 
     protected goUp(): void {
         const view = this.view()
-        if (!view || view.centre === view.tree) {
-            return
+        const parent = view && findParentFolder(view.tree, view.centre.path)
+        if (parent) {
+            this.selectFolder(parent.path)
         }
-        this.selectFolder(parentPath(view.centre.path))
     }
 
     protected selectFile(path: string): void {
