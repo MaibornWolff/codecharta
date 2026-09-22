@@ -4,12 +4,15 @@
 const { app, BrowserWindow, shell } = require("electron")
 const path = require("path")
 
+// Only Windows reads .ico; elsewhere Electron fails to decode it and the window ends up iconless.
+const windowIconFile = process.platform === "win32" ? "icon.ico" : "icon.png"
+
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1400,
         height: 900,
-        icon: path.join(__dirname, "/codeCharta/assets/icon.ico")
+        icon: path.join(__dirname, "codeCharta/assets", windowIconFile)
     })
 
     // open links in web browser instead of in electron

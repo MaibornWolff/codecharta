@@ -10,9 +10,9 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-visualization",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "engines": {
-    "node": ">=22.19"
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "description": "MaibornWolff CodeCharta",
   "files": [
@@ -64,16 +64,16 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@angular/animations": "^21.1.2",
-    "@angular/common": "^21.1.2",
-    "@angular/core": "^21.1.2",
-    "@angular/forms": "^21.2.8",
-    "@angular/platform-browser": "^21.1.2",
-    "@angular/platform-browser-dynamic": "^21.2.8",
-    "@angular/router": "^21.2.8",
+    "@angular/animations": "^22.1.7",
+    "@angular/common": "^22.1.7",
+    "@angular/core": "^22.1.7",
+    "@angular/forms": "^22.1.7",
+    "@angular/platform-browser": "^22.1.7",
+    "@angular/platform-browser-dynamic": "^22.1.7",
+    "@angular/router": "^22.1.7",
     "@fortawesome/fontawesome-free": "^7.0.0",
-    "@ngrx/effects": "^21.1.0",
-    "@ngrx/store": "^21.0.1",
+    "@ngrx/effects": "^22.0.1",
+    "@ngrx/store": "^22.0.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/d3": "^7.4.3",
     "ajv": "^8.17.1",
@@ -81,9 +81,9 @@
     "d3": "^7.9.0",
     "d3-hierarchy": "^3.1.2",
     "dequal": "^2.0.3",
-    "echarts": "5.6.0",
+    "echarts": "6.1.0",
     "echarts-wordcloud": "2.1.0",
-    "electron": "40.6.1",
+    "electron": "44.4.2",
     "fake-indexeddb": "^6.2.5",
     "fflate": "^0.8.2",
     "hotkeys-js": "^4.0.3",
@@ -104,13 +104,13 @@
     "typescript-json-schema": "0.67.1"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.7",
-    "@angular/cli": "^21.2.7",
-    "@angular/compiler": "^21.1.2",
-    "@angular/compiler-cli": "^21.2.8",
-    "@cyclonedx/cyclonedx-npm": "^4.2.1",
-    "@electron/get": "^4.0.3",
-    "@electron/packager": "^19.1.0",
+    "@angular/build": "^22.1.8",
+    "@angular/cli": "^22.1.8",
+    "@angular/compiler": "^22.1.7",
+    "@angular/compiler-cli": "^22.1.7",
+    "@cyclonedx/cyclonedx-npm": "^6.0.1",
+    "@electron/get": "^5.1.0",
+    "@electron/packager": "^20.3.0",
     "@playwright/test": "^1.59.1",
     "@testing-library/angular": "^19.2.1",
     "@testing-library/user-event": "^14.6.1",
@@ -119,24 +119,24 @@
     "@types/three": "^0.182.0",
     "bestzip": "^2.2.3",
     "daisyui": "^5.5.19",
-    "dependency-cruiser": "^17.3.10",
+    "dependency-cruiser": "^18.3.1",
     "fast-xml-parser": "^5.5.12",
     "jest": "^30.3.0",
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.3.0",
-    "jest-preset-angular": "16.1.1",
+    "jest-preset-angular": "17.0.0",
     "knip": "^6.25.0",
     "marked": "^17.0.6",
     "patch-package": "^8.0.1",
     "postcss": "^8.5.9",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
+  },
+  "overrides": {
+    "echarts-wordcloud": {
+      "echarts": "$echarts"
+    }
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.24.2"
-  },
-  "overrides": {
-    "extract-zip": {
-      "yauzl": "^3.4.0"
-    }
   }
 }
