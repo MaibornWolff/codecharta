@@ -1,6 +1,12 @@
 import * as echarts from "echarts/core"
 import { SunburstChartRegistry } from "../../services/sunburstChart.registry"
-import { fireChartEvent, ResizeObserverStub, resetStubbedChart, stubbedChart, stubResizeObserver } from "../../testing/sunburstChart.stub"
+import {
+    fireChartEvent,
+    resetStubbedChart,
+    resizeObserverDisconnect,
+    stubbedChart,
+    stubResizeObserver
+} from "../../testing/sunburstChart.stub"
 import { POINTER_LEAVE_GRACE_MS, SunburstChartHandlers, SunburstChartHost } from "./sunburstChartHost"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/sunburstChart.stub").echartsCoreStub)
@@ -238,7 +244,7 @@ describe("SunburstChartHost", () => {
         // Assert
         expect(stubbedChart.dispose).toHaveBeenCalled()
         expect(registry.current()).toBeNull()
-        expect(ResizeObserverStub.disconnect).toHaveBeenCalled()
+        expect(resizeObserverDisconnect).toHaveBeenCalled()
         expect(browserMenu.defaultPrevented).toBe(false)
     })
 

@@ -1,8 +1,8 @@
 @if (isDeltaState()) {
     <div class="flex h-full items-center justify-center p-4">
-        <div class="alert max-w-md" role="status">
+        <output class="alert max-w-md">
             <span>The sunburst shows a single map. Switch to another map layout to compare two maps.</span>
-        </div>
+        </output>
     </div>
 } @else if (view(); as view) {
     <cc-sunburst
@@ -22,11 +22,11 @@
     </div>
 } @else {
     <div class="flex h-full items-center justify-center p-4">
-        <div class="alert max-w-md" role="status">
+        <output class="alert max-w-md">
             <span>There are no files with an area to show.</span>
             @if (isFocused()) {
                 <button type="button" class="btn btn-sm" (click)="unfocus()">Unfocus</button>
             }
-        </div>
+        </output>
     </div>
 }

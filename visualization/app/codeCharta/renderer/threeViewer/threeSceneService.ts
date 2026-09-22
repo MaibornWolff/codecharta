@@ -392,7 +392,7 @@ export class ThreeSceneService implements OnDestroy {
             this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
             return
         }
-        if (previouslySelected && previouslySelected.node.path === selectedPath) {
+        if (previouslySelected?.node.path === selectedPath) {
             this.threeSceneStore.clearNodeSelection()
             this.eventEmitter.emit("onBuildingDeselected")
         }

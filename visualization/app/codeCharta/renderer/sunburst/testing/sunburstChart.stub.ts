@@ -35,26 +35,20 @@ export function lastDrawnOption() {
 }
 
 export function lastHighlightedPath(): string | undefined {
-    return stubbedChart.dispatchAction.mock.calls
-        .map(([action]) => action)
-        .filter(action => action.type === "highlight")
-        .at(-1)?.name
+    return stubbedChart.dispatchAction.mock.calls.map(([action]) => action).findLast(action => action.type === "highlight")?.name
 }
 
-export class ResizeObserverStub {
-    static latestCallback: () => void
-    static readonly disconnect = jest.fn()
-
-    constructor(callback: () => void) {
-        ResizeObserverStub.latestCallback = callback
+class ResizeObserverStub {
+    observe() {
+        // the chart host only needs a size once; a resize is never reported to it in a test
     }
-
-    observe() {}
 
     disconnect() {
-        ResizeObserverStub.disconnect()
+        resizeObserverDisconnect()
     }
 }
+
+export const resizeObserverDisconnect = jest.fn()
 
 export function stubResizeObserver(): void {
     globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver
