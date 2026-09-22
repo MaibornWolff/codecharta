@@ -9,6 +9,7 @@ and this project adheres to <a href="http://semver.org/">Semantic Versioning</a>
 <img src="" width="450px" alt=""/></li>
 <li>2 (<a href="">#2</a>)</li>
 </ul>
+<h2>[1.78.0] - 2021-08-02</h2>
 <h2>[1.77.0] - 2021-07-30</h2>
 <h3>Fixed 🐞</h3>
 <ul>
@@ -38,6 +39,10 @@ and this project adheres to <a href="http://semver.org/">Semantic Versioning</a>
 <li>10.2</li>
 </ul>
 </li>
+</ul>
+<h3>Removed</h3>
+<ul>
+<li>14</li>
 </ul>
 <h2>[1.75.0] - 2021-07-05</h2>
 <h3>Fixed 🐞</h3>

@@ -25,7 +25,7 @@ describe("ChangelogDialogComponent", () => {
             acknowledgeChangelog: jest.fn()
         }
         mockChangelogParserService = {
-            parseChangesBetweenVersions: jest.fn().mockReturnValue([{ title: "Added 🚀", changes: "<li>New feature</li>" }])
+            parseChangesBetweenVersions: jest.fn().mockReturnValue([{ title: "Added", changes: "<li>New feature</li>" }])
         }
 
         await TestBed.configureTestingModule({
@@ -51,7 +51,7 @@ describe("ChangelogDialogComponent", () => {
         const changes = component.changes()
 
         // Assert
-        expect(changes).toEqual([{ title: "Added 🚀", changes: "<li>New feature</li>" }])
+        expect(changes).toEqual([{ title: "Added", changes: "<li>New feature</li>" }])
         expect(mockChangelogParserService.parseChangesBetweenVersions).toHaveBeenCalledWith("1.76.0", "1.77.0")
     })
 
@@ -86,6 +86,43 @@ describe("ChangelogDialogComponent", () => {
         // Assert
         expect(mockVersionService.acknowledgeChangelog).toHaveBeenCalled()
         expect(mockClose).toHaveBeenCalled()
+    })
+
+    it("should open the dialog when a new version brings changes", () => {
+        // Arrange
+        const mockShowModal = jest.fn()
+        component.dialogElement().nativeElement.showModal = mockShowModal
+
+        // Act
+        mockVersionService.shouldShowChangelog.set(true)
+        fixture.detectChanges()
+
+        // Assert
+        expect(mockShowModal).toHaveBeenCalled()
+    })
+
+    it("should not open the dialog when the versions in between have no changes", () => {
+        // Arrange
+        const mockShowModal = jest.fn()
+        component.dialogElement().nativeElement.showModal = mockShowModal
+        mockChangelogParserService.parseChangesBetweenVersions.mockReturnValue([])
+        mockVersionService.previousVersion.set("1.76.1")
+
+        // Act
+        mockVersionService.shouldShowChangelog.set(true)
+        fixture.detectChanges()
+
+        // Assert
+        expect(mockShowModal).not.toHaveBeenCalled()
+        expect(mockVersionService.acknowledgeChangelog).toHaveBeenCalled()
+    })
+
+    it("should link the full changelog to the GitHub releases", () => {
+        // Arrange & Act
+        const link = fixture.nativeElement.querySelector("a[target='_blank']") as HTMLAnchorElement
+
+        // Assert
+        expect(link.href).toBe("https://github.com/MaibornWolff/codecharta/releases")
     })
 
     it("should return empty changes when no previous version", () => {

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, type Locator, test } from "@playwright/test"
 import { clearIndexedDB, collapseExplorer, goto } from "../../../../../playwright.helper"
 import { NavBarFolderButtonPageObject } from "../../../navBar/components/navBarFolderButton/navBarFolderButton.po"
 import { MetricsBarPageObject } from "./metricsBar.po"
@@ -56,3 +56,45 @@ test.describe("MetricsBar", () => {
         await expect(metricsBar.selectedAreaMetricName()).toHaveText(otherMetric as string)
     })
 })
+
+test.describe("MetricsBar beside the explorer", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
+    })
+
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
+    })
+
+    test("should stay in place under the open explorer and be fully visible once it is collapsed", async ({ page }) => {
+        // Arrange
+        const explorer = page.locator("cc-sidebar-explorer")
+        const bar = page.locator("cc-metrics-bar")
+        const barWhileExplorerIsOpen = await boundingBoxOf(bar)
+        expect(overlaps(await boundingBoxOf(explorer), barWhileExplorerIsOpen)).toBe(true)
+
+        // Act
+        await collapseExplorer(page)
+
+        // Assert
+        const barWhileExplorerIsCollapsed = await boundingBoxOf(bar)
+        expect(barWhileExplorerIsCollapsed).toEqual(barWhileExplorerIsOpen)
+        expect(overlaps(await boundingBoxOf(explorer), barWhileExplorerIsCollapsed)).toBe(false)
+    })
+})
+
+type Box = { x: number; y: number; width: number; height: number }
+
+async function boundingBoxOf(locator: Locator): Promise<Box> {
+    const box = await locator.boundingBox()
+    if (!box) {
+        throw new Error("The element has not been laid out")
+    }
+    return box
+}
+
+function overlaps(first: Box, second: Box) {
+    const overlapsHorizontally = first.x < second.x + second.width && second.x < first.x + first.width
+    const overlapsVertically = first.y < second.y + second.height && second.y < first.y + first.height
+    return overlapsHorizontally && overlapsVertically
+}

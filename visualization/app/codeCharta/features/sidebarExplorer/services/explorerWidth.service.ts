@@ -5,8 +5,6 @@ export const EXPLORER_MIN_WIDTH = 240
 export const EXPLORER_MAX_WIDTH = 720
 export const EXPLORER_DEFAULT_WIDTH = 320
 
-export const EXPLORER_WIDTH_CSS_VARIABLE = "--cc-explorer-width"
-
 @Injectable()
 export class ExplorerWidthService {
     private readonly explorerWidthRepo = inject(ExplorerWidthRepo)

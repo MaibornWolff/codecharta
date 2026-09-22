@@ -4,11 +4,11 @@ import { ChangelogCategory, ChangelogParserService } from "../../services/change
 import { VersionService } from "../../services/version.service"
 
 const CATEGORY_CONFIG: Record<string, { emoji: string; label: string; type: string }> = {
-    "Added 🚀": { emoji: "🚀", label: "Added", type: "added" },
-    "Fixed 🐞": { emoji: "🐞", label: "Fixed", type: "fixed" },
+    Added: { emoji: "🚀", label: "Added", type: "added" },
+    Fixed: { emoji: "🐞", label: "Fixed", type: "fixed" },
     Changed: { emoji: "✨", label: "Changed", type: "changed" },
-    "Removed 🗑": { emoji: "🗑", label: "Removed", type: "removed" },
-    "Chore 👨‍💻 👩‍💻": { emoji: "🔧", label: "Maintenance", type: "chore" }
+    Removed: { emoji: "🗑", label: "Removed", type: "removed" },
+    Chore: { emoji: "🔧", label: "Maintenance", type: "chore" }
 }
 
 const CATEGORY_STYLES: Record<string, { header: string; icon: string; count: string }> = {
@@ -65,9 +65,14 @@ export class ChangelogDialogComponent {
         private readonly changelogParserService: ChangelogParserService
     ) {
         effect(() => {
-            if (this.shouldShowChangelog()) {
-                this.open()
+            if (!this.shouldShowChangelog()) {
+                return
             }
+            if (this.changes().length === 0) {
+                this.versionService.acknowledgeChangelog()
+                return
+            }
+            this.open()
         })
     }
 

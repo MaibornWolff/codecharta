@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, OnDestroy, viewChild } from "@angular/core"
-import { CSS_VARIABLE_HOST } from "../../../shared/facade"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { EXPLORER_METRIC_RULES } from "../../explorerMetricRules.port"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
-import { EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
+import { ExplorerWidthService } from "../../services/explorerWidth.service"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
 import { ExplorerSortControlComponent } from "../explorerSortControl/explorerSortControl.component"
@@ -40,7 +39,6 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
 export class SidebarExplorerComponent implements OnDestroy {
     private readonly collapseService = inject(ExplorerCollapseService)
     private readonly widthService = inject(ExplorerWidthService)
-    private readonly cssVariableHost = inject(CSS_VARIABLE_HOST)
     private readonly scrollHostService = inject(ExplorerScrollHostService)
     private readonly modeService = inject(ExplorerModeService)
 
@@ -57,13 +55,7 @@ export class SidebarExplorerComponent implements OnDestroy {
     readonly displayWidth = computed(() => (this.isCollapsed() ? COLLAPSED_STRIP_WIDTH_PX : this.width()))
 
     constructor() {
-        effect(() => this.publishWidthTheBottomBarsMustAvoid())
         effect(() => this.scrollHostService.register(this.scrollHost()?.nativeElement ?? null))
-    }
-
-    private publishWidthTheBottomBarsMustAvoid() {
-        const occupiedWidth = this.isCollapsed() ? 0 : this.width()
-        this.cssVariableHost.style.setProperty(EXPLORER_WIDTH_CSS_VARIABLE, `${occupiedWidth}px`)
     }
 
     private isResizing = false
@@ -89,7 +81,6 @@ export class SidebarExplorerComponent implements OnDestroy {
 
     ngOnDestroy() {
         this.stopResize()
-        this.cssVariableHost.style.removeProperty(EXPLORER_WIDTH_CSS_VARIABLE)
     }
 
     private resize(event: PointerEvent) {

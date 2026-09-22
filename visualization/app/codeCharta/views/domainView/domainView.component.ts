@@ -29,7 +29,6 @@ import {
     ExplorerCollapseService,
     ExplorerCountChipComponent,
     ExplorerModeService,
-    ExplorerWidthService,
     provideExplorerSearch,
     provideExplorerSort,
     provideViewScopedExplorerState,
@@ -105,7 +104,6 @@ import { wordsToMark } from "./wordMarking"
 export class DomainViewComponent {
     private readonly domainBarReadStore = inject(DomainBarReadStore)
     private readonly customShapeMaskStore = inject(CustomShapeMaskStore)
-    private readonly explorerWidthService = inject(ExplorerWidthService)
     private readonly explorerCollapseService = inject(ExplorerCollapseService)
     private readonly explorerModeService = inject(ExplorerModeService)
     private readonly domainSelectionStore = inject(DomainSelectionStore)
@@ -123,8 +121,6 @@ export class DomainViewComponent {
 
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath
     readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
-
-    readonly cloudLeftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
 
     readonly hiddenWordCount = computed(() => this.hiddenWordsReadStore.hiddenWords().length)
     readonly hiddenWordsTooltip = computed(() =>

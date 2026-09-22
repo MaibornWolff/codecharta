@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, goto } from "../../../../playwright.helper"
+import { clearIndexedDB, collapseExplorer, goto } from "../../../../playwright.helper"
 import { MetricsBarPageObject } from "../../metricsBar/components/metricsBar/metricsBar.po"
 import { ScenariosPageObject } from "./scenarios.po"
 
@@ -78,6 +78,7 @@ test.describe("Scenarios", () => {
     test("should apply the settings a scenario carries", async ({ page }) => {
         const scenarios = new ScenariosPageObject(page)
         const metricsBar = new MetricsBarPageObject(page)
+        await collapseExplorer(page)
 
         await metricsBar.openAreaMetricSelect()
         await metricsBar.selectAreaMetricOption("sonar_complexity")
@@ -93,6 +94,7 @@ test.describe("Scenarios", () => {
     test("should apply everything a scenario holds from the apply-all button", async ({ page }) => {
         const scenarios = new ScenariosPageObject(page)
         const metricsBar = new MetricsBarPageObject(page)
+        await collapseExplorer(page)
 
         await metricsBar.openAreaMetricSelect()
         await metricsBar.selectAreaMetricOption("sonar_complexity")

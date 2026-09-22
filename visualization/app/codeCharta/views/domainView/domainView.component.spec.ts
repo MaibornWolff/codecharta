@@ -22,7 +22,6 @@ import {
     EXPLORER_WORD_SORT,
     ExplorerCollapseService,
     ExplorerModeService,
-    ExplorerWidthService,
     FILES_EXPLORER_MODE
 } from "../../features/sidebarExplorer/facade"
 import { viewIndependentTreeSelector } from "../../lenses/structure/structure.facade"
@@ -197,34 +196,6 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(rootNode.path).toBe(VIEW_INDEPENDENT_ROOT.path)
-    })
-
-    it("should inset the cloud container by the explorer width so the explorer cannot occlude the cloud", async () => {
-        // Arrange
-        const { fixture, detectChanges } = await setup()
-        const widthService = fixture.debugElement.injector.get(ExplorerWidthService)
-
-        // Act
-        widthService.setWidth(480)
-        detectChanges()
-
-        // Assert
-        const cloudContainer = fixture.debugElement.query(By.directive(StubWordCloudComponent)).nativeElement.parentElement
-        expect(cloudContainer.style.left).toBe("480px")
-    })
-
-    it("should drop the inset while the explorer is collapsed, since it then only covers a short bar", async () => {
-        // Arrange
-        const { fixture, detectChanges } = await setup()
-        const collapseService = fixture.debugElement.injector.get(ExplorerCollapseService)
-
-        // Act
-        collapseService.toggle()
-        detectChanges()
-
-        // Assert
-        const cloudContainer = fixture.debugElement.query(By.directive(StubWordCloudComponent)).nativeElement.parentElement
-        expect(cloudContainer.style.left).toBe("0px")
     })
 
     it("should bind the domain-bar settings into the word cloud", async () => {
