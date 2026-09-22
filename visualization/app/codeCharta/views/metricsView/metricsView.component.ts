@@ -27,6 +27,7 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
+import { SunburstMapComponent } from "../../features/sunburst/facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
 import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
@@ -38,7 +39,6 @@ import { METRICS_EXPLORER_SORT } from "./explorer/metricsExplorerSort"
 import { MetricsExplorerTree } from "./explorer/metricsExplorerTree"
 import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelectedNodeAfterLoad.directive"
 import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
-import { MetricsSunburstComponent } from "./sunburst/metricsSunburst.component"
 
 @Component({
     selector: "cc-metrics-view",
@@ -54,7 +54,7 @@ import { MetricsSunburstComponent } from "./sunburst/metricsSunburst.component"
         LegendPanelComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent,
-        MetricsSunburstComponent
+        SunburstMapComponent
     ],
     providers: [
         MetricsExplorerRow,

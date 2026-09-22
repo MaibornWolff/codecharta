@@ -1,7 +1,7 @@
 import { CodeMapNode, ColorMode, NodeType } from "../../../model/codeCharta.model"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
-import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
+import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./sunburstMap.selectors"
 
 function file(path: string, rloc: number): CodeMapNode {
     return { name: path.split("/").at(-1), path, type: NodeType.FILE, attributes: { rloc, mcc: 1 } }

@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { Store } from "@ngrx/store"
-import { map } from "rxjs"
-import { SCREENSHOT_CAPTURE, ScreenshotButtonComponent, SunburstScreenshotService } from "../../../features/screenshot/facade"
-import { CcState } from "../../../model/codeCharta.model"
 import {
     findClosestFolder,
     findClosestNode,
@@ -11,14 +7,8 @@ import {
     type RightClickedNode,
     SunburstComponent,
     VISIBLE_RING_COUNT
-} from "../../../renderer/sunburst/sunburst.facade"
-import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
-import {
-    currentFocusedNodePathSelector,
-    hoveredNodeIdSelector,
-    selectedNodePathSelector
-} from "../../../stores/sharedView/sharedView.read.facade"
-import { NodeInteraction, setRightClickedNodeData, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
+} from "../../../../renderer/sunburst/sunburst.facade"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import {
     BAR_GAP_PX,
     BOTTOM_BAR_HEIGHT_CSS_VARIABLE,
@@ -26,8 +16,10 @@ import {
     DEFAULT_FILE_EXTENSION_BAR_HEIGHT_PX,
     FILE_EXTENSION_BAR_HEIGHT_CSS_VARIABLE,
     METRICS_BAR_HEIGHT_CSS_VARIABLE
-} from "../../../util/barLayout"
-import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
+} from "../../../../util/barLayout"
+import { SCREENSHOT_CAPTURE, ScreenshotButtonComponent, SunburstScreenshotService } from "../../../screenshot/facade"
+import { SunburstMapReadStore } from "../../stores/sunburstMap.read.store"
+import { SunburstMapWriteStore } from "../../stores/sunburstMap.write.store"
 
 const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
     `var(${BOTTOM_BAR_HEIGHT_CSS_VARIABLE}, ${DEFAULT_BOTTOM_BAR_HEIGHT_PX}px)`,
@@ -37,8 +29,8 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
 ].join(" + ")})`
 
 @Component({
-    selector: "cc-metrics-sunburst",
-    templateUrl: "./metricsSunburst.component.html",
+    selector: "cc-sunburst-map",
+    templateUrl: "./sunburstMap.component.html",
     imports: [SunburstComponent, ScreenshotButtonComponent],
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: SunburstScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,19 +40,19 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
         "[class.hidden]": "isLoadingFile()"
     }
 })
-export class MetricsSunburstComponent {
+export class SunburstMapComponent {
     protected readonly bottomInset = BOTTOM_INSET_ABOVE_THE_BARS
-    private readonly store = inject<Store<CcState>>(Store)
-    private readonly nodeInteraction = inject(NodeInteraction)
+    private readonly readStore = inject(SunburstMapReadStore)
+    private readonly writeStore = inject(SunburstMapWriteStore)
 
-    protected readonly tree = toSignal(this.store.select(sunburstTreeSelector), { requireSync: true })
-    protected readonly metrics = toSignal(this.store.select(sunburstMetricsSelector), { requireSync: true })
-    protected readonly coloring = toSignal(this.store.select(sunburstColoringSelector), { requireSync: true })
-    protected readonly hoveredPath = toSignal(this.store.select(hoveredNodeIdSelector), { requireSync: true })
-    protected readonly isDeltaState = toSignal(this.store.select(isDeltaStateSelector), { requireSync: true })
+    protected readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
+    protected readonly metrics = toSignal(this.readStore.metrics$, { requireSync: true })
+    protected readonly coloring = toSignal(this.readStore.coloring$, { requireSync: true })
+    protected readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
+    protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
+    protected readonly isFocused = toSignal(this.readStore.isFocused$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
-    private readonly selectedPath = toSignal(this.store.select(selectedNodePathSelector), { requireSync: true })
-    protected readonly isFocused = toSignal(this.store.select(currentFocusedNodePathSelector).pipe(map(Boolean)), { requireSync: true })
+    private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
 
     private readonly requestedCentrePath = signal<string | null>(null)
 
@@ -78,8 +70,8 @@ export class MetricsSunburstComponent {
     }
 
     protected selectFolder(path: string): void {
-        this.hover(null)
-        this.nodeInteraction.selectNode(path)
+        this.writeStore.hoverNode(null)
+        this.writeStore.selectNode(path)
     }
 
     protected goUp(): void {
@@ -91,27 +83,19 @@ export class MetricsSunburstComponent {
     }
 
     protected selectFile(path: string): void {
-        this.nodeInteraction.selectNode(path)
+        this.writeStore.selectNode(path)
     }
 
     protected openContextMenu({ path, clientX, clientY }: RightClickedNode): void {
-        this.store.dispatch(
-            setRightClickedNodeData({
-                value: { nodeId: path, xPositionOfRightClickEvent: clientX, yPositionOfRightClickEvent: clientY, origin: "sunburst" }
-            })
-        )
+        this.writeStore.openContextMenu(path, clientX, clientY)
     }
 
     protected unfocus(): void {
-        this.store.dispatch(unfocusNode())
+        this.writeStore.unfocus()
     }
 
     protected hover(path: string | null): void {
-        if (path === null) {
-            this.nodeInteraction.clearHover()
-        } else {
-            this.nodeInteraction.hoverNode(path)
-        }
+        this.writeStore.hoverNode(path)
     }
 
     private centreOnTheSelection(): void {

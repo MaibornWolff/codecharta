@@ -1,6 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test"
 
-export class MetricsSunburstPageObject {
+export class SunburstMapPageObject {
     constructor(private readonly page: Page) {}
 
     chart(): Locator {

@@ -2,8 +2,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import { of } from "rxjs"
-import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
-import { SunburstNode } from "../../../renderer/sunburst/sunburst.facade"
+import { SunburstNode } from "../../../../renderer/sunburst/sunburst.facade"
 import {
     fileNode,
     fireChartEvent,
@@ -14,24 +13,25 @@ import {
     stubElementSize,
     stubResizeObserver,
     TEST_COLORING
-} from "../../../renderer/sunburst/testing/sunburstChart.stub"
-import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
-import { defaultState } from "../../../stores/rootStore/state.manager"
+} from "../../../../renderer/sunburst/testing/sunburstChart.stub"
+import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
 import {
     currentFocusedNodePathSelector,
     hoveredNodeIdSelector,
     selectedNodePathSelector
-} from "../../../stores/sharedView/sharedView.read.facade"
+} from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     setHoveredNodeId,
     setRightClickedNodeData,
     setSelectedNodePath,
     unfocusNode
-} from "../../../stores/sharedView/sharedView.write.facade"
-import { MetricsSunburstComponent } from "./metricsSunburst.component"
-import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
+} from "../../../../stores/sharedView/sharedView.write.facade"
+import { GlobalSettingsFacade } from "../../../globalSettings/facade"
+import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "../../selectors/sunburstMap.selectors"
+import { SunburstMapComponent } from "./sunburstMap.component"
 
-jest.mock("echarts/core", () => jest.requireActual("../../../renderer/sunburst/testing/sunburstChart.stub").echartsCoreStub)
+jest.mock("echarts/core", () => jest.requireActual("../../../../renderer/sunburst/testing/sunburstChart.stub").echartsCoreStub)
 
 const TREE = folderNode("/root", [
     folderNode("/root/src", [folderNode("/root/src/app", [fileNode("/root/src/app/deep.ts")]), fileNode("/root/src/b.ts")])
@@ -45,7 +45,7 @@ interface Setup {
 }
 
 async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, focusedNodePath }: Setup = {}) {
-    const rendered = await render(MetricsSunburstComponent, {
+    const rendered = await render(SunburstMapComponent, {
         providers: [
             provideMockStore({
                 initialState: defaultState,
@@ -73,7 +73,7 @@ function lastDrawnCentre(): string {
     return lastDrawnOption().series[0].data[0].name
 }
 
-describe("MetricsSunburstComponent", () => {
+describe("SunburstMapComponent", () => {
     let restoreElementSize: () => void
 
     beforeAll(() => {

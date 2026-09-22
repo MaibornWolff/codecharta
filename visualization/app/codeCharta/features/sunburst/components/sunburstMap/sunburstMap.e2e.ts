@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, goto, readPersistedLayoutAlgorithm, withDiskBackedPage } from "../../../../playwright.helper"
-import { ExplorerTreeLevelPageObject } from "../../../features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
-import { SidebarInspectorPageObject } from "../../../features/sidebarInspector/components/sidebarInspector/sidebarInspector.po"
-import { MetricsSunburstPageObject } from "./metricsSunburst.po"
+import { clearIndexedDB, goto, readPersistedLayoutAlgorithm, withDiskBackedPage } from "../../../../../playwright.helper"
+import { ExplorerTreeLevelPageObject } from "../../../sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
+import { SidebarInspectorPageObject } from "../../../sidebarInspector/components/sidebarInspector/sidebarInspector.po"
+import { SunburstMapPageObject } from "./sunburstMap.po"
 
 const INNER_RING = 0.35
 const CENTRE = 0
@@ -19,7 +19,7 @@ test.describe("Sunburst layout", () => {
 
     test("should replace the 3D map and its 3D-only controls", async ({ page }) => {
         // Arrange
-        const sunburst = new MetricsSunburstPageObject(page)
+        const sunburst = new SunburstMapPageObject(page)
 
         // Act
         await sunburst.switchLayoutTo("Sunburst")
@@ -34,7 +34,7 @@ test.describe("Sunburst layout", () => {
 
     test("should drill into a clicked folder and back up through the centre, showing each in the inspector", async ({ page }) => {
         // Arrange
-        const sunburst = new MetricsSunburstPageObject(page)
+        const sunburst = new SunburstMapPageObject(page)
         const inspector = new SidebarInspectorPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
 
@@ -54,7 +54,7 @@ test.describe("Sunburst layout", () => {
 
     test("should select a clicked file without stepping into anything", async ({ page }) => {
         // Arrange
-        const sunburst = new MetricsSunburstPageObject(page)
+        const sunburst = new SunburstMapPageObject(page)
         const explorer = new ExplorerTreeLevelPageObject(page)
         const inspector = new SidebarInspectorPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
@@ -76,7 +76,7 @@ test.describe("Sunburst layout", () => {
 
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {
         // Arrange
-        const sunburst = new MetricsSunburstPageObject(page)
+        const sunburst = new SunburstMapPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
         await expect(sunburst.chart()).toBeVisible()
 
@@ -96,7 +96,7 @@ test.describe("Sunburst layout", () => {
             const errors: string[] = []
             page.on("pageerror", error => errors.push(error.message))
             page.on("console", message => message.type() === "error" && errors.push(message.text()))
-            const sunburst = new MetricsSunburstPageObject(page)
+            const sunburst = new SunburstMapPageObject(page)
             const explorer = new ExplorerTreeLevelPageObject(page)
             const inspector = new SidebarInspectorPageObject(page)
             await goto(page)
