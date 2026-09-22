@@ -7,7 +7,7 @@ import { isSunburstLayoutSelector, MapStateReadWindow } from "../../../stores/ma
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
 import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 
 @Injectable({ providedIn: "root" })
@@ -16,7 +16,8 @@ export class CodeMapStore {
         private readonly store: Store<CcState>,
         private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly mapStateReadWindow: MapStateReadWindow,
-        private readonly sharedViewReadWindow: SharedViewReadWindow
+        private readonly sharedViewReadWindow: SharedViewReadWindow,
+        private readonly nodeInteraction: NodeInteraction
     ) {}
 
     getState(): CcState {
@@ -40,7 +41,7 @@ export class CodeMapStore {
     }
 
     getSelectedNodePath(): string | null {
-        return this.ccStateSnapshot.get().sharedView.selectedNodePath
+        return this.sharedViewReadWindow.getSelectedNodePath()
     }
 
     isSunburstLayout(): boolean {
@@ -51,8 +52,12 @@ export class CodeMapStore {
         return idToNodeSelector(this.ccStateSnapshot.get())
     }
 
-    setHoveredNodeId(value: string | null) {
-        this.store.dispatch(setHoveredNodeId({ value }))
+    hoverNode(path: string) {
+        this.nodeInteraction.hoverNode(path)
+    }
+
+    clearHover() {
+        this.nodeInteraction.clearHover()
     }
 
     setRightClickedNodeData(value: CcState["sharedView"]["rightClickedNodeData"]) {

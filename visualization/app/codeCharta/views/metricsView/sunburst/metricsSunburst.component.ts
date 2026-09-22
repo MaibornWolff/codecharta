@@ -18,12 +18,7 @@ import {
     hoveredNodeIdSelector,
     selectedNodePathSelector
 } from "../../../stores/sharedView/sharedView.read.facade"
-import {
-    setHoveredNodeId,
-    setRightClickedNodeData,
-    setSelectedNodePath,
-    unfocusNode
-} from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 import {
     BAR_GAP_PX,
     BOTTOM_BAR_HEIGHT_CSS_VARIABLE,
@@ -56,6 +51,7 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
 export class MetricsSunburstComponent {
     protected readonly bottomInset = BOTTOM_INSET_ABOVE_THE_BARS
     private readonly store = inject<Store<CcState>>(Store)
+    private readonly nodeInteraction = inject(NodeInteraction)
 
     protected readonly tree = toSignal(this.store.select(sunburstTreeSelector), { requireSync: true })
     protected readonly metrics = toSignal(this.store.select(sunburstMetricsSelector), { requireSync: true })
@@ -83,7 +79,7 @@ export class MetricsSunburstComponent {
 
     protected selectFolder(path: string): void {
         this.hover(null)
-        this.store.dispatch(setSelectedNodePath({ value: path }))
+        this.nodeInteraction.selectNode(path)
     }
 
     protected goUp(): void {
@@ -95,7 +91,7 @@ export class MetricsSunburstComponent {
     }
 
     protected selectFile(path: string): void {
-        this.store.dispatch(setSelectedNodePath({ value: path }))
+        this.nodeInteraction.selectNode(path)
     }
 
     protected openContextMenu({ path, clientX, clientY }: RightClickedNode): void {
@@ -111,7 +107,11 @@ export class MetricsSunburstComponent {
     }
 
     protected hover(path: string | null): void {
-        this.store.dispatch(setHoveredNodeId({ value: path }))
+        if (path === null) {
+            this.nodeInteraction.clearHover()
+        } else {
+            this.nodeInteraction.hoverNode(path)
+        }
     }
 
     private centreOnTheSelection(): void {

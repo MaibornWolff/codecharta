@@ -5,7 +5,7 @@ import { MapStateReadWindow, mapColorsSelector } from "../../../stores/mapState/
 import { PreferencesReadWindow } from "../../../stores/preferences/preferences.read.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
 import { idToNodeSelector } from "../../renderModel/renderModel.facade"
 
 @Injectable({ providedIn: "root" })
@@ -14,7 +14,8 @@ export class ThreeSceneStore {
         private readonly store: Store<CcState>,
         private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly mapStateReadWindow: MapStateReadWindow,
-        private readonly preferencesReadWindow: PreferencesReadWindow
+        private readonly preferencesReadWindow: PreferencesReadWindow,
+        private readonly nodeInteraction: NodeInteraction
     ) {}
 
     readonly mapColors$ = this.store.select(mapColorsSelector)
@@ -39,7 +40,11 @@ export class ThreeSceneStore {
         return selectedNodePathSelector(this.ccStateSnapshot.get())
     }
 
-    setSelectedNodePath(value: string | null) {
-        this.store.dispatch(setSelectedNodePath({ value }))
+    selectNode(path: string) {
+        this.nodeInteraction.selectNode(path)
+    }
+
+    clearNodeSelection() {
+        this.nodeInteraction.clearSelection()
     }
 }

@@ -47,4 +47,8 @@ export class SharedViewReadWindow {
     getHoveredNodeId(): string | null {
         return this.state.getValue().sharedView.hoveredNodeId
     }
+
+    getSelectedNodePath(): string | null {
+        return this.state.getValue().sharedView.selectedNodePath
+    }
 }

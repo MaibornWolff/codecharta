@@ -369,7 +369,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
         this.threeSceneService.applyHighlights()
         if (updateStore) {
-            this.codeMapStore.setHoveredNodeId(hoveredBuilding.node.path)
+            this.codeMapStore.hoverNode(hoveredBuilding.node.path)
         }
     }
 
@@ -398,7 +398,7 @@ export class CodeMapMouseEventService implements OnDestroy {
         }
 
         if (updateStore) {
-            this.codeMapStore.setHoveredNodeId(null)
+            this.codeMapStore.clearHover()
         }
     }
 }

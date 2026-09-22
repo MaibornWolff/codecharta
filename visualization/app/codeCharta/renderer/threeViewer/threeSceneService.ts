@@ -257,7 +257,7 @@ export class ThreeSceneService implements OnDestroy {
             if (this.selected) {
                 this.getMapMesh().clearSelection(this.selected)
             }
-            this.threeSceneStore.setSelectedNodePath(building.node.path)
+            this.threeSceneStore.selectNode(building.node.path)
         }
 
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
@@ -308,7 +308,7 @@ export class ThreeSceneService implements OnDestroy {
             this.getMapMesh().clearSelection(this.selected)
         }
         if (hadSelection) {
-            this.threeSceneStore.setSelectedNodePath(null)
+            this.threeSceneStore.clearNodeSelection()
             this.eventEmitter.emit("onBuildingDeselected")
         }
         // null before repainting: the highlight pass must not treat the
@@ -369,7 +369,7 @@ export class ThreeSceneService implements OnDestroy {
             return
         }
         if (previouslySelected && previouslySelected.node.path === selectedPath) {
-            this.threeSceneStore.setSelectedNodePath(null)
+            this.threeSceneStore.clearNodeSelection()
             this.eventEmitter.emit("onBuildingDeselected")
         }
     }
