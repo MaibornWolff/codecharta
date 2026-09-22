@@ -22,6 +22,7 @@ function inputs(centre: SunburstFolder, overrides: Partial<SunburstOptionInputs>
         isMapRoot: false,
         metrics: { areaMetric: "rloc", colorMetric: "mcc" },
         coloring: COLORING,
+        folderColorValueRange: { minValue: 0, maxValue: 100 },
         chartSizeInPixels: 800,
         ...overrides
     }
@@ -116,7 +117,7 @@ describe("buildSunburstOption", () => {
         // Assert
         expect(tooltip).toContain("/root/&lt;b&gt;")
         expect(tooltip).toContain("rloc: 1,234.57")
-        expect(tooltip).toContain("mcc (area-weighted average): –")
+        expect(tooltip).toContain("mcc: –")
         expect(tooltip).not.toContain("go up")
     })
 

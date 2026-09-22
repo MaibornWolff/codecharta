@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildSunburstFolders, findClosestFolder, findFolder, isInside, parentPath } from "./sunburstFolders"
+import { buildSunburstFolders, colorValueRange, findClosestFolder, findFolder, isInside, parentPath } from "./sunburstFolders"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -8,8 +8,8 @@ function file(path: string, attributes: Record<string, number>, overrides: Parti
     return { name: path.split("/").at(-1), path, type: NodeType.FILE, attributes, ...overrides }
 }
 
-function folder(path: string, children: CodeMapNode[]): CodeMapNode {
-    return { name: path.split("/").at(-1), path, type: NodeType.FOLDER, attributes: {}, children }
+function folder(path: string, children: CodeMapNode[], attributes: Record<string, number> = {}): CodeMapNode {
+    return { name: path.split("/").at(-1), path, type: NodeType.FOLDER, attributes, children }
 }
 
 describe("buildSunburstFolders", () => {
@@ -34,33 +34,19 @@ describe("buildSunburstFolders", () => {
         expect(result.children[0].children[0].children).toEqual([])
     })
 
-    it("should colour a folder by the average of its files' colour metric, weighted by their area", () => {
+    it("should colour a folder by its own colour value, the one the inspector shows", () => {
         // Arrange
-        const root = folder("/root", [file("/root/small.ts", { rloc: 10, mcc: 40 }), file("/root/big.ts", { rloc: 30, mcc: 0 })])
+        const root = folder("/root", [folder("/root/src", [file("/root/src/a.ts", { rloc: 10, mcc: 40 })], { mcc: 40 })], { mcc: 55 })
 
         // Act
         const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
-        expect(result.colorValue).toBe(10)
+        expect(result.colorValue).toBe(55)
+        expect(result.children[0].colorValue).toBe(40)
     })
 
-    it("should weight files in sub folders the same as files directly inside the folder", () => {
-        // Arrange
-        const root = folder("/root", [
-            file("/root/a.ts", { rloc: 10, mcc: 40 }),
-            folder("/root/src", [file("/root/src/b.ts", { rloc: 30, mcc: 0 })])
-        ])
-
-        // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
-
-        // Assert
-        expect(result.colorValue).toBe(10)
-        expect(result.children[0].colorValue).toBe(0)
-    })
-
-    it("should leave excluded files out of both size and colour", () => {
+    it("should leave excluded files out of the size", () => {
         // Arrange
         const root = folder("/root", [
             file("/root/a.ts", { rloc: 10, mcc: 2 }),
@@ -72,7 +58,6 @@ describe("buildSunburstFolders", () => {
 
         // Assert
         expect(result.area).toBe(10)
-        expect(result.colorValue).toBe(2)
     })
 
     it("should drop folders without any area", () => {
@@ -89,26 +74,20 @@ describe("buildSunburstFolders", () => {
         expect(result.children).toEqual([])
     })
 
-    it("should count flattened files for size but not for colour, and mark flattened folders", () => {
+    it("should mark flattened folders", () => {
         // Arrange
-        const root = folder("/root", [
-            file("/root/a.ts", { rloc: 10, mcc: 2 }),
-            file("/root/flat.ts", { rloc: 30, mcc: 100 }),
-            folder("/root/flatFolder", [file("/root/flatFolder/b.ts", { rloc: 5, mcc: 1 })])
-        ])
-        const isFlat = (node: CodeMapNode) => node.path === "/root/flat.ts" || node.path === "/root/flatFolder"
+        const root = folder("/root", [folder("/root/flatFolder", [file("/root/flatFolder/b.ts", { rloc: 5 })])])
+        const isFlat = (node: CodeMapNode) => node.path === "/root/flatFolder"
 
         // Act
         const result = buildSunburstFolders(root, METRICS, isFlat)
 
         // Assert
-        expect(result.area).toBe(45)
         expect(result.isFlat).toBe(false)
         expect(result.children[0].isFlat).toBe(true)
-        expect(result.children[0].colorValue).toBe(1)
     })
 
-    it("should have no colour value when no file carries the colour metric", () => {
+    it("should have no colour value for a folder without the colour metric", () => {
         // Arrange
         const root = folder("/root", [file("/root/a.ts", { rloc: 10 })])
 
@@ -128,7 +107,6 @@ describe("buildSunburstFolders", () => {
 
         // Assert
         expect(result.area).toBe(4)
-        expect(result.colorValue).toBe(1)
     })
 
     it("should return null for a map that is a single file", () => {
@@ -140,6 +118,41 @@ describe("buildSunburstFolders", () => {
 
         // Assert
         expect(result).toBeNull()
+    })
+})
+
+describe("colorValueRange", () => {
+    it("should span the colour values of every folder in the tree", () => {
+        // Arrange
+        const tree = buildSunburstFolders(
+            folder(
+                "/root",
+                [
+                    folder("/root/a", [file("/root/a/x.ts", { rloc: 1 })], { mcc: 3 }),
+                    folder("/root/b", [file("/root/b/y.ts", { rloc: 1 })], { mcc: 9 })
+                ],
+                { mcc: 12 }
+            ),
+            METRICS,
+            NOTHING_IS_FLAT
+        )
+
+        // Act
+        const range = colorValueRange(tree)
+
+        // Assert
+        expect(range).toEqual({ minValue: 3, maxValue: 12 })
+    })
+
+    it("should have no range when no folder carries the colour metric", () => {
+        // Arrange
+        const tree = buildSunburstFolders(folder("/root", [file("/root/a.ts", { rloc: 1 })]), METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const range = colorValueRange(tree)
+
+        // Assert
+        expect(range).toBeNull()
     })
 })
 

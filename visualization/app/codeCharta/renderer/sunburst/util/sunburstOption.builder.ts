@@ -1,3 +1,4 @@
+import { MetricMinMax } from "../../../util/metric/metricRange"
 import { folderColor, readableTextColor, SunburstColoring } from "./sunburstColor"
 import { SunburstFolder, SunburstMetrics } from "./sunburstFolders"
 
@@ -15,6 +16,7 @@ export interface SunburstOptionInputs {
     isMapRoot: boolean
     metrics: SunburstMetrics
     coloring: SunburstColoring
+    folderColorValueRange: MetricMinMax
     chartSizeInPixels: number
 }
 
@@ -40,7 +42,14 @@ export function buildSunburstOption(inputs: SunburstOptionInputs) {
         series: [
             {
                 type: "sunburst",
-                data: [toDatum(inputs.centre, inputs.coloring, VISIBLE_RING_COUNT, true)],
+                data: [
+                    toDatum(
+                        inputs.centre,
+                        folder => folderColor(folder, inputs.coloring, inputs.folderColorValueRange),
+                        VISIBLE_RING_COUNT,
+                        true
+                    )
+                ],
                 radius: ["0%", `${OUTER_RADIUS_PERCENT}%`],
                 nodeClick: false,
                 sort: "desc",
@@ -89,8 +98,8 @@ function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixe
     }))
 }
 
-function toDatum(folder: SunburstFolder, coloring: SunburstColoring, ringsLeft: number, isCentre: boolean): SunburstDatum {
-    const color = folderColor(folder, coloring)
+function toDatum(folder: SunburstFolder, colorOf: (folder: SunburstFolder) => string, ringsLeft: number, isCentre: boolean): SunburstDatum {
+    const color = colorOf(folder)
     return {
         name: folder.path,
         value: folder.area,
@@ -99,7 +108,7 @@ function toDatum(folder: SunburstFolder, coloring: SunburstColoring, ringsLeft: 
         isCentre,
         itemStyle: { color },
         label: { color: readableTextColor(color) },
-        children: ringsLeft > 0 ? folder.children.map(child => toDatum(child, coloring, ringsLeft - 1, false)) : []
+        children: ringsLeft > 0 ? folder.children.map(child => toDatum(child, colorOf, ringsLeft - 1, false)) : []
     }
 }
 
@@ -115,7 +124,7 @@ function buildTooltipFormatter(metrics: SunburstMetrics, isMapRoot: boolean) {
         const rows = [
             `<b>${escapeHtml(data.name)}</b>`,
             `${escapeHtml(metrics.areaMetric)}: ${numberFormatter.format(data.value)}`,
-            `${escapeHtml(metrics.colorMetric)} (area-weighted average): ${data.colorValue === undefined ? "–" : numberFormatter.format(data.colorValue)}`
+            `${escapeHtml(metrics.colorMetric)}: ${data.colorValue === undefined ? "–" : numberFormatter.format(data.colorValue)}`
         ]
         if (data.isCentre && !isMapRoot) {
             rows.push("<i>Click to go up one folder</i>")

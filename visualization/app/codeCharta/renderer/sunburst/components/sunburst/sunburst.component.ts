@@ -12,9 +12,11 @@ import {
 } from "@angular/core"
 import { SunburstChartRegistry } from "../../services/sunburstChart.registry"
 import { SunburstColoring } from "../../util/sunburstColor"
-import { findClosestFolder, findFolder, isInside, SunburstFolder, SunburstMetrics } from "../../util/sunburstFolders"
+import { colorValueRange, findClosestFolder, findFolder, isInside, SunburstFolder, SunburstMetrics } from "../../util/sunburstFolders"
 import { buildSunburstOption, VISIBLE_RING_COUNT } from "../../util/sunburstOption.builder"
 import { SunburstChartHost } from "./sunburstChartHost"
+
+const NO_COLOR_VALUES = { minValue: 0, maxValue: 0 }
 
 @Component({
     selector: "cc-sunburst",
@@ -42,6 +44,8 @@ export class SunburstComponent implements OnDestroy {
     })
 
     private readonly centre = computed(() => findFolder(this.folders(), this.centrePath()) ?? this.folders())
+
+    private readonly folderColorValueRange = computed(() => colorValueRange(this.folders()) ?? NO_COLOR_VALUES)
 
     private readonly highlightedFolderPath = computed(() => {
         const hoveredPath = this.hoveredPath()
@@ -74,6 +78,7 @@ export class SunburstComponent implements OnDestroy {
                 isMapRoot: this.centre() === this.folders(),
                 metrics: this.metrics(),
                 coloring: this.coloring(),
+                folderColorValueRange: this.folderColorValueRange(),
                 chartSizeInPixels: Math.min(width, height)
             })
         )

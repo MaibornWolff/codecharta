@@ -18,7 +18,8 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
 
 ### 2. Sunburst data
 - Folders only; angle = area metric summed over the folder's files
-- Colour = area-weighted average of the colour metric, mapped through the existing colour range and map colours
+- Colour = the folder's summed colour value (as in the inspector), placed on the map's colour range by its position
+  between the smallest and largest folder value
 - Respects exclude/flatten/focus like the 3D map
 
 ### 3. Sunburst view
@@ -43,6 +44,8 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
 
 - Decisions from the Q&A: folders only, click = drill + select, hover syncs explorer, metrics bar/legend/extension
   bar/sidebars stay, delta out of scope, names + tooltip, 3D controls hidden, screenshot supported
+- Revised after review: the colour first used an area-weighted average of the files; it now uses the folder's own
+  summed value on a range built from the folders. A height/colour link is ignored while the sunburst is shown
 - Rings shrink to the depth that exists below the centre (at most three), so shallow maps get wider, readable rings
 - The centre follows the selection (a file centres on its folder); clearing the selection keeps the centre
 - ECharts is only in lazy chunks (`@defer` + `sunburstRegistry.facade.ts`); the initial bundle grows by about 20 KB

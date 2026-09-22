@@ -1,5 +1,6 @@
 import { CodeMapNode } from "../../../model/codeCharta.model"
 import { isLeaf } from "../../../util/codeMapHelper"
+import { MetricMinMax } from "../../../util/metric/metricRange"
 
 export interface SunburstFolder {
     path: string
@@ -17,57 +18,46 @@ export interface SunburstMetrics {
 
 type IsFlat = (node: CodeMapNode) => boolean
 
-interface ColorAccumulator {
-    weightedSum: number
-    weight: number
-}
-
-interface FolderWithColorWeights {
-    folder: SunburstFolder
-    color: ColorAccumulator
-}
-
 export function buildSunburstFolders(root: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): SunburstFolder | null {
-    if (isLeaf(root)) {
-        return null
-    }
-    return summarizeFolder(root, metrics, isFlat).folder
+    return isLeaf(root) ? null : summarizeFolder(root, metrics, isFlat)
 }
 
-function summarizeFolder(node: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): FolderWithColorWeights {
-    const color: ColorAccumulator = { weightedSum: 0, weight: 0 }
+function summarizeFolder(node: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): SunburstFolder {
     const children: SunburstFolder[] = []
     let area = 0
 
     for (const child of node.children) {
         if (isLeaf(child)) {
-            area += addFile(child, metrics, isFlat, color)
+            area += child.isExcluded ? 0 : (child.attributes?.[metrics.areaMetric] ?? 0)
             continue
         }
-        const summary = summarizeFolder(child, metrics, isFlat)
-        area += summary.folder.area
-        color.weightedSum += summary.color.weightedSum
-        color.weight += summary.color.weight
-        if (summary.folder.area > 0) {
-            children.push(summary.folder)
+        const folder = summarizeFolder(child, metrics, isFlat)
+        area += folder.area
+        if (folder.area > 0) {
+            children.push(folder)
         }
     }
 
-    const colorValue = color.weight > 0 ? color.weightedSum / color.weight : undefined
-    return { folder: { path: node.path, name: node.name, area, colorValue, isFlat: isFlat(node), children }, color }
+    const colorValue = node.attributes?.[metrics.colorMetric]
+    return { path: node.path, name: node.name, area, colorValue, isFlat: isFlat(node), children }
 }
 
-function addFile(file: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat, color: ColorAccumulator): number {
-    if (file.isExcluded) {
-        return 0
+export function colorValueRange(root: SunburstFolder): MetricMinMax | null {
+    const colorValues = collectColorValues(root, [])
+    if (colorValues.length === 0) {
+        return null
     }
-    const area = file.attributes?.[metrics.areaMetric] ?? 0
-    const colorValue = file.attributes?.[metrics.colorMetric]
-    if (area > 0 && colorValue !== undefined && !isFlat(file)) {
-        color.weightedSum += colorValue * area
-        color.weight += area
+    return { minValue: Math.min(...colorValues), maxValue: Math.max(...colorValues) }
+}
+
+function collectColorValues(folder: SunburstFolder, colorValues: number[]): number[] {
+    if (folder.colorValue !== undefined) {
+        colorValues.push(folder.colorValue)
     }
-    return area
+    for (const child of folder.children) {
+        collectColorValues(child, colorValues)
+    }
+    return colorValues
 }
 
 export function findFolder(root: SunburstFolder, path: string): SunburstFolder | undefined {

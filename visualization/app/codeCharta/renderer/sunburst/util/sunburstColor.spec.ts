@@ -11,17 +11,38 @@ describe("folderColor", () => {
         colorMetricRange: { minValue: 0, maxValue: 100 }
     }
 
+    const SAME_AS_FILES = { minValue: 0, maxValue: 100 }
+
     it("should classify the folder's value on the map's colour range", () => {
         // Act
-        const colors = [5, 15, 25].map(colorValue => folderColor({ colorValue, isFlat: false }, coloring))
+        const colors = [5, 15, 25].map(colorValue => folderColor({ colorValue, isFlat: false }, coloring, SAME_AS_FILES))
 
         // Assert
         expect(colors).toEqual([defaultMapColors.positive, defaultMapColors.neutral, defaultMapColors.negative])
     })
 
-    it("should use the base colour when no file below the folder carries the colour metric", () => {
+    it("should place a folder's value on the colour range by its position among the folders", () => {
+        // Arrange
+        const foldersSpanTenTimesTheFiles = { minValue: 0, maxValue: 1000 }
+
         // Act
-        const color = folderColor({ colorValue: undefined, isFlat: false }, coloring)
+        const colors = [50, 150, 250].map(colorValue => folderColor({ colorValue, isFlat: false }, coloring, foldersSpanTenTimesTheFiles))
+
+        // Assert
+        expect(colors).toEqual([defaultMapColors.positive, defaultMapColors.neutral, defaultMapColors.negative])
+    })
+
+    it("should treat every folder as the lowest value when all folders share one value", () => {
+        // Act
+        const color = folderColor({ colorValue: 7, isFlat: false }, coloring, { minValue: 7, maxValue: 7 })
+
+        // Assert
+        expect(color).toBe(defaultMapColors.positive)
+    })
+
+    it("should use the base colour when the folder has no colour value", () => {
+        // Act
+        const color = folderColor({ colorValue: undefined, isFlat: false }, coloring, SAME_AS_FILES)
 
         // Assert
         expect(color).toBe(defaultMapColors.base)
@@ -29,7 +50,7 @@ describe("folderColor", () => {
 
     it("should use the flat colour for a flattened folder", () => {
         // Act
-        const color = folderColor({ colorValue: 25, isFlat: true }, coloring)
+        const color = folderColor({ colorValue: 25, isFlat: true }, coloring, SAME_AS_FILES)
 
         // Assert
         expect(color).toBe(defaultMapColors.flat)
@@ -37,7 +58,7 @@ describe("folderColor", () => {
 
     it("should colour every folder positive for the unary colour metric", () => {
         // Act
-        const color = folderColor({ colorValue: 25, isFlat: false }, { ...coloring, colorMetric: "unary" })
+        const color = folderColor({ colorValue: 25, isFlat: false }, { ...coloring, colorMetric: "unary" }, SAME_AS_FILES)
 
         // Assert
         expect(color).toBe(defaultMapColors.positive)
