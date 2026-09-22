@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-visualization",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "engines": {
     "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
