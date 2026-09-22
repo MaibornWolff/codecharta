@@ -1,6 +1,6 @@
 import { MetricMinMax } from "../../../util/metric/metricRange"
 import { folderColor, readableTextColor, SunburstColoring } from "./sunburstColor"
-import { SunburstFolder, SunburstMetrics } from "./sunburstFolders"
+import { SunburstMetrics, SunburstNode } from "./sunburstTree"
 
 export const VISIBLE_RING_COUNT = 3
 
@@ -12,7 +12,7 @@ const SEGMENT_BORDER_COLOR = "#ffffff"
 const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
 
 export interface SunburstOptionInputs {
-    centre: SunburstFolder
+    centre: SunburstNode
     isMapRoot: boolean
     metrics: SunburstMetrics
     coloring: SunburstColoring
@@ -65,7 +65,7 @@ export function buildSunburstOption(inputs: SunburstOptionInputs) {
 
 export type SunburstOption = ReturnType<typeof buildSunburstOption>
 
-function levelsAround(centre: SunburstFolder, radiusInPixels: number) {
+function levelsAround(centre: SunburstNode, radiusInPixels: number) {
     const ringCount = Math.max(1, depthBelow(centre, VISIBLE_RING_COUNT))
     const ringWidthPercent = (OUTER_RADIUS_PERCENT - CENTRE_RADIUS_PERCENT) / ringCount
     const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / 100
@@ -78,7 +78,7 @@ function levelsAround(centre: SunburstFolder, radiusInPixels: number) {
     return [virtualRootLevel, centreLevel, ...ringLevels(ringCount, ringWidthPercent, (radiusInPixels * ringWidthPercent) / 100)]
 }
 
-function depthBelow(folder: SunburstFolder, maxDepth: number): number {
+function depthBelow(folder: SunburstNode, maxDepth: number): number {
     if (maxDepth === 0 || folder.children.length === 0) {
         return 0
     }
@@ -98,7 +98,7 @@ function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixe
     }))
 }
 
-function toDatum(folder: SunburstFolder, colorOf: (folder: SunburstFolder) => string, ringsLeft: number, isCentre: boolean): SunburstDatum {
+function toDatum(folder: SunburstNode, colorOf: (folder: SunburstNode) => string, ringsLeft: number, isCentre: boolean): SunburstDatum {
     const color = colorOf(folder)
     return {
         name: folder.path,

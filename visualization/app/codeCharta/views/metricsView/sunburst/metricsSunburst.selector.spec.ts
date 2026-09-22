@@ -1,7 +1,7 @@
 import { CodeMapNode, ColorMode, NodeType } from "../../../model/codeCharta.model"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
-import { sunburstColoringSelector, sunburstFoldersSelector, sunburstMetricsSelector } from "./metricsSunburst.selector"
+import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
 function file(path: string, rloc: number): CodeMapNode {
     return { name: path.split("/").at(-1), path, type: NodeType.FILE, attributes: { rloc, mcc: 1 } }
@@ -23,10 +23,10 @@ function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedDa
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
 
-describe("sunburstFoldersSelector", () => {
+describe("sunburstTreeSelector", () => {
     it("should build the folders of the whole map when nothing is focused", () => {
         // Act
-        const folders = sunburstFoldersSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+        const folders = sunburstTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(folders.path).toBe("/root")
@@ -35,7 +35,7 @@ describe("sunburstFoldersSelector", () => {
 
     it("should start at the focused folder", () => {
         // Act
-        const folders = sunburstFoldersSelector.projector(accumulatedData(MAP), PATH_TO_NODE, "/root/src", METRICS, NOTHING_IS_FLAT)
+        const folders = sunburstTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, "/root/src", METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(folders.path).toBe("/root/src")
@@ -44,7 +44,7 @@ describe("sunburstFoldersSelector", () => {
 
     it("should have no folders before a map is loaded", () => {
         // Act
-        const folders = sunburstFoldersSelector.projector(accumulatedData(undefined), new Map(), undefined, METRICS, NOTHING_IS_FLAT)
+        const folders = sunburstTreeSelector.projector(accumulatedData(undefined), new Map(), undefined, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(folders).toBeNull()

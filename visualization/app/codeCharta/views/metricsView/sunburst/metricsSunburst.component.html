@@ -4,10 +4,10 @@
             <span>The sunburst shows a single map. Switch to another map layout to compare two maps.</span>
         </div>
     </div>
-} @else if (folders(); as folders) {
+} @else if (tree(); as tree) {
     <cc-sunburst
-        [folders]="folders"
-        [centrePath]="centrePath() ?? folders.path"
+        [tree]="tree"
+        [centrePath]="centrePath() ?? tree.path"
         [hoveredPath]="hoveredPath()"
         [metrics]="metrics()"
         [coloring]="coloring()"

@@ -7,14 +7,14 @@ import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
 import { ExplorerCollapseService, ExplorerWidthService } from "../../../features/sidebarExplorer/facade"
 import { InspectorVisibilityService } from "../../../features/sidebarInspector/facade"
 import { ColorMode } from "../../../model/codeCharta.model"
-import { SunburstFolder } from "../../../renderer/sunburst/sunburst.facade"
+import { SunburstNode } from "../../../renderer/sunburst/sunburst.facade"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsSunburstComponent } from "./metricsSunburst.component"
-import { sunburstColoringSelector, sunburstFoldersSelector, sunburstMetricsSelector } from "./metricsSunburst.selector"
+import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
 type EventHandler = (event: unknown) => void
 
@@ -38,14 +38,14 @@ class ResizeObserverMock {
     disconnect() {}
 }
 
-function folder(path: string, children: SunburstFolder[] = []): SunburstFolder {
+function folder(path: string, children: SunburstNode[] = []): SunburstNode {
     return { path, name: path.split("/").at(-1), area: 10, colorValue: 5, isFlat: false, children }
 }
 
 const FOLDERS = folder("/root", [folder("/root/src", [folder("/root/src/app")])])
 
 interface Setup {
-    folders?: SunburstFolder | null
+    tree?: SunburstNode | null
     selectedPath?: string | null
     isDeltaState?: boolean
     isExplorerCollapsed?: boolean
@@ -53,7 +53,7 @@ interface Setup {
 }
 
 async function setup({
-    folders = FOLDERS,
+    tree = FOLDERS,
     selectedPath = null,
     isDeltaState = false,
     isExplorerCollapsed = false,
@@ -64,7 +64,7 @@ async function setup({
             provideMockStore({
                 initialState: defaultState,
                 selectors: [
-                    { selector: sunburstFoldersSelector, value: folders },
+                    { selector: sunburstTreeSelector, value: tree },
                     { selector: sunburstMetricsSelector, value: { areaMetric: "rloc", colorMetric: "mcc" } },
                     {
                         selector: sunburstColoringSelector,
@@ -221,7 +221,7 @@ describe("MetricsSunburstComponent", () => {
 
     it("should explain instead of drawing when no folder has an area", async () => {
         // Act
-        await setup({ folders: null })
+        await setup({ tree: null })
 
         // Assert
         expect(screen.getByRole("status").textContent).toContain("no folders")

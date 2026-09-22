@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildSunburstFolders, colorValueRange, findClosestFolder, findFolder, isInside, parentPath } from "./sunburstFolders"
+import { buildSunburstTree, colorValueRange, findClosestFolder, findFolder, isInside, parentPath } from "./sunburstTree"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -12,7 +12,7 @@ function folder(path: string, children: CodeMapNode[], attributes: Record<string
     return { name: path.split("/").at(-1), path, type: NodeType.FOLDER, attributes, children }
 }
 
-describe("buildSunburstFolders", () => {
+describe("buildSunburstTree", () => {
     it("should keep only folders and size each one by the area of all files below it", () => {
         // Arrange
         const root = folder("/root", [
@@ -24,7 +24,7 @@ describe("buildSunburstFolders", () => {
         ])
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.area).toBe(45)
@@ -39,7 +39,7 @@ describe("buildSunburstFolders", () => {
         const root = folder("/root", [folder("/root/src", [file("/root/src/a.ts", { rloc: 10, mcc: 40 })], { mcc: 40 })], { mcc: 55 })
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.colorValue).toBe(55)
@@ -54,7 +54,7 @@ describe("buildSunburstFolders", () => {
         ])
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.area).toBe(10)
@@ -68,7 +68,7 @@ describe("buildSunburstFolders", () => {
         ])
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.children).toEqual([])
@@ -80,7 +80,7 @@ describe("buildSunburstFolders", () => {
         const isFlat = (node: CodeMapNode) => node.path === "/root/flatFolder"
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, isFlat)
+        const result = buildSunburstTree(root, METRICS, isFlat)
 
         // Assert
         expect(result.isFlat).toBe(false)
@@ -92,7 +92,7 @@ describe("buildSunburstFolders", () => {
         const root = folder("/root", [file("/root/a.ts", { rloc: 10 })])
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.colorValue).toBeUndefined()
@@ -103,7 +103,7 @@ describe("buildSunburstFolders", () => {
         const root = folder("/root", [file("/root/a.ts", { mcc: 3 }), file("/root/b.ts", { rloc: 4, mcc: 1 })])
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result.area).toBe(4)
@@ -114,7 +114,7 @@ describe("buildSunburstFolders", () => {
         const root = file("/root", { rloc: 10 })
 
         // Act
-        const result = buildSunburstFolders(root, METRICS, NOTHING_IS_FLAT)
+        const result = buildSunburstTree(root, METRICS, NOTHING_IS_FLAT)
 
         // Assert
         expect(result).toBeNull()
@@ -124,7 +124,7 @@ describe("buildSunburstFolders", () => {
 describe("colorValueRange", () => {
     it("should span the colour values of every folder in the tree", () => {
         // Arrange
-        const tree = buildSunburstFolders(
+        const tree = buildSunburstTree(
             folder(
                 "/root",
                 [
@@ -146,7 +146,7 @@ describe("colorValueRange", () => {
 
     it("should have no range when no folder carries the colour metric", () => {
         // Arrange
-        const tree = buildSunburstFolders(folder("/root", [file("/root/a.ts", { rloc: 1 })]), METRICS, NOTHING_IS_FLAT)
+        const tree = buildSunburstTree(folder("/root", [file("/root/a.ts", { rloc: 1 })]), METRICS, NOTHING_IS_FLAT)
 
         // Act
         const range = colorValueRange(tree)
@@ -157,7 +157,7 @@ describe("colorValueRange", () => {
 })
 
 describe("folder lookup", () => {
-    const tree = buildSunburstFolders(
+    const tree = buildSunburstTree(
         folder("/root", [
             folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", { rloc: 1 })])]),
             folder("/root/srcOther", [file("/root/srcOther/b.ts", { rloc: 1 })])

@@ -2,13 +2,13 @@ import { CodeMapNode } from "../../../model/codeCharta.model"
 import { isLeaf } from "../../../util/codeMapHelper"
 import { MetricMinMax } from "../../../util/metric/metricRange"
 
-export interface SunburstFolder {
+export interface SunburstNode {
     path: string
     name: string
     area: number
     colorValue: number | undefined
     isFlat: boolean
-    children: SunburstFolder[]
+    children: SunburstNode[]
 }
 
 export interface SunburstMetrics {
@@ -18,12 +18,12 @@ export interface SunburstMetrics {
 
 type IsFlat = (node: CodeMapNode) => boolean
 
-export function buildSunburstFolders(root: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): SunburstFolder | null {
+export function buildSunburstTree(root: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): SunburstNode | null {
     return isLeaf(root) ? null : summarizeFolder(root, metrics, isFlat)
 }
 
-function summarizeFolder(node: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): SunburstFolder {
-    const children: SunburstFolder[] = []
+function summarizeFolder(node: CodeMapNode, metrics: SunburstMetrics, isFlat: IsFlat): SunburstNode {
+    const children: SunburstNode[] = []
     let area = 0
 
     for (const child of node.children) {
@@ -42,7 +42,7 @@ function summarizeFolder(node: CodeMapNode, metrics: SunburstMetrics, isFlat: Is
     return { path: node.path, name: node.name, area, colorValue, isFlat: isFlat(node), children }
 }
 
-export function colorValueRange(root: SunburstFolder): MetricMinMax | null {
+export function colorValueRange(root: SunburstNode): MetricMinMax | null {
     const colorValues = collectColorValues(root, [])
     if (colorValues.length === 0) {
         return null
@@ -50,7 +50,7 @@ export function colorValueRange(root: SunburstFolder): MetricMinMax | null {
     return { minValue: Math.min(...colorValues), maxValue: Math.max(...colorValues) }
 }
 
-function collectColorValues(folder: SunburstFolder, colorValues: number[]): number[] {
+function collectColorValues(folder: SunburstNode, colorValues: number[]): number[] {
     if (folder.colorValue !== undefined) {
         colorValues.push(folder.colorValue)
     }
@@ -60,7 +60,7 @@ function collectColorValues(folder: SunburstFolder, colorValues: number[]): numb
     return colorValues
 }
 
-export function findFolder(root: SunburstFolder, path: string): SunburstFolder | undefined {
+export function findFolder(root: SunburstNode, path: string): SunburstNode | undefined {
     if (root.path === path) {
         return root
     }
@@ -68,7 +68,7 @@ export function findFolder(root: SunburstFolder, path: string): SunburstFolder |
     return child ? findFolder(child, path) : undefined
 }
 
-export function findClosestFolder(root: SunburstFolder, path: string, maxDepth = Number.POSITIVE_INFINITY): SunburstFolder {
+export function findClosestFolder(root: SunburstNode, path: string, maxDepth = Number.POSITIVE_INFINITY): SunburstNode {
     const child = maxDepth > 0 ? root.children.find(candidate => isInside(path, candidate.path)) : undefined
     return child ? findClosestFolder(child, path, maxDepth - 1) : root
 }

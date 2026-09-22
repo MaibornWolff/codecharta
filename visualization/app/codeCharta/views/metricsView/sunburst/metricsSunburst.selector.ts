@@ -5,7 +5,7 @@ import {
     metricRangeSelector,
     pathToNodeSelector
 } from "../../../renderer/renderModel/renderModel.facade"
-import { buildSunburstFolders, SunburstColoring, SunburstMetrics } from "../../../renderer/sunburst/sunburst.facade"
+import { buildSunburstTree, SunburstColoring, SunburstMetrics } from "../../../renderer/sunburst/sunburst.facade"
 import {
     areaMetricSelector,
     colorMetricSelector,
@@ -21,7 +21,7 @@ export const sunburstMetricsSelector = createSelector(
     (areaMetric, colorMetric): SunburstMetrics => ({ areaMetric, colorMetric })
 )
 
-export const sunburstFoldersSelector = createSelector(
+export const sunburstTreeSelector = createSelector(
     accumulatedDataSelector,
     pathToNodeSelector,
     currentFocusedNodePathSelector,
@@ -29,7 +29,7 @@ export const sunburstFoldersSelector = createSelector(
     flattenPredicateSelector,
     ({ unifiedMapNode }, pathToNode, focusedNodePath, metrics, isFlat) => {
         const root = (focusedNodePath && pathToNode.get(focusedNodePath)) || unifiedMapNode
-        return root ? buildSunburstFolders(root, metrics, isFlat) : null
+        return root ? buildSunburstTree(root, metrics, isFlat) : null
     }
 )
 

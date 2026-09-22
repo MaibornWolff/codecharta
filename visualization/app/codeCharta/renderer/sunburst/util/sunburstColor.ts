@@ -3,7 +3,7 @@ import { ColorMode, ColorRange, MapColors } from "../../../model/codeCharta.mode
 import { getColorByMetricValue } from "../../../util/color/gradientCalculator"
 import { MetricMinMax } from "../../../util/metric/metricRange"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
-import { SunburstFolder } from "./sunburstFolders"
+import { SunburstNode } from "./sunburstTree"
 
 export interface SunburstColoring {
     colorMetric: string
@@ -18,7 +18,7 @@ const LIGHT_TEXT = "#ffffff"
 const LUMINANCE_THRESHOLD_FOR_DARK_TEXT = 0.5
 
 export function folderColor(
-    { colorValue, isFlat }: Pick<SunburstFolder, "colorValue" | "isFlat">,
+    { colorValue, isFlat }: Pick<SunburstNode, "colorValue" | "isFlat">,
     coloring: SunburstColoring,
     folderColorValueRange: MetricMinMax
 ): string {

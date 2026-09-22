@@ -9,7 +9,7 @@ import { findClosestFolder, parentPath, SunburstComponent } from "../../../rende
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
-import { sunburstColoringSelector, sunburstFoldersSelector, sunburstMetricsSelector } from "./metricsSunburst.selector"
+import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
 @Component({
     selector: "cc-metrics-sunburst",
@@ -30,7 +30,7 @@ export class MetricsSunburstComponent {
     private readonly explorerWidthService = inject(ExplorerWidthService)
     private readonly inspectorVisibilityService = inject(InspectorVisibilityService)
 
-    protected readonly folders = toSignal(this.store.select(sunburstFoldersSelector), { requireSync: true })
+    protected readonly tree = toSignal(this.store.select(sunburstTreeSelector), { requireSync: true })
     protected readonly metrics = toSignal(this.store.select(sunburstMetricsSelector), { requireSync: true })
     protected readonly coloring = toSignal(this.store.select(sunburstColoringSelector), { requireSync: true })
     protected readonly hoveredPath = toSignal(this.store.select(hoveredNodeIdSelector), { requireSync: true })
@@ -41,12 +41,12 @@ export class MetricsSunburstComponent {
     private readonly requestedCentrePath = signal<string | null>(null)
 
     protected readonly centrePath = computed(() => {
-        const folders = this.folders()
+        const tree = this.tree()
         const requestedCentrePath = this.requestedCentrePath()
-        if (!folders) {
+        if (!tree) {
             return null
         }
-        return requestedCentrePath === null ? folders.path : findClosestFolder(folders, requestedCentrePath).path
+        return requestedCentrePath === null ? tree.path : findClosestFolder(tree, requestedCentrePath).path
     })
 
     protected readonly leftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
@@ -63,7 +63,7 @@ export class MetricsSunburstComponent {
 
     protected goUp(): void {
         const centrePath = this.centrePath()
-        if (centrePath === null || centrePath === this.folders().path) {
+        if (centrePath === null || centrePath === this.tree().path) {
             return
         }
         this.selectFolder(parentPath(centrePath))

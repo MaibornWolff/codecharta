@@ -2,7 +2,7 @@ import { render } from "@testing-library/angular"
 import { ColorMode } from "../../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../../stores/mapState/store/mapColors/mapColors.reducer"
 import { SunburstColoring } from "../../util/sunburstColor"
-import { SunburstFolder } from "../../util/sunburstFolders"
+import { SunburstNode } from "../../util/sunburstTree"
 import { SunburstComponent } from "./sunburst.component"
 
 type EventHandler = (event: unknown) => void
@@ -35,7 +35,7 @@ const COLORING: SunburstColoring = {
     colorMetricRange: { minValue: 0, maxValue: 100 }
 }
 
-function folder(path: string, children: SunburstFolder[] = []): SunburstFolder {
+function folder(path: string, children: SunburstNode[] = []): SunburstNode {
     return { path, name: path.split("/").at(-1), area: 10, colorValue: 5, isFlat: false, children }
 }
 
@@ -48,7 +48,7 @@ let measuredSize = { width: 800, height: 600 }
 async function renderSunburst(inputs: Partial<{ centrePath: string; hoveredPath: string | null }> = {}) {
     return render(SunburstComponent, {
         inputs: {
-            folders: FOLDERS,
+            tree: FOLDERS,
             centrePath: "/root",
             hoveredPath: null,
             metrics: { areaMetric: "rloc", colorMetric: "mcc" },

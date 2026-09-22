@@ -1,8 +1,8 @@
 import { ColorMode } from "../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../stores/mapState/store/mapColors/mapColors.reducer"
 import { SunburstColoring } from "./sunburstColor"
-import { SunburstFolder } from "./sunburstFolders"
 import { buildSunburstOption, SunburstOptionInputs, VISIBLE_RING_COUNT } from "./sunburstOption.builder"
+import { SunburstNode } from "./sunburstTree"
 
 const COLORING: SunburstColoring = {
     colorMetric: "mcc",
@@ -12,11 +12,11 @@ const COLORING: SunburstColoring = {
     colorMetricRange: { minValue: 0, maxValue: 100 }
 }
 
-function folder(path: string, children: SunburstFolder[] = [], overrides: Partial<SunburstFolder> = {}): SunburstFolder {
+function folder(path: string, children: SunburstNode[] = [], overrides: Partial<SunburstNode> = {}): SunburstNode {
     return { path, name: path.split("/").at(-1), area: 10, colorValue: 5, isFlat: false, children, ...overrides }
 }
 
-function inputs(centre: SunburstFolder, overrides: Partial<SunburstOptionInputs> = {}): SunburstOptionInputs {
+function inputs(centre: SunburstNode, overrides: Partial<SunburstOptionInputs> = {}): SunburstOptionInputs {
     return {
         centre,
         isMapRoot: false,
@@ -28,7 +28,7 @@ function inputs(centre: SunburstFolder, overrides: Partial<SunburstOptionInputs>
     }
 }
 
-function nestedFolders(depth: number, path = "/root"): SunburstFolder {
+function nestedFolders(depth: number, path = "/root"): SunburstNode {
     return folder(path, depth > 0 ? [nestedFolders(depth - 1, `${path}/level${depth}`)] : [])
 }
 

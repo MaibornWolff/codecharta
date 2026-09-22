@@ -1,4 +1,4 @@
 export { SunburstComponent } from "./components/sunburst/sunburst.component"
 export type { SunburstColoring } from "./util/sunburstColor"
-export type { SunburstFolder, SunburstMetrics } from "./util/sunburstFolders"
-export { buildSunburstFolders, findClosestFolder, parentPath } from "./util/sunburstFolders"
+export type { SunburstMetrics, SunburstNode } from "./util/sunburstTree"
+export { buildSunburstTree, findClosestFolder, parentPath } from "./util/sunburstTree"

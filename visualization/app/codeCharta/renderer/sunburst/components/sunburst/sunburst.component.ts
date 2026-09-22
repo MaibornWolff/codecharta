@@ -12,8 +12,8 @@ import {
 } from "@angular/core"
 import { SunburstChartRegistry } from "../../services/sunburstChart.registry"
 import { SunburstColoring } from "../../util/sunburstColor"
-import { colorValueRange, findClosestFolder, findFolder, isInside, SunburstFolder, SunburstMetrics } from "../../util/sunburstFolders"
 import { buildSunburstOption, VISIBLE_RING_COUNT } from "../../util/sunburstOption.builder"
+import { colorValueRange, findClosestFolder, findFolder, isInside, SunburstMetrics, SunburstNode } from "../../util/sunburstTree"
 import { SunburstChartHost } from "./sunburstChartHost"
 
 const NO_COLOR_VALUES = { minValue: 0, maxValue: 0 }
@@ -25,7 +25,7 @@ const NO_COLOR_VALUES = { minValue: 0, maxValue: 0 }
     host: { class: "block h-full w-full" }
 })
 export class SunburstComponent implements OnDestroy {
-    readonly folders = input.required<SunburstFolder>()
+    readonly tree = input.required<SunburstNode>()
     readonly centrePath = input.required<string>()
     readonly hoveredPath = input<string | null>(null)
     readonly metrics = input.required<SunburstMetrics>()
@@ -43,9 +43,9 @@ export class SunburstComponent implements OnDestroy {
         onFolderHovered: path => this.folderHovered.emit(path)
     })
 
-    private readonly centre = computed(() => findFolder(this.folders(), this.centrePath()) ?? this.folders())
+    private readonly centre = computed(() => findFolder(this.tree(), this.centrePath()) ?? this.tree())
 
-    private readonly folderColorValueRange = computed(() => colorValueRange(this.folders()) ?? NO_COLOR_VALUES)
+    private readonly folderColorValueRange = computed(() => colorValueRange(this.tree()) ?? NO_COLOR_VALUES)
 
     private readonly highlightedFolderPath = computed(() => {
         const hoveredPath = this.hoveredPath()
@@ -75,7 +75,7 @@ export class SunburstComponent implements OnDestroy {
         this.chartHost.render(
             buildSunburstOption({
                 centre: this.centre(),
-                isMapRoot: this.centre() === this.folders(),
+                isMapRoot: this.centre() === this.tree(),
                 metrics: this.metrics(),
                 coloring: this.coloring(),
                 folderColorValueRange: this.folderColorValueRange(),
