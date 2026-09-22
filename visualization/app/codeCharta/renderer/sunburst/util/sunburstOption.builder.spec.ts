@@ -86,6 +86,16 @@ describe("buildSunburstOption", () => {
         expect(option.series[0].data[0].isFile).toBe(false)
     })
 
+    it("should write file names in bold and leave folder names to the ring's style", () => {
+        // Act
+        const option = buildSunburstOption(inputs(folder("/root", [folder("/root/a.ts", [], { isFile: true }), folder("/root/src")])))
+
+        // Assert
+        const [fileDatum, folderDatum] = option.series[0].data[0].children
+        expect(fileDatum.label.fontWeight).toBe("bold")
+        expect(folderDatum.label.fontWeight).toBeUndefined()
+    })
+
     it("should leave drilling to the caller instead of letting ECharts zoom", () => {
         // Act
         const option = buildSunburstOption(inputs(folder("/root")))

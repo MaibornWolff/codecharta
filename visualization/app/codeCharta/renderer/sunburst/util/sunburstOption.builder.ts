@@ -26,7 +26,7 @@ export interface SunburstDatum {
     isCentre: boolean
     isFile: boolean
     itemStyle: { color: string }
-    label: { color: string }
+    label: { color: string; fontWeight?: "bold" }
     children: SunburstDatum[]
 }
 
@@ -100,7 +100,7 @@ function toDatum(node: SunburstNode, coloring: SunburstColoring, ringsLeft: numb
         isCentre,
         isFile: node.isFile,
         itemStyle: { color },
-        label: { color: readableTextColor(color) },
+        label: node.isFile ? { color: readableTextColor(color), fontWeight: "bold" } : { color: readableTextColor(color) },
         children: ringsLeft > 0 ? node.children.map(child => toDatum(child, coloring, ringsLeft - 1, false)) : []
     }
 }
