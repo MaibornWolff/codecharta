@@ -8,7 +8,7 @@ export interface ChangelogCategory {
     changes: string
 }
 
-const CHANGELOG_CATEGORIES = ["Added 🚀", "Fixed 🐞", "Changed", "Removed 🗑", "Chore 👨‍💻 👩‍💻"]
+const CHANGELOG_CATEGORIES = ["Added", "Fixed", "Changed", "Removed", "Chore"]
 
 @Injectable({ providedIn: "root" })
 export class ChangelogParserService {
@@ -32,7 +32,7 @@ export class ChangelogParserService {
         const categories: ChangelogCategory[] = []
 
         for (const title of CHANGELOG_CATEGORIES) {
-            const titlePattern = new RegExp(`<h3>${title}</h3>`)
+            const titlePattern = new RegExp(String.raw`<h3>${title}\b[^<]*</h3>`)
             const titleIndexes = this.findAllIndexes(lines, titlePattern)
 
             const changes: string[] = []

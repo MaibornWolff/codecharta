@@ -47,5 +47,41 @@ describe("ChangelogParserService", () => {
             // Assert
             expect(result.length).toBeGreaterThan(0)
         })
+
+        it("should return no changes when every version in the range has an empty section", () => {
+            // Arrange
+            const previousVersion = "1.77.0"
+            const currentVersion = "1.78.0"
+
+            // Act
+            const result = service.parseChangesBetweenVersions(previousVersion, currentVersion)
+
+            // Assert
+            expect(result).toEqual([])
+        })
+
+        it("should skip an empty version section and keep the changes of the versions below it", () => {
+            // Arrange
+            const previousVersion = "1.76.0"
+            const currentVersion = "1.78.0"
+
+            // Act
+            const result = service.parseChangesBetweenVersions(previousVersion, currentVersion)
+
+            // Assert
+            expect(result.map(category => category.title)).toEqual(["Fixed", "Chore"])
+        })
+
+        it("should recognise a category heading written without its emoji", () => {
+            // Arrange
+            const previousVersion = "1.75.0"
+            const currentVersion = "1.76.0"
+
+            // Act
+            const result = service.parseChangesBetweenVersions(previousVersion, currentVersion)
+
+            // Assert
+            expect(result.find(category => category.title === "Removed")?.changes).toContain("<li>14</li>")
+        })
     })
 })

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **The explorer floats over the view**: resizing, collapsing or expanding the explorer no longer shifts the settings bar or redraws the word cloud.
 
+### Fixed 🐞
+
+- **Release notes after an update**: the "What's new" dialog lists every change since your last visit, removals included, stays closed when there are none, and links to the full release notes on GitHub.
+
 ## [2.5.1] - 2026-09-21
 
 ### Changed
