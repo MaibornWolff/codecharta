@@ -5,7 +5,7 @@ import { ExplorerMode, FILES_EXPLORER_MODE } from "../../explorerModes"
 import { provideExplorerPortsMock } from "../../explorerPorts.mocks"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
 import { ExplorerModeService } from "../../services/explorerMode.service"
-import { EXPLORER_DEFAULT_WIDTH, EXPLORER_WIDTH_CSS_VARIABLE, ExplorerWidthService } from "../../services/explorerWidth.service"
+import { EXPLORER_DEFAULT_WIDTH, ExplorerWidthService } from "../../services/explorerWidth.service"
 import { COLLAPSED_STRIP_WIDTH_PX, SidebarExplorerComponent } from "./sidebarExplorer.component"
 
 const WORDS_MODE: ExplorerMode = {
@@ -147,27 +147,6 @@ describe("SidebarExplorerComponent", () => {
 
         // Assert
         expect(host.style.width).toBe(`${EXPLORER_DEFAULT_WIDTH}px`)
-    })
-
-    it("should publish its expanded footprint so the floating bars center clear of the sidebar", async () => {
-        // Arrange & Act
-        await render(SidebarExplorerComponent)
-
-        // Assert
-        expect(document.documentElement.style.getPropertyValue(EXPLORER_WIDTH_CSS_VARIABLE)).toBe(`${EXPLORER_DEFAULT_WIDTH}px`)
-    })
-
-    it("should publish a zero footprint when collapsed so a bar can span the full width", async () => {
-        // Arrange
-        const { detectChanges } = await render(SidebarExplorerComponent)
-        const collapseService = TestBed.inject(ExplorerCollapseService)
-
-        // Act
-        collapseService.toggle()
-        detectChanges()
-
-        // Assert — a collapsed explorer is a short top strip that overlaps nothing at the viewport bottom
-        expect(document.documentElement.style.getPropertyValue(EXPLORER_WIDTH_CSS_VARIABLE)).toBe("0px")
     })
 
     it("should resize the explorer when dragging the resize handle", async () => {

@@ -23,14 +23,15 @@ const SCRIPTED_SHAPE_FILE = "./app/codeCharta/resources/shape_mask_with_script.s
 // enough to survive a row's worth of chrome moving in or out of the panel.
 const MOST_ROWS_A_WINDOW_RENDERS = 40
 
-/** The cloud fills its centre and leaves the corners bare, so the top left corner is empty canvas.
- * The toolbox sits in the opposite corner, out of the way. */
+/** The cloud fills its centre and leaves the corners bare, so its top left is empty canvas. The
+ * explorer floats over that corner, so the click lands just beside the explorer instead. */
 async function clickBesideEveryWord(page: Page) {
     const cloud = await page.locator("cc-word-cloud canvas").boundingBox()
-    if (!cloud) {
+    const explorer = await page.locator("cc-sidebar-explorer").boundingBox()
+    if (!cloud || !explorer) {
         throw new Error("The word cloud has not been laid out")
     }
-    await page.mouse.click(cloud.x + 4, cloud.y + 4)
+    await page.mouse.click(explorer.x + explorer.width + 4, cloud.y + 4)
 }
 
 /** The cloud lays its largest word out at the centre, which is the only word a test can aim at. */
