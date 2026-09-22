@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
+import { map } from "rxjs"
 import { SCREENSHOT_CAPTURE, ScreenshotButtonComponent, SunburstScreenshotService } from "../../../features/screenshot/facade"
 import { CcState } from "../../../model/codeCharta.model"
 import {
@@ -12,8 +13,17 @@ import {
     VISIBLE_RING_COUNT
 } from "../../../renderer/sunburst/sunburst.facade"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
-import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setRightClickedNodeData, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import {
+    currentFocusedNodePathSelector,
+    hoveredNodeIdSelector,
+    selectedBuildingIdSelector
+} from "../../../stores/sharedView/sharedView.read.facade"
+import {
+    setHoveredNodeId,
+    setRightClickedNodeData,
+    setSelectedBuildingId,
+    unfocusNode
+} from "../../../stores/sharedView/sharedView.write.facade"
 import {
     BAR_GAP_PX,
     BOTTOM_BAR_HEIGHT_CSS_VARIABLE,
@@ -54,6 +64,7 @@ export class MetricsSunburstComponent {
     protected readonly isDeltaState = toSignal(this.store.select(isDeltaStateSelector), { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
     private readonly selectedPath = toSignal(this.store.select(selectedBuildingIdSelector), { requireSync: true })
+    protected readonly isFocused = toSignal(this.store.select(currentFocusedNodePathSelector).pipe(map(Boolean)), { requireSync: true })
 
     private readonly requestedCentrePath = signal<string | null>(null)
 
@@ -93,6 +104,10 @@ export class MetricsSunburstComponent {
                 value: { nodeId: path, xPositionOfRightClickEvent: clientX, yPositionOfRightClickEvent: clientY, origin: "sunburst" }
             })
         )
+    }
+
+    protected unfocus(): void {
+        this.store.dispatch(unfocusNode())
     }
 
     protected hover(path: string | null): void {

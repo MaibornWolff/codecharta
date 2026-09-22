@@ -17,8 +17,17 @@ import {
 } from "../../../renderer/sunburst/testing/sunburstChart.stub"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
-import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setRightClickedNodeData, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import {
+    currentFocusedNodePathSelector,
+    hoveredNodeIdSelector,
+    selectedBuildingIdSelector
+} from "../../../stores/sharedView/sharedView.read.facade"
+import {
+    setHoveredNodeId,
+    setRightClickedNodeData,
+    setSelectedBuildingId,
+    unfocusNode
+} from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsSunburstComponent } from "./metricsSunburst.component"
 import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
@@ -32,9 +41,10 @@ interface Setup {
     tree?: SunburstNode | null
     selectedPath?: string | null
     isDeltaState?: boolean
+    focusedNodePath?: string
 }
 
-async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }: Setup = {}) {
+async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, focusedNodePath }: Setup = {}) {
     const rendered = await render(MetricsSunburstComponent, {
         providers: [
             provideMockStore({
@@ -45,7 +55,8 @@ async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }:
                     { selector: sunburstColoringSelector, value: TEST_COLORING },
                     { selector: hoveredNodeIdSelector, value: null },
                     { selector: selectedBuildingIdSelector, value: selectedPath },
-                    { selector: isDeltaStateSelector, value: isDeltaState }
+                    { selector: isDeltaStateSelector, value: isDeltaState },
+                    { selector: currentFocusedNodePathSelector, value: focusedNodePath }
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
@@ -245,6 +256,25 @@ describe("MetricsSunburstComponent", () => {
 
         // Assert
         expect(screen.getByRole("status").textContent).toContain("no files")
+    })
+
+    it("should offer a way out of a focus that leaves nothing to show", async () => {
+        // Arrange
+        const { store } = await setup({ tree: null, focusedNodePath: "/root/src/b.ts" })
+
+        // Act
+        screen.getByRole("button", { name: "Unfocus" }).click()
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(unfocusNode())
+    })
+
+    it("should not offer to unfocus when nothing is focused", async () => {
+        // Act
+        await setup({ tree: null })
+
+        // Assert
+        expect(screen.queryByRole("button", { name: "Unfocus" })).toBeNull()
     })
 
     it("should span the whole width so opening the explorer or inspector does not move it", async () => {

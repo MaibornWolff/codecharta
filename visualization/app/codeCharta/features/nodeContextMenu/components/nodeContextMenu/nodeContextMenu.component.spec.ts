@@ -151,6 +151,15 @@ describe("nodeContextMenu component", () => {
         expect(document.querySelector("cc-mark-folder-row")).toBe(null)
     })
 
+    it("should not offer to focus a file while the sunburst is shown, which cannot centre on one", async () => {
+        // Arrange & Act
+        await renderMenu({ node: fileNode, origin: "sunburst", isSunburst: true })
+
+        // Assert
+        expect(screen.queryByText("Focus")).toBe(null)
+        expect(screen.getByText("Exclude")).not.toBe(null)
+    })
+
     it("should offer Show in Explorer for a right-click in the sunburst", async () => {
         // Arrange & Act
         await renderMenu({ origin: "sunburst", isSunburst: true })

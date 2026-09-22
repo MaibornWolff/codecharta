@@ -24,6 +24,9 @@
     <div class="flex h-full items-center justify-center p-4">
         <div class="alert max-w-md" role="status">
             <span>There are no files with an area to show.</span>
+            @if (isFocused()) {
+                <button type="button" class="btn btn-sm" (click)="unfocus()">Unfocus</button>
+            }
         </div>
     </div>
 }
