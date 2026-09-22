@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.5.3] - 2026-09-22
+
 ### Changed
 
 - **The explorer floats over the view**: resizing, collapsing or expanding the explorer no longer shifts the settings bar or redraws the word cloud.
