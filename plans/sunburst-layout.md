@@ -23,7 +23,7 @@ ECharts sunburst of the folders instead of the 3D map, at most three rings deep,
 - Respects exclude/flatten/focus like the 3D map
 
 ### 3. Sunburst view
-- ECharts sunburst component replacing the 3D canvas; three rings around the current centre
+- ECharts sunburst component replacing the 3D canvas; three rings around the current centre; the sidebars float over it
 - Click a folder: drill in and select it (inspector); click the centre: go up and select the parent
 - Hover syncs with the explorer both ways; labels where they fit, tooltip with path, area and colour value
 - Delta mode shows a notice instead

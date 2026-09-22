@@ -1,11 +1,8 @@
-import { signal } from "@angular/core"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen, waitFor } from "@testing-library/angular"
 import { of } from "rxjs"
 import { GlobalSettingsFacade } from "../../../features/globalSettings/facade"
-import { ExplorerCollapseService, ExplorerWidthService } from "../../../features/sidebarExplorer/facade"
-import { InspectorVisibilityService } from "../../../features/sidebarInspector/facade"
 import { ColorMode } from "../../../model/codeCharta.model"
 import { SunburstNode } from "../../../renderer/sunburst/sunburst.facade"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
@@ -52,17 +49,9 @@ interface Setup {
     tree?: SunburstNode | null
     selectedPath?: string | null
     isDeltaState?: boolean
-    isExplorerCollapsed?: boolean
-    isInspectorVisible?: boolean
 }
 
-async function setup({
-    tree = FOLDERS,
-    selectedPath = null,
-    isDeltaState = false,
-    isExplorerCollapsed = false,
-    isInspectorVisible = false
-}: Setup = {}) {
+async function setup({ tree = FOLDERS, selectedPath = null, isDeltaState = false }: Setup = {}) {
     const rendered = await render(MetricsSunburstComponent, {
         providers: [
             provideMockStore({
@@ -87,9 +76,6 @@ async function setup({
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
             { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } },
-            { provide: ExplorerCollapseService, useValue: { isCollapsed: signal(isExplorerCollapsed) } },
-            { provide: ExplorerWidthService, useValue: { width: signal(300) } },
-            { provide: InspectorVisibilityService, useValue: { isVisible: signal(isInspectorVisible) } },
             { provide: GlobalSettingsFacade, useValue: { screenshotToClipboardEnabled$: () => of(false) } }
         ]
     })
@@ -277,23 +263,14 @@ describe("MetricsSunburstComponent", () => {
         expect(screen.getByRole("status").textContent).toContain("no files")
     })
 
-    it("should keep clear of the open explorer and inspector", async () => {
+    it("should span the whole width so opening the explorer or inspector does not move it", async () => {
         // Act
-        const { fixture } = await setup({ isInspectorVisible: true })
+        const { fixture } = await setup()
 
         // Assert
         const host: HTMLElement = fixture.nativeElement
-        expect(host.style.left).toBe("300px")
-        expect(host.style.right).toBe("var(--cc-inspector-width)")
-    })
-
-    it("should use the full width while the sidebars are closed", async () => {
-        // Act
-        const { fixture } = await setup({ isExplorerCollapsed: true })
-
-        // Assert
-        const host: HTMLElement = fixture.nativeElement
-        expect(host.style.left).toBe("0px")
-        expect(host.style.right).toBe("0px")
+        expect(host.classList).toContain("inset-x-0")
+        expect(host.style.left).toBe("")
+        expect(host.style.right).toBe("")
     })
 })

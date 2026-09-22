@@ -2,8 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
 import { SCREENSHOT_CAPTURE, ScreenshotButtonComponent, SunburstScreenshotService } from "../../../features/screenshot/facade"
-import { ExplorerCollapseService, ExplorerWidthService } from "../../../features/sidebarExplorer/facade"
-import { InspectorVisibilityService } from "../../../features/sidebarInspector/facade"
 import { CcState } from "../../../model/codeCharta.model"
 import {
     findClosestFolder,
@@ -26,17 +24,12 @@ import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: SunburstScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
-        class: "fixed z-0 top-[var(--cc-bars-height,49px)] bottom-[calc(var(--cc-bottom-bar-height,32px)+var(--cc-file-extension-bar-height,17px)+var(--cc-metrics-bar-height,0px)+12px)]",
-        "[class.hidden]": "isLoadingFile()",
-        "[style.left.px]": "leftInset()",
-        "[style.right]": "rightInset()"
+        class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)] bottom-[calc(var(--cc-bottom-bar-height,32px)+var(--cc-file-extension-bar-height,17px)+var(--cc-metrics-bar-height,0px)+12px)]",
+        "[class.hidden]": "isLoadingFile()"
     }
 })
 export class MetricsSunburstComponent {
     private readonly store = inject<Store<CcState>>(Store)
-    private readonly explorerCollapseService = inject(ExplorerCollapseService)
-    private readonly explorerWidthService = inject(ExplorerWidthService)
-    private readonly inspectorVisibilityService = inject(InspectorVisibilityService)
 
     protected readonly tree = toSignal(this.store.select(sunburstTreeSelector), { requireSync: true })
     protected readonly metrics = toSignal(this.store.select(sunburstMetricsSelector), { requireSync: true })
@@ -56,9 +49,6 @@ export class MetricsSunburstComponent {
         }
         return requestedCentrePath === null ? tree.path : findClosestFolder(tree, requestedCentrePath).path
     })
-
-    protected readonly leftInset = computed(() => (this.explorerCollapseService.isCollapsed() ? 0 : this.explorerWidthService.width()))
-    protected readonly rightInset = computed(() => (this.inspectorVisibilityService.isVisible() ? "var(--cc-inspector-width)" : "0px"))
 
     constructor() {
         effect(() => this.centreOnTheSelection())
