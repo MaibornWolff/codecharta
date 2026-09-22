@@ -13,10 +13,16 @@ export interface SunburstChartHandlers {
     onFileClicked: (path: string) => void
     onCentreClicked: () => void
     onNodeHovered: (path: string | null) => void
+    onNodeRightClicked: (path: string, clientX: number, clientY: number) => void
 }
 
 interface EchartsSegmentEvent {
     data?: SunburstDatum
+    event?: { event?: MouseEvent }
+}
+
+function suppressBrowserMenu(event: Event): void {
+    event.preventDefault()
 }
 
 export class SunburstChartHost {
@@ -47,6 +53,8 @@ export class SunburstChartHost {
         this.chart.on("click", (event: unknown) => this.reportClick(event as EchartsSegmentEvent))
         this.chart.on("mouseover", (event: unknown) => this.handlers.onNodeHovered((event as EchartsSegmentEvent).data?.name ?? null))
         this.chart.on("mouseout", () => this.handlers.onNodeHovered(null))
+        this.chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as EchartsSegmentEvent))
+        container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
         this.measureContainer()
         this.resizeObserver = new ResizeObserver(() => this.measureContainer())
@@ -68,6 +76,7 @@ export class SunburstChartHost {
     }
 
     dispose(): void {
+        this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
         this.resizeObserver?.disconnect()
         this.resizeObserver = undefined
         if (this.chart) {
@@ -88,6 +97,13 @@ export class SunburstChartHost {
             this.handlers.onFileClicked(data.name)
         } else {
             this.handlers.onFolderClicked(data.name)
+        }
+    }
+
+    private reportRightClick({ data, event }: EchartsSegmentEvent): void {
+        const mouseEvent = event?.event
+        if (data && mouseEvent) {
+            this.handlers.onNodeRightClicked(data.name, mouseEvent.clientX, mouseEvent.clientY)
         }
     }
 

@@ -62,7 +62,7 @@ describe("nodeContextMenu component", () => {
 
     type RenderMenuOptions = {
         node?: CodeMapNode | null
-        origin?: "codeMap" | "explorer"
+        origin?: "codeMap" | "explorer" | "sunburst"
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
@@ -130,6 +130,18 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Flatten")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
         expect(container.querySelector(".colorButton")).toBe(null)
+    })
+
+    it("should leave out focus, highlight and flatten when the right-click came from the sunburst", async () => {
+        // Arrange & Act
+        await renderMenu({ origin: "sunburst" })
+
+        // Assert
+        expect(screen.getByText("Show in Explorer")).not.toBe(null)
+        expect(screen.getByText("Exclude")).not.toBe(null)
+        expect(screen.queryByText("Focus")).toBe(null)
+        expect(screen.queryByText("Keep Highlight")).toBe(null)
+        expect(screen.queryByText("Flatten")).toBe(null)
     })
 
     it("should hide the show-in-explorer entry when the right-click came from the explorer", async () => {

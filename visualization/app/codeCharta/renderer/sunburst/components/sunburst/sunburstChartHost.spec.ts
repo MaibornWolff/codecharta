@@ -47,7 +47,13 @@ describe("SunburstChartHost", () => {
         chartEventHandlers.clear()
         globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
         registry = new SunburstChartRegistry()
-        handlers = { onFolderClicked: jest.fn(), onFileClicked: jest.fn(), onCentreClicked: jest.fn(), onNodeHovered: jest.fn() }
+        handlers = {
+            onFolderClicked: jest.fn(),
+            onFileClicked: jest.fn(),
+            onCentreClicked: jest.fn(),
+            onNodeHovered: jest.fn(),
+            onNodeRightClicked: jest.fn()
+        }
         host = new SunburstChartHost(registry, handlers)
     })
 
@@ -112,6 +118,23 @@ describe("SunburstChartHost", () => {
         // Assert
         expect(handlers.onFileClicked).toHaveBeenCalledWith("/root/a.ts")
         expect(handlers.onFolderClicked).not.toHaveBeenCalled()
+    })
+
+    it("should report a right click on a segment with where it happened, instead of the browser's menu", () => {
+        // Arrange
+        const container = containerOfSize(800, 600)
+        host.attachTo(container)
+        const browserMenu = new MouseEvent("contextmenu", { cancelable: true })
+
+        // Act
+        chartEventHandlers.get("contextmenu")({ data: { name: "/root/src" }, event: { event: { clientX: 12, clientY: 34 } } })
+        chartEventHandlers.get("contextmenu")({ event: { event: { clientX: 1, clientY: 2 } } })
+        container.dispatchEvent(browserMenu)
+
+        // Assert
+        expect(handlers.onNodeRightClicked).toHaveBeenCalledTimes(1)
+        expect(handlers.onNodeRightClicked).toHaveBeenCalledWith("/root/src", 12, 34)
+        expect(browserMenu.defaultPrevented).toBe(true)
     })
 
     it("should ignore clicks that hit no segment", () => {

@@ -16,6 +16,12 @@ import { buildSunburstOption, VISIBLE_RING_COUNT } from "../../util/sunburstOpti
 import { findClosestNode, findFolder, isInside, SunburstMetrics, SunburstNode } from "../../util/sunburstTree"
 import { SunburstChartHost } from "./sunburstChartHost"
 
+export interface RightClickedNode {
+    path: string
+    clientX: number
+    clientY: number
+}
+
 @Component({
     selector: "cc-sunburst",
     templateUrl: "./sunburst.component.html",
@@ -33,6 +39,7 @@ export class SunburstComponent implements OnDestroy {
     readonly fileClicked = output<string>()
     readonly centreClicked = output<void>()
     readonly nodeHovered = output<string | null>()
+    readonly nodeRightClicked = output<RightClickedNode>()
 
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
 
@@ -40,7 +47,8 @@ export class SunburstComponent implements OnDestroy {
         onFolderClicked: path => this.folderClicked.emit(path),
         onFileClicked: path => this.fileClicked.emit(path),
         onCentreClicked: () => this.centreClicked.emit(),
-        onNodeHovered: path => this.nodeHovered.emit(path)
+        onNodeHovered: path => this.nodeHovered.emit(path),
+        onNodeRightClicked: (path, clientX, clientY) => this.nodeRightClicked.emit({ path, clientX, clientY })
     })
 
     private readonly centre = computed(() => findFolder(this.tree(), this.centrePath()) ?? this.tree())

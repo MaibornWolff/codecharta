@@ -74,7 +74,8 @@ export class NodeContextMenuComponent {
     })
 
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
-    readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin === "codeMap")
+    readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin !== "explorer")
+    readonly isOpenedFromSunburst = computed(() => this.rightClickedNodeData()?.origin === "sunburst")
     readonly displayPath = computed(() => {
         const node = this.menuNode()
         if (!node) {

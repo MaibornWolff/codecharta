@@ -12,7 +12,7 @@ import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileS
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import { setHoveredNodeId, setRightClickedNodeData, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsSunburstComponent } from "./metricsSunburst.component"
 import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
@@ -230,6 +230,21 @@ describe("MetricsSunburstComponent", () => {
 
         // Assert
         expect(store.dispatch).not.toHaveBeenCalled()
+    })
+
+    it("should open the node context menu for a right-clicked node, marked as coming from the sunburst", async () => {
+        // Arrange
+        const { store } = await setup()
+
+        // Act
+        chartEventHandlers.get("contextmenu")({ data: { name: "/root/src" }, event: { event: { clientX: 7, clientY: 8 } } })
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(
+            setRightClickedNodeData({
+                value: { nodeId: "/root/src", xPositionOfRightClickEvent: 7, yPositionOfRightClickEvent: 8, origin: "sunburst" }
+            })
+        )
     })
 
     it("should share the hovered folder with the rest of the app", async () => {

@@ -10,12 +10,13 @@ import {
     findClosestNode,
     findFolder,
     parentPath,
+    type RightClickedNode,
     SunburstComponent,
     VISIBLE_RING_COUNT
 } from "../../../renderer/sunburst/sunburst.facade"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { hoveredNodeIdSelector, selectedBuildingIdSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
+import { setHoveredNodeId, setRightClickedNodeData, setSelectedBuildingId } from "../../../stores/sharedView/sharedView.write.facade"
 import { sunburstColoringSelector, sunburstMetricsSelector, sunburstTreeSelector } from "./metricsSunburst.selector"
 
 @Component({
@@ -78,6 +79,14 @@ export class MetricsSunburstComponent {
 
     protected selectFile(path: string): void {
         this.store.dispatch(setSelectedBuildingId({ value: path }))
+    }
+
+    protected openContextMenu({ path, clientX, clientY }: RightClickedNode): void {
+        this.store.dispatch(
+            setRightClickedNodeData({
+                value: { nodeId: path, xPositionOfRightClickEvent: clientX, yPositionOfRightClickEvent: clientY, origin: "sunburst" }
+            })
+        )
     }
 
     protected hover(path: string | null): void {

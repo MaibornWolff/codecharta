@@ -173,6 +173,19 @@ describe("SunburstComponent", () => {
         expect(fileClicked).toHaveBeenCalledWith("/root/a.ts")
     })
 
+    it("should report a right-clicked node with where it happened", async () => {
+        // Arrange
+        const { fixture } = await renderSunburst()
+        const nodeRightClicked = jest.fn()
+        fixture.componentInstance.nodeRightClicked.subscribe(nodeRightClicked)
+
+        // Act
+        chartEventHandlers.get("contextmenu")({ data: { name: "/root/src" }, event: { event: { clientX: 5, clientY: 6 } } })
+
+        // Assert
+        expect(nodeRightClicked).toHaveBeenCalledWith({ path: "/root/src", clientX: 5, clientY: 6 })
+    })
+
     it("should dispose the chart when destroyed", async () => {
         // Arrange
         const { fixture } = await renderSunburst()

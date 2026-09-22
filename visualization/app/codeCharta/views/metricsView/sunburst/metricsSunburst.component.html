@@ -15,6 +15,7 @@
         (centreClicked)="goUp()"
         (fileClicked)="selectFile($event)"
         (nodeHovered)="hover($event)"
+        (nodeRightClicked)="openContextMenu($event)"
     ></cc-sunburst>
     <div class="join absolute right-[10px] top-[10px] rounded bg-base-100 shadow-md">
         <cc-toolbox-screenshot-button view="metrics"></cc-toolbox-screenshot-button>
