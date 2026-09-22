@@ -16,6 +16,7 @@ gradlew.bat text eol=crlf
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
+*.gif binary
 *.icns binary
 *.ico binary
 *.eot binary
