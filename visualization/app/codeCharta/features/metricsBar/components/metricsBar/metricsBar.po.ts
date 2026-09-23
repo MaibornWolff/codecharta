@@ -68,4 +68,20 @@ export class MetricsBarPageObject {
         await this.pickLayout(layout)
         await this.page.keyboard.press("Escape")
     }
+
+    foldersCard(): Locator {
+        return this.page.getByTestId("metric-segment-folders")
+    }
+
+    async pickFolderValue(value: string) {
+        await clickButtonOnPageElement(this.page, "button[popovertarget='metric-select-popover-folders']")
+        await this.page.getByTestId("folder-value-popover").waitFor({ state: "visible", timeout: 10_000 })
+        await this.page.getByTestId(`folder-value-${value}`).click()
+    }
+
+    async setFolderStyle(style: "tinted" | "neutral") {
+        await this.page.getByTestId("metric-segment-folders-cog").click()
+        await this.page.getByTestId("folder-style-popover").waitFor({ state: "visible", timeout: 10_000 })
+        await this.page.getByTestId(`folder-style-${style}`).click()
+    }
 }

@@ -1,5 +1,12 @@
 import { expect, test } from "@playwright/test"
-import { clearIndexedDB, goto, readPersistedLayoutAlgorithm, withDiskBackedPage } from "../../../../../playwright.helper"
+import {
+    clearIndexedDB,
+    goto,
+    readPersistedLayoutAlgorithm,
+    readPersistedPreference,
+    withDiskBackedPage
+} from "../../../../../playwright.helper"
+import { MetricsBarPageObject } from "../../../metricsBar/components/metricsBar/metricsBar.po"
 import { ExplorerTreeLevelPageObject } from "../../../sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.po"
 import { SidebarInspectorPageObject } from "../../../sidebarInspector/components/sidebarInspector/sidebarInspector.po"
 import { RadialMapPageObject } from "./radialMap.po"
@@ -7,6 +14,8 @@ import { RadialMapPageObject } from "./radialMap.po"
 const INNER_RING = 0.35
 const CENTRE = 0
 const JUST_PAST_THE_TOP = 15
+const NEUTRAL_FOLDER_GREY = "#d9dce1"
+const MANY_PIXELS = 1000
 
 test.describe("Sunburst layout", () => {
     test.beforeEach(async ({ page }) => {
@@ -102,6 +111,52 @@ test.describe("Sunburst layout", () => {
         // Assert
         await expect(sunburst.chart()).toHaveCount(0)
         await expect(page.locator("#codeMap")).toBeVisible()
+    })
+
+    test("should recolour the folders from the Folders card", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        const metricsBar = new MetricsBarPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await expect(metricsBar.foldersCard()).toContainText("max")
+        await expect.poll(() => sunburst.countPixelsOfColor(NEUTRAL_FOLDER_GREY)).toBe(0)
+        const tintedByMax = await sunburst.pixelFingerprint()
+
+        // Act
+        await metricsBar.pickFolderValue("sum")
+
+        // Assert
+        await expect(metricsBar.foldersCard()).toContainText("sum")
+        await expect.poll(() => sunburst.pixelFingerprint()).not.toBe(tintedByMax)
+
+        // Act
+        await metricsBar.setFolderStyle("neutral")
+
+        // Assert
+        await expect(metricsBar.foldersCard()).toContainText("neutral")
+        await expect.poll(() => sunburst.countPixelsOfColor(NEUTRAL_FOLDER_GREY)).toBeGreaterThan(MANY_PIXELS)
+    })
+
+    test("should keep the folder colours after a reload", async () => {
+        test.setTimeout(60_000)
+        await withDiskBackedPage(async page => {
+            // Arrange
+            const sunburst = new RadialMapPageObject(page)
+            const metricsBar = new MetricsBarPageObject(page)
+            await goto(page)
+            await sunburst.switchLayoutTo("Sunburst")
+            await metricsBar.pickFolderValue("median")
+            await metricsBar.setFolderStyle("neutral")
+            await expect.poll(() => readPersistedPreference(page, "radialFolderStyle"), { timeout: 30_000 }).toBe("neutral")
+
+            // Act
+            await goto(page)
+
+            // Assert
+            await expect(metricsBar.foldersCard()).toContainText("median")
+            await expect(metricsBar.foldersCard()).toContainText("neutral")
+            await expect.poll(() => sunburst.countPixelsOfColor(NEUTRAL_FOLDER_GREY)).toBeGreaterThan(MANY_PIXELS)
+        })
     })
 
     test("should come back as a sunburst after a reload and still hand the map back to 3D", async () => {

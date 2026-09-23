@@ -102,6 +102,10 @@ export function readPersistedLayoutAlgorithm(page: Page): Promise<string | undef
     return readPersistedCcState(page).then(({ settings }) => settings?.mapState?.layoutAlgorithm)
 }
 
+export function readPersistedPreference(page: Page, key: string): Promise<unknown> {
+    return readPersistedCcState(page).then(({ settings }) => settings?.preferences?.[key])
+}
+
 function readPersistedCcState(page: Page): Promise<PersistedCcState> {
     return page.evaluate(
         () =>
