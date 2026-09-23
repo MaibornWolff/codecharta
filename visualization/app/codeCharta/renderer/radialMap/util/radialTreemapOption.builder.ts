@@ -1,8 +1,10 @@
+import { layOutGlyphsAlongArc } from "./arcGlyphs"
 import { CENTRE_RADIUS, DIMMED_OPACITY, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter } from "./radialTooltip"
 import { AnnularSector, layOutRadialTreemap, MAX_BAND_COUNT, PlacedSector, RadialTreemapPlacement } from "./radialTreemapLayout"
+import { measureGlyphsIn } from "./textMeasure"
 
 const TWELVE_O_CLOCK = -Math.PI / 2
 const QUARTER_TURN = Math.PI / 2
@@ -45,6 +47,15 @@ interface LabelPlacement {
     rotation: number
     lengthPx: number
     heightPx: number
+}
+
+interface RingInPixels {
+    midAngle: number
+    innerRadiusPx: number
+    midRadiusPx: number
+    angularSpan: number
+    arcLengthPx: number
+    depthPx: number
 }
 
 const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
@@ -127,24 +138,70 @@ function drawLabel(sector: PlacedSector, datum: RadialTreemapDatum, frame: Frame
     if (sector.role === "outline") {
         return null
     }
-    const placement = sector.role === "centre" ? centreLabelPlacement(frame) : labelPlacementIn(sector, frame)
+    if (sector.role === "centre") {
+        return drawStraightLabel(centreLabelPlacement(frame), datum)
+    }
+    const ring = ringInPixels(sector, frame)
+    return ring.arcLengthPx >= ring.depthPx
+        ? drawCurvedLabel(ring, datum, frame)
+        : drawStraightLabel(radialLabelPlacement(ring, frame), datum)
+}
+
+function ringInPixels(sector: AnnularSector, frame: Frame): RingInPixels {
+    const innerRadiusPx = sector.innerRadius * frame.radiusPx
+    const outerRadiusPx = sector.outerRadius * frame.radiusPx
+    const midRadiusPx = (innerRadiusPx + outerRadiusPx) / 2
+    const angularSpan = sector.endAngle - sector.startAngle
+    return {
+        midAngle: TWELVE_O_CLOCK + (sector.startAngle + sector.endAngle) / 2,
+        innerRadiusPx,
+        midRadiusPx,
+        angularSpan,
+        arcLengthPx: angularSpan * midRadiusPx,
+        depthPx: outerRadiusPx - innerRadiusPx
+    }
+}
+
+function drawStraightLabel(placement: LabelPlacement, datum: RadialTreemapDatum) {
     if (placement.lengthPx < MIN_LABEL_LENGTH_PX || placement.heightPx < LABEL_LINE_HEIGHT_PX) {
         return null
     }
     const { x, y, rotation, lengthPx } = placement
-    return { type: "text", x, y, rotation, silent: true, z2: Z_LABEL, style: labelStyle(datum, lengthPx), blur: dimmed() }
+    const style = { ...glyphStyle(datum), text: datum.displayName, width: lengthPx - LABEL_PADDING_PX, overflow: "truncate" }
+    return { type: "text", x, y, rotation, silent: true, z2: Z_LABEL, style, blur: dimmed() }
 }
 
-function labelStyle(datum: RadialTreemapDatum, lengthPx: number) {
+function drawCurvedLabel(ring: RingInPixels, datum: RadialTreemapDatum, frame: Frame) {
+    const lengthPx = ring.arcLengthPx - LABEL_PADDING_PX
+    if (lengthPx < MIN_LABEL_LENGTH_PX || ring.depthPx < LABEL_LINE_HEIGHT_PX) {
+        return null
+    }
+    const style = glyphStyle(datum)
+    const arc = { centreX: frame.centreX, centreY: frame.centreY, radiusPx: ring.midRadiusPx, midAngle: ring.midAngle, lengthPx }
+    const glyphs = layOutGlyphsAlongArc(datum.displayName, arc, measureGlyphsIn(style.fontWeight, style.fontSize))
+    if (glyphs.length === 0) {
+        return null
+    }
+    const children = glyphs.map(({ glyph, x, y, rotation }) => ({
+        type: "text",
+        x,
+        y,
+        rotation,
+        silent: true,
+        z2: Z_LABEL,
+        style: { ...style, text: glyph },
+        blur: dimmed()
+    }))
+    return { type: "group", ...UNTRANSFORMED, children }
+}
+
+function glyphStyle(datum: RadialTreemapDatum) {
     return {
-        text: datum.displayName,
         fill: readableTextColor(datum.color),
         fontSize: LABEL_FONT_SIZE_PX,
         fontWeight: datum.isCentre || datum.isFile ? "bold" : "normal",
         align: "center",
-        verticalAlign: "middle",
-        width: lengthPx - LABEL_PADDING_PX,
-        overflow: "truncate"
+        verticalAlign: "middle"
     }
 }
 
@@ -153,29 +210,15 @@ function centreLabelPlacement(frame: Frame): LabelPlacement {
     return { x: frame.centreX, y: frame.centreY, rotation: 0, lengthPx: diameterPx, heightPx: diameterPx }
 }
 
-// Runs the name along the arc when the piece is wider than deep, along the radius otherwise, and keeps it upright.
-function labelPlacementIn(sector: AnnularSector, frame: Frame): LabelPlacement {
-    const midAngle = TWELVE_O_CLOCK + (sector.startAngle + sector.endAngle) / 2
-    const innerRadiusPx = sector.innerRadius * frame.radiusPx
-    const outerRadiusPx = sector.outerRadius * frame.radiusPx
-    const midRadiusPx = (innerRadiusPx + outerRadiusPx) / 2
-    const angularSpan = sector.endAngle - sector.startAngle
-    const isAlongTheArc = angularSpan * midRadiusPx >= outerRadiusPx - innerRadiusPx
+// Runs the name outwards along the radius, turned so that it never reads upside down.
+function radialLabelPlacement(ring: RingInPixels, frame: Frame): LabelPlacement {
     return {
-        x: frame.centreX + midRadiusPx * Math.cos(midAngle),
-        y: frame.centreY + midRadiusPx * Math.sin(midAngle),
-        rotation: upright(isAlongTheArc ? QUARTER_TURN - midAngle : -midAngle),
-        ...(isAlongTheArc
-            ? roomAlongTheArc(angularSpan, midRadiusPx, outerRadiusPx - innerRadiusPx, outerRadiusPx)
-            : { lengthPx: outerRadiusPx - innerRadiusPx, heightPx: angularSpan * innerRadiusPx })
+        x: frame.centreX + ring.midRadiusPx * Math.cos(ring.midAngle),
+        y: frame.centreY + ring.midRadiusPx * Math.sin(ring.midAngle),
+        rotation: upright(-ring.midAngle),
+        lengthPx: ring.depthPx,
+        heightPx: ring.angularSpan * ring.innerRadiusPx
     }
-}
-
-// A straight name drifts outwards from the arc towards its ends; it stops where its outer corners reach the rim.
-function roomAlongTheArc(angularSpan: number, midRadiusPx: number, depthPx: number, outerRadiusPx: number) {
-    const outerEdgeOfTextPx = midRadiusPx + LABEL_LINE_HEIGHT_PX / 2
-    const halfChordAtTheRimPx = Math.sqrt(Math.max(0, outerRadiusPx ** 2 - outerEdgeOfTextPx ** 2))
-    return { lengthPx: Math.min(angularSpan * midRadiusPx, 2 * halfChordAtTheRimPx), heightPx: depthPx }
 }
 
 function upright(rotation: number): number {

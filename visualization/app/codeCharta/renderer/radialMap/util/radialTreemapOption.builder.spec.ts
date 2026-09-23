@@ -18,12 +18,21 @@ interface DrawnElement {
     shape?: Record<string, number | boolean>
     style: Record<string, unknown>
     blur?: { style: { opacity: number } }
+    children?: DrawnElement[]
 }
 
 interface DrawnGroup {
     type: string
     focus: string
     children: DrawnElement[]
+}
+
+function leavesOf(elements: DrawnElement[]): DrawnElement[] {
+    return elements.flatMap(element => (element.type === "group" ? leavesOf(element.children) : [element]))
+}
+
+function textsOf(group: DrawnGroup): DrawnElement[] {
+    return leavesOf(group.children).filter(element => element.type === "text")
 }
 
 function inputs(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {}): RadialOptionInputs {
@@ -105,13 +114,13 @@ describe("buildRadialTreemapOption", () => {
         expect(group.type).toBe("group")
         expect(group.focus).toBe("self")
         expect(group.children.length).toBeGreaterThan(1)
-        expect(group.children.every(child => child.blur.style.opacity < 1)).toBe(true)
+        expect(leavesOf(group.children).every(child => child.blur.style.opacity < 1)).toBe(true)
     })
 
     it("should say of every element whether it takes the pointer, as a redraw keeps what an element was told before", () => {
         // Act
         const { data, drawIndex } = drawn(TREE)
-        const elements = data.flatMap((_, dataIndex) => drawIndex(dataIndex).children)
+        const elements = data.flatMap((_, dataIndex) => leavesOf(drawIndex(dataIndex).children))
 
         // Assert
         expect(elements.every(element => typeof element.silent === "boolean")).toBe(true)
@@ -170,8 +179,8 @@ describe("buildRadialTreemapOption", () => {
         const { drawItem } = drawn(centre)
 
         // Assert
-        expect(drawItem("/root/tiny.ts").children.some(child => child.type === "text")).toBe(false)
-        expect(drawItem("/root/big.ts").children.some(child => child.type === "text")).toBe(true)
+        expect(textsOf(drawItem("/root/tiny.ts"))).toHaveLength(0)
+        expect(textsOf(drawItem("/root/big.ts")).length).toBeGreaterThan(0)
     })
 
     it("should keep every label upright", () => {
@@ -180,7 +189,7 @@ describe("buildRadialTreemapOption", () => {
 
         // Act
         const { data, drawIndex } = drawn(folderNode("/root", files, { area: 12 }))
-        const labels = data.flatMap((_, dataIndex) => drawIndex(dataIndex).children.filter(child => child.type === "text"))
+        const labels = data.flatMap((_, dataIndex) => textsOf(drawIndex(dataIndex)))
 
         // Assert
         expect(labels.length).toBeGreaterThan(1)
@@ -207,19 +216,35 @@ describe("buildRadialTreemapOption", () => {
         expect(pieces.every(piece => piece.x === 0 && piece.y === 0 && piece.rotation === 0)).toBe(true)
     })
 
-    it("should keep a name running along an arc short enough to stay inside the arc's outer rim", () => {
+    it("should curve a name that runs along an arc, letter by letter on the arc's middle", () => {
         // Arrange
-        const wideFile = fileNode("/root/a-file-that-covers-most-of-the-ring.ts", { area: 90 })
+        const wideFile = fileNode("/root/wide.ts", { area: 90 })
         const centre = folderNode("/root", [wideFile, fileNode("/root/b.ts", { area: 10 })], { area: 100 })
 
         // Act
         const { drawItem } = drawn(centre)
-        const [wedge, label] = drawItem(wideFile.path).children
+        const [wedge, curvedLabel] = drawItem(wideFile.path).children
 
         // Assert
-        const distanceFromCentre = Math.hypot(label.x - (wedge.shape.cx as number), label.y - (wedge.shape.cy as number))
-        const halfLength = (label.style.width as number) / 2
-        expect(Math.hypot(distanceFromCentre, halfLength)).toBeLessThanOrEqual(wedge.shape.r as number)
+        const glyphs = curvedLabel.children
+        const middleRadius = ((wedge.shape.r0 as number) + (wedge.shape.r as number)) / 2
+        expect(curvedLabel).toMatchObject({ type: "group", x: 0, y: 0, rotation: 0 })
+        expect(glyphs.map(glyph => glyph.style.text).join("")).toBe("wide.ts")
+        for (const glyph of glyphs) {
+            expect(Math.hypot(glyph.x - (wedge.shape.cx as number), glyph.y - (wedge.shape.cy as number))).toBeCloseTo(middleRadius)
+        }
+    })
+
+    it("should keep a name that runs along the radius straight", () => {
+        // Arrange
+        const files = Array.from({ length: 16 }, (_, index) => fileNode(`/root/f${index}.ts`, { area: 1 }))
+
+        // Act
+        const { drawItem } = drawn(folderNode("/root", files, { area: 16 }))
+        const [, label] = drawItem("/root/f0.ts").children
+
+        // Assert
+        expect(label).toMatchObject({ type: "text", style: { text: "f0.ts", overflow: "truncate" } })
     })
 
     it("should draw one level deeper than it has bands, as the last band shows its folders' contents", () => {
