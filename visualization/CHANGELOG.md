@@ -7,16 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Radial treemap map layout**: choose "Radial TreeMap" to see one band per folder level around the folder you are in, each folder's slice filled with a treemap of what it contains, and click your way in and out as in the sunburst.
+
 ## [2.6.0] - 2026-09-23
 
 ### Added 🚀
 
 - **Sunburst map layout**: choose "Sunburst" as the map layout to see your folders and files as rings around the folder you are in, sized by the area metric and coloured by the colour metric, and click a folder to step into it or the centre to step back out.
-- **Radial treemap map layout**: choose "Radial TreeMap" to see one band per folder level around the folder you are in, each folder's slice filled with a treemap of what it contains, and click your way in and out as in the sunburst.
 
 ### Changed
 
-- **Layout on the metric bar**: a tab on top of the metric bar names the map layout and switches between all five, with TreeMapStreet's file limit beside them.
+- **Layout on the metric bar**: a tab on top of the metric bar names the map layout and switches between all four, with TreeMapStreet's file limit beside them.
 
 ### Fixed 🐞
 
