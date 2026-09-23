@@ -59,6 +59,25 @@ describe("buildRadialTreemapOption", () => {
         expect(data.filter(datum => datum.isCentre)).toHaveLength(1)
     })
 
+    it("should key each item by the centre as well, so stepping to another folder draws its nodes afresh", () => {
+        // Act
+        const { data } = drawn(TREE)
+        const { data: steppedIn } = drawn(SRC)
+
+        // Assert
+        expect(data.find(datum => datum.name === "/root/src/a.ts").id).not.toBe(steppedIn.find(datum => datum.name === "/root/src/a.ts").id)
+        expect(new Set(data.map(datum => datum.id)).size).toBe(data.length)
+    })
+
+    it("should give every element state options of its own", () => {
+        // Act
+        const { data, drawIndex } = drawn(TREE)
+        const blurStates = data.flatMap((_, dataIndex) => drawIndex(dataIndex).children.map(child => child.blur))
+
+        // Assert
+        expect(new Set(blurStates).size).toBe(blurStates.length)
+    })
+
     it("should tell files from folders, and carry what the tooltip shows", () => {
         // Act
         const { data } = drawn(TREE)
