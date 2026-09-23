@@ -4,7 +4,6 @@ import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.fa
 import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
 import { GlobalSettingsWriteStore } from "../../stores/globalSettings.write.store"
 import { ExternalLinksComponent } from "./externalLinks/externalLinks.component"
-import { MapLayoutSelectionComponent } from "./mapLayoutSelection/mapLayoutSelection.component"
 import { ResetFiltersButtonComponent } from "./resetFiltersButton/resetFiltersButton.component"
 import { ResetMapButtonComponent } from "./resetMapButton/resetMapButton.component"
 import { ResetSettingsButtonComponent } from "./resetSettingsButton/resetSettingsButton.component"
@@ -14,7 +13,6 @@ import { SettingToggleComponent } from "./settingToggle/settingToggle.component"
     selector: "cc-global-configuration-dialog",
     templateUrl: "./globalConfigurationDialog.component.html",
     imports: [
-        MapLayoutSelectionComponent,
         ResetFiltersButtonComponent,
         ResetMapButtonComponent,
         ResetSettingsButtonComponent,

@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test"
+import { MetricsBarPageObject } from "../../../metricsBar/components/metricsBar/metricsBar.po"
 
 export class SunburstMapPageObject {
     constructor(private readonly page: Page) {}
@@ -8,9 +9,7 @@ export class SunburstMapPageObject {
     }
 
     async switchLayoutTo(layout: string) {
-        await this.page.getByTitle("Global Configuration").first().click()
-        await this.page.locator("#mapLayoutSelect").selectOption(layout)
-        await this.page.keyboard.press("Escape")
+        await new MetricsBarPageObject(this.page).switchLayoutTo(layout)
     }
 
     async rightClickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {

@@ -57,6 +57,59 @@ test.describe("MetricsBar", () => {
     })
 })
 
+test.describe("MetricsBar layout tab", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
+    })
+
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
+    })
+
+    test("should switch the map layout and name it on the tab", async ({ page }) => {
+        // Arrange
+        const metricsBar = new MetricsBarPageObject(page)
+        await metricsBar.openLayoutPicker()
+
+        // Act
+        await metricsBar.pickLayout("StreetMap")
+
+        // Assert
+        await expect(metricsBar.layoutTab()).toContainText("StreetMap")
+        await expect(page.locator("[data-testid='metrics-bar-layout-picker'] button[data-layout='StreetMap']")).toHaveAttribute(
+            "aria-pressed",
+            "true"
+        )
+    })
+
+    test("should offer the file limit only while TreeMapStreet is picked", async ({ page }) => {
+        // Arrange
+        const metricsBar = new MetricsBarPageObject(page)
+        await metricsBar.openLayoutPicker()
+        await expect(metricsBar.maxTreeMapFilesInput()).toHaveCount(0)
+
+        // Act
+        await metricsBar.pickLayout("TreeMapStreet")
+
+        // Assert
+        await expect(metricsBar.maxTreeMapFilesInput()).toBeVisible()
+        await expect(metricsBar.maxTreeMapFilesInput()).toHaveValue("100")
+    })
+
+    test("should stay on the bar's top edge without making the bar taller", async ({ page }) => {
+        // Arrange
+        const metricsBar = new MetricsBarPageObject(page)
+        const bar = await boundingBoxOf(page.locator("cc-metrics-bar"))
+
+        // Act
+        const tab = await boundingBoxOf(metricsBar.layoutTab())
+
+        // Assert
+        expect(tab.y + tab.height).toBeCloseTo(bar.y + 1, 0)
+        expect(tab.x).toBeGreaterThan(bar.x)
+    })
+})
+
 test.describe("MetricsBar beside the explorer", () => {
     test.beforeEach(async ({ page }) => {
         await goto(page)

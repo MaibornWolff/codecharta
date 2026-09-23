@@ -1,0 +1,40 @@
+@switch (layout()) {
+    @case (LayoutAlgorithm.StreetMap) {
+        <svg class="w-full h-full" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <path d="M1.5 10h17M10 10v8" stroke-width="2" />
+            <g fill="currentColor" stroke="none">
+                <rect x="2.5" y="4.5" width="3" height="4" rx=".5" />
+                <rect x="6.5" y="2.5" width="3" height="6" rx=".5" />
+                <rect x="11" y="5" width="3" height="3.5" rx=".5" />
+                <rect x="15" y="3.5" width="3" height="5" rx=".5" />
+                <rect x="3" y="11.5" width="5.5" height="3.5" rx=".5" />
+                <rect x="11.5" y="11.5" width="3" height="5.5" rx=".5" />
+                <rect x="15.5" y="11.5" width="2.5" height="3" rx=".5" />
+            </g>
+        </svg>
+    }
+    @case (LayoutAlgorithm.TreeMapStreet) {
+        <svg class="w-full h-full" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+            <path d="M1.5 10h17" stroke-width="2" />
+            <rect x="2.5" y="2.5" width="15" height="6" rx="1" />
+            <path d="M9 2.5v6M13 2.5v6M13 5.5h4.5" />
+            <rect x="2.5" y="11.5" width="7" height="6" rx="1" />
+            <path d="M6 11.5v6" />
+            <rect x="11.5" y="11.5" width="6" height="4" rx="1" />
+        </svg>
+    }
+    @case (LayoutAlgorithm.Sunburst) {
+        <svg class="w-full h-full" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+            <circle cx="10" cy="10" r="2.6" />
+            <circle cx="10" cy="10" r="5.6" />
+            <path d="M10 7.4V4.4M12.3 11.3l2.6 1.5M7.7 11.3l-2.6 1.5" />
+            <path d="M10 1.4a8.6 8.6 0 0 1 8.3 10.8M16.4 15.8a8.6 8.6 0 0 1-9.6 2.2M3.9 16a8.6 8.6 0 0 1-1.6-9.6" stroke-width="1.8" />
+        </svg>
+    }
+    @default {
+        <svg class="w-full h-full" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="15" height="15" rx="1.2" />
+            <path d="M11 2.5v15M2.5 10h8.5M11 12.5h6.5M6.5 10v7.5M14.5 2.5v10" />
+        </svg>
+    }
+}

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState, ColorMode, ColorRange, MapColors, MarkedPackage, Scaling } from "../../../model/codeCharta.model"
+import { CcState, ColorMode, ColorRange, LayoutAlgorithm, MapColors, MarkedPackage, Scaling } from "../../../model/codeCharta.model"
 import {
     invertColorRange,
     invertDeltaColors,
@@ -15,6 +15,7 @@ import {
     setHeightMetric,
     setInvertArea,
     setInvertHeight,
+    setLayoutAlgorithm,
     setMapColors,
     setMargin,
     setScaling,
@@ -23,7 +24,7 @@ import {
     setShowOutgoingEdges,
     toggleEdgeMetricVisible
 } from "../../../stores/mapState/mapState.write.facade"
-import { toggleIsColorMetricLinkedToHeightMetric } from "../../../stores/preferences/preferences.write.facade"
+import { setMaxTreeMapFiles, toggleIsColorMetricLinkedToHeightMetric } from "../../../stores/preferences/preferences.write.facade"
 import { markPackages, unmarkPackage } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable({
@@ -46,6 +47,14 @@ export class MetricsBarWriteStore {
 
     setEdgeMetric(value: string) {
         this.store.dispatch(setEdgeMetric({ value }))
+    }
+
+    setLayoutAlgorithm(value: LayoutAlgorithm) {
+        this.store.dispatch(setLayoutAlgorithm({ value }))
+    }
+
+    setMaxTreeMapFiles(value: number) {
+        this.store.dispatch(setMaxTreeMapFiles({ value }))
     }
 
     setMargin(value: number) {

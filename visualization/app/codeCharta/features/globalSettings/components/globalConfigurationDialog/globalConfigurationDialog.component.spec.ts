@@ -21,9 +21,7 @@ describe("GlobalConfigurationDialogComponent", () => {
             setExperimentalFeaturesEnabled: jest.fn(),
             setWhiteBackground: jest.fn(),
             setHideFlatBuildings: jest.fn(),
-            setResetCameraIfNewFileIsLoaded: jest.fn(),
-            setLayoutAlgorithm: jest.fn(),
-            setMaxTreeMapFiles: jest.fn()
+            setResetCameraIfNewFileIsLoaded: jest.fn()
         }
 
         mockState = {
@@ -96,12 +94,12 @@ describe("GlobalConfigurationDialogComponent", () => {
     })
 
     describe("rendering sub-components", () => {
-        it("should render MapLayoutSelection component", () => {
+        it("should leave the map layout to the metrics bar", () => {
             // Arrange & Act
-            const mapLayoutComponent = fixture.nativeElement.querySelector("cc-map-layout-selection")
+            const mapLayoutSelect = fixture.nativeElement.querySelector("#mapLayoutSelect")
 
             // Assert
-            expect(mapLayoutComponent).toBeTruthy()
+            expect(mapLayoutSelect).toBeNull()
         })
 
         it("should render ResetSettingsButton component", () => {
