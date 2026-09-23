@@ -1,0 +1,53 @@
+<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" ariaLabel="Folder style" testId="folder-style-popover">
+    <span class="text-sm font-semibold">Folder style</span>
+
+    <div class="flex flex-col gap-1">
+        <span class="text-xs uppercase tracking-wider opacity-60">Folders</span>
+        <div class="join w-full" role="radiogroup" aria-label="Folder style">
+            <button
+                type="button"
+                role="radio"
+                class="join-item btn btn-sm flex-1 gap-1.5"
+                [class.btn-active]="!isNeutral()"
+                [attr.aria-checked]="!isNeutral()"
+                data-testid="folder-style-tinted"
+                (click)="styleSelected.emit(Tinted)"
+            >
+                <span class="inline-block h-2 w-3.5 shrink-0 rounded-sm" [style.background]="tintedSwatch()"></span>
+                Tinted by value
+            </button>
+            <button
+                type="button"
+                role="radio"
+                class="join-item btn btn-sm flex-1 gap-1.5"
+                [class.btn-active]="isNeutral()"
+                [attr.aria-checked]="isNeutral()"
+                data-testid="folder-style-neutral"
+                (click)="styleSelected.emit(Neutral)"
+            >
+                <span class="inline-block h-2 w-3.5 shrink-0 rounded-sm" [style.background]="neutralSwatch"></span>
+                Neutral
+            </button>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-1" [class.opacity-50]="isNeutral()">
+        <span class="text-xs uppercase tracking-wider opacity-60">Tint strength</span>
+        <cc-slider-number-input
+            ariaLabel="Tint strength"
+            [min]="minTintPercent"
+            [max]="maxTintPercent"
+            [step]="tintPercentStep"
+            [value]="tintPercent()"
+            [disabled]="isNeutral()"
+            (valueChange)="tintPercentChange.emit($event)"
+        ></cc-slider-number-input>
+        <div class="h-2 rounded-sm" [style.background]="tintedSwatch()"></div>
+    </div>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset folder value, style and tint strength to their defaults"
+        label="Reset folder colors"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

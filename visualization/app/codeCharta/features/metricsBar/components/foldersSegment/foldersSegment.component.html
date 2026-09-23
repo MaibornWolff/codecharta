@@ -1,0 +1,36 @@
+<cc-axis-card
+    label="Folders"
+    [metricName]="valueLabel()"
+    [dimmed]="isNeutral()"
+    [hasCog]="true"
+    [cogPopoverId]="stylePopoverId"
+    [cogAnchorName]="styleAnchorName"
+    [searchPopoverId]="valuePopoverId"
+    [searchAnchorName]="valueAnchorName"
+    [testId]="'metric-segment-folders'"
+    [cogTestId]="'metric-segment-folders-cog'"
+>
+    <div body class="flex items-center justify-center gap-1 text-xs leading-tight min-h-4">
+        <span class="inline-block h-2 w-3.5 shrink-0 rounded-sm border border-base-300" [style.background]="swatch()"></span>
+        <span class="font-medium" data-testid="metric-segment-folders-style">{{ styleLabel() }}</span>
+    </div>
+</cc-axis-card>
+
+<cc-folder-value-popover
+    [popoverId]="valuePopoverId"
+    [anchorName]="valueAnchorName"
+    [selected]="folderValue()"
+    [isNeutral]="isNeutral()"
+    [colorMetric]="colorMetric()"
+    (valueSelected)="selectValue($event)"
+></cc-folder-value-popover>
+
+<cc-folder-style-popover
+    [popoverId]="stylePopoverId"
+    [anchorName]="styleAnchorName"
+    [isNeutral]="isNeutral()"
+    [tintPercent]="tintPercent()"
+    [tintedSwatch]="tintedSwatch()"
+    (styleSelected)="selectStyle($event)"
+    (tintPercentChange)="setTintPercent($event)"
+></cc-folder-style-popover>

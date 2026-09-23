@@ -16,6 +16,7 @@ import { AreaSegmentComponent } from "../areaSegment/areaSegment.component"
 import { ColorSegmentComponent } from "../colorSegment/colorSegment.component"
 import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSettingsPopover.component"
 import { EdgeSegmentComponent } from "../edgeSegment/edgeSegment.component"
+import { FoldersSegmentComponent } from "../foldersSegment/foldersSegment.component"
 import { HeightSegmentComponent } from "../heightSegment/heightSegment.component"
 import { LabelsScenariosSegmentComponent } from "../labelsScenariosSegment/labelsScenariosSegment.component"
 import { LayoutTabComponent } from "../layoutTab/layoutTab.component"
@@ -31,6 +32,7 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
         ColorSegmentComponent,
         ColorSettingsPopoverComponent,
         EdgeSegmentComponent,
+        FoldersSegmentComponent,
         HeightSegmentComponent,
         LabelsScenariosSegmentComponent,
         LayoutTabComponent,

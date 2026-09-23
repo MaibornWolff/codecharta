@@ -9,6 +9,9 @@
         <cc-link-color-height-button></cc-link-color-height-button>
     }
     <cc-color-segment></cc-color-segment>
+    @if (isRadialLayout()) {
+        <cc-folders-segment></cc-folders-segment>
+    }
 } @else {
     <cc-axis-card
         label="Color"

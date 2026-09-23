@@ -76,6 +76,30 @@ describe("MetricsBarComponent", () => {
         expect(screen.queryByTestId("metric-segment-labels")).toBeNull()
     })
 
+    it("should show the folders card in the radial layouts", async () => {
+        // Arrange & Act
+        await setup({ isRadialLayout: true })
+
+        // Assert
+        expect(screen.getByTestId("metric-segment-folders")).not.toBeNull()
+    })
+
+    it("should leave out the folders card on the 3D map", async () => {
+        // Arrange & Act
+        await setup()
+
+        // Assert
+        expect(screen.queryByTestId("metric-segment-folders")).toBeNull()
+    })
+
+    it("should leave out the folders card in delta state", async () => {
+        // Arrange & Act
+        await setup({ isDelta: true, isRadialLayout: true })
+
+        // Assert
+        expect(screen.queryByTestId("metric-segment-folders")).toBeNull()
+    })
+
     it("should keep the layout tab on the bar while the sunburst is shown", async () => {
         // Arrange & Act
         await setup({ isRadialLayout: true })
