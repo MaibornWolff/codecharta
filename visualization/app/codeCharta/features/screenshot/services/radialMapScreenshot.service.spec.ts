@@ -35,16 +35,16 @@ describe("RadialMapScreenshotService", () => {
         jest.clearAllMocks()
     })
 
-    it("should be available while a sunburst chart is drawn", () => {
+    it("should be available while a radial chart is drawn", () => {
         // Act
         const service = configure(true)
 
         // Assert
         expect(service.isCaptureAvailable()).toBe(true)
-        expect(service.subject).toBe("sunburst")
+        expect(service.subject).toBe("map")
     })
 
-    it("should not be available while no sunburst chart is drawn", () => {
+    it("should not be available while no radial chart is drawn", () => {
         // Act
         const service = configure(false)
 

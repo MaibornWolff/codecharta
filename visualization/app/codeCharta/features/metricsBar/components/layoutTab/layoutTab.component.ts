@@ -11,7 +11,8 @@ const LAYOUT_DESCRIPTIONS: Record<LayoutAlgorithm, string> = {
     [LayoutAlgorithm.SquarifiedTreeMap]: "Folders nest inside each other and every bit of floor is used.",
     [LayoutAlgorithm.StreetMap]: "Folders become streets, files line up along them.",
     [LayoutAlgorithm.TreeMapStreet]: "Streets for the upper folders, treemaps near the files.",
-    [LayoutAlgorithm.Sunburst]: "Folders as rings around the centre, drawn flat without heights."
+    [LayoutAlgorithm.Sunburst]: "Folders as rings around the centre, drawn flat without heights.",
+    [LayoutAlgorithm.RadialTreeMap]: "A band per folder level, each folder filled with a treemap of its contents."
 }
 
 @Component({

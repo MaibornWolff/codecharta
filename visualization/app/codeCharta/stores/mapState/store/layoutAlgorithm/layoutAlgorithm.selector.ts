@@ -6,7 +6,7 @@ export const layoutAlgorithmSelector = createSelector(mapStateSelector, mapState
 
 export const isRadialLayoutSelector = createSelector(
     layoutAlgorithmSelector,
-    layoutAlgorithm => layoutAlgorithm === LayoutAlgorithm.Sunburst
+    layoutAlgorithm => layoutAlgorithm === LayoutAlgorithm.Sunburst || layoutAlgorithm === LayoutAlgorithm.RadialTreeMap
 )
 
 export const isThreeDimensionalLayoutSelector = createSelector(isRadialLayoutSelector, isRadialLayout => !isRadialLayout)

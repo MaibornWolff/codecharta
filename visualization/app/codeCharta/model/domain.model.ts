@@ -11,7 +11,8 @@ export enum LayoutAlgorithm {
     SquarifiedTreeMap = "Squarified TreeMap",
     StreetMap = "StreetMap",
     TreeMapStreet = "TreeMapStreet",
-    Sunburst = "Sunburst"
+    Sunburst = "Sunburst",
+    RadialTreeMap = "Radial TreeMap"
 }
 
 export interface CCFile {

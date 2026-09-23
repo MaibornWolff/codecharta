@@ -1,11 +1,17 @@
 import { expect, Locator, Page } from "@playwright/test"
 import { MetricsBarPageObject } from "../../../metricsBar/components/metricsBar/metricsBar.po"
 
+const FIRST_DESCRIBED_PATH = /the data for (\S+) is/
+
 export class RadialMapPageObject {
     constructor(private readonly page: Page) {}
 
     chart(): Locator {
         return this.page.getByTestId("radial-chart")
+    }
+
+    async waitUntilCentredOn(path: string) {
+        await expect.poll(async () => FIRST_DESCRIBED_PATH.exec((await this.chart().getAttribute("aria-label")) ?? "")?.[1]).toBe(path)
     }
 
     async switchLayoutTo(layout: string) {

@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { LayoutAlgorithm } from "../../../../model/codeCharta.model"
 import {
     findClosestFolder,
     findClosestNode,
     findParentFolder,
+    RADIAL_TREEMAP_SHAPE,
     RadialChartComponent,
     type RightClickedNode,
     SUNBURST_SHAPE
@@ -42,11 +44,14 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
 })
 export class RadialMapComponent {
     protected readonly bottomInset = BOTTOM_INSET_ABOVE_THE_BARS
-    protected readonly shape = SUNBURST_SHAPE
     private readonly readStore = inject(RadialMapReadStore)
     private readonly writeStore = inject(RadialMapWriteStore)
 
     protected readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
+    private readonly layoutAlgorithm = toSignal(this.readStore.layoutAlgorithm$, { requireSync: true })
+    protected readonly shape = computed(() =>
+        this.layoutAlgorithm() === LayoutAlgorithm.RadialTreeMap ? RADIAL_TREEMAP_SHAPE : SUNBURST_SHAPE
+    )
     protected readonly metrics = toSignal(this.readStore.metrics$, { requireSync: true })
     protected readonly coloring = toSignal(this.readStore.coloring$, { requireSync: true })
     protected readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
@@ -112,7 +117,7 @@ export class RadialMapComponent {
         if (!view) {
             return false
         }
-        const shownNode = findClosestNode(view.centre, path, this.shape.visibleDepth)
+        const shownNode = findClosestNode(view.centre, path, this.shape().visibleDepth)
         return shownNode.isFile && shownNode.path === path
     }
 }
