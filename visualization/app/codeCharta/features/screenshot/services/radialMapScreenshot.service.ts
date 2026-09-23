@@ -7,5 +7,5 @@ export class RadialMapScreenshotService extends ChartScreenshotService {
     protected readonly chartRegistry = inject(RadialChartRegistry)
     protected readonly fileNameSuffix = "map"
 
-    readonly subject = "sunburst"
+    readonly subject = "map"
 }

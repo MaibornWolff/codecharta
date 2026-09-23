@@ -1,4 +1,4 @@
-import { SunburstChart } from "echarts/charts"
+import { CustomChart, SunburstChart } from "echarts/charts"
 import { AriaComponent, TooltipComponent } from "echarts/components"
 import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
@@ -6,7 +6,7 @@ import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { RadialChartRegistry } from "../../services/radialChart.registry"
 
-echarts.use([SunburstChart, CanvasRenderer, TooltipComponent, AriaComponent])
+echarts.use([SunburstChart, CustomChart, CanvasRenderer, TooltipComponent, AriaComponent])
 
 export interface RadialChartHandlers {
     onFolderClicked: (path: string) => void

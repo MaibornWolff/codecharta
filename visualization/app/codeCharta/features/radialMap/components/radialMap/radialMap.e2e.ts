@@ -139,3 +139,90 @@ test.describe("Sunburst layout", () => {
         })
     })
 })
+
+const HEADER_STRIP = 0.22
+const FIRST_BAND_CELLS = 0.45
+const FILE_CELL_IN_FIRST_BAND = 195
+
+test.describe("Radial treemap layout", () => {
+    test.beforeEach(async ({ page }) => {
+        await goto(page)
+    })
+
+    test.afterEach(async ({ page }) => {
+        await clearIndexedDB(page)
+    })
+
+    test("should replace the 3D map, and hand the chart over to the sunburst without errors", async ({ page }) => {
+        // Arrange
+        const errors: string[] = []
+        page.on("pageerror", error => errors.push(error.message))
+        page.on("console", message => message.type() === "error" && errors.push(message.text()))
+        const radialTreemap = new RadialMapPageObject(page)
+
+        // Act
+        await radialTreemap.switchLayoutTo("Radial TreeMap")
+
+        // Assert
+        await expect(radialTreemap.chart()).toBeVisible()
+        await expect(radialTreemap.chart()).toHaveAttribute("aria-busy", "false")
+        await expect(page.locator("#codeMap")).toBeHidden()
+
+        // Act
+        await radialTreemap.switchLayoutTo("Sunburst")
+
+        // Assert
+        await expect(radialTreemap.chart()).toHaveAttribute("aria-busy", "false")
+        expect(errors).toEqual([])
+    })
+
+    test("should drill into a folder from its header strip or its cell, and back up through the centre", async ({ page }) => {
+        // Arrange
+        const radialTreemap = new RadialMapPageObject(page)
+        const inspector = new SidebarInspectorPageObject(page)
+        await radialTreemap.switchLayoutTo("Radial TreeMap")
+
+        // Act
+        await radialTreemap.clickAt(HEADER_STRIP)
+
+        // Assert
+        await inspector.waitUntilOpen()
+        await expect(inspector.nodeName()).toHaveText("sample2.cc.json")
+
+        // Act
+        await radialTreemap.waitUntilCentredOn("/root/sample2.cc.json")
+        await radialTreemap.clickAt(CENTRE)
+        await radialTreemap.waitUntilCentredOn("/root")
+        await radialTreemap.clickAt(FIRST_BAND_CELLS)
+
+        // Assert
+        await expect(inspector.nodeName()).toHaveText("ParentLeaf")
+
+        // Act
+        await radialTreemap.waitUntilCentredOn("/root/sample2.cc.json/ParentLeaf")
+        await radialTreemap.clickAt(CENTRE)
+
+        // Assert
+        await expect(inspector.nodeName()).toHaveText("sample2.cc.json")
+    })
+
+    test("should select a file from its cell without stepping into anything", async ({ page }) => {
+        // Arrange
+        const radialTreemap = new RadialMapPageObject(page)
+        const inspector = new SidebarInspectorPageObject(page)
+        await radialTreemap.switchLayoutTo("Radial TreeMap")
+
+        // Act
+        await radialTreemap.clickAt(FIRST_BAND_CELLS, FILE_CELL_IN_FIRST_BAND)
+
+        // Assert
+        await inspector.waitUntilOpen()
+        await expect(inspector.nodeName()).toHaveText("bigLeaf.ts")
+
+        // Act
+        await radialTreemap.clickAt(FIRST_BAND_CELLS, FILE_CELL_IN_FIRST_BAND)
+
+        // Assert
+        await expect(inspector.nodeName()).toHaveText("bigLeaf.ts")
+    })
+})

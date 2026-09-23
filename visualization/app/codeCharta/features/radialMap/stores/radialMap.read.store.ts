@@ -3,6 +3,7 @@ import { Store } from "@ngrx/store"
 import { map } from "rxjs"
 import { CcState } from "../../../model/codeCharta.model"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
+import { layoutAlgorithmSelector } from "../../../stores/mapState/mapState.read.facade"
 import {
     currentFocusedNodePathSelector,
     hoveredNodePathSelector,
@@ -15,6 +16,7 @@ export class RadialMapReadStore {
     constructor(private readonly store: Store<CcState>) {}
 
     readonly tree$ = this.store.select(radialTreeSelector)
+    readonly layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
     readonly metrics$ = this.store.select(radialMetricsSelector)
     readonly coloring$ = this.store.select(radialColoringSelector)
     readonly hoveredNodePath$ = this.store.select(hoveredNodePathSelector)

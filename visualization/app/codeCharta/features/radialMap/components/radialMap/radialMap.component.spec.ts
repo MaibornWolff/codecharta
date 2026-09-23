@@ -2,6 +2,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
+import { LayoutAlgorithm } from "../../../../model/codeCharta.model"
 import { RadialNode } from "../../../../renderer/radialMap/radialMap.facade"
 import {
     fileNode,
@@ -15,6 +16,7 @@ import {
     TEST_COLORING
 } from "../../../../renderer/radialMap/testing/radialChart.stub"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
+import { layoutAlgorithmSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import {
     currentFocusedNodePathSelector,
@@ -42,15 +44,23 @@ interface Setup {
     selectedPath?: string | null
     isDeltaState?: boolean
     focusedNodePath?: string
+    layoutAlgorithm?: LayoutAlgorithm
 }
 
-async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, focusedNodePath }: Setup = {}) {
+async function setup({
+    tree = TREE,
+    selectedPath = null,
+    isDeltaState = false,
+    focusedNodePath,
+    layoutAlgorithm = LayoutAlgorithm.Sunburst
+}: Setup = {}) {
     const rendered = await render(RadialMapComponent, {
         providers: [
             provideMockStore({
                 initialState: defaultState,
                 selectors: [
                     { selector: radialTreeSelector, value: tree },
+                    { selector: layoutAlgorithmSelector, value: layoutAlgorithm },
                     { selector: radialMetricsSelector, value: { areaMetric: "rloc", colorMetric: "mcc" } },
                     { selector: radialColoringSelector, value: TEST_COLORING },
                     { selector: hoveredNodePathSelector, value: null },
@@ -96,6 +106,37 @@ describe("RadialMapComponent", () => {
         // Assert
         expect(lastDrawnCentre()).toBe("/root")
         expect(screen.getByRole("button", { name: /screenshot/i })).not.toBeNull()
+    })
+
+    it("should draw the radial treemap in its layout and the sunburst in the sunburst layout", async () => {
+        // Arrange
+        const { store, fixture } = await setup({ layoutAlgorithm: LayoutAlgorithm.RadialTreeMap })
+        const radialTreemapSeries = lastDrawnOption().series[0].type
+
+        // Act
+        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.Sunburst)
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(radialTreemapSeries).toBe("custom")
+        expect(lastDrawnOption().series[0].type).toBe("sunburst")
+    })
+
+    it("should keep the centre for a selected file the radial treemap shows as a cell four levels down", async () => {
+        // Arrange
+        const deepTree = folderNode("/root", [
+            folderNode("/root/a", [folderNode("/root/a/b", [folderNode("/root/a/b/c", [fileNode("/root/a/b/c/d.ts")])])])
+        ])
+        const { store, fixture } = await setup({ tree: deepTree, layoutAlgorithm: LayoutAlgorithm.RadialTreeMap })
+
+        // Act
+        store.overrideSelector(selectedNodePathSelector, "/root/a/b/c/d.ts")
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(lastDrawnCentre()).toBe("/root")
     })
 
     it("should centre on the selected folder, and on the folder of a selected file", async () => {

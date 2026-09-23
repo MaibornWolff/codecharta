@@ -3,4 +3,5 @@ export { RadialChartComponent } from "./components/radialChart/radialChart.compo
 export type { RadialColoring } from "./util/radialColor"
 export type { RadialMetrics, RadialNode } from "./util/radialTree"
 export { buildRadialTree, findClosestFolder, findClosestNode, findParentFolder } from "./util/radialTree"
+export { RADIAL_TREEMAP_SHAPE } from "./util/radialTreemapOption.builder"
 export { SUNBURST_SHAPE } from "./util/sunburstOption.builder"
