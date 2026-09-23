@@ -22,12 +22,12 @@
   <p>
     <a href="https://github.com/MaibornWolff/codecharta/releases/tag/ana-2.0.2">
       <img alt="Analysis Version Badge" src="https://img.shields.io/badge/2.0.2-x?style=flat-square&label=Analysis&color=blue"></a>
-    <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-2.5.3">
-      <img alt="Visualization Version Badge" src="https://img.shields.io/badge/2.5.3-x?style=flat-square&label=Visualization&color=blue"></a>
+    <a href="https://github.com/MaibornWolff/codecharta/releases/tag/vis-2.6.0">
+      <img alt="Visualization Version Badge" src="https://img.shields.io/badge/2.6.0-x?style=flat-square&label=Visualization&color=blue"></a>
     <a href="https://github.com/MaibornWolff/codecharta/tree/ana-2.0.2">
       <img alt="Release Analysis Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/ana-2.0.2?label=Release%20Analysis&style=flat-square"></a>
-    <a href="https://github.com/MaibornWolff/codecharta/tree/vis-2.5.3">
-      <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-2.5.3?label=Release%20Visualization&style=flat-square"></a>
+    <a href="https://github.com/MaibornWolff/codecharta/tree/vis-2.6.0">
+      <img alt="Release Visualization Badge" src="https://img.shields.io/github/check-runs/MaibornWolff/CodeCharta/vis-2.6.0?label=Release%20Visualization&style=flat-square"></a>
     <br>
     <a href="https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis">
       <img alt="Quality Gate Analysis" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_analysis/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Analysis&style=flat-square"></a>

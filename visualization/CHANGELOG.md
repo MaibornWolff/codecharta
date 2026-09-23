@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.6.0] - 2026-09-23
+
 ### Added 🚀
 
 - **Sunburst map layout**: choose "Sunburst" as the map layout to see your folders and files as rings around the folder you are in, sized by the area metric and coloured by the colour metric, and click a folder to step into it or the centre to step back out.
