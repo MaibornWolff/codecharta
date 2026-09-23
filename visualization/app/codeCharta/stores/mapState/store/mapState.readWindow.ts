@@ -22,7 +22,7 @@ import { labelModeSelector } from "./labelMode/labelMode.selector"
 import { labelSizeSelector } from "./labelSize/labelSize.selector"
 import { labelsPerMapSelector } from "./labelsPerMap/labelsPerMap.selector"
 import {
-    isSunburstLayoutSelector,
+    isRadialLayoutSelector,
     isThreeDimensionalLayoutSelector,
     layoutAlgorithmSelector
 } from "./layoutAlgorithm/layoutAlgorithm.selector"
@@ -58,7 +58,7 @@ export class MapStateReadWindow {
     readonly hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
     readonly isWhiteBackground$ = this.store.select(isWhiteBackgroundSelector)
     readonly layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
-    readonly isSunburstLayout$ = this.store.select(isSunburstLayoutSelector)
+    readonly isRadialLayout$ = this.store.select(isRadialLayoutSelector)
     readonly isThreeDimensionalLayout$ = this.store.select(isThreeDimensionalLayoutSelector)
     readonly edgeHeight$ = this.store.select(edgeHeightSelector)
     readonly amountOfEdgePreviews$ = this.store.select(amountOfEdgePreviewsSelector)

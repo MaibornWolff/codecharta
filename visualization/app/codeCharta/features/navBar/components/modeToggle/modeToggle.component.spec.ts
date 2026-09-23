@@ -5,7 +5,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { routeLinks, routePaths } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { ModeToggleComponent } from "./modeToggle.component"
@@ -166,7 +166,7 @@ describe("ModeToggleComponent", () => {
                     initialState: defaultState,
                     selectors: [
                         { selector: isDeltaStateSelector, value: isDeltaState },
-                        { selector: isSunburstLayoutSelector, value: true }
+                        { selector: isRadialLayoutSelector, value: true }
                     ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },

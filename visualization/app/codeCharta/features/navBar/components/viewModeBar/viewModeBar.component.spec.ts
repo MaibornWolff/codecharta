@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/angular"
 import { ColorMode } from "../../../../model/codeCharta.model"
 import { routeLinks, routePaths, ViewId } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
-import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { ViewModeBarComponent } from "./viewModeBar.component"
@@ -14,7 +14,7 @@ import { ViewModeBarComponent } from "./viewModeBar.component"
 describe("ViewModeBarComponent", () => {
     const stateWithAbsoluteColorMode = { ...defaultState, mapState: { ...defaultState.mapState, colorMode: ColorMode.absolute } }
 
-    async function setup(view: ViewId, activeViewLink: string = routeLinks.metrics, isSunburst = false) {
+    async function setup(view: ViewId, activeViewLink: string = routeLinks.metrics, isRadialLayout = false) {
         const rendered = await render(ViewModeBarComponent, {
             inputs: { view },
             providers: [
@@ -26,7 +26,7 @@ describe("ViewModeBarComponent", () => {
                     initialState: stateWithAbsoluteColorMode,
                     selectors: [
                         { selector: isDeltaStateSelector, value: false },
-                        { selector: isSunburstLayoutSelector, value: isSunburst }
+                        { selector: isRadialLayoutSelector, value: isRadialLayout }
                     ]
                 }),
                 { provide: State, useValue: { getValue: () => stateWithAbsoluteColorMode } },

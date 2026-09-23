@@ -1,8 +1,8 @@
 import { LayoutAlgorithm } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../rootStore/state.manager"
-import { isSunburstLayoutSelector } from "./layoutAlgorithm.selector"
+import { isRadialLayoutSelector } from "./layoutAlgorithm.selector"
 
-describe("isSunburstLayoutSelector", () => {
+describe("isRadialLayoutSelector", () => {
     function stateWith(layoutAlgorithm: LayoutAlgorithm) {
         return { ...defaultState, mapState: { ...defaultState.mapState, layoutAlgorithm } }
     }
@@ -12,10 +12,10 @@ describe("isSunburstLayoutSelector", () => {
         const state = stateWith(LayoutAlgorithm.Sunburst)
 
         // Act
-        const isSunburst = isSunburstLayoutSelector(state)
+        const isRadialLayout = isRadialLayoutSelector(state)
 
         // Assert
-        expect(isSunburst).toBe(true)
+        expect(isRadialLayout).toBe(true)
     })
 
     it("should not report a 3D layout as the sunburst", () => {
@@ -23,9 +23,9 @@ describe("isSunburstLayoutSelector", () => {
         const state = stateWith(LayoutAlgorithm.SquarifiedTreeMap)
 
         // Act
-        const isSunburst = isSunburstLayoutSelector(state)
+        const isRadialLayout = isRadialLayoutSelector(state)
 
         // Assert
-        expect(isSunburst).toBe(false)
+        expect(isRadialLayout).toBe(false)
     })
 })

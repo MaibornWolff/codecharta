@@ -74,7 +74,7 @@ export interface SharedView {
         nodeId: string
         xPositionOfRightClickEvent: number
         yPositionOfRightClickEvent: number
-        origin: "codeMap" | "explorer" | "sunburst"
+        origin: "codeMap" | "explorer" | "radialMap"
     } | null
 }
 

@@ -16,7 +16,7 @@ export { isEdgeMetricVisibleSelector } from "./store/isEdgeMetricVisible/isEdgeM
 export { isWhiteBackgroundSelector } from "./store/isWhiteBackground/isWhiteBackground.selector"
 export { labelsPerMapSelector } from "./store/labelsPerMap/labelsPerMap.selector"
 export {
-    isSunburstLayoutSelector,
+    isRadialLayoutSelector,
     isThreeDimensionalLayoutSelector,
     layoutAlgorithmSelector
 } from "./store/layoutAlgorithm/layoutAlgorithm.selector"

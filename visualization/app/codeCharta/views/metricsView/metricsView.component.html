@@ -1,9 +1,9 @@
 <cc-loading-file-progress-spinner view="metrics"></cc-loading-file-progress-spinner>
 
-<cc-code-map [class.hidden]="isSunburst()"></cc-code-map>
-@if (isSunburst()) {
+<cc-code-map [class.hidden]="isRadialLayout()"></cc-code-map>
+@if (isRadialLayout()) {
     @defer {
-        <cc-sunburst-map></cc-sunburst-map>
+        <cc-radial-map></cc-radial-map>
     }
 }
 <cc-sidebar-explorer>

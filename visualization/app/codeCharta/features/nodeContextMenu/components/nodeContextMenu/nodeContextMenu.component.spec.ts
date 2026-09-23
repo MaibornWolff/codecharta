@@ -10,7 +10,7 @@ import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderMode
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { routeLinks } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
-import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
@@ -63,13 +63,13 @@ describe("nodeContextMenu component", () => {
 
     type RenderMenuOptions = {
         node?: CodeMapNode | null
-        origin?: "codeMap" | "explorer" | "sunburst"
+        origin?: "codeMap" | "explorer" | "radialMap"
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
         hasDomainData?: boolean
         isFlattened?: (node: CodeMapNode) => boolean
-        isSunburst?: boolean
+        isRadialLayout?: boolean
     }
 
     async function renderMenu({
@@ -80,7 +80,7 @@ describe("nodeContextMenu component", () => {
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
         hasDomainData = true,
         isFlattened = () => false,
-        isSunburst = false
+        isRadialLayout = false
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -100,7 +100,7 @@ describe("nodeContextMenu component", () => {
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
                         { selector: hasDomainDataSelector, value: hasDomainData },
-                        { selector: isSunburstLayoutSelector, value: isSunburst }
+                        { selector: isRadialLayoutSelector, value: isRadialLayout }
                     ]
                 }),
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock },
@@ -137,11 +137,11 @@ describe("nodeContextMenu component", () => {
     })
 
     it.each([
-        "sunburst",
+        "radialMap",
         "explorer"
     ] as const)("should leave out highlight and folder marking, which the sunburst does not show, for a right-click from the %s", async origin => {
         // Arrange & Act
-        await renderMenu({ node: folderNode, origin, isSunburst: true })
+        await renderMenu({ node: folderNode, origin, isRadialLayout: true })
 
         // Assert
         expect(screen.getByText("Focus")).not.toBe(null)
@@ -153,7 +153,7 @@ describe("nodeContextMenu component", () => {
 
     it("should not offer to focus a file while the sunburst is shown, which cannot centre on one", async () => {
         // Arrange & Act
-        await renderMenu({ node: fileNode, origin: "sunburst", isSunburst: true })
+        await renderMenu({ node: fileNode, origin: "radialMap", isRadialLayout: true })
 
         // Assert
         expect(screen.queryByText("Focus")).toBe(null)
@@ -162,7 +162,7 @@ describe("nodeContextMenu component", () => {
 
     it("should offer Show in Explorer for a right-click in the sunburst", async () => {
         // Arrange & Act
-        await renderMenu({ origin: "sunburst", isSunburst: true })
+        await renderMenu({ origin: "radialMap", isRadialLayout: true })
 
         // Assert
         expect(screen.getByText("Show in Explorer")).not.toBe(null)

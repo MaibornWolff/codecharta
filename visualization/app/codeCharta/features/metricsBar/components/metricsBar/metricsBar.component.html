@@ -1,11 +1,11 @@
 <cc-layout-tab />
 <cc-area-segment></cc-area-segment>
-@if (!isSunburst()) {
+@if (!isRadialLayout()) {
     <cc-height-segment></cc-height-segment>
 }
 
 @if (showColorMetricSegment()) {
-    @if (!isSunburst()) {
+    @if (!isRadialLayout()) {
         <cc-link-color-height-button></cc-link-color-height-button>
     }
     <cc-color-segment></cc-color-segment>
@@ -25,7 +25,7 @@
     ></cc-color-settings-popover>
 }
 
-@if (hasEdgeMetric() && !isSunburst()) {
+@if (hasEdgeMetric() && !isRadialLayout()) {
     <cc-edge-segment></cc-edge-segment>
 }
 

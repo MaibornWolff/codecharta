@@ -5,7 +5,7 @@ import { of } from "rxjs"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { metricDataSelector } from "../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { areaMetricSelector, heightMetricSelector, isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { areaMetricSelector, heightMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { MetricsBarComponent } from "./metricsBar.component"
 
@@ -13,11 +13,11 @@ describe("MetricsBarComponent", () => {
     async function setup({
         isDelta = false,
         hasEdgeMetric = false,
-        isSunburst = false
+        isRadialLayout = false
     }: {
         isDelta?: boolean
         hasEdgeMetric?: boolean
-        isSunburst?: boolean
+        isRadialLayout?: boolean
     } = {}) {
         return render(MetricsBarComponent, {
             providers: [
@@ -25,7 +25,7 @@ describe("MetricsBarComponent", () => {
                     initialState: defaultState,
                     selectors: [
                         { selector: isDeltaStateSelector, value: isDelta },
-                        { selector: isSunburstLayoutSelector, value: isSunburst },
+                        { selector: isRadialLayoutSelector, value: isRadialLayout },
                         { selector: areaMetricSelector, value: "rloc" },
                         { selector: heightMetricSelector, value: "mcc" },
                         {
@@ -65,7 +65,7 @@ describe("MetricsBarComponent", () => {
 
     it("should leave out height, edges and labels while the sunburst is shown", async () => {
         // Arrange & Act
-        await setup({ hasEdgeMetric: true, isSunburst: true })
+        await setup({ hasEdgeMetric: true, isRadialLayout: true })
 
         // Assert
         expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
@@ -78,7 +78,7 @@ describe("MetricsBarComponent", () => {
 
     it("should keep the layout tab on the bar while the sunburst is shown", async () => {
         // Arrange & Act
-        await setup({ isSunburst: true })
+        await setup({ isRadialLayout: true })
 
         // Assert
         expect(screen.getByTestId("metrics-bar-layout-tab")).not.toBeNull()
