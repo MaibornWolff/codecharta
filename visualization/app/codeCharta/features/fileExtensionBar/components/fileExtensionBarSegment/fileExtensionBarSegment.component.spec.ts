@@ -52,8 +52,8 @@ describe("FileExtensionBarSegment", () => {
             flattenedNodes: [],
             metricRules: [],
             markedPackages: [],
-            hoveredNodeId: null,
-            selectedBuildingId: null,
+            hoveredNodePath: null,
+            selectedNodePath: null,
             rightClickedNodeData: null
         }
     }

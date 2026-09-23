@@ -4,21 +4,30 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
-import { colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { colorMetricSelector, isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ColorSegmentComponent } from "./colorSegment.component"
 
 describe("ColorSegmentComponent", () => {
-    async function setup({ colorMetric = "mcc", isLinked = false }: { colorMetric?: string; isLinked?: boolean } = {}) {
+    async function setup({
+        colorMetric = "mcc",
+        isLinked = false,
+        isSunburst = false
+    }: {
+        colorMetric?: string
+        isLinked?: boolean
+        isSunburst?: boolean
+    } = {}) {
         return render(ColorSegmentComponent, {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [
                         { selector: colorMetricSelector, value: colorMetric },
-                        { selector: isColorMetricLinkedToHeightMetricSelector, value: isLinked }
+                        { selector: isColorMetricLinkedToHeightMetricSelector, value: isLinked },
+                        { selector: isSunburstLayoutSelector, value: isSunburst }
                     ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -87,5 +96,14 @@ describe("ColorSegmentComponent", () => {
         const button = colorCard.querySelector("button[disabled]")
         expect(button).not.toBeNull()
         expect(button?.textContent).toContain("mcc")
+    })
+
+    it("should keep the color metric selectable in the sunburst even when it is linked to the height metric", async () => {
+        // Arrange & Act
+        await setup({ isLinked: true, isSunburst: true })
+
+        // Assert
+        const colorCard = screen.getByTestId("metric-segment-color")
+        expect(colorCard.querySelector("button[disabled]")).toBeNull()
     })
 })

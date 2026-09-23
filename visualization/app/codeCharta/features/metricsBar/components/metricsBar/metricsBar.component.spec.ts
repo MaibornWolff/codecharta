@@ -5,18 +5,27 @@ import { of } from "rxjs"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { metricDataSelector } from "../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { areaMetricSelector, heightMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { areaMetricSelector, heightMetricSelector, isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { MetricsBarComponent } from "./metricsBar.component"
 
 describe("MetricsBarComponent", () => {
-    async function setup({ isDelta = false, hasEdgeMetric = false }: { isDelta?: boolean; hasEdgeMetric?: boolean } = {}) {
+    async function setup({
+        isDelta = false,
+        hasEdgeMetric = false,
+        isSunburst = false
+    }: {
+        isDelta?: boolean
+        hasEdgeMetric?: boolean
+        isSunburst?: boolean
+    } = {}) {
         return render(MetricsBarComponent, {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
                     selectors: [
                         { selector: isDeltaStateSelector, value: isDelta },
+                        { selector: isSunburstLayoutSelector, value: isSunburst },
                         { selector: areaMetricSelector, value: "rloc" },
                         { selector: heightMetricSelector, value: "mcc" },
                         {
@@ -51,6 +60,19 @@ describe("MetricsBarComponent", () => {
         expect(screen.getByTestId("metric-segment-color")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-labels")).not.toBeNull()
         expect(screen.queryByTestId("metric-segment-edges")).toBeNull()
+    })
+
+    it("should leave out height, edges and labels while the sunburst is shown", async () => {
+        // Arrange & Act
+        await setup({ hasEdgeMetric: true, isSunburst: true })
+
+        // Assert
+        expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
+        expect(screen.getByTestId("metric-segment-color")).not.toBeNull()
+        expect(screen.getByTestId("metric-segment-scenario")).not.toBeNull()
+        expect(screen.queryByTestId("metric-segment-height")).toBeNull()
+        expect(screen.queryByTestId("metric-segment-edges")).toBeNull()
+        expect(screen.queryByTestId("metric-segment-labels")).toBeNull()
     })
 
     it("should swap color metric segment for color settings segment in delta state", async () => {

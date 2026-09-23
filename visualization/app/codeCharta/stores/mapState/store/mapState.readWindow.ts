@@ -21,7 +21,11 @@ import { isWhiteBackgroundSelector } from "./isWhiteBackground/isWhiteBackground
 import { labelModeSelector } from "./labelMode/labelMode.selector"
 import { labelSizeSelector } from "./labelSize/labelSize.selector"
 import { labelsPerMapSelector } from "./labelsPerMap/labelsPerMap.selector"
-import { layoutAlgorithmSelector } from "./layoutAlgorithm/layoutAlgorithm.selector"
+import {
+    isSunburstLayoutSelector,
+    isThreeDimensionalLayoutSelector,
+    layoutAlgorithmSelector
+} from "./layoutAlgorithm/layoutAlgorithm.selector"
 import { mapColorsSelector } from "./mapColors/mapColors.selector"
 import { marginSelector } from "./margin/margin.selector"
 import { scalingSelector } from "./scaling/scaling.selector"
@@ -54,6 +58,8 @@ export class MapStateReadWindow {
     readonly hideFlatBuildings$ = this.store.select(hideFlatBuildingsSelector)
     readonly isWhiteBackground$ = this.store.select(isWhiteBackgroundSelector)
     readonly layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
+    readonly isSunburstLayout$ = this.store.select(isSunburstLayoutSelector)
+    readonly isThreeDimensionalLayout$ = this.store.select(isThreeDimensionalLayoutSelector)
     readonly edgeHeight$ = this.store.select(edgeHeightSelector)
     readonly amountOfEdgePreviews$ = this.store.select(amountOfEdgePreviewsSelector)
     readonly isEdgeMetricVisible$ = this.store.select(isEdgeMetricVisibleSelector)

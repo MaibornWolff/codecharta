@@ -253,13 +253,33 @@ export class ThreeSceneService implements OnDestroy {
         if (!building) {
             return
         }
-        if (building.id !== this.selected?.id) {
-            if (this.selected) {
-                this.getMapMesh().clearSelection(this.selected)
-            }
-            this.threeSceneStore.setSelectedBuildingId(building.node.path)
+        const isNewSelection = building.id !== this.selected?.id
+        this.paintSelection(building)
+        if (isNewSelection) {
+            this.threeSceneStore.selectNode(building.node.path)
         }
+    }
 
+    /** Shows a selection another view made, without writing it back to the store. */
+    showSelection(path: string | null) {
+        if (!this.mapMesh || (this.selected?.node.path ?? null) === path) {
+            return
+        }
+        const building = path === null ? undefined : this.mapMesh.getBuildingByPath(path)
+        if (building) {
+            this.paintSelection(building)
+            return
+        }
+        if (this.selected) {
+            this.paintNoSelection()
+            this.eventEmitter.emit("onBuildingDeselected")
+        }
+    }
+
+    private paintSelection(building: CodeMapBuilding) {
+        if (this.selected && this.selected.id !== building.id) {
+            this.getMapMesh().clearSelection(this.selected)
+        }
         this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
         this.selected = building
         this.applyHighlights()
@@ -303,13 +323,17 @@ export class ThreeSceneService implements OnDestroy {
         // A node picked in the explorer is selected whether or not the map drew a building for it — a
         // folder, or a file with no area in the current metric, has none. Clearing only what the scene
         // holds would leave such a selection in the store, and the inspector open on it for good.
-        const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedBuildingId() !== null
+        const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedNodePath() !== null
+        this.paintNoSelection()
+        if (hadSelection) {
+            this.threeSceneStore.clearNodeSelection()
+            this.eventEmitter.emit("onBuildingDeselected")
+        }
+    }
+
+    private paintNoSelection() {
         if (this.selected) {
             this.getMapMesh().clearSelection(this.selected)
-        }
-        if (hadSelection) {
-            this.threeSceneStore.setSelectedBuildingId(null)
-            this.eventEmitter.emit("onBuildingDeselected")
         }
         // null before repainting: the highlight pass must not treat the
         // just-deselected building as still selected
@@ -357,20 +381,28 @@ export class ThreeSceneService implements OnDestroy {
         this.mapMeshChanged$.next()
     }
 
-    // The selection must not survive a mesh swap pointing at a building of the old
-    // mesh: remap it onto the new mesh by path, or drop it when the building is gone.
+    // The store owns the selection: another view can change it while this mesh is not drawn.
     private remapSelectedBuilding() {
-        if (!this.selected) {
+        const previouslySelected = this.selected
+        const selectedPath = this.threeSceneStore.getSelectedNodePath()
+        const buildingOnNewMesh = selectedPath === null ? undefined : this.mapMesh.getBuildingByPath(selectedPath)
+        this.clearStaleSelectionColor(previouslySelected, selectedPath)
+        this.selected = null
+        if (buildingOnNewMesh) {
+            this.paintSelection(buildingOnNewMesh)
             return
         }
-        const buildingOnNewMesh = this.mapMesh.getBuildingByPath(this.selected.node.path)
-        if (buildingOnNewMesh) {
-            this.selected = buildingOnNewMesh
-            this.mapMesh.selectBuilding(buildingOnNewMesh, this.folderLabelColorSelected)
-        } else {
-            this.selected = null
-            this.threeSceneStore.setSelectedBuildingId(null)
+        if (previouslySelected?.node.path === selectedPath) {
+            this.threeSceneStore.clearNodeSelection()
             this.eventEmitter.emit("onBuildingDeselected")
+        }
+    }
+
+    private clearStaleSelectionColor(previouslySelected: CodeMapBuilding | null, selectedPath: string | null) {
+        const hasStaleSelection = previouslySelected !== null && previouslySelected.node.path !== selectedPath
+        const buildingOnMesh = hasStaleSelection ? this.mapMesh.getBuildingByPath(previouslySelected.node.path) : undefined
+        if (buildingOnMesh) {
+            this.mapMesh.clearSelection(buildingOnMesh)
         }
     }
 

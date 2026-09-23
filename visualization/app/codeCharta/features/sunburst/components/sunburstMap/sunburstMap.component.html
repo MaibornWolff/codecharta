@@ -1,0 +1,32 @@
+@if (isDeltaState()) {
+    <div class="flex h-full items-center justify-center p-4">
+        <output class="alert max-w-md">
+            <span>The sunburst shows a single map. Switch to another map layout to compare two maps.</span>
+        </output>
+    </div>
+} @else if (view(); as view) {
+    <cc-sunburst
+        [tree]="view.tree"
+        [centre]="view.centre"
+        [hoveredPath]="hoveredPath()"
+        [metrics]="metrics()"
+        [coloring]="coloring()"
+        (folderClicked)="selectFolder($event)"
+        (centreClicked)="goUp()"
+        (fileClicked)="selectFile($event)"
+        (nodeHovered)="hover($event)"
+        (nodeRightClicked)="openContextMenu($event)"
+    ></cc-sunburst>
+    <div class="join absolute right-[10px] top-[10px] rounded bg-base-100 shadow-md">
+        <cc-toolbox-screenshot-button view="metrics"></cc-toolbox-screenshot-button>
+    </div>
+} @else {
+    <div class="flex h-full items-center justify-center p-4">
+        <output class="alert max-w-md">
+            <span>There are no files with an area to show.</span>
+            @if (isFocused()) {
+                <button type="button" class="btn btn-sm" (click)="unfocus()">Unfocus</button>
+            }
+        </output>
+    </div>
+}

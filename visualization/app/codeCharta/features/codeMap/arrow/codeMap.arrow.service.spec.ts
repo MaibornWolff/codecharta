@@ -12,6 +12,7 @@ import {
 } from "../../../renderer/threeViewer/rendering/codeMapBuilding.mocks"
 import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
+import { ThreeMapVisibilityStore } from "../../../renderer/threeViewer/threeViewer.facade"
 import {
     setEdgeMetric,
     setHeightMetric,
@@ -22,6 +23,7 @@ import {
 } from "../../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
+import { setHoveredNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { clone } from "../../../util/clone"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { wait } from "../../../util/testUtils/wait"
@@ -49,7 +51,12 @@ describe("CodeMapArrowService", () => {
         state = TestBed.inject(State)
         const codeMapStore = TestBed.inject(CodeMapStore)
         const sharedViewReadWindow = TestBed.inject(SharedViewReadWindow)
-        codeMapArrowService = new CodeMapArrowService(codeMapStore, sharedViewReadWindow, threeSceneService)
+        codeMapArrowService = new CodeMapArrowService(
+            codeMapStore,
+            sharedViewReadWindow,
+            threeSceneService,
+            TestBed.inject(ThreeMapVisibilityStore)
+        )
     })
 
     function withMockedThreeSceneService() {
@@ -436,6 +443,37 @@ describe("CodeMapArrowService", () => {
             codeMapArrowService.clearArrows()
 
             expect(threeSceneService.edgeArrows.children.length).toBe(0)
+        })
+    })
+
+    describe("hover while the 3D map is not on screen", () => {
+        it("should not recompute edges for a building nobody can see", () => {
+            // Arrange
+            jest.spyOn(codeMapArrowService["threeMapVisibilityStore"], "isMapShown").mockReturnValue(false)
+            codeMapArrowService.onBuildingHovered = jest.fn()
+            codeMapArrowService.onBuildingUnhovered = jest.fn()
+
+            // Act
+            store.dispatch(setHoveredNodePath({ value: "/root/sample1.cc.json" }))
+            store.dispatch(setHoveredNodePath({ value: null }))
+
+            // Assert
+            expect(codeMapArrowService.onBuildingHovered).not.toHaveBeenCalled()
+            expect(codeMapArrowService.onBuildingUnhovered).not.toHaveBeenCalled()
+        })
+    })
+
+    describe("addEdgePreview before any map was laid out", () => {
+        it("should draw no preview instead of failing, as when the app starts in the sunburst layout", () => {
+            // Arrange
+            jest.spyOn(codeMapArrowService["codeMapStore"], "getEdgeVisibility").mockReturnValue(clone(VALID_EDGES_DECORATED))
+            codeMapArrowService["previewMode"] = jest.fn()
+
+            // Act
+            codeMapArrowService.addEdgePreview()
+
+            // Assert
+            expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
         })
     })
 

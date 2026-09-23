@@ -5,6 +5,7 @@ import {
     TEST_LEAF_NODE_WITHOUT_EXTENSION,
     TEST_NODE_LEAF,
     TEST_NODE_LEAF_0_LENGTH,
+    TEST_NODE_ROOT,
     TEST_NODES,
     VALID_FILE_NODE_WITH_ID,
     VALID_NODES_WITH_ID
@@ -12,8 +13,8 @@ import {
 import { CcState, CodeMapNode, LayoutAlgorithm } from "../../model/codeCharta.model"
 import { setEnableFloorLabels, setLayoutAlgorithm, setScaling } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
-import { selectedBuildingIdSelector } from "../../stores/sharedView/sharedView.read.facade"
-import { setSelectedBuildingId } from "../../stores/sharedView/sharedView.write.facade"
+import { selectedNodePathSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { setSelectedNodePath } from "../../stores/sharedView/sharedView.write.facade"
 import { idToNodeSelector } from "../renderModel/renderModel.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { IdToBuildingService } from "./idToBuilding.service"
@@ -66,18 +67,75 @@ describe("ThreeSceneService", () => {
         })
     })
 
+    describe("selection after the mesh was rebuilt", () => {
+        const LEAF_PATH = "/root/big leaf"
+
+        beforeEach(() => {
+            // a layout without floor labels keeps the rebuild to the mesh this describe is about
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
+        })
+
+        function rebuildMeshWith(nodes = TEST_NODES) {
+            threeSceneService.setMapMesh(nodes, new CodeMapMesh(nodes, state.getValue(), false))
+        }
+
+        function sceneSelectionPath() {
+            return threeSceneService.getSelectedBuilding()?.node.path ?? null
+        }
+
+        it("should select what another view selected while the map was not drawn, and announce it", () => {
+            // Arrange
+            const selectedBuildings: string[] = []
+            threeSceneService.subscribe("onBuildingSelected", ({ building }) => selectedBuildings.push(building.node.path))
+            store.dispatch(setSelectedNodePath({ value: LEAF_PATH }))
+
+            // Act
+            rebuildMeshWith()
+
+            // Assert
+            expect(sceneSelectionPath()).toBe(LEAF_PATH)
+            expect(selectedNodePathSelector(state.getValue())).toBe(LEAF_PATH)
+            expect(selectedBuildings).toEqual([LEAF_PATH])
+        })
+
+        it("should drop the selection when the building it had selected is gone", () => {
+            // Arrange
+            store.dispatch(setSelectedNodePath({ value: LEAF_PATH }))
+            rebuildMeshWith()
+
+            // Act
+            rebuildMeshWith([TEST_NODE_ROOT])
+
+            // Assert
+            expect(sceneSelectionPath()).toBeNull()
+            expect(selectedNodePathSelector(state.getValue())).toBeNull()
+        })
+
+        it("should keep a selection the map draws no building for, such as a folder", () => {
+            // Arrange
+            store.dispatch(setSelectedNodePath({ value: "/root/a folder" }))
+
+            // Act
+            rebuildMeshWith()
+
+            // Assert
+            expect(sceneSelectionPath()).toBeNull()
+            expect(selectedNodePathSelector(state.getValue())).toBe("/root/a folder")
+        })
+    })
+
     describe("clearSelection", () => {
         it("should clear a selection that no building was drawn for, so the inspector can be closed", () => {
             // Arrange: a node picked in the explorer selects it whether or not the map drew a building —
             // a folder, or a file with no area in the current metric, has none.
             threeSceneService["mapMesh"].clearSelection = jest.fn()
-            store.dispatch(setSelectedBuildingId({ value: "a-node-without-a-building" }))
+            store.dispatch(setSelectedNodePath({ value: "a-node-without-a-building" }))
 
             // Act
             threeSceneService.clearSelection()
 
             // Assert
-            expect(selectedBuildingIdSelector(state.getValue())).toBeNull()
+            expect(selectedNodePathSelector(state.getValue())).toBeNull()
         })
 
         it("should leave the store alone when there was nothing selected at all", () => {

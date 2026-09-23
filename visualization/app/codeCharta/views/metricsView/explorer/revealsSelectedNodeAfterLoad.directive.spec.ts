@@ -21,17 +21,17 @@ class HostComponent {}
 
 describe("RevealsSelectedNodeAfterLoadDirective", () => {
     let actions$: Subject<unknown>
-    let selectedBuildingId$: BehaviorSubject<string | null>
+    let selectedNodePath$: BehaviorSubject<string | null>
 
     const setup = async (initialSelection: string | null) => {
         actions$ = new Subject()
-        selectedBuildingId$ = new BehaviorSubject<string | null>(initialSelection)
+        selectedNodePath$ = new BehaviorSubject<string | null>(initialSelection)
         TestBed.resetTestingModule()
         TestBed.configureTestingModule({
             providers: [
                 provideMockStore(),
                 provideMockActions(() => actions$),
-                { provide: SharedViewReadWindow, useValue: { selectedBuildingId$ } }
+                { provide: SharedViewReadWindow, useValue: { selectedNodePath$ } }
             ]
         })
         return render(HostComponent)
@@ -59,7 +59,7 @@ describe("RevealsSelectedNodeAfterLoadDirective", () => {
         expect(revealService.revealNode).not.toHaveBeenCalled()
 
         // Act
-        selectedBuildingId$.next("/root/src/late.ts")
+        selectedNodePath$.next("/root/src/late.ts")
 
         // Assert
         expect(revealService.revealNode).toHaveBeenCalledWith("/root/src/late.ts", { expand: false })
@@ -71,7 +71,7 @@ describe("RevealsSelectedNodeAfterLoadDirective", () => {
 
         // Act
         actions$.next(filesLoaded({ payload: undefined } as never))
-        selectedBuildingId$.next("/root/second.ts")
+        selectedNodePath$.next("/root/second.ts")
 
         // Assert — later selections are the user clicking, not the load
         expect(revealService.revealNode).toHaveBeenCalledTimes(1)

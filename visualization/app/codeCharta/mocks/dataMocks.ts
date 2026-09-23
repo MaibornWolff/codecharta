@@ -1983,8 +1983,8 @@ export const STATE: CcState = {
         flattenedNodes: [],
         metricRules: [],
         markedPackages: [],
-        hoveredNodeId: null,
-        selectedBuildingId: null,
+        hoveredNodePath: null,
+        selectedNodePath: null,
         rightClickedNodeData: null
     },
     preferences: {
@@ -2124,8 +2124,8 @@ export const DEFAULT_STATE: CcState = {
         flattenedNodes: [],
         metricRules: [],
         markedPackages: [],
-        hoveredNodeId: null,
-        selectedBuildingId: null,
+        hoveredNodePath: null,
+        selectedNodePath: null,
         rightClickedNodeData: null
     },
     metricsLensSource: {

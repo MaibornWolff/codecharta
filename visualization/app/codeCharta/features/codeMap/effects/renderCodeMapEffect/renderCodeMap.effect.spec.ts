@@ -12,6 +12,7 @@ import { ThreeViewerService } from "../../../../renderer/threeViewer/threeViewer
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { ViewId } from "../../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
+import { isThreeDimensionalLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setInvertArea } from "../../../../stores/mapState/mapState.write.facade"
 import { wait } from "../../../../util/testUtils/wait"
 import { CodeMapRenderService } from "../../codeMap.render.service"
@@ -46,7 +47,12 @@ describe("renderCodeMapEffect", () => {
                 { provide: ThreeViewerService, useValue: { isMapCanvasMounted$ } },
                 { provide: ActiveViewStore, useValue: { activeView$ } },
                 { provide: ErrorHandler, useValue: errorHandler },
-                provideMockStore({ selectors: [{ selector: accumulatedDataSelector, value: NO_MAP_DATA }] }),
+                provideMockStore({
+                    selectors: [
+                        { selector: accumulatedDataSelector, value: NO_MAP_DATA },
+                        { selector: isThreeDimensionalLayoutSelector, value: true }
+                    ]
+                }),
                 provideMockActions(() => actions$)
             ]
         })
@@ -76,6 +82,23 @@ describe("renderCodeMapEffect", () => {
         await wait(maxFPS)
         expect(codeMapRenderService.load).toHaveBeenCalledTimes(1)
         expect(threeRendererService.render).toHaveBeenCalledTimes(1)
+    })
+
+    it("should leave the 3D map alone while another layout is shown, and still report the render", async () => {
+        // Arrange
+        store.overrideSelector(isThreeDimensionalLayoutSelector, false)
+        store.refreshState()
+        const reportedRenders: unknown[] = []
+        TestBed.inject(RenderCodeMapEffect).renderCodeMap$.subscribe(rendered => reportedRenders.push(rendered))
+
+        // Act
+        actions$.next(setInvertArea({ value: true }))
+        await wait(maxFPS)
+
+        // Assert
+        expect(codeMapRenderService.load).not.toHaveBeenCalled()
+        expect(threeRendererService.render).not.toHaveBeenCalled()
+        expect(reportedRenders).toEqual([LOADED_MAP_DATA])
     })
 
     it("should not build the map while the metrics view is off screen", async () => {

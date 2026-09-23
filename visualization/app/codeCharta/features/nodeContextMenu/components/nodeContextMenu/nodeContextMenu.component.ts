@@ -5,7 +5,7 @@ import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/thr
 import { ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
-import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
+import { ContextMenuItemComponent, FloatingMenuComponent, injectIsSunburstLayout } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
@@ -74,7 +74,9 @@ export class NodeContextMenuComponent {
     })
 
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
-    readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin === "codeMap")
+    readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin !== "explorer")
+    readonly isSunburst = injectIsSunburstLayout()
+    readonly isFocusOffered = computed(() => !this.isNodeFocused() && (this.isFolder() || !this.isSunburst()))
     readonly displayPath = computed(() => {
         const node = this.menuNode()
         if (!node) {

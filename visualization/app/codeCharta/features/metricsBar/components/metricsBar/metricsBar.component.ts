@@ -8,6 +8,7 @@ import {
     BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
     BarShellDirective,
     HEIGHT_CSS_VARIABLE,
+    injectIsSunburstLayout,
     PublishesHeightDirective
 } from "../../../shared/facade"
 import { MetricsBarReadStore } from "../../stores/metricsBar.read.store"
@@ -47,6 +48,8 @@ export class MetricsBarComponent {
     readonly hasEdgeMetric = toSignal(this.metricsBarReadStore.metricData$.pipe(map(metricData => metricData.edgeMetricData.length > 0)), {
         initialValue: false
     })
+
+    readonly isSunburst = injectIsSunburstLayout()
 
     readonly showColorMetricSegment = computed(() => !this.isDeltaState())
 

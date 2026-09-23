@@ -9,7 +9,7 @@ import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuComponent
 } from "../../features/nodeContextMenu/facade"
-import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
+import { injectIsSunburstLayout, LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
     EXPLORER_CAPABILITIES,
@@ -27,6 +27,7 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
+import { SunburstMapComponent } from "../../features/sunburst/facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
 import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
@@ -52,7 +53,8 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         CodeMapComponent,
         LegendPanelComponent,
         BottomBarComponent,
-        LoadingFileProgressSpinnerComponent
+        LoadingFileProgressSpinnerComponent,
+        SunburstMapComponent
     ],
     providers: [
         MetricsExplorerRow,
@@ -79,4 +81,6 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
     hostDirectives: [RevealsSelectedNodeAfterLoadDirective, ShowsHandedOverNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MetricsViewComponent {}
+export class MetricsViewComponent {
+    protected readonly isSunburst = injectIsSunburstLayout()
+}

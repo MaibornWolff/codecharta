@@ -92,16 +92,27 @@ export async function waitForCcStatePersisted(page: Page, expectedFileName: stri
     await expect.poll(() => readPersistedFileNames(page), { timeout: 60_000, intervals: [200] }).toContain(expectedFileName)
 }
 
+type PersistedCcState = { files: any[]; settings: any }
+
 function readPersistedFileNames(page: Page): Promise<string[]> {
+    return readPersistedCcState(page).then(({ files }) => files.map((fileState: any) => fileState?.file?.fileMeta?.fileName))
+}
+
+export function readPersistedLayoutAlgorithm(page: Page): Promise<string | undefined> {
+    return readPersistedCcState(page).then(({ settings }) => settings?.mapState?.layoutAlgorithm)
+}
+
+function readPersistedCcState(page: Page): Promise<PersistedCcState> {
     return page.evaluate(
         () =>
-            new Promise<string[]>(resolve => {
+            new Promise<PersistedCcState>(resolve => {
+                const nothingPersisted = { files: [], settings: undefined }
                 const open = indexedDB.open("CodeCharta")
                 open.onsuccess = () => {
                     const database = open.result
                     if (!database.objectStoreNames.contains("ccstate")) {
                         database.close()
-                        return resolve([])
+                        return resolve(nothingPersisted)
                     }
                     const transaction = database.transaction("ccstate", "readonly")
                     const store = transaction.objectStore("ccstate")
@@ -109,15 +120,15 @@ function readPersistedFileNames(page: Page): Promise<string[]> {
                     const settingsRecord = store.get(1001)
                     transaction.oncomplete = () => {
                         database.close()
-                        const files = filesRecord.result?.files ?? settingsRecord.result?.state?.files ?? []
-                        resolve(files.map((fileState: any) => fileState?.file?.fileMeta?.fileName))
+                        const settings = settingsRecord.result?.state
+                        resolve({ files: filesRecord.result?.files ?? settings?.files ?? [], settings })
                     }
                     transaction.onerror = () => {
                         database.close()
-                        resolve([])
+                        resolve(nothingPersisted)
                     }
                 }
-                open.onerror = () => resolve([])
+                open.onerror = () => resolve(nothingPersisted)
             })
     )
 }

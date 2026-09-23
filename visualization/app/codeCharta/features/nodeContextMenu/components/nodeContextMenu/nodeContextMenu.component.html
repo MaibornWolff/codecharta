@@ -29,7 +29,7 @@
         @if (showMapActions) {
             <div class="my-1 border-t border-base-300"></div>
 
-            @if (!isNodeFocused()) {
+            @if (isFocusOffered()) {
                 <cc-context-menu-item
                     icon="fa-solid fa-crosshairs"
                     buttonId="focus-button"
@@ -50,14 +50,16 @@
                 }
             }
 
-            @if (!isHighlighted()) {
-                <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Highlight node constantly" (itemClick)="keepHighlight()">
-                    Keep Highlight
-                </cc-context-menu-item>
-            } @else {
-                <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Remove constant highlight" (itemClick)="removeHighlight()">
-                    Remove Highlight
-                </cc-context-menu-item>
+            @if (!isSunburst()) {
+                @if (!isHighlighted()) {
+                    <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Highlight node constantly" (itemClick)="keepHighlight()">
+                        Keep Highlight
+                    </cc-context-menu-item>
+                } @else {
+                    <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Remove constant highlight" (itemClick)="removeHighlight()">
+                        Remove Highlight
+                    </cc-context-menu-item>
+                }
             }
 
             <div class="my-1 border-t border-base-300"></div>
@@ -84,7 +86,7 @@
                 Exclude
             </cc-context-menu-item>
 
-            @if (isFolder()) {
+            @if (isFolder() && !isSunburst()) {
                 <div class="my-1 border-t border-base-300"></div>
                 <cc-mark-folder-row (folderMarked)="close()"></cc-mark-folder-row>
             }

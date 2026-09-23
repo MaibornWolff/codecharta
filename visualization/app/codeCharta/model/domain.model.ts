@@ -10,7 +10,8 @@ export type Scaling = {
 export enum LayoutAlgorithm {
     SquarifiedTreeMap = "Squarified TreeMap",
     StreetMap = "StreetMap",
-    TreeMapStreet = "TreeMapStreet"
+    TreeMapStreet = "TreeMapStreet",
+    Sunburst = "Sunburst"
 }
 
 export interface CCFile {

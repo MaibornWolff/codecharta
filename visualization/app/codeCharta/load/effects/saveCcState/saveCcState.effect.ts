@@ -5,7 +5,7 @@ import { fileActions } from "../../../stores/fileStore/fileStore.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setState } from "../../../stores/rootStore/state.actions"
-import { setHoveredNodeId } from "../../../stores/sharedView/sharedView.write.facade"
+import { setHoveredNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { runWhenIdle } from "../../../util/runWhenIdle"
 import { actionsRequiringSaveCcState } from "./actionsRequiringSaveCcState"
 
@@ -24,7 +24,7 @@ export class SaveCcStateEffect {
     saveCcState$ = createEffect(
         () =>
             this.actions$.pipe(
-                filter(action => action.type !== setHoveredNodeId.type),
+                filter(action => action.type !== setHoveredNodePath.type),
                 ofType(...actionsRequiringSaveCcState),
                 debounceTime(SAVE_DEBOUNCE_MS),
                 tap(() => this.saveWhenIdle(() => writeCcState(this.ccStateSnapshot.get())))

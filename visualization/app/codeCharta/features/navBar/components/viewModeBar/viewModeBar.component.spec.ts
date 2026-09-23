@@ -6,6 +6,7 @@ import { render, screen } from "@testing-library/angular"
 import { ColorMode } from "../../../../model/codeCharta.model"
 import { routeLinks, routePaths, ViewId } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
+import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { ViewModeBarComponent } from "./viewModeBar.component"
@@ -13,7 +14,7 @@ import { ViewModeBarComponent } from "./viewModeBar.component"
 describe("ViewModeBarComponent", () => {
     const stateWithAbsoluteColorMode = { ...defaultState, mapState: { ...defaultState.mapState, colorMode: ColorMode.absolute } }
 
-    async function setup(view: ViewId, activeViewLink: string = routeLinks.metrics) {
+    async function setup(view: ViewId, activeViewLink: string = routeLinks.metrics, isSunburst = false) {
         const rendered = await render(ViewModeBarComponent, {
             inputs: { view },
             providers: [
@@ -23,7 +24,10 @@ describe("ViewModeBarComponent", () => {
                 ]),
                 provideMockStore({
                     initialState: stateWithAbsoluteColorMode,
-                    selectors: [{ selector: isDeltaStateSelector, value: false }]
+                    selectors: [
+                        { selector: isDeltaStateSelector, value: false },
+                        { selector: isSunburstLayoutSelector, value: isSunburst }
+                    ]
                 }),
                 { provide: State, useValue: { getValue: () => stateWithAbsoluteColorMode } },
                 { provide: FileSelectionModeService, useValue: { toggle: jest.fn() } }
@@ -42,6 +46,14 @@ describe("ViewModeBarComponent", () => {
         expect(screen.getByRole("tab", { name: "Explore" })).not.toBeNull()
         expect(screen.getByRole("tab", { name: "Compare" })).not.toBeNull()
         expect(screen.getByRole("button", { name: "3D Print" })).not.toBeNull()
+    })
+
+    it("should not offer 3D print while the map is shown as a sunburst", async () => {
+        // Arrange & Act
+        await setup("metrics", routeLinks.metrics, true)
+
+        // Assert
+        expect(screen.queryByRole("button", { name: "3D Print" })).toBeNull()
     })
 
     it("should offer explore only for the domain view", async () => {

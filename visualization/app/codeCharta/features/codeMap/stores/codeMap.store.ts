@@ -7,7 +7,7 @@ import { MapStateReadWindow } from "../../../stores/mapState/mapState.read.facad
 import { setColorLabels } from "../../../stores/mapState/mapState.write.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodeId, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
 import { edgeVisibilitySelector } from "../selectors/edgeVisibility.selector"
 
 @Injectable({ providedIn: "root" })
@@ -16,7 +16,8 @@ export class CodeMapStore {
         private readonly store: Store<CcState>,
         private readonly ccStateSnapshot: CcStateSnapshot,
         private readonly mapStateReadWindow: MapStateReadWindow,
-        private readonly sharedViewReadWindow: SharedViewReadWindow
+        private readonly sharedViewReadWindow: SharedViewReadWindow,
+        private readonly nodeInteraction: NodeInteraction
     ) {}
 
     getState(): CcState {
@@ -35,16 +36,12 @@ export class CodeMapStore {
         return edgeVisibilitySelector(this.ccStateSnapshot.get())
     }
 
-    getHoveredNodeId(): string | null {
-        return this.sharedViewReadWindow.getHoveredNodeId()
-    }
-
     getIdToNode() {
         return idToNodeSelector(this.ccStateSnapshot.get())
     }
 
-    setHoveredNodeId(value: string | null) {
-        this.store.dispatch(setHoveredNodeId({ value }))
+    hoverNode(path: string | null) {
+        this.nodeInteraction.hoverNode(path)
     }
 
     setRightClickedNodeData(value: CcState["sharedView"]["rightClickedNodeData"]) {

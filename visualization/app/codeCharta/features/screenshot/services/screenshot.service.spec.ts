@@ -2,7 +2,13 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { waitFor } from "@testing-library/angular"
-import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { of } from "rxjs"
+import {
+    ThreeCameraService,
+    ThreeMapVisibilityStore,
+    ThreeRendererService,
+    ThreeSceneService
+} from "../../../renderer/threeViewer/threeViewer.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { checkWriteToClipboardAllowed, setToClipboard } from "./clipboardWriter"
 import { ScreenshotService } from "./screenshot.service"
@@ -26,11 +32,12 @@ jest.mock("html2canvas-pro", () => {
 describe("ScreenshotService", () => {
     let service: ScreenshotService
 
-    function configure() {
+    function configure(isMapShown = true) {
         TestBed.configureTestingModule({
             providers: [
                 ScreenshotService,
                 provideMockStore({ initialState: defaultState }),
+                { provide: ThreeMapVisibilityStore, useValue: { isMapShown$: of(isMapShown) } },
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ThreeCameraService, useValue: {} },
                 { provide: ThreeSceneService, useValue: {} },
@@ -58,6 +65,22 @@ describe("ScreenshotService", () => {
 
     afterEach(() => {
         jest.clearAllMocks()
+    })
+
+    it("should capture the 3D map while it is on screen", () => {
+        // Act
+        configure(true)
+
+        // Assert
+        expect(service.isCaptureAvailable()).toBe(true)
+    })
+
+    it("should not capture the 3D map while it is not on screen", () => {
+        // Act
+        configure(false)
+
+        // Assert
+        expect(service.isCaptureAvailable()).toBe(false)
     })
 
     it("should copy to clipboard when isWriteToClipboardAllowed is true", async () => {

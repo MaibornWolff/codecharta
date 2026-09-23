@@ -8,6 +8,8 @@ import "echarts-wordcloud"
 
 echarts.use([CanvasRenderer, TooltipComponent, AriaComponent])
 
+import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
+import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudOption } from "../../util/wordCloudOption.model"
 
@@ -34,10 +36,6 @@ interface ZrenderClickEvent {
     target?: unknown
 }
 
-function suppressBrowserMenu(event: Event): void {
-    event.preventDefault()
-}
-
 interface EchartsWithModel {
     getModel?: () => {
         getSeriesByIndex: (
@@ -49,20 +47,16 @@ interface EchartsWithModel {
 export class WordCloudChartHost {
     private chart?: echarts.ECharts
     private attachedContainer?: HTMLElement
-    private resizeObserver?: ResizeObserver
     private renderTimeout?: ReturnType<typeof setTimeout>
     private layoutSettleTimeout?: ReturnType<typeof setTimeout>
     private highlightedWords: readonly string[] = []
     private mustRestoreHighlightAfterLayout = false
     private hasDrawnACloud = false
 
-    private readonly measuredContainerSize = signal(
-        { width: 0, height: 0 },
-        { equal: (a, b) => a.width === b.width && a.height === b.height }
-    )
+    private readonly containerSizeObserver = new ContainerSizeObserver()
     private readonly drawnWords = signal<number | null>(null)
 
-    readonly containerSize = this.measuredContainerSize.asReadonly()
+    readonly containerSize = this.containerSizeObserver.size
     readonly drawnWordCount = this.drawnWords.asReadonly()
 
     constructor(
@@ -88,8 +82,7 @@ export class WordCloudChartHost {
         this.chart.on("contextmenu", (params: unknown) => this.reportRightClickedWord(params as EchartsContextMenuParams))
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
-        this.measuredContainerSize.set({ width: container.clientWidth, height: container.clientHeight })
-        this.publishEveryMeasuredSize(container)
+        this.containerSizeObserver.observe(container)
     }
 
     /** Echarts reports the right click on the word, the browser its own menu on the canvas below it. */
@@ -189,8 +182,7 @@ export class WordCloudChartHost {
 
     dispose(): void {
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
-        this.resizeObserver?.disconnect()
-        this.resizeObserver = undefined
+        this.containerSizeObserver.disconnect()
         this.cancelPendingRender()
         if (this.layoutSettleTimeout !== undefined) {
             clearTimeout(this.layoutSettleTimeout)
@@ -203,13 +195,6 @@ export class WordCloudChartHost {
         this.chart?.dispose()
         this.chart = undefined
         this.attachedContainer = undefined
-    }
-
-    private publishEveryMeasuredSize(container: HTMLElement): void {
-        this.resizeObserver = new ResizeObserver(() => {
-            this.measuredContainerSize.set({ width: container.clientWidth, height: container.clientHeight })
-        })
-        this.resizeObserver.observe(container)
     }
 
     /** Every chunk of a progressive layout reports itself finished, so the layout has settled only once

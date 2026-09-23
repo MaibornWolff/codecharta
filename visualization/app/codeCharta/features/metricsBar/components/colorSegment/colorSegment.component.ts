@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
-import { AxisCardComponent } from "../../../shared/facade"
+import { AxisCardComponent, injectIsSunburstLayout } from "../../../shared/facade"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSettingsPopover.component"
 import { MetricBarSelectPopoverComponent } from "../metricBarSelectPopover/metricBarSelectPopover.component"
@@ -28,7 +28,9 @@ export class ColorSegmentComponent {
     readonly settingsAnchorName = "metric-segment-color-cog"
 
     readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
-    readonly isLinked = toSignal(this.preferencesReadWindow.isColorMetricLinkedToHeightMetric$, { initialValue: false })
+    private readonly isLinkedToHeight = toSignal(this.preferencesReadWindow.isColorMetricLinkedToHeightMetric$, { initialValue: false })
+    private readonly isSunburst = injectIsSunburstLayout()
+    readonly isLinked = computed(() => this.isLinkedToHeight() && !this.isSunburst())
 
     handleMetricSelected(value: string) {
         this.metricsBarWriteStore.setColorMetric(value)

@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { tap } from "rxjs"
+import { filter, tap } from "rxjs"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { EdgeVisibility, Node } from "../../../model/codeCharta.model"
-import { CodeMapBuilding, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { CodeMapBuilding, ThreeMapVisibilityStore, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { ColorConverter } from "../../../util/color/colorConverter"
 import { debounce } from "../../../util/debounce"
@@ -10,7 +10,7 @@ import { CodeMapStore } from "../stores/codeMap.store"
 
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
-    private map: Map<string, Node>
+    private map = new Map<string, Node>()
     private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
     private readonly HIGHLIGHT_BUILDING_DELAY = 1
@@ -18,11 +18,12 @@ export class CodeMapArrowService implements OnDestroy {
         (hoveredBuilding: CodeMapBuilding) => this.resetEdgesOfBuildings(hoveredBuilding),
         this.HIGHLIGHT_BUILDING_DELAY
     )
-    private readonly hoveredNodeSubscription = this.sharedViewReadWindow.hoveredNodeId$
+    private readonly hoveredNodeSubscription = this.sharedViewReadWindow.hoveredNodePath$
         .pipe(
-            tap(hoveredNodeId => {
-                if (hoveredNodeId !== null) {
-                    const hoveredBuilding = this.threeSceneService.getMapMesh()?.getMeshDescription().getBuildingByPath(hoveredNodeId)
+            filter(() => this.threeMapVisibilityStore.isMapShown()),
+            tap(hoveredNodePath => {
+                if (hoveredNodePath !== null) {
+                    const hoveredBuilding = this.threeSceneService.getMapMesh()?.getMeshDescription().getBuildingByPath(hoveredNodePath)
                     this.onBuildingHovered(hoveredBuilding)
                 } else {
                     this.onBuildingUnhovered()
@@ -34,7 +35,8 @@ export class CodeMapArrowService implements OnDestroy {
     constructor(
         private readonly codeMapStore: CodeMapStore,
         private readonly sharedViewReadWindow: SharedViewReadWindow,
-        private readonly threeSceneService: ThreeSceneService
+        private readonly threeSceneService: ThreeSceneService,
+        private readonly threeMapVisibilityStore: ThreeMapVisibilityStore
     ) {
         this.threeSceneService.subscribe("onBuildingSelected", this.onBuildingSelected)
         this.threeSceneService.subscribe("onBuildingDeselected", this.onBuildingDeselected)

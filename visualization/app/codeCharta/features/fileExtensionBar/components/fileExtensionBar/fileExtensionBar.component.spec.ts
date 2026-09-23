@@ -8,8 +8,8 @@ import { accumulatedDataSelector } from "../../../../renderer/renderModel/accumu
 import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { excludedNodesSelector, flattenedNodesSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { hoveredNodeIdSelector } from "../../../../stores/sharedView/store/hoveredNodeId/hoveredNodeId.selector"
-import { selectedBuildingIdSelector } from "../../../../stores/sharedView/store/selectedBuildingId/selectedBuildingId.selector"
+import { hoveredNodePathSelector } from "../../../../stores/sharedView/store/hoveredNodePath/hoveredNodePath.selector"
+import { selectedNodePathSelector } from "../../../../stores/sharedView/store/selectedNodePath/selectedNodePath.selector"
 import { CategorizedMetricDistribution } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
 import { metricDistributionSelector } from "../../selectors/metricDistribution.selector"
@@ -32,8 +32,8 @@ describe("FileExtensionBarComponent", () => {
                     selectors: [
                         { selector: areaMetricSelector, value: {} },
                         { selector: accumulatedDataSelector, value: {} },
-                        { selector: hoveredNodeIdSelector, value: null },
-                        { selector: selectedBuildingIdSelector, value: null },
+                        { selector: hoveredNodePathSelector, value: null },
+                        { selector: selectedNodePathSelector, value: null },
                         {
                             selector: metricDistributionSelector,
                             value: {

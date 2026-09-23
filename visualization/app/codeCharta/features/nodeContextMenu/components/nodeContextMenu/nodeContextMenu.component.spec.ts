@@ -10,6 +10,7 @@ import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderMode
 import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { routeLinks } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
+import { isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
@@ -62,12 +63,13 @@ describe("nodeContextMenu component", () => {
 
     type RenderMenuOptions = {
         node?: CodeMapNode | null
-        origin?: "codeMap" | "explorer"
+        origin?: "codeMap" | "explorer" | "sunburst"
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
         hasDomainData?: boolean
         isFlattened?: (node: CodeMapNode) => boolean
+        isSunburst?: boolean
     }
 
     async function renderMenu({
@@ -77,7 +79,8 @@ describe("nodeContextMenu component", () => {
         previousFocusedNodePath,
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
         hasDomainData = true,
-        isFlattened = () => false
+        isFlattened = () => false,
+        isSunburst = false
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -96,7 +99,8 @@ describe("nodeContextMenu component", () => {
                         { selector: focusedNodePathSelector, value: focusedNodePaths },
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
-                        { selector: hasDomainDataSelector, value: hasDomainData }
+                        { selector: hasDomainDataSelector, value: hasDomainData },
+                        { selector: isSunburstLayoutSelector, value: isSunburst }
                     ]
                 }),
                 { provide: ThreeSceneService, useValue: threeSceneServiceMock },
@@ -130,6 +134,38 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Flatten")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
         expect(container.querySelector(".colorButton")).toBe(null)
+    })
+
+    it.each([
+        "sunburst",
+        "explorer"
+    ] as const)("should leave out highlight and folder marking, which the sunburst does not show, for a right-click from the %s", async origin => {
+        // Arrange & Act
+        await renderMenu({ node: folderNode, origin, isSunburst: true })
+
+        // Assert
+        expect(screen.getByText("Focus")).not.toBe(null)
+        expect(screen.getByText("Flatten")).not.toBe(null)
+        expect(screen.getByText("Exclude")).not.toBe(null)
+        expect(screen.queryByText("Keep Highlight")).toBe(null)
+        expect(document.querySelector("cc-mark-folder-row")).toBe(null)
+    })
+
+    it("should not offer to focus a file while the sunburst is shown, which cannot centre on one", async () => {
+        // Arrange & Act
+        await renderMenu({ node: fileNode, origin: "sunburst", isSunburst: true })
+
+        // Assert
+        expect(screen.queryByText("Focus")).toBe(null)
+        expect(screen.getByText("Exclude")).not.toBe(null)
+    })
+
+    it("should offer Show in Explorer for a right-click in the sunburst", async () => {
+        // Arrange & Act
+        await renderMenu({ origin: "sunburst", isSunburst: true })
+
+        // Assert
+        expect(screen.getByText("Show in Explorer")).not.toBe(null)
     })
 
     it("should hide the show-in-explorer entry when the right-click came from the explorer", async () => {

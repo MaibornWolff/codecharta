@@ -1,9 +1,15 @@
-import { Injectable, inject, signal } from "@angular/core"
+import { Injectable, inject } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import html2canvas from "html2canvas-pro"
 import { Color, WebGLRenderer } from "three"
 import { FileState } from "../../../model/files/files"
 import { createPNGFileName } from "../../../model/files/files.helper"
-import { ThreeCameraService, ThreeRendererService, ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import {
+    ThreeCameraService,
+    ThreeMapVisibilityStore,
+    ThreeRendererService,
+    ThreeSceneService
+} from "../../../renderer/threeViewer/threeViewer.facade"
 import { FilesRepo } from "../../../stores/fileStore/fileStore.facade"
 import { ScreenshotCapture } from "../screenshotCapture"
 import { cropTransparentMargins } from "./canvasCrop"
@@ -19,7 +25,7 @@ export class ScreenshotService implements ScreenshotCapture {
 
     readonly isWriteToClipboardAllowed = checkWriteToClipboardAllowed()
     readonly subject = "map"
-    readonly isCaptureAvailable = signal(true).asReadonly()
+    readonly isCaptureAvailable = toSignal(inject(ThreeMapVisibilityStore).isMapShown$, { initialValue: false })
 
     async makeScreenshotToFile(): Promise<void> {
         const renderer = this.threeRendererService.renderer
