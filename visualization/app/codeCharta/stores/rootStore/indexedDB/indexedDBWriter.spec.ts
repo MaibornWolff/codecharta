@@ -36,7 +36,7 @@ import {
     migrateCcStateRecordToV20,
     migrateCcStateRecordToV21,
     migrateCcStateRecordToV22,
-    openCodeChartaDB,
+    migrateCcStateRecordToV24,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcFiles,
@@ -889,6 +889,51 @@ describe("migrateCcStateRecordToV21 (center map zoom seed on the persisted prefe
     })
 })
 
+describe("migrateCcStateRecordToV24 (radial folder colouring seed on the persisted preferences)", () => {
+    it("should seed the default folder colouring on preferences persisted before it", () => {
+        // Arrange
+        const oldShapeState = { preferences: { centerMapZoom: 165 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV24(oldShapeState) as unknown as { preferences: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.preferences).toEqual({
+            centerMapZoom: 165,
+            radialFolderValue: "max",
+            radialFolderStyle: "tinted",
+            radialFolderTint: 0.5
+        })
+    })
+
+    it("should leave an existing folder colouring untouched", () => {
+        // Arrange
+        const alreadyMigrated = { preferences: { radialFolderValue: "median", radialFolderStyle: "neutral", radialFolderTint: 0.8 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV24(alreadyMigrated)
+
+        // Assert
+        expect(migrated).toBe(alreadyMigrated)
+    })
+
+    it("should pass a blob without preferences through unchanged", () => {
+        // Arrange
+        const withoutPreferences = { domainState: { topN: 25 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV24(withoutPreferences)
+
+        // Assert
+        expect(migrated).toBe(withoutPreferences)
+    })
+
+    it("should pass a nullish blob through unchanged", () => {
+        // Arrange & Act & Assert
+        expect(migrateCcStateRecordToV24(null)).toBeNull()
+    })
+})
+
 describe("openCodeChartaDB upgrade (v2 blob → chained v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 transforms)", () => {
     it("should re-home a persisted v2-shaped CcState blob when the DB upgrades", async () => {
         // Runs first (before any higher-version connection is opened) so a fresh fake-indexeddb starts at v2.
@@ -1089,28 +1134,26 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         expect(restored.domainLensSource).not.toHaveProperty("words")
     })
 
-    it("should not even read the session when no transform applies to it", async () => {
-        // Arrange — a v22 record needs only the files split, which the read path handles on its own
-        const v21Database = await openDB(DB_NAME, 22, {
+    it("should seed the folder colouring on preferences persisted at v23", async () => {
+        // Arrange
+        const { radialFolderValue, radialFolderStyle, radialFolderTint, ...preferencesBeforeV24 } = defaultState.preferences
+        const v23Database = await openDB(DB_NAME, 23, {
             upgrade(database) {
                 database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
                 database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
             }
         })
-        await v21Database.put(CCSTATE_STORE_NAME, {
+        await v23Database.put(CCSTATE_STORE_NAME, {
             [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
-            state: { ...defaultState, files: [{ file: { fileMeta: { fileName: "big.cc.json" } }, selectedAs: "Partial" }] }
+            state: { ...defaultState, preferences: preferencesBeforeV24 }
         })
-        v21Database.close()
-        const getSpy = jest.spyOn(IDBObjectStore.prototype, "get")
+        v23Database.close()
 
         // Act
-        const database = await openCodeChartaDB()
-        database.close()
+        const restored = await readCcState()
 
-        // Assert — reading it would deserialize the whole session a second time during boot
-        expect(getSpy).not.toHaveBeenCalled()
-        getSpy.mockRestore()
+        // Assert
+        expect(restored.preferences).toEqual({ ...preferencesBeforeV24, radialFolderValue, radialFolderStyle, radialFolderTint })
     })
 
     it("should not rewrite the persisted record when a session only predates the files split", async () => {

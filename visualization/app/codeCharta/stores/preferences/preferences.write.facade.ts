@@ -8,5 +8,8 @@ export {
 export { setPresentationMode } from "./store/isPresentationMode/isPresentationMode.actions"
 export { setMaxTreeMapFiles } from "./store/maxTreeMapFiles/maxTreeMapFiles.actions"
 export { preferencesActions } from "./store/preferences.actions"
+export { setRadialFolderStyle } from "./store/radialFolderStyle/radialFolderStyle.actions"
+export { setRadialFolderTint } from "./store/radialFolderTint/radialFolderTint.actions"
+export { setRadialFolderValue } from "./store/radialFolderValue/radialFolderValue.actions"
 export { setResetCameraIfNewFileIsLoaded } from "./store/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 export { setSortingOption, toggleSortingOrderAscending } from "./store/sorting/sorting.actions"

@@ -7,6 +7,9 @@ import { experimentalFeaturesEnabledSelector } from "./enableExperimentalFeature
 import { isColorMetricLinkedToHeightMetricSelector } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { isPresentationModeSelector } from "./isPresentationMode/isPresentationMode.selector"
 import { maxTreeMapFilesSelector } from "./maxTreeMapFiles/maxTreeMapFiles.selector"
+import { radialFolderStyleSelector } from "./radialFolderStyle/radialFolderStyle.selector"
+import { radialFolderTintSelector } from "./radialFolderTint/radialFolderTint.selector"
+import { radialFolderValueSelector } from "./radialFolderValue/radialFolderValue.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 import { sortingOrderAscendingSelector, sortingOrderSelector } from "./sorting/sorting.selector"
 
@@ -28,6 +31,9 @@ export class PreferencesReadWindow {
     readonly maxTreeMapFiles$ = this.store.select(maxTreeMapFilesSelector)
     readonly sortingOrder$ = this.store.select(sortingOrderSelector)
     readonly sortingOrderAscending$ = this.store.select(sortingOrderAscendingSelector)
+    readonly radialFolderValue$ = this.store.select(radialFolderValueSelector)
+    readonly radialFolderStyle$ = this.store.select(radialFolderStyleSelector)
+    readonly radialFolderTint$ = this.store.select(radialFolderTintSelector)
 
     getPreferences(): Preferences {
         return this.state.getValue().preferences

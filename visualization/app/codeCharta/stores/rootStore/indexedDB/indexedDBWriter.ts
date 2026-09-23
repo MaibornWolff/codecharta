@@ -7,11 +7,18 @@ import { defaultDomainLensSource } from "../../domainLensSource/domainLensSource
 import { defaultDomainState } from "../../domainState/domainState.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
-import { defaultCenterMapZoom, defaultPreferences, defaultSorting } from "../../preferences/preferences.read.facade"
+import {
+    defaultCenterMapZoom,
+    defaultPreferences,
+    defaultRadialFolderStyle,
+    defaultRadialFolderTint,
+    defaultRadialFolderValue,
+    defaultSorting
+} from "../../preferences/preferences.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 23
+export const DB_VERSION = 24
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -623,6 +630,24 @@ export function migrateCcStateRecordToV22<T>(state: T): T {
     } as T
 }
 
+// v24: preferences persisted before the radial layouts coloured their folders carry no folder colouring
+export function migrateCcStateRecordToV24<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"]
+    if (!preferences || typeof preferences !== "object" || "radialFolderValue" in preferences) {
+        return state
+    }
+    const radialFolderColoring = {
+        radialFolderValue: defaultRadialFolderValue,
+        radialFolderStyle: defaultRadialFolderStyle,
+        radialFolderTint: defaultRadialFolderTint
+    }
+    return { ...record, preferences: { ...radialFolderColoring, ...preferences } } as T
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -643,7 +668,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 19, migrate: migrateCcStateRecordToV19 },
     { version: 20, migrate: migrateCcStateRecordToV20 },
     { version: 21, migrate: migrateCcStateRecordToV21 },
-    { version: 22, migrate: migrateCcStateRecordToV22 }
+    { version: 22, migrate: migrateCcStateRecordToV22 },
+    { version: 24, migrate: migrateCcStateRecordToV24 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

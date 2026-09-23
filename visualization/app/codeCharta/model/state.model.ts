@@ -31,6 +31,21 @@ export interface DomainState extends WordCloudSettings {
 
 export const defaultAmountOfTopLabels = 10
 
+export enum RadialFolderValue {
+    Sum = "sum",
+    Max = "max",
+    Median = "median",
+    MeanPerFile = "meanPerFile",
+    AvgPerLine = "avgPerLine",
+    ShareBySize = "shareBySize",
+    ShareOfRed = "shareOfRed"
+}
+
+export enum RadialFolderStyle {
+    Tinted = "tinted",
+    Neutral = "neutral"
+}
+
 export enum FileSelectionState {
     Reference = "Reference",
     Comparison = "Comparison",
@@ -59,6 +74,9 @@ export interface Preferences {
     screenshotToClipboardEnabled: boolean
     isColorMetricLinkedToHeightMetric: boolean
     sorting: Sorting
+    radialFolderValue: RadialFolderValue
+    radialFolderStyle: RadialFolderStyle
+    radialFolderTint: number
 }
 
 export interface SharedView {
