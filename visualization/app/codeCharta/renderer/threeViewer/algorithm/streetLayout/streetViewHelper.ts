@@ -15,21 +15,17 @@ function calculateSize(node: CodeMapNode, metricName: string) {
     return totalSize
 }
 
-function mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
-    let mergedNode = node
+export interface MergedFolder {
+    node: CodeMapNode
+    label: string
+}
+
+function mergeDirectories(node: CodeMapNode, metricName: string): MergedFolder {
     const nodeSize = calculateSize(node, metricName)
-    for (const child of node.children) {
-        if (!isLeaf(child)) {
-            const childSize = calculateSize(child, metricName)
-            if (nodeSize === childSize) {
-                const nodeName = mergedNode.name
-                mergedNode = child
-                mergedNode.name = `${nodeName}/${child.name}`
-                break
-            }
-        }
-    }
-    return mergedNode
+    const subfolderHoldingEverything = node.children.find(child => !isLeaf(child) && calculateSize(child, metricName) === nodeSize)
+    return subfolderHoldingEverything
+        ? { node: subfolderHoldingEverything, label: `${node.name}/${subfolderHoldingEverything.name}` }
+        : { node, label: node.name }
 }
 
 function buildNodeFrom(layoutNode: CodeMapNode, heightScale: number, maxHeight: number, state: CcState, isDeltaState: boolean): Node {

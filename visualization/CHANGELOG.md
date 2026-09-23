@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Layout on the metric bar**: a tab on top of the metric bar names the map layout and switches between all four, with TreeMapStreet's file limit beside them.
 
+### Fixed 🐞
+
+- **Folder names in the explorer**: switching to StreetMap or TreeMapStreet no longer repeats a folder's name in the explorer.
+
 ## [2.5.3] - 2026-09-22
 
 ### Changed
