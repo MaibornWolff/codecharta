@@ -1,5 +1,6 @@
+import { CENTRE_RADIUS, OUTER_RADIUS } from "./radialChartStyle"
 import { RadialNode } from "./radialTree"
-import { AnnularSector, CENTRE_RADIUS, layOutRadialTreemap, OUTER_RADIUS, RadialTreemapPlacement, SectorRole } from "./radialTreemapLayout"
+import { AnnularSector, layOutRadialTreemap, RadialTreemapPlacement, SectorRole } from "./radialTreemapLayout"
 
 const FULL_TURN = 2 * Math.PI
 

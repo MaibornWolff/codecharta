@@ -10,7 +10,9 @@ import {
     stubResizeObserver,
     TEST_COLORING
 } from "../../testing/radialChart.stub"
+import { RadialShape } from "../../util/radialShape"
 import { RadialNode } from "../../util/radialTree"
+import { RADIAL_TREEMAP_SHAPE } from "../../util/radialTreemapOption.builder"
 import { SUNBURST_SHAPE } from "../../util/sunburstOption.builder"
 import { RadialChartComponent } from "./radialChart.component"
 
@@ -23,7 +25,7 @@ const ROOT = folderNode("/root", [SRC])
 
 let measuredSize = { width: 800, height: 600 }
 
-async function renderChart(inputs: Partial<{ centre: RadialNode; hoveredPath: string | null }> = {}) {
+async function renderChart(inputs: Partial<{ shape: RadialShape; centre: RadialNode; hoveredPath: string | null }> = {}) {
     return render(RadialChartComponent, {
         inputs: {
             shape: SUNBURST_SHAPE,
@@ -79,6 +81,14 @@ describe("RadialChartComponent", () => {
 
         // Assert
         expect(lastHighlightedPath()).toBe("/root/src/app/a")
+    })
+
+    it("should highlight a folder one level deeper in the radial treemap, whose last band shows its folders' contents", async () => {
+        // Act
+        await renderChart({ shape: RADIAL_TREEMAP_SHAPE, hoveredPath: "/root/src/app/a/b/deep.ts" })
+
+        // Assert
+        expect(lastHighlightedPath()).toBe("/root/src/app/a/b")
     })
 
     it("should highlight nothing for a hovered path outside the drawn folders", async () => {

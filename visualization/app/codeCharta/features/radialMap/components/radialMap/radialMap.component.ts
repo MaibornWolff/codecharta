@@ -105,19 +105,20 @@ export class RadialMapComponent {
 
     private centreOnTheSelection(): void {
         const selectedPath = this.selectedPath()
+        const { visibleDepth } = this.shape()
         untracked(() => {
-            if (selectedPath !== null && !this.isFileShownAroundTheCentre(selectedPath)) {
+            if (selectedPath !== null && !this.isFileShownAroundTheCentre(selectedPath, visibleDepth)) {
                 this.requestedCentrePath.set(selectedPath)
             }
         })
     }
 
-    private isFileShownAroundTheCentre(path: string): boolean {
+    private isFileShownAroundTheCentre(path: string, visibleDepth: number): boolean {
         const view = this.view()
         if (!view) {
             return false
         }
-        const shownNode = findClosestNode(view.centre, path, this.shape().visibleDepth)
+        const shownNode = findClosestNode(view.centre, path, visibleDepth)
         return shownNode.isFile && shownNode.path === path
     }
 }

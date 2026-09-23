@@ -1,26 +1,18 @@
+import { CENTRE_RADIUS, DIMMED_OPACITY, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter } from "./radialTooltip"
-import {
-    AnnularSector,
-    CENTRE_RADIUS,
-    layOutRadialTreemap,
-    MAX_BAND_COUNT,
-    PlacedSector,
-    RadialTreemapPlacement
-} from "./radialTreemapLayout"
+import { AnnularSector, layOutRadialTreemap, MAX_BAND_COUNT, PlacedSector, RadialTreemapPlacement } from "./radialTreemapLayout"
 
 const TWELVE_O_CLOCK = -Math.PI / 2
 const QUARTER_TURN = Math.PI / 2
 const HALF_TURN = Math.PI
 const PIECE_BORDER = { color: "#ffffff", widthPx: 0.5 }
 const WEDGE_OUTLINE = { color: "#ffffff", widthPx: 2.5 }
-const DIMMED_OPACITY = 0.45
-const TRANSITION_MS = 400
 const LABEL_FONT_SIZE_PX = 11
+const LABEL_LINE_HEIGHT_PX = 13
 const LABEL_PADDING_PX = 4
 const MIN_LABEL_LENGTH_PX = 28
-const MIN_LABEL_HEIGHT_PX = 13
 const Z_PIECE = 1
 const Z_OUTLINE = 2
 const Z_LABEL = 3
@@ -46,6 +38,16 @@ interface Frame {
     centreY: number
     radiusPx: number
 }
+
+interface LabelPlacement {
+    x: number
+    y: number
+    rotation: number
+    lengthPx: number
+    heightPx: number
+}
+
+const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
 
 export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
     const placements = layOutRadialTreemap(inputs.centre)
@@ -94,18 +96,19 @@ function drawPlacement(placement: RadialTreemapPlacement, datum: RadialTreemapDa
     return { type: "group", focus: "self", children: [...pieces, ...labels] }
 }
 
-// Redrawing reuses the elements of the previous centre and keeps any setting left out, so each one is set in full.
+// ECharts reuses a node's elements by position, keeping whatever an option leaves out: a piece created where a
+// label was kept the label's position and rotation, so every element states them.
 function drawSector(sector: PlacedSector, color: string, frame: Frame) {
     if (sector.role === "outline") {
         const style = { fill: "none", stroke: WEDGE_OUTLINE.color, lineWidth: WEDGE_OUTLINE.widthPx }
-        return { type: "sector", silent: true, z2: Z_OUTLINE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
+        return { type: "sector", ...UNTRANSFORMED, silent: true, z2: Z_OUTLINE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
     }
     const style = { fill: color, stroke: PIECE_BORDER.color, lineWidth: PIECE_BORDER.widthPx }
     if (sector.role === "centre") {
         const shape = { cx: frame.centreX, cy: frame.centreY, r: sector.outerRadius * frame.radiusPx }
-        return { type: "circle", silent: false, z2: Z_PIECE, shape, style, blur: dimmed() }
+        return { type: "circle", ...UNTRANSFORMED, silent: false, z2: Z_PIECE, shape, style, blur: dimmed() }
     }
-    return { type: "sector", silent: false, z2: Z_PIECE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
+    return { type: "sector", ...UNTRANSFORMED, silent: false, z2: Z_PIECE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
 }
 
 function toScreenShape(sector: AnnularSector, frame: Frame) {
@@ -124,50 +127,55 @@ function drawLabel(sector: PlacedSector, datum: RadialTreemapDatum, frame: Frame
     if (sector.role === "outline") {
         return null
     }
-    const placement = sector.role === "centre" ? centreLabelPlacement(frame) : labelPlacementAlong(sector, frame)
-    if (placement.lengthPx < MIN_LABEL_LENGTH_PX || placement.heightPx < MIN_LABEL_HEIGHT_PX) {
+    const placement = sector.role === "centre" ? centreLabelPlacement(frame) : labelPlacementIn(sector, frame)
+    if (placement.lengthPx < MIN_LABEL_LENGTH_PX || placement.heightPx < LABEL_LINE_HEIGHT_PX) {
         return null
     }
+    const { x, y, rotation, lengthPx } = placement
+    return { type: "text", x, y, rotation, silent: true, z2: Z_LABEL, style: labelStyle(datum, lengthPx), blur: dimmed() }
+}
+
+function labelStyle(datum: RadialTreemapDatum, lengthPx: number) {
     return {
-        type: "text",
-        silent: true,
-        z2: Z_LABEL,
-        x: placement.x,
-        y: placement.y,
-        rotation: placement.rotation,
-        style: {
-            text: datum.displayName,
-            fill: readableTextColor(datum.color),
-            fontSize: LABEL_FONT_SIZE_PX,
-            fontWeight: datum.isCentre || datum.isFile ? "bold" : "normal",
-            align: "center",
-            verticalAlign: "middle",
-            width: placement.lengthPx - LABEL_PADDING_PX,
-            overflow: "truncate"
-        },
-        blur: dimmed()
+        text: datum.displayName,
+        fill: readableTextColor(datum.color),
+        fontSize: LABEL_FONT_SIZE_PX,
+        fontWeight: datum.isCentre || datum.isFile ? "bold" : "normal",
+        align: "center",
+        verticalAlign: "middle",
+        width: lengthPx - LABEL_PADDING_PX,
+        overflow: "truncate"
     }
 }
 
-function centreLabelPlacement(frame: Frame) {
+function centreLabelPlacement(frame: Frame): LabelPlacement {
     const diameterPx = 2 * CENTRE_RADIUS * frame.radiusPx
     return { x: frame.centreX, y: frame.centreY, rotation: 0, lengthPx: diameterPx, heightPx: diameterPx }
 }
 
 // Runs the name along the arc when the piece is wider than deep, along the radius otherwise, and keeps it upright.
-function labelPlacementAlong(sector: AnnularSector, frame: Frame) {
+function labelPlacementIn(sector: AnnularSector, frame: Frame): LabelPlacement {
     const midAngle = TWELVE_O_CLOCK + (sector.startAngle + sector.endAngle) / 2
-    const midRadiusPx = ((sector.innerRadius + sector.outerRadius) / 2) * frame.radiusPx
-    const arcLengthPx = (sector.endAngle - sector.startAngle) * midRadiusPx
-    const depthPx = (sector.outerRadius - sector.innerRadius) * frame.radiusPx
-    const isAlongTheArc = arcLengthPx >= depthPx
+    const innerRadiusPx = sector.innerRadius * frame.radiusPx
+    const outerRadiusPx = sector.outerRadius * frame.radiusPx
+    const midRadiusPx = (innerRadiusPx + outerRadiusPx) / 2
+    const angularSpan = sector.endAngle - sector.startAngle
+    const isAlongTheArc = angularSpan * midRadiusPx >= outerRadiusPx - innerRadiusPx
     return {
         x: frame.centreX + midRadiusPx * Math.cos(midAngle),
         y: frame.centreY + midRadiusPx * Math.sin(midAngle),
         rotation: upright(isAlongTheArc ? QUARTER_TURN - midAngle : -midAngle),
-        lengthPx: Math.max(arcLengthPx, depthPx),
-        heightPx: Math.min(arcLengthPx, depthPx)
+        ...(isAlongTheArc
+            ? roomAlongTheArc(angularSpan, midRadiusPx, outerRadiusPx - innerRadiusPx, outerRadiusPx)
+            : { lengthPx: outerRadiusPx - innerRadiusPx, heightPx: angularSpan * innerRadiusPx })
     }
+}
+
+// A straight name drifts outwards from the arc towards its ends; it stops where its outer corners reach the rim.
+function roomAlongTheArc(angularSpan: number, midRadiusPx: number, depthPx: number, outerRadiusPx: number) {
+    const outerEdgeOfTextPx = midRadiusPx + LABEL_LINE_HEIGHT_PX / 2
+    const halfChordAtTheRimPx = Math.sqrt(Math.max(0, outerRadiusPx ** 2 - outerEdgeOfTextPx ** 2))
+    return { lengthPx: Math.min(angularSpan * midRadiusPx, 2 * halfChordAtTheRimPx), heightPx: depthPx }
 }
 
 function upright(rotation: number): number {
@@ -178,7 +186,6 @@ function upright(rotation: number): number {
     return normalized < -QUARTER_TURN ? normalized + HALF_TURN : normalized
 }
 
-// One state object shared by all elements left the header strips unpainted.
 function dimmed() {
     return { style: { opacity: DIMMED_OPACITY } }
 }

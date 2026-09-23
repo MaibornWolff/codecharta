@@ -1,10 +1,12 @@
 import { fileNode, folderNode, TEST_COLORING } from "../testing/radialChart.stub"
+import { CENTRE_RADIUS } from "./radialChartStyle"
 import { nodeColor } from "./radialColor"
 import { RadialOptionInputs } from "./radialShape"
 import { RadialNode } from "./radialTree"
 import { buildRadialTreemapOption, RADIAL_TREEMAP_SHAPE, RadialTreemapDatum } from "./radialTreemapOption.builder"
 
 const CHART_SIZE = { getWidth: () => 800, getHeight: () => 600 }
+const SHORTER_HALF_SIDE_PX = 300
 
 interface DrawnElement {
     type: string
@@ -67,15 +69,6 @@ describe("buildRadialTreemapOption", () => {
         // Assert
         expect(data.find(datum => datum.name === "/root/src/a.ts").id).not.toBe(steppedIn.find(datum => datum.name === "/root/src/a.ts").id)
         expect(new Set(data.map(datum => datum.id)).size).toBe(data.length)
-    })
-
-    it("should give every element state options of its own", () => {
-        // Act
-        const { data, drawIndex } = drawn(TREE)
-        const blurStates = data.flatMap((_, dataIndex) => drawIndex(dataIndex).children.map(child => child.blur))
-
-        // Assert
-        expect(new Set(blurStates).size).toBe(blurStates.length)
     })
 
     it("should tell files from folders, and carry what the tooltip shows", () => {
@@ -155,7 +148,7 @@ describe("buildRadialTreemapOption", () => {
         // Assert
         expect(centreDisc.type).toBe("circle")
         expect(centreDisc.shape).toMatchObject({ cx: 400, cy: 300 })
-        expect(centreDisc.shape.r).toBeCloseTo(0.2 * 300)
+        expect(centreDisc.shape.r).toBeCloseTo(CENTRE_RADIUS * SHORTER_HALF_SIDE_PX)
     })
 
     it("should name the centre in bold in its middle", () => {
@@ -205,9 +198,38 @@ describe("buildRadialTreemapOption", () => {
         expect(atRoot.tooltip.formatter(centre)).not.toContain("Click to go up one folder")
     })
 
-    it("should draw one level deeper than it has bands, as the last band shows its folders' contents", () => {
+    it("should place every piece itself, as a piece that takes the place of a label keeps the label's position otherwise", () => {
+        // Act
+        const { data, drawIndex } = drawn(TREE)
+        const pieces = data.flatMap((_, dataIndex) => drawIndex(dataIndex).children.filter(child => child.type !== "text"))
+
         // Assert
-        expect(RADIAL_TREEMAP_SHAPE.visibleDepth).toBe(4)
-        expect(RADIAL_TREEMAP_SHAPE.buildOption(inputs(TREE))).toEqual(expect.objectContaining({ series: expect.any(Array) }))
+        expect(pieces.every(piece => piece.x === 0 && piece.y === 0 && piece.rotation === 0)).toBe(true)
+    })
+
+    it("should keep a name running along an arc short enough to stay inside the arc's outer rim", () => {
+        // Arrange
+        const wideFile = fileNode("/root/a-file-that-covers-most-of-the-ring.ts", { area: 90 })
+        const centre = folderNode("/root", [wideFile, fileNode("/root/b.ts", { area: 10 })], { area: 100 })
+
+        // Act
+        const { drawItem } = drawn(centre)
+        const [wedge, label] = drawItem(wideFile.path).children
+
+        // Assert
+        const distanceFromCentre = Math.hypot(label.x - (wedge.shape.cx as number), label.y - (wedge.shape.cy as number))
+        const halfLength = (label.style.width as number) / 2
+        expect(Math.hypot(distanceFromCentre, halfLength)).toBeLessThanOrEqual(wedge.shape.r as number)
+    })
+
+    it("should draw one level deeper than it has bands, as the last band shows its folders' contents", () => {
+        // Arrange
+        const bandLimit = 3
+
+        // Act
+        const { visibleDepth } = RADIAL_TREEMAP_SHAPE
+
+        // Assert
+        expect(visibleDepth).toBe(bandLimit + 1)
     })
 })

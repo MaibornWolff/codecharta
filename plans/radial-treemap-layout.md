@@ -20,8 +20,8 @@ children. It shares the sunburst's host, navigation and surrounding UI.
 - `isSunburstLayout` gate → `isRadialLayout`; context-menu origin `"sunburst"` → `"radialMap"`
 
 ### 2. Geometry (pure, TDD)
-- Angles: each node's share of its parent's angle, largest first (ties by path), so every node keeps the angle it
-  has in the sunburst
+- Angles: each node's share of its parent's angle, largest first as in the sunburst (ties by path here, by data order
+  there)
 - Band k (k = 1..3, one per folder level below the centre) holds the nodes at depth k as wedges: a thin header strip
   at the inner edge shows the node itself, the rest is a squarified treemap of its direct children, laid out in
   arc length × band width and mapped back to angle × radius (area-preserving)
@@ -61,6 +61,10 @@ children. It shares the sunburst's host, navigation and surrounding UI.
 - Stepping to another centre used to reshape the previous centre's elements, whose roles differ by depth; pieces were
   left stranded mid-animation, header strips unpainted and stray arcs showed in exported screenshots. Items are keyed
   by centre and path now, so a new centre draws fresh elements, and every element gets its own state options
+- Review round (2026-09-23, sub-agent): every piece states its position and rotation (a piece created where a label
+  was kept the label's transform), names along an arc stop before their corners pass the rim, switching to a layout
+  that draws fewer levels re-centres on a selected file it no longer shows, shared radii/opacity/transition moved to
+  `radialChartStyle.ts`
 - Hovering with the pointer does not dim the other nodes in either radial layout (hover from the explorer does);
   this was already so for the sunburst and is left as it is
 - Verified: format, unit gate (466 suites), lint, tsc, 103/103 e2e on local bundled Chromium, and the chart looked at

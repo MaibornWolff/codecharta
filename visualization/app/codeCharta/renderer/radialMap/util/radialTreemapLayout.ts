@@ -1,9 +1,8 @@
 import { HierarchyRectangularNode, hierarchy, treemap, treemapSquarify } from "d3-hierarchy"
+import { CENTRE_RADIUS, OUTER_RADIUS } from "./radialChartStyle"
 import { RadialNode } from "./radialTree"
 
 export const MAX_BAND_COUNT = 3
-export const CENTRE_RADIUS = 0.2
-export const OUTER_RADIUS = 0.95
 
 const FULL_TURN = 2 * Math.PI
 const HEADER_SHARE_OF_BAND = 0.15
