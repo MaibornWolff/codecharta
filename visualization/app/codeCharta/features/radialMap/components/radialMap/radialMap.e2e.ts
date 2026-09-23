@@ -204,6 +204,15 @@ test.describe("Radial treemap layout", () => {
 
         // Assert
         await expect(inspector.nodeName()).toHaveText("sample2.cc.json")
+
+        // Act
+        await radialTreemap.waitUntilCentredOn("/root/sample2.cc.json")
+        await radialTreemap.clickAt(CENTRE)
+        await radialTreemap.waitUntilCentredOn("/root")
+        await radialTreemap.clickAt(HEADER_STRIP)
+
+        // Assert
+        await radialTreemap.waitUntilCentredOn("/root/sample2.cc.json")
     })
 
     test("should select a file from its cell without stepping into anything", async ({ page }) => {

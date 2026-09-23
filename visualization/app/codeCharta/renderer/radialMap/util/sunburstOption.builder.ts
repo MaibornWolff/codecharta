@@ -1,3 +1,4 @@
+import { CENTRE_RADIUS, DIMMED_OPACITY, OUTER_RADIUS, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter } from "./radialTooltip"
@@ -5,15 +6,13 @@ import { RadialNode } from "./radialTree"
 
 export const VISIBLE_RING_COUNT = 3
 
-const CENTRE_RADIUS_PERCENT = 20
-const OUTER_RADIUS_PERCENT = 95
+const CENTRE_RADIUS_PERCENT = CENTRE_RADIUS * 100
+const OUTER_RADIUS_PERCENT = OUTER_RADIUS * 100
 const MIN_LABEL_ANGLE_DEGREES = 5
 const LABEL_PADDING_PX = 8
 const SEGMENT_BORDER_COLOR = "#ffffff"
 const SEGMENT_BORDER_WIDTH_PX = 1
-const RING_TRANSITION_MS = 400
 const HOVER_FADE = { duration: 500, easing: "cubicOut" }
-const DIMMED_OPACITY = 0.45
 
 export interface SunburstDatum {
     name: string
@@ -49,7 +48,7 @@ export function buildSunburstOption(inputs: RadialOptionInputs) {
                 stateAnimation: HOVER_FADE,
                 itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: SEGMENT_BORDER_WIDTH_PX },
                 label: { formatter: labelOf },
-                animationDurationUpdate: RING_TRANSITION_MS,
+                animationDurationUpdate: TRANSITION_MS,
                 levels: levelsAround(inputs.centre, inputs.chartSizeInPixels / 2)
             }
         ]

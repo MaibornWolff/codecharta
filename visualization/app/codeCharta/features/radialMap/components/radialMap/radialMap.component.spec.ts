@@ -139,6 +139,26 @@ describe("RadialMapComponent", () => {
         expect(lastDrawnCentre()).toBe("/root")
     })
 
+    it("should centre on the folder of a selected file when a layout that draws fewer levels no longer shows it", async () => {
+        // Arrange
+        const deepTree = folderNode("/root", [
+            folderNode("/root/a", [folderNode("/root/a/b", [folderNode("/root/a/b/c", [fileNode("/root/a/b/c/d.ts")])])])
+        ])
+        const { store, fixture } = await setup({
+            tree: deepTree,
+            layoutAlgorithm: LayoutAlgorithm.RadialTreeMap,
+            selectedPath: "/root/a/b/c/d.ts"
+        })
+
+        // Act
+        store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.Sunburst)
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(lastDrawnCentre()).toBe("/root/a/b/c")
+    })
+
     it("should centre on the selected folder, and on the folder of a selected file", async () => {
         // Arrange
         const { store, fixture } = await setup({ selectedPath: "/root/src" })
