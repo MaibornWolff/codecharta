@@ -6,7 +6,7 @@ import {
     findParentFolder,
     RadialChartComponent,
     type RightClickedNode,
-    VISIBLE_RING_COUNT
+    SUNBURST_SHAPE
 } from "../../../../renderer/radialMap/radialMap.facade"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import {
@@ -42,6 +42,7 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
 })
 export class RadialMapComponent {
     protected readonly bottomInset = BOTTOM_INSET_ABOVE_THE_BARS
+    protected readonly shape = SUNBURST_SHAPE
     private readonly readStore = inject(RadialMapReadStore)
     private readonly writeStore = inject(RadialMapWriteStore)
 
@@ -111,7 +112,7 @@ export class RadialMapComponent {
         if (!view) {
             return false
         }
-        const shownNode = findClosestNode(view.centre, path, VISIBLE_RING_COUNT)
+        const shownNode = findClosestNode(view.centre, path, this.shape.visibleDepth)
         return shownNode.isFile && shownNode.path === path
     }
 }

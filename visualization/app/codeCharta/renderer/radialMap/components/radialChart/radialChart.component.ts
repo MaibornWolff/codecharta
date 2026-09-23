@@ -12,8 +12,8 @@ import {
 } from "@angular/core"
 import { RadialChartRegistry } from "../../services/radialChart.registry"
 import { RadialColoring } from "../../util/radialColor"
+import { RadialShape } from "../../util/radialShape"
 import { findClosestNode, isInside, RadialMetrics, RadialNode } from "../../util/radialTree"
-import { buildSunburstOption, VISIBLE_RING_COUNT } from "../../util/sunburstOption.builder"
 import { RadialChartHost } from "./radialChartHost"
 
 export interface RightClickedNode {
@@ -29,6 +29,7 @@ export interface RightClickedNode {
     host: { class: "block h-full w-full" }
 })
 export class RadialChartComponent implements OnDestroy {
+    readonly shape = input.required<RadialShape>()
     readonly tree = input.required<RadialNode>()
     readonly centre = input.required<RadialNode>()
     readonly hoveredPath = input<string | null>(null)
@@ -57,7 +58,7 @@ export class RadialChartComponent implements OnDestroy {
         if (hoveredPath === null || !isInside(hoveredPath, centre.path)) {
             return null
         }
-        const displayedNode = findClosestNode(centre, hoveredPath, VISIBLE_RING_COUNT)
+        const displayedNode = findClosestNode(centre, hoveredPath, this.shape().visibleDepth)
         return displayedNode === centre ? null : displayedNode.path
     })
 
@@ -77,7 +78,7 @@ export class RadialChartComponent implements OnDestroy {
             return
         }
         this.chartHost.render(
-            buildSunburstOption({
+            this.shape().buildOption({
                 centre: this.centre(),
                 isMapRoot: this.centre() === this.tree(),
                 metrics: this.metrics(),

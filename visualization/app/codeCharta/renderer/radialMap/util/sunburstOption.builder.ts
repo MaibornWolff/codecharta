@@ -1,6 +1,7 @@
-import { escapeHtml } from "../../../util/escapeHtml"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
-import { RadialMetrics, RadialNode } from "./radialTree"
+import { RadialOptionInputs, RadialShape } from "./radialShape"
+import { buildTooltipFormatter } from "./radialTooltip"
+import { RadialNode } from "./radialTree"
 
 export const VISIBLE_RING_COUNT = 3
 
@@ -13,15 +14,6 @@ const SEGMENT_BORDER_WIDTH_PX = 1
 const RING_TRANSITION_MS = 400
 const HOVER_FADE = { duration: 500, easing: "cubicOut" }
 const DIMMED_OPACITY = 0.45
-const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
-
-export interface SunburstOptionInputs {
-    centre: RadialNode
-    isMapRoot: boolean
-    metrics: RadialMetrics
-    coloring: RadialColoring
-    chartSizeInPixels: number
-}
 
 export interface SunburstDatum {
     name: string
@@ -39,7 +31,9 @@ interface SunburstFormatterParams {
     data?: SunburstDatum
 }
 
-export function buildSunburstOption(inputs: SunburstOptionInputs) {
+export const SUNBURST_SHAPE: RadialShape = { visibleDepth: VISIBLE_RING_COUNT, buildOption: buildSunburstOption }
+
+export function buildSunburstOption(inputs: RadialOptionInputs) {
     return {
         aria: { enabled: true },
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
@@ -112,21 +106,4 @@ function toDatum(node: RadialNode, coloring: RadialColoring, ringsLeft: number, 
 
 function labelOf({ data }: SunburstFormatterParams): string {
     return data?.displayName ?? ""
-}
-
-function buildTooltipFormatter(metrics: RadialMetrics, isMapRoot: boolean) {
-    return ({ data }: SunburstFormatterParams): string => {
-        if (!data) {
-            return ""
-        }
-        const rows = [
-            `<b>${escapeHtml(data.name)}</b>`,
-            `${escapeHtml(metrics.areaMetric)}: ${numberFormatter.format(data.value)}`,
-            `${escapeHtml(metrics.colorMetric)}: ${data.colorValue === undefined ? "–" : numberFormatter.format(data.colorValue)}`
-        ]
-        if (data.isCentre && !isMapRoot) {
-            rows.push("<i>Click to go up one folder</i>")
-        }
-        return rows.join("<br/>")
-    }
 }
