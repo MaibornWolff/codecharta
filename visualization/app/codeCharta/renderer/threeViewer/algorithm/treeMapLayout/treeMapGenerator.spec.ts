@@ -9,6 +9,7 @@ import {
     VALID_NODE_WITH_PATH,
     VALID_NODE_WITH_PATH_AND_DELTAS
 } from "../../../../mocks/dataMocks"
+import { deepFreeze } from "../../../../mocks/deepFreeze"
 import { NameDataPair } from "../../../../model/codeCharta.api.model"
 import { CcState, CodeMapNode, Node, NodeMetricData } from "../../../../model/codeCharta.model"
 import { fileWithFixedFolders } from "../../../../resources/fixed-folders/fixed-folders-example"
@@ -46,6 +47,17 @@ describe("treeMapGenerator", () => {
     })
 
     describe("create Treemap nodes", () => {
+        it("should leave the map untouched when laying it out", () => {
+            // Arrange
+            const frozenMap = deepFreeze(map)
+
+            // Act
+            const layOutFrozenMap = () => SquarifiedLayoutGenerator.createTreemapNodes(frozenMap, state, metricData, isDeltaState)
+
+            // Assert
+            expect(layOutFrozenMap).not.toThrow()
+        })
+
         it("create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other", () => {
             map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE.map)
 

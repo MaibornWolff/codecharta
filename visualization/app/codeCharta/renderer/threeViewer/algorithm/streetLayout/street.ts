@@ -10,6 +10,7 @@ export enum StreetOrientation {
 
 export default abstract class Street extends BoundingBox {
     streetRect: Rectangle | undefined
+    label = this.mapNode.name
     protected spacer = 2
 
     protected abstract layoutStreet(origin: Vector2, maxNodeSideLength: number): CodeMapNode

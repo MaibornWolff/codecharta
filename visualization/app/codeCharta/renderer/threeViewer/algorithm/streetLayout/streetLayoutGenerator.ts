@@ -8,7 +8,7 @@ import HorizontalStreet from "./horizontalStreet"
 import House from "./house"
 import SquarifiedTreeMap from "./squarifiedTreeMap"
 import { StreetOrientation } from "./street"
-import { StreetViewHelper } from "./streetViewHelper"
+import { MergedFolder, StreetViewHelper } from "./streetViewHelper"
 import TreeMap from "./treeMap"
 import VerticalStreet from "./verticalStreet"
 
@@ -25,10 +25,10 @@ export class StreetLayoutGenerator {
         const maxHeight = metricData.find(x => x.name === state.mapState.heightMetric).maxValue * mapSizeResolutionScaling
 
         const metricName = state.mapState.areaMetric
-        const mergedMap = StreetViewHelper.mergeDirectories(map, metricName)
+        const mergedRoot = StreetViewHelper.mergeDirectories(map, metricName)
         const maxTreeMapFiles = state.preferences.maxTreeMapFiles
-        const childBoxes = this.createBoxes(mergedMap, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
-        const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
+        const childBoxes = this.createBoxes(mergedRoot.node, metricName, state, matcher, StreetOrientation.Vertical, 1, maxTreeMapFiles)
+        const rootStreet = this.createStreet(mergedRoot, StreetOrientation.Horizontal, childBoxes, 0)
         rootStreet.calculateDimension(metricName)
         const margin = state.mapState.margin * MARGIN_SCALING_FACTOR
         const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
@@ -55,7 +55,7 @@ export class StreetLayoutGenerator {
     ): BoundingBox[] {
         const children: BoundingBox[] = []
         const areaMetric = state.mapState.areaMetric
-        for (let child of node.children) {
+        for (const child of node.children) {
             if (isLeaf(child)) {
                 children.push(new House(child))
                 continue
@@ -70,9 +70,9 @@ export class StreetLayoutGenerator {
                 const treeMap = StreetLayoutGenerator.createTreeMap(child)
                 children.push(treeMap)
             } else {
-                child = StreetViewHelper.mergeDirectories(child, areaMetric)
+                const mergedChild = StreetViewHelper.mergeDirectories(child, areaMetric)
                 const streetChildren = StreetLayoutGenerator.createBoxes(
-                    child,
+                    mergedChild.node,
                     metricName,
                     state,
                     matcher,
@@ -80,17 +80,20 @@ export class StreetLayoutGenerator {
                     depth + 1,
                     maxTreeMapFiles
                 )
-                const street = StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth)
+                const street = StreetLayoutGenerator.createStreet(mergedChild, orientation, streetChildren, depth)
                 children.push(street)
             }
         }
         return children
     }
 
-    private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {
-        return orientation === StreetOrientation.Horizontal
-            ? new HorizontalStreet(node, children, depth)
-            : new VerticalStreet(node, children, depth)
+    private static createStreet(folder: MergedFolder, orientation: StreetOrientation, children: BoundingBox[], depth: number) {
+        const street =
+            orientation === StreetOrientation.Horizontal
+                ? new HorizontalStreet(folder.node, children, depth)
+                : new VerticalStreet(folder.node, children, depth)
+        street.label = folder.label
+        return street
     }
 
     private static createTreeMap(node: CodeMapNode): TreeMap {

@@ -79,6 +79,7 @@ export default class HorizontalStreet extends Street {
 
         return {
             ...this.mapNode,
+            name: this.label,
             value: this.metricValue,
             rect: this.streetRect,
             zOffset: 0

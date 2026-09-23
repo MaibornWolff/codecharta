@@ -41,15 +41,27 @@ describe("StreetViewHelper", () => {
     })
 
     describe("mergeDirectories", () => {
-        it("should merge directory names", () => {
-            // TODO test needs to be corrected
-            //const node = StreetViewHelper.mergeDirectories(innerNode, "rloc")
-            //expect(node.name).toBe(innerNode.name + "/" + leafNode.name)
+        it("should merge a folder with the subfolder holding all of its size and label it after both", () => {
+            // Arrange
+            const subfolder = { name: "src", path: "/root/src", type: NodeType.FOLDER, attributes: {}, children: [leafNode] } as CodeMapNode
+            innerNode.children = [subfolder]
+
+            // Act
+            const merged = StreetViewHelper.mergeDirectories(innerNode, "rloc")
+
+            // Assert
+            expect(merged.node).toBe(subfolder)
+            expect(merged.label).toBe("root/src")
+            expect(subfolder.name).toBe("src")
         })
 
-        it("should not merge directory names", () => {
-            const node = StreetViewHelper.mergeDirectories(innerNode, "rloc")
-            expect(node.name).toBe(innerNode.name)
+        it("should keep a folder whose size is spread over files", () => {
+            // Arrange & Act
+            const merged = StreetViewHelper.mergeDirectories(innerNode, "rloc")
+
+            // Assert
+            expect(merged.node).toBe(innerNode)
+            expect(merged.label).toBe(innerNode.name)
         })
     })
 
