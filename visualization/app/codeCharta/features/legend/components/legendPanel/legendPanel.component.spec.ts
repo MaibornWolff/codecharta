@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { edgeMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { LegendPanelComponent } from "./legendPanel.component"
 
@@ -88,6 +88,31 @@ describe("LegendPanelComponent", () => {
         expect(screen.getByText("+Δ positive delta")).not.toBeNull()
         expect(screen.getByText("–Δ negative delta")).not.toBeNull()
         expect(screen.queryByText("Color scale")).toBeNull()
+    })
+
+    it("should add a line for the folders in the radial layouts", async () => {
+        // Arrange
+        const { renderResult, store } = await setup()
+        store.overrideSelector(isRadialLayoutSelector, true)
+        store.refreshState()
+        renderResult.detectChanges()
+
+        // Act
+        fireEvent.click(screen.getByText("LEGEND"))
+
+        // Assert
+        expect(screen.getByTestId("legend-folders-row").textContent).toContain("folders: their worst file, tinted")
+    })
+
+    it("should leave out the folders line on the 3D map", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireEvent.click(screen.getByText("LEGEND"))
+
+        // Assert
+        expect(screen.queryByTestId("legend-folders-row")).toBeNull()
     })
 
     it("should shift the panel and the button left when the inspector sidebar is visible", async () => {

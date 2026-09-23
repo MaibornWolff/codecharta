@@ -12,6 +12,9 @@
             } @else {
                 <cc-legend-metrics-section></cc-legend-metrics-section>
                 <cc-legend-color-scale-section></cc-legend-color-scale-section>
+                @if (isRadialLayout()) {
+                    <cc-legend-folders-row></cc-legend-folders-row>
+                }
             }
 
             <div class="border-base-300 border-t pt-2">

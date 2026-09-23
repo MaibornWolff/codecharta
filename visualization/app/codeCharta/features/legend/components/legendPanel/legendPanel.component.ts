@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, OnDes
 import { toSignal } from "@angular/core/rxjs-interop"
 import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { injectIsRadialLayout } from "../../../shared/facade"
 import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 import { LegendColorRowComponent } from "./legendColorRow.component"
 import { LegendColorScaleSectionComponent } from "./legendColorScaleSection.component"
 import { LegendDeltaColorsSectionComponent } from "./legendDeltaColorsSection.component"
 import { LegendEdgeColorsSectionComponent } from "./legendEdgeColorsSection.component"
+import { LegendFoldersRowComponent } from "./legendFoldersRow.component"
 import { LegendMetricsSectionComponent } from "./legendMetricsSection.component"
 import { LegendToggleButtonComponent } from "./legendToggleButton.component"
 
@@ -20,6 +22,7 @@ import { LegendToggleButtonComponent } from "./legendToggleButton.component"
         LegendDeltaColorsSectionComponent,
         LegendEdgeColorsSectionComponent,
         LegendColorRowComponent,
+        LegendFoldersRowComponent,
         LegendToggleButtonComponent
     ]
 })
@@ -30,6 +33,7 @@ export class LegendPanelComponent implements OnInit, OnDestroy {
 
     readonly isOpen = signal(false)
     readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
+    readonly isRadialLayout = injectIsRadialLayout()
 
     readonly panelBottom = `calc(${LEGEND_BARS_OFFSET} + 12px)`
     readonly panelRight = computed(() => (this.inspectorVisibilityService.isVisible() ? "calc(var(--cc-inspector-width) + 40px)" : "40px"))
