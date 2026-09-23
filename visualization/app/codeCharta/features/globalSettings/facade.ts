@@ -33,12 +33,4 @@ export class GlobalSettingsFacade {
     resetCameraIfNewFileIsLoaded$() {
         return this.preferencesReadWindow.resetCameraIfNewFileIsLoaded$
     }
-
-    layoutAlgorithm$() {
-        return this.mapStateReadWindow.layoutAlgorithm$
-    }
-
-    maxTreeMapFiles$() {
-        return this.preferencesReadWindow.maxTreeMapFiles$
-    }
 }

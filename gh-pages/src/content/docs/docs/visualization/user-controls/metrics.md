@@ -17,6 +17,17 @@ Each metric column shows the chosen metric's name and the summed (Σ) value acro
 
 If your map contains **edges** (connections between buildings, for example call or co-change relationships), an additional edge metric appears in the bar with its own settings popover for previewing and styling those edges.
 
+## Layout
+
+The **Layout** tab on top of the bar names the current map layout. Click it to pick one of four layouts:
+
+- **Squarified TreeMap** – the default, traditional treemap layout that packs buildings into rectangles with aspect ratios close to squares for easy comparison.
+- **StreetMap** – a street-like layout that places buildings along paths, mirroring the folder hierarchy as a network of streets.
+- **TreeMapStreet** – a hybrid layout that combines the treemap and street approaches.
+- **Sunburst** – a flat chart of your folders and files as rings around the folder you are in. Height, edges and labels do not apply to it, so the bar hides them while it is shown.
+
+When **TreeMapStreet** is picked, a **Maximum TreeMap Files** control appears under the layouts (a slider plus a number input, range 1–1000) that limits how many files are rendered as a treemap before the street layout takes over.
+
 ## Area
 
 The Area metric sets the base footprint of every building – larger values produce larger buildings. A common choice is lines of code (`rloc`), so that bigger files become bigger buildings.

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Sunburst map layout**: choose "Sunburst" as the map layout to see your folders and files as rings around the folder you are in, sized by the area metric and coloured by the colour metric, and click a folder to step into it or the centre to step back out.
 
+### Changed
+
+- **Layout on the metric bar**: a tab on top of the metric bar names the map layout and switches between all four, with TreeMapStreet's file limit beside them.
+
 ## [2.5.3] - 2026-09-22
 
 ### Changed

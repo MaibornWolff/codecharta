@@ -60,6 +60,7 @@ describe("MetricsBarComponent", () => {
         expect(screen.getByTestId("metric-segment-color")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-labels")).not.toBeNull()
         expect(screen.queryByTestId("metric-segment-edges")).toBeNull()
+        expect(screen.getByTestId("metrics-bar-layout-tab")).not.toBeNull()
     })
 
     it("should leave out height, edges and labels while the sunburst is shown", async () => {
@@ -73,6 +74,14 @@ describe("MetricsBarComponent", () => {
         expect(screen.queryByTestId("metric-segment-height")).toBeNull()
         expect(screen.queryByTestId("metric-segment-edges")).toBeNull()
         expect(screen.queryByTestId("metric-segment-labels")).toBeNull()
+    })
+
+    it("should keep the layout tab on the bar while the sunburst is shown", async () => {
+        // Arrange & Act
+        await setup({ isSunburst: true })
+
+        // Assert
+        expect(screen.getByTestId("metrics-bar-layout-tab")).not.toBeNull()
     })
 
     it("should swap color metric segment for color settings segment in delta state", async () => {

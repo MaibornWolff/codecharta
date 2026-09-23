@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState, LayoutAlgorithm } from "../../../model/codeCharta.model"
-import { setHideFlatBuildings, setIsWhiteBackground, setLayoutAlgorithm } from "../../../stores/mapState/mapState.write.facade"
+import { CcState } from "../../../model/codeCharta.model"
+import { setHideFlatBuildings, setIsWhiteBackground } from "../../../stores/mapState/mapState.write.facade"
 import {
     setExperimentalFeaturesEnabled,
-    setMaxTreeMapFiles,
     setResetCameraIfNewFileIsLoaded,
     setScreenshotToClipboardEnabled
 } from "../../../stores/preferences/preferences.write.facade"
@@ -33,13 +32,5 @@ export class GlobalSettingsWriteStore {
 
     setScreenshotToClipboard(value: boolean) {
         this.store.dispatch(setScreenshotToClipboardEnabled({ value }))
-    }
-
-    setLayoutAlgorithm(value: LayoutAlgorithm) {
-        this.store.dispatch(setLayoutAlgorithm({ value }))
-    }
-
-    setMaxTreeMapFiles(value: number) {
-        this.store.dispatch(setMaxTreeMapFiles({ value }))
     }
 }

@@ -18,6 +18,7 @@ import { ColorSettingsPopoverComponent } from "../colorSettingsPopover/colorSett
 import { EdgeSegmentComponent } from "../edgeSegment/edgeSegment.component"
 import { HeightSegmentComponent } from "../heightSegment/heightSegment.component"
 import { LabelsScenariosSegmentComponent } from "../labelsScenariosSegment/labelsScenariosSegment.component"
+import { LayoutTabComponent } from "../layoutTab/layoutTab.component"
 import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkColorHeightButton.component"
 
 @Component({
@@ -32,6 +33,7 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
         EdgeSegmentComponent,
         HeightSegmentComponent,
         LabelsScenariosSegmentComponent,
+        LayoutTabComponent,
         LinkColorHeightButtonComponent
     ],
     hostDirectives: [BarShellDirective, PublishesHeightDirective],

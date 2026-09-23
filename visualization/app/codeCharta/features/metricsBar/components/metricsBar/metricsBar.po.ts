@@ -45,4 +45,27 @@ export class MetricsBarPageObject {
         const text = await this.selectedAreaMetricName().innerText()
         return text.trim()
     }
+
+    layoutTab(): Locator {
+        return this.page.getByTestId("metrics-bar-layout-tab")
+    }
+
+    maxTreeMapFilesInput(): Locator {
+        return this.page.getByTestId("metrics-bar-layout-picker").getByRole("spinbutton", { name: "Maximum TreeMap Files" })
+    }
+
+    async openLayoutPicker() {
+        await this.layoutTab().click()
+        await this.page.getByTestId("metrics-bar-layout-picker").waitFor({ state: "visible", timeout: 10_000 })
+    }
+
+    async pickLayout(layout: string) {
+        await this.page.locator(`[data-testid='metrics-bar-layout-picker'] button[data-layout='${layout}']`).click()
+    }
+
+    async switchLayoutTo(layout: string) {
+        await this.openLayoutPicker()
+        await this.pickLayout(layout)
+        await this.page.keyboard.press("Escape")
+    }
 }

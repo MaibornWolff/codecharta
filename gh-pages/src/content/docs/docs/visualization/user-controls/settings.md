@@ -2,19 +2,9 @@
 title: "Settings"
 ---
 
-The **Settings** dialog, titled **Global Configuration**, holds application-wide preferences that affect how the map is laid out and rendered, independent of which file is loaded. Open it from the **Settings** entry in the top-right navigation. Unlike per-map metric controls, the options here are remembered across sessions and apply to whatever map you view next.
+The **Settings** dialog, titled **Global Configuration**, holds application-wide preferences that affect how the map is rendered, independent of which file is loaded. Open it from the **Settings** entry in the top-right navigation. Unlike per-map metric controls, the options here are remembered across sessions and apply to whatever map you view next.
 
 ![Global Configuration dialog](/assets/images/docs/visualization/user-controls/settings.jpeg)
-
-## Map Layout
-
-The **Map Layout** dropdown selects the algorithm used to arrange the buildings of the treemap. The available options are:
-
-- **Squarified TreeMap** – the default, traditional treemap layout that packs buildings into rectangles with aspect ratios close to squares for easy comparison.
-- **StreetMap** – a street-like layout that places buildings along paths, mirroring the folder hierarchy as a network of streets.
-- **TreeMapStreet** – a hybrid layout that combines the treemap and street approaches.
-
-When **TreeMapStreet** is selected, an additional **Maximum TreeMap Files** control appears (a slider plus a number input, range 1–1000) that limits how many files are rendered as a treemap before the street layout takes over.
 
 ## Display and behavior options
 
@@ -30,7 +20,7 @@ Each of the following toggles switches a single global preference on or off:
 
 The dialog provides two reset buttons with different scopes:
 
-- **Reset global settings** – restores only the global preferences in this dialog (map layout, maximum treemap files, hide flattened buildings, white background, and reset-camera behavior) to their defaults. The loaded map and selected metrics are left untouched.
+- **Reset global settings** – restores only the global preferences (hide flattened buildings, white background, reset-camera behavior, and the map layout and maximum treemap files chosen on the [metric bar](/docs/visualization/user-controls/metrics#layout)) to their defaults. The loaded map and selected metrics are left untouched.
 - **Reset map to default** – performs a full reset: uploaded maps, selected metrics, and settings are all returned to their defaults. Because this is destructive, it first asks for confirmation ("Confirm reset map to default") before clearing your current session.
 
 ## External links
