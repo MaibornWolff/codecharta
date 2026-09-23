@@ -1,5 +1,5 @@
 <div class="flex flex-col items-stretch gap-1.5 px-2 py-1 rounded-md transition-colors max-w-[220px] min-w-[160px]">
-    @if (!isSunburst()) {
+    @if (!isRadialLayout()) {
         <div class="flex flex-col gap-1" data-testid="metric-segment-labels">
             <div class="flex items-center justify-between gap-1">
                 <span class="text-[10px] uppercase tracking-wide opacity-70">Labels</span>
@@ -41,7 +41,7 @@
     </div>
 </div>
 
-@if (!isSunburst()) {
+@if (!isRadialLayout()) {
     <cc-settings-popover-shell popoverId="metric-settings-popover-labels" anchorName="metric-segment-labels" widthClass="w-80">
         <cc-label-settings-panel></cc-label-settings-panel>
     </cc-settings-popover-shell>

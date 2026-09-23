@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
-import { colorMetricSelector, isSunburstLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { colorMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
@@ -14,11 +14,11 @@ describe("ColorSegmentComponent", () => {
     async function setup({
         colorMetric = "mcc",
         isLinked = false,
-        isSunburst = false
+        isRadialLayout = false
     }: {
         colorMetric?: string
         isLinked?: boolean
-        isSunburst?: boolean
+        isRadialLayout?: boolean
     } = {}) {
         return render(ColorSegmentComponent, {
             providers: [
@@ -27,7 +27,7 @@ describe("ColorSegmentComponent", () => {
                     selectors: [
                         { selector: colorMetricSelector, value: colorMetric },
                         { selector: isColorMetricLinkedToHeightMetricSelector, value: isLinked },
-                        { selector: isSunburstLayoutSelector, value: isSunburst }
+                        { selector: isRadialLayoutSelector, value: isRadialLayout }
                     ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -100,7 +100,7 @@ describe("ColorSegmentComponent", () => {
 
     it("should keep the color metric selectable in the sunburst even when it is linked to the height metric", async () => {
         // Arrange & Act
-        await setup({ isLinked: true, isSunburst: true })
+        await setup({ isLinked: true, isRadialLayout: true })
 
         // Assert
         const colorCard = screen.getByTestId("metric-segment-color")

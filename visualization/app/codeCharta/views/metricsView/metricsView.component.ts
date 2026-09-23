@@ -9,7 +9,8 @@ import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuComponent
 } from "../../features/nodeContextMenu/facade"
-import { injectIsSunburstLayout, LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
+import { RadialMapComponent } from "../../features/radialMap/facade"
+import { injectIsRadialLayout, LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
     EXPLORER_CAPABILITIES,
@@ -27,7 +28,6 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
-import { SunburstMapComponent } from "../../features/sunburst/facade"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
 import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
@@ -54,7 +54,7 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         LegendPanelComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent,
-        SunburstMapComponent
+        RadialMapComponent
     ],
     providers: [
         MetricsExplorerRow,
@@ -82,5 +82,5 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsViewComponent {
-    protected readonly isSunburst = injectIsSunburstLayout()
+    protected readonly isRadialLayout = injectIsRadialLayout()
 }

@@ -4,9 +4,9 @@ import { mapStateSelector } from "../mapState.selector"
 
 export const layoutAlgorithmSelector = createSelector(mapStateSelector, mapState => mapState.layoutAlgorithm)
 
-export const isSunburstLayoutSelector = createSelector(
+export const isRadialLayoutSelector = createSelector(
     layoutAlgorithmSelector,
     layoutAlgorithm => layoutAlgorithm === LayoutAlgorithm.Sunburst
 )
 
-export const isThreeDimensionalLayoutSelector = createSelector(isSunburstLayoutSelector, isSunburst => !isSunburst)
+export const isThreeDimensionalLayoutSelector = createSelector(isRadialLayoutSelector, isRadialLayout => !isRadialLayout)

@@ -9,7 +9,7 @@ import {
     ScenarioListDialogComponent,
     ScenariosService
 } from "../../../scenarios/facade"
-import { injectIsSunburstLayout, SettingsPopoverShellComponent } from "../../../shared/facade"
+import { injectIsRadialLayout, SettingsPopoverShellComponent } from "../../../shared/facade"
 
 @Component({
     selector: "cc-labels-scenarios-segment",
@@ -26,7 +26,7 @@ import { injectIsSunburstLayout, SettingsPopoverShellComponent } from "../../../
 })
 export class LabelsScenariosSegmentComponent implements OnInit {
     private readonly scenariosService = inject(ScenariosService)
-    readonly isSunburst = injectIsSunburstLayout()
+    readonly isRadialLayout = injectIsRadialLayout()
 
     readonly listDialog = viewChild.required<ScenarioListDialogComponent>("listDialog")
     readonly saveDialog = viewChild.required<SaveScenarioDialogComponent>("saveDialog")
