@@ -65,6 +65,10 @@ children. It shares the sunburst's host, navigation and surrounding UI.
   was kept the label's transform), names along an arc stop before their corners pass the rim, switching to a layout
   that draws fewer levels re-centres on a selected file it no longer shows, shared radii/opacity/transition moved to
   `radialChartStyle.ts`
+- Curved names (2026-09-23): a name that runs along an arc is drawn letter by letter on the arc's middle radius,
+  clockwise and standing on the arc in the top half, anticlockwise and hanging from it in the bottom half, cut with an
+  ellipsis at the arc's length. Letter widths come from a canvas and are cached per font. Names along the radius and
+  the centre's name stay straight
 - Hovering with the pointer does not dim the other nodes in either radial layout (hover from the explorer does);
   this was already so for the sunburst and is left as it is
 - Verified: format, unit gate (466 suites), lint, tsc, 103/103 e2e on local bundled Chromium, and the chart looked at
