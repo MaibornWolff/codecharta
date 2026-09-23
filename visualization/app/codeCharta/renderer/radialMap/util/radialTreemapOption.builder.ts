@@ -1,4 +1,4 @@
-import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
+import { nodeColor, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter } from "./radialTooltip"
 import {
@@ -15,7 +15,7 @@ const QUARTER_TURN = Math.PI / 2
 const HALF_TURN = Math.PI
 const PIECE_BORDER = { color: "#ffffff", widthPx: 0.5 }
 const WEDGE_OUTLINE = { color: "#ffffff", widthPx: 2.5 }
-const DIMMED = { style: { opacity: 0.45 } }
+const DIMMED_OPACITY = 0.45
 const TRANSITION_MS = 400
 const LABEL_FONT_SIZE_PX = 11
 const LABEL_PADDING_PX = 4
@@ -26,6 +26,7 @@ const Z_OUTLINE = 2
 const Z_LABEL = 3
 
 export interface RadialTreemapDatum {
+    id: string
     name: string
     value: number
     displayName: string
@@ -48,7 +49,7 @@ interface Frame {
 
 export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
     const placements = layOutRadialTreemap(inputs.centre)
-    const data = placements.map(placement => toDatum(placement, inputs.coloring))
+    const data = placements.map(placement => toDatum(placement, inputs))
     return {
         aria: { enabled: true },
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
@@ -67,8 +68,10 @@ export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
 
 export const RADIAL_TREEMAP_SHAPE: RadialShape = { visibleDepth: MAX_BAND_COUNT + 1, buildOption: buildRadialTreemapOption }
 
-function toDatum({ node, isCentre }: RadialTreemapPlacement, coloring: RadialColoring): RadialTreemapDatum {
+// A node is drawn from other pieces around another centre; reshaping the old ones left pieces stranded mid-animation.
+function toDatum({ node, isCentre }: RadialTreemapPlacement, { centre, coloring }: RadialOptionInputs): RadialTreemapDatum {
     return {
+        id: `${centre.path}|${node.path}`,
         name: node.path,
         value: node.area,
         displayName: node.name,
@@ -95,14 +98,14 @@ function drawPlacement(placement: RadialTreemapPlacement, datum: RadialTreemapDa
 function drawSector(sector: PlacedSector, color: string, frame: Frame) {
     if (sector.role === "outline") {
         const style = { fill: "none", stroke: WEDGE_OUTLINE.color, lineWidth: WEDGE_OUTLINE.widthPx }
-        return { type: "sector", silent: true, z2: Z_OUTLINE, shape: toScreenShape(sector, frame), style, blur: DIMMED }
+        return { type: "sector", silent: true, z2: Z_OUTLINE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
     }
     const style = { fill: color, stroke: PIECE_BORDER.color, lineWidth: PIECE_BORDER.widthPx }
     if (sector.role === "centre") {
         const shape = { cx: frame.centreX, cy: frame.centreY, r: sector.outerRadius * frame.radiusPx }
-        return { type: "circle", silent: false, z2: Z_PIECE, shape, style, blur: DIMMED }
+        return { type: "circle", silent: false, z2: Z_PIECE, shape, style, blur: dimmed() }
     }
-    return { type: "sector", silent: false, z2: Z_PIECE, shape: toScreenShape(sector, frame), style, blur: DIMMED }
+    return { type: "sector", silent: false, z2: Z_PIECE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
 }
 
 function toScreenShape(sector: AnnularSector, frame: Frame) {
@@ -142,7 +145,7 @@ function drawLabel(sector: PlacedSector, datum: RadialTreemapDatum, frame: Frame
             width: placement.lengthPx - LABEL_PADDING_PX,
             overflow: "truncate"
         },
-        blur: DIMMED
+        blur: dimmed()
     }
 }
 
@@ -173,4 +176,9 @@ function upright(rotation: number): number {
         return normalized - HALF_TURN
     }
     return normalized < -QUARTER_TURN ? normalized + HALF_TURN : normalized
+}
+
+// One state object shared by all elements left the header strips unpainted.
+function dimmed() {
+    return { style: { opacity: DIMMED_OPACITY } }
 }

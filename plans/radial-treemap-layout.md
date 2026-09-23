@@ -58,6 +58,9 @@ children. It shares the sunburst's host, navigation and surrounding UI.
   explorer highlight every piece of a node, and a click anywhere reports that node
 - ECharts keeps an element's earlier settings when a redraw reuses it, so every element sets `silent` explicitly
   (a reused outline left its cell unclickable after stepping in and out)
+- Stepping to another centre used to reshape the previous centre's elements, whose roles differ by depth; pieces were
+  left stranded mid-animation, header strips unpainted and stray arcs showed in exported screenshots. Items are keyed
+  by centre and path now, so a new centre draws fresh elements, and every element gets its own state options
 - Hovering with the pointer does not dim the other nodes in either radial layout (hover from the explorer does);
   this was already so for the sunburst and is left as it is
 - Verified: format, unit gate (466 suites), lint, tsc, 103/103 e2e on local bundled Chromium, and the chart looked at
