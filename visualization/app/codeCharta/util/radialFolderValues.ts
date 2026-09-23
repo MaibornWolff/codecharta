@@ -1,5 +1,5 @@
 import { Color } from "three"
-import { RadialFolderValue } from "../model/codeCharta.model"
+import { MapColors, RadialFolderStyle, RadialFolderValue } from "../model/codeCharta.model"
 import { ColorConverter } from "./color/colorConverter"
 
 export const SHARE_BY_SIZE_RED_AT = 3
@@ -85,4 +85,13 @@ export function mixColors(fromHex: string, toHex: string, fraction: number): str
     const from = ColorConverter.convertHexToColorObject(fromHex)
     const to = ColorConverter.convertHexToColorObject(toHex)
     return ColorConverter.convertColorToHex(new Color().lerpColors(from, to, fraction))
+}
+
+/** A CSS background showing how folders look: the tinted traffic light, or the one neutral grey. */
+export function folderSwatchBackground(mapColors: MapColors, style: RadialFolderStyle, tint: number): string {
+    if (style === RadialFolderStyle.Neutral) {
+        return NEUTRAL_FOLDER_COLOR
+    }
+    const stops = [mapColors.positive, mapColors.neutral, mapColors.negative].map(color => tintColor(color, tint))
+    return `linear-gradient(90deg, ${stops.join(", ")})`
 }

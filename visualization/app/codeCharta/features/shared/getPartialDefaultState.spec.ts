@@ -15,6 +15,17 @@ describe("getPartialDefaultState", () => {
         expect(actualSettings).toEqual(expectedSettings)
     })
 
+    it("should reset the radial folder colours to max, tinted at 50 %", () => {
+        // Arrange
+        const keySettings = ["preferences.radialFolderValue", "preferences.radialFolderStyle", "preferences.radialFolderTint"]
+
+        // Act
+        const actualSettings = getPartialDefaultState(keySettings, DEFAULT_STATE)
+
+        // Assert
+        expect(actualSettings).toEqual({ preferences: { radialFolderValue: "max", radialFolderStyle: "tinted", radialFolderTint: 0.5 } })
+    })
+
     it("should reset 'labelSize' to its static default of 1", () => {
         const keySettings = ["mapState.labelSize"]
         const expectedSettings = { mapState: { labelSize: 1 } }

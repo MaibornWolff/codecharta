@@ -1,6 +1,16 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { CcState, ColorMode, ColorRange, LayoutAlgorithm, MapColors, MarkedPackage, Scaling } from "../../../model/codeCharta.model"
+import {
+    CcState,
+    ColorMode,
+    ColorRange,
+    LayoutAlgorithm,
+    MapColors,
+    MarkedPackage,
+    RadialFolderStyle,
+    RadialFolderValue,
+    Scaling
+} from "../../../model/codeCharta.model"
 import {
     invertColorRange,
     invertDeltaColors,
@@ -24,7 +34,13 @@ import {
     setShowOutgoingEdges,
     toggleEdgeMetricVisible
 } from "../../../stores/mapState/mapState.write.facade"
-import { setMaxTreeMapFiles, toggleIsColorMetricLinkedToHeightMetric } from "../../../stores/preferences/preferences.write.facade"
+import {
+    setMaxTreeMapFiles,
+    setRadialFolderStyle,
+    setRadialFolderTint,
+    setRadialFolderValue,
+    toggleIsColorMetricLinkedToHeightMetric
+} from "../../../stores/preferences/preferences.write.facade"
 import { markPackages, unmarkPackage } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable({
@@ -55,6 +71,18 @@ export class MetricsBarWriteStore {
 
     setMaxTreeMapFiles(value: number) {
         this.store.dispatch(setMaxTreeMapFiles({ value }))
+    }
+
+    setRadialFolderValue(value: RadialFolderValue) {
+        this.store.dispatch(setRadialFolderValue({ value }))
+    }
+
+    setRadialFolderStyle(value: RadialFolderStyle) {
+        this.store.dispatch(setRadialFolderStyle({ value }))
+    }
+
+    setRadialFolderTint(value: number) {
+        this.store.dispatch(setRadialFolderTint({ value }))
     }
 
     setMargin(value: number) {

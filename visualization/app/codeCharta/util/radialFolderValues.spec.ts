@@ -1,5 +1,14 @@
-import { RadialFolderValue } from "../model/codeCharta.model"
-import { describeRadialFolderValue, mixColors, RADIAL_FOLDER_VALUES, RadialFolderScale, tintColor } from "./radialFolderValues"
+import { RadialFolderStyle, RadialFolderValue } from "../model/codeCharta.model"
+import { defaultMapColors } from "../stores/mapState/mapState.read.facade"
+import {
+    describeRadialFolderValue,
+    folderSwatchBackground,
+    mixColors,
+    NEUTRAL_FOLDER_COLOR,
+    RADIAL_FOLDER_VALUES,
+    RadialFolderScale,
+    tintColor
+} from "./radialFolderValues"
 
 describe("radialFolderValues", () => {
     it("should describe every folder value exactly once", () => {
@@ -40,5 +49,21 @@ describe("radialFolderValues", () => {
 
         // Assert
         expect(mixed).toBe("#404040")
+    })
+
+    it("should show tinted folders as the tinted traffic light", () => {
+        // Act
+        const background = folderSwatchBackground(defaultMapColors, RadialFolderStyle.Tinted, 1)
+
+        // Assert
+        expect(background).toBe("linear-gradient(90deg, #69ae40, #ddcc00, #820e0e)")
+    })
+
+    it("should show neutral folders as the one neutral grey", () => {
+        // Act
+        const background = folderSwatchBackground(defaultMapColors, RadialFolderStyle.Neutral, 1)
+
+        // Assert
+        expect(background).toBe(NEUTRAL_FOLDER_COLOR)
     })
 })
