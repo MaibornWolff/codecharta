@@ -1,4 +1,10 @@
-<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" ariaLabel="Folder style" testId="folder-style-popover">
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    widthClass="w-80"
+    ariaLabel="Folder style"
+    testId="folder-style-popover"
+>
     <span class="text-sm font-semibold">Folder style</span>
 
     <div class="flex flex-col gap-1">
@@ -7,7 +13,7 @@
             <button
                 type="button"
                 role="radio"
-                class="join-item btn btn-sm flex-1 gap-1.5"
+                class="join-item btn btn-sm flex-1 flex-nowrap gap-1.5 whitespace-nowrap"
                 [class.btn-active]="!isNeutral()"
                 [attr.aria-checked]="!isNeutral()"
                 data-testid="folder-style-tinted"
@@ -19,7 +25,7 @@
             <button
                 type="button"
                 role="radio"
-                class="join-item btn btn-sm flex-1 gap-1.5"
+                class="join-item btn btn-sm flex-1 flex-nowrap gap-1.5 whitespace-nowrap"
                 [class.btn-active]="isNeutral()"
                 [attr.aria-checked]="isNeutral()"
                 data-testid="folder-style-neutral"
