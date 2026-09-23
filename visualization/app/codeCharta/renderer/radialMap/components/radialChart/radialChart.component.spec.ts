@@ -11,6 +11,7 @@ import {
     TEST_COLORING
 } from "../../testing/radialChart.stub"
 import { RadialNode } from "../../util/radialTree"
+import { SUNBURST_SHAPE } from "../../util/sunburstOption.builder"
 import { RadialChartComponent } from "./radialChart.component"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/radialChart.stub").echartsCoreStub)
@@ -25,6 +26,7 @@ let measuredSize = { width: 800, height: 600 }
 async function renderChart(inputs: Partial<{ centre: RadialNode; hoveredPath: string | null }> = {}) {
     return render(RadialChartComponent, {
         inputs: {
+            shape: SUNBURST_SHAPE,
             tree: ROOT,
             centre: ROOT,
             hoveredPath: null,

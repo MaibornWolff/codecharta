@@ -1,9 +1,10 @@
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { folderNode, TEST_COLORING } from "../testing/radialChart.stub"
+import { RadialOptionInputs } from "./radialShape"
 import { RadialNode } from "./radialTree"
-import { buildSunburstOption, SunburstOptionInputs, VISIBLE_RING_COUNT } from "./sunburstOption.builder"
+import { buildSunburstOption, VISIBLE_RING_COUNT } from "./sunburstOption.builder"
 
-function inputs(centre: RadialNode, overrides: Partial<SunburstOptionInputs> = {}): SunburstOptionInputs {
+function inputs(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {}): RadialOptionInputs {
     return {
         centre,
         isMapRoot: false,

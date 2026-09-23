@@ -6,6 +6,7 @@
     </div>
 } @else if (view(); as view) {
     <cc-radial-chart
+        [shape]="shape"
         [tree]="view.tree"
         [centre]="view.centre"
         [hoveredPath]="hoveredPath()"
