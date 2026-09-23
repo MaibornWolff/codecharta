@@ -14,6 +14,32 @@ export class RadialMapPageObject {
         await expect.poll(async () => FIRST_DESCRIBED_PATH.exec((await this.chart().getAttribute("aria-label")) ?? "")?.[1]).toBe(path)
     }
 
+    /** How many pixels of the chart's canvas show exactly this colour, e.g. to tell tinted from neutral folders. */
+    countPixelsOfColor(hex: string): Promise<number> {
+        return this.chart()
+            .locator("canvas")
+            .first()
+            .evaluate((canvas: HTMLCanvasElement, color: string) => {
+                const [red, green, blue] = [1, 3, 5].map(start => Number.parseInt(color.slice(start, start + 2), 16))
+                const { data } = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height)
+                let count = 0
+                for (let index = 0; index < data.length; index += 4) {
+                    if (data[index] === red && data[index + 1] === green && data[index + 2] === blue) {
+                        count++
+                    }
+                }
+                return count
+            }, hex)
+    }
+
+    /** A fingerprint of the chart's pixels, to tell that its colours changed. */
+    pixelFingerprint(): Promise<string> {
+        return this.chart()
+            .locator("canvas")
+            .first()
+            .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL())
+    }
+
     async switchLayoutTo(layout: string) {
         await new MetricsBarPageObject(this.page).switchLayoutTo(layout)
     }
