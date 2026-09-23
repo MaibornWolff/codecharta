@@ -19,7 +19,11 @@ export class SunburstMapPageObject {
 
     async clickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90, button: "left" | "right" = "left") {
         await expect(this.chart()).toHaveAttribute("aria-busy", "false")
+        await expect(this.chart()).toBeVisible()
         const box = await this.chart().boundingBox()
+        if (!box) {
+            throw new Error("The sunburst chart has no bounding box to click into")
+        }
         const radius = Math.min(box.width, box.height) / 2
         const angle = (degreesClockwiseFromTop * Math.PI) / 180
         await this.page.mouse.click(

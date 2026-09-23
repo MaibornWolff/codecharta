@@ -280,6 +280,6 @@ describe("SunburstChartHost", () => {
         jest.advanceTimersByTime(POINTER_LEAVE_GRACE_MS)
 
         // Assert
-        expect(handlers.onNodeHovered.mock.calls.filter(([path]) => path === null)).toHaveLength(1)
+        expect(jest.mocked(handlers.onNodeHovered).mock.calls.filter(([path]) => path === null)).toHaveLength(1)
     })
 })
