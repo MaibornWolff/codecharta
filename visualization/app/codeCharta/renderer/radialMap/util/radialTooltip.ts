@@ -1,12 +1,17 @@
+import { RadialFolderValue } from "../../../model/codeCharta.model"
 import { escapeHtml } from "../../../util/escapeHtml"
-import { RadialMetrics } from "./radialTree"
+import { describeRadialFolderValue } from "../../../util/radialFolderValues"
+import { RadialFolderColoring } from "./radialColor"
+import { RadialMetrics, RadialNode } from "./radialTree"
 
 const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
+const PERCENT = 100
 
 interface RadialTooltipDatum {
     name: string
     value: number
     colorValue: number | undefined
+    folderValueText?: string
     isCentre: boolean
 }
 
@@ -24,9 +29,30 @@ export function buildTooltipFormatter(metrics: RadialMetrics, isMapRoot: boolean
             `${escapeHtml(metrics.areaMetric)}: ${numberFormatter.format(data.value)}`,
             `${escapeHtml(metrics.colorMetric)}: ${data.colorValue === undefined ? "–" : numberFormatter.format(data.colorValue)}`
         ]
+        if (data.folderValueText) {
+            rows.push(escapeHtml(data.folderValueText))
+        }
         if (data.isCentre && !isMapRoot) {
             rows.push("<i>Click to go up one folder</i>")
         }
         return rows.join("<br/>")
     }
+}
+
+export function folderValueText({ path, isFile }: Pick<RadialNode, "path" | "isFile">, folders: RadialFolderColoring): string | undefined {
+    const folderValue = isFile ? undefined : folders.values.get(path)
+    if (folderValue === undefined) {
+        return undefined
+    }
+    return `${describeRadialFolderValue(folders.value).label} ${formatFolderValue(folders.value, folderValue)}`
+}
+
+function formatFolderValue(value: RadialFolderValue, folderValue: number): string {
+    if (value === RadialFolderValue.ShareBySize) {
+        return `${numberFormatter.format(folderValue)}×`
+    }
+    if (value === RadialFolderValue.ShareOfRed) {
+        return `${Math.round(folderValue * PERCENT)} %`
+    }
+    return numberFormatter.format(folderValue)
 }
