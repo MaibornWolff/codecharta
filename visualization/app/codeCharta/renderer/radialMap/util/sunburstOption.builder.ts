@@ -1,7 +1,7 @@
 import { CENTRE_RADIUS, DIMMED_OPACITY, OUTER_RADIUS, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
-import { buildTooltipFormatter } from "./radialTooltip"
+import { buildTooltipFormatter, folderValueText } from "./radialTooltip"
 import { RadialNode } from "./radialTree"
 
 export const VISIBLE_RING_COUNT = 3
@@ -19,6 +19,7 @@ export interface SunburstDatum {
     value: number
     displayName: string
     colorValue: number | undefined
+    folderValueText: string | undefined
     isCentre: boolean
     isFile: boolean
     itemStyle: { color: string }
@@ -95,6 +96,7 @@ function toDatum(node: RadialNode, coloring: RadialColoring, ringsLeft: number, 
         value: node.area,
         displayName: node.name,
         colorValue: node.colorValue,
+        folderValueText: folderValueText(node, coloring.folders),
         isCentre,
         isFile: node.isFile,
         itemStyle: { color },

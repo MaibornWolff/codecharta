@@ -1,6 +1,7 @@
 export type { RightClickedNode } from "./components/radialChart/radialChart.component"
 export { RadialChartComponent } from "./components/radialChart/radialChart.component"
 export type { RadialColoring } from "./util/radialColor"
+export { calculateFolderValues } from "./util/radialFolderValueCalculation"
 export type { RadialMetrics, RadialNode } from "./util/radialTree"
 export { buildRadialTree, findClosestFolder, findClosestNode, findParentFolder } from "./util/radialTree"
 export { RADIAL_TREEMAP_SHAPE } from "./util/radialTreemapOption.builder"

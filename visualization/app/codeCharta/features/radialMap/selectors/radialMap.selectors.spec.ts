@@ -1,7 +1,7 @@
-import { CodeMapNode, ColorMode, NodeType } from "../../../model/codeCharta.model"
+import { CodeMapNode, ColorMode, NodeType, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
-import { radialColoringSelector, radialMetricsSelector, radialTreeSelector } from "./radialMap.selectors"
+import { radialColoringSelector, radialFolderValuesSelector, radialMetricsSelector, radialTreeSelector } from "./radialMap.selectors"
 
 function file(path: string, rloc: number): CodeMapNode {
     return { name: path.split("/").at(-1), path, type: NodeType.FILE, attributes: { rloc, mcc: 1 } }
@@ -22,6 +22,7 @@ function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedDa
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
+const FOLDERS = { values: new Map([["/root", 1]]), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
 
 describe("radialTreeSelector", () => {
     it("should build the tree of the whole map when nothing is focused", () => {
@@ -62,11 +63,14 @@ describe("sunburst metrics and coloring", () => {
 
     it("should mark the unary metric, which colours every node the same", () => {
         // Act
-        const coloring = radialColoringSelector.projector("unary", { from: 1, to: 2 }, ColorMode.absolute, defaultMapColors, {
-            minValue: 0,
-            maxValue: 3,
-            values: []
-        })
+        const coloring = radialColoringSelector.projector(
+            "unary",
+            { from: 1, to: 2 },
+            ColorMode.absolute,
+            defaultMapColors,
+            { minValue: 0, maxValue: 3, values: [] },
+            FOLDERS
+        )
 
         // Assert
         expect(coloring.isUnaryMetric).toBe(true)
@@ -78,7 +82,14 @@ describe("sunburst metrics and coloring", () => {
         const colorMetricRange = { minValue: 0, maxValue: 3, values: [] }
 
         // Act
-        const coloring = radialColoringSelector.projector("mcc", colorRange, ColorMode.absolute, defaultMapColors, colorMetricRange)
+        const coloring = radialColoringSelector.projector(
+            "mcc",
+            colorRange,
+            ColorMode.absolute,
+            defaultMapColors,
+            colorMetricRange,
+            FOLDERS
+        )
 
         // Assert
         expect(coloring).toEqual({
@@ -86,7 +97,27 @@ describe("sunburst metrics and coloring", () => {
             colorRange,
             colorMode: ColorMode.absolute,
             mapColors: defaultMapColors,
-            colorMetricRange
+            colorMetricRange,
+            folders: FOLDERS
         })
+    })
+})
+
+describe("radialFolderValuesSelector", () => {
+    it("should compute the folder values over the whole map", () => {
+        // Act
+        const values = radialFolderValuesSelector.projector(accumulatedData(MAP), METRICS, RadialFolderValue.Sum, null)
+
+        // Assert
+        expect(values.get("/root")).toBe(2)
+        expect(values.get("/root/src/app")).toBe(1)
+    })
+
+    it("should have no folder values before a map is loaded", () => {
+        // Act
+        const values = radialFolderValuesSelector.projector(accumulatedData(undefined), METRICS, RadialFolderValue.Max, null)
+
+        // Assert
+        expect(values.size).toBe(0)
     })
 })

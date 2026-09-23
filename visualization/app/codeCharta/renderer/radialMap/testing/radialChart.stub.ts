@@ -1,4 +1,4 @@
-import { ColorMode } from "../../../model/codeCharta.model"
+import { ColorMode, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
 
 export { elementOfSize, resizeObserverDisconnect, stubElementSize, stubResizeObserver } from "../../../util/testUtils/domStubs"
 
@@ -46,7 +46,8 @@ export const TEST_COLORING: RadialColoring = {
     colorRange: { from: 10, to: 20 },
     colorMode: ColorMode.absolute,
     mapColors: defaultMapColors,
-    colorMetricRange: { minValue: 0, maxValue: 100 }
+    colorMetricRange: { minValue: 0, maxValue: 100 },
+    folders: { values: new Map(), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
 }
 
 export function folderNode(path: string, children: RadialNode[] = [], overrides: Partial<RadialNode> = {}): RadialNode {

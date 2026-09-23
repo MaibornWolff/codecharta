@@ -1,5 +1,6 @@
+import { RadialFolderValue } from "../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
-import { folderNode, TEST_COLORING } from "../testing/radialChart.stub"
+import { fileNode, folderNode, TEST_COLORING } from "../testing/radialChart.stub"
 import { RadialOptionInputs } from "./radialShape"
 import { RadialNode } from "./radialTree"
 import { buildSunburstOption, VISIBLE_RING_COUNT } from "./sunburstOption.builder"
@@ -115,12 +116,16 @@ describe("buildSunburstOption", () => {
     })
 
     it("should colour each segment by the folder's value and pick a readable label colour", () => {
+        // Arrange
+        const folders = { ...TEST_COLORING.folders, values: new Map([["/root/hot", 50]]), tint: 1 }
+        const coloring = { ...TEST_COLORING, folders }
+
         // Act
-        const option = buildSunburstOption(inputs(folderNode("/root", [folderNode("/root/hot", [], { colorValue: 50 })])))
+        const option = buildSunburstOption(inputs(folderNode("/root", [folderNode("/root/hot")]), { coloring }))
 
         // Assert
         const [hot] = option.series[0].data[0].children
-        expect(hot.itemStyle.color).toBe(defaultMapColors.negative)
+        expect(hot.itemStyle.color).toBe(defaultMapColors.negative.toLowerCase())
         expect(hot.label.color).toBe("#ffffff")
     })
 
@@ -150,6 +155,44 @@ describe("buildSunburstOption", () => {
         expect(tooltip).toContain("rloc: 1,234.57")
         expect(tooltip).toContain("mcc: –")
         expect(tooltip).not.toContain("go up")
+    })
+
+    it("should show a folder's value in its tooltip, on its own scale where it has one", () => {
+        // Arrange
+        const values = new Map([
+            ["/root/max", 47],
+            ["/root/ratio", 1.5],
+            ["/root/red", 0.234]
+        ])
+        const tooltipOf = (value: RadialFolderValue, path: string) => {
+            const coloring = { ...TEST_COLORING, folders: { ...TEST_COLORING.folders, values, value } }
+            const option = buildSunburstOption(inputs(folderNode("/root", [folderNode(path)]), { coloring }))
+            return option.tooltip.formatter({ data: option.series[0].data[0].children[0] })
+        }
+
+        // Act
+        const tooltips = [
+            tooltipOf(RadialFolderValue.Max, "/root/max"),
+            tooltipOf(RadialFolderValue.ShareBySize, "/root/ratio"),
+            tooltipOf(RadialFolderValue.ShareOfRed, "/root/red")
+        ]
+
+        // Assert
+        expect(tooltips[0]).toContain("max 47")
+        expect(tooltips[1]).toContain("share ÷ size 1.5×")
+        expect(tooltips[2]).toContain("share of red 23 %")
+    })
+
+    it("should show no folder value in a file's tooltip", () => {
+        // Arrange
+        const coloring = { ...TEST_COLORING, folders: { ...TEST_COLORING.folders, values: new Map([["/root/a.ts", 3]]) } }
+        const option = buildSunburstOption(inputs(folderNode("/root", [fileNode("/root/a.ts")]), { coloring }))
+
+        // Act
+        const tooltip = option.tooltip.formatter({ data: option.series[0].data[0].children[0] })
+
+        // Assert
+        expect(tooltip).not.toContain("max")
     })
 
     it("should tell in the tooltip that clicking the centre goes up, unless it is the top of the map", () => {

@@ -2,7 +2,7 @@ import { layOutGlyphsAlongArc } from "./arcGlyphs"
 import { CENTRE_RADIUS, DIMMED_OPACITY, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
-import { buildTooltipFormatter } from "./radialTooltip"
+import { buildTooltipFormatter, folderValueText } from "./radialTooltip"
 import { AnnularSector, layOutRadialTreemap, MAX_BAND_COUNT, PlacedSector, RadialTreemapPlacement } from "./radialTreemapLayout"
 import { measureGlyphsIn } from "./textMeasure"
 
@@ -25,6 +25,7 @@ export interface RadialTreemapDatum {
     value: number
     displayName: string
     colorValue: number | undefined
+    folderValueText: string | undefined
     isCentre: boolean
     isFile: boolean
     color: string
@@ -89,6 +90,7 @@ function toDatum({ node, isCentre }: RadialTreemapPlacement, { centre, coloring 
         value: node.area,
         displayName: node.name,
         colorValue: node.colorValue,
+        folderValueText: folderValueText(node, coloring.folders),
         isCentre,
         isFile: node.isFile,
         color: nodeColor(node, coloring)
