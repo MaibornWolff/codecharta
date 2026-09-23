@@ -22,6 +22,8 @@ import {
     Node,
     NodeMetricData,
     NodeType,
+    RadialFolderStyle,
+    RadialFolderValue,
     SortingOption
 } from "../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../model/files/files"
@@ -1995,7 +1997,10 @@ export const STATE: CcState = {
         screenshotToClipboardEnabled: false,
         centerMapZoom: 140,
         maxTreeMapFiles: 200,
-        sorting: { option: SortingOption.NAME, orderAscending: false }
+        sorting: { option: SortingOption.NAME, orderAscending: false },
+        radialFolderValue: RadialFolderValue.Max,
+        radialFolderStyle: RadialFolderStyle.Tinted,
+        radialFolderTint: 0.5
     },
     mapState: {
         areaMetric: "rloc",
@@ -2063,7 +2068,10 @@ export const DEFAULT_STATE: CcState = {
         screenshotToClipboardEnabled: false,
         centerMapZoom: 140,
         maxTreeMapFiles: 100,
-        sorting: { option: SortingOption.NAME, orderAscending: true }
+        sorting: { option: SortingOption.NAME, orderAscending: true },
+        radialFolderValue: RadialFolderValue.Max,
+        radialFolderStyle: RadialFolderStyle.Tinted,
+        radialFolderTint: 0.5
     },
     mapState: {
         areaMetric: null,

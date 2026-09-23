@@ -1,7 +1,7 @@
 import "fake-indexeddb/auto"
 import { TestBed } from "@angular/core/testing"
 import { Action, Store, StoreModule } from "@ngrx/store"
-import { CcState, DomainLensSource, DomainState, SharedView } from "../model/codeCharta.model"
+import { CcState, DomainLensSource, DomainState, RadialFolderStyle, RadialFolderValue, SharedView } from "../model/codeCharta.model"
 import { WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
 import { DomainLensSourceReadWindow, defaultDomainLensSource } from "../stores/domainLensSource/domainLensSource.read.facade"
 import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
@@ -17,6 +17,8 @@ import {
     setDomainStateSizingMode,
     setDomainStateTopN
 } from "../stores/domainState/domainState.write.facade"
+import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
+import { setRadialFolderStyle, setRadialFolderTint, setRadialFolderValue } from "../stores/preferences/preferences.write.facade"
 import { readCcState, writeCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
 import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
@@ -220,6 +222,30 @@ describe("LoadInitialFileStore", () => {
             expect(() => loadInitialFileStore.applyDomainLensSource(savedDomainLensSourceWithUnknownKey)).toThrow(
                 "Unhandled key: unknownKey"
             )
+        })
+    })
+
+    describe("applyPreferences", () => {
+        it("should restore the saved radial folder colours", () => {
+            // Arrange
+            setup()
+            const savedPreferences = {
+                ...defaultPreferences,
+                radialFolderValue: RadialFolderValue.ShareOfRed,
+                radialFolderStyle: RadialFolderStyle.Neutral,
+                radialFolderTint: 0.8
+            }
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyPreferences(savedPreferences)
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([
+                setRadialFolderValue({ value: RadialFolderValue.ShareOfRed }),
+                setRadialFolderStyle({ value: RadialFolderStyle.Neutral }),
+                setRadialFolderTint({ value: 0.8 })
+            ])
         })
     })
 

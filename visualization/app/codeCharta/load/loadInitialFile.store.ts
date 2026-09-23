@@ -76,6 +76,9 @@ import {
     setIsColorMetricLinkedToHeightMetricAction,
     setMaxTreeMapFiles,
     setPresentationMode,
+    setRadialFolderStyle,
+    setRadialFolderTint,
+    setRadialFolderValue,
     setResetCameraIfNewFileIsLoaded,
     setScreenshotToClipboardEnabled,
     setSortingOption
@@ -390,6 +393,15 @@ export class LoadInitialFileStore {
                 }
                 break
             }
+            case "radialFolderValue":
+                this.store.dispatch(setRadialFolderValue({ value }))
+                break
+            case "radialFolderStyle":
+                this.store.dispatch(setRadialFolderStyle({ value }))
+                break
+            case "radialFolderTint":
+                this.store.dispatch(setRadialFolderTint({ value }))
+                break
             default: {
                 throw new Error(`Unhandled key: ${key}`)
             }

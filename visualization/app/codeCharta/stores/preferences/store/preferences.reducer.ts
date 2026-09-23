@@ -11,6 +11,9 @@ import {
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
 import { defaultIsPresentationMode, isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
 import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
+import { defaultRadialFolderStyle, radialFolderStyle } from "./radialFolderStyle/radialFolderStyle.reducer"
+import { defaultRadialFolderTint, radialFolderTint } from "./radialFolderTint/radialFolderTint.reducer"
+import { defaultRadialFolderValue, radialFolderValue } from "./radialFolderValue/radialFolderValue.reducer"
 import {
     defaultResetCameraIfNewFileIsLoaded,
     resetCameraIfNewFileIsLoaded
@@ -25,7 +28,10 @@ export const preferences = combineReducers({
     experimentalFeaturesEnabled,
     screenshotToClipboardEnabled,
     isColorMetricLinkedToHeightMetric,
-    sorting
+    sorting,
+    radialFolderValue,
+    radialFolderStyle,
+    radialFolderTint
 })
 
 export const defaultPreferences = {
@@ -36,5 +42,8 @@ export const defaultPreferences = {
     experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
     screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
-    sorting: defaultSorting
+    sorting: defaultSorting,
+    radialFolderValue: defaultRadialFolderValue,
+    radialFolderStyle: defaultRadialFolderStyle,
+    radialFolderTint: defaultRadialFolderTint
 }

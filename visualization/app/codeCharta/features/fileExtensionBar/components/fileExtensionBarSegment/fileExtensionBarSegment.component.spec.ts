@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { screen } from "@testing-library/angular"
-import { CcState, NodeRule, RuleEffect, SortingOption } from "../../../../model/codeCharta.model"
+import { CcState, NodeRule, RadialFolderStyle, RadialFolderValue, RuleEffect, SortingOption } from "../../../../model/codeCharta.model"
 import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
 import { sortedFlattenedNodesSelector } from "../../../../stores/sharedView/sharedView.read.facade"
@@ -43,7 +43,10 @@ describe("FileExtensionBarSegment", () => {
             experimentalFeaturesEnabled: false,
             screenshotToClipboardEnabled: false,
             isColorMetricLinkedToHeightMetric: false,
-            sorting: { option: SortingOption.NAME, orderAscending: true }
+            sorting: { option: SortingOption.NAME, orderAscending: true },
+            radialFolderValue: RadialFolderValue.Max,
+            radialFolderStyle: RadialFolderStyle.Tinted,
+            radialFolderTint: 0.5
         },
         sharedView: {
             focusedNodePath: [],

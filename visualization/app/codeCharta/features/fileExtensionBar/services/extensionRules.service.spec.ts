@@ -1,6 +1,15 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CcState, CodeMapNode, NodeRule, NodeType, RuleEffect, SortingOption } from "../../../model/codeCharta.model"
+import {
+    CcState,
+    CodeMapNode,
+    NodeRule,
+    NodeType,
+    RadialFolderStyle,
+    RadialFolderValue,
+    RuleEffect,
+    SortingOption
+} from "../../../model/codeCharta.model"
 import { hoveredNodeSelector } from "../../../renderer/renderModel/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
 import { defaultMapState } from "../../../stores/mapState/mapState.read.facade"
@@ -89,7 +98,10 @@ describe("ExtensionRulesService", () => {
             experimentalFeaturesEnabled: false,
             screenshotToClipboardEnabled: false,
             isColorMetricLinkedToHeightMetric: false,
-            sorting: { option: SortingOption.NAME, orderAscending: true }
+            sorting: { option: SortingOption.NAME, orderAscending: true },
+            radialFolderValue: RadialFolderValue.Max,
+            radialFolderStyle: RadialFolderStyle.Tinted,
+            radialFolderTint: 0.5
         },
         sharedView: {
             focusedNodePath: [],
