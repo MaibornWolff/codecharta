@@ -38,7 +38,10 @@ export abstract class ChartScreenshotService implements ScreenshotCapture {
         if (!canvas) {
             return
         }
-        const blob = await new Promise<Blob>(resolve => canvas.toBlob(resolve, PNG_MIME_TYPE))
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, PNG_MIME_TYPE))
+        if (!blob) {
+            return
+        }
         await setToClipboard(blob)
     }
 

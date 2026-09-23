@@ -12,12 +12,12 @@ jest.mock("./clipboardWriter", () => ({
 }))
 
 describe("SunburstScreenshotService", () => {
-    function configure(hasChart: boolean) {
+    function configure(hasChart: boolean, encodedBlob: Blob | null = new Blob([], { type: "image/png" })) {
         const renderedCanvas = document.createElement("canvas")
         renderedCanvas.width = 4
         renderedCanvas.height = 4
         jest.spyOn(renderedCanvas, "toDataURL").mockReturnValue("data:image/png;base64,aGk=")
-        jest.spyOn(renderedCanvas, "toBlob").mockImplementation(callback => callback(new Blob([], { type: "image/png" })))
+        jest.spyOn(renderedCanvas, "toBlob").mockImplementation(callback => callback(encodedBlob))
         TestBed.configureTestingModule({
             providers: [
                 SunburstScreenshotService,
@@ -78,5 +78,16 @@ describe("SunburstScreenshotService", () => {
         expect(checkWriteToClipboardAllowed).toHaveBeenCalled()
         expect(setToClipboard).toHaveBeenCalledTimes(1)
         expect((setToClipboard as jest.Mock).mock.calls[0][0].type).toBe("image/png")
+    })
+
+    it("should leave the clipboard alone when the canvas cannot be encoded", async () => {
+        // Arrange
+        const service = configure(true, null)
+
+        // Act
+        await service.makeScreenshotToClipboard()
+
+        // Assert
+        expect(setToClipboard).not.toHaveBeenCalled()
     })
 })
