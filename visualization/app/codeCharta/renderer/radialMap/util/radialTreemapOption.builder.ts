@@ -1,5 +1,5 @@
 import { layOutGlyphsAlongArc } from "./arcGlyphs"
-import { CENTRE_RADIUS, DIMMED_OPACITY, TRANSITION_MS } from "./radialChartStyle"
+import { Border, borderWidthThatFits, CENTRE_RADIUS, DIMMED_OPACITY, pieceBorder, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter, folderValueText } from "./radialTooltip"
@@ -9,7 +9,7 @@ import { measureGlyphsIn } from "./textMeasure"
 const TWELVE_O_CLOCK = -Math.PI / 2
 const QUARTER_TURN = Math.PI / 2
 const HALF_TURN = Math.PI
-const PIECE_BORDER = { color: "#ffffff", widthPx: 0.5 }
+const PIECE_BORDER: Border = { color: "#ffffff", widthPx: 0.5 }
 const WEDGE_OUTLINE = { color: "#ffffff", widthPx: 2.5 }
 const LABEL_FONT_SIZE_PX = 11
 const LABEL_LINE_HEIGHT_PX = 13
@@ -117,15 +117,24 @@ function drawPlacement(placement: RadialTreemapPlacement, datum: RadialTreemapDa
 // label was kept the label's position and rotation, so every element states them.
 function drawSector(sector: PlacedSector, color: string, frame: Frame) {
     if (sector.role === "outline") {
-        const style = { fill: "none", stroke: WEDGE_OUTLINE.color, lineWidth: WEDGE_OUTLINE.widthPx }
+        const lineWidth = borderWidthThatFits(WEDGE_OUTLINE.widthPx, thinnestSidePx(sector, frame))
+        const style = { fill: "none", stroke: WEDGE_OUTLINE.color, lineWidth }
         return { type: "sector", ...UNTRANSFORMED, silent: true, z2: Z_OUTLINE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
     }
-    const style = { fill: color, stroke: PIECE_BORDER.color, lineWidth: PIECE_BORDER.widthPx }
     if (sector.role === "centre") {
+        const style = { fill: color, stroke: PIECE_BORDER.color, lineWidth: PIECE_BORDER.widthPx }
         const shape = { cx: frame.centreX, cy: frame.centreY, r: sector.outerRadius * frame.radiusPx }
         return { type: "circle", ...UNTRANSFORMED, silent: false, z2: Z_PIECE, shape, style, blur: dimmed() }
     }
+    const border = pieceBorder(color, PIECE_BORDER, thinnestSidePx(sector, frame))
+    const style = { fill: color, stroke: border.color, lineWidth: border.widthPx }
     return { type: "sector", ...UNTRANSFORMED, silent: false, z2: Z_PIECE, shape: toScreenShape(sector, frame), style, blur: dimmed() }
+}
+
+function thinnestSidePx(sector: AnnularSector, frame: Frame): number {
+    const arcAtInnerEdgePx = (sector.endAngle - sector.startAngle) * sector.innerRadius * frame.radiusPx
+    const depthPx = (sector.outerRadius - sector.innerRadius) * frame.radiusPx
+    return Math.min(arcAtInnerEdgePx, depthPx)
 }
 
 function toScreenShape(sector: AnnularSector, frame: Frame) {

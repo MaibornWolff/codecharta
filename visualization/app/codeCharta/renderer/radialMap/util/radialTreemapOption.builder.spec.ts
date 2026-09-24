@@ -148,6 +148,40 @@ describe("buildRadialTreemapOption", () => {
         expect(series.progressive).toBe(0)
     })
 
+    it("should keep the white border on a piece wide enough for it", () => {
+        // Act
+        const [piece] = drawn(TREE).drawItem("/root/src/a.ts").children
+
+        // Assert
+        expect(piece.style.stroke).toBe("#ffffff")
+    })
+
+    it("should outline a piece too thin for a white border in its own colour, so tiny files do not fade to white", () => {
+        // Arrange
+        const tiny = fileNode("/root/big/tiny.ts", { area: 0.001 })
+        const big = folderNode("/root/big", [fileNode("/root/big/huge.ts", { area: 1000 }), tiny], { area: 1000.001 })
+
+        // Act
+        const [piece] = drawn(folderNode("/root", [big], { area: 1000.001 })).drawItem("/root/big/tiny.ts").children
+
+        // Assert
+        expect(piece.style.stroke).toBe(piece.style.fill)
+    })
+
+    it("should leave out the outline of a wedge too thin to hold it", () => {
+        // Arrange
+        const thin = folderNode("/root/thin", [fileNode("/root/thin/a.ts", { area: 0.001 })], { area: 0.001 })
+        const wide = folderNode("/root/wide", [fileNode("/root/wide/b.ts", { area: 1000 })], { area: 1000 })
+        const { drawItem } = drawn(folderNode("/root", [wide, thin], { area: 1000.001 }))
+
+        // Act
+        const outlineOf = (path: string) => drawItem(path).children.find(child => child.type === "sector" && child.silent)
+
+        // Assert
+        expect(outlineOf("/root/thin").style.lineWidth).toBe(0)
+        expect(outlineOf("/root/wide").style.lineWidth).toBeGreaterThan(0)
+    })
+
     it("should start the first wedge at twelve o'clock around the middle of the chart", () => {
         // Act
         const { drawItem } = drawn(TREE)
