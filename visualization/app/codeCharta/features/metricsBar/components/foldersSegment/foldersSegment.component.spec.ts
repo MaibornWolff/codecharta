@@ -43,7 +43,7 @@ describe("FoldersSegmentComponent", () => {
 
     it("should show the folder value and the tint strength on the card", async () => {
         // Arrange & Act
-        await setup({ folderValue: RadialFolderValue.AvgPerLine, tint: 0.8 })
+        await setup({ folderValue: RadialFolderValue.AvgPerArea, tint: 0.8 })
 
         // Assert
         const card = screen.getByTestId("metric-segment-folders")
