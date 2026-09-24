@@ -5,6 +5,7 @@ export interface FolderValueInputs {
     areaMetric: string
     colorMetric: string
     folderValue: RadialFolderValue
+    isFlat: (node: CodeMapNode) => boolean
 }
 
 interface FolderStats {
@@ -48,7 +49,7 @@ function collectStats(node: CodeMapNode, inputs: FolderValueInputs, statsByPath:
     }
     const stats = emptyStats()
     for (const child of node.children) {
-        if (!child.isExcluded) {
+        if (!child.isExcluded && !inputs.isFlat(child)) {
             addStats(stats, collectStats(child, inputs, statsByPath))
         }
     }

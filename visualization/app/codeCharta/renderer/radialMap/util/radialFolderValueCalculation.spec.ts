@@ -16,8 +16,14 @@ const MAP = folder("/root", [
     folder("/root/docs", [file("/root/docs/readme.md", 100, 1)])
 ])
 
-function valuesOf(folderValue: RadialFolderValue, map = MAP): ReadonlyMap<string, number> {
-    const inputs: FolderValueInputs = { areaMetric: "rloc", colorMetric: "mcc", folderValue }
+const NOTHING_IS_FLAT = () => false
+
+function valuesOf(
+    folderValue: RadialFolderValue,
+    map = MAP,
+    isFlat: (node: CodeMapNode) => boolean = NOTHING_IS_FLAT
+): ReadonlyMap<string, number> {
+    const inputs: FolderValueInputs = { areaMetric: "rloc", colorMetric: "mcc", folderValue, isFlat }
     return calculateFolderValues(map, inputs)
 }
 
@@ -85,6 +91,23 @@ describe("calculateFolderValues", () => {
         const values = valuesOf(RadialFolderValue.Max, map)
 
         // Assert
+        expect(values.get("/root")).toBe(2)
+        expect(values.has("/root/gen")).toBe(false)
+    })
+
+    it("should leave out flattened files and folders", () => {
+        // Arrange
+        const map = folder("/root", [
+            folder("/root/src", [file("/root/src/a.ts", 10, 2), file("/root/src/hot.ts", 10, 99)]),
+            folder("/root/gen", [file("/root/gen/x.ts", 10, 50)])
+        ])
+        const flattenedPaths = new Set(["/root/src/hot.ts", "/root/gen", "/root/gen/x.ts"])
+
+        // Act
+        const values = valuesOf(RadialFolderValue.Max, map, node => flattenedPaths.has(node.path))
+
+        // Assert
+        expect(values.get("/root/src")).toBe(2)
         expect(values.get("/root")).toBe(2)
         expect(values.has("/root/gen")).toBe(false)
     })

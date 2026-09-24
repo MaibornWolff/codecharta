@@ -106,16 +106,29 @@ describe("sunburst metrics and coloring", () => {
 describe("radialFolderValuesSelector", () => {
     it("should compute the folder values over the whole map", () => {
         // Act
-        const values = radialFolderValuesSelector.projector(accumulatedData(MAP), METRICS, RadialFolderValue.Sum)
+        const values = radialFolderValuesSelector.projector(accumulatedData(MAP), METRICS, RadialFolderValue.Sum, NOTHING_IS_FLAT)
 
         // Assert
         expect(values.get("/root")).toBe(2)
         expect(values.get("/root/src/app")).toBe(1)
     })
 
+    it("should leave flattened nodes out of the folder values", () => {
+        // Act
+        const values = radialFolderValuesSelector.projector(
+            accumulatedData(MAP),
+            METRICS,
+            RadialFolderValue.Sum,
+            (node: CodeMapNode) => node.path === "/root/b.ts"
+        )
+
+        // Assert
+        expect(values.get("/root")).toBe(1)
+    })
+
     it("should have no folder values before a map is loaded", () => {
         // Act
-        const values = radialFolderValuesSelector.projector(accumulatedData(undefined), METRICS, RadialFolderValue.Max)
+        const values = radialFolderValuesSelector.projector(accumulatedData(undefined), METRICS, RadialFolderValue.Max, NOTHING_IS_FLAT)
 
         // Assert
         expect(values.size).toBe(0)
