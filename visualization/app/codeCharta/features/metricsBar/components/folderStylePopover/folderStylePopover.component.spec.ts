@@ -24,8 +24,8 @@ describe("FolderStylePopoverComponent", () => {
         await setup({ isNeutral: true })
 
         // Assert
-        expect(screen.getByTestId("folder-style-neutral").getAttribute("aria-checked")).toBe("true")
-        expect(screen.getByTestId("folder-style-tinted").getAttribute("aria-checked")).toBe("false")
+        expect(screen.getByTestId("folder-style-neutral").querySelector("input").checked).toBe(true)
+        expect(screen.getByTestId("folder-style-tinted").querySelector("input").checked).toBe(false)
     })
 
     it("should offer a tint strength from 20 to 100 %", async () => {

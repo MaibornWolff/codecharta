@@ -10,30 +10,36 @@
     <div class="flex flex-col gap-1">
         <span class="text-xs uppercase tracking-wider opacity-60">Folders</span>
         <div class="join w-full" role="radiogroup" aria-label="Folder style">
-            <button
-                type="button"
-                role="radio"
-                class="join-item btn btn-sm flex-1 flex-nowrap gap-1.5 whitespace-nowrap"
+            <label
+                class="join-item btn btn-sm flex-1 flex-nowrap gap-1.5 whitespace-nowrap has-[:focus-visible]:outline-2"
                 [class.btn-active]="!isNeutral()"
-                [attr.aria-checked]="!isNeutral()"
                 data-testid="folder-style-tinted"
-                (click)="styleSelected.emit(Tinted)"
             >
+                <input
+                    type="radio"
+                    class="sr-only"
+                    [name]="popoverId() + '-style'"
+                    [checked]="!isNeutral()"
+                    (click)="styleSelected.emit(Tinted)"
+                />
                 <span class="inline-block h-2 w-3.5 shrink-0 rounded-sm" [style.background]="tintedSwatch()"></span>
                 Tinted by value
-            </button>
-            <button
-                type="button"
-                role="radio"
-                class="join-item btn btn-sm flex-1 flex-nowrap gap-1.5 whitespace-nowrap"
+            </label>
+            <label
+                class="join-item btn btn-sm flex-1 flex-nowrap gap-1.5 whitespace-nowrap has-[:focus-visible]:outline-2"
                 [class.btn-active]="isNeutral()"
-                [attr.aria-checked]="isNeutral()"
                 data-testid="folder-style-neutral"
-                (click)="styleSelected.emit(Neutral)"
             >
+                <input
+                    type="radio"
+                    class="sr-only"
+                    [name]="popoverId() + '-style'"
+                    [checked]="isNeutral()"
+                    (click)="styleSelected.emit(Neutral)"
+                />
                 <span class="inline-block h-2 w-3.5 shrink-0 rounded-sm" [style.background]="neutralSwatch"></span>
                 Neutral
-            </button>
+            </label>
         </div>
     </div>
 

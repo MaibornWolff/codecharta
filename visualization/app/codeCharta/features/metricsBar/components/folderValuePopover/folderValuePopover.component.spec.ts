@@ -1,12 +1,15 @@
-import { render, screen } from "@testing-library/angular"
+import { fireEvent, render, screen } from "@testing-library/angular"
 import { RadialFolderValue } from "../../../../model/codeCharta.model"
 import { FolderValuePopoverComponent } from "./folderValuePopover.component"
 
 describe("FolderValuePopoverComponent", () => {
     async function setup({ selected = RadialFolderValue.Max, isNeutral = false } = {}) {
-        return render(FolderValuePopoverComponent, {
-            inputs: { popoverId: "values", anchorName: "anchor", selected, isNeutral, colorMetric: "mcc" }
+        const valueSelected = jest.fn()
+        await render(FolderValuePopoverComponent, {
+            inputs: { popoverId: "values", anchorName: "anchor", selected, isNeutral, colorMetric: "mcc" },
+            on: { valueSelected }
         })
+        return { valueSelected }
     }
 
     it("should list all six values, each with a description", async () => {
@@ -14,7 +17,9 @@ describe("FolderValuePopoverComponent", () => {
         await setup()
 
         // Assert
-        const labels = screen.getAllByRole("radio", { hidden: true }).map(radio => radio.querySelector(".font-medium").textContent)
+        const labels = screen
+            .getAllByRole("radio", { hidden: true })
+            .map(radio => radio.closest("label").querySelector(".font-medium").textContent)
         expect(labels).toEqual(["sum", "max", "min", "median", "mean / file", "avg / area"])
         expect(screen.getByText("Its lowest file. Never hides a low value, e.g. with inverted colors.")).not.toBeNull()
     })
@@ -24,8 +29,8 @@ describe("FolderValuePopoverComponent", () => {
         await setup({ selected: RadialFolderValue.MeanPerFile })
 
         // Assert
-        expect(screen.getByTestId("folder-value-meanPerFile").getAttribute("aria-checked")).toBe("true")
-        expect(screen.getByTestId("folder-value-max").getAttribute("aria-checked")).toBe("false")
+        expect(screen.getByTestId("folder-value-meanPerFile").querySelector("input").checked).toBe(true)
+        expect(screen.getByTestId("folder-value-max").querySelector("input").checked).toBe(false)
         expect(screen.getByTestId("folder-value-title").textContent).toBe("mean / file")
     })
 
@@ -36,5 +41,16 @@ describe("FolderValuePopoverComponent", () => {
         // Assert
         expect(screen.getByTestId("folder-value-title").textContent).toBe("neutral")
         expect(screen.getByText("Folders are one grey. Pick a value to tint them again.")).not.toBeNull()
+    })
+
+    it("should emit the checked value again when it is picked while neutral", async () => {
+        // Arrange
+        const { valueSelected } = await setup({ selected: RadialFolderValue.Max, isNeutral: true })
+
+        // Act
+        fireEvent.click(screen.getByTestId("folder-value-max"))
+
+        // Assert
+        expect(valueSelected).toHaveBeenCalledWith(RadialFolderValue.Max)
     })
 })
