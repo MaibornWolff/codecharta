@@ -3,6 +3,7 @@ import { ColorMode, ColorRange, MapColors, RadialFolderStyle, RadialFolderValue 
 import { getColorByMetricValue } from "../../../util/color/gradientCalculator"
 import { MetricMinMax } from "../../../util/metric/metricRange"
 import { NEUTRAL_FOLDER_COLOR, tintColor } from "../../../util/radialFolderValues"
+import { WHITE } from "./radialChartStyle"
 import { RadialNode } from "./radialTree"
 
 export interface RadialFolderColoring {
@@ -23,7 +24,6 @@ export interface RadialColoring {
 }
 
 const DARK_TEXT = "#1f2937"
-const LIGHT_TEXT = "#ffffff"
 const LUMINANCE_THRESHOLD_FOR_DARK_TEXT = 0.5
 const RED_LUMA_WEIGHT = 0.299
 const GREEN_LUMA_WEIGHT = 0.587
@@ -40,14 +40,7 @@ export function nodeColor({ path, isFile, colorValue, isFlat }: ColoredNode, col
     if (isFlat) {
         return mapColors.flat
     }
-    return isFile ? fileColor(colorValue, coloring) : folderColor(path, coloring)
-}
-
-function fileColor(colorValue: number, coloring: RadialColoring): string {
-    if (coloring.isUnaryMetric) {
-        return coloring.mapColors.positive
-    }
-    return getColorByMetricValue(coloring.mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, colorValue)
+    return isFile ? colorForMetricValue(colorValue, coloring) : folderColor(path, coloring)
 }
 
 function folderColor(path: string, coloring: RadialColoring): string {
@@ -59,14 +52,19 @@ function folderColor(path: string, coloring: RadialColoring): string {
     if (folders.style === RadialFolderStyle.Neutral) {
         return NEUTRAL_FOLDER_COLOR
     }
-    const valueColor = coloring.isUnaryMetric
-        ? mapColors.positive
-        : getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, folderValue)
-    return tintColor(valueColor, folders.tint)
+    return tintColor(colorForMetricValue(folderValue, coloring), folders.tint)
+}
+
+export function colorForMetricValue(value: number, coloring: RadialColoring): string {
+    const { mapColors } = coloring
+    if (coloring.isUnaryMetric) {
+        return mapColors.positive
+    }
+    return getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, value)
 }
 
 export function readableTextColor(backgroundHex: string): string {
     const [red, green, blue] = convert.hex.rgb(backgroundHex)
     const relativeLuminance = (RED_LUMA_WEIGHT * red + GREEN_LUMA_WEIGHT * green + BLUE_LUMA_WEIGHT * blue) / MAX_CHANNEL_VALUE
-    return relativeLuminance > LUMINANCE_THRESHOLD_FOR_DARK_TEXT ? DARK_TEXT : LIGHT_TEXT
+    return relativeLuminance > LUMINANCE_THRESHOLD_FOR_DARK_TEXT ? DARK_TEXT : WHITE
 }

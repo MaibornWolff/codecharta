@@ -244,7 +244,7 @@ describe("buildRadialTreemapOption", () => {
         // Act
         const { option } = drawn(TREE)
         const { option: atRoot } = drawn(TREE, { isMapRoot: true })
-        const centre = { data: { name: "/root", value: 60, colorValue: 5, isCentre: true } }
+        const centre = { data: { name: "/root", value: 60, colorValue: 5, folderValueText: undefined, isCentre: true } }
 
         // Assert
         expect(option.tooltip.formatter(centre)).toContain("Click to go up one folder")

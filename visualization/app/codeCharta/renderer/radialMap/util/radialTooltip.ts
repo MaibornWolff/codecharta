@@ -1,17 +1,8 @@
 import { escapeHtml } from "../../../util/escapeHtml"
-import { describeRadialFolderValue } from "../../../util/radialFolderValues"
-import { RadialFolderColoring } from "./radialColor"
-import { RadialMetrics, RadialNode } from "./radialTree"
+import { numberFormatter, RadialDatum } from "./radialDatum"
+import { RadialMetrics } from "./radialTree"
 
-const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
-
-interface RadialTooltipDatum {
-    name: string
-    value: number
-    colorValue: number | undefined
-    folderValueText?: string
-    isCentre: boolean
-}
+type RadialTooltipDatum = Pick<RadialDatum, "name" | "value" | "colorValue" | "folderValueText" | "isCentre">
 
 interface RadialFormatterParams {
     data?: RadialTooltipDatum
@@ -35,12 +26,4 @@ export function buildTooltipFormatter(metrics: RadialMetrics, isMapRoot: boolean
         }
         return rows.join("<br/>")
     }
-}
-
-export function folderValueText({ path, isFile }: Pick<RadialNode, "path" | "isFile">, folders: RadialFolderColoring): string | undefined {
-    const folderValue = isFile ? undefined : folders.values.get(path)
-    if (folderValue === undefined) {
-        return undefined
-    }
-    return `${describeRadialFolderValue(folders.value).label} ${numberFormatter.format(folderValue)}`
 }

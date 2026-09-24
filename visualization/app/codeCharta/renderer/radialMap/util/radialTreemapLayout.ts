@@ -1,10 +1,9 @@
 import { HierarchyRectangularNode, hierarchy, treemap, treemapSquarify } from "d3-hierarchy"
-import { CENTRE_RADIUS, OUTER_RADIUS } from "./radialChartStyle"
-import { RadialNode } from "./radialTree"
+import { CENTRE_RADIUS, FULL_TURN, OUTER_RADIUS, ringWidth } from "./radialChartStyle"
+import { levelsBelow, RadialNode } from "./radialTree"
 
 export const MAX_BAND_COUNT = 3
 
-const FULL_TURN = 2 * Math.PI
 const HEADER_SHARE_OF_BAND = 0.15
 const MAX_HEADER_THICKNESS = 0.04
 const GAP_BETWEEN_BANDS = 0.012
@@ -49,18 +48,12 @@ export function layOutRadialTreemap(centre: RadialNode): RadialTreemapPlacement[
 }
 
 function bandsAround(centre: RadialNode): Bands {
-    const count = Math.max(1, deepestFolderLevel(centre, MAX_BAND_COUNT))
-    const width = (OUTER_RADIUS - CENTRE_RADIUS) / count
+    const count = Math.max(
+        1,
+        levelsBelow(centre, MAX_BAND_COUNT, child => !child.isFile)
+    )
+    const width = ringWidth(count)
     return { count, width, headerThickness: Math.min(width * HEADER_SHARE_OF_BAND, MAX_HEADER_THICKNESS) }
-}
-
-function deepestFolderLevel(folder: RadialNode, levelsLeft: number): number {
-    if (levelsLeft === 0) {
-        return 0
-    }
-    return folder.children
-        .filter(child => !child.isFile)
-        .reduce((deepest, child) => Math.max(deepest, 1 + deepestFolderLevel(child, levelsLeft - 1)), 0)
 }
 
 function placeChildWedges(context: LayoutContext, parent: RadialNode, span: Pick<AnnularSector, "startAngle" | "endAngle">, band: number) {
@@ -113,10 +106,10 @@ function placeCells(context: LayoutContext, nodes: RadialNode[], body: AnnularSe
 function squarify(nodes: RadialNode[], body: AnnularSector): { node: RadialNode; sector: AnnularSector }[] {
     const arcLength = ((body.endAngle - body.startAngle) * (body.innerRadius + body.outerRadius)) / 2
     const thickness = body.outerRadius - body.innerRadius
-    const group: RadialNode = { ...nodes[0], path: "", area: 0, children: nodes }
+    const group: RadialNode = { path: "", name: "", isFile: false, area: 0, colorValue: undefined, isFlat: false, children: nodes }
     const root = hierarchy(group, node => (node === group ? node.children : undefined))
         .sum(node => (node === group ? 0 : node.area))
-        .sort((a, b) => compareLargestFirst(a.data, b.data))
+        .sort((first, second) => compareLargestFirst(first.data, second.data))
     const tiled = treemap<RadialNode>().tile(treemapSquarify).size([arcLength, thickness])(root)
     return tiled.children.map(cell => ({ node: cell.data, sector: bendIntoBody(cell, body, arcLength, thickness) }))
 }
@@ -139,8 +132,8 @@ function largestFirst(nodes: RadialNode[]): RadialNode[] {
     return [...nodes].sort(compareLargestFirst)
 }
 
-function compareLargestFirst(a: RadialNode, b: RadialNode): number {
-    return b.area - a.area || a.path.localeCompare(b.path)
+function compareLargestFirst(first: RadialNode, second: RadialNode): number {
+    return second.area - first.area || first.path.localeCompare(second.path)
 }
 
 function place(context: LayoutContext, node: RadialNode, sector: PlacedSector) {

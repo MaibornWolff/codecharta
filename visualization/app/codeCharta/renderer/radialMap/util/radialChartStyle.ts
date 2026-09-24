@@ -2,6 +2,9 @@ export const CENTRE_RADIUS = 0.2
 export const OUTER_RADIUS = 0.95
 export const DIMMED_OPACITY = 0.45
 export const TRANSITION_MS = 400
+export const QUARTER_TURN = Math.PI / 2
+export const FULL_TURN = 2 * Math.PI
+export const WHITE = "#ffffff"
 // A border takes its width out of every piece it outlines, so on a piece thinner than a few borders the
 // white line covers the colour. Thinner pieces are outlined in their own colour instead: canvas
 // antialiasing leaves gaps between sub-pixel slivers, and a map of many tiny files would fade to white.
@@ -11,6 +14,10 @@ const SLIVER_BLEED_PX = 1
 export interface Border {
     color: string
     widthPx: number
+}
+
+export function ringWidth(ringCount: number): number {
+    return (OUTER_RADIUS - CENTRE_RADIUS) / ringCount
 }
 
 export function borderWidthThatFits(borderWidthPx: number, thinnestSidePx: number): number {

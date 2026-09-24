@@ -1,4 +1,5 @@
-const QUARTER_TURN = Math.PI / 2
+import { QUARTER_TURN } from "./radialChartStyle"
+
 const ELLIPSIS = "…"
 
 export type MeasureGlyph = (glyph: string) => number

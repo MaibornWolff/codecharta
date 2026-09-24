@@ -1,4 +1,4 @@
-import { borderWidthThatFits, pieceBorder } from "./radialChartStyle"
+import { borderWidthThatFits, pieceBorder, ringWidth } from "./radialChartStyle"
 
 const WHITE_BORDER = { color: "#ffffff", widthPx: 1 }
 
@@ -25,5 +25,13 @@ describe("radialChartStyle", () => {
 
         // Assert
         expect(border).toEqual({ color: "#69ae40", widthPx: 1 })
+    })
+
+    it("should share the room between the centre and the rim evenly among the rings", () => {
+        // Act
+        const widths = [1, 3].map(ringCount => ringWidth(ringCount))
+
+        // Assert
+        expect(widths).toEqual([0.75, 0.25])
     })
 })
