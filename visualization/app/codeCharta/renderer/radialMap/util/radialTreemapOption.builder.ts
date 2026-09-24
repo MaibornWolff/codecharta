@@ -60,6 +60,9 @@ interface RingInPixels {
 }
 
 const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
+// ECharts draws a large custom series in chunks over several frames, and redraws it that way on every
+// hover, so a big map would sweep round like a clock hand each time the pointer moves.
+const DRAW_EVERY_PIECE_IN_ONE_FRAME = 0
 
 export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
     const placements = layOutRadialTreemap(inputs.centre)
@@ -74,7 +77,8 @@ export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
                 data,
                 renderItem: ({ dataIndex }: { dataIndex: number }, chartSize: ChartSize) =>
                     drawPlacement(placements[dataIndex], data[dataIndex], frameOf(chartSize)),
-                animationDurationUpdate: TRANSITION_MS
+                animationDurationUpdate: TRANSITION_MS,
+                progressive: DRAW_EVERY_PIECE_IN_ONE_FRAME
             }
         ]
     }

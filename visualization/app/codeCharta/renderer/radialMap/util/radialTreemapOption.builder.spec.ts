@@ -140,6 +140,14 @@ describe("buildRadialTreemapOption", () => {
         expect(outlines[0].z2).toBeGreaterThan(drawItem("/root/src/a.ts").children[0].z2)
     })
 
+    it("should draw every piece in one frame, so hovering a big map does not redraw it in sweeps", () => {
+        // Act
+        const { series } = drawn(TREE)
+
+        // Assert
+        expect(series.progressive).toBe(0)
+    })
+
     it("should start the first wedge at twelve o'clock around the middle of the chart", () => {
         // Act
         const { drawItem } = drawn(TREE)
