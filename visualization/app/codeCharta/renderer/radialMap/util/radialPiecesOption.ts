@@ -14,6 +14,13 @@ export interface RadialPieceDatum extends RadialDatum {
     color: string
 }
 
+export interface PiecesStyle {
+    border: Border
+    focus: "self" | "ancestors"
+}
+
+type Focus = "self" | number[]
+
 interface ChartSize {
     getWidth(): number
     getHeight(): number
@@ -26,8 +33,9 @@ const DRAW_EVERY_PIECE_IN_ONE_FRAME = 0
 // rings left some files there faded for good. Hovering fades every other piece anyway, so the layer saves nothing.
 const NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER = Number.POSITIVE_INFINITY
 
-export function buildRadialPiecesOption(inputs: RadialOptionInputs, placements: RadialPlacement[], border: Border) {
+export function buildRadialPiecesOption(inputs: RadialOptionInputs, placements: RadialPlacement[], style: PiecesStyle) {
     const data = placements.map(placement => toDatum(placement, inputs))
+    const focusOf = style.focus === "ancestors" ? ancestorIndicesOf(placements) : () => "self" as const
     return {
         aria: { enabled: true },
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
@@ -38,7 +46,11 @@ export function buildRadialPiecesOption(inputs: RadialOptionInputs, placements: 
                 coordinateSystem: "none",
                 data,
                 renderItem: ({ dataIndex }: { dataIndex: number }, chartSize: ChartSize) =>
-                    drawPlacement(placements[dataIndex], data[dataIndex], { frame: frameOf(chartSize), border }),
+                    drawPlacement(placements[dataIndex], data[dataIndex], {
+                        frame: frameOf(chartSize),
+                        border: style.border,
+                        focus: focusOf(dataIndex)
+                    }),
                 ...pieceAnimation(data.length),
                 progressive: DRAW_EVERY_PIECE_IN_ONE_FRAME
             }
@@ -56,6 +68,17 @@ function toDatum({ node, isCentre }: RadialPlacement, { centre, coloring }: Radi
     }
 }
 
+function ancestorIndicesOf(placements: RadialPlacement[]): (dataIndex: number) => number[] {
+    const indexByPath = new Map(placements.map(({ node }, dataIndex) => [node.path, dataIndex]))
+    return dataIndex => {
+        const indices: number[] = []
+        for (let path = placements[dataIndex].node.path; indexByPath.has(path); path = path.slice(0, path.lastIndexOf("/"))) {
+            indices.push(indexByPath.get(path))
+        }
+        return indices
+    }
+}
+
 function frameOf(chartSize: ChartSize): Frame {
     const width = chartSize.getWidth()
     const height = chartSize.getHeight()
@@ -65,12 +88,13 @@ function frameOf(chartSize: ChartSize): Frame {
 interface Canvas {
     frame: Frame
     border: Border
+    focus: Focus
 }
 
 function drawPlacement(placement: RadialPlacement, datum: RadialPieceDatum, canvas: Canvas) {
     const pieces = placement.sectors.map(sector => drawSector(sector, datum.color, canvas))
     const labels = placement.sectors.map(sector => drawLabel(sector, datum, canvas.frame)).filter(label => label !== null)
-    return { type: "group", focus: "self", children: [...pieces, ...labels] }
+    return { type: "group", focus: canvas.focus, children: [...pieces, ...labels] }
 }
 
 function drawSector(sector: PlacedSector, color: string, { frame, border }: Canvas) {

@@ -85,6 +85,22 @@ function lastDrawnCentre(): string {
     return lastDrawnOption().series[0].data[0].name
 }
 
+interface DrawnPiece {
+    type: string
+    style: { fill?: string }
+}
+
+function lastDrawnPiecesOf(path: string): DrawnPiece[] {
+    const [series] = lastDrawnOption().series
+    const dataIndex = series.data.findIndex((datum: { name: string }) => datum.name === path)
+    const chartSize = { getWidth: () => 800, getHeight: () => 600 }
+    return series.renderItem({ dataIndex }, chartSize).children
+}
+
+function isWedgeOutline(piece: DrawnPiece): boolean {
+    return piece.type === "sector" && piece.style.fill === "none"
+}
+
 describe("RadialMapComponent", () => {
     let restoreElementSize: () => void
 
@@ -113,7 +129,7 @@ describe("RadialMapComponent", () => {
     it("should draw the radial treemap in its layout and the sunburst in the sunburst layout", async () => {
         // Arrange
         const { store, fixture } = await setup({ layoutAlgorithm: LayoutAlgorithm.RadialTreeMap })
-        const radialTreemapSeries = lastDrawnOption().series[0].type
+        const radialTreemapFolder = lastDrawnPiecesOf("/root/src")
 
         // Act
         store.overrideSelector(layoutAlgorithmSelector, LayoutAlgorithm.Sunburst)
@@ -121,8 +137,8 @@ describe("RadialMapComponent", () => {
         fixture.detectChanges()
 
         // Assert
-        expect(radialTreemapSeries).toBe("custom")
-        expect(lastDrawnOption().series[0].type).toBe("sunburst")
+        expect(radialTreemapFolder.some(isWedgeOutline)).toBe(true)
+        expect(lastDrawnPiecesOf("/root/src").some(isWedgeOutline)).toBe(false)
     })
 
     it("should keep the centre for a selected file the radial treemap shows as a cell four levels down", async () => {

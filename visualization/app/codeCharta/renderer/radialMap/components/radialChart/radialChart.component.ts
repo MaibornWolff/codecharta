@@ -87,8 +87,7 @@ export class RadialChartComponent implements OnDestroy {
                 centre: view.centre,
                 isMapRoot: view.centre === this.tree(),
                 metrics: this.metrics(),
-                coloring: this.coloring(),
-                chartSizeInPixels: Math.min(width, height)
+                coloring: this.coloring()
             }),
             { keepsSegments }
         )
