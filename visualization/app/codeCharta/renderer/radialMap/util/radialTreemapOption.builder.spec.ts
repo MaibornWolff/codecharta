@@ -237,7 +237,7 @@ describe("buildRadialTreemapOption", () => {
 
         // Assert
         expect(labels.length).toBeGreaterThan(1)
-        expect(labels.every(label => Math.abs(label.rotation) <= Math.PI / 2)).toBe(true)
+        expect(labels.every(label => Math.abs(Math.atan2(Math.sin(label.rotation), Math.cos(label.rotation))) <= Math.PI / 2)).toBe(true)
     })
 
     it("should offer going up in the centre's tooltip below the map root only", () => {
