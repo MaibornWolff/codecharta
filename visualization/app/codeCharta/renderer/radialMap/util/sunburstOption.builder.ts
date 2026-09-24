@@ -1,4 +1,4 @@
-import { CENTRE_RADIUS, DIMMED_OPACITY, OUTER_RADIUS, TRANSITION_MS } from "./radialChartStyle"
+import { Border, CENTRE_RADIUS, DIMMED_OPACITY, OUTER_RADIUS, pieceBorder, TRANSITION_MS } from "./radialChartStyle"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter, folderValueText } from "./radialTooltip"
@@ -10,9 +10,16 @@ const CENTRE_RADIUS_PERCENT = CENTRE_RADIUS * 100
 const OUTER_RADIUS_PERCENT = OUTER_RADIUS * 100
 const MIN_LABEL_ANGLE_DEGREES = 5
 const LABEL_PADDING_PX = 8
-const SEGMENT_BORDER_COLOR = "#ffffff"
-const SEGMENT_BORDER_WIDTH_PX = 1
+const SEGMENT_BORDER: Border = { color: "#ffffff", widthPx: 1 }
 const HOVER_FADE = { duration: 500, easing: "cubicOut" }
+const FULL_TURN = 2 * Math.PI
+
+interface DatumContext {
+    coloring: RadialColoring
+    /** Every ring shares the centre's full turn, so a node's angle is its share of the centre's area. */
+    centreArea: number
+    ringInnerRadiiPx: number[]
+}
 
 export interface SunburstDatum {
     name: string
@@ -22,7 +29,7 @@ export interface SunburstDatum {
     folderValueText: string | undefined
     isCentre: boolean
     isFile: boolean
-    itemStyle: { color: string }
+    itemStyle: { color: string; borderColor: string; borderWidth: number }
     label: { color: string; fontWeight?: "bold" }
     children: SunburstDatum[]
 }
@@ -34,30 +41,44 @@ interface SunburstFormatterParams {
 export const SUNBURST_SHAPE: RadialShape = { visibleDepth: VISIBLE_RING_COUNT, buildOption: buildSunburstOption }
 
 export function buildSunburstOption(inputs: RadialOptionInputs) {
+    const radiusInPixels = inputs.chartSizeInPixels / 2
+    const ringCount = ringCountAround(inputs.centre)
+    const context: DatumContext = {
+        coloring: inputs.coloring,
+        centreArea: inputs.centre.area,
+        ringInnerRadiiPx: ringInnerRadiiInPixels(ringCount, radiusInPixels)
+    }
     return {
         aria: { enabled: true },
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
         series: [
             {
                 type: "sunburst",
-                data: [toDatum(inputs.centre, inputs.coloring, VISIBLE_RING_COUNT, true)],
+                data: [toDatum(inputs.centre, context, 0)],
                 radius: ["0%", `${OUTER_RADIUS_PERCENT}%`],
                 nodeClick: false,
                 sort: "desc",
                 emphasis: { focus: "ancestor" },
                 blur: { itemStyle: { opacity: DIMMED_OPACITY }, label: { opacity: DIMMED_OPACITY } },
                 stateAnimation: HOVER_FADE,
-                itemStyle: { borderColor: SEGMENT_BORDER_COLOR, borderWidth: SEGMENT_BORDER_WIDTH_PX },
                 label: { formatter: labelOf },
                 animationDurationUpdate: TRANSITION_MS,
-                levels: levelsAround(inputs.centre, inputs.chartSizeInPixels / 2)
+                levels: levelsAround(ringCount, radiusInPixels)
             }
         ]
     }
 }
 
-function levelsAround(centre: RadialNode, radiusInPixels: number) {
-    const ringCount = Math.max(1, depthBelow(centre, VISIBLE_RING_COUNT))
+function ringCountAround(centre: RadialNode): number {
+    return Math.max(1, depthBelow(centre, VISIBLE_RING_COUNT))
+}
+
+function ringInnerRadiiInPixels(ringCount: number, radiusInPixels: number): number[] {
+    const ringWidth = (OUTER_RADIUS - CENTRE_RADIUS) / ringCount
+    return Array.from({ length: ringCount }, (_, ringIndex) => (CENTRE_RADIUS + ringIndex * ringWidth) * radiusInPixels)
+}
+
+function levelsAround(ringCount: number, radiusInPixels: number) {
     const ringWidthPercent = (OUTER_RADIUS_PERCENT - CENTRE_RADIUS_PERCENT) / ringCount
     const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / 100
     const virtualRootLevel = {}
@@ -89,8 +110,11 @@ function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixe
     }))
 }
 
-function toDatum(node: RadialNode, coloring: RadialColoring, ringsLeft: number, isCentre: boolean): SunburstDatum {
+function toDatum(node: RadialNode, context: DatumContext, ring: number): SunburstDatum {
+    const { coloring } = context
     const color = nodeColor(node, coloring)
+    const isCentre = ring === 0
+    const border = isCentre ? SEGMENT_BORDER : pieceBorder(color, SEGMENT_BORDER, arcAtInnerEdgePx(node, context, ring))
     return {
         name: node.path,
         value: node.area,
@@ -99,10 +123,14 @@ function toDatum(node: RadialNode, coloring: RadialColoring, ringsLeft: number, 
         folderValueText: folderValueText(node, coloring.folders),
         isCentre,
         isFile: node.isFile,
-        itemStyle: { color },
+        itemStyle: { color, borderColor: border.color, borderWidth: border.widthPx },
         label: node.isFile ? { color: readableTextColor(color), fontWeight: "bold" } : { color: readableTextColor(color) },
-        children: ringsLeft > 0 ? node.children.map(child => toDatum(child, coloring, ringsLeft - 1, false)) : []
+        children: ring < VISIBLE_RING_COUNT ? node.children.map(child => toDatum(child, context, ring + 1)) : []
     }
+}
+
+function arcAtInnerEdgePx(node: RadialNode, { centreArea, ringInnerRadiiPx }: DatumContext, ring: number): number {
+    return (FULL_TURN * node.area * ringInnerRadiiPx[ring - 1]) / centreArea
 }
 
 function labelOf({ data }: SunburstFormatterParams): string {

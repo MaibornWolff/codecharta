@@ -217,4 +217,18 @@ describe("buildSunburstOption", () => {
         expect(option.tooltip.formatter({})).toBe("")
         expect(option.series[0].label.formatter({})).toBe("")
     })
+
+    it("should outline a segment too thin for a white border in its own colour, so tiny files do not fade to white", () => {
+        // Arrange
+        const centre = folderNode("/root", [fileNode("/root/huge.ts", { area: 1000 }), fileNode("/root/tiny.ts", { area: 0.001 })], {
+            area: 1000.001
+        })
+
+        // Act
+        const [huge, tiny] = buildSunburstOption(inputs(centre)).series[0].data[0].children
+
+        // Assert
+        expect(huge.itemStyle).toMatchObject({ borderColor: "#ffffff", borderWidth: 1 })
+        expect(tiny.itemStyle.borderColor).toBe(tiny.itemStyle.color)
+    })
 })
