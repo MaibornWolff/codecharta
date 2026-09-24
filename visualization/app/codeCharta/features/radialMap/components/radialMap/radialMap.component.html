@@ -12,9 +12,9 @@
         [hoveredPath]="hoveredPath()"
         [metrics]="metrics()"
         [coloring]="coloring()"
-        (folderClicked)="selectFolder($event)"
+        (folderClicked)="selectNode($event)"
         (centreClicked)="goUp()"
-        (fileClicked)="selectFile($event)"
+        (fileClicked)="selectNode($event)"
         (nodeHovered)="hover($event)"
         (nodeRightClicked)="openContextMenu($event)"
     ></cc-radial-chart>

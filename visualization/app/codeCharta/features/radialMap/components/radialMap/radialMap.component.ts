@@ -75,7 +75,7 @@ export class RadialMapComponent {
         effect(() => this.centreOnTheSelection())
     }
 
-    protected selectFolder(path: string): void {
+    protected selectNode(path: string): void {
         this.writeStore.selectNode(path)
     }
 
@@ -83,12 +83,8 @@ export class RadialMapComponent {
         const view = this.view()
         const parent = view && findParentFolder(view.tree, view.centre.path)
         if (parent) {
-            this.selectFolder(parent.path)
+            this.selectNode(parent.path)
         }
-    }
-
-    protected selectFile(path: string): void {
-        this.writeStore.selectNode(path)
     }
 
     protected openContextMenu({ path, clientX, clientY }: RightClickedNode): void {
