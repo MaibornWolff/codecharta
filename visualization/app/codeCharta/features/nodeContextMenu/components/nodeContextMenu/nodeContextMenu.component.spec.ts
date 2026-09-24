@@ -160,6 +160,22 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Exclude")).not.toBe(null)
     })
 
+    it("should draw a single divider before Flatten when a file in the sunburst has no focus actions", async () => {
+        // Arrange & Act
+        const { container } = await renderMenu({ node: fileNode, origin: "radialMap", isRadialLayout: true })
+
+        // Assert
+        expect(container.querySelectorAll(".border-t")).toHaveLength(1)
+    })
+
+    it("should keep the divider before the focus actions of a folder in the sunburst", async () => {
+        // Arrange & Act
+        const { container } = await renderMenu({ node: folderNode, origin: "radialMap", isRadialLayout: true })
+
+        // Assert
+        expect(container.querySelectorAll(".border-t")).toHaveLength(2)
+    })
+
     it("should offer Show in Explorer for a right-click in the sunburst", async () => {
         // Arrange & Act
         await renderMenu({ origin: "radialMap", isRadialLayout: true })
