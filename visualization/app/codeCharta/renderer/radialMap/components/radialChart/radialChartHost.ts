@@ -57,6 +57,15 @@ export class RadialChartHost {
         this.chart.on("click", (event: unknown) => this.reportClick(event as EchartsSegmentEvent))
         this.chart.on("mouseover", (event: unknown) => this.reportPointerEntered((event as EchartsSegmentEvent).data?.name ?? null))
         this.chart.on("mouseout", () => this.reportPointerLeftAfterGrace())
+        // A resize makes ECharts forget the segment under the pointer, and leaving that segment then reports no
+        // mouseout: the hover would stay, and every other segment dimmed, until the pointer finds another one.
+        const renderSurface = this.chart.getZr()
+        renderSurface.on("mousemove", event => {
+            if (!event.target) {
+                this.reportPointerOverNothing()
+            }
+        })
+        renderSurface.on("globalout", () => this.reportPointerOverNothing())
         this.chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as EchartsSegmentEvent))
         this.chart.on("finished", () => container.setAttribute("aria-busy", "false"))
         container.addEventListener("contextmenu", suppressBrowserMenu)
@@ -128,6 +137,12 @@ export class RadialChartHost {
             this.pointerLeaveTimeout = undefined
             this.reportPointerLeft()
         }, POINTER_LEAVE_GRACE_MS)
+    }
+
+    private reportPointerOverNothing(): void {
+        if (this.pathUnderPointer !== null && this.pointerLeaveTimeout === undefined) {
+            this.reportPointerLeftAfterGrace()
+        }
     }
 
     private reportPointerLeft(): void {
