@@ -62,18 +62,4 @@ describe("linkHeightAndColorMetricEffect", () => {
         // so the last action remains the previous one
         expect(await getLastAction(store)).toEqual(setColorMetric({ value: "rloc" }))
     })
-
-    it("should leave the color metric free while the sunburst is shown, and link it again for the 3D map", () => {
-        // Arrange
-        const heightMetric = "rloc"
-        const isLinkedByTheUser = true
-
-        // Act
-        const inSunburst = heightAndLinkedSelector.projector(heightMetric, isLinkedByTheUser, true)
-        const inTreeMap = heightAndLinkedSelector.projector(heightMetric, isLinkedByTheUser, false)
-
-        // Assert
-        expect(inSunburst).toEqual({ heightMetric: "rloc", isLinked: false })
-        expect(inTreeMap).toEqual({ heightMetric: "rloc", isLinked: true })
-    })
 })

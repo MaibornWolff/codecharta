@@ -35,6 +35,7 @@ import {
     toggleEdgeMetricVisible
 } from "../../../stores/mapState/mapState.write.facade"
 import {
+    setIsColorMetricLinkedToHeightMetricAction,
     setMaxTreeMapFiles,
     setRadialFolderStyle,
     setRadialFolderTint,
@@ -151,6 +152,10 @@ export class MetricsBarWriteStore {
 
     toggleIsHeightAndColorMetricLinked() {
         this.store.dispatch(toggleIsColorMetricLinkedToHeightMetric())
+    }
+
+    unlinkColorMetricFromHeightMetric() {
+        this.store.dispatch(setIsColorMetricLinkedToHeightMetricAction({ value: false }))
     }
 
     markPackage(markedPackage: MarkedPackage) {

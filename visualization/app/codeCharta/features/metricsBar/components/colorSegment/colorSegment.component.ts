@@ -33,6 +33,9 @@ export class ColorSegmentComponent {
     readonly isSelectionLocked = computed(() => this.isLinkedToHeight() && !this.isRadialLayout())
 
     handleMetricSelected(value: string) {
+        if (this.isLinkedToHeight()) {
+            this.metricsBarWriteStore.unlinkColorMetricFromHeightMetric()
+        }
         this.metricsBarWriteStore.setColorMetric(value)
     }
 }
