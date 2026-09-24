@@ -37,7 +37,7 @@ export enum RadialFolderValue {
     Min = "min",
     Median = "median",
     MeanPerFile = "meanPerFile",
-    AvgPerLine = "avgPerLine"
+    AvgPerArea = "avgPerArea"
 }
 
 export enum RadialFolderStyle {

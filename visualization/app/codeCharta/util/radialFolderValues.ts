@@ -44,7 +44,7 @@ export const RADIAL_FOLDER_VALUES: readonly RadialFolderValueDescriptor[] = [
         legend: "mean per file"
     },
     {
-        value: RadialFolderValue.AvgPerLine,
+        value: RadialFolderValue.AvgPerArea,
         label: "avg / line",
         description: "Weighted by lines, so it matches the area.",
         legend: "avg / line of their files"

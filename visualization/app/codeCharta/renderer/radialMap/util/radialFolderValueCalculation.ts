@@ -25,7 +25,7 @@ const FOLDER_VALUE_OF: Record<RadialFolderValue, FolderValueOf> = {
     [RadialFolderValue.Min]: stats => stats.min,
     [RadialFolderValue.Median]: stats => median(stats.values),
     [RadialFolderValue.MeanPerFile]: stats => stats.sum / stats.files,
-    [RadialFolderValue.AvgPerLine]: stats => stats.areaWeightedSum / stats.area
+    [RadialFolderValue.AvgPerArea]: stats => stats.areaWeightedSum / stats.area
 }
 
 /** Every folder's value over all its files with an area and a colour value, keyed by path. */
