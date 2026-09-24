@@ -1,4 +1,4 @@
-import { Border, borderWidthThatFits, pieceBorder, TRANSITION_MS, WHITE } from "./radialChartStyle"
+import { Border, borderWidthThatFits, pieceAnimation, pieceBorder, WHITE } from "./radialChartStyle"
 import { nodeColor } from "./radialColor"
 import { describeNode, RadialDatum } from "./radialDatum"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
@@ -46,7 +46,7 @@ export function buildRadialTreemapOption(inputs: RadialOptionInputs, maxBandCoun
                 data,
                 renderItem: ({ dataIndex }: { dataIndex: number }, chartSize: ChartSize) =>
                     drawPlacement(placements[dataIndex], data[dataIndex], frameOf(chartSize)),
-                animationDurationUpdate: TRANSITION_MS,
+                ...pieceAnimation(data.length),
                 progressive: DRAW_EVERY_PIECE_IN_ONE_FRAME
             }
         ]

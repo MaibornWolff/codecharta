@@ -1,8 +1,29 @@
-import { borderWidthThatFits, pieceBorder, ringWidth } from "./radialChartStyle"
+import { borderWidthThatFits, pieceAnimation, pieceBorder, ringWidth, TRANSITION_MS } from "./radialChartStyle"
 
 const WHITE_BORDER = { color: "#ffffff", widthPx: 1 }
 
 describe("radialChartStyle", () => {
+    it("should fade the hover gently and move the pieces on a map of up to two thousand pieces", () => {
+        // Act
+        const animation = pieceAnimation(2000)
+
+        // Assert
+        expect(animation.stateAnimation.duration).toBeGreaterThanOrEqual(500)
+        expect(animation.animationThreshold).toBe(Number.POSITIVE_INFINITY)
+        expect(animation.animationDurationUpdate).toBe(TRANSITION_MS)
+    })
+
+    it("should keep fading the hover but stop moving the pieces on a bigger map", () => {
+        // Act
+        const animation = pieceAnimation(2001)
+
+        // Assert
+        expect(animation.stateAnimation.duration).toBeGreaterThanOrEqual(500)
+        expect(animation.animationThreshold).toBe(Number.POSITIVE_INFINITY)
+        expect(animation.animationDurationUpdate).toBe(0)
+        expect(animation.animationDuration).toBe(0)
+    })
+
     it("should keep a border on a shape a few borders wide", () => {
         // Act
         const widths = [borderWidthThatFits(1, 4), borderWidthThatFits(1, 3.9)]

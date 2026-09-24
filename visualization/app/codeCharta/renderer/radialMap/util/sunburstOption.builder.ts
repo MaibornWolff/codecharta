@@ -4,9 +4,9 @@ import {
     DIMMED_OPACITY,
     FULL_TURN,
     OUTER_RADIUS,
+    pieceAnimation,
     pieceBorder,
     ringWidth,
-    TRANSITION_MS,
     WHITE
 } from "./radialChartStyle"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
@@ -21,7 +21,6 @@ const OUTER_RADIUS_PERCENT = OUTER_RADIUS * PERCENT
 const MIN_LABEL_ANGLE_DEGREES = 5
 const LABEL_PADDING_PX = 8
 const SEGMENT_BORDER: Border = { color: WHITE, widthPx: 1 }
-const HOVER_FADE = { duration: 500, easing: "cubicOut" }
 
 interface DatumContext {
     coloring: RadialColoring
@@ -54,25 +53,29 @@ export function buildSunburstOption(inputs: RadialOptionInputs, maxRingCount: nu
         centreArea: inputs.centre.area,
         ringInnerRadiiPx: ringInnerRadiiInPixels(ringCount, radiusInPixels)
     }
+    const centreDatum = toDatum(inputs.centre, context, 0)
     return {
         aria: { enabled: true },
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
         series: [
             {
                 type: "sunburst",
-                data: [toDatum(inputs.centre, context, 0)],
+                data: [centreDatum],
                 radius: ["0%", `${OUTER_RADIUS_PERCENT}%`],
                 nodeClick: false,
                 sort: "desc",
                 emphasis: { focus: "ancestor" },
                 blur: { itemStyle: { opacity: DIMMED_OPACITY }, label: { opacity: DIMMED_OPACITY } },
-                stateAnimation: HOVER_FADE,
                 label: { formatter: labelOf },
-                animationDurationUpdate: TRANSITION_MS,
+                ...pieceAnimation(countOf(centreDatum)),
                 levels: levelsAround(ringCount, radiusInPixels)
             }
         ]
     }
+}
+
+function countOf(datum: SunburstDatum): number {
+    return datum.children.reduce((count, child) => count + countOf(child), 1)
 }
 
 function ringInnerRadiiInPixels(ringCount: number, radiusInPixels: number): number[] {
