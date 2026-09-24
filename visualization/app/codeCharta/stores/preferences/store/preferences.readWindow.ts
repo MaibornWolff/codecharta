@@ -11,6 +11,7 @@ import { isRadialFolderNeutralSelector, radialFolderStyleSelector } from "./radi
 import { radialFolderSwatchSelector, radialTintedFolderSwatchSelector } from "./radialFolderSwatch/radialFolderSwatch.selector"
 import { radialFolderTintSelector } from "./radialFolderTint/radialFolderTint.selector"
 import { radialFolderValueSelector } from "./radialFolderValue/radialFolderValue.selector"
+import { radialLevelsSelector } from "./radialLevels/radialLevels.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
 import { sortingOrderAscendingSelector, sortingOrderSelector } from "./sorting/sorting.selector"
 
@@ -38,6 +39,7 @@ export class PreferencesReadWindow {
     readonly isRadialFolderNeutral$ = this.store.select(isRadialFolderNeutralSelector)
     readonly radialFolderSwatch$ = this.store.select(radialFolderSwatchSelector)
     readonly radialTintedFolderSwatch$ = this.store.select(radialTintedFolderSwatchSelector)
+    readonly radialLevels$ = this.store.select(radialLevelsSelector)
 
     getPreferences(): Preferences {
         return this.state.getValue().preferences

@@ -5,10 +5,10 @@ import {
     findClosestFolder,
     findClosestNode,
     findParentFolder,
-    RADIAL_TREEMAP_SHAPE,
     RadialChartComponent,
     type RightClickedNode,
-    SUNBURST_SHAPE
+    radialTreemapShape,
+    sunburstShape
 } from "../../../../renderer/radialMap/radialMap.facade"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import {
@@ -49,8 +49,11 @@ export class RadialMapComponent {
 
     protected readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
     private readonly layoutAlgorithm = toSignal(this.readStore.layoutAlgorithm$, { requireSync: true })
+    private readonly radialLevels = toSignal(this.readStore.radialLevels$, { requireSync: true })
     protected readonly shape = computed(() =>
-        this.layoutAlgorithm() === LayoutAlgorithm.RadialTreeMap ? RADIAL_TREEMAP_SHAPE : SUNBURST_SHAPE
+        this.layoutAlgorithm() === LayoutAlgorithm.RadialTreeMap
+            ? radialTreemapShape(this.radialLevels())
+            : sunburstShape(this.radialLevels())
     )
     protected readonly metrics = toSignal(this.readStore.metrics$, { requireSync: true })
     protected readonly coloring = toSignal(this.readStore.coloring$, { requireSync: true })

@@ -54,6 +54,10 @@ export class MetricsBarPageObject {
         return this.page.getByTestId("metrics-bar-layout-picker").getByRole("spinbutton", { name: "Maximum TreeMap Files" })
     }
 
+    radialLevelsInput(): Locator {
+        return this.page.getByTestId("metrics-bar-layout-picker").getByRole("spinbutton", { name: "Visible levels" })
+    }
+
     async openLayoutPicker() {
         await this.layoutTab().click()
         await this.page.getByTestId("metrics-bar-layout-picker").waitFor({ state: "visible", timeout: 10_000 })

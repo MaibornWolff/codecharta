@@ -79,6 +79,7 @@ import {
     setRadialFolderStyle,
     setRadialFolderTint,
     setRadialFolderValue,
+    setRadialLevels,
     setResetCameraIfNewFileIsLoaded,
     setScreenshotToClipboardEnabled,
     setSortingOption
@@ -401,6 +402,9 @@ export class LoadInitialFileStore {
                 break
             case "radialFolderTint":
                 this.store.dispatch(setRadialFolderTint({ value }))
+                break
+            case "radialLevels":
+                this.store.dispatch(setRadialLevels({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

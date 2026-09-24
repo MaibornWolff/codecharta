@@ -2,8 +2,6 @@ import { HierarchyRectangularNode, hierarchy, treemap, treemapSquarify } from "d
 import { CENTRE_RADIUS, FULL_TURN, ringWidth } from "./radialChartStyle"
 import { levelsBelow, RadialNode } from "./radialTree"
 
-export const MAX_BAND_COUNT = 3
-
 const HEADER_SHARE_OF_BAND = 0.15
 const MAX_HEADER_THICKNESS = 0.04
 const GAP_BETWEEN_BANDS = 0.012
@@ -39,16 +37,16 @@ interface LayoutContext {
     bands: Bands
 }
 
-export function layOutRadialTreemap(centre: RadialNode): RadialTreemapPlacement[] {
-    const context: LayoutContext = { placements: new Map(), bands: bandsAround(centre) }
+export function layOutRadialTreemap(centre: RadialNode, maxBandCount: number): RadialTreemapPlacement[] {
+    const context: LayoutContext = { placements: new Map(), bands: bandsAround(centre, maxBandCount) }
     context.placements.set(centre, { node: centre, isCentre: true, sectors: [] })
     place(context, centre, { role: "centre", startAngle: 0, endAngle: FULL_TURN, innerRadius: 0, outerRadius: CENTRE_RADIUS })
     placeChildren(context, centre, { startAngle: 0, endAngle: FULL_TURN }, 1)
     return [...context.placements.values()]
 }
 
-function bandsAround(centre: RadialNode): Bands {
-    const count = Math.max(1, levelsBelow(centre, MAX_BAND_COUNT))
+function bandsAround(centre: RadialNode, maxBandCount: number): Bands {
+    const count = Math.max(1, levelsBelow(centre, maxBandCount))
     const width = ringWidth(count)
     return { count, width, headerThickness: Math.min(width * HEADER_SHARE_OF_BAND, MAX_HEADER_THICKNESS) }
 }

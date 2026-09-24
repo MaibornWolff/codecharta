@@ -96,6 +96,20 @@ test.describe("MetricsBar layout tab", () => {
         await expect(metricsBar.maxTreeMapFilesInput()).toHaveValue("100")
     })
 
+    test("should offer the level count only while a radial layout is picked", async ({ page }) => {
+        // Arrange
+        const metricsBar = new MetricsBarPageObject(page)
+        await metricsBar.openLayoutPicker()
+        await expect(metricsBar.radialLevelsInput()).toHaveCount(0)
+
+        // Act
+        await metricsBar.pickLayout("Sunburst")
+
+        // Assert
+        await expect(metricsBar.radialLevelsInput()).toBeVisible()
+        await expect(metricsBar.radialLevelsInput()).toHaveValue("3")
+    })
+
     test("should stay on the bar's top edge without making the bar taller", async ({ page }) => {
         // Arrange
         const metricsBar = new MetricsBarPageObject(page)

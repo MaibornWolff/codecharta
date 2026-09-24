@@ -17,6 +17,7 @@ import {
 } from "../../../../renderer/radialMap/testing/radialChart.stub"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { layoutAlgorithmSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { radialLevelsSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import {
     currentFocusedNodePathSelector,
@@ -157,6 +158,20 @@ describe("RadialMapComponent", () => {
 
         // Assert
         expect(lastDrawnCentre()).toBe("/root/a/b/c")
+    })
+
+    it("should centre on the folder of a selected file when fewer levels are asked for than reach it", async () => {
+        // Arrange
+        const deepTree = folderNode("/root", [folderNode("/root/a", [folderNode("/root/a/b", [fileNode("/root/a/b/c.ts")])])])
+        const { store, fixture } = await setup({ tree: deepTree, selectedPath: "/root/a/b/c.ts" })
+
+        // Act
+        store.overrideSelector(radialLevelsSelector, 1)
+        store.refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(lastDrawnCentre()).toBe("/root/a/b")
     })
 
     it("should centre on the selected folder, and on the folder of a selected file", async () => {

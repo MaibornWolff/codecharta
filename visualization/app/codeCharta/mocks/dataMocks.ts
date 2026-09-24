@@ -2000,7 +2000,8 @@ export const STATE: CcState = {
         sorting: { option: SortingOption.NAME, orderAscending: false },
         radialFolderValue: RadialFolderValue.Max,
         radialFolderStyle: RadialFolderStyle.Tinted,
-        radialFolderTint: 0.5
+        radialFolderTint: 0.5,
+        radialLevels: 3
     },
     mapState: {
         areaMetric: "rloc",
@@ -2071,7 +2072,8 @@ export const DEFAULT_STATE: CcState = {
         sorting: { option: SortingOption.NAME, orderAscending: true },
         radialFolderValue: RadialFolderValue.Max,
         radialFolderStyle: RadialFolderStyle.Tinted,
-        radialFolderTint: 0.5
+        radialFolderTint: 0.5,
+        radialLevels: 3
     },
     mapState: {
         areaMetric: null,

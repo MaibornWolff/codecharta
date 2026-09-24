@@ -10,6 +10,7 @@ import { setMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { setRadialFolderStyle } from "./radialFolderStyle/radialFolderStyle.actions"
 import { setRadialFolderTint } from "./radialFolderTint/radialFolderTint.actions"
 import { setRadialFolderValue } from "./radialFolderValue/radialFolderValue.actions"
+import { setRadialLevels } from "./radialLevels/radialLevels.actions"
 import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { setSortingOption, toggleSortingOrderAscending } from "./sorting/sorting.actions"
 
@@ -27,5 +28,6 @@ export const preferencesActions = [
     setSortingOption,
     setRadialFolderValue,
     setRadialFolderStyle,
-    setRadialFolderTint
+    setRadialFolderTint,
+    setRadialLevels
 ]

@@ -15,8 +15,6 @@ import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter } from "./radialTooltip"
 import { levelsBelow, RadialNode } from "./radialTree"
 
-export const VISIBLE_RING_COUNT = 3
-
 const PERCENT = 100
 const CENTRE_RADIUS_PERCENT = CENTRE_RADIUS * PERCENT
 const OUTER_RADIUS_PERCENT = OUTER_RADIUS * PERCENT
@@ -27,6 +25,7 @@ const HOVER_FADE = { duration: 500, easing: "cubicOut" }
 
 interface DatumContext {
     coloring: RadialColoring
+    ringCount: number
     /** Every ring shares the centre's full turn, so a node's angle is its share of the centre's area. */
     centreArea: number
     ringInnerRadiiPx: number[]
@@ -42,13 +41,16 @@ interface SunburstFormatterParams {
     data?: SunburstDatum
 }
 
-export const SUNBURST_SHAPE: RadialShape = { visibleDepth: VISIBLE_RING_COUNT, buildOption: buildSunburstOption }
+export function sunburstShape(maxRingCount: number): RadialShape {
+    return { visibleDepth: maxRingCount, buildOption: inputs => buildSunburstOption(inputs, maxRingCount) }
+}
 
-export function buildSunburstOption(inputs: RadialOptionInputs) {
+export function buildSunburstOption(inputs: RadialOptionInputs, maxRingCount: number) {
     const radiusInPixels = inputs.chartSizeInPixels / 2
-    const ringCount = ringCountAround(inputs.centre)
+    const ringCount = Math.max(1, levelsBelow(inputs.centre, maxRingCount))
     const context: DatumContext = {
         coloring: inputs.coloring,
+        ringCount,
         centreArea: inputs.centre.area,
         ringInnerRadiiPx: ringInnerRadiiInPixels(ringCount, radiusInPixels)
     }
@@ -71,10 +73,6 @@ export function buildSunburstOption(inputs: RadialOptionInputs) {
             }
         ]
     }
-}
-
-function ringCountAround(centre: RadialNode): number {
-    return Math.max(1, levelsBelow(centre, VISIBLE_RING_COUNT))
 }
 
 function ringInnerRadiiInPixels(ringCount: number, radiusInPixels: number): number[] {
@@ -117,7 +115,7 @@ function toDatum(node: RadialNode, context: DatumContext, ring: number): Sunburs
         isCentre,
         itemStyle: { color, borderColor: border.color, borderWidth: border.widthPx },
         label: node.isFile ? { color: readableTextColor(color), fontWeight: "bold" } : { color: readableTextColor(color) },
-        children: ring < VISIBLE_RING_COUNT ? node.children.map(child => toDatum(child, context, ring + 1)) : []
+        children: ring < context.ringCount ? node.children.map(child => toDatum(child, context, ring + 1)) : []
     }
 }
 

@@ -18,7 +18,12 @@ import {
     setDomainStateTopN
 } from "../stores/domainState/domainState.write.facade"
 import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
-import { setRadialFolderStyle, setRadialFolderTint, setRadialFolderValue } from "../stores/preferences/preferences.write.facade"
+import {
+    setRadialFolderStyle,
+    setRadialFolderTint,
+    setRadialFolderValue,
+    setRadialLevels
+} from "../stores/preferences/preferences.write.facade"
 import { readCcState, writeCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
 import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
@@ -246,6 +251,19 @@ describe("LoadInitialFileStore", () => {
                 setRadialFolderStyle({ value: RadialFolderStyle.Neutral }),
                 setRadialFolderTint({ value: 0.8 })
             ])
+        })
+
+        it("should restore the saved number of radial levels", () => {
+            // Arrange
+            setup()
+            const savedPreferences = { ...defaultPreferences, radialLevels: 6 }
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyPreferences(savedPreferences)
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([setRadialLevels({ value: 6 })])
         })
     })
 

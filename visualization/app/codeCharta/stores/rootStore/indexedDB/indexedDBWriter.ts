@@ -13,12 +13,13 @@ import {
     defaultRadialFolderStyle,
     defaultRadialFolderTint,
     defaultRadialFolderValue,
+    defaultRadialLevels,
     defaultSorting
 } from "../../preferences/preferences.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 24
+export const DB_VERSION = 25
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -648,6 +649,19 @@ export function migrateCcStateRecordToV24<T>(state: T): T {
     return { ...record, preferences: { ...radialFolderColoring, ...preferences } } as T
 }
 
+// v25: preferences persisted before the radial layouts let the user pick their depth carry no level count
+export function migrateCcStateRecordToV25<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"]
+    if (!preferences || typeof preferences !== "object" || "radialLevels" in preferences) {
+        return state
+    }
+    return { ...record, preferences: { radialLevels: defaultRadialLevels, ...preferences } } as T
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -669,7 +683,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 20, migrate: migrateCcStateRecordToV20 },
     { version: 21, migrate: migrateCcStateRecordToV21 },
     { version: 22, migrate: migrateCcStateRecordToV22 },
-    { version: 24, migrate: migrateCcStateRecordToV24 }
+    { version: 24, migrate: migrateCcStateRecordToV24 },
+    { version: 25, migrate: migrateCcStateRecordToV25 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
