@@ -34,11 +34,10 @@ export const defaultAmountOfTopLabels = 10
 export enum RadialFolderValue {
     Sum = "sum",
     Max = "max",
+    Min = "min",
     Median = "median",
     MeanPerFile = "meanPerFile",
-    AvgPerLine = "avgPerLine",
-    ShareBySize = "shareBySize",
-    ShareOfRed = "shareOfRed"
+    AvgPerLine = "avgPerLine"
 }
 
 export enum RadialFolderStyle {

@@ -1,6 +1,6 @@
-import { ColorMode, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
+import { ColorMode, RadialFolderStyle } from "../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../stores/mapState/store/mapColors/mapColors.reducer"
-import { mixColors, NEUTRAL_FOLDER_COLOR, tintColor } from "../../../util/radialFolderValues"
+import { NEUTRAL_FOLDER_COLOR, tintColor } from "../../../util/radialFolderValues"
 import { TEST_COLORING } from "../testing/radialChart.stub"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
 
@@ -142,44 +142,6 @@ describe("nodeColor", () => {
 
             // Assert
             expect(color).toBe(tintColor(defaultMapColors.positive, 0.5))
-        })
-
-        it("should put share ÷ size on its own scale: 1× and below green, 3× and above red", () => {
-            // Arrange
-            const colorAt = (ratio: number) => nodeColor(folder(1), coloringWithFolder(ratio, { value: RadialFolderValue.ShareBySize }))
-
-            // Act
-            const colors = [0, 1, Math.sqrt(3), 3, 10].map(colorAt)
-
-            // Assert
-            const { positive, neutral, negative } = defaultMapColors
-            expect(colors).toEqual([positive, positive, neutral, negative, negative].map(color => color.toLowerCase()))
-        })
-
-        it("should put share of red on its own scale: 0 % green, 50 % and above red", () => {
-            // Arrange
-            const colorAt = (share: number) => nodeColor(folder(1), coloringWithFolder(share, { value: RadialFolderValue.ShareOfRed }))
-
-            // Act
-            const colors = [0, 0.125, 0.25, 0.5, 0.9].map(colorAt)
-
-            // Assert
-            const { positive, neutral, negative } = defaultMapColors
-            expect(colors).toEqual(
-                [positive, mixColors(positive, neutral, 0.5), neutral, negative, negative].map(color => color.toLowerCase())
-            )
-        })
-
-        it("should follow inverted colours on its own scale", () => {
-            // Arrange
-            const invertedColors = { ...defaultMapColors, positive: defaultMapColors.negative, negative: defaultMapColors.positive }
-            const coloring = coloringWithFolder(0, { value: RadialFolderValue.ShareOfRed }, { mapColors: invertedColors })
-
-            // Act
-            const color = nodeColor(folder(1), coloring)
-
-            // Assert
-            expect(color).toBe(defaultMapColors.negative.toLowerCase())
         })
     })
 })

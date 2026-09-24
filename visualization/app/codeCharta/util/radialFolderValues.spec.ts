@@ -1,14 +1,6 @@
 import { RadialFolderStyle, RadialFolderValue } from "../model/codeCharta.model"
 import { defaultMapColors } from "../stores/mapState/mapState.read.facade"
-import {
-    describeRadialFolderValue,
-    folderSwatchBackground,
-    mixColors,
-    NEUTRAL_FOLDER_COLOR,
-    RADIAL_FOLDER_VALUES,
-    RadialFolderScale,
-    tintColor
-} from "./radialFolderValues"
+import { folderSwatchBackground, mixColors, NEUTRAL_FOLDER_COLOR, RADIAL_FOLDER_VALUES, tintColor } from "./radialFolderValues"
 
 describe("radialFolderValues", () => {
     it("should describe every folder value exactly once", () => {
@@ -17,22 +9,6 @@ describe("radialFolderValues", () => {
 
         // Assert
         expect(described).toEqual(Object.values(RadialFolderValue))
-    })
-
-    it("should put only share ÷ size and share of red on their own scale", () => {
-        // Act
-        const ownScale = RADIAL_FOLDER_VALUES.filter(descriptor => descriptor.scale === RadialFolderScale.OwnScale)
-
-        // Assert
-        expect(ownScale.map(descriptor => descriptor.value)).toEqual([RadialFolderValue.ShareBySize, RadialFolderValue.ShareOfRed])
-    })
-
-    it("should label its scale in the legend of an own-scale value", () => {
-        // Act
-        const legends = [RadialFolderValue.ShareBySize, RadialFolderValue.ShareOfRed].map(value => describeRadialFolderValue(value).legend)
-
-        // Assert
-        expect(legends).toEqual(["share ÷ size (1× – 3×)", "share of lines in red files (0 – 50 %)"])
     })
 
     it("should mix a colour toward white by the tint strength", () => {

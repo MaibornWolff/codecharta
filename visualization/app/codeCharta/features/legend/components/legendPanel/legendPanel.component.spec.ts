@@ -101,7 +101,7 @@ describe("LegendPanelComponent", () => {
         fireEvent.click(screen.getByText("LEGEND"))
 
         // Assert
-        expect(screen.getByTestId("legend-folders-row").textContent).toContain("folders: their worst file, tinted")
+        expect(screen.getByTestId("legend-folders-row").textContent).toContain("folders: their highest file, tinted")
     })
 
     it("should leave out the folders line on the 3D map", async () => {

@@ -1,12 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from "@angular/core"
 import { RadialFolderValue } from "../../../../model/codeCharta.model"
-import { describeRadialFolderValue, RADIAL_FOLDER_VALUES, RadialFolderScale } from "../../../../util/radialFolderValues"
+import { describeRadialFolderValue, RADIAL_FOLDER_VALUES } from "../../../../util/radialFolderValues"
 import { SettingsPopoverShellComponent } from "../../../shared/facade"
-
-const SCALE_TITLES: Record<RadialFolderScale, string> = {
-    [RadialFolderScale.FileThresholds]: "On the file thresholds",
-    [RadialFolderScale.OwnScale]: "Own scale (not the file thresholds)"
-}
 
 @Component({
     selector: "cc-folder-value-popover",
@@ -23,11 +18,7 @@ export class FolderValuePopoverComponent {
     readonly colorMetric = input.required<string>()
     readonly valueSelected = output<RadialFolderValue>()
 
-    readonly groups = Object.values(RadialFolderScale).map(scale => ({
-        scale,
-        title: SCALE_TITLES[scale],
-        options: RADIAL_FOLDER_VALUES.filter(descriptor => descriptor.scale === scale)
-    }))
+    readonly options = RADIAL_FOLDER_VALUES
 
     readonly title = computed(() => (this.isNeutral() ? "neutral" : describeRadialFolderValue(this.selected()).label))
     readonly footnote = computed(() =>

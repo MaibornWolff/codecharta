@@ -9,15 +9,14 @@ describe("FolderValuePopoverComponent", () => {
         })
     }
 
-    it("should list all seven values in two groups, each with a description", async () => {
+    it("should list all six values, each with a description", async () => {
         // Arrange & Act
         await setup()
 
         // Assert
-        expect(screen.getAllByRole("radio", { hidden: true })).toHaveLength(7)
-        expect(screen.getByText("On the file thresholds")).not.toBeNull()
-        expect(screen.getByText("Own scale (not the file thresholds)")).not.toBeNull()
-        expect(screen.getByText("Its worst file. Never hides a hotspot.")).not.toBeNull()
+        const labels = screen.getAllByRole("radio", { hidden: true }).map(radio => radio.querySelector(".font-medium").textContent)
+        expect(labels).toEqual(["sum", "max", "min", "median", "mean / file", "avg / line"])
+        expect(screen.getByText("Its lowest file. Never hides a low value, e.g. with inverted colors.")).not.toBeNull()
     })
 
     it("should check the selected value and name it in the title", async () => {
