@@ -293,6 +293,14 @@ describe("buildRadialTreemapOption", () => {
         expect(label).toMatchObject({ type: "text", style: { text: "f0.ts", overflow: "truncate" } })
     })
 
+    it("should draw a hovered piece on the map itself, however many pieces the map has", () => {
+        // Act
+        const { option } = drawn(TREE)
+
+        // Assert
+        expect(option.hoverLayerThreshold).toBe(Number.POSITIVE_INFINITY)
+    })
+
     it("should draw one level deeper than it has bands, as the last band shows its folders' contents", () => {
         // Arrange
         const bandLimit = 6

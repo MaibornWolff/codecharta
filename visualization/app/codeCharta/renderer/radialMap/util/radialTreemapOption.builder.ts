@@ -23,6 +23,9 @@ interface ChartSize {
 // ECharts draws a large custom series in chunks over several frames, and redraws it that way on every
 // hover, so a big map would sweep round like a clock hand each time the pointer moves.
 const DRAW_EVERY_PIECE_IN_ONE_FRAME = 0
+// On a map with many pieces ECharts draws the hovered piece on a layer of its own, and a quick sweep across the
+// rings left some files there faded for good. Hovering fades every other piece anyway, so the layer saves nothing.
+const NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER = Number.POSITIVE_INFINITY
 
 // The last band shows its folders' contents as a treemap, so the map draws one level deeper than it has bands.
 export function radialTreemapShape(maxBandCount: number): RadialShape {
@@ -34,6 +37,7 @@ export function buildRadialTreemapOption(inputs: RadialOptionInputs, maxBandCoun
     const data = placements.map(placement => toDatum(placement, inputs))
     return {
         aria: { enabled: true },
+        hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
         series: [
             {
