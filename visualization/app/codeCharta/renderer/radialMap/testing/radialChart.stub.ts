@@ -9,8 +9,10 @@ import { RadialNode } from "../util/radialTree"
 type ChartEventHandler = (event: unknown) => void
 
 const chartEventHandlers = new Map<string, ChartEventHandler>()
+const renderSurfaceEventHandlers = new Map<string, ChartEventHandler>()
 
 export const stubbedChart = {
+    getZr: jest.fn(() => ({ on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler) })),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
     resize: jest.fn(),
@@ -28,9 +30,14 @@ export function fireChartEvent(eventName: string, event: unknown = {}): void {
     chartEventHandlers.get(eventName)(event)
 }
 
+export function fireRenderSurfaceEvent(eventName: string, event: unknown = {}): void {
+    renderSurfaceEventHandlers.get(eventName)(event)
+}
+
 export function resetStubbedChart(): void {
     jest.clearAllMocks()
     chartEventHandlers.clear()
+    renderSurfaceEventHandlers.clear()
 }
 
 export function lastDrawnOption() {

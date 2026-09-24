@@ -3,6 +3,7 @@ import { RadialChartRegistry } from "../../services/radialChart.registry"
 import {
     elementOfSize,
     fireChartEvent,
+    fireRenderSurfaceEvent,
     resetStubbedChart,
     resizeObserverDisconnect,
     stubbedChart,
@@ -129,6 +130,65 @@ describe("RadialChartHost", () => {
         // Assert
         expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(1, "/root/src")
         expect(handlers.onNodeHovered).toHaveBeenNthCalledWith(2, null)
+    })
+
+    it("should report leaving a segment for empty space even when the chart does not report the pointer out", () => {
+        // Arrange
+        jest.useFakeTimers()
+        host.attachTo(elementOfSize(800, 600))
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+
+        // Act
+        fireRenderSurfaceEvent("mousemove", { target: undefined })
+        jest.advanceTimersByTime(POINTER_LEAVE_GRACE_MS)
+
+        // Assert
+        expect(handlers.onNodeHovered).toHaveBeenLastCalledWith(null)
+    })
+
+    it("should report leaving a segment when the pointer leaves the chart", () => {
+        // Arrange
+        jest.useFakeTimers()
+        host.attachTo(elementOfSize(800, 600))
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+
+        // Act
+        fireRenderSurfaceEvent("globalout")
+        jest.advanceTimersByTime(POINTER_LEAVE_GRACE_MS)
+
+        // Assert
+        expect(handlers.onNodeHovered).toHaveBeenLastCalledWith(null)
+    })
+
+    it("should not put off leaving while the pointer keeps moving over empty space", () => {
+        // Arrange
+        jest.useFakeTimers()
+        host.attachTo(elementOfSize(800, 600))
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+        const halfTheGrace = POINTER_LEAVE_GRACE_MS / 2
+
+        // Act
+        for (let move = 0; move < 3; move++) {
+            fireRenderSurfaceEvent("mousemove", { target: undefined })
+            jest.advanceTimersByTime(halfTheGrace)
+        }
+
+        // Assert
+        expect(handlers.onNodeHovered).toHaveBeenLastCalledWith(null)
+    })
+
+    it("should keep the hover while the pointer moves over a segment", () => {
+        // Arrange
+        jest.useFakeTimers()
+        host.attachTo(elementOfSize(800, 600))
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+
+        // Act
+        fireRenderSurfaceEvent("mousemove", { target: {} })
+        jest.advanceTimersByTime(POINTER_LEAVE_GRACE_MS)
+
+        // Assert
+        expect(handlers.onNodeHovered).not.toHaveBeenCalledWith(null)
     })
 
     it("should not report the gap while the pointer moves from one segment to the next", () => {

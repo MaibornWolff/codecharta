@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - 
 ### Fixed 🐞
 
+- **Faded pieces after hovering**: moving the pointer off the sunburst or radial treemap no longer leaves the rest of the map faded until you hover it again.
 - **Color setup after the sunburst**: switching to the sunburst or radial treemap and back keeps your color metric and color range, and picking a color metric there unlinks it from the height metric.
 
 ## [2.6.0] - 2026-09-23
