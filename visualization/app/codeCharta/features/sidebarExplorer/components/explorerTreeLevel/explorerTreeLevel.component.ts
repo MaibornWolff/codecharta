@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnInit, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from "@angular/core"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { isLeaf } from "../../../../util/codeMapHelper"
 import { EXPLORER_ROW } from "../../explorerRow"
@@ -6,6 +6,7 @@ import { explorerRowId } from "../../explorerRowId"
 import { EXPLORER_SELECTION } from "../../explorerSelection"
 import { EXPLORER_STORAGE_SCOPE } from "../../explorerStorageScope"
 import { scrollRowIntoViewWhenRendered } from "../../scrollRowIntoView"
+import { ExplorerOpenFoldersService } from "../../services/explorerOpenFolders.service"
 import { ExplorerRevealService } from "../../services/explorerReveal.service"
 import { ExplorerRowContextMenuService } from "../../services/explorerRowContextMenu.service"
 import { ExplorerRowComponent } from "../explorerRow/explorerRow.component"
@@ -18,17 +19,18 @@ import { ExplorerTreeItemNameComponent } from "../explorerTreeItemName/explorerT
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ExplorerRowComponent, ExplorerTreeItemIconComponent, ExplorerTreeItemNameComponent]
 })
-export class ExplorerTreeLevelComponent implements OnInit {
+export class ExplorerTreeLevelComponent {
     private readonly row = inject(EXPLORER_ROW)
     private readonly selection = inject(EXPLORER_SELECTION)
     private readonly contextMenu = inject(ExplorerRowContextMenuService)
     private readonly revealService = inject(ExplorerRevealService)
+    private readonly openFolders = inject(ExplorerOpenFoldersService)
     private readonly storageScope = inject(EXPLORER_STORAGE_SCOPE)
 
     readonly node = input.required<CodeMapNode>()
     readonly depth = input.required<number>()
 
-    readonly isOpen = signal(false)
+    readonly isOpen = computed(() => this.openFolders.isOpen(this.node().path, this.depth() === 0))
 
     readonly rowId = computed(() => explorerRowId(this.storageScope, this.node().path))
     readonly rowProjection = computed(() => this.row.project(this.node()))
@@ -49,15 +51,11 @@ export class ExplorerTreeLevelComponent implements OnInit {
         }
         const path = this.node().path
         if (revealedNodePath.startsWith(`${path}/`)) {
-            this.isOpen.set(true)
+            this.openFolders.setOpen(path, true)
         }
         if (revealedNodePath === path) {
             scrollRowIntoViewWhenRendered(this.rowId(), () => this.revealService.revealedNodePath() === path)
         }
-    }
-
-    ngOnInit(): void {
-        this.isOpen.set(this.depth() === 0)
     }
 
     onMouseEnter($event: MouseEvent) {
@@ -74,7 +72,7 @@ export class ExplorerTreeLevelComponent implements OnInit {
             return
         }
         const willBeOpen = !this.isOpen()
-        this.isOpen.set(willBeOpen)
+        this.openFolders.setOpen(this.node().path, willBeOpen)
         if (this.isLeafNode() || willBeOpen) {
             this.selection.select(this.node())
             return

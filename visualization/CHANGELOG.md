@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Color setup after the sunburst**: switching to the sunburst or radial treemap and back keeps your color metric and color range, and picking a color metric there unlinks it from the height metric.
 - **Clicking beside the words keeps your file**: clicking the domain cloud where no word is drawn only unpins the open word, and the cloud stays on the file or folder you selected.
+- **Explorer keeps its open folders**: switching the explorer to Words or collapsing it and coming back shows the files with the same folders open as before.
 
 ## [2.6.0] - 2026-09-23
 

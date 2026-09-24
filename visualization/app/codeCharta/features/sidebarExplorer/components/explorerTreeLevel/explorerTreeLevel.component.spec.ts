@@ -97,6 +97,23 @@ describe("ExplorerTreeLevelComponent", () => {
         await waitFor(() => expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy())
     })
 
+    it("should keep the folders it had open when the tree is rendered again", async () => {
+        // Arrange — the tree is torn down while the explorer shows another mode
+        const firstRender = await render(ExplorerTreeLevelComponent, { inputs: componentInputs, excludeComponentDeclaration: true })
+        await userEvent.click(firstRender.container.querySelector("#metrics\\:\\/root\\/ParentLeaf"))
+        firstRender.fixture.destroy()
+
+        // Act
+        const secondRender = TestBed.createComponent(ExplorerTreeLevelComponent)
+        secondRender.componentRef.setInput("node", componentInputs.node)
+        secondRender.componentRef.setInput("depth", componentInputs.depth)
+        secondRender.detectChanges()
+
+        // Assert
+        const container: HTMLElement = secondRender.nativeElement
+        expect(container.querySelector("#metrics\\:\\/root\\/ParentLeaf\\/smallLeaf")).toBeTruthy()
+    })
+
     it("should mark search-result rows", async () => {
         // Arrange
         configureWithPorts({ searchedNodePaths: new Set(["/root/bigLeaf"]) })
