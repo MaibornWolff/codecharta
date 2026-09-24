@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildRadialTree, findClosestFolder, findClosestNode, findParentFolder, isInside } from "./radialTree"
+import { buildRadialTree, findClosestFolder, findClosestNode, findParentFolder, isInside, levelsBelow } from "./radialTree"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -179,5 +179,54 @@ describe("node lookup", () => {
 
         // Assert
         expect(parent).toBeUndefined()
+    })
+})
+
+describe("levelsBelow", () => {
+    const tree = buildRadialTree(
+        folder("/root", [
+            file("/root/a.ts", { rloc: 10 }),
+            folder("/root/src", [
+                file("/root/src/b.ts", { rloc: 30 }),
+                folder("/root/src/deep", [file("/root/src/deep/c.ts", { rloc: 5 })])
+            ])
+        ]),
+        METRICS,
+        NOTHING_IS_FLAT
+    )
+
+    it("should count the levels of nodes below a node", () => {
+        // Act
+        const levels = levelsBelow(tree, Number.POSITIVE_INFINITY)
+
+        // Assert
+        expect(levels).toBe(3)
+    })
+
+    it("should stop counting at the maximum depth", () => {
+        // Act
+        const levels = levelsBelow(tree, 2)
+
+        // Assert
+        expect(levels).toBe(2)
+    })
+
+    it("should count only the levels of nodes that match", () => {
+        // Act
+        const levels = levelsBelow(tree, Number.POSITIVE_INFINITY, child => !child.isFile)
+
+        // Assert
+        expect(levels).toBe(2)
+    })
+
+    it("should find no levels below a file", () => {
+        // Act
+        const levels = levelsBelow(
+            tree.children.find(child => child.isFile),
+            Number.POSITIVE_INFINITY
+        )
+
+        // Assert
+        expect(levels).toBe(0)
     })
 })

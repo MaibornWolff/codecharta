@@ -43,6 +43,13 @@ function describe(node: CodeMapNode, metrics: RadialMetrics, isFlat: IsFlat) {
     return { path: node.path, name: node.name, colorValue: node.attributes?.[metrics.colorMetric], isFlat: isFlat(node) }
 }
 
+export function levelsBelow(node: RadialNode, maxDepth: number, counts: (child: RadialNode) => boolean = () => true): number {
+    if (maxDepth === 0) {
+        return 0
+    }
+    return node.children.filter(counts).reduce((deepest, child) => Math.max(deepest, 1 + levelsBelow(child, maxDepth - 1, counts)), 0)
+}
+
 export function findClosestFolder(root: RadialNode, path: string): RadialNode {
     const child = root.children.find(candidate => !candidate.isFile && isInside(path, candidate.path))
     return child ? findClosestFolder(child, path) : root

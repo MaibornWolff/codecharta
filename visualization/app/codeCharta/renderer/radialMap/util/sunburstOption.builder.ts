@@ -1,18 +1,29 @@
-import { Border, CENTRE_RADIUS, DIMMED_OPACITY, OUTER_RADIUS, pieceBorder, TRANSITION_MS } from "./radialChartStyle"
+import {
+    Border,
+    CENTRE_RADIUS,
+    DIMMED_OPACITY,
+    FULL_TURN,
+    OUTER_RADIUS,
+    pieceBorder,
+    ringWidth,
+    TRANSITION_MS,
+    WHITE
+} from "./radialChartStyle"
 import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
+import { describeNode, RadialDatum } from "./radialDatum"
 import { RadialOptionInputs, RadialShape } from "./radialShape"
-import { buildTooltipFormatter, folderValueText } from "./radialTooltip"
-import { RadialNode } from "./radialTree"
+import { buildTooltipFormatter } from "./radialTooltip"
+import { levelsBelow, RadialNode } from "./radialTree"
 
 export const VISIBLE_RING_COUNT = 3
 
-const CENTRE_RADIUS_PERCENT = CENTRE_RADIUS * 100
-const OUTER_RADIUS_PERCENT = OUTER_RADIUS * 100
+const PERCENT = 100
+const CENTRE_RADIUS_PERCENT = CENTRE_RADIUS * PERCENT
+const OUTER_RADIUS_PERCENT = OUTER_RADIUS * PERCENT
 const MIN_LABEL_ANGLE_DEGREES = 5
 const LABEL_PADDING_PX = 8
-const SEGMENT_BORDER: Border = { color: "#ffffff", widthPx: 1 }
+const SEGMENT_BORDER: Border = { color: WHITE, widthPx: 1 }
 const HOVER_FADE = { duration: 500, easing: "cubicOut" }
-const FULL_TURN = 2 * Math.PI
 
 interface DatumContext {
     coloring: RadialColoring
@@ -21,14 +32,7 @@ interface DatumContext {
     ringInnerRadiiPx: number[]
 }
 
-export interface SunburstDatum {
-    name: string
-    value: number
-    displayName: string
-    colorValue: number | undefined
-    folderValueText: string | undefined
-    isCentre: boolean
-    isFile: boolean
+export interface SunburstDatum extends RadialDatum {
     itemStyle: { color: string; borderColor: string; borderWidth: number }
     label: { color: string; fontWeight?: "bold" }
     children: SunburstDatum[]
@@ -70,31 +74,24 @@ export function buildSunburstOption(inputs: RadialOptionInputs) {
 }
 
 function ringCountAround(centre: RadialNode): number {
-    return Math.max(1, depthBelow(centre, VISIBLE_RING_COUNT))
+    return Math.max(1, levelsBelow(centre, VISIBLE_RING_COUNT))
 }
 
 function ringInnerRadiiInPixels(ringCount: number, radiusInPixels: number): number[] {
-    const ringWidth = (OUTER_RADIUS - CENTRE_RADIUS) / ringCount
-    return Array.from({ length: ringCount }, (_, ringIndex) => (CENTRE_RADIUS + ringIndex * ringWidth) * radiusInPixels)
+    const width = ringWidth(ringCount)
+    return Array.from({ length: ringCount }, (_, ringIndex) => (CENTRE_RADIUS + ringIndex * width) * radiusInPixels)
 }
 
 function levelsAround(ringCount: number, radiusInPixels: number) {
-    const ringWidthPercent = (OUTER_RADIUS_PERCENT - CENTRE_RADIUS_PERCENT) / ringCount
-    const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / 100
+    const ringWidthPercent = ringWidth(ringCount) * PERCENT
+    const centreDiameterInPixels = (radiusInPixels * CENTRE_RADIUS_PERCENT * 2) / PERCENT
     const virtualRootLevel = {}
     const centreLevel = {
         r0: "0%",
         r: `${CENTRE_RADIUS_PERCENT}%`,
         label: { rotate: 0, fontWeight: "bold", overflow: "truncate", width: centreDiameterInPixels - LABEL_PADDING_PX }
     }
-    return [virtualRootLevel, centreLevel, ...ringLevels(ringCount, ringWidthPercent, (radiusInPixels * ringWidthPercent) / 100)]
-}
-
-function depthBelow(folder: RadialNode, maxDepth: number): number {
-    if (maxDepth === 0 || folder.children.length === 0) {
-        return 0
-    }
-    return 1 + folder.children.reduce((deepest, child) => Math.max(deepest, depthBelow(child, maxDepth - 1)), 0)
+    return [virtualRootLevel, centreLevel, ...ringLevels(ringCount, ringWidthPercent, (radiusInPixels * ringWidthPercent) / PERCENT)]
 }
 
 function ringLevels(ringCount: number, ringWidthPercent: number, ringWidthInPixels: number) {
@@ -116,13 +113,8 @@ function toDatum(node: RadialNode, context: DatumContext, ring: number): Sunburs
     const isCentre = ring === 0
     const border = isCentre ? SEGMENT_BORDER : pieceBorder(color, SEGMENT_BORDER, arcAtInnerEdgePx(node, context, ring))
     return {
-        name: node.path,
-        value: node.area,
-        displayName: node.name,
-        colorValue: node.colorValue,
-        folderValueText: folderValueText(node, coloring.folders),
+        ...describeNode(node, coloring),
         isCentre,
-        isFile: node.isFile,
         itemStyle: { color, borderColor: border.color, borderWidth: border.widthPx },
         label: node.isFile ? { color: readableTextColor(color), fontWeight: "bold" } : { color: readableTextColor(color) },
         children: ring < VISIBLE_RING_COUNT ? node.children.map(child => toDatum(child, context, ring + 1)) : []

@@ -2,7 +2,7 @@ import { ColorMode, RadialFolderStyle } from "../../../model/codeCharta.model"
 import { defaultMapColors } from "../../../stores/mapState/store/mapColors/mapColors.reducer"
 import { NEUTRAL_FOLDER_COLOR, tintColor } from "../../../util/radialFolderValues"
 import { TEST_COLORING } from "../testing/radialChart.stub"
-import { nodeColor, RadialColoring, readableTextColor } from "./radialColor"
+import { colorForMetricValue, nodeColor, RadialColoring, readableTextColor } from "./radialColor"
 
 const FOLDER = "/root/src"
 
@@ -143,6 +143,24 @@ describe("nodeColor", () => {
             // Assert
             expect(color).toBe(tintColor(defaultMapColors.positive, 0.5))
         })
+    })
+})
+
+describe("colorForMetricValue", () => {
+    it("should place a value on the map's colour range", () => {
+        // Act
+        const colors = [5, 15, 25].map(value => colorForMetricValue(value, TEST_COLORING))
+
+        // Assert
+        expect(colors).toEqual([defaultMapColors.positive, defaultMapColors.neutral, defaultMapColors.negative])
+    })
+
+    it("should give every value the positive colour for the unary colour metric", () => {
+        // Act
+        const color = colorForMetricValue(25, { ...TEST_COLORING, isUnaryMetric: true })
+
+        // Assert
+        expect(color).toBe(defaultMapColors.positive)
     })
 })
 

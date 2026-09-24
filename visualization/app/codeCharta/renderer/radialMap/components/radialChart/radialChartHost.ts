@@ -5,6 +5,7 @@ import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { RadialChartRegistry } from "../../services/radialChart.registry"
+import { RadialDatum } from "../../util/radialDatum"
 
 echarts.use([SunburstChart, CustomChart, CanvasRenderer, TooltipComponent, AriaComponent])
 
@@ -16,11 +17,7 @@ export interface RadialChartHandlers {
     onNodeRightClicked: (path: string, clientX: number, clientY: number) => void
 }
 
-interface RadialChartDatum {
-    name: string
-    isCentre: boolean
-    isFile: boolean
-}
+type RadialChartDatum = Pick<RadialDatum, "name" | "isCentre" | "isFile">
 
 interface EchartsSegmentEvent {
     data?: RadialChartDatum
