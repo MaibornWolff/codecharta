@@ -4,11 +4,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { RadialFolderStyle, RadialFolderValue } from "../../../../model/codeCharta.model"
 import { colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
-import {
-    radialFolderStyleSelector,
-    radialFolderTintSelector,
-    radialFolderValueSelector
-} from "../../../../stores/preferences/preferences.read.facade"
 import { setRadialFolderStyle, setRadialFolderTint, setRadialFolderValue } from "../../../../stores/preferences/preferences.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { FoldersSegmentComponent } from "./foldersSegment.component"
@@ -23,16 +18,17 @@ describe("FoldersSegmentComponent", () => {
         folderStyle?: RadialFolderStyle
         tint?: number
     } = {}) {
+        const preferences = {
+            ...defaultState.preferences,
+            radialFolderValue: folderValue,
+            radialFolderStyle: folderStyle,
+            radialFolderTint: tint
+        }
         const renderResult = await render(FoldersSegmentComponent, {
             providers: [
                 provideMockStore({
-                    initialState: defaultState,
-                    selectors: [
-                        { selector: radialFolderValueSelector, value: folderValue },
-                        { selector: radialFolderStyleSelector, value: folderStyle },
-                        { selector: radialFolderTintSelector, value: tint },
-                        { selector: colorMetricSelector, value: "mcc" }
-                    ]
+                    initialState: { ...defaultState, preferences },
+                    selectors: [{ selector: colorMetricSelector, value: "mcc" }]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } }
             ]

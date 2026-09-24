@@ -7,7 +7,8 @@ import { experimentalFeaturesEnabledSelector } from "./enableExperimentalFeature
 import { isColorMetricLinkedToHeightMetricSelector } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 import { isPresentationModeSelector } from "./isPresentationMode/isPresentationMode.selector"
 import { maxTreeMapFilesSelector } from "./maxTreeMapFiles/maxTreeMapFiles.selector"
-import { radialFolderStyleSelector } from "./radialFolderStyle/radialFolderStyle.selector"
+import { isRadialFolderNeutralSelector, radialFolderStyleSelector } from "./radialFolderStyle/radialFolderStyle.selector"
+import { radialFolderSwatchSelector, radialTintedFolderSwatchSelector } from "./radialFolderSwatch/radialFolderSwatch.selector"
 import { radialFolderTintSelector } from "./radialFolderTint/radialFolderTint.selector"
 import { radialFolderValueSelector } from "./radialFolderValue/radialFolderValue.selector"
 import { resetCameraIfNewFileIsLoadedSelector } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.selector"
@@ -34,6 +35,9 @@ export class PreferencesReadWindow {
     readonly radialFolderValue$ = this.store.select(radialFolderValueSelector)
     readonly radialFolderStyle$ = this.store.select(radialFolderStyleSelector)
     readonly radialFolderTint$ = this.store.select(radialFolderTintSelector)
+    readonly isRadialFolderNeutral$ = this.store.select(isRadialFolderNeutralSelector)
+    readonly radialFolderSwatch$ = this.store.select(radialFolderSwatchSelector)
+    readonly radialTintedFolderSwatch$ = this.store.select(radialTintedFolderSwatchSelector)
 
     getPreferences(): Preferences {
         return this.state.getValue().preferences

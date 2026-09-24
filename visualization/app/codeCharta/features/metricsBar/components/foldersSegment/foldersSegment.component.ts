@@ -3,7 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { RadialFolderStyle, RadialFolderValue } from "../../../../model/codeCharta.model"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
 import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
-import { describeRadialFolderValue, folderSwatchBackground } from "../../../../util/radialFolderValues"
+import { describeRadialFolderValue } from "../../../../util/radialFolderValues"
 import { AxisCardComponent } from "../../../shared/facade"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { FolderStylePopoverComponent } from "../folderStylePopover/folderStylePopover.component"
@@ -29,17 +29,15 @@ export class FoldersSegmentComponent {
     private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
 
     readonly folderValue = toSignal(this.preferencesReadWindow.radialFolderValue$, { requireSync: true })
-    readonly folderStyle = toSignal(this.preferencesReadWindow.radialFolderStyle$, { requireSync: true })
+    readonly isNeutral = toSignal(this.preferencesReadWindow.isRadialFolderNeutral$, { requireSync: true })
     private readonly tint = toSignal(this.preferencesReadWindow.radialFolderTint$, { requireSync: true })
     readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { requireSync: true })
-    private readonly mapColors = toSignal(this.mapStateReadWindow.mapColors$, { requireSync: true })
+    readonly swatch = toSignal(this.preferencesReadWindow.radialFolderSwatch$, { requireSync: true })
+    readonly tintedSwatch = toSignal(this.preferencesReadWindow.radialTintedFolderSwatch$, { requireSync: true })
 
-    readonly isNeutral = computed(() => this.folderStyle() === RadialFolderStyle.Neutral)
     readonly tintPercent = computed(() => Math.round(this.tint() * PERCENT))
     readonly valueLabel = computed(() => describeRadialFolderValue(this.folderValue()).label)
     readonly styleLabel = computed(() => (this.isNeutral() ? "neutral" : `tinted ${this.tintPercent()} %`))
-    readonly swatch = computed(() => folderSwatchBackground(this.mapColors(), this.folderStyle(), this.tint()))
-    readonly tintedSwatch = computed(() => folderSwatchBackground(this.mapColors(), RadialFolderStyle.Tinted, this.tint()))
 
     selectValue(value: RadialFolderValue) {
         this.metricsBarWriteStore.setRadialFolderValue(value)
