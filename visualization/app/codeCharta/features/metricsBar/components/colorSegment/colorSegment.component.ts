@@ -30,7 +30,7 @@ export class ColorSegmentComponent {
     readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
     private readonly isLinkedToHeight = toSignal(this.preferencesReadWindow.isColorMetricLinkedToHeightMetric$, { initialValue: false })
     private readonly isRadialLayout = injectIsRadialLayout()
-    readonly isLinked = computed(() => this.isLinkedToHeight() && !this.isRadialLayout())
+    readonly isSelectionLocked = computed(() => this.isLinkedToHeight() && !this.isRadialLayout())
 
     handleMetricSelected(value: string) {
         this.metricsBarWriteStore.setColorMetric(value)
