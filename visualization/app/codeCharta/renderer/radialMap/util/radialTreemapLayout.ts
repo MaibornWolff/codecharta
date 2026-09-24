@@ -1,5 +1,5 @@
 import { HierarchyRectangularNode, hierarchy, treemap, treemapSquarify } from "d3-hierarchy"
-import { CENTRE_RADIUS, FULL_TURN, OUTER_RADIUS, ringWidth } from "./radialChartStyle"
+import { CENTRE_RADIUS, FULL_TURN, ringWidth } from "./radialChartStyle"
 import { levelsBelow, RadialNode } from "./radialTree"
 
 export const MAX_BAND_COUNT = 3
@@ -43,7 +43,7 @@ export function layOutRadialTreemap(centre: RadialNode): RadialTreemapPlacement[
     const context: LayoutContext = { placements: new Map(), bands: bandsAround(centre) }
     context.placements.set(centre, { node: centre, isCentre: true, sectors: [] })
     place(context, centre, { role: "centre", startAngle: 0, endAngle: FULL_TURN, innerRadius: 0, outerRadius: CENTRE_RADIUS })
-    placeChildWedges(context, centre, { startAngle: 0, endAngle: FULL_TURN }, 1)
+    placeChildren(context, centre, bandSector(context, { startAngle: 0, endAngle: FULL_TURN }, 1), 1)
     return [...context.placements.values()]
 }
 
@@ -56,45 +56,61 @@ function bandsAround(centre: RadialNode): Bands {
     return { count, width, headerThickness: Math.min(width * HEADER_SHARE_OF_BAND, MAX_HEADER_THICKNESS) }
 }
 
-function placeChildWedges(context: LayoutContext, parent: RadialNode, span: Pick<AnnularSector, "startAngle" | "endAngle">, band: number) {
-    if (band > context.bands.count) {
-        return
-    }
-    const innerRadius = CENTRE_RADIUS + (band - 1) * context.bands.width
-    const outerRadius = innerRadius + context.bands.width - GAP_BETWEEN_BANDS
-    const anglePerArea = (span.endAngle - span.startAngle) / parent.area
-    let startAngle = span.startAngle
-    for (const slot of wedgeSlots(parent, band)) {
-        const wedge = { startAngle, endAngle: startAngle + slot.area * anglePerArea, innerRadius, outerRadius }
+// As in the sunburst, every child keeps its own share of the parent's angle and stays on its parent's level: the
+// files share one block of cells there, and a sub-folder's cell lines up with its own wedge in the next band.
+function placeChildren(context: LayoutContext, parent: RadialNode, body: AnnularSector, band: number) {
+    const anglePerArea = (body.endAngle - body.startAngle) / parent.area
+    let startAngle = body.startAngle
+    for (const slot of childSlots(parent)) {
+        const share = { ...body, startAngle, endAngle: startAngle + slot.area * anglePerArea }
         if (slot.folder) {
-            placeFolderWedge(context, slot.folder, wedge, band)
+            placeSubFolder(context, slot.folder, share, band)
         } else {
-            placeCells(context, slot.files, { ...wedge, outerRadius: OUTER_RADIUS - GAP_BETWEEN_BANDS })
+            placeCells(context, slot.files, share)
         }
-        startAngle = wedge.endAngle
+        startAngle = share.endAngle
     }
 }
 
-type WedgeSlot = { area: number; folder: RadialNode; files?: never } | { area: number; folder?: never; files: RadialNode[] }
+type ChildSlot = { area: number; folder: RadialNode; files?: never } | { area: number; folder?: never; files: RadialNode[] }
 
-// The centre's own files share one block of cells reaching out to the rim, so they look like every other folder's
-// files instead of thin slices; deeper files only show as cells in their parent's wedge.
-function wedgeSlots(parent: RadialNode, band: number): WedgeSlot[] {
+function childSlots(parent: RadialNode): ChildSlot[] {
     const children = largestFirst(parent.children)
-    const slots: WedgeSlot[] = children.filter(child => !child.isFile).map(folder => ({ area: folder.area, folder }))
+    const slots: ChildSlot[] = children.filter(child => !child.isFile).map(folder => ({ area: folder.area, folder }))
     const files = children.filter(child => child.isFile)
-    if (band === 1 && files.length > 0) {
+    if (files.length > 0) {
         slots.push({ area: files.reduce((sum, file) => sum + file.area, 0), files })
     }
     return slots.sort((first, second) => second.area - first.area)
 }
 
+function placeSubFolder(context: LayoutContext, folder: RadialNode, share: AnnularSector, band: number) {
+    const wedge = bandSector(context, share, band)
+    if (share.innerRadius < wedge.innerRadius) {
+        place(context, folder, { ...share, role: "cell" })
+    }
+    placeFolderWedge(context, folder, wedge, band)
+}
+
+function bandSector(context: LayoutContext, span: Pick<AnnularSector, "startAngle" | "endAngle">, band: number): AnnularSector {
+    const innerRadius = CENTRE_RADIUS + (band - 1) * context.bands.width
+    return {
+        startAngle: span.startAngle,
+        endAngle: span.endAngle,
+        innerRadius,
+        outerRadius: innerRadius + context.bands.width - GAP_BETWEEN_BANDS
+    }
+}
+
 function placeFolderWedge(context: LayoutContext, folder: RadialNode, wedge: AnnularSector, band: number) {
-    const headerOuterRadius = wedge.innerRadius + context.bands.headerThickness
+    const body = { ...wedge, innerRadius: wedge.innerRadius + context.bands.headerThickness }
     place(context, folder, { ...wedge, role: "outline" })
-    place(context, folder, { ...wedge, outerRadius: headerOuterRadius, role: "header" })
-    placeCells(context, folder.children, { ...wedge, innerRadius: headerOuterRadius })
-    placeChildWedges(context, folder, wedge, band + 1)
+    place(context, folder, { ...wedge, outerRadius: body.innerRadius, role: "header" })
+    if (band === context.bands.count) {
+        placeCells(context, folder.children, body)
+    } else {
+        placeChildren(context, folder, body, band + 1)
+    }
 }
 
 function placeCells(context: LayoutContext, nodes: RadialNode[], body: AnnularSector) {
