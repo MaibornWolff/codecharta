@@ -65,7 +65,6 @@ export function mixColors(fromHex: string, toHex: string, fraction: number): str
     return ColorConverter.convertColorToHex(new Color().lerpColors(from, to, fraction))
 }
 
-/** A CSS background showing how folders look: the tinted traffic light, or the one neutral grey. */
 export function folderSwatchBackground(mapColors: MapColors, style: RadialFolderStyle, tint: number): string {
     if (style === RadialFolderStyle.Neutral) {
         return NEUTRAL_FOLDER_COLOR
