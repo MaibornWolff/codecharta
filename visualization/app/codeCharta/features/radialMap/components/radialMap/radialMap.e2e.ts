@@ -123,10 +123,10 @@ test.describe("Sunburst layout", () => {
         const tintedByMax = await sunburst.pixelFingerprint()
 
         // Act
-        await metricsBar.pickFolderValue("sum")
+        await metricsBar.pickFolderValue("min")
 
         // Assert
-        await expect(metricsBar.foldersCard()).toContainText("sum")
+        await expect(metricsBar.foldersCard()).toContainText("min")
         await expect.poll(() => sunburst.pixelFingerprint()).not.toBe(tintedByMax)
 
         // Act
