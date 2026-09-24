@@ -227,10 +227,12 @@ describe("buildRadialTreemapOption", () => {
 
     it("should keep every label upright", () => {
         // Arrange
-        const files = Array.from({ length: 12 }, (_, index) => fileNode(`/root/f${index}.ts`, { area: 1 }))
+        const folders = Array.from({ length: 12 }, (_, index) =>
+            folderNode(`/root/d${index}`, [fileNode(`/root/d${index}/a.ts`, { area: 1 })], { area: 1 })
+        )
 
         // Act
-        const { data, drawIndex } = drawn(folderNode("/root", files, { area: 12 }))
+        const { data, drawIndex } = drawn(folderNode("/root", folders, { area: 12 }))
         const labels = data.flatMap((_, dataIndex) => textsOf(drawIndex(dataIndex)))
 
         // Assert

@@ -17,7 +17,7 @@ export interface AnnularSector {
     outerRadius: number
 }
 
-export type SectorRole = "centre" | "header" | "wedge" | "cell" | "outline"
+export type SectorRole = "centre" | "header" | "cell" | "outline"
 
 export interface PlacedSector extends AnnularSector {
     role: SectorRole
@@ -71,32 +71,51 @@ function placeChildWedges(context: LayoutContext, parent: RadialNode, span: Pick
     const outerRadius = innerRadius + context.bands.width - GAP_BETWEEN_BANDS
     const anglePerArea = (span.endAngle - span.startAngle) / parent.area
     let startAngle = span.startAngle
-    for (const child of largestFirst(parent.children)) {
-        const wedge = { startAngle, endAngle: startAngle + child.area * anglePerArea, innerRadius, outerRadius }
-        if (!child.isFile) {
-            placeFolderWedge(context, child, wedge, band)
-        } else if (band === 1) {
-            place(context, child, { ...wedge, role: "wedge" })
+    for (const slot of wedgeSlots(parent, band)) {
+        const wedge = { startAngle, endAngle: startAngle + slot.area * anglePerArea, innerRadius, outerRadius }
+        if (slot.folder) {
+            placeFolderWedge(context, slot.folder, wedge, band)
+        } else {
+            placeCells(context, slot.files, { ...wedge, outerRadius: OUTER_RADIUS - GAP_BETWEEN_BANDS })
         }
         startAngle = wedge.endAngle
     }
+}
+
+type WedgeSlot = { area: number; folder: RadialNode; files?: never } | { area: number; folder?: never; files: RadialNode[] }
+
+// The centre's own files share one block of cells reaching out to the rim, so they look like every other folder's
+// files instead of thin slices; deeper files only show as cells in their parent's wedge.
+function wedgeSlots(parent: RadialNode, band: number): WedgeSlot[] {
+    const children = largestFirst(parent.children)
+    const slots: WedgeSlot[] = children.filter(child => !child.isFile).map(folder => ({ area: folder.area, folder }))
+    const files = children.filter(child => child.isFile)
+    if (band === 1 && files.length > 0) {
+        slots.push({ area: files.reduce((sum, file) => sum + file.area, 0), files })
+    }
+    return slots.sort((first, second) => second.area - first.area)
 }
 
 function placeFolderWedge(context: LayoutContext, folder: RadialNode, wedge: AnnularSector, band: number) {
     const headerOuterRadius = wedge.innerRadius + context.bands.headerThickness
     place(context, folder, { ...wedge, role: "outline" })
     place(context, folder, { ...wedge, outerRadius: headerOuterRadius, role: "header" })
-    for (const cell of squarify(folder, { ...wedge, innerRadius: headerOuterRadius })) {
-        place(context, cell.node, { ...cell.sector, role: "cell" })
-    }
+    placeCells(context, folder.children, { ...wedge, innerRadius: headerOuterRadius })
     placeChildWedges(context, folder, wedge, band + 1)
 }
 
-function squarify(folder: RadialNode, body: AnnularSector): { node: RadialNode; sector: AnnularSector }[] {
+function placeCells(context: LayoutContext, nodes: RadialNode[], body: AnnularSector) {
+    for (const cell of squarify(nodes, body)) {
+        place(context, cell.node, { ...cell.sector, role: "cell" })
+    }
+}
+
+function squarify(nodes: RadialNode[], body: AnnularSector): { node: RadialNode; sector: AnnularSector }[] {
     const arcLength = ((body.endAngle - body.startAngle) * (body.innerRadius + body.outerRadius)) / 2
     const thickness = body.outerRadius - body.innerRadius
-    const root = hierarchy(folder, node => (node === folder ? node.children : undefined))
-        .sum(node => (node === folder ? 0 : node.area))
+    const group: RadialNode = { ...nodes[0], path: "", area: 0, children: nodes }
+    const root = hierarchy(group, node => (node === group ? node.children : undefined))
+        .sum(node => (node === group ? 0 : node.area))
         .sort((a, b) => compareLargestFirst(a.data, b.data))
     const tiled = treemap<RadialNode>().tile(treemapSquarify).size([arcLength, thickness])(root)
     return tiled.children.map(cell => ({ node: cell.data, sector: bendIntoBody(cell, body, arcLength, thickness) }))
