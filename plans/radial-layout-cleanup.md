@@ -27,12 +27,18 @@ nothing in radial layouts, and the folder values drop the own-scale group and ga
 - Add `min` (its best file), useful when the colour range is inverted
 - Values: sum, max, min, median, mean / file, avg / line
 
+### 4. Flickering radial charts on hover
+- Hovering showed the path in the bottom bar, which grew it by 1 px, resized the chart and redrew it; the redraw
+  dropped the hover, the bar shrank and the chart redrew again, twice per mouse move
+- Reserve the path's line in the bottom bar; a redraw of the same centre and layout keeps the hover
+
 ## Steps
 
 - [x] Complete Task 1: open folder's files as cells
 - [x] Complete Task 2: radial settings without 3D-only options
 - [x] Complete Task 3: folder values
 - [x] Changelog, format:check, npm test, lint, tsc
+- [x] Complete Task 4: flicker fixed, verified in Chromium (120 redraws per 60 mouse moves before, 0 after)
 
 ## Notes
 
