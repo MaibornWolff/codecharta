@@ -7,6 +7,7 @@ import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { colorMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
+import { setIsColorMetricLinkedToHeightMetricAction } from "../../../../stores/preferences/preferences.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ColorSegmentComponent } from "./colorSegment.component"
 
@@ -98,12 +99,28 @@ describe("ColorSegmentComponent", () => {
         expect(button?.textContent).toContain("mcc")
     })
 
-    it("should keep the color metric selectable in the sunburst even when it is linked to the height metric", async () => {
+    it("should keep the color metric selectable in a radial layout even when it is linked to the height metric", async () => {
         // Arrange & Act
         await setup({ isLinked: true, isRadialLayout: true })
 
         // Assert
         const colorCard = screen.getByTestId("metric-segment-color")
         expect(colorCard.querySelector("button[disabled]")).toBeNull()
+    })
+
+    it("should unlink the color metric from the height metric when a metric is picked in a radial layout", async () => {
+        // Arrange
+        const { fixture } = await setup({ isLinked: true, isRadialLayout: true })
+        const store = TestBed.inject(MockStore)
+        const dispatchSpy = jest.spyOn(store, "dispatch")
+
+        // Act
+        fixture.componentInstance.handleMetricSelected("loc")
+
+        // Assert
+        expect(dispatchSpy.mock.calls).toEqual([
+            [setIsColorMetricLinkedToHeightMetricAction({ value: false })],
+            [setColorMetric({ value: "loc" })]
+        ])
     })
 })

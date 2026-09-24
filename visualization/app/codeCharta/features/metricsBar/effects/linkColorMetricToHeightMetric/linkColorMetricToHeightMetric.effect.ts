@@ -3,15 +3,14 @@ import { createEffect } from "@ngrx/effects"
 import { createSelector, Store } from "@ngrx/store"
 import { filter, map } from "rxjs"
 import { CcState } from "../../../../model/codeCharta.model"
-import { heightMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { heightMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setColorMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { isColorMetricLinkedToHeightMetricSelector } from "../../../../stores/preferences/preferences.read.facade"
 
 export const heightAndLinkedSelector = createSelector(
     heightMetricSelector,
     isColorMetricLinkedToHeightMetricSelector,
-    isRadialLayoutSelector,
-    (heightMetric, isLinked, isRadialLayout) => ({ heightMetric, isLinked: isLinked && !isRadialLayout })
+    (heightMetric, isLinked) => ({ heightMetric, isLinked })
 )
 
 @Injectable()
