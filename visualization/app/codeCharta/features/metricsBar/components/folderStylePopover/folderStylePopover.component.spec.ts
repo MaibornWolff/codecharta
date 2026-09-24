@@ -1,6 +1,7 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+import { RadialFolderStyle } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ResetSettingsButtonStore } from "../../../shared/stores/resetSettingsButton.store"
 import { FolderStylePopoverComponent } from "./folderStylePopover.component"
@@ -8,15 +9,17 @@ import { FolderStylePopoverComponent } from "./folderStylePopover.component"
 describe("FolderStylePopoverComponent", () => {
     async function setup({ isNeutral = false, tintPercent = 50 } = {}) {
         const resetSettings = jest.fn()
+        const styleSelected = jest.fn()
         await render(FolderStylePopoverComponent, {
             inputs: { popoverId: "style", anchorName: "anchor", isNeutral, tintPercent, tintedSwatch: "#ffffff" },
+            on: { styleSelected },
             providers: [
                 provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 { provide: ResetSettingsButtonStore, useValue: { resetSettings } }
             ]
         })
-        return { resetSettings }
+        return { resetSettings, styleSelected }
     }
 
     it("should check the current folder style", async () => {
@@ -26,6 +29,17 @@ describe("FolderStylePopoverComponent", () => {
         // Assert
         expect(screen.getByTestId("folder-style-neutral").querySelector("input").checked).toBe(true)
         expect(screen.getByTestId("folder-style-tinted").querySelector("input").checked).toBe(false)
+    })
+
+    it("should emit the folder style that is picked", async () => {
+        // Arrange
+        const { styleSelected } = await setup()
+
+        // Act
+        fireEvent.click(screen.getByTestId("folder-style-neutral").querySelector("input"))
+
+        // Assert
+        expect(styleSelected).toHaveBeenCalledWith(RadialFolderStyle.Neutral)
     })
 
     it("should offer a tint strength from 20 to 100 %", async () => {
