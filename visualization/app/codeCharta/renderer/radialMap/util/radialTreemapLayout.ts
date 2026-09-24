@@ -1,30 +1,20 @@
 import { HierarchyRectangularNode, hierarchy, treemap, treemapSquarify } from "d3-hierarchy"
-import { CENTRE_RADIUS, FULL_TURN, ringWidth } from "./radialChartStyle"
+import { CENTRE_RADIUS, ringWidth } from "./radialChartStyle"
+import {
+    AngularSpan,
+    AnnularSector,
+    CENTRE_SECTOR,
+    compareLargestFirst,
+    FULL_CIRCLE,
+    largestFirst,
+    PlacedSector,
+    RadialPlacement
+} from "./radialPlacement"
 import { levelsBelow, RadialNode } from "./radialTree"
 
 const HEADER_SHARE_OF_BAND = 0.15
 const MAX_HEADER_THICKNESS = 0.04
 const GAP_BETWEEN_BANDS = 0.012
-
-/** Angles in radians, clockwise from twelve o'clock; radii as a share of half the chart's shorter side. */
-export interface AnnularSector {
-    startAngle: number
-    endAngle: number
-    innerRadius: number
-    outerRadius: number
-}
-
-export type SectorRole = "centre" | "header" | "cell" | "outline"
-
-export interface PlacedSector extends AnnularSector {
-    role: SectorRole
-}
-
-export interface RadialTreemapPlacement {
-    node: RadialNode
-    isCentre: boolean
-    sectors: PlacedSector[]
-}
 
 interface Bands {
     count: number
@@ -33,15 +23,15 @@ interface Bands {
 }
 
 interface LayoutContext {
-    placements: Map<RadialNode, RadialTreemapPlacement>
+    placements: Map<RadialNode, RadialPlacement>
     bands: Bands
 }
 
-export function layOutRadialTreemap(centre: RadialNode, maxBandCount: number): RadialTreemapPlacement[] {
+export function layOutRadialTreemap(centre: RadialNode, maxBandCount: number): RadialPlacement[] {
     const context: LayoutContext = { placements: new Map(), bands: bandsAround(centre, maxBandCount) }
     context.placements.set(centre, { node: centre, isCentre: true, sectors: [] })
-    place(context, centre, { role: "centre", startAngle: 0, endAngle: FULL_TURN, innerRadius: 0, outerRadius: CENTRE_RADIUS })
-    placeChildren(context, centre, { startAngle: 0, endAngle: FULL_TURN }, 1)
+    place(context, centre, CENTRE_SECTOR)
+    placeChildren(context, centre, FULL_CIRCLE, 1)
     return [...context.placements.values()]
 }
 
@@ -66,8 +56,6 @@ function placeChildren(context: LayoutContext, parent: RadialNode, span: Angular
         startAngle = share.endAngle
     }
 }
-
-type AngularSpan = Pick<AnnularSector, "startAngle" | "endAngle">
 
 type ChildSlot = { area: number; folder: RadialNode; files?: never } | { area: number; folder?: never; files: RadialNode[] }
 
@@ -133,14 +121,6 @@ function bendIntoBody(cell: HierarchyRectangularNode<RadialNode>, body: AnnularS
         innerRadius: radiusAt(cell.y0),
         outerRadius: radiusAt(cell.y1)
     }
-}
-
-function largestFirst(nodes: RadialNode[]): RadialNode[] {
-    return [...nodes].sort(compareLargestFirst)
-}
-
-function compareLargestFirst(first: RadialNode, second: RadialNode): number {
-    return second.area - first.area || first.path.localeCompare(second.path)
 }
 
 function place(context: LayoutContext, node: RadialNode, sector: PlacedSector) {

@@ -1,9 +1,10 @@
 import { fileNode, folderNode, TEST_COLORING } from "../testing/radialChart.stub"
 import { CENTRE_RADIUS } from "./radialChartStyle"
 import { nodeColor } from "./radialColor"
+import { RadialPieceDatum } from "./radialPiecesOption"
 import { RadialOptionInputs } from "./radialShape"
 import { RadialNode } from "./radialTree"
-import { buildRadialTreemapOption, RadialTreemapDatum, radialTreemapShape } from "./radialTreemapOption.builder"
+import { buildRadialTreemapOption, radialTreemapShape } from "./radialTreemapOption.builder"
 
 const CHART_SIZE = { getWidth: () => 800, getHeight: () => 600 }
 const SHORTER_HALF_SIDE_PX = 300
@@ -51,7 +52,7 @@ const BAND_COUNT = 3
 function drawn(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {}, maxBandCount = BAND_COUNT) {
     const option = buildRadialTreemapOption(inputs(centre, overrides), maxBandCount)
     const [series] = option.series
-    const data = series.data as RadialTreemapDatum[]
+    const data = series.data as RadialPieceDatum[]
     const drawIndex = (dataIndex: number) => series.renderItem({ dataIndex }, CHART_SIZE) as DrawnGroup
     const drawItem = (path: string) => drawIndex(data.findIndex(datum => datum.name === path))
     return { option, series, data, drawIndex, drawItem }
