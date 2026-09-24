@@ -4,18 +4,21 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { CodeMapRenderService } from "../../../../features/codeMap/facade"
-import { areaMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { areaMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setAreaMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { AreaSegmentComponent } from "./areaSegment.component"
 
 describe("AreaSegmentComponent", () => {
-    async function setup(areaMetric = "rloc") {
+    async function setup(areaMetric = "rloc", isRadialLayout = false) {
         const renderResult = await render(AreaSegmentComponent, {
             providers: [
                 provideMockStore({
                     initialState: defaultState,
-                    selectors: [{ selector: areaMetricSelector, value: areaMetric }]
+                    selectors: [
+                        { selector: areaMetricSelector, value: areaMetric },
+                        { selector: isRadialLayoutSelector, value: isRadialLayout }
+                    ]
                 }),
                 { provide: State, useValue: { getValue: () => defaultState } },
                 {
@@ -47,6 +50,16 @@ describe("AreaSegmentComponent", () => {
         // Assert
         expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
         expect(screen.getByTestId("metric-segment-area-cog")).not.toBeNull()
+    })
+
+    it("should offer no area settings in a radial layout, where none of them apply", async () => {
+        // Arrange & Act
+        await setup("rloc", true)
+
+        // Assert
+        expect(screen.getByTestId("metric-segment-area")).not.toBeNull()
+        expect(screen.queryByTestId("metric-segment-area-cog")).toBeNull()
+        expect(screen.queryByText("Margin")).toBeNull()
     })
 
     it("should dispatch setAreaMetric when a metric is selected", async () => {

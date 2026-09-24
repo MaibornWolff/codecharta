@@ -7,8 +7,11 @@
     [searchAnchorName]="searchAnchorName"
     [settingsPopoverId]="settingsPopoverId"
     [settingsAnchorName]="settingsAnchorName"
+    [hasSettings]="!isRadialLayout()"
     testIdPrefix="metric-segment-area"
     (metricSelected)="handleMetricSelected($event)"
 >
-    <cc-area-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-area-settings-popover>
+    @if (!isRadialLayout()) {
+        <cc-area-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-area-settings-popover>
+    }
 </cc-metric-segment>
