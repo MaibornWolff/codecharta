@@ -18,6 +18,7 @@ export class MetricSegmentComponent {
     readonly placeholder = input("")
     readonly searchPopoverId = input.required<string>()
     readonly searchAnchorName = input.required<string>()
+    readonly hasSettings = input(true)
     readonly settingsPopoverId = input.required<string>()
     readonly settingsAnchorName = input.required<string>()
     readonly testIdPrefix = input.required<string>()

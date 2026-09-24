@@ -14,5 +14,7 @@
 
     <cc-invert-reset-row></cc-invert-reset-row>
 
-    <cc-folder-overrides></cc-folder-overrides>
+    @if (!isRadialLayout()) {
+        <cc-folder-overrides></cc-folder-overrides>
+    }
 </cc-settings-popover-shell>

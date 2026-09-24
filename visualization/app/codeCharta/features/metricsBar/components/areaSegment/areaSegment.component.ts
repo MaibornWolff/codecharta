@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
+import { injectIsRadialLayout } from "../../../shared/facade"
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { AreaSettingsPopoverComponent } from "../areaSettingsPopover/areaSettingsPopover.component"
 import { MetricSegmentComponent } from "../metricSegment/metricSegment.component"
@@ -21,6 +22,7 @@ export class AreaSegmentComponent {
     private readonly mapStateReadWindow = inject(MapStateReadWindow)
     private readonly metricsBarWriteStore = inject(MetricsBarWriteStore)
 
+    readonly isRadialLayout = injectIsRadialLayout()
     readonly areaMetric = toSignal(this.mapStateReadWindow.areaMetric$, { initialValue: "" })
 
     handleMetricSelected(value: string) {
