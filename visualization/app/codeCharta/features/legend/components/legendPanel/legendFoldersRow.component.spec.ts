@@ -2,26 +2,20 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { RadialFolderStyle, RadialFolderValue } from "../../../../model/codeCharta.model"
-import {
-    radialFolderStyleSelector,
-    radialFolderTintSelector,
-    radialFolderValueSelector
-} from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { LegendFoldersRowComponent } from "./legendFoldersRow.component"
 
 describe("LegendFoldersRowComponent", () => {
     async function setup(folderValue: RadialFolderValue, folderStyle: RadialFolderStyle) {
+        const preferences = {
+            ...defaultState.preferences,
+            radialFolderValue: folderValue,
+            radialFolderStyle: folderStyle,
+            radialFolderTint: 0.5
+        }
         await render(LegendFoldersRowComponent, {
             providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [
-                        { selector: radialFolderValueSelector, value: folderValue },
-                        { selector: radialFolderStyleSelector, value: folderStyle },
-                        { selector: radialFolderTintSelector, value: 0.5 }
-                    ]
-                }),
+                provideMockStore({ initialState: { ...defaultState, preferences } }),
                 { provide: State, useValue: { getValue: () => defaultState } }
             ]
         })
