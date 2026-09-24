@@ -89,11 +89,11 @@ describe("FoldersSegmentComponent", () => {
         const { dispatchSpy } = await setup({ folderStyle: RadialFolderStyle.Neutral })
 
         // Act
-        fireEvent.click(screen.getByTestId("folder-value-shareOfRed"))
+        fireEvent.click(screen.getByTestId("folder-value-min"))
 
         // Assert
         expect(dispatchSpy.mock.calls).toEqual([
-            [setRadialFolderValue({ value: RadialFolderValue.ShareOfRed })],
+            [setRadialFolderValue({ value: RadialFolderValue.Min })],
             [setRadialFolderStyle({ value: RadialFolderStyle.Tinted })]
         ])
     })

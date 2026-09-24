@@ -231,7 +231,7 @@ describe("LoadInitialFileStore", () => {
             setup()
             const savedPreferences = {
                 ...defaultPreferences,
-                radialFolderValue: RadialFolderValue.ShareOfRed,
+                radialFolderValue: RadialFolderValue.Min,
                 radialFolderStyle: RadialFolderStyle.Neutral,
                 radialFolderTint: 0.8
             }
@@ -242,7 +242,7 @@ describe("LoadInitialFileStore", () => {
             // Assert
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([
-                setRadialFolderValue({ value: RadialFolderValue.ShareOfRed }),
+                setRadialFolderValue({ value: RadialFolderValue.Min }),
                 setRadialFolderStyle({ value: RadialFolderStyle.Neutral }),
                 setRadialFolderTint({ value: 0.8 })
             ])

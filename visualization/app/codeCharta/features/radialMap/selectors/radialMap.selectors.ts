@@ -1,5 +1,4 @@
 import { createSelector } from "@ngrx/store"
-import { RadialFolderValue } from "../../../model/codeCharta.model"
 import { buildRadialTree, calculateFolderValues, RadialColoring, RadialMetrics } from "../../../renderer/radialMap/radialMap.facade"
 import {
     accumulatedDataSelector,
@@ -40,17 +39,12 @@ export const radialTreeSelector = createSelector(
     }
 )
 
-const redThresholdSelector = createSelector(radialFolderValueSelector, colorRangeSelector, (folderValue, colorRange) =>
-    folderValue === RadialFolderValue.ShareOfRed ? colorRange.to : null
-)
-
 export const radialFolderValuesSelector = createSelector(
     accumulatedDataSelector,
     radialMetricsSelector,
     radialFolderValueSelector,
-    redThresholdSelector,
-    ({ unifiedMapNode }, metrics, folderValue, redThreshold): ReadonlyMap<string, number> =>
-        unifiedMapNode ? calculateFolderValues(unifiedMapNode, { ...metrics, folderValue, redThreshold }) : new Map()
+    ({ unifiedMapNode }, metrics, folderValue): ReadonlyMap<string, number> =>
+        unifiedMapNode ? calculateFolderValues(unifiedMapNode, { ...metrics, folderValue }) : new Map()
 )
 
 const radialFolderColoringSelector = createSelector(

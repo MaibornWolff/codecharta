@@ -5,42 +5,38 @@ export interface FolderValueInputs {
     areaMetric: string
     colorMetric: string
     folderValue: RadialFolderValue
-    /** The colour range's upper threshold; only the share of red reads it. */
-    redThreshold: number | null
 }
 
 interface FolderStats {
     files: number
     sum: number
     max: number
+    min: number
     area: number
     areaWeightedSum: number
-    redArea: number
     values: number[]
 }
 
-type FolderValueOf = (stats: FolderStats, mapDensity: number) => number
+type FolderValueOf = (stats: FolderStats) => number
 
 const FOLDER_VALUE_OF: Record<RadialFolderValue, FolderValueOf> = {
     [RadialFolderValue.Sum]: stats => stats.sum,
     [RadialFolderValue.Max]: stats => stats.max,
+    [RadialFolderValue.Min]: stats => stats.min,
     [RadialFolderValue.Median]: stats => median(stats.values),
     [RadialFolderValue.MeanPerFile]: stats => stats.sum / stats.files,
-    [RadialFolderValue.AvgPerLine]: stats => stats.areaWeightedSum / stats.area,
-    [RadialFolderValue.ShareBySize]: (stats, mapDensity) => (mapDensity > 0 ? stats.sum / stats.area / mapDensity : 0),
-    [RadialFolderValue.ShareOfRed]: stats => stats.redArea / stats.area
+    [RadialFolderValue.AvgPerLine]: stats => stats.areaWeightedSum / stats.area
 }
 
 /** Every folder's value over all its files with an area and a colour value, keyed by path. */
 export function calculateFolderValues(root: CodeMapNode, inputs: FolderValueInputs): ReadonlyMap<string, number> {
     const statsByPath = new Map<string, FolderStats>()
-    const mapStats = collectStats(root, inputs, statsByPath)
-    const mapDensity = mapStats.area > 0 ? mapStats.sum / mapStats.area : 0
+    collectStats(root, inputs, statsByPath)
     const folderValueOf = FOLDER_VALUE_OF[inputs.folderValue]
     const folderValues = new Map<string, number>()
     for (const [path, stats] of statsByPath) {
         if (stats.files > 0) {
-            folderValues.set(path, folderValueOf(stats, mapDensity))
+            folderValues.set(path, folderValueOf(stats))
         }
     }
     return folderValues
@@ -60,7 +56,7 @@ function collectStats(node: CodeMapNode, inputs: FolderValueInputs, statsByPath:
     return stats
 }
 
-function fileStats(file: CodeMapNode, { areaMetric, colorMetric, folderValue, redThreshold }: FolderValueInputs): FolderStats {
+function fileStats(file: CodeMapNode, { areaMetric, colorMetric, folderValue }: FolderValueInputs): FolderStats {
     const area = file.attributes?.[areaMetric] ?? 0
     const value = file.attributes?.[colorMetric]
     if (area <= 0 || value === undefined) {
@@ -70,24 +66,24 @@ function fileStats(file: CodeMapNode, { areaMetric, colorMetric, folderValue, re
         files: 1,
         sum: value,
         max: value,
+        min: value,
         area,
         areaWeightedSum: value * area,
-        redArea: redThreshold !== null && value >= redThreshold ? area : 0,
         values: folderValue === RadialFolderValue.Median ? [value] : []
     }
 }
 
 function emptyStats(): FolderStats {
-    return { files: 0, sum: 0, max: Number.NEGATIVE_INFINITY, area: 0, areaWeightedSum: 0, redArea: 0, values: [] }
+    return { files: 0, sum: 0, max: Number.NEGATIVE_INFINITY, min: Number.POSITIVE_INFINITY, area: 0, areaWeightedSum: 0, values: [] }
 }
 
 function addStats(stats: FolderStats, childStats: FolderStats) {
     stats.files += childStats.files
     stats.sum += childStats.sum
     stats.max = Math.max(stats.max, childStats.max)
+    stats.min = Math.min(stats.min, childStats.min)
     stats.area += childStats.area
     stats.areaWeightedSum += childStats.areaWeightedSum
-    stats.redArea += childStats.redArea
     for (const value of childStats.values) {
         stats.values.push(value)
     }

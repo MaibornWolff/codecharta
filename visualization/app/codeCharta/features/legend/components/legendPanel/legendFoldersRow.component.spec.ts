@@ -33,16 +33,8 @@ describe("LegendFoldersRowComponent", () => {
         const row = await setup(RadialFolderValue.Max, RadialFolderStyle.Tinted)
 
         // Assert
-        expect(row.textContent.trim()).toBe("folders: their worst file, tinted")
+        expect(row.textContent.trim()).toBe("folders: their highest file, tinted")
         expect((row.firstElementChild as HTMLElement).style.background).toContain("linear-gradient")
-    })
-
-    it("should label the scale of an own-scale value", async () => {
-        // Arrange & Act
-        const row = await setup(RadialFolderValue.ShareBySize, RadialFolderStyle.Tinted)
-
-        // Assert
-        expect(row.textContent.trim()).toBe("folders: share ÷ size (1× – 3×), tinted")
     })
 
     it("should say neutral with a grey swatch while folders are neutral", async () => {

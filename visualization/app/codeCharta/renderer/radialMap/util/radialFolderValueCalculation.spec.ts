@@ -16,8 +16,8 @@ const MAP = folder("/root", [
     folder("/root/docs", [file("/root/docs/readme.md", 100, 1)])
 ])
 
-function valuesOf(folderValue: RadialFolderValue, map = MAP, redThreshold: number | null = null): ReadonlyMap<string, number> {
-    const inputs: FolderValueInputs = { areaMetric: "rloc", colorMetric: "mcc", folderValue, redThreshold }
+function valuesOf(folderValue: RadialFolderValue, map = MAP): ReadonlyMap<string, number> {
+    const inputs: FolderValueInputs = { areaMetric: "rloc", colorMetric: "mcc", folderValue }
     return calculateFolderValues(map, inputs)
 }
 
@@ -31,13 +31,22 @@ describe("calculateFolderValues", () => {
         expect(values.get("/root")).toBe(19)
     })
 
-    it("should take a folder's worst file for the max", () => {
+    it("should take a folder's highest file for the max", () => {
         // Act
         const values = valuesOf(RadialFolderValue.Max)
 
         // Assert
         expect(values.get("/root/src")).toBe(12)
         expect(values.get("/root")).toBe(12)
+    })
+
+    it("should take a folder's lowest file for the min", () => {
+        // Act
+        const values = valuesOf(RadialFolderValue.Min)
+
+        // Assert
+        expect(values.get("/root/src")).toBe(2)
+        expect(values.get("/root")).toBe(1)
     })
 
     it("should take a folder's middle file for the median, averaging the two middle files of an even count", () => {
@@ -63,35 +72,6 @@ describe("calculateFolderValues", () => {
 
         // Assert
         expect(values.get("/root/src")).toBeCloseTo((10 * 2 + 30 * 12 + 60 * 4) / 100)
-    })
-
-    it("should compare a folder's share of the metric with its share of the whole map's area for share ÷ size", () => {
-        // Act
-        const values = valuesOf(RadialFolderValue.ShareBySize)
-
-        // Assert — src holds 18 of 19 mcc on 100 of 200 lines
-        expect(values.get("/root/src")).toBeCloseTo(18 / 19 / (100 / 200))
-        expect(values.get("/root")).toBeCloseTo(1)
-    })
-
-    it("should give share ÷ size zero when the whole map has none of the metric", () => {
-        // Arrange
-        const zeroMap = folder("/root", [file("/root/a.ts", 10, 0)])
-
-        // Act
-        const values = valuesOf(RadialFolderValue.ShareBySize, zeroMap)
-
-        // Assert
-        expect(values.get("/root")).toBe(0)
-    })
-
-    it("should take the share of a folder's area in files at or above the upper threshold for share of red", () => {
-        // Act
-        const values = valuesOf(RadialFolderValue.ShareOfRed, MAP, 4)
-
-        // Assert — b.ts (30 lines) and c.ts (60 lines) reach 4
-        expect(values.get("/root/src")).toBeCloseTo(0.9)
-        expect(values.get("/root/docs")).toBe(0)
     })
 
     it("should leave out excluded files and folders", () => {

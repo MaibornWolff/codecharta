@@ -106,7 +106,7 @@ describe("sunburst metrics and coloring", () => {
 describe("radialFolderValuesSelector", () => {
     it("should compute the folder values over the whole map", () => {
         // Act
-        const values = radialFolderValuesSelector.projector(accumulatedData(MAP), METRICS, RadialFolderValue.Sum, null)
+        const values = radialFolderValuesSelector.projector(accumulatedData(MAP), METRICS, RadialFolderValue.Sum)
 
         // Assert
         expect(values.get("/root")).toBe(2)
@@ -115,7 +115,7 @@ describe("radialFolderValuesSelector", () => {
 
     it("should have no folder values before a map is loaded", () => {
         // Act
-        const values = radialFolderValuesSelector.projector(accumulatedData(undefined), METRICS, RadialFolderValue.Max, null)
+        const values = radialFolderValuesSelector.projector(accumulatedData(undefined), METRICS, RadialFolderValue.Max)
 
         // Assert
         expect(values.size).toBe(0)

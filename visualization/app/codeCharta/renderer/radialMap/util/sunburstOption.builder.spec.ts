@@ -157,30 +157,17 @@ describe("buildSunburstOption", () => {
         expect(tooltip).not.toContain("go up")
     })
 
-    it("should show a folder's value in its tooltip, on its own scale where it has one", () => {
+    it("should show a folder's value in its tooltip", () => {
         // Arrange
-        const values = new Map([
-            ["/root/max", 47],
-            ["/root/ratio", 1.5],
-            ["/root/red", 0.234]
-        ])
-        const tooltipOf = (value: RadialFolderValue, path: string) => {
-            const coloring = { ...TEST_COLORING, folders: { ...TEST_COLORING.folders, values, value } }
-            const option = buildSunburstOption(inputs(folderNode("/root", [folderNode(path)]), { coloring }))
-            return option.tooltip.formatter({ data: option.series[0].data[0].children[0] })
-        }
+        const values = new Map([["/root/src", 47]])
+        const coloring = { ...TEST_COLORING, folders: { ...TEST_COLORING.folders, values, value: RadialFolderValue.Min } }
+        const option = buildSunburstOption(inputs(folderNode("/root", [folderNode("/root/src")]), { coloring }))
 
         // Act
-        const tooltips = [
-            tooltipOf(RadialFolderValue.Max, "/root/max"),
-            tooltipOf(RadialFolderValue.ShareBySize, "/root/ratio"),
-            tooltipOf(RadialFolderValue.ShareOfRed, "/root/red")
-        ]
+        const tooltip = option.tooltip.formatter({ data: option.series[0].data[0].children[0] })
 
         // Assert
-        expect(tooltips[0]).toContain("max 47")
-        expect(tooltips[1]).toContain("share ÷ size 1.5×")
-        expect(tooltips[2]).toContain("share of red 23 %")
+        expect(tooltip).toContain("min 47")
     })
 
     it("should show no folder value in a file's tooltip", () => {

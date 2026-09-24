@@ -2,7 +2,7 @@ import convert from "color-convert"
 import { ColorMode, ColorRange, MapColors, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
 import { getColorByMetricValue } from "../../../util/color/gradientCalculator"
 import { MetricMinMax } from "../../../util/metric/metricRange"
-import { mixColors, NEUTRAL_FOLDER_COLOR, SHARE_BY_SIZE_RED_AT, SHARE_OF_RED_RED_AT, tintColor } from "../../../util/radialFolderValues"
+import { NEUTRAL_FOLDER_COLOR, tintColor } from "../../../util/radialFolderValues"
 import { RadialNode } from "./radialTree"
 
 export interface RadialFolderColoring {
@@ -21,8 +21,6 @@ export interface RadialColoring {
     colorMetricRange: MetricMinMax
     folders: RadialFolderColoring
 }
-
-const HALFWAY = 0.5
 
 const DARK_TEXT = "#1f2937"
 const LIGHT_TEXT = "#ffffff"
@@ -61,26 +59,10 @@ function folderColor(path: string, coloring: RadialColoring): string {
     if (folders.style === RadialFolderStyle.Neutral) {
         return NEUTRAL_FOLDER_COLOR
     }
-    const valueColor = coloring.isUnaryMetric ? mapColors.positive : folderValueColor(folderValue, coloring)
+    const valueColor = coloring.isUnaryMetric
+        ? mapColors.positive
+        : getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, folderValue)
     return tintColor(valueColor, folders.tint)
-}
-
-function folderValueColor(folderValue: number, coloring: RadialColoring): string {
-    const { mapColors } = coloring
-    if (coloring.folders.value === RadialFolderValue.ShareBySize) {
-        return trafficLightColor(mapColors, Math.log2(folderValue) / Math.log2(SHARE_BY_SIZE_RED_AT))
-    }
-    if (coloring.folders.value === RadialFolderValue.ShareOfRed) {
-        return trafficLightColor(mapColors, folderValue / SHARE_OF_RED_RED_AT)
-    }
-    return getColorByMetricValue(mapColors, coloring.colorRange, coloring.colorMode, coloring.colorMetricRange, folderValue)
-}
-
-function trafficLightColor(mapColors: MapColors, redness: number): string {
-    const clampedRedness = Math.min(1, Math.max(0, redness))
-    return clampedRedness < HALFWAY
-        ? mixColors(mapColors.positive, mapColors.neutral, clampedRedness / HALFWAY)
-        : mixColors(mapColors.neutral, mapColors.negative, (clampedRedness - HALFWAY) / HALFWAY)
 }
 
 export function readableTextColor(backgroundHex: string): string {

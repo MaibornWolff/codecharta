@@ -1,11 +1,9 @@
-import { RadialFolderValue } from "../../../model/codeCharta.model"
 import { escapeHtml } from "../../../util/escapeHtml"
 import { describeRadialFolderValue } from "../../../util/radialFolderValues"
 import { RadialFolderColoring } from "./radialColor"
 import { RadialMetrics, RadialNode } from "./radialTree"
 
 const numberFormatter = new Intl.NumberFormat("en", { maximumFractionDigits: 2 })
-const PERCENT = 100
 
 interface RadialTooltipDatum {
     name: string
@@ -44,15 +42,5 @@ export function folderValueText({ path, isFile }: Pick<RadialNode, "path" | "isF
     if (folderValue === undefined) {
         return undefined
     }
-    return `${describeRadialFolderValue(folders.value).label} ${formatFolderValue(folders.value, folderValue)}`
-}
-
-function formatFolderValue(value: RadialFolderValue, folderValue: number): string {
-    if (value === RadialFolderValue.ShareBySize) {
-        return `${numberFormatter.format(folderValue)}×`
-    }
-    if (value === RadialFolderValue.ShareOfRed) {
-        return `${Math.round(folderValue * PERCENT)} %`
-    }
-    return numberFormatter.format(folderValue)
+    return `${describeRadialFolderValue(folders.value).label} ${numberFormatter.format(folderValue)}`
 }
