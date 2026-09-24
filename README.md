@@ -14,6 +14,7 @@
 
   <p>
     <a href="https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true"><b>▶ Try the live demo</b></a> •
+    <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true">Staging demo</a> •
     <a href="#quickstart">Quickstart</a> •
     <a href="https://maibornwolff.github.io/codecharta/">Documentation</a> •
     <a href="https://github.com/MaibornWolff/codecharta/releases">Releases</a>
@@ -35,6 +36,11 @@
       <img alt="Quality Gate Visualization" src="https://img.shields.io/sonar/quality_gate/maibornwolff-gmbh_codecharta_visualization/main?server=https%3A%2F%2Fsonarcloud.io&label=Quality%20Gate%20Visualization&style=flat-square"></a>
     <a href="LICENSE.md">
       <img alt="License" src="https://img.shields.io/badge/License-BSD--3--Clause-green?style=flat-square"></a>
+    <br>
+    <a href="https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true">
+      <img alt="Web Studio Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fvisualization%2Fapp%2Findex.html&up_message=running&label=Web%20Studio&style=flat-square"></a>
+    <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true">
+      <img alt="Web Studio Staging Badge" src="https://img.shields.io/website?url=https%3A%2F%2Fcodecharta.com%2Fstg%2Fvisualization%2Findex.html&up_message=running&label=Web%20Studio%20Staging&style=flat-square"></a>
   </p>
 </div>
 

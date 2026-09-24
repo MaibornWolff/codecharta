@@ -346,7 +346,7 @@ describe("DomainViewComponent", () => {
         expect(wordCloud(fixture).markedWords()).toEqual([])
     })
 
-    it("should let the broken-down word and the scoped node go when the cloud is clicked beside every word", async () => {
+    it("should unpin the broken-down word but keep the scoped node when the cloud is clicked beside every word", async () => {
         // Arrange — a word broken down and the cloud scoped to a node, the state a click builds up
         const { fixture, detectChanges } = await setup()
         openWordFromTheCloud(fixture, detectChanges)
@@ -359,7 +359,7 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordList(fixture).expandedWord()).toBe(null)
-        expect(wordCloud(fixture).selectedNodePath()).toBe(null)
+        expect(wordCloud(fixture).selectedNodePath()).toBe("/root/ParentLeaf")
     })
 
     it("should keep marking what the search matched when the cloud is clicked beside every word", async () => {
