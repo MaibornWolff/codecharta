@@ -45,9 +45,9 @@ export const RADIAL_FOLDER_VALUES: readonly RadialFolderValueDescriptor[] = [
     },
     {
         value: RadialFolderValue.AvgPerArea,
-        label: "avg / line",
-        description: "Weighted by lines, so it matches the area.",
-        legend: "avg / line of their files"
+        label: "avg / area",
+        description: "Weighted by the area metric, so bigger slices count more.",
+        legend: "area-weighted avg of their files"
     }
 ]
 

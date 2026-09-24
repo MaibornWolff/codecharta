@@ -48,7 +48,7 @@ describe("FoldersSegmentComponent", () => {
         // Assert
         const card = screen.getByTestId("metric-segment-folders")
         expect(card.textContent).toContain("Folders")
-        expect(card.textContent).toContain("avg / line")
+        expect(card.textContent).toContain("avg / area")
         expect(screen.getByTestId("metric-segment-folders-style").textContent.trim()).toBe("tinted 80 %")
     })
 

@@ -66,7 +66,7 @@ describe("calculateFolderValues", () => {
         expect(values.get("/root/src")).toBe(6)
     })
 
-    it("should weight each file by its area for the average per line", () => {
+    it("should weight each file by its area for the average per area", () => {
         // Act
         const values = valuesOf(RadialFolderValue.AvgPerArea)
 

@@ -25,7 +25,8 @@ nothing in radial layouts, and the folder values drop the own-scale group and ga
 ### 3. Folder values: drop the own scale, add `min`
 - Remove `share ÷ size` and `share of red` (unreleased, no migration) and the scale grouping in the value list
 - Add `min` (its best file), useful when the colour range is inverted
-- Values: sum, max, min, median, mean / file, avg / line
+- Values: sum, max, min, median, mean / file, avg / area (`avg / line` renamed: it is weighted by the area metric,
+  which is only a line count when that metric is one)
 
 ### 4. Flickering radial charts on hover
 - Hovering showed the path in the bottom bar, which grew it by 1 px, resized the chart and redrew it; the redraw

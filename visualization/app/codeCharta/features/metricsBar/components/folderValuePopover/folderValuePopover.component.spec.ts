@@ -15,7 +15,7 @@ describe("FolderValuePopoverComponent", () => {
 
         // Assert
         const labels = screen.getAllByRole("radio", { hidden: true }).map(radio => radio.querySelector(".font-medium").textContent)
-        expect(labels).toEqual(["sum", "max", "min", "median", "mean / file", "avg / line"])
+        expect(labels).toEqual(["sum", "max", "min", "median", "mean / file", "avg / area"])
         expect(screen.getByText("Its lowest file. Never hides a low value, e.g. with inverted colors.")).not.toBeNull()
     })
 
