@@ -131,7 +131,7 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Show in Explorer")).not.toBe(null)
         expect(screen.getByText("Focus")).not.toBe(null)
         expect(screen.getByText("Keep Highlight")).not.toBe(null)
-        expect(screen.getByText("Flatten")).not.toBe(null)
+        expect(screen.getByText("Flatten & decolor")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
         expect(container.querySelector(".colorButton")).toBe(null)
     })
@@ -145,7 +145,7 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.getByText("Focus")).not.toBe(null)
-        expect(screen.getByText("Flatten")).not.toBe(null)
+        expect(screen.getByText("Flatten & decolor")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
         expect(screen.queryByText("Keep Highlight")).toBe(null)
         expect(document.querySelector("cc-mark-folder-row")).toBe(null)
@@ -204,7 +204,7 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("…/src")).not.toBe(null)
         expect(screen.queryByText("Focus")).toBe(null)
         expect(screen.queryByText("Keep Highlight")).toBe(null)
-        expect(screen.queryByText("Flatten")).toBe(null)
+        expect(screen.queryByText("Flatten & decolor")).toBe(null)
         expect(screen.queryByText("Exclude")).toBe(null)
         expect(screen.queryByText("Show in Domain")).toBe(null)
         expect(container.querySelector(".colorButton")).toBe(null)
@@ -354,7 +354,7 @@ describe("nodeContextMenu component", () => {
         const { dispatchSpy } = await renderMenu()
 
         // Act
-        fireEvent.click(screen.getByText("Flatten"))
+        fireEvent.click(screen.getByText("Flatten & decolor"))
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(
@@ -367,7 +367,7 @@ describe("nodeContextMenu component", () => {
         await renderMenu({ node: { ...fileNode }, isFlattened: () => true })
 
         // Assert
-        expect(screen.queryByText("Flatten")).toBe(null)
+        expect(screen.queryByText("Flatten & decolor")).toBe(null)
         expect(screen.getByText("Show")).not.toBe(null)
     })
 
