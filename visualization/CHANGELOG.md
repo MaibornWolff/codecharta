@@ -17,13 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Flatten & decolor**: the context menu names what flattening a node does, since it also greys the node out.
 - **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 
-### Fixed 🐞
-
-- **Sunburst on very big maps**: areas full of tiny files show their colour instead of fading to white.
-- **File extension bar in the sunburst**: hovering the bar no longer raises an error when the app was opened in the sunburst.
-- **Flickering sunburst**: moving the mouse over the sunburst or radial treemap no longer makes the chart flash.
-- **Context menu in the sunburst**: right-clicking a file shows one divider line before Flatten instead of two.
-
 ## [2.6.0] - 2026-09-23
 
 ### Added 🚀
