@@ -200,6 +200,18 @@ describe("RadialChartHost", () => {
         expect(handlers.onNodeHovered).toHaveBeenLastCalledWith(null)
     })
 
+    it("should keep the hovered segment when a redraw draws the same segments again", () => {
+        // Arrange
+        host.attachTo(elementOfSize(800, 600))
+        fireChartEvent("mouseover", { data: { name: "/root/src" } })
+
+        // Act
+        host.render(SOME_OPTION, { keepsSegments: true })
+
+        // Assert
+        expect(handlers.onNodeHovered).toHaveBeenLastCalledWith("/root/src")
+    })
+
     it("should let go of the hovered segment when it is disposed before the pointer left", () => {
         // Arrange
         jest.useFakeTimers()

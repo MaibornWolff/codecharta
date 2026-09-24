@@ -42,6 +42,8 @@ export class RadialChartComponent implements OnDestroy {
     readonly nodeHovered = output<string | null>()
     readonly nodeRightClicked = output<RightClickedNode>()
 
+    private renderedView?: { centre: RadialNode; shape: RadialShape }
+
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
 
     private readonly chartHost = new RadialChartHost(inject(RadialChartRegistry), {
@@ -77,14 +79,18 @@ export class RadialChartComponent implements OnDestroy {
         if (width === 0 || height === 0) {
             return
         }
+        const view = { centre: this.centre(), shape: this.shape() }
+        const keepsSegments = view.centre === this.renderedView?.centre && view.shape === this.renderedView?.shape
+        this.renderedView = view
         this.chartHost.render(
-            this.shape().buildOption({
-                centre: this.centre(),
-                isMapRoot: this.centre() === this.tree(),
+            view.shape.buildOption({
+                centre: view.centre,
+                isMapRoot: view.centre === this.tree(),
                 metrics: this.metrics(),
                 coloring: this.coloring(),
                 chartSizeInPixels: Math.min(width, height)
-            })
+            }),
+            { keepsSegments }
         )
     }
 }

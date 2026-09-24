@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Sunburst on very big maps**: areas full of tiny files show their colour instead of fading to white.
 - **File extension bar in the sunburst**: hovering the bar no longer raises an error when the app was opened in the sunburst.
+- **Flickering sunburst**: moving the mouse over the sunburst or radial treemap no longer makes the chart flash.
 - **Context menu in the sunburst**: right-clicking a file shows one divider line before Flatten instead of two.
 
 ## [2.6.0] - 2026-09-23

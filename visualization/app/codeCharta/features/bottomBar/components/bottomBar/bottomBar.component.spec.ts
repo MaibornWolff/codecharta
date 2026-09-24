@@ -14,4 +14,14 @@ describe("BottomBarComponent", () => {
         expect(container.querySelectorAll("cc-hovered-path").length).toBe(1)
         expect(container.querySelectorAll("cc-attribution").length).toBe(1)
     })
+
+    it("should reserve a line for the path, so hovering does not change the bar's height", async () => {
+        // Arrange & Act
+        const { container } = await render(BottomBarComponent, {
+            providers: [provideMockStore({ initialState: defaultState })]
+        })
+
+        // Assert
+        expect(container.querySelector("cc-hovered-path").classList).toContain("min-h-5")
+    })
 })

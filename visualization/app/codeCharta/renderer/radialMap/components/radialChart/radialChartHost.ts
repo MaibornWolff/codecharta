@@ -27,6 +27,11 @@ interface EchartsSegmentEvent {
     event?: { event?: MouseEvent }
 }
 
+export interface RenderScope {
+    /** Only the size or the colours changed, so every segment is drawn again where it was. */
+    keepsSegments: boolean
+}
+
 export const POINTER_LEAVE_GRACE_MS = 120
 
 export class RadialChartHost {
@@ -62,15 +67,19 @@ export class RadialChartHost {
         this.containerSizeObserver.observe(container)
     }
 
-    render(option: object): void {
+    render(option: object, { keepsSegments }: RenderScope = { keepsSegments: false }): void {
         if (!this.chart) {
             return
         }
         this.attachedContainer?.setAttribute("aria-busy", "true")
         this.chart.resize()
         this.chart.setOption(option as echarts.EChartsCoreOption)
-        // The segments the pointer knew are gone, and ECharts reports a hover again only once it moves.
-        this.reportPointerLeft()
+        // The segments the pointer knew are gone, and ECharts reports a hover again only once it moves. A redraw
+        // of the same segments keeps the hover: letting go of it can resize the bars around the chart, which
+        // redraws it again and flickers for as long as the pointer moves.
+        if (!keepsSegments) {
+            this.reportPointerLeft()
+        }
         this.applyHighlight()
     }
 

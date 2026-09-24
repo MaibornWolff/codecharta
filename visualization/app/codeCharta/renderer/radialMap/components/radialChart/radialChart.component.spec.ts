@@ -128,6 +128,37 @@ describe("RadialChartComponent", () => {
         expect(nodeHovered).toHaveBeenCalledWith("/root/src/app")
     })
 
+    it("should keep the hover through a redraw of the same folder, which would otherwise flicker", async () => {
+        // Arrange
+        const { fixture } = await renderChart({ centre: SRC })
+        const nodeHovered = jest.fn()
+        fixture.componentInstance.nodeHovered.subscribe(nodeHovered)
+        fireChartEvent("mouseover", { data: { name: "/root/src/app" } })
+
+        // Act
+        fixture.componentRef.setInput("coloring", { ...TEST_COLORING })
+        fixture.detectChanges()
+
+        // Assert
+        expect(stubbedChart.setOption).toHaveBeenCalledTimes(2)
+        expect(nodeHovered).toHaveBeenLastCalledWith("/root/src/app")
+    })
+
+    it("should let go of the hover when it centres on another folder", async () => {
+        // Arrange
+        const { fixture } = await renderChart({ centre: SRC })
+        const nodeHovered = jest.fn()
+        fixture.componentInstance.nodeHovered.subscribe(nodeHovered)
+        fireChartEvent("mouseover", { data: { name: "/root/src/app" } })
+
+        // Act
+        fixture.componentRef.setInput("centre", APP)
+        fixture.detectChanges()
+
+        // Assert
+        expect(nodeHovered).toHaveBeenLastCalledWith(null)
+    })
+
     it("should report a click on a file separately from a click on a folder", async () => {
         // Arrange
         const { fixture } = await renderChart()
