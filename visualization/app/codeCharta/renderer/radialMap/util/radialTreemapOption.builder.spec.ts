@@ -3,7 +3,7 @@ import { CENTRE_RADIUS } from "./radialChartStyle"
 import { nodeColor } from "./radialColor"
 import { RadialOptionInputs } from "./radialShape"
 import { RadialNode } from "./radialTree"
-import { buildRadialTreemapOption, RADIAL_TREEMAP_SHAPE, RadialTreemapDatum } from "./radialTreemapOption.builder"
+import { buildRadialTreemapOption, RadialTreemapDatum, radialTreemapShape } from "./radialTreemapOption.builder"
 
 const CHART_SIZE = { getWidth: () => 800, getHeight: () => 600 }
 const SHORTER_HALF_SIDE_PX = 300
@@ -46,8 +46,10 @@ function inputs(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {})
     }
 }
 
-function drawn(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {}) {
-    const option = buildRadialTreemapOption(inputs(centre, overrides))
+const BAND_COUNT = 3
+
+function drawn(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {}, maxBandCount = BAND_COUNT) {
+    const option = buildRadialTreemapOption(inputs(centre, overrides), maxBandCount)
     const [series] = option.series
     const data = series.data as RadialTreemapDatum[]
     const drawIndex = (dataIndex: number) => series.renderItem({ dataIndex }, CHART_SIZE) as DrawnGroup
@@ -293,10 +295,10 @@ describe("buildRadialTreemapOption", () => {
 
     it("should draw one level deeper than it has bands, as the last band shows its folders' contents", () => {
         // Arrange
-        const bandLimit = 3
+        const bandLimit = 6
 
         // Act
-        const { visibleDepth } = RADIAL_TREEMAP_SHAPE
+        const { visibleDepth } = radialTreemapShape(bandLimit)
 
         // Assert
         expect(visibleDepth).toBe(bandLimit + 1)

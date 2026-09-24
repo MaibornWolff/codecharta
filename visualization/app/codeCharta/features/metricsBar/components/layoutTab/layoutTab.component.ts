@@ -7,6 +7,10 @@ import { SettingsPopoverShellComponent, SliderNumberInputComponent } from "../..
 import { MetricsBarWriteStore } from "../../stores/metricsBar.write.store"
 import { LayoutGlyphComponent } from "./layoutGlyph.component"
 
+const MIN_RADIAL_LEVELS = 1
+const MAX_RADIAL_LEVELS = 10
+const RADIAL_LAYOUTS = new Set([LayoutAlgorithm.Sunburst, LayoutAlgorithm.RadialTreeMap])
+
 const LAYOUT_DESCRIPTIONS: Record<LayoutAlgorithm, string> = {
     [LayoutAlgorithm.SquarifiedTreeMap]: "Folders nest inside each other and every bit of floor is used.",
     [LayoutAlgorithm.StreetMap]: "Folders become streets, files line up along them.",
@@ -32,6 +36,10 @@ export class LayoutTabComponent {
     readonly layoutAlgorithm = toSignal(inject(MapStateReadWindow).layoutAlgorithm$, { requireSync: true })
     readonly maxTreeMapFiles = toSignal(inject(PreferencesReadWindow).maxTreeMapFiles$, { requireSync: true })
     readonly showMaxTreeMapFiles = computed(() => this.layoutAlgorithm() === LayoutAlgorithm.TreeMapStreet)
+    readonly radialLevels = toSignal(inject(PreferencesReadWindow).radialLevels$, { requireSync: true })
+    readonly showRadialLevels = computed(() => RADIAL_LAYOUTS.has(this.layoutAlgorithm()))
+    readonly minRadialLevels = MIN_RADIAL_LEVELS
+    readonly maxRadialLevels = MAX_RADIAL_LEVELS
 
     selectLayout(layout: LayoutAlgorithm) {
         this.writeStore.setLayoutAlgorithm(layout)
@@ -39,5 +47,9 @@ export class LayoutTabComponent {
 
     setMaxTreeMapFiles(value: number) {
         this.writeStore.setMaxTreeMapFiles(value)
+    }
+
+    setRadialLevels(value: number) {
+        this.writeStore.setRadialLevels(value)
     }
 }

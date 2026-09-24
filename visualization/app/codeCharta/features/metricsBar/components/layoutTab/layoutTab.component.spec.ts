@@ -13,11 +13,11 @@ describe("LayoutTabComponent", () => {
 
     async function setup(layoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap) {
         const layoutAlgorithm$ = new BehaviorSubject(layoutAlgorithm)
-        const writeStore = { setLayoutAlgorithm: jest.fn(), setMaxTreeMapFiles: jest.fn() }
+        const writeStore = { setLayoutAlgorithm: jest.fn(), setMaxTreeMapFiles: jest.fn(), setRadialLevels: jest.fn() }
         const renderResult = await render(LayoutTabComponent, {
             providers: [
                 { provide: MapStateReadWindow, useValue: { layoutAlgorithm$ } },
-                { provide: PreferencesReadWindow, useValue: { maxTreeMapFiles$: of(100) } },
+                { provide: PreferencesReadWindow, useValue: { maxTreeMapFiles$: of(100), radialLevels$: of(3) } },
                 { provide: MetricsBarWriteStore, useValue: writeStore }
             ]
         })
@@ -96,5 +96,30 @@ describe("LayoutTabComponent", () => {
 
         // Assert
         expect(writeStore.setMaxTreeMapFiles).toHaveBeenCalledWith(250)
+    })
+
+    it("should hide the level count when the layout is not radial", async () => {
+        // Arrange & Act
+        await setup(LayoutAlgorithm.TreeMapStreet)
+
+        // Assert
+        expect(screen.queryByRole("spinbutton", { name: "Visible levels" })).toBeNull()
+    })
+
+    it.each([
+        LayoutAlgorithm.Sunburst,
+        LayoutAlgorithm.RadialTreeMap
+    ])("should set the level count after the debounce while the layout is %s", async layout => {
+        // Arrange
+        jest.useFakeTimers()
+        const { writeStore } = await setup(layout)
+        const levelInput = screen.getByRole("spinbutton", { name: "Visible levels" })
+
+        // Act
+        fireEvent.input(levelInput, { target: { value: "7" } })
+        jest.advanceTimersByTime(400)
+
+        // Assert
+        expect(writeStore.setRadialLevels).toHaveBeenCalledWith(7)
     })
 })

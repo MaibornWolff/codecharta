@@ -101,7 +101,8 @@ describe("ExtensionRulesService", () => {
             sorting: { option: SortingOption.NAME, orderAscending: true },
             radialFolderValue: RadialFolderValue.Max,
             radialFolderStyle: RadialFolderStyle.Tinted,
-            radialFolderTint: 0.5
+            radialFolderTint: 0.5,
+            radialLevels: 3
         },
         sharedView: {
             focusedNodePath: [],

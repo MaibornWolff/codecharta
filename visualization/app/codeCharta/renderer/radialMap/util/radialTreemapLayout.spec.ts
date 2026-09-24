@@ -32,6 +32,7 @@ function areaOf(sector: AnnularSector): number {
 }
 
 const TOLERANCE = 1e-9
+const BAND_COUNT = 3
 
 describe("layOutRadialTreemap", () => {
     it("should place the centre as a full disc inside the centre radius", () => {
@@ -39,7 +40,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folder("/root", [file("/root/a.ts", 1)])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         expect(placements[0].isCentre).toBe(true)
@@ -60,7 +61,7 @@ describe("layOutRadialTreemap", () => {
         ])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const big = onlySectorOf(placements, "/root/big", "outline")
@@ -76,7 +77,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folder("/root", [folder("/root/b", [file("/root/b/a.ts", 1)]), folder("/root/a", [file("/root/a/a.ts", 1)])])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         expect(onlySectorOf(placements, "/root/a", "outline").startAngle).toBe(0)
@@ -91,7 +92,7 @@ describe("layOutRadialTreemap", () => {
         ])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const cells = [onlySectorOf(placements, "/root/a.ts", "cell"), onlySectorOf(placements, "/root/b.ts", "cell")]
@@ -114,7 +115,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folderThreeLevelsDown([file("/r/1/2/3/a.ts", 1)])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const outline = onlySectorOf(placements, "/r/1/2/3", "outline")
@@ -130,7 +131,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folderThreeLevelsDown([file("/r/1/2/3/a.ts", 3), file("/r/1/2/3/b.ts", 1)])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const outline = onlySectorOf(placements, "/r/1/2/3", "outline")
@@ -147,7 +148,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folderThreeLevelsDown(children)
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const outline = onlySectorOf(placements, "/r/1/2/3", "outline")
@@ -168,7 +169,7 @@ describe("layOutRadialTreemap", () => {
         ])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         expect(placements.find(placement => placement.node.path === "/root/src/b.ts").sectors).toEqual([
@@ -181,7 +182,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folder("/root", [folder("/root/src", [file("/root/src/a.ts", 1)])])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const outline = onlySectorOf(placements, "/root/src", "outline")
@@ -197,7 +198,7 @@ describe("layOutRadialTreemap", () => {
         ])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const parent = onlySectorOf(placements, "/root/a", "outline")
@@ -217,7 +218,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folder("/root", [folder("/root/src", [file("/root/src/a.ts", 1)])])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         const firstBand = onlySectorOf(placements, "/root/src", "outline")
@@ -233,7 +234,7 @@ describe("layOutRadialTreemap", () => {
         const centre = folder("/r", [folder("/r/1", [folder("/r/1/2", [folder("/r/1/2/3", [level4])])])])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         expect(sectorsOf(placements, "/r/1/2/3", "outline")).toHaveLength(1)
@@ -242,12 +243,37 @@ describe("layOutRadialTreemap", () => {
         expect(placements.some(placement => placement.node.path === "/r/1/2/3/4/a.ts")).toBe(false)
     })
 
+    it("should draw a band for the fourth level when four bands are asked for", () => {
+        // Arrange
+        const level4 = folder("/r/1/2/3/4", [file("/r/1/2/3/4/a.ts", 1)])
+        const centre = folder("/r", [folder("/r/1", [folder("/r/1/2", [folder("/r/1/2/3", [level4])])])])
+
+        // Act
+        const placements = layOutRadialTreemap(centre, 4)
+
+        // Assert
+        expect(sectorsOf(placements, level4.path, "outline")).toHaveLength(1)
+        expect(sectorsOf(placements, "/r/1/2/3/4/a.ts", "cell")).toHaveLength(1)
+    })
+
+    it("should fill the whole ring with a single band when one band is asked for", () => {
+        // Arrange
+        const centre = folder("/r", [folder("/r/1", [folder("/r/1/2", [file("/r/1/2/a.ts", 1)])])])
+
+        // Act
+        const placements = layOutRadialTreemap(centre, 1)
+
+        // Assert
+        expect(onlySectorOf(placements, "/r/1", "outline").outerRadius).toBeGreaterThan(OUTER_RADIUS - 0.05)
+        expect(sectorsOf(placements, "/r/1/2", "cell")).toHaveLength(1)
+    })
+
     it("should list every node once, the centre first", () => {
         // Arrange
         const centre = folder("/root", [folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", 1)])])])
 
         // Act
-        const placements = layOutRadialTreemap(centre)
+        const placements = layOutRadialTreemap(centre, BAND_COUNT)
 
         // Assert
         expect(placements.map(placement => placement.node.path)).toEqual(["/root", "/root/src", "/root/src/app", "/root/src/app/a.ts"])

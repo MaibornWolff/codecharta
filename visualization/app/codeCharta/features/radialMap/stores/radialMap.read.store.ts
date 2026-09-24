@@ -4,6 +4,7 @@ import { map } from "rxjs"
 import { CcState } from "../../../model/codeCharta.model"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { layoutAlgorithmSelector } from "../../../stores/mapState/mapState.read.facade"
+import { radialLevelsSelector } from "../../../stores/preferences/preferences.read.facade"
 import {
     currentFocusedNodePathSelector,
     hoveredNodePathSelector,
@@ -17,6 +18,7 @@ export class RadialMapReadStore {
 
     readonly tree$ = this.store.select(radialTreeSelector)
     readonly layoutAlgorithm$ = this.store.select(layoutAlgorithmSelector)
+    readonly radialLevels$ = this.store.select(radialLevelsSelector)
     readonly metrics$ = this.store.select(radialMetricsSelector)
     readonly coloring$ = this.store.select(radialColoringSelector)
     readonly hoveredNodePath$ = this.store.select(hoveredNodePathSelector)

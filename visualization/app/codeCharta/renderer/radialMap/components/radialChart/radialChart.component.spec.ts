@@ -12,8 +12,8 @@ import {
 } from "../../testing/radialChart.stub"
 import { RadialShape } from "../../util/radialShape"
 import { RadialNode } from "../../util/radialTree"
-import { RADIAL_TREEMAP_SHAPE } from "../../util/radialTreemapOption.builder"
-import { SUNBURST_SHAPE } from "../../util/sunburstOption.builder"
+import { radialTreemapShape } from "../../util/radialTreemapOption.builder"
+import { sunburstShape } from "../../util/sunburstOption.builder"
 import { RadialChartComponent } from "./radialChart.component"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/radialChart.stub").echartsCoreStub)
@@ -28,7 +28,7 @@ let measuredSize = { width: 800, height: 600 }
 async function renderChart(inputs: Partial<{ shape: RadialShape; centre: RadialNode; hoveredPath: string | null }> = {}) {
     return render(RadialChartComponent, {
         inputs: {
-            shape: SUNBURST_SHAPE,
+            shape: sunburstShape(3),
             tree: ROOT,
             centre: ROOT,
             hoveredPath: null,
@@ -85,7 +85,7 @@ describe("RadialChartComponent", () => {
 
     it("should highlight a folder one level deeper in the radial treemap, whose last band shows its folders' contents", async () => {
         // Act
-        await renderChart({ shape: RADIAL_TREEMAP_SHAPE, hoveredPath: "/root/src/app/a/b/deep.ts" })
+        await renderChart({ shape: radialTreemapShape(3), hoveredPath: "/root/src/app/a/b/deep.ts" })
 
         // Assert
         expect(lastHighlightedPath()).toBe("/root/src/app/a/b")

@@ -14,6 +14,7 @@ import { defaultMaxTreeMapFiles, maxTreeMapFiles } from "./maxTreeMapFiles/maxTr
 import { defaultRadialFolderStyle, radialFolderStyle } from "./radialFolderStyle/radialFolderStyle.reducer"
 import { defaultRadialFolderTint, radialFolderTint } from "./radialFolderTint/radialFolderTint.reducer"
 import { defaultRadialFolderValue, radialFolderValue } from "./radialFolderValue/radialFolderValue.reducer"
+import { defaultRadialLevels, radialLevels } from "./radialLevels/radialLevels.reducer"
 import {
     defaultResetCameraIfNewFileIsLoaded,
     resetCameraIfNewFileIsLoaded
@@ -31,7 +32,8 @@ export const preferences = combineReducers({
     sorting,
     radialFolderValue,
     radialFolderStyle,
-    radialFolderTint
+    radialFolderTint,
+    radialLevels
 })
 
 export const defaultPreferences = {
@@ -45,5 +47,6 @@ export const defaultPreferences = {
     sorting: defaultSorting,
     radialFolderValue: defaultRadialFolderValue,
     radialFolderStyle: defaultRadialFolderStyle,
-    radialFolderTint: defaultRadialFolderTint
+    radialFolderTint: defaultRadialFolderTint,
+    radialLevels: defaultRadialLevels
 }

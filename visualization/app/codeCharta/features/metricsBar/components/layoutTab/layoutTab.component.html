@@ -59,4 +59,18 @@
             <span class="text-xs opacity-70">Folders with up to {{ maxTreeMapFiles() }} files are drawn as a treemap.</span>
         </div>
     }
+
+    @if (showRadialLevels()) {
+        <div class="flex flex-col gap-1">
+            <span class="text-sm">Visible levels</span>
+            <cc-slider-number-input
+                ariaLabel="Visible levels"
+                [min]="minRadialLevels"
+                [max]="maxRadialLevels"
+                [value]="radialLevels()"
+                (valueChange)="setRadialLevels($event)"
+            />
+            <span class="text-xs opacity-70">Shows {{ radialLevels() }} folder levels around the centre.</span>
+        </div>
+    }
 </cc-settings-popover-shell>

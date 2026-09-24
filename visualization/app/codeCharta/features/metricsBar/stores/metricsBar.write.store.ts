@@ -40,6 +40,7 @@ import {
     setRadialFolderStyle,
     setRadialFolderTint,
     setRadialFolderValue,
+    setRadialLevels,
     toggleIsColorMetricLinkedToHeightMetric
 } from "../../../stores/preferences/preferences.write.facade"
 import { markPackages, unmarkPackage } from "../../../stores/sharedView/sharedView.write.facade"
@@ -72,6 +73,10 @@ export class MetricsBarWriteStore {
 
     setMaxTreeMapFiles(value: number) {
         this.store.dispatch(setMaxTreeMapFiles({ value }))
+    }
+
+    setRadialLevels(value: number) {
+        this.store.dispatch(setRadialLevels({ value }))
     }
 
     setRadialFolderValue(value: RadialFolderValue) {

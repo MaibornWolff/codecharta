@@ -76,6 +76,7 @@ export interface Preferences {
     radialFolderValue: RadialFolderValue
     radialFolderStyle: RadialFolderStyle
     radialFolderTint: number
+    radialLevels: number
 }
 
 export interface SharedView {

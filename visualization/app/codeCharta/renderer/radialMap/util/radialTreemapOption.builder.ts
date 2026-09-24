@@ -5,7 +5,7 @@ import { RadialOptionInputs, RadialShape } from "./radialShape"
 import { buildTooltipFormatter } from "./radialTooltip"
 import { Frame, shapeElement, TWELVE_O_CLOCK } from "./radialTreemapElements"
 import { drawLabel } from "./radialTreemapLabel"
-import { AnnularSector, layOutRadialTreemap, MAX_BAND_COUNT, PlacedSector, RadialTreemapPlacement } from "./radialTreemapLayout"
+import { AnnularSector, layOutRadialTreemap, PlacedSector, RadialTreemapPlacement } from "./radialTreemapLayout"
 
 const PIECE_BORDER: Border = { color: WHITE, widthPx: 0.5 }
 const WEDGE_OUTLINE = { color: WHITE, widthPx: 2.5 }
@@ -24,8 +24,13 @@ interface ChartSize {
 // hover, so a big map would sweep round like a clock hand each time the pointer moves.
 const DRAW_EVERY_PIECE_IN_ONE_FRAME = 0
 
-export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
-    const placements = layOutRadialTreemap(inputs.centre)
+// The last band shows its folders' contents as a treemap, so the map draws one level deeper than it has bands.
+export function radialTreemapShape(maxBandCount: number): RadialShape {
+    return { visibleDepth: maxBandCount + 1, buildOption: inputs => buildRadialTreemapOption(inputs, maxBandCount) }
+}
+
+export function buildRadialTreemapOption(inputs: RadialOptionInputs, maxBandCount: number) {
+    const placements = layOutRadialTreemap(inputs.centre, maxBandCount)
     const data = placements.map(placement => toDatum(placement, inputs))
     return {
         aria: { enabled: true },
@@ -43,8 +48,6 @@ export function buildRadialTreemapOption(inputs: RadialOptionInputs) {
         ]
     }
 }
-
-export const RADIAL_TREEMAP_SHAPE: RadialShape = { visibleDepth: MAX_BAND_COUNT + 1, buildOption: buildRadialTreemapOption }
 
 // A node is drawn from other pieces around another centre; reshaping the old ones left pieces stranded mid-animation.
 function toDatum({ node, isCentre }: RadialTreemapPlacement, { centre, coloring }: RadialOptionInputs): RadialTreemapDatum {
