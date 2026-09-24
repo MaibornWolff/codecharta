@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Radial treemap map layout**: choose "Radial TreeMap" to see one band per folder level around the folder you are in, each folder's slice filled with a treemap of what it contains, and click your way in and out as in the sunburst.
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its worst or its middle file, and tints folders by it or keeps them a neutral grey.
 
+### Fixed 🐞
+
+- **Sunburst on very big maps**: areas full of tiny files show their colour instead of fading to white.
+- **File extension bar in the sunburst**: hovering the bar no longer raises an error when the app was opened in the sunburst.
+
 ## [2.6.0] - 2026-09-23
 
 ### Added 🚀
