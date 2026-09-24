@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, input, output } from "@angular/core"
 import { RadialFolderStyle } from "../../../../model/codeCharta.model"
 import { NEUTRAL_FOLDER_COLOR } from "../../../../util/radialFolderValues"
 import { ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent } from "../../../shared/facade"
@@ -19,9 +19,11 @@ export class FolderStylePopoverComponent {
     readonly styleSelected = output<RadialFolderStyle>()
     readonly tintPercentChange = output<number>()
 
-    readonly Tinted = RadialFolderStyle.Tinted
-    readonly Neutral = RadialFolderStyle.Neutral
-    readonly neutralSwatch = NEUTRAL_FOLDER_COLOR
+    readonly selectedStyle = computed(() => (this.isNeutral() ? RadialFolderStyle.Neutral : RadialFolderStyle.Tinted))
+    readonly options = computed(() => [
+        { style: RadialFolderStyle.Tinted, label: "Tinted by value", swatch: this.tintedSwatch() },
+        { style: RadialFolderStyle.Neutral, label: "Neutral", swatch: NEUTRAL_FOLDER_COLOR }
+    ])
     readonly minTintPercent = 20
     readonly maxTintPercent = 100
     readonly tintPercentStep = 10
