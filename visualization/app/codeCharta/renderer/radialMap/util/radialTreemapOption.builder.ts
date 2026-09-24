@@ -11,5 +11,5 @@ export function radialTreemapShape(maxBandCount: number): RadialShape {
 }
 
 export function buildRadialTreemapOption(inputs: RadialOptionInputs, maxBandCount: number) {
-    return buildRadialPiecesOption(inputs, layOutRadialTreemap(inputs.centre, maxBandCount), PIECE_BORDER)
+    return buildRadialPiecesOption(inputs, layOutRadialTreemap(inputs.centre, maxBandCount), { border: PIECE_BORDER, focus: "self" })
 }

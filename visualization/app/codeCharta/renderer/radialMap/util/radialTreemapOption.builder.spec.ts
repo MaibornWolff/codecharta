@@ -42,7 +42,6 @@ function inputs(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {})
         isMapRoot: false,
         metrics: { areaMetric: "rloc", colorMetric: "mcc" },
         coloring: TEST_COLORING,
-        chartSizeInPixels: 600,
         ...overrides
     }
 }

@@ -6,7 +6,6 @@ export interface RadialOptionInputs {
     isMapRoot: boolean
     metrics: RadialMetrics
     coloring: RadialColoring
-    chartSizeInPixels: number
 }
 
 export interface RadialShape {

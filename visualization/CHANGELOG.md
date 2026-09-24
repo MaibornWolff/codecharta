@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - **Flatten & decolor**: the context menu names what flattening a node does, since it also greys the node out.
+- **Sunburst labels**: names in the sunburst curve along wide segments and run straight along narrow ones, as in the radial treemap.
 - **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 - **Clicking beside the words keeps your file**: clicking the domain cloud where no word is drawn only unpins the open word, and the cloud stays on the file or folder you selected.
 - **Explorer keeps its open folders**: switching the explorer to Words or collapsing it and coming back shows the files with the same folders open as before.

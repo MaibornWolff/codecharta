@@ -9,7 +9,7 @@ export interface AnnularSector {
     outerRadius: number
 }
 
-export type SectorRole = "centre" | "header" | "cell" | "outline"
+export type SectorRole = "centre" | "ring" | "header" | "cell" | "outline"
 
 export interface PlacedSector extends AnnularSector {
     role: SectorRole
