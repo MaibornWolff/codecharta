@@ -17,7 +17,7 @@ import {
 } from "../../../../renderer/radialMap/testing/radialChart.stub"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { layoutAlgorithmSelector } from "../../../../stores/mapState/mapState.read.facade"
-import { radialLevelsSelector } from "../../../../stores/preferences/preferences.read.facade"
+import { defaultRadialLevels, radialLevelsSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import {
     currentFocusedNodePathSelector,
@@ -62,6 +62,7 @@ async function setup({
                 selectors: [
                     { selector: radialTreeSelector, value: tree },
                     { selector: layoutAlgorithmSelector, value: layoutAlgorithm },
+                    { selector: radialLevelsSelector, value: defaultRadialLevels },
                     { selector: radialMetricsSelector, value: { areaMetric: "rloc", colorMetric: "mcc" } },
                     { selector: radialColoringSelector, value: TEST_COLORING },
                     { selector: hoveredNodePathSelector, value: null },
