@@ -431,5 +431,20 @@ describe("ThreeSceneService", () => {
             const fileNames = buildings.filter(b => threeSceneService["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
             expect(fileNames).toEqual([TEST_NODE_LEAF.name, TEST_NODE_LEAF_0_LENGTH.name])
         })
+
+        it("should highlight nothing, without failing, before any 3D map was built", () => {
+            // Arrange
+            threeSceneService["mapMesh"] = undefined
+
+            // Act
+            const highlight = () => {
+                threeSceneService.highlightBuildingsByExtension(new Set<string>(["ts"]))
+                threeSceneService.highlightBuildingsWithoutExtensions()
+            }
+
+            // Assert
+            expect(highlight).not.toThrow()
+            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
+        })
     })
 })
