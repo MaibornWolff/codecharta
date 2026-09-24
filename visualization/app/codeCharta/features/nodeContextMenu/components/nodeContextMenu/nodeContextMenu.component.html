@@ -69,10 +69,10 @@
             @if (!isMenuNodeFlattened()) {
                 <cc-context-menu-item
                     icon="fa-solid fa-arrows-down-to-line"
-                    hoverHint="Flatten node and its children, keeping an empty space"
+                    hoverHint="Flatten and grey out the node and its children, keeping an empty space"
                     (itemClick)="flattenNode()"
                 >
-                    Flatten
+                    Flatten &amp; decolor
                 </cc-context-menu-item>
             } @else {
                 <cc-context-menu-item

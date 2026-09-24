@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- **Flatten & decolor**: the context menu names what flattening a node does, since it also greys the node out.
 - **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 
 ### Fixed 🐞
