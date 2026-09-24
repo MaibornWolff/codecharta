@@ -43,8 +43,9 @@ export const radialFolderValuesSelector = createSelector(
     accumulatedDataSelector,
     radialMetricsSelector,
     radialFolderValueSelector,
-    ({ unifiedMapNode }, metrics, folderValue): ReadonlyMap<string, number> =>
-        unifiedMapNode ? calculateFolderValues(unifiedMapNode, { ...metrics, folderValue }) : new Map()
+    flattenPredicateSelector,
+    ({ unifiedMapNode }, metrics, folderValue, isFlat): ReadonlyMap<string, number> =>
+        unifiedMapNode ? calculateFolderValues(unifiedMapNode, { ...metrics, folderValue, isFlat }) : new Map()
 )
 
 const radialFolderColoringSelector = createSelector(
