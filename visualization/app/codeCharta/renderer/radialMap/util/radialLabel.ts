@@ -2,8 +2,8 @@ import { layOutGlyphsAlongArc } from "./arcGlyphs"
 import { CENTRE_RADIUS, QUARTER_TURN } from "./radialChartStyle"
 import { readableTextColor } from "./radialColor"
 import { RadialDatum } from "./radialDatum"
-import { ElementPosition, Frame, groupElement, TWELVE_O_CLOCK, textElement } from "./radialTreemapElements"
-import { AnnularSector, PlacedSector } from "./radialTreemapLayout"
+import { ElementPosition, Frame, groupElement, TWELVE_O_CLOCK, textElement } from "./radialElements"
+import { AnnularSector, PlacedSector } from "./radialPlacement"
 import { measureGlyphsIn } from "./textMeasure"
 
 const HALF_TURN = Math.PI

@@ -1,6 +1,7 @@
 import { CENTRE_RADIUS, OUTER_RADIUS } from "./radialChartStyle"
+import { AnnularSector, RadialPlacement, SectorRole } from "./radialPlacement"
 import { RadialNode } from "./radialTree"
-import { AnnularSector, layOutRadialTreemap, RadialTreemapPlacement, SectorRole } from "./radialTreemapLayout"
+import { layOutRadialTreemap } from "./radialTreemapLayout"
 
 const FULL_TURN = 2 * Math.PI
 
@@ -17,11 +18,11 @@ function folderThreeLevelsDown(children: RadialNode[]): RadialNode {
     return folder("/r", [folder("/r/1", [folder("/r/1/2", [folder("/r/1/2/3", children)])])])
 }
 
-function sectorsOf(placements: RadialTreemapPlacement[], path: string, role: SectorRole): AnnularSector[] {
+function sectorsOf(placements: RadialPlacement[], path: string, role: SectorRole): AnnularSector[] {
     return placements.find(placement => placement.node.path === path)?.sectors.filter(sector => sector.role === role) ?? []
 }
 
-function onlySectorOf(placements: RadialTreemapPlacement[], path: string, role: SectorRole): AnnularSector {
+function onlySectorOf(placements: RadialPlacement[], path: string, role: SectorRole): AnnularSector {
     const sectors = sectorsOf(placements, path, role)
     expect(sectors).toHaveLength(1)
     return sectors[0]
