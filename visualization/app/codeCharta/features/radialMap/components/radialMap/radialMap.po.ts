@@ -14,7 +14,6 @@ export class RadialMapPageObject {
         await expect.poll(async () => FIRST_DESCRIBED_PATH.exec((await this.chart().getAttribute("aria-label")) ?? "")?.[1]).toBe(path)
     }
 
-    /** How many pixels of the chart's canvas show exactly this colour, e.g. to tell tinted from neutral folders. */
     countPixelsOfColor(hex: string): Promise<number> {
         return this.chart()
             .locator("canvas")
@@ -32,7 +31,6 @@ export class RadialMapPageObject {
             }, hex)
     }
 
-    /** A fingerprint of the chart's pixels, to tell that its colours changed. */
     pixelFingerprint(): Promise<string> {
         return this.chart()
             .locator("canvas")
