@@ -293,6 +293,19 @@ describe("buildRadialTreemapOption", () => {
         expect(label).toMatchObject({ type: "text", style: { text: "f0.ts", overflow: "truncate" } })
     })
 
+    it("should fade the hover gently, however many pieces the map has", () => {
+        // Arrange
+        const manyFiles = Array.from({ length: 2500 }, (_, index) => fileNode(`/root/f${index}.ts`))
+
+        // Act
+        const { series } = drawn(folderNode("/root", manyFiles))
+
+        // Assert
+        expect(series.stateAnimation.duration).toBeGreaterThanOrEqual(500)
+        expect(series.animationThreshold).toBe(Number.POSITIVE_INFINITY)
+        expect(series.animationDurationUpdate).toBe(0)
+    })
+
     it("should draw a hovered piece on the map itself, however many pieces the map has", () => {
         // Act
         const { option } = drawn(TREE)

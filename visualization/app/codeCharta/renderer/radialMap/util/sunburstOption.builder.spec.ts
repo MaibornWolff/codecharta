@@ -133,6 +133,19 @@ describe("buildSunburstOption", () => {
         expect(series.blur.itemStyle.opacity).toBeGreaterThan(0.2)
     })
 
+    it("should keep fading the hover on a map too big to move its rings", () => {
+        // Arrange
+        const manyFiles = Array.from({ length: 2500 }, (_, index) => fileNode(`/root/f${index}.ts`))
+
+        // Act
+        const [series] = sunburstOption(inputs(folderNode("/root", manyFiles))).series
+
+        // Assert
+        expect(series.stateAnimation.duration).toBeGreaterThanOrEqual(500)
+        expect(series.animationThreshold).toBe(Number.POSITIVE_INFINITY)
+        expect(series.animationDurationUpdate).toBe(0)
+    })
+
     it("should leave drilling to the caller instead of letting ECharts zoom", () => {
         // Act
         const option = sunburstOption(inputs(folderNode("/root")))
