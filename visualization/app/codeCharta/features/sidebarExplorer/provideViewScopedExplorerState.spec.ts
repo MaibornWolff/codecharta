@@ -2,6 +2,7 @@ import { Injector, runInInjectionContext } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { provideViewScopedExplorerState } from "./provideViewScopedExplorerState"
 import { ExplorerCollapseService } from "./services/explorerCollapse.service"
+import { ExplorerOpenFoldersService } from "./services/explorerOpenFolders.service"
 import { ExplorerRevealService } from "./services/explorerReveal.service"
 import { ExplorerWidthService } from "./services/explorerWidth.service"
 
@@ -52,6 +53,19 @@ describe("provideViewScopedExplorerState", () => {
         // Assert
         expect(metrics.revealedNodePath()).toBe("/root/src/main.ts")
         expect(domain.revealedNodePath()).toBe(null)
+    })
+
+    it("should give each view its own open folders, so opening a folder in one explorer leaves the other closed", () => {
+        // Arrange
+        const metrics = createViewInjector("metrics").get(ExplorerOpenFoldersService)
+        const domain = createViewInjector("domain").get(ExplorerOpenFoldersService)
+
+        // Act
+        metrics.setOpen("/root/src", true)
+
+        // Assert
+        expect(metrics.isOpen("/root/src", false)).toBe(true)
+        expect(domain.isOpen("/root/src", false)).toBe(false)
     })
 
     it("should persist each view's width under its own key", () => {
