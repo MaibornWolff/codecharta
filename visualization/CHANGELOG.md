@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Radial treemap map layout**: choose "Radial TreeMap" to see one band per folder level around the folder you are in, each folder's slice filled with a treemap of what it contains, and click your way in and out as in the sunburst.
+- **Radial treemap map layout**: choose "Radial TreeMap" to see the folder you are in ring by ring as in the sunburst, with each folder's files packed as a treemap instead of thin slices, and click your way in and out.
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its highest, lowest or middle file, and tints folders by it or keeps them a neutral grey.
 
 ### Changed

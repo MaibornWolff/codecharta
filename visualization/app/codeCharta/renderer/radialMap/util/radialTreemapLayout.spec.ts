@@ -13,6 +13,10 @@ function folder(path: string, children: RadialNode[]): RadialNode {
     return { path, name: path.split("/").at(-1), isFile: false, area, colorValue: 1, isFlat: false, children }
 }
 
+function folderThreeLevelsDown(children: RadialNode[]): RadialNode {
+    return folder("/r", [folder("/r/1", [folder("/r/1/2", [folder("/r/1/2/3", children)])])])
+}
+
 function sectorsOf(placements: RadialTreemapPlacement[], path: string, role: SectorRole): AnnularSector[] {
     return placements.find(placement => placement.node.path === path)?.sectors.filter(sector => sector.role === role) ?? []
 }
@@ -105,49 +109,49 @@ describe("layOutRadialTreemap", () => {
         expect(areaOf(cells[0]) / areaOf(cells[1])).toBeCloseTo(3)
     })
 
-    it("should give a folder a header strip at the inner edge of its wedge and an outline around the wedge", () => {
+    it("should give a folder in the outermost band a header strip at the inner edge of its wedge and an outline around it", () => {
         // Arrange
-        const centre = folder("/root", [folder("/root/src", [file("/root/src/a.ts", 1)])])
+        const centre = folderThreeLevelsDown([file("/r/1/2/3/a.ts", 1)])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const outline = onlySectorOf(placements, "/root/src", "outline")
-        const header = onlySectorOf(placements, "/root/src", "header")
+        const outline = onlySectorOf(placements, "/r/1/2/3", "outline")
+        const header = onlySectorOf(placements, "/r/1/2/3", "header")
         expect(header.innerRadius).toBe(outline.innerRadius)
         expect(header.outerRadius).toBeGreaterThan(header.innerRadius)
         expect(header.outerRadius).toBeLessThan(outline.outerRadius)
         expect([header.startAngle, header.endAngle]).toEqual([outline.startAngle, outline.endAngle])
     })
 
-    it("should fill a folder's wedge below its header with cells of its children, sized in proportion to their area", () => {
+    it("should fill an outermost folder's wedge below its header with cells of its children, sized in proportion to their area", () => {
         // Arrange
-        const centre = folder("/root", [folder("/root/src", [file("/root/src/a.ts", 3), file("/root/src/b.ts", 1)])])
+        const centre = folderThreeLevelsDown([file("/r/1/2/3/a.ts", 3), file("/r/1/2/3/b.ts", 1)])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const outline = onlySectorOf(placements, "/root/src", "outline")
-        const header = onlySectorOf(placements, "/root/src", "header")
-        const cells = [onlySectorOf(placements, "/root/src/a.ts", "cell"), onlySectorOf(placements, "/root/src/b.ts", "cell")]
+        const outline = onlySectorOf(placements, "/r/1/2/3", "outline")
+        const header = onlySectorOf(placements, "/r/1/2/3", "header")
+        const cells = [onlySectorOf(placements, "/r/1/2/3/a.ts", "cell"), onlySectorOf(placements, "/r/1/2/3/b.ts", "cell")]
         const body = { ...outline, innerRadius: header.outerRadius }
         expect(areaOf(cells[0]) + areaOf(cells[1])).toBeCloseTo(areaOf(body))
         expect(areaOf(cells[0]) / areaOf(cells[1])).toBeCloseTo(3)
     })
 
-    it("should keep every cell inside the body of its parent's wedge", () => {
+    it("should keep every cell inside the body of its outermost parent's wedge", () => {
         // Arrange
-        const children = [5, 3, 2, 2, 1, 1, 1].map((area, index) => file(`/root/src/f${index}.ts`, area))
-        const centre = folder("/root", [folder("/root/src", children), file("/root/big.ts", 20)])
+        const children = [5, 3, 2, 2, 1, 1, 1].map((area, index) => file(`/r/1/2/3/f${index}.ts`, area))
+        const centre = folderThreeLevelsDown(children)
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const outline = onlySectorOf(placements, "/root/src", "outline")
-        const header = onlySectorOf(placements, "/root/src", "header")
+        const outline = onlySectorOf(placements, "/r/1/2/3", "outline")
+        const header = onlySectorOf(placements, "/r/1/2/3", "header")
         for (const child of children) {
             const cell = onlySectorOf(placements, child.path, "cell")
             expect(cell.startAngle).toBeGreaterThanOrEqual(outline.startAngle - TOLERANCE)
@@ -157,7 +161,7 @@ describe("layOutRadialTreemap", () => {
         }
     })
 
-    it("should show a file below the first band only once, as a cell in its parent's wedge", () => {
+    it("should show a file only once, as a cell", () => {
         // Arrange
         const centre = folder("/root", [
             folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", 1)]), file("/root/src/b.ts", 1)])
@@ -172,59 +176,52 @@ describe("layOutRadialTreemap", () => {
         ])
     })
 
-    it("should give a sub-folder both a cell in its parent's wedge and a wedge of its own in the next band", () => {
+    it("should draw a folder with a band beyond it as one piece across its band, its children one band further out", () => {
         // Arrange
-        const centre = folder("/root", [folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", 1)])])])
+        const centre = folder("/root", [folder("/root/src", [file("/root/src/a.ts", 1)])])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const parentOutline = onlySectorOf(placements, "/root/src", "outline")
-        expect(onlySectorOf(placements, "/root/src/app", "cell").outerRadius).toBeCloseTo(parentOutline.outerRadius)
-        expect(onlySectorOf(placements, "/root/src/app", "header").innerRadius).toBeGreaterThan(parentOutline.outerRadius)
+        const outline = onlySectorOf(placements, "/root/src", "outline")
+        expect(onlySectorOf(placements, "/root/src", "header")).toEqual({ ...outline, role: "header" })
+        expect(sectorsOf(placements, "/root/src", "cell")).toHaveLength(0)
+        expect(onlySectorOf(placements, "/root/src/a.ts", "cell").innerRadius).toBeGreaterThan(outline.outerRadius)
     })
 
-    it("should keep a folder's own files in their share of its angle and inside its band, beside its sub-folder", () => {
+    it("should put a folder's own files in the next band in their share of its angle, beside its sub-folder", () => {
         // Arrange
         const centre = folder("/root", [
-            folder("/root/src", [
-                folder("/root/src/app", [file("/root/src/app/a.ts", 2)]),
-                file("/root/src/b.ts", 1),
-                file("/root/src/c.ts", 1)
-            ])
+            folder("/root/a", [folder("/root/a/sub", [file("/root/a/sub/s.ts", 2)]), file("/root/a/b.ts", 1), file("/root/a/c.ts", 1)])
         ])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const header = onlySectorOf(placements, "/root/src", "header")
-        const subFolderCell = onlySectorOf(placements, "/root/src/app", "cell")
-        const subFolderWedge = onlySectorOf(placements, "/root/src/app", "outline")
-        expect([subFolderCell.startAngle, subFolderCell.endAngle]).toEqual([subFolderWedge.startAngle, subFolderWedge.endAngle])
-        expect(subFolderWedge.endAngle).toBeCloseTo(FULL_TURN / 2)
-        for (const path of ["/root/src/b.ts", "/root/src/c.ts"]) {
-            const cell = onlySectorOf(placements, path, "cell")
-            expect(cell.startAngle).toBeGreaterThanOrEqual(subFolderWedge.endAngle - TOLERANCE)
-            expect(cell.innerRadius).toBeGreaterThanOrEqual(header.outerRadius - TOLERANCE)
+        const parent = onlySectorOf(placements, "/root/a", "outline")
+        const subFolder = onlySectorOf(placements, "/root/a/sub", "outline")
+        const fileCells = ["/root/a/b.ts", "/root/a/c.ts"].map(path => onlySectorOf(placements, path, "cell"))
+        expect(subFolder.innerRadius).toBeGreaterThan(parent.outerRadius)
+        expect(subFolder.endAngle).toBeCloseTo(FULL_TURN / 2)
+        for (const cell of fileCells) {
+            expect(cell.startAngle).toBeGreaterThanOrEqual(subFolder.endAngle - TOLERANCE)
+            expect(cell.innerRadius).toBeCloseTo(subFolder.innerRadius)
+            expect(cell.outerRadius).toBeLessThanOrEqual(subFolder.outerRadius + TOLERANCE)
         }
-        const fileCells = ["/root/src/b.ts", "/root/src/c.ts"].map(path => onlySectorOf(placements, path, "cell"))
-        expect(Math.max(...fileCells.map(cell => cell.outerRadius))).toBeCloseTo(
-            onlySectorOf(placements, "/root/src", "outline").outerRadius
-        )
     })
 
-    it("should use one band per folder level below the centre", () => {
+    it("should use one band per level below the centre, files included, sharing the space out to the rim", () => {
         // Arrange
-        const centre = folder("/root", [folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", 1)])])])
+        const centre = folder("/root", [folder("/root/src", [file("/root/src/a.ts", 1)])])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
         const firstBand = onlySectorOf(placements, "/root/src", "outline")
-        const secondBand = onlySectorOf(placements, "/root/src/app", "outline")
+        const secondBand = onlySectorOf(placements, "/root/src/a.ts", "cell")
         expect(firstBand.innerRadius).toBe(CENTRE_RADIUS)
         expect(secondBand.innerRadius).toBeCloseTo((CENTRE_RADIUS + OUTER_RADIUS) / 2)
         expect(secondBand.outerRadius).toBeGreaterThan(OUTER_RADIUS - 0.05)

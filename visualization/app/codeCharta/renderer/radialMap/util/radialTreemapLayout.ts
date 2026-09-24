@@ -43,34 +43,33 @@ export function layOutRadialTreemap(centre: RadialNode): RadialTreemapPlacement[
     const context: LayoutContext = { placements: new Map(), bands: bandsAround(centre) }
     context.placements.set(centre, { node: centre, isCentre: true, sectors: [] })
     place(context, centre, { role: "centre", startAngle: 0, endAngle: FULL_TURN, innerRadius: 0, outerRadius: CENTRE_RADIUS })
-    placeChildren(context, centre, bandSector(context, { startAngle: 0, endAngle: FULL_TURN }, 1), 1)
+    placeChildren(context, centre, { startAngle: 0, endAngle: FULL_TURN }, 1)
     return [...context.placements.values()]
 }
 
 function bandsAround(centre: RadialNode): Bands {
-    const count = Math.max(
-        1,
-        levelsBelow(centre, MAX_BAND_COUNT, child => !child.isFile)
-    )
+    const count = Math.max(1, levelsBelow(centre, MAX_BAND_COUNT))
     const width = ringWidth(count)
     return { count, width, headerThickness: Math.min(width * HEADER_SHARE_OF_BAND, MAX_HEADER_THICKNESS) }
 }
 
-// As in the sunburst, every child keeps its own share of the parent's angle and stays on its parent's level: the
-// files share one block of cells there, and a sub-folder's cell lines up with its own wedge in the next band.
-function placeChildren(context: LayoutContext, parent: RadialNode, body: AnnularSector, band: number) {
-    const anglePerArea = (body.endAngle - body.startAngle) / parent.area
-    let startAngle = body.startAngle
+// As in the sunburst, a folder's children sit one band further out, each in its own share of the folder's angle:
+// the files as one block of cells, every sub-folder as a wedge whose children continue in the band after.
+function placeChildren(context: LayoutContext, parent: RadialNode, span: AngularSpan, band: number) {
+    const anglePerArea = (span.endAngle - span.startAngle) / parent.area
+    let startAngle = span.startAngle
     for (const slot of childSlots(parent)) {
-        const share = { ...body, startAngle, endAngle: startAngle + slot.area * anglePerArea }
+        const share = bandSector(context, { startAngle, endAngle: startAngle + slot.area * anglePerArea }, band)
         if (slot.folder) {
-            placeSubFolder(context, slot.folder, share, band)
+            placeFolderWedge(context, slot.folder, share, band)
         } else {
             placeCells(context, slot.files, share)
         }
         startAngle = share.endAngle
     }
 }
+
+type AngularSpan = Pick<AnnularSector, "startAngle" | "endAngle">
 
 type ChildSlot = { area: number; folder: RadialNode; files?: never } | { area: number; folder?: never; files: RadialNode[] }
 
@@ -84,15 +83,7 @@ function childSlots(parent: RadialNode): ChildSlot[] {
     return slots.sort((first, second) => second.area - first.area)
 }
 
-function placeSubFolder(context: LayoutContext, folder: RadialNode, share: AnnularSector, band: number) {
-    const wedge = bandSector(context, share, band)
-    if (share.innerRadius < wedge.innerRadius) {
-        place(context, folder, { ...share, role: "cell" })
-    }
-    placeFolderWedge(context, folder, wedge, band)
-}
-
-function bandSector(context: LayoutContext, span: Pick<AnnularSector, "startAngle" | "endAngle">, band: number): AnnularSector {
+function bandSector(context: LayoutContext, span: AngularSpan, band: number): AnnularSector {
     const innerRadius = CENTRE_RADIUS + (band - 1) * context.bands.width
     return {
         startAngle: span.startAngle,
@@ -102,15 +93,17 @@ function bandSector(context: LayoutContext, span: Pick<AnnularSector, "startAngl
     }
 }
 
+// Only the outermost band has no band beyond it, so its folders show their contents as a treemap below a header.
 function placeFolderWedge(context: LayoutContext, folder: RadialNode, wedge: AnnularSector, band: number) {
-    const body = { ...wedge, innerRadius: wedge.innerRadius + context.bands.headerThickness }
     place(context, folder, { ...wedge, role: "outline" })
-    place(context, folder, { ...wedge, outerRadius: body.innerRadius, role: "header" })
-    if (band === context.bands.count) {
-        placeCells(context, folder.children, body)
-    } else {
-        placeChildren(context, folder, body, band + 1)
+    if (band < context.bands.count) {
+        place(context, folder, { ...wedge, role: "header" })
+        placeChildren(context, folder, wedge, band + 1)
+        return
     }
+    const body = { ...wedge, innerRadius: wedge.innerRadius + context.bands.headerThickness }
+    place(context, folder, { ...wedge, outerRadius: body.innerRadius, role: "header" })
+    placeCells(context, folder.children, body)
 }
 
 function placeCells(context: LayoutContext, nodes: RadialNode[], body: AnnularSector) {
