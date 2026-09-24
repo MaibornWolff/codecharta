@@ -29,7 +29,7 @@ interface EchartsSegmentEvent {
 
 export interface RenderScope {
     /** Only the size or the colours changed, so every segment is drawn again where it was. */
-    keepsSegments: boolean
+    keepsSegments?: boolean
 }
 
 export const POINTER_LEAVE_GRACE_MS = 120
@@ -67,7 +67,7 @@ export class RadialChartHost {
         this.containerSizeObserver.observe(container)
     }
 
-    render(option: object, { keepsSegments }: RenderScope = { keepsSegments: false }): void {
+    render(option: object, { keepsSegments = false }: RenderScope = {}): void {
         if (!this.chart) {
             return
         }
