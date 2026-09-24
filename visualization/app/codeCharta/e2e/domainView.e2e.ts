@@ -291,7 +291,7 @@ test.describe("DomainView", () => {
         await expect(occurrenceRow.locator(".selected")).toBeVisible()
     })
 
-    test("should let the word and the node go when the cloud is clicked beside every word", async ({ page }) => {
+    test("should unpin the word but keep the node when the cloud is clicked beside every word", async ({ page }) => {
         // Arrange — a word broken down and the cloud scoped to a node below it
         await new ViewSwitcherPageObject(page).switchToDomain()
         await expect(page.locator("cc-word-cloud canvas")).toBeVisible()
@@ -300,14 +300,15 @@ test.describe("DomainView", () => {
         await page.locator("cc-domain-word-occurrence-row").first().click()
         const currentCrumb = page.locator("cc-bottom-bar cc-hovered-path [data-testid='hovered-path-current']")
         await expect(currentCrumb).not.toHaveText("root")
+        const selectedNodeName = await currentCrumb.innerText()
         await page.waitForTimeout(WORD_CLOUD_LAYOUT_MS)
 
         // Act
         await clickBesideEveryWord(page)
 
-        // Assert — the breakdown closes and the cloud is back on the whole project
+        // Assert — the breakdown closes and the cloud stays on the selected node
         await expect(page.locator("cc-domain-word-occurrence-tree")).toHaveCount(0)
-        await expect(currentCrumb).toHaveText("root")
+        await expect(currentCrumb).toHaveText(selectedNodeName)
     })
 
     test("should keep a word the search matched marked after the cloud is clicked beside every word", async ({ page }) => {

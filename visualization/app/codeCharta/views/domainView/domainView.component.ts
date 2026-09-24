@@ -179,12 +179,10 @@ export class DomainViewComponent {
         this.domainSelectionStore.clear()
     }
 
-    /** A click beside every word lets go of what clicking picked out — the broken-down word and the node
-     * the cloud was scoped to. The search box is left alone, so whatever it matches stays marked: it is
-     * the reader's own state, and only the box itself clears it. */
-    deselect() {
+    /** A click beside every word only unpins the broken-down word. The node the cloud is scoped to
+     * stays, or the cloud would swap its words; the search box stays too, since only the box clears it. */
+    unpinWord() {
         this.domainWordInspectionStore.clear()
-        this.domainSelectionStore.clear()
     }
 
     async copySelectedPath() {
