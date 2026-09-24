@@ -50,14 +50,17 @@ describe("layOutRadialTreemap", () => {
 
     it("should give the centre's children angles in proportion to their area, largest first from the top", () => {
         // Arrange
-        const centre = folder("/root", [file("/root/small.ts", 1), file("/root/big.ts", 3)])
+        const centre = folder("/root", [
+            folder("/root/small", [file("/root/small/a.ts", 1)]),
+            folder("/root/big", [file("/root/big/a.ts", 3)])
+        ])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const big = onlySectorOf(placements, "/root/big.ts", "wedge")
-        const small = onlySectorOf(placements, "/root/small.ts", "wedge")
+        const big = onlySectorOf(placements, "/root/big", "outline")
+        const small = onlySectorOf(placements, "/root/small", "outline")
         expect(big.startAngle).toBe(0)
         expect(big.endAngle).toBeCloseTo((3 / 4) * FULL_TURN)
         expect(small.startAngle).toBeCloseTo(big.endAngle)
@@ -66,27 +69,40 @@ describe("layOutRadialTreemap", () => {
 
     it("should order children of equal area by path so the layout is the same on every run", () => {
         // Arrange
-        const centre = folder("/root", [file("/root/b.ts", 1), file("/root/a.ts", 1)])
+        const centre = folder("/root", [folder("/root/b", [file("/root/b/a.ts", 1)]), folder("/root/a", [file("/root/a/a.ts", 1)])])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        expect(onlySectorOf(placements, "/root/a.ts", "wedge").startAngle).toBe(0)
+        expect(onlySectorOf(placements, "/root/a", "outline").startAngle).toBe(0)
     })
 
-    it("should draw a file next to the centre as a single wedge across the whole band", () => {
+    it("should draw the centre's own files as cells of one block reaching from the centre out to the rim", () => {
         // Arrange
-        const centre = folder("/root", [file("/root/a.ts", 1)])
+        const centre = folder("/root", [
+            folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", 4)])]),
+            file("/root/a.ts", 3),
+            file("/root/b.ts", 1)
+        ])
 
         // Act
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        const wedge = onlySectorOf(placements, "/root/a.ts", "wedge")
-        expect(wedge.innerRadius).toBe(CENTRE_RADIUS)
-        expect(wedge.outerRadius).toBeLessThan(OUTER_RADIUS)
-        expect(wedge.outerRadius).toBeGreaterThan(OUTER_RADIUS - 0.05)
+        const cells = [onlySectorOf(placements, "/root/a.ts", "cell"), onlySectorOf(placements, "/root/b.ts", "cell")]
+        const block = {
+            startAngle: Math.min(...cells.map(cell => cell.startAngle)),
+            endAngle: Math.max(...cells.map(cell => cell.endAngle)),
+            innerRadius: Math.min(...cells.map(cell => cell.innerRadius)),
+            outerRadius: Math.max(...cells.map(cell => cell.outerRadius))
+        }
+        expect(block.startAngle).toBeCloseTo(onlySectorOf(placements, "/root/src", "outline").endAngle)
+        expect(block.endAngle).toBeCloseTo(FULL_TURN)
+        expect(block.innerRadius).toBeCloseTo(CENTRE_RADIUS)
+        expect(block.outerRadius).toBeCloseTo(onlySectorOf(placements, "/root/src/app", "outline").outerRadius)
+        expect(areaOf(cells[0]) + areaOf(cells[1])).toBeCloseTo(areaOf(block))
+        expect(areaOf(cells[0]) / areaOf(cells[1])).toBeCloseTo(3)
     })
 
     it("should give a folder a header strip at the inner edge of its wedge and an outline around the wedge", () => {
@@ -141,7 +157,7 @@ describe("layOutRadialTreemap", () => {
         }
     })
 
-    it("should show a file below the first band only as a cell, not as a wedge of its own", () => {
+    it("should show a file below the first band only once, as a cell in its parent's wedge", () => {
         // Arrange
         const centre = folder("/root", [
             folder("/root/src", [folder("/root/src/app", [file("/root/src/app/a.ts", 1)]), file("/root/src/b.ts", 1)])
@@ -151,8 +167,9 @@ describe("layOutRadialTreemap", () => {
         const placements = layOutRadialTreemap(centre)
 
         // Assert
-        expect(sectorsOf(placements, "/root/src/b.ts", "cell")).toHaveLength(1)
-        expect(sectorsOf(placements, "/root/src/b.ts", "wedge")).toHaveLength(0)
+        expect(placements.find(placement => placement.node.path === "/root/src/b.ts").sectors).toEqual([
+            expect.objectContaining({ role: "cell" })
+        ])
     })
 
     it("should give a sub-folder both a cell in its parent's wedge and a wedge of its own in the next band", () => {
