@@ -16,6 +16,7 @@ const CENTRE = 0
 const JUST_PAST_THE_TOP = 15
 const NEUTRAL_FOLDER_GREY = "#d9dce1"
 const MANY_PIXELS = 1000
+const SELECTION_ORANGE = "#eb8319"
 
 test.describe("Sunburst layout", () => {
     test.beforeEach(async ({ page }) => {
@@ -118,6 +119,42 @@ test.describe("Sunburst layout", () => {
         // Act
         await sunburst.rightClickAt(INNER_RING)
         await menu.getByText("Remove Highlight").click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
+    })
+
+    test("should paint the selected file in the selection colour", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.waitUntilDrawn()
+        await expect.poll(() => sunburst.countPixelsOfColor(SELECTION_ORANGE)).toBe(0)
+
+        // Act
+        await sunburst.clickAt(INNER_RING, JUST_PAST_THE_TOP)
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.countPixelsOfColor(SELECTION_ORANGE)).toBeGreaterThan(MANY_PIXELS)
+    })
+
+    test("should light the files of a hovered file type and fade the rest", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.waitUntilDrawn()
+        const unhighlighted = await sunburst.pixelFingerprint()
+        const fileTypeSegment = page.locator("cc-file-extension-bar-segment", { hasText: "scss" }).locator("[data-test-id=formattedTitle]")
+
+        // Act
+        await fileTypeSegment.hover()
+
+        // Assert
+        await expect.poll(() => sunburst.pixelFingerprint()).not.toBe(unhighlighted)
+
+        // Act
         await sunburst.movePointerAway()
 
         // Assert
