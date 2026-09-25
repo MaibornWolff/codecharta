@@ -3,6 +3,7 @@ import { Store } from "@ngrx/store"
 import { hasDomainDataSelector } from "../../../lenses/domain/domainLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { flattenPredicateSelector, rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { keptHighlightPathsSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../selectors/markFolderItems.selector"
 
 @Injectable({
@@ -16,4 +17,5 @@ export class NodeContextMenuReadStore {
     readonly currentMarkColor$ = this.store.select(currentMarkColorSelector)
     readonly hasDomainData$ = this.store.select(hasDomainDataSelector)
     readonly isFlattened$ = this.store.select(flattenPredicateSelector)
+    readonly keptHighlightPaths$ = this.store.select(keptHighlightPathsSelector)
 }

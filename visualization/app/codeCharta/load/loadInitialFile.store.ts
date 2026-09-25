@@ -109,6 +109,7 @@ export class LoadInitialFileStore {
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
         "hoveredNodePath",
         "hoveredFileExtensions",
+        "keptHighlightPaths",
         "selectedNodePath",
         "rightClickedNodeData"
     ])

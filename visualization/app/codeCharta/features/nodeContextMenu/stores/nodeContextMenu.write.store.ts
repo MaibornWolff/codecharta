@@ -1,6 +1,7 @@
 import { Injectable, inject } from "@angular/core"
 import { Router } from "@angular/router"
 import { Store } from "@ngrx/store"
+import { hierarchy } from "d3-hierarchy"
 import { CcState, CodeMapNode } from "../../../model/codeCharta.model"
 import { routeLinks, ViewId } from "../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../routing/viewHandoff.store"
@@ -8,8 +9,10 @@ import {
     addExcludedNodesIfNotResultsInEmptyMap,
     addFlattenedNodes,
     focusNode,
+    keepHighlight,
     markPackages,
     removeFlattenedNodes,
+    removeKeptHighlight,
     setRightClickedNodeData,
     unfocusAllNodes,
     unfocusNode,
@@ -61,6 +64,14 @@ export class NodeContextMenuWriteStore {
         )
     }
 
+    keepHighlight(node: CodeMapNode) {
+        this.store.dispatch(keepHighlight({ paths: pathsOfNodeAndDescendants(node) }))
+    }
+
+    removeHighlight(node: CodeMapNode) {
+        this.store.dispatch(removeKeptHighlight({ paths: pathsOfNodeAndDescendants(node) }))
+    }
+
     markFolder(path: string, color: string) {
         this.store.dispatch(markPackages({ packages: [{ path, color }] }))
     }
@@ -85,4 +96,10 @@ export class NodeContextMenuWriteStore {
     closeMenu() {
         this.store.dispatch(setRightClickedNodeData({ value: null }))
     }
+}
+
+function pathsOfNodeAndDescendants(node: CodeMapNode): string[] {
+    return hierarchy(node)
+        .descendants()
+        .map(({ data }) => data.path)
 }

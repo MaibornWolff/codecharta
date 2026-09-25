@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
-import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
@@ -28,8 +27,6 @@ export class NodeContextMenuComponent {
     private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
     private readonly readStore = inject(NodeContextMenuReadStore)
     private readonly writeStore = inject(NodeContextMenuWriteStore)
-    private readonly threeSceneService = inject(ThreeSceneService)
-    private readonly idToBuildingService = inject(IdToBuildingService)
     private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
 
@@ -93,13 +90,10 @@ export class NodeContextMenuComponent {
     readonly hasViewActions = computed(
         () => this.isFocusOffered() || this.isNodeFocused() || this.isParentFocused() || !this.isRadialLayout()
     )
+    private readonly keptHighlightPaths = toSignal(this.readStore.keptHighlightPaths$, { requireSync: true })
     readonly isHighlighted = computed(() => {
         const node = this.menuNode()
-        if (!node) {
-            return false
-        }
-        const building = this.idToBuildingService.get(node.id)
-        return building !== undefined && this.threeSceneService.getConstantHighlight().has(building.id)
+        return node !== null && this.keptHighlightPaths().includes(node.path)
     })
 
     constructor() {
@@ -155,7 +149,7 @@ export class NodeContextMenuComponent {
     keepHighlight() {
         const node = this.menuNode()
         if (node) {
-            this.threeSceneService.addNodeAndChildrenToConstantHighlight(node)
+            this.writeStore.keepHighlight(node)
         }
         this.close()
     }
@@ -163,7 +157,7 @@ export class NodeContextMenuComponent {
     removeHighlight() {
         const node = this.menuNode()
         if (node) {
-            this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(node)
+            this.writeStore.removeHighlight(node)
         }
         this.close()
     }

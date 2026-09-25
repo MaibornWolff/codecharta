@@ -55,7 +55,10 @@ jest.mock("../model/files/files.helper")
 const URL_LOAD_ERROR_TITLE = "File(s) could not be loaded from the given file URL parameter. Loaded sample files instead."
 const INDEXED_DB_LOAD_ERROR_TITLE = "Previously loaded files and settings could not be restored. Loaded sample files instead."
 // Never restored, so a persisted value would be counted as a difference that is not dispatched.
-const TRANSIENT_SHARED_VIEW: Partial<SharedView> = { hoveredFileExtensions: defaultSharedView.hoveredFileExtensions }
+const TRANSIENT_SHARED_VIEW: Partial<SharedView> = {
+    hoveredFileExtensions: defaultSharedView.hoveredFileExtensions,
+    keptHighlightPaths: defaultSharedView.keptHighlightPaths
+}
 const MISSING_PROPERTIES_ERROR_TITLE =
     "The previous state could not be fully restored after loading the page. The following properties were not restored."
 

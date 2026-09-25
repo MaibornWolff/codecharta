@@ -6,6 +6,7 @@ export { currentFocusedNodePathSelector } from "./store/focusedNodePath/currentF
 export { focusedNodePathSelector } from "./store/focusedNodePath/focusedNodePath.selector"
 export { hoveredFileExtensionsSelector } from "./store/hoveredFileExtensions/hoveredFileExtensions.selector"
 export { hoveredNodePathSelector } from "./store/hoveredNodePath/hoveredNodePath.selector"
+export { keptHighlightPathsSelector } from "./store/keptHighlightPaths/keptHighlightPaths.selector"
 export { markedPackagesSelector } from "./store/markedPackages/markedPackages.selector"
 export { findIndexOfMarkedPackageOrParent } from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"
 export { metricRulesSelector } from "./store/metricRules/metricRules.selector"
