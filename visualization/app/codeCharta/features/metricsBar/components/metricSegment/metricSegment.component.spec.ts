@@ -1,8 +1,6 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { metricDataSelector } from "../../../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { MetricSegmentComponent } from "./metricSegment.component"
@@ -38,15 +36,7 @@ describe("MetricSegmentComponent", () => {
                             }
                         ]
                     }),
-                    { provide: State, useValue: { getValue: () => defaultState } },
-                    {
-                        provide: CodeMapRenderService,
-                        useValue: {
-                            getNodes: () => [],
-                            sortVisibleNodesByHeightDescending: () => [],
-                            colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                        }
-                    }
+                    { provide: State, useValue: { getValue: () => defaultState } }
                 ]
             }))
         }

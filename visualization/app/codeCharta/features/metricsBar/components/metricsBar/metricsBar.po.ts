@@ -46,6 +46,10 @@ export class MetricsBarPageObject {
         return text.trim()
     }
 
+    areaMetricSummary(): Locator {
+        return this.page.locator(`[data-testid='${this.areaSegmentTestId}'] cc-metric-meta-value`)
+    }
+
     layoutTab(): Locator {
         return this.page.getByTestId("metrics-bar-layout-tab")
     }

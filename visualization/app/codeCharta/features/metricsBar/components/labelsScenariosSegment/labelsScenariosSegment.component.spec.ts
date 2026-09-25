@@ -1,8 +1,7 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { BehaviorSubject, of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
+import { BehaviorSubject } from "rxjs"
 import { ColorMode } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { Scenario, ScenariosService } from "../../../scenarios/facade"
@@ -40,15 +39,7 @@ describe("LabelsScenariosSegmentComponent", () => {
             providers: [
                 provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
-                { provide: ScenariosService, useValue: scenariosService },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
-                }
+                { provide: ScenariosService, useValue: scenariosService }
             ]
         })
         return { ...renderResult, component: renderResult.fixture.componentInstance }

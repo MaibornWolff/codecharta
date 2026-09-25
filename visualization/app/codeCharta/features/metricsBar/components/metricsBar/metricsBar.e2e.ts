@@ -1,5 +1,5 @@
 import { expect, type Locator, test } from "@playwright/test"
-import { clearIndexedDB, collapseExplorer, goto } from "../../../../../playwright.helper"
+import { clearIndexedDB, collapseExplorer, goto, readPersistedLayoutAlgorithm } from "../../../../../playwright.helper"
 import { NavBarFolderButtonPageObject } from "../../../navBar/components/navBarFolderButton/navBarFolderButton.po"
 import { MetricsBarPageObject } from "./metricsBar.po"
 
@@ -108,6 +108,20 @@ test.describe("MetricsBar layout tab", () => {
         // Assert
         await expect(metricsBar.radialLevelsInput()).toBeVisible()
         await expect(metricsBar.radialLevelsInput()).toHaveValue("3")
+    })
+
+    test("should show the map's total under the area metric after a reload in a radial layout", async ({ page }) => {
+        // Arrange
+        const metricsBar = new MetricsBarPageObject(page)
+        await metricsBar.switchLayoutTo("Sunburst")
+        await expect.poll(() => readPersistedLayoutAlgorithm(page), { timeout: 60_000 }).toBe("Sunburst")
+
+        // Act
+        await page.reload()
+        await page.locator("#loading-gif-file").waitFor({ state: "hidden", timeout: 60_000 })
+
+        // Assert
+        await expect(metricsBar.areaMetricSummary()).toContainText(/\d/)
     })
 
     test("should stay on the bar's top edge without making the bar taller", async ({ page }) => {

@@ -2,15 +2,14 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { Observable, of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
-import { AttributeTypeValue, CodeMapNode, Node } from "../../../../model/codeCharta.model"
+import { AttributeTypeValue, CodeMapNode } from "../../../../model/codeCharta.model"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { clone } from "../../../../util/clone"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
 import { MetricChooserTypeComponent } from "./metricChooserType.component"
 
 describe("MetricChooserTypeComponent", () => {
-    async function setup(options: { node$: Observable<CodeMapNode | Node | undefined>; state?: typeof defaultState }) {
+    async function setup(options: { node$: Observable<CodeMapNode | undefined>; state?: typeof defaultState }) {
         return render(MetricChooserTypeComponent, {
             inputs: {
                 metricFor: "areaMetric",
@@ -22,14 +21,6 @@ describe("MetricChooserTypeComponent", () => {
                 {
                     provide: NodeSelectionService,
                     useValue: { createNodeObservable: () => options.node$ }
-                },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
                 }
             ]
         })
@@ -37,8 +28,6 @@ describe("MetricChooserTypeComponent", () => {
 
     const folderNode = { name: "root", children: [{ name: "file.ts" }] } as unknown as CodeMapNode
     const leafCodeMapNode = { name: "file.ts", children: [] } as unknown as CodeMapNode
-    const leafRenderNode = { name: "file.ts", isLeaf: true } as unknown as Node
-    const folderRenderNode = { name: "root", isLeaf: false } as unknown as Node
 
     it("should be visible (not hidden) for a folder node", async () => {
         // Arrange & Act
@@ -58,24 +47,6 @@ describe("MetricChooserTypeComponent", () => {
         // Assert
         expect(component.isNodeALeaf()).toBe(true)
         expect(screen.getByText("Σ").hidden).toBe(true)
-    })
-
-    it("should use the isLeaf property when the node is a render Node", async () => {
-        // Arrange & Act
-        const { fixture } = await setup({ node$: of(leafRenderNode) })
-        const component = fixture.componentInstance
-
-        // Assert
-        expect(component.isNodeALeaf()).toBe(true)
-    })
-
-    it("should treat a render Node with isLeaf false as a folder", async () => {
-        // Arrange & Act
-        const { fixture } = await setup({ node$: of(folderRenderNode) })
-        const component = fixture.componentInstance
-
-        // Assert
-        expect(component.isNodeALeaf()).toBe(false)
     })
 
     it("should not treat an undefined node as a leaf", async () => {
