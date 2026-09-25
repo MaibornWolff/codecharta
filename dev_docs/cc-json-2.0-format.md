@@ -71,6 +71,20 @@ what producers wrote before the fields existed. The four edge types are a pure f
 are therefore **derived where they are consumed, never stored**: regular (neither), cyclic (`isCyclic`),
 container-level feedback (`isPointingUpwards`), leaf-level feedback (both).
 
+**Reading the graph.** Four rules a consumer relies on without the schema spelling them out:
+
+- **The flags describe the dependency graph only.** `edges` is shared with every other edge producer —
+  `gitlogparser` writes `temporal_coupling` edges into it — and two producers' edges of one pair fold into
+  one. `isCyclic` and `isPointingUpwards` are only meaningful on an edge that carries `dependencies`; on any
+  other edge their absence means "not a dependency", not "not cyclic".
+- **No `nodes` entry means not in the graph.** A file without supported source code, or a folder holding
+  none, has no entry; it does not sit at level 0.
+- **Levels are local.** A level orders a node among its siblings — the files and folders of one folder,
+  the declarations and sub-namespaces of one namespace. Levels of nodes under different parents do not
+  compare.
+- **A leaf edge weighs 1 unless its source is split.** Each part of a declaration split across files that
+  references the target counts once, so the weight is the number of such parts.
+
 **`nodes`** maps a node id to that node's `DependencyNode`, currently just its `level`: the node's
 levelization depth within its parent — 0 for a node that depends on nothing, *n* for one that depends
 only on nodes below level *n*. It is an object rather than a bare number so per-node facts (declaration
