@@ -2,7 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { buildRadialTree, calculateFolderValues, RadialColoring, RadialMetrics } from "../../../renderer/radialMap/radialMap.facade"
 import {
     accumulatedDataSelector,
-    flattenPredicateSelector,
+    mapFlattenPredicateSelector,
     metricRangeSelector,
     pathToNodeSelector
 } from "../../../renderer/renderModel/renderModel.facade"
@@ -32,7 +32,7 @@ export const radialTreeSelector = createSelector(
     pathToNodeSelector,
     currentFocusedNodePathSelector,
     radialMetricsSelector,
-    flattenPredicateSelector,
+    mapFlattenPredicateSelector,
     ({ unifiedMapNode }, pathToNode, focusedNodePath, metrics, isFlat) => {
         const root = (focusedNodePath && pathToNode.get(focusedNodePath)) || unifiedMapNode
         return root ? buildRadialTree(root, metrics, isFlat) : null
@@ -43,7 +43,7 @@ export const radialFolderValuesSelector = createSelector(
     accumulatedDataSelector,
     radialMetricsSelector,
     radialFolderValueSelector,
-    flattenPredicateSelector,
+    mapFlattenPredicateSelector,
     ({ unifiedMapNode }, metrics, folderValue, isFlat): ReadonlyMap<string, number> =>
         unifiedMapNode ? calculateFolderValues(unifiedMapNode, { ...metrics, folderValue, isFlat }) : new Map()
 )

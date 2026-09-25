@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.
 - **Faded pieces after hovering**: moving the pointer off the sunburst or radial treemap no longer leaves the rest of the map faded until you hover it again.
+- **Search in the radial layouts**: searching the explorer greys out what the search misses in the sunburst and radial treemap, as in the 3D map, while the folders leading to a hit keep their colour.
 - **Color setup after the sunburst**: switching to the sunburst or radial treemap and back keeps your color metric and color range, and picking a color metric there unlinks it from the height metric.
 
 ## [2.6.0] - 2026-09-23
