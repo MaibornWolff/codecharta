@@ -15,6 +15,8 @@ export interface RadialFolderColoring {
 
 export interface RadialHighlight {
     selectedPath: string | null
+    /** While any node is lit, every other one is faded. */
+    litPaths: ReadonlySet<string>
 }
 
 export interface RadialColoring {

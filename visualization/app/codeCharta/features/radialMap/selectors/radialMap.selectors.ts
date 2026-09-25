@@ -2,9 +2,11 @@ import { createSelector } from "@ngrx/store"
 import {
     buildRadialTree,
     calculateFolderValues,
+    filePathsWhere,
     RadialColoring,
     RadialHighlight,
-    RadialMetrics
+    RadialMetrics,
+    RadialNode
 } from "../../../renderer/radialMap/radialMap.facade"
 import {
     accumulatedDataSelector,
@@ -24,7 +26,12 @@ import {
     radialFolderTintSelector,
     radialFolderValueSelector
 } from "../../../stores/preferences/preferences.read.facade"
-import { currentFocusedNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import {
+    currentFocusedNodePathSelector,
+    hoveredFileExtensionsSelector,
+    selectedNodePathSelector
+} from "../../../stores/sharedView/sharedView.read.facade"
+import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 
 export const radialMetricsSelector = createSelector(
@@ -62,7 +69,22 @@ const radialFolderColoringSelector = createSelector(
     (values, value, style, tint) => ({ values, value, style, tint })
 )
 
-export const radialHighlightSelector = createSelector(selectedNodePathSelector, (selectedPath): RadialHighlight => ({ selectedPath }))
+export const radialHighlightSelector = createSelector(
+    selectedNodePathSelector,
+    hoveredFileExtensionsSelector,
+    radialTreeSelector,
+    (selectedPath, hoveredFileExtensions, tree): RadialHighlight => ({
+        selectedPath,
+        litPaths: filesWithExtensions(tree, hoveredFileExtensions)
+    })
+)
+
+function filesWithExtensions(tree: RadialNode | null, extensions: string[]): ReadonlySet<string> {
+    if (!tree || extensions.length === 0) {
+        return new Set()
+    }
+    return filePathsWhere(tree, file => extensions.includes(FileExtensionCalculator.estimateFileExtension(file.name)))
+}
 
 export const radialColoringSelector = createSelector(
     colorMetricSelector,

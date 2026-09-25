@@ -1,5 +1,5 @@
 import { fileNode, folderNode, TEST_COLORING } from "../testing/radialChart.stub"
-import { CENTRE_RADIUS } from "./radialChartStyle"
+import { CENTRE_RADIUS, DIMMED_OPACITY } from "./radialChartStyle"
 import { nodeColor } from "./radialColor"
 import { RadialPieceDatum } from "./radialPiecesOption"
 import { RadialOptionInputs } from "./radialShape"
@@ -19,6 +19,7 @@ interface DrawnElement {
     shape?: Record<string, number | boolean>
     style: Record<string, unknown>
     blur?: { style: { opacity: number } }
+    emphasis?: { style: { opacity: number } }
     children?: DrawnElement[]
 }
 
@@ -323,5 +324,31 @@ describe("buildRadialTreemapOption", () => {
 
         // Assert
         expect(visibleDepth).toBe(bandLimit + 1)
+    })
+
+    it("should fade every piece and its name but the lit ones while some are lit, and bring a faded piece back on hover", () => {
+        // Arrange
+        const highlight = { selectedPath: null, litPaths: new Set(["/root/src/a.ts"]) }
+        const { drawItem } = drawn(TREE, { coloring: { ...TEST_COLORING, highlight } })
+
+        // Act
+        const litLeaves = leavesOf(drawItem("/root/src/a.ts").children)
+        const fadedLeaves = leavesOf(drawItem("/root/readme.md").children)
+
+        // Assert
+        expect(litLeaves.map(leaf => leaf.style.opacity)).not.toContain(DIMMED_OPACITY)
+        expect(fadedLeaves.length).toBeGreaterThan(1)
+        for (const leaf of fadedLeaves) {
+            expect(leaf.style.opacity).toBe(DIMMED_OPACITY)
+            expect(leaf.emphasis.style.opacity).toBe(1)
+        }
+    })
+
+    it("should fade nothing while nothing is lit", () => {
+        // Act
+        const leaves = leavesOf(drawn(TREE).drawItem("/root/readme.md").children)
+
+        // Assert
+        expect(leaves.map(leaf => leaf.style.opacity)).not.toContain(DIMMED_OPACITY)
     })
 })

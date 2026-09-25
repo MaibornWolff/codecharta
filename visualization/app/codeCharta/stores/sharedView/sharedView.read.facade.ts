@@ -4,6 +4,7 @@ export { flattenedNodesSelector, sortedFlattenedNodesSelector } from "./store/fl
 export { flattenMatcherSelector } from "./store/flattenedNodes/flattenMatcher.selector"
 export { currentFocusedNodePathSelector } from "./store/focusedNodePath/currentFocused.selector"
 export { focusedNodePathSelector } from "./store/focusedNodePath/focusedNodePath.selector"
+export { hoveredFileExtensionsSelector } from "./store/hoveredFileExtensions/hoveredFileExtensions.selector"
 export { hoveredNodePathSelector } from "./store/hoveredNodePath/hoveredNodePath.selector"
 export { markedPackagesSelector } from "./store/markedPackages/markedPackages.selector"
 export { findIndexOfMarkedPackageOrParent } from "./store/markedPackages/util/findIndexOfMarkedPackageOrParent"

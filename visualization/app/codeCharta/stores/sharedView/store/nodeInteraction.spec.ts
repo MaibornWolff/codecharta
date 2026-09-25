@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { setHoveredFileExtensions } from "./hoveredFileExtensions/hoveredFileExtensions.actions"
 import { setHoveredNodePath } from "./hoveredNodePath/hoveredNodePath.actions"
 import { NodeInteraction } from "./nodeInteraction"
 import { setSelectedNodePath } from "./selectedNodePath/selectedNodePath.actions"
@@ -32,5 +33,15 @@ describe("NodeInteraction", () => {
         // Assert
         expect(dispatch).toHaveBeenNthCalledWith(1, setHoveredNodePath({ value: "/root/src" }))
         expect(dispatch).toHaveBeenNthCalledWith(2, setHoveredNodePath({ value: null }))
+    })
+
+    it("should hover file extensions and clear them", () => {
+        // Act
+        nodeInteraction.hoverFileExtensions(["ts"])
+        nodeInteraction.hoverFileExtensions([])
+
+        // Assert
+        expect(dispatch).toHaveBeenNthCalledWith(1, setHoveredFileExtensions({ value: ["ts"] }))
+        expect(dispatch).toHaveBeenNthCalledWith(2, setHoveredFileExtensions({ value: [] }))
     })
 })

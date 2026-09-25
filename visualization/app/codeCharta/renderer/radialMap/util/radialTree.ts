@@ -50,6 +50,21 @@ export function levelsBelow(node: RadialNode, maxDepth: number, counts: (child: 
     return node.children.filter(counts).reduce((deepest, child) => Math.max(deepest, 1 + levelsBelow(child, maxDepth - 1, counts)), 0)
 }
 
+export function filePathsWhere(root: RadialNode, isWanted: (file: RadialNode) => boolean): Set<string> {
+    const paths = new Set<string>()
+    const visit = (node: RadialNode) => {
+        if (node.isFile) {
+            if (isWanted(node)) {
+                paths.add(node.path)
+            }
+            return
+        }
+        node.children.forEach(visit)
+    }
+    visit(root)
+    return paths
+}
+
 export function findClosestFolder(root: RadialNode, path: string): RadialNode {
     const child = root.children.find(candidate => !candidate.isFile && isInside(path, candidate.path))
     return child ? findClosestFolder(child, path) : root

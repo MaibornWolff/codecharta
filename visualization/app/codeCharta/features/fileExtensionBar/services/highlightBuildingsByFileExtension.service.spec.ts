@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
 import { CategorizedMetricDistribution, NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import { metricDistributionSelector } from "../selectors/metricDistribution.selector"
 import { HighlightBuildingsByFileExtensionService } from "./highlightBuildingsByFileExtension.service"
@@ -8,6 +9,7 @@ import { HighlightBuildingsByFileExtensionService } from "./highlightBuildingsBy
 describe("HighlightBuildingsByFileExtensionService", () => {
     let fixture: HighlightBuildingsByFileExtensionService
     let threeSceneServiceWithMockedMethods: ThreeSceneService
+    let nodeInteraction: NodeInteraction
     const mockedDistribution: CategorizedMetricDistribution = {
         visible: [
             {
@@ -64,6 +66,7 @@ describe("HighlightBuildingsByFileExtensionService", () => {
                         highlightBuildingsWithoutExtensions: jest.fn()
                     }
                 },
+                { provide: NodeInteraction, useValue: { hoverFileExtensions: jest.fn() } },
                 provideMockStore({
                     selectors: [
                         {
@@ -79,6 +82,7 @@ describe("HighlightBuildingsByFileExtensionService", () => {
     beforeEach(() => {
         fixture = TestBed.inject(HighlightBuildingsByFileExtensionService)
         threeSceneServiceWithMockedMethods = TestBed.inject(ThreeSceneService)
+        nodeInteraction = TestBed.inject(NodeInteraction)
     })
 
     afterEach(() => {
@@ -107,5 +111,29 @@ describe("HighlightBuildingsByFileExtensionService", () => {
     it("Clear highlighting will call the 3sceneService to clear all the highlighting", () => {
         fixture.clearHighlightingOnFileExtensions()
         expect(threeSceneServiceWithMockedMethods.applyClearHighlights).toHaveBeenCalledTimes(1)
+    })
+
+    it("should share a hovered extension with the other map layouts", () => {
+        // Act
+        fixture.highlightExtension("ts")
+
+        // Assert
+        expect(nodeInteraction.hoverFileExtensions).toHaveBeenCalledWith(["ts"])
+    })
+
+    it(`should share every extension grouped in ${OTHER_EXTENSION} when it is hovered`, () => {
+        // Act
+        fixture.highlightExtension(OTHER_EXTENSION)
+
+        // Assert
+        expect(nodeInteraction.hoverFileExtensions).toHaveBeenCalledWith(["xml", "json"])
+    })
+
+    it("should share that no extension is hovered any more", () => {
+        // Act
+        fixture.clearHighlightingOnFileExtensions()
+
+        // Assert
+        expect(nodeInteraction.hoverFileExtensions).toHaveBeenCalledWith([])
     })
 })
