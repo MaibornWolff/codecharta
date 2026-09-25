@@ -1,7 +1,13 @@
 import { CodeMapNode, ColorMode, NodeType, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
-import { radialColoringSelector, radialFolderValuesSelector, radialMetricsSelector, radialTreeSelector } from "./radialMap.selectors"
+import {
+    radialColoringSelector,
+    radialFolderValuesSelector,
+    radialHighlightSelector,
+    radialMetricsSelector,
+    radialTreeSelector
+} from "./radialMap.selectors"
 
 function file(path: string, rloc: number): CodeMapNode {
     return { name: path.split("/").at(-1), path, type: NodeType.FILE, attributes: { rloc, mcc: 1 } }
@@ -23,6 +29,7 @@ function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedDa
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
 const FOLDERS = { values: new Map([["/root", 1]]), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
+const HIGHLIGHT = { selectedPath: "/root/b.ts" }
 
 describe("radialTreeSelector", () => {
     it("should build the tree of the whole map when nothing is focused", () => {
@@ -69,14 +76,15 @@ describe("sunburst metrics and coloring", () => {
             ColorMode.absolute,
             defaultMapColors,
             { minValue: 0, maxValue: 3, values: [] },
-            FOLDERS
+            FOLDERS,
+            HIGHLIGHT
         )
 
         // Assert
         expect(coloring.isUnaryMetric).toBe(true)
     })
 
-    it("should gather what colouring a folder needs", () => {
+    it("should gather what colouring a node needs", () => {
         // Arrange
         const colorRange = { from: 1, to: 2 }
         const colorMetricRange = { minValue: 0, maxValue: 3, values: [] }
@@ -88,7 +96,8 @@ describe("sunburst metrics and coloring", () => {
             ColorMode.absolute,
             defaultMapColors,
             colorMetricRange,
-            FOLDERS
+            FOLDERS,
+            HIGHLIGHT
         )
 
         // Assert
@@ -98,8 +107,19 @@ describe("sunburst metrics and coloring", () => {
             colorMode: ColorMode.absolute,
             mapColors: defaultMapColors,
             colorMetricRange,
-            folders: FOLDERS
+            folders: FOLDERS,
+            highlight: HIGHLIGHT
         })
+    })
+})
+
+describe("radialHighlightSelector", () => {
+    it("should carry the selected node, to fill it with the selection colour", () => {
+        // Act
+        const highlight = radialHighlightSelector.projector("/root/b.ts")
+
+        // Assert
+        expect(highlight.selectedPath).toBe("/root/b.ts")
     })
 })
 

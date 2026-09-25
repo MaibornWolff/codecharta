@@ -24,6 +24,17 @@ function coloringWithFolder(
 }
 
 describe("nodeColor", () => {
+    it("should fill the selected node with the selection colour, whatever colours it otherwise", () => {
+        // Arrange
+        const coloring = { ...TEST_COLORING, highlight: { selectedPath: FOLDER } }
+
+        // Act
+        const colors = [nodeColor(folder(25), coloring), nodeColor(folder(undefined, true), coloring)]
+
+        // Assert
+        expect(colors).toEqual([defaultMapColors.selected, defaultMapColors.selected])
+    })
+
     describe("for files", () => {
         it("should classify a value on the map's colour range unchanged, just like a building", () => {
             // Act

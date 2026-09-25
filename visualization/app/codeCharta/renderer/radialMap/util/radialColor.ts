@@ -13,6 +13,10 @@ export interface RadialFolderColoring {
     tint: number
 }
 
+export interface RadialHighlight {
+    selectedPath: string | null
+}
+
 export interface RadialColoring {
     /** The unary metric counts nodes rather than measuring them, so every node shows as good. */
     isUnaryMetric: boolean
@@ -21,6 +25,7 @@ export interface RadialColoring {
     mapColors: MapColors
     colorMetricRange: MetricMinMax
     folders: RadialFolderColoring
+    highlight: RadialHighlight
 }
 
 const DARK_TEXT = "#1f2937"
@@ -34,6 +39,9 @@ type ColoredNode = Pick<RadialNode, "path" | "isFile" | "colorValue" | "isFlat">
 
 export function nodeColor({ path, isFile, colorValue, isFlat }: ColoredNode, coloring: RadialColoring): string {
     const { mapColors } = coloring
+    if (path === coloring.highlight.selectedPath) {
+        return mapColors.selected
+    }
     if (colorValue === undefined) {
         return mapColors.base
     }

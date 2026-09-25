@@ -1,5 +1,11 @@
 import { createSelector } from "@ngrx/store"
-import { buildRadialTree, calculateFolderValues, RadialColoring, RadialMetrics } from "../../../renderer/radialMap/radialMap.facade"
+import {
+    buildRadialTree,
+    calculateFolderValues,
+    RadialColoring,
+    RadialHighlight,
+    RadialMetrics
+} from "../../../renderer/radialMap/radialMap.facade"
 import {
     accumulatedDataSelector,
     mapFlattenPredicateSelector,
@@ -18,7 +24,7 @@ import {
     radialFolderTintSelector,
     radialFolderValueSelector
 } from "../../../stores/preferences/preferences.read.facade"
-import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { currentFocusedNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
 
 export const radialMetricsSelector = createSelector(
@@ -56,6 +62,8 @@ const radialFolderColoringSelector = createSelector(
     (values, value, style, tint) => ({ values, value, style, tint })
 )
 
+export const radialHighlightSelector = createSelector(selectedNodePathSelector, (selectedPath): RadialHighlight => ({ selectedPath }))
+
 export const radialColoringSelector = createSelector(
     colorMetricSelector,
     colorRangeSelector,
@@ -63,12 +71,14 @@ export const radialColoringSelector = createSelector(
     mapColorsSelector,
     metricRangeSelector,
     radialFolderColoringSelector,
-    (colorMetric, colorRange, colorMode, mapColors, colorMetricRange, folders): RadialColoring => ({
+    radialHighlightSelector,
+    (colorMetric, colorRange, colorMode, mapColors, colorMetricRange, folders, highlight): RadialColoring => ({
         isUnaryMetric: colorMetric === UNARY_METRIC,
         colorRange,
         colorMode,
         mapColors,
         colorMetricRange,
-        folders
+        folders,
+        highlight
     })
 )
