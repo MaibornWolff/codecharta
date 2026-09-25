@@ -132,9 +132,17 @@ class EveritValidatorTest {
         val leaves =
             mapOf(
                 "com.example.domain.Creature" to
-                    DependencyLeaf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), "Creature", "CLASS", 2),
+                    DependencyLeaf(
+                        listOf(
+                            NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File),
+                            NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File)
+                        ),
+                        "Creature",
+                        "CLASS",
+                        2
+                    ),
                 "com.example.domain.HitPoints" to
-                    DependencyLeaf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File), "HitPoints", "VALUECLASS", 0)
+                    DependencyLeaf(listOf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File)), "HitPoints", "VALUECLASS", 0)
             )
         val leafEdges =
             listOf(
@@ -355,12 +363,12 @@ class EveritValidatorTest {
 
     @Test
     fun `should reject a 2_0 file whose dependency-lens leaf references an unknown node id`() {
-        // Schema-valid, but the leaf's nodeId resolves to no node — the reader would silently drop the leaf.
+        // Schema-valid, but one of the leaf's node ids resolves to no node — the reader would silently drop it.
         val danglingLeaf =
             """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
                 """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
                 """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
-                """"lenses":{"dependency":{"leaves":{"com.example.Ghost":{"nodeId":"ghost-id","name":"Ghost","kind":"CLASS"}}}}}"""
+                """"lenses":{"dependency":{"leaves":{"com.example.Ghost":{"nodeIds":["app-id","ghost-id"],"name":"Ghost","kind":"CLASS"}}}}}"""
 
         val thrown =
             assertFailsWith(ReferentialIntegrityException::class) {
@@ -392,7 +400,7 @@ class EveritValidatorTest {
             """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
                 """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
                 """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
-                """"lenses":{"dependency":{"leaves":{"com.example.App":{"nodeId":"app-id","name":"App","kind":"CLASS"}},""" +
+                """"lenses":{"dependency":{"leaves":{"com.example.App":{"nodeIds":["app-id"],"name":"App","kind":"CLASS"}},""" +
                 """"leafEdges":[{"fromLeaf":"com.example.App","toLeaf":"com.example.Ghost"}]}}}"""
 
         val thrown =

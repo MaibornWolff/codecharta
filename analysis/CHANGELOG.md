@@ -26,23 +26,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   existing reader keeps working. The four DependaCharta edge types are a pure function of the two booleans and are
   derived where they are consumed rather than stored.
 
-- **`ccsh dependencyparser` emits the logical package/declaration layer beside the file-level one.** Resolution,
-  cycle detection and levelization all run at declaration level already; until now everything but the file-collapsed
-  result was discarded. The `dependency` lens gains three optional tables, keyed by dotted logical path: `leaves`
-  (every declaration with its kind, its level and the id of the file node it lives in), `namespaces` (each package's
-  level) and `leafEdges` (the dependencies between declarations, with their weight, the two graph flags and `usage` —
-  how the source uses the target). This carries the two signals the file-level view cannot: a dependency
-  between two declarations of the *same* file, and the kind of use each dependency is. `edges`, `nodes` and the
-  per-file metrics are unchanged byte for byte, so every existing reader keeps working; a file without a logical
-  layer is unchanged too, since the tables are omitted when empty. Levelization now runs twice, once per projection,
-  and `--omit-graph-analysis` skips both. Uncompressed output roughly quadruples; it is gzipped by default.
-  `MergeFilter`, `StructureModifier` and `EdgeFilter` carry the new tables through: namespaces merge max-wins, leaves
-  union first-wins, leaf edges fold by endpoint pair, and a restructuring re-points `leaves[].nodeId` at the file's
-  new id — dropping a leaf, and the edges touching it, when its file did not survive. `merge --large` prefixes the
-  logical ids with the wrapping folder, the way it prefixes edge paths, so two inputs declaring the same package
-  stay apart. `ccsh check` rejects a leaf
-  whose `nodeId` resolves to no node, a `nodes` key that names no node and a leaf edge whose endpoint the leaf table
-  does not declare, the way it already rejects a dangling edge endpoint or metrics key.
+- **`ccsh dependencyparser` emits the logical package/declaration layer beside the file-level one.** Resolution, cycle
+  detection and levelization all run at declaration level already; until now everything but the file-collapsed result
+  was discarded. The `dependency` lens gains three optional tables, keyed by dotted logical path: `leaves` (every
+  declaration with its kind, its level and the ids of the file nodes it lives in), `namespaces` (each package's level)
+  and `leafEdges` (the dependencies between declarations, with their weight, the two graph flags and `usage` — how the
+  source uses the target). This carries the two signals the file-level view cannot: a dependency between two
+  declarations of the *same* file, and the kind of use each dependency is. `edges`, `nodes` and the per-file metrics
+  are unchanged byte for byte, so every existing reader keeps working; a file without a logical layer is unchanged
+  too, since the tables are omitted when empty. Levelization now runs twice, once per projection, and
+  `--omit-graph-analysis` skips both. Uncompressed output roughly quadruples; it is gzipped by default. `MergeFilter`,
+  `StructureModifier` and `EdgeFilter` carry the new tables through: namespaces merge max-wins, leaves union with the
+  files of both inputs, leaf edges fold by endpoint pair, and a restructuring re-points `leaves[].nodeIds` at the
+  files' new ids — dropping a leaf, and the edges touching it, when none of its files survived. `merge --large`
+  prefixes the logical ids with the wrapping folder, the way it prefixes edge paths, so two inputs declaring the same
+  package stay apart. `ccsh check` rejects a leaf node id that resolves to no node, a `nodes` key that names no node
+  and a leaf edge whose endpoint the leaf table does not declare, the way it already rejects a dangling edge endpoint
+  or metrics key.
 
 ### Changed
 

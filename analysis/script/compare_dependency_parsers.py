@@ -116,7 +116,7 @@ def read_codecharta(path):
         model.leaves[leaf_id] = {
             "name": leaf["name"],
             "kind": leaf["kind"],
-            "file": path_by_id.get(leaf["nodeId"], leaf["nodeId"]),
+            "file": path_by_id.get(leaf["nodeIds"][0], leaf["nodeIds"][0]),
             "level": leaf.get("level"),
         }
     for edge in lens.get("leafEdges", []):

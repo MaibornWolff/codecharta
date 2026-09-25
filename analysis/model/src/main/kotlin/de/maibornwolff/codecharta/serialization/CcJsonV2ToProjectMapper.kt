@@ -80,15 +80,20 @@ object CcJsonV2ToProjectMapper {
         return declared.filterKeys { it in knownNodeIds }
     }
 
-    // A leaf joins onto the file tree through its nodeId; one that names no file node has nothing to join
-    // onto, so it is dropped with a warning like an unresolved edge endpoint.
+    // A leaf joins onto the file tree through its node ids. One that names no file node is dropped with a
+    // warning like an unresolved edge endpoint; a leaf left with no file has nothing to join onto and goes.
     private fun resolveLeaves(dto: CcJsonV2, knownNodeIds: Set<String>): Map<String, DependencyLeaf> {
         val declared = dto.lenses.dependency.leaves ?: return emptyMap()
-        val (resolvable, orphans) = declared.entries.partition { it.value.nodeId in knownNodeIds }
-        orphans.forEach { orphan ->
-            Logger.warn { "Dropping dependency-lens leaf '${orphan.key}' with unresolved node id: ${orphan.value.nodeId}" }
-        }
-        return resolvable.associate { it.key to it.value }
+        return declared
+            .mapNotNull { (leafId, leaf) ->
+                val (resolvable, orphans) = leaf.nodeIds.orEmpty().partition { it in knownNodeIds }
+                orphans.forEach { orphan -> Logger.warn { "Dropping unresolved node id $orphan of dependency-lens leaf '$leafId'" } }
+                if (resolvable.isEmpty()) {
+                    Logger.warn { "Dropping dependency-lens leaf '$leafId', which joins onto no file node" }
+                    return@mapNotNull null
+                }
+                leafId to DependencyLeaf(resolvable, leaf.name, leaf.kind, leaf.level)
+            }.toMap()
     }
 
     // Leaf edges address leaves, so an edge whose endpoint the leaf table does not declare — or whose leaf

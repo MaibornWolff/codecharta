@@ -117,7 +117,8 @@ def dependency_record(edge, is_pointing_upwards):
 def build_leaves(lens, paths, outgoing):
     leaves = OrderedDict()
     for leaf_id, leaf in lens["leaves"].items():
-        physical_path = paths.get(leaf.get("nodeId"), "")
+        # A .cg.json leaf has one physical path, so it takes the first file: the one file edges point at.
+        physical_path = paths.get(next(iter(leaf.get("nodeIds") or []), None), "")
         leaves[leaf_id] = {
             "id": leaf_id,
             "name": leaf.get("name", leaf_id.rsplit(".", 1)[-1]),

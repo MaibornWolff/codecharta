@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.DependencyLeafDto
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.EdgeDto
 import de.maibornwolff.codecharta.serialization.dto.FileDto
@@ -78,7 +79,10 @@ object ProjectToCcJsonV2Mapper {
                 attributeDescriptors = project.lenses.dependency.attributeDescriptors,
                 nodes = project.lenses.dependency.nodes.takeIf { it.isNotEmpty() },
                 namespaces = project.lenses.dependency.namespaces.takeIf { it.isNotEmpty() },
-                leaves = project.lenses.dependency.leaves.takeIf { it.isNotEmpty() },
+                leaves =
+                    project.lenses.dependency.leaves
+                        .takeIf { it.isNotEmpty() }
+                        ?.mapValues { (_, leaf) -> DependencyLeafDto(leaf.nodeIds, leaf.name, leaf.kind, leaf.level) },
                 leafEdges =
                     project.lenses.dependency.leafEdges
                         .takeIf { it.isNotEmpty() }

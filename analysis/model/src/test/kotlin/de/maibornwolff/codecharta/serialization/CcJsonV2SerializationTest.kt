@@ -810,7 +810,7 @@ class CcJsonV2SerializationTest {
         val dependency = readBack.lenses.dependency
         assertEquals(mapOf("com.example.domain" to DependencyNamespace(0)), dependency.namespaces)
         assertEquals(
-            DependencyLeaf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), "Creature", "CLASS", 2),
+            DependencyLeaf(listOf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)), "Creature", "CLASS", 2),
             dependency.leaves["com.example.domain.Creature"]
         )
         val leafEdge = dependency.leafEdges.single()
@@ -845,7 +845,7 @@ class CcJsonV2SerializationTest {
             .getAsJsonObject("lenses")
             .getAsJsonObject("dependency")
             .getAsJsonObject("leaves")
-            .add("com.example.domain.Ghost", JsonParser.parseString("""{"nodeId":"ghost-id","name":"Ghost","kind":"CLASS"}"""))
+            .add("com.example.domain.Ghost", JsonParser.parseString("""{"nodeIds":["ghost-id"],"name":"Ghost","kind":"CLASS"}"""))
 
         // Act
         val readBack = ProjectDeserializer.deserializeProject(with20.toString())
@@ -853,6 +853,29 @@ class CcJsonV2SerializationTest {
         // Assert
         assertFalse(readBack.lenses.dependency.leaves.containsKey("com.example.domain.Ghost"))
         assertEquals(2, readBack.lenses.dependency.leaves.size)
+    }
+
+    @Test
+    fun `should keep a leaf with the node ids that resolve when only some of them do`() {
+        // Arrange: a declaration split across a file the tree has and one it does not.
+        val with20 = JsonParser.parseString(ProjectSerializer.serializeToString(logicalLayerProject())).asJsonObject
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        with20
+            .getAsJsonObject("lenses")
+            .getAsJsonObject("dependency")
+            .getAsJsonObject("leaves")
+            .add("com.example.domain.Split", JsonParser.parseString("""{"nodeIds":["$appId","ghost-id"],"name":"Split","kind":"CLASS"}"""))
+
+        // Act
+        val readBack = ProjectDeserializer.deserializeProject(with20.toString())
+
+        // Assert
+        assertEquals(
+            listOf(appId),
+            readBack.lenses.dependency.leaves
+                .getValue("com.example.domain.Split")
+                .nodeIds
+        )
     }
 
     private fun logicalLayerProject(usage: List<String> = listOf("inheritance"), flagged: Boolean = true): Project {
@@ -868,9 +891,19 @@ class CcJsonV2SerializationTest {
                         leaves =
                             mapOf(
                                 "com.example.domain.Creature" to
-                                    DependencyLeaf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File), "Creature", "CLASS", 2),
+                                    DependencyLeaf(
+                                        listOf(NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)),
+                                        "Creature",
+                                        "CLASS",
+                                        2
+                                    ),
                                 "com.example.domain.HitPoints" to
-                                    DependencyLeaf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File), "HitPoints", "CLASS", 0)
+                                    DependencyLeaf(
+                                        listOf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File)),
+                                        "HitPoints",
+                                        "CLASS",
+                                        0
+                                    )
                             ),
                         leafEdges =
                             listOf(

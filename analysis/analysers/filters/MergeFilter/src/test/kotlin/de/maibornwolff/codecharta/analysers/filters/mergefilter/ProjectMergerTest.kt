@@ -283,7 +283,7 @@ class ProjectMergerTest {
                         dependency =
                             DependencyLens(
                                 namespaces = mapOf("com.example" to DependencyNamespace(1)),
-                                leaves = mapOf("com.example.A" to DependencyLeaf("node-a", "A", "CLASS", 2)),
+                                leaves = mapOf("com.example.A" to DependencyLeaf(listOf("node-a"), "A", "CLASS", 2)),
                                 leafEdges =
                                     listOf(
                                         LeafEdge(
@@ -306,7 +306,7 @@ class ProjectMergerTest {
                         dependency =
                             DependencyLens(
                                 namespaces = mapOf("com.example" to DependencyNamespace(3), "com.other" to DependencyNamespace(0)),
-                                leaves = mapOf("com.example.B" to DependencyLeaf("node-b", "B", "INTERFACE", 0)),
+                                leaves = mapOf("com.example.B" to DependencyLeaf(listOf("node-b"), "B", "INTERFACE", 0)),
                                 leafEdges =
                                     listOf(
                                         LeafEdge(

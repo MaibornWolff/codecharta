@@ -28,8 +28,8 @@ class DependencyProjectGeneratorTest {
                 ),
             declarations =
                 listOf(
-                    Declaration("app.Source", "Source", "CLASS", sourceFile, level = 1),
-                    Declaration("app.Target", "Target", "INTERFACE", targetFile, level = 0)
+                    Declaration("app.Source", "Source", "CLASS", listOf(sourceFile), level = 1),
+                    Declaration("app.Target", "Target", "INTERFACE", listOf(targetFile), level = 0)
                 ),
             declarationEdges =
                 listOf(
@@ -91,7 +91,7 @@ class DependencyProjectGeneratorTest {
 
         // Assert
         val leaf = project.lenses.dependency.leaves.getValue("app.Source")
-        assertThat(leaf.nodeId).isEqualTo(NodeId.fromSegments(sourceFile, NodeType.File))
+        assertThat(leaf.nodeIds).containsExactly(NodeId.fromSegments(sourceFile, NodeType.File))
         assertThat(leaf.name).isEqualTo("Source")
         assertThat(leaf.kind).isEqualTo("CLASS")
         assertThat(leaf.level).isEqualTo(1)

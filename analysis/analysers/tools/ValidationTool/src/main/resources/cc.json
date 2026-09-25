@@ -577,8 +577,12 @@
     "DependencyLeaf": {
       "additionalProperties": false,
       "properties": {
-        "nodeId": {
-          "type": "string"
+        "nodeIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
         },
         "name": {
           "type": "string"
@@ -604,7 +608,7 @@
         }
       },
       "required": [
-        "nodeId",
+        "nodeIds",
         "name",
         "kind"
       ],

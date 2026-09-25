@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.util.Logger
  * along with it — see [rekeyed]. The logical projection is the graph as the code declares it: [leaves]
  * are the declarations, [namespaces] the packages containing them, and [leafEdges] the dependencies
  * between declarations. Its tables are keyed by dotted logical path, which a restructuring of one
- * project's files never moves — only [DependencyLeaf.nodeId], the join back onto the file tree, is
+ * project's files never moves — only [DependencyLeaf.nodeIds], the join back onto the file tree, is
  * re-keyed. Wrapping a whole project into a folder is the exception, see [underNamespace].
  */
 data class DependencyLens(
@@ -61,18 +61,18 @@ data class DependencyLens(
     private fun mergeNamespaces(otherNamespaces: Map<String, DependencyNamespace>): Map<String, DependencyNamespace> =
         mergeByKey(namespaces, otherNamespaces) { _, existing, incoming -> existing.merge(incoming) }
 
-    // A leaf describes where a declaration lives, not a measurement of it, so there is nothing to
-    // reconcile: the first description wins and the conflict is reported, the way CcJsonV2ToProjectMapper
-    // handles two file nodes claiming one id.
+    // Two inputs declaring one logical path describe one declaration that lives in the files of both, so
+    // the files union. Name and kind describe the declaration itself: the first wins and a conflict is
+    // reported, the way CcJsonV2ToProjectMapper handles two file nodes claiming one id.
     private fun mergeLeaves(otherLeaves: Map<String, DependencyLeaf>): Map<String, DependencyLeaf> =
         mergeByKey(leaves, otherLeaves) { leafId, existing, incoming ->
-            if (existing != incoming) {
+            if (existing.name != incoming.name || existing.kind != incoming.kind) {
                 Logger.warn {
-                    "Two inputs describe the leaf '$leafId' differently (node ids ${existing.nodeId} and ${incoming.nodeId}); " +
-                        "keeping the first and ignoring the second."
+                    "Two inputs describe the leaf '$leafId' differently (${existing.kind} ${existing.name} and " +
+                        "${incoming.kind} ${incoming.name}); keeping the first description."
                 }
             }
-            existing
+            existing.copy(nodeIds = (existing.nodeIds + incoming.nodeIds).distinct())
         }
 
     private fun <T> mergeByKey(own: Map<String, T>, other: Map<String, T>, reconcile: (String, T, T) -> T): Map<String, T> {
@@ -94,7 +94,7 @@ data class DependencyLens(
     /**
      * Re-key the entries that address a file node onto a restructured tree; see [nodeIdRemapping] for how
      * ids are recovered. A leaf keeps its logical key — a restructuring moves files, not packages — and
-     * only follows its file; one whose file did not survive has nothing left to join onto, so it goes,
+     * only follows its files; one none of whose files survived has nothing left to join onto, so it goes,
      * and with it every leaf edge that touched it and every namespace no surviving leaf lives in.
      */
     fun rekeyed(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): DependencyLens {
@@ -102,7 +102,8 @@ data class DependencyLens(
         val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)
         val rekeyedLeaves = leaves
             .mapNotNull { (leafId, leaf) ->
-                newIdByOldId[leaf.nodeId]?.let { newNodeId -> leafId to leaf.copy(nodeId = newNodeId) }
+                val survivingNodeIds = leaf.nodeIds.mapNotNull { newIdByOldId[it] }
+                if (survivingNodeIds.isEmpty()) null else leafId to leaf.copy(nodeIds = survivingNodeIds)
             }.toMap()
         val inhabitedNamespaces = namespacesOf(rekeyedLeaves.keys)
         return copy(
@@ -159,12 +160,13 @@ data class DependencyNamespace(val level: Int) {
 
 /**
  * One declaration — a class, interface, function, … — as the logical layer sees it, keyed by its dotted
- * logical path. [nodeId] is the id of the file node the declaration lives in, and the only join from the
- * logical layer back onto the file tree. [name] is kept rather than derived from the key because the
- * logical path escapes dots inside a segment and that escaping is not reversible. [level] is absent when
- * the producer skipped levelization.
+ * logical path. [nodeIds] are the ids of the file nodes the declaration lives in — more than one for a
+ * declaration split across files, such as a partial class — and the only join from the logical layer back
+ * onto the file tree. The first is the file the physical projection points edges into the declaration at.
+ * [name] is kept rather than derived from the key because the logical path escapes dots inside a segment
+ * and that escaping is not reversible. [level] is absent when the producer skipped levelization.
  */
-data class DependencyLeaf(val nodeId: String, val name: String, val kind: String, val level: Int? = null)
+data class DependencyLeaf(val nodeIds: List<String>, val name: String, val kind: String, val level: Int? = null)
 
 /**
  * A dependency between two declarations. A list of its own rather than a widened [Edge], because [Edge]

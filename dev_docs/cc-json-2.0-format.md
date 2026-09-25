@@ -32,7 +32,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
   ],
   "lenses": {
     "metrics":    { "attributes": { "<id>": { "rloc": 120, "mcc": 8 } }, "attributeDescriptors": {}, "attributeTypes": {} },
-    "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true } ], "nodes": { "<id>": { "level": 2 } }, "namespaces": { "com.example.domain": { "level": 0 } }, "leaves": { "com.example.domain.Creature": { "nodeId": "<id>", "name": "Creature", "kind": "CLASS", "level": 2 } }, "leafEdges": [ { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints", "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true } ], "attributeTypes": {}, "attributeDescriptors": {} },
+    "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true } ], "nodes": { "<id>": { "level": 2 } }, "namespaces": { "com.example.domain": { "level": 0 } }, "leaves": { "com.example.domain.Creature": { "nodeIds": ["<id>"], "name": "Creature", "kind": "CLASS", "level": 2 } }, "leafEdges": [ { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints", "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true } ], "attributeTypes": {}, "attributeDescriptors": {} },
     "clusters":   { "clusterings": { "author-ownership": { "title": "Author ownership", "membership": "weighted", "weightBasis": "rloc", "analyzers": ["gitlogparser"], "clusters": [ { "id": "author-a", "name": "Author A", "members": [ { "nodeId": "<id>", "weight": 0.62 } ] } ] } } },
     "domain":     { "nodes": { "<id>": { "words": [ { "text": "invoice", "frequency": 12, "tfidf": 0.42 } ] } } },
     "security":   {}
@@ -88,9 +88,11 @@ levels for a merged tree mean re-running the parser on it.
 `edges` and `nodes` are the graph as the *file tree* sees it. The three optional tables beside them are
 the same graph as the *code* declares it — packages and declarations rather than folders and files.
 
-- **`leaves`** maps a declaration's dotted logical path (`com.example.domain.Creature`) to its `nodeId`
-  (the file node it is declared in), its `name`, its `kind` (`CLASS`, `VALUECLASS`, `INTERFACE`,
+- **`leaves`** maps a declaration's dotted logical path (`com.example.domain.Creature`) to its `nodeIds`
+  (the file nodes it is declared in), its `name`, its `kind` (`CLASS`, `VALUECLASS`, `INTERFACE`,
   `ANNOTATION`, `ENUM`, `FUNCTION`, `VARIABLE`, `REEXPORT`, `SCRIPT`, `UNKNOWN`) and its `level`.
+  `nodeIds` holds more than one id for a declaration split across files — a partial class, the same
+  package and name in two modules — and its first id is the file `edges` into the declaration point at.
 - **`namespaces`** maps a dotted package path to its `level`. It needs no `parent`: with dotted ids the
   parent is the id's prefix. `leaves` needs no `namespace` for the same reason, but does keep `name`,
   because a logical path escapes dots inside a segment and that escaping is not reversible.
@@ -104,7 +106,7 @@ Ids here are the dotted logical path **verbatim** rather than a hash. Node ids a
 *paths* — separator, Unicode form, `.`/`..` — and a dotted namespace has none of that variance, so
 hashing would buy nothing but cost readability. Every table is optional and omitted when empty, so a file
 carrying only the physical projection is byte-identical to what producers wrote before they existed.
-A restructuring within one project moves files, not packages, so it re-points a leaf's `nodeId` and leaves
+A restructuring within one project moves files, not packages, so it re-points a leaf's `nodeIds` and leaves
 the logical ids alone; `merge --large`, which wraps each input in a folder, prefixes the logical ids with
 that folder (dots escaped to `_`) so two inputs declaring the same package stay apart in both projections.
 
@@ -113,12 +115,13 @@ and the edge-metric machinery, `edgefilter` and the 3D map all read `edges`. It 
 the file-collapsed `edges` cannot: a dependency between two declarations of the *same* file, and the kind
 of use each dependency is.
 
-**Merge and re-key.** `namespaces` merges max-wins on `level`, like `nodes`. `leaves` unions, first
-description winning on a conflicting key with a warning, since a leaf describes where a declaration lives
-rather than measuring it. `leafEdges` fold by endpoint pair the way `edges` do: the first weight wins, the flags OR, `usage` unions.
-Re-keying touches only **`leaves[].nodeId`** — the one node reference the logical layer holds; a leaf
-whose file did not survive a restructuring is dropped, and with it every leaf edge that touched it and
-every namespace no surviving leaf lives in. The logical keys themselves never move: a restructuring moves
+**Merge and re-key.** `namespaces` merges max-wins on `level`, like `nodes`. `leaves` unions; a key
+both inputs declare is one declaration living in the files of both, so its `nodeIds` union, while `name`,
+`kind` and `level` stay the first input's, with a warning when name or kind conflict. `leafEdges` fold by
+endpoint pair the way `edges` do: the first weight wins, the flags OR, `usage` unions.
+Re-keying touches only **`leaves[].nodeIds`** — the only node references the logical layer holds; a leaf
+keeps the files that survive a restructuring and is dropped when none do, and with it every leaf edge that
+touched it and every namespace no surviving leaf lives in. The logical keys themselves never move: a restructuring moves
 files, not packages.
 
 **The two projections can disagree, by design.** Folder levels are not a projection of namespace levels,

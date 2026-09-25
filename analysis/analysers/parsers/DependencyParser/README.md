@@ -50,7 +50,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 "dependency": {
   "namespaces": { "com.example.domain": { "level": 0 } },
   "leaves": {
-    "com.example.domain.Creature": { "nodeId": "<file node id>", "name": "Creature", "kind": "CLASS", "level": 2 }
+    "com.example.domain.Creature": { "nodeIds": ["<file node id>"], "name": "Creature", "kind": "CLASS", "level": 2 }
   },
   "leafEdges": [
     { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints",
@@ -62,12 +62,15 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - Both tables are keyed by the **dotted logical path** verbatim, so a namespace's parent is its id's
   prefix and needs no field of its own. `name` is kept because the logical path escapes dots inside a
   segment and that escaping is not reversible.
-- **`nodeId`** is the id of the file node the declaration lives in — the one join from the logical layer
-  back onto the file tree, and the only thing a re-pathing filter has to rewrite.
+- **`nodeIds`** are the ids of the file nodes the declaration lives in — the one join from the logical
+  layer back onto the file tree, and the only thing a re-pathing filter has to rewrite. A declaration
+  split across files (a C# partial class, one package and name in two modules) lists all of them; the
+  first is the file the file-level edges into it point at.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
   `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
   kind, the first the extractor found, because a used type is identified by its name alone — the same
-  rule DependaCharta applies, and why a pair always weighs 1 at declaration level. **Only PHP reports
+  rule DependaCharta applies, and why a pair weighs 1 at declaration level — unless the source is split
+  across files, when each part that references the target counts once. **Only PHP reports
   more than `usage` today**, because `PhpAnalyzer` runs its own tree-sitter queries and classifies types by
   the clause they appear in. Every other language goes through `TreeSitterExcavationSite`, which already
   makes the same distinction internally — its per-language `UsedTypeExtractor` has separate

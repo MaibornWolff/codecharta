@@ -94,7 +94,7 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
     // A leaf joins onto the file tree through the very id the tree above computed for that file, so the
     // join is exact by construction rather than by matching path strings.
     private fun toDependencyLeaves(graph: DependencyGraph): Map<String, DependencyLeaf> = graph.declarations.associate {
-        it.id to DependencyLeaf(NodeId.fromSegments(it.filePath, NodeType.File), it.name, it.kind, it.level)
+        it.id to DependencyLeaf(it.filePaths.map { filePath -> NodeId.fromSegments(filePath, NodeType.File) }, it.name, it.kind, it.level)
     }
 
     private fun toLeafEdges(graph: DependencyGraph): List<LeafEdge> = graph.declarationEdges.map {

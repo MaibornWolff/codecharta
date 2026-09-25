@@ -53,7 +53,7 @@ declarations:
 "dependency": {
   "namespaces": { "com.example.domain": { "level": 0 } },
   "leaves": {
-    "com.example.domain.Creature": { "nodeId": "<file node id>", "name": "Creature", "kind": "CLASS", "level": 2 }
+    "com.example.domain.Creature": { "nodeIds": ["<file node id>"], "name": "Creature", "kind": "CLASS", "level": 2 }
   },
   "leafEdges": [
     { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints",
@@ -63,7 +63,8 @@ declarations:
 ```
 
 - Both tables are keyed by the dotted logical path, so a namespace's parent is its id's prefix.
-- `nodeId` is the id of the file node the declaration lives in — the one join back onto the file tree.
+- `nodeIds` are the ids of the file nodes the declaration lives in — the one join back onto the file tree.
+  A declaration split across files, such as a C# partial class, lists all of them.
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
   extractor found, as in DependaCharta. Only PHP reports more than `usage` today; see

@@ -173,12 +173,12 @@
       }
     },
     "DependencyLeaf": {
-      "description": "One declaration — a class, interface, function, ... — as the logical layer sees it. `nodeId` is the id of the file node the declaration lives in, and the only join from the logical layer back onto the file tree. `name` is kept rather than derived from the key because the logical path escapes dots inside a segment and that escaping is not reversible.",
+      "description": "One declaration — a class, interface, function, ... — as the logical layer sees it. `nodeIds` are the ids of the file nodes the declaration lives in — more than one for a declaration split across files, such as a partial class — and the only join from the logical layer back onto the file tree; the first is the file the physical `edges` point edges into the declaration at. `name` is kept rather than derived from the key because the logical path escapes dots inside a segment and that escaping is not reversible.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["nodeId", "name", "kind"],
+      "required": ["nodeIds", "name", "kind"],
       "properties": {
-        "nodeId": { "type": "string" },
+        "nodeIds": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
         "name": { "type": "string" },
         "kind": {
           "description": "The kind of declaration this leaf stands for.",

@@ -107,14 +107,14 @@ class ProcessingPipelineTest {
     }
 
     @Test
-    fun `should record every declaration with the file it was declared in`() {
+    fun `should record every declaration with the files it was declared in`() {
         // Act
         val graph = graphOfJavaSample()
 
         // Assert
         assertThat(graph.declarations).isNotEmpty
         assertThat(graph.declarations).allSatisfy { declaration ->
-            assertThat(declaration.filePath.last()).endsWith(".java")
+            assertThat(declaration.filePaths).allSatisfy { filePath -> assertThat(filePath.last()).endsWith(".java") }
             assertThat(declaration.name).isNotEmpty()
             assertThat(declaration.kind).isNotEmpty()
         }
@@ -164,7 +164,7 @@ class ProcessingPipelineTest {
     fun `should agree with the file-level projection on every edge that crosses a file boundary`() {
         // Arrange
         val graph = graphOfJavaSample()
-        val fileByDeclaration = graph.declarations.associate { it.id to it.filePath }
+        val fileByDeclaration = graph.declarations.associate { it.id to it.filePaths.first() }
         val filePairsWithAnEdge = graph.edges.map { it.fromPath to it.toPath }.toSet()
 
         // Act
@@ -203,7 +203,7 @@ class ProcessingPipelineTest {
     }
 
     @Test
-    fun `should join a declaration split across files to the same file in both projections`() {
+    fun `should list every file of a declaration split across files and point file edges at the first`() {
         // Arrange: a partial class in two files, and a class that depends on it.
         File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
         File(sampleDirectory, "FooB.cs").writeText("namespace N { public partial class Foo { } }")
@@ -212,9 +212,9 @@ class ProcessingPipelineTest {
         // Act
         val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.C_SHARP), omitGraphAnalysis = false)
 
-        // Assert: the leaf joins to FooA.cs, and so does every file edge that targets Foo.
+        // Assert: the leaf lists both parts, and every file edge that targets Foo points at the first.
         val foo = graph.declarations.single { it.id == "N.Foo" }
-        assertThat(foo.filePath).containsExactly("FooA.cs")
+        assertThat(foo.filePaths).containsExactly(listOf("FooA.cs"), listOf("FooB.cs"))
         val edgesIntoFoo = graph.edges.filter { it.fromPath == listOf("Bar.cs") }
         assertThat(edgesIntoFoo).extracting("toPath").containsExactly(listOf("FooA.cs"))
         assertThat(graph.edges.map { it.fromPath to it.toPath }).contains(listOf("FooA.cs") to listOf("Bar.cs"))
@@ -242,7 +242,9 @@ class ProcessingPipelineTest {
         assertThat(
             graph.declarations.map { it.id }
         ).containsExactlyInAnyOrder("cpp.example.Root", "cpp.example.MyType", "cpp.different.UsedType")
-        assertThat(graph.declarations.single { it.id == "cpp.example.MyType" }.filePath).containsExactly("cpp", "example", "MyType.cpp")
+        assertThat(
+            graph.declarations.single { it.id == "cpp.example.MyType" }.filePaths
+        ).containsExactly(listOf("cpp", "example", "MyType.cpp"))
         assertThat(graph.declarationEdges.map { it.fromId to it.toId }).contains("cpp.example.MyType" to "cpp.different.UsedType")
         assertThat(graph.edges.map { it.fromPath to it.toPath })
             .doesNotContain(listOf("cpp", "example", "MyType.cpp") to listOf("cpp", "example", "MyType.h"))

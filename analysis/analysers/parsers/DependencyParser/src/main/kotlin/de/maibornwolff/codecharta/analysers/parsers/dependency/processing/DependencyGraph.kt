@@ -32,14 +32,16 @@ data class FileDependencyEdge(
 data class LevelizedPath(val path: List<String>, val isFile: Boolean, val level: Int)
 
 /**
- * One declaration, addressed by [id], its dotted logical path. [filePath] is the file it was declared
- * in, the join back onto the physical projection; [level] is absent when levelization was skipped.
+ * One declaration, addressed by [id], its dotted logical path. [filePaths] are the files it was declared
+ * in — several for a declaration split across files — and the join back onto the physical projection;
+ * the first is the one file edges into the declaration point at. [level] is absent when levelization was
+ * skipped.
  */
 data class Declaration(
     val id: String,
     val name: String,
     val kind: String,
-    val filePath: List<String>,
+    val filePaths: List<List<String>>,
     val level: Int? = null
 )
 

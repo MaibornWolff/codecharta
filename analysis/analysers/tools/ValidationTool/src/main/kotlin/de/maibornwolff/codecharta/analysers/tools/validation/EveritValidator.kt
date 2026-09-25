@@ -95,15 +95,17 @@ class EveritValidator(private var schemaPath: String) : Validator {
         .filter { it !in nodeIds }
         .map { "dependency-lens node entry for unknown node id '$it'" }
 
-    // A leaf joins the logical layer onto the file tree through its nodeId, the only node reference the
+    // A leaf joins the logical layer onto the file tree through its nodeIds, the only node references the
     // logical tables carry; one that resolves to nothing would be dropped silently on read.
     private fun collectDanglingLeafNodeIds(dependency: JSONObject?, nodeIds: Set<String>): List<String> {
         val leaves = dependency?.optJSONObject("leaves") ?: return emptyList()
         return leaves
             .keySet()
-            .map { leafId -> leafId to leaves.getJSONObject(leafId).optString("nodeId") }
-            .filter { (_, nodeId) -> nodeId !in nodeIds }
-            .map { (leafId, nodeId) -> "dependency-lens leaf '$leafId' with unknown nodeId '$nodeId'" }
+            .flatMap { leafId ->
+                val leafNodeIds = leaves.getJSONObject(leafId).optJSONArray("nodeIds") ?: return@flatMap emptyList()
+                (0 until leafNodeIds.length()).map { index -> leafId to leafNodeIds.optString(index) }
+            }.filter { (_, nodeId) -> nodeId !in nodeIds }
+            .map { (leafId, nodeId) -> "dependency-lens leaf '$leafId' with unknown node id '$nodeId'" }
     }
 
     // Leaf edges address leaves; without a leaf table there are no endpoints to check them against.

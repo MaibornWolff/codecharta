@@ -37,7 +37,7 @@ class LargeMergeTest {
             lenses = LensSet(
                 dependency = DependencyLens(
                     namespaces = mapOf("com.example" to DependencyNamespace(0)),
-                    leaves = mapOf("com.example.File" to DependencyLeaf(fileId, "File", "CLASS", 1)),
+                    leaves = mapOf("com.example.File" to DependencyLeaf(listOf(fileId), "File", "CLASS", 1)),
                     leafEdges = listOf(LeafEdge("com.example.File", "com.example.File"))
                 )
             )
@@ -51,8 +51,8 @@ class LargeMergeTest {
         val dependency = wrapped.lenses.dependency
         assertEquals(mapOf("alpha.com.example" to DependencyNamespace(0)), dependency.namespaces)
         assertEquals(
-            NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File),
-            dependency.leaves.getValue("alpha.com.example.File").nodeId
+            listOf(NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File)),
+            dependency.leaves.getValue("alpha.com.example.File").nodeIds
         )
         assertEquals(listOf(LeafEdge("alpha.com.example.File", "alpha.com.example.File")), dependency.leafEdges)
     }

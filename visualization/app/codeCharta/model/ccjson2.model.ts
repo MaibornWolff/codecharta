@@ -60,7 +60,7 @@ interface MetricsLensData {
  * The dependency graph in both of its projections: the physical one (`edges` between file nodes, plus
  * each node's place in that graph) and the logical one the code declares (`leaves` are the declarations,
  * `namespaces` the packages containing them, `leafEdges` the dependencies between declarations). The
- * logical tables are keyed by dotted logical path; a leaf joins back onto the file tree through `nodeId`.
+ * logical tables are keyed by dotted logical path; a leaf joins back onto the file tree through `nodeIds`.
  */
 interface DependencyLensData {
     edges: DependencyEdge[]
@@ -82,11 +82,13 @@ interface DependencyLensNamespace {
 }
 
 /*
- * `name` is carried rather than derived from the key because the logical path escapes dots inside a
- * segment and that escaping is not reversible. `level` is absent when the producer skipped levelization.
+ * `nodeIds` lists every file the declaration lives in, several for one split across files; the first is the
+ * file the physical `edges` point edges into the declaration at. `name` is carried rather than derived from
+ * the key because the logical path escapes dots inside a segment and that escaping is not reversible.
+ * `level` is absent when the producer skipped levelization.
  */
 interface DependencyLensLeaf {
-    nodeId: string
+    nodeIds: string[]
     name: string
     kind: DeclarationKind
     level?: number
