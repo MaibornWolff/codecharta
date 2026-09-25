@@ -38,7 +38,20 @@ export class RadialMapPageObject {
             .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL())
     }
 
-    opacityAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<number> {
+    async opacityAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<number> {
+        const [, , , alpha] = await this.pixelAt(distanceFromCentreInRadii, degreesClockwiseFromTop)
+        return alpha / 255
+    }
+
+    async colorAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<string> {
+        const channels = await this.pixelAt(distanceFromCentreInRadii, degreesClockwiseFromTop)
+        return `#${channels
+            .slice(0, 3)
+            .map(channel => channel.toString(16).padStart(2, "0"))
+            .join("")}`
+    }
+
+    private pixelAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<number[]> {
         return this.chart()
             .locator("canvas")
             .first()
@@ -49,8 +62,7 @@ export class RadialMapPageObject {
                     const angle = (degrees * Math.PI) / 180
                     const x = (canvas.clientWidth / 2 + radius * Math.sin(angle)) * scale
                     const y = (canvas.clientHeight / 2 - radius * Math.cos(angle)) * scale
-                    const [, , , alpha] = canvas.getContext("2d").getImageData(Math.round(x), Math.round(y), 1, 1).data
-                    return alpha / 255
+                    return [...canvas.getContext("2d").getImageData(Math.round(x), Math.round(y), 1, 1).data]
                 },
                 { distance: distanceFromCentreInRadii, degrees: degreesClockwiseFromTop }
             )

@@ -11,8 +11,13 @@ type ChartEventHandler = (event: unknown) => void
 const chartEventHandlers = new Map<string, ChartEventHandler>()
 const renderSurfaceEventHandlers = new Map<string, ChartEventHandler>()
 
+export const stubbedDrawnElements: { stopAnimation: jest.Mock }[] = []
+
 export const stubbedChart = {
-    getZr: jest.fn(() => ({ on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler) })),
+    getZr: jest.fn(() => ({
+        on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler),
+        storage: { getDisplayList: () => stubbedDrawnElements }
+    })),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
     resize: jest.fn(),
@@ -36,6 +41,7 @@ export function fireRenderSurfaceEvent(eventName: string, event: unknown = {}): 
 
 export function resetStubbedChart(): void {
     jest.clearAllMocks()
+    stubbedDrawnElements.length = 0
     chartEventHandlers.clear()
     renderSurfaceEventHandlers.clear()
 }
