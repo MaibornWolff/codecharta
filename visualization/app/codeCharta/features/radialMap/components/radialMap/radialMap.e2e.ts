@@ -125,11 +125,14 @@ test.describe("Sunburst layout", () => {
         await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
     })
 
-    test("should paint the selected file in the selection colour", async ({ page }) => {
+    test("should paint the selected file in the selection colour, but not the folder it steps into", async ({ page }) => {
         // Arrange
         const sunburst = new RadialMapPageObject(page)
+        const explorer = new ExplorerTreeLevelPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
-        await sunburst.waitUntilDrawn()
+        await explorer.selectNode("/root/sample1.cc.json")
+        await sunburst.waitUntilCentredOn("/root/sample1.cc.json")
+        await sunburst.movePointerAway()
         await expect.poll(() => sunburst.countPixelsOfColor(SELECTION_ORANGE)).toBe(0)
 
         // Act
