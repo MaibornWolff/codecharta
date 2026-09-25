@@ -19,7 +19,7 @@ interface DrawnElement {
     shape?: Record<string, number | boolean>
     style: Record<string, unknown>
     blur?: { style: { opacity: number } }
-    emphasis?: { style: { opacity: number } }
+    emphasis?: { style: { fill: string } }
     children?: DrawnElement[]
 }
 
@@ -48,6 +48,7 @@ function inputs(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {})
 }
 
 const BAND_COUNT = 3
+const FADED_COLOR = new RegExp(String.raw`^rgba\(\d+, \d+, \d+, ${DIMMED_OPACITY}\)$`)
 
 function drawn(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {}, maxBandCount = BAND_COUNT) {
     const option = buildRadialTreemapOption(inputs(centre, overrides), maxBandCount)
@@ -336,11 +337,11 @@ describe("buildRadialTreemapOption", () => {
         const fadedLeaves = leavesOf(drawItem("/root/readme.md").children)
 
         // Assert
-        expect(litLeaves.map(leaf => leaf.style.opacity)).not.toContain(DIMMED_OPACITY)
+        expect(litLeaves.map(leaf => leaf.style.fill)).not.toContainEqual(expect.stringMatching(FADED_COLOR))
         expect(fadedLeaves.length).toBeGreaterThan(1)
         for (const leaf of fadedLeaves) {
-            expect(leaf.style.opacity).toBe(DIMMED_OPACITY)
-            expect(leaf.emphasis.style.opacity).toBe(1)
+            expect(leaf.style.fill).toMatch(FADED_COLOR)
+            expect(leaf.emphasis.style.fill).toMatch(/^#/)
         }
     })
 
@@ -349,6 +350,6 @@ describe("buildRadialTreemapOption", () => {
         const leaves = leavesOf(drawn(TREE).drawItem("/root/readme.md").children)
 
         // Assert
-        expect(leaves.map(leaf => leaf.style.opacity)).not.toContain(DIMMED_OPACITY)
+        expect(leaves.map(leaf => leaf.style.fill)).not.toContainEqual(expect.stringMatching(FADED_COLOR))
     })
 })

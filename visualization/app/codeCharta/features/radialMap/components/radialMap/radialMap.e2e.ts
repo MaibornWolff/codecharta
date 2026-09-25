@@ -14,6 +14,9 @@ import { RadialMapPageObject } from "./radialMap.po"
 const INNER_RING = 0.35
 const CENTRE = 0
 const JUST_PAST_THE_TOP = 15
+const KEPT_FOLDER = 200
+const FILE_BESIDE_IT = 330
+const HALF = 0.5
 const NEUTRAL_FOLDER_GREY = "#d9dce1"
 const MANY_PIXELS = 1000
 const SELECTION_ORANGE = "#eb8319"
@@ -100,29 +103,31 @@ test.describe("Sunburst layout", () => {
         await expect(menu).toContainText("Keep Highlight")
     })
 
-    test("should fade everything but a kept highlight until it is removed", async ({ page }) => {
+    test("should fade everything but a kept highlight until it is removed, even while the hover fades out", async ({ page }) => {
         // Arrange
         const sunburst = new RadialMapPageObject(page)
         const menu = page.locator("#codemap-context-menu")
         await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.clickAt(INNER_RING, JUST_PAST_THE_TOP)
+        await sunburst.movePointerAway()
         await sunburst.waitUntilDrawn()
-        const unhighlighted = await sunburst.pixelFingerprint()
-        await sunburst.rightClickAt(INNER_RING)
+        await sunburst.rightClickAt(INNER_RING, KEPT_FOLDER)
 
         // Act
         await menu.getByText("Keep Highlight").click()
         await sunburst.movePointerAway()
 
         // Assert
-        await expect.poll(() => sunburst.pixelFingerprint()).not.toBe(unhighlighted)
+        await expect.poll(() => sunburst.opacityAt(INNER_RING, FILE_BESIDE_IT)).toBeLessThan(HALF)
+        await expect.poll(() => sunburst.opacityAt(INNER_RING, KEPT_FOLDER)).toBe(1)
 
         // Act
-        await sunburst.rightClickAt(INNER_RING)
+        await sunburst.rightClickAt(INNER_RING, KEPT_FOLDER)
         await menu.getByText("Remove Highlight").click()
         await sunburst.movePointerAway()
 
         // Assert
-        await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
+        await expect.poll(() => sunburst.opacityAt(INNER_RING, FILE_BESIDE_IT)).toBe(1)
     })
 
     test("should paint the selected file in the selection colour, but not the folder it steps into", async ({ page }) => {

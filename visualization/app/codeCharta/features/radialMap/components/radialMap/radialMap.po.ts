@@ -38,6 +38,24 @@ export class RadialMapPageObject {
             .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL())
     }
 
+    opacityAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<number> {
+        return this.chart()
+            .locator("canvas")
+            .first()
+            .evaluate(
+                (canvas: HTMLCanvasElement, { distance, degrees }) => {
+                    const scale = canvas.width / canvas.clientWidth
+                    const radius = (Math.min(canvas.clientWidth, canvas.clientHeight) / 2) * distance
+                    const angle = (degrees * Math.PI) / 180
+                    const x = (canvas.clientWidth / 2 + radius * Math.sin(angle)) * scale
+                    const y = (canvas.clientHeight / 2 - radius * Math.cos(angle)) * scale
+                    const [, , , alpha] = canvas.getContext("2d").getImageData(Math.round(x), Math.round(y), 1, 1).data
+                    return alpha / 255
+                },
+                { distance: distanceFromCentreInRadii, degrees: degreesClockwiseFromTop }
+            )
+    }
+
     async switchLayoutTo(layout: string) {
         await new MetricsBarPageObject(this.page).switchLayoutTo(layout)
     }
