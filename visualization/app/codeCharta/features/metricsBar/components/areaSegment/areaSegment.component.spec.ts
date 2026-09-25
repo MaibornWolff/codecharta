@@ -2,8 +2,6 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { areaMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setAreaMetric } from "../../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
@@ -20,15 +18,7 @@ describe("AreaSegmentComponent", () => {
                         { selector: isRadialLayoutSelector, value: isRadialLayout }
                     ]
                 }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
-                }
+                { provide: State, useValue: { getValue: () => defaultState } }
             ]
         })
         return { ...renderResult, component: renderResult.fixture.componentInstance }

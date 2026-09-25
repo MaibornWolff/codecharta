@@ -1,8 +1,6 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { MetricColorRangeDiagramComponent } from "./metricColorRangeDiagram.component"
 
@@ -24,18 +22,7 @@ describe("MetricColorRangeDiagramComponent", () => {
                 isAttributeDirectionInverted: false,
                 ...inputs
             },
-            providers: [
-                provideMockStore({ initialState: defaultState }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
-                }
-            ]
+            providers: [provideMockStore({ initialState: defaultState }), { provide: State, useValue: { getValue: () => defaultState } }]
         })
         return result.fixture.componentInstance as any
     }
