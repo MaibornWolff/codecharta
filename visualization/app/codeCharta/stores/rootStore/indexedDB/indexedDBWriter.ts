@@ -435,14 +435,14 @@ export function migrateCcStateRecordToV19<T>(state: T): T {
     if (!Array.isArray(files)) {
         return state
     }
-    return { ...record, files: files.map(withSeededDomainWords) } as T
+    return { ...record, files: files.map(fileState => withSeededFileSetting(fileState, "domainWords")) } as T
 }
 
 type PersistedFileState = { file?: { settings?: { fileSettings?: Record<string, unknown> } } }
 
-function withSeededDomainWords(fileState: unknown): unknown {
+function withSeededFileSetting(fileState: unknown, key: string): unknown {
     const fileSettings = (fileState as PersistedFileState)?.file?.settings?.fileSettings
-    if (!fileSettings || typeof fileSettings !== "object" || fileSettings["domainWords"]) {
+    if (!fileSettings || typeof fileSettings !== "object" || fileSettings[key]) {
         return fileState
     }
     const state = fileState as Record<string, unknown>
@@ -450,7 +450,7 @@ function withSeededDomainWords(fileState: unknown): unknown {
     const settings = file["settings"] as Record<string, unknown>
     return {
         ...state,
-        file: { ...file, settings: { ...settings, fileSettings: { ...fileSettings, domainWords: {} } } }
+        file: { ...file, settings: { ...settings, fileSettings: { ...fileSettings, [key]: {} } } }
     }
 }
 
@@ -562,7 +562,7 @@ export async function readCcState(): Promise<CcState | null> {
         return null
     }
     const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
-    const files = filesRecord?.files ?? settingsRecord.state.files ?? []
+    const files = withSeededDependencyLevels(filesRecord?.files ?? settingsRecord.state.files ?? [])
     persistedFiles = files
     // A record written before the split still carries the derived word bank. It is dropped as it is read,
     // because persisted beats file-derived: a stale bank would win over the rebuilt one.
@@ -576,6 +576,12 @@ export async function deleteCcState() {
     await tx.store.delete(CCSTATE_FILES_ID)
     await tx.done
     persistedFiles = null
+}
+
+/** Files persisted before the dependency lens grew levels carry no `dependencyLevels`. They are seeded as they are
+ * read, not by an upgrade transform, because the upgrade leaves the files record unread. */
+function withSeededDependencyLevels(files: FileState[]): FileState[] {
+    return files.map(fileState => withSeededFileSetting(fileState, "dependencyLevels") as FileState)
 }
 
 function withoutFiles(state: CcState): Omit<CcState, "files"> {

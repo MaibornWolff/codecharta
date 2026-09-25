@@ -1242,6 +1242,28 @@ describe("openCodeChartaDB upgrade (v19 blob → v20 transform)", () => {
         const restored = await readCcState()
         expect(restored.files).toEqual(loadedFiles)
     })
+
+    it("should seed empty dependency levels on the files of a session that predates the files split", async () => {
+        // Arrange
+        const loadedFiles = [{ file: { settings: { fileSettings: { domainWords: {} } } } }]
+        const v21Database = await openDB(DB_NAME, 21, {
+            upgrade(database) {
+                database.createObjectStore(CCSTATE_STORE_NAME, { keyPath: CCSTATE_PRIMARY_KEY })
+                database.createObjectStore(SCENARIOS_STORE_NAME, { keyPath: "id" })
+            }
+        })
+        await v21Database.put(CCSTATE_STORE_NAME, {
+            [CCSTATE_PRIMARY_KEY]: CCSTATE_STATE_ID,
+            state: { ...defaultState, files: loadedFiles }
+        })
+        v21Database.close()
+
+        // Act
+        const restored = await readCcState()
+
+        // Assert
+        expect(restored.files[0].file.settings.fileSettings.dependencyLevels).toEqual({})
+    })
 })
 
 describe("IndexedDBWriter", () => {
@@ -1442,6 +1464,33 @@ describe("IndexedDBWriter", () => {
             const state = await readCcState()
 
             expect(state).toBeNull()
+        })
+
+        it("should seed empty dependency levels on loaded files persisted before the dependency lens grew levels", async () => {
+            // Arrange
+            const fileSettings = { attributeTypes: {}, domainWords: {} }
+            await writeCcState(defaultState)
+            await writeCcFiles([{ selectedAs: "Partial", file: { settings: { fileSettings } } }] as never)
+
+            // Act
+            const restored = await readCcState()
+
+            // Assert
+            expect(restored.files[0].file.settings.fileSettings).toEqual({ ...fileSettings, dependencyLevels: {} })
+            expect(restored.files[0].selectedAs).toBe("Partial")
+        })
+
+        it("should leave the file states that already carry dependency levels untouched", async () => {
+            // Arrange
+            const dependencyLevels = { "/root/a.ts": { level: 2 } }
+            await writeCcState(defaultState)
+            await writeCcFiles([{ file: { settings: { fileSettings: { dependencyLevels } } } }] as never)
+
+            // Act
+            const restored = await readCcState()
+
+            // Assert
+            expect(restored.files[0].file.settings.fileSettings.dependencyLevels).toEqual(dependencyLevels)
         })
     })
 })
