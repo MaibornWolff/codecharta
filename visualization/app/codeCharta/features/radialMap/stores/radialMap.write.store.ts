@@ -12,6 +12,7 @@ export class RadialMapWriteStore {
 
     selectNode(path: string) {
         this.nodeInteraction.selectNode(path)
+        this.nodeInteraction.clearKeptHighlight()
     }
 
     hoverNode(path: string | null) {

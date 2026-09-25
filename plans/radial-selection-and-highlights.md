@@ -35,7 +35,7 @@ the file-extension bar highlights the matching files, and the context menu offer
 
 - [x] Complete Task 1: Mark the selection
 - [x] Complete Task 2: Highlight a hovered file extension
-- [ ] Complete Task 3: Keep Highlight in shared state
+- [x] Complete Task 3: Keep Highlight in shared state
 - [ ] Complete Task 4: Mark folder
 - [ ] Complete Task 5: Changelog
 - [ ] Run format check, tests, lint and type check

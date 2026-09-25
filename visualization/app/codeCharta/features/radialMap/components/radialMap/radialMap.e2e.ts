@@ -83,7 +83,7 @@ test.describe("Sunburst layout", () => {
         await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")
     })
 
-    test("should offer the node menu on a right-clicked segment, without the entries the sunburst cannot show", async ({ page }) => {
+    test("should offer the node menu on a right-clicked segment", async ({ page }) => {
         // Arrange
         const sunburst = new RadialMapPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
@@ -96,7 +96,32 @@ test.describe("Sunburst layout", () => {
         await expect(menu).toBeVisible()
         await expect(menu).toContainText("Exclude")
         await expect(menu).toContainText("Focus")
-        await expect(menu).not.toContainText("Keep Highlight")
+        await expect(menu).toContainText("Keep Highlight")
+    })
+
+    test("should fade everything but a kept highlight until it is removed", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        const menu = page.locator("#codemap-context-menu")
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.waitUntilDrawn()
+        const unhighlighted = await sunburst.pixelFingerprint()
+        await sunburst.rightClickAt(INNER_RING)
+
+        // Act
+        await menu.getByText("Keep Highlight").click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.pixelFingerprint()).not.toBe(unhighlighted)
+
+        // Act
+        await sunburst.rightClickAt(INNER_RING)
+        await menu.getByText("Remove Highlight").click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
     })
 
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {

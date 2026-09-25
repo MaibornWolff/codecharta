@@ -137,15 +137,15 @@ describe("nodeContextMenu component", () => {
     it.each([
         "radialMap",
         "explorer"
-    ] as const)("should leave out highlight and folder marking, which the sunburst does not show, for a right-click from the %s", async origin => {
+    ] as const)("should offer the highlight but leave out folder marking in the sunburst for a right-click from the %s", async origin => {
         // Arrange & Act
         await renderMenu({ node: folderNode, origin, isRadialLayout: true })
 
         // Assert
         expect(screen.getByText("Focus")).not.toBe(null)
+        expect(screen.getByText("Keep Highlight")).not.toBe(null)
         expect(screen.getByText("Flatten & decolor")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
-        expect(screen.queryByText("Keep Highlight")).toBe(null)
         expect(document.querySelector("cc-mark-folder-row")).toBe(null)
     })
 
@@ -158,12 +158,12 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Exclude")).not.toBe(null)
     })
 
-    it("should draw a single divider before Flatten when a file in the sunburst has no focus actions", async () => {
+    it("should set the highlight apart from the path and from Flatten for a file in the sunburst", async () => {
         // Arrange & Act
         const { container } = await renderMenu({ node: fileNode, origin: "radialMap", isRadialLayout: true })
 
         // Assert
-        expect(container.querySelectorAll(".border-t")).toHaveLength(1)
+        expect(container.querySelectorAll(".border-t")).toHaveLength(2)
     })
 
     it("should keep the divider before the focus actions of a folder in the sunburst", async () => {
