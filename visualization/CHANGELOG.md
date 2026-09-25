@@ -12,20 +12,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Radial treemap map layout**: choose "Radial TreeMap" to see the folder you are in ring by ring as in the sunburst, with each folder's files packed as a treemap instead of thin slices, and click your way in and out.
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its highest, lowest or middle file, and tints folders by it or keeps them a neutral grey.
 - **Levels in the radial layouts**: a slider in the layout picker sets how many folder levels, from 1 to 10, the sunburst and radial treemap show around the centre.
+- **Search in the radial layouts**: searching the explorer greys out what the search misses in the sunburst and radial treemap, as in the 3D map, while the folders leading to a hit keep their colour.
 
 ### Changed
 
 - **Flatten & decolor**: the context menu names what flattening a node does, since it also greys the node out.
 - **Sunburst labels**: names in the sunburst curve along wide segments and run straight along narrow ones, as in the radial treemap.
-- **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 - **Clicking beside the words keeps your file**: clicking the domain cloud where no word is drawn only unpins the open word, and the cloud stays on the file or folder you selected.
 - **Explorer keeps its open folders**: switching the explorer to Words or collapsing it and coming back shows the files with the same folders open as before.
-- 
+- **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.
+
 ### Fixed 🐞
 
-- **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.
 - **Faded pieces after hovering**: moving the pointer off the sunburst or radial treemap no longer leaves the rest of the map faded until you hover it again.
-- **Search in the radial layouts**: searching the explorer greys out what the search misses in the sunburst and radial treemap, as in the 3D map, while the folders leading to a hit keep their colour.
 - **Color setup after the sunburst**: switching to the sunburst or radial treemap and back keeps your color metric and color range, and picking a color metric there unlinks it from the height metric.
 
 ## [2.6.0] - 2026-09-23
