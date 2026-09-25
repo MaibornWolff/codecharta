@@ -1,7 +1,7 @@
 ---
 name: Radial maps show the selection, file-extension hover, kept highlights and marked folders
 issue: none
-state: progress
+state: complete
 version: 1
 ---
 
@@ -14,6 +14,7 @@ the file-extension bar highlights the matching files, and the context menu offer
 
 ### 1. Mark the selection
 - The piece of the selected node is filled with the selection map colour, as the 3D map fills the selected building
+- Never the centre: stepping in or out selects the folder that becomes the centre
 
 ### 2. Highlight a hovered file extension
 - The hovered extensions move into transient shared state, written by the file-extension bar service
@@ -36,10 +37,15 @@ the file-extension bar highlights the matching files, and the context menu offer
 - [x] Complete Task 1: Mark the selection
 - [x] Complete Task 2: Highlight a hovered file extension
 - [x] Complete Task 3: Keep Highlight in shared state
-- [ ] Complete Task 4: Mark folder
-- [ ] Complete Task 5: Changelog
-- [ ] Run format check, tests, lint and type check
+- [x] Complete Task 4: Mark folder
+- [x] Complete Task 5: Changelog
+- [x] Run format check, tests, lint and type check
 
 ## Notes
 
 - New shared-view keys are transient: never restored from IndexedDB, like the hovered and selected paths
+- Faded pieces use see-through colours, not opacity: ECharts animates the opacity back after a hover and overwrote
+  a fade drawn meanwhile
+- Leaving the file type bar in 3D no longer drops a kept highlight (the kept highlight now lives in shared state)
+- Verified: unit tests, biome, type check, depcruise, knip; radial, node menu, metric bar, codeMap and e2e-folder
+  Playwright suites on a Linux build (one flaky domain screenshot test passed on rerun)

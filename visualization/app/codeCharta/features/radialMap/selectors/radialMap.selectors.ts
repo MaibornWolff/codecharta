@@ -4,6 +4,7 @@ import {
     calculateFolderValues,
     filePathsWhere,
     RadialColoring,
+    RadialFolderColoring,
     RadialHighlight,
     RadialMetrics,
     RadialNode
@@ -30,6 +31,7 @@ import {
     currentFocusedNodePathSelector,
     hoveredFileExtensionsSelector,
     keptHighlightPathsSelector,
+    markedPackagesSelector,
     selectedNodePathSelector
 } from "../../../stores/sharedView/sharedView.read.facade"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
@@ -62,12 +64,13 @@ export const radialFolderValuesSelector = createSelector(
         unifiedMapNode ? calculateFolderValues(unifiedMapNode, { ...metrics, folderValue, isFlat }) : new Map()
 )
 
-const radialFolderColoringSelector = createSelector(
+export const radialFolderColoringSelector = createSelector(
     radialFolderValuesSelector,
     radialFolderValueSelector,
     radialFolderStyleSelector,
     radialFolderTintSelector,
-    (values, value, style, tint) => ({ values, value, style, tint })
+    markedPackagesSelector,
+    (values, value, style, tint, markedPackages): RadialFolderColoring => ({ values, value, style, tint, markedPackages })
 )
 
 export const radialHighlightSelector = createSelector(

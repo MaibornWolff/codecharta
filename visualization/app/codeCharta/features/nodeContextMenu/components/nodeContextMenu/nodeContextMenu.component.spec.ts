@@ -137,7 +137,7 @@ describe("nodeContextMenu component", () => {
     it.each([
         "radialMap",
         "explorer"
-    ] as const)("should offer the highlight but leave out folder marking in the sunburst for a right-click from the %s", async origin => {
+    ] as const)("should offer the highlight and folder marking in the sunburst for a right-click from the %s", async origin => {
         // Arrange & Act
         await renderMenu({ node: folderNode, origin, isRadialLayout: true })
 
@@ -146,7 +146,7 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Keep Highlight")).not.toBe(null)
         expect(screen.getByText("Flatten & decolor")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
-        expect(document.querySelector("cc-mark-folder-row")).toBe(null)
+        expect(document.querySelector("cc-mark-folder-row")).not.toBe(null)
     })
 
     it("should not offer to focus a file while the sunburst is shown, which cannot centre on one", async () => {
@@ -166,12 +166,12 @@ describe("nodeContextMenu component", () => {
         expect(container.querySelectorAll(".border-t")).toHaveLength(2)
     })
 
-    it("should keep the divider before the focus actions of a folder in the sunburst", async () => {
+    it("should set the view actions, Flatten and the folder marking apart for a folder in the sunburst", async () => {
         // Arrange & Act
         const { container } = await renderMenu({ node: folderNode, origin: "radialMap", isRadialLayout: true })
 
         // Assert
-        expect(container.querySelectorAll(".border-t")).toHaveLength(2)
+        expect(container.querySelectorAll(".border-t")).toHaveLength(3)
     })
 
     it("should offer Show in Explorer for a right-click in the sunburst", async () => {

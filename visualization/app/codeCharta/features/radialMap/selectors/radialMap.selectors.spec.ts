@@ -5,6 +5,7 @@ import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
 import { NO_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import {
     radialColoringSelector,
+    radialFolderColoringSelector,
     radialFolderValuesSelector,
     radialHighlightSelector,
     radialMetricsSelector,
@@ -30,7 +31,13 @@ function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedDa
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
-const FOLDERS = { values: new Map([["/root", 1]]), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
+const FOLDERS = {
+    values: new Map([["/root", 1]]),
+    value: RadialFolderValue.Max,
+    style: RadialFolderStyle.Tinted,
+    tint: 0.5,
+    markedPackages: []
+}
 const HIGHLIGHT = { selectedPath: "/root/b.ts", litPaths: new Set<string>() }
 
 describe("radialTreeSelector", () => {
@@ -166,6 +173,25 @@ describe("radialHighlightSelector", () => {
 
         // Assert
         expect(highlight.litPaths.size).toBe(0)
+    })
+})
+
+describe("radialFolderColoringSelector", () => {
+    it("should carry the marked folders, which take their mark colour", () => {
+        // Arrange
+        const markedPackages = [{ path: "/root/src", color: "#ff00ff" }]
+
+        // Act
+        const folders = radialFolderColoringSelector.projector(
+            new Map(),
+            RadialFolderValue.Max,
+            RadialFolderStyle.Tinted,
+            0.5,
+            markedPackages
+        )
+
+        // Assert
+        expect(folders.markedPackages).toBe(markedPackages)
     })
 })
 

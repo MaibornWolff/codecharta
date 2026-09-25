@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Selection in the radial layouts**: the file you select takes the selection colour in the sunburst and radial treemap, as in the 3D map.
 - **File types in the radial layouts**: hovering a file type in the bar below the map lights up those files in the sunburst and radial treemap and fades the rest.
 - **Keep Highlight in the radial layouts**: the context menu of the sunburst and radial treemap keeps a file or folder lit while the rest of the map fades, until you remove it or click the map.
+- **Folder marks in the radial layouts**: folders you mark with a colour from the context menu or the colour settings take that colour in the sunburst and radial treemap, the folders inside them too.
 
 ### Changed
 
