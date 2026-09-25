@@ -35,6 +35,17 @@ describe("nodeColor", () => {
         expect(colors).toEqual([defaultMapColors.selected, defaultMapColors.selected])
     })
 
+    it("should leave the centre in its own colour when it is the selected node, since stepping in or out selects it", () => {
+        // Arrange
+        const coloring = { ...TEST_COLORING, highlight: { ...TEST_COLORING.highlight, selectedPath: FOLDER } }
+
+        // Act
+        const color = nodeColor({ ...folder(undefined), isCentre: true }, coloring)
+
+        // Assert
+        expect(color).toBe(defaultMapColors.base)
+    })
+
     describe("for files", () => {
         it("should classify a value on the map's colour range unchanged, just like a building", () => {
             // Act

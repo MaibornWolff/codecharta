@@ -66,7 +66,7 @@ function toDatum({ node, isCentre }: RadialPlacement, { centre, coloring }: Radi
         ...describeNode(node, coloring),
         id: `${centre.path}|${node.path}`,
         isCentre,
-        color: nodeColor(node, coloring),
+        color: nodeColor({ ...node, isCentre }, coloring),
         isFaded: litPaths.size > 0 && !litPaths.has(node.path)
     }
 }

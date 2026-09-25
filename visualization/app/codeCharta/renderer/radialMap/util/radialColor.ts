@@ -37,11 +37,11 @@ const GREEN_LUMA_WEIGHT = 0.587
 const BLUE_LUMA_WEIGHT = 0.114
 const MAX_CHANNEL_VALUE = 255
 
-type ColoredNode = Pick<RadialNode, "path" | "isFile" | "colorValue" | "isFlat">
+type ColoredNode = Pick<RadialNode, "path" | "isFile" | "colorValue" | "isFlat"> & { isCentre?: boolean }
 
-export function nodeColor({ path, isFile, colorValue, isFlat }: ColoredNode, coloring: RadialColoring): string {
+export function nodeColor({ path, isFile, colorValue, isFlat, isCentre = false }: ColoredNode, coloring: RadialColoring): string {
     const { mapColors } = coloring
-    if (path === coloring.highlight.selectedPath) {
+    if (!isCentre && path === coloring.highlight.selectedPath) {
         return mapColors.selected
     }
     if (colorValue === undefined) {
