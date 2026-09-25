@@ -36,7 +36,7 @@
 
 ### Expected file-level edges (written before the first parser run)
 
-Paths are relative to `training/c`; `inc` abbreviates `include/de/sots/cellarsandcentaurs`. An edge is listed when
+Paths are relative to `sample-projects/c`; `inc` abbreviates `include/de/sots/cellarsandcentaurs`. An edge is listed when
 the file references a declaration of the target file (type in a field, parameter, return, cast, compound literal,
 forward declaration) or calls a function / uses a constant declared there. Pure `#include` of a header without using
 anything from it (`creature_util.h -> fightable.h`) is deliberately not expected. Barrel and umbrella headers are

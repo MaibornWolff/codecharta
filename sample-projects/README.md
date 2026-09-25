@@ -1,4 +1,4 @@
-# Training projects
+# Sample projects
 
 One small "Cellars and Centaurs" project per language, used to check what the `dependencyparser` and the
 `domainlanguageparser` of CodeCharta find in each language. The projects do not need to compile. They are
@@ -10,7 +10,7 @@ This folder is excluded from Biome and Sonar.
 ## Layout
 
 ```
-training/
+sample-projects/
   README.md                 this spec
   tools/dump_lenses.py      prints the dependency and domain lens of a cc.json as plain text
   <language>/
@@ -106,13 +106,13 @@ CLI and do not change anything under `analysis/` or `visualization/`.
 ```bash
 REPO=$(git rev-parse --show-toplevel)
 CCSH="$REPO/analysis/build/install/codecharta-analysis/bin/ccsh"
-LANG_DIR="$REPO/training/<language>"
+LANG_DIR="$REPO/sample-projects/<language>"
 mkdir -p "$LANG_DIR/output"
 "$CCSH" dependencyparser -nc "$LANG_DIR" -e "output,FINDINGS.md" -o "$LANG_DIR/output/dependency.cc.json"
 "$CCSH" dependencyparser -nc "$LANG_DIR" -e "output,FINDINGS.md" --include-tests -o "$LANG_DIR/output/dependency-with-tests.cc.json"
 "$CCSH" domainlanguageparser -nc "$LANG_DIR" -e "output,FINDINGS.md" -o "$LANG_DIR/output/domain.cc.json"
-python3 "$REPO/training/tools/dump_lenses.py" "$LANG_DIR/output/dependency.cc.json"
-python3 "$REPO/training/tools/dump_lenses.py" "$LANG_DIR/output/domain.cc.json" --words 40
+python3 "$REPO/sample-projects/tools/dump_lenses.py" "$LANG_DIR/output/dependency.cc.json"
+python3 "$REPO/sample-projects/tools/dump_lenses.py" "$LANG_DIR/output/domain.cc.json" --words 40
 ```
 
 Options worth a second run when judging a finding: `--verbose` on both parsers, `--stop-word-level MINIMAL`

@@ -7,23 +7,23 @@ version: 1
 
 ## Goal
 
-Create one "Cellars and Centaurs" example project per supported language under `training/`, run the
+Create one "Cellars and Centaurs" example project per supported language under `sample-projects/`, run the
 dependency parser and the domain language parser on each, and record what each parser gets right, wrong
 or misses.
 
 ## Tasks
 
 ### 1. Shared spec and tooling
-- `training/README.md` with the shared model, stress constructs, planted comments, commands and report template
-- `training/tools/dump_lenses.py` to print both lenses as plain text
-- exclude `training/` from Biome and Sonar
+- `sample-projects/README.md` with the shared model, stress constructs, planted comments, commands and report template
+- `sample-projects/tools/dump_lenses.py` to print both lenses as plain text
+- exclude `sample-projects/` from Biome and Sonar
 
 ### 2. One project per language (18 languages, union of both parsers)
 - one agent per language via a workflow, all in parallel
-- each agent writes the project, runs both parsers, writes `training/<language>/FINDINGS.md`
+- each agent writes the project, runs both parsers, writes `sample-projects/<language>/FINDINGS.md`
 
 ### 3. Summary
-- `training/SUMMARY.md` with a cross-language table and the ranked list of parser defects
+- `sample-projects/SUMMARY.md` with a cross-language table and the ranked list of parser defects
 
 ## Steps
 

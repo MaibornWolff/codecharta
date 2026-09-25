@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name = 'cellars_and_centaurs'
   spec.version = De::Sots::CellarsAndCentaurs::VERSION
   spec.authors = ['Sots']
-  spec.summary = 'Creatures, centaurs and cellars for the CodeCharta training project'
+  spec.summary = 'Creatures, centaurs and cellars for the CodeCharta sample project'
   spec.files = Dir['lib/**/*.rb', 'lib/tasks/*.rake']
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 3.1'

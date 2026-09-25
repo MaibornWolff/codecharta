@@ -2,7 +2,7 @@
 
 ## Expected file-level edges (written before the first parser run)
 
-Paths relative to `training/php`. Namespace `De\Sots\CellarsAndCentaurs\...` maps to `src/...` (PSR-4).
+Paths relative to `sample-projects/php`. Namespace `De\Sots\CellarsAndCentaurs\...` maps to `src/...` (PSR-4).
 
 ```
 src/Domain/Model/Creature.php            -> CreatureId, CreatureType, ArmorClass, HitPoints, Fightable (implements), HasSpeeds (trait), Dice (rollD20 free function), src/Application/CreatureFacade.php (STANDARD_CREATURE_TYPE, upward, cyclic)
@@ -68,8 +68,8 @@ Expected upward edges (domain -> application, adapter -> application): Creature 
 Commands (both ran without error, exit 0, stderr in `output/*.stderr.txt`):
 
 ```
-ccsh dependencyparser -nc training/php -e "output,FINDINGS.md" -o output/dependency.cc.json                  -> 23 leaves, 33 file edges
-ccsh dependencyparser -nc training/php -e "output,FINDINGS.md" --include-tests -o output/dependency-with-tests.cc.json -> 24 leaves, 39 file edges
+ccsh dependencyparser -nc sample-projects/php -e "output,FINDINGS.md" -o output/dependency.cc.json                  -> 23 leaves, 33 file edges
+ccsh dependencyparser -nc sample-projects/php -e "output,FINDINGS.md" --include-tests -o output/dependency-with-tests.cc.json -> 24 leaves, 39 file edges
 ```
 
 To isolate causes I ran the parser on a 10-file throw-away project in the scratchpad (not kept). Its result is quoted as "isolated test" below.
@@ -120,7 +120,7 @@ Language vs. CodeCharta: PHP has namespaces and `use` imports, but no module sys
 Commands (all ran without error unless noted, outputs kept in `output/`):
 
 ```
-domainlanguageparser -nc training/php -e "output,FINDINGS.md" -o output/domain.cc.json                 (default: MODERATE, tests included)
+domainlanguageparser -nc sample-projects/php -e "output,FINDINGS.md" -o output/domain.cc.json                 (default: MODERATE, tests included)
 ... --stop-word-level MINIMAL     -> output/domain-minimal.cc.json
 ... --stop-word-level AGGRESSIVE  -> output/domain-aggressive.cc.json
 ... --exclude-tests               -> output/domain-no-tests.cc.json

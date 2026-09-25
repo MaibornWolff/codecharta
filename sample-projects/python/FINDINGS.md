@@ -48,7 +48,7 @@ Expected cycles: `creature.py -> A/__init__.py -> creature_facade.py -> creature
 Expected upward edges: domain -> application (`creature.py`, `armor_class.py`).
 
 ## Dependency parser
-- Commands (README "How to run", `LANG_DIR=training/python`): `dependencyparser -nc ... -e "output,FINDINGS.md" -o output/dependency.cc.json` and the same with `--include-tests -o output/dependency-with-tests.cc.json`. Both exited 0, no errors or warnings in `output/dependency*.stderr.log`. Result: 51 file edges (56 with tests), 47 leaves, 63 leaf edges.
+- Commands (README "How to run", `LANG_DIR=sample-projects/python`): `dependencyparser -nc ... -e "output,FINDINGS.md" -o output/dependency.cc.json` and the same with `--include-tests -o output/dependency-with-tests.cc.json`. Both exited 0, no errors or warnings in `output/dependency*.stderr.log`. Result: 51 file edges (56 with tests), 47 leaves, 63 leaf edges.
 
 | Construct | Expected edge(s) | Found | Verdict |
 | --- | --- | --- | --- |

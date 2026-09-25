@@ -37,6 +37,6 @@ is at stake.
 
 - C++ header/source pairs stay folded into one node before leaves are built, so such a class lists only
   its source file; unfolding them would bring back the `.cpp` → `.h` file edges
-- On this repo 43 leaves span several files, all in `training/` (one class copied across languages)
+- On this repo 43 leaves span several files, all in `sample-projects/` (one class copied across languages)
 - Considered and not done now: a `language` on leaves (only surfaces key collisions, mostly a
-  `training/` artefact) and `name`/`nodeId` on namespaces
+  `sample-projects/` artefact) and `name`/`nodeId` on namespaces

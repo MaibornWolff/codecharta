@@ -44,7 +44,7 @@
       "!**/gh-pages/**",
       "!**/*.gradle.kts",
       "!**/*.toml",
-      "!**/training/**"
+      "!**/sample-projects/**"
     ]
   },
   "formatter": {
@@ -198,7 +198,7 @@
         "noWith": "error"
       }
     },
-    "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js", "!**/training/**"]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!**/*.js", "!**/sample-projects/**"]
   },
   "css": {
     "parser": {

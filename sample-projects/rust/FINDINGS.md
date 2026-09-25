@@ -186,7 +186,7 @@
 
 ## Expected file-level edges (written before the first run)
 
-Paths relative to `training/rust/`, `m/` = `src/domain/model/`, `s/` = `src/domain/service/`,
+Paths relative to `sample-projects/rust/`, `m/` = `src/domain/model/`, `s/` = `src/domain/service/`,
 `p/` = `src/adapter/persistence/`, `a/` = `src/application/`. Barrel re-exports (`pub use` in the
 `mod.rs` files) are expected to be folded, so the edge should land on the defining file.
 

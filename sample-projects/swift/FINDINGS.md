@@ -45,7 +45,7 @@ Package.swift -> (manifest: target CellarsAndCentaursPersistence depends on targ
 - What the language offers natively: a module per SwiftPM target, whole-module visibility without imports, `import` only for other modules. Everything inside the training project (all edges above) has to be resolved by CodeCharta from bare type names, exactly like a C# project with `global using` for every namespace; there is no import line to hang an edge on.
 
 ## Domain language parser
-- Commands (all from the README, `LANG_DIR=training/swift`, stderr redirected to `output/*.stderr.log`):
+- Commands (all from the README, `LANG_DIR=sample-projects/swift`, stderr redirected to `output/*.stderr.log`):
   - `domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json` : ok, 26 files, 39 nodes.
   - `--exclude-tests` -> `output/domain-exclude-tests.cc.json` : ok, 25 files.
   - `--stop-word-level MINIMAL` / `AGGRESSIVE` -> `output/domain-minimal.cc.json` / `output/domain-aggressive.cc.json` : ok.

@@ -82,8 +82,8 @@ PersistedCreatures -> Api.
 Commands (both ran without error, exit 0, stderr in `output/*.stderr.log`; `--verbose` adds nothing for Delphi):
 
 ```
-ccsh dependencyparser -nc training/delphi -e "output,FINDINGS.md" -o output/dependency.cc.json
-ccsh dependencyparser -nc training/delphi -e "output,FINDINGS.md" --include-tests -o output/dependency-with-tests.cc.json
+ccsh dependencyparser -nc sample-projects/delphi -e "output,FINDINGS.md" -o output/dependency.cc.json
+ccsh dependencyparser -nc sample-projects/delphi -e "output,FINDINGS.md" --include-tests -o output/dependency-with-tests.cc.json
 ```
 
 Result: 21 file nodes, 23 leaves, 32 file edges, 33 leaf edges, no cycle, no upward edge. All 32 reported

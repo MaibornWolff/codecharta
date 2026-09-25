@@ -67,13 +67,13 @@ and after.
   "style" commit so the move commit stays a pure move.
 - Add the module to `analysis/NEW_TO_ANALYSIS.md` (module list) and one CHANGELOG line under Unreleased:
   "TreeSitterExcavationSite is now a module of the analysis build instead of an external library".
-- Add `training/tools/TseProbe.java` note: compile against the module jar or the fat jar, unchanged.
+- Add `sample-projects/tools/TseProbe.java` note: compile against the module jar or the fat jar, unchanged.
 - Delete `Ideas/TreeSitterExcavationSite` after the move (it is gitignored in Ideas; confirm with the user
   before deleting, the checkout carries the Ideas-local git history).
 
 ### 5. Verify no behaviour change
 - `./gradlew build` (unit tests of the module and of all parsers) and `./gradlew integrationTest`.
-- Rerun the three README commands from `training/README.md` for one TSE language (kotlin) and one
+- Rerun the three README commands from `sample-projects/README.md` for one TSE language (kotlin) and one
   own-analyzer language (python) and diff `output/*.cc.json` against the committed files: identical apart
   from the checksum field is the acceptance criterion.
 - The Delphi test that reads `./spring4d/...` is guarded by an `assumeTrue` and skips when the folder is
@@ -112,7 +112,7 @@ and after.
 - `Ideas/TreeSitterExcavationSite` is deliberately kept: it is gitignored and its git history is the only
   local copy, so it stays available for comparing against the module.
 - Verification: `./gradlew build` and `./gradlew integrationTest` green; the module's 3094 tests pass with 4
-  skipped (the Delphi `spring4d` ones). The three `training/README.md` commands for kotlin and python
+  skipped (the Delphi `spring4d` ones). The three `sample-projects/README.md` commands for kotlin and python
   produce files byte-identical to the committed ones, checksum included. The fat jar carries the tsx and
   pascal natives without the `from(zipTree)` trick, and `cyclonedxbom` lists the module and all 20 grammars.
 
@@ -121,5 +121,5 @@ and after.
   (catalog and consumer wiring), (3) optional `style(analysis): ktlintFormat treeSitterExcavationSite`.
 - Consumers use exactly three entry points: `TreeSitterDependencies.analyze`, `TreeSitterExtraction.extract`,
   `TreeSitterMetrics.parse`. Nothing else from the library is referenced outside the module.
-- Follow-up work (not in this plan): fix the resolver-side defects from `training/SUMMARY.md`, then the
+- Follow-up work (not in this plan): fix the resolver-side defects from `sample-projects/SUMMARY.md`, then the
   TSE-side gaps inside the module, then migrate the PHP, Go, Python and Vue analyzers onto TSE mappings.

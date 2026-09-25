@@ -27,7 +27,7 @@
 
 ### Expected file-level edges (written before the first run)
 
-Derived from actual type / function usages in the source, not from import lines. Paths relative to `training/go`.
+Derived from actual type / function usages in the source, not from import lines. Paths relative to `sample-projects/go`.
 
 | from | to |
 | --- | --- |

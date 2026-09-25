@@ -79,7 +79,7 @@ Expected cycles: Creature -> CreatureFacade -> CreatureService -> Creatures -> C
 Expected upward edges: ArmorClass -> CreatureUtil, Creature -> CreatureFacade, PersistedCreatures -> CreatureFacade.
 
 ## Dependency parser
-- Commands (from the README, `LANG_DIR=training/csharp`): `dependencyparser -nc ... -o output/dependency.cc.json`
+- Commands (from the README, `LANG_DIR=sample-projects/csharp`): `dependencyparser -nc ... -o output/dependency.cc.json`
   and the same with `--include-tests -o output/dependency-with-tests.cc.json`. Both exit 0, no analyzer warnings
   (only the JVM native-access warning and "No .gitignore found"). 22 leaves / 41 file edges without tests,
   23 leaves / 49 file edges with tests. Stderr is in `output/*.stderr.txt`.

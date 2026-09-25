@@ -68,7 +68,7 @@
   `dice.p` would need kinds for temp-table / function / procedure, which the current kind set does not have.
 
 ## Domain language parser
-- Commands (all from the README, `LANG_DIR=training/abl`, stderr in `output/*.stderr.log`); all exit 0 unless noted:
+- Commands (all from the README, `LANG_DIR=sample-projects/abl`, stderr in `output/*.stderr.log`); all exit 0 unless noted:
   - `domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json` (22 files, 41 nodes)
   - `--exclude-tests` -> `output/domain-exclude-tests.cc.json`
   - `--comment-weight 0` and `--string-weight 0` fail with `IllegalArgumentException: --comment-weight must be positive, got 0`

@@ -2,7 +2,7 @@
 
 ## Expected (written before running any parser)
 
-File-level `source` edges in the project as written (paths relative to `training/bash`):
+File-level `source` edges in the project as written (paths relative to `sample-projects/bash`):
 
 | from | to |
 | --- | --- |

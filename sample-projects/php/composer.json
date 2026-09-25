@@ -1,6 +1,6 @@
 {
   "name": "sots/cellars-and-centaurs",
-  "description": "Cellars and Centaurs training project for the CodeCharta dependency and domain language parsers",
+  "description": "Cellars and Centaurs sample project for the CodeCharta dependency and domain language parsers",
   "type": "project",
   "require": {
     "php": ">=8.1",

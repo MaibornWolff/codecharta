@@ -93,7 +93,7 @@
   for Ruby.
 
 ## Domain language parser
-- Commands (all from the README, `LANG_DIR=training/ruby`, stderr redirected to `output/*.stderr.log`):
+- Commands (all from the README, `LANG_DIR=sample-projects/ruby`, stderr redirected to `output/*.stderr.log`):
   - `domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json`: ok,
     "27 files processed", 27 leaves.
   - `--exclude-tests` -> `output/domain-exclude-tests.cc.json`: ok, 25 leaves.
@@ -247,7 +247,7 @@
      extension), `extend` / `prepend` as mixins, Zeitwerk constant-to-file mapping (fails for the second
      declaration in `dice.rb`), `require` with a computed path (must yield no edge, not a wrong one), a
      `Struct.new` constant as superclass with the same-name trap `Dto::Creature` vs `Model::Creature`,
-     and `const_get` with a literal string (`training/ruby/FINDINGS.md`, "Round 2").
+     and `const_get` with a literal string (`sample-projects/ruby/FINDINGS.md`, "Round 2").
   2. `Rakefile` (extension-less Ruby) is not analysed.
   3. No lemmatisation (`creature`/`creatures`, `cellar`/`cellars`, `centaur`/`centaurs` stay separate).
   4. No per-file metrics for Ruby (`lenses.metrics.attributes` is empty, `incoming_dependencies` /

@@ -79,7 +79,7 @@ language's own report counted (expected edges include test edges where the repor
     implementation are not distinguished; `export default` adds a synthetic `_DEFAULT_EXPORT` leaf (ts, vue, js).
 11. **Upward flag follows inferred levels, not layer names.** `adapter -> application` is not flagged upward in
     java, kotlin, php and vue because levelling puts the adapter above the application layer. Defensible, but
-    the hexagonal reading of the training projects expects it flagged.
+    the hexagonal reading of the sample projects expects it flagged.
 12. `--verbose` prints timing only; nothing about unresolved imports (typescript, rust).
 
 ## Domain language parser: defects ranked by impact
@@ -131,9 +131,9 @@ language's own report counted (expected edges include test edges where the repor
 
 ## Where to look
 
-Every `training/<language>/FINDINGS.md` starts with the expected edge list written before the parser ran, then
+Every `sample-projects/<language>/FINDINGS.md` starts with the expected edge list written before the parser ran, then
 the per-construct table with the exact file and construct, then the domain parser tables. The raw outputs and
-the variant runs (`--include-tests`, `MINIMAL`, `AGGRESSIVE`, changed weights) are in `training/<language>/output/`.
+the variant runs (`--include-tests`, `MINIMAL`, `AGGRESSIVE`, changed weights) are in `sample-projects/<language>/output/`.
 
 ## Round 2: the less common dependency forms
 
@@ -202,7 +202,7 @@ TreeSitterExcavationSite (TSE, `v0.12.0`) does the extraction for java, kotlin, 
 csharp, cpp (also used for c), delphi and rust: it returns declarations (name, type, parent path, used types
 with a namespace prefix and generics) and imports (path, wildcard flag, namespace path, binding name).
 CodeCharta's own tree-sitter analyzers handle php, go, python and vue entirely, so every finding for those four
-languages is ours. For the TSE languages, `training/tools/TseProbe.java` shows what TSE delivers; the split
+languages is ours. For the TSE languages, `sample-projects/tools/TseProbe.java` shows what TSE delivers; the split
 from running it on the defect files:
 
 | Defect | Where | Evidence |

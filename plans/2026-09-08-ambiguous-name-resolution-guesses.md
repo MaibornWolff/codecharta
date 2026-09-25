@@ -48,8 +48,8 @@ to resolve instead of guessing.
   DependaCharta, and all 75 are this. 73 collide on the target name, 2 on the source.
 - The two tools pick different candidates only because `SourceFileScanner` sorts by path while
   DependaCharta uses `File.walk()` order. Deterministic, but deterministically wrong.
-- `training/` is the worst case: 12 language copies of one project, so `Creature` is declared 20 times,
-  `CreatureId` 10, `Fightable` 11. Scoped to `training/rust` alone every type resolves correctly, so
+- `sample-projects/` is the worst case: 12 language copies of one project, so `Creature` is declared 20 times,
+  `CreatureId` 10, `Fightable` 11. Scoped to `sample-projects/rust` alone every type resolves correctly, so
   the shared root is the cause, not any one analyser.
 - Expect this to *lose* edges that are right today by luck; the contract samples and the comparison
   script are the measure of whether the trade is worth it.
