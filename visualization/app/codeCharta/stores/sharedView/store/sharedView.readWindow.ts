@@ -7,6 +7,7 @@ import { flattenedNodesSelector } from "./flattenedNodes/flattenedNodes.selector
 import { currentFocusedNodePathSelector } from "./focusedNodePath/currentFocused.selector"
 import { focusedNodePathSelector } from "./focusedNodePath/focusedNodePath.selector"
 import { hoveredNodePathSelector } from "./hoveredNodePath/hoveredNodePath.selector"
+import { keptHighlightPathsSelector } from "./keptHighlightPaths/keptHighlightPaths.selector"
 import { markedPackagesSelector } from "./markedPackages/markedPackages.selector"
 import { rightClickedNodeDataSelector } from "./rightClickedNodeData/rightClickedNodeData.selector"
 import { searchPatternSelector } from "./searchPattern/searchPattern.selector"
@@ -27,6 +28,7 @@ export class SharedViewReadWindow {
     readonly focusedNodePath$ = this.store.select(focusedNodePathSelector)
     readonly currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     readonly hoveredNodePath$ = this.store.select(hoveredNodePathSelector)
+    readonly keptHighlightPaths$ = this.store.select(keptHighlightPathsSelector)
     readonly markedPackages$ = this.store.select(markedPackagesSelector)
     readonly rightClickedNodeData$ = this.store.select(rightClickedNodeDataSelector)
     readonly searchPattern$ = this.store.select(searchPatternSelector)

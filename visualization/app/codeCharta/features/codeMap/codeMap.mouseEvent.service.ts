@@ -146,7 +146,7 @@ export class CodeMapMouseEventService implements OnDestroy {
 
     onFilesSelectionChanged() {
         this.threeSceneService.clearSelection()
-        this.threeSceneService.clearConstantHighlight()
+        this.codeMapStore.clearKeptHighlight()
         this.tooltipService.hide()
     }
 
@@ -338,7 +338,7 @@ export class CodeMapMouseEventService implements OnDestroy {
                 this.threeSceneService.clearSelection()
                 this.labelSettingsFacade.clearSelectionLabel()
             }
-            this.threeSceneService.clearConstantHighlight()
+            this.codeMapStore.clearKeptHighlight()
         }
         this.threeRendererService.render()
     }

@@ -4,9 +4,11 @@ import { ThreeMapVisibilityStore, ThreeRendererService, ThreeSceneService } from
 import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { SceneSelectionSyncService } from "./sceneSelectionSync.service"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 describe("SceneSelectionSyncService", () => {
     let selectedNodePath$: BehaviorSubject<string | null>
+    let keptHighlightPaths$: BehaviorSubject<string[]>
     let isMapShown$: BehaviorSubject<boolean>
     let selectedBuilding: { node: { path: string } } | null
     const threeSceneService = {
@@ -14,8 +16,9 @@ describe("SceneSelectionSyncService", () => {
         showSelection: jest.fn((path: string | null) => {
             selectedBuilding = path === null ? null : { node: { path } }
         }),
-        clearConstantHighlight: jest.fn()
+        showKeptHighlight: jest.fn()
     }
+    const codeMapStore = { clearKeptHighlight: jest.fn() }
     const threeRendererService = { render: jest.fn() }
     const codeMapMouseEventService = { drawLabelSelectedBuilding: jest.fn() }
 
@@ -23,14 +26,16 @@ describe("SceneSelectionSyncService", () => {
         jest.clearAllMocks()
         selectedBuilding = null
         selectedNodePath$ = new BehaviorSubject<string | null>(null)
+        keptHighlightPaths$ = new BehaviorSubject<string[]>([])
         isMapShown$ = new BehaviorSubject(true)
         TestBed.configureTestingModule({
             providers: [
-                { provide: SharedViewReadWindow, useValue: { selectedNodePath$ } },
+                { provide: SharedViewReadWindow, useValue: { selectedNodePath$, keptHighlightPaths$ } },
                 { provide: ThreeMapVisibilityStore, useValue: { isMapShown$ } },
                 { provide: ThreeSceneService, useValue: threeSceneService },
                 { provide: ThreeRendererService, useValue: threeRendererService },
-                { provide: CodeMapMouseEventService, useValue: codeMapMouseEventService }
+                { provide: CodeMapMouseEventService, useValue: codeMapMouseEventService },
+                { provide: CodeMapStore, useValue: codeMapStore }
             ]
         })
         TestBed.inject(SceneSelectionSyncService).start()
@@ -43,7 +48,7 @@ describe("SceneSelectionSyncService", () => {
         // Assert
         expect(threeSceneService.showSelection).toHaveBeenLastCalledWith("/root/scripts")
         expect(codeMapMouseEventService.drawLabelSelectedBuilding).toHaveBeenCalledWith({ node: { path: "/root/scripts" } })
-        expect(threeSceneService.clearConstantHighlight).toHaveBeenCalled()
+        expect(codeMapStore.clearKeptHighlight).toHaveBeenCalled()
         expect(threeRendererService.render).toHaveBeenCalled()
     })
 
@@ -85,5 +90,28 @@ describe("SceneSelectionSyncService", () => {
 
         // Assert
         expect(threeRendererService.render).not.toHaveBeenCalled()
+    })
+
+    it("should show the highlight another view kept", () => {
+        // Act
+        keptHighlightPaths$.next(["/root/scripts"])
+
+        // Assert
+        expect(threeSceneService.showKeptHighlight).toHaveBeenLastCalledWith(["/root/scripts"])
+    })
+
+    it("should catch up with a highlight kept while the map was hidden once it is shown again", () => {
+        // Arrange
+        isMapShown$.next(false)
+        keptHighlightPaths$.next(["/root/scripts"])
+
+        // Assert — nothing was painted while the map was hidden
+        expect(threeSceneService.showKeptHighlight).not.toHaveBeenCalledWith(["/root/scripts"])
+
+        // Act
+        isMapShown$.next(true)
+
+        // Assert
+        expect(threeSceneService.showKeptHighlight).toHaveBeenLastCalledWith(["/root/scripts"])
     })
 })

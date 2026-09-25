@@ -6,32 +6,21 @@ import {
     TEST_NODE_LEAF,
     TEST_NODE_LEAF_0_LENGTH,
     TEST_NODE_ROOT,
-    TEST_NODES,
-    VALID_FILE_NODE_WITH_ID,
-    VALID_NODES_WITH_ID
+    TEST_NODES
 } from "../../mocks/dataMocks"
-import { CcState, CodeMapNode, LayoutAlgorithm } from "../../model/codeCharta.model"
+import { CcState, LayoutAlgorithm } from "../../model/codeCharta.model"
 import { setEnableFloorLabels, setLayoutAlgorithm, setScaling } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
 import { selectedNodePathSelector } from "../../stores/sharedView/sharedView.read.facade"
-import { setSelectedNodePath } from "../../stores/sharedView/sharedView.write.facade"
-import { idToNodeSelector } from "../renderModel/renderModel.facade"
+import { keepHighlight, setSelectedNodePath } from "../../stores/sharedView/sharedView.write.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
-import { IdToBuildingService } from "./idToBuilding.service"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { ThreeSceneService } from "./threeSceneService"
 
-jest.mock("../renderModel/accumulatedData/idToNode.selector", () => ({
-    idToNodeSelector: jest.fn()
-}))
-const mockedIdToNodeSelector = jest.mocked(idToNodeSelector)
-
 describe("ThreeSceneService", () => {
     let threeSceneService: ThreeSceneService
     let state: State<CcState>
-    let idToBuildingService: IdToBuildingService
     let store: Store<CcState>
 
     beforeEach(() => {
@@ -41,7 +30,6 @@ describe("ThreeSceneService", () => {
         })
 
         state = TestBed.inject(State)
-        idToBuildingService = TestBed.inject(IdToBuildingService)
         store = TestBed.inject(Store)
 
         threeSceneService = TestBed.inject(ThreeSceneService)
@@ -198,74 +186,63 @@ describe("ThreeSceneService", () => {
         })
     })
 
-    describe("addNodeAndChildrenToConstantHighlight", () => {
+    describe("showKeptHighlight", () => {
+        const LEAF_PATH = "/root/big leaf"
+
         beforeEach(() => {
-            mockedIdToNodeSelector.mockImplementation(() => {
-                const idToNode = new Map<number, CodeMapNode>()
-                idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
-                idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
-                return idToNode
-            })
-            idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE])
             Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
+            threeSceneService["threeRendererService"].render = jest.fn()
         })
 
-        it("should add a node into constant highlight ", () => {
-            const result = new Map<number, CodeMapBuilding>()
-            result.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+        it("should light the buildings of the kept paths and repaint", () => {
+            // Arrange
+            jest.spyOn(threeSceneService, "applyHighlights")
 
-            threeSceneService.addNodeAndChildrenToConstantHighlight(VALID_FILE_NODE_WITH_ID)
+            // Act
+            threeSceneService.showKeptHighlight([LEAF_PATH, "/root/not drawn"])
 
-            expect(threeSceneService["constantHighlight"]).toEqual(result)
+            // Assert
+            expect([...threeSceneService.getConstantHighlight().values()].map(({ node }) => node.path)).toEqual([LEAF_PATH])
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
 
-        it("should add the folder and its children into constant highlight", () => {
-            const result = new Map<number, CodeMapBuilding>()
-            result.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
-            result.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+        it("should clear the highlight once nothing is kept any more", () => {
+            // Arrange
+            threeSceneService.showKeptHighlight([LEAF_PATH])
+            jest.spyOn(threeSceneService, "applyClearHighlights")
 
-            threeSceneService.addNodeAndChildrenToConstantHighlight(VALID_NODES_WITH_ID)
+            // Act
+            threeSceneService.showKeptHighlight([])
 
-            expect(threeSceneService["constantHighlight"]).toEqual(result)
-        })
-    })
-
-    describe("removeNodeAndChildrenFromConstantHighlight", () => {
-        beforeEach(() => {
-            mockedIdToNodeSelector.mockImplementation(() => {
-                const idToNode = new Map<number, CodeMapNode>()
-                idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
-                idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
-                return idToNode
-            })
-            idToBuildingService.setIdToBuilding([CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE])
+            // Assert
+            expect(threeSceneService.getConstantHighlight().size).toBe(0)
+            expect(threeSceneService.applyClearHighlights).toHaveBeenCalled()
         })
 
-        it("should remove the building from constant Highlight ", () => {
-            const result = new Map<number, CodeMapBuilding>()
-            result.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+        it("should not repaint while nothing was or is kept", () => {
+            // Arrange
+            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(threeSceneService, "applyClearHighlights")
 
-            threeSceneService.removeNodeAndChildrenFromConstantHighlight(VALID_FILE_NODE_WITH_ID)
+            // Act
+            threeSceneService.showKeptHighlight([])
 
-            expect(threeSceneService["constantHighlight"]).toEqual(result)
+            // Assert
+            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
+            expect(threeSceneService.applyClearHighlights).not.toHaveBeenCalled()
         })
 
-        it("should remove the folder and its children from constant Highlight ", () => {
-            const result = new Map()
+        it("should find the kept buildings again on a rebuilt mesh", () => {
+            // Arrange
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
+            store.dispatch(keepHighlight({ paths: [LEAF_PATH] }))
+            const rebuiltMesh = new CodeMapMesh(TEST_NODES, state.getValue(), false)
 
-            threeSceneService.removeNodeAndChildrenFromConstantHighlight(VALID_NODES_WITH_ID)
+            // Act
+            threeSceneService.setMapMesh(TEST_NODES, rebuiltMesh)
 
-            expect(threeSceneService["constantHighlight"]).toEqual(result)
-        })
-    })
-
-    describe("clearConstantHighlight", () => {
-        it("should clear all the constant highlighted buildings ", () => {
-            threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
-
-            threeSceneService.clearConstantHighlight()
-
-            expect(threeSceneService["constantHighlight"].size).toEqual(0)
+            // Assert
+            expect([...threeSceneService.getConstantHighlight().values()]).toEqual([rebuiltMesh.getBuildingByPath(LEAF_PATH)])
         })
     })
 

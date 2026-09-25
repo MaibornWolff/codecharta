@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core"
-import { hierarchy } from "d3-hierarchy"
 import { Subject } from "rxjs"
 import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
-import { CcState, CodeMapNode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
+import { CcState, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { getMarkingColor } from "../../util/codeMapHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
@@ -291,31 +290,28 @@ export class ThreeSceneService implements OnDestroy {
         }
     }
 
-    addNodeAndChildrenToConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
-        const idToNode = this.threeSceneStore.getIdToNode()
-        const codeMapBuilding = idToNode.get(codeMapNode.id)
-        for (const { data } of hierarchy(codeMapBuilding)) {
-            const building = this.idToBuilding.get(data.id)
+    /** Shows the highlight the store keeps, which another view can change while this mesh is not drawn. */
+    showKeptHighlight(paths: readonly string[]) {
+        if (!this.mapMesh) {
+            return
+        }
+        const hadKeptHighlight = this.constantHighlight.size > 0
+        this.collectKeptHighlight(paths)
+        if (this.constantHighlight.size > 0) {
+            this.mapMesh.clearUnselectedBuildings(this.selected)
+            this.applyHighlights()
+        } else if (hadKeptHighlight) {
+            this.applyClearHighlights()
+        }
+    }
+
+    private collectKeptHighlight(paths: readonly string[]) {
+        this.constantHighlight.clear()
+        for (const path of paths) {
+            const building = this.mapMesh.getBuildingByPath(path)
             if (building) {
                 this.constantHighlight.set(building.id, building)
             }
-        }
-    }
-
-    removeNodeAndChildrenFromConstantHighlight(codeMapNode: Pick<CodeMapNode, "id">) {
-        const idToNode = this.threeSceneStore.getIdToNode()
-        const codeMapBuilding = idToNode.get(codeMapNode.id)
-        for (const { data } of hierarchy(codeMapBuilding)) {
-            const building = this.idToBuilding.get(data.id)
-            if (building) {
-                this.constantHighlight.delete(building.id)
-            }
-        }
-    }
-
-    clearConstantHighlight() {
-        if (this.constantHighlight.size > 0) {
-            this.clearHighlight()
         }
     }
 
@@ -377,6 +373,7 @@ export class ThreeSceneService implements OnDestroy {
 
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
         this.remapSelectedBuilding()
+        this.collectKeptHighlight(this.threeSceneStore.getKeptHighlightPaths())
 
         this.mapMeshChanged$.next()
     }
@@ -413,6 +410,7 @@ export class ThreeSceneService implements OnDestroy {
         this.initFloorLabels(nodes)
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
         this.remapSelectedBuilding()
+        this.collectKeptHighlight(this.threeSceneStore.getKeptHighlightPaths())
         this.mapMeshChanged$.next()
     }
 

@@ -1,30 +1,41 @@
 import { Injectable, inject, OnDestroy } from "@angular/core"
-import { combineLatest, filter, map, Subscription } from "rxjs"
+import { combineLatest, filter, map, Observable, Subscription } from "rxjs"
 import { ThreeMapVisibilityStore, ThreeRendererService, ThreeSceneService } from "../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CodeMapStore } from "./stores/codeMap.store"
 
 @Injectable({ providedIn: "root" })
 export class SceneSelectionSyncService implements OnDestroy {
     private readonly threeSceneService = inject(ThreeSceneService)
     private readonly threeRendererService = inject(ThreeRendererService)
     private readonly codeMapMouseEventService = inject(CodeMapMouseEventService)
+    private readonly codeMapStore = inject(CodeMapStore)
     private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
     private readonly threeMapVisibilityStore = inject(ThreeMapVisibilityStore)
     private subscription?: Subscription
 
     start(): void {
         this.subscription?.unsubscribe()
-        this.subscription = combineLatest([this.sharedViewReadWindow.selectedNodePath$, this.threeMapVisibilityStore.isMapShown$])
-            .pipe(
-                filter(([, isMapShown]) => isMapShown),
-                map(([selectedNodePath]) => selectedNodePath)
+        this.subscription = this.whileTheMapIsShown(this.sharedViewReadWindow.selectedNodePath$).subscribe(selectedNodePath =>
+            this.showOnTheMap(selectedNodePath)
+        )
+        this.subscription.add(
+            this.whileTheMapIsShown(this.sharedViewReadWindow.keptHighlightPaths$).subscribe(paths =>
+                this.threeSceneService.showKeptHighlight(paths)
             )
-            .subscribe(selectedNodePath => this.showOnTheMap(selectedNodePath))
+        )
     }
 
     ngOnDestroy(): void {
         this.subscription?.unsubscribe()
+    }
+
+    private whileTheMapIsShown<T>(value$: Observable<T>): Observable<T> {
+        return combineLatest([value$, this.threeMapVisibilityStore.isMapShown$]).pipe(
+            filter(([, isMapShown]) => isMapShown),
+            map(([value]) => value)
+        )
     }
 
     private showOnTheMap(selectedNodePath: string | null): void {
@@ -35,7 +46,7 @@ export class SceneSelectionSyncService implements OnDestroy {
             return
         }
         this.codeMapMouseEventService.drawLabelSelectedBuilding(selectedNow)
-        this.threeSceneService.clearConstantHighlight()
+        this.codeMapStore.clearKeptHighlight()
         this.threeRendererService.render()
     }
 }

@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { setHoveredFileExtensions } from "./hoveredFileExtensions/hoveredFileExtensions.actions"
 import { setHoveredNodePath } from "./hoveredNodePath/hoveredNodePath.actions"
+import { clearKeptHighlight, keepHighlight, removeKeptHighlight } from "./keptHighlightPaths/keptHighlightPaths.actions"
 import { NodeInteraction } from "./nodeInteraction"
 import { setSelectedNodePath } from "./selectedNodePath/selectedNodePath.actions"
 
@@ -43,5 +44,17 @@ describe("NodeInteraction", () => {
         // Assert
         expect(dispatch).toHaveBeenNthCalledWith(1, setHoveredFileExtensions({ value: ["ts"] }))
         expect(dispatch).toHaveBeenNthCalledWith(2, setHoveredFileExtensions({ value: [] }))
+    })
+
+    it("should keep a highlight, remove part of it and clear it", () => {
+        // Act
+        nodeInteraction.keepHighlight(["/root/src", "/root/src/a.ts"])
+        nodeInteraction.removeKeptHighlight(["/root/src/a.ts"])
+        nodeInteraction.clearKeptHighlight()
+
+        // Assert
+        expect(dispatch).toHaveBeenNthCalledWith(1, keepHighlight({ paths: ["/root/src", "/root/src/a.ts"] }))
+        expect(dispatch).toHaveBeenNthCalledWith(2, removeKeptHighlight({ paths: ["/root/src/a.ts"] }))
+        expect(dispatch).toHaveBeenNthCalledWith(3, clearKeptHighlight())
     })
 })

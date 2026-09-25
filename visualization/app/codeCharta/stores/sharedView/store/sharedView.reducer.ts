@@ -5,6 +5,7 @@ import { defaultFlattenedNodes, flattenedNodes } from "./flattenedNodes/flattene
 import { defaultFocusedNodePath, focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
 import { defaultHoveredFileExtensions, hoveredFileExtensions } from "./hoveredFileExtensions/hoveredFileExtensions.reducer"
 import { defaultHoveredNodePath, hoveredNodePath } from "./hoveredNodePath/hoveredNodePath.reducer"
+import { defaultKeptHighlightPaths, keptHighlightPaths } from "./keptHighlightPaths/keptHighlightPaths.reducer"
 import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
 import { defaultMetricRules, metricRules } from "./metricRules/metricRules.reducer"
 import { defaultRightClickedNodeData, rightClickedNodeData } from "./rightClickedNodeData/rightClickedNodeData.reducer"
@@ -20,6 +21,7 @@ export const sharedView = combineReducers({
     markedPackages,
     hoveredNodePath,
     hoveredFileExtensions,
+    keptHighlightPaths,
     selectedNodePath,
     rightClickedNodeData
 })
@@ -33,6 +35,7 @@ export const defaultSharedView: SharedView = {
     markedPackages: defaultMarkedPackages,
     hoveredNodePath: defaultHoveredNodePath,
     hoveredFileExtensions: defaultHoveredFileExtensions,
+    keptHighlightPaths: defaultKeptHighlightPaths,
     selectedNodePath: defaultSelectedNodePath,
     rightClickedNodeData: defaultRightClickedNodeData
 }

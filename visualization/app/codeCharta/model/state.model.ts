@@ -88,6 +88,7 @@ export interface SharedView {
     markedPackages: MarkedPackage[]
     hoveredNodePath: string | null
     hoveredFileExtensions: string[]
+    keptHighlightPaths: string[]
     selectedNodePath: string | null
     rightClickedNodeData: {
         nodeId: string

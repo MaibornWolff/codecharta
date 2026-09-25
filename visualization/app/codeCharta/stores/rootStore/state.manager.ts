@@ -37,6 +37,7 @@ const objectWithDynamicKeysInStore = new Set([
     "sharedView.markedPackages",
     "sharedView.focusedNodePath",
     "sharedView.hoveredFileExtensions",
+    "sharedView.keptHighlightPaths",
     // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
     "mapState.mapColors.markingColors",
     "files"
