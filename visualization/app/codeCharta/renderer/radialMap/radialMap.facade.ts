@@ -3,6 +3,6 @@ export { RadialChartComponent } from "./components/radialChart/radialChart.compo
 export type { RadialColoring, RadialHighlight } from "./util/radialColor"
 export { calculateFolderValues } from "./util/radialFolderValueCalculation"
 export type { RadialMetrics, RadialNode } from "./util/radialTree"
-export { buildRadialTree, findClosestFolder, findClosestNode, findParentFolder } from "./util/radialTree"
+export { buildRadialTree, filePathsWhere, findClosestFolder, findClosestNode, findParentFolder } from "./util/radialTree"
 export { radialTreemapShape } from "./util/radialTreemapOption.builder"
 export { sunburstShape } from "./util/sunburstOption.builder"

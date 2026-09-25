@@ -26,7 +26,7 @@ function coloringWithFolder(
 describe("nodeColor", () => {
     it("should fill the selected node with the selection colour, whatever colours it otherwise", () => {
         // Arrange
-        const coloring = { ...TEST_COLORING, highlight: { selectedPath: FOLDER } }
+        const coloring = { ...TEST_COLORING, highlight: { ...TEST_COLORING.highlight, selectedPath: FOLDER } }
 
         // Act
         const colors = [nodeColor(folder(25), coloring), nodeColor(folder(undefined, true), coloring)]

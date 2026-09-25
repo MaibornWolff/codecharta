@@ -112,6 +112,7 @@ describe("ExtensionRulesService", () => {
             metricRules: [],
             markedPackages: [],
             hoveredNodePath: null,
+            hoveredFileExtensions: [],
             selectedNodePath: null,
             rightClickedNodeData: null
         }

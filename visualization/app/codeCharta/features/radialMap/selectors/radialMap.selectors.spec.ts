@@ -1,6 +1,8 @@
 import { CodeMapNode, ColorMode, NodeType, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
+import { fileNode, folderNode } from "../../../renderer/radialMap/testing/radialChart.stub"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
+import { NO_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import {
     radialColoringSelector,
     radialFolderValuesSelector,
@@ -29,7 +31,7 @@ function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedDa
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
 const FOLDERS = { values: new Map([["/root", 1]]), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
-const HIGHLIGHT = { selectedPath: "/root/b.ts" }
+const HIGHLIGHT = { selectedPath: "/root/b.ts", litPaths: new Set<string>() }
 
 describe("radialTreeSelector", () => {
     it("should build the tree of the whole map when nothing is focused", () => {
@@ -116,10 +118,43 @@ describe("sunburst metrics and coloring", () => {
 describe("radialHighlightSelector", () => {
     it("should carry the selected node, to fill it with the selection colour", () => {
         // Act
-        const highlight = radialHighlightSelector.projector("/root/b.ts")
+        const highlight = radialHighlightSelector.projector("/root/b.ts", [], null)
 
         // Assert
         expect(highlight.selectedPath).toBe("/root/b.ts")
+    })
+
+    it("should light the files with a hovered file extension", () => {
+        // Arrange
+        const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, ["ts"], tree)
+
+        // Assert
+        expect([...highlight.litPaths]).toEqual(["/root/src/app/a.ts", "/root/b.ts"])
+    })
+
+    it("should light the files without an extension when none is hovered", () => {
+        // Arrange
+        const tree = folderNode("/root", [fileNode("/root/Makefile"), fileNode("/root/a.ts")])
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, [NO_EXTENSION], tree)
+
+        // Assert
+        expect([...highlight.litPaths]).toEqual(["/root/Makefile"])
+    })
+
+    it("should light nothing while no file extension is hovered", () => {
+        // Arrange
+        const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, [], tree)
+
+        // Assert
+        expect(highlight.litPaths.size).toBe(0)
     })
 })
 

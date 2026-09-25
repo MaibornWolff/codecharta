@@ -1,7 +1,7 @@
 import { Border, borderWidthThatFits, pieceAnimation, pieceBorder, WHITE } from "./radialChartStyle"
 import { nodeColor } from "./radialColor"
 import { describeNode, RadialDatum } from "./radialDatum"
-import { Frame, shapeElement, TWELVE_O_CLOCK } from "./radialElements"
+import { Frame, fadedElement, shapeElement, TWELVE_O_CLOCK } from "./radialElements"
 import { drawLabel } from "./radialLabel"
 import { AnnularSector, PlacedSector, RadialPlacement } from "./radialPlacement"
 import { RadialOptionInputs } from "./radialShape"
@@ -12,6 +12,7 @@ const WEDGE_OUTLINE = { color: WHITE, widthPx: 2.5 }
 export interface RadialPieceDatum extends RadialDatum {
     id: string
     color: string
+    isFaded: boolean
 }
 
 export interface PiecesStyle {
@@ -60,11 +61,13 @@ export function buildRadialPiecesOption(inputs: RadialOptionInputs, placements: 
 
 // A node is drawn from other pieces around another centre; reshaping the old ones left pieces stranded mid-animation.
 function toDatum({ node, isCentre }: RadialPlacement, { centre, coloring }: RadialOptionInputs): RadialPieceDatum {
+    const { litPaths } = coloring.highlight
     return {
         ...describeNode(node, coloring),
         id: `${centre.path}|${node.path}`,
         isCentre,
-        color: nodeColor(node, coloring)
+        color: nodeColor(node, coloring),
+        isFaded: litPaths.size > 0 && !litPaths.has(node.path)
     }
 }
 
@@ -94,7 +97,8 @@ interface Canvas {
 function drawPlacement(placement: RadialPlacement, datum: RadialPieceDatum, canvas: Canvas) {
     const pieces = placement.sectors.map(sector => drawSector(sector, datum.color, canvas))
     const labels = placement.sectors.map(sector => drawLabel(sector, datum, canvas.frame)).filter(label => label !== null)
-    return { type: "group", focus: canvas.focus, children: [...pieces, ...labels] }
+    const children = [...pieces, ...labels]
+    return { type: "group", focus: canvas.focus, children: datum.isFaded ? children.map(fadedElement) : children }
 }
 
 function drawSector(sector: PlacedSector, color: string, { frame, border }: Canvas) {

@@ -33,8 +33,8 @@ the file-extension bar highlights the matching files, and the context menu offer
 
 ## Steps
 
-- [ ] Complete Task 1: Mark the selection
-- [ ] Complete Task 2: Highlight a hovered file extension
+- [x] Complete Task 1: Mark the selection
+- [x] Complete Task 2: Highlight a hovered file extension
 - [ ] Complete Task 3: Keep Highlight in shared state
 - [ ] Complete Task 4: Mark folder
 - [ ] Complete Task 5: Changelog

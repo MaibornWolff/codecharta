@@ -3,6 +3,7 @@ import { SharedView } from "../../../model/codeCharta.model"
 import { defaultExcludedNodes, excludedNodes } from "./excludedNodes/excludedNodes.reducer"
 import { defaultFlattenedNodes, flattenedNodes } from "./flattenedNodes/flattenedNodes.reducer"
 import { defaultFocusedNodePath, focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
+import { defaultHoveredFileExtensions, hoveredFileExtensions } from "./hoveredFileExtensions/hoveredFileExtensions.reducer"
 import { defaultHoveredNodePath, hoveredNodePath } from "./hoveredNodePath/hoveredNodePath.reducer"
 import { defaultMarkedPackages, markedPackages } from "./markedPackages/markedPackages.reducer"
 import { defaultMetricRules, metricRules } from "./metricRules/metricRules.reducer"
@@ -18,6 +19,7 @@ export const sharedView = combineReducers({
     metricRules,
     markedPackages,
     hoveredNodePath,
+    hoveredFileExtensions,
     selectedNodePath,
     rightClickedNodeData
 })
@@ -30,6 +32,7 @@ export const defaultSharedView: SharedView = {
     metricRules: defaultMetricRules,
     markedPackages: defaultMarkedPackages,
     hoveredNodePath: defaultHoveredNodePath,
+    hoveredFileExtensions: defaultHoveredFileExtensions,
     selectedNodePath: defaultSelectedNodePath,
     rightClickedNodeData: defaultRightClickedNodeData
 }

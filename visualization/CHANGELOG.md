@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Levels in the radial layouts**: a slider in the layout picker sets how many folder levels, from 1 to 10, the sunburst and radial treemap show around the centre.
 - **Search in the radial layouts**: searching the explorer greys out what the search misses in the sunburst and radial treemap, as in the 3D map, while the folders leading to a hit keep their colour.
 - **Selection in the radial layouts**: the file or folder you select takes the selection colour in the sunburst and radial treemap, as in the 3D map.
+- **File types in the radial layouts**: hovering a file type in the bar below the map lights up those files in the sunburst and radial treemap and fades the rest.
 
 ### Changed
 

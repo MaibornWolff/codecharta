@@ -1986,6 +1986,7 @@ export const STATE: CcState = {
         metricRules: [],
         markedPackages: [],
         hoveredNodePath: null,
+        hoveredFileExtensions: [],
         selectedNodePath: null,
         rightClickedNodeData: null
     },
@@ -2135,6 +2136,7 @@ export const DEFAULT_STATE: CcState = {
         metricRules: [],
         markedPackages: [],
         hoveredNodePath: null,
+        hoveredFileExtensions: [],
         selectedNodePath: null,
         rightClickedNodeData: null
     },

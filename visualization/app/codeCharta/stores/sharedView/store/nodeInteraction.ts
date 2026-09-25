@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
+import { setHoveredFileExtensions } from "./hoveredFileExtensions/hoveredFileExtensions.actions"
 import { setHoveredNodePath } from "./hoveredNodePath/hoveredNodePath.actions"
 import { setSelectedNodePath } from "./selectedNodePath/selectedNodePath.actions"
 
@@ -18,5 +19,9 @@ export class NodeInteraction {
 
     hoverNode(path: string | null): void {
         this.store.dispatch(setHoveredNodePath({ value: path }))
+    }
+
+    hoverFileExtensions(extensions: string[]): void {
+        this.store.dispatch(setHoveredFileExtensions({ value: extensions }))
     }
 }

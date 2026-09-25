@@ -1,5 +1,6 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildRadialTree, findClosestFolder, findClosestNode, findParentFolder, isInside, levelsBelow } from "./radialTree"
+import { fileNode, folderNode } from "../testing/radialChart.stub"
+import { buildRadialTree, filePathsWhere, findClosestFolder, findClosestNode, findParentFolder, isInside, levelsBelow } from "./radialTree"
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
@@ -228,5 +229,21 @@ describe("levelsBelow", () => {
 
         // Assert
         expect(levels).toBe(0)
+    })
+})
+
+describe("filePathsWhere", () => {
+    it("should collect the paths of the files that match, at any depth, and no folder", () => {
+        // Arrange
+        const tree = folderNode("/root", [
+            folderNode("/root/src", [fileNode("/root/src/a.ts"), fileNode("/root/src/b.md")]),
+            fileNode("/root/c.ts")
+        ])
+
+        // Act
+        const paths = filePathsWhere(tree, file => file.name.endsWith(".ts") || file.name === "src")
+
+        // Assert
+        expect([...paths]).toEqual(["/root/src/a.ts", "/root/c.ts"])
     })
 })
