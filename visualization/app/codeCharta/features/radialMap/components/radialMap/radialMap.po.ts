@@ -42,6 +42,14 @@ export class RadialMapPageObject {
         await new MetricsBarPageObject(this.page).switchLayoutTo(layout)
     }
 
+    async waitUntilDrawn() {
+        await expect(this.chart()).toHaveAttribute("aria-busy", "false")
+    }
+
+    async movePointerAway() {
+        await this.page.mouse.move(0, 0)
+    }
+
     async rightClickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {
         await this.clickAt(distanceFromCentreInRadii, degreesClockwiseFromTop, "right")
     }

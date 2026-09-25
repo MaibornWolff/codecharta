@@ -87,9 +87,6 @@ export class NodeContextMenuComponent {
         const node = this.menuNode()
         return Boolean(focusedPath && node && node.path !== focusedPath && node.path.startsWith(`${focusedPath}/`))
     })
-    readonly hasViewActions = computed(
-        () => this.isFocusOffered() || this.isNodeFocused() || this.isParentFocused() || !this.isRadialLayout()
-    )
     private readonly keptHighlightPaths = toSignal(this.readStore.keptHighlightPaths$, { requireSync: true })
     readonly isHighlighted = computed(() => {
         const node = this.menuNode()

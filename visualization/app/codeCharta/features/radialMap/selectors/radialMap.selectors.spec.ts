@@ -118,7 +118,7 @@ describe("sunburst metrics and coloring", () => {
 describe("radialHighlightSelector", () => {
     it("should carry the selected node, to fill it with the selection colour", () => {
         // Act
-        const highlight = radialHighlightSelector.projector("/root/b.ts", [], null)
+        const highlight = radialHighlightSelector.projector("/root/b.ts", [], [], null)
 
         // Assert
         expect(highlight.selectedPath).toBe("/root/b.ts")
@@ -129,7 +129,7 @@ describe("radialHighlightSelector", () => {
         const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
 
         // Act
-        const highlight = radialHighlightSelector.projector(null, ["ts"], tree)
+        const highlight = radialHighlightSelector.projector(null, [], ["ts"], tree)
 
         // Assert
         expect([...highlight.litPaths]).toEqual(["/root/src/app/a.ts", "/root/b.ts"])
@@ -140,18 +140,29 @@ describe("radialHighlightSelector", () => {
         const tree = folderNode("/root", [fileNode("/root/Makefile"), fileNode("/root/a.ts")])
 
         // Act
-        const highlight = radialHighlightSelector.projector(null, [NO_EXTENSION], tree)
+        const highlight = radialHighlightSelector.projector(null, [], [NO_EXTENSION], tree)
 
         // Assert
         expect([...highlight.litPaths]).toEqual(["/root/Makefile"])
     })
 
-    it("should light nothing while no file extension is hovered", () => {
+    it("should light what the highlight keeps together with the files of a hovered file extension", () => {
         // Arrange
         const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
 
         // Act
-        const highlight = radialHighlightSelector.projector(null, [], tree)
+        const highlight = radialHighlightSelector.projector(null, ["/root/src", "/root/src/app"], ["ts"], tree)
+
+        // Assert
+        expect([...highlight.litPaths]).toEqual(["/root/src", "/root/src/app", "/root/src/app/a.ts", "/root/b.ts"])
+    })
+
+    it("should light nothing while nothing is kept or hovered", () => {
+        // Arrange
+        const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, [], [], tree)
 
         // Assert
         expect(highlight.litPaths.size).toBe(0)

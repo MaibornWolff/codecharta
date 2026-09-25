@@ -29,6 +29,7 @@ import {
 import {
     currentFocusedNodePathSelector,
     hoveredFileExtensionsSelector,
+    keptHighlightPathsSelector,
     selectedNodePathSelector
 } from "../../../stores/sharedView/sharedView.read.facade"
 import { FileExtensionCalculator } from "../../../util/fileExtension/fileExtensionCalculator"
@@ -71,17 +72,18 @@ const radialFolderColoringSelector = createSelector(
 
 export const radialHighlightSelector = createSelector(
     selectedNodePathSelector,
+    keptHighlightPathsSelector,
     hoveredFileExtensionsSelector,
     radialTreeSelector,
-    (selectedPath, hoveredFileExtensions, tree): RadialHighlight => ({
+    (selectedPath, keptHighlightPaths, hoveredFileExtensions, tree): RadialHighlight => ({
         selectedPath,
-        litPaths: filesWithExtensions(tree, hoveredFileExtensions)
+        litPaths: new Set([...keptHighlightPaths, ...filesWithExtensions(tree, hoveredFileExtensions)])
     })
 )
 
-function filesWithExtensions(tree: RadialNode | null, extensions: string[]): ReadonlySet<string> {
+function filesWithExtensions(tree: RadialNode | null, extensions: string[]): Iterable<string> {
     if (!tree || extensions.length === 0) {
-        return new Set()
+        return []
     }
     return filePathsWhere(tree, file => extensions.includes(FileExtensionCalculator.estimateFileExtension(file.name)))
 }
