@@ -63,7 +63,7 @@ Every analyser is asked whether it is applicable to the entered resource, and al
 - RawTextParser
 - CoverageImporter
 - DependaChartaImporter (deprecated, see the Dependency Parser)
-- DependencyParser
+- DependencyParser (experimental)
 
 ### Combining multiple metrics
 

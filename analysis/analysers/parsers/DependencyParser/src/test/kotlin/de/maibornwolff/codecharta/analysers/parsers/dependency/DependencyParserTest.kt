@@ -14,6 +14,15 @@ import kotlin.io.path.writeText
 
 class DependencyParserTest {
     @Test
+    fun `should label itself experimental wherever ccsh lists it`() {
+        // Act
+        val description = DependencyParser().getAnalyserDescription()
+
+        // Assert
+        assertThat(description).startsWith("[experimental]")
+    }
+
+    @Test
     fun `should not be applicable when the resource is blank`() {
         // Act
         val isApplicable = DependencyParser().isApplicable("   ")

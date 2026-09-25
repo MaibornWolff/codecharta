@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 - **Clicking beside the words keeps your file**: clicking the domain cloud where no word is drawn only unpins the open word, and the cloud stays on the file or folder you selected.
 - **Explorer keeps its open folders**: switching the explorer to Words or collapsing it and coming back shows the files with the same folders open as before.
-- 
+
 ### Fixed 🐞
 
 - **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.

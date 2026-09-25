@@ -4,6 +4,10 @@ title: "Dependency Parser"
 
 **Category**: Parser (takes in source code and outputs cc.json)
 
+:::caution
+This parser is experimental: its output and options may still change between releases.
+:::
+
 This parser extracts the *dependency graph* of a codebase: which file uses which, how often, where the
 dependencies run in circles, and which of them point against the architectural flow. It is a port of
 [DependaCharta](https://github.com/MaibornWolff/DependaCharta)'s analysis, writing into the cc.json 2.0
