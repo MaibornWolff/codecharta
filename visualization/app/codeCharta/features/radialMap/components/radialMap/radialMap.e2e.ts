@@ -20,6 +20,7 @@ const HALF = 0.5
 const NEUTRAL_FOLDER_GREY = "#d9dce1"
 const MANY_PIXELS = 1000
 const SELECTION_ORANGE = "#eb8319"
+const FIRST_MARK_PINK = "#ff1d8e"
 
 test.describe("Sunburst layout", () => {
     test.beforeEach(async ({ page }) => {
@@ -167,6 +168,22 @@ test.describe("Sunburst layout", () => {
 
         // Assert
         await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
+    })
+
+    test("should colour a folder marked from the node menu in its mark colour", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.waitUntilDrawn()
+        await expect.poll(() => sunburst.countPixelsOfColor(FIRST_MARK_PINK)).toBe(0)
+        await sunburst.rightClickAt(INNER_RING)
+
+        // Act
+        await page.locator("#codemap-context-menu").getByTitle("Colorize folder").first().click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.countPixelsOfColor(FIRST_MARK_PINK)).toBeGreaterThan(MANY_PIXELS)
     })
 
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {

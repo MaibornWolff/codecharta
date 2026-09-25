@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from "@angular/co
 import { toSignal } from "@angular/core/rxjs-interop"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { MapStateReadWindow } from "../../../../stores/mapState/mapState.read.facade"
-import { injectIsRadialLayout, SettingsPopoverShellComponent } from "../../../shared/facade"
+import { SettingsPopoverShellComponent } from "../../../shared/facade"
 import { ColorBandsSectionComponent } from "./colorBandsSection.component"
 import { ColorRangeSectionComponent } from "./colorRangeSection.component"
 import { ColorSettingsHeaderComponent } from "./colorSettingsHeader.component"
@@ -36,8 +36,6 @@ export class ColorSettingsPopoverComponent {
 
     private readonly colorMetric = toSignal(this.mapStateReadWindow.colorMetric$, { initialValue: "" })
     private readonly isDeltaState = toSignal(this.fileStoreReadWindow.isDeltaState$, { initialValue: false })
-
-    readonly isRadialLayout = injectIsRadialLayout()
 
     readonly hasRangeSection = computed(() => !this.isDeltaState() && this.colorMetric() !== "unary")
 }

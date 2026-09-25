@@ -1,5 +1,6 @@
 import convert from "color-convert"
-import { ColorMode, ColorRange, MapColors, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
+import { ColorMode, ColorRange, MapColors, MarkedPackage, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
+import { getMarkingColor } from "../../../util/codeMapHelper"
 import { getColorByMetricValue } from "../../../util/color/gradientCalculator"
 import { MetricMinMax } from "../../../util/metric/metricRange"
 import { NEUTRAL_FOLDER_COLOR, tintColor } from "../../../util/radialFolderValues"
@@ -11,6 +12,7 @@ export interface RadialFolderColoring {
     value: RadialFolderValue
     style: RadialFolderStyle
     tint: number
+    markedPackages: MarkedPackage[]
 }
 
 export interface RadialHighlight {
@@ -55,6 +57,10 @@ export function nodeColor({ path, isFile, colorValue, isFlat, isCentre = false }
 
 function folderColor(path: string, coloring: RadialColoring): string {
     const { folders, mapColors } = coloring
+    const markingColor = getMarkingColor({ path }, folders.markedPackages)
+    if (markingColor) {
+        return markingColor
+    }
     const folderValue = folders.values.get(path)
     if (folderValue === undefined) {
         return mapColors.base
