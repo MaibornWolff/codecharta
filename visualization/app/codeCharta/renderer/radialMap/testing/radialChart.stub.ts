@@ -54,7 +54,8 @@ export const TEST_COLORING: RadialColoring = {
     colorMode: ColorMode.absolute,
     mapColors: defaultMapColors,
     colorMetricRange: { minValue: 0, maxValue: 100 },
-    folders: { values: new Map(), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
+    folders: { values: new Map(), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 },
+    highlight: { selectedPath: null }
 }
 
 export function folderNode(path: string, children: RadialNode[] = [], overrides: Partial<RadialNode> = {}): RadialNode {

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its highest, lowest or middle file, and tints folders by it or keeps them a neutral grey.
 - **Levels in the radial layouts**: a slider in the layout picker sets how many folder levels, from 1 to 10, the sunburst and radial treemap show around the centre.
 - **Search in the radial layouts**: searching the explorer greys out what the search misses in the sunburst and radial treemap, as in the 3D map, while the folders leading to a hit keep their colour.
+- **Selection in the radial layouts**: the file or folder you select takes the selection colour in the sunburst and radial treemap, as in the 3D map.
 
 ### Changed
 
