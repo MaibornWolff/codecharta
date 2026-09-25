@@ -14,6 +14,8 @@ Ideas/
 /analysis/script/*.cc.json.gz
 # DependaCharta's on-disk pipeline reports; the dependency parser runs in memory and reads none of them
 /analysis/analysers/parsers/DependencyParser/src/test/resources/pipeline/
+# parser runs over the sample projects — generated, rerun them with the commands in sample-projects/README.md
+/sample-projects/*/output/
 # analyser output dropped at the repo root (e.g. maibornwolff-domain.cc.json) — generated, and biome
 # would otherwise try to format the minified map. Tracked fixtures all live in subdirectories.
 /*.cc.json

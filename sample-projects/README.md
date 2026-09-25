@@ -15,8 +15,7 @@ sample-projects/
   tools/dump_lenses.py      prints the dependency and domain lens of a cc.json as plain text
   <language>/
     FINDINGS.md             report for that language (template below)
-    output/dependency.cc.json
-    output/domain.cc.json
+    output/                   parser runs from "How to run" (generated, gitignored)
     <project files in the language's conventional layout>
 ```
 
