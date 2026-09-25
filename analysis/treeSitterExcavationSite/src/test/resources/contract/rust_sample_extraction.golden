@@ -1,0 +1,53 @@
+# Identifiers
+Blue
+Color
+Custom
+Drawable
+GREETING
+Green
+MAX_RETRIES
+Number
+PI
+Rectangle
+Red
+ShapeMap
+a
+add
+area
+area
+b
+describe
+describe
+floating
+geometry
+height
+height
+initial
+integer
+label
+new
+raw
+result
+square
+width
+width
+
+# Comments
+A block comment inside a module.
+A color enumeration.
+A normal line comment.
+A union of numeric representations.
+Behavior shared by drawable shapes.
+Computes the sum of two integers.
+Creates a new rectangle.
+Module-level documentation comment for the sample crate.
+Represents a geometric shape.
+Returns the area of the shape.
+The maximum number of retries allowed.
+
+# Strings
+R
+a "raw" string
+hello
+rectangle
+{} {} {}

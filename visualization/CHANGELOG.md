@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Radial treemap map layout**: choose "Radial TreeMap" to see the folder you are in ring by ring as in the sunburst, with each folder's files packed as a treemap instead of thin slices, and click your way in and out.
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its highest, lowest or middle file, and tints folders by it or keeps them a neutral grey.
 - **Levels in the radial layouts**: a slider in the layout picker sets how many folder levels, from 1 to 10, the sunburst and radial treemap show around the centre.
+- **The cc.json 2.0 reader understands the grown `dependency` lens.** An edge now carries the optional `isCyclic` and
+  `isPointingUpwards` flags through to the viz model, and a file's `dependencyLevels` hold the level each node sits
+  on. Nothing renders them yet — this lands the data layer so a visualization can be built on it, and so the vendored
+  schema accepts files from `ccsh dependencyparser`.
+
+- **The vendored cc.json 2.0 schema accepts the logical package/declaration layer.** `ccsh dependencyparser` now also
+  writes the graph as the code declares it: `leaves` (declarations), `namespaces` (packages) and `leafEdges`
+  (dependencies between declarations, with the way each is used). The schema and the `CcJson2` types know all three,
+  so a released viz reads the parser's output instead of rejecting it. Nothing renders them yet.
 
 ### Changed
 
@@ -20,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 - **Clicking beside the words keeps your file**: clicking the domain cloud where no word is drawn only unpins the open word, and the cloud stays on the file or folder you selected.
 - **Explorer keeps its open folders**: switching the explorer to Words or collapsing it and coming back shows the files with the same folders open as before.
-- 
+
 ### Fixed 🐞
 
 - **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.

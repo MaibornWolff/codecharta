@@ -24,6 +24,7 @@ export interface CCFile {
             blacklist: Array<ImportedNodeRule>
             markedPackages: Array<MarkedPackage>
             domainWords: DomainLensData
+            dependencyLevels: DependencyLevelData
         }
     }
     fileMeta: FileMeta
@@ -120,6 +121,9 @@ export interface DependencyLensSource {
     attributeTypes: AttributeTypeMap
 }
 
+/** A node's levelization depth in the dependency graph, keyed by node path. */
+export type DependencyLevelData = Record<string, number>
+
 export type DomainLensData = Record<string, DomainWord[]>
 
 export interface DomainWord {
@@ -204,6 +208,8 @@ export interface Edge {
     toNodeName: string
     attributes: KeyValuePair
     visible?: EdgeVisibility
+    isCyclic?: boolean
+    isPointingUpwards?: boolean
 }
 
 export enum EdgeVisibility {

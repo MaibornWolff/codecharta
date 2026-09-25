@@ -124,7 +124,8 @@ describe("loadFileService", () => {
                     blacklist: [],
                     edges: [],
                     markedPackages: [],
-                    domainWords: {}
+                    domainWords: {},
+                    dependencyLevels: {}
                 }
             }
         }

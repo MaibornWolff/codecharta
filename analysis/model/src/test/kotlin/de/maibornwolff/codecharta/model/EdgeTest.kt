@@ -36,4 +36,24 @@ internal class EdgeTest {
         assertNotEquals(edgeFull, edgeEqualButAttributes)
         assertEquals(edgeEqualButAttributes.hashCode(), edgeEqualAttributes.hashCode())
     }
+
+    @Test
+    fun `should treat edges differing only in a graph flag as unequal`() {
+        val regular = Edge(nodeA, nodeB, attributes)
+        val cyclic = Edge(nodeA, nodeB, attributes, isCyclic = true)
+        val upwards = Edge(nodeA, nodeB, attributes, isPointingUpwards = true)
+
+        assertNotEquals(regular, cyclic)
+        assertNotEquals(regular, upwards)
+        assertNotEquals(cyclic, upwards)
+    }
+
+    @Test
+    fun `should carry the graph flags onto the new endpoints when re-pathing an edge`() {
+        val edge = Edge(nodeA, nodeB, attributes, isCyclic = true, isPointingUpwards = true)
+
+        val rePathed = edge.withEndpoints("/root/nodeA", "/root/nodeB")
+
+        assertEquals(Edge("/root/nodeA", "/root/nodeB", attributes, isCyclic = true, isPointingUpwards = true), rePathed)
+    }
 }

@@ -1,0 +1,73 @@
+# Identifiers
+Active
+Calculate
+ChainedCall
+Completed
+FormatByType
+GetCounter
+MaxRetries
+NewSample
+Pending
+Process
+Process
+ProcessData
+Processable
+Sample
+Status
+_
+a
+b
+c
+count
+counter
+d
+e
+i
+i
+input
+item
+items
+label
+prefix
+prefix
+result
+s
+s
+s
+s
+s
+s
+sum
+typeID
+
+# Comments
+Calculate computes a sum with validation and control flow
+ChainedCall demonstrates method chaining
+FormatByType demonstrates switch expression usage
+GetCounter is a simple getter with no complexity
+MaxRetries is the maximum number of retry attempts
+NewSample creates a new Sample instance
+Package sample provides a comprehensive example demonstrating various Go features.
+Process implements the Processable interface
+ProcessData is a long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Processable defines an interface for processing
+Sample represents a sample struct with various methods
+Status represents the processing status
+Used for golden file contract testing.
+
+# Strings
+
+
+ total: 
+A
+B
+X
+Y
+empty
+no items
+one
+processed
+three
+two
+unknown

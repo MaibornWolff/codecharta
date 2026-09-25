@@ -110,10 +110,9 @@ class FolderMover(private val project: Project) {
         val sanitizedTo = "/" + to.removeSuffix("/").removePrefix("/")
         return project.lenses.dependency.edges
             .map { edge ->
-                Edge(
+                edge.withEndpoints(
                     edge.fromNodeName.replace(sanitizedFrom, sanitizedTo),
-                    edge.toNodeName.replace(sanitizedFrom, sanitizedTo),
-                    edge.attributes
+                    edge.toNodeName.replace(sanitizedFrom, sanitizedTo)
                 )
             }.toMutableList()
     }

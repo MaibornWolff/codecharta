@@ -1,0 +1,74 @@
+# Identifiers
+ACTIVE
+COMPLETED
+MAX_RETRIES
+PENDING
+Processable
+Sample
+Status
+a
+b
+c
+calculate
+chained_call
+count
+counter
+counter
+create_multiplier
+d
+e
+factor
+format_by_type
+get_counter
+i
+initialize
+input
+item
+items
+label
+prefix
+prefix
+process
+process_data
+result
+sum
+type
+x
+
+# Comments
+#
+@param type [Integer] the type identifier
+@return [String] formatted result string
+A comprehensive sample class demonstrating various Ruby features.
+A long method that processes data with nested logic.
+  This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates case/when expression usage.
+Lambda example
+Method chaining example (triggers message_chains metric)
+Module for testing mixins
+Simple getter with no complexity
+Status module with constants
+Used for golden file contract testing.
+
+# Strings
+
+ total: 
+#{@prefix}#{label}
+A
+B
+Hello, 
+X
+Y
+active
+completed
+counter
+empty
+error
+one
+pending
+processed
+three
+two
+unknown

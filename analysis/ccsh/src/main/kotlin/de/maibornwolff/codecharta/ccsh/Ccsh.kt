@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.importers.dependacharta.DependaChart
 import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporter
 import de.maibornwolff.codecharta.analysers.importers.sourcemonitor.SourceMonitorImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
+import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
@@ -59,7 +60,8 @@ import kotlin.system.exitProcess
         DependaChartaImporter::class,
         RawTextParser::class,
         UnifiedParser::class,
-        DomainLanguageParser::class
+        DomainLanguageParser::class,
+        DependencyParser::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = [CodeChartaConstants.GENERIC_FOOTER]
@@ -273,6 +275,7 @@ class Ccsh : Callable<Unit?> {
             AttributeGeneratorRegistry.registerGenerator(TokeiImporter())
             AttributeGeneratorRegistry.registerGenerator(SourceMonitorImporter())
             AttributeGeneratorRegistry.registerGenerator(DependaChartaImporter())
+            AttributeGeneratorRegistry.registerGenerator(DependencyParser())
         }
     }
 

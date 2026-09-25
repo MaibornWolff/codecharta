@@ -1,0 +1,5 @@
+# Console captures and lens dumps written beside the parser results: reproducible
+# from the commands in README.md, and they carry the absolute paths of the machine
+# that produced them. The .cc.json results next to them are kept.
+**/output/*.log
+**/output/*.txt

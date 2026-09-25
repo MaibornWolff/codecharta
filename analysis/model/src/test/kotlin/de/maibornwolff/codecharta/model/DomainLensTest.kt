@@ -79,7 +79,14 @@ class DomainLensTest {
         val lens = DomainLens(mapOf(fileId to DomainNode(listOf(DomainWord("order", 3)))))
 
         // Act
-        val rekeyed = lens.rekeyed(tree) { segments -> if (segments.isEmpty()) segments else listOf("alpha") + segments }
+        val rekeyed = lens.rekeyed(tree, movedInto("alpha", tree)) { segments ->
+            if (segments.isEmpty()) {
+                segments
+            } else {
+                listOf("alpha") +
+                    segments
+            }
+        }
 
         // Assert
         assertThat(rekeyed.nodes.keys).containsExactly(NodeId.fromSegments(listOf("alpha", "src", "App.kt"), NodeType.File))
@@ -94,9 +101,12 @@ class DomainLensTest {
         val lens = DomainLens(mapOf(fileId to DomainNode(listOf(DomainWord("order", 3)))))
 
         // Act: nothing survives.
-        val rekeyed = lens.rekeyed(tree) { null }
+        val rekeyed = lens.rekeyed(tree, Node("root", NodeType.Folder)) { null }
 
         // Assert: no key is left pointing at a node the output no longer has.
         assertThat(rekeyed.nodes).isEmpty()
     }
+
+    private fun movedInto(folderName: String, tree: Node): Node =
+        Node(tree.name, NodeType.Folder, children = setOf(Node(folderName, NodeType.Folder, children = tree.children)))
 }

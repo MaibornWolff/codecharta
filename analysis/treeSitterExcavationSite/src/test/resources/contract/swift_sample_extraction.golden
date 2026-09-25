@@ -1,0 +1,71 @@
+# Identifiers
+Processable
+Sample
+Status
+a
+active
+b
+c
+calculate
+chainedCall
+closure
+completed
+count
+counter
+d
+e
+formatByType
+getCounter
+init
+input
+items
+label
+maxRetries
+pending
+prefix
+prefix
+process
+process
+processData
+remaining
+result
+sum
+transform
+type
+value
+
+# Comments
+A comprehensive sample class demonstrating various Swift features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Class-level constant
+Closure example
+Demonstrates switch expression usage.
+- Parameter type: the type identifier
+- Returns: formatted result string
+Enum for testing
+Method chaining example (triggers message_chains metric)
+Protocol for testing
+Protocol implementation
+Simple getter with no complexity
+
+# Strings
+
+ total: \(count)
+A
+B
+Hello, 
+X
+Y
+active
+completed
+empty
+error
+one
+pending
+processed
+three
+two
+unknown

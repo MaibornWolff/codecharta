@@ -1,0 +1,83 @@
+# Identifiers
+ pCounter
+ pcInput
+ pcLabel
+ pcResult
+ piType
+Customer
+CustomerName
+Delivered
+GetSummary
+MAX_RETRIES
+OrderId
+OrderProcessor
+OrderProcessor
+OrderStatus
+PREFIX
+Pending
+ProcessOrder
+Processing
+STATUS_ACTIVE
+STATUS_COMPLETED
+STATUS_PENDING
+Shipped
+bufCustomer
+cResult
+cTemp
+calculateSum
+chainExample
+dsOrders
+err
+formatByType
+getCounter
+greet
+i
+i
+iSum
+oError
+oProcessor
+pcName
+pcStatus
+piA
+piB
+piC
+piOrderId
+processData
+processRecords
+safeOperation
+ttOrder
+
+# Comments
+A comprehensive sample program demonstrating various ABL features.
+Used for golden file contract testing.
+A procedure that processes data with nested logic
+Buffer and temp-table definitions
+Calculate sum with validation and control flow
+Class with properties, methods, and constructor
+Constants
+Demonstrates case statement usage
+Enum definition example
+Exception handling example
+FOR EACH example with database access pattern
+Greet function example
+Message chain example
+Simple procedure with no complexity
+Status values
+
+# Strings
+
+!
+,
+: Order 
+Hello, 
+Hello, 
+active
+completed
+empty
+one
+pending
+rush
+rush
+three
+two
+unknown

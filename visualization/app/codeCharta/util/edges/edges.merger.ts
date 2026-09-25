@@ -31,6 +31,8 @@ function copyEdge(edge: Edge, fileName: string, withUpdatedPath: boolean): Edge 
         fromNodeName: withUpdatedPath ? getUpdatedPath(fileName, edge.fromNodeName) : edge.fromNodeName,
         toNodeName: withUpdatedPath ? getUpdatedPath(fileName, edge.toNodeName) : edge.toNodeName,
         attributes: clone(edge.attributes),
-        visible: edge.visible
+        visible: edge.visible,
+        isCyclic: edge.isCyclic,
+        isPointingUpwards: edge.isPointingUpwards
     }
 }
