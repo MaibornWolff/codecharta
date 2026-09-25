@@ -164,6 +164,10 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     applyClearHighlights() {
+        if (this.constantHighlight.size > 0) {
+            this.clearHoverHighlight()
+            return
+        }
         this.clearHighlight()
         this.threeRendererService.render()
     }

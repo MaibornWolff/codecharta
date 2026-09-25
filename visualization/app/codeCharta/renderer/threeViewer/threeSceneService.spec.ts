@@ -286,8 +286,24 @@ describe("ThreeSceneService", () => {
     })
 
     describe("applyClearHighlights", () => {
+        it("should keep the kept highlight while it clears the hover highlight", () => {
+            // Arrange
+            const keptHighlight = new Map([[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING]])
+            Object.defineProperty(threeSceneService, "constantHighlight", { value: keptHighlight, writable: true, configurable: true })
+            threeSceneService["threeRendererService"].render = jest.fn()
+            threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING_TS_NODE)
+
+            // Act
+            threeSceneService.applyClearHighlights()
+
+            // Assert
+            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
+            expect([...threeSceneService.getConstantHighlight().values()]).toEqual([CODE_MAP_BUILDING])
+        })
+
         it("should call clearHighlight and render changes", () => {
             // Arrange
+            Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
             const renderSpy = jest.spyOn(threeSceneService["threeRendererService"], "render").mockImplementation(() => {})
 
             // Act
