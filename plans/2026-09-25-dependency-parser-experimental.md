@@ -20,11 +20,13 @@ everywhere, but labelled so users know its output may change. Visualization stay
 ### 2. Label the DependencyParser experimental
 - Mark it in its ccsh description (shows in `ccsh -h`, `ccsh dependencyparser -h` and the interactive picker)
 - Mark it in the analysis README, the parser README, the gh-pages docs and the CHANGELOG entry
+- Keep it out of `simplecc.sh` (and so `simplecc-local.sh`, which wraps it) while it is experimental
 
 ## Steps
 
 - [x] Complete Task 1: Rebase on main, `dependencyLevels` backfill moved to the read path
 - [x] Complete Task 2: Label the DependencyParser experimental
+- [x] Drop the dependency step from simplecc
 
 ## Notes
 
