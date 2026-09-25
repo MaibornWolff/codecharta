@@ -17,6 +17,7 @@ const JUST_PAST_THE_TOP = 15
 const KEPT_FOLDER = 200
 const FILE_BESIDE_IT = 330
 const HALF = 0.5
+const BESIDE_THE_NAME = 20
 const NEUTRAL_FOLDER_GREY = "#d9dce1"
 const MANY_PIXELS = 1000
 const SELECTION_ORANGE = "#eb8319"
@@ -170,20 +171,19 @@ test.describe("Sunburst layout", () => {
         await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
     })
 
-    test("should colour a folder marked from the node menu in its mark colour", async ({ page }) => {
+    test("should colour a folder marked from its own node menu in its mark colour, even while its hover fades out", async ({ page }) => {
         // Arrange
         const sunburst = new RadialMapPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
         await sunburst.waitUntilDrawn()
-        await expect.poll(() => sunburst.countPixelsOfColor(FIRST_MARK_PINK)).toBe(0)
-        await sunburst.rightClickAt(INNER_RING)
+        await sunburst.rightClickAt(INNER_RING, BESIDE_THE_NAME)
 
         // Act
         await page.locator("#codemap-context-menu").getByTitle("Colorize folder").first().click()
         await sunburst.movePointerAway()
 
         // Assert
-        await expect.poll(() => sunburst.countPixelsOfColor(FIRST_MARK_PINK)).toBeGreaterThan(MANY_PIXELS)
+        await expect.poll(() => sunburst.colorAt(INNER_RING, BESIDE_THE_NAME)).toBe(FIRST_MARK_PINK)
     })
 
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {
