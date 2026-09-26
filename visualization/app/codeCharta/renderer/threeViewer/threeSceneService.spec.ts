@@ -206,30 +206,47 @@ describe("ThreeSceneService", () => {
             expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
 
-        it("should clear the highlight once nothing is kept any more", () => {
+        it("should repaint the default colours once nothing is kept any more", () => {
             // Arrange
             threeSceneService.showKeptHighlight([LEAF_PATH])
-            jest.spyOn(threeSceneService, "applyClearHighlights")
+            jest.spyOn(threeSceneService["mapMesh"], "clearUnselectedBuildings")
+            jest.spyOn(threeSceneService, "applyHighlights")
 
             // Act
             threeSceneService.showKeptHighlight([])
 
             // Assert
             expect(threeSceneService.getConstantHighlight().size).toBe(0)
-            expect(threeSceneService.applyClearHighlights).toHaveBeenCalled()
+            expect(threeSceneService["mapMesh"].clearUnselectedBuildings).toHaveBeenCalled()
+            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
+            expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled()
+        })
+
+        it("should keep the hovered building lit once nothing is kept any more", () => {
+            // Arrange
+            const hoveredBuilding = threeSceneService["mapMesh"].getBuildingByPath("/root")
+            threeSceneService.showKeptHighlight([LEAF_PATH])
+            threeSceneService.addBuildingsToHighlightingList(hoveredBuilding)
+            jest.spyOn(threeSceneService, "applyHighlights")
+
+            // Act
+            threeSceneService.showKeptHighlight([])
+
+            // Assert
+            expect(threeSceneService["highlightedBuildingIds"]).toEqual(new Set([hoveredBuilding.id]))
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
         })
 
         it("should not repaint while nothing was or is kept", () => {
             // Arrange
             jest.spyOn(threeSceneService, "applyHighlights")
-            jest.spyOn(threeSceneService, "applyClearHighlights")
 
             // Act
             threeSceneService.showKeptHighlight([])
 
             // Assert
             expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
-            expect(threeSceneService.applyClearHighlights).not.toHaveBeenCalled()
+            expect(threeSceneService["threeRendererService"].render).not.toHaveBeenCalled()
         })
 
         it("should find the kept buildings again on a rebuilt mesh", () => {
@@ -243,6 +260,47 @@ describe("ThreeSceneService", () => {
 
             // Assert
             expect([...threeSceneService.getConstantHighlight().values()]).toEqual([rebuiltMesh.getBuildingByPath(LEAF_PATH)])
+        })
+
+        it("should paint the kept highlight on a rebuilt mesh", () => {
+            // Arrange
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
+            store.dispatch(keepHighlight({ paths: [LEAF_PATH] }))
+            const rebuiltMesh = new CodeMapMesh(TEST_NODES, state.getValue(), false)
+            jest.spyOn(threeSceneService, "applyHighlights")
+
+            // Act
+            threeSceneService.setMapMesh(TEST_NODES, rebuiltMesh)
+
+            // Assert
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+        })
+
+        it("should paint the kept highlight on a mesh updated in place", () => {
+            // Arrange
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
+            store.dispatch(keepHighlight({ paths: [LEAF_PATH] }))
+            jest.spyOn(threeSceneService, "applyHighlights")
+
+            // Act
+            threeSceneService.updateMapMeshInPlace(TEST_NODES, TEST_NODES, state.getValue(), false)
+
+            // Assert
+            expect(threeSceneService.getConstantHighlight().size).toBe(1)
+            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+        })
+
+        it("should leave a rebuilt mesh undimmed while nothing is kept", () => {
+            // Arrange
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
+            const rebuiltMesh = new CodeMapMesh(TEST_NODES, state.getValue(), false)
+            jest.spyOn(threeSceneService, "applyHighlights")
+
+            // Act
+            threeSceneService.setMapMesh(TEST_NODES, rebuiltMesh)
+
+            // Assert
+            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
         })
     })
 
