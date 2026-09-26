@@ -4,7 +4,6 @@ import { ThreeMapVisibilityStore, ThreeRendererService, ThreeSceneService } from
 import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { SceneSelectionSyncService } from "./sceneSelectionSync.service"
-import { CodeMapStore } from "./stores/codeMap.store"
 
 describe("SceneSelectionSyncService", () => {
     let selectedNodePath$: BehaviorSubject<string | null>
@@ -18,7 +17,6 @@ describe("SceneSelectionSyncService", () => {
         }),
         showKeptHighlight: jest.fn()
     }
-    const codeMapStore = { clearKeptHighlight: jest.fn() }
     const threeRendererService = { render: jest.fn() }
     const codeMapMouseEventService = { drawLabelSelectedBuilding: jest.fn() }
 
@@ -34,8 +32,7 @@ describe("SceneSelectionSyncService", () => {
                 { provide: ThreeMapVisibilityStore, useValue: { isMapShown$ } },
                 { provide: ThreeSceneService, useValue: threeSceneService },
                 { provide: ThreeRendererService, useValue: threeRendererService },
-                { provide: CodeMapMouseEventService, useValue: codeMapMouseEventService },
-                { provide: CodeMapStore, useValue: codeMapStore }
+                { provide: CodeMapMouseEventService, useValue: codeMapMouseEventService }
             ]
         })
         TestBed.inject(SceneSelectionSyncService).start()
@@ -48,7 +45,6 @@ describe("SceneSelectionSyncService", () => {
         // Assert
         expect(threeSceneService.showSelection).toHaveBeenLastCalledWith("/root/scripts")
         expect(codeMapMouseEventService.drawLabelSelectedBuilding).toHaveBeenCalledWith({ node: { path: "/root/scripts" } })
-        expect(codeMapStore.clearKeptHighlight).toHaveBeenCalled()
         expect(threeRendererService.render).toHaveBeenCalled()
     })
 
@@ -65,6 +61,19 @@ describe("SceneSelectionSyncService", () => {
 
         // Assert
         expect(threeSceneService.showSelection).toHaveBeenLastCalledWith("/root/scripts")
+    })
+
+    it("should keep the highlight another view kept after its selection when the map catches up", () => {
+        // Arrange
+        isMapShown$.next(false)
+        selectedNodePath$.next("/root/scripts")
+        keptHighlightPaths$.next(["/root/scripts"])
+
+        // Act
+        isMapShown$.next(true)
+
+        // Assert
+        expect(threeSceneService.showKeptHighlight).toHaveBeenLastCalledWith(["/root/scripts"])
     })
 
     it("should not paint again when the 3D map itself made the selection", () => {
