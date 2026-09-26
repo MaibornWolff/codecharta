@@ -302,11 +302,35 @@ export class ThreeSceneService implements OnDestroy {
         const hadKeptHighlight = this.constantHighlight.size > 0
         this.collectKeptHighlight(paths)
         if (this.constantHighlight.size > 0) {
-            this.mapMesh.clearUnselectedBuildings(this.selected)
-            this.applyHighlights()
+            this.paintKeptHighlight()
         } else if (hadKeptHighlight) {
-            this.applyClearHighlights()
+            this.repaintWithoutKeptHighlight()
         }
+    }
+
+    private restoreKeptHighlight() {
+        this.collectKeptHighlight(this.threeSceneStore.getKeptHighlightPaths())
+        if (this.constantHighlight.size > 0) {
+            this.paintKeptHighlight()
+        }
+    }
+
+    private paintKeptHighlight() {
+        this.mapMesh.clearUnselectedBuildings(this.selected)
+        this.applyHighlights()
+    }
+
+    private repaintWithoutKeptHighlight() {
+        this.mapMesh.clearUnselectedBuildings(this.selected)
+        if (this.highlightedBuildingIds.size > 0) {
+            this.applyHighlights()
+            return
+        }
+        const materials = this.getMapMaterials()
+        if (materials) {
+            this.resetMaterial(materials)
+        }
+        this.threeRendererService.render()
     }
 
     private collectKeptHighlight(paths: readonly string[]) {
@@ -377,7 +401,7 @@ export class ThreeSceneService implements OnDestroy {
 
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
         this.remapSelectedBuilding()
-        this.collectKeptHighlight(this.threeSceneStore.getKeptHighlightPaths())
+        this.restoreKeptHighlight()
 
         this.mapMeshChanged$.next()
     }
@@ -414,7 +438,7 @@ export class ThreeSceneService implements OnDestroy {
         this.initFloorLabels(nodes)
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
         this.remapSelectedBuilding()
-        this.collectKeptHighlight(this.threeSceneStore.getKeptHighlightPaths())
+        this.restoreKeptHighlight()
         this.mapMeshChanged$.next()
     }
 
