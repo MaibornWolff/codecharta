@@ -25,6 +25,7 @@ export class MetricsExplorerSelection implements ExplorerSelection {
 
     select(node: CodeMapNode): void {
         this.nodeInteraction.selectNode(node.path)
+        this.nodeInteraction.clearKeptHighlight()
     }
 
     deselect(): void {
