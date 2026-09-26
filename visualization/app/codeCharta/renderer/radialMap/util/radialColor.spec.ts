@@ -177,6 +177,17 @@ describe("nodeColor", () => {
             expect(color).toBe("#ff00ff")
         })
 
+        it("should colour a marked folder without a value in the mark colour", () => {
+            // Arrange
+            const coloring = coloringWithFolder(undefined, { markedPackages: [{ path: FOLDER, color: "#ff00ff" }] })
+
+            // Act
+            const color = nodeColor(folder(undefined), coloring)
+
+            // Assert
+            expect(color).toBe("#ff00ff")
+        })
+
         it("should take the mark of the closest marked folder above", () => {
             // Arrange
             const markedPackages = [

@@ -46,23 +46,23 @@ export function nodeColor({ path, isFile, colorValue, isFlat, isCentre = false }
     if (!isCentre && path === coloring.highlight.selectedPath) {
         return mapColors.selected
     }
+    if (!isFile && !isFlat) {
+        return folderColor(path, colorValue, coloring)
+    }
     if (colorValue === undefined) {
         return mapColors.base
     }
-    if (isFlat) {
-        return mapColors.flat
-    }
-    return isFile ? colorForMetricValue(colorValue, coloring) : folderColor(path, coloring)
+    return isFlat ? mapColors.flat : colorForMetricValue(colorValue, coloring)
 }
 
-function folderColor(path: string, coloring: RadialColoring): string {
+function folderColor(path: string, colorValue: number | undefined, coloring: RadialColoring): string {
     const { folders, mapColors } = coloring
     const markingColor = getMarkingColor({ path }, folders.markedPackages)
     if (markingColor) {
         return markingColor
     }
     const folderValue = folders.values.get(path)
-    if (folderValue === undefined) {
+    if (colorValue === undefined || folderValue === undefined) {
         return mapColors.base
     }
     if (folders.style === RadialFolderStyle.Neutral) {
