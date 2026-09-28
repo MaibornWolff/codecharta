@@ -14,18 +14,12 @@ import {
 } from "./dependencyGraphStyle"
 import { LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 
-/** Carried by the open/close glyph, so a click on it toggles the folder instead of selecting it. */
-export const TOGGLE_INFO = "toggle"
-
 export type BoxEmphasis = "selected" | "hovered" | "none"
 
 const LABEL_FONT_SIZE_PX = 12
 const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
-const TOGGLE_SIZE_PX = 16
-/** Below this width a folder's name matters more than its glyph; it still opens on a double click. */
-const MIN_TOGGLE_BOX_WIDTH_PX = 100
 const CORNER_RADIUS_PX = 4
 
 interface PixelRect {
@@ -38,13 +32,9 @@ interface PixelRect {
 export function drawBox(box: LayoutBox, emphasis: BoxEmphasis, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     const children: object[] = [{ type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: boxStyle(box, emphasis) }]
-    const hasToggle = box.isFolder && rect.width >= MIN_TOGGLE_BOX_WIDTH_PX
-    const label = drawLabel(box, rect, hasToggle)
+    const label = drawLabel(box, rect)
     if (label) {
         children.push(label)
-    }
-    if (hasToggle) {
-        children.push(...drawToggle(box, rect))
     }
     return drawnItem(children)
 }
@@ -108,9 +98,8 @@ function baseStyle(box: LayoutBox) {
 }
 
 /** An open folder names itself in its header strip; a file or a closed folder in its middle. */
-function drawLabel(box: LayoutBox, rect: PixelRect, hasToggle: boolean) {
-    const reservedForToggle = hasToggle ? TOGGLE_SIZE_PX + LABEL_INSET_PX : 0
-    const width = rect.width - 2 * LABEL_INSET_PX - reservedForToggle
+function drawLabel(box: LayoutBox, rect: PixelRect) {
+    const width = rect.width - 2 * LABEL_INSET_PX
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -121,7 +110,7 @@ function drawLabel(box: LayoutBox, rect: PixelRect, hasToggle: boolean) {
         silent: true,
         style: {
             text: box.name,
-            x: isHeader ? rect.x + LABEL_INSET_PX : rect.x + (rect.width - reservedForToggle) / 2,
+            x: isHeader ? rect.x + LABEL_INSET_PX : rect.x + rect.width / 2,
             y: isHeader ? rect.y + headerHeightPx(box, rect) / 2 : rect.y + rect.height / 2,
             width,
             overflow: "truncate",
@@ -136,35 +125,4 @@ function drawLabel(box: LayoutBox, rect: PixelRect, hasToggle: boolean) {
 
 function headerHeightPx(box: LayoutBox, rect: PixelRect): number {
     return (rect.height * LAYOUT_SPACING.headerHeight) / box.height
-}
-
-function drawToggle(box: LayoutBox, rect: PixelRect) {
-    const centreY = box.isExpanded ? rect.y + headerHeightPx(box, rect) / 2 : rect.y + rect.height / 2
-    const left = rect.x + rect.width - LABEL_INSET_PX - TOGGLE_SIZE_PX
-    const top = centreY - TOGGLE_SIZE_PX / 2
-    return [
-        {
-            type: "rect",
-            ...UNTRANSFORMED,
-            info: TOGGLE_INFO,
-            cursor: "pointer",
-            shape: { x: left, y: top, width: TOGGLE_SIZE_PX, height: TOGGLE_SIZE_PX, r: 3 },
-            style: { fill: FILE_FILL, stroke: CLOSED_FOLDER_STROKE, lineWidth: 1 }
-        },
-        {
-            type: "text",
-            ...UNTRANSFORMED,
-            silent: true,
-            style: {
-                text: box.isExpanded ? "−" : "+",
-                x: left + TOGGLE_SIZE_PX / 2,
-                y: centreY,
-                align: "center",
-                verticalAlign: "middle",
-                fontSize: LABEL_FONT_SIZE_PX,
-                fontWeight: "bold",
-                fill: TEXT_COLOR
-            }
-        }
-    ]
 }

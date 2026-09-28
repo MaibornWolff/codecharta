@@ -89,6 +89,11 @@ function drawnBoxPaths(): string[] {
 
 const boxEvent = (name: string) => ({ seriesId: "boxes", name })
 
+function doubleClickBox(path: string) {
+    fireChartEvent("click", boxEvent(path))
+    screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
+}
+
 describe("DependencyMapComponent", () => {
     let restoreElementSize: () => void
 
@@ -113,12 +118,12 @@ describe("DependencyMapComponent", () => {
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model", "/root/ui/view.ts", "/root/model/node.ts"])
     })
 
-    it("should close an open folder from its glyph and draw its edges on the folder", async () => {
+    it("should close an open folder on a double click and draw its edges on the folder", async () => {
         // Arrange
         await setup()
 
         // Act
-        fireChartEvent("click", { ...boxEvent("/root/model"), info: "toggle" })
+        doubleClickBox("/root/model")
         await screen.findByTestId("dependency-graph")
 
         // Assert
@@ -126,13 +131,13 @@ describe("DependencyMapComponent", () => {
         expect(drawnSeries("edges").data).toHaveLength(2)
     })
 
-    it("should ignore a toggle on a file", async () => {
+    it("should ignore a double click on a file", async () => {
         // Arrange
         await setup()
         const drawsBefore = stubbedChart.setOption.mock.calls.length
 
         // Act
-        fireChartEvent("click", { ...boxEvent("/root/ui/view.ts"), info: "toggle" })
+        doubleClickBox("/root/ui/view.ts")
 
         // Assert
         expect(stubbedChart.setOption.mock.calls.length).toBe(drawsBefore)
@@ -143,7 +148,7 @@ describe("DependencyMapComponent", () => {
         await setup({ selectedPath: "/root/model/node.ts" })
 
         // Act
-        fireChartEvent("click", { ...boxEvent("/root/model"), info: "toggle" })
+        doubleClickBox("/root/model")
         await screen.findByTestId("dependency-graph")
 
         // Assert

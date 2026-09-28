@@ -4,7 +4,6 @@ import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
-import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { isBoxSeries } from "../../util/dependencyGraphSeries"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
@@ -20,7 +19,6 @@ export interface DependencyGraphHandlers {
 interface ChartItemEvent {
     seriesId?: string
     name?: string
-    info?: unknown
     event?: { event?: MouseEvent }
 }
 
@@ -102,11 +100,6 @@ export class DependencyGraphHost {
     private reportClick(event: ChartItemEvent): void {
         const path = boxPathOf(event)
         if (path === null) {
-            return
-        }
-        if (event.info === TOGGLE_INFO) {
-            this.lastBoxClick = null
-            this.handlers.onBoxToggled(path)
             return
         }
         this.lastBoxClick = { path, at: Date.now() }
