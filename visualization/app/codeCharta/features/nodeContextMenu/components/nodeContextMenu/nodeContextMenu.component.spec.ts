@@ -60,7 +60,8 @@ describe("nodeContextMenu component", () => {
 
     type RenderMenuOptions = {
         node?: CodeMapNode | null
-        origin?: "codeMap" | "explorer" | "radialMap"
+        origin?: "codeMap" | "explorer" | "radialMap" | "dependencyMap"
+        hasExplorer?: boolean
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
@@ -79,7 +80,8 @@ describe("nodeContextMenu component", () => {
         hasDomainData = true,
         isFlattened = () => false,
         isRadialLayout = false,
-        keptHighlightPaths = []
+        keptHighlightPaths = [],
+        hasExplorer = true
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -103,7 +105,7 @@ describe("nodeContextMenu component", () => {
                         { selector: keptHighlightPathsSelector, value: keptHighlightPaths }
                     ]
                 }),
-                { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
+                ...(hasExplorer ? [{ provide: ExplorerRevealService, useValue: explorerRevealServiceMock }] : []),
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
         })
@@ -180,6 +182,14 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.getByText("Show in Explorer")).not.toBe(null)
+    })
+
+    it("should hide the show-in-explorer entry in a view without the explorer sidebar", async () => {
+        // Arrange & Act
+        await renderMenu({ origin: "dependencyMap", hasExplorer: false })
+
+        // Assert
+        expect(screen.queryByText("Show in Explorer")).toBe(null)
     })
 
     it("should hide the show-in-explorer entry when the right-click came from the explorer", async () => {
