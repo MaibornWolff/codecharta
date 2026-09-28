@@ -1,0 +1,34 @@
+# Package
+
+
+# Imports
+std.collections.HashMap
+
+# Declarations
+CLASS:Number
+CLASS:Rectangle
+CLASS:ShapeMap
+ENUM:Color
+FUNCTION:add
+FUNCTION:square
+INTERFACE:Drawable
+VARIABLE:GREETING
+VARIABLE:MAX_RETRIES
+VARIABLE:PI (parent: geometry)
+
+# Used Types (per declaration)
+Color
+Drawable
+  String
+GREETING
+MAX_RETRIES
+Number
+PI
+Rectangle
+  Drawable
+  Rectangle
+  String
+ShapeMap
+  HashMap<String,Rectangle>
+add
+square

@@ -1,0 +1,18 @@
+BLOCK-LEVEL ON ERROR UNDO, THROW.
+
+CLASS de.sots.cellarsandcentaurs.domain.model.CreatureId:
+
+    DEFINE PUBLIC PROPERTY Id AS CHARACTER NO-UNDO
+        GET.
+        PRIVATE SET.
+
+    CONSTRUCTOR PUBLIC CreatureId (INPUT pId AS CHARACTER):
+        SUPER().
+        ASSIGN Id = pId.
+    END CONSTRUCTOR.
+
+    METHOD PUBLIC OVERRIDE CHARACTER ToString ():
+        RETURN Id.
+    END METHOD.
+
+END CLASS.

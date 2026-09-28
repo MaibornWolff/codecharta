@@ -1,0 +1,6 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "De.Sots.CellarsAndCentaurs", "src\De.Sots.CellarsAndCentaurs\De.Sots.CellarsAndCentaurs.csproj", "{1B7B9A2E-5C0C-4E2B-9E3C-0F2B6B5A1D11}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "De.Sots.CellarsAndCentaurs.Tests", "tests\De.Sots.CellarsAndCentaurs.Tests\De.Sots.CellarsAndCentaurs.Tests.csproj", "{2C8C0B3F-6D1D-4F3C-AF4D-1A3C7C6B2E22}"
+EndProject

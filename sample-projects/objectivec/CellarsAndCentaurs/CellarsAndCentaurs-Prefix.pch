@@ -1,0 +1,15 @@
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+
+#import "Fightable.h"
+#import "CreatureType.h"
+#import "SpeedType.h"
+#import "CreatureId.h"
+#import "ArmorClass.h"
+#import "HitPoints.h"
+#import "Speed.h"
+#import "Creature.h"
+#import "Centaur.h"
+#import "Dice.h"
+#import "CreatureErrors.h"
+#endif

@@ -6,6 +6,7 @@ import {
     AttributeTypes,
     CCFile,
     CodeMapNode,
+    DependencyLevelData,
     DomainLensData,
     Edge,
     KeyValuePair
@@ -31,6 +32,7 @@ export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: Nam
                 attributeTypes: getAttributeTypes(file),
                 attributeDescriptors: getAttributeDescriptors(file),
                 domainWords: mapDomainWords(file, idToPath),
+                dependencyLevels: mapDependencyLevels(file, idToPath),
                 // 2.0 files carry neither; both are populated only when a 1.x file is normalized.
                 blacklist: file.blacklist ?? [],
                 markedPackages: file.markedPackages ?? []
@@ -87,9 +89,28 @@ function mapEdges(file: CcJson2, idToPath: Record<string, string>): Edge[] {
             console.warn(`Dropping dependency edge with unresolved endpoint(s): ${edge.fromId} -> ${edge.toId}`)
             continue
         }
-        edges.push({ fromNodeName, toNodeName, attributes: { ...edge.attributes } })
+        edges.push({
+            fromNodeName,
+            toNodeName,
+            attributes: { ...edge.attributes },
+            isCyclic: edge.isCyclic,
+            isPointingUpwards: edge.isPointingUpwards
+        })
     }
     return edges
+}
+
+function mapDependencyLevels(file: CcJson2, idToPath: Record<string, string>): DependencyLevelData {
+    const levels: DependencyLevelData = {}
+    for (const [nodeId, node] of Object.entries(file.lenses.dependency?.nodes ?? {})) {
+        const path = idToPath[nodeId]
+        if (path === undefined) {
+            console.warn(`Dropping dependency-lens level with unresolved node id: ${nodeId}`)
+            continue
+        }
+        levels[path] = node.level
+    }
+    return levels
 }
 
 function mapDomainWords(file: CcJson2, idToPath: Record<string, string>): DomainLensData {

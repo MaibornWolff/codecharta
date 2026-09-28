@@ -1,0 +1,83 @@
+# Identifiers
+MAX_RETRIES
+Processable
+Sample
+Sample
+a
+a
+b
+b
+block
+c
+c
+calculateWithA
+calculateWithA
+chainedCall
+chainedCall
+count
+counter
+d
+d
+e
+e
+exception
+formatByType
+formatByType
+getCounter
+getCounter
+i
+i
+initWithPrefix
+initWithPrefix
+input
+input
+item
+items
+items
+label
+prefix
+prefix
+prefix
+process
+process
+processData
+processData
+remaining
+sum
+transformValue
+type
+type
+value
+
+# Comments
+A comprehensive sample file demonstrating various Objective-C features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Block example
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression usage.
+@param type the type identifier
+@return formatted result string
+Method chaining example (triggers message_chains metric)
+Protocol for testing
+Protocol implementation
+Simple getter with no complexity
+Simple initializer
+Status enum
+
+# Strings
+ total: %ld
+A
+B
+Hello, 
+X
+Y
+empty
+error
+one
+processed
+three
+two
+unknown

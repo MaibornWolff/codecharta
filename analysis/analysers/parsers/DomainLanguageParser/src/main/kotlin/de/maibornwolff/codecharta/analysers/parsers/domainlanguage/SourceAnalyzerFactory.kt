@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.FileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.CoroutineFileProcessor
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.PathScopedKeywordProvider
@@ -12,7 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.Sile
 
 object SourceAnalyzerFactory {
     fun create(config: AnalysisConfiguration, progressReporter: ProgressReporter = SilentProgressReporter): SourceAnalyzer {
-        val fileScanner = FileScanner(config.allowedExtensions)
+        val fileScanner = SourceFileScanner(config.allowedExtensions, config.excludePatterns, excludeTests = config.excludeTests)
         val pathScopedKeywordProvider = PathScopedKeywordProvider(config.frameworksByPath)
         val stopWordFilter =
             StopWordFilter(

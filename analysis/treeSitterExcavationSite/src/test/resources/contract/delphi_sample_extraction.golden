@@ -1,0 +1,81 @@
+# Identifiers
+A
+A
+APrefix
+APrefix
+Active
+B
+B
+Builder
+C
+C
+Calculate
+Calculate
+Calculate
+Completed
+Count
+Create
+Create
+Create
+D
+D
+Destroy
+Destroy
+Destroy
+E
+E
+E
+FCounter
+FItems
+FPrefix
+FValue
+FirstOrEmpty
+FirstOrEmpty
+FirstOrEmpty
+GetCounter
+GetCounter
+GetCounter
+ISampleProcessor
+Input
+Input
+Input
+Item
+Items
+Items
+Pending
+Process
+Process
+Process
+Process
+ProcessData
+ProcessData
+ProcessData
+Sum
+TInner
+TOuter
+TPoint
+TSample
+TStatus
+TStringsHelper
+X
+Y
+i
+i
+
+# Comments
+Forward-declared interface
+Sample unit demonstrating Delphi language features.
+Simple record type
+Status enum declaration
+Used for golden file contract testing.
+
+# Strings
+
+
+ total: 
+Hello, 
+empty
+error
+long
+medium
+short

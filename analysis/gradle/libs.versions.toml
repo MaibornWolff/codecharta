@@ -15,11 +15,36 @@ kasechange = "1.4.1"
 kotlinx-serialization-json = "1.7.3"
 kotter = "1.2.1"
 picocli = "4.7.7"
-tree-sitter-excavation-site = "v0.12.0"
+# TreeSitter core plus every grammar binding the treeSitterExcavationSite module loads. The go,
+# javascript, php, python and vue pins are also compile-visible to the dependency parser, which
+# queries those grammars directly; they must stay on the versions the module declares, or the ccsh
+# fat jar carries two conflicting sets of natives.
+tree-sitter = "0.26.3"
+tree-sitter-bash = "0.23.3"
+tree-sitter-c = "0.23.2"
+tree-sitter-cpp = "0.23.4"
+tree-sitter-csharp = "0.23.1"
+tree-sitter-go = "0.23.3"
+tree-sitter-java = "0.23.4"
+tree-sitter-javascript = "0.23.1"
+tree-sitter-kotlin = "0.3.8.1"
+tree-sitter-objc = "main-a"
+tree-sitter-php = "0.23.11"
+tree-sitter-python = "0.23.4"
+tree-sitter-ruby = "0.23.1"
+tree-sitter-rust = "0.24.0"
+tree-sitter-swift = "0.5.0"
+tree-sitter-typescript = "0.23.2"
+tree-sitter-vue = "0.2.1a"
+# tree-sitter-ng is an experimental fork with ABL support, published through JitPack
+tree-sitter-abl = "de274a6"
+# tree-sitter-tsx and tree-sitter-pascal are not on Maven Central; the module bundles them as
+# treeSitterExcavationSite/libs/*.jar, built from https://github.com/bonede/tree-sitter-ng
 slf4j = "2.0.17"
 sonarqube = "7.2.2.6593"
 univocity-parsers = "2.9.1"
 appmattus-crypto = "1.0.2"
+archunit = "1.4.1"
 assertj = "3.27.7"
 junit5 = "6.0.3"
 ktlint = "14.0.1"
@@ -41,6 +66,7 @@ kotter = { group = "com.varabyte.kotter", name = "kotter-jvm", version.ref = "ko
 kotter-test = { group = "com.varabyte.kotterx", name = "kotter-test-support-jvm", version.ref = "kotter" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+archunit-junit5 = { group = "com.tngtech.archunit", name = "archunit-junit5", version.ref = "archunit" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 jsonassert = { group = "org.skyscreamer", name = "jsonassert", version = "1.5.3" }
@@ -55,7 +81,24 @@ json = { group = "org.json", name = "json", version.ref = "json" }
 commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.15.0" }
 json-schema = { group = "com.github.everit-org.json-schema", name = "org.everit.json.schema", version.ref = "json-schema" }
 appmattus-crypto = { group = "com.appmattus.crypto", name = "cryptohash", version.ref = "appmattus-crypto"}
-tree-sitter-excavation-site = { group = "com.github.MaibornWolff", name = "TreeSitterExcavationSite", version.ref = "tree-sitter-excavation-site" }
+tree-sitter = { group = "io.github.bonede", name = "tree-sitter", version.ref = "tree-sitter" }
+tree-sitter-bash = { group = "io.github.bonede", name = "tree-sitter-bash", version.ref = "tree-sitter-bash" }
+tree-sitter-c = { group = "io.github.bonede", name = "tree-sitter-c", version.ref = "tree-sitter-c" }
+tree-sitter-cpp = { group = "io.github.bonede", name = "tree-sitter-cpp", version.ref = "tree-sitter-cpp" }
+tree-sitter-csharp = { group = "io.github.bonede", name = "tree-sitter-c-sharp", version.ref = "tree-sitter-csharp" }
+tree-sitter-go = { group = "io.github.bonede", name = "tree-sitter-go", version.ref = "tree-sitter-go" }
+tree-sitter-java = { group = "io.github.bonede", name = "tree-sitter-java", version.ref = "tree-sitter-java" }
+tree-sitter-javascript = { group = "io.github.bonede", name = "tree-sitter-javascript", version.ref = "tree-sitter-javascript" }
+tree-sitter-kotlin = { group = "io.github.bonede", name = "tree-sitter-kotlin", version.ref = "tree-sitter-kotlin" }
+tree-sitter-objc = { group = "io.github.bonede", name = "tree-sitter-objc", version.ref = "tree-sitter-objc" }
+tree-sitter-php = { group = "io.github.bonede", name = "tree-sitter-php", version.ref = "tree-sitter-php" }
+tree-sitter-python = { group = "io.github.bonede", name = "tree-sitter-python", version.ref = "tree-sitter-python" }
+tree-sitter-ruby = { group = "io.github.bonede", name = "tree-sitter-ruby", version.ref = "tree-sitter-ruby" }
+tree-sitter-rust = { group = "io.github.bonede", name = "tree-sitter-rust", version.ref = "tree-sitter-rust" }
+tree-sitter-swift = { group = "io.github.bonede", name = "tree-sitter-swift", version.ref = "tree-sitter-swift" }
+tree-sitter-typescript = { group = "io.github.bonede", name = "tree-sitter-typescript", version.ref = "tree-sitter-typescript" }
+tree-sitter-vue = { group = "io.github.bonede", name = "tree-sitter-vue", version.ref = "tree-sitter-vue" }
+tree-sitter-abl = { group = "com.github.ChristianHuehn.tree-sitter-ng", name = "tree-sitter-abl", version.ref = "tree-sitter-abl" }
 kasechange = { group = "net.pearx.kasechange", name = "kasechange", version.ref = "kasechange" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 

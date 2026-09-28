@@ -1,0 +1,57 @@
+# Identifiers
+ACTIVE
+COMPLETED
+MAX_RETRIES
+PENDING
+Sample
+Status
+a
+b
+c
+calculate
+chainedCall
+count
+counter
+d
+e
+e
+formatByType
+getCounter
+i
+i
+input
+item
+items
+label
+prefix
+processData
+result
+s
+s
+sum
+type
+
+# Comments
+A comprehensive sample class demonstrating various Java features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression and lambda usage.
+@param type the type identifier
+@return formatted result string
+Inner enum for testing enum extraction
+Method chaining example (triggers message_chains metric)
+Simple getter with no complexity
+
+# Strings
+ total: 
+Hello, 
+empty
+error
+one
+three
+two
+unknown
+unused

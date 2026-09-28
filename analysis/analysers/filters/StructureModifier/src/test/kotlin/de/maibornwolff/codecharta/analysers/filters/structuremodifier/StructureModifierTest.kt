@@ -321,6 +321,27 @@ class StructureModifierTest {
     }
 
     @Test
+    fun `should re-point the dependency lens leaves at the new paths when setting a new root`() {
+        // when
+        val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-s=/root/src"))
+
+        // then - the package did not move, the file did, so the leaf keeps its key and follows its file
+        assertThat(cliResult).contains("com.example.File1")
+        assertThat(cliResult).contains(ID_OF_MAIN_FILE1_AFTER_SET_ROOT)
+        assertThat(cliResult).contains("com.example")
+    }
+
+    @Test
+    fun `should drop dependency lens leaves and their edges for files that removal took away`() {
+        // when
+        val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-r=/root/src/main"))
+
+        // then - no leaf and no leaf edge is left pointing at a file that is gone
+        assertThat(cliResult).doesNotContain("com.example.File1")
+        assertThat(cliResult).doesNotContain("leafEdges")
+    }
+
+    @Test
     fun `should exit zero when restructuring a project carrying a domain lens`() {
         // when
         val exitCode = CommandLine(StructureModifier()).execute(DOMAIN_PROJECT, "-s=/root/src")

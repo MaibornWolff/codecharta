@@ -9,9 +9,11 @@ import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.DependencyLeafDto
 import de.maibornwolff.codecharta.serialization.dto.DependencyLensDto
 import de.maibornwolff.codecharta.serialization.dto.EdgeDto
 import de.maibornwolff.codecharta.serialization.dto.FileDto
+import de.maibornwolff.codecharta.serialization.dto.LeafEdgeDto
 import de.maibornwolff.codecharta.serialization.dto.LensesDto
 import de.maibornwolff.codecharta.serialization.dto.MetaDto
 import de.maibornwolff.codecharta.serialization.dto.MetricsLensDto
@@ -68,11 +70,32 @@ object ProjectToCcJsonV2Mapper {
                         EdgeDto(
                             edgeEndpointId(it.fromNodeName, typeByCanonicalPath),
                             edgeEndpointId(it.toNodeName, typeByCanonicalPath),
-                            it.attributes
+                            it.attributes,
+                            it.isCyclic.orNullWhenFalse(),
+                            it.isPointingUpwards.orNullWhenFalse()
                         )
                     },
                 attributeTypes = project.lenses.dependency.attributeTypes,
-                attributeDescriptors = project.lenses.dependency.attributeDescriptors
+                attributeDescriptors = project.lenses.dependency.attributeDescriptors,
+                nodes = project.lenses.dependency.nodes.takeIf { it.isNotEmpty() },
+                namespaces = project.lenses.dependency.namespaces.takeIf { it.isNotEmpty() },
+                leaves =
+                    project.lenses.dependency.leaves
+                        .takeIf { it.isNotEmpty() }
+                        ?.mapValues { (_, leaf) -> DependencyLeafDto(leaf.nodeIds, leaf.name, leaf.kind, leaf.level) },
+                leafEdges =
+                    project.lenses.dependency.leafEdges
+                        .takeIf { it.isNotEmpty() }
+                        ?.map {
+                            LeafEdgeDto(
+                                it.fromLeaf,
+                                it.toLeaf,
+                                it.attributes,
+                                it.usage.takeIf { usage -> usage.isNotEmpty() },
+                                it.isCyclic.orNullWhenFalse(),
+                                it.isPointingUpwards.orNullWhenFalse()
+                            )
+                        }
             )
         return files to
             LensesDto(
@@ -82,6 +105,8 @@ object ProjectToCcJsonV2Mapper {
                 opaqueLenses = project.lenses.opaqueLenses
             )
     }
+
+    private fun Boolean.orNullWhenFalse(): Boolean? = takeIf { it }
 
     private fun buildMeta(project: Project, checksum: String, commitHash: String?): MetaDto = MetaDto(
         projectName = project.projectName,

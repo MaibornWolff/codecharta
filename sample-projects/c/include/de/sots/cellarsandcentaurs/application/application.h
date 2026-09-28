@@ -1,0 +1,7 @@
+#ifndef DE_SOTS_CELLARSANDCENTAURS_APPLICATION_APPLICATION_H
+#define DE_SOTS_CELLARSANDCENTAURS_APPLICATION_APPLICATION_H
+
+#include "creature_facade.h"
+#include "creature_util.h"
+
+#endif

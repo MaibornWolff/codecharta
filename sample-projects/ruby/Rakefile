@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+require 'rspec/core/rake_task'
+
+Dir.glob('lib/tasks/*.rake').each { |task_file| load task_file }
+
+RSpec::Core::RakeTask.new(:spec)
+
+task default: :spec

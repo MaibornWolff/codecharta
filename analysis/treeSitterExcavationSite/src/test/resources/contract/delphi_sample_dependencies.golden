@@ -1,0 +1,42 @@
+# Package
+MyCo.MyMod.Sample
+
+# Imports
+Classes
+Generics.Collections
+Math
+SysUtils
+
+# Declarations
+CLASS:TInner (parent: TOuter)
+CLASS:TOuter
+CLASS:TSample
+CLASS:TStringsHelper
+ENUM:TStatus
+INTERFACE:ISampleProcessor
+RECORD:TPoint
+
+# Used Types (per declaration)
+ISampleProcessor
+  string
+TInner
+  Integer
+TOuter
+  Integer
+TPoint
+  Integer
+TSample
+  Builder
+  FItems
+  ISampleProcessor
+  Integer
+  Items
+  TObject
+  TStringBuilder
+  TStringList
+  TStrings
+  string
+TStatus
+TStringsHelper
+  TStrings
+  string

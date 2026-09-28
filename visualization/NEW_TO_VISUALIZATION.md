@@ -36,7 +36,7 @@ The code under `app/codeCharta/` is organised into modules whose boundaries are 
   decoration/export kernel).
 
 These boundaries are the first slices of the **Visualization 2.0** migration toward a
-lenses × renderers architecture; see `Ideas/codecharta-2.0-implementation-map.html` for the target map.
+lenses × renderers architecture.
 
 ### Other Technologies
 

@@ -1,0 +1,77 @@
+# Identifiers
+Exception
+MAX_RETRIES
+Processable
+Sample
+Sample
+Status
+__construct
+a
+b
+c
+calculate
+chainedCall
+count
+counter
+d
+e
+e
+formatByType
+getCounter
+i
+i
+input
+item
+items
+label
+prefix
+prefix
+process
+process
+processData
+result
+sum
+type
+
+# Comments
+A comprehensive sample class demonstrating various PHP features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression usage.
+@param int $type the type identifier
+@return string formatted result string
+Enum for testing
+Interface for testing
+Interface implementation
+Method chaining example (triggers message_chains metric)
+Simple getter with no complexity
+
+# Strings
+
+ total: {$count}
+A
+B
+Hello, 
+X
+Y
+active
+completed
+empty
+error
+one
+pending
+processed
+string
+string
+string
+string
+string
+string
+string
+string
+three
+two
+unknown

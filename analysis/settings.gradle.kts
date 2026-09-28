@@ -5,6 +5,7 @@ plugins {
 include("ccsh")
 include("dialogProvider")
 include("model")
+include("treeSitterExcavationSite")
 include("analysers:AnalyserInterface")
 include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
@@ -21,7 +22,8 @@ include(
     "analysers:parsers:GitLogParser",
     "analysers:parsers:SVNLogParser",
     "analysers:parsers:UnifiedParser",
-    "analysers:parsers:DomainLanguageParser"
+    "analysers:parsers:DomainLanguageParser",
+    "analysers:parsers:DependencyParser"
 )
 include("analysers:exporters:CSVExporter")
 include(

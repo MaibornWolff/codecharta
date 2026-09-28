@@ -1,0 +1,78 @@
+# Identifiers
+ACTIVE
+COMPLETED
+MAX_RETRIES
+PENDING
+Processable
+ResultType
+Sample
+Status
+a
+b
+c
+c
+calculate
+chainedCall
+count
+counter
+d
+e
+e
+formatByType
+getCounter
+greet
+i
+i
+input
+item
+items
+label
+message
+name
+prefix
+process
+processData
+result
+sum
+transform
+type
+value
+value
+
+# Comments
+A comprehensive sample class demonstrating various TypeScript features.
+Used for golden file contract testing.
+A long method that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Arrow function example
+Calculate sum with validation and control flow
+Class-level constant
+Demonstrates switch expression usage.
+@param type the type identifier
+@returns formatted result string
+Enum for testing enum extraction
+Interface for testing interface extraction
+Interface implementation
+Method chaining example (triggers message_chains metric)
+Simple getter with no complexity
+Template literal example
+Type alias for testing
+
+# Strings
+
+
+
+ 
+ total: ${count}
+${this.prefix}${name}!
+Hello, 
+active
+completed
+empty
+error
+one
+pending
+processed
+three
+two
+unknown

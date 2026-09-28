@@ -65,6 +65,7 @@ class AnalyserServiceTest {
             Arguments.of("dependachartaimport"),
             Arguments.of("rawtextparser"),
             Arguments.of("domainlanguageparser"),
+            Arguments.of("dependencyparser"),
             Arguments.of("check"),
             Arguments.of("inspect")
         )
@@ -150,6 +151,7 @@ class AnalyserServiceTest {
                 "gitlogparser",
                 "rawtextparser",
                 "domainlanguageparser",
+                "dependencyparser",
                 "sourcemonitorimport",
                 "tokeiimporter",
                 "dependachartaimport",

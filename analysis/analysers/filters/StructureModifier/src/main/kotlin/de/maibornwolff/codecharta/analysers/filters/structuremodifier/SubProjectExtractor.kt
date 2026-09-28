@@ -66,10 +66,9 @@ class SubProjectExtractor(private val project: Project) {
         .filter {
             it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern)
         }.map { edge ->
-            Edge(
+            edge.withEndpoints(
                 "/root" + edge.fromNodeName.removePrefix(pattern),
-                "/root" + edge.toNodeName.removePrefix(pattern),
-                edge.attributes
+                "/root" + edge.toNodeName.removePrefix(pattern)
             )
         }
 

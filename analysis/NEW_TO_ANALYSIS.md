@@ -23,6 +23,14 @@ A simple way to only import the analysis is to clone the whole repository and th
 
 - Consumes a cc.json and creates another cc.json. A common use case is merging two cc.jsons
 
+#### Library module
+
+- Carries shared code instead of a CLI command: `model` the cc.json data model, `dialogProvider` the
+  interactive dialogs and `treeSitterExcavationSite` the TreeSitter grammars together with the metric,
+  extraction and dependency queries that `unifiedparser`, `domainlanguageparser` and `dependencyparser`
+  build on. The last module was developed at https://github.com/MaibornWolff/TreeSitterExcavationSite up
+  to `v0.12.0` and lives here since.
+
 ### Technologies
 
 - Kotlin
@@ -32,6 +40,7 @@ A simple way to only import the analysis is to clone the whole repository and th
 - Assertj
 - MockK
 - Gson
+- TreeSitter
 - Sonar-Plugins to create our own parsers
 
 ### Concepts
@@ -66,6 +75,33 @@ If the integration tests fail on macOS, it is likely because the `timeout` comma
 
 - `gradlew.bat ktLintCheck` or `./gradlew ktLintCheck` to check code style
 - `gradlew.bat ktLintFormat` or `./gradlew ktLintFormat` to format code
+
+### Known issues
+
+**`DialogProviderTest > directoryNavigator should provide repeated auto-completion` is flaky.** It asserts
+that the `dialogProvider` module contains exactly the directories `build/` and `src/`, so it depends on the
+state of the working tree rather than on fixtures. It fails after a `clean` that has not been followed by a
+compile, and on any checkout carrying an extra directory in that module. Re-run the module's tests; if it
+keeps failing, check for stray directories in `dialogProvider/`.
+
+**Declaration usage kinds are only reported for PHP.** `ccsh dependencyparser` writes a `usage` list on
+every leaf edge — `inheritance`, `implementation`, `instantiation`, `argument`, `return_value`,
+`constant_access` — but everything except PHP, which runs its own tree-sitter queries, reports only
+`usage`. The information is *not* missing: `TreeSitterExcavationSite` already separates used types by the
+position they appear in (`UsedTypeExtractor.extractInheritanceTypes`, `extractParameterTypes`,
+`extractReturnTypes`, `extractObjectCreationTypes`, … for Java, Kotlin, C#, Rust, Delphi, JavaScript, and
+the `cpp/extractors/usedtypes` split for C++). Its public `UsedType` is `(name, genericTypes,
+namespacePrefix)`, so the distinction is flattened away at the API boundary. The fix is upstream and
+small — carry the position each extractor already knows on `UsedType`; `TseMappings.toType()` here then
+maps it straight onto `TypeOfUsage`. DependaCharta has the same gap for the same reason.
+
+**Building on a mounted filesystem.** If the checkout lives on a filesystem that does not give the build a
+coherent view of files it has just written — a VM or container mount (virtiofs, 9p), or a network share —
+Gradle fails while snapshotting its own outputs (`Cannot access output property ... NoSuchFileException`
+naming a class file, test result or report it just wrote), and Kotlin's incremental compilation corrupts
+its caches (`Could not close incremental caches`, then phantom `Unresolved reference` errors on the next
+build). Put the build directories on local disk, and set `kotlin.incremental=false` in your
+`~/.gradle/gradle.properties`.
 
 ### Intellij Gradle Integration for Building and Testing
 

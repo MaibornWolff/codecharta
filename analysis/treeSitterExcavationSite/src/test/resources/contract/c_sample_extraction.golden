@@ -1,0 +1,67 @@
+# Identifiers
+BUFFER_SIZE
+MAX_RETRIES
+STATUS_ACTIVE
+STATUS_COMPLETED
+STATUS_PENDING
+Sample
+Status
+a
+arr
+arr
+b
+c
+calculate
+count
+count_str
+counter
+create_array
+d
+e
+format_by_type
+free_array
+get_counter
+i
+i
+i
+init_sample
+item
+item_count
+items
+j
+label
+len
+prefix
+prefix
+process_data
+result
+sample
+sample
+size
+sum
+type
+
+# Comments
+A comprehensive sample file demonstrating various C features.
+Used for golden file contract testing.
+A long function that processes data with nested logic.
+This tests long_method detection (15+ lines).
+Calculate sum with validation and control flow
+Constants
+Demonstrates switch statement usage
+Free function
+Initialize sample struct
+Pointer manipulation example
+Sample struct
+Simple getter with no complexity
+Status enum
+
+# Strings
+ total: %d
+\0
+\0
+empty
+one
+three
+two
+unknown

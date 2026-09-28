@@ -8,8 +8,8 @@ dependencies {
     implementation(libs.kotter)
     implementation(libs.kotter.test)
 
-    // TreesitterLibrary provides all TreeSitter dependencies and metric calculation
-    implementation(libs.tree.sitter.excavation.site)
+    // TreeSitterExcavationSite provides all TreeSitter dependencies and metric calculation
+    implementation(project(":treeSitterExcavationSite"))
 
     testImplementation(libs.jsonassert)
 }

@@ -105,7 +105,7 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
         if (isRestructuringAction() && refuseToInvalidateUnknownOpaqueLenses()) return null
 
         val treeBeforeRestructuring = project.rootNode
-        var domainPathRemapping: SegmentRemapping? = null
+        var pathRemapping: SegmentRemapping? = null
 
         when {
             printLevels != null -> {
@@ -114,7 +114,7 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
             }
 
             setRoot != null -> {
-                domainPathRemapping = DomainPathRemapper.forSetRoot(setRoot!!)
+                pathRemapping = DomainPathRemapper.forSetRoot(setRoot!!)
                 project = SubProjectExtractor(project).extract(setRoot!!)
             }
             renameMcc != null -> {
@@ -128,30 +128,38 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
                     }
             }
             remove.isNotEmpty() -> {
-                domainPathRemapping = DomainPathRemapper.forRemove(remove)
+                pathRemapping = DomainPathRemapper.forRemove(remove)
                 project = NodeRemover(project).remove(remove)
             }
             moveFrom != null -> {
                 // FolderMover rejects a missing destination itself, so both paths are known good after it.
                 project = FolderMover(project).move(moveFrom, moveTo) ?: return null
-                domainPathRemapping = DomainPathRemapper.forMove(moveFrom!!, moveTo!!)
+                pathRemapping = DomainPathRemapper.forMove(moveFrom!!, moveTo!!)
             }
         }
 
-        domainPathRemapping?.let { project = withRekeyedDomainLens(project, it, treeBeforeRestructuring) }
+        pathRemapping?.let { project = withRekeyedLenses(project, it, treeBeforeRestructuring) }
 
         ProjectSerializer.serializeToFileOrStream(project, outputFile, output, false)
 
         return null
     }
 
-    private fun withRekeyedDomainLens(project: Project, remapping: SegmentRemapping, treeBeforeRestructuring: Node): Project {
-        val domain = project.lenses.domain ?: return project
+    // Both node-keyed lenses re-key onto the restructured tree. Dependency edges are addressed by path
+    // and are re-pathed by the restructuring actions themselves; only the lens's per-node entries need this.
+    private fun withRekeyedLenses(project: Project, remapping: SegmentRemapping, treeBeforeRestructuring: Node): Project {
+        val domain = project.lenses.domain
+        val dependency = project.lenses.dependency
+        if (domain == null && !dependency.carriesNodeData) return project
         return Project(
             projectName = project.projectName,
             nodes = listOf(project.rootNode),
             apiVersion = project.apiVersion,
-            lenses = project.lenses.copy(domain = domain.rekeyed(treeBeforeRestructuring, remapping)),
+            lenses =
+                project.lenses.copy(
+                    dependency = dependency.rekeyed(treeBeforeRestructuring, project.rootNode, remapping),
+                    domain = domain?.rekeyed(treeBeforeRestructuring, project.rootNode, remapping)
+                ),
             blacklist = project.blacklist,
             commitHash = project.commitHash
         )
@@ -159,7 +167,8 @@ class StructureModifier(private val input: InputStream = System.`in`, private va
 
     private fun isRestructuringAction(): Boolean = setRoot != null || remove.isNotEmpty() || moveFrom != null
 
-    // The typed `domain` lens is re-keyed onto the new paths, so it survives a restructure. An opaque lens
+    // The typed `domain` and `dependency` lenses are re-keyed onto the new paths, so they survive a
+    // restructure. An opaque lens
     // has an unknown shape whose node ids cannot be rewritten safely, so those still refuse rather than emit
     // a lens referencing nodes the output no longer has — the guard `--large` merging also applies.
     private fun refuseToInvalidateUnknownOpaqueLenses(): Boolean {
