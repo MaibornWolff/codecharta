@@ -7,6 +7,7 @@ import {
     resetStubbedChart,
     resizeObserverDisconnect,
     stubbedChart,
+    stubbedDrawnElements,
     stubResizeObserver
 } from "../../testing/radialChart.stub"
 import { POINTER_LEAVE_GRACE_MS, RadialChartHandlers, RadialChartHost } from "./radialChartHost"
@@ -232,6 +233,20 @@ describe("RadialChartHost", () => {
         // Assert
         expect(stubbedChart.setOption).toHaveBeenCalledWith(SOME_OPTION)
         expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({ type: "highlight", seriesIndex: 0, name: "/root/src" })
+    })
+
+    it("should finish every running animation before a redraw, so a fading hover cannot paint over the new colours", () => {
+        // Arrange
+        host.attachTo(elementOfSize(800, 600))
+        const piece = { stopAnimation: jest.fn() }
+        stubbedDrawnElements.push(piece)
+
+        // Act
+        host.render(SOME_OPTION)
+
+        // Assert
+        expect(piece.stopAnimation).toHaveBeenCalledWith(undefined, true)
+        expect(piece.stopAnimation.mock.invocationCallOrder[0]).toBeLessThan(stubbedChart.setOption.mock.invocationCallOrder[0])
     })
 
     it("should emphasise a hovered path again after a redraw replaced the segment that was under the pointer", () => {

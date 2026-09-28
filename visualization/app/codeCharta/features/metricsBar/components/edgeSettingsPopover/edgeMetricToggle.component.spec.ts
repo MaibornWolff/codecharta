@@ -2,8 +2,6 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { isEdgeMetricVisibleSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { toggleEdgeMetricVisible } from "../../../../stores/mapState/mapState.write.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
@@ -17,15 +15,7 @@ describe("EdgeMetricToggleComponent", () => {
                     initialState: defaultState,
                     selectors: [{ selector: isEdgeMetricVisibleSelector, value: isEdgeMetricVisible }]
                 }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
-                }
+                { provide: State, useValue: { getValue: () => defaultState } }
             ]
         })
     }

@@ -44,6 +44,10 @@ export class CodeMapStore {
         this.nodeInteraction.hoverNode(path)
     }
 
+    clearKeptHighlight() {
+        this.nodeInteraction.clearKeptHighlight()
+    }
+
     setRightClickedNodeData(value: CcState["sharedView"]["rightClickedNodeData"]) {
         this.store.dispatch(setRightClickedNodeData({ value }))
     }

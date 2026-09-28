@@ -2,8 +2,6 @@ import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { amountOfBuildingsWithSelectedEdgeMetricSelector } from "../../../../renderer/renderModel/amountOfBuildingsWithSelectedEdgeMetric/amountOfBuildingsWithSelectedEdgeMetric.selector"
 import {
     amountOfEdgePreviewsSelector,
@@ -60,15 +58,7 @@ describe("EdgeSettingsPopoverComponent", () => {
                         { selector: showOnlyBuildingsWithEdgesSelector, value: showOnlyBuildingsWithEdges }
                     ]
                 }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
-                }
+                { provide: State, useValue: { getValue: () => defaultState } }
             ]
         })
     }

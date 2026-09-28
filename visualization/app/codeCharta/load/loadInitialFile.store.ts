@@ -108,6 +108,8 @@ export class LoadInitialFileStore {
     // Transient interaction state: never restored, so a persisted blob without it is complete.
     private static readonly ignoredSharedViewKeys = new Set<keyof SharedView>([
         "hoveredNodePath",
+        "hoveredFileExtensions",
+        "keptHighlightPaths",
         "selectedNodePath",
         "rightClickedNodeData"
     ])

@@ -1,5 +1,7 @@
 import { expect, type Locator, test } from "@playwright/test"
-import { clearIndexedDB, collapseExplorer, goto } from "../../../../../playwright.helper"
+import { clearIndexedDB, collapseExplorer, goto, readPersistedLayoutAlgorithm } from "../../../../../playwright.helper"
+import sample1 from "../../../../assets/sample1.cc.json"
+import sample2 from "../../../../assets/sample2.cc.json"
 import { NavBarFolderButtonPageObject } from "../../../navBar/components/navBarFolderButton/navBarFolderButton.po"
 import { MetricsBarPageObject } from "./metricsBar.po"
 
@@ -110,6 +112,22 @@ test.describe("MetricsBar layout tab", () => {
         await expect(metricsBar.radialLevelsInput()).toHaveValue("3")
     })
 
+    test("should show the map's total under the area metric after a reload in a radial layout", async ({ page }) => {
+        // Arrange
+        const metricsBar = new MetricsBarPageObject(page)
+        await metricsBar.switchLayoutTo("Sunburst")
+        await expect.poll(() => readPersistedLayoutAlgorithm(page), { timeout: 60_000 }).toBe("Sunburst")
+
+        // Act
+        await page.reload()
+        await page.locator("#loading-gif-file").waitFor({ state: "hidden", timeout: 60_000 })
+
+        // Assert
+        const areaMetric = await metricsBar.getSelectedAreaMetricName()
+        const bootMapTotal = sumOfMetric(sample1, areaMetric) + sumOfMetric(sample2, areaMetric)
+        await expect(metricsBar.areaMetricSummary()).toContainText(bootMapTotal.toLocaleString("en-US"))
+    })
+
     test("should stay on the bar's top edge without making the bar taller", async ({ page }) => {
         // Arrange
         const metricsBar = new MetricsBarPageObject(page)
@@ -164,4 +182,8 @@ function overlaps(first: Box, second: Box) {
     const overlapsHorizontally = first.x < second.x + second.width && second.x < first.x + first.width
     const overlapsVertically = first.y < second.y + second.height && second.y < first.y + first.height
     return overlapsHorizontally && overlapsVertically
+}
+
+function sumOfMetric(ccJson: { lenses: { metrics: { attributes: Record<string, Record<string, number>> } } }, metric: string) {
+    return Object.values(ccJson.lenses.metrics.attributes).reduce((total, attributes) => total + (attributes[metric] ?? 0), 0)
 }

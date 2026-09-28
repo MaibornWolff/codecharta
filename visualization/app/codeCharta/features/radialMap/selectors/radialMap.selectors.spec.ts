@@ -1,7 +1,16 @@
 import { CodeMapNode, ColorMode, NodeType, RadialFolderStyle, RadialFolderValue } from "../../../model/codeCharta.model"
+import { fileNode, folderNode } from "../../../renderer/radialMap/testing/radialChart.stub"
 import { AccumulatedData } from "../../../renderer/renderModel/renderModel.facade"
 import { defaultMapColors } from "../../../stores/mapState/mapState.read.facade"
-import { radialColoringSelector, radialFolderValuesSelector, radialMetricsSelector, radialTreeSelector } from "./radialMap.selectors"
+import { NO_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
+import {
+    radialColoringSelector,
+    radialFolderColoringSelector,
+    radialFolderValuesSelector,
+    radialHighlightSelector,
+    radialMetricsSelector,
+    radialTreeSelector
+} from "./radialMap.selectors"
 
 function file(path: string, rloc: number): CodeMapNode {
     return { name: path.split("/").at(-1), path, type: NodeType.FILE, attributes: { rloc, mcc: 1 } }
@@ -22,7 +31,14 @@ function accumulatedData(unifiedMapNode: CodeMapNode | undefined): AccumulatedDa
 
 const METRICS = { areaMetric: "rloc", colorMetric: "mcc" }
 const NOTHING_IS_FLAT = () => false
-const FOLDERS = { values: new Map([["/root", 1]]), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
+const FOLDERS = {
+    values: new Map([["/root", 1]]),
+    value: RadialFolderValue.Max,
+    style: RadialFolderStyle.Tinted,
+    tint: 0.5,
+    markedPackages: []
+}
+const HIGHLIGHT = { selectedPath: "/root/b.ts", litPaths: new Set<string>() }
 
 describe("radialTreeSelector", () => {
     it("should build the tree of the whole map when nothing is focused", () => {
@@ -69,14 +85,15 @@ describe("sunburst metrics and coloring", () => {
             ColorMode.absolute,
             defaultMapColors,
             { minValue: 0, maxValue: 3, values: [] },
-            FOLDERS
+            FOLDERS,
+            HIGHLIGHT
         )
 
         // Assert
         expect(coloring.isUnaryMetric).toBe(true)
     })
 
-    it("should gather what colouring a folder needs", () => {
+    it("should gather what colouring a node needs", () => {
         // Arrange
         const colorRange = { from: 1, to: 2 }
         const colorMetricRange = { minValue: 0, maxValue: 3, values: [] }
@@ -88,7 +105,8 @@ describe("sunburst metrics and coloring", () => {
             ColorMode.absolute,
             defaultMapColors,
             colorMetricRange,
-            FOLDERS
+            FOLDERS,
+            HIGHLIGHT
         )
 
         // Assert
@@ -98,8 +116,82 @@ describe("sunburst metrics and coloring", () => {
             colorMode: ColorMode.absolute,
             mapColors: defaultMapColors,
             colorMetricRange,
-            folders: FOLDERS
+            folders: FOLDERS,
+            highlight: HIGHLIGHT
         })
+    })
+})
+
+describe("radialHighlightSelector", () => {
+    it("should carry the selected node, to fill it with the selection colour", () => {
+        // Act
+        const highlight = radialHighlightSelector.projector("/root/b.ts", [], [], null)
+
+        // Assert
+        expect(highlight.selectedPath).toBe("/root/b.ts")
+    })
+
+    it("should light the files with a hovered file extension", () => {
+        // Arrange
+        const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, [], ["ts"], tree)
+
+        // Assert
+        expect([...highlight.litPaths]).toEqual(["/root/src/app/a.ts", "/root/b.ts"])
+    })
+
+    it("should light the files without an extension when none is hovered", () => {
+        // Arrange
+        const tree = folderNode("/root", [fileNode("/root/Makefile"), fileNode("/root/a.ts")])
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, [], [NO_EXTENSION], tree)
+
+        // Assert
+        expect([...highlight.litPaths]).toEqual(["/root/Makefile"])
+    })
+
+    it("should light what the highlight keeps together with the files of a hovered file extension", () => {
+        // Arrange
+        const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, ["/root/src", "/root/src/app"], ["ts"], tree)
+
+        // Assert
+        expect([...highlight.litPaths]).toEqual(["/root/src", "/root/src/app", "/root/src/app/a.ts", "/root/b.ts"])
+    })
+
+    it("should light nothing while nothing is kept or hovered", () => {
+        // Arrange
+        const tree = radialTreeSelector.projector(accumulatedData(MAP), PATH_TO_NODE, undefined, METRICS, NOTHING_IS_FLAT)
+
+        // Act
+        const highlight = radialHighlightSelector.projector(null, [], [], tree)
+
+        // Assert
+        expect(highlight.litPaths.size).toBe(0)
+    })
+})
+
+describe("radialFolderColoringSelector", () => {
+    it("should carry the marked folders, which take their mark colour", () => {
+        // Arrange
+        const markedPackages = [{ path: "/root/src", color: "#ff00ff" }]
+
+        // Act
+        const folders = radialFolderColoringSelector.projector(
+            new Map(),
+            RadialFolderValue.Max,
+            RadialFolderStyle.Tinted,
+            0.5,
+            markedPackages
+        )
+
+        // Assert
+        expect(folders.markedPackages).toBe(markedPackages)
     })
 })
 

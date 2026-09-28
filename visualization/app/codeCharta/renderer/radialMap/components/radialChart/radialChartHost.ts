@@ -79,6 +79,7 @@ export class RadialChartHost {
         }
         this.attachedContainer?.setAttribute("aria-busy", "true")
         this.chart.resize()
+        this.finishRunningAnimations()
         this.chart.setOption(option as echarts.EChartsCoreOption)
         // The segments the pointer knew are gone, and ECharts reports a hover again only once it moves. A redraw
         // of the same segments keeps the hover: letting go of it can resize the bars around the chart, which
@@ -164,6 +165,14 @@ export class RadialChartHost {
         const mouseEvent = event?.event
         if (data && mouseEvent) {
             this.handlers.onNodeRightClicked(data.name, mouseEvent.clientX, mouseEvent.clientY)
+        }
+    }
+
+    // A hover that ends fades a piece back to the colours it had when the hover began, and a redraw during that fade
+    // was painted over by it: a folder marked from its own menu kept its old colour.
+    private finishRunningAnimations(): void {
+        for (const element of this.chart.getZr().storage.getDisplayList()) {
+            element.stopAnimation(undefined, true)
         }
     }
 

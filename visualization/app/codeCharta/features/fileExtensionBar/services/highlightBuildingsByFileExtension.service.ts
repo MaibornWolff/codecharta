@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core"
 import { distinct, filter } from "rxjs"
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeViewer.facade"
+import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
 import { NO_EXTENSION, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import { MetricDistributionStore } from "../stores/metricDistribution.store"
 
@@ -14,7 +15,8 @@ export class HighlightBuildingsByFileExtensionService {
 
     constructor(
         private readonly threeSceneService: ThreeSceneService,
-        private readonly metricDistributionStore: MetricDistributionStore
+        private readonly metricDistributionStore: MetricDistributionStore,
+        private readonly nodeInteraction: NodeInteraction
     ) {
         this.metricDistribution$
             .pipe(
@@ -35,6 +37,7 @@ export class HighlightBuildingsByFileExtensionService {
     }
 
     highlightExtension(hoveredExtension: string) {
+        this.nodeInteraction.hoverFileExtensions(this.extensionsIn(hoveredExtension))
         switch (hoveredExtension) {
             case OTHER_EXTENSION:
                 this.threeSceneService.highlightBuildingsByExtension(this.fileExtensionsOfOthers)
@@ -49,6 +52,11 @@ export class HighlightBuildingsByFileExtensionService {
     }
 
     clearHighlightingOnFileExtensions() {
+        this.nodeInteraction.hoverFileExtensions([])
         this.threeSceneService.applyClearHighlights()
+    }
+
+    private extensionsIn(hoveredExtension: string): string[] {
+        return hoveredExtension === OTHER_EXTENSION ? [...this.fileExtensionsOfOthers] : [hoveredExtension]
     }
 }

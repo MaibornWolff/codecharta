@@ -38,8 +38,46 @@ export class RadialMapPageObject {
             .evaluate((canvas: HTMLCanvasElement) => canvas.toDataURL())
     }
 
+    async opacityAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<number> {
+        const [, , , alpha] = await this.pixelAt(distanceFromCentreInRadii, degreesClockwiseFromTop)
+        return alpha / 255
+    }
+
+    async colorAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<string> {
+        const channels = await this.pixelAt(distanceFromCentreInRadii, degreesClockwiseFromTop)
+        return `#${channels
+            .slice(0, 3)
+            .map(channel => channel.toString(16).padStart(2, "0"))
+            .join("")}`
+    }
+
+    private pixelAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop: number): Promise<number[]> {
+        return this.chart()
+            .locator("canvas")
+            .first()
+            .evaluate(
+                (canvas: HTMLCanvasElement, { distance, degrees }) => {
+                    const scale = canvas.width / canvas.clientWidth
+                    const radius = (Math.min(canvas.clientWidth, canvas.clientHeight) / 2) * distance
+                    const angle = (degrees * Math.PI) / 180
+                    const x = (canvas.clientWidth / 2 + radius * Math.sin(angle)) * scale
+                    const y = (canvas.clientHeight / 2 - radius * Math.cos(angle)) * scale
+                    return [...canvas.getContext("2d").getImageData(Math.round(x), Math.round(y), 1, 1).data]
+                },
+                { distance: distanceFromCentreInRadii, degrees: degreesClockwiseFromTop }
+            )
+    }
+
     async switchLayoutTo(layout: string) {
         await new MetricsBarPageObject(this.page).switchLayoutTo(layout)
+    }
+
+    async waitUntilDrawn() {
+        await expect(this.chart()).toHaveAttribute("aria-busy", "false")
+    }
+
+    async movePointerAway() {
+        await this.page.mouse.move(0, 0)
     }
 
     async rightClickAt(distanceFromCentreInRadii: number, degreesClockwiseFromTop = 90) {

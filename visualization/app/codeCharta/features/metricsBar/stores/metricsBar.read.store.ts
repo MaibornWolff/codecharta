@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { AttributeTypes, CcState, PrimaryMetrics } from "../../../model/codeCharta.model"
 import {
-    accumulatedDataSelector,
     amountOfBuildingsWithSelectedEdgeMetricSelector,
     hoveredNodeSelector,
     metricDataSelector,
@@ -15,6 +14,7 @@ import { markableFolderPathsSelector } from "../selectors/markableFolderPaths.se
 import { markedPackagesWithCountsSelector } from "../selectors/markedPackagesWithCounts.selector"
 import { metricColorRangeColorsSelector } from "../selectors/metricColorRangeColors.selector"
 import { metricColorRangeValuesSelector } from "../selectors/metricColorRangeValues.selector"
+import { topLevelNodeSelector } from "../selectors/topLevelNode.selector"
 
 @Injectable({
     providedIn: "root"
@@ -32,7 +32,7 @@ export class MetricsBarReadStore {
     readonly markableFolderPaths$ = this.store.select(markableFolderPathsSelector)
     readonly hoveredNode$ = this.store.select(hoveredNodeSelector)
     readonly selectedNode$ = this.store.select(selectedNodeSelector)
-    readonly accumulatedData$ = this.store.select(accumulatedDataSelector)
+    readonly topLevelNode$ = this.store.select(topLevelNodeSelector)
 
     attributeTypeLabel$(attributeType: keyof AttributeTypes, metricFor: keyof PrimaryMetrics) {
         return this.store.select(createAttributeTypeSelector(attributeType, metricFor))

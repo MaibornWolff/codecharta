@@ -2,12 +2,11 @@ import { HttpClient } from "@angular/common/http"
 import { TestBed } from "@angular/core/testing"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { CodeMapRenderService } from "../../../features/codeMap/facade"
-import { TEST_DELTA_MAP_A, TEST_NODE_LEAF_0_LENGTH, TEST_NODES, VALID_NODE_WITH_MCC } from "../../../mocks/dataMocks"
-import { accumulatedDataSelector } from "../../../renderer/renderModel/accumulatedData/accumulatedData.selector"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_MCC } from "../../../mocks/dataMocks"
 import { hoveredNodeSelector } from "../../../renderer/renderModel/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
 import { defaultState } from "../../../stores/rootStore/state.manager"
+import { topLevelNodeSelector } from "../selectors/topLevelNode.selector"
 import { NodeSelectionService } from "./nodeSelection.service"
 
 describe("NodeSelectionService", () => {
@@ -18,13 +17,6 @@ describe("NodeSelectionService", () => {
             providers: [
                 { provide: HttpClient, useValue: {} },
                 { provide: State, useValue: { getValue: () => null } },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: jest.fn().mockImplementation(() => TEST_NODES),
-                        sortVisibleNodesByHeightDescending: jest.fn().mockImplementation(input => input)
-                    }
-                },
                 provideMockStore({
                     selectors: [
                         {
@@ -36,8 +28,8 @@ describe("NodeSelectionService", () => {
                             value: null
                         },
                         {
-                            selector: accumulatedDataSelector,
-                            value: null
+                            selector: topLevelNodeSelector,
+                            value: undefined
                         }
                     ]
                 })
@@ -54,10 +46,7 @@ describe("NodeSelectionService", () => {
 
     it("should return hoverednode if hoverednode available", done => {
         store.setState(defaultState)
-        store.overrideSelector(accumulatedDataSelector, {
-            unifiedMapNode: TEST_DELTA_MAP_A.map,
-            unifiedFileMeta: null
-        })
+        store.overrideSelector(topLevelNodeSelector, TEST_DELTA_MAP_A.map)
         store.overrideSelector(hoveredNodeSelector, VALID_NODE_WITH_MCC)
         store.refreshState()
 
@@ -69,10 +58,7 @@ describe("NodeSelectionService", () => {
 
     it("should return selectedNode if selectedNode available and hoverednode not available", done => {
         store.setState(defaultState)
-        store.overrideSelector(accumulatedDataSelector, {
-            unifiedMapNode: TEST_DELTA_MAP_A.map,
-            unifiedFileMeta: null
-        })
+        store.overrideSelector(topLevelNodeSelector, TEST_DELTA_MAP_A.map)
         store.overrideSelector(selectedNodeSelector, VALID_NODE_WITH_MCC)
         store.refreshState()
 
@@ -82,32 +68,49 @@ describe("NodeSelectionService", () => {
         })
     })
 
-    it("should return toplevelnode if both selectedNode and hoverednode are not available", done => {
+    it("should return the top-level node when neither a node is hovered nor selected", done => {
+        // Arrange
         store.setState(defaultState)
-        store.overrideSelector(accumulatedDataSelector, {
-            unifiedMapNode: TEST_DELTA_MAP_A.map,
-            unifiedFileMeta: null
-        })
+        store.overrideSelector(topLevelNodeSelector, TEST_DELTA_MAP_A.map)
         store.refreshState()
 
+        // Act
         nodeSelectionService.createNodeObservable().subscribe(node => {
-            expect(node).toEqual(TEST_NODE_LEAF_0_LENGTH)
+            // Assert
+            expect(node).toBe(TEST_DELTA_MAP_A.map)
             done()
         })
     })
 
-    it("should return undefined toplevelnode when there are no visible nodes", done => {
-        const codeMapRenderService = TestBed.inject(CodeMapRenderService)
-        jest.spyOn(codeMapRenderService, "sortVisibleNodesByHeightDescending").mockReturnValue([])
-
+    it("should return the new top-level node when the focus changes", done => {
+        // Arrange
+        const focusedFolder = TEST_DELTA_MAP_A.map.children[0]
         store.setState(defaultState)
-        store.overrideSelector(accumulatedDataSelector, {
-            unifiedMapNode: TEST_DELTA_MAP_A.map,
-            unifiedFileMeta: null
+        store.overrideSelector(topLevelNodeSelector, TEST_DELTA_MAP_A.map)
+        store.refreshState()
+        const emittedNodes = []
+
+        // Act
+        nodeSelectionService.createNodeObservable().subscribe(node => {
+            emittedNodes.push(node)
+            if (emittedNodes.length === 2) {
+                // Assert
+                expect(emittedNodes).toEqual([TEST_DELTA_MAP_A.map, focusedFolder])
+                done()
+            }
         })
+        store.overrideSelector(topLevelNodeSelector, focusedFolder)
+        store.refreshState()
+    })
+
+    it("should return undefined when no map is loaded", done => {
+        // Arrange
+        store.setState(defaultState)
         store.refreshState()
 
+        // Act
         nodeSelectionService.createNodeObservable().subscribe(node => {
+            // Assert
             expect(node).toBeUndefined()
             done()
         })

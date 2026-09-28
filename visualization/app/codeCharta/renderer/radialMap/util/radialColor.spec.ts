@@ -24,6 +24,28 @@ function coloringWithFolder(
 }
 
 describe("nodeColor", () => {
+    it("should fill the selected node with the selection colour, whatever colours it otherwise", () => {
+        // Arrange
+        const coloring = { ...TEST_COLORING, highlight: { ...TEST_COLORING.highlight, selectedPath: FOLDER } }
+
+        // Act
+        const colors = [nodeColor(folder(25), coloring), nodeColor(folder(undefined, true), coloring)]
+
+        // Assert
+        expect(colors).toEqual([defaultMapColors.selected, defaultMapColors.selected])
+    })
+
+    it("should leave the centre in its own colour when it is the selected node, since stepping in or out selects it", () => {
+        // Arrange
+        const coloring = { ...TEST_COLORING, highlight: { ...TEST_COLORING.highlight, selectedPath: FOLDER } }
+
+        // Act
+        const color = nodeColor({ ...folder(undefined), isCentre: true }, coloring)
+
+        // Assert
+        expect(color).toBe(defaultMapColors.base)
+    })
+
     describe("for files", () => {
         it("should classify a value on the map's colour range unchanged, just like a building", () => {
             // Act
@@ -55,6 +77,17 @@ describe("nodeColor", () => {
 
             // Assert
             expect(color).toBe(defaultMapColors.positive)
+        })
+
+        it("should keep its metric colour inside a marked folder", () => {
+            // Arrange
+            const coloring = coloringWithFolder(25, { markedPackages: [{ path: "/root", color: "#ff00ff" }] })
+
+            // Act
+            const color = nodeColor(file(25), coloring)
+
+            // Assert
+            expect(color).toBe(defaultMapColors.negative)
         })
 
         it("should ignore the folder style", () => {
@@ -131,6 +164,54 @@ describe("nodeColor", () => {
 
             // Assert
             expect(colors).toEqual([defaultMapColors.base, defaultMapColors.base])
+        })
+
+        it("should colour a marked folder and the folders inside it in the mark colour, whatever their folder value", () => {
+            // Arrange
+            const coloring = coloringWithFolder(25, { markedPackages: [{ path: "/root", color: "#ff00ff" }] })
+
+            // Act
+            const color = nodeColor(folder(1), coloring)
+
+            // Assert
+            expect(color).toBe("#ff00ff")
+        })
+
+        it("should colour a marked folder without a value in the mark colour", () => {
+            // Arrange
+            const coloring = coloringWithFolder(undefined, { markedPackages: [{ path: FOLDER, color: "#ff00ff" }] })
+
+            // Act
+            const color = nodeColor(folder(undefined), coloring)
+
+            // Assert
+            expect(color).toBe("#ff00ff")
+        })
+
+        it("should take the mark of the closest marked folder above", () => {
+            // Arrange
+            const markedPackages = [
+                { path: "/root", color: "#ff00ff" },
+                { path: FOLDER, color: "#00ffff" }
+            ]
+            const coloring = coloringWithFolder(25, { style: RadialFolderStyle.Neutral, markedPackages })
+
+            // Act
+            const color = nodeColor(folder(1), coloring)
+
+            // Assert
+            expect(color).toBe("#00ffff")
+        })
+
+        it("should keep the flat colour for a flattened folder inside a marked one", () => {
+            // Arrange
+            const coloring = coloringWithFolder(25, { markedPackages: [{ path: FOLDER, color: "#ff00ff" }] })
+
+            // Act
+            const color = nodeColor(folder(1, true), coloring)
+
+            // Assert
+            expect(color).toBe(defaultMapColors.flat)
         })
 
         it("should tint every folder positive for the unary colour metric", () => {

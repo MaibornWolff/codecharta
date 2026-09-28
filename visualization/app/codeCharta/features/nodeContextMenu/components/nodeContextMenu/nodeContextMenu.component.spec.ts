@@ -7,15 +7,20 @@ import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { flattenPredicateSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
-import { IdToBuildingService, ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { routeLinks } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
-import { currentFocusedNodePathSelector, focusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import {
+    currentFocusedNodePathSelector,
+    focusedNodePathSelector,
+    keptHighlightPathsSelector
+} from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
     addFlattenedNodes,
     focusNode,
+    keepHighlight,
+    removeKeptHighlight,
     setRightClickedNodeData,
     unfocusAllNodes
 } from "../../../../stores/sharedView/sharedView.write.facade"
@@ -47,18 +52,10 @@ describe("nodeContextMenu component", () => {
         children: [fileNode]
     } as CodeMapNode
 
-    const threeSceneServiceMock = {
-        getConstantHighlight: jest.fn(),
-        addNodeAndChildrenToConstantHighlight: jest.fn(),
-        removeNodeAndChildrenFromConstantHighlight: jest.fn()
-    }
-    const idToBuildingServiceMock = { get: jest.fn() }
     const explorerRevealServiceMock = { revealNode: jest.fn() }
 
     beforeEach(() => {
         jest.clearAllMocks()
-        idToBuildingServiceMock.get.mockReturnValue(undefined)
-        threeSceneServiceMock.getConstantHighlight.mockReturnValue(new Map())
     })
 
     type RenderMenuOptions = {
@@ -70,6 +67,7 @@ describe("nodeContextMenu component", () => {
         hasDomainData?: boolean
         isFlattened?: (node: CodeMapNode) => boolean
         isRadialLayout?: boolean
+        keptHighlightPaths?: string[]
     }
 
     async function renderMenu({
@@ -80,7 +78,8 @@ describe("nodeContextMenu component", () => {
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
         hasDomainData = true,
         isFlattened = () => false,
-        isRadialLayout = false
+        isRadialLayout = false,
+        keptHighlightPaths = []
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -100,11 +99,10 @@ describe("nodeContextMenu component", () => {
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
                         { selector: hasDomainDataSelector, value: hasDomainData },
-                        { selector: isRadialLayoutSelector, value: isRadialLayout }
+                        { selector: isRadialLayoutSelector, value: isRadialLayout },
+                        { selector: keptHighlightPathsSelector, value: keptHighlightPaths }
                     ]
                 }),
-                { provide: ThreeSceneService, useValue: threeSceneServiceMock },
-                { provide: IdToBuildingService, useValue: idToBuildingServiceMock },
                 { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
@@ -139,16 +137,16 @@ describe("nodeContextMenu component", () => {
     it.each([
         "radialMap",
         "explorer"
-    ] as const)("should leave out highlight and folder marking, which the sunburst does not show, for a right-click from the %s", async origin => {
+    ] as const)("should offer the highlight and folder marking in the sunburst for a right-click from the %s", async origin => {
         // Arrange & Act
         await renderMenu({ node: folderNode, origin, isRadialLayout: true })
 
         // Assert
         expect(screen.getByText("Focus")).not.toBe(null)
+        expect(screen.getByText("Keep Highlight")).not.toBe(null)
         expect(screen.getByText("Flatten & decolor")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
-        expect(screen.queryByText("Keep Highlight")).toBe(null)
-        expect(document.querySelector("cc-mark-folder-row")).toBe(null)
+        expect(document.querySelector("cc-mark-folder-row")).not.toBe(null)
     })
 
     it("should not offer to focus a file while the sunburst is shown, which cannot centre on one", async () => {
@@ -160,20 +158,20 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Exclude")).not.toBe(null)
     })
 
-    it("should draw a single divider before Flatten when a file in the sunburst has no focus actions", async () => {
+    it("should set the highlight apart from the path and from Flatten for a file in the sunburst", async () => {
         // Arrange & Act
         const { container } = await renderMenu({ node: fileNode, origin: "radialMap", isRadialLayout: true })
 
         // Assert
-        expect(container.querySelectorAll(".border-t")).toHaveLength(1)
+        expect(container.querySelectorAll(".border-t")).toHaveLength(2)
     })
 
-    it("should keep the divider before the focus actions of a folder in the sunburst", async () => {
+    it("should set the view actions, Flatten and the folder marking apart for a folder in the sunburst", async () => {
         // Arrange & Act
         const { container } = await renderMenu({ node: folderNode, origin: "radialMap", isRadialLayout: true })
 
         // Assert
-        expect(container.querySelectorAll(".border-t")).toHaveLength(2)
+        expect(container.querySelectorAll(".border-t")).toHaveLength(3)
     })
 
     it("should offer Show in Explorer for a right-click in the sunburst", async () => {
@@ -387,15 +385,33 @@ describe("nodeContextMenu component", () => {
     })
 
     it("should offer to remove the highlight when the node is constantly highlighted", async () => {
-        // Arrange
-        idToBuildingServiceMock.get.mockReturnValue({ id: 1 })
-        threeSceneServiceMock.getConstantHighlight.mockReturnValue(new Map([[1, {}]]))
-
         // Act
-        await renderMenu()
+        await renderMenu({ keptHighlightPaths: [fileNode.path] })
 
         // Assert
         expect(screen.queryByText("Keep Highlight")).toBe(null)
         expect(screen.getByText("Remove Highlight")).not.toBe(null)
+    })
+
+    it("should keep the highlight on a folder and everything inside it", async () => {
+        // Arrange
+        const { dispatchSpy } = await renderMenu({ node: folderNode })
+
+        // Act
+        fireEvent.click(screen.getByText("Keep Highlight"))
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(keepHighlight({ paths: [folderNode.path, fileNode.path] }))
+    })
+
+    it("should remove the kept highlight from a folder and everything inside it", async () => {
+        // Arrange
+        const { dispatchSpy } = await renderMenu({ node: folderNode, keptHighlightPaths: [folderNode.path, fileNode.path] })
+
+        // Act
+        fireEvent.click(screen.getByText("Remove Highlight"))
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(removeKeptHighlight({ paths: [folderNode.path, fileNode.path] }))
     })
 })

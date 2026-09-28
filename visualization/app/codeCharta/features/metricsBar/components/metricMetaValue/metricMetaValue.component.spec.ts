@@ -2,8 +2,7 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { Observable, of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
-import { CodeMapNode, Node } from "../../../../model/codeCharta.model"
+import { CodeMapNode } from "../../../../model/codeCharta.model"
 import { primaryMetricNamesSelector } from "../../../../renderer/renderModel/primaryMetrics/primaryMetricNames.selector"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { NodeSelectionService } from "../../services/nodeSelection.service"
@@ -16,9 +15,9 @@ const metricNames = {
     edgeMetric: "avgCommit"
 }
 
-async function setup(node: Partial<CodeMapNode | Node> | undefined, metricFor: keyof typeof metricNames = "heightMetric") {
+async function setup(node: Partial<CodeMapNode> | undefined, metricFor: keyof typeof metricNames = "heightMetric") {
     const nodeSelectionServiceMock = {
-        createNodeObservable: (): Observable<CodeMapNode | Node | undefined> => of(node as CodeMapNode | Node | undefined)
+        createNodeObservable: (): Observable<CodeMapNode | undefined> => of(node as CodeMapNode | undefined)
     }
 
     return render(MetricMetaValueComponent, {
@@ -29,15 +28,7 @@ async function setup(node: Partial<CodeMapNode | Node> | undefined, metricFor: k
                 selectors: [{ selector: primaryMetricNamesSelector, value: metricNames }]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
-            { provide: NodeSelectionService, useValue: nodeSelectionServiceMock },
-            {
-                provide: CodeMapRenderService,
-                useValue: {
-                    getNodes: () => [],
-                    sortVisibleNodesByHeightDescending: () => [],
-                    colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                }
-            }
+            { provide: NodeSelectionService, useValue: nodeSelectionServiceMock }
         ]
     })
 }
@@ -74,7 +65,7 @@ describe("MetricMetaValueComponent", () => {
 
     it("should style a positive heightMetric delta as success", async () => {
         // Arrange
-        const node = { attributes: { mcc: 10 }, deltas: { mcc: 5 } } as Partial<Node>
+        const node = { attributes: { mcc: 10 }, deltas: { mcc: 5 } } as Partial<CodeMapNode>
         const { fixture } = await setup(node, "heightMetric")
         const component = fixture.componentInstance as MetricMetaValueComponent
 
@@ -85,7 +76,7 @@ describe("MetricMetaValueComponent", () => {
 
     it("should style a negative delta as error regardless of metric", async () => {
         // Arrange
-        const node = { attributes: { mcc: 10 }, deltas: { mcc: -7 } } as Partial<Node>
+        const node = { attributes: { mcc: 10 }, deltas: { mcc: -7 } } as Partial<CodeMapNode>
         const { fixture } = await setup(node, "heightMetric")
         const component = fixture.componentInstance as MetricMetaValueComponent
 
@@ -95,7 +86,7 @@ describe("MetricMetaValueComponent", () => {
 
     it("should style a positive non-heightMetric delta as base content", async () => {
         // Arrange
-        const node = { attributes: { mcc: 10 }, deltas: { mcc: 5 } } as Partial<Node>
+        const node = { attributes: { mcc: 10 }, deltas: { mcc: 5 } } as Partial<CodeMapNode>
         const { fixture } = await setup(node, "colorMetric")
         const component = fixture.componentInstance as MetricMetaValueComponent
 

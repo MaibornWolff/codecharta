@@ -4,9 +4,8 @@ import { CcState } from "../../../model/codeCharta.model"
 import { MapStateReadWindow, mapColorsSelector } from "../../../stores/mapState/mapState.read.facade"
 import { PreferencesReadWindow } from "../../../stores/preferences/preferences.read.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
-import { selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import { keptHighlightPathsSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
-import { idToNodeSelector } from "../../renderModel/renderModel.facade"
 
 @Injectable({ providedIn: "root" })
 export class ThreeSceneStore {
@@ -32,8 +31,8 @@ export class ThreeSceneStore {
         return this.mapStateReadWindow.getMapState()
     }
 
-    getIdToNode() {
-        return idToNodeSelector(this.ccStateSnapshot.get())
+    getKeptHighlightPaths(): readonly string[] {
+        return keptHighlightPathsSelector(this.ccStateSnapshot.get())
     }
 
     getSelectedNodePath(): string | null {

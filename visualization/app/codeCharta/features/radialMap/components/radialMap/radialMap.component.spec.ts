@@ -25,6 +25,7 @@ import {
     selectedNodePathSelector
 } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
+    clearKeptHighlight,
     setHoveredNodePath,
     setRightClickedNodeData,
     setSelectedNodePath,
@@ -259,6 +260,17 @@ describe("RadialMapComponent", () => {
 
         // Assert
         expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/src" }))
+    })
+
+    it("should drop a kept highlight on a click, as the 3D map does", async () => {
+        // Arrange
+        const { store } = await setup()
+
+        // Act
+        fireChartEvent("click", { data: { name: "/root/src/b.ts", isCentre: false, isFile: true } })
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(clearKeptHighlight())
     })
 
     it("should select the parent folder when the centre is clicked", async () => {

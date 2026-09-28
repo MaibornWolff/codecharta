@@ -6,33 +6,32 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
+  
+## [2.7.0] - 2026-09-28
 
 ### Added 🚀
 
 - **Radial treemap map layout**: choose "Radial TreeMap" to see the folder you are in ring by ring as in the sunburst, with each folder's files packed as a treemap instead of thin slices, and click your way in and out.
 - **Folder colours in the radial layouts**: a Folders card beside Color in the sunburst and radial treemap picks what a folder's colour shows, such as its highest, lowest or middle file, and tints folders by it or keeps them a neutral grey.
 - **Levels in the radial layouts**: a slider in the layout picker sets how many folder levels, from 1 to 10, the sunburst and radial treemap show around the centre.
-- **The cc.json 2.0 reader understands the grown `dependency` lens.** An edge now carries the optional `isCyclic` and
-  `isPointingUpwards` flags through to the viz model, and a file's `dependencyLevels` hold the level each node sits
-  on. Nothing renders them yet — this lands the data layer so a visualization can be built on it, and so the vendored
-  schema accepts files from `ccsh dependencyparser`.
 
-- **The vendored cc.json 2.0 schema accepts the logical package/declaration layer.** `ccsh dependencyparser` now also
-  writes the graph as the code declares it: `leaves` (declarations), `namespaces` (packages) and `leafEdges`
-  (dependencies between declarations, with the way each is used). The schema and the `CcJson2` types know all three,
-  so a released viz reads the parser's output instead of rejecting it. Nothing renders them yet.
+- **Search in the radial layouts**: searching the explorer greys out what the search misses in the sunburst and radial treemap, as in the 3D map, while the folders leading to a hit keep their colour.
+- **Selection in the radial layouts**: the file you select takes the selection colour in the sunburst and radial treemap, as in the 3D map.
+- **File types in the radial layouts**: hovering a file type in the bar below the map lights up those files in the sunburst and radial treemap and fades the rest.
+- **Keep Highlight in the radial layouts**: the context menu of the sunburst and radial treemap keeps a file or folder lit while the rest of the map fades, until you remove it or click the map.
+- **Folder marks in the radial layouts**: folders you mark with a colour from the context menu or the colour settings take that colour in the sunburst and radial treemap, the folders inside them too.
 
 ### Changed
 
 - **Flatten & decolor**: the context menu names what flattening a node does, since it also greys the node out.
 - **Sunburst labels**: names in the sunburst curve along wide segments and run straight along narrow ones, as in the radial treemap.
-- **Settings in the radial layouts**: the sunburst and radial treemap no longer offer area settings and folder colour overrides that only change the 3D map.
 - **Clicking beside the words keeps your file**: clicking the domain cloud where no word is drawn only unpins the open word, and the cloud stays on the file or folder you selected.
 - **Explorer keeps its open folders**: switching the explorer to Words or collapsing it and coming back shows the files with the same folders open as before.
+- **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.
 
 ### Fixed 🐞
 
-- **Smooth hover on big maps**: hovering the sunburst or radial treemap of a large map fades the rest of it gently instead of in one jump.
+- **Kept highlight**: moving the pointer off the file type bar below the 3D map no longer drops a highlight you kept.
 - **Faded pieces after hovering**: moving the pointer off the sunburst or radial treemap no longer leaves the rest of the map faded until you hover it again.
 - **Color setup after the sunburst**: switching to the sunburst or radial treemap and back keeps your color metric and color range, and picking a color metric there unlinks it from the height metric.
 

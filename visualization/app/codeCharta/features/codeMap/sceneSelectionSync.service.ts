@@ -1,5 +1,5 @@
 import { Injectable, inject, OnDestroy } from "@angular/core"
-import { combineLatest, filter, map, Subscription } from "rxjs"
+import { combineLatest, filter, map, Observable, Subscription } from "rxjs"
 import { ThreeMapVisibilityStore, ThreeRendererService, ThreeSceneService } from "../../renderer/threeViewer/threeViewer.facade"
 import { SharedViewReadWindow } from "../../stores/sharedView/sharedView.read.facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
@@ -15,16 +15,25 @@ export class SceneSelectionSyncService implements OnDestroy {
 
     start(): void {
         this.subscription?.unsubscribe()
-        this.subscription = combineLatest([this.sharedViewReadWindow.selectedNodePath$, this.threeMapVisibilityStore.isMapShown$])
-            .pipe(
-                filter(([, isMapShown]) => isMapShown),
-                map(([selectedNodePath]) => selectedNodePath)
+        this.subscription = this.whileTheMapIsShown(this.sharedViewReadWindow.selectedNodePath$).subscribe(selectedNodePath =>
+            this.showOnTheMap(selectedNodePath)
+        )
+        this.subscription.add(
+            this.whileTheMapIsShown(this.sharedViewReadWindow.keptHighlightPaths$).subscribe(paths =>
+                this.threeSceneService.showKeptHighlight(paths)
             )
-            .subscribe(selectedNodePath => this.showOnTheMap(selectedNodePath))
+        )
     }
 
     ngOnDestroy(): void {
         this.subscription?.unsubscribe()
+    }
+
+    private whileTheMapIsShown<T>(value$: Observable<T>): Observable<T> {
+        return combineLatest([value$, this.threeMapVisibilityStore.isMapShown$]).pipe(
+            filter(([, isMapShown]) => isMapShown),
+            map(([value]) => value)
+        )
     }
 
     private showOnTheMap(selectedNodePath: string | null): void {
@@ -35,7 +44,6 @@ export class SceneSelectionSyncService implements OnDestroy {
             return
         }
         this.codeMapMouseEventService.drawLabelSelectedBuilding(selectedNow)
-        this.threeSceneService.clearConstantHighlight()
         this.threeRendererService.render()
     }
 }

@@ -14,8 +14,14 @@ import { RadialMapPageObject } from "./radialMap.po"
 const INNER_RING = 0.35
 const CENTRE = 0
 const JUST_PAST_THE_TOP = 15
+const KEPT_FOLDER = 200
+const FILE_BESIDE_IT = 330
+const HALF = 0.5
+const BESIDE_THE_NAME = 20
 const NEUTRAL_FOLDER_GREY = "#d9dce1"
 const MANY_PIXELS = 1000
+const SELECTION_ORANGE = "#eb8319"
+const FIRST_MARK_PINK = "#ff1d8e"
 
 test.describe("Sunburst layout", () => {
     test.beforeEach(async ({ page }) => {
@@ -83,7 +89,7 @@ test.describe("Sunburst layout", () => {
         await expect(inspector.nodeName()).toHaveText("sample1OnlyLeaf.scss")
     })
 
-    test("should offer the node menu on a right-clicked segment, without the entries the sunburst cannot show", async ({ page }) => {
+    test("should offer the node menu on a right-clicked segment", async ({ page }) => {
         // Arrange
         const sunburst = new RadialMapPageObject(page)
         await sunburst.switchLayoutTo("Sunburst")
@@ -96,7 +102,88 @@ test.describe("Sunburst layout", () => {
         await expect(menu).toBeVisible()
         await expect(menu).toContainText("Exclude")
         await expect(menu).toContainText("Focus")
-        await expect(menu).not.toContainText("Keep Highlight")
+        await expect(menu).toContainText("Keep Highlight")
+    })
+
+    test("should fade everything but a kept highlight until it is removed, even while the hover fades out", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        const menu = page.locator("#codemap-context-menu")
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.clickAt(INNER_RING, JUST_PAST_THE_TOP)
+        await sunburst.movePointerAway()
+        await sunburst.waitUntilDrawn()
+        await sunburst.rightClickAt(INNER_RING, KEPT_FOLDER)
+
+        // Act
+        await menu.getByText("Keep Highlight").click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.opacityAt(INNER_RING, FILE_BESIDE_IT)).toBeLessThan(HALF)
+        await expect.poll(() => sunburst.opacityAt(INNER_RING, KEPT_FOLDER)).toBe(1)
+
+        // Act
+        await sunburst.rightClickAt(INNER_RING, KEPT_FOLDER)
+        await menu.getByText("Remove Highlight").click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.opacityAt(INNER_RING, FILE_BESIDE_IT)).toBe(1)
+    })
+
+    test("should paint the selected file in the selection colour, but not the folder it steps into", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        const explorer = new ExplorerTreeLevelPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await explorer.selectNode("/root/sample1.cc.json")
+        await sunburst.waitUntilCentredOn("/root/sample1.cc.json")
+        await sunburst.movePointerAway()
+        await expect.poll(() => sunburst.countPixelsOfColor(SELECTION_ORANGE)).toBe(0)
+
+        // Act
+        await sunburst.clickAt(INNER_RING, JUST_PAST_THE_TOP)
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.countPixelsOfColor(SELECTION_ORANGE)).toBeGreaterThan(MANY_PIXELS)
+    })
+
+    test("should light the files of a hovered file type and fade the rest", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.waitUntilDrawn()
+        const unhighlighted = await sunburst.pixelFingerprint()
+        const fileTypeSegment = page.locator("cc-file-extension-bar-segment", { hasText: "scss" }).locator("[data-test-id=formattedTitle]")
+
+        // Act
+        await fileTypeSegment.hover()
+
+        // Assert
+        await expect.poll(() => sunburst.pixelFingerprint()).not.toBe(unhighlighted)
+
+        // Act
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.pixelFingerprint()).toBe(unhighlighted)
+    })
+
+    test("should colour a folder marked from its own node menu in its mark colour, even while its hover fades out", async ({ page }) => {
+        // Arrange
+        const sunburst = new RadialMapPageObject(page)
+        await sunburst.switchLayoutTo("Sunburst")
+        await sunburst.waitUntilDrawn()
+        await sunburst.rightClickAt(INNER_RING, BESIDE_THE_NAME)
+
+        // Act
+        await page.locator("#codemap-context-menu").getByTitle("Colorize folder").first().click()
+        await sunburst.movePointerAway()
+
+        // Assert
+        await expect.poll(() => sunburst.colorAt(INNER_RING, BESIDE_THE_NAME)).toBe(FIRST_MARK_PINK)
     })
 
     test("should bring the 3D map back when another layout is chosen", async ({ page }) => {

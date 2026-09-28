@@ -5,7 +5,7 @@ import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { CodeMapTooltipService } from "../../../renderer/threeViewer/threeViewer.facade"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodePath, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
+import { clearKeptHighlight, setHoveredNodePath, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { MetricsExplorerSelection } from "./metricsExplorerSelection"
 
 const LEAF = { name: "a.ts", path: "/root/src/a.ts", id: 2, type: NodeType.FILE, attributes: { rloc: 4 } } as CodeMapNode
@@ -35,7 +35,7 @@ describe("MetricsExplorerSelection", () => {
         jest.clearAllMocks()
     })
 
-    it("should only publish the selected path, which every view then shows", () => {
+    it("should publish the selected path, which every view then shows, and drop the kept highlight", () => {
         // Arrange
         const { selection, dispatchSpy } = setup()
 
@@ -43,8 +43,7 @@ describe("MetricsExplorerSelection", () => {
         selection.select(LEAF)
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledTimes(1)
-        expect(dispatchSpy).toHaveBeenCalledWith(setSelectedNodePath({ value: LEAF.path }))
+        expect(dispatchSpy.mock.calls).toEqual([[setSelectedNodePath({ value: LEAF.path })], [clearKeptHighlight()]])
     })
 
     it("should clear the selected path on deselect", () => {

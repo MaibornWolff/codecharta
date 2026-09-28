@@ -3,7 +3,6 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import { Observable, of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { CodeMapNode, Node } from "../../../../model/codeCharta.model"
 import { edgeMetricSelector, isEdgeMetricVisibleSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { setEdgeMetric } from "../../../../stores/mapState/mapState.write.facade"
@@ -27,14 +26,6 @@ describe("EdgeSegmentComponent", () => {
                 {
                     provide: NodeSelectionService,
                     useValue: { createNodeObservable: () => node$ }
-                },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
                 }
             ]
         })

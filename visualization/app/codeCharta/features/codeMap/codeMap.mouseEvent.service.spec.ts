@@ -193,7 +193,6 @@ describe("codeMapMouseEventService", () => {
             clearHighlight: jest.fn(),
             highlightSingleBuilding: jest.fn(),
             clearSelection: jest.fn(),
-            clearConstantHighlight: jest.fn(),
             clearHoverHighlight: jest.fn(),
             selectBuilding: jest.fn(),
             getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),

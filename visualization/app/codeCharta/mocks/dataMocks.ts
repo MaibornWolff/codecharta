@@ -609,28 +609,6 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
     ]
 }
 
-export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
-    name: "big leaf",
-    id: 1,
-    type: NodeType.FILE,
-    path: "/root/big leaf",
-    attributes: { rloc: 100, functions: 10, mcc: 1, [UNARY_METRIC]: 1 },
-    link: "https://www.google.de",
-    isExcluded: false
-}
-
-export const VALID_NODES_WITH_ID: CodeMapNode = {
-    name: "root",
-    type: NodeType.FOLDER,
-    id: 0,
-    attributes: { a: 20, b: 15 },
-    edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
-    path: "/root",
-    link: "NO_LINK",
-    isExcluded: false,
-    children: [VALID_FILE_NODE_WITH_ID]
-}
-
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
     name: "root",
     type: NodeType.FOLDER,
@@ -1989,6 +1967,8 @@ export const STATE: CcState = {
         metricRules: [],
         markedPackages: [],
         hoveredNodePath: null,
+        hoveredFileExtensions: [],
+        keptHighlightPaths: [],
         selectedNodePath: null,
         rightClickedNodeData: null
     },
@@ -2138,6 +2118,8 @@ export const DEFAULT_STATE: CcState = {
         metricRules: [],
         markedPackages: [],
         hoveredNodePath: null,
+        hoveredFileExtensions: [],
+        keptHighlightPaths: [],
         selectedNodePath: null,
         rightClickedNodeData: null
     },

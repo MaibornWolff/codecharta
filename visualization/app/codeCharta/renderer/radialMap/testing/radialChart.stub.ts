@@ -11,8 +11,13 @@ type ChartEventHandler = (event: unknown) => void
 const chartEventHandlers = new Map<string, ChartEventHandler>()
 const renderSurfaceEventHandlers = new Map<string, ChartEventHandler>()
 
+export const stubbedDrawnElements: { stopAnimation: jest.Mock }[] = []
+
 export const stubbedChart = {
-    getZr: jest.fn(() => ({ on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler) })),
+    getZr: jest.fn(() => ({
+        on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler),
+        storage: { getDisplayList: () => stubbedDrawnElements }
+    })),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
     resize: jest.fn(),
@@ -36,6 +41,7 @@ export function fireRenderSurfaceEvent(eventName: string, event: unknown = {}): 
 
 export function resetStubbedChart(): void {
     jest.clearAllMocks()
+    stubbedDrawnElements.length = 0
     chartEventHandlers.clear()
     renderSurfaceEventHandlers.clear()
 }
@@ -54,7 +60,8 @@ export const TEST_COLORING: RadialColoring = {
     colorMode: ColorMode.absolute,
     mapColors: defaultMapColors,
     colorMetricRange: { minValue: 0, maxValue: 100 },
-    folders: { values: new Map(), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5 }
+    folders: { values: new Map(), value: RadialFolderValue.Max, style: RadialFolderStyle.Tinted, tint: 0.5, markedPackages: [] },
+    highlight: { selectedPath: null, litPaths: new Set() }
 }
 
 export function folderNode(path: string, children: RadialNode[] = [], overrides: Partial<RadialNode> = {}): RadialNode {

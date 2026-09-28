@@ -87,6 +87,8 @@ export interface SharedView {
     metricRules: MetricRule[]
     markedPackages: MarkedPackage[]
     hoveredNodePath: string | null
+    hoveredFileExtensions: string[]
+    keptHighlightPaths: string[]
     selectedNodePath: string | null
     rightClickedNodeData: {
         nodeId: string

@@ -1,15 +1,13 @@
 import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { of } from "rxjs"
-import { CodeMapRenderService } from "../../../../features/codeMap/facade"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/store/isDeltaState.selector"
-import { colorMetricSelector, isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { colorMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { ColorSettingsPopoverComponent } from "./colorSettingsPopover.component"
 
 describe("ColorSettingsPopoverComponent", () => {
-    async function setup(colorMetric = "mcc", isDeltaState = false, isRadialLayout = false) {
+    async function setup(colorMetric = "mcc", isDeltaState = false) {
         const renderResult = await render(ColorSettingsPopoverComponent, {
             inputs: {
                 popoverId: "metric-settings-popover-color",
@@ -20,19 +18,10 @@ describe("ColorSettingsPopoverComponent", () => {
                     initialState: defaultState,
                     selectors: [
                         { selector: colorMetricSelector, value: colorMetric },
-                        { selector: isDeltaStateSelector, value: isDeltaState },
-                        { selector: isRadialLayoutSelector, value: isRadialLayout }
+                        { selector: isDeltaStateSelector, value: isDeltaState }
                     ]
                 }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                {
-                    provide: CodeMapRenderService,
-                    useValue: {
-                        getNodes: () => [],
-                        sortVisibleNodesByHeightDescending: () => [],
-                        colorCategoryCounts$: of({ positive: 0, neutral: 0, negative: 0 })
-                    }
-                }
+                { provide: State, useValue: { getValue: () => defaultState } }
             ]
         })
         return { component: renderResult.fixture.componentInstance }
@@ -49,15 +38,6 @@ describe("ColorSettingsPopoverComponent", () => {
         expect(screen.getByText("Bands")).not.toBeNull()
         expect(screen.getByText("Invert colors")).not.toBeNull()
         expect(screen.getByText("Folder Overrides")).not.toBeNull()
-    })
-
-    it("should leave out the folder overrides in a radial layout, which does not show them", async () => {
-        // Arrange & Act
-        await setup("mcc", false, true)
-
-        // Assert
-        expect(screen.getByText("Bands")).not.toBeNull()
-        expect(screen.queryByText("Folder Overrides")).toBeNull()
     })
 
     it("should hide the range and gradient sections for the unary metric", async () => {
