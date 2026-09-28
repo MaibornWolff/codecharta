@@ -7,6 +7,7 @@ import { CopyToClipboardService } from "../../../../util/copyToClipboard.service
 import { ContextMenuItemComponent, FloatingMenuComponent, injectIsRadialLayout } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
+import { NODE_CONTEXT_MENU_VIEW_ACTIONS, NodeContextMenuViewAction } from "../../nodeContextMenuViewActions"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
@@ -37,6 +38,7 @@ export class NodeContextMenuComponent {
     private readonly clipboard = inject(CopyToClipboardService)
 
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
+    readonly viewActions = inject(NODE_CONTEXT_MENU_VIEW_ACTIONS, { optional: true }) ?? []
 
     readonly showMapActions = this.capabilities.showMapActions
 
@@ -121,6 +123,14 @@ export class NodeContextMenuComponent {
         const jumpTarget = this.jumpTarget()
         if (node && jumpTarget) {
             this.writeStore.showNodeInView(jumpTarget.view, node.path)
+        }
+        this.close()
+    }
+
+    runViewAction(action: NodeContextMenuViewAction) {
+        const node = this.menuNode()
+        if (node) {
+            action.run(node.path)
         }
         this.close()
     }
