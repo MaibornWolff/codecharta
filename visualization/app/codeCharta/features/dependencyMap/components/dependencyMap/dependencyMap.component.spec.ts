@@ -20,6 +20,7 @@ import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodePath, setRightClickedNodeData, setSelectedNodePath } from "../../../../stores/sharedView/sharedView.write.facade"
 import { dependencyTreeSelector } from "../../selectors/dependencyMap.selectors"
+import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyMapComponent } from "./dependencyMap.component"
 
 jest.mock("echarts/core", () => jest.requireActual("../../../../renderer/dependencyGraph/testing/dependencyGraph.stub").echartsCoreStub)
@@ -235,5 +236,19 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(screen.getByText("No file in view carries dependency levels.")).not.toBeNull()
+    })
+
+    it("should leave a hidden folder and its edges out of the graph", async () => {
+        // Arrange
+        const { fixture } = await setup()
+
+        // Act
+        TestBed.inject(DependencyMapViewStore).hide("/root/model")
+        fixture.detectChanges()
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts"])
+        expect(drawnSeries("edges").data).toHaveLength(0)
     })
 })
