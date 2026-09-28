@@ -31,6 +31,7 @@ import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuCapabilities
 } from "../../nodeContextMenuCapabilities"
+import { NODE_CONTEXT_MENU_VIEW_ACTIONS, NodeContextMenuViewAction } from "../../nodeContextMenuViewActions"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"
 
@@ -62,6 +63,7 @@ describe("nodeContextMenu component", () => {
         node?: CodeMapNode | null
         origin?: "codeMap" | "explorer" | "radialMap" | "dependencyMap"
         hasExplorer?: boolean
+        viewActions?: NodeContextMenuViewAction[]
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
@@ -81,7 +83,8 @@ describe("nodeContextMenu component", () => {
         isFlattened = () => false,
         isRadialLayout = false,
         keptHighlightPaths = [],
-        hasExplorer = true
+        hasExplorer = true,
+        viewActions
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -106,6 +109,7 @@ describe("nodeContextMenu component", () => {
                     ]
                 }),
                 ...(hasExplorer ? [{ provide: ExplorerRevealService, useValue: explorerRevealServiceMock }] : []),
+                ...(viewActions ? [{ provide: NODE_CONTEXT_MENU_VIEW_ACTIONS, useValue: viewActions }] : []),
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
         })
@@ -182,6 +186,19 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.getByText("Show in Explorer")).not.toBe(null)
+    })
+
+    it("should offer the actions the view adds and run them on the node", async () => {
+        // Arrange
+        const run = jest.fn()
+        const { dispatchSpy } = await renderMenu({ viewActions: [{ label: "Hide", icon: "fa-regular fa-eye-slash", hoverHint: "", run }] })
+
+        // Act
+        fireEvent.click(screen.getByText("Hide"))
+
+        // Assert
+        expect(run).toHaveBeenCalledWith(fileNode.path)
+        expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
     })
 
     it("should hide the show-in-explorer entry in a view without the explorer sidebar", async () => {
