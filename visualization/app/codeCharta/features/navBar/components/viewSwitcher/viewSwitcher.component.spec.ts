@@ -5,6 +5,7 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { locationStrategyProvider } from "../../../../../app.config"
+import { hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { routeLinks, routePaths } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
@@ -17,12 +18,13 @@ const deepLinkedUrl = "http://localhost:9009/index.html?file=fileOne.json&area=f
 const hrefOf = (routeLink: string) => `${deepLinkedUrl}#${routeLink}`
 
 describe("ViewSwitcherComponent", () => {
-    async function setup(hasDomainData: boolean, isDeltaState = false) {
+    async function setup(hasDomainData: boolean, isDeltaState = false, hasDependencyData = false) {
         return render(ViewSwitcherComponent, {
             providers: [
                 provideRouter([
                     { path: routePaths.metrics, children: [] },
-                    { path: routePaths.domain, children: [] }
+                    { path: routePaths.domain, children: [] },
+                    { path: routePaths.dependencies, children: [] }
                 ]),
                 locationStrategyProvider,
                 { provide: MOCK_PLATFORM_LOCATION_CONFIG, useValue: { startUrl: deepLinkedUrl } },
@@ -30,6 +32,7 @@ describe("ViewSwitcherComponent", () => {
                     initialState: defaultState,
                     selectors: [
                         { selector: hasDomainDataSelector, value: hasDomainData },
+                        { selector: hasDependencyDataSelector, value: hasDependencyData },
                         { selector: isDeltaStateSelector, value: isDeltaState }
                     ]
                 }),
@@ -47,6 +50,22 @@ describe("ViewSwitcherComponent", () => {
         expect(screen.getByTestId("view-switcher")).not.toBeNull()
         expect(screen.getByTestId("view-switcher-metrics")).not.toBeNull()
         expect(screen.queryByTestId("view-switcher-domain")).toBeNull()
+    })
+
+    it("should hide the dependencies tab when the file has no dependency levels", async () => {
+        // Arrange & Act
+        await setup(true)
+
+        // Assert
+        expect(screen.queryByTestId("view-switcher-dependencies")).toBeNull()
+    })
+
+    it("should link the dependencies tab to the dependency route when the file has dependency levels", async () => {
+        // Arrange & Act
+        await setup(false, false, true)
+
+        // Assert
+        expect(screen.getByTestId("view-switcher-dependencies").getAttribute("href")).toBe(hrefOf(routeLinks.dependencies))
     })
 
     it("should keep the domain tab in compare mode", async () => {

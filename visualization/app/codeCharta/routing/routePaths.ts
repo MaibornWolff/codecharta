@@ -1,13 +1,15 @@
 export const routePaths = {
     metrics: "",
-    domain: "domain"
+    domain: "domain",
+    dependencies: "dependencies"
 } as const
 
 const absoluteLinkOf = (routePath: string) => `/${routePath}`
 
 export const routeLinks = {
     metrics: absoluteLinkOf(routePaths.metrics),
-    domain: absoluteLinkOf(routePaths.domain)
+    domain: absoluteLinkOf(routePaths.domain),
+    dependencies: absoluteLinkOf(routePaths.dependencies)
 } as const
 
 export type ViewId = keyof typeof routePaths

@@ -24,12 +24,16 @@ class MetricsViewStubComponent {}
 @Component({ selector: "cc-domain-view-stub", template: "domain" })
 class DomainViewStubComponent {}
 
+@Component({ selector: "cc-dependency-view-stub", template: "dependencies" })
+class DependencyViewStubComponent {}
+
 const stubComponentByPath = {
     [routePaths.metrics]: MetricsViewStubComponent,
-    [routePaths.domain]: DomainViewStubComponent
+    [routePaths.domain]: DomainViewStubComponent,
+    [routePaths.dependencies]: DependencyViewStubComponent
 }
 
-// The domain route is lazy, so `loadComponent` has to go with it — Angular rejects a route that
+// The domain and dependency routes are lazy, so `loadComponent` has to go with it — Angular rejects a route that
 // carries both it and a `component`.
 const stubbedRoutes: Route[] = routes.map(({ loadComponent, ...route }) => ({
     ...route,

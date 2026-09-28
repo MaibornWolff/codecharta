@@ -6,14 +6,14 @@
         }
     } @else {
         <a
-            #domainExplore="routerLinkActive"
+            #viewExplore="routerLinkActive"
             class="btn btn-ghost btn-sm relative"
-            [routerLink]="routeLinks.domain"
+            [routerLink]="routeLinks[view()]"
             routerLinkActive="font-bold"
-            data-testid="view-mode-domain-explore"
+            [attr.data-testid]="'view-mode-' + view() + '-explore'"
         >
             Explore
-            @if (domainExplore.isActive) {
+            @if (viewExplore.isActive) {
                 <span class="cc-current-underline"></span>
             }
         </a>

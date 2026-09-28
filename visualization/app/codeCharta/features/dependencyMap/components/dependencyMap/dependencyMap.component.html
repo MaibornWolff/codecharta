@@ -1,0 +1,62 @@
+@if (isDeltaState()) {
+    <div class="flex h-full items-center justify-center p-4">
+        <output class="alert max-w-md">
+            <span>The dependency view shows a single map. Leave compare mode to see its dependencies.</span>
+        </output>
+    </div>
+} @else if (scene(); as scene) {
+    <cc-dependency-graph
+        #graph
+        [scene]="scene"
+        (boxClicked)="select($event)"
+        (boxToggled)="toggle($event)"
+        (boxHovered)="hover($event)"
+        (boxRightClicked)="openContextMenu($event)"
+        (rendered)="markReady()"
+    ></cc-dependency-graph>
+
+    <div class="absolute right-[10px] top-[10px] z-10 flex gap-2">
+        <div class="join rounded bg-base-100 shadow-md" role="group" aria-label="Dependencies shown">
+            @for (option of edgeFilterOptions; track option.value) {
+                <button
+                    type="button"
+                    class="btn btn-sm join-item"
+                    [class.btn-active]="edgeFilter() === option.value"
+                    [attr.aria-pressed]="edgeFilter() === option.value"
+                    [title]="option.hint"
+                    [attr.data-testid]="'dependency-edge-filter-' + option.value"
+                    (click)="showEdges(option.value)"
+                >
+                    {{ option.label }}
+                </button>
+            }
+        </div>
+        <button
+            type="button"
+            class="btn btn-sm btn-square bg-base-100 shadow-md"
+            title="Show the whole graph"
+            aria-label="Show the whole graph"
+            data-testid="dependency-reset-view"
+            (click)="graph.resetView()"
+        >
+            <i class="fa-solid fa-expand" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <ul class="absolute bottom-[10px] left-[10px] z-10 m-0 flex list-none flex-col gap-1 rounded bg-base-100 p-2 text-xs shadow-md" aria-label="Edge colours">
+        @for (entry of edgeLegend; track entry.type) {
+            <li class="flex items-center gap-2">
+                <svg class="h-2 w-6" viewBox="0 0 24 8" aria-hidden="true">
+                    <line x1="0" y1="4" x2="24" y2="4" stroke-width="2" [attr.stroke]="entry.color" [attr.stroke-dasharray]="entry.isDashed ? '5 4' : null" />
+                </svg>
+                <span>{{ entry.label }}</span>
+            </li>
+        }
+    </ul>
+} @else {
+    <div class="flex h-full items-center justify-center p-4">
+        <output class="alert max-w-md">
+            <span>No file in view carries dependency levels.</span>
+        </output>
+    </div>
+}

@@ -1,0 +1,133 @@
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
+import {
+    DependencyGraphComponent,
+    DependencyGraphScene,
+    EDGE_LEGEND,
+    EdgeFilter,
+    layoutLevelized,
+    projectEdges,
+    type RightClickedBox,
+    visibleRepresentatives
+} from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
+import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
+import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
+import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
+
+interface EdgeFilterOption {
+    value: EdgeFilter
+    label: string
+    hint: string
+}
+
+const EDGE_FILTER_OPTIONS: EdgeFilterOption[] = [
+    { value: "all", label: "All", hint: "Show every dependency" },
+    { value: "cycles", label: "Cycles", hint: "Show only dependencies that take part in a cycle" },
+    { value: "feedback", label: "Upward", hint: "Show only dependencies that point upward, against the levels" },
+    { value: "none", label: "None", hint: "Show dependencies only for the box under the pointer" }
+]
+
+@Component({
+    selector: "cc-dependency-map",
+    templateUrl: "./dependencyMap.component.html",
+    imports: [DependencyGraphComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {
+        class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]",
+        "[class.hidden]": "isLoadingFile()"
+    }
+})
+export class DependencyMapComponent {
+    private readonly readStore = inject(DependencyMapReadStore)
+    private readonly writeStore = inject(DependencyMapWriteStore)
+    private readonly viewStore = inject(DependencyMapViewStore)
+    private readonly viewReadinessStore = inject(ViewReadinessStore)
+
+    protected readonly edgeFilterOptions = EDGE_FILTER_OPTIONS
+    protected readonly edgeLegend = EDGE_LEGEND
+    protected readonly edgeFilter = this.viewStore.edgeFilter
+    protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
+    protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
+
+    private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
+    private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
+    private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
+    private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
+
+    private readonly layout = computed(() => {
+        const tree = this.tree()
+        return tree ? layoutLevelized(tree, this.viewStore.expandedPaths()) : null
+    })
+    private readonly representatives = computed(() => {
+        const tree = this.tree()
+        return tree ? visibleRepresentatives(tree, this.viewStore.expandedPaths()) : new Map<string, string>()
+    })
+    private readonly folderPaths = computed(
+        () =>
+            new Set(
+                this.layout()
+                    ?.boxes.filter(box => box.isFolder)
+                    .map(box => box.path)
+            )
+    )
+
+    protected readonly scene = computed((): DependencyGraphScene | null => {
+        const layout = this.layout()
+        if (!layout) {
+            return null
+        }
+        return {
+            layout,
+            edges: projectEdges(this.edges(), this.representatives()),
+            edgeFilter: this.edgeFilter(),
+            hoveredPath: this.boxStandingFor(this.hoveredPath()),
+            selectedPath: this.boxStandingFor(this.selectedPath())
+        }
+    })
+
+    constructor() {
+        effect(() => {
+            const tree = this.tree()
+            if (tree) {
+                this.viewStore.adoptTree(tree)
+            }
+        })
+        effect(() => {
+            if (!this.scene() || this.isDeltaState()) {
+                this.markReady()
+            }
+        })
+    }
+
+    protected select(path: string): void {
+        this.writeStore.selectNode(path)
+    }
+
+    protected toggle(path: string): void {
+        if (this.folderPaths().has(path)) {
+            this.viewStore.toggle(path)
+        }
+    }
+
+    protected hover(path: string | null): void {
+        this.writeStore.hoverNode(path)
+    }
+
+    protected openContextMenu({ path, clientX, clientY }: RightClickedBox): void {
+        this.writeStore.openContextMenu(path, clientX, clientY)
+    }
+
+    protected showEdges(filter: EdgeFilter): void {
+        this.viewStore.showEdges(filter)
+    }
+
+    protected markReady(): void {
+        this.viewReadinessStore.markReady("dependencies")
+    }
+
+    private boxStandingFor(path: string | null): string | null {
+        return path === null ? null : (this.representatives().get(path) ?? null)
+    }
+}
