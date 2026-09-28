@@ -35,7 +35,7 @@ export interface DependencyGraphLayout {
 export const LAYOUT_SPACING = {
     nodeWidth: 160,
     nodeHeight: 40,
-    padding: 16,
+    padding: 12,
     headerHeight: 28,
     gapBetweenNodes: 20,
     gapBetweenRows: 14,

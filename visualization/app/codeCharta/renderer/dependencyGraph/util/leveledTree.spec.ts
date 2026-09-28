@@ -21,8 +21,8 @@ describe("leveledTree", () => {
     describe("buildLeveledTree", () => {
         it("should keep files with a level and the folders holding them", () => {
             // Arrange
-            const root = folder("/root", [folder("/root/app", [file("/root/app/a.ts"), file("/root/app/README.md")])])
-            const levels = { "/root/app": 1, "/root/app/a.ts": 2 }
+            const root = folder("/root", [folder("/root/app", [file("/root/app/a.ts"), file("/root/app/README.md")]), file("/root/b.ts")])
+            const levels = { "/root/app": 1, "/root/app/a.ts": 2, "/root/b.ts": 0 }
 
             // Act
             const tree = buildLeveledTree(root, levels)
@@ -40,9 +40,26 @@ describe("leveledTree", () => {
                         level: 1,
                         isFolder: true,
                         children: [{ path: "/root/app/a.ts", name: "a.ts", level: 2, isFolder: false, children: [] }]
-                    }
+                    },
+                    { path: "/root/b.ts", name: "b.ts", level: 0, isFolder: false, children: [] }
                 ]
             })
+        })
+
+        it("should fold a chain of single-folder folders into one box named by the chain", () => {
+            // Arrange
+            const root = folder("/root", [
+                folder("/root/src", [folder("/root/src/main", [folder("/root/src/main/app", [file("/root/src/main/app/a.ts")])])]),
+                file("/root/b.ts")
+            ])
+            const levels = { "/root/src": 3, "/root/src/main/app/a.ts": 0, "/root/b.ts": 0 }
+
+            // Act
+            const tree = buildLeveledTree(root, levels)
+
+            // Assert
+            expect(tree.children[0]).toMatchObject({ path: "/root/src/main/app", name: "src/main/app", level: 3, isFolder: true })
+            expect(tree.children[0].children.map(child => child.path)).toEqual(["/root/src/main/app/a.ts"])
         })
 
         it("should drop folders that hold no leveled file", () => {

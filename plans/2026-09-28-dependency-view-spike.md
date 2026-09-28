@@ -47,6 +47,14 @@ aspect ratio (design 22), file edges typed by `isCyclic`/`isPointingUpwards`.
 - [x] Complete Task 4: Feature + view
 - [x] Complete Task 5: Wrap-up
 
+## Review Feedback Addressed
+
+1. **Hovering an open folder hid everything**: ECharts lifts a hovered custom-series element ten layers
+   unless the element itself sets `emphasisDisabled`; the series-level switch does not reach it. The lifted
+   folder covered its children and caught every later hover, click and double click
+2. **Boxes too small on deep packages**: chains of single-folder folders (`src/main/kotlin/de/…`) are one box
+   named by the chain; padding 16 → 12
+
 ## Notes
 
 - Decisions (asked): new view; pan/zoom, expand/collapse, hover + filter, shared selection; aspect-ratio
