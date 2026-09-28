@@ -1,3 +1,4 @@
+import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
 import { drawBox, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, ToPixels } from "./dependencyGraphScene"
@@ -65,10 +66,23 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     }
 }
 
-/** A hovered box shows all its edges whatever the filter, drawn last so they stay on top. */
+/** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
+ * could not be seen at all. */
+const PAINT_RANK: Record<DependencyEdgeType, number> = {
+    regular: 0,
+    cyclic: 1,
+    feedbackContainerLevel: 2,
+    feedbackLeafLevel: 3
+}
+const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
+
+/** A hovered box shows all its edges whatever the filter, painted over every other edge; otherwise the
+ * edges that break the architecture are painted over the ones that follow it. */
 function edgesToDraw({ edges, edgeFilter, hoveredPath }: DependencyGraphScene): GraphEdge[] {
-    const shown = edges.filter(edge => isShownByFilter(edge.type, edgeFilter) || isEdgeOfHovered(edge, hoveredPath))
-    return [...shown.filter(edge => !isEdgeOfHovered(edge, hoveredPath)), ...shown.filter(edge => isEdgeOfHovered(edge, hoveredPath))]
+    const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isEdgeOfHovered(edge, hoveredPath) ? HOVERED_PAINT_RANK : 0)
+    return edges
+        .filter(edge => isShownByFilter(edge.type, edgeFilter) || isEdgeOfHovered(edge, hoveredPath))
+        .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {
