@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.7.0] - 2026-09-28
+
 ### Added 🚀
 
 - **Radial treemap map layout**: choose "Radial TreeMap" to see the folder you are in ring by ring as in the sunburst, with each folder's files packed as a treemap instead of thin slices, and click your way in and out.
