@@ -1,3 +1,4 @@
+import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import { DIMMED_OPACITY, edgeColor, edgeDash, edgeWidthPx } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
@@ -10,7 +11,6 @@ const MIN_CURVE_PULL_PX = 24
  * dependency run side by side instead of on top of each other. */
 const LEAVING_AT = 0.42
 const ARRIVING_AT = 0.58
-const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
 
 type Point = [number, number]
 
@@ -25,28 +25,24 @@ export function drawEdge(edge: GraphEdge, from: LayoutBox, to: LayoutBox, isDimm
     const curve = curveBetween(from, to, toPixels)
     const color = edgeColor(edge.type)
     const opacity = isDimmed ? DIMMED_OPACITY : 1
-    return {
-        type: "group",
-        ...UNTRANSFORMED,
-        children: [
-            {
-                type: "bezierCurve",
-                ...UNTRANSFORMED,
-                shape: {
-                    x1: curve.start[0],
-                    y1: curve.start[1],
-                    cpx1: curve.startPull[0],
-                    cpy1: curve.startPull[1],
-                    cpx2: curve.endPull[0],
-                    cpy2: curve.endPull[1],
-                    x2: curve.end[0],
-                    y2: curve.end[1]
-                },
-                style: { stroke: color, lineWidth: edgeWidthPx(edge.weight), lineDash: edgeDash(edge.type), fill: null, opacity }
+    return drawnItem([
+        {
+            type: "bezierCurve",
+            ...UNTRANSFORMED,
+            shape: {
+                x1: curve.start[0],
+                y1: curve.start[1],
+                cpx1: curve.startPull[0],
+                cpy1: curve.startPull[1],
+                cpx2: curve.endPull[0],
+                cpy2: curve.endPull[1],
+                x2: curve.end[0],
+                y2: curve.end[1]
             },
-            { type: "polygon", ...UNTRANSFORMED, shape: { points: arrowHead(curve) }, style: { fill: color, opacity } }
-        ]
-    }
+            style: { stroke: color, lineWidth: edgeWidthPx(edge.weight), lineDash: edgeDash(edge.type), fill: null, opacity }
+        },
+        { type: "polygon", ...UNTRANSFORMED, shape: { points: arrowHead(curve) }, style: { fill: color, opacity } }
+    ])
 }
 
 /** Downward edges leave through the bottom and enter through the top, upward edges the other way round,

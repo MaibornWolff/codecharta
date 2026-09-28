@@ -1,3 +1,4 @@
+import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import {
     CLOSED_FOLDER_FILL,
@@ -26,9 +27,6 @@ const TOGGLE_SIZE_PX = 16
 /** Below this width a folder's name matters more than its glyph; it still opens on a double click. */
 const MIN_TOGGLE_BOX_WIDTH_PX = 100
 const CORNER_RADIUS_PX = 4
-// ECharts reuses an element by its position among the drawn ones and keeps whatever an option leaves out,
-// so every element states its transform.
-const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
 
 interface PixelRect {
     x: number
@@ -48,7 +46,7 @@ export function drawBox(box: LayoutBox, emphasis: BoxEmphasis, toPixels: ToPixel
     if (hasToggle) {
         children.push(...drawToggle(box, rect))
     }
-    return { type: "group", ...UNTRANSFORMED, children }
+    return drawnItem(children)
 }
 
 export function drawLevelBand(band: LevelBand, toPixels: ToPixels) {
@@ -80,7 +78,7 @@ export function drawLevelBand(band: LevelBand, toPixels: ToPixels) {
             style: { stroke: LEVEL_SEPARATOR_COLOR, lineWidth: 1, lineDash: [4, 4] }
         })
     }
-    return { type: "group", ...UNTRANSFORMED, children }
+    return drawnItem(children)
 }
 
 function pixelRectOf(box: LayoutBox, toPixels: ToPixels): PixelRect {
