@@ -25,9 +25,6 @@ const FIT_SHARE = 0.94
 const DRAW_EVERYTHING_IN_ONE_FRAME = 0
 const NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER = Number.POSITIVE_INFINITY
 const EXTENT_ENCODING = { x: [0, 2], y: [1, 3] }
-// ECharts' own hover lifts the hovered item above everything drawn after it, so an open folder under the
-// pointer covered its own children. The scene marks the hovered box itself.
-const NO_BUILT_IN_HOVER = { disabled: true }
 
 export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport: Viewport) {
     const { layout } = scene
@@ -98,7 +95,6 @@ function customSeries(id: string, items: Extent[], renderItem: (params: RenderPa
         encode: EXTENT_ENCODING,
         renderItem,
         progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
-        emphasis: NO_BUILT_IN_HOVER,
         clip: true
     }
 }

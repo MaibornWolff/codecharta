@@ -119,14 +119,21 @@ describe("buildDependencyGraphOption", () => {
         expect(seriesOf(option, SERIES_IDS.boxes).data.map(item => item.name)).toEqual(["/root/view.ts", "/root/model.ts", "/root/util.ts"])
     })
 
-    it("should leave the hover emphasis to the scene, so an open folder never covers its children", () => {
+    it("should keep ECharts from lifting a hovered item over the rest, so an open folder never covers its children", () => {
         // Arrange
-        const option = buildDependencyGraphOption(sceneWith(), { width: 800, height: 600 })
+        const option = buildDependencyGraphOption(sceneWith({ hoveredPath: view.path }), { width: 800, height: 600 })
 
         // Act
-        const emphases = option.series.map(series => series.emphasis)
+        const drawnItems = option.series.map(series =>
+            (series as unknown as BuiltSeries).renderItem({ dataIndex: 0 }, { coord: identityPixels })
+        )
 
         // Assert
-        expect(emphases).toEqual([{ disabled: true }, { disabled: true }, { disabled: true }, { disabled: true }])
+        expect(drawnItems.map(item => (item as unknown as { emphasisDisabled: boolean }).emphasisDisabled)).toEqual([
+            true,
+            true,
+            true,
+            true
+        ])
     })
 })
