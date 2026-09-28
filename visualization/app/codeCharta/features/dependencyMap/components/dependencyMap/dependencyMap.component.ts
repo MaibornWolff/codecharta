@@ -8,7 +8,8 @@ import {
     layoutLevelized,
     projectEdges,
     type RightClickedBox,
-    visibleRepresentatives
+    visibleRepresentatives,
+    withoutHidden
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
@@ -51,7 +52,11 @@ export class DependencyMapComponent {
     protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
 
-    private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
+    private readonly wholeTree = toSignal(this.readStore.tree$, { requireSync: true })
+    private readonly tree = computed(() => {
+        const tree = this.wholeTree()
+        return tree ? withoutHidden(tree, this.viewStore.hiddenPaths()) : null
+    })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
@@ -89,7 +94,7 @@ export class DependencyMapComponent {
 
     constructor() {
         effect(() => {
-            const tree = this.tree()
+            const tree = this.wholeTree()
             if (tree) {
                 this.viewStore.adoptTree(tree)
             }

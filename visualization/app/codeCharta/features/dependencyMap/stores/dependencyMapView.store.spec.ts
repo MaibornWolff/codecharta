@@ -69,4 +69,29 @@ describe("DependencyMapViewStore", () => {
         expect(before).toBe("all")
         expect(store.edgeFilter()).toBe("feedback")
     })
+
+    it("should keep hidden nodes while the tree keeps its root", () => {
+        // Arrange
+        const tree = leveledFolder("/root", [leveledFolder("/root/training")])
+        store.adoptTree(tree)
+
+        // Act
+        store.hide("/root/training")
+        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/training"), leveledFolder("/root/app")]))
+
+        // Assert
+        expect([...store.hiddenPaths()]).toEqual(["/root/training"])
+    })
+
+    it("should show everything again when the tree gets a new root", () => {
+        // Arrange
+        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/training")]))
+        store.hide("/root/training")
+
+        // Act
+        store.adoptTree(leveledFolder("/root/app", [leveledFolder("/root/app/ui")]))
+
+        // Assert
+        expect(store.hiddenPaths().size).toBe(0)
+    })
 })
