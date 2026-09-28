@@ -10,7 +10,8 @@ import { isPendingHeavyDispatch$ } from "../../../util/dispatchAfterPaint"
 
 const DRAWING_PHASE_OF_VIEW: Record<ViewId, string> = {
     metrics: "Drawing the map",
-    domain: "Drawing the word cloud"
+    domain: "Drawing the word cloud",
+    dependencies: "Drawing the dependency graph"
 }
 const SAVING_SESSION_PHASE = "Saving your session"
 

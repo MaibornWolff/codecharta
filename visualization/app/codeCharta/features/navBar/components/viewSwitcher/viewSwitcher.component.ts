@@ -23,6 +23,7 @@ export class ViewSwitcherComponent {
     private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef)
 
     readonly isDomainViewAvailable = this.readStore.isDomainViewAvailable
+    readonly isDependencyViewAvailable = this.readStore.isDependencyViewAvailable
     readonly activeView = toSignal(inject(ActiveViewStore).activeView$, { requireSync: true })
     readonly routeLinks = routeLinks
 

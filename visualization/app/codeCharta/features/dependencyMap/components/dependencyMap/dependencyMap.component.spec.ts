@@ -1,0 +1,234 @@
+import { TestBed } from "@angular/core/testing"
+import { State } from "@ngrx/store"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { fireEvent, render, screen } from "@testing-library/angular"
+import { of } from "rxjs"
+import { edgesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { Edge } from "../../../../model/codeCharta.model"
+import { LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import {
+    fireChartEvent,
+    lastDrawnOption,
+    resetStubbedChart,
+    stubbedChart,
+    stubElementSize,
+    stubResizeObserver
+} from "../../../../renderer/dependencyGraph/testing/dependencyGraph.stub"
+import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
+import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
+import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
+import { setHoveredNodePath, setRightClickedNodeData, setSelectedNodePath } from "../../../../stores/sharedView/sharedView.write.facade"
+import { dependencyTreeSelector } from "../../selectors/dependencyMap.selectors"
+import { DependencyMapComponent } from "./dependencyMap.component"
+
+jest.mock("echarts/core", () => jest.requireActual("../../../../renderer/dependencyGraph/testing/dependencyGraph.stub").echartsCoreStub)
+
+function leveledFile(path: string, level = 0): LeveledNode {
+    return { path, name: path.split("/").pop(), level, isFolder: false, children: [] }
+}
+
+function leveledFolder(path: string, children: LeveledNode[], level = 0): LeveledNode {
+    return { path, name: path.split("/").pop(), level, isFolder: true, children }
+}
+
+const TREE = leveledFolder("/root", [
+    leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")], 1),
+    leveledFolder("/root/model", [leveledFile("/root/model/node.ts")])
+])
+const EDGES: Edge[] = [
+    { fromNodeName: "/root/ui/view.ts", toNodeName: "/root/model/node.ts", attributes: {} },
+    { fromNodeName: "/root/model/node.ts", toNodeName: "/root/ui/view.ts", attributes: {}, isPointingUpwards: true, isCyclic: true }
+]
+
+interface Setup {
+    tree?: LeveledNode | null
+    selectedPath?: string | null
+    isDeltaState?: boolean
+}
+
+async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }: Setup = {}) {
+    const rendered = await render(DependencyMapComponent, {
+        providers: [
+            provideMockStore({
+                initialState: defaultState,
+                selectors: [
+                    { selector: dependencyTreeSelector, value: tree },
+                    { selector: edgesSelector, value: EDGES },
+                    { selector: hoveredNodePathSelector, value: null },
+                    { selector: selectedNodePathSelector, value: selectedPath },
+                    { selector: isDeltaStateSelector, value: isDeltaState }
+                ]
+            }),
+            { provide: State, useValue: { getValue: () => defaultState } },
+            { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } }
+        ]
+    })
+    const store = TestBed.inject(MockStore)
+    const markReady = jest.spyOn(TestBed.inject(ViewReadinessStore), "markReady")
+    jest.spyOn(store, "dispatch")
+    return { ...rendered, store, markReady }
+}
+
+interface DrawnSeries {
+    id: string
+    data: { name?: string }[]
+    renderItem: (
+        params: { dataIndex: number },
+        api: { coord: (point: number[]) => number[] }
+    ) => { children: { style: Record<string, unknown> }[] }
+}
+
+function drawnSeries(id: string): DrawnSeries {
+    return lastDrawnOption().series.find((series: DrawnSeries) => series.id === id)
+}
+
+function drawnBoxPaths(): string[] {
+    return [...drawnSeries("openFolders").data, ...drawnSeries("boxes").data].map(item => item.name)
+}
+
+const boxEvent = (name: string) => ({ seriesId: "boxes", name })
+
+describe("DependencyMapComponent", () => {
+    let restoreElementSize: () => void
+
+    beforeAll(() => {
+        restoreElementSize = stubElementSize(() => ({ width: 800, height: 600 }))
+    })
+
+    afterAll(() => {
+        restoreElementSize()
+    })
+
+    beforeEach(() => {
+        resetStubbedChart()
+        stubResizeObserver()
+    })
+
+    it("should draw a first look at the tree, higher levels above lower ones", async () => {
+        // Act
+        await setup()
+
+        // Assert
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model", "/root/ui/view.ts", "/root/model/node.ts"])
+    })
+
+    it("should close an open folder from its glyph and draw its edges on the folder", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireChartEvent("click", { ...boxEvent("/root/model"), info: "toggle" })
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts", "/root/model"])
+        expect(drawnSeries("edges").data).toHaveLength(2)
+    })
+
+    it("should ignore a toggle on a file", async () => {
+        // Arrange
+        await setup()
+        const drawsBefore = stubbedChart.setOption.mock.calls.length
+
+        // Act
+        fireChartEvent("click", { ...boxEvent("/root/ui/view.ts"), info: "toggle" })
+
+        // Assert
+        expect(stubbedChart.setOption.mock.calls.length).toBe(drawsBefore)
+    })
+
+    it("should mark the box that stands for the selected node", async () => {
+        // Arrange
+        await setup({ selectedPath: "/root/model/node.ts" })
+
+        // Act
+        fireChartEvent("click", { ...boxEvent("/root/model"), info: "toggle" })
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        const modelIndex = drawnSeries("boxes").data.findIndex(item => item.name === "/root/model")
+        const outline = drawnSeries("boxes").renderItem({ dataIndex: modelIndex }, { coord: point => point }).children[0].style
+        expect(outline.lineWidth).toBe(2.5)
+    })
+
+    it("should select, hover and open the context menu through the shared view state", async () => {
+        // Arrange
+        const { store } = await setup()
+
+        // Act
+        fireChartEvent("click", boxEvent("/root/ui/view.ts"))
+        fireChartEvent("mouseover", boxEvent("/root/ui"))
+        fireChartEvent("contextmenu", { ...boxEvent("/root/ui"), event: { event: { clientX: 5, clientY: 6 } } })
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/ui/view.ts" }))
+        expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodePath({ value: "/root/ui" }))
+        expect(store.dispatch).toHaveBeenCalledWith(
+            setRightClickedNodeData({
+                value: { nodeId: "/root/ui", xPositionOfRightClickEvent: 5, yPositionOfRightClickEvent: 6, origin: "dependencyMap" }
+            })
+        )
+    })
+
+    it("should draw only the edges of the picked filter", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireEvent.click(screen.getByTestId("dependency-edge-filter-feedback"))
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        expect(drawnSeries("edges").data).toHaveLength(1)
+        expect(screen.getByTestId("dependency-edge-filter-feedback").getAttribute("aria-pressed")).toBe("true")
+    })
+
+    it("should zoom back out to the whole graph from the toolbox", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireEvent.click(screen.getByTestId("dependency-reset-view"))
+
+        // Assert
+        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith(expect.objectContaining({ type: "dataZoom" }))
+    })
+
+    it("should explain the four edge colours", async () => {
+        // Act
+        await setup()
+
+        // Assert
+        const legend = screen.getByRole("list", { name: "Edge colours" })
+        expect(legend.textContent).toContain("Points upward and closes a cycle")
+    })
+
+    it("should mark the view ready once the graph is drawn", async () => {
+        // Arrange
+        const { markReady } = await setup()
+
+        // Act
+        fireChartEvent("finished")
+
+        // Assert
+        expect(markReady).toHaveBeenCalledWith("dependencies")
+    })
+
+    it("should explain compare mode instead of drawing", async () => {
+        // Act
+        await setup({ isDeltaState: true })
+
+        // Assert
+        expect(screen.getByText(/Leave compare mode/)).not.toBeNull()
+        expect(stubbedChart.setOption).not.toHaveBeenCalled()
+    })
+
+    it("should say so when no file carries dependency levels", async () => {
+        // Act
+        await setup({ tree: null })
+
+        // Assert
+        expect(screen.getByText("No file in view carries dependency levels.")).not.toBeNull()
+    })
+})

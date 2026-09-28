@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
-  
+
+### Added 🚀
+
+- **Dependency view (experimental)**: a map analysed with the dependency parser opens in a Dependencies view that nests its folders as boxes, stacks their files in rows by level and colours each dependency by whether it closes a cycle or points upward.
+
 ## [2.7.0] - 2026-09-28
 
 ### Added 🚀

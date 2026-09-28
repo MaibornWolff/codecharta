@@ -20,7 +20,8 @@ describe("ViewModeBarComponent", () => {
             providers: [
                 provideRouter([
                     { path: routePaths.metrics, children: [] },
-                    { path: routePaths.domain, children: [] }
+                    { path: routePaths.domain, children: [] },
+                    { path: routePaths.dependencies, children: [] }
                 ]),
                 provideMockStore({
                     initialState: stateWithAbsoluteColorMode,
@@ -74,6 +75,16 @@ describe("ViewModeBarComponent", () => {
         expect(exploreLink.getAttribute("href")).toBe(routeLinks.domain)
         expect(exploreLink.classList.contains("font-bold")).toBe(true)
         expect(exploreLink.querySelectorAll(".cc-current-underline").length).toBe(1)
+    })
+
+    it("should link the dependency explore mode to the dependency route and mark it active there", async () => {
+        // Arrange & Act
+        await setup("dependencies", routeLinks.dependencies)
+
+        // Assert
+        const exploreLink = screen.getByTestId("view-mode-dependencies-explore")
+        expect(exploreLink.getAttribute("href")).toBe(routeLinks.dependencies)
+        expect(exploreLink.classList.contains("font-bold")).toBe(true)
     })
 
     it("should keep 3D print clickable from another view so it can offer the switch", async () => {

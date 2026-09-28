@@ -42,6 +42,25 @@
                 }
             </a>
         }
+        @if (isDependencyViewAvailable()) {
+            <a
+                #dependenciesTab="routerLinkActive"
+                class="btn btn-ghost btn-sm relative"
+                [class.font-bold]="dependenciesTab.isActive"
+                [routerLink]="routeLinks.dependencies"
+                routerLinkActive
+                ariaCurrentWhenActive="page"
+                title="Show the dependency graph, arranged by level"
+                data-testid="view-switcher-dependencies"
+                (mouseenter)="openModeBar('dependencies')"
+                (focusin)="openModeBar('dependencies')"
+            >
+                Dependencies
+                @if (dependenciesTab.isActive) {
+                    <span class="cc-current-underline"></span>
+                }
+            </a>
+        }
     </nav>
     @if (previewedView(); as previewed) {
         <div
