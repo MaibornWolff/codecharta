@@ -136,4 +136,26 @@ describe("buildDependencyGraphOption", () => {
             true
         ])
     })
+
+    it("should paint the edges that break the architecture over the ones that follow it, and the hovered box's edges over all", () => {
+        // Arrange
+        const edges = [
+            anEdge(view.path, util.path, { type: "feedbackLeafLevel" }),
+            anEdge(util.path, model.path, { type: "feedbackContainerLevel" }),
+            anEdge(model.path, util.path, { type: "cyclic" }),
+            anEdge(view.path, model.path)
+        ]
+        const scene = sceneWith({ edges, hoveredPath: null })
+        const hoveredScene = sceneWith({ edges, hoveredPath: model.path })
+
+        // Act
+        const paintOrder = buildDependencyGraphOption(scene, { width: 800, height: 600 }).tooltip.formatter
+        const hoveredPaintOrder = buildDependencyGraphOption(hoveredScene, { width: 800, height: 600 }).tooltip.formatter
+
+        // Assert
+        const typesIn = (formatter: typeof paintOrder) =>
+            [0, 1, 2, 3].map(dataIndex => formatter({ seriesId: SERIES_IDS.edges, dataIndex }).split(" · ")[1])
+        expect(typesIn(paintOrder)).toEqual(["Dependency", "In a cycle", "Points upward", "Points upward and closes a cycle"])
+        expect(typesIn(hoveredPaintOrder)).toEqual(["Points upward and closes a cycle", "Dependency", "In a cycle", "Points upward"])
+    })
 })
