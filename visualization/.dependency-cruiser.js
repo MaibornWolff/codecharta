@@ -512,6 +512,17 @@ module.exports = {
             }
         },
         {
+            name: "dependencygraph-external-access-only-via-facade",
+            severity: "error",
+            comment:
+                "Outside code may touch the dependency graph engine (renderer/dependencyGraph/ — the ECharts host of the levelized dependency graph, its pure tree, layout, edge projection and option builders) ONLY through renderer/dependencyGraph/dependencyGraph.facade.ts. Mirrors radialmap-external-access-only-via-facade. The layer's own files and spec/e2e are exempt.",
+            from: { path: "^app/", pathNot: ["^app/codeCharta/renderer/dependencyGraph/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: {
+                path: "^app/codeCharta/renderer/dependencyGraph/",
+                pathNot: ["^app/codeCharta/renderer/dependencyGraph/dependencyGraph\\.facade\\.ts$"]
+            }
+        },
+        {
             name: "radialmap-external-access-only-via-facade",
             severity: "error",
             comment:
