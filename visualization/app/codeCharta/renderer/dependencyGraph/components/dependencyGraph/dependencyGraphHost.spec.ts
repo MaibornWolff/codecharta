@@ -7,7 +7,6 @@ import {
     stubbedChart,
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
-import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { SERIES_IDS } from "../../util/dependencyGraphSeries"
 import { DependencyGraphHandlers, DependencyGraphHost, DOUBLE_CLICK_MS, POINTER_LEAVE_GRACE_MS } from "./dependencyGraphHost"
 
@@ -57,21 +56,20 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxToggled).not.toHaveBeenCalled()
     })
 
+    it("should not report clicks outside every box", () => {
+        // Act
+        fireChartEvent("click", { seriesId: SERIES_IDS.boxes })
+
+        // Assert
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
     it("should report a click on an open folder with its path", () => {
         // Act
         fireChartEvent("click", { seriesId: SERIES_IDS.openFolders, name: "/root/app" })
 
         // Assert
         expect(handlers.onBoxClicked).toHaveBeenCalledWith("/root/app")
-    })
-
-    it("should report a click on a folder's glyph as a toggle", () => {
-        // Act
-        fireChartEvent("click", { ...BOX, info: TOGGLE_INFO })
-
-        // Assert
-        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app/a.ts")
-        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
     it("should ignore clicks on edges", () => {
@@ -108,15 +106,6 @@ describe("DependencyGraphHost", () => {
 
         // Assert
         expect(handlers.onBoxToggled).not.toHaveBeenCalled()
-    })
-
-    it("should not toggle twice when the glyph was clicked just before", () => {
-        // Act
-        fireChartEvent("click", { ...BOX, info: TOGGLE_INFO })
-        container.dispatchEvent(new MouseEvent("dblclick"))
-
-        // Assert
-        expect(handlers.onBoxToggled).toHaveBeenCalledTimes(1)
     })
 
     it("should stop listening for double clicks once disposed", () => {

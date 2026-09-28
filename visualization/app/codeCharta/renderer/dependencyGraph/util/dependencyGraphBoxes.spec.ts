@@ -1,4 +1,4 @@
-import { drawBox, drawLevelBand, TOGGLE_INFO } from "./dependencyGraphBoxes"
+import { drawBox, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
@@ -28,46 +28,33 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "a.ts", x: 90, y: 40, align: "center", overflow: "truncate" })
         })
 
-        it("should name an open folder in its header and offer a glyph to close it", () => {
+        it("should name an open folder in its header and draw nothing else on it", () => {
             // Arrange
             const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
 
             // Act
-            const [, label, toggle, glyph] = childrenOf(drawBox(box, "none", identityPixels))
+            const children = childrenOf(drawBox(box, "none", identityPixels))
 
             // Assert
-            expect(label.style).toMatchObject({ text: "app", align: "left", y: 14 })
-            expect(toggle.info).toBe(TOGGLE_INFO)
-            expect(glyph.style.text).toBe("−")
+            expect(children).toHaveLength(2)
+            expect(children[1].style).toMatchObject({ text: "app", align: "left", y: 14 })
         })
 
-        it("should offer a glyph to open a closed folder", () => {
+        it("should centre a closed folder's name across its whole box", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true })
+            const box = aBox("/root/app", { isFolder: true, x: 0 })
 
             // Act
-            const glyph = childrenOf(drawBox(box, "none", identityPixels)).at(-1)
+            const [, label] = childrenOf(drawBox(box, "none", identityPixels))
 
             // Assert
-            expect(glyph.style.text).toBe("+")
+            expect(label.style).toMatchObject({ text: "app", x: 80, align: "center", width: 144 })
         })
 
-        it("should keep a small folder's name and leave out its glyph", () => {
+        it("should leave out the name when the box is too small on screen", () => {
             // Arrange
             const box = aBox("/root/app", { isFolder: true })
-            const zoomedOut = ([x, y]: [number, number]) => [x / 2, y / 2]
-
-            // Act
-            const children = childrenOf(drawBox(box, "none", zoomedOut))
-
-            // Assert
-            expect(children.map(child => child.style.text)).toEqual([undefined, "app"])
-        })
-
-        it("should leave out the name and the glyph when the box is too small on screen", () => {
-            // Arrange
-            const box = aBox("/root/app", { isFolder: true })
-            const zoomedOut = ([x, y]: [number, number]) => [x / 10, y / 10]
+            const zoomedOut = ([x, y]: [number, number]) => [x / 4, y / 4]
 
             // Act
             const children = childrenOf(drawBox(box, "none", zoomedOut))
