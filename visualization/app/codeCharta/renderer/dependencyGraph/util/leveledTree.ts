@@ -1,7 +1,9 @@
 import { CodeMapNode, DependencyLevelData, NodeType } from "../../../model/codeCharta.model"
 
 /** The part of the file tree the dependency graph can place: files that carry a level, and the folders
- * holding them. A folder without a level of its own sits at level 0 of its parent. */
+ * holding them. A folder without a level of its own sits at level 0 of its parent. A chain of folders that
+ * each hold just one folder is one box named by the whole chain, as in src/main/kotlin/de/…: nesting a box
+ * per link would leave the files too small to read. The box keeps the deepest folder's path. */
 export interface LeveledNode {
     path: string
     name: string
@@ -24,7 +26,12 @@ export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData)
     if (children.length === 0) {
         return null
     }
-    return { path: root.path, name: root.name, level: levels[root.path] ?? FOLDER_LEVEL_WHEN_ABSENT, isFolder: true, children }
+    const level = levels[root.path] ?? FOLDER_LEVEL_WHEN_ABSENT
+    const [onlyChild] = children
+    if (children.length === 1 && onlyChild.isFolder) {
+        return { ...onlyChild, name: `${root.name}/${onlyChild.name}`, level }
+    }
+    return { path: root.path, name: root.name, level, isFolder: true, children }
 }
 
 /** Opens folders breadth first, as long as the boxes on screen stay within the budget, so a first look

@@ -23,8 +23,8 @@ describe("dependencyTreeSelector", () => {
         const tree = dependencyTreeSelector.projector(accumulatedData, pathToNode, "", levels)
 
         // Assert
-        expect(tree.path).toBe("/root")
-        expect(tree.children[0].children[0].path).toBe("/root/app/a.ts")
+        expect(tree).toMatchObject({ path: "/root/app", name: "root/app" })
+        expect(tree.children[0].path).toBe("/root/app/a.ts")
     })
 
     it("should start at the focused folder", () => {
@@ -35,7 +35,7 @@ describe("dependencyTreeSelector", () => {
         const tree = dependencyTreeSelector.projector(accumulatedData, pathToNode, "/root/app", levels)
 
         // Assert
-        expect(tree.path).toBe("/root/app")
+        expect(tree).toMatchObject({ path: "/root/app", name: "app" })
     })
 
     it("should be null while no map is loaded", () => {
