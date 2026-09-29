@@ -2,11 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 import { setDependencyGraphSettings } from "../../../stores/preferences/preferences.write.facade"
-import {
-    addExcludedNodesIfNotResultsInEmptyMap,
-    NodeInteraction,
-    setRightClickedNodeData
-} from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
 import { DependencyMapWriteStore } from "./dependencyMap.write.store"
 
 describe("DependencyMapWriteStore", () => {
@@ -41,14 +37,6 @@ describe("DependencyMapWriteStore", () => {
                 value: { nodeId: "/root/a.ts", xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "dependencyMap" }
             })
         )
-    })
-
-    it("should exclude a node through the guard that keeps the map from going empty", () => {
-        // Act
-        writeStore.excludeNode("/root/training")
-
-        // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: "/root/training" }] }))
     })
 
     it("should set the edge metric the Metric view shares", () => {

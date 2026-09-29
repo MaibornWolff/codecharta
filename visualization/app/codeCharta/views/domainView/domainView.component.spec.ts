@@ -171,7 +171,7 @@ describe("DomainViewComponent", () => {
             canFlatten: false,
             modes: DOMAIN_EXPLORER_MODES
         })
-        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false, jumpTargetViews: ["metrics"] })
+        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ showMapActions: false, showExclude: false })
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
     })
 

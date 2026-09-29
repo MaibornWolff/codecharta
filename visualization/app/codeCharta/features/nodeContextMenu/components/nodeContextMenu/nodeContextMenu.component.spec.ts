@@ -2,13 +2,15 @@ import { TestBed } from "@angular/core/testing"
 import { provideRouter, Router } from "@angular/router"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+import { of } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { flattenPredicateSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderModel/rightClickedCodeMapNode.selector"
-import { routeLinks } from "../../../../routing/routePaths"
+import { ActiveViewStore } from "../../../../routing/activeView.store"
+import { routeLinks, ViewId } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import {
@@ -32,7 +34,6 @@ import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuCapabilities
 } from "../../nodeContextMenuCapabilities"
-import { NODE_CONTEXT_MENU_VIEW_ACTIONS, NodeContextMenuViewAction } from "../../nodeContextMenuViewActions"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../../selectors/markFolderItems.selector"
 import { NodeContextMenuComponent } from "./nodeContextMenu.component"
 
@@ -64,7 +65,7 @@ describe("nodeContextMenu component", () => {
         node?: CodeMapNode | null
         origin?: "codeMap" | "explorer" | "radialMap" | "dependencyMap"
         hasExplorer?: boolean
-        viewActions?: NodeContextMenuViewAction[]
+        activeView?: ViewId
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
@@ -87,7 +88,7 @@ describe("nodeContextMenu component", () => {
         isRadialLayout = false,
         keptHighlightPaths = [],
         hasExplorer = true,
-        viewActions
+        activeView = "metrics"
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
@@ -113,7 +114,7 @@ describe("nodeContextMenu component", () => {
                     ]
                 }),
                 ...(hasExplorer ? [{ provide: ExplorerRevealService, useValue: explorerRevealServiceMock }] : []),
-                ...(viewActions ? [{ provide: NODE_CONTEXT_MENU_VIEW_ACTIONS, useValue: viewActions }] : []),
+                { provide: ActiveViewStore, useValue: { activeView$: of(activeView) } },
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
         })
@@ -192,35 +193,6 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Show in Explorer")).not.toBe(null)
     })
 
-    it("should offer the actions the view adds and run them on the node", async () => {
-        // Arrange
-        const run = jest.fn()
-        const { dispatchSpy } = await renderMenu({ viewActions: [{ label: "Hide", icon: "fa-regular fa-eye-slash", hoverHint: "", run }] })
-
-        // Act
-        fireEvent.click(screen.getByText("Hide"))
-
-        // Assert
-        expect(run).toHaveBeenCalledWith(fileNode.path)
-        expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
-    })
-
-    it("should offer a view's action only for the nodes it applies to", async () => {
-        // Arrange
-        const run = jest.fn()
-        const viewActions = [
-            { label: "Hide", icon: "fa-regular fa-eye-slash", hoverHint: "", run, isOfferedFor: () => false },
-            { label: "Show again", icon: "fa-regular fa-eye", hoverHint: "", run, isOfferedFor: (path: string) => path === fileNode.path }
-        ]
-
-        // Act
-        await renderMenu({ viewActions })
-
-        // Assert
-        expect(screen.queryByText("Hide")).toBeNull()
-        expect(screen.getByText("Show again")).not.toBeNull()
-    })
-
     it("should hide the show-in-explorer entry in a view without the explorer sidebar", async () => {
         // Arrange & Act
         await renderMenu({ origin: "dependencyMap", hasExplorer: false })
@@ -242,7 +214,8 @@ describe("nodeContextMenu component", () => {
         const { container } = await renderMenu({
             node: folderNode,
             origin: "explorer",
-            capabilities: { showMapActions: false, jumpTargetViews: [] }
+            capabilities: { showMapActions: false, showExclude: false },
+            hasDomainData: false
         })
 
         // Assert
@@ -257,7 +230,7 @@ describe("nodeContextMenu component", () => {
 
     it("should hand the node over to the jump target view and close", async () => {
         // Arrange
-        await renderMenu({ capabilities: { showMapActions: false, jumpTargetViews: ["metrics"] } })
+        await renderMenu({ capabilities: { showMapActions: false, showExclude: false }, activeView: "domain" })
         const viewHandoffStore = TestBed.inject(ViewHandoffStore)
         const navigateByUrl = jest.spyOn(TestBed.inject(Router), "navigateByUrl").mockResolvedValue(true)
 
@@ -306,6 +279,34 @@ describe("nodeContextMenu component", () => {
         expect(offeredJumps).toEqual(["Show in Domain", "Show in Dependencies"])
         expect(TestBed.inject(ViewHandoffStore).takeNodeFor("dependencies")).toBe("/root/src/RatingBean.java")
         expect(navigateByUrl).toHaveBeenCalledWith(routeLinks.dependencies)
+    })
+
+    it("should offer the jumps to every other view, whichever view the menu is in", async () => {
+        // Arrange & Act
+        await renderMenu({ activeView: "dependencies", pathsWithDependencyLevels: new Set(["/root/src/RatingBean.java"]) })
+
+        // Assert
+        const offeredJumps = screen.getAllByText(/^\s*Show in (Metrics|Domain|Dependencies)\s*$/).map(item => item.textContent.trim())
+        expect(offeredJumps).toEqual(["Show in Metrics", "Show in Domain"])
+    })
+
+    it("should offer Exclude alone, below a divider, where the view has no map to shape", async () => {
+        // Arrange
+        const { container, dispatchSpy } = await renderMenu({
+            node: folderNode,
+            capabilities: { showMapActions: false, showExclude: true }
+        })
+
+        // Act
+        fireEvent.click(screen.getByText("Exclude"))
+
+        // Assert
+        expect(screen.queryByText("Flatten & decolor")).toBe(null)
+        expect(container.querySelector(".colorButton")).toBe(null)
+        expect(screen.getByText("Exclude").closest("cc-context-menu-item").previousElementSibling.classList).toContain("border-t")
+        expect(dispatchSpy).toHaveBeenCalledWith(
+            addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: folderNode.path, nodeType: NodeType.FOLDER }] })
+        )
     })
 
     it("should show the color row for folders", async () => {
