@@ -45,6 +45,7 @@ export class DependencyBarComponent {
     readonly widthFactorRange = EDGE_WIDTH_FACTOR_RANGE
     readonly edgeFilter = this.viewStore.edgeFilter
     readonly edgeStyle = this.viewStore.edgeStyle
+    readonly isAnchoredAtSideMiddle = this.viewStore.isAnchoredAtSideMiddle
     readonly edgeWidth = this.viewStore.edgeWidth
 
     showEdges(filter: string): void {
@@ -53,6 +54,10 @@ export class DependencyBarComponent {
 
     drawEdgesAs(style: string): void {
         this.viewStore.drawEdgesAs(style as EdgeStyle)
+    }
+
+    anchorAtSideMiddle(event: Event): void {
+        this.viewStore.anchorAtSideMiddle((event.target as HTMLInputElement).checked)
     }
 
     drawEdgesThick(thickness: string): void {

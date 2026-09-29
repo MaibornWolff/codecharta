@@ -83,6 +83,42 @@ describe("routeEdges", () => {
         expect([oneWay.bend, there.bend, back.bend]).toEqual(["straight", "arc", "arc"])
     })
 
+    describe.each(["curved", "spread", "upwardAside", "straight"] as const)("anchored at the side's middle, drawn %s", style => {
+        it("should start and end every edge at the middle of its sides", () => {
+            // Act
+            const routes = routeEdges(
+                [anEdge(upper.path, lowerLeft.path), anEdge(upper.path, lowerRight.path), anEdge(upper.path, sideBySide.path)],
+                boxes,
+                style,
+                true
+            )
+
+            // Assert
+            expect(routes.map(({ start, end }) => [start, end])).toEqual([
+                [
+                    [80, 40],
+                    [80, 100]
+                ],
+                [
+                    [80, 40],
+                    [380, 100]
+                ],
+                [
+                    [160, 20],
+                    [300, 20]
+                ]
+            ])
+        })
+
+        it("should bow the two edges of a dependency running both ways apart, as they share their ends", () => {
+            // Act
+            const [there, back] = routeEdges([anEdge(upper.path, sideBySide.path), anEdge(sideBySide.path, upper.path)], boxes, style, true)
+
+            // Assert
+            expect([there.bend, back.bend]).toEqual(["arc", "arc"])
+        })
+    })
+
     describe.each(["curved", "spread", "straight"] as const)("a dependency running both ways, drawn %s", style => {
         const application = aBox("/root/application")
         const domain = aBox("/root/domain")

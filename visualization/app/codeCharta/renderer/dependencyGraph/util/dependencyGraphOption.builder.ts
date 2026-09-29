@@ -76,7 +76,7 @@ function edgeItems(
     byPath: ReadonlyMap<string, LayoutBox>,
     isFound: (boxPath: string) => boolean
 ): EdgeItem[] {
-    const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
+    const routes = routeEdges(shownEdges, byPath, scene.edgeStyle, scene.isAnchoredAtSideMiddle)
     const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
     const isDimmed = isHoverLit
         ? (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath)

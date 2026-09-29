@@ -17,6 +17,7 @@ export class DependencyMapViewStore {
     private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
     private readonly shownEdges = signal<EdgeFilter>("all")
     private readonly drawnEdges = signal<EdgeStyle>("curved")
+    private readonly edgesAtSideMiddle = signal(false)
     private readonly edgeLineWidth = signal<EdgeWidth>(DEFAULT_EDGE_WIDTH)
     private readonly hiddenNodes = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
@@ -27,6 +28,7 @@ export class DependencyMapViewStore {
     readonly expandedPaths = this.openedFolders.asReadonly()
     readonly edgeFilter = this.shownEdges.asReadonly()
     readonly edgeStyle = this.drawnEdges.asReadonly()
+    readonly isAnchoredAtSideMiddle = this.edgesAtSideMiddle.asReadonly()
     readonly edgeWidth = this.edgeLineWidth.asReadonly()
     readonly hiddenPaths = this.hiddenNodes.asReadonly()
     readonly boxOffsets = this.movedBoxes.asReadonly()
@@ -98,6 +100,10 @@ export class DependencyMapViewStore {
 
     drawEdgesAs(style: EdgeStyle): void {
         this.drawnEdges.set(style)
+    }
+
+    anchorAtSideMiddle(isAnchored: boolean): void {
+        this.edgesAtSideMiddle.set(isAnchored)
     }
 
     drawEdgesThick(thickness: EdgeThickness): void {

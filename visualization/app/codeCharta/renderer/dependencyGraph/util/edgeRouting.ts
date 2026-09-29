@@ -37,22 +37,45 @@ type Lane = "low" | "high"
 const LANE_BY_START_SIDE: Record<Side, Lane> = { bottom: "high", top: "low", right: "low", left: "high" }
 const CURVED_PORT: Record<Lane, number> = { low: 0.42, high: 0.58 }
 const PORT_MARGIN = 0.1
+const SIDE_MIDDLE = 0.5
 
-export function routeEdges(edges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>, style: EdgeStyle): EdgeRoute[] {
+/** Anchored at the side's middle, every edge starts and ends at the middle of its sides, whatever the style. */
+export function routeEdges(
+    edges: GraphEdge[],
+    byPath: ReadonlyMap<string, LayoutBox>,
+    style: EdgeStyle,
+    isAnchoredAtSideMiddle = false
+): EdgeRoute[] {
     const sides = edges.map(edge => sidesOf(byPath.get(edge.fromPath), byPath.get(edge.toPath), style))
-    const portOf = style === "curved" ? (index: number) => CURVED_PORT[laneOf(sides[index])] : spreadPorts(edges, sides, byPath)
+    const portOf = portsFor(edges, sides, byPath, style, isAnchoredAtSideMiddle)
     const edgeIds = new Set(edges.map(edge => edge.id))
     return edges.map((edge, index) => {
         const { startSide, endSide } = sides[index]
         const runsBothWays = edgeIds.has(`${edge.toPath}|${edge.fromPath}`)
+        const bend = bendOf(style, sides[index], runsBothWays)
         return {
             start: pointOn(byPath.get(edge.fromPath), startSide, portOf(index, "start")),
             startSide,
             end: pointOn(byPath.get(edge.toPath), endSide, portOf(index, "end")),
             endSide,
-            bend: bendOf(style, sides[index], runsBothWays)
+            bend: isAnchoredAtSideMiddle && runsBothWays && bend !== "aside" ? "arc" : bend
         }
     })
+}
+
+type PortOf = (index: number, end: EndOfEdge) => number
+
+function portsFor(
+    edges: GraphEdge[],
+    sides: Sides[],
+    byPath: ReadonlyMap<string, LayoutBox>,
+    style: EdgeStyle,
+    isAnchoredAtSideMiddle: boolean
+): PortOf {
+    if (isAnchoredAtSideMiddle) {
+        return () => SIDE_MIDDLE
+    }
+    return style === "curved" ? (index: number) => CURVED_PORT[laneOf(sides[index])] : spreadPorts(edges, sides, byPath)
 }
 
 /** Downward edges leave through the bottom and enter through the top, upward edges the other way round or,
