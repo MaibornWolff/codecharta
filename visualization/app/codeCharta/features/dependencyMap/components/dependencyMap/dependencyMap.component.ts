@@ -80,6 +80,7 @@ export class DependencyMapComponent {
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
+    private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
 
     private readonly layout = computed(() => {
         const tree = this.tree()
@@ -124,7 +125,8 @@ export class DependencyMapComponent {
             hoveredPath: this.boxStandingFor(this.hoveredPath()),
             selectedPath: this.boxStandingFor(this.selectedPath()),
             raisedPaths: this.viewStore.raisedPaths(),
-            draggingPath: this.viewStore.draggingPath()
+            draggingPath: this.viewStore.draggingPath(),
+            searchedPaths: this.searchedPaths()
         }
     })
 

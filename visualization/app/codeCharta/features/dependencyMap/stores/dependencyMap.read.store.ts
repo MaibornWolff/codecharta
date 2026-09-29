@@ -4,7 +4,7 @@ import { edgesSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { dependencyTreeSelector } from "../selectors/dependencyMap.selectors"
+import { dependencySearchedPathsSelector, dependencyTreeSelector } from "../selectors/dependencyMap.selectors"
 
 @Injectable({ providedIn: "root" })
 export class DependencyMapReadStore {
@@ -15,4 +15,5 @@ export class DependencyMapReadStore {
     readonly hoveredNodePath$ = this.store.select(hoveredNodePathSelector)
     readonly selectedNodePath$ = this.store.select(selectedNodePathSelector)
     readonly isDeltaState$ = this.store.select(isDeltaStateSelector)
+    readonly searchedPaths$ = this.store.select(dependencySearchedPathsSelector)
 }

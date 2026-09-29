@@ -44,6 +44,8 @@ export const EDGE_LEGEND: EdgeLegendEntry[] = (Object.keys(EDGE_TYPE_LABELS) as 
 }))
 
 export const DIMMED_OPACITY = 0.12
+export const MISSED_BY_SEARCH_OPACITY = 0.3
+export const FOUND_OPACITY = 1
 
 const BASE_EDGE_WIDTH_PX = 1.2
 const MAX_EXTRA_EDGE_WIDTH_PX = 2.5

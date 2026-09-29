@@ -30,6 +30,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         draggingPath: null,
         hoveredPath: null,
         selectedPath: null,
+        searchedPaths: null,
         ...overrides
     }
 }
@@ -196,6 +197,19 @@ describe("buildDependencyGraphOption", () => {
         expect(fillOf(lib.path)).toMatch(/^#/)
         expect(fillOf(ui.path)).toMatch(/^rgba/)
         expect(fillOf(apart.path)).toMatch(/^rgba/)
+    })
+
+    it("should fade the boxes a search missed, and the edges running only between them", () => {
+        // Arrange
+        const edges = [anEdge(view.path, model.path), anEdge(util.path, model.path)]
+
+        // Act
+        const { indexOf, draw, edgeIndices } = drawnGraph(sceneWith({ edges, searchedPaths: new Set([view.path]) }))
+
+        // Assert
+        const opacityOf = (index: number) => draw(index).children[0].style.opacity
+        expect([root.path, view.path, model.path, util.path].map(path => opacityOf(indexOf(path)))).toEqual([1, 1, 0.3, 0.3])
+        expect(edgeIndices.map(opacityOf)).toEqual([1, 0.12])
     })
 
     it("should give the axes room around the graph for dragged boxes to grow into", () => {
