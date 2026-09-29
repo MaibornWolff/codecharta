@@ -22,6 +22,7 @@ const SCENE: DependencyGraphScene = {
     edgeStyle: "curved",
     raisedPaths: [],
     draggingPath: null,
+    searchedPaths: null,
     hoveredPath: null,
     selectedPath: null
 }

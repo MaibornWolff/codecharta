@@ -20,7 +20,7 @@ import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fi
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodePath, setRightClickedNodeData, setSelectedNodePath } from "../../../../stores/sharedView/sharedView.write.facade"
-import { dependencyTreeSelector } from "../../selectors/dependencyMap.selectors"
+import { dependencySearchedPathsSelector, dependencyTreeSelector } from "../../selectors/dependencyMap.selectors"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyMapComponent } from "./dependencyMap.component"
 
@@ -47,9 +47,10 @@ interface Setup {
     tree?: LeveledNode | null
     selectedPath?: string | null
     isDeltaState?: boolean
+    searchedPaths?: ReadonlySet<string> | null
 }
 
-async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }: Setup = {}) {
+async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, searchedPaths = null }: Setup = {}) {
     const rendered = await render(DependencyMapComponent, {
         providers: [
             provideMockStore({
@@ -59,7 +60,8 @@ async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }:
                     { selector: edgesSelector, value: EDGES },
                     { selector: hoveredNodePathSelector, value: null },
                     { selector: selectedNodePathSelector, value: selectedPath },
-                    { selector: isDeltaStateSelector, value: isDeltaState }
+                    { selector: isDeltaStateSelector, value: isDeltaState },
+                    { selector: dependencySearchedPathsSelector, value: searchedPaths }
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
@@ -124,6 +126,20 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts", "/root/model", "/root/model/node.ts"])
+    })
+
+    it("should fade the boxes the explorer's search missed", async () => {
+        // Arrange
+        await setup({ searchedPaths: new Set(["/root/ui"]) })
+
+        // Act
+        const series = drawnSeries()
+        const opacityOf = (path: string) =>
+            series.renderItem({ dataIndex: series.data.findIndex(item => item.name === path) }, { coord: point => point }).children[0].style
+                .opacity
+
+        // Assert
+        expect(drawnBoxPaths().map(opacityOf)).toEqual([1, 1, 1, 0.3, 0.3])
     })
 
     it("should close an open folder on a double click and draw its edges on the folder", async () => {

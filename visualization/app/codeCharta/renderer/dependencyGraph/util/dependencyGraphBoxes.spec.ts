@@ -10,8 +10,8 @@ interface DrawnElement {
     children?: DrawnElement[]
 }
 
-function look(emphasis: BoxEmphasis, isSeeThrough = false) {
-    return { emphasis, isSeeThrough }
+function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false) {
+    return { emphasis, isSeeThrough, isMissedBySearch }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -98,6 +98,28 @@ describe("dependencyGraphBoxes", () => {
 
             // Assert
             expect(rect.style.fill).toBe("rgba(233, 237, 242, 0.65)")
+        })
+
+        it("should fade a box the search missed, its name included", () => {
+            // Arrange
+            const box = aBox("/root/a.ts")
+
+            // Act
+            const [rect, label] = childrenOf(drawBox(box, look("none", false, true), identityPixels))
+
+            // Assert
+            expect([rect.style.opacity, label.style.opacity]).toEqual([0.3, 0.3])
+        })
+
+        it("should state full opacity on a box the search found, so a box redrawn after a search is no longer faded", () => {
+            // Arrange
+            const box = aBox("/root/a.ts")
+
+            // Act
+            const [rect, label] = childrenOf(drawBox(box, look("none"), identityPixels))
+
+            // Assert
+            expect([rect.style.opacity, label.style.opacity]).toEqual([1, 1])
         })
     })
 

@@ -1,7 +1,7 @@
 import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
 import { BoxLook, drawBox, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
-import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, ToPixels } from "./dependencyGraphScene"
+import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge, isShownByFilter } from "./edgeProjection"
@@ -36,7 +36,9 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     const shownEdges = edgesToDraw(scene)
     const painted = paintOrder(layout, scene.raisedPaths)
     const overlaps = scene.raisedPaths.length > 0 ? findOverlaps(painted) : NO_OVERLAPS
-    const items: GraphItem[] = [...painted, ...edgeItems(scene, shownEdges, byPath)]
+    const isFound = searchMatcher(scene.searchedPaths)
+    const lookOfBox = (box: LayoutBox) => lookOf(box, scene, overlaps, isFound(box.path))
+    const items: GraphItem[] = [...painted, ...edgeItems(scene, shownEdges, byPath, isFound)]
     return {
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
@@ -54,7 +56,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
                 type: "custom",
                 data: items.map(item => datumOf(item, byPath)),
                 encode: EXTENT_ENCODING,
-                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => drawItem(items[dataIndex], scene, overlaps, api.coord),
+                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => drawItem(items[dataIndex], lookOfBox, overlaps, api.coord),
                 progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
                 clip: true
             }
@@ -62,15 +64,20 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     }
 }
 
-function edgeItems(scene: DependencyGraphScene, shownEdges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>): EdgeItem[] {
+/** While a box is hovered, its edges stand out; otherwise the edges between boxes a search missed fade with
+ * the boxes. */
+function edgeItems(
+    scene: DependencyGraphScene,
+    shownEdges: GraphEdge[],
+    byPath: ReadonlyMap<string, LayoutBox>,
+    isFound: (boxPath: string) => boolean
+): EdgeItem[] {
     const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
     const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
-    return shownEdges.map((edge, index) => ({
-        kind: "edge",
-        edge,
-        route: routes[index],
-        isDimmed: isHoverLit && !isEdgeOfHovered(edge, scene.hoveredPath)
-    }))
+    const isDimmed = isHoverLit
+        ? (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath)
+        : (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath)
+    return shownEdges.map((edge, index) => ({ kind: "edge", edge, route: routes[index], isDimmed: isDimmed(edge) }))
 }
 
 /** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
@@ -92,10 +99,10 @@ function edgesToDraw({ edges, edgeFilter, hoveredPath }: DependencyGraphScene): 
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
-function drawItem(item: GraphItem, scene: DependencyGraphScene, overlaps: Overlaps, toPixels: ToPixels) {
+function drawItem(item: GraphItem, lookOfBox: (box: LayoutBox) => BoxLook, overlaps: Overlaps, toPixels: ToPixels) {
     switch (item.kind) {
         case "box":
-            return drawBox(item.box, lookOf(item.box, scene, overlaps), toPixels)
+            return drawBox(item.box, lookOfBox(item.box), toPixels)
         case "band":
             return drawLevelBand(item.band, toPixels, overlaps.bandCutouts.get(item.band))
         default:
@@ -115,9 +122,9 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
 }
 
 /** A folder shows what lies behind it where it overlaps something, and while it is dragged. */
-function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps): BoxLook {
+function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps, isFound: boolean): BoxLook {
     const isDragged = box.isFolder && box.path === scene.draggingPath
-    return { emphasis: emphasisOf(box, scene), isSeeThrough: isDragged || seeThroughPaths.has(box.path) }
+    return { emphasis: emphasisOf(box, scene), isSeeThrough: isDragged || seeThroughPaths.has(box.path), isMissedBySearch: !isFound }
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {

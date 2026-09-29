@@ -6,9 +6,11 @@ import {
     FILE_FILL,
     FILE_STROKE,
     FOLDER_STROKE,
+    FOUND_OPACITY,
     folderFill,
     HOVERED_COLOR,
     LEVEL_SEPARATOR_COLOR,
+    MISSED_BY_SEARCH_OPACITY,
     SELECTED_COLOR,
     seeThrough,
     TEXT_COLOR
@@ -22,6 +24,8 @@ export interface BoxLook {
     emphasis: BoxEmphasis
     /** Lets whatever lies behind the box show through its fill. */
     isSeeThrough: boolean
+    /** Fades the box: a search is on and it holds nothing the search found. */
+    isMissedBySearch: boolean
 }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
@@ -39,12 +43,15 @@ interface PixelRect {
     height: number
 }
 
-export function drawBox(box: LayoutBox, { emphasis, isSeeThrough }: BoxLook, toPixels: ToPixels) {
+export function drawBox(box: LayoutBox, { emphasis, isSeeThrough, isMissedBySearch }: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     const style = boxStyle(box, emphasis)
     const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
-    const children: object[] = [{ type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill } }]
-    const label = drawLabel(box, rect)
+    const opacity = isMissedBySearch ? MISSED_BY_SEARCH_OPACITY : FOUND_OPACITY
+    const children: object[] = [
+        { type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }
+    ]
+    const label = drawLabel(box, rect, opacity)
     if (label) {
         children.push(label)
     }
@@ -133,7 +140,7 @@ function baseStyle(box: LayoutBox) {
 }
 
 /** An open folder names itself in its header strip; a file or a closed folder in its middle. */
-function drawLabel(box: LayoutBox, rect: PixelRect) {
+function drawLabel(box: LayoutBox, rect: PixelRect, opacity: number) {
     const width = rect.width - 2 * LABEL_INSET_PX
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
@@ -153,7 +160,8 @@ function drawLabel(box: LayoutBox, rect: PixelRect) {
             verticalAlign: "middle",
             fontSize: LABEL_FONT_SIZE_PX,
             fontWeight: box.isFolder ? "bold" : "normal",
-            fill: TEXT_COLOR
+            fill: TEXT_COLOR,
+            opacity
         }
     }
 }

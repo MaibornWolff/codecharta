@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { dependencyTreeSelector } from "./dependencyMap.selectors"
+import { dependencySearchedPathsSelector, dependencyTreeSelector } from "./dependencyMap.selectors"
 
 const appFolder: CodeMapNode = {
     name: "app",
@@ -47,5 +47,26 @@ describe("dependencyTreeSelector", () => {
 
         // Assert
         expect(tree).toBeNull()
+    })
+})
+
+describe("dependencySearchedPathsSelector", () => {
+    it("should hand on what the search found while a search is on", () => {
+        // Arrange
+        const found = new Set(["/root/app"])
+
+        // Act
+        const searched = dependencySearchedPathsSelector.projector("app", found)
+
+        // Assert
+        expect(searched).toBe(found)
+    })
+
+    it("should find nothing to fade while the search pattern is empty", () => {
+        // Act
+        const searched = dependencySearchedPathsSelector.projector("!", new Set())
+
+        // Assert
+        expect(searched).toBeNull()
     })
 })
