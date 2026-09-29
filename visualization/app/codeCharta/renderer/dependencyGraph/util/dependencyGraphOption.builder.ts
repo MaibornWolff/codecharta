@@ -1,6 +1,7 @@
 import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
 import { BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
+import { atPaintRank } from "./dependencyGraphElements"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
@@ -57,7 +58,8 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
                 type: "custom",
                 data: items.map(item => datumOf(item, byPath)),
                 encode: EXTENT_ENCODING,
-                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => drawItem(items[dataIndex], lookOfBox, overlaps, api.coord),
+                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) =>
+                    atPaintRank(drawItem(items[dataIndex], lookOfBox, overlaps, api.coord), dataIndex),
                 progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
                 clip: true
             }

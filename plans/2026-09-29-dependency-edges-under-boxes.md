@@ -21,6 +21,12 @@ folders' backgrounds but under every closed box and every name, hovered or not.
 
 - [x] Complete Task 1: Paint in three layers
 
+## Review Feedback Addressed
+
+1. **Hide / show again**: boxes that reappeared were painted over everything and the edges over the other boxes,
+   because ECharts paints elements it creates in a later draw on top. Every element now carries its place in the
+   paint order as its z2.
+
 ## Notes
 
 - Decided with the user: boxes above edges (no routing around boxes); hovered edges stay under the boxes too

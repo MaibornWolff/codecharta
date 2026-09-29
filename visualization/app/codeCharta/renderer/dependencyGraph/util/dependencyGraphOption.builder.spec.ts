@@ -5,7 +5,7 @@ import { aBand, aBox, anEdge, identityPixels } from "./dependencyGraphTestData"
 
 interface DrawnElement {
     emphasisDisabled?: boolean
-    children: { style: Record<string, unknown> }[]
+    children: { style: Record<string, unknown>; z2?: number }[]
 }
 
 interface BuiltSeries {
@@ -142,6 +142,15 @@ describe("buildDependencyGraphOption", () => {
 
         // Assert
         expect(series.data.map((_, index) => draw(index).emphasisDisabled)).toEqual(series.data.map(() => true))
+    })
+
+    it("should pin every element to its place in the paint order, which ECharts would otherwise lose for elements added in a later draw", () => {
+        // Act
+        const { series, draw } = drawnGraph(sceneWith())
+
+        // Assert
+        const ranks = series.data.map((_, index) => draw(index).children.map(child => child.z2))
+        expect(ranks).toEqual(series.data.map((_, index) => ranks[index].map(() => index)))
     })
 
     it("should paint the edges that break the architecture over the ones that follow it, and the hovered box's edges over all", () => {
