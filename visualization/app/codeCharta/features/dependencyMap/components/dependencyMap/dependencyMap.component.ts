@@ -5,6 +5,7 @@ import {
     DependencyGraphScene,
     EDGE_LEGEND,
     EdgeFilter,
+    EdgeStyle,
     layoutLevelized,
     projectEdges,
     type RightClickedBox,
@@ -22,6 +23,18 @@ interface EdgeFilterOption {
     label: string
     hint: string
 }
+
+interface EdgeStyleOption {
+    value: EdgeStyle
+    label: string
+}
+
+const EDGE_STYLE_OPTIONS: EdgeStyleOption[] = [
+    { value: "curved", label: "Curved" },
+    { value: "spread", label: "Spread" },
+    { value: "upwardAside", label: "Upward aside" },
+    { value: "straight", label: "Straight" }
+]
 
 const EDGE_FILTER_OPTIONS: EdgeFilterOption[] = [
     { value: "all", label: "All", hint: "Show every dependency" },
@@ -49,6 +62,8 @@ export class DependencyMapComponent {
     protected readonly edgeFilterOptions = EDGE_FILTER_OPTIONS
     protected readonly edgeLegend = EDGE_LEGEND
     protected readonly edgeFilter = this.viewStore.edgeFilter
+    protected readonly edgeStyleOptions = EDGE_STYLE_OPTIONS
+    protected readonly edgeStyle = this.viewStore.edgeStyle
     protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
 
@@ -87,6 +102,7 @@ export class DependencyMapComponent {
             layout,
             edges: projectEdges(this.edges(), this.representatives()),
             edgeFilter: this.edgeFilter(),
+            edgeStyle: this.edgeStyle(),
             hoveredPath: this.boxStandingFor(this.hoveredPath()),
             selectedPath: this.boxStandingFor(this.selectedPath())
         }
@@ -126,6 +142,10 @@ export class DependencyMapComponent {
 
     protected showEdges(filter: EdgeFilter): void {
         this.viewStore.showEdges(filter)
+    }
+
+    protected drawEdgesAs(style: EdgeStyle): void {
+        this.viewStore.drawEdgesAs(style)
     }
 
     protected markReady(): void {

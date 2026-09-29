@@ -251,4 +251,22 @@ describe("DependencyMapComponent", () => {
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts"])
         expect(drawnSeries("edges").data).toHaveLength(0)
     })
+
+    it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireEvent.change(screen.getByTestId("dependency-edge-style"), { target: { value: "straight" } })
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        const drawnCurve = drawnSeries("edges").renderItem({ dataIndex: 0 }, { coord: point => point }).children[0] as unknown as {
+            shape: { x1: number; y1: number; cpx1: number; cpy1: number; x2: number; y2: number }
+        }
+        // the two edges run both ways, so the straight style bows each one 14 px off the straight line
+        const { x1, y1, cpx1, cpy1, x2, y2 } = drawnCurve.shape
+        const distanceOffTheLine = Math.abs((cpx1 - x1) * (y2 - y1) - (cpy1 - y1) * (x2 - x1)) / Math.hypot(x2 - x1, y2 - y1)
+        expect(distanceOffTheLine).toBeCloseTo(14)
+    })
 })

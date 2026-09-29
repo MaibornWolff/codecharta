@@ -1,5 +1,5 @@
 import { Injectable, signal } from "@angular/core"
-import { EdgeFilter, expandWithinBudget, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { EdgeFilter, EdgeStyle, expandWithinBudget, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 
 /** How many boxes a first look opens folders up to: enough to show structure, few enough to read. */
 const FIRST_LOOK_BOX_BUDGET = 60
@@ -10,11 +10,13 @@ const FIRST_LOOK_BOX_BUDGET = 60
 export class DependencyMapViewStore {
     private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
     private readonly shownEdges = signal<EdgeFilter>("all")
+    private readonly drawnEdges = signal<EdgeStyle>("curved")
     private readonly hiddenNodes = signal<ReadonlySet<string>>(new Set())
     private rootOfTheOpenedFolders: string | null = null
 
     readonly expandedPaths = this.openedFolders.asReadonly()
     readonly edgeFilter = this.shownEdges.asReadonly()
+    readonly edgeStyle = this.drawnEdges.asReadonly()
     readonly hiddenPaths = this.hiddenNodes.asReadonly()
 
     /** A new project, or a new focus, starts from a first look with nothing hidden; the same one keeps
@@ -44,5 +46,9 @@ export class DependencyMapViewStore {
 
     showEdges(filter: EdgeFilter): void {
         this.shownEdges.set(filter)
+    }
+
+    drawEdgesAs(style: EdgeStyle): void {
+        this.drawnEdges.set(style)
     }
 }

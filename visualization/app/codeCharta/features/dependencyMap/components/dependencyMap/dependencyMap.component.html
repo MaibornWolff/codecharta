@@ -31,6 +31,19 @@
                 </button>
             }
         </div>
+        <label class="flex items-center gap-1 rounded bg-base-100 pl-2 text-sm shadow-md">
+            <span>Edges</span>
+            <select
+                class="select select-ghost select-sm"
+                aria-label="Edge style"
+                data-testid="dependency-edge-style"
+                (change)="drawEdgesAs($any($event.target).value)"
+            >
+                @for (option of edgeStyleOptions; track option.value) {
+                    <option [value]="option.value" [selected]="edgeStyle() === option.value">{{ option.label }}</option>
+                }
+            </select>
+        </label>
         <button
             type="button"
             class="btn btn-sm btn-square bg-base-100 shadow-md"

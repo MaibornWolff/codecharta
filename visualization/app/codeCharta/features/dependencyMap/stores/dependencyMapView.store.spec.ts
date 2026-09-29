@@ -94,4 +94,14 @@ describe("DependencyMapViewStore", () => {
         // Assert
         expect(store.hiddenPaths().size).toBe(0)
     })
+
+    it("should draw edges curved until the reader picks another style", () => {
+        // Act
+        const before = store.edgeStyle()
+        store.drawEdgesAs("straight")
+
+        // Assert
+        expect(before).toBe("curved")
+        expect(store.edgeStyle()).toBe("straight")
+    })
 })

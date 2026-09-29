@@ -5,6 +5,7 @@ import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, ToPixels } from "./
 import { SERIES_IDS } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge, isShownByFilter } from "./edgeProjection"
+import { routeEdges } from "./edgeRouting"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 
 export interface Viewport {
@@ -32,6 +33,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     const byPath = boxesByPath(layout)
     const shownEdges = edgesToDraw(scene)
     const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
+    const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
     const openFolders = layout.boxes.filter(box => box.isExpanded)
     const closedBoxes = layout.boxes.filter(box => !box.isExpanded)
     const boxSeries = (id: string, boxes: LayoutBox[]) =>
@@ -59,7 +61,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
                 ({ dataIndex }, api) => {
                     const edge = shownEdges[dataIndex]
                     const isDimmed = isHoverLit && !isEdgeOfHovered(edge, scene.hoveredPath)
-                    return drawEdge(edge, byPath.get(edge.fromPath), byPath.get(edge.toPath), isDimmed, api.coord)
+                    return drawEdge(edge, routes[dataIndex], isDimmed, api.coord)
                 }
             ),
             boxSeries(SERIES_IDS.boxes, closedBoxes)
