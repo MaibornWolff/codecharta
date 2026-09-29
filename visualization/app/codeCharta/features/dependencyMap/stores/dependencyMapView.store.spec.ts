@@ -151,4 +151,36 @@ describe("DependencyMapViewStore", () => {
         expect(whileDragging).toBe("/root/a")
         expect(store.draggingPath()).toBeNull()
     })
+
+    it("should count a node inside a hidden folder as hidden", () => {
+        // Arrange
+        store.hide("/root/training")
+
+        // Act
+        const hidden = ["/root/training", "/root/training/a.ts", "/root/trainingData.ts"].map(path => store.isHidden(path))
+
+        // Assert
+        expect(hidden).toEqual([true, true, false])
+    })
+
+    it("should show a node again together with the hidden folders holding it, and nothing else", () => {
+        // Arrange
+        store.hide("/root/training")
+        store.hide("/root/training/a.ts")
+        store.hide("/root/app")
+
+        // Act
+        store.show("/root/training/a.ts")
+
+        // Assert
+        expect([...store.hiddenPaths()]).toEqual(["/root/app"])
+    })
+
+    it("should open every folder holding a node to reveal it, but not the node itself", () => {
+        // Act
+        store.reveal("/root/app/ui/button.ts")
+
+        // Assert
+        expect([...store.expandedPaths()]).toEqual(["/root", "/root/app", "/root/app/ui"])
+    })
 })

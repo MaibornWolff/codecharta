@@ -4,7 +4,8 @@ import { clone } from "../../../util/clone"
 import {
     dependencyLevelsSelector,
     hasDependencyDataSelector,
-    isLoadedFileSetWithoutDependencyLensSelector
+    isLoadedFileSetWithoutDependencyLensSelector,
+    pathsWithDependencyLevelsSelector
 } from "./dependencyLevels.selector"
 
 describe("dependency lens levels", () => {
@@ -149,6 +150,19 @@ describe("dependency lens levels", () => {
 
             // Assert
             expect(isWithout).toBe(false)
+        })
+    })
+
+    describe("pathsWithDependencyLevelsSelector", () => {
+        it("should name every node carrying a level and every folder holding one", () => {
+            // Arrange
+            const levels = { "/root/app/ui/view.ts": 1, "/root/app/model.ts": 0 }
+
+            // Act
+            const paths = pathsWithDependencyLevelsSelector.projector(levels)
+
+            // Assert
+            expect([...paths].sort()).toEqual(["/root", "/root/app", "/root/app/model.ts", "/root/app/ui", "/root/app/ui/view.ts"])
         })
     })
 })

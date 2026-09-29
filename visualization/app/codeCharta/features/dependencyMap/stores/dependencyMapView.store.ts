@@ -59,6 +59,21 @@ export class DependencyMapViewStore {
         this.hiddenNodes.update(hidden => new Set([...hidden, path]))
     }
 
+    /** Hidden itself, or inside a hidden folder. */
+    isHidden(path: string): boolean {
+        return [...this.hiddenNodes()].some(hiddenPath => isSameOrInside(path, hiddenPath))
+    }
+
+    /** Brings the node back, and the hidden folders holding it with it. */
+    show(path: string): void {
+        this.hiddenNodes.update(hidden => new Set([...hidden].filter(hiddenPath => !isSameOrInside(path, hiddenPath))))
+    }
+
+    /** Opens every folder holding the node, so its own box is on screen. */
+    reveal(path: string): void {
+        this.openedFolders.update(opened => new Set([...opened, ...ancestorsOf(path)]))
+    }
+
     toggle(folderPath: string): void {
         this.openedFolders.update(opened => {
             const next = new Set(opened)
@@ -76,4 +91,13 @@ export class DependencyMapViewStore {
     drawEdgesAs(style: EdgeStyle): void {
         this.drawnEdges.set(style)
     }
+}
+
+function isSameOrInside(path: string, folderPath: string): boolean {
+    return path === folderPath || path.startsWith(`${folderPath}/`)
+}
+
+function ancestorsOf(path: string): string[] {
+    const segments = path.split("/")
+    return segments.slice(2).map((_, index) => segments.slice(0, index + 2).join("/"))
 }

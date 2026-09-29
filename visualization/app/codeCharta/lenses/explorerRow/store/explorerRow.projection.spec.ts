@@ -137,6 +137,34 @@ describe("projectExplorerRow", () => {
         })
     })
 
+    describe("with the dependency inputs", () => {
+        const inputs = { pathsWithDependencyLevels: new Set([LEAF_WITH_BUILDING.path]), isHiddenFromDependencyGraph: () => false }
+
+        it("should dim a row whose node the dependency graph cannot show", () => {
+            // Arrange & Act
+            const projection = projectExplorerRow(LEAF_WITHOUT_BUILDING, inputs)
+
+            // Assert
+            expect(projection).toMatchObject({ isInactive: true, isSelectable: true, title: "Not in the dependency graph" })
+        })
+
+        it("should dim a row whose node the reader hid from the dependency graph", () => {
+            // Arrange & Act
+            const projection = projectExplorerRow(LEAF_WITH_BUILDING, { ...inputs, isHiddenFromDependencyGraph: () => true })
+
+            // Assert
+            expect(projection).toMatchObject({ isInactive: true, title: "Hidden from the dependency graph" })
+        })
+
+        it("should leave a row the dependency graph shows undimmed", () => {
+            // Arrange & Act
+            const projection = projectExplorerRow(LEAF_WITH_BUILDING, inputs)
+
+            // Assert
+            expect(projection).toMatchObject({ isInactive: false, title: "" })
+        })
+    })
+
     describe("with no inputs (a view with no 3D map)", () => {
         it("should render the trivial projection: selectable, undimmed, no decoration", () => {
             // Arrange & Act
