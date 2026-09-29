@@ -20,6 +20,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
         edgeFilter: "all",
         edgeStyle: "curved",
+        raisedPaths: [],
         hoveredPath: null,
         selectedPath: null,
         ...overrides
@@ -76,7 +77,7 @@ describe("buildDependencyGraphOption", () => {
 
         // Assert
         const strokeWidthOf = (dataIndex: number) => boxes.renderItem({ dataIndex }, { coord: identityPixels }).children[0].style.lineWidth
-        expect([0, 1, 2].map(strokeWidthOf)).toEqual([2.5, 2, 1])
+        expect([2, 3, 4].map(strokeWidthOf)).toEqual([2.5, 2, 1])
     })
 
     it("should describe boxes and edges in the tooltip", () => {
@@ -84,10 +85,10 @@ describe("buildDependencyGraphOption", () => {
         const option = buildDependencyGraphOption(sceneWith(), { width: 800, height: 600 })
 
         // Act
-        const folderText = option.tooltip.formatter({ seriesId: SERIES_IDS.openFolders, dataIndex: 0 })
-        const fileText = option.tooltip.formatter({ seriesId: SERIES_IDS.boxes, dataIndex: 0 })
+        const folderText = option.tooltip.formatter({ seriesId: SERIES_IDS.boxes, dataIndex: 0 })
+        const levelText = option.tooltip.formatter({ seriesId: SERIES_IDS.boxes, dataIndex: 1 })
+        const fileText = option.tooltip.formatter({ seriesId: SERIES_IDS.boxes, dataIndex: 2 })
         const edgeText = option.tooltip.formatter({ seriesId: SERIES_IDS.edges, dataIndex: 1 })
-        const levelText = option.tooltip.formatter({ seriesId: SERIES_IDS.levels, dataIndex: 0 })
 
         // Assert
         expect(folderText).toBe("<b>/root</b><br/>Level 0<br/><i>Double-click to close</i>")
@@ -101,13 +102,13 @@ describe("buildDependencyGraphOption", () => {
         const option = buildDependencyGraphOption(sceneWith(), { width: 800, height: 600 })
 
         // Act
-        const levels = seriesOf(option, SERIES_IDS.levels)
+        const boxes = seriesOf(option, SERIES_IDS.boxes)
 
         // Assert
-        expect(levels.renderItem({ dataIndex: 0 }, { coord: identityPixels }).children[0].style.text).toBe("level 1")
+        expect(boxes.renderItem({ dataIndex: 1 }, { coord: identityPixels }).children[0].style.text).toBe("level 1")
     })
 
-    it("should paint open folders at the back and files on top of the edges, each named by its path", () => {
+    it("should paint the boxes in paint order, each named by its path, and the edges above them", () => {
         // Arrange
         const option = buildDependencyGraphOption(sceneWith(), { width: 800, height: 600 })
 
@@ -115,9 +116,14 @@ describe("buildDependencyGraphOption", () => {
         const seriesIds = option.series.map(series => series.id)
 
         // Assert
-        expect(seriesIds).toEqual([SERIES_IDS.openFolders, SERIES_IDS.levels, SERIES_IDS.edges, SERIES_IDS.boxes])
-        expect(seriesOf(option, SERIES_IDS.openFolders).data.map(item => item.name)).toEqual(["/root"])
-        expect(seriesOf(option, SERIES_IDS.boxes).data.map(item => item.name)).toEqual(["/root/view.ts", "/root/model.ts", "/root/util.ts"])
+        expect(seriesIds).toEqual([SERIES_IDS.boxes, SERIES_IDS.edges])
+        expect(seriesOf(option, SERIES_IDS.boxes).data.map(item => item.name)).toEqual([
+            "/root",
+            undefined,
+            "/root/view.ts",
+            "/root/model.ts",
+            "/root/util.ts"
+        ])
     })
 
     it("should keep ECharts from lifting a hovered item over the rest, so an open folder never covers its children", () => {
@@ -130,12 +136,7 @@ describe("buildDependencyGraphOption", () => {
         )
 
         // Assert
-        expect(drawnItems.map(item => (item as unknown as { emphasisDisabled: boolean }).emphasisDisabled)).toEqual([
-            true,
-            true,
-            true,
-            true
-        ])
+        expect(drawnItems.map(item => (item as unknown as { emphasisDisabled: boolean }).emphasisDisabled)).toEqual([true, true])
     })
 
     it("should paint the edges that break the architecture over the ones that follow it, and the hovered box's edges over all", () => {

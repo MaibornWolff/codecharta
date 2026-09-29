@@ -3,6 +3,7 @@ import { SERIES_IDS } from "./dependencyGraphSeries"
 import { EDGE_TYPE_LABELS } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
 import { LayoutBox } from "./levelizedLayout"
+import { PaintedItem } from "./paintOrder"
 
 interface TooltipParams {
     seriesId?: string
@@ -10,24 +11,18 @@ interface TooltipParams {
 }
 
 interface TooltipSources {
-    openFolders: LayoutBox[]
-    closedBoxes: LayoutBox[]
+    painted: PaintedItem[]
     shownEdges: GraphEdge[]
     byPath: ReadonlyMap<string, LayoutBox>
 }
 
-export function buildTooltipFormatter({ openFolders, closedBoxes, shownEdges, byPath }: TooltipSources) {
+export function buildTooltipFormatter({ painted, shownEdges, byPath }: TooltipSources) {
     return ({ seriesId, dataIndex }: TooltipParams): string => {
-        switch (seriesId) {
-            case SERIES_IDS.edges:
-                return describeEdge(shownEdges[dataIndex], byPath)
-            case SERIES_IDS.openFolders:
-                return describeBox(openFolders[dataIndex])
-            case SERIES_IDS.boxes:
-                return describeBox(closedBoxes[dataIndex])
-            default:
-                return ""
+        if (seriesId === SERIES_IDS.edges) {
+            return describeEdge(shownEdges[dataIndex], byPath)
         }
+        const item = painted[dataIndex]
+        return seriesId === SERIES_IDS.boxes && item.kind === "box" ? describeBox(item.box) : ""
     }
 }
 

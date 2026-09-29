@@ -19,6 +19,7 @@ const SCENE: DependencyGraphScene = {
     edges: [],
     edgeFilter: "all",
     edgeStyle: "curved",
+    raisedPaths: [],
     hoveredPath: null,
     selectedPath: null
 }
@@ -47,7 +48,7 @@ describe("DependencyGraphComponent", () => {
         await render(DependencyGraphComponent, { inputs: { scene: SCENE } })
 
         // Assert
-        expect(lastDrawnOption().series.at(-1).data[0].name).toBe("/root/a.ts")
+        expect(lastDrawnOption().series[0].data[0].name).toBe("/root/a.ts")
     })
 
     it("should not draw into a container that has no size yet", async () => {

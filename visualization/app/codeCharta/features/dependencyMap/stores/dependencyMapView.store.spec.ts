@@ -127,4 +127,17 @@ describe("DependencyMapViewStore", () => {
         // Assert
         expect(store.boxOffsets().size).toBe(0)
     })
+
+    it("should raise the most recently dragged box to the end of the paint order", () => {
+        // Act
+        store.placeBox("/root/a", [1, 0])
+        store.placeBox("/root/b", [1, 0])
+        store.placeBox("/root/a", [2, 0])
+        const raised = store.raisedPaths()
+        store.resetLayout()
+
+        // Assert
+        expect(raised).toEqual(["/root/b", "/root/a"])
+        expect(store.raisedPaths()).toEqual([])
+    })
 })

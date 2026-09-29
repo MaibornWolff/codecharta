@@ -11,6 +11,8 @@ export interface DependencyGraphScene {
     edgeStyle: EdgeStyle
     hoveredPath: string | null
     selectedPath: string | null
+    /** Dragged boxes, the most recently dragged last: they paint above their siblings. */
+    raisedPaths: readonly string[]
 }
 
 /** Converts a point of the layout into pixels on the chart; the zoom and pan decide the mapping. */

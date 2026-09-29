@@ -1,14 +1,10 @@
-/** Painted in this order: open folders at the back, then the level bands, the edges, and on top the files
- * and closed folders, so an edge never covers a box the reader wants to click. */
+/** Painted in this order: every box and level band in paint order, then the edges above them all. An edge
+ * over a box does not take the box's clicks: the host hands them on to the box underneath. */
 export const SERIES_IDS = {
-    openFolders: "openFolders",
-    levels: "levels",
-    edges: "edges",
-    boxes: "boxes"
+    boxes: "boxes",
+    edges: "edges"
 } as const
 
-const BOX_SERIES_IDS: ReadonlySet<string> = new Set([SERIES_IDS.openFolders, SERIES_IDS.boxes])
-
 export function isBoxSeries(seriesId: string | undefined): boolean {
-    return seriesId !== undefined && BOX_SERIES_IDS.has(seriesId)
+    return seriesId === SERIES_IDS.boxes
 }

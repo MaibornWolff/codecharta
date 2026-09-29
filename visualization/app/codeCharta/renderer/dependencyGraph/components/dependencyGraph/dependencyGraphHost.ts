@@ -4,8 +4,8 @@ import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
-import { isBoxSeries } from "../../util/dependencyGraphSeries"
-import { BoxDragGesture, BoxDragHandlers } from "./boxDragGesture"
+import { isBoxSeries, SERIES_IDS } from "../../util/dependencyGraphSeries"
+import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
 
@@ -15,6 +15,8 @@ export interface DependencyGraphHandlers extends BoxDragHandlers {
     onBoxHovered: (path: string | null) => void
     onBoxRightClicked: (path: string, clientX: number, clientY: number) => void
     onRendered: () => void
+    /** The box painted on top at a layout point; an edge lying over it hands it the clicks. */
+    boxAt: (point: [number, number]) => string | null
 }
 
 interface ChartItemEvent {
@@ -110,14 +112,14 @@ export class DependencyGraphHost {
     }
 
     private startDragging(event: ChartItemEvent): void {
-        const path = boxPathOf(event)
+        const path = this.boxUnder(event)
         if (path !== null && event.event) {
             this.dragGesture?.press(path, event.event)
         }
     }
 
     private reportClick(event: ChartItemEvent): void {
-        const path = boxPathOf(event)
+        const path = this.boxUnder(event)
         if (this.dragGesture?.takesClick() || path === null) {
             return
         }
@@ -134,11 +136,19 @@ export class DependencyGraphHost {
     }
 
     private reportRightClick(event: ChartItemEvent): void {
-        const path = boxPathOf(event)
+        const path = this.boxUnder(event)
         const mouseEvent = event.event?.event
         if (path !== null && mouseEvent) {
             this.handlers.onBoxRightClicked(path, mouseEvent.clientX, mouseEvent.clientY)
         }
+    }
+
+    /** The box under the pointer: the one hit, or, when an edge lying over a box is hit, that box. */
+    private boxUnder(event: ChartItemEvent): string | null {
+        if (event.seriesId === SERIES_IDS.edges && event.event && this.chart) {
+            return this.handlers.boxAt(layoutPointAt(this.chart, event.event))
+        }
+        return boxPathOf(event)
     }
 
     private reportRendered(): void {
