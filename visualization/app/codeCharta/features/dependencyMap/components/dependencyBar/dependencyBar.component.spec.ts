@@ -3,6 +3,7 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { DEPENDENCY_EDGE_TYPES } from "../../../../lenses/dependency/dependencyLens.facade"
 import { edgeMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
@@ -41,17 +42,37 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId("dependency-bar-edge-thickness-segment").textContent).toContain("By count")
     })
 
-    it("should show the edges the reader picks", async () => {
+    it("should show only the edge types the reader leaves ticked", async () => {
         // Arrange
         await renderBar()
 
         // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-edges-cycles"))
+        await userEvent.click(screen.getByTestId("dependency-bar-edges-regular"))
+        await userEvent.click(screen.getByTestId("dependency-bar-edges-feedbackContainerLevel"))
 
         // Assert
-        expect(TestBed.inject(DependencyMapViewStore).edgeFilter()).toBe("cycles")
-        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("Cycles")
-        expect(screen.getByTestId("dependency-bar-edges-cycles").getAttribute("aria-pressed")).toBe("true")
+        expect(TestBed.inject(DependencyMapViewStore).shownEdgeTypes()).toEqual(["cyclic", "feedbackLeafLevel"])
+        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("In a cycle, Points upward and closes a cycle")
+    })
+
+    it("should tick no type on None, every type on All and flip them on Invert", async () => {
+        // Arrange
+        await renderBar()
+        const store = TestBed.inject(DependencyMapViewStore)
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "None" }))
+        const afterNone = store.shownEdgeTypes()
+        await userEvent.click(screen.getByTestId("dependency-bar-edges-cyclic"))
+        await userEvent.click(screen.getByRole("button", { name: "Invert" }))
+        const afterInvert = store.shownEdgeTypes()
+        await userEvent.click(screen.getByRole("button", { name: "All" }))
+
+        // Assert
+        expect(afterNone).toEqual([])
+        expect(afterInvert).toEqual(["regular", "feedbackContainerLevel", "feedbackLeafLevel"])
+        expect(store.shownEdgeTypes()).toEqual(DEPENDENCY_EDGE_TYPES)
+        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
     })
 
     it("should draw the edges in the style the reader picks", async () => {
@@ -102,16 +123,19 @@ describe("DependencyBarComponent", () => {
         expect(TestBed.inject(DependencyMapViewStore).isAnchoredAtSideMiddle()).toBe(true)
     })
 
-    it("should offer neither cycles nor upward edges for another edge metric, and show all of its edges instead", async () => {
+    it("should offer only the dependency toggle for another edge metric, and name its choice after it", async () => {
         // Arrange
         await renderBar("temporal_coupling")
 
         // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-edges-cycles"))
+        await userEvent.click(screen.getByRole("button", { name: "Invert" }))
 
         // Assert
-        expect(screen.getByTestId("dependency-bar-edges-cycles").hasAttribute("disabled")).toBe(true)
-        expect(screen.getByTestId("dependency-bar-edges-feedback").hasAttribute("disabled")).toBe(true)
-        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
+        const disabledTypes = DEPENDENCY_EDGE_TYPES.filter(type =>
+            screen.getByTestId(`dependency-bar-edges-${type}`).hasAttribute("disabled")
+        )
+        expect(disabledTypes).toEqual(["cyclic", "feedbackContainerLevel", "feedbackLeafLevel"])
+        expect(TestBed.inject(DependencyMapViewStore).shownEdgeTypes()).toEqual(["cyclic", "feedbackContainerLevel", "feedbackLeafLevel"])
+        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("None")
     })
 })

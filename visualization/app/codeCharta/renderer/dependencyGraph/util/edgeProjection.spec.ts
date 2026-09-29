@@ -1,5 +1,5 @@
 import { Edge } from "../../../model/codeCharta.model"
-import { effectiveEdgeFilter, isShownByFilter, projectEdges, visibleRepresentatives } from "./edgeProjection"
+import { projectEdges, visibleRepresentatives } from "./edgeProjection"
 import { LeveledNode } from "./leveledTree"
 
 function leveledFile(path: string): LeveledNode {
@@ -132,37 +132,6 @@ describe("edgeProjection", () => {
 
             // Assert
             expect(projected).toEqual([])
-        })
-    })
-
-    describe("effectiveEdgeFilter", () => {
-        it("should keep every filter for dependencies, and show all edges of another metric instead of its cycles or upward edges", () => {
-            // Act
-            const forDependencies = (["cycles", "feedback"] as const).map(filter => effectiveEdgeFilter(filter, "dependencies"))
-            const forCoupling = (["all", "cycles", "feedback", "none"] as const).map(filter =>
-                effectiveEdgeFilter(filter, "temporal_coupling")
-            )
-
-            // Assert
-            expect(forDependencies).toEqual(["cycles", "feedback"])
-            expect(forCoupling).toEqual(["all", "all", "all", "none"])
-        })
-    })
-
-    describe("isShownByFilter", () => {
-        it.each([
-            ["none", "feedbackLeafLevel", false],
-            ["all", "regular", true],
-            ["cycles", "cyclic", true],
-            ["cycles", "feedbackContainerLevel", false],
-            ["feedback", "feedbackContainerLevel", true],
-            ["feedback", "cyclic", false]
-        ] as const)("should decide for filter %s and type %s", (filter, type, expected) => {
-            // Arrange + Act
-            const isShown = isShownByFilter(type, filter)
-
-            // Assert
-            expect(isShown).toBe(expected)
         })
     })
 })

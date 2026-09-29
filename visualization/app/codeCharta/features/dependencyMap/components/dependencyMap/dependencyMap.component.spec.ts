@@ -231,12 +231,12 @@ describe("DependencyMapComponent", () => {
         )
     })
 
-    it("should draw only the edges of the picked filter", async () => {
+    it("should draw only the edges of the picked types", async () => {
         // Arrange
         const { fixture } = await setup()
 
         // Act
-        TestBed.inject(DependencyMapViewStore).showEdges("feedback")
+        TestBed.inject(DependencyMapViewStore).showEdgeTypes(["feedbackContainerLevel", "feedbackLeafLevel"])
         fixture.detectChanges()
         await screen.findByTestId("dependency-graph")
 

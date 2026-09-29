@@ -1,0 +1,34 @@
+<cc-axis-card
+    label="Edges shown"
+    [metricName]="chosenLabel()"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    testId="dependency-bar-edges-segment"
+></cc-axis-card>
+<cc-settings-popover-shell [popoverId]="popoverId" [anchorName]="anchorName" ariaLabel="Edges shown" widthClass="w-72" contentClass="gap-2 p-2">
+    <cc-selection-shortcuts (selectAll)="showAll()" (selectNone)="showNone()" (invert)="invert()"></cc-selection-shortcuts>
+    <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
+        @for (entry of entries(); track entry.type) {
+            <li>
+                <label
+                    class="flex w-full items-center gap-2 rounded-md px-2 py-1"
+                    [class]="entry.isCarried ? 'cursor-pointer hover:bg-base-200' : 'cursor-not-allowed opacity-50'"
+                >
+                    <input
+                        type="checkbox"
+                        class="checkbox checkbox-sm checkbox-primary shrink-0"
+                        [checked]="entry.isShown"
+                        [disabled]="!entry.isCarried"
+                        [attr.data-testid]="'dependency-bar-edges-' + entry.type"
+                        (change)="toggle(entry.type, $any($event.target).checked)"
+                    />
+                    <svg class="h-2 w-6 shrink-0" viewBox="0 0 24 8" aria-hidden="true">
+                        <line x1="0" y1="4" x2="24" y2="4" stroke-width="2" [attr.stroke]="entry.color" [attr.stroke-dasharray]="entry.isDashed ? '5 4' : null" />
+                    </svg>
+                    <span>{{ entry.label }}</span>
+                </label>
+            </li>
+        }
+    </ul>
+    <p class="m-0 px-2 text-xs opacity-70">With none ticked, only the edges of the box under the pointer show.</p>
+</cc-settings-popover-shell>

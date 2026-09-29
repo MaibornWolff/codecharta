@@ -1,9 +1,9 @@
 import { Injectable, signal } from "@angular/core"
+import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
 import {
     BoxOffset,
     collapsedFirstLook,
     DEFAULT_EDGE_WIDTH,
-    EdgeFilter,
     EdgeStyle,
     EdgeThickness,
     EdgeWidth,
@@ -15,7 +15,7 @@ import {
 @Injectable({ providedIn: "root" })
 export class DependencyMapViewStore {
     private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
-    private readonly shownEdges = signal<EdgeFilter>("all")
+    private readonly shownEdges = signal<readonly DependencyEdgeType[]>(DEPENDENCY_EDGE_TYPES)
     private readonly drawnEdges = signal<EdgeStyle>("curved")
     private readonly edgesAtSideMiddle = signal(false)
     private readonly edgeLineWidth = signal<EdgeWidth>(DEFAULT_EDGE_WIDTH)
@@ -26,7 +26,7 @@ export class DependencyMapViewStore {
     private rootOfTheOpenedFolders: string | null = null
 
     readonly expandedPaths = this.openedFolders.asReadonly()
-    readonly edgeFilter = this.shownEdges.asReadonly()
+    readonly shownEdgeTypes = this.shownEdges.asReadonly()
     readonly edgeStyle = this.drawnEdges.asReadonly()
     readonly isAnchoredAtSideMiddle = this.edgesAtSideMiddle.asReadonly()
     readonly edgeWidth = this.edgeLineWidth.asReadonly()
@@ -94,8 +94,8 @@ export class DependencyMapViewStore {
         })
     }
 
-    showEdges(filter: EdgeFilter): void {
-        this.shownEdges.set(filter)
+    showEdgeTypes(types: readonly DependencyEdgeType[]): void {
+        this.shownEdges.set(types)
     }
 
     drawEdgesAs(style: EdgeStyle): void {
