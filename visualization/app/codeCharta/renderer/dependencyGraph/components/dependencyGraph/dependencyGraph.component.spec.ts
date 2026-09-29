@@ -20,6 +20,7 @@ const SCENE: DependencyGraphScene = {
     edges: [],
     edgeFilter: "all",
     edgeStyle: "curved",
+    edgeWidth: { thickness: "byCount", factor: 1 },
     raisedPaths: [],
     draggingPath: null,
     searchedPaths: null,

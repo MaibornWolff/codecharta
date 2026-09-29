@@ -26,6 +26,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
         edgeFilter: "all",
         edgeStyle: "curved",
+        edgeWidth: { thickness: "byCount", factor: 1 },
         raisedPaths: [],
         draggingPath: null,
         hoveredPath: null,
@@ -171,6 +172,14 @@ describe("buildDependencyGraphOption", () => {
             edgeIndices.map(index => describe(index).split(" · ")[1])
         expect(typesIn(plain)).toEqual(["Dependency", "In a cycle", "Points upward", "Points upward and closes a cycle"])
         expect(typesIn(hovered)).toEqual(["Points upward and closes a cycle", "Dependency", "In a cycle", "Points upward"])
+    })
+
+    it("should draw the edges as wide as the scene asks", () => {
+        // Act
+        const { edgeIndices, draw } = drawnGraph(sceneWith({ edgeWidth: { thickness: "uniform", factor: 2 } }))
+
+        // Assert
+        expect(edgeIndices.map(index => draw(index).children[0].style.lineWidth)).toEqual([3.2, 3.2])
     })
 
     it("should light up only the edges crossing a hovered folder's border", () => {

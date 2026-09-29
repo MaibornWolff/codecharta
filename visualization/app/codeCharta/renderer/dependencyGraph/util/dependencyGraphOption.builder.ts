@@ -7,6 +7,7 @@ import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge, isShownByFilter } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
+import { edgeWidthPx } from "./edgeWidth"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 import { findOverlaps, NO_OVERLAPS, Overlaps } from "./overlaps"
 import { aroundEdges, EdgeItem, GraphItem, paintOrder } from "./paintOrder"
@@ -80,7 +81,12 @@ function edgeItems(
     const isDimmed = isHoverLit
         ? (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath)
         : (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath)
-    return shownEdges.map((edge, index) => ({ kind: "edge", edge, route: routes[index], isDimmed: isDimmed(edge) }))
+    return shownEdges.map((edge, index) => ({
+        kind: "edge",
+        edge,
+        route: routes[index],
+        look: { isDimmed: isDimmed(edge), widthPx: edgeWidthPx(edge.weight, scene.edgeWidth) }
+    }))
 }
 
 /** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
@@ -111,7 +117,7 @@ function drawItem(item: GraphItem, lookOfBox: (box: LayoutBox) => BoxLook, overl
         case "title":
             return drawFolderTitle(item.box, lookOfBox(item.box), toPixels)
         default:
-            return drawEdge(item.edge, item.route, item.isDimmed, toPixels)
+            return drawEdge(item.edge, item.route, item.look, toPixels)
     }
 }
 
