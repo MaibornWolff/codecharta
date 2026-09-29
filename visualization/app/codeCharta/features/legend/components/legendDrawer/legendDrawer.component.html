@@ -7,7 +7,7 @@
         [style.bottom]="panelBottom"
     >
         <div class="flex flex-col gap-3 p-3">
-            <ng-content></ng-content>
+            <ng-container [ngTemplateOutlet]="legendContent()"></ng-container>
         </div>
     </div>
 }

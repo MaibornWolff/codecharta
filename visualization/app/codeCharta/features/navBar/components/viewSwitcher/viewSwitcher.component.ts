@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, signal } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, Signal, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { RouterLink, RouterLinkActive } from "@angular/router"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
@@ -9,6 +9,20 @@ import { ViewModeBarComponent } from "../viewModeBar/viewModeBar.component"
 /** The mode bar floats below the nav bar, so the pointer crosses a seam on its way down into it.
  * Closing on a short delay instead of straight on mouseleave keeps it reachable. */
 const CLOSE_MODE_BAR_DELAY_MS = 200
+
+interface ViewTab {
+    view: ViewId
+    label: string
+    title: string
+    /** The metrics route is the empty default path, which every other route would otherwise match too. */
+    matchesExactly: boolean
+}
+
+const VIEW_TABS: readonly ViewTab[] = [
+    { view: "metrics", label: "Metric", title: "Show the 3D metrics map", matchesExactly: true },
+    { view: "domain", label: "Domain", title: "Show the domain-language word cloud", matchesExactly: false },
+    { view: "dependencies", label: "Dependencies", title: "Show the dependency graph, arranged by level", matchesExactly: false }
+]
 
 @Component({
     selector: "cc-view-switcher",
@@ -22,8 +36,12 @@ export class ViewSwitcherComponent {
     private readonly readStore = inject(ViewSwitcherReadStore)
     private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef)
 
-    readonly isDomainViewAvailable = this.readStore.isDomainViewAvailable
-    readonly isDependencyViewAvailable = this.readStore.isDependencyViewAvailable
+    private readonly isViewAvailable: Record<ViewId, Signal<boolean>> = {
+        metrics: signal(true),
+        domain: this.readStore.isDomainViewAvailable,
+        dependencies: this.readStore.isDependencyViewAvailable
+    }
+    readonly availableTabs = computed(() => VIEW_TABS.filter(tab => this.isViewAvailable[tab.view]()))
     readonly activeView = toSignal(inject(ActiveViewStore).activeView$, { requireSync: true })
     readonly routeLinks = routeLinks
 
