@@ -19,68 +19,31 @@
         (boxDragEnded)="endDragging()"
     ></cc-dependency-graph>
 
-    <div class="absolute right-[10px] top-[10px] z-10 flex gap-2">
-        <div class="join rounded bg-base-100 shadow-md" role="group" aria-label="Dependencies shown">
-            @for (option of edgeFilterOptions; track option.value) {
+    <div class="absolute right-[10px] top-[10px] z-10 flex">
+        <div class="join rounded bg-base-100 shadow-md">
+            @if (hasMovedBoxes()) {
                 <button
                     type="button"
                     class="btn btn-sm join-item"
-                    [class.btn-active]="edgeFilter() === option.value"
-                    [attr.aria-pressed]="edgeFilter() === option.value"
-                    [title]="option.hint"
-                    [attr.data-testid]="'dependency-edge-filter-' + option.value"
-                    (click)="showEdges(option.value)"
+                    title="Put every dragged box back in its place"
+                    data-testid="dependency-reset-layout"
+                    (click)="resetLayout()"
                 >
-                    {{ option.label }}
+                    Reset layout
                 </button>
             }
-        </div>
-        <label class="flex items-center gap-1 rounded bg-base-100 pl-2 text-sm shadow-md">
-            <span>Edges</span>
-            <select
-                class="select select-ghost select-sm"
-                aria-label="Edge style"
-                data-testid="dependency-edge-style"
-                (change)="drawEdgesAs($any($event.target).value)"
-            >
-                @for (option of edgeStyleOptions; track option.value) {
-                    <option [value]="option.value" [selected]="edgeStyle() === option.value">{{ option.label }}</option>
-                }
-            </select>
-        </label>
-        @if (hasMovedBoxes()) {
             <button
                 type="button"
-                class="btn btn-sm bg-base-100 shadow-md"
-                title="Put every dragged box back in its place"
-                data-testid="dependency-reset-layout"
-                (click)="resetLayout()"
+                class="btn btn-sm btn-square join-item"
+                title="Show the whole graph"
+                aria-label="Show the whole graph"
+                data-testid="dependency-reset-view"
+                (click)="graph.resetView()"
             >
-                Reset layout
+                <i class="fa-solid fa-expand" aria-hidden="true"></i>
             </button>
-        }
-        <button
-            type="button"
-            class="btn btn-sm btn-square bg-base-100 shadow-md"
-            title="Show the whole graph"
-            aria-label="Show the whole graph"
-            data-testid="dependency-reset-view"
-            (click)="graph.resetView()"
-        >
-            <i class="fa-solid fa-expand" aria-hidden="true"></i>
-        </button>
+        </div>
     </div>
-
-    <ul class="absolute bottom-[10px] left-[10px] z-10 m-0 flex list-none flex-col gap-1 rounded bg-base-100 p-2 text-xs shadow-md" aria-label="Edge colours">
-        @for (entry of edgeLegend; track entry.type) {
-            <li class="flex items-center gap-2">
-                <svg class="h-2 w-6" viewBox="0 0 24 8" aria-hidden="true">
-                    <line x1="0" y1="4" x2="24" y2="4" stroke-width="2" [attr.stroke]="entry.color" [attr.stroke-dasharray]="entry.isDashed ? '5 4' : null" />
-                </svg>
-                <span>{{ entry.label }}</span>
-            </li>
-        }
-    </ul>
 } @else {
     <div class="flex h-full items-center justify-center p-4">
         <output class="alert max-w-md">

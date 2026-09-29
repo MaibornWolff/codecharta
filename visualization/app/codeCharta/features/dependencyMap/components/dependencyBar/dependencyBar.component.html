@@ -1,0 +1,15 @@
+<cc-choice-segment
+    label="Edges shown"
+    idPrefix="dependency-bar-edges"
+    [choices]="edgeFilterChoices"
+    [chosen]="edgeFilter()"
+    (choose)="showEdges($event)"
+></cc-choice-segment>
+
+<cc-choice-segment
+    label="Edge style"
+    idPrefix="dependency-bar-edge-style"
+    [choices]="edgeStyleChoices"
+    [chosen]="edgeStyle()"
+    (choose)="drawEdgesAs($event)"
+></cc-choice-segment>

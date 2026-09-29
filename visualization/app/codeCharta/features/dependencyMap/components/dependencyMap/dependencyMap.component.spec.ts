@@ -202,15 +202,15 @@ describe("DependencyMapComponent", () => {
 
     it("should draw only the edges of the picked filter", async () => {
         // Arrange
-        await setup()
+        const { fixture } = await setup()
 
         // Act
-        fireEvent.click(screen.getByTestId("dependency-edge-filter-feedback"))
+        TestBed.inject(DependencyMapViewStore).showEdges("feedback")
+        fixture.detectChanges()
         await screen.findByTestId("dependency-graph")
 
         // Assert
         expect(drawnEdgeIndices()).toHaveLength(1)
-        expect(screen.getByTestId("dependency-edge-filter-feedback").getAttribute("aria-pressed")).toBe("true")
     })
 
     it("should zoom back out to the whole graph from the toolbox", async () => {
@@ -222,15 +222,6 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(stubbedChart.dispatchAction).toHaveBeenCalledWith(expect.objectContaining({ type: "dataZoom" }))
-    })
-
-    it("should explain the four edge colours", async () => {
-        // Act
-        await setup()
-
-        // Assert
-        const legend = screen.getByRole("list", { name: "Edge colours" })
-        expect(legend.textContent).toContain("Points upward and closes a cycle")
     })
 
     it("should mark the view ready once the graph is drawn", async () => {
@@ -277,10 +268,11 @@ describe("DependencyMapComponent", () => {
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {
         // Arrange
-        await setup()
+        const { fixture } = await setup()
 
         // Act
-        fireEvent.change(screen.getByTestId("dependency-edge-style"), { target: { value: "straight" } })
+        TestBed.inject(DependencyMapViewStore).drawEdgesAs("straight")
+        fixture.detectChanges()
         await screen.findByTestId("dependency-graph")
 
         // Assert
