@@ -3,6 +3,14 @@ import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { DependencyBarComponent, DependencyEdgeLegendComponent, DependencyMapComponent } from "../../features/dependencyMap/facade"
 import { LegendDrawerComponent } from "../../features/legend/facade"
 import {
+    MAP_EXPLORER_SEARCH,
+    MAP_EXPLORER_SORT,
+    MAP_EXPLORER_VIEW,
+    MapExplorerRules,
+    MapExplorerTree,
+    ShowsHandedOverMapNodeDirective
+} from "../../features/mapExplorer/facade"
+import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuCapabilities,
     NodeContextMenuComponent,
@@ -24,14 +32,9 @@ import {
     provideViewScopedExplorerState,
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
-import { MapExplorerRules } from "../mapExplorer/mapExplorerRules"
 import { DependencyExplorerCounts } from "./explorer/dependencyExplorerCounts"
 import { DependencyExplorerRow } from "./explorer/dependencyExplorerRow"
-import { DEPENDENCY_EXPLORER_SEARCH } from "./explorer/dependencyExplorerSearch"
 import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelection"
-import { DEPENDENCY_EXPLORER_SORT } from "./explorer/dependencyExplorerSort"
-import { DependencyExplorerTree } from "./explorer/dependencyExplorerTree"
-import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
 
 @Component({
     selector: "cc-dependency-view",
@@ -54,14 +57,15 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         { provide: EXPLORER_SELECTION, useExisting: DependencyExplorerSelection },
         NodeContextMenuForExplorer,
         { provide: EXPLORER_CONTEXT_MENU, useExisting: NodeContextMenuForExplorer },
-        DependencyExplorerTree,
-        { provide: EXPLORER_TREE, useExisting: DependencyExplorerTree },
+        MapExplorerTree,
+        { provide: EXPLORER_TREE, useExisting: MapExplorerTree },
         DependencyExplorerCounts,
         { provide: EXPLORER_COUNTS, useExisting: DependencyExplorerCounts },
         MapExplorerRules,
         { provide: EXPLORER_RULES, useExisting: MapExplorerRules },
-        provideExplorerSort(DEPENDENCY_EXPLORER_SORT),
-        provideExplorerSearch(DEPENDENCY_EXPLORER_SEARCH),
+        provideExplorerSort(MAP_EXPLORER_SORT),
+        provideExplorerSearch(MAP_EXPLORER_SEARCH),
+        { provide: MAP_EXPLORER_VIEW, useValue: "dependencies" },
         {
             provide: EXPLORER_CAPABILITIES,
             useValue: { showRules: true, showSearch: true, showCounts: true, canFlatten: false, modes: [FILES_EXPLORER_MODE] }
@@ -73,7 +77,7 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         provideViewScopedExplorerState("dependencies"),
         provideViewScopedCssVariables()
     ],
-    hostDirectives: [ShowsHandedOverNodeDirective],
+    hostDirectives: [ShowsHandedOverMapNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DependencyViewComponent {}

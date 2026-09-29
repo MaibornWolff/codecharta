@@ -10,8 +10,11 @@ const PATHS_WITH_LEVELS = new Set(["/root/a.ts", "/root/b.ts"])
 
 describe("countDependencyExplorer", () => {
     it("should count the files the graph shows and the excluded ones, and nothing as flattened", () => {
+        // Arrange
+        const nothingSearched: CodeMapNode[] = []
+
         // Act
-        const counts = countDependencyExplorer([], LEAVES, PATHS_WITH_LEVELS)
+        const counts = countDependencyExplorer(nothingSearched, LEAVES, PATHS_WITH_LEVELS)
 
         // Assert
         expect(counts).toEqual({ shown: 1, flattened: 0, excluded: 1, noArea: 0 })

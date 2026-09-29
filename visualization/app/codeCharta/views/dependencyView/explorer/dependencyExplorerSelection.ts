@@ -6,8 +6,6 @@ import { CodeMapNode } from "../../../model/codeCharta.model"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
 
-/** Selecting and hovering a row selects and hovers the node in every view, so the graph marks the box
- * standing for it; selecting also opens the folders around it in the graph. */
 @Injectable()
 export class DependencyExplorerSelection implements ExplorerSelection {
     private readonly nodeInteraction = inject(NodeInteraction)
