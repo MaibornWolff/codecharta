@@ -40,5 +40,9 @@ edges are never hidden while their boxes show, and the whole graph stays reachab
 - The overlap analysis runs only once something was moved; the laid-out graph never overlaps
 - The axes reach the graph plus its own size on every side and do not change while dragging, so the view does
   not shift under the pointer; a new graph is fitted once on arrival
-- Not checked in a browser this session: no scratch directory for a production build
+- Checked in a production build on the analysis cc.json: a folder dragged into another shows it through; a
+  folder dragged far up grows the root out of view and Show the whole graph brings it all back
+- The browser check found the pan running along with every drag: ECharts calls its own chart events last, so
+  marking the press came too late. The pan reads the mark on every move too, and the host hears each move
+  first, so the drag now marks its moves
 

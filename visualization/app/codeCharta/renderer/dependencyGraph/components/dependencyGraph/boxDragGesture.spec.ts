@@ -28,16 +28,16 @@ describe("BoxDragGesture", () => {
 
     it("should keep the graph from panning and drag the pressed box by the pointer, in layout units, once per frame", () => {
         // Arrange
-        const press = pointer(10, 10)
+        const firstMove = pointer(20, 10)
 
         // Act
-        gesture.press("/root/a.ts", press)
-        gesture.move(pointer(20, 10))
+        gesture.press("/root/a.ts", pointer(10, 10))
+        gesture.move(firstMove)
         gesture.move(pointer(30, 14))
         jest.runOnlyPendingTimers()
 
         // Assert
-        expect(press.__ecRoamConsumed).toBe(true)
+        expect(firstMove.__ecRoamConsumed).toBe(true)
         expect(handlers.canDragBox).toHaveBeenCalledWith("/root/a.ts", [5, 5])
         expect(handlers.onBoxDragged).toHaveBeenCalledTimes(1)
         expect(handlers.onBoxDragged).toHaveBeenCalledWith("/root/a.ts", 10, 2)
@@ -46,15 +46,15 @@ describe("BoxDragGesture", () => {
     it("should leave a press it may not drag to the graph's pan", () => {
         // Arrange
         handlers.canDragBox = jest.fn(() => false)
-        const press = pointer(10, 10)
+        const move = pointer(40, 40)
 
         // Act
-        gesture.press("/root", press)
-        gesture.move(pointer(40, 40))
+        gesture.press("/root", pointer(10, 10))
+        gesture.move(move)
         gesture.release()
 
         // Assert
-        expect(press.__ecRoamConsumed).toBeUndefined()
+        expect(move.__ecRoamConsumed).toBeUndefined()
         expect(handlers.onBoxDragged).not.toHaveBeenCalled()
     })
 
