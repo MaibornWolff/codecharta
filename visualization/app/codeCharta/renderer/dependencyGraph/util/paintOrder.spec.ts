@@ -1,6 +1,6 @@
 import { aBand, aBox } from "./dependencyGraphTestData"
 import { DependencyGraphLayout } from "./levelizedLayout"
-import { PaintedItem, paintOrder, topmostBoxAt } from "./paintOrder"
+import { aroundEdges, boxAtPoint, PaintedItem, paintOrder, TitleItem, topmostBoxAt } from "./paintOrder"
 
 const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, width: 1000, height: 600 })
 const first = aBox("/root/first", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 40, width: 300, height: 200 })
@@ -14,8 +14,17 @@ const layout: DependencyGraphLayout = {
     height: 600
 }
 
-function namesOf(items: PaintedItem[]): string[] {
-    return items.map(item => (item.kind === "box" ? item.box.path : `band ${item.band.folderPath} ${item.band.level}`))
+function namesOf(items: (PaintedItem | TitleItem)[]): string[] {
+    return items.map(item => {
+        switch (item.kind) {
+            case "box":
+                return item.box.path
+            case "title":
+                return `title ${item.box.path}`
+            default:
+                return `band ${item.band.folderPath} ${item.band.level}`
+        }
+    })
 }
 
 describe("paintOrder", () => {
@@ -63,6 +72,36 @@ describe("paintOrder", () => {
 
         // Assert
         expect(items).toEqual([])
+    })
+})
+
+describe("aroundEdges", () => {
+    it("should lay the open folders and level bands under the edges, and the closed boxes and folder names over them", () => {
+        // Act
+        const { underEdges, overEdges } = aroundEdges(paintOrder(layout, []))
+
+        // Assert
+        expect(namesOf(underEdges)).toEqual(["/root", "band /root 2", "/root/first", "band /root/first 0", "/root/second"])
+        expect(namesOf(overEdges)).toEqual([
+            "title /root",
+            "title /root/first",
+            "/root/first/a.ts",
+            "title /root/second",
+            "/root/second/b.ts"
+        ])
+    })
+})
+
+describe("boxAtPoint", () => {
+    it("should find a closed box over a folder dragged across it, as the closed box is painted over every open folder", () => {
+        // Arrange
+        const draggedOver = { ...layout, boxes: layout.boxes.map(box => (box === second ? { ...second, x: 20, y: 40 } : box)) }
+
+        // Act
+        const found = boxAtPoint(draggedOver, ["/root/second"], [50, 90])
+
+        // Assert
+        expect(found).toBe("/root/first/a.ts")
     })
 })
 

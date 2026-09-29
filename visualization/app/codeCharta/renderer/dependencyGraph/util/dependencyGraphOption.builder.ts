@@ -1,5 +1,5 @@
 import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
-import { BoxLook, drawBox, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
@@ -8,7 +8,7 @@ import { GraphEdge, isShownByFilter } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 import { findOverlaps, NO_OVERLAPS, Overlaps } from "./overlaps"
-import { EdgeItem, GraphItem, paintOrder } from "./paintOrder"
+import { aroundEdges, EdgeItem, GraphItem, paintOrder } from "./paintOrder"
 
 export interface Viewport {
     width: number
@@ -38,7 +38,8 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     const overlaps = scene.raisedPaths.length > 0 ? findOverlaps(painted) : NO_OVERLAPS
     const isFound = searchMatcher(scene.searchedPaths)
     const lookOfBox = (box: LayoutBox) => lookOf(box, scene, overlaps, isFound(box.path))
-    const items: GraphItem[] = [...painted, ...edgeItems(scene, shownEdges, byPath, isFound)]
+    const { underEdges, overEdges } = aroundEdges(painted)
+    const items: GraphItem[] = [...underEdges, ...edgeItems(scene, shownEdges, byPath, isFound), ...overEdges]
     return {
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
@@ -105,6 +106,8 @@ function drawItem(item: GraphItem, lookOfBox: (box: LayoutBox) => BoxLook, overl
             return drawBox(item.box, lookOfBox(item.box), toPixels)
         case "band":
             return drawLevelBand(item.band, toPixels, overlaps.bandCutouts.get(item.band))
+        case "title":
+            return drawFolderTitle(item.box, lookOfBox(item.box), toPixels)
         default:
             return drawEdge(item.edge, item.route, item.isDimmed, toPixels)
     }
@@ -116,6 +119,8 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
             return { name: item.box.path, value: extentValue(item.box) }
         case "band":
             return { value: extentValue(item.band) }
+        case "title":
+            return { value: extentValue(item.box) }
         default:
             return { isEdge: true, value: extentValue(spanOf(byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath))) }
     }

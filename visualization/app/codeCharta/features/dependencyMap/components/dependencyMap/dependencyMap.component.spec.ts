@@ -125,7 +125,7 @@ describe("DependencyMapComponent", () => {
         await setup()
 
         // Assert
-        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts", "/root/model", "/root/model/node.ts"])
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model", "/root/ui/view.ts", "/root/model/node.ts"])
     })
 
     it("should fade the boxes the explorer's search missed", async () => {
@@ -139,7 +139,7 @@ describe("DependencyMapComponent", () => {
                 .opacity
 
         // Assert
-        expect(drawnBoxPaths().map(opacityOf)).toEqual([1, 1, 1, 0.3, 0.3])
+        expect(drawnBoxPaths().map(opacityOf)).toEqual([1, 1, 0.3, 1, 0.3])
     })
 
     it("should close an open folder on a double click and draw its edges on the folder", async () => {
@@ -323,7 +323,7 @@ describe("DependencyMapComponent", () => {
         await screen.findByTestId("dependency-reset-layout")
 
         // Assert
-        expect(drawnBoxPaths()).toEqual(["/root", "/root/model", "/root/model/node.ts", "/root/ui", "/root/ui/view.ts"])
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/model", "/root/ui", "/root/model/node.ts", "/root/ui/view.ts"])
     })
 
     it("should draw a folder see-through while it is dragged and solid again once dropped", async () => {

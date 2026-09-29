@@ -1,4 +1,4 @@
-import { BoxEmphasis, drawBox, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxEmphasis, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
@@ -32,7 +32,7 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "a.ts", x: 90, y: 40, align: "center", overflow: "truncate" })
         })
 
-        it("should name an open folder in its header and draw nothing else on it", () => {
+        it("should leave an open folder's name to its title, which is painted over the edges", () => {
             // Arrange
             const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
 
@@ -40,8 +40,7 @@ describe("dependencyGraphBoxes", () => {
             const children = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
-            expect(children).toHaveLength(2)
-            expect(children[1].style).toMatchObject({ text: "app", align: "left", y: 14 })
+            expect(children.map(child => child.type)).toEqual(["rect"])
         })
 
         it("should centre a closed folder's name across its whole box", () => {
@@ -120,6 +119,42 @@ describe("dependencyGraphBoxes", () => {
 
             // Assert
             expect([rect.style.opacity, label.style.opacity]).toEqual([1, 1])
+        })
+    })
+
+    describe("drawFolderTitle", () => {
+        it("should name an open folder in its header", () => {
+            // Arrange
+            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+
+            // Act
+            const children = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
+
+            // Assert
+            expect(children).toHaveLength(1)
+            expect(children[0].style).toMatchObject({ text: "app", align: "left", y: 14, opacity: 1 })
+        })
+
+        it("should fade the name of a folder the search missed", () => {
+            // Arrange
+            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+
+            // Act
+            const [title] = childrenOf(drawFolderTitle(box, look("none", false, true), identityPixels))
+
+            // Assert
+            expect(title.style.opacity).toBe(0.3)
+        })
+
+        it("should draw no name for a folder too narrow on screen", () => {
+            // Arrange
+            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 40, height: 200 })
+
+            // Act
+            const children = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
+
+            // Assert
+            expect(children).toEqual([])
         })
     })
 
