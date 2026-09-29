@@ -1,11 +1,13 @@
 import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
-import { DIMMED_OPACITY, edgeColor, edgeDash, edgeWidthPx } from "./dependencyGraphStyle"
+import { DIMMED_OPACITY, edgeColor, edgeDash } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
 import { EdgeRoute, Side } from "./edgeRouting"
 
-const ARROW_LENGTH_PX = 8
-const ARROW_HALF_WIDTH_PX = 4
+const MIN_ARROW_LENGTH_PX = 8
+const MIN_ARROW_HALF_WIDTH_PX = 4
+const ARROW_LENGTH_PER_LINE_WIDTH = 3
+const ARROW_HALF_WIDTH_PER_LINE_WIDTH = 1.5
 const MIN_CURVE_PULL_PX = 24
 const MIN_ASIDE_BULGE_PX = 40
 const ASIDE_BULGE_PER_HEIGHT = 0.35
@@ -21,9 +23,14 @@ interface Curve {
     end: Point
 }
 
+export interface EdgeLook {
+    isDimmed: boolean
+    widthPx: number
+}
+
 const OUTWARD: Record<Side, Point> = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] }
 
-export function drawEdge(edge: GraphEdge, route: EdgeRoute, isDimmed: boolean, toPixels: ToPixels) {
+export function drawEdge(edge: GraphEdge, route: EdgeRoute, { isDimmed, widthPx }: EdgeLook, toPixels: ToPixels) {
     const curve = bend(route, asPoint(toPixels(route.start)), asPoint(toPixels(route.end)))
     const color = edgeColor(edge.type)
     const opacity = isDimmed ? DIMMED_OPACITY : 1
@@ -41,9 +48,9 @@ export function drawEdge(edge: GraphEdge, route: EdgeRoute, isDimmed: boolean, t
                 x2: curve.end[0],
                 y2: curve.end[1]
             },
-            style: { stroke: color, lineWidth: edgeWidthPx(edge.weight), lineDash: edgeDash(edge.type), fill: null, opacity }
+            style: { stroke: color, lineWidth: widthPx, lineDash: edgeDash(edge.type), fill: null, opacity }
         },
-        { type: "polygon", ...UNTRANSFORMED, shape: { points: arrowHead(curve) }, style: { fill: color, opacity } }
+        { type: "polygon", ...UNTRANSFORMED, shape: { points: arrowHead(curve, widthPx) }, style: { fill: color, opacity } }
     ])
 }
 
@@ -87,11 +94,14 @@ function asPoint(pixels: number[]): Point {
     return [pixels[0], pixels[1]]
 }
 
-function arrowHead({ endPull, end }: Curve): Point[] {
+/** Grows with a wide line, so the line never swallows it. */
+function arrowHead({ endPull, end }: Curve, lineWidthPx: number): Point[] {
+    const length = Math.max(MIN_ARROW_LENGTH_PX, lineWidthPx * ARROW_LENGTH_PER_LINE_WIDTH)
+    const halfWidth = Math.max(MIN_ARROW_HALF_WIDTH_PX, lineWidthPx * ARROW_HALF_WIDTH_PER_LINE_WIDTH)
     const angle = Math.atan2(end[1] - endPull[1], end[0] - endPull[0])
-    const baseX = end[0] - Math.cos(angle) * ARROW_LENGTH_PX
-    const baseY = end[1] - Math.sin(angle) * ARROW_LENGTH_PX
-    const offsetX = Math.sin(angle) * ARROW_HALF_WIDTH_PX
-    const offsetY = -Math.cos(angle) * ARROW_HALF_WIDTH_PX
+    const baseX = end[0] - Math.cos(angle) * length
+    const baseY = end[1] - Math.sin(angle) * length
+    const offsetX = Math.sin(angle) * halfWidth
+    const offsetY = -Math.cos(angle) * halfWidth
     return [end, [baseX + offsetX, baseY + offsetY], [baseX - offsetX, baseY - offsetY]]
 }

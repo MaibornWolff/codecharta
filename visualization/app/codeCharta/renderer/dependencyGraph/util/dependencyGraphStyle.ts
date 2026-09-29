@@ -47,10 +47,6 @@ export const DIMMED_OPACITY = 0.12
 export const MISSED_BY_SEARCH_OPACITY = 0.3
 export const FOUND_OPACITY = 1
 
-const BASE_EDGE_WIDTH_PX = 1.2
-const MAX_EXTRA_EDGE_WIDTH_PX = 2.5
-const EXTRA_WIDTH_PER_DOUBLING_PX = 0.5
-
 /** How much of a see-through folder's fill remains, so what lies behind it stays readable. */
 const SEE_THROUGH_OPACITY = 0.65
 
@@ -69,10 +65,4 @@ export function edgeColor(type: DependencyEdgeType): string {
 
 export function edgeDash(type: DependencyEdgeType): number[] | null {
     return EDGE_LEGEND.find(entry => entry.type === type).isDashed ? DASHED : null
-}
-
-/** Grows with the number of dependencies an edge stands for, but slowly, so one heavy edge does not
- * drown the rest. */
-export function edgeWidthPx(weight: number): number {
-    return BASE_EDGE_WIDTH_PX + Math.min(MAX_EXTRA_EDGE_WIDTH_PX, Math.log2(weight) * EXTRA_WIDTH_PER_DOUBLING_PX)
 }

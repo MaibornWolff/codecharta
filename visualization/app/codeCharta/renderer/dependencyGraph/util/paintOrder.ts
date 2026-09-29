@@ -1,3 +1,4 @@
+import { EdgeLook } from "./dependencyGraphEdges"
 import { GraphEdge } from "./edgeProjection"
 import { EdgeRoute } from "./edgeRouting"
 import { childIndicesByFolder } from "./layoutHierarchy"
@@ -9,7 +10,7 @@ export interface EdgeItem {
     kind: "edge"
     edge: GraphEdge
     route: EdgeRoute
-    isDimmed: boolean
+    look: EdgeLook
 }
 
 /** An open folder's name, painted apart from the folder so that it lies over the edges. */

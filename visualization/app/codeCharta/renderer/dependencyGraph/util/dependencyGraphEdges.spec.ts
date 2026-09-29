@@ -1,4 +1,4 @@
-import { drawEdge } from "./dependencyGraphEdges"
+import { drawEdge, EdgeLook } from "./dependencyGraphEdges"
 import { DIMMED_OPACITY } from "./dependencyGraphStyle"
 import { anEdge, identityPixels } from "./dependencyGraphTestData"
 import { EdgeRoute } from "./edgeRouting"
@@ -10,8 +10,9 @@ interface DrawnEdge {
     ]
 }
 
-function draw(route: EdgeRoute, overrides: Parameters<typeof anEdge>[2] = {}, isDimmed = false): DrawnEdge {
-    return drawEdge(anEdge("/root/a", "/root/b", overrides), route, isDimmed, identityPixels) as unknown as DrawnEdge
+function draw(route: EdgeRoute, overrides: Parameters<typeof anEdge>[2] = {}, look: Partial<EdgeLook> = {}): DrawnEdge {
+    const edgeLook = { isDimmed: false, widthPx: 1.2, ...look }
+    return drawEdge(anEdge("/root/a", "/root/b", overrides), route, edgeLook, identityPixels) as unknown as DrawnEdge
 }
 
 const downward: EdgeRoute = { start: [60, 40], startSide: "bottom", end: [90, 140], endSide: "top", bend: "sCurve" }
@@ -83,9 +84,28 @@ describe("drawEdge", () => {
 
     it("should fade a dimmed edge and its arrow", () => {
         // Act
-        const { children } = draw(downward, {}, true)
+        const { children } = draw(downward, {}, { isDimmed: true })
 
         // Assert
         expect(children.map(child => child.style.opacity)).toEqual([DIMMED_OPACITY, DIMMED_OPACITY])
+    })
+
+    it("should draw the edge as wide as its look says", () => {
+        // Act
+        const [curve] = draw(downward, {}, { widthPx: 3 }).children
+
+        // Assert
+        expect(curve.style.lineWidth).toBe(3)
+    })
+
+    it("should grow the arrow with a wide edge, so the line never swallows it", () => {
+        // Act
+        const [, thinArrow] = draw(downward, {}, { widthPx: 1.2 }).children
+        const [, wideArrow] = draw(downward, {}, { widthPx: 6 }).children
+
+        // Assert
+        const lengthOf = (points: number[][]) => points[0][1] - points[1][1]
+        expect(lengthOf(thinArrow.shape.points)).toBeCloseTo(8)
+        expect(lengthOf(wideArrow.shape.points)).toBeCloseTo(18)
     })
 })

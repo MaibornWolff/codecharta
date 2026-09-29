@@ -13,3 +13,23 @@
     [chosen]="edgeStyle()"
     (choose)="drawEdgesAs($event)"
 ></cc-choice-segment>
+
+<cc-choice-segment
+    label="Line thickness"
+    idPrefix="dependency-bar-edge-thickness"
+    [choices]="edgeThicknessChoices"
+    [chosen]="edgeWidth().thickness"
+    (choose)="drawEdgesThick($event)"
+>
+    <div class="border-base-300 mt-2 flex flex-col gap-1 border-t px-2 pt-2">
+        <span class="text-xs opacity-70">Width factor</span>
+        <cc-slider-number-input
+            ariaLabel="Line width factor"
+            [min]="widthFactorRange.min"
+            [max]="widthFactorRange.max"
+            [step]="widthFactorRange.step"
+            [value]="edgeWidth().factor"
+            (valueChange)="scaleEdgeWidth($event)"
+        ></cc-slider-number-input>
+    </div>
+</cc-choice-segment>

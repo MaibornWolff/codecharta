@@ -105,6 +105,17 @@ describe("DependencyMapViewStore", () => {
         expect(store.edgeStyle()).toBe("straight")
     })
 
+    it("should draw edges by count at their own width until the reader picks another thickness and factor", () => {
+        // Act
+        const before = store.edgeWidth()
+        store.drawEdgesThick("strong")
+        store.scaleEdgeWidth(2)
+
+        // Assert
+        expect(before).toEqual({ thickness: "byCount", factor: 1 })
+        expect(store.edgeWidth()).toEqual({ thickness: "strong", factor: 2 })
+    })
+
     it("should keep where the reader put a box until the layout is reset", () => {
         // Act
         store.placeBox("/root/app", [20, 10])

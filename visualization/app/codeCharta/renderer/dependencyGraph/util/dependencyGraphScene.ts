@@ -1,5 +1,6 @@
 import { EdgeFilter, GraphEdge } from "./edgeProjection"
 import { EdgeStyle } from "./edgeRouting"
+import { EdgeWidth } from "./edgeWidth"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 
 /** Everything one frame of the dependency graph shows. The paths are box paths: a selection or hover
@@ -9,6 +10,7 @@ export interface DependencyGraphScene {
     edges: GraphEdge[]
     edgeFilter: EdgeFilter
     edgeStyle: EdgeStyle
+    edgeWidth: EdgeWidth
     hoveredPath: string | null
     selectedPath: string | null
     /** Dragged boxes, the most recently dragged last: they paint above their siblings. */
