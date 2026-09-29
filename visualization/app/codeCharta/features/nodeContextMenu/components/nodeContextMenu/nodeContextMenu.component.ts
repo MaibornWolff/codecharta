@@ -33,8 +33,7 @@ export class NodeContextMenuComponent {
     private readonly sharedViewReadWindow = inject(SharedViewReadWindow)
     private readonly readStore = inject(NodeContextMenuReadStore)
     private readonly writeStore = inject(NodeContextMenuWriteStore)
-    // A view without the explorer sidebar has nothing to reveal a node in.
-    private readonly explorerRevealService = inject(ExplorerRevealService, { optional: true })
+    private readonly explorerRevealService = inject(ExplorerRevealService)
     private readonly clipboard = inject(CopyToClipboardService)
 
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
@@ -70,7 +69,8 @@ export class NodeContextMenuComponent {
         const node = this.menuNode()
         return node !== null && this.isFlattened()(node)
     })
-    private readonly hasDomainData = toSignal(this.readStore.hasDomainData$, { requireSync: true })
+    private readonly pathsWithDomainWords = toSignal(this.readStore.pathsWithDomainWords$, { requireSync: true })
+    private readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     private readonly pathsWithDependencyLevels = toSignal(this.readStore.pathsWithDependencyLevels$, { requireSync: true })
     readonly jumpTargets = computed(() => {
         const node = this.menuNode()
@@ -83,9 +83,7 @@ export class NodeContextMenuComponent {
     })
 
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
-    readonly isShowInExplorerVisible = computed(
-        () => this.explorerRevealService !== null && this.rightClickedNodeData()?.origin !== "explorer"
-    )
+    readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin !== "explorer")
     readonly isRadialLayout = injectIsRadialLayout()
     readonly isFocusOffered = computed(() => !this.isNodeFocused() && (this.isFolder() || !this.isRadialLayout()))
     readonly displayPath = computed(() => {
@@ -133,7 +131,7 @@ export class NodeContextMenuComponent {
     showInExplorer() {
         const node = this.menuNode()
         if (node) {
-            this.explorerRevealService?.revealNode(node.path)
+            this.explorerRevealService.revealNode(node.path)
         }
         this.close()
     }
@@ -203,9 +201,9 @@ export class NodeContextMenuComponent {
     private canShowIn(view: ViewId, nodePath: string): boolean {
         switch (view) {
             case "domain":
-                return this.hasDomainData()
+                return this.pathsWithDomainWords().has(nodePath)
             case "dependencies":
-                return this.pathsWithDependencyLevels().has(nodePath)
+                return !this.isDeltaState() && this.pathsWithDependencyLevels().has(nodePath)
             default:
                 return true
         }

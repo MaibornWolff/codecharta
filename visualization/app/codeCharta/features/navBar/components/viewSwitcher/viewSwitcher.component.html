@@ -5,58 +5,22 @@
     (focusout)="closeModeBarWhenFocusLeaves($event)"
 >
     <nav class="flex items-center gap-1" aria-label="View" data-testid="view-switcher">
-        <a
-            #metricsTab="routerLinkActive"
-            class="btn btn-ghost btn-sm relative"
-            [class.font-bold]="metricsTab.isActive"
-            [routerLink]="routeLinks.metrics"
-            routerLinkActive
-            ariaCurrentWhenActive="page"
-            [routerLinkActiveOptions]="{ exact: true }"
-            title="Show the 3D metrics map"
-            data-testid="view-switcher-metrics"
-            (mouseenter)="openModeBar('metrics')"
-            (focusin)="openModeBar('metrics')"
-        >
-            Metric
-            @if (metricsTab.isActive) {
-                <span class="cc-current-underline"></span>
-            }
-        </a>
-        @if (isDomainViewAvailable()) {
+        @for (tab of availableTabs(); track tab.view) {
             <a
-                #domainTab="routerLinkActive"
+                #tabLink="routerLinkActive"
                 class="btn btn-ghost btn-sm relative"
-                [class.font-bold]="domainTab.isActive"
-                [routerLink]="routeLinks.domain"
+                [class.font-bold]="tabLink.isActive"
+                [routerLink]="routeLinks[tab.view]"
                 routerLinkActive
                 ariaCurrentWhenActive="page"
-                title="Show the domain-language word cloud"
-                data-testid="view-switcher-domain"
-                (mouseenter)="openModeBar('domain')"
-                (focusin)="openModeBar('domain')"
+                [routerLinkActiveOptions]="{ exact: tab.matchesExactly }"
+                [title]="tab.title"
+                [attr.data-testid]="'view-switcher-' + tab.view"
+                (mouseenter)="openModeBar(tab.view)"
+                (focusin)="openModeBar(tab.view)"
             >
-                Domain
-                @if (domainTab.isActive) {
-                    <span class="cc-current-underline"></span>
-                }
-            </a>
-        }
-        @if (isDependencyViewAvailable()) {
-            <a
-                #dependenciesTab="routerLinkActive"
-                class="btn btn-ghost btn-sm relative"
-                [class.font-bold]="dependenciesTab.isActive"
-                [routerLink]="routeLinks.dependencies"
-                routerLinkActive
-                ariaCurrentWhenActive="page"
-                title="Show the dependency graph, arranged by level"
-                data-testid="view-switcher-dependencies"
-                (mouseenter)="openModeBar('dependencies')"
-                (focusin)="openModeBar('dependencies')"
-            >
-                Dependencies
-                @if (dependenciesTab.isActive) {
+                {{ tab.label }}
+                @if (tabLink.isActive) {
                     <span class="cc-current-underline"></span>
                 }
             </a>

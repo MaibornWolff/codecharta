@@ -5,17 +5,15 @@ import { Store } from "@ngrx/store"
 import { combineLatest, debounceTime, filter, map, shareReplay, switchMap, take, tap } from "rxjs"
 import { isLoadedFileSetWithoutDomainLensSelector } from "../../../../lenses/domain/domainLens.facade"
 import { CcState } from "../../../../model/codeCharta.model"
-import { routeLinks, viewIdForLink } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { ToastService } from "../../../shared/facade"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
+import { AWAIT_SETTLED_FILE_STORE_WRITES_MS, injectMetricsViewRedirect } from "../redirectToMetricsView"
 
 type UnreachableDomainViewReason = "missing-domain-data" | "delta" | null
 
 const MISSING_DOMAIN_DATA_TOAST = "This file has no domain-language data — switched to the map view."
 const LEFT_COMPARE_MODE_TOAST = "Left compare mode — the domain view shows a single word cloud."
-
-const AWAIT_SETTLED_FILE_STORE_WRITES_MS = 0
 
 @Injectable()
 export class RedirectAwayFromDomainViewEffect {
@@ -23,6 +21,7 @@ export class RedirectAwayFromDomainViewEffect {
     private readonly router = inject(Router)
     private readonly toastService = inject(ToastService)
     private readonly fileSelectionModeService = inject(FileSelectionModeService)
+    private readonly metricsViewRedirect = injectMetricsViewRedirect("domain", MISSING_DOMAIN_DATA_TOAST)
 
     /** The route is read where the state changes rather than after the settling delay: a reason that
      * only becomes true as the user navigates onto the domain view belongs to the arrival, not to a
@@ -33,7 +32,7 @@ export class RedirectAwayFromDomainViewEffect {
     ]).pipe(
         map(([isLoadedFileSetWithoutDomainLens, isDeltaState]) => ({
             reason: this.toUnreachableReason(isLoadedFileSetWithoutDomainLens, isDeltaState),
-            wasOnDomainRoute: this.isOnDomainRoute()
+            wasOnDomainRoute: this.metricsViewRedirect.isOnView()
         })),
         debounceTime(AWAIT_SETTLED_FILE_STORE_WRITES_MS),
         // Both handlers read this stream, and one of them reads it on demand — replaying the last
@@ -46,7 +45,7 @@ export class RedirectAwayFromDomainViewEffect {
     redirectAwayFromUnreachableDomainView$ = createEffect(
         () =>
             this.unreachableReason$.pipe(
-                filter(({ reason, wasOnDomainRoute }) => reason !== null && wasOnDomainRoute && this.isOnDomainRoute()),
+                filter(({ reason, wasOnDomainRoute }) => reason !== null && wasOnDomainRoute && this.metricsViewRedirect.isOnView()),
                 tap(({ reason }) => this.redirectToMetricsView(reason))
             ),
         { dispatch: false }
@@ -59,7 +58,7 @@ export class RedirectAwayFromDomainViewEffect {
             this.navigated$.pipe(
                 // A navigation that beats the first settled reason waits for it rather than being dropped.
                 switchMap(() => this.unreachableReason$.pipe(take(1))),
-                filter(({ reason }) => reason !== null && this.isOnDomainRoute()),
+                filter(({ reason }) => reason !== null && this.metricsViewRedirect.isOnView()),
                 tap(({ reason }) => this.makeTheDomainViewReachable(reason))
             ),
         { dispatch: false }
@@ -89,13 +88,10 @@ export class RedirectAwayFromDomainViewEffect {
     }
 
     private redirectToMetricsView(reason: UnreachableDomainViewReason): void {
-        this.router.navigateByUrl(routeLinks.metrics, { replaceUrl: true })
         if (reason === "missing-domain-data") {
-            this.toastService.show(MISSING_DOMAIN_DATA_TOAST)
+            this.metricsViewRedirect.redirectForMissingData()
+            return
         }
-    }
-
-    private isOnDomainRoute(): boolean {
-        return viewIdForLink(this.router.url) === "domain"
+        this.metricsViewRedirect.redirect()
     }
 }

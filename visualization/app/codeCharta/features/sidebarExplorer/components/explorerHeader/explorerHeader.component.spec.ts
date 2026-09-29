@@ -71,10 +71,22 @@ describe("ExplorerHeaderComponent", () => {
         expect(container.querySelector("[title='47 visible · 3 with no area in current metric']")).not.toBe(null)
     })
 
-    it("should leave out the flattened chip and the missing area where the view cannot flatten", async () => {
+    it("should leave the missing area out of the shown chip's tooltip when every file has an area", async () => {
         // Arrange
         TestBed.resetTestingModule()
-        configureWithShowCounts(true, { canFlatten: false, noArea: 0 })
+        configureWithShowCounts(true, { noArea: 0 })
+
+        // Act
+        const { container } = await render(ExplorerHeaderComponent)
+
+        // Assert
+        expect(container.querySelector("[title='47 visible']")).not.toBe(null)
+    })
+
+    it("should leave out the flattened chip where the view cannot flatten", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithShowCounts(true, { canFlatten: false })
 
         // Act
         const { container } = await render(ExplorerHeaderComponent)
@@ -82,7 +94,6 @@ describe("ExplorerHeaderComponent", () => {
         // Assert
         expect(screen.queryByText("Flattened")).toBe(null)
         expect(container.querySelectorAll("cc-explorer-count-chip").length).toBe(2)
-        expect(container.querySelector("[title='47 visible']")).not.toBe(null)
     })
 
     it("should hide the count chips when the view does not want them", async () => {

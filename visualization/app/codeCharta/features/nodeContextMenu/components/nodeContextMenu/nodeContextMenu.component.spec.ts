@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
-import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
+import { pathsWithDomainWordsSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { flattenPredicateSelector } from "../../../../renderer/renderModel/renderModel.facade"
@@ -12,6 +12,7 @@ import { rightClickedCodeMapNodeSelector } from "../../../../renderer/renderMode
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { routeLinks, ViewId } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
+import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import {
     currentFocusedNodePathSelector,
@@ -64,12 +65,12 @@ describe("nodeContextMenu component", () => {
     type RenderMenuOptions = {
         node?: CodeMapNode | null
         origin?: "codeMap" | "explorer" | "radialMap" | "dependencyMap"
-        hasExplorer?: boolean
         activeView?: ViewId
         focusedNodePath?: string
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
-        hasDomainData?: boolean
+        pathsWithDomainWords?: ReadonlySet<string>
+        isDeltaState?: boolean
         pathsWithDependencyLevels?: ReadonlySet<string>
         isFlattened?: (node: CodeMapNode) => boolean
         isRadialLayout?: boolean
@@ -82,12 +83,12 @@ describe("nodeContextMenu component", () => {
         focusedNodePath,
         previousFocusedNodePath,
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
-        hasDomainData = true,
+        pathsWithDomainWords = new Set([folderNode.path, fileNode.path]),
+        isDeltaState = false,
         pathsWithDependencyLevels = new Set<string>(),
         isFlattened = () => false,
         isRadialLayout = false,
         keptHighlightPaths = [],
-        hasExplorer = true,
         activeView = "metrics"
     }: RenderMenuOptions = {}) {
         const rightClickedNodeData = node
@@ -107,13 +108,14 @@ describe("nodeContextMenu component", () => {
                         { selector: focusedNodePathSelector, value: focusedNodePaths },
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
-                        { selector: hasDomainDataSelector, value: hasDomainData },
+                        { selector: pathsWithDomainWordsSelector, value: pathsWithDomainWords },
+                        { selector: isDeltaStateSelector, value: isDeltaState },
                         { selector: pathsWithDependencyLevelsSelector, value: pathsWithDependencyLevels },
                         { selector: isRadialLayoutSelector, value: isRadialLayout },
                         { selector: keptHighlightPathsSelector, value: keptHighlightPaths }
                     ]
                 }),
-                ...(hasExplorer ? [{ provide: ExplorerRevealService, useValue: explorerRevealServiceMock }] : []),
+                { provide: ExplorerRevealService, useValue: explorerRevealServiceMock },
                 { provide: ActiveViewStore, useValue: { activeView$: of(activeView) } },
                 { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: capabilities }
             ]
@@ -193,14 +195,6 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Show in Explorer")).not.toBe(null)
     })
 
-    it("should hide the show-in-explorer entry in a view without the explorer sidebar", async () => {
-        // Arrange & Act
-        await renderMenu({ origin: "dependencyMap", hasExplorer: false })
-
-        // Assert
-        expect(screen.queryByText("Show in Explorer")).toBe(null)
-    })
-
     it("should hide the show-in-explorer entry when the right-click came from the explorer", async () => {
         // Arrange & Act
         await renderMenu({ origin: "explorer" })
@@ -215,7 +209,7 @@ describe("nodeContextMenu component", () => {
             node: folderNode,
             origin: "explorer",
             capabilities: { showMapActions: false, showExclude: false },
-            hasDomainData: false
+            pathsWithDomainWords: new Set()
         })
 
         // Assert
@@ -242,17 +236,28 @@ describe("nodeContextMenu component", () => {
         expect(navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics)
     })
 
-    it("should hide the jump to the domain view while no domain data is loaded", async () => {
+    it("should hide the jump to the domain view for a file without domain words", async () => {
         // Arrange & Act
-        await renderMenu({ hasDomainData: false })
+        await renderMenu({ node: fileNode, pathsWithDomainWords: new Set([folderNode.path]) })
 
         // Assert
         expect(screen.queryByText("Show in Domain")).toBe(null)
     })
 
-    it("should offer the jump to the domain view once domain data is loaded", async () => {
+    it("should hide the jump to the domain view for a folder without domain words", async () => {
         // Arrange & Act
-        await renderMenu()
+        await renderMenu({ node: folderNode, pathsWithDomainWords: new Set(["/root"]) })
+
+        // Assert
+        expect(screen.queryByText("Show in Domain")).toBe(null)
+    })
+
+    it.each([
+        ["file", fileNode],
+        ["folder", folderNode]
+    ])("should offer the jump to the domain view for a %s carrying domain words", async (_nodeKind, node) => {
+        // Arrange & Act
+        await renderMenu({ node, pathsWithDomainWords: new Set([node.path]) })
 
         // Assert
         expect(screen.getByText("Show in Domain")).not.toBe(null)
@@ -264,6 +269,15 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.queryByText("Show in Dependencies")).toBe(null)
+    })
+
+    it("should hide the jump to the dependency view in compare mode, which the dependency view cannot show", async () => {
+        // Arrange & Act
+        await renderMenu({ isDeltaState: true, pathsWithDependencyLevels: new Set(["/root/src/RatingBean.java"]) })
+
+        // Assert
+        expect(screen.queryByText("Show in Dependencies")).toBe(null)
+        expect(screen.getByText("Show in Domain")).not.toBe(null)
     })
 
     it("should offer the jump to the dependency view for a node in the dependency graph, next to the domain view", async () => {
@@ -456,7 +470,7 @@ describe("nodeContextMenu component", () => {
     })
 
     it("should offer to remove the highlight when the node is constantly highlighted", async () => {
-        // Act
+        // Arrange & Act
         await renderMenu({ keptHighlightPaths: [fileNode.path] })
 
         // Assert

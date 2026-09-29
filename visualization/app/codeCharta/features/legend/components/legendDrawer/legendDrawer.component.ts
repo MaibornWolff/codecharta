@@ -1,14 +1,31 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, OnDestroy, OnInit, signal } from "@angular/core"
+import { NgTemplateOutlet } from "@angular/common"
+import {
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    contentChild,
+    ElementRef,
+    inject,
+    input,
+    OnDestroy,
+    OnInit,
+    signal,
+    TemplateRef
+} from "@angular/core"
 import { InspectorVisibilityService } from "../../../../features/sidebarInspector/facade"
 import { LEGEND_BARS_OFFSET } from "../../models/legendPosition"
 import { LegendToggleButtonComponent } from "./legendToggleButton.component"
 
-/** The LEGEND tab at the right edge and the panel it opens; each view puts its own legend inside. */
+/**
+ * The LEGEND tab at the right edge and the panel it opens. Each view puts its own legend inside as an
+ * `<ng-template>`, so the legend is only created while the panel is open instead of following every
+ * state change behind a closed tab.
+ */
 @Component({
     selector: "cc-legend-drawer",
     templateUrl: "./legendDrawer.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [LegendToggleButtonComponent]
+    imports: [LegendToggleButtonComponent, NgTemplateOutlet]
 })
 export class LegendDrawerComponent implements OnInit, OnDestroy {
     private readonly elementReference = inject(ElementRef<HTMLElement>)
@@ -16,6 +33,8 @@ export class LegendDrawerComponent implements OnInit, OnDestroy {
 
     /** Whether the view shows the inspector, which a selection slides in at the right edge. */
     readonly besideInspector = input(false)
+
+    readonly legendContent = contentChild.required(TemplateRef)
 
     readonly isOpen = signal(false)
     readonly isMovedAsideByInspector = computed(() => this.besideInspector() && this.inspectorVisibilityService.isVisible())

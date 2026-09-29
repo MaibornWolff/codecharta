@@ -1,6 +1,7 @@
 import { InjectionToken } from "@angular/core"
+import { ViewId } from "../../routing/routePaths"
 
-export type ExplorerStorageScope = "metrics" | "domain" | "dependencies"
+export type ExplorerStorageScope = ViewId
 
 export const EXPLORER_STORAGE_SCOPE = new InjectionToken<ExplorerStorageScope>("EXPLORER_STORAGE_SCOPE")
 
