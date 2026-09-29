@@ -158,4 +158,40 @@ describe("buildDependencyGraphOption", () => {
         expect(typesIn(paintOrder)).toEqual(["Dependency", "In a cycle", "Points upward", "Points upward and closes a cycle"])
         expect(typesIn(hoveredPaintOrder)).toEqual(["Points upward and closes a cycle", "Dependency", "In a cycle", "Points upward"])
     })
+
+    it("should light up only the edges crossing a hovered folder's border", () => {
+        // Arrange
+        const folder = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+        const inside = aBox("/root/app/a.ts")
+        const alsoInside = aBox("/root/app/b.ts", { y: 100 })
+        const outside = aBox("/root/lib.ts", { y: 300 })
+        const edges = [anEdge(inside.path, alsoInside.path), anEdge(inside.path, outside.path)]
+        const scene = sceneWith({
+            layout: { boxes: [root, folder, inside, alsoInside, outside], bands: [], width: 400, height: 400 },
+            edges,
+            edgeFilter: "none",
+            hoveredPath: folder.path
+        })
+
+        // Act
+        const drawn = seriesOf(buildDependencyGraphOption(scene, { width: 800, height: 600 }), SERIES_IDS.edges)
+
+        // Assert
+        expect(drawn.data).toHaveLength(1)
+        expect(drawn.renderItem({ dataIndex: 0 }, { coord: identityPixels }).children[0].style.opacity).toBe(1)
+    })
+
+    it("should dim nothing while the hovered box has no edge crossing its border, as the root never has", () => {
+        // Arrange
+        const scene = sceneWith({ hoveredPath: root.path })
+
+        // Act
+        const drawn = seriesOf(buildDependencyGraphOption(scene, { width: 800, height: 600 }), SERIES_IDS.edges)
+
+        // Assert
+        const opacities = drawn.data.map(
+            (_, dataIndex) => drawn.renderItem({ dataIndex }, { coord: identityPixels }).children[0].style.opacity
+        )
+        expect(opacities).toEqual([1, 1])
+    })
 })
