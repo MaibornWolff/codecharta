@@ -6,6 +6,8 @@ export interface NodeContextMenuViewAction {
     icon: string
     hoverHint: string
     run: (nodePath: string) => void
+    /** Leaves the entry out for nodes it does not apply to; offered for every node when absent. */
+    isOfferedFor?: (nodePath: string) => boolean
 }
 
 export const NODE_CONTEXT_MENU_VIEW_ACTIONS = new InjectionToken<NodeContextMenuViewAction[]>("NODE_CONTEXT_MENU_VIEW_ACTIONS")

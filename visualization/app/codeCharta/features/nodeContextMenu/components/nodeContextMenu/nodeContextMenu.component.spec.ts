@@ -201,6 +201,22 @@ describe("nodeContextMenu component", () => {
         expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
     })
 
+    it("should offer a view's action only for the nodes it applies to", async () => {
+        // Arrange
+        const run = jest.fn()
+        const viewActions = [
+            { label: "Hide", icon: "fa-regular fa-eye-slash", hoverHint: "", run, isOfferedFor: () => false },
+            { label: "Show again", icon: "fa-regular fa-eye", hoverHint: "", run, isOfferedFor: (path: string) => path === fileNode.path }
+        ]
+
+        // Act
+        await renderMenu({ viewActions })
+
+        // Assert
+        expect(screen.queryByText("Hide")).toBeNull()
+        expect(screen.getByText("Show again")).not.toBeNull()
+    })
+
     it("should hide the show-in-explorer entry in a view without the explorer sidebar", async () => {
         // Arrange & Act
         await renderMenu({ origin: "dependencyMap", hasExplorer: false })

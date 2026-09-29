@@ -38,7 +38,7 @@ export class NodeContextMenuComponent {
     private readonly clipboard = inject(CopyToClipboardService)
 
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
-    readonly viewActions = inject(NODE_CONTEXT_MENU_VIEW_ACTIONS, { optional: true }) ?? []
+    private readonly viewActions = inject(NODE_CONTEXT_MENU_VIEW_ACTIONS, { optional: true }) ?? []
 
     readonly showMapActions = this.capabilities.showMapActions
 
@@ -78,6 +78,10 @@ export class NodeContextMenuComponent {
         return { view, ...JUMP_TARGETS[view] }
     })
 
+    readonly offeredViewActions = computed(() => {
+        const node = this.menuNode()
+        return node === null ? [] : this.viewActions.filter(action => action.isOfferedFor?.(node.path) ?? true)
+    })
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
     readonly isShowInExplorerVisible = computed(
         () => this.explorerRevealService !== null && this.rightClickedNodeData()?.origin !== "explorer"
