@@ -6,7 +6,7 @@ import { isPendingSave$ } from "../../../util/busy/isPendingSave"
 import { defaultDependencyLensSource } from "../../dependencyLensSource/dependencyLensSource.read.facade"
 import { defaultMapState } from "../../mapState/mapState.read.facade"
 import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSource.read.facade"
-import { defaultPreferences } from "../../preferences/preferences.read.facade"
+import { defaultDependencyGraphSettings, defaultPreferences } from "../../preferences/preferences.read.facade"
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 import { defaultState } from "../state.manager"
 import {
@@ -38,6 +38,7 @@ import {
     migrateCcStateRecordToV22,
     migrateCcStateRecordToV24,
     migrateCcStateRecordToV25,
+    migrateCcStateRecordToV26,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcFiles,
@@ -972,6 +973,42 @@ describe("migrateCcStateRecordToV25 (radial level count seed on the persisted pr
     it("should pass a nullish blob through unchanged", () => {
         // Arrange & Act & Assert
         expect(migrateCcStateRecordToV25(null)).toBeNull()
+    })
+})
+
+describe("migrateCcStateRecordToV26 (dependency bar settings seed on the persisted preferences)", () => {
+    it("should seed the default dependency bar settings on preferences persisted before them", () => {
+        // Arrange
+        const oldShapeState = { preferences: { centerMapZoom: 165 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV26(oldShapeState) as unknown as { preferences: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.preferences).toEqual({ centerMapZoom: 165, dependencyGraph: defaultDependencyGraphSettings })
+    })
+
+    it("should leave existing dependency bar settings untouched", () => {
+        // Arrange
+        const alreadyMigrated = { preferences: { dependencyGraph: { ...defaultDependencyGraphSettings, edgeStyle: "straight" } } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV26(alreadyMigrated)
+
+        // Assert
+        expect(migrated).toBe(alreadyMigrated)
+    })
+
+    it("should pass a blob without preferences, or a nullish one, through unchanged", () => {
+        // Arrange
+        const withoutPreferences = { domainState: { topN: 25 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV26(withoutPreferences)
+
+        // Assert
+        expect(migrated).toBe(withoutPreferences)
+        expect(migrateCcStateRecordToV26(null)).toBeNull()
     })
 })
 

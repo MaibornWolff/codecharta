@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
+import { setDependencyGraphSettings } from "../../../stores/preferences/preferences.write.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
     NodeInteraction,
@@ -56,5 +57,13 @@ describe("DependencyMapWriteStore", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setEdgeMetric({ value: "temporal_coupling" }))
+    })
+
+    it("should change the bar's settings that are kept across reloads", () => {
+        // Act
+        writeStore.changeSettings({ edgeStyle: "straight" })
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setDependencyGraphSettings({ value: { edgeStyle: "straight" } }))
     })
 })

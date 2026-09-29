@@ -1984,7 +1984,13 @@ export const STATE: CcState = {
         radialFolderValue: RadialFolderValue.Max,
         radialFolderStyle: RadialFolderStyle.Tinted,
         radialFolderTint: 0.5,
-        radialLevels: 3
+        radialLevels: 3,
+        dependencyGraph: {
+            shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
+            edgeStyle: "curved",
+            isAnchoredAtSideMiddle: false,
+            edgeWidth: { thickness: "byCount", factor: 1 }
+        }
     },
     mapState: {
         areaMetric: "rloc",
@@ -2056,7 +2062,13 @@ export const DEFAULT_STATE: CcState = {
         radialFolderValue: RadialFolderValue.Max,
         radialFolderStyle: RadialFolderStyle.Tinted,
         radialFolderTint: 0.5,
-        radialLevels: 3
+        radialLevels: 3,
+        dependencyGraph: {
+            shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
+            edgeStyle: "curved",
+            isAnchoredAtSideMiddle: false,
+            edgeWidth: { thickness: "byCount", factor: 1 }
+        }
     },
     mapState: {
         areaMetric: null,

@@ -1,5 +1,4 @@
 import { TestBed } from "@angular/core/testing"
-import { DEPENDENCY_EDGE_TYPES } from "../../../lenses/dependency/dependencyLens.facade"
 import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
@@ -59,47 +58,6 @@ describe("DependencyMapViewStore", () => {
         // Assert
         expect(afterOpening).toBe(true)
         expect(store.expandedPaths().has("/root/app")).toBe(false)
-    })
-
-    it("should show every edge type until the reader picks some", () => {
-        // Act
-        const before = store.shownEdgeTypes()
-        store.showEdgeTypes(["cyclic"])
-
-        // Assert
-        expect(before).toEqual(DEPENDENCY_EDGE_TYPES)
-        expect(store.shownEdgeTypes()).toEqual(["cyclic"])
-    })
-
-    it("should draw edges curved until the reader picks another style", () => {
-        // Act
-        const before = store.edgeStyle()
-        store.drawEdgesAs("straight")
-
-        // Assert
-        expect(before).toBe("curved")
-        expect(store.edgeStyle()).toBe("straight")
-    })
-
-    it("should draw edges by count at their own width until the reader picks another thickness and factor", () => {
-        // Act
-        const before = store.edgeWidth()
-        store.drawEdgesThick("strong")
-        store.scaleEdgeWidth(2)
-
-        // Assert
-        expect(before).toEqual({ thickness: "byCount", factor: 1 })
-        expect(store.edgeWidth()).toEqual({ thickness: "strong", factor: 2 })
-    })
-
-    it("should anchor edges where their style puts them until the reader anchors them at the side's middle", () => {
-        // Act
-        const before = store.isAnchoredAtSideMiddle()
-        store.anchorAtSideMiddle(true)
-
-        // Assert
-        expect(before).toBe(false)
-        expect(store.isAnchoredAtSideMiddle()).toBe(true)
     })
 
     it("should keep where the reader put a box until the layout is reset", () => {

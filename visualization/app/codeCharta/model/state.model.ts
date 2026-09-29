@@ -1,3 +1,4 @@
+import { DependencyGraphSettings } from "./dependencyGraph.model"
 import {
     CCFile,
     ColorLabelOptions,
@@ -77,6 +78,7 @@ export interface Preferences {
     radialFolderStyle: RadialFolderStyle
     radialFolderTint: number
     radialLevels: number
+    dependencyGraph: DependencyGraphSettings
 }
 
 export interface SharedView {

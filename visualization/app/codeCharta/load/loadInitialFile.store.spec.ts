@@ -19,6 +19,7 @@ import {
 } from "../stores/domainState/domainState.write.facade"
 import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
 import {
+    setDependencyGraphSettings,
     setRadialFolderStyle,
     setRadialFolderTint,
     setRadialFolderValue,
@@ -264,6 +265,24 @@ describe("LoadInitialFileStore", () => {
             // Assert
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([setRadialLevels({ value: 6 })])
+        })
+
+        it("should restore the saved dependency bar settings", () => {
+            // Arrange
+            setup()
+            const dependencyGraph = {
+                ...defaultPreferences.dependencyGraph,
+                shownEdgeTypes: ["cyclic" as const],
+                edgeStyle: "straight" as const
+            }
+            const savedPreferences = { ...defaultPreferences, dependencyGraph }
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyPreferences(savedPreferences)
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([setDependencyGraphSettings({ value: dependencyGraph })])
         })
     })
 
