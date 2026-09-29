@@ -46,21 +46,14 @@ export function withoutHidden(tree: LeveledNode, hiddenPaths: ReadonlySet<string
     return children.length === 0 ? null : { ...tree, children }
 }
 
-/** Opens folders breadth first, as long as the boxes on screen stay within the budget, so a first look
- * shows as much structure as fits. A folder with a single child costs nothing to open. */
-export function expandWithinBudget(tree: LeveledNode, budget: number): Set<string> {
-    const expanded = new Set<string>([tree.path])
-    let visibleCount = tree.children.length
-    const candidates = tree.children.filter(child => child.isFolder)
-    while (candidates.length > 0) {
-        const folder = candidates.shift()
-        const additionalBoxes = folder.children.length - 1
-        if (visibleCount + additionalBoxes > budget) {
-            continue
-        }
-        expanded.add(folder.path)
-        visibleCount += additionalBoxes
-        candidates.push(...folder.children.filter(child => child.isFolder))
+/** Only the root is open, and the folders below it for as long as each holds nothing but one folder: a lone box
+ * would show nothing. */
+export function collapsedFirstLook(tree: LeveledNode): Set<string> {
+    const opened = new Set<string>([tree.path])
+    let folder = tree
+    while (folder.children.length === 1 && folder.children[0].isFolder) {
+        folder = folder.children[0]
+        opened.add(folder.path)
     }
-    return expanded
+    return opened
 }

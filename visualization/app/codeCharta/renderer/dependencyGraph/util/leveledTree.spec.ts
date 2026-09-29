@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildLeveledTree, expandWithinBudget, LeveledNode, withoutHidden } from "./leveledTree"
+import { buildLeveledTree, collapsedFirstLook, LeveledNode, withoutHidden } from "./leveledTree"
 
 function file(path: string): CodeMapNode {
     return { name: path.split("/").pop(), path, type: NodeType.FILE }
@@ -99,32 +99,37 @@ describe("leveledTree", () => {
         })
     })
 
-    describe("expandWithinBudget", () => {
-        it("should open folders breadth first while the visible boxes fit the budget", () => {
+    describe("collapsedFirstLook", () => {
+        it("should open only the root, leaving every folder in it closed", () => {
             // Arrange
             const tree = leveledFolder("/root", [
-                leveledFolder("/root/a", [leveledFile("/root/a/1"), leveledFile("/root/a/2")]),
-                leveledFolder("/root/b", [leveledFile("/root/b/1"), leveledFile("/root/b/2"), leveledFile("/root/b/3")])
+                leveledFolder("/root/a", [leveledFolder("/root/a/deep", [leveledFile("/root/a/deep/1")])]),
+                leveledFolder("/root/b", [leveledFile("/root/b/1")])
             ])
 
             // Act
-            const expanded = expandWithinBudget(tree, 4)
+            const opened = collapsedFirstLook(tree)
 
             // Assert
-            expect([...expanded]).toEqual(["/root", "/root/a"])
+            expect([...opened]).toEqual(["/root"])
         })
 
-        it("should open a chain of single-child folders for free", () => {
+        it("should open a chain of single folders below the root, so the first look is never one lone box", () => {
             // Arrange
             const tree = leveledFolder("/root", [
-                leveledFolder("/root/src", [leveledFolder("/root/src/main", [leveledFile("/root/src/main/a")])])
+                leveledFolder("/root/src", [
+                    leveledFolder("/root/src/main", [
+                        leveledFolder("/root/src/main/a", [leveledFile("/root/src/main/a/1")]),
+                        leveledFile("/root/src/main/b")
+                    ])
+                ])
             ])
 
             // Act
-            const expanded = expandWithinBudget(tree, 1)
+            const opened = collapsedFirstLook(tree)
 
             // Assert
-            expect([...expanded]).toEqual(["/root", "/root/src", "/root/src/main"])
+            expect([...opened]).toEqual(["/root", "/root/src", "/root/src/main"])
         })
     })
 
