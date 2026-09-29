@@ -1,10 +1,8 @@
 import { Edge } from "../../../model/codeCharta.model"
+import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../model/dependencyGraph.model"
 
-/** DependaCharta's four edge types. A pure function of the two flags an edge carries, so it is derived
- * where it is consumed and never stored. */
-export type DependencyEdgeType = "regular" | "cyclic" | "feedbackContainerLevel" | "feedbackLeafLevel"
-
-export const DEPENDENCY_EDGE_TYPES: readonly DependencyEdgeType[] = ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"]
+export type { DependencyEdgeType }
+export { DEPENDENCY_EDGE_TYPES }
 
 /** The edge metric the dependency parser writes. `edges` is shared with every edge producer, so only an edge
  * carrying it is a dependency, and its cycle and upward flags describe the dependency graph alone. */

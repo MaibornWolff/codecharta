@@ -1,10 +1,7 @@
-export type EdgeThickness = "byCount" | "thin" | "uniform" | "strong"
+import { DependencyEdgeThickness, DependencyEdgeWidth } from "../../../model/dependencyGraph.model"
 
-export interface EdgeWidth {
-    thickness: EdgeThickness
-    /** Scales every width the thickness gives. */
-    factor: number
-}
+export type EdgeThickness = DependencyEdgeThickness
+export type EdgeWidth = DependencyEdgeWidth
 
 export const DEFAULT_EDGE_WIDTH: EdgeWidth = { thickness: "byCount", factor: 1 }
 
