@@ -7,12 +7,13 @@ import {
     stubbedChart,
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
-import { SERIES_IDS } from "../../util/dependencyGraphSeries"
+import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { DependencyGraphHandlers, DependencyGraphHost, DOUBLE_CLICK_MS, POINTER_LEAVE_GRACE_MS } from "./dependencyGraphHost"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGraph.stub").echartsCoreStub)
 
-const BOX = { seriesId: SERIES_IDS.boxes, name: "/root/app/a.ts" }
+const BOX = { seriesId: GRAPH_SERIES_ID, name: "/root/app/a.ts" }
+const EDGE = { seriesId: GRAPH_SERIES_ID, data: { isEdge: true } }
 
 describe("DependencyGraphHost", () => {
     let handlers: DependencyGraphHandlers
@@ -61,7 +62,7 @@ describe("DependencyGraphHost", () => {
 
     it("should not report clicks outside every box", () => {
         // Act
-        fireChartEvent("click", { seriesId: SERIES_IDS.boxes })
+        fireChartEvent("click", { seriesId: GRAPH_SERIES_ID })
 
         // Assert
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
@@ -69,7 +70,7 @@ describe("DependencyGraphHost", () => {
 
     it("should hand a click on an edge lying over a box to that box", () => {
         // Act
-        fireChartEvent("click", { seriesId: SERIES_IDS.edges, event: { offsetX: 30, offsetY: 40 } })
+        fireChartEvent("click", { ...EDGE, event: { offsetX: 30, offsetY: 40 } })
 
         // Assert
         expect(handlers.boxAt).toHaveBeenCalledWith([30, 40])
@@ -81,7 +82,7 @@ describe("DependencyGraphHost", () => {
         handlers.boxAt = jest.fn(() => null)
 
         // Act
-        fireChartEvent("click", { seriesId: SERIES_IDS.edges, event: { offsetX: 30, offsetY: 40 } })
+        fireChartEvent("click", { ...EDGE, event: { offsetX: 30, offsetY: 40 } })
 
         // Assert
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
@@ -160,7 +161,7 @@ describe("DependencyGraphHost", () => {
         handlers.boxAt = jest.fn(() => null)
 
         // Act
-        fireChartEvent("mousedown", { seriesId: SERIES_IDS.edges, event: { offsetX: 10, offsetY: 10 } })
+        fireChartEvent("mousedown", { ...EDGE, event: { offsetX: 10, offsetY: 10 } })
 
         // Assert
         expect(handlers.canDragBox).not.toHaveBeenCalled()
@@ -191,7 +192,7 @@ describe("DependencyGraphHost", () => {
 
     it("should not report the pointer over an edge as a hovered box", () => {
         // Act
-        fireChartEvent("mouseover", { seriesId: SERIES_IDS.edges, name: undefined })
+        fireChartEvent("mouseover", EDGE)
 
         // Assert
         expect(handlers.onBoxHovered).not.toHaveBeenCalled()

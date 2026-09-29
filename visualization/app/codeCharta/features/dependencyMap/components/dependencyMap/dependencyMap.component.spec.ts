@@ -74,24 +74,28 @@ async function setup({ tree = TREE, selectedPath = null, isDeltaState = false }:
 
 interface DrawnSeries {
     id: string
-    data: { name?: string }[]
+    data: { name?: string; isEdge?: boolean }[]
     renderItem: (
         params: { dataIndex: number },
         api: { coord: (point: number[]) => number[] }
     ) => { children: { style: Record<string, unknown> }[] }
 }
 
-function drawnSeries(id: string): DrawnSeries {
-    return lastDrawnOption().series.find((series: DrawnSeries) => series.id === id)
+function drawnSeries(): DrawnSeries {
+    return lastDrawnOption().series[0]
 }
 
 function drawnBoxPaths(): string[] {
-    return drawnSeries("boxes")
+    return drawnSeries()
         .data.map(item => item.name)
         .filter(name => name !== undefined)
 }
 
-const boxEvent = (name: string) => ({ seriesId: "boxes", name })
+function drawnEdgeIndices(): number[] {
+    return drawnSeries().data.flatMap((item, index) => (item.isEdge ? [index] : []))
+}
+
+const boxEvent = (name: string) => ({ seriesId: "graph", name })
 
 function doubleClickBox(path: string) {
     fireChartEvent("click", boxEvent(path))
@@ -132,7 +136,7 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts", "/root/model"])
-        expect(drawnSeries("edges").data).toHaveLength(2)
+        expect(drawnEdgeIndices()).toHaveLength(2)
     })
 
     it("should ignore a double click on a file", async () => {
@@ -156,8 +160,8 @@ describe("DependencyMapComponent", () => {
         await screen.findByTestId("dependency-graph")
 
         // Assert
-        const modelIndex = drawnSeries("boxes").data.findIndex(item => item.name === "/root/model")
-        const outline = drawnSeries("boxes").renderItem({ dataIndex: modelIndex }, { coord: point => point }).children[0].style
+        const modelIndex = drawnSeries().data.findIndex(item => item.name === "/root/model")
+        const outline = drawnSeries().renderItem({ dataIndex: modelIndex }, { coord: point => point }).children[0].style
         expect(outline.lineWidth).toBe(2.5)
     })
 
@@ -189,7 +193,7 @@ describe("DependencyMapComponent", () => {
         await screen.findByTestId("dependency-graph")
 
         // Assert
-        expect(drawnSeries("edges").data).toHaveLength(1)
+        expect(drawnEdgeIndices()).toHaveLength(1)
         expect(screen.getByTestId("dependency-edge-filter-feedback").getAttribute("aria-pressed")).toBe("true")
     })
 
@@ -252,7 +256,7 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts"])
-        expect(drawnSeries("edges").data).toHaveLength(0)
+        expect(drawnEdgeIndices()).toHaveLength(0)
     })
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {
@@ -264,7 +268,8 @@ describe("DependencyMapComponent", () => {
         await screen.findByTestId("dependency-graph")
 
         // Assert
-        const drawnCurve = drawnSeries("edges").renderItem({ dataIndex: 0 }, { coord: point => point }).children[0] as unknown as {
+        const drawnCurve = drawnSeries().renderItem({ dataIndex: drawnEdgeIndices()[0] }, { coord: point => point })
+            .children[0] as unknown as {
             shape: { x1: number; y1: number; cpx1: number; cpy1: number; x2: number; y2: number }
         }
         // the two edges run both ways, so the straight style bows each one 14 px off the straight line
@@ -277,7 +282,7 @@ describe("DependencyMapComponent", () => {
         // Arrange
         await setup()
         const drawnX = (path: string) => {
-            const boxes = drawnSeries("boxes")
+            const boxes = drawnSeries()
             const index = boxes.data.findIndex(item => item.name === path)
             return (boxes.renderItem({ dataIndex: index }, { coord: point => point }).children[0] as unknown as { shape: { x: number } })
                 .shape.x

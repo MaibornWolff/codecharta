@@ -2,12 +2,12 @@ import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.fa
 import { drawBox, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, ToPixels } from "./dependencyGraphScene"
-import { SERIES_IDS } from "./dependencyGraphSeries"
+import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge, isShownByFilter } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
-import { PaintedItem, paintOrder } from "./paintOrder"
+import { EdgeItem, GraphItem, paintOrder, withEdges } from "./paintOrder"
 
 export interface Viewport {
     width: number
@@ -33,14 +33,12 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     const { layout } = scene
     const byPath = boxesByPath(layout)
     const shownEdges = edgesToDraw(scene)
-    const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
-    const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
-    const painted = paintOrder(layout, scene.raisedPaths)
+    const items = withEdges(paintOrder(layout, scene.raisedPaths), edgeItems(scene, shownEdges, byPath))
     return {
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
-        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter({ painted, shownEdges, byPath }) },
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(items, byPath) },
         grid: { left: 0, right: 0, top: 0, bottom: 0 },
         ...axesFittingTheGraph(layout, viewport),
         dataZoom: [
@@ -48,20 +46,26 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
             { type: "inside", yAxisIndex: 0, filterMode: "none" }
         ],
         series: [
-            customSeries(SERIES_IDS.boxes, painted.map(extentOfPainted), ({ dataIndex }, api) =>
-                drawPainted(painted[dataIndex], scene, api.coord)
-            ),
-            customSeries(
-                SERIES_IDS.edges,
-                shownEdges.map(edge => spanOf(byPath.get(edge.fromPath), byPath.get(edge.toPath))),
-                ({ dataIndex }, api) => {
-                    const edge = shownEdges[dataIndex]
-                    const isDimmed = isHoverLit && !isEdgeOfHovered(edge, scene.hoveredPath)
-                    return drawEdge(edge, routes[dataIndex], isDimmed, api.coord)
-                }
-            )
+            {
+                id: GRAPH_SERIES_ID,
+                type: "custom",
+                data: items.map(item => datumOf(item, byPath)),
+                encode: EXTENT_ENCODING,
+                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => drawItem(items[dataIndex], scene, api.coord),
+                progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
+                clip: true
+            }
         ]
     }
+}
+
+function edgeItems(scene: DependencyGraphScene, shownEdges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>): EdgeItem[] {
+    const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
+    const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
+    return shownEdges.map((edge, index) => {
+        const isOfHovered = isEdgeOfHovered(edge, scene.hoveredPath)
+        return { kind: "edge", edge, route: routes[index], isDimmed: isHoverLit && !isOfHovered, isOnTop: isOfHovered }
+    })
 }
 
 /** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
@@ -83,12 +87,26 @@ function edgesToDraw({ edges, edgeFilter, hoveredPath }: DependencyGraphScene): 
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
-function drawPainted(item: PaintedItem, scene: DependencyGraphScene, toPixels: ToPixels) {
-    return item.kind === "box" ? drawBox(item.box, emphasisOf(item.box, scene), toPixels) : drawLevelBand(item.band, toPixels)
+function drawItem(item: GraphItem, scene: DependencyGraphScene, toPixels: ToPixels) {
+    switch (item.kind) {
+        case "box":
+            return drawBox(item.box, emphasisOf(item.box, scene), toPixels)
+        case "band":
+            return drawLevelBand(item.band, toPixels)
+        default:
+            return drawEdge(item.edge, item.route, item.isDimmed, toPixels)
+    }
 }
 
-function extentOfPainted(item: PaintedItem): Extent {
-    return item.kind === "box" ? item.box : item.band
+function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): GraphDatum & { value: number[] } {
+    switch (item.kind) {
+        case "box":
+            return { name: item.box.path, value: extentValue(item.box) }
+        case "band":
+            return { value: extentValue(item.band) }
+        default:
+            return { isEdge: true, value: extentValue(spanOf(byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath))) }
+    }
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {
@@ -103,20 +121,10 @@ interface Extent {
     y: number
     width: number
     height: number
-    /** Reported back by the chart's events, so a click names the box it hit. */
-    path?: string
 }
 
-function customSeries(id: string, items: Extent[], renderItem: (params: RenderParams, api: CoordinateApi) => object) {
-    return {
-        id,
-        type: "custom",
-        data: items.map(({ x, y, width, height, path }) => ({ name: path, value: [x, y, x + width, y + height] })),
-        encode: EXTENT_ENCODING,
-        renderItem,
-        progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
-        clip: true
-    }
+function extentValue({ x, y, width, height }: Extent): number[] {
+    return [x, y, x + width, y + height]
 }
 
 function spanOf(from: LayoutBox, to: LayoutBox): Extent {

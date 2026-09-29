@@ -4,7 +4,7 @@ import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
-import { isBoxSeries, SERIES_IDS } from "../../util/dependencyGraphSeries"
+import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
@@ -22,6 +22,7 @@ export interface DependencyGraphHandlers extends BoxDragHandlers {
 interface ChartItemEvent {
     seriesId?: string
     name?: string
+    data?: GraphDatum
     event?: { event?: MouseEvent; offsetX: number; offsetY: number }
 }
 
@@ -145,7 +146,7 @@ export class DependencyGraphHost {
 
     /** The box under the pointer: the one hit, or, when an edge lying over a box is hit, that box. */
     private boxUnder(event: ChartItemEvent): string | null {
-        if (event.seriesId === SERIES_IDS.edges && event.event && this.chart) {
+        if (event.data?.isEdge && event.event && this.chart) {
             return this.handlers.boxAt(layoutPointAt(this.chart, event.event))
         }
         return boxPathOf(event)
@@ -201,5 +202,5 @@ export class DependencyGraphHost {
 }
 
 function boxPathOf({ seriesId, name }: ChartItemEvent): string | null {
-    return isBoxSeries(seriesId) && name ? name : null
+    return seriesId === GRAPH_SERIES_ID && name ? name : null
 }

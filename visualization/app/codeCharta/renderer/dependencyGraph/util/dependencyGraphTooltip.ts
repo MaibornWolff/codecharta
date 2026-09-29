@@ -1,28 +1,24 @@
 import { escapeHtml } from "../../../util/escapeHtml"
-import { SERIES_IDS } from "./dependencyGraphSeries"
 import { EDGE_TYPE_LABELS } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
 import { LayoutBox } from "./levelizedLayout"
-import { PaintedItem } from "./paintOrder"
+import { GraphItem } from "./paintOrder"
 
 interface TooltipParams {
-    seriesId?: string
     dataIndex: number
 }
 
-interface TooltipSources {
-    painted: PaintedItem[]
-    shownEdges: GraphEdge[]
-    byPath: ReadonlyMap<string, LayoutBox>
-}
-
-export function buildTooltipFormatter({ painted, shownEdges, byPath }: TooltipSources) {
-    return ({ seriesId, dataIndex }: TooltipParams): string => {
-        if (seriesId === SERIES_IDS.edges) {
-            return describeEdge(shownEdges[dataIndex], byPath)
+export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<string, LayoutBox>) {
+    return ({ dataIndex }: TooltipParams): string => {
+        const item = items[dataIndex]
+        switch (item?.kind) {
+            case "box":
+                return describeBox(item.box)
+            case "edge":
+                return describeEdge(item.edge, byPath)
+            default:
+                return ""
         }
-        const item = painted[dataIndex]
-        return seriesId === SERIES_IDS.boxes && item.kind === "box" ? describeBox(item.box) : ""
     }
 }
 
