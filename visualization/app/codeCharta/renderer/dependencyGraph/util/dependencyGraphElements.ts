@@ -7,3 +7,10 @@ export const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
 export function drawnItem(children: object[]) {
     return { type: "group", ...UNTRANSFORMED, emphasisDisabled: true, children }
 }
+
+/** ECharts paints the elements it first creates in a later draw over all it drew before, whatever their place in
+ * the data; an item shown again would then cover the edges and the edges the boxes. The rank pins each element
+ * to its item's place in the paint order. */
+export function atPaintRank<Item extends { children: object[] }>(item: Item, rank: number): Item {
+    return { ...item, children: item.children.map(child => ({ ...child, z2: rank })) }
+}
