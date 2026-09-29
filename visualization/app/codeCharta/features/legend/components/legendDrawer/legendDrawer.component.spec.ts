@@ -11,6 +11,7 @@ import { LegendDrawerComponent } from "./legendDrawer.component"
 class LegendDrawerHostComponent {}
 
 const INSPECTOR_HIDDEN = { provide: InspectorVisibilityService, useValue: { isVisible: () => false } }
+const INSPECTOR_SHOWN = { provide: InspectorVisibilityService, useValue: { isVisible: () => true } }
 
 describe("LegendDrawerComponent", () => {
     it("should show the legend a view puts inside once the tab is clicked", async () => {
@@ -36,5 +37,17 @@ describe("LegendDrawerComponent", () => {
 
         // Assert
         expect(screen.queryByTestId("legend-panel")).toBeNull()
+    })
+
+    it("should stay at the right edge while a node is selected, as long as its view shows no inspector", async () => {
+        // Arrange
+        await render(LegendDrawerHostComponent, { providers: [INSPECTOR_SHOWN] })
+
+        // Act
+        fireEvent.click(screen.getByTestId("legend-panel-button"))
+
+        // Assert
+        expect(screen.getByTestId("legend-panel").style.right).toBe("40px")
+        expect(screen.getByTestId("legend-panel-button").style.right).toBe("-28px")
     })
 })
