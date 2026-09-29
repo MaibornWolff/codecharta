@@ -8,7 +8,7 @@ import {
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
-import { SERIES_IDS } from "../../util/dependencyGraphSeries"
+import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { aBox } from "../../util/dependencyGraphTestData"
 import { DependencyGraphComponent } from "./dependencyGraph.component"
 
@@ -73,7 +73,7 @@ describe("DependencyGraphComponent", () => {
             inputs: { scene: SCENE },
             on: { boxClicked, boxToggled, boxHovered, boxRightClicked, rendered }
         })
-        const box = { seriesId: SERIES_IDS.boxes, name: "/root/a.ts" }
+        const box = { seriesId: GRAPH_SERIES_ID, name: "/root/a.ts" }
 
         // Act
         fireChartEvent("click", box)
