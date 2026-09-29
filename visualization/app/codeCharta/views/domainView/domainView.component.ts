@@ -93,7 +93,7 @@ import { wordsToMark } from "./wordMarking"
         { provide: EXPLORER_WORD_SORT, useExisting: DomainWordSortStore },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
-            useValue: { showMapActions: false, jumpTargetView: "metrics" } satisfies NodeContextMenuCapabilities
+            useValue: { showMapActions: false, jumpTargetViews: ["metrics"] } satisfies NodeContextMenuCapabilities
         },
         CopyToClipboardService,
         provideViewScopedExplorerState("domain"),

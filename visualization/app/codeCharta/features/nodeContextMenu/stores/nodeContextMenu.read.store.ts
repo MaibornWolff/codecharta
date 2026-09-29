@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
+import { pathsWithDependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../lenses/domain/domainLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { flattenPredicateSelector, rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
@@ -16,6 +17,7 @@ export class NodeContextMenuReadStore {
     readonly markFolderItems$ = this.store.select(markFolderItemsSelector)
     readonly currentMarkColor$ = this.store.select(currentMarkColorSelector)
     readonly hasDomainData$ = this.store.select(hasDomainDataSelector)
+    readonly pathsWithDependencyLevels$ = this.store.select(pathsWithDependencyLevelsSelector)
     readonly isFlattened$ = this.store.select(flattenPredicateSelector)
     readonly keptHighlightPaths$ = this.store.select(keptHighlightPathsSelector)
 }
