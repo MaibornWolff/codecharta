@@ -8,7 +8,7 @@ const file = aBox("/root/app/a.ts", { depth: 2, x: 150, y: 170 })
 const other = aBox("/root/lib.ts", { depth: 1, x: 600, y: 100 })
 const layout: DependencyGraphLayout = {
     boxes: [root, folder, file, other],
-    bands: [aBand({ folderPath: "/root/app", x: 100, y: 170, width: 400 })],
+    bands: [aBand({ folderPath: "/root/app", memberPaths: ["/root/app/a.ts"], x: 100, y: 170, width: 400 })],
     width: 1000,
     height: 600
 }
@@ -43,6 +43,14 @@ describe("boxMoves", () => {
 
             // Assert
             expect(boxAt(moved, "/root/app/a.ts")).toMatchObject({ x: 210, y: 180 })
+        })
+
+        it("should move a level band with the boxes of its level", () => {
+            // Act
+            const moved = movedLayout(layout, new Map([["/root/app/a.ts", [0, 60]]]))
+
+            // Assert
+            expect(moved.bands[0]).toMatchObject({ y: 230, height: 40 })
         })
 
         it("should grow the folder, and its level bands, to hold a box dragged past its edge", () => {
