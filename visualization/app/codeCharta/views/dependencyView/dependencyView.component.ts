@@ -17,7 +17,9 @@ import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } fr
 import {
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
+    EXPLORER_COUNTS,
     EXPLORER_ROW,
+    EXPLORER_RULES,
     EXPLORER_SELECTION,
     EXPLORER_TREE,
     ExplorerSearchBarComponent,
@@ -27,6 +29,8 @@ import {
     provideViewScopedExplorerState,
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
+import { MapExplorerRules } from "../mapExplorer/mapExplorerRules"
+import { DependencyExplorerCounts } from "./explorer/dependencyExplorerCounts"
 import { DependencyExplorerRow } from "./explorer/dependencyExplorerRow"
 import { DEPENDENCY_EXPLORER_SEARCH } from "./explorer/dependencyExplorerSearch"
 import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelection"
@@ -56,11 +60,15 @@ import { DependencyExplorerTree } from "./explorer/dependencyExplorerTree"
         { provide: EXPLORER_CONTEXT_MENU, useExisting: NodeContextMenuForExplorer },
         DependencyExplorerTree,
         { provide: EXPLORER_TREE, useExisting: DependencyExplorerTree },
+        DependencyExplorerCounts,
+        { provide: EXPLORER_COUNTS, useExisting: DependencyExplorerCounts },
+        MapExplorerRules,
+        { provide: EXPLORER_RULES, useExisting: MapExplorerRules },
         provideExplorerSort(DEPENDENCY_EXPLORER_SORT),
         provideExplorerSearch(DEPENDENCY_EXPLORER_SEARCH),
         {
             provide: EXPLORER_CAPABILITIES,
-            useValue: { showRules: false, showSearch: true, showCounts: false, modes: [FILES_EXPLORER_MODE] }
+            useValue: { showRules: true, showSearch: true, showCounts: true, canFlatten: false, modes: [FILES_EXPLORER_MODE] }
         },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,

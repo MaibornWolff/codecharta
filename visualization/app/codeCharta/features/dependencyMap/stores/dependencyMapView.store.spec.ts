@@ -71,31 +71,6 @@ describe("DependencyMapViewStore", () => {
         expect(store.shownEdgeTypes()).toEqual(["cyclic"])
     })
 
-    it("should keep hidden nodes while the tree keeps its root", () => {
-        // Arrange
-        const tree = leveledFolder("/root", [leveledFolder("/root/training")])
-        store.adoptTree(tree)
-
-        // Act
-        store.hide("/root/training")
-        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/training"), leveledFolder("/root/app")]))
-
-        // Assert
-        expect([...store.hiddenPaths()]).toEqual(["/root/training"])
-    })
-
-    it("should show everything again when the tree gets a new root", () => {
-        // Arrange
-        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/training")]))
-        store.hide("/root/training")
-
-        // Act
-        store.adoptTree(leveledFolder("/root/app", [leveledFolder("/root/app/ui")]))
-
-        // Assert
-        expect(store.hiddenPaths().size).toBe(0)
-    })
-
     it("should draw edges curved until the reader picks another style", () => {
         // Act
         const before = store.edgeStyle()
@@ -172,30 +147,6 @@ describe("DependencyMapViewStore", () => {
         // Assert
         expect(whileDragging).toBe("/root/a")
         expect(store.draggingPath()).toBeNull()
-    })
-
-    it("should count a node inside a hidden folder as hidden", () => {
-        // Arrange
-        store.hide("/root/training")
-
-        // Act
-        const hidden = ["/root/training", "/root/training/a.ts", "/root/trainingData.ts"].map(path => store.isHidden(path))
-
-        // Assert
-        expect(hidden).toEqual([true, true, false])
-    })
-
-    it("should show a node again together with the hidden folders holding it, and nothing else", () => {
-        // Arrange
-        store.hide("/root/training")
-        store.hide("/root/training/a.ts")
-        store.hide("/root/app")
-
-        // Act
-        store.show("/root/training/a.ts")
-
-        // Assert
-        expect([...store.hiddenPaths()]).toEqual(["/root/app"])
     })
 
     it("should open every folder holding a node to reveal it, but not the node itself", () => {

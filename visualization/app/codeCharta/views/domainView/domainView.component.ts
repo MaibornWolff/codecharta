@@ -83,6 +83,7 @@ import { wordsToMark } from "./wordMarking"
                 showRules: false,
                 showSearch: true,
                 showCounts: false,
+                canFlatten: false,
                 modes: DOMAIN_EXPLORER_MODES
             }
         },

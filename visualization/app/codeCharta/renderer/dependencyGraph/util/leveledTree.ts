@@ -34,18 +34,6 @@ export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData)
     return { path: root.path, name: root.name, level, isFolder: true, children }
 }
 
-/** Leaves the hidden nodes out, and with them every folder that held nothing else. */
-export function withoutHidden(tree: LeveledNode, hiddenPaths: ReadonlySet<string>): LeveledNode | null {
-    if (hiddenPaths.has(tree.path)) {
-        return null
-    }
-    if (!tree.isFolder || hiddenPaths.size === 0) {
-        return tree
-    }
-    const children = tree.children.map(child => withoutHidden(child, hiddenPaths)).filter(child => child !== null)
-    return children.length === 0 ? null : { ...tree, children }
-}
-
 /** Only the root is open, and the folders below it for as long as each holds nothing but one folder: a lone box
  * would show nothing. */
 export function collapsedFirstLook(tree: LeveledNode): Set<string> {

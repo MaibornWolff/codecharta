@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
-import { createExplorerRulesMock, createExplorerSearchMock } from "../../explorerPorts.mocks"
+import { createExplorerRulesMock, createExplorerSearchMock, provideExplorerCapabilitiesMock } from "../../explorerPorts.mocks"
 import { EXPLORER_RULES, ExplorerRules } from "../../explorerRules.port"
 import { EXPLORER_SEARCH } from "../../explorerSearch.port"
 import { ExplorerSearchActionsComponent } from "./explorerSearchActions.component"
@@ -10,23 +10,23 @@ import { ExplorerSearchActionsComponent } from "./explorerSearchActions.componen
 describe("ExplorerSearchActionsComponent", () => {
     let rules: ExplorerRules
 
-    const configureWithEnabledActions = () => {
-        rules = createExplorerRulesMock({ isFlattenPatternDisabled$: of(false), isExcludePatternDisabled$: of(false) })
+    const configure = ({ isPatternUsable = true, canFlatten = true } = {}) => {
+        rules = isPatternUsable
+            ? createExplorerRulesMock({ isFlattenPatternDisabled$: of(false), isExcludePatternDisabled$: of(false) })
+            : createExplorerRulesMock()
         TestBed.configureTestingModule({
             imports: [ExplorerSearchActionsComponent],
             providers: [
                 { provide: EXPLORER_RULES, useValue: rules },
-                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock({ isPatternEmpty$: of(false) }) }
+                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock(isPatternUsable ? { isPatternEmpty$: of(false) } : {}) },
+                provideExplorerCapabilitiesMock({ canFlatten })
             ]
         })
     }
 
-    beforeEach(() => {
-        configureWithEnabledActions()
-    })
-
     it("should ask the rules port to flatten the current search pattern", async () => {
         // Arrange
+        configure()
         await render(ExplorerSearchActionsComponent)
 
         // Act
@@ -38,6 +38,7 @@ describe("ExplorerSearchActionsComponent", () => {
 
     it("should ask the rules port to exclude the current search pattern", async () => {
         // Arrange
+        configure()
         await render(ExplorerSearchActionsComponent)
 
         // Act
@@ -49,14 +50,7 @@ describe("ExplorerSearchActionsComponent", () => {
 
     it("should disable both actions while the rules port reports the pattern unusable", async () => {
         // Arrange
-        TestBed.resetTestingModule()
-        TestBed.configureTestingModule({
-            imports: [ExplorerSearchActionsComponent],
-            providers: [
-                { provide: EXPLORER_RULES, useValue: createExplorerRulesMock() },
-                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock() }
-            ]
-        })
+        configure({ isPatternUsable: false })
 
         // Act
         await render(ExplorerSearchActionsComponent)
@@ -68,19 +62,25 @@ describe("ExplorerSearchActionsComponent", () => {
 
     it("should hint at entering a pattern while the search is empty", async () => {
         // Arrange
-        TestBed.resetTestingModule()
-        TestBed.configureTestingModule({
-            imports: [ExplorerSearchActionsComponent],
-            providers: [
-                { provide: EXPLORER_RULES, useValue: createExplorerRulesMock() },
-                { provide: EXPLORER_SEARCH, useValue: createExplorerSearchMock() }
-            ]
-        })
+        configure({ isPatternUsable: false })
 
         // Act
         await render(ExplorerSearchActionsComponent)
 
         // Assert
         expect(screen.getByText("Enter a pattern to enable Flatten/Exclude")).not.toBe(null)
+    })
+
+    it("should offer only excluding where the view cannot flatten", async () => {
+        // Arrange
+        configure({ isPatternUsable: false, canFlatten: false })
+
+        // Act
+        await render(ExplorerSearchActionsComponent)
+
+        // Assert
+        expect(screen.queryByTestId("search-bar-flatten-button")).toBe(null)
+        expect(screen.getByTestId("search-bar-exclude-button")).not.toBe(null)
+        expect(screen.getByText("Enter a pattern to enable Exclude")).not.toBe(null)
     })
 })

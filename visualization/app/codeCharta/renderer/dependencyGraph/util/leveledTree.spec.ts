@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildLeveledTree, collapsedFirstLook, LeveledNode, withoutHidden } from "./leveledTree"
+import { buildLeveledTree, collapsedFirstLook, LeveledNode } from "./leveledTree"
 
 function file(path: string): CodeMapNode {
     return { name: path.split("/").pop(), path, type: NodeType.FILE }
@@ -130,46 +130,6 @@ describe("leveledTree", () => {
 
             // Assert
             expect([...opened]).toEqual(["/root", "/root/src", "/root/src/main"])
-        })
-    })
-
-    describe("withoutHidden", () => {
-        const tree = leveledFolder("/root", [
-            leveledFolder("/root/training", [leveledFile("/root/training/a")]),
-            leveledFolder("/root/app", [leveledFile("/root/app/b"), leveledFile("/root/app/c")])
-        ])
-
-        it("should leave out a hidden folder with everything in it", () => {
-            // Act
-            const visible = withoutHidden(tree, new Set(["/root/training"]))
-
-            // Assert
-            expect(visible.children.map(child => child.path)).toEqual(["/root/app"])
-        })
-
-        it("should leave out a folder whose last node is hidden", () => {
-            // Act
-            const visible = withoutHidden(tree, new Set(["/root/training/a", "/root/app/b"]))
-
-            // Assert
-            expect(visible.children.map(child => child.path)).toEqual(["/root/app"])
-            expect(visible.children[0].children.map(child => child.path)).toEqual(["/root/app/c"])
-        })
-
-        it("should return the tree itself when nothing is hidden", () => {
-            // Act
-            const visible = withoutHidden(tree, new Set())
-
-            // Assert
-            expect(visible).toBe(tree)
-        })
-
-        it("should return null when everything is hidden", () => {
-            // Act
-            const visible = withoutHidden(tree, new Set(["/root"]))
-
-            // Assert
-            expect(visible).toBeNull()
         })
     })
 })

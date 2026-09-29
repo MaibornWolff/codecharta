@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { EXPLORER_METRIC_RULES } from "../../explorerMetricRules.port"
 import { EXPLORER_RULES } from "../../explorerRules.port"
 import { EXPLORER_SEARCH } from "../../explorerSearch.port"
@@ -11,6 +12,9 @@ import { EXPLORER_SEARCH } from "../../explorerSearch.port"
 })
 export class ExplorerSearchActionsComponent {
     private readonly rules = inject(EXPLORER_RULES)
+
+    readonly canFlatten = inject(EXPLORER_CAPABILITIES).canFlatten
+    readonly offeredRules = this.canFlatten ? "Flatten/Exclude" : "Exclude"
 
     /** Absent in views that have no metrics to filter by, which hides the two metric entries. */
     readonly hasMetricRules = inject(EXPLORER_METRIC_RULES, { optional: true }) !== null

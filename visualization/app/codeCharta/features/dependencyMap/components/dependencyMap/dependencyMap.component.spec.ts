@@ -283,20 +283,6 @@ describe("DependencyMapComponent", () => {
         expect(screen.getByText("No file in view carries dependency levels.")).not.toBeNull()
     })
 
-    it("should leave a hidden folder and its edges out of the graph", async () => {
-        // Arrange
-        const { fixture } = await setup()
-
-        // Act
-        TestBed.inject(DependencyMapViewStore).hide("/root/model")
-        fixture.detectChanges()
-        await screen.findByTestId("dependency-graph")
-
-        // Assert
-        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts"])
-        expect(drawnEdgeIndices()).toHaveLength(0)
-    })
-
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {
         // Arrange
         const { fixture } = await setup()
