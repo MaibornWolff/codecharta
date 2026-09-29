@@ -8,6 +8,17 @@ export const dependencyLevelsSelector = createSelector(visibleFileStatesSelector
     mergeDependencyLevels(getCCFiles(visibleFileStates), isPartialState(visibleFileStates))
 )
 
+/** The files and folders that carry a level, and the folders holding them: what the dependency graph can show. */
+export const pathsWithDependencyLevelsSelector = createSelector(dependencyLevelsSelector, levels => {
+    const paths = new Set<string>()
+    for (const path of Object.keys(levels)) {
+        for (let ancestor = path; ancestor.length > 0 && !paths.has(ancestor); ancestor = ancestor.slice(0, ancestor.lastIndexOf("/"))) {
+            paths.add(ancestor)
+        }
+    }
+    return paths as ReadonlySet<string>
+})
+
 export const hasDependencyDataSelector = createSelector(dependencyLevelsSelector, levels => Object.keys(levels).length > 0)
 
 const carriesNoDependencyLens = ({ file }: FileState) => Object.keys(file.settings.fileSettings.dependencyLevels ?? {}).length === 0

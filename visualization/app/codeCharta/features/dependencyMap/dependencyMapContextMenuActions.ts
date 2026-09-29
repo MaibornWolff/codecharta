@@ -12,7 +12,15 @@ export function provideDependencyMapContextMenuActions(): Provider {
                     label: "Hide",
                     icon: "fa-regular fa-eye-slash",
                     hoverHint: "Leave this node and its dependencies out of the dependency graph",
-                    run: path => viewStore.hide(path)
+                    run: path => viewStore.hide(path),
+                    isOfferedFor: path => !viewStore.isHidden(path)
+                },
+                {
+                    label: "Show again",
+                    icon: "fa-regular fa-eye",
+                    hoverHint: "Bring this node, and the hidden folders holding it, back into the dependency graph",
+                    run: path => viewStore.show(path),
+                    isOfferedFor: path => viewStore.isHidden(path)
                 }
             ]
         }

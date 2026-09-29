@@ -1,6 +1,6 @@
 import { InjectionToken } from "@angular/core"
 
-export type ExplorerStorageScope = "metrics" | "domain"
+export type ExplorerStorageScope = "metrics" | "domain" | "dependencies"
 
 export const EXPLORER_STORAGE_SCOPE = new InjectionToken<ExplorerStorageScope>("EXPLORER_STORAGE_SCOPE")
 

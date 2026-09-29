@@ -4,7 +4,8 @@ export { dependencyEdgeTypeOf, dependencyWeightOf } from "./store/dependencyEdge
 export {
     dependencyLevelsSelector,
     hasDependencyDataSelector,
-    isLoadedFileSetWithoutDependencyLensSelector
+    isLoadedFileSetWithoutDependencyLensSelector,
+    pathsWithDependencyLevelsSelector
 } from "./store/dependencyLevels.selector"
 export { calculateEdgeMetricData } from "./store/edgeMetricData.calculator"
 export { edgesSelector } from "./store/edges.selector"
