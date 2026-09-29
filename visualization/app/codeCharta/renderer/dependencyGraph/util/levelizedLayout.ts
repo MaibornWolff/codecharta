@@ -18,6 +18,8 @@ export interface LevelBand {
     folderPath: string
     level: number
     isTopmost: boolean
+    /** The boxes of this level, which the band spans once the reader drags them around. */
+    memberPaths: string[]
     x: number
     y: number
     width: number
@@ -232,12 +234,13 @@ class LayoutPlacer {
                 rowTop += gapAbove(row, previous)
             }
             if (previous?.level !== row.level) {
-                band = { folderPath: folder.path, level: row.level, isTopmost: !previous, x, y: rowTop, width, height: 0 }
+                band = { folderPath: folder.path, level: row.level, isTopmost: !previous, memberPaths: [], x, y: rowTop, width, height: 0 }
                 this.layout.bands.push(band)
             }
             band.height = rowTop + row.height - band.y
             let nodeLeft = x + LAYOUT_SPACING.padding + (innerWidth - row.width) / 2
             for (const child of row.nodes) {
+                band.memberPaths.push(child.path)
                 this.place(child, nodeLeft, rowTop, childDepth)
                 nodeLeft += this.measurer.sizeOf(child).width + LAYOUT_SPACING.gapBetweenNodes
             }

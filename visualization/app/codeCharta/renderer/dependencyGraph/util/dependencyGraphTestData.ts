@@ -22,7 +22,7 @@ export function anEdge(fromPath: string, toPath: string, overrides: Partial<Grap
 }
 
 export function aBand(overrides: Partial<LevelBand> = {}): LevelBand {
-    return { folderPath: "/root", level: 1, isTopmost: false, x: 0, y: 100, width: 400, height: 40, ...overrides }
+    return { folderPath: "/root", level: 1, isTopmost: false, memberPaths: [], x: 0, y: 100, width: 400, height: 40, ...overrides }
 }
 
 export const identityPixels = ([x, y]: [number, number]) => [x, y]
