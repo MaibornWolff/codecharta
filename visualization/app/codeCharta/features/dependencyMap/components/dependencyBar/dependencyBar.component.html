@@ -15,7 +15,7 @@
     [chosen]="edgeStyle()"
     (choose)="drawEdgesAs($event)"
 >
-    <label class="border-base-300 mt-2 flex cursor-pointer items-center gap-2 border-t px-2 pt-2 text-sm">
+    <label class="flex cursor-pointer items-center gap-2 px-2">
         <input
             type="checkbox"
             class="checkbox checkbox-sm checkbox-primary"
@@ -34,8 +34,8 @@
     [chosen]="edgeWidth().thickness"
     (choose)="drawEdgesThick($event)"
 >
-    <div class="border-base-300 mt-2 flex flex-col gap-1 border-t px-2 pt-2">
-        <span class="text-xs opacity-70">Width factor</span>
+    <div class="px-2">
+        <span class="text-sm">Width factor</span>
         <cc-slider-number-input
             ariaLabel="Line width factor"
             [min]="widthFactorRange.min"
