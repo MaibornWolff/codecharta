@@ -6,9 +6,6 @@ import {
     DependencyGraphComponent,
     DependencyGraphScene,
     type DraggedBox,
-    EDGE_LEGEND,
-    EdgeFilter,
-    EdgeStyle,
     isDraggable,
     layoutLevelized,
     movedLayout,
@@ -22,31 +19,6 @@ import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.faca
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
-
-interface EdgeFilterOption {
-    value: EdgeFilter
-    label: string
-    hint: string
-}
-
-interface EdgeStyleOption {
-    value: EdgeStyle
-    label: string
-}
-
-const EDGE_STYLE_OPTIONS: EdgeStyleOption[] = [
-    { value: "curved", label: "Curved" },
-    { value: "spread", label: "Spread" },
-    { value: "upwardAside", label: "Upward aside" },
-    { value: "straight", label: "Straight" }
-]
-
-const EDGE_FILTER_OPTIONS: EdgeFilterOption[] = [
-    { value: "all", label: "All", hint: "Show every dependency" },
-    { value: "cycles", label: "Cycles", hint: "Show only dependencies that take part in a cycle" },
-    { value: "feedback", label: "Upward", hint: "Show only dependencies that point upward, against the levels" },
-    { value: "none", label: "None", hint: "Show dependencies only for the box under the pointer" }
-]
 
 @Component({
     selector: "cc-dependency-map",
@@ -64,11 +36,6 @@ export class DependencyMapComponent {
     private readonly viewStore = inject(DependencyMapViewStore)
     private readonly viewReadinessStore = inject(ViewReadinessStore)
 
-    protected readonly edgeFilterOptions = EDGE_FILTER_OPTIONS
-    protected readonly edgeLegend = EDGE_LEGEND
-    protected readonly edgeFilter = this.viewStore.edgeFilter
-    protected readonly edgeStyleOptions = EDGE_STYLE_OPTIONS
-    protected readonly edgeStyle = this.viewStore.edgeStyle
     protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
 
@@ -120,8 +87,8 @@ export class DependencyMapComponent {
         return {
             layout,
             edges: projectEdges(this.edges(), this.representatives()),
-            edgeFilter: this.edgeFilter(),
-            edgeStyle: this.edgeStyle(),
+            edgeFilter: this.viewStore.edgeFilter(),
+            edgeStyle: this.viewStore.edgeStyle(),
             hoveredPath: this.boxStandingFor(this.hoveredPath()),
             selectedPath: this.boxStandingFor(this.selectedPath()),
             raisedPaths: this.viewStore.raisedPaths(),
@@ -162,10 +129,6 @@ export class DependencyMapComponent {
         this.writeStore.openContextMenu(path, clientX, clientY)
     }
 
-    protected showEdges(filter: EdgeFilter): void {
-        this.viewStore.showEdges(filter)
-    }
-
     protected moveBox({ path, dx, dy }: DraggedBox): void {
         const [offsetX, offsetY] = this.viewStore.boxOffsets().get(path) ?? [0, 0]
         this.viewStore.placeBox(path, [offsetX + dx, offsetY + dy])
@@ -177,10 +140,6 @@ export class DependencyMapComponent {
 
     protected resetLayout(): void {
         this.viewStore.resetLayout()
-    }
-
-    protected drawEdgesAs(style: EdgeStyle): void {
-        this.viewStore.drawEdgesAs(style)
     }
 
     protected markReady(): void {

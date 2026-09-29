@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
-import { DependencyMapComponent, provideDependencyMapContextMenuActions } from "../../features/dependencyMap/facade"
+import {
+    DependencyBarComponent,
+    DependencyEdgeLegendComponent,
+    DependencyMapComponent,
+    provideDependencyMapContextMenuActions
+} from "../../features/dependencyMap/facade"
+import { LegendDrawerComponent } from "../../features/legend/facade"
 import {
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuCapabilities,
@@ -34,6 +40,9 @@ import { DependencyExplorerTree } from "./explorer/dependencyExplorerTree"
         SidebarExplorerComponent,
         ExplorerSearchBarComponent,
         DependencyMapComponent,
+        DependencyBarComponent,
+        LegendDrawerComponent,
+        DependencyEdgeLegendComponent,
         NodeContextMenuComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent

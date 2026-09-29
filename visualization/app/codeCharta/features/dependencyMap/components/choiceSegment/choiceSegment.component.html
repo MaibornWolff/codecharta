@@ -1,0 +1,26 @@
+<cc-axis-card
+    [label]="label()"
+    [metricName]="chosenLabel()"
+    [searchPopoverId]="popoverId()"
+    [searchAnchorName]="anchorName()"
+    [testId]="idPrefix() + '-segment'"
+></cc-axis-card>
+<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" [ariaLabel]="label()" widthClass="w-72" contentClass="p-2">
+    <ul class="menu menu-sm w-full p-0">
+        @for (choice of choices(); track choice.value) {
+            <li>
+                <button
+                    type="button"
+                    class="flex flex-col items-start gap-0"
+                    [class.menu-active]="choice.value === chosen()"
+                    [attr.aria-pressed]="choice.value === chosen()"
+                    [attr.data-testid]="idPrefix() + '-' + choice.value"
+                    (click)="pick(choice.value)"
+                >
+                    <span class="font-semibold">{{ choice.label }}</span>
+                    <span class="text-xs opacity-70">{{ choice.hint }}</span>
+                </button>
+            </li>
+        }
+    </ul>
+</cc-settings-popover-shell>
