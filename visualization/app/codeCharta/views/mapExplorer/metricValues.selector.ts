@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store"
-import { MetricValues } from "../../../features/sidebarExplorer/facade"
-import { CodeMapNode } from "../../../model/codeCharta.model"
-import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
+import { MetricValues } from "../../features/sidebarExplorer/facade"
+import { CodeMapNode } from "../../model/codeCharta.model"
+import { UNARY_METRIC } from "../../util/metric/unaryMetric"
 import { metricRuleLeavesSelector } from "./metricRuleLeaves.selector"
 
 /** One value per file for every metric some file has, 0 where a file has none — as the map shows it. */

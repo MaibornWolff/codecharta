@@ -5,7 +5,7 @@ import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLen
 import { CcState, MetricRule } from "../../../model/codeCharta.model"
 import { addMetricRule } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
-import { metricValuesSelector } from "./metricValues.selector"
+import { metricValuesSelector } from "../../mapExplorer/metricValues.selector"
 
 @Injectable()
 export class MetricsExplorerMetricRules implements ExplorerMetricRules {

@@ -1,7 +1,7 @@
 import { createSelector, MemoizedSelector } from "@ngrx/store"
-import { CcState, NodeRule } from "../../../model/codeCharta.model"
-import { excludedNodesSelector, flattenedNodesSelector, searchPatternSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { isPatternInRules } from "../../../util/nodeRules/isPatternInRules"
+import { CcState, NodeRule } from "../../model/codeCharta.model"
+import { excludedNodesSelector, flattenedNodesSelector, searchPatternSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { isPatternInRules } from "../../util/nodeRules/isPatternInRules"
 import { isSearchPatternEmptySelector } from "./isSearchPatternEmpty.selector"
 
 const createIsPatternDisabledSelector = (nodeRulesSelector: MemoizedSelector<CcState, NodeRule[]>) =>

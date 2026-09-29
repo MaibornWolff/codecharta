@@ -1,4 +1,4 @@
-import { CCFile, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
+import { CCFile, CodeMapNode, NodeType } from "../../model/codeCharta.model"
 import { metricRuleLeavesSelector } from "./metricRuleLeaves.selector"
 
 const file = (name: string): CodeMapNode => ({ name, path: `/root/${name}`, type: NodeType.FILE, attributes: { mcc: 1 } })

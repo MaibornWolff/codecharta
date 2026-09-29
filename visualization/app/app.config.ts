@@ -17,7 +17,7 @@ import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/quer
 import { routePaths } from "app/codeCharta/routing/routePaths"
 import { appReducers, setStateMiddleware } from "app/codeCharta/stores/rootStore/store"
 import { domainViewEffects } from "app/codeCharta/views/domainView/effects/domainView.effects"
-import { metricsViewEffects } from "app/codeCharta/views/metricsView/effects/metricsView.effects"
+import { mapExplorerEffects } from "app/codeCharta/views/mapExplorer/effects/mapExplorer.effects"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 
 export const routes: Routes = [
@@ -56,7 +56,7 @@ export const appConfig: ApplicationConfig = {
             ...sharedEffects,
             ...loadEffects,
             ...domainViewEffects,
-            ...metricsViewEffects
+            ...mapExplorerEffects
         ]),
 
         {

@@ -2,24 +2,24 @@ import { TestBed } from "@angular/core/testing"
 import { EffectsModule } from "@ngrx/effects"
 import { Store, StoreModule } from "@ngrx/store"
 import { firstValueFrom } from "rxjs"
-import { AddExcludedNodesIfNotResultsInEmptyMapEffect } from "../../../features/shared/effects/addExcludedNodesIfNotResultsInEmptyMap/addExcludedNodesIfNotResultsInEmptyMap.effect"
-import { CcState, NodeRule } from "../../../model/codeCharta.model"
-import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
-import { excludedNodesSelector, flattenedNodesSelector, metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { addFlattenedNodes, addMetricRule, setSearchPattern } from "../../../stores/sharedView/sharedView.write.facade"
-import { resultsInEmptyMap } from "../../../util/nodeRules/resultsInEmptyMap"
-import { RuleFromSearchPatternEffect } from "../effects/ruleFromSearchPattern/ruleFromSearchPattern.effect"
-import { MetricsExplorerRules } from "./metricsExplorerRules"
+import { AddExcludedNodesIfNotResultsInEmptyMapEffect } from "../../features/shared/effects/addExcludedNodesIfNotResultsInEmptyMap/addExcludedNodesIfNotResultsInEmptyMap.effect"
+import { CcState, NodeRule } from "../../model/codeCharta.model"
+import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
+import { excludedNodesSelector, flattenedNodesSelector, metricRulesSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { addFlattenedNodes, addMetricRule, setSearchPattern } from "../../stores/sharedView/sharedView.write.facade"
+import { resultsInEmptyMap } from "../../util/nodeRules/resultsInEmptyMap"
+import { RuleFromSearchPatternEffect } from "./effects/ruleFromSearchPattern/ruleFromSearchPattern.effect"
+import { MapExplorerRules } from "./mapExplorerRules"
 
-jest.mock("../../../util/nodeRules/resultsInEmptyMap", () => ({
+jest.mock("../../util/nodeRules/resultsInEmptyMap", () => ({
     resultsInEmptyMap: jest.fn()
 }))
 
 const rulesOfEffect = async (effect: "flatten" | "exclude") =>
     firstValueFrom(TestBed.inject<Store<CcState>>(Store).select(effect === "flatten" ? flattenedNodesSelector : excludedNodesSelector))
 
-describe("MetricsExplorerRules", () => {
-    let rules: MetricsExplorerRules
+describe("MapExplorerRules", () => {
+    let rules: MapExplorerRules
 
     beforeEach(() => {
         jest.mocked(resultsInEmptyMap).mockImplementation(() => false)
@@ -28,9 +28,9 @@ describe("MetricsExplorerRules", () => {
                 StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] }),
                 EffectsModule.forRoot([RuleFromSearchPatternEffect, AddExcludedNodesIfNotResultsInEmptyMapEffect])
             ],
-            providers: [MetricsExplorerRules]
+            providers: [MapExplorerRules]
         })
-        rules = TestBed.inject(MetricsExplorerRules)
+        rules = TestBed.inject(MapExplorerRules)
         TestBed.inject(Store).dispatch(setSearchPattern({ value: "needle" }))
     })
 

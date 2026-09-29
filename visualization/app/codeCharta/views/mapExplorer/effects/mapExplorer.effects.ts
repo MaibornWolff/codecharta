@@ -1,3 +1,3 @@
 import { RuleFromSearchPatternEffect } from "./ruleFromSearchPattern/ruleFromSearchPattern.effect"
 
-export const metricsViewEffects = [RuleFromSearchPatternEffect]
+export const mapExplorerEffects = [RuleFromSearchPatternEffect]

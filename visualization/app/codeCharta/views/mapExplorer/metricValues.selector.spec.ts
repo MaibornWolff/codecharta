@@ -1,5 +1,5 @@
-import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { UNARY_METRIC } from "../../../util/metric/unaryMetric"
+import { CodeMapNode, NodeType } from "../../model/codeCharta.model"
+import { UNARY_METRIC } from "../../util/metric/unaryMetric"
 import { metricValuesSelector } from "./metricValues.selector"
 
 const leaf = (name: string, attributes: Record<string, number>): CodeMapNode => ({
