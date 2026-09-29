@@ -3,7 +3,7 @@ import type { ECharts } from "echarts/core"
 type LayoutPoint = [number, number]
 
 export interface BoxDragHandlers {
-    canDragBox: (path: string, point: LayoutPoint) => boolean
+    canDragBox: (path: string) => boolean
     onBoxDragged: (path: string, dx: number, dy: number) => void
     onBoxDragEnded: () => void
 }
@@ -41,14 +41,10 @@ export class BoxDragGesture {
     ) {}
 
     press(path: string, pointer: PointerEvent): void {
-        if (!isPrimaryPress(pointer)) {
+        if (!isPrimaryPress(pointer) || !this.handlers.canDragBox(path)) {
             return
         }
-        const point = this.toLayout(pointer)
-        if (!this.handlers.canDragBox(path, point)) {
-            return
-        }
-        this.drag = { path, last: point, pressedAt: [pointer.offsetX, pointer.offsetY], hasMoved: false }
+        this.drag = { path, last: this.toLayout(pointer), pressedAt: [pointer.offsetX, pointer.offsetY], hasMoved: false }
     }
 
     move(pointer: PointerEvent): void {

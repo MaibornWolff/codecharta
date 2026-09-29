@@ -1,4 +1,4 @@
-import { canDragBoxAt, movedLayout } from "./boxMoves"
+import { isDraggable, movedLayout } from "./boxMoves"
 import { aBand, aBox } from "./dependencyGraphTestData"
 import { DependencyGraphLayout, LAYOUT_SPACING } from "./levelizedLayout"
 
@@ -83,28 +83,19 @@ describe("boxMoves", () => {
         })
     })
 
-    describe("canDragBoxAt", () => {
-        it("should drag a file anywhere on it", () => {
+    describe("isDraggable", () => {
+        it("should drag files and folders wherever they are grabbed", () => {
             // Act
-            const canDrag = canDragBoxAt(layout, "/root/app/a.ts", [200, 200])
+            const draggable = [file.path, folder.path].map(path => isDraggable(layout, path))
 
             // Assert
-            expect(canDrag).toBe(true)
-        })
-
-        it("should drag an open folder by its header only", () => {
-            // Act
-            const byHeader = canDragBoxAt(layout, "/root/app", [200, 110])
-            const byInside = canDragBoxAt(layout, "/root/app", [200, 300])
-
-            // Assert
-            expect([byHeader, byInside]).toEqual([true, false])
+            expect(draggable).toEqual([true, true])
         })
 
         it("should never drag the root or a box that is not drawn", () => {
             // Act
-            const rootDrag = canDragBoxAt(layout, "/root", [10, 10])
-            const missing = canDragBoxAt(layout, "/root/gone.ts", [10, 10])
+            const rootDrag = isDraggable(layout, "/root")
+            const missing = isDraggable(layout, "/root/gone.ts")
 
             // Assert
             expect([rootDrag, missing]).toEqual([false, false])
