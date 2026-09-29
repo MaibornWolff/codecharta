@@ -1,4 +1,4 @@
-export { elementOfSize, stubElementSize, stubResizeObserver } from "../../../util/testUtils/domStubs"
+export { elementOfSize, reportResize, stubElementSize, stubResizeObserver } from "../../../util/testUtils/domStubs"
 
 type ChartEventHandler = (event: unknown) => void
 

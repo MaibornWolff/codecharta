@@ -1,6 +1,5 @@
 import type { ECharts } from "echarts/core"
-
-type LayoutPoint = [number, number]
+import { Point } from "../../util/geometry"
 
 export interface BoxDragHandlers {
     canDragBox: (path: string) => boolean
@@ -12,26 +11,27 @@ interface PointerEvent {
     offsetX: number
     offsetY: number
     event?: MouseEvent | TouchEvent
-    /** ECharts' pan skips a pointer move marked so. It reads the mark on every move, and the host hears each
-     * move before the pan does, while ECharts reports the press itself only after the pan has taken it. */
+    /** ECharts' inside zoom skips a pointer move marked so. Switching its moveOnMouseMove off instead takes a
+     * setOption, a full redraw, on every press and release, and a redraw replaces the box under the pointer,
+     * which costs ECharts the click on it. The host hears each move before the pan does, because it listens
+     * before the zoom exists. The spec pins that the installed ECharts still reads the mark. */
     __ecRoamConsumed?: boolean
 }
 
 interface Drag {
     path: string
-    last: LayoutPoint
-    pressedAt: [number, number]
+    last: Point
+    pressedAt: Point
     hasMoved: boolean
 }
 
-/** A press closer than this to where it started is still a click. */
+/** Below zrender's own 4px click tolerance, so a click after a tiny drag still arrives and has to be taken. */
 export const DRAG_THRESHOLD_PX = 3
 const PRIMARY_BUTTON = 0
 
-/** Drags a box by the pointer, in layout units, one report per frame however fast the pointer moves. */
 export class BoxDragGesture {
     private drag: Drag | null = null
-    private pending: LayoutPoint = [0, 0]
+    private pending: Point = [0, 0]
     private frame?: number
     private hasJustDragged = false
 
@@ -41,10 +41,13 @@ export class BoxDragGesture {
     ) {}
 
     press(path: string, pointer: PointerEvent): void {
+        // zrender sends no click after a drag over its tolerance, so the next press is where a finished drag ends.
+        this.hasJustDragged = false
         if (!isPrimaryPress(pointer) || !this.handlers.canDragBox(path)) {
             return
         }
-        this.drag = { path, last: this.toLayout(pointer), pressedAt: [pointer.offsetX, pointer.offsetY], hasMoved: false }
+        const pressedAt: Point = [pointer.offsetX, pointer.offsetY]
+        this.drag = { path, last: this.toLayout(pointer), pressedAt, hasMoved: false }
     }
 
     move(pointer: PointerEvent): void {
@@ -70,8 +73,7 @@ export class BoxDragGesture {
         }
     }
 
-    /** The click that ends a drag is no click on the box. Asked once per click. */
-    takesClick(): boolean {
+    takeClickThatEndedDrag(): boolean {
         const hasJustDragged = this.hasJustDragged
         this.hasJustDragged = false
         return hasJustDragged
@@ -98,7 +100,7 @@ export class BoxDragGesture {
         }
     }
 
-    private toLayout(pointer: PointerEvent): LayoutPoint {
+    private toLayout(pointer: PointerEvent): Point {
         return layoutPointAt(this.chart, pointer)
     }
 }
@@ -108,7 +110,7 @@ function isPrimaryPress({ event }: PointerEvent): boolean {
     return !event || !("button" in event) || event.button === PRIMARY_BUTTON
 }
 
-export function layoutPointAt(chart: ECharts, { offsetX, offsetY }: { offsetX: number; offsetY: number }): LayoutPoint {
+export function layoutPointAt(chart: ECharts, { offsetX, offsetY }: { offsetX: number; offsetY: number }): Point {
     const [x, y] = chart.convertFromPixel({ gridIndex: 0 }, [offsetX, offsetY]) as number[]
     return [x, y]
 }
