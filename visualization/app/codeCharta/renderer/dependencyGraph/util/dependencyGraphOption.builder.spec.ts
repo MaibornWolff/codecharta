@@ -19,6 +19,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         layout: { boxes: [root, view, model, util], bands: [aBand()], width: 400, height: 200 },
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
         edgeFilter: "all",
+        edgeStyle: "curved",
         hoveredPath: null,
         selectedPath: null,
         ...overrides

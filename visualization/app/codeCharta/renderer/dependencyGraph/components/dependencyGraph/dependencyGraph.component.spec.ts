@@ -18,6 +18,7 @@ const SCENE: DependencyGraphScene = {
     layout: { boxes: [aBox("/root/a.ts")], bands: [], width: 160, height: 40 },
     edges: [],
     edgeFilter: "all",
+    edgeStyle: "curved",
     hoveredPath: null,
     selectedPath: null
 }

@@ -1,6 +1,7 @@
 import { drawEdge } from "./dependencyGraphEdges"
 import { DIMMED_OPACITY } from "./dependencyGraphStyle"
-import { aBox, anEdge, identityPixels } from "./dependencyGraphTestData"
+import { anEdge, identityPixels } from "./dependencyGraphTestData"
+import { EdgeRoute } from "./edgeRouting"
 
 interface DrawnEdge {
     children: [
@@ -9,91 +10,80 @@ interface DrawnEdge {
     ]
 }
 
-function draw(...args: Parameters<typeof drawEdge>): DrawnEdge {
-    return drawEdge(...args) as unknown as DrawnEdge
+function draw(route: EdgeRoute, overrides: Parameters<typeof anEdge>[2] = {}, isDimmed = false): DrawnEdge {
+    return drawEdge(anEdge("/root/a", "/root/b", overrides), route, isDimmed, identityPixels) as unknown as DrawnEdge
 }
 
+const downward: EdgeRoute = { start: [60, 40], startSide: "bottom", end: [90, 140], endSide: "top", bend: "sCurve" }
+
 describe("drawEdge", () => {
-    const upper = aBox("/root/upper", { x: 0, y: 0 })
-    const lower = aBox("/root/lower", { x: 0, y: 100 })
-
-    it("should leave a downward edge through the bottom and enter through the top", () => {
-        // Arrange
-        const edge = anEdge(upper.path, lower.path)
-
+    it("should leave and enter square to the sides, pulled out by half the distance", () => {
         // Act
-        const { children } = draw(edge, upper, lower, false, identityPixels)
+        const [curve, arrow] = draw(downward).children
 
         // Assert
-        expect(children[0].shape).toMatchObject({ x1: 160 * 0.42, y1: 40, x2: 160 * 0.58, y2: 100 })
-        expect(children[1].shape.points[0]).toEqual([160 * 0.58, 100])
+        expect(curve.shape).toEqual({ x1: 60, y1: 40, cpx1: 60, cpy1: 90, cpx2: 90, cpy2: 90, x2: 90, y2: 140 })
+        expect(arrow.shape.points[0]).toEqual([90, 140])
     })
 
-    it("should leave an upward edge through the top and enter through the bottom", () => {
+    it("should still pull out a short edge between facing sides", () => {
         // Arrange
-        const edge = anEdge(lower.path, upper.path, { type: "feedbackLeafLevel" })
+        const route: EdgeRoute = { start: [160, 20], startSide: "right", end: [170, 20], endSide: "left", bend: "sCurve" }
 
         // Act
-        const { children } = draw(edge, lower, upper, false, identityPixels)
+        const [curve] = draw(route).children
 
         // Assert
-        expect(children[0].shape).toMatchObject({ y1: 100, y2: 40 })
-        expect(children[0].style.stroke).toBe("#dc2626")
+        expect(curve.shape).toMatchObject({ cpx1: 160 + 24, cpx2: 170 - 24 })
     })
 
-    it("should run between the facing sides of boxes in the same row", () => {
+    it("should draw a straight line with its pulls on the line", () => {
         // Arrange
-        const left = aBox("/root/left", { x: 0 })
-        const right = aBox("/root/right", { x: 300 })
+        const route: EdgeRoute = { start: [0, 0], startSide: "bottom", end: [0, 90], endSide: "top", bend: "straight" }
 
         // Act
-        const { children } = draw(anEdge(right.path, left.path), right, left, false, identityPixels)
+        const [curve] = draw(route).children
 
         // Assert
-        expect(children[0].shape).toMatchObject({ x1: 300, x2: 160 })
+        expect(curve.shape).toMatchObject({ cpx1: 0, cpy1: 30, cpx2: 0, cpy2: 60 })
     })
 
-    it("should run rightward between boxes in the same row", () => {
+    it("should bow the two directions of a two-way dependency to opposite sides", () => {
         // Arrange
-        const left = aBox("/root/left", { x: 0 })
-        const right = aBox("/root/right", { x: 300 })
+        const there: EdgeRoute = { start: [0, 0], startSide: "bottom", end: [0, 90], endSide: "top", bend: "arc" }
+        const back: EdgeRoute = { start: [0, 90], startSide: "top", end: [0, 0], endSide: "bottom", bend: "arc" }
 
         // Act
-        const { children } = draw(anEdge(left.path, right.path), left, right, false, identityPixels)
+        const [thereCurve] = draw(there).children
+        const [backCurve] = draw(back).children
 
         // Assert
-        expect(children[0].shape).toMatchObject({ x1: 160, x2: 300, cpx1: 230 })
+        expect(thereCurve.shape.cpx1).toBeCloseTo(14)
+        expect(backCurve.shape.cpx1).toBeCloseTo(-14)
     })
 
-    it("should still bend an edge between boxes that touch", () => {
+    it("should swing an aside edge out to the right of both ends", () => {
         // Arrange
-        const upper = aBox("/root/upper", { y: 0 })
-        const touching = aBox("/root/touching", { y: 40 })
+        const route: EdgeRoute = { start: [160, 120], startSide: "right", end: [160, 20], endSide: "right", bend: "aside" }
 
         // Act
-        const { children } = draw(anEdge(upper.path, touching.path), upper, touching, false, identityPixels)
+        const [curve] = draw(route).children
 
         // Assert
-        expect(children[0].shape).toMatchObject({ cpy1: 40 + 24, cpy2: 40 - 24 })
+        expect(curve.shape).toMatchObject({ cpx1: 160 + 40, cpy1: 120, cpx2: 160 + 40, cpy2: 20 })
     })
 
-    it("should dash a container-level feedback edge", () => {
-        // Arrange
-        const edge = anEdge(lower.path, upper.path, { type: "feedbackContainerLevel" })
-
+    it("should colour and dash a container-level feedback edge", () => {
         // Act
-        const { children } = draw(edge, lower, upper, false, identityPixels)
+        const [curve] = draw(downward, { type: "feedbackContainerLevel" }).children
 
         // Assert
-        expect(children[0].style.lineDash).toEqual([5, 4])
+        expect(curve.style).toMatchObject({ stroke: "#dc2626", lineDash: [5, 4] })
     })
 
     it("should fade a dimmed edge and its arrow", () => {
-        // Arrange
-        const edge = anEdge(upper.path, lower.path)
-
         // Act
-        const { children } = draw(edge, upper, lower, true, identityPixels)
+        const { children } = draw(downward, {}, true)
 
         // Assert
         expect(children.map(child => child.style.opacity)).toEqual([DIMMED_OPACITY, DIMMED_OPACITY])

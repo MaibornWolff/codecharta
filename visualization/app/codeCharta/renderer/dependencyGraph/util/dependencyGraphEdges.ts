@@ -2,15 +2,15 @@ import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import { DIMMED_OPACITY, edgeColor, edgeDash, edgeWidthPx } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
-import { LayoutBox } from "./levelizedLayout"
+import { EdgeRoute, Side } from "./edgeRouting"
 
 const ARROW_LENGTH_PX = 8
 const ARROW_HALF_WIDTH_PX = 4
 const MIN_CURVE_PULL_PX = 24
-/** Edges leave a box left of its middle and arrive right of it, so the two edges of a two-way
- * dependency run side by side instead of on top of each other. */
-const LEAVING_AT = 0.42
-const ARRIVING_AT = 0.58
+const MIN_ASIDE_BULGE_PX = 40
+const ASIDE_BULGE_PER_HEIGHT = 0.35
+/** How far a dependency running both ways bows out, each direction to its own side. */
+const TWO_WAY_ARC_PX = 14
 
 type Point = [number, number]
 
@@ -21,8 +21,10 @@ interface Curve {
     end: Point
 }
 
-export function drawEdge(edge: GraphEdge, from: LayoutBox, to: LayoutBox, isDimmed: boolean, toPixels: ToPixels) {
-    const curve = curveBetween(from, to, toPixels)
+const OUTWARD: Record<Side, Point> = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] }
+
+export function drawEdge(edge: GraphEdge, route: EdgeRoute, isDimmed: boolean, toPixels: ToPixels) {
+    const curve = bend(route, asPoint(toPixels(route.start)), asPoint(toPixels(route.end)))
     const color = edgeColor(edge.type)
     const opacity = isDimmed ? DIMMED_OPACITY : 1
     return drawnItem([
@@ -45,35 +47,44 @@ export function drawEdge(edge: GraphEdge, from: LayoutBox, to: LayoutBox, isDimm
     ])
 }
 
-/** Downward edges leave through the bottom and enter through the top, upward edges the other way round,
- * and edges between boxes side by side run between their facing sides. */
-function curveBetween(from: LayoutBox, to: LayoutBox, toPixels: ToPixels): Curve {
-    if (to.y >= from.y + from.height) {
-        return verticalCurve(
-            toPixels([from.x + from.width * LEAVING_AT, from.y + from.height]),
-            toPixels([to.x + to.width * ARRIVING_AT, to.y])
-        )
+function bend(route: EdgeRoute, start: Point, end: Point): Curve {
+    switch (route.bend) {
+        case "straight":
+            return { start, startPull: along(start, end, 1 / 3, 0), endPull: along(start, end, 2 / 3, 0), end }
+        case "arc":
+            return { start, startPull: along(start, end, 1 / 3, TWO_WAY_ARC_PX), endPull: along(start, end, 2 / 3, TWO_WAY_ARC_PX), end }
+        case "aside": {
+            const bulgeX = Math.max(start[0], end[0]) + Math.max(MIN_ASIDE_BULGE_PX, Math.abs(end[1] - start[1]) * ASIDE_BULGE_PER_HEIGHT)
+            return { start, startPull: [bulgeX, start[1]], endPull: [bulgeX, end[1]], end }
+        }
+        default:
+            return sCurve(route, start, end)
     }
-    if (to.y + to.height <= from.y) {
-        return verticalCurve(
-            toPixels([from.x + from.width * LEAVING_AT, from.y]),
-            toPixels([to.x + to.width * ARRIVING_AT, to.y + to.height])
-        )
-    }
-    const isRightward = to.x >= from.x + from.width
-    const start = toPixels([isRightward ? from.x + from.width : from.x, from.y + from.height * LEAVING_AT])
-    const end = toPixels([isRightward ? to.x : to.x + to.width, to.y + to.height * ARRIVING_AT])
-    return horizontalCurve(start, end)
 }
 
-function verticalCurve(start: number[], end: number[]): Curve {
-    const pull = Math.max(Math.abs(end[1] - start[1]) / 2, MIN_CURVE_PULL_PX) * Math.sign(end[1] - start[1] || 1)
-    return { start: [start[0], start[1]], startPull: [start[0], start[1] + pull], endPull: [end[0], end[1] - pull], end: [end[0], end[1]] }
+/** Leaves and enters square to the box's side, pulled out by half the distance along that direction. */
+function sCurve({ startSide, endSide }: EdgeRoute, start: Point, end: Point): Curve {
+    const isVertical = startSide === "top" || startSide === "bottom"
+    const distance = Math.abs(isVertical ? end[1] - start[1] : end[0] - start[0])
+    const pull = Math.max(distance / 2, MIN_CURVE_PULL_PX)
+    return { start, startPull: pushedOut(start, startSide, pull), endPull: pushedOut(end, endSide, pull), end }
 }
 
-function horizontalCurve(start: number[], end: number[]): Curve {
-    const pull = Math.max(Math.abs(end[0] - start[0]) / 2, MIN_CURVE_PULL_PX) * Math.sign(end[0] - start[0] || 1)
-    return { start: [start[0], start[1]], startPull: [start[0] + pull, start[1]], endPull: [end[0] - pull, end[1]], end: [end[0], end[1]] }
+function pushedOut(point: Point, side: Side, distance: number): Point {
+    const [outX, outY] = OUTWARD[side]
+    return [point[0] + outX * distance, point[1] + outY * distance]
+}
+
+/** A point part of the way from start to end, moved sideways to the left of the direction of travel. */
+function along(start: Point, end: Point, share: number, sideways: number): Point {
+    const deltaX = end[0] - start[0]
+    const deltaY = end[1] - start[1]
+    const length = Math.hypot(deltaX, deltaY) || 1
+    return [start[0] + deltaX * share + (deltaY / length) * sideways, start[1] + deltaY * share - (deltaX / length) * sideways]
+}
+
+function asPoint(pixels: number[]): Point {
+    return [pixels[0], pixels[1]]
 }
 
 function arrowHead({ endPull, end }: Curve): Point[] {
