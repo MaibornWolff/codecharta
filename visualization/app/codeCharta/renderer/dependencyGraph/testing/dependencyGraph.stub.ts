@@ -11,6 +11,7 @@ export const stubbedChart = {
     })),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
+    convertFromPixel: jest.fn((_finder: unknown, [x, y]: number[]) => [x, y]),
     resize: jest.fn(),
     dispose: jest.fn(),
     on: jest.fn((eventName: string, handler: ChartEventHandler) => chartEventHandlers.set(eventName, handler))

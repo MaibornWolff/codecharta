@@ -104,4 +104,27 @@ describe("DependencyMapViewStore", () => {
         expect(before).toBe("curved")
         expect(store.edgeStyle()).toBe("straight")
     })
+
+    it("should keep where the reader put a box until the layout is reset", () => {
+        // Act
+        store.placeBox("/root/app", [20, 10])
+        const placed = store.boxOffsets().get("/root/app")
+        store.resetLayout()
+
+        // Assert
+        expect(placed).toEqual([20, 10])
+        expect(store.boxOffsets().size).toBe(0)
+    })
+
+    it("should put every box back when the tree gets a new root", () => {
+        // Arrange
+        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/app")]))
+        store.placeBox("/root/app", [20, 10])
+
+        // Act
+        store.adoptTree(leveledFolder("/root/app", [leveledFolder("/root/app/ui")]))
+
+        // Assert
+        expect(store.boxOffsets().size).toBe(0)
+    })
 })

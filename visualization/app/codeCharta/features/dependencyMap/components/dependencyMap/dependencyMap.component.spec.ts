@@ -8,6 +8,7 @@ import { Edge } from "../../../../model/codeCharta.model"
 import { LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import {
     fireChartEvent,
+    fireRenderSurfaceEvent,
     lastDrawnOption,
     resetStubbedChart,
     stubbedChart,
@@ -268,5 +269,31 @@ describe("DependencyMapComponent", () => {
         const { x1, y1, cpx1, cpy1, x2, y2 } = drawnCurve.shape
         const distanceOffTheLine = Math.abs((cpx1 - x1) * (y2 - y1) - (cpy1 - y1) * (x2 - x1)) / Math.hypot(x2 - x1, y2 - y1)
         expect(distanceOffTheLine).toBeCloseTo(14)
+    })
+
+    it("should move a dragged box, offer to reset the layout and put it back", async () => {
+        // Arrange
+        await setup()
+        const drawnX = (path: string) => {
+            const boxes = drawnSeries("boxes")
+            const index = boxes.data.findIndex(item => item.name === path)
+            return (boxes.renderItem({ dataIndex: index }, { coord: point => point }).children[0] as unknown as { shape: { x: number } })
+                .shape.x
+        }
+        const before = drawnX("/root/ui/view.ts")
+
+        // Act
+        fireChartEvent("mousedown", { ...boxEvent("/root/ui/view.ts"), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
+        fireRenderSurfaceEvent("mousemove", { offsetX: -30, offsetY: 0, target: {} })
+        fireRenderSurfaceEvent("mouseup")
+        await screen.findByTestId("dependency-reset-layout")
+        const moved = drawnX("/root/ui/view.ts")
+        fireEvent.click(screen.getByTestId("dependency-reset-layout"))
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        expect(moved).toBeLessThan(before)
+        expect(drawnX("/root/ui/view.ts")).toBe(before)
+        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
     })
 })

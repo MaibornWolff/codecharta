@@ -8,11 +8,13 @@
     <cc-dependency-graph
         #graph
         [scene]="scene"
+        [canDragBox]="canDragBox"
         (boxClicked)="select($event)"
         (boxToggled)="toggle($event)"
         (boxHovered)="hover($event)"
         (boxRightClicked)="openContextMenu($event)"
         (rendered)="markReady()"
+        (boxDragged)="moveBox($event)"
     ></cc-dependency-graph>
 
     <div class="absolute right-[10px] top-[10px] z-10 flex gap-2">
@@ -44,6 +46,17 @@
                 }
             </select>
         </label>
+        @if (hasMovedBoxes()) {
+            <button
+                type="button"
+                class="btn btn-sm bg-base-100 shadow-md"
+                title="Put every dragged box back in its place"
+                data-testid="dependency-reset-layout"
+                (click)="resetLayout()"
+            >
+                Reset layout
+            </button>
+        }
         <button
             type="button"
             class="btn btn-sm btn-square bg-base-100 shadow-md"
