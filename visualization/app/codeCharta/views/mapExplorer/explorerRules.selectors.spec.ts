@@ -1,5 +1,5 @@
-import { RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { CodeMapNode, NodeRule, NodeType } from "../../../model/codeCharta.model"
+import { RuleWithCount } from "../../features/sidebarExplorer/facade"
+import { CodeMapNode, NodeRule, NodeType } from "../../model/codeCharta.model"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./explorerRules.selectors"
 
 const pathRules = (rules: RuleWithCount[]) => rules.filter(rule => rule.kind !== "METRIC")

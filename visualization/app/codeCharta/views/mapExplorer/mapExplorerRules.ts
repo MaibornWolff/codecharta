@@ -1,20 +1,20 @@
 import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { ExplorerRules, RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { CcState, RuleEffect } from "../../../model/codeCharta.model"
+import { ExplorerRules, RuleWithCount } from "../../features/sidebarExplorer/facade"
+import { CcState, RuleEffect } from "../../model/codeCharta.model"
 import {
     clearRulesOfType,
     removeExcludedNodes,
     removeFlattenedNodes,
     removeMetricRule
-} from "../../../stores/sharedView/sharedView.write.facade"
-import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
-import { ruleFromSearchPattern } from "../effects/ruleFromSearchPattern/ruleFromSearchPattern.effect"
+} from "../../stores/sharedView/sharedView.write.facade"
+import { dispatchRuleChange } from "../../util/dispatchAfterPaint"
+import { ruleFromSearchPattern } from "./effects/ruleFromSearchPattern/ruleFromSearchPattern.effect"
 import { excludeRulesWithCountSelector, flattenRulesWithCountSelector } from "./explorerRules.selectors"
 import { isExcludePatternDisabledSelector, isFlattenPatternDisabledSelector } from "./isPatternDisabled.selector"
 
 @Injectable()
-export class MetricsExplorerRules implements ExplorerRules {
+export class MapExplorerRules implements ExplorerRules {
     private readonly store = inject<Store<CcState>>(Store)
 
     readonly flattenRules$ = this.store.select(flattenRulesWithCountSelector)

@@ -1,5 +1,5 @@
-import { MetricValues } from "../../../features/sidebarExplorer/facade"
-import { MetricRule } from "../../../model/codeCharta.model"
+import { MetricValues } from "../../features/sidebarExplorer/facade"
+import { MetricRule } from "../../model/codeCharta.model"
 import { excludeMetricRulesWithCountSelector, flattenMetricRulesWithCountSelector } from "./metricRulesWithCount.selector"
 
 const rule = (overrides: Partial<MetricRule> = {}): MetricRule => ({

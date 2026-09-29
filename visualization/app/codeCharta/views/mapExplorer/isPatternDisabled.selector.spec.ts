@@ -1,4 +1,4 @@
-import { NodeRule } from "../../../model/codeCharta.model"
+import { NodeRule } from "../../model/codeCharta.model"
 import { isExcludePatternDisabledSelector, isFlattenPatternDisabledSelector } from "./isPatternDisabled.selector"
 
 const FLATTENED_NODES: NodeRule[] = [{ path: "*alreadyFlattened*" }]

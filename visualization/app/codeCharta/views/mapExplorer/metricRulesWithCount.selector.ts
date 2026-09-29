@@ -1,9 +1,9 @@
 import { createSelector } from "@ngrx/store"
-import { MetricValues, RuleWithCount } from "../../../features/sidebarExplorer/facade"
-import { MetricRule, RuleEffect } from "../../../model/codeCharta.model"
-import { metricRulesSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { describeMetricRule } from "../../../util/metricRule/describeMetricRule"
-import { matchesMetricRule } from "../../../util/metricRule/metricRuleMatcher"
+import { MetricValues, RuleWithCount } from "../../features/sidebarExplorer/facade"
+import { MetricRule, RuleEffect } from "../../model/codeCharta.model"
+import { metricRulesSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { describeMetricRule } from "../../util/metricRule/describeMetricRule"
+import { matchesMetricRule } from "../../util/metricRule/metricRuleMatcher"
 import { metricValuesSelector } from "./metricValues.selector"
 
 const countFilesMatching = (rule: MetricRule, metricValues: MetricValues): number =>
