@@ -63,21 +63,32 @@ describe("buildDependencyGraphOption", () => {
         expect(yAxis.inverse).toBe(true)
     })
 
-    it("should draw boxes and level bands as one series in paint order, and the edges above them all", () => {
+    it("should draw everything as one series, the edges over the open folders and under the closed boxes and every name", () => {
         // Act
         const { option, series } = drawnGraph(sceneWith())
 
         // Assert
         expect(option.series.map(built => built.id)).toEqual([GRAPH_SERIES_ID])
-        expect(series.data.map(datum => datum.name ?? (datum.isEdge ? "edge" : "band"))).toEqual([
+        expect(series.data.map(datum => datum.name ?? (datum.isEdge ? "edge" : "decoration"))).toEqual([
             "/root",
-            "band",
+            "decoration",
+            "edge",
+            "edge",
+            "decoration",
             "/root/view.ts",
             "/root/model.ts",
-            "/root/util.ts",
-            "edge",
-            "edge"
+            "/root/util.ts"
         ])
+    })
+
+    it("should name an open folder over the edges", () => {
+        // Act
+        const { series, draw } = drawnGraph(sceneWith())
+
+        // Assert
+        const texts = series.data.map((_, index) => draw(index).children.map(child => child.style.text))
+        expect(texts[4]).toEqual(["root"])
+        expect(texts[0]).toEqual([undefined])
     })
 
     it("should draw only the edges the filter lets through", () => {
@@ -90,10 +101,10 @@ describe("buildDependencyGraphOption", () => {
 
     it("should draw every edge of the hovered box, whatever the filter", () => {
         // Act
-        const { edgeIndices, series, draw } = drawnGraph(sceneWith({ edgeFilter: "none", hoveredPath: model.path }))
+        const { edgeIndices, describe, draw } = drawnGraph(sceneWith({ edgeFilter: "none", hoveredPath: model.path }))
 
         // Assert
-        expect(edgeIndices).toEqual([series.data.length - 1])
+        expect(edgeIndices.map(index => describe(index).split("<br/>")[0])).toEqual(["<b>view.ts → model.ts</b>"])
         expect(draw(edgeIndices[0]).children[0].style.opacity).toBe(1)
     })
 
@@ -108,12 +119,12 @@ describe("buildDependencyGraphOption", () => {
 
     it("should describe boxes and edges in the tooltip, and nothing for a level band", () => {
         // Act
-        const { describe, edgeIndices } = drawnGraph(sceneWith())
+        const { describe, edgeIndices, indexOf } = drawnGraph(sceneWith())
 
         // Assert
         expect(describe(0)).toBe("<b>/root</b><br/>Level 0<br/><i>Double-click to close</i>")
         expect(describe(1)).toBe("")
-        expect(describe(2)).toBe("<b>/root/view.ts</b><br/>Level 0")
+        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0")
         expect(describe(edgeIndices[1])).toBe("<b>util.ts → view.ts</b><br/>1 dependency · Points upward")
     })
 

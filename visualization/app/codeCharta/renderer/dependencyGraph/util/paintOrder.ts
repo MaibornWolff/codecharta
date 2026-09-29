@@ -12,7 +12,13 @@ export interface EdgeItem {
     isDimmed: boolean
 }
 
-export type GraphItem = PaintedItem | EdgeItem
+/** An open folder's name, painted apart from the folder so that it lies over the edges. */
+export interface TitleItem {
+    kind: "title"
+    box: LayoutBox
+}
+
+export type GraphItem = PaintedItem | TitleItem | EdgeItem
 
 type LayoutPoint = [number, number]
 
@@ -42,12 +48,31 @@ export function paintOrder(layout: DependencyGraphLayout, raisedPaths: readonly 
     return items
 }
 
+/** The painted items split around the edges: the open folders and level bands lie under them, the closed boxes
+ * and the open folders' names over them, so no edge hides a name. Each side keeps the paint order. */
+export function aroundEdges(painted: PaintedItem[]): { underEdges: PaintedItem[]; overEdges: (PaintedItem | TitleItem)[] } {
+    const underEdges: PaintedItem[] = []
+    const overEdges: (PaintedItem | TitleItem)[] = []
+    for (const item of painted) {
+        if (item.kind === "box" && !item.box.isExpanded) {
+            overEdges.push(item)
+            continue
+        }
+        underEdges.push(item)
+        if (item.kind === "box") {
+            overEdges.push({ kind: "title", box: item.box })
+        }
+    }
+    return { underEdges, overEdges }
+}
+
 export function boxAtPoint(layout: DependencyGraphLayout, raisedPaths: readonly string[], point: LayoutPoint): string | null {
-    return topmostBoxAt(paintOrder(layout, raisedPaths), point)
+    const { underEdges, overEdges } = aroundEdges(paintOrder(layout, raisedPaths))
+    return topmostBoxAt([...underEdges, ...overEdges], point)
 }
 
 /** The box painted on top at a point, which is the one the reader sees and means to click there. */
-export function topmostBoxAt(items: PaintedItem[], [x, y]: LayoutPoint): string | null {
+export function topmostBoxAt(items: (PaintedItem | TitleItem)[], [x, y]: LayoutPoint): string | null {
     for (let index = items.length - 1; index >= 0; index--) {
         const item = items[index]
         if (

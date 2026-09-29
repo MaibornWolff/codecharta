@@ -47,15 +47,25 @@ export function drawBox(box: LayoutBox, { emphasis, isSeeThrough, isMissedBySear
     const rect = pixelRectOf(box, toPixels)
     const style = boxStyle(box, emphasis)
     const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
-    const opacity = isMissedBySearch ? MISSED_BY_SEARCH_OPACITY : FOUND_OPACITY
+    const opacity = opacityOf(isMissedBySearch)
     const children: object[] = [
         { type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }
     ]
-    const label = drawLabel(box, rect, opacity)
+    const label = box.isExpanded ? null : drawLabel(box, rect, opacity)
     if (label) {
         children.push(label)
     }
     return drawnItem(children)
+}
+
+/** An open folder's name in its header strip, drawn apart from the folder so the edges pass under it. */
+export function drawFolderTitle(box: LayoutBox, { isMissedBySearch }: BoxLook, toPixels: ToPixels) {
+    const label = drawLabel(box, pixelRectOf(box, toPixels), opacityOf(isMissedBySearch))
+    return drawnItem(label ? [label] : [])
+}
+
+function opacityOf(isMissedBySearch: boolean): number {
+    return isMissedBySearch ? MISSED_BY_SEARCH_OPACITY : FOUND_OPACITY
 }
 
 /** The band's label and separator, less whatever a box from outside its folder covers. */

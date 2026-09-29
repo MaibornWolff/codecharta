@@ -1,4 +1,5 @@
-/** Everything is drawn by one series: the boxes and level bands in paint order, then the edges above them all.
+/** Everything is drawn by one series: the open folders and level bands, then the edges, then the closed boxes and
+ * the folders' names, so that no edge covers a name.
  * An edge over a box does not take the box's clicks: the host hands them on to the box underneath. */
 export const GRAPH_SERIES_ID = "graph"
 
