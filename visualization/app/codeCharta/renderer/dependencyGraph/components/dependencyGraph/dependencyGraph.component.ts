@@ -26,8 +26,8 @@ const NO_BOX_ANYWHERE = () => null
 })
 export class DependencyGraphComponent implements OnDestroy {
     readonly scene = input.required<DependencyGraphScene>()
-    /** Whether a press at this layout point on this box drags it rather than the graph. */
-    readonly canDragBox = input<(path: string, point: [number, number]) => boolean>(NOTHING_DRAGGABLE)
+    /** Whether pressing this box drags it rather than the graph. */
+    readonly canDragBox = input<(path: string) => boolean>(NOTHING_DRAGGABLE)
     /** The box painted on top at a layout point, which takes the clicks on an edge lying over it. */
     readonly boxAt = input<(point: [number, number]) => string | null>(NO_BOX_ANYWHERE)
 
@@ -49,7 +49,7 @@ export class DependencyGraphComponent implements OnDestroy {
         onBoxHovered: path => this.boxHovered.emit(path),
         onBoxRightClicked: (path, clientX, clientY) => this.boxRightClicked.emit({ path, clientX, clientY }),
         onRendered: () => this.rendered.emit(),
-        canDragBox: (path, point) => this.canDragBox()(path, point),
+        canDragBox: path => this.canDragBox()(path),
         onBoxDragged: (path, dx, dy) => this.boxDragged.emit({ path, dx, dy }),
         onBoxDragEnded: () => this.boxDragEnded.emit(),
         boxAt: point => this.boxAt()(point)

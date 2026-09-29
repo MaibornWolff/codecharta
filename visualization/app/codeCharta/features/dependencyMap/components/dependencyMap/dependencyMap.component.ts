@@ -3,13 +3,13 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import {
     BoxOffset,
     boxAtPoint,
-    canDragBoxAt,
     DependencyGraphComponent,
     DependencyGraphScene,
     type DraggedBox,
     EDGE_LEGEND,
     EdgeFilter,
     EdgeStyle,
+    isDraggable,
     layoutLevelized,
     movedLayout,
     projectEdges,
@@ -94,9 +94,9 @@ export class DependencyMapComponent {
         const layout = this.shownLayout()
         return layout === null ? null : boxAtPoint(layout, this.viewStore.raisedPaths(), point)
     }
-    protected readonly canDragBox = (path: string, point: BoxOffset) => {
+    protected readonly canDragBox = (path: string) => {
         const layout = this.shownLayout()
-        return layout !== null && canDragBoxAt(layout, path, point)
+        return layout !== null && isDraggable(layout, path)
     }
     private readonly representatives = computed(() => {
         const tree = this.tree()

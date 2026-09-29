@@ -25,14 +25,10 @@ export function movedLayout(layout: DependencyGraphLayout, offsets: ReadonlyMap<
     return { ...layout, boxes, bands: layout.bands.map(band => spanningItsBoxes(band, byPath)) }
 }
 
-/** A file or closed folder is dragged anywhere on it, an open folder by its header, so the space inside an
- * open folder still pans. The root stays where it is. */
-export function canDragBoxAt(layout: DependencyGraphLayout, path: string, [, y]: BoxOffset): boolean {
+/** Every box but the root is dragged wherever it is grabbed; the root stays, so its empty space pans. */
+export function isDraggable(layout: DependencyGraphLayout, path: string): boolean {
     const box = layout.boxes.find(candidate => candidate.path === path)
-    if (!box || box.depth === 0) {
-        return false
-    }
-    return !box.isExpanded || y <= box.y + LAYOUT_SPACING.headerHeight
+    return box !== undefined && box.depth > 0
 }
 
 function accumulatedShifts(offsets: ReadonlyMap<string, BoxOffset>) {

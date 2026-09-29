@@ -38,7 +38,7 @@ describe("BoxDragGesture", () => {
 
         // Assert
         expect(firstMove.__ecRoamConsumed).toBe(true)
-        expect(handlers.canDragBox).toHaveBeenCalledWith("/root/a.ts", [5, 5])
+        expect(handlers.canDragBox).toHaveBeenCalledWith("/root/a.ts")
         expect(handlers.onBoxDragged).toHaveBeenCalledTimes(1)
         expect(handlers.onBoxDragged).toHaveBeenCalledWith("/root/a.ts", 10, 2)
     })

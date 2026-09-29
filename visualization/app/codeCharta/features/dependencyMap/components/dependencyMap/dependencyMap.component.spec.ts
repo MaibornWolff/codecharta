@@ -339,4 +339,30 @@ describe("DependencyMapComponent", () => {
         expect(whileDragging).toMatch(/^rgba/)
         expect(fillOf("/root/ui")).toMatch(/^#/)
     })
+
+    it("should drag an open folder grabbed deep inside it, not only by its header", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireChartEvent("mousedown", { ...boxEvent("/root/ui"), event: { offsetX: 150, offsetY: 400, event: { button: 0 } } })
+        fireRenderSurfaceEvent("mousemove", { offsetX: 150, offsetY: 460, target: {} })
+        fireRenderSurfaceEvent("mouseup")
+
+        // Assert
+        expect(await screen.findByTestId("dependency-reset-layout")).not.toBeNull()
+    })
+
+    it("should never drag the root, so its empty space pans the view", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireChartEvent("mousedown", { ...boxEvent("/root"), event: { offsetX: 5, offsetY: 5, event: { button: 0 } } })
+        fireRenderSurfaceEvent("mousemove", { offsetX: 90, offsetY: 90, target: {} })
+        fireRenderSurfaceEvent("mouseup")
+
+        // Assert
+        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+    })
 })
