@@ -70,12 +70,14 @@ export class NodeContextMenuComponent {
         return node !== null && this.isFlattened()(node)
     })
     private readonly hasDomainData = toSignal(this.readStore.hasDomainData$, { requireSync: true })
-    readonly jumpTarget = computed(() => {
-        const view = this.capabilities.jumpTargetView
-        if (!view || (view === "domain" && !this.hasDomainData())) {
-            return null
-        }
-        return { view, ...JUMP_TARGETS[view] }
+    private readonly pathsWithDependencyLevels = toSignal(this.readStore.pathsWithDependencyLevels$, { requireSync: true })
+    readonly jumpTargets = computed(() => {
+        const node = this.menuNode()
+        return node === null
+            ? []
+            : this.capabilities.jumpTargetViews
+                  .filter(view => this.canShowIn(view, node.path))
+                  .map(view => ({ view, ...JUMP_TARGETS[view] }))
     })
 
     readonly offeredViewActions = computed(() => {
@@ -122,11 +124,10 @@ export class NodeContextMenuComponent {
         }
     }
 
-    showInJumpTargetView() {
+    showInView(view: ViewId) {
         const node = this.menuNode()
-        const jumpTarget = this.jumpTarget()
-        if (node && jumpTarget) {
-            this.writeStore.showNodeInView(jumpTarget.view, node.path)
+        if (node) {
+            this.writeStore.showNodeInView(view, node.path)
         }
         this.close()
     }
@@ -207,6 +208,17 @@ export class NodeContextMenuComponent {
 
     close() {
         this.writeStore.closeMenu()
+    }
+
+    private canShowIn(view: ViewId, nodePath: string): boolean {
+        switch (view) {
+            case "domain":
+                return this.hasDomainData()
+            case "dependencies":
+                return this.pathsWithDependencyLevels().has(nodePath)
+            default:
+                return true
+        }
     }
 
     private pathWithoutRootSegment(node: Pick<CodeMapNode, "path" | "name">) {

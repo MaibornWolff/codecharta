@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { provideRouter, Router } from "@angular/router"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
+import { pathsWithDependencyLevelsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
@@ -68,6 +69,7 @@ describe("nodeContextMenu component", () => {
         previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
         hasDomainData?: boolean
+        pathsWithDependencyLevels?: ReadonlySet<string>
         isFlattened?: (node: CodeMapNode) => boolean
         isRadialLayout?: boolean
         keptHighlightPaths?: string[]
@@ -80,6 +82,7 @@ describe("nodeContextMenu component", () => {
         previousFocusedNodePath,
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
         hasDomainData = true,
+        pathsWithDependencyLevels = new Set<string>(),
         isFlattened = () => false,
         isRadialLayout = false,
         keptHighlightPaths = [],
@@ -104,6 +107,7 @@ describe("nodeContextMenu component", () => {
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
                         { selector: hasDomainDataSelector, value: hasDomainData },
+                        { selector: pathsWithDependencyLevelsSelector, value: pathsWithDependencyLevels },
                         { selector: isRadialLayoutSelector, value: isRadialLayout },
                         { selector: keptHighlightPathsSelector, value: keptHighlightPaths }
                     ]
@@ -238,7 +242,7 @@ describe("nodeContextMenu component", () => {
         const { container } = await renderMenu({
             node: folderNode,
             origin: "explorer",
-            capabilities: { showMapActions: false, jumpTargetView: null }
+            capabilities: { showMapActions: false, jumpTargetViews: [] }
         })
 
         // Assert
@@ -253,7 +257,7 @@ describe("nodeContextMenu component", () => {
 
     it("should hand the node over to the jump target view and close", async () => {
         // Arrange
-        await renderMenu({ capabilities: { showMapActions: false, jumpTargetView: "metrics" } })
+        await renderMenu({ capabilities: { showMapActions: false, jumpTargetViews: ["metrics"] } })
         const viewHandoffStore = TestBed.inject(ViewHandoffStore)
         const navigateByUrl = jest.spyOn(TestBed.inject(Router), "navigateByUrl").mockResolvedValue(true)
 
@@ -279,6 +283,29 @@ describe("nodeContextMenu component", () => {
 
         // Assert
         expect(screen.getByText("Show in Domain")).not.toBe(null)
+    })
+
+    it("should hide the jump to the dependency view for a node the dependency graph cannot show", async () => {
+        // Arrange & Act
+        await renderMenu({ pathsWithDependencyLevels: new Set(["/root/src"]) })
+
+        // Assert
+        expect(screen.queryByText("Show in Dependencies")).toBe(null)
+    })
+
+    it("should offer the jump to the dependency view for a node in the dependency graph, next to the domain view", async () => {
+        // Arrange
+        await renderMenu({ pathsWithDependencyLevels: new Set(["/root/src", "/root/src/RatingBean.java"]) })
+        const navigateByUrl = jest.spyOn(TestBed.inject(Router), "navigateByUrl").mockResolvedValue(true)
+        const offeredJumps = screen.getAllByText(/^\s*Show in (Domain|Dependencies)\s*$/).map(item => item.textContent.trim())
+
+        // Act
+        fireEvent.click(screen.getByText("Show in Dependencies"))
+
+        // Assert
+        expect(offeredJumps).toEqual(["Show in Domain", "Show in Dependencies"])
+        expect(TestBed.inject(ViewHandoffStore).takeNodeFor("dependencies")).toBe("/root/src/RatingBean.java")
+        expect(navigateByUrl).toHaveBeenCalledWith(routeLinks.dependencies)
     })
 
     it("should show the color row for folders", async () => {

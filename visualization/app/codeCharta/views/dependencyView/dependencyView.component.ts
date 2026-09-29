@@ -36,6 +36,7 @@ import { DEPENDENCY_EXPLORER_SEARCH } from "./explorer/dependencyExplorerSearch"
 import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelection"
 import { DEPENDENCY_EXPLORER_SORT } from "./explorer/dependencyExplorerSort"
 import { DependencyExplorerTree } from "./explorer/dependencyExplorerTree"
+import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
 
 @Component({
     selector: "cc-dependency-view",
@@ -72,12 +73,13 @@ import { DependencyExplorerTree } from "./explorer/dependencyExplorerTree"
         },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
-            useValue: { showMapActions: false, jumpTargetView: "metrics" } satisfies NodeContextMenuCapabilities
+            useValue: { showMapActions: false, jumpTargetViews: ["metrics"] } satisfies NodeContextMenuCapabilities
         },
         provideDependencyMapContextMenuActions(),
         provideViewScopedExplorerState("dependencies"),
         provideViewScopedCssVariables()
     ],
+    hostDirectives: [ShowsHandedOverNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DependencyViewComponent {}

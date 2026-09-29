@@ -26,8 +26,8 @@
             </cc-context-menu-item>
         }
 
-        @if (jumpTarget(); as jumpTarget) {
-            <cc-context-menu-item [icon]="jumpTarget.icon" [hoverHint]="jumpTarget.hoverHint" (itemClick)="showInJumpTargetView()">
+        @for (jumpTarget of jumpTargets(); track jumpTarget.view) {
+            <cc-context-menu-item [icon]="jumpTarget.icon" [hoverHint]="jumpTarget.hoverHint" (itemClick)="showInView(jumpTarget.view)">
                 {{ jumpTarget.label }}
             </cc-context-menu-item>
         }
