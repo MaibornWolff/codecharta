@@ -1,4 +1,4 @@
-import { DependencyEdgeType, dependencyEdgeTypeOf, dependencyWeightOf } from "../../../lenses/dependency/dependencyLens.facade"
+import { DependencyEdgeType, dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../model/codeCharta.model"
 import { LeveledNode } from "./leveledTree"
 
@@ -19,6 +19,16 @@ const TYPES_SHOWN_BY_FILTER: Record<EdgeFilter, ReadonlySet<DependencyEdgeType>>
     all: new Set(["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"]),
     cycles: new Set(["cyclic", "feedbackLeafLevel"]),
     feedback: new Set(["feedbackContainerLevel", "feedbackLeafLevel"])
+}
+
+/** An edge without the metric, or at zero, stands for nothing of it. */
+function isCarried(value: unknown): value is number {
+    return typeof value === "number" && value > 0
+}
+
+/** Another metric has no cycles or upward edges, so asking for them shows all of its edges. */
+export function effectiveEdgeFilter(filter: EdgeFilter, edgeMetric: string | null): EdgeFilter {
+    return isDependencyEdgeMetric(edgeMetric) || filter === "all" || filter === "none" ? filter : "all"
 }
 
 export function isShownByFilter(type: DependencyEdgeType, filter: EdgeFilter): boolean {
@@ -49,12 +59,15 @@ interface MergedEdge {
     isPointingUpwards: boolean
 }
 
-export function projectEdges(edges: Edge[], representatives: ReadonlyMap<string, string>): GraphEdge[] {
+/** The edges carrying the metric, merged onto the boxes on screen and weighted by its value. The cycle and upward
+ * flags describe the dependency graph alone, so every other metric draws its edges as regular ones. */
+export function projectEdges(edges: Edge[], representatives: ReadonlyMap<string, string>, edgeMetric: string | null): GraphEdge[] {
     const merged = new Map<string, MergedEdge>()
     for (const edge of edges) {
+        const value = edgeMetric === null ? undefined : edge.attributes?.[edgeMetric]
         const fromPath = representatives.get(edge.fromNodeName)
         const toPath = representatives.get(edge.toNodeName)
-        if (fromPath === undefined || toPath === undefined || fromPath === toPath) {
+        if (!isCarried(value) || fromPath === undefined || toPath === undefined || fromPath === toPath) {
             continue
         }
         const id = `${fromPath}|${toPath}`
@@ -62,16 +75,11 @@ export function projectEdges(edges: Edge[], representatives: ReadonlyMap<string,
         merged.set(id, {
             fromPath,
             toPath,
-            weight: existing.weight + dependencyWeightOf(edge),
+            weight: existing.weight + value,
             isCyclic: existing.isCyclic || Boolean(edge.isCyclic),
             isPointingUpwards: existing.isPointingUpwards || Boolean(edge.isPointingUpwards)
         })
     }
-    return [...merged].map(([id, edge]) => ({
-        id,
-        fromPath: edge.fromPath,
-        toPath: edge.toPath,
-        weight: edge.weight,
-        type: dependencyEdgeTypeOf(edge)
-    }))
+    const typeOf = isDependencyEdgeMetric(edgeMetric) ? dependencyEdgeTypeOf : () => "regular" as const
+    return [...merged].map(([id, edge]) => ({ id, fromPath: edge.fromPath, toPath: edge.toPath, weight: edge.weight, type: typeOf(edge) }))
 }

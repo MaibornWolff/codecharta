@@ -45,6 +45,7 @@ export class DependencyMapComponent {
         return tree ? withoutHidden(tree, this.viewStore.hiddenPaths()) : null
     })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
+    private readonly edgeMetric = toSignal(this.readStore.edgeMetric$, { requireSync: true })
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
@@ -86,7 +87,8 @@ export class DependencyMapComponent {
         }
         return {
             layout,
-            edges: projectEdges(this.edges(), this.representatives()),
+            edges: projectEdges(this.edges(), this.representatives(), this.edgeMetric()),
+            edgeMetric: this.edgeMetric(),
             edgeFilter: this.viewStore.edgeFilter(),
             edgeStyle: this.viewStore.edgeStyle(),
             isAnchoredAtSideMiddle: this.viewStore.isAnchoredAtSideMiddle(),

@@ -1,5 +1,5 @@
 import { Edge } from "../../../model/codeCharta.model"
-import { isShownByFilter, projectEdges, visibleRepresentatives } from "./edgeProjection"
+import { effectiveEdgeFilter, isShownByFilter, projectEdges, visibleRepresentatives } from "./edgeProjection"
 import { LeveledNode } from "./leveledTree"
 
 function leveledFile(path: string): LeveledNode {
@@ -41,11 +41,11 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(tree, new Set(["/root", "/root/ui"]))
             const edges = [
                 edge("/root/ui/view.ts", "/root/model/node.ts", { attributes: { dependencies: 2 } }),
-                edge("/root/ui/view.ts", "/root/model/edge.ts", { isCyclic: true })
+                edge("/root/ui/view.ts", "/root/model/edge.ts", { attributes: { dependencies: 1, temporal_coupling: 0.5 }, isCyclic: true })
             ]
 
             // Act
-            const projected = projectEdges(edges, representatives)
+            const projected = projectEdges(edges, representatives, "dependencies")
 
             // Assert
             expect(projected).toEqual([
@@ -62,7 +62,7 @@ describe("edgeProjection", () => {
             ]
 
             // Act
-            const [projected] = projectEdges(edges, representatives)
+            const [projected] = projectEdges(edges, representatives, "dependencies")
 
             // Assert
             expect(projected.type).toBe("feedbackContainerLevel")
@@ -74,10 +74,78 @@ describe("edgeProjection", () => {
             const edges = [edge("/root/ui/view.ts", "/root/ui/menu.ts"), edge("/root/ui/view.ts", "/root/docs/readme.md")]
 
             // Act
-            const projected = projectEdges(edges, representatives)
+            const projected = projectEdges(edges, representatives, "dependencies")
 
             // Assert
             expect(projected).toEqual([])
+        })
+
+        it("should draw only the edges carrying the metric, as other producers share the list", () => {
+            // Arrange
+            const representatives = visibleRepresentatives(tree, new Set(["/root", "/root/ui", "/root/model"]))
+            const edges = [
+                edge("/root/ui/view.ts", "/root/model/node.ts"),
+                edge("/root/ui/menu.ts", "/root/model/edge.ts", { attributes: { temporal_coupling: 0.4 } })
+            ]
+
+            // Act
+            const dependencies = projectEdges(edges, representatives, "dependencies")
+            const coupling = projectEdges(edges, representatives, "temporal_coupling")
+
+            // Assert
+            expect(dependencies.map(projected => projected.id)).toEqual(["/root/ui/view.ts|/root/model/node.ts"])
+            expect(coupling).toEqual([
+                {
+                    id: "/root/ui/menu.ts|/root/model/edge.ts",
+                    fromPath: "/root/ui/menu.ts",
+                    toPath: "/root/model/edge.ts",
+                    weight: 0.4,
+                    type: "regular"
+                }
+            ])
+        })
+
+        it("should draw another metric neutral, as the cycle and upward flags describe dependencies only", () => {
+            // Arrange
+            const representatives = visibleRepresentatives(tree, new Set(["/root", "/root/ui", "/root/model"]))
+            const edges = [
+                edge("/root/model/node.ts", "/root/ui/view.ts", {
+                    attributes: { dependencies: 1, temporal_coupling: 0.4 },
+                    isCyclic: true,
+                    isPointingUpwards: true
+                })
+            ]
+
+            // Act
+            const [projected] = projectEdges(edges, representatives, "temporal_coupling")
+
+            // Assert
+            expect(projected.type).toBe("regular")
+        })
+
+        it("should draw nothing while the map has no edge metric", () => {
+            // Arrange
+            const representatives = visibleRepresentatives(tree, new Set(["/root", "/root/ui", "/root/model"]))
+
+            // Act
+            const projected = projectEdges([edge("/root/ui/view.ts", "/root/model/node.ts")], representatives, null)
+
+            // Assert
+            expect(projected).toEqual([])
+        })
+    })
+
+    describe("effectiveEdgeFilter", () => {
+        it("should keep every filter for dependencies, and show all edges of another metric instead of its cycles or upward edges", () => {
+            // Act
+            const forDependencies = (["cycles", "feedback"] as const).map(filter => effectiveEdgeFilter(filter, "dependencies"))
+            const forCoupling = (["all", "cycles", "feedback", "none"] as const).map(filter =>
+                effectiveEdgeFilter(filter, "temporal_coupling")
+            )
+
+            // Assert
+            expect(forDependencies).toEqual(["cycles", "feedback"])
+            expect(forCoupling).toEqual(["all", "all", "all", "none"])
         })
     })
 

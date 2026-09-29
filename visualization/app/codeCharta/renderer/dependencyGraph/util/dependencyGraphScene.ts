@@ -8,6 +8,8 @@ import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 export interface DependencyGraphScene {
     layout: DependencyGraphLayout
     edges: GraphEdge[]
+    /** The edge metric the edges are drawn for; their weight is its value. */
+    edgeMetric: string | null
     edgeFilter: EdgeFilter
     edgeStyle: EdgeStyle
     /** Every edge starts and ends at the middle of its sides, whatever the style. */

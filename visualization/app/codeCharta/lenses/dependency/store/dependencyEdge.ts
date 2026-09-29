@@ -4,7 +4,9 @@ import { Edge } from "../../../model/codeCharta.model"
  * where it is consumed and never stored. */
 export type DependencyEdgeType = "regular" | "cyclic" | "feedbackContainerLevel" | "feedbackLeafLevel"
 
-const DEPENDENCIES_ATTRIBUTE = "dependencies"
+/** The edge metric the dependency parser writes. `edges` is shared with every edge producer, so only an edge
+ * carrying it is a dependency, and its cycle and upward flags describe the dependency graph alone. */
+const DEPENDENCIES_EDGE_METRIC = "dependencies"
 
 export function dependencyEdgeTypeOf({
     isCyclic = false,
@@ -16,8 +18,6 @@ export function dependencyEdgeTypeOf({
     return isCyclic ? "cyclic" : "regular"
 }
 
-/** How many declaration-level dependencies a file edge stands for. An edge written without the count
- * still is one dependency. */
-export function dependencyWeightOf(edge: Pick<Edge, "attributes">): number {
-    return edge.attributes[DEPENDENCIES_ATTRIBUTE] ?? 1
+export function isDependencyEdgeMetric(edgeMetric: string | null): boolean {
+    return edgeMetric === DEPENDENCIES_EDGE_METRIC
 }

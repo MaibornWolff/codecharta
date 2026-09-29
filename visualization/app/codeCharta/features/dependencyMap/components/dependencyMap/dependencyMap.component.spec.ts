@@ -17,6 +17,7 @@ import {
 } from "../../../../renderer/dependencyGraph/testing/dependencyGraph.stub"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
+import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodePath, setRightClickedNodeData, setSelectedNodePath } from "../../../../stores/sharedView/sharedView.write.facade"
@@ -39,8 +40,15 @@ const TREE = leveledFolder("/root", [
     leveledFolder("/root/model", [leveledFile("/root/model/node.ts")])
 ])
 const EDGES: Edge[] = [
-    { fromNodeName: "/root/ui/view.ts", toNodeName: "/root/model/node.ts", attributes: {} },
-    { fromNodeName: "/root/model/node.ts", toNodeName: "/root/ui/view.ts", attributes: {}, isPointingUpwards: true, isCyclic: true }
+    { fromNodeName: "/root/ui/view.ts", toNodeName: "/root/model/node.ts", attributes: { dependencies: 1 } },
+    {
+        fromNodeName: "/root/model/node.ts",
+        toNodeName: "/root/ui/view.ts",
+        attributes: { dependencies: 1 },
+        isPointingUpwards: true,
+        isCyclic: true
+    },
+    { fromNodeName: "/root/ui/view.ts", toNodeName: "/root/model/node.ts", attributes: { temporal_coupling: 0.5 } }
 ]
 
 interface Setup {
@@ -68,6 +76,7 @@ async function setup({
                 selectors: [
                     { selector: dependencyTreeSelector, value: tree },
                     { selector: edgesSelector, value: EDGES },
+                    { selector: edgeMetricSelector, value: "dependencies" },
                     { selector: hoveredNodePathSelector, value: null },
                     { selector: selectedNodePathSelector, value: selectedPath },
                     { selector: isDeltaStateSelector, value: isDeltaState },

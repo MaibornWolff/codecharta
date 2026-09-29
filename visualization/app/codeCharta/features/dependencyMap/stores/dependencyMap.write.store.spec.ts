@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 import { NodeInteraction, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
 import { DependencyMapWriteStore } from "./dependencyMap.write.store"
 
@@ -35,5 +36,13 @@ describe("DependencyMapWriteStore", () => {
                 value: { nodeId: "/root/a.ts", xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin: "dependencyMap" }
             })
         )
+    })
+
+    it("should set the edge metric the Metric view shares", () => {
+        // Act
+        writeStore.setEdgeMetric("temporal_coupling")
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(setEdgeMetric({ value: "temporal_coupling" }))
     })
 })

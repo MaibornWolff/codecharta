@@ -1,0 +1,16 @@
+<cc-axis-card
+    label="Edge metric"
+    [metricName]="edgeMetric()"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    testId="dependency-bar-edge-metric-segment"
+></cc-axis-card>
+<cc-metric-select-popover
+    [popoverId]="popoverId"
+    [anchorName]="anchorName"
+    placeholder="Edge Metric (highest value)"
+    [options]="edgeMetricData()"
+    [descriptors]="descriptors()"
+    [selected]="edgeMetric()"
+    (metricSelected)="pick($event)"
+></cc-metric-select-popover>

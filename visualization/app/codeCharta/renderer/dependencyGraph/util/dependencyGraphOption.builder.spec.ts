@@ -24,6 +24,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
     return {
         layout: { boxes: [root, view, model, util], bands: [aBand()], width: 400, height: 200 },
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
+        edgeMetric: "dependencies",
         edgeFilter: "all",
         edgeStyle: "curved",
         isAnchoredAtSideMiddle: false,
@@ -128,6 +129,36 @@ describe("buildDependencyGraphOption", () => {
         expect(describe(1)).toBe("")
         expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0")
         expect(describe(edgeIndices[1])).toBe("<b>util.ts → view.ts</b><br/>1 dependency · Points upward")
+    })
+
+    it("should name the metric and its value in the tooltip of another metric's edge", () => {
+        // Arrange
+        const edges = [anEdge(view.path, model.path, { weight: 0.375 })]
+
+        // Act
+        const { describe, edgeIndices } = drawnGraph(sceneWith({ edges, edgeMetric: "temporal_coupling" }))
+
+        // Assert
+        expect(describe(edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>temporal_coupling 0.375")
+    })
+
+    it("should widen the edges relative to the lightest one shown, so a metric below one still spreads its widths", () => {
+        // Arrange
+        const edges = [anEdge(view.path, model.path, { weight: 0.25 }), anEdge(util.path, model.path, { weight: 1 })]
+
+        // Act
+        const { edgeIndices, draw } = drawnGraph(sceneWith({ edges, edgeMetric: "temporal_coupling" }))
+
+        // Assert
+        expect(edgeIndices.map(index => draw(index).children[0].style.lineWidth)).toEqual([1.2, 2.2])
+    })
+
+    it("should show every edge of another metric while cycles or upward edges are asked for, as that metric has neither", () => {
+        // Act
+        const { edgeIndices } = drawnGraph(sceneWith({ edgeMetric: "temporal_coupling", edgeFilter: "feedback" }))
+
+        // Assert
+        expect(edgeIndices).toHaveLength(2)
     })
 
     it("should draw the level bands", () => {
