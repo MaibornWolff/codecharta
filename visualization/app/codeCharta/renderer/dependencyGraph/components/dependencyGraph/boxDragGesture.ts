@@ -12,7 +12,8 @@ interface PointerEvent {
     offsetX: number
     offsetY: number
     event?: MouseEvent | TouchEvent
-    /** ECharts' pan skips a press marked so; this is how a press on a box drags the box, not the graph. */
+    /** ECharts' pan skips a pointer move marked so. It reads the mark on every move, and the host hears each
+     * move before the pan does, while ECharts reports the press itself only after the pan has taken it. */
     __ecRoamConsumed?: boolean
 }
 
@@ -47,7 +48,6 @@ export class BoxDragGesture {
         if (!this.handlers.canDragBox(path, point)) {
             return
         }
-        pointer.__ecRoamConsumed = true
         this.drag = { path, last: point, pressedAt: [pointer.offsetX, pointer.offsetY], hasMoved: false }
     }
 
@@ -56,6 +56,7 @@ export class BoxDragGesture {
         if (!drag) {
             return
         }
+        pointer.__ecRoamConsumed = true
         drag.hasMoved ||= Math.hypot(pointer.offsetX - drag.pressedAt[0], pointer.offsetY - drag.pressedAt[1]) > DRAG_THRESHOLD_PX
         const point = this.toLayout(pointer)
         this.pending = [this.pending[0] + point[0] - drag.last[0], this.pending[1] + point[1] - drag.last[1]]
