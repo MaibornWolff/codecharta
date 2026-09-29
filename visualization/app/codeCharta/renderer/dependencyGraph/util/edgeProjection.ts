@@ -2,8 +2,6 @@ import { DependencyEdgeType, dependencyEdgeTypeOf, isDependencyEdgeMetric } from
 import { Edge } from "../../../model/codeCharta.model"
 import { LeveledNode } from "./leveledTree"
 
-export type EdgeFilter = "none" | "all" | "cycles" | "feedback"
-
 /** A file edge lifted onto the boxes on screen. Edges landing on the same two boxes merge: their
  * dependencies add up, and a merged edge is cyclic or points upward when any of its parts does. */
 export interface GraphEdge {
@@ -14,25 +12,9 @@ export interface GraphEdge {
     type: DependencyEdgeType
 }
 
-const TYPES_SHOWN_BY_FILTER: Record<EdgeFilter, ReadonlySet<DependencyEdgeType>> = {
-    none: new Set(),
-    all: new Set(["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"]),
-    cycles: new Set(["cyclic", "feedbackLeafLevel"]),
-    feedback: new Set(["feedbackContainerLevel", "feedbackLeafLevel"])
-}
-
 /** An edge without the metric, or at zero, stands for nothing of it. */
 function isCarried(value: unknown): value is number {
     return typeof value === "number" && value > 0
-}
-
-/** Another metric has no cycles or upward edges, so asking for them shows all of its edges. */
-export function effectiveEdgeFilter(filter: EdgeFilter, edgeMetric: string | null): EdgeFilter {
-    return isDependencyEdgeMetric(edgeMetric) || filter === "all" || filter === "none" ? filter : "all"
-}
-
-export function isShownByFilter(type: DependencyEdgeType, filter: EdgeFilter): boolean {
-    return TYPES_SHOWN_BY_FILTER[filter].has(type)
 }
 
 /** Maps every path of the tree onto the box that stands for it: itself when it is on screen, else the

@@ -1,4 +1,5 @@
-import { EdgeFilter, GraphEdge } from "./edgeProjection"
+import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
+import { GraphEdge } from "./edgeProjection"
 import { EdgeStyle } from "./edgeRouting"
 import { EdgeWidth } from "./edgeWidth"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
@@ -10,7 +11,8 @@ export interface DependencyGraphScene {
     edges: GraphEdge[]
     /** The edge metric the edges are drawn for; their weight is its value. */
     edgeMetric: string | null
-    edgeFilter: EdgeFilter
+    /** The types whose edges are drawn; the hovered box's edges are drawn whatever their type. */
+    shownEdgeTypes: readonly DependencyEdgeType[]
     edgeStyle: EdgeStyle
     /** Every edge starts and ends at the middle of its sides, whatever the style. */
     isAnchoredAtSideMiddle: boolean

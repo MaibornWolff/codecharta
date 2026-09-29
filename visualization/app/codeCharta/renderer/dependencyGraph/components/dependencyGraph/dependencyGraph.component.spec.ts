@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/angular"
+import { DEPENDENCY_EDGE_TYPES } from "../../../../lenses/dependency/dependencyLens.facade"
 import {
     fireChartEvent,
     fireRenderSurfaceEvent,
@@ -19,7 +20,7 @@ const SCENE: DependencyGraphScene = {
     layout: { boxes: [aBox("/root/a.ts")], bands: [], width: 160, height: 40 },
     edges: [],
     edgeMetric: "dependencies",
-    edgeFilter: "all",
+    shownEdgeTypes: DEPENDENCY_EDGE_TYPES,
     edgeStyle: "curved",
     isAnchoredAtSideMiddle: false,
     edgeWidth: { thickness: "byCount", factor: 1 },

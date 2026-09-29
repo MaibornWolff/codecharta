@@ -1,3 +1,4 @@
+import { DEPENDENCY_EDGE_TYPES } from "../../../lenses/dependency/dependencyLens.facade"
 import { buildDependencyGraphOption, fitWindowOf } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
@@ -25,7 +26,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         layout: { boxes: [root, view, model, util], bands: [aBand()], width: 400, height: 200 },
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
         edgeMetric: "dependencies",
-        edgeFilter: "all",
+        shownEdgeTypes: DEPENDENCY_EDGE_TYPES,
         edgeStyle: "curved",
         isAnchoredAtSideMiddle: false,
         edgeWidth: { thickness: "byCount", factor: 1 },
@@ -94,17 +95,17 @@ describe("buildDependencyGraphOption", () => {
         expect(texts[0]).toEqual([undefined])
     })
 
-    it("should draw only the edges the filter lets through", () => {
+    it("should draw only the edges of the types shown", () => {
         // Act
-        const { edgeIndices } = drawnGraph(sceneWith({ edgeFilter: "feedback" }))
+        const { edgeIndices } = drawnGraph(sceneWith({ shownEdgeTypes: ["feedbackContainerLevel", "feedbackLeafLevel"] }))
 
         // Assert
         expect(edgeIndices).toHaveLength(1)
     })
 
-    it("should draw every edge of the hovered box, whatever the filter", () => {
+    it("should draw every edge of the hovered box, whatever its type", () => {
         // Act
-        const { edgeIndices, describe, draw } = drawnGraph(sceneWith({ edgeFilter: "none", hoveredPath: model.path }))
+        const { edgeIndices, describe, draw } = drawnGraph(sceneWith({ shownEdgeTypes: [], hoveredPath: model.path }))
 
         // Assert
         expect(edgeIndices.map(index => describe(index).split("<br/>")[0])).toEqual(["<b>view.ts → model.ts</b>"])
@@ -151,14 +152,6 @@ describe("buildDependencyGraphOption", () => {
 
         // Assert
         expect(edgeIndices.map(index => draw(index).children[0].style.lineWidth)).toEqual([1.2, 2.2])
-    })
-
-    it("should show every edge of another metric while cycles or upward edges are asked for, as that metric has neither", () => {
-        // Act
-        const { edgeIndices } = drawnGraph(sceneWith({ edgeMetric: "temporal_coupling", edgeFilter: "feedback" }))
-
-        // Assert
-        expect(edgeIndices).toHaveLength(2)
     })
 
     it("should draw the level bands", () => {
@@ -223,7 +216,7 @@ describe("buildDependencyGraphOption", () => {
         const scene = sceneWith({
             layout: { boxes: [root, folder, inside, alsoInside, outside], bands: [], width: 400, height: 400 },
             edges: [anEdge(inside.path, alsoInside.path), anEdge(inside.path, outside.path)],
-            edgeFilter: "none",
+            shownEdgeTypes: [],
             hoveredPath: folder.path
         })
 

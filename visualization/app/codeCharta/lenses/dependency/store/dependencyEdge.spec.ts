@@ -1,4 +1,4 @@
-import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "./dependencyEdge"
+import { DEPENDENCY_EDGE_TYPES, dependencyEdgeTypeOf, edgeTypesCarriedBy, isDependencyEdgeMetric } from "./dependencyEdge"
 
 describe("dependency edge", () => {
     describe("dependencyEdgeTypeOf", () => {
@@ -37,6 +37,18 @@ describe("dependency edge", () => {
 
             // Assert
             expect(answers).toEqual([true, false, false])
+        })
+    })
+
+    describe("edgeTypesCarriedBy", () => {
+        it("should carry every type for dependencies and only regular edges for another metric", () => {
+            // Act
+            const forDependencies = edgeTypesCarriedBy("dependencies")
+            const forCoupling = edgeTypesCarriedBy("temporal_coupling")
+
+            // Assert
+            expect(forDependencies).toEqual(DEPENDENCY_EDGE_TYPES)
+            expect(forCoupling).toEqual(["regular"])
         })
     })
 })

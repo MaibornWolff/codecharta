@@ -1,12 +1,6 @@
 <cc-edge-metric-segment></cc-edge-metric-segment>
 
-<cc-choice-segment
-    label="Edges shown"
-    idPrefix="dependency-bar-edges"
-    [choices]="edgeFilterChoices()"
-    [chosen]="edgeFilter()"
-    (choose)="showEdges($event)"
-></cc-choice-segment>
+<cc-edge-types-segment></cc-edge-types-segment>
 
 <cc-choice-segment
     label="Edge style"

@@ -11,9 +11,8 @@
             <li class="flex">
                 <button
                     type="button"
-                    class="flex w-full cursor-pointer flex-col items-start gap-0.5 rounded border-0 px-2 py-1 text-left disabled:cursor-not-allowed disabled:opacity-50"
+                    class="flex w-full cursor-pointer flex-col items-start gap-0.5 rounded border-0 px-2 py-1 text-left"
                     [class]="choice.value === chosen() ? 'bg-base-200 font-semibold' : 'bg-transparent hover:bg-base-200'"
-                    [disabled]="choice.isDisabled"
                     [attr.aria-pressed]="choice.value === chosen()"
                     [attr.data-testid]="idPrefix() + '-' + choice.value"
                     (click)="pick(choice.value)"

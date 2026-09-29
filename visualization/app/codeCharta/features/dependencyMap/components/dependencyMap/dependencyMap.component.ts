@@ -89,7 +89,7 @@ export class DependencyMapComponent {
             layout,
             edges: projectEdges(this.edges(), this.representatives(), this.edgeMetric()),
             edgeMetric: this.edgeMetric(),
-            edgeFilter: this.viewStore.edgeFilter(),
+            shownEdgeTypes: this.viewStore.shownEdgeTypes(),
             edgeStyle: this.viewStore.edgeStyle(),
             isAnchoredAtSideMiddle: this.viewStore.isAnchoredAtSideMiddle(),
             edgeWidth: this.viewStore.edgeWidth(),

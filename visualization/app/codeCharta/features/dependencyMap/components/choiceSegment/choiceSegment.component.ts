@@ -5,7 +5,6 @@ export interface Choice {
     value: string
     label: string
     hint: string
-    isDisabled?: boolean
 }
 
 /** A bar card naming the current choice; a click on it opens the list to pick another, and whatever the bar puts

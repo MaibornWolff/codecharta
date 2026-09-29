@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { DEPENDENCY_EDGE_TYPES } from "../../../lenses/dependency/dependencyLens.facade"
 import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
@@ -60,14 +61,14 @@ describe("DependencyMapViewStore", () => {
         expect(store.expandedPaths().has("/root/app")).toBe(false)
     })
 
-    it("should show all edges until the reader picks a filter", () => {
+    it("should show every edge type until the reader picks some", () => {
         // Act
-        const before = store.edgeFilter()
-        store.showEdges("feedback")
+        const before = store.shownEdgeTypes()
+        store.showEdgeTypes(["cyclic"])
 
         // Assert
-        expect(before).toBe("all")
-        expect(store.edgeFilter()).toBe("feedback")
+        expect(before).toEqual(DEPENDENCY_EDGE_TYPES)
+        expect(store.shownEdgeTypes()).toEqual(["cyclic"])
     })
 
     it("should keep hidden nodes while the tree keeps its root", () => {

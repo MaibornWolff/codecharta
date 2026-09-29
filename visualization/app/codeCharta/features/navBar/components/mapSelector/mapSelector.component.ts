@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { CCFile } from "../../../../model/codeCharta.model"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { SelectionShortcutsComponent } from "../../../shared/facade"
 import { RemoveExtensionPipe } from "../../removeExtension.pipe"
 import { NavBarWriteStore } from "../../stores/navBar.write.store"
 
@@ -14,7 +15,7 @@ type FileRemovedInUIState = {
 @Component({
     selector: "cc-map-selector",
     templateUrl: "./mapSelector.component.html",
-    imports: [RemoveExtensionPipe],
+    imports: [RemoveExtensionPipe, SelectionShortcutsComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapSelectorComponent {

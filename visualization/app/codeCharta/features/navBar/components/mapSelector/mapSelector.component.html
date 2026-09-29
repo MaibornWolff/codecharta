@@ -9,11 +9,11 @@
     </button>
     @if (isOpen()) {
         <div class="dropdown-content bg-base-100 rounded-box border border-base-300 shadow-md mt-1 min-w-[14rem] w-max max-w-[32rem] z-[70] p-2">
-            <div class="flex items-center gap-1 px-1 pb-2 border-b border-base-200">
-                <button type="button" class="btn btn-ghost btn-xs flex-1" (click)="handleSelectAll()">All</button>
-                <button type="button" class="btn btn-ghost btn-xs flex-1" (click)="handleSelectNone()">None</button>
-                <button type="button" class="btn btn-ghost btn-xs flex-1" (click)="handleSelectInvert()">Invert</button>
-            </div>
+            <cc-selection-shortcuts
+                (selectAll)="handleSelectAll()"
+                (selectNone)="handleSelectNone()"
+                (invert)="handleSelectInvert()"
+            ></cc-selection-shortcuts>
             <ul class="flex flex-col gap-0.5 p-0 m-0 list-none max-h-72 overflow-y-auto">
                 @for (file of filesInUI(); track file.file.fileMeta.fileName) {
                     <li class="w-full">

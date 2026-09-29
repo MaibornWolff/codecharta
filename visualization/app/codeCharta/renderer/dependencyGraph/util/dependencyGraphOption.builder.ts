@@ -5,7 +5,7 @@ import { atPaintRank } from "./dependencyGraphElements"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
-import { effectiveEdgeFilter, GraphEdge, isShownByFilter } from "./edgeProjection"
+import { GraphEdge } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { edgeWidthPx } from "./edgeWidth"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
@@ -100,13 +100,12 @@ const PAINT_RANK: Record<DependencyEdgeType, number> = {
 }
 const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
 
-/** A hovered box shows all its edges whatever the filter, painted over every other edge; otherwise the
+/** A hovered box shows all its edges whatever their type, painted over every other edge; otherwise the
  * edges that break the architecture are painted over the ones that follow it. */
-function edgesToDraw({ edges, edgeMetric, edgeFilter, hoveredPath }: DependencyGraphScene): GraphEdge[] {
-    const filter = effectiveEdgeFilter(edgeFilter, edgeMetric)
+function edgesToDraw({ edges, shownEdgeTypes, hoveredPath }: DependencyGraphScene): GraphEdge[] {
     const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isEdgeOfHovered(edge, hoveredPath) ? HOVERED_PAINT_RANK : 0)
     return edges
-        .filter(edge => isShownByFilter(edge.type, filter) || isEdgeOfHovered(edge, hoveredPath))
+        .filter(edge => shownEdgeTypes.includes(edge.type) || isEdgeOfHovered(edge, hoveredPath))
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
