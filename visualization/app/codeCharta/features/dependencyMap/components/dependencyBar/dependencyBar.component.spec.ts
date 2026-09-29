@@ -64,4 +64,15 @@ describe("DependencyBarComponent", () => {
         // Assert
         expect(TestBed.inject(DependencyMapViewStore).edgeWidth().factor).toBe(2.5)
     })
+
+    it("should anchor the edges at the middle of the sides once the reader ticks it", async () => {
+        // Arrange
+        await render(DependencyBarComponent)
+
+        // Act
+        await userEvent.click(screen.getByLabelText("Start and end at the middle of the side"))
+
+        // Assert
+        expect(TestBed.inject(DependencyMapViewStore).isAnchoredAtSideMiddle()).toBe(true)
+    })
 })

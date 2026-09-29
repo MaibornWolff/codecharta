@@ -26,6 +26,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
         edgeFilter: "all",
         edgeStyle: "curved",
+        isAnchoredAtSideMiddle: false,
         edgeWidth: { thickness: "byCount", factor: 1 },
         raisedPaths: [],
         draggingPath: null,

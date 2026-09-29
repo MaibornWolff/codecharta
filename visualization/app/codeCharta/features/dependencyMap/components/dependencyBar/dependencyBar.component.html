@@ -12,7 +12,18 @@
     [choices]="edgeStyleChoices"
     [chosen]="edgeStyle()"
     (choose)="drawEdgesAs($event)"
-></cc-choice-segment>
+>
+    <label class="border-base-300 mt-2 flex cursor-pointer items-center gap-2 border-t px-2 pt-2 text-sm">
+        <input
+            type="checkbox"
+            class="checkbox checkbox-sm checkbox-primary"
+            data-testid="dependency-bar-edge-style-side-middle"
+            [checked]="isAnchoredAtSideMiddle()"
+            (change)="anchorAtSideMiddle($event)"
+        />
+        <span>Start and end at the middle of the side</span>
+    </label>
+</cc-choice-segment>
 
 <cc-choice-segment
     label="Line thickness"

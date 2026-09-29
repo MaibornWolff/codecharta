@@ -10,6 +10,8 @@ export interface DependencyGraphScene {
     edges: GraphEdge[]
     edgeFilter: EdgeFilter
     edgeStyle: EdgeStyle
+    /** Every edge starts and ends at the middle of its sides, whatever the style. */
+    isAnchoredAtSideMiddle: boolean
     edgeWidth: EdgeWidth
     hoveredPath: string | null
     selectedPath: string | null

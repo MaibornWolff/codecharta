@@ -116,6 +116,16 @@ describe("DependencyMapViewStore", () => {
         expect(store.edgeWidth()).toEqual({ thickness: "strong", factor: 2 })
     })
 
+    it("should anchor edges where their style puts them until the reader anchors them at the side's middle", () => {
+        // Act
+        const before = store.isAnchoredAtSideMiddle()
+        store.anchorAtSideMiddle(true)
+
+        // Assert
+        expect(before).toBe(false)
+        expect(store.isAnchoredAtSideMiddle()).toBe(true)
+    })
+
     it("should keep where the reader put a box until the layout is reset", () => {
         // Act
         store.placeBox("/root/app", [20, 10])
