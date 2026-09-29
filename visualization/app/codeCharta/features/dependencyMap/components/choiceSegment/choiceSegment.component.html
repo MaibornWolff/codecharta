@@ -5,22 +5,21 @@
     [searchAnchorName]="anchorName()"
     [testId]="idPrefix() + '-segment'"
 ></cc-axis-card>
-<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" [ariaLabel]="label()" widthClass="w-72" contentClass="p-2">
-    <ul class="menu menu-sm w-full p-0">
+<cc-settings-popover-shell [popoverId]="popoverId()" [anchorName]="anchorName()" [ariaLabel]="label()" widthClass="w-72" contentClass="gap-2 p-2">
+    <ul class="m-0 flex list-none flex-col p-0">
         @for (choice of choices(); track choice.value) {
-            <li>
+            <li class="flex">
                 <button
                     type="button"
-                    class="flex flex-col items-start gap-0"
-                    [class.menu-active]="choice.value === chosen()"
-                    [class.menu-disabled]="choice.isDisabled"
+                    class="flex w-full cursor-pointer flex-col items-start gap-0.5 rounded border-0 px-2 py-1 text-left disabled:cursor-not-allowed disabled:opacity-50"
+                    [class]="choice.value === chosen() ? 'bg-base-200 font-semibold' : 'bg-transparent hover:bg-base-200'"
                     [disabled]="choice.isDisabled"
                     [attr.aria-pressed]="choice.value === chosen()"
                     [attr.data-testid]="idPrefix() + '-' + choice.value"
                     (click)="pick(choice.value)"
                 >
-                    <span class="font-semibold">{{ choice.label }}</span>
-                    <span class="text-xs opacity-70">{{ choice.hint }}</span>
+                    <span>{{ choice.label }}</span>
+                    <span class="text-xs font-normal opacity-70">{{ choice.hint }}</span>
                 </button>
             </li>
         }
