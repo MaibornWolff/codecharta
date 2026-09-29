@@ -49,6 +49,14 @@ const BASE_EDGE_WIDTH_PX = 1.2
 const MAX_EXTRA_EDGE_WIDTH_PX = 2.5
 const EXTRA_WIDTH_PER_DOUBLING_PX = 0.5
 
+/** How much of a see-through folder's fill remains, so what lies behind it stays readable. */
+const SEE_THROUGH_OPACITY = 0.65
+
+export function seeThrough(hexColor: string): string {
+    const [red, green, blue] = [1, 3, 5].map(start => Number.parseInt(hexColor.slice(start, start + 2), 16))
+    return `rgba(${red}, ${green}, ${blue}, ${SEE_THROUGH_OPACITY})`
+}
+
 export function folderFill(depth: number): string {
     return FOLDER_FILLS_BY_DEPTH[Math.min(depth, FOLDER_FILLS_BY_DEPTH.length - 1)]
 }

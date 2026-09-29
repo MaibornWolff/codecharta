@@ -31,7 +31,8 @@ describe("DependencyGraphHost", () => {
             onRendered: jest.fn(),
             canDragBox: jest.fn(() => true),
             onBoxDragged: jest.fn(),
-            boxAt: jest.fn(() => "/root/app")
+            boxAt: jest.fn(() => "/root/app"),
+            onBoxDragEnded: jest.fn()
         }
         host = new DependencyGraphHost(handlers)
         container = elementOfSize(800, 600)
@@ -239,16 +240,16 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onRendered).toHaveBeenCalled()
     })
 
-    it("should zoom both axes back out to the whole graph", () => {
+    it("should zoom and pan both axes to a window in layout units", () => {
         // Act
-        host.resetView()
+        host.fitTo({ x: [-10, 90], y: [5, 65] })
 
         // Assert
         expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({
             type: "dataZoom",
             batch: [
-                { dataZoomIndex: 0, start: 0, end: 100 },
-                { dataZoomIndex: 1, start: 0, end: 100 }
+                { dataZoomIndex: 0, startValue: -10, endValue: 90 },
+                { dataZoomIndex: 1, startValue: 5, endValue: 65 }
             ]
         })
     })

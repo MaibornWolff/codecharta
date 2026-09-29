@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/angular"
 import {
     fireChartEvent,
+    fireRenderSurfaceEvent,
     lastDrawnOption,
     resetStubbedChart,
     stubbedChart,
@@ -20,6 +21,7 @@ const SCENE: DependencyGraphScene = {
     edgeFilter: "all",
     edgeStyle: "curved",
     raisedPaths: [],
+    draggingPath: null,
     hoveredPath: null,
     selectedPath: null
 }
@@ -90,14 +92,33 @@ describe("DependencyGraphComponent", () => {
         expect(rendered).toHaveBeenCalled()
     })
 
-    it("should zoom back out to the whole graph on request", async () => {
+    it("should fit a new graph into view once, and again on request", async () => {
         // Arrange
         const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE } })
+        const fitsOnArrival = stubbedChart.dispatchAction.mock.calls.length
+        fixture.componentRef.setInput("scene", { ...SCENE, hoveredPath: "/root/a.ts" })
+        fixture.detectChanges()
+        const fitsAfterARedraw = stubbedChart.dispatchAction.mock.calls.length
 
         // Act
         fixture.componentInstance.resetView()
 
         // Assert
-        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith(expect.objectContaining({ type: "dataZoom" }))
+        expect([fitsOnArrival, fitsAfterARedraw]).toEqual([1, 1])
+        expect(stubbedChart.dispatchAction).toHaveBeenCalledTimes(2)
+        expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
+    })
+
+    it("should report the end of a drag", async () => {
+        // Arrange
+        const boxDragEnded = jest.fn()
+        await render(DependencyGraphComponent, { inputs: { scene: SCENE, canDragBox: () => true }, on: { boxDragEnded } })
+
+        // Act
+        fireChartEvent("mousedown", { seriesId: GRAPH_SERIES_ID, name: "/root/a.ts", event: { offsetX: 0, offsetY: 0 } })
+        fireRenderSurfaceEvent("mouseup")
+
+        // Assert
+        expect(boxDragEnded).toHaveBeenCalled()
     })
 })

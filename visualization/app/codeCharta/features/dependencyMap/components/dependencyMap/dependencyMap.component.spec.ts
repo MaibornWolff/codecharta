@@ -317,4 +317,26 @@ describe("DependencyMapComponent", () => {
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/model", "/root/model/node.ts", "/root/ui", "/root/ui/view.ts"])
     })
+
+    it("should draw a folder see-through while it is dragged and solid again once dropped", async () => {
+        // Arrange
+        await setup()
+        const fillOf = (path: string) => {
+            const index = drawnSeries().data.findIndex(item => item.name === path)
+            return drawnSeries().renderItem({ dataIndex: index }, { coord: point => point }).children[0].style.fill
+        }
+
+        // Act
+        fireChartEvent("mousedown", { ...boxEvent("/root/ui"), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
+        fireRenderSurfaceEvent("mousemove", { offsetX: 200, offsetY: 0, target: {} })
+        await new Promise(resolve => requestAnimationFrame(resolve))
+        await screen.findByTestId("dependency-reset-layout")
+        const whileDragging = fillOf("/root/ui")
+        fireRenderSurfaceEvent("mouseup")
+        await screen.findByTestId("dependency-graph")
+
+        // Assert
+        expect(whileDragging).toMatch(/^rgba/)
+        expect(fillOf("/root/ui")).toMatch(/^#/)
+    })
 })

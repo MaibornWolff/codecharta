@@ -1,5 +1,5 @@
 import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
-import { drawBox, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxLook, drawBox, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
@@ -7,7 +7,8 @@ import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge, isShownByFilter } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
-import { EdgeItem, GraphItem, paintOrder, withEdges } from "./paintOrder"
+import { findOverlaps, NO_OVERLAPS, Overlaps } from "./overlaps"
+import { EdgeItem, GraphItem, paintOrder } from "./paintOrder"
 
 export interface Viewport {
     width: number
@@ -33,7 +34,9 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     const { layout } = scene
     const byPath = boxesByPath(layout)
     const shownEdges = edgesToDraw(scene)
-    const items = withEdges(paintOrder(layout, scene.raisedPaths), edgeItems(scene, shownEdges, byPath))
+    const painted = paintOrder(layout, scene.raisedPaths)
+    const overlaps = scene.raisedPaths.length > 0 ? findOverlaps(painted) : NO_OVERLAPS
+    const items: GraphItem[] = [...painted, ...edgeItems(scene, shownEdges, byPath)]
     return {
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
@@ -51,7 +54,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
                 type: "custom",
                 data: items.map(item => datumOf(item, byPath)),
                 encode: EXTENT_ENCODING,
-                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => drawItem(items[dataIndex], scene, api.coord),
+                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => drawItem(items[dataIndex], scene, overlaps, api.coord),
                 progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
                 clip: true
             }
@@ -62,10 +65,12 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
 function edgeItems(scene: DependencyGraphScene, shownEdges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>): EdgeItem[] {
     const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
     const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
-    return shownEdges.map((edge, index) => {
-        const isOfHovered = isEdgeOfHovered(edge, scene.hoveredPath)
-        return { kind: "edge", edge, route: routes[index], isDimmed: isHoverLit && !isOfHovered, isOnTop: isOfHovered }
-    })
+    return shownEdges.map((edge, index) => ({
+        kind: "edge",
+        edge,
+        route: routes[index],
+        isDimmed: isHoverLit && !isEdgeOfHovered(edge, scene.hoveredPath)
+    }))
 }
 
 /** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
@@ -87,12 +92,12 @@ function edgesToDraw({ edges, edgeFilter, hoveredPath }: DependencyGraphScene): 
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
-function drawItem(item: GraphItem, scene: DependencyGraphScene, toPixels: ToPixels) {
+function drawItem(item: GraphItem, scene: DependencyGraphScene, overlaps: Overlaps, toPixels: ToPixels) {
     switch (item.kind) {
         case "box":
-            return drawBox(item.box, emphasisOf(item.box, scene), toPixels)
+            return drawBox(item.box, lookOf(item.box, scene, overlaps), toPixels)
         case "band":
-            return drawLevelBand(item.band, toPixels)
+            return drawLevelBand(item.band, toPixels, overlaps.bandCutouts.get(item.band))
         default:
             return drawEdge(item.edge, item.route, item.isDimmed, toPixels)
     }
@@ -107,6 +112,12 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
         default:
             return { isEdge: true, value: extentValue(spanOf(byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath))) }
     }
+}
+
+/** A folder shows what lies behind it where it overlaps something, and while it is dragged. */
+function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps): BoxLook {
+    const isDragged = box.isFolder && box.path === scene.draggingPath
+    return { emphasis: emphasisOf(box, scene), isSeeThrough: isDragged || seeThroughPaths.has(box.path) }
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {
@@ -133,16 +144,41 @@ function spanOf(from: LayoutBox, to: LayoutBox): Extent {
     return { x, y, width: Math.max(from.x + from.width, to.x + to.width) - x, height: Math.max(from.y + from.height, to.y + to.height) - y }
 }
 
-/** Both axes get the same number of pixels per layout unit, so zooming both together never squashes the
- * graph, and the whole graph sits centred in the chart. */
+/** The two ends of each axis in layout units, as far as the chart shows them. */
+export interface AxisWindow {
+    x: [number, number]
+    y: [number, number]
+}
+
+/** The axes reach the laid-out graph plus this share of its size on every side, room that dragged boxes can
+ * grow the graph into and still be panned to. The axes stay put while boxes move, so a drag never shifts the
+ * view under the pointer. */
+const DRAGGING_ROOM_SHARE = 1
+
 function axesFittingTheGraph(layout: DependencyGraphLayout, viewport: Viewport) {
-    const pixelsPerUnit = Math.min(viewport.width / layout.width, viewport.height / layout.height) * FIT_SHARE
+    const room = Math.max(layout.width, layout.height) * DRAGGING_ROOM_SHARE
+    const reach = windowAround({ x: -room, y: -room, width: layout.width + 2 * room, height: layout.height + 2 * room }, viewport, 1)
+    return {
+        xAxis: { type: "value", show: false, min: reach.x[0], max: reach.x[1] },
+        yAxis: { type: "value", show: false, inverse: true, min: reach.y[0], max: reach.y[1] }
+    }
+}
+
+/** The window that shows the whole graph as it is drawn, dragged boxes and the folders they grew included. */
+export function fitWindowOf(layout: DependencyGraphLayout, viewport: Viewport): AxisWindow {
+    const [root] = layout.boxes
+    return windowAround(root ?? { x: 0, y: 0, width: layout.width, height: layout.height }, viewport, FIT_SHARE)
+}
+
+/** Centres the area and gives both axes the same number of pixels per layout unit, so the graph is never
+ * squashed. */
+function windowAround(area: Extent, viewport: Viewport, share: number): AxisWindow {
+    const pixelsPerUnit = Math.min(viewport.width / area.width, viewport.height / area.height) * share
     const halfWidth = viewport.width / pixelsPerUnit / 2
     const halfHeight = viewport.height / pixelsPerUnit / 2
-    return {
-        xAxis: { type: "value", show: false, min: layout.width / 2 - halfWidth, max: layout.width / 2 + halfWidth },
-        yAxis: { type: "value", show: false, inverse: true, min: layout.height / 2 - halfHeight, max: layout.height / 2 + halfHeight }
-    }
+    const centreX = area.x + area.width / 2
+    const centreY = area.y + area.height / 2
+    return { x: [centreX - halfWidth, centreX + halfWidth], y: [centreY - halfHeight, centreY + halfHeight] }
 }
 
 function describeGraph(layout: DependencyGraphLayout, shownEdges: GraphEdge[]): string {

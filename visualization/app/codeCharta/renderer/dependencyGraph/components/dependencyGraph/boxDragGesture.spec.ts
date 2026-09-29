@@ -18,7 +18,7 @@ describe("BoxDragGesture", () => {
 
     beforeEach(() => {
         jest.useFakeTimers()
-        handlers = { canDragBox: jest.fn(() => true), onBoxDragged: jest.fn() }
+        handlers = { canDragBox: jest.fn(() => true), onBoxDragged: jest.fn(), onBoxDragEnded: jest.fn() }
         gesture = new BoxDragGesture(chart, handlers)
     })
 
@@ -77,6 +77,7 @@ describe("BoxDragGesture", () => {
 
         // Assert
         expect(handlers.onBoxDragged).toHaveBeenCalledWith("/root/a.ts", 10, 0)
+        expect(handlers.onBoxDragEnded).toHaveBeenCalledTimes(1)
         expect(gesture.takesClick()).toBe(true)
         expect(gesture.takesClick()).toBe(false)
     })

@@ -14,6 +14,7 @@ export class DependencyMapViewStore {
     private readonly hiddenNodes = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
     private readonly draggedOrder = signal<readonly string[]>([])
+    private readonly boxBeingDragged = signal<string | null>(null)
     private rootOfTheOpenedFolders: string | null = null
 
     readonly expandedPaths = this.openedFolders.asReadonly()
@@ -23,6 +24,7 @@ export class DependencyMapViewStore {
     readonly boxOffsets = this.movedBoxes.asReadonly()
     /** Dragged boxes, the most recently dragged last, so it paints over the others. */
     readonly raisedPaths = this.draggedOrder.asReadonly()
+    readonly draggingPath = this.boxBeingDragged.asReadonly()
 
     /** A new project, or a new focus, starts from a first look with nothing hidden or moved; the same one
      * keeps what was opened, hidden and moved. */
@@ -37,10 +39,15 @@ export class DependencyMapViewStore {
     }
 
     placeBox(path: string, offset: BoxOffset): void {
+        this.boxBeingDragged.set(path)
         this.movedBoxes.update(moved => new Map(moved).set(path, offset))
         if (this.draggedOrder().at(-1) !== path) {
             this.draggedOrder.update(order => [...order.filter(raised => raised !== path), path])
         }
+    }
+
+    endDragging(): void {
+        this.boxBeingDragged.set(null)
     }
 
     resetLayout(): void {

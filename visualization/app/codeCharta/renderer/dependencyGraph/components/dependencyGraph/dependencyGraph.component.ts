@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, input, OnDestroy, output, viewChild } from "@angular/core"
-import { buildDependencyGraphOption } from "../../util/dependencyGraphOption.builder"
+import { buildDependencyGraphOption, fitWindowOf } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { DependencyGraphHost } from "./dependencyGraphHost"
 
@@ -37,8 +37,11 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly boxRightClicked = output<RightClickedBox>()
     readonly rendered = output<void>()
     readonly boxDragged = output<DraggedBox>()
+    readonly boxDragEnded = output<void>()
 
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
+    /** The graph the view was last fitted to, named by its root, so a new graph gets fitted once. */
+    private fittedGraph: string | null = null
 
     private readonly chartHost = new DependencyGraphHost({
         onBoxClicked: path => this.boxClicked.emit(path),
@@ -48,6 +51,7 @@ export class DependencyGraphComponent implements OnDestroy {
         onRendered: () => this.rendered.emit(),
         canDragBox: (path, point) => this.canDragBox()(path, point),
         onBoxDragged: (path, dx, dy) => this.boxDragged.emit({ path, dx, dy }),
+        onBoxDragEnded: () => this.boxDragEnded.emit(),
         boxAt: point => this.boxAt()(point)
     })
 
@@ -57,7 +61,7 @@ export class DependencyGraphComponent implements OnDestroy {
     }
 
     resetView(): void {
-        this.chartHost.resetView()
+        this.fitWholeGraph()
     }
 
     ngOnDestroy(): void {
@@ -69,6 +73,16 @@ export class DependencyGraphComponent implements OnDestroy {
         if (viewport.width === 0 || viewport.height === 0) {
             return
         }
-        this.chartHost.render(buildDependencyGraphOption(this.scene(), viewport))
+        const scene = this.scene()
+        this.chartHost.render(buildDependencyGraphOption(scene, viewport))
+        const graph = scene.layout.boxes[0]?.path ?? null
+        if (graph !== this.fittedGraph) {
+            this.fittedGraph = graph
+            this.fitWholeGraph()
+        }
+    }
+
+    private fitWholeGraph(): void {
+        this.chartHost.fitTo(fitWindowOf(this.scene().layout, this.chartHost.containerSize()))
     }
 }

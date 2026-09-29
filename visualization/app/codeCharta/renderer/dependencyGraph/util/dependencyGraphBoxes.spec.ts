@@ -1,4 +1,4 @@
-import { drawBox, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxEmphasis, drawBox, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
@@ -8,6 +8,10 @@ interface DrawnElement {
     shape?: Record<string, unknown>
     style?: Record<string, unknown>
     children?: DrawnElement[]
+}
+
+function look(emphasis: BoxEmphasis, isSeeThrough = false) {
+    return { emphasis, isSeeThrough }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -21,7 +25,7 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
             // Act
-            const [rect, label] = childrenOf(drawBox(box, "none", identityPixels))
+            const [rect, label] = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
             expect(rect.shape).toMatchObject({ x: 10, y: 20, width: 160, height: 40 })
@@ -33,7 +37,7 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
 
             // Act
-            const children = childrenOf(drawBox(box, "none", identityPixels))
+            const children = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
             expect(children).toHaveLength(2)
@@ -45,7 +49,7 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/app", { isFolder: true, x: 0 })
 
             // Act
-            const [, label] = childrenOf(drawBox(box, "none", identityPixels))
+            const [, label] = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
             expect(label.style).toMatchObject({ text: "app", x: 80, align: "center", width: 144 })
@@ -57,7 +61,7 @@ describe("dependencyGraphBoxes", () => {
             const zoomedOut = ([x, y]: [number, number]) => [x / 4, y / 4]
 
             // Act
-            const children = childrenOf(drawBox(box, "none", zoomedOut))
+            const children = childrenOf(drawBox(box, look("none"), zoomedOut))
 
             // Assert
             expect(children).toHaveLength(1)
@@ -68,7 +72,7 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/a.ts")
 
             // Act
-            const [rect] = childrenOf(drawBox(box, "selected", identityPixels))
+            const [rect] = childrenOf(drawBox(box, look("selected"), identityPixels))
 
             // Assert
             expect(rect.style).toMatchObject({ stroke: SELECTED_COLOR, lineWidth: 2.5 })
@@ -79,10 +83,21 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/a.ts")
 
             // Act
-            const [rect] = childrenOf(drawBox(box, "hovered", identityPixels))
+            const [rect] = childrenOf(drawBox(box, look("hovered"), identityPixels))
 
             // Assert
             expect(rect.style.lineWidth).toBe(2)
+        })
+
+        it("should let what lies behind a see-through box show through its fill", () => {
+            // Arrange
+            const box = aBox("/root/app", { isFolder: true, isExpanded: true, depth: 1, width: 400, height: 200 })
+
+            // Act
+            const [rect] = childrenOf(drawBox(box, look("none", true), identityPixels))
+
+            // Assert
+            expect(rect.style.fill).toBe("rgba(233, 237, 242, 0.65)")
         })
     })
 
@@ -108,6 +123,31 @@ describe("dependencyGraphBoxes", () => {
 
             // Assert
             expect(children).toHaveLength(1)
+        })
+
+        it("should stop the separator where a box from outside the folder covers it", () => {
+            // Arrange
+            const band = aBand({ x: 0, width: 400 })
+
+            // Act
+            const separators = childrenOf(drawLevelBand(band, identityPixels, { hiddenSpans: [[100, 200]], isLabelHidden: false })).slice(1)
+
+            // Assert
+            expect(separators.map(separator => [separator.shape.x1, separator.shape.x2])).toEqual([
+                [12, 100],
+                [200, 388]
+            ])
+        })
+
+        it("should leave out a label that a box from outside the folder covers", () => {
+            // Arrange
+            const band = aBand({ isTopmost: true })
+
+            // Act
+            const children = childrenOf(drawLevelBand(band, identityPixels, { hiddenSpans: [], isLabelHidden: true }))
+
+            // Assert
+            expect(children).toHaveLength(0)
         })
     })
 })
