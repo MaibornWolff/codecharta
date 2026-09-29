@@ -13,6 +13,7 @@ export class DependencyMapViewStore {
     private readonly drawnEdges = signal<EdgeStyle>("curved")
     private readonly hiddenNodes = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
+    private readonly draggedOrder = signal<readonly string[]>([])
     private rootOfTheOpenedFolders: string | null = null
 
     readonly expandedPaths = this.openedFolders.asReadonly()
@@ -20,6 +21,8 @@ export class DependencyMapViewStore {
     readonly edgeStyle = this.drawnEdges.asReadonly()
     readonly hiddenPaths = this.hiddenNodes.asReadonly()
     readonly boxOffsets = this.movedBoxes.asReadonly()
+    /** Dragged boxes, the most recently dragged last, so it paints over the others. */
+    readonly raisedPaths = this.draggedOrder.asReadonly()
 
     /** A new project, or a new focus, starts from a first look with nothing hidden or moved; the same one
      * keeps what was opened, hidden and moved. */
@@ -30,15 +33,19 @@ export class DependencyMapViewStore {
         this.rootOfTheOpenedFolders = tree.path
         this.openedFolders.set(expandWithinBudget(tree, FIRST_LOOK_BOX_BUDGET))
         this.hiddenNodes.set(new Set())
-        this.movedBoxes.set(new Map())
+        this.resetLayout()
     }
 
     placeBox(path: string, offset: BoxOffset): void {
         this.movedBoxes.update(moved => new Map(moved).set(path, offset))
+        if (this.draggedOrder().at(-1) !== path) {
+            this.draggedOrder.update(order => [...order.filter(raised => raised !== path), path])
+        }
     }
 
     resetLayout(): void {
         this.movedBoxes.set(new Map())
+        this.draggedOrder.set([])
     }
 
     hide(path: string): void {

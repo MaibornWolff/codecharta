@@ -86,7 +86,9 @@ function drawnSeries(id: string): DrawnSeries {
 }
 
 function drawnBoxPaths(): string[] {
-    return [...drawnSeries("openFolders").data, ...drawnSeries("boxes").data].map(item => item.name)
+    return drawnSeries("boxes")
+        .data.map(item => item.name)
+        .filter(name => name !== undefined)
 }
 
 const boxEvent = (name: string) => ({ seriesId: "boxes", name })
@@ -117,7 +119,7 @@ describe("DependencyMapComponent", () => {
         await setup()
 
         // Assert
-        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model", "/root/ui/view.ts", "/root/model/node.ts"])
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/ui/view.ts", "/root/model", "/root/model/node.ts"])
     })
 
     it("should close an open folder on a double click and draw its edges on the folder", async () => {
@@ -295,5 +297,19 @@ describe("DependencyMapComponent", () => {
         expect(moved).toBeLessThan(before)
         expect(drawnX("/root/ui/view.ts")).toBe(before)
         expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+    })
+
+    it("should paint a dragged folder with its content over the folders beside it", async () => {
+        // Arrange
+        await setup()
+
+        // Act
+        fireChartEvent("mousedown", { ...boxEvent("/root/ui"), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
+        fireRenderSurfaceEvent("mousemove", { offsetX: 0, offsetY: 40, target: {} })
+        fireRenderSurfaceEvent("mouseup")
+        await screen.findByTestId("dependency-reset-layout")
+
+        // Assert
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/model", "/root/model/node.ts", "/root/ui", "/root/ui/view.ts"])
     })
 })

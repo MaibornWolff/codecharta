@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@a
 import { toSignal } from "@angular/core/rxjs-interop"
 import {
     BoxOffset,
+    boxAtPoint,
     canDragBoxAt,
     DependencyGraphComponent,
     DependencyGraphScene,
@@ -89,6 +90,10 @@ export class DependencyMapComponent {
         return layout ? movedLayout(layout, this.viewStore.boxOffsets()) : null
     })
     protected readonly hasMovedBoxes = computed(() => this.viewStore.boxOffsets().size > 0)
+    protected readonly boxAt = (point: BoxOffset) => {
+        const layout = this.shownLayout()
+        return layout === null ? null : boxAtPoint(layout, this.viewStore.raisedPaths(), point)
+    }
     protected readonly canDragBox = (path: string, point: BoxOffset) => {
         const layout = this.shownLayout()
         return layout !== null && canDragBoxAt(layout, path, point)
@@ -117,7 +122,8 @@ export class DependencyMapComponent {
             edgeFilter: this.edgeFilter(),
             edgeStyle: this.edgeStyle(),
             hoveredPath: this.boxStandingFor(this.hoveredPath()),
-            selectedPath: this.boxStandingFor(this.selectedPath())
+            selectedPath: this.boxStandingFor(this.selectedPath()),
+            raisedPaths: this.viewStore.raisedPaths()
         }
     })
 

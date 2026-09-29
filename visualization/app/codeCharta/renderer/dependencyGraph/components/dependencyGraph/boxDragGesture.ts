@@ -98,13 +98,17 @@ export class BoxDragGesture {
         }
     }
 
-    private toLayout({ offsetX, offsetY }: PointerEvent): LayoutPoint {
-        const [x, y] = this.chart.convertFromPixel({ gridIndex: 0 }, [offsetX, offsetY]) as number[]
-        return [x, y]
+    private toLayout(pointer: PointerEvent): LayoutPoint {
+        return layoutPointAt(this.chart, pointer)
     }
 }
 
 /** A touch carries no button and drags like the primary one. */
 function isPrimaryPress({ event }: PointerEvent): boolean {
     return !event || !("button" in event) || event.button === PRIMARY_BUTTON
+}
+
+export function layoutPointAt(chart: ECharts, { offsetX, offsetY }: { offsetX: number; offsetY: number }): LayoutPoint {
+    const [x, y] = chart.convertFromPixel({ gridIndex: 0 }, [offsetX, offsetY]) as number[]
+    return [x, y]
 }

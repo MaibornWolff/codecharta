@@ -29,7 +29,8 @@ describe("DependencyGraphHost", () => {
             onBoxRightClicked: jest.fn(),
             onRendered: jest.fn(),
             canDragBox: jest.fn(() => true),
-            onBoxDragged: jest.fn()
+            onBoxDragged: jest.fn(),
+            boxAt: jest.fn(() => "/root/app")
         }
         host = new DependencyGraphHost(handlers)
         container = elementOfSize(800, 600)
@@ -66,17 +67,21 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
-    it("should report a click on an open folder with its path", () => {
+    it("should hand a click on an edge lying over a box to that box", () => {
         // Act
-        fireChartEvent("click", { seriesId: SERIES_IDS.openFolders, name: "/root/app" })
+        fireChartEvent("click", { seriesId: SERIES_IDS.edges, event: { offsetX: 30, offsetY: 40 } })
 
         // Assert
+        expect(handlers.boxAt).toHaveBeenCalledWith([30, 40])
         expect(handlers.onBoxClicked).toHaveBeenCalledWith("/root/app")
     })
 
-    it("should ignore clicks on edges", () => {
+    it("should ignore a click on an edge over no box", () => {
+        // Arrange
+        handlers.boxAt = jest.fn(() => null)
+
         // Act
-        fireChartEvent("click", { seriesId: SERIES_IDS.edges, name: undefined })
+        fireChartEvent("click", { seriesId: SERIES_IDS.edges, event: { offsetX: 30, offsetY: 40 } })
 
         // Assert
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
@@ -151,6 +156,9 @@ describe("DependencyGraphHost", () => {
     })
 
     it("should not start a drag on a press outside every box", () => {
+        // Arrange
+        handlers.boxAt = jest.fn(() => null)
+
         // Act
         fireChartEvent("mousedown", { seriesId: SERIES_IDS.edges, event: { offsetX: 10, offsetY: 10 } })
 

@@ -7,6 +7,7 @@ import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge, isShownByFilter } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
+import { PaintedItem, paintOrder } from "./paintOrder"
 
 export interface Viewport {
     width: number
@@ -34,15 +35,12 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     const shownEdges = edgesToDraw(scene)
     const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
     const routes = routeEdges(shownEdges, byPath, scene.edgeStyle)
-    const openFolders = layout.boxes.filter(box => box.isExpanded)
-    const closedBoxes = layout.boxes.filter(box => !box.isExpanded)
-    const boxSeries = (id: string, boxes: LayoutBox[]) =>
-        customSeries(id, boxes, ({ dataIndex }, api) => drawBox(boxes[dataIndex], emphasisOf(boxes[dataIndex], scene), api.coord))
+    const painted = paintOrder(layout, scene.raisedPaths)
     return {
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
-        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter({ openFolders, closedBoxes, shownEdges, byPath }) },
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter({ painted, shownEdges, byPath }) },
         grid: { left: 0, right: 0, top: 0, bottom: 0 },
         ...axesFittingTheGraph(layout, viewport),
         dataZoom: [
@@ -50,11 +48,9 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
             { type: "inside", yAxisIndex: 0, filterMode: "none" }
         ],
         series: [
-            boxSeries(SERIES_IDS.openFolders, openFolders),
-            {
-                ...customSeries(SERIES_IDS.levels, layout.bands, ({ dataIndex }, api) => drawLevelBand(layout.bands[dataIndex], api.coord)),
-                silent: true
-            },
+            customSeries(SERIES_IDS.boxes, painted.map(extentOfPainted), ({ dataIndex }, api) =>
+                drawPainted(painted[dataIndex], scene, api.coord)
+            ),
             customSeries(
                 SERIES_IDS.edges,
                 shownEdges.map(edge => spanOf(byPath.get(edge.fromPath), byPath.get(edge.toPath))),
@@ -63,8 +59,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
                     const isDimmed = isHoverLit && !isEdgeOfHovered(edge, scene.hoveredPath)
                     return drawEdge(edge, routes[dataIndex], isDimmed, api.coord)
                 }
-            ),
-            boxSeries(SERIES_IDS.boxes, closedBoxes)
+            )
         ]
     }
 }
@@ -86,6 +81,14 @@ function edgesToDraw({ edges, edgeFilter, hoveredPath }: DependencyGraphScene): 
     return edges
         .filter(edge => isShownByFilter(edge.type, edgeFilter) || isEdgeOfHovered(edge, hoveredPath))
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
+}
+
+function drawPainted(item: PaintedItem, scene: DependencyGraphScene, toPixels: ToPixels) {
+    return item.kind === "box" ? drawBox(item.box, emphasisOf(item.box, scene), toPixels) : drawLevelBand(item.band, toPixels)
+}
+
+function extentOfPainted(item: PaintedItem): Extent {
+    return item.kind === "box" ? item.box : item.band
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {
