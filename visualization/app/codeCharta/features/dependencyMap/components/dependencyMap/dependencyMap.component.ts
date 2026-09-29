@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import {
+    BoxOffset,
+    canDragBoxAt,
     DependencyGraphComponent,
     DependencyGraphScene,
+    type DraggedBox,
     EDGE_LEGEND,
     EdgeFilter,
     EdgeStyle,
     layoutLevelized,
+    movedLayout,
     projectEdges,
     type RightClickedBox,
     visibleRepresentatives,
@@ -80,6 +84,15 @@ export class DependencyMapComponent {
         const tree = this.tree()
         return tree ? layoutLevelized(tree, this.viewStore.expandedPaths()) : null
     })
+    private readonly shownLayout = computed(() => {
+        const layout = this.layout()
+        return layout ? movedLayout(layout, this.viewStore.boxOffsets()) : null
+    })
+    protected readonly hasMovedBoxes = computed(() => this.viewStore.boxOffsets().size > 0)
+    protected readonly canDragBox = (path: string, point: BoxOffset) => {
+        const layout = this.shownLayout()
+        return layout !== null && canDragBoxAt(layout, path, point)
+    }
     private readonly representatives = computed(() => {
         const tree = this.tree()
         return tree ? visibleRepresentatives(tree, this.viewStore.expandedPaths()) : new Map<string, string>()
@@ -94,7 +107,7 @@ export class DependencyMapComponent {
     )
 
     protected readonly scene = computed((): DependencyGraphScene | null => {
-        const layout = this.layout()
+        const layout = this.shownLayout()
         if (!layout) {
             return null
         }
@@ -142,6 +155,15 @@ export class DependencyMapComponent {
 
     protected showEdges(filter: EdgeFilter): void {
         this.viewStore.showEdges(filter)
+    }
+
+    protected moveBox({ path, dx, dy }: DraggedBox): void {
+        const [offsetX, offsetY] = this.viewStore.boxOffsets().get(path) ?? [0, 0]
+        this.viewStore.placeBox(path, [offsetX + dx, offsetY + dy])
+    }
+
+    protected resetLayout(): void {
+        this.viewStore.resetLayout()
     }
 
     protected drawEdgesAs(style: EdgeStyle): void {

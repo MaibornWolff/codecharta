@@ -9,6 +9,14 @@ export interface RightClickedBox {
     clientY: number
 }
 
+export interface DraggedBox {
+    path: string
+    dx: number
+    dy: number
+}
+
+const NOTHING_DRAGGABLE = () => false
+
 @Component({
     selector: "cc-dependency-graph",
     templateUrl: "./dependencyGraph.component.html",
@@ -17,12 +25,15 @@ export interface RightClickedBox {
 })
 export class DependencyGraphComponent implements OnDestroy {
     readonly scene = input.required<DependencyGraphScene>()
+    /** Whether a press at this layout point on this box drags it rather than the graph. */
+    readonly canDragBox = input<(path: string, point: [number, number]) => boolean>(NOTHING_DRAGGABLE)
 
     readonly boxClicked = output<string>()
     readonly boxToggled = output<string>()
     readonly boxHovered = output<string | null>()
     readonly boxRightClicked = output<RightClickedBox>()
     readonly rendered = output<void>()
+    readonly boxDragged = output<DraggedBox>()
 
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
 
@@ -31,7 +42,9 @@ export class DependencyGraphComponent implements OnDestroy {
         onBoxToggled: path => this.boxToggled.emit(path),
         onBoxHovered: path => this.boxHovered.emit(path),
         onBoxRightClicked: (path, clientX, clientY) => this.boxRightClicked.emit({ path, clientX, clientY }),
-        onRendered: () => this.rendered.emit()
+        onRendered: () => this.rendered.emit(),
+        canDragBox: (path, point) => this.canDragBox()(path, point),
+        onBoxDragged: (path, dx, dy) => this.boxDragged.emit({ path, dx, dy })
     })
 
     constructor() {

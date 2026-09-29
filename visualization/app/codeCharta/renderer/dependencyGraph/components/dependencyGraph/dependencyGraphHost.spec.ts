@@ -27,7 +27,9 @@ describe("DependencyGraphHost", () => {
             onBoxToggled: jest.fn(),
             onBoxHovered: jest.fn(),
             onBoxRightClicked: jest.fn(),
-            onRendered: jest.fn()
+            onRendered: jest.fn(),
+            canDragBox: jest.fn(() => true),
+            onBoxDragged: jest.fn()
         }
         host = new DependencyGraphHost(handlers)
         container = elementOfSize(800, 600)
@@ -118,6 +120,42 @@ describe("DependencyGraphHost", () => {
 
         // Assert
         expect(handlers.onBoxToggled).not.toHaveBeenCalled()
+    })
+
+    it("should drag a pressed box and not select it on the click that ends the drag", () => {
+        // Arrange
+        jest.useFakeTimers()
+        const press = { offsetX: 10, offsetY: 10, event: { button: 0 } }
+
+        // Act
+        fireChartEvent("mousedown", { ...BOX, event: press })
+        fireRenderSurfaceEvent("mousemove", { offsetX: 40, offsetY: 30, target: {} })
+        fireRenderSurfaceEvent("mouseup")
+        fireChartEvent("click", BOX)
+
+        // Assert
+        expect(handlers.onBoxDragged).toHaveBeenCalledWith("/root/app/a.ts", 30, 20)
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
+    it("should end a drag when the pointer leaves the chart", () => {
+        // Arrange
+        fireChartEvent("mousedown", { ...BOX, event: { offsetX: 10, offsetY: 10, event: { button: 0 } } })
+
+        // Act
+        fireRenderSurfaceEvent("globalout")
+        fireRenderSurfaceEvent("mousemove", { offsetX: 90, offsetY: 90, target: {} })
+
+        // Assert
+        expect(handlers.onBoxDragged).not.toHaveBeenCalled()
+    })
+
+    it("should not start a drag on a press outside every box", () => {
+        // Act
+        fireChartEvent("mousedown", { seriesId: SERIES_IDS.edges, event: { offsetX: 10, offsetY: 10 } })
+
+        // Assert
+        expect(handlers.canDragBox).not.toHaveBeenCalled()
     })
 
     it("should report a right click with the pointer position", () => {

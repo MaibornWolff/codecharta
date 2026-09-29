@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Dependency view (experimental)**: a map analysed with the dependency parser opens in a Dependencies view that nests its folders as boxes, stacks their files in rows by level, colours each dependency by whether it closes a cycle or points upward, and lets you hide a file or folder from the graph through its context menu.
+- **Dependency view (experimental)**: a map analysed with the dependency parser opens in a Dependencies view that nests its folders as boxes, stacks their files in rows by level, colours each dependency by whether it closes a cycle or points upward, and lets you hide files and folders, drag boxes around and pick how the edges are drawn.
 
 ## [2.7.0] - 2026-09-28
 
