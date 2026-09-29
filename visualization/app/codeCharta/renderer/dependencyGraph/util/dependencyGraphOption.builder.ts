@@ -1,4 +1,5 @@
-import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
+import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
+import { minOf } from "./collections"
 import { BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { atPaintRank } from "./dependencyGraphElements"
@@ -8,6 +9,7 @@ import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { edgeWidthPx } from "./edgeWidth"
+import { enclosingRectangle, Rectangle } from "./geometry"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 import { findOverlaps, NO_OVERLAPS, Overlaps } from "./overlaps"
 import { aroundEdges, EdgeItem, GraphItem, paintOrder } from "./paintOrder"
@@ -25,51 +27,61 @@ interface CoordinateApi {
     coord: ToPixels
 }
 
-/** The share of the chart the whole graph takes when it is first shown or the view is reset. */
 const FIT_SHARE = 0.94
 // Drawn in parts over several frames, the graph would build up box by box on every hover.
 const DRAW_EVERYTHING_IN_ONE_FRAME = 0
 const NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER = Number.POSITIVE_INFINITY
 const EXTENT_ENCODING = { x: [0, 2], y: [1, 3] }
+const ZOOM_BOTH_AXES_INSIDE = [
+    { type: "inside", xAxisIndex: 0, filterMode: "none" },
+    { type: "inside", yAxisIndex: 0, filterMode: "none" }
+]
+
+interface DrawableGraph {
+    items: GraphItem[]
+    draw: (item: GraphItem, toPixels: ToPixels) => ReturnType<typeof drawItem>
+}
 
 export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport: Viewport) {
-    const { layout } = scene
-    const byPath = boxesByPath(layout)
+    const byPath = boxesByPath(scene.layout)
     const shownEdges = edgesToDraw(scene)
-    const painted = paintOrder(layout, scene.raisedPaths)
+    const graph = drawableGraph(scene, shownEdges, byPath)
+    return {
+        animation: false,
+        aria: { enabled: true, label: { description: describeGraph(scene.layout, shownEdges) } },
+        hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(graph.items, byPath, scene.edgeMetric) },
+        grid: { left: 0, right: 0, top: 0, bottom: 0 },
+        ...axesFittingTheGraph(scene.layout, viewport),
+        dataZoom: ZOOM_BOTH_AXES_INSIDE,
+        series: [graphSeries(graph, byPath)]
+    }
+}
+
+function drawableGraph(scene: DependencyGraphScene, shownEdges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>): DrawableGraph {
+    const painted = paintOrder(scene.layout, scene.raisedPaths)
     const overlaps = scene.raisedPaths.length > 0 ? findOverlaps(painted) : NO_OVERLAPS
     const isFound = searchMatcher(scene.searchedPaths)
     const lookOfBox = (box: LayoutBox) => lookOf(box, scene, overlaps, isFound(box.path))
     const { underEdges, overEdges } = aroundEdges(painted)
-    const items: GraphItem[] = [...underEdges, ...edgeItems(scene, shownEdges, byPath, isFound), ...overEdges]
     return {
-        animation: false,
-        aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
-        hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
-        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(items, byPath, scene.edgeMetric) },
-        grid: { left: 0, right: 0, top: 0, bottom: 0 },
-        ...axesFittingTheGraph(layout, viewport),
-        dataZoom: [
-            { type: "inside", xAxisIndex: 0, filterMode: "none" },
-            { type: "inside", yAxisIndex: 0, filterMode: "none" }
-        ],
-        series: [
-            {
-                id: GRAPH_SERIES_ID,
-                type: "custom",
-                data: items.map(item => datumOf(item, byPath)),
-                encode: EXTENT_ENCODING,
-                renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) =>
-                    atPaintRank(drawItem(items[dataIndex], lookOfBox, overlaps, api.coord), dataIndex),
-                progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
-                clip: true
-            }
-        ]
+        items: [...underEdges, ...edgeItems(scene, shownEdges, byPath, isFound), ...overEdges],
+        draw: (item, toPixels) => drawItem(item, lookOfBox, overlaps, toPixels)
     }
 }
 
-/** While a box is hovered, its edges stand out; otherwise the edges between boxes a search missed fade with
- * the boxes. */
+function graphSeries({ items, draw }: DrawableGraph, byPath: ReadonlyMap<string, LayoutBox>) {
+    return {
+        id: GRAPH_SERIES_ID,
+        type: "custom",
+        data: items.map(item => datumOf(item, byPath)),
+        encode: EXTENT_ENCODING,
+        renderItem: ({ dataIndex }: RenderParams, api: CoordinateApi) => atPaintRank(draw(items[dataIndex], api.coord), dataIndex),
+        progressive: DRAW_EVERYTHING_IN_ONE_FRAME,
+        clip: true
+    }
+}
+
 function edgeItems(
     scene: DependencyGraphScene,
     shownEdges: GraphEdge[],
@@ -81,7 +93,7 @@ function edgeItems(
     const isDimmed = isHoverLit
         ? (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath)
         : (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath)
-    const lightestWeight = Math.min(...shownEdges.map(edge => edge.weight))
+    const lightestWeight = minOf(shownEdges.map(edge => edge.weight))
     return shownEdges.map((edge, index) => ({
         kind: "edge",
         edge,
@@ -100,8 +112,6 @@ const PAINT_RANK: Record<DependencyEdgeType, number> = {
 }
 const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
 
-/** A hovered box shows all its edges whatever their type, painted over every other edge; otherwise the
- * edges that break the architecture are painted over the ones that follow it. */
 function edgesToDraw({ edges, shownEdgeTypes, hoveredPath }: DependencyGraphScene): GraphEdge[] {
     const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isEdgeOfHovered(edge, hoveredPath) ? HOVERED_PAINT_RANK : 0)
     return edges
@@ -131,11 +141,10 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
         case "title":
             return { value: extentValue(item.box) }
         default:
-            return { isEdge: true, value: extentValue(spanOf(byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath))) }
+            return { isEdge: true, value: extentValue(enclosingRectangle([byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath)])) }
     }
 }
 
-/** A folder shows what lies behind it where it overlaps something, and while it is dragged. */
 function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps, isFound: boolean): BoxLook {
     const isDragged = box.isFolder && box.path === scene.draggingPath
     return { emphasis: emphasisOf(box, scene), isSeeThrough: isDragged || seeThroughPaths.has(box.path), isMissedBySearch: !isFound }
@@ -148,24 +157,11 @@ function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGra
     return box.path === hoveredPath ? "hovered" : "none"
 }
 
-interface Extent {
-    x: number
-    y: number
-    width: number
-    height: number
-}
-
-function extentValue({ x, y, width, height }: Extent): number[] {
+function extentValue({ x, y, width, height }: Rectangle): number[] {
     return [x, y, x + width, y + height]
 }
 
-function spanOf(from: LayoutBox, to: LayoutBox): Extent {
-    const x = Math.min(from.x, to.x)
-    const y = Math.min(from.y, to.y)
-    return { x, y, width: Math.max(from.x + from.width, to.x + to.width) - x, height: Math.max(from.y + from.height, to.y + to.height) - y }
-}
-
-/** The two ends of each axis in layout units, as far as the chart shows them. */
+/** In layout units. */
 export interface AxisWindow {
     x: [number, number]
     y: [number, number]
@@ -185,21 +181,28 @@ function axesFittingTheGraph(layout: DependencyGraphLayout, viewport: Viewport) 
     }
 }
 
-/** The window that shows the whole graph as it is drawn, dragged boxes and the folders they grew included. */
+/** Fits the graph as drawn, dragged boxes and the folders they grew included. */
 export function fitWindowOf(layout: DependencyGraphLayout, viewport: Viewport): AxisWindow {
     const [root] = layout.boxes
     return windowAround(root ?? { x: 0, y: 0, width: layout.width, height: layout.height }, viewport, FIT_SHARE)
 }
 
-/** Centres the area and gives both axes the same number of pixels per layout unit, so the graph is never
- * squashed. */
-function windowAround(area: Extent, viewport: Viewport, share: number): AxisWindow {
+/** Both axes get the same number of pixels per layout unit, so the graph is never squashed. */
+function windowAround(area: Rectangle, viewport: Viewport, share: number): AxisWindow {
     const pixelsPerUnit = Math.min(viewport.width / area.width, viewport.height / area.height) * share
+    if (!(Number.isFinite(pixelsPerUnit) && pixelsPerUnit > 0)) {
+        return windowOf(area)
+    }
     const halfWidth = viewport.width / pixelsPerUnit / 2
     const halfHeight = viewport.height / pixelsPerUnit / 2
     const centreX = area.x + area.width / 2
     const centreY = area.y + area.height / 2
     return { x: [centreX - halfWidth, centreX + halfWidth], y: [centreY - halfHeight, centreY + halfHeight] }
+}
+
+// Before the chart has a size there is no scale to keep; showing the area as it is keeps the window a number.
+function windowOf({ x, y, width, height }: Rectangle): AxisWindow {
+    return { x: [x, x + width], y: [y, y + height] }
 }
 
 function describeGraph(layout: DependencyGraphLayout, shownEdges: GraphEdge[]): string {

@@ -15,16 +15,16 @@ import {
     seeThrough,
     TEXT_COLOR
 } from "./dependencyGraphStyle"
+import { Rectangle } from "./geometry"
 import { LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
-import { BandCutout } from "./overlaps"
+import { BandCutout, BandSeparator, bandSeparator } from "./overlaps"
 
 export type BoxEmphasis = "selected" | "hovered" | "none"
 
 export interface BoxLook {
     emphasis: BoxEmphasis
-    /** Lets whatever lies behind the box show through its fill. */
     isSeeThrough: boolean
-    /** Fades the box: a search is on and it holds nothing the search found. */
+    /** A search is on and the box holds nothing it found. */
     isMissedBySearch: boolean
 }
 
@@ -35,13 +35,11 @@ const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
 const CORNER_RADIUS_PX = 4
-
-interface PixelRect {
-    x: number
-    y: number
-    width: number
-    height: number
-}
+const LINE_WIDTH_PX = 1
+const SELECTED_LINE_WIDTH_PX = 2.5
+const HOVERED_LINE_WIDTH_PX = 2
+const LEVEL_LABEL_LIFT_PX = 2
+const SEPARATOR_DASH_PX = [4, 4]
 
 export function drawBox(box: LayoutBox, { emphasis, isSeeThrough, isMissedBySearch }: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
@@ -58,7 +56,7 @@ export function drawBox(box: LayoutBox, { emphasis, isSeeThrough, isMissedBySear
     return drawnItem(children)
 }
 
-/** An open folder's name in its header strip, drawn apart from the folder so the edges pass under it. */
+/** Drawn apart from the folder so the edges pass under it. */
 export function drawFolderTitle(box: LayoutBox, { isMissedBySearch }: BoxLook, toPixels: ToPixels) {
     const label = drawLabel(box, pixelRectOf(box, toPixels), opacityOf(isMissedBySearch))
     return drawnItem(label ? [label] : [])
@@ -68,46 +66,45 @@ function opacityOf(isMissedBySearch: boolean): number {
     return isMissedBySearch ? MISSED_BY_SEARCH_OPACITY : FOUND_OPACITY
 }
 
-/** The band's label and separator, less whatever a box from outside its folder covers. */
 export function drawLevelBand(band: LevelBand, toPixels: ToPixels, cutout: BandCutout = NOTHING_CUT_OUT) {
-    const left = band.x + LAYOUT_SPACING.padding
-    const right = band.x + band.width - LAYOUT_SPACING.padding
-    const separatorY = band.y - LAYOUT_SPACING.gapBetweenLevels / 2
-    const children: object[] = []
-    if (!cutout.isLabelHidden) {
-        const [labelX, labelY] = toPixels([left, band.y])
-        children.push({
-            type: "text",
-            ...UNTRANSFORMED,
-            silent: true,
-            style: {
-                text: `level ${band.level}`,
-                x: labelX,
-                y: labelY - 2,
-                align: "left",
-                verticalAlign: "bottom",
-                fontSize: LEVEL_FONT_SIZE_PX,
-                fill: LEVEL_SEPARATOR_COLOR
-            }
-        })
-    }
-    if (!band.isTopmost) {
-        for (const [from, to] of visibleSpans([left, right], cutout.hiddenSpans)) {
-            const [x1, y1] = toPixels([from, separatorY])
-            const [x2] = toPixels([to, separatorY])
-            children.push({
-                type: "line",
-                ...UNTRANSFORMED,
-                silent: true,
-                shape: { x1, y1, x2, y2: y1 },
-                style: { stroke: LEVEL_SEPARATOR_COLOR, lineWidth: 1, lineDash: [4, 4] }
-            })
-        }
-    }
-    return drawnItem(children)
+    const separator = bandSeparator(band)
+    const label = cutout.isLabelHidden ? [] : [drawLevelLabel(band, separator, toPixels)]
+    const separatorLines = band.isTopmost ? [] : drawSeparatorLines(separator, cutout.hiddenSpans, toPixels)
+    return drawnItem([...label, ...separatorLines])
 }
 
-/** What remains of a span once the hidden stretches are taken out of it. */
+function drawLevelLabel(band: LevelBand, { left }: BandSeparator, toPixels: ToPixels) {
+    const [labelX, labelY] = toPixels([left, band.y])
+    return {
+        type: "text",
+        ...UNTRANSFORMED,
+        silent: true,
+        style: {
+            text: `level ${band.level}`,
+            x: labelX,
+            y: labelY - LEVEL_LABEL_LIFT_PX,
+            align: "left",
+            verticalAlign: "bottom",
+            fontSize: LEVEL_FONT_SIZE_PX,
+            fill: LEVEL_SEPARATOR_COLOR
+        }
+    }
+}
+
+function drawSeparatorLines({ left, right, y }: BandSeparator, hiddenSpans: [number, number][], toPixels: ToPixels) {
+    return visibleSpans([left, right], hiddenSpans).map(([from, to]) => {
+        const [x1, y1] = toPixels([from, y])
+        const [x2] = toPixels([to, y])
+        return {
+            type: "line",
+            ...UNTRANSFORMED,
+            silent: true,
+            shape: { x1, y1, x2, y2: y1 },
+            style: { stroke: LEVEL_SEPARATOR_COLOR, lineWidth: LINE_WIDTH_PX, lineDash: SEPARATOR_DASH_PX }
+        }
+    })
+}
+
 function visibleSpans([start, end]: [number, number], hidden: [number, number][]): [number, number][] {
     const spans: [number, number][] = []
     let from = start
@@ -123,7 +120,7 @@ function visibleSpans([start, end]: [number, number], hidden: [number, number][]
     return spans
 }
 
-function pixelRectOf(box: LayoutBox, toPixels: ToPixels): PixelRect {
+function pixelRectOf(box: LayoutBox, toPixels: ToPixels): Rectangle {
     const [left, top] = toPixels([box.x, box.y])
     const [right, bottom] = toPixels([box.x + box.width, box.y + box.height])
     return { x: left, y: top, width: right - left, height: bottom - top }
@@ -132,25 +129,24 @@ function pixelRectOf(box: LayoutBox, toPixels: ToPixels): PixelRect {
 function boxStyle(box: LayoutBox, emphasis: BoxEmphasis) {
     const base = baseStyle(box)
     if (emphasis === "selected") {
-        return { ...base, stroke: SELECTED_COLOR, lineWidth: 2.5 }
+        return { ...base, stroke: SELECTED_COLOR, lineWidth: SELECTED_LINE_WIDTH_PX }
     }
     if (emphasis === "hovered") {
-        return { ...base, stroke: HOVERED_COLOR, lineWidth: 2 }
+        return { ...base, stroke: HOVERED_COLOR, lineWidth: HOVERED_LINE_WIDTH_PX }
     }
     return base
 }
 
 function baseStyle(box: LayoutBox) {
     if (!box.isFolder) {
-        return { fill: FILE_FILL, stroke: FILE_STROKE, lineWidth: 1 }
+        return { fill: FILE_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
     }
     return box.isExpanded
-        ? { fill: folderFill(box.depth), stroke: FOLDER_STROKE, lineWidth: 1 }
-        : { fill: CLOSED_FOLDER_FILL, stroke: CLOSED_FOLDER_STROKE, lineWidth: 1 }
+        ? { fill: folderFill(box.depth), stroke: FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
+        : { fill: CLOSED_FOLDER_FILL, stroke: CLOSED_FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
 }
 
-/** An open folder names itself in its header strip; a file or a closed folder in its middle. */
-function drawLabel(box: LayoutBox, rect: PixelRect, opacity: number) {
+function drawLabel(box: LayoutBox, rect: Rectangle, opacity: number) {
     const width = rect.width - 2 * LABEL_INSET_PX
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
@@ -176,6 +172,6 @@ function drawLabel(box: LayoutBox, rect: PixelRect, opacity: number) {
     }
 }
 
-function headerHeightPx(box: LayoutBox, rect: PixelRect): number {
+function headerHeightPx(box: LayoutBox, rect: Rectangle): number {
     return (rect.height * LAYOUT_SPACING.headerHeight) / box.height
 }

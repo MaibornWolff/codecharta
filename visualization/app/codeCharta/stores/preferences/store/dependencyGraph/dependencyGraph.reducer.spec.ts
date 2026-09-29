@@ -3,8 +3,11 @@ import { defaultDependencyGraphSettings, dependencyGraph } from "./dependencyGra
 
 describe("dependencyGraph", () => {
     it("should change the given settings and keep the others", () => {
+        // Arrange
+        const action = setDependencyGraphSettings({ value: { edgeStyle: "straight" } })
+
         // Act
-        const result = dependencyGraph(defaultDependencyGraphSettings, setDependencyGraphSettings({ value: { edgeStyle: "straight" } }))
+        const result = dependencyGraph(defaultDependencyGraphSettings, action)
 
         // Assert
         expect(result).toEqual({ ...defaultDependencyGraphSettings, edgeStyle: "straight" })

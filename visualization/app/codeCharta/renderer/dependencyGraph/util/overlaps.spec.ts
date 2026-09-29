@@ -9,15 +9,19 @@ const libBand = aBand({ folderPath: "/root/lib", level: 0, isTopmost: false, x: 
 const libFile = aBox("/root/lib/c.ts", { depth: 2, x: 40, y: 200 })
 const ui = aBox("/root/ui", { isFolder: true, isExpanded: true, depth: 1, x: 300, y: 150, width: 300, height: 200 })
 const uiFile = aBox("/root/ui/d.ts", { depth: 2, x: 320, y: 220 })
+const MANY_FILES = 2000
+const GAP_BETWEEN_FILES = 20
+const FILE_SPACING = 160 + GAP_BETWEEN_FILES
 
 function painted(...entries: (typeof root | typeof libBand)[]): PaintedItem[] {
     return entries.map(entry => ("folderPath" in entry ? { kind: "band", band: entry } : { kind: "box", box: entry }))
 }
 
 describe("findOverlaps", () => {
-    const items = painted(root, lib, libBand, libFile, ui, uiFile)
-
     it("should let a folder painted over a box it does not belong with show it through", () => {
+        // Arrange
+        const items = painted(root, lib, libBand, libFile, ui, uiFile)
+
         // Act
         const { seeThroughPaths } = findOverlaps(items)
 
@@ -26,14 +30,20 @@ describe("findOverlaps", () => {
     })
 
     it("should keep folders solid over their own content and their parents", () => {
+        // Arrange
+        const items = painted(root, lib, libFile)
+
         // Act
-        const { seeThroughPaths } = findOverlaps(painted(root, lib, libFile))
+        const { seeThroughPaths } = findOverlaps(items)
 
         // Assert
         expect(seeThroughPaths.size).toBe(0)
     })
 
     it("should stop a band's separator where a box from outside its folder covers it", () => {
+        // Arrange
+        const items = painted(root, lib, libBand, libFile, ui, uiFile)
+
         // Act
         const cutout = findOverlaps(items).bandCutouts.get(libBand)
 
@@ -62,5 +72,53 @@ describe("findOverlaps", () => {
 
         // Assert
         expect(bandCutouts.size).toBe(0)
+    })
+
+    it("should leave a band alone that a box painted before it covers", () => {
+        // Arrange
+        const items = painted(root, ui, lib, libBand)
+
+        // Act
+        const { bandCutouts } = findOverlaps(items)
+
+        // Assert
+        expect(bandCutouts.size).toBe(0)
+    })
+
+    it("should find the one overlap among many boxes, wherever it lies", () => {
+        // Arrange
+        const files = Array.from({ length: MANY_FILES }, (_, index) =>
+            aBox(`/root/wide/file${index}.ts`, { depth: 2, x: index * FILE_SPACING, y: 1000 })
+        )
+        const wide = aBox("/root/wide", {
+            isFolder: true,
+            isExpanded: true,
+            depth: 1,
+            y: 960,
+            width: MANY_FILES * FILE_SPACING,
+            height: 100
+        })
+        const lastFile = files.at(-1)
+        const draggedOntoTheLastFile = aBox("/root/wide/dragged", {
+            isFolder: true,
+            isExpanded: true,
+            depth: 2,
+            x: lastFile.x,
+            y: lastFile.y
+        })
+        const betweenTheFiles = aBox("/root/wide/between", {
+            isFolder: true,
+            depth: 2,
+            x: FILE_SPACING - GAP_BETWEEN_FILES,
+            y: 1000,
+            width: GAP_BETWEEN_FILES
+        })
+        const items = painted(root, wide, ...files, betweenTheFiles, draggedOntoTheLastFile)
+
+        // Act
+        const { seeThroughPaths } = findOverlaps(items)
+
+        // Assert
+        expect([...seeThroughPaths]).toEqual(["/root/wide/dragged"])
     })
 })

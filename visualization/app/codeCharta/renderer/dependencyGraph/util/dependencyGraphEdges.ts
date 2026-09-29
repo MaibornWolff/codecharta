@@ -3,6 +3,7 @@ import { ToPixels } from "./dependencyGraphScene"
 import { DIMMED_OPACITY, edgeColor, edgeDash } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
 import { EdgeRoute, Side } from "./edgeRouting"
+import { Point } from "./geometry"
 
 const MIN_ARROW_LENGTH_PX = 8
 const MIN_ARROW_HALF_WIDTH_PX = 4
@@ -13,8 +14,9 @@ const MIN_ASIDE_BULGE_PX = 40
 const ASIDE_BULGE_PER_HEIGHT = 0.35
 /** How far a dependency running both ways bows out, each direction to its own side. */
 const TWO_WAY_ARC_PX = 14
-
-type Point = [number, number]
+/** Pulls a third and two thirds of the way along keep a bezier on the straight line between its ends. */
+const PULL_SHARES = { start: 1 / 3, end: 2 / 3 }
+const ON_THE_LINE_PX = 0
 
 interface Curve {
     start: Point
@@ -57,9 +59,9 @@ export function drawEdge(edge: GraphEdge, route: EdgeRoute, { isDimmed, widthPx 
 function bend(route: EdgeRoute, start: Point, end: Point): Curve {
     switch (route.bend) {
         case "straight":
-            return { start, startPull: along(start, end, 1 / 3, 0), endPull: along(start, end, 2 / 3, 0), end }
+            return pulledAlong(start, end, ON_THE_LINE_PX)
         case "arc":
-            return { start, startPull: along(start, end, 1 / 3, TWO_WAY_ARC_PX), endPull: along(start, end, 2 / 3, TWO_WAY_ARC_PX), end }
+            return pulledAlong(start, end, TWO_WAY_ARC_PX)
         case "aside": {
             const bulgeX = Math.max(start[0], end[0]) + Math.max(MIN_ASIDE_BULGE_PX, Math.abs(end[1] - start[1]) * ASIDE_BULGE_PER_HEIGHT)
             return { start, startPull: [bulgeX, start[1]], endPull: [bulgeX, end[1]], end }
@@ -69,7 +71,15 @@ function bend(route: EdgeRoute, start: Point, end: Point): Curve {
     }
 }
 
-/** Leaves and enters square to the box's side, pulled out by half the distance along that direction. */
+function pulledAlong(start: Point, end: Point, sidewaysPx: number): Curve {
+    return {
+        start,
+        startPull: along(start, end, PULL_SHARES.start, sidewaysPx),
+        endPull: along(start, end, PULL_SHARES.end, sidewaysPx),
+        end
+    }
+}
+
 function sCurve({ startSide, endSide }: EdgeRoute, start: Point, end: Point): Curve {
     const isVertical = startSide === "top" || startSide === "bottom"
     const distance = Math.abs(isVertical ? end[1] - start[1] : end[0] - start[0])
@@ -82,7 +92,7 @@ function pushedOut(point: Point, side: Side, distance: number): Point {
     return [point[0] + outX * distance, point[1] + outY * distance]
 }
 
-/** A point part of the way from start to end, moved sideways to the left of the direction of travel. */
+/** Sideways is to the left of the direction of travel. */
 function along(start: Point, end: Point, share: number, sideways: number): Point {
     const deltaX = end[0] - start[0]
     const deltaY = end[1] - start[1]

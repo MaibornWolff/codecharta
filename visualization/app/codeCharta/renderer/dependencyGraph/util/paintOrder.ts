@@ -1,6 +1,8 @@
+import { addToGroup } from "./collections"
 import { EdgeLook } from "./dependencyGraphEdges"
 import { GraphEdge } from "./edgeProjection"
 import { EdgeRoute } from "./edgeRouting"
+import { Point } from "./geometry"
 import { childIndicesByFolder } from "./layoutHierarchy"
 import { DependencyGraphLayout, LayoutBox, LevelBand } from "./levelizedLayout"
 
@@ -13,7 +15,7 @@ export interface EdgeItem {
     look: EdgeLook
 }
 
-/** An open folder's name, painted apart from the folder so that it lies over the edges. */
+/** Painted apart from its open folder so that it lies over the edges. */
 export interface TitleItem {
     kind: "title"
     box: LayoutBox
@@ -21,10 +23,8 @@ export interface TitleItem {
 
 export type GraphItem = PaintedItem | TitleItem | EdgeItem
 
-type LayoutPoint = [number, number]
-
-/** Back to front: each folder, then its level bands, then its children, so a folder dragged over another covers
- * all of it. Among siblings, the dragged ones come last, the most recently dragged on top. */
+/** Each folder, then its level bands, then its children, so a folder dragged over another covers all of it.
+ * Among siblings, the dragged ones come last, the most recently dragged on top. */
 export function paintOrder(layout: DependencyGraphLayout, raisedPaths: readonly string[]): PaintedItem[] {
     const { boxes } = layout
     if (boxes.length === 0) {
@@ -49,8 +49,8 @@ export function paintOrder(layout: DependencyGraphLayout, raisedPaths: readonly 
     return items
 }
 
-/** The painted items split around the edges: the open folders and level bands lie under them, the closed boxes
- * and the open folders' names over them, so no edge hides a name. Each side keeps the paint order. */
+/** The open folders and level bands lie under the edges, the closed boxes and the open folders' names over them,
+ * so no edge hides a name. */
 export function aroundEdges(painted: PaintedItem[]): { underEdges: PaintedItem[]; overEdges: (PaintedItem | TitleItem)[] } {
     const underEdges: PaintedItem[] = []
     const overEdges: (PaintedItem | TitleItem)[] = []
@@ -67,13 +67,13 @@ export function aroundEdges(painted: PaintedItem[]): { underEdges: PaintedItem[]
     return { underEdges, overEdges }
 }
 
-export function boxAtPoint(layout: DependencyGraphLayout, raisedPaths: readonly string[], point: LayoutPoint): string | null {
+export function boxAtPoint(layout: DependencyGraphLayout, raisedPaths: readonly string[], point: Point): string | null {
     const { underEdges, overEdges } = aroundEdges(paintOrder(layout, raisedPaths))
     return topmostBoxAt([...underEdges, ...overEdges], point)
 }
 
-/** The box painted on top at a point, which is the one the reader sees and means to click there. */
-export function topmostBoxAt(items: (PaintedItem | TitleItem)[], [x, y]: LayoutPoint): string | null {
+/** The box painted on top is the one the reader sees and means to click. */
+export function topmostBoxAt(items: (PaintedItem | TitleItem)[], [x, y]: Point): string | null {
     for (let index = items.length - 1; index >= 0; index--) {
         const item = items[index]
         if (
@@ -92,7 +92,7 @@ export function topmostBoxAt(items: (PaintedItem | TitleItem)[], [x, y]: LayoutP
 function bandsByFolder(bands: LevelBand[]): Map<string, LevelBand[]> {
     const byFolder = new Map<string, LevelBand[]>()
     for (const band of bands) {
-        byFolder.set(band.folderPath, [...(byFolder.get(band.folderPath) ?? []), band])
+        addToGroup(byFolder, band.folderPath, band)
     }
     return byFolder
 }

@@ -11,11 +11,12 @@
 >
     <label class="flex cursor-pointer items-center gap-2 px-2">
         <input
+            #sideMiddleCheckbox
             type="checkbox"
             class="checkbox checkbox-sm checkbox-primary"
             data-testid="dependency-bar-edge-style-side-middle"
             [checked]="isAnchoredAtSideMiddle()"
-            (change)="anchorAtSideMiddle($event)"
+            (change)="anchorAtSideMiddle(sideMiddleCheckbox.checked)"
         />
         <span>Start and end at the middle of the side</span>
     </label>

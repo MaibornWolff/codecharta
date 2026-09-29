@@ -1,4 +1,4 @@
-import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../../lenses/dependency/dependencyLens.facade"
+import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../../model/dependencyGraph.model"
 import { EDGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 
 type EdgeTypes = readonly DependencyEdgeType[]

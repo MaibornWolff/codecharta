@@ -4,11 +4,24 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { DependencyMapViewStore } from "../../../features/dependencyMap/facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
+import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { defaultState } from "../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodePath, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
 import { DependencyExplorerSelection } from "./dependencyExplorerSelection"
 
 const LEAF = { name: "view.ts", path: "/root/app/ui/view.ts", id: 2, type: NodeType.FILE, attributes: {} } as unknown as CodeMapNode
+
+const TREE: LeveledNode = {
+    path: "/root",
+    name: "root",
+    level: 0,
+    isFolder: true,
+    children: [
+        { path: "/root/app", name: "app", level: 0, isFolder: true, children: [] },
+        { path: "/root/lib", name: "lib", level: 0, isFolder: true, children: [] }
+    ]
+}
 
 describe("DependencyExplorerSelection", () => {
     function setup(selectedNodePath: string | null = null, hoveredNodePath: string | null = null) {
@@ -17,6 +30,7 @@ describe("DependencyExplorerSelection", () => {
                 DependencyExplorerSelection,
                 provideMockState(),
                 provideMockStore({
+                    initialState: defaultState,
                     selectors: [
                         { selector: selectedNodePathSelector, value: selectedNodePath },
                         { selector: hoveredNodePathSelector, value: hoveredNodePath }
@@ -38,6 +52,19 @@ describe("DependencyExplorerSelection", () => {
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setSelectedNodePath({ value: LEAF.path }))
         expect([...TestBed.inject(DependencyMapViewStore).expandedPaths()]).toEqual(["/root", "/root/app", "/root/app/ui"])
+    })
+
+    it("should keep the folders holding a node handed over from another view open once the graph adopts its tree", () => {
+        // Arrange
+        const { selection } = setup()
+        const viewStore = TestBed.inject(DependencyMapViewStore)
+        selection.select(LEAF)
+
+        // Act
+        viewStore.adoptTree(TREE)
+
+        // Assert
+        expect([...viewStore.expandedPaths()]).toEqual(["/root", "/root/app", "/root/app/ui"])
     })
 
     it("should clear the selection on deselect", () => {

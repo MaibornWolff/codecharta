@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { DependencyEdgeType, edgeTypesCarriedBy } from "../../../../lenses/dependency/dependencyLens.facade"
+import { edgeTypesCarriedBy } from "../../../../lenses/dependency/dependencyLens.facade"
+import { DependencyEdgeType } from "../../../../model/dependencyGraph.model"
 import { EDGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { AxisCardComponent, SelectionShortcutsComponent, SettingsPopoverShellComponent } from "../../../shared/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
@@ -18,8 +19,8 @@ import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeT
 export class EdgeTypesSegmentComponent {
     private readonly readStore = inject(DependencyMapReadStore)
     private readonly writeStore = inject(DependencyMapWriteStore)
-    private readonly edgeMetric = toSignal(this.readStore.edgeMetric$, { requireSync: true })
-    private readonly settings = toSignal(this.readStore.settings$, { requireSync: true })
+    private readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
+    private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
 
     readonly popoverId = "dependency-bar-edges-popover"
     readonly anchorName = "dependency-bar-edges-card"

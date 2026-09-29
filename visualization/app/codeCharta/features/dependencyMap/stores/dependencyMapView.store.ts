@@ -1,31 +1,39 @@
-import { Injectable, signal } from "@angular/core"
+import { Injectable, inject, signal, untracked } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import { BoxOffset, collapsedFirstLook, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
-/** What the reader opened and moved. View state of this view alone, so it is kept for as long as the app runs and
- * never persisted. */
+interface RevealsAwaitingAdoption {
+    layoutIdentity: string
+    paths: string[]
+}
+
 @Injectable({ providedIn: "root" })
 export class DependencyMapViewStore {
+    private readonly currentLayoutIdentity = toSignal(inject(DependencyMapReadStore).layoutIdentity$, { requireSync: true })
+    private readonly layoutIdentityOfTheOpenedFolders = signal<string | null>(null)
     private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
     private readonly draggedOrder = signal<readonly string[]>([])
     private readonly boxBeingDragged = signal<string | null>(null)
-    private rootOfTheOpenedFolders: string | null = null
+    private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
 
+    readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedFolders.asReadonly()
     readonly expandedPaths = this.openedFolders.asReadonly()
     readonly boxOffsets = this.movedBoxes.asReadonly()
     /** Dragged boxes, the most recently dragged last, so it paints over the others. */
     readonly raisedPaths = this.draggedOrder.asReadonly()
     readonly draggingPath = this.boxBeingDragged.asReadonly()
 
-    /** A new project, or a new focus, starts collapsed with nothing moved; the same one keeps what was
-     * opened and moved. */
     adoptTree(tree: LeveledNode): void {
-        if (tree.path === this.rootOfTheOpenedFolders) {
+        const layoutIdentity = this.currentLayoutIdentity()
+        if (layoutIdentity === untracked(this.layoutIdentityOfTheOpenedFolders)) {
             return
         }
-        this.rootOfTheOpenedFolders = tree.path
+        this.layoutIdentityOfTheOpenedFolders.set(layoutIdentity)
         this.openedFolders.set(collapsedFirstLook(tree))
         this.resetLayout()
+        this.revealTheAwaitingPaths(layoutIdentity)
     }
 
     placeBox(path: string, offset: BoxOffset): void {
@@ -45,9 +53,14 @@ export class DependencyMapViewStore {
         this.draggedOrder.set([])
     }
 
-    /** Opens every folder holding the node, so its own box is on screen. */
+    /** A reveal arriving before the tree of the loaded files is adopted, as on the way in from another view, is
+     * repeated once it is, since adopting a tree closes every folder. */
     reveal(path: string): void {
-        this.openedFolders.update(opened => new Set([...opened, ...ancestorsOf(path)]))
+        this.openFoldersHolding([path])
+        const layoutIdentity = untracked(this.currentLayoutIdentity)
+        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedFolders)) {
+            this.awaitAdoptionToReveal(layoutIdentity, path)
+        }
     }
 
     toggle(folderPath: string): void {
@@ -58,6 +71,24 @@ export class DependencyMapViewStore {
             }
             return next
         })
+    }
+
+    private awaitAdoptionToReveal(layoutIdentity: string, path: string): void {
+        const awaiting = this.revealsAwaitingAdoption
+        const earlierPaths = awaiting?.layoutIdentity === layoutIdentity ? awaiting.paths : []
+        this.revealsAwaitingAdoption = { layoutIdentity, paths: [...earlierPaths, path] }
+    }
+
+    private revealTheAwaitingPaths(layoutIdentity: string): void {
+        const awaiting = this.revealsAwaitingAdoption
+        this.revealsAwaitingAdoption = null
+        if (awaiting?.layoutIdentity === layoutIdentity) {
+            this.openFoldersHolding(awaiting.paths)
+        }
+    }
+
+    private openFoldersHolding(paths: string[]): void {
+        this.openedFolders.update(opened => new Set([...opened, ...paths.flatMap(ancestorsOf)]))
     }
 }
 

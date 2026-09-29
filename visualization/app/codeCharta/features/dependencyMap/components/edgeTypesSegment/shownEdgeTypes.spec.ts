@@ -1,4 +1,4 @@
-import { DEPENDENCY_EDGE_TYPES } from "../../../../lenses/dependency/dependencyLens.facade"
+import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../../model/dependencyGraph.model"
 import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeTypes } from "./shownEdgeTypes"
 
 describe("shownEdgeTypes", () => {
@@ -10,8 +10,11 @@ describe("shownEdgeTypes", () => {
             [["regular"], ["regular"], "All"],
             [["cyclic"], ["regular"], "None"]
         ] as const)("should name the shown types %j of the carried %j as %s", (shown, carried, expected) => {
+            // Arrange
+            const carriedTypes: readonly DependencyEdgeType[] = carried
+
             // Act
-            const name = nameOfShownEdgeTypes(shown, carried)
+            const name = nameOfShownEdgeTypes(shown, carriedTypes)
 
             // Assert
             expect(name).toBe(expected)
@@ -20,8 +23,11 @@ describe("shownEdgeTypes", () => {
 
     describe("withAllEdgeTypes", () => {
         it("should add the types in the order of the edge colours", () => {
+            // Arrange
+            const shown: DependencyEdgeType[] = ["feedbackLeafLevel"]
+
             // Act
-            const types = withAllEdgeTypes(["feedbackLeafLevel"], ["regular"])
+            const types = withAllEdgeTypes(shown, ["regular"])
 
             // Assert
             expect(types).toEqual(["regular", "feedbackLeafLevel"])
@@ -30,8 +36,11 @@ describe("shownEdgeTypes", () => {
 
     describe("withoutEdgeTypes", () => {
         it("should remove the types and keep the others", () => {
+            // Arrange
+            const removed: DependencyEdgeType[] = ["regular", "cyclic"]
+
             // Act
-            const types = withoutEdgeTypes(DEPENDENCY_EDGE_TYPES, ["regular", "cyclic"])
+            const types = withoutEdgeTypes(DEPENDENCY_EDGE_TYPES, removed)
 
             // Assert
             expect(types).toEqual(["feedbackContainerLevel", "feedbackLeafLevel"])
@@ -40,8 +49,11 @@ describe("shownEdgeTypes", () => {
 
     describe("invertedEdgeTypes", () => {
         it("should flip the carried types and leave the others as they were", () => {
+            // Arrange
+            const shown: DependencyEdgeType[] = ["regular", "cyclic"]
+
             // Act
-            const types = invertedEdgeTypes(["regular", "cyclic"], ["regular"])
+            const types = invertedEdgeTypes(shown, ["regular"])
 
             // Assert
             expect(types).toEqual(["cyclic"])

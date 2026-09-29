@@ -1,51 +1,43 @@
-import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
+import { DependencyEdgeStyle, DependencyEdgeType, DependencyEdgeWidth } from "../../../model/dependencyGraph.model"
+import { isWithin } from "./boxPaths"
 import { GraphEdge } from "./edgeProjection"
-import { EdgeStyle } from "./edgeRouting"
-import { EdgeWidth } from "./edgeWidth"
+import { Point } from "./geometry"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
 
-/** Everything one frame of the dependency graph shows. The paths are box paths: a selection or hover
- * deeper than the boxes on screen arrives already lifted onto the box standing for it. */
+/** The paths are box paths: a selection or hover deeper than the boxes on screen arrives already lifted onto
+ * the box standing for it. */
 export interface DependencyGraphScene {
     layout: DependencyGraphLayout
     edges: GraphEdge[]
-    /** The edge metric the edges are drawn for; their weight is its value. */
+    /** The edges' weight is its value. */
     edgeMetric: string | null
-    /** The types whose edges are drawn; the hovered box's edges are drawn whatever their type. */
+    /** The hovered box's edges are drawn whatever their type. */
     shownEdgeTypes: readonly DependencyEdgeType[]
-    edgeStyle: EdgeStyle
-    /** Every edge starts and ends at the middle of its sides, whatever the style. */
+    edgeStyle: DependencyEdgeStyle
     isAnchoredAtSideMiddle: boolean
-    edgeWidth: EdgeWidth
+    edgeWidth: DependencyEdgeWidth
     hoveredPath: string | null
     selectedPath: string | null
     /** Dragged boxes, the most recently dragged last: they paint above their siblings. */
     raisedPaths: readonly string[]
-    /** The box the reader is dragging right now, if any. */
     draggingPath: string | null
-    /** What a search found, files and folders alike; null while no search is on. */
+    /** Files and folders alike; null while no search is on. */
     searchedPaths: ReadonlySet<string> | null
 }
 
-/** Converts a point of the layout into pixels on the chart; the zoom and pan decide the mapping. */
-export type ToPixels = (point: [number, number]) => number[]
-
-function touches(path: string, target: string): boolean {
-    return path === target || path.startsWith(`${target}/`)
-}
+export type ToPixels = (layoutPoint: Point) => number[]
 
 /** A hovered box's edges are the ones crossing its border. An open folder holds edges between its own
  * children too, and the root holds every edge; showing those would light up the whole graph. */
 export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null): boolean {
-    return hoveredPath !== null && touches(edge.fromPath, hoveredPath) !== touches(edge.toPath, hoveredPath)
+    return hoveredPath !== null && isWithin(edge.fromPath, hoveredPath) !== isWithin(edge.toPath, hoveredPath)
 }
 
 export function boxesByPath(layout: DependencyGraphLayout): Map<string, LayoutBox> {
     return new Map(layout.boxes.map(box => [box.path, box]))
 }
 
-/** Whether a box holds something the search found, or lies in a folder it found. Everything counts as found
- * while no search is on. */
+/** A box counts as found when it holds something the search found, or lies in a folder it found. */
 export function searchMatcher(searchedPaths: ReadonlySet<string> | null): (boxPath: string) => boolean {
     if (searchedPaths === null) {
         return () => true

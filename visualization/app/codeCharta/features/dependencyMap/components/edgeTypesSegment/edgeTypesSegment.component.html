@@ -15,12 +15,13 @@
                     [class]="entry.isCarried ? 'cursor-pointer hover:bg-base-200' : 'cursor-not-allowed opacity-50'"
                 >
                     <input
+                        #edgeTypeCheckbox
                         type="checkbox"
                         class="checkbox checkbox-sm checkbox-primary shrink-0"
                         [checked]="entry.isShown"
                         [disabled]="!entry.isCarried"
                         [attr.data-testid]="'dependency-bar-edges-' + entry.type"
-                        (change)="toggle(entry.type, $any($event.target).checked)"
+                        (change)="toggle(entry.type, edgeTypeCheckbox.checked)"
                     />
                     <svg class="h-2 w-6 shrink-0" viewBox="0 0 24 8" aria-hidden="true">
                         <line x1="0" y1="4" x2="24" y2="4" stroke-width="2" [attr.stroke]="entry.color" [attr.stroke-dasharray]="entry.isDashed ? '5 4' : null" />

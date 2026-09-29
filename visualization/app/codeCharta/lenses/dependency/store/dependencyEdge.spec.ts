@@ -1,4 +1,5 @@
-import { DEPENDENCY_EDGE_TYPES, dependencyEdgeTypeOf, edgeTypesCarriedBy, isDependencyEdgeMetric } from "./dependencyEdge"
+import { DEPENDENCY_EDGE_TYPES } from "../../../model/dependencyGraph.model"
+import { dependencyEdgeTypeOf, edgeTypesCarriedBy, isDependencyEdgeMetric } from "./dependencyEdge"
 
 describe("dependency edge", () => {
     describe("dependencyEdgeTypeOf", () => {

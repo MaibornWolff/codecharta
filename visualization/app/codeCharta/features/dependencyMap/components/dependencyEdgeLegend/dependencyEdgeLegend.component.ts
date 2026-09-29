@@ -13,7 +13,7 @@ const [REGULAR_EDGE] = EDGE_LEGEND
     host: { class: "contents" }
 })
 export class DependencyEdgeLegendComponent {
-    private readonly edgeMetric = toSignal(inject(DependencyMapReadStore).edgeMetric$, { requireSync: true })
+    private readonly edgeMetric = toSignal(inject(DependencyMapReadStore).sharedEdgeMetric$, { requireSync: true })
 
     readonly isDependencyMetric = computed(() => isDependencyEdgeMetric(this.edgeMetric()))
     /** Another edge metric has no cycles or upward edges: all its edges share the regular colour. */

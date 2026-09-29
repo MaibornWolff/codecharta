@@ -1,29 +1,22 @@
+import { addToGroup, maxOf } from "./collections"
+import { Rectangle } from "./geometry"
 import { LeveledNode } from "./leveledTree"
 
-export interface LayoutBox {
+export interface LayoutBox extends Rectangle {
     path: string
     name: string
     isFolder: boolean
     isExpanded: boolean
     level: number
     depth: number
-    x: number
-    y: number
-    width: number
-    height: number
 }
 
-/** The strip of an open folder that holds the children of one level. */
-export interface LevelBand {
+export interface LevelBand extends Rectangle {
     folderPath: string
     level: number
     isTopmost: boolean
-    /** The boxes of this level, which the band spans once the reader drags them around. */
+    /** The band spans them once the reader drags them around. */
     memberPaths: string[]
-    x: number
-    y: number
-    width: number
-    height: number
 }
 
 export interface DependencyGraphLayout {
@@ -108,7 +101,7 @@ class FolderMeasurer {
 
     private packRows(levels: LeveledNode[][], maxRowWidth: number): FolderPlan {
         const rows = levels.flatMap(levelNodes => this.wrapLevel(levelNodes, maxRowWidth))
-        const innerWidth = Math.max(...rows.map(row => row.width))
+        const innerWidth = maxOf(rows.map(row => row.width))
         const innerHeight = rows.reduce((height, row, index) => height + row.height + (index === 0 ? 0 : gapAbove(row, rows[index - 1])), 0)
         return {
             rows,
@@ -140,7 +133,7 @@ class FolderMeasurer {
 function groupByLevelFromTop(nodes: LeveledNode[]): LeveledNode[][] {
     const byLevel = new Map<number, LeveledNode[]>()
     for (const node of nodes) {
-        byLevel.set(node.level, [...(byLevel.get(node.level) ?? []), node])
+        addToGroup(byLevel, node.level, node)
     }
     return [...byLevel.entries()]
         .sort(([levelA], [levelB]) => levelB - levelA)
@@ -151,8 +144,9 @@ function groupByLevelFromTop(nodes: LeveledNode[]): LeveledNode[][] {
  * change, so these are the only widths worth trying. */
 function rowWidthCandidates(levels: LeveledNode[][], widthOf: (node: LeveledNode) => number): number[] {
     const rowWidthsPerLevel = levels.map(levelNodes => cumulativeRowWidths(levelNodes.map(widthOf)))
-    const widestSingleRow = Math.max(...rowWidthsPerLevel.map(rowWidths => rowWidths.at(-1)))
-    const narrowest = Math.max(...levels.flat().map(widthOf), Math.min(rowWidthOf(MIN_NODES_PER_ROW), widestSingleRow))
+    const widestSingleRow = maxOf(rowWidthsPerLevel.map(rowWidths => rowWidths.at(-1)))
+    const widestNode = maxOf(levels.flat().map(widthOf))
+    const narrowest = Math.max(widestNode, Math.min(rowWidthOf(MIN_NODES_PER_ROW), widestSingleRow))
     const candidates = new Set([narrowest, ...rowWidthsPerLevel.flat().filter(rowWidth => rowWidth > narrowest)])
     return [...candidates].sort((widthA, widthB) => widthA - widthB)
 }
@@ -169,22 +163,33 @@ function rowWidthOf(nodeCount: number): number {
 /** A wider row limit never makes a folder taller, so its aspect ratio only grows with the limit, and a
  * binary search finds the two candidates around the target. */
 function chooseClosestToTargetAspect(candidates: number[], planFor: (maxRowWidth: number) => FolderPlan): FolderPlan {
+    const planAt = plannedOnce(index => planFor(candidates[index]))
     let low = 0
     let high = candidates.length - 1
     while (low < high) {
         const middle = Math.floor((low + high) / 2)
-        if (aspectOf(planFor(candidates[middle])) < TARGET_ASPECT_RATIO) {
+        if (aspectOf(planAt(middle)) < TARGET_ASPECT_RATIO) {
             low = middle + 1
         } else {
             high = middle
         }
     }
-    const reaching = planFor(candidates[low])
+    const reaching = planAt(low)
     if (low === 0) {
         return reaching
     }
-    const falling = planFor(candidates[low - 1])
+    const falling = planAt(low - 1)
     return distanceToTarget(falling) < distanceToTarget(reaching) ? falling : reaching
+}
+
+function plannedOnce(planAt: (candidateIndex: number) => FolderPlan): (candidateIndex: number) => FolderPlan {
+    const plans = new Map<number, FolderPlan>()
+    return candidateIndex => {
+        if (!plans.has(candidateIndex)) {
+            plans.set(candidateIndex, planAt(candidateIndex))
+        }
+        return plans.get(candidateIndex)
+    }
 }
 
 function aspectOf({ width, height }: Size): number {

@@ -20,7 +20,7 @@ export class EdgeMetricSegmentComponent {
     readonly popoverId = "dependency-bar-edge-metric-popover"
     readonly anchorName = "dependency-bar-edge-metric-card"
 
-    readonly edgeMetric = toSignal(this.readStore.edgeMetric$, { requireSync: true })
+    readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     readonly edgeMetricData = toSignal(this.readStore.edgeMetricData$, { requireSync: true })
     readonly descriptors = toSignal(inject(MetricsLensFacade).descriptors$, { initialValue: {} })
 
