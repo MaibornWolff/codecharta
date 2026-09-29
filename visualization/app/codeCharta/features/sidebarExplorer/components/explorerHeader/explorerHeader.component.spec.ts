@@ -8,15 +8,15 @@ import { ExplorerCollapseService } from "../../services/explorerCollapse.service
 import { ExplorerHeaderComponent } from "./explorerHeader.component"
 
 describe("ExplorerHeaderComponent", () => {
-    const configureWithShowCounts = (showCounts: boolean) => {
+    const configureWithShowCounts = (showCounts: boolean, { canFlatten = true, noArea = 3 } = {}) => {
         TestBed.configureTestingModule({
             imports: [ExplorerHeaderComponent],
             providers: [
                 {
                     provide: EXPLORER_COUNTS,
-                    useValue: createExplorerCountsMock({ shown: 47, flattened: 12, excluded: 5, noArea: 3 })
+                    useValue: createExplorerCountsMock({ shown: 47, flattened: 12, excluded: 5, noArea })
                 },
-                provideExplorerCapabilitiesMock({ showCounts }),
+                provideExplorerCapabilitiesMock({ showCounts, canFlatten }),
                 ...provideViewScopedExplorerState("metrics")
             ]
         })
@@ -61,6 +61,28 @@ describe("ExplorerHeaderComponent", () => {
         expect(shownChip.querySelector("[popovertarget]")).toBe(null)
         expect(flattenedChip.querySelector("[popovertarget='explorer-flatten-rules']")).not.toBe(null)
         expect(hiddenChip.querySelector("[popovertarget='explorer-excluded-rules']")).not.toBe(null)
+    })
+
+    it("should name the files without area in the shown chip's tooltip", async () => {
+        // Arrange & Act
+        const { container } = await render(ExplorerHeaderComponent)
+
+        // Assert
+        expect(container.querySelector("[title='47 visible · 3 with no area in current metric']")).not.toBe(null)
+    })
+
+    it("should leave out the flattened chip and the missing area where the view cannot flatten", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithShowCounts(true, { canFlatten: false, noArea: 0 })
+
+        // Act
+        const { container } = await render(ExplorerHeaderComponent)
+
+        // Assert
+        expect(screen.queryByText("Flattened")).toBe(null)
+        expect(container.querySelectorAll("cc-explorer-count-chip").length).toBe(2)
+        expect(container.querySelector("[title='47 visible']")).not.toBe(null)
     })
 
     it("should hide the count chips when the view does not want them", async () => {

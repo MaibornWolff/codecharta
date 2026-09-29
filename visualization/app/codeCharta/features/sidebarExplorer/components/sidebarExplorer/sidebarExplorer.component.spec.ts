@@ -21,6 +21,7 @@ describe("SidebarExplorerComponent", () => {
         showRules?: boolean
         showSearch?: boolean
         showCounts?: boolean
+        canFlatten?: boolean
         modes?: ExplorerMode[]
     }) => {
         TestBed.configureTestingModule({
@@ -52,6 +53,19 @@ describe("SidebarExplorerComponent", () => {
         // Assert
         expect(container.querySelectorAll("cc-rules-popover").length).toBe(2)
         expect(container.querySelector("cc-explorer-search-bar")).not.toBe(null)
+    })
+
+    it("should render only the exclusion rules where the view cannot flatten", async () => {
+        // Arrange
+        TestBed.resetTestingModule()
+        configureWithCapabilities({ canFlatten: false })
+
+        // Act
+        const { container } = await render(SidebarExplorerComponent)
+
+        // Assert
+        const kinds = [...container.querySelectorAll("cc-rules-popover")].map(popover => popover.getAttribute("kind"))
+        expect(kinds).toEqual(["exclude"])
     })
 
     it("should hide the rules popovers when the view does not want them", async () => {

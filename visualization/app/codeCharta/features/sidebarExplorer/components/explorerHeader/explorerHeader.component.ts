@@ -20,6 +20,7 @@ export class ExplorerHeaderComponent {
     private readonly capabilities = inject(EXPLORER_CAPABILITIES)
 
     readonly showCounts = this.capabilities.showCounts
+    readonly canFlatten = this.capabilities.canFlatten
     readonly showModeToggle = this.capabilities.modes.length > 1
 
     private readonly countsSource = this.showCounts ? inject(EXPLORER_COUNTS) : null
@@ -30,7 +31,9 @@ export class ExplorerHeaderComponent {
     readonly flattened = computed(() => this.counts().flattened)
     readonly excluded = computed(() => this.counts().excluded)
     readonly noArea = computed(() => this.counts().noArea)
-    readonly shownTooltip = computed(() => `${this.shown()} visible · ${this.noArea()} with no area in current metric`)
+    readonly shownTooltip = computed(() =>
+        this.noArea() > 0 ? `${this.shown()} visible · ${this.noArea()} with no area in current metric` : `${this.shown()} visible`
+    )
 
     collapse() {
         this.collapseService.toggle()

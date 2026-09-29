@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
-import { DependencyMapViewStore } from "../../../features/dependencyMap/facade"
 import { pathsWithDependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
@@ -37,17 +36,6 @@ describe("DependencyExplorerRow", () => {
 
         // Assert
         expect(projection).toMatchObject({ isInactive: true, title: "Not in the dependency graph" })
-    })
-
-    it("should grey out a node the reader hid from the graph", () => {
-        // Arrange
-        TestBed.inject(DependencyMapViewStore).hide("/root")
-
-        // Act
-        const projection = row.project(LEAF_IN_GRAPH)
-
-        // Assert
-        expect(projection).toMatchObject({ isInactive: true, title: "Hidden from the dependency graph" })
     })
 
     it("should leave out an excluded node, as the graph does", () => {

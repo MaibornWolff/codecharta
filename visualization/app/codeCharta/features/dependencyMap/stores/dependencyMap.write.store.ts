@@ -2,7 +2,12 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
 import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
-import { NodeInteraction, setRightClickedNodeData } from "../../../stores/sharedView/sharedView.write.facade"
+import {
+    addExcludedNodesIfNotResultsInEmptyMap,
+    NodeInteraction,
+    setRightClickedNodeData
+} from "../../../stores/sharedView/sharedView.write.facade"
+import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
 
 @Injectable({ providedIn: "root" })
 export class DependencyMapWriteStore {
@@ -25,6 +30,11 @@ export class DependencyMapWriteStore {
                 value: { nodeId: path, xPositionOfRightClickEvent: clientX, yPositionOfRightClickEvent: clientY, origin: "dependencyMap" }
             })
         )
+    }
+
+    /** Shared with the Metric view: excluding here excludes there, and its explorer brings the node back. */
+    excludeNode(path: string) {
+        dispatchRuleChange(this.store, "exclude", addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path }] }))
     }
 
     setEdgeMetric(edgeMetric: string) {

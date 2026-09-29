@@ -138,7 +138,7 @@ describe("projectExplorerRow", () => {
     })
 
     describe("with the dependency inputs", () => {
-        const inputs = { pathsWithDependencyLevels: new Set([LEAF_WITH_BUILDING.path]), isHiddenFromDependencyGraph: () => false }
+        const inputs = { pathsWithDependencyLevels: new Set([LEAF_WITH_BUILDING.path]) }
 
         it("should dim a row whose node the dependency graph cannot show", () => {
             // Arrange & Act
@@ -146,14 +146,6 @@ describe("projectExplorerRow", () => {
 
             // Assert
             expect(projection).toMatchObject({ isInactive: true, isSelectable: true, title: "Not in the dependency graph" })
-        })
-
-        it("should dim a row whose node the reader hid from the dependency graph", () => {
-            // Arrange & Act
-            const projection = projectExplorerRow(LEAF_WITH_BUILDING, { ...inputs, isHiddenFromDependencyGraph: () => true })
-
-            // Assert
-            expect(projection).toMatchObject({ isInactive: true, title: "Hidden from the dependency graph" })
         })
 
         it("should leave a row the dependency graph shows undimmed", () => {

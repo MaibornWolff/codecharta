@@ -3,7 +3,7 @@
     class="btn btn-ghost btn-sm btn-square"
     popovertarget="explorer-search-actions"
     style="anchor-name: --explorer-search-actions"
-    title="Flatten or exclude the search pattern"
+    [title]="canFlatten ? 'Flatten or exclude the search pattern' : 'Exclude the search pattern'"
     data-testid="search-bar-actions-trigger"
 >
     <i class="fa fa-ellipsis-v"></i>
@@ -16,21 +16,23 @@
     class="dropdown menu bg-base-100 rounded-box w-44 p-2 shadow-lg"
 >
     @if (isSearchPatternEmpty()) {
-        <li class="px-2 py-1 text-xs opacity-60">Enter a pattern to enable Flatten/Exclude</li>
+        <li class="px-2 py-1 text-xs opacity-60">Enter a pattern to enable {{ offeredRules }}</li>
     }
-    <li>
-        <button
-            type="button"
-            data-testid="search-bar-flatten-button"
-            popovertarget="explorer-search-actions"
-            popovertargetaction="hide"
-            [disabled]="isFlattenPatternDisabled()"
-            (click)="flattenPattern()"
-        >
-            <i class="fa-solid fa-arrows-down-to-line"></i>
-            Flatten
-        </button>
-    </li>
+    @if (canFlatten) {
+        <li>
+            <button
+                type="button"
+                data-testid="search-bar-flatten-button"
+                popovertarget="explorer-search-actions"
+                popovertargetaction="hide"
+                [disabled]="isFlattenPatternDisabled()"
+                (click)="flattenPattern()"
+            >
+                <i class="fa-solid fa-arrows-down-to-line"></i>
+                Flatten
+            </button>
+        </li>
+    }
     <li>
         <button
             type="button"

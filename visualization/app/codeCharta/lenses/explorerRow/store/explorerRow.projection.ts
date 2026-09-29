@@ -5,7 +5,6 @@ import { formatCompactNumber } from "../../../util/formatCompactNumber"
 const NO_AREA_HINT = "No Node Area for Chosen Metric"
 const NO_DOMAIN_WORDS_HINT = "No domain words"
 const NOT_IN_DEPENDENCY_GRAPH_HINT = "Not in the dependency graph"
-const HIDDEN_FROM_DEPENDENCY_GRAPH_HINT = "Hidden from the dependency graph"
 
 export interface ExplorerRowProjection {
     isSelectable: boolean
@@ -22,7 +21,6 @@ export interface ExplorerRowInputs {
     areaMetric?: string
     pathsWithDomainWords?: ReadonlySet<string>
     pathsWithDependencyLevels?: ReadonlySet<string>
-    isHiddenFromDependencyGraph?: (path: string) => boolean
     buildingIds?: ReadonlySet<number>
     rootUnary?: number | null
     /** Flattening is not decorated onto the tree — the map answers it while it lays itself out —
@@ -55,14 +53,10 @@ function computeInactiveHint(node: CodeMapNode, inputs: ExplorerRowInputs): stri
     if (inputs.pathsWithDomainWords !== undefined && !inputs.pathsWithDomainWords.has(node.path)) {
         return NO_DOMAIN_WORDS_HINT
     }
-    return dependencyGraphHint(node, inputs)
-}
-
-function dependencyGraphHint(node: CodeMapNode, inputs: ExplorerRowInputs): string {
     if (inputs.pathsWithDependencyLevels !== undefined && !inputs.pathsWithDependencyLevels.has(node.path)) {
         return NOT_IN_DEPENDENCY_GRAPH_HINT
     }
-    return inputs.isHiddenFromDependencyGraph?.(node.path) ? HIDDEN_FROM_DEPENDENCY_GRAPH_HINT : ""
+    return ""
 }
 
 function computeSelectable(node: CodeMapNode, buildingIds: ReadonlySet<number> | undefined): boolean {
