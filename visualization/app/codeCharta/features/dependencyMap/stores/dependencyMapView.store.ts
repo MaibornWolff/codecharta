@@ -1,17 +1,14 @@
 import { Injectable, signal } from "@angular/core"
 import {
     BoxOffset,
+    collapsedFirstLook,
     DEFAULT_EDGE_WIDTH,
     EdgeFilter,
     EdgeStyle,
     EdgeThickness,
     EdgeWidth,
-    expandWithinBudget,
     LeveledNode
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-
-/** How many boxes a first look opens folders up to: enough to show structure, few enough to read. */
-const FIRST_LOOK_BOX_BUDGET = 60
 
 /** What the reader opened, hid and moved, and which edges they asked for. View state of this view alone, so it is
  * kept for as long as the app runs and never persisted. */
@@ -37,14 +34,14 @@ export class DependencyMapViewStore {
     readonly raisedPaths = this.draggedOrder.asReadonly()
     readonly draggingPath = this.boxBeingDragged.asReadonly()
 
-    /** A new project, or a new focus, starts from a first look with nothing hidden or moved; the same one
+    /** A new project, or a new focus, starts collapsed with nothing hidden or moved; the same one
      * keeps what was opened, hidden and moved. */
     adoptTree(tree: LeveledNode): void {
         if (tree.path === this.rootOfTheOpenedFolders) {
             return
         }
         this.rootOfTheOpenedFolders = tree.path
-        this.openedFolders.set(expandWithinBudget(tree, FIRST_LOOK_BOX_BUDGET))
+        this.openedFolders.set(collapsedFirstLook(tree))
         this.hiddenNodes.set(new Set())
         this.resetLayout()
     }

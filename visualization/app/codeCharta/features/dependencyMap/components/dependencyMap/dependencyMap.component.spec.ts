@@ -48,9 +48,19 @@ interface Setup {
     selectedPath?: string | null
     isDeltaState?: boolean
     searchedPaths?: ReadonlySet<string> | null
+    /** The graph starts with every folder closed; most tests look into them. */
+    openedFolders?: string[]
 }
 
-async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, searchedPaths = null }: Setup = {}) {
+const EVERY_FOLDER = ["/root/ui", "/root/model"]
+
+async function setup({
+    tree = TREE,
+    selectedPath = null,
+    isDeltaState = false,
+    searchedPaths = null,
+    openedFolders = EVERY_FOLDER
+}: Setup = {}) {
     const rendered = await render(DependencyMapComponent, {
         providers: [
             provideMockStore({
@@ -68,6 +78,10 @@ async function setup({ tree = TREE, selectedPath = null, isDeltaState = false, s
             { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } }
         ]
     })
+    for (const folder of openedFolders) {
+        TestBed.inject(DependencyMapViewStore).toggle(folder)
+    }
+    rendered.fixture.detectChanges()
     const store = TestBed.inject(MockStore)
     const markReady = jest.spyOn(TestBed.inject(ViewReadinessStore), "markReady")
     jest.spyOn(store, "dispatch")
@@ -120,7 +134,15 @@ describe("DependencyMapComponent", () => {
         stubResizeObserver()
     })
 
-    it("should draw a first look at the tree, higher levels above lower ones", async () => {
+    it("should start with every folder closed", async () => {
+        // Act
+        await setup({ openedFolders: [] })
+
+        // Assert
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model"])
+    })
+
+    it("should draw the files of the opened folders, higher levels above lower ones", async () => {
         // Act
         await setup()
 

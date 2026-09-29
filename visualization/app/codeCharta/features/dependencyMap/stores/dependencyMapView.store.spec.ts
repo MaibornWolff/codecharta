@@ -13,20 +13,20 @@ describe("DependencyMapViewStore", () => {
         store = TestBed.inject(DependencyMapViewStore)
     })
 
-    it("should open a first look when it meets a tree", () => {
+    it("should open only the root when it meets a tree, so every folder in it starts closed", () => {
         // Arrange
-        const tree = leveledFolder("/root", [leveledFolder("/root/app")])
+        const tree = leveledFolder("/root", [leveledFolder("/root/app", [leveledFolder("/root/app/ui")]), leveledFolder("/root/lib")])
 
         // Act
         store.adoptTree(tree)
 
         // Assert
-        expect([...store.expandedPaths()]).toEqual(["/root", "/root/app"])
+        expect([...store.expandedPaths()]).toEqual(["/root"])
     })
 
     it("should keep what the reader opened while the tree keeps its root", () => {
         // Arrange
-        const tree = leveledFolder("/root", [leveledFolder("/root/app")])
+        const tree = leveledFolder("/root", [leveledFolder("/root/app"), leveledFolder("/root/lib")])
         store.adoptTree(tree)
         store.toggle("/root/app")
 
@@ -34,19 +34,19 @@ describe("DependencyMapViewStore", () => {
         store.adoptTree(leveledFolder("/root", [leveledFolder("/root/app"), leveledFolder("/root/lib")]))
 
         // Assert
-        expect(store.expandedPaths().has("/root/app")).toBe(false)
+        expect(store.expandedPaths().has("/root/app")).toBe(true)
     })
 
-    it("should start over from a first look when the tree gets a new root", () => {
+    it("should start over with only the root open when the tree gets a new root", () => {
         // Arrange
         store.adoptTree(leveledFolder("/root", [leveledFolder("/root/app")]))
         store.toggle("/root/app")
 
         // Act
-        store.adoptTree(leveledFolder("/root/app", [leveledFolder("/root/app/ui")]))
+        store.adoptTree(leveledFolder("/root/app", [leveledFolder("/root/app/ui"), leveledFolder("/root/app/model")]))
 
         // Assert
-        expect([...store.expandedPaths()]).toEqual(["/root/app", "/root/app/ui"])
+        expect([...store.expandedPaths()]).toEqual(["/root/app"])
     })
 
     it("should open a closed folder and close an open one", () => {
