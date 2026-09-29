@@ -18,8 +18,10 @@ function touches(path: string, target: string): boolean {
     return path === target || path.startsWith(`${target}/`)
 }
 
+/** A hovered box's edges are the ones crossing its border. An open folder holds edges between its own
+ * children too, and the root holds every edge; showing those would light up the whole graph. */
 export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null): boolean {
-    return hoveredPath !== null && (touches(edge.fromPath, hoveredPath) || touches(edge.toPath, hoveredPath))
+    return hoveredPath !== null && touches(edge.fromPath, hoveredPath) !== touches(edge.toPath, hoveredPath)
 }
 
 export function boxesByPath(layout: DependencyGraphLayout): Map<string, LayoutBox> {
