@@ -3,6 +3,14 @@ import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { CodeMapComponent } from "../../features/codeMap/facade"
 import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facade"
 import { LegendPanelComponent } from "../../features/legend/facade"
+import {
+    MAP_EXPLORER_SEARCH,
+    MAP_EXPLORER_SORT,
+    MAP_EXPLORER_VIEW,
+    MapExplorerRules,
+    MapExplorerTree,
+    ShowsHandedOverMapNodeDirective
+} from "../../features/mapExplorer/facade"
 import { MetricsBarComponent } from "../../features/metricsBar/facade"
 import {
     DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
@@ -28,17 +36,12 @@ import {
     SidebarExplorerComponent
 } from "../../features/sidebarExplorer/facade"
 import { SidebarInspectorComponent } from "../../features/sidebarInspector/facade"
-import { MapExplorerRules } from "../mapExplorer/mapExplorerRules"
 import { MetricsExplorerContextMenu } from "./explorer/metricsExplorerContextMenu"
 import { MetricsExplorerCounts } from "./explorer/metricsExplorerCounts"
 import { MetricsExplorerMetricRules } from "./explorer/metricsExplorerMetricRules"
 import { MetricsExplorerRow } from "./explorer/metricsExplorerRow"
-import { METRICS_EXPLORER_SEARCH } from "./explorer/metricsExplorerSearch"
 import { MetricsExplorerSelection } from "./explorer/metricsExplorerSelection"
-import { METRICS_EXPLORER_SORT } from "./explorer/metricsExplorerSort"
-import { MetricsExplorerTree } from "./explorer/metricsExplorerTree"
 import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelectedNodeAfterLoad.directive"
-import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.directive"
 
 @Component({
     selector: "cc-metrics-view",
@@ -63,22 +66,23 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         { provide: EXPLORER_SELECTION, useExisting: MetricsExplorerSelection },
         MetricsExplorerContextMenu,
         { provide: EXPLORER_CONTEXT_MENU, useExisting: MetricsExplorerContextMenu },
-        MetricsExplorerTree,
-        { provide: EXPLORER_TREE, useExisting: MetricsExplorerTree },
+        MapExplorerTree,
+        { provide: EXPLORER_TREE, useExisting: MapExplorerTree },
         MetricsExplorerCounts,
         { provide: EXPLORER_COUNTS, useExisting: MetricsExplorerCounts },
         MapExplorerRules,
         { provide: EXPLORER_RULES, useExisting: MapExplorerRules },
         MetricsExplorerMetricRules,
         { provide: EXPLORER_METRIC_RULES, useExisting: MetricsExplorerMetricRules },
-        provideExplorerSort(METRICS_EXPLORER_SORT),
-        provideExplorerSearch(METRICS_EXPLORER_SEARCH),
+        provideExplorerSort(MAP_EXPLORER_SORT),
+        provideExplorerSearch(MAP_EXPLORER_SEARCH),
+        { provide: MAP_EXPLORER_VIEW, useValue: "metrics" },
         { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES },
         { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES },
         provideViewScopedExplorerState("metrics"),
         provideViewScopedCssVariables()
     ],
-    hostDirectives: [RevealsSelectedNodeAfterLoadDirective, ShowsHandedOverNodeDirective],
+    hostDirectives: [RevealsSelectedNodeAfterLoadDirective, ShowsHandedOverMapNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsViewComponent {

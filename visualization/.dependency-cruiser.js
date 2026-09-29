@@ -37,6 +37,14 @@ module.exports = {
             from: { path: "^app/codeCharta/", pathNot: ["^app/codeCharta/views/", "\\.spec\\.ts$", "\\.e2e\\.ts$"] },
             to: { path: "^app/codeCharta/views/" }
         },
+        {
+            name: "views-do-not-import-sibling-views",
+            severity: "error",
+            comment:
+                "Each view under views/<view>/ composes its own page, so it must not import another view's files. What several views share (the map explorer's rules, tree, search, sort and handed-over node for the metrics and dependency views) is logic, and logic lives in a feature (features/mapExplorer) reached through its facade. Spec/e2e exempt.",
+            from: { path: "^app/codeCharta/views/([^/]+)/", pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"] },
+            to: { path: "^app/codeCharta/views/", pathNot: ["^app/codeCharta/views/$1/"] }
+        },
 
         {
             name: "feature-no-external-access-to-internals",
@@ -429,7 +437,7 @@ module.exports = {
             name: "sidebar-explorer-is-view-agnostic",
             severity: "error",
             comment:
-                "The sidebar explorer is shared by the map and domain views, so it must not read or write EITHER view's state: no sharedView/mapState/domainState, no renderModel, no threeViewer. Everything view-specific arrives through the per-view ports (EXPLORER_ROW / SELECTION / CONTEXT_MENU / TREE / SORT / SEARCH / COUNTS / RULES), which live in views/ and are implemented per view — that is what keeps the domain explorer from inheriting the map's marked packages, blacklist, counts and searched nodes. The provideExplorerSearch/Sort factories take a per-view selector+action config, so they never name a home themselves. Spec/e2e exempt.",
+                "The sidebar explorer is shared by the metrics, domain and dependency views, so it must not read or write ANY view's state: no sharedView/mapState/domainState, no renderModel, no threeViewer. Everything view-specific arrives through the per-view ports (EXPLORER_ROW / SELECTION / CONTEXT_MENU / TREE / SORT / SEARCH / COUNTS / RULES), which are implemented per view in views/ — or, where the metrics and dependency views browse the same map, once in features/mapExplorer — that is what keeps the domain explorer from inheriting the map's marked packages, blacklist, counts and searched nodes. The provideExplorerSearch/Sort factories take a per-view selector+action config, so they never name a home themselves. Spec/e2e exempt.",
             from: {
                 path: "^app/codeCharta/features/sidebarExplorer/",
                 pathNot: ["\\.spec\\.ts$", "\\.e2e\\.ts$"]

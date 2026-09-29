@@ -9,9 +9,7 @@ const LEAF_IN_GRAPH = { name: "a.ts", path: "/root/a.ts", id: 1, type: NodeType.
 const LEAF_OUTSIDE_GRAPH = { ...LEAF_IN_GRAPH, name: "b.md", path: "/root/b.md" } as CodeMapNode
 
 describe("DependencyExplorerRow", () => {
-    let row: DependencyExplorerRow
-
-    beforeEach(() => {
+    function setup() {
         TestBed.configureTestingModule({
             providers: [
                 DependencyExplorerRow,
@@ -19,10 +17,13 @@ describe("DependencyExplorerRow", () => {
                 provideMockStore({ selectors: [{ selector: pathsWithDependencyLevelsSelector, value: new Set([LEAF_IN_GRAPH.path]) }] })
             ]
         })
-        row = TestBed.inject(DependencyExplorerRow)
-    })
+        return TestBed.inject(DependencyExplorerRow)
+    }
 
     it("should render a node the graph shows undimmed", () => {
+        // Arrange
+        const row = setup()
+
         // Act
         const projection = row.project(LEAF_IN_GRAPH)
 
@@ -31,6 +32,9 @@ describe("DependencyExplorerRow", () => {
     })
 
     it("should grey out a node the graph has no box for", () => {
+        // Arrange
+        const row = setup()
+
         // Act
         const projection = row.project(LEAF_OUTSIDE_GRAPH)
 
@@ -39,8 +43,12 @@ describe("DependencyExplorerRow", () => {
     })
 
     it("should leave out an excluded node, as the graph does", () => {
+        // Arrange
+        const row = setup()
+        const excludedLeaf = { ...LEAF_IN_GRAPH, isExcluded: true }
+
         // Act
-        const projection = row.project({ ...LEAF_IN_GRAPH, isExcluded: true })
+        const projection = row.project(excludedLeaf)
 
         // Assert
         expect(projection.isHidden).toBe(true)

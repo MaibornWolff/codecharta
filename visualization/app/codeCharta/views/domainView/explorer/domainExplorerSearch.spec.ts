@@ -3,12 +3,12 @@ import { TestBed } from "@angular/core/testing"
 import { StoreModule } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
+import { MAP_EXPLORER_SEARCH } from "../../../features/mapExplorer/facade"
 import { EXPLORER_SEARCH, ExplorerSearch, provideExplorerSearch } from "../../../features/sidebarExplorer/facade"
 import { viewIndependentTreeSelector } from "../../../lenses/structure/structure.facade"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { domainStateSearchPatternSelector } from "../../../stores/domainState/domainState.read.facade"
 import { appReducers, setStateMiddleware } from "../../../stores/rootStore/store"
-import { METRICS_EXPLORER_SEARCH } from "../../metricsView/explorer/metricsExplorerSearch"
 import { DOMAIN_EXPLORER_SEARCH } from "./domainExplorerSearch"
 
 describe("DOMAIN_EXPLORER_SEARCH", () => {
@@ -23,7 +23,7 @@ describe("DOMAIN_EXPLORER_SEARCH", () => {
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
         domainSearch = searchOf(DOMAIN_EXPLORER_SEARCH)
-        metricsSearch = searchOf(METRICS_EXPLORER_SEARCH)
+        metricsSearch = searchOf(MAP_EXPLORER_SEARCH)
     })
 
     it("should stream the domain view's own pattern", async () => {

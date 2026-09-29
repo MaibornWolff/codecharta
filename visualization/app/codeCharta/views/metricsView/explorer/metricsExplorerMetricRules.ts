@@ -1,11 +1,11 @@
 import { Injectable, inject } from "@angular/core"
 import { Store } from "@ngrx/store"
+import { metricValuesSelector } from "../../../features/mapExplorer/facade"
 import { ExplorerMetricRules } from "../../../features/sidebarExplorer/facade"
 import { attributeDescriptorsSelector } from "../../../lenses/metrics/metricsLens.facade"
 import { CcState, MetricRule } from "../../../model/codeCharta.model"
 import { addMetricRule } from "../../../stores/sharedView/sharedView.write.facade"
 import { dispatchRuleChange } from "../../../util/dispatchAfterPaint"
-import { metricValuesSelector } from "../../mapExplorer/metricValues.selector"
 
 @Injectable()
 export class MetricsExplorerMetricRules implements ExplorerMetricRules {

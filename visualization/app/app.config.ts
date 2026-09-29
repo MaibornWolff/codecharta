@@ -8,6 +8,7 @@ import { ChangelogFacade } from "app/codeCharta/features/changelog/facade"
 import { codeMapEffects } from "app/codeCharta/features/codeMap/effects/codeMap.effects"
 import { fileExtensionBarEffects } from "app/codeCharta/features/fileExtensionBar/effects/fileExtensionBar.effects"
 import { labelSettingsEffects } from "app/codeCharta/features/labelSettings/effects/labelSettings.effects"
+import { mapExplorerEffects } from "app/codeCharta/features/mapExplorer/effects/mapExplorer.effects"
 import { metricsBarEffects } from "app/codeCharta/features/metricsBar/effects/metricsBar.effects"
 import { navBarEffects } from "app/codeCharta/features/navBar/effects/navBar.effects"
 import { sharedEffects } from "app/codeCharta/features/shared/effects/shared.effects"
@@ -17,7 +18,6 @@ import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/quer
 import { routePaths } from "app/codeCharta/routing/routePaths"
 import { appReducers, setStateMiddleware } from "app/codeCharta/stores/rootStore/store"
 import { domainViewEffects } from "app/codeCharta/views/domainView/effects/domainView.effects"
-import { mapExplorerEffects } from "app/codeCharta/views/mapExplorer/effects/mapExplorer.effects"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 
 export const routes: Routes = [
