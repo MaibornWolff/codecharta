@@ -1,10 +1,8 @@
+import { DependencyEdgeStyle } from "../../../model/dependencyGraph.model"
 import { GraphEdge } from "./edgeProjection"
 import { LayoutBox } from "./levelizedLayout"
 
-/** How edges are drawn. Curved leaves and enters every box at one point per direction; the others spread a box's edges
- * along its side by where their other end lies. Upward aside swings upward edges out to the right, and
- * straight draws straight lines as DependaCharta does, bending only a dependency that runs both ways. */
-export type EdgeStyle = "curved" | "spread" | "upwardAside" | "straight"
+export type EdgeStyle = DependencyEdgeStyle
 
 export type Side = "top" | "bottom" | "left" | "right"
 
