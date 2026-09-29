@@ -6,6 +6,7 @@ import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { AxisWindow } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
+import { Point } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
@@ -16,9 +17,16 @@ export interface DependencyGraphHandlers extends BoxDragHandlers {
     onBoxHovered: (path: string | null) => void
     onBoxRightClicked: (path: string, clientX: number, clientY: number) => void
     onRendered: () => void
-    /** The box painted on top at a layout point; an edge lying over it hands it the clicks. */
-    boxAt: (point: [number, number]) => string | null
+    /** The box painted on top at a layout point; an edge lying over it hands it the pointer. */
+    boxAt: (point: Point) => string | null
 }
+
+interface ChartSize {
+    width: number
+    height: number
+}
+
+type RenderSurface = ReturnType<echarts.ECharts["getZr"]>
 
 interface ChartItemEvent {
     seriesId?: string
@@ -40,6 +48,7 @@ export class DependencyGraphHost {
     private pointerLeaveTimeout?: ReturnType<typeof setTimeout>
     private lastBoxClick: { path: string; at: number } | null = null
     private dragGesture?: BoxDragGesture
+    private chartSize?: ChartSize
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
 
@@ -54,30 +63,10 @@ export class DependencyGraphHost {
         this.dispose()
         this.attachedContainer = container
         this.chart = echarts.init(container)
-        const dragGesture = new BoxDragGesture(this.chart, this.handlers)
-        this.dragGesture = dragGesture
-        this.chart.on("mousedown", (event: unknown) => this.startDragging(event as ChartItemEvent))
-        this.chart.on("click", (event: unknown) => this.reportClick(event as ChartItemEvent))
-        this.chart.on("mouseover", (event: unknown) => this.reportPointerEntered(event as ChartItemEvent))
-        this.chart.on("mouseout", () => this.reportPointerLeftAfterGrace())
-        this.chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as ChartItemEvent))
-        this.chart.on("finished", () => this.reportRendered())
-        // Redrawing replaces the boxes under a resting pointer, and ECharts then reports no mouseout for them.
-        const renderSurface = this.chart.getZr()
-        renderSurface.on("mousemove", event => {
-            dragGesture.move(event)
-            if (!event.target) {
-                this.reportPointerOverNothing()
-            }
-        })
-        renderSurface.on("mouseup", () => dragGesture.release())
-        renderSurface.on("globalout", () => {
-            dragGesture.release()
-            this.reportPointerOverNothing()
-        })
-        container.addEventListener("contextmenu", suppressBrowserMenu)
-        container.addEventListener("dblclick", this.reportDoubleClick)
-        this.containerSizeObserver.observe(container)
+        this.dragGesture = new BoxDragGesture(this.chart, this.handlers)
+        this.listenToChart(this.chart)
+        this.listenToRenderSurface(this.chart.getZr(), this.dragGesture)
+        this.listenToContainer(container)
     }
 
     render(option: object): void {
@@ -85,11 +74,10 @@ export class DependencyGraphHost {
             return
         }
         this.attachedContainer?.setAttribute("aria-busy", "true")
-        this.chart.resize()
+        this.resizeToContainer(this.chart)
         this.chart.setOption(option as echarts.EChartsCoreOption)
     }
 
-    /** Zooms and pans both axes to the window, in layout units. */
     fitTo({ x, y }: AxisWindow): void {
         this.chart?.dispatchAction({
             type: "dataZoom",
@@ -110,7 +98,48 @@ export class DependencyGraphHost {
         this.dragGesture = undefined
         this.chart?.dispose()
         this.chart = undefined
+        this.chartSize = undefined
         this.attachedContainer = undefined
+    }
+
+    private listenToChart(chart: echarts.ECharts): void {
+        chart.on("mousedown", (event: unknown) => this.startDragging(event as ChartItemEvent))
+        chart.on("click", (event: unknown) => this.reportClick(event as ChartItemEvent))
+        chart.on("mouseover", (event: unknown) => this.reportPointerEntered(event as ChartItemEvent))
+        chart.on("mouseout", () => this.reportPointerLeftAfterGrace())
+        chart.on("contextmenu", (event: unknown) => this.reportRightClick(event as ChartItemEvent))
+        chart.on("finished", () => this.reportRendered())
+    }
+
+    private listenToRenderSurface(renderSurface: RenderSurface, dragGesture: BoxDragGesture): void {
+        // Redrawing replaces the boxes under a resting pointer, and ECharts then reports no mouseout for them.
+        renderSurface.on("mousemove", event => {
+            dragGesture.move(event)
+            if (!event.target) {
+                this.reportPointerOverNothing()
+            }
+        })
+        renderSurface.on("mouseup", () => dragGesture.release())
+        renderSurface.on("globalout", () => {
+            dragGesture.release()
+            this.reportPointerOverNothing()
+        })
+    }
+
+    private listenToContainer(container: HTMLElement): void {
+        container.addEventListener("contextmenu", suppressBrowserMenu)
+        container.addEventListener("dblclick", this.reportDoubleClick)
+        this.containerSizeObserver.observe(container)
+    }
+
+    // ECharts' resize() redraws everything even when the size is unchanged.
+    private resizeToContainer(chart: echarts.ECharts): void {
+        const size = this.containerSize()
+        if (size.width === this.chartSize?.width && size.height === this.chartSize?.height) {
+            return
+        }
+        this.chartSize = size
+        chart.resize()
     }
 
     private startDragging(event: ChartItemEvent): void {
@@ -122,7 +151,7 @@ export class DependencyGraphHost {
 
     private reportClick(event: ChartItemEvent): void {
         const path = this.boxUnder(event)
-        if (this.dragGesture?.takesClick() || path === null) {
+        if (this.dragGesture?.takeClickThatEndedDrag() || path === null) {
             return
         }
         this.lastBoxClick = { path, at: Date.now() }
@@ -145,7 +174,6 @@ export class DependencyGraphHost {
         }
     }
 
-    /** The box under the pointer: the one hit, or, when an edge lying over a box is hit, that box. */
     private boxUnder(event: ChartItemEvent): string | null {
         if (event.data?.isEdge && event.event && this.chart) {
             return this.handlers.boxAt(layoutPointAt(this.chart, event.event))
@@ -159,7 +187,7 @@ export class DependencyGraphHost {
     }
 
     private reportPointerEntered(event: ChartItemEvent): void {
-        const path = boxPathOf(event)
+        const path = this.boxUnder(event)
         if (path === null) {
             return
         }
