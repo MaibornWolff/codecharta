@@ -5,6 +5,7 @@ type LayoutPoint = [number, number]
 export interface BoxDragHandlers {
     canDragBox: (path: string, point: LayoutPoint) => boolean
     onBoxDragged: (path: string, dx: number, dy: number) => void
+    onBoxDragEnded: () => void
 }
 
 interface PointerEvent {
@@ -63,11 +64,13 @@ export class BoxDragGesture {
     }
 
     release(): void {
-        if (this.drag) {
-            this.flush(this.drag.path)
-            this.hasJustDragged = this.drag.hasMoved
-        }
+        const drag = this.drag
         this.drag = null
+        if (drag) {
+            this.flush(drag.path)
+            this.hasJustDragged = drag.hasMoved
+            this.handlers.onBoxDragEnded()
+        }
     }
 
     /** The click that ends a drag is no click on the box. Asked once per click. */

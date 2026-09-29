@@ -4,6 +4,7 @@ import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
+import { AxisWindow } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 
@@ -31,7 +32,6 @@ export const POINTER_LEAVE_GRACE_MS = 120
  * ECharts then loses the second click of a double click. The browser's own double click still arrives on
  * the container, and it toggles the box the first click landed on. */
 export const DOUBLE_CLICK_MS = 500
-const WHOLE_RANGE = { start: 0, end: 100 }
 
 export class DependencyGraphHost {
     private chart?: echarts.ECharts
@@ -89,12 +89,13 @@ export class DependencyGraphHost {
         this.chart.setOption(option as echarts.EChartsCoreOption)
     }
 
-    resetView(): void {
+    /** Zooms and pans both axes to the window, in layout units. */
+    fitTo({ x, y }: AxisWindow): void {
         this.chart?.dispatchAction({
             type: "dataZoom",
             batch: [
-                { dataZoomIndex: 0, ...WHOLE_RANGE },
-                { dataZoomIndex: 1, ...WHOLE_RANGE }
+                { dataZoomIndex: 0, startValue: x[0], endValue: x[1] },
+                { dataZoomIndex: 1, startValue: y[0], endValue: y[1] }
             ]
         })
     }

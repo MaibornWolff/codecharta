@@ -123,7 +123,8 @@ export class DependencyMapComponent {
             edgeStyle: this.edgeStyle(),
             hoveredPath: this.boxStandingFor(this.hoveredPath()),
             selectedPath: this.boxStandingFor(this.selectedPath()),
-            raisedPaths: this.viewStore.raisedPaths()
+            raisedPaths: this.viewStore.raisedPaths(),
+            draggingPath: this.viewStore.draggingPath()
         }
     })
 
@@ -166,6 +167,10 @@ export class DependencyMapComponent {
     protected moveBox({ path, dx, dy }: DraggedBox): void {
         const [offsetX, offsetY] = this.viewStore.boxOffsets().get(path) ?? [0, 0]
         this.viewStore.placeBox(path, [offsetX + dx, offsetY + dy])
+    }
+
+    protected endDragging(): void {
+        this.viewStore.endDragging()
     }
 
     protected resetLayout(): void {

@@ -10,8 +10,6 @@ export interface EdgeItem {
     edge: GraphEdge
     route: EdgeRoute
     isDimmed: boolean
-    /** Drawn above everything, as the edges of the hovered box are. */
-    isOnTop: boolean
 }
 
 export type GraphItem = PaintedItem | EdgeItem
@@ -42,24 +40,6 @@ export function paintOrder(layout: DependencyGraphLayout, raisedPaths: readonly 
     }
     paint(0)
     return items
-}
-
-/** Each edge paints right after the later of its two ends, so whatever covers both of them covers the edge
- * too: a folder dragged under another takes its edges along. Edges on top paint last. Edges sharing a place
- * keep the order they arrive in. */
-export function withEdges(painted: PaintedItem[], edges: EdgeItem[]): GraphItem[] {
-    const paintIndexOf = new Map(painted.flatMap((item, index) => (item.kind === "box" ? [[item.box.path, index] as const] : [])))
-    const edgesAfter = new Map<number, EdgeItem[]>()
-    const onTop: EdgeItem[] = []
-    for (const item of edges) {
-        if (item.isOnTop) {
-            onTop.push(item)
-            continue
-        }
-        const slot = Math.max(paintIndexOf.get(item.edge.fromPath), paintIndexOf.get(item.edge.toPath))
-        edgesAfter.set(slot, [...(edgesAfter.get(slot) ?? []), item])
-    }
-    return [...painted.flatMap((item, index) => [item, ...(edgesAfter.get(index) ?? [])]), ...onTop]
 }
 
 export function boxAtPoint(layout: DependencyGraphLayout, raisedPaths: readonly string[], point: LayoutPoint): string | null {

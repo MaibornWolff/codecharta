@@ -13,6 +13,8 @@ export interface DependencyGraphScene {
     selectedPath: string | null
     /** Dragged boxes, the most recently dragged last: they paint above their siblings. */
     raisedPaths: readonly string[]
+    /** The box the reader is dragging right now, if any. */
+    draggingPath: string | null
 }
 
 /** Converts a point of the layout into pixels on the chart; the zoom and pan decide the mapping. */

@@ -1,4 +1,4 @@
-import { buildDependencyGraphOption } from "./dependencyGraphOption.builder"
+import { buildDependencyGraphOption, fitWindowOf } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
 import { aBand, aBox, anEdge, identityPixels } from "./dependencyGraphTestData"
@@ -27,6 +27,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         edgeFilter: "all",
         edgeStyle: "curved",
         raisedPaths: [],
+        draggingPath: null,
         hoveredPath: null,
         selectedPath: null,
         ...overrides
@@ -61,7 +62,7 @@ describe("buildDependencyGraphOption", () => {
         expect(yAxis.inverse).toBe(true)
     })
 
-    it("should draw boxes, level bands and edges as one series in paint order, each edge right after its later end", () => {
+    it("should draw boxes and level bands as one series in paint order, and the edges above them all", () => {
         // Act
         const { option, series } = drawnGraph(sceneWith())
 
@@ -72,28 +73,10 @@ describe("buildDependencyGraphOption", () => {
             "band",
             "/root/view.ts",
             "/root/model.ts",
-            "edge",
             "/root/util.ts",
+            "edge",
             "edge"
         ])
-    })
-
-    it("should paint a covered folder's edges under the folder covering it", () => {
-        // Arrange
-        const covered = aBox("/root/covered", { isFolder: true, isExpanded: true, depth: 1, width: 300, height: 150 })
-        const inside = aBox("/root/covered/a.ts", { depth: 2 })
-        const alsoInside = aBox("/root/covered/b.ts", { depth: 2, y: 80 })
-        const covering = aBox("/root/covering", { isFolder: true, isExpanded: true, depth: 1, width: 300, height: 150 })
-        const layout = { boxes: [root, covered, inside, alsoInside, covering], bands: [], width: 400, height: 200 }
-        const edges = [anEdge(inside.path, alsoInside.path)]
-
-        // Act
-        const underneath = drawnGraph(sceneWith({ layout, edges }))
-        const raised = drawnGraph(sceneWith({ layout, edges, raisedPaths: [covered.path] }))
-
-        // Assert
-        expect(underneath.edgeIndices[0]).toBeLessThan(underneath.indexOf(covering.path))
-        expect(raised.edgeIndices[0]).toBeGreaterThan(raised.indexOf(covering.path))
     })
 
     it("should draw only the edges the filter lets through", () => {
@@ -104,7 +87,7 @@ describe("buildDependencyGraphOption", () => {
         expect(edgeIndices).toHaveLength(1)
     })
 
-    it("should draw every edge of the hovered box on top, whatever the filter", () => {
+    it("should draw every edge of the hovered box, whatever the filter", () => {
         // Act
         const { edgeIndices, series, draw } = drawnGraph(sceneWith({ edgeFilter: "none", hoveredPath: model.path }))
 
@@ -196,5 +179,48 @@ describe("buildDependencyGraphOption", () => {
 
         // Assert
         expect(edgeIndices.map(index => draw(index).children[0].style.opacity)).toEqual([1, 1])
+    })
+
+    it("should let a moved folder show what it overlaps, and a dragged folder always", () => {
+        // Arrange
+        const lib = aBox("/root/lib", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 20, width: 200, height: 100 })
+        const ui = aBox("/root/ui", { isFolder: true, isExpanded: true, depth: 1, x: 100, y: 60, width: 200, height: 100 })
+        const apart = aBox("/root/apart", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 300, width: 100, height: 50 })
+        const layout = { boxes: [root, lib, ui, apart], bands: [], width: 400, height: 400 }
+
+        // Act
+        const { indexOf, draw } = drawnGraph(sceneWith({ layout, edges: [], raisedPaths: [ui.path], draggingPath: apart.path }))
+
+        // Assert
+        const fillOf = (path: string) => draw(indexOf(path)).children[0].style.fill
+        expect(fillOf(lib.path)).toMatch(/^#/)
+        expect(fillOf(ui.path)).toMatch(/^rgba/)
+        expect(fillOf(apart.path)).toMatch(/^rgba/)
+    })
+
+    it("should give the axes room around the graph for dragged boxes to grow into", () => {
+        // Act
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), { width: 800, height: 800 })
+
+        // Assert
+        expect([xAxis.min, xAxis.max]).toEqual([-400, 800])
+        expect(yAxis.min).toBeLessThan(-400)
+    })
+})
+
+describe("fitWindowOf", () => {
+    it("should fit the root as drawn, grown by dragged boxes, with equal scale on both axes", () => {
+        // Arrange
+        const grownRoot = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, x: -100, y: -50, width: 500, height: 250 })
+        const layout = { boxes: [grownRoot], bands: [], width: 400, height: 200 }
+
+        // Act
+        const window = fitWindowOf(layout, { width: 1000, height: 500 })
+
+        // Assert
+        expect((window.x[0] + window.x[1]) / 2).toBe(150)
+        expect((window.y[0] + window.y[1]) / 2).toBe(75)
+        expect((window.x[1] - window.x[0]) / 1000).toBeCloseTo((window.y[1] - window.y[0]) / 500)
+        expect(window.x[1] - window.x[0]).toBeGreaterThan(500)
     })
 })

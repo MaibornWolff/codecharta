@@ -140,4 +140,15 @@ describe("DependencyMapViewStore", () => {
         expect(raised).toEqual(["/root/b", "/root/a"])
         expect(store.raisedPaths()).toEqual([])
     })
+
+    it("should know which box is being dragged until the drag ends", () => {
+        // Act
+        store.placeBox("/root/a", [1, 0])
+        const whileDragging = store.draggingPath()
+        store.endDragging()
+
+        // Assert
+        expect(whileDragging).toBe("/root/a")
+        expect(store.draggingPath()).toBeNull()
+    })
 })
