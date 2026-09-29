@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { CodeMapNode } from "../../../../model/codeCharta.model"
-import { ViewId } from "../../../../routing/routePaths"
+import { ActiveViewStore } from "../../../../routing/activeView.store"
+import { VIEW_IDS, ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { ContextMenuItemComponent, FloatingMenuComponent, injectIsRadialLayout } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
-import { NODE_CONTEXT_MENU_VIEW_ACTIONS, NodeContextMenuViewAction } from "../../nodeContextMenuViewActions"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
 import { NodeContextMenuWriteStore } from "../../stores/nodeContextMenu.write.store"
 import { MarkFolderRowComponent } from "./markFolderRow.component"
@@ -38,9 +38,10 @@ export class NodeContextMenuComponent {
     private readonly clipboard = inject(CopyToClipboardService)
 
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
-    private readonly viewActions = inject(NODE_CONTEXT_MENU_VIEW_ACTIONS, { optional: true }) ?? []
+    private readonly activeView = toSignal(inject(ActiveViewStore).activeView$, { requireSync: true })
 
     readonly showMapActions = this.capabilities.showMapActions
+    readonly showExclude = this.capabilities.showExclude
 
     readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
     readonly codeMapNode = toSignal(this.readStore.rightClickedCodeMapNode$, { requireSync: true })
@@ -75,15 +76,12 @@ export class NodeContextMenuComponent {
         const node = this.menuNode()
         return node === null
             ? []
-            : this.capabilities.jumpTargetViews
-                  .filter(view => this.canShowIn(view, node.path))
-                  .map(view => ({ view, ...JUMP_TARGETS[view] }))
+            : VIEW_IDS.filter(view => view !== this.activeView() && this.canShowIn(view, node.path)).map(view => ({
+                  view,
+                  ...JUMP_TARGETS[view]
+              }))
     })
 
-    readonly offeredViewActions = computed(() => {
-        const node = this.menuNode()
-        return node === null ? [] : this.viewActions.filter(action => action.isOfferedFor?.(node.path) ?? true)
-    })
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
     readonly isShowInExplorerVisible = computed(
         () => this.explorerRevealService !== null && this.rightClickedNodeData()?.origin !== "explorer"
@@ -128,14 +126,6 @@ export class NodeContextMenuComponent {
         const node = this.menuNode()
         if (node) {
             this.writeStore.showNodeInView(view, node.path)
-        }
-        this.close()
-    }
-
-    runViewAction(action: NodeContextMenuViewAction) {
-        const node = this.menuNode()
-        if (node) {
-            action.run(node.path)
         }
         this.close()
     }

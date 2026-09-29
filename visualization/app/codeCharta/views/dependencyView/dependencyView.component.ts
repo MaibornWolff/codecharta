@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
-import {
-    DependencyBarComponent,
-    DependencyEdgeLegendComponent,
-    DependencyMapComponent,
-    provideDependencyMapContextMenuActions
-} from "../../features/dependencyMap/facade"
+import { DependencyBarComponent, DependencyEdgeLegendComponent, DependencyMapComponent } from "../../features/dependencyMap/facade"
 import { LegendDrawerComponent } from "../../features/legend/facade"
 import {
     NODE_CONTEXT_MENU_CAPABILITIES,
@@ -73,9 +68,8 @@ import { ShowsHandedOverNodeDirective } from "./explorer/showsHandedOverNode.dir
         },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
-            useValue: { showMapActions: false, jumpTargetViews: ["metrics"] } satisfies NodeContextMenuCapabilities
+            useValue: { showMapActions: false, showExclude: true } satisfies NodeContextMenuCapabilities
         },
-        provideDependencyMapContextMenuActions(),
         provideViewScopedExplorerState("dependencies"),
         provideViewScopedCssVariables()
     ],

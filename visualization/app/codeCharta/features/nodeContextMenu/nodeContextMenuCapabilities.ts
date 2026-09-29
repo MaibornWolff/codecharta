@@ -1,16 +1,15 @@
 import { InjectionToken } from "@angular/core"
-import { ViewId } from "../../routing/routePaths"
 
 export interface NodeContextMenuCapabilities {
-    /** Focus, highlight, flatten, exclude and folder marking only shape the metrics map. */
+    /** Focus, highlight, flatten and folder marking only shape the metrics map. */
     showMapActions: boolean
-    /** The views the menu offers to continue the node in; each is left out while it has nothing to show for it. */
-    jumpTargetViews: ViewId[]
+    /** Excluding leaves the node out of every view drawing the map's files. */
+    showExclude: boolean
 }
 
 export const DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES: NodeContextMenuCapabilities = {
     showMapActions: true,
-    jumpTargetViews: ["domain", "dependencies"]
+    showExclude: true
 }
 
 export const NODE_CONTEXT_MENU_CAPABILITIES = new InjectionToken<NodeContextMenuCapabilities>("NODE_CONTEXT_MENU_CAPABILITIES")

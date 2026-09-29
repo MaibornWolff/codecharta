@@ -2,5 +2,3 @@ export { NodeContextMenuComponent } from "./components/nodeContextMenu/nodeConte
 export type { NodeContextMenuCapabilities } from "./nodeContextMenuCapabilities"
 export { DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES, NODE_CONTEXT_MENU_CAPABILITIES } from "./nodeContextMenuCapabilities"
 export { NodeContextMenuForExplorer } from "./nodeContextMenuForExplorer"
-export type { NodeContextMenuViewAction } from "./nodeContextMenuViewActions"
-export { NODE_CONTEXT_MENU_VIEW_ACTIONS } from "./nodeContextMenuViewActions"
