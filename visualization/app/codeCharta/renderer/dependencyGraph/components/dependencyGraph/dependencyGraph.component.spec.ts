@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/angular"
-import { DEPENDENCY_EDGE_TYPES } from "../../../../lenses/dependency/dependencyLens.facade"
+import { DEPENDENCY_EDGE_TYPES } from "../../../../model/dependencyGraph.model"
 import {
     fireChartEvent,
     fireRenderSurfaceEvent,
@@ -31,6 +31,8 @@ const SCENE: DependencyGraphScene = {
     selectedPath: null
 }
 
+const GRAPH_IDENTITY = "project A"
+
 let measuredSize = { width: 800, height: 600 }
 
 describe("DependencyGraphComponent", () => {
@@ -51,8 +53,11 @@ describe("DependencyGraphComponent", () => {
     })
 
     it("should draw the scene once its container has a size", async () => {
+        // Arrange
+        const inputs = { scene: SCENE, graphIdentity: GRAPH_IDENTITY }
+
         // Act
-        await render(DependencyGraphComponent, { inputs: { scene: SCENE } })
+        await render(DependencyGraphComponent, { inputs })
 
         // Assert
         expect(lastDrawnOption().series[0].data[0].name).toBe("/root/a.ts")
@@ -63,7 +68,7 @@ describe("DependencyGraphComponent", () => {
         measuredSize = { width: 0, height: 0 }
 
         // Act
-        await render(DependencyGraphComponent, { inputs: { scene: SCENE } })
+        await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
 
         // Assert
         expect(stubbedChart.setOption).not.toHaveBeenCalled()
@@ -77,7 +82,7 @@ describe("DependencyGraphComponent", () => {
         const boxRightClicked = jest.fn()
         const rendered = jest.fn()
         await render(DependencyGraphComponent, {
-            inputs: { scene: SCENE },
+            inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY },
             on: { boxClicked, boxToggled, boxHovered, boxRightClicked, rendered }
         })
         const box = { seriesId: GRAPH_SERIES_ID, name: "/root/a.ts" }
@@ -99,7 +104,7 @@ describe("DependencyGraphComponent", () => {
 
     it("should fit a new graph into view once, and again on request", async () => {
         // Arrange
-        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE } })
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
         const fitsOnArrival = stubbedChart.dispatchAction.mock.calls.length
         fixture.componentRef.setInput("scene", { ...SCENE, hoveredPath: "/root/a.ts" })
         fixture.detectChanges()
@@ -114,10 +119,28 @@ describe("DependencyGraphComponent", () => {
         expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
     })
 
+    it("should fit a graph of other files into view although its root keeps the same path", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+        const fitsOnArrival = stubbedChart.dispatchAction.mock.calls.length
+
+        // Act
+        fixture.componentRef.setInput("scene", { ...SCENE })
+        fixture.componentRef.setInput("graphIdentity", "project B")
+        fixture.detectChanges()
+
+        // Assert
+        expect(stubbedChart.dispatchAction.mock.calls.length).toBe(fitsOnArrival + 1)
+        expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
+    })
+
     it("should report the end of a drag", async () => {
         // Arrange
         const boxDragEnded = jest.fn()
-        await render(DependencyGraphComponent, { inputs: { scene: SCENE, canDragBox: () => true }, on: { boxDragEnded } })
+        await render(DependencyGraphComponent, {
+            inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY, canDragBox: () => true },
+            on: { boxDragEnded }
+        })
 
         // Act
         fireChartEvent("mousedown", { seriesId: GRAPH_SERIES_ID, name: "/root/a.ts", event: { offsetX: 0, offsetY: 0 } })

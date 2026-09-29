@@ -19,8 +19,11 @@ const downward: EdgeRoute = { start: [60, 40], startSide: "bottom", end: [90, 14
 
 describe("drawEdge", () => {
     it("should leave and enter square to the sides, pulled out by half the distance", () => {
+        // Arrange
+        const route = downward
+
         // Act
-        const [curve, arrow] = draw(downward).children
+        const [curve, arrow] = draw(route).children
 
         // Assert
         expect(curve.shape).toEqual({ x1: 60, y1: 40, cpx1: 60, cpy1: 90, cpx2: 90, cpy2: 90, x2: 90, y2: 140 })
@@ -75,33 +78,45 @@ describe("drawEdge", () => {
     })
 
     it("should colour and dash a container-level feedback edge", () => {
+        // Arrange
+        const pointingUpward = { type: "feedbackContainerLevel" } as const
+
         // Act
-        const [curve] = draw(downward, { type: "feedbackContainerLevel" }).children
+        const [curve] = draw(downward, pointingUpward).children
 
         // Assert
         expect(curve.style).toMatchObject({ stroke: "#dc2626", lineDash: [5, 4] })
     })
 
     it("should fade a dimmed edge and its arrow", () => {
+        // Arrange
+        const dimmed = { isDimmed: true }
+
         // Act
-        const { children } = draw(downward, {}, { isDimmed: true })
+        const { children } = draw(downward, {}, dimmed)
 
         // Assert
         expect(children.map(child => child.style.opacity)).toEqual([DIMMED_OPACITY, DIMMED_OPACITY])
     })
 
     it("should draw the edge as wide as its look says", () => {
+        // Arrange
+        const wide = { widthPx: 3 }
+
         // Act
-        const [curve] = draw(downward, {}, { widthPx: 3 }).children
+        const [curve] = draw(downward, {}, wide).children
 
         // Assert
         expect(curve.style.lineWidth).toBe(3)
     })
 
     it("should grow the arrow with a wide edge, so the line never swallows it", () => {
+        // Arrange
+        const [thin, wide] = [{ widthPx: 1.2 }, { widthPx: 6 }]
+
         // Act
-        const [, thinArrow] = draw(downward, {}, { widthPx: 1.2 }).children
-        const [, wideArrow] = draw(downward, {}, { widthPx: 6 }).children
+        const [, thinArrow] = draw(downward, {}, thin).children
+        const [, wideArrow] = draw(downward, {}, wide).children
 
         // Assert
         const lengthOf = (points: number[][]) => points[0][1] - points[1][1]

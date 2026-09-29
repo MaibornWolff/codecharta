@@ -29,8 +29,11 @@ function namesOf(items: (PaintedItem | TitleItem)[]): string[] {
 
 describe("paintOrder", () => {
     it("should paint each folder, then its level bands, then its children", () => {
+        // Arrange
+        const nothingDragged: string[] = []
+
         // Act
-        const items = paintOrder(layout, [])
+        const items = paintOrder(layout, nothingDragged)
 
         // Assert
         expect(namesOf(items)).toEqual([
@@ -45,8 +48,11 @@ describe("paintOrder", () => {
     })
 
     it("should paint a dragged folder with everything in it over its siblings", () => {
+        // Arrange
+        const raisedPaths = ["/root/first"]
+
         // Act
-        const items = paintOrder(layout, ["/root/first"])
+        const items = paintOrder(layout, raisedPaths)
 
         // Assert
         expect(namesOf(items).slice(2)).toEqual([
@@ -59,16 +65,22 @@ describe("paintOrder", () => {
     })
 
     it("should paint the most recently dragged sibling on top", () => {
+        // Arrange
+        const raisedPaths = ["/root/second", "/root/first"]
+
         // Act
-        const items = paintOrder(layout, ["/root/second", "/root/first"])
+        const items = paintOrder(layout, raisedPaths)
 
         // Assert
         expect(namesOf(items).at(-1)).toBe("/root/first/a.ts")
     })
 
     it("should paint nothing for an empty layout", () => {
+        // Arrange
+        const emptyLayout = { boxes: [], bands: [], width: 0, height: 0 }
+
         // Act
-        const items = paintOrder({ boxes: [], bands: [], width: 0, height: 0 }, [])
+        const items = paintOrder(emptyLayout, [])
 
         // Assert
         expect(items).toEqual([])
@@ -77,8 +89,11 @@ describe("paintOrder", () => {
 
 describe("aroundEdges", () => {
     it("should lay the open folders and level bands under the edges, and the closed boxes and folder names over them", () => {
+        // Arrange
+        const painted = paintOrder(layout, [])
+
         // Act
-        const { underEdges, overEdges } = aroundEdges(paintOrder(layout, []))
+        const { underEdges, overEdges } = aroundEdges(painted)
 
         // Assert
         expect(namesOf(underEdges)).toEqual(["/root", "band /root 2", "/root/first", "band /root/first 0", "/root/second"])

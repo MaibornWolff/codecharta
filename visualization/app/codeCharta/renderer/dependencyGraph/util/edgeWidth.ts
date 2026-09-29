@@ -1,8 +1,5 @@
 import { DependencyEdgeThickness, DependencyEdgeWidth } from "../../../model/dependencyGraph.model"
 
-export type EdgeThickness = DependencyEdgeThickness
-export type EdgeWidth = DependencyEdgeWidth
-
 const BASE_WIDTH_PX = 1.2
 const HAIRLINE_WIDTH_PX = 0.6
 const UNIFORM_WIDTH_PX = 1.6
@@ -12,11 +9,11 @@ const UNIFORM_WIDTH_PX = 1.6
 const GROWTH_BY_COUNT = { perDoublingPx: 0.5, maxExtraPx: 2.5 }
 const STRONG_GROWTH = { perDoublingPx: 1, maxExtraPx: 5 }
 
-export function edgeWidthPx(weight: number, { thickness, factor }: EdgeWidth): number {
+export function edgeWidthPx(weight: number, { thickness, factor }: DependencyEdgeWidth): number {
     return roundedPx(unscaledWidthPx(weight, thickness) * factor)
 }
 
-function unscaledWidthPx(weight: number, thickness: EdgeThickness): number {
+function unscaledWidthPx(weight: number, thickness: DependencyEdgeThickness): number {
     switch (thickness) {
         case "thin":
             return HAIRLINE_WIDTH_PX

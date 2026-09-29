@@ -8,6 +8,7 @@
     <cc-dependency-graph
         #graph
         [scene]="scene"
+        [graphIdentity]="graphIdentity()"
         [canDragBox]="canDragBox"
         [boxAt]="boxAt"
         (boxClicked)="select($event)"
@@ -43,6 +44,17 @@
                 <i class="fa-solid fa-expand" aria-hidden="true"></i>
             </button>
         </div>
+    </div>
+} @else if (hasDependencyData()) {
+    <div class="flex h-full items-center justify-center p-4">
+        <output class="alert max-w-md">
+            @if (isFocused()) {
+                <span>Nothing in the focused folder carries dependency levels.</span>
+                <button type="button" class="btn btn-sm" data-testid="dependency-unfocus" (click)="unfocus()">Unfocus</button>
+            } @else {
+                <span>Every file that carries dependency levels is excluded. Include some again from the Excluded list in the explorer.</span>
+            }
+        </output>
     </div>
 } @else {
     <div class="flex h-full items-center justify-center p-4">

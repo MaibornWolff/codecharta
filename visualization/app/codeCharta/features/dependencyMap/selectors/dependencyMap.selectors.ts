@@ -2,11 +2,10 @@ import { createSelector } from "@ngrx/store"
 import { dependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { buildLeveledTree } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { accumulatedDataSelector, pathToNodeSelector, searchedNodePathsSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
 import { currentFocusedNodePathSelector, searchPatternSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { isSearchPatternEmpty } from "../../sidebarExplorer/facade"
 
-/** The graph follows the map's focus and exclusions, so a folder focused or a file excluded on the map
- * is focused or left out here too. */
 export const dependencyTreeSelector = createSelector(
     accumulatedDataSelector,
     pathToNodeSelector,
@@ -18,8 +17,19 @@ export const dependencyTreeSelector = createSelector(
     }
 )
 
-/** The explorer's search, shared with the metrics view, fades in the graph what it misses; null while no
- * search is on. */
-export const dependencySearchedPathsSelector = createSelector(searchPatternSelector, searchedNodePathsSelector, (pattern, paths) =>
+/** Excluding a node can move the tree's root, so the layout is kept for the loaded files and the focus instead. */
+export const dependencyLayoutIdentitySelector = createSelector(
+    visibleFileStatesSelector,
+    currentFocusedNodePathSelector,
+    (visibleFileStates, focusedNodePath) =>
+        JSON.stringify({
+            fileChecksums: visibleFileStates.map(({ file }) => file.fileMeta.fileChecksum).sort(),
+            focusedNodePath: focusedNodePath ?? null
+        })
+)
+
+export const isDependencyMapFocusedSelector = createSelector(currentFocusedNodePathSelector, Boolean)
+
+export const dependencySearchedPathsOrNullSelector = createSelector(searchPatternSelector, searchedNodePathsSelector, (pattern, paths) =>
     isSearchPatternEmpty(pattern) ? null : paths
 )

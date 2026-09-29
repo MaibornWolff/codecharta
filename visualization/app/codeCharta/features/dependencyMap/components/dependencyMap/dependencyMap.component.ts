@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import {
-    BoxOffset,
     boxAtPoint,
     DependencyGraphComponent,
     DependencyGraphScene,
@@ -9,6 +8,7 @@ import {
     isDraggable,
     layoutLevelized,
     movedLayout,
+    type Point,
     projectEdges,
     type RightClickedBox,
     visibleRepresentatives
@@ -37,11 +37,14 @@ export class DependencyMapComponent {
 
     protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
+    protected readonly hasDependencyData = toSignal(this.readStore.hasDependencyData$, { requireSync: true })
+    protected readonly isFocused = toSignal(this.readStore.isFocused$, { requireSync: true })
+    protected readonly graphIdentity = computed(() => this.viewStore.adoptedLayoutIdentity() ?? "")
 
     private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
-    private readonly edgeMetric = toSignal(this.readStore.edgeMetric$, { requireSync: true })
-    private readonly settings = toSignal(this.readStore.settings$, { requireSync: true })
+    private readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
+    private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
@@ -55,7 +58,7 @@ export class DependencyMapComponent {
         return layout ? movedLayout(layout, this.viewStore.boxOffsets()) : null
     })
     protected readonly hasMovedBoxes = computed(() => this.viewStore.boxOffsets().size > 0)
-    protected readonly boxAt = (point: BoxOffset) => {
+    protected readonly boxAt = (point: Point) => {
         const layout = this.shownLayout()
         return layout === null ? null : boxAtPoint(layout, this.viewStore.raisedPaths(), point)
     }
@@ -67,6 +70,7 @@ export class DependencyMapComponent {
         const tree = this.tree()
         return tree ? visibleRepresentatives(tree, this.viewStore.expandedPaths()) : new Map<string, string>()
     })
+    private readonly projectedEdges = computed(() => projectEdges(this.edges(), this.representatives(), this.edgeMetric()))
     private readonly folderPaths = computed(
         () =>
             new Set(
@@ -84,7 +88,7 @@ export class DependencyMapComponent {
         const { shownEdgeTypes, edgeStyle, isAnchoredAtSideMiddle, edgeWidth } = this.settings()
         return {
             layout,
-            edges: projectEdges(this.edges(), this.representatives(), this.edgeMetric()),
+            edges: this.projectedEdges(),
             edgeMetric: this.edgeMetric(),
             shownEdgeTypes,
             edgeStyle,
@@ -130,9 +134,9 @@ export class DependencyMapComponent {
         this.writeStore.openContextMenu(path, clientX, clientY)
     }
 
-    protected moveBox({ path, dx, dy }: DraggedBox): void {
+    protected moveBox({ path, deltaX, deltaY }: DraggedBox): void {
         const [offsetX, offsetY] = this.viewStore.boxOffsets().get(path) ?? [0, 0]
-        this.viewStore.placeBox(path, [offsetX + dx, offsetY + dy])
+        this.viewStore.placeBox(path, [offsetX + deltaX, offsetY + deltaY])
     }
 
     protected endDragging(): void {
@@ -141,6 +145,10 @@ export class DependencyMapComponent {
 
     protected resetLayout(): void {
         this.viewStore.resetLayout()
+    }
+
+    protected unfocus(): void {
+        this.writeStore.unfocus()
     }
 
     protected markReady(): void {

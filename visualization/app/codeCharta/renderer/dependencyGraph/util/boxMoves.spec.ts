@@ -1,4 +1,4 @@
-import { isDraggable, movedLayout } from "./boxMoves"
+import { BoxOffset, isDraggable, movedLayout } from "./boxMoves"
 import { aBand, aBox } from "./dependencyGraphTestData"
 import { DependencyGraphLayout, LAYOUT_SPACING } from "./levelizedLayout"
 
@@ -20,8 +20,11 @@ function boxAt(moved: DependencyGraphLayout, path: string) {
 describe("boxMoves", () => {
     describe("movedLayout", () => {
         it("should shift a moved folder with everything inside it and its level bands", () => {
+            // Arrange
+            const offsets = new Map<string, BoxOffset>([["/root/app", [50, 20]]])
+
             // Act
-            const moved = movedLayout(layout, new Map([["/root/app", [50, 20]]]))
+            const moved = movedLayout(layout, offsets)
 
             // Assert
             expect(boxAt(moved, "/root/app")).toMatchObject({ x: 150, y: 120, width: 400 })
@@ -32,30 +35,36 @@ describe("boxMoves", () => {
         })
 
         it("should add up a folder's move and its child's own", () => {
+            // Arrange
+            const offsets = new Map<string, BoxOffset>([
+                ["/root/app", [50, 0]],
+                ["/root/app/a.ts", [10, 10]]
+            ])
+
             // Act
-            const moved = movedLayout(
-                layout,
-                new Map([
-                    ["/root/app", [50, 0]],
-                    ["/root/app/a.ts", [10, 10]]
-                ])
-            )
+            const moved = movedLayout(layout, offsets)
 
             // Assert
             expect(boxAt(moved, "/root/app/a.ts")).toMatchObject({ x: 210, y: 180 })
         })
 
         it("should move a level band with the boxes of its level", () => {
+            // Arrange
+            const offsets = new Map<string, BoxOffset>([["/root/app/a.ts", [0, 60]]])
+
             // Act
-            const moved = movedLayout(layout, new Map([["/root/app/a.ts", [0, 60]]]))
+            const moved = movedLayout(layout, offsets)
 
             // Assert
             expect(moved.bands[0]).toMatchObject({ y: 230, height: 40 })
         })
 
         it("should grow the folder, and its level bands, to hold a box dragged past its edge", () => {
+            // Arrange
+            const offsets = new Map<string, BoxOffset>([["/root/app/a.ts", [-200, 0]]])
+
             // Act
-            const moved = movedLayout(layout, new Map([["/root/app/a.ts", [-200, 0]]]))
+            const moved = movedLayout(layout, offsets)
 
             // Assert
             const grown = boxAt(moved, "/root/app")
@@ -65,8 +74,11 @@ describe("boxMoves", () => {
         })
 
         it("should grow every folder up the tree that the moved box reaches past", () => {
+            // Arrange
+            const offsets = new Map<string, BoxOffset>([["/root/app/a.ts", [0, 1000]]])
+
             // Act
-            const moved = movedLayout(layout, new Map([["/root/app/a.ts", [0, 1000]]]))
+            const moved = movedLayout(layout, offsets)
 
             // Assert
             const grownFolder = boxAt(moved, "/root/app")
@@ -75,8 +87,11 @@ describe("boxMoves", () => {
         })
 
         it("should return the layout itself while nothing is moved", () => {
+            // Arrange
+            const offsets = new Map<string, BoxOffset>()
+
             // Act
-            const moved = movedLayout(layout, new Map())
+            const moved = movedLayout(layout, offsets)
 
             // Assert
             expect(moved).toBe(layout)
@@ -85,20 +100,25 @@ describe("boxMoves", () => {
 
     describe("isDraggable", () => {
         it("should drag files and folders wherever they are grabbed", () => {
+            // Arrange
+            const grabbedPaths = [file.path, folder.path]
+
             // Act
-            const draggable = [file.path, folder.path].map(path => isDraggable(layout, path))
+            const draggable = grabbedPaths.map(path => isDraggable(layout, path))
 
             // Assert
             expect(draggable).toEqual([true, true])
         })
 
         it("should never drag the root or a box that is not drawn", () => {
+            // Arrange
+            const grabbedPaths = [root.path, "/root/gone.ts"]
+
             // Act
-            const rootDrag = isDraggable(layout, "/root")
-            const missing = isDraggable(layout, "/root/gone.ts")
+            const draggable = grabbedPaths.map(path => isDraggable(layout, path))
 
             // Assert
-            expect([rootDrag, missing]).toEqual([false, false])
+            expect(draggable).toEqual([false, false])
         })
     })
 })

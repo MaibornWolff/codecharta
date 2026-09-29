@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, input, OnDestroy, output, viewChild } from "@angular/core"
 import { buildDependencyGraphOption, fitWindowOf } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
+import { Point } from "../../util/geometry"
 import { DependencyGraphHost } from "./dependencyGraphHost"
 
 export interface RightClickedBox {
@@ -11,8 +12,8 @@ export interface RightClickedBox {
 
 export interface DraggedBox {
     path: string
-    dx: number
-    dy: number
+    deltaX: number
+    deltaY: number
 }
 
 const NOTHING_DRAGGABLE = () => false
@@ -26,10 +27,13 @@ const NO_BOX_ANYWHERE = () => null
 })
 export class DependencyGraphComponent implements OnDestroy {
     readonly scene = input.required<DependencyGraphScene>()
+    /** The whole graph is fitted into view when this changes, so a new map or focus is seen whole while the zoom
+     * survives every other redraw. */
+    readonly graphIdentity = input.required<string>()
     /** Whether pressing this box drags it rather than the graph. */
     readonly canDragBox = input<(path: string) => boolean>(NOTHING_DRAGGABLE)
     /** The box painted on top at a layout point, which takes the clicks on an edge lying over it. */
-    readonly boxAt = input<(point: [number, number]) => string | null>(NO_BOX_ANYWHERE)
+    readonly boxAt = input<(point: Point) => string | null>(NO_BOX_ANYWHERE)
 
     readonly boxClicked = output<string>()
     readonly boxToggled = output<string>()
@@ -40,8 +44,7 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly boxDragEnded = output<void>()
 
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
-    /** The graph the view was last fitted to, named by its root, so a new graph gets fitted once. */
-    private fittedGraph: string | null = null
+    private fittedGraphIdentity: string | null = null
 
     private readonly chartHost = new DependencyGraphHost({
         onBoxClicked: path => this.boxClicked.emit(path),
@@ -50,7 +53,7 @@ export class DependencyGraphComponent implements OnDestroy {
         onBoxRightClicked: (path, clientX, clientY) => this.boxRightClicked.emit({ path, clientX, clientY }),
         onRendered: () => this.rendered.emit(),
         canDragBox: path => this.canDragBox()(path),
-        onBoxDragged: (path, dx, dy) => this.boxDragged.emit({ path, dx, dy }),
+        onBoxDragged: (path, deltaX, deltaY) => this.boxDragged.emit({ path, deltaX, deltaY }),
         onBoxDragEnded: () => this.boxDragEnded.emit(),
         boxAt: point => this.boxAt()(point)
     })
@@ -75,9 +78,9 @@ export class DependencyGraphComponent implements OnDestroy {
         }
         const scene = this.scene()
         this.chartHost.render(buildDependencyGraphOption(scene, viewport))
-        const graph = scene.layout.boxes[0]?.path ?? null
-        if (graph !== this.fittedGraph) {
-            this.fittedGraph = graph
+        const graphIdentity = this.graphIdentity()
+        if (graphIdentity !== this.fittedGraphIdentity) {
+            this.fittedGraphIdentity = graphIdentity
             this.fitWholeGraph()
         }
     }

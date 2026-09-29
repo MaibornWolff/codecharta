@@ -1,5 +1,6 @@
-import { DependencyEdgeType, dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
+import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../model/codeCharta.model"
+import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 import { LeveledNode } from "./leveledTree"
 
 /** A file edge lifted onto the boxes on screen. Edges landing on the same two boxes merge: their
@@ -12,13 +13,10 @@ export interface GraphEdge {
     type: DependencyEdgeType
 }
 
-/** An edge without the metric, or at zero, stands for nothing of it. */
 function isCarried(value: unknown): value is number {
     return typeof value === "number" && value > 0
 }
 
-/** Maps every path of the tree onto the box that stands for it: itself when it is on screen, else the
- * closed folder it hides in. */
 export function visibleRepresentatives(tree: LeveledNode, expandedPaths: ReadonlySet<string>): Map<string, string> {
     const representatives = new Map<string, string>()
     const visit = (node: LeveledNode, hiddenIn: string | null) => {
@@ -41,8 +39,8 @@ interface MergedEdge {
     isPointingUpwards: boolean
 }
 
-/** The edges carrying the metric, merged onto the boxes on screen and weighted by its value. The cycle and upward
- * flags describe the dependency graph alone, so every other metric draws its edges as regular ones. */
+/** The cycle and upward flags describe the dependency graph alone, so every other metric draws its edges as
+ * regular ones. */
 export function projectEdges(edges: Edge[], representatives: ReadonlyMap<string, string>, edgeMetric: string | null): GraphEdge[] {
     const merged = new Map<string, MergedEdge>()
     for (const edge of edges) {

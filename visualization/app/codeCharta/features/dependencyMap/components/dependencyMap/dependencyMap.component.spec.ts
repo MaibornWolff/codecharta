@@ -3,7 +3,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
-import { edgesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { edgesSelector, hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
 import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
@@ -22,8 +22,18 @@ import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.fa
 import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { setHoveredNodePath, setRightClickedNodeData, setSelectedNodePath } from "../../../../stores/sharedView/sharedView.write.facade"
-import { dependencySearchedPathsSelector, dependencyTreeSelector } from "../../selectors/dependencyMap.selectors"
+import {
+    setHoveredNodePath,
+    setRightClickedNodeData,
+    setSelectedNodePath,
+    unfocusNode
+} from "../../../../stores/sharedView/sharedView.write.facade"
+import {
+    dependencyLayoutIdentitySelector,
+    dependencySearchedPathsOrNullSelector,
+    dependencyTreeSelector,
+    isDependencyMapFocusedSelector
+} from "../../selectors/dependencyMap.selectors"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyMapComponent } from "./dependencyMap.component"
 
@@ -58,17 +68,22 @@ interface Setup {
     selectedPath?: string | null
     isDeltaState?: boolean
     searchedPaths?: ReadonlySet<string> | null
+    hasDependencyData?: boolean
+    isFocused?: boolean
     /** The graph starts with every folder closed; most tests look into them. */
     openedFolders?: string[]
 }
 
 const EVERY_FOLDER = ["/root/ui", "/root/model"]
+const PROJECT_A = "project A"
 
 async function setup({
     tree = TREE,
     selectedPath = null,
     isDeltaState = false,
     searchedPaths = null,
+    hasDependencyData = true,
+    isFocused = false,
     openedFolders = EVERY_FOLDER
 }: Setup = {}) {
     const rendered = await render(DependencyMapComponent, {
@@ -82,7 +97,10 @@ async function setup({
                     { selector: hoveredNodePathSelector, value: null },
                     { selector: selectedNodePathSelector, value: selectedPath },
                     { selector: isDeltaStateSelector, value: isDeltaState },
-                    { selector: dependencySearchedPathsSelector, value: searchedPaths }
+                    { selector: dependencySearchedPathsOrNullSelector, value: searchedPaths },
+                    { selector: dependencyLayoutIdentitySelector, value: PROJECT_A },
+                    { selector: hasDependencyDataSelector, value: hasDependencyData },
+                    { selector: isDependencyMapFocusedSelector, value: isFocused }
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
@@ -130,6 +148,25 @@ async function changeSettings(store: MockStore, settings: Partial<DependencyGrap
     await screen.findByTestId("dependency-graph")
 }
 
+async function loadOtherFiles(store: MockStore, tree: LeveledNode = TREE) {
+    store.overrideSelector(dependencyLayoutIdentitySelector, "project B")
+    store.overrideSelector(dependencyTreeSelector, { ...tree })
+    store.refreshState()
+    await screen.findByTestId("dependency-graph")
+}
+
+async function excludeSoTheRootMoves(store: MockStore) {
+    store.overrideSelector(dependencyTreeSelector, leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")]))
+    store.refreshState()
+    await screen.findByTestId("dependency-graph")
+}
+
+function dragBox(path: string) {
+    fireChartEvent("mousedown", { ...boxEvent(path), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
+    fireRenderSurfaceEvent("mousemove", { offsetX: -30, offsetY: 0, target: {} })
+    fireRenderSurfaceEvent("mouseup")
+}
+
 function doubleClickBox(path: string) {
     fireChartEvent("click", boxEvent(path))
     screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
@@ -152,16 +189,22 @@ describe("DependencyMapComponent", () => {
     })
 
     it("should start with every folder closed", async () => {
+        // Arrange
+        const openedFolders: string[] = []
+
         // Act
-        await setup({ openedFolders: [] })
+        await setup({ openedFolders })
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model"])
     })
 
     it("should draw the files of the opened folders, higher levels above lower ones", async () => {
+        // Arrange
+        const openedFolders = EVERY_FOLDER
+
         // Act
-        await setup()
+        await setup({ openedFolders })
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model", "/root/ui/view.ts", "/root/model/node.ts"])
@@ -274,8 +317,11 @@ describe("DependencyMapComponent", () => {
     })
 
     it("should explain compare mode instead of drawing", async () => {
+        // Arrange
+        const isDeltaState = true
+
         // Act
-        await setup({ isDeltaState: true })
+        await setup({ isDeltaState })
 
         // Assert
         expect(screen.getByText(/Leave compare mode/)).not.toBeNull()
@@ -283,11 +329,78 @@ describe("DependencyMapComponent", () => {
     })
 
     it("should say so when no file carries dependency levels", async () => {
+        // Arrange
+        const hasDependencyData = false
+
         // Act
-        await setup({ tree: null })
+        await setup({ tree: null, hasDependencyData })
 
         // Assert
         expect(screen.getByText("No file in view carries dependency levels.")).not.toBeNull()
+    })
+
+    it("should offer to unfocus when the focused folder holds nothing with dependency levels", async () => {
+        // Arrange
+        const { store } = await setup({ tree: null, isFocused: true })
+
+        // Act
+        fireEvent.click(screen.getByTestId("dependency-unfocus"))
+
+        // Assert
+        expect(screen.getByText("Nothing in the focused folder carries dependency levels.")).not.toBeNull()
+        expect(store.dispatch).toHaveBeenCalledWith(unfocusNode())
+    })
+
+    it("should point to the Excluded list when every file with dependency levels is excluded", async () => {
+        // Arrange
+        const isFocused = false
+
+        // Act
+        await setup({ tree: null, isFocused })
+
+        // Assert
+        expect(screen.getByText(/Include some again from the Excluded list/)).not.toBeNull()
+        expect(screen.queryByTestId("dependency-unfocus")).toBeNull()
+    })
+
+    it("should start over with every folder closed and nothing moved when other files with the same root are loaded", async () => {
+        // Arrange
+        const { store } = await setup()
+        dragBox("/root/ui/view.ts")
+        await screen.findByTestId("dependency-reset-layout")
+
+        // Act
+        await loadOtherFiles(store)
+
+        // Assert
+        expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model"])
+        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+    })
+
+    it("should fit the graph of newly loaded files into view", async () => {
+        // Arrange
+        const { store } = await setup()
+        const fitsBefore = stubbedChart.dispatchAction.mock.calls.length
+
+        // Act
+        await loadOtherFiles(store)
+
+        // Assert
+        expect(stubbedChart.dispatchAction.mock.calls.length).toBeGreaterThan(fitsBefore)
+        expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
+    })
+
+    it("should keep the moved boxes when an exclusion moves the root of the tree", async () => {
+        // Arrange
+        const { store } = await setup()
+        dragBox("/root/ui/view.ts")
+        await screen.findByTestId("dependency-reset-layout")
+
+        // Act
+        await excludeSoTheRootMoves(store)
+
+        // Assert
+        expect(screen.queryByTestId("dependency-reset-layout")).not.toBeNull()
     })
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {

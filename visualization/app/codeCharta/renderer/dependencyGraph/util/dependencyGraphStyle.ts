@@ -1,4 +1,4 @@
-import { DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
+import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 
 export const TEXT_COLOR = "#1f2937"
 export const SELECTED_COLOR = "#1b9cfc"
@@ -49,9 +49,14 @@ export const FOUND_OPACITY = 1
 
 /** How much of a see-through folder's fill remains, so what lies behind it stays readable. */
 const SEE_THROUGH_OPACITY = 0.65
+const RGB_OFFSETS_IN_HEX_COLOR = [1, 3, 5]
+const HEX_DIGITS_PER_CHANNEL = 2
+const HEX_RADIX = 16
 
 export function seeThrough(hexColor: string): string {
-    const [red, green, blue] = [1, 3, 5].map(start => Number.parseInt(hexColor.slice(start, start + 2), 16))
+    const [red, green, blue] = RGB_OFFSETS_IN_HEX_COLOR.map(start =>
+        Number.parseInt(hexColor.slice(start, start + HEX_DIGITS_PER_CHANNEL), HEX_RADIX)
+    )
     return `rgba(${red}, ${green}, ${blue}, ${SEE_THROUGH_OPACITY})`
 }
 

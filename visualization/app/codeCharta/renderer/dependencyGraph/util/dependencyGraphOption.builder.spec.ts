@@ -1,4 +1,4 @@
-import { DEPENDENCY_EDGE_TYPES } from "../../../lenses/dependency/dependencyLens.facade"
+import { DEPENDENCY_EDGE_TYPES } from "../../../model/dependencyGraph.model"
 import { buildDependencyGraphOption, fitWindowOf } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
@@ -68,8 +68,11 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should draw everything as one series, the edges over the open folders and under the closed boxes and every name", () => {
+        // Arrange
+        const scene = sceneWith()
+
         // Act
-        const { option, series } = drawnGraph(sceneWith())
+        const { option, series } = drawnGraph(scene)
 
         // Assert
         expect(option.series.map(built => built.id)).toEqual([GRAPH_SERIES_ID])
@@ -86,8 +89,11 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should name an open folder over the edges", () => {
+        // Arrange
+        const scene = sceneWith()
+
         // Act
-        const { series, draw } = drawnGraph(sceneWith())
+        const { series, draw } = drawnGraph(scene)
 
         // Assert
         const texts = series.data.map((_, index) => draw(index).children.map(child => child.style.text))
@@ -96,16 +102,22 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should draw only the edges of the types shown", () => {
+        // Arrange
+        const scene = sceneWith({ shownEdgeTypes: ["feedbackContainerLevel", "feedbackLeafLevel"] })
+
         // Act
-        const { edgeIndices } = drawnGraph(sceneWith({ shownEdgeTypes: ["feedbackContainerLevel", "feedbackLeafLevel"] }))
+        const { edgeIndices } = drawnGraph(scene)
 
         // Assert
         expect(edgeIndices).toHaveLength(1)
     })
 
     it("should draw every edge of the hovered box, whatever its type", () => {
+        // Arrange
+        const scene = sceneWith({ shownEdgeTypes: [], hoveredPath: model.path })
+
         // Act
-        const { edgeIndices, describe, draw } = drawnGraph(sceneWith({ shownEdgeTypes: [], hoveredPath: model.path }))
+        const { edgeIndices, describe, draw } = drawnGraph(scene)
 
         // Assert
         expect(edgeIndices.map(index => describe(index).split("<br/>")[0])).toEqual(["<b>view.ts → model.ts</b>"])
@@ -113,8 +125,11 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should mark the selected and the hovered box", () => {
+        // Arrange
+        const scene = sceneWith({ selectedPath: view.path, hoveredPath: model.path })
+
         // Act
-        const { indexOf, draw } = drawnGraph(sceneWith({ selectedPath: view.path, hoveredPath: model.path }))
+        const { indexOf, draw } = drawnGraph(scene)
 
         // Assert
         const strokeWidthOf = (path: string) => draw(indexOf(path)).children[0].style.lineWidth
@@ -122,8 +137,11 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should describe boxes and edges in the tooltip, and nothing for a level band", () => {
+        // Arrange
+        const scene = sceneWith()
+
         // Act
-        const { describe, edgeIndices, indexOf } = drawnGraph(sceneWith())
+        const { describe, edgeIndices, indexOf } = drawnGraph(scene)
 
         // Assert
         expect(describe(0)).toBe("<b>/root</b><br/>Level 0<br/><i>Double-click to close</i>")
@@ -155,24 +173,33 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should draw the level bands", () => {
+        // Arrange
+        const scene = sceneWith()
+
         // Act
-        const { draw } = drawnGraph(sceneWith())
+        const { draw } = drawnGraph(scene)
 
         // Assert
         expect(draw(1).children[0].style.text).toBe("level 1")
     })
 
     it("should keep ECharts from lifting a hovered item over the rest, so an open folder never covers its children", () => {
+        // Arrange
+        const scene = sceneWith({ hoveredPath: view.path })
+
         // Act
-        const { series, draw } = drawnGraph(sceneWith({ hoveredPath: view.path }))
+        const { series, draw } = drawnGraph(scene)
 
         // Assert
         expect(series.data.map((_, index) => draw(index).emphasisDisabled)).toEqual(series.data.map(() => true))
     })
 
     it("should pin every element to its place in the paint order, which ECharts would otherwise lose for elements added in a later draw", () => {
+        // Arrange
+        const scene = sceneWith()
+
         // Act
-        const { series, draw } = drawnGraph(sceneWith())
+        const { series, draw } = drawnGraph(scene)
 
         // Assert
         const ranks = series.data.map((_, index) => draw(index).children.map(child => child.z2))
@@ -200,8 +227,11 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should draw the edges as wide as the scene asks", () => {
+        // Arrange
+        const scene = sceneWith({ edgeWidth: { thickness: "uniform", factor: 2 } })
+
         // Act
-        const { edgeIndices, draw } = drawnGraph(sceneWith({ edgeWidth: { thickness: "uniform", factor: 2 } }))
+        const { edgeIndices, draw } = drawnGraph(scene)
 
         // Assert
         expect(edgeIndices.map(index => draw(index).children[0].style.lineWidth)).toEqual([3.2, 3.2])
@@ -229,8 +259,11 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should dim nothing while the hovered box has no edge crossing its border, as the root never has", () => {
+        // Arrange
+        const scene = sceneWith({ hoveredPath: root.path })
+
         // Act
-        const { edgeIndices, draw } = drawnGraph(sceneWith({ hoveredPath: root.path }))
+        const { edgeIndices, draw } = drawnGraph(scene)
 
         // Assert
         expect(edgeIndices.map(index => draw(index).children[0].style.opacity)).toEqual([1, 1])
@@ -267,12 +300,39 @@ describe("buildDependencyGraphOption", () => {
     })
 
     it("should give the axes room around the graph for dragged boxes to grow into", () => {
+        // Arrange
+        const squareViewport = { width: 800, height: 800 }
+
         // Act
-        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), { width: 800, height: 800 })
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), squareViewport)
 
         // Assert
         expect([xAxis.min, xAxis.max]).toEqual([-400, 800])
         expect(yAxis.min).toBeLessThan(-400)
+    })
+
+    it("should draw a scene without edges", () => {
+        // Arrange
+        const scene = sceneWith({ edges: [] })
+
+        // Act
+        const { series, edgeIndices, draw } = drawnGraph(scene)
+
+        // Assert
+        expect(edgeIndices).toEqual([])
+        expect(series.data.map(datum => datum.name).filter(Boolean)).toEqual([root.path, view.path, model.path, util.path])
+        expect(draw(0).children).toHaveLength(1)
+    })
+
+    it("should keep the axes numbers while the chart has no size yet", () => {
+        // Arrange
+        const noSize = { width: 0, height: 0 }
+
+        // Act
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), noSize)
+
+        // Assert
+        expect([xAxis.min, xAxis.max, yAxis.min, yAxis.max].every(Number.isFinite)).toBe(true)
     })
 })
 
@@ -290,5 +350,27 @@ describe("fitWindowOf", () => {
         expect((window.y[0] + window.y[1]) / 2).toBe(75)
         expect((window.x[1] - window.x[0]) / 1000).toBeCloseTo((window.y[1] - window.y[0]) / 500)
         expect(window.x[1] - window.x[0]).toBeGreaterThan(500)
+    })
+
+    it("should fit the root without a scale while the chart has no size yet", () => {
+        // Arrange
+        const layout = { boxes: [root], bands: [], width: 400, height: 200 }
+
+        // Act
+        const window = fitWindowOf(layout, { width: 0, height: 0 })
+
+        // Assert
+        expect(window).toEqual({ x: [0, 400], y: [0, 200] })
+    })
+
+    it("should fit an empty graph without a size to finite numbers", () => {
+        // Arrange
+        const emptyLayout = { boxes: [], bands: [], width: 0, height: 0 }
+
+        // Act
+        const window = fitWindowOf(emptyLayout, { width: 0, height: 0 })
+
+        // Assert
+        expect([...window.x, ...window.y].every(Number.isFinite)).toBe(true)
     })
 })

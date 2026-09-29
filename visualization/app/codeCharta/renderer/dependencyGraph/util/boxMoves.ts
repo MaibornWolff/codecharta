@@ -1,19 +1,13 @@
+import { isWithin } from "./boxPaths"
+import { enclosingRectangle, Rectangle } from "./geometry"
 import { childIndicesByFolder } from "./layoutHierarchy"
 import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 
-/** How far a box was dragged from where the layout put it, in layout units. */
+/** In layout units, from where the layout put the box. */
 export type BoxOffset = [number, number]
 
-interface Rect {
-    x: number
-    y: number
-    width: number
-    height: number
-}
-
-/** The layout with every dragged box, and everything inside a dragged folder, shifted by its offset. A box
- * never leaves its folder: the folder grows to hold whatever was dragged towards or past its edge, and each
- * level band follows the boxes of its level. */
+/** A box never leaves its folder: the folder grows to hold whatever was dragged towards or past its edge, and
+ * each level band follows the boxes of its level. */
 export function movedLayout(layout: DependencyGraphLayout, offsets: ReadonlyMap<string, BoxOffset>): DependencyGraphLayout {
     if (offsets.size === 0) {
         return layout
@@ -25,7 +19,7 @@ export function movedLayout(layout: DependencyGraphLayout, offsets: ReadonlyMap<
     return { ...layout, boxes, bands: layout.bands.map(band => spanningItsBoxes(band, byPath)) }
 }
 
-/** Every box but the root is dragged wherever it is grabbed; the root stays, so its empty space pans. */
+/** The root stays, so its empty space pans the view instead. */
 export function isDraggable(layout: DependencyGraphLayout, path: string): boolean {
     const box = layout.boxes.find(candidate => candidate.path === path)
     return box !== undefined && box.depth > 0
@@ -35,7 +29,7 @@ function accumulatedShifts(offsets: ReadonlyMap<string, BoxOffset>) {
     const moves = [...offsets]
     return (path: string): BoxOffset =>
         moves
-            .filter(([movedPath]) => path === movedPath || path.startsWith(`${movedPath}/`))
+            .filter(([movedPath]) => isWithin(path, movedPath))
             .reduce<BoxOffset>(([sumX, sumY], [, [dx, dy]]) => [sumX + dx, sumY + dy], [0, 0])
 }
 
@@ -45,33 +39,26 @@ function growFoldersAroundTheirChildren(boxes: LayoutBox[]): void {
     for (let index = boxes.length - 1; index >= 0; index--) {
         const children = childrenOf.get(index)
         if (children) {
-            boxes[index] = {
-                ...boxes[index],
-                ...enclosing(
-                    boxes[index],
-                    children.map(child => boxes[child])
-                )
-            }
+            const folder = boxes[index]
+            boxes[index] = { ...folder, ...enclosingRectangle([folder, ...children.map(child => roomAround(boxes[child]))]) }
         }
     }
 }
 
-function enclosing(folder: Rect, children: Rect[]): Rect {
-    const left = Math.min(folder.x, ...children.map(child => child.x - LAYOUT_SPACING.padding))
-    const top = Math.min(folder.y, ...children.map(child => child.y - LAYOUT_SPACING.padding - LAYOUT_SPACING.headerHeight))
-    const right = Math.max(folder.x + folder.width, ...children.map(child => child.x + child.width + LAYOUT_SPACING.padding))
-    const bottom = Math.max(folder.y + folder.height, ...children.map(child => child.y + child.height + LAYOUT_SPACING.padding))
-    return { x: left, y: top, width: right - left, height: bottom - top }
+function roomAround(child: Rectangle): Rectangle {
+    const { padding, headerHeight } = LAYOUT_SPACING
+    return {
+        x: child.x - padding,
+        y: child.y - padding - headerHeight,
+        width: child.width + 2 * padding,
+        height: child.height + 2 * padding + headerHeight
+    }
 }
 
-/** A band stretches across its folder and from the highest to the lowest of its boxes, wherever they were
- * dragged. */
 function spanningItsBoxes(band: LevelBand, byPath: ReadonlyMap<string, LayoutBox>): LevelBand {
     const folder = byPath.get(band.folderPath)
-    const members = band.memberPaths.map(path => byPath.get(path))
-    const top = Math.min(...members.map(member => member.y))
-    const bottom = Math.max(...members.map(member => member.y + member.height))
-    return { ...band, x: folder.x, width: folder.width, y: top, height: bottom - top }
+    const members = enclosingRectangle(band.memberPaths.map(path => byPath.get(path)))
+    return { ...band, x: folder.x, width: folder.width, y: members.y, height: members.height }
 }
 
 function shifted<T extends { x: number; y: number }>(item: T, [dx, dy]: BoxOffset): T {

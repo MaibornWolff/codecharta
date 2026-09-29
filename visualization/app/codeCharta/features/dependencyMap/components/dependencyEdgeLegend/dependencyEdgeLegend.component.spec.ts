@@ -12,8 +12,11 @@ async function renderFor(edgeMetric: string) {
 
 describe("DependencyEdgeLegendComponent", () => {
     it("should explain the four edge colours of the dependencies", async () => {
+        // Arrange
+        const edgeMetric = "dependencies"
+
         // Act
-        const entries = await renderFor("dependencies")
+        const entries = await renderFor(edgeMetric)
 
         // Assert
         expect(entries).toHaveLength(4)
@@ -21,10 +24,13 @@ describe("DependencyEdgeLegendComponent", () => {
     })
 
     it("should name the only colour another edge metric is drawn in", async () => {
+        // Arrange
+        const edgeMetric = "temporal_coupling"
+
         // Act
-        const entries = await renderFor("temporal_coupling")
+        const entries = await renderFor(edgeMetric)
 
         // Assert
-        expect(entries).toEqual(["temporal_coupling"])
+        expect(entries).toEqual([edgeMetric])
     })
 })

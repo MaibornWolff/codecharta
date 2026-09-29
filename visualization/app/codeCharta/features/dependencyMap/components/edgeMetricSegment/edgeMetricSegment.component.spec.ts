@@ -32,19 +32,25 @@ async function setup() {
 
 describe("EdgeMetricSegmentComponent", () => {
     it("should name the edge metric the graph is drawn for", async () => {
+        // Arrange
+        const segmentTestId = "dependency-bar-edge-metric-segment"
+
         // Act
         await setup()
 
         // Assert
-        expect(screen.getByTestId("dependency-bar-edge-metric-segment").textContent).toContain("dependencies")
+        expect(screen.getByTestId(segmentTestId).textContent).toContain("dependencies")
     })
 
     it("should offer the map's edge metrics to pick from", async () => {
-        // Act
+        // Arrange
         const { segment } = await setup()
 
+        // Act
+        const offeredNames = segment.edgeMetricData().map(metric => metric.name)
+
         // Assert
-        expect(segment.edgeMetricData().map(metric => metric.name)).toEqual(["dependencies", "temporal_coupling"])
+        expect(offeredNames).toEqual(["dependencies", "temporal_coupling"])
     })
 
     it("should set the edge metric it shares with the Metric view", async () => {
