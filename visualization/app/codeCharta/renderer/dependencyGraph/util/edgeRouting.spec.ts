@@ -14,12 +14,12 @@ function byPathOf(...boxes: LayoutBox[]) {
 describe("routeEdges", () => {
     const boxes = byPathOf(upper, lowerLeft, lowerRight, sideBySide)
 
-    it("should leave a downward edge through the bottom and enter through the top at fixed points when curved", () => {
+    it("should leave a downward edge through the bottom and enter through the top, right of the middle when curved", () => {
         // Act
         const [route] = routeEdges([anEdge(upper.path, lowerLeft.path)], boxes, "curved")
 
         // Assert
-        expect(route).toEqual({ start: [160 * 0.42, 40], startSide: "bottom", end: [160 * 0.58, 100], endSide: "top", bend: "sCurve" })
+        expect(route).toEqual({ start: [160 * 0.58, 40], startSide: "bottom", end: [160 * 0.58, 100], endSide: "top", bend: "sCurve" })
     })
 
     it("should leave an upward edge through the top and enter through the bottom", () => {
@@ -44,8 +44,8 @@ describe("routeEdges", () => {
         )
 
         // Assert
-        expect(rightward).toMatchObject({ startSide: "right", endSide: "left", start: [160, 40 * 0.42] })
-        expect(leftward).toMatchObject({ startSide: "left", endSide: "right", start: [300, 40 * 0.42] })
+        expect(rightward).toMatchObject({ startSide: "right", endSide: "left", start: [160, 40 * 0.42], end: [300, 40 * 0.42] })
+        expect(leftward).toMatchObject({ startSide: "left", endSide: "right", start: [300, 40 * 0.58], end: [160, 40 * 0.58] })
     })
 
     it("should spread a side's edges in the order their other ends lie along it", () => {
@@ -81,5 +81,29 @@ describe("routeEdges", () => {
 
         // Assert
         expect([oneWay.bend, there.bend, back.bend]).toEqual(["straight", "arc", "arc"])
+    })
+
+    describe.each(["curved", "spread", "straight"] as const)("a dependency running both ways, drawn %s", style => {
+        const application = aBox("/root/application")
+        const domain = aBox("/root/domain")
+        const edges = [anEdge(application.path, domain.path), anEdge(domain.path, application.path)]
+
+        /** Both ends of the downward edge lie right of both ends of the upward one: the edges never cross, and
+         * each runs on the side it bows to. */
+        function lanesOf(above: LayoutBox, below: LayoutBox) {
+            const stacked = byPathOf({ ...above, x: 0, y: 0 }, { ...below, x: 0, y: 100 })
+            const routes = routeEdges(edges, stacked, style)
+            const downward = routes[edges.findIndex(edge => edge.fromPath === above.path)]
+            const upward = routes[edges.findIndex(edge => edge.fromPath === below.path)]
+            return Math.min(downward.start[0], downward.end[0]) > Math.max(upward.start[0], upward.end[0])
+        }
+
+        it("should run the downward edge right of the upward one, whichever box is above", () => {
+            // Act
+            const lanes = [lanesOf(application, domain), lanesOf(domain, application)]
+
+            // Assert
+            expect(lanes).toEqual([true, true])
+        })
     })
 })
