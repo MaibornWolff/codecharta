@@ -1,6 +1,6 @@
 export { edgeAttributeTypesSelector } from "./store/attributeTypes.selectors"
 export type { DependencyEdgeType } from "./store/dependencyEdge"
-export { dependencyEdgeTypeOf, dependencyWeightOf } from "./store/dependencyEdge"
+export { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "./store/dependencyEdge"
 export {
     dependencyLevelsSelector,
     hasDependencyDataSelector,

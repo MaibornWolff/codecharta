@@ -13,6 +13,8 @@
                     type="button"
                     class="flex flex-col items-start gap-0"
                     [class.menu-active]="choice.value === chosen()"
+                    [class.menu-disabled]="choice.isDisabled"
+                    [disabled]="choice.isDisabled"
                     [attr.aria-pressed]="choice.value === chosen()"
                     [attr.data-testid]="idPrefix() + '-' + choice.value"
                     (click)="pick(choice.value)"

@@ -1,8 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
-import { EdgeFilter, EdgeStyle, EdgeThickness } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
+import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
+import { EdgeFilter, EdgeStyle, EdgeThickness, effectiveEdgeFilter } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective, SliderNumberInputComponent } from "../../../shared/facade"
+import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { Choice, ChoiceSegmentComponent } from "../choiceSegment/choiceSegment.component"
+import { EdgeMetricSegmentComponent } from "../edgeMetricSegment/edgeMetricSegment.component"
 
 const EDGE_FILTER_CHOICES: Choice[] = [
     { value: "all", label: "All", hint: "Every dependency" },
@@ -10,6 +14,9 @@ const EDGE_FILTER_CHOICES: Choice[] = [
     { value: "feedback", label: "Upward", hint: "Only dependencies that point upward, against the levels" },
     { value: "none", label: "None", hint: "Only the dependencies of the box under the pointer" }
 ]
+
+/** Only the dependencies carry cycles and upward edges. */
+const DEPENDENCY_ONLY_FILTERS: ReadonlySet<string> = new Set<EdgeFilter>(["cycles", "feedback"])
 
 const EDGE_STYLE_CHOICES: Choice[] = [
     { value: "curved", label: "Curved", hint: "Leave and enter each box square to its side" },
@@ -31,7 +38,7 @@ const EDGE_WIDTH_FACTOR_RANGE = { min: 0.25, max: 3, step: 0.25 }
     selector: "cc-dependency-bar",
     templateUrl: "./dependencyBar.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [ChoiceSegmentComponent, SliderNumberInputComponent],
+    imports: [EdgeMetricSegmentComponent, ChoiceSegmentComponent, SliderNumberInputComponent],
     hostDirectives: [BarShellDirective],
     host: { "[style.bottom]": "barBottom" }
 })
@@ -39,11 +46,19 @@ export class DependencyBarComponent {
     private readonly viewStore = inject(DependencyMapViewStore)
 
     readonly barBottom = BAR_BOTTOM_ABOVE_BOTTOM_BAR
-    readonly edgeFilterChoices = EDGE_FILTER_CHOICES
+    private readonly edgeMetric = toSignal(inject(DependencyMapReadStore).edgeMetric$, { requireSync: true })
+    private readonly isDependencyMetric = computed(() => isDependencyEdgeMetric(this.edgeMetric()))
+
+    readonly edgeFilterChoices = computed(() =>
+        EDGE_FILTER_CHOICES.map(choice => ({
+            ...choice,
+            isDisabled: !this.isDependencyMetric() && DEPENDENCY_ONLY_FILTERS.has(choice.value)
+        }))
+    )
     readonly edgeStyleChoices = EDGE_STYLE_CHOICES
     readonly edgeThicknessChoices = EDGE_THICKNESS_CHOICES
     readonly widthFactorRange = EDGE_WIDTH_FACTOR_RANGE
-    readonly edgeFilter = this.viewStore.edgeFilter
+    readonly edgeFilter = computed(() => effectiveEdgeFilter(this.viewStore.edgeFilter(), this.edgeMetric()))
     readonly edgeStyle = this.viewStore.edgeStyle
     readonly isAnchoredAtSideMiddle = this.viewStore.isAnchoredAtSideMiddle
     readonly edgeWidth = this.viewStore.edgeWidth

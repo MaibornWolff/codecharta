@@ -1,4 +1,4 @@
-import { dependencyEdgeTypeOf, dependencyWeightOf } from "./dependencyEdge"
+import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "./dependencyEdge"
 
 describe("dependency edge", () => {
     describe("dependencyEdgeTypeOf", () => {
@@ -30,27 +30,13 @@ describe("dependency edge", () => {
         })
     })
 
-    describe("dependencyWeightOf", () => {
-        it("should read the dependencies attribute", () => {
-            // Arrange
-            const edge = { attributes: { dependencies: 4 } }
-
+    describe("isDependencyEdgeMetric", () => {
+        it("should tell the dependencies metric from the other edge metrics", () => {
             // Act
-            const weight = dependencyWeightOf(edge)
+            const answers = ["dependencies", "temporal_coupling", null].map(isDependencyEdgeMetric)
 
             // Assert
-            expect(weight).toBe(4)
-        })
-
-        it("should count an edge without the attribute as one dependency", () => {
-            // Arrange
-            const edge = { attributes: {} }
-
-            // Act
-            const weight = dependencyWeightOf(edge)
-
-            // Assert
-            expect(weight).toBe(1)
+            expect(answers).toEqual([true, false, false])
         })
     })
 })

@@ -18,6 +18,7 @@ jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGrap
 const SCENE: DependencyGraphScene = {
     layout: { boxes: [aBox("/root/a.ts")], bands: [], width: 160, height: 40 },
     edges: [],
+    edgeMetric: "dependencies",
     edgeFilter: "all",
     edgeStyle: "curved",
     isAnchoredAtSideMiddle: false,

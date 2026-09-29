@@ -5,7 +5,7 @@ import { atPaintRank } from "./dependencyGraphElements"
 import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
-import { GraphEdge, isShownByFilter } from "./edgeProjection"
+import { effectiveEdgeFilter, GraphEdge, isShownByFilter } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
 import { edgeWidthPx } from "./edgeWidth"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
@@ -46,7 +46,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(layout, shownEdges) } },
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
-        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(items, byPath) },
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(items, byPath, scene.edgeMetric) },
         grid: { left: 0, right: 0, top: 0, bottom: 0 },
         ...axesFittingTheGraph(layout, viewport),
         dataZoom: [
@@ -81,11 +81,12 @@ function edgeItems(
     const isDimmed = isHoverLit
         ? (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath)
         : (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath)
+    const lightestWeight = Math.min(...shownEdges.map(edge => edge.weight))
     return shownEdges.map((edge, index) => ({
         kind: "edge",
         edge,
         route: routes[index],
-        look: { isDimmed: isDimmed(edge), widthPx: edgeWidthPx(edge.weight, scene.edgeWidth) }
+        look: { isDimmed: isDimmed(edge), widthPx: edgeWidthPx(edge.weight / lightestWeight, scene.edgeWidth) }
     }))
 }
 
@@ -101,10 +102,11 @@ const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
 
 /** A hovered box shows all its edges whatever the filter, painted over every other edge; otherwise the
  * edges that break the architecture are painted over the ones that follow it. */
-function edgesToDraw({ edges, edgeFilter, hoveredPath }: DependencyGraphScene): GraphEdge[] {
+function edgesToDraw({ edges, edgeMetric, edgeFilter, hoveredPath }: DependencyGraphScene): GraphEdge[] {
+    const filter = effectiveEdgeFilter(edgeFilter, edgeMetric)
     const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isEdgeOfHovered(edge, hoveredPath) ? HOVERED_PAINT_RANK : 0)
     return edges
-        .filter(edge => isShownByFilter(edge.type, edgeFilter) || isEdgeOfHovered(edge, hoveredPath))
+        .filter(edge => isShownByFilter(edge.type, filter) || isEdgeOfHovered(edge, hoveredPath))
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
