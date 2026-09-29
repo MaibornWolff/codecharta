@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
+import { toSignal } from "@angular/core/rxjs-interop"
 import { EdgeStyle, EdgeThickness } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective, SliderNumberInputComponent } from "../../../shared/facade"
-import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
+import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
+import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { Choice, ChoiceSegmentComponent } from "../choiceSegment/choiceSegment.component"
 import { EdgeMetricSegmentComponent } from "../edgeMetricSegment/edgeMetricSegment.component"
 import { EdgeTypesSegmentComponent } from "../edgeTypesSegment/edgeTypesSegment.component"
@@ -31,29 +33,30 @@ const EDGE_WIDTH_FACTOR_RANGE = { min: 0.25, max: 3, step: 0.25 }
     host: { "[style.bottom]": "barBottom" }
 })
 export class DependencyBarComponent {
-    private readonly viewStore = inject(DependencyMapViewStore)
+    private readonly writeStore = inject(DependencyMapWriteStore)
+    private readonly settings = toSignal(inject(DependencyMapReadStore).settings$, { requireSync: true })
 
     readonly barBottom = BAR_BOTTOM_ABOVE_BOTTOM_BAR
     readonly edgeStyleChoices = EDGE_STYLE_CHOICES
     readonly edgeThicknessChoices = EDGE_THICKNESS_CHOICES
     readonly widthFactorRange = EDGE_WIDTH_FACTOR_RANGE
-    readonly edgeStyle = this.viewStore.edgeStyle
-    readonly isAnchoredAtSideMiddle = this.viewStore.isAnchoredAtSideMiddle
-    readonly edgeWidth = this.viewStore.edgeWidth
+    readonly edgeStyle = computed(() => this.settings().edgeStyle)
+    readonly isAnchoredAtSideMiddle = computed(() => this.settings().isAnchoredAtSideMiddle)
+    readonly edgeWidth = computed(() => this.settings().edgeWidth)
 
     drawEdgesAs(style: string): void {
-        this.viewStore.drawEdgesAs(style as EdgeStyle)
+        this.writeStore.changeSettings({ edgeStyle: style as EdgeStyle })
     }
 
     anchorAtSideMiddle(event: Event): void {
-        this.viewStore.anchorAtSideMiddle((event.target as HTMLInputElement).checked)
+        this.writeStore.changeSettings({ isAnchoredAtSideMiddle: (event.target as HTMLInputElement).checked })
     }
 
     drawEdgesThick(thickness: string): void {
-        this.viewStore.drawEdgesThick(thickness as EdgeThickness)
+        this.writeStore.changeSettings({ edgeWidth: { ...this.edgeWidth(), thickness: thickness as EdgeThickness } })
     }
 
     scaleEdgeWidth(factor: number): void {
-        this.viewStore.scaleEdgeWidth(factor)
+        this.writeStore.changeSettings({ edgeWidth: { ...this.edgeWidth(), factor } })
     }
 }

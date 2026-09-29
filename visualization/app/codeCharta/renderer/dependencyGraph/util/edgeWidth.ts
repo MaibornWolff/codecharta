@@ -3,8 +3,6 @@ import { DependencyEdgeThickness, DependencyEdgeWidth } from "../../../model/dep
 export type EdgeThickness = DependencyEdgeThickness
 export type EdgeWidth = DependencyEdgeWidth
 
-export const DEFAULT_EDGE_WIDTH: EdgeWidth = { thickness: "byCount", factor: 1 }
-
 const BASE_WIDTH_PX = 1.2
 const HAIRLINE_WIDTH_PX = 0.6
 const UNIFORM_WIDTH_PX = 1.6

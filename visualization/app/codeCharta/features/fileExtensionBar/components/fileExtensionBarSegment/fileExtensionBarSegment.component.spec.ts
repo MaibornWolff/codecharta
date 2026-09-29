@@ -5,6 +5,7 @@ import { screen } from "@testing-library/angular"
 import { CcState, NodeRule, RadialFolderStyle, RadialFolderValue, RuleEffect, SortingOption } from "../../../../model/codeCharta.model"
 import { ThreeSceneService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { defaultMapState } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultDependencyGraphSettings } from "../../../../stores/preferences/preferences.read.facade"
 import { sortedFlattenedNodesSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CategorizedMetricDistribution, MetricDistribution, NO_EXTENSION } from "../../../../util/fileExtension/fileExtensionCalculator"
 import { hoveredNodeMetricDistributionSelector } from "../../selectors/hoveredNodeMetricDistribution.selector"
@@ -47,7 +48,8 @@ describe("FileExtensionBarSegment", () => {
             radialFolderValue: RadialFolderValue.Max,
             radialFolderStyle: RadialFolderStyle.Tinted,
             radialFolderTint: 0.5,
-            radialLevels: 3
+            radialLevels: 3,
+            dependencyGraph: defaultDependencyGraphSettings
         },
         sharedView: {
             focusedNodePath: [],

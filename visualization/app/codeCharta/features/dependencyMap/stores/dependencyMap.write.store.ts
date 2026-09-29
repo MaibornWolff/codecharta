@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
+import { DependencyGraphSettings } from "../../../model/dependencyGraph.model"
 import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
+import { setDependencyGraphSettings } from "../../../stores/preferences/preferences.write.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
     NodeInteraction,
@@ -39,5 +41,9 @@ export class DependencyMapWriteStore {
 
     setEdgeMetric(edgeMetric: string) {
         this.store.dispatch(setEdgeMetric({ value: edgeMetric }))
+    }
+
+    changeSettings(settings: Partial<DependencyGraphSettings>) {
+        this.store.dispatch(setDependencyGraphSettings({ value: settings }))
     }
 }

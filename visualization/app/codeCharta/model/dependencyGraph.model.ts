@@ -16,3 +16,12 @@ export interface DependencyEdgeWidth {
     /** Scales every width the thickness gives. */
     factor: number
 }
+
+/** What the reader set in the dependency bar; kept across reloads like the metrics bar settings. */
+export interface DependencyGraphSettings {
+    shownEdgeTypes: DependencyEdgeType[]
+    edgeStyle: DependencyEdgeStyle
+    /** Every edge starts and ends at the middle of its sides, whatever the style. */
+    isAnchoredAtSideMiddle: boolean
+    edgeWidth: DependencyEdgeWidth
+}

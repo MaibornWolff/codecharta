@@ -72,6 +72,7 @@ import { setAttributeDescriptors, setAttributeTypes } from "../stores/metricsLen
 import { PreferencesReadWindow } from "../stores/preferences/preferences.read.facade"
 import {
     setCenterMapZoom,
+    setDependencyGraphSettings,
     setExperimentalFeaturesEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
     setMaxTreeMapFiles,
@@ -407,6 +408,9 @@ export class LoadInitialFileStore {
                 break
             case "radialLevels":
                 this.store.dispatch(setRadialLevels({ value }))
+                break
+            case "dependencyGraph":
+                this.store.dispatch(setDependencyGraphSettings({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

@@ -13,6 +13,7 @@ import {
 import { hoveredNodeSelector } from "../../../renderer/renderModel/hoveredNode.selector"
 import { selectedNodeSelector } from "../../../renderer/renderModel/selectedNode.selector"
 import { defaultMapState } from "../../../stores/mapState/mapState.read.facade"
+import { defaultDependencyGraphSettings } from "../../../stores/preferences/preferences.read.facade"
 import { CategorizedMetricDistribution, OTHER_EXTENSION } from "../../../util/fileExtension/fileExtensionCalculator"
 import { ExtensionRuleAction } from "../effects/extensionRule/extensionRule.effect"
 import { hoveredNodeMetricDistributionSelector } from "../selectors/hoveredNodeMetricDistribution.selector"
@@ -102,7 +103,8 @@ describe("ExtensionRulesService", () => {
             radialFolderValue: RadialFolderValue.Max,
             radialFolderStyle: RadialFolderStyle.Tinted,
             radialFolderTint: 0.5,
-            radialLevels: 3
+            radialLevels: 3,
+            dependencyGraph: defaultDependencyGraphSettings
         },
         sharedView: {
             focusedNodePath: [],

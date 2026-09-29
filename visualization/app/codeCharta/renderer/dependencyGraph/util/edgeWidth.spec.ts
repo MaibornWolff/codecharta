@@ -1,9 +1,9 @@
-import { DEFAULT_EDGE_WIDTH, edgeWidthPx } from "./edgeWidth"
+import { edgeWidthPx } from "./edgeWidth"
 
 describe("edgeWidthPx", () => {
     it("should grow slowly with the dependencies an edge stands for, and stop growing at some point", () => {
         // Act
-        const widths = [1, 2, 4, 1_000_000].map(weight => edgeWidthPx(weight, DEFAULT_EDGE_WIDTH))
+        const widths = [1, 2, 4, 1_000_000].map(weight => edgeWidthPx(weight, { thickness: "byCount", factor: 1 }))
 
         // Assert
         expect(widths).toEqual([1.2, 1.7, 2.2, 3.7])

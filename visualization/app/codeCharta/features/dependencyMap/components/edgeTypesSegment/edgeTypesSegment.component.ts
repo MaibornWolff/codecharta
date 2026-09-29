@@ -4,7 +4,7 @@ import { DependencyEdgeType, edgeTypesCarriedBy } from "../../../../lenses/depen
 import { EDGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { AxisCardComponent, SelectionShortcutsComponent, SettingsPopoverShellComponent } from "../../../shared/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
-import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
+import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeTypes } from "./shownEdgeTypes"
 
 /** The edge types the graph draws, one toggle per edge colour; the edge metric decides which of them it carries. */
@@ -16,14 +16,16 @@ import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeT
     imports: [AxisCardComponent, SettingsPopoverShellComponent, SelectionShortcutsComponent]
 })
 export class EdgeTypesSegmentComponent {
-    private readonly viewStore = inject(DependencyMapViewStore)
-    private readonly edgeMetric = toSignal(inject(DependencyMapReadStore).edgeMetric$, { requireSync: true })
+    private readonly readStore = inject(DependencyMapReadStore)
+    private readonly writeStore = inject(DependencyMapWriteStore)
+    private readonly edgeMetric = toSignal(this.readStore.edgeMetric$, { requireSync: true })
+    private readonly settings = toSignal(this.readStore.settings$, { requireSync: true })
 
     readonly popoverId = "dependency-bar-edges-popover"
     readonly anchorName = "dependency-bar-edges-card"
 
     private readonly carriedTypes = computed(() => edgeTypesCarriedBy(this.edgeMetric()))
-    private readonly shownTypes = this.viewStore.shownEdgeTypes
+    private readonly shownTypes = computed(() => this.settings().shownEdgeTypes)
 
     readonly entries = computed(() =>
         EDGE_LEGEND.map(entry => {
@@ -34,18 +36,22 @@ export class EdgeTypesSegmentComponent {
     readonly chosenLabel = computed(() => nameOfShownEdgeTypes(this.shownTypes(), this.carriedTypes()))
 
     toggle(type: DependencyEdgeType, isShown: boolean): void {
-        this.viewStore.showEdgeTypes(isShown ? withAllEdgeTypes(this.shownTypes(), [type]) : withoutEdgeTypes(this.shownTypes(), [type]))
+        this.show(isShown ? withAllEdgeTypes(this.shownTypes(), [type]) : withoutEdgeTypes(this.shownTypes(), [type]))
     }
 
     showAll(): void {
-        this.viewStore.showEdgeTypes(withAllEdgeTypes(this.shownTypes(), this.carriedTypes()))
+        this.show(withAllEdgeTypes(this.shownTypes(), this.carriedTypes()))
     }
 
     showNone(): void {
-        this.viewStore.showEdgeTypes(withoutEdgeTypes(this.shownTypes(), this.carriedTypes()))
+        this.show(withoutEdgeTypes(this.shownTypes(), this.carriedTypes()))
     }
 
     invert(): void {
-        this.viewStore.showEdgeTypes(invertedEdgeTypes(this.shownTypes(), this.carriedTypes()))
+        this.show(invertedEdgeTypes(this.shownTypes(), this.carriedTypes()))
+    }
+
+    private show(shownEdgeTypes: DependencyEdgeType[]): void {
+        this.writeStore.changeSettings({ shownEdgeTypes })
     }
 }

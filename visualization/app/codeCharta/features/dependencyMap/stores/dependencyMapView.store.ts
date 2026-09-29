@@ -1,34 +1,17 @@
 import { Injectable, signal } from "@angular/core"
-import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../lenses/dependency/dependencyLens.facade"
-import {
-    BoxOffset,
-    collapsedFirstLook,
-    DEFAULT_EDGE_WIDTH,
-    EdgeStyle,
-    EdgeThickness,
-    EdgeWidth,
-    LeveledNode
-} from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { BoxOffset, collapsedFirstLook, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 
-/** What the reader opened and moved, and which edges they asked for. View state of this view alone, so it is
- * kept for as long as the app runs and never persisted. */
+/** What the reader opened and moved. View state of this view alone, so it is kept for as long as the app runs and
+ * never persisted. */
 @Injectable({ providedIn: "root" })
 export class DependencyMapViewStore {
     private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
-    private readonly shownEdges = signal<readonly DependencyEdgeType[]>(DEPENDENCY_EDGE_TYPES)
-    private readonly drawnEdges = signal<EdgeStyle>("curved")
-    private readonly edgesAtSideMiddle = signal(false)
-    private readonly edgeLineWidth = signal<EdgeWidth>(DEFAULT_EDGE_WIDTH)
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
     private readonly draggedOrder = signal<readonly string[]>([])
     private readonly boxBeingDragged = signal<string | null>(null)
     private rootOfTheOpenedFolders: string | null = null
 
     readonly expandedPaths = this.openedFolders.asReadonly()
-    readonly shownEdgeTypes = this.shownEdges.asReadonly()
-    readonly edgeStyle = this.drawnEdges.asReadonly()
-    readonly isAnchoredAtSideMiddle = this.edgesAtSideMiddle.asReadonly()
-    readonly edgeWidth = this.edgeLineWidth.asReadonly()
     readonly boxOffsets = this.movedBoxes.asReadonly()
     /** Dragged boxes, the most recently dragged last, so it paints over the others. */
     readonly raisedPaths = this.draggedOrder.asReadonly()
@@ -75,26 +58,6 @@ export class DependencyMapViewStore {
             }
             return next
         })
-    }
-
-    showEdgeTypes(types: readonly DependencyEdgeType[]): void {
-        this.shownEdges.set(types)
-    }
-
-    drawEdgesAs(style: EdgeStyle): void {
-        this.drawnEdges.set(style)
-    }
-
-    anchorAtSideMiddle(isAnchored: boolean): void {
-        this.edgesAtSideMiddle.set(isAnchored)
-    }
-
-    drawEdgesThick(thickness: EdgeThickness): void {
-        this.edgeLineWidth.update(width => ({ ...width, thickness }))
-    }
-
-    scaleEdgeWidth(factor: number): void {
-        this.edgeLineWidth.update(width => ({ ...width, factor }))
     }
 }
 

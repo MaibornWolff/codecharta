@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { edgesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
+import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import {
     fireChartEvent,
@@ -18,6 +19,7 @@ import {
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
+import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodePath, setRightClickedNodeData, setSelectedNodePath } from "../../../../stores/sharedView/sharedView.write.facade"
@@ -121,6 +123,12 @@ function drawnEdgeIndices(): number[] {
 }
 
 const boxEvent = (name: string) => ({ seriesId: "graph", name })
+
+async function changeSettings(store: MockStore, settings: Partial<DependencyGraphSettings>) {
+    store.overrideSelector(dependencyGraphSettingsSelector, { ...defaultDependencyGraphSettings, ...settings })
+    store.refreshState()
+    await screen.findByTestId("dependency-graph")
+}
 
 function doubleClickBox(path: string) {
     fireChartEvent("click", boxEvent(path))
@@ -233,12 +241,11 @@ describe("DependencyMapComponent", () => {
 
     it("should draw only the edges of the picked types", async () => {
         // Arrange
-        const { fixture } = await setup()
+        const { store, fixture } = await setup()
 
         // Act
-        TestBed.inject(DependencyMapViewStore).showEdgeTypes(["feedbackContainerLevel", "feedbackLeafLevel"])
+        await changeSettings(store, { shownEdgeTypes: ["feedbackContainerLevel", "feedbackLeafLevel"] })
         fixture.detectChanges()
-        await screen.findByTestId("dependency-graph")
 
         // Assert
         expect(drawnEdgeIndices()).toHaveLength(1)
@@ -285,12 +292,11 @@ describe("DependencyMapComponent", () => {
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {
         // Arrange
-        const { fixture } = await setup()
+        const { store, fixture } = await setup()
 
         // Act
-        TestBed.inject(DependencyMapViewStore).drawEdgesAs("straight")
+        await changeSettings(store, { edgeStyle: "straight" })
         fixture.detectChanges()
-        await screen.findByTestId("dependency-graph")
 
         // Assert
         const drawnCurve = drawnSeries().renderItem({ dataIndex: drawnEdgeIndices()[0] }, { coord: point => point })
