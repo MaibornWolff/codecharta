@@ -20,7 +20,7 @@
             </cc-context-menu-item>
         }
 
-        @for (action of viewActions; track action.label) {
+        @for (action of offeredViewActions(); track action.label) {
             <cc-context-menu-item [icon]="action.icon" [hoverHint]="action.hoverHint" (itemClick)="runViewAction(action)">
                 {{ action.label }}
             </cc-context-menu-item>
