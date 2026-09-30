@@ -1,3 +1,4 @@
+import { Provider } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { provideMockStore } from "@ngrx/store/testing"
 import { of } from "rxjs"
@@ -7,6 +8,7 @@ import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { ViewId } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { EXPLORER_SELECTION, ExplorerRevealService } from "../../../sidebarExplorer/facade"
+import { HANDED_OVER_MAP_NODE_ARRIVAL } from "../../handedOverMapNodeArrival"
 import { MAP_EXPLORER_VIEW } from "../../mapExplorerView"
 import { ShowsHandedOverMapNodeDirective } from "./showsHandedOverMapNode.directive"
 
@@ -22,11 +24,17 @@ describe("ShowsHandedOverMapNodeDirective", () => {
         hoverEnd: jest.fn()
     }
     const revealServiceMock = { revealNode: jest.fn() }
+    const arrivalMock = { receive: jest.fn() }
 
-    function setup(view: ViewId, knownNodes: [string, CodeMapNode][] = [[HANDED_OVER_NODE.path, HANDED_OVER_NODE]]) {
+    function setup(
+        view: ViewId,
+        knownNodes: [string, CodeMapNode][] = [[HANDED_OVER_NODE.path, HANDED_OVER_NODE]],
+        arrivalProviders: Provider[] = []
+    ) {
         jest.clearAllMocks()
         TestBed.configureTestingModule({
             providers: [
+                ...arrivalProviders,
                 ShowsHandedOverMapNodeDirective,
                 provideMockStore({ selectors: [{ selector: pathToNodeSelector, value: new Map(knownNodes) }] }),
                 { provide: MAP_EXPLORER_VIEW, useValue: view },
@@ -49,6 +57,22 @@ describe("ShowsHandedOverMapNodeDirective", () => {
         // Assert
         expect(selectionMock.select).toHaveBeenCalledWith(HANDED_OVER_NODE)
         expect(revealServiceMock.revealNode).toHaveBeenCalledWith(HANDED_OVER_NODE.path)
+    })
+
+    it("should let the view prepare for the handed over node before selecting it", () => {
+        // Arrange
+        const callOrder: string[] = []
+        arrivalMock.receive.mockImplementationOnce(() => callOrder.push("receive"))
+        selectionMock.select.mockImplementationOnce(() => callOrder.push("select"))
+        const viewHandoffStore = setup("dependencies", undefined, [{ provide: HANDED_OVER_MAP_NODE_ARRIVAL, useValue: arrivalMock }])
+        viewHandoffStore.handOverNode("dependencies", HANDED_OVER_NODE.path)
+
+        // Act
+        TestBed.inject(ShowsHandedOverMapNodeDirective)
+
+        // Assert
+        expect(arrivalMock.receive).toHaveBeenCalledWith(HANDED_OVER_NODE.path)
+        expect(callOrder).toEqual(["receive", "select"])
     })
 
     it("should leave a node handed over to another view for that view", () => {

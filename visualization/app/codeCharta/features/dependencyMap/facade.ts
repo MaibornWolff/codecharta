@@ -1,4 +1,5 @@
 export { DependencyBarComponent } from "./components/dependencyBar/dependencyBar.component"
 export { DependencyEdgeLegendComponent } from "./components/dependencyEdgeLegend/dependencyEdgeLegend.component"
 export { DependencyMapComponent } from "./components/dependencyMap/dependencyMap.component"
+export { DependencyMapArrival } from "./stores/dependencyMapArrival"
 export { DependencyMapViewStore } from "./stores/dependencyMapView.store"

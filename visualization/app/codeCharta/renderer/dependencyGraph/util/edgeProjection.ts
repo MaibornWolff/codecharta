@@ -21,7 +21,9 @@ export function visibleRepresentatives(tree: LeveledNode, expandedPaths: Readonl
     const representatives = new Map<string, string>()
     const visit = (node: LeveledNode, hiddenIn: string | null) => {
         const representative = hiddenIn ?? node.path
-        representatives.set(node.path, representative)
+        for (const path of [...(node.foldedPaths ?? []), node.path]) {
+            representatives.set(path, representative)
+        }
         const hidesChildren = hiddenIn !== null || !expandedPaths.has(node.path)
         for (const child of node.children) {
             visit(child, hidesChildren ? representative : null)

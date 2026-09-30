@@ -33,9 +33,46 @@ describe("edgeProjection", () => {
             expect(representatives.get("/root/model/node.ts")).toBe("/root/model")
             expect(representatives.get("/root/model")).toBe("/root/model")
         })
+
+        it("should map the folders folded into a chain box onto the box standing for it", () => {
+            // Arrange
+            const chain = { ...leveledFolder("/root/src/main", [leveledFile("/root/src/main/a.ts")]), foldedPaths: ["/root", "/root/src"] }
+
+            // Act
+            const representatives = visibleRepresentatives(chain, new Set())
+
+            // Assert
+            expect(representatives.get("/root")).toBe("/root/src/main")
+            expect(representatives.get("/root/src")).toBe("/root/src/main")
+            expect(representatives.get("/root/src/main/a.ts")).toBe("/root/src/main")
+        })
+
+        it("should map the folders folded into a chain box hidden in a closed folder onto that folder", () => {
+            // Arrange
+            const chain = { ...leveledFolder("/root/ui/src/main", [leveledFile("/root/ui/src/main/a.ts")]), foldedPaths: ["/root/ui/src"] }
+            const treeWithChain = leveledFolder("/root", [leveledFolder("/root/ui", [chain, leveledFile("/root/ui/b.ts")])])
+
+            // Act
+            const representatives = visibleRepresentatives(treeWithChain, new Set(["/root"]))
+
+            // Assert
+            expect(representatives.get("/root/ui/src")).toBe("/root/ui")
+        })
     })
 
     describe("projectEdges", () => {
+        it("should lift an edge ending on a folder folded into a chain box onto that box", () => {
+            // Arrange
+            const chain = { ...leveledFolder("/root/src/main", [leveledFile("/root/src/main/a.ts")]), foldedPaths: ["/root/src"] }
+            const representatives = visibleRepresentatives(leveledFolder("/root", [chain, leveledFile("/root/b.ts")]), new Set(["/root"]))
+
+            // Act
+            const projected = projectEdges([edge("/root/b.ts", "/root/src")], representatives, "dependencies")
+
+            // Assert
+            expect(projected.map(({ fromPath, toPath }) => [fromPath, toPath])).toEqual([["/root/b.ts", "/root/src/main"]])
+        })
+
         it("should merge the edges that land on the same two boxes", () => {
             // Arrange
             const representatives = visibleRepresentatives(tree, new Set(["/root", "/root/ui"]))

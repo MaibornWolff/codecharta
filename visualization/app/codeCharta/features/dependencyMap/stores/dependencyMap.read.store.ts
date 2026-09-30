@@ -1,12 +1,17 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
+import { skip } from "rxjs"
 import { edgesSelector, hasDependencyDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
-import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { accumulatedDataSelector, edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { edgeMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { dependencyGraphSettingsSelector } from "../../../stores/preferences/preferences.read.facade"
-import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
+import {
+    currentFocusedNodePathSelector,
+    hoveredNodePathSelector,
+    selectedNodePathSelector
+} from "../../../stores/sharedView/sharedView.read.facade"
 import {
     dependencyLayoutIdentitySelector,
     dependencySearchedPathsOrNullSelector,
@@ -22,6 +27,7 @@ export class DependencyMapReadStore {
     readonly layoutIdentity$ = this.store.select(dependencyLayoutIdentitySelector)
     readonly hasDependencyData$ = this.store.select(hasDependencyDataSelector)
     readonly isFocused$ = this.store.select(isDependencyMapFocusedSelector)
+    readonly focusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     readonly edges$ = this.store.select(edgesSelector)
     readonly sharedEdgeMetric$ = this.store.select(edgeMetricSelector)
     readonly edgeMetricData$ = this.store.select(edgeMetricDataSelector)
@@ -30,4 +36,5 @@ export class DependencyMapReadStore {
     readonly selectedNodePath$ = this.store.select(selectedNodePathSelector)
     readonly isDeltaState$ = this.store.select(isDeltaStateSelector)
     readonly searchedPaths$ = this.store.select(dependencySearchedPathsOrNullSelector)
+    readonly mapChanges$ = this.store.select(accumulatedDataSelector).pipe(skip(1))
 }

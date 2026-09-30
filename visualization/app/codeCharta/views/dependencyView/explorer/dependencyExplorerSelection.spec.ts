@@ -54,6 +54,17 @@ describe("DependencyExplorerSelection", () => {
         expect([...TestBed.inject(DependencyMapViewStore).expandedPaths()]).toEqual(["/root", "/root/app", "/root/app/ui"])
     })
 
+    it("should leave the graph's zoom alone when a row is selected", () => {
+        // Arrange
+        const { selection } = setup()
+
+        // Act
+        selection.select(LEAF)
+
+        // Assert
+        expect(TestBed.inject(DependencyMapViewStore).fitRequest()).toBe(0)
+    })
+
     it("should keep the folders holding a node handed over from another view open once the graph adopts its tree", () => {
         // Arrange
         const { selection } = setup()

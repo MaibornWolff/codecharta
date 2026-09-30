@@ -55,6 +55,61 @@ describe("DependencyMapViewStore", () => {
         expect(store.boxOffsets().get("/root/src")).toEqual([200, 0])
     })
 
+    it("should open the root an exclusion folds the last folder into, keeping what the reader opened and moved", () => {
+        // Arrange
+        store.adoptTree(TWO_TOP_FOLDERS)
+        store.toggle("/root/lib")
+        store.placeBox("/root/lib", [200, 0])
+        const foldedRoot = {
+            ...leveledFolder("/root/src", [leveledFolder("/root/src/ui"), leveledFolder("/root/src/api")]),
+            foldedPaths: ["/root"]
+        }
+
+        // Act
+        store.adoptTree(foldedRoot)
+
+        // Assert
+        expect([...store.expandedPaths()]).toEqual(["/root", "/root/lib", "/root/src"])
+        expect(store.boxOffsets().get("/root/lib")).toEqual([200, 0])
+    })
+
+    it("should leave a root the reader closed closed while the tree's root stays where it is", () => {
+        // Arrange
+        store.adoptTree(TWO_TOP_FOLDERS)
+        store.toggle("/root")
+
+        // Act
+        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/src")]))
+
+        // Assert
+        expect(store.expandedPaths().has("/root")).toBe(false)
+    })
+
+    it("should count the requests to fit the whole graph into view", () => {
+        // Arrange
+        const before = store.fitRequest()
+
+        // Act
+        store.requestFit()
+        store.requestFit()
+
+        // Assert
+        expect([before, store.fitRequest()]).toEqual([0, 2])
+    })
+
+    it("should keep a reveal made while the focus changes until the tree of the new focus is adopted", () => {
+        // Arrange
+        store.adoptTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")]))
+        loadLayoutIdentity(PROJECT_B)
+        store.reveal("/root/lib/util/strings.ts")
+
+        // Act
+        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/src"), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])]))
+
+        // Assert
+        expect([...store.expandedPaths()]).toEqual(["/root", "/root/lib", "/root/lib/util"])
+    })
+
     it("should start over with nothing opened or moved when other files with the same root are loaded", () => {
         // Arrange
         store.adoptTree(TWO_TOP_FOLDERS)

@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { By } from "@angular/platform-browser"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
@@ -6,7 +7,7 @@ import { of } from "rxjs"
 import { edgesSelector, hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
 import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
-import { LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { DependencyGraphComponent, LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import {
     fireChartEvent,
     fireRenderSurfaceEvent,
@@ -16,6 +17,7 @@ import {
     stubElementSize,
     stubResizeObserver
 } from "../../../../renderer/dependencyGraph/testing/dependencyGraph.stub"
+import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
@@ -28,6 +30,7 @@ import {
     setSelectedNodePath,
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
+import { clearPendingHeavyDispatch, isPendingHeavyDispatch$ } from "../../../../util/dispatchAfterPaint"
 import {
     dependencyLayoutIdentitySelector,
     dependencySearchedPathsOrNullSelector,
@@ -161,6 +164,29 @@ async function excludeSoTheRootMoves(store: MockStore) {
     await screen.findByTestId("dependency-graph")
 }
 
+interface ZoomOption {
+    startValue: number
+    endValue: number
+}
+
+function shownWindowOf({ dataZoom: [xZoom, yZoom] }: { dataZoom: ZoomOption[] }) {
+    return { x: [xZoom.startValue, xZoom.endValue], y: [yZoom.startValue, yZoom.endValue] }
+}
+
+function outlineWidthOf(path: string): unknown {
+    const index = drawnSeries().data.findIndex(item => item.name === path)
+    return drawnSeries().renderItem({ dataIndex: index }, { coord: point => point }).children[0].style.lineWidth
+}
+
+function landHeavyDispatch(store: MockStore, tree?: LeveledNode | null) {
+    isPendingHeavyDispatch$.next(true)
+    if (tree !== undefined) {
+        store.overrideSelector(dependencyTreeSelector, tree)
+    }
+    store.overrideSelector(accumulatedDataSelector, { unifiedMapNode: undefined, unifiedFileMeta: undefined })
+    store.refreshState()
+}
+
 function dragBox(path: string) {
     fireChartEvent("mousedown", { ...boxEvent(path), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
     fireRenderSurfaceEvent("mousemove", { offsetX: -30, offsetY: 0, target: {} })
@@ -170,15 +196,6 @@ function dragBox(path: string) {
 function doubleClickBox(path: string) {
     fireChartEvent("click", boxEvent(path))
     screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
-}
-
-interface ZoomOption {
-    startValue: number
-    endValue: number
-}
-
-function shownWindowOf({ dataZoom: [xZoom, yZoom] }: { dataZoom: ZoomOption[] }) {
-    return { x: [xZoom.startValue, xZoom.endValue], y: [yZoom.startValue, yZoom.endValue] }
 }
 
 describe("DependencyMapComponent", () => {
@@ -195,6 +212,10 @@ describe("DependencyMapComponent", () => {
     beforeEach(() => {
         resetStubbedChart()
         stubResizeObserver()
+    })
+
+    afterEach(() => {
+        clearPendingHeavyDispatch()
     })
 
     it("should start with every folder closed", async () => {
@@ -270,6 +291,73 @@ describe("DependencyMapComponent", () => {
         const modelIndex = drawnSeries().data.findIndex(item => item.name === "/root/model")
         const outline = drawnSeries().renderItem({ dataIndex: modelIndex }, { coord: point => point }).children[0].style
         expect(outline.lineWidth).toBe(2.5)
+    })
+
+    it("should mark the chain box when a folder folded into it is selected", async () => {
+        // Arrange
+        const chain = { ...leveledFolder("/root/lib/core", [leveledFile("/root/lib/core/io.ts")]), foldedPaths: ["/root/lib"] }
+        const tree = leveledFolder("/root", [chain, leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")])])
+
+        // Act
+        await setup({ tree, selectedPath: "/root/lib", openedFolders: [] })
+
+        // Assert
+        expect(outlineWidthOf("/root/lib/core")).toBe(2.5)
+    })
+
+    it("should hand every request to fit the graph into view on to the graph", async () => {
+        // Arrange
+        const { fixture } = await setup()
+        const graph = fixture.debugElement.query(By.directive(DependencyGraphComponent)).componentInstance as DependencyGraphComponent
+
+        // Act
+        TestBed.inject(DependencyMapViewStore).requestFit()
+        fixture.detectChanges()
+
+        // Assert
+        expect(graph.fitRequest()).toBe(1)
+    })
+
+    it("should keep the spinner of an exclusion that changes the graph up until the graph is redrawn", async () => {
+        // Arrange
+        const { store, fixture } = await setup()
+        const treeAfterExclusion = leveledFolder("/root", [leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")], 1)])
+
+        // Act
+        landHeavyDispatch(store, treeAfterExclusion)
+        fixture.detectChanges()
+        await screen.findByTestId("dependency-graph")
+        const whileRedrawing = isPendingHeavyDispatch$.value
+        fireChartEvent("finished")
+
+        // Assert
+        expect(whileRedrawing).toBe(true)
+        expect(isPendingHeavyDispatch$.value).toBe(false)
+    })
+
+    it.each([
+        ["leaves the graph as it is", undefined],
+        ["empties the graph", null]
+    ])("should take the spinner down as soon as an exclusion %s", async (_, treeAfterExclusion) => {
+        // Arrange
+        const { store } = await setup()
+
+        // Act
+        landHeavyDispatch(store, treeAfterExclusion)
+
+        // Assert
+        expect(isPendingHeavyDispatch$.value).toBe(false)
+    })
+
+    it("should take the spinner down as soon as an exclusion lands in compare mode", async () => {
+        // Arrange
+        const { store } = await setup({ isDeltaState: true })
+
+        // Act
+        landHeavyDispatch(store)
+
+        // Assert
+        expect(isPendingHeavyDispatch$.value).toBe(false)
     })
 
     it("should select, hover and open the context menu through the shared view state", async () => {

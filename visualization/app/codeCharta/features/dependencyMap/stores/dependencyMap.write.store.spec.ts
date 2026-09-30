@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 import { setDependencyGraphSettings } from "../../../stores/preferences/preferences.write.facade"
-import { NodeInteraction, setRightClickedNodeData, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData, unfocusAllNodes, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 import { DependencyMapWriteStore } from "./dependencyMap.write.store"
 
 describe("DependencyMapWriteStore", () => {
@@ -81,5 +81,16 @@ describe("DependencyMapWriteStore", () => {
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(unfocusAction)
+    })
+
+    it("should clear every focus the Metric view set", () => {
+        // Arrange
+        const unfocusAllAction = unfocusAllNodes()
+
+        // Act
+        writeStore.unfocusAll()
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(unfocusAllAction)
     })
 })

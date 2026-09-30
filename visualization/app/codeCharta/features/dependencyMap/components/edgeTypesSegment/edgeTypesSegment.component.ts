@@ -8,7 +8,6 @@ import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeTypes } from "./shownEdgeTypes"
 
-/** The edge types the graph draws, one toggle per edge colour; the edge metric decides which of them it carries. */
 @Component({
     selector: "cc-edge-types-segment",
     templateUrl: "./edgeTypesSegment.component.html",
