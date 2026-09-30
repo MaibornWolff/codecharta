@@ -70,7 +70,6 @@ export interface Preferences {
     resetCameraIfNewFileIsLoaded: boolean
     centerMapZoom: number
     maxTreeMapFiles: number
-    experimentalFeaturesEnabled: boolean
     screenshotToClipboardEnabled: boolean
     isColorMetricLinkedToHeightMetric: boolean
     sorting: Sorting

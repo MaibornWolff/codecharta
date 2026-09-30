@@ -3,7 +3,6 @@ export { centerMapZoomSelector } from "./store/centerMapZoom/centerMapZoom.selec
 export { defaultDependencyGraphSettings } from "./store/dependencyGraph/dependencyGraph.reducer"
 export { dependencyGraphSettingsSelector } from "./store/dependencyGraph/dependencyGraph.selector"
 export { screenshotToClipboardEnabledSelector } from "./store/enableClipboard/screenshotToClipboardEnabled.selector"
-export { experimentalFeaturesEnabledSelector } from "./store/enableExperimentalFeatures/experimentalFeaturesEnabled.selector"
 export { isColorMetricLinkedToHeightMetricSelector } from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 export { isPresentationModeSelector } from "./store/isPresentationMode/isPresentationMode.selector"
 export { maxTreeMapFilesSelector } from "./store/maxTreeMapFiles/maxTreeMapFiles.selector"

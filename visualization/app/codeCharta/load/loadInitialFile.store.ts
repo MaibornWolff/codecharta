@@ -73,7 +73,6 @@ import { PreferencesReadWindow } from "../stores/preferences/preferences.read.fa
 import {
     setCenterMapZoom,
     setDependencyGraphSettings,
-    setExperimentalFeaturesEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
     setMaxTreeMapFiles,
     setPresentationMode,
@@ -376,9 +375,6 @@ export class LoadInitialFileStore {
                 break
             case "maxTreeMapFiles":
                 this.store.dispatch(setMaxTreeMapFiles({ value }))
-                break
-            case "experimentalFeaturesEnabled":
-                this.store.dispatch(setExperimentalFeaturesEnabled({ value }))
                 break
             case "screenshotToClipboardEnabled":
                 this.store.dispatch(setScreenshotToClipboardEnabled({ value }))

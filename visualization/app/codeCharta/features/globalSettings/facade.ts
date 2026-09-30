@@ -18,10 +18,6 @@ export class GlobalSettingsFacade {
         return this.preferencesReadWindow.screenshotToClipboardEnabled$
     }
 
-    experimentalFeaturesEnabled$() {
-        return this.preferencesReadWindow.experimentalFeaturesEnabled$
-    }
-
     isWhiteBackground$() {
         return this.mapStateReadWindow.isWhiteBackground$
     }

@@ -142,7 +142,6 @@ function scaleRoot(root: Node, scaleLength: number, scaleWidth: number) {
 function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutionScaling: number, maxWidth: number): SquarifiedTreeMap {
     const hierarchyNode = hierarchy(map)
     const nodesPerSide = getEstimatedNodesPerSide(hierarchyNode)
-    const { experimentalFeaturesEnabled } = state.preferences
     const { enableFloorLabels, margin } = state.mapState
     const padding = margin * PADDING_SCALING_FACTOR * mapSizeResolutionScaling
 
@@ -196,9 +195,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: CcState, mapSizeResolutio
         })
 
     return {
-        treeMap: treeMap(
-            hierarchyNode.sum(node => calculateAreaValue(node, state, maxWidth, experimentalFeaturesEnabled) * mapSizeResolutionScaling)
-        ),
+        treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state, maxWidth) * mapSizeResolutionScaling)),
         height,
         width
     }
@@ -221,12 +218,7 @@ function isOnlyVisibleInComparisonMap(node: CodeMapNode, mapState: MapState) {
     return node.attributes[mapState.areaMetric] === 0 && node.deltas[mapState.heightMetric] < 0
 }
 
-export function calculateAreaValue(
-    node: CodeMapNode,
-    { mapState, metricsLensSource }: CcState,
-    maxWidth: number,
-    experimentalFeaturesEnabled: boolean
-) {
+export function calculateAreaValue(node: CodeMapNode, { mapState, metricsLensSource }: CcState, maxWidth: number) {
     if (node.isExcluded) {
         return 0
     }
@@ -245,5 +237,5 @@ export function calculateAreaValue(
         }
         return mapState.invertArea ? maxWidth - node.attributes[mapState.areaMetric] : node.attributes[mapState.areaMetric]
     }
-    return experimentalFeaturesEnabled ? 0.5 : 0
+    return 0
 }

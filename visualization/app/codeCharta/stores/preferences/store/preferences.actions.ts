@@ -1,7 +1,6 @@
 import { setCenterMapZoom } from "./centerMapZoom/centerMapZoom.actions"
 import { setDependencyGraphSettings } from "./dependencyGraph/dependencyGraph.actions"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
-import { setExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 import {
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric
@@ -22,7 +21,6 @@ export const preferencesActions = [
     toggleSortingOrderAscending,
     setCenterMapZoom,
     setMaxTreeMapFiles,
-    setExperimentalFeaturesEnabled,
     setScreenshotToClipboardEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
     toggleIsColorMetricLinkedToHeightMetric,

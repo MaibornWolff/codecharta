@@ -22,12 +22,6 @@
             />
 
             <cc-setting-toggle
-                [checked]="experimentalFeaturesEnabled()"
-                [label]="'Enable Experimental Features'"
-                (checkedChange)="handleExperimentalFeaturesEnabledChanged($event)"
-            />
-
-            <cc-setting-toggle
                 [checked]="screenshotToClipboardEnabled()"
                 [label]="'Screenshot to clipboard'"
                 (checkedChange)="handleScreenshotToClipboardEnabledChanged($event)"

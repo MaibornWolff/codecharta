@@ -1,7 +1,6 @@
 import { CcState } from "../../model/codeCharta.model"
 import { defaultState } from "../rootStore/state.manager"
 import {
-    experimentalFeaturesEnabledSelector,
     maxTreeMapFilesSelector,
     resetCameraIfNewFileIsLoadedSelector,
     screenshotToClipboardEnabledSelector
@@ -32,30 +31,6 @@ describe("preferences.read.facade", () => {
 
             // Act
             const result = screenshotToClipboardEnabledSelector.projector(mockState.preferences)
-
-            // Assert
-            expect(result).toBe(false)
-        })
-    })
-
-    describe("experimentalFeaturesEnabledSelector", () => {
-        it("should select experimentalFeaturesEnabled from preferences", () => {
-            // Arrange
-            mockState.preferences.experimentalFeaturesEnabled = true
-
-            // Act
-            const result = experimentalFeaturesEnabledSelector.projector(mockState.preferences)
-
-            // Assert
-            expect(result).toBe(true)
-        })
-
-        it("should return false when experimentalFeaturesEnabled is false", () => {
-            // Arrange
-            mockState.preferences.experimentalFeaturesEnabled = false
-
-            // Act
-            const result = experimentalFeaturesEnabledSelector.projector(mockState.preferences)
 
             // Assert
             expect(result).toBe(false)

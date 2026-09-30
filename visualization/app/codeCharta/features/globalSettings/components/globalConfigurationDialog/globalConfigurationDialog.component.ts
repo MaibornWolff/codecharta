@@ -31,9 +31,6 @@ export class GlobalConfigurationDialogComponent {
     screenshotToClipboardEnabled = toSignal(this.preferencesReadWindow.screenshotToClipboardEnabled$, {
         requireSync: true
     })
-    experimentalFeaturesEnabled = toSignal(this.preferencesReadWindow.experimentalFeaturesEnabled$, {
-        requireSync: true
-    })
     isWhiteBackground = toSignal(this.mapStateReadWindow.isWhiteBackground$, { requireSync: true })
     hideFlatBuildings = toSignal(this.mapStateReadWindow.hideFlatBuildings$, { requireSync: true })
     resetCameraIfNewFileIsLoaded = toSignal(this.preferencesReadWindow.resetCameraIfNewFileIsLoaded$, {
@@ -58,10 +55,6 @@ export class GlobalConfigurationDialogComponent {
 
     handleIsWhiteBackgroundChanged(checked: boolean) {
         this.globalSettingsWriteStore.setWhiteBackground(checked)
-    }
-
-    handleExperimentalFeaturesEnabledChanged(checked: boolean) {
-        this.globalSettingsWriteStore.setExperimentalFeaturesEnabled(checked)
     }
 
     handleScreenshotToClipboardEnabledChanged(checked: boolean) {

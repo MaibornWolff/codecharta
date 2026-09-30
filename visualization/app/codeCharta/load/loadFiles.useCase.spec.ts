@@ -565,7 +565,7 @@ describe("LoadFilesUseCase", () => {
         it("should show an error dialog when the persisted state misses properties the current state has", async () => {
             // Arrange
             const mockedState = JSON.parse(stringify(defaultState)) as CcState
-            delete (mockedState.preferences as Partial<Preferences>).experimentalFeaturesEnabled
+            delete (mockedState.preferences as Partial<Preferences>).screenshotToClipboardEnabled
             mockUrlWithoutFile()
             mockPersistedState(mockedState)
 
@@ -575,7 +575,7 @@ describe("LoadFilesUseCase", () => {
             // Assert
             expect(mockedErrorDialogService.open).toHaveBeenCalledWith({
                 title: MISSING_PROPERTIES_ERROR_TITLE,
-                message: expect.stringContaining("experimentalFeaturesEnabled")
+                message: expect.stringContaining("screenshotToClipboardEnabled")
             })
         })
 

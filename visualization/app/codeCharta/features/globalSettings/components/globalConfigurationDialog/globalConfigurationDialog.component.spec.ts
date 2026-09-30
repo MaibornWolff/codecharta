@@ -18,7 +18,6 @@ describe("GlobalConfigurationDialogComponent", () => {
     beforeEach(() => {
         mockGlobalSettingsWriteStore = {
             setScreenshotToClipboard: jest.fn(),
-            setExperimentalFeaturesEnabled: jest.fn(),
             setWhiteBackground: jest.fn(),
             setHideFlatBuildings: jest.fn(),
             setResetCameraIfNewFileIsLoaded: jest.fn()
@@ -55,14 +54,6 @@ describe("GlobalConfigurationDialogComponent", () => {
         it("should initialize screenshotToClipboardEnabled signal", () => {
             // Arrange & Act
             const value = component.screenshotToClipboardEnabled()
-
-            // Assert
-            expect(value).toBe(false)
-        })
-
-        it("should initialize experimentalFeaturesEnabled signal", () => {
-            // Arrange & Act
-            const value = component.experimentalFeaturesEnabled()
 
             // Assert
             expect(value).toBe(false)
@@ -216,22 +207,6 @@ describe("GlobalConfigurationDialogComponent", () => {
 
             // Assert
             expect(mockGlobalSettingsWriteStore.setWhiteBackground).toHaveBeenCalledWith(false)
-        })
-
-        it("should call setExperimentalFeaturesEnabled when handleExperimentalFeaturesEnabledChanged is called with true", () => {
-            // Arrange & Act
-            component.handleExperimentalFeaturesEnabledChanged(true)
-
-            // Assert
-            expect(mockGlobalSettingsWriteStore.setExperimentalFeaturesEnabled).toHaveBeenCalledWith(true)
-        })
-
-        it("should call setExperimentalFeaturesEnabled when handleExperimentalFeaturesEnabledChanged is called with false", () => {
-            // Arrange & Act
-            component.handleExperimentalFeaturesEnabledChanged(false)
-
-            // Assert
-            expect(mockGlobalSettingsWriteStore.setExperimentalFeaturesEnabled).toHaveBeenCalledWith(false)
         })
 
         it("should call setScreenshotToClipboard when handleScreenshotToClipboardEnabledChanged is called with true", () => {

@@ -67,7 +67,7 @@ describe("ResetSettingsStore", () => {
 
         it("should dispatch setState action with partial default state for multiple settings", async () => {
             // Arrange
-            const settingsKeys = ["mapState.hideFlatBuildings", "preferences.experimentalFeaturesEnabled"]
+            const settingsKeys = ["mapState.hideFlatBuildings", "preferences.screenshotToClipboardEnabled"]
 
             // Act
             store.resetSettings(settingsKeys)
@@ -80,7 +80,7 @@ describe("ResetSettingsStore", () => {
                     hideFlatBuildings: defaultState.mapState.hideFlatBuildings
                 },
                 preferences: {
-                    experimentalFeaturesEnabled: defaultState.preferences.experimentalFeaturesEnabled
+                    screenshotToClipboardEnabled: defaultState.preferences.screenshotToClipboardEnabled
                 }
             })
         })

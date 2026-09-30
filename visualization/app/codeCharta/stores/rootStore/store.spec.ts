@@ -13,7 +13,7 @@ describe("_applyPartialState", () => {
         const newState = _applyPartialState(clone(defaultState), partialState)
 
         expect(newState.mapState.invertArea).toBe(true)
-        expect(newState.preferences.experimentalFeaturesEnabled).toBe(defaultState.preferences.experimentalFeaturesEnabled)
+        expect(newState.preferences.screenshotToClipboardEnabled).toBe(defaultState.preferences.screenshotToClipboardEnabled)
     })
 
     it("should not update state property when a key does not exist", () => {

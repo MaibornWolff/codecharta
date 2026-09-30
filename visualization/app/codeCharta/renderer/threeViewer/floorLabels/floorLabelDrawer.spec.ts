@@ -35,12 +35,6 @@ describe("FloorLabelDrawer", () => {
         }
     }
 
-    function initMapCanvas() {
-        const mapCanvas = document.createElement("canvas")
-        mapCanvas.id = "codeMapScene"
-        document.body.appendChild(mapCanvas)
-    }
-
     function createCanvasMock() {
         const canvasContextMock = {
             font: "",
@@ -80,8 +74,6 @@ describe("FloorLabelDrawer", () => {
 
     describe("draw", () => {
         it("should draw one plane per labelled folder, shortening a name that does not fit its floor", () => {
-            initMapCanvas()
-
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [
                 rootNode,
@@ -93,7 +85,7 @@ describe("FloorLabelDrawer", () => {
 
             const canvasContextMock = createCanvasMock()
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, mapSize, scaling)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(5)
@@ -113,15 +105,13 @@ describe("FloorLabelDrawer", () => {
 
         it("should draw an outline behind each label so it stays readable at distance", () => {
             // Arrange
-            initMapCanvas()
-
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [rootNode, createFakeNode("simpleLabelNode1", 400, 400, false, 1)]
 
             const canvasContextMock = createCanvasMock()
 
             // Act
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, mapSize, scaling)
             floorLabelDrawer.draw()
 
             // Assert
@@ -134,8 +124,6 @@ describe("FloorLabelDrawer", () => {
 
         it("should apply the given anisotropy to the label textures", () => {
             // Arrange
-            initMapCanvas()
-
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [rootNode, createFakeNode("simpleLabelNode1", 400, 400, false, 1)]
 
@@ -143,7 +131,7 @@ describe("FloorLabelDrawer", () => {
             const maxAnisotropy = 8
 
             // Act
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false, maxAnisotropy)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, mapSize, scaling, maxAnisotropy)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             // Assert
@@ -152,29 +140,7 @@ describe("FloorLabelDrawer", () => {
             }
         })
 
-        it("should scale folderGeometryHeight when experimentalFeatures are enabled", () => {
-            initMapCanvas()
-
-            const rootNode = createFakeNode("root", 20_000, 20_000, false, 0)
-            const nodes = [
-                rootNode,
-                createFakeNode("simpleLabelNode1", 4000, 4000, false, 1),
-                createFakeNode("simpleLabelNode2", 2000, 2000, false, 2),
-                createFakeNode("simpleLabelNode3", 1500, 1500, false, 2),
-                createFakeNode("text_to_be_shortened_to_fit_onto_the_floor", 50, 50, false, 2)
-            ]
-
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, true)
-            const floorLabelPlanes = floorLabelDrawer.draw()
-
-            expect(floorLabelDrawer.folderGeometryHeight).toBe(68)
-
-            expect(floorLabelPlanes.length).toBe(5)
-        })
-
         it("should not label folders below the third level", () => {
-            initMapCanvas()
-
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [
                 rootNode,
@@ -187,16 +153,28 @@ describe("FloorLabelDrawer", () => {
 
             const canvasContextMock = createCanvasMock()
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, mapSize, scaling)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(4)
             expect(floorLabelPlanes.length).toBe(4)
         })
 
-        it("should not label leaves", () => {
-            initMapCanvas()
+        it("should not draw a label for a folder without a name", () => {
+            // Arrange
+            const rootNode = createFakeNode("root", 500, 500, false, 0)
+            const nodes = [rootNode, createFakeNode("", 400, 400, false, 1)]
+            const canvasContextMock = createCanvasMock()
 
+            // Act
+            const floorLabelPlanes = new FloorLabelDrawer(nodes, mapSize, scaling).draw()
+
+            // Assert
+            expect(canvasContextMock.fillText).toHaveBeenCalledTimes(1)
+            expect(floorLabelPlanes.length).toBe(1)
+        })
+
+        it("should not label leaves", () => {
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [
                 rootNode,
@@ -206,7 +184,7 @@ describe("FloorLabelDrawer", () => {
 
             const canvasContextMock = createCanvasMock()
 
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, mapSize, scaling)
             const floorLabelPlanes = floorLabelDrawer.draw()
 
             expect(canvasContextMock.fillText).toHaveBeenCalledTimes(2)
@@ -217,14 +195,13 @@ describe("FloorLabelDrawer", () => {
     describe("translatePlaneCanvases", () => {
         it("should lift every label to its level's floor height when the map is rescaled", () => {
             // Arrange
-            initMapCanvas()
             const rootNode = createFakeNode("root", 500, 500, false, 0)
             const nodes = [
                 rootNode,
                 createFakeNode("simpleLabelNode1", 400, 400, false, 1),
                 createFakeNode("unlabeledNode", 100, 100, true, 1)
             ]
-            const floorLabelDrawer = new FloorLabelDrawer(nodes, rootNode, mapSize, scaling, false)
+            const floorLabelDrawer = new FloorLabelDrawer(nodes, mapSize, scaling)
             const [rootLabel, childLabel] = floorLabelDrawer.draw()
             const liftToPreventZFighting = 2
 
@@ -238,9 +215,8 @@ describe("FloorLabelDrawer", () => {
 
         it("should place a label at its level's floor height before any rescaling", () => {
             // Arrange
-            initMapCanvas()
             const rootNode = createFakeNode("root", 500, 500, false, 0)
-            const floorLabelDrawer = new FloorLabelDrawer([rootNode], rootNode, mapSize, scaling, false)
+            const floorLabelDrawer = new FloorLabelDrawer([rootNode], mapSize, scaling)
 
             // Act
             const [rootLabel] = floorLabelDrawer.draw()
