@@ -1,5 +1,6 @@
 export { setCenterMapZoom } from "./store/centerMapZoom/centerMapZoom.actions"
 export { setDependencyGraphSettings } from "./store/dependencyGraph/dependencyGraph.actions"
+export { setDependencyViewEnabled } from "./store/dependencyViewEnabled/dependencyViewEnabled.actions"
 export { setScreenshotToClipboardEnabled } from "./store/enableClipboard/screenshotToClipboardEnabled.actions"
 export {
     setIsColorMetricLinkedToHeightMetricAction,

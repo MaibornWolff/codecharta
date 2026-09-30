@@ -2,6 +2,8 @@ export { defaultCenterMapZoom } from "./store/centerMapZoom/centerMapZoom.reduce
 export { centerMapZoomSelector } from "./store/centerMapZoom/centerMapZoom.selector"
 export { defaultDependencyGraphSettings } from "./store/dependencyGraph/dependencyGraph.reducer"
 export { dependencyGraphSettingsSelector } from "./store/dependencyGraph/dependencyGraph.selector"
+export { defaultDependencyViewEnabled } from "./store/dependencyViewEnabled/dependencyViewEnabled.reducer"
+export { dependencyViewEnabledSelector } from "./store/dependencyViewEnabled/dependencyViewEnabled.selector"
 export { screenshotToClipboardEnabledSelector } from "./store/enableClipboard/screenshotToClipboardEnabled.selector"
 export { isColorMetricLinkedToHeightMetricSelector } from "./store/isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.selector"
 export { isPresentationModeSelector } from "./store/isPresentationMode/isPresentationMode.selector"
