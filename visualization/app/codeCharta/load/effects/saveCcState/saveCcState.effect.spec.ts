@@ -15,7 +15,7 @@ import {
 } from "../../../stores/domainState/domainState.write.facade"
 import { setFiles } from "../../../stores/fileStore/store/files.actions"
 import { setShowIncomingEdges } from "../../../stores/mapState/mapState.write.facade"
-import { writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
+import { isFilesWriteDue, writeCcFiles, writeCcState } from "../../../stores/rootStore/indexedDB/indexedDBWriter"
 import { setState } from "../../../stores/rootStore/state.actions"
 import { removeExcludedNodes, setMarkedPackages } from "../../../stores/sharedView/sharedView.write.facade"
 import { isPendingSave$ } from "../../../util/busy/isPendingSave"
@@ -26,7 +26,8 @@ jest.mock("../../../stores/rootStore/indexedDB/indexedDBWriter", () => {
     return {
         __esModule: true,
         writeCcState: jest.fn(() => Promise.resolve()),
-        writeCcFiles: jest.fn(() => Promise.resolve())
+        writeCcFiles: jest.fn(() => Promise.resolve()),
+        isFilesWriteDue: jest.fn(() => true)
     }
 })
 
@@ -61,6 +62,49 @@ describe("SaveCcStateEffect", () => {
 
         // Assert
         await waitFor(() => expect(writeCcFiles).toHaveBeenCalledWith(state.files))
+    })
+
+    it("should hold the spinner from the moment the files changed until they are written", async () => {
+        // Arrange - the write copies every loaded map on the main thread, so the spinner must be on screen before
+        const store = TestBed.inject(MockStore)
+        let finishWrite: () => void = () => undefined
+        ;(writeCcFiles as jest.Mock).mockImplementationOnce(() => new Promise<void>(resolve => (finishWrite = resolve)))
+        let isPending = false
+        const pendingSaves = isPendingSave$.subscribe(value => {
+            isPending = value
+        })
+
+        // Act
+        actions$.next(setFiles({ value: [] }))
+        store.refreshState()
+        const isPendingBeforeTheWrite = isPending
+        await waitFor(() => expect(writeCcFiles).toHaveBeenCalled())
+        const isPendingWhileWriting = isPending
+        finishWrite()
+
+        // Assert
+        expect(isPendingBeforeTheWrite).toBe(true)
+        expect(isPendingWhileWriting).toBe(true)
+        await waitFor(() => expect(isPending).toBe(false))
+        pendingSaves.unsubscribe()
+    })
+
+    it("should not hold the spinner for files the session already holds, as after a restore", async () => {
+        // Arrange
+        const store = TestBed.inject(MockStore)
+        ;(isFilesWriteDue as jest.Mock).mockReturnValueOnce(false)
+        let isPending = false
+        const pendingSaves = isPendingSave$.subscribe(value => {
+            isPending = value
+        })
+
+        // Act
+        actions$.next(setFiles({ value: [] }))
+        store.refreshState()
+
+        // Assert
+        expect(isPending).toBe(false)
+        pendingSaves.unsubscribe()
     })
 
     it("should not write the loaded files when only a setting changed", async () => {
