@@ -7,6 +7,7 @@ export {
     BarShellDirective
 } from "./components/barShell/barShell.directive"
 export { BarToolComponent } from "./components/barTool/barTool.component"
+export { BarToolsDividerComponent } from "./components/barToolsDivider/barToolsDivider.component"
 export { BarToolsTabComponent } from "./components/barToolsTab/barToolsTab.component"
 export { BootLoadingIndicatorComponent } from "./components/bootLoadingIndicator/bootLoadingIndicator.component"
 export { ConfirmDialogComponent } from "./components/confirmDialog/confirmDialog.component"
@@ -23,6 +24,7 @@ export { SelectionShortcutsComponent } from "./components/selectionShortcuts/sel
 export { SettingsPopoverShellComponent } from "./components/settingsPopoverShell/settingsPopoverShell.component"
 export { SliderNumberInputComponent } from "./components/sliderNumberInput/sliderNumberInput.component"
 export { ToastComponent } from "./components/toast/toast.component"
+export { UnfocusToolComponent } from "./components/unfocusTool/unfocusTool.component"
 export { provideViewScopedCssVariables } from "./cssVariableHost"
 export { ExcludeGuard } from "./effects/addExcludedNodesIfNotResultsInEmptyMap/excludeGuard"
 export { getPartialDefaultState } from "./getPartialDefaultState"

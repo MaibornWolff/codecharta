@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DependencyGraphScreenshotService, SCREENSHOT_CAPTURE, ScreenshotButtonComponent } from "../../../screenshot/facade"
-import { BarToolComponent } from "../../../shared/facade"
+import { BarToolComponent, BarToolsDividerComponent, UnfocusToolComponent } from "../../../shared/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
@@ -9,7 +9,7 @@ import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 @Component({
     selector: "cc-graph-view-tools",
     templateUrl: "./graphViewTools.component.html",
-    imports: [BarToolComponent, ScreenshotButtonComponent],
+    imports: [BarToolComponent, BarToolsDividerComponent, ScreenshotButtonComponent, UnfocusToolComponent],
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: DependencyGraphScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "flex items-center gap-0.5" }
