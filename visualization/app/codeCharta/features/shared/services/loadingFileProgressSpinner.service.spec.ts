@@ -1,5 +1,7 @@
 import { BehaviorSubject, firstValueFrom } from "rxjs"
+import { ViewId } from "../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
+import { ViewSwitchProgressStore } from "../../../routing/viewSwitchProgress.store"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { setIsApplyingScenario } from "../../../util/busy/isApplyingScenario"
 import { beginPendingSave, endPendingSave } from "../../../util/busy/isPendingSave"
@@ -10,12 +12,18 @@ import { LoadingFileProgressSpinnerService } from "./loadingFileProgressSpinner.
 describe("LoadingFileProgressSpinnerService", () => {
     let viewReadinessStore: ViewReadinessStore
     let isLoadingFile$: BehaviorSubject<boolean>
+    let pendingViewSwitch$: BehaviorSubject<ViewId | null>
     let service: LoadingFileProgressSpinnerService
 
     beforeEach(() => {
         viewReadinessStore = new ViewReadinessStore()
         isLoadingFile$ = new BehaviorSubject(false)
-        service = new LoadingFileProgressSpinnerService(viewReadinessStore, { isLoadingFile$ } as unknown as FileStoreReadWindow)
+        pendingViewSwitch$ = new BehaviorSubject<ViewId | null>(null)
+        service = new LoadingFileProgressSpinnerService(
+            viewReadinessStore,
+            { isLoadingFile$ } as unknown as FileStoreReadWindow,
+            { pendingView$: pendingViewSwitch$ } as unknown as ViewSwitchProgressStore
+        )
         isPendingHeavyDispatch$.next(false)
         setIsApplyingScenario(false)
     })
@@ -96,6 +104,17 @@ describe("LoadingFileProgressSpinnerService", () => {
         subscription.unsubscribe()
     })
 
+    it("should report the view being left busy while the switch builds the view it goes to", async () => {
+        // Arrange
+        viewReadinessStore.markReady("metrics")
+
+        // Act
+        pendingViewSwitch$.next("domain")
+
+        // Assert
+        expect(await firstValueFrom(service.isLoading$("metrics"))).toBe(true)
+    })
+
     it("should report busy while a scenario is being applied", async () => {
         // Arrange — a scenario rewrites the settings behind every view at once
         viewReadinessStore.markReady("domain")
@@ -143,6 +162,17 @@ describe("LoadingFileProgressSpinnerService", () => {
 
         // Assert
         expect(await firstValueFrom(service.phase$("metrics"))).toBe("Drawing the map")
+    })
+
+    it("should name the view being switched to while the switch builds it", async () => {
+        // Arrange
+        viewReadinessStore.markReady("metrics")
+
+        // Act
+        pendingViewSwitch$.next("dependencies")
+
+        // Assert
+        expect(await firstValueFrom(service.phase$("metrics"))).toBe("Drawing the dependency graph")
     })
 
     it("should say the session is being saved while the save is still in flight", async () => {

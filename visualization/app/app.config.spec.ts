@@ -1,6 +1,7 @@
 import { HashLocationStrategy, LocationStrategy } from "@angular/common"
 import { TestBed } from "@angular/core/testing"
 import { routeLinks, routePaths } from "app/codeCharta/routing/routePaths"
+import { showSpinnerBeforeBuildingView } from "app/codeCharta/routing/showSpinnerBeforeBuildingView.guard"
 import { DomainViewComponent } from "app/codeCharta/views/domainView/domainView.component"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 import { routerProviders, routes } from "./app.config"
@@ -21,6 +22,14 @@ describe("app routes", () => {
         // Assert
         expect(domainRoute?.component).toBeUndefined()
         expect(await domainRoute?.loadComponent?.()).toBe(DomainViewComponent)
+    })
+
+    it("should show the spinner before building any of the views", () => {
+        // Arrange & Act
+        const guardsPerRoute = routes.map(route => route.canActivate)
+
+        // Assert
+        expect(guardsPerRoute).toEqual(routes.map(() => [showSpinnerBeforeBuildingView]))
     })
 
     it("should keep the routed path in the fragment so file and static-host entry URLs resolve", () => {

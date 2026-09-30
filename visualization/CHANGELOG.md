@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Dependency view (experimental)**: a map analysed with the dependency parser opens as a graph that stacks its files by dependency level and marks the dependencies that close a cycle or point upward.
+- **Loading indicator when switching views**: switching to a view that still has to be built shows a spinner instead of a frozen screen.
 
 ## [2.7.0] - 2026-09-28
 

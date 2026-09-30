@@ -69,14 +69,13 @@ export class NodeContextMenuComponent {
         const node = this.menuNode()
         return node !== null && this.isFlattened()(node)
     })
-    private readonly pathsWithDomainWords = toSignal(this.readStore.pathsWithDomainWords$, { requireSync: true })
-    private readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
-    private readonly pathsWithDependencyLevels = toSignal(this.readStore.pathsWithDependencyLevels$, { requireSync: true })
+    private readonly isMenuNodeInDomainLens = toSignal(this.readStore.isRightClickedNodeInDomainLens$, { requireSync: true })
+    private readonly isMenuNodeInDependencyLens = toSignal(this.readStore.isRightClickedNodeInDependencyLens$, { requireSync: true })
     readonly jumpTargets = computed(() => {
         const node = this.menuNode()
         return node === null
             ? []
-            : VIEW_IDS.filter(view => view !== this.activeView() && this.canShowIn(view, node.path)).map(view => ({
+            : VIEW_IDS.filter(view => view !== this.activeView() && this.canShowMenuNodeIn(view)).map(view => ({
                   view,
                   ...JUMP_TARGETS[view]
               }))
@@ -198,12 +197,12 @@ export class NodeContextMenuComponent {
         this.writeStore.closeMenu()
     }
 
-    private canShowIn(view: ViewId, nodePath: string): boolean {
+    private canShowMenuNodeIn(view: ViewId): boolean {
         switch (view) {
             case "domain":
-                return this.pathsWithDomainWords().has(nodePath)
+                return this.isMenuNodeInDomainLens()
             case "dependencies":
-                return !this.isDeltaState() && this.pathsWithDependencyLevels().has(nodePath)
+                return this.isMenuNodeInDependencyLens()
             default:
                 return true
         }

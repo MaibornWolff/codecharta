@@ -16,19 +16,22 @@ import { loadEffects } from "app/codeCharta/load/effects/load.effects"
 import { KeepAliveRouteReuseStrategy } from "app/codeCharta/routing/keepAliveRouteReuse.strategy"
 import { QueryPreservingHashLocationStrategy } from "app/codeCharta/routing/queryPreservingHashLocation.strategy"
 import { routePaths } from "app/codeCharta/routing/routePaths"
+import { showSpinnerBeforeBuildingView } from "app/codeCharta/routing/showSpinnerBeforeBuildingView.guard"
 import { appReducers, setStateMiddleware } from "app/codeCharta/stores/rootStore/store"
 import { domainViewEffects } from "app/codeCharta/views/domainView/effects/domainView.effects"
 import { MetricsViewComponent } from "app/codeCharta/views/metricsView/metricsView.component"
 
 export const routes: Routes = [
-    { path: routePaths.metrics, component: MetricsViewComponent },
+    { path: routePaths.metrics, component: MetricsViewComponent, canActivate: [showSpinnerBeforeBuildingView] },
     // Lazy: the domain and dependency views are all that pull in echarts, which no metric-view user needs.
     {
         path: routePaths.domain,
+        canActivate: [showSpinnerBeforeBuildingView],
         loadComponent: () => import("app/codeCharta/views/domainView/domainView.component").then(m => m.DomainViewComponent)
     },
     {
         path: routePaths.dependencies,
+        canActivate: [showSpinnerBeforeBuildingView],
         loadComponent: () => import("app/codeCharta/views/dependencyView/dependencyView.component").then(m => m.DependencyViewComponent)
     }
 ]
