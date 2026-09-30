@@ -5,7 +5,6 @@ import { AxisCardComponent, MetricSelectPopoverComponent } from "../../../shared
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 
-/** The edge metric the graph is drawn for, shared with the Metric view; a click on it opens the list to pick another. */
 @Component({
     selector: "cc-edge-metric-segment",
     templateUrl: "./edgeMetricSegment.component.html",

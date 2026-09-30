@@ -16,7 +16,9 @@ export class DependencyMapViewStore {
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
     private readonly draggedOrder = signal<readonly string[]>([])
     private readonly boxBeingDragged = signal<string | null>(null)
+    private readonly fitRequestCount = signal(0)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
+    private adoptedRootPath: string | null = null
 
     readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedFolders.asReadonly()
     readonly expandedPaths = this.openedFolders.asReadonly()
@@ -24,16 +26,21 @@ export class DependencyMapViewStore {
     /** Dragged boxes, the most recently dragged last, so it paints over the others. */
     readonly raisedPaths = this.draggedOrder.asReadonly()
     readonly draggingPath = this.boxBeingDragged.asReadonly()
+    readonly fitRequest = this.fitRequestCount.asReadonly()
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()
-        if (layoutIdentity === untracked(this.layoutIdentityOfTheOpenedFolders)) {
-            return
+        const hasRootMoved = tree.path !== this.adoptedRootPath
+        this.adoptedRootPath = tree.path
+        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedFolders)) {
+            this.startOver(tree, layoutIdentity)
+        } else if (hasRootMoved) {
+            this.openTheMovedRoot(tree)
         }
-        this.layoutIdentityOfTheOpenedFolders.set(layoutIdentity)
-        this.openedFolders.set(collapsedFirstLook(tree))
-        this.resetLayout()
-        this.revealTheAwaitingPaths(layoutIdentity)
+    }
+
+    requestFit(): void {
+        this.fitRequestCount.update(count => count + 1)
     }
 
     placeBox(path: string, offset: BoxOffset): void {
@@ -71,6 +78,21 @@ export class DependencyMapViewStore {
             }
             return next
         })
+    }
+
+    private startOver(tree: LeveledNode, layoutIdentity: string): void {
+        this.layoutIdentityOfTheOpenedFolders.set(layoutIdentity)
+        this.openedFolders.set(collapsedFirstLook(tree))
+        this.resetLayout()
+        this.revealTheAwaitingPaths(layoutIdentity)
+    }
+
+    /** An exclusion can fold the one folder left into the root, which then carries that folder's path; left closed,
+     * the whole graph would be one box. */
+    private openTheMovedRoot(tree: LeveledNode): void {
+        if (!untracked(this.openedFolders).has(tree.path)) {
+            this.openedFolders.update(opened => new Set([...opened, ...collapsedFirstLook(tree)]))
+        }
     }
 
     private awaitAdoptionToReveal(layoutIdentity: string, path: string): void {

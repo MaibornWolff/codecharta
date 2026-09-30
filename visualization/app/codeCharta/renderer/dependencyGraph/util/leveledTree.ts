@@ -3,13 +3,15 @@ import { CodeMapNode, DependencyLevelData, NodeType } from "../../../model/codeC
 /** The part of the file tree the dependency graph can place: files that carry a level, and the folders
  * holding them. A folder without a level of its own sits at level 0 of its parent. A chain of folders that
  * each hold just one folder is one box named by the whole chain, as in src/main/kotlin/de/…: nesting a box
- * per link would leave the files too small to read. The box keeps the deepest folder's path. */
+ * per link would leave the files too small to read. The box keeps the deepest folder's path, and the folders
+ * folded into it keep theirs in foldedPaths, outermost first. */
 export interface LeveledNode {
     path: string
     name: string
     level: number
     isFolder: boolean
     children: LeveledNode[]
+    foldedPaths?: string[]
 }
 
 const FOLDER_LEVEL_WHEN_ABSENT = 0
@@ -29,7 +31,7 @@ export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData)
     const level = levels[root.path] ?? FOLDER_LEVEL_WHEN_ABSENT
     const [onlyChild] = children
     if (children.length === 1 && onlyChild.isFolder) {
-        return { ...onlyChild, name: `${root.name}/${onlyChild.name}`, level }
+        return { ...onlyChild, name: `${root.name}/${onlyChild.name}`, level, foldedPaths: [root.path, ...(onlyChild.foldedPaths ?? [])] }
     }
     return { path: root.path, name: root.name, level, isFolder: true, children }
 }

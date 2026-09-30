@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
+import { filter, map, Observable, of, Subject, switchMap, take } from "rxjs"
 import {
     boxAtPoint,
     DependencyGraphComponent,
@@ -15,6 +16,7 @@ import {
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { clearPendingHeavyDispatch, isPendingHeavyDispatch$ } from "../../../../util/dispatchAfterPaint"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
@@ -40,6 +42,7 @@ export class DependencyMapComponent {
     protected readonly hasDependencyData = toSignal(this.readStore.hasDependencyData$, { requireSync: true })
     protected readonly isFocused = toSignal(this.readStore.isFocused$, { requireSync: true })
     protected readonly graphIdentity = computed(() => this.viewStore.adoptedLayoutIdentity() ?? "")
+    protected readonly fitRequest = this.viewStore.fitRequest
 
     private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
@@ -48,6 +51,7 @@ export class DependencyMapComponent {
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
+    private readonly graphRendered$ = new Subject<void>()
 
     private readonly layout = computed(() => {
         const tree = this.tree()
@@ -114,6 +118,7 @@ export class DependencyMapComponent {
                 this.markReady()
             }
         })
+        this.clearPendingHeavyDispatchOnceHandled()
     }
 
     protected select(path: string): void {
@@ -151,8 +156,37 @@ export class DependencyMapComponent {
         this.writeStore.unfocus()
     }
 
-    protected markReady(): void {
+    protected handleRendered(): void {
+        this.markReady()
+        this.graphRendered$.next()
+    }
+
+    private markReady(): void {
         this.viewReadinessStore.markReady("dependencies")
+    }
+
+    /** A heavy dispatch holds the app's spinner until the Metric view's map redraws, which this view never draws. */
+    private clearPendingHeavyDispatchOnceHandled(): void {
+        isPendingHeavyDispatch$
+            .pipe(
+                filter(Boolean),
+                map(() => this.scene()),
+                switchMap(sceneBefore =>
+                    this.readStore.mapChanges$.pipe(
+                        take(1),
+                        map(() => sceneBefore)
+                    )
+                ),
+                switchMap(sceneBefore => this.redrawOf(sceneBefore)),
+                takeUntilDestroyed()
+            )
+            .subscribe(() => clearPendingHeavyDispatch())
+    }
+
+    private redrawOf(sceneBefore: DependencyGraphScene | null): Observable<void> {
+        const scene = this.scene()
+        const isRedrawing = !this.isDeltaState() && scene !== null && scene !== sceneBefore
+        return isRedrawing ? this.graphRendered$.pipe(take(1)) : of(undefined)
     }
 
     private boxStandingFor(path: string | null): string | null {

@@ -62,6 +62,20 @@ describe("leveledTree", () => {
             expect(tree.children[0].children.map(child => child.path)).toEqual(["/root/src/main/app/a.ts"])
         })
 
+        it("should keep the paths of the folders folded into a chain box, outermost first", () => {
+            // Arrange
+            const root = folder("/root", [
+                folder("/root/src", [folder("/root/src/main", [file("/root/src/main/a.ts"), file("/root/src/main/b.ts")])])
+            ])
+            const levels = { "/root/src/main/a.ts": 0, "/root/src/main/b.ts": 1 }
+
+            // Act
+            const tree = buildLeveledTree(root, levels)
+
+            // Assert
+            expect(tree).toMatchObject({ path: "/root/src/main", name: "root/src/main", foldedPaths: ["/root", "/root/src"] })
+        })
+
         it("should drop folders that hold no leveled file", () => {
             // Arrange
             const root = folder("/root", [folder("/root/docs", [file("/root/docs/guide.md")]), file("/root/a.ts")])

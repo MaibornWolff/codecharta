@@ -9,13 +9,14 @@
         #graph
         [scene]="scene"
         [graphIdentity]="graphIdentity()"
+        [fitRequest]="fitRequest()"
         [canDragBox]="canDragBox"
         [boxAt]="boxAt"
         (boxClicked)="select($event)"
         (boxToggled)="toggle($event)"
         (boxHovered)="hover($event)"
         (boxRightClicked)="openContextMenu($event)"
-        (rendered)="markReady()"
+        (rendered)="handleRendered()"
         (boxDragged)="moveBox($event)"
         (boxDragEnded)="endDragging()"
     ></cc-dependency-graph>

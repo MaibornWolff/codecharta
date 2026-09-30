@@ -1,4 +1,6 @@
 export { ShowsHandedOverMapNodeDirective } from "./components/showsHandedOverMapNode/showsHandedOverMapNode.directive"
+export type { HandedOverMapNodeArrival } from "./handedOverMapNodeArrival"
+export { HANDED_OVER_MAP_NODE_ARRIVAL } from "./handedOverMapNodeArrival"
 export { MAP_EXPLORER_SEARCH } from "./mapExplorerSearch"
 export { MAP_EXPLORER_SORT } from "./mapExplorerSort"
 export { MAP_EXPLORER_VIEW } from "./mapExplorerView"

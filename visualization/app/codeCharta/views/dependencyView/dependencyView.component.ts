@@ -1,8 +1,14 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
-import { DependencyBarComponent, DependencyEdgeLegendComponent, DependencyMapComponent } from "../../features/dependencyMap/facade"
+import {
+    DependencyBarComponent,
+    DependencyEdgeLegendComponent,
+    DependencyMapArrival,
+    DependencyMapComponent
+} from "../../features/dependencyMap/facade"
 import { LegendDrawerComponent } from "../../features/legend/facade"
 import {
+    HANDED_OVER_MAP_NODE_ARRIVAL,
     MAP_EXPLORER_SEARCH,
     MAP_EXPLORER_SORT,
     MAP_EXPLORER_VIEW,
@@ -66,6 +72,8 @@ import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelect
         provideExplorerSort(MAP_EXPLORER_SORT),
         provideExplorerSearch(MAP_EXPLORER_SEARCH),
         { provide: MAP_EXPLORER_VIEW, useValue: "dependencies" },
+        DependencyMapArrival,
+        { provide: HANDED_OVER_MAP_NODE_ARRIVAL, useExisting: DependencyMapArrival },
         {
             provide: EXPLORER_CAPABILITIES,
             useValue: { showRules: true, showSearch: true, showCounts: true, canFlatten: false, modes: [FILES_EXPLORER_MODE] }

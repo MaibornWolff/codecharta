@@ -3,7 +3,6 @@ import { EDGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGrap
 
 type EdgeTypes = readonly DependencyEdgeType[]
 
-/** "All" or "None" while every or no carried type is shown, else the shown types by name. */
 export function nameOfShownEdgeTypes(shown: EdgeTypes, carried: EdgeTypes): string {
     const shownAndCarried = carried.filter(type => shown.includes(type))
     if (shownAndCarried.length === carried.length) {

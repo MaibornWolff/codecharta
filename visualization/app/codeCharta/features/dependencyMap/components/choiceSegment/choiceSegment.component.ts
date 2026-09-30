@@ -7,8 +7,6 @@ export interface Choice<Value extends string> {
     hint: string
 }
 
-/** A bar card naming the current choice; a click on it opens the list to pick another, and whatever the bar puts
- * inside below it. */
 @Component({
     selector: "cc-choice-segment",
     templateUrl: "./choiceSegment.component.html",
