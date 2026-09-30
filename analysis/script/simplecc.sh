@@ -61,7 +61,11 @@ ANALYSIS STEPS:
                           technical words filtered out. Put project-specific
                           noise words (product names, tech terms) in a
                           .dlcignore file in the analysed folder to drop them.
-    7. SonarImporter    - SonarQube metrics (requires: sonar-scanner, token)
+    7. DependencyParser - Dependency lens (requires: ccsh), experimental: the
+                          file dependencies with their cycles and levels, which
+                          the dependency view shows once it is switched on in
+                          the Web Studio's Global Configuration.
+    8. SonarImporter    - SonarQube metrics (requires: sonar-scanner, token)
 
     Only ccsh is mandatory. All other tools are optional.
 
@@ -248,6 +252,9 @@ main() {
 
     # --- DomainLanguageParser (optional, needs a ccsh that ships it) ---
     run_domain_language_analysis
+
+    # --- DependencyParser (optional, needs a ccsh that ships it) ---
+    run_dependency_analysis
 
     # --- SonarImporter (optional) ---
     run_sonar_import
@@ -469,6 +476,24 @@ run_domain_language_analysis() {
     fi
 }
 
+run_dependency_analysis() {
+    echo ""
+    echo "Dependency Analysis (experimental)"
+    echo "=================================="
+
+    if ! ccsh dependencyparser --help >/dev/null 2>&1; then
+        skip_step "Dependency Analysis" "ccsh does not provide dependencyparser (update ccsh)"
+        return
+    fi
+
+    if ccsh dependencyparser . -o "$TEMP_DIR/dependency.${FILE_EXTENSION}"; then
+        GENERATED_FILES+=("$TEMP_DIR/dependency.${FILE_EXTENSION}")
+        echo "   Generated dependency.${FILE_EXTENSION}"
+    else
+        skip_step "Dependency Analysis" "ccsh dependencyparser failed"
+    fi
+}
+
 run_sonar_import() {
     echo ""
     echo "SonarQube Import"
@@ -547,6 +572,7 @@ print_summary() {
         echo "  - Height Metric: whitespace_complexity"
         echo "  - Color Metric: number_of_commits or weeks_with_commits"
         echo "  - Domain view: size and sort words by TF-IDF (Relevance)"
+        echo "  - Dependency view (experimental): switch it on in the Global Configuration"
     else
         echo "Error: Failed to create output file."
     fi

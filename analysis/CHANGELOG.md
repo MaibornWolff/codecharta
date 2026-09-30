@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **Dependencies in simplecc.sh**: the map `simplecc.sh` writes, in the Docker image too, carries the project's
+  dependencies for the experimental dependency view.
+
 - **`ccsh dependencyparser` (experimental) extracts a project's dependency graph.** A port of DependaCharta's
   analysis: tree-sitter dependency extraction for Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript,
   Vue, Delphi and Rust, plus cycle detection and levelization. The result lands in the `dependency` lens — a
