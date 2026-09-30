@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core"
 import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { FloatingMenuAnchor, FloatingMenuComponent, SliderNumberInputComponent } from "../../../shared/facade"
-import { ViewCubeToolboxReadStore } from "../../stores/viewCubeToolbox.read.store"
-import { ViewCubeToolboxWriteStore } from "../../stores/viewCubeToolbox.write.store"
+import { MapToolsReadStore } from "../../stores/mapTools.read.store"
+import { MapToolsWriteStore } from "../../stores/mapTools.write.store"
 
 @Component({
     selector: "cc-center-map-zoom-menu",
@@ -13,8 +13,8 @@ import { ViewCubeToolboxWriteStore } from "../../stores/viewCubeToolbox.write.st
 })
 export class CenterMapZoomMenuComponent {
     private readonly mapControls = inject(ThreeMapControlsService)
-    private readonly readStore = inject(ViewCubeToolboxReadStore)
-    private readonly writeStore = inject(ViewCubeToolboxWriteStore)
+    private readonly readStore = inject(MapToolsReadStore)
+    private readonly writeStore = inject(MapToolsWriteStore)
 
     readonly anchor = input.required<FloatingMenuAnchor>()
     readonly dismissed = output<void>()

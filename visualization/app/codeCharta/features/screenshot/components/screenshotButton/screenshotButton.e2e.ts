@@ -12,7 +12,7 @@ test.describe("ScreenshotButton", () => {
 
         // Act
         const download = page.waitForEvent("download")
-        await page.locator("cc-view-cube-toolbox button[aria-label='Screenshot']").click()
+        await page.locator("cc-map-tools button[aria-label='Screenshot']").click()
 
         // Assert
         expect((await download).suggestedFilename()).toMatch(/_map\.png$/)

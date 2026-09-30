@@ -12,7 +12,7 @@ import {
     Vector3,
     WebGLRenderer
 } from "three"
-import { ViewCubeToolboxComponent } from "../../features/viewCubeToolbox/facade"
+import { MapToolsComponent } from "../../features/mapTools/facade"
 import { ThreeMapControlsService } from "../../renderer/threeViewer/threeViewer.facade"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
@@ -24,7 +24,7 @@ import { ZoomSliderComponent } from "./zoomSlider/zoomSlider.component"
     host: {
         class: "absolute right-0 top-[10px] z-[11] [transition:right_0.3s_ease] [&.sideBarVisible]:right-[var(--cc-inspector-width)]"
     },
-    imports: [ViewCubeToolboxComponent, ZoomSliderComponent],
+    imports: [MapToolsComponent, ZoomSliderComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewCubeComponent implements OnInit {
