@@ -5,9 +5,9 @@ sidebar:
   label: Overview
 ---
 
-## [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true)
+## [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true)
 
-Before you start doing anything, you should have a look at our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true) where you can try everything out yourself. You could also have a look at our [User Controls](/docs/visualization/user-controls) to help you navigate.
+Before you start doing anything, you should have a look at our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true) where you can try everything out yourself. You could also have a look at our [User Controls](/docs/visualization/user-controls) to help you navigate.
 
 ## Install & run CodeCharta
 

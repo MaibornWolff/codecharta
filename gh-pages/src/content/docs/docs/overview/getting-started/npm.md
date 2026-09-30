@@ -55,4 +55,4 @@ See [CodeCharta Shell](/docs/analysis/codecharta-shell) for interactive mode, pa
 
 ## Open your map in the Web Studio
 
-Open the [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true) and load your `tutorial.cc.json.gz` with the folder-open button (**Load cc.json files**) in the top-left — see [Upload](/docs/visualization/user-controls/upload) for details. You can now explore your codebase to your heart's content.
+Open the [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true) and load your `tutorial.cc.json.gz` with the folder-open button (**Load cc.json files**) in the top-left — see [Upload](/docs/visualization/user-controls/upload) for details. You can now explore your codebase to your heart's content.

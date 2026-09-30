@@ -12,7 +12,7 @@ CodeCharta runs entirely on your machine. No metrics you analyze or visualize ev
 
 ## Try it online
 
-You don't have to install anything — open the hosted [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=avgCommits&currentFilesAreSampleFiles=true) directly in your browser, preloaded with sample data.
+You don't have to install anything — open the hosted [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true) directly in your browser, preloaded with sample data.
 
 ## Run it yourself
 
