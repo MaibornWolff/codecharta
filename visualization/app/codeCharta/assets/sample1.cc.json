@@ -2,7 +2,7 @@
     "meta": {
         "projectName": "Sample Project with Edges",
         "apiVersion": "2.0",
-        "checksum": "06a21f72c5b644784f7c2b0fa6abca21"
+        "checksum": "92f2cc60df5649e426712fed3a92f881"
     },
     "files": [
         {
@@ -83,13 +83,31 @@
             }
         },
         "dependency": {
+            "nodes": {
+                "1ae98c1a93690d75": {
+                    "level": 0
+                },
+                "ea70504d5daa3547": {
+                    "level": 0
+                },
+                "120a1569e3556450": {
+                    "level": 0
+                },
+                "7de6343f370ff7cf": {
+                    "level": 1
+                },
+                "3d6521b0884ce9f4": {
+                    "level": 2
+                }
+            },
             "edges": [
                 {
                     "fromId": "7de6343f370ff7cf",
                     "toId": "120a1569e3556450",
                     "attributes": {
                         "pairingRate": 89,
-                        "avgCommits": 34
+                        "avgCommits": 34,
+                        "dependencies": 3
                     }
                 },
                 {
@@ -97,7 +115,8 @@
                     "toId": "120a1569e3556450",
                     "attributes": {
                         "pairingRate": 32,
-                        "avgCommits": 17
+                        "avgCommits": 17,
+                        "dependencies": 1
                     }
                 },
                 {
@@ -105,15 +124,51 @@
                     "toId": "7de6343f370ff7cf",
                     "attributes": {
                         "pairingRate": 65,
-                        "avgCommits": 22
-                    }
+                        "avgCommits": 22,
+                        "dependencies": 2
+                    },
+                    "isPointingUpwards": true
+                },
+                {
+                    "fromId": "3d6521b0884ce9f4",
+                    "toId": "7de6343f370ff7cf",
+                    "attributes": {
+                        "pairingRate": 48,
+                        "avgCommits": 25,
+                        "dependencies": 4
+                    },
+                    "isCyclic": true
+                },
+                {
+                    "fromId": "7de6343f370ff7cf",
+                    "toId": "3d6521b0884ce9f4",
+                    "attributes": {
+                        "pairingRate": 41,
+                        "avgCommits": 19,
+                        "dependencies": 1
+                    },
+                    "isCyclic": true,
+                    "isPointingUpwards": true
                 }
             ],
             "attributeTypes": {
                 "pairingRate": "relative",
-                "avgCommits": "absolute"
+                "avgCommits": "absolute",
+                "dependencies": "absolute"
             },
-            "attributeDescriptors": {}
+            "attributeDescriptors": {
+                "dependencies": {
+                    "title": "Dependencies",
+                    "description": "Number of declaration-level dependencies between two files",
+                    "hintLowValue": "Few dependencies between the files",
+                    "hintHighValue": "Many dependencies between the files",
+                    "link": "",
+                    "direction": -1,
+                    "analyzers": [
+                        "dependencyParser"
+                    ]
+                }
+            }
         },
         "domain": {
             "nodes": {
