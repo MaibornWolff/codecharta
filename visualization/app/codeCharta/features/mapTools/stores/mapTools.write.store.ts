@@ -4,7 +4,7 @@ import { CcState } from "../../../model/codeCharta.model"
 import { setCenterMapZoom, setPresentationMode } from "../../../stores/preferences/preferences.write.facade"
 
 @Injectable({ providedIn: "root" })
-export class ViewCubeToolboxWriteStore {
+export class MapToolsWriteStore {
     constructor(private readonly store: Store<CcState>) {}
 
     setPresentationMode(value: boolean) {

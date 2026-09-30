@@ -7,12 +7,12 @@ import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeV
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import { ScreenshotService } from "../../../screenshot/facade"
-import { ViewCubeToolboxComponent } from "./viewCubeToolbox.component"
+import { MapToolsComponent } from "./mapTools.component"
 
-describe("ViewCubeToolboxComponent", () => {
+describe("MapToolsComponent", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [ViewCubeToolboxComponent],
+            imports: [MapToolsComponent],
             providers: [
                 provideMockStore({ initialState: defaultState }),
                 { provide: State, useValue: { getValue: () => defaultState } },
@@ -43,7 +43,7 @@ describe("ViewCubeToolboxComponent", () => {
 
     it("should render one of each toolbox sub-component", async () => {
         // Arrange & Act
-        const { container } = await render(ViewCubeToolboxComponent)
+        const { container } = await render(MapToolsComponent)
 
         // Assert
         expect(container.querySelectorAll("cc-toolbox-center-map-button").length).toBe(1)
@@ -53,7 +53,7 @@ describe("ViewCubeToolboxComponent", () => {
 
     it("should open the zoom menu outside the translated toolbar on right click", async () => {
         // Arrange
-        const { container } = await render(ViewCubeToolboxComponent)
+        const { container } = await render(MapToolsComponent)
 
         // Act
         fireEvent.contextMenu(screen.getByRole("button", { name: "Center map" }))

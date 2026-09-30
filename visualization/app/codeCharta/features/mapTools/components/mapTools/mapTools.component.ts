@@ -6,13 +6,13 @@ import { CenterMapZoomMenuComponent } from "../centerMapZoomMenu/centerMapZoomMe
 import { PresentationModeButtonComponent } from "../presentationModeButton/presentationModeButton.component"
 
 @Component({
-    selector: "cc-view-cube-toolbox",
-    templateUrl: "./viewCubeToolbox.component.html",
+    selector: "cc-map-tools",
+    templateUrl: "./mapTools.component.html",
     imports: [CenterMapButtonComponent, ScreenshotButtonComponent, PresentationModeButtonComponent, CenterMapZoomMenuComponent],
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: ScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewCubeToolboxComponent {
+export class MapToolsComponent {
     // The zoom menu is positioned against the viewport, so it lives outside the toolbar: the toolbar's
     // own translate would make it the containing block and place the menu away from the cursor.
     protected readonly zoomMenuAnchor = signal<FloatingMenuAnchor | null>(null)

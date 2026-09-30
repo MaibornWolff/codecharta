@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
-import { ViewCubeToolboxWriteStore } from "../../stores/viewCubeToolbox.write.store"
+import { MapToolsWriteStore } from "../../stores/mapTools.write.store"
 
 @Component({
     selector: "cc-toolbox-presentation-mode-button",
@@ -10,7 +10,7 @@ import { ViewCubeToolboxWriteStore } from "../../stores/viewCubeToolbox.write.st
 })
 export class PresentationModeButtonComponent {
     private readonly preferencesReadWindow = inject(PreferencesReadWindow)
-    private readonly viewCubeToolboxWriteStore = inject(ViewCubeToolboxWriteStore)
+    private readonly mapToolsWriteStore = inject(MapToolsWriteStore)
 
     protected readonly isPresentationMode = toSignal(this.preferencesReadWindow.isPresentationMode$, { requireSync: true })
 
@@ -19,6 +19,6 @@ export class PresentationModeButtonComponent {
     )
 
     handleToggle() {
-        this.viewCubeToolboxWriteStore.setPresentationMode(!this.isPresentationMode())
+        this.mapToolsWriteStore.setPresentationMode(!this.isPresentationMode())
     }
 }

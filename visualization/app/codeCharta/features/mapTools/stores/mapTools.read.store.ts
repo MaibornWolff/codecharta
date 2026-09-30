@@ -5,7 +5,7 @@ import { CcState } from "../../../model/codeCharta.model"
 import { centerMapZoomSelector, defaultCenterMapZoom } from "../../../stores/preferences/preferences.read.facade"
 
 @Injectable({ providedIn: "root" })
-export class ViewCubeToolboxReadStore {
+export class MapToolsReadStore {
     constructor(private readonly store: Store<CcState>) {}
 
     readonly defaultCenterMapZoom = defaultCenterMapZoom
