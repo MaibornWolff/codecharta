@@ -1,5 +1,6 @@
 export { ScreenshotButtonComponent } from "./components/screenshotButton/screenshotButton.component"
 export { SCREENSHOT_CAPTURE } from "./screenshotCapture"
+export { DependencyGraphScreenshotService } from "./services/dependencyGraphScreenshot.service"
 export { RadialMapScreenshotService } from "./services/radialMapScreenshot.service"
 export { ScreenshotService } from "./services/screenshot.service"
 export { WordCloudScreenshotService } from "./services/wordCloudScreenshot.service"

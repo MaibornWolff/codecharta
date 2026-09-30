@@ -4,6 +4,7 @@ import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
+import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import { AxisWindow, Viewport, windowResizedTo } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
@@ -49,7 +50,10 @@ export class DependencyGraphHost {
 
     readonly containerSize = this.containerSizeObserver.size
 
-    constructor(private readonly handlers: DependencyGraphHandlers) {}
+    constructor(
+        private readonly chartRegistry: DependencyGraphChartRegistry,
+        private readonly handlers: DependencyGraphHandlers
+    ) {}
 
     attachTo(container: HTMLElement): void {
         if (this.chart && this.attachedContainer === container) {
@@ -62,6 +66,7 @@ export class DependencyGraphHost {
         this.listenToChart(this.chart)
         this.listenToRenderSurface(this.chart.getZr(), this.dragGesture)
         this.listenToContainer(container)
+        this.chartRegistry.register(this.chart)
     }
 
     render(option: object): void {
@@ -90,6 +95,9 @@ export class DependencyGraphHost {
         this.containerSizeObserver.disconnect()
         this.dragGesture?.cancel()
         this.dragGesture = undefined
+        if (this.chart) {
+            this.chartRegistry.unregister(this.chart)
+        }
         this.chart?.dispose()
         this.chart = undefined
         this.chartSize = undefined

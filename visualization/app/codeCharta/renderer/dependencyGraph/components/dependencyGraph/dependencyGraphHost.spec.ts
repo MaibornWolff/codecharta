@@ -1,4 +1,5 @@
 import * as echarts from "echarts/core"
+import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import {
     elementOfSize,
     fireChartEvent,
@@ -20,6 +21,7 @@ const PRIMARY_PRESS = { offsetX: 10, offsetY: 10, event: { button: 0 } }
 describe("DependencyGraphHost", () => {
     let handlers: DependencyGraphHandlers
     let host: DependencyGraphHost
+    let registry: DependencyGraphChartRegistry
     let container: HTMLElement
 
     beforeEach(() => {
@@ -36,7 +38,8 @@ describe("DependencyGraphHost", () => {
             boxAt: jest.fn(() => "/root/app"),
             onBoxDragEnded: jest.fn()
         }
-        host = new DependencyGraphHost(handlers)
+        registry = new DependencyGraphChartRegistry()
+        host = new DependencyGraphHost(registry, handlers)
         container = elementOfSize(800, 600)
         host.attachTo(container)
     })
@@ -45,7 +48,7 @@ describe("DependencyGraphHost", () => {
         jest.useRealTimers()
     })
 
-    it("should create one chart per container and publish the container's size", () => {
+    it("should create one chart per container, register it for screenshots and publish the container's size", () => {
         // Arrange
         const sameContainer = container
 
@@ -54,6 +57,7 @@ describe("DependencyGraphHost", () => {
 
         // Assert
         expect(echarts.init).toHaveBeenCalledTimes(1)
+        expect(registry.current()).toBe(stubbedChart)
         expect(host.containerSize()).toEqual({ width: 800, height: 600 })
     })
 
@@ -354,7 +358,7 @@ describe("DependencyGraphHost", () => {
         expect(shownWindow).toBeNull()
     })
 
-    it("should end a hover and release the chart when disposed", () => {
+    it("should end a hover and release the chart and its registration when disposed", () => {
         // Arrange
         fireChartEvent("mouseover", BOX)
 
@@ -365,6 +369,7 @@ describe("DependencyGraphHost", () => {
         // Assert
         expect(handlers.onBoxHovered).toHaveBeenLastCalledWith(null)
         expect(stubbedChart.dispose).toHaveBeenCalled()
+        expect(registry.current()).toBeNull()
         expect(stubbedChart.setOption).not.toHaveBeenCalled()
     })
 })
