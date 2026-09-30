@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
-import { NodeInteraction, setRightClickedNodeData, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData, unfocusAllNodes, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class RadialMapWriteStore {
@@ -29,5 +29,9 @@ export class RadialMapWriteStore {
 
     unfocus() {
         this.store.dispatch(unfocusNode())
+    }
+
+    unfocusAll() {
+        this.store.dispatch(unfocusAllNodes())
     }
 }
