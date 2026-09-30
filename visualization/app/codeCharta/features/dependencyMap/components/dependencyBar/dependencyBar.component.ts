@@ -1,15 +1,21 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core"
-import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective } from "../../../shared/facade"
+import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective, BarToolsTabComponent } from "../../../shared/facade"
 import { EdgeMetricSegmentComponent } from "../edgeMetricSegment/edgeMetricSegment.component"
 import { EdgeStyleSegmentComponent } from "../edgeStyleSegment/edgeStyleSegment.component"
 import { EdgeTypesSegmentComponent } from "../edgeTypesSegment/edgeTypesSegment.component"
-import { GraphViewSegmentComponent } from "../graphViewSegment/graphViewSegment.component"
+import { GraphViewToolsComponent } from "../graphViewTools/graphViewTools.component"
 
 @Component({
     selector: "cc-dependency-bar",
     templateUrl: "./dependencyBar.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [EdgeTypesSegmentComponent, EdgeStyleSegmentComponent, EdgeMetricSegmentComponent, GraphViewSegmentComponent],
+    imports: [
+        BarToolsTabComponent,
+        EdgeTypesSegmentComponent,
+        EdgeStyleSegmentComponent,
+        EdgeMetricSegmentComponent,
+        GraphViewToolsComponent
+    ],
     hostDirectives: [BarShellDirective],
     host: { "[style.bottom]": "barBottom" }
 })

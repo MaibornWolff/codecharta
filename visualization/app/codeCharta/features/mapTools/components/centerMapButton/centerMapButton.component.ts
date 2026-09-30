@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, output } from "@angular/core"
 import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
-import { FloatingMenuAnchor } from "../../../shared/facade"
+import { BarToolComponent, FloatingMenuAnchor } from "../../../shared/facade"
 
 @Component({
     selector: "cc-toolbox-center-map-button",
     templateUrl: "./centerMapButton.component.html",
+    imports: [BarToolComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CenterMapButtonComponent {

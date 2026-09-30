@@ -1,10 +1,1 @@
-<button
-    type="button"
-    class="join-item btn btn-sm btn-square"
-    [class.btn-active]="isPresentationMode()"
-    [title]="tooltip()"
-    aria-label="Presentation mode"
-    (click)="handleToggle()"
->
-    <i class="fa fa-lightbulb-o"></i>
-</button>
+<cc-bar-tool label="Flashlight" icon="fa fa-lightbulb-o" [pressed]="isPresentationMode()" [tooltip]="tooltip()" (activated)="handleToggle()"></cc-bar-tool>

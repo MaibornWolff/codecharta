@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { PreferencesReadWindow } from "../../../../stores/preferences/preferences.read.facade"
+import { BarToolComponent } from "../../../shared/facade"
 import { MapToolsWriteStore } from "../../stores/mapTools.write.store"
 
 @Component({
     selector: "cc-toolbox-presentation-mode-button",
     templateUrl: "./presentationModeButton.component.html",
+    imports: [BarToolComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PresentationModeButtonComponent {

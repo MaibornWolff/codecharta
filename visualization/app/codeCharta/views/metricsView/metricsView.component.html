@@ -17,7 +17,13 @@
 <cc-sidebar-inspector></cc-sidebar-inspector>
 <cc-node-context-menu></cc-node-context-menu>
 
-<cc-metrics-bar></cc-metrics-bar>
+<cc-metrics-bar>
+    @if (isRadialLayout()) {
+        <cc-radial-map-tools barTools></cc-radial-map-tools>
+    } @else {
+        <cc-map-tools barTools></cc-map-tools>
+    }
+</cc-metrics-bar>
 
 <cc-legend-panel></cc-legend-panel>
 

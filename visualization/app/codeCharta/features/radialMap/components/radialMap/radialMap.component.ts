@@ -19,7 +19,6 @@ import {
     FILE_EXTENSION_BAR_HEIGHT_CSS_VARIABLE,
     METRICS_BAR_HEIGHT_CSS_VARIABLE
 } from "../../../../util/barLayout"
-import { RadialMapScreenshotService, SCREENSHOT_CAPTURE, ScreenshotButtonComponent } from "../../../screenshot/facade"
 import { RadialMapReadStore } from "../../stores/radialMap.read.store"
 import { RadialMapWriteStore } from "../../stores/radialMap.write.store"
 
@@ -33,8 +32,7 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
 @Component({
     selector: "cc-radial-map",
     templateUrl: "./radialMap.component.html",
-    imports: [RadialChartComponent, ScreenshotButtonComponent],
-    providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: RadialMapScreenshotService }],
+    imports: [RadialChartComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)]",

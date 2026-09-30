@@ -11,13 +11,14 @@ import {
     MapExplorerTree,
     ShowsHandedOverMapNodeDirective
 } from "../../features/mapExplorer/facade"
+import { MapToolsComponent } from "../../features/mapTools/facade"
 import { MetricsBarComponent } from "../../features/metricsBar/facade"
 import {
     DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
     NODE_CONTEXT_MENU_CAPABILITIES,
     NodeContextMenuComponent
 } from "../../features/nodeContextMenu/facade"
-import { RadialMapComponent } from "../../features/radialMap/facade"
+import { RadialMapComponent, RadialMapToolsComponent } from "../../features/radialMap/facade"
 import { injectIsRadialLayout, LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
@@ -57,7 +58,9 @@ import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelecte
         LegendPanelComponent,
         BottomBarComponent,
         LoadingFileProgressSpinnerComponent,
-        RadialMapComponent
+        MapToolsComponent,
+        RadialMapComponent,
+        RadialMapToolsComponent
     ],
     providers: [
         MetricsExplorerRow,

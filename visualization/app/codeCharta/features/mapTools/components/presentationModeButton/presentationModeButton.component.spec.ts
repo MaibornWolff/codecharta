@@ -18,29 +18,29 @@ describe("PresentationModeButtonComponent (toolbox)", () => {
         })
     }
 
-    it("should not have btn-active when presentation mode is off", async () => {
+    it("should show the flashlight as not pressed when presentation mode is off", async () => {
         // Arrange
         configure(false)
 
         // Act
         await render(PresentationModeButtonComponent)
-        const button = screen.getByRole("button", { name: "Presentation mode" })
+        const button = screen.getByRole("button", { name: "Flashlight" })
 
         // Assert
-        expect(button.classList.contains("btn-active")).toBe(false)
+        expect(button.getAttribute("aria-pressed")).toBe("false")
         expect(button.getAttribute("title")).toBe("Enable flashlight hover effect")
     })
 
-    it("should have btn-active when presentation mode is on", async () => {
+    it("should show the flashlight as pressed when presentation mode is on", async () => {
         // Arrange
         configure(true)
 
         // Act
         await render(PresentationModeButtonComponent)
-        const button = screen.getByRole("button", { name: "Presentation mode" })
+        const button = screen.getByRole("button", { name: "Flashlight" })
 
         // Assert
-        expect(button.classList.contains("btn-active")).toBe(true)
+        expect(button.getAttribute("aria-pressed")).toBe("true")
         expect(button.getAttribute("title")).toBe("Disable flashlight hover effect")
     })
 
@@ -52,7 +52,7 @@ describe("PresentationModeButtonComponent (toolbox)", () => {
         const dispatchSpy = jest.spyOn(store, "dispatch")
 
         // Act
-        await userEvent.click(screen.getByRole("button", { name: "Presentation mode" }))
+        await userEvent.click(screen.getByRole("button", { name: "Flashlight" }))
 
         // Assert
         expect(dispatchSpy).toHaveBeenCalledWith(setPresentationMode({ value: true }))

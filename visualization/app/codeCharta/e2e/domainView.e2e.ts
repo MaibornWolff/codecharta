@@ -556,7 +556,7 @@ test.describe("DomainView", () => {
         await expect(page).toHaveURL(/\?(?:[^#]*&)?file=fileOne\.json(?:&[^#]*)?#\/$/)
     })
 
-    test("should download a png of the word cloud from the domain toolbox", async ({ page }) => {
+    test("should download a png of the word cloud from the tools tab of the domain bar", async ({ page }) => {
         // Arrange
         const viewSwitcher = new ViewSwitcherPageObject(page)
         await viewSwitcher.switchToDomain()
@@ -564,7 +564,7 @@ test.describe("DomainView", () => {
 
         // Act
         const download = page.waitForEvent("download")
-        await page.locator("cc-domain-toolbox button[aria-label='Screenshot']").click()
+        await page.locator("cc-domain-bar button[aria-label='Screenshot']").click()
 
         // Assert — the domain suffix distinguishes it from the metrics view's "_map" screenshot
         expect((await download).suggestedFilename()).toMatch(/_domain\.png$/)

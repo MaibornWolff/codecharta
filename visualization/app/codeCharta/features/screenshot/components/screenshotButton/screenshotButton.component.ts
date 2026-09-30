@@ -4,6 +4,7 @@ import hotkeys from "hotkeys-js"
 import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { ViewId } from "../../../../routing/routePaths"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
+import { BarToolComponent } from "../../../shared/facade"
 import { SCREENSHOT_CAPTURE } from "../../screenshotCapture"
 
 const SCREENSHOT_HOTKEY_TO_FILE = "Ctrl+Alt+S"
@@ -12,6 +13,7 @@ const SCREENSHOT_HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
 @Component({
     selector: "cc-toolbox-screenshot-button",
     templateUrl: "./screenshotButton.component.html",
+    imports: [BarToolComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScreenshotButtonComponent implements OnInit, OnDestroy {

@@ -8,7 +8,7 @@ import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { MetricsBarComponent } from "./metricsBar.component"
 
 describe("MetricsBarComponent", () => {
-    async function setup({
+    function barProviders({
         isDelta = false,
         hasEdgeMetric = false,
         isRadialLayout = false
@@ -17,29 +17,42 @@ describe("MetricsBarComponent", () => {
         hasEdgeMetric?: boolean
         isRadialLayout?: boolean
     } = {}) {
-        return render(MetricsBarComponent, {
-            providers: [
-                provideMockStore({
-                    initialState: defaultState,
-                    selectors: [
-                        { selector: isDeltaStateSelector, value: isDelta },
-                        { selector: isRadialLayoutSelector, value: isRadialLayout },
-                        { selector: areaMetricSelector, value: "rloc" },
-                        { selector: heightMetricSelector, value: "mcc" },
-                        {
-                            selector: metricDataSelector,
-                            value: {
-                                nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0 }],
-                                edgeMetricData: hasEdgeMetric ? [{ name: "pairing_rate", maxValue: 10, minValue: 0, values: [] }] : [],
-                                nodeEdgeMetricsMap: new Map()
-                            }
+        return [
+            provideMockStore({
+                initialState: defaultState,
+                selectors: [
+                    { selector: isDeltaStateSelector, value: isDelta },
+                    { selector: isRadialLayoutSelector, value: isRadialLayout },
+                    { selector: areaMetricSelector, value: "rloc" },
+                    { selector: heightMetricSelector, value: "mcc" },
+                    {
+                        selector: metricDataSelector,
+                        value: {
+                            nodeMetricData: [{ name: "rloc", maxValue: 100, minValue: 0 }],
+                            edgeMetricData: hasEdgeMetric ? [{ name: "pairing_rate", maxValue: 10, minValue: 0, values: [] }] : [],
+                            nodeEdgeMetricsMap: new Map()
                         }
-                    ]
-                }),
-                { provide: State, useValue: { getValue: () => defaultState } }
-            ]
-        })
+                    }
+                ]
+            }),
+            { provide: State, useValue: { getValue: () => defaultState } }
+        ]
     }
+
+    async function setup(options: Parameters<typeof barProviders>[0] = {}) {
+        return render(MetricsBarComponent, { providers: barProviders(options) })
+    }
+
+    it("should carry the tools it is given in the tab on its edge", async () => {
+        // Act
+        const { container } = await render('<cc-metrics-bar><button type="button" barTools>Center map</button></cc-metrics-bar>', {
+            imports: [MetricsBarComponent],
+            providers: barProviders()
+        })
+
+        // Assert
+        expect(container.querySelector("cc-bar-tools-tab").textContent).toContain("Center map")
+    })
 
     it("should render scenario, area, height, color and labels segments by default", async () => {
         await setup()

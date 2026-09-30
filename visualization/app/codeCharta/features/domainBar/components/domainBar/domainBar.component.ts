@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { WordCloudSizingMode, wordCloudShapeLabels } from "../../../../model/wordCloud.model"
-import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective } from "../../../shared/facade"
+import { BAR_BOTTOM_ABOVE_BOTTOM_BAR, BarShellDirective, BarToolsTabComponent } from "../../../shared/facade"
 import { DomainBarReadStore } from "../../stores/domainBar.read.store"
 import { DomainSegmentComponent } from "../domainSegment/domainSegment.component"
 import { RotationSettingsPopoverComponent } from "../rotationSettingsPopover/rotationSettingsPopover.component"
@@ -11,7 +11,13 @@ import { WordSizingSettingsPopoverComponent } from "../wordSizingSettingsPopover
     selector: "cc-domain-bar",
     templateUrl: "./domainBar.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [DomainSegmentComponent, ShapeSettingsPopoverComponent, WordSizingSettingsPopoverComponent, RotationSettingsPopoverComponent],
+    imports: [
+        BarToolsTabComponent,
+        DomainSegmentComponent,
+        ShapeSettingsPopoverComponent,
+        WordSizingSettingsPopoverComponent,
+        RotationSettingsPopoverComponent
+    ],
     standalone: true,
     hostDirectives: [BarShellDirective],
     host: { "[style.bottom]": "barBottom" }

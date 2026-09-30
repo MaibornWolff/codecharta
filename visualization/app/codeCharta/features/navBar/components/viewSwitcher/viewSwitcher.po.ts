@@ -24,7 +24,7 @@ export class ViewSwitcherPageObject {
     }
 
     /** The view-switch spinner comes and goes under a resting pointer, which hovers the tab again and reopens the
-     * mode bar over the view's toolbox; a user moves on, so the pointer leaves the tab as a user's would. */
+     * mode bar over the view; a user moves on, so the pointer leaves the tab as a user's would. */
     private async switchTo(view: "domain" | "metrics") {
         await this.page.locator(`[data-testid=view-switcher-${view}]`).click()
         await this.page.mouse.move(0, 0)

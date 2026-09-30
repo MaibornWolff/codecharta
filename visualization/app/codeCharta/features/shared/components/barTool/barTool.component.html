@@ -1,0 +1,22 @@
+<div class="flex min-w-0 overflow-hidden">
+    <button
+        type="button"
+        [class]="buttonClasses()"
+        [attr.aria-label]="label()"
+        [attr.aria-pressed]="pressed()"
+        [attr.title]="tooltip()"
+        [attr.data-testid]="testId()"
+        [disabled]="disabled()"
+        (click)="activated.emit()"
+    >
+        <span
+            class="grid grid-cols-[0fr] transition-[grid-template-columns] duration-120 ease-out motion-reduce:transition-none group-hover:grid-cols-[1fr] group-focus-visible:grid-cols-[1fr]"
+            aria-hidden="true"
+        >
+            <span class="overflow-hidden">
+                <span class="inline-block whitespace-nowrap pl-0.5 pr-1.5 text-xs font-semibold opacity-0 transition-opacity duration-120 ease-out motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100">{{ label() }}</span>
+            </span>
+        </span>
+        <i [class]="icon() + ' text-xs'" aria-hidden="true"></i>
+    </button>
+</div>
