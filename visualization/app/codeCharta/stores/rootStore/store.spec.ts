@@ -99,4 +99,15 @@ describe("_applyPartialState", () => {
         expect(Array.isArray(newState.mapState.mapColors.markingColors)).toBe(true)
         expect(newState.mapState.mapColors.markingColors).toEqual(["#aaaaaa", "#bbbbbb"])
     })
+
+    it("should replace any array wholesale, such as the dependency bar's shown edge types", () => {
+        // Arrange
+        const partialState = { preferences: { dependencyGraph: { shownEdgeTypes: ["cyclic"] } } }
+
+        // Act
+        const newState = _applyPartialState(clone(defaultState), partialState)
+
+        // Assert
+        expect(newState.preferences.dependencyGraph.shownEdgeTypes).toEqual(["cyclic"])
+    })
 })
