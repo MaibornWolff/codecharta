@@ -1,3 +1,7 @@
+<cc-unfocus-tool [isFocused]="isFocused()" testId="metrics-bar-unfocus" (unfocused)="unfocus()"></cc-unfocus-tool>
+@if (isFocused()) {
+    <cc-bar-tools-divider></cc-bar-tools-divider>
+}
 <cc-toolbox-center-map-button (zoomMenuRequested)="zoomMenuAnchor.set($event)"></cc-toolbox-center-map-button>
 <cc-toolbox-presentation-mode-button></cc-toolbox-presentation-mode-button>
 <cc-toolbox-screenshot-button view="metrics"></cc-toolbox-screenshot-button>

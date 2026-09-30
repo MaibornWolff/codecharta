@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- **Tools on the bars**: centering, the flashlight and the screenshot sit in a small tab on the edge of each view's bar instead of floating over the map, and each tool shows its name when you point at it.
+- **Tools on the bars**: centering, the flashlight and the screenshot sit in a small tab on the edge of each view's bar instead of floating over the map, each tool shows its name when you point at it, and an Unfocus button joins them while you are focused on a folder.
 
 ### Removed
 
