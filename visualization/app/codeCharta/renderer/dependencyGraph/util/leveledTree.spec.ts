@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { buildLeveledTree, collapsedFirstLook, LeveledNode } from "./leveledTree"
+import { boxPathOf, buildLeveledTree, collapsedFirstLook, LeveledNode } from "./leveledTree"
 
 function file(path: string): CodeMapNode {
     return { name: path.split("/").pop(), path, type: NodeType.FILE }
@@ -110,6 +110,20 @@ describe("leveledTree", () => {
 
             // Assert
             expect(tree).toBeNull()
+        })
+    })
+
+    describe("boxPathOf", () => {
+        it("should find a folder's own box, the chain box it is folded into, and nothing for a folder the graph lacks", () => {
+            // Arrange
+            const chain = { ...leveledFolder("/root/lib/core", [leveledFile("/root/lib/core/io.ts")]), foldedPaths: ["/root/lib"] }
+            const tree = leveledFolder("/root", [chain, leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")])])
+
+            // Act
+            const boxPaths = ["/root/ui", "/root/lib", "/root/docs"].map(path => boxPathOf(tree, path))
+
+            // Assert
+            expect(boxPaths).toEqual(["/root/ui", "/root/lib/core", null])
         })
     })
 

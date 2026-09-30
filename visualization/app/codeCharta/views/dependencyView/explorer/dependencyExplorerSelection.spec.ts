@@ -54,6 +54,20 @@ describe("DependencyExplorerSelection", () => {
         expect([...TestBed.inject(DependencyMapViewStore).expandedPaths()]).toEqual(["/root", "/root/app", "/root/app/ui"])
     })
 
+    it("should open a folder opened in the explorer in the graph as well", () => {
+        // Arrange
+        const { selection } = setup()
+        const viewStore = TestBed.inject(DependencyMapViewStore)
+        viewStore.adoptTree(TREE)
+        const folder = { name: "app", path: "/root/app", id: 1, type: NodeType.FOLDER, children: [LEAF] } as unknown as CodeMapNode
+
+        // Act
+        selection.select(folder)
+
+        // Assert
+        expect(viewStore.expandedPaths().has("/root/app")).toBe(true)
+    })
+
     it("should leave the graph's zoom alone when a row is selected", () => {
         // Arrange
         const { selection } = setup()
