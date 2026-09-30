@@ -5,11 +5,11 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { locationStrategyProvider } from "../../../../../app.config"
-import { hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { routeLinks, routePaths } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { isDependencyViewAvailableSelector } from "../../selectors/isDependencyViewAvailable.selector"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { ViewSwitcherComponent } from "./viewSwitcher.component"
 
@@ -18,7 +18,7 @@ const deepLinkedUrl = "http://localhost:9009/index.html?file=fileOne.json&area=f
 const hrefOf = (routeLink: string) => `${deepLinkedUrl}#${routeLink}`
 
 describe("ViewSwitcherComponent", () => {
-    async function setup(hasDomainData: boolean, isDeltaState = false, hasDependencyData = false) {
+    async function setup(hasDomainData: boolean, isDeltaState = false, isDependencyViewAvailable = false) {
         return render(ViewSwitcherComponent, {
             providers: [
                 provideRouter([
@@ -32,7 +32,7 @@ describe("ViewSwitcherComponent", () => {
                     initialState: defaultState,
                     selectors: [
                         { selector: hasDomainDataSelector, value: hasDomainData },
-                        { selector: hasDependencyDataSelector, value: hasDependencyData },
+                        { selector: isDependencyViewAvailableSelector, value: isDependencyViewAvailable },
                         { selector: isDeltaStateSelector, value: isDeltaState }
                     ]
                 }),
@@ -52,7 +52,7 @@ describe("ViewSwitcherComponent", () => {
         expect(screen.queryByTestId("view-switcher-domain")).toBeNull()
     })
 
-    it("should hide the dependencies tab when the file has no dependency levels", async () => {
+    it("should hide the dependencies tab while the dependency view is unavailable", async () => {
         // Arrange & Act
         await setup(true)
 
@@ -60,7 +60,7 @@ describe("ViewSwitcherComponent", () => {
         expect(screen.queryByTestId("view-switcher-dependencies")).toBeNull()
     })
 
-    it("should link the dependencies tab to the dependency route when the file has dependency levels", async () => {
+    it("should link the dependencies tab to the dependency route while the dependency view is available", async () => {
         // Arrange & Act
         await setup(false, false, true)
 

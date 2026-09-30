@@ -28,14 +28,14 @@ describe("RedirectAwayFromDependencyViewEffect", () => {
         store = TestBed.inject(MockStore)
     }
 
-    function loadFile(dependencyLevels: DependencyLevelData) {
+    function loadFile(dependencyLevels: DependencyLevelData, dependencyViewEnabled = true) {
         const files = [
             {
                 file: { fileMeta: { fileChecksum: "checksum" }, settings: { fileSettings: { dependencyLevels } } },
                 selectedAs: FileSelectionState.Partial
             }
         ] as FileState[]
-        store.setState({ ...defaultState, files })
+        store.setState({ ...defaultState, preferences: { ...defaultState.preferences, dependencyViewEnabled }, files })
     }
 
     function navigateTo(url: string) {
@@ -86,12 +86,36 @@ describe("RedirectAwayFromDependencyViewEffect", () => {
         expect(router.navigateByUrl).not.toHaveBeenCalled()
     })
 
+    it("should send the reader to the map with a toast naming the setting while the dependency view is switched off", async () => {
+        // Arrange
+        setup(routeLinks.dependencies)
+
+        // Act
+        loadFile({ "/root/a.ts": 0 }, false)
+        await settle()
+
+        // Assert
+        expect(router.navigateByUrl).toHaveBeenCalledWith(routeLinks.metrics, { replaceUrl: true })
+        expect(toastService.show).toHaveBeenCalledWith("The dependency view is experimental — switch it on in the Global Configuration.")
+    })
+
+    it("should wait for the files before reading the setting, since the saved setting is restored before them", async () => {
+        // Arrange
+        setup(routeLinks.dependencies)
+
+        // Act
+        await settle()
+
+        // Assert
+        expect(router.navigateByUrl).not.toHaveBeenCalled()
+    })
+
     it("should leave other views alone", async () => {
         // Arrange
         setup(routeLinks.metrics)
 
         // Act
-        loadFile({})
+        loadFile({}, false)
         await settle()
 
         // Assert

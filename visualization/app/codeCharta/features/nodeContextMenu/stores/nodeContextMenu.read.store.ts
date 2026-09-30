@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { distinctUntilChanged, map, Observable, of, switchMap } from "rxjs"
+import { combineLatest, distinctUntilChanged, map, Observable, of, switchMap } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector, pathsWithDomainWordsSelector } from "../../../lenses/domain/domainLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { flattenPredicateSelector, rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
+import { dependencyViewEnabledSelector } from "../../../stores/preferences/preferences.read.facade"
 import { keptHighlightPathsSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { currentMarkColorSelector, markFolderItemsSelector } from "../selectors/markFolderItems.selector"
 
@@ -31,9 +32,11 @@ export class NodeContextMenuReadStore {
             .pipe(switchMap(hasDomainData => (hasDomainData ? this.store.select(pathsWithDomainWordsSelector) : of(NO_PATHS))))
     )
     readonly isRightClickedNodeInDependencyLens$ = this.whileNodeIsRightClicked(() =>
-        this.store
-            .select(isDeltaStateSelector)
-            .pipe(switchMap(isDeltaState => (isDeltaState ? of(NO_PATHS) : this.store.select(pathsWithDependencyLevelsSelector))))
+        combineLatest([this.store.select(dependencyViewEnabledSelector), this.store.select(isDeltaStateSelector)]).pipe(
+            switchMap(([isEnabled, isDeltaState]) =>
+                isEnabled && !isDeltaState ? this.store.select(pathsWithDependencyLevelsSelector) : of(NO_PATHS)
+            )
+        )
     )
 
     private whileNodeIsRightClicked(lensPaths: () => Observable<ReadonlySet<string>>): Observable<boolean> {

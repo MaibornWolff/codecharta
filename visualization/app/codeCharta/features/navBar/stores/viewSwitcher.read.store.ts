@@ -1,8 +1,8 @@
 import { Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { Store } from "@ngrx/store"
-import { hasDependencyDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../lenses/domain/domainLens.facade"
+import { isDependencyViewAvailableSelector } from "../selectors/isDependencyViewAvailable.selector"
 
 @Injectable({ providedIn: "root" })
 export class ViewSwitcherReadStore {
@@ -12,5 +12,5 @@ export class ViewSwitcherReadStore {
      * blocked by it (see RedirectAwayFromDomainViewEffect). */
     readonly isDomainViewAvailable = toSignal(this.store.select(hasDomainDataSelector), { initialValue: false })
 
-    readonly isDependencyViewAvailable = toSignal(this.store.select(hasDependencyDataSelector), { initialValue: false })
+    readonly isDependencyViewAvailable = toSignal(this.store.select(isDependencyViewAvailableSelector), { initialValue: false })
 }
