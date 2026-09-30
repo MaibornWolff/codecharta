@@ -18,6 +18,10 @@ export const VIEW_IDS = Object.keys(routePaths) as readonly ViewId[]
 
 const VIEW_ID_FOR_UNRECOGNIZED_URL: ViewId = "metrics"
 
+export function viewIdForRoutePath(routePath: string): ViewId {
+    return viewIdForLink(absoluteLinkOf(routePath))
+}
+
 export function viewIdForLink(url: string): ViewId {
     const linkWithoutQueryString = url.split("?")[0]
     const matchedViewId = VIEW_IDS.find(viewId => routeLinks[viewId] === linkWithoutQueryString)

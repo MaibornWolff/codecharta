@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { of } from "rxjs"
 import { pathsWithDependencyLevelsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
-import { pathsWithDomainWordsSelector } from "../../../../lenses/domain/domainLens.facade"
+import { hasDomainDataSelector, pathsWithDomainWordsSelector } from "../../../../lenses/domain/domainLens.facade"
 import { provideMockState } from "../../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../../model/codeCharta.model"
 import { flattenPredicateSelector } from "../../../../renderer/renderModel/renderModel.facade"
@@ -108,6 +108,7 @@ describe("nodeContextMenu component", () => {
                         { selector: focusedNodePathSelector, value: focusedNodePaths },
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
+                        { selector: hasDomainDataSelector, value: pathsWithDomainWords.size > 0 },
                         { selector: pathsWithDomainWordsSelector, value: pathsWithDomainWords },
                         { selector: isDeltaStateSelector, value: isDeltaState },
                         { selector: pathsWithDependencyLevelsSelector, value: pathsWithDependencyLevels },

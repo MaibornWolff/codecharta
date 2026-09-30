@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { combineLatest, distinctUntilChanged, map, Observable, of, switchMap, timer } from "rxjs"
 import { ViewId } from "../../../routing/routePaths"
 import { ViewReadinessStore } from "../../../routing/viewReadiness.store"
+import { ViewSwitchProgressStore } from "../../../routing/viewSwitchProgress.store"
 import { FileStoreReadWindow } from "../../../stores/fileStore/fileStore.facade"
 import { isApplyingScenario$ } from "../../../util/busy/isApplyingScenario"
 import { isPendingSave$ } from "../../../util/busy/isPendingSave"
@@ -25,12 +26,14 @@ const SETTLE_HOLD_MS = 400
 export class LoadingFileProgressSpinnerService {
     constructor(
         private readonly viewReadinessStore: ViewReadinessStore,
-        private readonly fileStoreReadWindow: FileStoreReadWindow
+        private readonly fileStoreReadWindow: FileStoreReadWindow,
+        private readonly viewSwitchProgressStore: ViewSwitchProgressStore
     ) {}
 
     isLoading$(view: ViewId): Observable<boolean> {
         return combineLatest([
             this.viewReadinessStore.isStale$(view),
+            this.viewSwitchProgressStore.pendingView$.pipe(map(pendingView => pendingView !== null)),
             this.fileStoreReadWindow.isLoadingFile$,
             isPendingHeavyDispatch$,
             isApplyingScenario$,
@@ -47,20 +50,25 @@ export class LoadingFileProgressSpinnerService {
 
     /** What the spinner is waiting for once the load has stopped announcing its own phases. */
     phase$(view: ViewId): Observable<string | null> {
-        return combineLatest([loadPhase$, this.viewReadinessStore.isStale$(view), isPendingHeavyDispatch$, isPendingSave$]).pipe(
-            map(
-                ([announcedPhase, isViewStale, isDispatchPending, isSavePending]) =>
-                    announcedPhase ?? this.phaseOfRemainingWork(view, isViewStale || isDispatchPending, isSavePending)
-            ),
+        return combineLatest([loadPhase$, this.drawnView$(view), isPendingSave$]).pipe(
+            map(([announcedPhase, drawnView, isSavePending]) => announcedPhase ?? this.phaseOfRemainingWork(drawnView, isSavePending)),
             distinctUntilChanged()
         )
     }
 
+    private drawnView$(view: ViewId): Observable<ViewId | null> {
+        return combineLatest([
+            this.viewSwitchProgressStore.pendingView$,
+            this.viewReadinessStore.isStale$(view),
+            isPendingHeavyDispatch$
+        ]).pipe(map(([pendingView, isViewStale, isDispatchPending]) => pendingView ?? (isViewStale || isDispatchPending ? view : null)))
+    }
+
     // The save outranks the draw: it blocks the main thread, while the draw only waits for frames.
-    private phaseOfRemainingWork(view: ViewId, isDrawing: boolean, isSavePending: boolean): string | null {
+    private phaseOfRemainingWork(drawnView: ViewId | null, isSavePending: boolean): string | null {
         if (isSavePending) {
             return SAVING_SESSION_PHASE
         }
-        return isDrawing ? DRAWING_PHASE_OF_VIEW[view] : null
+        return drawnView === null ? null : DRAWING_PHASE_OF_VIEW[drawnView]
     }
 }
