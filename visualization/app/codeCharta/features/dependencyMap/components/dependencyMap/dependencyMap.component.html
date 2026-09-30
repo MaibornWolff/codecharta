@@ -6,7 +6,6 @@
     </div>
 } @else if (scene(); as scene) {
     <cc-dependency-graph
-        #graph
         [scene]="scene"
         [graphIdentity]="graphIdentity()"
         [fitRequest]="fitRequest()"
@@ -21,31 +20,6 @@
         (boxDragEnded)="endDragging()"
     ></cc-dependency-graph>
 
-    <div class="absolute right-[10px] top-[10px] z-10 flex">
-        <div class="join rounded bg-base-100 shadow-md">
-            @if (hasMovedBoxes()) {
-                <button
-                    type="button"
-                    class="btn btn-sm join-item"
-                    title="Put every dragged box back in its place"
-                    data-testid="dependency-reset-layout"
-                    (click)="resetLayout()"
-                >
-                    Reset layout
-                </button>
-            }
-            <button
-                type="button"
-                class="btn btn-sm btn-square join-item"
-                title="Show the whole graph"
-                aria-label="Show the whole graph"
-                data-testid="dependency-reset-view"
-                (click)="graph.resetView()"
-            >
-                <i class="fa-solid fa-expand" aria-hidden="true"></i>
-            </button>
-        </div>
-    </div>
 } @else if (hasDependencyData()) {
     <div class="flex h-full items-center justify-center p-4">
         <output class="alert max-w-md">

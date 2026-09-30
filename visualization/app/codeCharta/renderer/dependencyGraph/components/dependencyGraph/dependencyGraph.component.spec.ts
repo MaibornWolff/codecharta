@@ -192,24 +192,6 @@ describe("DependencyGraphComponent", () => {
         expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
     })
 
-    it("should fit the whole graph when the view is reset", async () => {
-        // Arrange
-        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
-        const { x, y } = fitWindowOf(SCENE.layout, measuredSize)
-
-        // Act
-        fixture.componentInstance.resetView()
-
-        // Assert
-        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({
-            type: "dataZoom",
-            batch: [
-                { dataZoomIndex: 0, startValue: x[0], endValue: x[1] },
-                { dataZoomIndex: 1, startValue: y[0], endValue: y[1] }
-            ]
-        })
-    })
-
     it("should report the end of a drag", async () => {
         // Arrange
         const boxDragEnded = jest.fn()

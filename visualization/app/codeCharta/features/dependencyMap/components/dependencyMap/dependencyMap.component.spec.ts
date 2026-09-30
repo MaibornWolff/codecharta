@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { fireEvent, render, screen } from "@testing-library/angular"
+import { fireEvent, render, screen, waitFor } from "@testing-library/angular"
 import { of } from "rxjs"
 import { edgesSelector, hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
@@ -191,6 +191,14 @@ function dragBox(path: string) {
     fireChartEvent("mousedown", { ...boxEvent(path), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
     fireRenderSurfaceEvent("mousemove", { offsetX: -30, offsetY: 0, target: {} })
     fireRenderSurfaceEvent("mouseup")
+}
+
+function movedBoxCount(): number {
+    return TestBed.inject(DependencyMapViewStore).boxOffsets().size
+}
+
+async function awaitMovedBoxes() {
+    await waitFor(() => expect(movedBoxCount()).toBeGreaterThan(0))
 }
 
 function doubleClickBox(path: string) {
@@ -391,17 +399,6 @@ describe("DependencyMapComponent", () => {
         expect(drawnEdgeIndices()).toHaveLength(1)
     })
 
-    it("should zoom back out to the whole graph from the toolbox", async () => {
-        // Arrange
-        await setup()
-
-        // Act
-        fireEvent.click(screen.getByTestId("dependency-reset-view"))
-
-        // Assert
-        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith(expect.objectContaining({ type: "dataZoom" }))
-    })
-
     it("should mark the view ready once the graph is drawn", async () => {
         // Arrange
         const { markReady } = await setup()
@@ -464,14 +461,14 @@ describe("DependencyMapComponent", () => {
         // Arrange
         const { store } = await setup()
         dragBox("/root/ui/view.ts")
-        await screen.findByTestId("dependency-reset-layout")
+        await awaitMovedBoxes()
 
         // Act
         await loadOtherFiles(store)
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model"])
-        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+        expect(movedBoxCount()).toBe(0)
     })
 
     it("should fit the graph of newly loaded files into view", async () => {
@@ -491,13 +488,13 @@ describe("DependencyMapComponent", () => {
         // Arrange
         const { store } = await setup()
         dragBox("/root/ui/view.ts")
-        await screen.findByTestId("dependency-reset-layout")
+        await awaitMovedBoxes()
 
         // Act
         await excludeSoTheRootMoves(store)
 
         // Assert
-        expect(screen.queryByTestId("dependency-reset-layout")).not.toBeNull()
+        expect(movedBoxCount()).toBeGreaterThan(0)
     })
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {
@@ -519,7 +516,7 @@ describe("DependencyMapComponent", () => {
         expect(distanceOffTheLine).toBeCloseTo(14)
     })
 
-    it("should move a dragged box, offer to reset the layout and put it back", async () => {
+    it("should move a dragged box and put it back once the layout is reset", async () => {
         // Arrange
         await setup()
         const drawnX = (path: string) => {
@@ -534,15 +531,15 @@ describe("DependencyMapComponent", () => {
         fireChartEvent("mousedown", { ...boxEvent("/root/ui/view.ts"), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
         fireRenderSurfaceEvent("mousemove", { offsetX: -30, offsetY: 0, target: {} })
         fireRenderSurfaceEvent("mouseup")
-        await screen.findByTestId("dependency-reset-layout")
+        await awaitMovedBoxes()
         const moved = drawnX("/root/ui/view.ts")
-        fireEvent.click(screen.getByTestId("dependency-reset-layout"))
+        TestBed.inject(DependencyMapViewStore).resetLayout()
         await screen.findByTestId("dependency-graph")
 
         // Assert
         expect(moved).toBeLessThan(before)
         expect(drawnX("/root/ui/view.ts")).toBe(before)
-        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+        expect(movedBoxCount()).toBe(0)
     })
 
     it("should paint a dragged folder with its content over the folders beside it", async () => {
@@ -553,7 +550,7 @@ describe("DependencyMapComponent", () => {
         fireChartEvent("mousedown", { ...boxEvent("/root/ui"), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
         fireRenderSurfaceEvent("mousemove", { offsetX: 0, offsetY: 40, target: {} })
         fireRenderSurfaceEvent("mouseup")
-        await screen.findByTestId("dependency-reset-layout")
+        await awaitMovedBoxes()
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/model", "/root/ui", "/root/model/node.ts", "/root/ui/view.ts"])
@@ -571,7 +568,7 @@ describe("DependencyMapComponent", () => {
         fireChartEvent("mousedown", { ...boxEvent("/root/ui"), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
         fireRenderSurfaceEvent("mousemove", { offsetX: 200, offsetY: 0, target: {} })
         await new Promise(resolve => requestAnimationFrame(resolve))
-        await screen.findByTestId("dependency-reset-layout")
+        await awaitMovedBoxes()
         const whileDragging = fillOf("/root/ui")
         fireRenderSurfaceEvent("mouseup")
         await screen.findByTestId("dependency-graph")
@@ -591,7 +588,7 @@ describe("DependencyMapComponent", () => {
         fireRenderSurfaceEvent("mouseup")
 
         // Assert
-        expect(await screen.findByTestId("dependency-reset-layout")).not.toBeNull()
+        await awaitMovedBoxes()
     })
 
     it("should never drag the root, so its empty space pans the view", async () => {
@@ -604,6 +601,6 @@ describe("DependencyMapComponent", () => {
         fireRenderSurfaceEvent("mouseup")
 
         // Assert
-        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+        expect(movedBoxCount()).toBe(0)
     })
 })
