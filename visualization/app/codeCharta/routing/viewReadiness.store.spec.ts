@@ -36,6 +36,19 @@ describe("ViewReadinessStore", () => {
         expect(store.isStale("metrics")).toBe(true)
     })
 
+    it("should mark a single view stale without affecting the other", () => {
+        // Arrange
+        store.markReady("domain")
+        store.markReady("metrics")
+
+        // Act
+        store.markStale("metrics")
+
+        // Assert
+        expect(store.isStale("metrics")).toBe(true)
+        expect(store.isStale("domain")).toBe(false)
+    })
+
     it("should emit the staleness of the requested view only", async () => {
         // Arrange
         store.markReady("domain")

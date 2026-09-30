@@ -143,6 +143,25 @@ describe("renderCodeMapEffect", () => {
         expect(codeMapRenderService.load).toHaveBeenCalledTimes(1)
     })
 
+    it("should rebuild a settled map that changed while the metrics view was off screen, once it is shown again", async () => {
+        // Arrange
+        actions$.next(setInvertArea({ value: true }))
+        await wait(maxFPS)
+        viewReadinessStore.markReady("metrics")
+        activeView$.next("dependencies")
+        actions$.next(setInvertArea({ value: false }))
+        await wait(maxFPS)
+        const isStaleWhileAway = viewReadinessStore.isStale("metrics")
+
+        // Act
+        activeView$.next("metrics")
+        await wait(maxFPS)
+
+        // Assert
+        expect(isStaleWhileAway).toBe(true)
+        expect(codeMapRenderService.load).toHaveBeenCalledTimes(2)
+    })
+
     it("should keep re-rendering on-screen changes after the map has settled to ready", async () => {
         // Arrange — the map rendered once and settled, exactly the state the app is in when the user has
         actions$.next(setInvertArea({ value: true }))
