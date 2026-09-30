@@ -21,6 +21,13 @@ export class ViewReadinessStore {
         this.staleViews$.next(new Set(VIEW_IDS))
     }
 
+    markStale(view: ViewId): void {
+        if (this.isStale(view)) {
+            return
+        }
+        this.staleViews$.next(new Set([...this.staleViews$.value, view]))
+    }
+
     markReady(view: ViewId): void {
         if (!this.isStale(view)) {
             return

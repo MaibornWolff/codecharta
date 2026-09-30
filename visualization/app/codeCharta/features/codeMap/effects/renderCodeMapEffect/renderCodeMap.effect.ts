@@ -47,8 +47,14 @@ export class RenderCodeMapEffect {
         map(([accumulatedData]) => accumulatedData)
     )
 
+    // A change the hidden metrics view misses leaves it stale, so it is drawn once the view is shown again.
     private readonly dataChangedWhileMetricsViewIsShown$ = this.mapDataChange$.pipe(
         withLatestFrom(this.activeViewStore.activeView$),
+        tap(([, activeView]) => {
+            if (activeView !== "metrics") {
+                this.viewReadinessStore.markStale("metrics")
+            }
+        }),
         filter(([, activeView]) => activeView === "metrics"),
         map(([accumulatedData]) => accumulatedData)
     )
