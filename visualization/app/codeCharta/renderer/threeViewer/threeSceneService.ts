@@ -1,60 +1,56 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { Subject } from "rxjs"
-import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
-import { CcState, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
+import { AmbientLight, DirectionalLight, Group, Scene } from "three"
+import { CcState, Node } from "../../model/codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { getMarkingColor } from "../../util/codeMapHelper"
-import { ColorConverter } from "../../util/color/colorConverter"
 import { EventEmitter } from "../../util/EventEmitter"
-import { FileExtensionCalculator, NO_EXTENSION } from "../../util/fileExtension/fileExtensionCalculator"
+import { NO_EXTENSION } from "../../util/fileExtension/fileExtensionCalculator"
 import { selectedColorMetricDataSelector } from "../renderModel/renderModel.facade"
 import { getBuildingColor, treeMapSize } from "./algorithm/treeMapLayout/treeMapHelper"
-import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { IdToBuildingService } from "./idToBuilding.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { ThreeSceneStore } from "./stores/threeScene.store"
 import { ThreeRendererService } from "./threeRenderer.service"
-
-type BuildingSelectedEvents = {
-    onBuildingSelected: (data: { building: CodeMapBuilding }) => void
-    onBuildingDeselected: () => void
-}
+import { ThreeSceneFloorLabels } from "./threeScene.floorLabels"
+import { ThreeSceneHighlight } from "./threeScene.highlight"
+import { ThreeSceneMaterials } from "./threeScene.materials"
+import { BuildingSelectedEvents, ThreeSceneSelection } from "./threeScene.selection"
 
 @Injectable({ providedIn: "root" })
 export class ThreeSceneService implements OnDestroy {
-    scene: Scene
-    labels: Group
-    floorLabelPlanes: Group
-    edgeArrows: Group
-    mapGeometry: Group
+    scene = new Scene()
+    labels = new Group()
+    floorLabelPlanes = new Group()
+    edgeArrows = new Group()
+    mapGeometry = new Group()
 
     /** Emits right after a new map mesh has been placed into `mapGeometry` — the deterministic
      *  "the map is now in the scene" moment the camera auto-fit waits for. */
     readonly mapMeshChanged$ = new Subject<void>()
 
-    private readonly lights: Group
+    private readonly lights = new Group()
     private mapMesh: CodeMapMesh
     private readonly eventEmitter = new EventEmitter<BuildingSelectedEvents>()
 
-    private floorLabelDrawer: FloorLabelDrawer
-
-    private selected: CodeMapBuilding = null
-    private readonly highlightedBuildingIds: Set<number> = new Set()
-    private readonly highlightedNodeIds: Set<number> = new Set()
-    private primaryHighlightedBuilding: CodeMapBuilding = null
-    private readonly constantHighlight: Map<number, CodeMapBuilding> = new Map()
-
-    // Hardcoded color values — no runtime theming system (CSS custom properties) exists in this project.
-    // These do not adapt to dark mode or theme changes.
-    private readonly folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
-    private readonly folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
-    private folderLabelColorSelected: string
-    private numberSelectionColor: number
+    private readonly floorLabels = new ThreeSceneFloorLabels(this.floorLabelPlanes, this.threeSceneStore, this.threeRendererService)
+    private readonly materials = new ThreeSceneMaterials(this.mapGeometry)
+    private readonly highlight = new ThreeSceneHighlight(
+        { getMapMesh: () => this.mapMesh, getSelectedBuilding: () => this.selected },
+        this.threeSceneStore,
+        this.threeRendererService,
+        this.materials
+    )
+    private readonly selection = new ThreeSceneSelection(
+        () => this.mapMesh,
+        this.threeSceneStore,
+        { highlight: this.highlight, materials: this.materials },
+        this.eventEmitter
+    )
 
     private readonly subscription = this.threeSceneStore.mapColors$.subscribe(mapColors => {
-        this.folderLabelColorSelected = mapColors.selected
-        this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+        this.selection.setSelectionColor(mapColors.selected)
     })
 
     constructor(
@@ -62,13 +58,6 @@ export class ThreeSceneService implements OnDestroy {
         private readonly idToBuilding: IdToBuildingService,
         private readonly threeRendererService: ThreeRendererService
     ) {
-        this.scene = new Scene()
-        this.mapGeometry = new Group()
-        this.lights = new Group()
-        this.labels = new Group()
-        this.floorLabelPlanes = new Group()
-        this.edgeArrows = new Group()
-
         this.initLights()
 
         this.scene.add(this.mapGeometry)
@@ -82,294 +71,67 @@ export class ThreeSceneService implements OnDestroy {
         this.subscription.unsubscribe()
     }
 
-    private initFloorLabels(nodes: Node[]) {
-        for (const child of this.floorLabelPlanes.children) {
-            const childWithGeometry = child as unknown as { geometry?: { dispose: () => void } }
-            if (childWithGeometry.geometry) {
-                childWithGeometry.geometry.dispose()
-            }
-            const childWithMaterial = child as unknown as {
-                material?: { map?: { dispose: () => void }; dispose: () => void }
-            }
-            if (childWithMaterial.material) {
-                childWithMaterial.material.map?.dispose()
-                childWithMaterial.material.dispose()
-            }
-        }
-        this.floorLabelPlanes.clear()
-
-        const { layoutAlgorithm, enableFloorLabels } = this.threeSceneStore.getMapState()
-        if (layoutAlgorithm !== LayoutAlgorithm.SquarifiedTreeMap || !enableFloorLabels) {
-            return
-        }
-
-        const rootNode = this.getRootNode(nodes)
-        if (!rootNode) {
-            return
-        }
-        const scaling = this.threeSceneStore.getMapState().scaling
-        const experimentalFeaturesEnabled = this.threeSceneStore.getPreferences().experimentalFeaturesEnabled
-        const scalingVector = new Vector3(scaling.x, scaling.y, scaling.z)
-
-        const maxAnisotropy = this.threeRendererService.renderer?.capabilities.getMaxAnisotropy() ?? 1
-
-        this.floorLabelDrawer = new FloorLabelDrawer(
-            this.mapMesh.getNodes(),
-            rootNode,
-            treeMapSize,
-            scalingVector,
-            experimentalFeaturesEnabled,
-            maxAnisotropy
-        )
-        const floorLabels = this.floorLabelDrawer.draw()
-
-        if (floorLabels.length > 0) {
-            this.floorLabelPlanes.add(...floorLabels)
-            this.scene.add(this.floorLabelPlanes)
-        }
-    }
-
-    private getRootNode(nodes: Node[]) {
-        return nodes.find(node => node.id === 0)
+    private get selected() {
+        return this.selection.getSelected()
     }
 
     getConstantHighlight() {
-        return this.constantHighlight
-    }
-
-    private getMapMaterials(): Material[] | null {
-        const child = this.mapGeometry.children[0]
-        if (!child) {
-            return null
-        }
-        const mat = (child as unknown as { material: unknown }).material
-        return Array.isArray(mat) ? (mat as Material[]) : null
+        return this.highlight.getConstantHighlight()
     }
 
     applyHighlights() {
-        const state = this.threeSceneStore.getState()
-        this.getMapMesh().highlightBuilding(
-            this.highlightedBuildingIds,
-            this.primaryHighlightedBuilding,
-            this.selected,
-            state,
-            this.constantHighlight
-        )
-        const materials = this.getMapMaterials()
-        if (materials) {
-            const constantHighlightedNodes = new Set<number>([...this.constantHighlight.values()].map(({ node }) => node.id))
-            this.highlightMaterial(materials, constantHighlightedNodes)
-        }
-        this.threeRendererService.render()
+        this.highlight.apply()
     }
 
     applyClearHighlights() {
-        if (this.constantHighlight.size > 0) {
-            this.clearHoverHighlight()
-            return
-        }
-        this.clearHighlight()
-        this.threeRendererService.render()
-    }
-
-    private selectMaterial(materials: Material[]) {
-        const selectedMaterial = materials.find(({ userData }) => userData.id === this.selected.node.id)
-        selectedMaterial?.["color"].setHex(this.numberSelectionColor)
-    }
-
-    private resetMaterial(materials: Material[]) {
-        const selectedID = this.selected ? this.selected.node.id : -1
-        for (const material of materials) {
-            const materialNodeId = material.userData.id
-            if (materialNodeId !== selectedID) {
-                material["color"]?.setHex(this.folderLabelColorHighlighted)
-            }
-        }
+        this.highlight.applyClear()
     }
 
     scaleHeight() {
         const scale = this.threeSceneStore.getMapState().scaling
 
-        this.floorLabelDrawer?.translatePlaneCanvases(scale)
+        this.floorLabels.translate(scale)
         this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
         this.mapGeometry.position.set(-treeMapSize * scale.x, 0, -treeMapSize * scale.z)
         this.mapMesh.setScale(scale)
     }
 
-    private highlightMaterial(materials: Material[], constantHighlightedNodes: Set<number>) {
-        for (const material of materials) {
-            const materialNodeId = material.userData.id
-            if (this.selected && materialNodeId === this.selected.node.id) {
-                material["color"].setHex(this.numberSelectionColor)
-            } else if (this.highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
-                material["color"].setHex(this.folderLabelColorHighlighted)
-            } else {
-                material["color"]?.setHex(this.folderLabelColorNotHighlighted)
-            }
-        }
-    }
-
     highlightSingleBuilding(building: CodeMapBuilding) {
-        this.highlightedBuildingIds.clear()
-        this.highlightedNodeIds.clear()
-        this.primaryHighlightedBuilding = null
-        this.addBuildingsToHighlightingList(building)
-        this.applyHighlights()
+        this.highlight.highlightSingle(building)
     }
 
     addBuildingsToHighlightingList(...buildings: CodeMapBuilding[]) {
-        for (const building of buildings) {
-            this.primaryHighlightedBuilding ??= building
-            this.highlightedBuildingIds.add(building.id)
-            this.highlightedNodeIds.add(building.node.id)
-        }
+        this.highlight.add(...buildings)
     }
 
     clearHoverHighlight() {
-        this.highlightedBuildingIds.clear()
-        this.highlightedNodeIds.clear()
-        this.primaryHighlightedBuilding = null
-        this.applyHighlights()
+        this.highlight.clearHover()
     }
 
     prepareHighlightTransition() {
-        this.highlightedBuildingIds.clear()
-        this.highlightedNodeIds.clear()
-        this.primaryHighlightedBuilding = null
+        this.highlight.prepareTransition()
     }
 
     clearHighlight() {
-        if (this.getMapMesh()) {
-            this.getMapMesh().clearUnselectedBuildings(this.selected)
-            this.highlightedBuildingIds.clear()
-            this.highlightedNodeIds.clear()
-            this.primaryHighlightedBuilding = null
-            this.constantHighlight.clear()
-            const materials = this.getMapMaterials()
-            if (materials) {
-                this.resetMaterial(materials)
-            }
-        }
+        this.highlight.clear()
     }
 
     selectBuilding(building: CodeMapBuilding) {
-        if (!building) {
-            return
-        }
-        const isNewSelection = building.id !== this.selected?.id
-        this.paintSelection(building)
-        if (isNewSelection) {
-            this.threeSceneStore.selectNode(building.node.path)
-        }
+        this.selection.select(building)
     }
 
     /** Shows a selection another view made, without writing it back to the store. */
     showSelection(path: string | null) {
-        if (!this.mapMesh || (this.selected?.node.path ?? null) === path) {
-            return
-        }
-        const building = path === null ? undefined : this.mapMesh.getBuildingByPath(path)
-        if (building) {
-            this.paintSelection(building)
-            return
-        }
-        if (this.selected) {
-            this.paintNoSelection()
-            this.eventEmitter.emit("onBuildingDeselected")
-        }
-    }
-
-    private paintSelection(building: CodeMapBuilding) {
-        if (this.selected && this.selected.id !== building.id) {
-            this.getMapMesh().clearSelection(this.selected)
-        }
-        this.getMapMesh().selectBuilding(building, this.folderLabelColorSelected)
-        this.selected = building
-        this.applyHighlights()
-
-        this.eventEmitter.emit("onBuildingSelected", { building: this.selected })
-        const materials = this.getMapMaterials()
-        if (materials) {
-            this.selectMaterial(materials)
-        }
+        this.selection.show(path)
     }
 
     /** Shows the highlight the store keeps, which another view can change while this mesh is not drawn. */
     showKeptHighlight(paths: readonly string[]) {
-        if (!this.mapMesh) {
-            return
-        }
-        const hadKeptHighlight = this.constantHighlight.size > 0
-        this.collectKeptHighlight(paths)
-        if (this.constantHighlight.size > 0) {
-            this.paintKeptHighlight()
-        } else if (hadKeptHighlight) {
-            this.repaintWithoutKeptHighlight()
-        }
-    }
-
-    private restoreKeptHighlight() {
-        this.collectKeptHighlight(this.threeSceneStore.getKeptHighlightPaths())
-        if (this.constantHighlight.size > 0) {
-            this.paintKeptHighlight()
-        }
-    }
-
-    private paintKeptHighlight() {
-        this.mapMesh.clearUnselectedBuildings(this.selected)
-        this.applyHighlights()
-    }
-
-    private repaintWithoutKeptHighlight() {
-        this.mapMesh.clearUnselectedBuildings(this.selected)
-        if (this.highlightedBuildingIds.size > 0) {
-            this.applyHighlights()
-            return
-        }
-        const materials = this.getMapMaterials()
-        if (materials) {
-            this.resetMaterial(materials)
-        }
-        this.threeRendererService.render()
-    }
-
-    private collectKeptHighlight(paths: readonly string[]) {
-        this.constantHighlight.clear()
-        for (const path of paths) {
-            const building = this.mapMesh.getBuildingByPath(path)
-            if (building) {
-                this.constantHighlight.set(building.id, building)
-            }
-        }
+        this.highlight.showKept(paths)
     }
 
     clearSelection() {
-        // A node picked in the explorer is selected whether or not the map drew a building for it — a
-        // folder, or a file with no area in the current metric, has none. Clearing only what the scene
-        // holds would leave such a selection in the store, and the inspector open on it for good.
-        const hadSelection = this.selected !== null || this.threeSceneStore.getSelectedNodePath() !== null
-        this.paintNoSelection()
-        if (hadSelection) {
-            this.threeSceneStore.clearNodeSelection()
-            this.eventEmitter.emit("onBuildingDeselected")
-        }
-    }
-
-    private paintNoSelection() {
-        if (this.selected) {
-            this.getMapMesh().clearSelection(this.selected)
-        }
-        // null before repainting: the highlight pass must not treat the
-        // just-deselected building as still selected
-        this.selected = null
-
-        if (this.highlightedBuildingIds.size > 0) {
-            this.applyHighlights()
-        }
-        const materials = this.getMapMaterials()
-        if (materials) {
-            this.resetMaterial(materials)
-        }
+        this.selection.clear()
     }
 
     initLights() {
@@ -389,7 +151,7 @@ export class ThreeSceneService implements OnDestroy {
         this.mapMesh?.dispose()
         this.mapMesh = mesh
 
-        this.initFloorLabels(nodes)
+        this.floorLabels.draw(nodes, this.mapMesh, this.scene)
 
         this.mapGeometry.children.length = 0
 
@@ -399,46 +161,21 @@ export class ThreeSceneService implements OnDestroy {
 
         this.mapGeometry.add(this.mapMesh.getThreeMesh())
 
-        this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
-        this.remapSelectedBuilding()
-        this.restoreKeptHighlight()
-
-        this.mapMeshChanged$.next()
-    }
-
-    // The store owns the selection: another view can change it while this mesh is not drawn.
-    private remapSelectedBuilding() {
-        const previouslySelected = this.selected
-        const selectedPath = this.threeSceneStore.getSelectedNodePath()
-        const buildingOnNewMesh = selectedPath === null ? undefined : this.mapMesh.getBuildingByPath(selectedPath)
-        this.clearStaleSelectionColor(previouslySelected, selectedPath)
-        this.selected = null
-        if (buildingOnNewMesh) {
-            this.paintSelection(buildingOnNewMesh)
-            return
-        }
-        if (previouslySelected?.node.path === selectedPath) {
-            this.threeSceneStore.clearNodeSelection()
-            this.eventEmitter.emit("onBuildingDeselected")
-        }
-    }
-
-    private clearStaleSelectionColor(previouslySelected: CodeMapBuilding | null, selectedPath: string | null) {
-        const hasStaleSelection = previouslySelected !== null && previouslySelected.node.path !== selectedPath
-        const buildingOnMesh = hasStaleSelection ? this.mapMesh.getBuildingByPath(previouslySelected.node.path) : undefined
-        if (buildingOnMesh) {
-            this.mapMesh.clearSelection(buildingOnMesh)
-        }
+        this.syncMeshWithStore()
     }
 
     /** Move the buildings onto a new layout without replacing the mesh. Mirrors `setMapMesh` for the
      *  case where the node set did not change. */
     updateMapMeshInPlace(nodes: Node[], laidOutNodes: Node[], state: CcState, isDeltaState: boolean) {
         this.mapMesh.updateBuildings(laidOutNodes, state, isDeltaState)
-        this.initFloorLabels(nodes)
+        this.floorLabels.draw(nodes, this.mapMesh, this.scene)
+        this.syncMeshWithStore()
+    }
+
+    private syncMeshWithStore() {
         this.idToBuilding.setIdToBuilding(this.mapMesh.getMeshDescription().buildings)
-        this.remapSelectedBuilding()
-        this.restoreKeptHighlight()
+        this.selection.remapOntoMesh()
+        this.highlight.restoreKept()
         this.mapMeshChanged$.next()
     }
 
@@ -456,10 +193,8 @@ export class ThreeSceneService implements OnDestroy {
             node.markingColor = getMarkingColor(node, state.sharedView.markedPackages)
         }
         this.mapMesh.recolorBuildings()
-        if (this.selected) {
-            this.mapMesh.selectBuilding(this.selected, this.folderLabelColorSelected)
-        }
-        this.applyHighlights()
+        this.selection.repaintSelected()
+        this.highlight.apply()
     }
 
     getMapMesh() {
@@ -471,7 +206,7 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     getHighlightedBuilding() {
-        return this.primaryHighlightedBuilding
+        return this.highlight.getPrimaryHighlightedBuilding()
     }
 
     dispose() {
@@ -485,29 +220,10 @@ export class ThreeSceneService implements OnDestroy {
     }
 
     highlightBuildingsWithoutExtensions() {
-        const shouldExtensionBeHighlighted = (buildingExtension: string) => buildingExtension === NO_EXTENSION
-        this.applyHighlightingForExtensions(shouldExtensionBeHighlighted)
+        this.highlight.highlightMatchingExtensions(buildingExtension => buildingExtension === NO_EXTENSION)
     }
 
     highlightBuildingsByExtension(extensionsToHighlight: Set<string>) {
-        const shouldExtensionBeHighlighted = (buildingExtension: string) => extensionsToHighlight.has(buildingExtension)
-        this.applyHighlightingForExtensions(shouldExtensionBeHighlighted)
-    }
-
-    private applyHighlightingForExtensions(shouldExtensionBeHighlighted: (buildingExtension: string) => boolean) {
-        if (!this.mapMesh) {
-            return
-        }
-        const buildingsToHighlight = this.mapMesh.getMeshDescription().buildings.filter(building => {
-            if (!building.node.isLeaf) {
-                return false
-            }
-
-            const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
-            return shouldExtensionBeHighlighted(buildingExtension)
-        })
-
-        this.addBuildingsToHighlightingList(...buildingsToHighlight)
-        this.applyHighlights()
+        this.highlight.highlightMatchingExtensions(buildingExtension => extensionsToHighlight.has(buildingExtension))
     }
 }

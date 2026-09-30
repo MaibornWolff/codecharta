@@ -1,18 +1,11 @@
 import { TestBed } from "@angular/core/testing"
 import { State, Store, StoreModule } from "@ngrx/store"
-import { Vector3 } from "three"
-import {
-    TEST_LEAF_NODE_WITHOUT_EXTENSION,
-    TEST_NODE_LEAF,
-    TEST_NODE_LEAF_0_LENGTH,
-    TEST_NODE_ROOT,
-    TEST_NODES
-} from "../../mocks/dataMocks"
+import { Mesh, MeshBasicMaterial, PlaneGeometry, Texture, Vector3 } from "three"
+import { TEST_LEAF_NODE_WITHOUT_EXTENSION, TEST_NODE_LEAF, TEST_NODE_LEAF_0_LENGTH, TEST_NODES } from "../../mocks/dataMocks"
 import { CcState, LayoutAlgorithm } from "../../model/codeCharta.model"
 import { setEnableFloorLabels, setLayoutAlgorithm, setScaling } from "../../stores/mapState/mapState.write.facade"
 import { appReducers, setStateMiddleware } from "../../stores/rootStore/store"
-import { selectedNodePathSelector } from "../../stores/sharedView/sharedView.read.facade"
-import { keepHighlight, setSelectedNodePath } from "../../stores/sharedView/sharedView.write.facade"
+import { keepHighlight } from "../../stores/sharedView/sharedView.write.facade"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
 import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT } from "./rendering/codeMapBuilding.mocks"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
@@ -34,8 +27,12 @@ describe("ThreeSceneService", () => {
 
         threeSceneService = TestBed.inject(ThreeSceneService)
         threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, state.getValue(), false)
-        Object.defineProperty(threeSceneService, "constantHighlight", { value: CONSTANT_HIGHLIGHT, writable: true, configurable: true })
+        Object.defineProperty(sceneHighlight(), "constantHighlight", { value: CONSTANT_HIGHLIGHT, writable: true, configurable: true })
     })
+
+    function sceneHighlight() {
+        return threeSceneService["highlight"]
+    }
 
     describe("highlightBuildings", () => {
         it("should call highlightBuilding", () => {
@@ -45,144 +42,26 @@ describe("ThreeSceneService", () => {
             threeSceneService.applyHighlights()
 
             expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
-                threeSceneService["highlightedBuildingIds"],
-                threeSceneService["primaryHighlightedBuilding"],
+                sceneHighlight()["highlightedBuildingIds"],
+                sceneHighlight()["primaryHighlightedBuilding"],
                 null,
                 state.getValue(),
-                threeSceneService["constantHighlight"]
+                sceneHighlight()["constantHighlight"]
             )
             expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled()
         })
     })
 
-    describe("selection after the mesh was rebuilt", () => {
-        const LEAF_PATH = "/root/big leaf"
-
-        beforeEach(() => {
-            // a layout without floor labels keeps the rebuild to the mesh this describe is about
-            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
-        })
-
-        function rebuildMeshWith(nodes = TEST_NODES) {
-            threeSceneService.setMapMesh(nodes, new CodeMapMesh(nodes, state.getValue(), false))
-        }
-
-        function sceneSelectionPath() {
-            return threeSceneService.getSelectedBuilding()?.node.path ?? null
-        }
-
-        it("should select what another view selected while the map was not drawn, and announce it", () => {
-            // Arrange
-            const selectedBuildings: string[] = []
-            threeSceneService.subscribe("onBuildingSelected", ({ building }) => selectedBuildings.push(building.node.path))
-            store.dispatch(setSelectedNodePath({ value: LEAF_PATH }))
-
-            // Act
-            rebuildMeshWith()
-
-            // Assert
-            expect(sceneSelectionPath()).toBe(LEAF_PATH)
-            expect(selectedNodePathSelector(state.getValue())).toBe(LEAF_PATH)
-            expect(selectedBuildings).toEqual([LEAF_PATH])
-        })
-
-        it("should drop the selection when the building it had selected is gone", () => {
-            // Arrange
-            store.dispatch(setSelectedNodePath({ value: LEAF_PATH }))
-            rebuildMeshWith()
-
-            // Act
-            rebuildMeshWith([TEST_NODE_ROOT])
-
-            // Assert
-            expect(sceneSelectionPath()).toBeNull()
-            expect(selectedNodePathSelector(state.getValue())).toBeNull()
-        })
-
-        it("should keep a selection the map draws no building for, such as a folder", () => {
-            // Arrange
-            store.dispatch(setSelectedNodePath({ value: "/root/a folder" }))
-
-            // Act
-            rebuildMeshWith()
-
-            // Assert
-            expect(sceneSelectionPath()).toBeNull()
-            expect(selectedNodePathSelector(state.getValue())).toBe("/root/a folder")
-        })
-    })
-
-    describe("clearSelection", () => {
-        it("should clear a selection that no building was drawn for, so the inspector can be closed", () => {
-            // Arrange: a node picked in the explorer selects it whether or not the map drew a building —
-            // a folder, or a file with no area in the current metric, has none.
-            threeSceneService["mapMesh"].clearSelection = jest.fn()
-            store.dispatch(setSelectedNodePath({ value: "a-node-without-a-building" }))
-
-            // Act
-            threeSceneService.clearSelection()
-
-            // Assert
-            expect(selectedNodePathSelector(state.getValue())).toBeNull()
-        })
-
-        it("should leave the store alone when there was nothing selected at all", () => {
-            // Arrange: clicking empty map space clears the selection on every click.
-            threeSceneService["mapMesh"].clearSelection = jest.fn()
-            const dispatch = jest.spyOn(store, "dispatch")
-
-            // Act
-            threeSceneService.clearSelection()
-
-            // Assert
-            expect(dispatch).not.toHaveBeenCalled()
-        })
-    })
-
-    describe("selectBuilding", () => {
-        beforeEach(() => {
-            threeSceneService["threeRendererService"].render = jest.fn()
-            threeSceneService["mapMesh"].selectBuilding = jest.fn()
-            threeSceneService["mapMesh"].clearSelection = jest.fn()
-            threeSceneService["mapMesh"].highlightBuilding = jest.fn()
-        })
-
-        it("should clear the previously selected building before selecting a different one", () => {
-            // Arrange
-            threeSceneService.selectBuilding(CODE_MAP_BUILDING)
-            ;(threeSceneService["mapMesh"].clearSelection as jest.Mock).mockClear()
-
-            // Act
-            threeSceneService.selectBuilding(CODE_MAP_BUILDING_TS_NODE)
-
-            // Assert
-            expect(threeSceneService["mapMesh"].clearSelection).toHaveBeenCalledWith(CODE_MAP_BUILDING)
-            expect(threeSceneService["selected"]).toBe(CODE_MAP_BUILDING_TS_NODE)
-        })
-
-        it("should not clear selection when the same building is selected again", () => {
-            // Arrange
-            threeSceneService.selectBuilding(CODE_MAP_BUILDING)
-            ;(threeSceneService["mapMesh"].clearSelection as jest.Mock).mockClear()
-
-            // Act
-            threeSceneService.selectBuilding(CODE_MAP_BUILDING)
-
-            // Assert
-            expect(threeSceneService["mapMesh"].clearSelection).not.toHaveBeenCalled()
-        })
-    })
-
     describe("addBuildingsToHighlightingList", () => {
         it("should add the given building to the HighlightingList ", () => {
-            threeSceneService["highlightedBuildingIds"].clear()
-            threeSceneService["highlightedNodeIds"].clear()
-            threeSceneService["primaryHighlightedBuilding"] = null
+            sceneHighlight()["highlightedBuildingIds"].clear()
+            sceneHighlight()["highlightedNodeIds"].clear()
+            sceneHighlight()["primaryHighlightedBuilding"] = null
 
             threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING)
 
-            expect(threeSceneService["highlightedBuildingIds"].has(CODE_MAP_BUILDING.id)).toBe(true)
-            expect(threeSceneService["primaryHighlightedBuilding"]).toBe(CODE_MAP_BUILDING)
+            expect(sceneHighlight()["highlightedBuildingIds"].has(CODE_MAP_BUILDING.id)).toBe(true)
+            expect(sceneHighlight()["primaryHighlightedBuilding"]).toBe(CODE_MAP_BUILDING)
         })
     })
 
@@ -190,27 +69,27 @@ describe("ThreeSceneService", () => {
         const LEAF_PATH = "/root/big leaf"
 
         beforeEach(() => {
-            Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
+            Object.defineProperty(sceneHighlight(), "constantHighlight", { value: new Map(), writable: true, configurable: true })
             threeSceneService["threeRendererService"].render = jest.fn()
         })
 
         it("should light the buildings of the kept paths and repaint", () => {
             // Arrange
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.showKeptHighlight([LEAF_PATH, "/root/not drawn"])
 
             // Assert
             expect([...threeSceneService.getConstantHighlight().values()].map(({ node }) => node.path)).toEqual([LEAF_PATH])
-            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+            expect(sceneHighlight().apply).toHaveBeenCalled()
         })
 
         it("should repaint the default colours once nothing is kept any more", () => {
             // Arrange
             threeSceneService.showKeptHighlight([LEAF_PATH])
             jest.spyOn(threeSceneService["mapMesh"], "clearUnselectedBuildings")
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.showKeptHighlight([])
@@ -218,7 +97,7 @@ describe("ThreeSceneService", () => {
             // Assert
             expect(threeSceneService.getConstantHighlight().size).toBe(0)
             expect(threeSceneService["mapMesh"].clearUnselectedBuildings).toHaveBeenCalled()
-            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
+            expect(sceneHighlight().apply).not.toHaveBeenCalled()
             expect(threeSceneService["threeRendererService"].render).toHaveBeenCalled()
         })
 
@@ -227,25 +106,25 @@ describe("ThreeSceneService", () => {
             const hoveredBuilding = threeSceneService["mapMesh"].getBuildingByPath("/root")
             threeSceneService.showKeptHighlight([LEAF_PATH])
             threeSceneService.addBuildingsToHighlightingList(hoveredBuilding)
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.showKeptHighlight([])
 
             // Assert
-            expect(threeSceneService["highlightedBuildingIds"]).toEqual(new Set([hoveredBuilding.id]))
-            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+            expect(sceneHighlight()["highlightedBuildingIds"]).toEqual(new Set([hoveredBuilding.id]))
+            expect(sceneHighlight().apply).toHaveBeenCalled()
         })
 
         it("should not repaint while nothing was or is kept", () => {
             // Arrange
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.showKeptHighlight([])
 
             // Assert
-            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
+            expect(sceneHighlight().apply).not.toHaveBeenCalled()
             expect(threeSceneService["threeRendererService"].render).not.toHaveBeenCalled()
         })
 
@@ -267,55 +146,55 @@ describe("ThreeSceneService", () => {
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
             store.dispatch(keepHighlight({ paths: [LEAF_PATH] }))
             const rebuiltMesh = new CodeMapMesh(TEST_NODES, state.getValue(), false)
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.setMapMesh(TEST_NODES, rebuiltMesh)
 
             // Assert
-            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+            expect(sceneHighlight().apply).toHaveBeenCalled()
         })
 
         it("should paint the kept highlight on a mesh updated in place", () => {
             // Arrange
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
             store.dispatch(keepHighlight({ paths: [LEAF_PATH] }))
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.updateMapMeshInPlace(TEST_NODES, TEST_NODES, state.getValue(), false)
 
             // Assert
             expect(threeSceneService.getConstantHighlight().size).toBe(1)
-            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+            expect(sceneHighlight().apply).toHaveBeenCalled()
         })
 
         it("should leave a rebuilt mesh undimmed while nothing is kept", () => {
             // Arrange
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
             const rebuiltMesh = new CodeMapMesh(TEST_NODES, state.getValue(), false)
-            jest.spyOn(threeSceneService, "applyHighlights")
+            jest.spyOn(sceneHighlight(), "apply")
 
             // Act
             threeSceneService.setMapMesh(TEST_NODES, rebuiltMesh)
 
             // Assert
-            expect(threeSceneService.applyHighlights).not.toHaveBeenCalled()
+            expect(sceneHighlight().apply).not.toHaveBeenCalled()
         })
     })
 
     describe("highlightSingleBuilding", () => {
         it("should add a building to the highlighting list and call the highlight function", () => {
-            threeSceneService.addBuildingsToHighlightingList = jest.fn()
-            threeSceneService.applyHighlights = jest.fn()
-            threeSceneService["highlightedBuildingIds"].clear()
-            threeSceneService["highlightedNodeIds"].clear()
-            threeSceneService["primaryHighlightedBuilding"] = null
+            jest.spyOn(sceneHighlight(), "add")
+            jest.spyOn(sceneHighlight(), "apply").mockImplementation(() => {})
+            sceneHighlight()["highlightedBuildingIds"].clear()
+            sceneHighlight()["highlightedNodeIds"].clear()
+            sceneHighlight()["primaryHighlightedBuilding"] = null
 
             threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)
 
-            expect(threeSceneService.addBuildingsToHighlightingList).toHaveBeenCalled()
-            expect(threeSceneService.applyHighlights).toHaveBeenCalled()
+            expect(sceneHighlight().add).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+            expect(sceneHighlight().apply).toHaveBeenCalled()
         })
     })
 
@@ -328,18 +207,30 @@ describe("ThreeSceneService", () => {
             threeSceneService.prepareHighlightTransition()
 
             // Assert
-            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
-            expect(threeSceneService["highlightedNodeIds"].size).toBe(0)
-            expect(threeSceneService["primaryHighlightedBuilding"]).toBeNull()
+            expect(sceneHighlight()["highlightedBuildingIds"].size).toBe(0)
+            expect(sceneHighlight()["highlightedNodeIds"].size).toBe(0)
+            expect(sceneHighlight()["primaryHighlightedBuilding"]).toBeNull()
         })
     })
 
     describe("clearHighlight", () => {
+        it("should do nothing before any 3D map was built", () => {
+            // Arrange
+            threeSceneService["mapMesh"] = undefined
+            threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING)
+
+            // Act
+            threeSceneService.clearHighlight()
+
+            // Assert
+            expect(sceneHighlight()["highlightedBuildingIds"].size).toBe(1)
+        })
+
         it("should clear the highlighting list", () => {
             threeSceneService.clearHighlight()
 
-            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
-            expect(threeSceneService["primaryHighlightedBuilding"]).toBeNull()
+            expect(sceneHighlight()["highlightedBuildingIds"].size).toBe(0)
+            expect(sceneHighlight()["primaryHighlightedBuilding"]).toBeNull()
         })
     })
 
@@ -347,7 +238,7 @@ describe("ThreeSceneService", () => {
         it("should keep the kept highlight while it clears the hover highlight", () => {
             // Arrange
             const keptHighlight = new Map([[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING]])
-            Object.defineProperty(threeSceneService, "constantHighlight", { value: keptHighlight, writable: true, configurable: true })
+            Object.defineProperty(sceneHighlight(), "constantHighlight", { value: keptHighlight, writable: true, configurable: true })
             threeSceneService["threeRendererService"].render = jest.fn()
             threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING_TS_NODE)
 
@@ -355,13 +246,13 @@ describe("ThreeSceneService", () => {
             threeSceneService.applyClearHighlights()
 
             // Assert
-            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
+            expect(sceneHighlight()["highlightedBuildingIds"].size).toBe(0)
             expect([...threeSceneService.getConstantHighlight().values()]).toEqual([CODE_MAP_BUILDING])
         })
 
         it("should call clearHighlight and render changes", () => {
             // Arrange
-            Object.defineProperty(threeSceneService, "constantHighlight", { value: new Map(), writable: true, configurable: true })
+            Object.defineProperty(sceneHighlight(), "constantHighlight", { value: new Map(), writable: true, configurable: true })
             const renderSpy = jest.spyOn(threeSceneService["threeRendererService"], "render").mockImplementation(() => {})
 
             // Act
@@ -373,9 +264,20 @@ describe("ThreeSceneService", () => {
     })
 
     describe("scaleHeight", () => {
+        it("should scale the map without floor labels drawn", () => {
+            // Arrange
+            store.dispatch(setScaling({ value: new Vector3(1, 2, 3) }))
+
+            // Act
+            threeSceneService.scaleHeight()
+
+            // Assert
+            expect(threeSceneService.mapGeometry.scale).toEqual(new Vector3(1, 2, 3))
+        })
+
         it("should update mapGeometry scaling to new vector", () => {
             const translateCanvasesMock = jest.fn()
-            Object.defineProperty(threeSceneService, "floorLabelDrawer", {
+            Object.defineProperty(threeSceneService["floorLabels"], "floorLabelDrawer", {
                 value: { translatePlaneCanvases: translateCanvasesMock },
                 writable: true
             })
@@ -393,7 +295,7 @@ describe("ThreeSceneService", () => {
 
         it("should call mapMesh.scale and apply the correct scaling to the mesh", () => {
             const translateCanvasesMock = jest.fn()
-            Object.defineProperty(threeSceneService, "floorLabelDrawer", {
+            Object.defineProperty(threeSceneService["floorLabels"], "floorLabelDrawer", {
                 value: { translatePlaneCanvases: translateCanvasesMock },
                 writable: true
             })
@@ -410,17 +312,62 @@ describe("ThreeSceneService", () => {
     })
 
     describe("initFloorLabels", () => {
-        const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
+        const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw")
+
+        beforeEach(() => {
+            floorLabelDrawerSpy.mockReturnValue([])
+        })
 
         afterEach(() => {
             floorLabelDrawerSpy.mockReset()
         })
 
+        function floorLabelPlane() {
+            const texture = new Texture()
+            const material = new MeshBasicMaterial({ map: texture })
+            const geometry = new PlaneGeometry()
+            return { plane: new Mesh(geometry, material), disposables: [texture, material, geometry] }
+        }
+
+        function rebuildMesh() {
+            threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, state.getValue(), false))
+        }
+
+        it("should add the drawn floor labels to the scene", () => {
+            // Arrange
+            const { plane } = floorLabelPlane()
+            jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([plane])
+
+            // Act
+            rebuildMesh()
+
+            // Assert
+            expect(threeSceneService.floorLabelPlanes.children).toEqual([plane])
+            expect(threeSceneService.scene.children).toContain(threeSceneService.floorLabelPlanes)
+        })
+
+        it("should dispose the floor labels of the previous map before drawing new ones", () => {
+            // Arrange
+            const { plane, disposables } = floorLabelPlane()
+            jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValueOnce([plane]).mockReturnValueOnce([])
+            rebuildMesh()
+            const disposeSpies = disposables.map(disposable => jest.spyOn(disposable, "dispose"))
+
+            // Act
+            rebuildMesh()
+
+            // Assert
+            for (const disposeSpy of disposeSpies) {
+                expect(disposeSpy).toHaveBeenCalled()
+            }
+            expect(threeSceneService.floorLabelPlanes.children).toEqual([])
+        })
+
         it("should not add floor labels for StreetMap and TreeMapStreet algorithms", () => {
             threeSceneService["notifyMapMeshChanged"] = jest.fn()
             const getRootNodeMock = jest.fn()
-            const originalGetRootNode = threeSceneService["getRootNode"]
-            threeSceneService["getRootNode"] = getRootNodeMock
+            const originalGetRootNode = threeSceneService["floorLabels"]["getRootNode"]
+            threeSceneService["floorLabels"]["getRootNode"] = getRootNodeMock
 
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
             threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
@@ -431,7 +378,7 @@ describe("ThreeSceneService", () => {
             expect(getRootNodeMock).not.toHaveBeenCalled()
             expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
 
-            threeSceneService["getRootNode"] = originalGetRootNode
+            threeSceneService["floorLabels"]["getRootNode"] = originalGetRootNode
 
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.SquarifiedTreeMap }))
             threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, state.getValue(), false))
@@ -460,6 +407,21 @@ describe("ThreeSceneService", () => {
         })
     })
 
+    describe("clearHoverHighlight", () => {
+        it("should clear the hover highlight and repaint", () => {
+            // Arrange
+            threeSceneService.addBuildingsToHighlightingList(CODE_MAP_BUILDING)
+            jest.spyOn(sceneHighlight(), "apply").mockImplementation(() => {})
+
+            // Act
+            threeSceneService.clearHoverHighlight()
+
+            // Assert
+            expect(threeSceneService.getHighlightedBuilding()).toBeNull()
+            expect(sceneHighlight().apply).toHaveBeenCalled()
+        })
+    })
+
     describe("Highlighting by extensioins", () => {
         beforeEach(() => {
             threeSceneService["mapMesh"] = new CodeMapMesh(
@@ -472,14 +434,14 @@ describe("ThreeSceneService", () => {
         it("WHEN highlighting buildings without extensions then only files without extensions are highlighted", () => {
             threeSceneService.highlightBuildingsWithoutExtensions()
             const buildings = threeSceneService["mapMesh"].getMeshDescription().buildings
-            const fileNames = buildings.filter(b => threeSceneService["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
+            const fileNames = buildings.filter(b => sceneHighlight()["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
             expect(fileNames).toEqual([TEST_LEAF_NODE_WITHOUT_EXTENSION.name])
         })
 
         it("WHEN highlighting buildings with extensions then only files without extensions are highlighted", () => {
             threeSceneService.highlightBuildingsByExtension(new Set<string>(["ts"]))
             const buildings = threeSceneService["mapMesh"].getMeshDescription().buildings
-            const fileNames = buildings.filter(b => threeSceneService["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
+            const fileNames = buildings.filter(b => sceneHighlight()["highlightedBuildingIds"].has(b.id)).map(b => b.node.name)
             expect(fileNames).toEqual([TEST_NODE_LEAF.name, TEST_NODE_LEAF_0_LENGTH.name])
         })
 
@@ -495,7 +457,7 @@ describe("ThreeSceneService", () => {
 
             // Assert
             expect(highlight).not.toThrow()
-            expect(threeSceneService["highlightedBuildingIds"].size).toBe(0)
+            expect(sceneHighlight()["highlightedBuildingIds"].size).toBe(0)
         })
     })
 })
