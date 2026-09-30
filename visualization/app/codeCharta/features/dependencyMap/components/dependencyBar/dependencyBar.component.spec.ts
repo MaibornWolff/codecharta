@@ -8,7 +8,11 @@ import { edgeMetricDataSelector } from "../../../../renderer/renderModel/renderM
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { setDependencyGraphSettings } from "../../../../stores/preferences/preferences.write.facade"
+import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { unfocusAllNodes } from "../../../../stores/sharedView/sharedView.write.facade"
+import { isDependencyMapFocusedSelector } from "../../selectors/dependencyMap.selectors"
+import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
 const EDGE_METRICS = [
@@ -18,12 +22,14 @@ const EDGE_METRICS = [
 
 async function renderBar({
     edgeMetric = "dependencies",
-    settings = {}
+    settings = {},
+    isFocused = false
 }: {
     edgeMetric?: string
     settings?: Partial<DependencyGraphSettings>
+    isFocused?: boolean
 } = {}) {
-    await render(DependencyBarComponent, {
+    const rendered = await render(DependencyBarComponent, {
         providers: [
             { provide: State, useValue: { getValue: () => defaultState } },
             provideMockStore({
@@ -31,12 +37,13 @@ async function renderBar({
                 selectors: [
                     { selector: edgeMetricSelector, value: edgeMetric },
                     { selector: edgeMetricDataSelector, value: EDGE_METRICS },
-                    { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
+                    { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } },
+                    { selector: isDependencyMapFocusedSelector, value: isFocused }
                 ]
             })
         ]
     })
-    return jest.spyOn(TestBed.inject(MockStore), "dispatch")
+    return Object.assign(jest.spyOn(TestBed.inject(MockStore), "dispatch"), { fixture: rendered.fixture })
 }
 
 function changed(settings: Partial<DependencyGraphSettings>) {
@@ -44,15 +51,44 @@ function changed(settings: Partial<DependencyGraphSettings>) {
 }
 
 describe("DependencyBarComponent", () => {
-    it("should name the edges shown and the edge style", async () => {
+    it("should name the edges shown, the edge style with its line thickness and the edge metric, in that order", async () => {
         // Act
         await renderBar()
 
         // Assert
-        expect(screen.getByTestId("dependency-bar-edge-metric-segment").textContent).toContain("dependencies")
+        const segments = [...document.querySelectorAll("[data-testid$='-segment']")].map(segment => segment.getAttribute("data-testid"))
+        expect(segments).toEqual([
+            "dependency-bar-edges-segment",
+            "dependency-bar-edge-style-segment",
+            "dependency-bar-edge-metric-segment"
+        ])
         expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
         expect(screen.getByTestId("dependency-bar-edge-style-segment").textContent).toContain("Curved")
-        expect(screen.getByTestId("dependency-bar-edge-thickness-segment").textContent).toContain("By count")
+        expect(screen.getByTestId("dependency-bar-edge-thickness-value").textContent).toContain("By count")
+        expect(screen.getByTestId("dependency-bar-edge-metric-segment").textContent).toContain("dependencies")
+    })
+
+    it("should explain the chosen edge style and line thickness", async () => {
+        // Act
+        await renderBar({ settings: { edgeStyle: "straight", edgeWidth: { thickness: "thin", factor: 1 } } })
+
+        // Assert
+        expect(screen.getByTestId("dependency-bar-edge-style-hint").textContent).toBe("A straight line from box to box")
+        expect(screen.getByTestId("dependency-bar-edge-thickness-hint").textContent).toBe("Every edge a hairline, easiest to see through")
+    })
+
+    it("should reset the edge style and line thickness to their defaults", async () => {
+        // Arrange
+        const dispatch = await renderBar({ settings: { edgeStyle: "straight", isAnchoredAtSideMiddle: true } })
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Reset edge style" }))
+
+        // Assert
+        const { edgeStyle, isAnchoredAtSideMiddle, edgeWidth } = defaultDependencyGraphSettings
+        expect(dispatch).toHaveBeenCalledWith(
+            setState({ value: { preferences: { dependencyGraph: { edgeStyle, isAnchoredAtSideMiddle, edgeWidth } } } })
+        )
     })
 
     it("should name the edge types shown when only some are", async () => {
@@ -153,5 +189,52 @@ describe("DependencyBarComponent", () => {
         expect(disabledTypes).toEqual(["cyclic", "feedbackContainerLevel", "feedbackLeafLevel"])
         expect(dispatch).toHaveBeenCalledWith(changed({ shownEdgeTypes: ["cyclic", "feedbackContainerLevel", "feedbackLeafLevel"] }))
         expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
+    })
+
+    it("should fit the whole graph into view once the reader asks for it", async () => {
+        // Arrange
+        await renderBar()
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Show the whole graph" }))
+
+        // Assert
+        expect(TestBed.inject(DependencyMapViewStore).fitRequest()).toBe(1)
+    })
+
+    it("should offer to reset the layout only once a box was moved, and put it back", async () => {
+        // Arrange
+        const { fixture } = await renderBar()
+        const viewStore = TestBed.inject(DependencyMapViewStore)
+        const offeredBeforeMoving = screen.queryByTestId("dependency-reset-layout") !== null
+        viewStore.placeBox("/root/a.ts", [10, 0])
+        fixture.detectChanges()
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-reset-layout"))
+
+        // Assert
+        expect(offeredBeforeMoving).toBe(false)
+        expect(viewStore.boxOffsets().size).toBe(0)
+        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
+    })
+
+    it("should offer to unfocus only while a folder is focused, and show every folder again", async () => {
+        // Arrange
+        const dispatch = await renderBar({ isFocused: true })
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-unfocus"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(unfocusAllNodes())
+    })
+
+    it("should not offer to unfocus while nothing is focused", async () => {
+        // Act
+        await renderBar()
+
+        // Assert
+        expect(screen.queryByTestId("dependency-bar-unfocus")).toBeNull()
     })
 })

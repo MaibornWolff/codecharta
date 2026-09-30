@@ -61,7 +61,6 @@ export class DependencyMapComponent {
         const layout = this.layout()
         return layout ? movedLayout(layout, this.viewStore.boxOffsets()) : null
     })
-    protected readonly hasMovedBoxes = computed(() => this.viewStore.boxOffsets().size > 0)
     protected readonly boxAt = (point: Point) => {
         const layout = this.shownLayout()
         return layout === null ? null : boxAtPoint(layout, this.viewStore.raisedPaths(), point)
@@ -146,10 +145,6 @@ export class DependencyMapComponent {
 
     protected endDragging(): void {
         this.viewStore.endDragging()
-    }
-
-    protected resetLayout(): void {
-        this.viewStore.resetLayout()
     }
 
     protected unfocus(): void {

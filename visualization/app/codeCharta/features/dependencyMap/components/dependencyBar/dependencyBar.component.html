@@ -1,43 +1,7 @@
-<cc-edge-metric-segment></cc-edge-metric-segment>
-
 <cc-edge-types-segment></cc-edge-types-segment>
 
-<cc-choice-segment
-    label="Edge style"
-    idPrefix="dependency-bar-edge-style"
-    [choices]="edgeStyleChoices"
-    [chosen]="edgeStyle()"
-    (choose)="drawEdgesAs($event)"
->
-    <label class="flex cursor-pointer items-center gap-2 px-2">
-        <input
-            #sideMiddleCheckbox
-            type="checkbox"
-            class="checkbox checkbox-sm checkbox-primary"
-            data-testid="dependency-bar-edge-style-side-middle"
-            [checked]="isAnchoredAtSideMiddle()"
-            (change)="anchorAtSideMiddle(sideMiddleCheckbox.checked)"
-        />
-        <span>Start and end at the middle of the side</span>
-    </label>
-</cc-choice-segment>
+<cc-edge-style-segment></cc-edge-style-segment>
 
-<cc-choice-segment
-    label="Line thickness"
-    idPrefix="dependency-bar-edge-thickness"
-    [choices]="edgeThicknessChoices"
-    [chosen]="edgeWidth().thickness"
-    (choose)="drawEdgesThick($event)"
->
-    <div class="px-2">
-        <span class="text-sm">Width factor</span>
-        <cc-slider-number-input
-            ariaLabel="Line width factor"
-            [min]="widthFactorRange.min"
-            [max]="widthFactorRange.max"
-            [step]="widthFactorRange.step"
-            [value]="edgeWidth().factor"
-            (valueChange)="scaleEdgeWidth($event)"
-        ></cc-slider-number-input>
-    </div>
-</cc-choice-segment>
+<cc-edge-metric-segment></cc-edge-metric-segment>
+
+<cc-graph-view-segment></cc-graph-view-segment>

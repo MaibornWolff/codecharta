@@ -65,10 +65,6 @@ export class DependencyGraphComponent implements OnDestroy {
         effect(() => this.renderOnceTheContainerIsMeasured())
     }
 
-    resetView(): void {
-        this.chartHost.fitTo(fitWindowOf(this.scene().layout, this.chartHost.containerSize()))
-    }
-
     ngOnDestroy(): void {
         this.chartHost.dispose()
     }

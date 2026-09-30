@@ -8,7 +8,6 @@ import {
     stubbedChart,
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
-import { AxisWindow } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { DependencyGraphHandlers, DependencyGraphHost, DOUBLE_CLICK_MS, POINTER_LEAVE_GRACE_MS } from "./dependencyGraphHost"
 
@@ -353,23 +352,6 @@ describe("DependencyGraphHost", () => {
 
         // Assert
         expect(shownWindow).toBeNull()
-    })
-
-    it("should zoom and pan both axes to a window in layout units", () => {
-        // Arrange
-        const layoutWindow: AxisWindow = { x: [-10, 90], y: [5, 65] }
-
-        // Act
-        host.fitTo(layoutWindow)
-
-        // Assert
-        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({
-            type: "dataZoom",
-            batch: [
-                { dataZoomIndex: 0, startValue: -10, endValue: 90 },
-                { dataZoomIndex: 1, startValue: 5, endValue: 65 }
-            ]
-        })
     })
 
     it("should end a hover and release the chart when disposed", () => {

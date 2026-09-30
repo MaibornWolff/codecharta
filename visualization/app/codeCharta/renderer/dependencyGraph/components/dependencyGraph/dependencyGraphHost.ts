@@ -82,16 +82,6 @@ export class DependencyGraphHost {
         return [...shownWindow.x, ...shownWindow.y].every(Number.isFinite) ? shownWindow : null
     }
 
-    fitTo({ x, y }: AxisWindow): void {
-        this.chart?.dispatchAction({
-            type: "dataZoom",
-            batch: [
-                { dataZoomIndex: 0, startValue: x[0], endValue: x[1] },
-                { dataZoomIndex: 1, startValue: y[0], endValue: y[1] }
-            ]
-        })
-    }
-
     dispose(): void {
         this.cancelPointerLeave()
         this.reportPointerLeft()

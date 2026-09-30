@@ -1,0 +1,57 @@
+<cc-axis-card
+    label="Edge style"
+    [metricName]="edgeStyleLabel()"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    testId="dependency-bar-edge-style-segment"
+>
+    <div body class="text-center text-xs opacity-70" data-testid="dependency-bar-edge-thickness-value">{{ edgeThicknessLabel() }}</div>
+</cc-axis-card>
+<cc-settings-popover-shell [popoverId]="popoverId" [anchorName]="anchorName" ariaLabel="Edge style" widthClass="w-[420px] max-w-[95vw]">
+    <cc-choice-row
+        label="Style"
+        idPrefix="dependency-bar-edge-style"
+        [choices]="edgeStyleChoices"
+        [chosen]="edgeStyle()"
+        (choose)="drawEdgesAs($event)"
+    >
+        <label class="flex cursor-pointer items-center gap-2">
+            <input
+                #sideMiddleToggle
+                type="checkbox"
+                class="toggle toggle-sm toggle-primary"
+                data-testid="dependency-bar-edge-style-side-middle"
+                [checked]="isAnchoredAtSideMiddle()"
+                (change)="anchorAtSideMiddle(sideMiddleToggle.checked)"
+            />
+            <span class="text-sm">Start and end at the middle of the side</span>
+        </label>
+    </cc-choice-row>
+
+    <cc-choice-row
+        label="Line thickness"
+        idPrefix="dependency-bar-edge-thickness"
+        [choices]="edgeThicknessChoices"
+        [chosen]="edgeWidth().thickness"
+        (choose)="drawEdgesThick($event)"
+    >
+        <div>
+            <span class="text-sm">Width factor</span>
+            <cc-slider-number-input
+                ariaLabel="Line width factor"
+                [min]="widthFactorRange.min"
+                [max]="widthFactorRange.max"
+                [step]="widthFactorRange.step"
+                [value]="edgeWidth().factor"
+                (valueChange)="scaleEdgeWidth($event)"
+            ></cc-slider-number-input>
+        </div>
+    </cc-choice-row>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset the edge style and line thickness to their defaults"
+        label="Reset edge style"
+        [small]="true"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

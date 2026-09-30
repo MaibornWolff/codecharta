@@ -1,0 +1,17 @@
+<span class="text-xs uppercase tracking-wider opacity-60">{{ label() }}</span>
+<div class="join w-full" role="radiogroup" [attr.aria-label]="label()">
+    @for (choice of choices(); track choice.value) {
+        <input
+            type="radio"
+            class="join-item btn btn-sm flex-1"
+            [name]="idPrefix()"
+            [attr.aria-label]="choice.label"
+            [title]="choice.hint"
+            [checked]="choice.value === chosen()"
+            [attr.data-testid]="idPrefix() + '-' + choice.value"
+            (change)="choose.emit(choice.value)"
+        />
+    }
+</div>
+<p class="m-0 text-xs opacity-70" [attr.data-testid]="idPrefix() + '-hint'">{{ chosenHint() }}</p>
+<ng-content></ng-content>
