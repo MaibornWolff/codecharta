@@ -11,6 +11,10 @@ export class ViewSwitcherPageObject {
         await this.switchTo("metrics")
     }
 
+    async switchToDependencies() {
+        await this.switchTo("dependencies")
+    }
+
     /** Picking a tab closes the mode bar, so the pointer has to leave before it can hover it open again. */
     async hoverMetricsTab() {
         await this.page.mouse.move(0, 0)
@@ -25,7 +29,7 @@ export class ViewSwitcherPageObject {
 
     /** The view-switch spinner comes and goes under a resting pointer, which hovers the tab again and reopens the
      * mode bar over the view; a user moves on, so the pointer leaves the tab as a user's would. */
-    private async switchTo(view: "domain" | "metrics") {
+    private async switchTo(view: "domain" | "metrics" | "dependencies") {
         await this.page.locator(`[data-testid=view-switcher-${view}]`).click()
         await this.page.mouse.move(0, 0)
     }
