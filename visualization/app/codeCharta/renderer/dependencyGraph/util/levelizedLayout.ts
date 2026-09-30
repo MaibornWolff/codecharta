@@ -137,7 +137,7 @@ function groupByLevelFromTop(nodes: LeveledNode[]): LeveledNode[][] {
     }
     return [...byLevel.entries()]
         .sort(([levelA], [levelB]) => levelB - levelA)
-        .map(([, levelNodes]) => levelNodes.sort((nodeA, nodeB) => nodeA.name.localeCompare(nodeB.name)))
+        .map(([, levelNodes]) => levelNodes.toSorted((nodeA, nodeB) => nodeA.name.localeCompare(nodeB.name)))
 }
 
 /** Every width at which some level would break into a new row. Between two of them the packing does not

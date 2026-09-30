@@ -754,7 +754,7 @@ function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
     return migrated
 }
 
-export async function openCodeChartaDB() {
+export function openCodeChartaDB() {
     return openDB(DB_NAME, DB_VERSION, {
         async upgrade(database, oldVersion, _newVersion, transaction) {
             if (!database.objectStoreNames.contains(CCSTATE_STORE_NAME)) {
