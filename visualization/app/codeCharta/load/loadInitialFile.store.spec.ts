@@ -1,7 +1,16 @@
 import "fake-indexeddb/auto"
 import { TestBed } from "@angular/core/testing"
 import { Action, Store, StoreModule } from "@ngrx/store"
-import { CcState, DomainLensSource, DomainState, RadialFolderStyle, RadialFolderValue, SharedView } from "../model/codeCharta.model"
+import {
+    CcState,
+    DomainLensSource,
+    DomainState,
+    Preferences,
+    RadialFolderStyle,
+    RadialFolderValue,
+    SharedView,
+    SortingOption
+} from "../model/codeCharta.model"
 import { WordCloudShape, WordCloudSizingMode } from "../model/wordCloud.model"
 import { DomainLensSourceReadWindow, defaultDomainLensSource } from "../stores/domainLensSource/domainLensSource.read.facade"
 import { setDomainWords } from "../stores/domainLensSource/domainLensSource.write.facade"
@@ -22,11 +31,14 @@ import {
     setRadialFolderStyle,
     setRadialFolderTint,
     setRadialFolderValue,
-    setRadialLevels
+    setRadialLevels,
+    setSortingOption
 } from "../stores/preferences/preferences.write.facade"
 import { readCcState, writeCcState } from "../stores/rootStore/indexedDB/indexedDBWriter"
 import { defaultState } from "../stores/rootStore/state.manager"
 import { appReducers, setStateMiddleware } from "../stores/rootStore/store"
+import { SharedViewReadWindow } from "../stores/sharedView/sharedView.read.facade"
+import { setSearchPattern } from "../stores/sharedView/sharedView.write.facade"
 import { LoadInitialFileStore } from "./loadInitialFile.store"
 
 describe("LoadInitialFileStore", () => {
@@ -264,6 +276,63 @@ describe("LoadInitialFileStore", () => {
             // Assert
             expect(missingKeys).toEqual([])
             expect(dispatchedActions()).toEqual([setRadialLevels({ value: 6 })])
+        })
+        it("should restore the saved sort option but not the sort order", () => {
+            // Arrange
+            setup()
+            const savedPreferences = {
+                ...defaultPreferences,
+                sorting: { option: SortingOption.AREA_SIZE, orderAscending: !defaultPreferences.sorting.orderAscending }
+            }
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyPreferences(savedPreferences)
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([setSortingOption({ value: SortingOption.AREA_SIZE })])
+        })
+
+        it("should dispatch nothing for a saved sorting without an option", () => {
+            // Arrange
+            setup()
+            const savedPreferences = { ...defaultPreferences, sorting: { orderAscending: false } as Preferences["sorting"] }
+
+            // Act
+            const missingKeys = loadInitialFileStore.applyPreferences(savedPreferences)
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([])
+        })
+    })
+
+    describe("applySharedView", () => {
+        it("should restore a changed setting but not the transient interaction state", () => {
+            // Arrange
+            setup()
+            const savedSharedView: SharedView = { ...defaultState.sharedView, searchPattern: "*.ts", hoveredNodePath: "/root/a.ts" }
+
+            // Act
+            const missingKeys = loadInitialFileStore.applySharedView(savedSharedView)
+
+            // Assert
+            expect(missingKeys).toEqual([])
+            expect(dispatchedActions()).toEqual([setSearchPattern({ value: "*.ts" })])
+        })
+
+        it("should throw for a key only inherited by the action lookup table", () => {
+            // Arrange
+            setup([
+                {
+                    provide: SharedViewReadWindow,
+                    useValue: { getSharedView: () => ({ ...defaultState.sharedView, toString: "old" }) }
+                }
+            ])
+            const savedSharedViewWithInheritedKey = { ...defaultState.sharedView, toString: "new" } as unknown as SharedView
+
+            // Act & Assert
+            expect(() => loadInitialFileStore.applySharedView(savedSharedViewWithInheritedKey)).toThrow("Unhandled key: toString")
         })
     })
 
