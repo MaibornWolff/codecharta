@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { BoxOffset, collapsedFirstLook, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { BoxOffset, boxPathOf, collapsedFirstLook, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
 interface RevealsAwaitingAdoption {
@@ -18,7 +18,7 @@ export class DependencyMapViewStore {
     private readonly boxBeingDragged = signal<string | null>(null)
     private readonly fitRequestCount = signal(0)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
-    private adoptedRootPath: string | null = null
+    private adoptedTree: LeveledNode | null = null
 
     readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedFolders.asReadonly()
     readonly expandedPaths = this.openedFolders.asReadonly()
@@ -30,8 +30,8 @@ export class DependencyMapViewStore {
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()
-        const hasRootMoved = tree.path !== this.adoptedRootPath
-        this.adoptedRootPath = tree.path
+        const hasRootMoved = tree.path !== this.adoptedTree?.path
+        this.adoptedTree = tree
         if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedFolders)) {
             this.startOver(tree, layoutIdentity)
         } else if (hasRootMoved) {
@@ -68,6 +68,12 @@ export class DependencyMapViewStore {
         if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedFolders)) {
             this.awaitAdoptionToReveal(layoutIdentity, path)
         }
+    }
+
+    openFolder(folderPath: string): void {
+        this.reveal(folderPath)
+        const boxPath = (this.adoptedTree && boxPathOf(this.adoptedTree, folderPath)) ?? folderPath
+        this.openedFolders.update(opened => new Set([...opened, boxPath]))
     }
 
     toggle(folderPath: string): void {

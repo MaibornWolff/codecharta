@@ -5,6 +5,7 @@ import { ExplorerSelection } from "../../../features/sidebarExplorer/facade"
 import { CodeMapNode } from "../../../model/codeCharta.model"
 import { SharedViewReadWindow } from "../../../stores/sharedView/sharedView.read.facade"
 import { NodeInteraction } from "../../../stores/sharedView/sharedView.write.facade"
+import { isLeaf } from "../../../util/codeMapHelper"
 
 @Injectable()
 export class DependencyExplorerSelection implements ExplorerSelection {
@@ -25,7 +26,11 @@ export class DependencyExplorerSelection implements ExplorerSelection {
 
     select(node: CodeMapNode): void {
         this.nodeInteraction.selectNode(node.path)
-        this.viewStore.reveal(node.path)
+        if (isLeaf(node)) {
+            this.viewStore.reveal(node.path)
+        } else {
+            this.viewStore.openFolder(node.path)
+        }
     }
 
     deselect(): void {

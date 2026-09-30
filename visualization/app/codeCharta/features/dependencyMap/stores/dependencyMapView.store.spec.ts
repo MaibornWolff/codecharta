@@ -193,6 +193,29 @@ describe("DependencyMapViewStore", () => {
         expect([...store.expandedPaths()]).toEqual(["/root", "/root/src", "/root/src/ui"])
     })
 
+    it("should open a folder together with the folders holding it", () => {
+        // Arrange
+        store.adoptTree(TWO_TOP_FOLDERS)
+
+        // Act
+        store.openFolder("/root/src/ui")
+
+        // Assert
+        expect([...store.expandedPaths()]).toEqual(["/root", "/root/src", "/root/src/ui"])
+    })
+
+    it("should open the chain box a folder is folded into", () => {
+        // Arrange
+        const chain = { ...leveledFolder("/root/lib/core", [leveledFolder("/root/lib/core/io")]), foldedPaths: ["/root/lib"] }
+        store.adoptTree(leveledFolder("/root", [chain, leveledFolder("/root/src")]))
+
+        // Act
+        store.openFolder("/root/lib")
+
+        // Assert
+        expect(store.expandedPaths().has("/root/lib/core")).toBe(true)
+    })
+
     it("should keep a reveal that arrives before the tree of the loaded files is adopted", () => {
         // Arrange
         store.reveal("/root/src/ui/button.ts")

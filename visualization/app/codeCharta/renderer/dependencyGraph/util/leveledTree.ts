@@ -36,6 +36,20 @@ export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData)
     return { path: root.path, name: root.name, level, isFolder: true, children }
 }
 
+/** The box a folder is drawn as: its own, or the chain box it is folded into. */
+export function boxPathOf(tree: LeveledNode, folderPath: string): string | null {
+    if (tree.path === folderPath || tree.foldedPaths?.includes(folderPath)) {
+        return tree.path
+    }
+    for (const child of tree.children) {
+        const boxPath = boxPathOf(child, folderPath)
+        if (boxPath !== null) {
+            return boxPath
+        }
+    }
+    return null
+}
+
 /** Only the root is open, and the folders below it for as long as each holds nothing but one folder: a lone box
  * would show nothing. */
 export function collapsedFirstLook(tree: LeveledNode): Set<string> {
