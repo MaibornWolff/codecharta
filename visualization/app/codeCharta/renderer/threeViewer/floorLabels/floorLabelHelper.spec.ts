@@ -2,39 +2,6 @@ import { Node } from "../../../model/codeCharta.model"
 import { FloorLabelHelper } from "./floorLabelHelper"
 
 describe("FloorLabelHelper", () => {
-    describe("getMapResolutionScaling", () => {
-        function appendMapCanvas(mapCanvasWidth) {
-            const fakeMapCanvas = document.createElement("canvas")
-            fakeMapCanvas.width = fakeMapCanvas.height = mapCanvasWidth
-            document.getElementById = jest.fn().mockReturnValue(fakeMapCanvas)
-        }
-
-        it("should not scale since map width is smaller than scaling threshold (four times the display width)", () => {
-            appendMapCanvas(500)
-
-            expect(FloorLabelHelper.getMapResolutionScaling(400)).toBe(1)
-        })
-
-        it("should scale since map width is greater than scaling threshold (four times the display width)", () => {
-            appendMapCanvas(1000)
-
-            expect(FloorLabelHelper.getMapResolutionScaling(5000)).toBeLessThan(1)
-        })
-
-        it("should not scale since map width is smaller than scaling threshold (four times the width of 2560px=FullHD+)", () => {
-            appendMapCanvas(1000)
-
-            expect(FloorLabelHelper.getMapResolutionScaling(400)).toBe(1)
-        })
-
-        it("should scale since map width is greater than scaling threshold (four times the width of 2560px=FullHD+)", () => {
-            const fullHdPlusWidth = 2560
-            appendMapCanvas(fullHdPlusWidth * 5)
-
-            expect(FloorLabelHelper.getMapResolutionScaling(fullHdPlusWidth * 6)).toBeLessThan(1)
-        })
-    })
-
     describe("isLabelNode", () => {
         function createNode(isLeaf: boolean, mapNodeDepth?: number): Node {
             return {

@@ -21,6 +21,7 @@ export class FloorLabelDrawer {
     private static readonly TEXTURE_FONT_SIZE = 64
     private static readonly LINE_HEIGHT_RATIO = 1.3
     private static readonly LIFT_TO_PREVENT_Z_FIGHTING = 2
+    private static readonly FOLDER_GEOMETRY_HEIGHT = 2.01
     private static readonly FONT_FAMILY = "Arial"
 
     private readonly floorLabelPlanes: Mesh[] = []
@@ -29,16 +30,12 @@ export class FloorLabelDrawer {
     private readonly mapSize: number
     private readonly scaling: Vector3
     private readonly maxAnisotropy: number
-    readonly folderGeometryHeight: number = 2.01
 
-    constructor(nodes: Node[], rootNode: Node, mapSize: number, scaling: Vector3, experimentalFeaturesEnabled: boolean, maxAnisotropy = 1) {
+    constructor(nodes: Node[], mapSize: number, scaling: Vector3, maxAnisotropy = 1) {
         this.labelNodes = nodes.filter(node => FloorLabelHelper.isLabelNode(node))
         this.mapSize = mapSize
         this.scaling = scaling
         this.maxAnisotropy = maxAnisotropy
-        this.folderGeometryHeight = experimentalFeaturesEnabled
-            ? Math.ceil(2 / FloorLabelHelper.getMapResolutionScaling(rootNode.width)) * 2
-            : 2.01
     }
 
     draw() {
@@ -59,7 +56,7 @@ export class FloorLabelDrawer {
     }
 
     private floorHeightOfLevel(level: number, heightScaling: number) {
-        return this.folderGeometryHeight * heightScaling * (level + 1) + FloorLabelDrawer.LIFT_TO_PREVENT_Z_FIGHTING
+        return FloorLabelDrawer.FOLDER_GEOMETRY_HEIGHT * heightScaling * (level + 1) + FloorLabelDrawer.LIFT_TO_PREVENT_Z_FIGHTING
     }
 
     private drawLabel(labelNode: Node): Mesh | undefined {

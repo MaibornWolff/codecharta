@@ -256,15 +256,9 @@ describe("treeMapGenerator", () => {
 
     describe("calculateAreaValue", () => {
         it("should return 0 if node has children, not excluded and not only visible in comparison map", () => {
-            const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400, false)
+            const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400)
 
             expect(actual).toBe(0)
-        })
-
-        it("should return 0.5 if experimentalFeaturesEnabled is true and node has children, not excluded and not only visible in comparison map", () => {
-            const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode, state, 400, true)
-
-            expect(actual).toBe(0.5)
         })
 
         it("should invert area when areametric indicates a positive direction", () => {
@@ -280,7 +274,7 @@ describe("treeMapGenerator", () => {
                 }
             }
             codeMapNode.children[0].attributes = { branch_coverage: 0.9 }
-            const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode.children[0], state, 400, false)
+            const actual = SquarifiedLayoutGenerator.calculateAreaValue(codeMapNode.children[0], state, 400)
 
             expect(actual).toBe(400 - 0.9)
         })

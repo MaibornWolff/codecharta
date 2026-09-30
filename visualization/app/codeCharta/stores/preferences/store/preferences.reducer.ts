@@ -3,10 +3,6 @@ import { centerMapZoom, defaultCenterMapZoom } from "./centerMapZoom/centerMapZo
 import { defaultDependencyGraphSettings, dependencyGraph } from "./dependencyGraph/dependencyGraph.reducer"
 import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import {
-    defaultExperimentalFeaturesEnabled,
-    experimentalFeaturesEnabled
-} from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
-import {
     defaultIsColorMetricLinkedToHeightMetric,
     isColorMetricLinkedToHeightMetric
 } from "./isHeightAndColorMetricLinked/isColorMetricLinkedToHeightMetric.reducer"
@@ -27,7 +23,6 @@ export const preferences = combineReducers({
     resetCameraIfNewFileIsLoaded,
     centerMapZoom,
     maxTreeMapFiles,
-    experimentalFeaturesEnabled,
     screenshotToClipboardEnabled,
     isColorMetricLinkedToHeightMetric,
     sorting,
@@ -43,7 +38,6 @@ export const defaultPreferences = {
     resetCameraIfNewFileIsLoaded: defaultResetCameraIfNewFileIsLoaded,
     centerMapZoom: defaultCenterMapZoom,
     maxTreeMapFiles: defaultMaxTreeMapFiles,
-    experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled,
     screenshotToClipboardEnabled: defaultScreenshotToClipboardEnabled,
     isColorMetricLinkedToHeightMetric: defaultIsColorMetricLinkedToHeightMetric,
     sorting: defaultSorting,

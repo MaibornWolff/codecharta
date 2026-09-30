@@ -96,7 +96,6 @@ describe("ExtensionRulesService", () => {
             resetCameraIfNewFileIsLoaded: true,
             centerMapZoom: 140,
             maxTreeMapFiles: 100,
-            experimentalFeaturesEnabled: false,
             screenshotToClipboardEnabled: false,
             isColorMetricLinkedToHeightMetric: false,
             sorting: { option: SortingOption.NAME, orderAscending: true },

@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing"
-import { State, Store, StoreModule } from "@ngrx/store"
+import { Store, StoreModule } from "@ngrx/store"
 import { klona } from "klona"
 import { Object3D, Vector3 } from "three"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
@@ -13,12 +13,11 @@ import {
     STATE,
     TEST_FILE_WITH_PATHS,
     TEST_NODE_LEAF,
-    TEST_NODE_LEAF_0_LENGTH,
     TEST_NODE_ROOT,
     TEST_NODES,
     VALID_EDGES
 } from "../../mocks/dataMocks"
-import { CcState, CodeMapNode, LabelMode, Node } from "../../model/codeCharta.model"
+import { CcState, CodeMapNode, LabelMode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
 import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
@@ -63,7 +62,6 @@ jest.mock("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector", (
 
 describe("codeMapRenderService", () => {
     let store: Store<CcState>
-    let state: State<CcState>
     let codeMapStore: CodeMapStore
     let fileStoreReadWindow: FileStoreReadWindow
     let codeMapRenderService: CodeMapRenderService
@@ -92,7 +90,6 @@ describe("codeMapRenderService", () => {
             imports: [StoreModule.forRoot(appReducers, { metaReducers: [setStateMiddleware] })]
         })
         store = TestBed.inject(Store)
-        state = TestBed.inject(State)
         codeMapStore = TestBed.inject(CodeMapStore)
         fileStoreReadWindow = TestBed.inject(FileStoreReadWindow)
         labelSettingsFacade = TestBed.inject(LabelSettingsFacade)
@@ -356,41 +353,28 @@ describe("codeMapRenderService", () => {
 
             expect(sortedNodes).toMatchSnapshot()
         })
+
+        it("should return no nodes for a layout the 3D map does not build", () => {
+            // Arrange
+            store.dispatch(setState({ value: { ...STATE, mapState: { ...STATE.mapState, layoutAlgorithm: LayoutAlgorithm.Sunburst } } }))
+
+            // Act
+            const nodes: Node[] = codeMapRenderService["getNodes"](map)
+
+            // Assert
+            expect(nodes).toEqual([])
+        })
     })
 
     describe("sortVisibleNodesByHeightDescending", () => {
-        it("should return nodes with length of 0 and set min length if experimental features are enabled", () => {
-            const newState = {
-                ...state.getValue(),
-                preferences: {
-                    ...state.getValue().preferences,
-                    experimentalFeaturesEnabled: true
-                }
-            }
-            store.dispatch(setState({ value: newState }))
-
+        it("should drop nodes without length or width", () => {
+            // Arrange
             const nodes = klona(TEST_NODES)
+
+            // Act
             const sortedNodes: Node[] = codeMapRenderService.sortVisibleNodesByHeightDescending(nodes)
 
-            const updatedNode = klona(TEST_NODE_LEAF_0_LENGTH)
-            updatedNode.length = 2
-            const result: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF, updatedNode]
-            expect(sortedNodes).toEqual(result)
-        })
-
-        it("should return nodes with length and width > 0 if experimental features are not enabled", () => {
-            const newState = {
-                ...state.getValue(),
-                preferences: {
-                    ...state.getValue().preferences,
-                    experimentalFeaturesEnabled: false
-                }
-            }
-            store.dispatch(setState({ value: newState }))
-
-            const nodes = klona(TEST_NODES)
-            const sortedNodes: Node[] = codeMapRenderService.sortVisibleNodesByHeightDescending(nodes)
-
+            // Assert
             const result: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
             expect(sortedNodes).toEqual(result)
         })

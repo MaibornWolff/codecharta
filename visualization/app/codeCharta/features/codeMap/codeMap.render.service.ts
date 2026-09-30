@@ -22,8 +22,6 @@ import { RendererEngine } from "./rendererEngine.contract"
 import { selectTopNByValue, selectTopNByValuePerGroup } from "./selectTopNByValue"
 import { CodeMapStore } from "./stores/codeMap.store"
 
-const MIN_BUILDING_LENGTH = 2
-
 @Injectable({ providedIn: "root" })
 export class CodeMapRenderService implements OnDestroy, RendererEngine {
     private nodesByColor = {
@@ -143,20 +141,7 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
     }
 
     sortVisibleNodesByHeightDescending(nodes: Node[]) {
-        const experimentalFeaturesEnabled = this.codeMapStore.getState().preferences.experimentalFeaturesEnabled
-        if (experimentalFeaturesEnabled) {
-            this.setMinBuildingLength(nodes)
-            return nodes.filter(node => node.visible && node.width > 0).sort((a, b) => b.height - a.height)
-        }
         return nodes.filter(node => node.visible && node.length > 0 && node.width > 0).sort((a, b) => b.height - a.height)
-    }
-
-    private setMinBuildingLength(nodes: Node[]) {
-        for (const node of nodes) {
-            if (node.length <= 0) {
-                node.length = MIN_BUILDING_LENGTH
-            }
-        }
     }
 
     private getNodesMatchingColorSelector(sortedNodes: Node[]) {
