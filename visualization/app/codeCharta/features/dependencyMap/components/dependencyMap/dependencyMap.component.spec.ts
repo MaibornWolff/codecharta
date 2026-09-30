@@ -17,7 +17,6 @@ import {
     stubElementSize,
     stubResizeObserver
 } from "../../../../renderer/dependencyGraph/testing/dependencyGraph.stub"
-import { accumulatedDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow, isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
@@ -30,7 +29,6 @@ import {
     setSelectedNodePath,
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
-import { clearPendingHeavyDispatch, isPendingHeavyDispatch$ } from "../../../../util/dispatchAfterPaint"
 import {
     dependencyLayoutIdentitySelector,
     dependencySearchedPathsOrNullSelector,
@@ -178,15 +176,6 @@ function outlineWidthOf(path: string): unknown {
     return drawnSeries().renderItem({ dataIndex: index }, { coord: point => point }).children[0].style.lineWidth
 }
 
-function landHeavyDispatch(store: MockStore, tree?: LeveledNode | null) {
-    isPendingHeavyDispatch$.next(true)
-    if (tree !== undefined) {
-        store.overrideSelector(dependencyTreeSelector, tree)
-    }
-    store.overrideSelector(accumulatedDataSelector, { unifiedMapNode: undefined, unifiedFileMeta: undefined })
-    store.refreshState()
-}
-
 function dragBox(path: string) {
     fireChartEvent("mousedown", { ...boxEvent(path), event: { offsetX: 0, offsetY: 0, event: { button: 0 } } })
     fireRenderSurfaceEvent("mousemove", { offsetX: -30, offsetY: 0, target: {} })
@@ -220,10 +209,6 @@ describe("DependencyMapComponent", () => {
     beforeEach(() => {
         resetStubbedChart()
         stubResizeObserver()
-    })
-
-    afterEach(() => {
-        clearPendingHeavyDispatch()
     })
 
     it("should start with every folder closed", async () => {
@@ -324,48 +309,6 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(graph.fitRequest()).toBe(1)
-    })
-
-    it("should keep the spinner of an exclusion that changes the graph up until the graph is redrawn", async () => {
-        // Arrange
-        const { store, fixture } = await setup()
-        const treeAfterExclusion = leveledFolder("/root", [leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")], 1)])
-
-        // Act
-        landHeavyDispatch(store, treeAfterExclusion)
-        fixture.detectChanges()
-        await screen.findByTestId("dependency-graph")
-        const whileRedrawing = isPendingHeavyDispatch$.value
-        fireChartEvent("finished")
-
-        // Assert
-        expect(whileRedrawing).toBe(true)
-        expect(isPendingHeavyDispatch$.value).toBe(false)
-    })
-
-    it.each([
-        ["leaves the graph as it is", undefined],
-        ["empties the graph", null]
-    ])("should take the spinner down as soon as an exclusion %s", async (_, treeAfterExclusion) => {
-        // Arrange
-        const { store } = await setup()
-
-        // Act
-        landHeavyDispatch(store, treeAfterExclusion)
-
-        // Assert
-        expect(isPendingHeavyDispatch$.value).toBe(false)
-    })
-
-    it("should take the spinner down as soon as an exclusion lands in compare mode", async () => {
-        // Arrange
-        const { store } = await setup({ isDeltaState: true })
-
-        // Act
-        landHeavyDispatch(store)
-
-        // Assert
-        expect(isPendingHeavyDispatch$.value).toBe(false)
     })
 
     it("should select, hover and open the context menu through the shared view state", async () => {

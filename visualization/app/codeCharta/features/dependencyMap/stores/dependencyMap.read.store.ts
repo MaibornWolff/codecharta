@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { skip } from "rxjs"
 import { edgesSelector, hasDependencyDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
-import { accumulatedDataSelector, edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
 import { edgeMetricSelector } from "../../../stores/mapState/mapState.read.facade"
 import { dependencyGraphSettingsSelector } from "../../../stores/preferences/preferences.read.facade"
@@ -36,5 +35,4 @@ export class DependencyMapReadStore {
     readonly selectedNodePath$ = this.store.select(selectedNodePathSelector)
     readonly isDeltaState$ = this.store.select(isDeltaStateSelector)
     readonly searchedPaths$ = this.store.select(dependencySearchedPathsOrNullSelector)
-    readonly mapChanges$ = this.store.select(accumulatedDataSelector).pipe(skip(1))
 }
