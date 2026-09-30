@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Map after changes made in another view**: an exclusion, focus or search made in another view shows in the 3D map as soon as you return to it.
+- **One spinner while a large map loads**: the spinner stays up until the loaded map is saved, instead of leaving a frozen map followed by a second spinner.
 
 ## [2.7.0] - 2026-09-28
 

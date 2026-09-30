@@ -540,8 +540,12 @@ function holdsThePersistedFileStates(files: FileState[]): boolean {
     return files.every(file => persisted.includes(file))
 }
 
+export function isFilesWriteDue(files: FileState[]): boolean {
+    return !holdsThePersistedFileStates(files)
+}
+
 export async function writeCcFiles(files: FileState[]) {
-    if (holdsThePersistedFileStates(files)) {
+    if (!isFilesWriteDue(files)) {
         return
     }
     const database = await openCodeChartaDB()
