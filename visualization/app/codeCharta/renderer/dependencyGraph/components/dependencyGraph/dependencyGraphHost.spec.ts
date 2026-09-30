@@ -316,6 +316,45 @@ describe("DependencyGraphHost", () => {
         expect(stubbedChart.resize).toHaveBeenCalledTimes(2)
     })
 
+    it("should read the window it shows in layout units and carry it over to a resized chart at the same scale", () => {
+        // Arrange
+        const twoPixelsPerUnitFrom100 = (_finder: unknown, [x, y]: number[]) => [x / 2 + 100, y / 2 + 100]
+        stubbedChart.convertFromPixel.mockImplementation(twoPixelsPerUnitFrom100)
+        host.render({})
+
+        // Act
+        const windowAtSameSize = host.shownWindowFor({ width: 800, height: 600 })
+        const windowAtHalfWidth = host.shownWindowFor({ width: 400, height: 600 })
+
+        // Assert
+        expect(windowAtSameSize).toEqual({ x: [100, 500], y: [100, 400] })
+        expect(windowAtHalfWidth).toEqual({ x: [200, 400], y: [100, 400] })
+    })
+
+    it("should know no shown window before it has drawn anything", () => {
+        // Arrange
+        const viewport = { width: 800, height: 600 }
+
+        // Act
+        const shownWindow = host.shownWindowFor(viewport)
+
+        // Assert
+        expect(shownWindow).toBeNull()
+        expect(stubbedChart.convertFromPixel).not.toHaveBeenCalled()
+    })
+
+    it("should know no shown window while the chart maps pixels to no layout point", () => {
+        // Arrange
+        stubbedChart.convertFromPixel.mockImplementation(() => [Number.NaN, Number.NaN])
+        host.render({})
+
+        // Act
+        const shownWindow = host.shownWindowFor({ width: 800, height: 600 })
+
+        // Assert
+        expect(shownWindow).toBeNull()
+    })
+
     it("should zoom and pan both axes to a window in layout units", () => {
         // Arrange
         const layoutWindow: AxisWindow = { x: [-10, 90], y: [5, 65] }

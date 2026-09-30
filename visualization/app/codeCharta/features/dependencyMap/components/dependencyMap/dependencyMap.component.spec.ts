@@ -172,6 +172,15 @@ function doubleClickBox(path: string) {
     screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
 }
 
+interface ZoomOption {
+    startValue: number
+    endValue: number
+}
+
+function shownWindowOf({ dataZoom: [xZoom, yZoom] }: { dataZoom: ZoomOption[] }) {
+    return { x: [xZoom.startValue, xZoom.endValue], y: [yZoom.startValue, yZoom.endValue] }
+}
+
 describe("DependencyMapComponent", () => {
     let restoreElementSize: () => void
 
@@ -379,15 +388,15 @@ describe("DependencyMapComponent", () => {
 
     it("should fit the graph of newly loaded files into view", async () => {
         // Arrange
-        const { store } = await setup()
-        const fitsBefore = stubbedChart.dispatchAction.mock.calls.length
+        const { store } = await setup({ openedFolders: [] })
+        const [[fittedOnArrival]] = stubbedChart.setOption.mock.calls
+        stubbedChart.convertFromPixel.mockImplementation((_finder: unknown, [x, y]: number[]) => [x / 2, y / 2])
 
         // Act
         await loadOtherFiles(store)
 
         // Assert
-        expect(stubbedChart.dispatchAction.mock.calls.length).toBeGreaterThan(fitsBefore)
-        expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
+        expect(shownWindowOf(lastDrawnOption())).toEqual(shownWindowOf(fittedOnArrival))
     })
 
     it("should keep the moved boxes when an exclusion moves the root of the tree", async () => {

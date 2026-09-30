@@ -1,5 +1,5 @@
 import { DEPENDENCY_EDGE_TYPES } from "../../../model/dependencyGraph.model"
-import { buildDependencyGraphOption, fitWindowOf } from "./dependencyGraphOption.builder"
+import { AxisWindow, buildDependencyGraphOption, fitWindowOf, windowResizedTo } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
 import { aBand, aBox, anEdge, identityPixels } from "./dependencyGraphTestData"
@@ -20,6 +20,7 @@ const view = aBox("/root/view.ts", { x: 16, y: 44 })
 const model = aBox("/root/model.ts", { x: 16, y: 120 })
 const util = aBox("/root/util.ts", { x: 200, y: 120 })
 const VIEWPORT = { width: 800, height: 600 }
+const SHOWN_WINDOW: AxisWindow = { x: [0, 400], y: [0, 200] }
 
 function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGraphScene {
     return {
@@ -40,7 +41,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
 }
 
 function drawnGraph(scene: DependencyGraphScene) {
-    const option = buildDependencyGraphOption(scene, VIEWPORT)
+    const option = buildDependencyGraphOption(scene, VIEWPORT, SHOWN_WINDOW)
     const series = option.series[0] as unknown as BuiltSeries
     const edgeIndices = series.data.flatMap((datum, index) => (datum.isEdge ? [index] : []))
     return {
@@ -59,7 +60,7 @@ describe("buildDependencyGraphOption", () => {
         const viewport = { width: 1000, height: 400 }
 
         // Act
-        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), viewport)
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), viewport, SHOWN_WINDOW)
 
         // Assert
         expect((xAxis.max - xAxis.min) / viewport.width).toBeCloseTo((yAxis.max - yAxis.min) / viewport.height)
@@ -304,11 +305,39 @@ describe("buildDependencyGraphOption", () => {
         const squareViewport = { width: 800, height: 800 }
 
         // Act
-        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), squareViewport)
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), squareViewport, SHOWN_WINDOW)
 
         // Assert
         expect([xAxis.min, xAxis.max]).toEqual([-400, 800])
         expect(yAxis.min).toBeLessThan(-400)
+    })
+
+    it("should show the given window on both axes in layout values", () => {
+        // Arrange
+        const shownWindow: AxisWindow = { x: [-20, 380], y: [10, 310] }
+
+        // Act
+        const { dataZoom } = buildDependencyGraphOption(sceneWith(), VIEWPORT, shownWindow)
+
+        // Assert
+        expect(dataZoom).toEqual([
+            expect.objectContaining({ type: "inside", xAxisIndex: 0, startValue: -20, endValue: 380 }),
+            expect.objectContaining({ type: "inside", yAxisIndex: 0, startValue: 10, endValue: 310 })
+        ])
+        expect(dataZoom.some(zoom => "start" in zoom || "end" in zoom)).toBe(false)
+    })
+
+    it("should stretch the axes to reach a shown window beyond the room around the graph", () => {
+        // Arrange
+        const windowBeyondTheRoom: AxisWindow = { x: [-5000, 100], y: [0, 9000] }
+
+        // Act
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), VIEWPORT, windowBeyondTheRoom)
+
+        // Assert
+        expect(xAxis.min).toBe(-5000)
+        expect(yAxis.max).toBe(9000)
+        expect(xAxis.max).toBeGreaterThan(400)
     })
 
     it("should draw a scene without edges", () => {
@@ -329,7 +358,7 @@ describe("buildDependencyGraphOption", () => {
         const noSize = { width: 0, height: 0 }
 
         // Act
-        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), noSize)
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), noSize, SHOWN_WINDOW)
 
         // Assert
         expect([xAxis.min, xAxis.max, yAxis.min, yAxis.max].every(Number.isFinite)).toBe(true)
@@ -372,5 +401,20 @@ describe("fitWindowOf", () => {
 
         // Assert
         expect([...window.x, ...window.y].every(Number.isFinite)).toBe(true)
+    })
+})
+
+describe("windowResizedTo", () => {
+    it("should keep the window's centre and its pixels per unit on both axes when the chart is resized", () => {
+        // Arrange
+        const windowFittedAtWideSize: AxisWindow = { x: [0, 1276], y: [0, 638] }
+
+        // Act
+        const window = windowResizedTo(windowFittedAtWideSize, { width: 1600, height: 800 }, { width: 800, height: 800 })
+
+        // Assert
+        expect(window).toEqual({ x: [319, 957], y: [0, 638] })
+        expect(800 / (window.x[1] - window.x[0])).toBeCloseTo(1600 / 1276)
+        expect(800 / (window.y[1] - window.y[0])).toBeCloseTo(1600 / 1276)
     })
 })

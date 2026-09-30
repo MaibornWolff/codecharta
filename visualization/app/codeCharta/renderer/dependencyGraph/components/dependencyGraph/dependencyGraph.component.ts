@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, input, OnDestroy, output, viewChild } from "@angular/core"
-import { buildDependencyGraphOption, fitWindowOf } from "../../util/dependencyGraphOption.builder"
+import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
 import { DependencyGraphHost } from "./dependencyGraphHost"
@@ -27,9 +27,10 @@ const NO_BOX_ANYWHERE = () => null
 })
 export class DependencyGraphComponent implements OnDestroy {
     readonly scene = input.required<DependencyGraphScene>()
-    /** The whole graph is fitted into view when this changes, so a new map or focus is seen whole while the zoom
-     * survives every other redraw. */
+    /** The whole graph is fitted into view when this changes, so a new map or focus is seen whole. */
     readonly graphIdentity = input.required<string>()
+    /** Raising this counter fits the whole graph into view with the next drawing. */
+    readonly fitRequest = input(0)
     /** Whether pressing this box drags it rather than the graph. */
     readonly canDragBox = input<(path: string) => boolean>(NOTHING_DRAGGABLE)
     /** The box painted on top at a layout point, which takes the clicks on an edge lying over it. */
@@ -45,6 +46,7 @@ export class DependencyGraphComponent implements OnDestroy {
 
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
     private fittedGraphIdentity: string | null = null
+    private handledFitRequest = 0
 
     private readonly chartHost = new DependencyGraphHost({
         onBoxClicked: path => this.boxClicked.emit(path),
@@ -64,7 +66,7 @@ export class DependencyGraphComponent implements OnDestroy {
     }
 
     resetView(): void {
-        this.fitWholeGraph()
+        this.chartHost.fitTo(fitWindowOf(this.scene().layout, this.chartHost.containerSize()))
     }
 
     ngOnDestroy(): void {
@@ -77,15 +79,20 @@ export class DependencyGraphComponent implements OnDestroy {
             return
         }
         const scene = this.scene()
-        this.chartHost.render(buildDependencyGraphOption(scene, viewport))
-        const graphIdentity = this.graphIdentity()
-        if (graphIdentity !== this.fittedGraphIdentity) {
-            this.fittedGraphIdentity = graphIdentity
-            this.fitWholeGraph()
-        }
+        this.chartHost.render(buildDependencyGraphOption(scene, viewport, this.windowToShow(scene, viewport)))
     }
 
-    private fitWholeGraph(): void {
-        this.chartHost.fitTo(fitWindowOf(this.scene().layout, this.chartHost.containerSize()))
+    private windowToShow(scene: DependencyGraphScene, viewport: Viewport): AxisWindow {
+        const shownWindow = this.consumeDueFit() ? null : this.chartHost.shownWindowFor(viewport)
+        return shownWindow ?? fitWindowOf(scene.layout, viewport)
+    }
+
+    private consumeDueFit(): boolean {
+        const graphIdentity = this.graphIdentity()
+        const fitRequest = this.fitRequest()
+        const isFitDue = graphIdentity !== this.fittedGraphIdentity || (fitRequest > 0 && fitRequest !== this.handledFitRequest)
+        this.fittedGraphIdentity = graphIdentity
+        this.handledFitRequest = fitRequest
+        return isFitDue
     }
 }

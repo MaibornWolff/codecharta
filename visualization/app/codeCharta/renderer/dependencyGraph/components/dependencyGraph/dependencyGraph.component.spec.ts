@@ -4,11 +4,13 @@ import {
     fireChartEvent,
     fireRenderSurfaceEvent,
     lastDrawnOption,
+    reportResize,
     resetStubbedChart,
     stubbedChart,
     stubElementSize,
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
+import { AxisWindow, fitWindowOf } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { aBox } from "../../util/dependencyGraphTestData"
@@ -32,6 +34,23 @@ const SCENE: DependencyGraphScene = {
 }
 
 const GRAPH_IDENTITY = "project A"
+
+const GROWN_SCENE: DependencyGraphScene = {
+    ...SCENE,
+    layout: { boxes: [aBox("/root/a.ts", { width: 2000, height: 900 })], bands: [], width: 2000, height: 900 }
+}
+
+const PANNED_AND_ZOOMED = (_finder: unknown, [x, y]: number[]) => [x / 2 + 100, y / 2 + 100]
+const PANNED_AND_ZOOMED_WINDOW: AxisWindow = { x: [100, 500], y: [100, 400] }
+
+interface ZoomOption {
+    startValue: number
+    endValue: number
+}
+
+function shownWindowOf({ dataZoom: [xZoom, yZoom] }: { dataZoom: ZoomOption[] }): AxisWindow {
+    return { x: [xZoom.startValue, xZoom.endValue], y: [yZoom.startValue, yZoom.endValue] }
+}
 
 let measuredSize = { width: 800, height: 600 }
 
@@ -102,36 +121,93 @@ describe("DependencyGraphComponent", () => {
         expect(rendered).toHaveBeenCalled()
     })
 
-    it("should fit a new graph into view once, and again on request", async () => {
+    it("should fit a new graph into view with its first drawing", async () => {
         // Arrange
-        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
-        const fitsOnArrival = stubbedChart.dispatchAction.mock.calls.length
-        fixture.componentRef.setInput("scene", { ...SCENE, hoveredPath: "/root/a.ts" })
-        fixture.detectChanges()
-        const fitsAfterARedraw = stubbedChart.dispatchAction.mock.calls.length
+        const inputs = { scene: SCENE, graphIdentity: GRAPH_IDENTITY }
 
         // Act
-        fixture.componentInstance.resetView()
+        await render(DependencyGraphComponent, { inputs })
 
         // Assert
-        expect([fitsOnArrival, fitsAfterARedraw]).toEqual([1, 1])
-        expect(stubbedChart.dispatchAction).toHaveBeenCalledTimes(2)
-        expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
+        expect(shownWindowOf(lastDrawnOption())).toEqual(fitWindowOf(SCENE.layout, measuredSize))
+        expect(stubbedChart.dispatchAction).not.toHaveBeenCalled()
+    })
+
+    it("should keep the reader's zoom and position when a redraw grows the graph", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+
+        // Act
+        fixture.componentRef.setInput("scene", GROWN_SCENE)
+        fixture.detectChanges()
+
+        // Assert
+        expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
+    })
+
+    it("should keep the scale and centre of the shown window when the container is resized", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+        measuredSize = { width: 400, height: 600 }
+
+        // Act
+        reportResize()
+        fixture.detectChanges()
+
+        // Assert
+        expect(shownWindowOf(lastDrawnOption())).toEqual({ x: [200, 400], y: [100, 400] })
     })
 
     it("should fit a graph of other files into view although its root keeps the same path", async () => {
         // Arrange
         const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
-        const fitsOnArrival = stubbedChart.dispatchAction.mock.calls.length
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
 
         // Act
-        fixture.componentRef.setInput("scene", { ...SCENE })
+        fixture.componentRef.setInput("scene", GROWN_SCENE)
         fixture.componentRef.setInput("graphIdentity", "project B")
         fixture.detectChanges()
 
         // Assert
-        expect(stubbedChart.dispatchAction.mock.calls.length).toBe(fitsOnArrival + 1)
-        expect(stubbedChart.dispatchAction).toHaveBeenLastCalledWith(expect.objectContaining({ type: "dataZoom" }))
+        expect(shownWindowOf(lastDrawnOption())).toEqual(fitWindowOf(GROWN_SCENE.layout, measuredSize))
+    })
+
+    it("should fit the whole graph once for each new fit request", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+        fixture.componentRef.setInput("fitRequest", 1)
+        fixture.componentRef.setInput("scene", GROWN_SCENE)
+        fixture.detectChanges()
+        const windowOnRequest = shownWindowOf(lastDrawnOption())
+
+        // Act
+        fixture.componentRef.setInput("scene", { ...GROWN_SCENE, hoveredPath: "/root/a.ts" })
+        fixture.detectChanges()
+
+        // Assert
+        expect(windowOnRequest).toEqual(fitWindowOf(GROWN_SCENE.layout, measuredSize))
+        expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
+    })
+
+    it("should fit the whole graph when the view is reset", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+        const { x, y } = fitWindowOf(SCENE.layout, measuredSize)
+
+        // Act
+        fixture.componentInstance.resetView()
+
+        // Assert
+        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({
+            type: "dataZoom",
+            batch: [
+                { dataZoomIndex: 0, startValue: x[0], endValue: x[1] },
+                { dataZoomIndex: 1, startValue: y[0], endValue: y[1] }
+            ]
+        })
     })
 
     it("should report the end of a drag", async () => {

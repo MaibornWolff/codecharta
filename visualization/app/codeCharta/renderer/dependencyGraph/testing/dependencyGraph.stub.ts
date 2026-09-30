@@ -5,13 +5,15 @@ type ChartEventHandler = (event: unknown) => void
 const chartEventHandlers = new Map<string, ChartEventHandler>()
 const renderSurfaceEventHandlers = new Map<string, ChartEventHandler>()
 
+const pixelsAsLayoutUnits = (_finder: unknown, [x, y]: number[]) => [x, y]
+
 export const stubbedChart = {
     getZr: jest.fn(() => ({
         on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler)
     })),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
-    convertFromPixel: jest.fn((_finder: unknown, [x, y]: number[]) => [x, y]),
+    convertFromPixel: jest.fn(pixelsAsLayoutUnits),
     resize: jest.fn(),
     dispose: jest.fn(),
     on: jest.fn((eventName: string, handler: ChartEventHandler) => chartEventHandlers.set(eventName, handler))
@@ -33,6 +35,7 @@ export function fireRenderSurfaceEvent(eventName: string, event: unknown = {}): 
 
 export function resetStubbedChart(): void {
     jest.clearAllMocks()
+    stubbedChart.convertFromPixel.mockImplementation(pixelsAsLayoutUnits)
     chartEventHandlers.clear()
     renderSurfaceEventHandlers.clear()
 }
