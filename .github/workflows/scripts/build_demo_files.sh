@@ -24,16 +24,19 @@ $CCSH sonarimport -nc -o codecharta_sonar_visualization.cc.json https://sonarclo
 # Domain lens, so the demo map offers the Domain view. Parsed on the unmodified tree: its node ids are
 # path hashes, which `ccsh modify` would invalidate.
 $CCSH domainlanguageparser ../visualization $DOMAIN_OPTS -o codecharta_domain_visualization.cc.json -nc
+# Dependency lens, so the demo map offers the Dependency view. Also parsed on the unmodified tree.
+$CCSH dependencyparser ../visualization -o codecharta_dependency_visualization.cc.json -nc
 # Create one zipped map for pipeline build
-$CCSH merge -o ../visualization/dist/bundler/browser/codecharta_visualization.cc.json codecharta_sonar_visualization.cc.json codecharta_unified_visualization.cc.json codecharta_domain_visualization.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/dist/bundler/browser/codecharta_visualization.cc.json codecharta_sonar_visualization.cc.json codecharta_unified_visualization.cc.json codecharta_domain_visualization.cc.json codecharta_dependency_visualization.cc.json codecharta_git_mod.cc.json
 
 # Map for analysis
 $CCSH modify --set-root root/analysis -o codecharta_git_mod.cc.json codecharta_git.cc.json
 $CCSH unifiedparser ../analysis -o codecharta_unified_analysis.cc.json -nc
 $CCSH sonarimport -nc -o codecharta_sonar_analysis.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_analysis
 $CCSH domainlanguageparser ../analysis $DOMAIN_OPTS -o codecharta_domain_analysis.cc.json -nc
+$CCSH dependencyparser ../analysis -o codecharta_dependency_analysis.cc.json -nc
 # Create one zipped map for pipeline build
-$CCSH merge -o ../visualization/dist/bundler/browser/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_unified_analysis.cc.json codecharta_domain_analysis.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/dist/bundler/browser/codecharta_analysis.cc.json codecharta_sonar_analysis.cc.json codecharta_unified_analysis.cc.json codecharta_domain_analysis.cc.json codecharta_dependency_analysis.cc.json codecharta_git_mod.cc.json
 
 cd ..
 rm -r temp_dir
