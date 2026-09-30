@@ -5,259 +5,1201 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments.argumentSet
+import org.junit.jupiter.params.provider.MethodSource
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ObjectiveCExtractionTest {
-    // === Identifier Extraction Tests ===
-
-    @Test
-    fun `should extract class interface identifier`() {
-        // Arrange
-        val code = """
-            @interface User : NSObject
-            @end
-        """.trimIndent()
-
+    @ParameterizedTest
+    @MethodSource("typeDeclarationCases")
+    fun `should extract class, category and protocol identifiers`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("User")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract class implementation identifier`() {
-        // Arrange
-        val code = """
-            @implementation Order
-            @end
-        """.trimIndent()
+    fun typeDeclarationCases() = listOf(
+        argumentSet(
+            "extract class interface identifier",
+            """
+                @interface User : NSObject
+                @end
+            """.trimIndent(),
+            listOf("User")
+        ),
+        argumentSet(
+            "extract class implementation identifier",
+            """
+                @implementation Order
+                @end
+            """.trimIndent(),
+            listOf("Order")
+        ),
+        argumentSet(
+            "extract category interface identifier",
+            """
+                @interface NSString (Validation)
+                @end
+            """.trimIndent(),
+            listOf("Validation")
+        ),
+        argumentSet(
+            "extract category implementation identifier",
+            """
+                @implementation User (Formatting)
+                @end
+            """.trimIndent(),
+            listOf("Formatting")
+        ),
+        argumentSet(
+            "extract protocol declaration identifier",
+            """
+                @protocol OrderRepository
+                @end
+            """.trimIndent(),
+            listOf("OrderRepository")
+        ),
+        argumentSet(
+            "handle class extension (anonymous category)",
+            """
+                @interface MyClass ()
+                @property (nonatomic) NSString *privateProperty;
+                - (void)privateMethod;
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "privateProperty", "privateMethod")
+        ),
+        argumentSet(
+            "handle multiple classes in same file",
+            """
+                @interface ClassA : NSObject
+                - (void)methodA;
+                @end
 
+                @interface ClassB : NSObject
+                - (void)methodB;
+                @end
+
+                @implementation ClassA
+                - (void)methodA {}
+                @end
+
+                @implementation ClassB
+                - (void)methodB {}
+                @end
+            """.trimIndent(),
+            listOf("ClassA", "methodA", "ClassB", "methodB", "ClassA", "methodA", "ClassB", "methodB")
+        ),
+        argumentSet(
+            "handle empty implementation",
+            """
+                @implementation EmptyClass
+                @end
+            """.trimIndent(),
+            listOf("EmptyClass")
+        ),
+        argumentSet(
+            "handle empty interface",
+            """
+                @interface EmptyInterface : NSObject
+                @end
+            """.trimIndent(),
+            listOf("EmptyInterface")
+        ),
+        argumentSet(
+            "handle empty protocol",
+            """
+                @protocol EmptyProtocol
+                @end
+            """.trimIndent(),
+            listOf("EmptyProtocol")
+        ),
+        argumentSet(
+            "handle protocol with properties",
+            """
+                @protocol DataSource
+                @property (nonatomic, readonly) NSInteger itemCount;
+                - (id)itemAtIndex:(NSInteger)index;
+                @end
+            """.trimIndent(),
+            listOf("DataSource", "itemCount", "itemAtIndex", "index")
+        ),
+        argumentSet(
+            "handle category with multiple methods",
+            """
+                @interface NSString (Utilities)
+                - (NSString *)trim;
+                - (NSString *)reverse;
+                - (BOOL)isValidEmail;
+                @end
+            """.trimIndent(),
+            listOf("Utilities", "trim", "reverse", "isValidEmail")
+        ),
+        argumentSet(
+            "handle class implementing multiple protocols",
+            """
+                @interface MyClass : NSObject <NSCoding, NSCopying, UITableViewDelegate>
+                @end
+            """.trimIndent(),
+            listOf("MyClass")
+        ),
+        argumentSet(
+            "handle instance variable declaration",
+            """
+                @interface MyClass : NSObject {
+                    NSString *_name;
+                    int _count;
+                    @private
+                    id _privateData;
+                }
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "_name", "_count", "_privateData")
+        ),
+        argumentSet("extract forward class declaration", "@class MyClass, AnotherClass;", listOf("MyClass", "AnotherClass")),
+        argumentSet("extract single forward class declaration", "@class SingleClass;", listOf("SingleClass")),
+        argumentSet("extract forward protocol declaration", "@protocol MyProtocol;", listOf("MyProtocol")),
+        argumentSet(
+            "extract multiple forward declarations in file",
+            """
+                @class UserService;
+                @protocol DataDelegate;
+                @class OrderManager, CartService;
+            """.trimIndent(),
+            listOf("UserService", "DataDelegate", "OrderManager", "CartService")
+        ),
+        argumentSet("handle multiple forward protocol declarations", "@protocol ProtocolA, ProtocolB, ProtocolC;", listOf("ProtocolA"))
+    )
+
+    @ParameterizedTest
+    @MethodSource("methodCases")
+    fun `should extract method selectors and parameters`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("Order")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract category interface identifier`() {
-        // Arrange
-        val code = """
-            @interface NSString (Validation)
-            @end
-        """.trimIndent()
+    fun methodCases() = listOf(
+        argumentSet(
+            "extract method definition identifier",
+            """
+                @implementation User
+                - (void)save {
+                }
+                @end
+            """.trimIndent(),
+            listOf("User", "save")
+        ),
+        argumentSet(
+            "extract method declaration identifier",
+            """
+                @interface User : NSObject
+                - (void)processOrder;
+                @end
+            """.trimIndent(),
+            listOf("User", "processOrder")
+        ),
+        argumentSet(
+            "extract compound method selector first keyword",
+            """
+                @implementation User
+                - (id)initWithName:(NSString *)name age:(int)age {
+                    return self;
+                }
+                @end
+            """.trimIndent(),
+            listOf("User", "initWithName", "name", "age")
+        ),
+        argumentSet(
+            "extract method parameter identifiers",
+            """
+                @implementation User
+                - (void)setName:(NSString *)customerName age:(int)customerAge {
+                }
+                @end
+            """.trimIndent(),
+            listOf("User", "setName", "customerName", "customerAge")
+        ),
+        argumentSet(
+            "extract class method identifier",
+            """
+                @implementation Factory
+                + (id)createOrder {
+                    return nil;
+                }
+                @end
+            """.trimIndent(),
+            listOf("Factory", "createOrder")
+        ),
+        argumentSet(
+            "handle protocol method declarations",
+            """
+                @protocol MyProtocol
+                - (void)requiredMethod;
+                @optional
+                - (void)optionalMethod;
+                @end
+            """.trimIndent(),
+            listOf("MyProtocol", "requiredMethod", "optionalMethod")
+        ),
+        argumentSet(
+            "handle IBAction method",
+            """
+                @implementation ViewController
+                - (IBAction)buttonTapped:(UIButton *)sender {
+                    NSLog(@"Tapped");
+                }
+                @end
+            """.trimIndent(),
+            listOf("ViewController", "buttonTapped", "sender")
+        ),
+        argumentSet(
+            "handle complex selector with many parts",
+            """
+                @implementation Service
+                - (id)initWithHost:(NSString *)host port:(int)port user:(NSString *)user password:(NSString *)pass {
+                    return self;
+                }
+                @end
+            """.trimIndent(),
+            listOf("Service", "initWithHost", "host", "port", "user", "pass")
+        ),
+        argumentSet(
+            "handle method with no parameters",
+            """
+                @implementation Service
+                - (void)start {
+                }
+                - (void)stop {
+                }
+                + (id)sharedInstance {
+                    return nil;
+                }
+                @end
+            """.trimIndent(),
+            listOf("Service", "start", "stop", "sharedInstance")
+        ),
+        argumentSet(
+            "handle method returning instancetype",
+            """
+                @interface Builder : NSObject
+                - (instancetype)init;
+                - (instancetype)initWithConfig:(NSDictionary *)config;
+                + (instancetype)builder;
+                @end
+            """.trimIndent(),
+            listOf("Builder", "init", "initWithConfig", "config", "builder")
+        ),
+        argumentSet(
+            "handle method with nullable parameter",
+            """
+                @interface Service : NSObject
+                - (void)processData:(NSData * _Nullable)data completion:(void (^)(BOOL))handler;
+                @end
+            """.trimIndent(),
+            listOf("Service", "processData", "data", "handler")
+        ),
+        argumentSet(
+            "handle class method with complex return type",
+            """
+                @interface Factory : NSObject
+                + (NSArray<NSString *> *)allNames;
+                + (NSDictionary<NSString *, NSNumber *> *)mappings;
+                @end
+            """.trimIndent(),
+            listOf("Factory", "allNames", "mappings")
+        ),
+        argumentSet(
+            "handle method with variadic parameters",
+            """
+                @interface Logger : NSObject
+                + (void)logFormat:(NSString *)format, ...;
+                - (void)logWithLevel:(int)level format:(NSString *)format, ...;
+                @end
+            """.trimIndent(),
+            listOf("Logger", "logFormat", "format", "logWithLevel", "level", "format")
+        ),
+        argumentSet(
+            "handle selector as argument",
+            """
+                void test() {
+                    SEL selector = @selector(handleAction:);
+                    [target performSelector:selector];
+                }
+            """.trimIndent(),
+            listOf("test", "selector")
+        )
+    )
 
+    @ParameterizedTest
+    @MethodSource("propertyCases")
+    fun `should extract property names`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("Validation")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract category implementation identifier`() {
-        // Arrange
-        val code = """
-            @implementation User (Formatting)
-            @end
-        """.trimIndent()
+    fun propertyCases() = listOf(
+        argumentSet(
+            "extract property declaration identifier",
+            """
+                @interface User : NSObject
+                @property (nonatomic, strong) NSString *userName;
+                @end
+            """.trimIndent(),
+            listOf("User", "userName")
+        ),
+        argumentSet(
+            "extract property declaration with readonly attribute",
+            """
+                @interface Order : NSObject
+                @property (nonatomic, readonly) NSString *orderId;
+                @end
+            """.trimIndent(),
+            listOf("Order", "orderId")
+        ),
+        argumentSet(
+            "handle IBOutlet property",
+            """
+                @interface ViewController : UIViewController
+                @property (nonatomic, weak) IBOutlet UILabel *titleLabel;
+                @end
+            """.trimIndent(),
+            listOf("ViewController", "titleLabel")
+        ),
+        argumentSet(
+            "handle property with primitive type",
+            """
+                @interface Counter : NSObject
+                @property (nonatomic) int count;
+                @property (nonatomic) float ratio;
+                @property (nonatomic) BOOL enabled;
+                @end
+            """.trimIndent(),
+            listOf("Counter", "count", "ratio", "enabled")
+        ),
+        argumentSet(
+            "handle property with custom getter",
+            """
+                @interface Config : NSObject
+                @property (nonatomic, getter=isEnabled) BOOL enabled;
+                @property (nonatomic, getter=isVisible, setter=setVisibility:) BOOL visible;
+                @end
+            """.trimIndent(),
+            listOf("Config", "enabled", "visible")
+        ),
+        argumentSet(
+            "extract synthesize property name",
+            """
+                @implementation MyClass
+                @synthesize name = _name;
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "name")
+        ),
+        argumentSet(
+            "extract synthesize property without ivar",
+            """
+                @implementation MyClass
+                @synthesize age;
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "age")
+        ),
+        argumentSet(
+            "extract dynamic property name",
+            """
+                @implementation MyClass
+                @dynamic computedProperty;
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "computedProperty")
+        ),
+        argumentSet(
+            "extract multiple synthesize properties",
+            """
+                @implementation MyClass
+                @synthesize firstName;
+                @synthesize lastName;
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "firstName", "lastName")
+        ),
+        argumentSet(
+            "extract multiple dynamic properties",
+            """
+                @implementation MyClass
+                @dynamic propA;
+                @dynamic propB;
+                @end
+            """.trimIndent(),
+            listOf("MyClass", "propA", "propB")
+        )
+    )
 
+    @ParameterizedTest
+    @MethodSource("cDeclarationCases")
+    fun `should extract C function, variable and type identifiers`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("Formatting")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract protocol declaration identifier`() {
-        // Arrange
-        val code = """
-            @protocol OrderRepository
-            @end
-        """.trimIndent()
+    fun cDeclarationCases() = listOf(
+        argumentSet(
+            "extract C function identifier",
+            """
+                void process_order(int orderId) {
+                }
+            """.trimIndent(),
+            listOf("process_order", "orderId")
+        ),
+        argumentSet("extract variable declaration identifier", "int orderCount;", listOf("orderCount")),
+        argumentSet("extract initialized variable declaration identifier", "int orderCount = 10;", listOf("orderCount")),
+        argumentSet("extract pointer variable declaration identifier", "NSString *customerName;", listOf("customerName")),
+        argumentSet(
+            "handle static variables",
+            """
+                static NSString *sharedName;
+                static int counter = 0;
+            """.trimIndent(),
+            listOf("sharedName", "counter")
+        ),
+        argumentSet(
+            "handle extern declarations",
+            """
+                extern NSString *const kNotificationName;
+                extern int globalCounter;
+            """.trimIndent(),
+            listOf("kNotificationName", "globalCounter")
+        ),
+        argumentSet(
+            "handle typedef struct",
+            """
+                typedef struct {
+                    CGFloat x;
+                    CGFloat y;
+                    CGFloat width;
+                    CGFloat height;
+                } MyRect;
+            """.trimIndent(),
+            listOf("x", "y", "width", "height")
+        ),
+        argumentSet(
+            "handle typedef enum",
+            """
+                typedef enum {
+                    StatusPending,
+                    StatusActive,
+                    StatusCompleted
+                } TaskStatus;
+            """.trimIndent(),
+            emptyList<String>()
+        ),
+        argumentSet(
+            "handle NS_ENUM style enum",
+            """
+                typedef NS_ENUM(NSInteger, Direction) {
+                    DirectionNorth,
+                    DirectionSouth,
+                    DirectionEast,
+                    DirectionWest
+                };
+            """.trimIndent(),
+            emptyList<String>()
+        ),
+        argumentSet(
+            "handle pointer to pointer declaration",
+            """
+                void test(NSError **errorPtr) {
+                    NSString **stringPtr;
+                }
+            """.trimIndent(),
+            listOf("test", "errorPtr", "stringPtr")
+        ),
+        argumentSet(
+            "handle array declaration",
+            """
+                void test() {
+                    int numbers[10];
+                    char name[256];
+                }
+            """.trimIndent(),
+            listOf("test", "numbers", "name")
+        ),
+        argumentSet(
+            "handle function pointer declaration",
+            """
+                void test() {
+                    int (*compareFunc)(const void *, const void *);
+                }
+            """.trimIndent(),
+            listOf("test", "compareFunc")
+        ),
+        argumentSet(
+            "handle union declaration",
+            """
+                typedef union {
+                    int intValue;
+                    float floatValue;
+                    char charValue;
+                } ValueUnion;
+            """.trimIndent(),
+            listOf("intValue", "floatValue", "charValue")
+        ),
+        argumentSet(
+            "handle bitfield in struct",
+            """
+                typedef struct {
+                    unsigned int flag1 : 1;
+                    unsigned int flag2 : 1;
+                    unsigned int value : 6;
+                } Flags;
+            """.trimIndent(),
+            listOf("flag1", "flag2", "value")
+        ),
+        argumentSet(
+            "handle inline function",
+            """
+                static inline int square(int x) {
+                    return x * x;
+                }
+            """.trimIndent(),
+            listOf("square", "x")
+        ),
+        argumentSet(
+            "handle const pointer declarations",
+            """
+                void test() {
+                    const char *constPtr;
+                    char *const ptrConst;
+                    const char *const bothConst;
+                }
+            """.trimIndent(),
+            listOf("test", "constPtr", "ptrConst", "bothConst")
+        ),
+        argumentSet(
+            "handle variable assigned an escaped string",
+            """
+                void test() {
+                    NSString *escaped;
+                    escaped = @"Line1\nLine2\tTabbed";
+                }
+            """.trimIndent(),
+            listOf("test", "escaped")
+        ),
+        argumentSet(
+            "handle empty string variables",
+            """
+                void test() {
+                    NSString *empty;
+                    char *cEmpty;
+                }
+            """.trimIndent(),
+            listOf("test", "empty", "cEmpty")
+        ),
+        argumentSet(
+            "handle unicode string variables",
+            """
+                void test() {
+                    NSString *emoji;
+                    NSString *chinese;
+                }
+            """.trimIndent(),
+            listOf("test", "emoji", "chinese")
+        ),
+        argumentSet(
+            "handle variable assigned a query string",
+            """
+                void test() {
+                    NSString *query;
+                    query = @"SELECT * FROM users";
+                }
+            """.trimIndent(),
+            listOf("test", "query")
+        )
+    )
 
+    @ParameterizedTest
+    @MethodSource("preprocessorCases")
+    fun `should extract preprocessor macro names`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("OrderRepository")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract method definition identifier`() {
-        // Arrange
-        val code = """
-            @implementation User
-            - (void)save {
-            }
-            @end
-        """.trimIndent()
+    fun preprocessorCases() = listOf(
+        argumentSet("extract preprocessor macro definition", """#define APP_NAME @"MyApp"""", listOf("APP_NAME")),
+        argumentSet("extract numeric macro definition", "#define MAX_COUNT 100", listOf("MAX_COUNT")),
+        argumentSet("extract function-like macro definition", "#define MIN(a, b) ((a) < (b) ? (a) : (b))", listOf("MIN")),
+        argumentSet(
+            "extract multiple macro definitions",
+            """
+                #define VERSION 1
+                #define BUILD_NUMBER 42
+                #define APP_ID @"com.example.app"
+            """.trimIndent(),
+            listOf("VERSION", "BUILD_NUMBER", "APP_ID")
+        ),
+        argumentSet(
+            "handle conditional compilation",
+            """
+                #ifdef DEBUG
+                #define LOG(msg) NSLog(@"%@", msg)
+                #endif
 
+                void test() {
+                    int value;
+                }
+            """.trimIndent(),
+            listOf("LOG", "test", "value")
+        )
+    )
+
+    @ParameterizedTest
+    @MethodSource("loopAndExceptionVariableCases")
+    fun `should extract for-in and catch variables`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("User", "save")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract method declaration identifier`() {
-        // Arrange
-        val code = """
-            @interface User : NSObject
-            - (void)processOrder;
-            @end
-        """.trimIndent()
+    fun loopAndExceptionVariableCases() = listOf(
+        argumentSet(
+            "extract fast enumeration variable with pointer type",
+            """
+                void test() {
+                    for (NSString *item in array) {
+                        NSLog(@"%@", item);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "item")
+        ),
+        argumentSet(
+            "extract fast enumeration variable with id type",
+            """
+                void test() {
+                    for (id key in dictionary) {
+                        NSLog(@"%@", key);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "key")
+        ),
+        argumentSet(
+            "extract fast enumeration with explicit type",
+            """
+                void test() {
+                    for (NSDictionary *dict in dictionaries) {
+                        process(dict);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "dict")
+        ),
+        argumentSet(
+            "handle multiple for-in loops",
+            """
+                void test() {
+                    for (NSString *key in keys) {
+                        process(key);
+                    }
+                    for (id value in values) {
+                        process(value);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "key", "value")
+        ),
+        argumentSet(
+            "handle nested for-in loops",
+            """
+                void test() {
+                    for (NSArray *innerArray in outerArray) {
+                        for (NSString *item in innerArray) {
+                            process(item);
+                        }
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "innerArray", "item")
+        ),
+        argumentSet(
+            "handle for-in with dictionary",
+            """
+                void test() {
+                    NSDictionary *dict;
+                    for (NSString *key in dict) {
+                        id value = dict[key];
+                        process(key, value);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "dict", "key", "value")
+        ),
+        argumentSet(
+            "extract catch exception variable",
+            """
+                void test() {
+                    @try {
+                        [self riskyOperation];
+                    }
+                    @catch (NSException *exception) {
+                        NSLog(@"Exception: %@", exception);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "exception")
+        ),
+        argumentSet(
+            "extract catch with different exception type",
+            """
+                void test() {
+                    @try {
+                        riskyOperation();
+                    }
+                    @catch (NSError *error) {
+                        handleError(error);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "error")
+        ),
+        argumentSet(
+            "extract multiple catch clauses",
+            """
+                void test() {
+                    @try {
+                        riskyOperation();
+                    }
+                    @catch (NSInvalidArgumentException *argEx) {
+                        handleArg(argEx);
+                    }
+                    @catch (NSException *ex) {
+                        handleGeneric(ex);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "argEx", "ex")
+        ),
+        argumentSet(
+            "extract try-catch-finally variables",
+            """
+                void test() {
+                    @try {
+                        [self riskyOperation];
+                    }
+                    @catch (NSException *exception) {
+                        NSLog(@"%@", exception);
+                    }
+                    @finally {
+                        [self cleanup];
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "exception")
+        ),
+        argumentSet(
+            "handle nested try-catch blocks",
+            """
+                void test() {
+                    @try {
+                        @try {
+                            innerRisky();
+                        }
+                        @catch (NSException *innerEx) {
+                            handleInner(innerEx);
+                        }
+                    }
+                    @catch (NSException *outerEx) {
+                        handleOuter(outerEx);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "innerEx", "outerEx")
+        ),
+        argumentSet(
+            "handle try with only finally no catch",
+            """
+                void test() {
+                    @try {
+                        riskyOperation();
+                    }
+                    @finally {
+                        cleanup();
+                    }
+                }
+            """.trimIndent(),
+            listOf("test")
+        )
+    )
 
+    @ParameterizedTest
+    @MethodSource("blockCases")
+    fun `should extract block parameters`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("User", "processOrder")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract compound method selector first keyword`() {
-        // Arrange
-        val code = """
-            @implementation User
-            - (id)initWithName:(NSString *)name age:(int)age {
-                return self;
-            }
-            @end
-        """.trimIndent()
+    fun blockCases() = listOf(
+        argumentSet(
+            "extract block parameters from block literal",
+            """
+                void test() {
+                    void (^myBlock)(NSString *, int) = ^(NSString *name, int count) {
+                        NSLog(@"%@", name);
+                    };
+                }
+            """.trimIndent(),
+            listOf("test", "name", "count")
+        ),
+        argumentSet(
+            "extract enumeration block parameters",
+            """
+                void test() {
+                    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                        NSLog(@"%@", obj);
+                    }];
+                }
+            """.trimIndent(),
+            listOf("test", "obj", "idx", "stop")
+        ),
+        argumentSet(
+            "extract block with single parameter",
+            """
+                void test() {
+                    void (^handler)(NSString *) = ^(NSString *message) {
+                        NSLog(@"%@", message);
+                    };
+                }
+            """.trimIndent(),
+            listOf("test", "message")
+        ),
+        argumentSet(
+            "extract completion handler block parameters",
+            """
+                void test() {
+                    [network fetchDataWithCompletion:^(NSData *data, NSError *error) {
+                        if (error) {
+                            handleError(error);
+                        }
+                    }];
+                }
+            """.trimIndent(),
+            listOf("test", "data", "error")
+        ),
+        argumentSet(
+            "handle nested blocks",
+            """
+                void test() {
+                    dispatch_async(queue, ^{
+                        [array enumerateObjectsUsingBlock:^(id innerObj, NSUInteger innerIdx, BOOL *innerStop) {
+                            process(innerObj);
+                        }];
+                    });
+                }
+            """.trimIndent(),
+            listOf("test", "innerObj", "innerIdx", "innerStop")
+        ),
+        argumentSet(
+            "handle block with no parameters",
+            """
+                void test() {
+                    dispatch_async(queue, ^{
+                        doSomething();
+                    });
+                }
+            """.trimIndent(),
+            listOf("test")
+        ),
+        argumentSet(
+            "handle multiple blocks in same method",
+            """
+                void test() {
+                    dispatch_async(queue1, ^(void) {
+                        firstTask();
+                    });
+                    dispatch_async(queue2, ^(void) {
+                        secondTask();
+                    });
+                }
+            """.trimIndent(),
+            listOf("test")
+        ),
+        argumentSet(
+            "handle block with return type",
+            """
+                void test() {
+                    NSInteger (^sum)(NSInteger, NSInteger) = ^NSInteger(NSInteger a, NSInteger b) {
+                        return a + b;
+                    };
+                }
+            """.trimIndent(),
+            listOf("test", "a", "b")
+        ),
+        argumentSet(
+            "handle deeply nested blocks",
+            """
+                void test() {
+                    dispatch_async(queue, ^{
+                        [service fetchWithCompletion:^(NSData *data) {
+                            [parser parseData:data completion:^(id result) {
+                                handleResult(result);
+                            }];
+                        }];
+                    });
+                }
+            """.trimIndent(),
+            listOf("test", "data", "result")
+        ),
+        argumentSet(
+            "handle dispatch_once pattern",
+            """
+                @implementation Singleton
+                + (instancetype)sharedInstance {
+                    static id instance;
+                    static dispatch_once_t onceToken;
+                    dispatch_once(&onceToken, ^{
+                        instance = [[self alloc] init];
+                    });
+                    return instance;
+                }
+                @end
+            """.trimIndent(),
+            listOf("Singleton", "sharedInstance", "instance", "onceToken")
+        )
+    )
 
+    @ParameterizedTest
+    @MethodSource("completeSourceCases")
+    fun `should extract identifiers from complete source files`(code: String, expectedIdentifiers: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("User", "initWithName", "name", "age")
+        assertThat(result.identifiers).containsExactlyElementsOf(expectedIdentifiers)
     }
 
-    @Test
-    fun `should extract method parameter identifiers`() {
-        // Arrange
-        val code = """
-            @implementation User
-            - (void)setName:(NSString *)customerName age:(int)customerAge {
-            }
-            @end
-        """.trimIndent()
+    fun completeSourceCases() = listOf(
+        argumentSet(
+            "extract from complete class",
+            """
+                @interface Customer : NSObject
+                @property (nonatomic, strong) NSString *name;
+                @property (nonatomic, assign) int age;
+                - (void)save;
+                - (void)updateName:(NSString *)newName;
+                @end
+            """.trimIndent(),
+            listOf("Customer", "name", "age", "save", "updateName", "newName")
+        ),
+        argumentSet(
+            "handle class with all new features",
+            """
+                @class Helper;
+                #define TAG @"MyClass"
 
+                @implementation MyClass
+                @synthesize name;
+                @dynamic computedValue;
+
+                - (void)processItems {
+                    for (NSString *item in items) {
+                        @try {
+                            [self processItem:item];
+                        }
+                        @catch (NSException *ex) {
+                            NSLog(@"%@", ex);
+                        }
+                    }
+
+                    [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                        handle(obj);
+                    }];
+                }
+                @end
+            """.trimIndent(),
+            listOf("Helper", "TAG", "MyClass", "name", "computedValue", "processItems", "item", "ex", "obj", "idx", "stop")
+        ),
+        argumentSet(
+            "extract from mixed C and Objective-C code",
+            """
+                #define MAX_SIZE 100
+
+                static int helper_function(int param) {
+                    return param * 2;
+                }
+
+                @implementation Calculator
+                - (int)calculateWithValue:(int)value {
+                    return helper_function(value);
+                }
+                @end
+            """.trimIndent(),
+            listOf("MAX_SIZE", "helper_function", "param", "Calculator", "calculateWithValue", "value")
+        ),
+        argumentSet(
+            "not extract from comments containing code-like text",
+            """
+                // @class HiddenClass;
+                // #define HIDDEN 1
+                @interface RealClass : NSObject
+                @end
+            """.trimIndent(),
+            listOf("RealClass")
+        ),
+        argumentSet(
+            "not extract identifiers from string literals",
+            """
+                void test() {
+                    NSString *codeStr;
+                    NSString *methodStr;
+                    codeStr = @"@interface FakeClass @end";
+                    methodStr = @"- (void)fakeMethod;";
+                }
+            """.trimIndent(),
+            listOf("test", "codeStr", "methodStr")
+        ),
+        argumentSet(
+            "handle at-autoreleasepool",
+            """
+                void test() {
+                    NSString *str;
+                    @autoreleasepool {
+                        str = [[NSString alloc] init];
+                        process(str);
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "str")
+        ),
+        argumentSet(
+            "handle at-synchronized",
+            """
+                void test() {
+                    @synchronized(self) {
+                        int localVar = sharedCounter;
+                        sharedCounter = localVar + 1;
+                    }
+                }
+            """.trimIndent(),
+            listOf("test", "localVar")
+        )
+    )
+
+    @ParameterizedTest
+    @MethodSource("commentCases")
+    fun `should extract comment text`(code: String, expectedComment: String) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("User", "setName", "customerName", "customerAge")
+        assertThat(result.comments).containsExactly(expectedComment)
     }
 
-    @Test
-    fun `should extract C function identifier`() {
-        // Arrange
-        val code = """
-            void process_order(int orderId) {
-            }
-        """.trimIndent()
+    fun commentCases() = listOf(
+        argumentSet(
+            "extract single line comment",
+            """
+                // This is a comment
+                @interface User : NSObject
+                @end
+            """.trimIndent(),
+            "This is a comment"
+        ),
+        argumentSet(
+            "extract block comment",
+            """
+                /* This is a block comment */
+                @interface User : NSObject
+                @end
+            """.trimIndent(),
+            "This is a block comment"
+        ),
+        argumentSet(
+            "extract multiline block comment",
+            """
+                /*
+                 * This is a multiline
+                 * block comment
+                 */
+                @interface User : NSObject
+                @end
+            """.trimIndent(),
+            "This is a multiline\nblock comment"
+        ),
+        argumentSet(
+            "extract doc comment",
+            """
+                /**
+                 * Process the given order.
+                 * @param order The order to process
+                 */
+                @interface OrderProcessor : NSObject
+                @end
+            """.trimIndent(),
+            "Process the given order.\n@param order The order to process"
+        )
+    )
 
+    @ParameterizedTest
+    @MethodSource("stringCases")
+    fun `should extract C and NSString literals`(code: String, expectedStrings: List<String>) {
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.identifiers).containsExactly("process_order", "orderId")
+        assertThat(result.strings).containsExactlyElementsOf(expectedStrings)
     }
 
-    @Test
-    fun `should extract variable declaration identifier`() {
-        // Arrange
-        val code = """
-            int orderCount;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("orderCount")
-    }
-
-    @Test
-    fun `should extract initialized variable declaration identifier`() {
-        // Arrange
-        val code = """
-            int orderCount = 10;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("orderCount")
-    }
-
-    @Test
-    fun `should extract pointer variable declaration identifier`() {
-        // Arrange
-        val code = """
-            NSString *customerName;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("customerName")
-    }
-
-    @Test
-    fun `should extract property declaration identifier`() {
-        // Arrange
-        val code = """
-            @interface User : NSObject
-            @property (nonatomic, strong) NSString *userName;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("User", "userName")
-    }
-
-    @Test
-    fun `should extract property declaration with readonly attribute`() {
-        // Arrange
-        val code = """
-            @interface Order : NSObject
-            @property (nonatomic, readonly) NSString *orderId;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Order", "orderId")
-    }
-
-    @Test
-    fun `should extract class method identifier`() {
-        // Arrange
-        val code = """
-            @implementation Factory
-            + (id)createOrder {
-                return nil;
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Factory", "createOrder")
-    }
+    fun stringCases() = listOf(
+        argumentSet(
+            "extract C string literal",
+            """
+                void test() {
+                    char *message = "Hello World";
+                }
+            """.trimIndent(),
+            listOf("Hello World")
+        ),
+        argumentSet(
+            "extract NSString literal",
+            """
+                void test() {
+                    NSString *message = @"Hello World";
+                }
+            """.trimIndent(),
+            listOf("Hello World")
+        ),
+        argumentSet(
+            "extract multiple strings",
+            """
+                void test() {
+                    NSString *first = @"Hello";
+                    NSString *second = @"World";
+                }
+            """.trimIndent(),
+            listOf("Hello", "World")
+        )
+    )
 
     @Test
     fun `should handle empty source code`() {
@@ -273,51 +1215,33 @@ class ObjectiveCExtractionTest {
         assertThat(result.strings).isEmpty()
     }
 
-    // === Comment Extraction Tests ===
-
     @Test
-    fun `should extract single line comment`() {
+    fun `should handle struct declaration`() {
         // Arrange
         val code = """
-            // This is a comment
-            @interface User : NSObject
-            @end
+            typedef struct {
+                int x;
+                int y;
+            } Point;
         """.trimIndent()
 
         // Act
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.comments).hasSize(1)
-        assertThat(result.comments[0]).isEqualTo("This is a comment")
+        assertThat(result.identifiers).containsExactlyInAnyOrder("x", "y")
     }
 
     @Test
-    fun `should extract block comment`() {
+    fun `should handle comments with special characters`() {
         // Arrange
         val code = """
-            /* This is a block comment */
-            @interface User : NSObject
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.comments).hasSize(1)
-        assertThat(result.comments[0]).isEqualTo("This is a block comment")
-    }
-
-    @Test
-    fun `should extract multiline block comment`() {
-        // Arrange
-        val code = """
+            // TODO: Fix this @implementation bug <urgent>
             /*
-             * This is a multiline
-             * block comment
+             * Copyright (c) 2024
+             * @author Developer <dev@example.com>
              */
-            @interface User : NSObject
+            @interface Test : NSObject
             @end
         """.trimIndent()
 
@@ -325,82 +1249,9 @@ class ObjectiveCExtractionTest {
         val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
 
         // Assert
-        assertThat(result.comments).hasSize(1)
-        assertThat(result.comments[0]).isEqualTo("This is a multiline\nblock comment")
+        assertThat(result.identifiers).containsExactly("Test")
+        assertThat(result.comments).hasSize(2)
     }
-
-    @Test
-    fun `should extract doc comment`() {
-        // Arrange
-        val code = """
-            /**
-             * Process the given order.
-             * @param order The order to process
-             */
-            @interface OrderProcessor : NSObject
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.comments).hasSize(1)
-        assertThat(result.comments[0]).isEqualTo("Process the given order.\n@param order The order to process")
-    }
-
-    // === String Extraction Tests ===
-
-    @Test
-    fun `should extract C string literal`() {
-        // Arrange
-        val code = """
-            void test() {
-                char *message = "Hello World";
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.strings).containsExactly("Hello World")
-    }
-
-    @Test
-    fun `should extract NSString literal`() {
-        // Arrange
-        val code = """
-            void test() {
-                NSString *message = @"Hello World";
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.strings).containsExactly("Hello World")
-    }
-
-    @Test
-    fun `should extract multiple strings`() {
-        // Arrange
-        val code = """
-            void test() {
-                NSString *first = @"Hello";
-                NSString *second = @"World";
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.strings).containsExactly("Hello", "World")
-    }
-
-    // === Combined Tests ===
 
     @Test
     fun `should correctly categorize extracted items by context`() {
@@ -439,27 +1290,6 @@ class ObjectiveCExtractionTest {
     }
 
     @Test
-    fun `should extract from complete class`() {
-        // Arrange
-        val code = """
-            @interface Customer : NSObject
-            @property (nonatomic, strong) NSString *name;
-            @property (nonatomic, assign) int age;
-            - (void)save;
-            - (void)updateName:(NSString *)newName;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Customer", "name", "age", "save", "updateName", "newName")
-    }
-
-    // === API Tests ===
-
-    @Test
     fun `should report extraction is supported for ObjectiveC`() {
         // Act & Assert
         assertThat(TreeSitterExtraction.isExtractionSupported(Language.OBJECTIVE_C)).isTrue()
@@ -478,1540 +1308,5 @@ class ObjectiveCExtractionTest {
         // Act & Assert
         assertThat(TreeSitterExtraction.isExtractionSupported(".m")).isTrue()
         assertThat(TreeSitterExtraction.isExtractionSupported(".mm")).isTrue()
-    }
-
-    // === Fast Enumeration (for-in) Tests ===
-
-    @Test
-    fun `should extract fast enumeration variable with pointer type`() {
-        // Arrange
-        val code = """
-            void test() {
-                for (NSString *item in array) {
-                    NSLog(@"%@", item);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "item")
-    }
-
-    @Test
-    fun `should extract fast enumeration variable with id type`() {
-        // Arrange
-        val code = """
-            void test() {
-                for (id key in dictionary) {
-                    NSLog(@"%@", key);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "key")
-    }
-
-    @Test
-    fun `should extract fast enumeration with explicit type`() {
-        // Arrange
-        val code = """
-            void test() {
-                for (NSDictionary *dict in dictionaries) {
-                    process(dict);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "dict")
-    }
-
-    // === @try/@catch Exception Variable Tests ===
-
-    @Test
-    fun `should extract catch exception variable`() {
-        // Arrange
-        val code = """
-            void test() {
-                @try {
-                    [self riskyOperation];
-                }
-                @catch (NSException *exception) {
-                    NSLog(@"Exception: %@", exception);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "exception")
-    }
-
-    @Test
-    fun `should extract catch with different exception type`() {
-        // Arrange
-        val code = """
-            void test() {
-                @try {
-                    riskyOperation();
-                }
-                @catch (NSError *error) {
-                    handleError(error);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "error")
-    }
-
-    @Test
-    fun `should extract multiple catch clauses`() {
-        // Arrange
-        val code = """
-            void test() {
-                @try {
-                    riskyOperation();
-                }
-                @catch (NSInvalidArgumentException *argEx) {
-                    handleArg(argEx);
-                }
-                @catch (NSException *ex) {
-                    handleGeneric(ex);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "argEx", "ex")
-    }
-
-    @Test
-    fun `should extract try-catch-finally variables`() {
-        // Arrange
-        val code = """
-            void test() {
-                @try {
-                    [self riskyOperation];
-                }
-                @catch (NSException *exception) {
-                    NSLog(@"%@", exception);
-                }
-                @finally {
-                    [self cleanup];
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "exception")
-    }
-
-    // === Block Parameter Tests ===
-
-    @Test
-    fun `should extract block parameters from block literal`() {
-        // Arrange
-        val code = """
-            void test() {
-                void (^myBlock)(NSString *, int) = ^(NSString *name, int count) {
-                    NSLog(@"%@", name);
-                };
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Block parameter names are extracted from block literals
-        // Note: Block pointer variable names have complex declarator syntax
-        assertThat(result.identifiers).containsExactly("test", "name", "count")
-    }
-
-    @Test
-    fun `should extract enumeration block parameters`() {
-        // Arrange
-        val code = """
-            void test() {
-                [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    NSLog(@"%@", obj);
-                }];
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "obj", "idx", "stop")
-    }
-
-    @Test
-    fun `should extract block with single parameter`() {
-        // Arrange
-        val code = """
-            void test() {
-                void (^handler)(NSString *) = ^(NSString *message) {
-                    NSLog(@"%@", message);
-                };
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Block parameter names are extracted from block literals
-        assertThat(result.identifiers).containsExactly("test", "message")
-    }
-
-    @Test
-    fun `should extract completion handler block parameters`() {
-        // Arrange
-        val code = """
-            void test() {
-                [network fetchDataWithCompletion:^(NSData *data, NSError *error) {
-                    if (error) {
-                        handleError(error);
-                    }
-                }];
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "data", "error")
-    }
-
-    // === @synthesize/@dynamic Tests ===
-
-    @Test
-    fun `should extract synthesize property name`() {
-        // Arrange
-        val code = """
-            @implementation MyClass
-            @synthesize name = _name;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - tree-sitter extracts the first property name from @synthesize
-        assertThat(result.identifiers).containsExactly("MyClass", "name")
-    }
-
-    @Test
-    fun `should extract synthesize property without ivar`() {
-        // Arrange
-        val code = """
-            @implementation MyClass
-            @synthesize age;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass", "age")
-    }
-
-    @Test
-    fun `should extract dynamic property name`() {
-        // Arrange
-        val code = """
-            @implementation MyClass
-            @dynamic computedProperty;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass", "computedProperty")
-    }
-
-    @Test
-    fun `should extract multiple synthesize properties`() {
-        // Arrange - Use separate @synthesize statements for reliable extraction
-        val code = """
-            @implementation MyClass
-            @synthesize firstName;
-            @synthesize lastName;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass", "firstName", "lastName")
-    }
-
-    @Test
-    fun `should extract multiple dynamic properties`() {
-        // Arrange - Use separate @dynamic statements for reliable extraction
-        val code = """
-            @implementation MyClass
-            @dynamic propA;
-            @dynamic propB;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass", "propA", "propB")
-    }
-
-    // === Forward Declaration Tests ===
-
-    @Test
-    fun `should extract forward class declaration`() {
-        // Arrange
-        val code = "@class MyClass, AnotherClass;"
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass", "AnotherClass")
-    }
-
-    @Test
-    fun `should extract single forward class declaration`() {
-        // Arrange
-        val code = "@class SingleClass;"
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("SingleClass")
-    }
-
-    @Test
-    fun `should extract forward protocol declaration`() {
-        // Arrange
-        val code = "@protocol MyProtocol;"
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyProtocol")
-    }
-
-    @Test
-    fun `should extract multiple forward declarations in file`() {
-        // Arrange
-        val code = """
-            @class UserService;
-            @protocol DataDelegate;
-            @class OrderManager, CartService;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("UserService", "DataDelegate", "OrderManager", "CartService")
-    }
-
-    // === Preprocessor Macro Tests ===
-
-    @Test
-    fun `should extract preprocessor macro definition`() {
-        // Arrange
-        val code = """
-            #define APP_NAME @"MyApp"
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Macro name is extracted; macro value strings are not parsed as string nodes
-        assertThat(result.identifiers).containsExactly("APP_NAME")
-    }
-
-    @Test
-    fun `should extract numeric macro definition`() {
-        // Arrange
-        val code = """
-            #define MAX_COUNT 100
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MAX_COUNT")
-    }
-
-    @Test
-    fun `should extract function-like macro definition`() {
-        // Arrange
-        val code = """
-            #define MIN(a, b) ((a) < (b) ? (a) : (b))
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MIN")
-    }
-
-    @Test
-    fun `should extract multiple macro definitions`() {
-        // Arrange
-        val code = """
-            #define VERSION 1
-            #define BUILD_NUMBER 42
-            #define APP_ID @"com.example.app"
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("VERSION", "BUILD_NUMBER", "APP_ID")
-    }
-
-    // === Edge Case Tests ===
-
-    @Test
-    fun `should handle nested blocks`() {
-        // Arrange
-        val code = """
-            void test() {
-                dispatch_async(queue, ^{
-                    [array enumerateObjectsUsingBlock:^(id innerObj, NSUInteger innerIdx, BOOL *innerStop) {
-                        process(innerObj);
-                    }];
-                });
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "innerObj", "innerIdx", "innerStop")
-    }
-
-    @Test
-    fun `should handle class with all new features`() {
-        // Arrange
-        val code = """
-            @class Helper;
-            #define TAG @"MyClass"
-
-            @implementation MyClass
-            @synthesize name;
-            @dynamic computedValue;
-
-            - (void)processItems {
-                for (NSString *item in items) {
-                    @try {
-                        [self processItem:item];
-                    }
-                    @catch (NSException *ex) {
-                        NSLog(@"%@", ex);
-                    }
-                }
-
-                [items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    handle(obj);
-                }];
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly(
-            "Helper", "TAG", "MyClass", "name",
-            "computedValue", "processItems", "item", "ex",
-            "obj", "idx", "stop"
-        )
-    }
-
-    @Test
-    fun `should handle protocol method declarations`() {
-        // Arrange
-        val code = """
-            @protocol MyProtocol
-            - (void)requiredMethod;
-            @optional
-            - (void)optionalMethod;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyProtocol", "requiredMethod", "optionalMethod")
-    }
-
-    @Test
-    fun `should handle class extension (anonymous category)`() {
-        // Arrange
-        val code = """
-            @interface MyClass ()
-            @property (nonatomic) NSString *privateProperty;
-            - (void)privateMethod;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Class name is extracted from category_interface even for extensions
-        assertThat(result.identifiers).containsExactly("MyClass", "privateProperty", "privateMethod")
-    }
-
-    @Test
-    fun `should handle IBAction method`() {
-        // Arrange
-        val code = """
-            @implementation ViewController
-            - (IBAction)buttonTapped:(UIButton *)sender {
-                NSLog(@"Tapped");
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("ViewController", "buttonTapped", "sender")
-    }
-
-    @Test
-    fun `should handle IBOutlet property`() {
-        // Arrange
-        val code = """
-            @interface ViewController : UIViewController
-            @property (nonatomic, weak) IBOutlet UILabel *titleLabel;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("ViewController", "titleLabel")
-    }
-
-    @Test
-    fun `should handle complex selector with many parts`() {
-        // Arrange
-        val code = """
-            @implementation Service
-            - (id)initWithHost:(NSString *)host port:(int)port user:(NSString *)user password:(NSString *)pass {
-                return self;
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly(
-            "Service",
-            "initWithHost",
-            "host",
-            "port",
-            "user",
-            "pass"
-        )
-    }
-
-    @Test
-    fun `should handle multiple for-in loops`() {
-        // Arrange
-        val code = """
-            void test() {
-                for (NSString *key in keys) {
-                    process(key);
-                }
-                for (id value in values) {
-                    process(value);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "key", "value")
-    }
-
-    @Test
-    fun `should not extract from comments containing code-like text`() {
-        // Arrange
-        val code = """
-            // @class HiddenClass;
-            // #define HIDDEN 1
-            @interface RealClass : NSObject
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("RealClass")
-    }
-
-    @Test
-    fun `should handle block with no parameters`() {
-        // Arrange
-        val code = """
-            void test() {
-                dispatch_async(queue, ^{
-                    doSomething();
-                });
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test")
-    }
-
-    @Test
-    fun `should handle struct declaration`() {
-        // Arrange
-        val code = """
-            typedef struct {
-                int x;
-                int y;
-            } Point;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactlyInAnyOrder("x", "y")
-    }
-
-    @Test
-    fun `should extract from mixed C and Objective-C code`() {
-        // Arrange
-        val code = """
-            #define MAX_SIZE 100
-
-            static int helper_function(int param) {
-                return param * 2;
-            }
-
-            @implementation Calculator
-            - (int)calculateWithValue:(int)value {
-                return helper_function(value);
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly(
-            "MAX_SIZE",
-            "helper_function",
-            "param",
-            "Calculator",
-            "calculateWithValue",
-            "value"
-        )
-    }
-
-    // === Additional Edge Case Tests ===
-
-    @Test
-    fun `should handle nested for-in loops`() {
-        // Arrange
-        val code = """
-            void test() {
-                for (NSArray *innerArray in outerArray) {
-                    for (NSString *item in innerArray) {
-                        process(item);
-                    }
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "innerArray", "item")
-    }
-
-    @Test
-    fun `should handle nested try-catch blocks`() {
-        // Arrange
-        val code = """
-            void test() {
-                @try {
-                    @try {
-                        innerRisky();
-                    }
-                    @catch (NSException *innerEx) {
-                        handleInner(innerEx);
-                    }
-                }
-                @catch (NSException *outerEx) {
-                    handleOuter(outerEx);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "innerEx", "outerEx")
-    }
-
-    @Test
-    fun `should handle try with only finally no catch`() {
-        // Arrange
-        val code = """
-            void test() {
-                @try {
-                    riskyOperation();
-                }
-                @finally {
-                    cleanup();
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test")
-    }
-
-    @Test
-    fun `should handle multiple blocks in same method`() {
-        // Arrange
-        val code = """
-            void test() {
-                dispatch_async(queue1, ^(void) {
-                    firstTask();
-                });
-                dispatch_async(queue2, ^(void) {
-                    secondTask();
-                });
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test")
-    }
-
-    @Test
-    fun `should handle method with no parameters`() {
-        // Arrange
-        val code = """
-            @implementation Service
-            - (void)start {
-            }
-            - (void)stop {
-            }
-            + (id)sharedInstance {
-                return nil;
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Service", "start", "stop", "sharedInstance")
-    }
-
-    @Test
-    fun `should handle property with primitive type`() {
-        // Arrange
-        val code = """
-            @interface Counter : NSObject
-            @property (nonatomic) int count;
-            @property (nonatomic) float ratio;
-            @property (nonatomic) BOOL enabled;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Counter", "count", "ratio", "enabled")
-    }
-
-    @Test
-    fun `should handle multiple classes in same file`() {
-        // Arrange
-        val code = """
-            @interface ClassA : NSObject
-            - (void)methodA;
-            @end
-
-            @interface ClassB : NSObject
-            - (void)methodB;
-            @end
-
-            @implementation ClassA
-            - (void)methodA {}
-            @end
-
-            @implementation ClassB
-            - (void)methodB {}
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly(
-            "ClassA",
-            "methodA",
-            "ClassB",
-            "methodB",
-            "ClassA",
-            "methodA",
-            "ClassB",
-            "methodB"
-        )
-    }
-
-    @Test
-    fun `should handle empty implementation`() {
-        // Arrange
-        val code = """
-            @implementation EmptyClass
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("EmptyClass")
-    }
-
-    @Test
-    fun `should handle empty interface`() {
-        // Arrange
-        val code = """
-            @interface EmptyInterface : NSObject
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("EmptyInterface")
-    }
-
-    @Test
-    fun `should handle empty protocol`() {
-        // Arrange
-        val code = """
-            @protocol EmptyProtocol
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("EmptyProtocol")
-    }
-
-    @Test
-    fun `should handle protocol with properties`() {
-        // Arrange
-        val code = """
-            @protocol DataSource
-            @property (nonatomic, readonly) NSInteger itemCount;
-            - (id)itemAtIndex:(NSInteger)index;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("DataSource", "itemCount", "itemAtIndex", "index")
-    }
-
-    @Test
-    fun `should handle category with multiple methods`() {
-        // Arrange
-        val code = """
-            @interface NSString (Utilities)
-            - (NSString *)trim;
-            - (NSString *)reverse;
-            - (BOOL)isValidEmail;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Utilities", "trim", "reverse", "isValidEmail")
-    }
-
-    @Test
-    fun `should handle static variables`() {
-        // Arrange
-        val code = """
-            static NSString *sharedName;
-            static int counter = 0;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("sharedName", "counter")
-    }
-
-    @Test
-    fun `should handle extern declarations`() {
-        // Arrange
-        val code = """
-            extern NSString *const kNotificationName;
-            extern int globalCounter;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("kNotificationName", "globalCounter")
-    }
-
-    @Test
-    fun `should handle typedef struct`() {
-        // Arrange
-        val code = """
-            typedef struct {
-                CGFloat x;
-                CGFloat y;
-                CGFloat width;
-                CGFloat height;
-            } MyRect;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("x", "y", "width", "height")
-    }
-
-    @Test
-    fun `should handle typedef enum`() {
-        // Arrange - Enum enumerators use different node types not in container set
-        val code = """
-            typedef enum {
-                StatusPending,
-                StatusActive,
-                StatusCompleted
-            } TaskStatus;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Enum enumerators are not currently extracted as identifiers
-        assertThat(result.identifiers).isEmpty()
-    }
-
-    @Test
-    fun `should handle NS_ENUM style enum`() {
-        // Arrange - NS_ENUM is a macro that tree-sitter may handle differently
-        val code = """
-            typedef NS_ENUM(NSInteger, Direction) {
-                DirectionNorth,
-                DirectionSouth,
-                DirectionEast,
-                DirectionWest
-            };
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Enum enumerators are not currently extracted
-        assertThat(result.identifiers).isEmpty()
-    }
-
-    @Test
-    fun `should handle string with escaped characters`() {
-        // Arrange - Variable with string initialization
-        val code = """
-            void test() {
-                NSString *escaped;
-                escaped = @"Line1\nLine2\tTabbed";
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "escaped")
-    }
-
-    @Test
-    fun `should handle empty string`() {
-        // Arrange - Separate declaration and assignment
-        val code = """
-            void test() {
-                NSString *empty;
-                char *cEmpty;
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "empty", "cEmpty")
-    }
-
-    @Test
-    fun `should handle string with unicode`() {
-        // Arrange - Variable declarations without initialization
-        val code = """
-            void test() {
-                NSString *emoji;
-                NSString *chinese;
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "emoji", "chinese")
-    }
-
-    @Test
-    fun `should handle comments with special characters`() {
-        // Arrange
-        val code = """
-            // TODO: Fix this @implementation bug <urgent>
-            /*
-             * Copyright (c) 2024
-             * @author Developer <dev@example.com>
-             */
-            @interface Test : NSObject
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Test")
-        assertThat(result.comments).hasSize(2)
-    }
-
-    @Test
-    fun `should not extract identifiers from string literals`() {
-        // Arrange
-        val code = """
-            void test() {
-                NSString *codeStr;
-                NSString *methodStr;
-                codeStr = @"@interface FakeClass @end";
-                methodStr = @"- (void)fakeMethod;";
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Variables are declared separately, strings don't create identifiers
-        assertThat(result.identifiers).containsExactly("test", "codeStr", "methodStr")
-    }
-
-    @Test
-    fun `should handle pointer to pointer declaration`() {
-        // Arrange
-        val code = """
-            void test(NSError **errorPtr) {
-                NSString **stringPtr;
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "errorPtr", "stringPtr")
-    }
-
-    @Test
-    fun `should handle array declaration`() {
-        // Arrange
-        val code = """
-            void test() {
-                int numbers[10];
-                char name[256];
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "numbers", "name")
-    }
-
-    @Test
-    fun `should handle function pointer declaration`() {
-        // Arrange
-        val code = """
-            void test() {
-                int (*compareFunc)(const void *, const void *);
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "compareFunc")
-    }
-
-    @Test
-    fun `should handle method returning instancetype`() {
-        // Arrange
-        val code = """
-            @interface Builder : NSObject
-            - (instancetype)init;
-            - (instancetype)initWithConfig:(NSDictionary *)config;
-            + (instancetype)builder;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Builder", "init", "initWithConfig", "config", "builder")
-    }
-
-    @Test
-    fun `should handle method with nullable parameter`() {
-        // Arrange
-        val code = """
-            @interface Service : NSObject
-            - (void)processData:(NSData * _Nullable)data completion:(void (^)(BOOL))handler;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Service", "processData", "data", "handler")
-    }
-
-    @Test
-    fun `should handle for-in with dictionary`() {
-        // Arrange
-        val code = """
-            void test() {
-                NSDictionary *dict;
-                for (NSString *key in dict) {
-                    id value = dict[key];
-                    process(key, value);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "dict", "key", "value")
-    }
-
-    @Test
-    fun `should handle block with return type`() {
-        // Arrange
-        val code = """
-            void test() {
-                NSInteger (^sum)(NSInteger, NSInteger) = ^NSInteger(NSInteger a, NSInteger b) {
-                    return a + b;
-                };
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "a", "b")
-    }
-
-    @Test
-    fun `should handle dispatch_once pattern`() {
-        // Arrange
-        val code = """
-            @implementation Singleton
-            + (instancetype)sharedInstance {
-                static id instance;
-                static dispatch_once_t onceToken;
-                dispatch_once(&onceToken, ^{
-                    instance = [[self alloc] init];
-                });
-                return instance;
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Singleton", "sharedInstance", "instance", "onceToken")
-    }
-
-    @Test
-    fun `should handle property with custom getter`() {
-        // Arrange
-        val code = """
-            @interface Config : NSObject
-            @property (nonatomic, getter=isEnabled) BOOL enabled;
-            @property (nonatomic, getter=isVisible, setter=setVisibility:) BOOL visible;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Config", "enabled", "visible")
-    }
-
-    @Test
-    fun `should handle multiple forward protocol declarations`() {
-        // Arrange
-        val code = """
-            @protocol ProtocolA, ProtocolB, ProtocolC;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("ProtocolA")
-    }
-
-    @Test
-    fun `should handle class implementing multiple protocols`() {
-        // Arrange
-        val code = """
-            @interface MyClass : NSObject <NSCoding, NSCopying, UITableViewDelegate>
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass")
-    }
-
-    @Test
-    fun `should handle instance variable declaration`() {
-        // Arrange
-        val code = """
-            @interface MyClass : NSObject {
-                NSString *_name;
-                int _count;
-                @private
-                id _privateData;
-            }
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("MyClass", "_name", "_count", "_privateData")
-    }
-
-    @Test
-    fun `should handle deeply nested blocks`() {
-        // Arrange
-        val code = """
-            void test() {
-                dispatch_async(queue, ^{
-                    [service fetchWithCompletion:^(NSData *data) {
-                        [parser parseData:data completion:^(id result) {
-                            handleResult(result);
-                        }];
-                    }];
-                });
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "data", "result")
-    }
-
-    @Test
-    fun `should handle selector as argument`() {
-        // Arrange
-        val code = """
-            void test() {
-                SEL selector = @selector(handleAction:);
-                [target performSelector:selector];
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "selector")
-    }
-
-    @Test
-    fun `should handle at-autoreleasepool`() {
-        // Arrange - Variables inside @autoreleasepool compound statement
-        val code = """
-            void test() {
-                NSString *str;
-                @autoreleasepool {
-                    str = [[NSString alloc] init];
-                    process(str);
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "str")
-    }
-
-    @Test
-    fun `should handle at-synchronized`() {
-        // Arrange
-        val code = """
-            void test() {
-                @synchronized(self) {
-                    int localVar = sharedCounter;
-                    sharedCounter = localVar + 1;
-                }
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "localVar")
-    }
-
-    @Test
-    fun `should handle class method with complex return type`() {
-        // Arrange
-        val code = """
-            @interface Factory : NSObject
-            + (NSArray<NSString *> *)allNames;
-            + (NSDictionary<NSString *, NSNumber *> *)mappings;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Factory", "allNames", "mappings")
-    }
-
-    @Test
-    fun `should handle conditional compilation`() {
-        // Arrange
-        val code = """
-            #ifdef DEBUG
-            #define LOG(msg) NSLog(@"%@", msg)
-            #endif
-
-            void test() {
-                int value;
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert - Only one LOG macro is extracted (ifdef branch)
-        assertThat(result.identifiers).containsExactly("LOG", "test", "value")
-    }
-
-    @Test
-    fun `should handle multiline string concatenation`() {
-        // Arrange - Variable declared separately
-        val code = """
-            void test() {
-                NSString *query;
-                query = @"SELECT * FROM users";
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "query")
-    }
-
-    @Test
-    fun `should handle union declaration`() {
-        // Arrange
-        val code = """
-            typedef union {
-                int intValue;
-                float floatValue;
-                char charValue;
-            } ValueUnion;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("intValue", "floatValue", "charValue")
-    }
-
-    @Test
-    fun `should handle bitfield in struct`() {
-        // Arrange
-        val code = """
-            typedef struct {
-                unsigned int flag1 : 1;
-                unsigned int flag2 : 1;
-                unsigned int value : 6;
-            } Flags;
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("flag1", "flag2", "value")
-    }
-
-    @Test
-    fun `should handle method with variadic parameters`() {
-        // Arrange
-        val code = """
-            @interface Logger : NSObject
-            + (void)logFormat:(NSString *)format, ...;
-            - (void)logWithLevel:(int)level format:(NSString *)format, ...;
-            @end
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("Logger", "logFormat", "format", "logWithLevel", "level", "format")
-    }
-
-    @Test
-    fun `should handle inline function`() {
-        // Arrange
-        val code = """
-            static inline int square(int x) {
-                return x * x;
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("square", "x")
-    }
-
-    @Test
-    fun `should handle const pointer declarations`() {
-        // Arrange
-        val code = """
-            void test() {
-                const char *constPtr;
-                char *const ptrConst;
-                const char *const bothConst;
-            }
-        """.trimIndent()
-
-        // Act
-        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
-
-        // Assert
-        assertThat(result.identifiers).containsExactly("test", "constPtr", "ptrConst", "bothConst")
     }
 }
