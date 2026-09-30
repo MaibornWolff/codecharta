@@ -47,15 +47,22 @@ export class RenderCodeMapEffect {
         map(([accumulatedData]) => accumulatedData)
     )
 
-    // A change the hidden metrics view misses leaves it stale, so it is drawn once the view is shown again.
-    private readonly dataChangedWhileMetricsViewIsShown$ = this.mapDataChange$.pipe(
-        withLatestFrom(this.activeViewStore.activeView$),
-        tap(([, activeView]) => {
-            if (activeView !== "metrics") {
+    // Before the router settles on the view in the URL, the metrics view reads as active without a canvas
+    // to draw into — a reload into another view — so the map also waits for that canvas.
+    private readonly isMetricsMapShown$ = combineLatest([
+        this.activeViewStore.activeView$,
+        this.threeViewerService.isMapCanvasMounted$
+    ]).pipe(map(([activeView, isMapCanvasMounted]) => activeView === "metrics" && isMapCanvasMounted))
+
+    // A change the metrics map misses while it is not shown leaves the view stale, so it is drawn on arrival.
+    private readonly dataChangedWhileMetricsMapIsShown$ = this.mapDataChange$.pipe(
+        withLatestFrom(this.isMetricsMapShown$),
+        tap(([, isMetricsMapShown]) => {
+            if (!isMetricsMapShown) {
                 this.viewReadinessStore.markStale("metrics")
             }
         }),
-        filter(([, activeView]) => activeView === "metrics"),
+        filter(([, isMetricsMapShown]) => isMetricsMapShown),
         map(([accumulatedData]) => accumulatedData)
     )
 
@@ -74,7 +81,7 @@ export class RenderCodeMapEffect {
 
     renderCodeMap$ = createEffect(
         () =>
-            merge(this.dataChangedWhileMetricsViewIsShown$, this.switchedToStaleMetricsView$).pipe(
+            merge(this.dataChangedWhileMetricsMapIsShown$, this.switchedToStaleMetricsView$).pipe(
                 filter((accumulatedData: AccumulatedData) => Boolean(accumulatedData.unifiedMapNode)),
                 throttleTime(maxFPS, asyncScheduler, { leading: false, trailing: true }),
                 withLatestFrom(this.store.select(isThreeDimensionalLayoutSelector)),
