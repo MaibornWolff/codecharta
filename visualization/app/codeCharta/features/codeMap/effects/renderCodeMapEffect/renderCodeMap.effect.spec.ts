@@ -226,6 +226,24 @@ describe("renderCodeMapEffect", () => {
         expect(renders).toHaveBeenCalledTimes(1)
     })
 
+    it("should leave the map to be built on arrival while the metrics view has no canvas yet, as on a reload into another view", async () => {
+        // Arrange — the router has not settled on the view in the URL, so the metrics view still reads as active
+        isMapCanvasMounted$.next(false)
+
+        // Act
+        actions$.next(setInvertArea({ value: true }))
+        await wait(maxFPS)
+        const loadsBeforeTheCanvas = (codeMapRenderService.load as jest.Mock).mock.calls.length
+        isMapCanvasMounted$.next(true)
+        activeView$.next("dependencies")
+        activeView$.next("metrics")
+        await wait(maxFPS)
+
+        // Assert
+        expect(loadsBeforeTheCanvas).toBe(0)
+        expect(codeMapRenderService.load).toHaveBeenCalledTimes(1)
+    })
+
     it("should wait for the metrics view to mount its canvas before building a deferred map", async () => {
         // Arrange — the metrics view has never been shown, so its canvas does not exist yet
         isMapCanvasMounted$.next(false)
