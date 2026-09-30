@@ -27,20 +27,7 @@ const objectWithDynamicKeysInStore = new Set([
     "dependencyLensSource.attributeTypes",
     "domainLensSource.words",
     "domainState.sizeRange",
-    "domainState.rotationRange",
-    // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
-    "domainState.hiddenWords",
-    // arrays: must be replaced wholesale, otherwise the deep-merge spread turns them into objects with numeric keys
-    "sharedView.excludedNodes",
-    "sharedView.flattenedNodes",
-    "sharedView.metricRules",
-    "sharedView.markedPackages",
-    "sharedView.focusedNodePath",
-    "sharedView.hoveredFileExtensions",
-    "sharedView.keptHighlightPaths",
-    // an array: must be replaced wholesale, otherwise the deep-merge spread turns it into an object with numeric keys
-    "mapState.mapColors.markingColors",
-    "files"
+    "domainState.rotationRange"
 ])
 
 export function _applyPartialState<T>(applyTo: T, toBeApplied: unknown, composedPath = []): T {
@@ -56,13 +43,17 @@ export function _applyPartialState<T>(applyTo: T, toBeApplied: unknown, composed
         const newComposedPath = [...composedPath, key]
         const composedJoinedPath = newComposedPath.join(".")
 
-        applyTo[key] =
-            typeof value !== "object" || objectWithDynamicKeysInStore.has(composedJoinedPath)
-                ? value
-                : _applyPartialState({ ...applyTo[key] }, value, newComposedPath)
+        applyTo[key] = isReplacedWholesale(value, composedJoinedPath)
+            ? value
+            : _applyPartialState({ ...applyTo[key] }, value, newComposedPath)
     }
 
     return applyTo
+}
+
+// A deep-merge spread would turn an array into an object with numeric keys.
+function isReplacedWholesale(value: unknown, path: string): boolean {
+    return typeof value !== "object" || Array.isArray(value) || objectWithDynamicKeysInStore.has(path)
 }
 
 function isKeyOf<T>(of: T, key: PropertyKey): key is keyof T {

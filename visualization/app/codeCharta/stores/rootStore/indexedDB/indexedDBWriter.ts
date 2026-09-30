@@ -20,7 +20,7 @@ import {
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 26
+export const DB_VERSION = 27
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -682,6 +682,22 @@ export function migrateCcStateRecordToV26<T>(state: T): T {
     return { ...record, preferences: { dependencyGraph: defaultDependencyGraphSettings, ...preferences } } as T
 }
 
+// v27: a restore used to deep-merge the shown edge types into an object with numeric keys, and saved it so
+export function migrateCcStateRecordToV27<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"] as Record<string, unknown> | undefined
+    const dependencyGraph = preferences?.["dependencyGraph"] as Record<string, unknown> | undefined
+    const shownEdgeTypes = dependencyGraph?.["shownEdgeTypes"]
+    if (!shownEdgeTypes || typeof shownEdgeTypes !== "object" || Array.isArray(shownEdgeTypes)) {
+        return state
+    }
+    const repaired = { ...dependencyGraph, shownEdgeTypes: [...new Set(Object.values(shownEdgeTypes))] }
+    return { ...record, preferences: { ...preferences, dependencyGraph: repaired } } as T
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -705,7 +721,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 22, migrate: migrateCcStateRecordToV22 },
     { version: 24, migrate: migrateCcStateRecordToV24 },
     { version: 25, migrate: migrateCcStateRecordToV25 },
-    { version: 26, migrate: migrateCcStateRecordToV26 }
+    { version: 26, migrate: migrateCcStateRecordToV26 },
+    { version: 27, migrate: migrateCcStateRecordToV27 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {
