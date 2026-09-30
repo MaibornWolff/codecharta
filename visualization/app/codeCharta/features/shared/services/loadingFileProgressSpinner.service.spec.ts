@@ -53,15 +53,27 @@ describe("LoadingFileProgressSpinnerService", () => {
         expect(isMetricsLoading).toBe(true)
     })
 
-    it("should report busy while a heavy dispatch is in flight", async () => {
+    it("should report the metrics view busy while a heavy dispatch is in flight", async () => {
         // Arrange
-        viewReadinessStore.markReady("domain")
+        viewReadinessStore.markReady("metrics")
 
         // Act
         isPendingHeavyDispatch$.next(true)
 
         // Assert
-        expect(await firstValueFrom(service.isLoading$("domain"))).toBe(true)
+        expect(await firstValueFrom(service.isLoading$("metrics"))).toBe(true)
+    })
+
+    it.each<ViewId>(["domain", "dependencies"])("should keep the %s view idle while a heavy dispatch is in flight", async view => {
+        // Arrange
+        viewReadinessStore.markReady(view)
+
+        // Act
+        isPendingHeavyDispatch$.next(true)
+
+        // Assert
+        expect(await firstValueFrom(service.isLoading$(view))).toBe(false)
+        expect(await firstValueFrom(service.phase$(view))).toBeNull()
     })
 
     it("should report every view busy while a load is in flight", async () => {

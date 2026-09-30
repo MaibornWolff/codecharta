@@ -20,6 +20,10 @@ const SAVING_SESSION_PHASE = "Saving your session"
  * signals, and without the hold that gap reads as a flash followed by a second spinner. */
 const SETTLE_HOLD_MS = 400
 
+/** A heavy dispatch rebuilds the 3D map. The other views redraw from it in no time, so a spinner over
+ * them would only hide an answer that is already there. */
+const VIEW_WAITING_FOR_HEAVY_DISPATCHES: ViewId = "metrics"
+
 @Injectable({
     providedIn: "root"
 })
@@ -35,7 +39,7 @@ export class LoadingFileProgressSpinnerService {
             this.viewReadinessStore.isStale$(view),
             this.viewSwitchProgressStore.pendingView$.pipe(map(pendingView => pendingView !== null)),
             this.fileStoreReadWindow.isLoadingFile$,
-            isPendingHeavyDispatch$,
+            pendingHeavyDispatchFor$(view),
             isApplyingScenario$,
             // Writing the session copies it on the main thread, so the map cannot answer while it runs.
             isPendingSave$
@@ -60,7 +64,7 @@ export class LoadingFileProgressSpinnerService {
         return combineLatest([
             this.viewSwitchProgressStore.pendingView$,
             this.viewReadinessStore.isStale$(view),
-            isPendingHeavyDispatch$
+            pendingHeavyDispatchFor$(view)
         ]).pipe(map(([pendingView, isViewStale, isDispatchPending]) => pendingView ?? (isViewStale || isDispatchPending ? view : null)))
     }
 
@@ -71,4 +75,8 @@ export class LoadingFileProgressSpinnerService {
         }
         return drawnView === null ? null : DRAWING_PHASE_OF_VIEW[drawnView]
     }
+}
+
+function pendingHeavyDispatchFor$(view: ViewId): Observable<boolean> {
+    return view === VIEW_WAITING_FOR_HEAVY_DISPATCHES ? isPendingHeavyDispatch$ : of(false)
 }
