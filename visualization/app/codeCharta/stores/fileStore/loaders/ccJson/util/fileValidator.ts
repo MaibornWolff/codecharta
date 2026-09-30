@@ -1,44 +1,25 @@
 import Ajv, { ErrorObject } from "ajv"
 import packageJson from "../../../../../../../package.json"
-import { CcJson2, FileNode } from "../../../../../model/ccjson2.model"
+import { CcJson2 } from "../../../../../model/ccjson2.model"
 import { ExportCCFile } from "../../../../../model/codeCharta.api.model"
-import { CodeMapNode, FixedPosition } from "../../../../../model/codeCharta.model"
+import { CodeMapNode } from "../../../../../model/codeCharta.model"
 import ccJson2Schema from "../../../../../util/ccJson2Schema.json"
-import { isLeaf } from "../../../../../util/codeMapHelper"
 import jsonSchema from "../../../../../util/generatedSchema.json"
+import { getAsApiVersion } from "./apiVersion"
+import { ERROR_MESSAGES } from "./fileValidationMessages"
+import { validateFixedFolders } from "./fixedFolderValidator"
+import { validateAllFileNodeIdsAreUnique, validateAllFileNodesAreUnique, validateAllNodesAreUnique } from "./nodeUniquenessValidator"
+import { collectUnresolvedNodeIdWarnings } from "./unresolvedNodeIdWarnings"
+
+export { getAsApiVersion } from "./apiVersion"
+export { ERROR_MESSAGES } from "./fileValidationMessages"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
-
-interface ApiVersion {
-    major: number
-    minor: number
-}
 
 export interface CCFileValidationResult {
     fileName: string
     errors: string[]
     warnings: string[]
-}
-
-export const ERROR_MESSAGES = {
-    fileIsInvalid: "File is empty or invalid.",
-    checksumUnavailable: "File has no checksum, and the browser can only compute one when CodeCharta is opened via https or localhost.",
-    apiVersionIsInvalid: "API Version is empty or invalid.",
-    majorApiVersionIsOutdated: "API Version Outdated: Update CodeCharta API Version to match cc.json.",
-    minorApiVersionOutdated: "Minor API Version Outdated.",
-    nodesNotUnique: "Node names in combination with node types are not unique.",
-    nodeIdsNotUnique: "Node ids are not unique.",
-    unresolvedEdgeEndpoint: "Dependency edge dropped: an endpoint id does not resolve to a node.",
-    unresolvedDomainWordsNodeId: "Domain lens word bank dropped: the node id does not resolve to a node.",
-    nodesEmpty: "The nodes array is empty. At least one node is required.",
-    notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
-    fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
-    fixedFoldersOverlapped: "Folders may not overlap.",
-    fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2.",
-    fileAlreadyExists: "File already exists.",
-    excludesEveryBuilding: "Excluding all buildings is not possible.",
-    fileContainsAuthorsAttribute:
-        "File contains unsupported 'authors' attribute. This attribute will be ignored. Node containing the attribute: "
 }
 
 /** The raw parsed file content at the load boundary — a 1.x export, a 2.0 file, or nothing. */
@@ -74,48 +55,6 @@ export function checkWarnings(file: CcFileContent): string[] {
         return [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
     }
     return []
-}
-
-/**
- * cc.json 2.0 dependency edges and domain-lens word banks reference nodes by id; the 2.0 reader silently
- * drops any of them whose id is absent from the file tree (mapEdges, mapDomainWords). Surface each drop as
- * a load warning so it shows in the load-warnings dialog instead of only console.warn.
- */
-function collectUnresolvedNodeIdWarnings(file: CcJson2): string[] {
-    const root = file.files?.[0]
-    if (root === undefined) {
-        return []
-    }
-    const nodeIds = new Set<string>()
-    collectFileNodeIds(root, nodeIds)
-    return [...collectUnresolvedEdgeWarnings(file, nodeIds), ...collectUnresolvedDomainWordsWarnings(file, nodeIds)]
-}
-
-function collectUnresolvedEdgeWarnings(file: CcJson2, nodeIds: Set<string>): string[] {
-    const warnings: string[] = []
-    for (const edge of file.lenses.dependency?.edges ?? []) {
-        if (!nodeIds.has(edge.fromId) || !nodeIds.has(edge.toId)) {
-            warnings.push(`${ERROR_MESSAGES.unresolvedEdgeEndpoint} ${edge.fromId} -> ${edge.toId}`)
-        }
-    }
-    return warnings
-}
-
-function collectUnresolvedDomainWordsWarnings(file: CcJson2, nodeIds: Set<string>): string[] {
-    const warnings: string[] = []
-    for (const nodeId of Object.keys(file.lenses.domain?.nodes ?? {})) {
-        if (!nodeIds.has(nodeId)) {
-            warnings.push(`${ERROR_MESSAGES.unresolvedDomainWordsNodeId} ${nodeId}`)
-        }
-    }
-    return warnings
-}
-
-function collectFileNodeIds(node: FileNode, into: Set<string>) {
-    into.add(node.id)
-    for (const child of node.children ?? []) {
-        collectFileNodeIds(child, into)
-    }
 }
 
 export function checkErrors(file: CcFileContent): string[] {
@@ -156,48 +95,6 @@ function checkErrors2_0(file: CcJson2): string[] {
         return validate.errors.map((error: ErrorObject) => getValidationMessage(error))
     }
     return [...validateAllFileNodeIdsAreUnique(file.files[0]), ...validateAllFileNodesAreUnique(file.files[0])]
-}
-
-function validateAllFileNodeIdsAreUnique(root: FileNode): string[] {
-    const errors: string[] = []
-    collectDuplicateFileNodeIds(root, new Set<string>(), errors)
-    return errors
-}
-
-function collectDuplicateFileNodeIds(node: FileNode, seenIds: Set<string>, errors: string[]) {
-    if (seenIds.has(node.id)) {
-        errors.push(`${ERROR_MESSAGES.nodeIdsNotUnique} Found duplicate id: ${node.id}`)
-    } else {
-        seenIds.add(node.id)
-    }
-    for (const child of node.children ?? []) {
-        collectDuplicateFileNodeIds(child, seenIds, errors)
-    }
-}
-
-/**
- * A 2.0 node id already encodes type + tree position, but the file may come from a producer that did not
- * enforce it; check sibling name|type uniqueness directly (mirrors the 1.x validateAllNodesAreUnique
- * check) so two same-name-same-type siblings are rejected instead of trusted.
- */
-function validateAllFileNodesAreUnique(root: FileNode): string[] {
-    const errors: string[] = []
-    collectDuplicateSiblingFileNodes(root, `/${root.name}`, errors)
-    return errors
-}
-
-function collectDuplicateSiblingFileNodes(node: FileNode, subPath: string, errors: string[]) {
-    const seen = new Set<string>()
-    for (const child of node.children ?? []) {
-        const path = `${subPath}/${child.name}`
-        const key = `${child.name}|${child.type}`
-        if (seen.has(key)) {
-            errors.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with path: ${path}`)
-        } else {
-            seen.add(key)
-            collectDuplicateSiblingFileNodes(child, path, errors)
-        }
-    }
 }
 
 function checkJsonSchema(file: ExportCCFile) {
@@ -251,128 +148,8 @@ function removeAuthorsAttributeFromNodes(nodes: CodeMapNode[]): string[] {
     return warnings
 }
 
-export function getAsApiVersion(version: string): ApiVersion {
-    return {
-        major: Number(version.split(".")[0]),
-        minor: Number(version.split(".")[1])
-    }
-}
-
 function getValidationMessage(error: ErrorObject) {
     const errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
     const errorParameter = error.instancePath.slice(1)
     return `${errorType} error: ${errorParameter} ${error.message}`
-}
-
-function validateAllNodesAreUnique(node: CodeMapNode) {
-    const errors: string[] = []
-    const names = new Set<string>()
-    names.add(`${node.name}|${node.type}`)
-    validateChildrenAreUniqueRecursive(node, errors, names, `/${node.name}`)
-    return errors
-}
-
-function validateChildrenAreUniqueRecursive(node: CodeMapNode, errors: string[], names: Set<string>, subPath: string) {
-    if (isLeaf(node)) {
-        return
-    }
-
-    for (const child of node.children) {
-        const path = `${subPath}/${child.name}`
-        if (names.has(`${path}|${child.type}`)) {
-            errors.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with path: ${path}`)
-        } else {
-            names.add(`${path}|${child.type}`)
-            validateChildrenAreUniqueRecursive(child, errors, names, path)
-        }
-    }
-}
-
-function checkChildNodes(
-    childNodes: CodeMapNode[],
-    notFixed: string[],
-    file: ExportCCFile,
-    errors: string[],
-    outOfBounds: string[],
-    intersections: Set<string>
-) {
-    for (const node of childNodes) {
-        if (node.fixedPosition === undefined) {
-            notFixed.push(`${node.name}`)
-        } else {
-            const apiVersion = getAsApiVersion(file.apiVersion)
-            if (apiVersion.major < 1 || (apiVersion.major === 1 && apiVersion.minor < 2)) {
-                errors.push(`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: ${file.apiVersion}`)
-                return
-            }
-
-            if (isOutOfBounds(node)) {
-                outOfBounds.push(getFoundFolderMessage(node))
-            }
-
-            collectIntersections(node, childNodes, intersections)
-        }
-    }
-}
-
-function collectIntersections(node: CodeMapNode, childNodes: CodeMapNode[], intersections: Set<string>) {
-    for (const node2 of childNodes) {
-        if (
-            node2.fixedPosition !== undefined &&
-            node !== node2 &&
-            rectanglesIntersect(node.fixedPosition, node2.fixedPosition) &&
-            !intersections.has(`${getFoundFolderMessage(node2)} and ${getFoundFolderMessage(node)}`)
-        ) {
-            intersections.add(`${getFoundFolderMessage(node)} and ${getFoundFolderMessage(node2)}`)
-        }
-    }
-}
-
-function validateFixedFolders(file: ExportCCFile, childNodes: CodeMapNode[] = file.nodes[0].children) {
-    const errors: string[] = []
-    const notFixed: string[] = []
-    const outOfBounds: string[] = []
-    const intersections: Set<string> = new Set()
-
-    checkChildNodes(childNodes, notFixed, file, errors, outOfBounds, intersections)
-
-    if (notFixed.length > 0 && notFixed.length !== childNodes.length) {
-        errors.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
-    }
-
-    if (outOfBounds.length > 0) {
-        errors.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: ${outOfBounds.join(", ")}`)
-    }
-
-    if (intersections.size > 0) {
-        errors.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections].join(", ")}`)
-    }
-
-    for (const node of childNodes) {
-        if (node.children) {
-            errors.push(...validateFixedFolders(file, node.children))
-        }
-    }
-    return errors
-}
-
-function getFoundFolderMessage(node: CodeMapNode) {
-    return `${node.name} ${JSON.stringify(node.fixedPosition)}`
-}
-
-function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition) {
-    return (
-        isInRectangle(rect1.left, rect1.top, rect2) ||
-        isInRectangle(rect1.left, rect1.top + rect1.height, rect2) ||
-        isInRectangle(rect1.left + rect1.width, rect1.top, rect2) ||
-        isInRectangle(rect1.left + rect1.width, rect1.top + rect1.height, rect2)
-    )
-}
-
-function isInRectangle(x: number, y: number, rect: FixedPosition) {
-    return x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height
-}
-
-function isOutOfBounds({ fixedPosition: { left, top, width, height } }: CodeMapNode) {
-    return left < 0 || top < 0 || left + width > 100 || top + height > 100 || width < 0 || height < 0
 }
