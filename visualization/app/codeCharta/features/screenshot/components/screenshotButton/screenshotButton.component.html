@@ -1,10 +1,1 @@
-<button
-    type="button"
-    class="join-item btn btn-sm btn-square"
-    [title]="tooltip()"
-    aria-label="Screenshot"
-    [disabled]="isDisabled()"
-    (click)="handleClick()"
->
-    <i class="fa fa-camera"></i>
-</button>
+<cc-bar-tool label="Screenshot" icon="fa fa-camera" [tooltip]="tooltip()" [disabled]="isDisabled()" (activated)="handleClick()"></cc-bar-tool>

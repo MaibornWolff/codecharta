@@ -10,10 +10,9 @@ import { PresentationModeButtonComponent } from "../presentationModeButton/prese
     templateUrl: "./mapTools.component.html",
     imports: [CenterMapButtonComponent, ScreenshotButtonComponent, PresentationModeButtonComponent, CenterMapZoomMenuComponent],
     providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: ScreenshotService }],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: "flex items-center gap-0.5" }
 })
 export class MapToolsComponent {
-    // The zoom menu is positioned against the viewport, so it lives outside the toolbar: the toolbar's
-    // own translate would make it the containing block and place the menu away from the cursor.
     protected readonly zoomMenuAnchor = signal<FloatingMenuAnchor | null>(null)
 }

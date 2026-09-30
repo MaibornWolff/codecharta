@@ -17,7 +17,7 @@ describe("DomainBarComponent", () => {
         jest.useRealTimers()
     })
 
-    async function setup(settings = defaultWordCloudSettings) {
+    async function setup(settings = defaultWordCloudSettings, template?: string) {
         writeStore = {
             setShape: jest.fn(),
             setSizingMode: jest.fn(),
@@ -30,20 +30,30 @@ describe("DomainBarComponent", () => {
             setDrawOutOfBound: jest.fn()
         }
         hasTfidfData = signal(false)
-        return render(DomainBarComponent, {
-            providers: [
-                provideMockStore({ initialState: defaultState }),
-                { provide: State, useValue: { getValue: () => defaultState } },
-                { provide: DomainBarReadStore, useValue: { settings: signal(settings), hasTfidfData } },
-                { provide: DomainBarWriteStore, useValue: writeStore }
-            ]
-        })
+        const providers = [
+            provideMockStore({ initialState: defaultState }),
+            { provide: State, useValue: { getValue: () => defaultState } },
+            { provide: DomainBarReadStore, useValue: { settings: signal(settings), hasTfidfData } },
+            { provide: DomainBarWriteStore, useValue: writeStore }
+        ]
+        return template ? render(template, { imports: [DomainBarComponent], providers }) : render(DomainBarComponent, { providers })
     }
 
     function changeSlider(accessibleName: string, value: string) {
         fireEvent.input(screen.getByRole("slider", { name: accessibleName }), { target: { value } })
         jest.advanceTimersByTime(SETTINGS_INPUT_DEBOUNCE_MS)
     }
+
+    it("should carry the tools it is given in the tab on its edge", async () => {
+        // Act
+        const { container } = await setup(
+            defaultWordCloudSettings,
+            '<cc-domain-bar><button type="button" barTools>Screenshot</button></cc-domain-bar>'
+        )
+
+        // Assert
+        expect(container.querySelector("cc-bar-tools-tab").textContent).toContain("Screenshot")
+    })
 
     it("should render one segment per settings area", async () => {
         // Arrange & Act

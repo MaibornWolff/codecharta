@@ -31,7 +31,6 @@ import {
     setSelectedNodePath,
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
-import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import { radialColoringSelector, radialMetricsSelector, radialTreeSelector } from "../../selectors/radialMap.selectors"
 import { RadialMapComponent } from "./radialMap.component"
 
@@ -73,8 +72,7 @@ async function setup({
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
-            { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } },
-            { provide: GlobalSettingsFacade, useValue: { screenshotToClipboardEnabled$: () => of(false) } }
+            { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } }
         ]
     })
     const store = rendered.fixture.debugElement.injector.get(MockStore)
@@ -124,7 +122,6 @@ describe("RadialMapComponent", () => {
 
         // Assert
         expect(lastDrawnCentre()).toBe("/root")
-        expect(screen.getByRole("button", { name: /screenshot/i })).not.toBeNull()
     })
 
     it("should draw the radial treemap in its layout and the sunburst in the sunburst layout", async () => {

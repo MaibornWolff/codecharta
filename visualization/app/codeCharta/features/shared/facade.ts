@@ -6,6 +6,8 @@ export {
     BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
     BarShellDirective
 } from "./components/barShell/barShell.directive"
+export { BarToolComponent } from "./components/barTool/barTool.component"
+export { BarToolsTabComponent } from "./components/barToolsTab/barToolsTab.component"
 export { BootLoadingIndicatorComponent } from "./components/bootLoadingIndicator/bootLoadingIndicator.component"
 export { ConfirmDialogComponent } from "./components/confirmDialog/confirmDialog.component"
 export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMenuItem.component"

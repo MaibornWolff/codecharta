@@ -10,9 +10,6 @@ import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from 
 import { setDependencyGraphSettings } from "../../../../stores/preferences/preferences.write.facade"
 import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { unfocusAllNodes } from "../../../../stores/sharedView/sharedView.write.facade"
-import { isDependencyMapFocusedSelector } from "../../selectors/dependencyMap.selectors"
-import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
 const EDGE_METRICS = [
@@ -22,12 +19,10 @@ const EDGE_METRICS = [
 
 async function renderBar({
     edgeMetric = "dependencies",
-    settings = {},
-    isFocused = false
+    settings = {}
 }: {
     edgeMetric?: string
     settings?: Partial<DependencyGraphSettings>
-    isFocused?: boolean
 } = {}) {
     const rendered = await render(DependencyBarComponent, {
         providers: [
@@ -37,8 +32,7 @@ async function renderBar({
                 selectors: [
                     { selector: edgeMetricSelector, value: edgeMetric },
                     { selector: edgeMetricDataSelector, value: EDGE_METRICS },
-                    { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } },
-                    { selector: isDependencyMapFocusedSelector, value: isFocused }
+                    { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
                 ]
             })
         ]
@@ -191,50 +185,11 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
     })
 
-    it("should fit the whole graph into view once the reader asks for it", async () => {
-        // Arrange
-        await renderBar()
-
+    it("should carry the graph view tools in the tab on its edge", async () => {
         // Act
-        await userEvent.click(screen.getByRole("button", { name: "Show the whole graph" }))
-
-        // Assert
-        expect(TestBed.inject(DependencyMapViewStore).fitRequest()).toBe(1)
-    })
-
-    it("should offer to reset the layout only once a box was moved, and put it back", async () => {
-        // Arrange
         const { fixture } = await renderBar()
-        const viewStore = TestBed.inject(DependencyMapViewStore)
-        const offeredBeforeMoving = screen.queryByTestId("dependency-reset-layout") !== null
-        viewStore.placeBox("/root/a.ts", [10, 0])
-        fixture.detectChanges()
-
-        // Act
-        await userEvent.click(screen.getByTestId("dependency-reset-layout"))
 
         // Assert
-        expect(offeredBeforeMoving).toBe(false)
-        expect(viewStore.boxOffsets().size).toBe(0)
-        expect(screen.queryByTestId("dependency-reset-layout")).toBeNull()
-    })
-
-    it("should offer to unfocus only while a folder is focused, and show every folder again", async () => {
-        // Arrange
-        const dispatch = await renderBar({ isFocused: true })
-
-        // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-unfocus"))
-
-        // Assert
-        expect(dispatch).toHaveBeenCalledWith(unfocusAllNodes())
-    })
-
-    it("should not offer to unfocus while nothing is focused", async () => {
-        // Act
-        await renderBar()
-
-        // Assert
-        expect(screen.queryByTestId("dependency-bar-unfocus")).toBeNull()
+        expect(fixture.nativeElement.querySelector("cc-bar-tools-tab cc-graph-view-tools")).not.toBeNull()
     })
 })

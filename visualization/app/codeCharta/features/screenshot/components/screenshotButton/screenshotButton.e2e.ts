@@ -6,13 +6,13 @@ test.describe("ScreenshotButton", () => {
         await goto(page)
     })
 
-    test("should download a png of the map from the view-cube toolbox", async ({ page }) => {
+    test("should download a png of the map from the tools tab of the metrics bar", async ({ page }) => {
         // Arrange
         await expect(page.locator("#codeMapScene")).toBeVisible()
 
         // Act
         const download = page.waitForEvent("download")
-        await page.locator("cc-map-tools button[aria-label='Screenshot']").click()
+        await page.locator("cc-metrics-bar button[aria-label='Screenshot']").click()
 
         // Assert
         expect((await download).suggestedFilename()).toMatch(/_map\.png$/)

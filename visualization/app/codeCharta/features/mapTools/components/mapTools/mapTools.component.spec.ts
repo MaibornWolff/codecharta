@@ -41,17 +41,16 @@ describe("MapToolsComponent", () => {
         })
     })
 
-    it("should render one of each toolbox sub-component", async () => {
+    it("should offer centering, the flashlight and a screenshot, in that order", async () => {
         // Arrange & Act
         const { container } = await render(MapToolsComponent)
 
         // Assert
-        expect(container.querySelectorAll("cc-toolbox-center-map-button").length).toBe(1)
-        expect(container.querySelectorAll("cc-toolbox-screenshot-button").length).toBe(1)
-        expect(container.querySelectorAll("cc-toolbox-presentation-mode-button").length).toBe(1)
+        const labels = [...container.querySelectorAll("button")].map(button => button.getAttribute("aria-label"))
+        expect(labels).toEqual(["Center map", "Flashlight", "Screenshot"])
     })
 
-    it("should open the zoom menu outside the translated toolbar on right click", async () => {
+    it("should open the zoom menu on right click of the center map tool", async () => {
         // Arrange
         const { container } = await render(MapToolsComponent)
 
@@ -59,9 +58,6 @@ describe("MapToolsComponent", () => {
         fireEvent.contextMenu(screen.getByRole("button", { name: "Center map" }))
 
         // Assert
-        const zoomMenu = container.querySelector("cc-center-map-zoom-menu")
-        expect(zoomMenu).toBeTruthy()
-        // a translated ancestor becomes the containing block of the fixed menu and moves it off screen
-        expect(zoomMenu.closest(".join")).toBeNull()
+        expect(container.querySelector("cc-center-map-zoom-menu")).not.toBeNull()
     })
 })

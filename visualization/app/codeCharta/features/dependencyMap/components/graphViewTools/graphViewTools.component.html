@@ -1,0 +1,23 @@
+<cc-bar-tool
+    label="Unfocus"
+    icon="fa-solid fa-crosshairs"
+    tooltip="Leave the focus and show every folder"
+    highlighted
+    [revealed]="isFocused()"
+    testId="dependency-bar-unfocus"
+    (activated)="unfocus()"
+></cc-bar-tool>
+<cc-bar-tool
+    label="Reset layout"
+    icon="fa fa-undo"
+    tooltip="Put every dragged box back in its place"
+    highlighted
+    [revealed]="hasMovedBoxes()"
+    testId="dependency-reset-layout"
+    (activated)="resetLayout()"
+></cc-bar-tool>
+@if (hasSomethingToUndo()) {
+    <span class="mx-0.5 h-3.5 w-px bg-base-300" aria-hidden="true" data-testid="dependency-tools-divider"></span>
+}
+<cc-bar-tool label="Show whole graph" icon="fa-solid fa-expand" testId="dependency-reset-view" (activated)="showWholeGraph()"></cc-bar-tool>
+<cc-toolbox-screenshot-button view="dependencies"></cc-toolbox-screenshot-button>

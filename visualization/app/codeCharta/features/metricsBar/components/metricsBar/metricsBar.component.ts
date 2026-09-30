@@ -7,6 +7,7 @@ import {
     AxisCardComponent,
     BAR_BOTTOM_ABOVE_FILE_EXTENSION_BAR,
     BarShellDirective,
+    BarToolsTabComponent,
     HEIGHT_CSS_VARIABLE,
     injectIsRadialLayout,
     PublishesHeightDirective
@@ -29,6 +30,7 @@ import { LinkColorHeightButtonComponent } from "../linkColorHeightButton/linkCol
     imports: [
         AreaSegmentComponent,
         AxisCardComponent,
+        BarToolsTabComponent,
         ColorSegmentComponent,
         ColorSettingsPopoverComponent,
         EdgeSegmentComponent,

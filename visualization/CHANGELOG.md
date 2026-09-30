@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Dependency view (experimental)**: a map analysed with the dependency parser opens as a graph that stacks its files by dependency level and marks the dependencies that close a cycle or point upward, with a screenshot button as in the other views.
 - **Loading indicator when switching views**: switching to a view that still has to be built shows a spinner instead of a frozen screen.
 
+### Changed
+
+- **Tools on the bars**: centering, the flashlight and the screenshot sit in a small tab on the edge of each view's bar instead of floating over the map, and each tool shows its name when you point at it.
+
 ### Removed
 
 - **Enable Experimental Features**: the global setting is gone, and with it the tiny buildings for files without an area value and the raised folder labels it switched on.
