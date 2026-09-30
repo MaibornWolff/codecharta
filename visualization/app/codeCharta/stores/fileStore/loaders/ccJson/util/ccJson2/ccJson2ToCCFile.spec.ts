@@ -1,7 +1,7 @@
-import sample1CcJson2 from "../../../../../../assets/sample1.cc.json"
 import { TEST_FILE_CONTENT_CC_JSON_2 } from "../../../../../../mocks/dataMocks"
 import { CcJson2 } from "../../../../../../model/ccjson2.model"
 import { ExportCCFile, NameDataPair } from "../../../../../../model/codeCharta.api.model"
+import sample1CcJson2 from "../../../../../../resources/sample1_converted_to_2_0.cc.json"
 import sample1Legacy from "../../../../../../resources/sample1_legacy_1_2.cc.json"
 import { clone } from "../../../../../../util/clone"
 import { getCCFile } from "../ccFileHelper"
@@ -182,7 +182,7 @@ describe("mapCcJson2ToCCFile", () => {
     })
 
     it("should produce the same map, edges and attributeTypes as the 1.5 source it was converted from (ccsh render parity)", () => {
-        // Arrange — the REAL ccsh-converted 2.0 bundled sample (opaque hashed ids) vs the 1.x source it
+        // Arrange — the REAL ccsh-converted 2.0 sample (opaque hashed ids) vs the 1.x source it
         // was produced from. Proves the 2.0 reader's id→path join does not rely on id==path.
         const from1_5 = getCCFile({ fileName: "sample1.cc.json", fileSize: 0, content: sample1Legacy as unknown as ExportCCFile })
         const from2_0 = getCCFile({ fileName: "sample1.cc.json", fileSize: 0, content: sample1CcJson2 as unknown as CcJson2 })
