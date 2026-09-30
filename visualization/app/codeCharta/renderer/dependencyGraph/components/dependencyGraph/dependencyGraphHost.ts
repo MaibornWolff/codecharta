@@ -4,7 +4,7 @@ import * as echarts from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
-import { AxisWindow } from "../../util/dependencyGraphOption.builder"
+import { AxisWindow, Viewport, windowResizedTo } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
@@ -19,11 +19,6 @@ export interface DependencyGraphHandlers extends BoxDragHandlers {
     onRendered: () => void
     /** The box painted on top at a layout point; an edge lying over it hands it the pointer. */
     boxAt: (point: Point) => string | null
-}
-
-interface ChartSize {
-    width: number
-    height: number
 }
 
 type RenderSurface = ReturnType<echarts.ECharts["getZr"]>
@@ -48,7 +43,7 @@ export class DependencyGraphHost {
     private pointerLeaveTimeout?: ReturnType<typeof setTimeout>
     private lastBoxClick: { path: string; at: number } | null = null
     private dragGesture?: BoxDragGesture
-    private chartSize?: ChartSize
+    private chartSize?: Viewport
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
 
@@ -76,6 +71,15 @@ export class DependencyGraphHost {
         this.attachedContainer?.setAttribute("aria-busy", "true")
         this.resizeToContainer(this.chart)
         this.chart.setOption(option as echarts.EChartsCoreOption)
+    }
+
+    /** The window the chart shows, carried over to `viewport` at the same scale; null before anything is drawn. */
+    shownWindowFor(viewport: Viewport): AxisWindow | null {
+        if (!this.chart || !this.chartSize) {
+            return null
+        }
+        const shownWindow = windowResizedTo(this.shownWindow(this.chart, this.chartSize), this.chartSize, viewport)
+        return [...shownWindow.x, ...shownWindow.y].every(Number.isFinite) ? shownWindow : null
     }
 
     fitTo({ x, y }: AxisWindow): void {
@@ -130,6 +134,12 @@ export class DependencyGraphHost {
         container.addEventListener("contextmenu", suppressBrowserMenu)
         container.addEventListener("dblclick", this.reportDoubleClick)
         this.containerSizeObserver.observe(container)
+    }
+
+    private shownWindow(chart: echarts.ECharts, { width, height }: Viewport): AxisWindow {
+        const [left, top] = layoutPointAt(chart, { offsetX: 0, offsetY: 0 })
+        const [right, bottom] = layoutPointAt(chart, { offsetX: width, offsetY: height })
+        return { x: [left, right], y: [top, bottom] }
     }
 
     // ECharts' resize() redraws everything even when the size is unchanged.

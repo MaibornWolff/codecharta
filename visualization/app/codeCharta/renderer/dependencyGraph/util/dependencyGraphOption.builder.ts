@@ -32,17 +32,13 @@ const FIT_SHARE = 0.94
 const DRAW_EVERYTHING_IN_ONE_FRAME = 0
 const NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER = Number.POSITIVE_INFINITY
 const EXTENT_ENCODING = { x: [0, 2], y: [1, 3] }
-const ZOOM_BOTH_AXES_INSIDE = [
-    { type: "inside", xAxisIndex: 0, filterMode: "none" },
-    { type: "inside", yAxisIndex: 0, filterMode: "none" }
-]
 
 interface DrawableGraph {
     items: GraphItem[]
     draw: (item: GraphItem, toPixels: ToPixels) => ReturnType<typeof drawItem>
 }
 
-export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport: Viewport) {
+export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport: Viewport, shownWindow: AxisWindow) {
     const byPath = boxesByPath(scene.layout)
     const shownEdges = edgesToDraw(scene)
     const graph = drawableGraph(scene, shownEdges, byPath)
@@ -52,8 +48,8 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
         tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(graph.items, byPath, scene.edgeMetric) },
         grid: { left: 0, right: 0, top: 0, bottom: 0 },
-        ...axesFittingTheGraph(scene.layout, viewport),
-        dataZoom: ZOOM_BOTH_AXES_INSIDE,
+        ...axesReaching(scene.layout, viewport, shownWindow),
+        dataZoom: zoomBothAxesInsideTo(shownWindow),
         series: [graphSeries(graph, byPath)]
     }
 }
@@ -168,16 +164,33 @@ export interface AxisWindow {
 }
 
 /** The axes reach the laid-out graph plus this share of its size on every side, room that dragged boxes can
- * grow the graph into and still be panned to. The axes stay put while boxes move, so a drag never shifts the
- * view under the pointer. */
+ * grow the graph into and still be panned to. */
 const DRAGGING_ROOM_SHARE = 1
 
-function axesFittingTheGraph(layout: DependencyGraphLayout, viewport: Viewport) {
+function axesReaching(layout: DependencyGraphLayout, viewport: Viewport, shownWindow: AxisWindow) {
     const room = Math.max(layout.width, layout.height) * DRAGGING_ROOM_SHARE
-    const reach = windowAround({ x: -room, y: -room, width: layout.width + 2 * room, height: layout.height + 2 * room }, viewport, 1)
+    const roomyGraph = windowAround({ x: -room, y: -room, width: layout.width + 2 * room, height: layout.height + 2 * room }, viewport, 1)
+    // ECharts clamps the shown window to the axes, which would cut a window reaching past a graph that shrank.
+    const reach = enclosingWindow(roomyGraph, shownWindow)
     return {
         xAxis: { type: "value", show: false, min: reach.x[0], max: reach.x[1] },
         yAxis: { type: "value", show: false, inverse: true, min: reach.y[0], max: reach.y[1] }
+    }
+}
+
+// Values rather than percentages: ECharts maps a percentage onto the axes' reach, and that grows and shrinks
+// with the graph, which would move and rescale the view on every redraw.
+function zoomBothAxesInsideTo({ x, y }: AxisWindow) {
+    return [
+        { type: "inside", xAxisIndex: 0, filterMode: "none", startValue: x[0], endValue: x[1] },
+        { type: "inside", yAxisIndex: 0, filterMode: "none", startValue: y[0], endValue: y[1] }
+    ]
+}
+
+function enclosingWindow(first: AxisWindow, second: AxisWindow): AxisWindow {
+    return {
+        x: [Math.min(first.x[0], second.x[0]), Math.max(first.x[1], second.x[1])],
+        y: [Math.min(first.y[0], second.y[0]), Math.max(first.y[1], second.y[1])]
     }
 }
 
@@ -198,6 +211,18 @@ function windowAround(area: Rectangle, viewport: Viewport, share: number): AxisW
     const centreX = area.x + area.width / 2
     const centreY = area.y + area.height / 2
     return { x: [centreX - halfWidth, centreX + halfWidth], y: [centreY - halfHeight, centreY + halfHeight] }
+}
+
+/** Keeps the window's centre and its pixels per layout unit, so a resized chart shows more or less of the graph
+ * at the same scale rather than stretching it. */
+export function windowResizedTo(shownWindow: AxisWindow, from: Viewport, to: Viewport): AxisWindow {
+    return { x: axisResizedTo(shownWindow.x, from.width, to.width), y: axisResizedTo(shownWindow.y, from.height, to.height) }
+}
+
+function axisResizedTo([start, end]: [number, number], fromPixels: number, toPixels: number): [number, number] {
+    const centre = (start + end) / 2
+    const halfSpan = ((end - start) * toPixels) / fromPixels / 2
+    return [centre - halfSpan, centre + halfSpan]
 }
 
 // Before the chart has a size there is no scale to keep; showing the area as it is keeps the window a number.
