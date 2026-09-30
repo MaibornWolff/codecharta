@@ -34,6 +34,10 @@ export class ViewSwitcherPageObject {
         await this.page.mouse.move(0, 0)
     }
 
+    dependenciesTab() {
+        return this.page.locator("[data-testid=view-switcher-dependencies]")
+    }
+
     isDomainOptionVisible() {
         return this.page.locator("[data-testid=view-switcher-domain]").isVisible()
     }

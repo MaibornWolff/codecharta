@@ -5,6 +5,7 @@ import { hasDomainDataSelector, pathsWithDomainWordsSelector } from "../../../le
 import { CcState, CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { rightClickedCodeMapNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
+import { dependencyViewEnabledSelector } from "../../../stores/preferences/preferences.read.facade"
 import { NodeContextMenuReadStore } from "./nodeContextMenu.read.store"
 
 describe("NodeContextMenuReadStore", () => {
@@ -22,7 +23,7 @@ describe("NodeContextMenuReadStore", () => {
         return { stream, activeSubscriptions: () => activeSubscriptions }
     }
 
-    function setup({ hasDomainData = true, isDeltaState = false } = {}) {
+    function setup({ hasDomainData = true, isDeltaState = false, isDependencyViewEnabled = true } = {}) {
         const rightClickedNode$ = new BehaviorSubject<CodeMapNode | null>(null)
         const domainIndex = trackedSelection(new Set([rightClickedNode.path]))
         const dependencyPaths = trackedSelection(new Set([rightClickedNode.path]))
@@ -31,6 +32,7 @@ describe("NodeContextMenuReadStore", () => {
             [hasDomainDataSelector, of(hasDomainData)],
             [pathsWithDomainWordsSelector, domainIndex.stream],
             [isDeltaStateSelector, of(isDeltaState)],
+            [dependencyViewEnabledSelector, of(isDependencyViewEnabled)],
             [pathsWithDependencyLevelsSelector, dependencyPaths.stream]
         ])
         const store = { select: (selector: unknown) => streamsBySelector.get(selector) ?? NEVER }
@@ -122,6 +124,20 @@ describe("NodeContextMenuReadStore", () => {
     it("should not look up the dependency paths in compare mode, which the dependency view cannot show", () => {
         // Arrange
         const { readStore, rightClickedNode$, dependencyPaths } = setup({ isDeltaState: true })
+        const emissions: boolean[] = []
+        readStore.isRightClickedNodeInDependencyLens$.subscribe(isInLens => emissions.push(isInLens))
+
+        // Act
+        rightClickedNode$.next(rightClickedNode)
+
+        // Assert
+        expect(dependencyPaths.activeSubscriptions()).toBe(0)
+        expect(emissions).toEqual([false])
+    })
+
+    it("should not look up the dependency paths while the dependency view is switched off", () => {
+        // Arrange
+        const { readStore, rightClickedNode$, dependencyPaths } = setup({ isDependencyViewEnabled: false })
         const emissions: boolean[] = []
         readStore.isRightClickedNodeInDependencyLens$.subscribe(isInLens => emissions.push(isInLens))
 
