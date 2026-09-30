@@ -10,6 +10,7 @@ import { defaultMetricsLensSource } from "../../metricsLensSource/metricsLensSou
 import {
     defaultCenterMapZoom,
     defaultDependencyGraphSettings,
+    defaultDependencyViewEnabled,
     defaultPreferences,
     defaultRadialFolderStyle,
     defaultRadialFolderTint,
@@ -20,7 +21,7 @@ import {
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 27
+export const DB_VERSION = 28
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -702,6 +703,19 @@ export function migrateCcStateRecordToV27<T>(state: T): T {
     return { ...record, preferences: { ...preferences, dependencyGraph: repaired } } as T
 }
 
+// v28: preferences persisted before the dependency view could be switched on carry no such setting
+export function migrateCcStateRecordToV28<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"]
+    if (!preferences || typeof preferences !== "object" || "dependencyViewEnabled" in preferences) {
+        return state
+    }
+    return { ...record, preferences: { dependencyViewEnabled: defaultDependencyViewEnabled, ...preferences } } as T
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -726,7 +740,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 24, migrate: migrateCcStateRecordToV24 },
     { version: 25, migrate: migrateCcStateRecordToV25 },
     { version: 26, migrate: migrateCcStateRecordToV26 },
-    { version: 27, migrate: migrateCcStateRecordToV27 }
+    { version: 27, migrate: migrateCcStateRecordToV27 },
+    { version: 28, migrate: migrateCcStateRecordToV28 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

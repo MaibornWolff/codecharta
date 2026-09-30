@@ -1989,7 +1989,8 @@ export const STATE: CcState = {
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 }
-        }
+        },
+        dependencyViewEnabled: false
     },
     mapState: {
         areaMetric: "rloc",
@@ -2066,7 +2067,8 @@ export const DEFAULT_STATE: CcState = {
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 }
-        }
+        },
+        dependencyViewEnabled: false
     },
     mapState: {
         areaMetric: null,

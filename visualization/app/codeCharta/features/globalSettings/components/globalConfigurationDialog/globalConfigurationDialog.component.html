@@ -27,6 +27,12 @@
                 (checkedChange)="handleScreenshotToClipboardEnabledChanged($event)"
             />
 
+            <cc-setting-toggle
+                [checked]="dependencyViewEnabled()"
+                [label]="'Enable Dependency View (experimental)'"
+                (checkedChange)="handleDependencyViewEnabledChanged($event)"
+            />
+
             <div class="flex flex-wrap gap-3">
                 <cc-reset-settings-button
                     [settingsKeys]="[

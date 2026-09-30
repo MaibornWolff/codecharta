@@ -20,7 +20,8 @@ describe("GlobalConfigurationDialogComponent", () => {
             setScreenshotToClipboard: jest.fn(),
             setWhiteBackground: jest.fn(),
             setHideFlatBuildings: jest.fn(),
-            setResetCameraIfNewFileIsLoaded: jest.fn()
+            setResetCameraIfNewFileIsLoaded: jest.fn(),
+            setDependencyViewEnabled: jest.fn()
         }
 
         mockState = {
@@ -81,6 +82,14 @@ describe("GlobalConfigurationDialogComponent", () => {
 
             // Assert
             expect(value).toBe(true)
+        })
+
+        it("should initialize dependencyViewEnabled signal as switched off", () => {
+            // Arrange & Act
+            const value = component.dependencyViewEnabled()
+
+            // Assert
+            expect(value).toBe(false)
         })
     })
 
@@ -223,6 +232,22 @@ describe("GlobalConfigurationDialogComponent", () => {
 
             // Assert
             expect(mockGlobalSettingsWriteStore.setScreenshotToClipboard).toHaveBeenCalledWith(false)
+        })
+
+        it("should call setDependencyViewEnabled when handleDependencyViewEnabledChanged is called", () => {
+            // Arrange & Act
+            component.handleDependencyViewEnabledChanged(true)
+
+            // Assert
+            expect(mockGlobalSettingsWriteStore.setDependencyViewEnabled).toHaveBeenCalledWith(true)
+        })
+
+        it("should offer the dependency view as an experimental setting", () => {
+            // Arrange & Act
+            const labels = [...fixture.nativeElement.querySelectorAll("cc-setting-toggle")].map(toggle => toggle.textContent.trim())
+
+            // Assert
+            expect(labels).toContain("Enable Dependency View (experimental)")
         })
     })
 })
