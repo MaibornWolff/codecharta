@@ -29,6 +29,7 @@ import {
     setSelectedNodePath,
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
+import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import {
     dependencyLayoutIdentitySelector,
     dependencySearchedPathsOrNullSelector,
@@ -105,7 +106,8 @@ async function setup({
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
-            { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } }
+            { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } },
+            { provide: GlobalSettingsFacade, useValue: { screenshotToClipboardEnabled$: () => of(false) } }
         ]
     })
     for (const folder of openedFolders) {
@@ -353,6 +355,14 @@ describe("DependencyMapComponent", () => {
         expect(markReady).toHaveBeenCalledWith("dependencies")
     })
 
+    it("should offer a screenshot of the drawn graph", async () => {
+        // Act
+        await setup()
+
+        // Assert
+        expect((screen.getByRole("button", { name: "Screenshot" }) as HTMLButtonElement).disabled).toBe(false)
+    })
+
     it("should explain compare mode instead of drawing", async () => {
         // Arrange
         const isDeltaState = true
@@ -363,6 +373,7 @@ describe("DependencyMapComponent", () => {
         // Assert
         expect(screen.getByText(/Leave compare mode/)).not.toBeNull()
         expect(stubbedChart.setOption).not.toHaveBeenCalled()
+        expect(screen.queryByRole("button", { name: "Screenshot" })).toBeNull()
     })
 
     it("should say so when no file carries dependency levels", async () => {

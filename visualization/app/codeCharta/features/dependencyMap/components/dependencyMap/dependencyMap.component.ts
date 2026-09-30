@@ -15,6 +15,7 @@ import {
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { DependencyGraphScreenshotService, SCREENSHOT_CAPTURE, ScreenshotButtonComponent } from "../../../screenshot/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
@@ -22,7 +23,8 @@ import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 @Component({
     selector: "cc-dependency-map",
     templateUrl: "./dependencyMap.component.html",
-    imports: [DependencyGraphComponent],
+    imports: [DependencyGraphComponent, ScreenshotButtonComponent],
+    providers: [{ provide: SCREENSHOT_CAPTURE, useExisting: DependencyGraphScreenshotService }],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]",

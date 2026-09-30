@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ElementRef, effect, input, OnDestroy, output, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, OnDestroy, output, viewChild } from "@angular/core"
+import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
@@ -48,7 +49,7 @@ export class DependencyGraphComponent implements OnDestroy {
     private fittedGraphIdentity: string | null = null
     private handledFitRequest = 0
 
-    private readonly chartHost = new DependencyGraphHost({
+    private readonly chartHost = new DependencyGraphHost(inject(DependencyGraphChartRegistry), {
         onBoxClicked: path => this.boxClicked.emit(path),
         onBoxToggled: path => this.boxToggled.emit(path),
         onBoxHovered: path => this.boxHovered.emit(path),
