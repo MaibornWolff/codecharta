@@ -161,13 +161,13 @@ describe("dependencyGraphBoxes", () => {
     describe("drawLevelBand", () => {
         it("should name the level and separate it from the level above", () => {
             // Arrange
-            const band = aBand({ level: 2 })
+            const band = aBand({ level: 2, levelPath: [0, 1, 2] })
 
             // Act
             const [label, separator] = childrenOf(drawLevelBand(band, identityPixels))
 
             // Assert
-            expect(label.style.text).toBe("level 2")
+            expect(label.style.text).toBe("level 0.1.2")
             expect(separator.shape).toMatchObject({ y1: 82, y2: 82 })
         })
 

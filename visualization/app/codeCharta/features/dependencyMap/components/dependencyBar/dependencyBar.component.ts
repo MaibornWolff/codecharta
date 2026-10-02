@@ -4,6 +4,7 @@ import { EdgeMetricSegmentComponent } from "../edgeMetricSegment/edgeMetricSegme
 import { EdgeStyleSegmentComponent } from "../edgeStyleSegment/edgeStyleSegment.component"
 import { EdgeTypesSegmentComponent } from "../edgeTypesSegment/edgeTypesSegment.component"
 import { GraphViewToolsComponent } from "../graphViewTools/graphViewTools.component"
+import { LevelLabelSegmentComponent } from "../levelLabelSegment/levelLabelSegment.component"
 
 @Component({
     selector: "cc-dependency-bar",
@@ -14,7 +15,8 @@ import { GraphViewToolsComponent } from "../graphViewTools/graphViewTools.compon
         EdgeTypesSegmentComponent,
         EdgeStyleSegmentComponent,
         EdgeMetricSegmentComponent,
-        GraphViewToolsComponent
+        GraphViewToolsComponent,
+        LevelLabelSegmentComponent
     ],
     hostDirectives: [BarShellDirective],
     host: { "[style.bottom]": "barBottom" }

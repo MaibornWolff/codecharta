@@ -1,0 +1,17 @@
+<cc-axis-card
+    label="Level labels"
+    [metricName]="chosenLabel()"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    testId="dependency-bar-level-label-segment"
+></cc-axis-card>
+
+<cc-choice-list-popover
+    [popoverId]="popoverId"
+    [anchorName]="anchorName"
+    title="Levels labelled by"
+    idPrefix="dependency-bar-level-label"
+    [choices]="levelLabelChoices"
+    [chosen]="levelLabel()"
+    (choose)="labelLevelsBy($event)"
+></cc-choice-list-popover>

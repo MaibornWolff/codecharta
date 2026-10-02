@@ -8,6 +8,7 @@ import {
     isDraggable,
     layoutLevelized,
     movedLayout,
+    namedByOwnLevel,
     type Point,
     projectEdges,
     type RightClickedBox,
@@ -43,6 +44,7 @@ export class DependencyMapComponent {
     protected readonly fitRequest = this.viewStore.fitRequest
 
     private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
+    private readonly focusedFolderLevelPath = toSignal(this.readStore.focusedFolderLevelPath$, { requireSync: true })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
     private readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
@@ -52,7 +54,11 @@ export class DependencyMapComponent {
 
     private readonly layout = computed(() => {
         const tree = this.tree()
-        return tree ? layoutLevelized(tree, this.viewStore.expandedPaths()) : null
+        if (!tree) {
+            return null
+        }
+        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), this.focusedFolderLevelPath())
+        return this.settings().levelLabel === "path" ? layout : namedByOwnLevel(layout)
     })
     private readonly shownLayout = computed(() => {
         const layout = this.layout()

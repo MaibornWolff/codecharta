@@ -89,7 +89,7 @@ describe("routeEdges", () => {
         expect([oneWay.bend, there.bend, back.bend]).toEqual(["straight", "arc", "arc"])
     })
 
-    describe.each(["curved", "spread", "upwardAside", "straight"] as const)("anchored at the side's middle, drawn %s", style => {
+    describe.each(["curved", "upwardAside", "straight"] as const)("anchored at the side's middle, drawn %s", style => {
         it("should start and end every edge at the middle of its sides", () => {
             // Arrange
             const edges = [anEdge(upper.path, lowerLeft.path), anEdge(upper.path, lowerRight.path), anEdge(upper.path, sideBySide.path)]
@@ -124,6 +124,18 @@ describe("routeEdges", () => {
             // Assert
             expect([there.bend, back.bend]).toEqual(["arc", "arc"])
         })
+    })
+
+    it("should keep every edge on its own spot when drawn spread, which has no middle to gather them at", () => {
+        // Arrange
+        const edges = [anEdge(upper.path, lowerLeft.path), anEdge(upper.path, lowerRight.path)]
+
+        // Act
+        const anchored = routeEdges(edges, boxes, "spread", true)
+
+        // Assert
+        expect(anchored).toEqual(routeEdges(edges, boxes, "spread", false))
+        expect(anchored[0].start).not.toEqual(anchored[1].start)
     })
 
     describe.each(["curved", "spread", "straight"] as const)("a dependency running both ways, drawn %s", style => {

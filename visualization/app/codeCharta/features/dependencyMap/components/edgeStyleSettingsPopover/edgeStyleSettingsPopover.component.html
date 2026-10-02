@@ -1,0 +1,35 @@
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    widthClass="w-96 max-w-[95vw]"
+    ariaLabel="Edge style settings"
+    testId="dependency-bar-edge-style-settings-popover"
+>
+    <span class="text-sm font-semibold">Edge style settings</span>
+
+    <cc-choice-row
+        label="Line thickness"
+        idPrefix="dependency-bar-edge-thickness"
+        [choices]="edgeThicknessChoices"
+        [chosen]="edgeWidth().thickness"
+        (choose)="drawEdgesThick($event)"
+    ></cc-choice-row>
+
+    <div class="flex flex-col gap-1">
+        <span class="text-xs uppercase tracking-wider opacity-60">Width factor</span>
+        <cc-slider-number-input
+            ariaLabel="Line width factor"
+            [min]="widthFactorRange.min"
+            [max]="widthFactorRange.max"
+            [step]="widthFactorRange.step"
+            [value]="edgeWidth().factor"
+            (valueChange)="scaleEdgeWidth($event)"
+        ></cc-slider-number-input>
+    </div>
+
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        tooltip="Reset the edge style and line thickness to their defaults"
+        label="Reset edge style"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>

@@ -1,0 +1,36 @@
+<cc-settings-popover-shell
+    [popoverId]="popoverId()"
+    [anchorName]="anchorName()"
+    widthClass="w-80"
+    [ariaLabel]="title()"
+    [testId]="idPrefix() + '-popover'"
+>
+    <span class="text-sm font-semibold whitespace-nowrap">
+        {{ title() }} <span class="text-primary" [attr.data-testid]="idPrefix() + '-title'">{{ chosenLabel() }}</span>
+    </span>
+
+    <div class="flex flex-col gap-0.5" role="radiogroup" [attr.aria-label]="title()">
+        @for (choice of choices(); track choice.value) {
+            <label
+                class="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-left hover:bg-base-200 has-[:focus-visible]:outline-2"
+                [class.bg-base-200]="choice.value === chosen()"
+                [attr.data-testid]="idPrefix() + '-' + choice.value"
+            >
+                <input
+                    type="radio"
+                    class="sr-only"
+                    [name]="popoverId() + '-value'"
+                    [checked]="choice.value === chosen()"
+                    (click)="choose.emit(choice.value)"
+                />
+                <span class="flex min-w-0 flex-1 flex-col">
+                    <span class="text-sm font-medium">{{ choice.label }}</span>
+                    <span class="text-xs opacity-70">{{ choice.hint }}</span>
+                </span>
+                <i class="fa fa-check text-primary" [class.invisible]="choice.value !== chosen()" aria-hidden="true"></i>
+            </label>
+        }
+    </div>
+
+    <ng-content></ng-content>
+</cc-settings-popover-shell>

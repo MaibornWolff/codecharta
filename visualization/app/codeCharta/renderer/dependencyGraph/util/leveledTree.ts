@@ -50,6 +50,20 @@ export function boxPathOf(tree: LeveledNode, folderPath: string): string | null 
     return null
 }
 
+/** The levels to walk down from the tree's root to reach a folder's box, outermost first. */
+export function levelPathOf(tree: LeveledNode, folderPath: string): number[] | null {
+    if (tree.path === folderPath || tree.foldedPaths?.includes(folderPath)) {
+        return []
+    }
+    for (const child of tree.children) {
+        const levelPathBelowChild = levelPathOf(child, folderPath)
+        if (levelPathBelowChild !== null) {
+            return [child.level, ...levelPathBelowChild]
+        }
+    }
+    return null
+}
+
 /** Only the root is open, and the folders below it for as long as each holds nothing but one folder: a lone box
  * would show nothing. */
 export function collapsedFirstLook(tree: LeveledNode): Set<string> {

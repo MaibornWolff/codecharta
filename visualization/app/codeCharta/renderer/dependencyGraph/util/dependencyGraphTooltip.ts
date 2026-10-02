@@ -2,7 +2,7 @@ import { isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLen
 import { escapeHtml } from "../../../util/escapeHtml"
 import { EDGE_TYPE_LABELS } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
-import { LayoutBox } from "./levelizedLayout"
+import { describeLevelPath, LayoutBox } from "./levelizedLayout"
 import { GraphItem } from "./paintOrder"
 
 interface TooltipParams {
@@ -24,7 +24,10 @@ export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<st
 }
 
 function describeBox(box: LayoutBox): string {
-    const rows = [`<b>${escapeHtml(box.path)}</b>`, `Level ${box.level}`]
+    const rows = [`<b>${escapeHtml(box.path)}</b>`]
+    if (box.levelPath.length > 0) {
+        rows.push(`Level ${describeLevelPath(box.levelPath)}`)
+    }
     if (box.isFolder) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
     }

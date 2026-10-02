@@ -1988,7 +1988,8 @@ export const STATE: CcState = {
             shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
-            edgeWidth: { thickness: "byCount", factor: 1 }
+            edgeWidth: { thickness: "byCount", factor: 1 },
+            levelLabel: "number"
         },
         dependencyViewEnabled: false
     },
@@ -2066,7 +2067,8 @@ export const DEFAULT_STATE: CcState = {
             shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
-            edgeWidth: { thickness: "byCount", factor: 1 }
+            edgeWidth: { thickness: "byCount", factor: 1 },
+            levelLabel: "number"
         },
         dependencyViewEnabled: false
     },

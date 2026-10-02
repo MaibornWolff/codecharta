@@ -4,6 +4,7 @@ import {
     dependencyLayoutIdentitySelector,
     dependencySearchedPathsOrNullSelector,
     dependencyTreeSelector,
+    focusedFolderLevelPathSelector,
     isDependencyMapFocusedSelector
 } from "./dependencyMap.selectors"
 
@@ -53,6 +54,43 @@ describe("dependencyTreeSelector", () => {
 
         // Assert
         expect(tree).toBeNull()
+    })
+})
+
+describe("focusedFolderLevelPathSelector", () => {
+    const coreFolder: CodeMapNode = {
+        name: "core",
+        path: "/root/lib/core",
+        type: NodeType.FOLDER,
+        children: [{ name: "io.ts", path: "/root/lib/core/io.ts", type: NodeType.FILE }]
+    }
+    const libFolder: CodeMapNode = {
+        name: "lib",
+        path: "/root/lib",
+        type: NodeType.FOLDER,
+        children: [coreFolder, { name: "index.ts", path: "/root/lib/index.ts", type: NodeType.FILE }]
+    }
+    const wholeMap: CodeMapNode = { name: "root", path: "/root", type: NodeType.FOLDER, children: [appFolder, libFolder] }
+    const accumulatedData = { unifiedMapNode: wholeMap, unifiedFileMeta: undefined }
+    const nestedLevels = { ...levels, "/root/lib": 2, "/root/lib/core": 1, "/root/lib/core/io.ts": 0, "/root/lib/index.ts": 0 }
+
+    it("should list the levels leading from the root to the focused folder", () => {
+        // Act
+        const levelPath = focusedFolderLevelPathSelector.projector(accumulatedData, "/root/lib/core", nestedLevels)
+
+        // Assert
+        expect(levelPath).toEqual([2, 1])
+    })
+
+    it.each([
+        ["no folder is focused", ""],
+        ["the focused folder carries no dependency levels", "/root/docs"]
+    ])("should list no levels while %s", (_situation, focusedNodePath) => {
+        // Act
+        const levelPath = focusedFolderLevelPathSelector.projector(accumulatedData, focusedNodePath, nestedLevels)
+
+        // Assert
+        expect(levelPath).toEqual([])
     })
 })
 
