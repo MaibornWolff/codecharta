@@ -27,7 +27,8 @@ import {
     keepHighlight,
     removeKeptHighlight,
     setRightClickedNodeData,
-    unfocusAllNodes
+    unfocusAllNodes,
+    unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
@@ -56,6 +57,8 @@ describe("nodeContextMenu component", () => {
         attributes: {},
         children: [fileNode]
     } as CodeMapNode
+
+    const FOLDER_FOCUS_CAPABILITIES: NodeContextMenuCapabilities = { focusableNodes: "folders", showMapActions: false, showExclude: true }
 
     const explorerRevealServiceMock = { revealNode: jest.fn() }
 
@@ -213,7 +216,7 @@ describe("nodeContextMenu component", () => {
         const { container } = await renderMenu({
             node: folderNode,
             origin: "explorer",
-            capabilities: { showMapActions: false, showExclude: false },
+            capabilities: { focusableNodes: "none", showMapActions: false, showExclude: false },
             pathsWithDomainWords: new Set()
         })
 
@@ -229,7 +232,7 @@ describe("nodeContextMenu component", () => {
 
     it("should hand the node over to the jump target view and close", async () => {
         // Arrange
-        await renderMenu({ capabilities: { showMapActions: false, showExclude: false }, activeView: "domain" })
+        await renderMenu({ capabilities: { focusableNodes: "none", showMapActions: false, showExclude: false }, activeView: "domain" })
         const viewHandoffStore = TestBed.inject(ViewHandoffStore)
         const navigateByUrl = jest.spyOn(TestBed.inject(Router), "navigateByUrl").mockResolvedValue(true)
 
@@ -322,7 +325,7 @@ describe("nodeContextMenu component", () => {
         // Arrange
         const { container, dispatchSpy } = await renderMenu({
             node: folderNode,
-            capabilities: { showMapActions: false, showExclude: true }
+            capabilities: { focusableNodes: "none", showMapActions: false, showExclude: true }
         })
 
         // Act
@@ -335,6 +338,42 @@ describe("nodeContextMenu component", () => {
         expect(dispatchSpy).toHaveBeenCalledWith(
             addExcludedNodesIfNotResultsInEmptyMap({ items: [{ path: folderNode.path, nodeType: NodeType.FOLDER }] })
         )
+    })
+
+    it("should offer Focus above Exclude for a folder where the view focuses folders only", async () => {
+        // Arrange
+        const { dispatchSpy } = await renderMenu({ node: folderNode, origin: "dependencyMap", capabilities: FOLDER_FOCUS_CAPABILITIES })
+
+        // Act
+        fireEvent.click(screen.getByText("Focus"))
+
+        // Assert
+        expect(screen.queryByText("Keep Highlight")).toBe(null)
+        expect(dispatchSpy).toHaveBeenCalledWith(focusNode({ value: folderNode.path }))
+    })
+
+    it("should not offer Focus for a file where the view focuses folders only, and keep a single divider above Exclude", async () => {
+        // Arrange & Act
+        const { container } = await renderMenu({ origin: "dependencyMap", capabilities: FOLDER_FOCUS_CAPABILITIES })
+
+        // Assert
+        expect(screen.queryByText("Focus")).toBe(null)
+        expect(container.querySelectorAll(".border-t").length).toBe(1)
+    })
+
+    it("should offer to leave the focus of a parent folder where the view focuses folders only", async () => {
+        // Arrange
+        const { dispatchSpy } = await renderMenu({
+            origin: "dependencyMap",
+            capabilities: FOLDER_FOCUS_CAPABILITIES,
+            focusedNodePath: folderNode.path
+        })
+
+        // Act
+        fireEvent.click(screen.getByText("Unfocus Parent"))
+
+        // Assert
+        expect(dispatchSpy).toHaveBeenCalledWith(unfocusNode())
     })
 
     it("should show the color row for folders", async () => {

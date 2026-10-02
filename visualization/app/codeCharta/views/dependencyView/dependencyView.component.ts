@@ -80,7 +80,7 @@ import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelect
         },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
-            useValue: { showMapActions: false, showExclude: true } satisfies NodeContextMenuCapabilities
+            useValue: { focusableNodes: "folders", showMapActions: false, showExclude: true } satisfies NodeContextMenuCapabilities
         },
         provideViewScopedExplorerState("dependencies"),
         provideViewScopedCssVariables()
