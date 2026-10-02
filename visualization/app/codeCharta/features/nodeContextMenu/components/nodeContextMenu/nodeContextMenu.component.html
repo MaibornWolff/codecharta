@@ -26,30 +26,32 @@
             </cc-context-menu-item>
         }
 
-        @if (showMapActions) {
+        @if (hasViewActions()) {
             <div class="my-1 border-t border-base-300"></div>
+        }
 
-            @if (isFocusOffered()) {
-                <cc-context-menu-item
-                    icon="fa-solid fa-crosshairs"
-                    buttonId="focus-button"
-                    hoverHint="Only show the selected node and its children"
-                    (itemClick)="focusNode()"
-                >
-                    Focus
+        @if (isFocusOffered()) {
+            <cc-context-menu-item
+                icon="fa-solid fa-crosshairs"
+                buttonId="focus-button"
+                hoverHint="Only show the selected node and its children"
+                (itemClick)="focusNode()"
+            >
+                Focus
+            </cc-context-menu-item>
+        }
+        @if (isUnfocusOffered()) {
+            <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show previous focused node" (itemClick)="unfocusNode()">
+                {{ isParentFocused() ? "Unfocus Parent" : "Unfocus" }}
+            </cc-context-menu-item>
+            @if (hasPreviousFocusedNodePath()) {
+                <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show complete map" (itemClick)="unfocusAllNodes()">
+                    Unfocus All
                 </cc-context-menu-item>
             }
-            @if (isNodeFocused() || isParentFocused()) {
-                <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show previous focused node" (itemClick)="unfocusNode()">
-                    {{ isParentFocused() ? "Unfocus Parent" : "Unfocus" }}
-                </cc-context-menu-item>
-                @if (hasPreviousFocusedNodePath()) {
-                    <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show complete map" (itemClick)="unfocusAllNodes()">
-                        Unfocus All
-                    </cc-context-menu-item>
-                }
-            }
+        }
 
+        @if (showMapActions) {
             @if (!isHighlighted()) {
                 <cc-context-menu-item icon="fa-solid fa-thumbtack" hoverHint="Highlight node constantly" (itemClick)="keepHighlight()">
                     Keep Highlight

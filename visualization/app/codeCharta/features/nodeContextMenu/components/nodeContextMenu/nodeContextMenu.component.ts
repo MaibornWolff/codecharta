@@ -39,6 +39,7 @@ export class NodeContextMenuComponent {
     private readonly capabilities = inject(NODE_CONTEXT_MENU_CAPABILITIES)
     private readonly activeView = toSignal(inject(ActiveViewStore).activeView$, { requireSync: true })
 
+    private readonly focusableNodes = this.capabilities.focusableNodes
     readonly showMapActions = this.capabilities.showMapActions
     readonly showExclude = this.capabilities.showExclude
 
@@ -84,7 +85,12 @@ export class NodeContextMenuComponent {
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
     readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin !== "explorer")
     readonly isRadialLayout = injectIsRadialLayout()
-    readonly isFocusOffered = computed(() => !this.isNodeFocused() && (this.isFolder() || !this.isRadialLayout()))
+    private readonly canFocusFiles = computed(() => this.focusableNodes === "foldersAndFiles" && !this.isRadialLayout())
+    readonly isFocusOffered = computed(
+        () => this.focusableNodes !== "none" && !this.isNodeFocused() && (this.isFolder() || this.canFocusFiles())
+    )
+    readonly isUnfocusOffered = computed(() => this.focusableNodes !== "none" && (this.isNodeFocused() || this.isParentFocused()))
+    readonly hasViewActions = computed(() => this.showMapActions || this.isFocusOffered() || this.isUnfocusOffered())
     readonly displayPath = computed(() => {
         const node = this.menuNode()
         if (!node) {
