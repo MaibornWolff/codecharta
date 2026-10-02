@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { boxPathOf, buildLeveledTree, collapsedFirstLook, LeveledNode } from "./leveledTree"
+import { boxPathOf, buildLeveledTree, collapsedFirstLook, LeveledNode, levelPathOf } from "./leveledTree"
 
 function file(path: string): CodeMapNode {
     return { name: path.split("/").pop(), path, type: NodeType.FILE }
@@ -124,6 +124,21 @@ describe("leveledTree", () => {
 
             // Assert
             expect(boxPaths).toEqual(["/root/ui", "/root/lib/core", null])
+        })
+    })
+
+    describe("levelPathOf", () => {
+        it("should list the levels down to a folder's box, counting a folded chain once, and nothing for a folder the graph lacks", () => {
+            // Arrange
+            const core = { ...leveledFolder("/root/lib/core/io", [leveledFile("/root/lib/core/io/file.ts")]), level: 2 }
+            const chain = { ...leveledFolder("/root/lib/core", [core]), level: 1, foldedPaths: ["/root/lib"] }
+            const tree = leveledFolder("/root", [chain])
+
+            // Act
+            const levelPaths = ["/root", "/root/lib", "/root/lib/core/io", "/root/docs"].map(path => levelPathOf(tree, path))
+
+            // Assert
+            expect(levelPaths).toEqual([[], [1], [1, 2], null])
         })
     })
 

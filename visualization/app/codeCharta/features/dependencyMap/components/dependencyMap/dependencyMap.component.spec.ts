@@ -137,6 +137,14 @@ function drawnBoxPaths(): string[] {
         .filter(name => name !== undefined)
 }
 
+function drawnLevelLabels(): string[] {
+    const { data, renderItem } = drawnSeries()
+    return data
+        .flatMap((_item, dataIndex) => renderItem({ dataIndex }, { coord: point => point })?.children ?? [])
+        .map(child => String(child.style?.text ?? ""))
+        .filter(text => text.startsWith("level "))
+}
+
 function drawnEdgeIndices(): number[] {
     return drawnSeries().data.flatMap((item, index) => (item.isEdge ? [index] : []))
 }
@@ -438,6 +446,20 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(movedBoxCount()).toBeGreaterThan(0)
+    })
+
+    it("should label each level by its own number, and by the levels around it once the reader picks the path", async () => {
+        // Arrange
+        const { store, fixture } = await setup()
+        const numberLabels = drawnLevelLabels()
+
+        // Act
+        await changeSettings(store, { levelLabel: "path" })
+        fixture.detectChanges()
+
+        // Assert
+        expect(numberLabels).toEqual(["level 1", "level 0", "level 0", "level 0"])
+        expect(drawnLevelLabels()).toEqual(["level 1", "level 0", "level 1.0", "level 0.0"])
     })
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {

@@ -7,7 +7,8 @@ export const defaultDependencyGraphSettings: DependencyGraphSettings = {
     shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES],
     edgeStyle: "curved",
     isAnchoredAtSideMiddle: false,
-    edgeWidth: { thickness: "byCount", factor: 1 }
+    edgeWidth: { thickness: "byCount", factor: 1 },
+    levelLabel: "number"
 }
 
 export const dependencyGraph = createReducer(

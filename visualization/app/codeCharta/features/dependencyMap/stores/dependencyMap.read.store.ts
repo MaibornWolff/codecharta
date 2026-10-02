@@ -15,6 +15,7 @@ import {
     dependencyLayoutIdentitySelector,
     dependencySearchedPathsOrNullSelector,
     dependencyTreeSelector,
+    focusedFolderLevelPathSelector,
     isDependencyMapFocusedSelector
 } from "../selectors/dependencyMap.selectors"
 
@@ -23,6 +24,7 @@ export class DependencyMapReadStore {
     constructor(private readonly store: Store<CcState>) {}
 
     readonly tree$ = this.store.select(dependencyTreeSelector)
+    readonly focusedFolderLevelPath$ = this.store.select(focusedFolderLevelPathSelector)
     readonly layoutIdentity$ = this.store.select(dependencyLayoutIdentitySelector)
     readonly hasDependencyData$ = this.store.select(hasDependencyDataSelector)
     readonly isFocused$ = this.store.select(isDependencyMapFocusedSelector)

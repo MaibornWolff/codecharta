@@ -1,4 +1,4 @@
-import { DependencyEdgeStyle } from "../../../model/dependencyGraph.model"
+import { canAnchorAtSideMiddle, DependencyEdgeStyle } from "../../../model/dependencyGraph.model"
 import { addToGroup } from "./collections"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
@@ -55,7 +55,8 @@ export function routeEdges(
     isAnchoredAtSideMiddle = false
 ): EdgeRoute[] {
     const sides = edges.map(edge => sidesOf(byPath.get(edge.fromPath), byPath.get(edge.toPath), style))
-    const portOf = portsFor({ edges, sides, byPath }, style, isAnchoredAtSideMiddle)
+    const isAnchored = isAnchoredAtSideMiddle && canAnchorAtSideMiddle(style)
+    const portOf = portsFor({ edges, sides, byPath }, style, isAnchored)
     const edgeIds = new Set(edges.map(edge => edge.id))
     return edges.map((edge, index) => {
         const { startSide, endSide } = sides[index]
@@ -66,7 +67,7 @@ export function routeEdges(
             startSide,
             end: pointOn(byPath.get(edge.toPath), endSide, portOf(index, "end")),
             endSide,
-            bend: isAnchoredAtSideMiddle && runsBothWays && bend !== "aside" ? "arc" : bend
+            bend: isAnchored && runsBothWays && bend !== "aside" ? "arc" : bend
         }
     })
 }

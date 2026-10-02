@@ -8,12 +8,15 @@ export interface LayoutBox extends Rectangle {
     isFolder: boolean
     isExpanded: boolean
     level: number
+    /** The levels it is named by: those of the boxes around it, outermost first, then its own. */
+    levelPath: number[]
     depth: number
 }
 
 export interface LevelBand extends Rectangle {
     folderPath: string
     level: number
+    levelPath: number[]
     isTopmost: boolean
     /** The band spans them once the reader drags them around. */
     memberPaths: string[]
@@ -25,6 +28,15 @@ export interface DependencyGraphLayout {
     bands: LevelBand[]
     width: number
     height: number
+}
+
+export function namedByOwnLevel(layout: DependencyGraphLayout): DependencyGraphLayout {
+    const ownLevelOnly = <Item extends { levelPath: number[] }>(item: Item): Item => ({ ...item, levelPath: item.levelPath.slice(-1) })
+    return { ...layout, boxes: layout.boxes.map(ownLevelOnly), bands: layout.bands.map(ownLevelOnly) }
+}
+
+export function describeLevelPath(levelPath: number[]): string {
+    return levelPath.join(".")
 }
 
 export const LAYOUT_SPACING = {
@@ -62,11 +74,15 @@ interface FolderPlan extends Size {
     innerWidth: number
 }
 
-export function layoutLevelized(tree: LeveledNode, expandedPaths: ReadonlySet<string>): DependencyGraphLayout {
+export function layoutLevelized(
+    tree: LeveledNode,
+    expandedPaths: ReadonlySet<string>,
+    levelPathOfTree: number[] = []
+): DependencyGraphLayout {
     const measurer = new FolderMeasurer(expandedPaths)
     const rootSize = measurer.sizeOf(tree)
     const layout: DependencyGraphLayout = { boxes: [], bands: [], width: rootSize.width, height: rootSize.height }
-    new LayoutPlacer(measurer, layout).place(tree, 0, 0, 0)
+    new LayoutPlacer(measurer, layout, new Map([[tree.path, levelPathOfTree]])).place(tree, 0, 0, 0)
     return layout
 }
 
@@ -207,7 +223,8 @@ function gapAbove(row: Row, previous: Row): number {
 class LayoutPlacer {
     constructor(
         private readonly measurer: FolderMeasurer,
-        private readonly layout: DependencyGraphLayout
+        private readonly layout: DependencyGraphLayout,
+        private readonly levelPaths: Map<string, number[]>
     ) {}
 
     place(node: LeveledNode, x: number, y: number, depth: number) {
@@ -219,6 +236,7 @@ class LayoutPlacer {
             isFolder: node.isFolder,
             isExpanded,
             level: node.level,
+            levelPath: this.levelPaths.get(node.path),
             depth,
             x,
             y,
@@ -239,17 +257,24 @@ class LayoutPlacer {
                 rowTop += gapAbove(row, previous)
             }
             if (previous?.level !== row.level) {
-                band = { folderPath: folder.path, level: row.level, isTopmost: !previous, memberPaths: [], x, y: rowTop, width, height: 0 }
+                band = this.startBand(folder, row.level, { x, y: rowTop, width, height: 0 })
+                band.isTopmost = !previous
                 this.layout.bands.push(band)
             }
             band.height = rowTop + row.height - band.y
             let nodeLeft = x + LAYOUT_SPACING.padding + (innerWidth - row.width) / 2
             for (const child of row.nodes) {
                 band.memberPaths.push(child.path)
+                this.levelPaths.set(child.path, band.levelPath)
                 this.place(child, nodeLeft, rowTop, childDepth)
                 nodeLeft += this.measurer.sizeOf(child).width + LAYOUT_SPACING.gapBetweenNodes
             }
             rowTop += row.height
         })
+    }
+
+    private startBand(folder: LeveledNode, level: number, rectangle: Rectangle): LevelBand {
+        const levelPath = [...this.levelPaths.get(folder.path), level]
+        return { folderPath: folder.path, level, levelPath, isTopmost: false, memberPaths: [], ...rectangle }
     }
 }

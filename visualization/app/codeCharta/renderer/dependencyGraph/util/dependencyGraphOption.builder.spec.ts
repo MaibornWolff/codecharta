@@ -15,7 +15,7 @@ interface BuiltSeries {
     renderItem: (params: { dataIndex: number }, api: { coord: typeof identityPixels }) => DrawnElement
 }
 
-const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, width: 400, height: 200 })
+const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, levelPath: [], width: 400, height: 200 })
 const view = aBox("/root/view.ts", { x: 16, y: 44 })
 const model = aBox("/root/model.ts", { x: 16, y: 120 })
 const util = aBox("/root/util.ts", { x: 200, y: 120 })
@@ -145,7 +145,7 @@ describe("buildDependencyGraphOption", () => {
         const { describe, edgeIndices, indexOf } = drawnGraph(scene)
 
         // Assert
-        expect(describe(0)).toBe("<b>/root</b><br/>Level 0<br/><i>Double-click to close</i>")
+        expect(describe(0)).toBe("<b>/root</b><br/><i>Double-click to close</i>")
         expect(describe(1)).toBe("")
         expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0")
         expect(describe(edgeIndices[1])).toBe("<b>util.ts → view.ts</b><br/>1 dependency · Points upward")
