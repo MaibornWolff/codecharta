@@ -12,6 +12,8 @@ const wordsInFocusSelector = createSelector(domainWordIndexSelector, currentFocu
     index.wordsOf(focusedNodePath ?? fileRoot.rootPath)
 )
 
+const isFolderFocusedSelector = createSelector(currentFocusedNodePathSelector, focusedNodePath => focusedNodePath !== undefined)
+
 const visibleWordsInFocusSelector = createSelector(wordsInFocusSelector, domainStateHiddenWordsSelector, withoutHiddenWords)
 
 @Injectable({ providedIn: "root" })
@@ -20,6 +22,8 @@ export class DomainWordOccurrencesReadStore {
 
     /** The words of the focused folder, or of the whole project while nothing is focused. */
     readonly wordsInFocus$: Observable<DomainWord[]> = this.store.select(visibleWordsInFocusSelector)
+
+    readonly isFolderFocused$: Observable<boolean> = this.store.select(isFolderFocusedSelector)
 
     occurrencesInFocusOf(word: string): Observable<WordOccurrenceNode | null> {
         return this.store

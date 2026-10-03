@@ -32,6 +32,7 @@ export class DomainWordListComponent implements OnDestroy {
     readonly nodeClicked = output<string>()
 
     private readonly wordsInFocus = toSignal(this.readStore.wordsInFocus$, { requireSync: true })
+    private readonly isFolderFocused = toSignal(this.readStore.isFolderFocused$, { requireSync: true })
 
     /** The opened word is lifted out of the rows into the pin above them, so it is never listed twice. */
     protected readonly pinnedWord = computed(() => this.wordsInFocus().find(word => word.text === this.expandedWord()) ?? null)
@@ -48,7 +49,7 @@ export class DomainWordListComponent implements OnDestroy {
     /** The hint answers for the search, so a search whose only match is pinned has nothing to explain. */
     protected readonly emptyHint = computed(() => {
         if (this.wordsInFocus().length === 0) {
-            return "This project carries no words."
+            return this.isFolderFocused() ? "The focused folder carries no words." : "This project carries no words."
         }
         return this.matchedWords().length === 0 ? `No word contains "${this.query().trim()}".` : null
     })

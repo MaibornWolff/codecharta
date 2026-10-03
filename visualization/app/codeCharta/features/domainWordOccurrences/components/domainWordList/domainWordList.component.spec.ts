@@ -38,7 +38,8 @@ describe("DomainWordListComponent", () => {
 
     async function setup(
         inputs: { query?: string; expandedWord?: string | null; sorting?: WordSorting } = {},
-        words: DomainLensData = WORDS
+        words: DomainLensData = WORDS,
+        focusedNodePath: string[] = []
     ) {
         jest.clearAllMocks()
         TestBed.overrideComponent(DomainWordListComponent, { set: { imports: [DomainWordRowComponent, StubOccurrenceTreeComponent] } })
@@ -46,7 +47,9 @@ describe("DomainWordListComponent", () => {
             inputs: { query: "", expandedWord: null, ...inputs },
             on: { wordToggled, nodeClicked },
             providers: [
-                provideMockStore({ initialState: { ...STATE, domainLensSource: { words }, sharedView: NOTHING_FOCUSED } as CcState }),
+                provideMockStore({
+                    initialState: { ...STATE, domainLensSource: { words }, sharedView: { ...NOTHING_FOCUSED, focusedNodePath } } as CcState
+                }),
                 ExplorerScrollHostService
             ]
         })
@@ -99,7 +102,15 @@ describe("DomainWordListComponent", () => {
         await setup({}, {})
 
         // Assert
-        expect(screen.getByTestId("domain-word-list-empty").textContent).toContain("carries no words")
+        expect(screen.getByTestId("domain-word-list-empty").textContent).toContain("This project carries no words")
+    })
+
+    it("should explain that the focused folder carries no words, rather than blaming the whole project", async () => {
+        // Arrange & Act
+        await setup({}, WORDS, ["/root/wordless"])
+
+        // Assert
+        expect(screen.getByTestId("domain-word-list-empty").textContent).toContain("The focused folder carries no words")
     })
 
     it("should report a clicked word, so the view can expand it", async () => {
