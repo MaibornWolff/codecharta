@@ -58,6 +58,18 @@ describe("treeMapGenerator", () => {
             expect(layOutFrozenMap).not.toThrow()
         })
 
+        it("should lay out a fixed folder at full map size when it is the layout root", () => {
+            // Arrange
+            const fixedFolder: CodeMapNode = { ...map, fixedPosition: { left: 10, top: 10, width: 20, height: 20 } }
+
+            // Act
+            const nodesOfFixedFolder = SquarifiedLayoutGenerator.createTreemapNodes(fixedFolder, state, metricData, isDeltaState)
+
+            // Assert
+            const nodesOfFreeFolder = SquarifiedLayoutGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+            expect(footprintsOf(nodesOfFixedFolder)).toEqual(footprintsOf(nodesOfFreeFolder))
+        })
+
         it("create map with fixed root children which include dynamic folders on the one hand and fixed ones at the other", () => {
             map = klona(FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE.map)
 

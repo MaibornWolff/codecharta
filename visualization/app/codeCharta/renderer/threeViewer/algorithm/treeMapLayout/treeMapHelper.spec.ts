@@ -180,9 +180,37 @@ describe("TreeMapHelper", () => {
             expect(buildNode().markingColor).toEqual(undefined)
         })
 
-        it("should be visible if it's a children of the focused node path", () => {
-            state.sharedView.focusedNodePath = ["/root"]
-            expect(buildNode().visible).toBeTruthy()
+        it("should count the depth from the map root when nothing is focused", () => {
+            // Arrange
+            state.sharedView.focusedNodePath = []
+
+            // Act
+            const node = buildNode()
+
+            // Assert
+            expect(node.depth).toBe(1)
+        })
+
+        it("should count the depth from the focused node", () => {
+            // Arrange
+            state.sharedView.focusedNodePath = ["/root/Anode"]
+
+            // Act
+            const node = buildNode()
+
+            // Assert
+            expect(node.depth).toBe(0)
+        })
+
+        it("should be visible when another node is focused, because the layout holds the focused folder alone", () => {
+            // Arrange
+            state.sharedView.focusedNodePath = ["/root/AnotherNode"]
+
+            // Act
+            const node = buildNode()
+
+            // Assert
+            expect(node.visible).toBe(true)
         })
 
         it("should not be visible if it's excluded", () => {
