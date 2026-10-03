@@ -12,6 +12,7 @@ export { edgeMetricDataSelector } from "./edgeMetricData/edgeMetricData.selector
 export { sortedNodeEdgeMetricsMapSelector } from "./edgeMetricData/sortedNodeEdgeMetricsMap.selector"
 export { type FlattenPredicate, flattenPredicateSelector } from "./flatness/flattenPredicate.selector"
 export { mapFlattenPredicateSelector } from "./flatness/mapFlattenPredicate.selector"
+export { focusedNodeSelector } from "./focusedNode.selector"
 export { hoveredNodeSelector } from "./hoveredNode.selector"
 export { labelsPerMapActiveSelector } from "./labelsPerMapActive.selector"
 export { createNodeByPathSelector } from "./nodeByPath.selector"

@@ -19,6 +19,7 @@ import {
 } from "../../mocks/dataMocks"
 import { CcState, CodeMapNode, LabelMode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { metricDataSelector } from "../../renderer/renderModel/accumulatedData/metricData/metricData.selector"
+import { focusedNodeSelector } from "../../renderer/renderModel/focusedNode.selector"
 import { nodeMetricDataSelector } from "../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"
 import { ColorCategoryCountsStore } from "../../renderer/threeViewer/stores/colorCategoryCounts.store"
 import { ThreeSceneService } from "../../renderer/threeViewer/threeSceneService"
@@ -59,6 +60,9 @@ jest.mock("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector", (
     ...jest.requireActual("../../renderer/renderModel/nodeMetricData/nodeMetricData.selector"),
     nodeMetricDataSelector: jest.fn()
 }))
+
+const mockedFocusedNodeSelector = focusedNodeSelector as unknown as jest.Mock
+jest.mock("../../renderer/renderModel/focusedNode.selector", () => ({ focusedNodeSelector: jest.fn() }))
 
 describe("codeMapRenderService", () => {
     let store: Store<CcState>
@@ -115,6 +119,7 @@ describe("codeMapRenderService", () => {
             edgeMetricData: []
         }))
         mockedNodeMetricDataSelector.mockImplementation(() => METRIC_DATA)
+        mockedFocusedNodeSelector.mockReturnValue(undefined)
     }
 
     function rebuildService() {
@@ -352,6 +357,26 @@ describe("codeMapRenderService", () => {
             const sortedNodes: Node[] = codeMapRenderService["getNodes"](map)
 
             expect(sortedNodes).toMatchSnapshot()
+        })
+
+        it.each([
+            LayoutAlgorithm.SquarifiedTreeMap,
+            LayoutAlgorithm.StreetMap,
+            LayoutAlgorithm.TreeMapStreet
+        ])("should lay out the focused folder as the root of the %s", layoutAlgorithm => {
+            // Arrange
+            const focusedFolder = map.children.find(child => child.path === "/root/Parent Leaf")
+            mockedFocusedNodeSelector.mockReturnValue(focusedFolder)
+            store.dispatch(setState({ value: { ...STATE, mapState: { ...STATE.mapState, layoutAlgorithm } } }))
+
+            // Act
+            const nodes: Node[] = codeMapRenderService["getNodes"](map)
+
+            // Assert
+            const layoutRoot = nodes.find(node => node.path === focusedFolder.path)
+            expect(layoutRoot.depth).toBe(0)
+            expect(layoutRoot.z0).toBe(0)
+            expect(nodes.every(node => node.path.startsWith(focusedFolder.path))).toBe(true)
         })
 
         it("should return no nodes for a layout the 3D map does not build", () => {

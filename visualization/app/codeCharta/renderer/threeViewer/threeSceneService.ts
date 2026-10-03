@@ -103,7 +103,7 @@ export class ThreeSceneService implements OnDestroy {
             return
         }
 
-        if (!this.getRootNode(nodes)) {
+        if (nodes.length === 0) {
             return
         }
         const scaling = this.threeSceneStore.getMapState().scaling
@@ -118,10 +118,6 @@ export class ThreeSceneService implements OnDestroy {
             this.floorLabelPlanes.add(...floorLabels)
             this.scene.add(this.floorLabelPlanes)
         }
-    }
-
-    private getRootNode(nodes: Node[]) {
-        return nodes.find(node => node.id === 0)
     }
 
     getConstantHighlight() {

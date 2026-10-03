@@ -418,20 +418,13 @@ describe("ThreeSceneService", () => {
 
         it("should not add floor labels for StreetMap and TreeMapStreet algorithms", () => {
             threeSceneService["notifyMapMeshChanged"] = jest.fn()
-            const getRootNodeMock = jest.fn()
-            const originalGetRootNode = threeSceneService["getRootNode"]
-            threeSceneService["getRootNode"] = getRootNodeMock
-
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.StreetMap }))
             threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.TreeMapStreet }))
             threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
-            expect(getRootNodeMock).not.toHaveBeenCalled()
             expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
-
-            threeSceneService["getRootNode"] = originalGetRootNode
 
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.SquarifiedTreeMap }))
             threeSceneService.setMapMesh(TEST_NODES, new CodeMapMesh(TEST_NODES, state.getValue(), false))
@@ -439,14 +432,31 @@ describe("ThreeSceneService", () => {
             expect(floorLabelDrawerSpy).toHaveBeenCalled()
         })
 
-        it("should not add floor labels if no root node was found", () => {
+        it("should not add floor labels if the map has no nodes", () => {
+            // Arrange
             threeSceneService["notifyMapMeshChanged"] = jest.fn()
             const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
-
             store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.SquarifiedTreeMap }))
-            threeSceneService.setMapMesh([TEST_NODE_LEAF], new CodeMapMesh(TEST_NODES, state.getValue(), false))
 
+            // Act
+            threeSceneService.setMapMesh([], new CodeMapMesh(TEST_NODES, state.getValue(), false))
+
+            // Assert
             expect(floorLabelDrawerSpy).not.toHaveBeenCalled()
+        })
+
+        it("should add floor labels when the layout root is a focused folder rather than the map root", () => {
+            // Arrange
+            threeSceneService["notifyMapMeshChanged"] = jest.fn()
+            const floorLabelDrawerSpy = jest.spyOn(FloorLabelDrawer.prototype, "draw").mockReturnValue([])
+            store.dispatch(setLayoutAlgorithm({ value: LayoutAlgorithm.SquarifiedTreeMap }))
+            const focusedFolder = { ...TEST_NODE_ROOT, id: 42 }
+
+            // Act
+            threeSceneService.setMapMesh([focusedFolder], new CodeMapMesh([focusedFolder], state.getValue(), false))
+
+            // Assert
+            expect(floorLabelDrawerSpy).toHaveBeenCalled()
         })
 
         it("should not add floor labels if floor labels are disabled", () => {

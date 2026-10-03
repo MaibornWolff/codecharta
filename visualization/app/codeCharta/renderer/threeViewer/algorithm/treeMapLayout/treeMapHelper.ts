@@ -7,6 +7,7 @@ import { getColorByMetricValue } from "../../../../util/color/gradientCalculator
 import { MetricMinMax } from "../../../../util/metric/metricRange"
 import {
     flattenPredicateSelector,
+    focusedNodeSelector,
     searchedNodePathsSelector,
     selectedColorMetricDataSelector
 } from "../../../renderModel/renderModel.facade"
@@ -16,6 +17,7 @@ export const treeMapSize = 250
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
 const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
+const PATH_SEGMENTS_OF_MAP_ROOT = 2
 
 function countNodes(node: { children?: CodeMapNode[] }) {
     let count = 1
@@ -46,7 +48,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 
     return {
         name: map.name,
-        id: 0,
+        id: map.id ?? 0,
         width,
         height,
         length,
@@ -81,7 +83,7 @@ function buildNodeFrom(
     const { x0, x1, y0, y1, data } = squaredNode
     const isNodeLeaf = isLeaf(squaredNode)
     const flattened = isNodeFlat(data, state)
-    const depth = data.path.split("/").length - 2
+    const depth = getDepthBelowLayoutRoot(data.path, state)
     const leafHeight = flattened
         ? MIN_BUILDING_HEIGHT
         : resolveHeightValue(getHeightValue(state, data, maxHeight), heightScale, data, state)
@@ -119,6 +121,16 @@ function buildNodeFrom(
     }
 }
 
+function getDepthBelowLayoutRoot(path: string, state: CcState) {
+    const layoutRootPath = focusedNodeSelector(state)?.path
+    const pathSegmentsOfLayoutRoot = layoutRootPath ? countPathSegments(layoutRootPath) : PATH_SEGMENTS_OF_MAP_ROOT
+    return countPathSegments(path) - pathSegmentsOfLayoutRoot
+}
+
+function countPathSegments(path: string) {
+    return path.split("/").length
+}
+
 function getHeightValue(state: CcState, squaredNode: CodeMapNode, maxHeight: number) {
     const mapSizeResolutionScaling = getMapResolutionScaleFactor(state.files)
 
@@ -147,15 +159,7 @@ function resolveHeightValue(heightValue: number, heightScale: number, data: Code
 }
 
 export function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: CcState, flattened: boolean) {
-    if (squaredNode.isExcluded || (isNodeLeaf && state.mapState.hideFlatBuildings && flattened)) {
-        return false
-    }
-
-    if (state.sharedView.focusedNodePath.length > 0) {
-        return squaredNode.path.startsWith(state.sharedView.focusedNodePath[0])
-    }
-
-    return true
+    return !squaredNode.isExcluded && !(isNodeLeaf && state.mapState.hideFlatBuildings && flattened)
 }
 
 export function getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {

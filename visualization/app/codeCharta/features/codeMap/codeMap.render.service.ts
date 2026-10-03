@@ -3,7 +3,7 @@ import { Subscription, tap } from "rxjs"
 import { LabelSettingsFacade } from "../../features/labelSettings/facade"
 import { CcState, CodeMapNode, ColorLabelOptions, colorLabelTypes, LabelMode, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
-import { labelsPerMapActiveSelector, nodeMetricDataSelector } from "../../renderer/renderModel/renderModel.facade"
+import { focusedNodeSelector, labelsPerMapActiveSelector, nodeMetricDataSelector } from "../../renderer/renderModel/renderModel.facade"
 import {
     CodeMapMesh,
     ColorCategoryCountsStore,
@@ -129,12 +129,19 @@ export class CodeMapRenderService implements OnDestroy, RendererEngine {
             files
         } = state
         const deltaState = isDeltaState(files)
+        const layoutRoot = focusedNodeSelector(state) ?? map
         switch (layoutAlgorithm) {
             case LayoutAlgorithm.StreetMap:
             case LayoutAlgorithm.TreeMapStreet:
-                return StreetLayoutGenerator.createStreetLayoutNodes(map, state, nodeMetricData, excludeMatcherSelector(state), deltaState)
+                return StreetLayoutGenerator.createStreetLayoutNodes(
+                    layoutRoot,
+                    state,
+                    nodeMetricData,
+                    excludeMatcherSelector(state),
+                    deltaState
+                )
             case LayoutAlgorithm.SquarifiedTreeMap:
-                return createTreemapNodes(map, state, nodeMetricData, deltaState)
+                return createTreemapNodes(layoutRoot, state, nodeMetricData, deltaState)
             default:
                 return []
         }
