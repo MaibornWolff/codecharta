@@ -7,8 +7,10 @@ export interface ScreenshotCapture {
 
     readonly isCaptureAvailable: Signal<boolean>
 
+    /** Rejects when no screenshot was saved, so the caller can tell the user. */
     makeScreenshotToFile(): Promise<void>
 
+    /** Rejects when no screenshot reached the clipboard, so the caller can tell the user. */
     makeScreenshotToClipboard(): Promise<void>
 }
 

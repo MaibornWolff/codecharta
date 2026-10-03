@@ -24,9 +24,6 @@ export abstract class ChartScreenshotService implements ScreenshotCapture {
 
     async makeScreenshotToFile(): Promise<void> {
         const canvas = this.renderScreenshotCanvas()
-        if (!canvas) {
-            return
-        }
         downloadPng(canvas.toDataURL(PNG_MIME_TYPE), createPNGFileName(this.filesRepo.getFiles(), this.fileNameSuffix))
     }
 
@@ -35,21 +32,21 @@ export abstract class ChartScreenshotService implements ScreenshotCapture {
             return
         }
         const canvas = this.renderScreenshotCanvas()
-        if (!canvas) {
-            return
-        }
         const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, PNG_MIME_TYPE))
         if (!blob) {
-            return
+            throw new Error(`The ${this.subject} could not be encoded as a png`)
         }
         await setToClipboard(blob)
     }
 
-    private renderScreenshotCanvas(): HTMLCanvasElement | null {
+    private renderScreenshotCanvas(): HTMLCanvasElement {
         const canvas = this.chartRegistry.current()?.getRenderedCanvas({
             pixelRatio: window.devicePixelRatio || 1,
             backgroundColor: "transparent"
         })
-        return canvas ? cropTransparentMargins(canvas) : null
+        if (!canvas) {
+            throw new Error(`There is no ${this.subject} to capture`)
+        }
+        return cropTransparentMargins(canvas)
     }
 }
