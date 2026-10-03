@@ -29,7 +29,7 @@ import {
 } from "../../../stores/mapState/mapState.write.facade"
 import { CcStateSnapshot } from "../../../stores/rootStore/ccState.snapshot"
 import { setState } from "../../../stores/rootStore/state.actions"
-import { unfocusAllNodes } from "../../../stores/sharedView/sharedView.write.facade"
+import { unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 import { calculateInitialColorRange } from "../../../util/color/calculateInitialColorRange"
 import { fileRoot } from "../../../util/fileRoot"
 import { getNumberOfTopLabels } from "../../../util/getNumberOfTopLabels"
@@ -185,7 +185,7 @@ export class ReconcileAfterLoadEffect {
         }
 
         if (trigger.kind === "fileSet") {
-            this.store.dispatch(unfocusAllNodes())
+            this.store.dispatch(unfocusNode())
             this.updateVisibleTopLabels()
             this.applyRestoredSettings(trigger.provenance?.restoredSettings ?? null)
         }

@@ -30,6 +30,8 @@ function listedWords(): string[] {
     return [...document.querySelectorAll("cc-domain-word-row .node-name")].map(name => name.textContent?.trim() ?? "")
 }
 
+const NOTHING_FOCUSED = { ...STATE.sharedView, focusedNodePath: [] }
+
 describe("DomainWordListComponent", () => {
     const wordToggled = jest.fn()
     const nodeClicked = jest.fn()
@@ -43,7 +45,10 @@ describe("DomainWordListComponent", () => {
         return render(DomainWordListComponent, {
             inputs: { query: "", expandedWord: null, ...inputs },
             on: { wordToggled, nodeClicked },
-            providers: [provideMockStore({ initialState: { ...STATE, domainLensSource: { words } } as CcState }), ExplorerScrollHostService]
+            providers: [
+                provideMockStore({ initialState: { ...STATE, domainLensSource: { words }, sharedView: NOTHING_FOCUSED } as CcState }),
+                ExplorerScrollHostService
+            ]
         })
     }
 

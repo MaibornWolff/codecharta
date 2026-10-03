@@ -2,10 +2,11 @@ import { Component, DebugElement, input, output, signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { provideRouter } from "@angular/router"
-import { provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render } from "@testing-library/angular"
 import { firstValueFrom, of } from "rxjs"
 import { DomainBarReadStore } from "../../features/domainBar/facade"
+import { WordCloudViewStore } from "../../features/domainToolbox/facade"
 import {
     DomainWordOccurrencesReadStore,
     HiddenWordsWriteStore,
@@ -31,6 +32,8 @@ import { defaultWordCloudSettings, WordCloudSettings } from "../../model/wordClo
 import { accumulatedDataSelector } from "../../renderer/renderModel/renderModel.facade"
 import { RightClickedWord } from "../../renderer/wordCloud/wordCloud.facade"
 import { defaultState } from "../../stores/rootStore/state.manager"
+import { currentFocusedNodePathSelector } from "../../stores/sharedView/sharedView.read.facade"
+import { unfocusNode } from "../../stores/sharedView/sharedView.write.facade"
 import { CopyToClipboardService } from "../../util/copyToClipboard.service"
 import { DomainViewComponent } from "./domainView.component"
 import { DOMAIN_EXPLORER_MODES, WORDS_EXPLORER_MODE } from "./explorer/domainExplorerModes"
@@ -45,6 +48,7 @@ class StubWordCloudComponent {
     readonly selectedNodePath = input<string | null>(null)
     readonly customShapeMask = input<string | null>(null)
     readonly markedWords = input<readonly string[]>([])
+    readonly fitRequest = input(0)
     readonly clearSelection = output<void>()
     readonly backgroundClicked = output<void>()
     readonly wordRightClicked = output<RightClickedWord>()
@@ -153,7 +157,7 @@ describe("DomainViewComponent", () => {
                     ]
                 }),
                 { provide: DomainBarReadStore, useValue: { settings: signal(settings) } },
-                { provide: DomainWordOccurrencesReadStore, useValue: { projectWords$: of(PROJECT_WORDS) } }
+                { provide: DomainWordOccurrencesReadStore, useValue: { wordsInFocus$: of(PROJECT_WORDS) } }
             ]
         })
     }
@@ -171,7 +175,11 @@ describe("DomainViewComponent", () => {
             canFlatten: false,
             modes: DOMAIN_EXPLORER_MODES
         })
-        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({ focusableNodes: "none", showMapActions: false, showExclude: false })
+        expect(injector.get(NODE_CONTEXT_MENU_CAPABILITIES)).toEqual({
+            focusableNodes: "folders",
+            showMapActions: false,
+            showExclude: false
+        })
         expect(injector.get(EXPLORER_ROW).project(SOME_NODE).isSelectable).toBe(true)
     })
 
@@ -449,6 +457,61 @@ describe("DomainViewComponent", () => {
 
         // Assert
         expect(wordCloud(fixture).selectedNodePath()).toBeNull()
+    })
+
+    it("should let go of the focus as well when the cloud asks to show the whole map", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        const store = TestBed.inject(MockStore)
+        const dispatch = jest.spyOn(store, "dispatch")
+
+        // Act
+        wordCloud(fixture).clearSelection.emit()
+        detectChanges()
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(unfocusNode())
+    })
+
+    it("should show the focused folder's words while no node is selected", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        const store = TestBed.inject(MockStore)
+
+        // Act
+        store.overrideSelector(currentFocusedNodePathSelector, "/root/billing")
+        store.refreshState()
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).selectedNodePath()).toBe("/root/billing")
+    })
+
+    it("should show the selected node rather than the focus it lies in", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+        const store = TestBed.inject(MockStore)
+        store.overrideSelector(currentFocusedNodePathSelector, "/root/billing")
+        store.refreshState()
+
+        // Act
+        fixture.debugElement.injector.get(DomainSelectionStore).select("/root/billing/invoice.ts")
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).selectedNodePath()).toBe("/root/billing/invoice.ts")
+    })
+
+    it("should pass a request for the whole cloud on to the cloud", async () => {
+        // Arrange
+        const { fixture, detectChanges } = await setup()
+
+        // Act
+        TestBed.inject(WordCloudViewStore).requestFit()
+        detectChanges()
+
+        // Assert
+        expect(wordCloud(fixture).fitRequest()).toBe(1)
     })
 
     it("should copy the selected node's path", async () => {

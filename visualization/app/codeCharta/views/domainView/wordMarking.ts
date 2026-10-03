@@ -7,8 +7,8 @@ import { DomainWord } from "../../model/codeCharta.model"
  * a mark from a query nobody can see reads as a bug. An empty query matches every word, so it marks
  * nothing on its own.
  */
-export function wordsToMark(inspectedWord: string | null, projectWords: DomainWord[], wordQuery: string, browsesWords: boolean): string[] {
-    const searchedWords = browsesWords && wordQuery.trim().length > 0 ? matchingWords(projectWords, wordQuery).map(({ text }) => text) : []
+export function wordsToMark(inspectedWord: string | null, wordsInFocus: DomainWord[], wordQuery: string, browsesWords: boolean): string[] {
+    const searchedWords = browsesWords && wordQuery.trim().length > 0 ? matchingWords(wordsInFocus, wordQuery).map(({ text }) => text) : []
     if (inspectedWord === null || searchedWords.includes(inspectedWord)) {
         return searchedWords
     }

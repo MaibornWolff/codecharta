@@ -1,8 +1,9 @@
 import { TestBed } from "@angular/core/testing"
-import { provideMockStore } from "@ngrx/store/testing"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
 import { viewIndependentTreeSelector } from "../../../lenses/structure/structure.facade"
 import { CodeMapNode, NodeType, SortingOption } from "../../../model/codeCharta.model"
+import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { DomainExplorerTree } from "./domainExplorerTree"
 
 const TREE = {
@@ -12,7 +13,13 @@ const TREE = {
     attributes: { unary: 3 },
     children: [
         { name: "z", path: "/root/z", type: NodeType.FOLDER, attributes: { unary: 2 }, children: [] },
-        { name: "a", path: "/root/a", type: NodeType.FOLDER, attributes: { unary: 1 }, children: [] }
+        {
+            name: "a",
+            path: "/root/a",
+            type: NodeType.FOLDER,
+            attributes: { unary: 1 },
+            children: [{ name: "deep", path: "/root/a/deep", type: NodeType.FOLDER, attributes: { unary: 1 }, children: [] }]
+        }
     ]
 } as CodeMapNode
 
@@ -21,7 +28,15 @@ describe("DomainExplorerTree", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [DomainExplorerTree, provideMockStore({ selectors: [{ selector: viewIndependentTreeSelector, value: TREE }] })]
+            providers: [
+                DomainExplorerTree,
+                provideMockStore({
+                    selectors: [
+                        { selector: viewIndependentTreeSelector, value: TREE },
+                        { selector: currentFocusedNodePathSelector, value: undefined }
+                    ]
+                })
+            ]
         })
         tree = TestBed.inject(DomainExplorerTree)
     })
@@ -48,5 +63,29 @@ describe("DomainExplorerTree", () => {
 
         // Assert
         expect(TREE.children.map(child => child.name)).toEqual(["z", "a"])
+    })
+
+    it("should list the focused folder alone, so nothing the cloud leaves out can be picked", async () => {
+        // Arrange
+        TestBed.inject(MockStore).overrideSelector(currentFocusedNodePathSelector, "/root/a/deep")
+        TestBed.inject(MockStore).refreshState()
+
+        // Act
+        const rootNode = await firstValueFrom(tree.rootNodeFor(SortingOption.NAME, true))
+
+        // Assert
+        expect(rootNode.path).toBe("/root/a/deep")
+    })
+
+    it("should list the whole tree when the focused folder is not part of it", async () => {
+        // Arrange
+        TestBed.inject(MockStore).overrideSelector(currentFocusedNodePathSelector, "/root/gone")
+        TestBed.inject(MockStore).refreshState()
+
+        // Act
+        const rootNode = await firstValueFrom(tree.rootNodeFor(SortingOption.NAME, true))
+
+        // Assert
+        expect(rootNode.path).toBe("/root")
     })
 })

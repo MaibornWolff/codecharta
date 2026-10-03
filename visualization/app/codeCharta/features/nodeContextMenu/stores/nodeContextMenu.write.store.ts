@@ -14,7 +14,6 @@ import {
     removeFlattenedNodes,
     removeKeptHighlight,
     setRightClickedNodeData,
-    unfocusAllNodes,
     unfocusNode,
     unmarkPackage
 } from "../../../stores/sharedView/sharedView.write.facade"
@@ -42,10 +41,6 @@ export class NodeContextMenuWriteStore {
 
     unfocus() {
         this.store.dispatch(unfocusNode())
-    }
-
-    unfocusAll() {
-        this.store.dispatch(unfocusAllNodes())
     }
 
     flattenNode(node: RuleableNode) {

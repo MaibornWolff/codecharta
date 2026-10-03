@@ -8,6 +8,7 @@ import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { WordCloudReadStore } from "../../stores/wordCloud.read.store"
 import { WORD_CLOUD_M_MASK_DATA_URI } from "../../util/wordCloudMask"
 import { WordCloudComponent } from "./wordCloud.component"
+import { WordCloudChartHost } from "./wordCloudChartHost"
 
 let finishedCallback: (() => void) | undefined
 
@@ -116,6 +117,30 @@ describe("WordCloudComponent", () => {
             ]
         })
     }
+
+    it("should show the whole cloud again when the reader asks for it", async () => {
+        // Arrange
+        const showWholeCloud = jest.spyOn(WordCloudChartHost.prototype, "showWholeCloud")
+        const { fixture } = await setup()
+
+        // Act
+        fixture.componentRef.setInput("fitRequest", 1)
+        fixture.detectChanges()
+
+        // Assert
+        expect(showWholeCloud).toHaveBeenCalledTimes(1)
+    })
+
+    it("should leave the cloud as it is while nobody asked for the whole cloud", async () => {
+        // Arrange
+        const showWholeCloud = jest.spyOn(WordCloudChartHost.prototype, "showWholeCloud")
+
+        // Act
+        await setup()
+
+        // Assert
+        expect(showWholeCloud).not.toHaveBeenCalled()
+    })
 
     it("should initialize the chart after the view is laid out", async () => {
         // Arrange & Act

@@ -4,7 +4,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { unfocusAllNodes } from "../../../../stores/sharedView/sharedView.write.facade"
+import { unfocusNode } from "../../../../stores/sharedView/sharedView.write.facade"
 import { isDependencyMapFocusedSelector } from "../../selectors/dependencyMap.selectors"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { GraphViewToolsComponent } from "./graphViewTools.component"
@@ -74,7 +74,7 @@ describe("GraphViewToolsComponent", () => {
 
         // Assert
         expect(isRevealed("dependency-bar-unfocus")).toBe(true)
-        expect(dispatch).toHaveBeenCalledWith(unfocusAllNodes())
+        expect(dispatch).toHaveBeenCalledWith(unfocusNode())
     })
 
     it("should keep unfocus and the divider hidden while nothing is focused or moved", async () => {

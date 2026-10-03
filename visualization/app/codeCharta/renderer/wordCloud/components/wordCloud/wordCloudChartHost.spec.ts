@@ -12,7 +12,10 @@ const mockChart = {
     dispose: jest.fn(),
     clear: jest.fn(),
     on: jest.fn(),
-    getModel: jest.fn()
+    getModel: jest.fn(),
+    getViewOfSeriesModel: jest.fn(),
+    getWidth: jest.fn(() => 800),
+    getHeight: jest.fn(() => 600)
 }
 
 jest.mock("echarts/core", () => ({
@@ -60,6 +63,60 @@ describe("WordCloudChartHost", () => {
 
     afterEach(() => {
         jest.useRealTimers()
+    })
+
+    describe("zoom", () => {
+        const wordGroup = { attr: jest.fn() }
+
+        function zoomIn() {
+            const [, handleWheel] = mockZrender.on.mock.calls.find(([eventName]) => eventName === "mousewheel")
+            handleWheel({ offsetX: 400, offsetY: 300, wheelDelta: 1 })
+        }
+
+        beforeEach(() => {
+            const wordData = { count: () => 0, getItemGraphicEl: () => null }
+            mockChart.getModel.mockReturnValue({ getSeriesByIndex: () => ({ getData: () => wordData }) })
+            mockChart.getViewOfSeriesModel.mockReturnValue({ group: wordGroup })
+        })
+
+        afterEach(() => {
+            mockChart.getModel.mockReset()
+            mockChart.getViewOfSeriesModel.mockReset()
+        })
+
+        it("should keep the magnification when the cloud is laid out anew, so a new selection does not zoom out", () => {
+            // Arrange
+            host.attachTo(measurableContainer())
+            zoomIn()
+            const magnified = wordGroup.attr.mock.calls.at(-1)[0]
+            wordGroup.attr.mockClear()
+
+            // Act
+            host.render(SOME_OPTION, () => undefined)
+
+            // Assert
+            expect(wordGroup.attr).toHaveBeenCalledWith(magnified)
+        })
+
+        it("should show the whole cloud again on request", () => {
+            // Arrange
+            host.attachTo(measurableContainer())
+            zoomIn()
+
+            // Act
+            host.showWholeCloud()
+
+            // Assert
+            expect(wordGroup.attr).toHaveBeenLastCalledWith({ x: 0, y: 0, scaleX: 1, scaleY: 1 })
+        })
+
+        it("should have nothing to zoom out of before a container is attached", () => {
+            // Arrange & Act
+            host.showWholeCloud()
+
+            // Assert
+            expect(wordGroup.attr).not.toHaveBeenCalled()
+        })
     })
 
     it("should report a clicked word, so the explorer can follow the cloud", () => {

@@ -31,6 +31,6 @@ export class GraphViewToolsComponent {
     }
 
     unfocus(): void {
-        this.writeStore.unfocusAll()
+        this.writeStore.unfocus()
     }
 }

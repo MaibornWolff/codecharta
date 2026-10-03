@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { CcState } from "../../../model/codeCharta.model"
 import { setCenterMapZoom, setPresentationMode } from "../../../stores/preferences/preferences.write.facade"
-import { unfocusAllNodes } from "../../../stores/sharedView/sharedView.write.facade"
+import { unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class MapToolsWriteStore {
@@ -16,7 +16,7 @@ export class MapToolsWriteStore {
         this.store.dispatch(setCenterMapZoom({ value }))
     }
 
-    unfocusAll() {
-        this.store.dispatch(unfocusAllNodes())
+    unfocus() {
+        this.store.dispatch(unfocusNode())
     }
 }

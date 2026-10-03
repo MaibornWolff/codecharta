@@ -1,5 +1,7 @@
+import { signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { of } from "rxjs"
+import { SharedFocusStore } from "../../../features/shared/facade"
 import { provideExplorerCapabilitiesMock } from "../../../features/sidebarExplorer/explorerPorts.mocks"
 import { ExplorerModeService, ExplorerRevealService, FILES_EXPLORER_MODE } from "../../../features/sidebarExplorer/facade"
 import { ActiveViewStore } from "../../../routing/activeView.store"
@@ -13,14 +15,16 @@ const HANDED_OVER_NODE_PATH = "/root/src/invoice.ts"
 
 describe("ShowsHandedOverNodeDirective", () => {
     const revealServiceMock = { revealNode: jest.fn() }
+    const unfocus = jest.fn()
 
-    function setup(activeView: ViewId) {
+    function setup(activeView: ViewId, focusedNodePath?: string) {
         jest.clearAllMocks()
         TestBed.configureTestingModule({
             providers: [
                 ShowsHandedOverNodeDirective,
                 { provide: ActiveViewStore, useValue: { activeView$: of(activeView) } },
                 { provide: ExplorerRevealService, useValue: revealServiceMock },
+                { provide: SharedFocusStore, useValue: { focusedNodePath: signal(focusedNodePath), unfocus } },
                 provideExplorerCapabilitiesMock({ modes: DOMAIN_EXPLORER_MODES }),
                 ExplorerModeService
             ]
@@ -43,6 +47,30 @@ describe("ShowsHandedOverNodeDirective", () => {
         // Assert
         expect(domainSelectionStore.selectedNodePath()).toBe(HANDED_OVER_NODE_PATH)
         expect(revealServiceMock.revealNode).toHaveBeenCalledWith(HANDED_OVER_NODE_PATH)
+    })
+
+    it("should clear the focus when the handed-over node lies outside it, since the explorer lists only the focus", () => {
+        // Arrange
+        const { viewHandoffStore } = setup("domain", "/root/other")
+        viewHandoffStore.handOverNode("domain", HANDED_OVER_NODE_PATH)
+
+        // Act
+        TestBed.inject(ShowsHandedOverNodeDirective)
+
+        // Assert
+        expect(unfocus).toHaveBeenCalledTimes(1)
+    })
+
+    it("should keep the focus when the handed-over node lies inside it", () => {
+        // Arrange
+        const { viewHandoffStore } = setup("domain", "/root/src")
+        viewHandoffStore.handOverNode("domain", HANDED_OVER_NODE_PATH)
+
+        // Act
+        TestBed.inject(ShowsHandedOverNodeDirective)
+
+        // Assert
+        expect(unfocus).not.toHaveBeenCalled()
     })
 
     it("should leave the selection alone when the user arrives without a jump", () => {

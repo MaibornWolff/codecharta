@@ -7,7 +7,6 @@ import { DomainWordOccurrencesReadStore } from "../../stores/domainWordOccurrenc
 import { DomainWordOccurrenceRowComponent } from "../domainWordOccurrenceRow/domainWordOccurrenceRow.component"
 
 /** The word list scopes to the whole project, so a word's occurrences are counted from the root. */
-const PROJECT_SCOPE = null
 
 @Component({
     selector: "cc-domain-word-occurrence-tree",
@@ -24,10 +23,9 @@ export class DomainWordOccurrenceTreeComponent {
 
     readonly nodeClicked = output<string>()
 
-    private readonly occurrences = toSignal(
-        toObservable(this.word).pipe(switchMap(word => this.readStore.occurrencesOf(word, PROJECT_SCOPE))),
-        { initialValue: null as WordOccurrenceNode | null }
-    )
+    private readonly occurrences = toSignal(toObservable(this.word).pipe(switchMap(word => this.readStore.occurrencesInFocusOf(word))), {
+        initialValue: null as WordOccurrenceNode | null
+    })
 
     protected readonly topLevelOccurrences = computed(() => this.occurrences()?.children ?? [])
 

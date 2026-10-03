@@ -2,8 +2,9 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { firstValueFrom } from "rxjs"
 import { CodeMapNode, NodeType, SortingOption } from "../../../model/codeCharta.model"
-import { accumulatedDataSelector } from "../../../renderer/renderModel/renderModel.facade"
+import { accumulatedDataSelector, pathToNodeSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { areaMetricSelector } from "../../../stores/mapState/mapState.read.facade"
+import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { MapExplorerTree } from "./mapExplorerTree"
 
 const TREE = {
@@ -17,14 +18,18 @@ const TREE = {
     ]
 } as CodeMapNode
 
+const FOCUSABLE_FOLDER = TREE.children[1]
+
 describe("MapExplorerTree", () => {
-    function setup() {
+    function setup(focusedNodePath?: string) {
         TestBed.configureTestingModule({
             providers: [
                 MapExplorerTree,
                 provideMockStore({
                     selectors: [
                         { selector: accumulatedDataSelector, value: { unifiedMapNode: TREE, unifiedFileMeta: undefined } },
+                        { selector: pathToNodeSelector, value: new Map([[FOCUSABLE_FOLDER.path, FOCUSABLE_FOLDER]]) },
+                        { selector: currentFocusedNodePathSelector, value: focusedNodePath },
                         { selector: areaMetricSelector, value: "rloc" }
                     ]
                 })
@@ -102,5 +107,38 @@ describe("MapExplorerTree", () => {
 
         // Assert
         expect(rootNodes).toHaveLength(1)
+    })
+
+    it("should list the focused folder alone, so nothing the view leaves out can be picked", async () => {
+        // Arrange
+        const { tree } = setup(FOCUSABLE_FOLDER.path)
+
+        // Act
+        const rootNode = await firstValueFrom(tree.rootNodeFor(SortingOption.NAME, true))
+
+        // Assert
+        expect(rootNode.path).toBe(FOCUSABLE_FOLDER.path)
+    })
+
+    it("should list the focused folder alone while sorting by area as well", async () => {
+        // Arrange
+        const { tree } = setup(FOCUSABLE_FOLDER.path)
+
+        // Act
+        const rootNode = await firstValueFrom(tree.rootNodeFor(SortingOption.AREA_SIZE, true))
+
+        // Assert
+        expect(rootNode.path).toBe(FOCUSABLE_FOLDER.path)
+    })
+
+    it("should list the whole tree when the focused folder is not part of the map", async () => {
+        // Arrange
+        const { tree } = setup("/root/gone")
+
+        // Act
+        const rootNode = await firstValueFrom(tree.rootNodeFor(SortingOption.NAME, true))
+
+        // Assert
+        expect(rootNode.path).toBe(TREE.path)
     })
 })

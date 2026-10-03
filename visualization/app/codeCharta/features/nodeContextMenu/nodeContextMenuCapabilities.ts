@@ -1,9 +1,9 @@
 import { InjectionToken } from "@angular/core"
 
-type FocusableNodes = "none" | "folders" | "foldersAndFiles"
+type FocusableNodes = "none" | "folders"
 
 export interface NodeContextMenuCapabilities {
-    /** A view focuses what it can still draw something of: a graph of one file has no edge left to show. */
+    /** A focus is a folder: it is what the explorer then lists, and a single file leaves nothing to explore. */
     focusableNodes: FocusableNodes
     /** Highlight, flatten and folder marking only shape the metrics map. */
     showMapActions: boolean
@@ -12,7 +12,7 @@ export interface NodeContextMenuCapabilities {
 }
 
 export const DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES: NodeContextMenuCapabilities = {
-    focusableNodes: "foldersAndFiles",
+    focusableNodes: "folders",
     showMapActions: true,
     showExclude: true
 }
