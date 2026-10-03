@@ -108,16 +108,18 @@ describe("WordCloudScreenshotService", () => {
         expect(getRenderedCanvas).not.toHaveBeenCalled()
     })
 
-    it("should do nothing when there is no chart to capture", async () => {
+    it("should reject without saving or copying when there is no chart to capture", async () => {
         // Arrange
         const service = configure({ hasChart: false })
         const clickDownloadLinkSpy = jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation()
 
         // Act
-        await service.makeScreenshotToFile()
-        await service.makeScreenshotToClipboard()
+        const savingToFile = service.makeScreenshotToFile()
+        const copyingToClipboard = service.makeScreenshotToClipboard()
 
         // Assert
+        await expect(savingToFile).rejects.toThrow("There is no word cloud to capture")
+        await expect(copyingToClipboard).rejects.toThrow("There is no word cloud to capture")
         expect(clickDownloadLinkSpy).not.toHaveBeenCalled()
         expect(setToClipboard).not.toHaveBeenCalled()
     })

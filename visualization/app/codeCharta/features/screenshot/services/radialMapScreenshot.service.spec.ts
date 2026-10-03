@@ -80,14 +80,15 @@ describe("RadialMapScreenshotService", () => {
         expect((setToClipboard as jest.Mock).mock.calls[0][0].type).toBe("image/png")
     })
 
-    it("should leave the clipboard alone when the canvas cannot be encoded", async () => {
+    it("should reject and leave the clipboard alone when the canvas cannot be encoded", async () => {
         // Arrange
         const service = configure(true, null)
 
         // Act
-        await service.makeScreenshotToClipboard()
+        const copyingToClipboard = service.makeScreenshotToClipboard()
 
         // Assert
+        await expect(copyingToClipboard).rejects.toThrow("could not be encoded as a png")
         expect(setToClipboard).not.toHaveBeenCalled()
     })
 })

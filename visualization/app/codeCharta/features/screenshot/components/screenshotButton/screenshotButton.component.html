@@ -1,1 +1,8 @@
-<cc-bar-tool label="Screenshot" icon="fa fa-camera" [tooltip]="tooltip()" [disabled]="isDisabled()" (activated)="handleClick()"></cc-bar-tool>
+<cc-bar-tool
+    [label]="appearance().label"
+    [icon]="appearance().icon"
+    [tooltip]="tooltip()"
+    [disabled]="isDisabled()"
+    [highlighted]="hasSucceeded()"
+    (activated)="handleClick()"
+></cc-bar-tool>
