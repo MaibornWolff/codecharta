@@ -31,6 +31,11 @@ dependency views share — scope the domain view's cloud and word list.
 - [x] Checks: format, tests, lint, tsc
 - [x] CHANGELOG
 
+## Review Feedback Addressed
+
+1. **Word list empty hint**: a focused folder without words is now named as such instead of claiming the whole project carries none
+2. **Click after dragging the cloud**: skipped — zrender already drops the click once the pointer moved more than 4px between press and release, so a drag never reports a word or background click
+
 ## Notes
 
 - Zoom transforms the series' zrender group, so words stay crisp and clickable; no re-layout

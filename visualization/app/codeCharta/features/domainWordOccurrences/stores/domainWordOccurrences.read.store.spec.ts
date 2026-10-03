@@ -54,4 +54,26 @@ describe("DomainWordOccurrencesReadStore", () => {
         // Assert
         expect(result).toEqual(billingWords)
     })
+
+    it("should report that no folder is focused while the whole project is shown", async () => {
+        // Arrange
+        const readStore = setup()
+
+        // Act
+        const result = await firstValueFrom(readStore.isFolderFocused$)
+
+        // Assert
+        expect(result).toBe(false)
+    })
+
+    it("should report that a folder is focused", async () => {
+        // Arrange
+        const readStore = setup([], ["/root/billing"])
+
+        // Act
+        const result = await firstValueFrom(readStore.isFolderFocused$)
+
+        // Assert
+        expect(result).toBe(true)
+    })
 })
