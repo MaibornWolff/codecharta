@@ -63,12 +63,17 @@ export function createTreemapNodes(map: CodeMapNode, state: CcState, metricData:
         ]
     }
 
-    const squarifiedTreeMap = getSquarifiedTreeMap(map, state, mapSizeResolutionScaling, maxWidth)
+    const squarifiedTreeMap = getSquarifiedTreeMap(withoutFixedPosition(map), state, mapSizeResolutionScaling, maxWidth)
     const nodes: Node[] = []
     for (const squarifiedNode of squarifiedTreeMap.treeMap) {
         nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState))
     }
     return nodes
+}
+
+// A focused fixed folder is the layout root, so it takes the whole map instead of its slot in the parent.
+function withoutFixedPosition(layoutRoot: CodeMapNode): CodeMapNode {
+    return layoutRoot.fixedPosition ? { ...layoutRoot, fixedPosition: undefined } : layoutRoot
 }
 
 function buildSquarifiedTreeMapsForFixedFolders(

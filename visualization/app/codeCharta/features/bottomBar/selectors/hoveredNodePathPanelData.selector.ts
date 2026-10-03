@@ -3,6 +3,7 @@ import { CodeMapNode } from "../../../model/codeCharta.model"
 import {
     accumulatedDataSelector,
     createNodeByPathSelector,
+    focusedNodeSelector,
     hoveredNodeSelector,
     selectedNodeSelector
 } from "../../../renderer/renderModel/renderModel.facade"
@@ -15,13 +16,17 @@ export const _getHoveredNodePathPanelData = (hoveredNode?: Pick<CodeMapNode, "pa
 
 export const hoveredNodePathPanelDataSelector = createSelector(hoveredNodeSelector, _getHoveredNodePathPanelData)
 
-export const selectedNodePathPanelDataSelector = createSelector(
-    selectedNodeSelector,
+export const shownFolderSelector = createSelector(
+    focusedNodeSelector,
     accumulatedDataSelector,
-    (selectedNode, accumulatedData) => _getHoveredNodePathPanelData(selectedNode ?? accumulatedData?.unifiedMapNode)
+    (focusedNode, accumulatedData) => focusedNode ?? accumulatedData?.unifiedMapNode
+)
+
+export const selectedNodePathPanelDataSelector = createSelector(selectedNodeSelector, shownFolderSelector, (selectedNode, shownFolder) =>
+    _getHoveredNodePathPanelData(selectedNode ?? shownFolder)
 )
 
 export const createSelectedNodePathPanelDataSelector = (selectedNodePath: string | null) =>
-    createSelector(createNodeByPathSelector(selectedNodePath), accumulatedDataSelector, (selectedNode, accumulatedData) =>
-        _getHoveredNodePathPanelData(selectedNode ?? accumulatedData?.unifiedMapNode)
+    createSelector(createNodeByPathSelector(selectedNodePath), shownFolderSelector, (selectedNode, shownFolder) =>
+        _getHoveredNodePathPanelData(selectedNode ?? shownFolder)
     )

@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Dependency view (experimental)**: once switched on in the global configuration, a map analysed with the dependency parser, the sample map and the online demo included, opens as a graph that stacks its files by dependency level, can label the levels of nested folders by their path as in 0.1.2, marks the dependencies that close a cycle or point upward and focuses on a folder from its context menu, with a screenshot button as in the other views.
 - **Loading indicator when switching views**: switching to a view that still has to be built shows a spinner instead of a frozen screen.
 - **Zoom the word cloud**: the mouse wheel magnifies the domain view's word cloud and dragging moves it, with a **Show whole cloud** button on the bar to get back.
-- **Focus in the domain view**: focusing on a folder from its context menu limits the word cloud and the word list to that folder, and the focus is the one the other views share.
+- **Screenshot confirmation**: the screenshot button briefly turns into a check mark saying whether the picture was copied or saved, or into a warning when it could not be taken.
+- **Focus in the domain view**: focusing on a folder from its context menu limits the word cloud and the word list to that folder, names it in the bar at the bottom, and the focus is the one the other views share.
 
 ### Changed
 
 - **The explorer follows the focus**: while you are focused on a folder, the explorer of every view lists that folder alone, under a banner that brings the whole project back with a click.
+- **A focused folder fills the 3D map**: focusing a folder lays the 3D map out around it, so it fills the map and its subfolders carry their floor labels as the whole project does.
 - **One focus at a time**: focusing a folder replaces the focus you had, so a single Unfocus brings back the whole map and Unfocus All is gone.
 - **Tools on the bars**: centering, the flashlight and the screenshot sit in a small tab on the edge of each view's bar instead of floating over the map, each tool shows its name when you point at it, and an Unfocus button joins them while you are focused on a folder.
 

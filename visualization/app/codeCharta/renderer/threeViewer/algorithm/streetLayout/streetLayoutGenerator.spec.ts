@@ -1,9 +1,15 @@
 import { klona } from "klona"
 import { METRIC_DATA, STATE, VALID_NODE_WITH_PATH } from "../../../../mocks/dataMocks"
 import { deepFreeze } from "../../../../mocks/deepFreeze"
-import { CodeMapNode, LayoutAlgorithm, NodeType } from "../../../../model/codeCharta.model"
+import { CodeMapNode, LayoutAlgorithm, Node, NodeType } from "../../../../model/codeCharta.model"
 import { createExcludeMatcher } from "../../../../util/nodeRules/excludeMatcher"
+import { rootUnarySelector } from "../../../renderModel/accumulatedData/rootUnary.selector"
 import { StreetLayoutGenerator } from "./streetLayoutGenerator"
+
+jest.mock("../../../renderModel/accumulatedData/rootUnary.selector", () => ({ rootUnarySelector: jest.fn() }))
+const mockedRootUnarySelector = rootUnarySelector as unknown as jest.Mock
+
+const MIN_BUILDING_HEIGHT = 2
 
 describe("horizontalStreet", () => {
     let codeMapNode: CodeMapNode
@@ -12,6 +18,7 @@ describe("horizontalStreet", () => {
     beforeEach(() => {
         codeMapNode = klona(VALID_NODE_WITH_PATH)
         codeMapNode.path = "somePath"
+        mockedRootUnarySelector.mockReturnValue(undefined)
     })
     describe("createStreetLayoutNodes", () => {
         it("should not call createTreeMap", () => {
@@ -84,6 +91,23 @@ describe("horizontalStreet", () => {
 
             // Assert
             expect(layOutFrozenMap).not.toThrow()
+        })
+
+        it("should keep a building's height when a subfolder is laid out on its own", () => {
+            // Arrange
+            const fileCountOfWholeMap = 1_000_000
+            mockedRootUnarySelector.mockReturnValue(fileCountOfWholeMap)
+            const map = mapWithSingleFolderChain()
+            map.attributes.unary = fileCountOfWholeMap
+            const subfolder = map.children[0].children[0]
+            const heightOfFile = (nodes: Node[]) => nodes.find(node => node.path === "/root/src/app/a.ts")?.height
+
+            // Act
+            const heightInSubfolder = heightOfFile(layOut(subfolder, LayoutAlgorithm.StreetMap))
+
+            // Assert
+            expect(heightInSubfolder).toBeGreaterThan(MIN_BUILDING_HEIGHT)
+            expect(heightInSubfolder).toBe(heightOfFile(layOut(map, LayoutAlgorithm.StreetMap)))
         })
 
         it("should name a street that merges a folder with its only subfolder after both", () => {

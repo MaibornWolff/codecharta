@@ -2,6 +2,7 @@ import { Vector2 } from "three"
 import { CcState, CodeMapNode, LayoutAlgorithm, Node, NodeMetricData } from "../../../../model/codeCharta.model"
 import { getMapResolutionScaleFactor, isLeaf } from "../../../../util/codeMapHelper"
 import { ExcludeMatcher } from "../../../../util/nodeRules/excludeMatcher"
+import { rootUnarySelector } from "../../../renderModel/renderModel.facade"
 import { treeMapSize } from "../treeMapLayout/treeMapHelper"
 import BoundingBox from "./boundingBox"
 import HorizontalStreet from "./horizontalStreet"
@@ -33,15 +34,12 @@ export class StreetLayoutGenerator {
         const margin = state.mapState.margin * MARGIN_SCALING_FACTOR
         const layoutNodes = rootStreet.layout(margin, new Vector2(0, 0))
 
-        return layoutNodes.map(streetLayoutNode => {
-            return StreetViewHelper.buildNodeFrom(
-                streetLayoutNode,
-                this.calculateHeightScale(map, treeMapSize, maxHeight),
-                maxHeight,
-                state,
-                isDeltaState
-            )
-        })
+        const fileCountOfWholeMap = rootUnarySelector(state) ?? map.attributes.unary
+        const heightScale = this.calculateHeightScale(fileCountOfWholeMap, treeMapSize, maxHeight)
+
+        return layoutNodes.map(streetLayoutNode =>
+            StreetViewHelper.buildNodeFrom(streetLayoutNode, heightScale, maxHeight, state, isDeltaState)
+        )
     }
 
     private static createBoxes(
@@ -108,14 +106,14 @@ export class StreetLayoutGenerator {
         return totalFileNodes
     }
 
-    private static calculateHeightScale(map: CodeMapNode, treeMapSize: number, maxHeight: number): number {
+    private static calculateHeightScale(fileCount: number, treeMapSize: number, maxHeight: number): number {
         // Constants to control the curve and scaling
         const linearCoefficient = 0.0001
         const rootCoefficient = 0.005
 
         // Calculate linear and square root components
-        const linearComponent = linearCoefficient * map.attributes.unary
-        const rootComponent = Math.sqrt(map.attributes.unary) * rootCoefficient
+        const linearComponent = linearCoefficient * fileCount
+        const rootComponent = Math.sqrt(fileCount) * rootCoefficient
 
         // Combine both components for the height scale calculation
         return ((treeMapSize * 2) / maxHeight) * (linearComponent + rootComponent)

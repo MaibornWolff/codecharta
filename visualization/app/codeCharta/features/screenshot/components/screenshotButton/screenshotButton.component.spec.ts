@@ -1,4 +1,4 @@
-import { signal } from "@angular/core"
+import { ErrorHandler, signal } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
@@ -12,6 +12,7 @@ import { ScreenshotButtonComponent } from "./screenshotButton.component"
 
 const HOTKEY_TO_FILE = "Ctrl+Alt+S"
 const HOTKEY_TO_CLIPBOARD = "Ctrl+Alt+F"
+const OUTCOME_FEEDBACK_MS = 1500
 
 describe("ScreenshotButtonComponent (toolbox)", () => {
     let isClipboardEnabled$: BehaviorSubject<boolean>
@@ -175,6 +176,77 @@ describe("ScreenshotButtonComponent (toolbox)", () => {
 
         // Assert
         expect(capture.makeScreenshotToFile).not.toHaveBeenCalled()
+    })
+
+    it("should confirm a screenshot copied to the clipboard on the button", async () => {
+        // Arrange
+        configure({ isClipboardEnabled: true })
+        await renderButton()
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Screenshot" }))
+
+        // Assert
+        expect(await screen.findByRole("button", { name: "Copied!" })).toBeTruthy()
+    })
+
+    it("should confirm a screenshot saved as a file on the button", async () => {
+        // Arrange
+        configure({ isClipboardEnabled: false })
+        await renderButton()
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Screenshot" }))
+
+        // Assert
+        expect(await screen.findByRole("button", { name: "Saved!" })).toBeTruthy()
+    })
+
+    it("should confirm a screenshot taken with the hotkey on the button", async () => {
+        // Arrange
+        configure({ activeView: "domain" })
+        await renderButton("domain")
+
+        // Act
+        hotkeys.trigger(HOTKEY_TO_CLIPBOARD)
+
+        // Assert
+        expect(await screen.findByRole("button", { name: "Copied!" })).toBeTruthy()
+    })
+
+    it("should report a failed screenshot on the button and to the error handler", async () => {
+        // Arrange
+        configure()
+        const failure = new Error("canvas is tainted")
+        capture.makeScreenshotToFile.mockRejectedValue(failure)
+        const errorHandler = { handleError: jest.fn() }
+        TestBed.overrideProvider(ErrorHandler, { useValue: errorHandler })
+        await renderButton()
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Screenshot" }))
+
+        // Assert
+        expect(await screen.findByRole("button", { name: "Screenshot failed" })).toBeTruthy()
+        expect(errorHandler.handleError).toHaveBeenCalledWith(failure)
+    })
+
+    it("should turn back into the screenshot button once the confirmation has been shown", async () => {
+        // Arrange
+        jest.useFakeTimers()
+        const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+        configure()
+        const { fixture } = await renderButton()
+        await user.click(screen.getByRole("button", { name: "Screenshot" }))
+        await screen.findByRole("button", { name: "Saved!" })
+
+        // Act
+        jest.advanceTimersByTime(OUTCOME_FEEDBACK_MS)
+        fixture.detectChanges()
+
+        // Assert
+        expect(screen.getByRole("button", { name: "Screenshot" })).toBeTruthy()
+        jest.useRealTimers()
     })
 
     it("should unbind only its own hotkey handlers on destroy", async () => {
