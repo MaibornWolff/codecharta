@@ -80,6 +80,9 @@ export class WordCloudComponent implements OnDestroy {
      * The cloud marks them so both say the same thing. */
     readonly markedWords = input<readonly string[]>([])
 
+    /** Counts the times the reader asked for the whole cloud back. */
+    readonly fitRequest = input(0)
+
     readonly clearSelection = output<void>()
 
     /** A click on the cloud beside every word, which lets go of what a click picked out. */
@@ -126,6 +129,7 @@ export class WordCloudComponent implements OnDestroy {
         effect(() => this.loadTheUploadedShapeAndKeepTheCircleFallbackOnFailure())
         effect(() => this.renderIntoTheChartOnceTheContainerIsMeasured())
         effect(() => this.chartHost.highlightWords(this.markedWords()))
+        effect(() => this.showTheWholeCloudOnRequest())
     }
 
     ngOnDestroy(): void {
@@ -144,6 +148,12 @@ export class WordCloudComponent implements OnDestroy {
     protected showWholeMap(event: MouseEvent): void {
         event.stopPropagation()
         this.clearSelection.emit()
+    }
+
+    private showTheWholeCloudOnRequest(): void {
+        if (this.fitRequest() > 0) {
+            this.chartHost.showWholeCloud()
+        }
     }
 
     private renderIntoTheChartOnceTheContainerIsMeasured(): void {

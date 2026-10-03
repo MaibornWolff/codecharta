@@ -67,7 +67,6 @@ import {
     setFlattenedNodes,
     setMarkedPackages,
     setSearchPattern,
-    unfocusAllNodes,
     unfocusNode,
     unmarkPackage
 } from "../../../stores/sharedView/sharedView.write.facade"
@@ -111,7 +110,7 @@ const mapStateSaveActions = [
 const sharedViewSaveActions = [
     setSearchPattern,
     setAllFocusedNodes,
-    unfocusAllNodes,
+    unfocusNode,
     focusNode,
     unfocusNode,
     setExcludedNodes,

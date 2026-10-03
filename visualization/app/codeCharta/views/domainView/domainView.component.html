@@ -50,9 +50,10 @@
     <cc-word-cloud
         [settings]="settings()"
         [customShapeMask]="customShapeMask()"
-        [selectedNodePath]="selectedNodePath()"
+        [selectedNodePath]="cloudNodePath()"
         [markedWords]="markedWords()"
-        (clearSelection)="clearSelection()"
+        [fitRequest]="cloudFitRequest()"
+        (clearSelection)="showWholeMap()"
         (backgroundClicked)="unpinWord()"
         (wordClicked)="showWordOccurrences($event)"
         (wordRightClicked)="rightClickedWord.set($event)"

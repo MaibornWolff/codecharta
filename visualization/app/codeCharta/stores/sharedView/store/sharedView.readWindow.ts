@@ -5,7 +5,6 @@ import { excludedNodesSelector } from "./excludedNodes/excludedNodes.selector"
 import { excludeMatcherSelector } from "./excludedNodes/excludeMatcher.selector"
 import { flattenedNodesSelector } from "./flattenedNodes/flattenedNodes.selector"
 import { currentFocusedNodePathSelector } from "./focusedNodePath/currentFocused.selector"
-import { focusedNodePathSelector } from "./focusedNodePath/focusedNodePath.selector"
 import { hoveredNodePathSelector } from "./hoveredNodePath/hoveredNodePath.selector"
 import { keptHighlightPathsSelector } from "./keptHighlightPaths/keptHighlightPaths.selector"
 import { markedPackagesSelector } from "./markedPackages/markedPackages.selector"
@@ -25,7 +24,6 @@ export class SharedViewReadWindow {
     readonly excludedNodes$ = this.store.select(excludedNodesSelector)
     readonly flattenedNodes$ = this.store.select(flattenedNodesSelector)
     readonly excludeMatcher$ = this.store.select(excludeMatcherSelector)
-    readonly focusedNodePath$ = this.store.select(focusedNodePathSelector)
     readonly currentFocusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     readonly hoveredNodePath$ = this.store.select(hoveredNodePathSelector)
     readonly keptHighlightPaths$ = this.store.select(keptHighlightPathsSelector)

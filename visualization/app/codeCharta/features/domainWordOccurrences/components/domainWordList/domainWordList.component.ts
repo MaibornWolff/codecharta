@@ -31,12 +31,12 @@ export class DomainWordListComponent implements OnDestroy {
     readonly wordToggled = output<string>()
     readonly nodeClicked = output<string>()
 
-    private readonly projectWords = toSignal(this.readStore.projectWords$, { requireSync: true })
+    private readonly wordsInFocus = toSignal(this.readStore.wordsInFocus$, { requireSync: true })
 
     /** The opened word is lifted out of the rows into the pin above them, so it is never listed twice. */
-    protected readonly pinnedWord = computed(() => this.projectWords().find(word => word.text === this.expandedWord()) ?? null)
+    protected readonly pinnedWord = computed(() => this.wordsInFocus().find(word => word.text === this.expandedWord()) ?? null)
 
-    private readonly matchedWords = computed(() => matchingWords(this.projectWords(), this.query()))
+    private readonly matchedWords = computed(() => matchingWords(this.wordsInFocus(), this.query()))
 
     protected readonly visibleWords = computed(() =>
         sortWords(
@@ -47,7 +47,7 @@ export class DomainWordListComponent implements OnDestroy {
 
     /** The hint answers for the search, so a search whose only match is pinned has nothing to explain. */
     protected readonly emptyHint = computed(() => {
-        if (this.projectWords().length === 0) {
+        if (this.wordsInFocus().length === 0) {
             return "This project carries no words."
         }
         return this.matchedWords().length === 0 ? `No word contains "${this.query().trim()}".` : null
@@ -66,7 +66,7 @@ export class DomainWordListComponent implements OnDestroy {
         return this.visibleWords().slice(firstIndex, lastIndex + 1)
     })
 
-    private readonly totalOccurrences = computed(() => this.projectWords().reduce((total, word) => total + word.frequency, 0))
+    private readonly totalOccurrences = computed(() => this.wordsInFocus().reduce((total, word) => total + word.frequency, 0))
 
     constructor() {
         effect(() => this.viewport.attachTo(this.hostElement.nativeElement, this.scrollHostService.element()))

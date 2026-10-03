@@ -29,6 +29,6 @@ export class MapToolsComponent {
     protected readonly zoomMenuAnchor = signal<FloatingMenuAnchor | null>(null)
 
     protected unfocus() {
-        this.writeStore.unfocusAll()
+        this.writeStore.unfocus()
     }
 }

@@ -22,11 +22,12 @@ import {
     NodeContextMenuComponent,
     NodeContextMenuForExplorer
 } from "../../features/nodeContextMenu/facade"
-import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
+import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables, SharedFocusStore } from "../../features/shared/facade"
 import {
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
     EXPLORER_COUNTS,
+    EXPLORER_FOCUS,
     EXPLORER_ROW,
     EXPLORER_RULES,
     EXPLORER_SELECTION,
@@ -69,6 +70,7 @@ import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelect
         { provide: EXPLORER_COUNTS, useExisting: DependencyExplorerCounts },
         MapExplorerRules,
         { provide: EXPLORER_RULES, useExisting: MapExplorerRules },
+        { provide: EXPLORER_FOCUS, useExisting: SharedFocusStore },
         provideExplorerSort(MAP_EXPLORER_SORT),
         provideExplorerSearch(MAP_EXPLORER_SEARCH),
         { provide: MAP_EXPLORER_VIEW, useValue: "dependencies" },

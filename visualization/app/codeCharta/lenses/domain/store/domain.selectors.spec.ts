@@ -7,8 +7,7 @@ import {
     hasDomainDataSelector,
     hasTfidfDataSelector,
     isLoadedFileSetWithoutDomainLensSelector,
-    pathsWithDomainWordsSelector,
-    projectWordsSelector
+    pathsWithDomainWordsSelector
 } from "./domain.selectors"
 
 describe("domain lens selectors", () => {
@@ -114,8 +113,8 @@ describe("domain lens selectors", () => {
         })
     })
 
-    describe("projectWordsSelector", () => {
-        it("should sum the whole project, which a file-level bank never records itself", () => {
+    describe("createWordsForSelectedNodeSelector", () => {
+        it("should sum the whole project while nothing is selected, which a file-level bank never records itself", () => {
             // Arrange
             fileRoot.updateRoot("root")
             const state = stateWithWords({
@@ -124,14 +123,12 @@ describe("domain lens selectors", () => {
             })
 
             // Act
-            const result = projectWordsSelector(state)
+            const result = createWordsForSelectedNodeSelector(null)(state)
 
             // Assert
             expect(result).toEqual([{ text: "invoice", frequency: 10 }])
         })
-    })
 
-    describe("createWordsForSelectedNodeSelector", () => {
         it("should sum the files beneath a selected folder", () => {
             // Arrange
             const state = stateWithWords({

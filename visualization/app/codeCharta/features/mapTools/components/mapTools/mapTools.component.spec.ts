@@ -7,7 +7,7 @@ import { BehaviorSubject, of } from "rxjs"
 import { ThreeMapControlsService } from "../../../../renderer/threeViewer/threeViewer.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { currentFocusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { unfocusAllNodes } from "../../../../stores/sharedView/sharedView.write.facade"
+import { unfocusNode } from "../../../../stores/sharedView/sharedView.write.facade"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import { ScreenshotService } from "../../../screenshot/facade"
 import { MapToolsComponent } from "./mapTools.component"
@@ -94,6 +94,6 @@ describe("MapToolsComponent", () => {
 
         // Assert
         expect(isUnfocusRevealed()).toBe(true)
-        expect(dispatch).toHaveBeenCalledWith(unfocusAllNodes())
+        expect(dispatch).toHaveBeenCalledWith(unfocusNode())
     })
 })

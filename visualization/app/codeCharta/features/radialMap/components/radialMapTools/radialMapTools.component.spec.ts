@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { currentFocusedNodePathSelector } from "../../../../stores/sharedView/sharedView.read.facade"
-import { unfocusAllNodes } from "../../../../stores/sharedView/sharedView.write.facade"
+import { unfocusNode } from "../../../../stores/sharedView/sharedView.write.facade"
 import { GlobalSettingsFacade } from "../../../globalSettings/facade"
 import { RadialMapScreenshotService } from "../../../screenshot/facade"
 import { RadialMapToolsComponent } from "./radialMapTools.component"
@@ -75,6 +75,6 @@ describe("RadialMapToolsComponent", () => {
 
         // Assert
         expect(isUnfocusRevealed()).toBe(true)
-        expect(dispatch).toHaveBeenCalledWith(unfocusAllNodes())
+        expect(dispatch).toHaveBeenCalledWith(unfocusNode())
     })
 })

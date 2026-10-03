@@ -44,7 +44,12 @@ describe("DomainWordOccurrenceTreeComponent", () => {
     const nodeClicked = jest.fn()
     let contextMenu: ExplorerContextMenu
 
-    async function setup(words: DomainLensData = WORDS, selectedNodePath: string | null = null, markedNodePath: string | null = null) {
+    async function setup(
+        words: DomainLensData = WORDS,
+        selectedNodePath: string | null = null,
+        markedNodePath: string | null = null,
+        focusedNodePath: string[] = []
+    ) {
         jest.clearAllMocks()
         contextMenu = {
             isEnabledFor: () => true,
@@ -52,7 +57,7 @@ describe("DomainWordOccurrenceTreeComponent", () => {
             open: jest.fn(),
             close: jest.fn()
         }
-        const state = { ...STATE, domainLensSource: { words } } as CcState
+        const state = { ...STATE, domainLensSource: { words }, sharedView: { ...STATE.sharedView, focusedNodePath } } as CcState
         return render(DomainWordOccurrenceTreeComponent, {
             inputs: { word: "invoice", selectedNodePath },
             on: { nodeClicked },
@@ -73,6 +78,14 @@ describe("DomainWordOccurrenceTreeComponent", () => {
 
         // Assert
         expect(listedNamesOf(container)).toEqual(["billing", "api"])
+    })
+
+    it("should break the word down inside the focused folder only", async () => {
+        // Arrange & Act
+        const { container } = await setup(WORDS, null, null, ["/root/billing"])
+
+        // Assert
+        expect(listedNamesOf(container)).toEqual(["invoice.ts", "dunning.ts"])
     })
 
     it("should name the word each node's percentage is a share of, so it cannot be read as a share of the project", async () => {

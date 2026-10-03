@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@a
 import { toSignal } from "@angular/core/rxjs-interop"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import { CustomShapeMaskStore, DomainBarComponent, DomainBarReadStore } from "../../features/domainBar/facade"
-import { DomainToolboxComponent } from "../../features/domainToolbox/facade"
+import { DomainToolboxComponent, WordCloudViewStore } from "../../features/domainToolbox/facade"
 import { DomainWordMenuComponent } from "../../features/domainWordMenu/facade"
 import {
     DomainWordListComponent,
@@ -17,10 +17,11 @@ import {
     NodeContextMenuComponent,
     NodeContextMenuForExplorer
 } from "../../features/nodeContextMenu/facade"
-import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
+import { LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables, SharedFocusStore } from "../../features/shared/facade"
 import {
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
+    EXPLORER_FOCUS,
     EXPLORER_ROW,
     EXPLORER_SELECTION,
     EXPLORER_TREE,
@@ -91,9 +92,10 @@ import { wordsToMark } from "./wordMarking"
         { provide: EXPLORER_WORD_SEARCH, useExisting: DomainWordQueryStore },
         DomainWordSortStore,
         { provide: EXPLORER_WORD_SORT, useExisting: DomainWordSortStore },
+        { provide: EXPLORER_FOCUS, useExisting: SharedFocusStore },
         {
             provide: NODE_CONTEXT_MENU_CAPABILITIES,
-            useValue: { focusableNodes: "none", showMapActions: false, showExclude: false } satisfies NodeContextMenuCapabilities
+            useValue: { focusableNodes: "folders", showMapActions: false, showExclude: false } satisfies NodeContextMenuCapabilities
         },
         CopyToClipboardService,
         provideViewScopedExplorerState("domain"),
@@ -115,6 +117,7 @@ export class DomainViewComponent {
     private readonly hiddenWordsReadStore = inject(HiddenWordsReadStore)
     private readonly hiddenWordsWriteStore = inject(HiddenWordsWriteStore)
     private readonly clipboard = inject(CopyToClipboardService)
+    private readonly focusStore = inject(SharedFocusStore)
 
     readonly settings = this.domainBarReadStore.settings
     readonly customShapeMask = this.customShapeMaskStore.dataUri
@@ -122,6 +125,8 @@ export class DomainViewComponent {
 
     readonly selectedNodePath = this.domainSelectionStore.selectedNodePath
     readonly selectedNodeName = computed(() => pathToNodeName(this.selectedNodePath(), ""))
+    readonly cloudNodePath = computed(() => this.selectedNodePath() ?? this.focusStore.focusedNodePath() ?? null)
+    readonly cloudFitRequest = inject(WordCloudViewStore).fitRequest
 
     readonly hiddenWordCount = computed(() => this.hiddenWordsReadStore.hiddenWords().length)
     readonly hiddenWordsTooltip = computed(() =>
@@ -133,9 +138,9 @@ export class DomainViewComponent {
     readonly wordQuery = toSignal(this.domainWordQueryStore.pattern$, { requireSync: true })
     readonly wordSorting = toSignal(this.domainWordSortStore.sorting$, { requireSync: true })
 
-    private readonly projectWords = toSignal(this.wordOccurrencesReadStore.projectWords$, { requireSync: true })
+    private readonly wordsInFocus = toSignal(this.wordOccurrencesReadStore.wordsInFocus$, { requireSync: true })
     readonly markedWords = computed(() =>
-        wordsToMark(this.inspectedWord(), this.projectWords(), this.wordQuery(), !this.explorerModeService.isFilesMode())
+        wordsToMark(this.inspectedWord(), this.wordsInFocus(), this.wordQuery(), !this.explorerModeService.isFilesMode())
     )
 
     /** The search box stays as the reader left it. Writing the word into it would narrow the list to
@@ -176,8 +181,9 @@ export class DomainViewComponent {
         this.domainSelectionStore.select(path)
     }
 
-    clearSelection() {
+    showWholeMap() {
         this.domainSelectionStore.clear()
+        this.focusStore.unfocus()
     }
 
     /** A click beside every word only unpins the broken-down word. The node the cloud is scoped to

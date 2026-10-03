@@ -5,7 +5,7 @@ import { ActiveViewStore } from "../../../../routing/activeView.store"
 import { VIEW_IDS, ViewId } from "../../../../routing/routePaths"
 import { SharedViewReadWindow } from "../../../../stores/sharedView/sharedView.read.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
-import { ContextMenuItemComponent, FloatingMenuComponent, injectIsRadialLayout } from "../../../shared/facade"
+import { ContextMenuItemComponent, FloatingMenuComponent } from "../../../shared/facade"
 import { ExplorerRevealService } from "../../../sidebarExplorer/facade"
 import { NODE_CONTEXT_MENU_CAPABILITIES } from "../../nodeContextMenuCapabilities"
 import { NodeContextMenuReadStore } from "../../stores/nodeContextMenu.read.store"
@@ -46,8 +46,6 @@ export class NodeContextMenuComponent {
     readonly rightClickedNodeData = toSignal(this.sharedViewReadWindow.rightClickedNodeData$, { requireSync: true })
     readonly codeMapNode = toSignal(this.readStore.rightClickedCodeMapNode$, { requireSync: true })
     readonly currentFocusedNodePath = toSignal(this.sharedViewReadWindow.currentFocusedNodePath$, { requireSync: true })
-    private readonly focusedNodePath = toSignal(this.sharedViewReadWindow.focusedNodePath$, { requireSync: true })
-    readonly hasPreviousFocusedNodePath = computed(() => this.focusedNodePath().length > 1)
 
     readonly wasPathCopied = this.clipboard.copied
 
@@ -84,11 +82,7 @@ export class NodeContextMenuComponent {
 
     readonly isFolder = computed(() => (this.menuNode()?.children?.length ?? 0) > 0)
     readonly isShowInExplorerVisible = computed(() => this.rightClickedNodeData()?.origin !== "explorer")
-    readonly isRadialLayout = injectIsRadialLayout()
-    private readonly canFocusFiles = computed(() => this.focusableNodes === "foldersAndFiles" && !this.isRadialLayout())
-    readonly isFocusOffered = computed(
-        () => this.focusableNodes !== "none" && !this.isNodeFocused() && (this.isFolder() || this.canFocusFiles())
-    )
+    readonly isFocusOffered = computed(() => this.focusableNodes !== "none" && !this.isNodeFocused() && this.isFolder())
     readonly isUnfocusOffered = computed(() => this.focusableNodes !== "none" && (this.isNodeFocused() || this.isParentFocused()))
     readonly hasViewActions = computed(() => this.showMapActions || this.isFocusOffered() || this.isUnfocusOffered())
     readonly displayPath = computed(() => {
@@ -151,11 +145,6 @@ export class NodeContextMenuComponent {
 
     unfocusNode() {
         this.writeStore.unfocus()
-        this.close()
-    }
-
-    unfocusAllNodes() {
-        this.writeStore.unfocusAll()
         this.close()
     }
 

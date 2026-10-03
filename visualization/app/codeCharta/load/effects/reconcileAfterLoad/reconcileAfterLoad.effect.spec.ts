@@ -185,15 +185,15 @@ describe("ReconcileAfterLoadEffect", () => {
 
     // ── replaces UnfocusNodesEffect ────────────────────────────────────────────────────
 
-    it("should unfocus all nodes when files are loaded", async () => {
+    it("should unfocus when files are loaded", async () => {
         // Act
         await loadFileAndSignal()
 
         // Assert
-        expect(dispatchedActionsOfType("UNFOCUS_ALL_NODES")).toHaveLength(1)
+        expect(dispatchedActionsOfType("UNFOCUS_NODE")).toHaveLength(1)
     })
 
-    it("should unfocus all nodes when the file selection changes without a load", async () => {
+    it("should unfocus when the file selection changes without a load", async () => {
         // Arrange
         await loadFileAndSignal()
         dispatchSpy.mockClear()
@@ -203,7 +203,7 @@ describe("ReconcileAfterLoadEffect", () => {
         await flushDebounce()
 
         // Assert
-        expect(dispatchedActionsOfType("UNFOCUS_ALL_NODES")).toHaveLength(1)
+        expect(dispatchedActionsOfType("UNFOCUS_NODE")).toHaveLength(1)
     })
 
     // ── replaces ResetChosenMetricsEffect ──────────────────────────────────────────────
@@ -284,7 +284,7 @@ describe("ReconcileAfterLoadEffect", () => {
 
         // Assert
         expect(dispatchedActionsOfType("SET_STATE")).toHaveLength(1)
-        expect(dispatchedActionsOfType("UNFOCUS_ALL_NODES")).toHaveLength(1)
+        expect(dispatchedActionsOfType("UNFOCUS_NODE")).toHaveLength(1)
         expect(dispatchedActionsOfType("SET_AMOUNT_OF_TOP_LABELS")).toHaveLength(1)
     })
 
@@ -367,7 +367,7 @@ describe("ReconcileAfterLoadEffect", () => {
         await flushDebounce()
 
         // Assert — the sequence ran, but did not touch what only a file-set change may touch
-        expect(dispatchedActionsOfType("UNFOCUS_ALL_NODES")).toHaveLength(0)
+        expect(dispatchedActionsOfType("UNFOCUS_NODE")).toHaveLength(0)
         expect(dispatchedActionsOfType("SET_AMOUNT_OF_TOP_LABELS")).toHaveLength(0)
         expect(dispatchedActionsOfType("SET_STATE")).toHaveLength(0)
     })

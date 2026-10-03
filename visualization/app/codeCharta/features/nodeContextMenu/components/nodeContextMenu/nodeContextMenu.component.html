@@ -41,14 +41,9 @@
             </cc-context-menu-item>
         }
         @if (isUnfocusOffered()) {
-            <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show previous focused node" (itemClick)="unfocusNode()">
+            <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show the whole map again" (itemClick)="unfocusNode()">
                 {{ isParentFocused() ? "Unfocus Parent" : "Unfocus" }}
             </cc-context-menu-item>
-            @if (hasPreviousFocusedNodePath()) {
-                <cc-context-menu-item icon="fa-solid fa-crosshairs" hoverHint="Show complete map" (itemClick)="unfocusAllNodes()">
-                    Unfocus All
-                </cc-context-menu-item>
-            }
         }
 
         @if (showMapActions) {

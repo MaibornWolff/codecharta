@@ -5,6 +5,7 @@ import { ExplorerCollapseService } from "../../services/explorerCollapse.service
 import { ExplorerModeService } from "../../services/explorerMode.service"
 import { ExplorerScrollHostService } from "../../services/explorerScrollHost.service"
 import { ExplorerWidthService } from "../../services/explorerWidth.service"
+import { ExplorerFocusBannerComponent } from "../explorerFocusBanner/explorerFocusBanner.component"
 import { ExplorerHeaderComponent } from "../explorerHeader/explorerHeader.component"
 import { ExplorerSearchBarComponent } from "../explorerSearchBar/explorerSearchBar.component"
 import { ExplorerSortControlComponent } from "../explorerSortControl/explorerSortControl.component"
@@ -19,6 +20,7 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
     templateUrl: "./sidebarExplorer.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
+        ExplorerFocusBannerComponent,
         ExplorerHeaderComponent,
         ExplorerSearchBarComponent,
         ExplorerSortControlComponent,

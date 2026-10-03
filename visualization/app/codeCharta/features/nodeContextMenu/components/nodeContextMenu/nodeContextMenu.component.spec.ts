@@ -15,11 +15,7 @@ import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { dependencyViewEnabledSelector } from "../../../../stores/preferences/preferences.read.facade"
-import {
-    currentFocusedNodePathSelector,
-    focusedNodePathSelector,
-    keptHighlightPathsSelector
-} from "../../../../stores/sharedView/sharedView.read.facade"
+import { currentFocusedNodePathSelector, keptHighlightPathsSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
     addFlattenedNodes,
@@ -27,7 +23,6 @@ import {
     keepHighlight,
     removeKeptHighlight,
     setRightClickedNodeData,
-    unfocusAllNodes,
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import { rightClickedNodeDataSelector } from "../../../../stores/sharedView/store/rightClickedNodeData/rightClickedNodeData.selector"
@@ -71,7 +66,6 @@ describe("nodeContextMenu component", () => {
         origin?: "codeMap" | "explorer" | "radialMap" | "dependencyMap"
         activeView?: ViewId
         focusedNodePath?: string
-        previousFocusedNodePath?: string
         capabilities?: NodeContextMenuCapabilities
         pathsWithDomainWords?: ReadonlySet<string>
         isDeltaState?: boolean
@@ -86,7 +80,6 @@ describe("nodeContextMenu component", () => {
         node = fileNode,
         origin = "codeMap",
         focusedNodePath,
-        previousFocusedNodePath,
         capabilities = DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES,
         pathsWithDomainWords = new Set([folderNode.path, fileNode.path]),
         isDeltaState = false,
@@ -100,7 +93,6 @@ describe("nodeContextMenu component", () => {
         const rightClickedNodeData = node
             ? { nodeId: node.id, xPositionOfRightClickEvent: 10, yPositionOfRightClickEvent: 20, origin }
             : null
-        const focusedNodePaths = [focusedNodePath, previousFocusedNodePath].filter(Boolean)
         const renderResult = await render(NodeContextMenuComponent, {
             providers: [
                 provideRouter([]),
@@ -111,7 +103,6 @@ describe("nodeContextMenu component", () => {
                         { selector: rightClickedNodeDataSelector, value: rightClickedNodeData },
                         { selector: rightClickedCodeMapNodeSelector, value: node },
                         { selector: currentFocusedNodePathSelector, value: focusedNodePath },
-                        { selector: focusedNodePathSelector, value: focusedNodePaths },
                         { selector: markFolderItemsSelector, value: [{ color: "red", isMarked: false }] },
                         { selector: currentMarkColorSelector, value: null },
                         { selector: hasDomainDataSelector, value: pathsWithDomainWords.size > 0 },
@@ -148,7 +139,7 @@ describe("nodeContextMenu component", () => {
         // Assert
         expect(screen.getByText("…/RatingBean.java")).not.toBe(null)
         expect(screen.getByText("Show in Explorer")).not.toBe(null)
-        expect(screen.getByText("Focus")).not.toBe(null)
+        expect(screen.queryByText("Focus")).toBe(null)
         expect(screen.getByText("Keep Highlight")).not.toBe(null)
         expect(screen.getByText("Flatten & decolor")).not.toBe(null)
         expect(screen.getByText("Exclude")).not.toBe(null)
@@ -170,7 +161,7 @@ describe("nodeContextMenu component", () => {
         expect(document.querySelector("cc-mark-folder-row")).not.toBe(null)
     })
 
-    it("should not offer to focus a file while the sunburst is shown, which cannot centre on one", async () => {
+    it("should not offer to focus a file in the sunburst", async () => {
         // Arrange & Act
         await renderMenu({ node: fileNode, origin: "radialMap", isRadialLayout: true })
 
@@ -409,15 +400,15 @@ describe("nodeContextMenu component", () => {
         expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
     })
 
-    it("should focus the node and close the menu when clicking focus", async () => {
+    it("should focus the folder and close the menu when clicking focus", async () => {
         // Arrange
-        const { dispatchSpy } = await renderMenu()
+        const { dispatchSpy } = await renderMenu({ node: folderNode })
 
         // Act
         fireEvent.click(screen.getByText("Focus"))
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(focusNode({ value: "/root/src/RatingBean.java" }))
+        expect(dispatchSpy).toHaveBeenCalledWith(focusNode({ value: folderNode.path }))
         expect(dispatchSpy).toHaveBeenCalledWith(setRightClickedNodeData({ value: null }))
     })
 
@@ -430,15 +421,12 @@ describe("nodeContextMenu component", () => {
         expect(screen.getByText("Unfocus")).not.toBe(null)
     })
 
-    it("should offer unfocus all when a previous focus exists", async () => {
-        // Arrange
-        const { dispatchSpy } = await renderMenu({ focusedNodePath: fileNode.path, previousFocusedNodePath: "/root/src" })
-
-        // Act
-        fireEvent.click(screen.getByText("Unfocus All"))
+    it("should offer a single way out of the focus, since a focus replaces the one before it", async () => {
+        // Arrange & Act
+        await renderMenu({ focusedNodePath: fileNode.path })
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(unfocusAllNodes())
+        expect(screen.queryByText("Unfocus All")).toBe(null)
     })
 
     it("should close when pointing down outside the menu", async () => {

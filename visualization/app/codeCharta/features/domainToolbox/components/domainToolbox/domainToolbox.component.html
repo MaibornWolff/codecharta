@@ -1,1 +1,6 @@
+<cc-unfocus-tool [isFocused]="isFocused()" testId="domain-bar-unfocus" (unfocused)="unfocus()"></cc-unfocus-tool>
+@if (isFocused()) {
+    <cc-bar-tools-divider data-testid="domain-tools-divider"></cc-bar-tools-divider>
+}
+<cc-bar-tool label="Show whole cloud" icon="fa-solid fa-expand" testId="domain-reset-view" (activated)="showWholeCloud()"></cc-bar-tool>
 <cc-toolbox-screenshot-button view="domain"></cc-toolbox-screenshot-button>

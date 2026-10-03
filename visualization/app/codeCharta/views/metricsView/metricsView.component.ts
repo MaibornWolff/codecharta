@@ -4,6 +4,8 @@ import { CodeMapComponent } from "../../features/codeMap/facade"
 import { FileExtensionBarComponent } from "../../features/fileExtensionBar/facade"
 import { LegendPanelComponent } from "../../features/legend/facade"
 import {
+    HANDED_OVER_MAP_NODE_ARRIVAL,
+    LeavesFocusForNodeOutsideIt,
     MAP_EXPLORER_SEARCH,
     MAP_EXPLORER_SORT,
     MAP_EXPLORER_VIEW,
@@ -19,12 +21,18 @@ import {
     NodeContextMenuComponent
 } from "../../features/nodeContextMenu/facade"
 import { RadialMapComponent, RadialMapToolsComponent } from "../../features/radialMap/facade"
-import { injectIsRadialLayout, LoadingFileProgressSpinnerComponent, provideViewScopedCssVariables } from "../../features/shared/facade"
+import {
+    injectIsRadialLayout,
+    LoadingFileProgressSpinnerComponent,
+    provideViewScopedCssVariables,
+    SharedFocusStore
+} from "../../features/shared/facade"
 import {
     DEFAULT_EXPLORER_CAPABILITIES,
     EXPLORER_CAPABILITIES,
     EXPLORER_CONTEXT_MENU,
     EXPLORER_COUNTS,
+    EXPLORER_FOCUS,
     EXPLORER_METRIC_RULES,
     EXPLORER_ROW,
     EXPLORER_RULES,
@@ -77,9 +85,12 @@ import { RevealsSelectedNodeAfterLoadDirective } from "./explorer/revealsSelecte
         { provide: EXPLORER_RULES, useExisting: MapExplorerRules },
         MetricsExplorerMetricRules,
         { provide: EXPLORER_METRIC_RULES, useExisting: MetricsExplorerMetricRules },
+        { provide: EXPLORER_FOCUS, useExisting: SharedFocusStore },
         provideExplorerSort(MAP_EXPLORER_SORT),
         provideExplorerSearch(MAP_EXPLORER_SEARCH),
         { provide: MAP_EXPLORER_VIEW, useValue: "metrics" },
+        LeavesFocusForNodeOutsideIt,
+        { provide: HANDED_OVER_MAP_NODE_ARRIVAL, useExisting: LeavesFocusForNodeOutsideIt },
         { provide: EXPLORER_CAPABILITIES, useValue: DEFAULT_EXPLORER_CAPABILITIES },
         { provide: NODE_CONTEXT_MENU_CAPABILITIES, useValue: DEFAULT_NODE_CONTEXT_MENU_CAPABILITIES },
         provideViewScopedExplorerState("metrics"),

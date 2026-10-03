@@ -12,6 +12,7 @@ import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { WordCloudChartRegistry } from "../../services/wordCloudChart.registry"
 import { WordCloudOption } from "../../util/wordCloudOption.model"
+import { WordCloudPanZoom } from "./wordCloudPanZoom"
 
 const RENDER_DEBOUNCE_MS = 150
 const LAYOUT_SETTLE_MS = 200
@@ -46,6 +47,7 @@ interface EchartsWithModel {
 
 export class WordCloudChartHost {
     private chart?: echarts.ECharts
+    private panZoom?: WordCloudPanZoom
     private attachedContainer?: HTMLElement
     private renderTimeout?: ReturnType<typeof setTimeout>
     private layoutSettleTimeout?: ReturnType<typeof setTimeout>
@@ -80,6 +82,7 @@ export class WordCloudChartHost {
         this.chart.on("click", (params: unknown) => this.reportClickedWord(params as EchartsClickParams))
         this.chart.getZr().on("click", (event: unknown) => this.reportClickBesideEveryWord(event as ZrenderClickEvent))
         this.chart.on("contextmenu", (params: unknown) => this.reportRightClickedWord(params as EchartsContextMenuParams))
+        this.panZoom = new WordCloudPanZoom(this.chart)
         container.addEventListener("contextmenu", suppressBrowserMenu)
         this.chartRegistry.register(this.chart)
         this.containerSizeObserver.observe(container)
@@ -165,8 +168,13 @@ export class WordCloudChartHost {
         this.chart?.clear()
         this.chart?.resize()
         this.chart?.setOption(option as unknown as echarts.EChartsCoreOption, true)
+        this.panZoom?.restoreAfterLayout()
         this.mustRestoreHighlightAfterLayout = true
         onRendered()
+    }
+
+    showWholeCloud(): void {
+        this.panZoom?.showWholeCloud()
     }
 
     cancelPendingRender(): void {
@@ -194,6 +202,7 @@ export class WordCloudChartHost {
         }
         this.chart?.dispose()
         this.chart = undefined
+        this.panZoom = undefined
         this.attachedContainer = undefined
     }
 

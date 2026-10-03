@@ -14,7 +14,7 @@ export class DependencyMapArrival implements HandedOverMapNodeArrival {
     /** The graph holds only what lies in the focus, so a node from outside it clears the focus. */
     receive(nodePath: string): void {
         if (!isInsideFocus(nodePath, this.focusedNodePath())) {
-            this.writeStore.unfocusAll()
+            this.writeStore.unfocus()
         }
         this.viewStore.requestFit()
     }

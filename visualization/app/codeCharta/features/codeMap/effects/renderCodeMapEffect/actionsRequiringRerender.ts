@@ -48,7 +48,6 @@ import {
     setMarkedPackages,
     setMetricRules,
     setSearchPattern,
-    unfocusAllNodes,
     unfocusNode,
     unmarkPackage
 } from "../../../../stores/sharedView/sharedView.write.facade"
@@ -92,7 +91,6 @@ export const actionsRequiringRerender = [
     setSearchPattern,
     setAllFocusedNodes,
     focusNode,
-    unfocusAllNodes,
     unfocusNode,
     setHeightMetric,
     setAreaMetric,

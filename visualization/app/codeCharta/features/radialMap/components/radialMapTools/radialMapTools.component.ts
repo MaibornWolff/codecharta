@@ -19,6 +19,6 @@ export class RadialMapToolsComponent {
     protected readonly isFocused = toSignal(inject(RadialMapReadStore).isFocused$, { requireSync: true })
 
     protected unfocus() {
-        this.writeStore.unfocusAll()
+        this.writeStore.unfocus()
     }
 }

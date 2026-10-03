@@ -4,7 +4,7 @@ import { CcState } from "../../../model/codeCharta.model"
 import { DependencyGraphSettings } from "../../../model/dependencyGraph.model"
 import { setEdgeMetric } from "../../../stores/mapState/mapState.write.facade"
 import { setDependencyGraphSettings } from "../../../stores/preferences/preferences.write.facade"
-import { NodeInteraction, setRightClickedNodeData, unfocusAllNodes, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
+import { NodeInteraction, setRightClickedNodeData, unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 
 @Injectable({ providedIn: "root" })
 export class DependencyMapWriteStore {
@@ -39,9 +39,5 @@ export class DependencyMapWriteStore {
 
     unfocus() {
         this.store.dispatch(unfocusNode())
-    }
-
-    unfocusAll() {
-        this.store.dispatch(unfocusAllNodes())
     }
 }

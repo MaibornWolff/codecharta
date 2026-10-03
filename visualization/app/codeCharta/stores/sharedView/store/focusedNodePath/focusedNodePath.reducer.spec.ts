@@ -1,4 +1,4 @@
-import { focusNode, setAllFocusedNodes, unfocusAllNodes, unfocusNode } from "./focusedNodePath.actions"
+import { focusNode, setAllFocusedNodes, unfocusNode } from "./focusedNodePath.actions"
 import { focusedNodePath } from "./focusedNodePath.reducer"
 
 describe("focusedNodePath", () => {
@@ -9,10 +9,10 @@ describe("focusedNodePath", () => {
             expect(result).toEqual(["some/path/*.ts"])
         })
 
-        it("should add focusedNodePath", () => {
-            const result = focusedNodePath(["some/path/*.ts"], focusNode({ value: "foo.ts" }))
+        it("should replace the focus there was, so a single unfocus leaves it", () => {
+            const result = focusedNodePath(["some/path"], focusNode({ value: "some/path/deeper" }))
 
-            expect(result).toEqual(["foo.ts", "some/path/*.ts"])
+            expect(result).toEqual(["some/path/deeper"])
         })
 
         it("should not allow to focus root folder", () => {
@@ -23,26 +23,30 @@ describe("focusedNodePath", () => {
     })
 
     describe("Action: UNFOCUS_NODE", () => {
-        it("should remove focusedNodePath", () => {
-            const result = focusedNodePath(["some/path/*.ts", "foo.ts"], unfocusNode())
+        it("should leave the focus", () => {
+            const result = focusedNodePath(["some/path"], unfocusNode())
 
-            expect(result).toEqual(["foo.ts"])
+            expect(result).toEqual([])
         })
-    })
 
-    describe("Action: UNFOCUS_ALL_NODES", () => {
-        it("should remove all focusedNodePaths", () => {
-            const result = focusedNodePath(["some/path/*.ts", "foo.ts"], unfocusAllNodes())
+        it("should leave a stack of focuses an older state still carries at once", () => {
+            const result = focusedNodePath(["some/path/deeper", "some/path"], unfocusNode())
 
             expect(result).toEqual([])
         })
     })
 
     describe("Action: SET_ALL_FOCUSED_NODES", () => {
-        it("should set all focusedNodePaths", () => {
-            const result = focusedNodePath([], setAllFocusedNodes({ value: ["some/path/*.ts", "foo.ts"] }))
+        it("should restore the focus", () => {
+            const result = focusedNodePath([], setAllFocusedNodes({ value: ["some/path"] }))
 
-            expect(result).toEqual(["some/path/*.ts", "foo.ts"])
+            expect(result).toEqual(["some/path"])
+        })
+
+        it("should keep only the current focus of a stack saved by an older version", () => {
+            const result = focusedNodePath([], setAllFocusedNodes({ value: ["some/path/deeper", "some/path"] }))
+
+            expect(result).toEqual(["some/path/deeper"])
         })
     })
 })

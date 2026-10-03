@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
-import { unfocusAllNodes } from "../../../stores/sharedView/sharedView.write.facade"
+import { unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 import { dependencyLayoutIdentitySelector } from "../selectors/dependencyMap.selectors"
 import { DependencyMapArrival } from "./dependencyMapArrival"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
@@ -64,7 +64,7 @@ describe("DependencyMapArrival", () => {
         arrival.receive(nodePath)
 
         // Assert
-        expect(dispatchSpy).toHaveBeenCalledWith(unfocusAllNodes())
+        expect(dispatchSpy).toHaveBeenCalledWith(unfocusNode())
     })
 
     it("should reveal a node from outside the focus once the graph adopts the unfocused tree", () => {
