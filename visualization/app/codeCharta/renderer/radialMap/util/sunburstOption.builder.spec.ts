@@ -21,7 +21,7 @@ interface DrawnGroup {
 }
 
 function inputs(centre: RadialNode): RadialOptionInputs {
-    return { centre, isMapRoot: false, metrics: { areaMetric: "rloc", colorMetric: "mcc" }, coloring: TEST_COLORING }
+    return { centre, isMapRoot: false, isFocused: false, metrics: { areaMetric: "rloc", colorMetric: "mcc" }, coloring: TEST_COLORING }
 }
 
 function drawn(centre: RadialNode) {

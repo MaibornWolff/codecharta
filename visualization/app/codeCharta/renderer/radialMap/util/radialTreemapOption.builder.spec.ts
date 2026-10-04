@@ -41,6 +41,7 @@ function inputs(centre: RadialNode, overrides: Partial<RadialOptionInputs> = {})
     return {
         centre,
         isMapRoot: false,
+        isFocused: false,
         metrics: { areaMetric: "rloc", colorMetric: "mcc" },
         coloring: TEST_COLORING,
         ...overrides
@@ -253,6 +254,28 @@ describe("buildRadialTreemapOption", () => {
         // Assert
         expect(option.tooltip.formatter(centre)).toContain("Click to go up one folder")
         expect(atRoot.tooltip.formatter(centre)).not.toContain("Click to go up one folder")
+    })
+
+    it("should offer unfocusing in the centre's tooltip when the centre is the focused folder", () => {
+        // Arrange
+        const centre = { data: { name: "/root", value: 60, colorValue: 5, folderValueText: undefined, isCentre: true } }
+
+        // Act
+        const { option } = drawn(TREE, { isMapRoot: true, isFocused: true })
+
+        // Assert
+        expect(option.tooltip.formatter(centre)).toContain("Click to unfocus and go up one folder")
+    })
+
+    it("should offer plain going up below the focused folder", () => {
+        // Arrange
+        const centre = { data: { name: "/root", value: 60, colorValue: 5, folderValueText: undefined, isCentre: true } }
+
+        // Act
+        const { option } = drawn(TREE, { isMapRoot: false, isFocused: true })
+
+        // Assert
+        expect(option.tooltip.formatter(centre)).toContain("<i>Click to go up one folder</i>")
     })
 
     it("should place every piece itself, as a piece that takes the place of a label keeps the label's position otherwise", () => {

@@ -35,6 +35,7 @@ export class RadialChartComponent implements OnDestroy {
     readonly hoveredPath = input<string | null>(null)
     readonly metrics = input.required<RadialMetrics>()
     readonly coloring = input.required<RadialColoring>()
+    readonly isFocused = input(false)
 
     readonly folderClicked = output<string>()
     readonly fileClicked = output<string>()
@@ -86,6 +87,7 @@ export class RadialChartComponent implements OnDestroy {
             view.shape.buildOption({
                 centre: view.centre,
                 isMapRoot: view.centre === this.tree(),
+                isFocused: this.isFocused(),
                 metrics: this.metrics(),
                 coloring: this.coloring()
             }),
