@@ -64,12 +64,12 @@ export class ScreenshotButtonComponent implements OnInit, OnDestroy {
 
     private readonly screenshotToFileHotkeyHandler = () => {
         if (this.isCapturable()) {
-            this.saveToFile()
+            void this.saveToFile()
         }
     }
     private readonly screenshotToClipboardHotkeyHandler = () => {
         if (this.isCapturable() && this.capture.isWriteToClipboardAllowed) {
-            this.copyToClipboard()
+            void this.copyToClipboard()
         }
     }
 
