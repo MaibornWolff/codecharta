@@ -8,7 +8,16 @@ interface RadialFormatterParams {
     data?: RadialTooltipDatum
 }
 
-export function buildTooltipFormatter(metrics: RadialMetrics, isMapRoot: boolean) {
+const GO_UP_HINT = "Click to go up one folder"
+const UNFOCUS_AND_GO_UP_HINT = "Click to unfocus and go up one folder"
+
+interface CentrePosition {
+    isMapRoot: boolean
+    isFocused: boolean
+}
+
+export function buildTooltipFormatter(metrics: RadialMetrics, centrePosition: CentrePosition) {
+    const centreClickHint = getCentreClickHint(centrePosition)
     return ({ data }: RadialFormatterParams): string => {
         if (!data) {
             return ""
@@ -21,9 +30,16 @@ export function buildTooltipFormatter(metrics: RadialMetrics, isMapRoot: boolean
         if (data.folderValueText) {
             rows.push(escapeHtml(data.folderValueText))
         }
-        if (data.isCentre && !isMapRoot) {
-            rows.push("<i>Click to go up one folder</i>")
+        if (data.isCentre && centreClickHint) {
+            rows.push(`<i>${centreClickHint}</i>`)
         }
         return rows.join("<br/>")
     }
+}
+
+function getCentreClickHint({ isMapRoot, isFocused }: CentrePosition): string | null {
+    if (!isMapRoot) {
+        return GO_UP_HINT
+    }
+    return isFocused ? UNFOCUS_AND_GO_UP_HINT : null
 }

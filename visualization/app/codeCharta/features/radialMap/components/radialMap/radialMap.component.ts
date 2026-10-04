@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked, viewChild } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { LayoutAlgorithm } from "../../../../model/codeCharta.model"
 import {
@@ -19,6 +19,7 @@ import {
     FILE_EXTENSION_BAR_HEIGHT_CSS_VARIABLE,
     METRICS_BAR_HEIGHT_CSS_VARIABLE
 } from "../../../../util/barLayout"
+import { ConfirmDialogComponent } from "../../../shared/facade"
 import { RadialMapReadStore } from "../../stores/radialMap.read.store"
 import { RadialMapWriteStore } from "../../stores/radialMap.write.store"
 
@@ -32,7 +33,7 @@ const BOTTOM_INSET_ABOVE_THE_BARS = `calc(${[
 @Component({
     selector: "cc-radial-map",
     templateUrl: "./radialMap.component.html",
-    imports: [RadialChartComponent],
+    imports: [RadialChartComponent, ConfirmDialogComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)]",
@@ -72,6 +73,11 @@ export class RadialMapComponent {
         return { tree, centre: requestedCentrePath === null ? tree : findClosestFolder(tree, requestedCentrePath) }
     })
 
+    private readonly unfocusConfirmation = viewChild.required<ConfirmDialogComponent>("unfocusConfirmation")
+    protected readonly unfocusConfirmationMessage = computed(
+        () => `You are focused on "${this.tree()?.name ?? ""}", so there is no folder above it. Unfocus and go up one folder?`
+    )
+
     constructor() {
         effect(() => this.centreOnTheSelection())
     }
@@ -83,6 +89,18 @@ export class RadialMapComponent {
     protected goUp(): void {
         const view = this.view()
         const parent = view && findParentFolder(view.tree, view.centre.path)
+        if (parent) {
+            this.selectNode(parent.path)
+        } else if (this.isFocused()) {
+            this.unfocusConfirmation().open()
+        }
+    }
+
+    protected unfocusAndGoUp(): void {
+        const focusedFolderPath = this.tree()?.path
+        this.unfocus()
+        const wholeMap = this.tree()
+        const parent = wholeMap && focusedFolderPath && findParentFolder(wholeMap, focusedFolderPath)
         if (parent) {
             this.selectNode(parent.path)
         }

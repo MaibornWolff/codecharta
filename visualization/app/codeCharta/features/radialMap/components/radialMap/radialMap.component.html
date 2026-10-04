@@ -12,6 +12,7 @@
         [hoveredPath]="hoveredPath()"
         [metrics]="metrics()"
         [coloring]="coloring()"
+        [isFocused]="isFocused()"
         (folderClicked)="selectNode($event)"
         (centreClicked)="goUp()"
         (fileClicked)="selectNode($event)"
@@ -28,3 +29,11 @@
         </output>
     </div>
 }
+
+<cc-confirm-dialog
+    #unfocusConfirmation
+    title="Unfocus to go up?"
+    [message]="unfocusConfirmationMessage()"
+    testId="radial-map-unfocus-confirmation"
+    (confirmed)="unfocusAndGoUp()"
+></cc-confirm-dialog>

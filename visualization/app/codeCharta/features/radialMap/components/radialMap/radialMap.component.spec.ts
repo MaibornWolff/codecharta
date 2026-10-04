@@ -114,6 +114,8 @@ describe("RadialMapComponent", () => {
     beforeEach(() => {
         resetStubbedChart()
         stubResizeObserver()
+        HTMLDialogElement.prototype.showModal = jest.fn()
+        HTMLDialogElement.prototype.close = jest.fn()
     })
 
     it("should centre on the top of the map while nothing is selected", async () => {
@@ -299,6 +301,54 @@ describe("RadialMapComponent", () => {
 
         // Act
         fireChartEvent("click", { data: { name: "/root", isCentre: true } })
+
+        // Assert
+        expect(store.dispatch).not.toHaveBeenCalled()
+    })
+
+    it("should ask before leaving the focus when the centre of the focused folder is clicked", async () => {
+        // Arrange
+        const focusedFolder = folderNode("/root/src", [fileNode("/root/src/b.ts")])
+        const { store } = await setup({ tree: focusedFolder, focusedNodePath: "/root/src" })
+
+        // Act
+        fireChartEvent("click", { data: { name: "/root/src", isCentre: true } })
+
+        // Assert
+        expect(HTMLDialogElement.prototype.showModal).toHaveBeenCalledTimes(1)
+        expect(screen.getByText(/You are focused on "src"/)).toBeTruthy()
+        expect(store.dispatch).not.toHaveBeenCalled()
+    })
+
+    it("should unfocus and go up to the parent folder once leaving the focus is confirmed", async () => {
+        // Arrange
+        const focusedFolder = folderNode("/root/src/app", [fileNode("/root/src/app/deep.ts")])
+        const { store, fixture } = await setup({ tree: focusedFolder, focusedNodePath: "/root/src/app" })
+        ;(store.dispatch as jest.Mock).mockImplementation(action => {
+            if (action.type === unfocusNode.type) {
+                store.overrideSelector(radialTreeSelector, TREE)
+                store.refreshState()
+            }
+        })
+        fireChartEvent("click", { data: { name: "/root/src/app", isCentre: true } })
+        fixture.detectChanges()
+
+        // Act
+        screen.getByTestId("confirm-dialog-yes").click()
+
+        // Assert
+        expect(store.dispatch).toHaveBeenCalledWith(unfocusNode())
+        expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: "/root/src" }))
+    })
+
+    it("should keep the focus when leaving it is declined", async () => {
+        // Arrange
+        const focusedFolder = folderNode("/root/src", [fileNode("/root/src/b.ts")])
+        const { store } = await setup({ tree: focusedFolder, focusedNodePath: "/root/src" })
+        fireChartEvent("click", { data: { name: "/root/src", isCentre: true } })
+
+        // Act
+        screen.getByTestId("confirm-dialog-no").click()
 
         // Assert
         expect(store.dispatch).not.toHaveBeenCalled()

@@ -40,7 +40,7 @@ export function buildRadialPiecesOption(inputs: RadialOptionInputs, placements: 
     return {
         aria: { enabled: true },
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
-        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs.isMapRoot) },
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(inputs.metrics, inputs) },
         series: [
             {
                 type: "custom",
