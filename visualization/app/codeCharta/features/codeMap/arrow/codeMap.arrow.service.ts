@@ -8,9 +8,13 @@ import { ColorConverter } from "../../../util/color/colorConverter"
 import { debounce } from "../../../util/debounce"
 import { CodeMapStore } from "../stores/codeMap.store"
 
+// A fixed lift towers over a small map, such as a focused folder, and flattens on a large one.
+const EDGE_LIFT_PER_EDGE_HEIGHT_AS_FRACTION_OF_MAP_SIZE = 0.0125
+
 @Injectable({ providedIn: "root" })
 export class CodeMapArrowService implements OnDestroy {
     private map = new Map<string, Node>()
+    private shownMapSize = 0
     private readonly VERTICES_PER_LINE = 5
     private arrows: Object3D[] = new Array<Object3D>()
     private readonly HIGHLIGHT_BUILDING_DELAY = 1
@@ -106,11 +110,10 @@ export class CodeMapArrowService implements OnDestroy {
 
     addArrow(arrowOriginNode: Node, arrowTargetNode: Node, buildingIsOriginNode: boolean) {
         const mapState = this.codeMapStore.getMapState()
-        const curveScale = 100 * mapState.edgeHeight
 
         // An edge is a relationship between two files; it is drawn from the layout geometry
         // (edge points + building height) and does not depend on the selected height metric.
-        const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
+        const curve = this.createCurve(arrowOriginNode, arrowTargetNode, this.getEdgeLift())
         const color = ColorConverter.getNumber(mapState.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
         this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
         this.setCurveColor(curve, color)
@@ -123,8 +126,7 @@ export class CodeMapArrowService implements OnDestroy {
             const originNode = this.map.get(edge.fromNodeName)
             const targetNode = this.map.get(edge.toNodeName)
             if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
-                const curveScale = 100 * this.codeMapStore.getMapState().edgeHeight
-                const curve = this.createCurve(originNode, targetNode, curveScale)
+                const curve = this.createCurve(originNode, targetNode, this.getEdgeLift())
                 this.previewMode(curve, edge.visible)
             }
         }
@@ -132,6 +134,11 @@ export class CodeMapArrowService implements OnDestroy {
 
     addEdgeMapBasedOnNodes(nodes: Node[]) {
         this.map = this.getNodesAsMap(nodes)
+        this.shownMapSize = nodes.reduce((size, node) => Math.max(size, node.width, node.length), 0)
+    }
+
+    private getEdgeLift() {
+        return this.codeMapStore.getMapState().edgeHeight * EDGE_LIFT_PER_EDGE_HEIGHT_AS_FRACTION_OF_MAP_SIZE * this.shownMapSize
     }
 
     scale() {
@@ -198,10 +205,10 @@ export class CodeMapArrowService implements OnDestroy {
         }
     }
 
-    private createCurve(arrowOriginNode: Node, arrowTargetNode: Node, curveScale) {
+    private createCurve(arrowOriginNode: Node, arrowTargetNode: Node, edgeLift: number) {
         const bezierPoint2 = arrowOriginNode.outgoingEdgePoint.clone()
         const bezierPoint3 = arrowTargetNode.incomingEdgePoint.clone()
-        const arrowHeight = Math.max(bezierPoint2.y + arrowTargetNode.height, bezierPoint3.y + 1) + curveScale
+        const arrowHeight = Math.max(bezierPoint2.y + arrowTargetNode.height, bezierPoint3.y + 1) + edgeLift
         bezierPoint2.setY(arrowHeight)
         bezierPoint3.setY(arrowHeight)
         return new CubicBezierCurve3(arrowOriginNode.outgoingEdgePoint, bezierPoint2, bezierPoint3, arrowTargetNode.incomingEdgePoint)

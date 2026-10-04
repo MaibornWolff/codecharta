@@ -14,6 +14,7 @@ import { CodeMapMesh } from "../../../renderer/threeViewer/rendering/codeMapMesh
 import { ThreeSceneService } from "../../../renderer/threeViewer/threeSceneService"
 import { ThreeMapVisibilityStore } from "../../../renderer/threeViewer/threeViewer.facade"
 import {
+    setEdgeHeight,
     setEdgeMetric,
     setHeightMetric,
     setScaling,
@@ -530,6 +531,49 @@ describe("CodeMapArrowService", () => {
             const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
 
             expect(curve).toBeDefined()
+        })
+    })
+
+    describe("edge lift", () => {
+        const defaultEdgeHeight = 4
+
+        function liftOnMapOfSize(mapSize: number) {
+            codeMapArrowService.addEdgeMapBasedOnNodes([{ ...OUTGOING_NODE, width: mapSize, length: mapSize / 2 }, INCOMING_NODE])
+            return codeMapArrowService["getEdgeLift"]()
+        }
+
+        it("should lift the edges in proportion to the size of the shown map", () => {
+            // Arrange
+            const sizeOfFocusedFolder = 400
+            const sizeOfWholeMap = 8000
+
+            // Act
+            const liftOnFocusedFolder = liftOnMapOfSize(sizeOfFocusedFolder)
+            const liftOnWholeMap = liftOnMapOfSize(sizeOfWholeMap)
+
+            // Assert
+            expect(liftOnFocusedFolder).toBe(defaultEdgeHeight * 0.0125 * sizeOfFocusedFolder)
+            expect(liftOnWholeMap / liftOnFocusedFolder).toBe(sizeOfWholeMap / sizeOfFocusedFolder)
+        })
+
+        it("should lift the edges higher for a higher edge height setting", () => {
+            // Arrange
+            const liftAtDefaultEdgeHeight = liftOnMapOfSize(1000)
+            store.dispatch(setEdgeHeight({ value: defaultEdgeHeight * 2 }))
+
+            // Act
+            const liftAtDoubledEdgeHeight = liftOnMapOfSize(1000)
+
+            // Assert
+            expect(liftAtDoubledEdgeHeight).toBe(liftAtDefaultEdgeHeight * 2)
+        })
+
+        it("should not lift the edges before a map was laid out", () => {
+            // Act
+            const lift = codeMapArrowService["getEdgeLift"]()
+
+            // Assert
+            expect(lift).toBe(0)
         })
     })
 

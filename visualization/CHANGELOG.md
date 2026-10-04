@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **The explorer follows the focus**: while you are focused on a folder, the explorer of every view lists that folder alone, under a banner that brings the whole project back with a click.
 - **A focused folder fills the 3D map**: focusing a folder lays the 3D map out around it, so it fills the map and its subfolders carry their floor labels as the whole project does.
 - **Going up from a focused folder**: clicking the centre of the sunburst or radial treemap while it shows the focused folder asks whether to unfocus and go up, instead of doing nothing.
+- **Edge height follows the map**: edges in the 3D map arch in proportion to the size of the map shown, so they no longer tower over a small map such as a focused folder.
 - **One focus at a time**: focusing a folder replaces the focus you had, so a single Unfocus brings back the whole map and Unfocus All is gone.
 - **Tools on the bars**: centering, the flashlight and the screenshot sit in a small tab on the edge of each view's bar instead of floating over the map, each tool shows its name when you point at it, and an Unfocus button joins them while you are focused on a folder.
 
