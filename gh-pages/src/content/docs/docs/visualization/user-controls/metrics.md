@@ -11,22 +11,20 @@ The bar is split into columns, one per visual dimension:
 - **Area** – the footprint (base size) of each building.
 - **Height** – how tall each building is.
 - **Color** – which colour each building is tinted with.
+- **Edges** – shown only when the map carries edges (see [Edges](#edges)).
 - **Labels** and **Scenarios** – covered on their own pages (see below).
+
+Two small tabs sit on the top edge of the bar: **Layout** on the left (see [Layout](#layout)) and the [map tools](/docs/visualization/user-controls/map-tools) on the right.
 
 Each metric column shows the chosen metric's name and the summed (Σ) value across the map. Click a column's name to open a searchable list and pick a different metric, or click its **gear icon** to open a settings popover that fine-tunes how that dimension behaves. The small **link icon** sitting between Height and Color ties those two dimensions to the same metric (see [Linking height and color](#linking-height-and-color)).
 
-If your map contains **edges** (connections between buildings, for example call or co-change relationships), an additional edge metric appears in the bar with its own settings popover for previewing and styling those edges.
-
 ## Layout
 
-The **Layout** tab on top of the bar names the current map layout. Click it to pick one of four layouts:
+The **Layout** tab on top of the bar names the current map layout. Click it to pick one of five layouts: **Squarified TreeMap** (the default), **StreetMap**, **TreeMapStreet**, **Sunburst** and **Radial TreeMap**.
 
-- **Squarified TreeMap** – the default, traditional treemap layout that packs buildings into rectangles with aspect ratios close to squares for easy comparison.
-- **StreetMap** – a street-like layout that places buildings along paths, mirroring the folder hierarchy as a network of streets.
-- **TreeMapStreet** – a hybrid layout that combines the treemap and street approaches.
-- **Sunburst** – a flat chart of your folders and files as rings around the folder you are in. Height, edges and labels do not apply to it, so the bar hides them while it is shown.
+![The layout picker](/assets/images/docs/visualization/user-controls/metrics-layout.jpeg)
 
-When **TreeMapStreet** is picked, a **Maximum TreeMap Files** control appears under the layouts (a slider plus a number input, range 1–1000) that limits how many files are rendered as a treemap before the street layout takes over.
+Sunburst and Radial TreeMap are flat: height, edges and labels do not apply to them, so the bar hides those columns and shows a **Folders** column instead. The layouts and their extra controls are described on the [Map Layouts](/docs/visualization/user-controls/layouts) page.
 
 ## Area
 
@@ -82,6 +80,21 @@ The **Bands** list shows each colour band with the **count** of buildings that c
 ### Folder overrides
 
 Under **Folder Overrides** you can **Pin a folder color…** to tint a specific folder's floor with a fixed colour. The buildings inside still keep their metric-based colours. This is useful for highlighting a team's area or a subsystem on the map. Pinned folders are listed here with a count, and each can be recoloured or unpinned individually.
+
+## Edges
+
+If your map contains **edges** (connections between buildings, for example dependencies or co-change relationships), an **Edges** column appears in the bar. Its name opens the list of edge metrics; the value below shows the number of incoming and outgoing edges. Hovering or selecting a building draws its edges for the selected edge metric.
+
+![The Edges settings popover](/assets/images/docs/visualization/user-controls/metrics-edges.jpeg)
+
+Open the gear icon on the Edges column to adjust:
+
+- **Preview** – how many buildings have their edges drawn without being hovered, starting with the buildings that have the most edges.
+- **Height** – how high the edge curves arch above the map (1–9).
+- **Outgoing Edge** / **Incoming Edge** – the color of each direction, and a **Show** checkbox to hide one of them.
+- **Only show nodes with edges** – hides every building that has no edge for the selected metric.
+- **Disable edge metric** – switches the edges off without removing the column.
+- **Reset edge metric settings** – restores these settings to their defaults.
 
 ## Linking height and color
 

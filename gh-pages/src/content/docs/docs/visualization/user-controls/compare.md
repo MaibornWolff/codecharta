@@ -4,7 +4,7 @@ title: "Compare"
 
 **Compare** mode (also called **delta** mode) shows the difference between two loaded maps instead of a single map. Each building is rendered as the *delta* of its metrics, so you can see at a glance which files grew, shrank, were added, or stayed the same between the two maps.
 
-To use Compare you need **at least two maps loaded** (load multiple `cc.json` files by holding _shift_ while selecting them, or merge them beforehand). Once two maps are available, switch on Compare from the **Compare** entry in the top navigation bar. When it is active, the top bar shows two map selectors with a swap control between them, and the map is recolored to show the delta.
+To use Compare you need **at least two maps loaded** (load multiple `cc.json` files by holding _shift_ while selecting them, or merge them beforehand). Once two maps are available, switch on Compare from the **Compare** entry in the [mode bar](/docs/visualization/user-controls/views#the-mode-bar): hover the **Metric** tab in the top bar and pick **Compare**. Compare belongs to the Metric view and is not offered while the map layout is Sunburst or Radial TreeMap. When it is active, the top bar shows two map selectors with a swap control between them, and the map is recolored to show the delta.
 
 ![Compare mode showing the delta between two maps](/assets/images/docs/visualization/user-controls/compare.jpeg)
 
@@ -27,6 +27,6 @@ In Compare mode the building colors no longer represent the color metric. Instea
 - **Red** — the height metric **decreased** (negative delta). This is the `negativeDelta` color (default `#ff0E0E`).
 - **Grey** — the building is **unchanged** (no delta), or it is flattened.
 
-These are the default semantics: by default an increase in the height metric is green and a decrease is red. You can flip them by inverting the delta colors in the color settings, in which case the meaning of green and red is reversed. The legend reflects the current assignment, labeling the two colors **"+Δ positive delta"** and **"–Δ negative delta"**.
+These are the default semantics: by default an increase in the height metric is green and a decrease is red. You can flip them by inverting the delta colors in the color settings, in which case the meaning of green and red is reversed. The Color column of the metric bar is reduced to its settings in Compare mode. The legend reflects the current assignment, labeling the two colors **"+Δ positive delta"** and **"–Δ negative delta"**.
 
-At the bottom of the screen the **metric bar** shows the delta numerically. Alongside the summed metric value (`Σ`), each metric displays its delta with a `Δ` prefix — for example `Σ 63.229 Δ22.949` for the area metric and `Σ 8.966 Δ2.663` for the height metric in the screenshot above. These `Δ` values tell you, in absolute numbers, how much each selected metric changed between the reference and the comparison map.
+At the bottom of the screen the **metric bar** shows the delta numerically. Alongside the summed metric value (`Σ`), each metric displays its delta with a `Δ` prefix — for example `Σ 193,199 Δ97,838` for the area metric and `Σ 30,668 Δ15,630` for the height metric in the screenshot above. These `Δ` values tell you, in absolute numbers, how much each selected metric changed between the reference and the comparison map.

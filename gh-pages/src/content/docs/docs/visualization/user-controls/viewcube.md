@@ -2,11 +2,13 @@
 title: "Viewcube"
 ---
 
-The **Viewcube** is the navigation widget in the top-right corner of the CodeCharta Web Studio. It mirrors the orientation of the map's camera as a small 3D cube, lets you snap to a fixed viewing angle with a single click, and groups together a row of toolbar buttons and a zoom slider for controlling how you look at the map.
+The **Viewcube** is the navigation widget in the top-right corner of the 3D map. It mirrors the orientation of the map's camera as a small 3D cube and lets you snap to a fixed viewing angle with a single click. Next to it sits the zoom slider.
 
-![The Viewcube in the top-right corner, with its toolbar row and zoom slider](/assets/images/docs/visualization/user-controls/viewcube.jpeg)
+![The Viewcube in the top-right corner, with the zoom slider](/assets/images/docs/visualization/user-controls/viewcube.jpeg)
 
-The cube always reflects the current camera: as you orbit the map, the cube rotates in sync, so it doubles as a compass for the 3D scene. Above the cube sits a row of three small toolbar buttons, and to its right is a vertical zoom slider showing the current zoom level (140% in the screenshot above).
+The cube always reflects the current camera: as you orbit the map, the cube rotates in sync, so it doubles as a compass for the 3D scene. To its right is a vertical zoom slider showing the current zoom level (140% in the screenshot above).
+
+The Viewcube belongs to the 3D [layouts](/docs/visualization/user-controls/layouts); the flat Sunburst and Radial TreeMap layouts have no camera to turn.
 
 ## Changing the camera angle
 
@@ -18,7 +20,7 @@ The cube is divided into clickable regions: its **faces**, **edges**, and **corn
 
 As you hover over the cube, the region under the cursor highlights so you can see which perspective you are about to jump to. Clicking it rotates the camera to that fixed orientation. You can also **drag directly on the cube** to orbit the map freely, just as you would by dragging on the map itself.
 
-To return to the default framing, use the **compass** button (the left-most toolbar icon above the cube). It recenters and re-fits the camera so the whole map is in view again. This is the same action referenced in the controls overview: click a side or edge of the Viewcube to change the perspective, or click the compass to reset the view.
+To return to the default framing, use the **Center map** tool on the metric bar. It recenters and re-fits the camera so the whole map is in view again. See [Map Tools](/docs/visualization/user-controls/map-tools).
 
 ## Zooming
 
@@ -31,10 +33,6 @@ You can:
 
 The slider stays in sync with zooming you do directly on the map (for example with the mouse wheel), so it always reflects the current zoom level.
 
-## Toolbox
+## Center, screenshot and flashlight
 
-The three buttons in the toolbar row above the cube are, from left to right:
-
-- **Compass (center map).** Recenters and auto-fits the camera so the entire map fits back into view. Use this whenever you have orbited or zoomed away and want to get back to a clean overview of the whole map.
-- **Camera (screenshot).** Takes a screenshot of the map. Depending on your settings, it either saves the image as a file or copies it to the clipboard. The same action is available via keyboard shortcuts: **Ctrl+Alt+S** to save as a file and **Ctrl+Alt+F** to copy to the clipboard.
-- **Lightbulb (flashlight hover effect).** Toggles a presentation "flashlight" effect: when enabled, hovering over the map lights up buildings under the cursor, which is useful when presenting or demoing a map. The button stays highlighted while the effect is active; click it again to turn the effect off.
+The three buttons that used to sit above the cube — center map, screenshot and flashlight — are now on the tab at the right edge of the metric bar. See [Map Tools](/docs/visualization/user-controls/map-tools).

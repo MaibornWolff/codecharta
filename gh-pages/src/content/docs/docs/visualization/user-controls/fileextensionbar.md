@@ -2,7 +2,7 @@
 title: "Fileextensionbar"
 ---
 
-The **distribution bar** is the thin horizontal bar at the very bottom of the Web Studio. It shows how the currently selected **area metric** (for example `rloc`) is distributed across the file types (extensions) in the loaded map, drawn as proportional colored segments.
+The **distribution bar** is the thin horizontal bar at the bottom of the Metric view, directly above the bottom bar. It shows how the currently selected **area metric** (for example `rloc`) is distributed across the file types (extensions) in the loaded map, drawn as proportional colored segments.
 
 ![File extension distribution bar](/assets/images/docs/visualization/user-controls/fileextensionbar.jpeg)
 
@@ -22,6 +22,6 @@ A few details about how the segments are built:
 
 ## Interaction
 
-- **Hover** a segment to highlight all buildings of that file extension in the 3D map (hovering **other** highlights every grouped extension at once).
+- **Hover** a segment to highlight all files of that extension in the map, in the radial layouts too (hovering **other** highlights every grouped extension at once).
 - **Click** a segment to toggle the labels between relative percentages and absolute metric values.
 - **Right-click** a segment to open a context menu with actions for that extension: **Flatten** (or **Show** if already flattened) and **Exclude**.
