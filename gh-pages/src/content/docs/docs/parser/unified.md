@@ -15,7 +15,7 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | Typescript   | .ts, .cts, .mts                        |
 | TSX          | .tsx                                   |
 | Java         | .java                                  |
-| Kotlin       | .kt                                    |
+| Kotlin       | .kt, .kts                              |
 | C#           | .cs                                    |
 | C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
 | C            | .c, .h                                 |
@@ -157,7 +157,7 @@ contribute to complexity:
   `compact_constructor_declaration`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### Kotlin (.kt)
+##### Kotlin (.kt, .kts)
 
 - **Control flow**: `if_expression`, `for_statement`, `while_statement`, `do_while_statement`, `elvis_expression`, `conjunction_expression`,
   `disjunction_expression`, `when_entry`, `catch_block`
@@ -215,7 +215,7 @@ contribute to complexity:
 
 ##### Ruby (.rb)
 
-- **Control flow**: `if`, `elsif`, `for`, `until`, `while`, `do_block`, `when`, `else`, `rescue`
+- **Control flow**: `if`, `elsif`, `for`, `until`, `while`, `do_block`, `conditional`, `when`, `else`, `rescue`
 - **Functions**: `lambda`, `method`, `singleton_method`
 - **Logical operators**: `&&`, `||`, `and`, `or` in binary expressions
 
@@ -290,7 +290,7 @@ Function counting identifies different types of function definitions per languag
 - **Methods and constructors**: `method_declaration`, `constructor_declaration`, `compact_constructor_declaration`
 - **Lambda expressions**: Assigned to variables (detected via `variable_declarator` with `lambda_expression` value)
 
-##### Kotlin (.kt)
+##### Kotlin (.kt, .kts)
 
 - **Simple functions**: `secondary_constructor`, `setter`, `getter`
 - **Complex functions**: Property declarations with lambda literals, anonymous functions, or initializers; function declarations with
@@ -371,7 +371,8 @@ This metric is calculated by counting all lines that are not identified as comme
 
 Parameters per function counts the number of parameters declared for each function. The metric identifies parameter nodes specific to each language:
 
-- **JavaScript/TypeScript/TSX**: `formal_parameter`, `required_parameter`
+- **JavaScript**: `identifier` parameters
+- **TypeScript/TSX**: `required_parameter`
 - **Java**: `formal_parameter`
 - **Kotlin**: `parameter`
 - **C#**: `parameter`
@@ -380,10 +381,10 @@ Parameters per function counts the number of parameters declared for each functi
 - **Objective-C**: `parameter_declaration` (C functions), `keyword_declarator` (Objective-C method parameters)
 - **Python**: `identifier` parameters in `parameters` node
 - **Go**: `parameter_declaration`
-- **PHP**: `simple_parameter`, `variadic_parameter`, `property_promotion_parameter`
+- **PHP**: `simple_parameter`
 - **Ruby**: `identifier` parameters
 - **Swift**: `parameter`
-- **Bash**: Parameters are counted from function definitions
+- **Bash**: not counted, as Bash functions declare no parameters
 - **Delphi**: `declArg`
 - **Rust**: `parameter` (the `self` receiver is a distinct `self_parameter` node and is excluded)
 
@@ -412,7 +413,7 @@ can indicate tight coupling and violations of the Law of Demeter. The metric cou
 - **Chain nodes**: `method_invocation`, `field_access`
 - **Call nodes**: `method_invocation`
 
-##### Kotlin (.kt)
+##### Kotlin (.kt, .kts)
 
 - **Chain nodes**: `call_expression`, `navigation_expression`
 - **Call nodes**: `call_expression`
@@ -431,6 +432,11 @@ can indicate tight coupling and violations of the Law of Demeter. The metric cou
 
 - **Chain nodes**: `call_expression`, `field_expression`
 - **Call nodes**: `call_expression`
+
+##### Objective-C (.m)
+
+- **Chain nodes**: `call_expression`, `field_expression`, `message_expression`
+- **Call nodes**: `call_expression`, `message_expression`
 
 ##### Python (.py)
 

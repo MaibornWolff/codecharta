@@ -12,7 +12,7 @@ The first file with visualisation data is used as reference for the merging stra
 - leaf (beta): fit leaf nodes into reference structure according to their name (and tail of their path),
   either adding missing leaves (`--add-missing`) or ignoring them (default)
 
-Both strategies will merge the unique list entries for `attributeTypes`, `analyzers` and `blacklist`. If multiple files contain the same metric, the max value will be used for the output.
+Both strategies will merge the unique list entries for `attributeTypes` and `analyzers`. If multiple files contain the same metric, the max value will be used for the output.
 
 ### Usage and Parameters
 
@@ -27,12 +27,13 @@ Both strategies will merge the unique list entries for `attributeTypes`, `analyz
 | `-o, --output-file=<outputFile>` | output File (or empty for stdout; [MIMO mode] output folder)                     |
 | `--recursive`                    | use recursive merging strategy (default)                                         |
 | `--mimo`                         | merge multiple files with the same prefix into multiple output files             |
-| `-ld, --levenshtein-distance`    | [MIMO mode] levenshtein distance for name match suggestions                      |
+| `-ld, --levenshtein-distance`    | [MIMO mode] levenshtein distance for name match suggestions (default: 3; 0 for no suggestions) |
 | `-f`                             | force merge non-overlapping modules at the top-level structure                   |
 | `--large`                        | merge multiple project files into one output file, separated by their dot-prefix |
 
 ```
-Usage: ccsh merge [-ah] [--ignore-case] [--leaf] [-nc] [--recursive]
+Usage: ccsh merge [-afh] [--ignore-case] [--large] [--leaf] [--mimo] [-nc]
+                  [--recursive] [-ld=<levenshteinDistance>]
                   [-o=<outputFile>] FILE or FOLDER...
 ```
 

@@ -31,6 +31,6 @@ ccsh inspect --levels=2 foo.cc.json
 Instead of providing a cc.json file as input, a project can also be piped to the filter:
 
 ```
-cat demo.cc.json | sh ccsh inspect
+cat demo.cc.json | ccsh inspect
 ```
 

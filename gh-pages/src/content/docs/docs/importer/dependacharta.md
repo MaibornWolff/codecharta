@@ -6,15 +6,18 @@ title: "DependaCharta Importer"
 
 > **Deprecated.** Use the [Dependency Parser](/docs/parser/dependency) instead: it runs DependaCharta's analysis on
 > the source itself and keeps the declaration kinds, levels, cycles and upward flags this importer flattens away.
-> The command still works and says so on every run; it will be removed.
+> The command still works and says so on every run; it will be removed. DependaCharta itself names its output
+> `.cg.json`, so the shell's parser suggestions, which look for `.dc.json`, do not offer this importer for it.
 
-The DependaChartaImporter generates visualization data from DependaCharta `.dc.json` files. DependaCharta analyzes code-level dependencies between classes, functions, and other code entities and records them with their physical file paths. The importer aggregates these entity-level dependencies into file-level edges so they can be visualized in CodeCharta. Note that the metrics generated here are edge metrics.
+The DependaChartaImporter generates visualization data from DependaCharta `.dc.json` files. DependaCharta analyzes code-level dependencies between classes, functions, and other code entities and records them with their physical file paths. The importer aggregates these entity-level dependencies into file-level edges so they can be visualized in CodeCharta. Besides the edge metric it writes two metrics per file that count those edges.
 
-### Supported (Edge) Metrics
+### Supported Metrics
 
-| Metric         | Description                                              |
-| -------------- | -------------------------------------------------------- |
-| `dependencies` | Number of code-level dependency links between two files  |
+| Metric                  | Kind | Description                                                          |
+| ----------------------- | ---- | -------------------------------------------------------------------- |
+| `dependencies`          | edge | Number of code-level dependency links between two files              |
+| `outgoing_dependencies` | file | Number of code-level dependency links from this file to other files  |
+| `incoming_dependencies` | file | Number of code-level dependency links from other files to this file  |
 
 ### Usage and Parameters
 
@@ -55,6 +58,8 @@ Usage: ccsh dependachartaimport [-h] [-nc] [-o=<outputFile>] FILE
 
 ### Example File Content
 
+The `cc.json` file is formatted for readability and its `attributeDescriptors` are left out.
+
 ```json
 $ cat project.dc.json
 {
@@ -90,28 +95,71 @@ $ cat project.dc.json
 ```json
 $ cat dependencies.cc.json
 {
-  "projectName": "",
-  "apiVersion": "1.5",
-  "nodes": [
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.1",
+    "checksum": "9b6ea0bb0bda479efea6e86c4c1c75af"
+  },
+  "files": [
     {
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
-      "children": []
+      "children": [
+        {
+          "id": "fabeab231626f275",
+          "name": "src",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "6720aa93a5d244cb",
+              "name": "FileA.ts",
+              "type": "File",
+              "link": ""
+            },
+            {
+              "id": "e6e235c8e4a029fb",
+              "name": "FileB.ts",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
     }
   ],
-  "edges": [
-    {
-      "fromNodeName": "/root/src/FileA.ts",
-      "toNodeName": "/root/src/FileB.ts",
+  "lenses": {
+    "metrics": {
       "attributes": {
-        "dependencies": 1
+        "6720aa93a5d244cb": {
+          "outgoing_dependencies": 1,
+          "incoming_dependencies": 0
+        },
+        "e6e235c8e4a029fb": {
+          "outgoing_dependencies": 0,
+          "incoming_dependencies": 1
+        }
+      },
+      "attributeTypes": {
+        "outgoing_dependencies": "absolute",
+        "incoming_dependencies": "absolute"
       }
-    }
-  ],
-  "attributeTypes": {
-    "edges": {
-      "dependencies": "absolute"
+    },
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "6720aa93a5d244cb",
+          "toId": "e6e235c8e4a029fb",
+          "attributes": {
+            "dependencies": 1
+          }
+        }
+      ],
+      "attributeTypes": {
+        "dependencies": "absolute"
+      }
     }
   }
 }

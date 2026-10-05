@@ -4,7 +4,7 @@ title: "Commit-Based Analysis"
 
 The `--commit` option enables analyzing a codebase at any historical point in time without manually checking out that commit. It creates a temporary git worktree, runs the analysis against it, and cleans up automatically.
 
-This option is available on the [UnifiedParser](/docs/parser/unified), [RawTextParser](/docs/parser/raw-text), and [GitLogParser](/docs/parser/git-log) (repo-scan subcommand).
+This option is available on the [UnifiedParser](/docs/parser/unified), [RawTextParser](/docs/parser/raw-text), [Dependency Parser](/docs/parser/dependency), [Domain Language Parser](/docs/parser/domain-language), and [GitLogParser](/docs/parser/git-log) (repo-scan subcommand).
 
 ### How It Works
 

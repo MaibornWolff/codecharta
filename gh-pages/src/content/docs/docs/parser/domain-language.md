@@ -7,12 +7,12 @@ title: "Domain Language Parser"
 This parser extracts the *domain vocabulary* of a codebase. It tokenizes identifiers, comments and
 string literals across the supported languages, filters out programming-language keywords and technical
 stop words, and counts how often each (optionally n-gram) word occurs. The word-frequency data is
-written into the reserved cc.json 2.0 **`domain` lens**, keyed by node id, for every file and
-aggregated for every folder (and the project root).
+written into the reserved cc.json **`domain` lens**, keyed by node id, for every file. Folders carry
+no words of their own.
 
 The `domain` lens payload keys its entries under `nodes`:
 `{ "nodes": { "<nodeId>": { "words": [{ "text", "frequency", "tfidf"? }, ...] } } }`.
-`tfidf` is only present when TF-IDF scoring is enabled and defined.
+`tfidf` is only present when TF-IDF scoring is enabled and defined; it is rounded to three decimals.
 
 ### Supported Languages
 
@@ -25,12 +25,16 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `FILE or FOLDER`                          | file/project to parse                                                                           |
 | `-o, --output-file=<outputFile>`          | output file (or empty for stdout)                                                              |
 | `-nc, --not-compressed`                   | save uncompressed output file                                                                  |
+| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of file-extensions to parse only those files (default: all supported)     |
+| `-e, --exclude=<patterns>`                | comma-separated list of regex patterns to exclude files/folders                                |
+| `-ibf, --include-build-folders`           | include build and common resource folders                                                      |
 | `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion                                              |
-| `--verbose`                               | verbose mode (also shows an analysis progress bar)                                             |
+| `--commit=<ref>`                          | analyze the codebase at a specific git commit/tag/branch (creates a temporary worktree). See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
+| `--verbose`                               | verbose mode                                                                                   |
 | `--exclude-tests`                         | exclude test files from the analysis (test files are included by default)                     |
 | `--ngrams=<ngrams>`                       | generate n-grams up to size N (1=words, 2=bigrams, 3=trigrams; default 1)                      |
 | `--no-ssr`                                | disable Statistical Substring Reduction for n-grams (enabled by default when `--ngrams` > 1)   |
-| `--limit=<limit>`                         | limit each node to its top X words (all words if not set)                                      |
+| `--limit=<limit>`                         | limit each file to its top X words (all words if not set)                                      |
 | `--sort-by=<FREQUENCY\|TFIDF>`            | sort words by frequency (default) or TF-IDF score                                              |
 | `--stop-word-level=<MINIMAL\|MODERATE\|AGGRESSIVE>` | technical stop word filtering level (default MODERATE)                               |
 | `--no-technical-stopwords`                | disable filtering of common technical words (e.g. `test`, `util`, `handler`)                  |
@@ -40,9 +44,10 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |
 | `-h, --help`                              | displays this help and exits                                                                    |
 
-`--limit` is applied per node **before** folders aggregate their files, so a folder's word frequencies
-are the sum of the words that survived each file's limit, not full corpus totals. Leave it unset when
-you need exact folder counts.
+`--limit` is applied per file, so anything that sums the words of a folder afterwards adds up the words
+that survived each file's limit, not full corpus totals. Leave it unset when you need exact folder counts.
+
+`--base-file` and `--local-changes` are accepted but have no effect on this parser.
 
 The input may be a folder or a single source file. Either way the surrounding directory defines the
 analysis — `.dlcignore`, framework detection and the paths words are keyed by are relative to it. A run
@@ -56,7 +61,7 @@ Analyze a project folder and write a compressed cc.json:
 ccsh domainlanguageparser foo/bar/project -o out.cc.json
 ```
 
-Keep only the top 25 words per node, ranked by TF-IDF:
+Keep only the top 25 words per file, ranked by TF-IDF:
 
 ```
 ccsh domainlanguageparser foo/bar/project --limit=25 --sort-by=TFIDF -o out.cc.json

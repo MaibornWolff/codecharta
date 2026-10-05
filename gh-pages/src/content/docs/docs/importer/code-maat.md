@@ -48,11 +48,11 @@ Usage: ccsh codemaatimport [-h] [-nc] [-o=<outputFile>] FILE...
    ccsh codemaatimport edges.csv -o edges.cc.json
    ```
 
-4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/EdgeFilter/README.md)
+4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](/docs/filter/edge-filter)
    ```bash
    ccsh edgefilter edges.cc.json -o visual_edges.cc.json
    ```
-5. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/MergeFilter/README.md)
+5. Merge the coupling data with the project metrics file while using the [MergeFilter](/docs/filter/merge-filter)
 
    ```bash
    ccsh merge visual_edges.cc.json metrics.cc.json -o merged.cc.json
@@ -63,6 +63,8 @@ Usage: ccsh codemaatimport [-h] [-nc] [-o=<outputFile>] FILE...
 ![Image](/assets/images/docs/codemaat/codemaatimport-modell.png)
 
 ### Example File Content
+
+The `cc.json` files are formatted for readability and their `attributeDescriptors` are left out.
 
 ```
 
@@ -91,39 +93,76 @@ app/testVille.html, app/codeCharta.html, 42, 8
 
 \$ cat edges.cc.json
 {
-  "projectName": "Sample Project with edges",
-  "apiVersion": "1.2",
-  "nodes": [
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.1",
+    "checksum": "fdbcc27628d9920e9b74c4afcc59d114"
+  },
+  "files": [
     {
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
+      "children": [
+        {
+          "id": "06121309c9b10d8a",
+          "name": "app",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "6b185a8cc9433de8",
+              "name": "codeCharta.html",
+              "type": "File",
+              "link": ""
+            },
+            {
+              "id": "d515f754245533a8",
+              "name": "codeCharta.scss",
+              "type": "File",
+              "link": ""
+            },
+            {
+              "id": "4c6b71df479538b7",
+              "name": "testVille.html",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
       "attributes": {},
-      "children": []
-    }
-  ],
-  "edges": [
-    {
-      "fromNodeName": "/root/app/codeCharta.html",
-      "toNodeName": "/root/app/codeCharta.scss",
-      "attributes": {
-        "pairingRate": 56,
-        "avgCommits": 10
-      }
+      "attributeTypes": {}
     },
-    {
-      "fromNodeName": "/root/app/testVille.html",
-      "toNodeName": "/root/app/codeCharta.html",
-      "attributes": {
-        "pairingRate": 42,
-        "avgCommits": 8
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "6b185a8cc9433de8",
+          "toId": "d515f754245533a8",
+          "attributes": {
+            "pairingRate": 56,
+            "avgCommits": 10
+          }
+        },
+        {
+          "fromId": "4c6b71df479538b7",
+          "toId": "6b185a8cc9433de8",
+          "attributes": {
+            "pairingRate": 42,
+            "avgCommits": 8
+          }
+        }
+      ],
+      "attributeTypes": {
+        "pairingRate": "relative",
+        "avgCommits": "absolute"
       }
     }
-  ],
-  "attributeTypes": {
-    "edges": [
-      "pairingRate": "relative",
-      "avgCommits": "absolute"
-    ]
   }
 }
 
@@ -133,71 +172,85 @@ app/testVille.html, app/codeCharta.html, 42, 8
 
 \$ cat visual_edges.cc.json
 {
-  "projectName": "Sample Project with edges",
-  "apiVersion": "1.2",
-  "nodes": [
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.1",
+    "checksum": "ed44ca25feabe4f543becc73f579b606"
+  },
+  "files": [
     {
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
       "children": [
         {
+          "id": "06121309c9b10d8a",
           "name": "app",
           "type": "Folder",
-          "attributes": {},
           "children": [
             {
+              "id": "6b185a8cc9433de8",
               "name": "codeCharta.html",
-              "type": "File",
-              "attributes": {
-                "pairingRate": 49,
-                "avgCommits": 18
-              }
+              "type": "File"
             },
             {
+              "id": "d515f754245533a8",
               "name": "codeCharta.scss",
-              "type": "File",
-              "attributes": {
-                "pairingRate": 56,
-                "avgCommits": 10
-              }
+              "type": "File"
             },
             {
+              "id": "4c6b71df479538b7",
               "name": "testVille.html",
-              "type": "File",
-              "attributes": {
-                "pairingRate": 42,
-                "avgCommits": 8
-              }
+              "type": "File"
             }
           ]
         }
-      ]
+      ],
+      "link": ""
     }
   ],
-  "edges": [
-    {
-      "fromNodeName": "/root/app/codeCharta.html",
-      "toNodeName": "/root/app/codeCharta.scss",
+  "lenses": {
+    "metrics": {
       "attributes": {
-        "pairingRate": 56,
-        "avgCommits": 10
-      }
+        "6b185a8cc9433de8": {
+          "pairingRate": 49,
+          "avgCommits": 18
+        },
+        "d515f754245533a8": {
+          "pairingRate": 56,
+          "avgCommits": 10
+        },
+        "4c6b71df479538b7": {
+          "pairingRate": 42,
+          "avgCommits": 8
+        }
+      },
+      "attributeTypes": {}
     },
-    {
-      "fromNodeName": "/root/app/testVille.html",
-      "toNodeName": "/root/app/codeCharta.html",
-      "attributes": {
-        "pairingRate": 42,
-        "avgCommits": 8
+    "dependency": {
+      "edges": [
+        {
+          "fromId": "6b185a8cc9433de8",
+          "toId": "d515f754245533a8",
+          "attributes": {
+            "pairingRate": 56,
+            "avgCommits": 10
+          }
+        },
+        {
+          "fromId": "4c6b71df479538b7",
+          "toId": "6b185a8cc9433de8",
+          "attributes": {
+            "pairingRate": 42,
+            "avgCommits": 8
+          }
+        }
+      ],
+      "attributeTypes": {
+        "pairingRate": "relative",
+        "avgCommits": "absolute"
       }
     }
-  ],
-  "attributeTypes": {
-    "edges": [
-      "pairingRate": "relative",
-      "avgCommits": "absolute"
-    ]
   }
 }
 

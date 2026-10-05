@@ -12,9 +12,9 @@ The Structure Modifier is used to modify the structure of .cc.json files. It ena
 - Rename the mcc metric to complexity or sonar_complexity (revert the previous renaming to mcc).
 - Print the hierarchy of the project: Prints the hierarchy into the console in a human-readable format. (That feature was moved to the new command 'inspect')
 
-The edges and blacklist entries associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
+The edges associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
 
-> Do not specify multiple actions in one command, as only one action will be performed
+> Do not specify multiple actions in one command: the command then reports an error and performs none of them
 
 #### Usage and Parameters
 
@@ -23,7 +23,7 @@ The edges and blacklist entries associated with moved/removed nodes will be alte
 | `FILE`                             | input project file                                                                                                               |
 | `-f, --move-from=<moveFrom>`       | move nodes in project folder ... (use paired with the `--move-to` parameter)                                                     |
 | `-h, --help`                       | displays help and exits                                                                                                          |
-| `-o, --output-file=<outputFile>`   | output File (or empty for stdout)                                                                                                |
+| `-o, --output-file=<outputFile>`   | output File (or empty for stdout); the output is not compressed                                                                  |
 | `-p, --print-levels=<printLevels>` | show first x layers of project hierarchy (deprecated; use command 'inspect' instead)                                            |
 | `-r, --remove=<remove>`            | comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes) |
 | `--rename-mcc[=<renameMcc>]`       | renames the mcc metric to complexity. Optionally specify 'sonar' for the metric to be renamed to sonar_complexity                |
@@ -38,10 +38,6 @@ Usage: ccsh modify [-h] [--rename-mcc[=<renameMcc>]] [-f=<moveFrom>]
 ```
 
 ### Examples
-
-```
-ccsh modify foo.cc.json -p=2
-```
 
 ```
 ccsh modify foo.cc.json --remove=/root/foo --remove=/root/bar/
@@ -60,6 +56,6 @@ ccsh modify foo.cc.json --set-root=/root/foo/
 Instead of providing a cc.json file as input, a project can also be piped to the filter:
 
 ```
-cat demo.cc.json | sh ccsh modify -p=2
+cat demo.cc.json | ccsh modify --set-root=/root/foo/
 ```
 
