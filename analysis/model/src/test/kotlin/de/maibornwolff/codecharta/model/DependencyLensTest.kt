@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.model
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 
 class DependencyLensTest {
@@ -86,46 +87,67 @@ class DependencyLensTest {
     }
 
     @Test
-    fun `should union the files of a leaf both lenses declare when merging`() {
-        // Arrange: two scans resolved the same dotted path to declarations in different files.
-        val first = DependencyLens(leaves = mapOf("com.example.Creature" to DependencyLeaf(listOf("node-a"), "Creature", "CLASS", 2)))
-        val second =
-            DependencyLens(leaves = mapOf("com.example.Creature" to DependencyLeaf(listOf("node-b", "node-a"), "Creature", "CLASS", 0)))
-
-        // Act
-        val merged = first.merge(second)
-
-        // Assert
-        assertThat(merged.leaves["com.example.Creature"]).isEqualTo(DependencyLeaf(listOf("node-a", "node-b"), "Creature", "CLASS", 2))
-    }
-
-    @Test
-    fun `should keep the first name and kind of a leaf both lenses describe differently when merging`() {
+    fun `should keep the parent of a namespace only one of the lenses knows when merging`() {
         // Arrange
-        val first = DependencyLens(leaves = mapOf("com.example.Creature" to DependencyLeaf(listOf("node-a"), "Creature", "CLASS", 2)))
-        val second = DependencyLens(leaves = mapOf("com.example.Creature" to DependencyLeaf(listOf("node-b"), "Creature", "INTERFACE", 0)))
+        val withoutParent = DependencyLens(namespaces = mapOf("com.example" to DependencyNamespace(1)))
+        val withParent = DependencyLens(namespaces = mapOf("com.example" to DependencyNamespace(0, parent = "com")))
+
+        // Act
+        val merged = withoutParent.merge(withParent)
+
+        // Assert
+        assertThat(merged.namespaces["com.example"]).isEqualTo(DependencyNamespace(1, parent = "com"))
+    }
+
+    @Test
+    fun `should keep the leaves of one name apart when two files declare it`() {
+        // Arrange: a partial class, one part per file and per scan.
+        val first = DependencyLens(leaves = mapOf("node-a" to mapOf("Creature" to DependencyLeaf("class", namespace = "com.example"))))
+        val second = DependencyLens(leaves = mapOf("node-b" to mapOf("Creature" to DependencyLeaf("class", namespace = "com.example"))))
 
         // Act
         val merged = first.merge(second)
 
         // Assert
-        assertThat(merged.leaves["com.example.Creature"]).isEqualTo(DependencyLeaf(listOf("node-a", "node-b"), "Creature", "CLASS", 2))
+        assertThat(merged.leaves.keys).containsExactly("node-a", "node-b")
     }
 
     @Test
-    fun `should fold leaf edges sharing an endpoint pair by keeping the first weight and unioning usage`() {
+    fun `should union the leaves two lenses declare in one file when merging`() {
+        // Arrange
+        val first = DependencyLens(leaves = mapOf("node-a" to mapOf("Creature" to DependencyLeaf("class"))))
+        val second = DependencyLens(leaves = mapOf("node-a" to mapOf("Dragon" to DependencyLeaf("class"))))
+
+        // Act
+        val merged = first.merge(second)
+
+        // Assert
+        assertThat(merged.leaves.getValue("node-a").keys).containsExactly("Creature", "Dragon")
+    }
+
+    @Test
+    fun `should keep the first description of a leaf both lenses describe differently when merging`() {
+        // Arrange
+        val first = DependencyLens(leaves = mapOf("node-a" to mapOf("Creature" to DependencyLeaf("class", level = 2))))
+        val second = DependencyLens(leaves = mapOf("node-a" to mapOf("Creature" to DependencyLeaf("interface", level = 0))))
+
+        // Act
+        val merged = first.merge(second)
+
+        // Assert
+        assertThat(merged.leaves.getValue("node-a")).containsExactly(entry("Creature", DependencyLeaf("class", level = 2)))
+    }
+
+    @Test
+    fun `should fold leaf edges sharing both endpoints by keeping the first weight and unioning usage`() {
         // Arrange: the same declaration pair, seen once as inheritance and once as an argument.
         val inheritance =
             DependencyLens(
-                leafEdges =
-                    listOf(LeafEdge("com.example.A", "com.example.B", mapOf("dependencies" to 2), listOf("inheritance"), isCyclic = true))
+                leafEdges = listOf(LeafEdge("a", "A", "b", "B", mapOf("dependencies" to 2), listOf("inheritance"), isCyclic = true))
             )
         val argument =
             DependencyLens(
-                leafEdges =
-                    listOf(
-                        LeafEdge("com.example.A", "com.example.B", mapOf("dependencies" to 1), listOf("argument"), isPointingUpwards = true)
-                    )
+                leafEdges = listOf(LeafEdge("a", "A", "b", "B", mapOf("dependencies" to 1), listOf("argument"), isPointingUpwards = true))
             )
 
         // Act
@@ -140,12 +162,27 @@ class DependencyLensTest {
     }
 
     @Test
-    fun `should re-point a leaf at the file the restructuring moved it to while keeping its logical key`() {
+    fun `should keep leaf edges apart whose leaves share a key but sit in different files`() {
+        // Arrange
+        val first = DependencyLens(leafEdges = listOf(LeafEdge("a", "A", "b", "B")))
+        val second = DependencyLens(leafEdges = listOf(LeafEdge("a", "A", "c", "B")))
+
+        // Act
+        val merged = first.merge(second)
+
+        // Assert
+        assertThat(merged.leafEdges).hasSize(2)
+    }
+
+    @Test
+    fun `should re-key the leaves and leaf edges of a file onto the path a restructuring moved it to`() {
         // Arrange
         val fileId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        val movedId = NodeId.fromSegments(listOf("alpha", "src", "App.kt"), NodeType.File)
         val tree =
             Node("root", NodeType.Folder, children = setOf(Node("src", NodeType.Folder, children = setOf(Node("App.kt", NodeType.File)))))
-        val lens = DependencyLens(leaves = mapOf("com.example.App" to DependencyLeaf(listOf(fileId), "App", "CLASS", 1)))
+        val leavesOfFile = mapOf("App" to DependencyLeaf("class"), "Helper" to DependencyLeaf("class"))
+        val lens = DependencyLens(leaves = mapOf(fileId to leavesOfFile), leafEdges = listOf(LeafEdge(fileId, "App", fileId, "Helper")))
 
         // Act
         val rekeyed = lens.rekeyed(tree, movedInto("alpha", tree)) { segments ->
@@ -157,84 +194,113 @@ class DependencyLensTest {
             }
         }
 
-        // Assert: the package did not move, the file did.
-        assertThat(rekeyed.leaves.keys).containsExactly("com.example.App")
-        assertThat(rekeyed.leaves.getValue("com.example.App").nodeIds)
-            .containsExactly(NodeId.fromSegments(listOf("alpha", "src", "App.kt"), NodeType.File))
+        // Assert
+        assertThat(rekeyed.leaves).containsExactly(entry(movedId, leavesOfFile))
+        assertThat(rekeyed.leafEdges).containsExactly(LeafEdge(movedId, "App", movedId, "Helper"))
     }
 
     @Test
-    fun `should keep a leaf spanning several files when the restructuring took only one of them away`() {
+    fun `should keep the part of a split declaration whose file survived the restructuring`() {
         // Arrange: a partial class declared in two files, one of which does not survive.
         val appId = NodeId.fromSegments(listOf("src", "App.cs"), NodeType.File)
         val generatedId = NodeId.fromSegments(listOf("gen", "App.g.cs"), NodeType.File)
-        val tree =
-            Node(
-                "root",
-                NodeType.Folder,
-                children =
-                    setOf(
-                        Node("src", NodeType.Folder, children = setOf(Node("App.cs", NodeType.File))),
-                        Node("gen", NodeType.Folder, children = setOf(Node("App.g.cs", NodeType.File)))
-                    )
-            )
-        val lens = DependencyLens(leaves = mapOf("Example.App" to DependencyLeaf(listOf(appId, generatedId), "App", "CLASS", 0)))
+        val tree = treeOf("src" to "App.cs", "gen" to "App.g.cs")
+        val part = mapOf("App" to DependencyLeaf("class"))
+        val lens = DependencyLens(leaves = mapOf(appId to part, generatedId to part))
 
         // Act
         val rekeyed = lens.rekeyed(tree, without("gen", tree)) { segments -> if (segments.firstOrNull() == "gen") null else segments }
 
         // Assert
-        assertThat(rekeyed.leaves.getValue("Example.App").nodeIds).containsExactly(appId)
+        assertThat(rekeyed.leaves.keys).containsExactly(appId)
     }
 
     @Test
-    fun `should drop a leaf and its edges when the restructuring took its file away`() {
+    fun `should drop the leaves of a file the restructuring took away and the leaf edges touching them`() {
         // Arrange
-        val fileId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
-        val tree =
-            Node("root", NodeType.Folder, children = setOf(Node("src", NodeType.Folder, children = setOf(Node("App.kt", NodeType.File)))))
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        val libId = NodeId.fromSegments(listOf("lib", "Lib.kt"), NodeType.File)
+        val tree = treeOf("src" to "App.kt", "lib" to "Lib.kt")
         val lens =
             DependencyLens(
-                leaves = mapOf("com.example.App" to DependencyLeaf(listOf(fileId), "App", "CLASS", 1)),
-                leafEdges = listOf(LeafEdge("com.example.App", "com.example.Lib"))
+                leaves = mapOf(appId to mapOf("App" to DependencyLeaf("class")), libId to mapOf("Lib" to DependencyLeaf("class"))),
+                leafEdges = listOf(LeafEdge(appId, "App", libId, "Lib"))
             )
 
-        // Act: nothing survives.
-        val rekeyed = lens.rekeyed(tree, Node("root", NodeType.Folder)) { null }
+        // Act
+        val rekeyed = lens.rekeyed(tree, without("lib", tree)) { segments -> if (segments.firstOrNull() == "lib") null else segments }
 
-        // Assert: no leaf and no leaf edge is left pointing at something the output no longer has.
-        assertThat(rekeyed.leaves).isEmpty()
+        // Assert
+        assertThat(rekeyed.leaves.keys).containsExactly(appId)
         assertThat(rekeyed.leafEdges).isEmpty()
     }
 
     @Test
-    fun `should drop a namespace no surviving leaf lives in while keeping the ancestors of the survivors`() {
-        // Arrange: two packages, one of which loses its only file.
+    fun `should drop the leaves of a file that a move discarded for the file already at its destination`() {
+        // Arrange: `moved/Shared.kt` lands on `kept/Shared.kt`, which stays; the tree discards the moved one.
+        val discardedId = NodeId.fromSegments(listOf("moved", "Shared.kt"), NodeType.File)
+        val keptId = NodeId.fromSegments(listOf("kept", "Shared.kt"), NodeType.File)
+        val userId = NodeId.fromSegments(listOf("app", "User.kt"), NodeType.File)
+        val tree = treeOf("moved" to "Shared.kt", "kept" to "Shared.kt", "app" to "User.kt")
+        val lens =
+            DependencyLens(
+                leaves =
+                    mapOf(
+                        discardedId to mapOf("Discarded" to DependencyLeaf("class")),
+                        keptId to mapOf("Kept" to DependencyLeaf("class")),
+                        userId to mapOf("User" to DependencyLeaf("class"))
+                    ),
+                leafEdges = listOf(LeafEdge(userId, "User", discardedId, "Discarded"), LeafEdge(userId, "User", keptId, "Kept"))
+            )
+
+        // Act
+        val rekeyed =
+            lens.rekeyed(tree, without("moved", tree)) { segments ->
+                if (segments.firstOrNull() == "moved") listOf("kept") + segments.drop(1) else segments
+            }
+
+        // Assert
+        assertThat(rekeyed.leaves).containsOnly(
+            entry(keptId, mapOf("Kept" to DependencyLeaf("class"))),
+            entry(userId, mapOf("User" to DependencyLeaf("class")))
+        )
+        assertThat(rekeyed.leafEdges).containsExactly(LeafEdge(userId, "User", keptId, "Kept"))
+    }
+
+    @Test
+    fun `should re-key leaf edges of a lens that carries no leaves`() {
+        // Arrange
         val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
         val libId = NodeId.fromSegments(listOf("lib", "Lib.kt"), NodeType.File)
-        val tree =
-            Node(
-                "root",
-                NodeType.Folder,
-                children =
-                    setOf(
-                        Node("src", NodeType.Folder, children = setOf(Node("App.kt", NodeType.File))),
-                        Node("lib", NodeType.Folder, children = setOf(Node("Lib.kt", NodeType.File)))
-                    )
-            )
+        val tree = treeOf("src" to "App.kt", "lib" to "Lib.kt")
+        val lens = DependencyLens(leafEdges = listOf(LeafEdge(appId, "App", appId, "Helper"), LeafEdge(appId, "App", libId, "Lib")))
+
+        // Act
+        val rekeyed = lens.rekeyed(tree, without("lib", tree)) { segments -> if (segments.firstOrNull() == "lib") null else segments }
+
+        // Assert
+        assertThat(rekeyed.leafEdges).containsExactly(LeafEdge(appId, "App", appId, "Helper"))
+    }
+
+    @Test
+    fun `should drop a namespace no surviving leaf lives in while keeping the parents of the survivors`() {
+        // Arrange: two packages, one of which loses its only file. The keys share no dots with their parents.
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        val libId = NodeId.fromSegments(listOf("lib", "Lib.kt"), NodeType.File)
+        val tree = treeOf("src" to "App.kt", "lib" to "Lib.kt")
         val lens =
             DependencyLens(
                 namespaces =
                     mapOf(
-                        "com" to DependencyNamespace(0),
-                        "com.example" to DependencyNamespace(0),
-                        "com.example.app" to DependencyNamespace(1),
-                        "com.example.lib" to DependencyNamespace(0)
+                        "acme" to DependencyNamespace(0),
+                        "application" to DependencyNamespace(1, parent = "acme"),
+                        "library" to DependencyNamespace(0, parent = "acme"),
+                        "acme.unused" to DependencyNamespace(0)
                     ),
                 leaves =
                     mapOf(
-                        "com.example.app.App" to DependencyLeaf(listOf(appId), "App", "CLASS", 0),
-                        "com.example.lib.Lib" to DependencyLeaf(listOf(libId), "Lib", "CLASS", 0)
+                        appId to mapOf("App" to DependencyLeaf("class", namespace = "application")),
+                        libId to mapOf("Lib" to DependencyLeaf("class", namespace = "library"))
                     )
             )
 
@@ -242,7 +308,7 @@ class DependencyLensTest {
         val rekeyed = lens.rekeyed(tree, without("lib", tree)) { segments -> if (segments.firstOrNull() == "lib") null else segments }
 
         // Assert
-        assertThat(rekeyed.namespaces.keys).containsExactly("com", "com.example", "com.example.app")
+        assertThat(rekeyed.namespaces.keys).containsExactly("acme", "application")
     }
 
     @Test
@@ -291,21 +357,35 @@ class DependencyLensTest {
     private fun without(childName: String, tree: Node): Node =
         Node(tree.name, NodeType.Folder, children = tree.children.filterNot { it.name == childName }.toSet())
 
+    private fun treeOf(vararg filesByFolder: Pair<String, String>): Node = Node(
+        "root",
+        NodeType.Folder,
+        children = filesByFolder
+            .map { (folder, file) ->
+                Node(folder, NodeType.Folder, children = setOf(Node(file, NodeType.File)))
+            }.toSet()
+    )
+
     @Test
-    fun `should prefix every logical id with the namespace a project is wrapped into`() {
+    fun `should prefix the namespace keys and every reference to them when a project is wrapped`() {
         // Arrange
         val lens = DependencyLens(
-            namespaces = mapOf("com.example" to DependencyNamespace(0)),
-            leaves = mapOf("com.example.App" to DependencyLeaf(listOf("id"), "App", "CLASS", 1)),
-            leafEdges = listOf(LeafEdge("com.example.App", "com.example.Lib"))
+            namespaces = mapOf("com" to DependencyNamespace(0), "com.example" to DependencyNamespace(0, parent = "com")),
+            leaves = mapOf("id" to mapOf("App" to DependencyLeaf("class", namespace = "com.example", parent = "Outer"))),
+            leafEdges = listOf(LeafEdge("id", "App", "id", "Lib"))
         )
 
         // Act
-        val wrapped = lens.underNamespace("my.app")
+        val wrapped = lens.underNamespace("backend")
 
-        // Assert: the dot of the folder name is escaped so the prefix stays one segment.
-        assertThat(wrapped.namespaces.keys).containsExactly("my_app.com.example")
-        assertThat(wrapped.leaves.keys).containsExactly("my_app.com.example.App")
-        assertThat(wrapped.leafEdges).containsExactly(LeafEdge("my_app.com.example.App", "my_app.com.example.Lib"))
+        // Assert: leaf keys and leaf edges address files, so only the namespaces move.
+        assertThat(wrapped.namespaces).containsExactly(
+            entry("backend.com", DependencyNamespace(0)),
+            entry("backend.com.example", DependencyNamespace(0, parent = "backend.com"))
+        )
+        assertThat(wrapped.leaves).containsExactly(
+            entry("id", mapOf("App" to DependencyLeaf("class", namespace = "backend.com.example", parent = "Outer")))
+        )
+        assertThat(wrapped.leafEdges).isEqualTo(lens.leafEdges)
     }
 }

@@ -93,31 +93,44 @@ class ProcessingPipelineTest {
     }
 
     @Test
-    fun `should produce declaration-to-declaration edges addressed by dotted logical path`() {
+    fun `should address both ends of every declaration edge by a declaration it lists`() {
         // Act
         val graph = graphOfJavaSample()
 
         // Assert
-        val declarationIds = graph.declarations.map { it.id }
+        val addresses = graph.declarations.map { it.address }
         assertThat(graph.declarationEdges).isNotEmpty
         assertThat(graph.declarationEdges).allSatisfy { edge ->
-            assertThat(declarationIds).contains(edge.fromId, edge.toId)
+            assertThat(addresses).contains(edge.from, edge.to)
             assertThat(edge.weight).isGreaterThanOrEqualTo(1)
         }
     }
 
     @Test
-    fun `should record every declaration with the files it was declared in`() {
+    fun `should record every declaration with its file, a lower-case kind and its language`() {
         // Act
         val graph = graphOfJavaSample()
 
         // Assert
         assertThat(graph.declarations).isNotEmpty
         assertThat(graph.declarations).allSatisfy { declaration ->
-            assertThat(declaration.filePaths).allSatisfy { filePath -> assertThat(filePath.last()).endsWith(".java") }
-            assertThat(declaration.name).isNotEmpty()
-            assertThat(declaration.kind).isNotEmpty()
+            assertThat(declaration.address.filePath.last()).endsWith(".java")
+            assertThat(declaration.address.key).isEqualTo(declaration.name)
+            assertThat(declaration.kind).isLowerCase()
+            assertThat(declaration.language).isEqualTo("java")
         }
+    }
+
+    @Test
+    fun `should give every key at most one declaration per file`() {
+        // Arrange
+        val extracted = extractFrom(javaSample, SupportedLanguage.JAVA)
+
+        // Act
+        val graph = ProcessingPipeline.run(extracted, omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations.map { it.address }).doesNotHaveDuplicates()
     }
 
     @Test
@@ -127,8 +140,110 @@ class ProcessingPipelineTest {
 
         // Assert
         assertThat(graph.declarations).allSatisfy { declaration -> assertThat(declaration.level).isNotNull() }
-        assertThat(graph.namespaceLevels).isNotEmpty
-        assertThat(graph.namespaceLevels.values).allSatisfy { level -> assertThat(level).isGreaterThanOrEqualTo(0) }
+        assertThat(graph.namespaces).isNotEmpty
+        assertThat(graph.namespaces.values).allSatisfy { namespace -> assertThat(namespace.level).isGreaterThanOrEqualTo(0) }
+    }
+
+    @Test
+    fun `should put a declaration of a package language into the package it declares`() {
+        // Arrange
+        File(sampleDirectory, "Creature.java").writeText("package de.sots.domain;\n\npublic class Creature {}\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.JAVA), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations.single().namespace).isEqualTo("de.sots.domain")
+    }
+
+    @Test
+    fun `should link every namespace to the one containing it and leave the outermost without a parent`() {
+        // Arrange
+        File(sampleDirectory, "Creature.java").writeText("package de.sots.domain;\n\npublic class Creature {}\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.JAVA), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.namespaces.mapValues { it.value.parent })
+            .containsExactlyInAnyOrderEntriesOf(mapOf("de" to null, "de.sots" to "de", "de.sots.domain" to "de.sots"))
+    }
+
+    @Test
+    fun `should emit no namespace for a language whose logical path is its file path`() {
+        // Arrange
+        File(sampleDirectory, "creature.ts").writeText("export class Creature {}\n")
+        File(sampleDirectory, "dragon.ts").writeText("import { Creature } from './creature'\nexport class Dragon extends Creature {}\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.TYPESCRIPT), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations.map { it.address.key }).containsExactlyInAnyOrder("Creature", "Dragon")
+        assertThat(graph.declarations).allSatisfy { declaration -> assertThat(declaration.namespace).isNull() }
+        assertThat(graph.namespaces).isEmpty()
+        assertThat(graph.declarationEdges).hasSize(1)
+    }
+
+    @Test
+    fun `should emit no namespace for a file of a package language that declares none`() {
+        // Arrange
+        File(sampleDirectory, "plain.php").writeText("<?php\nclass Plain {}\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.PHP), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations.single().namespace).isNull()
+        assertThat(graph.namespaces).isEmpty()
+    }
+
+    @Test
+    fun `should emit no namespace for a language whose package path is the directory of the file`() {
+        // Arrange
+        val packageDirectory = File(sampleDirectory, "util").apply { mkdirs() }
+        File(packageDirectory, "helper.go").writeText("package util\n\ntype Helper struct{}\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.GO), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations).isNotEmpty
+        assertThat(graph.declarations).allSatisfy { declaration -> assertThat(declaration.namespace).isNull() }
+        assertThat(graph.namespaces).isEmpty()
+    }
+
+    @Test
+    fun `should put a nested declaration into the package of the declaration enclosing it`() {
+        // Arrange
+        File(sampleDirectory, "Outer.kt").writeText("package de.sots\n\nclass Outer {\n    class Inner\n}\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.KOTLIN), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations.map { it.address.key to it.namespace }).containsExactlyInAnyOrder(
+            "Outer" to "de.sots",
+            "Inner" to "de.sots"
+        )
+        assertThat(graph.namespaces.keys).containsExactlyInAnyOrder("de", "de.sots")
+    }
+
+    @Test
+    fun `should key two declarations of one file that share a name by their logical paths`() {
+        // Arrange: one file, two namespaces, the same class name in both.
+        File(
+            sampleDirectory,
+            "Shapes.cs"
+        ).writeText("namespace First { public class Shape { } }\nnamespace Second { public class Shape { } }\n")
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.C_SHARP), omitGraphAnalysis = false)
+
+        // Assert
+        assertThat(graph.declarations.map { it.address.key }).containsExactlyInAnyOrder("First.Shape", "Second.Shape")
+        assertThat(graph.declarations.map { it.name }).containsOnly("Shape")
+        assertThat(graph.declarations.map { it.namespace }).containsExactlyInAnyOrder("First", "Second")
     }
 
     @Test
@@ -164,12 +279,11 @@ class ProcessingPipelineTest {
     fun `should agree with the file-level projection on every edge that crosses a file boundary`() {
         // Arrange
         val graph = graphOfJavaSample()
-        val fileByDeclaration = graph.declarations.associate { it.id to it.filePaths.first() }
         val filePairsWithAnEdge = graph.edges.map { it.fromPath to it.toPath }.toSet()
 
         // Act
         val crossFileLeafEdges = graph.declarationEdges
-            .map { fileByDeclaration.getValue(it.fromId) to fileByDeclaration.getValue(it.toId) }
+            .map { it.from.filePath to it.to.filePath }
             .filter { (fromFile, toFile) -> fromFile != toFile }
 
         // Assert: the file graph is the leaf graph folded onto files, so it can lose only the edges
@@ -198,12 +312,14 @@ class ProcessingPipelineTest {
         val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.JAVA), omitGraphAnalysis = false)
 
         // Assert
-        assertThat(graph.declarationEdges.map { it.fromId to it.toId }).contains("de.sots.Outer" to "de.sots.Inner")
+        val file = listOf("Outer.java")
+        assertThat(graph.declarationEdges.map { it.from to it.to })
+            .containsExactly(DeclarationAddress(file, "Outer") to DeclarationAddress(file, "Inner"))
         assertThat(graph.edges).isEmpty()
     }
 
     @Test
-    fun `should list every file of a declaration split across files and point file edges at the first`() {
+    fun `should emit one declaration per file of a split declaration and point edges into it at the first`() {
         // Arrange: a partial class in two files, and a class that depends on it.
         File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
         File(sampleDirectory, "FooB.cs").writeText("namespace N { public partial class Foo { } }")
@@ -212,9 +328,13 @@ class ProcessingPipelineTest {
         // Act
         val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.C_SHARP), omitGraphAnalysis = false)
 
-        // Assert: the leaf lists both parts, and every file edge that targets Foo points at the first.
-        val foo = graph.declarations.single { it.id == "N.Foo" }
-        assertThat(foo.filePaths).containsExactly(listOf("FooA.cs"), listOf("FooB.cs"))
+        // Assert: both parts share namespace and key, and both projections point Bar at the first part.
+        val fooA = DeclarationAddress(listOf("FooA.cs"), "Foo")
+        val parts = graph.declarations.filter { it.name == "Foo" }
+        assertThat(parts.map { it.address }).containsExactly(fooA, DeclarationAddress(listOf("FooB.cs"), "Foo"))
+        assertThat(parts.map { it.namespace }).containsOnly("N")
+        val bar = DeclarationAddress(listOf("Bar.cs"), "Bar")
+        assertThat(graph.declarationEdges.map { it.from to it.to }).containsExactlyInAnyOrder(bar to fooA, fooA to bar)
         val edgesIntoFoo = graph.edges.filter { it.fromPath == listOf("Bar.cs") }
         assertThat(edgesIntoFoo).extracting("toPath").containsExactly(listOf("FooA.cs"))
         assertThat(graph.edges.map { it.fromPath to it.toPath }).contains(listOf("FooA.cs") to listOf("Bar.cs"))
@@ -238,14 +358,15 @@ class ProcessingPipelineTest {
         // Act
         val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis = false)
 
-        // Assert: one leaf, joined to the source file (first in path order), keeping the source half's dependency.
-        assertThat(
-            graph.declarations.map { it.id }
-        ).containsExactlyInAnyOrder("cpp.example.Root", "cpp.example.MyType", "cpp.different.UsedType")
-        assertThat(
-            graph.declarations.single { it.id == "cpp.example.MyType" }.filePaths
-        ).containsExactly(listOf("cpp", "example", "MyType.cpp"))
-        assertThat(graph.declarationEdges.map { it.fromId to it.toId }).contains("cpp.example.MyType" to "cpp.different.UsedType")
+        // Assert: one leaf, in the source file (first in path order), keeping the source half's dependency.
+        val myType = DeclarationAddress(listOf("cpp", "example", "MyType.cpp"), "MyType")
+        assertThat(graph.declarations.map { it.address }).containsExactlyInAnyOrder(
+            DeclarationAddress(listOf("cpp", "example", "Root.cpp"), "Root"),
+            myType,
+            DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType")
+        )
+        assertThat(graph.declarationEdges.map { it.from to it.to })
+            .contains(myType to DeclarationAddress(listOf("cpp", "different", "UsedType.h"), "UsedType"))
         assertThat(graph.edges.map { it.fromPath to it.toPath })
             .doesNotContain(listOf("cpp", "example", "MyType.cpp") to listOf("cpp", "example", "MyType.h"))
     }
@@ -334,8 +455,11 @@ class ProcessingPipelineTest {
             assertThat(edge.isCyclic).isFalse()
             assertThat(edge.isPointingUpwards).isFalse()
         }
-        assertThat(graph.declarations).allSatisfy { declaration -> assertThat(declaration.level).isNull() }
-        assertThat(graph.namespaceLevels).isEmpty()
+        assertThat(graph.declarations).allSatisfy { declaration ->
+            assertThat(declaration.level).isNull()
+            assertThat(declaration.namespace).isNull()
+        }
+        assertThat(graph.namespaces).isEmpty()
     }
 
     @Test
@@ -373,6 +497,6 @@ class ProcessingPipelineTest {
         assertThat(second.levels).isEqualTo(first.levels)
         assertThat(second.declarations).isEqualTo(first.declarations)
         assertThat(second.declarationEdges).isEqualTo(first.declarationEdges)
-        assertThat(second.namespaceLevels).isEqualTo(first.namespaceLevels)
+        assertThat(second.namespaces).isEqualTo(first.namespaces)
     }
 }

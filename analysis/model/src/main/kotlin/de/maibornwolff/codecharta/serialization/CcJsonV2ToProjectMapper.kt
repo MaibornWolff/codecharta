@@ -12,7 +12,9 @@ import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.dto.CcJsonV2
+import de.maibornwolff.codecharta.serialization.dto.DependencyLeafDto
 import de.maibornwolff.codecharta.serialization.dto.FileDto
+import de.maibornwolff.codecharta.serialization.dto.LeafEdgeDto
 import de.maibornwolff.codecharta.util.Logger
 
 object CcJsonV2ToProjectMapper {
@@ -39,7 +41,9 @@ object CcJsonV2ToProjectMapper {
                 Edge(from, to, edge.attributes.orEmpty(), edge.isCyclic == true, edge.isPointingUpwards == true)
             }
 
-        val leaves = resolveLeaves(dto, idToEndpoint.keys)
+        val fileNodeIds = HashSet<String>()
+        collectFileNodeIds(rootFileDto, fileNodeIds)
+        val leaves = resolveLeaves(dto, fileNodeIds)
         val lenses =
             LensSet(
                 metrics =
@@ -55,7 +59,7 @@ object CcJsonV2ToProjectMapper {
                         nodes = resolveDependencyNodes(dto, idToEndpoint.keys),
                         namespaces = dto.lenses.dependency.namespaces.orEmpty(),
                         leaves = leaves,
-                        leafEdges = resolveLeafEdges(dto, leaves.keys)
+                        leafEdges = resolveLeafEdges(dto, fileNodeIds, leaves)
                     ),
                 domain = dto.lenses.domain,
                 opaqueLenses = dto.lenses.opaqueLenses
@@ -80,42 +84,57 @@ object CcJsonV2ToProjectMapper {
         return declared.filterKeys { it in knownNodeIds }
     }
 
-    // A leaf joins onto the file tree through its node ids. One that names no file node is dropped with a
-    // warning like an unresolved edge endpoint; a leaf left with no file has nothing to join onto and goes.
-    private fun resolveLeaves(dto: CcJsonV2, knownNodeIds: Set<String>): Map<String, DependencyLeaf> {
+    // Leaves are grouped under the id of their file node, so the leaves of an id that is no file node of this
+    // document have nothing to join onto and are dropped with a warning like an unresolved edge endpoint.
+    private fun resolveLeaves(dto: CcJsonV2, fileNodeIds: Set<String>): Map<String, Map<String, DependencyLeaf>> {
         val declared = dto.lenses.dependency.leaves ?: return emptyMap()
+        declared.keys
+            .filterNot { it in fileNodeIds }
+            .forEach { orphanId -> Logger.warn { "Dropping dependency-lens leaves with unresolved file node id: $orphanId" } }
         return declared
-            .mapNotNull { (leafId, leaf) ->
-                val (resolvable, orphans) = leaf.nodeIds.orEmpty().partition { it in knownNodeIds }
-                orphans.forEach { orphan -> Logger.warn { "Dropping unresolved node id $orphan of dependency-lens leaf '$leafId'" } }
-                if (resolvable.isEmpty()) {
-                    Logger.warn { "Dropping dependency-lens leaf '$leafId', which joins onto no file node" }
-                    return@mapNotNull null
-                }
-                leafId to DependencyLeaf(resolvable, leaf.name, leaf.kind, leaf.level)
-            }.toMap()
+            .filterKeys { it in fileNodeIds }
+            .mapValues { (_, leavesOfFile) ->
+                leavesOfFile.mapValues { (_, leaf) -> leaf.toModel() }
+            }
     }
 
-    // Leaf edges address leaves, so an edge whose endpoint the leaf table does not declare — or whose leaf
-    // was just dropped — points at nothing. A file that carries leaf edges without any leaves declares no
-    // endpoints at all, so nothing can be checked and every edge is kept.
-    private fun resolveLeafEdges(dto: CcJsonV2, knownLeafIds: Set<String>): List<LeafEdge> {
+    private fun DependencyLeafDto.toModel(): DependencyLeaf = DependencyLeaf(
+        kind = kind,
+        name = name,
+        language = language,
+        namespace = namespace,
+        parent = parent,
+        level = level
+    )
+
+    // A file that carries leaf edges without any leaves declares no declarations to check the leaf keys
+    // against, so only the node ids are resolved.
+    private fun resolveLeafEdges(
+        dto: CcJsonV2,
+        fileNodeIds: Set<String>,
+        leaves: Map<String, Map<String, DependencyLeaf>>
+    ): List<LeafEdge> {
         val declared = dto.lenses.dependency.leafEdges ?: return emptyList()
-        return declared.mapNotNull { edge ->
-            if (knownLeafIds.isNotEmpty() && (edge.fromLeaf !in knownLeafIds || edge.toLeaf !in knownLeafIds)) {
-                Logger.warn { "Dropping leaf edge with unresolved leaf(s): fromLeaf=${edge.fromLeaf}, toLeaf=${edge.toLeaf}" }
-                return@mapNotNull null
+        val (resolved, unresolved) =
+            declared.map { it.toModel() }.partition { edge ->
+                edge.fromId in fileNodeIds && edge.toId in fileNodeIds && (leaves.isEmpty() || edge.joinsOnto(leaves))
             }
-            LeafEdge(
-                edge.fromLeaf,
-                edge.toLeaf,
-                edge.attributes.orEmpty(),
-                edge.usage.orEmpty(),
-                edge.isCyclic == true,
-                edge.isPointingUpwards == true
-            )
+        unresolved.forEach { edge ->
+            Logger.warn { "Dropping leaf edge with unresolved endpoint(s): ${edge.fromId}/${edge.fromLeaf} -> ${edge.toId}/${edge.toLeaf}" }
         }
+        return resolved
     }
+
+    private fun LeafEdgeDto.toModel(): LeafEdge = LeafEdge(
+        fromId = fromId,
+        fromLeaf = fromLeaf,
+        toId = toId,
+        toLeaf = toLeaf,
+        attributes = attributes.orEmpty(),
+        usage = usage.orEmpty(),
+        isCyclic = isCyclic == true,
+        isPointingUpwards = isPointingUpwards == true
+    )
 
     private fun toNode(fileDto: FileDto, metricsByNodeId: Map<String, Map<String, Any>>): Node {
         val children = fileDto.children?.map { toNode(it, metricsByNodeId) } ?: emptyList()
@@ -128,6 +147,11 @@ object CcJsonV2ToProjectMapper {
             children = children.toSet(),
             checksum = fileDto.contentHash
         )
+    }
+
+    private fun collectFileNodeIds(fileDto: FileDto, fileNodeIds: MutableSet<String>) {
+        if (fileDto.type == NodeType.File.name) fileNodeIds.add(fileDto.id)
+        fileDto.children?.forEach { child -> collectFileNodeIds(child, fileNodeIds) }
     }
 
     private fun collectEndpoints(fileDto: FileDto, segments: List<String>, idToEndpoint: MutableMap<String, String>) {

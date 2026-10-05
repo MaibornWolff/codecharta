@@ -283,12 +283,14 @@ class ProjectMergerTest {
                         dependency =
                             DependencyLens(
                                 namespaces = mapOf("com.example" to DependencyNamespace(1)),
-                                leaves = mapOf("com.example.A" to DependencyLeaf(listOf("node-a"), "A", "CLASS", 2)),
+                                leaves = mapOf("node-a" to mapOf("A" to DependencyLeaf("class", namespace = "com.example", level = 2))),
                                 leafEdges =
                                     listOf(
                                         LeafEdge(
-                                            "com.example.A",
-                                            "com.example.B",
+                                            "node-a",
+                                            "A",
+                                            "node-b",
+                                            "B",
                                             mapOf("dependencies" to 2),
                                             listOf("inheritance"),
                                             isCyclic = true
@@ -306,12 +308,14 @@ class ProjectMergerTest {
                         dependency =
                             DependencyLens(
                                 namespaces = mapOf("com.example" to DependencyNamespace(3), "com.other" to DependencyNamespace(0)),
-                                leaves = mapOf("com.example.B" to DependencyLeaf(listOf("node-b"), "B", "INTERFACE", 0)),
+                                leaves = mapOf("node-b" to mapOf("B" to DependencyLeaf("interface", namespace = "com.example", level = 0))),
                                 leafEdges =
                                     listOf(
                                         LeafEdge(
-                                            "com.example.A",
-                                            "com.example.B",
+                                            "node-a",
+                                            "A",
+                                            "node-b",
+                                            "B",
                                             mapOf("dependencies" to 1),
                                             listOf("argument"),
                                             isPointingUpwards = true
@@ -326,7 +330,7 @@ class ProjectMergerTest {
 
         // Assert
         assertEquals(mapOf("com.example" to DependencyNamespace(3), "com.other" to DependencyNamespace(0)), merged.namespaces)
-        assertEquals(setOf("com.example.A", "com.example.B"), merged.leaves.keys)
+        assertEquals(setOf("node-a", "node-b"), merged.leaves.keys)
         val leafEdge = merged.leafEdges.single()
         assertEquals(mapOf("dependencies" to 2), leafEdge.attributes)
         assertEquals(listOf("inheritance", "argument"), leafEdge.usage)

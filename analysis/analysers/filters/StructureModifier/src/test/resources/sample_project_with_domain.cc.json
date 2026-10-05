@@ -228,23 +228,29 @@
         }
       },
       "leaves": {
-        "com.example.File1": {
-          "nodeIds": ["2f6cb0760e30e5d6"],
-          "name": "File1",
-          "kind": "CLASS",
-          "level": 1
+        "2f6cb0760e30e5d6": {
+          "FirstClass": {
+            "kind": "class",
+            "language": "java",
+            "namespace": "com.example",
+            "level": 1
+          }
         },
-        "com.example.File2": {
-          "nodeIds": ["59690b3e49b79bb1"],
-          "name": "File2",
-          "kind": "CLASS",
-          "level": 0
+        "59690b3e49b79bb1": {
+          "SecondClass": {
+            "kind": "class",
+            "language": "java",
+            "namespace": "com.example",
+            "level": 0
+          }
         }
       },
       "leafEdges": [
         {
-          "fromLeaf": "com.example.File1",
-          "toLeaf": "com.example.File2",
+          "fromId": "2f6cb0760e30e5d6",
+          "fromLeaf": "FirstClass",
+          "toId": "59690b3e49b79bb1",
+          "toLeaf": "SecondClass",
           "attributes": {
             "dependencies": 1
           },

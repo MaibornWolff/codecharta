@@ -63,8 +63,8 @@ class ProjectMergerTest {
         val logical =
             originalProject.lenses.dependency.copy(
                 namespaces = mapOf("com.example" to DependencyNamespace(1)),
-                leaves = mapOf("com.example.Leaf" to DependencyLeaf(listOf(leafFileNodeId), "Leaf", "CLASS", 2)),
-                leafEdges = listOf(LeafEdge("com.example.Leaf", "com.example.Leaf", mapOf("dependencies" to 2), listOf("usage")))
+                leaves = mapOf(leafFileNodeId to mapOf("Leaf" to DependencyLeaf("class", namespace = "com.example", level = 2))),
+                leafEdges = listOf(LeafEdge(leafFileNodeId, "Leaf", leafFileNodeId, "Leaf", mapOf("dependencies" to 2), listOf("usage")))
             )
         val projectWithLogicalLayer =
             Project(

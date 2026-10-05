@@ -55,7 +55,7 @@ class ConvertToolTest {
 
         val rawOutput = output.toString("UTF-8")
         assertThat(rawOutput).contains("\"files\"").contains("\"lenses\"").contains("\"metrics\"")
-        assertThat(ProjectDeserializer.deserializeProject(rawOutput).apiVersion).isEqualTo("2.0")
+        assertThat(ProjectDeserializer.deserializeProject(rawOutput).apiVersion).isEqualTo("2.1")
     }
 
     @Test
@@ -71,7 +71,7 @@ class ConvertToolTest {
 
         // Assert: the flat 1.5 edges/types/descriptors are routed into the typed 2.0 lenses, not dropped.
         val project = ProjectDeserializer.deserializeProject(output.toString("UTF-8"))
-        assertThat(project.apiVersion).isEqualTo("2.0")
+        assertThat(project.apiVersion).isEqualTo("2.1")
         assertThat(project.lenses.dependency.edges).hasSize(1)
         assertThat(project.lenses.dependency.attributeTypes).containsKey("pairingRate")
         assertThat(project.lenses.metrics.attributeTypes).containsKey("rloc")
@@ -98,7 +98,7 @@ class ConvertToolTest {
         CommandLine(ConvertTool(ByteArrayInputStream(ByteArray(0)), PrintStream(output))).execute(inputFile.absolutePath)
 
         // Assert
-        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.0")
+        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.1")
     }
 
     @Test
@@ -111,7 +111,7 @@ class ConvertToolTest {
         CommandLine(ConvertTool(stdin, PrintStream(output))).execute()
 
         // Assert
-        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.0")
+        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.1")
     }
 
     @Test
@@ -150,7 +150,7 @@ class ConvertToolTest {
         }
 
         // Assert: the conversion still succeeds and the user is told the curation was dropped.
-        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.0")
+        assertThat(ProjectDeserializer.deserializeProject(output.toString("UTF-8")).apiVersion).isEqualTo("2.1")
         val warning = err.toString("UTF-8")
         assertThat(warning).contains("blacklist").contains("markedPackages")
         assertThat(warning).contains("1 blacklist item").contains("1 marked package")

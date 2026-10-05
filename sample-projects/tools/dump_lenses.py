@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print the dependency and domain lenses of a cc.json 2.0 file in a form that is easy to diff by eye.
+"""Print the dependency and domain lenses of a cc.json 2.x file in a form that is easy to diff by eye.
 
 Usage: dump_lenses.py <file.cc.json> [--words N]
 """
@@ -18,6 +18,10 @@ def strip_root(path):
     return path.split("/", 1)[1] if "/" in path else path
 
 
+def leaf_address(node_id, leaf_key, paths):
+    return f"{strip_root(paths.get(node_id, node_id))}#{leaf_key}"
+
+
 def dump_dependency(lens, paths):
     edges = lens.get("edges", [])
     print(f"## File edges ({len(edges)})")
@@ -27,14 +31,19 @@ def dump_dependency(lens, paths):
         count = edge.get("attributes", {}).get("dependencies", "?")
         print(f"{strip_root(paths.get(edge['fromId'], edge['fromId']))} -> {strip_root(paths.get(edge['toId'], edge['toId']))}  x{count}{flag_text}")
     leaves = lens.get("leaves", {})
-    print(f"\n## Leaves ({len(leaves)})")
-    for key, leaf in sorted(leaves.items()):
-        print(f"{key}  kind={leaf.get('kind')} level={leaf.get('level')}")
-    leaf_edges = lens.get("leafEdges", [])
+    print(f"\n## Leaves ({sum(len(leaves_of_file) for leaves_of_file in leaves.values())})")
+    for address, leaf in sorted(
+        (leaf_address(node_id, key, paths), leaf) for node_id, leaves_of_file in leaves.items() for key, leaf in leaves_of_file.items()
+    ):
+        print(f"{address}  kind={leaf.get('kind')} namespace={leaf.get('namespace')} level={leaf.get('level')}")
+    leaf_edges = [
+        (leaf_address(edge["fromId"], edge["fromLeaf"], paths), leaf_address(edge["toId"], edge["toLeaf"], paths), edge)
+        for edge in lens.get("leafEdges", [])
+    ]
     print(f"\n## Leaf edges ({len(leaf_edges)})")
-    for edge in sorted(leaf_edges, key=lambda e: (e["fromLeaf"], e["toLeaf"])):
+    for source, target, edge in sorted(leaf_edges, key=lambda entry: entry[:2]):
         usage = ",".join(edge.get("usage", []))
-        print(f"{edge['fromLeaf']} -> {edge['toLeaf']}  usage={usage}")
+        print(f"{source} -> {target}  usage={usage}")
     print("\n## Node levels")
     for node_id, info in sorted(lens.get("nodes", {}).items(), key=lambda item: paths.get(item[0], "")):
         print(f"{strip_root(paths.get(node_id, node_id))}  level={info.get('level')}")

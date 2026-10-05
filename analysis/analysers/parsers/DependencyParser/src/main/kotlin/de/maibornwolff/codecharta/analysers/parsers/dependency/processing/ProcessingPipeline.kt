@@ -37,22 +37,17 @@ object ProcessingPipeline {
         }
 
         val cyclicEdgesByDeclaration = detectCycles(resolvedNodes, omitGraphAnalysis)
-        val declarationsById = declarationsById(resolvedNodes)
-        val declarationEdges = toDeclarationEdges(resolvedNodes, declarationsById.keys, cyclicEdgesByDeclaration)
         val aggregatedEdges = FileLevelAggregator.aggregate(resolvedNodes, cyclicEdgesByDeclaration)
-        val filePaths = resolvedNodes.map { FileLevelAggregator.filePathOf(it) }.distinct()
 
         if (omitGraphAnalysis) {
             Logger.info { "Levelization disabled by --omit-graph-analysis" }
-            return DependencyGraph(
-                edges = aggregatedEdges.map { it.withoutLevelization() },
-                declarations = declarationsById.values.toList(),
-                declarationEdges = declarationEdges
-            )
+            val physical = DependencyGraph(edges = aggregatedEdges.map { it.withoutLevelization() })
+            return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, namespaceTree = null).addTo(physical)
         }
 
+        val filePaths = resolvedNodes.map { FileLevelAggregator.filePathOf(it) }.distinct()
         val physical = levelizeFileTree(aggregatedEdges, filePaths)
-        return levelizeNamespaceTree(physical, resolvedNodes, declarationsById.values.toList(), declarationEdges)
+        return LogicalProjection(resolvedNodes, cyclicEdgesByDeclaration, levelizeNamespaceTree(resolvedNodes)).addTo(physical)
     }
 
     private fun levelizeFileTree(aggregatedEdges: List<AggregatedFileEdge>, filePaths: List<FilePath>): DependencyGraph {
@@ -66,44 +61,19 @@ object ProcessingPipeline {
                 toPath = edge.to.segments,
                 weight = edge.weight,
                 isCyclic = edge.isCyclic,
-                isPointingUpwards = pointsUpwards(index, edge.from.graphId, edge.to.graphId)
+                isPointingUpwards = index.pointsUpwardsOrFalse(edge.from.graphId, edge.to.graphId)
             )
         }
         return DependencyGraph(edges, collectLevels(levelizedRoots, filePaths))
     }
 
     /**
-     * Levelizes the packages the declarations sit in, using the same three calls the folder tree makes:
-     * build the tree, levelize it, index it. The two levelizations are independent — folder levels are
-     * not a projection of namespace levels — so both run, which is why `--omit-graph-analysis` skips both.
+     * Levelizes the packages the declarations sit in, as the folder tree is levelized. The two
+     * levelizations are independent — folder levels are not a projection of namespace levels — so both
+     * run, which is why `--omit-graph-analysis` skips both.
      */
-    private fun levelizeNamespaceTree(
-        physical: DependencyGraph,
-        resolvedNodes: Collection<Node>,
-        declarations: List<Declaration>,
-        declarationEdges: List<DeclarationEdge>
-    ): DependencyGraph {
-        val levelizedRoots = Logger.timed("Leveling the namespace tree") { levelize(resolvedNodes.toGraphNodes()) }
-        val (_, unifiedRoot) = GraphNode.wrapInVirtualRootIfNeeded(levelizedRoots)
-        val index = GraphIndex(unifiedRoot)
-        val levelByGraphId = collectGraphLevels(levelizedRoots)
-        val declarationIds = declarations.map { it.id }.toSet()
-
-        return physical.copy(
-            declarations = declarations.map { it.copy(level = levelByGraphId[it.id]) },
-            declarationEdges =
-                declarationEdges.map { it.copy(isPointingUpwards = pointsUpwards(index, it.fromId, it.toId)) },
-            namespaceLevels = levelByGraphId.filterKeys { it !in declarationIds }
-        )
-    }
-
-    // A pair the index cannot relate — a node the levelizer dropped, or two roots with no common ancestor
-    // — is not evidence of an architectural violation, so it counts as pointing downwards.
-    private fun pointsUpwards(index: GraphIndex, sourceGraphId: String, targetGraphId: String): Boolean = try {
-        index.isPointingUpwards(sourceGraphId, targetGraphId)
-    } catch (unrelated: IllegalStateException) {
-        false
-    }
+    private fun levelizeNamespaceTree(resolvedNodes: Collection<Node>): LevelizedNamespaceTree =
+        LevelizedNamespaceTree(Logger.timed("Leveling the namespace tree") { levelize(resolvedNodes.toGraphNodes()) })
 
     private fun toFileTree(aggregatedEdges: List<AggregatedFileEdge>, filePaths: List<FilePath>): List<GraphNode> {
         val edgesByFile = aggregatedEdges.groupBy { it.from }
@@ -148,83 +118,6 @@ object ProcessingPipeline {
         levelizedRoots.forEach(::collect)
         return levels
     }
-
-    // The namespace tree is addressed by the very ids the logical layer uses, so unlike the folder tree
-    // its levels need no translation back into path segments.
-    private fun collectGraphLevels(levelizedRoots: List<GraphNode>): Map<String, Int> {
-        val levels = LinkedHashMap<String, Int>()
-
-        fun collect(node: GraphNode) {
-            node.level?.let { levels[node.id] = it }
-            node.children.forEach(::collect)
-        }
-        levelizedRoots.forEach(::collect)
-        return levels
-    }
-
-    /**
-     * Indexes the declarations by their dotted logical path.
-     *
-     * Two declarations can resolve to the same path — a partial class split across files, a name a
-     * language allows twice. They are one leaf that lists every file they live in, in the order the nodes
-     * arrive, so its first file is the one [FileLevelAggregator] points file edges into the declaration at
-     * and both projections agree on where those land. Its leaf edges are the union of every part's
-     * dependencies; its name and kind are the first part's.
-     */
-    private fun declarationsById(resolvedNodes: Collection<Node>): Map<String, Declaration> {
-        val declarations = LinkedHashMap<String, Declaration>()
-        resolvedNodes.forEach { node ->
-            val declarationId = node.pathWithName.withDots()
-            val filePath = FileLevelAggregator.filePathOf(node).segments
-            val existing = declarations[declarationId]
-            declarations[declarationId] =
-                existing?.copy(filePaths = (existing.filePaths + listOf(filePath)).distinct())
-                    ?: Declaration(declarationId, node.name(), node.nodeType.name, listOf(filePath))
-        }
-        return declarations
-    }
-
-    /**
-     * Folds the resolved declaration dependencies into one edge per ordered pair. A used type is identified
-     * by its name, so a pair arrives once per node and weighs 1 as in DependaCharta; the fold sums anyway in
-     * case a merged node reports a pair twice, and [DeclarationEdge.usage] collects every way the source uses
-     * the target.
-     */
-    private fun toDeclarationEdges(
-        resolvedNodes: Collection<Node>,
-        knownDeclarationIds: Set<String>,
-        cyclicEdgesByDeclaration: Map<String, Set<String>>
-    ): List<DeclarationEdge> {
-        val edgesByEndpoints = LinkedHashMap<Pair<String, String>, DeclarationEdge>()
-        resolvedNodes.forEach { node ->
-            val sourceId = node.pathWithName.withDots()
-            val cyclicTargets = cyclicEdgesByDeclaration[sourceId].orEmpty()
-
-            node.resolvedNodeDependencies.internalDependencies.forEach { dependency ->
-                val targetId = dependency.withDots()
-                // A dependency whose declaration no analyzer produced (e.g. a node dropped as a Rust
-                // re-export carrier) has nothing to point at, so there is no edge to draw.
-                if (targetId !in knownDeclarationIds || targetId == sourceId) return@forEach
-                val edge =
-                    DeclarationEdge(
-                        fromId = sourceId,
-                        toId = targetId,
-                        weight = 1,
-                        usage = listOf(dependency.type.rawValue),
-                        isCyclic = targetId in cyclicTargets,
-                        isPointingUpwards = false
-                    )
-                edgesByEndpoints.merge(sourceId to targetId, edge, ::foldDeclarationEdge)
-            }
-        }
-        return edgesByEndpoints.values.toList()
-    }
-
-    private fun foldDeclarationEdge(first: DeclarationEdge, second: DeclarationEdge): DeclarationEdge = first.copy(
-        weight = first.weight + second.weight,
-        usage = (first.usage + second.usage).distinct(),
-        isCyclic = first.isCyclic || second.isCyclic
-    )
 
     private fun detectCycles(resolvedNodes: Collection<Node>, omitGraphAnalysis: Boolean): Map<String, Set<String>> {
         if (omitGraphAnalysis) {
@@ -274,6 +167,14 @@ object ProcessingPipeline {
         FileDependencyEdge(from.segments, to.segments, weight, isCyclic, isPointingUpwards = false)
 
     private const val DEPENDENCY_EDGE_TYPE = "usage"
+}
+
+// A pair the index cannot relate — a node the levelizer dropped, or two roots with no common ancestor — is
+// not evidence of an architectural violation, so it counts as pointing downwards.
+internal fun GraphIndex.pointsUpwardsOrFalse(sourceGraphId: String, targetGraphId: String): Boolean = try {
+    isPointingUpwards(sourceGraphId, targetGraphId)
+} catch (unrelated: IllegalStateException) {
+    false
 }
 
 private fun <T> Logger.timed(description: String, block: () -> T): T {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert the `dependency` lens of a cc.json 2.0 file into DependaCharta's `.cg.json`.
+"""Convert the `dependency` lens of a cc.json 2.x file into DependaCharta's `.cg.json`.
 
     ./script/ccjson_to_cgjson.py out.cc.json -o out.cg.json
 
@@ -7,9 +7,17 @@ The result opens in DependaCharta's Web Studio (https://maibornwolff.github.io/D
 graph `ccsh dependencyparser` produces can be compared there against a DependaCharta run of the same
 project.
 
-Only `lenses.dependency.{leaves,namespaces,leafEdges}` and the `files` tree are read. The lens `edges`
-are deliberately ignored: they address file nodes and may carry metrics merged in from a piped
+Only `lenses.dependency.{leaves,namespaces,leafEdges,nodes}` and the `files` tree are read. The lens
+`edges` are deliberately ignored: they address file nodes and may carry metrics merged in from a piped
 project, so they are not the declaration graph DependaCharta works in.
+
+DependaCharta addresses a declaration by one dotted path, the lens by its file and a key within it. The
+dotted path is rebuilt from the leaf's namespace, or from its file path where it has none, so the ids
+of a language without packages keep the file suffix DependaCharta itself strips (`src.app_ts.App`). A
+container that stands for a folder or file rather than a package takes its level from `nodes`.
+
+Only the output of `ccsh dependencyparser` converts faithfully: where a leaf carries a `name`, its key
+is taken to be the dotted logical path, which is what that producer writes there.
 """
 
 import argparse
@@ -97,10 +105,37 @@ def language_of(physical_path):
     return LANGUAGE_BY_EXTENSION.get(extension, UNKNOWN_LANGUAGE)
 
 
-def outgoing_edges_by_leaf(leaf_edges):
+def dotted_path_of(physical_path):
+    return ".".join(segment.replace(".", "_") for segment in physical_path.split("/") if segment)
+
+
+# A key that carries a separate `name` is the full logical path already: `ccsh dependencyparser` writes
+# it where two declarations of one file share a name.
+def dotted_id_of(leaf_key, leaf, physical_path):
+    if "name" in leaf:
+        return leaf_key
+    if "namespace" in leaf:
+        return f"{leaf['namespace']}.{leaf_key}"
+    file_container = dotted_path_of(physical_path)
+    return f"{file_container}.{leaf_key}" if file_container else leaf_key
+
+
+def dotted_ids_by_address(lens, paths):
+    return {
+        (node_id, leaf_key): dotted_id_of(leaf_key, leaf, paths.get(node_id, ""))
+        for node_id, leaves_of_file in lens["leaves"].items()
+        for leaf_key, leaf in leaves_of_file.items()
+    }
+
+
+# Edges are re-addressed by dotted id; one whose end the leaf table does not declare is left out.
+def outgoing_edges_by_leaf(leaf_edges, dotted_ids):
     outgoing = {}
     for edge in leaf_edges:
-        outgoing.setdefault(edge["fromLeaf"], []).append(edge)
+        source = dotted_ids.get((edge["fromId"], edge["fromLeaf"]))
+        target = dotted_ids.get((edge["toId"], edge["toLeaf"]))
+        if source and target:
+            outgoing.setdefault(source, []).append({**edge, "toLeaf": target})
     return outgoing
 
 
@@ -114,24 +149,49 @@ def dependency_record(edge, is_pointing_upwards):
     }
 
 
-def build_leaves(lens, paths, outgoing):
+# A declaration split across files is one leaf per file in the lens but one leaf in a .cg.json, which
+# keeps the first file: the one edges into the declaration point at.
+def build_leaves(lens, paths, dotted_ids, outgoing):
     leaves = OrderedDict()
-    for leaf_id, leaf in lens["leaves"].items():
-        # A .cg.json leaf has one physical path, so it takes the first file: the one file edges point at.
-        physical_path = paths.get(next(iter(leaf.get("nodeIds") or []), None), "")
-        leaves[leaf_id] = {
-            "id": leaf_id,
-            "name": leaf.get("name", leaf_id.rsplit(".", 1)[-1]),
-            "physicalPath": physical_path,
-            "nodeType": leaf.get("kind", "UNKNOWN"),
-            "language": language_of(physical_path),
-            # DependaCharta always writes false here and carries the real flag on the tree node, so a
-            # viewer reading either field sees what it would see for a DependaCharta run.
-            "dependencies": {
-                edge["toLeaf"]: dependency_record(edge, False) for edge in outgoing.get(leaf_id, [])
-            },
-        }
+    for node_id, leaves_of_file in lens["leaves"].items():
+        physical_path = paths.get(node_id, "")
+        for leaf_key, leaf in leaves_of_file.items():
+            leaf_id = dotted_ids[(node_id, leaf_key)]
+            if leaf_id in leaves:
+                continue
+            leaves[leaf_id] = {
+                "id": leaf_id,
+                "name": leaf.get("name", leaf_key),
+                "physicalPath": physical_path,
+                "nodeType": leaf.get("kind", "unknown").upper(),
+                "language": language_of(physical_path),
+                # DependaCharta always writes false here and carries the real flag on the tree node, so a
+                # viewer reading either field sees what it would see for a DependaCharta run.
+                "dependencies": {
+                    edge["toLeaf"]: dependency_record(edge, False) for edge in outgoing.get(leaf_id, [])
+                },
+            }
     return leaves
+
+
+def leaf_levels_by_dotted_id(lens, dotted_ids):
+    levels = {}
+    for node_id, leaves_of_file in lens["leaves"].items():
+        for leaf_key, leaf in leaves_of_file.items():
+            levels.setdefault(dotted_ids[(node_id, leaf_key)], leaf.get("level", 0))
+    return levels
+
+
+# A package the code declares is levelized in `namespaces`; a container that re-encodes a folder or file
+# is that node of the file tree, so its level is the one `nodes` carries. A package wins a shared path.
+def container_levels(lens, paths):
+    levels = {
+        dotted_path_of(paths[node_id]): entry.get("level", 0)
+        for node_id, entry in (lens.get("nodes") or {}).items()
+        if paths.get(node_id)
+    }
+    levels.update({path: entry.get("level", 0) for path, entry in (lens.get("namespaces") or {}).items()})
+    return levels
 
 
 def aggregate_dependencies(leaf_ids, outgoing):
@@ -162,8 +222,8 @@ class TreeBuilder:
     contains other nodes, but never both: a declaration with declarations nested inside it therefore
     gets a container node beside its leaf node, exactly as DependaCharta emits it."""
 
-    def __init__(self, namespace_levels, leaf_levels):
-        self.namespace_levels = namespace_levels
+    def __init__(self, container_levels, leaf_levels):
+        self.container_levels = container_levels
         self.leaf_levels = leaf_levels
         self.containers = {}
         self.roots = []
@@ -175,7 +235,7 @@ class TreeBuilder:
         node = {
             "name": name_of(path),
             "children": [],
-            "level": self.namespace_levels.get(path, self.leaf_levels.get(path, 0)),
+            "level": self.container_levels.get(path, self.leaf_levels.get(path, 0)),
             "containedLeaves": [],
             "containedInternalDependencies": {},
         }
@@ -203,12 +263,9 @@ class TreeBuilder:
         return node
 
 
-def build_tree(lens, outgoing):
-    namespace_levels = {path: entry.get("level", 0) for path, entry in lens["namespaces"].items()}
-    leaf_levels = {path: entry.get("level", 0) for path, entry in lens["leaves"].items()}
-
-    builder = TreeBuilder(namespace_levels, leaf_levels)
-    for path in sorted(namespace_levels):
+def build_tree(lens, levels_of_containers, leaf_levels, outgoing):
+    builder = TreeBuilder(levels_of_containers, leaf_levels)
+    for path in sorted(lens.get("namespaces") or {}):
         builder.container(path)
 
     leaf_nodes = {}
@@ -243,12 +300,11 @@ def fill_containment(containers, leaf_nodes, leaf_levels, outgoing):
 
 def convert(document):
     lens = dependency_lens(document)
-    outgoing = outgoing_edges_by_leaf(lens.get("leafEdges") or [])
     paths = paths_by_node_id(document)
-    return {
-        "projectTreeRoots": build_tree(lens, outgoing),
-        "leaves": build_leaves(lens, paths, outgoing),
-    }
+    dotted_ids = dotted_ids_by_address(lens, paths)
+    outgoing = outgoing_edges_by_leaf(lens.get("leafEdges") or [], dotted_ids)
+    roots = build_tree(lens, container_levels(lens, paths), leaf_levels_by_dotted_id(lens, dotted_ids), outgoing)
+    return {"projectTreeRoots": roots, "leaves": build_leaves(lens, paths, dotted_ids, outgoing)}
 
 
 def report(project, lens):
@@ -271,7 +327,7 @@ def report(project, lens):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("input", type=Path, help="cc.json 2.0 file with a dependency lens (may be gzipped)")
+    parser.add_argument("input", type=Path, help="cc.json 2.x file with a dependency lens (may be gzipped)")
     parser.add_argument("-o", "--output", type=Path, help="output file (default: the input with a .cg.json suffix)")
     parser.add_argument("--indent", type=int, default=None, help="pretty-print the output with this indent")
     return parser.parse_args()

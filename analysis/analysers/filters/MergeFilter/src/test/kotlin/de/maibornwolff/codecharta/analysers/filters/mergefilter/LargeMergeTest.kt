@@ -30,15 +30,15 @@ class LargeMergeTest {
     )
 
     @Test
-    fun `should move the logical layer under the folder and re-point a leaf at the wrapped file`() {
+    fun `should move the namespaces under the folder and re-key the leaves onto the wrapped file`() {
         // Arrange
         val fileId = NodeId.fromSegments(listOf("file.kt"), NodeType.File)
         val project = rootProject(
             lenses = LensSet(
                 dependency = DependencyLens(
                     namespaces = mapOf("com.example" to DependencyNamespace(0)),
-                    leaves = mapOf("com.example.File" to DependencyLeaf(listOf(fileId), "File", "CLASS", 1)),
-                    leafEdges = listOf(LeafEdge("com.example.File", "com.example.File"))
+                    leaves = mapOf(fileId to mapOf("File" to DependencyLeaf("class", namespace = "com.example", level = 1))),
+                    leafEdges = listOf(LeafEdge(fileId, "File", fileId, "File"))
                 )
             )
         )
@@ -47,14 +47,15 @@ class LargeMergeTest {
         val wrapped = LargeMerge.wrapProjectInFolder(project, "alpha")
 
         // Assert: the package and the file both moved into the folder, so a second project declaring
-        // com.example.File stays apart from this one.
+        // com.example stays apart from this one.
+        val wrappedFileId = NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File)
         val dependency = wrapped.lenses.dependency
         assertEquals(mapOf("alpha.com.example" to DependencyNamespace(0)), dependency.namespaces)
         assertEquals(
-            listOf(NodeId.fromSegments(listOf("alpha", "file.kt"), NodeType.File)),
-            dependency.leaves.getValue("alpha.com.example.File").nodeIds
+            mapOf(wrappedFileId to mapOf("File" to DependencyLeaf("class", namespace = "alpha.com.example", level = 1))),
+            dependency.leaves
         )
-        assertEquals(listOf(LeafEdge("alpha.com.example.File", "alpha.com.example.File")), dependency.leafEdges)
+        assertEquals(listOf(LeafEdge(wrappedFileId, "File", wrappedFileId, "File")), dependency.leafEdges)
     }
 
     @Test

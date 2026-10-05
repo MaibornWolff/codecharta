@@ -33,11 +33,11 @@ class Project(
 
     companion object {
         private const val API_VERSION_MAJOR = "2"
-        private const val API_VERSION_MINOR = "0"
+        private const val API_VERSION_MINOR = "1"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 
-        // 2.0 is the only format the analysis pipeline works with: ccsh emits 2.0 and every command but
-        // `convert` reads 2.0 only (1.x must be upgraded first), so the merge gate accepts major 2 only.
+        // 2.x is the only format the analysis pipeline works with: ccsh emits 2.x and every command but
+        // `convert` reads 2.x only (1.x must be upgraded first), so the merge gate accepts major 2 only.
         private val SUPPORTED_API_VERSION_MAJORS = setOf("2")
 
         fun isAPIVersionCompatible(apiVersion: String): Boolean {

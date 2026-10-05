@@ -128,27 +128,25 @@ class EveritValidatorTest {
                 NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File) to DependencyNode(2),
                 NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File) to DependencyNode(0)
             )
-        val namespaces = mapOf("com.example.domain" to DependencyNamespace(0))
+        val appId = NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File)
+        val otherId = NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File)
+        val namespaces = mapOf("com" to DependencyNamespace(0), "com.example" to DependencyNamespace(0, parent = "com"))
         val leaves =
             mapOf(
-                "com.example.domain.Creature" to
-                    DependencyLeaf(
-                        listOf(
-                            NodeId.fromSegments(listOf("src", "App.kt"), NodeType.File),
-                            NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File)
-                        ),
-                        "Creature",
-                        "CLASS",
-                        2
+                appId to
+                    mapOf(
+                        "Creature" to DependencyLeaf("class", language = "kotlin", namespace = "com.example", level = 2),
+                        "Creature.Claw" to DependencyLeaf("class", name = "Claw", language = "kotlin", parent = "Creature")
                     ),
-                "com.example.domain.HitPoints" to
-                    DependencyLeaf(listOf(NodeId.fromSegments(listOf("src", "Other.kt"), NodeType.File)), "HitPoints", "VALUECLASS", 0)
+                otherId to mapOf("HitPoints" to DependencyLeaf("valueclass", language = "kotlin", namespace = "com.example", level = 0))
             )
         val leafEdges =
             listOf(
                 LeafEdge(
-                    "com.example.domain.Creature",
-                    "com.example.domain.HitPoints",
+                    appId,
+                    "Creature",
+                    otherId,
+                    "HitPoints",
                     mapOf("dependencies" to 1),
                     listOf("inheritance"),
                     isCyclic = true,
@@ -362,20 +360,198 @@ class EveritValidatorTest {
     }
 
     @Test
-    fun `should reject a 2_0 file whose dependency-lens leaf references an unknown node id`() {
-        // Schema-valid, but one of the leaf's node ids resolves to no node — the reader would silently drop it.
-        val danglingLeaf =
-            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
-                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
-                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
-                """"lenses":{"dependency":{"leaves":{"com.example.Ghost":{"nodeIds":["app-id","ghost-id"],"name":"Ghost","kind":"CLASS"}}}}}"""
+    fun `should accept a logical layer whose every reference resolves`() {
+        // Arrange
+        val resolvable =
+            withDependencyLens(
+                """"namespaces":{"com":{"level":0},"com.example":{"parent":"com","level":0}},""" +
+                    """"leaves":{"app-id":{"App":{"kind":"class","namespace":"com.example"},""" +
+                    """"App.Inner":{"kind":"class","parent":"App"}}},""" +
+                    """"leafEdges":[{"fromId":"app-id","fromLeaf":"App.Inner","toId":"app-id","toLeaf":"App"}]"""
+            )
 
-        val thrown =
-            assertFailsWith(ReferentialIntegrityException::class) {
-                validator.validate(ByteArrayInputStream(danglingLeaf.toByteArray()))
-            }
-        Assertions.assertThat(thrown.message).contains("com.example.Ghost").contains("ghost-id")
+        // Act
+        val validation = runCatching { validator.validate(ByteArrayInputStream(resolvable.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(validation.isSuccess).isTrue()
     }
+
+    @Test
+    fun `should reject leaves grouped under an unknown node id`() {
+        // Arrange
+        val danglingLeaves = withDependencyLens(""""leaves":{"ghost-id":{"Ghost":{"kind":"class"}}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) { validator.validate(ByteArrayInputStream(danglingLeaves.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("leaves for unknown file node id").contains("ghost-id")
+    }
+
+    @Test
+    fun `should reject leaves grouped under the id of a folder`() {
+        // Arrange
+        val leavesOfFolder = withDependencyLens(""""leaves":{"root-id":{"App":{"kind":"class"}}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) { validator.validate(ByteArrayInputStream(leavesOfFolder.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("leaves for unknown file node id").contains("root-id")
+    }
+
+    @Test
+    fun `should reject a leaf edge that ends at a folder`() {
+        // Arrange
+        val edgeIntoFolder = withDependencyLens(""""leafEdges":[{"fromId":"app-id","fromLeaf":"App","toId":"root-id","toLeaf":"App"}]""")
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) { validator.validate(ByteArrayInputStream(edgeIntoFolder.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("toId").contains("root-id")
+    }
+
+    @Test
+    fun `should reject namespaces whose parents form a cycle`() {
+        // Arrange
+        val cyclicNamespaces =
+            withDependencyLens(""""namespaces":{"first":{"parent":"second","level":0},"second":{"parent":"first","level":0}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(
+                ReferentialIntegrityException::class
+            ) { validator.validate(ByteArrayInputStream(cyclicNamespaces.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("namespace 'first' with a cyclic parent chain")
+    }
+
+    @Test
+    fun `should reject a leaf that names itself as its parent`() {
+        // Arrange
+        val selfParent = withDependencyLens(""""leaves":{"app-id":{"App":{"kind":"class","parent":"App"}}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) { validator.validate(ByteArrayInputStream(selfParent.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("leaf 'App' with a cyclic parent chain")
+    }
+
+    @Test
+    fun `should reject a leaf whose namespace the namespace table does not declare`() {
+        // Arrange
+        val danglingNamespace = withDependencyLens(""""leaves":{"app-id":{"App":{"kind":"class","namespace":"com.ghost"}}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(
+                ReferentialIntegrityException::class
+            ) { validator.validate(ByteArrayInputStream(danglingNamespace.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("unknown namespace").contains("com.ghost")
+    }
+
+    @Test
+    fun `should reject a leaf whose parent its file does not declare`() {
+        // Arrange
+        val danglingParent = withDependencyLens(""""leaves":{"app-id":{"App.Inner":{"kind":"class","parent":"Ghost"}}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) { validator.validate(ByteArrayInputStream(danglingParent.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("leaf 'App.Inner' with unknown parent").contains("Ghost")
+    }
+
+    @Test
+    fun `should reject a namespace whose parent the namespace table does not declare`() {
+        // Arrange
+        val danglingParent = withDependencyLens(""""namespaces":{"com.example":{"parent":"ghost","level":0}}""")
+
+        // Act
+        val thrown =
+            assertFailsWith(ReferentialIntegrityException::class) { validator.validate(ByteArrayInputStream(danglingParent.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("namespace 'com.example' with unknown parent").contains("ghost")
+    }
+
+    @Test
+    fun `should reject a leaf edge whose file node the tree does not have`() {
+        // Arrange
+        val danglingLeafEdge =
+            withDependencyLens(
+                """"leaves":{"app-id":{"App":{"kind":"class"}}},""" +
+                    """"leafEdges":[{"fromId":"app-id","fromLeaf":"App","toId":"ghost-id","toLeaf":"App"}]"""
+            )
+
+        // Act
+        val thrown =
+            assertFailsWith(
+                ReferentialIntegrityException::class
+            ) { validator.validate(ByteArrayInputStream(danglingLeafEdge.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("toId").contains("ghost-id")
+    }
+
+    @Test
+    fun `should reject a leaf edge whose leaf its file does not declare`() {
+        // Arrange: `Ghost` is declared nowhere under app-id, though the id itself resolves.
+        val danglingLeafEdge =
+            withDependencyLens(
+                """"leaves":{"app-id":{"App":{"kind":"class"}}},""" +
+                    """"leafEdges":[{"fromId":"app-id","fromLeaf":"App","toId":"app-id","toLeaf":"Ghost"}]"""
+            )
+
+        // Act
+        val thrown =
+            assertFailsWith(
+                ReferentialIntegrityException::class
+            ) { validator.validate(ByteArrayInputStream(danglingLeafEdge.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(thrown.message).contains("toLeaf").contains("Ghost")
+    }
+
+    @Test
+    fun `should check only the node ids of leaf edges when the file carries no leaf table`() {
+        // Arrange
+        val edgesOnly = withDependencyLens(""""leafEdges":[{"fromId":"app-id","fromLeaf":"App","toId":"app-id","toLeaf":"Helper"}]""")
+
+        // Act
+        val validation = runCatching { validator.validate(ByteArrayInputStream(edgesOnly.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(validation.isSuccess).isTrue()
+    }
+
+    @Test
+    fun `should reject a leaf that is not grouped under a file node id`() {
+        // Arrange
+        val ungrouped = withDependencyLens(""""leaves":{"com.example.App":{"nodeIds":["app-id"],"name":"App","kind":"CLASS"}}""")
+
+        // Act
+        val validation = runCatching { validator.validate(ByteArrayInputStream(ungrouped.toByteArray())) }
+
+        // Assert
+        Assertions.assertThat(validation.exceptionOrNull()).isInstanceOf(ValidationException::class.java)
+    }
+
+    private fun withDependencyLens(tables: String): String = """{"meta":{"projectName":"p","apiVersion":"2.1","checksum":"x"},""" +
+        """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
+        """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
+        """"lenses":{"dependency":{$tables}}}"""
 
     @Test
     fun `should reject a 2_0 file whose dependency-lens node entry references an unknown node id`() {
@@ -391,23 +567,6 @@ class EveritValidatorTest {
                 validator.validate(ByteArrayInputStream(danglingNode.toByteArray()))
             }
         Assertions.assertThat(thrown.message).contains("node entry").contains("ghost-id")
-    }
-
-    @Test
-    fun `should reject a 2_0 file whose leaf edge references a leaf the leaf table does not declare`() {
-        // Schema-valid, but toLeaf names no declared leaf — the reader would drop the edge with a warning.
-        val danglingLeafEdge =
-            """{"meta":{"projectName":"p","apiVersion":"2.0","checksum":"x"},""" +
-                """"files":[{"id":"root-id","name":"root","type":"Folder","children":[""" +
-                """{"id":"app-id","name":"App.kt","type":"File"}]}],""" +
-                """"lenses":{"dependency":{"leaves":{"com.example.App":{"nodeIds":["app-id"],"name":"App","kind":"CLASS"}},""" +
-                """"leafEdges":[{"fromLeaf":"com.example.App","toLeaf":"com.example.Ghost"}]}}}"""
-
-        val thrown =
-            assertFailsWith(ReferentialIntegrityException::class) {
-                validator.validate(ByteArrayInputStream(danglingLeafEdge.toByteArray()))
-            }
-        Assertions.assertThat(thrown.message).contains("toLeaf").contains("com.example.Ghost")
     }
 
     @Test

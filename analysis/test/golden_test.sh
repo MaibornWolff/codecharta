@@ -263,29 +263,30 @@ check_dependencyparser() {
     exit_with_err "${ACTUAL_DEPENDENCYPARSER_JSON} does not carry the per-file dependency counts"
   fi
   # The same analysis is emitted a second time at declaration level, so assert the logical tables are
-  # there alongside the physical ones: the namespaces, the declarations with their kind and the file they
-  # join onto, and the declaration-level edges with the way each dependency is used.
+  # there alongside the physical ones: the namespaces with their parents, the declarations of each file
+  # with their kind, and the declaration-level edges with the way each dependency is used.
   if ! grep -q '"namespaces":{' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"parent":"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
     ! grep -q '"leaves":{' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
-    ! grep -q '"leafEdges":\[{"fromLeaf"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
-    ! grep -q '"kind":"CLASS"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"leafEdges":\[{"fromId":"[^"]*","fromLeaf":"[^"]*","toId"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
+    ! grep -q '"kind":"class"' "${ACTUAL_DEPENDENCYPARSER_JSON}" ||
     ! grep -q '"usage":\["' "${ACTUAL_DEPENDENCYPARSER_JSON}"; then
     exit_with_err "${ACTUAL_DEPENDENCYPARSER_JSON} does not carry the logical package/declaration layer"
   fi
 }
 
 check_convert() {
-  echo " -- expect convert to upgrade a legacy 1.x file to a valid 2.0 cc.json file"
+  echo " -- expect convert to upgrade a legacy 1.x file to a valid 2.x cc.json file"
   ACTUAL_CONVERT_JSON="${TEMP_DIR}/actual_convert.cc.json"
   CONVERT_LOG="${TEMP_DIR}/actual_convert_log.txt"
   "${CCSH}" convert "${DATA}/legacy_1_5.cc.json" -o "${ACTUAL_CONVERT_JSON}" -nc 2>"${CONVERT_LOG}"
   validate "${ACTUAL_CONVERT_JSON}"
-  # `validate` (ccsh check) alone is blind to a wrong output format, so assert the output is genuine 2.0
+  # `validate` (ccsh check) alone is blind to a wrong output format, so assert the output is genuine 2.x
   # (meta/lenses envelope, edge carried through as fromId) and not the un-converted legacy 1.x shape.
-  if ! grep -q '"apiVersion":"2.0"' "${ACTUAL_CONVERT_JSON}" ||
+  if ! grep -q '"apiVersion":"2.1"' "${ACTUAL_CONVERT_JSON}" ||
     ! grep -q '"lenses"' "${ACTUAL_CONVERT_JSON}" ||
     ! grep -q '"fromId"' "${ACTUAL_CONVERT_JSON}"; then
-    exit_with_err "${ACTUAL_CONVERT_JSON} is not a 2.0 file carrying its edges"
+    exit_with_err "${ACTUAL_CONVERT_JSON} is not a 2.x file carrying its edges"
   fi
   if grep -q '"nodes":' "${ACTUAL_CONVERT_JSON}" || grep -q '"data":' "${ACTUAL_CONVERT_JSON}"; then
     exit_with_err "${ACTUAL_CONVERT_JSON} still carries the legacy 1.x shape"

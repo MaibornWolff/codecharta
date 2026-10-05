@@ -42,10 +42,10 @@ class DependencyLensDto(
     // Keyed by node id on the wire exactly as in the model, so it needs no DTO of its own. Null rather
     // than empty so a lens without per-node data stays byte-identical to what earlier writers emitted.
     val nodes: Map<String, DependencyNode>? = null,
-    // The logical projection, keyed by dotted logical path. Null on the same terms as `nodes`, so a file
-    // that carries only the physical projection is byte-identical to what earlier writers emitted.
+    // The logical projection. Null on the same terms as `nodes`, so a file that carries only the physical
+    // projection is byte-identical to what earlier writers emitted.
     val namespaces: Map<String, DependencyNamespace>? = null,
-    val leaves: Map<String, DependencyLeafDto>? = null,
+    val leaves: Map<String, Map<String, DependencyLeafDto>>? = null,
     val leafEdges: List<LeafEdgeDto>? = null
 )
 
@@ -61,14 +61,21 @@ class EdgeDto(
     val isPointingUpwards: Boolean? = null
 )
 
-// `nodeIds` is required by the schema, but GSON leaves a missing list null despite the Kotlin type, so it is
-// nullable here and a leaf without it reads as joined to no file.
-class DependencyLeafDto(val nodeIds: List<String>? = null, val name: String, val kind: String, val level: Int? = null)
+class DependencyLeafDto(
+    val name: String? = null,
+    val kind: String,
+    val language: String? = null,
+    val namespace: String? = null,
+    val parent: String? = null,
+    val level: Int? = null
+)
 
 // Nullable on the same terms as EdgeDto's flags: a leaf edge that is neither cyclic nor upward-pointing
 // and whose usage the producer did not record serializes as its endpoints and weight alone.
 class LeafEdgeDto(
+    val fromId: String,
     val fromLeaf: String,
+    val toId: String,
     val toLeaf: String,
     val attributes: Map<String, Any>? = null,
     val usage: List<String>? = null,

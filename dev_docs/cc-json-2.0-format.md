@@ -1,7 +1,7 @@
 # cc.json 2.0 — `{ meta, files, lenses }`
 
-> Status: **implemented on both the analysis (`ccsh`) and the visualization side.** `ccsh` emits 2.0
-> only; every `ccsh` command reads 2.0, and the legacy 1.x format is read solely by `ccsh convert`
+> Status: **implemented on both the analysis (`ccsh`) and the visualization side.** `ccsh` emits 2.x
+> only (currently 2.1); every `ccsh` command reads 2.x, and the legacy 1.x format is read solely by `ccsh convert`
 > (which upgrades it). The visualization reads 2.0 natively and still opens legacy 1.x files by
 > normalizing them to 2.0 on load. See
 > [ADR 12](adr/2026-06-25-ADR_12_separate_file_structure_from_analysis_lenses.md).
@@ -22,7 +22,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
 
 ```json
 {
-  "meta": { "projectName": "p", "apiVersion": "2.0", "checksum": "<md5 of files+lenses>", "commitHash": "a1b2c3d" },
+  "meta": { "projectName": "p", "apiVersion": "2.1", "checksum": "<md5 of files+lenses>", "commitHash": "a1b2c3d" },
   "files": [
     { "id": "<sha256(Folder/)[:16]>", "name": "root", "type": "Folder", "children": [
       { "id": "<sha256(Folder/src)[:16]>", "name": "src", "type": "Folder", "children": [
@@ -32,7 +32,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
   ],
   "lenses": {
     "metrics":    { "attributes": { "<id>": { "rloc": 120, "mcc": 8 } }, "attributeDescriptors": {}, "attributeTypes": {} },
-    "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true } ], "nodes": { "<id>": { "level": 2 } }, "namespaces": { "com.example.domain": { "level": 0 } }, "leaves": { "com.example.domain.Creature": { "nodeIds": ["<id>"], "name": "Creature", "kind": "CLASS", "level": 2 } }, "leafEdges": [ { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints", "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true } ], "attributeTypes": {}, "attributeDescriptors": {} },
+    "dependency": { "edges": [ { "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true } ], "nodes": { "<id>": { "level": 2 } }, "namespaces": { "com": { "level": 0 }, "com.example": { "parent": "com", "level": 0 } }, "leaves": { "<id>": { "Creature": { "kind": "class", "language": "java", "namespace": "com.example", "level": 2 } } }, "leafEdges": [ { "fromId": "<id>", "fromLeaf": "Creature", "toId": "<id>", "toLeaf": "HitPoints", "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true } ], "attributeTypes": {}, "attributeDescriptors": {} },
     "clusters":   { "clusterings": { "author-ownership": { "title": "Author ownership", "membership": "weighted", "weightBasis": "rloc", "analyzers": ["gitlogparser"], "clusters": [ { "id": "author-a", "name": "Author A", "members": [ { "nodeId": "<id>", "weight": 0.62 } ] } ] } } },
     "domain":     { "nodes": { "<id>": { "words": [ { "text": "invoice", "frequency": 12, "tfidf": 0.42 } ] } } },
     "security":   {}
@@ -47,7 +47,7 @@ backend and a frontend built separately, or a coverage report rooted by package)
   visualization support yet — see [the `clusters` lens](cc-json-2.0-clusters-lens.md) for its full
   definition and merge semantics; `dependency` carries the graph in both projections — `edges` between node ids
   plus an optional `nodes` map giving each file and folder the `level` it sits on, and the logical layer
-  (`namespaces`, `leaves`, `leafEdges`) keyed by dotted logical path (see
+  (`namespaces`, `leaves`, `leafEdges`), whose declarations are grouped under the id of their file node (see
   [the dependency graph](#the-dependency-graph-in-the-dependency-lens)); `domain` carries a `nodes` map from node id to that node's entry, each
   entry holding a `words` bank (each word carrying `text`, `frequency` and an optional `tfidf`) — the
   envelope keeps room for lens-wide data beside `nodes` and per-node data beside `words`, and an unused
@@ -82,8 +82,8 @@ container-level feedback (`isPointingUpwards`), leaf-level feedback (both).
 - **Levels are local.** A level orders a node among its siblings — the files and folders of one folder,
   the declarations and sub-namespaces of one namespace. Levels of nodes under different parents do not
   compare.
-- **A leaf edge weighs 1 unless its source is split.** Each part of a declaration split across files that
-  references the target counts once, so the weight is the number of such parts.
+- **A leaf edge weighs 1 unless its source is declared more than once in its file.** Declarations of one
+  file that share a logical path are one leaf, and each of them that references the target counts once.
 
 **`nodes`** maps a node id to that node's `DependencyNode`, currently just its `level`: the node's
 levelization depth within its parent — 0 for a node that depends on nothing, *n* for one that depends
@@ -102,41 +102,62 @@ levels for a merged tree mean re-running the parser on it.
 `edges` and `nodes` are the graph as the *file tree* sees it. The three optional tables beside them are
 the same graph as the *code* declares it — packages and declarations rather than folders and files.
 
-- **`leaves`** maps a declaration's dotted logical path (`com.example.domain.Creature`) to its `nodeIds`
-  (the file nodes it is declared in), its `name`, its `kind` (`CLASS`, `VALUECLASS`, `INTERFACE`,
-  `ANNOTATION`, `ENUM`, `FUNCTION`, `VARIABLE`, `REEXPORT`, `SCRIPT`, `UNKNOWN`) and its `level`.
-  `nodeIds` holds more than one id for a declaration split across files — a partial class, the same
-  package and name in two modules — and its first id is the file `edges` into the declaration point at.
-- **`namespaces`** maps a dotted package path to its `level`. It needs no `parent`: with dotted ids the
-  parent is the id's prefix. `leaves` needs no `namespace` for the same reason, but does keep `name`,
-  because a logical path escapes dots inside a segment and that escaping is not reversible.
-- **`leafEdges`** are the dependencies between declarations, addressed by those same dotted paths, with
-  the edge weight in `attributes`, the same two graph flags as an `Edge`, and `usage`: every way the
-  source uses the target (`usage`, `inheritance`, `implementation`, `instantiation`, `argument`,
-  `return_value`, `constant_access`). The format defines all seven; a reader must not assume a producer
-  fills them in, and `ccsh dependencyparser` currently reports more than `usage` for PHP only.
+- **`leaves`** maps a file node id to the declarations of that file, each under a key that is unique
+  within the file. A leaf has no id of its own: it is addressed by that pair, and the key is opaque — a
+  reader never parses or splits it. A leaf carries its `kind` and, each only when set, `name` (written
+  only when it differs from the key), `language`, `namespace` (a key of `namespaces`), `parent` (the key
+  of the declaration of the same file it is nested in) and `level`.
+- **`namespaces`** maps a declared package name to its `level` and its `parent`, the key of the package
+  containing it; a top-level package has none. The hierarchy is `parent` alone, never the dots of a key.
+- **`leafEdges`** are the dependencies between declarations. `fromId` and `toId` are file node ids exactly
+  as on an `Edge`, `fromLeaf` and `toLeaf` the keys within those files. Beside them sit the edge weight in
+  `attributes`, the same two graph flags as an `Edge`, and `usage`: every way the source uses the target.
 
-Ids here are the dotted logical path **verbatim** rather than a hash. Node ids are hashed to canonicalize
-*paths* — separator, Unicode form, `.`/`..` — and a dotted namespace has none of that variance, so
-hashing would buy nothing but cost readability. Every table is optional and omitted when empty, so a file
-carrying only the physical projection is byte-identical to what producers wrote before they existed.
-A restructuring within one project moves files, not packages, so it re-points a leaf's `nodeIds` and leaves
-the logical ids alone; `merge --large`, which wraps each input in a folder, prefixes the logical ids with
-that folder (dots escaped to `_`) so two inputs declaring the same package stay apart in both projections.
+`kind`, `usage` and `language` are open lower-case vocabularies, not enums, so a producer can add a value
+without a schema change. Known values: `kind` — `class`, `valueclass`, `interface`, `annotation`, `enum`,
+`function`, `variable`, `reexport`, `script`, `unknown`; `usage` — `usage`, `inheritance`,
+`implementation`, `instantiation`, `argument`, `return_value`, `constant_access`; `language` — `java`,
+`kotlin`, `csharp`, `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`. A
+reader must not assume a producer fills in every usage, and `ccsh dependencyparser` currently reports more
+than `usage` for PHP only.
 
-`leafEdges` is a list of its own rather than a widened `Edge`, because `Edge` requires `fromId`/`toId`
-and the edge-metric machinery, `edgefilter` and the 3D map all read `edges`. It carries the two signals
-the file-collapsed `edges` cannot: a dependency between two declarations of the *same* file, and the kind
-of use each dependency is.
+**Why the file node id is the key.** A dotted logical path is the declared package in Java, Kotlin, C#,
+PHP and C++, but merely the re-encoded file path everywhere else. As a key it collides (`app.config.ts`
+beside `app_config.ts`), goes stale when a file moves, and makes the parent ambiguous (`user.ts` beside
+`user/User.ts`). The node id is the identity the file tree already has, and it follows the file through
+every filter.
 
-**Merge and re-key.** `namespaces` merges max-wins on `level`, like `nodes`. `leaves` unions; a key
-both inputs declare is one declaration living in the files of both, so its `nodeIds` union, while `name`,
-`kind` and `level` stay the first input's, with a warning when name or kind conflict. `leafEdges` fold by
-endpoint pair the way `edges` do: the first weight wins, the flags OR, `usage` unions.
-Re-keying touches only **`leaves[].nodeIds`** — the only node references the logical layer holds; a leaf
-keeps the files that survive a restructuring and is dropped when none do, and with it every leaf edge that
-touched it and every namespace no surviving leaf lives in. The logical keys themselves never move: a restructuring moves
-files, not packages.
+**`namespace` only where packages are real.** A leaf carries a `namespace`, and `namespaces` an entry for
+it, only where the language has packages apart from its files — for `ccsh dependencyparser` that is
+Java, Kotlin, C#, PHP and C++, and there only for a declaration that sits in one (a PHP or C++ file
+without a `namespace` declares none). TypeScript, JavaScript, Vue, Python, Go, Rust and Delphi leaves
+carry no `namespace`: their grouping is the file tree. A namespace entry requires a `level`, so a run with
+`--omit-graph-analysis` writes neither `namespaces` nor `namespace`.
+
+**A declaration split across files** — a partial class, the same package and name in two modules — is one
+leaf per file with the same `namespace` and key; a reader that wants the one class groups on that pair.
+An edge *into* it targets the first of those files, in both projections.
+
+**`parent` is reserved.** The schema lets a leaf name the declaration it is nested in, and such a leaf
+inherits its namespace through it. No producer emits it yet: `ccsh dependencyparser` writes a nested
+declaration as an ordinary leaf of its file, in the package of the declaration around it.
+
+Every table is optional and omitted when empty, so the lens of a file carrying only the physical
+projection reads as it did before they existed.
+
+`leafEdges` is a list of its own rather than a widened `Edge`, because the edge-metric machinery,
+`edgefilter` and the 3D map all read `edges`. It carries the two signals the file-collapsed `edges`
+cannot: a dependency between two declarations of the *same* file, and the kind of use each dependency is.
+
+**Merge and re-key.** `namespaces` merges max-wins on `level`, like `nodes`. `leaves` merge by file node
+id and key: the leaves of two inputs union, and for a pair both declare the first input's description
+stays, with a warning when the two differ. `leafEdges` fold by their four endpoint fields the way
+`edges` fold by two: the first weight wins, the flags OR, `usage` unions. Re-keying follows the tree:
+the outer keys of `leaves` and the `fromId`/`toId` of `leafEdges` move with their files, the leaves of a
+file that did not survive go with it, and with them every leaf edge that touched them and every namespace
+no surviving leaf lives in, directly or through `parent`. `merge --large`, which wraps each input in a
+folder, prefixes the namespace keys and the references to them with that folder, so two inputs declaring
+the same package stay apart in both projections.
 
 **The two projections can disagree, by design.** Folder levels are not a projection of namespace levels,
 so both trees are levelized separately. Where a language's packages and folders diverge — Java, C#, Go —
@@ -193,10 +214,10 @@ combine consistently regardless of which tool produced them.
 
 ## Converting and reading
 
-- `ccsh` emits 2.0 only — there is no 1.5 writer.
-- Every command reads 2.0 only. Feeding a legacy 1.x file to `merge`/`modify`/`edgefilter`/`inspect`/an
+- `ccsh` emits 2.x only (currently 2.1) — there is no 1.5 writer.
+- Every command reads 2.x only. Feeding a legacy 1.x file to `merge`/`modify`/`edgefilter`/`inspect`/an
   importer reports that the file is legacy and points at `ccsh convert`. Only `ccsh convert` reads 1.x.
-- `ccsh convert <file> [-o out]` upgrades a 1.x (or 2.0) file to 2.0 — the one on-ramp for legacy files.
+- `ccsh convert <file> [-o out]` upgrades a 1.x (or older 2.x) file to the current 2.x — the one on-ramp for legacy files.
 - `ccsh check <file>` validates either format (the everit schema still accepts both via `anyOf`; the 2.0
   branch is strict — `apiVersion` major 2, exactly one root, no unknown keys).
 
@@ -218,7 +239,8 @@ combine consistently regardless of which tool produced them.
 
 Practical rule for contributors: to extend 2.x, add an **optional** field (or a whole new lens — the
 `lenses` object already preserves unknown lenses verbatim) and bump the minor; never touch the meaning
-of an existing field. When you add a field, update all three schema copies (this file's schema, the
+of an existing field. `ccsh` writes `2.1`: the dependency lens's edge flags, `nodes` and logical tables
+are its additions over `2.0`. When you add a field, update all three schema copies (this file's schema, the
 viz-vendored `ccJson2Schema.json`, and the `ccsh check` `cc.json`) so `EveritValidatorTest` and the
 viz drift guard stay green.
 
