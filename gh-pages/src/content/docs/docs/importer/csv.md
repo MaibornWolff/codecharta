@@ -16,12 +16,12 @@ _Conventions for csv input:_
 
 | Parameters                          | Description                                                       |
 | ----------------------------------- | ----------------------------------------------------------------- |
-| `FILE`                              | sourcemonitor csv files                                           |
+| `FILE`                              | csv files with header                                             |
 | `--path-separator=<pathSeparator>`  | path separator (default = '/')                                    |
-| `-d, --delimiter=<csvDelimiter>`    | delimiter in csv file                                             |
+| `-d, --delimiter=<csvDelimiter>`    | delimiter in csv file (default = ',')                             |
 | `-h, --help`                        | displays help                                                     |
 | `-o, --output-file=<outputFile>`    | output File (or empty for stdout)                                 |
-| `--path-column-name=<pathColumnName>` | specify the path column name                                    |
+| `--path-column-name=<pathColumnName>` | specify the path column name (default = 'path')                 |
 | `-nc, --not-compressed`             | save the output file uncompressed (plain JSON instead of gzip)    |
 
 ```
@@ -45,128 +45,95 @@ ParentLeaf/smallLeaf.html,smallLeaf.html,File,30.0,100.0,100.0,60.0,51.0,ParentL
 ParentLeaf/otherSmallLeaf.ts,otherSmallLeaf.ts,File,70.0,1000.0,10.0,65.0,22.0,ParentLeaf
 ```
 
-And output a cc.json file that looks like this (the output will all be in one line, here the json was sorted to be more readable):
+And output a cc.json file that looks like this (the output will all be in one line, here the json was formatted to be more readable and the `attributeDescriptors` are left out):
 
 ```
-  "checksum": "93f5995ee258ed3ff1fb1fe396c704eb",
-  "data": {
+{
+  "meta": {
     "projectName": "",
-    "nodes": [
-      {
-        "name": "root",
-        "type": "Folder",
-        "attributes": {},
-        "link": "",
-        "children": [
-          {
-            "name": "sample1OnlyLeaf.scss",
-            "type": "File",
-            "attributes": {
-              "rloc": 400.0,
-              "functions": 10.0,
-              "mcc": 100.0,
-              "pairingRate": 32.0,
-              "avgCommits": 17.0
+    "apiVersion": "2.1",
+    "checksum": "f581ee7bc75ddf6bfc4dde6db72e2c6f"
+  },
+  "files": [
+    {
+      "id": "164ddff4bb1345e1",
+      "name": "root",
+      "type": "Folder",
+      "children": [
+        {
+          "id": "1ae98c1a93690d75",
+          "name": "ParentLeaf",
+          "type": "Folder",
+          "children": [
+            {
+              "id": "ea70504d5daa3547",
+              "name": "otherSmallLeaf.ts",
+              "type": "File",
+              "link": ""
             },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "bigLeaf.ts",
-            "type": "File",
-            "attributes": {
-              "rloc": 100.0,
-              "functions": 10.0,
-              "mcc": 1.0,
-              "pairingRate": 77.0,
-              "avgCommits": 56.0
-            },
-            "link": "",
-            "children": []
-          },
-          {
-            "name": "ParentLeaf",
-            "type": "Folder",
-            "attributes": {},
-            "link": "",
-            "children": [
-              {
-                "name": "smallLeaf.html",
-                "type": "File",
-                "attributes": {
-                  "rloc": 30.0,
-                  "functions": 100.0,
-                  "mcc": 100.0,
-                  "pairingRate": 60.0,
-                  "avgCommits": 51.0
-                },
-                "link": "",
-                "children": []
-              },
-              {
-                "name": "otherSmallLeaf.ts",
-                "type": "File",
-                "attributes": {
-                  "rloc": 70.0,
-                  "functions": 1000.0,
-                  "mcc": 10.0,
-                  "pairingRate": 65.0,
-                  "avgCommits": 22.0
-                },
-                "link": "",
-                "children": []
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    "apiVersion": "1.5",
-    "edges": [],
-    "attributeTypes": {},
-    "attributeDescriptors": {
-      "rloc": {
-        "title": "rloc",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1
+            {
+              "id": "120a1569e3556450",
+              "name": "smallLeaf.html",
+              "type": "File",
+              "link": ""
+            }
+          ],
+          "link": ""
+        },
+        {
+          "id": "7de6343f370ff7cf",
+          "name": "bigLeaf.ts",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "3d6521b0884ce9f4",
+          "name": "sample1OnlyLeaf.scss",
+          "type": "File",
+          "link": ""
+        }
+      ],
+      "link": ""
+    }
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "ea70504d5daa3547": {
+          "rloc": 70.0,
+          "functions": 1000.0,
+          "mcc": 10.0,
+          "pairingRate": 65.0,
+          "avgCommits": 22.0
+        },
+        "120a1569e3556450": {
+          "rloc": 30.0,
+          "functions": 100.0,
+          "mcc": 100.0,
+          "pairingRate": 60.0,
+          "avgCommits": 51.0
+        },
+        "7de6343f370ff7cf": {
+          "rloc": 100.0,
+          "functions": 10.0,
+          "mcc": 1.0,
+          "pairingRate": 77.0,
+          "avgCommits": 56.0
+        },
+        "3d6521b0884ce9f4": {
+          "rloc": 400.0,
+          "functions": 10.0,
+          "mcc": 100.0,
+          "pairingRate": 32.0,
+          "avgCommits": 17.0
+        }
       },
-      "functions": {
-        "title": "functions",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1
-      },
-      "mcc": {
-        "title": "mcc",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1
-      },
-      "pairingRate": {
-        "title": "pairingRate",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1
-      },
-      "avgCommits": {
-        "title": "avgCommits",
-        "description": "",
-        "hintLowValue": "",
-        "hintHighValue": "",
-        "link": "",
-        "direction": -1
-      }
+      "attributeTypes": {}
     },
-    "blacklist": []
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {}
+    }
   }
 }
 ```
@@ -193,44 +160,64 @@ ccsh csvimport newmetrics.csv -o newmetrics.cc.json
 
 This results in a new file `newmetrics.cc.json` that can be used as is in the visualisation.
 
-If you are interested in what a cc.json file for custom metrics looks like, here is what the `newmetrics.cc.json` looks like:
+If you are interested in what a cc.json file for custom metrics looks like, here is what the `newmetrics.cc.json` looks like (the `attributeDescriptors` are left out):
 
 ```json
 {
-  "projectName": "myproject",
-  "apiVersion": "1.5",
-  "nodes": [
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.1",
+    "checksum": "211f97a56ddb8746637c0c7a6a7b7866"
+  },
+  "files": [
     {
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
-      "link": "",
       "children": [
         {
+          "id": "12613ba8c758725d",
           "name": "File.js",
           "type": "File",
-          "attributes": { "Metric1": 4.0, "Metric2": 500.0 },
-          "link": "",
-          "children": []
+          "link": ""
         },
         {
+          "id": "829f61caef15986c",
           "name": "service",
           "type": "Folder",
-          "attributes": {},
-          "link": "",
           "children": [
             {
+              "id": "0a12c853600c5fdc",
               "name": "Service1.ts",
               "type": "File",
-              "attributes": { "Metric1": 40.0, "Metric2": 20.0 },
-              "link": "",
-              "children": []
+              "link": ""
             }
-          ]
+          ],
+          "link": ""
         }
-      ]
+      ],
+      "link": ""
     }
-  ]
+  ],
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "12613ba8c758725d": {
+          "Metric1": 4.0,
+          "Metric2": 500.0
+        },
+        "0a12c853600c5fdc": {
+          "Metric1": 40.0,
+          "Metric2": 20.0
+        }
+      },
+      "attributeTypes": {}
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {}
+    }
+  }
 }
 ```
 

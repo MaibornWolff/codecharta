@@ -4,7 +4,7 @@ title: "Local Changes Detection"
 
 The `--local-changes` flag enables incremental analysis by only parsing files that differ from the remote tracking branch. This includes uncommitted, staged, unstaged, and untracked files. Deleted files are included with empty metrics so they can be visualized as absent in the treemap.
 
-This flag is available on the [UnifiedParser](/docs/parser/unified) and [RawTextParser](/docs/parser/raw-text).
+This flag is available on the [UnifiedParser](/docs/parser/unified) and [RawTextParser](/docs/parser/raw-text). The [Dependency Parser](/docs/parser/dependency) rejects it, because the dependency graph needs every file of the project, and the [Domain Language Parser](/docs/parser/domain-language) accepts it without effect.
 
 ### How It Works
 

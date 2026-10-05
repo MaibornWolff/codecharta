@@ -101,37 +101,50 @@ BRH:0
 end_of_record
 ```
 
-Example Output file: `typescript_coverage.cc.json` (simplified excerpt; the real output also contains `attributeTypes`, `attributeDescriptors` and `blacklist` fields)
+Example Output file: `typescript_coverage.cc.json` (formatted for readability; the `attributeDescriptors` are left out). The leading `app` folder is removed unless you pass `--keep-leading-paths`.
 ```
 {
-  "projectName": "typescript_coverage",
-  "apiVersion": "1.5",
-  "nodes": [
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.1",
+    "checksum": "87cc7b95d475f324ce46523e91804d7d"
+  },
+  "files": [
     {
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
       "children": [
         {
-          "name": "app",
-          "type": "Folder",
-          "attributes": {},
-          "children": [
-            {
-              "name": "app.config.ts",
-              "type": "File",
-              "attributes": {
-                "line_coverage": 0,
-                "branch_coverage": 0,
-                "statement_coverage": 0
-              }
-            }
-          ]
+          "id": "fc1a3a3451fe7dad",
+          "name": "app.config.ts",
+          "type": "File",
+          "link": ""
         }
-      ]
+      ],
+      "link": ""
     }
   ],
-  "edges": []
+  "lenses": {
+    "metrics": {
+      "attributes": {
+        "fc1a3a3451fe7dad": {
+          "line_coverage": 0.0,
+          "branch_coverage": 100.0,
+          "statement_coverage": 0.0
+        }
+      },
+      "attributeTypes": {
+        "line_coverage": "relative",
+        "branch_coverage": "relative",
+        "statement_coverage": "relative"
+      }
+    },
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {}
+    }
+  }
 }
 ```
 

@@ -56,7 +56,7 @@ The resulting project has the project name specified for the SVNLogParser.
 | --- | ---------- | ------------------------ | -------------- | --------------------- | ------------------- |
 | SVN | SVN_LOG    | `svn log --verbose`      | yes            | yes                   | no                  |
 
-Executing this command generates the log file that can be used by the SVN-log parser. You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
+Executing this command generates the log file that can be used by the SVN-log parser. You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW_REVERSED for usage with CodeCharta.
 
 ### Examples
 

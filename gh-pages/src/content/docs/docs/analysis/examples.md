@@ -56,7 +56,7 @@ SonarQube is a popular platform to analyze code in a variety of metrics. To use 
 Once the analysis is complete, you can parse the analyzed project to the sonar importer to generate a `cc.json` file using:
 
 ```bash
-ccsh sonarimport [options] [file] [url] [project-id]
+ccsh sonarimport [options] <url> <project-id>
 ```
 
 ## Combining metrics
@@ -84,10 +84,10 @@ A simple comparison you can do is to check that the `<project>.source.cc.json` h
 
 ```bash
 # Print the first level of the <project>.source.cc.json
-ccsh modify junit4.source.cc.json -p 1
+ccsh inspect junit4.source.cc.json --levels 1
 # Print the first level of the <project>.git.cc.json
-ccsh modify junit4.git.cc.json -p 1
-# Use (--move-from and --move-to) or --set-root to correct wrong structure
+ccsh inspect junit4.git.cc.json --levels 1
+# Use ccsh modify with (--move-from and --move-to) or --set-root to correct wrong structure
 ```
 
 ## Using CodeCharta in Docker
@@ -114,7 +114,7 @@ docker cp codecharta-analysis:path/to/ccjson/ docker-sample.cc.json
 ```
 
 > You can also [check the docs of the docker cp command to learn more.](https://docs.docker.com/engine/reference/commandline/cp/)
-> To move files between containers (for example to and from sonar) you can use the shared volume, which you can access under /mnt/data in each container.
+> The containers share no volume, so `docker cp` is also the way to move files between them (for example to and from sonar).
 
 Now you're almost done! Simply navigate to localhost:9001 in your browser to open the visualization and upload your file.
 

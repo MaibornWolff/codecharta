@@ -47,110 +47,101 @@ ccsh csvexport sample1.cc.json -o sample1.csv
 
 ```
 path,name,type,rloc,functions,mcc,pairingRate,avgCommits,dir0,dir1,dir2,dir3,dir4,dir5,dir6,dir7,dir8,dir9
-sample1OnlyLeaf.scss,sample1OnlyLeaf.scss,File,400.0,10.0,100.0,32.0,17.0,,,,,,,,,,
-bigLeaf.ts,bigLeaf.ts,File,100.0,10.0,1.0,77.0,56.0,,,,,,,,,,
-ParentLeaf/smallLeaf.html,smallLeaf.html,File,30.0,100.0,100.0,60.0,51.0,ParentLeaf,,,,,,,,,
 ParentLeaf/otherSmallLeaf.ts,otherSmallLeaf.ts,File,70.0,1000.0,10.0,65.0,22.0,ParentLeaf,,,,,,,,,
+ParentLeaf/smallLeaf.html,smallLeaf.html,File,30.0,100.0,100.0,60.0,51.0,ParentLeaf,,,,,,,,,
+bigLeaf.ts,bigLeaf.ts,File,100.0,10.0,1.0,77.0,56.0,,,,,,,,,,
+sample1OnlyLeaf.scss,sample1OnlyLeaf.scss,File,400.0,10.0,100.0,32.0,17.0,,,,,,,,,,
 ```
 
-**cc.json Input (`sample1.cc.json`):**
+**cc.json Input (`sample1.cc.json`, formatted for readability, the `attributeDescriptors` are left out):**
 
 ```
 {
-  "projectName": "Sample Project with Edges",
-  "apiVersion": "1.2",
-  "fileChecksum": "valid-md5-sample1",
-  "nodes": [
+  "meta": {
+    "projectName": "",
+    "apiVersion": "2.1",
+    "checksum": "f581ee7bc75ddf6bfc4dde6db72e2c6f"
+  },
+  "files": [
     {
+      "id": "164ddff4bb1345e1",
       "name": "root",
       "type": "Folder",
-      "attributes": {},
       "children": [
         {
-          "name": "sample1OnlyLeaf.scss",
-          "type": "File",
-          "attributes": {
-          "rloc": 400,
-          "functions": 10,
-          "mcc": 100,
-          "pairingRate": 32,
-          "avgCommits": 17
-          },
-          "link": "http://www.google.de"
-        },
-        {
-          "name": "bigLeaf.ts",
-          "type": "File",
-          "attributes": {
-            "rloc": 100,
-            "functions": 10,
-            "mcc": 1,
-            "pairingRate": 77,
-            "avgCommits": 56
-          },
-          "link": "http://www.google.de"
-        },
-        {
+          "id": "1ae98c1a93690d75",
           "name": "ParentLeaf",
           "type": "Folder",
-          "attributes": {},
           "children": [
             {
-              "name": "smallLeaf.html",
-              "type": "File",
-              "attributes": {
-                "rloc": 30,
-                "functions": 100,
-                "mcc": 100,
-                "pairingRate": 60,
-                "avgCommits": 51
-              }
-            },
-            {
+              "id": "ea70504d5daa3547",
               "name": "otherSmallLeaf.ts",
               "type": "File",
-              "attributes": {
-                "rloc": 70,
-                "functions": 1000,
-                "mcc": 10,
-                "pairingRate": 65,
-                "avgCommits": 22
-              }
+              "link": ""
+            },
+            {
+              "id": "120a1569e3556450",
+              "name": "smallLeaf.html",
+              "type": "File",
+              "link": ""
             }
-          ]
+          ],
+          "link": ""
+        },
+        {
+          "id": "7de6343f370ff7cf",
+          "name": "bigLeaf.ts",
+          "type": "File",
+          "link": ""
+        },
+        {
+          "id": "3d6521b0884ce9f4",
+          "name": "sample1OnlyLeaf.scss",
+          "type": "File",
+          "link": ""
         }
-      ]
+      ],
+      "link": ""
     }
   ],
-  "edges": [
-    {
-      "fromNodeName": "/root/bigLeaf.ts",
-      "toNodeName": "/root/ParentLeaf/smallLeaf.html",
+  "lenses": {
+    "metrics": {
       "attributes": {
-        "pairingRate": 89,
-        "avgCommits": 34
-      }
+        "ea70504d5daa3547": {
+          "rloc": 70.0,
+          "functions": 1000.0,
+          "mcc": 10.0,
+          "pairingRate": 65.0,
+          "avgCommits": 22.0
+        },
+        "120a1569e3556450": {
+          "rloc": 30.0,
+          "functions": 100.0,
+          "mcc": 100.0,
+          "pairingRate": 60.0,
+          "avgCommits": 51.0
+        },
+        "7de6343f370ff7cf": {
+          "rloc": 100.0,
+          "functions": 10.0,
+          "mcc": 1.0,
+          "pairingRate": 77.0,
+          "avgCommits": 56.0
+        },
+        "3d6521b0884ce9f4": {
+          "rloc": 400.0,
+          "functions": 10.0,
+          "mcc": 100.0,
+          "pairingRate": 32.0,
+          "avgCommits": 17.0
+        }
+      },
+      "attributeTypes": {}
     },
-    {
-      "fromNodeName": "/root/sample1OnlyLeaf.scss",
-      "toNodeName": "/root/ParentLeaf/smallLeaf.html",
-      "attributes": {
-        "pairingRate": 32,
-        "avgCommits": 17
-      }
-    },
-    {
-      "fromNodeName": "/root/ParentLeaf/otherSmallLeaf.ts",
-      "toNodeName": "/root/bigLeaf.ts",
-      "attributes": {
-        "pairingRate": 65,
-        "avgCommits": 22
-      }
+    "dependency": {
+      "edges": [],
+      "attributeTypes": {}
     }
-  ],
-  "attributeTypes": {
-    "nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute", "pairingRate": "relative" },
-    "edges": { "pairingRate": "relative", "avgCommits": "absolute" }
   }
 }
 ```

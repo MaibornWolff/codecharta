@@ -8,7 +8,7 @@ If you want to run the latest development version or contribute to CodeCharta, y
 ## Prerequisites
 
 - Node **>= 22.19**
-- Java **>= 11**
+- Java **>= 17**
 - Git
 
 ## Clone the repository

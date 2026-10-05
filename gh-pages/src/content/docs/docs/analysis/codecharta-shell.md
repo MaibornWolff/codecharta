@@ -9,7 +9,7 @@ While the main purpose of the CodeCharta Shell (ccsh) is to use its various tool
 #### Requirements
 
 - Node **>= 22.19**
-- Java **>= 11**
+- Java **>= 17**
 
 #### npm
 
@@ -25,11 +25,11 @@ $ ccsh -h
 
 ### General usage
 
-After the CodeCharta analysis has been installed, executing `ccsh -h` should show the help where all further commands are listed. Most often the CodeCharta shell is called with one of its tools to perform different actions. For example `ccsh csvimport example.csv` will use the [CSVImporter](/docs/importer/csv) to turn the given csv file into `cc.json` format. More information on how to use the CodeCharta Shell can be found in the pages of the individual analysis tools.
+After the CodeCharta analysis has been installed, executing `ccsh -h` should show the help where all further commands are listed, and `ccsh -v` prints the installed version. Most often the CodeCharta shell is called with one of its tools to perform different actions. For example `ccsh csvimport example.csv` will use the [CSVImporter](/docs/importer/csv) to turn the given csv file into `cc.json` format. More information on how to use the CodeCharta Shell can be found in the pages of the individual analysis tools.
 
 ### The cc.json format
 
-Every parser, importer and filter reads and writes CodeCharta's `cc.json` format, now at version **2.0** (`{ meta, files, lenses }`). The shell reads and writes 2.0 only. If you have an older 1.x `.cc.json` file, upgrade it once with [`ccsh convert`](/docs/filter/convert) before using it with the other tools — otherwise they stop with a hint pointing you at `convert`. The visualization opens both 1.x and 2.0 files directly.
+Every parser, importer and filter reads and writes CodeCharta's `cc.json` format, now at version **2.1** (`{ meta, files, lenses }`). The shell reads and writes 2.x only. If you have an older 1.x `.cc.json` file, upgrade it once with [`ccsh convert`](/docs/filter/convert) before using it with the other tools — otherwise they stop with a hint pointing you at `convert`. The visualization opens both 1.x and 2.x files directly.
 
 ### Interactive Shell
 
@@ -62,6 +62,7 @@ Every analyser is asked whether it is applicable to the entered resource, and al
 - UnifiedParser
 - RawTextParser
 - CoverageImporter
+- DomainLanguageParser
 - DependaChartaImporter (deprecated, see the Dependency Parser)
 - DependencyParser (experimental)
 
@@ -74,12 +75,12 @@ You can combine multiple metrics into one `.cc.json`. This allows users to analy
 Instead of providing a cc.json file as input, a project can also be piped to the filter:
 
 ```
-cat demo.cc.json | ccsh modify -p=2
+cat demo.cc.json | ccsh inspect --levels=2
 ```
 
-This behaviour is currently supported by `ccsh modify`, `ccsh merge` and `ccsh edgefilter`
+This behaviour is currently supported by `ccsh modify`, `ccsh inspect` and `ccsh convert`. `ccsh merge` and `ccsh edgefilter` need their input as files.
 
 ### Validating cc.json files
 
-CodeCharta also provides the `ccsh check` command, which can verify the syntax of a `cc.json` file. This can be useful in case you want to manually create or modify a `cc.json` file. While it is possible, we advise against manually adjusting `cc.json` files. If you want to use metrics that are not available with our tools, it is much easier and safer to create them in CSV format and use our [CSVimporter](/docs/importer/csv).
+CodeCharta also provides the `ccsh check` command, which can verify the syntax of a `cc.json` file (see [Validation Tool](/docs/filter/validation-tool)). This can be useful in case you want to manually create or modify a `cc.json` file. While it is possible, we advise against manually adjusting `cc.json` files. If you want to use metrics that are not available with our tools, it is much easier and safer to create them in CSV format and use our [CSVimporter](/docs/importer/csv).
 

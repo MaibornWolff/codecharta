@@ -57,11 +57,11 @@ ccsh rawtextparser foo/bar/project
 ```
 
 ```
-ccsh rawtextparser foo.txt --max-indentation-level=6 tab-width=4 --metrics=IndentationLevel, LinesOfCode
+ccsh rawtextparser foo.txt --max-indentation-level=6 --tab-width=4 --metrics=IndentationLevel,LinesOfCode
 ```
 
 ```
-ccsh rawtextparser foo -o out.cc.json --exclude=*.html --exclude=bar
+ccsh rawtextparser foo -o out.cc.json --exclude='.*\.html' --exclude=bar
 ```
 
 ```

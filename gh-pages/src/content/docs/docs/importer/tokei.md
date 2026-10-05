@@ -26,7 +26,7 @@ It supports a large number of different languages.
 | `<FILE>`                           | Tokei generated JSON file                                                   |
 | `-h, --help`                       | displays this help and exits                                                |
 | `-o, --output-file=<outputFile>`   | output File (or empty for stdout)                                           |
-| `-r, --root-name=<rootName>`       | root folder as specified when executing tokei                               |
+| `-r, --root-name=<rootName>`       | root folder as specified when executing tokei (default = '.')               |
 | `--path-separator=<pathSeparator>` | path separator, leave empty for auto-detection (default = '')                |
 | `-nc, --not-compressed`            | don't compress output to gzip, output JSON instead                          |
 

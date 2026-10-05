@@ -33,6 +33,7 @@ Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sour
 | `sm_percent_branch_statements`    | The percentage of all statements that are branch statements (e.g., if, else, switch, case).                   |
 | `sm_method_call_statements`       | The count of statements in the code that are method or function calls.                                        |
 | `sm_percent_lines_with_comments`  | The percentage of the total lines of code that contain comments.                                              |
+| `statements_at_level_<i>`         | The count of statements at block level `<i>`, one metric for each level from 0 to 9.                          |
 
 ### Usage and Parameters
 

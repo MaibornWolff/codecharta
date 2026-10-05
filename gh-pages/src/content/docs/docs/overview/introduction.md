@@ -41,7 +41,7 @@ To install our [CodeCharta Shell](/docs/analysis/codecharta-shell), which is use
 #### Requirements
 
 - Node **>= 22.19**
-- Java **>= 11**
+- Java **>= 17**
 
 ```bash
 # Install codecharta-analysis globally

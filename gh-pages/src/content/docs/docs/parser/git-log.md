@@ -54,7 +54,7 @@ As this parser can generate metrics based on a given git-log file or given a git
 | `-nc, --not-compressed`             | save uncompressed output File                                                       |
 | `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                   |
 | `--repo-files=FILE `                | list of all file names in current git project (only available for log-scan mode!)   |
-| `--repo-path=DIRECTORY`             | root directory of the repository (only available for repo-scan mode!)               |
+| `--repo-path=DIRECTORY`             | root directory of the repository (required and only available for repo-scan mode!)  |
 | `--silent`                          | suppress command line output during process                                         |
 
 ```
@@ -69,7 +69,7 @@ ccsh gitlogparser log-scan [-h] [--add-author] [-nc] [--silent]
 Usage for repo-scan mode:
 ccsh gitlogparser repo-scan [-h] [--add-author] [--commit=<ref>] [-nc]
                             [--silent] [-o=<outputFilePath>]
-                            [--repo-path=DIRECTORY]
+                            --repo-path=DIRECTORY
 
 ```
 
@@ -84,7 +84,7 @@ ccsh gitlogparser repo-scan --repo-path <path>
 ```
 
 With the sub command `repo-scan` you can parse a local git repository on your disk. During scanning a git log of the
-repository in the current working directory (or from the directory specified by repo-path) is created in your
+repository in the directory specified by `--repo-path` (the option is required) is created in your
 temp-Folder and parsed automatically. Furthermore, the parser creates another temporary file-name-list of files that are
 tracked by git automatically which is needed for the parsing process.
 
@@ -115,18 +115,20 @@ The resulting project has the project name specified for the GitLogParser.
 
 ##### Creating the repository log for metric generation
 
-| SCM | Log format                   | Command for log creation                            | tracks renames | ignores deleted files | supports code churn |
-| --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
-| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
+| SCM | Log format                   | Command for log creation                                                  | tracks renames | ignores deleted files | supports code churn |
+| --- | ---------------------------- | ------------------------------------------------------------------------- | -------------- | --------------------- | ------------------- |
+| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | no                  |
 
 You can also use the bash
-script [anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/import/GitLogParser/src/main/dist/anongit)
+script [anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/analysers/parsers/GitLogParser/src/main/dist/anongit)
 which generates a git log with anonymized authors for usage with CodeCharta.
+
+`-c core.quotepath=off` keeps file names with non-ASCII characters unquoted. Use it for the log and for the file list below, so both spell such a name the same way.
 
 ##### Creating the git files list of the repository for metric generation
 
 ```
-git ls-files > file-name-list.txt
+git -c core.quotepath=off ls-files > file-name-list.txt
 ```
 
 Please make sure to execute this command in the root folder of your repository.
@@ -135,8 +137,8 @@ Please make sure to execute this command in the root folder of your repository.
 
 ```
 cd <my_git_project>
-git log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
-git ls-files > file-name-list.txt
+git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
+git -c core.quotepath=off ls-files > file-name-list.txt
 ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz
 ```
 
