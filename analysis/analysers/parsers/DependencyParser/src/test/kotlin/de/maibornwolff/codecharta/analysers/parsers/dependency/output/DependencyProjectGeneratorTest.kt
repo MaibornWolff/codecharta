@@ -1,21 +1,30 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.output
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.Declaration
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DeclarationAddress
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DeclarationEdge
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DependencyGraph
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.FileDependencyEdge
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.LevelizedNamespace
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.LevelizedPath
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.DependencyLeaf
+import de.maibornwolff.codecharta.model.DependencyNamespace
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 
 class DependencyProjectGeneratorTest {
     private val sourceFile = listOf("app", "Source.kt")
     private val targetFile = listOf("app", "Target.kt")
     private val analysedFiles = listOf(sourceFile, targetFile)
+    private val source = DeclarationAddress(sourceFile, "Source")
+    private val target = DeclarationAddress(targetFile, "Target")
+    private val overload = DeclarationAddress(targetFile, "com.app.util.Target")
 
     private val graph =
         DependencyGraph(
@@ -28,22 +37,26 @@ class DependencyProjectGeneratorTest {
                 ),
             declarations =
                 listOf(
-                    Declaration("app.Source", "Source", "CLASS", listOf(sourceFile), level = 1),
-                    Declaration("app.Target", "Target", "INTERFACE", listOf(targetFile), level = 0)
+                    Declaration(source, "Source", "class", "kotlin", namespace = "com.app", level = 1),
+                    Declaration(target, "Target", "interface", "kotlin", namespace = "com.app", level = 0),
+                    Declaration(overload, "Target", "function", "kotlin")
                 ),
             declarationEdges =
                 listOf(
                     DeclarationEdge(
-                        "app.Source",
-                        "app.Target",
+                        source,
+                        target,
                         weight = 3,
                         usage = listOf("implementation"),
                         isCyclic = true,
                         isPointingUpwards = true
                     )
                 ),
-            namespaceLevels = mapOf("app" to 0)
+            namespaces = mapOf("com" to LevelizedNamespace(0), "com.app" to LevelizedNamespace(2, parent = "com"))
         )
+
+    private val sourceFileId = NodeId.fromSegments(sourceFile, NodeType.File)
+    private val targetFileId = NodeId.fromSegments(targetFile, NodeType.File)
 
     private fun generate(graph: DependencyGraph = this.graph): Project = DependencyProjectGenerator().generate(graph, analysedFiles)
 
@@ -85,40 +98,62 @@ class DependencyProjectGeneratorTest {
     }
 
     @Test
-    fun `should key each declaration by its logical path and join it to the file node it lives in`() {
+    fun `should group the declarations under the node id of the file they are declared in`() {
         // Act
         val project = generate()
 
         // Assert
-        val leaf = project.lenses.dependency.leaves.getValue("app.Source")
-        assertThat(leaf.nodeIds).containsExactly(NodeId.fromSegments(sourceFile, NodeType.File))
-        assertThat(leaf.name).isEqualTo("Source")
-        assertThat(leaf.kind).isEqualTo("CLASS")
-        assertThat(leaf.level).isEqualTo(1)
+        val leaves = project.lenses.dependency.leaves
+        assertThat(leaves.keys).containsExactlyInAnyOrder(sourceFileId, targetFileId)
+        assertThat(leaves.getValue(sourceFileId))
+            .containsExactly(entry("Source", DependencyLeaf("class", language = "kotlin", namespace = "com.app", level = 1)))
+        assertThat(leaves.getValue(targetFileId).keys).containsExactly("Target", "com.app.util.Target")
     }
 
     @Test
-    fun `should write each declaration edge into the dependency lens with its weight, usage and graph flags`() {
+    fun `should write the name of a declaration only when it differs from its key`() {
+        // Arrange
+        val generator = DependencyProjectGenerator()
+
         // Act
-        val project = generate()
+        val project = generator.generate(graph, analysedFiles)
 
         // Assert
-        val leafEdge = project.lenses.dependency.leafEdges.single()
-        assertThat(leafEdge.fromLeaf).isEqualTo("app.Source")
-        assertThat(leafEdge.toLeaf).isEqualTo("app.Target")
-        assertThat(leafEdge.attributes).isEqualTo(mapOf("dependencies" to 3))
-        assertThat(leafEdge.usage).containsExactly("implementation")
-        assertThat(leafEdge.isCyclic).isTrue()
-        assertThat(leafEdge.isPointingUpwards).isTrue()
+        val leavesOfTargetFile = project.lenses.dependency.leaves.getValue(targetFileId)
+        assertThat(leavesOfTargetFile.getValue("Target").name).isNull()
+        assertThat(leavesOfTargetFile.getValue("com.app.util.Target").name).isEqualTo("Target")
     }
 
     @Test
-    fun `should key each namespace level by its dotted logical path`() {
+    fun `should write each declaration edge into the dependency lens with its endpoints, weight, usage and graph flags`() {
         // Act
         val project = generate()
 
         // Assert
-        assertThat(project.lenses.dependency.namespaces["app"]?.level).isEqualTo(0)
+        assertThat(project.lenses.dependency.leafEdges).containsExactly(
+            LeafEdge(
+                sourceFileId,
+                "Source",
+                targetFileId,
+                "Target",
+                mapOf("dependencies" to 3),
+                listOf("implementation"),
+                isCyclic = true,
+                isPointingUpwards = true
+            )
+        )
+    }
+
+    @Test
+    fun `should write each namespace with its level and the namespace containing it`() {
+        // Act
+        val project = generate()
+
+        // Assert
+        assertThat(project.lenses.dependency.namespaces).containsExactly(
+            entry("com", DependencyNamespace(0)),
+            entry("com.app", DependencyNamespace(2, parent = "com"))
+        )
     }
 
     @Test

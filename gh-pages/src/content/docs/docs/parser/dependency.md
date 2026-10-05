@@ -51,37 +51,42 @@ declarations:
 
 ```json
 "dependency": {
-  "namespaces": { "com.example.domain": { "level": 0 } },
+  "namespaces": { "com": { "level": 0 }, "com.example": { "parent": "com", "level": 0 } },
   "leaves": {
-    "com.example.domain.Creature": { "nodeIds": ["<file node id>"], "name": "Creature", "kind": "CLASS", "level": 2 }
+    "<file node id>": { "Creature": { "kind": "class", "language": "java", "namespace": "com.example", "level": 2 } }
   },
   "leafEdges": [
-    { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints",
+    { "fromId": "<file node id>", "fromLeaf": "Creature", "toId": "<file node id>", "toLeaf": "HitPoints",
       "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true }
   ]
 }
 ```
 
-- Both tables are keyed by the dotted logical path, so a namespace's parent is its id's prefix.
-- `nodeIds` are the ids of the file nodes the declaration lives in — the one join back onto the file tree.
-  A declaration split across files, such as a C# partial class, lists all of them.
+- `leaves` groups the declarations under the id of the file node they are declared in, each under a key
+  unique within that file: the declaration's name, or its dotted logical path where two declarations of
+  one file share a name, in which case `name` is written beside it.
+- `namespace` is written only where the language has packages apart from its files — Java, Kotlin, C#,
+  PHP and C++. Everywhere else the file tree already is the hierarchy, so the leaf carries no
+  `namespace` and no namespace is listed.
+- `namespaces` lists the packages with their level and their `parent`, the package containing them.
+- `language` is the language the declaration is written in, lower case, such as `java` or `typescript`.
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
   extractor found, as in DependaCharta. Only PHP reports more than `usage` today; see
   [known issues](#known-issues).
 - A declaration split across files — a C# partial class, a Go function name reused within a package — is
-  one leaf, joined to the first of its files as the scan lists them (path order), and its `leafEdges` are the union of every
-  part's dependencies. In the physical layer each part's dependencies count for the file they are written
-  in, while a dependency *on* the split declaration points at the same first file the leaf reports.
-- `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
-  `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
+  one leaf per file, with the same key and, where it has one, the same `namespace`. Each part's dependencies leave the file they are
+  written in, while a dependency *on* the split declaration points at the first of its files as the scan
+  lists them (path order).
+- `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
+  `variable`, `reexport`, `script` or `unknown`.
 
 Both projections ship on every run. The logical one carries the two signals the file-level one cannot: a
 dependency between two declarations of the *same* file, and the kind of use each dependency is. Their
 levels disagree by design where a language's packages and folders diverge — folder levels are not a
 projection of namespace levels, so both trees are levelized separately. The file roughly quadruples in
-size uncompressed (376 KB to 1.7 MB on this project's own frontend) and about doubles gzipped; output is
-gzipped by default.
+size uncompressed (520 KB to 2.0 MB on this project's own frontend) and grows two and a half times
+gzipped; output is gzipped by default.
 
 ### Supported Languages
 

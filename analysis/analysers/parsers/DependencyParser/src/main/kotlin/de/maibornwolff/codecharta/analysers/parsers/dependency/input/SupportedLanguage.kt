@@ -25,11 +25,20 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     DELPHI("Delphi", listOf(FileExtension.DELPHI)),
     RUST("Rust", listOf(FileExtension.RUST));
 
+    val lensName: String
+        get() = name.lowercase().replace(ENUM_WORD_SEPARATOR, "")
+
+    val declaresPackages: Boolean
+        get() = this in PACKAGE_LANGUAGES
+
     /** Extensions without the leading dot, the form file scanning and import stripping both use. */
     val suffixes: List<String>
         get() = fileExtensions.flatMap { listOf(it.primaryExtension) + it.otherValidExtensions }.map { it.removePrefix(".") }
 
     companion object {
+        private const val ENUM_WORD_SEPARATOR = "_"
+        private val PACKAGE_LANGUAGES by lazy { setOf(PHP, C_SHARP, JAVA, CPP, KOTLIN) }
+
         private val bySuffix: Map<String, SupportedLanguage> by lazy {
             entries.flatMap { language -> language.suffixes.map { suffix -> suffix.lowercase() to language } }.toMap()
         }

@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.output
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.Declaration
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DeclarationAddress
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.DependencyGraph
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
@@ -51,7 +53,7 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
                 ).addAttributeDescriptions(dependencyAttributeDescriptors())
                 .withDependencyLens(
                     nodes = toDependencyNodes(graph),
-                    namespaces = graph.namespaceLevels.mapValues { (_, level) -> DependencyNamespace(level) },
+                    namespaces = graph.namespaces.mapValues { (_, namespace) -> DependencyNamespace(namespace.level, namespace.parent) },
                     leaves = toDependencyLeaves(graph),
                     leafEdges = toLeafEdges(graph)
                 ).build()
@@ -91,15 +93,32 @@ class DependencyProjectGenerator(private val projectBuilder: ProjectBuilder = Pr
         NodeId.fromSegments(levelizedPath.path, type) to DependencyNode(levelizedPath.level)
     }
 
-    // A leaf joins onto the file tree through the very id the tree above computed for that file, so the
-    // join is exact by construction rather than by matching path strings.
-    private fun toDependencyLeaves(graph: DependencyGraph): Map<String, DependencyLeaf> = graph.declarations.associate {
-        it.id to DependencyLeaf(it.filePaths.map { filePath -> NodeId.fromSegments(filePath, NodeType.File) }, it.name, it.kind, it.level)
-    }
+    private fun toDependencyLeaves(graph: DependencyGraph): Map<String, Map<String, DependencyLeaf>> = graph.declarations
+        .groupBy { fileNodeId(it.address) }
+        .mapValues { (_, declarationsOfFile) -> declarationsOfFile.associate { it.address.key to it.toLeaf() } }
+
+    private fun Declaration.toLeaf(): DependencyLeaf = DependencyLeaf(
+        kind = kind,
+        name = name.takeIf { it != address.key },
+        language = language,
+        namespace = namespace,
+        level = level
+    )
 
     private fun toLeafEdges(graph: DependencyGraph): List<LeafEdge> = graph.declarationEdges.map {
-        LeafEdge(it.fromId, it.toId, mapOf(DEPENDENCIES to it.weight), it.usage, it.isCyclic, it.isPointingUpwards)
+        LeafEdge(
+            fromId = fileNodeId(it.from),
+            fromLeaf = it.from.key,
+            toId = fileNodeId(it.to),
+            toLeaf = it.to.key,
+            attributes = mapOf(DEPENDENCIES to it.weight),
+            usage = it.usage,
+            isCyclic = it.isCyclic,
+            isPointingUpwards = it.isPointingUpwards
+        )
     }
+
+    private fun fileNodeId(address: DeclarationAddress): String = NodeId.fromSegments(address.filePath, NodeType.File)
 
     companion object {
         private const val NODE_ATTRIBUTE_TYPE = "nodes"

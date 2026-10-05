@@ -48,29 +48,35 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 
 ```json
 "dependency": {
-  "namespaces": { "com.example.domain": { "level": 0 } },
+  "namespaces": { "com": { "level": 0 }, "com.example": { "parent": "com", "level": 0 } },
   "leaves": {
-    "com.example.domain.Creature": { "nodeIds": ["<file node id>"], "name": "Creature", "kind": "CLASS", "level": 2 }
+    "<file node id>": { "Creature": { "kind": "class", "language": "java", "namespace": "com.example", "level": 2 } }
   },
   "leafEdges": [
-    { "fromLeaf": "com.example.domain.Creature", "toLeaf": "com.example.domain.HitPoints",
+    { "fromId": "<file node id>", "fromLeaf": "Creature", "toId": "<file node id>", "toLeaf": "HitPoints",
       "attributes": { "dependencies": 1 }, "usage": ["inheritance"], "isCyclic": true, "isPointingUpwards": true }
   ]
 }
 ```
 
-- Both tables are keyed by the **dotted logical path** verbatim, so a namespace's parent is its id's
-  prefix and needs no field of its own. `name` is kept because the logical path escapes dots inside a
-  segment and that escaping is not reversible.
-- **`nodeIds`** are the ids of the file nodes the declaration lives in — the one join from the logical
-  layer back onto the file tree, and the only thing a re-pathing filter has to rewrite. A declaration
-  split across files (a C# partial class, one package and name in two modules) lists all of them; the
-  first is the file the file-level edges into it point at.
+- **`leaves`** groups the declarations under the id of the file node they are declared in, each under a
+  key unique within that file: the declaration's name, or its dotted logical path where two declarations
+  of one file share a name, in which case `name` is written beside it. A leaf is addressed by file node id
+  and key, so it follows its file through every re-pathing filter, and the key is never parsed.
+- **`namespace`** is written only where the language has packages apart from its files — Java, Kotlin,
+  C#, PHP and C++ — and there only for a declaration that sits in one. Everywhere else the logical
+  path is the re-encoded file path, so the leaf carries no `namespace` and no namespace is listed: the
+  file tree already is that hierarchy. A nested declaration is a leaf of its own in the package of the
+  declaration around it; the schema's `parent` is not written yet.
+- **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
+  The hierarchy comes from `parent`, never from the dots of a key.
+- **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,
+  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi` or `rust`.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
   `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
   kind, the first the extractor found, because a used type is identified by its name alone — the same
-  rule DependaCharta applies, and why a pair weighs 1 at declaration level — unless the source is split
-  across files, when each part that references the target counts once. **Only PHP reports
+  rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
+  more than once in its file, when each declaration that references the target counts once. **Only PHP reports
   more than `usage` today**, because `PhpAnalyzer` runs its own tree-sitter queries and classifies types by
   the clause they appear in. Every other language goes through `TreeSitterExcavationSite`, which already
   makes the same distinction internally — its per-language `UsedTypeExtractor` has separate
@@ -79,14 +85,14 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   the position on `UsedType` upstream would light all of these up at once; `TseMappings.toType()` is the
   only place here that would change. DependaCharta has the same gap for the same reason.
 - A declaration split across files — a C# partial class, a Go function name reused within a package — is
-  one leaf, joined to the first of its files as the scan lists them (path order), and its `leafEdges` are the union of every
-  part's dependencies. In the physical layer each part's dependencies count for the file they are written
-  in, while a dependency *on* the split declaration points at the same first file the leaf reports.
-- `kind` is the declaration kind: `CLASS`, `VALUECLASS`, `INTERFACE`, `ANNOTATION`, `ENUM`, `FUNCTION`,
-  `VARIABLE`, `REEXPORT`, `SCRIPT` or `UNKNOWN`.
-- `leafEdges` is a list of its own rather than a widened `Edge`, because `Edge` addresses file nodes by
-  id and is what the edge-metric machinery, `edgefilter` and the 3D map read. Leaving `edges` untouched
-  is what keeps the physical view working unchanged.
+  one leaf per file, with the same key and, where it has one, the same `namespace`. Each part's dependencies leave the file they are
+  written in, in both layers, while a dependency *on* the split declaration points at the first of its
+  files as the scan lists them (path order).
+- `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
+  `variable`, `reexport`, `script` or `unknown`.
+- `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric
+  machinery, `edgefilter` and the 3D map read. Leaving `edges` untouched is what keeps the physical view
+  working unchanged.
 
 Both projections ship on every run. The logical one carries the two signals the physical one cannot: a
 dependency between two declarations of the *same* file (which disappears when edges fold onto files) and
@@ -94,10 +100,11 @@ the kind of use each dependency is. Levels of the two disagree by design where a
 folders diverge — folder levels are not a projection of namespace levels, so both are levelized
 separately.
 
-Size on `visualization/app` (921 files, 2150 declarations, 3986 declaration edges): 376 KB → 1.7 MB
-uncompressed, 65 KB → 166 KB gzipped. Output is gzipped by default, so the cost lands mostly in viewer
+Size on `visualization/app` (1034 files, 3290 declarations, 7115 declaration edges): 520 KB → 2.0 MB
+uncompressed, 83 KB → 207 KB gzipped. Output is gzipped by default, so the cost lands mostly in viewer
 memory. `--omit-graph-analysis` skips both levelizations and both cycle passes, leaving both projections
-without levels and with every edge unflagged.
+without levels and with every edge unflagged, and the logical one without namespaces, since a namespace
+entry needs its level.
 
 ### Parity with DependaCharta
 
@@ -139,7 +146,8 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 
 `script/compare_dependency_parsers.py` produces this comparison for any project: it runs both tools (or
 takes two existing output files) and diffs declarations, declaration edges, namespace levels and file
-edges by key, ignoring the self-edges unless asked to keep them. It needs the DependaCharta fat jar,
+edges by key, ignoring the self-edges unless asked to keep them. Declarations are matched by file and
+key, and only the namespaces this parser lists are compared. It needs the DependaCharta fat jar,
 found via `--dependacharta-jar` or `DEPENDACHARTA_JAR`, and a locally installed `ccsh`.
 
 ```
@@ -154,7 +162,10 @@ same graph can be opened in DependaCharta's Web Studio and compared by eye:
 ```
 
 The tree it writes is deduplicated, where DependaCharta emits one node per declaration *occurrence*,
-and `.cg.json` records a single usage kind per pair where `leafEdges` may carry several.
+and `.cg.json` records a single usage kind per pair where `leafEdges` may carry several. A `.cg.json`
+addresses a declaration by one dotted path, which the script rebuilds from the leaf's namespace, or from
+its file path where it has none — so for a language without packages the path keeps the file suffix
+DependaCharta strips, and such a file or folder takes its level from `nodes`.
 
 ## How it works
 

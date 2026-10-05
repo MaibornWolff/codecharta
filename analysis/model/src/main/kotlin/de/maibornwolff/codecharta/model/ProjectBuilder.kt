@@ -62,7 +62,7 @@ open class ProjectBuilder(
     fun withDependencyLens(
         nodes: Map<String, DependencyNode>,
         namespaces: Map<String, DependencyNamespace> = emptyMap(),
-        leaves: Map<String, DependencyLeaf> = emptyMap(),
+        leaves: Map<String, Map<String, DependencyLeaf>> = emptyMap(),
         leafEdges: List<LeafEdge> = emptyList()
     ): ProjectBuilder {
         this.dependencyTables = DependencyLens(nodes = nodes, namespaces = namespaces, leaves = leaves, leafEdges = leafEdges)

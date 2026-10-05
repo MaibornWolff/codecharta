@@ -404,6 +404,96 @@ describe("FileValidator", () => {
             expect(errors).toEqual(["Type error: lenses/domain/nodes/~1root/words/0/frequency must be number"])
         })
 
+        it("should accept a 2.x file whose dependency lens keys its logical layer by file node id", () => {
+            // Arrange
+            file2_0.meta.apiVersion = "2.1"
+            file2_0.lenses.dependency = {
+                ...file2_0.lenses.dependency,
+                namespaces: { com: { level: 0 }, "com.acme": { parent: "com", level: 0 } },
+                leaves: {
+                    "/root/big.ts": {
+                        Util: { kind: "class", language: "java", namespace: "com.acme", level: 1 },
+                        "Util.Inner": { name: "Inner", parent: "Util", kind: "class", language: "java" }
+                    },
+                    "/root/Parent/small.ts": { helper: { kind: "function", language: "typescript", level: 0 } }
+                },
+                leafEdges: [
+                    {
+                        fromId: "/root/Parent/small.ts",
+                        fromLeaf: "helper",
+                        toId: "/root/big.ts",
+                        toLeaf: "Util",
+                        attributes: { dependencies: 1 },
+                        usage: ["inheritance"],
+                        isCyclic: true,
+                        isPointingUpwards: true
+                    }
+                ]
+            }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual([])
+        })
+
+        it("should reject a leaf that is not grouped under a file node id", () => {
+            // Arrange
+            ;(file2_0.lenses as Record<string, unknown>).dependency = {
+                ...file2_0.lenses.dependency,
+                leaves: {
+                    "com.acme.Util": { nodeIds: ["/root/big.ts"], name: "Util", kind: "CLASS", level: 1 }
+                }
+            }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual([
+                "Type error: lenses/dependency/leaves/com.acme.Util/nodeIds must be object",
+                "Type error: lenses/dependency/leaves/com.acme.Util/name must be object",
+                "Type error: lenses/dependency/leaves/com.acme.Util/kind must be object",
+                "Type error: lenses/dependency/leaves/com.acme.Util/level must be object"
+            ])
+        })
+
+        it("should reject a leaf carrying nodeIds beside its file node id", () => {
+            // Arrange
+            ;(file2_0.lenses as Record<string, unknown>).dependency = {
+                ...file2_0.lenses.dependency,
+                leaves: {
+                    "/root/big.ts": { Util: { kind: "class", nodeIds: ["/root/big.ts"] } }
+                }
+            }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual([
+                "AdditionalProperties error: lenses/dependency/leaves/~1root~1big.ts/Util must NOT have additional properties"
+            ])
+        })
+
+        it("should reject a leaf edge that names its declarations without their file node ids", () => {
+            // Arrange
+            ;(file2_0.lenses as Record<string, unknown>).dependency = {
+                ...file2_0.lenses.dependency,
+                leafEdges: [{ fromLeaf: "com.acme.Helper", toLeaf: "com.acme.Util", attributes: { dependencies: 1 } }]
+            }
+
+            // Act
+            const errors = checkErrors(file2_0)
+
+            // Assert
+            expect(errors).toEqual([
+                "Required error: lenses/dependency/leafEdges/0 must have required property 'fromId'",
+                "Required error: lenses/dependency/leafEdges/0 must have required property 'toId'"
+            ])
+        })
+
         it("should warn about a 2.0 dependency edge whose to endpoint id does not resolve to a node", () => {
             file2_0.lenses.dependency.edges.push({ fromId: "/root/big.ts", toId: "/does/not/exist", attributes: {} })
 

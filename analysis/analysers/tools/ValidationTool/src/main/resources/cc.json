@@ -519,7 +519,10 @@
         },
         "leaves": {
           "additionalProperties": {
-            "$ref": "#/definitions/DependencyLeaf"
+            "additionalProperties": {
+              "$ref": "#/definitions/DependencyLeaf"
+            },
+            "type": "object"
           },
           "type": "object"
         },
@@ -564,6 +567,9 @@
     "DependencyNamespace": {
       "additionalProperties": false,
       "properties": {
+        "parent": {
+          "type": "string"
+        },
         "level": {
           "minimum": 0,
           "type": "integer"
@@ -577,29 +583,19 @@
     "DependencyLeaf": {
       "additionalProperties": false,
       "properties": {
-        "nodeIds": {
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1,
-          "type": "array"
-        },
         "name": {
           "type": "string"
         },
         "kind": {
-          "enum": [
-            "CLASS",
-            "VALUECLASS",
-            "INTERFACE",
-            "ANNOTATION",
-            "ENUM",
-            "FUNCTION",
-            "VARIABLE",
-            "REEXPORT",
-            "SCRIPT",
-            "UNKNOWN"
-          ],
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "parent": {
           "type": "string"
         },
         "level": {
@@ -608,8 +604,6 @@
         }
       },
       "required": [
-        "nodeIds",
-        "name",
         "kind"
       ],
       "type": "object"
@@ -617,7 +611,13 @@
     "LeafEdge": {
       "additionalProperties": false,
       "properties": {
+        "fromId": {
+          "type": "string"
+        },
         "fromLeaf": {
+          "type": "string"
+        },
+        "toId": {
           "type": "string"
         },
         "toLeaf": {
@@ -628,15 +628,6 @@
         },
         "usage": {
           "items": {
-            "enum": [
-              "usage",
-              "inheritance",
-              "implementation",
-              "instantiation",
-              "argument",
-              "return_value",
-              "constant_access"
-            ],
             "type": "string"
           },
           "type": "array"
@@ -649,7 +640,9 @@
         }
       },
       "required": [
+        "fromId",
         "fromLeaf",
+        "toId",
         "toLeaf"
       ],
       "type": "object"

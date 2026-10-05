@@ -145,3 +145,26 @@ export interface Fixed {
 - Readers keep `additionalProperties: false`, so an **older** tool cleanly rejects a **newer** file that
   uses a field it doesn't know (no upward compatibility — update CodeCharta to read newer files).
 - A change that must break an existing field is a **new major** (`3.0`); major-2 tools reject it.
+
+## 2.1
+
+- The `dependency` lens carries the whole dependency graph, in two projections. Every addition is
+  optional and omitted when unset, so a 2.0 file is a valid 2.1 file.
+- **Physical**: an `Edge` gains the booleans `isCyclic` and `isPointingUpwards`, and the lens gains
+  `nodes`, a map from node id to the `level` that file or folder sits on.
+- **Logical**: three tables describe the graph as the code declares it. `leaves` groups the declarations
+  under the id of the file node they are declared in, each under a key unique within that file;
+  `namespaces` lists the declared packages with their `level` and `parent`; `leafEdges` are the
+  dependencies between declarations, with their weight, the two graph flags and `usage`.
+
+```json
+"dependency": {
+  "edges": [{ "fromId": "<id>", "toId": "<id>", "attributes": { "dependencies": 3 }, "isCyclic": true, "isPointingUpwards": true }],
+  "nodes": { "<id>": { "level": 2 } },
+  "namespaces": { "com": { "level": 0 }, "com.example": { "parent": "com", "level": 0 } },
+  "leaves": { "<id>": { "Creature": { "kind": "class", "language": "java", "namespace": "com.example", "level": 2 } } },
+  "leafEdges": [{ "fromId": "<id>", "fromLeaf": "Creature", "toId": "<id>", "toLeaf": "HitPoints", "attributes": { "dependencies": 1 }, "usage": ["inheritance"] }]
+}
+```
+
+See [`dev_docs/cc-json-2.0-format.md`](dev_docs/cc-json-2.0-format.md#the-dependency-graph-in-the-dependency-lens).

@@ -117,7 +117,7 @@ python3 "$REPO/sample-projects/tools/dump_lenses.py" "$LANG_DIR/output/domain.cc
 Options worth a second run when judging a finding: `--verbose` on both parsers, `--stop-word-level MINIMAL`
 / `AGGRESSIVE`, `--no-technical-stopwords`, `--ngrams 2`, `--exclude-tests` on the domain parser.
 
-The `.cc.json` uses API version 2.0: `files` holds the tree, `lenses.dependency.edges` the file-level edges
+The `.cc.json` uses API version 2.1: `files` holds the tree, `lenses.dependency.edges` the file-level edges
 (with `isCyclic` and `isPointingUpwards` flags), `lenses.dependency.leaves` / `leafEdges` the
 declaration-level graph, `lenses.metrics.attributes` the per-file `incoming_dependencies` /
 `outgoing_dependencies`, and `lenses.domain.nodes` the word list per file and folder.

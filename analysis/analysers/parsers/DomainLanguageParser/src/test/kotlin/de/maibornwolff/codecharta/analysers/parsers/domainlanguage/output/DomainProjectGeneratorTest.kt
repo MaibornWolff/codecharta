@@ -56,7 +56,7 @@ class DomainProjectGeneratorTest {
         val json = serialize(DomainProjectGenerator().generate(result))
 
         // Assert
-        assertEquals("2.0", json.getAsJsonObject("meta").get("apiVersion").asString)
+        assertEquals("2.1", json.getAsJsonObject("meta").get("apiVersion").asString)
         assertTrue(json.getAsJsonObject("lenses").getAsJsonObject(LensSet.DOMAIN_KEY).has("nodes"))
     }
 

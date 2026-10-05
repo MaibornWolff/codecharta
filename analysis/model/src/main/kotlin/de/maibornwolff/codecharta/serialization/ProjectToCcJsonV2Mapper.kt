@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.reflect.TypeToken
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Node
@@ -82,13 +83,15 @@ object ProjectToCcJsonV2Mapper {
                 leaves =
                     project.lenses.dependency.leaves
                         .takeIf { it.isNotEmpty() }
-                        ?.mapValues { (_, leaf) -> DependencyLeafDto(leaf.nodeIds, leaf.name, leaf.kind, leaf.level) },
+                        ?.mapValues { (_, leavesOfFile) -> leavesOfFile.mapValues { (_, leaf) -> leaf.toDto() } },
                 leafEdges =
                     project.lenses.dependency.leafEdges
                         .takeIf { it.isNotEmpty() }
                         ?.map {
                             LeafEdgeDto(
+                                it.fromId,
                                 it.fromLeaf,
+                                it.toId,
                                 it.toLeaf,
                                 it.attributes,
                                 it.usage.takeIf { usage -> usage.isNotEmpty() },
@@ -108,9 +111,18 @@ object ProjectToCcJsonV2Mapper {
 
     private fun Boolean.orNullWhenFalse(): Boolean? = takeIf { it }
 
+    private fun DependencyLeaf.toDto(): DependencyLeafDto = DependencyLeafDto(
+        name = name,
+        kind = kind,
+        language = language,
+        namespace = namespace,
+        parent = parent,
+        level = level
+    )
+
     private fun buildMeta(project: Project, checksum: String, commitHash: String?): MetaDto = MetaDto(
         projectName = project.projectName,
-        apiVersion = ApiVersion.TWO_ZERO.versionString,
+        apiVersion = ApiVersion.TWO_ONE.versionString,
         checksum = checksum,
         commitHash = commitHash
     )

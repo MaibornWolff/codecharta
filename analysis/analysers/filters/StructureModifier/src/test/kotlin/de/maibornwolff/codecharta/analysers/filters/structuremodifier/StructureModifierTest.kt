@@ -321,14 +321,14 @@ class StructureModifierTest {
     }
 
     @Test
-    fun `should re-point the dependency lens leaves at the new paths when setting a new root`() {
+    fun `should re-key the dependency lens leaves and leaf edges onto the new paths when setting a new root`() {
         // when
         val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-s=/root/src"))
 
         // then - the package did not move, the file did, so the leaf keeps its key and follows its file
-        assertThat(cliResult).contains("com.example.File1")
-        assertThat(cliResult).contains(ID_OF_MAIN_FILE1_AFTER_SET_ROOT)
-        assertThat(cliResult).contains("com.example")
+        assertThat(cliResult).contains("\"$ID_OF_MAIN_FILE1_AFTER_SET_ROOT\":{\"FirstClass\":")
+        assertThat(cliResult).contains("\"fromId\":\"$ID_OF_MAIN_FILE1_AFTER_SET_ROOT\",\"fromLeaf\":\"FirstClass\"")
+        assertThat(cliResult).contains("\"com.example\":{\"level\":0}")
     }
 
     @Test
@@ -337,8 +337,9 @@ class StructureModifierTest {
         val cliResult = executeForOutput("", arrayOf(DOMAIN_PROJECT, "-r=/root/src/main"))
 
         // then - no leaf and no leaf edge is left pointing at a file that is gone
-        assertThat(cliResult).doesNotContain("com.example.File1")
+        assertThat(cliResult).doesNotContain("FirstClass")
         assertThat(cliResult).doesNotContain("leafEdges")
+        assertThat(cliResult).doesNotContain("com.example")
     }
 
     @Test

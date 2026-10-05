@@ -56,12 +56,6 @@ interface MetricsLensData {
     attributeTypes: Record<string, AttributeTypeValue>
 }
 
-/*
- * The dependency graph in both of its projections: the physical one (`edges` between file nodes, plus
- * each node's place in that graph) and the logical one the code declares (`leaves` are the declarations,
- * `namespaces` the packages containing them, `leafEdges` the dependencies between declarations). The
- * logical tables are keyed by dotted logical path; a leaf joins back onto the file tree through `nodeIds`.
- */
 interface DependencyLensData {
     edges: DependencyEdge[]
     attributeTypes: Record<string, AttributeTypeValue>
@@ -69,7 +63,7 @@ interface DependencyLensData {
     /** Optional so an unused lens slot stays `{}`, the form the analysis side treats as carrying nothing. */
     nodes?: Record<string, DependencyLensNode>
     namespaces?: Record<string, DependencyLensNamespace>
-    leaves?: Record<string, DependencyLensLeaf>
+    leaves?: Record<string, Record<string, DependencyLensLeaf>>
     leafEdges?: DependencyLeafEdge[]
 }
 
@@ -78,45 +72,27 @@ interface DependencyLensNode {
 }
 
 interface DependencyLensNamespace {
+    parent?: string
     level: number
 }
 
-/*
- * `nodeIds` lists every file the declaration lives in, several for one split across files; the first is the
- * file the physical `edges` point edges into the declaration at. `name` is carried rather than derived from
- * the key because the logical path escapes dots inside a segment and that escaping is not reversible.
- * `level` is absent when the producer skipped levelization.
- */
 interface DependencyLensLeaf {
-    nodeIds: string[]
-    name: string
-    kind: DeclarationKind
+    name?: string
+    kind: string
+    language?: string
+    namespace?: string
+    parent?: string
     level?: number
 }
 
-type DeclarationKind =
-    | "CLASS"
-    | "VALUECLASS"
-    | "INTERFACE"
-    | "ANNOTATION"
-    | "ENUM"
-    | "FUNCTION"
-    | "VARIABLE"
-    | "REEXPORT"
-    | "SCRIPT"
-    | "UNKNOWN"
-
-type TypeOfUsage = "usage" | "inheritance" | "implementation" | "instantiation" | "argument" | "return_value" | "constant_access"
-
-/*
- * A dependency between two declarations. Separate from `edges` because an edge addresses file nodes by
- * id; an edge between two declarations of the same file has no file-level counterpart at all.
- */
+/* Separate from `edges` because an edge between two declarations of the same file has no file-level counterpart. */
 interface DependencyLeafEdge {
+    fromId: string
     fromLeaf: string
+    toId: string
     toLeaf: string
-    attributes: Record<string, number>
-    usage?: TypeOfUsage[]
+    attributes?: Record<string, number>
+    usage?: string[]
     isCyclic?: boolean
     isPointingUpwards?: boolean
 }

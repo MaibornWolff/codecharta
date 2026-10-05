@@ -3,15 +3,10 @@ package de.maibornwolff.codecharta.model
 import de.maibornwolff.codecharta.util.Logger
 
 /**
- * The dependency graph of a project in both of its projections.
- *
- * The physical projection is [edges] between file nodes plus, per node, where the node sits in that
- * graph ([nodes]); it is keyed by node id, so a filter that re-paths the tree has to re-key the lens
- * along with it — see [rekeyed]. The logical projection is the graph as the code declares it: [leaves]
- * are the declarations, [namespaces] the packages containing them, and [leafEdges] the dependencies
- * between declarations. Its tables are keyed by dotted logical path, which a restructuring of one
- * project's files never moves — only [DependencyLeaf.nodeIds], the join back onto the file tree, is
- * re-keyed. Wrapping a whole project into a folder is the exception, see [underNamespace].
+ * The dependency graph of a project in both of its projections: the physical one between file nodes
+ * ([edges], [nodes]) and the logical one the code declares ([namespaces], [leaves], [leafEdges]).
+ * Everything but [edges] and [namespaces] is keyed by node id, so a filter that re-paths the tree has to
+ * re-key the lens along with it — see [rekeyed].
  */
 data class DependencyLens(
     val edges: List<Edge> = emptyList(),
@@ -19,10 +14,10 @@ data class DependencyLens(
     val attributeDescriptors: Map<String, AttributeDescriptor> = emptyMap(),
     val nodes: Map<String, DependencyNode> = emptyMap(),
     val namespaces: Map<String, DependencyNamespace> = emptyMap(),
-    val leaves: Map<String, DependencyLeaf> = emptyMap(),
+    val leaves: Map<String, Map<String, DependencyLeaf>> = emptyMap(),
     val leafEdges: List<LeafEdge> = emptyList()
 ) : Lens {
-    val carriesNodeData: Boolean get() = nodes.isNotEmpty() || leaves.isNotEmpty()
+    val carriesNodeData: Boolean get() = nodes.isNotEmpty() || leaves.isNotEmpty() || leafEdges.isNotEmpty()
 
     fun merge(other: DependencyLens): DependencyLens = DependencyLens(
         edges = mergeEdges(edges + other.edges),
@@ -61,18 +56,19 @@ data class DependencyLens(
     private fun mergeNamespaces(otherNamespaces: Map<String, DependencyNamespace>): Map<String, DependencyNamespace> =
         mergeByKey(namespaces, otherNamespaces) { _, existing, incoming -> existing.merge(incoming) }
 
-    // Two inputs declaring one logical path describe one declaration that lives in the files of both, so
-    // the files union. Name and kind describe the declaration itself: the first wins and a conflict is
-    // reported, the way CcJsonV2ToProjectMapper handles two file nodes claiming one id.
-    private fun mergeLeaves(otherLeaves: Map<String, DependencyLeaf>): Map<String, DependencyLeaf> =
-        mergeByKey(leaves, otherLeaves) { leafId, existing, incoming ->
-            if (existing.name != incoming.name || existing.kind != incoming.kind) {
-                Logger.warn {
-                    "Two inputs describe the leaf '$leafId' differently (${existing.kind} ${existing.name} and " +
-                        "${incoming.kind} ${incoming.name}); keeping the first description."
+    // Two inputs declaring one key in one file describe the same declaration: the first description wins,
+    // the way CcJsonV2ToProjectMapper handles two file nodes claiming one id.
+    private fun mergeLeaves(otherLeaves: Map<String, Map<String, DependencyLeaf>>): Map<String, Map<String, DependencyLeaf>> =
+        mergeByKey(leaves, otherLeaves) { nodeId, existingLeaves, incomingLeaves ->
+            mergeByKey(existingLeaves, incomingLeaves) { leafKey, existing, incoming ->
+                if (existing != incoming) {
+                    Logger.warn {
+                        "Two inputs describe the leaf '$leafKey' of node '$nodeId' differently ($existing and $incoming); " +
+                            "keeping the first description."
+                    }
                 }
+                existing
             }
-            existing.copy(nodeIds = (existing.nodeIds + incoming.nodeIds).distinct())
         }
 
     private fun <T> mergeByKey(own: Map<String, T>, other: Map<String, T>, reconcile: (String, T, T) -> T): Map<String, T> {
@@ -88,57 +84,55 @@ data class DependencyLens(
     }
 
     private fun mergeLeafEdges(allLeafEdges: List<LeafEdge>): List<LeafEdge> = allLeafEdges
-        .groupBy { Pair(it.fromLeaf, it.toLeaf) }
-        .map { (_, edgesForPair) -> edgesForPair.reduce(LeafEdge::merge) }
+        .groupBy { listOf(it.fromId, it.fromLeaf, it.toId, it.toLeaf) }
+        .map { (_, edgesForEndpoints) -> edgesForEndpoints.reduce(LeafEdge::merge) }
 
     /**
      * Re-key the entries that address a file node onto a restructured tree; see [nodeIdRemapping] for how
-     * ids are recovered. A leaf keeps its logical key — a restructuring moves files, not packages — and
-     * only follows its files; one none of whose files survived has nothing left to join onto, so it goes,
-     * and with it every leaf edge that touched it and every namespace no surviving leaf lives in.
+     * ids are recovered. The leaves of a file that did not survive go with it, and with them every leaf
+     * edge that touched them and every namespace no surviving leaf lives in.
      */
     fun rekeyed(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): DependencyLens {
         if (!carriesNodeData) return this
         val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)
-        val rekeyedLeaves = leaves
-            .mapNotNull { (leafId, leaf) ->
-                val survivingNodeIds = leaf.nodeIds.mapNotNull { newIdByOldId[it] }
-                if (survivingNodeIds.isEmpty()) null else leafId to leaf.copy(nodeIds = survivingNodeIds)
-            }.toMap()
-        val inhabitedNamespaces = namespacesOf(rekeyedLeaves.keys)
+        val rekeyedNodes = nodes.rekeyedBy(newIdByOldId)
+        val rekeyedLeafEdges = leafEdges.mapNotNull { it.rekeyedBy(newIdByOldId) }
+        if (leaves.isEmpty()) return copy(nodes = rekeyedNodes, leafEdges = rekeyedLeafEdges)
+
+        val rekeyedLeaves = leaves.rekeyedBy(newIdByOldId)
+        val inhabitedNamespaces = inhabitedNamespaces(rekeyedLeaves)
         return copy(
-            nodes = nodes.rekeyedBy(newIdByOldId),
-            namespaces = namespaces.filterKeys { leaves.isEmpty() || it in inhabitedNamespaces },
+            nodes = rekeyedNodes,
+            namespaces = namespaces.filterKeys { it in inhabitedNamespaces },
             leaves = rekeyedLeaves,
-            leafEdges = leafEdges.filter { leaves.isEmpty() || (it.fromLeaf in rekeyedLeaves && it.toLeaf in rekeyedLeaves) }
+            leafEdges = rekeyedLeafEdges.filter { it.joinsOnto(rekeyedLeaves) }
         )
     }
+
+    private fun inhabitedNamespaces(survivingLeaves: Map<String, Map<String, DependencyLeaf>>): Set<String> =
+        withAncestors(survivingLeaves.values.flatMap { it.values }.mapNotNull { it.namespace }) { namespaces[it]?.parent }
 
     /**
-     * Prefixes every logical id with [segment], the way `merge --large` prefixes the file paths with the
+     * Prefixes every namespace key with [segment], the way `merge --large` prefixes the file paths with the
      * folder a project is wrapped in: two inputs declaring the same package must stay apart in the logical
-     * projection as they do in the physical one. A dot in the segment is escaped the way the parser
-     * escapes dots inside a logical path segment.
+     * projection as they do in the physical one.
      */
     fun underNamespace(segment: String): DependencyLens {
-        val prefix = segment.replace(LOGICAL_SEPARATOR, ESCAPED_LOGICAL_SEPARATOR) + LOGICAL_SEPARATOR
+        fun prefixed(namespaceKey: String) = "$segment$NAMESPACE_SEPARATOR$namespaceKey"
         return copy(
-            namespaces = namespaces.mapKeys { (namespaceId, _) -> prefix + namespaceId },
-            leaves = leaves.mapKeys { (leafId, _) -> prefix + leafId },
-            leafEdges = leafEdges.map { it.copy(fromLeaf = prefix + it.fromLeaf, toLeaf = prefix + it.toLeaf) }
+            namespaces =
+                namespaces.entries.associate { (namespaceKey, namespace) ->
+                    prefixed(namespaceKey) to namespace.copy(parent = namespace.parent?.let(::prefixed))
+                },
+            leaves =
+                leaves.mapValues { (_, leavesOfFile) ->
+                    leavesOfFile.mapValues { (_, leaf) -> leaf.copy(namespace = leaf.namespace?.let(::prefixed)) }
+                }
         )
     }
 
-    // With dotted ids the namespaces a leaf lives in are every proper prefix of its id, split on the dots.
-    private fun namespacesOf(leafIds: Collection<String>): Set<String> = leafIds
-        .flatMapTo(HashSet()) { leafId ->
-            val segments = leafId.split('.')
-            (1 until segments.size).map { depth -> segments.take(depth).joinToString(".") }
-        }
-
     companion object {
-        private const val LOGICAL_SEPARATOR = "."
-        private const val ESCAPED_LOGICAL_SEPARATOR = "_"
+        private const val NAMESPACE_SEPARATOR = "."
     }
 }
 
@@ -150,33 +144,27 @@ data class DependencyNode(val level: Int) {
     fun merge(other: DependencyNode): DependencyNode = DependencyNode(maxOf(level, other.level))
 }
 
-/**
- * One package's place in the logical dependency graph, keyed by its dotted logical path. It needs no
- * parent: with dotted ids the parent is the id's prefix.
- */
-data class DependencyNamespace(val level: Int) {
-    fun merge(other: DependencyNamespace): DependencyNamespace = DependencyNamespace(maxOf(level, other.level))
+data class DependencyNamespace(val level: Int, val parent: String? = null) {
+    fun merge(other: DependencyNamespace): DependencyNamespace = copy(level = maxOf(level, other.level), parent = parent ?: other.parent)
 }
 
-/**
- * One declaration — a class, interface, function, … — as the logical layer sees it, keyed by its dotted
- * logical path. [nodeIds] are the ids of the file nodes the declaration lives in — more than one for a
- * declaration split across files, such as a partial class — and the only join from the logical layer back
- * onto the file tree. The first is the file the physical projection points edges into the declaration at.
- * [name] is kept rather than derived from the key because the logical path escapes dots inside a segment
- * and that escaping is not reversible. [level] is absent when the producer skipped levelization.
- */
-data class DependencyLeaf(val nodeIds: List<String>, val name: String, val kind: String, val level: Int? = null)
+data class DependencyLeaf(
+    val kind: String,
+    val name: String? = null,
+    val language: String? = null,
+    val namespace: String? = null,
+    val parent: String? = null,
+    val level: Int? = null
+)
 
 /**
  * A dependency between two declarations. A list of its own rather than a widened [Edge], because [Edge]
- * addresses file nodes by id and is what the edge-metric machinery, `edgefilter` and the 3D map read.
- *
- * [usage] carries every way the source declaration uses the target (inheritance, instantiation, …), so
- * folding two edges of one pair unions the ways rather than picking one.
+ * is what the edge-metric machinery, `edgefilter` and the 3D map read.
  */
 data class LeafEdge(
+    val fromId: String,
     val fromLeaf: String,
+    val toId: String,
     val toLeaf: String,
     val attributes: Map<String, Any> = emptyMap(),
     val usage: List<String> = emptyList(),
@@ -187,12 +175,31 @@ data class LeafEdge(
     // conflicting key. Two inputs carrying the same pair describe the same references, not disjoint ones,
     // so adding the weights would double-count a project merged with itself, and the physical projection
     // of the same dependency would disagree with the logical one.
-    fun merge(other: LeafEdge): LeafEdge = LeafEdge(
-        fromLeaf = fromLeaf,
-        toLeaf = toLeaf,
+    fun merge(other: LeafEdge): LeafEdge = copy(
         attributes = other.attributes + attributes,
         usage = (usage + other.usage).distinct(),
         isCyclic = isCyclic || other.isCyclic,
         isPointingUpwards = isPointingUpwards || other.isPointingUpwards
     )
+
+    fun joinsOnto(leaves: Map<String, Map<String, DependencyLeaf>>): Boolean =
+        leaves[fromId]?.containsKey(fromLeaf) == true && leaves[toId]?.containsKey(toLeaf) == true
+
+    internal fun rekeyedBy(newIdByOldId: Map<String, String>): LeafEdge? {
+        val newFromId = newIdByOldId[fromId] ?: return null
+        val newToId = newIdByOldId[toId] ?: return null
+        return copy(fromId = newFromId, toId = newToId)
+    }
+}
+
+/** [keys] and everything reached from them by following [parentOf]; a cyclic chain ends where it closes. */
+fun withAncestors(keys: Iterable<String>, parentOf: (String) -> String?): Set<String> {
+    val reached = HashSet<String>()
+    keys.forEach { key ->
+        var current: String? = key
+        while (current != null && reached.add(current)) {
+            current = parentOf(current)
+        }
+    }
+    return reached
 }

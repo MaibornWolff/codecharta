@@ -11,6 +11,8 @@ Or compare two files that already exist:
 
 Both outputs are normalised into the same four tables — declarations (leaves), dependencies between
 declarations (leaf edges), namespace levels and file-to-file edges — and every table is diffed by key.
+A declaration is keyed the way the cc.json addresses it, by its file and its key within that file, and
+only the namespaces ccsh lists are compared: the packages a language declares apart from its files.
 Self-edges (a declaration depending on itself) are dropped on both sides unless --keep-self-edges is
 given, because ccsh drops them by design and they would otherwise show up as a difference on every run.
 The exit code is 0 when the graphs agree and 1 when they differ, so the script can guard a CI job.
@@ -35,6 +37,8 @@ DEPENDACHARTA_VIRTUAL_ROOT = "__virtual_root__"
 DEPENDACHARTA_DEFAULT_MAX_FILE_SIZE_KB = 1024
 DEPENDACHARTA_DEFAULT_FILE_TIMEOUT_SECONDS = 60
 DEPENDENCIES_ATTRIBUTE = "dependencies"
+LEAF_ADDRESS_SEPARATOR = "#"
+PACKAGE_LANGUAGES = {"PHP", "C_SHARP", "JAVA", "CPP", "KOTLIN"}
 DEPENDACHARTA_LABEL = "DependaCharta"
 CODECHARTA_LABEL = "CodeCharta"
 
@@ -63,32 +67,68 @@ class SectionDiff:
 
 def read_dependacharta(path):
     report = json.load(open(path, encoding="utf-8"))
+    addresses = addresses_by_leaf_id(report["leaves"])
     model = DependencyModel()
     for leaf_id, leaf in report["leaves"].items():
-        model.leaves[leaf_id] = {"name": leaf["name"], "kind": leaf["nodeType"], "file": leaf["physicalPath"]}
+        model.leaves[addresses[leaf_id]] = {"name": leaf["name"], "kind": leaf["nodeType"].lower(), "file": leaf["physicalPath"]}
+    packages = declared_packages(report["leaves"])
     for root in report["projectTreeRoots"]:
-        collect_dependacharta_tree(root, [], model, set(report["leaves"]))
+        collect_dependacharta_tree(root, [], model, addresses, packages)
     model.file_edges = collapse_to_file_edges(model)
     return model
 
 
-def collect_dependacharta_tree(node, parent_segments, model, leaf_ids):
+# ccsh keys a declaration by its name, or by its dotted path when two declarations of one file share it.
+def addresses_by_leaf_id(leaves):
+    ids_by_file_and_name = {}
+    for leaf_id, leaf in leaves.items():
+        ids_by_file_and_name.setdefault((leaf["physicalPath"], leaf["name"]), []).append(leaf_id)
+    return {
+        leaf_id: leaf_address(file, name if len(leaf_ids) == 1 else leaf_id)
+        for (file, name), leaf_ids in ids_by_file_and_name.items()
+        for leaf_id in leaf_ids
+    }
+
+
+def leaf_address(file, leaf_key):
+    return f"{file}{LEAF_ADDRESS_SEPARATOR}{leaf_key}"
+
+
+# The namespaces ccsh lists: the package of every declaration of a package language, and what contains
+# it. A declaration nested in another one of its file belongs to that one's package, and a path that
+# merely re-encodes the file is no package.
+def declared_packages(leaves):
+    ids_by_file = {}
+    for leaf_id, leaf in leaves.items():
+        ids_by_file.setdefault(leaf["physicalPath"], set()).add(leaf_id)
+    packages = set()
+    for leaf_id, leaf in leaves.items():
+        if leaf.get("language") not in PACKAGE_LANGUAGES:
+            continue
+        segments = leaf_id.split(".")[:-1]
+        while segments and ".".join(segments) in ids_by_file[leaf["physicalPath"]]:
+            segments.pop()
+        if segments == [segment.replace(".", "_") for segment in leaf["physicalPath"].split("/") if segment]:
+            continue
+        packages.update(".".join(segments[:depth]) for depth in range(1, len(segments) + 1))
+    return packages
+
+
+def collect_dependacharta_tree(node, parent_segments, model, addresses, packages):
     segments = parent_segments if node["name"] == DEPENDACHARTA_VIRTUAL_ROOT else parent_segments + [node["name"]]
     dotted = ".".join(segments)
     leaf_id = node.get("leafId")
     if leaf_id:
-        model.leaves.setdefault(leaf_id, {})["level"] = node["level"]
+        model.leaves.setdefault(addresses[leaf_id], {})["level"] = node["level"]
         for target, info in node["containedInternalDependencies"].items():
-            model.leaf_edges[(leaf_id, target)] = leaf_edge_record(
+            model.leaf_edges[(addresses[leaf_id], addresses.get(target, target))] = leaf_edge_record(
                 info["weight"], info["type"].split(","), info["isCyclic"], info.get("isPointingUpwards", False)
             )
         return
-    # A declaration with nested declarations gets a container node of its own next to its leaf node;
-    # that container is not a namespace, and ccsh lists only packages under `namespaces`.
-    if segments and dotted not in leaf_ids:
-        model.namespaces[dotted] = {"level": node["level"]}
+    if dotted in packages:
+        model.namespaces[dotted] = {"level": node["level"], "parent": ".".join(segments[:-1]) or None}
     for child in node["children"]:
-        collect_dependacharta_tree(child, segments, model, leaf_ids)
+        collect_dependacharta_tree(child, segments, model, addresses, packages)
 
 
 def collapse_to_file_edges(model):
@@ -112,18 +152,24 @@ def read_codecharta(path):
     for root in project["files"]:
         collect_codecharta_paths(root, [], path_by_id)
     model = DependencyModel()
-    for leaf_id, leaf in lens.get("leaves", {}).items():
-        model.leaves[leaf_id] = {
-            "name": leaf["name"],
-            "kind": leaf["kind"],
-            "file": path_by_id.get(leaf["nodeIds"][0], leaf["nodeIds"][0]),
-            "level": leaf.get("level"),
-        }
+    for node_id, leaves_of_file in lens.get("leaves", {}).items():
+        file = path_by_id.get(node_id, node_id)
+        for leaf_key, leaf in leaves_of_file.items():
+            model.leaves[leaf_address(file, leaf_key)] = {
+                "name": leaf.get("name", leaf_key),
+                "kind": leaf["kind"],
+                "file": file,
+                "level": leaf.get("level"),
+            }
     for edge in lens.get("leafEdges", []):
-        model.leaf_edges[(edge["fromLeaf"], edge["toLeaf"])] = leaf_edge_record(
+        source = leaf_address(path_by_id.get(edge["fromId"], edge["fromId"]), edge["fromLeaf"])
+        target = leaf_address(path_by_id.get(edge["toId"], edge["toId"]), edge["toLeaf"])
+        model.leaf_edges[(source, target)] = leaf_edge_record(
             edge_weight(edge), edge.get("usage", []), edge.get("isCyclic", False), edge.get("isPointingUpwards", False)
         )
-    model.namespaces = {dotted: {"level": entry.get("level")} for dotted, entry in lens.get("namespaces", {}).items()}
+    model.namespaces = {
+        name: {"level": entry.get("level"), "parent": entry.get("parent")} for name, entry in lens.get("namespaces", {}).items()
+    }
     for edge in lens.get("edges", []):
         source = path_by_id.get(edge["fromId"], edge["fromId"])
         target = path_by_id.get(edge["toId"], edge["toId"])
