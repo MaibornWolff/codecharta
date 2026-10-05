@@ -2,7 +2,7 @@
 title: "3D Print"
 ---
 
-The **3D Print** action in the top-right navigation exports the map that is currently
+The **3D Print** action in the [mode bar](/docs/visualization/user-controls/views#the-mode-bar) below the **Metric** tab exports the map that is currently
 on screen as a physical, printable model. Selecting it opens the **3D Print CodeCharta
 Map** dialog, where you configure the printer, the model size and the labels, watch a
 live preview, and then download the model as a 3MF or STL file.
@@ -10,6 +10,8 @@ live preview, and then download the model as a 3MF or STL file.
 The export always uses the map exactly as it looks in the scene: the same area, height
 and color metrics, the same color range, and the same blacklist. Adjust those in the
 main view before opening this dialog.
+
+3D Print works on the 3D layouts of the Metric view; it is not offered while the map layout is Sunburst or Radial TreeMap. Started from another view, it first asks to switch to the Metric view.
 
 ![The 3D Print CodeCharta Map dialog](/assets/images/docs/visualization/user-controls/3d-print.jpeg)
 

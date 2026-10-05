@@ -4,7 +4,7 @@ title: "Labels"
 
 Labels annotate individual buildings on the map with their name and/or metric value, so you can read off the most relevant files without hovering over each one. Rather than labelling every building (which would be unreadable), CodeCharta labels only a configurable number of the most relevant buildings.
 
-All label behaviour is configured from the **LABELS** settings, opened from the gear icon in the bottom [metric bar](/docs/visualization/user-controls/metrics).
+All label behaviour is configured from the **LABELS** settings, opened from the gear icon next to **LABELS** in the [metric bar](/docs/visualization/user-controls/metrics). Labels belong to the 3D layouts; the Sunburst and Radial TreeMap layouts write the names into their segments instead and hide this entry.
 
 ![Labels settings popover](/assets/images/docs/visualization/user-controls/labels.jpeg)
 

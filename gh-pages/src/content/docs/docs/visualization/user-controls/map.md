@@ -15,6 +15,8 @@ CodeCharta visualizes your codebase as a 3D treemap, a city built from your fold
 
 Because the city is laid out directly from your folders, files that live close together in the code also stand close together on the map.
 
+The city is the default. The same data can also be laid out along streets or as flat rings around a centre — see [Map Layouts](/docs/visualization/user-controls/layouts).
+
 ## Visual dimensions
 
 The buildings are not just placeholders, their shape and color encode metrics. Three visual dimensions carry meaning, and you choose which metric drives each one:
@@ -25,7 +27,7 @@ The buildings are not just placeholders, their shape and color encode metrics. T
 
 If your map provides them, **edges** between buildings represent an **edge metric**, drawing connections (such as how often two files change together) on top of the city.
 
-The four selectable metrics are shown in the metric bar at the bottom of the map. To learn how to pick metrics and tune their color ranges, see the [Metrics](/docs/visualization/user-controls/metrics) page.
+The selectable metrics are shown in the metric bar at the bottom of the map. To learn how to pick metrics and tune their color ranges, see the [Metrics](/docs/visualization/user-controls/metrics) page.
 
 ## Navigating the map
 
