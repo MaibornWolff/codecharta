@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.8.0] - 2026-10-05
+
 ### Added 🚀
 
 - **Dependency view (experimental)**: once switched on in the global configuration, a map analysed with the dependency parser, the sample map and the online demo included, opens as a graph that stacks its files by dependency level, can label the levels of nested folders by their path as in 0.1.2, marks the dependencies that close a cycle or point upward and focuses on a folder from its context menu, with a screenshot button as in the other views.
