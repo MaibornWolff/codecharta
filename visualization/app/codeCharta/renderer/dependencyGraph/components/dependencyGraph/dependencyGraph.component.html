@@ -3,6 +3,6 @@
     [boxes]="scene().layout.boxes"
     [selectedPath]="scene().selectedPath"
     (boxClicked)="boxClicked.emit($event)"
-    (boxToggled)="boxToggled.emit($event)"
+    (boxToggled)="toggle($event)"
     (boxFocused)="focusBox($event)"
 ></cc-dependency-graph-box-list>

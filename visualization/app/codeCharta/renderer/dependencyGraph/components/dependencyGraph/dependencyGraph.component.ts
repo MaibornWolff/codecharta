@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, OnDestroy, output, viewChild } from "@angular/core"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
-import { AxisWindow, fitWindowOf, Viewport, windowHolding } from "../../util/axisWindow"
+import { AxisWindow, fitWindowOf, Viewport, windowHolding, windowKeepingInPlace } from "../../util/axisWindow"
 import { buildDependencyGraphOption } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
+import { DependencyGraphLayout, LayoutBox } from "../../util/layoutModel"
 import { DependencyGraphBoxListComponent } from "../dependencyGraphBoxList/dependencyGraphBoxList.component"
 import { DependencyGraphHost } from "./dependencyGraphHost"
 
@@ -23,6 +24,12 @@ export interface DraggedBox {
     path: string
     deltaX: number
     deltaY: number
+}
+
+/** A box as it lay when the reader opened or closed it, to show it at the same spot once it is laid out anew. */
+interface ToggledBox {
+    box: LayoutBox
+    layout: DependencyGraphLayout
 }
 
 const NOTHING_DRAGGABLE = () => false
@@ -63,10 +70,11 @@ export class DependencyGraphComponent implements OnDestroy {
     private fittedGraphIdentity: string | null = null
     private handledFitRequest = 0
     private handledViewRequest: number | null = null
+    private toggledBox: ToggledBox | null = null
 
     private readonly chartHost = new DependencyGraphHost(inject(DependencyGraphChartRegistry), {
         onBoxClicked: path => this.boxClicked.emit(path),
-        onBoxToggled: path => this.boxToggled.emit(path),
+        onBoxToggled: path => this.toggle(path),
         onCycleBadgeClicked: path => this.cycleBadgeClicked.emit(path),
         onEdgeClicked: edgeId => this.edgeClicked.emit(edgeId),
         onBoxHovered: path => this.boxHovered.emit(path),
@@ -94,6 +102,13 @@ export class DependencyGraphComponent implements OnDestroy {
         }
     }
 
+    protected toggle(path: string): void {
+        const layout = this.scene().layout
+        const box = layout.boxes.find(candidate => candidate.path === path)
+        this.toggledBox = box ? { box, layout } : null
+        this.boxToggled.emit(path)
+    }
+
     private renderOnceTheContainerIsMeasured(): void {
         const viewport = this.chartHost.containerSize()
         if (viewport.width === 0 || viewport.height === 0) {
@@ -104,10 +119,27 @@ export class DependencyGraphComponent implements OnDestroy {
     }
 
     private windowToShow(scene: DependencyGraphScene, viewport: Viewport): AxisWindow {
-        const shownWindow = this.consumeDueFit() ? null : this.chartHost.shownWindowFor(viewport)
+        const toggledBox = this.consumeToggledBox(scene.layout)
+        const shownWindow = this.consumeDueFit() ? null : this.shownWindowKeeping(toggledBox, viewport)
         const asked = this.consumeDueViewRequest()
         const windowHoldingTheAsked = asked && windowHolding(asked, scene.layout, viewport, shownWindow)
         return windowHoldingTheAsked ?? shownWindow ?? fitWindowOf(scene.layout, viewport)
+    }
+
+    private shownWindowKeeping(toggledBox: [LayoutBox, LayoutBox] | null, viewport: Viewport): AxisWindow | null {
+        const shownWindow = this.chartHost.shownWindowFor(viewport)
+        return shownWindow && toggledBox ? windowKeepingInPlace(shownWindow, ...toggledBox, viewport) : shownWindow
+    }
+
+    /** The toggled box before and after the layout that followed its toggling; null on any other drawing. */
+    private consumeToggledBox(layout: DependencyGraphLayout): [LayoutBox, LayoutBox] | null {
+        const toggled = this.toggledBox
+        if (toggled === null || toggled.layout === layout) {
+            return null
+        }
+        this.toggledBox = null
+        const laidOutAnew = layout.boxes.find(box => box.path === toggled.box.path)
+        return laidOutAnew && laidOutAnew.isExpanded !== toggled.box.isExpanded ? [toggled.box, laidOutAnew] : null
     }
 
     private consumeDueViewRequest(): readonly string[] | null {
