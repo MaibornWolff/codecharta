@@ -9,7 +9,7 @@ import {
     lineStyleOfUsages,
     usageLabelOf
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { CycleChain, findCycleChains } from "./cycleChains"
+import { CycleChain, cyclesThrough } from "./cycleChains"
 import { DeclarationIndex, fromPathOf, IndexedDeclaration, toPathOf } from "./declarationIndex"
 
 type PanelRefKind = "folder" | "file" | "declaration"
@@ -77,7 +77,9 @@ export interface PanelModel {
     facts: PanelFact[]
     lists: PanelRefList[]
     sections: PanelSection[]
+    /** The cycles running through the selection; a hub's are cut like its rows. */
     cycles: PanelCycle[]
+    cycleCount: number
     action: PanelActionKind | null
 }
 
@@ -87,6 +89,8 @@ export type PanelSubject =
 
 export interface PanelContext {
     index: DeclarationIndex
+    /** Every cycle of the map. */
+    cycles: readonly CycleChain[]
     /** A hub's rows are cut at this many per group and list, so the panel of a hub stays a panel. */
     rowLimit: number
     /** Whether a dependency is drawn pointing upward in the hierarchy shown: between two files the folders
@@ -137,7 +141,7 @@ function describeFile(file: LeveledNode, isOpen: boolean, context: PanelContext)
                 context
             )
         ],
-        cycles: cyclesThrough(declarations, context.index),
+        ...cyclesOf(declarations, context),
         action: declarations.length === 0 ? null : isOpen ? "close" : "open"
     }
 }
@@ -167,7 +171,7 @@ function describeDeclaration(node: LeveledNode, context: PanelContext): PanelMod
                 context
             )
         ],
-        cycles: cyclesThrough(declarations, context.index),
+        ...cyclesOf(declarations, context),
         action: null
     }
 }
@@ -198,7 +202,7 @@ function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel 
         ],
         lists: [],
         sections: [],
-        cycles: cyclesThrough(declarations, context.index),
+        ...cyclesOf(declarations, context),
         action: null
     }
 }
@@ -216,6 +220,7 @@ function describeEdge(edge: GraphEdge, title: string, context: PanelContext): Pa
         lists: [],
         sections: [section("Stands for", ungrouped(told), context)],
         cycles: [],
+        cycleCount: 0,
         action: told.length > 0 && !isUnfolded ? "unfold" : null
     }
 }
@@ -295,16 +300,19 @@ function byNames(dependencyA: PanelDependency, dependencyB: PanelDependency): nu
     return dependencyA.from.name.localeCompare(dependencyB.from.name) || dependencyA.to.name.localeCompare(dependencyB.to.name)
 }
 
-function cyclesThrough(declarations: readonly IndexedDeclaration[], index: DeclarationIndex): PanelCycle[] {
-    const chains = findCycleChains(
-        declarations.map(declaration => declaration.path),
-        index
-    )
-    return chains.map(chain => ({
-        steps: [fromPathOf(chain[0]), ...chain.map(toPathOf)].map(path => declarationRef(index.declarations.get(path))),
-        files: [...new Set(chain.map(leafEdge => leafEdge.fromNodeName))].map(fileRef),
-        leafEdges: chain
-    }))
+function cyclesOf(
+    declarations: readonly IndexedDeclaration[],
+    { index, cycles, rowLimit }: PanelContext
+): Pick<PanelModel, "cycles" | "cycleCount"> {
+    const chains = cyclesThrough(new Set(declarations.map(declaration => declaration.path)), cycles)
+    return {
+        cycleCount: chains.length,
+        cycles: chains.slice(0, rowLimit).map(chain => ({
+            steps: [fromPathOf(chain[0]), ...chain.map(toPathOf)].map(path => declarationRef(index.declarations.get(path))),
+            files: [...new Set(chain.map(leafEdge => leafEdge.fromNodeName))].map(fileRef),
+            leafEdges: chain
+        }))
+    }
 }
 
 function filesIn(node: LeveledNode): LeveledNode[] {

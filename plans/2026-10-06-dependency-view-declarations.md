@@ -107,7 +107,8 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
   - A file sits in the package most of its declarations declare, at the highest level any of them has there
   - "Mark what moves" pairs a package with the folder most of its files lie in; a file apart from that pair, a
     pair on different levels and a file pair whose edge type differs are marked
-  - The panel cuts each group at 20 rows ("and N more" shows all) and tells at most 12 cycles, found as the
-    shortest way back over cyclic declaration edges
+  - The cycles are found once per map as the shortest way back over cyclic declaration edges. A badge counts
+    the cycles running through something its closed box hides, not the cyclic edges as first planned, so it is
+    the number the panel lists for that box. The panel cuts each group and the cycles at 20 rows ("and N more")
   - Checked in a real build with a hand-made sample map (both hierarchies, panel, marks, legend, keyboard) and
     with the two dependency view e2e tests; the rest of the e2e suite was not run

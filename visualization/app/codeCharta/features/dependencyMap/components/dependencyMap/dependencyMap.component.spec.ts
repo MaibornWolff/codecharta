@@ -404,7 +404,18 @@ describe("DependencyMapComponent", () => {
         describe("cycle badges", () => {
             const CYCLIC: DependencyDeclarations = {
                 ...DECLARATIONS,
-                leafEdges: DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true }))
+                leafEdges: [
+                    ...DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true })),
+                    {
+                        fromNodeName: NODE,
+                        fromLeaf: "Node",
+                        toNodeName: VIEW,
+                        toLeaf: "View",
+                        attributes: { dependencies: 1 },
+                        usage: [],
+                        isCyclic: true
+                    }
+                ]
             }
             const badgeCountOf = (path: string) => {
                 const dataIndex = drawnSeries().data.findIndex(item => item.name === path)
@@ -416,7 +427,7 @@ describe("DependencyMapComponent", () => {
                 return badge.length === 0 ? null : (badge.find(part => part.style.text)?.style.text ?? "1")
             }
 
-            it("should count the hidden cyclic dependencies on the closed files and stop once a file is opened", async () => {
+            it("should count on each closed file the cycles it hides a part of, and stop counting on a file once it is opened", async () => {
                 // Arrange
                 await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
                 const whileClosed = [VIEW, NODE].map(badgeCountOf)
@@ -426,7 +437,7 @@ describe("DependencyMapComponent", () => {
                 await screen.findByTestId("dependency-graph")
 
                 // Assert
-                expect(whileClosed).toEqual(["2", "1"])
+                expect(whileClosed).toEqual(["1", "1"])
                 expect([VIEW, NODE].map(badgeCountOf)).toEqual([null, "1"])
             })
 

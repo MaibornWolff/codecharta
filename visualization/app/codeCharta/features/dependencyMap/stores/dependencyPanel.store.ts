@@ -74,7 +74,7 @@ export class DependencyPanelStore {
             return null
         }
         const rowLimit = this.subjectShownInFull() === this.subjectId() ? Number.POSITIVE_INFINITY : PANEL_ROW_LIMIT
-        return describeSubject(subject, { index, rowLimit, pointsUpward: this.graphModel.pointsUpward() })
+        return describeSubject(subject, { index, rowLimit, cycles: this.graphModel.cycles(), pointsUpward: this.graphModel.pointsUpward() })
     })
 
     /** Each dependency pointed at lights up the edge it is drawn as, or drawn in. */
