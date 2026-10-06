@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@a
 import { toSignal } from "@angular/core/rxjs-interop"
 import {
     boxAtPoint,
+    canBeOpened,
     DependencyGraphComponent,
     DependencyGraphScene,
     type DraggedBox,
@@ -46,6 +47,7 @@ export class DependencyMapComponent {
     private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
     private readonly focusedFolderLevelPath = toSignal(this.readStore.focusedFolderLevelPath$, { requireSync: true })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
+    private readonly declarations = toSignal(this.readStore.declarations$, { requireSync: true })
     private readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
@@ -57,8 +59,12 @@ export class DependencyMapComponent {
         if (!tree) {
             return null
         }
-        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), this.focusedFolderLevelPath())
-        return this.settings().levelLabel === "path" ? layout : namedByOwnLevel(layout)
+        const { levelLabel, declarationArrangement } = this.settings()
+        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), {
+            levelPathOfTree: this.focusedFolderLevelPath(),
+            declarationArrangement
+        })
+        return levelLabel === "path" ? layout : namedByOwnLevel(layout)
     })
     private readonly shownLayout = computed(() => {
         const layout = this.layout()
@@ -76,15 +82,15 @@ export class DependencyMapComponent {
         const tree = this.tree()
         return tree ? visibleRepresentatives(tree, this.viewStore.expandedPaths()) : new Map<string, string>()
     })
-    private readonly projectedEdges = computed(() => projectEdges(this.edges(), this.representatives(), this.edgeMetric()))
-    private readonly folderPaths = computed(
-        () =>
-            new Set(
-                this.layout()
-                    ?.boxes.filter(box => box.kind === "folder")
-                    .map(box => box.path)
-            )
+    private readonly projectedEdges = computed(() =>
+        projectEdges(this.edges(), this.representatives(), this.edgeMetric(), this.declarations().leafEdges)
     )
+    private readonly boxes = computed(() => new Map(this.layout()?.boxes.map(box => [box.path, box])))
+    private readonly selectedBoxPath = computed(() => {
+        const inGraph = this.viewStore.graphSelection()
+        const sharedPath = this.selectedPath()
+        return this.boxStandingFor(inGraph?.sharedPath === sharedPath ? inGraph.path : sharedPath)
+    })
 
     protected readonly scene = computed((): DependencyGraphScene | null => {
         const layout = this.shownLayout()
@@ -100,8 +106,8 @@ export class DependencyMapComponent {
             edgeStyle,
             isAnchoredAtSideMiddle,
             edgeWidth,
-            hoveredPath: this.boxStandingFor(this.hoveredPath()),
-            selectedPath: this.boxStandingFor(this.selectedPath()),
+            hoveredPath: this.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()),
+            selectedPath: this.selectedBoxPath(),
             raisedPaths: this.viewStore.raisedPaths(),
             draggingPath: this.viewStore.draggingPath(),
             searchedPaths: this.searchedPaths()
@@ -123,21 +129,25 @@ export class DependencyMapComponent {
     }
 
     protected select(path: string): void {
-        this.writeStore.selectNode(path)
+        const nodePath = this.nodePathOf(path)
+        this.viewStore.selectInGraph(nodePath === path ? null : { path, sharedPath: nodePath })
+        this.writeStore.selectNode(nodePath)
     }
 
     protected toggle(path: string): void {
-        if (this.folderPaths().has(path)) {
+        const box = this.boxes().get(path)
+        if (box && canBeOpened(box)) {
             this.viewStore.toggle(path)
         }
     }
 
     protected hover(path: string | null): void {
-        this.writeStore.hoverNode(path)
+        this.viewStore.hoverInGraph(path)
+        this.writeStore.hoverNode(path === null ? null : this.nodePathOf(path))
     }
 
     protected openContextMenu({ path, clientX, clientY }: RightClickedBox): void {
-        this.writeStore.openContextMenu(path, clientX, clientY)
+        this.writeStore.openContextMenu(this.nodePathOf(path), clientX, clientY)
     }
 
     protected moveBox({ path, deltaX, deltaY }: DraggedBox): void {
@@ -155,6 +165,12 @@ export class DependencyMapComponent {
 
     protected markReady(): void {
         this.viewReadinessStore.markReady("dependencies")
+    }
+
+    /** A declaration is no node of the map; its file stands for it wherever the other views are told. */
+    private nodePathOf(boxPath: string): string {
+        const box = this.boxes().get(boxPath)
+        return box?.kind === "declaration" ? box.parentPath : boxPath
     }
 
     private boxStandingFor(path: string | null): string | null {

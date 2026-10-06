@@ -24,10 +24,15 @@ export function canAnchorAtSideMiddle(edgeStyle: DependencyEdgeStyle): boolean {
 /** A level band is named by its own number, or by the levels of the folders around it first, as in 0.1.2. */
 export type DependencyLevelLabel = "number" | "path"
 
+/** How the declarations of an opened file are arranged: in rows by their level, one below the other, or as
+ * small chips that fill the rows. */
+export type DeclarationArrangement = "stacked" | "list" | "chips"
+
 export interface DependencyGraphSettings {
     shownEdgeTypes: DependencyEdgeType[]
     edgeStyle: DependencyEdgeStyle
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth
     levelLabel: DependencyLevelLabel
+    declarationArrangement: DeclarationArrangement
 }

@@ -46,6 +46,35 @@ describe("leveledTree", () => {
             })
         })
 
+        it("should give a file its declarations, each at the level it has in its package or at level 0", () => {
+            // Arrange
+            const root = folder("/root", [file("/root/a.ts"), file("/root/b.ts")])
+            const leaves = {
+                "/root/a.ts": {
+                    "game.Creature": { name: "Creature", kind: "class", level: 2 },
+                    helper: { name: "helper", kind: "function" }
+                },
+                "/root/unknown.ts": { ghost: { name: "ghost", kind: "class" } }
+            }
+
+            // Act
+            const tree = buildLeveledTree(root, { "/root/a.ts": 0, "/root/b.ts": 0 }, leaves)
+
+            // Assert
+            expect(tree.children[0].children).toEqual([
+                {
+                    path: "/root/a.ts/game.Creature",
+                    name: "Creature",
+                    level: 2,
+                    kind: "declaration",
+                    children: [],
+                    declarationKind: "class"
+                },
+                { path: "/root/a.ts/helper", name: "helper", level: 0, kind: "declaration", children: [], declarationKind: "function" }
+            ])
+            expect(tree.children[1].children).toEqual([])
+        })
+
         it("should fold a chain of single-folder folders into one box named by the chain", () => {
             // Arrange
             const root = folder("/root", [

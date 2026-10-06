@@ -12,6 +12,10 @@ export const dependencyDeclarationsSelector = createSelector(visibleFileStatesSe
     mergeDependencyDeclarations(getCCFiles(visibleFileStates), isPartialState(visibleFileStates))
 )
 
+export const hasDeclarationsSelector = createSelector(dependencyDeclarationsSelector, declarations =>
+    Object.values(declarations.leaves).some(leavesOfFile => Object.keys(leavesOfFile).length > 0)
+)
+
 export const hasNamespacesSelector = createSelector(
     dependencyDeclarationsSelector,
     declarations => Object.keys(declarations.namespaces).length > 0

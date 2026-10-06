@@ -3,6 +3,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
+import { hasDeclarationsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { edgeMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
@@ -19,10 +20,12 @@ const EDGE_METRICS = [
 
 async function renderBar({
     edgeMetric = "dependencies",
-    settings = {}
+    settings = {},
+    hasDeclarations = false
 }: {
     edgeMetric?: string
     settings?: Partial<DependencyGraphSettings>
+    hasDeclarations?: boolean
 } = {}) {
     const rendered = await render(DependencyBarComponent, {
         providers: [
@@ -32,6 +35,7 @@ async function renderBar({
                 selectors: [
                     { selector: edgeMetricSelector, value: edgeMetric },
                     { selector: edgeMetricDataSelector, value: EDGE_METRICS },
+                    { selector: hasDeclarationsSelector, value: hasDeclarations },
                     { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
                 ]
             })
@@ -231,5 +235,31 @@ describe("DependencyBarComponent", () => {
 
         // Assert
         expect(fixture.nativeElement.querySelector("cc-bar-tools-tab cc-graph-view-tools")).not.toBeNull()
+    })
+
+    it("should offer the declaration settings only for a map that tells its declarations", async () => {
+        // Arrange
+        const { fixture } = await renderBar()
+        const segmentWithoutDeclarations = screen.queryByTestId("dependency-bar-declarations-segment")
+
+        // Act
+        TestBed.inject(MockStore).overrideSelector(hasDeclarationsSelector, true)
+        TestBed.inject(MockStore).refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(segmentWithoutDeclarations).toBeNull()
+        expect(screen.getByTestId("dependency-bar-declarations-segment").textContent).toContain("Stacked")
+    })
+
+    it("should arrange the declarations of an opened file the way the reader picks", async () => {
+        // Arrange
+        const dispatch = await renderBar({ hasDeclarations: true })
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-declaration-arrangement-chips"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ declarationArrangement: "chips" }))
     })
 })

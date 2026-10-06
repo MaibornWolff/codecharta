@@ -1,7 +1,7 @@
 import { TEST_FILE_DATA } from "../../../mocks/dataMocks"
 import { CCFile, DependencyDeclarationData, FileSelectionState, FileState } from "../../../model/codeCharta.model"
 import { clone } from "../../../util/clone"
-import { dependencyDeclarationsSelector, hasNamespacesSelector } from "./dependencyDeclarations.selector"
+import { dependencyDeclarationsSelector, hasDeclarationsSelector, hasNamespacesSelector } from "./dependencyDeclarations.selector"
 
 const DECLARATIONS: DependencyDeclarationData = {
     namespaces: { com: { level: 0 }, "com.game": { parent: "com", level: 1 } },
@@ -92,6 +92,23 @@ describe("dependency lens declarations", () => {
             // Assert
             expect(Object.keys(derived.leaves["/root/Creature.java"])).toEqual(["Creature", "Monster"])
             expect(Object.keys(derived.namespaces)).toEqual(["com", "com.game"])
+        })
+    })
+
+    describe("hasDeclarationsSelector", () => {
+        it.each([
+            [DECLARATIONS.leaves, true],
+            [{ "/root/empty.ts": {} }, false],
+            [{}, false]
+        ])("should tell whether the leaves %j hold a declaration: %s", (leaves, expected) => {
+            // Arrange
+            const merged = { namespaces: {}, leaves, leafEdges: [] }
+
+            // Act
+            const hasDeclarations = hasDeclarationsSelector.projector(merged)
+
+            // Assert
+            expect(hasDeclarations).toBe(expected)
         })
     })
 

@@ -1992,7 +1992,8 @@ export const STATE: CcState = {
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
-            levelLabel: "number"
+            levelLabel: "number",
+            declarationArrangement: "stacked"
         },
         dependencyViewEnabled: false
     },
@@ -2071,7 +2072,8 @@ export const DEFAULT_STATE: CcState = {
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
-            levelLabel: "number"
+            levelLabel: "number",
+            declarationArrangement: "stacked"
         },
         dependencyViewEnabled: false
     },

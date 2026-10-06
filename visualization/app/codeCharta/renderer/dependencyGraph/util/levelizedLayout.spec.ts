@@ -9,6 +9,24 @@ function leveledFolder(path: string, children: LeveledNode[], level = 0): Levele
     return { path, name: path.split("/").pop(), level, kind: "folder", children }
 }
 
+function leveledDeclaration(filePath: string, name: string, level = 0): LeveledNode {
+    return { path: `${filePath}/${name}`, name, level, kind: "declaration", children: [], declarationKind: "class" }
+}
+
+const FILE = "/root/a.ts"
+const DECLARING_TREE = leveledFolder("/root", [
+    {
+        ...leveledFile(FILE),
+        children: [
+            leveledDeclaration(FILE, "Zebra", 1),
+            leveledDeclaration(FILE, "AnExceptionallyLongDeclarationName"),
+            leveledDeclaration(FILE, "Bee")
+        ]
+    },
+    leveledFile("/root/b.ts")
+])
+const DECLARATIONS = ["Zebra", "AnExceptionallyLongDeclarationName", "Bee"].map(name => `${FILE}/${name}`)
+
 function filesNamed(count: number): LeveledNode[] {
     return Array.from({ length: count }, (_, index) => leveledFile(`/root/file${String(index).padStart(3, "0")}`))
 }
@@ -155,11 +173,115 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root/open", [leveledFile("/root/open/x", 2)])
 
         // Act
-        const { bands, boxes } = layoutLevelized(tree, new Set(["/root/open"]), [0, 1])
+        const { bands, boxes } = layoutLevelized(tree, new Set(["/root/open"]), { levelPathOfTree: [0, 1] })
 
         // Assert
         expect(bands.map(band => band.levelPath)).toEqual([[0, 1, 2]])
         expect(boxOf(boxes, "/root/open").levelPath).toEqual([0, 1])
+    })
+})
+
+describe("layoutLevelized with declarations", () => {
+    it("should keep a file closed until it is opened, and say how many declarations it holds", () => {
+        // Arrange
+        const expanded = new Set(["/root"])
+
+        // Act
+        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+
+        // Assert
+        expect(boxes.map(box => box.path)).toEqual(["/root", FILE, "/root/b.ts"])
+        expect(boxOf(boxes, FILE)).toMatchObject({ isExpanded: false, declarationCount: 3, width: 160, height: 40 })
+        expect(boxOf(boxes, "/root/b.ts").declarationCount).toBe(0)
+    })
+
+    it("should never open a file that holds no declaration", () => {
+        // Arrange
+        const expanded = new Set(["/root", "/root/b.ts"])
+
+        // Act
+        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+
+        // Assert
+        expect(boxOf(boxes, "/root/b.ts").isExpanded).toBe(false)
+    })
+
+    it("should lay the declarations of an opened file inside it, each knowing its file and its kind, without level bands", () => {
+        // Arrange
+        const expanded = new Set(["/root", FILE])
+
+        // Act
+        const { boxes, bands } = layoutLevelized(DECLARING_TREE, expanded)
+
+        // Assert
+        const file = boxOf(boxes, FILE)
+        const declarations = DECLARATIONS.map(path => boxOf(boxes, path))
+        expect(declarations.every(declaration => isInside(declaration, file))).toBe(true)
+        expect(declarations[0]).toMatchObject({ kind: "declaration", parentPath: FILE, declarationKind: "class", levelPath: [], depth: 2 })
+        expect(bands.map(band => band.folderPath)).toEqual(["/root"])
+    })
+
+    it("should stack the declarations by level by default, the higher level above", () => {
+        // Arrange
+        const expanded = new Set(["/root", FILE])
+
+        // Act
+        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+
+        // Assert
+        const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
+        expect(zebra.y).toBeLessThan(long.y)
+        expect(long.y).toBe(bee.y)
+        expect(long.x).toBeLessThan(bee.x)
+        expect(zebra).toMatchObject({ width: 132, height: 26 })
+    })
+
+    it("should list the declarations one below the other by name", () => {
+        // Arrange
+        const expanded = new Set(["/root", FILE])
+
+        // Act
+        const { boxes } = layoutLevelized(DECLARING_TREE, expanded, { declarationArrangement: "list" })
+
+        // Assert
+        const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
+        expect([long.y, bee.y, zebra.y]).toEqual([long.y, long.y + 32, long.y + 64])
+        expect(new Set([zebra.x, long.x, bee.x]).size).toBe(1)
+    })
+
+    it("should draw the declarations as chips as wide as their names", () => {
+        // Arrange
+        const expanded = new Set(["/root", FILE])
+
+        // Act
+        const { boxes } = layoutLevelized(DECLARING_TREE, expanded, { declarationArrangement: "chips" })
+
+        // Assert
+        const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
+        expect([bee.width, zebra.width, long.width]).toEqual([44, 48.5, 220])
+        expect(bee.height).toBe(22)
+    })
+
+    it("should keep an opened file wide enough for its name", () => {
+        // Arrange
+        const lone = leveledFolder("/root", [{ ...leveledFile(FILE), children: [leveledDeclaration(FILE, "A")] }])
+
+        // Act
+        const { boxes } = layoutLevelized(lone, new Set(["/root", FILE]), { declarationArrangement: "chips" })
+
+        // Assert
+        expect(boxOf(boxes, FILE).width).toBe(160)
+    })
+
+    it("should tell each box the box it lies in", () => {
+        // Arrange
+        const expanded = new Set(["/root"])
+
+        // Act
+        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+
+        // Assert
+        expect(boxes.map(box => box.parentPath)).toEqual([null, "/root", "/root"])
     })
 })
 

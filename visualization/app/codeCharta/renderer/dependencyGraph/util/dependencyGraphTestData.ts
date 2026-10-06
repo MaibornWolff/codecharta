@@ -4,6 +4,7 @@ import { LayoutBox, LevelBand } from "./levelizedLayout"
 export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBox {
     return {
         path,
+        parentPath: path.slice(0, path.lastIndexOf("/")) || null,
         name: path.split("/").pop(),
         kind: "file",
         isExpanded: false,
@@ -19,7 +20,7 @@ export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBo
 }
 
 export function anEdge(fromPath: string, toPath: string, overrides: Partial<GraphEdge> = {}): GraphEdge {
-    return { id: `${fromPath}|${toPath}`, fromPath, toPath, weight: 1, type: "regular", ...overrides }
+    return { id: `${fromPath}|${toPath}`, fromPath, toPath, weight: 1, type: "regular", declarationEdges: [], ...overrides }
 }
 
 export function aBand(overrides: Partial<LevelBand> = {}): LevelBand {

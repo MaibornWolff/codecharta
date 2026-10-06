@@ -4,7 +4,12 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen, waitFor } from "@testing-library/angular"
 import { of } from "rxjs"
-import { edgesSelector, hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import {
+    DependencyDeclarations,
+    dependencyDeclarationsSelector,
+    edgesSelector,
+    hasDependencyDataSelector
+} from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
 import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { DependencyGraphComponent, LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
@@ -64,8 +69,33 @@ const EDGES: Edge[] = [
     { fromNodeName: "/root/ui/view.ts", toNodeName: "/root/model/node.ts", attributes: { temporal_coupling: 0.5 } }
 ]
 
+const VIEW = "/root/ui/view.ts"
+const NODE = "/root/model/node.ts"
+
+function leveledDeclaration(filePath: string, name: string): LeveledNode {
+    return { path: `${filePath}/${name}`, name, level: 0, kind: "declaration", children: [], declarationKind: "class" }
+}
+
+const DECLARING_TREE = leveledFolder("/root", [
+    leveledFolder(
+        "/root/ui",
+        [{ ...leveledFile(VIEW), children: [leveledDeclaration(VIEW, "View"), leveledDeclaration(VIEW, "Menu")] }],
+        1
+    ),
+    leveledFolder("/root/model", [{ ...leveledFile(NODE), children: [leveledDeclaration(NODE, "Node")] }])
+])
+const NO_DECLARATIONS: DependencyDeclarations = { namespaces: {}, leaves: {}, leafEdges: [] }
+const DECLARATIONS: DependencyDeclarations = {
+    ...NO_DECLARATIONS,
+    leafEdges: [
+        { fromNodeName: VIEW, fromLeaf: "View", toNodeName: NODE, toLeaf: "Node", attributes: { dependencies: 1 }, usage: ["usage"] },
+        { fromNodeName: VIEW, fromLeaf: "Menu", toNodeName: VIEW, toLeaf: "View", attributes: { dependencies: 1 }, usage: ["usage"] }
+    ]
+}
+
 interface Setup {
     tree?: LeveledNode | null
+    declarations?: DependencyDeclarations
     selectedPath?: string | null
     isDeltaState?: boolean
     searchedPaths?: ReadonlySet<string> | null
@@ -80,6 +110,7 @@ const PROJECT_A = "project A"
 
 async function setup({
     tree = TREE,
+    declarations = NO_DECLARATIONS,
     selectedPath = null,
     isDeltaState = false,
     searchedPaths = null,
@@ -94,6 +125,7 @@ async function setup({
                 selectors: [
                     { selector: dependencyTreeSelector, value: tree },
                     { selector: edgesSelector, value: EDGES },
+                    { selector: dependencyDeclarationsSelector, value: declarations },
                     { selector: edgeMetricSelector, value: "dependencies" },
                     { selector: hoveredNodePathSelector, value: null },
                     { selector: selectedNodePathSelector, value: selectedPath },
@@ -278,6 +310,100 @@ describe("DependencyMapComponent", () => {
 
         // Assert
         expect(stubbedChart.setOption.mock.calls.length).toBe(drawsBefore)
+    })
+
+    describe("with declarations", () => {
+        const drawnEdgeCount = () => drawnEdgeIndices().length
+
+        it("should open a file into its declarations on a double click and draw their edges, the one inside the file too", async () => {
+            // Arrange
+            await setup({ tree: DECLARING_TREE, declarations: DECLARATIONS })
+            const edgesWhileClosed = drawnEdgeCount()
+
+            // Act
+            doubleClickBox(VIEW)
+            await screen.findByTestId("dependency-graph")
+
+            // Assert
+            expect(edgesWhileClosed).toBe(2)
+            expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", VIEW, "/root/model", `${VIEW}/Menu`, `${VIEW}/View`, NODE])
+            expect(drawnEdgeCount()).toBe(3)
+        })
+
+        it("should open and close a file from its toggle", async () => {
+            // Arrange
+            await setup({ tree: DECLARING_TREE, declarations: DECLARATIONS })
+
+            // Act
+            fireChartEvent("click", { ...boxEvent(VIEW), info: "toggle" })
+            await screen.findByTestId("dependency-graph")
+            const opened = drawnBoxPaths()
+            fireChartEvent("click", { ...boxEvent(VIEW), info: "toggle" })
+            await screen.findByTestId("dependency-graph")
+
+            // Assert
+            expect(opened).toContain(`${VIEW}/View`)
+            expect(drawnBoxPaths()).not.toContain(`${VIEW}/View`)
+        })
+
+        it("should arrange the declarations the way the reader set", async () => {
+            // Arrange
+            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })
+            const drawnWidth = () => {
+                const dataIndex = drawnSeries().data.findIndex(item => item.name === `${VIEW}/View`)
+                const [outline] = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children
+                return (outline as unknown as { shape: { width: number } }).shape.width
+            }
+            const stacked = drawnWidth()
+
+            // Act
+            await changeSettings(store, { declarationArrangement: "chips" })
+            fixture.detectChanges()
+
+            // Assert
+            expect(stacked).toBe(132)
+            expect(drawnWidth()).toBe(44)
+        })
+
+        it("should tell the other views the file of a selected, hovered or right-clicked declaration, and mark the declaration itself", async () => {
+            // Arrange
+            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })
+            const declaration = boxEvent(`${VIEW}/View`)
+
+            // Act
+            fireChartEvent("click", declaration)
+            fireChartEvent("mouseover", declaration)
+            fireChartEvent("contextmenu", { ...declaration, event: { event: { clientX: 5, clientY: 6 } } })
+            store.overrideSelector(selectedNodePathSelector, VIEW)
+            store.refreshState()
+            fixture.detectChanges()
+
+            // Assert
+            expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: VIEW }))
+            expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodePath({ value: VIEW }))
+            expect(store.dispatch).toHaveBeenCalledWith(
+                setRightClickedNodeData({
+                    value: { nodeId: VIEW, xPositionOfRightClickEvent: 5, yPositionOfRightClickEvent: 6, origin: "dependencyMap" }
+                })
+            )
+            expect(outlineWidthOf(`${VIEW}/View`)).toBe(2.5)
+            expect(outlineWidthOf(VIEW)).toBe(1)
+        })
+
+        it("should mark the file again once another view selects it", async () => {
+            // Arrange
+            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })
+            fireChartEvent("click", boxEvent(`${VIEW}/View`))
+
+            // Act
+            store.overrideSelector(selectedNodePathSelector, NODE)
+            store.refreshState()
+            fixture.detectChanges()
+
+            // Assert
+            expect(outlineWidthOf(NODE)).toBe(2.5)
+            expect(outlineWidthOf(`${VIEW}/View`)).toBe(1)
+        })
     })
 
     it("should mark the box that stands for the selected node", async () => {

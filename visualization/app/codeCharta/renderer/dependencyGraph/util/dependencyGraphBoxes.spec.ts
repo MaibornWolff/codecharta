@@ -32,6 +32,61 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "a.ts", x: 90, y: 40, align: "center", overflow: "truncate" })
         })
 
+        it("should give a closed file that holds declarations a toggle and their count", () => {
+            // Arrange
+            const box = aBox("/root/a.ts", { declarationCount: 3 })
+
+            // Act
+            const [, label, toggle, count] = childrenOf(drawBox(box, look("none"), identityPixels))
+
+            // Assert
+            expect(label.style).toMatchObject({ text: "a.ts", width: 112 })
+            expect(toggle).toMatchObject({ info: "toggle", style: { text: "▸" } })
+            expect(count.style).toMatchObject({ text: "3", align: "right", x: 152 })
+        })
+
+        it("should not count the one declaration a file's name already stands for, nor mark a file without any", () => {
+            // Arrange
+            const single = aBox("/root/a.ts", { declarationCount: 1 })
+            const plain = aBox("/root/b.ts", { declarationCount: 0 })
+
+            // Act
+            const drawn = [single, plain].map(box => childrenOf(drawBox(box, look("none"), identityPixels)).map(child => child.style.text))
+
+            // Assert
+            expect(drawn).toEqual([
+                [undefined, "a.ts", "▸"],
+                [undefined, "b.ts"]
+            ])
+        })
+
+        it("should head an opened file with its name and a toggle to close it, painted over the edges", () => {
+            // Arrange
+            const box = aBox("/root/a.ts", { declarationCount: 3, isExpanded: true, width: 300, height: 140 })
+
+            // Act
+            const outline = childrenOf(drawBox(box, look("none"), identityPixels))
+            const [label, toggle, ...rest] = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
+
+            // Assert
+            expect(outline.map(child => child.type)).toEqual(["rect"])
+            expect(label.style).toMatchObject({ text: "a.ts", align: "left", x: 24, y: 14, fontWeight: "normal" })
+            expect(toggle.style.text).toBe("▾")
+            expect(rest).toEqual([])
+        })
+
+        it("should draw a declaration smaller and lighter than a file", () => {
+            // Arrange
+            const box = aBox("/root/a.ts/Creature", { kind: "declaration", declarationKind: "class", width: 132, height: 26 })
+
+            // Act
+            const [rect, label] = childrenOf(drawBox(box, look("none"), identityPixels))
+
+            // Assert
+            expect(rect.style).toMatchObject({ fill: "#ffffff", stroke: "#b9c1cc" })
+            expect(label.style).toMatchObject({ text: "Creature", fontSize: 11 })
+        })
+
         it("should leave an open folder's name to its title, which is painted over the edges", () => {
             // Arrange
             const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })

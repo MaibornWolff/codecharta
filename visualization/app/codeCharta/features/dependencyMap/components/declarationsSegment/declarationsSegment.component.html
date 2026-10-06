@@ -1,0 +1,17 @@
+<cc-axis-card
+    label="Declarations"
+    [metricName]="arrangementLabel()"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    testId="dependency-bar-declarations-segment"
+></cc-axis-card>
+
+<cc-choice-list-popover
+    [popoverId]="popoverId"
+    [anchorName]="anchorName"
+    title="Declarations in a file"
+    idPrefix="dependency-bar-declaration-arrangement"
+    [choices]="arrangementChoices"
+    [chosen]="arrangement()"
+    (choose)="arrangeAs($event)"
+></cc-choice-list-popover>

@@ -3,6 +3,7 @@ import { Store } from "@ngrx/store"
 import {
     dependencyDeclarationsSelector,
     edgesSelector,
+    hasDeclarationsSelector,
     hasDependencyDataSelector,
     hasNamespacesSelector
 } from "../../../lenses/dependency/dependencyLens.facade"
@@ -36,6 +37,7 @@ export class DependencyMapReadStore {
     readonly focusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     readonly edges$ = this.store.select(edgesSelector)
     readonly declarations$ = this.store.select(dependencyDeclarationsSelector)
+    readonly hasDeclarations$ = this.store.select(hasDeclarationsSelector)
     readonly hasNamespaces$ = this.store.select(hasNamespacesSelector)
     readonly sharedEdgeMetric$ = this.store.select(edgeMetricSelector)
     readonly edgeMetricData$ = this.store.select(edgeMetricDataSelector)

@@ -73,6 +73,20 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxToggled).not.toHaveBeenCalled()
     })
 
+    it("should toggle a box on a click on its toggle rather than select it, and let no double click toggle it back", () => {
+        // Arrange
+        const toggleOfBox = { ...BOX, info: "toggle" }
+
+        // Act
+        fireChartEvent("click", toggleOfBox)
+        container.dispatchEvent(new MouseEvent("dblclick"))
+
+        // Assert
+        expect(handlers.onBoxToggled).toHaveBeenCalledTimes(1)
+        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app/a.ts")
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
     it("should not report clicks outside every box", () => {
         // Arrange
         const clickOnNoBox = { seriesId: GRAPH_SERIES_ID }

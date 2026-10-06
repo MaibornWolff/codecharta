@@ -1,11 +1,13 @@
-import { CodeMapNode, DependencyLevelData, NodeType } from "../../../model/codeCharta.model"
+import { CodeMapNode, DependencyLeaf, DependencyLevelData, NodeType } from "../../../model/codeCharta.model"
+import { declarationPathOf } from "./boxPaths"
 
 /** The part of the file tree the dependency graph can place: files that carry a level, and the folders
  * holding them. A folder without a level of its own sits at level 0 of its parent. A chain of folders that
  * each hold just one folder is one box named by the whole chain, as in src/main/kotlin/de/…: nesting a box
  * per link would leave the files too small to read. The box keeps the deepest folder's path, and the folders
- * folded into it keep theirs in foldedPaths, outermost first. */
-export type BoxKind = "folder" | "file"
+ * folded into it keep theirs in foldedPaths, outermost first. A file holds its declarations, which no level
+ * of the file tree orders: they borrow the level they have within their package. */
+export type BoxKind = "folder" | "file" | "declaration"
 
 export interface LeveledNode {
     path: string
@@ -14,28 +16,44 @@ export interface LeveledNode {
     kind: BoxKind
     children: LeveledNode[]
     foldedPaths?: string[]
+    /** What a declaration is, as its language names it: class, interface, function, … */
+    declarationKind?: string
 }
 
-const FOLDER_LEVEL_WHEN_ABSENT = 0
+export type LeavesByFile = Readonly<Record<string, Record<string, DependencyLeaf>>>
 
-export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData): LeveledNode | null {
+const LEVEL_WHEN_ABSENT = 0
+const NO_LEAVES: LeavesByFile = {}
+
+export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData, leaves: LeavesByFile = NO_LEAVES): LeveledNode | null {
     if (root.isExcluded || root.path === undefined) {
         return null
     }
     if (root.type !== NodeType.FOLDER) {
-        const level = levels[root.path]
-        return level === undefined ? null : { path: root.path, name: root.name, level, kind: "file", children: [] }
+        return leveledFile(root, levels[root.path], leaves[root.path])
     }
-    const children = (root.children ?? []).map(child => buildLeveledTree(child, levels)).filter(child => child !== null)
+    const children = (root.children ?? []).map(child => buildLeveledTree(child, levels, leaves)).filter(child => child !== null)
     if (children.length === 0) {
         return null
     }
-    const level = levels[root.path] ?? FOLDER_LEVEL_WHEN_ABSENT
+    const level = levels[root.path] ?? LEVEL_WHEN_ABSENT
     const [onlyChild] = children
     if (children.length === 1 && onlyChild.kind === "folder") {
         return { ...onlyChild, name: `${root.name}/${onlyChild.name}`, level, foldedPaths: [root.path, ...(onlyChild.foldedPaths ?? [])] }
     }
     return { path: root.path, name: root.name, level, kind: "folder", children }
+}
+
+function leveledFile(file: CodeMapNode, level: number | undefined, leavesOfFile: Record<string, DependencyLeaf> = {}): LeveledNode | null {
+    if (level === undefined) {
+        return null
+    }
+    const declarations = Object.entries(leavesOfFile).map(([key, leaf]) => leveledDeclaration(declarationPathOf(file.path, key), leaf))
+    return { path: file.path, name: file.name, level, kind: "file", children: declarations }
+}
+
+function leveledDeclaration(path: string, leaf: DependencyLeaf): LeveledNode {
+    return { path, name: leaf.name, level: leaf.level ?? LEVEL_WHEN_ABSENT, kind: "declaration", children: [], declarationKind: leaf.kind }
 }
 
 /** The box a folder is drawn as: its own, or the chain box it is folded into. */

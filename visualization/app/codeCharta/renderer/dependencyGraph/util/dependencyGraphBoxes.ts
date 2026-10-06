@@ -3,6 +3,7 @@ import { ToPixels } from "./dependencyGraphScene"
 import {
     CLOSED_FOLDER_FILL,
     CLOSED_FOLDER_STROKE,
+    DECLARATION_STROKE,
     FILE_FILL,
     FILE_STROKE,
     FOLDER_STROKE,
@@ -11,6 +12,8 @@ import {
     HOVERED_COLOR,
     LEVEL_SEPARATOR_COLOR,
     MISSED_BY_SEARCH_OPACITY,
+    OPEN_FILE_FILL,
+    QUIET_TEXT_COLOR,
     SELECTED_COLOR,
     seeThrough,
     TEXT_COLOR
@@ -31,6 +34,15 @@ export interface BoxLook {
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
 
 const LABEL_FONT_SIZE_PX = 12
+const DECLARATION_FONT_SIZE_PX = 11
+const QUIET_FONT_SIZE_PX = 10
+/** What the toggle and the count each take from the name of a file that holds declarations. */
+const FILE_MARK_WIDTH_PX = 16
+const TOGGLE_HIT_PADDING_PX = 4
+const TOGGLE_GLYPHS = { open: "▾", closed: "▸" }
+
+/** What a click on a box's toggle carries, to tell it from a click on the box. */
+export const TOGGLE_INFO = "toggle"
 const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
@@ -46,20 +58,67 @@ export function drawBox(box: LayoutBox, { emphasis, isSeeThrough, isMissedBySear
     const style = boxStyle(box, emphasis)
     const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
     const opacity = opacityOf(isMissedBySearch)
-    const children: object[] = [
-        { type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }
-    ]
-    const label = box.isExpanded ? null : drawLabel(box, rect, opacity)
-    if (label) {
-        children.push(label)
-    }
-    return drawnItem(children)
+    const outline = { type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }
+    return drawnItem(box.isExpanded ? [outline] : [outline, ...drawName(box, rect, opacity)])
 }
 
-/** Drawn apart from the folder so the edges pass under it. */
+/** Drawn apart from the open box so the edges pass under it. */
 export function drawFolderTitle(box: LayoutBox, { isMissedBySearch }: BoxLook, toPixels: ToPixels) {
-    const label = drawLabel(box, pixelRectOf(box, toPixels), opacityOf(isMissedBySearch))
-    return drawnItem(label ? [label] : [])
+    return drawnItem(drawName(box, pixelRectOf(box, toPixels), opacityOf(isMissedBySearch)))
+}
+
+function drawName(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+    const marks = holdsDeclarations(box) ? [drawToggle(box, rect, opacity), ...drawDeclarationCount(box, rect, opacity)] : []
+    const label = drawLabel(box, rect, opacity)
+    return label ? [label, ...marks] : marks
+}
+
+function holdsDeclarations(box: LayoutBox): boolean {
+    return box.kind === "file" && box.declarationCount > 0
+}
+
+function drawToggle(box: LayoutBox, rect: Rectangle, opacity: number) {
+    return {
+        type: "text",
+        ...UNTRANSFORMED,
+        info: TOGGLE_INFO,
+        cursor: "pointer",
+        style: {
+            text: box.isExpanded ? TOGGLE_GLYPHS.open : TOGGLE_GLYPHS.closed,
+            x: rect.x + LABEL_INSET_PX - TOGGLE_HIT_PADDING_PX,
+            y: nameCentreY(box, rect),
+            padding: TOGGLE_HIT_PADDING_PX,
+            align: "left",
+            verticalAlign: "middle",
+            fontSize: QUIET_FONT_SIZE_PX,
+            fill: QUIET_TEXT_COLOR,
+            opacity
+        }
+    }
+}
+
+/** A closed file says how many declarations it holds once there is more than the one its name stands for. */
+function drawDeclarationCount(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+    if (box.isExpanded || box.declarationCount < 2) {
+        return []
+    }
+    return [
+        {
+            type: "text",
+            ...UNTRANSFORMED,
+            silent: true,
+            style: {
+                text: String(box.declarationCount),
+                x: rect.x + rect.width - LABEL_INSET_PX,
+                y: nameCentreY(box, rect),
+                align: "right",
+                verticalAlign: "middle",
+                fontSize: QUIET_FONT_SIZE_PX,
+                fill: QUIET_TEXT_COLOR,
+                opacity
+            }
+        }
+    ]
 }
 
 function opacityOf(isMissedBySearch: boolean): number {
@@ -138,16 +197,21 @@ function boxStyle(box: LayoutBox, emphasis: BoxEmphasis) {
 }
 
 function baseStyle(box: LayoutBox) {
-    if (box.kind !== "folder") {
-        return { fill: FILE_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
+    switch (box.kind) {
+        case "declaration":
+            return { fill: FILE_FILL, stroke: DECLARATION_STROKE, lineWidth: LINE_WIDTH_PX }
+        case "file":
+            return { fill: box.isExpanded ? OPEN_FILE_FILL : FILE_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
+        default:
+            return box.isExpanded
+                ? { fill: folderFill(box.depth), stroke: FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
+                : { fill: CLOSED_FOLDER_FILL, stroke: CLOSED_FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
     }
-    return box.isExpanded
-        ? { fill: folderFill(box.depth), stroke: FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
-        : { fill: CLOSED_FOLDER_FILL, stroke: CLOSED_FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
 }
 
 function drawLabel(box: LayoutBox, rect: Rectangle, opacity: number) {
-    const width = rect.width - 2 * LABEL_INSET_PX
+    const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX : 0
+    const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth)
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -158,18 +222,23 @@ function drawLabel(box: LayoutBox, rect: Rectangle, opacity: number) {
         silent: true,
         style: {
             text: box.name,
-            x: isHeader ? rect.x + LABEL_INSET_PX : rect.x + rect.width / 2,
-            y: isHeader ? rect.y + headerHeightPx(box, rect) / 2 : rect.y + rect.height / 2,
+            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + rect.width / 2,
+            y: nameCentreY(box, rect),
             width,
             overflow: "truncate",
             align: isHeader ? "left" : "center",
             verticalAlign: "middle",
-            fontSize: LABEL_FONT_SIZE_PX,
+            fontSize: box.kind === "declaration" ? DECLARATION_FONT_SIZE_PX : LABEL_FONT_SIZE_PX,
             fontWeight: box.kind === "folder" ? "bold" : "normal",
             fill: TEXT_COLOR,
             opacity
         }
     }
+}
+
+/** An open box names itself in its header, a closed one across its middle. */
+function nameCentreY(box: LayoutBox, rect: Rectangle): number {
+    return box.isExpanded ? rect.y + headerHeightPx(box, rect) / 2 : rect.y + rect.height / 2
 }
 
 function headerHeightPx(box: LayoutBox, rect: Rectangle): number {
