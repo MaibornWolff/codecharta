@@ -1,6 +1,6 @@
 import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
-import { DIMMED_OPACITY, FILE_FILL, SELECTED_COLOR } from "./dependencyGraphStyle"
+import { DIMMED_OPACITY, FILE_FILL, MOVED_COLOR, SELECTED_COLOR } from "./dependencyGraphStyle"
 import { EdgeRoute, Side } from "./edgeRouting"
 import { Point } from "./geometry"
 import { ArrowHead, LineStyle } from "./lineStyle"
@@ -18,7 +18,7 @@ const TWO_WAY_ARC_PX = 14
 const PULL_SHARES = { start: 1 / 3, end: 2 / 3 }
 const ON_THE_LINE_PX = 0
 const MAX_HEAD_OUTLINE_PX = 1.5
-const SELECTION_HALO = { extraWidthPx: 6, opacity: 0.45 }
+const HALO = { extraWidthPx: 6, opacity: 0.45 }
 
 interface Curve {
     start: Point
@@ -30,6 +30,8 @@ interface Curve {
 export interface EdgeLook {
     isDimmed: boolean
     isSelected: boolean
+    /** Of another type in the other hierarchy. */
+    isMoved: boolean
     widthPx: number
     color: string
     line: LineStyle
@@ -37,7 +39,7 @@ export interface EdgeLook {
 
 const OUTWARD: Record<Side, Point> = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] }
 
-export function drawEdge(route: EdgeRoute, { isDimmed, isSelected, widthPx, color, line }: EdgeLook, toPixels: ToPixels) {
+export function drawEdge(route: EdgeRoute, { isDimmed, isSelected, isMoved, widthPx, color, line }: EdgeLook, toPixels: ToPixels) {
     const curve = bend(route, asPoint(toPixels(route.start)), asPoint(toPixels(route.end)))
     const opacity = isDimmed ? DIMMED_OPACITY : 1
     const shape = {
@@ -50,9 +52,10 @@ export function drawEdge(route: EdgeRoute, { isDimmed, isSelected, widthPx, colo
         x2: curve.end[0],
         y2: curve.end[1]
     }
-    const halo = { stroke: SELECTED_COLOR, lineWidth: widthPx + SELECTION_HALO.extraWidthPx, fill: null, opacity: SELECTION_HALO.opacity }
+    const haloColor = isSelected ? SELECTED_COLOR : MOVED_COLOR
+    const halo = { stroke: haloColor, lineWidth: widthPx + HALO.extraWidthPx, fill: null, opacity: HALO.opacity }
     return drawnItem([
-        ...(isSelected ? [{ type: "bezierCurve", ...UNTRANSFORMED, silent: true, shape, style: halo }] : []),
+        ...(isSelected || isMoved ? [{ type: "bezierCurve", ...UNTRANSFORMED, silent: true, shape, style: halo }] : []),
         {
             type: "bezierCurve",
             ...UNTRANSFORMED,

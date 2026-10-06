@@ -1,6 +1,6 @@
 import { provideMockStore } from "@ngrx/store/testing"
 import { render, screen } from "@testing-library/angular"
-import { hasDeclarationsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { hasDeclarationsSelector, hasNamespacesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
 import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from "../../../../stores/preferences/preferences.read.facade"
@@ -9,16 +9,18 @@ import { DependencyEdgeLegendComponent } from "./dependencyEdgeLegend.component"
 interface Setup {
     edgeMetric?: string
     hasDeclarations?: boolean
+    hasNamespaces?: boolean
     settings?: Partial<DependencyGraphSettings>
 }
 
-async function renderLegend({ edgeMetric = "dependencies", hasDeclarations = true, settings = {} }: Setup = {}) {
+async function renderLegend({ edgeMetric = "dependencies", hasDeclarations = true, hasNamespaces = true, settings = {} }: Setup = {}) {
     await render(DependencyEdgeLegendComponent, {
         providers: [
             provideMockStore({
                 selectors: [
                     { selector: edgeMetricSelector, value: edgeMetric },
                     { selector: hasDeclarationsSelector, value: hasDeclarations },
+                    { selector: hasNamespacesSelector, value: hasNamespaces },
                     { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
                 ]
             })
@@ -125,5 +127,29 @@ describe("DependencyEdgeLegendComponent", () => {
 
         // Assert
         expect(screen.queryByTestId("dependency-kind-legend")).toBeNull()
+    })
+
+    it("should explain the mark of what differs between folders and packages only while it is asked for and the map has packages", async () => {
+        // Arrange
+        const settings = { marksHierarchyDifferences: true }
+
+        // Act
+        await renderLegend({ settings })
+        const withPackages = screen.queryByTestId("dependency-hierarchy-legend")
+
+        // Assert
+        expect(withPackages.textContent).toContain("Differs between folders and packages")
+    })
+
+    it.each([
+        [{ hasNamespaces: false, settings: { marksHierarchyDifferences: true } }],
+        [{ settings: { marksHierarchyDifferences: false } }],
+        [{ edgeMetric: "temporal_coupling", settings: { marksHierarchyDifferences: true } }]
+    ])("should not explain that mark for %j", async setup => {
+        // Act
+        await renderLegend(setup)
+
+        // Assert
+        expect(screen.queryByTestId("dependency-hierarchy-legend")).toBeNull()
     })
 })

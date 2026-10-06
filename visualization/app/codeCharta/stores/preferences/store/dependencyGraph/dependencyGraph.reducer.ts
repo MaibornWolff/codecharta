@@ -13,7 +13,8 @@ export const defaultDependencyGraphSettings: DependencyGraphSettings = {
     levelLabel: "number",
     declarationArrangement: "stacked",
     declarationKindMark: "icon",
-    showsCycleBadges: true
+    showsCycleBadges: true,
+    marksHierarchyDifferences: false
 }
 
 export const dependencyGraph = createReducer(

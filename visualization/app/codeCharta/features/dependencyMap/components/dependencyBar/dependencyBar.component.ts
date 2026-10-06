@@ -7,6 +7,7 @@ import { EdgeMetricSegmentComponent } from "../edgeMetricSegment/edgeMetricSegme
 import { EdgeStyleSegmentComponent } from "../edgeStyleSegment/edgeStyleSegment.component"
 import { EdgeTypesSegmentComponent } from "../edgeTypesSegment/edgeTypesSegment.component"
 import { GraphViewToolsComponent } from "../graphViewTools/graphViewTools.component"
+import { HierarchySegmentComponent } from "../hierarchySegment/hierarchySegment.component"
 import { LevelLabelSegmentComponent } from "../levelLabelSegment/levelLabelSegment.component"
 
 @Component({
@@ -20,6 +21,7 @@ import { LevelLabelSegmentComponent } from "../levelLabelSegment/levelLabelSegme
         EdgeStyleSegmentComponent,
         EdgeMetricSegmentComponent,
         GraphViewToolsComponent,
+        HierarchySegmentComponent,
         LevelLabelSegmentComponent
     ],
     hostDirectives: [BarShellDirective],
@@ -27,6 +29,10 @@ import { LevelLabelSegmentComponent } from "../levelLabelSegment/levelLabelSegme
 })
 export class DependencyBarComponent {
     readonly barBottom = BAR_BOTTOM_ABOVE_BOTTOM_BAR
+    private readonly readStore = inject(DependencyMapReadStore)
+
     /** A map without declarations has nothing these settings could change. */
-    readonly hasDeclarations = toSignal(inject(DependencyMapReadStore).hasDeclarations$, { requireSync: true })
+    readonly hasDeclarations = toSignal(this.readStore.hasDeclarations$, { requireSync: true })
+    /** Without packages there is one hierarchy only, the folders. */
+    readonly hasNamespaces = toSignal(this.readStore.hasNamespaces$, { requireSync: true })
 }

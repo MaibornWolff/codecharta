@@ -12,7 +12,7 @@ interface DrawnElement {
 }
 
 function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false, kindMark: DeclarationKindMark = "off"): BoxLook {
-    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, cycle: NO_CYCLE }
+    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, cycle: NO_CYCLE, isMoved: false }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -225,6 +225,36 @@ describe("dependencyGraphBoxes", () => {
                 })
                 expect(unringed.map(child => child.type)).toEqual(["rect", "text"])
             })
+        })
+
+        it("should tell a package from a folder by its colours, closed and open, and name it in bold", () => {
+            // Arrange
+            const closed = aBox("package:game", { kind: "package" })
+            const open = aBox("package:game", { kind: "package", isExpanded: true, depth: 1 })
+
+            // Act
+            const [closedOutline, name] = childrenOf(drawBox(closed, look("none"), identityPixels))
+            const [openOutline] = childrenOf(drawBox(open, look("none"), identityPixels))
+
+            // Assert
+            expect(closedOutline.style).toMatchObject({ fill: "#e6e0f7", stroke: "#8f7fc7" })
+            expect(openOutline.style).toMatchObject({ fill: "#f0ecfa", stroke: "#c6bce2" })
+            expect(name.style.fontWeight).toBe("bold")
+        })
+
+        it("should outline a box that sits elsewhere in the other hierarchy in dashes, and state no dashes for every other box", () => {
+            // Arrange
+            const box = aBox("/root/a.ts")
+
+            // Act
+            const [moved] = childrenOf(drawBox(box, { ...look("none"), isMoved: true }, identityPixels))
+            const [selectedAndMoved] = childrenOf(drawBox(box, { ...look("selected"), isMoved: true }, identityPixels))
+            const [unmoved] = childrenOf(drawBox(box, look("none"), identityPixels))
+
+            // Assert
+            expect(moved.style).toMatchObject({ stroke: "#d97706", lineDash: [4, 3], lineWidth: 2 })
+            expect(selectedAndMoved.style).toMatchObject({ stroke: SELECTED_COLOR, lineDash: [4, 3] })
+            expect(unmoved.style.lineDash).toBeNull()
         })
 
         it("should leave an open folder's name to its title, which is painted over the edges", () => {

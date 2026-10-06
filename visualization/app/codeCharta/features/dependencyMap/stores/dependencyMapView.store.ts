@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
     BoxOffset,
     boxPathOf,
@@ -35,6 +36,7 @@ export class DependencyMapViewStore {
     private readonly fitRequestCount = signal(0)
     private readonly selectedInGraph = signal<GraphSelection | null>(null)
     private readonly hoveredInGraph = signal<string | null>(null)
+    private readonly shownHierarchy = signal<DependencyHierarchy>("folders")
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: LeveledNode | null = null
 
@@ -48,6 +50,8 @@ export class DependencyMapViewStore {
     readonly graphSelection = this.selectedInGraph.asReadonly()
     /** The box under the pointer, which the shared hover names only by the node it belongs to. */
     readonly hoveredBoxPath = this.hoveredInGraph.asReadonly()
+    /** What the reader asked for; a map without packages is shown by its folders all the same. */
+    readonly hierarchy = this.shownHierarchy.asReadonly()
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()
@@ -62,6 +66,12 @@ export class DependencyMapViewStore {
 
     selectInGraph(selection: GraphSelection | null): void {
         this.selectedInGraph.set(selection)
+    }
+
+    /** The boxes move to other places, so where the reader dragged them to no longer means anything. */
+    showHierarchy(hierarchy: DependencyHierarchy): void {
+        this.shownHierarchy.set(hierarchy)
+        this.resetLayout()
     }
 
     hoverInGraph(path: string | null): void {

@@ -78,7 +78,7 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
 - [x] Complete Task 3: Declaration kind and kind of use
 - [x] Complete Task 4: Cycle badges
 - [x] Complete Task 5: Panel
-- [ ] Complete Task 6: Folders or packages
+- [x] Complete Task 6: Folders or packages
 - [ ] Complete Task 7: Settings, explorer, wrap-up
 
 ## Notes

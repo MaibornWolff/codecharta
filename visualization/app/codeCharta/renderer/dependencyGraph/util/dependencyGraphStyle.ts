@@ -9,6 +9,12 @@ const FOLDER_FILLS_BY_DEPTH = ["#f4f6f9", "#e9edf2", "#dfe5ec", "#d5dce5"]
 export const FOLDER_STROKE = "#b8c2cf"
 export const CLOSED_FOLDER_FILL = "#dbe7f5"
 export const CLOSED_FOLDER_STROKE = "#7a9cc6"
+const PACKAGE_FILLS_BY_DEPTH = ["#f8f6fd", "#f0ecfa", "#e9e3f7", "#e1d9f3"]
+export const PACKAGE_STROKE = "#c6bce2"
+export const CLOSED_PACKAGE_FILL = "#e6e0f7"
+export const CLOSED_PACKAGE_STROKE = "#8f7fc7"
+/** What sits elsewhere, or reads differently, in the other hierarchy. */
+export const MOVED_COLOR = "#d97706"
 export const FILE_FILL = "#ffffff"
 export const FILE_STROKE = "#9aa5b4"
 export const OPEN_FILE_FILL = "#fbfcfe"
@@ -60,4 +66,8 @@ export function seeThrough(hexColor: string): string {
 
 export function folderFill(depth: number): string {
     return FOLDER_FILLS_BY_DEPTH[Math.min(depth, FOLDER_FILLS_BY_DEPTH.length - 1)]
+}
+
+export function packageFill(depth: number): string {
+    return PACKAGE_FILLS_BY_DEPTH[Math.min(depth, PACKAGE_FILLS_BY_DEPTH.length - 1)]
 }

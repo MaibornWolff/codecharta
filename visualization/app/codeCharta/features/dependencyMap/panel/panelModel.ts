@@ -172,7 +172,7 @@ function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel 
     return {
         kind: "folder",
         title: folder.name,
-        subtitle: "Folder",
+        subtitle: folder.kind === "package" ? "Package" : "Folder",
         path: folder.path,
         facts: [
             { label: "Files", value: String(files.length) },

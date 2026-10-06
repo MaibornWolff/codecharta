@@ -41,9 +41,13 @@ export function namedByOwnLevel(layout: DependencyGraphLayout): DependencyGraphL
     return { ...layout, boxes: layout.boxes.map(ownLevelOnly), bands: layout.bands.map(ownLevelOnly) }
 }
 
-/** A folder opens into what it holds, and so does a file once the map tells its declarations. */
+/** A folder or package opens into what it holds, and so does a file once the map tells its declarations. */
 export function canBeOpened(box: LayoutBox): boolean {
-    return box.kind === "folder" || (box.kind === "file" && box.declarationCount > 0)
+    return isContainerKind(box.kind) || (box.kind === "file" && box.declarationCount > 0)
+}
+
+export function isContainerKind(kind: BoxKind): boolean {
+    return kind === "folder" || kind === "package"
 }
 
 export function describeLevelPath(levelPath: number[]): string {

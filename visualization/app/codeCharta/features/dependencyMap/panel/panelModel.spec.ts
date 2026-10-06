@@ -196,6 +196,20 @@ describe("describeSubject", () => {
         })
     })
 
+    describe("a package", () => {
+        it("should be told as a folder is, by what it holds", () => {
+            // Arrange
+            const gamePackage: LeveledNode = { ...GAME_FOLDER, path: "package:game", kind: "package" }
+
+            // Act
+            const model = describeSubject(box(gamePackage), context())
+
+            // Assert
+            expect(model).toMatchObject({ title: "game", subtitle: "Package", path: "package:game" })
+            expect(model.facts[0]).toEqual({ label: "Files", value: "2" })
+        })
+    })
+
     describe("an edge", () => {
         const edge: GraphEdge = {
             id: `${CREATURE}|${WEAPON}`,

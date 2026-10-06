@@ -33,6 +33,9 @@ export interface DependencyGraphScene {
     selectedEdgeId: string | null
     /** Edges the reader points at from outside the graph; while there are any, the others step back. */
     highlightedEdgeIds: ReadonlySet<string>
+    /** The boxes and edges that sit elsewhere, or read differently, in the other hierarchy; empty unless asked for. */
+    movedPaths: ReadonlySet<string>
+    movedEdgeIds: ReadonlySet<string>
     /** Dragged boxes, the most recently dragged last: they paint above their siblings. */
     raisedPaths: readonly string[]
     draggingPath: string | null
