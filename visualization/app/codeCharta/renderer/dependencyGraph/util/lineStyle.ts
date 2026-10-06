@@ -45,7 +45,6 @@ export function lineStyleOf(edge: GraphEdge, lineStyleShows: LineStyleMeaning): 
     return USAGE_LEGEND.find(entry => entry.usage === usageShownBy(edge)) ?? PLAIN_LINE
 }
 
-/** How the strongest of the given kinds of use is drawn. */
 export function lineStyleOfUsages(usages: readonly string[]): LineStyle {
     return USAGE_LEGEND.find(entry => usages.includes(entry.usage)) ?? PLAIN_LINE
 }

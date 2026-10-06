@@ -52,12 +52,10 @@ function cyclicStepsOf(index: DeclarationIndex): CyclicSteps {
     return cyclicSteps
 }
 
-/** The declarations a cycle runs through, in the order they are walked. */
 export function declarationsOn(chain: CycleChain): string[] {
     return chain.map(fromPathOf)
 }
 
-/** The cycles that run through at least one of the given declarations. */
 export function cyclesThrough(declarationPaths: ReadonlySet<string>, chains: readonly CycleChain[]): CycleChain[] {
     return chains.filter(chain => chain.some(declarationEdge => declarationPaths.has(fromPathOf(declarationEdge))))
 }

@@ -56,7 +56,6 @@ export class DependencyMapViewStore {
         this.hoveredInGraph.set(path)
     }
 
-    /** Asks the graph to move so far that these boxes are in view; it stays where it is when they are already. */
     bringIntoView(paths: readonly string[]): void {
         this.askedIntoView.update(request => ({ id: (request?.id ?? 0) + 1, paths }))
     }

@@ -7,12 +7,10 @@ import { LayoutBox } from "./layoutModel"
 export interface CycleLook {
     /** The cycles a closed box hides; none draws no badge. */
     hiddenCount: number
-    /** A declaration taking part in a cycle. */
     isInCycle: boolean
     color: string
 }
 
-/** How a mark inside a box is drawn: as faded as its box, and as much smaller as the zoom makes the box. */
 export interface MarkLook {
     opacity: number
     scale: number
@@ -119,14 +117,12 @@ export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, { opacity,
 
 export interface CycleMarkLook {
     opacity: number
-    /** How many pixels a layout unit takes. */
     zoom: number
 }
 
 /** A cycle mark leads the reader to a cycle from far out, so it shrinks with the graph only this far. */
 const SMALLEST_CYCLE_MARK_SCALE = 0.7
 
-/** Both sit on the box's upper right corner: the badge of a closed box, the ring of a declaration. */
 export function drawCycleMark(
     box: LayoutBox,
     rect: Rectangle,
@@ -149,7 +145,6 @@ interface BadgeLook {
     scale: number
 }
 
-/** A pill with the sign of a cycle, and the count once it hides more than one. */
 function drawCycleBadge(rect: Rectangle, count: number, { color, opacity, scale }: BadgeLook): object[] {
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
     const height = CYCLE_BADGE.heightPx * scale

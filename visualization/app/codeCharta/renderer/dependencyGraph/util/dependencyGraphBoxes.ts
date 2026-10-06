@@ -47,7 +47,6 @@ export interface BoxLook {
     isSeeThrough: boolean
     /** A search is on and the box holds nothing it found. */
     isMissedBySearch: boolean
-    /** How a declaration tells what it is. */
     kindMark: DeclarationKindMark
     /** In a list no row stands for a level, so each declaration names its own. */
     listsLevels: boolean
@@ -93,7 +92,6 @@ export function drawContainerTitle(box: LayoutBox, look: BoxLook, toPixels: ToPi
     return drawnItem(drawName(box, rect, look, zoomOf(box, rect)))
 }
 
-/** How many pixels a layout unit takes. */
 function zoomOf(box: LayoutBox, rect: Rectangle): number {
     return rect.height / box.height
 }
@@ -105,7 +103,6 @@ function markScaleOf(zoom: number): number | null {
     return scale < SMALLEST_READABLE_MARK_SCALE ? null : scale
 }
 
-/** The box itself, and inside it the second frame of a kind told by a double border. */
 function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark }: BoxLook): object[] {
     const kindLook = box.kind === "declaration" ? declarationKindLookOf(box.declarationKind) : null
     const shape = kindLook && kindMark === "shape" ? kindLook.shape : "plain"

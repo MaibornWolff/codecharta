@@ -41,7 +41,6 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly graphIdentity = input.required<string>()
     /** Raising this counter fits the whole graph into view with the next drawing. */
     readonly fitRequest = input(0)
-    /** The boxes to bring into view with the next drawing, unless they are in view already. */
     readonly viewRequest = input<ViewRequest | null>(null)
     /** Whether pressing this box drags it rather than the graph. */
     readonly canDragBox = input<(path: string) => boolean>(NOTHING_DRAGGABLE)

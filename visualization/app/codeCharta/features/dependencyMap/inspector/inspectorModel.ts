@@ -18,7 +18,6 @@ import { DeclarationIndex, fromPathOf, IndexedDeclaration, toPathOf } from "../d
 
 type InspectorReferenceKind = "folder" | "file" | "declaration"
 
-/** Something the inspector names that the reader can go to. */
 export interface InspectorReference {
     path: string
     name: string
@@ -44,9 +43,7 @@ export interface InspectorDependency {
     isFromOwn: boolean
     isToOwn: boolean
     usages: string[]
-    /** The dashes and arrowhead of its strongest way of use. */
     line: LineStyle
-    /** The edge type it is drawn in. */
     type: DependencyEdgeType
     declarationEdge: DependencyLeafEdge
 }
@@ -84,12 +81,10 @@ interface InspectorCycleStep {
 
 export interface InspectorCycle {
     steps: InspectorCycleStep[]
-    /** The files the cycle runs through. */
     files: InspectorReference[]
     declarationEdges: CycleChain
 }
 
-/** The look of an edge: the dashes and arrowhead of its strongest way of use, and the edge type it is drawn in. */
 interface InspectorLink {
     line: LineStyle
     type: DependencyEdgeType
@@ -128,11 +123,10 @@ export type InspectorSubject = BoxSubject | { kind: "edge"; edge: GraphEdge; fro
 
 export interface InspectorContext {
     index: DeclarationIndex
-    /** Every cycle of the map. */
     cycles: readonly CycleChain[]
     mayMissCycles: boolean
     edgeMetric: string | null
-    /** A hub's rows are cut at this many per group and list, so the inspector of a hub stays a inspector. */
+    /** A hub's rows are cut at this many per group and list, so the inspector of a hub stays one. */
     rowLimit: number
     /** Whether a dependency is drawn pointing upward in the hierarchy shown: between two files the folders
      * decide that by the file edge, the packages by the dependency itself. */
@@ -341,7 +335,6 @@ function detailOf({ leaf }: IndexedDeclaration): string {
 }
 
 interface Dependencies {
-    /** Both ends among the declarations asked for. */
     inside: DependencyLeafEdge[]
     outgoing: DependencyLeafEdge[]
     incoming: DependencyLeafEdge[]

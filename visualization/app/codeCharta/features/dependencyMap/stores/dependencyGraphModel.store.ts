@@ -17,7 +17,6 @@ import { indexDeclarations } from "../declarations/declarationIndex"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
-/** What the graph draws and the inspector explains, derived once from the map and from what the reader opened. */
 @Injectable({ providedIn: "root" })
 export class DependencyGraphModelStore {
     private readonly readStore = inject(DependencyMapReadStore)
@@ -80,7 +79,6 @@ export class DependencyGraphModelStore {
         })
     )
 
-    /** Whether a dependency between declarations is drawn pointing upward in the hierarchy shown. */
     readonly pointsUpward = computed(() => upwardRuleOf(this.edges(), this.hierarchy()))
 
     /** The boxes move to other places, so where the reader dragged them to no longer means anything, and the
@@ -91,7 +89,6 @@ export class DependencyGraphModelStore {
         this.viewStore.requestFit()
     }
 
-    /** The box on screen that stands for a node or declaration, which may be hidden in a closed one. */
     boxStandingFor(path: string | null): string | null {
         return path === null ? null : (this.representatives().get(path) ?? null)
     }
