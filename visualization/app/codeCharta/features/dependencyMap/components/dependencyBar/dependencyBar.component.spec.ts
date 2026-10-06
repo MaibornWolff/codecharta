@@ -349,4 +349,32 @@ describe("DependencyBarComponent", () => {
         // Assert
         expect(dispatch).toHaveBeenCalledWith(changed({ marksHierarchyDifferences: true }))
     })
+
+    it("should say that the upward edge closing a cycle shares the upward colour until the line style shows the kind of use, and still let its own colour be picked", async () => {
+        // Arrange
+        const { fixture } = await renderBar()
+        const ownColorOf = (type: string) =>
+            fixture.debugElement.query(By.css(`[data-testid='dependency-bar-edge-color-${type}']`)).componentInstance.hexColor()
+        const sampleColorOf = (type: string) =>
+            screen.getByTestId(`dependency-bar-edges-${type}`).closest("li").querySelector("line").getAttribute("stroke")
+
+        // Act
+        const byEdgeType = {
+            note: screen.queryByTestId("dependency-bar-edge-color-note"),
+            own: ownColorOf("feedbackLeafLevel"),
+            sample: sampleColorOf("feedbackLeafLevel")
+        }
+        TestBed.inject(MockStore).overrideSelector(dependencyGraphSettingsSelector, {
+            ...defaultDependencyGraphSettings,
+            lineStyleShows: "usage"
+        })
+        TestBed.inject(MockStore).refreshState()
+        fixture.detectChanges()
+
+        // Assert
+        expect(byEdgeType.note).not.toBeNull()
+        expect([byEdgeType.own, byEdgeType.sample]).toEqual(["#7f1d1d", "#dc2626"])
+        expect(screen.queryByTestId("dependency-bar-edge-color-note")).toBeNull()
+        expect(sampleColorOf("feedbackLeafLevel")).toBe("#7f1d1d")
+    })
 })

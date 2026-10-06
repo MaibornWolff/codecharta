@@ -21,7 +21,7 @@
                     (change)="toggle(entry.type, edgeTypeCheckbox.checked)"
                 />
                 <cc-inline-color-picker
-                    [hexColor]="entry.color"
+                    [hexColor]="entry.ownColor"
                     [ariaLabel]="'Colour of: ' + entry.label"
                     [attr.data-testid]="'dependency-bar-edge-color-' + entry.type"
                     (colorChange)="recolor(entry.type, $event)"
@@ -38,6 +38,12 @@
             </li>
         }
     </ul>
+    @if (!showsEveryColor()) {
+        <p class="m-0 px-2 text-xs opacity-70" data-testid="dependency-bar-edge-color-note">
+            An upward edge that closes a cycle is drawn in the colour of the upward edges, solid. Its own colour shows once the line style shows
+            the kind of use.
+        </p>
+    }
     <p class="m-0 px-2 text-xs opacity-70">With none ticked, only the edges of the box under the pointer show.</p>
     <cc-reset-settings-button
         [settingsKeys]="colorResetKeys"

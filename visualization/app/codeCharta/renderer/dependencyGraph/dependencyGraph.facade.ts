@@ -6,7 +6,7 @@ export { declarationPathOf, isPackagePath, packagePathOf } from "./util/boxPaths
 export { findCycleMarks, NO_CYCLE_MARKS } from "./util/cycleMarks"
 export { DECLARATION_KIND_LEGEND, declarationKindLabelOf, declarationKindLookOf, KIND_ICON_COLORS } from "./util/declarationKinds"
 export type { DependencyGraphScene } from "./util/dependencyGraphScene"
-export { EDGE_TYPE_LABELS, edgeLegend } from "./util/dependencyGraphStyle"
+export { EDGE_TYPE_LABELS, edgeColorsAsDrawn, edgeLegend } from "./util/dependencyGraphStyle"
 export type { GraphEdge } from "./util/edgeProjection"
 export { projectEdges, visibleRepresentatives } from "./util/edgeProjection"
 export type { Point } from "./util/geometry"

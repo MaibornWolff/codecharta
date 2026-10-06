@@ -1,6 +1,7 @@
 import { computed, Injectable, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
+import { edgeColorsAsDrawn } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../panel/declarationIndex"
 import { describeSubject, PANEL_ROW_LIMIT, PanelActionKind, PanelCycle, PanelModel, PanelRef, PanelSubject } from "../panel/panelModel"
 import { DependencyGraphModelStore } from "./dependencyGraphModel.store"
@@ -26,7 +27,10 @@ export class DependencyPanelStore {
     private readonly cyclesRequestCount = signal(0)
 
     readonly cyclesRequest = this.cyclesRequestCount.asReadonly()
-    readonly edgeColors = computed(() => this.graphModel.settings().edgeColors)
+    readonly edgeColors = computed(() => {
+        const { edgeColors, lineStyleShows } = this.graphModel.settings()
+        return edgeColorsAsDrawn(edgeColors, lineStyleShows)
+    })
 
     private readonly selection = computed((): Selection => {
         const inGraph = this.viewStore.graphSelection()

@@ -828,7 +828,7 @@ describe("DependencyMapComponent", () => {
                 await screen.findByTestId("dependency-graph")
 
                 // Assert
-                expect(amongFolders).toBe("#7f1d1d")
+                expect(amongFolders).toBe("#dc2626")
                 expect(strokeOf(`${DATA}|${SCREENS}`)).toBe("#2563eb")
             })
 

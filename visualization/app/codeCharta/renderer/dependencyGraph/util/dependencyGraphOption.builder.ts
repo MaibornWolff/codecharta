@@ -6,6 +6,7 @@ import { drawEdge } from "./dependencyGraphEdges"
 import { atPaintRank } from "./dependencyGraphElements"
 import { boxesByPath, DependencyGraphScene, isEdgeInFocus, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
+import { edgeColorsAsDrawn } from "./dependencyGraphStyle"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge } from "./edgeProjection"
 import { routeEdges } from "./edgeRouting"
@@ -98,6 +99,7 @@ function edgeItems(
 ): EdgeItem[] {
     const routes = routeEdges(shownEdges, byPath, scene.edgeStyle, scene.isAnchoredAtSideMiddle)
     const lightestWeight = minOf(shownEdges.map(edge => edge.weight))
+    const colors = edgeColorsAsDrawn(scene.edgeColors, scene.lineStyleShows)
     return shownEdges.map((edge, index) => ({
         kind: "edge",
         edge,
@@ -107,7 +109,7 @@ function edgeItems(
             isSelected: edge.id === scene.selectedEdgeId,
             isMoved: scene.movedEdgeIds.has(edge.id),
             widthPx: edgeWidthPx(edge.weight / lightestWeight, scene.edgeWidth),
-            color: scene.edgeColors[edge.type],
+            color: colors[edge.type],
             line: lineStyleOf(edge, scene.lineStyleShows)
         }
     }))
