@@ -11,7 +11,7 @@ interface DrawnElement {
 
 interface BuiltSeries {
     id: string
-    data: { name?: string; isEdge?: boolean; edgeId?: string; value: number[] }[]
+    data: { name?: string; titledBoxPath?: string; isEdge?: boolean; edgeId?: string; value: number[] }[]
     renderItem: (params: { dataIndex: number }, api: { coord: typeof identityPixels }) => DrawnElement
 }
 
@@ -167,6 +167,39 @@ describe("buildDependencyGraphOption", () => {
         expect(option.aria.label.description).toContain("with 1 files")
     })
 
+    it("should name an edge between two declaration boxes by their names, without saying what it is drawn as", () => {
+        // Arrange
+        const viewClass = aBox(`${view.path}/k1`, { kind: "declaration", name: "View" })
+        const modelClass = aBox(`${model.path}/k2`, { kind: "declaration", name: "Model" })
+        const dependency = {
+            fromNodeName: view.path,
+            fromLeaf: "k1",
+            toNodeName: model.path,
+            toLeaf: "k2",
+            attributes: {},
+            usage: ["usage"]
+        }
+        const edges = [anEdge(viewClass.path, modelClass.path, { declarationEdges: [dependency] })]
+        const layout = { boxes: [root, view, model, viewClass, modelClass], bands: [], width: 400, height: 200 }
+
+        // Act
+        const graph = drawnGraph(sceneWith({ layout, edges }))
+
+        // Assert
+        expect(graph.describe(graph.edgeIndices[0])).toBe("<b>View → Model</b><br/>Uses · Dependency")
+    })
+
+    it("should tell the title of an open box which box it belongs to, so a click on it reaches that box", () => {
+        // Arrange
+        const scene = sceneWith()
+
+        // Act
+        const { series } = drawnGraph(scene)
+
+        // Assert
+        expect(series.data.filter(datum => datum.titledBoxPath !== undefined).map(datum => datum.titledBoxPath)).toEqual([root.path])
+    })
+
     it("should draw each edge in the colour the reader gave its type and say how its one dependency is used, in dashes too once the line style shows that", () => {
         // Arrange
         const usedAs = (usage: string[]) => ({
@@ -255,25 +288,6 @@ describe("buildDependencyGraphOption", () => {
         expect(describe(edgeIndices[0])).toBe(
             "<b>view.ts → model.ts</b><br/>2 declaration edges · In a cycle<br/><i>Click to list them</i>"
         )
-    })
-
-    it("should name an unfolded edge by its declarations alone", () => {
-        // Arrange
-        const declarationEdge = {
-            fromNodeName: view.path,
-            fromLeaf: "view.ts",
-            toNodeName: model.path,
-            toLeaf: "model.ts",
-            attributes: {},
-            usage: []
-        }
-        const edges = [anEdge(view.path, model.path, { declarationEdges: [declarationEdge] })]
-
-        // Act
-        const { describe, edgeIndices } = drawnGraph(sceneWith({ edges }))
-
-        // Assert
-        expect(describe(edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>Dependency")
     })
 
     it("should draw the upward edge that closes a cycle in the colour of the upward edges while dashes tell the types apart, and in its own once they tell the kind of use", () => {

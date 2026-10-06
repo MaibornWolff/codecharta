@@ -98,12 +98,14 @@ export function levelPathOf(tree: LeveledNode, folderPath: string): number[] | n
     return null
 }
 
-/** Only the root is open, and the folders below it for as long as each holds nothing but one folder: a lone box
- * would show nothing. */
+/** Only the root is open, and the folders and packages below it for as long as each holds nothing but one of
+ * them: a lone box would show nothing. */
+const HOLDING_FILES: ReadonlySet<BoxKind> = new Set(["folder", "package"])
+
 export function collapsedFirstLook(tree: LeveledNode): Set<string> {
     const opened = new Set<string>([tree.path])
     let folder = tree
-    while (folder.children.length === 1 && folder.children[0].kind === "folder") {
+    while (folder.children.length === 1 && HOLDING_FILES.has(folder.children[0].kind)) {
         folder = folder.children[0]
         opened.add(folder.path)
     }

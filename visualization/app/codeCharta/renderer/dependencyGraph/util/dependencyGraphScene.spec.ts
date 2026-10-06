@@ -45,6 +45,22 @@ describe("searchMatcher", () => {
         expect(["/root/app/deep/a.ts", "/root/application.ts"].map(isFound)).toEqual([true, false])
     })
 
+    it("should not find the folder a found file's path names when the file is drawn in a package instead", () => {
+        // Arrange
+        const boxes = [
+            aBox("/root", { parentPath: null }),
+            aBox("/root/src", { parentPath: "/root" }),
+            aBox("package:game", { parentPath: "/root" }),
+            aBox("/root/src/creature.ts", { parentPath: "package:game" })
+        ]
+
+        // Act
+        const isFound = searchMatcher(new Set(["/root/src/creature.ts"]), boxes)
+
+        // Assert
+        expect(["/root", "package:game", "/root/src"].map(isFound)).toEqual([true, true, false])
+    })
+
     it("should find the boxes around a found one that hold it without its path saying so, as a package holds a file", () => {
         // Arrange
         const boxes = [

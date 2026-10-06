@@ -6,6 +6,7 @@ import { PLAIN_LINE } from "./lineStyle"
 
 interface DrawnPart {
     type: string
+    silent?: boolean
     shape: Record<string, number> & { points?: number[][] }
     style: Record<string, unknown>
 }
@@ -125,6 +126,17 @@ describe("drawEdge", () => {
         expect(children).toHaveLength(3)
         expect(children[0].style).toMatchObject({ stroke: SELECTED_COLOR, lineWidth: 8 })
         expect(children[0].shape).toEqual(children[1].shape)
+    })
+
+    it("should say of the line and its arrow that they react to the pointer, as they may be drawn on a halo that does not", () => {
+        // Arrange
+        const selected = { isSelected: true }
+
+        // Act
+        const [halo, line, head] = draw(downward, selected).children
+
+        // Assert
+        expect([halo.silent, line.silent, head.silent]).toEqual([true, false, false])
     })
 
     it("should fade a dimmed edge and its arrow", () => {

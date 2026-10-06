@@ -11,6 +11,18 @@ describe("declarationKinds", () => {
         expect(tints.size).toBe(DECLARATION_KIND_LEGEND.length)
     })
 
+    it("should draw a kind named like something every object has as any other kind it does not know", () => {
+        // Arrange
+        const kind = "constructor"
+
+        // Act
+        const look = declarationKindLookOf(kind)
+
+        // Assert
+        expect(look).toEqual(declarationKindLookOf("other"))
+        expect(declarationKindLabelOf(kind)).toBe("constructor")
+    })
+
     it("should draw a kind it does not know, or a declaration without one, as any other", () => {
         // Act
         const looks = ["a_kind_of_tomorrow", undefined].map(declarationKindLookOf)

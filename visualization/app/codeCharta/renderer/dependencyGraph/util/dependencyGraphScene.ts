@@ -67,14 +67,10 @@ export function searchMatcher(searchedPaths: ReadonlySet<string> | null, boxes: 
     }
     const boxAround = new Map(boxes.map(box => [box.path, box.parentPath]))
     const foundOrHoldingFound = new Set<string>()
+    const holderOf = (path: string) => (boxAround.has(path) ? (boxAround.get(path) ?? "") : parentOf(path))
     for (const path of searchedPaths) {
-        for (let ancestor = path; ancestor !== "" && !foundOrHoldingFound.has(ancestor); ancestor = parentOf(ancestor)) {
-            foundOrHoldingFound.add(ancestor)
-        }
-    }
-    for (const path of searchedPaths) {
-        for (let around = boxAround.get(path); around != null && !foundOrHoldingFound.has(around); around = boxAround.get(around)) {
-            foundOrHoldingFound.add(around)
+        for (let holder = path; holder !== "" && !foundOrHoldingFound.has(holder); holder = holderOf(holder)) {
+            foundOrHoldingFound.add(holder)
         }
     }
     return boxPath => foundOrHoldingFound.has(boxPath) || ancestorsOf(boxPath).some(ancestor => searchedPaths.has(ancestor))
