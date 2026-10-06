@@ -4,8 +4,11 @@ import { BoxOffset, boxPathOf, collapsedFirstLook, LeveledNode } from "../../../
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
 /** Something only the graph can select: a declaration is no node of the map, so the shared selection holds its
- * file, and the graph's own selection lasts for as long as the shared one still does. */
+ * file, and an edge is none either, so the shared selection is empty. The graph's own selection lasts for as
+ * long as the shared one still is what it was set to. */
 export interface GraphSelection {
+    kind: "box" | "edge"
+    /** A box's path or an edge's id. */
     path: string
     sharedPath: string | null
 }

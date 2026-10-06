@@ -17,6 +17,10 @@ export class DependencyMapWriteStore {
         this.nodeInteraction.selectNode(path)
     }
 
+    clearSelection() {
+        this.nodeInteraction.clearSelection()
+    }
+
     hoverNode(path: string | null) {
         this.nodeInteraction.hoverNode(path)
     }

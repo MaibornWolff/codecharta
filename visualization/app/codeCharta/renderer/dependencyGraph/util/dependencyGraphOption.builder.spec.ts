@@ -11,7 +11,7 @@ interface DrawnElement {
 
 interface BuiltSeries {
     id: string
-    data: { name?: string; isEdge?: boolean; value: number[] }[]
+    data: { name?: string; isEdge?: boolean; edgeId?: string; value: number[] }[]
     renderItem: (params: { dataIndex: number }, api: { coord: typeof identityPixels }) => DrawnElement
 }
 
@@ -208,6 +208,30 @@ describe("buildDependencyGraphOption", () => {
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#2563eb" })
         expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>Hides 1 cyclic dependency between declarations")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>Takes part in a cycle")
+    })
+
+    it("should draw the selected edge though its type is hidden, with a halo, and tell each edge's id to the chart", () => {
+        // Arrange
+        const selectedEdgeId = `${view.path}|${model.path}`
+
+        // Act
+        const { series, edgeIndices, draw } = drawnGraph(sceneWith({ shownEdgeTypes: [], selectedEdgeId }))
+
+        // Assert
+        expect(edgeIndices.map(index => series.data[index].edgeId)).toEqual([selectedEdgeId])
+        expect(draw(edgeIndices[0]).children).toHaveLength(3)
+    })
+
+    it("should let every other edge step back while edges are pointed at from outside the graph", () => {
+        // Arrange
+        const highlightedEdgeIds = new Set([`${util.path}|${view.path}`])
+
+        // Act
+        const { series, edgeIndices, draw } = drawnGraph(sceneWith({ highlightedEdgeIds, hoveredPath: model.path }))
+
+        // Assert
+        const opacityById = Object.fromEntries(edgeIndices.map(index => [series.data[index].edgeId, draw(index).children[0].style.opacity]))
+        expect(opacityById).toEqual({ [`${view.path}|${model.path}`]: 0.12, [`${util.path}|${view.path}`]: 1 })
     })
 
     it("should name the metric and its value in the tooltip of another metric's edge", () => {

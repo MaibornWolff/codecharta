@@ -17,6 +17,7 @@ export interface DependencyGraphHandlers extends BoxDragHandlers {
     onBoxClicked: (path: string) => void
     onBoxToggled: (path: string) => void
     onCycleBadgeClicked: (path: string) => void
+    onEdgeClicked: (edgeId: string) => void
     onBoxHovered: (path: string | null) => void
     onBoxRightClicked: (path: string, clientX: number, clientY: number) => void
     onRendered: () => void
@@ -166,8 +167,16 @@ export class DependencyGraphHost {
     }
 
     private reportClick(event: ChartItemEvent): void {
+        if (this.dragGesture?.takeClickThatEndedDrag()) {
+            return
+        }
+        if (event.data?.edgeId !== undefined) {
+            this.lastBoxClick = null
+            this.handlers.onEdgeClicked(event.data.edgeId)
+            return
+        }
         const path = this.boxUnder(event)
-        if (this.dragGesture?.takeClickThatEndedDrag() || path === null) {
+        if (path === null) {
             return
         }
         const onPartClicked = this.partClickHandlers[String(event.info)]

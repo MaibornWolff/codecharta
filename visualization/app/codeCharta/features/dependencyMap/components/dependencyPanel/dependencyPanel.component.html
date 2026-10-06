@@ -1,0 +1,147 @@
+<ng-template #refButton let-ref>
+    <button
+        type="button"
+        class="inline-flex max-w-full min-w-0 cursor-pointer items-center gap-1 rounded-sm border-0 bg-transparent p-0 text-left hover:underline"
+        [title]="ref.path"
+        (click)="refChosen.emit(ref)"
+    >
+        @if (ref.kind === "declaration") {
+            <span
+                class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] text-[9px] leading-none font-bold text-white"
+                [style.background-color]="kindLookOf(ref).color"
+                [title]="kindLookOf(ref).label"
+                aria-hidden="true"
+                >{{ kindLookOf(ref).letter }}</span
+            >
+        } @else {
+            <i class="shrink-0 text-xs opacity-60" [class]="iconOf(ref)" aria-hidden="true"></i>
+        }
+        <span class="truncate">{{ ref.name }}</span>
+    </button>
+</ng-template>
+
+<header class="flex items-start gap-2 border-b border-base-300 p-3">
+    <div class="min-w-0 flex-1">
+        <div class="text-xs tracking-wider uppercase opacity-60" data-testid="dependency-panel-subtitle">{{ model().subtitle }}</div>
+        <h2 class="m-0 truncate text-sm font-semibold" [title]="model().path" data-testid="dependency-panel-title">{{ model().title }}</h2>
+    </div>
+    <button type="button" class="btn btn-ghost btn-xs btn-square" aria-label="Close details" title="Close details" (click)="closed.emit()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </button>
+</header>
+
+<div class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3 pb-36 text-sm" data-testid="dependency-panel-body">
+    @if (model().facts.length > 0) {
+        <dl class="m-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1" data-testid="dependency-panel-facts">
+            @for (fact of model().facts; track fact.label) {
+                <dt class="opacity-60">{{ fact.label }}</dt>
+                <dd class="m-0 min-w-0 truncate" [title]="fact.value">
+                    @if (fact.ref) {
+                        <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: fact.ref }"></ng-container>
+                    } @else {
+                        {{ fact.value }}
+                    }
+                </dd>
+            }
+        </dl>
+    }
+
+    @if (model().action; as action) {
+        <button type="button" class="btn btn-sm btn-outline self-start" data-testid="dependency-panel-action" (click)="actionChosen.emit(action)">
+            {{ actionLabels[action] }}
+        </button>
+    }
+
+    @for (list of model().lists; track list.title) {
+        @if (list.count > 0) {
+            <section class="flex flex-col gap-1" [attr.aria-label]="list.title">
+                <h3 class="m-0 text-xs font-normal tracking-wider uppercase opacity-60">{{ list.title }} · {{ list.count }}</h3>
+                <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
+                    @for (ref of list.refs; track ref.path) {
+                        <li class="flex min-w-0">
+                            <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: ref }"></ng-container>
+                        </li>
+                    }
+                </ul>
+                @if (list.hiddenCount > 0) {
+                    <button type="button" class="btn btn-ghost btn-xs self-start" (click)="allRowsRequested.emit()">and {{ list.hiddenCount }} more</button>
+                }
+            </section>
+        }
+    }
+
+    @for (section of model().sections; track section.title) {
+        @if (section.count > 0) {
+            <section class="flex flex-col gap-1.5" [attr.aria-label]="section.title">
+                <h3 class="m-0 text-xs font-normal tracking-wider uppercase opacity-60">{{ section.title }} · {{ section.count }}</h3>
+                @for (group of section.groups; track $index) {
+                    <div class="flex flex-col gap-0.5">
+                        @if (group.heading; as heading) {
+                            <div class="flex min-w-0 font-medium">
+                                <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: heading }"></ng-container>
+                            </div>
+                        }
+                        <ul class="m-0 flex list-none flex-col gap-0.5 p-0" [class.pl-3]="group.heading">
+                            @for (dependency of group.dependencies; track $index) {
+                                <li
+                                    class="flex min-w-0 flex-wrap items-center gap-x-1 rounded-sm px-1 hover:bg-base-200"
+                                    data-testid="dependency-panel-row"
+                                    (mouseenter)="dependenciesPointedAt.emit([dependency.leafEdge])"
+                                    (mouseleave)="dependenciesPointedAt.emit(null)"
+                                    (focusin)="dependenciesPointedAt.emit([dependency.leafEdge])"
+                                    (focusout)="dependenciesPointedAt.emit(null)"
+                                >
+                                    <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: dependency.from }"></ng-container>
+                                    <span class="opacity-60" aria-label="uses">→</span>
+                                    <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: dependency.to }"></ng-container>
+                                    @if (dependency.isCyclic) {
+                                        <span class="badge badge-xs badge-info badge-outline">cycle</span>
+                                    }
+                                    @if (dependency.isPointingUpwards) {
+                                        <span class="badge badge-xs badge-error badge-outline">upward</span>
+                                    }
+                                    @if (dependency.usages.length > 0) {
+                                        <span class="w-full text-xs opacity-60">{{ dependency.usages.join(", ") }}</span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                        @if (group.hiddenCount > 0) {
+                            <button type="button" class="btn btn-ghost btn-xs self-start" (click)="allRowsRequested.emit()">
+                                and {{ group.hiddenCount }} more
+                            </button>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    }
+
+    @if (model().cycles.length > 0) {
+        <section #cyclesSection class="flex flex-col gap-1.5" aria-label="Cycles" data-testid="dependency-panel-cycles">
+            <h3 class="m-0 text-xs font-normal tracking-wider uppercase opacity-60">Cycles · {{ model().cycles.length }}</h3>
+            <ul class="m-0 flex list-none flex-col gap-1.5 p-0">
+                @for (cycle of model().cycles; track $index) {
+                    <li
+                        class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200"
+                        data-testid="dependency-panel-cycle"
+                        (mouseenter)="dependenciesPointedAt.emit(cycle.leafEdges)"
+                        (mouseleave)="dependenciesPointedAt.emit(null)"
+                        (focusin)="dependenciesPointedAt.emit(cycle.leafEdges)"
+                        (focusout)="dependenciesPointedAt.emit(null)"
+                    >
+                        <div class="flex min-w-0 flex-wrap items-center gap-x-1">
+                            @for (step of cycle.steps; track $index; let isFirst = $first) {
+                                @if (!isFirst) {
+                                    <span class="opacity-60" aria-label="uses">→</span>
+                                }
+                                <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: step }"></ng-container>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-xs self-start" (click)="cycleShown.emit(cycle)">Show in graph</button>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+</div>

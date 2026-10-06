@@ -1,4 +1,4 @@
-import { DECLARATION_KIND_LEGEND, declarationKindLookOf } from "./declarationKinds"
+import { DECLARATION_KIND_LEGEND, declarationKindLabelOf, declarationKindLookOf } from "./declarationKinds"
 
 describe("declarationKinds", () => {
     it("should tell every kind apart by letter and by colour", () => {
@@ -25,5 +25,13 @@ describe("declarationKinds", () => {
 
         // Assert
         expect(labels).toEqual(["Class", "Interface", "Enum", "Function"])
+    })
+
+    it("should name a kind it knows by its label and any other by the name its language gave it", () => {
+        // Act
+        const labels = ["valueclass", "typealias"].map(declarationKindLabelOf)
+
+        // Assert
+        expect(labels).toEqual(["Value class", "typealias"])
     })
 })

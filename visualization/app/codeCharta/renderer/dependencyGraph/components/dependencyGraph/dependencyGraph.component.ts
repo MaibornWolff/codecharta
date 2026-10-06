@@ -40,6 +40,7 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly boxClicked = output<string>()
     readonly boxToggled = output<string>()
     readonly cycleBadgeClicked = output<string>()
+    readonly edgeClicked = output<string>()
     readonly boxHovered = output<string | null>()
     readonly boxRightClicked = output<RightClickedBox>()
     readonly rendered = output<void>()
@@ -54,6 +55,7 @@ export class DependencyGraphComponent implements OnDestroy {
         onBoxClicked: path => this.boxClicked.emit(path),
         onBoxToggled: path => this.boxToggled.emit(path),
         onCycleBadgeClicked: path => this.cycleBadgeClicked.emit(path),
+        onEdgeClicked: edgeId => this.edgeClicked.emit(edgeId),
         onBoxHovered: path => this.boxHovered.emit(path),
         onBoxRightClicked: (path, clientX, clientY) => this.boxRightClicked.emit({ path, clientX, clientY }),
         onRendered: () => this.rendered.emit(),

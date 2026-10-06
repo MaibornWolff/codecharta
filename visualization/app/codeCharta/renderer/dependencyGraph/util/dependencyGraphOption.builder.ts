@@ -3,7 +3,7 @@ import { minOf } from "./collections"
 import { BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { atPaintRank } from "./dependencyGraphElements"
-import { boxesByPath, DependencyGraphScene, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
+import { boxesByPath, DependencyGraphScene, isEdgeInFocus, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID, GraphDatum } from "./dependencyGraphSeries"
 import { buildTooltipFormatter } from "./dependencyGraphTooltip"
 import { GraphEdge } from "./edgeProjection"
@@ -86,10 +86,7 @@ function edgeItems(
     isFound: (boxPath: string) => boolean
 ): EdgeItem[] {
     const routes = routeEdges(shownEdges, byPath, scene.edgeStyle, scene.isAnchoredAtSideMiddle)
-    const isHoverLit = shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))
-    const isDimmed = isHoverLit
-        ? (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath)
-        : (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath)
+    const isDimmed = dimmerOf(scene, shownEdges, isFound)
     const lightestWeight = minOf(shownEdges.map(edge => edge.weight))
     return shownEdges.map((edge, index) => ({
         kind: "edge",
@@ -97,11 +94,24 @@ function edgeItems(
         route: routes[index],
         look: {
             isDimmed: isDimmed(edge),
+            isSelected: edge.id === scene.selectedEdgeId,
             widthPx: edgeWidthPx(edge.weight / lightestWeight, scene.edgeWidth),
             color: scene.edgeColors[edge.type],
             line: lineStyleOf(edge, scene.lineStyleShows)
         }
     }))
+}
+
+/** The edges the reader points at stand out against all others; without any, those of the hovered box do, and
+ * without a hover, those a search found. */
+function dimmerOf(scene: DependencyGraphScene, shownEdges: GraphEdge[], isFound: (boxPath: string) => boolean) {
+    if (scene.highlightedEdgeIds.size > 0) {
+        return (edge: GraphEdge) => !isEdgeInFocus(edge, scene)
+    }
+    if (shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))) {
+        return (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath) && !isEdgeInFocus(edge, scene)
+    }
+    return (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath) && !isEdgeInFocus(edge, scene)
 }
 
 /** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
@@ -114,10 +124,12 @@ const PAINT_RANK: Record<DependencyEdgeType, number> = {
 }
 const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
 
-function edgesToDraw({ edges, shownEdgeTypes, hoveredPath }: DependencyGraphScene): GraphEdge[] {
-    const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isEdgeOfHovered(edge, hoveredPath) ? HOVERED_PAINT_RANK : 0)
+function edgesToDraw(scene: DependencyGraphScene): GraphEdge[] {
+    const { edges, shownEdgeTypes, hoveredPath } = scene
+    const isRaised = (edge: GraphEdge) => isEdgeOfHovered(edge, hoveredPath) || isEdgeInFocus(edge, scene)
+    const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isRaised(edge) ? HOVERED_PAINT_RANK : 0)
     return edges
-        .filter(edge => shownEdgeTypes.includes(edge.type) || isEdgeOfHovered(edge, hoveredPath))
+        .filter(edge => shownEdgeTypes.includes(edge.type) || isRaised(edge))
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
@@ -143,7 +155,11 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
         case "title":
             return { value: extentValue(item.box) }
         default:
-            return { isEdge: true, value: extentValue(enclosingRectangle([byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath)])) }
+            return {
+                isEdge: true,
+                edgeId: item.edge.id,
+                value: extentValue(enclosingRectangle([byPath.get(item.edge.fromPath), byPath.get(item.edge.toPath)]))
+            }
     }
 }
 

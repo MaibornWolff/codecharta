@@ -255,7 +255,7 @@ describe("DependencyMapViewStore", () => {
     it("should keep what only the graph can select and hover, and drop the selection with the graph of other files", () => {
         // Arrange
         store.adoptTree(TWO_TOP_FOLDERS)
-        const selection = { path: "/root/a.ts/Creature", sharedPath: "/root/a.ts" }
+        const selection = { kind: "box", path: "/root/a.ts/Creature", sharedPath: "/root/a.ts" } as const
 
         // Act
         store.selectInGraph(selection)

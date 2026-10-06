@@ -4,4 +4,5 @@ export const GRAPH_SERIES_ID = "graph"
 export interface GraphDatum {
     name?: string
     isEdge?: boolean
+    edgeId?: string
 }

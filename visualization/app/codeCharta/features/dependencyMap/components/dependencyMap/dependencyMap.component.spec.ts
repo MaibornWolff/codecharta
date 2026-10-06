@@ -2,7 +2,8 @@ import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { fireEvent, render, screen, waitFor } from "@testing-library/angular"
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { of } from "rxjs"
 import {
     DependencyDeclarations,
@@ -86,7 +87,11 @@ const DECLARING_TREE = leveledFolder("/root", [
 ])
 const NO_DECLARATIONS: DependencyDeclarations = { namespaces: {}, leaves: {}, leafEdges: [] }
 const DECLARATIONS: DependencyDeclarations = {
-    ...NO_DECLARATIONS,
+    namespaces: {},
+    leaves: {
+        [VIEW]: { View: { name: "View", kind: "class" }, Menu: { name: "Menu", kind: "class" } },
+        [NODE]: { Node: { name: "Node", kind: "class" } }
+    },
     leafEdges: [
         { fromNodeName: VIEW, fromLeaf: "View", toNodeName: NODE, toLeaf: "Node", attributes: { dependencies: 1 }, usage: ["usage"] },
         { fromNodeName: VIEW, fromLeaf: "Menu", toNodeName: VIEW, toLeaf: "View", attributes: { dependencies: 1 }, usage: ["usage"] }
@@ -367,7 +372,11 @@ describe("DependencyMapComponent", () => {
 
         it("should tell the other views the file of a selected, hovered or right-clicked declaration, and mark the declaration itself", async () => {
             // Arrange
-            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })
+            const { store, fixture } = await setup({
+                tree: DECLARING_TREE,
+                declarations: DECLARATIONS,
+                openedFolders: [...EVERY_FOLDER, VIEW]
+            })
             const declaration = boxEvent(`${VIEW}/View`)
 
             // Act
@@ -448,9 +457,218 @@ describe("DependencyMapComponent", () => {
             })
         })
 
+        describe("panel", () => {
+            const CYCLIC: DependencyDeclarations = {
+                ...DECLARATIONS,
+                leafEdges: [
+                    ...DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true })),
+                    {
+                        fromNodeName: NODE,
+                        fromLeaf: "Node",
+                        toNodeName: VIEW,
+                        toLeaf: "View",
+                        attributes: { dependencies: 1 },
+                        usage: [],
+                        isCyclic: true
+                    }
+                ]
+            }
+            const EDGE_ID = `${VIEW}|${NODE}`
+
+            async function setupSelected(selectedPath: string | null, declarations = CYCLIC) {
+                return setup({ tree: DECLARING_TREE, declarations, selectedPath })
+            }
+
+            async function select(store: MockStore, fixture: { detectChanges: () => void }, path: string | null) {
+                store.overrideSelector(selectedNodePathSelector, path)
+                store.refreshState()
+                fixture.detectChanges()
+            }
+
+            const panelTitle = () => screen.queryByTestId("dependency-panel-title")?.textContent ?? null
+            const edgeOpacities = () =>
+                Object.fromEntries(
+                    drawnSeries().data.flatMap((item, dataIndex) => {
+                        const parts = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children
+                        return item.isEdge ? [[(item as { edgeId?: string }).edgeId, parts.at(-1).style.opacity]] : []
+                    })
+                )
+
+            it("should explain the selected file beside the graph, and nothing while nothing is selected", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(null)
+                const withoutSelection = panelTitle()
+
+                // Act
+                await select(store, fixture, VIEW)
+
+                // Assert
+                expect(withoutSelection).toBeNull()
+                expect(panelTitle()).toBe("view.ts")
+                expect(screen.getByRole("region", { name: "Declarations" }).textContent).toContain("Menu")
+            })
+
+            it("should stay away for a map that tells no declarations", async () => {
+                // Act
+                await setup({ selectedPath: "/root/ui/view.ts" })
+
+                // Assert
+                expect(panelTitle()).toBeNull()
+            })
+
+            it("should explain a clicked edge, clear the selection of the other views and mark the edge", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+
+                // Act
+                fireChartEvent("click", { seriesId: "graph", data: { isEdge: true, edgeId: EDGE_ID } })
+                await select(store, fixture, null)
+
+                // Assert
+                expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: null }))
+                expect(panelTitle()).toBe("view.ts → node.ts")
+                const edgeIndex = drawnSeries().data.findIndex(item => (item as { edgeId?: string }).edgeId === EDGE_ID)
+                expect(drawnSeries().renderItem({ dataIndex: edgeIndex }, { coord: point => point }).children).toHaveLength(3)
+            })
+
+            it("should unfold the selected edge into the declarations at its ends", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+                fireChartEvent("click", { seriesId: "graph", data: { isEdge: true, edgeId: EDGE_ID } })
+                await select(store, fixture, null)
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Unfold in graph" }))
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(drawnBoxPaths()).toEqual(expect.arrayContaining([`${VIEW}/View`, `${NODE}/Node`]))
+                expect(panelTitle()).toBeNull()
+            })
+
+            it("should open and close the selected file from the panel", async () => {
+                // Arrange
+                const { fixture } = await setupSelected(VIEW)
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Open in graph" }))
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(drawnBoxPaths()).toContain(`${VIEW}/Menu`)
+                expect(screen.getByRole("button", { name: "Close in graph" })).not.toBeNull()
+            })
+
+            it("should go to a declaration named in the panel: open its file, select it and tell the other views its file", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+                const usedDeclaration = within(screen.getByRole("region", { name: "Uses" })).getByRole("button", { name: "Node" })
+
+                // Act
+                await userEvent.click(usedDeclaration)
+                await select(store, fixture, NODE)
+
+                // Assert
+                expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: NODE }))
+                expect(drawnBoxPaths()).toContain(`${NODE}/Node`)
+                expect(panelTitle()).toBe("Node")
+                expect(screen.getByTestId("dependency-panel-subtitle").textContent).toBe("Class")
+            })
+
+            it("should light up the edge of the row under the pointer and let the others step back", async () => {
+                // Arrange
+                const { fixture } = await setupSelected(VIEW)
+                const [usesRow] = within(screen.getByRole("region", { name: "Uses" })).getAllByTestId("dependency-panel-row")
+
+                // Act
+                fireEvent.mouseEnter(usesRow)
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+                const whilePointing = edgeOpacities()
+                fireEvent.mouseLeave(usesRow)
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(whilePointing).toEqual({ [EDGE_ID]: 1, [`${NODE}|${VIEW}`]: 0.12 })
+                expect(edgeOpacities()).toEqual({ [EDGE_ID]: 1, [`${NODE}|${VIEW}`]: 1 })
+            })
+
+            it("should show a cycle in the graph: open the files on it and light up its chain", async () => {
+                // Arrange
+                const { fixture } = await setupSelected(VIEW)
+                const [cycle] = screen.getAllByTestId("dependency-panel-cycle")
+
+                // Act
+                await userEvent.click(within(cycle).getByRole("button", { name: "Show in graph" }))
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(drawnBoxPaths()).toEqual(expect.arrayContaining([`${VIEW}/View`, `${NODE}/Node`]))
+                expect(edgeOpacities()).toMatchObject({ [`${VIEW}/View|${NODE}/Node`]: 1, [`${NODE}/Node|${VIEW}/View`]: 1 })
+            })
+
+            it("should bring the cycles into view when a cycle badge is clicked", async () => {
+                // Arrange
+                const scrollIntoView = jest.fn()
+                Element.prototype.scrollIntoView = scrollIntoView
+                const { fixture } = await setupSelected(VIEW)
+
+                // Act
+                fireChartEvent("click", { ...boxEvent(VIEW), info: "cycleBadge" })
+                fixture.detectChanges()
+
+                // Assert
+                expect(scrollIntoView).toHaveBeenCalledTimes(1)
+            })
+
+            it("should close on request and come back with the next selection", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Close details" }))
+                fixture.detectChanges()
+                const afterClosing = panelTitle()
+                fireChartEvent("click", boxEvent(NODE))
+                await select(store, fixture, NODE)
+
+                // Assert
+                expect(afterClosing).toBeNull()
+                expect(panelTitle()).toBe("node.ts")
+            })
+
+            it("should show every row of a hub once the reader asks for the ones left out", async () => {
+                // Arrange
+                const manyNames = Array.from({ length: 25 }, (_, index) => `Part${String(index).padStart(2, "0")}`)
+                const hub: DependencyDeclarations = {
+                    ...NO_DECLARATIONS,
+                    leaves: { [VIEW]: Object.fromEntries(manyNames.map(name => [name, { name, kind: "class" }])) }
+                }
+                const { fixture } = await setupSelected(VIEW, hub)
+                const declarationCount = () => screen.getByRole("region", { name: "Declarations" }).querySelectorAll("li").length
+                const cut = declarationCount()
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "and 5 more" }))
+                fixture.detectChanges()
+
+                // Assert
+                expect(cut).toBe(20)
+                expect(declarationCount()).toBe(25)
+            })
+        })
+
         it("should mark the file again once another view selects it", async () => {
             // Arrange
-            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })
+            const { store, fixture } = await setup({
+                tree: DECLARING_TREE,
+                declarations: DECLARATIONS,
+                openedFolders: [...EVERY_FOLDER, VIEW]
+            })
             fireChartEvent("click", boxEvent(`${VIEW}/View`))
 
             // Act
