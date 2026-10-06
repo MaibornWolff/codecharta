@@ -6,15 +6,7 @@
         (click)="goTo(reference)"
     >
         @if (reference.kind === "declaration") {
-            <span
-                class="flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full border text-[10px] leading-none font-bold"
-                [style.background-color]="kindLookOf(reference).tint"
-                [style.border-color]="iconColors.stroke"
-                [style.color]="iconColors.letter"
-                [title]="kindLookOf(reference).label"
-                aria-hidden="true"
-                >{{ kindLookOf(reference).letter }}</span
-            >
+            <cc-declaration-kind-icon [kind]="reference.declarationKind"></cc-declaration-kind-icon>
         } @else {
             <i class="shrink-0 text-xs opacity-60" [class]="icons[reference.kind]" aria-hidden="true"></i>
         }
@@ -31,24 +23,17 @@
     </span>
 </ng-template>
 
-<ng-template #connector let-line let-color="color" let-label="label">
-    <svg class="h-3 w-11 shrink-0" viewBox="0 0 44 12" role="img" [attr.aria-label]="label" [attr.stroke]="color" [attr.fill]="color">
-        <line x1="2" y1="6" x2="32" y2="6" stroke-width="1.6" [attr.stroke-dasharray]="line.dash?.join(' ') ?? null" />
-        @switch (line.head) {
-            @case ("hollow") {
-                <polygon points="41,6 32,2 32,10" fill="var(--color-base-100, #fff)" stroke-width="1.3" />
-            }
-            @case ("open") {
-                <polyline points="32,2 41,6 32,10" fill="none" stroke-width="1.5" />
-            }
-            @case ("dot") {
-                <circle cx="37" cy="6" r="3.5" stroke="none" />
-            }
-            @default {
-                <polygon points="41,6 32,2 32,10" stroke="none" />
-            }
-        }
-    </svg>
+<ng-template #sectionHeader let-title let-count="count">
+    <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
+        <h3 class="m-0 text-xs font-normal">{{ title }}</h3>
+        <span class="tracking-normal tabular-nums">{{ count }}</span>
+    </div>
+</ng-template>
+
+<ng-template #moreRows let-hiddenCount let-testId="testId">
+    <button type="button" class="btn btn-ghost btn-xs self-start" [attr.data-testid]="testId" (click)="showAllRows()">
+        and {{ hiddenCount }} more
+    </button>
 </ng-template>
 
 @if (model(); as model) {
@@ -105,7 +90,7 @@
         }
     </header>
 
-    <div class="min-h-0 flex-1 overflow-y-auto pb-36 text-sm" data-testid="dependency-inspector-body">
+    <div class="min-h-0 flex-1 overflow-y-auto pb-[var(--cc-legend-drawer-clearance,9rem)] text-sm" data-testid="dependency-inspector-body">
         @if (model.cycleCount > 0) {
             <section
                 #cyclesSection
@@ -113,10 +98,7 @@
                 aria-label="Cycles"
                 data-testid="dependency-inspector-cycles"
             >
-                <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-                    <h3 class="m-0 text-xs font-normal">Cycles</h3>
-                    <span class="tracking-normal tabular-nums">{{ model.cycleCount }}</span>
-                </div>
+                <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'Cycles', count: model.cycleCount }"></ng-container>
                 @for (cycle of model.cycles; track $index) {
                     <div
                         class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
@@ -140,14 +122,7 @@
                                         >↩ {{ cycle.steps[0].reference.name }}</span
                                     >
                                 } @else {
-                                    <ng-container
-                                        [ngTemplateOutlet]="connector"
-                                        [ngTemplateOutletContext]="{
-                                            $implicit: step.linkToNext.line,
-                                            color: edgeColors()[step.linkToNext.type],
-                                            label: 'uses'
-                                        }"
-                                    ></ng-container>
+                                    <cc-line-style-sample [line]="step.linkToNext.line" [color]="edgeColors()[step.linkToNext.type]" [label]="'uses'"></cc-line-style-sample>
                                 }
                             }
                         </div>
@@ -163,9 +138,10 @@
                     </div>
                 }
                 @if (model.cycleCount > model.cycles.length) {
-                    <button type="button" class="btn btn-ghost btn-xs self-start" data-testid="dependency-inspector-more-cycles" (click)="showAllRows()">
-                        and {{ model.cycleCount - model.cycles.length }} more
-                    </button>
+                    <ng-container
+                    [ngTemplateOutlet]="moreRows"
+                    [ngTemplateOutletContext]="{ $implicit: model.cycleCount - model.cycles.length, testId: 'dependency-inspector-more-cycles' }"
+                ></ng-container>
                 }
             </section>
         }
@@ -173,10 +149,7 @@
         @for (section of model.sections; track section.title) {
             @if (section.count > 0) {
                 <section class="flex flex-col gap-2 border-t border-base-300 px-3 py-2" [attr.aria-label]="section.title">
-                    <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-                        <h3 class="m-0 text-xs font-normal">{{ section.title }}</h3>
-                        <span class="tracking-normal tabular-nums">{{ section.count }}</span>
-                    </div>
+                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: section.title, count: section.count }"></ng-container>
                     @for (group of section.groups; track $index) {
                         <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
                             @if (group.heading; as heading) {
@@ -206,14 +179,7 @@
                                             [ngTemplateOutlet]="chip"
                                             [ngTemplateOutletContext]="{ $implicit: dependency.from, isOwn: dependency.isFromOwn }"
                                         ></ng-container>
-                                        <ng-container
-                                            [ngTemplateOutlet]="connector"
-                                            [ngTemplateOutletContext]="{
-                                                $implicit: dependency.line,
-                                                color: edgeColors()[dependency.type],
-                                                label: dependency.usages.join(', ') || 'uses'
-                                            }"
-                                        ></ng-container>
+                                        <cc-line-style-sample [line]="dependency.line" [color]="edgeColors()[dependency.type]" [label]="dependency.usages.join(', ') || 'uses'"></cc-line-style-sample>
                                         <ng-container
                                             [ngTemplateOutlet]="chip"
                                             [ngTemplateOutletContext]="{ $implicit: dependency.to, isOwn: dependency.isToOwn }"
@@ -232,9 +198,7 @@
                                 </div>
                             }
                             @if (group.hiddenCount > 0) {
-                                <button type="button" class="btn btn-ghost btn-xs self-start" (click)="showAllRows()">
-                                    and {{ group.hiddenCount }} more
-                                </button>
+                                <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: group.hiddenCount }"></ng-container>
                             }
                         </div>
                     }
@@ -245,10 +209,7 @@
         @if (model.declarations; as declarations) {
             @if (declarations.count > 0) {
                 <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" aria-label="Declarations">
-                    <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-                        <h3 class="m-0 text-xs font-normal">Declarations</h3>
-                        <span class="tracking-normal tabular-nums">{{ declarations.count }}</span>
-                    </div>
+                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'Declarations', count: declarations.count }"></ng-container>
                     <ul class="m-0 flex list-none flex-col gap-1 p-0">
                         @for (item of declarations.items; track item.reference.path) {
                             <li class="flex min-w-0 items-baseline justify-between gap-2">
@@ -258,9 +219,7 @@
                         }
                     </ul>
                     @if (declarations.hiddenCount > 0) {
-                        <button type="button" class="btn btn-ghost btn-xs self-start" (click)="showAllRows()">
-                            and {{ declarations.hiddenCount }} more
-                        </button>
+                        <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: declarations.hiddenCount }"></ng-container>
                     }
                 </section>
             }

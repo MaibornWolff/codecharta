@@ -1,10 +1,12 @@
 import { NgTemplateOutlet } from "@angular/common"
 import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, untracked, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
-import { declarationKindLookOf, EDGE_TYPE_LABELS, KIND_ICON_COLORS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { InspectorActionKind, InspectorCycle, InspectorReference } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
+import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
+import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
 
 const ACTION_LABELS: Record<InspectorActionKind, string> = {
     open: "Open in graph",
@@ -17,7 +19,7 @@ const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-fold
 @Component({
     selector: "cc-dependency-inspector",
     templateUrl: "./dependencyInspector.component.html",
-    imports: [NgTemplateOutlet],
+    imports: [NgTemplateOutlet, DeclarationKindIconComponent, LineStyleSampleComponent],
     providers: [CopyToClipboardService],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
@@ -38,7 +40,6 @@ export class DependencyInspectorComponent {
 
     readonly actionLabels = ACTION_LABELS
     readonly edgeTypeLabels = EDGE_TYPE_LABELS
-    readonly iconColors = KIND_ICON_COLORS
     readonly copied = this.clipboard.copied
 
     constructor() {
@@ -47,7 +48,7 @@ export class DependencyInspectorComponent {
             const section = this.cyclesSection()?.nativeElement
             if (section && request !== null && request !== this.shownCyclesRequest) {
                 this.shownCyclesRequest = request
-                section.scrollIntoView?.({ block: "start" })
+                section.scrollIntoView({ block: "start" })
             }
         })
         effect(() => {
@@ -88,9 +89,5 @@ export class DependencyInspectorComponent {
 
     protected dismiss(): void {
         this.store.dismiss()
-    }
-
-    kindLookOf(reference: InspectorReference) {
-        return declarationKindLookOf(reference.declarationKind)
     }
 }

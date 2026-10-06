@@ -1,17 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
-import {
-    DECLARATION_KIND_LEGEND,
-    edgeLegend,
-    KIND_ICON_COLORS,
-    USAGE_LEGEND
-} from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { DECLARATION_KIND_LEGEND, edgeLegend, USAGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
+import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
+import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
 
 @Component({
     selector: "cc-dependency-edge-legend",
     templateUrl: "./dependencyEdgeLegend.component.html",
+    imports: [DeclarationKindIconComponent, LineStyleSampleComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "flex flex-col gap-3" }
 })
@@ -32,6 +30,5 @@ export class DependencyEdgeLegendComponent {
     )
     readonly kindMark = computed(() => this.settings().declarationKindMark)
     readonly kindLegend = computed(() => (this.hasDeclarations() && this.kindMark() !== "off" ? DECLARATION_KIND_LEGEND : []))
-    readonly iconColors = KIND_ICON_COLORS
     readonly usageColor = computed(() => this.settings().edgeColors.regular)
 }
