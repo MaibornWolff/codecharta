@@ -1,4 +1,4 @@
-import { LayoutBox } from "./levelizedLayout"
+import { LayoutBox } from "./layoutModel"
 
 export type IsInside = (path: string, containerPath: string) => boolean
 

@@ -1,5 +1,5 @@
 import { IsInside, nestingOf } from "./boxNesting"
-import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
+import { DependencyGraphLayout, LayoutBox } from "./layoutModel"
 
 /** What every redraw looks up in the layout, the redraw of a hover included. */
 export interface LayoutLookups {

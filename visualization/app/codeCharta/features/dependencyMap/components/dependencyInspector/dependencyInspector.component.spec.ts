@@ -2,6 +2,7 @@ import { signal } from "@angular/core"
 import { fireEvent, render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
+import { defaultDependencyGraphSettings } from "../../../../stores/preferences/preferences.read.facade"
 import { InspectorDependency, InspectorModel, InspectorReference } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyInspectorComponent } from "./dependencyInspector.component"
@@ -12,7 +13,7 @@ const WEAPON_FILE: InspectorReference = { path: "/root/weapon.ts", name: "weapon
 const CREATURE_FILE: InspectorReference = { path: "/root/creature.ts", name: "creature.ts", kind: "file" }
 const ROOT_FOLDER = { path: "/root", name: "root", kind: "folder", shownAs: "/root" } as const
 
-const EDGE_COLORS = { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" }
+const EDGE_COLORS = defaultDependencyGraphSettings.edgeColors
 
 const DECLARATION_EDGE: DependencyLeafEdge = {
     fromNodeName: "/root/creature.ts",

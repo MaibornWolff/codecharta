@@ -1,6 +1,6 @@
 import { BoxOffset, isDraggable, movedLayout } from "./boxMoves"
 import { aBand, aBox } from "./dependencyGraphTestData"
-import { DependencyGraphLayout, LAYOUT_SPACING } from "./levelizedLayout"
+import { DependencyGraphLayout, LAYOUT_SPACING } from "./layoutModel"
 
 const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, x: 0, y: 0, width: 1000, height: 600 })
 const folder = aBox("/root/app", { kind: "folder", isExpanded: true, depth: 1, x: 100, y: 100, width: 400, height: 300 })
