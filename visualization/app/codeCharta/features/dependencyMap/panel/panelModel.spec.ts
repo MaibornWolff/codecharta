@@ -67,54 +67,89 @@ function box(node: LeveledNode, isOpen = false) {
 function rowsOf(model: PanelModel, title: string): string[] {
     const section = model.sections.find(candidate => candidate.title === title)
     return section.groups.flatMap(group =>
-        group.dependencies.map(row => `${group.heading?.name ?? "-"}: ${row.from.name} → ${row.to.name} (${row.usages.join(", ")})`)
+        group.dependencies.map(
+            row => `${group.heading?.name ?? (group.label || "-")}: ${row.from.name} → ${row.to.name} (${row.usages.join(", ")})`
+        )
     )
+}
+
+function badgesOf(model: PanelModel): string[] {
+    return model.badges.map(badge => badge.text)
 }
 
 describe("describeSubject", () => {
     describe("a file", () => {
-        it("should tell its folder, its package and its declarations by name", () => {
+        it("should head the panel with its folder, its name and what to copy, and tell its package, declarations and cycles as badges", () => {
             // Act
             const model = describeSubject(box(CREATURE_NODE), context())
 
             // Assert
-            expect(model).toMatchObject({ kind: "file", title: "creature.ts", subtitle: "File", path: CREATURE })
-            expect(model.facts).toEqual([
-                { label: "Folder", value: "/root/game", ref: { path: "/root/game", name: "game", kind: "folder" } },
-                { label: "Package", value: "game" }
-            ])
-            expect(model.lists).toEqual([
-                {
-                    title: "Declarations",
-                    count: 2,
-                    hiddenCount: 0,
-                    refs: [
-                        { path: `${CREATURE}/Armor`, name: "Armor", kind: "declaration", declarationKind: "valueclass" },
-                        { path: `${CREATURE}/Creature`, name: "Creature", kind: "declaration", declarationKind: "class" }
-                    ]
-                }
+            expect(model).toMatchObject({ kind: "file", title: "creature.ts", path: CREATURE, copyText: CREATURE })
+            expect(model.parent).toEqual({ path: "/root/game", name: "game", kind: "folder" })
+            expect(model.badges).toEqual([
+                { text: "file" },
+                { text: "package game" },
+                { text: "2 declarations" },
+                { text: "1 cycle", isAboutCycles: true }
             ])
         })
 
-        it("should tell the dependencies inside it apart from those it uses and is used by, grouped by the other file", () => {
+        it("should list its declarations by name, each with its kind and the level it has", () => {
+            // Act
+            const { declarations } = describeSubject(box(CREATURE_NODE), context())
+
+            // Assert
+            expect(declarations).toEqual({
+                count: 2,
+                hiddenCount: 0,
+                items: [
+                    {
+                        ref: { path: `${CREATURE}/Armor`, name: "Armor", kind: "declaration", declarationKind: "valueclass" },
+                        detail: "value class"
+                    },
+                    {
+                        ref: { path: `${CREATURE}/Creature`, name: "Creature", kind: "declaration", declarationKind: "class" },
+                        detail: "class · level 1"
+                    }
+                ]
+            })
+        })
+
+        it("should tell what it uses, the dependencies inside it first, and what uses it, each group under the other file", () => {
             // Act
             const model = describeSubject(box(CREATURE_NODE), context())
 
             // Assert
-            expect(rowsOf(model, "Inside the file")).toEqual(["-: Creature → Armor (Uses)"])
+            expect(model.sections.map(section => [section.title, section.count])).toEqual([
+                ["Uses", 3],
+                ["Used by", 1]
+            ])
             expect(rowsOf(model, "Uses")).toEqual([
+                "this file: Creature → Armor (Uses)",
                 "weapon.ts: Creature → Weapon (Inherits from, Uses)",
                 "text.ts: Armor → format (Takes as argument)"
             ])
             expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature (Uses)"])
-            expect(model.sections.map(section => section.count)).toEqual([1, 2, 1])
+        })
+
+        it("should say which end of a dependency is the file's own, so the direction reads at a glance", () => {
+            // Act
+            const model = describeSubject(box(CREATURE_NODE), context())
+            const [inside] = model.sections[0].groups[0].dependencies
+            const [outgoing] = model.sections[0].groups[1].dependencies
+            const [incoming] = model.sections[1].groups[0].dependencies
+
+            // Assert
+            expect([inside.isFromOwn, inside.isToOwn]).toEqual([true, true])
+            expect([outgoing.isFromOwn, outgoing.isToOwn]).toEqual([true, false])
+            expect([incoming.isFromOwn, incoming.isToOwn]).toEqual([false, true])
         })
 
         it("should carry each row's dependency for the graph to light up, the line of its strongest use and the edge type it is drawn in", () => {
             // Act
             const model = describeSubject(box(CREATURE_NODE), context())
-            const [usedBy] = model.sections[2].groups[0].dependencies
-            const [inherits] = model.sections[1].groups[0].dependencies
+            const [usedBy] = model.sections[1].groups[0].dependencies
+            const [inherits] = model.sections[0].groups[1].dependencies
 
             // Assert
             expect(usedBy).toMatchObject({ type: "feedbackLeafLevel", line: { dash: null, head: "filled" }, leafEdge: LEAF_EDGES[1] })
@@ -129,8 +164,8 @@ describe("describeSubject", () => {
             const model = describeSubject(box(CREATURE_NODE), upwardByFileEdge)
 
             // Assert
-            expect(model.sections[1].groups[0].dependencies[0].type).toBe("feedbackLeafLevel")
-            expect(model.sections[2].groups[0].dependencies[0].type).toBe("cyclic")
+            expect(model.sections[0].groups[1].dependencies[0].type).toBe("feedbackLeafLevel")
+            expect(model.sections[1].groups[0].dependencies[0].type).toBe("cyclic")
         })
 
         it("should offer to open a closed file and to close an open one, and neither for a file telling no declaration", () => {
@@ -151,6 +186,15 @@ describe("describeSubject", () => {
             expect(cycles.map(cycle => cycle.steps.map(step => step.name))).toEqual([["Creature", "Weapon", "Creature"]])
             expect(cycles[0].files.map(file => file.name)).toEqual(["creature.ts", "weapon.ts"])
             expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[0], LEAF_EDGES[1]])
+        })
+
+        it("should tell a cycle from one of its own declarations, wherever the cycle was found from", () => {
+            // Act
+            const { cycles } = describeSubject(box(fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")])), context())
+
+            // Assert
+            expect(cycles[0].steps.map(step => step.name)).toEqual(["Weapon", "Creature", "Weapon"])
+            expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[1], LEAF_EDGES[0]])
         })
 
         it("should count every cycle running through it and cut the ones told as it cuts a hub's rows", () => {
@@ -176,24 +220,21 @@ describe("describeSubject", () => {
             const model = describeSubject(box(CREATURE_NODE), context(1))
 
             // Assert
-            expect(model.lists[0]).toMatchObject({ count: 2, hiddenCount: 1 })
-            expect(model.lists[0].refs).toHaveLength(1)
-            expect(model.sections[1].groups.map(group => group.hiddenCount)).toEqual([0, 0])
+            expect(model.declarations).toMatchObject({ count: 2, hiddenCount: 1 })
+            expect(model.declarations.items).toHaveLength(1)
+            expect(model.sections[0].groups.map(group => group.hiddenCount)).toEqual([0, 0, 0])
         })
     })
 
     describe("a declaration", () => {
-        it("should tell its kind, file, package and level", () => {
+        it("should head the panel with its file and tell its kind, package, level and cycles as badges", () => {
             // Act
             const model = describeSubject(box(CREATURE_NODE.children[0]), context())
 
             // Assert
-            expect(model).toMatchObject({ kind: "declaration", title: "Creature", subtitle: "Class", action: null })
-            expect(model.facts).toEqual([
-                { label: "File", value: "creature.ts", ref: { path: CREATURE, name: "creature.ts", kind: "file" } },
-                { label: "Package", value: "game" },
-                { label: "Level", value: "1" }
-            ])
+            expect(model).toMatchObject({ kind: "declaration", title: "Creature", action: null, declarations: null, copyText: CREATURE })
+            expect(model.parent).toEqual({ path: CREATURE, name: "creature.ts", kind: "file" })
+            expect(badgesOf(model)).toEqual(["Class", "package game", "level 1", "1 cycle"])
         })
 
         it("should tell what it uses and what uses it, its own file among the others, and its cycles", () => {
@@ -209,14 +250,14 @@ describe("describeSubject", () => {
             expect(model.cycles).toHaveLength(1)
         })
 
-        it("should leave out the package and level a declaration does not have, and say nothing of one the map does not tell", () => {
+        it("should leave out the package and level a declaration does not have, and say little of one the map does not tell", () => {
             // Act
             const weapon = describeSubject(box(declarationNode(WEAPON, "Weapon", "interface")), context())
             const untold = describeSubject(box(declarationNode(WEAPON, "Ghost", "typealias")), context())
 
             // Assert
-            expect(weapon.facts.map(fact => fact.label)).toEqual(["File"])
-            expect(untold).toMatchObject({ subtitle: "typealias", facts: [], cycles: [] })
+            expect(badgesOf(weapon)).toEqual(["Interface", "1 cycle"])
+            expect(untold).toMatchObject({ parent: null, copyText: null, badges: [{ text: "typealias" }], cycles: [] })
         })
     })
 
@@ -226,20 +267,33 @@ describe("describeSubject", () => {
             const model = describeSubject(box(GAME_FOLDER), context())
 
             // Assert
-            expect(model).toMatchObject({ kind: "folder", title: "game", subtitle: "Folder", sections: [], action: null })
-            expect(model.facts).toEqual([
-                { label: "Files", value: "2" },
-                { label: "Declarations", value: "3" },
-                { label: "Cyclic dependencies", value: "2" },
-                { label: "Upward dependencies", value: "1" }
-            ])
-            expect(model.lists).toEqual([])
+            expect(model).toMatchObject({
+                kind: "folder",
+                title: "game",
+                sections: [],
+                action: null,
+                declarations: null,
+                copyText: "/root/game"
+            })
+            expect(model.parent).toEqual({ path: "/root", name: "root", kind: "folder" })
+            expect(badgesOf(model)).toEqual(["folder", "2 files", "3 declarations", "2 cyclic", "1 upward", "1 cycle"])
             expect(model.cycles).toHaveLength(1)
+        })
+
+        it("should head the root folder with nothing above it", () => {
+            // Arrange
+            const root: LeveledNode = { ...GAME_FOLDER, path: "/root", name: "root" }
+
+            // Act
+            const model = describeSubject(box(root), context())
+
+            // Assert
+            expect(model.parent).toBeNull()
         })
     })
 
     describe("a package", () => {
-        it("should be told as a folder is, by what it holds", () => {
+        it("should be told as a folder is, by what it holds, and copy its name", () => {
             // Arrange
             const gamePackage: LeveledNode = { ...GAME_FOLDER, path: "package:game", kind: "package" }
 
@@ -247,8 +301,8 @@ describe("describeSubject", () => {
             const model = describeSubject(box(gamePackage), context())
 
             // Assert
-            expect(model).toMatchObject({ title: "game", subtitle: "Package", path: "package:game" })
-            expect(model.facts[0]).toEqual({ label: "Files", value: "2" })
+            expect(model).toMatchObject({ title: "game", path: "package:game", parent: null, copyText: "game" })
+            expect(badgesOf(model).slice(0, 2)).toEqual(["package", "2 files"])
         })
     })
 
@@ -267,16 +321,15 @@ describe("describeSubject", () => {
             const model = describeSubject({ kind: "edge", edge, fromName: "creature.ts", toName: "weapon.ts" }, context())
 
             // Assert
-            expect(model).toMatchObject({ kind: "edge", title: "creature.ts → weapon.ts", subtitle: "Dependency", path: edge.id })
-            expect(model.facts).toEqual([
-                { label: "Dependencies", value: "3" },
-                { label: "Takes as argument", value: "1" },
-                { label: "Inherits from", value: "1" },
-                { label: "Uses", value: "1" }
-            ])
+            expect(model).toMatchObject({ kind: "edge", title: "creature.ts → weapon.ts", path: edge.id, parent: null, copyText: null })
+            expect(badgesOf(model)).toEqual(["3 dependencies", "Takes as argument 1", "Inherits from 1", "Uses 1"])
             expect(rowsOf(model, "Stands for")).toEqual([
                 "-: Armor → format (Takes as argument)",
                 "-: Creature → Weapon (Inherits from, Uses)"
+            ])
+            expect(model.sections[0].groups[0].dependencies.map(row => [row.isFromOwn, row.isToOwn])).toEqual([
+                [false, false],
+                [false, false]
             ])
         })
 
