@@ -17,8 +17,6 @@ export interface LayoutBox extends Rectangle {
     declarationKind?: string
     /** How many declarations a file holds, whether it shows them or not. */
     declarationCount?: number
-    /** The level a listed declaration names at its side, as no row tells it there. */
-    listedLevel?: number
 }
 
 export interface LevelBand extends Rectangle {
@@ -217,11 +215,6 @@ class ContainerMeasurer {
         return this.declarationArrangement === "stacked" && new Set(file.children.map(declaration => declaration.level)).size > 1
     }
 
-    /** In a list no row stands for a level, so each declaration names its own. */
-    listedLevelOf(node: LeveledNode): number | undefined {
-        return node.kind === "declaration" && this.declarationArrangement === "list" ? node.level : undefined
-    }
-
     private packRows(
         groups: LeveledNode[][],
         maxRowWidth: number,
@@ -375,7 +368,6 @@ class LayoutPlacer {
             levelPath: this.levelPaths.get(node.path) ?? NO_LEVEL_PATH,
             depth,
             ...declarationFactsOf(node),
-            ...(this.measurer.listedLevelOf(node) !== undefined && { listedLevel: node.level }),
             x,
             y,
             ...size
@@ -395,7 +387,7 @@ class LayoutPlacer {
                 rowTop += gapAbove(row, previous, spacing)
             }
             if (isLeveled) {
-                band = this.bandReaching(row, previous, band, container, { x, y: rowTop, width, height: 0 })
+                band = this.bandReaching({ row, previous, current: band }, container, { x, y: rowTop, width, height: 0 })
             }
             const left = x + LAYOUT_SPACING.padding + (innerWidth - row.width) / 2
             this.placeRow(row, { x: left, y: rowTop }, { parentPath: container.path, childDepth, band, spacing })
@@ -404,7 +396,7 @@ class LayoutPlacer {
     }
 
     /** A level's rows share one band, which a row of the next level ends. */
-    private bandReaching(row: Row, previous: Row | undefined, current: LevelBand | null, container: LeveledNode, rectangle: Rectangle) {
+    private bandReaching({ row, previous, current }: BandRows, container: LeveledNode, rectangle: Rectangle) {
         let band = current
         if (band === null || previous?.level !== row.level) {
             // The levels inside a file are those of its declarations' packages, which the levels around the file say nothing of.
@@ -435,6 +427,12 @@ class LayoutPlacer {
 interface Position {
     x: number
     y: number
+}
+
+interface BandRows {
+    row: Row
+    previous: Row | undefined
+    current: LevelBand | null
 }
 
 interface RowPlacement {

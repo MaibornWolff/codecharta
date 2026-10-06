@@ -73,10 +73,10 @@ function box(node: LeveledNode, { isOpen = false, parent = null as LeveledNode |
 
 function rowsOf(model: InspectorModel, title: string): string[] {
     const section = model.sections.find(candidate => candidate.title === title)
+    const headingOf = (heading: InspectorModel["sections"][number]["groups"][number]["heading"]) =>
+        typeof heading === "string" ? heading : (heading?.name ?? "-")
     return section.groups.flatMap(group =>
-        group.dependencies.map(
-            row => `${group.heading?.name ?? (group.label || "-")}: ${row.from.name} → ${row.to.name} (${row.usages.join(", ")})`
-        )
+        group.dependencies.map(row => `${headingOf(group.heading)}: ${row.from.name} → ${row.to.name} (${row.usages.join(", ")})`)
     )
 }
 
@@ -189,15 +189,15 @@ describe("describeSubject", () => {
             expect(actions).toEqual(["open", "close", null])
         })
 
-        it("should tell its cycles as the declarations walked, back to the first", () => {
+        it("should tell its cycles as the declarations walked, each with the look of its dependency on the next", () => {
             // Act
             const { cycles } = describeSubject(box(CREATURE_NODE), context())
 
             // Assert
-            expect(cycles.map(cycle => cycle.steps.map(step => step.name))).toEqual([["Creature", "Weapon", "Creature"]])
+            expect(cycles.map(cycle => cycle.steps.map(step => step.reference.name))).toEqual([["Creature", "Weapon"]])
             expect(cycles[0].files.map(file => file.name)).toEqual(["creature.ts", "weapon.ts"])
             expect(cycles[0].declarationEdges).toEqual([DECLARATION_EDGES[0], DECLARATION_EDGES[1]])
-            expect(cycles[0].links).toEqual([
+            expect(cycles[0].steps.map(step => step.linkToNext)).toEqual([
                 { line: expect.objectContaining({ dash: null, head: "hollow" }), type: "cyclic" },
                 { line: expect.objectContaining({ dash: null, head: "filled" }), type: "feedbackLeafLevel" }
             ])
@@ -208,7 +208,7 @@ describe("describeSubject", () => {
             const { cycles } = describeSubject(box(fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")])), context())
 
             // Assert
-            expect(cycles[0].steps.map(step => step.name)).toEqual(["Weapon", "Creature", "Weapon"])
+            expect(cycles[0].steps.map(step => step.reference.name)).toEqual(["Weapon", "Creature"])
             expect(cycles[0].declarationEdges).toEqual([DECLARATION_EDGES[1], DECLARATION_EDGES[0]])
         })
 

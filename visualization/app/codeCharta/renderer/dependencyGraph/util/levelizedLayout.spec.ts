@@ -269,13 +269,12 @@ describe("layoutLevelized with declarations", () => {
         // Assert
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
         expect(zebra.y).toBeLessThan(long.y)
-        expect(zebra.listedLevel).toBeUndefined()
         expect(long.y).toBe(bee.y)
         expect(long.x).toBeLessThan(bee.x)
         expect(zebra).toMatchObject({ width: 132, height: 26 })
     })
 
-    it("should list the declarations one below the other, the higher level first and by name within one, each naming its level", () => {
+    it("should list the declarations one below the other, the higher level first and by name within one", () => {
         // Arrange
         const expanded = new Set(["/root", FILE])
 
@@ -286,8 +285,7 @@ describe("layoutLevelized with declarations", () => {
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
         expect([long.y, bee.y]).toEqual([zebra.y + 32, zebra.y + 64])
         expect(new Set([zebra.x, long.x, bee.x]).size).toBe(1)
-        expect([zebra.listedLevel, long.listedLevel, bee.listedLevel]).toEqual([1, 0, 0])
-        expect(boxOf(boxes, FILE).listedLevel).toBeUndefined()
+        expect([zebra.level, long.level, bee.level]).toEqual([1, 0, 0])
     })
 
     it("should draw the declarations as chips as wide as their names", () => {

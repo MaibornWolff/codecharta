@@ -126,26 +126,27 @@
                     (focusout)="dependenciesPointedAt.emit(null)"
                 >
                     <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
-                        @for (step of cycle.steps; track $index; let position = $index; let isFirst = $first; let isLast = $last) {
+                        @for (step of cycle.steps; track $index; let isLast = $last) {
+                            <ng-container
+                                [ngTemplateOutlet]="chip"
+                                [ngTemplateOutletContext]="{ $implicit: step.reference, isOwn: false }"
+                            ></ng-container>
                             @if (isLast) {
                                 <span
                                     class="ml-1 text-xs"
-                                    [style.color]="edgeColors()[cycle.links[position - 1].type]"
+                                    [style.color]="edgeColors()[step.linkToNext.type]"
                                     data-testid="dependency-inspector-cycle-closing"
-                                    >↩ {{ step.name }}</span
+                                    >↩ {{ cycle.steps[0].reference.name }}</span
                                 >
                             } @else {
-                                @if (!isFirst) {
-                                    <ng-container
-                                        [ngTemplateOutlet]="connector"
-                                        [ngTemplateOutletContext]="{
-                                            $implicit: cycle.links[position - 1].line,
-                                            color: edgeColors()[cycle.links[position - 1].type],
-                                            label: 'uses'
-                                        }"
-                                    ></ng-container>
-                                }
-                                <ng-container [ngTemplateOutlet]="chip" [ngTemplateOutletContext]="{ $implicit: step, isOwn: false }"></ng-container>
+                                <ng-container
+                                    [ngTemplateOutlet]="connector"
+                                    [ngTemplateOutletContext]="{
+                                        $implicit: step.linkToNext.line,
+                                        color: edgeColors()[step.linkToNext.type],
+                                        label: 'uses'
+                                    }"
+                                ></ng-container>
                             }
                         }
                     </div>
@@ -177,12 +178,15 @@
                 </div>
                 @for (group of section.groups; track $index) {
                     <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
-                        @if (group.heading || group.label) {
+                        @if (group.heading; as heading) {
                             <div class="flex min-w-0 items-baseline justify-between gap-2 text-[13px] opacity-70">
-                                @if (group.heading; as heading) {
-                                    <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: heading }"></ng-container>
+                                @if (typeof heading === "string") {
+                                    <span>{{ heading }}</span>
                                 } @else {
-                                    <span>{{ group.label }}</span>
+                                    <ng-container
+                                        [ngTemplateOutlet]="referenceButton"
+                                        [ngTemplateOutletContext]="{ $implicit: heading }"
+                                    ></ng-container>
                                 }
                                 <span class="shrink-0 tabular-nums">{{ group.dependencies.length + group.hiddenCount }}</span>
                             </div>

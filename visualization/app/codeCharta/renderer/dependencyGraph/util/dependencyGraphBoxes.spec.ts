@@ -13,7 +13,7 @@ interface DrawnElement {
 }
 
 function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false, kindMark: DeclarationKindMark = "off"): BoxLook {
-    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, cycle: NO_CYCLE }
+    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, listsLevels: false, cycle: NO_CYCLE }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -94,10 +94,11 @@ describe("dependencyGraphBoxes", () => {
 
         it("should name a listed declaration's level at its right, and leave the name that much less room", () => {
             // Arrange
-            const box = aBox("/root/a.ts/Creature", { kind: "declaration", x: 0, y: 0, width: 132, height: 26, listedLevel: 3 })
+            const box = aBox("/root/a.ts/Creature", { kind: "declaration", x: 0, y: 0, width: 132, height: 26, level: 3 })
+            const listed = { ...look("none"), listsLevels: true }
 
             // Act
-            const [, label, level] = childrenOf(drawBox(box, look("none"), identityPixels))
+            const [, label, level] = childrenOf(drawBox(box, listed, identityPixels))
 
             // Assert
             expect(level.style).toMatchObject({ text: "3", x: 125, y: 13, align: "right", fill: "#8a94a3" })

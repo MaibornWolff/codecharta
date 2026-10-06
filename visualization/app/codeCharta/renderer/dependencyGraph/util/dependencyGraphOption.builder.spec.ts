@@ -315,7 +315,7 @@ describe("buildDependencyGraphOption", () => {
             declarationKind: "class",
             x: 200,
             y: 44,
-            listedLevel: 1
+            level: 1
         })
         const layout = { boxes: [root, file, declaration], bands: [aBand()], width: 400, height: 200 }
         const cycleMarks = { hiddenCycles: new Map([[file.path, 3]]), declarationsInCycles: new Set([declaration.path]) }
@@ -324,6 +324,7 @@ describe("buildDependencyGraphOption", () => {
             layout,
             edges,
             cycleMarks,
+            declarationArrangement: "list",
             selectedEdgeId: edges[0].id
         })
 

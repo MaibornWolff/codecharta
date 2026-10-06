@@ -23,7 +23,9 @@ const KIND_ICON = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10, lineWidthPx:
 export const KIND_ICON_WIDTH_PX = 18
 const HEXAGON = { maxNotchPx: 8, heightsPerNotch: 2.5 }
 const INNER_FRAME = { insetPx: 2.5, cornerRadiusPx: 1.5 }
-const COUNT_BADGE = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10 }
+const COUNT_BADGE = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10, outlinePx: 1 }
+/** One declaration is what the file's name stands for already. */
+const FEWEST_COUNTED_DECLARATIONS = 2
 const CYCLE_BADGE = {
     heightPx: 15,
     overhangPx: 6,
@@ -89,11 +91,8 @@ const LISTED_LEVEL = { insetPx: 7, fontSizePx: 10 }
 export const LISTED_LEVEL_WIDTH_PX = 12
 
 export function drawListedLevel(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
-    if (box.listedLevel === undefined) {
-        return []
-    }
     const style = {
-        text: String(box.listedLevel),
+        text: String(box.level),
         x: rect.x + rect.width - LISTED_LEVEL.insetPx * scale,
         y: rect.y + rect.height / 2,
         align: "right",
@@ -107,11 +106,11 @@ export function drawListedLevel(box: LayoutBox, rect: Rectangle, { opacity, scal
 
 /** A closed file says how many declarations it holds once there is more than the one its name stands for. */
 export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
-    if (box.isExpanded || box.declarationCount < 2) {
+    if (box.isExpanded || box.declarationCount < FEWEST_COUNTED_DECLARATIONS) {
         return []
     }
     const centre = { cx: rect.x + rect.width - COUNT_BADGE.centreInsetPx * scale, cy: rect.y + rect.height / 2 }
-    const disc = { fill: FILE_FILL, stroke: QUIET_BADGE_COLOR, lineWidth: 1, opacity }
+    const disc = { fill: FILE_FILL, stroke: QUIET_BADGE_COLOR, lineWidth: COUNT_BADGE.outlinePx, opacity }
     return [
         { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: COUNT_BADGE.radiusPx * scale }, style: disc },
         centredText(String(box.declarationCount), centre, { fontSize: COUNT_BADGE.fontSizePx * scale, fill: QUIET_BADGE_COLOR, opacity })
@@ -144,45 +143,50 @@ export function drawCycleMark(
     return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { color, opacity, scale })
 }
 
+interface BadgeLook {
+    color: string
+    opacity: number
+    scale: number
+}
+
 /** A pill with the sign of a cycle, and the count once it hides more than one. */
-function drawCycleBadge(
-    rect: Rectangle,
-    count: number,
-    { color, opacity, scale }: { color: string; opacity: number; scale: number }
-): object[] {
+function drawCycleBadge(rect: Rectangle, count: number, { color, opacity, scale }: BadgeLook): object[] {
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
     const height = CYCLE_BADGE.heightPx * scale
     const numberLeft = CYCLE_BADGE.numberLeftPx * scale
-    const width = count > 1 ? numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale : height
+    const isCounted = count > 1
+    const width = isCounted ? numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale : height
     const left = rect.x + rect.width + CYCLE_BADGE.overhangPx * scale - width
     const top = rect.y - CYCLE_BADGE.risePx * scale
-    const part = { info: CYCLE_BADGE_INFO, cursor: "pointer" }
     const pill = { x: left, y: top, width, height, r: height / 2 }
     const pillStyle = { fill: color, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_BADGE.outlinePx, opacity }
-    const glyphAt = { ...UNTRANSFORMED, x: left + height / 2, y: top + height / 2, scaleX: scale, scaleY: scale, silent: true }
-    const glyphLine = { fill: null, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_GLYPH.lineWidthPx, lineCap: "round", opacity }
-    const number = {
+    const middle = top + height / 2
+    return [
+        { type: "rect", ...UNTRANSFORMED, ...CYCLE_BADGE_PART, shape: pill, style: pillStyle },
+        ...cycleGlyph({ x: left + height / 2, y: middle }, { opacity, scale }),
+        ...(isCounted ? [cycleCount(text, { x: left + numberLeft, y: middle }, { opacity, scale })] : [])
+    ]
+}
+
+const CYCLE_BADGE_PART = { info: CYCLE_BADGE_INFO, cursor: "pointer" }
+
+function cycleGlyph(centre: { x: number; y: number }, { opacity, scale }: MarkLook): object[] {
+    const placed = { ...UNTRANSFORMED, ...centre, scaleX: scale, scaleY: scale, silent: true }
+    const line = { fill: null, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_GLYPH.lineWidthPx, lineCap: "round", opacity }
+    return [
+        { type: "path", ...placed, shape: { pathData: CYCLE_GLYPH.arc }, style: line },
+        { type: "path", ...placed, shape: { pathData: CYCLE_GLYPH.head }, style: { fill: CYCLE_BADGE_TEXT_COLOR, stroke: null, opacity } }
+    ]
+}
+
+function cycleCount(text: string, leftMiddle: { x: number; y: number }, { opacity, scale }: MarkLook) {
+    const look = { align: "left", verticalAlign: "middle", fontSize: CYCLE_BADGE.fontSizePx * scale, fontWeight: "bold" }
+    return {
         type: "text",
         ...UNTRANSFORMED,
-        ...part,
-        style: {
-            text,
-            x: left + numberLeft,
-            y: top + height / 2,
-            align: "left",
-            verticalAlign: "middle",
-            fontSize: CYCLE_BADGE.fontSizePx * scale,
-            fontWeight: "bold",
-            fill: CYCLE_BADGE_TEXT_COLOR,
-            opacity
-        }
+        ...CYCLE_BADGE_PART,
+        style: { text, ...leftMiddle, ...look, fill: CYCLE_BADGE_TEXT_COLOR, opacity }
     }
-    return [
-        { type: "rect", ...UNTRANSFORMED, ...part, shape: pill, style: pillStyle },
-        { type: "path", ...glyphAt, shape: { pathData: CYCLE_GLYPH.arc }, style: glyphLine },
-        { type: "path", ...glyphAt, shape: { pathData: CYCLE_GLYPH.head }, style: { fill: CYCLE_BADGE_TEXT_COLOR, stroke: null, opacity } },
-        ...(count > 1 ? [number] : [])
-    ]
 }
 
 interface TextLook {

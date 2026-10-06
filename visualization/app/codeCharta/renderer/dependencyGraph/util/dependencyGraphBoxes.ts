@@ -49,6 +49,8 @@ export interface BoxLook {
     isMissedBySearch: boolean
     /** How a declaration tells what it is. */
     kindMark: DeclarationKindMark
+    /** In a list no row stands for a level, so each declaration names its own. */
+    listsLevels: boolean
     cycle: CycleLook
 }
 
@@ -115,10 +117,11 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
     return shape === "double" ? [outline, drawInnerFrame(rect, opacity)] : [outline]
 }
 
-function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark }: BoxLook, zoom: number): object[] {
+function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark, listsLevels }: BoxLook, zoom: number): object[] {
     const opacity = opacityOf(isMissedBySearch)
     const scale = markScaleOf(zoom)
     const hasKindIcon = box.kind === "declaration" && kindMark === "icon"
+    const hasListedLevel = box.kind === "declaration" && listsLevels
     const mark = { opacity, scale: scale ?? 0 }
     const marks =
         scale === null
@@ -126,9 +129,9 @@ function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark 
             : [
                   ...drawFileMarks(box, rect, mark),
                   ...(hasKindIcon ? drawKindIcon(box, rect, mark) : []),
-                  ...drawListedLevel(box, rect, mark)
+                  ...(hasListedLevel ? drawListedLevel(box, rect, mark) : [])
               ]
-    const label = drawLabel(box, rect, { opacity, hasKindIcon, markScale: scale ?? 0 })
+    const label = drawLabel(box, rect, { opacity, hasKindIcon, hasListedLevel, markScale: scale ?? 0 })
     return label ? [label, ...marks] : marks
 }
 
@@ -255,15 +258,28 @@ function baseStyle(box: LayoutBox) {
 interface LabelLook {
     opacity: number
     hasKindIcon: boolean
+    hasListedLevel: boolean
     /** How large the marks beside the name are drawn; zero when they are left out. */
     markScale: number
 }
 
-function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon, markScale }: LabelLook) {
+/** What the marks beside a name take from the room for it. */
+interface LabelRoom {
+    marksWidth: number
+    iconWidth: number
+    levelWidth: number
+    width: number
+}
+
+function labelRoomOf(box: LayoutBox, rect: Rectangle, { hasKindIcon, hasListedLevel, markScale }: LabelLook): LabelRoom {
     const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX * markScale : 0
     const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX * markScale : 0
-    const levelWidth = box.listedLevel === undefined ? 0 : LISTED_LEVEL_WIDTH_PX * markScale
-    const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth - levelWidth
+    const levelWidth = hasListedLevel ? LISTED_LEVEL_WIDTH_PX * markScale : 0
+    return { marksWidth, iconWidth, levelWidth, width: rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth - levelWidth }
+}
+
+function drawLabel(box: LayoutBox, rect: Rectangle, look: LabelLook) {
+    const { marksWidth, iconWidth, levelWidth, width } = labelRoomOf(box, rect, look)
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -283,7 +299,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon, mark
             fontSize: box.kind === "declaration" ? DECLARATION_FONT_SIZE_PX : LABEL_FONT_SIZE_PX,
             fontWeight: isContainerKind(box.kind) ? "bold" : "normal",
             fill: TEXT_COLOR,
-            opacity
+            opacity: look.opacity
         }
     }
 }

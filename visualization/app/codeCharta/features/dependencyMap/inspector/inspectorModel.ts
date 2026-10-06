@@ -51,10 +51,9 @@ export interface InspectorDependency {
     declarationEdge: DependencyLeafEdge
 }
 
-/** The dependencies shared with one other file, under that file's name or, without one, under a plain label. */
+/** The dependencies shared with one other file, under that file's name, under a plain label, or under nothing. */
 interface InspectorGroup {
-    heading: InspectorReference | null
-    label: string
+    heading: InspectorReference | string | null
     dependencies: InspectorDependency[]
     hiddenCount: number
 }
@@ -77,13 +76,16 @@ interface InspectorDeclarations {
     hiddenCount: number
 }
 
+/** A declaration a cycle runs through, and how its dependency on the next one is drawn; the last leads back to the first. */
+interface InspectorCycleStep {
+    reference: InspectorReference
+    linkToNext: InspectorLink
+}
+
 export interface InspectorCycle {
-    /** The declarations walked, the first of them again at the end. */
-    steps: InspectorReference[]
+    steps: InspectorCycleStep[]
     /** The files the cycle runs through. */
     files: InspectorReference[]
-    /** How each step is drawn in the graph: one per dependency walked, the last leading back to the start. */
-    links: InspectorLink[]
     declarationEdges: CycleChain
 }
 
@@ -167,9 +169,7 @@ function parentOf(node: LeveledNode): InspectorParent {
 
 function describeFile(file: LeveledNode, isOpen: boolean, context: InspectorContext): InspectorModel {
     const declarations = context.index.declarationsOfFile.get(file.path) ?? []
-    const ownPaths = pathsOf(declarations)
     const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
-    const packages = [...new Set(declarations.flatMap(({ leaf }) => (leaf.namespace === undefined ? [] : [leaf.namespace])))]
     const cycles = cyclesOf(declarations, context)
     return {
         kind: "file",
@@ -177,78 +177,63 @@ function describeFile(file: LeveledNode, isOpen: boolean, context: InspectorCont
         parent: null,
         path: file.path,
         copyText: file.path,
-        badges: [
-            { text: "file" },
-            ...packages.map(packageKey => ({ text: `package ${packageKey}` })),
-            { text: counted(declarations.length, "declaration") },
-            ...cycleBadge(cycles.cycleCount)
-        ],
+        badges: [...fileBadges(declarations), ...cycleBadge(cycles.cycleCount)],
         declarations: declarationList(declarations, context.rowLimit),
-        sections: [
-            section(
-                "Uses",
-                [{ heading: null, label: THIS_FILE, declarationEdges: inside }, ...groupedByFile(outgoing, edge => edge.toNodeName)],
-                ownPaths,
-                context
-            ),
-            section(
-                "Used by",
-                groupedByFile(incoming, edge => edge.fromNodeName),
-                ownPaths,
-                context
-            )
-        ],
+        sections: usesAndUsedBy({ insideOwnFile: inside, uses: outgoing, usedBy: incoming }, pathsOf(declarations), context),
         ...cycles,
-        action: declarations.length === 0 ? null : isOpen ? "close" : "open"
+        action: actionOf(declarations, isOpen)
     }
+}
+
+function fileBadges(declarations: readonly IndexedDeclaration[]): InspectorBadge[] {
+    const packages = [...new Set(declarations.flatMap(({ leaf }) => (leaf.namespace === undefined ? [] : [leaf.namespace])))]
+    return [
+        { text: "file" },
+        ...packages.map(packageKey => ({ text: `package ${packageKey}` })),
+        { text: counted(declarations.length, "declaration") }
+    ]
+}
+
+function actionOf(declarations: readonly IndexedDeclaration[], isOpen: boolean): InspectorActionKind | null {
+    if (declarations.length === 0) {
+        return null
+    }
+    return isOpen ? "close" : "open"
 }
 
 function describeDeclaration(node: LeveledNode, context: InspectorContext): InspectorModel {
     const declaration = context.index.declarations.get(node.path)
     const declarations = declaration ? [declaration] : []
-    const ownPaths = pathsOf(declarations)
     const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
     const uses = [...inside.filter(edge => fromPathOf(edge) === node.path), ...outgoing]
     const usedBy = [...inside.filter(edge => toPathOf(edge) === node.path), ...incoming]
     const cycles = cyclesOf(declarations, context)
-    const { namespace, level } = declaration?.leaf ?? {}
     return {
         kind: "declaration",
         title: node.name,
         parent: null,
         path: node.path,
         copyText: declaration?.filePath ?? null,
-        badges: [
-            { text: declarationKindLabelOf(node.declarationKind ?? "") },
-            ...(namespace === undefined ? [] : [{ text: `package ${namespace}` }]),
-            ...(level === undefined ? [] : [{ text: `level ${level}` }]),
-            ...cycleBadge(cycles.cycleCount)
-        ],
+        badges: [...declarationBadges(node, declaration), ...cycleBadge(cycles.cycleCount)],
         declarations: null,
-        sections: [
-            section(
-                "Uses",
-                groupedByFile(uses, edge => edge.toNodeName),
-                ownPaths,
-                context
-            ),
-            section(
-                "Used by",
-                groupedByFile(usedBy, edge => edge.fromNodeName),
-                ownPaths,
-                context
-            )
-        ],
+        sections: usesAndUsedBy({ uses, usedBy }, pathsOf(declarations), context),
         ...cycles,
         action: null
     }
 }
 
+function declarationBadges(node: LeveledNode, declaration: IndexedDeclaration | undefined): InspectorBadge[] {
+    const { namespace, level } = declaration?.leaf ?? {}
+    return [
+        { text: declarationKindLabelOf(node.declarationKind ?? "") },
+        ...(namespace === undefined ? [] : [{ text: `package ${namespace}` }]),
+        ...(level === undefined ? [] : [{ text: `level ${level}` }])
+    ]
+}
+
 function describeFolder(folder: LeveledNode, context: InspectorContext): InspectorModel {
     const files = filesIn(folder)
     const declarations = files.flatMap(file => context.index.declarationsOfFile.get(file.path) ?? [])
-    const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
-    const touching = [...inside, ...outgoing, ...incoming]
     const cycles = cyclesOf(declarations, context)
     const isPackage = folder.kind === "package"
     return {
@@ -260,9 +245,7 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
         badges: [
             { text: isPackage ? "package" : "folder" },
             { text: counted(files.length, "file") },
-            { text: counted(declarations.length, "declaration") },
-            { text: `${touching.filter(edge => edge.isCyclic).length} cyclic` },
-            { text: `${touching.filter(context.pointsUpward).length} upward` },
+            ...dependencyBadges(declarations, context),
             ...cycleBadge(cycles.cycleCount)
         ],
         declarations: null,
@@ -270,6 +253,36 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
         ...cycles,
         action: null
     }
+}
+
+function dependencyBadges(declarations: readonly IndexedDeclaration[], context: InspectorContext): InspectorBadge[] {
+    const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
+    const touching = [...inside, ...outgoing, ...incoming]
+    return [
+        { text: counted(declarations.length, "declaration") },
+        { text: `${touching.filter(edge => edge.isCyclic).length} cyclic` },
+        { text: `${touching.filter(context.pointsUpward).length} upward` }
+    ]
+}
+
+interface Uses {
+    /** Dependencies between the declarations of the selected file itself. */
+    insideOwnFile?: readonly DependencyLeafEdge[]
+    uses: readonly DependencyLeafEdge[]
+    usedBy: readonly DependencyLeafEdge[]
+}
+
+function usesAndUsedBy({ insideOwnFile = [], uses, usedBy }: Uses, ownPaths: ReadonlySet<string>, context: InspectorContext) {
+    const ownFile = { heading: THIS_FILE, declarationEdges: insideOwnFile }
+    return [
+        section("Uses", [ownFile, ...groupedByFile(uses, edge => edge.toNodeName)], ownPaths, context),
+        section(
+            "Used by",
+            groupedByFile(usedBy, edge => edge.fromNodeName),
+            ownPaths,
+            context
+        )
+    ]
 }
 
 function describeEdge(edge: GraphEdge, title: string, context: InspectorContext): InspectorModel {
@@ -286,7 +299,7 @@ function describeEdge(edge: GraphEdge, title: string, context: InspectorContext)
         copyText: null,
         badges: [{ text: weightOf(edge, context.edgeMetric) }, ...usageCounts(indexedEdges)],
         declarations: null,
-        sections: [section("Stands for", [{ heading: null, label: "", declarationEdges: indexedEdges }], new Set(), context)],
+        sections: [section("Stands for", [{ heading: null, declarationEdges: indexedEdges }], new Set(), context)],
         cycles: [],
         cycleCount: 0,
         mayMissCycles: false,
@@ -320,7 +333,7 @@ function declarationList(declarations: readonly IndexedDeclaration[], rowLimit: 
     const items = declarations
         .map(declaration => ({ reference: declarationReference(declaration), detail: detailOf(declaration) }))
         .sort((itemA, itemB) => itemA.reference.name.localeCompare(itemB.reference.name))
-    return { count: items.length, items: items.slice(0, rowLimit), hiddenCount: Math.max(0, items.length - rowLimit) }
+    return { count: items.length, items: items.slice(0, rowLimit), hiddenCount: hiddenCountOf(items, rowLimit) }
 }
 
 function detailOf({ leaf }: IndexedDeclaration): string {
@@ -345,9 +358,12 @@ function dependenciesOf(declarations: readonly IndexedDeclaration[], index: Decl
     }
 }
 
+function hiddenCountOf(rows: readonly unknown[], rowLimit: number): number {
+    return Math.max(0, rows.length - rowLimit)
+}
+
 interface EdgeGroup {
-    heading: InspectorReference | null
-    label: string
+    heading: InspectorGroup["heading"]
     declarationEdges: readonly DependencyLeafEdge[]
 }
 
@@ -361,7 +377,7 @@ function groupedByFile(
     }
     return [...byFile.entries()]
         .sort(([fileA], [fileB]) => fileA.localeCompare(fileB))
-        .map(([filePath, edgesOfFile]) => ({ heading: fileReference(filePath), label: "", declarationEdges: edgesOfFile }))
+        .map(([filePath, edgesOfFile]) => ({ heading: fileReference(filePath), declarationEdges: edgesOfFile }))
 }
 
 function section(title: string, groups: readonly EdgeGroup[], ownPaths: ReadonlySet<string>, context: InspectorContext): InspectorSection {
@@ -370,14 +386,9 @@ function section(title: string, groups: readonly EdgeGroup[], ownPaths: Readonly
     return {
         title,
         count: filled.reduce((count, group) => count + group.declarationEdges.length, 0),
-        groups: filled.map(({ heading, label, declarationEdges }) => {
+        groups: filled.map(({ heading, declarationEdges }) => {
             const dependencies = declarationEdges.map(declarationEdge => dependencyOf(declarationEdge, ownPaths, context)).sort(byNames)
-            return {
-                heading,
-                label,
-                dependencies: dependencies.slice(0, rowLimit),
-                hiddenCount: Math.max(0, dependencies.length - rowLimit)
-            }
+            return { heading, dependencies: dependencies.slice(0, rowLimit), hiddenCount: hiddenCountOf(dependencies, rowLimit) }
         })
     }
 }
@@ -421,16 +432,18 @@ function cyclesOf(declarations: readonly IndexedDeclaration[], context: Inspecto
         cycles: chains.slice(0, rowLimit).map(chain => {
             const walked = startingAt(chain, ownPaths)
             return {
-                steps: [fromPathOf(walked[0]), ...walked.map(toPathOf)].map(path => declarationReference(index.declarations.get(path))),
+                steps: walked.map(declarationEdge => ({
+                    reference: declarationReference(index.declarations.get(fromPathOf(declarationEdge))),
+                    linkToNext: linkOf(declarationEdge, context)
+                })),
                 files: [...new Set(walked.map(declarationEdge => declarationEdge.fromNodeName))].map(fileReference),
-                links: walked.map(declarationEdge => linkOf(declarationEdge, context)),
                 declarationEdges: walked
             }
         })
     }
 }
 
-/** A cycle has no first declaration; it is indexedEdges from one of the selection's own, since that is where the reader stands. */
+/** A cycle has no first declaration; it is told from one of the selection's own, since that is where the reader stands. */
 function startingAt(chain: CycleChain, ownPaths: ReadonlySet<string>): CycleChain {
     const start = Math.max(
         0,
