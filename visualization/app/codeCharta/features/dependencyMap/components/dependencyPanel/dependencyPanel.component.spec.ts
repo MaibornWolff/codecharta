@@ -8,7 +8,7 @@ const CREATURE: PanelRef = { path: "/root/creature.ts/Creature", name: "Creature
 const WEAPON: PanelRef = { path: "/root/weapon.ts/Weapon", name: "Weapon", kind: "declaration", declarationKind: "interface" }
 const WEAPON_FILE: PanelRef = { path: "/root/weapon.ts", name: "weapon.ts", kind: "file" }
 const CREATURE_FILE: PanelRef = { path: "/root/creature.ts", name: "creature.ts", kind: "file" }
-const ROOT_FOLDER: PanelRef = { path: "/root", name: "root", kind: "folder" }
+const ROOT_FOLDER = { path: "/root", name: "root", kind: "folder", shownAs: "/root" } as const
 
 const EDGE_COLORS = { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" }
 
@@ -68,10 +68,11 @@ const FILE_MODEL: PanelModel = {
         }
     ],
     cycleCount: 6,
+    mayMissCycles: false,
     action: "open"
 }
 
-async function renderPanel(model: PanelModel = FILE_MODEL, cyclesRequest = 0) {
+async function renderPanel(model: PanelModel = FILE_MODEL, cyclesRequest: number | null = null) {
     const handlers = {
         refChosen: jest.fn(),
         dependenciesPointedAt: jest.fn(),
@@ -125,6 +126,44 @@ describe("DependencyPanelComponent", () => {
         expect(writeText).toHaveBeenCalledWith("/root/creature.ts")
         expect(whileCopied).toBe("Copied!")
         expect(copyButton.getAttribute("title")).toBe("Copy path")
+    })
+
+    it("should say nothing was copied where the page has no clipboard, and forget a copy once another subject is shown", async () => {
+        // Arrange
+        Object.assign(navigator, { clipboard: undefined })
+        const { fixture, rerender } = await renderPanel()
+        const copyButton = screen.getByTestId("dependency-panel-copy")
+
+        // Act
+        copyButton.click()
+        await fixture.whenStable()
+        fixture.detectChanges()
+        const withoutClipboard = copyButton.getAttribute("title")
+        Object.assign(navigator, { clipboard: { writeText: jest.fn().mockResolvedValue(undefined) } })
+        copyButton.click()
+        await fixture.whenStable()
+        fixture.detectChanges()
+        const afterCopying = copyButton.getAttribute("title")
+        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, edgeColors: EDGE_COLORS } })
+        fixture.detectChanges()
+
+        // Assert
+        expect([withoutClipboard, afterCopying]).toEqual(["Copy path", "Copied!"])
+        expect(screen.getByTestId("dependency-panel-copy").getAttribute("title")).toBe("Copy path")
+    })
+
+    it("should say that there may be more cycles than shown only for a map too tangled to search", async () => {
+        // Arrange
+        const { fixture, rerender } = await renderPanel()
+        const searchedToTheEnd = screen.queryByTestId("dependency-panel-cycles-incomplete")
+
+        // Act
+        await rerender({ inputs: { model: { ...FILE_MODEL, mayMissCycles: true }, edgeColors: EDGE_COLORS } })
+        fixture.detectChanges()
+
+        // Assert
+        expect(searchedToTheEnd).toBeNull()
+        expect(screen.getByTestId("dependency-panel-cycles-incomplete").textContent).toContain("there may be more")
     })
 
     it("should offer no copy button where there is nothing to copy, and no parent where nothing lies above", async () => {
@@ -292,6 +331,7 @@ describe("DependencyPanelComponent", () => {
             ],
             cycles: [],
             cycleCount: 0,
+            mayMissCycles: false,
             action: null
         }
 
@@ -339,7 +379,7 @@ describe("DependencyPanelComponent", () => {
         // Arrange
         const scrollIntoView = jest.fn()
         Element.prototype.scrollIntoView = scrollIntoView
-        const { rerender, fixture } = await renderPanel(FILE_MODEL, 0)
+        const { rerender, fixture } = await renderPanel(FILE_MODEL, null)
 
         // Act
         await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1, edgeColors: EDGE_COLORS } })

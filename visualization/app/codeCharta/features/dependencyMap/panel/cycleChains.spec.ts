@@ -24,7 +24,7 @@ describe("findCycleChains", () => {
         const index = indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("B", "C"), leafEdge("C", "A"), leafEdge("A", "D", false)])
 
         // Act
-        const chains = findCycleChains(index)
+        const { chains } = findCycleChains(index)
 
         // Assert
         expect(namesOf(chains)).toEqual(["A → B → A", "B → C → A → B"])
@@ -35,7 +35,7 @@ describe("findCycleChains", () => {
         const index = indexOf([leafEdge("A", "B"), leafEdge("B", "C"), leafEdge("C", "A")])
 
         // Act
-        const [chain] = findCycleChains(index)
+        const [chain] = findCycleChains(index).chains
 
         // Assert
         expect(chain.every((edge, position) => toPathOf(edge) === fromPathOf(chain[(position + 1) % 3]))).toBe(true)
@@ -47,7 +47,7 @@ describe("findCycleChains", () => {
         const index = indexOf([leafEdge("A", "A")])
 
         // Act
-        const chains = findCycleChains(index)
+        const { chains } = findCycleChains(index)
 
         // Assert
         expect(namesOf(chains)).toEqual(["A → A"])
@@ -58,13 +58,13 @@ describe("findCycleChains", () => {
         const index = indexOf([leafEdge("A", "B")])
 
         // Act
-        const chains = findCycleChains(index)
+        const { chains } = findCycleChains(index)
 
         // Assert
         expect(chains).toEqual([])
     })
 
-    it("should stop after the number of walks it is given", () => {
+    it("should stop after the number of walks it is given and say that it did", () => {
         // Arrange
         const spokes = ["B", "C", "D", "E"].flatMap(name => [leafEdge("Hub", name), leafEdge(name, "Hub")])
         const index = indexOf(spokes)
@@ -73,15 +73,15 @@ describe("findCycleChains", () => {
         const tired = findCycleChains(index, 3)
 
         // Assert
-        expect(tired).toHaveLength(3)
-        expect(findCycleChains(index)).toHaveLength(4)
+        expect([tired.chains.length, tired.isComplete]).toEqual([3, false])
+        expect(findCycleChains(index)).toMatchObject({ chains: { length: 4 }, isComplete: true })
     })
 })
 
 describe("cyclesThrough", () => {
     it("should keep the cycles running through one of the declarations asked for", () => {
         // Arrange
-        const chains = findCycleChains(indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("C", "D"), leafEdge("D", "C")]))
+        const { chains } = findCycleChains(indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("C", "D"), leafEdge("D", "C")]))
 
         // Act
         const throughB = cyclesThrough(new Set([`${FILE}/B`, `${FILE}/Unrelated`]), chains)

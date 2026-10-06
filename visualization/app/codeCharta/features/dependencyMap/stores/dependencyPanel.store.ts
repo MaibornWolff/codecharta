@@ -1,5 +1,5 @@
 import { computed, Injectable, inject, signal } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../panel/declarationIndex"
@@ -19,14 +19,14 @@ export class DependencyPanelStore {
     private readonly graphModel = inject(DependencyGraphModelStore)
     private readonly viewStore = inject(DependencyMapViewStore)
     private readonly writeStore = inject(DependencyMapWriteStore)
-    private readonly sharedSelectedPath = toSignal(inject(DependencyMapReadStore).selectedNodePath$, { requireSync: true })
+    private readonly selectedNodePath$ = inject(DependencyMapReadStore).selectedNodePath$
+    private readonly sharedSelectedPath = toSignal(this.selectedNodePath$, { requireSync: true })
 
     private readonly pointedAt = signal(NOTHING_POINTED_AT)
     private readonly dismissedSubject = signal<string | null>(null)
     private readonly subjectShownInFull = signal<string | null>(null)
-    private readonly cyclesRequestCount = signal(0)
+    private readonly cyclesAskedFor = signal<{ id: number; boxPath: string } | null>(null)
 
-    readonly cyclesRequest = this.cyclesRequestCount.asReadonly()
     readonly edgeColors = computed(() => {
         const { edgeColors, lineStyleShows } = this.graphModel.settings()
         return edgeColorsAsDrawn(edgeColors, lineStyleShows)
@@ -45,6 +45,13 @@ export class DependencyPanelStore {
         return selection?.kind === "edge" ? (this.graphModel.projectedEdges().find(edge => edge.id === selection.id) ?? null) : null
     })
 
+    /** The request to bring the cycles into view, for as long as the box they were asked of is selected. */
+    readonly cyclesRequest = computed(() => {
+        const asked = this.cyclesAskedFor()
+        const selection = this.selection()
+        return asked && selection?.kind === "box" && selection.path === asked.boxPath ? asked.id : null
+    })
+
     readonly selectedBoxPath = computed(() => {
         const selection = this.selection()
         return selection?.kind === "box" ? this.graphModel.boxStandingFor(selection.path) : null
@@ -59,7 +66,11 @@ export class DependencyPanelStore {
             return { kind: "edge", edge, fromName: nameOf(edge.fromPath), toName: nameOf(edge.toPath) }
         }
         const node = selection?.kind === "box" ? this.graphModel.nodesByPath().get(selection.path) : undefined
-        return node ? { kind: "box", node, isOpen: this.viewStore.expandedPaths().has(node.path) } : null
+        if (!node) {
+            return null
+        }
+        const parent = this.graphModel.parentsByPath().get(node.path) ?? null
+        return { kind: "box", node, parent, isOpen: this.viewStore.expandedPaths().has(node.path) }
     })
     private readonly subjectId = computed(() => {
         const subject = this.subject()
@@ -74,7 +85,15 @@ export class DependencyPanelStore {
             return null
         }
         const rowLimit = this.subjectShownInFull() === this.subjectId() ? Number.POSITIVE_INFINITY : PANEL_ROW_LIMIT
-        return describeSubject(subject, { index, rowLimit, cycles: this.graphModel.cycles(), pointsUpward: this.graphModel.pointsUpward() })
+        const { chains, isComplete } = this.graphModel.cycleSearch()
+        return describeSubject(subject, {
+            index,
+            rowLimit,
+            cycles: chains,
+            mayMissCycles: !isComplete,
+            edgeMetric: this.graphModel.edgeMetric(),
+            pointsUpward: this.graphModel.pointsUpward()
+        })
     })
 
     /** Each dependency pointed at lights up the edge it is drawn as, or drawn in. */
@@ -83,10 +102,16 @@ export class DependencyPanelStore {
         return new Set(this.pointedAt().map(leafEdge => `${boxOf(fromPathOf(leafEdge))}|${boxOf(toPathOf(leafEdge))}`))
     })
 
+    /** A subject the reader selects anew is shown again, whichever view it is selected in. */
+    constructor() {
+        this.selectedNodePath$.pipe(takeUntilDestroyed()).subscribe(() => this.dismissedSubject.set(null))
+    }
+
     select(boxPath: string): void {
         const nodePath = this.graphModel.nodePathOf(boxPath)
         this.viewStore.selectInGraph(nodePath === boxPath ? null : { kind: "box", path: boxPath, sharedPath: nodePath })
         this.dismissedSubject.set(null)
+        this.cyclesAskedFor.set(null)
         if (nodePath === null) {
             this.writeStore.clearSelection()
         } else {
@@ -101,13 +126,15 @@ export class DependencyPanelStore {
     }
 
     showCyclesOf(boxPath: string): void {
+        const id = (this.cyclesAskedFor()?.id ?? 0) + 1
         this.select(boxPath)
-        this.cyclesRequestCount.update(count => count + 1)
+        this.cyclesAskedFor.set({ id, boxPath })
     }
 
     goTo(ref: PanelRef): void {
         this.viewStore.reveal(ref.path)
         this.select(ref.path)
+        this.pointAt(null)
         this.bringIntoView([ref.path])
     }
 
@@ -118,7 +145,11 @@ export class DependencyPanelStore {
     perform(action: PanelActionKind): void {
         const subject = this.subject()
         if (subject?.kind === "edge" && action === "unfold") {
+            this.viewStore.selectInGraph(null)
             this.revealEndsOf(subject.edge.declarationEdges)
+        } else if (subject?.kind === "box" && action === "open") {
+            this.viewStore.openFolder(subject.node.path)
+            this.bringIntoView([subject.node.path])
         } else if (subject?.kind === "box") {
             this.viewStore.toggle(subject.node.path)
         }

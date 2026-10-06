@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, untracked } from "@angular/core"
-import { toSignal } from "@angular/core/rxjs-interop"
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
     BoxOffset,
@@ -28,7 +28,8 @@ interface RevealsAwaitingAdoption {
 
 @Injectable({ providedIn: "root" })
 export class DependencyMapViewStore {
-    private readonly currentLayoutIdentity = toSignal(inject(DependencyMapReadStore).layoutIdentity$, { requireSync: true })
+    private readonly readStore = inject(DependencyMapReadStore)
+    private readonly currentLayoutIdentity = toSignal(this.readStore.layoutIdentity$, { requireSync: true })
     private readonly layoutIdentityOfTheOpenedFolders = signal<string | null>(null)
     private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
@@ -55,6 +56,16 @@ export class DependencyMapViewStore {
     /** What the reader asked for; a map without packages is shown by its folders all the same. */
     readonly hierarchy = this.shownHierarchy.asReadonly()
     readonly viewRequest = this.askedIntoView.asReadonly()
+
+    /** The graph's own selection ends for good once the shared one has moved on: selecting the same node again
+     * later selects that node, not what the graph once showed of it. */
+    constructor() {
+        this.readStore.selectedNodePath$.pipe(takeUntilDestroyed()).subscribe(sharedPath => {
+            if (untracked(this.selectedInGraph)?.sharedPath !== sharedPath) {
+                this.selectedInGraph.set(null)
+            }
+        })
+    }
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()

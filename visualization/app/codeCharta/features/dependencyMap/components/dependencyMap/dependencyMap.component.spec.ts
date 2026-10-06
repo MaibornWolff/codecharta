@@ -659,6 +659,97 @@ describe("DependencyMapComponent", () => {
                 expect(panelTitle()).toBe("node.ts")
             })
 
+            it("should tell only of what the graph draws, leaving out the declarations of a file outside the focus", async () => {
+                // Arrange
+                const focusedOnUi = leveledFolder("/root/ui", DECLARING_TREE.children[0].children, 1)
+
+                // Act
+                await setup({ tree: focusedOnUi, declarations: CYCLIC, selectedPath: VIEW, openedFolders: [] })
+
+                // Assert
+                expect(screen.getByRole("region", { name: "Uses" }).textContent).not.toContain("Node")
+                expect(screen.queryByRole("region", { name: "Used by" })).toBeNull()
+                expect(screen.queryByRole("region", { name: "Cycles" })).toBeNull()
+            })
+
+            it("should not bring the cycles into view again for a box selected after the inspector was closed", async () => {
+                // Arrange
+                const scrollIntoView = jest.fn()
+                Element.prototype.scrollIntoView = scrollIntoView
+                const { store, fixture } = await setupSelected(VIEW)
+                fireChartEvent("click", { ...boxEvent(VIEW), info: "cycleBadge" })
+                fixture.detectChanges()
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
+                fixture.detectChanges()
+                fireChartEvent("click", boxEvent(NODE))
+                await select(store, fixture, NODE)
+
+                // Assert
+                expect(panelTitle()).toBe("node.ts")
+                expect(scrollIntoView).toHaveBeenCalledTimes(1)
+            })
+
+            it("should forget the selected edge once another view selects a node, also after that node is deselected", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+                fireChartEvent("click", { seriesId: "graph", data: { isEdge: true, edgeId: EDGE_ID } })
+                await select(store, fixture, null)
+
+                // Act
+                await select(store, fixture, NODE)
+                await select(store, fixture, null)
+
+                // Assert
+                expect(panelTitle()).toBeNull()
+            })
+
+            it("should explain a subject again that another view selects after the inspector was closed on it", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+                await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
+                fixture.detectChanges()
+
+                // Act
+                await select(store, fixture, NODE)
+                await select(store, fixture, VIEW)
+
+                // Assert
+                expect(panelTitle()).toBe("view.ts")
+            })
+
+            it("should open the folders around a hidden file when the panel opens that file in the graph", async () => {
+                // Arrange
+                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: CYCLIC, selectedPath: VIEW, openedFolders: [] })
+
+                // Act
+                await userEvent.click(screen.getByRole("button", { name: "Open in graph" }))
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(drawnBoxPaths()).toContain(`${VIEW}/Menu`)
+                expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([VIEW])
+            })
+
+            it("should stop lighting up a row's edge once the reader goes to a declaration named in that row", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+                const usesRow = within(screen.getByRole("region", { name: "Uses" }))
+                    .getAllByTestId("dependency-panel-row")
+                    .at(-1)
+                fireEvent.mouseEnter(usesRow)
+
+                // Act
+                await userEvent.click(within(usesRow).getByRole("button", { name: "Node" }))
+                await select(store, fixture, NODE)
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(new Set(Object.values(edgeOpacities()))).toEqual(new Set([1]))
+            })
+
             it("should show every row of a hub once the reader asks for the ones left out", async () => {
                 // Arrange
                 const manyNames = Array.from({ length: 25 }, (_, index) => `Part${String(index).padStart(2, "0")}`)
@@ -801,6 +892,18 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect([SCREENS, DATA, "package:app"].map(opacityOf)).toEqual([1, 0.3, 1])
+            })
+
+            it("should head a file in the panel with the package it is drawn in", async () => {
+                // Arrange
+                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, selectedPath: VIEW })
+
+                // Act
+                await showPackages(fixture)
+                fixture.detectChanges()
+
+                // Assert
+                expect(screen.getByTestId("dependency-panel-parent").textContent.trim()).toBe("package screens")
             })
 
             it("should select a package in the graph alone, explain it in the panel and tell the other views of no node", async () => {
