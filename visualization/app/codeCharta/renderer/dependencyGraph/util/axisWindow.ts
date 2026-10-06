@@ -1,5 +1,5 @@
 import { enclosingRectangle, Rectangle } from "./geometry"
-import { DependencyGraphLayout } from "./levelizedLayout"
+import { DependencyGraphLayout } from "./layoutModel"
 
 export interface Viewport {
     width: number

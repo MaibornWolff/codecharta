@@ -4,7 +4,7 @@ import { GraphEdge } from "./edgeProjection"
 import { EdgeRoute } from "./edgeRouting"
 import { Point } from "./geometry"
 import { childIndicesByFolder } from "./layoutHierarchy"
-import { DependencyGraphLayout, LayoutBox, LevelBand } from "./levelizedLayout"
+import { DependencyGraphLayout, LayoutBox, LevelBand } from "./layoutModel"
 
 export type PaintedItem = { kind: "box"; box: LayoutBox } | { kind: "band"; band: LevelBand }
 

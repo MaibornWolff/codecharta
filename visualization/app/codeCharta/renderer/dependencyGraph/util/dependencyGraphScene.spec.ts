@@ -1,7 +1,7 @@
 import { nestingOf } from "./boxNesting"
 import { isEdgeInFocus, isEdgeOfHovered, searchMatcher } from "./dependencyGraphScene"
 import { aBox, anEdge } from "./dependencyGraphTestData"
-import { LayoutBox } from "./levelizedLayout"
+import { LayoutBox } from "./layoutModel"
 
 const NO_BOXES = new Map<string, LayoutBox>()
 

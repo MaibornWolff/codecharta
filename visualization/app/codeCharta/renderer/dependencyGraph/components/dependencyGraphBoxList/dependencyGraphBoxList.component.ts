@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from "@angular/core"
+import { canBeOpened, LayoutBox } from "../../util/layoutModel"
 import { BoxKind } from "../../util/leveledTree"
-import { canBeOpened, LayoutBox } from "../../util/levelizedLayout"
 
 const BOX_KIND_NAMES: Record<BoxKind, string> = { folder: "Folder", package: "Package", file: "File", declaration: "Declaration" }
 const STEPS: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }

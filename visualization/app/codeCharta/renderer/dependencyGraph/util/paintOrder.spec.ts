@@ -1,5 +1,5 @@
 import { aBand, aBox } from "./dependencyGraphTestData"
-import { DependencyGraphLayout } from "./levelizedLayout"
+import { DependencyGraphLayout } from "./layoutModel"
 import { aroundEdges, boxAtPoint, PaintedItem, paintOrder, TitleItem, topmostBoxAt } from "./paintOrder"
 
 const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, width: 1000, height: 600 })

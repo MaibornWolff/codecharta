@@ -2,7 +2,7 @@ import { DeclarationShape, declarationKindLookOf, KIND_ICON_COLORS } from "./dec
 import { UNTRANSFORMED } from "./dependencyGraphElements"
 import { FILE_FILL, FILE_STROKE, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
-import { LayoutBox } from "./levelizedLayout"
+import { LayoutBox } from "./layoutModel"
 
 export interface CycleLook {
     /** The cycles a closed box hides; none draws no badge. */

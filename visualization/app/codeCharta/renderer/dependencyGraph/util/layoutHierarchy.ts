@@ -1,5 +1,5 @@
 import { addToGroup } from "./collections"
-import { LayoutBox } from "./levelizedLayout"
+import { LayoutBox } from "./layoutModel"
 
 /** Boxes come parents first, so a folder's children are the boxes one level deeper that follow it before the
  * next box at its own depth. */

@@ -2,7 +2,7 @@ import { canAnchorAtSideMiddle, DependencyEdgeStyle } from "../../../model/depen
 import { addToGroup } from "./collections"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
-import { LayoutBox } from "./levelizedLayout"
+import { LayoutBox } from "./layoutModel"
 
 export type Side = "top" | "bottom" | "left" | "right"
 

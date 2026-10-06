@@ -1,6 +1,6 @@
 import { aBox, anEdge } from "./dependencyGraphTestData"
 import { routeEdges } from "./edgeRouting"
-import { LayoutBox } from "./levelizedLayout"
+import { LayoutBox } from "./layoutModel"
 
 const upper = aBox("/root/upper", { x: 0, y: 0 })
 const lowerLeft = aBox("/root/lowerLeft", { x: 0, y: 100 })

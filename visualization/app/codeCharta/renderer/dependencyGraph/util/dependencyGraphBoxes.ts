@@ -37,7 +37,7 @@ import {
     TEXT_COLOR
 } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
-import { describeLevelPath, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
+import { describeLevelPath, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 import { BandCutout, BandSeparator, bandSeparator } from "./overlaps"
 
 export type BoxEmphasis = "selected" | "hovered" | "none"

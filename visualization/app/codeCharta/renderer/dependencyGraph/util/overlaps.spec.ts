@@ -1,6 +1,6 @@
 import { nestingOf } from "./boxNesting"
 import { aBand, aBox } from "./dependencyGraphTestData"
-import { LAYOUT_SPACING } from "./levelizedLayout"
+import { LAYOUT_SPACING } from "./layoutModel"
 import { findOverlaps } from "./overlaps"
 import { PaintedItem } from "./paintOrder"
 

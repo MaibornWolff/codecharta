@@ -1,5 +1,6 @@
+import { LAYOUT_SPACING, LayoutBox, namedByOwnLevel } from "./layoutModel"
 import { LeveledNode } from "./leveledTree"
-import { LAYOUT_SPACING, LayoutBox, LayoutOptions, layoutLevelized, namedByOwnLevel } from "./levelizedLayout"
+import { LayoutOptions, layoutLevelized } from "./levelizedLayout"
 
 function layout(tree: LeveledNode, expandedPaths: ReadonlySet<string>, options: Partial<LayoutOptions> = {}) {
     return layoutLevelized(tree, expandedPaths, { levelPathOfTree: [], declarationArrangement: "stacked", ...options })

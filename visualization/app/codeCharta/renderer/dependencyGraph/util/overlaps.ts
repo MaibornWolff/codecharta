@@ -1,6 +1,6 @@
 import { IsInside } from "./boxNesting"
 import { enclosingRectangle, intersects, Rectangle } from "./geometry"
-import { canBeOpened, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
+import { canBeOpened, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 import { PaintedItem } from "./paintOrder"
 import { RectangleGrid } from "./rectangleGrid"
 

@@ -2,7 +2,7 @@ import { IsInside } from "./boxNesting"
 import { enclosingRectangle, Rectangle } from "./geometry"
 import { childIndicesByFolder } from "./layoutHierarchy"
 import { lookupsOf } from "./layoutLookups"
-import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
+import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 
 /** In layout units, from where the layout put the box. */
 export type BoxOffset = [number, number]

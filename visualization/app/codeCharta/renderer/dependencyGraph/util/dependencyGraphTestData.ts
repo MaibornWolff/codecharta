@@ -1,14 +1,9 @@
-import { DependencyEdgeColors } from "../../../model/dependencyGraph.model"
+import { defaultDependencyGraphSettings } from "../../../stores/preferences/preferences.read.facade"
 import { NO_CYCLE_MARKS } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
-import { LayoutBox, LevelBand } from "./levelizedLayout"
+import { LayoutBox, LevelBand } from "./layoutModel"
 
-export const EDGE_COLORS: DependencyEdgeColors = {
-    regular: "#8c96a3",
-    cyclic: "#2563eb",
-    feedbackContainerLevel: "#dc2626",
-    feedbackLeafLevel: "#7f1d1d"
-}
+export const EDGE_COLORS = defaultDependencyGraphSettings.edgeColors
 
 /** How a scene looks while the reader has changed no setting. */
 export const DEFAULT_LOOKS = {
