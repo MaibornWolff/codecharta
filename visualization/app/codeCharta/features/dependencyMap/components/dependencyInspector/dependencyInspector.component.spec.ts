@@ -47,23 +47,21 @@ const FILE_MODEL: InspectorModel = {
             count: 5,
             groups: [
                 {
-                    heading: null,
-                    label: "this file",
+                    heading: "this file",
                     dependencies: [{ ...DEPENDENCY, to: CREATURE, isToOwn: true, type: "regular", usages: [] }],
                     hiddenCount: 0
                 },
-                { heading: WEAPON_FILE, label: "", dependencies: [DEPENDENCY], hiddenCount: 3 }
+                { heading: WEAPON_FILE, dependencies: [DEPENDENCY], hiddenCount: 3 }
             ]
         }
     ],
     cycles: [
         {
-            steps: [CREATURE, WEAPON, CREATURE],
-            files: [CREATURE_FILE, WEAPON_FILE],
-            links: [
-                { line: { dash: [7, 4], head: "hollow" }, type: "cyclic" },
-                { line: { dash: null, head: "filled" }, type: "feedbackLeafLevel" }
+            steps: [
+                { reference: CREATURE, linkToNext: { line: { dash: [7, 4], head: "hollow" }, type: "cyclic" } },
+                { reference: WEAPON, linkToNext: { line: { dash: null, head: "filled" }, type: "feedbackLeafLevel" } }
             ],
+            files: [CREATURE_FILE, WEAPON_FILE],
             declarationEdges: [DECLARATION_EDGE, DECLARATION_EDGE]
         }
     ],
@@ -324,9 +322,7 @@ describe("DependencyInspectorComponent", () => {
                 {
                     title: "Stands for",
                     count: 1,
-                    groups: [
-                        { heading: null, label: "", dependencies: [{ ...DEPENDENCY, line: { dash: null, head: "dot" } }], hiddenCount: 0 }
-                    ]
+                    groups: [{ heading: null, dependencies: [{ ...DEPENDENCY, line: { dash: null, head: "dot" } }], hiddenCount: 0 }]
                 }
             ],
             cycles: [],
@@ -358,7 +354,6 @@ describe("DependencyInspectorComponent", () => {
                     groups: [
                         {
                             heading: WEAPON_FILE,
-                            label: "",
                             dependencies: [{ ...DEPENDENCY, line: { dash: [2, 4], head: "open" } }],
                             hiddenCount: 0
                         }

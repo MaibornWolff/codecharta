@@ -1,4 +1,5 @@
 import {
+    DeclarationArrangement,
     DeclarationKindMark,
     DependencyEdgeColors,
     DependencyEdgeStyle,
@@ -25,6 +26,7 @@ export interface DependencyGraphScene {
     edgeColors: DependencyEdgeColors
     lineStyleShows: LineStyleMeaning
     declarationKindMark: DeclarationKindMark
+    declarationArrangement: DeclarationArrangement
     cycleMarks: CycleMarks
     edgeStyle: DependencyEdgeStyle
     isAnchoredAtSideMiddle: boolean
