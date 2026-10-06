@@ -2,6 +2,7 @@ import { DependencyLeafEdge, Edge } from "../../../model/codeCharta.model"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import { projectEdges, visibleRepresentatives } from "./edgeProjection"
 import { LeveledNode } from "./leveledTree"
+import { indexTree, isDrawnInside } from "./treeIndex"
 
 function leveledFile(path: string): LeveledNode {
     return { path, name: path.split("/").pop(), level: 0, kind: "file", children: [] }
@@ -29,7 +30,12 @@ function edge(fromNodeName: string, toNodeName: string, extra: Partial<Edge> = {
     return { fromNodeName, toNodeName, attributes: { dependencies: 1 }, ...extra }
 }
 
-const NO_DECLARATION_EDGES = { declarationEdges: [], hierarchy: "folders" } as const
+function insideRuleOf(root: LeveledNode) {
+    const index = indexTree(root)
+    return (path: string, holderPath: string) => isDrawnInside(index, path, holderPath)
+}
+
+const NO_DECLARATION_EDGES = { declarationEdges: [], hierarchy: "folders", isInside: () => false } as const
 
 const tree = leveledFolder("/root", [
     leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts"), leveledFile("/root/ui/menu.ts")]),
@@ -210,10 +216,11 @@ describe("edgeProjection", () => {
             declarationEdge(`${VIEW}#View`, `${VIEW}#Menu`, { isPointingUpwards: true })
         ]
         const everyFolder = ["/root", "/root/ui", "/root/model"]
+        const isInside = insideRuleOf(declaringTree)
 
         function project(openedFiles: string[], edgeMetric = "dependencies", hierarchy: DependencyHierarchy = "folders") {
             const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, ...openedFiles]))
-            return projectEdges(fileEdges, representatives, edgeMetric, { declarationEdges, hierarchy })
+            return projectEdges(fileEdges, representatives, edgeMetric, { declarationEdges, hierarchy, isInside })
         }
 
         it("should keep the file edge between two closed files and say which declaration edges it stands for", () => {
@@ -286,7 +293,8 @@ describe("edgeProjection", () => {
             // Act
             const projected = projectEdges(fileEdges, visibleRepresentatives(declaringTree, everythingClosed), "dependencies", {
                 declarationEdges,
-                hierarchy: "folders"
+                hierarchy: "folders",
+                isInside
             })
 
             // Assert
@@ -298,7 +306,11 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
 
             // Act
-            const projected = projectEdges(fileEdges, representatives, "dependencies", { declarationEdges: [], hierarchy: "folders" })
+            const projected = projectEdges(fileEdges, representatives, "dependencies", {
+                declarationEdges: [],
+                hierarchy: "folders",
+                isInside
+            })
 
             // Assert
             expect(projected.map(({ id }) => id)).toEqual([`${VIEW}|${NODE}`])
@@ -312,7 +324,8 @@ describe("edgeProjection", () => {
             // Act
             const projected = projectEdges(fileEdges, representatives, "dependencies", {
                 declarationEdges: toUnknown,
-                hierarchy: "folders"
+                hierarchy: "folders",
+                isInside
             })
 
             // Assert
@@ -325,7 +338,11 @@ describe("edgeProjection", () => {
             const toUnknown = [declarationEdge(`${VIEW}#View`, `${VIEW}#Ghost`)]
 
             // Act
-            const projected = projectEdges([], representatives, "dependencies", { declarationEdges: toUnknown, hierarchy: "folders" })
+            const projected = projectEdges([], representatives, "dependencies", {
+                declarationEdges: toUnknown,
+                hierarchy: "folders",
+                isInside
+            })
 
             // Assert
             expect(projected).toEqual([])
@@ -350,10 +367,38 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(declaringTree, new Set(everyFolder))
 
             // Act
-            const projected = projectEdges(fileEdges, representatives, "dependencies", { declarationEdges: [], hierarchy: "packages" })
+            const projected = projectEdges(fileEdges, representatives, "dependencies", {
+                declarationEdges: [],
+                hierarchy: "packages",
+                isInside
+            })
 
             // Assert
             expect(projected).toMatchObject([{ weight: 5, type: "feedbackContainerLevel" }])
+        })
+
+        it("should keep the edge between a file nested in a package and the closed folder it left, and drop the one inside that folder", () => {
+            // Arrange
+            const [packaged, left, alsoLeft] = ["/root/lib/packaged.ts", "/root/lib/left.ts", "/root/lib/alsoLeft.ts"]
+            const appPackage: LeveledNode = {
+                path: "package:app",
+                name: "app",
+                level: 0,
+                kind: "package",
+                children: [leveledFile(packaged)]
+            }
+            const byPackages = leveledFolder("/root", [appPackage, leveledFolder("/root/lib", [leveledFile(left), leveledFile(alsoLeft)])])
+            const representatives = visibleRepresentatives(byPackages, new Set(["/root", "package:app"]))
+
+            // Act
+            const projected = projectEdges([edge(packaged, left), edge(left, alsoLeft)], representatives, "dependencies", {
+                declarationEdges: [],
+                hierarchy: "packages",
+                isInside: insideRuleOf(byPackages)
+            })
+
+            // Assert
+            expect(projected.map(({ id }) => id)).toEqual([`${packaged}|/root/lib`])
         })
 
         it("should leave the declarations out of another edge metric", () => {

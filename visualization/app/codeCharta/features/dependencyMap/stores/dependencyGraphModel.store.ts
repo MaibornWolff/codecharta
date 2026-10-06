@@ -4,6 +4,7 @@ import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
     arrangedByPackages,
     indexTree,
+    isDrawnInside,
     isPackagePath,
     layoutLevelized,
     movedLayout,
@@ -72,12 +73,14 @@ export class DependencyGraphModelStore {
         const tree = this.tree()
         return tree ? visibleRepresentatives(tree, this.viewStore.expandedPaths()) : new Map<string, string>()
     })
-    readonly projectedEdges = computed(() =>
-        projectEdges(this.edges(), this.representatives(), this.edgeMetric(), {
+    readonly projectedEdges = computed(() => {
+        const treeIndex = this.treeIndex()
+        return projectEdges(this.edges(), this.representatives(), this.edgeMetric(), {
             declarationEdges: this.declarations().leafEdges,
-            hierarchy: this.hierarchy()
+            hierarchy: this.hierarchy(),
+            isInside: (path, holderPath) => Boolean(treeIndex) && isDrawnInside(treeIndex, path, holderPath)
         })
-    )
+    })
 
     readonly pointsUpward = computed(() => upwardRuleOf(this.edges(), this.hierarchy()))
 

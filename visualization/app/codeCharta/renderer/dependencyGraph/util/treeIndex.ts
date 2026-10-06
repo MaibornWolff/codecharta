@@ -45,6 +45,16 @@ export function levelPathOf(index: TreeIndex, containerPath: string): number[] |
     return belowTheRoot.map(below => below.level)
 }
 
+/** Whether one box is drawn somewhere inside another, which the paths of the two do not tell among packages. */
+export function isDrawnInside({ parentOf }: TreeIndex, path: string, holderPath: string): boolean {
+    for (let parent = parentOf.get(path); parent; parent = parentOf.get(parent.path)) {
+        if (parent.path === holderPath) {
+            return true
+        }
+    }
+    return false
+}
+
 function nodesAround({ parentOf }: TreeIndex, node: LeveledNode): LeveledNode[] {
     const around: LeveledNode[] = []
     for (let parent = parentOf.get(node.path); parent; parent = parentOf.get(parent.path)) {
