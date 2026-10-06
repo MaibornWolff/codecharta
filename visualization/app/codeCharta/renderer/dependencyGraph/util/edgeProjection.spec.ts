@@ -314,6 +314,18 @@ describe("edgeProjection", () => {
             expect(projected.map(({ id, weight }) => [id, weight])).toEqual([[`${VIEW}/View|${NODE}`, 1]])
         })
 
+        it("should draw no edge from a declaration to its own open file, which stands for a declaration the tree does not hold", () => {
+            // Arrange
+            const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
+            const toUnknown = [leafEdge(`${VIEW}#View`, `${VIEW}#Ghost`)]
+
+            // Act
+            const projected = projectEdges([], representatives, "dependencies", { leafEdges: toUnknown, hierarchy: "folders" })
+
+            // Assert
+            expect(projected).toEqual([])
+        })
+
         it("should take the flags and the weight of an edge between two closed files from its declaration edges among packages", () => {
             // Arrange
             const openedFiles: string[] = []

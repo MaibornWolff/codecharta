@@ -146,7 +146,7 @@ function boxesOf(leafEdge: DependencyLeafEdge, representatives: ReadonlyMap<stri
 }
 
 function mergeInto(merged: Map<string, MergedEdge>, { fromPath, toPath, weight, isCyclic, isPointingUpwards, declarationEdges }: EdgePart) {
-    if (fromPath === undefined || toPath === undefined || fromPath === toPath) {
+    if (fromPath === undefined || toPath === undefined || fromPath === toPath || isHeldBy(fromPath, toPath) || isHeldBy(toPath, fromPath)) {
         return
     }
     const id = `${fromPath}|${toPath}`
@@ -159,6 +159,12 @@ function mergeInto(merged: Map<string, MergedEdge>, { fromPath, toPath, weight, 
     existing.isCyclic ||= isCyclic
     existing.isPointingUpwards ||= isPointingUpwards
     existing.declarationEdges.push(...declarationEdges)
+}
+
+/** A declaration the map tells nothing about is stood for by its file, which may be the open box around the
+ * edge's other end. */
+function isHeldBy(path: string, holderPath: string): boolean {
+    return path.startsWith(`${holderPath}/`)
 }
 
 function groupedByFiles(leafEdges: readonly DependencyLeafEdge[]): Map<string, DependencyLeafEdge[]> {

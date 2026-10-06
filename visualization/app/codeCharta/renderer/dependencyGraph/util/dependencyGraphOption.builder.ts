@@ -169,7 +169,7 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
         case "band":
             return { value: extentValue(item.band) }
         case "title":
-            return { value: extentValue(item.box) }
+            return { titledBoxPath: item.box.path, value: extentValue(item.box) }
         default:
             return {
                 isEdge: true,

@@ -19,6 +19,9 @@ const PULL_SHARES = { start: 1 / 3, end: 2 / 3 }
 const ON_THE_LINE_PX = 0
 const MAX_HEAD_OUTLINE_PX = 1.5
 const HALO = { extraWidthPx: 6, opacity: 0.35 }
+/** ECharts draws an element on the one that had its place before and keeps what the new one leaves unsaid: a
+ * line drawn where a selection's halo was would stay as deaf to the pointer as the halo. */
+const REACTING_TO_THE_POINTER = { ...UNTRANSFORMED, silent: false }
 
 interface Curve {
     start: Point
@@ -55,8 +58,13 @@ export function drawEdge(route: EdgeRoute, { isDimmed, isSelected, widthPx, colo
         ...(isSelected
             ? [underlay(shape, { ...line, stroke: SELECTED_COLOR, lineWidth: widthPx + HALO.extraWidthPx, opacity: HALO.opacity })]
             : []),
-        { type: "bezierCurve", ...UNTRANSFORMED, shape, style: { ...line, stroke: color, lineWidth: widthPx, lineDash: lineStyle.dash } },
-        drawHead(lineStyle.head, arrowHead(curve, widthPx), { color, opacity, widthPx })
+        {
+            type: "bezierCurve",
+            ...REACTING_TO_THE_POINTER,
+            shape,
+            style: { ...line, stroke: color, lineWidth: widthPx, lineDash: lineStyle.dash }
+        },
+        { ...drawHead(lineStyle.head, arrowHead(curve, widthPx), { color, opacity, widthPx }), ...REACTING_TO_THE_POINTER }
     ])
 }
 

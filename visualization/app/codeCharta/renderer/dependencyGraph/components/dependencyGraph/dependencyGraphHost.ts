@@ -261,6 +261,9 @@ export class DependencyGraphHost {
     }
 }
 
-function boxPathOf({ seriesId, name }: ChartItemEvent): string | null {
-    return seriesId === GRAPH_SERIES_ID && name ? name : null
+function boxPathOf({ seriesId, name, data }: ChartItemEvent): string | null {
+    if (seriesId !== GRAPH_SERIES_ID) {
+        return null
+    }
+    return data?.titledBoxPath || name || null
 }

@@ -186,6 +186,20 @@ describe("leveledTree", () => {
             expect([...opened]).toEqual(["/root"])
         })
 
+        it("should open a lone package below the root as it does a lone folder", () => {
+            // Arrange
+            const lonePackage: LeveledNode = {
+                ...leveledFolder("package:com", [leveledFile("/root/a"), leveledFile("/root/b")]),
+                kind: "package"
+            }
+
+            // Act
+            const opened = collapsedFirstLook(leveledFolder("/root", [lonePackage]))
+
+            // Assert
+            expect([...opened]).toEqual(["/root", "package:com"])
+        })
+
         it("should open a chain of single folders below the root, so the first look is never one lone box", () => {
             // Arrange
             const tree = leveledFolder("/root", [

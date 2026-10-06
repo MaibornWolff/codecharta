@@ -50,9 +50,9 @@ function describeBox(box: LayoutBox, { hiddenCycles, declarationsInCycles }: Cyc
 }
 
 function describeEdge(edge: GraphEdge, boxesByPath: ReadonlyMap<string, LayoutBox>, { edgeMetric }: TooltipSettings): string {
-    const fromName = boxesByPath.get(edge.fromPath).name
-    const toName = boxesByPath.get(edge.toPath).name
-    const title = `<b>${escapeHtml(fromName)} → ${escapeHtml(toName)}</b>`
+    const from = boxesByPath.get(edge.fromPath)
+    const to = boxesByPath.get(edge.toPath)
+    const title = `<b>${escapeHtml(from.name)} → ${escapeHtml(to.name)}</b>`
     if (!isDependencyEdgeMetric(edgeMetric)) {
         return [title, `${escapeHtml(edgeMetric ?? "")} ${roundedForReading(edge.weight)}`].join("<br/>")
     }
@@ -65,10 +65,12 @@ function describeEdge(edge: GraphEdge, boxesByPath: ReadonlyMap<string, LayoutBo
         return [title, `${edge.declarationEdges.length} declaration edges · ${type}`, "<i>Click to list them</i>"].join("<br/>")
     }
     const usages = usagesOf(edge).map(usageLabelOf).map(escapeHtml).join(", ")
+    const kindOfUse = [usages, type].filter(Boolean).join(" · ")
+    if (from.kind === "declaration" && to.kind === "declaration") {
+        return [title, kindOfUse].join("<br/>")
+    }
     const declarations = `<b>${escapeHtml(only.fromLeaf)} → ${escapeHtml(only.toLeaf)}</b>`
-    const isFolded = fromName !== only.fromLeaf || toName !== only.toLeaf
-    const drawnAs = isFolded ? [`drawn as ${escapeHtml(fromName)} → ${escapeHtml(toName)}`] : []
-    return [declarations, [usages, type].filter(Boolean).join(" · "), ...drawnAs].join("<br/>")
+    return [declarations, kindOfUse, `drawn as ${escapeHtml(from.name)} → ${escapeHtml(to.name)}`].join("<br/>")
 }
 
 const READABLE_DECIMALS = 1000

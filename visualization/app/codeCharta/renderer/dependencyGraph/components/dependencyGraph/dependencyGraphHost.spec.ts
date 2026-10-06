@@ -89,6 +89,17 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
+    it("should toggle an open box on a click on the toggle in its title, which is drawn apart from the box", () => {
+        // Arrange
+        const toggleInTitle = { seriesId: GRAPH_SERIES_ID, name: "", data: { titledBoxPath: "/root/app" }, info: "toggle" }
+
+        // Act
+        fireChartEvent("click", toggleInTitle)
+
+        // Assert
+        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app")
+    })
+
     it("should report a click on a box's cycle badge as such, not as a click on the box", () => {
         // Arrange
         const badgeOfBox = { ...BOX, info: "cycleBadge" }
