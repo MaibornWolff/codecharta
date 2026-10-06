@@ -3,11 +3,11 @@ import { LAYOUT_SPACING } from "./levelizedLayout"
 import { findOverlaps } from "./overlaps"
 import { PaintedItem } from "./paintOrder"
 
-const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, width: 1000, height: 600 })
-const lib = aBox("/root/lib", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 40, width: 400, height: 300 })
+const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, width: 1000, height: 600 })
+const lib = aBox("/root/lib", { kind: "folder", isExpanded: true, depth: 1, x: 20, y: 40, width: 400, height: 300 })
 const libBand = aBand({ folderPath: "/root/lib", level: 0, isTopmost: false, x: 20, y: 200, width: 400 })
 const libFile = aBox("/root/lib/c.ts", { depth: 2, x: 40, y: 200 })
-const ui = aBox("/root/ui", { isFolder: true, isExpanded: true, depth: 1, x: 300, y: 150, width: 300, height: 200 })
+const ui = aBox("/root/ui", { kind: "folder", isExpanded: true, depth: 1, x: 300, y: 150, width: 300, height: 200 })
 const uiFile = aBox("/root/ui/d.ts", { depth: 2, x: 320, y: 220 })
 const MANY_FILES = 2000
 const GAP_BETWEEN_FILES = 20
@@ -54,7 +54,7 @@ describe("findOverlaps", () => {
 
     it("should leave out a band's label under a box from outside its folder", () => {
         // Arrange
-        const coveringTheLabel = aBox("/root/ui", { isFolder: true, isExpanded: true, depth: 1, x: 0, y: 150, width: 200, height: 100 })
+        const coveringTheLabel = aBox("/root/ui", { kind: "folder", isExpanded: true, depth: 1, x: 0, y: 150, width: 200, height: 100 })
 
         // Act
         const cutout = findOverlaps(painted(root, lib, libBand, coveringTheLabel)).bandCutouts.get(libBand)
@@ -91,7 +91,7 @@ describe("findOverlaps", () => {
             aBox(`/root/wide/file${index}.ts`, { depth: 2, x: index * FILE_SPACING, y: 1000 })
         )
         const wide = aBox("/root/wide", {
-            isFolder: true,
+            kind: "folder",
             isExpanded: true,
             depth: 1,
             y: 960,
@@ -100,14 +100,14 @@ describe("findOverlaps", () => {
         })
         const lastFile = files.at(-1)
         const draggedOntoTheLastFile = aBox("/root/wide/dragged", {
-            isFolder: true,
+            kind: "folder",
             isExpanded: true,
             depth: 2,
             x: lastFile.x,
             y: lastFile.y
         })
         const betweenTheFiles = aBox("/root/wide/between", {
-            isFolder: true,
+            kind: "folder",
             depth: 2,
             x: FILE_SPACING - GAP_BETWEEN_FILES,
             y: 1000,

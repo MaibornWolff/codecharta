@@ -41,11 +41,11 @@ import { DependencyMapComponent } from "./dependencyMap.component"
 jest.mock("echarts/core", () => jest.requireActual("../../../../renderer/dependencyGraph/testing/dependencyGraph.stub").echartsCoreStub)
 
 function leveledFile(path: string, level = 0): LeveledNode {
-    return { path, name: path.split("/").pop(), level, isFolder: false, children: [] }
+    return { path, name: path.split("/").pop(), level, kind: "file", children: [] }
 }
 
 function leveledFolder(path: string, children: LeveledNode[], level = 0): LeveledNode {
-    return { path, name: path.split("/").pop(), level, isFolder: true, children }
+    return { path, name: path.split("/").pop(), level, kind: "folder", children }
 }
 
 const TREE = leveledFolder("/root", [

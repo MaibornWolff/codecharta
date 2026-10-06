@@ -5,11 +5,13 @@ import { CodeMapNode, DependencyLevelData, NodeType } from "../../../model/codeC
  * each hold just one folder is one box named by the whole chain, as in src/main/kotlin/de/…: nesting a box
  * per link would leave the files too small to read. The box keeps the deepest folder's path, and the folders
  * folded into it keep theirs in foldedPaths, outermost first. */
+export type BoxKind = "folder" | "file"
+
 export interface LeveledNode {
     path: string
     name: string
     level: number
-    isFolder: boolean
+    kind: BoxKind
     children: LeveledNode[]
     foldedPaths?: string[]
 }
@@ -22,7 +24,7 @@ export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData)
     }
     if (root.type !== NodeType.FOLDER) {
         const level = levels[root.path]
-        return level === undefined ? null : { path: root.path, name: root.name, level, isFolder: false, children: [] }
+        return level === undefined ? null : { path: root.path, name: root.name, level, kind: "file", children: [] }
     }
     const children = (root.children ?? []).map(child => buildLeveledTree(child, levels)).filter(child => child !== null)
     if (children.length === 0) {
@@ -30,10 +32,10 @@ export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData)
     }
     const level = levels[root.path] ?? FOLDER_LEVEL_WHEN_ABSENT
     const [onlyChild] = children
-    if (children.length === 1 && onlyChild.isFolder) {
+    if (children.length === 1 && onlyChild.kind === "folder") {
         return { ...onlyChild, name: `${root.name}/${onlyChild.name}`, level, foldedPaths: [root.path, ...(onlyChild.foldedPaths ?? [])] }
     }
-    return { path: root.path, name: root.name, level, isFolder: true, children }
+    return { path: root.path, name: root.name, level, kind: "folder", children }
 }
 
 /** The box a folder is drawn as: its own, or the chain box it is folded into. */
@@ -69,7 +71,7 @@ export function levelPathOf(tree: LeveledNode, folderPath: string): number[] | n
 export function collapsedFirstLook(tree: LeveledNode): Set<string> {
     const opened = new Set<string>([tree.path])
     let folder = tree
-    while (folder.children.length === 1 && folder.children[0].isFolder) {
+    while (folder.children.length === 1 && folder.children[0].kind === "folder") {
         folder = folder.children[0]
         opened.add(folder.path)
     }

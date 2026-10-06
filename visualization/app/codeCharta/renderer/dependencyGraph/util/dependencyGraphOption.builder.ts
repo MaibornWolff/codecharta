@@ -142,7 +142,7 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
 }
 
 function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps, isFound: boolean): BoxLook {
-    const isDragged = box.isFolder && box.path === scene.draggingPath
+    const isDragged = box.kind === "folder" && box.path === scene.draggingPath
     return { emphasis: emphasisOf(box, scene), isSeeThrough: isDragged || seeThroughPaths.has(box.path), isMissedBySearch: !isFound }
 }
 
@@ -231,6 +231,6 @@ function windowOf({ x, y, width, height }: Rectangle): AxisWindow {
 }
 
 function describeGraph(layout: DependencyGraphLayout, shownEdges: GraphEdge[]): string {
-    const fileCount = layout.boxes.filter(box => !box.isFolder).length
+    const fileCount = layout.boxes.filter(box => box.kind !== "folder").length
     return `Dependency graph with ${fileCount} files and ${shownEdges.length} edges shown, arranged in rows by level.`
 }

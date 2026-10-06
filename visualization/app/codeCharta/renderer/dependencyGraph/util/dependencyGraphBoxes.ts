@@ -138,7 +138,7 @@ function boxStyle(box: LayoutBox, emphasis: BoxEmphasis) {
 }
 
 function baseStyle(box: LayoutBox) {
-    if (!box.isFolder) {
+    if (box.kind !== "folder") {
         return { fill: FILE_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
     }
     return box.isExpanded
@@ -165,7 +165,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, opacity: number) {
             align: isHeader ? "left" : "center",
             verticalAlign: "middle",
             fontSize: LABEL_FONT_SIZE_PX,
-            fontWeight: box.isFolder ? "bold" : "normal",
+            fontWeight: box.kind === "folder" ? "bold" : "normal",
             fill: TEXT_COLOR,
             opacity
         }

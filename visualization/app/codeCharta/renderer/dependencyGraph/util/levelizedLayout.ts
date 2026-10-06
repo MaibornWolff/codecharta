@@ -1,11 +1,11 @@
 import { addToGroup, maxOf } from "./collections"
 import { Rectangle } from "./geometry"
-import { LeveledNode } from "./leveledTree"
+import { BoxKind, LeveledNode } from "./leveledTree"
 
 export interface LayoutBox extends Rectangle {
     path: string
     name: string
-    isFolder: boolean
+    kind: BoxKind
     isExpanded: boolean
     level: number
     /** The levels it is named by: those of the boxes around it, outermost first, then its own. */
@@ -92,7 +92,7 @@ class FolderMeasurer {
     constructor(private readonly expandedPaths: ReadonlySet<string>) {}
 
     isOpen(node: LeveledNode): boolean {
-        return node.isFolder && this.expandedPaths.has(node.path)
+        return node.kind === "folder" && this.expandedPaths.has(node.path)
     }
 
     sizeOf(node: LeveledNode): Size {
@@ -233,7 +233,7 @@ class LayoutPlacer {
         this.layout.boxes.push({
             path: node.path,
             name: node.name,
-            isFolder: node.isFolder,
+            kind: node.kind,
             isExpanded,
             level: node.level,
             levelPath: this.levelPaths.get(node.path),

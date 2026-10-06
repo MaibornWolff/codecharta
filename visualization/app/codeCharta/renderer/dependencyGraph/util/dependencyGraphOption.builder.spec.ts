@@ -15,7 +15,7 @@ interface BuiltSeries {
     renderItem: (params: { dataIndex: number }, api: { coord: typeof identityPixels }) => DrawnElement
 }
 
-const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, levelPath: [], width: 400, height: 200 })
+const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, levelPath: [], width: 400, height: 200 })
 const view = aBox("/root/view.ts", { x: 16, y: 44 })
 const model = aBox("/root/model.ts", { x: 16, y: 120 })
 const util = aBox("/root/util.ts", { x: 200, y: 120 })
@@ -240,7 +240,7 @@ describe("buildDependencyGraphOption", () => {
 
     it("should light up only the edges crossing a hovered folder's border", () => {
         // Arrange
-        const folder = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+        const folder = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
         const inside = aBox("/root/app/a.ts", { depth: 2 })
         const alsoInside = aBox("/root/app/b.ts", { depth: 2, y: 100 })
         const outside = aBox("/root/lib.ts", { y: 300 })
@@ -272,9 +272,9 @@ describe("buildDependencyGraphOption", () => {
 
     it("should let a moved folder show what it overlaps, and a dragged folder always", () => {
         // Arrange
-        const lib = aBox("/root/lib", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 20, width: 200, height: 100 })
-        const ui = aBox("/root/ui", { isFolder: true, isExpanded: true, depth: 1, x: 100, y: 60, width: 200, height: 100 })
-        const apart = aBox("/root/apart", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 300, width: 100, height: 50 })
+        const lib = aBox("/root/lib", { kind: "folder", isExpanded: true, depth: 1, x: 20, y: 20, width: 200, height: 100 })
+        const ui = aBox("/root/ui", { kind: "folder", isExpanded: true, depth: 1, x: 100, y: 60, width: 200, height: 100 })
+        const apart = aBox("/root/apart", { kind: "folder", isExpanded: true, depth: 1, x: 20, y: 300, width: 100, height: 50 })
         const layout = { boxes: [root, lib, ui, apart], bands: [], width: 400, height: 400 }
 
         // Act
@@ -368,7 +368,7 @@ describe("buildDependencyGraphOption", () => {
 describe("fitWindowOf", () => {
     it("should fit the root as drawn, grown by dragged boxes, with equal scale on both axes", () => {
         // Arrange
-        const grownRoot = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, x: -100, y: -50, width: 500, height: 250 })
+        const grownRoot = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, x: -100, y: -50, width: 500, height: 250 })
         const layout = { boxes: [grownRoot], bands: [], width: 400, height: 200 }
 
         // Act

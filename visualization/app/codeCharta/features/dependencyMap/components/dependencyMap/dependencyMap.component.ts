@@ -81,7 +81,7 @@ export class DependencyMapComponent {
         () =>
             new Set(
                 this.layout()
-                    ?.boxes.filter(box => box.isFolder)
+                    ?.boxes.filter(box => box.kind === "folder")
                     .map(box => box.path)
             )
     )

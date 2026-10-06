@@ -16,10 +16,10 @@ const TREE: LeveledNode = {
     path: "/root",
     name: "root",
     level: 0,
-    isFolder: true,
+    kind: "folder",
     children: [
-        { path: "/root/app", name: "app", level: 0, isFolder: true, children: [] },
-        { path: "/root/lib", name: "lib", level: 0, isFolder: true, children: [] }
+        { path: "/root/app", name: "app", level: 0, kind: "folder", children: [] },
+        { path: "/root/lib", name: "lib", level: 0, kind: "folder", children: [] }
     ]
 }
 

@@ -2,10 +2,10 @@ import { aBand, aBox } from "./dependencyGraphTestData"
 import { DependencyGraphLayout } from "./levelizedLayout"
 import { aroundEdges, boxAtPoint, PaintedItem, paintOrder, TitleItem, topmostBoxAt } from "./paintOrder"
 
-const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, width: 1000, height: 600 })
-const first = aBox("/root/first", { isFolder: true, isExpanded: true, depth: 1, x: 20, y: 40, width: 300, height: 200 })
+const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, width: 1000, height: 600 })
+const first = aBox("/root/first", { kind: "folder", isExpanded: true, depth: 1, x: 20, y: 40, width: 300, height: 200 })
 const firstFile = aBox("/root/first/a.ts", { depth: 2, x: 40, y: 80 })
-const second = aBox("/root/second", { isFolder: true, isExpanded: true, depth: 1, x: 400, y: 40, width: 300, height: 200 })
+const second = aBox("/root/second", { kind: "folder", isExpanded: true, depth: 1, x: 400, y: 40, width: 300, height: 200 })
 const secondFile = aBox("/root/second/b.ts", { depth: 2, x: 420, y: 80 })
 const layout: DependencyGraphLayout = {
     boxes: [root, first, firstFile, second, secondFile],

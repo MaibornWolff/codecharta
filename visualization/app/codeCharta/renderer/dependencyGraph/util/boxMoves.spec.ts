@@ -2,8 +2,8 @@ import { BoxOffset, isDraggable, movedLayout } from "./boxMoves"
 import { aBand, aBox } from "./dependencyGraphTestData"
 import { DependencyGraphLayout, LAYOUT_SPACING } from "./levelizedLayout"
 
-const root = aBox("/root", { isFolder: true, isExpanded: true, depth: 0, x: 0, y: 0, width: 1000, height: 600 })
-const folder = aBox("/root/app", { isFolder: true, isExpanded: true, depth: 1, x: 100, y: 100, width: 400, height: 300 })
+const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, x: 0, y: 0, width: 1000, height: 600 })
+const folder = aBox("/root/app", { kind: "folder", isExpanded: true, depth: 1, x: 100, y: 100, width: 400, height: 300 })
 const file = aBox("/root/app/a.ts", { depth: 2, x: 150, y: 170 })
 const other = aBox("/root/lib.ts", { depth: 1, x: 600, y: 100 })
 const layout: DependencyGraphLayout = {

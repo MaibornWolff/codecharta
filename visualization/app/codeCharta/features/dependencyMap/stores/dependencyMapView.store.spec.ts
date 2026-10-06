@@ -5,7 +5,7 @@ import { dependencyLayoutIdentitySelector } from "../selectors/dependencyMap.sel
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
 function leveledFolder(path: string, children: LeveledNode[] = []): LeveledNode {
-    return { path, name: path.split("/").pop(), level: 0, isFolder: true, children }
+    return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
 }
 
 const PROJECT_A = "project A"

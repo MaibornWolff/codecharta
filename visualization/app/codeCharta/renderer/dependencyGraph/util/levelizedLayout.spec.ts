@@ -2,11 +2,11 @@ import { LeveledNode } from "./leveledTree"
 import { LAYOUT_SPACING, LayoutBox, layoutLevelized, namedByOwnLevel } from "./levelizedLayout"
 
 function leveledFile(path: string, level = 0): LeveledNode {
-    return { path, name: path.split("/").pop(), level, isFolder: false, children: [] }
+    return { path, name: path.split("/").pop(), level, kind: "file", children: [] }
 }
 
 function leveledFolder(path: string, children: LeveledNode[], level = 0): LeveledNode {
-    return { path, name: path.split("/").pop(), level, isFolder: true, children }
+    return { path, name: path.split("/").pop(), level, kind: "folder", children }
 }
 
 function filesNamed(count: number): LeveledNode[] {
@@ -59,7 +59,7 @@ describe("layoutLevelized", () => {
         const { boxes } = layoutLevelized(tree, new Set(["/root"]))
 
         // Assert
-        expect(new Set(boxes.filter(box => !box.isFolder).map(box => box.y)).size).toBe(1)
+        expect(new Set(boxes.filter(box => box.kind !== "folder").map(box => box.y)).size).toBe(1)
     })
 
     it("should wrap a long level into rows that keep the folder close to the target aspect ratio", () => {
@@ -70,7 +70,7 @@ describe("layoutLevelized", () => {
         const { boxes, width, height } = layoutLevelized(tree, new Set(["/root"]))
 
         // Assert
-        const fileBoxes = boxes.filter(box => !box.isFolder)
+        const fileBoxes = boxes.filter(box => box.kind !== "folder")
         expect(fileBoxes.filter(box => box.y === fileBoxes[0].y)).toHaveLength(7)
         expect(new Set(fileBoxes.map(box => box.y)).size).toBe(15)
         expect(width / height).toBeCloseTo(1.49, 2)

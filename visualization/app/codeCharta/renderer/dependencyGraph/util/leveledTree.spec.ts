@@ -10,11 +10,11 @@ function folder(path: string, children: CodeMapNode[]): CodeMapNode {
 }
 
 function leveledFolder(path: string, children: LeveledNode[]): LeveledNode {
-    return { path, name: path.split("/").pop(), level: 0, isFolder: true, children }
+    return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
 }
 
 function leveledFile(path: string): LeveledNode {
-    return { path, name: path.split("/").pop(), level: 0, isFolder: false, children: [] }
+    return { path, name: path.split("/").pop(), level: 0, kind: "file", children: [] }
 }
 
 describe("leveledTree", () => {
@@ -32,16 +32,16 @@ describe("leveledTree", () => {
                 path: "/root",
                 name: "root",
                 level: 0,
-                isFolder: true,
+                kind: "folder",
                 children: [
                     {
                         path: "/root/app",
                         name: "app",
                         level: 1,
-                        isFolder: true,
-                        children: [{ path: "/root/app/a.ts", name: "a.ts", level: 2, isFolder: false, children: [] }]
+                        kind: "folder",
+                        children: [{ path: "/root/app/a.ts", name: "a.ts", level: 2, kind: "file", children: [] }]
                     },
-                    { path: "/root/b.ts", name: "b.ts", level: 0, isFolder: false, children: [] }
+                    { path: "/root/b.ts", name: "b.ts", level: 0, kind: "file", children: [] }
                 ]
             })
         })
@@ -58,7 +58,7 @@ describe("leveledTree", () => {
             const tree = buildLeveledTree(root, levels)
 
             // Assert
-            expect(tree.children[0]).toMatchObject({ path: "/root/src/main/app", name: "src/main/app", level: 3, isFolder: true })
+            expect(tree.children[0]).toMatchObject({ path: "/root/src/main/app", name: "src/main/app", level: 3, kind: "folder" })
             expect(tree.children[0].children.map(child => child.path)).toEqual(["/root/src/main/app/a.ts"])
         })
 

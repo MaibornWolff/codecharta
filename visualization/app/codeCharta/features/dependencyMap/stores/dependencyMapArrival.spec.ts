@@ -12,7 +12,7 @@ const FOCUSED_LAYOUT = "focused on src"
 const UNFOCUSED_LAYOUT = "unfocused"
 
 function leveledFolder(path: string, children: LeveledNode[] = []): LeveledNode {
-    return { path, name: path.split("/").pop(), level: 0, isFolder: true, children }
+    return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
 }
 
 describe("DependencyMapArrival", () => {
