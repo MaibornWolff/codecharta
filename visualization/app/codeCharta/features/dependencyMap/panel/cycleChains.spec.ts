@@ -1,5 +1,5 @@
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
-import { findCycleChains } from "./cycleChains"
+import { cyclesThrough, declarationsOn, findCycleChains } from "./cycleChains"
 import { DeclarationIndex, fromPathOf, indexDeclarations, toPathOf } from "./declarationIndex"
 
 const FILE = "/root/game.ts"
@@ -19,41 +19,27 @@ function namesOf(chains: readonly (readonly DependencyLeafEdge[])[]): string[] {
 }
 
 describe("findCycleChains", () => {
-    it("should walk the shortest way back for each cyclic dependency leaving the declaration", () => {
+    it("should walk the shortest way back for each cyclic dependency, and tell each cycle once however often it is met", () => {
         // Arrange
         const index = indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("B", "C"), leafEdge("C", "A"), leafEdge("A", "D", false)])
 
         // Act
-        const chains = findCycleChains([`${FILE}/A`], index)
+        const chains = findCycleChains(index)
 
         // Assert
-        expect(namesOf(chains)).toEqual(["A → B → A"])
+        expect(namesOf(chains)).toEqual(["A → B → A", "B → C → A → B"])
     })
 
-    it("should find the longer way round when no shorter one closes the cycle", () => {
+    it("should close each cycle: every dependency ends where the next one starts", () => {
         // Arrange
         const index = indexOf([leafEdge("A", "B"), leafEdge("B", "C"), leafEdge("C", "A")])
 
         // Act
-        const chains = findCycleChains([`${FILE}/B`], index)
+        const [chain] = findCycleChains(index)
 
         // Assert
-        expect(namesOf(chains)).toEqual(["B → C → A → B"])
-        expect(chains[0].every((edge, position) => toPathOf(edge) === fromPathOf(chains[0][(position + 1) % 3]))).toBe(true)
-    })
-
-    it("should tell a cycle once, though several of the declarations asked for lie on it", () => {
-        // Arrange
-        const index = indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("C", "D"), leafEdge("D", "C")])
-
-        // Act
-        const chains = findCycleChains(
-            ["A", "B", "C"].map(name => `${FILE}/${name}`),
-            index
-        )
-
-        // Assert
-        expect(namesOf(chains)).toEqual(["A → B → A", "C → D → C"])
+        expect(chain.every((edge, position) => toPathOf(edge) === fromPathOf(chain[(position + 1) % 3]))).toBe(true)
+        expect(declarationsOn(chain)).toEqual(["A", "B", "C"].map(name => `${FILE}/${name}`))
     })
 
     it("should tell a declaration that depends on itself as a cycle of one", () => {
@@ -61,34 +47,46 @@ describe("findCycleChains", () => {
         const index = indexOf([leafEdge("A", "A")])
 
         // Act
-        const chains = findCycleChains([`${FILE}/A`], index)
+        const chains = findCycleChains(index)
 
         // Assert
         expect(namesOf(chains)).toEqual(["A → A"])
     })
 
-    it("should find nothing where a dependency marked cyclic has no way back, or the declaration is unknown", () => {
+    it("should find nothing where a dependency marked cyclic has no way back", () => {
         // Arrange
         const index = indexOf([leafEdge("A", "B")])
 
         // Act
-        const chains = findCycleChains([`${FILE}/A`, `${FILE}/Ghost`], index)
+        const chains = findCycleChains(index)
 
         // Assert
         expect(chains).toEqual([])
     })
 
-    it("should stop at the number of cycles and at the number of walks it is given", () => {
+    it("should stop after the number of walks it is given", () => {
         // Arrange
         const spokes = ["B", "C", "D", "E"].flatMap(name => [leafEdge("Hub", name), leafEdge(name, "Hub")])
         const index = indexOf(spokes)
 
         // Act
-        const capped = findCycleChains([`${FILE}/Hub`], index, { maxChains: 2, maxWalks: 100 })
-        const tired = findCycleChains([`${FILE}/Hub`], index, { maxChains: 100, maxWalks: 3 })
+        const tired = findCycleChains(index, 3)
 
         // Assert
-        expect(capped).toHaveLength(2)
         expect(tired).toHaveLength(3)
+        expect(findCycleChains(index)).toHaveLength(4)
+    })
+})
+
+describe("cyclesThrough", () => {
+    it("should keep the cycles running through one of the declarations asked for", () => {
+        // Arrange
+        const chains = findCycleChains(indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("C", "D"), leafEdge("D", "C")]))
+
+        // Act
+        const throughB = cyclesThrough(new Set([`${FILE}/B`, `${FILE}/Unrelated`]), chains)
+
+        // Assert
+        expect(namesOf(throughB)).toEqual(["A → B → A"])
     })
 })

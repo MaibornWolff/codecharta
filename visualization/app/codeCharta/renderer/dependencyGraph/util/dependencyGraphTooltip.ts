@@ -38,7 +38,7 @@ export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<st
     }
 }
 
-function describeBox(box: LayoutBox, { hiddenCyclicEdges, declarationsInCycles }: CycleMarks): string {
+function describeBox(box: LayoutBox, { hiddenCycles, declarationsInCycles }: CycleMarks): string {
     if (box.kind === "declaration") {
         const rows = [`<b>${escapeHtml(box.name)}</b>`, escapeHtml(box.declarationKind ?? "")]
         return [...rows, ...(declarationsInCycles.has(box.path) ? ["Takes part in a cycle"] : [])].join("<br/>")
@@ -48,9 +48,9 @@ function describeBox(box: LayoutBox, { hiddenCyclicEdges, declarationsInCycles }
     if (box.levelPath.length > 0) {
         rows.push(`Level ${describeLevelPath(box.levelPath)}`)
     }
-    const hiddenCount = box.isExpanded ? 0 : (hiddenCyclicEdges.get(box.path) ?? 0)
+    const hiddenCount = box.isExpanded ? 0 : (hiddenCycles.get(box.path) ?? 0)
     if (hiddenCount > 0) {
-        rows.push(`${hiddenCount} ${hiddenCount === 1 ? "dependency" : "dependencies"} in a cycle inside`)
+        rows.push(`${hiddenCount} ${hiddenCount === 1 ? "cycle" : "cycles"} inside`)
     }
     if (canBeOpened(box)) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)

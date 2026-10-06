@@ -45,6 +45,7 @@ const FILE_MODEL: PanelModel = {
         { title: "Uses", count: 4, groups: [{ heading: WEAPON_FILE, dependencies: [DEPENDENCY], hiddenCount: 3 }] }
     ],
     cycles: [{ steps: [CREATURE, WEAPON, CREATURE], files: [CREATURE_FILE, WEAPON_FILE], leafEdges: [LEAF_EDGE, LEAF_EDGE] }],
+    cycleCount: 6,
     action: "open"
 }
 
@@ -161,11 +162,13 @@ describe("DependencyPanelComponent", () => {
         await userEvent.click(screen.getByRole("button", { name: "Open in graph" }))
         await userEvent.click(screen.getByRole("button", { name: "and 2 more" }))
         await userEvent.click(screen.getByRole("button", { name: "and 3 more" }))
+        await userEvent.click(screen.getByTestId("dependency-panel-more-cycles"))
         await userEvent.click(screen.getByRole("button", { name: "Close details" }))
 
         // Assert
         expect(actionChosen).toHaveBeenCalledWith("open")
-        expect(allRowsRequested).toHaveBeenCalledTimes(2)
+        expect(allRowsRequested).toHaveBeenCalledTimes(3)
+        expect(screen.getByRole("region", { name: "Cycles" }).textContent).toContain("Cycles · 6")
         expect(closed).toHaveBeenCalledTimes(1)
     })
 
@@ -192,6 +195,7 @@ describe("DependencyPanelComponent", () => {
                 }
             ],
             cycles: [],
+            cycleCount: 0,
             action: "unfold"
         }
 

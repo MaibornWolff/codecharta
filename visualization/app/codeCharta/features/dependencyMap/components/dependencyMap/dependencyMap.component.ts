@@ -16,6 +16,7 @@ import {
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { declarationsOn } from "../../panel/cycleChains"
 import { PanelActionKind, PanelCycle, PanelRef } from "../../panel/panelModel"
 import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
@@ -74,7 +75,7 @@ export class DependencyMapComponent {
     })
     private readonly cycleMarks = computed(() =>
         this.graphModel.settings().showsCycleBadges && isDependencyEdgeMetric(this.graphModel.edgeMetric())
-            ? findCycleMarks(this.graphModel.declarations().leafEdges, this.graphModel.representatives())
+            ? findCycleMarks(this.graphModel.cycles().map(declarationsOn), this.graphModel.representatives())
             : NO_CYCLE_MARKS
     )
 

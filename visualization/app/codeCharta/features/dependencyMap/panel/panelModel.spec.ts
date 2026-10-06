@@ -1,6 +1,7 @@
 import { DependencyDeclarations } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { GraphEdge, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { findCycleChains } from "./cycleChains"
 import { indexDeclarations } from "./declarationIndex"
 import { describeSubject, PanelContext, PanelModel } from "./panelModel"
 
@@ -55,7 +56,8 @@ function context(
     rowLimit = 20,
     pointsUpward: PanelContext["pointsUpward"] = leafEdge => Boolean(leafEdge.isPointingUpwards)
 ): PanelContext {
-    return { index: indexDeclarations(DECLARATIONS), rowLimit, pointsUpward }
+    const index = indexDeclarations(DECLARATIONS)
+    return { index, rowLimit, pointsUpward, cycles: findCycleChains(index) }
 }
 
 function box(node: LeveledNode, isOpen = false) {
@@ -149,6 +151,24 @@ describe("describeSubject", () => {
             expect(cycles.map(cycle => cycle.steps.map(step => step.name))).toEqual([["Creature", "Weapon", "Creature"]])
             expect(cycles[0].files.map(file => file.name)).toEqual(["creature.ts", "weapon.ts"])
             expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[0], LEAF_EDGES[1]])
+        })
+
+        it("should count every cycle running through it and cut the ones told as it cuts a hub's rows", () => {
+            // Arrange
+            const uncut = context()
+            const second = [LEAF_EDGES[2], { ...LEAF_EDGES[2], fromLeaf: "Armor", toLeaf: "Creature" }]
+            const twoCycles = { ...uncut, cycles: [...uncut.cycles, second], rowLimit: 1 }
+
+            // Act
+            const model = describeSubject(box(CREATURE_NODE), twoCycles)
+
+            // Assert
+            expect(model.cycleCount).toBe(2)
+            expect(model.cycles).toHaveLength(1)
+            expect(describeSubject(box(fileNode(UTIL, [declarationNode(UTIL, "format", "function")])), uncut)).toMatchObject({
+                cycleCount: 0,
+                cycles: []
+            })
         })
 
         it("should cut a hub's rows and say how many it left out", () => {

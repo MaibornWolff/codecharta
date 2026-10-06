@@ -5,8 +5,8 @@ import { Rectangle } from "./geometry"
 import { LayoutBox } from "./levelizedLayout"
 
 export interface CycleLook {
-    /** The cyclic dependencies a closed box hides; none draws no badge. */
-    hiddenEdgeCount: number
+    /** The cycles a closed box hides; none draws no badge. */
+    hiddenCount: number
     /** A declaration taking part in a cycle. */
     isInCycle: boolean
     color: string
@@ -114,18 +114,13 @@ export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, opacity: n
 }
 
 /** Both sit on the box's upper right corner: the badge of a closed box, the ring of a declaration. */
-export function drawCycleMark(
-    box: LayoutBox,
-    rect: Rectangle,
-    { hiddenEdgeCount, isInCycle, color }: CycleLook,
-    opacity: number
-): object[] {
+export function drawCycleMark(box: LayoutBox, rect: Rectangle, { hiddenCount, isInCycle, color }: CycleLook, opacity: number): object[] {
     if (box.kind === "declaration") {
         const centre = { cx: rect.x + rect.width - CYCLE_RING.insetPx, cy: rect.y + CYCLE_RING.insetPx }
         const style = { fill: FILE_FILL, stroke: color, lineWidth: CYCLE_RING.lineWidthPx, opacity }
         return isInCycle ? [{ type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx }, style }] : []
     }
-    return box.isExpanded || hiddenEdgeCount === 0 ? [] : drawCycleBadge(rect, hiddenEdgeCount, { color, opacity })
+    return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { color, opacity })
 }
 
 /** A pill with the sign of a cycle, and the count once it hides more than one. */

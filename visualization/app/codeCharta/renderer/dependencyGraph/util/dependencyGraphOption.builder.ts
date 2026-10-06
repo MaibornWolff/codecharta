@@ -188,7 +188,7 @@ function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }
         isMissedBySearch: !isFound,
         kindMark: scene.declarationKindMark,
         cycle: {
-            hiddenEdgeCount: scene.cycleMarks.hiddenCyclicEdges.get(box.path) ?? 0,
+            hiddenCount: scene.cycleMarks.hiddenCycles.get(box.path) ?? 0,
             isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path),
             color: scene.edgeColors.cyclic
         },

@@ -196,11 +196,11 @@ describe("buildDependencyGraphOption", () => {
         expect(byUsage.draw(byUsage.edgeIndices[0]).children[1].style.fill).toBe("#ffffff")
     })
 
-    it("should badge a closed box hiding cyclic dependencies, ring a declaration in a cycle and say both in the tooltip", () => {
+    it("should badge a closed box hiding cycles, ring a declaration in a cycle and say both in the tooltip", () => {
         // Arrange
         const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
         const layout = { boxes: [root, view, declaration], bands: [], width: 800, height: 500 }
-        const cycleMarks = { hiddenCyclicEdges: new Map([[view.path, 1]]), declarationsInCycles: new Set([declaration.path]) }
+        const cycleMarks = { hiddenCycles: new Map([[view.path, 1]]), declarationsInCycles: new Set([declaration.path]) }
 
         // Act
         const { describe, draw, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
@@ -208,7 +208,7 @@ describe("buildDependencyGraphOption", () => {
         // Assert
         expect(draw(indexOf(view.path)).children.at(-3)).toMatchObject({ info: "cycleBadge", shape: { width: 15 } })
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#2563eb" })
-        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>1 dependency in a cycle inside")
+        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>1 cycle inside")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>Takes part in a cycle")
     })
 

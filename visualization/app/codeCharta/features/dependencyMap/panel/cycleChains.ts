@@ -5,27 +5,19 @@ import { DeclarationIndex, fromPathOf, toPathOf } from "./declarationIndex"
  * and the last ends where the first started. */
 export type CycleChain = readonly DependencyLeafEdge[]
 
-export interface CycleSearchLimits {
-    /** The search ends once it has found this many cycles. */
-    maxChains: number
-    /** How many ways around are tried in all: a hub in a large tangle would otherwise be walked for seconds. */
-    maxWalks: number
-}
+/** How many cyclic dependencies are walked back at most: a map tangled beyond that is not searched to its end,
+ * since each walk can cross the whole tangle. */
+const MAX_CYCLE_WALKS = 4000
 
-const CYCLE_SEARCH_LIMITS: CycleSearchLimits = { maxChains: 12, maxWalks: 300 }
-
-/** The shortest way back for every cyclic dependency leaving one of the given declarations. Only dependencies
- * the parser marked cyclic are walked, so the search never leaves the strongly connected part it starts in. */
-export function findCycleChains(
-    declarationPaths: readonly string[],
-    index: DeclarationIndex,
-    { maxChains, maxWalks }: CycleSearchLimits = CYCLE_SEARCH_LIMITS
-): CycleChain[] {
+/** The cycles of a map: for every dependency the parser marked cyclic, the shortest way back to where it starts,
+ * each cycle told once. Only cyclic dependencies are walked, so a walk never leaves the strongly connected part
+ * it starts in. A longer way round that a shorter one makes unnecessary is not told. */
+export function findCycleChains(index: DeclarationIndex, maxWalks = MAX_CYCLE_WALKS): CycleChain[] {
     const chains = new Map<string, CycleChain>()
     let walks = 0
-    for (const start of declarationPaths) {
+    for (const start of index.outgoing.keys()) {
         for (const firstStep of cyclicFrom(start, index)) {
-            if (chains.size >= maxChains || walks >= maxWalks) {
+            if (walks >= maxWalks) {
                 return [...chains.values()]
             }
             walks++
@@ -38,6 +30,16 @@ export function findCycleChains(
         }
     }
     return [...chains.values()]
+}
+
+/** The declarations a cycle runs through, in the order they are walked. */
+export function declarationsOn(chain: CycleChain): string[] {
+    return chain.map(fromPathOf)
+}
+
+/** The cycles that run through at least one of the given declarations. */
+export function cyclesThrough(declarationPaths: ReadonlySet<string>, chains: readonly CycleChain[]): CycleChain[] {
+    return chains.filter(chain => chain.some(leafEdge => declarationPaths.has(fromPathOf(leafEdge))))
 }
 
 function cyclicFrom(declarationPath: string, index: DeclarationIndex): DependencyLeafEdge[] {

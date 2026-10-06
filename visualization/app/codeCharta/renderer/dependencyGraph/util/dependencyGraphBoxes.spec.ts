@@ -179,12 +179,12 @@ describe("dependencyGraphBoxes", () => {
         describe("cycle marks", () => {
             const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, color: "#2563eb", ...cycle } })
 
-            it("should count the cyclic dependencies a closed box hides in a pill hanging over its upper right corner", () => {
+            it("should count the cycles a closed box hides in a pill hanging over its upper right corner", () => {
                 // Arrange
                 const box = aBox("/root/app", { kind: "folder", x: 10, y: 20 })
 
                 // Act
-                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 7 }), identityPixels))
+                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ hiddenCount: 7 }), identityPixels))
 
                 // Assert
                 expect(pill).toMatchObject({
@@ -197,13 +197,13 @@ describe("dependencyGraphBoxes", () => {
                 expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 165 } })
             })
 
-            it("should show the sign of a cycle alone for a single hidden dependency, and cap a large count", () => {
+            it("should show the sign of a cycle alone for a single hidden cycle, and cap a large count", () => {
                 // Arrange
                 const box = aBox("/root/a.ts")
 
                 // Act
-                const single = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 1 }), identityPixels))
-                const many = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 250 }), identityPixels))
+                const single = childrenOf(drawBox(box, cyclic({ hiddenCount: 1 }), identityPixels))
+                const many = childrenOf(drawBox(box, cyclic({ hiddenCount: 250 }), identityPixels))
 
                 // Assert
                 expect(single.map(part => part.type)).toEqual(["rect", "text", "rect", "path", "path"])
@@ -211,13 +211,13 @@ describe("dependencyGraphBoxes", () => {
                 expect(many.at(-1).style.text).toBe("99+")
             })
 
-            it("should draw no badge on a box that hides no cyclic dependency, nor on an open one", () => {
+            it("should draw no badge on a box that hides no cycle, nor on an open one", () => {
                 // Arrange
                 const closed = aBox("/root/a.ts")
                 const open = aBox("/root/app", { kind: "folder", isExpanded: true })
 
                 // Act
-                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ hiddenEdgeCount: 3 }), identityPixels)]
+                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ hiddenCount: 3 }), identityPixels)]
 
                 // Assert
                 expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])

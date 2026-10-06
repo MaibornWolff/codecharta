@@ -57,7 +57,7 @@ export interface BoxLook {
 
 export { CYCLE_BADGE_INFO }
 export type { CycleLook }
-export const NO_CYCLE: CycleLook = { hiddenEdgeCount: 0, isInCycle: false, color: "" }
+export const NO_CYCLE: CycleLook = { hiddenCount: 0, isInCycle: false, color: "" }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
 

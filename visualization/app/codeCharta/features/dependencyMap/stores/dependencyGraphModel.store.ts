@@ -14,6 +14,7 @@ import {
     projectEdges,
     visibleRepresentatives
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { findCycleChains } from "../panel/cycleChains"
 import { indexDeclarations } from "../panel/declarationIndex"
 import { filePairOf, findHierarchyDifferences, NO_HIERARCHY_DIFFERENCES } from "../util/hierarchyDifferences"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
@@ -42,6 +43,8 @@ export class DependencyGraphModelStore {
         return folderTree && this.hierarchy() === "packages" ? arrangedByPackages(folderTree, namespaces, leaves) : folderTree
     })
     readonly declarationIndex = computed(() => indexDeclarations(this.declarations()))
+    /** Every cycle between declarations, found once for the map: the badges count them and the panel tells them. */
+    readonly cycles = computed(() => findCycleChains(this.declarationIndex()))
     readonly nodesByPath = computed(() => indexedByPath(this.tree()))
 
     readonly layout = computed(() => {
