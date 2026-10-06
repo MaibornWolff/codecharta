@@ -71,6 +71,30 @@ function holds({ x, y }: AxisWindow, area: Rectangle): boolean {
     return x[0] <= area.x && area.x + area.width <= x[1] && y[0] <= area.y && area.y + area.height <= y[1]
 }
 
+/** The window that shows a box where the shown one did before the graph was laid out anew, at the same scale, so
+ * the box a reader opens or closes does not jump away. A box reaching out of that window is slid into it, and one
+ * too large for it is fitted. */
+export function windowKeepingInPlace(shownWindow: AxisWindow, before: Rectangle, after: Rectangle, viewport: Viewport): AxisWindow {
+    const moved: AxisWindow = { x: shifted(shownWindow.x, after.x - before.x), y: shifted(shownWindow.y, after.y - before.y) }
+    if (spanOf(moved.x) * FIT_SHARE < after.width || spanOf(moved.y) * FIT_SHARE < after.height) {
+        return windowAround(after, viewport, FIT_SHARE)
+    }
+    return { x: slidOver(moved.x, after.x, after.x + after.width), y: slidOver(moved.y, after.y, after.y + after.height) }
+}
+
+function slidOver(axis: [number, number], from: number, to: number): [number, number] {
+    const margin = (spanOf(axis) * (1 - FIT_SHARE)) / 2
+    return shifted(axis, Math.min(0, from - margin - axis[0]) + Math.max(0, to + margin - axis[1]))
+}
+
+function shifted([start, end]: [number, number], by: number): [number, number] {
+    return [start + by, end + by]
+}
+
+function spanOf([start, end]: [number, number]): number {
+    return end - start
+}
+
 /** Both axes get the same number of pixels per layout unit, so the graph is never squashed. */
 function windowAround(area: Rectangle, viewport: Viewport, share: number, maxPixelsPerUnit = Number.POSITIVE_INFINITY): AxisWindow {
     const pixelsPerUnit = Math.min(Math.min(viewport.width / area.width, viewport.height / area.height) * share, maxPixelsPerUnit)

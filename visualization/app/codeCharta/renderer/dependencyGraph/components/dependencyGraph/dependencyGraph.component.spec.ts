@@ -12,6 +12,7 @@ import {
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
 import { AxisWindow, fitWindowOf } from "../../util/axisWindow"
+import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { aBox, DEFAULT_LOOKS } from "../../util/dependencyGraphTestData"
@@ -41,6 +42,19 @@ const GROWN_SCENE: DependencyGraphScene = {
     ...SCENE,
     layout: { boxes: [aBox("/root/a.ts", { width: 2000, height: 900 })], bands: [], width: 2000, height: 900 }
 }
+
+const FOLDER = "/root/app"
+const CLOSED_FOLDER_SCENE: DependencyGraphScene = {
+    ...SCENE,
+    layout: { boxes: [aBox(FOLDER, { kind: "folder", x: 200, y: 150 })], bands: [], width: 400, height: 200 }
+}
+
+function sceneWithOpenedFolder(extent: { x: number; y: number; width: number; height: number }): DependencyGraphScene {
+    const openedFolder = aBox(FOLDER, { kind: "folder", isExpanded: true, ...extent })
+    return { ...SCENE, layout: { boxes: [openedFolder], bands: [], width: 2400, height: 1200 } }
+}
+
+const TOGGLE_OF_THE_FOLDER = { seriesId: GRAPH_SERIES_ID, name: FOLDER, info: TOGGLE_INFO }
 
 const PANNED_AND_ZOOMED = (_finder: unknown, [x, y]: number[]) => [x / 2 + 100, y / 2 + 100]
 const PANNED_AND_ZOOMED_WINDOW: AxisWindow = { x: [100, 500], y: [100, 400] }
@@ -241,6 +255,62 @@ describe("DependencyGraphComponent", () => {
 
         // Act
         fixture.componentRef.setInput("scene", GROWN_SCENE)
+        fixture.detectChanges()
+
+        // Assert
+        expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
+    })
+
+    it("should keep a box the reader opens at its spot on screen when the graph is laid out anew", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, {
+            inputs: { scene: CLOSED_FOLDER_SCENE, graphIdentity: GRAPH_IDENTITY }
+        })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+        fireChartEvent("click", TOGGLE_OF_THE_FOLDER)
+
+        // Act
+        fixture.componentRef.setInput("scene", sceneWithOpenedFolder({ x: 260, y: 180, width: 200, height: 120 }))
+        fixture.detectChanges()
+
+        // Assert
+        expect(shownWindowOf(lastDrawnOption())).toEqual({ x: [160, 560], y: [130, 430] })
+    })
+
+    it("should show an opened box whole when it is too large for the shown window", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, {
+            inputs: { scene: CLOSED_FOLDER_SCENE, graphIdentity: GRAPH_IDENTITY }
+        })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+        fireChartEvent("click", TOGGLE_OF_THE_FOLDER)
+        const openedScene = sceneWithOpenedFolder({ x: 260, y: 180, width: 2000, height: 900 })
+
+        // Act
+        fixture.componentRef.setInput("scene", openedScene)
+        fixture.detectChanges()
+
+        // Assert
+        expect(shownWindowOf(lastDrawnOption())).toEqual(fitWindowOf(openedScene.layout, measuredSize))
+    })
+
+    it("should leave the shown window alone when a later layout no longer toggles the box", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, {
+            inputs: { scene: CLOSED_FOLDER_SCENE, graphIdentity: GRAPH_IDENTITY }
+        })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+        fireChartEvent("click", { seriesId: GRAPH_SERIES_ID, name: "/root/unknown", info: TOGGLE_INFO })
+        fireChartEvent("click", TOGGLE_OF_THE_FOLDER)
+        const movedButStillClosed = {
+            ...CLOSED_FOLDER_SCENE,
+            layout: { ...CLOSED_FOLDER_SCENE.layout, boxes: [aBox(FOLDER, { kind: "folder", x: 900 })] }
+        }
+
+        // Act
+        fixture.componentRef.setInput("scene", movedButStillClosed)
+        fixture.detectChanges()
+        fixture.componentRef.setInput("scene", sceneWithOpenedFolder({ x: 260, y: 180, width: 200, height: 120 }))
         fixture.detectChanges()
 
         // Assert
