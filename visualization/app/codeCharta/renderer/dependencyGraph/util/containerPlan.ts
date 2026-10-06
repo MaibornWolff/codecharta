@@ -107,7 +107,8 @@ export class ContainerMeasurer {
     private planContainer(container: LeveledNode): ContainerPlan {
         const isFile = container.kind === "file"
         const isLeveled = !isFile || this.stacksSeveralLevels(container)
-        const spacing = isFile ? (isLeveled ? LEVELED_FILE_CONTENT : FILE_CONTENT[this.declarationArrangement]) : FOLDER_CONTENT
+        const fileSpacing = isLeveled ? LEVELED_FILE_CONTENT : FILE_CONTENT[this.declarationArrangement]
+        const spacing = isFile ? fileSpacing : FOLDER_CONTENT
         const groups = isFile ? groupDeclarations(container.children, this.declarationArrangement) : groupByLevelFromTop(container.children)
         const candidates = rowWidthCandidates(groups, node => this.sizeOf(node).width, spacing)
         const widthOfAClosedFileInside = LAYOUT_SPACING.nodeWidth - 2 * LAYOUT_SPACING.padding
