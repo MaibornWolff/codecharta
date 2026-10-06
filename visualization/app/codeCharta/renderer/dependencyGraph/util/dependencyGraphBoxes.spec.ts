@@ -38,12 +38,13 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/a.ts", { declarationCount: 3 })
 
             // Act
-            const [, label, toggle, count] = childrenOf(drawBox(box, look("none"), identityPixels))
+            const [, label, toggle, countDisc, count] = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
             expect(label.style).toMatchObject({ text: "a.ts", width: 112 })
             expect(toggle).toMatchObject({ info: "toggle", style: { text: "▸" } })
-            expect(count.style).toMatchObject({ text: "3", align: "right", x: 152 })
+            expect(countDisc).toMatchObject({ type: "circle", shape: { cx: 146, cy: 20, r: 7 }, style: { stroke: "#8a94a3" } })
+            expect(count.style).toMatchObject({ text: "3", x: 146, fill: "#8a94a3" })
         })
 
         it("should not count the one declaration a file's name already stands for, nor mark a file without any", () => {
@@ -76,7 +77,7 @@ describe("dependencyGraphBoxes", () => {
             expect(rest).toEqual([])
         })
 
-        it("should draw a declaration smaller and lighter than a file", () => {
+        it("should draw a declaration with a smaller name on a fill of its own", () => {
             // Arrange
             const box = aBox("/root/a.ts/Creature", { kind: "declaration", declarationKind: "class", width: 132, height: 26 })
 
@@ -84,7 +85,7 @@ describe("dependencyGraphBoxes", () => {
             const [rect, label] = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
-            expect(rect.style).toMatchObject({ fill: "#ffffff", stroke: "#b9c1cc" })
+            expect(rect.style).toMatchObject({ fill: "#f7f9fc", stroke: "#9aa5b4" })
             expect(label.style).toMatchObject({ text: "Creature", fontSize: 11 })
         })
 
@@ -92,7 +93,7 @@ describe("dependencyGraphBoxes", () => {
             const declaration = (declarationKind: string) =>
                 aBox("/root/a.ts/Creature", { kind: "declaration", declarationKind, x: 0, y: 0, width: 132, height: 26 })
 
-            it("should put a lettered icon in the kind's colour before the name", () => {
+            it("should put a round lettered icon in the kind's tint before the name", () => {
                 // Arrange
                 const box = declaration("interface")
 
@@ -100,44 +101,41 @@ describe("dependencyGraphBoxes", () => {
                 const [, label, icon, letter] = childrenOf(drawBox(box, look("none", false, false, "icon"), identityPixels))
 
                 // Assert
-                expect(icon).toMatchObject({ type: "rect", shape: { x: 8, y: 6, width: 14, height: 14 }, style: { fill: "#15803d" } })
-                expect(letter.style).toMatchObject({ text: "I", x: 15, y: 13 })
+                expect(icon).toMatchObject({
+                    type: "circle",
+                    shape: { cx: 14, cy: 13, r: 7 },
+                    style: { fill: "#dff3e4", stroke: "#7d8898" }
+                })
+                expect(letter.style).toMatchObject({ text: "I", x: 14, y: 13, fill: "#374151" })
                 expect(label.style).toMatchObject({ x: 75, width: 98 })
             })
 
-            it.each([
-                ["class", "rect", { r: 4 }],
-                ["interface", "rect", { r: 13 }],
-                ["enum", "rect", { r: 0 }]
-            ])("should outline a %s as a %s when the shape tells the kind", (declarationKind, type, shape) => {
+            it("should dash an interface's outline, frame an enum twice and point an annotation's box when the shape tells the kind", () => {
                 // Arrange
-                const box = declaration(declarationKind)
+                const shaped = look("selected", false, false, "shape")
 
                 // Act
-                const [outline] = childrenOf(drawBox(box, look("none", false, false, "shape"), identityPixels))
-
-                // Assert
-                expect(outline).toMatchObject({ type, shape })
-            })
-
-            it("should point a function's box at both ends and slant a variable's", () => {
-                // Arrange
-                const boxes = [declaration("function"), declaration("variable")]
-
-                // Act
-                const [hexagon, slanted] = boxes.map(
-                    box => childrenOf(drawBox(box, look("selected", false, false, "shape"), identityPixels))[0]
+                const [interfaceBox, enumBox, annotationBox, classBox] = ["interface", "enum", "annotation", "class"].map(kind =>
+                    childrenOf(drawBox(declaration(kind), shaped, identityPixels))
                 )
 
                 // Assert
-                expect(hexagon.shape.points).toHaveLength(6)
-                expect(slanted.shape.points).toEqual([
-                    [9.1, 0],
-                    [132, 0],
-                    [122.9, 26],
-                    [0, 26]
+                expect(interfaceBox[0].style.lineDash).toEqual([4, 3])
+                expect(enumBox.slice(0, 2).map(part => part.shape)).toMatchObject([
+                    { x: 0, y: 0, width: 132, height: 26 },
+                    { x: 2.5, y: 2.5, width: 127, height: 21 }
                 ])
-                expect(hexagon.style.stroke).toBe(SELECTED_COLOR)
+                expect(annotationBox[0].shape.points).toEqual([
+                    [8, 0],
+                    [124, 0],
+                    [132, 13],
+                    [124, 26],
+                    [8, 26],
+                    [0, 13]
+                ])
+                expect(annotationBox[0].style.stroke).toBe(SELECTED_COLOR)
+                expect(classBox.map(part => part.type)).toEqual(["rect", "text"])
+                expect(classBox[0].style.lineDash).toBeNull()
             })
 
             it("should fill the box in the kind's tint, and leave the box plain when the kind is not shown", () => {
@@ -149,9 +147,9 @@ describe("dependencyGraphBoxes", () => {
                 const plain = childrenOf(drawBox(box, look("none"), identityPixels))
 
                 // Assert
-                expect(tinted.style.fill).toBe("#f3e8ff")
+                expect(tinted.style.fill).toBe("#fdecc8")
                 expect(plain.map(child => child.type)).toEqual(["rect", "text"])
-                expect(plain[0].style.fill).toBe("#ffffff")
+                expect(plain[0].style).toMatchObject({ fill: "#f7f9fc", stroke: "#9aa5b4" })
             })
 
             it("should not mark a file by the kind setting", () => {
@@ -169,32 +167,36 @@ describe("dependencyGraphBoxes", () => {
         describe("cycle marks", () => {
             const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, color: "#2563eb", ...cycle } })
 
-            it("should count the cyclic dependencies a closed box hides in a round badge on its corner", () => {
+            it("should count the cyclic dependencies a closed box hides in a pill hanging over its upper right corner", () => {
                 // Arrange
                 const box = aBox("/root/app", { kind: "folder", x: 10, y: 20 })
 
                 // Act
-                const [, , badge, count] = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 7 }), identityPixels))
+                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 7 }), identityPixels))
 
                 // Assert
-                expect(badge).toMatchObject({
-                    type: "circle",
+                expect(pill).toMatchObject({
+                    type: "rect",
                     info: "cycleBadge",
-                    shape: { cx: 170, cy: 20, r: 8 },
+                    shape: { x: 148, y: 11, width: 28, height: 15 },
                     style: { fill: "#2563eb" }
                 })
-                expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 170, y: 20 } })
+                expect([arc, arrowHead].map(part => part.type)).toEqual(["path", "path"])
+                expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 165 } })
             })
 
-            it("should cap the count so it stays inside the badge", () => {
+            it("should show the sign of a cycle alone for a single hidden dependency, and cap a large count", () => {
                 // Arrange
                 const box = aBox("/root/a.ts")
 
                 // Act
-                const count = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 250 }), identityPixels)).at(-1)
+                const single = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 1 }), identityPixels))
+                const many = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 250 }), identityPixels))
 
                 // Assert
-                expect(count.style.text).toBe("99+")
+                expect(single.map(part => part.type)).toEqual(["rect", "text", "rect", "path", "path"])
+                expect(single[2].shape).toMatchObject({ width: 15, height: 15 })
+                expect(many.at(-1).style.text).toBe("99+")
             })
 
             it("should draw no badge on a box that hides no cyclic dependency, nor on an open one", () => {
@@ -220,13 +222,12 @@ describe("dependencyGraphBoxes", () => {
                 // Assert
                 expect(ring).toMatchObject({
                     type: "circle",
-                    shape: { cx: 132, cy: 0, r: 4 },
+                    shape: { cx: 131, cy: 1, r: 3.5 },
                     style: { stroke: "#2563eb", fill: "#ffffff" }
                 })
                 expect(unringed.map(child => child.type)).toEqual(["rect", "text"])
             })
         })
-
         it("should tell a package from a folder by its colours, closed and open, and name it in bold", () => {
             // Arrange
             const closed = aBox("package:game", { kind: "package" })
@@ -242,21 +243,19 @@ describe("dependencyGraphBoxes", () => {
             expect(name.style.fontWeight).toBe("bold")
         })
 
-        it("should outline a box that sits elsewhere in the other hierarchy in dashes, and state no dashes for every other box", () => {
+        it("should draw a dashed outline around a box that sits elsewhere in the other hierarchy, leaving its own border to say whether it is selected", () => {
             // Arrange
-            const box = aBox("/root/a.ts")
+            const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
             // Act
-            const [moved] = childrenOf(drawBox(box, { ...look("none"), isMoved: true }, identityPixels))
-            const [selectedAndMoved] = childrenOf(drawBox(box, { ...look("selected"), isMoved: true }, identityPixels))
-            const [unmoved] = childrenOf(drawBox(box, look("none"), identityPixels))
+            const [border, around] = childrenOf(drawBox(box, { ...look("selected"), isMoved: true }, identityPixels))
+            const unmoved = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
-            expect(moved.style).toMatchObject({ stroke: "#d97706", lineDash: [4, 3], lineWidth: 2 })
-            expect(selectedAndMoved.style).toMatchObject({ stroke: SELECTED_COLOR, lineDash: [4, 3] })
-            expect(unmoved.style.lineDash).toBeNull()
+            expect(border.style).toMatchObject({ stroke: SELECTED_COLOR, lineDash: null })
+            expect(around).toMatchObject({ shape: { x: 7, y: 17, width: 166, height: 46 }, style: { stroke: "#b45309", lineDash: [5, 3] } })
+            expect(unmoved.map(child => child.type)).toEqual(["rect", "text"])
         })
-
         it("should leave an open folder's name to its title, which is painted over the edges", () => {
             // Arrange
             const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })

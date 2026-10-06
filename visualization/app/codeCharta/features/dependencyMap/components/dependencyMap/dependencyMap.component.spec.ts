@@ -406,19 +406,20 @@ describe("DependencyMapComponent", () => {
                 ...DECLARATIONS,
                 leafEdges: DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true }))
             }
-            const badgeTextOf = (path: string) => {
+            const badgeCountOf = (path: string) => {
                 const dataIndex = drawnSeries().data.findIndex(item => item.name === path)
                 const parts = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children as unknown as {
                     info?: string
                     style: { text?: string }
                 }[]
-                return parts.findLast(part => part.info === "cycleBadge")?.style.text ?? null
+                const badge = parts.filter(part => part.info === "cycleBadge")
+                return badge.length === 0 ? null : (badge.find(part => part.style.text)?.style.text ?? "1")
             }
 
             it("should count the hidden cyclic dependencies on the closed files and stop once a file is opened", async () => {
                 // Arrange
                 await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
-                const whileClosed = [VIEW, NODE].map(badgeTextOf)
+                const whileClosed = [VIEW, NODE].map(badgeCountOf)
 
                 // Act
                 doubleClickBox(VIEW)
@@ -426,7 +427,7 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect(whileClosed).toEqual(["2", "1"])
-                expect([VIEW, NODE].map(badgeTextOf)).toEqual([null, "1"])
+                expect([VIEW, NODE].map(badgeCountOf)).toEqual([null, "1"])
             })
 
             it("should draw no badge once the reader switches them off, or for another edge metric", async () => {
@@ -436,7 +437,7 @@ describe("DependencyMapComponent", () => {
                 // Act
                 await changeSettings(store, { showsCycleBadges: false })
                 fixture.detectChanges()
-                const switchedOff = badgeTextOf(VIEW)
+                const switchedOff = badgeCountOf(VIEW)
                 await changeSettings(store, { showsCycleBadges: true })
                 store.overrideSelector(edgeMetricSelector, "temporal_coupling")
                 store.refreshState()
@@ -444,7 +445,7 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect(switchedOff).toBeNull()
-                expect(badgeTextOf(VIEW)).toBeNull()
+                expect(badgeCountOf(VIEW)).toBeNull()
             })
 
             it("should select the box whose badge is clicked", async () => {
@@ -854,9 +855,9 @@ describe("DependencyMapComponent", () => {
                 await screen.findByTestId("dependency-graph")
 
                 // Assert
-                expect(unmarked).not.toContain("#d97706")
-                expect(amongFolders).toEqual(["#d97706", "#b8c2cf", "#b8c2cf"])
-                expect(strokesOf(`${DATA}|${SCREENS}`)[0]).toBe("#d97706")
+                expect(unmarked).not.toContain("#b45309")
+                expect(amongFolders).toEqual(["#b45309", "#b8c2cf", "#b8c2cf"])
+                expect(strokesOf(`${DATA}|${SCREENS}`)[0]).toBe("#b45309")
             })
         })
 

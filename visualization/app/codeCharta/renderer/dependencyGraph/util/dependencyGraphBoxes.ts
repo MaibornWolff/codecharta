@@ -1,5 +1,16 @@
 import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
-import { DeclarationShape, declarationKindLookOf } from "./declarationKinds"
+import {
+    CYCLE_BADGE_INFO,
+    CycleLook,
+    drawCycleMark,
+    drawDeclarationCount,
+    drawInnerFrame,
+    drawKindIcon,
+    drawMovedOutline,
+    KIND_ICON_WIDTH_PX,
+    outlineOf
+} from "./boxMarks"
+import { declarationKindLookOf } from "./declarationKinds"
 import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import {
@@ -7,7 +18,7 @@ import {
     CLOSED_FOLDER_STROKE,
     CLOSED_PACKAGE_FILL,
     CLOSED_PACKAGE_STROKE,
-    DECLARATION_STROKE,
+    DECLARATION_FILL,
     FILE_FILL,
     FILE_STROKE,
     FOLDER_STROKE,
@@ -16,7 +27,6 @@ import {
     HOVERED_COLOR,
     LEVEL_SEPARATOR_COLOR,
     MISSED_BY_SEARCH_OPACITY,
-    MOVED_COLOR,
     OPEN_FILE_FILL,
     PACKAGE_STROKE,
     packageFill,
@@ -43,14 +53,8 @@ export interface BoxLook {
     isMoved: boolean
 }
 
-export interface CycleLook {
-    /** The cyclic dependencies a closed box hides; none draws no badge. */
-    hiddenEdgeCount: number
-    /** A declaration taking part in a cycle. */
-    isInCycle: boolean
-    color: string
-}
-
+export { CYCLE_BADGE_INFO }
+export type { CycleLook }
 export const NO_CYCLE: CycleLook = { hiddenEdgeCount: 0, isInCycle: false, color: "" }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
@@ -63,16 +67,8 @@ const FILE_MARK_WIDTH_PX = 16
 const TOGGLE_HIT_PADDING_PX = 4
 const TOGGLE_GLYPHS = { open: "▾", closed: "▸" }
 
-const KIND_ICON = { sizePx: 14, cornerRadiusPx: 3, fontSizePx: 9, gapPx: 4, letterColor: "#ffffff" }
-/** How far the pointed and slanted shapes cut into the box at its left and right. */
-const SHAPE_CUT_SHARE_OF_HEIGHT = 0.35
-
-const CYCLE_BADGE = { radiusPx: 8, fontSizePx: 9, textColor: "#ffffff", mostCounted: 99 }
-const CYCLE_RING = { radiusPx: 4, lineWidthPx: 2 }
-
-/** What a click on a part of a box carries, to tell it from a click on the box. */
+/** What a click on a box's toggle carries, to tell it from a click on the box. */
 export const TOGGLE_INFO = "toggle"
-export const CYCLE_BADGE_INFO = "cycleBadge"
 const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
@@ -80,15 +76,16 @@ const CORNER_RADIUS_PX = 4
 const LINE_WIDTH_PX = 1
 const SELECTED_LINE_WIDTH_PX = 2.5
 const HOVERED_LINE_WIDTH_PX = 2
-const MOVED_OUTLINE = { lineWidth: 2, lineDash: [4, 3] }
 const LEVEL_LABEL_LIFT_PX = 2
 const SEPARATOR_DASH_PX = [4, 4]
+const DASHED_OUTLINE = [4, 3]
 
 export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
-    const outline = drawOutline(box, rect, look)
-    const cycleMark = drawCycleMark(box, rect, look.cycle, opacityOf(look.isMissedBySearch))
-    return drawnItem(box.isExpanded ? [outline] : [outline, ...drawName(box, rect, look), ...cycleMark])
+    const opacity = opacityOf(look.isMissedBySearch)
+    const outline = [...drawOutline(box, rect, look), ...(look.isMoved ? [drawMovedOutline(rect, opacity)] : [])]
+    const cycleMark = drawCycleMark(box, rect, look.cycle, opacity)
+    return drawnItem(box.isExpanded ? outline : [...outline, ...drawName(box, rect, look), ...cycleMark])
 }
 
 /** Drawn apart from the open box so the edges pass under it. */
@@ -96,52 +93,16 @@ export function drawFolderTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixel
     return drawnItem(drawName(box, pixelRectOf(box, toPixels), look))
 }
 
-function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark, isMoved }: BoxLook) {
-    const style = boxStyle(box, emphasis, isMoved)
+/** The box itself, and inside it the second frame of a kind told by a double border. */
+function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark }: BoxLook): object[] {
     const kindLook = box.kind === "declaration" ? declarationKindLookOf(box.declarationKind) : null
+    const shape = kindLook && kindMark === "shape" ? kindLook.shape : "plain"
+    const style = { ...boxStyle(box, emphasis), lineDash: shape === "dashed" ? DASHED_OUTLINE : null }
     const ownFill = kindLook && kindMark === "tint" ? kindLook.tint : style.fill
     const fill = isSeeThrough ? seeThrough(ownFill) : ownFill
-    const shape = kindLook && kindMark === "shape" ? kindLook.shape : "rectangle"
-    return { ...UNTRANSFORMED, ...outlineOf(rect, shape), style: { ...style, fill, opacity: opacityOf(isMissedBySearch) } }
-}
-
-function outlineOf(rect: Rectangle, shape: DeclarationShape) {
-    const cut = rect.height * SHAPE_CUT_SHARE_OF_HEIGHT
-    const { x: left, y: top } = rect
-    const right = left + rect.width
-    const bottom = top + rect.height
-    switch (shape) {
-        case "pill":
-            return { type: "rect", shape: { ...rect, r: rect.height / 2 } }
-        case "sharp":
-            return { type: "rect", shape: { ...rect, r: 0 } }
-        case "hexagon": {
-            const middle = top + rect.height / 2
-            const points = [
-                [left + cut, top],
-                [right - cut, top],
-                [right, middle],
-                [right - cut, bottom],
-                [left + cut, bottom],
-                [left, middle]
-            ]
-            return { type: "polygon", shape: { points } }
-        }
-        case "slanted":
-            return {
-                type: "polygon",
-                shape: {
-                    points: [
-                        [left + cut, top],
-                        [right, top],
-                        [right - cut, bottom],
-                        [left, bottom]
-                    ]
-                }
-            }
-        default:
-            return { type: "rect", shape: { ...rect, r: CORNER_RADIUS_PX } }
-    }
+    const opacity = opacityOf(isMissedBySearch)
+    const outline = { ...UNTRANSFORMED, ...outlineOf(rect, shape, CORNER_RADIUS_PX), style: { ...style, fill, opacity } }
+    return shape === "double" ? [outline, drawInnerFrame(rect, opacity)] : [outline]
 }
 
 function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark }: BoxLook): object[] {
@@ -152,72 +113,8 @@ function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark 
     return label ? [label, ...marks] : marks
 }
 
-/** Both sit on the box's upper right corner: the badge of a closed box, the ring of a declaration. */
-function drawCycleMark(box: LayoutBox, rect: Rectangle, { hiddenEdgeCount, isInCycle, color }: CycleLook, opacity: number): object[] {
-    const centre = { cx: rect.x + rect.width, cy: rect.y }
-    if (box.kind === "declaration") {
-        const style = { fill: FILE_FILL, stroke: color, lineWidth: CYCLE_RING.lineWidthPx, opacity }
-        return isInCycle ? [{ type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx }, style }] : []
-    }
-    if (box.isExpanded || hiddenEdgeCount === 0) {
-        return []
-    }
-    const text = hiddenEdgeCount > CYCLE_BADGE.mostCounted ? `${CYCLE_BADGE.mostCounted}+` : String(hiddenEdgeCount)
-    const badge = { ...UNTRANSFORMED, info: CYCLE_BADGE_INFO, cursor: "pointer" }
-    return [
-        { type: "circle", ...badge, shape: { ...centre, r: CYCLE_BADGE.radiusPx }, style: { fill: color, opacity } },
-        {
-            type: "text",
-            ...badge,
-            style: {
-                text,
-                x: centre.cx,
-                y: centre.cy,
-                align: "center",
-                verticalAlign: "middle",
-                fontSize: CYCLE_BADGE.fontSizePx,
-                fontWeight: "bold",
-                fill: CYCLE_BADGE.textColor,
-                opacity
-            }
-        }
-    ]
-}
-
 function drawFileMarks(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
     return holdsDeclarations(box) ? [drawToggle(box, rect, opacity), ...drawDeclarationCount(box, rect, opacity)] : []
-}
-
-function drawKindIcon(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
-    const { letter, color } = declarationKindLookOf(box.declarationKind)
-    const left = rect.x + LABEL_INSET_PX
-    const centreY = rect.y + rect.height / 2
-    const square = {
-        x: left,
-        y: centreY - KIND_ICON.sizePx / 2,
-        width: KIND_ICON.sizePx,
-        height: KIND_ICON.sizePx,
-        r: KIND_ICON.cornerRadiusPx
-    }
-    return [
-        { type: "rect", ...UNTRANSFORMED, silent: true, shape: square, style: { fill: color, opacity } },
-        {
-            type: "text",
-            ...UNTRANSFORMED,
-            silent: true,
-            style: {
-                text: letter,
-                x: left + KIND_ICON.sizePx / 2,
-                y: centreY,
-                align: "center",
-                verticalAlign: "middle",
-                fontSize: KIND_ICON.fontSizePx,
-                fontWeight: "bold",
-                fill: KIND_ICON.letterColor,
-                opacity
-            }
-        }
-    ]
 }
 
 function holdsDeclarations(box: LayoutBox): boolean {
@@ -242,30 +139,6 @@ function drawToggle(box: LayoutBox, rect: Rectangle, opacity: number) {
             opacity
         }
     }
-}
-
-/** A closed file says how many declarations it holds once there is more than the one its name stands for. */
-function drawDeclarationCount(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
-    if (box.isExpanded || box.declarationCount < 2) {
-        return []
-    }
-    return [
-        {
-            type: "text",
-            ...UNTRANSFORMED,
-            silent: true,
-            style: {
-                text: String(box.declarationCount),
-                x: rect.x + rect.width - LABEL_INSET_PX,
-                y: nameCentreY(box, rect),
-                align: "right",
-                verticalAlign: "middle",
-                fontSize: QUIET_FONT_SIZE_PX,
-                fill: QUIET_TEXT_COLOR,
-                opacity
-            }
-        }
-    ]
 }
 
 function opacityOf(isMissedBySearch: boolean): number {
@@ -332,9 +205,8 @@ function pixelRectOf(box: LayoutBox, toPixels: ToPixels): Rectangle {
     return { x: left, y: top, width: right - left, height: bottom - top }
 }
 
-function boxStyle(box: LayoutBox, emphasis: BoxEmphasis, isMoved: boolean) {
-    // The dash is stated for every box: ECharts keeps on a reused element whatever the next style leaves out.
-    const base = isMoved ? { ...baseStyle(box), stroke: MOVED_COLOR, ...MOVED_OUTLINE } : { ...baseStyle(box), lineDash: null }
+function boxStyle(box: LayoutBox, emphasis: BoxEmphasis) {
+    const base = baseStyle(box)
     if (emphasis === "selected") {
         return { ...base, stroke: SELECTED_COLOR, lineWidth: SELECTED_LINE_WIDTH_PX }
     }
@@ -347,7 +219,7 @@ function boxStyle(box: LayoutBox, emphasis: BoxEmphasis, isMoved: boolean) {
 function baseStyle(box: LayoutBox) {
     switch (box.kind) {
         case "declaration":
-            return { fill: FILE_FILL, stroke: DECLARATION_STROKE, lineWidth: LINE_WIDTH_PX }
+            return { fill: DECLARATION_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
         case "file":
             return { fill: box.isExpanded ? OPEN_FILE_FILL : FILE_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
         case "package":
@@ -368,7 +240,7 @@ interface LabelLook {
 
 function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon }: LabelLook) {
     const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX : 0
-    const iconWidth = hasKindIcon ? KIND_ICON.sizePx + KIND_ICON.gapPx : 0
+    const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX : 0
     const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth
     if (width < MIN_LABEL_WIDTH_PX) {
         return null

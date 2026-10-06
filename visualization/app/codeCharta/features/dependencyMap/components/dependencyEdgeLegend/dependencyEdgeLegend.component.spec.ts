@@ -73,12 +73,12 @@ describe("DependencyEdgeLegendComponent", () => {
 
         // Assert
         expect(entriesOf("dependency-usage-legend")).toEqual([
-            "Inherits",
+            "Inherits from",
             "Implements",
             "Creates",
             "Takes as argument",
             "Returns",
-            "Reads a constant",
+            "Reads a constant of",
             "Uses"
         ])
         const edgeTypeLines = [...screen.getByTestId("dependency-edge-legend").querySelectorAll("line")]
@@ -100,8 +100,8 @@ describe("DependencyEdgeLegendComponent", () => {
             "Class",
             "Value class",
             "Interface",
-            "Annotation",
             "Enum",
+            "Annotation",
             "Function",
             "Variable",
             "Other"

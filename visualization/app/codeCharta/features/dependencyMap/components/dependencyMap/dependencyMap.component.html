@@ -28,6 +28,7 @@
             <cc-dependency-panel
                 [model]="panel"
                 [cyclesRequest]="cyclesRequest()"
+                [edgeColors]="edgeColors()"
                 (refChosen)="goTo($event)"
                 (dependenciesPointedAt)="pointAt($event)"
                 (actionChosen)="perform($event)"

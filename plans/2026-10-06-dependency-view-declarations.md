@@ -96,8 +96,10 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
   mixed project package levels and folder levels sit side by side and are not comparable
 - Exploration and the dropped forms: `2026-10-06-logical-dependency-layer-visual-exploration.md`
 - As built (2026-10-06):
-  - The prototype artifact could not be read while implementing (HTTP 403), so the look follows this plan's text
-    and the existing view, not the prototype; compare the two before merging
+  - The prototype could not be read while implementing (HTTP 403); once it lay in `Ideas/Declaration Drill-Down`
+    the kind icons, shapes and tints, the usage line styles, the cycle badge, the marks of what moves, the
+    tooltips and the panel rows were aligned with it. Not taken over: boxes as wide as their names, the arcs
+    around the declarations inside a file, the mini graph and "Open all / Close all" files
   - Routing around open files was not needed: declarations are painted over the edges, so an edge never takes
     their clicks; an edge crossing an open file passes under its declarations, as it does under files today
   - Folders mode: a declaration edge between two files takes "points upward" from its file edge and "cyclic"

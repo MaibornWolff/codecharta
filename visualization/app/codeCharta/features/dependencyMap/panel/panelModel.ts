@@ -1,5 +1,14 @@
+import { dependencyEdgeTypeOf } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
-import { declarationKindLabelOf, GraphEdge, LeveledNode, usageLabelOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
+import {
+    declarationKindLabelOf,
+    GraphEdge,
+    LeveledNode,
+    LineStyle,
+    lineStyleOfUsages,
+    usageLabelOf
+} from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CycleChain, findCycleChains } from "./cycleChains"
 import { DeclarationIndex, fromPathOf, IndexedDeclaration, toPathOf } from "./declarationIndex"
 
@@ -23,8 +32,10 @@ export interface PanelDependency {
     from: PanelRef
     to: PanelRef
     usages: string[]
-    isCyclic: boolean
-    isPointingUpwards: boolean
+    /** The dashes and arrowhead of its strongest way of use. */
+    line: LineStyle
+    /** The edge type it is drawn in. */
+    type: DependencyEdgeType
     leafEdge: DependencyLeafEdge
 }
 
@@ -51,6 +62,8 @@ interface PanelRefList {
 export interface PanelCycle {
     /** The declarations walked, the first of them again at the end. */
     steps: PanelRef[]
+    /** The files the cycle runs through. */
+    files: PanelRef[]
     leafEdges: CycleChain
 }
 
@@ -76,6 +89,9 @@ export interface PanelContext {
     index: DeclarationIndex
     /** A hub's rows are cut at this many per group and list, so the panel of a hub stays a panel. */
     rowLimit: number
+    /** Whether a dependency is drawn pointing upward in the hierarchy shown: between two files the folders
+     * decide that by the file edge, the packages by the dependency itself. */
+    pointsUpward: (leafEdge: DependencyLeafEdge) => boolean
 }
 
 export const PANEL_ROW_LIMIT = 20
@@ -178,7 +194,7 @@ function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel 
             { label: "Files", value: String(files.length) },
             { label: "Declarations", value: String(declarations.length) },
             { label: "Cyclic dependencies", value: String(touching.filter(edge => edge.isCyclic).length) },
-            { label: "Upward dependencies", value: String(touching.filter(edge => edge.isPointingUpwards).length) }
+            { label: "Upward dependencies", value: String(touching.filter(context.pointsUpward).length) }
         ],
         lists: [
             refList(
@@ -257,25 +273,26 @@ function groupedByFile(leafEdges: readonly DependencyLeafEdge[], fileOf: (leafEd
         .map(([filePath, edgesOfFile]) => ({ heading: fileRef(filePath), leafEdges: edgesOfFile }))
 }
 
-function section(title: string, groups: readonly EdgeGroup[], { index, rowLimit }: PanelContext): PanelSection {
+function section(title: string, groups: readonly EdgeGroup[], context: PanelContext): PanelSection {
+    const { rowLimit } = context
     const filled = groups.filter(group => group.leafEdges.length > 0)
     return {
         title,
         count: filled.reduce((count, group) => count + group.leafEdges.length, 0),
         groups: filled.map(({ heading, leafEdges }) => {
-            const dependencies = leafEdges.map(leafEdge => dependencyOf(leafEdge, index)).sort(byNames)
+            const dependencies = leafEdges.map(leafEdge => dependencyOf(leafEdge, context)).sort(byNames)
             return { heading, dependencies: dependencies.slice(0, rowLimit), hiddenCount: Math.max(0, dependencies.length - rowLimit) }
         })
     }
 }
 
-function dependencyOf(leafEdge: DependencyLeafEdge, index: DeclarationIndex): PanelDependency {
+function dependencyOf(leafEdge: DependencyLeafEdge, { index, pointsUpward }: PanelContext): PanelDependency {
     return {
         from: declarationRef(index.declarations.get(fromPathOf(leafEdge))),
         to: declarationRef(index.declarations.get(toPathOf(leafEdge))),
         usages: leafEdge.usage.map(usageLabelOf),
-        isCyclic: Boolean(leafEdge.isCyclic),
-        isPointingUpwards: Boolean(leafEdge.isPointingUpwards),
+        line: lineStyleOfUsages(leafEdge.usage),
+        type: dependencyEdgeTypeOf({ isCyclic: leafEdge.isCyclic, isPointingUpwards: pointsUpward(leafEdge) }),
         leafEdge
     }
 }
@@ -291,6 +308,7 @@ function cyclesThrough(declarations: readonly IndexedDeclaration[], index: Decla
     )
     return chains.map(chain => ({
         steps: [fromPathOf(chain[0]), ...chain.map(toPathOf)].map(path => declarationRef(index.declarations.get(path))),
+        files: [...new Set(chain.map(leafEdge => leafEdge.fromNodeName))].map(fileRef),
         leafEdges: chain
     }))
 }

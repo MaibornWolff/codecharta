@@ -54,6 +54,7 @@ export class DependencyMapComponent {
 
     protected readonly panelModel = this.panelStore.model
     protected readonly cyclesRequest = this.panelStore.cyclesRequest
+    protected readonly edgeColors = this.panelStore.edgeColors
 
     protected readonly boxAt = (point: Point) => {
         const layout = this.graphModel.shownLayout()

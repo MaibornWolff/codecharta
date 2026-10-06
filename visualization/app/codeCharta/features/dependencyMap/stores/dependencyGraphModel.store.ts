@@ -72,6 +72,21 @@ export class DependencyGraphModelStore {
         })
     )
 
+    private readonly upwardFilePairs = computed(
+        () => new Set(this.edges().flatMap(edge => (edge.isPointingUpwards ? [filePairOf(edge.fromNodeName, edge.toNodeName)] : [])))
+    )
+
+    /** Whether a dependency between declarations is drawn pointing upward: the folders decide that between two
+     * files by their file edge, the packages by the dependency itself, as it does inside one file. */
+    readonly pointsUpward = computed(() => {
+        const upwardFilePairs = this.upwardFilePairs()
+        const isDecidedByItself = this.hierarchy() === "packages"
+        return (leafEdge: DependencyLeafEdge): boolean =>
+            isDecidedByItself || leafEdge.fromNodeName === leafEdge.toNodeName
+                ? Boolean(leafEdge.isPointingUpwards)
+                : upwardFilePairs.has(filePairOf(leafEdge.fromNodeName, leafEdge.toNodeName))
+    })
+
     private readonly hierarchyDifferences = computed(() => {
         const folderTree = this.folderTree()
         const isAsked = this.settings().marksHierarchyDifferences && this.hasNamespaces() && isDependencyEdgeMetric(this.edgeMetric())

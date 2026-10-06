@@ -26,6 +26,7 @@ export class DependencyPanelStore {
     private readonly cyclesRequestCount = signal(0)
 
     readonly cyclesRequest = this.cyclesRequestCount.asReadonly()
+    readonly edgeColors = computed(() => this.graphModel.settings().edgeColors)
 
     private readonly selection = computed((): Selection => {
         const inGraph = this.viewStore.graphSelection()
@@ -69,7 +70,7 @@ export class DependencyPanelStore {
             return null
         }
         const rowLimit = this.subjectShownInFull() === this.subjectId() ? Number.POSITIVE_INFINITY : PANEL_ROW_LIMIT
-        return describeSubject(subject, { index, rowLimit })
+        return describeSubject(subject, { index, rowLimit, pointsUpward: this.graphModel.pointsUpward() })
     })
 
     /** Each dependency pointed at lights up the edge it is drawn as, or drawn in. */

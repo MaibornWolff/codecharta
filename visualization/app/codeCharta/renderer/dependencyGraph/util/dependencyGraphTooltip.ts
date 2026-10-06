@@ -50,7 +50,7 @@ function describeBox(box: LayoutBox, { hiddenCyclicEdges, declarationsInCycles }
     }
     const hiddenCount = box.isExpanded ? 0 : (hiddenCyclicEdges.get(box.path) ?? 0)
     if (hiddenCount > 0) {
-        rows.push(`Hides ${hiddenCount} cyclic ${hiddenCount === 1 ? "dependency" : "dependencies"} between declarations`)
+        rows.push(`${hiddenCount} ${hiddenCount === 1 ? "dependency" : "dependencies"} in a cycle inside`)
     }
     if (canBeOpened(box)) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
@@ -69,9 +69,19 @@ function describeEdge(
     if (!isDependencyEdgeMetric(edgeMetric)) {
         return [title, `${escapeHtml(edgeMetric ?? "")} ${roundedForReading(edge.weight)}`].join("<br/>")
     }
-    const count = `${edge.weight} ${edge.weight === 1 ? "dependency" : "dependencies"}`
-    const usages = lineStyleShows === "usage" ? usagesOf(edge).map(usageLabelOf).map(escapeHtml) : []
-    return [title, `${count} · ${EDGE_TYPE_LABELS[edge.type]}`, ...(usages.length > 0 ? [usages.join(", ")] : [])].join("<br/>")
+    const type = EDGE_TYPE_LABELS[edge.type]
+    const [only, ...others] = edge.declarationEdges
+    if (only === undefined) {
+        return [title, `${edge.weight} ${edge.weight === 1 ? "dependency" : "dependencies"} · ${type}`].join("<br/>")
+    }
+    if (others.length > 0) {
+        return [title, `${edge.declarationEdges.length} declaration edges · ${type}`, "<i>Click to list them</i>"].join("<br/>")
+    }
+    const usages = usagesOf(edge).map(usageLabelOf).map(escapeHtml).join(", ")
+    const declarations = `<b>${escapeHtml(only.fromLeaf)} → ${escapeHtml(only.toLeaf)}</b>`
+    const isFolded = fromName !== only.fromLeaf || toName !== only.toLeaf
+    const drawnAs = isFolded ? [`drawn as ${escapeHtml(fromName)} → ${escapeHtml(toName)}`] : []
+    return [declarations, [usages, type].filter(Boolean).join(" · "), ...drawnAs].join("<br/>")
 }
 
 const READABLE_DECIMALS = 1000

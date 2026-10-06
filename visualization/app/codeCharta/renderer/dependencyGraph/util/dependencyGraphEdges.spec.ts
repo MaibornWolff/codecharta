@@ -128,17 +128,19 @@ describe("drawEdge", () => {
         expect(children[0].shape).toEqual(children[1].shape)
     })
 
-    it("should lay a halo in the colour of what moves under an edge of another type in the other hierarchy, the selection's when selected too", () => {
+    it("should lay a dashed band in the colour of what moves under an edge of another type in the other hierarchy, cleared beside the line", () => {
         // Arrange
-        const moved = { isMoved: true }
+        const moved = { isMoved: true, widthPx: 2 }
 
         // Act
-        const [movedHalo] = draw(downward, moved).children
-        const [selectedHalo] = draw(downward, { ...moved, isSelected: true }).children
+        const [band, cleared, line] = draw(downward, moved).children
+        const selectedToo = draw(downward, { ...moved, isSelected: true }).children
 
         // Assert
-        expect(movedHalo.style.stroke).toBe("#d97706")
-        expect(selectedHalo.style.stroke).toBe(SELECTED_COLOR)
+        expect(band.style).toMatchObject({ stroke: "#b45309", lineWidth: 8, lineDash: [5, 3] })
+        expect(cleared.style).toMatchObject({ stroke: "#ffffff", lineWidth: 5 })
+        expect(line.style.stroke).toBe(EDGE_COLORS.regular)
+        expect(selectedToo.map(part => part.style.stroke).slice(0, 2)).toEqual([SELECTED_COLOR, "#b45309"])
     })
 
     it("should fade a dimmed edge and its arrow", () => {
