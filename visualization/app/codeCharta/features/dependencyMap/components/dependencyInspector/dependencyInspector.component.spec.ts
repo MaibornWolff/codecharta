@@ -85,7 +85,8 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         actionChosen: jest.fn(),
         cycleShown: jest.fn(),
         allRowsRequested: jest.fn(),
-        closed: jest.fn()
+        closed: jest.fn(),
+        cyclesRequestAnswered: jest.fn()
     }
     const shown = { model: signal<InspectorModel | null>(model), cyclesRequest: signal(cyclesRequest) }
     const store: Partial<DependencyInspectorStore> = {
@@ -96,7 +97,8 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         perform: handlers.actionChosen,
         showCycle: handlers.cycleShown,
         showAllRows: handlers.allRowsRequested,
-        dismiss: handlers.closed
+        dismiss: handlers.closed,
+        answerCyclesRequest: handlers.cyclesRequestAnswered.mockImplementation(() => shown.cyclesRequest.set(null))
     }
     const rendered = await render(DependencyInspectorComponent, { providers: [{ provide: DependencyInspectorStore, useValue: store }] })
     const rerender = async ({ inputs }: { inputs: Shown }) => {
@@ -406,19 +408,20 @@ describe("DependencyInspectorComponent", () => {
         expect(screen.queryByRole("region", { name: "Declarations" })).toBeNull()
     })
 
-    it("should bring the cycles into view when asked to, once per request", async () => {
+    it("should bring the cycles into view when asked to and answer the request, so it is not replayed", async () => {
         // Arrange
         const scrollIntoView = jest.fn()
         Element.prototype.scrollIntoView = scrollIntoView
-        const { rerender, fixture } = await renderInspector(FILE_MODEL, null)
+        const { rerender, fixture, cyclesRequestAnswered } = await renderInspector(FILE_MODEL, null)
 
         // Act
         await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1 } })
         fixture.detectChanges()
-        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, cyclesRequest: 1 } })
+        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" } } })
         fixture.detectChanges()
 
         // Assert
         expect(scrollIntoView).toHaveBeenCalledTimes(1)
+        expect(cyclesRequestAnswered).toHaveBeenCalledTimes(1)
     })
 })

@@ -167,6 +167,11 @@ export class DependencyInspectorStore {
         this.cyclesAskedFor.set({ id, boxPath })
     }
 
+    /** A request is answered once, so an inspector shown anew does not answer it again. */
+    answerCyclesRequest(): void {
+        this.cyclesAskedFor.set(null)
+    }
+
     goTo(reference: InspectorReference): void {
         this.viewStore.reveal([reference.path])
         this.select(reference.path)

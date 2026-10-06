@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from "@angular/common"
-import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, untracked, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, untracked, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
@@ -35,7 +35,7 @@ export class DependencyInspectorComponent {
     protected readonly edgeColors = this.store.edgeColors
 
     private readonly cyclesSection = viewChild<ElementRef<HTMLElement>>("cyclesSection")
-    private shownCyclesRequest: number | null = null
+    private readonly shownPath = computed(() => this.model()?.path)
     private readonly clipboard = inject(CopyToClipboardService)
 
     readonly actionLabels = ACTION_LABELS
@@ -44,15 +44,14 @@ export class DependencyInspectorComponent {
 
     constructor() {
         effect(() => {
-            const request = this.store.cyclesRequest()
             const section = this.cyclesSection()?.nativeElement
-            if (section && request !== null && request !== this.shownCyclesRequest) {
-                this.shownCyclesRequest = request
+            if (section && this.store.cyclesRequest() !== null) {
                 section.scrollIntoView({ block: "start" })
+                untracked(() => this.store.answerCyclesRequest())
             }
         })
         effect(() => {
-            this.model()?.path
+            this.shownPath()
             untracked(() => this.clipboard.reset())
         })
     }
