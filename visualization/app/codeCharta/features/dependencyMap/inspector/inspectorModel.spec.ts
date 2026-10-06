@@ -87,8 +87,11 @@ function badgesOf(model: InspectorModel): string[] {
 describe("describeSubject", () => {
     describe("a file", () => {
         it("should head the inspector with its folder, its name and what to copy, and tell its package, declarations and cycles as badges", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE, { parent: GAME_FOLDER })
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE, { parent: GAME_FOLDER }), context())
+            const model = describeSubject(subject, context())
 
             // Assert
             expect(model).toMatchObject({ kind: "file", title: "creature.ts", path: CREATURE, copyText: CREATURE })
@@ -102,8 +105,11 @@ describe("describeSubject", () => {
         })
 
         it("should list its declarations by name, each with its kind and the level it has", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE)
+
             // Act
-            const { declarations } = describeSubject(box(CREATURE_NODE), context())
+            const { declarations } = describeSubject(subject, context())
 
             // Assert
             expect(declarations).toEqual({
@@ -123,8 +129,11 @@ describe("describeSubject", () => {
         })
 
         it("should tell what it uses, the dependencies inside it first, and what uses it, each group under the other file", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE)
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE), context())
+            const model = describeSubject(subject, context())
 
             // Assert
             expect(model.sections.map(section => [section.title, section.count])).toEqual([
@@ -140,8 +149,11 @@ describe("describeSubject", () => {
         })
 
         it("should say which end of a dependency is the file's own, so the direction reads at a glance", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE)
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE), context())
+            const model = describeSubject(subject, context())
             const [inside] = model.sections[0].groups[0].dependencies
             const [outgoing] = model.sections[0].groups[1].dependencies
             const [incoming] = model.sections[1].groups[0].dependencies
@@ -153,8 +165,11 @@ describe("describeSubject", () => {
         })
 
         it("should carry each row's dependency for the graph to light up, the line of its strongest use and the edge type it is drawn in", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE)
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE), context())
+            const model = describeSubject(subject, context())
             const [usedBy] = model.sections[1].groups[0].dependencies
             const [inherits] = model.sections[0].groups[1].dependencies
 
@@ -180,18 +195,22 @@ describe("describeSubject", () => {
         })
 
         it("should offer to open a closed file and to close an open one, and neither for a file telling no declaration", () => {
+            // Arrange
+            const subjects = [box(CREATURE_NODE), box(CREATURE_NODE, { isOpen: true }), box(fileNode("/root/plain.ts"))]
+
             // Act
-            const actions = [box(CREATURE_NODE), box(CREATURE_NODE, { isOpen: true }), box(fileNode("/root/plain.ts"))].map(
-                subject => describeSubject(subject, context()).action
-            )
+            const actions = subjects.map(subject => describeSubject(subject, context()).action)
 
             // Assert
             expect(actions).toEqual(["open", "close", null])
         })
 
         it("should tell its cycles as the declarations walked, each with the look of its dependency on the next", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE)
+
             // Act
-            const { cycles } = describeSubject(box(CREATURE_NODE), context())
+            const { cycles } = describeSubject(subject, context())
 
             // Assert
             expect(cycles.map(cycle => cycle.steps.map(step => step.reference.name))).toEqual([["Creature", "Weapon"]])
@@ -204,8 +223,11 @@ describe("describeSubject", () => {
         })
 
         it("should tell a cycle from one of its own declarations, wherever the cycle was found from", () => {
+            // Arrange
+            const subject = box(fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")]))
+
             // Act
-            const { cycles } = describeSubject(box(fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")])), context())
+            const { cycles } = describeSubject(subject, context())
 
             // Assert
             expect(cycles[0].steps.map(step => step.reference.name)).toEqual(["Weapon", "Creature"])
@@ -268,8 +290,11 @@ describe("describeSubject", () => {
 
     describe("a declaration", () => {
         it("should head the inspector with its file and tell its kind, package, level and cycles as badges", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE.children[0], { parent: CREATURE_NODE })
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE.children[0], { parent: CREATURE_NODE }), context())
+            const model = describeSubject(subject, context())
 
             // Assert
             expect(model).toMatchObject({ kind: "declaration", title: "Creature", action: null, declarations: null, copyText: CREATURE })
@@ -278,8 +303,11 @@ describe("describeSubject", () => {
         })
 
         it("should tell what it uses and what uses it, its own file among the others, and its cycles", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE.children[0])
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE.children[0]), context())
+            const model = describeSubject(subject, context())
 
             // Assert
             expect(rowsOf(model, "Uses")).toEqual([
@@ -291,8 +319,11 @@ describe("describeSubject", () => {
         })
 
         it("should leave out the package and level a declaration does not have, and say little of one the map does not tell", () => {
+            // Arrange
+            const subject = box(declarationNode(WEAPON, "Weapon", "interface"))
+
             // Act
-            const weapon = describeSubject(box(declarationNode(WEAPON, "Weapon", "interface")), context())
+            const weapon = describeSubject(subject, context())
             const untold = describeSubject(box(declarationNode(WEAPON, "Ghost", "typealias")), context())
 
             // Assert
@@ -303,8 +334,11 @@ describe("describeSubject", () => {
 
     describe("a folder", () => {
         it("should count its files and declarations and the cyclic and upward dependencies touching them, leaving the files themselves to the explorer", () => {
+            // Arrange
+            const subject = box(GAME_FOLDER, { parent: ROOT_FOLDER })
+
             // Act
-            const model = describeSubject(box(GAME_FOLDER, { parent: ROOT_FOLDER }), context())
+            const model = describeSubject(subject, context())
 
             // Assert
             expect(model).toMatchObject({
@@ -368,8 +402,11 @@ describe("describeSubject", () => {
         }
 
         it("should tell the dependencies it stands for and count them per kind of use, the most frequent first", () => {
+            // Arrange
+            const subject = { kind: "edge", edge, fromName: "creature.ts", toName: "weapon.ts" } as const
+
             // Act
-            const model = describeSubject({ kind: "edge", edge, fromName: "creature.ts", toName: "weapon.ts" }, context())
+            const model = describeSubject(subject, context())
 
             // Assert
             expect(model).toMatchObject({ kind: "edge", title: "creature.ts → weapon.ts", path: edge.id, parent: null, copyText: null })

@@ -121,9 +121,12 @@ describe("dependencyGraphBoxes", () => {
             const iconLook = look("none", false, false, "icon")
 
             it("should shrink the marks inside a box with the box, keeping them in their place", () => {
+                // Arrange
+                const zoomedOutALittle = atZoom(0.75)
+
                 // Act
-                const [, , toggle, countDisc, count] = childrenOf(drawBox(file, look("none"), atZoom(0.75)))
-                const [, , icon, letter] = childrenOf(drawBox(declaration, iconLook, atZoom(0.75)))
+                const [, , toggle, countDisc, count] = childrenOf(drawBox(file, look("none"), zoomedOutALittle))
+                const [, , icon, letter] = childrenOf(drawBox(declaration, iconLook, zoomedOutALittle))
 
                 // Assert
                 expect(toggle.style.fontSize).toBe(7.5)
@@ -134,9 +137,12 @@ describe("dependencyGraphBoxes", () => {
             })
 
             it("should leave the marks out once they would be too small to read, and give their room to the name", () => {
+                // Arrange
+                const zoomedOutFar = atZoom(0.5)
+
                 // Act
-                const fileParts = childrenOf(drawBox(file, look("none"), atZoom(0.5)))
-                const declarationParts = childrenOf(drawBox(declaration, iconLook, atZoom(0.5)))
+                const fileParts = childrenOf(drawBox(file, look("none"), zoomedOutFar))
+                const declarationParts = childrenOf(drawBox(declaration, iconLook, zoomedOutFar))
 
                 // Assert
                 expect(fileParts.map(part => part.type)).toEqual(["rect", "text"])
@@ -145,8 +151,11 @@ describe("dependencyGraphBoxes", () => {
             })
 
             it("should keep the marks at their size when zoomed in, as the names keep theirs", () => {
+                // Arrange
+                const zoomedIn = atZoom(3)
+
                 // Act
-                const [, , icon] = childrenOf(drawBox(declaration, iconLook, atZoom(3)))
+                const [, , icon] = childrenOf(drawBox(declaration, iconLook, zoomedIn))
 
                 // Assert
                 expect(icon.shape).toMatchObject({ cx: 14, r: 7 })

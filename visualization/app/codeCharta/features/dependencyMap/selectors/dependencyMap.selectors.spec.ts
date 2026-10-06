@@ -81,8 +81,11 @@ describe("focusedFolderLevelPathSelector", () => {
     const nestedLevels = { ...levels, "/root/lib": 2, "/root/lib/core": 1, "/root/lib/core/io.ts": 0, "/root/lib/index.ts": 0 }
 
     it("should list the levels leading from the root to the focused folder", () => {
+        // Arrange
+        const focusedFolder = "/root/lib/core"
+
         // Act
-        const levelPath = focusedFolderLevelPathSelector.projector(accumulatedData, "/root/lib/core", nestedLevels)
+        const levelPath = focusedFolderLevelPathSelector.projector(accumulatedData, focusedFolder, nestedLevels)
 
         // Assert
         expect(levelPath).toEqual([2, 1])

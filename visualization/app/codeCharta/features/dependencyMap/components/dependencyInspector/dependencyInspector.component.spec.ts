@@ -203,25 +203,29 @@ describe("DependencyInspectorComponent", () => {
     })
 
     it("should put the cycles first, then what the selection uses, then its declarations, leaving out a section with nothing in it", async () => {
-        // Act
+        // Arrange
         await renderInspector()
 
-        // Assert
+        // Act
         const sections = [...screen.getByTestId("dependency-inspector-body").querySelectorAll("section")].map(section =>
             section.getAttribute("aria-label")
         )
+
+        // Assert
         expect(sections).toEqual(["Cycles", "Uses", "Declarations"])
         expect(screen.getByRole("region", { name: "Cycles" }).textContent).toContain("6")
         expect(screen.getByRole("region", { name: "Uses" }).textContent).toContain("5")
     })
 
     it("should draw a dependency as a chain: its two declarations with the edge between them, in the edge's dashes, head and colour", async () => {
-        // Act
+        // Arrange
         await renderInspector()
 
-        // Assert
+        // Act
         const row = fileRow()
         const connector = row.querySelector("svg")
+
+        // Assert
         expect(row.textContent.replaceAll(/\s+/g, "")).toContain("CCreatureIWeapon")
         expect(connector.getAttribute("stroke")).toBe("#7f1d1d")
         expect(connector.getAttribute("aria-label")).toBe("Inherits from")
@@ -232,11 +236,13 @@ describe("DependencyInspectorComponent", () => {
     })
 
     it("should outline the selection's own declarations in a row, and say nothing under a plain dependency", async () => {
-        // Act
+        // Arrange
         await renderInspector()
 
-        // Assert
+        // Act
         const [from, to] = [...fileRow().querySelectorAll("span.border")]
+
+        // Assert
         expect([from.classList.contains("border-primary"), to.classList.contains("border-primary")]).toEqual([true, false])
         const [ownRow] = screen.getAllByTestId("dependency-inspector-row")
         expect(ownRow.querySelectorAll("div")).toHaveLength(1)
@@ -244,11 +250,13 @@ describe("DependencyInspectorComponent", () => {
     })
 
     it("should put each other file's dependencies in a card under the file's name and count, the selection's own under a plain label", async () => {
-        // Act
+        // Arrange
         await renderInspector()
 
-        // Assert
+        // Act
         const [ownCard, otherCard] = screen.getAllByTestId("dependency-inspector-group")
+
+        // Assert
         expect(ownCard.textContent).toContain("this file")
         expect(within(otherCard).getByRole("button", { name: "weapon.ts" }).querySelector("i.fa-file-o")).not.toBeNull()
         expect(otherCard.textContent).toContain("4")
@@ -308,11 +316,13 @@ describe("DependencyInspectorComponent", () => {
     })
 
     it("should list the declarations with their kind and level at the right", async () => {
-        // Act
+        // Arrange
         await renderInspector()
 
-        // Assert
+        // Act
         const declarations = screen.getByRole("region", { name: "Declarations" })
+
+        // Assert
         expect(declarations.querySelector("li").textContent.replaceAll(/\s+/g, " ").trim()).toBe("CCreatureclass · level 2")
         expect(within(declarations).getByTitle("Class").textContent).toBe("C")
     })

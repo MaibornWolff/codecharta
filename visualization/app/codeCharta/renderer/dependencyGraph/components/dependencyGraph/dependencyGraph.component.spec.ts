@@ -152,11 +152,13 @@ describe("DependencyGraphComponent", () => {
         }
 
         it("should offer every box to the keyboard, named by its kind, saying whether it is open and which one is selected", async () => {
-            // Act
+            // Arrange
             await renderBoxes()
 
-            // Assert
+            // Act
             const boxes = screen.getAllByRole("button")
+
+            // Assert
             expect(boxes.map(box => box.getAttribute("aria-label"))).toEqual(["Folder app", "File a.ts", "File b.ts"])
             expect(boxes.map(box => box.getAttribute("aria-expanded"))).toEqual(["true", "false", null])
             expect(boxes.map(box => box.getAttribute("aria-pressed"))).toEqual(["true", "false", "false"])

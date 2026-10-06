@@ -596,8 +596,11 @@ describe("windowHolding", () => {
     })
 
     it("should have no window for boxes that are not on screen", () => {
+        // Arrange
+        const pathsWithoutABox = ["/root/hidden.ts"]
+
         // Act
-        const window = windowHolding(["/root/hidden.ts"], layout, viewport, null)
+        const window = windowHolding(pathsWithoutABox, layout, viewport, null)
 
         // Assert
         expect(window).toBeNull()

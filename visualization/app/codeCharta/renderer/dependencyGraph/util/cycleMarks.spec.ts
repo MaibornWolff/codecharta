@@ -71,8 +71,11 @@ describe("findCycleMarks", () => {
     })
 
     it("should mark nothing while there is no cycle", () => {
+        // Arrange
+        const noCycles: string[][] = []
+
         // Act
-        const marks = findCycleMarks([], representativesWith({}))
+        const marks = findCycleMarks(noCycles, representativesWith({}))
 
         // Assert
         expect(marks).toEqual(NO_CYCLE_MARKS)
