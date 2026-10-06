@@ -1,4 +1,4 @@
-import { computed, Injectable, inject, signal } from "@angular/core"
+import { computed, Injectable, inject, signal, untracked } from "@angular/core"
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
@@ -17,11 +17,27 @@ import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapWriteStore } from "./dependencyMap.write.store"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
-type Selection = { kind: "box"; path: string } | { kind: "edge"; id: string } | null
+type Selection = { kind: "box"; path: string } | { kind: "edge"; id: string }
+
+/** Something only the graph can select: a declaration is no node of the map, so the shared selection holds its
+ * file, and an edge or a package is none either, so the shared selection is empty. It lasts for as long as the
+ * shared selection is what it was set to and the same files are drawn. */
+interface GraphSelection {
+    selection: Selection
+    sharedPath: string | null
+    layoutIdentity: string | null
+}
+
+/** What the reader did to the inspector of one subject; it is forgotten with the next subject. */
+interface SubjectView {
+    subjectId: string | null
+    isDismissed: boolean
+    showsAllRows: boolean
+}
 
 const NOTHING_POINTED_AT: readonly DependencyLeafEdge[] = []
+const UNTOUCHED: SubjectView = { subjectId: null, isDismissed: false, showsAllRows: false }
 
-/** What is selected in the graph and what the inspector beside it says of that. The state lasts for the session. */
 @Injectable({ providedIn: "root" })
 export class DependencyInspectorStore {
     private readonly graphModel = inject(DependencyGraphModelStore)
@@ -30,9 +46,9 @@ export class DependencyInspectorStore {
     private readonly selectedNodePath$ = inject(DependencyMapReadStore).selectedNodePath$
     private readonly sharedSelectedPath = toSignal(this.selectedNodePath$, { requireSync: true })
 
+    private readonly selectedInGraph = signal<GraphSelection | null>(null)
     private readonly pointedAt = signal(NOTHING_POINTED_AT)
-    private readonly dismissedSubject = signal<string | null>(null)
-    private readonly subjectShownInFull = signal<string | null>(null)
+    private readonly touchedView = signal(UNTOUCHED)
     private readonly cyclesAskedFor = signal<{ id: number; boxPath: string } | null>(null)
 
     readonly edgeColors = computed(() => {
@@ -40,11 +56,11 @@ export class DependencyInspectorStore {
         return edgeColorsAsDrawn(edgeColors, lineStyleShows)
     })
 
-    private readonly selection = computed((): Selection => {
-        const inGraph = this.viewStore.graphSelection()
+    private readonly selection = computed((): Selection | null => {
+        const inGraph = this.selectedInGraph()
         const sharedPath = this.sharedSelectedPath()
-        if (inGraph && inGraph.sharedPath === sharedPath) {
-            return inGraph.kind === "edge" ? { kind: "edge", id: inGraph.path } : { kind: "box", path: inGraph.path }
+        if (inGraph?.sharedPath === sharedPath && inGraph.layoutIdentity === this.viewStore.adoptedLayoutIdentity()) {
+            return inGraph.selection
         }
         return sharedPath ? { kind: "box", path: sharedPath } : null
     })
@@ -84,19 +100,23 @@ export class DependencyInspectorStore {
         const subject = this.subject()
         return subject && (subject.kind === "edge" ? `edge ${subject.edge.id}` : `box ${subject.node.path}`)
     })
+    private readonly subjectView = computed(() => {
+        const touched = this.touchedView()
+        return touched.subjectId === this.subjectId() ? touched : UNTOUCHED
+    })
 
     /** A map that tells no declarations has nothing the inspector could add to the graph. */
     readonly model = computed((): InspectorModel | null => {
         const subject = this.subject()
         const index = this.graphModel.declarationIndex()
-        if (!subject || index.declarations.size === 0 || this.dismissedSubject() === this.subjectId()) {
+        const { isDismissed, showsAllRows } = this.subjectView()
+        if (!subject || index.declarations.size === 0 || isDismissed) {
             return null
         }
-        const rowLimit = this.subjectShownInFull() === this.subjectId() ? Number.POSITIVE_INFINITY : INSPECTOR_ROW_LIMIT
         const { chains, isComplete } = this.graphModel.cycleSearch()
         return describeSubject(subject, {
             index,
-            rowLimit,
+            rowLimit: showsAllRows ? Number.POSITIVE_INFINITY : INSPECTOR_ROW_LIMIT,
             cycles: chains,
             mayMissCycles: !isComplete,
             edgeMetric: this.graphModel.edgeMetric(),
@@ -112,15 +132,21 @@ export class DependencyInspectorStore {
         )
     })
 
-    /** A subject the reader selects anew is shown again, whichever view it is selected in. */
+    /** The graph's own selection ends for good once the shared one has moved on: selecting the same node again
+     * later selects that node, not what the graph once showed of it. And a subject the reader selects anew is
+     * shown again, whichever view it is selected in. */
     constructor() {
-        this.selectedNodePath$.pipe(takeUntilDestroyed()).subscribe(() => this.dismissedSubject.set(null))
+        this.selectedNodePath$.pipe(takeUntilDestroyed()).subscribe(sharedPath => {
+            if (untracked(this.selectedInGraph)?.sharedPath !== sharedPath) {
+                this.selectedInGraph.set(null)
+            }
+            this.showAgain()
+        })
     }
 
     select(boxPath: string): void {
         const nodePath = this.graphModel.nodePathOf(boxPath)
-        this.viewStore.selectInGraph(nodePath === boxPath ? null : { kind: "box", path: boxPath, sharedPath: nodePath })
-        this.dismissedSubject.set(null)
+        this.selectInGraph(nodePath === boxPath ? null : { kind: "box", path: boxPath }, nodePath)
         this.cyclesAskedFor.set(null)
         if (nodePath === null) {
             this.writeStore.clearSelection()
@@ -130,8 +156,7 @@ export class DependencyInspectorStore {
     }
 
     selectEdge(edgeId: string): void {
-        this.viewStore.selectInGraph({ kind: "edge", path: edgeId, sharedPath: null })
-        this.dismissedSubject.set(null)
+        this.selectInGraph({ kind: "edge", id: edgeId }, null)
         this.writeStore.clearSelection()
     }
 
@@ -142,7 +167,7 @@ export class DependencyInspectorStore {
     }
 
     goTo(reference: InspectorReference): void {
-        this.viewStore.reveal(reference.path)
+        this.viewStore.reveal([reference.path])
         this.select(reference.path)
         this.pointAt(null)
         this.bringIntoView([reference.path])
@@ -155,7 +180,7 @@ export class DependencyInspectorStore {
     perform(action: InspectorActionKind): void {
         const subject = this.subject()
         if (subject?.kind === "edge" && action === "unfold") {
-            this.viewStore.selectInGraph(null)
+            this.selectedInGraph.set(null)
             this.revealEndsOf(subject.edge.declarationEdges)
         } else if (subject?.kind === "box" && action === "open") {
             this.viewStore.openBox(subject.node.path)
@@ -171,20 +196,27 @@ export class DependencyInspectorStore {
     }
 
     showAllRows(): void {
-        this.subjectShownInFull.set(this.subjectId())
+        this.touchedView.set({ subjectId: this.subjectId(), isDismissed: false, showsAllRows: true })
     }
 
     dismiss(): void {
-        this.dismissedSubject.set(this.subjectId())
+        this.touchedView.set({ ...this.subjectView(), subjectId: this.subjectId(), isDismissed: true })
         this.pointAt(null)
     }
 
-    /** Opens what hides the two declarations of each dependency and moves the graph so that they are in view. */
+    private selectInGraph(selection: Selection | null, sharedPath: string | null): void {
+        const layoutIdentity = untracked(this.viewStore.adoptedLayoutIdentity)
+        this.selectedInGraph.set(selection && { selection, sharedPath, layoutIdentity })
+        this.showAgain()
+    }
+
+    private showAgain(): void {
+        this.touchedView.update(view => (view.isDismissed ? { ...view, isDismissed: false } : view))
+    }
+
     private revealEndsOf(declarationEdges: readonly DependencyLeafEdge[]): void {
         const ends = [...new Set(declarationEdges.flatMap(declarationEdge => [fromPathOf(declarationEdge), toPathOf(declarationEdge)]))]
-        for (const path of ends) {
-            this.viewStore.reveal(path)
-        }
+        this.viewStore.reveal(ends)
         this.bringIntoView(ends)
     }
 

@@ -1,6 +1,5 @@
 import { Injectable, inject, signal, untracked } from "@angular/core"
-import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
-import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
+import { toSignal } from "@angular/core/rxjs-interop"
 import {
     BoxOffset,
     boxPathOf,
@@ -11,16 +10,6 @@ import {
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
-/** Something only the graph can select: a declaration is no node of the map, so the shared selection holds its
- * file, and an edge is none either, so the shared selection is empty. The graph's own selection lasts for as
- * long as the shared one still is what it was set to. */
-export interface GraphSelection {
-    kind: "box" | "edge"
-    /** A box's path or an edge's id. */
-    path: string
-    sharedPath: string | null
-}
-
 interface RevealsAwaitingAdoption {
     layoutIdentity: string
     paths: string[]
@@ -28,17 +17,14 @@ interface RevealsAwaitingAdoption {
 
 @Injectable({ providedIn: "root" })
 export class DependencyMapViewStore {
-    private readonly readStore = inject(DependencyMapReadStore)
-    private readonly currentLayoutIdentity = toSignal(this.readStore.layoutIdentity$, { requireSync: true })
+    private readonly currentLayoutIdentity = toSignal(inject(DependencyMapReadStore).layoutIdentity$, { requireSync: true })
     private readonly layoutIdentityOfTheOpenedBoxes = signal<string | null>(null)
     private readonly openedBoxes = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
     private readonly draggedOrder = signal<readonly string[]>([])
     private readonly boxBeingDragged = signal<string | null>(null)
     private readonly fitRequestCount = signal(0)
-    private readonly selectedInGraph = signal<GraphSelection | null>(null)
     private readonly hoveredInGraph = signal<string | null>(null)
-    private readonly shownHierarchy = signal<DependencyHierarchy>("folders")
     private readonly askedIntoView = signal<ViewRequest | null>(null)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: LeveledNode | null = null
@@ -50,22 +36,9 @@ export class DependencyMapViewStore {
     readonly raisedPaths = this.draggedOrder.asReadonly()
     readonly draggingPath = this.boxBeingDragged.asReadonly()
     readonly fitRequest = this.fitRequestCount.asReadonly()
-    readonly graphSelection = this.selectedInGraph.asReadonly()
     /** The box under the pointer, which the shared hover names only by the node it belongs to. */
     readonly hoveredBoxPath = this.hoveredInGraph.asReadonly()
-    /** What the reader asked for; a map without packages is shown by its folders all the same. */
-    readonly hierarchy = this.shownHierarchy.asReadonly()
     readonly viewRequest = this.askedIntoView.asReadonly()
-
-    /** The graph's own selection ends for good once the shared one has moved on: selecting the same node again
-     * later selects that node, not what the graph once showed of it. */
-    constructor() {
-        this.readStore.selectedNodePath$.pipe(takeUntilDestroyed()).subscribe(sharedPath => {
-            if (untracked(this.selectedInGraph)?.sharedPath !== sharedPath) {
-                this.selectedInGraph.set(null)
-            }
-        })
-    }
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()
@@ -76,18 +49,6 @@ export class DependencyMapViewStore {
         } else if (hasRootMoved) {
             this.openTheMovedRoot(tree)
         }
-    }
-
-    selectInGraph(selection: GraphSelection | null): void {
-        this.selectedInGraph.set(selection)
-    }
-
-    /** The boxes move to other places, so where the reader dragged them to no longer means anything, and the
-     * part of the graph that was in view may be empty now. */
-    showHierarchy(hierarchy: DependencyHierarchy): void {
-        this.shownHierarchy.set(hierarchy)
-        this.resetLayout()
-        this.requestFit()
     }
 
     hoverInGraph(path: string | null): void {
@@ -122,16 +83,16 @@ export class DependencyMapViewStore {
 
     /** A reveal arriving before the tree of the loaded files is adopted, as on the way in from another view, is
      * repeated once it is, since adopting a tree closes every folder. */
-    reveal(path: string): void {
-        this.openBoxesHolding([path])
+    reveal(paths: readonly string[]): void {
+        this.openBoxesHolding(paths)
         const layoutIdentity = untracked(this.currentLayoutIdentity)
         if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedBoxes)) {
-            this.awaitAdoptionToReveal(layoutIdentity, path)
+            this.awaitAdoptionToReveal(layoutIdentity, paths)
         }
     }
 
     openBox(path: string): void {
-        this.reveal(path)
+        this.reveal([path])
         const boxPath = (this.adoptedTree && boxPathOf(this.adoptedTree, path)) ?? path
         this.openedBoxes.update(opened => new Set([...opened, boxPath]))
     }
@@ -150,7 +111,6 @@ export class DependencyMapViewStore {
         this.layoutIdentityOfTheOpenedBoxes.set(layoutIdentity)
         this.openedBoxes.set(collapsedFirstLook(tree))
         this.resetLayout()
-        this.selectedInGraph.set(null)
         this.revealTheAwaitingPaths(layoutIdentity)
     }
 
@@ -162,10 +122,10 @@ export class DependencyMapViewStore {
         }
     }
 
-    private awaitAdoptionToReveal(layoutIdentity: string, path: string): void {
+    private awaitAdoptionToReveal(layoutIdentity: string, paths: readonly string[]): void {
         const awaiting = this.revealsAwaitingAdoption
         const earlierPaths = awaiting?.layoutIdentity === layoutIdentity ? awaiting.paths : []
-        this.revealsAwaitingAdoption = { layoutIdentity, paths: [...earlierPaths, path] }
+        this.revealsAwaitingAdoption = { layoutIdentity, paths: [...earlierPaths, ...paths] }
     }
 
     private revealTheAwaitingPaths(layoutIdentity: string): void {
@@ -176,7 +136,7 @@ export class DependencyMapViewStore {
         }
     }
 
-    private openBoxesHolding(paths: string[]): void {
+    private openBoxesHolding(paths: readonly string[]): void {
         const boxesAround = (path: string) => (this.adoptedTree && containerPathsOf(this.adoptedTree, path)) ?? []
         this.openedBoxes.update(opened => new Set([...opened, ...paths.flatMap(ancestorsOf), ...paths.flatMap(boxesAround)]))
     }

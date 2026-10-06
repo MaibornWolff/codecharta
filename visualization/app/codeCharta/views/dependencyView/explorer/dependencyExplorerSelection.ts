@@ -27,7 +27,7 @@ export class DependencyExplorerSelection implements ExplorerSelection {
     select(node: CodeMapNode): void {
         this.nodeInteraction.selectNode(node.path)
         if (isLeaf(node)) {
-            this.viewStore.reveal(node.path)
+            this.viewStore.reveal([node.path])
         } else {
             this.viewStore.openBox(node.path)
         }

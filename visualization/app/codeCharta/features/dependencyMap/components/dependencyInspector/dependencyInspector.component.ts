@@ -1,10 +1,10 @@
 import { NgTemplateOutlet } from "@angular/common"
-import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, output, untracked, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, untracked, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
-import { DependencyEdgeColors } from "../../../../model/dependencyGraph.model"
 import { declarationKindLookOf, EDGE_TYPE_LABELS, KIND_ICON_COLORS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
-import { InspectorActionKind, InspectorCycle, InspectorModel, InspectorReference } from "../../inspector/inspectorModel"
+import { InspectorActionKind, InspectorCycle, InspectorReference } from "../../inspector/inspectorModel"
+import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 
 const ACTION_LABELS: Record<InspectorActionKind, string> = {
     open: "Open in graph",
@@ -20,21 +20,17 @@ const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-fold
     imports: [NgTemplateOutlet],
     providers: [CopyToClipboardService],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "flex h-full w-80 shrink-0 flex-col bg-base-100 shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)]" }
+    host: {
+        class: "h-full w-80 shrink-0 flex-col bg-base-100 shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)]",
+        "[class.flex]": "model() !== null",
+        "[class.hidden]": "model() === null"
+    }
 })
 export class DependencyInspectorComponent {
-    readonly model = input.required<InspectorModel>()
-    /** A new number brings the cycles into view; null asks for nothing. */
-    readonly cyclesRequest = input<number | null>(null)
-    readonly edgeColors = input.required<DependencyEdgeColors>()
+    private readonly store = inject(DependencyInspectorStore)
 
-    readonly referenceChosen = output<InspectorReference>()
-    /** The dependencies under the pointer, for the graph to light up; null once it left. */
-    readonly dependenciesPointedAt = output<readonly DependencyLeafEdge[] | null>()
-    readonly actionChosen = output<InspectorActionKind>()
-    readonly cycleShown = output<InspectorCycle>()
-    readonly allRowsRequested = output<void>()
-    readonly closed = output<void>()
+    protected readonly model = this.store.model
+    protected readonly edgeColors = this.store.edgeColors
 
     private readonly cyclesSection = viewChild<ElementRef<HTMLElement>>("cyclesSection")
     private shownCyclesRequest: number | null = null
@@ -47,7 +43,7 @@ export class DependencyInspectorComponent {
 
     constructor() {
         effect(() => {
-            const request = this.cyclesRequest()
+            const request = this.store.cyclesRequest()
             const section = this.cyclesSection()?.nativeElement
             if (section && request !== null && request !== this.shownCyclesRequest) {
                 this.shownCyclesRequest = request
@@ -55,20 +51,44 @@ export class DependencyInspectorComponent {
             }
         })
         effect(() => {
-            this.model().path
+            this.model()?.path
             untracked(() => this.clipboard.reset())
         })
     }
 
     /** Without a clipboard to write to, as on a page served over plain http, nothing is copied and nothing says so. */
     async copyPath(): Promise<void> {
-        const text = this.model().copyText
+        const text = this.model()?.copyText
         if (text) {
             await this.clipboard.copy(text).catch(() => undefined)
         }
     }
 
     readonly icons = REFERENCE_ICONS
+
+    protected goTo(reference: InspectorReference): void {
+        this.store.goTo(reference)
+    }
+
+    protected pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
+        this.store.pointAt(declarationEdges)
+    }
+
+    protected perform(action: InspectorActionKind): void {
+        this.store.perform(action)
+    }
+
+    protected showCycle(cycle: InspectorCycle): void {
+        this.store.showCycle(cycle)
+    }
+
+    protected showAllRows(): void {
+        this.store.showAllRows()
+    }
+
+    protected dismiss(): void {
+        this.store.dismiss()
+    }
 
     kindLookOf(reference: InspectorReference) {
         return declarationKindLookOf(reference.declarationKind)

@@ -3,7 +3,7 @@
         type="button"
         class="inline-flex max-w-full min-w-0 cursor-pointer items-center gap-1 rounded-sm border-0 bg-transparent p-0 text-left hover:underline"
         [title]="reference.path"
-        (click)="referenceChosen.emit(reference)"
+        (click)="goTo(reference)"
     >
         @if (reference.kind === "declaration") {
             <span
@@ -51,217 +51,219 @@
     </svg>
 </ng-template>
 
-<header class="shrink-0 px-3 py-2">
-    <div class="flex items-center justify-between">
-        <span class="text-xs tracking-widest uppercase opacity-60">Inspector</span>
-        <button type="button" class="btn btn-ghost btn-xs btn-square" aria-label="Close inspector" title="Close inspector" (click)="closed.emit()">
-            <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-    </div>
-    <div class="mt-1 flex items-start justify-between gap-2">
-        <div class="min-w-0">
-            @if (model().parent; as parent) {
+@if (model(); as model) {
+    <header class="shrink-0 px-3 py-2">
+        <div class="flex items-center justify-between">
+            <span class="text-xs tracking-widest uppercase opacity-60">Inspector</span>
+            <button type="button" class="btn btn-ghost btn-xs btn-square" aria-label="Close inspector" title="Close inspector" (click)="dismiss()">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="mt-1 flex items-start justify-between gap-2">
+            <div class="min-w-0">
+                @if (model.parent; as parent) {
+                    <button
+                        type="button"
+                        class="m-0 block cursor-pointer border-0 bg-transparent p-0 text-left text-sm leading-snug break-all opacity-60 hover:underline"
+                        data-testid="dependency-inspector-parent"
+                        (click)="goTo(parent)"
+                    >
+                        {{ parent.shownAs }}
+                    </button>
+                }
+                <h2 class="m-0 text-lg leading-snug font-semibold break-all text-primary" [title]="model.path" data-testid="dependency-inspector-title">
+                    {{ model.title }}
+                </h2>
+                <div class="mt-1 flex flex-wrap gap-1" data-testid="dependency-inspector-badges">
+                    @for (badge of model.badges; track badge.text) {
+                        <span class="badge badge-sm" [class]="badge.isAboutCycles ? 'badge-info badge-soft' : 'badge-ghost'">{{ badge.text }}</span>
+                    }
+                </div>
+            </div>
+            @if (model.copyText) {
                 <button
                     type="button"
-                    class="m-0 block cursor-pointer border-0 bg-transparent p-0 text-left text-sm leading-snug break-all opacity-60 hover:underline"
-                    data-testid="dependency-inspector-parent"
-                    (click)="referenceChosen.emit(parent)"
+                    class="btn btn-ghost btn-sm btn-square shrink-0"
+                    [title]="copied() ? 'Copied!' : 'Copy path'"
+                    [attr.aria-label]="copied() ? 'Copied!' : 'Copy path'"
+                    data-testid="dependency-inspector-copy"
+                    (click)="copyPath()"
                 >
-                    {{ parent.shownAs }}
+                    <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()" aria-hidden="true"></i>
                 </button>
             }
-            <h2 class="m-0 text-lg leading-snug font-semibold break-all text-primary" [title]="model().path" data-testid="dependency-inspector-title">
-                {{ model().title }}
-            </h2>
-            <div class="mt-1 flex flex-wrap gap-1" data-testid="dependency-inspector-badges">
-                @for (badge of model().badges; track badge.text) {
-                    <span class="badge badge-sm" [class]="badge.isAboutCycles ? 'badge-info badge-soft' : 'badge-ghost'">{{ badge.text }}</span>
-                }
-            </div>
         </div>
-        @if (model().copyText) {
-            <button
-                type="button"
-                class="btn btn-ghost btn-sm btn-square shrink-0"
-                [title]="copied() ? 'Copied!' : 'Copy path'"
-                [attr.aria-label]="copied() ? 'Copied!' : 'Copy path'"
-                data-testid="dependency-inspector-copy"
-                (click)="copyPath()"
-            >
-                <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()" aria-hidden="true"></i>
+        @if (model.mayMissCycles) {
+            <p class="m-0 mt-1 text-xs opacity-60" data-testid="dependency-inspector-cycles-incomplete">
+                This map is too tangled to search all its cycles: there may be more than shown.
+            </p>
+        }
+        @if (model.action; as action) {
+            <button type="button" class="btn btn-xs btn-outline mt-2" data-testid="dependency-inspector-action" (click)="perform(action)">
+                {{ actionLabels[action] }}
             </button>
         }
-    </div>
-    @if (model().mayMissCycles) {
-        <p class="m-0 mt-1 text-xs opacity-60" data-testid="dependency-inspector-cycles-incomplete">
-            This map is too tangled to search all its cycles: there may be more than shown.
-        </p>
-    }
-    @if (model().action; as action) {
-        <button type="button" class="btn btn-xs btn-outline mt-2" data-testid="dependency-inspector-action" (click)="actionChosen.emit(action)">
-            {{ actionLabels[action] }}
-        </button>
-    }
-</header>
+    </header>
 
-<div class="min-h-0 flex-1 overflow-y-auto pb-36 text-sm" data-testid="dependency-inspector-body">
-    @if (model().cycleCount > 0) {
-        <section
-            #cyclesSection
-            class="flex flex-col gap-2 border-t border-base-300 px-3 py-2"
-            aria-label="Cycles"
-            data-testid="dependency-inspector-cycles"
-        >
-            <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-                <h3 class="m-0 text-xs font-normal">Cycles</h3>
-                <span class="tracking-normal tabular-nums">{{ model().cycleCount }}</span>
-            </div>
-            @for (cycle of model().cycles; track $index) {
-                <div
-                    class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
-                    data-testid="dependency-inspector-cycle"
-                    (mouseenter)="dependenciesPointedAt.emit(cycle.declarationEdges)"
-                    (mouseleave)="dependenciesPointedAt.emit(null)"
-                    (focusin)="dependenciesPointedAt.emit(cycle.declarationEdges)"
-                    (focusout)="dependenciesPointedAt.emit(null)"
-                >
-                    <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
-                        @for (step of cycle.steps; track $index; let isLast = $last) {
-                            <ng-container
-                                [ngTemplateOutlet]="chip"
-                                [ngTemplateOutletContext]="{ $implicit: step.reference, isOwn: false }"
-                            ></ng-container>
-                            @if (isLast) {
-                                <span
-                                    class="ml-1 text-xs"
-                                    [style.color]="edgeColors()[step.linkToNext.type]"
-                                    data-testid="dependency-inspector-cycle-closing"
-                                    >↩ {{ cycle.steps[0].reference.name }}</span
-                                >
-                            } @else {
-                                <ng-container
-                                    [ngTemplateOutlet]="connector"
-                                    [ngTemplateOutletContext]="{
-                                        $implicit: step.linkToNext.line,
-                                        color: edgeColors()[step.linkToNext.type],
-                                        label: 'uses'
-                                    }"
-                                ></ng-container>
-                            }
-                        }
-                    </div>
-                    <div class="flex items-baseline justify-between gap-2 text-xs">
-                        <span class="opacity-60" data-testid="dependency-inspector-cycle-where">
-                            {{ cycle.files.length === 1 ? "inside" : "across" }}
-                            @for (file of cycle.files; track file.path; let isLast = $last) {
-                                {{ file.name }}{{ isLast ? "" : "," }}
-                            }
-                        </span>
-                        <button type="button" class="btn btn-ghost btn-xs shrink-0" (click)="cycleShown.emit(cycle)">Show in graph</button>
-                    </div>
-                </div>
-            }
-            @if (model().cycleCount > model().cycles.length) {
-                <button type="button" class="btn btn-ghost btn-xs self-start" data-testid="dependency-inspector-more-cycles" (click)="allRowsRequested.emit()">
-                    and {{ model().cycleCount - model().cycles.length }} more
-                </button>
-            }
-        </section>
-    }
-
-    @for (section of model().sections; track section.title) {
-        @if (section.count > 0) {
-            <section class="flex flex-col gap-2 border-t border-base-300 px-3 py-2" [attr.aria-label]="section.title">
+    <div class="min-h-0 flex-1 overflow-y-auto pb-36 text-sm" data-testid="dependency-inspector-body">
+        @if (model.cycleCount > 0) {
+            <section
+                #cyclesSection
+                class="flex flex-col gap-2 border-t border-base-300 px-3 py-2"
+                aria-label="Cycles"
+                data-testid="dependency-inspector-cycles"
+            >
                 <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-                    <h3 class="m-0 text-xs font-normal">{{ section.title }}</h3>
-                    <span class="tracking-normal tabular-nums">{{ section.count }}</span>
+                    <h3 class="m-0 text-xs font-normal">Cycles</h3>
+                    <span class="tracking-normal tabular-nums">{{ model.cycleCount }}</span>
                 </div>
-                @for (group of section.groups; track $index) {
-                    <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
-                        @if (group.heading; as heading) {
-                            <div class="flex min-w-0 items-baseline justify-between gap-2 text-[13px] opacity-70">
-                                @if (typeof heading === "string") {
-                                    <span>{{ heading }}</span>
+                @for (cycle of model.cycles; track $index) {
+                    <div
+                        class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
+                        data-testid="dependency-inspector-cycle"
+                        (mouseenter)="pointAt(cycle.declarationEdges)"
+                        (mouseleave)="pointAt(null)"
+                        (focusin)="pointAt(cycle.declarationEdges)"
+                        (focusout)="pointAt(null)"
+                    >
+                        <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
+                            @for (step of cycle.steps; track $index; let isLast = $last) {
+                                <ng-container
+                                    [ngTemplateOutlet]="chip"
+                                    [ngTemplateOutletContext]="{ $implicit: step.reference, isOwn: false }"
+                                ></ng-container>
+                                @if (isLast) {
+                                    <span
+                                        class="ml-1 text-xs"
+                                        [style.color]="edgeColors()[step.linkToNext.type]"
+                                        data-testid="dependency-inspector-cycle-closing"
+                                        >↩ {{ cycle.steps[0].reference.name }}</span
+                                    >
                                 } @else {
-                                    <ng-container
-                                        [ngTemplateOutlet]="referenceButton"
-                                        [ngTemplateOutletContext]="{ $implicit: heading }"
-                                    ></ng-container>
-                                }
-                                <span class="shrink-0 tabular-nums">{{ group.dependencies.length + group.hiddenCount }}</span>
-                            </div>
-                        }
-                        @for (dependency of group.dependencies; track $index) {
-                            <div
-                                class="flex flex-col gap-0.5 rounded-sm px-0.5 hover:bg-base-200/60"
-                                data-testid="dependency-inspector-row"
-                                (mouseenter)="dependenciesPointedAt.emit([dependency.declarationEdge])"
-                                (mouseleave)="dependenciesPointedAt.emit(null)"
-                                (focusin)="dependenciesPointedAt.emit([dependency.declarationEdge])"
-                                (focusout)="dependenciesPointedAt.emit(null)"
-                            >
-                                <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
-                                    <ng-container
-                                        [ngTemplateOutlet]="chip"
-                                        [ngTemplateOutletContext]="{ $implicit: dependency.from, isOwn: dependency.isFromOwn }"
-                                    ></ng-container>
                                     <ng-container
                                         [ngTemplateOutlet]="connector"
                                         [ngTemplateOutletContext]="{
-                                            $implicit: dependency.line,
-                                            color: edgeColors()[dependency.type],
-                                            label: dependency.usages.join(', ') || 'uses'
+                                            $implicit: step.linkToNext.line,
+                                            color: edgeColors()[step.linkToNext.type],
+                                            label: 'uses'
                                         }"
                                     ></ng-container>
-                                    <ng-container
-                                        [ngTemplateOutlet]="chip"
-                                        [ngTemplateOutletContext]="{ $implicit: dependency.to, isOwn: dependency.isToOwn }"
-                                    ></ng-container>
-                                </div>
-                                @if (dependency.usages.length > 0 || dependency.type !== "regular") {
-                                    <div class="pl-0.5 text-xs">
-                                        <span class="opacity-60">{{ dependency.usages.join(", ") }}</span>
-                                        @if (dependency.type !== "regular") {
-                                            <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-inspector-row-type">
-                                                {{ dependency.usages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
-                                            >
-                                        }
-                                    </div>
                                 }
-                            </div>
-                        }
-                        @if (group.hiddenCount > 0) {
-                            <button type="button" class="btn btn-ghost btn-xs self-start" (click)="allRowsRequested.emit()">
-                                and {{ group.hiddenCount }} more
-                            </button>
-                        }
+                            }
+                        </div>
+                        <div class="flex items-baseline justify-between gap-2 text-xs">
+                            <span class="opacity-60" data-testid="dependency-inspector-cycle-where">
+                                {{ cycle.files.length === 1 ? "inside" : "across" }}
+                                @for (file of cycle.files; track file.path; let isLast = $last) {
+                                    {{ file.name }}{{ isLast ? "" : "," }}
+                                }
+                            </span>
+                            <button type="button" class="btn btn-ghost btn-xs shrink-0" (click)="showCycle(cycle)">Show in graph</button>
+                        </div>
                     </div>
                 }
-            </section>
-        }
-    }
-
-    @if (model().declarations; as declarations) {
-        @if (declarations.count > 0) {
-            <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" aria-label="Declarations">
-                <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-                    <h3 class="m-0 text-xs font-normal">Declarations</h3>
-                    <span class="tracking-normal tabular-nums">{{ declarations.count }}</span>
-                </div>
-                <ul class="m-0 flex list-none flex-col gap-1 p-0">
-                    @for (item of declarations.items; track item.reference.path) {
-                        <li class="flex min-w-0 items-baseline justify-between gap-2">
-                            <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: item.reference }"></ng-container>
-                            <span class="shrink-0 text-xs opacity-60">{{ item.detail }}</span>
-                        </li>
-                    }
-                </ul>
-                @if (declarations.hiddenCount > 0) {
-                    <button type="button" class="btn btn-ghost btn-xs self-start" (click)="allRowsRequested.emit()">
-                        and {{ declarations.hiddenCount }} more
+                @if (model.cycleCount > model.cycles.length) {
+                    <button type="button" class="btn btn-ghost btn-xs self-start" data-testid="dependency-inspector-more-cycles" (click)="showAllRows()">
+                        and {{ model.cycleCount - model.cycles.length }} more
                     </button>
                 }
             </section>
         }
-    }
-</div>
+
+        @for (section of model.sections; track section.title) {
+            @if (section.count > 0) {
+                <section class="flex flex-col gap-2 border-t border-base-300 px-3 py-2" [attr.aria-label]="section.title">
+                    <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
+                        <h3 class="m-0 text-xs font-normal">{{ section.title }}</h3>
+                        <span class="tracking-normal tabular-nums">{{ section.count }}</span>
+                    </div>
+                    @for (group of section.groups; track $index) {
+                        <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
+                            @if (group.heading; as heading) {
+                                <div class="flex min-w-0 items-baseline justify-between gap-2 text-[13px] opacity-70">
+                                    @if (typeof heading === "string") {
+                                        <span>{{ heading }}</span>
+                                    } @else {
+                                        <ng-container
+                                            [ngTemplateOutlet]="referenceButton"
+                                            [ngTemplateOutletContext]="{ $implicit: heading }"
+                                        ></ng-container>
+                                    }
+                                    <span class="shrink-0 tabular-nums">{{ group.dependencies.length + group.hiddenCount }}</span>
+                                </div>
+                            }
+                            @for (dependency of group.dependencies; track $index) {
+                                <div
+                                    class="flex flex-col gap-0.5 rounded-sm px-0.5 hover:bg-base-200/60"
+                                    data-testid="dependency-inspector-row"
+                                    (mouseenter)="pointAt([dependency.declarationEdge])"
+                                    (mouseleave)="pointAt(null)"
+                                    (focusin)="pointAt([dependency.declarationEdge])"
+                                    (focusout)="pointAt(null)"
+                                >
+                                    <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
+                                        <ng-container
+                                            [ngTemplateOutlet]="chip"
+                                            [ngTemplateOutletContext]="{ $implicit: dependency.from, isOwn: dependency.isFromOwn }"
+                                        ></ng-container>
+                                        <ng-container
+                                            [ngTemplateOutlet]="connector"
+                                            [ngTemplateOutletContext]="{
+                                                $implicit: dependency.line,
+                                                color: edgeColors()[dependency.type],
+                                                label: dependency.usages.join(', ') || 'uses'
+                                            }"
+                                        ></ng-container>
+                                        <ng-container
+                                            [ngTemplateOutlet]="chip"
+                                            [ngTemplateOutletContext]="{ $implicit: dependency.to, isOwn: dependency.isToOwn }"
+                                        ></ng-container>
+                                    </div>
+                                    @if (dependency.usages.length > 0 || dependency.type !== "regular") {
+                                        <div class="pl-0.5 text-xs">
+                                            <span class="opacity-60">{{ dependency.usages.join(", ") }}</span>
+                                            @if (dependency.type !== "regular") {
+                                                <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-inspector-row-type">
+                                                    {{ dependency.usages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
+                                                >
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            @if (group.hiddenCount > 0) {
+                                <button type="button" class="btn btn-ghost btn-xs self-start" (click)="showAllRows()">
+                                    and {{ group.hiddenCount }} more
+                                </button>
+                            }
+                        </div>
+                    }
+                </section>
+            }
+        }
+
+        @if (model.declarations; as declarations) {
+            @if (declarations.count > 0) {
+                <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" aria-label="Declarations">
+                    <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
+                        <h3 class="m-0 text-xs font-normal">Declarations</h3>
+                        <span class="tracking-normal tabular-nums">{{ declarations.count }}</span>
+                    </div>
+                    <ul class="m-0 flex list-none flex-col gap-1 p-0">
+                        @for (item of declarations.items; track item.reference.path) {
+                            <li class="flex min-w-0 items-baseline justify-between gap-2">
+                                <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: item.reference }"></ng-container>
+                                <span class="shrink-0 text-xs opacity-60">{{ item.detail }}</span>
+                            </li>
+                        }
+                    </ul>
+                    @if (declarations.hiddenCount > 0) {
+                        <button type="button" class="btn btn-ghost btn-xs self-start" (click)="showAllRows()">
+                            and {{ declarations.hiddenCount }} more
+                        </button>
+                    }
+                </section>
+            }
+        }
+    </div>
+}

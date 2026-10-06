@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { DependencyHierarchy } from "../../../../model/dependencyGraph.model"
 import { AxisCardComponent } from "../../../shared/facade"
-import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
+import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { ChoiceListPopoverComponent } from "../choiceListPopover/choiceListPopover.component"
 import { Choice } from "../choiceRow/choiceRow.component"
 import { labelOf } from "../edgeStyleSegment/edgeStyleChoices"
@@ -19,16 +19,16 @@ const HIERARCHY_CHOICES: Choice<DependencyHierarchy>[] = [
     imports: [AxisCardComponent, ChoiceListPopoverComponent]
 })
 export class HierarchySegmentComponent {
-    private readonly viewStore = inject(DependencyMapViewStore)
+    private readonly graphModel = inject(DependencyGraphModelStore)
 
     readonly popoverId = "dependency-bar-hierarchy-popover"
     readonly anchorName = "dependency-bar-hierarchy-card"
     readonly hierarchyChoices = HIERARCHY_CHOICES
 
-    readonly hierarchy = this.viewStore.hierarchy
+    readonly hierarchy = this.graphModel.hierarchy
     readonly hierarchyLabel = computed(() => labelOf(HIERARCHY_CHOICES, this.hierarchy()))
 
     show(hierarchy: DependencyHierarchy): void {
-        this.viewStore.showHierarchy(hierarchy)
+        this.graphModel.showHierarchy(hierarchy)
     }
 }

@@ -1,4 +1,4 @@
-import { computed, Injectable, inject } from "@angular/core"
+import { computed, Injectable, inject, signal } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
@@ -33,7 +33,9 @@ export class DependencyGraphModelStore {
     readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
 
-    readonly hierarchy = computed((): DependencyHierarchy => (this.hasPackages() ? this.viewStore.hierarchy() : "folders"))
+    private readonly askedHierarchy = signal<DependencyHierarchy>("folders")
+    /** What the reader asked for; a map without packages is shown by its folders all the same. */
+    readonly hierarchy = computed((): DependencyHierarchy => (this.hasPackages() ? this.askedHierarchy() : "folders"))
     readonly tree = computed(() => {
         const folderTree = this.folderTree()
         const { namespaces, leaves } = this.declarations()
@@ -78,6 +80,14 @@ export class DependencyGraphModelStore {
 
     /** Whether a dependency between declarations is drawn pointing upward in the hierarchy shown. */
     readonly pointsUpward = computed(() => upwardRuleOf(this.edges(), this.hierarchy()))
+
+    /** The boxes move to other places, so where the reader dragged them to no longer means anything, and the
+     * part of the graph that was in view may be empty now. */
+    showHierarchy(hierarchy: DependencyHierarchy): void {
+        this.askedHierarchy.set(hierarchy)
+        this.viewStore.resetLayout()
+        this.viewStore.requestFit()
+    }
 
     /** The box on screen that stands for a node or declaration, which may be hidden in a closed one. */
     boxStandingFor(path: string | null): string | null {
