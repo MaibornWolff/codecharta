@@ -1,6 +1,8 @@
-// ECharts reuses an element by its position among the drawn ones and keeps whatever an option leaves out,
-// so every element states its transform.
-export const UNTRANSFORMED = { x: 0, y: 0, rotation: 0 }
+// ECharts reuses an element by its position among the drawn ones and keeps whatever an option leaves out, and an
+// element of another kind taking that position inherits the transform of the one it replaces. So every element
+// states its whole transform: a mark left with the scale of the sign it replaced would be drawn smaller and
+// nearer to the corner of the graph.
+export const UNTRANSFORMED = { x: 0, y: 0, rotation: 0, scaleX: 1, scaleY: 1 }
 
 /** One drawn item. ECharts' own hover would lift it ten layers up, and an open folder would then cover
  * its children and catch every hover and click meant for them; the scene marks the hovered box itself. */

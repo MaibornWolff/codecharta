@@ -160,7 +160,7 @@ function drawCycleBadge(
     const part = { info: CYCLE_BADGE_INFO, cursor: "pointer" }
     const pill = { x: left, y: top, width, height, r: height / 2 }
     const pillStyle = { fill: color, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_BADGE.outlinePx, opacity }
-    const glyphAt = { x: left + height / 2, y: top + height / 2, scaleX: scale, scaleY: scale, rotation: 0, silent: true }
+    const glyphAt = { ...UNTRANSFORMED, x: left + height / 2, y: top + height / 2, scaleX: scale, scaleY: scale, silent: true }
     const glyphLine = { fill: null, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_GLYPH.lineWidthPx, lineCap: "round", opacity }
     const number = {
         type: "text",

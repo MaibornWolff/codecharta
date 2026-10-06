@@ -313,6 +313,38 @@ describe("buildDependencyGraphOption", () => {
         expect(byUsage).toBe("#7f1d1d")
     })
 
+    it("should state the whole transform of every element it draws, since a reused element keeps whatever is left out", () => {
+        // Arrange
+        const file = aBox("/root/creature.ts", { declarationCount: 3, x: 16, y: 120 })
+        const declaration = aBox("/root/creature.ts/Creature", {
+            kind: "declaration",
+            declarationKind: "class",
+            x: 200,
+            y: 44,
+            listedLevel: 1
+        })
+        const layout = { boxes: [root, file, declaration], bands: [aBand()], width: 400, height: 200 }
+        const cycleMarks = { hiddenCycles: new Map([[file.path, 3]]), declarationsInCycles: new Set([declaration.path]) }
+        const edges = [anEdge(file.path, declaration.path)]
+        const scene = sceneWith({
+            layout,
+            edges,
+            cycleMarks,
+            selectedEdgeId: edges[0].id,
+            movedPaths: new Set([file.path]),
+            movedEdgeIds: new Set([edges[0].id])
+        })
+
+        // Act
+        const { series, draw } = drawnGraph(scene)
+        const parts = series.data.flatMap((_datum, dataIndex) => draw(dataIndex).children) as unknown as Record<string, unknown>[]
+
+        // Assert
+        const transformKeys = ["x", "y", "rotation", "scaleX", "scaleY"]
+        expect(parts.length).toBeGreaterThan(15)
+        expect(parts.filter(part => transformKeys.some(key => typeof part[key] !== "number"))).toEqual([])
+    })
+
     it("should name the metric and its value in the tooltip of another metric's edge", () => {
         // Arrange
         const edges = [anEdge(view.path, model.path, { weight: 0.375 })]
