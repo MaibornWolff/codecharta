@@ -107,4 +107,5 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
     pair on different levels and a file pair whose edge type differs are marked
   - The panel cuts each group at 20 rows ("and N more" shows all) and tells at most 12 cycles, found as the
     shortest way back over cyclic declaration edges
-  - Not run: the e2e suite and a look at the real app
+  - Checked in a real build with a hand-made sample map (both hierarchies, panel, marks, legend, keyboard) and
+    with the two dependency view e2e tests; the rest of the e2e suite was not run

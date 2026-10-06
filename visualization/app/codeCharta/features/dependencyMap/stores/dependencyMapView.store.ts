@@ -68,10 +68,12 @@ export class DependencyMapViewStore {
         this.selectedInGraph.set(selection)
     }
 
-    /** The boxes move to other places, so where the reader dragged them to no longer means anything. */
+    /** The boxes move to other places, so where the reader dragged them to no longer means anything, and the
+     * part of the graph that was in view may be empty now. */
     showHierarchy(hierarchy: DependencyHierarchy): void {
         this.shownHierarchy.set(hierarchy)
         this.resetLayout()
+        this.requestFit()
     }
 
     hoverInGraph(path: string | null): void {
