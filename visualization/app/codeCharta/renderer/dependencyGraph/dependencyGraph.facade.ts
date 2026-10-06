@@ -9,7 +9,7 @@ export { DECLARATION_KIND_LEGEND, declarationKindLabelOf, declarationKindLookOf,
 export type { DependencyGraphScene } from "./util/dependencyGraphScene"
 export { EDGE_TYPE_LABELS, edgeColorsAsDrawn, edgeLegend } from "./util/dependencyGraphStyle"
 export type { GraphEdge } from "./util/edgeProjection"
-export { edgeIdOf, projectEdges, visibleRepresentatives } from "./util/edgeProjection"
+export { edgeIdOf, projectEdges, upwardRuleOf, visibleRepresentatives } from "./util/edgeProjection"
 export type { Point } from "./util/geometry"
 export type { LeveledNode } from "./util/leveledTree"
 export { boxPathOf, buildLeveledTree, collapsedFirstLook, containerPathsOf, levelPathOf } from "./util/leveledTree"

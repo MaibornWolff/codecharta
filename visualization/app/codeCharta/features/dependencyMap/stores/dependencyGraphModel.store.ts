@@ -1,6 +1,5 @@
 import { computed, Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
     arrangedByPackages,
@@ -10,6 +9,7 @@ import {
     movedLayout,
     namedByOwnLevel,
     projectEdges,
+    upwardRuleOf,
     visibleRepresentatives
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { findCycleChains, MAX_CYCLE_WALKS } from "../panel/cycleChains"
@@ -76,20 +76,8 @@ export class DependencyGraphModelStore {
         })
     )
 
-    private readonly upwardFilePairs = computed(
-        () => new Set(this.edges().flatMap(edge => (edge.isPointingUpwards ? [filePairOf(edge.fromNodeName, edge.toNodeName)] : [])))
-    )
-
-    /** Whether a dependency between declarations is drawn pointing upward: the folders decide that between two
-     * files by their file edge, the packages by the dependency itself, as it does inside one file. */
-    readonly pointsUpward = computed(() => {
-        const upwardFilePairs = this.upwardFilePairs()
-        const isDecidedByItself = this.hierarchy() === "packages"
-        return (leafEdge: DependencyLeafEdge): boolean =>
-            isDecidedByItself || leafEdge.fromNodeName === leafEdge.toNodeName
-                ? Boolean(leafEdge.isPointingUpwards)
-                : upwardFilePairs.has(filePairOf(leafEdge.fromNodeName, leafEdge.toNodeName))
-    })
+    /** Whether a dependency between declarations is drawn pointing upward in the hierarchy shown. */
+    readonly pointsUpward = computed(() => upwardRuleOf(this.edges(), this.hierarchy()))
 
     /** The box on screen that stands for a node or declaration, which may be hidden in a closed one. */
     boxStandingFor(path: string | null): string | null {
@@ -129,8 +117,4 @@ function parentsIn(tree: LeveledNode | null): ReadonlyMap<string, LeveledNode> {
         visit(tree)
     }
     return parents
-}
-
-function filePairOf(fromFilePath: string, toFilePath: string): string {
-    return `${fromFilePath}|${toFilePath}`
 }

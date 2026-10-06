@@ -86,18 +86,19 @@ export function projectEdges(
     const isDependencies = isDependencyEdgeMetric(edgeMetric)
     const declarationEdges = isDependencies ? leafEdges : NO_LEAF_EDGES
     const declarationEdgesByFiles = groupedByFiles(declarationEdges)
+    const pointsUpward = upwardRuleOf(edges, hierarchy)
     for (const edge of edges) {
         const value = edgeMetric === null ? undefined : edge.attributes?.[edgeMetric]
         if (!isCarried(value)) {
             continue
         }
         const parts = declarationEdgesByFiles.get(filesKeyOf(edge.fromNodeName, edge.toNodeName)) ?? NO_LEAF_EDGES
-        for (const part of partsOfFileEdge({ edge, weight: value, declarationEdges: parts, hierarchy }, representatives)) {
+        for (const part of partsOfFileEdge({ edge, weight: value, declarationEdges: parts, hierarchy, pointsUpward }, representatives)) {
             mergeInto(merged, part)
         }
     }
     for (const leafEdge of declarationEdges.filter(isInsideOneFile)) {
-        mergeInto(merged, { ...boxesOf(leafEdge, representatives), ...leafEdgePart(leafEdge, Boolean(leafEdge.isPointingUpwards)) })
+        mergeInto(merged, { ...boxesOf(leafEdge, representatives), ...leafEdgePart(leafEdge, pointsUpward(leafEdge)) })
     }
     const typeOf = isDependencies ? dependencyEdgeTypeOf : () => "regular" as const
     return [...merged].map(([id, { isCyclic, isPointingUpwards, ...edge }]) => ({
@@ -116,10 +117,30 @@ interface FileEdge {
     weight: number
     declarationEdges: readonly DependencyLeafEdge[]
     hierarchy: DependencyHierarchy
+    pointsUpward: UpwardRule
+}
+
+type UpwardRule = (declarationEdge: DependencyLeafEdge) => boolean
+
+/** Which way is up for a dependency between declarations. Among folders the levels of the file tree say so
+ * between two files, so the dependency points upward when their file edge does, and its own flag counts only
+ * inside one file. Among packages the file tree has no say, and its own flag always counts. */
+export function upwardRuleOf(edges: readonly Edge[], hierarchy: DependencyHierarchy): UpwardRule {
+    const upwardFilePairs = new Set(
+        edges.flatMap(edge => (edge.isPointingUpwards && isDependency(edge) ? [filesKeyOf(edge.fromNodeName, edge.toNodeName)] : []))
+    )
+    return declarationEdge =>
+        hierarchy === "packages" || isInsideOneFile(declarationEdge)
+            ? Boolean(declarationEdge.isPointingUpwards)
+            : upwardFilePairs.has(filesKeyOf(declarationEdge.fromNodeName, declarationEdge.toNodeName))
+}
+
+function isDependency(edge: Edge): boolean {
+    return isCarried(edge.attributes?.[DEPENDENCIES_EDGE_METRIC])
 }
 
 function partsOfFileEdge(
-    { edge, weight, declarationEdges, hierarchy }: FileEdge,
+    { edge, weight, declarationEdges, hierarchy, pointsUpward }: FileEdge,
     representatives: ReadonlyMap<string, string>
 ): EdgePart[] {
     const fromPath = representatives.get(edge.fromNodeName)
@@ -131,8 +152,6 @@ function partsOfFileEdge(
         const isPointingUpwards = Boolean(edge.isPointingUpwards)
         return [{ fromPath, toPath, weight, isCyclic: Boolean(edge.isCyclic), isPointingUpwards, declarationEdges }]
     }
-    const pointsUpward = (leafEdge: DependencyLeafEdge) =>
-        Boolean(hierarchy === "packages" ? leafEdge.isPointingUpwards : edge.isPointingUpwards)
     return declarationEdges.map((leafEdge, index) => ({ ...ends[index], ...leafEdgePart(leafEdge, pointsUpward(leafEdge)) }))
 }
 
