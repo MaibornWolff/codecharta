@@ -89,6 +89,18 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "Creature", fontSize: 11 })
         })
 
+        it("should name a listed declaration's level at its right, and leave the name that much less room", () => {
+            // Arrange
+            const box = aBox("/root/a.ts/Creature", { kind: "declaration", x: 0, y: 0, width: 132, height: 26, listedLevel: 3 })
+
+            // Act
+            const [, label, level] = childrenOf(drawBox(box, look("none"), identityPixels))
+
+            // Assert
+            expect(level.style).toMatchObject({ text: "3", x: 125, y: 13, align: "right", fill: "#8a94a3" })
+            expect(label.style).toMatchObject({ x: 60, width: 104 })
+        })
+
         describe("declaration kind", () => {
             const declaration = (declarationKind: string) =>
                 aBox("/root/a.ts/Creature", { kind: "declaration", declarationKind, x: 0, y: 0, width: 132, height: 26 })
