@@ -88,8 +88,11 @@ describe("arrangedByPackages", () => {
     }
 
     it("should nest the files in the packages their declarations declare, at their level there", () => {
+        // Arrange
+        const packages = NAMESPACES
+
         // Act
-        const arranged = arrangedByPackages(tree, NAMESPACES, leaves)
+        const arranged = arrangedByPackages(tree, packages, leaves)
 
         // Assert
         const [game] = arranged.children

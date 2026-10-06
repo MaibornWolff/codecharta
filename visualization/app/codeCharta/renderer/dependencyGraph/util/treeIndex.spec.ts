@@ -44,16 +44,22 @@ describe("treeIndex", () => {
         const tree = leveledFolder("/root", [chain, leveledFile("/root/b.ts")])
 
         it("should name the boxes around a node, outermost first, a chain box once", () => {
+            // Arrange
+            const fileInTheChainBox = "/root/src/main/a.ts"
+
             // Act
-            const containers = containerPathsOf(indexTree(tree), "/root/src/main/a.ts")
+            const containers = containerPathsOf(indexTree(tree), fileInTheChainBox)
 
             // Assert
             expect(containers).toEqual(["/root", "/root/src/main"])
         })
 
         it("should name the boxes around a folder folded into a chain box, none around the root, and null for an unknown path", () => {
+            // Arrange
+            const foldedFolderRootAndUnknown = ["/root/src", "/root", "/root/unknown.ts"]
+
             // Act
-            const containers = ["/root/src", "/root", "/root/unknown.ts"].map(path => containerPathsOf(indexTree(tree), path))
+            const containers = foldedFolderRootAndUnknown.map(path => containerPathsOf(indexTree(tree), path))
 
             // Assert
             expect(containers).toEqual([["/root"], [], null])

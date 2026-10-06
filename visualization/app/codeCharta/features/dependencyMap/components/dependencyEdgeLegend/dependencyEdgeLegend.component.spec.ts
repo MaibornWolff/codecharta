@@ -121,8 +121,11 @@ describe("DependencyEdgeLegendComponent", () => {
     })
 
     it("should leave the declaration kinds out when the reader switched them off", async () => {
+        // Arrange
+        const settings = { declarationKindMark: "off" } as const
+
         // Act
-        await renderLegend({ settings: { declarationKindMark: "off" } })
+        await renderLegend({ settings })
 
         // Assert
         expect(screen.queryByTestId("dependency-kind-legend")).toBeNull()

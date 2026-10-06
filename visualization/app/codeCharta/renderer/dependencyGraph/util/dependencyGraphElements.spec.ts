@@ -14,8 +14,11 @@ describe("dependencyGraphElements", () => {
         })
 
         it("should tell ECharts not to merge the children of an item that has none left, so the ones it drew before are removed", () => {
+            // Arrange
+            const nothingToDraw: object[] = []
+
             // Act
-            const item = drawnItem([])
+            const item = drawnItem(nothingToDraw)
 
             // Assert
             expect(item).toMatchObject({ children: [], $mergeChildren: false })

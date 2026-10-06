@@ -524,8 +524,11 @@ describe("DependencyMapComponent", () => {
             })
 
             it("should stay away for a map that tells no declarations", async () => {
+                // Arrange
+                const selectedInAMapWithoutDeclarations = { selectedPath: "/root/ui/view.ts" }
+
                 // Act
-                await setup({ selectedPath: "/root/ui/view.ts" })
+                await setup(selectedInAMapWithoutDeclarations)
 
                 // Assert
                 expect(inspectorTitle()).toBeNull()

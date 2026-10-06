@@ -71,8 +71,11 @@ describe("lineStyle", () => {
 
     describe("lineStyleOfUsages", () => {
         it("should draw the strongest of several ways of use, and a way no legend names as a plain line", () => {
+            // Arrange
+            const usagesOfThreeEdges = [["usage", "implementation"], ["a_usage_of_tomorrow"], []]
+
             // Act
-            const styles = [["usage", "implementation"], ["a_usage_of_tomorrow"], []].map(lineStyleOfUsages)
+            const styles = usagesOfThreeEdges.map(lineStyleOfUsages)
 
             // Assert
             expect(styles).toEqual([{ usage: "implementation", label: "Implements", dash: [7, 4], head: "hollow" }, PLAIN_LINE, PLAIN_LINE])
@@ -94,8 +97,11 @@ describe("lineStyle", () => {
 
     describe("usageLabelOf", () => {
         it("should name a known way of use by its label and an unknown one by its words", () => {
+            // Arrange
+            const usages = ["return_value", "a_usage_of_tomorrow"]
+
             // Act
-            const labels = ["return_value", "a_usage_of_tomorrow"].map(usageLabelOf)
+            const labels = usages.map(usageLabelOf)
 
             // Assert
             expect(labels).toEqual(["Returns", "a usage of tomorrow"])

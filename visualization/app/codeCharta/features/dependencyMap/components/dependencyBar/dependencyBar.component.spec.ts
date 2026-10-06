@@ -57,11 +57,13 @@ function changed(settings: Partial<DependencyGraphSettings>) {
 
 describe("DependencyBarComponent", () => {
     it("should name the edges shown, the edge style with its line thickness, the edge metric and the level labels, in that order", async () => {
-        // Act
+        // Arrange
         await renderBar()
 
-        // Assert
+        // Act
         const segments = [...document.querySelectorAll("[data-testid$='-segment']")].map(segment => segment.getAttribute("data-testid"))
+
+        // Assert
         expect(segments).toEqual([
             "dependency-bar-edges-segment",
             "dependency-bar-edge-style-segment",
@@ -76,8 +78,11 @@ describe("DependencyBarComponent", () => {
     })
 
     it("should describe every edge style, mark the chosen one and explain the chosen line thickness", async () => {
+        // Arrange
+        const settings = { edgeStyle: "straight", edgeWidth: { thickness: "thin", factor: 1 } } as const
+
         // Act
-        await renderBar({ settings: { edgeStyle: "straight", edgeWidth: { thickness: "thin", factor: 1 } } })
+        await renderBar({ settings })
 
         // Assert
         expect(screen.getByTestId("dependency-bar-edge-style-title").textContent).toBe("Straight")
@@ -88,12 +93,14 @@ describe("DependencyBarComponent", () => {
     })
 
     it("should open the edge styles from the card's name and the edge style settings from its cog", async () => {
-        // Act
+        // Arrange
         await renderBar()
 
-        // Assert
+        // Act
         const card = screen.getByTestId("dependency-bar-edge-style-segment")
         const nameButton = card.querySelector("button[popovertarget]:not([data-testid])")
+
+        // Assert
         expect(nameButton.getAttribute("popovertarget")).toBe(screen.getByTestId("dependency-bar-edge-style-popover").id)
         expect(screen.getByTestId("dependency-bar-edge-style-cog").getAttribute("popovertarget")).toBe(
             screen.getByTestId("dependency-bar-edge-style-settings-popover").id
@@ -115,8 +122,11 @@ describe("DependencyBarComponent", () => {
     })
 
     it("should name the edge types shown when only some are", async () => {
+        // Arrange
+        const settings: Partial<DependencyGraphSettings> = { shownEdgeTypes: ["feedbackLeafLevel", "cyclic"] }
+
         // Act
-        await renderBar({ settings: { shownEdgeTypes: ["feedbackLeafLevel", "cyclic"] } })
+        await renderBar({ settings })
 
         // Assert
         expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("In a cycle, Points upward and closes a cycle")
@@ -199,8 +209,11 @@ describe("DependencyBarComponent", () => {
     })
 
     it("should not let the reader anchor the edges at the middle of the sides for Spread, and show a remembered tick as off", async () => {
+        // Arrange
+        const settings = { edgeStyle: "spread", isAnchoredAtSideMiddle: true } as const
+
         // Act
-        await renderBar({ settings: { edgeStyle: "spread", isAnchoredAtSideMiddle: true } })
+        await renderBar({ settings })
 
         // Assert
         const checkbox = screen.getByTestId<HTMLInputElement>("dependency-bar-edge-style-side-middle")
@@ -237,11 +250,14 @@ describe("DependencyBarComponent", () => {
     })
 
     it("should carry the graph view tools in the tab on its edge", async () => {
-        // Act
+        // Arrange
         const { fixture } = await renderBar()
 
+        // Act
+        const viewTools = fixture.nativeElement.querySelector("cc-bar-tools-tab cc-graph-view-tools")
+
         // Assert
-        expect(fixture.nativeElement.querySelector("cc-bar-tools-tab cc-graph-view-tools")).not.toBeNull()
+        expect(viewTools).not.toBeNull()
     })
 
     it("should offer the declaration settings only for a map that tells its declarations", async () => {
