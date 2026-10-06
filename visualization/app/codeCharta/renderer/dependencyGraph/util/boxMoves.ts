@@ -1,4 +1,4 @@
-import { isWithin } from "./boxPaths"
+import { IsInside, nestingOf } from "./boxNesting"
 import { enclosingRectangle, Rectangle } from "./geometry"
 import { childIndicesByFolder } from "./layoutHierarchy"
 import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
@@ -12,7 +12,7 @@ export function movedLayout(layout: DependencyGraphLayout, offsets: ReadonlyMap<
     if (offsets.size === 0) {
         return layout
     }
-    const shiftOf = accumulatedShifts(offsets)
+    const shiftOf = accumulatedShifts(offsets, nestingOf(layout.boxes))
     const boxes = layout.boxes.map(box => shifted(box, shiftOf(box.path)))
     growFoldersAroundTheirChildren(boxes)
     const byPath = new Map(boxes.map(box => [box.path, box]))
@@ -25,11 +25,11 @@ export function isDraggable(layout: DependencyGraphLayout, path: string): boolea
     return box !== undefined && box.depth > 0
 }
 
-function accumulatedShifts(offsets: ReadonlyMap<string, BoxOffset>) {
+function accumulatedShifts(offsets: ReadonlyMap<string, BoxOffset>, isInside: IsInside) {
     const moves = [...offsets]
     return (path: string): BoxOffset =>
         moves
-            .filter(([movedPath]) => isWithin(path, movedPath))
+            .filter(([movedPath]) => isInside(path, movedPath))
             .reduce<BoxOffset>(([sumX, sumY], [, [dx, dy]]) => [sumX + dx, sumY + dy], [0, 0])
 }
 

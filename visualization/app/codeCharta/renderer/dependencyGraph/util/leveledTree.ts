@@ -70,6 +70,20 @@ export function boxPathOf(tree: LeveledNode, folderPath: string): string | null 
     return null
 }
 
+/** The boxes around a node or declaration, outermost first; null for one the tree does not hold. */
+export function containerPathsOf(tree: LeveledNode, path: string): string[] | null {
+    if (tree.path === path || tree.foldedPaths?.includes(path)) {
+        return []
+    }
+    for (const child of tree.children) {
+        const containersBelow = containerPathsOf(child, path)
+        if (containersBelow !== null) {
+            return [tree.path, ...containersBelow]
+        }
+    }
+    return null
+}
+
 /** The levels to walk down from the tree's root to reach a folder's box, outermost first. */
 export function levelPathOf(tree: LeveledNode, folderPath: string): number[] | null {
     if (tree.path === folderPath || tree.foldedPaths?.includes(folderPath)) {

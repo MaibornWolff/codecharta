@@ -268,4 +268,17 @@ describe("DependencyMapViewStore", () => {
         expect(kept).toEqual([selection, selection.path])
         expect(store.graphSelection()).toBeNull()
     })
+
+    it("should open the boxes the tree puts around a revealed node, though its path names none of them", () => {
+        // Arrange
+        const file: LeveledNode = { path: "/root/src/creature.ts", name: "creature.ts", level: 0, kind: "file", children: [] }
+        const inPackage = leveledFolder("/root", [{ ...leveledFolder("package:game", [file]) }])
+        store.adoptTree(inPackage)
+
+        // Act
+        store.reveal(file.path)
+
+        // Assert
+        expect(store.expandedPaths().has("package:game")).toBe(true)
+    })
 })

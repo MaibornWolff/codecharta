@@ -1,4 +1,4 @@
-import { isWithin } from "./boxPaths"
+import { IsInside, nestingOf } from "./boxNesting"
 import { enclosingRectangle, intersects, Rectangle } from "./geometry"
 import { canBeOpened, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 import { PaintedItem } from "./paintOrder"
@@ -37,7 +37,8 @@ type PaintedBoxGrid = RectangleGrid<PaintedBox>
 export function findOverlaps(items: PaintedItem[]): Overlaps {
     const boxes = items.flatMap((item, paintIndex) => (item.kind === "box" ? [{ box: item.box, paintIndex }] : []))
     const grid = new RectangleGrid(boxes, ({ box }) => box)
-    return { seeThroughPaths: seeThroughFolders(boxes, grid), bandCutouts: bandCutoutsOf(items, grid) }
+    const isInside = nestingOf(boxes.map(({ box }) => box))
+    return { seeThroughPaths: seeThroughFolders(boxes, grid, isInside), bandCutouts: bandCutoutsOf(items, grid, isInside) }
 }
 
 export function bandSeparator(band: LevelBand): BandSeparator {
@@ -48,27 +49,29 @@ export function bandSeparator(band: LevelBand): BandSeparator {
     }
 }
 
-function seeThroughFolders(boxes: PaintedBox[], grid: PaintedBoxGrid): Set<string> {
+function seeThroughFolders(boxes: PaintedBox[], grid: PaintedBoxGrid, isInside: IsInside): Set<string> {
     const seeThroughPaths = new Set<string>()
     for (const upper of boxes) {
-        if (canBeOpened(upper.box) && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower))) {
+        if (canBeOpened(upper.box) && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower, isInside))) {
             seeThroughPaths.add(upper.box.path)
         }
     }
     return seeThroughPaths
 }
 
-function isPaintedOverUnrelated(upper: PaintedBox, lower: PaintedBox): boolean {
-    return lower.paintIndex < upper.paintIndex && areUnrelated(upper.box, lower.box) && intersects(upper.box, lower.box)
+function isPaintedOverUnrelated(upper: PaintedBox, lower: PaintedBox, isInside: IsInside): boolean {
+    const areUnrelated = !isInside(upper.box.path, lower.box.path) && !isInside(lower.box.path, upper.box.path)
+    return lower.paintIndex < upper.paintIndex && areUnrelated && intersects(upper.box, lower.box)
 }
 
-function bandCutoutsOf(items: PaintedItem[], grid: PaintedBoxGrid): Map<LevelBand, BandCutout> {
+function bandCutoutsOf(items: PaintedItem[], grid: PaintedBoxGrid, isInside: IsInside): Map<LevelBand, BandCutout> {
     const bandCutouts = new Map<LevelBand, BandCutout>()
     items.forEach((item, paintIndex) => {
         if (item.kind !== "band") {
             return
         }
-        const cutout = cutoutOf(item.band, boxesPaintedOver(item.band, paintIndex, grid))
+        const paintedOver = boxesPaintedOver(item.band, paintIndex, grid).filter(box => !isInside(box.path, item.band.folderPath))
+        const cutout = cutoutOf(item.band, paintedOver)
         if (cutout.hiddenSpans.length > 0 || cutout.isLabelHidden) {
             bandCutouts.set(item.band, cutout)
         }
@@ -81,7 +84,7 @@ function boxesPaintedOver(band: LevelBand, bandPaintIndex: number, grid: Painted
     const separatorLine = { x: separator.left, y: separator.y, width: separator.right - separator.left, height: 0 }
     return grid
         .itemsNear(enclosingRectangle([separatorLine, labelRectangleOf(band)]))
-        .filter(({ box, paintIndex }) => paintIndex > bandPaintIndex && !isWithin(box.path, band.folderPath))
+        .filter(({ paintIndex }) => paintIndex > bandPaintIndex)
         .sort((boxA, boxB) => boxA.paintIndex - boxB.paintIndex)
         .map(({ box }) => box)
 }
@@ -99,8 +102,4 @@ function cutoutOf(band: LevelBand, covering: LayoutBox[]): BandCutout {
 
 function labelRectangleOf(band: LevelBand): Rectangle {
     return { x: bandSeparator(band).left, y: band.y - LEVEL_LABEL_SIZE.height, ...LEVEL_LABEL_SIZE }
-}
-
-function areUnrelated(boxA: LayoutBox, boxB: LayoutBox): boolean {
-    return !isWithin(boxA.path, boxB.path) && !isWithin(boxB.path, boxA.path)
 }
