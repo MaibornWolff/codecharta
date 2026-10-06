@@ -22,15 +22,18 @@ export interface PanelRef {
     declarationKind?: string
 }
 
-interface PanelFact {
-    label: string
-    value: string
-    ref?: PanelRef
+/** A short fact under the name; one about cycles is set off in the colour of the cycles. */
+interface PanelBadge {
+    text: string
+    isAboutCycles?: boolean
 }
 
 export interface PanelDependency {
     from: PanelRef
     to: PanelRef
+    /** Whether the end belongs to the selection, so the reader sees at once which way the dependency runs. */
+    isFromOwn: boolean
+    isToOwn: boolean
     usages: string[]
     /** The dashes and arrowhead of its strongest way of use. */
     line: LineStyle
@@ -39,9 +42,10 @@ export interface PanelDependency {
     leafEdge: DependencyLeafEdge
 }
 
-/** The dependencies shared with one other file, or all of a section when it has no heading. */
+/** The dependencies shared with one other file, under that file's name or, without one, under a plain label. */
 interface PanelGroup {
     heading: PanelRef | null
+    label: string
     dependencies: PanelDependency[]
     hiddenCount: number
 }
@@ -52,10 +56,15 @@ interface PanelSection {
     groups: PanelGroup[]
 }
 
-interface PanelRefList {
-    title: string
+interface PanelDeclaration {
+    ref: PanelRef
+    /** Its kind and level, as far as the map tells them. */
+    detail: string
+}
+
+interface PanelDeclarations {
     count: number
-    refs: PanelRef[]
+    items: PanelDeclaration[]
     hiddenCount: number
 }
 
@@ -72,10 +81,13 @@ export type PanelActionKind = "open" | "close" | "unfold"
 export interface PanelModel {
     kind: PanelRefKind | "edge"
     title: string
-    subtitle: string
+    /** What stands above the name and leads there: the folder of a file, the file of a declaration. */
+    parent: PanelRef | null
     path: string
-    facts: PanelFact[]
-    lists: PanelRefList[]
+    /** What the copy button copies; null where there is nothing worth copying. */
+    copyText: string | null
+    badges: PanelBadge[]
+    declarations: PanelDeclarations | null
     sections: PanelSection[]
     /** The cycles running through the selection; a hub's are cut like its rows. */
     cycles: PanelCycle[]
@@ -100,6 +112,8 @@ export interface PanelContext {
 
 export const PANEL_ROW_LIMIT = 20
 
+const THIS_FILE = "this file"
+
 export function describeSubject(subject: PanelSubject, context: PanelContext): PanelModel {
     if (subject.kind === "edge") {
         return describeEdge(subject.edge, `${subject.fromName} → ${subject.toName}`, context)
@@ -116,32 +130,38 @@ export function describeSubject(subject: PanelSubject, context: PanelContext): P
 
 function describeFile(file: LeveledNode, isOpen: boolean, context: PanelContext): PanelModel {
     const declarations = context.index.declarationsOfFile.get(file.path) ?? []
+    const own = pathsOf(declarations)
     const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
     const packages = [...new Set(declarations.flatMap(({ leaf }) => (leaf.namespace === undefined ? [] : [leaf.namespace])))]
+    const cycles = cyclesOf(declarations, context)
     return {
         kind: "file",
         title: file.name,
-        subtitle: "File",
+        parent: folderRef(parentPathOf(file.path)),
         path: file.path,
-        facts: [
-            { label: "Folder", value: parentPathOf(file.path), ref: folderRef(parentPathOf(file.path)) },
-            ...(packages.length > 0 ? [{ label: packages.length === 1 ? "Package" : "Packages", value: packages.join(", ") }] : [])
+        copyText: file.path,
+        badges: [
+            { text: "file" },
+            ...packages.map(packageKey => ({ text: `package ${packageKey}` })),
+            { text: counted(declarations.length, "declaration") },
+            ...cycleBadge(cycles.cycleCount)
         ],
-        lists: [refList("Declarations", declarations.map(declarationRef), context.rowLimit)],
+        declarations: declarationList(declarations, context.rowLimit),
         sections: [
-            section("Inside the file", ungrouped(inside), context),
             section(
                 "Uses",
-                groupedByFile(outgoing, edge => edge.toNodeName),
+                [{ heading: null, label: THIS_FILE, leafEdges: inside }, ...groupedByFile(outgoing, edge => edge.toNodeName)],
+                own,
                 context
             ),
             section(
                 "Used by",
                 groupedByFile(incoming, edge => edge.fromNodeName),
+                own,
                 context
             )
         ],
-        ...cyclesOf(declarations, context),
+        ...cycles,
         action: declarations.length === 0 ? null : isOpen ? "close" : "open"
     }
 }
@@ -149,39 +169,42 @@ function describeFile(file: LeveledNode, isOpen: boolean, context: PanelContext)
 function describeDeclaration(node: LeveledNode, context: PanelContext): PanelModel {
     const declaration = context.index.declarations.get(node.path)
     const declarations = declaration ? [declaration] : []
+    const own = pathsOf(declarations)
     const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
     const uses = [...inside.filter(edge => fromPathOf(edge) === node.path), ...outgoing]
     const usedBy = [...inside.filter(edge => toPathOf(edge) === node.path), ...incoming]
+    const cycles = cyclesOf(declarations, context)
+    const { namespace, level } = declaration?.leaf ?? {}
     return {
         kind: "declaration",
         title: node.name,
-        subtitle: declarationKindLabelOf(node.declarationKind ?? ""),
+        parent: declaration ? fileRef(declaration.filePath) : null,
         path: node.path,
-        facts: declaration ? factsOfDeclaration(declaration) : [],
-        lists: [],
+        copyText: declaration?.filePath ?? null,
+        badges: [
+            { text: declarationKindLabelOf(node.declarationKind ?? "") },
+            ...(namespace === undefined ? [] : [{ text: `package ${namespace}` }]),
+            ...(level === undefined ? [] : [{ text: `level ${level}` }]),
+            ...cycleBadge(cycles.cycleCount)
+        ],
+        declarations: null,
         sections: [
             section(
                 "Uses",
                 groupedByFile(uses, edge => edge.toNodeName),
+                own,
                 context
             ),
             section(
                 "Used by",
                 groupedByFile(usedBy, edge => edge.fromNodeName),
+                own,
                 context
             )
         ],
-        ...cyclesOf(declarations, context),
+        ...cycles,
         action: null
     }
-}
-
-function factsOfDeclaration({ filePath, leaf }: IndexedDeclaration): PanelFact[] {
-    return [
-        { label: "File", value: nameOf(filePath), ref: fileRef(filePath) },
-        ...(leaf.namespace === undefined ? [] : [{ label: "Package", value: leaf.namespace }]),
-        ...(leaf.level === undefined ? [] : [{ label: "Level", value: String(leaf.level) }])
-    ]
 }
 
 function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel {
@@ -189,20 +212,25 @@ function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel 
     const declarations = files.flatMap(file => context.index.declarationsOfFile.get(file.path) ?? [])
     const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
     const touching = [...inside, ...outgoing, ...incoming]
+    const cycles = cyclesOf(declarations, context)
+    const isPackage = folder.kind === "package"
     return {
         kind: "folder",
         title: folder.name,
-        subtitle: folder.kind === "package" ? "Package" : "Folder",
+        parent: isPackage || parentPathOf(folder.path) === "" ? null : folderRef(parentPathOf(folder.path)),
         path: folder.path,
-        facts: [
-            { label: "Files", value: String(files.length) },
-            { label: "Declarations", value: String(declarations.length) },
-            { label: "Cyclic dependencies", value: String(touching.filter(edge => edge.isCyclic).length) },
-            { label: "Upward dependencies", value: String(touching.filter(context.pointsUpward).length) }
+        copyText: isPackage ? folder.name : folder.path,
+        badges: [
+            { text: isPackage ? "package" : "folder" },
+            { text: counted(files.length, "file") },
+            { text: counted(declarations.length, "declaration") },
+            { text: `${touching.filter(edge => edge.isCyclic).length} cyclic` },
+            { text: `${touching.filter(context.pointsUpward).length} upward` },
+            ...cycleBadge(cycles.cycleCount)
         ],
-        lists: [],
+        declarations: null,
         sections: [],
-        ...cyclesOf(declarations, context),
+        ...cycles,
         action: null
     }
 }
@@ -214,25 +242,49 @@ function describeEdge(edge: GraphEdge, title: string, context: PanelContext): Pa
     return {
         kind: "edge",
         title,
-        subtitle: "Dependency",
+        parent: null,
         path: edge.id,
-        facts: [{ label: "Dependencies", value: String(edge.weight) }, ...usageCounts(told)],
-        lists: [],
-        sections: [section("Stands for", ungrouped(told), context)],
+        copyText: null,
+        badges: [{ text: counted(edge.weight, "dependency", "dependencies") }, ...usageCounts(told)],
+        declarations: null,
+        sections: [section("Stands for", [{ heading: null, label: "", leafEdges: told }], new Set(), context)],
         cycles: [],
         cycleCount: 0,
         action: told.length > 0 && !isUnfolded ? "unfold" : null
     }
 }
 
-function usageCounts(leafEdges: readonly DependencyLeafEdge[]): PanelFact[] {
+function counted(count: number, singular: string, plural = `${singular}s`): string {
+    return `${count} ${count === 1 ? singular : plural}`
+}
+
+function cycleBadge(cycleCount: number): PanelBadge[] {
+    return cycleCount === 0 ? [] : [{ text: counted(cycleCount, "cycle"), isAboutCycles: true }]
+}
+
+function pathsOf(declarations: readonly IndexedDeclaration[]): ReadonlySet<string> {
+    return new Set(declarations.map(declaration => declaration.path))
+}
+
+function usageCounts(leafEdges: readonly DependencyLeafEdge[]): PanelBadge[] {
     const counts = new Map<string, number>()
     for (const usage of leafEdges.flatMap(leafEdge => leafEdge.usage)) {
         counts.set(usage, (counts.get(usage) ?? 0) + 1)
     }
     return [...counts]
         .sort(([usageA, countA], [usageB, countB]) => countB - countA || usageA.localeCompare(usageB))
-        .map(([usage, count]) => ({ label: usageLabelOf(usage), value: String(count) }))
+        .map(([usage, count]) => ({ text: `${usageLabelOf(usage)} ${count}` }))
+}
+
+function declarationList(declarations: readonly IndexedDeclaration[], rowLimit: number): PanelDeclarations {
+    const items = declarations
+        .map(declaration => ({ ref: declarationRef(declaration), detail: detailOf(declaration) }))
+        .sort((itemA, itemB) => itemA.ref.name.localeCompare(itemB.ref.name))
+    return { count: items.length, items: items.slice(0, rowLimit), hiddenCount: Math.max(0, items.length - rowLimit) }
+}
+
+function detailOf({ leaf }: IndexedDeclaration): string {
+    return [declarationKindLabelOf(leaf.kind).toLowerCase(), ...(leaf.level === undefined ? [] : [`level ${leaf.level}`])].join(" · ")
 }
 
 interface Dependencies {
@@ -255,11 +307,8 @@ function dependenciesOf(declarations: readonly IndexedDeclaration[], index: Decl
 
 interface EdgeGroup {
     heading: PanelRef | null
+    label: string
     leafEdges: readonly DependencyLeafEdge[]
-}
-
-function ungrouped(leafEdges: readonly DependencyLeafEdge[]): EdgeGroup[] {
-    return [{ heading: null, leafEdges }]
 }
 
 function groupedByFile(leafEdges: readonly DependencyLeafEdge[], fileOf: (leafEdge: DependencyLeafEdge) => string): EdgeGroup[] {
@@ -269,26 +318,33 @@ function groupedByFile(leafEdges: readonly DependencyLeafEdge[], fileOf: (leafEd
     }
     return [...byFile.entries()]
         .sort(([fileA], [fileB]) => fileA.localeCompare(fileB))
-        .map(([filePath, edgesOfFile]) => ({ heading: fileRef(filePath), leafEdges: edgesOfFile }))
+        .map(([filePath, edgesOfFile]) => ({ heading: fileRef(filePath), label: "", leafEdges: edgesOfFile }))
 }
 
-function section(title: string, groups: readonly EdgeGroup[], context: PanelContext): PanelSection {
+function section(title: string, groups: readonly EdgeGroup[], own: ReadonlySet<string>, context: PanelContext): PanelSection {
     const { rowLimit } = context
     const filled = groups.filter(group => group.leafEdges.length > 0)
     return {
         title,
         count: filled.reduce((count, group) => count + group.leafEdges.length, 0),
-        groups: filled.map(({ heading, leafEdges }) => {
-            const dependencies = leafEdges.map(leafEdge => dependencyOf(leafEdge, context)).sort(byNames)
-            return { heading, dependencies: dependencies.slice(0, rowLimit), hiddenCount: Math.max(0, dependencies.length - rowLimit) }
+        groups: filled.map(({ heading, label, leafEdges }) => {
+            const dependencies = leafEdges.map(leafEdge => dependencyOf(leafEdge, own, context)).sort(byNames)
+            return {
+                heading,
+                label,
+                dependencies: dependencies.slice(0, rowLimit),
+                hiddenCount: Math.max(0, dependencies.length - rowLimit)
+            }
         })
     }
 }
 
-function dependencyOf(leafEdge: DependencyLeafEdge, { index, pointsUpward }: PanelContext): PanelDependency {
+function dependencyOf(leafEdge: DependencyLeafEdge, own: ReadonlySet<string>, { index, pointsUpward }: PanelContext): PanelDependency {
     return {
         from: declarationRef(index.declarations.get(fromPathOf(leafEdge))),
         to: declarationRef(index.declarations.get(toPathOf(leafEdge))),
+        isFromOwn: own.has(fromPathOf(leafEdge)),
+        isToOwn: own.has(toPathOf(leafEdge)),
         usages: leafEdge.usage.map(usageLabelOf),
         line: lineStyleOfUsages(leafEdge.usage),
         type: dependencyEdgeTypeOf({ isCyclic: leafEdge.isCyclic, isPointingUpwards: pointsUpward(leafEdge) }),
@@ -304,24 +360,32 @@ function cyclesOf(
     declarations: readonly IndexedDeclaration[],
     { index, cycles, rowLimit }: PanelContext
 ): Pick<PanelModel, "cycles" | "cycleCount"> {
-    const chains = cyclesThrough(new Set(declarations.map(declaration => declaration.path)), cycles)
+    const own = pathsOf(declarations)
+    const chains = cyclesThrough(own, cycles)
     return {
         cycleCount: chains.length,
-        cycles: chains.slice(0, rowLimit).map(chain => ({
-            steps: [fromPathOf(chain[0]), ...chain.map(toPathOf)].map(path => declarationRef(index.declarations.get(path))),
-            files: [...new Set(chain.map(leafEdge => leafEdge.fromNodeName))].map(fileRef),
-            leafEdges: chain
-        }))
+        cycles: chains.slice(0, rowLimit).map(chain => {
+            const walked = startingAt(chain, own)
+            return {
+                steps: [fromPathOf(walked[0]), ...walked.map(toPathOf)].map(path => declarationRef(index.declarations.get(path))),
+                files: [...new Set(walked.map(leafEdge => leafEdge.fromNodeName))].map(fileRef),
+                leafEdges: walked
+            }
+        })
     }
+}
+
+/** A cycle has no first declaration; it is told from one of the selection's own, since that is where the reader stands. */
+function startingAt(chain: CycleChain, own: ReadonlySet<string>): CycleChain {
+    const start = Math.max(
+        0,
+        chain.findIndex(leafEdge => own.has(fromPathOf(leafEdge)))
+    )
+    return [...chain.slice(start), ...chain.slice(0, start)]
 }
 
 function filesIn(node: LeveledNode): LeveledNode[] {
     return node.kind === "file" ? [node] : node.children.flatMap(filesIn)
-}
-
-function refList(title: string, refs: PanelRef[], rowLimit: number): PanelRefList {
-    const byName = refs.toSorted((refA, refB) => refA.name.localeCompare(refB.name))
-    return { title, count: refs.length, refs: byName.slice(0, rowLimit), hiddenCount: Math.max(0, refs.length - rowLimit) }
 }
 
 function declarationRef({ path, leaf }: IndexedDeclaration): PanelRef {

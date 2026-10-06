@@ -8,7 +8,7 @@ const CREATURE: PanelRef = { path: "/root/creature.ts/Creature", name: "Creature
 const WEAPON: PanelRef = { path: "/root/weapon.ts/Weapon", name: "Weapon", kind: "declaration", declarationKind: "interface" }
 const WEAPON_FILE: PanelRef = { path: "/root/weapon.ts", name: "weapon.ts", kind: "file" }
 const CREATURE_FILE: PanelRef = { path: "/root/creature.ts", name: "creature.ts", kind: "file" }
-const GAME_FOLDER: PanelRef = { path: "/root", name: "root", kind: "folder" }
+const ROOT_FOLDER: PanelRef = { path: "/root", name: "root", kind: "folder" }
 
 const EDGE_COLORS = { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" }
 
@@ -24,6 +24,8 @@ const LEAF_EDGE: DependencyLeafEdge = {
 const DEPENDENCY: PanelDependency = {
     from: CREATURE,
     to: WEAPON,
+    isFromOwn: true,
+    isToOwn: false,
     usages: ["Inherits from"],
     line: { dash: [7, 4], head: "hollow" },
     type: "feedbackLeafLevel",
@@ -33,16 +35,26 @@ const DEPENDENCY: PanelDependency = {
 const FILE_MODEL: PanelModel = {
     kind: "file",
     title: "creature.ts",
-    subtitle: "File",
+    parent: ROOT_FOLDER,
     path: "/root/creature.ts",
-    facts: [
-        { label: "Folder", value: "/root", ref: GAME_FOLDER },
-        { label: "Package", value: "game" }
-    ],
-    lists: [{ title: "Declarations", count: 3, refs: [CREATURE], hiddenCount: 2 }],
+    copyText: "/root/creature.ts",
+    badges: [{ text: "file" }, { text: "package game" }, { text: "6 cycles", isAboutCycles: true }],
+    declarations: { count: 3, items: [{ ref: CREATURE, detail: "class · level 2" }], hiddenCount: 2 },
     sections: [
-        { title: "Inside the file", count: 0, groups: [] },
-        { title: "Uses", count: 4, groups: [{ heading: WEAPON_FILE, dependencies: [DEPENDENCY], hiddenCount: 3 }] }
+        { title: "Used by", count: 0, groups: [] },
+        {
+            title: "Uses",
+            count: 5,
+            groups: [
+                {
+                    heading: null,
+                    label: "this file",
+                    dependencies: [{ ...DEPENDENCY, to: CREATURE, isToOwn: true, type: "regular", usages: [] }],
+                    hiddenCount: 0
+                },
+                { heading: WEAPON_FILE, label: "", dependencies: [DEPENDENCY], hiddenCount: 3 }
+            ]
+        }
     ],
     cycles: [{ steps: [CREATURE, WEAPON, CREATURE], files: [CREATURE_FILE, WEAPON_FILE], leafEdges: [LEAF_EDGE, LEAF_EDGE] }],
     cycleCount: 6,
@@ -62,55 +74,119 @@ async function renderPanel(model: PanelModel = FILE_MODEL, cyclesRequest = 0) {
     return { ...rendered, ...handlers }
 }
 
+const fileCard = () => screen.getAllByTestId("dependency-panel-group")[1]
+const fileRow = () => within(fileCard()).getByTestId("dependency-panel-row")
+
 describe("DependencyPanelComponent", () => {
-    it("should name the selection and tell its facts, a fact that leads somewhere as a link", async () => {
+    it("should head the panel as the metrics inspector does: what lies above, the name and the badges, the one about cycles set off", async () => {
+        // Arrange
+        const { refChosen } = await renderPanel()
+
         // Act
-        await renderPanel()
+        await userEvent.click(screen.getByTestId("dependency-panel-parent"))
 
         // Assert
-        expect(screen.getByTestId("dependency-panel-subtitle").textContent).toBe("File")
-        expect(screen.getByTestId("dependency-panel-title").textContent).toBe("creature.ts")
-        const facts = screen.getByTestId("dependency-panel-facts")
-        expect(facts.textContent).toContain("Package")
-        expect(within(facts).getByRole("button", { name: "root" })).not.toBeNull()
+        expect(screen.getByTestId("dependency-panel-parent").textContent.trim()).toBe("/root")
+        expect(screen.getByTestId("dependency-panel-title").textContent.trim()).toBe("creature.ts")
+        const badges = [...screen.getByTestId("dependency-panel-badges").children]
+        expect(badges.map(badge => badge.textContent)).toEqual(["file", "package game", "6 cycles"])
+        expect(badges.map(badge => badge.classList.contains("badge-info"))).toEqual([false, false, true])
+        expect(refChosen).toHaveBeenCalledWith(ROOT_FOLDER)
     })
 
-    it("should list what the selection holds and how it depends on others, leaving out a section with nothing in it", async () => {
+    it("should copy the path and say so for a moment", async () => {
+        // Arrange
+        jest.useFakeTimers()
+        const writeText = jest.fn().mockResolvedValue(undefined)
+        Object.assign(navigator, { clipboard: { writeText } })
+        const { fixture } = await renderPanel()
+        const copyButton = screen.getByTestId("dependency-panel-copy")
+
+        // Act
+        copyButton.click()
+        await Promise.resolve()
+        fixture.detectChanges()
+        const whileCopied = copyButton.getAttribute("title")
+        jest.advanceTimersByTime(1500)
+        fixture.detectChanges()
+        jest.useRealTimers()
+
+        // Assert
+        expect(writeText).toHaveBeenCalledWith("/root/creature.ts")
+        expect(whileCopied).toBe("Copied!")
+        expect(copyButton.getAttribute("title")).toBe("Copy path")
+    })
+
+    it("should offer no copy button where there is nothing to copy, and no parent where nothing lies above", async () => {
+        // Arrange
+        const edgeLike: PanelModel = { ...FILE_MODEL, parent: null, copyText: null }
+
+        // Act
+        await renderPanel(edgeLike)
+
+        // Assert
+        expect(screen.queryByTestId("dependency-panel-copy")).toBeNull()
+        expect(screen.queryByTestId("dependency-panel-parent")).toBeNull()
+    })
+
+    it("should put the cycles first, then what the selection uses, then its declarations, leaving out a section with nothing in it", async () => {
         // Act
         await renderPanel()
 
         // Assert
-        expect(screen.getByRole("region", { name: "Declarations" }).textContent).toContain("Declarations · 3")
-        expect(screen.getByRole("region", { name: "Uses" }).textContent).toContain("Uses · 4")
-        expect(screen.queryByRole("region", { name: "Inside the file" })).toBeNull()
-        const row = screen.getByTestId("dependency-panel-row")
-        expect(row.textContent).toContain("Creature")
-        expect(row.textContent).toContain("Weapon")
+        const sections = [...screen.getByTestId("dependency-panel-body").querySelectorAll("section")].map(section =>
+            section.getAttribute("aria-label")
+        )
+        expect(sections).toEqual(["Cycles", "Uses", "Declarations"])
+        expect(screen.getByRole("region", { name: "Cycles" }).textContent).toContain("6")
+        expect(screen.getByRole("region", { name: "Uses" }).textContent).toContain("5")
+    })
+
+    it("should draw a dependency as a chain: its two declarations with the edge between them, in the edge's dashes, head and colour", async () => {
+        // Act
+        await renderPanel()
+
+        // Assert
+        const row = fileRow()
+        const connector = row.querySelector("svg")
+        expect(row.textContent.replaceAll(/\s+/g, "")).toContain("CCreatureIWeapon")
+        expect(connector.getAttribute("stroke")).toBe("#7f1d1d")
+        expect(connector.getAttribute("aria-label")).toBe("Inherits from")
+        expect(connector.querySelector("line").getAttribute("stroke-dasharray")).toBe("7 4")
+        expect(connector.querySelector("polygon").getAttribute("fill")).toContain("#fff")
         expect(row.textContent).toContain("Inherits from")
         expect(screen.getByTestId("dependency-panel-row-type").textContent).toContain("Points upward and closes a cycle")
-        expect(row.querySelector("line").getAttribute("stroke-dasharray")).toBe("7 4")
-        expect(row.querySelector("svg").getAttribute("stroke")).toBe("#7f1d1d")
-        expect(row.querySelector("svg polygon").getAttribute("fill")).toBe("#fff")
-        expect(screen.getByRole("region", { name: "Uses" }).textContent).toContain("weapon.ts4")
     })
 
-    it("should mark a declaration by the letter of its kind and a file by an icon", async () => {
+    it("should outline the selection's own declarations in a row, and say nothing under a plain dependency", async () => {
         // Act
         await renderPanel()
 
         // Assert
-        const uses = screen.getByRole("region", { name: "Uses" })
-        expect(within(uses).getAllByTitle("Interface")[0].textContent).toBe("I")
-        expect(within(uses).getByRole("button", { name: "weapon.ts" }).querySelector("i.fa-file-o")).not.toBeNull()
+        const [from, to] = [...fileRow().querySelectorAll("span.border")]
+        expect([from.classList.contains("border-primary"), to.classList.contains("border-primary")]).toEqual([true, false])
+        const [ownRow] = screen.getAllByTestId("dependency-panel-row")
+        expect(ownRow.querySelectorAll("div")).toHaveLength(1)
+        expect(ownRow.querySelector("svg").getAttribute("aria-label")).toBe("uses")
+    })
+
+    it("should put each other file's dependencies in a card under the file's name and count, the selection's own under a plain label", async () => {
+        // Act
+        await renderPanel()
+
+        // Assert
+        const [ownCard, otherCard] = screen.getAllByTestId("dependency-panel-group")
+        expect(ownCard.textContent).toContain("this file")
+        expect(within(otherCard).getByRole("button", { name: "weapon.ts" }).querySelector("i.fa-file-o")).not.toBeNull()
+        expect(otherCard.textContent).toContain("4")
     })
 
     it("should go to the file or declaration a row names", async () => {
         // Arrange
         const { refChosen } = await renderPanel()
-        const row = screen.getByTestId("dependency-panel-row")
 
         // Act
-        await userEvent.click(within(row).getByRole("button", { name: "Weapon" }))
+        await userEvent.click(within(fileRow()).getByRole("button", { name: "Weapon" }))
         await userEvent.click(screen.getByRole("button", { name: "weapon.ts" }))
 
         // Assert
@@ -120,7 +196,7 @@ describe("DependencyPanelComponent", () => {
     it("should point at a row's dependency while the pointer or the focus is on it", async () => {
         // Arrange
         const { dependenciesPointedAt } = await renderPanel()
-        const row = screen.getByTestId("dependency-panel-row")
+        const row = fileRow()
 
         // Act
         fireEvent.mouseEnter(row)
@@ -132,7 +208,7 @@ describe("DependencyPanelComponent", () => {
         expect(dependenciesPointedAt.mock.calls).toEqual([[[LEAF_EDGE]], [null], [[LEAF_EDGE]], [null]])
     })
 
-    it("should tell a cycle as its chain, point at the whole chain and show it in the graph on request", async () => {
+    it("should draw a cycle as the same chain, closed back to its start, point at the whole chain and show it in the graph on request", async () => {
         // Arrange
         const { dependenciesPointedAt, cycleShown } = await renderPanel()
         const cycle = screen.getByTestId("dependency-panel-cycle")
@@ -146,15 +222,27 @@ describe("DependencyPanelComponent", () => {
         await userEvent.click(within(cycle).getByRole("button", { name: "Show in graph" }))
 
         // Assert
-        expect(cycle.textContent.replaceAll(/\s+/g, "")).toContain("CCreature→IWeapon→CCreature")
-        expect(pointedAt).toEqual([[FILE_MODEL.cycles[0].leafEdges], [null], [FILE_MODEL.cycles[0].leafEdges], [null]])
+        expect(cycle.querySelectorAll("svg")).toHaveLength(1)
+        expect(cycle.querySelector("svg").getAttribute("stroke")).toBe("#2563eb")
+        expect(screen.getByTestId("dependency-panel-cycle-closing").textContent.trim()).toBe("↩ Creature")
         expect(screen.getByTestId("dependency-panel-cycle-where").textContent.replaceAll(/\s+/g, " ").trim()).toBe(
-            "2 declarations · across creature.ts, weapon.ts"
+            "across creature.ts, weapon.ts"
         )
+        expect(pointedAt).toEqual([[FILE_MODEL.cycles[0].leafEdges], [null], [FILE_MODEL.cycles[0].leafEdges], [null]])
         expect(cycleShown).toHaveBeenCalledWith(FILE_MODEL.cycles[0])
     })
 
-    it("should offer the selection's action, the rows a hub left out and to close the panel", async () => {
+    it("should list the declarations with their kind and level at the right", async () => {
+        // Act
+        await renderPanel()
+
+        // Assert
+        const declarations = screen.getByRole("region", { name: "Declarations" })
+        expect(declarations.querySelector("li").textContent.replaceAll(/\s+/g, " ").trim()).toBe("CCreatureclass · level 2")
+        expect(within(declarations).getByTitle("Class").textContent).toBe("C")
+    })
+
+    it("should offer the selection's action, everything a hub left out and to close the panel", async () => {
         // Arrange
         const { actionChosen, allRowsRequested, closed } = await renderPanel()
 
@@ -163,64 +251,76 @@ describe("DependencyPanelComponent", () => {
         await userEvent.click(screen.getByRole("button", { name: "and 2 more" }))
         await userEvent.click(screen.getByRole("button", { name: "and 3 more" }))
         await userEvent.click(screen.getByTestId("dependency-panel-more-cycles"))
-        await userEvent.click(screen.getByRole("button", { name: "Close details" }))
+        await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
 
         // Assert
         expect(actionChosen).toHaveBeenCalledWith("open")
         expect(allRowsRequested).toHaveBeenCalledTimes(3)
-        expect(screen.getByRole("region", { name: "Cycles" }).textContent).toContain("Cycles · 6")
         expect(closed).toHaveBeenCalledTimes(1)
     })
 
-    it("should show only what a selection has: an edge's facts and dependencies without lists or cycles, a regular row without a type", async () => {
+    it("should show only what a selection has: an edge's dependencies in a card without a name, no cycles, declarations or action", async () => {
         // Arrange
         const edgeModel: PanelModel = {
             kind: "edge",
             title: "creature.ts → weapon.ts",
-            subtitle: "Dependency",
+            parent: null,
             path: "/root/creature.ts|/root/weapon.ts",
-            facts: [{ label: "Dependencies", value: "1" }],
-            lists: [{ title: "Files", count: 0, refs: [], hiddenCount: 0 }],
+            copyText: null,
+            badges: [{ text: "1 dependency" }],
+            declarations: null,
             sections: [
                 {
                     title: "Stands for",
                     count: 1,
                     groups: [
-                        {
-                            heading: null,
-                            dependencies: [{ ...DEPENDENCY, usages: [], type: "regular", line: { dash: null, head: "dot" } }],
-                            hiddenCount: 0
-                        }
+                        { heading: null, label: "", dependencies: [{ ...DEPENDENCY, line: { dash: null, head: "dot" } }], hiddenCount: 0 }
                     ]
                 }
             ],
             cycles: [],
             cycleCount: 0,
-            action: "unfold"
+            action: null
         }
 
         // Act
         await renderPanel(edgeModel)
 
         // Assert
-        expect(screen.getByRole("button", { name: "Unfold in graph" })).not.toBeNull()
         expect(screen.queryByTestId("dependency-panel-cycles")).toBeNull()
-        expect(screen.queryByRole("region", { name: "Files" })).toBeNull()
-        expect(screen.getByTestId("dependency-panel-row").textContent).not.toContain("Inherits")
-        expect(screen.queryByTestId("dependency-panel-row-type")).toBeNull()
+        expect(screen.queryByRole("region", { name: "Declarations" })).toBeNull()
+        expect(screen.queryByTestId("dependency-panel-action")).toBeNull()
+        expect(screen.getByTestId("dependency-panel-group").querySelectorAll(":scope > div")).toHaveLength(1)
         expect(screen.getByTestId("dependency-panel-row").querySelector("circle")).not.toBeNull()
     })
 
-    it("should show no facts and no action for a selection without any", async () => {
+    it("should draw the open arrowhead of a way of use that has one, and list no declarations for a file telling none", async () => {
         // Arrange
-        const bare: PanelModel = { ...FILE_MODEL, facts: [], action: null }
+        const open: PanelModel = {
+            ...FILE_MODEL,
+            declarations: { count: 0, items: [], hiddenCount: 0 },
+            sections: [
+                {
+                    title: "Uses",
+                    count: 1,
+                    groups: [
+                        {
+                            heading: WEAPON_FILE,
+                            label: "",
+                            dependencies: [{ ...DEPENDENCY, line: { dash: [2, 4], head: "open" } }],
+                            hiddenCount: 0
+                        }
+                    ]
+                }
+            ]
+        }
 
         // Act
-        await renderPanel(bare)
+        await renderPanel(open)
 
         // Assert
-        expect(screen.queryByTestId("dependency-panel-facts")).toBeNull()
-        expect(screen.queryByTestId("dependency-panel-action")).toBeNull()
+        expect(screen.getByTestId("dependency-panel-row").querySelector("polyline")).not.toBeNull()
+        expect(screen.queryByRole("region", { name: "Declarations" })).toBeNull()
     })
 
     it("should bring the cycles into view when asked to, once per request, and set them off until another selection", async () => {
@@ -238,7 +338,7 @@ describe("DependencyPanelComponent", () => {
 
         // Assert
         expect(scrollIntoView).toHaveBeenCalledTimes(1)
-        expect(setOff).toContain("border-info")
-        expect(screen.getByTestId("dependency-panel-cycles").className).not.toContain("border-info")
+        expect(setOff).toContain("bg-info/10")
+        expect(screen.getByTestId("dependency-panel-cycles").className).not.toContain("bg-info/10")
     })
 })

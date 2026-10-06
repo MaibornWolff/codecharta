@@ -499,7 +499,7 @@ describe("DependencyMapComponent", () => {
                 fixture.detectChanges()
             }
 
-            const panelTitle = () => screen.queryByTestId("dependency-panel-title")?.textContent ?? null
+            const panelTitle = () => screen.queryByTestId("dependency-panel-title")?.textContent.trim() ?? null
             const edgeOpacities = () =>
                 Object.fromEntries(
                     drawnSeries().data.flatMap((item, dataIndex) => {
@@ -589,13 +589,15 @@ describe("DependencyMapComponent", () => {
                 expect(drawnBoxPaths()).toContain(`${NODE}/Node`)
                 expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${NODE}/Node`])
                 expect(panelTitle()).toBe("Node")
-                expect(screen.getByTestId("dependency-panel-subtitle").textContent).toBe("Class")
+                expect(screen.getByTestId("dependency-panel-badges").textContent).toContain("Class")
             })
 
             it("should light up the edge of the row under the pointer and let the others step back", async () => {
                 // Arrange
                 const { fixture } = await setupSelected(VIEW)
-                const [usesRow] = within(screen.getByRole("region", { name: "Uses" })).getAllByTestId("dependency-panel-row")
+                const usesRow = within(screen.getByRole("region", { name: "Uses" }))
+                    .getAllByTestId("dependency-panel-row")
+                    .at(-1)
 
                 // Act
                 fireEvent.mouseEnter(usesRow)
@@ -646,7 +648,7 @@ describe("DependencyMapComponent", () => {
                 const { store, fixture } = await setupSelected(VIEW)
 
                 // Act
-                await userEvent.click(screen.getByRole("button", { name: "Close details" }))
+                await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
                 fixture.detectChanges()
                 const afterClosing = panelTitle()
                 fireChartEvent("click", boxEvent(NODE))
@@ -819,7 +821,7 @@ describe("DependencyMapComponent", () => {
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: null }))
                 expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodePath({ value: null }))
                 expect(store.dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: setRightClickedNodeData.type }))
-                expect(screen.getByTestId("dependency-panel-subtitle").textContent).toBe("Package")
+                expect(screen.getByTestId("dependency-panel-badges").textContent).toContain("package")
                 expect(outlineWidthOf(SCREENS)).toBe(2.5)
             })
 
