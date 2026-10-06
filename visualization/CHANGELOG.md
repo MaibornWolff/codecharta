@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Declarations in the dependency view**: a file of a map analysed with the dependency parser opens into its classes, functions and other declarations, a panel beside the graph explains the selected file, declaration, folder or edge with its dependencies and cycles, and a badge on a closed box counts the cyclic dependencies it hides.
+- **Folders or packages in the dependency view**: a map that declares packages can nest its files in those packages instead of their folders, and on request marks what sits elsewhere or reads differently between the two.
+- **Kinds of use in the dependency view**: the dashes and arrowhead of an edge can tell how one declaration uses the other, such as inheriting from it or creating it, and the colours of the four edge types can be changed.
+- **Keyboard in the dependency view**: the boxes of the graph can be reached with the Tab key, selected with Enter and opened or closed with Space.
+
 ## [2.8.0] - 2026-10-05
 
 ### Added 🚀

@@ -764,6 +764,29 @@ describe("DependencyMapComponent", () => {
                 expect(drawnBoxPaths()).toContain(VIEW)
             })
 
+            it("should keep the closed package holding a file the search found, and fade the one holding none", async () => {
+                // Arrange
+                const { fixture } = await setup({
+                    tree: DECLARING_TREE,
+                    declarations: PACKAGED,
+                    openedFolders: [],
+                    searchedPaths: new Set([VIEW])
+                })
+                await showPackages(fixture)
+                TestBed.inject(DependencyMapViewStore).toggle("package:app")
+                fixture.detectChanges()
+                await screen.findByTestId("dependency-graph")
+
+                // Act
+                const opacityOf = (path: string) => {
+                    const dataIndex = drawnSeries().data.findIndex(item => item.name === path)
+                    return drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children[0].style.opacity
+                }
+
+                // Assert
+                expect([SCREENS, DATA, "package:app"].map(opacityOf)).toEqual([1, 0.3, 1])
+            })
+
             it("should select a package in the graph alone, explain it in the panel and tell the other views of no node", async () => {
                 // Arrange
                 const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedFolders: [] })

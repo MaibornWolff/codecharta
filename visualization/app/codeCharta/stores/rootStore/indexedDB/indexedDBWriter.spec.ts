@@ -41,6 +41,7 @@ import {
     migrateCcStateRecordToV26,
     migrateCcStateRecordToV27,
     migrateCcStateRecordToV28,
+    migrateCcStateRecordToV29,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcFiles,
@@ -1070,6 +1071,42 @@ describe("migrateCcStateRecordToV28 (dependency view setting seed on the persist
         expect(migrated[0]).toBe(alreadyMigrated)
         expect(migrated[1]).toBe(withoutPreferences)
         expect(migrateCcStateRecordToV28(null)).toBeNull()
+    })
+})
+
+describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted dependency graph settings)", () => {
+    it("should seed the settings the graph gained with their defaults and keep the ones the reader had set", () => {
+        // Arrange
+        const persistedBefore = { shownEdgeTypes: ["cyclic"], edgeStyle: "straight", levelLabel: "path" }
+        const oldShapeState = { preferences: { centerMapZoom: 165, dependencyGraph: persistedBefore } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV29(oldShapeState) as unknown as { preferences: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.preferences["centerMapZoom"]).toBe(165)
+        expect(migrated.preferences["dependencyGraph"]).toEqual({ ...defaultDependencyGraphSettings, ...persistedBefore })
+        expect(migrated.preferences["dependencyGraph"]).toMatchObject({
+            declarationArrangement: "stacked",
+            declarationKindMark: "icon",
+            lineStyleShows: "edgeType",
+            showsCycleBadges: true,
+            marksHierarchyDifferences: false
+        })
+    })
+
+    it("should pass complete settings, a blob without them, or a nullish one through unchanged", () => {
+        // Arrange
+        const alreadyMigrated = { preferences: { dependencyGraph: { ...defaultDependencyGraphSettings, declarationArrangement: "chips" } } }
+        const withoutSettings = { preferences: { centerMapZoom: 165 } }
+
+        // Act
+        const migrated = [alreadyMigrated, withoutSettings].map(state => migrateCcStateRecordToV29(state))
+
+        // Assert
+        expect(migrated[0]).toBe(alreadyMigrated)
+        expect(migrated[1]).toBe(withoutSettings)
+        expect(migrateCcStateRecordToV29(null)).toBeNull()
     })
 })
 

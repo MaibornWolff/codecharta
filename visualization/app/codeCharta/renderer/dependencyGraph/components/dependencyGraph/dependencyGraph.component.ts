@@ -3,6 +3,8 @@ import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChar
 import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
+import { BoxKind } from "../../util/leveledTree"
+import { canBeOpened, LayoutBox } from "../../util/levelizedLayout"
 import { DependencyGraphHost } from "./dependencyGraphHost"
 
 export interface RightClickedBox {
@@ -17,6 +19,7 @@ export interface DraggedBox {
     deltaY: number
 }
 
+const BOX_KIND_NAMES: Record<BoxKind, string> = { folder: "Folder", package: "Package", file: "File", declaration: "Declaration" }
 const NOTHING_DRAGGABLE = () => false
 const NO_BOX_ANYWHERE = () => null
 
@@ -24,7 +27,7 @@ const NO_BOX_ANYWHERE = () => null
     selector: "cc-dependency-graph",
     templateUrl: "./dependencyGraph.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "block h-full w-full" }
+    host: { class: "relative block h-full w-full" }
 })
 export class DependencyGraphComponent implements OnDestroy {
     readonly scene = input.required<DependencyGraphScene>()
@@ -72,6 +75,20 @@ export class DependencyGraphComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this.chartHost.dispose()
+    }
+
+    protected readonly canBeOpened = canBeOpened
+
+    protected labelOf(box: LayoutBox): string {
+        return `${BOX_KIND_NAMES[box.kind]} ${box.name}`
+    }
+
+    /** A button takes the space key as a click, which selects; here it opens and closes instead. */
+    protected toggleFromKeyboard(event: Event, box: LayoutBox): void {
+        event.preventDefault()
+        if (canBeOpened(box)) {
+            this.boxToggled.emit(box.path)
+        }
     }
 
     private renderOnceTheContainerIsMeasured(): void {
