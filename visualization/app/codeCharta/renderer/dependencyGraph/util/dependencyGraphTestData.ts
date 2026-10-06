@@ -1,4 +1,5 @@
 import { DependencyEdgeColors } from "../../../model/dependencyGraph.model"
+import { NO_CYCLE_MARKS } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { LayoutBox, LevelBand } from "./levelizedLayout"
 
@@ -10,7 +11,12 @@ export const EDGE_COLORS: DependencyEdgeColors = {
 }
 
 /** How a scene looks while the reader has changed no setting. */
-export const DEFAULT_LOOKS = { edgeColors: EDGE_COLORS, lineStyleShows: "edgeType", declarationKindMark: "icon" } as const
+export const DEFAULT_LOOKS = {
+    edgeColors: EDGE_COLORS,
+    lineStyleShows: "edgeType",
+    declarationKindMark: "icon",
+    cycleMarks: NO_CYCLE_MARKS
+} as const
 
 export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBox {
     return {

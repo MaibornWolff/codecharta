@@ -29,6 +29,7 @@ export class DeclarationsSegmentComponent {
     readonly arrangementLabel = computed(() => labelOf(DECLARATION_ARRANGEMENT_CHOICES, this.arrangement()))
 
     readonly kindMark = computed(() => this.settings().declarationKindMark)
+    readonly showsCycleBadges = computed(() => this.settings().showsCycleBadges)
 
     arrangeAs(declarationArrangement: DeclarationArrangement): void {
         this.writeStore.changeSettings({ declarationArrangement })
@@ -36,5 +37,9 @@ export class DeclarationsSegmentComponent {
 
     markKindBy(declarationKindMark: DeclarationKindMark): void {
         this.writeStore.changeSettings({ declarationKindMark })
+    }
+
+    showCycleBadges(showsCycleBadges: boolean): void {
+        this.writeStore.changeSettings({ showsCycleBadges })
     }
 }

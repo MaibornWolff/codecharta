@@ -303,4 +303,15 @@ describe("DependencyBarComponent", () => {
         // Assert
         expect(dispatch).toHaveBeenCalledWith(changed({ declarationKindMark: "shape" }))
     })
+
+    it("should stop counting hidden cycles once the reader unticks it", async () => {
+        // Arrange
+        const dispatch = await renderBar({ hasDeclarations: true })
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-cycle-badges"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ showsCycleBadges: false }))
+    })
 })

@@ -23,5 +23,16 @@
             [chosen]="kindMark()"
             (choose)="markKindBy($event)"
         ></cc-choice-row>
+        <label class="mt-2.5 flex cursor-pointer items-center gap-2">
+            <input
+                #cycleBadgesCheckbox
+                type="checkbox"
+                class="checkbox checkbox-sm checkbox-primary"
+                data-testid="dependency-bar-cycle-badges"
+                [checked]="showsCycleBadges()"
+                (change)="showCycleBadges(cycleBadgesCheckbox.checked)"
+            />
+            <span class="text-sm">Count the cyclic dependencies a closed box hides</span>
+        </label>
     </div>
 </cc-choice-list-popover>

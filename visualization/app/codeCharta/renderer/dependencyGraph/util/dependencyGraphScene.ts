@@ -7,6 +7,7 @@ import {
     LineStyleMeaning
 } from "../../../model/dependencyGraph.model"
 import { isWithin } from "./boxPaths"
+import { CycleMarks } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
 import { DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
@@ -23,6 +24,7 @@ export interface DependencyGraphScene {
     edgeColors: DependencyEdgeColors
     lineStyleShows: LineStyleMeaning
     declarationKindMark: DeclarationKindMark
+    cycleMarks: CycleMarks
     edgeStyle: DependencyEdgeStyle
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth

@@ -30,6 +30,7 @@ describe("DependencyGraphHost", () => {
         handlers = {
             onBoxClicked: jest.fn(),
             onBoxToggled: jest.fn(),
+            onCycleBadgeClicked: jest.fn(),
             onBoxHovered: jest.fn(),
             onBoxRightClicked: jest.fn(),
             onRendered: jest.fn(),
@@ -84,6 +85,18 @@ describe("DependencyGraphHost", () => {
         // Assert
         expect(handlers.onBoxToggled).toHaveBeenCalledTimes(1)
         expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app/a.ts")
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
+    it("should report a click on a box's cycle badge as such, not as a click on the box", () => {
+        // Arrange
+        const badgeOfBox = { ...BOX, info: "cycleBadge" }
+
+        // Act
+        fireChartEvent("click", badgeOfBox)
+
+        // Assert
+        expect(handlers.onCycleBadgeClicked).toHaveBeenCalledWith("/root/app/a.ts")
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 

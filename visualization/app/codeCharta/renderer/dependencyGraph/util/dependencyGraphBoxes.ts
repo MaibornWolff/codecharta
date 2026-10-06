@@ -33,7 +33,18 @@ export interface BoxLook {
     isMissedBySearch: boolean
     /** How a declaration tells what it is. */
     kindMark: DeclarationKindMark
+    cycle: CycleLook
 }
+
+export interface CycleLook {
+    /** The cyclic dependencies a closed box hides; none draws no badge. */
+    hiddenEdgeCount: number
+    /** A declaration taking part in a cycle. */
+    isInCycle: boolean
+    color: string
+}
+
+export const NO_CYCLE: CycleLook = { hiddenEdgeCount: 0, isInCycle: false, color: "" }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
 
@@ -49,8 +60,12 @@ const KIND_ICON = { sizePx: 14, cornerRadiusPx: 3, fontSizePx: 9, gapPx: 4, lett
 /** How far the pointed and slanted shapes cut into the box at its left and right. */
 const SHAPE_CUT_SHARE_OF_HEIGHT = 0.35
 
-/** What a click on a box's toggle carries, to tell it from a click on the box. */
+const CYCLE_BADGE = { radiusPx: 8, fontSizePx: 9, textColor: "#ffffff", mostCounted: 99 }
+const CYCLE_RING = { radiusPx: 4, lineWidthPx: 2 }
+
+/** What a click on a part of a box carries, to tell it from a click on the box. */
 export const TOGGLE_INFO = "toggle"
+export const CYCLE_BADGE_INFO = "cycleBadge"
 const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
@@ -64,7 +79,8 @@ const SEPARATOR_DASH_PX = [4, 4]
 export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     const outline = drawOutline(box, rect, look)
-    return drawnItem(box.isExpanded ? [outline] : [outline, ...drawName(box, rect, look)])
+    const cycleMark = drawCycleMark(box, rect, look.cycle, opacityOf(look.isMissedBySearch))
+    return drawnItem(box.isExpanded ? [outline] : [outline, ...drawName(box, rect, look), ...cycleMark])
 }
 
 /** Drawn apart from the open box so the edges pass under it. */
@@ -126,6 +142,38 @@ function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark 
     const marks = [...drawFileMarks(box, rect, opacity), ...(hasKindIcon ? drawKindIcon(box, rect, opacity) : [])]
     const label = drawLabel(box, rect, { opacity, hasKindIcon })
     return label ? [label, ...marks] : marks
+}
+
+/** Both sit on the box's upper right corner: the badge of a closed box, the ring of a declaration. */
+function drawCycleMark(box: LayoutBox, rect: Rectangle, { hiddenEdgeCount, isInCycle, color }: CycleLook, opacity: number): object[] {
+    const centre = { cx: rect.x + rect.width, cy: rect.y }
+    if (box.kind === "declaration") {
+        const style = { fill: FILE_FILL, stroke: color, lineWidth: CYCLE_RING.lineWidthPx, opacity }
+        return isInCycle ? [{ type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx }, style }] : []
+    }
+    if (box.isExpanded || hiddenEdgeCount === 0) {
+        return []
+    }
+    const text = hiddenEdgeCount > CYCLE_BADGE.mostCounted ? `${CYCLE_BADGE.mostCounted}+` : String(hiddenEdgeCount)
+    const badge = { ...UNTRANSFORMED, info: CYCLE_BADGE_INFO, cursor: "pointer" }
+    return [
+        { type: "circle", ...badge, shape: { ...centre, r: CYCLE_BADGE.radiusPx }, style: { fill: color, opacity } },
+        {
+            type: "text",
+            ...badge,
+            style: {
+                text,
+                x: centre.cx,
+                y: centre.cy,
+                align: "center",
+                verticalAlign: "middle",
+                fontSize: CYCLE_BADGE.fontSizePx,
+                fontWeight: "bold",
+                fill: CYCLE_BADGE.textColor,
+                opacity
+            }
+        }
+    ]
 }
 
 function drawFileMarks(box: LayoutBox, rect: Rectangle, opacity: number): object[] {

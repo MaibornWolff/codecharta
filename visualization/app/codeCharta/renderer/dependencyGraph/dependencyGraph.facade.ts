@@ -2,6 +2,7 @@ export type { DraggedBox, RightClickedBox } from "./components/dependencyGraph/d
 export { DependencyGraphComponent } from "./components/dependencyGraph/dependencyGraph.component"
 export type { BoxOffset } from "./util/boxMoves"
 export { isDraggable, movedLayout } from "./util/boxMoves"
+export { findCycleMarks, NO_CYCLE_MARKS } from "./util/cycleMarks"
 export { DECLARATION_KIND_LEGEND } from "./util/declarationKinds"
 export type { DependencyGraphScene } from "./util/dependencyGraphScene"
 export { EDGE_TYPE_LABELS, edgeLegend } from "./util/dependencyGraphStyle"

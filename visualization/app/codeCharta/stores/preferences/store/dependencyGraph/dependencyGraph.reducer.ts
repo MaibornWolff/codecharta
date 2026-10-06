@@ -12,7 +12,8 @@ export const defaultDependencyGraphSettings: DependencyGraphSettings = {
     edgeWidth: { thickness: "byCount", factor: 1 },
     levelLabel: "number",
     declarationArrangement: "stacked",
-    declarationKindMark: "icon"
+    declarationKindMark: "icon",
+    showsCycleBadges: true
 }
 
 export const dependencyGraph = createReducer(
