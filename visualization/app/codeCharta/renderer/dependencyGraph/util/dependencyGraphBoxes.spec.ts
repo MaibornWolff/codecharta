@@ -1,5 +1,6 @@
 import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
-import { BoxEmphasis, BoxLook, CycleLook, drawBox, drawFolderTitle, drawLevelBand, NO_CYCLE } from "./dependencyGraphBoxes"
+import { CycleLook } from "./boxMarks"
+import { BoxEmphasis, BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
@@ -18,6 +19,8 @@ function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = fa
 function childrenOf(element: object): DrawnElement[] {
     return (element as DrawnElement).children
 }
+
+const NO_CYCLE: CycleLook = { hiddenCount: 0, isInCycle: false, color: "" }
 
 describe("dependencyGraphBoxes", () => {
     describe("drawBox", () => {

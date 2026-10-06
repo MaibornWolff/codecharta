@@ -1,6 +1,6 @@
 import { DependencyLeaf } from "../../../model/codeCharta.model"
 import { LeveledNode } from "./leveledTree"
-import { arrangedByPackages, Namespaces, packagePlacementOf } from "./packageTree"
+import { arrangedByPackages, Namespaces } from "./packageTree"
 
 function leaf(namespace?: string, level?: number): DependencyLeaf {
     return { name: "Any", kind: "class", ...(namespace !== undefined && { namespace }), ...(level !== undefined && { level }) }
@@ -22,32 +22,50 @@ const NAMESPACES: Namespaces = {
     "com.empty": { parent: "com", level: 0 }
 }
 
-describe("packagePlacementOf", () => {
-    it("should place a file in the package most of its declarations declare, as high as the highest of them", () => {
+describe("the package a file is placed in", () => {
+    const FILE = "/root/file.ts"
+
+    function holderOf(node: LeveledNode, path: string): LeveledNode | null {
+        const isHeldHere = node.children.some(child => child.path === path)
+        return isHeldHere ? node : (node.children.map(child => holderOf(child, path)).find(holder => holder !== null) ?? null)
+    }
+
+    function placementOf(leavesOfFile: Record<string, DependencyLeaf> | undefined) {
+        const tree = leveledFolder("/root", [leveledFile(FILE)])
+        const arranged = arrangedByPackages(tree, NAMESPACES, leavesOfFile ? { [FILE]: leavesOfFile } : {})
+        const holder = holderOf(arranged, FILE)
+        const level = holder.children.find(child => child.path === FILE).level
+        return holder.kind === "package" ? { packagePath: holder.path, level } : null
+    }
+
+    it("should be the one most of its declarations declare, the file as high as the highest of them", () => {
         // Arrange
         const leaves = { A: leaf("com.game.model", 1), B: leaf("com.game.model", 4), C: leaf("com.game.ui", 9), D: leaf() }
 
         // Act
-        const placement = packagePlacementOf(leaves, NAMESPACES)
+        const placement = placementOf(leaves)
 
         // Assert
-        expect(placement).toEqual({ packageKey: "com.game.model", level: 4 })
+        expect(placement).toEqual({ packagePath: "package:com.game.model", level: 4 })
     })
 
-    it("should take the first package by name among equals, at level 0 where the declarations have none", () => {
+    it("should be the first package by name among equals, the file at level 0 where the declarations have none", () => {
         // Arrange
         const leaves = { A: leaf("com.game.ui"), B: leaf("com.game.model") }
 
         // Act
-        const placement = packagePlacementOf(leaves, NAMESPACES)
+        const placement = placementOf(leaves)
 
         // Assert
-        expect(placement).toEqual({ packageKey: "com.game.model", level: 0 })
+        expect(placement).toEqual({ packagePath: "package:com.game.model", level: 0 })
     })
 
-    it("should give no place to a file declaring no package the map knows", () => {
+    it("should be none for a file declaring no package the map knows", () => {
+        // Arrange
+        const withoutKnownPackage = [{ A: leaf() }, { A: leaf("org.unknown") }, {}, undefined]
+
         // Act
-        const placements = [{ A: leaf() }, { A: leaf("org.unknown") }, {}, undefined].map(leaves => packagePlacementOf(leaves, NAMESPACES))
+        const placements = withoutKnownPackage.map(placementOf)
 
         // Assert
         expect(placements).toEqual([null, null, null, null])

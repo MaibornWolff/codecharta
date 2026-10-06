@@ -12,7 +12,7 @@ import {
     projectEdges,
     visibleRepresentatives
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { findCycleChains } from "../panel/cycleChains"
+import { findCycleChains, MAX_CYCLE_WALKS } from "../panel/cycleChains"
 import { indexDeclarations } from "../panel/declarationIndex"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
@@ -46,7 +46,7 @@ export class DependencyGraphModelStore {
     )
     readonly declarationIndex = computed(() => indexDeclarations(this.declarations(), this.drawnFilePaths()))
     /** Every cycle between drawn declarations, found once: the badges count them and the panel tells them. */
-    readonly cycleSearch = computed(() => findCycleChains(this.declarationIndex()))
+    readonly cycleSearch = computed(() => findCycleChains(this.declarationIndex(), MAX_CYCLE_WALKS))
 
     readonly layout = computed(() => {
         const tree = this.tree()

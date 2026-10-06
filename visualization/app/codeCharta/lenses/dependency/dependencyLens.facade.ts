@@ -1,6 +1,11 @@
 export { edgeAttributeTypesSelector } from "./store/attributeTypes.selectors"
 export type { DependencyDeclarations } from "./store/dependencyDeclarations.selector"
-export { dependencyDeclarationsSelector, hasDeclarationsSelector, hasNamespacesSelector } from "./store/dependencyDeclarations.selector"
+export {
+    dependencyDeclarationsSelector,
+    hasDeclarationsSelector,
+    hasNamespacesSelector,
+    NAMESPACE_SEPARATOR
+} from "./store/dependencyDeclarations.selector"
 export { DEPENDENCIES_EDGE_METRIC, dependencyEdgeTypeOf, edgeTypesCarriedBy, isDependencyEdgeMetric } from "./store/dependencyEdge"
 export {
     dependencyLevelsSelector,

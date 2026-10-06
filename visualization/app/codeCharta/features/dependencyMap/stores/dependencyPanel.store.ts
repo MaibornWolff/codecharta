@@ -1,7 +1,7 @@
 import { computed, Injectable, inject, signal } from "@angular/core"
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
-import { edgeColorsAsDrawn } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../panel/declarationIndex"
 import { describeSubject, PANEL_ROW_LIMIT, PanelActionKind, PanelCycle, PanelModel, PanelRef, PanelSubject } from "../panel/panelModel"
 import { DependencyGraphModelStore } from "./dependencyGraphModel.store"
@@ -99,7 +99,7 @@ export class DependencyPanelStore {
     /** Each dependency pointed at lights up the edge it is drawn as, or drawn in. */
     readonly highlightedEdgeIds = computed((): ReadonlySet<string> => {
         const boxOf = (path: string) => this.graphModel.boxStandingFor(path)
-        return new Set(this.pointedAt().map(leafEdge => `${boxOf(fromPathOf(leafEdge))}|${boxOf(toPathOf(leafEdge))}`))
+        return new Set(this.pointedAt().map(leafEdge => edgeIdOf(boxOf(fromPathOf(leafEdge)), boxOf(toPathOf(leafEdge)))))
     })
 
     /** A subject the reader selects anew is shown again, whichever view it is selected in. */

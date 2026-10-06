@@ -68,9 +68,7 @@ export class DependencyPanelComponent {
         }
     }
 
-    iconOf(ref: PanelRef): string {
-        return ref.kind === "declaration" ? "" : REF_ICONS[ref.kind]
-    }
+    readonly icons = REF_ICONS
 
     kindLookOf(ref: PanelRef) {
         return declarationKindLookOf(ref.declarationKind)

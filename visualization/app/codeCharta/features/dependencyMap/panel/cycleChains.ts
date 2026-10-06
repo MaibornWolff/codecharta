@@ -7,7 +7,7 @@ export type CycleChain = readonly DependencyLeafEdge[]
 
 /** How many cyclic dependencies are walked back at most: a map tangled beyond that is not searched to its end,
  * since each walk can cross the whole tangle. */
-const MAX_CYCLE_WALKS = 4000
+export const MAX_CYCLE_WALKS = 4000
 
 export interface CycleSearch {
     chains: CycleChain[]
@@ -20,7 +20,7 @@ type CyclicSteps = ReadonlyMap<string, readonly DependencyLeafEdge[]>
 /** The cycles of a map: for every dependency the parser marked cyclic, the shortest way back to where it starts,
  * each cycle told once. Only cyclic dependencies are walked, so a walk never leaves the strongly connected part
  * it starts in. A longer way round that a shorter one makes unnecessary is not told. */
-export function findCycleChains(index: DeclarationIndex, maxWalks = MAX_CYCLE_WALKS): CycleSearch {
+export function findCycleChains(index: DeclarationIndex, maxWalks: number): CycleSearch {
     const cyclicSteps = cyclicStepsOf(index)
     const chains = new Map<string, CycleChain>()
     let walks = 0

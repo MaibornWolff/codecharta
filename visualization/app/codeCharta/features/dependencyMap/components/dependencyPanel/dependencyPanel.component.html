@@ -16,7 +16,7 @@
                 >{{ kindLookOf(ref).letter }}</span
             >
         } @else {
-            <i class="shrink-0 text-xs opacity-60" [class]="iconOf(ref)" aria-hidden="true"></i>
+            <i class="shrink-0 text-xs opacity-60" [class]="icons[ref.kind]" aria-hidden="true"></i>
         }
         <span class="truncate">{{ ref.name }}</span>
     </button>

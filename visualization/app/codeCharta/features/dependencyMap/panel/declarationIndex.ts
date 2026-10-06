@@ -1,6 +1,6 @@
 import { DependencyDeclarations } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeaf, DependencyLeafEdge } from "../../../model/codeCharta.model"
-import { declarationPathOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { addToGroup, declarationPathOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 
 export interface IndexedDeclaration {
     path: string
@@ -48,18 +48,9 @@ export function indexDeclarations(
     const incoming = new Map<string, DependencyLeafEdge[]>()
     for (const leafEdge of leafEdges) {
         if (declarations.has(fromPathOf(leafEdge)) && declarations.has(toPathOf(leafEdge))) {
-            addTo(outgoing, fromPathOf(leafEdge), leafEdge)
-            addTo(incoming, toPathOf(leafEdge), leafEdge)
+            addToGroup(outgoing, fromPathOf(leafEdge), leafEdge)
+            addToGroup(incoming, toPathOf(leafEdge), leafEdge)
         }
     }
     return { declarations, declarationsOfFile, outgoing, incoming }
-}
-
-function addTo(groups: Map<string, DependencyLeafEdge[]>, key: string, leafEdge: DependencyLeafEdge): void {
-    const group = groups.get(key)
-    if (group) {
-        group.push(leafEdge)
-    } else {
-        groups.set(key, [leafEdge])
-    }
 }

@@ -1,7 +1,7 @@
 import { DependencyDeclarations } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { GraphEdge, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { findCycleChains } from "./cycleChains"
+import { findCycleChains, MAX_CYCLE_WALKS } from "./cycleChains"
 import { indexDeclarations } from "./declarationIndex"
 import { describeSubject, PANEL_ROW_LIMIT, PanelContext, PanelModel } from "./panelModel"
 
@@ -58,7 +58,7 @@ function context(overrides: Partial<PanelContext> = {}, leafEdges = LEAF_EDGES):
         index,
         rowLimit: PANEL_ROW_LIMIT,
         pointsUpward: leafEdge => Boolean(leafEdge.isPointingUpwards),
-        cycles: findCycleChains(index).chains,
+        cycles: findCycleChains(index, MAX_CYCLE_WALKS).chains,
         mayMissCycles: false,
         edgeMetric: "dependencies",
         ...overrides
