@@ -201,7 +201,7 @@ describe("describeSubject", () => {
     })
 
     describe("a folder", () => {
-        it("should count its files and declarations and the cyclic and upward dependencies touching them, and list the files", () => {
+        it("should count its files and declarations and the cyclic and upward dependencies touching them, leaving the files themselves to the explorer", () => {
             // Act
             const model = describeSubject(box(GAME_FOLDER), context())
 
@@ -213,7 +213,7 @@ describe("describeSubject", () => {
                 { label: "Cyclic dependencies", value: "2" },
                 { label: "Upward dependencies", value: "1" }
             ])
-            expect(model.lists[0].refs.map(ref => ref.name)).toEqual(["creature.ts", "weapon.ts"])
+            expect(model.lists).toEqual([])
             expect(model.cycles).toHaveLength(1)
         })
     })

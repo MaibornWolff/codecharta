@@ -196,13 +196,7 @@ function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel 
             { label: "Cyclic dependencies", value: String(touching.filter(edge => edge.isCyclic).length) },
             { label: "Upward dependencies", value: String(touching.filter(context.pointsUpward).length) }
         ],
-        lists: [
-            refList(
-                "Files",
-                files.map(file => fileRef(file.path)),
-                context.rowLimit
-            )
-        ],
+        lists: [],
         sections: [],
         cycles: cyclesThrough(declarations, context.index),
         action: null
