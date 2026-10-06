@@ -60,9 +60,13 @@ interface MergedEdge extends Flags {
     declarationEdges: DependencyLeafEdge[]
 }
 
+type InsideRule = (path: string, holderPath: string) => boolean
+
 export interface DeclarationLayer {
     declarationEdges: readonly DependencyLeafEdge[]
     hierarchy: DependencyHierarchy
+    /** Whether the box at a path is drawn somewhere inside the one at another. */
+    isInside: InsideRule
 }
 
 const WEIGHT_OF_AN_UNWEIGHTED_DECLARATION_EDGE = 1
@@ -79,7 +83,7 @@ export function projectEdges(
     edges: Edge[],
     representatives: ReadonlyMap<string, string>,
     edgeMetric: string | null,
-    { declarationEdges: everyDeclarationEdge, hierarchy }: DeclarationLayer
+    { declarationEdges: everyDeclarationEdge, hierarchy, isInside }: DeclarationLayer
 ): GraphEdge[] {
     const merged = new Map<string, MergedEdge>()
     const isDependencies = isDependencyEdgeMetric(edgeMetric)
@@ -93,14 +97,15 @@ export function projectEdges(
         }
         const parts = declarationEdgesByFiles.get(filesKeyOf(edge.fromNodeName, edge.toNodeName)) ?? NO_DECLARATION_EDGES
         for (const part of partsOfFileEdge({ edge, weight: value, declarationEdges: parts, hierarchy, pointsUpward }, representatives)) {
-            mergeInto(merged, part)
+            mergeInto(merged, part, isInside)
         }
     }
     for (const declarationEdge of declarationEdges.filter(isInsideOneFile)) {
-        mergeInto(merged, {
+        const part = {
             ...boxesOf(declarationEdge, representatives),
             ...declarationEdgePart(declarationEdge, pointsUpward(declarationEdge))
-        })
+        }
+        mergeInto(merged, part, isInside)
     }
     const typeOf = isDependencies ? dependencyEdgeTypeOf : () => "regular" as const
     return [...merged].map(([id, { isCyclic, isPointingUpwards, ...edge }]) => ({
@@ -175,8 +180,9 @@ function boxesOf(declarationEdge: DependencyLeafEdge, representatives: ReadonlyM
     }
 }
 
-function mergeInto(merged: Map<string, MergedEdge>, { fromPath, toPath, weight, isCyclic, isPointingUpwards, declarationEdges }: EdgePart) {
-    if (fromPath === undefined || toPath === undefined || fromPath === toPath || isHeldBy(fromPath, toPath) || isHeldBy(toPath, fromPath)) {
+function mergeInto(merged: Map<string, MergedEdge>, part: EdgePart, isInside: InsideRule) {
+    const { fromPath, toPath, weight, isCyclic, isPointingUpwards, declarationEdges } = part
+    if (fromPath === undefined || toPath === undefined || isWithinOneBox(fromPath, toPath, isInside)) {
         return
     }
     const id = edgeIdOf(fromPath, toPath)
@@ -193,8 +199,8 @@ function mergeInto(merged: Map<string, MergedEdge>, { fromPath, toPath, weight, 
 
 /** A declaration the map tells nothing about is stood for by its file, which may be the open box around the
  * edge's other end. */
-function isHeldBy(path: string, holderPath: string): boolean {
-    return path.startsWith(`${holderPath}/`)
+function isWithinOneBox(fromPath: string, toPath: string, isInside: InsideRule): boolean {
+    return fromPath === toPath || isInside(fromPath, toPath) || isInside(toPath, fromPath)
 }
 
 function groupedByFiles(declarationEdges: readonly DependencyLeafEdge[]): Map<string, DependencyLeafEdge[]> {

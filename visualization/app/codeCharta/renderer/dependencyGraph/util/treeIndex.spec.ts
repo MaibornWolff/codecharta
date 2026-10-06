@@ -1,5 +1,5 @@
 import { LeveledNode } from "./leveledTree"
-import { boxPathOf, containerPathsOf, indexTree, levelPathOf } from "./treeIndex"
+import { boxPathOf, containerPathsOf, indexTree, isDrawnInside, levelPathOf } from "./treeIndex"
 
 function leveledFolder(path: string, children: LeveledNode[]): LeveledNode {
     return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
@@ -21,6 +21,27 @@ describe("treeIndex", () => {
 
             // Assert
             expect(boxPaths).toEqual(["/root/ui", "/root/lib/core", null])
+        })
+    })
+
+    describe("isDrawnInside", () => {
+        it("should tell a box inside another by the tree, not by its path", () => {
+            // Arrange
+            const packaged = leveledFile("/root/lib/packaged.ts")
+            const appPackage: LeveledNode = { path: "package:app", name: "app", level: 0, kind: "package", children: [packaged] }
+            const index = indexTree(leveledFolder("/root", [appPackage, leveledFolder("/root/lib", [leveledFile("/root/lib/left.ts")])]))
+
+            // Act
+            const inside = [
+                ["/root/lib/left.ts", "/root/lib"],
+                ["/root/lib/left.ts", "/root"],
+                ["/root/lib/packaged.ts", "/root/lib"],
+                ["/root/lib/packaged.ts", "package:app"],
+                ["/root/lib", "/root/lib"]
+            ].map(([path, holderPath]) => isDrawnInside(index, path, holderPath))
+
+            // Assert
+            expect(inside).toEqual([true, true, false, true, false])
         })
     })
 
