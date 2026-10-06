@@ -15,7 +15,7 @@ import { DependencyGraphHandlers, DependencyGraphHost, DOUBLE_CLICK_MS, POINTER_
 jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGraph.stub").echartsCoreStub)
 
 const BOX = { seriesId: GRAPH_SERIES_ID, name: "/root/app/a.ts" }
-const EDGE = { seriesId: GRAPH_SERIES_ID, data: { isEdge: true } }
+const EDGE = { seriesId: GRAPH_SERIES_ID, data: { isEdge: true, edgeId: "/root/app/a.ts|/root/app/b.ts" } }
 const PRIMARY_PRESS = { offsetX: 10, offsetY: 10, event: { button: 0 } }
 
 describe("DependencyGraphHost", () => {
@@ -31,6 +31,7 @@ describe("DependencyGraphHost", () => {
             onBoxClicked: jest.fn(),
             onBoxToggled: jest.fn(),
             onCycleBadgeClicked: jest.fn(),
+            onEdgeClicked: jest.fn(),
             onBoxHovered: jest.fn(),
             onBoxRightClicked: jest.fn(),
             onRendered: jest.fn(),
@@ -111,27 +112,18 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
-    it("should hand a click on an edge lying over a box to that box", () => {
+    it("should report a click on an edge with the edge's id, whatever box lies under it, and let no double click toggle that box", () => {
         // Arrange
         const clickOnEdge = { ...EDGE, event: { offsetX: 30, offsetY: 40 } }
 
         // Act
         fireChartEvent("click", clickOnEdge)
+        container.dispatchEvent(new MouseEvent("dblclick"))
 
         // Assert
-        expect(handlers.boxAt).toHaveBeenCalledWith([30, 40])
-        expect(handlers.onBoxClicked).toHaveBeenCalledWith("/root/app")
-    })
-
-    it("should ignore a click on an edge over no box", () => {
-        // Arrange
-        handlers.boxAt = jest.fn(() => null)
-
-        // Act
-        fireChartEvent("click", { ...EDGE, event: { offsetX: 30, offsetY: 40 } })
-
-        // Assert
+        expect(handlers.onEdgeClicked).toHaveBeenCalledWith("/root/app/a.ts|/root/app/b.ts")
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+        expect(handlers.onBoxToggled).not.toHaveBeenCalled()
     })
 
     it("should toggle the box the first click landed on when the browser reports a double click", () => {

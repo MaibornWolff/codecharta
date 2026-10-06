@@ -37,3 +37,8 @@ export const DECLARATION_KIND_LEGEND: readonly DeclarationKindLegendEntry[] = Ob
 export function declarationKindLookOf(kind: string | undefined): DeclarationKindLook {
     return LOOKS[kind ?? OTHER_KIND] ?? LOOKS[OTHER_KIND]
 }
+
+/** A kind this table does not know yet is still told by the name its language gave it. */
+export function declarationKindLabelOf(kind: string): string {
+    return LOOKS[kind]?.label ?? kind
+}

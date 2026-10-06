@@ -30,6 +30,9 @@ export interface DependencyGraphScene {
     edgeWidth: DependencyEdgeWidth
     hoveredPath: string | null
     selectedPath: string | null
+    selectedEdgeId: string | null
+    /** Edges the reader points at from outside the graph; while there are any, the others step back. */
+    highlightedEdgeIds: ReadonlySet<string>
     /** Dragged boxes, the most recently dragged last: they paint above their siblings. */
     raisedPaths: readonly string[]
     draggingPath: string | null
@@ -44,6 +47,13 @@ export type ToPixels = (layoutPoint: Point) => number[]
 export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null): boolean {
     return hoveredPath !== null && isWithin(edge.fromPath, hoveredPath) !== isWithin(edge.toPath, hoveredPath)
 }
+
+/** Drawn whatever its type, and never dimmed. */
+export function isEdgeInFocus(edge: GraphEdge, { selectedEdgeId, highlightedEdgeIds }: EdgeFocus): boolean {
+    return edge.id === selectedEdgeId || highlightedEdgeIds.has(edge.id)
+}
+
+type EdgeFocus = Pick<DependencyGraphScene, "selectedEdgeId" | "highlightedEdgeIds">
 
 export function boxesByPath(layout: DependencyGraphLayout): Map<string, LayoutBox> {
     return new Map(layout.boxes.map(box => [box.path, box]))

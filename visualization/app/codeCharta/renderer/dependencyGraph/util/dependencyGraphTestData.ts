@@ -15,7 +15,9 @@ export const DEFAULT_LOOKS = {
     edgeColors: EDGE_COLORS,
     lineStyleShows: "edgeType",
     declarationKindMark: "icon",
-    cycleMarks: NO_CYCLE_MARKS
+    cycleMarks: NO_CYCLE_MARKS,
+    selectedEdgeId: null,
+    highlightedEdgeIds: new Set<string>()
 } as const
 
 export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBox {

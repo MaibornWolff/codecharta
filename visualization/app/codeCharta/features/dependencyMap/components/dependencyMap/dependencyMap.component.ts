@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
+import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import {
     boxAtPoint,
     canBeOpened,
@@ -9,25 +10,24 @@ import {
     type DraggedBox,
     findCycleMarks,
     isDraggable,
-    layoutLevelized,
-    movedLayout,
     NO_CYCLE_MARKS,
-    namedByOwnLevel,
     type Point,
-    projectEdges,
-    type RightClickedBox,
-    visibleRepresentatives
+    type RightClickedBox
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
+import { PanelActionKind, PanelCycle, PanelRef } from "../../panel/panelModel"
+import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
+import { DependencyPanelStore } from "../../stores/dependencyPanel.store"
+import { DependencyPanelComponent } from "../dependencyPanel/dependencyPanel.component"
 
 @Component({
     selector: "cc-dependency-map",
     templateUrl: "./dependencyMap.component.html",
-    imports: [DependencyGraphComponent],
+    imports: [DependencyGraphComponent, DependencyPanelComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]",
@@ -39,6 +39,8 @@ export class DependencyMapComponent {
     private readonly writeStore = inject(DependencyMapWriteStore)
     private readonly viewStore = inject(DependencyMapViewStore)
     private readonly viewReadinessStore = inject(ViewReadinessStore)
+    private readonly graphModel = inject(DependencyGraphModelStore)
+    private readonly panelStore = inject(DependencyPanelStore)
 
     protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
@@ -47,73 +49,42 @@ export class DependencyMapComponent {
     protected readonly graphIdentity = computed(() => this.viewStore.adoptedLayoutIdentity() ?? "")
     protected readonly fitRequest = this.viewStore.fitRequest
 
-    private readonly tree = toSignal(this.readStore.tree$, { requireSync: true })
-    private readonly focusedFolderLevelPath = toSignal(this.readStore.focusedFolderLevelPath$, { requireSync: true })
-    private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
-    private readonly declarations = toSignal(this.readStore.declarations$, { requireSync: true })
-    private readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
-    private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
-    private readonly selectedPath = toSignal(this.readStore.selectedNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
 
-    private readonly layout = computed(() => {
-        const tree = this.tree()
-        if (!tree) {
-            return null
-        }
-        const { levelLabel, declarationArrangement } = this.settings()
-        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), {
-            levelPathOfTree: this.focusedFolderLevelPath(),
-            declarationArrangement
-        })
-        return levelLabel === "path" ? layout : namedByOwnLevel(layout)
-    })
-    private readonly shownLayout = computed(() => {
-        const layout = this.layout()
-        return layout ? movedLayout(layout, this.viewStore.boxOffsets()) : null
-    })
+    protected readonly panelModel = this.panelStore.model
+    protected readonly cyclesRequest = this.panelStore.cyclesRequest
+
     protected readonly boxAt = (point: Point) => {
-        const layout = this.shownLayout()
+        const layout = this.graphModel.shownLayout()
         return layout === null ? null : boxAtPoint(layout, this.viewStore.raisedPaths(), point)
     }
     protected readonly canDragBox = (path: string) => {
-        const layout = this.shownLayout()
+        const layout = this.graphModel.shownLayout()
         return layout !== null && isDraggable(layout, path)
     }
-    private readonly representatives = computed(() => {
-        const tree = this.tree()
-        return tree ? visibleRepresentatives(tree, this.viewStore.expandedPaths()) : new Map<string, string>()
-    })
-    private readonly projectedEdges = computed(() =>
-        projectEdges(this.edges(), this.representatives(), this.edgeMetric(), this.declarations().leafEdges)
-    )
     private readonly cycleMarks = computed(() =>
-        this.settings().showsCycleBadges && isDependencyEdgeMetric(this.edgeMetric())
-            ? findCycleMarks(this.declarations().leafEdges, this.representatives())
+        this.graphModel.settings().showsCycleBadges && isDependencyEdgeMetric(this.graphModel.edgeMetric())
+            ? findCycleMarks(this.graphModel.declarations().leafEdges, this.graphModel.representatives())
             : NO_CYCLE_MARKS
     )
-    private readonly boxes = computed(() => new Map(this.layout()?.boxes.map(box => [box.path, box])))
-    private readonly selectedBoxPath = computed(() => {
-        const inGraph = this.viewStore.graphSelection()
-        const sharedPath = this.selectedPath()
-        return this.boxStandingFor(inGraph?.sharedPath === sharedPath ? inGraph.path : sharedPath)
-    })
 
     protected readonly scene = computed((): DependencyGraphScene | null => {
-        const layout = this.shownLayout()
+        const layout = this.graphModel.shownLayout()
         if (!layout) {
             return null
         }
-        const { levelLabel, declarationArrangement, showsCycleBadges, ...looks } = this.settings()
+        const { levelLabel, declarationArrangement, showsCycleBadges, ...looks } = this.graphModel.settings()
         return {
             ...looks,
             cycleMarks: this.cycleMarks(),
             layout,
-            edges: this.projectedEdges(),
-            edgeMetric: this.edgeMetric(),
-            hoveredPath: this.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()),
-            selectedPath: this.selectedBoxPath(),
+            edges: this.graphModel.projectedEdges(),
+            edgeMetric: this.graphModel.edgeMetric(),
+            hoveredPath: this.graphModel.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()),
+            selectedPath: this.panelStore.selectedBoxPath(),
+            selectedEdgeId: this.panelStore.selectedEdgeId(),
+            highlightedEdgeIds: this.panelStore.highlightedEdgeIds(),
             raisedPaths: this.viewStore.raisedPaths(),
             draggingPath: this.viewStore.draggingPath(),
             searchedPaths: this.searchedPaths()
@@ -122,7 +93,7 @@ export class DependencyMapComponent {
 
     constructor() {
         effect(() => {
-            const tree = this.tree()
+            const tree = this.graphModel.tree()
             if (tree) {
                 this.viewStore.adoptTree(tree)
             }
@@ -135,17 +106,19 @@ export class DependencyMapComponent {
     }
 
     protected select(path: string): void {
-        const nodePath = this.nodePathOf(path)
-        this.viewStore.selectInGraph(nodePath === path ? null : { path, sharedPath: nodePath })
-        this.writeStore.selectNode(nodePath)
+        this.panelStore.select(path)
+    }
+
+    protected selectEdge(edgeId: string): void {
+        this.panelStore.selectEdge(edgeId)
     }
 
     protected showCyclesOf(path: string): void {
-        this.select(path)
+        this.panelStore.showCyclesOf(path)
     }
 
     protected toggle(path: string): void {
-        const box = this.boxes().get(path)
+        const box = this.graphModel.boxes().get(path)
         if (box && canBeOpened(box)) {
             this.viewStore.toggle(path)
         }
@@ -153,11 +126,35 @@ export class DependencyMapComponent {
 
     protected hover(path: string | null): void {
         this.viewStore.hoverInGraph(path)
-        this.writeStore.hoverNode(path === null ? null : this.nodePathOf(path))
+        this.writeStore.hoverNode(path === null ? null : this.graphModel.nodePathOf(path))
     }
 
     protected openContextMenu({ path, clientX, clientY }: RightClickedBox): void {
-        this.writeStore.openContextMenu(this.nodePathOf(path), clientX, clientY)
+        this.writeStore.openContextMenu(this.graphModel.nodePathOf(path), clientX, clientY)
+    }
+
+    protected goTo(ref: PanelRef): void {
+        this.panelStore.goTo(ref)
+    }
+
+    protected pointAt(leafEdges: readonly DependencyLeafEdge[] | null): void {
+        this.panelStore.pointAt(leafEdges)
+    }
+
+    protected perform(action: PanelActionKind): void {
+        this.panelStore.perform(action)
+    }
+
+    protected showCycle(cycle: PanelCycle): void {
+        this.panelStore.showCycle(cycle)
+    }
+
+    protected showAllRows(): void {
+        this.panelStore.showAllRows()
+    }
+
+    protected dismissPanel(): void {
+        this.panelStore.dismiss()
     }
 
     protected moveBox({ path, deltaX, deltaY }: DraggedBox): void {
@@ -175,15 +172,5 @@ export class DependencyMapComponent {
 
     protected markReady(): void {
         this.viewReadinessStore.markReady("dependencies")
-    }
-
-    /** A declaration is no node of the map; its file stands for it wherever the other views are told. */
-    private nodePathOf(boxPath: string): string {
-        const box = this.boxes().get(boxPath)
-        return box?.kind === "declaration" ? box.parentPath : boxPath
-    }
-
-    private boxStandingFor(path: string | null): string | null {
-        return path === null ? null : (this.representatives().get(path) ?? null)
     }
 }

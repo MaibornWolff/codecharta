@@ -1,18 +1,21 @@
 import { drawEdge, EdgeLook } from "./dependencyGraphEdges"
-import { DIMMED_OPACITY } from "./dependencyGraphStyle"
+import { DIMMED_OPACITY, SELECTED_COLOR } from "./dependencyGraphStyle"
 import { EDGE_COLORS, identityPixels } from "./dependencyGraphTestData"
 import { EdgeRoute } from "./edgeRouting"
 import { PLAIN_LINE } from "./lineStyle"
 
+interface DrawnPart {
+    type: string
+    shape: Record<string, number> & { points?: number[][] }
+    style: Record<string, unknown>
+}
+
 interface DrawnEdge {
-    children: [
-        { shape: Record<string, number>; style: Record<string, unknown> },
-        { type: string; shape: { points: number[][]; cx?: number; cy?: number; r?: number }; style: Record<string, unknown> }
-    ]
+    children: DrawnPart[]
 }
 
 function draw(route: EdgeRoute, look: Partial<EdgeLook> = {}): DrawnEdge {
-    const edgeLook = { isDimmed: false, widthPx: 1.2, color: EDGE_COLORS.regular, line: PLAIN_LINE, ...look }
+    const edgeLook = { isDimmed: false, isSelected: false, widthPx: 1.2, color: EDGE_COLORS.regular, line: PLAIN_LINE, ...look }
     return drawEdge(route, edgeLook, identityPixels) as unknown as DrawnEdge
 }
 
@@ -102,6 +105,19 @@ describe("drawEdge", () => {
         expect(open).toMatchObject({ type: "polyline", style: { fill: null, stroke: EDGE_COLORS.regular } })
         expect(open.shape.points[1]).toEqual([90, 140])
         expect(dot).toMatchObject({ type: "circle", shape: { cx: 90, cy: 140, r: 4 }, style: { fill: EDGE_COLORS.regular } })
+    })
+
+    it("should lay a halo in the selection colour under a selected edge", () => {
+        // Arrange
+        const selected = { isSelected: true, widthPx: 2 }
+
+        // Act
+        const { children } = draw(downward, selected)
+
+        // Assert
+        expect(children).toHaveLength(3)
+        expect(children[0].style).toMatchObject({ stroke: SELECTED_COLOR, lineWidth: 8 })
+        expect(children[0].shape).toEqual(children[1].shape)
     })
 
     it("should fade a dimmed edge and its arrow", () => {

@@ -5,21 +5,38 @@
         </output>
     </div>
 } @else if (scene(); as scene) {
-    <cc-dependency-graph
-        [scene]="scene"
-        [graphIdentity]="graphIdentity()"
-        [fitRequest]="fitRequest()"
-        [canDragBox]="canDragBox"
-        [boxAt]="boxAt"
-        (boxClicked)="select($event)"
-        (boxToggled)="toggle($event)"
-        (cycleBadgeClicked)="showCyclesOf($event)"
-        (boxHovered)="hover($event)"
-        (boxRightClicked)="openContextMenu($event)"
-        (rendered)="markReady()"
-        (boxDragged)="moveBox($event)"
-        (boxDragEnded)="endDragging()"
-    ></cc-dependency-graph>
+    <div class="flex h-full">
+        <div class="h-full min-w-0 flex-1">
+            <cc-dependency-graph
+                [scene]="scene"
+                [graphIdentity]="graphIdentity()"
+                [fitRequest]="fitRequest()"
+                [canDragBox]="canDragBox"
+                [boxAt]="boxAt"
+                (boxClicked)="select($event)"
+                (boxToggled)="toggle($event)"
+                (cycleBadgeClicked)="showCyclesOf($event)"
+                (edgeClicked)="selectEdge($event)"
+                (boxHovered)="hover($event)"
+                (boxRightClicked)="openContextMenu($event)"
+                (rendered)="markReady()"
+                (boxDragged)="moveBox($event)"
+                (boxDragEnded)="endDragging()"
+            ></cc-dependency-graph>
+        </div>
+        @if (panelModel(); as panel) {
+            <cc-dependency-panel
+                [model]="panel"
+                [cyclesRequest]="cyclesRequest()"
+                (refChosen)="goTo($event)"
+                (dependenciesPointedAt)="pointAt($event)"
+                (actionChosen)="perform($event)"
+                (cycleShown)="showCycle($event)"
+                (allRowsRequested)="showAllRows()"
+                (closed)="dismissPanel()"
+            ></cc-dependency-panel>
+        }
+    </div>
 } @else if (hasDependencyData()) {
     <div class="flex h-full items-center justify-center p-4">
         <output class="alert max-w-md">

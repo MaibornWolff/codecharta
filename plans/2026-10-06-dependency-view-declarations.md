@@ -77,7 +77,7 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
 - [x] Complete Task 2: Files open into declarations
 - [x] Complete Task 3: Declaration kind and kind of use
 - [x] Complete Task 4: Cycle badges
-- [ ] Complete Task 5: Panel
+- [x] Complete Task 5: Panel
 - [ ] Complete Task 6: Folders or packages
 - [ ] Complete Task 7: Settings, explorer, wrap-up
 
