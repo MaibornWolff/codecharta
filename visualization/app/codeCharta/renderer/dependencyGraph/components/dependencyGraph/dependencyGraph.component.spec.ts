@@ -146,7 +146,7 @@ describe("DependencyGraphComponent", () => {
         }
 
         async function renderBoxes() {
-            const handlers = { boxClicked: jest.fn(), boxToggled: jest.fn(), boxHovered: jest.fn() }
+            const handlers = { boxClicked: jest.fn(), boxToggled: jest.fn(), boxHovered: jest.fn(), boxFocused: jest.fn() }
             await render(DependencyGraphComponent, { inputs: { scene: KEYBOARD_SCENE, graphIdentity: GRAPH_IDENTITY }, on: handlers })
             return handlers
         }
@@ -173,6 +173,22 @@ describe("DependencyGraphComponent", () => {
 
             // Assert
             expect(boxHovered.mock.calls).toEqual([["/root/app/a.ts"], [null]])
+        })
+
+        it("should be one stop for the tab key, at the selected box, and move on with the arrow keys", async () => {
+            // Arrange
+            const { boxFocused } = await renderBoxes()
+            const tabStops = () => screen.getAllByRole("button").map(box => box.getAttribute("tabindex"))
+            const atFirst = tabStops()
+
+            // Act
+            screen.getByRole("button", { name: "Folder app" }).focus()
+            await userEvent.setup().keyboard("{ArrowDown}{ArrowDown}{ArrowDown}{ArrowUp}")
+
+            // Assert
+            expect(atFirst).toEqual(["0", "-1", "-1"])
+            expect(document.activeElement).toBe(screen.getByRole("button", { name: "File a.ts" }))
+            expect(boxFocused.mock.calls.map(([path]) => path)).toEqual(["/root/app", "/root/app/a.ts", "/root/app/b.ts", "/root/app/a.ts"])
         })
 
         it("should select the focused box on Enter and open or close it on Space, without selecting it", async () => {

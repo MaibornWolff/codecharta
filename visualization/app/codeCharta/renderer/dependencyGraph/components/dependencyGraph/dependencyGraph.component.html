@@ -1,18 +1,8 @@
 <div #chartContainer class="h-full w-full" data-testid="dependency-graph"></div>
-<ul class="sr-only" aria-label="Boxes of the dependency graph" data-testid="dependency-graph-boxes">
-    @for (box of scene().layout.boxes; track box.path) {
-        <li>
-            <button
-                type="button"
-                [attr.aria-label]="labelOf(box)"
-                [attr.aria-expanded]="canBeOpened(box) ? box.isExpanded : null"
-                [attr.aria-pressed]="box.path === scene().selectedPath"
-                (focus)="boxHovered.emit(box.path)"
-                (blur)="boxHovered.emit(null)"
-                (click)="boxClicked.emit(box.path)"
-                (keydown.space)="toggleFromKeyboard($event, box)"
-                (keyup.space)="$event.preventDefault()"
-            ></button>
-        </li>
-    }
-</ul>
+<cc-dependency-graph-box-list
+    [boxes]="scene().layout.boxes"
+    [selectedPath]="scene().selectedPath"
+    (boxClicked)="boxClicked.emit($event)"
+    (boxToggled)="boxToggled.emit($event)"
+    (boxFocused)="focusBox($event)"
+></cc-dependency-graph-box-list>
