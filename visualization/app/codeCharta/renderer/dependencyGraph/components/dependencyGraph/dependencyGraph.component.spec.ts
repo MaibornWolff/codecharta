@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/angular"
+import userEvent from "@testing-library/user-event"
 import { DEPENDENCY_EDGE_TYPES } from "../../../../model/dependencyGraph.model"
 import {
     fireChartEvent,
@@ -126,6 +127,81 @@ describe("DependencyGraphComponent", () => {
         expect(boxHovered).toHaveBeenCalledWith("/root/a.ts")
         expect(boxRightClicked).toHaveBeenCalledWith({ path: "/root/a.ts", clientX: 1, clientY: 2 })
         expect(rendered).toHaveBeenCalled()
+    })
+
+    describe("keyboard", () => {
+        const KEYBOARD_SCENE: DependencyGraphScene = {
+            ...SCENE,
+            selectedPath: "/root/app",
+            layout: {
+                boxes: [
+                    aBox("/root/app", { kind: "folder", isExpanded: true, depth: 0, parentPath: null }),
+                    aBox("/root/app/a.ts", { declarationCount: 2 }),
+                    aBox("/root/app/b.ts", { declarationCount: 0 })
+                ],
+                bands: [],
+                width: 400,
+                height: 200
+            }
+        }
+
+        async function renderBoxes() {
+            const handlers = { boxClicked: jest.fn(), boxToggled: jest.fn(), boxHovered: jest.fn() }
+            await render(DependencyGraphComponent, { inputs: { scene: KEYBOARD_SCENE, graphIdentity: GRAPH_IDENTITY }, on: handlers })
+            return handlers
+        }
+
+        it("should offer every box to the keyboard, named by its kind, saying whether it is open and which one is selected", async () => {
+            // Act
+            await renderBoxes()
+
+            // Assert
+            const boxes = screen.getAllByRole("button")
+            expect(boxes.map(box => box.getAttribute("aria-label"))).toEqual(["Folder app", "File a.ts", "File b.ts"])
+            expect(boxes.map(box => box.getAttribute("aria-expanded"))).toEqual(["true", "false", null])
+            expect(boxes.map(box => box.getAttribute("aria-pressed"))).toEqual(["true", "false", "false"])
+        })
+
+        it("should mark the focused box as the pointer would, until the focus leaves it", async () => {
+            // Arrange
+            const { boxHovered } = await renderBoxes()
+            const file = screen.getByRole("button", { name: "File a.ts" })
+
+            // Act
+            file.focus()
+            file.blur()
+
+            // Assert
+            expect(boxHovered.mock.calls).toEqual([["/root/app/a.ts"], [null]])
+        })
+
+        it("should select the focused box on Enter and open or close it on Space, without selecting it", async () => {
+            // Arrange
+            const { boxClicked, boxToggled } = await renderBoxes()
+            const user = userEvent.setup()
+
+            // Act
+            screen.getByRole("button", { name: "File a.ts" }).focus()
+            await user.keyboard("{Enter}")
+            await user.keyboard(" ")
+
+            // Assert
+            expect(boxClicked.mock.calls).toEqual([["/root/app/a.ts"]])
+            expect(boxToggled.mock.calls).toEqual([["/root/app/a.ts"]])
+        })
+
+        it("should leave a box that cannot be opened alone on Space", async () => {
+            // Arrange
+            const { boxClicked, boxToggled } = await renderBoxes()
+
+            // Act
+            screen.getByRole("button", { name: "File b.ts" }).focus()
+            await userEvent.setup().keyboard(" ")
+
+            // Assert
+            expect(boxToggled).not.toHaveBeenCalled()
+            expect(boxClicked).not.toHaveBeenCalled()
+        })
     })
 
     it("should fit a new graph into view with its first drawing", async () => {

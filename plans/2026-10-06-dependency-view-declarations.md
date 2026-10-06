@@ -1,7 +1,7 @@
 ---
 name: Declarations in the dependency view
 issue: -
-state: progress
+state: complete
 version: -
 ---
 
@@ -79,7 +79,7 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
 - [x] Complete Task 4: Cycle badges
 - [x] Complete Task 5: Panel
 - [x] Complete Task 6: Folders or packages
-- [ ] Complete Task 7: Settings, explorer, wrap-up
+- [x] Complete Task 7: Settings, explorer, wrap-up
 
 ## Notes
 
@@ -95,3 +95,16 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
   exists for declarations within a file, the namespace level is borrowed for the stacked arrangement; in a
   mixed project package levels and folder levels sit side by side and are not comparable
 - Exploration and the dropped forms: `2026-10-06-logical-dependency-layer-visual-exploration.md`
+- As built (2026-10-06):
+  - The prototype artifact could not be read while implementing (HTTP 403), so the look follows this plan's text
+    and the existing view, not the prototype; compare the two before merging
+  - Routing around open files was not needed: declarations are painted over the edges, so an edge never takes
+    their clicks; an edge crossing an open file passes under its declarations, as it does under files today
+  - Folders mode: a declaration edge between two files takes "points upward" from its file edge and "cyclic"
+    from itself; Packages mode: both flags and the weight come from the declaration edges
+  - A file sits in the package most of its declarations declare, at the highest level any of them has there
+  - "Mark what moves" pairs a package with the folder most of its files lie in; a file apart from that pair, a
+    pair on different levels and a file pair whose edge type differs are marked
+  - The panel cuts each group at 20 rows ("and N more" shows all) and tells at most 12 cycles, found as the
+    shortest way back over cyclic declaration edges
+  - Not run: the e2e suite and a look at the real app

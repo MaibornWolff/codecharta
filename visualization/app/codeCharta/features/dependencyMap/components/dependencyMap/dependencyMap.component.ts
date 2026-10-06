@@ -63,6 +63,13 @@ export class DependencyMapComponent {
         const layout = this.graphModel.shownLayout()
         return layout !== null && isDraggable(layout, path)
     }
+    /** A package holds files whose paths do not lie below its own, so a found file hidden in a closed box is
+     * told to the graph as that box. */
+    private readonly searchedBoxPaths = computed(() => {
+        const searchedPaths = this.searchedPaths()
+        const boxOf = this.graphModel.representatives()
+        return searchedPaths && new Set([...searchedPaths, ...[...searchedPaths].flatMap(path => boxOf.get(path) ?? [])])
+    })
     private readonly cycleMarks = computed(() =>
         this.graphModel.settings().showsCycleBadges && isDependencyEdgeMetric(this.graphModel.edgeMetric())
             ? findCycleMarks(this.graphModel.declarations().leafEdges, this.graphModel.representatives())
@@ -89,7 +96,7 @@ export class DependencyMapComponent {
             movedEdgeIds: this.graphModel.movedEdgeIds(),
             raisedPaths: this.viewStore.raisedPaths(),
             draggingPath: this.viewStore.draggingPath(),
-            searchedPaths: this.searchedPaths()
+            searchedPaths: this.searchedBoxPaths()
         }
     })
 
