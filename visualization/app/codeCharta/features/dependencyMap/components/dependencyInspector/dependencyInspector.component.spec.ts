@@ -69,7 +69,6 @@ const FILE_MODEL: InspectorModel = {
         }
     ],
     cycleCount: 6,
-    mayMissCycles: false,
     action: "open"
 }
 
@@ -176,20 +175,6 @@ describe("DependencyInspectorComponent", () => {
         // Assert
         expect([withoutClipboard, afterCopying]).toEqual(["Copy path", "Copied!"])
         expect(screen.getByTestId("dependency-inspector-copy").getAttribute("title")).toBe("Copy path")
-    })
-
-    it("should say that there may be more cycles than shown only for a map too tangled to search", async () => {
-        // Arrange
-        const { fixture, rerender } = await renderInspector()
-        const searchedToTheEnd = screen.queryByTestId("dependency-inspector-cycles-incomplete")
-
-        // Act
-        await rerender({ inputs: { model: { ...FILE_MODEL, mayMissCycles: true } } })
-        fixture.detectChanges()
-
-        // Assert
-        expect(searchedToTheEnd).toBeNull()
-        expect(screen.getByTestId("dependency-inspector-cycles-incomplete").textContent).toContain("there may be more")
     })
 
     it("should offer no copy button where there is nothing to copy, and no parent where nothing lies above", async () => {
@@ -365,7 +350,6 @@ describe("DependencyInspectorComponent", () => {
             ],
             cycles: [],
             cycleCount: 0,
-            mayMissCycles: false,
             action: null
         }
 

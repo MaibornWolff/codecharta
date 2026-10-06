@@ -1,5 +1,5 @@
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
-import { cyclesThrough, declarationsOn, findCycleChains, MAX_CYCLE_WALKS } from "./cycleChains"
+import { cyclesThrough, declarationsOn, findCycleChains } from "./cycleChains"
 import { DeclarationIndex, fromPathOf, indexDeclarations, toPathOf } from "./declarationIndex"
 
 const FILE = "/root/game.ts"
@@ -30,7 +30,7 @@ describe("findCycleChains", () => {
         ])
 
         // Act
-        const { chains } = findCycleChains(index, MAX_CYCLE_WALKS)
+        const chains = findCycleChains(index)
 
         // Assert
         expect(namesOf(chains)).toEqual(["A → B → A", "B → C → A → B"])
@@ -41,7 +41,7 @@ describe("findCycleChains", () => {
         const index = indexOf([declarationEdge("A", "B"), declarationEdge("B", "C"), declarationEdge("C", "A")])
 
         // Act
-        const [chain] = findCycleChains(index, MAX_CYCLE_WALKS).chains
+        const [chain] = findCycleChains(index)
 
         // Assert
         expect(chain.every((edge, position) => toPathOf(edge) === fromPathOf(chain[(position + 1) % 3]))).toBe(true)
@@ -53,7 +53,7 @@ describe("findCycleChains", () => {
         const index = indexOf([declarationEdge("A", "A")])
 
         // Act
-        const { chains } = findCycleChains(index, MAX_CYCLE_WALKS)
+        const chains = findCycleChains(index)
 
         // Assert
         expect(namesOf(chains)).toEqual(["A → A"])
@@ -64,32 +64,18 @@ describe("findCycleChains", () => {
         const index = indexOf([declarationEdge("A", "B")])
 
         // Act
-        const { chains } = findCycleChains(index, MAX_CYCLE_WALKS)
+        const chains = findCycleChains(index)
 
         // Assert
         expect(chains).toEqual([])
-    })
-
-    it("should stop after the number of walks it is given and say that it did", () => {
-        // Arrange
-        const spokes = ["B", "C", "D", "E"].flatMap(name => [declarationEdge("Hub", name), declarationEdge(name, "Hub")])
-        const index = indexOf(spokes)
-
-        // Act
-        const tired = findCycleChains(index, 3)
-
-        // Assert
-        expect([tired.chains.length, tired.isComplete]).toEqual([3, false])
-        expect(findCycleChains(index, MAX_CYCLE_WALKS)).toMatchObject({ chains: { length: 4 }, isComplete: true })
     })
 })
 
 describe("cyclesThrough", () => {
     it("should keep the cycles running through one of the declarations asked for", () => {
         // Arrange
-        const { chains } = findCycleChains(
-            indexOf([declarationEdge("A", "B"), declarationEdge("B", "A"), declarationEdge("C", "D"), declarationEdge("D", "C")]),
-            MAX_CYCLE_WALKS
+        const chains = findCycleChains(
+            indexOf([declarationEdge("A", "B"), declarationEdge("B", "A"), declarationEdge("C", "D"), declarationEdge("D", "C")])
         )
 
         // Act
