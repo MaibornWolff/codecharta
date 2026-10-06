@@ -6,6 +6,7 @@ import {
     collapsedFirstLook,
     containerPathsOf,
     LeveledNode,
+    TreeIndex,
     ViewRequest
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
@@ -27,7 +28,7 @@ export class DependencyMapViewStore {
     private readonly hoveredInGraph = signal<string | null>(null)
     private readonly askedIntoView = signal<ViewRequest | null>(null)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
-    private adoptedTree: LeveledNode | null = null
+    private adoptedTree: TreeIndex | null = null
 
     readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedBoxes.asReadonly()
     readonly expandedPaths = this.openedBoxes.asReadonly()
@@ -40,14 +41,14 @@ export class DependencyMapViewStore {
     readonly hoveredBoxPath = this.hoveredInGraph.asReadonly()
     readonly viewRequest = this.askedIntoView.asReadonly()
 
-    adoptTree(tree: LeveledNode): void {
+    adoptTree(tree: TreeIndex): void {
         const layoutIdentity = this.currentLayoutIdentity()
-        const hasRootMoved = tree.path !== this.adoptedTree?.path
+        const hasRootMoved = tree.root.path !== this.adoptedTree?.root.path
         this.adoptedTree = tree
         if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedBoxes)) {
-            this.startOver(tree, layoutIdentity)
+            this.startOver(tree.root, layoutIdentity)
         } else if (hasRootMoved) {
-            this.openTheMovedRoot(tree)
+            this.openTheMovedRoot(tree.root)
         }
     }
 

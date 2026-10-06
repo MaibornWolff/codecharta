@@ -97,7 +97,7 @@ export class DependencyMapComponent {
 
     constructor() {
         effect(() => {
-            const tree = this.graphModel.tree()
+            const tree = this.graphModel.treeIndex()
             if (tree) {
                 this.viewStore.adoptTree(tree)
             }

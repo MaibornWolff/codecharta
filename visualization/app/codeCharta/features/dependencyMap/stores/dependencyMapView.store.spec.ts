@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { indexTree, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { dependencyLayoutIdentitySelector } from "../selectors/dependencyMap.selectors"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
@@ -34,7 +34,7 @@ describe("DependencyMapViewStore", () => {
         const tree = leveledFolder("/root", [leveledFolder("/root/app", [leveledFolder("/root/app/ui")]), leveledFolder("/root/lib")])
 
         // Act
-        store.adoptTree(tree)
+        store.adoptTree(indexTree(tree))
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root"])
@@ -43,12 +43,12 @@ describe("DependencyMapViewStore", () => {
 
     it("should keep what the reader opened and moved while the same files and focus stay, even when the tree's root moves", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.toggle("/root/src")
         store.placeBox("/root/src", [200, 0])
 
         // Act
-        store.adoptTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")]))
+        store.adoptTree(indexTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")])))
 
         // Assert
         expect(store.expandedPaths().has("/root/src")).toBe(true)
@@ -57,7 +57,7 @@ describe("DependencyMapViewStore", () => {
 
     it("should open the root an exclusion folds the last folder into, keeping what the reader opened and moved", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.toggle("/root/lib")
         store.placeBox("/root/lib", [200, 0])
         const foldedRoot = {
@@ -66,7 +66,7 @@ describe("DependencyMapViewStore", () => {
         }
 
         // Act
-        store.adoptTree(foldedRoot)
+        store.adoptTree(indexTree(foldedRoot))
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root", "/root/lib", "/root/src"])
@@ -75,11 +75,11 @@ describe("DependencyMapViewStore", () => {
 
     it("should leave a root the reader closed closed while the tree's root stays where it is", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.toggle("/root")
 
         // Act
-        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/src")]))
+        store.adoptTree(indexTree(leveledFolder("/root", [leveledFolder("/root/src")])))
 
         // Assert
         expect(store.expandedPaths().has("/root")).toBe(false)
@@ -99,12 +99,14 @@ describe("DependencyMapViewStore", () => {
 
     it("should keep a reveal made while the focus changes until the tree of the new focus is adopted", () => {
         // Arrange
-        store.adoptTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")]))
+        store.adoptTree(indexTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")])))
         loadLayoutIdentity(PROJECT_B)
         store.reveal(["/root/lib/util/strings.ts"])
 
         // Act
-        store.adoptTree(leveledFolder("/root", [leveledFolder("/root/src"), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])]))
+        store.adoptTree(
+            indexTree(leveledFolder("/root", [leveledFolder("/root/src"), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])]))
+        )
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root", "/root/lib", "/root/lib/util"])
@@ -112,13 +114,13 @@ describe("DependencyMapViewStore", () => {
 
     it("should start over with nothing opened or moved when other files with the same root are loaded", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.toggle("/root/src")
         store.placeBox("/root/src", [200, 0])
         loadLayoutIdentity(PROJECT_B)
 
         // Act
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root"])
@@ -184,7 +186,7 @@ describe("DependencyMapViewStore", () => {
 
     it("should open every folder holding a node to reveal it, but not the node itself", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
 
         // Act
         store.reveal(["/root/src/ui/button.ts"])
@@ -195,7 +197,7 @@ describe("DependencyMapViewStore", () => {
 
     it("should open a folder together with the folders holding it", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
 
         // Act
         store.openBox("/root/src/ui")
@@ -207,7 +209,7 @@ describe("DependencyMapViewStore", () => {
     it("should open the chain box a folder is folded into", () => {
         // Arrange
         const chain = { ...leveledFolder("/root/lib/core", [leveledFolder("/root/lib/core/io")]), foldedPaths: ["/root/lib"] }
-        store.adoptTree(leveledFolder("/root", [chain, leveledFolder("/root/src")]))
+        store.adoptTree(indexTree(leveledFolder("/root", [chain, leveledFolder("/root/src")])))
 
         // Act
         store.openBox("/root/lib")
@@ -221,7 +223,7 @@ describe("DependencyMapViewStore", () => {
         store.reveal(["/root/src/ui/button.ts"])
 
         // Act
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root", "/root/src", "/root/src/ui"])
@@ -233,7 +235,7 @@ describe("DependencyMapViewStore", () => {
         loadLayoutIdentity(PROJECT_B)
 
         // Act
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root"])
@@ -241,12 +243,12 @@ describe("DependencyMapViewStore", () => {
 
     it("should not repeat a reveal made after the adoption when other files are loaded later", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.reveal(["/root/src/ui/button.ts"])
         loadLayoutIdentity(PROJECT_B)
 
         // Act
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root"])
@@ -267,7 +269,7 @@ describe("DependencyMapViewStore", () => {
         // Arrange
         const file: LeveledNode = { path: "/root/src/creature.ts", name: "creature.ts", level: 0, kind: "file", children: [] }
         const inPackage = leveledFolder("/root", [{ ...leveledFolder("package:game", [file]) }])
-        store.adoptTree(inPackage)
+        store.adoptTree(indexTree(inPackage))
 
         // Act
         store.reveal([file.path])

@@ -89,11 +89,12 @@ export class DependencyInspectorStore {
             const nameOf = (path: string) => this.graphModel.boxes().get(path)?.name ?? path
             return { kind: "edge", edge, fromName: nameOf(edge.fromPath), toName: nameOf(edge.toPath) }
         }
-        const node = selection?.kind === "box" ? this.graphModel.nodesByPath().get(selection.path) : undefined
+        const tree = this.graphModel.treeIndex()
+        const node = selection?.kind === "box" ? tree?.nodeAt.get(selection.path) : undefined
         if (!node) {
             return null
         }
-        const parent = this.graphModel.parentsByPath().get(node.path) ?? null
+        const parent = tree.parentOf.get(node.path) ?? null
         return { kind: "box", node, parent, isOpen: this.viewStore.expandedPaths().has(node.path) }
     })
     private readonly subjectId = computed(() => {

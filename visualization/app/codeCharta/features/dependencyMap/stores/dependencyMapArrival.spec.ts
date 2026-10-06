@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { indexTree, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
 import { dependencyLayoutIdentitySelector } from "../selectors/dependencyMap.selectors"
@@ -71,7 +71,7 @@ describe("DependencyMapArrival", () => {
         // Arrange
         const nodePath = "/root/lib/util/strings.ts"
         const { arrival, viewStore, store } = setup(FOCUSED_FOLDER)
-        viewStore.adoptTree(leveledFolder(FOCUSED_FOLDER, [leveledFolder("/root/src/ui")]))
+        viewStore.adoptTree(indexTree(leveledFolder(FOCUSED_FOLDER, [leveledFolder("/root/src/ui")])))
         const unfocusInTheStore = () => {
             store.overrideSelector(currentFocusedNodePathSelector, undefined)
             store.overrideSelector(dependencyLayoutIdentitySelector, UNFOCUSED_LAYOUT)
@@ -83,7 +83,9 @@ describe("DependencyMapArrival", () => {
         unfocusInTheStore()
         viewStore.reveal([nodePath])
         viewStore.adoptTree(
-            leveledFolder("/root", [leveledFolder(FOCUSED_FOLDER), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])])
+            indexTree(
+                leveledFolder("/root", [leveledFolder(FOCUSED_FOLDER), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])])
+            )
         )
 
         // Assert
