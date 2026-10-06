@@ -3,7 +3,11 @@ import { isEdgeInFocus, isEdgeOfHovered, searchMatcher } from "./dependencyGraph
 import { aBox, anEdge } from "./dependencyGraphTestData"
 import { LayoutBox } from "./levelizedLayout"
 
-const NO_BOXES: LayoutBox[] = []
+const NO_BOXES = new Map<string, LayoutBox>()
+
+function byPath(boxes: LayoutBox[]): Map<string, LayoutBox> {
+    return new Map(boxes.map(box => [box.path, box]))
+}
 
 describe("searchMatcher", () => {
     it("should count every box as found while no search is on", () => {
@@ -55,7 +59,7 @@ describe("searchMatcher", () => {
         ]
 
         // Act
-        const isFound = searchMatcher(new Set(["/root/src/creature.ts"]), boxes)
+        const isFound = searchMatcher(new Set(["/root/src/creature.ts"]), byPath(boxes))
 
         // Assert
         expect(["/root", "package:game", "/root/src"].map(isFound)).toEqual([true, true, false])
@@ -72,7 +76,7 @@ describe("searchMatcher", () => {
         ]
 
         // Act
-        const isFound = searchMatcher(new Set(["/root/src/creature.ts"]), boxes)
+        const isFound = searchMatcher(new Set(["/root/src/creature.ts"]), byPath(boxes))
 
         // Assert
         expect(["package:game.model", "package:game", "package:util"].map(isFound)).toEqual([true, true, false])

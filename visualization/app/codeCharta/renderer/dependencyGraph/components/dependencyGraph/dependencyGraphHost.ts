@@ -5,9 +5,9 @@ import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
+import { AxisWindow, Viewport, windowResizedTo } from "../../util/axisWindow"
 import { CYCLE_BADGE_INFO } from "../../util/boxMarks"
 import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
-import { AxisWindow, Viewport, windowResizedTo } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
@@ -172,7 +172,7 @@ export class DependencyGraphHost {
             return
         }
         if (event.data?.edgeId !== undefined) {
-            this.lastBoxClick = null
+            this.letNoDoubleClickToggle()
             this.handlers.onEdgeClicked(event.data.edgeId)
             return
         }
@@ -182,12 +182,16 @@ export class DependencyGraphHost {
         }
         const onPartClicked = this.partClickHandlers[String(event.info)]
         if (onPartClicked) {
-            this.lastBoxClick = null
+            this.letNoDoubleClickToggle()
             onPartClicked(path)
             return
         }
         this.lastBoxClick = { path, at: Date.now() }
         this.handlers.onBoxClicked(path)
+    }
+
+    private letNoDoubleClickToggle(): void {
+        this.lastBoxClick = null
     }
 
     private readonly reportDoubleClick = (): void => {

@@ -1,3 +1,4 @@
+import { nestingOf } from "./boxNesting"
 import { aBand, aBox } from "./dependencyGraphTestData"
 import { LAYOUT_SPACING } from "./levelizedLayout"
 import { findOverlaps } from "./overlaps"
@@ -17,13 +18,17 @@ function painted(...entries: (typeof root | typeof libBand)[]): PaintedItem[] {
     return entries.map(entry => ("containerPath" in entry ? { kind: "band", band: entry } : { kind: "box", box: entry }))
 }
 
+function overlapsOf(items: PaintedItem[]) {
+    return findOverlaps(items, nestingOf(items.flatMap(item => (item.kind === "box" ? [item.box] : []))))
+}
+
 describe("findOverlaps", () => {
     it("should let a folder painted over a box it does not belong with show it through", () => {
         // Arrange
         const items = painted(root, lib, libBand, libFile, ui, uiFile)
 
         // Act
-        const { seeThroughPaths } = findOverlaps(items)
+        const { seeThroughPaths } = overlapsOf(items)
 
         // Assert
         expect([...seeThroughPaths]).toEqual(["/root/ui"])
@@ -34,7 +39,7 @@ describe("findOverlaps", () => {
         const items = painted(root, lib, libFile)
 
         // Act
-        const { seeThroughPaths } = findOverlaps(items)
+        const { seeThroughPaths } = overlapsOf(items)
 
         // Assert
         expect(seeThroughPaths.size).toBe(0)
@@ -45,7 +50,7 @@ describe("findOverlaps", () => {
         const items = painted(root, lib, libBand, libFile, ui, uiFile)
 
         // Act
-        const cutout = findOverlaps(items).bandCutouts.get(libBand)
+        const cutout = overlapsOf(items).bandCutouts.get(libBand)
 
         // Assert
         expect(cutout.hiddenSpans).toEqual([[300, 420 - LAYOUT_SPACING.padding]])
@@ -57,7 +62,7 @@ describe("findOverlaps", () => {
         const coveringTheLabel = aBox("/root/ui", { kind: "folder", isExpanded: true, depth: 1, x: 0, y: 150, width: 200, height: 100 })
 
         // Act
-        const cutout = findOverlaps(painted(root, lib, libBand, coveringTheLabel)).bandCutouts.get(libBand)
+        const cutout = overlapsOf(painted(root, lib, libBand, coveringTheLabel)).bandCutouts.get(libBand)
 
         // Assert
         expect(cutout.isLabelHidden).toBe(true)
@@ -68,7 +73,7 @@ describe("findOverlaps", () => {
         const ownFileOnTheSeparator = aBox("/root/lib/e.ts", { depth: 2, x: 100, y: 170 })
 
         // Act
-        const { bandCutouts } = findOverlaps(painted(root, lib, libBand, ownFileOnTheSeparator))
+        const { bandCutouts } = overlapsOf(painted(root, lib, libBand, ownFileOnTheSeparator))
 
         // Assert
         expect(bandCutouts.size).toBe(0)
@@ -79,7 +84,7 @@ describe("findOverlaps", () => {
         const items = painted(root, ui, lib, libBand)
 
         // Act
-        const { bandCutouts } = findOverlaps(items)
+        const { bandCutouts } = overlapsOf(items)
 
         // Assert
         expect(bandCutouts.size).toBe(0)
@@ -116,7 +121,7 @@ describe("findOverlaps", () => {
         const items = painted(root, wide, ...files, betweenTheFiles, draggedOntoTheLastFile)
 
         // Act
-        const { seeThroughPaths } = findOverlaps(items)
+        const { seeThroughPaths } = overlapsOf(items)
 
         // Assert
         expect([...seeThroughPaths]).toEqual(["/root/wide/dragged"])

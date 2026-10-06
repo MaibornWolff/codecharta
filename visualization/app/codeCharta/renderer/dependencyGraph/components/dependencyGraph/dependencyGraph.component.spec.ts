@@ -11,7 +11,7 @@ import {
     stubElementSize,
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
-import { AxisWindow, fitWindowOf } from "../../util/dependencyGraphOption.builder"
+import { AxisWindow, fitWindowOf } from "../../util/axisWindow"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { aBox, DEFAULT_LOOKS } from "../../util/dependencyGraphTestData"

@@ -205,7 +205,8 @@ class ContainerMeasurer {
         const spacing = isFile ? (isLeveled ? LEVELED_FILE_CONTENT : FILE_CONTENT[this.declarationArrangement]) : FOLDER_CONTENT
         const groups = isFile ? groupDeclarations(container.children, this.declarationArrangement) : groupByLevelFromTop(container.children)
         const candidates = rowWidthCandidates(groups, node => this.sizeOf(node).width, spacing)
-        const minInnerWidth = isFile ? LAYOUT_SPACING.nodeWidth - 2 * LAYOUT_SPACING.padding : 0
+        const widthOfAClosedFileInside = LAYOUT_SPACING.nodeWidth - 2 * LAYOUT_SPACING.padding
+        const minInnerWidth = isFile ? widthOfAClosedFileInside : 0
         const planFor = (maxRowWidth: number) => ({ ...this.packRows(groups, maxRowWidth, spacing, minInnerWidth), isLeveled })
         return chooseClosestToTargetAspect(candidates, planFor)
     }
