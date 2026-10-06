@@ -10,7 +10,7 @@
 
 <cc-dependency-bar></cc-dependency-bar>
 
-<cc-legend-drawer>
+<cc-legend-drawer [isMovedAsideByInspector]="isInspectorShown()">
     <ng-template>
         <cc-dependency-edge-legend></cc-dependency-edge-legend>
     </ng-template>

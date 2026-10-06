@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core"
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
 import { BottomBarComponent } from "../../features/bottomBar/facade"
 import {
     DependencyBarComponent,
     DependencyEdgeLegendComponent,
+    DependencyInspectorStore,
     DependencyMapArrival,
     DependencyMapComponent
 } from "../../features/dependencyMap/facade"
@@ -90,4 +91,6 @@ import { DependencyExplorerSelection } from "./explorer/dependencyExplorerSelect
     hostDirectives: [ShowsHandedOverMapNodeDirective],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DependencyViewComponent {}
+export class DependencyViewComponent {
+    protected readonly isInspectorShown = inject(DependencyInspectorStore).isShown
+}

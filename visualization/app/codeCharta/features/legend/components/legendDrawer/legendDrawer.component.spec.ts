@@ -1,6 +1,5 @@
-import { Component, OnDestroy } from "@angular/core"
+import { Component, OnDestroy, signal } from "@angular/core"
 import { fireEvent, render, screen } from "@testing-library/angular"
-import { InspectorVisibilityService } from "../../../sidebarInspector/facade"
 import { LegendDrawerComponent } from "./legendDrawer.component"
 
 const legendLifecycle = { created: 0, destroyed: 0 }
@@ -21,14 +20,13 @@ class OwnLegendComponent implements OnDestroy {
 
 @Component({
     selector: "cc-legend-drawer-host",
-    template: `<cc-legend-drawer><ng-template><cc-own-legend></cc-own-legend></ng-template></cc-legend-drawer>
+    template: `<cc-legend-drawer [isMovedAsideByInspector]="isInspectorShown()"><ng-template><cc-own-legend></cc-own-legend></ng-template></cc-legend-drawer>
         <button type="button">outside</button>`,
     imports: [LegendDrawerComponent, OwnLegendComponent]
 })
-class LegendDrawerHostComponent {}
-
-const INSPECTOR_HIDDEN = { provide: InspectorVisibilityService, useValue: { isVisible: () => false } }
-const INSPECTOR_SHOWN = { provide: InspectorVisibilityService, useValue: { isVisible: () => true } }
+class LegendDrawerHostComponent {
+    readonly isInspectorShown = signal(false)
+}
 
 describe("LegendDrawerComponent", () => {
     beforeEach(() => {
@@ -38,7 +36,7 @@ describe("LegendDrawerComponent", () => {
 
     it("should not create the legend a view puts inside while the panel is closed", async () => {
         // Arrange & Act
-        await render(LegendDrawerHostComponent, { providers: [INSPECTOR_HIDDEN] })
+        await render(LegendDrawerHostComponent)
 
         // Assert
         expect(legendLifecycle.created).toBe(0)
@@ -46,7 +44,7 @@ describe("LegendDrawerComponent", () => {
 
     it("should destroy the legend a view puts inside once the panel closes", async () => {
         // Arrange
-        await render(LegendDrawerHostComponent, { providers: [INSPECTOR_HIDDEN] })
+        await render(LegendDrawerHostComponent)
         fireEvent.click(screen.getByTestId("legend-panel-button"))
 
         // Act
@@ -59,7 +57,7 @@ describe("LegendDrawerComponent", () => {
 
     it("should show the legend a view puts inside once the tab is clicked", async () => {
         // Arrange
-        await render(LegendDrawerHostComponent, { providers: [INSPECTOR_HIDDEN] })
+        await render(LegendDrawerHostComponent)
         const hiddenAtFirst = screen.queryByTestId("own-legend")
 
         // Act
@@ -72,7 +70,7 @@ describe("LegendDrawerComponent", () => {
 
     it("should close when the pointer goes down outside it", async () => {
         // Arrange
-        await render(LegendDrawerHostComponent, { providers: [INSPECTOR_HIDDEN] })
+        await render(LegendDrawerHostComponent)
         fireEvent.click(screen.getByTestId("legend-panel-button"))
 
         // Act
@@ -82,15 +80,19 @@ describe("LegendDrawerComponent", () => {
         expect(screen.queryByTestId("legend-panel")).toBeNull()
     })
 
-    it("should stay at the right edge while a node is selected, as long as its view shows no inspector", async () => {
+    it("should stay at the right edge until its view says an inspector is shown, then move aside by the inspector's width", async () => {
         // Arrange
-        await render(LegendDrawerHostComponent, { providers: [INSPECTOR_SHOWN] })
+        const { fixture } = await render(LegendDrawerHostComponent)
+        fireEvent.click(screen.getByTestId("legend-panel-button"))
+        const rightOf = () => [screen.getByTestId("legend-panel").style.right, screen.getByTestId("legend-panel-button").style.right]
+        const atTheEdge = rightOf()
 
         // Act
-        fireEvent.click(screen.getByTestId("legend-panel-button"))
+        fixture.componentInstance.isInspectorShown.set(true)
+        fixture.detectChanges()
 
         // Assert
-        expect(screen.getByTestId("legend-panel").style.right).toBe("40px")
-        expect(screen.getByTestId("legend-panel-button").style.right).toBe("-28px")
+        expect(atTheEdge).toEqual(["40px", "-28px"])
+        expect(rightOf()).toEqual(["calc(var(--cc-inspector-width) + 40px)", "calc(var(--cc-inspector-width) - 28px)"])
     })
 })
