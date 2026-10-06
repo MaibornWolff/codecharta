@@ -568,7 +568,7 @@ export async function readCcState(): Promise<CcState | null> {
         return null
     }
     const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
-    const files = withSeededDependencyLevels(filesRecord?.files ?? settingsRecord.state.files ?? [])
+    const files = withSeededDependencyLens(filesRecord?.files ?? settingsRecord.state.files ?? [])
     persistedFiles = files
     // A record written before the split still carries the derived word bank. It is dropped as it is read,
     // because persisted beats file-derived: a stale bank would win over the rebuilt one.
@@ -584,10 +584,12 @@ export async function deleteCcState() {
     persistedFiles = null
 }
 
-/** Files persisted before the dependency lens grew levels carry no `dependencyLevels`. They are seeded as they are
- * read, not by an upgrade transform, because the upgrade leaves the files record unread. */
-function withSeededDependencyLevels(files: FileState[]): FileState[] {
-    return files.map(fileState => withSeededFileSetting(fileState, "dependencyLevels") as FileState)
+const DEPENDENCY_LENS_FILE_SETTINGS = ["dependencyLevels", "dependencyDeclarations"]
+
+/** Files persisted before the dependency lens grew levels or declarations carry neither. They are seeded as they
+ * are read, not by an upgrade transform, because the upgrade leaves the files record unread. */
+function withSeededDependencyLens(files: FileState[]): FileState[] {
+    return files.map(fileState => DEPENDENCY_LENS_FILE_SETTINGS.reduce<unknown>(withSeededFileSetting, fileState) as FileState)
 }
 
 function withoutFiles(state: CcState): Omit<CcState, "files"> {

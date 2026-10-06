@@ -1,4 +1,5 @@
 export { edgeAttributeTypesSelector } from "./store/attributeTypes.selectors"
+export { dependencyDeclarationsSelector, hasNamespacesSelector } from "./store/dependencyDeclarations.selector"
 export { dependencyEdgeTypeOf, edgeTypesCarriedBy, isDependencyEdgeMetric } from "./store/dependencyEdge"
 export {
     dependencyLevelsSelector,

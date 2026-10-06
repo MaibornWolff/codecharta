@@ -53,7 +53,8 @@ export class AggregationGenerator {
                     attributeDescriptors: {},
                     markedPackages: [],
                     domainWords: {},
-                    dependencyLevels: {}
+                    dependencyLevels: {},
+                    dependencyDeclarations: {}
                 }
             }
         }

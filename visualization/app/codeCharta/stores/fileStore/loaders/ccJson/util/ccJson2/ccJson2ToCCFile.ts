@@ -1,4 +1,10 @@
-import { CcJson2, CcJson2WithCarryover, FileNodeWithCarryover } from "../../../../../../model/ccjson2.model"
+import {
+    CcJson2,
+    CcJson2WithCarryover,
+    DependencyLensData,
+    DependencyLensLeaf,
+    FileNodeWithCarryover
+} from "../../../../../../model/ccjson2.model"
 import { NameDataPair } from "../../../../../../model/codeCharta.api.model"
 import {
     AttributeDescriptor,
@@ -6,6 +12,9 @@ import {
     AttributeTypes,
     CCFile,
     CodeMapNode,
+    DependencyDeclarationData,
+    DependencyLeaf,
+    DependencyLeafEdge,
     DependencyLevelData,
     DomainLensData,
     Edge,
@@ -33,6 +42,7 @@ export function mapCcJson2ToCCFile(file: CcJson2WithCarryover, nameDataPair: Nam
                 attributeDescriptors: getAttributeDescriptors(file),
                 domainWords: mapDomainWords(file, idToPath),
                 dependencyLevels: mapDependencyLevels(file, idToPath),
+                dependencyDeclarations: mapDependencyDeclarations(file, idToPath),
                 // 2.0 files carry neither; both are populated only when a 1.x file is normalized.
                 blacklist: file.blacklist ?? [],
                 markedPackages: file.markedPackages ?? []
@@ -111,6 +121,61 @@ function mapDependencyLevels(file: CcJson2, idToPath: Record<string, string>): D
         levels[path] = node.level
     }
     return levels
+}
+
+function mapDependencyDeclarations(file: CcJson2, idToPath: Record<string, string>): DependencyDeclarationData {
+    const { namespaces, leaves, leafEdges } = file.lenses.dependency ?? {}
+    const declarations: DependencyDeclarationData = {}
+    if (namespaces !== undefined) {
+        declarations.namespaces = namespaces
+    }
+    if (leaves !== undefined) {
+        declarations.leaves = mapLeaves(leaves, idToPath)
+    }
+    if (leafEdges !== undefined) {
+        declarations.leafEdges = mapLeafEdges(leafEdges, idToPath)
+    }
+    return declarations
+}
+
+function mapLeaves(leaves: DependencyLensData["leaves"], idToPath: Record<string, string>): DependencyDeclarationData["leaves"] {
+    const leavesByPath: DependencyDeclarationData["leaves"] = {}
+    for (const [nodeId, leavesOfFile] of Object.entries(leaves)) {
+        const path = idToPath[nodeId]
+        if (path === undefined) {
+            console.warn(`Dropping dependency-lens declarations with unresolved node id: ${nodeId}`)
+            continue
+        }
+        leavesByPath[path] = Object.fromEntries(Object.entries(leavesOfFile).map(([key, leaf]) => [key, mapLeaf(key, leaf)]))
+    }
+    return leavesByPath
+}
+
+function mapLeaf(key: string, { name = key, kind, namespace, level }: DependencyLensLeaf): DependencyLeaf {
+    return { name, kind, ...(namespace !== undefined && { namespace }), ...(level !== undefined && { level }) }
+}
+
+function mapLeafEdges(leafEdges: DependencyLensData["leafEdges"], idToPath: Record<string, string>): DependencyLeafEdge[] {
+    const mapped: DependencyLeafEdge[] = []
+    for (const edge of leafEdges) {
+        const fromNodeName = idToPath[edge.fromId]
+        const toNodeName = idToPath[edge.toId]
+        if (fromNodeName === undefined || toNodeName === undefined) {
+            console.warn(`Dropping declaration edge with unresolved endpoint(s): ${edge.fromId} -> ${edge.toId}`)
+            continue
+        }
+        mapped.push({
+            fromNodeName,
+            fromLeaf: edge.fromLeaf,
+            toNodeName,
+            toLeaf: edge.toLeaf,
+            attributes: { ...edge.attributes },
+            usage: [...(edge.usage ?? [])],
+            isCyclic: edge.isCyclic,
+            isPointingUpwards: edge.isPointingUpwards
+        })
+    }
+    return mapped
 }
 
 function mapDomainWords(file: CcJson2, idToPath: Record<string, string>): DomainLensData {

@@ -1574,7 +1574,11 @@ describe("IndexedDBWriter", () => {
             const restored = await readCcState()
 
             // Assert
-            expect(restored.files[0].file.settings.fileSettings).toEqual({ ...fileSettings, dependencyLevels: {} })
+            expect(restored.files[0].file.settings.fileSettings).toEqual({
+                ...fileSettings,
+                dependencyLevels: {},
+                dependencyDeclarations: {}
+            })
             expect(restored.files[0].selectedAs).toBe("Partial")
         })
 

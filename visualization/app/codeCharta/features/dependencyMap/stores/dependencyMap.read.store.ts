@@ -1,6 +1,11 @@
 import { Injectable } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { edgesSelector, hasDependencyDataSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import {
+    dependencyDeclarationsSelector,
+    edgesSelector,
+    hasDependencyDataSelector,
+    hasNamespacesSelector
+} from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { isDeltaStateSelector } from "../../../stores/fileStore/fileStore.facade"
@@ -30,6 +35,8 @@ export class DependencyMapReadStore {
     readonly isFocused$ = this.store.select(isDependencyMapFocusedSelector)
     readonly focusedNodePath$ = this.store.select(currentFocusedNodePathSelector)
     readonly edges$ = this.store.select(edgesSelector)
+    readonly declarations$ = this.store.select(dependencyDeclarationsSelector)
+    readonly hasNamespaces$ = this.store.select(hasNamespacesSelector)
     readonly sharedEdgeMetric$ = this.store.select(edgeMetricSelector)
     readonly edgeMetricData$ = this.store.select(edgeMetricDataSelector)
     readonly persistedSettings$ = this.store.select(dependencyGraphSettingsSelector)
