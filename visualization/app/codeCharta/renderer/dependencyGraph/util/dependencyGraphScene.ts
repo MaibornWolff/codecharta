@@ -58,19 +58,17 @@ export function isEdgeInFocus(edge: GraphEdge, { selectedEdgeId, highlightedEdge
 
 type EdgeFocus = Pick<DependencyGraphScene, "selectedEdgeId" | "highlightedEdgeIds">
 
-export function boxesByPath(layout: DependencyGraphLayout): Map<string, LayoutBox> {
-    return new Map(layout.boxes.map(box => [box.path, box]))
-}
-
 /** A box counts as found when it holds something the search found, or lies in a folder it found. What a box
  * holds is read from the layout, what folder a node lies in from its path. */
-export function searchMatcher(searchedPaths: ReadonlySet<string> | null, boxes: readonly LayoutBox[]): (boxPath: string) => boolean {
+export function searchMatcher(
+    searchedPaths: ReadonlySet<string> | null,
+    boxesByPath: ReadonlyMap<string, LayoutBox>
+): (boxPath: string) => boolean {
     if (searchedPaths === null) {
         return () => true
     }
-    const boxAround = new Map(boxes.map(box => [box.path, box.parentPath]))
     const foundOrHoldingFound = new Set<string>()
-    const holderOf = (path: string) => (boxAround.has(path) ? (boxAround.get(path) ?? "") : parentPathOf(path))
+    const holderOf = (path: string) => (boxesByPath.has(path) ? (boxesByPath.get(path).parentPath ?? "") : parentPathOf(path))
     for (const path of searchedPaths) {
         for (let holder = path; holder !== "" && !foundOrHoldingFound.has(holder); holder = holderOf(holder)) {
             foundOrHoldingFound.add(holder)

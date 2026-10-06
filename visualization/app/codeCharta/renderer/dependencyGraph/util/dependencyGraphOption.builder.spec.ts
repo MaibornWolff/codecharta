@@ -1,5 +1,6 @@
 import { DEPENDENCY_EDGE_TYPES } from "../../../model/dependencyGraph.model"
-import { AxisWindow, buildDependencyGraphOption, fitWindowOf, windowHolding, windowResizedTo } from "./dependencyGraphOption.builder"
+import { AxisWindow, fitWindowOf, windowHolding, windowResizedTo } from "./axisWindow"
+import { buildDependencyGraphOption } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
 import { aBand, aBox, anEdge, DEFAULT_LOOKS, identityPixels } from "./dependencyGraphTestData"

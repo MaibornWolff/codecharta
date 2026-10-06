@@ -1,4 +1,4 @@
-import { IsInside, nestingOf } from "./boxNesting"
+import { IsInside } from "./boxNesting"
 import { enclosingRectangle, intersects, Rectangle } from "./geometry"
 import { canBeOpened, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 import { PaintedItem } from "./paintOrder"
@@ -34,10 +34,9 @@ interface PaintedBox {
 
 type PaintedBoxGrid = RectangleGrid<PaintedBox>
 
-export function findOverlaps(items: PaintedItem[]): Overlaps {
+export function findOverlaps(items: PaintedItem[], isInside: IsInside): Overlaps {
     const boxes = items.flatMap((item, paintIndex) => (item.kind === "box" ? [{ box: item.box, paintIndex }] : []))
     const grid = new RectangleGrid(boxes, ({ box }) => box)
-    const isInside = nestingOf(boxes.map(({ box }) => box))
     return { seeThroughPaths: seeThroughContainers(boxes, grid, isInside), bandCutouts: bandCutoutsOf(items, grid, isInside) }
 }
 

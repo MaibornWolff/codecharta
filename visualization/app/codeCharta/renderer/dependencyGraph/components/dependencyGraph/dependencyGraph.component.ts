@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, OnDestroy, output, viewChild } from "@angular/core"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
-import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport, windowHolding } from "../../util/dependencyGraphOption.builder"
+import { AxisWindow, fitWindowOf, Viewport, windowHolding } from "../../util/axisWindow"
+import { buildDependencyGraphOption } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
 import { DependencyGraphBoxListComponent } from "../dependencyGraphBoxList/dependencyGraphBoxList.component"

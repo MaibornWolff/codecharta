@@ -1,6 +1,7 @@
-import { IsInside, nestingOf } from "./boxNesting"
+import { IsInside } from "./boxNesting"
 import { enclosingRectangle, Rectangle } from "./geometry"
 import { childIndicesByFolder } from "./layoutHierarchy"
+import { lookupsOf } from "./layoutLookups"
 import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 
 /** In layout units, from where the layout put the box. */
@@ -12,7 +13,7 @@ export function movedLayout(layout: DependencyGraphLayout, offsets: ReadonlyMap<
     if (offsets.size === 0) {
         return layout
     }
-    const shiftOf = accumulatedShifts(offsets, nestingOf(layout.boxes))
+    const shiftOf = accumulatedShifts(offsets, lookupsOf(layout).isInside)
     const boxes = layout.boxes.map(box => shifted(box, shiftOf(box.path)))
     growFoldersAroundTheirChildren(boxes)
     const byPath = new Map(boxes.map(box => [box.path, box]))
