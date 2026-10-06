@@ -3,7 +3,7 @@ import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { GraphEdge, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { findCycleChains } from "./cycleChains"
 import { indexDeclarations } from "./declarationIndex"
-import { describeSubject, PanelContext, PanelModel } from "./panelModel"
+import { describeSubject, PANEL_ROW_LIMIT, PanelContext, PanelModel } from "./panelModel"
 
 const CREATURE = "/root/game/creature.ts"
 const WEAPON = "/root/game/weapon.ts"
@@ -52,16 +52,23 @@ const GAME_FOLDER: LeveledNode = {
     children: [CREATURE_NODE, fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")])]
 }
 
-function context(
-    rowLimit = 20,
-    pointsUpward: PanelContext["pointsUpward"] = leafEdge => Boolean(leafEdge.isPointingUpwards)
-): PanelContext {
-    const index = indexDeclarations(DECLARATIONS)
-    return { index, rowLimit, pointsUpward, cycles: findCycleChains(index) }
+function context(overrides: Partial<PanelContext> = {}, leafEdges = LEAF_EDGES): PanelContext {
+    const index = indexDeclarations({ ...DECLARATIONS, leafEdges })
+    return {
+        index,
+        rowLimit: PANEL_ROW_LIMIT,
+        pointsUpward: leafEdge => Boolean(leafEdge.isPointingUpwards),
+        cycles: findCycleChains(index).chains,
+        mayMissCycles: false,
+        edgeMetric: "dependencies",
+        ...overrides
+    }
 }
 
-function box(node: LeveledNode, isOpen = false) {
-    return { kind: "box", node, isOpen } as const
+const ROOT_FOLDER: LeveledNode = { path: "/root", name: "root", level: 0, kind: "folder", children: [] }
+
+function box(node: LeveledNode, { isOpen = false, parent = null as LeveledNode | null } = {}) {
+    return { kind: "box", node, parent, isOpen } as const
 }
 
 function rowsOf(model: PanelModel, title: string): string[] {
@@ -81,11 +88,11 @@ describe("describeSubject", () => {
     describe("a file", () => {
         it("should head the panel with its folder, its name and what to copy, and tell its package, declarations and cycles as badges", () => {
             // Act
-            const model = describeSubject(box(CREATURE_NODE), context())
+            const model = describeSubject(box(CREATURE_NODE, { parent: GAME_FOLDER }), context())
 
             // Assert
             expect(model).toMatchObject({ kind: "file", title: "creature.ts", path: CREATURE, copyText: CREATURE })
-            expect(model.parent).toEqual({ path: "/root/game", name: "game", kind: "folder" })
+            expect(model.parent).toEqual({ path: "/root/game", name: "game", kind: "folder", shownAs: "/root/game" })
             expect(model.badges).toEqual([
                 { text: "file" },
                 { text: "package game" },
@@ -158,7 +165,7 @@ describe("describeSubject", () => {
 
         it("should take which way is up from the hierarchy shown, not from the dependency alone", () => {
             // Arrange
-            const upwardByFileEdge = context(20, leafEdge => leafEdge === LEAF_EDGES[0])
+            const upwardByFileEdge = context({ pointsUpward: leafEdge => leafEdge === LEAF_EDGES[0] })
 
             // Act
             const model = describeSubject(box(CREATURE_NODE), upwardByFileEdge)
@@ -170,7 +177,7 @@ describe("describeSubject", () => {
 
         it("should offer to open a closed file and to close an open one, and neither for a file telling no declaration", () => {
             // Act
-            const actions = [box(CREATURE_NODE), box(CREATURE_NODE, true), box(fileNode("/root/plain.ts"))].map(
+            const actions = [box(CREATURE_NODE), box(CREATURE_NODE, { isOpen: true }), box(fileNode("/root/plain.ts"))].map(
                 subject => describeSubject(subject, context()).action
             )
 
@@ -213,31 +220,56 @@ describe("describeSubject", () => {
             // Assert
             expect(model.cycleCount).toBe(2)
             expect(model.cycles).toHaveLength(1)
-            expect(describeSubject(box(fileNode(UTIL, [declarationNode(UTIL, "format", "function")])), uncut)).toMatchObject({
-                cycleCount: 0,
-                cycles: []
-            })
         })
 
-        it("should cut a hub's rows and say how many it left out", () => {
+        it("should tell no cycle of a file none runs through", () => {
+            // Arrange
+            const fileOutsideEveryCycle = fileNode(UTIL, [declarationNode(UTIL, "format", "function")])
+
             // Act
-            const model = describeSubject(box(CREATURE_NODE), context(1))
+            const model = describeSubject(box(fileOutsideEveryCycle), context())
+
+            // Assert
+            expect(model).toMatchObject({ cycleCount: 0, cycles: [], mayMissCycles: false })
+        })
+
+        it("should say that there may be more cycles when the map was too tangled to search to its end", () => {
+            // Arrange
+            const stoppedEarly = context({ mayMissCycles: true })
+
+            // Act
+            const model = describeSubject(box(CREATURE_NODE), stoppedEarly)
+
+            // Assert
+            expect(model.mayMissCycles).toBe(true)
+        })
+
+        it("should cut a hub's declarations and the rows of each group, and say how many it left out", () => {
+            // Arrange
+            const twoToWeapon = [...LEAF_EDGES, leafEdge(`${CREATURE}#Armor`, `${WEAPON}#Weapon`)]
+
+            // Act
+            const model = describeSubject(box(CREATURE_NODE), context({ rowLimit: 1 }, twoToWeapon))
 
             // Assert
             expect(model.declarations).toMatchObject({ count: 2, hiddenCount: 1 })
             expect(model.declarations.items).toHaveLength(1)
-            expect(model.sections[0].groups.map(group => group.hiddenCount)).toEqual([0, 0, 0])
+            expect(model.sections[0].groups.map(group => [group.dependencies.length, group.hiddenCount])).toEqual([
+                [1, 0],
+                [1, 1],
+                [1, 0]
+            ])
         })
     })
 
     describe("a declaration", () => {
         it("should head the panel with its file and tell its kind, package, level and cycles as badges", () => {
             // Act
-            const model = describeSubject(box(CREATURE_NODE.children[0]), context())
+            const model = describeSubject(box(CREATURE_NODE.children[0], { parent: CREATURE_NODE }), context())
 
             // Assert
             expect(model).toMatchObject({ kind: "declaration", title: "Creature", action: null, declarations: null, copyText: CREATURE })
-            expect(model.parent).toEqual({ path: CREATURE, name: "creature.ts", kind: "file" })
+            expect(model.parent).toEqual({ path: CREATURE, name: "creature.ts", kind: "file", shownAs: CREATURE })
             expect(badgesOf(model)).toEqual(["Class", "package game", "level 1", "1 cycle"])
         })
 
@@ -268,7 +300,7 @@ describe("describeSubject", () => {
     describe("a folder", () => {
         it("should count its files and declarations and the cyclic and upward dependencies touching them, leaving the files themselves to the explorer", () => {
             // Act
-            const model = describeSubject(box(GAME_FOLDER), context())
+            const model = describeSubject(box(GAME_FOLDER, { parent: ROOT_FOLDER }), context())
 
             // Assert
             expect(model).toMatchObject({
@@ -279,20 +311,31 @@ describe("describeSubject", () => {
                 declarations: null,
                 copyText: "/root/game"
             })
-            expect(model.parent).toEqual({ path: "/root", name: "root", kind: "folder" })
+            expect(model.parent).toEqual({ path: "/root", name: "root", kind: "folder", shownAs: "/root" })
             expect(badgesOf(model)).toEqual(["folder", "2 files", "3 declarations", "2 cyclic", "1 upward", "1 cycle"])
             expect(model.cycles).toHaveLength(1)
         })
 
         it("should head the root folder with nothing above it", () => {
             // Arrange
-            const root: LeveledNode = { ...GAME_FOLDER, path: "/root", name: "root" }
+            const root = ROOT_FOLDER
 
             // Act
             const model = describeSubject(box(root), context())
 
             // Assert
             expect(model.parent).toBeNull()
+        })
+
+        it("should head a file with the package it is drawn in rather than the folder its path names", () => {
+            // Arrange
+            const gamePackage: LeveledNode = { ...GAME_FOLDER, path: "package:game", kind: "package" }
+
+            // Act
+            const model = describeSubject(box(CREATURE_NODE, { parent: gamePackage }), context())
+
+            // Assert
+            expect(model.parent).toEqual({ path: "package:game", name: "game", kind: "folder", shownAs: "package game" })
         })
     })
 
@@ -317,7 +360,7 @@ describe("describeSubject", () => {
             toPath: WEAPON,
             weight: 3,
             type: "cyclic",
-            declarationEdges: [LEAF_EDGES[0], LEAF_EDGES[3]]
+            declarationEdges: [LEAF_EDGES[0], LEAF_EDGES[2], LEAF_EDGES[3]]
         }
 
         it("should tell the dependencies it stands for and count them per kind of use, the most frequent first", () => {
@@ -326,15 +369,25 @@ describe("describeSubject", () => {
 
             // Assert
             expect(model).toMatchObject({ kind: "edge", title: "creature.ts → weapon.ts", path: edge.id, parent: null, copyText: null })
-            expect(badgesOf(model)).toEqual(["3 dependencies", "Takes as argument 1", "Inherits from 1", "Uses 1"])
+            expect(badgesOf(model)).toEqual(["3 dependencies", "Uses 2", "Takes as argument 1", "Inherits from 1"])
             expect(rowsOf(model, "Stands for")).toEqual([
                 "-: Armor → format (Takes as argument)",
+                "-: Creature → Armor (Uses)",
                 "-: Creature → Weapon (Inherits from, Uses)"
             ])
-            expect(model.sections[0].groups[0].dependencies.map(row => [row.isFromOwn, row.isToOwn])).toEqual([
-                [false, false],
-                [false, false]
-            ])
+            expect(model.sections[0].groups[0].dependencies.every(row => !row.isFromOwn && !row.isToOwn)).toBe(true)
+        })
+
+        it("should tell the weight under the edge metric shown, which counts dependencies only when it is theirs", () => {
+            // Arrange
+            const underAnotherMetric = context({ edgeMetric: "pairingRate" })
+            const withoutDeclarations = { ...edge, weight: 37, declarationEdges: [] }
+
+            // Act
+            const model = describeSubject({ kind: "edge", edge: withoutDeclarations, fromName: "a", toName: "b" }, underAnotherMetric)
+
+            // Assert
+            expect(badgesOf(model)).toEqual(["pairingRate 37"])
         })
 
         it("should offer to unfold it unless both ends are declarations already or the map tells none", () => {

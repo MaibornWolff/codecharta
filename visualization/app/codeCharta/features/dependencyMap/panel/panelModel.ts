@@ -1,9 +1,10 @@
-import { dependencyEdgeTypeOf } from "../../../lenses/dependency/dependencyLens.facade"
+import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 import {
     declarationKindLabelOf,
     GraphEdge,
+    isPackagePath,
     LeveledNode,
     LineStyle,
     lineStyleOfUsages,
@@ -20,6 +21,11 @@ export interface PanelRef {
     name: string
     kind: PanelRefKind
     declarationKind?: string
+}
+
+/** What stands above the name and leads there: the box around the selection. */
+interface PanelParent extends PanelRef {
+    shownAs: string
 }
 
 /** A short fact under the name; one about cycles is set off in the colour of the cycles. */
@@ -89,8 +95,7 @@ export type PanelActionKind = "open" | "close" | "unfold"
 export interface PanelModel {
     kind: PanelRefKind | "edge"
     title: string
-    /** What stands above the name and leads there: the folder of a file, the file of a declaration. */
-    parent: PanelRef | null
+    parent: PanelParent | null
     path: string
     /** What the copy button copies; null where there is nothing worth copying. */
     copyText: string | null
@@ -100,17 +105,28 @@ export interface PanelModel {
     /** The cycles running through the selection; a hub's are cut like its rows. */
     cycles: PanelCycle[]
     cycleCount: number
+    /** Whether the map is too tangled for its cycles to have been searched to the end. */
+    mayMissCycles: boolean
     action: PanelActionKind | null
 }
 
-export type PanelSubject =
-    | { kind: "box"; node: LeveledNode; isOpen: boolean }
-    | { kind: "edge"; edge: GraphEdge; fromName: string; toName: string }
+/** The parent is the box drawn around the node, which its path does not tell: a package holds files from any
+ * folder, and a chain of folders is drawn as one box. */
+interface BoxSubject {
+    kind: "box"
+    node: LeveledNode
+    parent: LeveledNode | null
+    isOpen: boolean
+}
+
+export type PanelSubject = BoxSubject | { kind: "edge"; edge: GraphEdge; fromName: string; toName: string }
 
 export interface PanelContext {
     index: DeclarationIndex
     /** Every cycle of the map. */
     cycles: readonly CycleChain[]
+    mayMissCycles: boolean
+    edgeMetric: string | null
     /** A hub's rows are cut at this many per group and list, so the panel of a hub stays a panel. */
     rowLimit: number
     /** Whether a dependency is drawn pointing upward in the hierarchy shown: between two files the folders
@@ -126,14 +142,24 @@ export function describeSubject(subject: PanelSubject, context: PanelContext): P
     if (subject.kind === "edge") {
         return describeEdge(subject.edge, `${subject.fromName} → ${subject.toName}`, context)
     }
-    switch (subject.node.kind) {
+    return { ...describeBox(subject, context), parent: subject.parent && parentOf(subject.parent) }
+}
+
+function describeBox({ node, isOpen }: BoxSubject, context: PanelContext): PanelModel {
+    switch (node.kind) {
         case "declaration":
-            return describeDeclaration(subject.node, context)
+            return describeDeclaration(node, context)
         case "file":
-            return describeFile(subject.node, subject.isOpen, context)
+            return describeFile(node, isOpen, context)
         default:
-            return describeFolder(subject.node, context)
+            return describeFolder(node, context)
     }
+}
+
+function parentOf(node: LeveledNode): PanelParent {
+    const kind = node.kind === "file" ? "file" : "folder"
+    const shownAs = isPackagePath(node.path) ? `package ${node.name}` : node.path
+    return { path: node.path, name: node.name, kind, shownAs }
 }
 
 function describeFile(file: LeveledNode, isOpen: boolean, context: PanelContext): PanelModel {
@@ -145,7 +171,7 @@ function describeFile(file: LeveledNode, isOpen: boolean, context: PanelContext)
     return {
         kind: "file",
         title: file.name,
-        parent: folderRef(parentPathOf(file.path)),
+        parent: null,
         path: file.path,
         copyText: file.path,
         badges: [
@@ -186,7 +212,7 @@ function describeDeclaration(node: LeveledNode, context: PanelContext): PanelMod
     return {
         kind: "declaration",
         title: node.name,
-        parent: declaration ? fileRef(declaration.filePath) : null,
+        parent: null,
         path: node.path,
         copyText: declaration?.filePath ?? null,
         badges: [
@@ -225,7 +251,7 @@ function describeFolder(folder: LeveledNode, context: PanelContext): PanelModel 
     return {
         kind: "folder",
         title: folder.name,
-        parent: isPackage || parentPathOf(folder.path) === "" ? null : folderRef(parentPathOf(folder.path)),
+        parent: null,
         path: folder.path,
         copyText: isPackage ? folder.name : folder.path,
         badges: [
@@ -253,13 +279,18 @@ function describeEdge(edge: GraphEdge, title: string, context: PanelContext): Pa
         parent: null,
         path: edge.id,
         copyText: null,
-        badges: [{ text: counted(edge.weight, "dependency", "dependencies") }, ...usageCounts(told)],
+        badges: [{ text: weightOf(edge, context.edgeMetric) }, ...usageCounts(told)],
         declarations: null,
         sections: [section("Stands for", [{ heading: null, label: "", leafEdges: told }], new Set(), context)],
         cycles: [],
         cycleCount: 0,
+        mayMissCycles: false,
         action: told.length > 0 && !isUnfolded ? "unfold" : null
     }
+}
+
+function weightOf(edge: GraphEdge, edgeMetric: string | null): string {
+    return isDependencyEdgeMetric(edgeMetric) ? counted(edge.weight, "dependency", "dependencies") : `${edgeMetric} ${edge.weight}`
 }
 
 function counted(count: number, singular: string, plural = `${singular}s`): string {
@@ -370,12 +401,15 @@ function byNames(dependencyA: PanelDependency, dependencyB: PanelDependency): nu
     return dependencyA.from.name.localeCompare(dependencyB.from.name) || dependencyA.to.name.localeCompare(dependencyB.to.name)
 }
 
-function cyclesOf(declarations: readonly IndexedDeclaration[], context: PanelContext): Pick<PanelModel, "cycles" | "cycleCount"> {
-    const { index, cycles, rowLimit } = context
+type PanelCycles = Pick<PanelModel, "cycles" | "cycleCount" | "mayMissCycles">
+
+function cyclesOf(declarations: readonly IndexedDeclaration[], context: PanelContext): PanelCycles {
+    const { index, cycles, rowLimit, mayMissCycles } = context
     const own = pathsOf(declarations)
     const chains = cyclesThrough(own, cycles)
     return {
         cycleCount: chains.length,
+        mayMissCycles,
         cycles: chains.slice(0, rowLimit).map(chain => {
             const walked = startingAt(chain, own)
             return {
@@ -409,14 +443,6 @@ function fileRef(path: string): PanelRef {
     return { path, name: nameOf(path), kind: "file" }
 }
 
-function folderRef(path: string): PanelRef {
-    return { path, name: nameOf(path), kind: "folder" }
-}
-
 function nameOf(path: string): string {
     return path.slice(path.lastIndexOf("/") + 1)
-}
-
-function parentPathOf(path: string): string {
-    return path.slice(0, path.lastIndexOf("/"))
 }

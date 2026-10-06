@@ -32,7 +32,10 @@ function mergeDependencyDeclarations(files: CCFile[], withFileNamePrefix: boolea
         const namespaceOf = (key: string) => (isPrefixed ? `${file.fileMeta.fileName}${NAMESPACE_SEPARATOR}${key}` : key)
         addNamespaces(merged.namespaces, declarations.namespaces ?? {}, namespaceOf)
         addLeaves(merged.leaves, declarations.leaves ?? {}, pathOf, namespaceOf)
-        merged.leafEdges.push(...(declarations.leafEdges ?? []).map(edge => repathed(edge, pathOf)))
+        // Not spread into push(): a large map's edges would be more arguments than a call can take.
+        for (const leafEdge of declarations.leafEdges ?? []) {
+            merged.leafEdges.push(repathed(leafEdge, pathOf))
+        }
     }
     return merged
 }

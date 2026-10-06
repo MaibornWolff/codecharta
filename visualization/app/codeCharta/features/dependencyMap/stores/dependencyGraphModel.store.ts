@@ -39,10 +39,14 @@ export class DependencyGraphModelStore {
         const { namespaces, leaves } = this.declarations()
         return folderTree && this.hierarchy() === "packages" ? arrangedByPackages(folderTree, namespaces, leaves) : folderTree
     })
-    readonly declarationIndex = computed(() => indexDeclarations(this.declarations()))
-    /** Every cycle between declarations, found once for the map: the badges count them and the panel tells them. */
-    readonly cycles = computed(() => findCycleChains(this.declarationIndex()))
     readonly nodesByPath = computed(() => indexedByPath(this.tree()))
+    readonly parentsByPath = computed(() => parentsIn(this.tree()))
+    private readonly drawnFilePaths = computed(
+        () => new Set([...this.nodesByPath().values()].flatMap(node => (node.kind === "file" ? [node.path] : [])))
+    )
+    readonly declarationIndex = computed(() => indexDeclarations(this.declarations(), this.drawnFilePaths()))
+    /** Every cycle between drawn declarations, found once: the badges count them and the panel tells them. */
+    readonly cycleSearch = computed(() => findCycleChains(this.declarationIndex()))
 
     readonly layout = computed(() => {
         const tree = this.tree()
@@ -111,6 +115,20 @@ function indexedByPath(tree: LeveledNode | null): ReadonlyMap<string, LeveledNod
         visit(tree)
     }
     return nodes
+}
+
+function parentsIn(tree: LeveledNode | null): ReadonlyMap<string, LeveledNode> {
+    const parents = new Map<string, LeveledNode>()
+    const visit = (node: LeveledNode) => {
+        for (const child of node.children) {
+            parents.set(child.path, node)
+            visit(child)
+        }
+    }
+    if (tree) {
+        visit(tree)
+    }
+    return parents
 }
 
 function filePairOf(fromFilePath: string, toFilePath: string): string {
