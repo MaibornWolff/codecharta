@@ -296,6 +296,23 @@ describe("buildDependencyGraphOption", () => {
         expect(describe(edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>Dependency")
     })
 
+    it("should draw the upward edge that closes a cycle in the colour of the upward edges while dashes tell the types apart, and in its own once they tell the kind of use", () => {
+        // Arrange
+        const edges = [anEdge(view.path, model.path, { type: "feedbackLeafLevel" })]
+        const strokeOf = (scene: DependencyGraphScene) => {
+            const { draw, edgeIndices } = drawnGraph(scene)
+            return draw(edgeIndices[0]).children[0].style.stroke
+        }
+
+        // Act
+        const byEdgeType = strokeOf(sceneWith({ edges }))
+        const byUsage = strokeOf(sceneWith({ edges, lineStyleShows: "usage" }))
+
+        // Assert
+        expect(byEdgeType).toBe("#dc2626")
+        expect(byUsage).toBe("#7f1d1d")
+    })
+
     it("should name the metric and its value in the tooltip of another metric's edge", () => {
         // Arrange
         const edges = [anEdge(view.path, model.path, { weight: 0.375 })]

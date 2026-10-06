@@ -48,7 +48,7 @@ describe("DependencyEdgeLegendComponent", () => {
             "Points upward",
             "Points upward and closes a cycle"
         ])
-        expect(lines.map(line => line.getAttribute("stroke"))).toEqual(["#8c96a3", "#123456", "#dc2626", "#7f1d1d"])
+        expect(lines.map(line => line.getAttribute("stroke"))).toEqual(["#8c96a3", "#123456", "#dc2626", "#dc2626"])
         expect(lines.map(line => line.getAttribute("stroke-dasharray"))).toEqual([null, null, "5 4", null])
     })
 
@@ -83,6 +83,7 @@ describe("DependencyEdgeLegendComponent", () => {
         ])
         const edgeTypeLines = [...screen.getByTestId("dependency-edge-legend").querySelectorAll("line")]
         expect(edgeTypeLines.every(line => line.getAttribute("stroke-dasharray") === null)).toBe(true)
+        expect(edgeTypeLines.at(-1).getAttribute("stroke")).toBe("#7f1d1d")
         expect(screen.getByTestId("dependency-usage-legend").querySelectorAll("polyline, circle")).toHaveLength(3)
     })
 

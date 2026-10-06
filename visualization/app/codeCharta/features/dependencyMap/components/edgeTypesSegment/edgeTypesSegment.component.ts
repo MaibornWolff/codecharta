@@ -46,6 +46,7 @@ export class EdgeTypesSegmentComponent {
             return { ...entry, isCarried, isShown: isCarried && this.shownTypes().includes(entry.type) }
         })
     )
+    readonly showsEveryColor = computed(() => this.settings().lineStyleShows === "usage")
     readonly chosenLabel = computed(() => nameOfShownEdgeTypes(this.shownTypes(), this.carriedTypes()))
 
     toggle(type: DependencyEdgeType, isShown: boolean): void {

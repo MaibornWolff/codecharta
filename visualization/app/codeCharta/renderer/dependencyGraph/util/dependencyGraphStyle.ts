@@ -35,15 +35,26 @@ export const EDGE_TYPE_LABELS: Record<DependencyEdgeType, string> = {
 export interface EdgeLegendEntry {
     type: DependencyEdgeType
     label: string
+    /** The colour the type is drawn in. */
     color: string
+    /** The colour the reader gave the type, which is drawn only while nothing else tells the type apart. */
+    ownColor: string
     isDashed: boolean
 }
 
+/** While the dashes tell the edge types apart, the upward edge that closes a cycle is the solid one in the colour
+ * of the upward edges, as it always was. Once the dashes tell the kind of use, only a colour of its own can. */
+export function edgeColorsAsDrawn(edgeColors: DependencyEdgeColors, lineStyleShows: LineStyleMeaning): DependencyEdgeColors {
+    return lineStyleShows === "usage" ? edgeColors : { ...edgeColors, feedbackLeafLevel: edgeColors.feedbackContainerLevel }
+}
+
 export function edgeLegend(edgeColors: DependencyEdgeColors, lineStyleShows: LineStyleMeaning): EdgeLegendEntry[] {
+    const drawn = edgeColorsAsDrawn(edgeColors, lineStyleShows)
     return DEPENDENCY_EDGE_TYPES.map(type => ({
         type,
         label: EDGE_TYPE_LABELS[type],
-        color: edgeColors[type],
+        color: drawn[type],
+        ownColor: edgeColors[type],
         isDashed: isDashedEdgeType(type, lineStyleShows)
     }))
 }
