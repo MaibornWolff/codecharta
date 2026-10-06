@@ -1,4 +1,4 @@
-import { DependencyEdgeStyle, DependencyEdgeThickness } from "../../../../model/dependencyGraph.model"
+import { DependencyEdgeStyle, DependencyEdgeThickness, LineStyleMeaning } from "../../../../model/dependencyGraph.model"
 import { Choice } from "../choiceRow/choiceRow.component"
 
 export const EDGE_STYLE_CHOICES: Choice<DependencyEdgeStyle>[] = [
@@ -13,6 +13,11 @@ export const EDGE_THICKNESS_CHOICES: Choice<DependencyEdgeThickness>[] = [
     { value: "thin", label: "Thin", hint: "Every edge a hairline, easiest to see through" },
     { value: "uniform", label: "Uniform", hint: "Every edge the same width" },
     { value: "strong", label: "Strong", hint: "Grows with the dependencies, twice as pronounced" }
+]
+
+export const LINE_STYLE_MEANING_CHOICES: Choice<LineStyleMeaning>[] = [
+    { value: "edgeType", label: "Edge type", hint: "Dashed where an edge points upward without closing a cycle" },
+    { value: "usage", label: "Kind of use", hint: "Dashes and arrowhead tell how one declaration uses the other" }
 ]
 
 export function labelOf<Value extends string>(choices: Choice<Value>[], value: Value): string | null {

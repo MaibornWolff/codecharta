@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing"
+import { By } from "@angular/platform-browser"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
@@ -101,9 +102,9 @@ describe("DependencyBarComponent", () => {
         await userEvent.click(screen.getByRole("button", { name: "Reset edge style" }))
 
         // Assert
-        const { edgeStyle, isAnchoredAtSideMiddle, edgeWidth } = defaultDependencyGraphSettings
+        const { edgeStyle, isAnchoredAtSideMiddle, edgeWidth, lineStyleShows } = defaultDependencyGraphSettings
         expect(dispatch).toHaveBeenCalledWith(
-            setState({ value: { preferences: { dependencyGraph: { edgeStyle, isAnchoredAtSideMiddle, edgeWidth } } } })
+            setState({ value: { preferences: { dependencyGraph: { edgeStyle, isAnchoredAtSideMiddle, edgeWidth, lineStyleShows } } } })
         )
     })
 
@@ -261,5 +262,45 @@ describe("DependencyBarComponent", () => {
 
         // Assert
         expect(dispatch).toHaveBeenCalledWith(changed({ declarationArrangement: "chips" }))
+    })
+
+    it("should let the dashes and arrowheads show the kind of use once the reader picks it", async () => {
+        // Arrange
+        const dispatch = await renderBar()
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-line-style-shows-usage"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ lineStyleShows: "usage" }))
+    })
+
+    it("should recolour an edge type and put the colours back on reset", async () => {
+        // Arrange
+        const dispatch = await renderBar({ settings: { edgeColors: { ...defaultDependencyGraphSettings.edgeColors, cyclic: "#000000" } } })
+        const picker = dispatch.fixture.debugElement.query(By.css("[data-testid='dependency-bar-edge-color-regular']"))
+
+        // Act
+        picker.triggerEventHandler("colorChange", "#abcdef")
+        await userEvent.click(screen.getByRole("button", { name: "Reset colours" }))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(
+            changed({ edgeColors: { ...defaultDependencyGraphSettings.edgeColors, cyclic: "#000000", regular: "#abcdef" } })
+        )
+        expect(dispatch).toHaveBeenCalledWith(
+            setState({ value: { preferences: { dependencyGraph: { edgeColors: defaultDependencyGraphSettings.edgeColors } } } })
+        )
+    })
+
+    it("should tell a declaration's kind the way the reader picks", async () => {
+        // Arrange
+        const dispatch = await renderBar({ hasDeclarations: true })
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-declaration-kind-shape"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ declarationKindMark: "shape" }))
     })
 })

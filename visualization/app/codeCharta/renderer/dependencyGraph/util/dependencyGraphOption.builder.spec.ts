@@ -2,7 +2,7 @@ import { DEPENDENCY_EDGE_TYPES } from "../../../model/dependencyGraph.model"
 import { AxisWindow, buildDependencyGraphOption, fitWindowOf, windowResizedTo } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
-import { aBand, aBox, anEdge, identityPixels } from "./dependencyGraphTestData"
+import { aBand, aBox, anEdge, DEFAULT_LOOKS, identityPixels } from "./dependencyGraphTestData"
 
 interface DrawnElement {
     emphasisDisabled?: boolean
@@ -28,6 +28,7 @@ function sceneWith(overrides: Partial<DependencyGraphScene> = {}): DependencyGra
         edges: [anEdge(view.path, model.path), anEdge(util.path, view.path, { type: "feedbackContainerLevel" })],
         edgeMetric: "dependencies",
         shownEdgeTypes: DEPENDENCY_EDGE_TYPES,
+        ...DEFAULT_LOOKS,
         edgeStyle: "curved",
         isAnchoredAtSideMiddle: false,
         edgeWidth: { thickness: "byCount", factor: 1 },
@@ -164,6 +165,33 @@ describe("buildDependencyGraphOption", () => {
         expect(describe(indexOf(file.path))).toBe("<b>/root/creature.ts</b><br/>Level 0<br/><i>Double-click to close</i>")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class")
         expect(option.aria.label.description).toContain("with 1 files")
+    })
+
+    it("should draw each edge in the colour the reader gave its type, and say how it is used once the line style shows that", () => {
+        // Arrange
+        const usedAs = (usage: string[]) => ({
+            fromNodeName: view.path,
+            fromLeaf: "View",
+            toNodeName: model.path,
+            toLeaf: "Model",
+            attributes: { dependencies: 1 },
+            usage
+        })
+        const edges = [anEdge(view.path, model.path, { declarationEdges: [usedAs(["usage", "inheritance"])] })]
+        const edgeColors = { ...DEFAULT_LOOKS.edgeColors, regular: "#123456" }
+
+        // Act
+        const byType = drawnGraph(sceneWith({ edges, edgeColors }))
+        const byUsage = drawnGraph(sceneWith({ edges, edgeColors, lineStyleShows: "usage" }))
+
+        // Assert
+        expect(byType.draw(byType.edgeIndices[0]).children.map(child => child.style.stroke ?? child.style.fill)).toEqual([
+            "#123456",
+            "#123456"
+        ])
+        expect(byType.describe(byType.edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>1 dependency · Dependency")
+        expect(byUsage.describe(byUsage.edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>1 dependency · Dependency<br/>Inherits, Uses")
+        expect(byUsage.draw(byUsage.edgeIndices[0]).children[1].style.fill).toBe("#ffffff")
     })
 
     it("should name the metric and its value in the tooltip of another metric's edge", () => {

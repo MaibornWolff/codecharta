@@ -1,5 +1,5 @@
 import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../../model/dependencyGraph.model"
-import { EDGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 
 type EdgeTypes = readonly DependencyEdgeType[]
 
@@ -11,8 +11,8 @@ export function nameOfShownEdgeTypes(shown: EdgeTypes, carried: EdgeTypes): stri
     if (shownAndCarried.length === 0) {
         return "None"
     }
-    return EDGE_LEGEND.filter(entry => shownAndCarried.includes(entry.type))
-        .map(entry => entry.label)
+    return DEPENDENCY_EDGE_TYPES.filter(type => shownAndCarried.includes(type))
+        .map(type => EDGE_TYPE_LABELS[type])
         .join(", ")
 }
 

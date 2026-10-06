@@ -28,11 +28,23 @@ export type DependencyLevelLabel = "number" | "path"
  * small chips that fill the rows. */
 export type DeclarationArrangement = "stacked" | "list" | "chips"
 
+export type DependencyEdgeColors = Record<DependencyEdgeType, string>
+
+/** How a declaration tells what it is: a lettered icon, the shape of its box, the colour of its box, or not at all. */
+export type DeclarationKindMark = "icon" | "shape" | "tint" | "off"
+
+/** What an edge's dashes and arrowhead tell: its edge type, as the folders-only graph always did, or the way the
+ * one declaration uses the other. */
+export type LineStyleMeaning = "edgeType" | "usage"
+
 export interface DependencyGraphSettings {
     shownEdgeTypes: DependencyEdgeType[]
+    edgeColors: DependencyEdgeColors
+    lineStyleShows: LineStyleMeaning
     edgeStyle: DependencyEdgeStyle
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth
     levelLabel: DependencyLevelLabel
     declarationArrangement: DeclarationArrangement
+    declarationKindMark: DeclarationKindMark
 }

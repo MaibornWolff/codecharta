@@ -1,5 +1,16 @@
+import { DependencyEdgeColors } from "../../../model/dependencyGraph.model"
 import { GraphEdge } from "./edgeProjection"
 import { LayoutBox, LevelBand } from "./levelizedLayout"
+
+export const EDGE_COLORS: DependencyEdgeColors = {
+    regular: "#8c96a3",
+    cyclic: "#2563eb",
+    feedbackContainerLevel: "#dc2626",
+    feedbackLeafLevel: "#7f1d1d"
+}
+
+/** How a scene looks while the reader has changed no setting. */
+export const DEFAULT_LOOKS = { edgeColors: EDGE_COLORS, lineStyleShows: "edgeType", declarationKindMark: "icon" } as const
 
 export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBox {
     return {

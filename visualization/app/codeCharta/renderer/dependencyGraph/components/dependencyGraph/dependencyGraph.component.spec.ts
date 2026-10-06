@@ -13,7 +13,7 @@ import {
 import { AxisWindow, fitWindowOf } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
-import { aBox } from "../../util/dependencyGraphTestData"
+import { aBox, DEFAULT_LOOKS } from "../../util/dependencyGraphTestData"
 import { DependencyGraphComponent } from "./dependencyGraph.component"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGraph.stub").echartsCoreStub)
@@ -23,6 +23,7 @@ const SCENE: DependencyGraphScene = {
     edges: [],
     edgeMetric: "dependencies",
     shownEdgeTypes: DEPENDENCY_EDGE_TYPES,
+    ...DEFAULT_LOOKS,
     edgeStyle: "curved",
     isAnchoredAtSideMiddle: false,
     edgeWidth: { thickness: "byCount", factor: 1 },

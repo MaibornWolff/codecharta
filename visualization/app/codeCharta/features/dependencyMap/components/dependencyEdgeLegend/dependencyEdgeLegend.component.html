@@ -11,3 +11,81 @@
         }
     </ul>
 </section>
+
+@if (usageLegend().length > 0) {
+    <section class="flex flex-col gap-1" aria-labelledby="dependency-usage-legend-title">
+        <span id="dependency-usage-legend-title" class="text-xs uppercase tracking-wider opacity-60">Kind of use</span>
+        <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-usage-legend">
+            @for (entry of usageLegend(); track entry.usage) {
+                <li class="flex items-center gap-2">
+                    <svg class="h-3 w-8" viewBox="0 0 32 12" aria-hidden="true" [attr.stroke]="usageColor()" [attr.fill]="usageColor()">
+                        <line x1="0" y1="6" x2="22" y2="6" stroke-width="1.5" [attr.stroke-dasharray]="entry.dash?.join(' ') ?? null" />
+                        @switch (entry.head) {
+                            @case ("hollow") {
+                                <polygon points="31,6 22,2 22,10" fill="var(--color-base-100, #fff)" stroke-width="1.2" />
+                            }
+                            @case ("open") {
+                                <polyline points="22,2 31,6 22,10" fill="none" stroke-width="1.2" />
+                            }
+                            @case ("dot") {
+                                <circle cx="27" cy="6" r="3.5" stroke="none" />
+                            }
+                            @default {
+                                <polygon points="31,6 22,2 22,10" stroke="none" />
+                            }
+                        }
+                    </svg>
+                    <span>{{ entry.label }}</span>
+                </li>
+            }
+        </ul>
+        <p class="m-0 text-xs opacity-70">An edge standing for several dependencies stays a plain line.</p>
+    </section>
+}
+
+@if (kindLegend().length > 0) {
+    <section class="flex flex-col gap-1" aria-labelledby="dependency-kind-legend-title">
+        <span id="dependency-kind-legend-title" class="text-xs uppercase tracking-wider opacity-60">Declarations</span>
+        <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-kind-legend">
+            @for (entry of kindLegend(); track entry.kind) {
+                <li class="flex items-center gap-2">
+                    @switch (kindMark()) {
+                        @case ("icon") {
+                            <span
+                                class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] text-[9px] font-bold leading-none text-white"
+                                [style.background-color]="entry.color"
+                                aria-hidden="true"
+                                >{{ entry.letter }}</span
+                            >
+                        }
+                        @case ("tint") {
+                            <span class="h-3.5 w-6 shrink-0 rounded-sm border border-base-300" [style.background-color]="entry.tint" aria-hidden="true"></span>
+                        }
+                        @default {
+                            <svg class="h-3.5 w-6 shrink-0" viewBox="0 0 24 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1">
+                                @switch (entry.shape) {
+                                    @case ("pill") {
+                                        <rect x="0.5" y="0.5" width="23" height="13" rx="6.5" />
+                                    }
+                                    @case ("sharp") {
+                                        <rect x="0.5" y="0.5" width="23" height="13" />
+                                    }
+                                    @case ("hexagon") {
+                                        <polygon points="5,0.5 19,0.5 23.5,7 19,13.5 5,13.5 0.5,7" />
+                                    }
+                                    @case ("slanted") {
+                                        <polygon points="5,0.5 23.5,0.5 19,13.5 0.5,13.5" />
+                                    }
+                                    @default {
+                                        <rect x="0.5" y="0.5" width="23" height="13" rx="3" />
+                                    }
+                                }
+                            </svg>
+                        }
+                    }
+                    <span>{{ entry.label }}</span>
+                </li>
+            }
+        </ul>
+    </section>
+}

@@ -97,15 +97,12 @@ export class DependencyMapComponent {
         if (!layout) {
             return null
         }
-        const { shownEdgeTypes, edgeStyle, isAnchoredAtSideMiddle, edgeWidth } = this.settings()
+        const { levelLabel, declarationArrangement, ...looks } = this.settings()
         return {
+            ...looks,
             layout,
             edges: this.projectedEdges(),
             edgeMetric: this.edgeMetric(),
-            shownEdgeTypes,
-            edgeStyle,
-            isAnchoredAtSideMiddle,
-            edgeWidth,
             hoveredPath: this.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()),
             selectedPath: this.selectedBoxPath(),
             raisedPaths: this.viewStore.raisedPaths(),
