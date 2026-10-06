@@ -101,7 +101,7 @@ describe("DependencyMapViewStore", () => {
         // Arrange
         store.adoptTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")]))
         loadLayoutIdentity(PROJECT_B)
-        store.reveal("/root/lib/util/strings.ts")
+        store.reveal(["/root/lib/util/strings.ts"])
 
         // Act
         store.adoptTree(leveledFolder("/root", [leveledFolder("/root/src"), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])]))
@@ -187,7 +187,7 @@ describe("DependencyMapViewStore", () => {
         store.adoptTree(TWO_TOP_FOLDERS)
 
         // Act
-        store.reveal("/root/src/ui/button.ts")
+        store.reveal(["/root/src/ui/button.ts"])
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root", "/root/src", "/root/src/ui"])
@@ -218,7 +218,7 @@ describe("DependencyMapViewStore", () => {
 
     it("should keep a reveal that arrives before the tree of the loaded files is adopted", () => {
         // Arrange
-        store.reveal("/root/src/ui/button.ts")
+        store.reveal(["/root/src/ui/button.ts"])
 
         // Act
         store.adoptTree(TWO_TOP_FOLDERS)
@@ -229,7 +229,7 @@ describe("DependencyMapViewStore", () => {
 
     it("should not carry a reveal made for other files over to the files adopted next", () => {
         // Arrange
-        store.reveal("/root/src/ui/button.ts")
+        store.reveal(["/root/src/ui/button.ts"])
         loadLayoutIdentity(PROJECT_B)
 
         // Act
@@ -242,7 +242,7 @@ describe("DependencyMapViewStore", () => {
     it("should not repeat a reveal made after the adoption when other files are loaded later", () => {
         // Arrange
         store.adoptTree(TWO_TOP_FOLDERS)
-        store.reveal("/root/src/ui/button.ts")
+        store.reveal(["/root/src/ui/button.ts"])
         loadLayoutIdentity(PROJECT_B)
 
         // Act
@@ -252,21 +252,15 @@ describe("DependencyMapViewStore", () => {
         expect([...store.expandedPaths()]).toEqual(["/root"])
     })
 
-    it("should keep what only the graph can select and hover, and drop the selection with the graph of other files", () => {
+    it("should keep the box under the pointer, which the shared hover names only by its node", () => {
         // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
-        const selection = { kind: "box", path: "/root/a.ts/Creature", sharedPath: "/root/a.ts" } as const
+        const declarationPath = "/root/a.ts/Creature"
 
         // Act
-        store.selectInGraph(selection)
-        store.hoverInGraph(selection.path)
-        const kept = [store.graphSelection(), store.hoveredBoxPath()]
-        loadLayoutIdentity(PROJECT_B)
-        store.adoptTree(TWO_TOP_FOLDERS)
+        store.hoverInGraph(declarationPath)
 
         // Assert
-        expect(kept).toEqual([selection, selection.path])
-        expect(store.graphSelection()).toBeNull()
+        expect(store.hoveredBoxPath()).toBe(declarationPath)
     })
 
     it("should open the boxes the tree puts around a revealed node, though its path names none of them", () => {
@@ -276,26 +270,10 @@ describe("DependencyMapViewStore", () => {
         store.adoptTree(inPackage)
 
         // Act
-        store.reveal(file.path)
+        store.reveal([file.path])
 
         // Assert
         expect(store.expandedPaths().has("package:game")).toBe(true)
-    })
-
-    it("should show the folders until the reader asks for the packages, then put every dragged box back and fit the graph into view", () => {
-        // Arrange
-        store.adoptTree(TWO_TOP_FOLDERS)
-        store.placeBox("/root/src", [40, 0])
-        const atFirst = store.hierarchy()
-
-        // Act
-        store.showHierarchy("packages")
-
-        // Assert
-        expect(atFirst).toBe("folders")
-        expect(store.hierarchy()).toBe("packages")
-        expect(store.boxOffsets().size).toBe(0)
-        expect(store.fitRequest()).toBe(1)
     })
 
     it("should ask anew for every request to bring boxes into view, also for the same boxes", () => {

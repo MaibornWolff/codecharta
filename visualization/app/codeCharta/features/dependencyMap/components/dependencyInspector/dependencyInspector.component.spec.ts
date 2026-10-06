@@ -1,7 +1,9 @@
+import { signal } from "@angular/core"
 import { fireEvent, render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { InspectorDependency, InspectorModel, InspectorReference } from "../../inspector/inspectorModel"
+import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyInspectorComponent } from "./dependencyInspector.component"
 
 const CREATURE: InspectorReference = { path: "/root/creature.ts/Creature", name: "Creature", kind: "declaration", declarationKind: "class" }
@@ -70,6 +72,11 @@ const FILE_MODEL: InspectorModel = {
     action: "open"
 }
 
+interface Shown {
+    model: InspectorModel
+    cyclesRequest?: number | null
+}
+
 async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest: number | null = null) {
     const handlers = {
         referenceChosen: jest.fn(),
@@ -79,8 +86,26 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         allRowsRequested: jest.fn(),
         closed: jest.fn()
     }
-    const rendered = await render(DependencyInspectorComponent, { inputs: { model, cyclesRequest, edgeColors: EDGE_COLORS }, on: handlers })
-    return { ...rendered, ...handlers }
+    const shown = { model: signal<InspectorModel | null>(model), cyclesRequest: signal(cyclesRequest) }
+    const store: Partial<DependencyInspectorStore> = {
+        ...shown,
+        edgeColors: signal(EDGE_COLORS),
+        goTo: handlers.referenceChosen,
+        pointAt: handlers.dependenciesPointedAt,
+        perform: handlers.actionChosen,
+        showCycle: handlers.cycleShown,
+        showAllRows: handlers.allRowsRequested,
+        dismiss: handlers.closed
+    }
+    const rendered = await render(DependencyInspectorComponent, { providers: [{ provide: DependencyInspectorStore, useValue: store }] })
+    const rerender = async ({ inputs }: { inputs: Shown }) => {
+        shown.model.set(inputs.model)
+        if (inputs.cyclesRequest !== undefined) {
+            shown.cyclesRequest.set(inputs.cyclesRequest)
+        }
+        rendered.fixture.detectChanges()
+    }
+    return { ...rendered, ...handlers, rerender, shown }
 }
 
 const fileCard = () => screen.getAllByTestId("dependency-inspector-group")[1]
@@ -142,7 +167,7 @@ describe("DependencyInspectorComponent", () => {
         await fixture.whenStable()
         fixture.detectChanges()
         const afterCopying = copyButton.getAttribute("title")
-        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, edgeColors: EDGE_COLORS } })
+        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" } } })
         fixture.detectChanges()
 
         // Assert
@@ -156,7 +181,7 @@ describe("DependencyInspectorComponent", () => {
         const searchedToTheEnd = screen.queryByTestId("dependency-inspector-cycles-incomplete")
 
         // Act
-        await rerender({ inputs: { model: { ...FILE_MODEL, mayMissCycles: true }, edgeColors: EDGE_COLORS } })
+        await rerender({ inputs: { model: { ...FILE_MODEL, mayMissCycles: true } } })
         fixture.detectChanges()
 
         // Assert
@@ -377,9 +402,9 @@ describe("DependencyInspectorComponent", () => {
         const { rerender, fixture } = await renderInspector(FILE_MODEL, null)
 
         // Act
-        await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1, edgeColors: EDGE_COLORS } })
+        await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1 } })
         fixture.detectChanges()
-        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, cyclesRequest: 1, edgeColors: EDGE_COLORS } })
+        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, cyclesRequest: 1 } })
         fixture.detectChanges()
 
         // Assert

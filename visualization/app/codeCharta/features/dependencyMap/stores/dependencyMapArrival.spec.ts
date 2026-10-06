@@ -81,7 +81,7 @@ describe("DependencyMapArrival", () => {
         // Act
         arrival.receive(nodePath)
         unfocusInTheStore()
-        viewStore.reveal(nodePath)
+        viewStore.reveal([nodePath])
         viewStore.adoptTree(
             leveledFolder("/root", [leveledFolder(FOCUSED_FOLDER), leveledFolder("/root/lib", [leveledFolder("/root/lib/util")])])
         )

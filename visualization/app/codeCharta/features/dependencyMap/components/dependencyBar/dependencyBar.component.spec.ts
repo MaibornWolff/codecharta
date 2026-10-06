@@ -13,7 +13,7 @@ import { setDependencyGraphSettings } from "../../../../stores/preferences/prefe
 import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { dependencyLayoutIdentitySelector } from "../../selectors/dependencyMap.selectors"
-import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
+import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
 const EDGE_METRICS = [
@@ -334,7 +334,7 @@ describe("DependencyBarComponent", () => {
 
         // Assert
         expect(withoutPackages).toBeNull()
-        expect(TestBed.inject(DependencyMapViewStore).hierarchy()).toBe("packages")
+        expect(TestBed.inject(DependencyGraphModelStore).hierarchy()).toBe("packages")
         expect(screen.getByTestId("dependency-bar-hierarchy-segment").textContent).toContain("Packages")
         expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: "SET_DEPENDENCY_GRAPH_SETTINGS" }))
     })

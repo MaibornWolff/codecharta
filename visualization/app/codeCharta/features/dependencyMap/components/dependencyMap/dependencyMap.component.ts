@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
-import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import {
     boxAtPoint,
     canBeOpened,
@@ -17,7 +16,6 @@ import {
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
 import { declarationsOn } from "../../declarations/cycleChains"
-import { InspectorActionKind, InspectorCycle, InspectorReference } from "../../inspector/inspectorModel"
 import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
@@ -53,10 +51,6 @@ export class DependencyMapComponent {
 
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
-
-    protected readonly inspectorModel = this.inspectorStore.model
-    protected readonly cyclesRequest = this.inspectorStore.cyclesRequest
-    protected readonly edgeColors = this.inspectorStore.edgeColors
 
     protected readonly boxAt = (point: Point) => {
         const layout = this.graphModel.shownLayout()
@@ -148,30 +142,6 @@ export class DependencyMapComponent {
         if (nodePath !== null) {
             this.writeStore.openContextMenu(nodePath, clientX, clientY)
         }
-    }
-
-    protected goTo(reference: InspectorReference): void {
-        this.inspectorStore.goTo(reference)
-    }
-
-    protected pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
-        this.inspectorStore.pointAt(declarationEdges)
-    }
-
-    protected perform(action: InspectorActionKind): void {
-        this.inspectorStore.perform(action)
-    }
-
-    protected showCycle(cycle: InspectorCycle): void {
-        this.inspectorStore.showCycle(cycle)
-    }
-
-    protected showAllRows(): void {
-        this.inspectorStore.showAllRows()
-    }
-
-    protected dismissInspector(): void {
-        this.inspectorStore.dismiss()
     }
 
     protected moveBox({ path, deltaX, deltaY }: DraggedBox): void {

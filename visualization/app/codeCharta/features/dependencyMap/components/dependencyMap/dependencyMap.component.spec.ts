@@ -42,6 +42,7 @@ import {
     dependencyTreeSelector,
     isDependencyMapFocusedSelector
 } from "../../selectors/dependencyMap.selectors"
+import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyMapComponent } from "./dependencyMap.component"
 
@@ -659,6 +660,24 @@ describe("DependencyMapComponent", () => {
                 expect(inspectorTitle()).toBe("node.ts")
             })
 
+            it("should forget a selected declaration once other files are loaded", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(VIEW)
+                TestBed.inject(DependencyMapViewStore).toggle(VIEW)
+                fixture.detectChanges()
+                fireChartEvent("click", boxEvent(`${VIEW}/Menu`))
+                fixture.detectChanges()
+                const whileSelected = inspectorTitle()
+
+                // Act
+                await loadOtherFiles(store, DECLARING_TREE)
+                fixture.detectChanges()
+
+                // Assert
+                expect(whileSelected).toBe("Menu")
+                expect(inspectorTitle()).toBe("view.ts")
+            })
+
             it("should tell only of what the graph draws, leaving out the declarations of a file outside the focus", async () => {
                 // Arrange
                 const focusedOnUi = leveledFolder("/root/ui", DECLARING_TREE.children[0].children, 1)
@@ -805,7 +824,7 @@ describe("DependencyMapComponent", () => {
             const DATA = "package:app.data"
 
             async function showPackages(fixture: { detectChanges: () => void }) {
-                TestBed.inject(DependencyMapViewStore).showHierarchy("packages")
+                TestBed.inject(DependencyGraphModelStore).showHierarchy("packages")
                 fixture.detectChanges()
                 await screen.findByTestId("dependency-graph")
             }
@@ -863,7 +882,7 @@ describe("DependencyMapComponent", () => {
                 await showPackages(fixture)
 
                 // Act
-                TestBed.inject(DependencyMapViewStore).reveal(VIEW)
+                TestBed.inject(DependencyMapViewStore).reveal([VIEW])
                 fixture.detectChanges()
                 await screen.findByTestId("dependency-graph")
 

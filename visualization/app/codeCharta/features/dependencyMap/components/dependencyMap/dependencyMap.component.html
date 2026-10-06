@@ -26,19 +26,7 @@
                 (boxDragEnded)="endDragging()"
             ></cc-dependency-graph>
         </div>
-        @if (inspectorModel(); as inspector) {
-            <cc-dependency-inspector
-                [model]="inspector"
-                [cyclesRequest]="cyclesRequest()"
-                [edgeColors]="edgeColors()"
-                (referenceChosen)="goTo($event)"
-                (dependenciesPointedAt)="pointAt($event)"
-                (actionChosen)="perform($event)"
-                (cycleShown)="showCycle($event)"
-                (allRowsRequested)="showAllRows()"
-                (closed)="dismissInspector()"
-            ></cc-dependency-inspector>
-        }
+        <cc-dependency-inspector></cc-dependency-inspector>
     </div>
 } @else if (hasDependencyData()) {
     <div class="flex h-full items-center justify-center p-4">
