@@ -5,7 +5,7 @@ import {
     edgesSelector,
     hasDeclarationsSelector,
     hasDependencyDataSelector,
-    hasNamespacesSelector
+    hasPackagesSelector
 } from "../../../lenses/dependency/dependencyLens.facade"
 import { CcState } from "../../../model/codeCharta.model"
 import { edgeMetricDataSelector } from "../../../renderer/renderModel/renderModel.facade"
@@ -38,7 +38,7 @@ export class DependencyMapReadStore {
     readonly edges$ = this.store.select(edgesSelector)
     readonly declarations$ = this.store.select(dependencyDeclarationsSelector)
     readonly hasDeclarations$ = this.store.select(hasDeclarationsSelector)
-    readonly hasNamespaces$ = this.store.select(hasNamespacesSelector)
+    readonly hasPackages$ = this.store.select(hasPackagesSelector)
     readonly sharedEdgeMetric$ = this.store.select(edgeMetricSelector)
     readonly edgeMetricData$ = this.store.select(edgeMetricDataSelector)
     readonly persistedSettings$ = this.store.select(dependencyGraphSettingsSelector)

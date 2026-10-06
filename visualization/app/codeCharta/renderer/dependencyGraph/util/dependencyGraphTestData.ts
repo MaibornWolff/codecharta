@@ -44,7 +44,7 @@ export function anEdge(fromPath: string, toPath: string, overrides: Partial<Grap
 
 export function aBand(overrides: Partial<LevelBand> = {}): LevelBand {
     return {
-        folderPath: "/root",
+        containerPath: "/root",
         level: 1,
         levelPath: [1],
         isTopmost: false,

@@ -30,8 +30,8 @@ interface RevealsAwaitingAdoption {
 export class DependencyMapViewStore {
     private readonly readStore = inject(DependencyMapReadStore)
     private readonly currentLayoutIdentity = toSignal(this.readStore.layoutIdentity$, { requireSync: true })
-    private readonly layoutIdentityOfTheOpenedFolders = signal<string | null>(null)
-    private readonly openedFolders = signal<ReadonlySet<string>>(new Set())
+    private readonly layoutIdentityOfTheOpenedBoxes = signal<string | null>(null)
+    private readonly openedBoxes = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
     private readonly draggedOrder = signal<readonly string[]>([])
     private readonly boxBeingDragged = signal<string | null>(null)
@@ -43,8 +43,8 @@ export class DependencyMapViewStore {
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: LeveledNode | null = null
 
-    readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedFolders.asReadonly()
-    readonly expandedPaths = this.openedFolders.asReadonly()
+    readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedBoxes.asReadonly()
+    readonly expandedPaths = this.openedBoxes.asReadonly()
     readonly boxOffsets = this.movedBoxes.asReadonly()
     /** Dragged boxes, the most recently dragged last, so it paints over the others. */
     readonly raisedPaths = this.draggedOrder.asReadonly()
@@ -71,7 +71,7 @@ export class DependencyMapViewStore {
         const layoutIdentity = this.currentLayoutIdentity()
         const hasRootMoved = tree.path !== this.adoptedTree?.path
         this.adoptedTree = tree
-        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedFolders)) {
+        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedBoxes)) {
             this.startOver(tree, layoutIdentity)
         } else if (hasRootMoved) {
             this.openTheMovedRoot(tree)
@@ -123,32 +123,32 @@ export class DependencyMapViewStore {
     /** A reveal arriving before the tree of the loaded files is adopted, as on the way in from another view, is
      * repeated once it is, since adopting a tree closes every folder. */
     reveal(path: string): void {
-        this.openFoldersHolding([path])
+        this.openBoxesHolding([path])
         const layoutIdentity = untracked(this.currentLayoutIdentity)
-        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedFolders)) {
+        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedBoxes)) {
             this.awaitAdoptionToReveal(layoutIdentity, path)
         }
     }
 
-    openFolder(folderPath: string): void {
-        this.reveal(folderPath)
-        const boxPath = (this.adoptedTree && boxPathOf(this.adoptedTree, folderPath)) ?? folderPath
-        this.openedFolders.update(opened => new Set([...opened, boxPath]))
+    openBox(path: string): void {
+        this.reveal(path)
+        const boxPath = (this.adoptedTree && boxPathOf(this.adoptedTree, path)) ?? path
+        this.openedBoxes.update(opened => new Set([...opened, boxPath]))
     }
 
-    toggle(folderPath: string): void {
-        this.openedFolders.update(opened => {
+    toggle(boxPath: string): void {
+        this.openedBoxes.update(opened => {
             const next = new Set(opened)
-            if (!next.delete(folderPath)) {
-                next.add(folderPath)
+            if (!next.delete(boxPath)) {
+                next.add(boxPath)
             }
             return next
         })
     }
 
     private startOver(tree: LeveledNode, layoutIdentity: string): void {
-        this.layoutIdentityOfTheOpenedFolders.set(layoutIdentity)
-        this.openedFolders.set(collapsedFirstLook(tree))
+        this.layoutIdentityOfTheOpenedBoxes.set(layoutIdentity)
+        this.openedBoxes.set(collapsedFirstLook(tree))
         this.resetLayout()
         this.selectedInGraph.set(null)
         this.revealTheAwaitingPaths(layoutIdentity)
@@ -157,8 +157,8 @@ export class DependencyMapViewStore {
     /** An exclusion can fold the one folder left into the root, which then carries that folder's path; left closed,
      * the whole graph would be one box. */
     private openTheMovedRoot(tree: LeveledNode): void {
-        if (!untracked(this.openedFolders).has(tree.path)) {
-            this.openedFolders.update(opened => new Set([...opened, ...collapsedFirstLook(tree)]))
+        if (!untracked(this.openedBoxes).has(tree.path)) {
+            this.openedBoxes.update(opened => new Set([...opened, ...collapsedFirstLook(tree)]))
         }
     }
 
@@ -172,13 +172,13 @@ export class DependencyMapViewStore {
         const awaiting = this.revealsAwaitingAdoption
         this.revealsAwaitingAdoption = null
         if (awaiting?.layoutIdentity === layoutIdentity) {
-            this.openFoldersHolding(awaiting.paths)
+            this.openBoxesHolding(awaiting.paths)
         }
     }
 
-    private openFoldersHolding(paths: string[]): void {
+    private openBoxesHolding(paths: string[]): void {
         const boxesAround = (path: string) => (this.adoptedTree && containerPathsOf(this.adoptedTree, path)) ?? []
-        this.openedFolders.update(opened => new Set([...opened, ...paths.flatMap(ancestorsOf), ...paths.flatMap(boxesAround)]))
+        this.openedBoxes.update(opened => new Set([...opened, ...paths.flatMap(ancestorsOf), ...paths.flatMap(boxesAround)]))
     }
 }
 

@@ -56,7 +56,7 @@ function roomAround(child: Rectangle): Rectangle {
 }
 
 function spanningItsBoxes(band: LevelBand, byPath: ReadonlyMap<string, LayoutBox>): LevelBand {
-    const folder = byPath.get(band.folderPath)
+    const folder = byPath.get(band.containerPath)
     const members = enclosingRectangle(band.memberPaths.map(path => byPath.get(path)))
     return { ...band, x: folder.x, width: folder.width, y: members.y, height: members.height }
 }

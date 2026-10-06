@@ -1,6 +1,6 @@
 import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
 import { CycleLook } from "./boxMarks"
-import { BoxEmphasis, BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxEmphasis, BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
@@ -71,7 +71,7 @@ describe("dependencyGraphBoxes", () => {
 
             // Act
             const outline = childrenOf(drawBox(box, look("none"), identityPixels))
-            const [label, toggle, ...rest] = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
+            const [label, toggle, ...rest] = childrenOf(drawContainerTitle(box, look("none"), identityPixels))
 
             // Assert
             expect(outline.map(child => child.type)).toEqual(["rect"])
@@ -411,13 +411,13 @@ describe("dependencyGraphBoxes", () => {
         })
     })
 
-    describe("drawFolderTitle", () => {
+    describe("drawContainerTitle", () => {
         it("should name an open folder in its header", () => {
             // Arrange
             const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
 
             // Act
-            const children = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
+            const children = childrenOf(drawContainerTitle(box, look("none"), identityPixels))
 
             // Assert
             expect(children).toHaveLength(1)
@@ -429,7 +429,7 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
 
             // Act
-            const [title] = childrenOf(drawFolderTitle(box, look("none", false, true), identityPixels))
+            const [title] = childrenOf(drawContainerTitle(box, look("none", false, true), identityPixels))
 
             // Assert
             expect(title.style.opacity).toBe(0.3)
@@ -440,7 +440,7 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 40, height: 200 })
 
             // Act
-            const children = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
+            const children = childrenOf(drawContainerTitle(box, look("none"), identityPixels))
 
             // Assert
             expect(children).toEqual([])

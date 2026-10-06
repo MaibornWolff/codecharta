@@ -1,6 +1,6 @@
 import { DependencyLeaf } from "../../../model/codeCharta.model"
 import { LeveledNode } from "./leveledTree"
-import { arrangedByPackages, Namespaces } from "./packageTree"
+import { arrangedByPackages, PackagesByKey } from "./packageTree"
 
 function leaf(namespace?: string, level?: number): DependencyLeaf {
     return { name: "Any", kind: "class", ...(namespace !== undefined && { namespace }), ...(level !== undefined && { level }) }
@@ -14,7 +14,7 @@ function leveledFolder(path: string, children: LeveledNode[], level = 0): Levele
     return { path, name: path.split("/").pop(), level, kind: "folder", children }
 }
 
-const NAMESPACES: Namespaces = {
+const NAMESPACES: PackagesByKey = {
     com: { level: 0 },
     "com.game": { parent: "com", level: 2 },
     "com.game.model": { parent: "com.game", level: 1 },
@@ -138,7 +138,7 @@ describe("arrangedByPackages", () => {
 
     it("should treat a package whose parent the map does not know, or which is its own parent some packages up, as a top-level one", () => {
         // Arrange
-        const namespaces: Namespaces = {
+        const namespaces: PackagesByKey = {
             orphan: { parent: "missing", level: 0 },
             loopA: { parent: "loopB", level: 0 },
             loopB: { parent: "loopA", level: 0 }

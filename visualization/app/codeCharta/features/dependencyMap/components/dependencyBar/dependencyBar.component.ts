@@ -34,5 +34,5 @@ export class DependencyBarComponent {
     /** A map without declarations has nothing these settings could change. */
     readonly hasDeclarations = toSignal(this.readStore.hasDeclarations$, { requireSync: true })
     /** Without packages there is one hierarchy only, the folders. */
-    readonly hasNamespaces = toSignal(this.readStore.hasNamespaces$, { requireSync: true })
+    readonly hasPackages = toSignal(this.readStore.hasPackages$, { requireSync: true })
 }

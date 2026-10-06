@@ -43,8 +43,8 @@ export function findCycleChains(index: DeclarationIndex, maxWalks: number): Cycl
 
 function cyclicStepsOf(index: DeclarationIndex): CyclicSteps {
     const cyclicSteps = new Map<string, DependencyLeafEdge[]>()
-    for (const [start, leafEdges] of index.outgoing) {
-        const cyclic = leafEdges.filter(leafEdge => leafEdge.isCyclic)
+    for (const [start, declarationEdges] of index.outgoing) {
+        const cyclic = declarationEdges.filter(declarationEdge => declarationEdge.isCyclic)
         if (cyclic.length > 0) {
             cyclicSteps.set(start, cyclic)
         }
@@ -59,17 +59,17 @@ export function declarationsOn(chain: CycleChain): string[] {
 
 /** The cycles that run through at least one of the given declarations. */
 export function cyclesThrough(declarationPaths: ReadonlySet<string>, chains: readonly CycleChain[]): CycleChain[] {
-    return chains.filter(chain => chain.some(leafEdge => declarationPaths.has(fromPathOf(leafEdge))))
+    return chains.filter(chain => chain.some(declarationEdge => declarationPaths.has(fromPathOf(declarationEdge))))
 }
 
 function shortestWay(from: string, to: string, cyclicSteps: CyclicSteps): DependencyLeafEdge[] | null {
     const stepInto = new Map<string, DependencyLeafEdge | null>([[from, null]])
     const queue = [from]
     for (let position = 0; position < queue.length && !stepInto.has(to); position++) {
-        for (const leafEdge of cyclicSteps.get(queue[position]) ?? []) {
-            const next = toPathOf(leafEdge)
+        for (const declarationEdge of cyclicSteps.get(queue[position]) ?? []) {
+            const next = toPathOf(declarationEdge)
             if (!stepInto.has(next)) {
-                stepInto.set(next, leafEdge)
+                stepInto.set(next, declarationEdge)
                 queue.push(next)
             }
         }

@@ -92,7 +92,7 @@ export function topmostBoxAt(items: (PaintedItem | TitleItem)[], [x, y]: Point):
 function bandsByFolder(bands: LevelBand[]): Map<string, LevelBand[]> {
     const byFolder = new Map<string, LevelBand[]>()
     for (const band of bands) {
-        addToGroup(byFolder, band.folderPath, band)
+        addToGroup(byFolder, band.containerPath, band)
     }
     return byFolder
 }

@@ -10,7 +10,7 @@ import {
     dependencyDeclarationsSelector,
     edgesSelector,
     hasDependencyDataSelector,
-    hasNamespacesSelector
+    hasPackagesSelector
 } from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
 import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
@@ -108,7 +108,7 @@ interface Setup {
     hasDependencyData?: boolean
     isFocused?: boolean
     /** The graph starts with every folder closed; most tests look into them. */
-    openedFolders?: string[]
+    openedBoxes?: string[]
 }
 
 const EVERY_FOLDER = ["/root/ui", "/root/model"]
@@ -122,7 +122,7 @@ async function setup({
     searchedPaths = null,
     hasDependencyData = true,
     isFocused = false,
-    openedFolders = EVERY_FOLDER
+    openedBoxes = EVERY_FOLDER
 }: Setup = {}) {
     const rendered = await render(DependencyMapComponent, {
         providers: [
@@ -132,7 +132,7 @@ async function setup({
                     { selector: dependencyTreeSelector, value: tree },
                     { selector: edgesSelector, value: EDGES },
                     { selector: dependencyDeclarationsSelector, value: declarations },
-                    { selector: hasNamespacesSelector, value: Object.keys(declarations.namespaces).length > 0 },
+                    { selector: hasPackagesSelector, value: Object.keys(declarations.namespaces).length > 0 },
                     { selector: edgeMetricSelector, value: "dependencies" },
                     { selector: hoveredNodePathSelector, value: null },
                     { selector: selectedNodePathSelector, value: selectedPath },
@@ -147,7 +147,7 @@ async function setup({
             { provide: FileStoreReadWindow, useValue: { isLoadingFile$: of(false) } }
         ]
     })
-    for (const folder of openedFolders) {
+    for (const folder of openedBoxes) {
         TestBed.inject(DependencyMapViewStore).toggle(folder)
     }
     rendered.fixture.detectChanges()
@@ -260,10 +260,10 @@ describe("DependencyMapComponent", () => {
 
     it("should start with every folder closed", async () => {
         // Arrange
-        const openedFolders: string[] = []
+        const openedBoxes: string[] = []
 
         // Act
-        await setup({ openedFolders })
+        await setup({ openedBoxes })
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model"])
@@ -271,10 +271,10 @@ describe("DependencyMapComponent", () => {
 
     it("should draw the files of the opened folders, higher levels above lower ones", async () => {
         // Arrange
-        const openedFolders = EVERY_FOLDER
+        const openedBoxes = EVERY_FOLDER
 
         // Act
-        await setup({ openedFolders })
+        await setup({ openedBoxes })
 
         // Assert
         expect(drawnBoxPaths()).toEqual(["/root", "/root/ui", "/root/model", "/root/ui/view.ts", "/root/model/node.ts"])
@@ -355,7 +355,7 @@ describe("DependencyMapComponent", () => {
 
         it("should arrange the declarations the way the reader set", async () => {
             // Arrange
-            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })
+            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedBoxes: [...EVERY_FOLDER, VIEW] })
             const drawnWidth = () => {
                 const dataIndex = drawnSeries().data.findIndex(item => item.name === `${VIEW}/View`)
                 const [outline] = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children
@@ -377,7 +377,7 @@ describe("DependencyMapComponent", () => {
             const { store, fixture } = await setup({
                 tree: DECLARING_TREE,
                 declarations: DECLARATIONS,
-                openedFolders: [...EVERY_FOLDER, VIEW]
+                openedBoxes: [...EVERY_FOLDER, VIEW]
             })
             const declaration = boxEvent(`${VIEW}/View`)
 
@@ -405,7 +405,7 @@ describe("DependencyMapComponent", () => {
             const CYCLIC: DependencyDeclarations = {
                 ...DECLARATIONS,
                 leafEdges: [
-                    ...DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true })),
+                    ...DECLARATIONS.leafEdges.map(declarationEdge => ({ ...declarationEdge, isCyclic: true })),
                     {
                         fromNodeName: NODE,
                         fromLeaf: "Node",
@@ -471,11 +471,11 @@ describe("DependencyMapComponent", () => {
             })
         })
 
-        describe("panel", () => {
+        describe("inspector", () => {
             const CYCLIC: DependencyDeclarations = {
                 ...DECLARATIONS,
                 leafEdges: [
-                    ...DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true })),
+                    ...DECLARATIONS.leafEdges.map(declarationEdge => ({ ...declarationEdge, isCyclic: true })),
                     {
                         fromNodeName: NODE,
                         fromLeaf: "Node",
@@ -499,7 +499,7 @@ describe("DependencyMapComponent", () => {
                 fixture.detectChanges()
             }
 
-            const panelTitle = () => screen.queryByTestId("dependency-panel-title")?.textContent.trim() ?? null
+            const inspectorTitle = () => screen.queryByTestId("dependency-inspector-title")?.textContent.trim() ?? null
             const edgeOpacities = () =>
                 Object.fromEntries(
                     drawnSeries().data.flatMap((item, dataIndex) => {
@@ -511,14 +511,14 @@ describe("DependencyMapComponent", () => {
             it("should explain the selected file beside the graph, and nothing while nothing is selected", async () => {
                 // Arrange
                 const { store, fixture } = await setupSelected(null)
-                const withoutSelection = panelTitle()
+                const withoutSelection = inspectorTitle()
 
                 // Act
                 await select(store, fixture, VIEW)
 
                 // Assert
                 expect(withoutSelection).toBeNull()
-                expect(panelTitle()).toBe("view.ts")
+                expect(inspectorTitle()).toBe("view.ts")
                 expect(screen.getByRole("region", { name: "Declarations" }).textContent).toContain("Menu")
             })
 
@@ -527,7 +527,7 @@ describe("DependencyMapComponent", () => {
                 await setup({ selectedPath: "/root/ui/view.ts" })
 
                 // Assert
-                expect(panelTitle()).toBeNull()
+                expect(inspectorTitle()).toBeNull()
             })
 
             it("should explain a clicked edge, clear the selection of the other views and mark the edge", async () => {
@@ -540,7 +540,7 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: null }))
-                expect(panelTitle()).toBe("view.ts → node.ts")
+                expect(inspectorTitle()).toBe("view.ts → node.ts")
                 const edgeIndex = drawnSeries().data.findIndex(item => (item as { edgeId?: string }).edgeId === EDGE_ID)
                 expect(drawnSeries().renderItem({ dataIndex: edgeIndex }, { coord: point => point }).children).toHaveLength(3)
             })
@@ -558,10 +558,10 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect(drawnBoxPaths()).toEqual(expect.arrayContaining([`${VIEW}/View`, `${NODE}/Node`]))
-                expect(panelTitle()).toBeNull()
+                expect(inspectorTitle()).toBeNull()
             })
 
-            it("should open and close the selected file from the panel", async () => {
+            it("should open and close the selected file from the inspector", async () => {
                 // Arrange
                 const { fixture } = await setupSelected(VIEW)
 
@@ -575,7 +575,7 @@ describe("DependencyMapComponent", () => {
                 expect(screen.getByRole("button", { name: "Close in graph" })).not.toBeNull()
             })
 
-            it("should go to a declaration named in the panel: open its file, select it and tell the other views its file", async () => {
+            it("should go to a declaration named in the inspector: open its file, select it and tell the other views its file", async () => {
                 // Arrange
                 const { store, fixture } = await setupSelected(VIEW)
                 const usedDeclaration = within(screen.getByRole("region", { name: "Uses" })).getByRole("button", { name: "Node" })
@@ -588,15 +588,15 @@ describe("DependencyMapComponent", () => {
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: NODE }))
                 expect(drawnBoxPaths()).toContain(`${NODE}/Node`)
                 expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${NODE}/Node`])
-                expect(panelTitle()).toBe("Node")
-                expect(screen.getByTestId("dependency-panel-badges").textContent).toContain("Class")
+                expect(inspectorTitle()).toBe("Node")
+                expect(screen.getByTestId("dependency-inspector-badges").textContent).toContain("Class")
             })
 
             it("should light up the edge of the row under the pointer and let the others step back", async () => {
                 // Arrange
                 const { fixture } = await setupSelected(VIEW)
                 const usesRow = within(screen.getByRole("region", { name: "Uses" }))
-                    .getAllByTestId("dependency-panel-row")
+                    .getAllByTestId("dependency-inspector-row")
                     .at(-1)
 
                 // Act
@@ -616,7 +616,7 @@ describe("DependencyMapComponent", () => {
             it("should show a cycle in the graph: open the files on it and light up its chain", async () => {
                 // Arrange
                 const { fixture } = await setupSelected(VIEW)
-                const [cycle] = screen.getAllByTestId("dependency-panel-cycle")
+                const [cycle] = screen.getAllByTestId("dependency-inspector-cycle")
 
                 // Act
                 await userEvent.click(within(cycle).getByRole("button", { name: "Show in graph" }))
@@ -650,13 +650,13 @@ describe("DependencyMapComponent", () => {
                 // Act
                 await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
                 fixture.detectChanges()
-                const afterClosing = panelTitle()
+                const afterClosing = inspectorTitle()
                 fireChartEvent("click", boxEvent(NODE))
                 await select(store, fixture, NODE)
 
                 // Assert
                 expect(afterClosing).toBeNull()
-                expect(panelTitle()).toBe("node.ts")
+                expect(inspectorTitle()).toBe("node.ts")
             })
 
             it("should tell only of what the graph draws, leaving out the declarations of a file outside the focus", async () => {
@@ -664,7 +664,7 @@ describe("DependencyMapComponent", () => {
                 const focusedOnUi = leveledFolder("/root/ui", DECLARING_TREE.children[0].children, 1)
 
                 // Act
-                await setup({ tree: focusedOnUi, declarations: CYCLIC, selectedPath: VIEW, openedFolders: [] })
+                await setup({ tree: focusedOnUi, declarations: CYCLIC, selectedPath: VIEW, openedBoxes: [] })
 
                 // Assert
                 expect(screen.getByRole("region", { name: "Uses" }).textContent).not.toContain("Node")
@@ -687,7 +687,7 @@ describe("DependencyMapComponent", () => {
                 await select(store, fixture, NODE)
 
                 // Assert
-                expect(panelTitle()).toBe("node.ts")
+                expect(inspectorTitle()).toBe("node.ts")
                 expect(scrollIntoView).toHaveBeenCalledTimes(1)
             })
 
@@ -702,7 +702,7 @@ describe("DependencyMapComponent", () => {
                 await select(store, fixture, null)
 
                 // Assert
-                expect(panelTitle()).toBeNull()
+                expect(inspectorTitle()).toBeNull()
             })
 
             it("should explain a subject again that another view selects after the inspector was closed on it", async () => {
@@ -716,12 +716,12 @@ describe("DependencyMapComponent", () => {
                 await select(store, fixture, VIEW)
 
                 // Assert
-                expect(panelTitle()).toBe("view.ts")
+                expect(inspectorTitle()).toBe("view.ts")
             })
 
-            it("should open the folders around a hidden file when the panel opens that file in the graph", async () => {
+            it("should open the folders around a hidden file when the inspector opens that file in the graph", async () => {
                 // Arrange
-                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: CYCLIC, selectedPath: VIEW, openedFolders: [] })
+                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: CYCLIC, selectedPath: VIEW, openedBoxes: [] })
 
                 // Act
                 await userEvent.click(screen.getByRole("button", { name: "Open in graph" }))
@@ -737,7 +737,7 @@ describe("DependencyMapComponent", () => {
                 // Arrange
                 const { store, fixture } = await setupSelected(VIEW)
                 const usesRow = within(screen.getByRole("region", { name: "Uses" }))
-                    .getAllByTestId("dependency-panel-row")
+                    .getAllByTestId("dependency-inspector-row")
                     .at(-1)
                 fireEvent.mouseEnter(usesRow)
 
@@ -812,7 +812,7 @@ describe("DependencyMapComponent", () => {
 
             it("should nest the files in their packages once the reader asks for them", async () => {
                 // Arrange
-                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedFolders: [] })
+                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedBoxes: [] })
 
                 // Act
                 await showPackages(fixture)
@@ -826,7 +826,7 @@ describe("DependencyMapComponent", () => {
 
             it("should keep the folders for a map without packages, whatever the reader asked for before", async () => {
                 // Arrange
-                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: DECLARATIONS, openedFolders: [] })
+                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: DECLARATIONS, openedBoxes: [] })
 
                 // Act
                 await showPackages(fixture)
@@ -841,7 +841,7 @@ describe("DependencyMapComponent", () => {
                     tree: DECLARING_TREE,
                     declarations: PACKAGED,
                     selectedPath: NODE,
-                    openedFolders: [...EVERY_FOLDER, VIEW]
+                    openedBoxes: [...EVERY_FOLDER, VIEW]
                 })
 
                 // Act
@@ -859,7 +859,7 @@ describe("DependencyMapComponent", () => {
 
             it("should open the packages around a file revealed from outside the graph", async () => {
                 // Arrange
-                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedFolders: [] })
+                const { fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedBoxes: [] })
                 await showPackages(fixture)
 
                 // Act
@@ -876,7 +876,7 @@ describe("DependencyMapComponent", () => {
                 const { fixture } = await setup({
                     tree: DECLARING_TREE,
                     declarations: PACKAGED,
-                    openedFolders: [],
+                    openedBoxes: [],
                     searchedPaths: new Set([VIEW])
                 })
                 await showPackages(fixture)
@@ -894,7 +894,7 @@ describe("DependencyMapComponent", () => {
                 expect([SCREENS, DATA, "package:app"].map(opacityOf)).toEqual([1, 0.3, 1])
             })
 
-            it("should head a file in the panel with the package it is drawn in", async () => {
+            it("should head a file in the inspector with the package it is drawn in", async () => {
                 // Arrange
                 const { fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, selectedPath: VIEW })
 
@@ -903,12 +903,12 @@ describe("DependencyMapComponent", () => {
                 fixture.detectChanges()
 
                 // Assert
-                expect(screen.getByTestId("dependency-panel-parent").textContent.trim()).toBe("package screens")
+                expect(screen.getByTestId("dependency-inspector-parent").textContent.trim()).toBe("package screens")
             })
 
-            it("should select a package in the graph alone, explain it in the panel and tell the other views of no node", async () => {
+            it("should select a package in the graph alone, explain it in the inspector and tell the other views of no node", async () => {
                 // Arrange
-                const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedFolders: [] })
+                const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED, openedBoxes: [] })
                 await showPackages(fixture)
                 TestBed.inject(DependencyMapViewStore).toggle("package:app")
                 fixture.detectChanges()
@@ -924,7 +924,7 @@ describe("DependencyMapComponent", () => {
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: null }))
                 expect(store.dispatch).toHaveBeenCalledWith(setHoveredNodePath({ value: null }))
                 expect(store.dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: setRightClickedNodeData.type }))
-                expect(screen.getByTestId("dependency-panel-badges").textContent).toContain("package")
+                expect(screen.getByTestId("dependency-inspector-badges").textContent).toContain("package")
                 expect(outlineWidthOf(SCREENS)).toBe(2.5)
             })
 
@@ -956,7 +956,7 @@ describe("DependencyMapComponent", () => {
             const { store, fixture } = await setup({
                 tree: DECLARING_TREE,
                 declarations: DECLARATIONS,
-                openedFolders: [...EVERY_FOLDER, VIEW]
+                openedBoxes: [...EVERY_FOLDER, VIEW]
             })
             fireChartEvent("click", boxEvent(`${VIEW}/View`))
 
@@ -991,7 +991,7 @@ describe("DependencyMapComponent", () => {
         const tree = leveledFolder("/root", [chain, leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")])])
 
         // Act
-        await setup({ tree, selectedPath: "/root/lib", openedFolders: [] })
+        await setup({ tree, selectedPath: "/root/lib", openedBoxes: [] })
 
         // Assert
         expect(outlineWidthOf("/root/lib/core")).toBe(2.5)
@@ -1115,7 +1115,7 @@ describe("DependencyMapComponent", () => {
 
     it("should fit the graph of newly loaded files into view", async () => {
         // Arrange
-        const { store } = await setup({ openedFolders: [] })
+        const { store } = await setup({ openedBoxes: [] })
         const [[fittedOnArrival]] = stubbedChart.setOption.mock.calls
         stubbedChart.convertFromPixel.mockImplementation((_finder: unknown, [x, y]: number[]) => [x / 2, y / 2])
 

@@ -22,7 +22,7 @@ export interface LayoutBox extends Rectangle {
 }
 
 export interface LevelBand extends Rectangle {
-    folderPath: string
+    containerPath: string
     level: number
     levelPath: number[]
     isTopmost: boolean
@@ -404,13 +404,13 @@ class LayoutPlacer {
     }
 
     /** A level's rows share one band, which a row of the next level ends. */
-    private bandReaching(row: Row, previous: Row | undefined, current: LevelBand | null, folder: LeveledNode, rectangle: Rectangle) {
+    private bandReaching(row: Row, previous: Row | undefined, current: LevelBand | null, container: LeveledNode, rectangle: Rectangle) {
         let band = current
         if (band === null || previous?.level !== row.level) {
             // The levels inside a file are those of its declarations' packages, which the levels around the file say nothing of.
-            const levelsAround = folder.kind === "file" ? [] : this.levelPaths.get(folder.path)
+            const levelsAround = container.kind === "file" ? [] : this.levelPaths.get(container.path)
             const levelPath = [...levelsAround, row.level]
-            band = { folderPath: folder.path, level: row.level, levelPath, isTopmost: !previous, memberPaths: [], ...rectangle }
+            band = { containerPath: container.path, level: row.level, levelPath, isTopmost: !previous, memberPaths: [], ...rectangle }
             this.layout.bands.push(band)
         }
         band.height = rectangle.y + row.height - band.y

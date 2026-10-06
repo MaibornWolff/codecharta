@@ -16,19 +16,19 @@ import {
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
-import { declarationsOn } from "../../panel/cycleChains"
-import { PanelActionKind, PanelCycle, PanelRef } from "../../panel/panelModel"
+import { declarationsOn } from "../../declarations/cycleChains"
+import { InspectorActionKind, InspectorCycle, InspectorReference } from "../../inspector/inspectorModel"
 import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
+import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
-import { DependencyPanelStore } from "../../stores/dependencyPanel.store"
-import { DependencyPanelComponent } from "../dependencyPanel/dependencyPanel.component"
+import { DependencyInspectorComponent } from "../dependencyInspector/dependencyInspector.component"
 
 @Component({
     selector: "cc-dependency-map",
     templateUrl: "./dependencyMap.component.html",
-    imports: [DependencyGraphComponent, DependencyPanelComponent],
+    imports: [DependencyGraphComponent, DependencyInspectorComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
         class: "fixed inset-x-0 z-0 top-[var(--cc-bars-height,49px)] bottom-[var(--cc-bottom-bar-height,32px)]",
@@ -41,7 +41,7 @@ export class DependencyMapComponent {
     private readonly viewStore = inject(DependencyMapViewStore)
     private readonly viewReadinessStore = inject(ViewReadinessStore)
     private readonly graphModel = inject(DependencyGraphModelStore)
-    private readonly panelStore = inject(DependencyPanelStore)
+    private readonly inspectorStore = inject(DependencyInspectorStore)
 
     protected readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
     protected readonly isLoadingFile = toSignal(inject(FileStoreReadWindow).isLoadingFile$, { initialValue: false })
@@ -54,9 +54,9 @@ export class DependencyMapComponent {
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
 
-    protected readonly panelModel = this.panelStore.model
-    protected readonly cyclesRequest = this.panelStore.cyclesRequest
-    protected readonly edgeColors = this.panelStore.edgeColors
+    protected readonly inspectorModel = this.inspectorStore.model
+    protected readonly cyclesRequest = this.inspectorStore.cyclesRequest
+    protected readonly edgeColors = this.inspectorStore.edgeColors
 
     protected readonly boxAt = (point: Point) => {
         const layout = this.graphModel.shownLayout()
@@ -92,9 +92,9 @@ export class DependencyMapComponent {
             edges: this.graphModel.projectedEdges(),
             edgeMetric: this.graphModel.edgeMetric(),
             hoveredPath: this.graphModel.boxStandingFor(this.viewStore.hoveredBoxPath() ?? this.hoveredPath()),
-            selectedPath: this.panelStore.selectedBoxPath(),
-            selectedEdgeId: this.panelStore.selectedEdgeId(),
-            highlightedEdgeIds: this.panelStore.highlightedEdgeIds(),
+            selectedPath: this.inspectorStore.selectedBoxPath(),
+            selectedEdgeId: this.inspectorStore.selectedEdgeId(),
+            highlightedEdgeIds: this.inspectorStore.highlightedEdgeIds(),
             raisedPaths: this.viewStore.raisedPaths(),
             draggingPath: this.viewStore.draggingPath(),
             searchedPaths: this.searchedBoxPaths()
@@ -116,15 +116,15 @@ export class DependencyMapComponent {
     }
 
     protected select(path: string): void {
-        this.panelStore.select(path)
+        this.inspectorStore.select(path)
     }
 
     protected selectEdge(edgeId: string): void {
-        this.panelStore.selectEdge(edgeId)
+        this.inspectorStore.selectEdge(edgeId)
     }
 
     protected showCyclesOf(path: string): void {
-        this.panelStore.showCyclesOf(path)
+        this.inspectorStore.showCyclesOf(path)
     }
 
     protected toggle(path: string): void {
@@ -150,28 +150,28 @@ export class DependencyMapComponent {
         }
     }
 
-    protected goTo(ref: PanelRef): void {
-        this.panelStore.goTo(ref)
+    protected goTo(reference: InspectorReference): void {
+        this.inspectorStore.goTo(reference)
     }
 
-    protected pointAt(leafEdges: readonly DependencyLeafEdge[] | null): void {
-        this.panelStore.pointAt(leafEdges)
+    protected pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
+        this.inspectorStore.pointAt(declarationEdges)
     }
 
-    protected perform(action: PanelActionKind): void {
-        this.panelStore.perform(action)
+    protected perform(action: InspectorActionKind): void {
+        this.inspectorStore.perform(action)
     }
 
-    protected showCycle(cycle: PanelCycle): void {
-        this.panelStore.showCycle(cycle)
+    protected showCycle(cycle: InspectorCycle): void {
+        this.inspectorStore.showCycle(cycle)
     }
 
     protected showAllRows(): void {
-        this.panelStore.showAllRows()
+        this.inspectorStore.showAllRows()
     }
 
-    protected dismissPanel(): void {
-        this.panelStore.dismiss()
+    protected dismissInspector(): void {
+        this.inspectorStore.dismiss()
     }
 
     protected moveBox({ path, deltaX, deltaY }: DraggedBox): void {

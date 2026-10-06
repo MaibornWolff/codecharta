@@ -20,12 +20,16 @@ export interface LeveledNode {
     declarationKind?: string
 }
 
-export type LeavesByFile = Readonly<Record<string, Record<string, DependencyLeaf>>>
+export type DeclarationsByFile = Readonly<Record<string, Record<string, DependencyLeaf>>>
 
 export const LEVEL_WHEN_ABSENT = 0
-const NO_LEAVES: LeavesByFile = {}
+const NO_LEAVES: DeclarationsByFile = {}
 
-export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData, leaves: LeavesByFile = NO_LEAVES): LeveledNode | null {
+export function buildLeveledTree(
+    root: CodeMapNode,
+    levels: DependencyLevelData,
+    leaves: DeclarationsByFile = NO_LEAVES
+): LeveledNode | null {
     if (root.isExcluded || root.path === undefined) {
         return null
     }
@@ -57,12 +61,12 @@ function leveledDeclaration(path: string, leaf: DependencyLeaf): LeveledNode {
 }
 
 /** The box a folder is drawn as: its own, or the chain box it is folded into. */
-export function boxPathOf(tree: LeveledNode, folderPath: string): string | null {
-    if (tree.path === folderPath || tree.foldedPaths?.includes(folderPath)) {
+export function boxPathOf(tree: LeveledNode, containerPath: string): string | null {
+    if (tree.path === containerPath || tree.foldedPaths?.includes(containerPath)) {
         return tree.path
     }
     for (const child of tree.children) {
-        const boxPath = boxPathOf(child, folderPath)
+        const boxPath = boxPathOf(child, containerPath)
         if (boxPath !== null) {
             return boxPath
         }
@@ -85,12 +89,12 @@ export function containerPathsOf(tree: LeveledNode, path: string): string[] | nu
 }
 
 /** The levels to walk down from the tree's root to reach a folder's box, outermost first. */
-export function levelPathOf(tree: LeveledNode, folderPath: string): number[] | null {
-    if (tree.path === folderPath || tree.foldedPaths?.includes(folderPath)) {
+export function levelPathOf(tree: LeveledNode, containerPath: string): number[] | null {
+    if (tree.path === containerPath || tree.foldedPaths?.includes(containerPath)) {
         return []
     }
     for (const child of tree.children) {
-        const levelPathBelowChild = levelPathOf(child, folderPath)
+        const levelPathBelowChild = levelPathOf(child, containerPath)
         if (levelPathBelowChild !== null) {
             return [child.level, ...levelPathBelowChild]
         }

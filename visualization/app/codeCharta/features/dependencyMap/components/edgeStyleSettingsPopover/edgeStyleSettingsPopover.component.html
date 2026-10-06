@@ -32,7 +32,7 @@
         idPrefix="dependency-bar-line-style-shows"
         [choices]="lineStyleMeaningChoices"
         [chosen]="lineStyleShows()"
-        (choose)="showByLineStyle($event)"
+        (choose)="setLineStyleMeaning($event)"
     ></cc-choice-row>
 
     <cc-reset-settings-button

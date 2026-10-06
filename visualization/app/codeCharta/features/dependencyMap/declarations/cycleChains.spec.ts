@@ -4,14 +4,14 @@ import { DeclarationIndex, fromPathOf, indexDeclarations, toPathOf } from "./dec
 
 const FILE = "/root/game.ts"
 
-function leafEdge(fromLeaf: string, toLeaf: string, isCyclic = true): DependencyLeafEdge {
+function declarationEdge(fromLeaf: string, toLeaf: string, isCyclic = true): DependencyLeafEdge {
     return { fromNodeName: FILE, fromLeaf, toNodeName: FILE, toLeaf, attributes: { dependencies: 1 }, usage: ["usage"], isCyclic }
 }
 
-function indexOf(leafEdges: DependencyLeafEdge[]): DeclarationIndex {
-    const names = new Set(leafEdges.flatMap(edge => [edge.fromLeaf, edge.toLeaf]))
+function indexOf(declarationEdges: DependencyLeafEdge[]): DeclarationIndex {
+    const names = new Set(declarationEdges.flatMap(edge => [edge.fromLeaf, edge.toLeaf]))
     const leaves = { [FILE]: Object.fromEntries([...names].map(name => [name, { name, kind: "class" }])) }
-    return indexDeclarations({ leaves, leafEdges })
+    return indexDeclarations({ leaves, leafEdges: declarationEdges })
 }
 
 function namesOf(chains: readonly (readonly DependencyLeafEdge[])[]): string[] {
@@ -21,7 +21,13 @@ function namesOf(chains: readonly (readonly DependencyLeafEdge[])[]): string[] {
 describe("findCycleChains", () => {
     it("should walk the shortest way back for each cyclic dependency, and tell each cycle once however often it is met", () => {
         // Arrange
-        const index = indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("B", "C"), leafEdge("C", "A"), leafEdge("A", "D", false)])
+        const index = indexOf([
+            declarationEdge("A", "B"),
+            declarationEdge("B", "A"),
+            declarationEdge("B", "C"),
+            declarationEdge("C", "A"),
+            declarationEdge("A", "D", false)
+        ])
 
         // Act
         const { chains } = findCycleChains(index, MAX_CYCLE_WALKS)
@@ -32,7 +38,7 @@ describe("findCycleChains", () => {
 
     it("should close each cycle: every dependency ends where the next one starts", () => {
         // Arrange
-        const index = indexOf([leafEdge("A", "B"), leafEdge("B", "C"), leafEdge("C", "A")])
+        const index = indexOf([declarationEdge("A", "B"), declarationEdge("B", "C"), declarationEdge("C", "A")])
 
         // Act
         const [chain] = findCycleChains(index, MAX_CYCLE_WALKS).chains
@@ -44,7 +50,7 @@ describe("findCycleChains", () => {
 
     it("should tell a declaration that depends on itself as a cycle of one", () => {
         // Arrange
-        const index = indexOf([leafEdge("A", "A")])
+        const index = indexOf([declarationEdge("A", "A")])
 
         // Act
         const { chains } = findCycleChains(index, MAX_CYCLE_WALKS)
@@ -55,7 +61,7 @@ describe("findCycleChains", () => {
 
     it("should find nothing where a dependency marked cyclic has no way back", () => {
         // Arrange
-        const index = indexOf([leafEdge("A", "B")])
+        const index = indexOf([declarationEdge("A", "B")])
 
         // Act
         const { chains } = findCycleChains(index, MAX_CYCLE_WALKS)
@@ -66,7 +72,7 @@ describe("findCycleChains", () => {
 
     it("should stop after the number of walks it is given and say that it did", () => {
         // Arrange
-        const spokes = ["B", "C", "D", "E"].flatMap(name => [leafEdge("Hub", name), leafEdge(name, "Hub")])
+        const spokes = ["B", "C", "D", "E"].flatMap(name => [declarationEdge("Hub", name), declarationEdge(name, "Hub")])
         const index = indexOf(spokes)
 
         // Act
@@ -82,7 +88,7 @@ describe("cyclesThrough", () => {
     it("should keep the cycles running through one of the declarations asked for", () => {
         // Arrange
         const { chains } = findCycleChains(
-            indexOf([leafEdge("A", "B"), leafEdge("B", "A"), leafEdge("C", "D"), leafEdge("D", "C")]),
+            indexOf([declarationEdge("A", "B"), declarationEdge("B", "A"), declarationEdge("C", "D"), declarationEdge("D", "C")]),
             MAX_CYCLE_WALKS
         )
 

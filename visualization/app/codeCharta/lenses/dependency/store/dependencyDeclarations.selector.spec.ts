@@ -1,7 +1,7 @@
 import { TEST_FILE_DATA } from "../../../mocks/dataMocks"
 import { CCFile, DependencyDeclarationData, FileSelectionState, FileState } from "../../../model/codeCharta.model"
 import { clone } from "../../../util/clone"
-import { dependencyDeclarationsSelector, hasDeclarationsSelector, hasNamespacesSelector } from "./dependencyDeclarations.selector"
+import { dependencyDeclarationsSelector, hasDeclarationsSelector, hasPackagesSelector } from "./dependencyDeclarations.selector"
 
 const DECLARATIONS: DependencyDeclarationData = {
     namespaces: { com: { level: 0 }, "com.game": { parent: "com", level: 1 } },
@@ -112,7 +112,7 @@ describe("dependency lens declarations", () => {
         })
     })
 
-    describe("hasNamespacesSelector", () => {
+    describe("hasPackagesSelector", () => {
         it.each([
             [DECLARATIONS, true],
             [{ ...DECLARATIONS, namespaces: {} }, false]
@@ -121,10 +121,10 @@ describe("dependency lens declarations", () => {
             const merged = { namespaces: {}, leaves: {}, leafEdges: [], ...declarations }
 
             // Act
-            const hasNamespaces = hasNamespacesSelector.projector(merged)
+            const hasPackages = hasPackagesSelector.projector(merged)
 
             // Assert
-            expect(hasNamespaces).toBe(expected)
+            expect(hasPackages).toBe(expected)
         })
     })
 })

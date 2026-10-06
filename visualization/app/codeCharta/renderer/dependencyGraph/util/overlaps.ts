@@ -38,7 +38,7 @@ export function findOverlaps(items: PaintedItem[]): Overlaps {
     const boxes = items.flatMap((item, paintIndex) => (item.kind === "box" ? [{ box: item.box, paintIndex }] : []))
     const grid = new RectangleGrid(boxes, ({ box }) => box)
     const isInside = nestingOf(boxes.map(({ box }) => box))
-    return { seeThroughPaths: seeThroughFolders(boxes, grid, isInside), bandCutouts: bandCutoutsOf(items, grid, isInside) }
+    return { seeThroughPaths: seeThroughContainers(boxes, grid, isInside), bandCutouts: bandCutoutsOf(items, grid, isInside) }
 }
 
 export function bandSeparator(band: LevelBand): BandSeparator {
@@ -49,7 +49,7 @@ export function bandSeparator(band: LevelBand): BandSeparator {
     }
 }
 
-function seeThroughFolders(boxes: PaintedBox[], grid: PaintedBoxGrid, isInside: IsInside): Set<string> {
+function seeThroughContainers(boxes: PaintedBox[], grid: PaintedBoxGrid, isInside: IsInside): Set<string> {
     const seeThroughPaths = new Set<string>()
     for (const upper of boxes) {
         if (canBeOpened(upper.box) && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower, isInside))) {
@@ -70,7 +70,7 @@ function bandCutoutsOf(items: PaintedItem[], grid: PaintedBoxGrid, isInside: IsI
         if (item.kind !== "band") {
             return
         }
-        const paintedOver = boxesPaintedOver(item.band, paintIndex, grid).filter(box => !isInside(box.path, item.band.folderPath))
+        const paintedOver = boxesPaintedOver(item.band, paintIndex, grid).filter(box => !isInside(box.path, item.band.containerPath))
         const cutout = cutoutOf(item.band, paintedOver)
         if (cutout.hiddenSpans.length > 0 || cutout.isLabelHidden) {
             bandCutouts.set(item.band, cutout)

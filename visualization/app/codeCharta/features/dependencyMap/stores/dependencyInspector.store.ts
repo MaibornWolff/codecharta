@@ -2,8 +2,16 @@ import { computed, Injectable, inject, signal } from "@angular/core"
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { fromPathOf, toPathOf } from "../panel/declarationIndex"
-import { describeSubject, PANEL_ROW_LIMIT, PanelActionKind, PanelCycle, PanelModel, PanelRef, PanelSubject } from "../panel/panelModel"
+import { fromPathOf, toPathOf } from "../declarations/declarationIndex"
+import {
+    describeSubject,
+    INSPECTOR_ROW_LIMIT,
+    InspectorActionKind,
+    InspectorCycle,
+    InspectorModel,
+    InspectorReference,
+    InspectorSubject
+} from "../inspector/inspectorModel"
 import { DependencyGraphModelStore } from "./dependencyGraphModel.store"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapWriteStore } from "./dependencyMap.write.store"
@@ -13,9 +21,9 @@ type Selection = { kind: "box"; path: string } | { kind: "edge"; id: string } | 
 
 const NOTHING_POINTED_AT: readonly DependencyLeafEdge[] = []
 
-/** What is selected in the graph and what the panel beside it says of that. The state lasts for the session. */
+/** What is selected in the graph and what the inspector beside it says of that. The state lasts for the session. */
 @Injectable({ providedIn: "root" })
-export class DependencyPanelStore {
+export class DependencyInspectorStore {
     private readonly graphModel = inject(DependencyGraphModelStore)
     private readonly viewStore = inject(DependencyMapViewStore)
     private readonly writeStore = inject(DependencyMapWriteStore)
@@ -58,7 +66,7 @@ export class DependencyPanelStore {
     })
     readonly selectedEdgeId = computed(() => this.selectedEdge()?.id ?? null)
 
-    private readonly subject = computed((): PanelSubject | null => {
+    private readonly subject = computed((): InspectorSubject | null => {
         const selection = this.selection()
         const edge = this.selectedEdge()
         if (edge) {
@@ -77,14 +85,14 @@ export class DependencyPanelStore {
         return subject && (subject.kind === "edge" ? `edge ${subject.edge.id}` : `box ${subject.node.path}`)
     })
 
-    /** A map that tells no declarations has nothing the panel could add to the graph. */
-    readonly model = computed((): PanelModel | null => {
+    /** A map that tells no declarations has nothing the inspector could add to the graph. */
+    readonly model = computed((): InspectorModel | null => {
         const subject = this.subject()
         const index = this.graphModel.declarationIndex()
         if (!subject || index.declarations.size === 0 || this.dismissedSubject() === this.subjectId()) {
             return null
         }
-        const rowLimit = this.subjectShownInFull() === this.subjectId() ? Number.POSITIVE_INFINITY : PANEL_ROW_LIMIT
+        const rowLimit = this.subjectShownInFull() === this.subjectId() ? Number.POSITIVE_INFINITY : INSPECTOR_ROW_LIMIT
         const { chains, isComplete } = this.graphModel.cycleSearch()
         return describeSubject(subject, {
             index,
@@ -99,7 +107,9 @@ export class DependencyPanelStore {
     /** Each dependency pointed at lights up the edge it is drawn as, or drawn in. */
     readonly highlightedEdgeIds = computed((): ReadonlySet<string> => {
         const boxOf = (path: string) => this.graphModel.boxStandingFor(path)
-        return new Set(this.pointedAt().map(leafEdge => edgeIdOf(boxOf(fromPathOf(leafEdge)), boxOf(toPathOf(leafEdge)))))
+        return new Set(
+            this.pointedAt().map(declarationEdge => edgeIdOf(boxOf(fromPathOf(declarationEdge)), boxOf(toPathOf(declarationEdge))))
+        )
     })
 
     /** A subject the reader selects anew is shown again, whichever view it is selected in. */
@@ -131,33 +141,33 @@ export class DependencyPanelStore {
         this.cyclesAskedFor.set({ id, boxPath })
     }
 
-    goTo(ref: PanelRef): void {
-        this.viewStore.reveal(ref.path)
-        this.select(ref.path)
+    goTo(reference: InspectorReference): void {
+        this.viewStore.reveal(reference.path)
+        this.select(reference.path)
         this.pointAt(null)
-        this.bringIntoView([ref.path])
+        this.bringIntoView([reference.path])
     }
 
-    pointAt(leafEdges: readonly DependencyLeafEdge[] | null): void {
-        this.pointedAt.set(leafEdges ?? NOTHING_POINTED_AT)
+    pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
+        this.pointedAt.set(declarationEdges ?? NOTHING_POINTED_AT)
     }
 
-    perform(action: PanelActionKind): void {
+    perform(action: InspectorActionKind): void {
         const subject = this.subject()
         if (subject?.kind === "edge" && action === "unfold") {
             this.viewStore.selectInGraph(null)
             this.revealEndsOf(subject.edge.declarationEdges)
         } else if (subject?.kind === "box" && action === "open") {
-            this.viewStore.openFolder(subject.node.path)
+            this.viewStore.openBox(subject.node.path)
             this.bringIntoView([subject.node.path])
         } else if (subject?.kind === "box") {
             this.viewStore.toggle(subject.node.path)
         }
     }
 
-    showCycle(cycle: PanelCycle): void {
-        this.revealEndsOf(cycle.leafEdges)
-        this.pointAt(cycle.leafEdges)
+    showCycle(cycle: InspectorCycle): void {
+        this.revealEndsOf(cycle.declarationEdges)
+        this.pointAt(cycle.declarationEdges)
     }
 
     showAllRows(): void {
@@ -170,8 +180,8 @@ export class DependencyPanelStore {
     }
 
     /** Opens what hides the two declarations of each dependency and moves the graph so that they are in view. */
-    private revealEndsOf(leafEdges: readonly DependencyLeafEdge[]): void {
-        const ends = [...new Set(leafEdges.flatMap(leafEdge => [fromPathOf(leafEdge), toPathOf(leafEdge)]))]
+    private revealEndsOf(declarationEdges: readonly DependencyLeafEdge[]): void {
+        const ends = [...new Set(declarationEdges.flatMap(declarationEdge => [fromPathOf(declarationEdge), toPathOf(declarationEdge)]))]
         for (const path of ends) {
             this.viewStore.reveal(path)
         }

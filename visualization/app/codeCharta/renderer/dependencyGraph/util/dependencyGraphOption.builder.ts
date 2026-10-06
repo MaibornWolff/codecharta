@@ -1,7 +1,7 @@
 import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 import { nestingOf } from "./boxNesting"
 import { minOf } from "./collections"
-import { BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
 import { atPaintRank } from "./dependencyGraphElements"
 import { boxesByPath, DependencyGraphScene, isEdgeInFocus, isEdgeOfHovered, searchMatcher, ToPixels } from "./dependencyGraphScene"
@@ -156,7 +156,7 @@ function drawItem(item: GraphItem, lookOfBox: (box: LayoutBox) => BoxLook, overl
         case "band":
             return drawLevelBand(item.band, toPixels, overlaps.bandCutouts.get(item.band))
         case "title":
-            return drawFolderTitle(item.box, lookOfBox(item.box), toPixels)
+            return drawContainerTitle(item.box, lookOfBox(item.box), toPixels)
         default:
             return drawEdge(item.route, item.look, toPixels)
     }

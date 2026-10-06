@@ -4,7 +4,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { hasDeclarationsSelector, hasNamespacesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { hasDeclarationsSelector, hasPackagesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { edgeMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
@@ -25,12 +25,12 @@ async function renderBar({
     edgeMetric = "dependencies",
     settings = {},
     hasDeclarations = false,
-    hasNamespaces = false
+    hasPackages = false
 }: {
     edgeMetric?: string
     settings?: Partial<DependencyGraphSettings>
     hasDeclarations?: boolean
-    hasNamespaces?: boolean
+    hasPackages?: boolean
 } = {}) {
     const rendered = await render(DependencyBarComponent, {
         providers: [
@@ -41,7 +41,7 @@ async function renderBar({
                     { selector: edgeMetricSelector, value: edgeMetric },
                     { selector: edgeMetricDataSelector, value: EDGE_METRICS },
                     { selector: hasDeclarationsSelector, value: hasDeclarations },
-                    { selector: hasNamespacesSelector, value: hasNamespaces },
+                    { selector: hasPackagesSelector, value: hasPackages },
                     { selector: dependencyLayoutIdentitySelector, value: "project" },
                     { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
                 ]
@@ -326,7 +326,7 @@ describe("DependencyBarComponent", () => {
         await renderBar()
         const withoutPackages = screen.queryByTestId("dependency-bar-hierarchy-segment")
         TestBed.resetTestingModule()
-        const dispatch = await renderBar({ hasNamespaces: true })
+        const dispatch = await renderBar({ hasPackages: true })
 
         // Act
         await userEvent.click(screen.getByTestId("dependency-bar-hierarchy-packages"))

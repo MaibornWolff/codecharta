@@ -19,7 +19,7 @@ function fileDeclaring(path: string, names: string[]): LeveledNode {
     return { ...leveledFile(path), children: names.map(name => leveledDeclaration(path, name)) }
 }
 
-function leafEdge(from: string, to: string, extra: Partial<DependencyLeafEdge> = {}): DependencyLeafEdge {
+function declarationEdge(from: string, to: string, extra: Partial<DependencyLeafEdge> = {}): DependencyLeafEdge {
     const [fromNodeName, fromLeaf] = from.split("#")
     const [toNodeName, toLeaf] = to.split("#")
     return { fromNodeName, fromLeaf, toNodeName, toLeaf, attributes: { dependencies: 1 }, usage: ["usage"], ...extra }
@@ -29,7 +29,7 @@ function edge(fromNodeName: string, toNodeName: string, extra: Partial<Edge> = {
     return { fromNodeName, toNodeName, attributes: { dependencies: 1 }, ...extra }
 }
 
-const NO_DECLARATION_EDGES = { leafEdges: [], hierarchy: "folders" } as const
+const NO_DECLARATION_EDGES = { declarationEdges: [], hierarchy: "folders" } as const
 
 const tree = leveledFolder("/root", [
     leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts"), leveledFile("/root/ui/menu.ts")]),
@@ -204,16 +204,16 @@ describe("edgeProjection", () => {
             leveledFolder("/root/model", [fileDeclaring(NODE, ["Node", "Edge"])])
         ])
         const fileEdges = [edge(VIEW, NODE, { attributes: { dependencies: 5 }, isPointingUpwards: true })]
-        const leafEdges = [
-            leafEdge(`${VIEW}#View`, `${NODE}#Node`, { isCyclic: true }),
-            leafEdge(`${VIEW}#Menu`, `${NODE}#Node`, { attributes: { dependencies: 2 } }),
-            leafEdge(`${VIEW}#View`, `${VIEW}#Menu`, { isPointingUpwards: true })
+        const declarationEdges = [
+            declarationEdge(`${VIEW}#View`, `${NODE}#Node`, { isCyclic: true }),
+            declarationEdge(`${VIEW}#Menu`, `${NODE}#Node`, { attributes: { dependencies: 2 } }),
+            declarationEdge(`${VIEW}#View`, `${VIEW}#Menu`, { isPointingUpwards: true })
         ]
         const everyFolder = ["/root", "/root/ui", "/root/model"]
 
         function project(openedFiles: string[], edgeMetric = "dependencies", hierarchy: DependencyHierarchy = "folders") {
             const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, ...openedFiles]))
-            return projectEdges(fileEdges, representatives, edgeMetric, { leafEdges, hierarchy })
+            return projectEdges(fileEdges, representatives, edgeMetric, { declarationEdges, hierarchy })
         }
 
         it("should keep the file edge between two closed files and say which declaration edges it stands for", () => {
@@ -231,7 +231,7 @@ describe("edgeProjection", () => {
                     toPath: NODE,
                     weight: 5,
                     type: "feedbackContainerLevel",
-                    declarationEdges: [leafEdges[0], leafEdges[1]]
+                    declarationEdges: [declarationEdges[0], declarationEdges[1]]
                 }
             ])
         })
@@ -285,7 +285,7 @@ describe("edgeProjection", () => {
 
             // Act
             const projected = projectEdges(fileEdges, visibleRepresentatives(declaringTree, everythingClosed), "dependencies", {
-                leafEdges,
+                declarationEdges,
                 hierarchy: "folders"
             })
 
@@ -298,7 +298,7 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
 
             // Act
-            const projected = projectEdges(fileEdges, representatives, "dependencies", { leafEdges: [], hierarchy: "folders" })
+            const projected = projectEdges(fileEdges, representatives, "dependencies", { declarationEdges: [], hierarchy: "folders" })
 
             // Assert
             expect(projected.map(({ id }) => id)).toEqual([`${VIEW}|${NODE}`])
@@ -307,10 +307,13 @@ describe("edgeProjection", () => {
         it("should stand a declaration the tree does not hold by its file, and weigh an edge without a weight as one", () => {
             // Arrange
             const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
-            const toUnknown = [leafEdge(`${VIEW}#View`, `${NODE}#Ghost`, { attributes: {} })]
+            const toUnknown = [declarationEdge(`${VIEW}#View`, `${NODE}#Ghost`, { attributes: {} })]
 
             // Act
-            const projected = projectEdges(fileEdges, representatives, "dependencies", { leafEdges: toUnknown, hierarchy: "folders" })
+            const projected = projectEdges(fileEdges, representatives, "dependencies", {
+                declarationEdges: toUnknown,
+                hierarchy: "folders"
+            })
 
             // Assert
             expect(projected.map(({ id, weight }) => [id, weight])).toEqual([[`${VIEW}/View|${NODE}`, 1]])
@@ -319,10 +322,10 @@ describe("edgeProjection", () => {
         it("should draw no edge from a declaration to its own open file, which stands for a declaration the tree does not hold", () => {
             // Arrange
             const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
-            const toUnknown = [leafEdge(`${VIEW}#View`, `${VIEW}#Ghost`)]
+            const toUnknown = [declarationEdge(`${VIEW}#View`, `${VIEW}#Ghost`)]
 
             // Act
-            const projected = projectEdges([], representatives, "dependencies", { leafEdges: toUnknown, hierarchy: "folders" })
+            const projected = projectEdges([], representatives, "dependencies", { declarationEdges: toUnknown, hierarchy: "folders" })
 
             // Assert
             expect(projected).toEqual([])
@@ -347,7 +350,7 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(declaringTree, new Set(everyFolder))
 
             // Act
-            const projected = projectEdges(fileEdges, representatives, "dependencies", { leafEdges: [], hierarchy: "packages" })
+            const projected = projectEdges(fileEdges, representatives, "dependencies", { declarationEdges: [], hierarchy: "packages" })
 
             // Assert
             expect(projected).toMatchObject([{ weight: 5, type: "feedbackContainerLevel" }])

@@ -198,7 +198,7 @@ describe("DependencyMapViewStore", () => {
         store.adoptTree(TWO_TOP_FOLDERS)
 
         // Act
-        store.openFolder("/root/src/ui")
+        store.openBox("/root/src/ui")
 
         // Assert
         expect([...store.expandedPaths()]).toEqual(["/root", "/root/src", "/root/src/ui"])
@@ -210,7 +210,7 @@ describe("DependencyMapViewStore", () => {
         store.adoptTree(leveledFolder("/root", [chain, leveledFolder("/root/src")]))
 
         // Act
-        store.openFolder("/root/lib")
+        store.openBox("/root/lib")
 
         // Assert
         expect(store.expandedPaths().has("/root/lib/core")).toBe(true)
