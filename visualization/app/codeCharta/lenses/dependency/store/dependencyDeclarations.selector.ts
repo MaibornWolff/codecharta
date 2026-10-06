@@ -6,7 +6,7 @@ import { getUpdatedPath } from "../../../util/nodePathHelper"
 
 export type DependencyDeclarations = Required<DependencyDeclarationData>
 
-export const NAMESPACE_SEPARATOR = "."
+export const PACKAGE_SEPARATOR = "."
 
 export const dependencyDeclarationsSelector = createSelector(visibleFileStatesSelector, visibleFileStates =>
     mergeDependencyDeclarations(getCCFiles(visibleFileStates), isPartialState(visibleFileStates))
@@ -16,7 +16,7 @@ export const hasDeclarationsSelector = createSelector(dependencyDeclarationsSele
     Object.values(declarations.leaves).some(leavesOfFile => Object.keys(leavesOfFile).length > 0)
 )
 
-export const hasNamespacesSelector = createSelector(
+export const hasPackagesSelector = createSelector(
     dependencyDeclarationsSelector,
     declarations => Object.keys(declarations.namespaces).length > 0
 )
@@ -29,7 +29,7 @@ function mergeDependencyDeclarations(files: CCFile[], withFileNamePrefix: boolea
         const declarations = file.settings.fileSettings.dependencyDeclarations ?? {}
         const isPrefixed = withFileNamePrefix && files.length > 1
         const pathOf = (path: string) => (isPrefixed ? getUpdatedPath(file.fileMeta.fileName, path) : path)
-        const namespaceOf = (key: string) => (isPrefixed ? `${file.fileMeta.fileName}${NAMESPACE_SEPARATOR}${key}` : key)
+        const namespaceOf = (key: string) => (isPrefixed ? `${file.fileMeta.fileName}${PACKAGE_SEPARATOR}${key}` : key)
         addNamespaces(merged.namespaces, declarations.namespaces ?? {}, namespaceOf)
         addLeaves(merged.leaves, declarations.leaves ?? {}, pathOf, namespaceOf)
         // Not spread into push(): a large map's edges would be more arguments than a call can take.

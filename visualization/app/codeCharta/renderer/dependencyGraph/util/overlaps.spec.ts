@@ -5,7 +5,7 @@ import { PaintedItem } from "./paintOrder"
 
 const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, width: 1000, height: 600 })
 const lib = aBox("/root/lib", { kind: "folder", isExpanded: true, depth: 1, x: 20, y: 40, width: 400, height: 300 })
-const libBand = aBand({ folderPath: "/root/lib", level: 0, isTopmost: false, x: 20, y: 200, width: 400 })
+const libBand = aBand({ containerPath: "/root/lib", level: 0, isTopmost: false, x: 20, y: 200, width: 400 })
 const libFile = aBox("/root/lib/c.ts", { depth: 2, x: 40, y: 200 })
 const ui = aBox("/root/ui", { kind: "folder", isExpanded: true, depth: 1, x: 300, y: 150, width: 300, height: 200 })
 const uiFile = aBox("/root/ui/d.ts", { depth: 2, x: 320, y: 220 })
@@ -14,7 +14,7 @@ const GAP_BETWEEN_FILES = 20
 const FILE_SPACING = 160 + GAP_BETWEEN_FILES
 
 function painted(...entries: (typeof root | typeof libBand)[]): PaintedItem[] {
-    return entries.map(entry => ("folderPath" in entry ? { kind: "band", band: entry } : { kind: "box", box: entry }))
+    return entries.map(entry => ("containerPath" in entry ? { kind: "band", band: entry } : { kind: "box", box: entry }))
 }
 
 describe("findOverlaps", () => {

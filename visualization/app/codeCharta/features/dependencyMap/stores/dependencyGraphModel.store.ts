@@ -12,12 +12,12 @@ import {
     upwardRuleOf,
     visibleRepresentatives
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { findCycleChains, MAX_CYCLE_WALKS } from "../panel/cycleChains"
-import { indexDeclarations } from "../panel/declarationIndex"
+import { findCycleChains, MAX_CYCLE_WALKS } from "../declarations/cycleChains"
+import { indexDeclarations } from "../declarations/declarationIndex"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
-/** What the graph draws and the panel explains, derived once from the map and from what the reader opened. */
+/** What the graph draws and the inspector explains, derived once from the map and from what the reader opened. */
 @Injectable({ providedIn: "root" })
 export class DependencyGraphModelStore {
     private readonly readStore = inject(DependencyMapReadStore)
@@ -27,13 +27,13 @@ export class DependencyGraphModelStore {
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
 
     private readonly folderTree = toSignal(this.readStore.tree$, { requireSync: true })
-    private readonly hasNamespaces = toSignal(this.readStore.hasNamespaces$, { requireSync: true })
+    private readonly hasPackages = toSignal(this.readStore.hasPackages$, { requireSync: true })
 
     readonly declarations = toSignal(this.readStore.declarations$, { requireSync: true })
     readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
 
-    readonly hierarchy = computed((): DependencyHierarchy => (this.hasNamespaces() ? this.viewStore.hierarchy() : "folders"))
+    readonly hierarchy = computed((): DependencyHierarchy => (this.hasPackages() ? this.viewStore.hierarchy() : "folders"))
     readonly tree = computed(() => {
         const folderTree = this.folderTree()
         const { namespaces, leaves } = this.declarations()
@@ -45,7 +45,7 @@ export class DependencyGraphModelStore {
         () => new Set([...this.nodesByPath().values()].flatMap(node => (node.kind === "file" ? [node.path] : [])))
     )
     readonly declarationIndex = computed(() => indexDeclarations(this.declarations(), this.drawnFilePaths()))
-    /** Every cycle between drawn declarations, found once: the badges count them and the panel tells them. */
+    /** Every cycle between drawn declarations, found once: the badges count them and the inspector tells them. */
     readonly cycleSearch = computed(() => findCycleChains(this.declarationIndex(), MAX_CYCLE_WALKS))
 
     readonly layout = computed(() => {
@@ -71,7 +71,7 @@ export class DependencyGraphModelStore {
     })
     readonly projectedEdges = computed(() =>
         projectEdges(this.edges(), this.representatives(), this.edgeMetric(), {
-            leafEdges: this.declarations().leafEdges,
+            declarationEdges: this.declarations().leafEdges,
             hierarchy: this.hierarchy()
         })
     )

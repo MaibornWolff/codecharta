@@ -45,12 +45,12 @@ export function lineStyleOf(edge: GraphEdge, lineStyleShows: LineStyleMeaning): 
     return USAGE_LEGEND.find(entry => entry.usage === usageShownBy(edge)) ?? PLAIN_LINE
 }
 
-/** How the strongest of the given ways of use is drawn. */
+/** How the strongest of the given kinds of use is drawn. */
 export function lineStyleOfUsages(usages: readonly string[]): LineStyle {
     return USAGE_LEGEND.find(entry => usages.includes(entry.usage)) ?? PLAIN_LINE
 }
 
-/** Only an edge standing for a single dependency between two declarations has one way of use to show; a
+/** Only an edge standing for a single dependency between two declarations has one kind of use to show; a
  * bundle of them stays a plain line. */
 function usageShownBy(edge: GraphEdge): string | null {
     const [only, ...others] = edge.declarationEdges

@@ -9,7 +9,7 @@ const second = aBox("/root/second", { kind: "folder", isExpanded: true, depth: 1
 const secondFile = aBox("/root/second/b.ts", { depth: 2, x: 420, y: 80 })
 const layout: DependencyGraphLayout = {
     boxes: [root, first, firstFile, second, secondFile],
-    bands: [aBand({ folderPath: "/root/first", level: 0 }), aBand({ folderPath: "/root", level: 2 })],
+    bands: [aBand({ containerPath: "/root/first", level: 0 }), aBand({ containerPath: "/root", level: 2 })],
     width: 1000,
     height: 600
 }
@@ -22,7 +22,7 @@ function namesOf(items: (PaintedItem | TitleItem)[]): string[] {
             case "title":
                 return `title ${item.box.path}`
             default:
-                return `band ${item.band.folderPath} ${item.band.level}`
+                return `band ${item.band.containerPath} ${item.band.level}`
         }
     })
 }

@@ -62,12 +62,12 @@ interface MergedEdge extends Flags {
 
 /** The dependencies between declarations, and the hierarchy they are lifted into. */
 export interface DeclarationLayer {
-    leafEdges: readonly DependencyLeafEdge[]
+    declarationEdges: readonly DependencyLeafEdge[]
     hierarchy: DependencyHierarchy
 }
 
-const WEIGHT_OF_AN_UNWEIGHTED_LEAF_EDGE = 1
-const NO_LEAF_EDGES: readonly DependencyLeafEdge[] = []
+const WEIGHT_OF_AN_UNWEIGHTED_DECLARATION_EDGE = 1
+const NO_DECLARATION_EDGES: readonly DependencyLeafEdge[] = []
 
 /** The cycle and upward flags describe the dependency graph alone, so every other metric draws its edges as
  * regular ones, and only the dependencies open into the edges between declarations.
@@ -80,11 +80,11 @@ export function projectEdges(
     edges: Edge[],
     representatives: ReadonlyMap<string, string>,
     edgeMetric: string | null,
-    { leafEdges, hierarchy }: DeclarationLayer
+    { declarationEdges: everyDeclarationEdge, hierarchy }: DeclarationLayer
 ): GraphEdge[] {
     const merged = new Map<string, MergedEdge>()
     const isDependencies = isDependencyEdgeMetric(edgeMetric)
-    const declarationEdges = isDependencies ? leafEdges : NO_LEAF_EDGES
+    const declarationEdges = isDependencies ? everyDeclarationEdge : NO_DECLARATION_EDGES
     const declarationEdgesByFiles = groupedByFiles(declarationEdges)
     const pointsUpward = upwardRuleOf(edges, hierarchy)
     for (const edge of edges) {
@@ -92,13 +92,16 @@ export function projectEdges(
         if (!isCarried(value)) {
             continue
         }
-        const parts = declarationEdgesByFiles.get(filesKeyOf(edge.fromNodeName, edge.toNodeName)) ?? NO_LEAF_EDGES
+        const parts = declarationEdgesByFiles.get(filesKeyOf(edge.fromNodeName, edge.toNodeName)) ?? NO_DECLARATION_EDGES
         for (const part of partsOfFileEdge({ edge, weight: value, declarationEdges: parts, hierarchy, pointsUpward }, representatives)) {
             mergeInto(merged, part)
         }
     }
-    for (const leafEdge of declarationEdges.filter(isInsideOneFile)) {
-        mergeInto(merged, { ...boxesOf(leafEdge, representatives), ...leafEdgePart(leafEdge, pointsUpward(leafEdge)) })
+    for (const declarationEdge of declarationEdges.filter(isInsideOneFile)) {
+        mergeInto(merged, {
+            ...boxesOf(declarationEdge, representatives),
+            ...declarationEdgePart(declarationEdge, pointsUpward(declarationEdge))
+        })
     }
     const typeOf = isDependencies ? dependencyEdgeTypeOf : () => "regular" as const
     return [...merged].map(([id, { isCyclic, isPointingUpwards, ...edge }]) => ({
@@ -108,8 +111,8 @@ export function projectEdges(
     }))
 }
 
-function isInsideOneFile(leafEdge: DependencyLeafEdge): boolean {
-    return leafEdge.fromNodeName === leafEdge.toNodeName
+function isInsideOneFile(declarationEdge: DependencyLeafEdge): boolean {
+    return declarationEdge.fromNodeName === declarationEdge.toNodeName
 }
 
 interface FileEdge {
@@ -145,26 +148,32 @@ function partsOfFileEdge(
 ): EdgePart[] {
     const fromPath = representatives.get(edge.fromNodeName)
     const toPath = representatives.get(edge.toNodeName)
-    const ends = declarationEdges.map(leafEdge => boxesOf(leafEdge, representatives))
+    const ends = declarationEdges.map(declarationEdge => boxesOf(declarationEdge, representatives))
     const showsDeclarations = ends.some(end => end.fromPath !== fromPath || end.toPath !== toPath)
     const isDecidedByDeclarations = hierarchy === "packages" && declarationEdges.length > 0
     if (!showsDeclarations && !isDecidedByDeclarations) {
         const isPointingUpwards = Boolean(edge.isPointingUpwards)
         return [{ fromPath, toPath, weight, isCyclic: Boolean(edge.isCyclic), isPointingUpwards, declarationEdges }]
     }
-    return declarationEdges.map((leafEdge, index) => ({ ...ends[index], ...leafEdgePart(leafEdge, pointsUpward(leafEdge)) }))
+    return declarationEdges.map((declarationEdge, index) => ({
+        ...ends[index],
+        ...declarationEdgePart(declarationEdge, pointsUpward(declarationEdge))
+    }))
 }
 
-function leafEdgePart(leafEdge: DependencyLeafEdge, isPointingUpwards: boolean) {
-    const weight = leafEdge.attributes[DEPENDENCIES_EDGE_METRIC] ?? WEIGHT_OF_AN_UNWEIGHTED_LEAF_EDGE
-    return { weight, isCyclic: Boolean(leafEdge.isCyclic), isPointingUpwards, declarationEdges: [leafEdge] }
+function declarationEdgePart(declarationEdge: DependencyLeafEdge, isPointingUpwards: boolean) {
+    const weight = declarationEdge.attributes[DEPENDENCIES_EDGE_METRIC] ?? WEIGHT_OF_AN_UNWEIGHTED_DECLARATION_EDGE
+    return { weight, isCyclic: Boolean(declarationEdge.isCyclic), isPointingUpwards, declarationEdges: [declarationEdge] }
 }
 
 /** A declaration the tree does not hold is stood for by whatever stands for its file. */
-function boxesOf(leafEdge: DependencyLeafEdge, representatives: ReadonlyMap<string, string>) {
+function boxesOf(declarationEdge: DependencyLeafEdge, representatives: ReadonlyMap<string, string>) {
     const boxOf = (filePath: string, leafKey: string) =>
         representatives.get(declarationPathOf(filePath, leafKey)) ?? representatives.get(filePath)
-    return { fromPath: boxOf(leafEdge.fromNodeName, leafEdge.fromLeaf), toPath: boxOf(leafEdge.toNodeName, leafEdge.toLeaf) }
+    return {
+        fromPath: boxOf(declarationEdge.fromNodeName, declarationEdge.fromLeaf),
+        toPath: boxOf(declarationEdge.toNodeName, declarationEdge.toLeaf)
+    }
 }
 
 function mergeInto(merged: Map<string, MergedEdge>, { fromPath, toPath, weight, isCyclic, isPointingUpwards, declarationEdges }: EdgePart) {
@@ -189,11 +198,11 @@ function isHeldBy(path: string, holderPath: string): boolean {
     return path.startsWith(`${holderPath}/`)
 }
 
-function groupedByFiles(leafEdges: readonly DependencyLeafEdge[]): Map<string, DependencyLeafEdge[]> {
+function groupedByFiles(declarationEdges: readonly DependencyLeafEdge[]): Map<string, DependencyLeafEdge[]> {
     const byFiles = new Map<string, DependencyLeafEdge[]>()
-    for (const leafEdge of leafEdges) {
-        if (!isInsideOneFile(leafEdge)) {
-            addToGroup(byFiles, filesKeyOf(leafEdge.fromNodeName, leafEdge.toNodeName), leafEdge)
+    for (const declarationEdge of declarationEdges) {
+        if (!isInsideOneFile(declarationEdge)) {
+            addToGroup(byFiles, filesKeyOf(declarationEdge.fromNodeName, declarationEdge.toNodeName), declarationEdge)
         }
     }
     return byFiles

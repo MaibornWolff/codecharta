@@ -1,33 +1,33 @@
-<ng-template #refButton let-ref>
+<ng-template #referenceButton let-reference>
     <button
         type="button"
         class="inline-flex max-w-full min-w-0 cursor-pointer items-center gap-1 rounded-sm border-0 bg-transparent p-0 text-left hover:underline"
-        [title]="ref.path"
-        (click)="refChosen.emit(ref)"
+        [title]="reference.path"
+        (click)="referenceChosen.emit(reference)"
     >
-        @if (ref.kind === "declaration") {
+        @if (reference.kind === "declaration") {
             <span
                 class="flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full border text-[10px] leading-none font-bold"
-                [style.background-color]="kindLookOf(ref).tint"
+                [style.background-color]="kindLookOf(reference).tint"
                 [style.border-color]="iconColors.stroke"
                 [style.color]="iconColors.letter"
-                [title]="kindLookOf(ref).label"
+                [title]="kindLookOf(reference).label"
                 aria-hidden="true"
-                >{{ kindLookOf(ref).letter }}</span
+                >{{ kindLookOf(reference).letter }}</span
             >
         } @else {
-            <i class="shrink-0 text-xs opacity-60" [class]="icons[ref.kind]" aria-hidden="true"></i>
+            <i class="shrink-0 text-xs opacity-60" [class]="icons[reference.kind]" aria-hidden="true"></i>
         }
-        <span class="truncate">{{ ref.name }}</span>
+        <span class="truncate">{{ reference.name }}</span>
     </button>
 </ng-template>
 
-<ng-template #chip let-ref let-isOwn="isOwn">
+<ng-template #chip let-reference let-isOwn="isOwn">
     <span
         class="inline-flex max-w-full min-w-0 items-center rounded-sm border bg-base-200/60 py-px pr-1.5 pl-1 text-[12.5px]"
         [class]="isOwn ? 'border-primary' : 'border-base-300'"
     >
-        <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: ref }"></ng-container>
+        <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: reference }"></ng-container>
     </span>
 </ng-template>
 
@@ -64,16 +64,16 @@
                 <button
                     type="button"
                     class="m-0 block cursor-pointer border-0 bg-transparent p-0 text-left text-sm leading-snug break-all opacity-60 hover:underline"
-                    data-testid="dependency-panel-parent"
-                    (click)="refChosen.emit(parent)"
+                    data-testid="dependency-inspector-parent"
+                    (click)="referenceChosen.emit(parent)"
                 >
                     {{ parent.shownAs }}
                 </button>
             }
-            <h2 class="m-0 text-lg leading-snug font-semibold break-all text-primary" [title]="model().path" data-testid="dependency-panel-title">
+            <h2 class="m-0 text-lg leading-snug font-semibold break-all text-primary" [title]="model().path" data-testid="dependency-inspector-title">
                 {{ model().title }}
             </h2>
-            <div class="mt-1 flex flex-wrap gap-1" data-testid="dependency-panel-badges">
+            <div class="mt-1 flex flex-wrap gap-1" data-testid="dependency-inspector-badges">
                 @for (badge of model().badges; track badge.text) {
                     <span class="badge badge-sm" [class]="badge.isAboutCycles ? 'badge-info badge-soft' : 'badge-ghost'">{{ badge.text }}</span>
                 }
@@ -85,7 +85,7 @@
                 class="btn btn-ghost btn-sm btn-square shrink-0"
                 [title]="copied() ? 'Copied!' : 'Copy path'"
                 [attr.aria-label]="copied() ? 'Copied!' : 'Copy path'"
-                data-testid="dependency-panel-copy"
+                data-testid="dependency-inspector-copy"
                 (click)="copyPath()"
             >
                 <i class="fa" [class.fa-copy]="!copied()" [class.fa-check]="copied()" aria-hidden="true"></i>
@@ -93,24 +93,24 @@
         }
     </div>
     @if (model().mayMissCycles) {
-        <p class="m-0 mt-1 text-xs opacity-60" data-testid="dependency-panel-cycles-incomplete">
+        <p class="m-0 mt-1 text-xs opacity-60" data-testid="dependency-inspector-cycles-incomplete">
             This map is too tangled to search all its cycles: there may be more than shown.
         </p>
     }
     @if (model().action; as action) {
-        <button type="button" class="btn btn-xs btn-outline mt-2" data-testid="dependency-panel-action" (click)="actionChosen.emit(action)">
+        <button type="button" class="btn btn-xs btn-outline mt-2" data-testid="dependency-inspector-action" (click)="actionChosen.emit(action)">
             {{ actionLabels[action] }}
         </button>
     }
 </header>
 
-<div class="min-h-0 flex-1 overflow-y-auto pb-36 text-sm" data-testid="dependency-panel-body">
+<div class="min-h-0 flex-1 overflow-y-auto pb-36 text-sm" data-testid="dependency-inspector-body">
     @if (model().cycleCount > 0) {
         <section
             #cyclesSection
             class="flex flex-col gap-2 border-t border-base-300 px-3 py-2"
             aria-label="Cycles"
-            data-testid="dependency-panel-cycles"
+            data-testid="dependency-inspector-cycles"
         >
             <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
                 <h3 class="m-0 text-xs font-normal">Cycles</h3>
@@ -119,10 +119,10 @@
             @for (cycle of model().cycles; track $index) {
                 <div
                     class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
-                    data-testid="dependency-panel-cycle"
-                    (mouseenter)="dependenciesPointedAt.emit(cycle.leafEdges)"
+                    data-testid="dependency-inspector-cycle"
+                    (mouseenter)="dependenciesPointedAt.emit(cycle.declarationEdges)"
                     (mouseleave)="dependenciesPointedAt.emit(null)"
-                    (focusin)="dependenciesPointedAt.emit(cycle.leafEdges)"
+                    (focusin)="dependenciesPointedAt.emit(cycle.declarationEdges)"
                     (focusout)="dependenciesPointedAt.emit(null)"
                 >
                     <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
@@ -131,7 +131,7 @@
                                 <span
                                     class="ml-1 text-xs"
                                     [style.color]="edgeColors()[cycle.links[position - 1].type]"
-                                    data-testid="dependency-panel-cycle-closing"
+                                    data-testid="dependency-inspector-cycle-closing"
                                     >↩ {{ step.name }}</span
                                 >
                             } @else {
@@ -150,7 +150,7 @@
                         }
                     </div>
                     <div class="flex items-baseline justify-between gap-2 text-xs">
-                        <span class="opacity-60" data-testid="dependency-panel-cycle-where">
+                        <span class="opacity-60" data-testid="dependency-inspector-cycle-where">
                             {{ cycle.files.length === 1 ? "inside" : "across" }}
                             @for (file of cycle.files; track file.path; let isLast = $last) {
                                 {{ file.name }}{{ isLast ? "" : "," }}
@@ -161,7 +161,7 @@
                 </div>
             }
             @if (model().cycleCount > model().cycles.length) {
-                <button type="button" class="btn btn-ghost btn-xs self-start" data-testid="dependency-panel-more-cycles" (click)="allRowsRequested.emit()">
+                <button type="button" class="btn btn-ghost btn-xs self-start" data-testid="dependency-inspector-more-cycles" (click)="allRowsRequested.emit()">
                     and {{ model().cycleCount - model().cycles.length }} more
                 </button>
             }
@@ -176,11 +176,11 @@
                     <span class="tracking-normal tabular-nums">{{ section.count }}</span>
                 </div>
                 @for (group of section.groups; track $index) {
-                    <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-panel-group">
+                    <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
                         @if (group.heading || group.label) {
                             <div class="flex min-w-0 items-baseline justify-between gap-2 text-[13px] opacity-70">
                                 @if (group.heading; as heading) {
-                                    <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: heading }"></ng-container>
+                                    <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: heading }"></ng-container>
                                 } @else {
                                     <span>{{ group.label }}</span>
                                 }
@@ -190,10 +190,10 @@
                         @for (dependency of group.dependencies; track $index) {
                             <div
                                 class="flex flex-col gap-0.5 rounded-sm px-0.5 hover:bg-base-200/60"
-                                data-testid="dependency-panel-row"
-                                (mouseenter)="dependenciesPointedAt.emit([dependency.leafEdge])"
+                                data-testid="dependency-inspector-row"
+                                (mouseenter)="dependenciesPointedAt.emit([dependency.declarationEdge])"
                                 (mouseleave)="dependenciesPointedAt.emit(null)"
-                                (focusin)="dependenciesPointedAt.emit([dependency.leafEdge])"
+                                (focusin)="dependenciesPointedAt.emit([dependency.declarationEdge])"
                                 (focusout)="dependenciesPointedAt.emit(null)"
                             >
                                 <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
@@ -218,7 +218,7 @@
                                     <div class="pl-0.5 text-xs">
                                         <span class="opacity-60">{{ dependency.usages.join(", ") }}</span>
                                         @if (dependency.type !== "regular") {
-                                            <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-panel-row-type">
+                                            <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-inspector-row-type">
                                                 {{ dependency.usages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
                                             >
                                         }
@@ -245,9 +245,9 @@
                     <span class="tracking-normal tabular-nums">{{ declarations.count }}</span>
                 </div>
                 <ul class="m-0 flex list-none flex-col gap-1 p-0">
-                    @for (item of declarations.items; track item.ref.path) {
+                    @for (item of declarations.items; track item.reference.path) {
                         <li class="flex min-w-0 items-baseline justify-between gap-2">
-                            <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: item.ref }"></ng-container>
+                            <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: item.reference }"></ng-container>
                             <span class="shrink-0 text-xs opacity-60">{{ item.detail }}</span>
                         </li>
                     }

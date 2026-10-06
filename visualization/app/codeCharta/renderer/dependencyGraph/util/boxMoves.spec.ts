@@ -8,7 +8,7 @@ const file = aBox("/root/app/a.ts", { depth: 2, x: 150, y: 170 })
 const other = aBox("/root/lib.ts", { depth: 1, x: 600, y: 100 })
 const layout: DependencyGraphLayout = {
     boxes: [root, folder, file, other],
-    bands: [aBand({ folderPath: "/root/app", memberPaths: ["/root/app/a.ts"], x: 100, y: 170, width: 400 })],
+    bands: [aBand({ containerPath: "/root/app", memberPaths: ["/root/app/a.ts"], x: 100, y: 170, width: 400 })],
     width: 1000,
     height: 600
 }

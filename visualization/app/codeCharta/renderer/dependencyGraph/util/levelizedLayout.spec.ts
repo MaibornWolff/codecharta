@@ -151,10 +151,10 @@ describe("layoutLevelized", () => {
         const { bands, boxes } = layout(tree, new Set(["/root", "/root/open"]))
 
         // Assert
-        const rootBand = bands.find(band => band.folderPath === "/root")
+        const rootBand = bands.find(band => band.containerPath === "/root")
         const lowestRootChild = Math.max(...boxes.filter(box => box.depth === 1).map(box => box.y + box.height))
         expect(rootBand.y + rootBand.height).toBe(lowestRootChild)
-        expect(bands.filter(band => band.folderPath === "/root/open").map(band => band.isTopmost)).toEqual([true, false])
+        expect(bands.filter(band => band.containerPath === "/root/open").map(band => band.isTopmost)).toEqual([true, false])
     })
 
     it("should number each band and box by the levels of the boxes around it, outermost first", () => {
@@ -222,7 +222,7 @@ describe("layoutLevelized with declarations", () => {
         const declarations = DECLARATIONS.map(path => boxOf(boxes, path))
         expect(declarations.every(declaration => isInside(declaration, file))).toBe(true)
         expect(declarations[0]).toMatchObject({ kind: "declaration", parentPath: FILE, declarationKind: "class", levelPath: [], depth: 2 })
-        expect(bands.map(band => band.folderPath)).toEqual(["/root", FILE, FILE])
+        expect(bands.map(band => band.containerPath)).toEqual(["/root", FILE, FILE])
     })
 
     it("should tell the levels inside a stacked file apart as a folder's are, by the declarations' own levels alone", () => {
@@ -234,7 +234,7 @@ describe("layoutLevelized with declarations", () => {
         const { bands, boxes } = layout(nested, new Set(["/root", "/root/app", filePath]))
 
         // Assert
-        const [upper, lower] = bands.filter(band => band.folderPath === filePath)
+        const [upper, lower] = bands.filter(band => band.containerPath === filePath)
         const file = boxOf(boxes, filePath)
         expect([upper, lower].map(band => band.levelPath)).toEqual([[1], [0]])
         expect([upper.isTopmost, lower.isTopmost]).toEqual([true, false])
@@ -250,7 +250,7 @@ describe("layoutLevelized with declarations", () => {
         ])
         const expanded = new Set(["/root", FILE])
         const bandsInFile = (tree: LeveledNode, declarationArrangement: "stacked" | "list" | "chips") =>
-            layout(tree, expanded, { declarationArrangement }).bands.filter(band => band.folderPath === FILE).length
+            layout(tree, expanded, { declarationArrangement }).bands.filter(band => band.containerPath === FILE).length
 
         // Act
         const counts = [bandsInFile(oneLevel, "stacked"), bandsInFile(DECLARING_TREE, "list"), bandsInFile(DECLARING_TREE, "chips")]

@@ -16,7 +16,11 @@ const appFolder: CodeMapNode = {
 }
 const root: CodeMapNode = { name: "root", path: "/root", type: NodeType.FOLDER, children: [appFolder] }
 const levels = { "/root/app/a.ts": 0 }
-const declarations = { namespaces: {}, leaves: { "/root/app/a.ts": { helper: { name: "helper", kind: "function" } } }, leafEdges: [] }
+const declarations = {
+    namespaces: {},
+    leaves: { "/root/app/a.ts": { helper: { name: "helper", kind: "function" } } },
+    leafEdges: []
+}
 const pathToNode = new Map([
     ["/root", root],
     ["/root/app", appFolder]

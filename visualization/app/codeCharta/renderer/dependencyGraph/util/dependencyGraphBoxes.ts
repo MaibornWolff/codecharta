@@ -86,7 +86,7 @@ export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
 }
 
 /** Drawn apart from the open box so the edges pass under it. */
-export function drawFolderTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
+export function drawContainerTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     return drawnItem(drawName(box, rect, look, zoomOf(box, rect)))
 }

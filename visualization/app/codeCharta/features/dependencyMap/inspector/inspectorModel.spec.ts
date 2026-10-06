@@ -1,26 +1,26 @@
 import { DependencyDeclarations } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { GraphEdge, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { findCycleChains, MAX_CYCLE_WALKS } from "./cycleChains"
-import { indexDeclarations } from "./declarationIndex"
-import { describeSubject, PANEL_ROW_LIMIT, PanelContext, PanelModel } from "./panelModel"
+import { findCycleChains, MAX_CYCLE_WALKS } from "../declarations/cycleChains"
+import { indexDeclarations } from "../declarations/declarationIndex"
+import { describeSubject, INSPECTOR_ROW_LIMIT, InspectorContext, InspectorModel } from "./inspectorModel"
 
 const CREATURE = "/root/game/creature.ts"
 const WEAPON = "/root/game/weapon.ts"
 const UTIL = "/root/util/text.ts"
 
-function leafEdge(from: string, to: string, extra: Partial<DependencyLeafEdge> = {}): DependencyLeafEdge {
+function declarationEdge(from: string, to: string, extra: Partial<DependencyLeafEdge> = {}): DependencyLeafEdge {
     const [fromNodeName, fromLeaf] = from.split("#")
     const [toNodeName, toLeaf] = to.split("#")
     return { fromNodeName, fromLeaf, toNodeName, toLeaf, attributes: { dependencies: 1 }, usage: ["usage"], ...extra }
 }
 
-const LEAF_EDGES = [
-    leafEdge(`${CREATURE}#Creature`, `${WEAPON}#Weapon`, { usage: ["inheritance", "usage"], isCyclic: true }),
-    leafEdge(`${WEAPON}#Weapon`, `${CREATURE}#Creature`, { isCyclic: true, isPointingUpwards: true }),
-    leafEdge(`${CREATURE}#Creature`, `${CREATURE}#Armor`),
-    leafEdge(`${CREATURE}#Armor`, `${UTIL}#format`, { usage: ["argument"] }),
-    leafEdge(`${CREATURE}#Creature`, "/root/gone.ts#Ghost")
+const DECLARATION_EDGES = [
+    declarationEdge(`${CREATURE}#Creature`, `${WEAPON}#Weapon`, { usage: ["inheritance", "usage"], isCyclic: true }),
+    declarationEdge(`${WEAPON}#Weapon`, `${CREATURE}#Creature`, { isCyclic: true, isPointingUpwards: true }),
+    declarationEdge(`${CREATURE}#Creature`, `${CREATURE}#Armor`),
+    declarationEdge(`${CREATURE}#Armor`, `${UTIL}#format`, { usage: ["argument"] }),
+    declarationEdge(`${CREATURE}#Creature`, "/root/gone.ts#Ghost")
 ]
 
 const DECLARATIONS: Pick<DependencyDeclarations, "leaves" | "leafEdges"> = {
@@ -32,7 +32,7 @@ const DECLARATIONS: Pick<DependencyDeclarations, "leaves" | "leafEdges"> = {
         [WEAPON]: { Weapon: { name: "Weapon", kind: "interface" } },
         [UTIL]: { format: { name: "format", kind: "function" } }
     },
-    leafEdges: LEAF_EDGES
+    leafEdges: DECLARATION_EDGES
 }
 
 function declarationNode(filePath: string, name: string, declarationKind: string): LeveledNode {
@@ -52,12 +52,12 @@ const GAME_FOLDER: LeveledNode = {
     children: [CREATURE_NODE, fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")])]
 }
 
-function context(overrides: Partial<PanelContext> = {}, leafEdges = LEAF_EDGES): PanelContext {
-    const index = indexDeclarations({ ...DECLARATIONS, leafEdges })
+function context(overrides: Partial<InspectorContext> = {}, declarationEdges = DECLARATION_EDGES): InspectorContext {
+    const index = indexDeclarations({ ...DECLARATIONS, leafEdges: declarationEdges })
     return {
         index,
-        rowLimit: PANEL_ROW_LIMIT,
-        pointsUpward: leafEdge => Boolean(leafEdge.isPointingUpwards),
+        rowLimit: INSPECTOR_ROW_LIMIT,
+        pointsUpward: declarationEdge => Boolean(declarationEdge.isPointingUpwards),
         cycles: findCycleChains(index, MAX_CYCLE_WALKS).chains,
         mayMissCycles: false,
         edgeMetric: "dependencies",
@@ -71,7 +71,7 @@ function box(node: LeveledNode, { isOpen = false, parent = null as LeveledNode |
     return { kind: "box", node, parent, isOpen } as const
 }
 
-function rowsOf(model: PanelModel, title: string): string[] {
+function rowsOf(model: InspectorModel, title: string): string[] {
     const section = model.sections.find(candidate => candidate.title === title)
     return section.groups.flatMap(group =>
         group.dependencies.map(
@@ -80,13 +80,13 @@ function rowsOf(model: PanelModel, title: string): string[] {
     )
 }
 
-function badgesOf(model: PanelModel): string[] {
+function badgesOf(model: InspectorModel): string[] {
     return model.badges.map(badge => badge.text)
 }
 
 describe("describeSubject", () => {
     describe("a file", () => {
-        it("should head the panel with its folder, its name and what to copy, and tell its package, declarations and cycles as badges", () => {
+        it("should head the inspector with its folder, its name and what to copy, and tell its package, declarations and cycles as badges", () => {
             // Act
             const model = describeSubject(box(CREATURE_NODE, { parent: GAME_FOLDER }), context())
 
@@ -111,11 +111,11 @@ describe("describeSubject", () => {
                 hiddenCount: 0,
                 items: [
                     {
-                        ref: { path: `${CREATURE}/Armor`, name: "Armor", kind: "declaration", declarationKind: "valueclass" },
+                        reference: { path: `${CREATURE}/Armor`, name: "Armor", kind: "declaration", declarationKind: "valueclass" },
                         detail: "value class"
                     },
                     {
-                        ref: { path: `${CREATURE}/Creature`, name: "Creature", kind: "declaration", declarationKind: "class" },
+                        reference: { path: `${CREATURE}/Creature`, name: "Creature", kind: "declaration", declarationKind: "class" },
                         detail: "class · level 1"
                     }
                 ]
@@ -159,13 +159,17 @@ describe("describeSubject", () => {
             const [inherits] = model.sections[0].groups[1].dependencies
 
             // Assert
-            expect(usedBy).toMatchObject({ type: "feedbackLeafLevel", line: { dash: null, head: "filled" }, leafEdge: LEAF_EDGES[1] })
+            expect(usedBy).toMatchObject({
+                type: "feedbackLeafLevel",
+                line: { dash: null, head: "filled" },
+                declarationEdge: DECLARATION_EDGES[1]
+            })
             expect(inherits).toMatchObject({ type: "cyclic", line: { dash: null, head: "hollow" } })
         })
 
         it("should take which way is up from the hierarchy shown, not from the dependency alone", () => {
             // Arrange
-            const upwardByFileEdge = context({ pointsUpward: leafEdge => leafEdge === LEAF_EDGES[0] })
+            const upwardByFileEdge = context({ pointsUpward: declarationEdge => declarationEdge === DECLARATION_EDGES[0] })
 
             // Act
             const model = describeSubject(box(CREATURE_NODE), upwardByFileEdge)
@@ -192,7 +196,7 @@ describe("describeSubject", () => {
             // Assert
             expect(cycles.map(cycle => cycle.steps.map(step => step.name))).toEqual([["Creature", "Weapon", "Creature"]])
             expect(cycles[0].files.map(file => file.name)).toEqual(["creature.ts", "weapon.ts"])
-            expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[0], LEAF_EDGES[1]])
+            expect(cycles[0].declarationEdges).toEqual([DECLARATION_EDGES[0], DECLARATION_EDGES[1]])
             expect(cycles[0].links).toEqual([
                 { line: expect.objectContaining({ dash: null, head: "hollow" }), type: "cyclic" },
                 { line: expect.objectContaining({ dash: null, head: "filled" }), type: "feedbackLeafLevel" }
@@ -205,13 +209,13 @@ describe("describeSubject", () => {
 
             // Assert
             expect(cycles[0].steps.map(step => step.name)).toEqual(["Weapon", "Creature", "Weapon"])
-            expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[1], LEAF_EDGES[0]])
+            expect(cycles[0].declarationEdges).toEqual([DECLARATION_EDGES[1], DECLARATION_EDGES[0]])
         })
 
         it("should count every cycle running through it and cut the ones told as it cuts a hub's rows", () => {
             // Arrange
             const uncut = context()
-            const second = [LEAF_EDGES[2], { ...LEAF_EDGES[2], fromLeaf: "Armor", toLeaf: "Creature" }]
+            const second = [DECLARATION_EDGES[2], { ...DECLARATION_EDGES[2], fromLeaf: "Armor", toLeaf: "Creature" }]
             const twoCycles = { ...uncut, cycles: [...uncut.cycles, second], rowLimit: 1 }
 
             // Act
@@ -246,7 +250,7 @@ describe("describeSubject", () => {
 
         it("should cut a hub's declarations and the rows of each group, and say how many it left out", () => {
             // Arrange
-            const twoToWeapon = [...LEAF_EDGES, leafEdge(`${CREATURE}#Armor`, `${WEAPON}#Weapon`)]
+            const twoToWeapon = [...DECLARATION_EDGES, declarationEdge(`${CREATURE}#Armor`, `${WEAPON}#Weapon`)]
 
             // Act
             const model = describeSubject(box(CREATURE_NODE), context({ rowLimit: 1 }, twoToWeapon))
@@ -263,7 +267,7 @@ describe("describeSubject", () => {
     })
 
     describe("a declaration", () => {
-        it("should head the panel with its file and tell its kind, package, level and cycles as badges", () => {
+        it("should head the inspector with its file and tell its kind, package, level and cycles as badges", () => {
             // Act
             const model = describeSubject(box(CREATURE_NODE.children[0], { parent: CREATURE_NODE }), context())
 
@@ -360,7 +364,7 @@ describe("describeSubject", () => {
             toPath: WEAPON,
             weight: 3,
             type: "cyclic",
-            declarationEdges: [LEAF_EDGES[0], LEAF_EDGES[2], LEAF_EDGES[3]]
+            declarationEdges: [DECLARATION_EDGES[0], DECLARATION_EDGES[2], DECLARATION_EDGES[3]]
         }
 
         it("should tell the dependencies it stands for and count them per kind of use, the most frequent first", () => {

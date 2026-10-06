@@ -1,10 +1,10 @@
-import { NAMESPACE_SEPARATOR } from "../../../lenses/dependency/dependencyLens.facade"
+import { PACKAGE_SEPARATOR } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeaf, DependencyNamespace } from "../../../model/codeCharta.model"
 import { packageKeyOf, packagePathOf } from "./boxPaths"
 import { addToGroup } from "./collections"
-import { LEVEL_WHEN_ABSENT, LeavesByFile, LeveledNode } from "./leveledTree"
+import { DeclarationsByFile, LEVEL_WHEN_ABSENT, LeveledNode } from "./leveledTree"
 
-export type Namespaces = Readonly<Record<string, DependencyNamespace>>
+export type PackagesByKey = Readonly<Record<string, DependencyNamespace>>
 
 interface PackagePlacement {
     packageKey: string
@@ -17,7 +17,7 @@ interface PackagePlacement {
  * the map knows has no place among them. */
 function packagePlacementOf(
     leavesOfFile: Readonly<Record<string, DependencyLeaf>> | undefined,
-    namespaces: Namespaces
+    namespaces: PackagesByKey
 ): PackagePlacement | null {
     const levelsByPackage = new Map<string, number[]>()
     for (const { namespace, level = LEVEL_WHEN_ABSENT } of Object.values(leavesOfFile ?? {})) {
@@ -34,7 +34,7 @@ function packagePlacementOf(
 /** The same files nested in the packages their declarations declare. A file without a package stays in its
  * folder, beside the packages: both kinds of box then share the root, with levels that do not compare. A chain
  * of packages that each hold just one package is one box, as a chain of folders is. */
-export function arrangedByPackages(tree: LeveledNode, namespaces: Namespaces, leaves: LeavesByFile): LeveledNode {
+export function arrangedByPackages(tree: LeveledNode, namespaces: PackagesByKey, leaves: DeclarationsByFile): LeveledNode {
     if (tree.kind !== "folder") {
         return tree
     }
@@ -62,7 +62,7 @@ class PackageNodes {
     private readonly keysByParent = new Map<string | null, string[]>()
 
     constructor(
-        private readonly namespaces: Namespaces,
+        private readonly namespaces: PackagesByKey,
         private readonly filesByPackage: ReadonlyMap<string, LeveledNode[]>
     ) {
         for (const key of Object.keys(namespaces)) {
@@ -112,6 +112,6 @@ class PackageNodes {
 
 /** A package inside another is named by what its name adds to the other's, as a folder is by its last segment. */
 function nameWithin(key: string, outerKey: string | null): string {
-    const outerPrefix = `${outerKey}${NAMESPACE_SEPARATOR}`
+    const outerPrefix = `${outerKey}${PACKAGE_SEPARATOR}`
     return outerKey !== null && key.startsWith(outerPrefix) ? key.slice(outerPrefix.length) : key
 }

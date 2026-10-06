@@ -29,7 +29,7 @@ export class DependencyExplorerSelection implements ExplorerSelection {
         if (isLeaf(node)) {
             this.viewStore.reveal(node.path)
         } else {
-            this.viewStore.openFolder(node.path)
+            this.viewStore.openBox(node.path)
         }
     }
 

@@ -8,7 +8,7 @@ export interface IndexedDeclaration {
     leaf: DependencyLeaf
 }
 
-/** The declarations and their dependencies by the path the graph gives a declaration, so that what the panel
+/** The declarations and their dependencies by the path the graph gives a declaration, so that what the inspector
  * shows of one is a lookup however large the map is. */
 export interface DeclarationIndex {
     declarations: ReadonlyMap<string, IndexedDeclaration>
@@ -17,12 +17,12 @@ export interface DeclarationIndex {
     incoming: ReadonlyMap<string, readonly DependencyLeafEdge[]>
 }
 
-export function fromPathOf(leafEdge: DependencyLeafEdge): string {
-    return declarationPathOf(leafEdge.fromNodeName, leafEdge.fromLeaf)
+export function fromPathOf(declarationEdge: DependencyLeafEdge): string {
+    return declarationPathOf(declarationEdge.fromNodeName, declarationEdge.fromLeaf)
 }
 
-export function toPathOf(leafEdge: DependencyLeafEdge): string {
-    return declarationPathOf(leafEdge.toNodeName, leafEdge.toLeaf)
+export function toPathOf(declarationEdge: DependencyLeafEdge): string {
+    return declarationPathOf(declarationEdge.toNodeName, declarationEdge.toLeaf)
 }
 
 /** Only the declarations of the files the graph draws are indexed, all of them where none are named: an excluded
@@ -46,10 +46,10 @@ export function indexDeclarations(
     }
     const outgoing = new Map<string, DependencyLeafEdge[]>()
     const incoming = new Map<string, DependencyLeafEdge[]>()
-    for (const leafEdge of leafEdges) {
-        if (declarations.has(fromPathOf(leafEdge)) && declarations.has(toPathOf(leafEdge))) {
-            addToGroup(outgoing, fromPathOf(leafEdge), leafEdge)
-            addToGroup(incoming, toPathOf(leafEdge), leafEdge)
+    for (const declarationEdge of leafEdges) {
+        if (declarations.has(fromPathOf(declarationEdge)) && declarations.has(toPathOf(declarationEdge))) {
+            addToGroup(outgoing, fromPathOf(declarationEdge), declarationEdge)
+            addToGroup(incoming, toPathOf(declarationEdge), declarationEdge)
         }
     }
     return { declarations, declarationsOfFile, outgoing, incoming }

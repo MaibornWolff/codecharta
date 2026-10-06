@@ -1,12 +1,12 @@
 import { findCycleMarks, NO_CYCLE_MARKS } from "./cycleMarks"
 
-const A = "/root/app/a.ts"
-const B = "/root/app/b.ts"
+const FIRST_FILE = "/root/app/a.ts"
+const SECOND_FILE = "/root/app/b.ts"
 
 const CYCLES = [
-    [`${A}/One`, `${B}/Two`],
-    [`${A}/One`, `${A}/Inner`],
-    [`${B}/Two`, `${B}/Three`, `${A}/One`]
+    [`${FIRST_FILE}/One`, `${SECOND_FILE}/Two`],
+    [`${FIRST_FILE}/One`, `${FIRST_FILE}/Inner`],
+    [`${SECOND_FILE}/Two`, `${SECOND_FILE}/Three`, `${FIRST_FILE}/One`]
 ]
 
 function representativesWith(shownAs: Record<string, string>): Map<string, string> {
@@ -26,8 +26,8 @@ describe("findCycleMarks", () => {
 
         // Assert
         expect([...hiddenCycles]).toEqual([
-            [A, 3],
-            [B, 2]
+            [FIRST_FILE, 3],
+            [SECOND_FILE, 2]
         ])
     })
 
@@ -44,13 +44,13 @@ describe("findCycleMarks", () => {
 
     it("should leave an opened file without a count and keep counting on the closed file its cycles also run through", () => {
         // Arrange
-        const representatives = representativesWith(hiddenIn(path => (fileOf(path) === A ? path : B)))
+        const representatives = representativesWith(hiddenIn(path => (fileOf(path) === FIRST_FILE ? path : SECOND_FILE)))
 
         // Act
         const { hiddenCycles } = findCycleMarks(CYCLES, representatives)
 
         // Assert
-        expect([...hiddenCycles]).toEqual([[B, 2]])
+        expect([...hiddenCycles]).toEqual([[SECOND_FILE, 2]])
     })
 
     it("should name the declarations taking part in a cycle, also those the graph does not show", () => {
@@ -61,7 +61,12 @@ describe("findCycleMarks", () => {
         const { declarationsInCycles, hiddenCycles } = findCycleMarks(CYCLES, nothingShown)
 
         // Assert
-        expect([...declarationsInCycles].sort()).toEqual([`${A}/Inner`, `${A}/One`, `${B}/Three`, `${B}/Two`])
+        expect([...declarationsInCycles].sort()).toEqual([
+            `${FIRST_FILE}/Inner`,
+            `${FIRST_FILE}/One`,
+            `${SECOND_FILE}/Three`,
+            `${SECOND_FILE}/Two`
+        ])
         expect(hiddenCycles.size).toBe(0)
     })
 

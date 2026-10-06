@@ -4,35 +4,35 @@ import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { DependencyEdgeColors } from "../../../../model/dependencyGraph.model"
 import { declarationKindLookOf, EDGE_TYPE_LABELS, KIND_ICON_COLORS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
-import { PanelActionKind, PanelCycle, PanelModel, PanelRef } from "../../panel/panelModel"
+import { InspectorActionKind, InspectorCycle, InspectorModel, InspectorReference } from "../../inspector/inspectorModel"
 
-const ACTION_LABELS: Record<PanelActionKind, string> = {
+const ACTION_LABELS: Record<InspectorActionKind, string> = {
     open: "Open in graph",
     close: "Close in graph",
     unfold: "Unfold in graph"
 }
 
-const REF_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-folder-o", file: "fa fa-file-o" }
+const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-folder-o", file: "fa fa-file-o" }
 
 @Component({
-    selector: "cc-dependency-panel",
-    templateUrl: "./dependencyPanel.component.html",
+    selector: "cc-dependency-inspector",
+    templateUrl: "./dependencyInspector.component.html",
     imports: [NgTemplateOutlet],
     providers: [CopyToClipboardService],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "flex h-full w-80 shrink-0 flex-col bg-base-100 shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)]" }
 })
-export class DependencyPanelComponent {
-    readonly model = input.required<PanelModel>()
+export class DependencyInspectorComponent {
+    readonly model = input.required<InspectorModel>()
     /** A new number brings the cycles into view; null asks for nothing. */
     readonly cyclesRequest = input<number | null>(null)
     readonly edgeColors = input.required<DependencyEdgeColors>()
 
-    readonly refChosen = output<PanelRef>()
+    readonly referenceChosen = output<InspectorReference>()
     /** The dependencies under the pointer, for the graph to light up; null once it left. */
     readonly dependenciesPointedAt = output<readonly DependencyLeafEdge[] | null>()
-    readonly actionChosen = output<PanelActionKind>()
-    readonly cycleShown = output<PanelCycle>()
+    readonly actionChosen = output<InspectorActionKind>()
+    readonly cycleShown = output<InspectorCycle>()
     readonly allRowsRequested = output<void>()
     readonly closed = output<void>()
 
@@ -68,9 +68,9 @@ export class DependencyPanelComponent {
         }
     }
 
-    readonly icons = REF_ICONS
+    readonly icons = REFERENCE_ICONS
 
-    kindLookOf(ref: PanelRef) {
-        return declarationKindLookOf(ref.declarationKind)
+    kindLookOf(reference: InspectorReference) {
+        return declarationKindLookOf(reference.declarationKind)
     }
 }

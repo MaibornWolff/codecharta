@@ -26,18 +26,18 @@
                 (boxDragEnded)="endDragging()"
             ></cc-dependency-graph>
         </div>
-        @if (panelModel(); as panel) {
-            <cc-dependency-panel
-                [model]="panel"
+        @if (inspectorModel(); as inspector) {
+            <cc-dependency-inspector
+                [model]="inspector"
                 [cyclesRequest]="cyclesRequest()"
                 [edgeColors]="edgeColors()"
-                (refChosen)="goTo($event)"
+                (referenceChosen)="goTo($event)"
                 (dependenciesPointedAt)="pointAt($event)"
                 (actionChosen)="perform($event)"
                 (cycleShown)="showCycle($event)"
                 (allRowsRequested)="showAllRows()"
-                (closed)="dismissPanel()"
-            ></cc-dependency-panel>
+                (closed)="dismissInspector()"
+            ></cc-dependency-inspector>
         }
     </div>
 } @else if (hasDependencyData()) {

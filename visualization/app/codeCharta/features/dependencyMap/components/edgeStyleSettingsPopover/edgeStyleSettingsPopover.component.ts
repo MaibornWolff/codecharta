@@ -44,7 +44,7 @@ export class EdgeStyleSettingsPopoverComponent {
         this.writeStore.changeSettings({ edgeWidth: { ...this.edgeWidth(), factor } })
     }
 
-    showByLineStyle(lineStyleShows: LineStyleMeaning): void {
+    setLineStyleMeaning(lineStyleShows: LineStyleMeaning): void {
         this.writeStore.changeSettings({ lineStyleShows })
     }
 }
