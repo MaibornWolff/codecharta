@@ -60,7 +60,6 @@ interface MergedEdge extends Flags {
     declarationEdges: DependencyLeafEdge[]
 }
 
-/** The dependencies between declarations, and the hierarchy they are lifted into. */
 export interface DeclarationLayer {
     declarationEdges: readonly DependencyLeafEdge[]
     hierarchy: DependencyHierarchy

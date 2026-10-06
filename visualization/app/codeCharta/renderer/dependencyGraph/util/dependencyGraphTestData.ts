@@ -5,7 +5,6 @@ import { LayoutBox, LevelBand } from "./layoutModel"
 
 export const EDGE_COLORS = defaultDependencyGraphSettings.edgeColors
 
-/** How a scene looks while the reader has changed no setting. */
 export const DEFAULT_LOOKS = {
     edgeColors: EDGE_COLORS,
     lineStyleShows: "edgeType",

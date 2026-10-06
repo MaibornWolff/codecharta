@@ -3,7 +3,6 @@ import { BoxKind } from "./leveledTree"
 
 export interface LayoutBox extends Rectangle {
     path: string
-    /** The box it lies in; null for the root. */
     parentPath: string | null
     name: string
     kind: BoxKind

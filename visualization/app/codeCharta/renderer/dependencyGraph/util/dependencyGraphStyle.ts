@@ -21,8 +21,6 @@ export const QUIET_TEXT_COLOR = "#6b7280"
 export const QUIET_BADGE_COLOR = "#8a94a3"
 export const LEVEL_SEPARATOR_COLOR = "#c3cbd6"
 
-/** Grey follows the architecture, blue closes a cycle but still points down, red points upward — the
- * colours DependaCharta users already read, unless the reader picks others. */
 export const EDGE_TYPE_LABELS: Record<DependencyEdgeType, string> = {
     regular: "Dependency",
     cyclic: "In a cycle",
@@ -33,7 +31,6 @@ export const EDGE_TYPE_LABELS: Record<DependencyEdgeType, string> = {
 export interface EdgeLegendEntry {
     type: DependencyEdgeType
     label: string
-    /** The colour the type is drawn in. */
     color: string
     /** The colour the reader gave the type, which is drawn only while nothing else tells the type apart. */
     ownColor: string

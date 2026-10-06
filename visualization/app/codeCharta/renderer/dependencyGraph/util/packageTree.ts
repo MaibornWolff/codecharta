@@ -8,7 +8,6 @@ export type PackagesByKey = Readonly<Record<string, DependencyNamespace>>
 
 interface PackagePlacement {
     packageKey: string
-    /** The file's level among what its package holds. */
     level: number
 }
 

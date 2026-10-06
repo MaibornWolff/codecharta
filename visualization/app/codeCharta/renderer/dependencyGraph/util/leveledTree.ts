@@ -1,14 +1,14 @@
 import { CodeMapNode, DependencyLeaf, DependencyLevelData, NodeType } from "../../../model/codeCharta.model"
 import { declarationPathOf } from "./boxPaths"
 
+export type BoxKind = "folder" | "package" | "file" | "declaration"
+
 /** The part of the file tree the dependency graph can place: files that carry a level, and the folders
  * holding them. A folder without a level of its own sits at level 0 of its parent. A chain of folders that
  * each hold just one folder is one box named by the whole chain, as in src/main/kotlin/de/…: nesting a box
  * per link would leave the files too small to read. The box keeps the deepest folder's path, and the folders
  * folded into it keep theirs in foldedPaths, outermost first. A file holds its declarations, which no level
  * of the file tree orders: they borrow the level they have within their package. */
-export type BoxKind = "folder" | "package" | "file" | "declaration"
-
 export interface LeveledNode {
     path: string
     name: string

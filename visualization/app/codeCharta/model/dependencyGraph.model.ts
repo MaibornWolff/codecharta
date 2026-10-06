@@ -24,20 +24,14 @@ export function canAnchorAtSideMiddle(edgeStyle: DependencyEdgeStyle): boolean {
 /** A level band is named by its own number, or by the levels of the folders around it first, as in 0.1.2. */
 export type DependencyLevelLabel = "number" | "path"
 
-/** How the declarations of an opened file are arranged: in rows by their level, one below the other, or as
- * small chips that fill the rows. */
 export type DeclarationArrangement = "stacked" | "list" | "chips"
 
 export type DependencyEdgeColors = Record<DependencyEdgeType, string>
 
-/** How a declaration tells what it is: a lettered icon, the shape of its box, the colour of its box, or not at all. */
 export type DeclarationKindMark = "icon" | "shape" | "tint" | "off"
 
-/** What an edge's dashes and arrowhead tell: its edge type, as the folders-only graph always did, or the way the
- * one declaration uses the other. */
 export type LineStyleMeaning = "edgeType" | "usage"
 
-/** What the graph nests its files in: the folders they lie in, or the packages their declarations declare. */
 export type DependencyHierarchy = "folders" | "packages"
 
 export interface DependencyGraphSettings {
@@ -50,6 +44,5 @@ export interface DependencyGraphSettings {
     levelLabel: DependencyLevelLabel
     declarationArrangement: DeclarationArrangement
     declarationKindMark: DeclarationKindMark
-    /** Whether a closed box counts the cyclic dependencies it hides. */
     showsCycleBadges: boolean
 }
