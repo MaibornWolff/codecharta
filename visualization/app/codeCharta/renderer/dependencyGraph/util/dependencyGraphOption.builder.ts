@@ -11,6 +11,7 @@ import { routeEdges } from "./edgeRouting"
 import { edgeWidthPx } from "./edgeWidth"
 import { enclosingRectangle, Rectangle } from "./geometry"
 import { canBeOpened, DependencyGraphLayout, LayoutBox } from "./levelizedLayout"
+import { lineStyleOf } from "./lineStyle"
 import { findOverlaps, NO_OVERLAPS, Overlaps } from "./overlaps"
 import { aroundEdges, EdgeItem, GraphItem, paintOrder } from "./paintOrder"
 
@@ -46,7 +47,7 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(scene.layout, shownEdges) } },
         hoverLayerThreshold: NEVER_DRAW_HOVER_ON_ITS_OWN_LAYER,
-        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(graph.items, byPath, scene.edgeMetric) },
+        tooltip: { show: true, confine: true, formatter: buildTooltipFormatter(graph.items, byPath, scene) },
         grid: { left: 0, right: 0, top: 0, bottom: 0 },
         ...axesReaching(scene.layout, viewport, shownWindow),
         dataZoom: zoomBothAxesInsideTo(shownWindow),
@@ -94,7 +95,12 @@ function edgeItems(
         kind: "edge",
         edge,
         route: routes[index],
-        look: { isDimmed: isDimmed(edge), widthPx: edgeWidthPx(edge.weight / lightestWeight, scene.edgeWidth) }
+        look: {
+            isDimmed: isDimmed(edge),
+            widthPx: edgeWidthPx(edge.weight / lightestWeight, scene.edgeWidth),
+            color: scene.edgeColors[edge.type],
+            line: lineStyleOf(edge, scene.lineStyleShows)
+        }
     }))
 }
 
@@ -124,7 +130,7 @@ function drawItem(item: GraphItem, lookOfBox: (box: LayoutBox) => BoxLook, overl
         case "title":
             return drawFolderTitle(item.box, lookOfBox(item.box), toPixels)
         default:
-            return drawEdge(item.edge, item.route, item.look, toPixels)
+            return drawEdge(item.route, item.look, toPixels)
     }
 }
 
@@ -143,7 +149,12 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
 
 function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps, isFound: boolean): BoxLook {
     const isDragged = canBeOpened(box) && box.path === scene.draggingPath
-    return { emphasis: emphasisOf(box, scene), isSeeThrough: isDragged || seeThroughPaths.has(box.path), isMissedBySearch: !isFound }
+    return {
+        emphasis: emphasisOf(box, scene),
+        isSeeThrough: isDragged || seeThroughPaths.has(box.path),
+        isMissedBySearch: !isFound,
+        kindMark: scene.declarationKindMark
+    }
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {

@@ -9,27 +9,39 @@
     <cc-selection-shortcuts (selectAll)="showAll()" (selectNone)="showNone()" (invert)="invert()"></cc-selection-shortcuts>
     <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
         @for (entry of entries(); track entry.type) {
-            <li>
+            <li class="flex items-center gap-2 rounded-md px-2 py-1" [class]="entry.isCarried ? 'hover:bg-base-200' : 'opacity-50'">
+                <input
+                    #edgeTypeCheckbox
+                    type="checkbox"
+                    class="checkbox checkbox-sm checkbox-primary shrink-0"
+                    [id]="'dependency-bar-edges-' + entry.type"
+                    [checked]="entry.isShown"
+                    [disabled]="!entry.isCarried"
+                    [attr.data-testid]="'dependency-bar-edges-' + entry.type"
+                    (change)="toggle(entry.type, edgeTypeCheckbox.checked)"
+                />
+                <cc-inline-color-picker
+                    [hexColor]="entry.color"
+                    [ariaLabel]="'Colour of: ' + entry.label"
+                    [attr.data-testid]="'dependency-bar-edge-color-' + entry.type"
+                    (colorChange)="recolor(entry.type, $event)"
+                ></cc-inline-color-picker>
+                <svg class="h-2 w-6 shrink-0" viewBox="0 0 24 8" aria-hidden="true">
+                    <line x1="0" y1="4" x2="24" y2="4" stroke-width="2" [attr.stroke]="entry.color" [attr.stroke-dasharray]="entry.isDashed ? '5 4' : null" />
+                </svg>
                 <label
-                    class="flex w-full items-center gap-2 rounded-md px-2 py-1"
-                    [class]="entry.isCarried ? 'cursor-pointer hover:bg-base-200' : 'cursor-not-allowed opacity-50'"
+                    class="min-w-0 flex-1 text-sm"
+                    [class]="entry.isCarried ? 'cursor-pointer' : 'cursor-not-allowed'"
+                    [attr.for]="'dependency-bar-edges-' + entry.type"
+                    >{{ entry.label }}</label
                 >
-                    <input
-                        #edgeTypeCheckbox
-                        type="checkbox"
-                        class="checkbox checkbox-sm checkbox-primary shrink-0"
-                        [checked]="entry.isShown"
-                        [disabled]="!entry.isCarried"
-                        [attr.data-testid]="'dependency-bar-edges-' + entry.type"
-                        (change)="toggle(entry.type, edgeTypeCheckbox.checked)"
-                    />
-                    <svg class="h-2 w-6 shrink-0" viewBox="0 0 24 8" aria-hidden="true">
-                        <line x1="0" y1="4" x2="24" y2="4" stroke-width="2" [attr.stroke]="entry.color" [attr.stroke-dasharray]="entry.isDashed ? '5 4' : null" />
-                    </svg>
-                    <span class="text-sm">{{ entry.label }}</span>
-                </label>
             </li>
         }
     </ul>
     <p class="m-0 px-2 text-xs opacity-70">With none ticked, only the edges of the box under the pointer show.</p>
+    <cc-reset-settings-button
+        [settingsKeys]="colorResetKeys"
+        tooltip="Reset the edge colours to their defaults"
+        label="Reset colours"
+    ></cc-reset-settings-button>
 </cc-settings-popover-shell>

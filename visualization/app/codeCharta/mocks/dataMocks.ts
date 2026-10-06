@@ -1989,11 +1989,14 @@ export const STATE: CcState = {
         radialLevels: 3,
         dependencyGraph: {
             shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
+            edgeColors: { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" },
+            lineStyleShows: "edgeType",
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
             levelLabel: "number",
-            declarationArrangement: "stacked"
+            declarationArrangement: "stacked",
+            declarationKindMark: "icon"
         },
         dependencyViewEnabled: false
     },
@@ -2069,11 +2072,14 @@ export const DEFAULT_STATE: CcState = {
         radialLevels: 3,
         dependencyGraph: {
             shownEdgeTypes: ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
+            edgeColors: { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" },
+            lineStyleShows: "edgeType",
             edgeStyle: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
             levelLabel: "number",
-            declarationArrangement: "stacked"
+            declarationArrangement: "stacked",
+            declarationKindMark: "icon"
         },
         dependencyViewEnabled: false
     },

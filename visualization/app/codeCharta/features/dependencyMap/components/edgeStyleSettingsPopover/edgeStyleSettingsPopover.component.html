@@ -27,6 +27,14 @@
         ></cc-slider-number-input>
     </div>
 
+    <cc-choice-row
+        label="Line style shows"
+        idPrefix="dependency-bar-line-style-shows"
+        [choices]="lineStyleMeaningChoices"
+        [chosen]="lineStyleShows()"
+        (choose)="showByLineStyle($event)"
+    ></cc-choice-row>
+
     <cc-reset-settings-button
         [settingsKeys]="resetKeys"
         tooltip="Reset the edge style and line thickness to their defaults"

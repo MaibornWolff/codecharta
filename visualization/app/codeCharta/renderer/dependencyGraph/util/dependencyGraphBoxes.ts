@@ -1,3 +1,5 @@
+import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
+import { DeclarationShape, declarationKindLookOf } from "./declarationKinds"
 import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import {
@@ -29,6 +31,8 @@ export interface BoxLook {
     isSeeThrough: boolean
     /** A search is on and the box holds nothing it found. */
     isMissedBySearch: boolean
+    /** How a declaration tells what it is. */
+    kindMark: DeclarationKindMark
 }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
@@ -40,6 +44,10 @@ const QUIET_FONT_SIZE_PX = 10
 const FILE_MARK_WIDTH_PX = 16
 const TOGGLE_HIT_PADDING_PX = 4
 const TOGGLE_GLYPHS = { open: "▾", closed: "▸" }
+
+const KIND_ICON = { sizePx: 14, cornerRadiusPx: 3, fontSizePx: 9, gapPx: 4, letterColor: "#ffffff" }
+/** How far the pointed and slanted shapes cut into the box at its left and right. */
+const SHAPE_CUT_SHARE_OF_HEIGHT = 0.35
 
 /** What a click on a box's toggle carries, to tell it from a click on the box. */
 export const TOGGLE_INFO = "toggle"
@@ -53,24 +61,107 @@ const HOVERED_LINE_WIDTH_PX = 2
 const LEVEL_LABEL_LIFT_PX = 2
 const SEPARATOR_DASH_PX = [4, 4]
 
-export function drawBox(box: LayoutBox, { emphasis, isSeeThrough, isMissedBySearch }: BoxLook, toPixels: ToPixels) {
+export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
-    const style = boxStyle(box, emphasis)
-    const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
-    const opacity = opacityOf(isMissedBySearch)
-    const outline = { type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }
-    return drawnItem(box.isExpanded ? [outline] : [outline, ...drawName(box, rect, opacity)])
+    const outline = drawOutline(box, rect, look)
+    return drawnItem(box.isExpanded ? [outline] : [outline, ...drawName(box, rect, look)])
 }
 
 /** Drawn apart from the open box so the edges pass under it. */
-export function drawFolderTitle(box: LayoutBox, { isMissedBySearch }: BoxLook, toPixels: ToPixels) {
-    return drawnItem(drawName(box, pixelRectOf(box, toPixels), opacityOf(isMissedBySearch)))
+export function drawFolderTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
+    return drawnItem(drawName(box, pixelRectOf(box, toPixels), look))
 }
 
-function drawName(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
-    const marks = holdsDeclarations(box) ? [drawToggle(box, rect, opacity), ...drawDeclarationCount(box, rect, opacity)] : []
-    const label = drawLabel(box, rect, opacity)
+function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark }: BoxLook) {
+    const style = boxStyle(box, emphasis)
+    const kindLook = box.kind === "declaration" ? declarationKindLookOf(box.declarationKind) : null
+    const ownFill = kindLook && kindMark === "tint" ? kindLook.tint : style.fill
+    const fill = isSeeThrough ? seeThrough(ownFill) : ownFill
+    const shape = kindLook && kindMark === "shape" ? kindLook.shape : "rectangle"
+    return { ...UNTRANSFORMED, ...outlineOf(rect, shape), style: { ...style, fill, opacity: opacityOf(isMissedBySearch) } }
+}
+
+function outlineOf(rect: Rectangle, shape: DeclarationShape) {
+    const cut = rect.height * SHAPE_CUT_SHARE_OF_HEIGHT
+    const { x: left, y: top } = rect
+    const right = left + rect.width
+    const bottom = top + rect.height
+    switch (shape) {
+        case "pill":
+            return { type: "rect", shape: { ...rect, r: rect.height / 2 } }
+        case "sharp":
+            return { type: "rect", shape: { ...rect, r: 0 } }
+        case "hexagon": {
+            const middle = top + rect.height / 2
+            const points = [
+                [left + cut, top],
+                [right - cut, top],
+                [right, middle],
+                [right - cut, bottom],
+                [left + cut, bottom],
+                [left, middle]
+            ]
+            return { type: "polygon", shape: { points } }
+        }
+        case "slanted":
+            return {
+                type: "polygon",
+                shape: {
+                    points: [
+                        [left + cut, top],
+                        [right, top],
+                        [right - cut, bottom],
+                        [left, bottom]
+                    ]
+                }
+            }
+        default:
+            return { type: "rect", shape: { ...rect, r: CORNER_RADIUS_PX } }
+    }
+}
+
+function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark }: BoxLook): object[] {
+    const opacity = opacityOf(isMissedBySearch)
+    const hasKindIcon = box.kind === "declaration" && kindMark === "icon"
+    const marks = [...drawFileMarks(box, rect, opacity), ...(hasKindIcon ? drawKindIcon(box, rect, opacity) : [])]
+    const label = drawLabel(box, rect, { opacity, hasKindIcon })
     return label ? [label, ...marks] : marks
+}
+
+function drawFileMarks(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+    return holdsDeclarations(box) ? [drawToggle(box, rect, opacity), ...drawDeclarationCount(box, rect, opacity)] : []
+}
+
+function drawKindIcon(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+    const { letter, color } = declarationKindLookOf(box.declarationKind)
+    const left = rect.x + LABEL_INSET_PX
+    const centreY = rect.y + rect.height / 2
+    const square = {
+        x: left,
+        y: centreY - KIND_ICON.sizePx / 2,
+        width: KIND_ICON.sizePx,
+        height: KIND_ICON.sizePx,
+        r: KIND_ICON.cornerRadiusPx
+    }
+    return [
+        { type: "rect", ...UNTRANSFORMED, silent: true, shape: square, style: { fill: color, opacity } },
+        {
+            type: "text",
+            ...UNTRANSFORMED,
+            silent: true,
+            style: {
+                text: letter,
+                x: left + KIND_ICON.sizePx / 2,
+                y: centreY,
+                align: "center",
+                verticalAlign: "middle",
+                fontSize: KIND_ICON.fontSizePx,
+                fontWeight: "bold",
+                fill: KIND_ICON.letterColor,
+                opacity
+            }
+        }
+    ]
 }
 
 function holdsDeclarations(box: LayoutBox): boolean {
@@ -209,9 +300,15 @@ function baseStyle(box: LayoutBox) {
     }
 }
 
-function drawLabel(box: LayoutBox, rect: Rectangle, opacity: number) {
+interface LabelLook {
+    opacity: number
+    hasKindIcon: boolean
+}
+
+function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon }: LabelLook) {
     const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX : 0
-    const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth)
+    const iconWidth = hasKindIcon ? KIND_ICON.sizePx + KIND_ICON.gapPx : 0
+    const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -222,7 +319,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, opacity: number) {
         silent: true,
         style: {
             text: box.name,
-            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + rect.width / 2,
+            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + (rect.width + iconWidth) / 2,
             y: nameCentreY(box, rect),
             width,
             overflow: "truncate",

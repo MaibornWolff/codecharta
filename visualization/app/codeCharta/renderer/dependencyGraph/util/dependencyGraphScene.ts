@@ -1,4 +1,11 @@
-import { DependencyEdgeStyle, DependencyEdgeType, DependencyEdgeWidth } from "../../../model/dependencyGraph.model"
+import {
+    DeclarationKindMark,
+    DependencyEdgeColors,
+    DependencyEdgeStyle,
+    DependencyEdgeType,
+    DependencyEdgeWidth,
+    LineStyleMeaning
+} from "../../../model/dependencyGraph.model"
 import { isWithin } from "./boxPaths"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
@@ -13,6 +20,9 @@ export interface DependencyGraphScene {
     edgeMetric: string | null
     /** The hovered box's edges are drawn whatever their type. */
     shownEdgeTypes: readonly DependencyEdgeType[]
+    edgeColors: DependencyEdgeColors
+    lineStyleShows: LineStyleMeaning
+    declarationKindMark: DeclarationKindMark
     edgeStyle: DependencyEdgeStyle
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth

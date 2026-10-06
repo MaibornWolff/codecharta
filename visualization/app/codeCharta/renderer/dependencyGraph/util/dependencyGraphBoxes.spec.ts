@@ -1,17 +1,18 @@
-import { BoxEmphasis, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
+import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
+import { BoxEmphasis, BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
 interface DrawnElement {
     type: string
     info?: string
-    shape?: Record<string, unknown>
+    shape?: Record<string, unknown> & { points?: number[][] }
     style?: Record<string, unknown>
     children?: DrawnElement[]
 }
 
-function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false) {
-    return { emphasis, isSeeThrough, isMissedBySearch }
+function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false, kindMark: DeclarationKindMark = "off"): BoxLook {
+    return { emphasis, isSeeThrough, isMissedBySearch, kindMark }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -85,6 +86,84 @@ describe("dependencyGraphBoxes", () => {
             // Assert
             expect(rect.style).toMatchObject({ fill: "#ffffff", stroke: "#b9c1cc" })
             expect(label.style).toMatchObject({ text: "Creature", fontSize: 11 })
+        })
+
+        describe("declaration kind", () => {
+            const declaration = (declarationKind: string) =>
+                aBox("/root/a.ts/Creature", { kind: "declaration", declarationKind, x: 0, y: 0, width: 132, height: 26 })
+
+            it("should put a lettered icon in the kind's colour before the name", () => {
+                // Arrange
+                const box = declaration("interface")
+
+                // Act
+                const [, label, icon, letter] = childrenOf(drawBox(box, look("none", false, false, "icon"), identityPixels))
+
+                // Assert
+                expect(icon).toMatchObject({ type: "rect", shape: { x: 8, y: 6, width: 14, height: 14 }, style: { fill: "#15803d" } })
+                expect(letter.style).toMatchObject({ text: "I", x: 15, y: 13 })
+                expect(label.style).toMatchObject({ x: 75, width: 98 })
+            })
+
+            it.each([
+                ["class", "rect", { r: 4 }],
+                ["interface", "rect", { r: 13 }],
+                ["enum", "rect", { r: 0 }]
+            ])("should outline a %s as a %s when the shape tells the kind", (declarationKind, type, shape) => {
+                // Arrange
+                const box = declaration(declarationKind)
+
+                // Act
+                const [outline] = childrenOf(drawBox(box, look("none", false, false, "shape"), identityPixels))
+
+                // Assert
+                expect(outline).toMatchObject({ type, shape })
+            })
+
+            it("should point a function's box at both ends and slant a variable's", () => {
+                // Arrange
+                const boxes = [declaration("function"), declaration("variable")]
+
+                // Act
+                const [hexagon, slanted] = boxes.map(
+                    box => childrenOf(drawBox(box, look("selected", false, false, "shape"), identityPixels))[0]
+                )
+
+                // Assert
+                expect(hexagon.shape.points).toHaveLength(6)
+                expect(slanted.shape.points).toEqual([
+                    [9.1, 0],
+                    [132, 0],
+                    [122.9, 26],
+                    [0, 26]
+                ])
+                expect(hexagon.style.stroke).toBe(SELECTED_COLOR)
+            })
+
+            it("should fill the box in the kind's tint, and leave the box plain when the kind is not shown", () => {
+                // Arrange
+                const box = declaration("enum")
+
+                // Act
+                const [tinted] = childrenOf(drawBox(box, look("none", false, false, "tint"), identityPixels))
+                const plain = childrenOf(drawBox(box, look("none"), identityPixels))
+
+                // Assert
+                expect(tinted.style.fill).toBe("#f3e8ff")
+                expect(plain.map(child => child.type)).toEqual(["rect", "text"])
+                expect(plain[0].style.fill).toBe("#ffffff")
+            })
+
+            it("should not mark a file by the kind setting", () => {
+                // Arrange
+                const file = aBox("/root/a.ts")
+
+                // Act
+                const children = childrenOf(drawBox(file, look("none", false, false, "icon"), identityPixels))
+
+                // Assert
+                expect(children.map(child => child.type)).toEqual(["rect", "text"])
+            })
         })
 
         it("should leave an open folder's name to its title, which is painted over the edges", () => {

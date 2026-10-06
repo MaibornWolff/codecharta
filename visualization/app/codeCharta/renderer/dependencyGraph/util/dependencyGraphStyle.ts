@@ -1,4 +1,5 @@
-import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
+import { DEPENDENCY_EDGE_TYPES, DependencyEdgeColors, DependencyEdgeType, LineStyleMeaning } from "../../../model/dependencyGraph.model"
+import { isDashedEdgeType } from "./lineStyle"
 
 export const TEXT_COLOR = "#1f2937"
 export const SELECTED_COLOR = "#1b9cfc"
@@ -16,15 +17,7 @@ export const QUIET_TEXT_COLOR = "#6b7280"
 export const LEVEL_SEPARATOR_COLOR = "#c3cbd6"
 
 /** Grey follows the architecture, blue closes a cycle but still points down, red points upward — the
- * colours DependaCharta users already read. A dashed red edge is a violation between folders only. */
-const EDGE_COLORS: Record<DependencyEdgeType, string> = {
-    regular: "#8c96a3",
-    cyclic: "#2563eb",
-    feedbackContainerLevel: "#dc2626",
-    feedbackLeafLevel: "#dc2626"
-}
-const DASHED = [5, 4]
-
+ * colours DependaCharta users already read, unless the reader picks others. */
 export const EDGE_TYPE_LABELS: Record<DependencyEdgeType, string> = {
     regular: "Dependency",
     cyclic: "In a cycle",
@@ -39,12 +32,14 @@ export interface EdgeLegendEntry {
     isDashed: boolean
 }
 
-export const EDGE_LEGEND: EdgeLegendEntry[] = (Object.keys(EDGE_TYPE_LABELS) as DependencyEdgeType[]).map(type => ({
-    type,
-    label: EDGE_TYPE_LABELS[type],
-    color: EDGE_COLORS[type],
-    isDashed: type === "feedbackContainerLevel"
-}))
+export function edgeLegend(edgeColors: DependencyEdgeColors, lineStyleShows: LineStyleMeaning): EdgeLegendEntry[] {
+    return DEPENDENCY_EDGE_TYPES.map(type => ({
+        type,
+        label: EDGE_TYPE_LABELS[type],
+        color: edgeColors[type],
+        isDashed: isDashedEdgeType(type, lineStyleShows)
+    }))
+}
 
 export const DIMMED_OPACITY = 0.12
 export const MISSED_BY_SEARCH_OPACITY = 0.3
@@ -65,12 +60,4 @@ export function seeThrough(hexColor: string): string {
 
 export function folderFill(depth: number): string {
     return FOLDER_FILLS_BY_DEPTH[Math.min(depth, FOLDER_FILLS_BY_DEPTH.length - 1)]
-}
-
-export function edgeColor(type: DependencyEdgeType): string {
-    return EDGE_COLORS[type]
-}
-
-export function edgeDash(type: DependencyEdgeType): number[] | null {
-    return EDGE_LEGEND.find(entry => entry.type === type).isDashed ? DASHED : null
 }

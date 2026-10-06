@@ -14,4 +14,14 @@
     [choices]="arrangementChoices"
     [chosen]="arrangement()"
     (choose)="arrangeAs($event)"
-></cc-choice-list-popover>
+>
+    <div class="border-t border-base-300 pt-2.5">
+        <cc-choice-row
+            label="Kind shown as"
+            idPrefix="dependency-bar-declaration-kind"
+            [choices]="kindMarkChoices"
+            [chosen]="kindMark()"
+            (choose)="markKindBy($event)"
+        ></cc-choice-row>
+    </div>
+</cc-choice-list-popover>

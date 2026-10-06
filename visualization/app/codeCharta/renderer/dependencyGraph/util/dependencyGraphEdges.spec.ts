@@ -1,18 +1,19 @@
 import { drawEdge, EdgeLook } from "./dependencyGraphEdges"
 import { DIMMED_OPACITY } from "./dependencyGraphStyle"
-import { anEdge, identityPixels } from "./dependencyGraphTestData"
+import { EDGE_COLORS, identityPixels } from "./dependencyGraphTestData"
 import { EdgeRoute } from "./edgeRouting"
+import { PLAIN_LINE } from "./lineStyle"
 
 interface DrawnEdge {
     children: [
         { shape: Record<string, number>; style: Record<string, unknown> },
-        { shape: { points: number[][] }; style: Record<string, unknown> }
+        { type: string; shape: { points: number[][]; cx?: number; cy?: number; r?: number }; style: Record<string, unknown> }
     ]
 }
 
-function draw(route: EdgeRoute, overrides: Parameters<typeof anEdge>[2] = {}, look: Partial<EdgeLook> = {}): DrawnEdge {
-    const edgeLook = { isDimmed: false, widthPx: 1.2, ...look }
-    return drawEdge(anEdge("/root/a", "/root/b", overrides), route, edgeLook, identityPixels) as unknown as DrawnEdge
+function draw(route: EdgeRoute, look: Partial<EdgeLook> = {}): DrawnEdge {
+    const edgeLook = { isDimmed: false, widthPx: 1.2, color: EDGE_COLORS.regular, line: PLAIN_LINE, ...look }
+    return drawEdge(route, edgeLook, identityPixels) as unknown as DrawnEdge
 }
 
 const downward: EdgeRoute = { start: [60, 40], startSide: "bottom", end: [90, 140], endSide: "top", bend: "sCurve" }
@@ -77,15 +78,30 @@ describe("drawEdge", () => {
         expect(curve.shape).toMatchObject({ cpx1: 160 + 40, cpy1: 120, cpx2: 160 + 40, cpy2: 20 })
     })
 
-    it("should colour and dash a container-level feedback edge", () => {
+    it("should draw the line in the colour and dashes its look says, with a filled arrow", () => {
         // Arrange
-        const pointingUpward = { type: "feedbackContainerLevel" } as const
+        const dashedRed: Partial<EdgeLook> = { color: "#dc2626", line: { dash: [5, 4], head: "filled" } }
 
         // Act
-        const [curve] = draw(downward, pointingUpward).children
+        const [curve, arrow] = draw(downward, dashedRed).children
 
         // Assert
         expect(curve.style).toMatchObject({ stroke: "#dc2626", lineDash: [5, 4] })
+        expect(arrow).toMatchObject({ type: "polygon", style: { fill: "#dc2626" } })
+    })
+
+    it("should end the line in a hollow, an open or a round head when its look asks for one", () => {
+        // Arrange
+        const heads = ["hollow", "open", "dot"] as const
+
+        // Act
+        const [hollow, open, dot] = heads.map(head => draw(downward, { line: { dash: null, head } }).children[1])
+
+        // Assert
+        expect(hollow).toMatchObject({ type: "polygon", style: { fill: "#ffffff", stroke: EDGE_COLORS.regular } })
+        expect(open).toMatchObject({ type: "polyline", style: { fill: null, stroke: EDGE_COLORS.regular } })
+        expect(open.shape.points[1]).toEqual([90, 140])
+        expect(dot).toMatchObject({ type: "circle", shape: { cx: 90, cy: 140, r: 4 }, style: { fill: EDGE_COLORS.regular } })
     })
 
     it("should fade a dimmed edge and its arrow", () => {
@@ -93,7 +109,7 @@ describe("drawEdge", () => {
         const dimmed = { isDimmed: true }
 
         // Act
-        const { children } = draw(downward, {}, dimmed)
+        const { children } = draw(downward, dimmed)
 
         // Assert
         expect(children.map(child => child.style.opacity)).toEqual([DIMMED_OPACITY, DIMMED_OPACITY])
@@ -104,7 +120,7 @@ describe("drawEdge", () => {
         const wide = { widthPx: 3 }
 
         // Act
-        const [curve] = draw(downward, {}, wide).children
+        const [curve] = draw(downward, wide).children
 
         // Assert
         expect(curve.style.lineWidth).toBe(3)
@@ -115,8 +131,8 @@ describe("drawEdge", () => {
         const [thin, wide] = [{ widthPx: 1.2 }, { widthPx: 6 }]
 
         // Act
-        const [, thinArrow] = draw(downward, {}, thin).children
-        const [, wideArrow] = draw(downward, {}, wide).children
+        const [, thinArrow] = draw(downward, thin).children
+        const [, wideArrow] = draw(downward, wide).children
 
         // Assert
         const lengthOf = (points: number[][]) => points[0][1] - points[1][1]
