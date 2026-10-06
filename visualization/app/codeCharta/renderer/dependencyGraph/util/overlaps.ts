@@ -1,6 +1,6 @@
 import { isWithin } from "./boxPaths"
 import { enclosingRectangle, intersects, Rectangle } from "./geometry"
-import { LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
+import { canBeOpened, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 import { PaintedItem } from "./paintOrder"
 import { RectangleGrid } from "./rectangleGrid"
 
@@ -51,7 +51,7 @@ export function bandSeparator(band: LevelBand): BandSeparator {
 function seeThroughFolders(boxes: PaintedBox[], grid: PaintedBoxGrid): Set<string> {
     const seeThroughPaths = new Set<string>()
     for (const upper of boxes) {
-        if (upper.box.kind === "folder" && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower))) {
+        if (canBeOpened(upper.box) && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower))) {
             seeThroughPaths.add(upper.box.path)
         }
     }

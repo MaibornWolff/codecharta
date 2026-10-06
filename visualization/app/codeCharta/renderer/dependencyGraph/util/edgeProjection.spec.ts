@@ -1,4 +1,4 @@
-import { Edge } from "../../../model/codeCharta.model"
+import { DependencyLeafEdge, Edge } from "../../../model/codeCharta.model"
 import { projectEdges, visibleRepresentatives } from "./edgeProjection"
 import { LeveledNode } from "./leveledTree"
 
@@ -8,6 +8,20 @@ function leveledFile(path: string): LeveledNode {
 
 function leveledFolder(path: string, children: LeveledNode[]): LeveledNode {
     return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
+}
+
+function leveledDeclaration(filePath: string, name: string): LeveledNode {
+    return { path: `${filePath}/${name}`, name, level: 0, kind: "declaration", children: [], declarationKind: "class" }
+}
+
+function fileDeclaring(path: string, names: string[]): LeveledNode {
+    return { ...leveledFile(path), children: names.map(name => leveledDeclaration(path, name)) }
+}
+
+function leafEdge(from: string, to: string, extra: Partial<DependencyLeafEdge> = {}): DependencyLeafEdge {
+    const [fromNodeName, fromLeaf] = from.split("#")
+    const [toNodeName, toLeaf] = to.split("#")
+    return { fromNodeName, fromLeaf, toNodeName, toLeaf, attributes: { dependencies: 1 }, usage: ["usage"], ...extra }
 }
 
 function edge(fromNodeName: string, toNodeName: string, extra: Partial<Edge> = {}): Edge {
@@ -86,7 +100,14 @@ describe("edgeProjection", () => {
 
             // Assert
             expect(projected).toEqual([
-                { id: "/root/ui/view.ts|/root/model", fromPath: "/root/ui/view.ts", toPath: "/root/model", weight: 3, type: "cyclic" }
+                {
+                    id: "/root/ui/view.ts|/root/model",
+                    fromPath: "/root/ui/view.ts",
+                    toPath: "/root/model",
+                    weight: 3,
+                    type: "cyclic",
+                    declarationEdges: []
+                }
             ])
         })
 
@@ -137,7 +158,8 @@ describe("edgeProjection", () => {
                     fromPath: "/root/ui/menu.ts",
                     toPath: "/root/model/edge.ts",
                     weight: 0.4,
-                    type: "regular"
+                    type: "regular",
+                    declarationEdges: []
                 }
             ])
         })
@@ -166,6 +188,134 @@ describe("edgeProjection", () => {
 
             // Act
             const projected = projectEdges([edge("/root/ui/view.ts", "/root/model/node.ts")], representatives, null)
+
+            // Assert
+            expect(projected).toEqual([])
+        })
+    })
+    describe("projectEdges with declarations", () => {
+        const VIEW = "/root/ui/view.ts"
+        const NODE = "/root/model/node.ts"
+        const declaringTree = leveledFolder("/root", [
+            leveledFolder("/root/ui", [fileDeclaring(VIEW, ["View", "Menu"])]),
+            leveledFolder("/root/model", [fileDeclaring(NODE, ["Node", "Edge"])])
+        ])
+        const fileEdges = [edge(VIEW, NODE, { attributes: { dependencies: 5 }, isPointingUpwards: true })]
+        const leafEdges = [
+            leafEdge(`${VIEW}#View`, `${NODE}#Node`, { isCyclic: true }),
+            leafEdge(`${VIEW}#Menu`, `${NODE}#Node`, { attributes: { dependencies: 2 } }),
+            leafEdge(`${VIEW}#View`, `${VIEW}#Menu`, { isPointingUpwards: true })
+        ]
+        const everyFolder = ["/root", "/root/ui", "/root/model"]
+
+        function project(openedFiles: string[], edgeMetric = "dependencies") {
+            const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, ...openedFiles]))
+            return projectEdges(fileEdges, representatives, edgeMetric, leafEdges)
+        }
+
+        it("should keep the file edge between two closed files and say which declaration edges it stands for", () => {
+            // Arrange
+            const openedFiles: string[] = []
+
+            // Act
+            const projected = project(openedFiles)
+
+            // Assert
+            expect(projected).toEqual([
+                {
+                    id: `${VIEW}|${NODE}`,
+                    fromPath: VIEW,
+                    toPath: NODE,
+                    weight: 5,
+                    type: "feedbackContainerLevel",
+                    declarationEdges: [leafEdges[0], leafEdges[1]]
+                }
+            ])
+        })
+
+        it("should show the declaration edges of an opened file, lifted onto the closed file at their other end", () => {
+            // Arrange
+            const openedFiles = [VIEW]
+
+            // Act
+            const projected = project(openedFiles)
+
+            // Assert
+            expect(projected.map(({ id, weight }) => [id, weight])).toEqual([
+                [`${VIEW}/View|${NODE}`, 1],
+                [`${VIEW}/Menu|${NODE}`, 2],
+                [`${VIEW}/View|${VIEW}/Menu`, 1]
+            ])
+        })
+
+        it("should take which way is up from the file edge between two files and from the declaration edge inside one", () => {
+            // Arrange
+            const openedFiles = [VIEW, NODE]
+
+            // Act
+            const projected = project(openedFiles)
+
+            // Assert
+            expect(projected.map(({ id, type }) => [id, type])).toEqual([
+                [`${VIEW}/View|${NODE}/Node`, "feedbackLeafLevel"],
+                [`${VIEW}/Menu|${NODE}/Node`, "feedbackContainerLevel"],
+                [`${VIEW}/View|${VIEW}/Menu`, "feedbackContainerLevel"]
+            ])
+        })
+
+        it("should merge the declaration edges that land on the same declaration of the other file", () => {
+            // Arrange
+            const openedFiles = [NODE]
+
+            // Act
+            const projected = project(openedFiles)
+
+            // Assert
+            expect(projected).toHaveLength(1)
+            expect(projected[0]).toMatchObject({ id: `${VIEW}|${NODE}/Node`, weight: 3, type: "feedbackLeafLevel" })
+            expect(projected[0].declarationEdges).toHaveLength(2)
+        })
+
+        it("should keep an edge inside a file hidden while the file is closed", () => {
+            // Arrange
+            const everythingClosed = new Set(["/root"])
+
+            // Act
+            const projected = projectEdges(fileEdges, visibleRepresentatives(declaringTree, everythingClosed), "dependencies", leafEdges)
+
+            // Assert
+            expect(projected.map(({ id }) => id)).toEqual(["/root/ui|/root/model"])
+        })
+
+        it("should end the file edge on the opened file when no declaration edge tells more", () => {
+            // Arrange
+            const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
+
+            // Act
+            const projected = projectEdges(fileEdges, representatives, "dependencies", [])
+
+            // Assert
+            expect(projected.map(({ id }) => id)).toEqual([`${VIEW}|${NODE}`])
+        })
+
+        it("should stand a declaration the tree does not hold by its file, and weigh an edge without a weight as one", () => {
+            // Arrange
+            const representatives = visibleRepresentatives(declaringTree, new Set([...everyFolder, VIEW]))
+            const toUnknown = [leafEdge(`${VIEW}#View`, `${NODE}#Ghost`, { attributes: {} })]
+
+            // Act
+            const projected = projectEdges(fileEdges, representatives, "dependencies", toUnknown)
+
+            // Assert
+            expect(projected.map(({ id, weight }) => [id, weight])).toEqual([[`${VIEW}/View|${NODE}`, 1]])
+        })
+
+        it("should leave the declarations out of another edge metric", () => {
+            // Arrange
+            const openedFiles = [VIEW, NODE]
+
+            // Act
+            const projected = project(openedFiles, "temporal_coupling")
 
             // Assert
             expect(projected).toEqual([])

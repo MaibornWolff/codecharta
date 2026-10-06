@@ -10,6 +10,9 @@ export const CLOSED_FOLDER_FILL = "#dbe7f5"
 export const CLOSED_FOLDER_STROKE = "#7a9cc6"
 export const FILE_FILL = "#ffffff"
 export const FILE_STROKE = "#9aa5b4"
+export const OPEN_FILE_FILL = "#fbfcfe"
+export const DECLARATION_STROKE = "#b9c1cc"
+export const QUIET_TEXT_COLOR = "#6b7280"
 export const LEVEL_SEPARATOR_COLOR = "#c3cbd6"
 
 /** Grey follows the architecture, blue closes a cycle but still points down, red points upward — the

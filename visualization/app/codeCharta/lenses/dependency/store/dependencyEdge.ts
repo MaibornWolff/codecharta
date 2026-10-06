@@ -3,7 +3,7 @@ import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType } from "../../../model/depend
 
 /** The edge metric the dependency parser writes. `edges` is shared with every edge producer, so only an edge
  * carrying it is a dependency, and its cycle and upward flags describe the dependency graph alone. */
-const DEPENDENCIES_EDGE_METRIC = "dependencies"
+export const DEPENDENCIES_EDGE_METRIC = "dependencies"
 
 export function dependencyEdgeTypeOf({
     isCyclic = false,

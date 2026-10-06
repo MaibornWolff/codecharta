@@ -1,5 +1,5 @@
 import { createSelector } from "@ngrx/store"
-import { dependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { dependencyDeclarationsSelector, dependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
 import { buildLeveledTree, levelPathOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { accumulatedDataSelector, pathToNodeSelector, searchedNodePathsSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
@@ -11,9 +11,10 @@ export const dependencyTreeSelector = createSelector(
     pathToNodeSelector,
     currentFocusedNodePathSelector,
     dependencyLevelsSelector,
-    ({ unifiedMapNode }, pathToNode, focusedNodePath, levels) => {
+    dependencyDeclarationsSelector,
+    ({ unifiedMapNode }, pathToNode, focusedNodePath, levels, { leaves }) => {
         const root = (focusedNodePath && pathToNode.get(focusedNodePath)) || unifiedMapNode
-        return root ? buildLeveledTree(root, levels) : null
+        return root ? buildLeveledTree(root, levels, leaves) : null
     }
 )
 

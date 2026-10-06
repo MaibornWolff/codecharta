@@ -5,6 +5,7 @@ import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
+import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { AxisWindow, Viewport, windowResizedTo } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
@@ -28,6 +29,8 @@ interface ChartItemEvent {
     seriesId?: string
     name?: string
     data?: GraphDatum
+    /** What the element under the pointer says about itself, when it is more than a part of its box. */
+    info?: unknown
     event?: { event?: MouseEvent; offsetX: number; offsetY: number }
 }
 
@@ -160,6 +163,11 @@ export class DependencyGraphHost {
     private reportClick(event: ChartItemEvent): void {
         const path = this.boxUnder(event)
         if (this.dragGesture?.takeClickThatEndedDrag() || path === null) {
+            return
+        }
+        if (event.info === TOGGLE_INFO) {
+            this.lastBoxClick = null
+            this.handlers.onBoxToggled(path)
             return
         }
         this.lastBoxClick = { path, at: Date.now() }

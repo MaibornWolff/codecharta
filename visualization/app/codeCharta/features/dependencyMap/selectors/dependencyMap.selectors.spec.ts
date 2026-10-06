@@ -16,6 +16,7 @@ const appFolder: CodeMapNode = {
 }
 const root: CodeMapNode = { name: "root", path: "/root", type: NodeType.FOLDER, children: [appFolder] }
 const levels = { "/root/app/a.ts": 0 }
+const declarations = { namespaces: {}, leaves: { "/root/app/a.ts": { helper: { name: "helper", kind: "function" } } }, leafEdges: [] }
 const pathToNode = new Map([
     ["/root", root],
     ["/root/app", appFolder]
@@ -27,11 +28,12 @@ describe("dependencyTreeSelector", () => {
         const accumulatedData = { unifiedMapNode: root, unifiedFileMeta: undefined }
 
         // Act
-        const tree = dependencyTreeSelector.projector(accumulatedData, pathToNode, "", levels)
+        const tree = dependencyTreeSelector.projector(accumulatedData, pathToNode, "", levels, declarations)
 
         // Assert
         expect(tree).toMatchObject({ path: "/root/app", name: "root/app" })
         expect(tree.children[0].path).toBe("/root/app/a.ts")
+        expect(tree.children[0].children.map(declaration => declaration.path)).toEqual(["/root/app/a.ts/helper"])
     })
 
     it("should start at the focused folder", () => {
@@ -39,7 +41,7 @@ describe("dependencyTreeSelector", () => {
         const accumulatedData = { unifiedMapNode: root, unifiedFileMeta: undefined }
 
         // Act
-        const tree = dependencyTreeSelector.projector(accumulatedData, pathToNode, "/root/app", levels)
+        const tree = dependencyTreeSelector.projector(accumulatedData, pathToNode, "/root/app", levels, declarations)
 
         // Assert
         expect(tree).toMatchObject({ path: "/root/app", name: "app" })
@@ -50,7 +52,7 @@ describe("dependencyTreeSelector", () => {
         const accumulatedData = { unifiedMapNode: undefined, unifiedFileMeta: undefined }
 
         // Act
-        const tree = dependencyTreeSelector.projector(accumulatedData, new Map(), "", levels)
+        const tree = dependencyTreeSelector.projector(accumulatedData, new Map(), "", levels, declarations)
 
         // Assert
         expect(tree).toBeNull()

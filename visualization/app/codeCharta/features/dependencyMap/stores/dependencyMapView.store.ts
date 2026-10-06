@@ -3,6 +3,13 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { BoxOffset, boxPathOf, collapsedFirstLook, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
+/** Something only the graph can select: a declaration is no node of the map, so the shared selection holds its
+ * file, and the graph's own selection lasts for as long as the shared one still does. */
+export interface GraphSelection {
+    path: string
+    sharedPath: string | null
+}
+
 interface RevealsAwaitingAdoption {
     layoutIdentity: string
     paths: string[]
@@ -17,6 +24,8 @@ export class DependencyMapViewStore {
     private readonly draggedOrder = signal<readonly string[]>([])
     private readonly boxBeingDragged = signal<string | null>(null)
     private readonly fitRequestCount = signal(0)
+    private readonly selectedInGraph = signal<GraphSelection | null>(null)
+    private readonly hoveredInGraph = signal<string | null>(null)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: LeveledNode | null = null
 
@@ -27,6 +36,9 @@ export class DependencyMapViewStore {
     readonly raisedPaths = this.draggedOrder.asReadonly()
     readonly draggingPath = this.boxBeingDragged.asReadonly()
     readonly fitRequest = this.fitRequestCount.asReadonly()
+    readonly graphSelection = this.selectedInGraph.asReadonly()
+    /** The box under the pointer, which the shared hover names only by the node it belongs to. */
+    readonly hoveredBoxPath = this.hoveredInGraph.asReadonly()
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()
@@ -37,6 +49,14 @@ export class DependencyMapViewStore {
         } else if (hasRootMoved) {
             this.openTheMovedRoot(tree)
         }
+    }
+
+    selectInGraph(selection: GraphSelection | null): void {
+        this.selectedInGraph.set(selection)
+    }
+
+    hoverInGraph(path: string | null): void {
+        this.hoveredInGraph.set(path)
     }
 
     requestFit(): void {
@@ -90,6 +110,7 @@ export class DependencyMapViewStore {
         this.layoutIdentityOfTheOpenedFolders.set(layoutIdentity)
         this.openedFolders.set(collapsedFirstLook(tree))
         this.resetLayout()
+        this.selectedInGraph.set(null)
         this.revealTheAwaitingPaths(layoutIdentity)
     }
 

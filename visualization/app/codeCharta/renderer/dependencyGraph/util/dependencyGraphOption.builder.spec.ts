@@ -151,6 +151,21 @@ describe("buildDependencyGraphOption", () => {
         expect(describe(edgeIndices[1])).toBe("<b>util.ts → view.ts</b><br/>1 dependency · Points upward")
     })
 
+    it("should say in the tooltip that a file holding declarations opens, and what kind of declaration a box is", () => {
+        // Arrange
+        const file = aBox("/root/creature.ts", { declarationCount: 2, isExpanded: true, width: 300, height: 120 })
+        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", depth: 2, levelPath: [] })
+        const layout = { boxes: [root, file, declaration], bands: [], width: 800, height: 500 }
+
+        // Act
+        const { describe, indexOf, option } = drawnGraph(sceneWith({ layout, edges: [] }))
+
+        // Assert
+        expect(describe(indexOf(file.path))).toBe("<b>/root/creature.ts</b><br/>Level 0<br/><i>Double-click to close</i>")
+        expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class")
+        expect(option.aria.label.description).toContain("with 1 files")
+    })
+
     it("should name the metric and its value in the tooltip of another metric's edge", () => {
         // Arrange
         const edges = [anEdge(view.path, model.path, { weight: 0.375 })]
