@@ -1,7 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
-import { DECLARATION_KIND_LEGEND, edgeLegend, USAGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import {
+    DECLARATION_KIND_LEGEND,
+    edgeLegend,
+    KIND_ICON_COLORS,
+    USAGE_LEGEND
+} from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 
 @Component({
@@ -31,5 +36,6 @@ export class DependencyEdgeLegendComponent {
     readonly marksHierarchyDifferences = computed(
         () => this.isDependencyMetric() && this.hasNamespaces() && this.settings().marksHierarchyDifferences
     )
+    readonly iconColors = KIND_ICON_COLORS
     readonly usageColor = computed(() => this.settings().edgeColors.regular)
 }

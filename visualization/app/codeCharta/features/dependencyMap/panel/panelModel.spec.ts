@@ -51,8 +51,11 @@ const GAME_FOLDER: LeveledNode = {
     children: [CREATURE_NODE, fileNode(WEAPON, [declarationNode(WEAPON, "Weapon", "interface")])]
 }
 
-function context(rowLimit = 20): PanelContext {
-    return { index: indexDeclarations(DECLARATIONS), rowLimit }
+function context(
+    rowLimit = 20,
+    pointsUpward: PanelContext["pointsUpward"] = leafEdge => Boolean(leafEdge.isPointingUpwards)
+): PanelContext {
+    return { index: indexDeclarations(DECLARATIONS), rowLimit, pointsUpward }
 }
 
 function box(node: LeveledNode, isOpen = false) {
@@ -98,19 +101,34 @@ describe("describeSubject", () => {
             // Assert
             expect(rowsOf(model, "Inside the file")).toEqual(["-: Creature → Armor (Uses)"])
             expect(rowsOf(model, "Uses")).toEqual([
-                "weapon.ts: Creature → Weapon (Inherits, Uses)",
+                "weapon.ts: Creature → Weapon (Inherits from, Uses)",
                 "text.ts: Armor → format (Takes as argument)"
             ])
             expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature (Uses)"])
             expect(model.sections.map(section => section.count)).toEqual([1, 2, 1])
         })
 
-        it("should carry the flags and the dependency of each row, for the graph to light up", () => {
+        it("should carry each row's dependency for the graph to light up, the line of its strongest use and the edge type it is drawn in", () => {
             // Act
-            const [usedBy] = describeSubject(box(CREATURE_NODE), context()).sections[2].groups[0].dependencies
+            const model = describeSubject(box(CREATURE_NODE), context())
+            const [usedBy] = model.sections[2].groups[0].dependencies
+            const [inherits] = model.sections[1].groups[0].dependencies
 
             // Assert
-            expect(usedBy).toMatchObject({ isCyclic: true, isPointingUpwards: true, leafEdge: LEAF_EDGES[1] })
+            expect(usedBy).toMatchObject({ type: "feedbackLeafLevel", line: { dash: null, head: "filled" }, leafEdge: LEAF_EDGES[1] })
+            expect(inherits).toMatchObject({ type: "cyclic", line: { dash: null, head: "hollow" } })
+        })
+
+        it("should take which way is up from the hierarchy shown, not from the dependency alone", () => {
+            // Arrange
+            const upwardByFileEdge = context(20, leafEdge => leafEdge === LEAF_EDGES[0])
+
+            // Act
+            const model = describeSubject(box(CREATURE_NODE), upwardByFileEdge)
+
+            // Assert
+            expect(model.sections[1].groups[0].dependencies[0].type).toBe("feedbackLeafLevel")
+            expect(model.sections[2].groups[0].dependencies[0].type).toBe("cyclic")
         })
 
         it("should offer to open a closed file and to close an open one, and neither for a file telling no declaration", () => {
@@ -129,6 +147,7 @@ describe("describeSubject", () => {
 
             // Assert
             expect(cycles.map(cycle => cycle.steps.map(step => step.name))).toEqual([["Creature", "Weapon", "Creature"]])
+            expect(cycles[0].files.map(file => file.name)).toEqual(["creature.ts", "weapon.ts"])
             expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[0], LEAF_EDGES[1]])
         })
 
@@ -162,7 +181,10 @@ describe("describeSubject", () => {
             const model = describeSubject(box(CREATURE_NODE.children[0]), context())
 
             // Assert
-            expect(rowsOf(model, "Uses")).toEqual(["creature.ts: Creature → Armor (Uses)", "weapon.ts: Creature → Weapon (Inherits, Uses)"])
+            expect(rowsOf(model, "Uses")).toEqual([
+                "creature.ts: Creature → Armor (Uses)",
+                "weapon.ts: Creature → Weapon (Inherits from, Uses)"
+            ])
             expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature (Uses)"])
             expect(model.cycles).toHaveLength(1)
         })
@@ -229,10 +251,13 @@ describe("describeSubject", () => {
             expect(model.facts).toEqual([
                 { label: "Dependencies", value: "3" },
                 { label: "Takes as argument", value: "1" },
-                { label: "Inherits", value: "1" },
+                { label: "Inherits from", value: "1" },
                 { label: "Uses", value: "1" }
             ])
-            expect(rowsOf(model, "Stands for")).toEqual(["-: Armor → format (Takes as argument)", "-: Creature → Weapon (Inherits, Uses)"])
+            expect(rowsOf(model, "Stands for")).toEqual([
+                "-: Armor → format (Takes as argument)",
+                "-: Creature → Weapon (Inherits from, Uses)"
+            ])
         })
 
         it("should offer to unfold it unless both ends are declarations already or the map tells none", () => {

@@ -7,8 +7,10 @@
     >
         @if (ref.kind === "declaration") {
             <span
-                class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] text-[9px] leading-none font-bold text-white"
-                [style.background-color]="kindLookOf(ref).color"
+                class="flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full border text-[10px] leading-none font-bold"
+                [style.background-color]="kindLookOf(ref).tint"
+                [style.border-color]="iconColors.stroke"
+                [style.color]="iconColors.letter"
                 [title]="kindLookOf(ref).label"
                 aria-hidden="true"
                 >{{ kindLookOf(ref).letter }}</span
@@ -77,8 +79,9 @@
                 @for (group of section.groups; track $index) {
                     <div class="flex flex-col gap-0.5">
                         @if (group.heading; as heading) {
-                            <div class="flex min-w-0 font-medium">
+                            <div class="flex min-w-0 items-baseline justify-between gap-2 font-medium">
                                 <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: heading }"></ng-container>
+                                <span class="shrink-0 text-xs font-normal opacity-60">{{ group.dependencies.length + group.hiddenCount }}</span>
                             </div>
                         }
                         <ul class="m-0 flex list-none flex-col gap-0.5 p-0" [class.pl-3]="group.heading">
@@ -94,15 +97,31 @@
                                     <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: dependency.from }"></ng-container>
                                     <span class="opacity-60" aria-label="uses">→</span>
                                     <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: dependency.to }"></ng-container>
-                                    @if (dependency.isCyclic) {
-                                        <span class="badge badge-xs badge-info badge-outline">cycle</span>
-                                    }
-                                    @if (dependency.isPointingUpwards) {
-                                        <span class="badge badge-xs badge-error badge-outline">upward</span>
-                                    }
-                                    @if (dependency.usages.length > 0) {
-                                        <span class="w-full text-xs opacity-60">{{ dependency.usages.join(", ") }}</span>
-                                    }
+                                    <span class="flex w-full items-center gap-1.5 text-xs">
+                                        <svg class="h-3 w-[46px] shrink-0" viewBox="0 0 46 12" aria-hidden="true" [attr.stroke]="edgeColors()[dependency.type]" [attr.fill]="edgeColors()[dependency.type]">
+                                            <line x1="2" y1="6" x2="34" y2="6" stroke-width="1.6" [attr.stroke-dasharray]="dependency.line.dash?.join(' ') ?? null" />
+                                            @switch (dependency.line.head) {
+                                                @case ("hollow") {
+                                                    <polygon points="43,6 34,2 34,10" fill="#fff" stroke-width="1.4" />
+                                                }
+                                                @case ("open") {
+                                                    <polyline points="34,2 43,6 34,10" fill="none" stroke-width="1.6" />
+                                                }
+                                                @case ("dot") {
+                                                    <circle cx="38" cy="6" r="3.5" stroke="none" />
+                                                }
+                                                @default {
+                                                    <polygon points="43,6 34,2 34,10" stroke="none" />
+                                                }
+                                            }
+                                        </svg>
+                                        <span class="opacity-60">{{ dependency.usages.join(", ") }}</span>
+                                        @if (dependency.type !== "regular") {
+                                            <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-panel-row-type"
+                                                >· {{ edgeTypeLabels[dependency.type] }}</span
+                                            >
+                                        }
+                                    </span>
                                 </li>
                             }
                         </ul>
@@ -118,7 +137,13 @@
     }
 
     @if (model().cycles.length > 0) {
-        <section #cyclesSection class="flex flex-col gap-1.5" aria-label="Cycles" data-testid="dependency-panel-cycles">
+        <section
+            #cyclesSection
+            class="flex flex-col gap-1.5 rounded-md"
+            [class]="focusedPath() === model().path ? '-mx-1.5 border border-info bg-info/10 p-1.5' : ''"
+            aria-label="Cycles"
+            data-testid="dependency-panel-cycles"
+        >
             <h3 class="m-0 text-xs font-normal tracking-wider uppercase opacity-60">Cycles · {{ model().cycles.length }}</h3>
             <ul class="m-0 flex list-none flex-col gap-1.5 p-0">
                 @for (cycle of model().cycles; track $index) {
@@ -138,6 +163,13 @@
                                 <ng-container [ngTemplateOutlet]="refButton" [ngTemplateOutletContext]="{ $implicit: step }"></ng-container>
                             }
                         </div>
+                        <span class="text-xs opacity-60" data-testid="dependency-panel-cycle-where">
+                            {{ cycle.steps.length - 1 }} {{ cycle.steps.length === 2 ? "declaration" : "declarations" }} ·
+                            {{ cycle.files.length === 1 ? "inside" : "across" }}
+                            @for (file of cycle.files; track file.path; let isLast = $last) {
+                                {{ file.name }}{{ isLast ? "" : "," }}
+                            }
+                        </span>
                         <button type="button" class="btn btn-ghost btn-xs self-start" (click)="cycleShown.emit(cycle)">Show in graph</button>
                     </li>
                 }

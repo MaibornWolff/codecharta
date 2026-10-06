@@ -14,12 +14,13 @@ export const PACKAGE_STROKE = "#c6bce2"
 export const CLOSED_PACKAGE_FILL = "#e6e0f7"
 export const CLOSED_PACKAGE_STROKE = "#8f7fc7"
 /** What sits elsewhere, or reads differently, in the other hierarchy. */
-export const MOVED_COLOR = "#d97706"
+export const MOVED_COLOR = "#b45309"
 export const FILE_FILL = "#ffffff"
+export const DECLARATION_FILL = "#f7f9fc"
 export const FILE_STROKE = "#9aa5b4"
 export const OPEN_FILE_FILL = "#fbfcfe"
-export const DECLARATION_STROKE = "#b9c1cc"
 export const QUIET_TEXT_COLOR = "#6b7280"
+export const QUIET_BADGE_COLOR = "#8a94a3"
 export const LEVEL_SEPARATOR_COLOR = "#c3cbd6"
 
 /** Grey follows the architecture, blue closes a cycle but still points down, red points upward — the

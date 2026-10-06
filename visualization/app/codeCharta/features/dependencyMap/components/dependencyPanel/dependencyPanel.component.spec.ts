@@ -7,7 +7,10 @@ import { DependencyPanelComponent } from "./dependencyPanel.component"
 const CREATURE: PanelRef = { path: "/root/creature.ts/Creature", name: "Creature", kind: "declaration", declarationKind: "class" }
 const WEAPON: PanelRef = { path: "/root/weapon.ts/Weapon", name: "Weapon", kind: "declaration", declarationKind: "interface" }
 const WEAPON_FILE: PanelRef = { path: "/root/weapon.ts", name: "weapon.ts", kind: "file" }
+const CREATURE_FILE: PanelRef = { path: "/root/creature.ts", name: "creature.ts", kind: "file" }
 const GAME_FOLDER: PanelRef = { path: "/root", name: "root", kind: "folder" }
+
+const EDGE_COLORS = { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" }
 
 const LEAF_EDGE: DependencyLeafEdge = {
     fromNodeName: "/root/creature.ts",
@@ -21,9 +24,9 @@ const LEAF_EDGE: DependencyLeafEdge = {
 const DEPENDENCY: PanelDependency = {
     from: CREATURE,
     to: WEAPON,
-    usages: ["Inherits"],
-    isCyclic: true,
-    isPointingUpwards: true,
+    usages: ["Inherits from"],
+    line: { dash: [7, 4], head: "hollow" },
+    type: "feedbackLeafLevel",
     leafEdge: LEAF_EDGE
 }
 
@@ -41,7 +44,7 @@ const FILE_MODEL: PanelModel = {
         { title: "Inside the file", count: 0, groups: [] },
         { title: "Uses", count: 4, groups: [{ heading: WEAPON_FILE, dependencies: [DEPENDENCY], hiddenCount: 3 }] }
     ],
-    cycles: [{ steps: [CREATURE, WEAPON, CREATURE], leafEdges: [LEAF_EDGE, LEAF_EDGE] }],
+    cycles: [{ steps: [CREATURE, WEAPON, CREATURE], files: [CREATURE_FILE, WEAPON_FILE], leafEdges: [LEAF_EDGE, LEAF_EDGE] }],
     action: "open"
 }
 
@@ -54,7 +57,7 @@ async function renderPanel(model: PanelModel = FILE_MODEL, cyclesRequest = 0) {
         allRowsRequested: jest.fn(),
         closed: jest.fn()
     }
-    const rendered = await render(DependencyPanelComponent, { inputs: { model, cyclesRequest }, on: handlers })
+    const rendered = await render(DependencyPanelComponent, { inputs: { model, cyclesRequest, edgeColors: EDGE_COLORS }, on: handlers })
     return { ...rendered, ...handlers }
 }
 
@@ -82,9 +85,12 @@ describe("DependencyPanelComponent", () => {
         const row = screen.getByTestId("dependency-panel-row")
         expect(row.textContent).toContain("Creature")
         expect(row.textContent).toContain("Weapon")
-        expect(row.textContent).toContain("Inherits")
-        expect(row.textContent).toContain("cycle")
-        expect(row.textContent).toContain("upward")
+        expect(row.textContent).toContain("Inherits from")
+        expect(screen.getByTestId("dependency-panel-row-type").textContent).toContain("Points upward and closes a cycle")
+        expect(row.querySelector("line").getAttribute("stroke-dasharray")).toBe("7 4")
+        expect(row.querySelector("svg").getAttribute("stroke")).toBe("#7f1d1d")
+        expect(row.querySelector("svg polygon").getAttribute("fill")).toBe("#fff")
+        expect(screen.getByRole("region", { name: "Uses" }).textContent).toContain("weapon.ts4")
     })
 
     it("should mark a declaration by the letter of its kind and a file by an icon", async () => {
@@ -141,6 +147,9 @@ describe("DependencyPanelComponent", () => {
         // Assert
         expect(cycle.textContent.replaceAll(/\s+/g, "")).toContain("CCreature→IWeapon→CCreature")
         expect(pointedAt).toEqual([[FILE_MODEL.cycles[0].leafEdges], [null], [FILE_MODEL.cycles[0].leafEdges], [null]])
+        expect(screen.getByTestId("dependency-panel-cycle-where").textContent.replaceAll(/\s+/g, " ").trim()).toBe(
+            "2 declarations · across creature.ts, weapon.ts"
+        )
         expect(cycleShown).toHaveBeenCalledWith(FILE_MODEL.cycles[0])
     })
 
@@ -160,7 +169,7 @@ describe("DependencyPanelComponent", () => {
         expect(closed).toHaveBeenCalledTimes(1)
     })
 
-    it("should show only what a selection has: an edge's facts and dependencies without lists, cycles or folder", async () => {
+    it("should show only what a selection has: an edge's facts and dependencies without lists or cycles, a regular row without a type", async () => {
         // Arrange
         const edgeModel: PanelModel = {
             kind: "edge",
@@ -173,7 +182,13 @@ describe("DependencyPanelComponent", () => {
                 {
                     title: "Stands for",
                     count: 1,
-                    groups: [{ heading: null, dependencies: [{ ...DEPENDENCY, usages: [] }], hiddenCount: 0 }]
+                    groups: [
+                        {
+                            heading: null,
+                            dependencies: [{ ...DEPENDENCY, usages: [], type: "regular", line: { dash: null, head: "dot" } }],
+                            hiddenCount: 0
+                        }
+                    ]
                 }
             ],
             cycles: [],
@@ -188,6 +203,8 @@ describe("DependencyPanelComponent", () => {
         expect(screen.queryByTestId("dependency-panel-cycles")).toBeNull()
         expect(screen.queryByRole("region", { name: "Files" })).toBeNull()
         expect(screen.getByTestId("dependency-panel-row").textContent).not.toContain("Inherits")
+        expect(screen.queryByTestId("dependency-panel-row-type")).toBeNull()
+        expect(screen.getByTestId("dependency-panel-row").querySelector("circle")).not.toBeNull()
     })
 
     it("should show no facts and no action for a selection without any", async () => {
@@ -202,19 +219,22 @@ describe("DependencyPanelComponent", () => {
         expect(screen.queryByTestId("dependency-panel-action")).toBeNull()
     })
 
-    it("should bring the cycles into view when asked to, once per request", async () => {
+    it("should bring the cycles into view when asked to, once per request, and set them off until another selection", async () => {
         // Arrange
         const scrollIntoView = jest.fn()
         Element.prototype.scrollIntoView = scrollIntoView
         const { rerender, fixture } = await renderPanel(FILE_MODEL, 0)
 
         // Act
-        await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1 } })
+        await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1, edgeColors: EDGE_COLORS } })
         fixture.detectChanges()
-        await rerender({ inputs: { model: { ...FILE_MODEL }, cyclesRequest: 1 } })
+        const setOff = screen.getByTestId("dependency-panel-cycles").className
+        await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, cyclesRequest: 1, edgeColors: EDGE_COLORS } })
         fixture.detectChanges()
 
         // Assert
         expect(scrollIntoView).toHaveBeenCalledTimes(1)
+        expect(setOff).toContain("border-info")
+        expect(screen.getByTestId("dependency-panel-cycles").className).not.toContain("border-info")
     })
 })

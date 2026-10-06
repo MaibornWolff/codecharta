@@ -6,7 +6,7 @@ import { aBand, aBox, anEdge, DEFAULT_LOOKS, identityPixels } from "./dependency
 
 interface DrawnElement {
     emphasisDisabled?: boolean
-    children: { style: Record<string, unknown>; z2?: number }[]
+    children: { info?: string; shape?: Record<string, unknown>; style: Record<string, unknown>; z2?: number }[]
 }
 
 interface BuiltSeries {
@@ -167,7 +167,7 @@ describe("buildDependencyGraphOption", () => {
         expect(option.aria.label.description).toContain("with 1 files")
     })
 
-    it("should draw each edge in the colour the reader gave its type, and say how it is used once the line style shows that", () => {
+    it("should draw each edge in the colour the reader gave its type and say how its one dependency is used, in dashes too once the line style shows that", () => {
         // Arrange
         const usedAs = (usage: string[]) => ({
             fromNodeName: view.path,
@@ -189,8 +189,10 @@ describe("buildDependencyGraphOption", () => {
             "#123456",
             "#123456"
         ])
-        expect(byType.describe(byType.edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>1 dependency · Dependency")
-        expect(byUsage.describe(byUsage.edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>1 dependency · Dependency<br/>Inherits, Uses")
+        expect(byType.describe(byType.edgeIndices[0])).toBe(
+            "<b>View → Model</b><br/>Inherits from, Uses · Dependency<br/>drawn as view.ts → model.ts"
+        )
+        expect(byUsage.describe(byUsage.edgeIndices[0])).toBe(byType.describe(byType.edgeIndices[0]))
         expect(byUsage.draw(byUsage.edgeIndices[0]).children[1].style.fill).toBe("#ffffff")
     })
 
@@ -204,9 +206,9 @@ describe("buildDependencyGraphOption", () => {
         const { describe, draw, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
 
         // Assert
-        expect(draw(indexOf(view.path)).children.at(-1).style).toMatchObject({ text: "1" })
+        expect(draw(indexOf(view.path)).children.at(-3)).toMatchObject({ info: "cycleBadge", shape: { width: 15 } })
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#2563eb" })
-        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>Hides 1 cyclic dependency between declarations")
+        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>1 dependency in a cycle inside")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>Takes part in a cycle")
     })
 
@@ -245,13 +247,53 @@ describe("buildDependencyGraphOption", () => {
         const { describe, draw, indexOf, edgeIndices } = drawnGraph(sceneWith({ layout, edges, ...moved }))
 
         // Assert
-        expect(draw(indexOf(gamePackage.path)).children[0].style).toMatchObject({ stroke: "#d97706" })
-        expect(draw(indexOf(view.path)).children[0].style.stroke).not.toBe("#d97706")
-        expect(draw(edgeIndices[0]).children[0].style).toMatchObject({ stroke: "#d97706" })
+        expect(draw(indexOf(gamePackage.path)).children[1].style).toMatchObject({ stroke: "#b45309" })
+        expect(draw(indexOf(view.path)).children.map(child => child.style.stroke)).not.toContain("#b45309")
+        expect(draw(edgeIndices[0]).children[0].style).toMatchObject({ stroke: "#b45309" })
         expect(describe(indexOf(gamePackage.path))).toBe(
             "<b>Package com.game</b><br/>Level 0<br/><i>Double-click to open</i><br/>Sits elsewhere among the folders and the packages"
         )
         expect(describe(edgeIndices[0])).toContain("Of another type among the folders than among the packages")
+    })
+
+    it("should count the declaration edges a bundled edge stands for in its tooltip and invite a click to list them", () => {
+        // Arrange
+        const usedAs = (toLeaf: string) => ({
+            fromNodeName: view.path,
+            fromLeaf: "View",
+            toNodeName: model.path,
+            toLeaf,
+            attributes: { dependencies: 1 },
+            usage: ["usage"]
+        })
+        const edges = [anEdge(view.path, model.path, { weight: 2, type: "cyclic", declarationEdges: [usedAs("Model"), usedAs("Node")] })]
+
+        // Act
+        const { describe, edgeIndices } = drawnGraph(sceneWith({ edges }))
+
+        // Assert
+        expect(describe(edgeIndices[0])).toBe(
+            "<b>view.ts → model.ts</b><br/>2 declaration edges · In a cycle<br/><i>Click to list them</i>"
+        )
+    })
+
+    it("should name an unfolded edge by its declarations alone", () => {
+        // Arrange
+        const declarationEdge = {
+            fromNodeName: view.path,
+            fromLeaf: "view.ts",
+            toNodeName: model.path,
+            toLeaf: "model.ts",
+            attributes: {},
+            usage: []
+        }
+        const edges = [anEdge(view.path, model.path, { declarationEdges: [declarationEdge] })]
+
+        // Act
+        const { describe, edgeIndices } = drawnGraph(sceneWith({ edges }))
+
+        // Assert
+        expect(describe(edgeIndices[0])).toBe("<b>view.ts → model.ts</b><br/>Dependency")
     })
 
     it("should name the metric and its value in the tooltip of another metric's edge", () => {

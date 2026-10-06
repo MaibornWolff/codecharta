@@ -18,7 +18,8 @@ const TWO_WAY_ARC_PX = 14
 const PULL_SHARES = { start: 1 / 3, end: 2 / 3 }
 const ON_THE_LINE_PX = 0
 const MAX_HEAD_OUTLINE_PX = 1.5
-const HALO = { extraWidthPx: 6, opacity: 0.45 }
+const HALO = { extraWidthPx: 6, opacity: 0.35 }
+const MOVED_BAND = { extraWidthPx: 6, clearedWidthPx: 3, dash: [5, 3], opacity: 0.75 }
 
 interface Curve {
     start: Point
@@ -39,7 +40,11 @@ export interface EdgeLook {
 
 const OUTWARD: Record<Side, Point> = { top: [0, -1], bottom: [0, 1], left: [-1, 0], right: [1, 0] }
 
-export function drawEdge(route: EdgeRoute, { isDimmed, isSelected, isMoved, widthPx, color, line }: EdgeLook, toPixels: ToPixels) {
+export function drawEdge(
+    route: EdgeRoute,
+    { isDimmed, isSelected, isMoved, widthPx, color, line: lineStyle }: EdgeLook,
+    toPixels: ToPixels
+) {
     const curve = bend(route, asPoint(toPixels(route.start)), asPoint(toPixels(route.end)))
     const opacity = isDimmed ? DIMMED_OPACITY : 1
     const shape = {
@@ -52,18 +57,32 @@ export function drawEdge(route: EdgeRoute, { isDimmed, isSelected, isMoved, widt
         x2: curve.end[0],
         y2: curve.end[1]
     }
-    const haloColor = isSelected ? SELECTED_COLOR : MOVED_COLOR
-    const halo = { stroke: haloColor, lineWidth: widthPx + HALO.extraWidthPx, fill: null, opacity: HALO.opacity }
+    const line = { fill: null, opacity }
     return drawnItem([
-        ...(isSelected || isMoved ? [{ type: "bezierCurve", ...UNTRANSFORMED, silent: true, shape, style: halo }] : []),
-        {
-            type: "bezierCurve",
-            ...UNTRANSFORMED,
-            shape,
-            style: { stroke: color, lineWidth: widthPx, lineDash: line.dash, fill: null, opacity }
-        },
-        drawHead(line.head, arrowHead(curve, widthPx), { color, opacity, widthPx })
+        ...(isSelected
+            ? [underlay(shape, { ...line, stroke: SELECTED_COLOR, lineWidth: widthPx + HALO.extraWidthPx, opacity: HALO.opacity })]
+            : []),
+        ...(isMoved ? movedMark(shape, widthPx, opacity) : []),
+        { type: "bezierCurve", ...UNTRANSFORMED, shape, style: { ...line, stroke: color, lineWidth: widthPx, lineDash: lineStyle.dash } },
+        drawHead(lineStyle.head, arrowHead(curve, widthPx), { color, opacity, widthPx })
     ])
+}
+
+/** A dashed band along the edge, cleared again right beside the line so the line's own dashes stay readable. */
+function movedMark(shape: object, widthPx: number, opacity: number): object[] {
+    const band = {
+        fill: null,
+        stroke: MOVED_COLOR,
+        lineWidth: widthPx + MOVED_BAND.extraWidthPx,
+        lineDash: MOVED_BAND.dash,
+        opacity: opacity * MOVED_BAND.opacity
+    }
+    const cleared = { fill: null, stroke: FILE_FILL, lineWidth: widthPx + MOVED_BAND.clearedWidthPx, opacity }
+    return [underlay(shape, band), underlay(shape, cleared)]
+}
+
+function underlay(shape: object, style: object) {
+    return { type: "bezierCurve", ...UNTRANSFORMED, silent: true, shape, style }
 }
 
 interface HeadLook {

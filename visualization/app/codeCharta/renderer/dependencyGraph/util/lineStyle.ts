@@ -13,21 +13,22 @@ export interface UsageLegendEntry extends LineStyle {
     label: string
 }
 
-const DASHED = [5, 4]
-const DOTTED = [2, 3]
-const DASH_DOTTED = [8, 3, 2, 3]
+const EDGE_TYPE_DASH = [5, 4]
+const DASHED = [7, 4]
+const DOTTED = [2, 4]
+const DASH_DOTTED = [9, 3, 2, 3]
 
 export const PLAIN_LINE: LineStyle = { dash: null, head: "filled" }
 
-/** The strongest tie first: an edge used in several ways shows the first of them it carries. The dashes and heads
- * follow UML where it has one, so inheritance and implementation read as they do in a class diagram. */
+/** The strongest tie first: an edge used in several ways shows the first of them it carries. Inheritance and
+ * implementation are drawn as in a class diagram. */
 export const USAGE_LEGEND: readonly UsageLegendEntry[] = [
-    { usage: "inheritance", label: "Inherits", dash: null, head: "hollow" },
+    { usage: "inheritance", label: "Inherits from", dash: null, head: "hollow" },
     { usage: "implementation", label: "Implements", dash: DASHED, head: "hollow" },
-    { usage: "instantiation", label: "Creates", dash: DASHED, head: "filled" },
+    { usage: "instantiation", label: "Creates", dash: DASHED, head: "open" },
     { usage: "argument", label: "Takes as argument", dash: DOTTED, head: "open" },
-    { usage: "return_value", label: "Returns", dash: DASH_DOTTED, head: "open" },
-    { usage: "constant_access", label: "Reads a constant", dash: null, head: "dot" },
+    { usage: "return_value", label: "Returns", dash: DASH_DOTTED, head: "filled" },
+    { usage: "constant_access", label: "Reads a constant of", dash: null, head: "dot" },
     { usage: "usage", label: "Uses", ...PLAIN_LINE }
 ]
 
@@ -39,9 +40,14 @@ export function isDashedEdgeType(type: DependencyEdgeType, lineStyleShows: LineS
 
 export function lineStyleOf(edge: GraphEdge, lineStyleShows: LineStyleMeaning): LineStyle {
     if (lineStyleShows === "edgeType") {
-        return isDashedEdgeType(edge.type, lineStyleShows) ? { dash: DASHED, head: "filled" } : PLAIN_LINE
+        return isDashedEdgeType(edge.type, lineStyleShows) ? { dash: EDGE_TYPE_DASH, head: "filled" } : PLAIN_LINE
     }
     return USAGE_LEGEND.find(entry => entry.usage === usageShownBy(edge)) ?? PLAIN_LINE
+}
+
+/** How the strongest of the given ways of use is drawn. */
+export function lineStyleOfUsages(usages: readonly string[]): LineStyle {
+    return USAGE_LEGEND.find(entry => usages.includes(entry.usage)) ?? PLAIN_LINE
 }
 
 /** Only an edge standing for a single dependency between two declarations has one way of use to show; a

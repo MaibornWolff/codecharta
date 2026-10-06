@@ -1,14 +1,14 @@
 import { DECLARATION_KIND_LEGEND, declarationKindLabelOf, declarationKindLookOf } from "./declarationKinds"
 
 describe("declarationKinds", () => {
-    it("should tell every kind apart by letter and by colour", () => {
+    it("should tell every kind apart by letter and by tint", () => {
         // Act
         const letters = new Set(DECLARATION_KIND_LEGEND.map(entry => entry.letter))
-        const colors = new Set(DECLARATION_KIND_LEGEND.map(entry => entry.color))
+        const tints = new Set(DECLARATION_KIND_LEGEND.map(entry => entry.tint))
 
         // Assert
         expect(letters.size).toBe(DECLARATION_KIND_LEGEND.length)
-        expect(colors.size).toBe(DECLARATION_KIND_LEGEND.length)
+        expect(tints.size).toBe(DECLARATION_KIND_LEGEND.length)
     })
 
     it("should draw a kind it does not know, or a declaration without one, as any other", () => {

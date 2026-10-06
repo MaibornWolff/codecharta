@@ -1,6 +1,6 @@
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { anEdge } from "./dependencyGraphTestData"
-import { isDashedEdgeType, lineStyleOf, PLAIN_LINE, usageLabelOf, usagesOf } from "./lineStyle"
+import { isDashedEdgeType, lineStyleOf, lineStyleOfUsages, PLAIN_LINE, usageLabelOf, usagesOf } from "./lineStyle"
 
 function declarationEdge(usage: string[]): DependencyLeafEdge {
     return { fromNodeName: "/root/a.ts", fromLeaf: "A", toNodeName: "/root/b.ts", toLeaf: "B", attributes: { dependencies: 1 }, usage }
@@ -38,10 +38,10 @@ describe("lineStyle", () => {
 
         it.each([
             [["inheritance"], { dash: null, head: "hollow" }],
-            [["implementation"], { dash: [5, 4], head: "hollow" }],
-            [["instantiation"], { dash: [5, 4], head: "filled" }],
-            [["argument"], { dash: [2, 3], head: "open" }],
-            [["return_value"], { dash: [8, 3, 2, 3], head: "open" }],
+            [["implementation"], { dash: [7, 4], head: "hollow" }],
+            [["instantiation"], { dash: [7, 4], head: "open" }],
+            [["argument"], { dash: [2, 4], head: "open" }],
+            [["return_value"], { dash: [9, 3, 2, 3], head: "filled" }],
             [["constant_access"], { dash: null, head: "dot" }],
             [["usage", "argument", "inheritance"], { dash: null, head: "hollow" }],
             [["a_usage_of_tomorrow"], { dash: null, head: "filled" }]
@@ -66,6 +66,16 @@ describe("lineStyle", () => {
 
             // Assert
             expect(styles).toEqual([PLAIN_LINE, PLAIN_LINE])
+        })
+    })
+
+    describe("lineStyleOfUsages", () => {
+        it("should draw the strongest of several ways of use, and a way no legend names as a plain line", () => {
+            // Act
+            const styles = [["usage", "implementation"], ["a_usage_of_tomorrow"], []].map(lineStyleOfUsages)
+
+            // Assert
+            expect(styles).toEqual([{ usage: "implementation", label: "Implements", dash: [7, 4], head: "hollow" }, PLAIN_LINE, PLAIN_LINE])
         })
     })
 
