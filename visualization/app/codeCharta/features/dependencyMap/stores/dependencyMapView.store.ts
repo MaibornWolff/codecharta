@@ -27,6 +27,7 @@ export class DependencyMapViewStore {
     private readonly fitRequestCount = signal(0)
     private readonly hoveredInGraph = signal<string | null>(null)
     private readonly askedIntoView = signal<ViewRequest | null>(null)
+    private readonly pixelsUnderTheBar = signal(0)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: TreeIndex | null = null
 
@@ -40,6 +41,8 @@ export class DependencyMapViewStore {
     /** The box under the pointer, which the shared hover names only by the node it belongs to. */
     readonly hoveredBoxPath = this.hoveredInGraph.asReadonly()
     readonly viewRequest = this.askedIntoView.asReadonly()
+    /** How many pixels at the bottom of the graph lie under the bar floating over it. */
+    readonly coveredBottom = this.pixelsUnderTheBar.asReadonly()
 
     adoptTree(tree: TreeIndex): void {
         const layoutIdentity = this.currentLayoutIdentity()
@@ -50,6 +53,10 @@ export class DependencyMapViewStore {
         } else if (hasRootMoved) {
             this.openTheMovedRoot(tree.root)
         }
+    }
+
+    coverBottom(pixels: number): void {
+        this.pixelsUnderTheBar.set(pixels)
     }
 
     hoverInGraph(path: string | null): void {

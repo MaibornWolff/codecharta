@@ -49,6 +49,8 @@ export class DependencyGraphComponent implements OnDestroy {
     /** Raising this counter fits the whole graph into view with the next drawing. */
     readonly fitRequest = input(0)
     readonly viewRequest = input<ViewRequest | null>(null)
+    /** How many pixels at the bottom lie under something drawn over the graph; nothing is fitted or brought there. */
+    readonly coveredBottom = input(0)
     /** Whether pressing this box drags it rather than the graph. */
     readonly canDragBox = input<(path: string) => boolean>(NOTHING_DRAGGABLE)
     /** The box painted on top at a layout point, which takes the clicks on an edge lying over it. */
@@ -69,6 +71,7 @@ export class DependencyGraphComponent implements OnDestroy {
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
     private fittedGraphIdentity: string | null = null
     private handledFitRequest = 0
+    private coveredBottomAtTheFit = 0
     private handledViewRequest: number | null = null
     private toggledBox: ToggledBox | null = null
 
@@ -110,7 +113,7 @@ export class DependencyGraphComponent implements OnDestroy {
     }
 
     private renderOnceTheContainerIsMeasured(): void {
-        const viewport = this.chartHost.containerSize()
+        const viewport = { ...this.chartHost.containerSize(), coveredBottom: this.coveredBottom() }
         if (viewport.width === 0 || viewport.height === 0) {
             return
         }
@@ -120,7 +123,7 @@ export class DependencyGraphComponent implements OnDestroy {
 
     private windowToShow(scene: DependencyGraphScene, viewport: Viewport): AxisWindow {
         const toggledBox = this.consumeToggledBox(scene.layout)
-        const shownWindow = this.consumeDueFit() ? null : this.shownWindowKeeping(toggledBox, viewport)
+        const shownWindow = this.consumeDueFit(viewport) ? null : this.shownWindowKeeping(toggledBox, viewport)
         const asked = this.consumeDueViewRequest()
         const windowHoldingTheAsked = asked && windowHolding(asked, scene.layout, viewport, shownWindow)
         return windowHoldingTheAsked ?? shownWindow ?? fitWindowOf(scene.layout, viewport)
@@ -151,12 +154,18 @@ export class DependencyGraphComponent implements OnDestroy {
         return request.paths
     }
 
-    private consumeDueFit(): boolean {
+    /** What covers the bottom is measured only once it is drawn, which may be after the graph was first fitted:
+     * that fit is then done again, or the graph would start out reaching under it. */
+    private consumeDueFit({ coveredBottom }: Viewport): boolean {
         const graphIdentity = this.graphIdentity()
         const fitRequest = this.fitRequest()
-        const isFitDue = graphIdentity !== this.fittedGraphIdentity || (fitRequest > 0 && fitRequest !== this.handledFitRequest)
+        const isRequested = graphIdentity !== this.fittedGraphIdentity || (fitRequest > 0 && fitRequest !== this.handledFitRequest)
+        const isCoverMeasuredSinceTheFit = this.coveredBottomAtTheFit === 0 && coveredBottom > 0
         this.fittedGraphIdentity = graphIdentity
         this.handledFitRequest = fitRequest
-        return isFitDue
+        if (isRequested || isCoverMeasuredSinceTheFit) {
+            this.coveredBottomAtTheFit = coveredBottom
+        }
+        return isRequested || isCoverMeasuredSinceTheFit
     }
 }

@@ -4,6 +4,8 @@ import { DependencyGraphLayout } from "./layoutModel"
 export interface Viewport {
     width: number
     height: number
+    /** How many pixels at the bottom lie under something drawn over the graph, such as a bar. */
+    coveredBottom?: number
 }
 
 const FIT_SHARE = 0.94
@@ -64,7 +66,9 @@ export function windowHolding(paths: readonly string[], layout: DependencyGraphL
         return null
     }
     const area = enclosingRectangle(boxes)
-    return shownWindow && holds(shownWindow, area) ? shownWindow : windowAround(area, viewport, FOCUS.share, FOCUS.maxPixelsPerUnit)
+    return shownWindow && holds(freePartOf(shownWindow, viewport), area)
+        ? shownWindow
+        : windowAround(area, viewport, FOCUS.share, FOCUS.maxPixelsPerUnit)
 }
 
 function holds({ x, y }: AxisWindow, area: Rectangle): boolean {
@@ -76,15 +80,29 @@ function holds({ x, y }: AxisWindow, area: Rectangle): boolean {
  * too large for it is fitted. */
 export function windowKeepingInPlace(shownWindow: AxisWindow, before: Rectangle, after: Rectangle, viewport: Viewport): AxisWindow {
     const moved: AxisWindow = { x: shifted(shownWindow.x, after.x - before.x), y: shifted(shownWindow.y, after.y - before.y) }
-    if (spanOf(moved.x) * FIT_SHARE < after.width || spanOf(moved.y) * FIT_SHARE < after.height) {
+    const free = freePartOf(moved, viewport)
+    if (spanOf(free.x) * FIT_SHARE < after.width || spanOf(free.y) * FIT_SHARE < after.height) {
         return windowAround(after, viewport, FIT_SHARE)
     }
-    return { x: slidOver(moved.x, after.x, after.x + after.width), y: slidOver(moved.y, after.y, after.y + after.height) }
+    return {
+        x: shifted(moved.x, slideOver(free.x, after.x, after.x + after.width)),
+        y: shifted(moved.y, slideOver(free.y, after.y, after.y + after.height))
+    }
 }
 
-function slidOver(axis: [number, number], from: number, to: number): [number, number] {
+function slideOver(axis: [number, number], from: number, to: number): number {
     const margin = (spanOf(axis) * (1 - FIT_SHARE)) / 2
-    return shifted(axis, Math.min(0, from - margin - axis[0]) + Math.max(0, to + margin - axis[1]))
+    return Math.min(0, from - margin - axis[0]) + Math.max(0, to + margin - axis[1])
+}
+
+function freeHeightOf({ height, coveredBottom = 0 }: Viewport): number {
+    return Math.max(height - coveredBottom, 0)
+}
+
+/** The part of a window that nothing is drawn over. */
+function freePartOf({ x, y }: AxisWindow, viewport: Viewport): AxisWindow {
+    const freeShare = viewport.height > 0 ? freeHeightOf(viewport) / viewport.height : 1
+    return { x, y: [y[0], y[0] + spanOf(y) * freeShare] }
 }
 
 function shifted([start, end]: [number, number], by: number): [number, number] {
@@ -95,17 +113,18 @@ function spanOf([start, end]: [number, number]): number {
     return end - start
 }
 
-/** Both axes get the same number of pixels per layout unit, so the graph is never squashed. */
+/** Both axes get the same number of pixels per layout unit, so the graph is never squashed. The area is centred
+ * in the part of the viewport that nothing is drawn over. */
 function windowAround(area: Rectangle, viewport: Viewport, share: number, maxPixelsPerUnit = Number.POSITIVE_INFINITY): AxisWindow {
-    const pixelsPerUnit = Math.min(Math.min(viewport.width / area.width, viewport.height / area.height) * share, maxPixelsPerUnit)
+    const freeHeight = freeHeightOf(viewport)
+    const pixelsPerUnit = Math.min(Math.min(viewport.width / area.width, freeHeight / area.height) * share, maxPixelsPerUnit)
     if (!(Number.isFinite(pixelsPerUnit) && pixelsPerUnit > 0)) {
         return windowOf(area)
     }
     const halfWidth = viewport.width / pixelsPerUnit / 2
-    const halfHeight = viewport.height / pixelsPerUnit / 2
     const centreX = area.x + area.width / 2
-    const centreY = area.y + area.height / 2
-    return { x: [centreX - halfWidth, centreX + halfWidth], y: [centreY - halfHeight, centreY + halfHeight] }
+    const top = area.y + area.height / 2 - freeHeight / pixelsPerUnit / 2
+    return { x: [centreX - halfWidth, centreX + halfWidth], y: [top, top + viewport.height / pixelsPerUnit] }
 }
 
 /** Keeps the window's centre and its pixels per layout unit, so a resized chart shows more or less of the graph

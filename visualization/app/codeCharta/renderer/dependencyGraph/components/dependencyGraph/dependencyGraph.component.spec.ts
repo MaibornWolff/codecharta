@@ -345,6 +345,23 @@ describe("DependencyGraphComponent", () => {
         expect(shownWindowOf(lastDrawnOption())).toEqual(fitWindowOf(GROWN_SCENE.layout, measuredSize))
     })
 
+    it("should fit the graph anew once what covers its bottom is measured, and leave the view alone when that changes later", async () => {
+        // Arrange
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+
+        // Act
+        fixture.componentRef.setInput("coveredBottom", 80)
+        fixture.detectChanges()
+        const onceMeasured = shownWindowOf(lastDrawnOption())
+        fixture.componentRef.setInput("coveredBottom", 120)
+        fixture.detectChanges()
+
+        // Assert
+        expect(onceMeasured).toEqual(fitWindowOf(SCENE.layout, { ...measuredSize, coveredBottom: 80 }))
+        expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
+    })
+
     it("should fit the whole graph once for each new fit request", async () => {
         // Arrange
         const { fixture } = await render(DependencyGraphComponent, { inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY } })

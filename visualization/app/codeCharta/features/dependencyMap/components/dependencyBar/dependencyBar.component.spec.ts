@@ -12,8 +12,10 @@ import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from 
 import { setDependencyGraphSettings } from "../../../../stores/preferences/preferences.write.facade"
 import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { reportResize, stubElementSize, stubResizeObserver } from "../../../../util/testUtils/domStubs"
 import { dependencyLayoutIdentitySelector } from "../../selectors/dependencyMap.selectors"
 import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
+import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
 const EDGE_METRICS = [
@@ -56,6 +58,27 @@ function changed(settings: Partial<DependencyGraphSettings>) {
 }
 
 describe("DependencyBarComponent", () => {
+    beforeEach(() => {
+        stubResizeObserver()
+    })
+
+    it("should tell the graph how much of its bottom the bar covers, gap included, and nothing once the bar is gone", async () => {
+        // Arrange
+        const restoreElementSize = stubElementSize(() => ({ width: 900, height: 56 }))
+        const { fixture } = await renderBar()
+        const coveredBottom = TestBed.inject(DependencyMapViewStore).coveredBottom
+
+        // Act
+        reportResize()
+        fixture.detectChanges()
+        const whileShown = coveredBottom()
+        fixture.destroy()
+        restoreElementSize()
+
+        // Assert
+        expect([whileShown, coveredBottom()]).toEqual([68, 0])
+    })
+
     it("should name the edges shown, the edge style with its line thickness, the edge metric and the level labels, in that order", async () => {
         // Arrange
         await renderBar()
