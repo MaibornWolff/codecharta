@@ -105,8 +105,9 @@ declared packages. Prototype: https://claude.ai/artifact/A9zyBx3YHn7cAD3kf266eq
   - Folders mode: a declaration edge between two files takes "points upward" from its file edge and "cyclic"
     from itself; Packages mode: both flags and the weight come from the declaration edges
   - A file sits in the package most of its declarations declare, at the highest level any of them has there
-  - "Mark what moves" pairs a package with the folder most of its files lie in; a file apart from that pair, a
-    pair on different levels and a file pair whose edge type differs are marked
+  - "Mark what moves" was built and then removed on request (2026-10-06): pairing a package with the folder most
+    of its files lie in marked too much on mixed-language folders, and compared a folder chain's outermost level
+    with the innermost package's
   - The cycles are found once per map as the shortest way back over cyclic declaration edges. A badge counts
     the cycles running through something its closed box hides, not the cyclic edges as first planned, so it is
     the number the panel lists for that box. The panel cuts each group and the cycles at 20 rows ("and N more")

@@ -844,34 +844,6 @@ describe("DependencyMapComponent", () => {
                 expect(amongFolders).toBe("#dc2626")
                 expect(strokeOf(`${DATA}|${SCREENS}`)).toBe("#2563eb")
             })
-
-            it("should mark the edge that is of another type in the other hierarchy once asked to, whichever hierarchy is shown", async () => {
-                // Arrange
-                const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: PACKAGED })
-                const strokesOf = (name: string) => {
-                    const dataIndex = drawnSeries().data.findIndex(
-                        item => item.name === name || (item as { edgeId?: string }).edgeId === name
-                    )
-                    return drawnSeries()
-                        .renderItem({ dataIndex }, { coord: point => point })
-                        .children.map(child => child.style.stroke)
-                }
-                const unmarked = strokesOf(`${NODE}|${VIEW}`)
-
-                // Act
-                await changeSettings(store, { marksHierarchyDifferences: true })
-                fixture.detectChanges()
-                const amongFolders = [strokesOf(`${NODE}|${VIEW}`)[0], strokesOf("/root/ui")[0], strokesOf("/root/model")[0]]
-                await showPackages(fixture)
-                TestBed.inject(DependencyMapViewStore).toggle("package:app")
-                fixture.detectChanges()
-                await screen.findByTestId("dependency-graph")
-
-                // Assert
-                expect(unmarked).not.toContain("#b45309")
-                expect(amongFolders).toEqual(["#b45309", "#b8c2cf", "#b8c2cf"])
-                expect(strokesOf(`${DATA}|${SCREENS}`)[0]).toBe("#b45309")
-            })
         })
 
         it("should mark the file again once another view selects it", async () => {

@@ -1,6 +1,5 @@
 import { computed, Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
@@ -10,13 +9,11 @@ import {
     layoutLevelized,
     movedLayout,
     namedByOwnLevel,
-    packagePathOf,
     projectEdges,
     visibleRepresentatives
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { findCycleChains } from "../panel/cycleChains"
 import { indexDeclarations } from "../panel/declarationIndex"
-import { filePairOf, findHierarchyDifferences, NO_HIERARCHY_DIFFERENCES } from "../util/hierarchyDifferences"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
@@ -90,24 +87,6 @@ export class DependencyGraphModelStore {
                 : upwardFilePairs.has(filePairOf(leafEdge.fromNodeName, leafEdge.toNodeName))
     })
 
-    private readonly hierarchyDifferences = computed(() => {
-        const folderTree = this.folderTree()
-        const isAsked = this.settings().marksHierarchyDifferences && this.hasNamespaces() && isDependencyEdgeMetric(this.edgeMetric())
-        return folderTree && isAsked ? findHierarchyDifferences(folderTree, this.declarations(), this.edges()) : NO_HIERARCHY_DIFFERENCES
-    })
-    /** A file hidden in a closed box marks that box, so the mark leads the reader to it. */
-    readonly movedPaths = computed((): ReadonlySet<string> => {
-        const { files, folders, packages } = this.hierarchyDifferences()
-        const containers = this.hierarchy() === "packages" ? [...packages].map(packagePathOf) : [...folders]
-        return new Set([...files, ...containers].flatMap(path => this.representatives().get(path) ?? []))
-    })
-    readonly movedEdgeIds = computed((): ReadonlySet<string> => {
-        const { filePairs } = this.hierarchyDifferences()
-        const isMoved = (leafEdge: DependencyLeafEdge) => filePairs.has(filePairOf(leafEdge.fromNodeName, leafEdge.toNodeName))
-        const moved = filePairs.size === 0 ? [] : this.projectedEdges().filter(edge => edge.declarationEdges.some(isMoved))
-        return new Set(moved.map(edge => edge.id))
-    })
-
     /** The box on screen that stands for a node or declaration, which may be hidden in a closed one. */
     boxStandingFor(path: string | null): string | null {
         return path === null ? null : (this.representatives().get(path) ?? null)
@@ -132,4 +111,8 @@ function indexedByPath(tree: LeveledNode | null): ReadonlyMap<string, LeveledNod
         visit(tree)
     }
     return nodes
+}
+
+function filePairOf(fromFilePath: string, toFilePath: string): string {
+    return `${fromFilePath}|${toFilePath}`
 }

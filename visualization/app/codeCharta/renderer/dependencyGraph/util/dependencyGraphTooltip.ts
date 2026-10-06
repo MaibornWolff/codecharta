@@ -13,25 +13,16 @@ interface TooltipParams {
     dataIndex: number
 }
 
-type TooltipSettings = Pick<DependencyGraphScene, "edgeMetric" | "lineStyleShows" | "cycleMarks" | "movedPaths" | "movedEdgeIds">
-
-const MOVED_BOX_NOTE = "Sits elsewhere among the folders and the packages"
-const MOVED_EDGE_NOTE = "Of another type among the folders than among the packages"
+type TooltipSettings = Pick<DependencyGraphScene, "edgeMetric" | "cycleMarks">
 
 export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<string, LayoutBox>, settings: TooltipSettings) {
     return ({ dataIndex }: TooltipParams): string => {
         const item = items[dataIndex]
         switch (item?.kind) {
             case "box":
-                return [
-                    describeBox(item.box, settings.cycleMarks),
-                    ...(settings.movedPaths.has(item.box.path) ? [MOVED_BOX_NOTE] : [])
-                ].join("<br/>")
+                return describeBox(item.box, settings.cycleMarks)
             case "edge":
-                return [
-                    describeEdge(item.edge, byPath, settings),
-                    ...(settings.movedEdgeIds.has(item.edge.id) ? [MOVED_EDGE_NOTE] : [])
-                ].join("<br/>")
+                return describeEdge(item.edge, byPath, settings)
             default:
                 return ""
         }
@@ -58,11 +49,7 @@ function describeBox(box: LayoutBox, { hiddenCycles, declarationsInCycles }: Cyc
     return rows.join("<br/>")
 }
 
-function describeEdge(
-    edge: GraphEdge,
-    boxesByPath: ReadonlyMap<string, LayoutBox>,
-    { edgeMetric, lineStyleShows }: TooltipSettings
-): string {
+function describeEdge(edge: GraphEdge, boxesByPath: ReadonlyMap<string, LayoutBox>, { edgeMetric }: TooltipSettings): string {
     const fromName = boxesByPath.get(edge.fromPath).name
     const toName = boxesByPath.get(edge.toPath).name
     const title = `<b>${escapeHtml(fromName)} → ${escapeHtml(toName)}</b>`

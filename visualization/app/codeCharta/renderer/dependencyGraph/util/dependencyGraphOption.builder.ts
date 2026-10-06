@@ -107,7 +107,6 @@ function edgeItems(
         look: {
             isDimmed: isDimmed(edge),
             isSelected: edge.id === scene.selectedEdgeId,
-            isMoved: scene.movedEdgeIds.has(edge.id),
             widthPx: edgeWidthPx(edge.weight / lightestWeight, scene.edgeWidth),
             color: colors[edge.type],
             line: lineStyleOf(edge, scene.lineStyleShows)
@@ -191,8 +190,7 @@ function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }
             hiddenCount: scene.cycleMarks.hiddenCycles.get(box.path) ?? 0,
             isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path),
             color: scene.edgeColors.cyclic
-        },
-        isMoved: scene.movedPaths.has(box.path)
+        }
     }
 }
 

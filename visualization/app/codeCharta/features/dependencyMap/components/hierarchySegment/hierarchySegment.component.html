@@ -14,21 +14,4 @@
     [choices]="hierarchyChoices"
     [chosen]="hierarchy()"
     (choose)="show($event)"
->
-    <div class="flex flex-col gap-1 border-t border-base-300 pt-2.5">
-        <label class="flex cursor-pointer items-center gap-2">
-            <input
-                #marksCheckbox
-                type="checkbox"
-                class="checkbox checkbox-sm checkbox-primary"
-                data-testid="dependency-bar-hierarchy-marks"
-                [checked]="marksDifferences()"
-                (change)="markDifferences(marksCheckbox.checked)"
-            />
-            <span class="text-sm">Mark what moves</span>
-        </label>
-        <p class="m-0 text-xs opacity-70">
-            Files in another box, boxes on another level and edges of another type among the folders than among the packages.
-        </p>
-    </div>
-</cc-choice-list-popover>
+></cc-choice-list-popover>

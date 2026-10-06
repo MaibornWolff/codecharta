@@ -18,7 +18,6 @@ function draw(route: EdgeRoute, look: Partial<EdgeLook> = {}): DrawnEdge {
     const edgeLook = {
         isDimmed: false,
         isSelected: false,
-        isMoved: false,
         widthPx: 1.2,
         color: EDGE_COLORS.regular,
         line: PLAIN_LINE,
@@ -126,21 +125,6 @@ describe("drawEdge", () => {
         expect(children).toHaveLength(3)
         expect(children[0].style).toMatchObject({ stroke: SELECTED_COLOR, lineWidth: 8 })
         expect(children[0].shape).toEqual(children[1].shape)
-    })
-
-    it("should lay a dashed band in the colour of what moves under an edge of another type in the other hierarchy, cleared beside the line", () => {
-        // Arrange
-        const moved = { isMoved: true, widthPx: 2 }
-
-        // Act
-        const [band, cleared, line] = draw(downward, moved).children
-        const selectedToo = draw(downward, { ...moved, isSelected: true }).children
-
-        // Assert
-        expect(band.style).toMatchObject({ stroke: "#b45309", lineWidth: 8, lineDash: [5, 3] })
-        expect(cleared.style).toMatchObject({ stroke: "#ffffff", lineWidth: 5 })
-        expect(line.style.stroke).toBe(EDGE_COLORS.regular)
-        expect(selectedToo.map(part => part.style.stroke).slice(0, 2)).toEqual([SELECTED_COLOR, "#b45309"])
     })
 
     it("should fade a dimmed edge and its arrow", () => {

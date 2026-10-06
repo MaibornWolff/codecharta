@@ -7,7 +7,6 @@ import {
     drawInnerFrame,
     drawKindIcon,
     drawListedLevel,
-    drawMovedOutline,
     KIND_ICON_WIDTH_PX,
     LISTED_LEVEL_WIDTH_PX,
     MarkLook,
@@ -52,8 +51,6 @@ export interface BoxLook {
     /** How a declaration tells what it is. */
     kindMark: DeclarationKindMark
     cycle: CycleLook
-    /** Sits elsewhere in the other hierarchy, or holds something that does. */
-    isMoved: boolean
 }
 
 export { CYCLE_BADGE_INFO }
@@ -87,7 +84,7 @@ const SMALLEST_READABLE_MARK_SCALE = 0.6
 export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     const opacity = opacityOf(look.isMissedBySearch)
-    const outline = [...drawOutline(box, rect, look), ...(look.isMoved ? [drawMovedOutline(rect, opacity)] : [])]
+    const outline = drawOutline(box, rect, look)
     const zoom = zoomOf(box, rect)
     const cycleMark = drawCycleMark(box, rect, look.cycle, { opacity, zoom })
     return drawnItem(box.isExpanded ? outline : [...outline, ...drawName(box, rect, look, zoom), ...cycleMark])

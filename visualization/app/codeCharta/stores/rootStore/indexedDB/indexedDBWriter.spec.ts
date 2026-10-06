@@ -1090,8 +1090,7 @@ describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted 
             declarationArrangement: "stacked",
             declarationKindMark: "icon",
             lineStyleShows: "edgeType",
-            showsCycleBadges: true,
-            marksHierarchyDifferences: false
+            showsCycleBadges: true
         })
     })
 

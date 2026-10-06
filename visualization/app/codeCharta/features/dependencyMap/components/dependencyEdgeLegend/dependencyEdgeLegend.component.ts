@@ -20,7 +20,6 @@ export class DependencyEdgeLegendComponent {
     private readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
     private readonly hasDeclarations = toSignal(this.readStore.hasDeclarations$, { requireSync: true })
-    private readonly hasNamespaces = toSignal(this.readStore.hasNamespaces$, { requireSync: true })
 
     readonly isDependencyMetric = computed(() => isDependencyEdgeMetric(this.edgeMetric()))
     /** Another edge metric has no cycles or upward edges: all its edges share the regular colour. */
@@ -33,9 +32,6 @@ export class DependencyEdgeLegendComponent {
     )
     readonly kindMark = computed(() => this.settings().declarationKindMark)
     readonly kindLegend = computed(() => (this.hasDeclarations() && this.kindMark() !== "off" ? DECLARATION_KIND_LEGEND : []))
-    readonly marksHierarchyDifferences = computed(
-        () => this.isDependencyMetric() && this.hasNamespaces() && this.settings().marksHierarchyDifferences
-    )
     readonly iconColors = KIND_ICON_COLORS
     readonly usageColor = computed(() => this.settings().edgeColors.regular)
 }
