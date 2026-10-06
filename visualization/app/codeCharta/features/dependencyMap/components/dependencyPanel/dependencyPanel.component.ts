@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from "@angular/common"
-import { ChangeDetectionStrategy, Component, ElementRef, effect, input, output, signal, untracked, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, ElementRef, effect, input, output, signal, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { DependencyEdgeColors } from "../../../../model/dependencyGraph.model"
 import { declarationKindLookOf, EDGE_TYPE_LABELS, KIND_ICON_COLORS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
@@ -24,7 +24,7 @@ const REF_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-folder-o",
 })
 export class DependencyPanelComponent {
     readonly model = input.required<PanelModel>()
-    /** Raising this counter brings the cycles into view and sets them off from the rest. */
+    /** Raising this counter brings the cycles into view. */
     readonly cyclesRequest = input(0)
     readonly edgeColors = input.required<DependencyEdgeColors>()
 
@@ -44,8 +44,6 @@ export class DependencyPanelComponent {
     readonly iconColors = KIND_ICON_COLORS
     readonly copied = signal(false)
     private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
-    /** The cycles stay set off for as long as the selection they were asked for lasts. */
-    readonly focusedPath = signal<string | null>(null)
 
     constructor() {
         effect(() => {
@@ -53,7 +51,6 @@ export class DependencyPanelComponent {
             const section = this.cyclesSection()?.nativeElement
             if (section && request !== this.shownCyclesRequest) {
                 this.shownCyclesRequest = request
-                this.focusedPath.set(untracked(this.model).path)
                 section.scrollIntoView?.({ block: "start" })
             }
         })

@@ -335,7 +335,7 @@ describe("DependencyPanelComponent", () => {
         expect(screen.queryByRole("region", { name: "Declarations" })).toBeNull()
     })
 
-    it("should bring the cycles into view when asked to, once per request, and set them off until another selection", async () => {
+    it("should bring the cycles into view when asked to, once per request", async () => {
         // Arrange
         const scrollIntoView = jest.fn()
         Element.prototype.scrollIntoView = scrollIntoView
@@ -344,13 +344,10 @@ describe("DependencyPanelComponent", () => {
         // Act
         await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1, edgeColors: EDGE_COLORS } })
         fixture.detectChanges()
-        const setOff = screen.getByTestId("dependency-panel-cycles").className
         await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" }, cyclesRequest: 1, edgeColors: EDGE_COLORS } })
         fixture.detectChanges()
 
         // Assert
         expect(scrollIntoView).toHaveBeenCalledTimes(1)
-        expect(setOff).toContain("bg-info/10")
-        expect(screen.getByTestId("dependency-panel-cycles").className).not.toContain("bg-info/10")
     })
 })
