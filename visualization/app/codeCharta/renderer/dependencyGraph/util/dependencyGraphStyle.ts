@@ -20,6 +20,7 @@ export const OPEN_FILE_FILL = "#fbfcfe"
 export const QUIET_TEXT_COLOR = "#6b7280"
 export const QUIET_BADGE_COLOR = "#8a94a3"
 export const LEVEL_SEPARATOR_COLOR = "#c3cbd6"
+export const CYCLE_MARK_COLOR = "#dc2626"
 
 export const EDGE_TYPE_LABELS: Record<DependencyEdgeType, string> = {
     regular: "Dependency",

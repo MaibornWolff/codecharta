@@ -20,7 +20,7 @@ function childrenOf(element: object): DrawnElement[] {
     return (element as DrawnElement).children
 }
 
-const NO_CYCLE: CycleLook = { hiddenCount: 0, isInCycle: false, color: "" }
+const NO_CYCLE: CycleLook = { hiddenCount: 0, isInCycle: false }
 
 describe("dependencyGraphBoxes", () => {
     describe("drawBox", () => {
@@ -163,7 +163,7 @@ describe("dependencyGraphBoxes", () => {
 
             it("should shrink a cycle badge and a cycle ring only so far, since they lead to the cycles from far out", () => {
                 // Arrange
-                const cyclic = { ...look("none"), cycle: { hiddenCount: 7, isInCycle: true, color: "#2563eb" } }
+                const cyclic = { ...look("none"), cycle: { hiddenCount: 7, isInCycle: true } }
 
                 // Act
                 const pill = childrenOf(drawBox(aBox("/root/app", { kind: "folder", x: 0, y: 0 }), cyclic, atZoom(0.2))).find(
@@ -253,7 +253,7 @@ describe("dependencyGraphBoxes", () => {
         })
 
         describe("cycle marks", () => {
-            const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, color: "#2563eb", ...cycle } })
+            const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, ...cycle } })
 
             it("should count the cycles a closed box hides in a pill hanging over its upper right corner", () => {
                 // Arrange
@@ -267,7 +267,7 @@ describe("dependencyGraphBoxes", () => {
                     type: "rect",
                     info: "cycleBadge",
                     shape: { x: 148, y: 11, width: 28, height: 15 },
-                    style: { fill: "#2563eb" }
+                    style: { fill: "#dc2626" }
                 })
                 expect([arc, arrowHead].map(part => part.type)).toEqual(["path", "path"])
                 expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 165 } })
@@ -311,7 +311,7 @@ describe("dependencyGraphBoxes", () => {
                 expect(ring).toMatchObject({
                     type: "circle",
                     shape: { cx: 131, cy: 1, r: 3.5 },
-                    style: { stroke: "#2563eb", fill: "#ffffff" }
+                    style: { stroke: "#dc2626", fill: "#ffffff" }
                 })
                 expect(unringed.map(child => child.type)).toEqual(["rect", "text"])
             })

@@ -185,8 +185,7 @@ function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }
         listsLevels: scene.declarationArrangement === "list",
         cycle: {
             hiddenCount: scene.cycleMarks.hiddenCycles.get(box.path) ?? 0,
-            isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path),
-            color: scene.edgeColors.cyclic
+            isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path)
         }
     }
 }
