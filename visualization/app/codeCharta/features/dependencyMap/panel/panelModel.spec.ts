@@ -186,6 +186,10 @@ describe("describeSubject", () => {
             expect(cycles.map(cycle => cycle.steps.map(step => step.name))).toEqual([["Creature", "Weapon", "Creature"]])
             expect(cycles[0].files.map(file => file.name)).toEqual(["creature.ts", "weapon.ts"])
             expect(cycles[0].leafEdges).toEqual([LEAF_EDGES[0], LEAF_EDGES[1]])
+            expect(cycles[0].links).toEqual([
+                { line: expect.objectContaining({ dash: null, head: "hollow" }), type: "cyclic" },
+                { line: expect.objectContaining({ dash: null, head: "filled" }), type: "feedbackLeafLevel" }
+            ])
         })
 
         it("should tell a cycle from one of its own declarations, wherever the cycle was found from", () => {

@@ -5,9 +5,14 @@
 export const UNTRANSFORMED = { x: 0, y: 0, rotation: 0, scaleX: 1, scaleY: 1 }
 
 /** One drawn item. ECharts' own hover would lift it ten layers up, and an open folder would then cover
- * its children and catch every hover and click meant for them; the scene marks the hovered box itself. */
+ * its children and catch every hover and click meant for them; the scene marks the hovered box itself.
+ *
+ * ECharts leaves an item alone that is handed no children, so the name of a box that got too small to carry one
+ * would stay on the canvas where it was last drawn, while the graph moves on under it. Such an item says outright
+ * that its children are not to be merged, which is what removes them. */
 export function drawnItem(children: object[]) {
-    return { type: "group", ...UNTRANSFORMED, emphasisDisabled: true, children }
+    const item = { type: "group", ...UNTRANSFORMED, emphasisDisabled: true, children }
+    return children.length === 0 ? { ...item, $mergeChildren: false } : item
 }
 
 /** ECharts paints the elements it first creates in a later draw over all it drew before, whatever their place in

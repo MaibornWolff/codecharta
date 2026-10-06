@@ -56,7 +56,17 @@ const FILE_MODEL: PanelModel = {
             ]
         }
     ],
-    cycles: [{ steps: [CREATURE, WEAPON, CREATURE], files: [CREATURE_FILE, WEAPON_FILE], leafEdges: [LEAF_EDGE, LEAF_EDGE] }],
+    cycles: [
+        {
+            steps: [CREATURE, WEAPON, CREATURE],
+            files: [CREATURE_FILE, WEAPON_FILE],
+            links: [
+                { line: { dash: [7, 4], head: "hollow" }, type: "cyclic" },
+                { line: { dash: null, head: "filled" }, type: "feedbackLeafLevel" }
+            ],
+            leafEdges: [LEAF_EDGE, LEAF_EDGE]
+        }
+    ],
     cycleCount: 6,
     action: "open"
 }
@@ -208,7 +218,7 @@ describe("DependencyPanelComponent", () => {
         expect(dependenciesPointedAt.mock.calls).toEqual([[[LEAF_EDGE]], [null], [[LEAF_EDGE]], [null]])
     })
 
-    it("should draw a cycle as the same chain, closed back to its start, point at the whole chain and show it in the graph on request", async () => {
+    it("should draw a cycle as the same chain, each step in its edge's own line and colour, closed back to its start, and show it in the graph on request", async () => {
         // Arrange
         const { dependenciesPointedAt, cycleShown } = await renderPanel()
         const cycle = screen.getByTestId("dependency-panel-cycle")
@@ -224,6 +234,8 @@ describe("DependencyPanelComponent", () => {
         // Assert
         expect(cycle.querySelectorAll("svg")).toHaveLength(1)
         expect(cycle.querySelector("svg").getAttribute("stroke")).toBe("#2563eb")
+        expect(cycle.querySelector("svg line").getAttribute("stroke-dasharray")).toBe("7 4")
+        expect(screen.getByTestId("dependency-panel-cycle-closing").style.color).toBe("rgb(127, 29, 29)")
         expect(screen.getByTestId("dependency-panel-cycle-closing").textContent.trim()).toBe("↩ Creature")
         expect(screen.getByTestId("dependency-panel-cycle-where").textContent.replaceAll(/\s+/g, " ").trim()).toBe(
             "across creature.ts, weapon.ts"

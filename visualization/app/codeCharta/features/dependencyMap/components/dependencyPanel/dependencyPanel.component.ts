@@ -2,12 +2,7 @@ import { NgTemplateOutlet } from "@angular/common"
 import { ChangeDetectionStrategy, Component, ElementRef, effect, input, output, signal, untracked, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { DependencyEdgeColors } from "../../../../model/dependencyGraph.model"
-import {
-    declarationKindLookOf,
-    EDGE_TYPE_LABELS,
-    KIND_ICON_COLORS,
-    LineStyle
-} from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { declarationKindLookOf, EDGE_TYPE_LABELS, KIND_ICON_COLORS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { PanelActionKind, PanelCycle, PanelModel, PanelRef } from "../../panel/panelModel"
 
 const ACTION_LABELS: Record<PanelActionKind, string> = {
@@ -17,7 +12,6 @@ const ACTION_LABELS: Record<PanelActionKind, string> = {
 }
 
 const COPY_FEEDBACK_MS = 1500
-const PLAIN_LINE: LineStyle = { dash: null, head: "filled" }
 
 const REF_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-folder-o", file: "fa fa-file-o" }
 
@@ -48,7 +42,6 @@ export class DependencyPanelComponent {
     readonly actionLabels = ACTION_LABELS
     readonly edgeTypeLabels = EDGE_TYPE_LABELS
     readonly iconColors = KIND_ICON_COLORS
-    readonly plainLine = PLAIN_LINE
     readonly copied = signal(false)
     private copyFeedbackTimeout?: ReturnType<typeof setTimeout>
     /** The cycles stay set off for as long as the selection they were asked for lasts. */
