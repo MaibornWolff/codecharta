@@ -2,12 +2,15 @@ import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/de
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 import {
+    addToGroup,
+    counted,
     declarationKindLabelOf,
     GraphEdge,
     isPackagePath,
     LeveledNode,
     LineStyle,
     lineStyleOfUsages,
+    nameOfPath,
     usageLabelOf
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CycleChain, cyclesThrough } from "./cycleChains"
@@ -293,10 +296,6 @@ function weightOf(edge: GraphEdge, edgeMetric: string | null): string {
     return isDependencyEdgeMetric(edgeMetric) ? counted(edge.weight, "dependency", "dependencies") : `${edgeMetric} ${edge.weight}`
 }
 
-function counted(count: number, singular: string, plural = `${singular}s`): string {
-    return `${count} ${count === 1 ? singular : plural}`
-}
-
 function cycleBadge(cycleCount: number): PanelBadge[] {
     return cycleCount === 0 ? [] : [{ text: counted(cycleCount, "cycle"), isAboutCycles: true }]
 }
@@ -334,7 +333,7 @@ interface Dependencies {
 }
 
 function dependenciesOf(declarations: readonly IndexedDeclaration[], index: DeclarationIndex): Dependencies {
-    const paths = new Set(declarations.map(declaration => declaration.path))
+    const paths = pathsOf(declarations)
     const leaving = declarations.flatMap(({ path }) => index.outgoing.get(path) ?? [])
     const arriving = declarations.flatMap(({ path }) => index.incoming.get(path) ?? [])
     return {
@@ -353,7 +352,7 @@ interface EdgeGroup {
 function groupedByFile(leafEdges: readonly DependencyLeafEdge[], fileOf: (leafEdge: DependencyLeafEdge) => string): EdgeGroup[] {
     const byFile = new Map<string, DependencyLeafEdge[]>()
     for (const leafEdge of leafEdges) {
-        byFile.set(fileOf(leafEdge), [...(byFile.get(fileOf(leafEdge)) ?? []), leafEdge])
+        addToGroup(byFile, fileOf(leafEdge), leafEdge)
     }
     return [...byFile.entries()]
         .sort(([fileA], [fileB]) => fileA.localeCompare(fileB))
@@ -440,9 +439,5 @@ function declarationRef({ path, leaf }: IndexedDeclaration): PanelRef {
 }
 
 function fileRef(path: string): PanelRef {
-    return { path, name: nameOf(path), kind: "file" }
-}
-
-function nameOf(path: string): string {
-    return path.slice(path.lastIndexOf("/") + 1)
+    return { path, name: nameOfPath(path), kind: "file" }
 }

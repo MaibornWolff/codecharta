@@ -155,14 +155,14 @@ interface ContainerPlan extends Size {
 
 export interface LayoutOptions {
     /** The levels above the tree's root, when the tree is a focused folder of a larger one. */
-    levelPathOfTree?: number[]
-    declarationArrangement?: DeclarationArrangement
+    levelPathOfTree: number[]
+    declarationArrangement: DeclarationArrangement
 }
 
 export function layoutLevelized(
     tree: LeveledNode,
     expandedPaths: ReadonlySet<string>,
-    { levelPathOfTree = [], declarationArrangement = "stacked" }: LayoutOptions = {}
+    { levelPathOfTree, declarationArrangement }: LayoutOptions
 ): DependencyGraphLayout {
     const measurer = new ContainerMeasurer(expandedPaths, declarationArrangement)
     const rootSize = measurer.sizeOf(tree)

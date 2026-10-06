@@ -17,3 +17,12 @@ export function isPackagePath(path: string): boolean {
 export function packageKeyOf(packagePath: string): string {
     return packagePath.slice(PACKAGE_PATH_PREFIX.length)
 }
+
+export function nameOfPath(path: string): string {
+    return path.slice(path.lastIndexOf("/") + 1)
+}
+
+/** Empty for the root, which has nothing above it. */
+export function parentPathOf(path: string): string {
+    return path.slice(0, Math.max(path.lastIndexOf("/"), 0))
+}

@@ -17,6 +17,10 @@ export interface GraphEdge {
     declarationEdges: readonly DependencyLeafEdge[]
 }
 
+export function edgeIdOf(fromPath: string, toPath: string): string {
+    return `${fromPath}|${toPath}`
+}
+
 function isCarried(value: unknown): value is number {
     return typeof value === "number" && value > 0
 }
@@ -64,7 +68,6 @@ export interface DeclarationLayer {
 
 const WEIGHT_OF_AN_UNWEIGHTED_LEAF_EDGE = 1
 const NO_LEAF_EDGES: readonly DependencyLeafEdge[] = []
-const NO_DECLARATIONS: DeclarationLayer = { leafEdges: NO_LEAF_EDGES, hierarchy: "folders" }
 
 /** The cycle and upward flags describe the dependency graph alone, so every other metric draws its edges as
  * regular ones, and only the dependencies open into the edges between declarations.
@@ -77,7 +80,7 @@ export function projectEdges(
     edges: Edge[],
     representatives: ReadonlyMap<string, string>,
     edgeMetric: string | null,
-    { leafEdges, hierarchy }: DeclarationLayer = NO_DECLARATIONS
+    { leafEdges, hierarchy }: DeclarationLayer
 ): GraphEdge[] {
     const merged = new Map<string, MergedEdge>()
     const isDependencies = isDependencyEdgeMetric(edgeMetric)
@@ -149,7 +152,7 @@ function mergeInto(merged: Map<string, MergedEdge>, { fromPath, toPath, weight, 
     if (fromPath === undefined || toPath === undefined || fromPath === toPath || isHeldBy(fromPath, toPath) || isHeldBy(toPath, fromPath)) {
         return
     }
-    const id = `${fromPath}|${toPath}`
+    const id = edgeIdOf(fromPath, toPath)
     const existing = merged.get(id)
     if (existing === undefined) {
         merged.set(id, { fromPath, toPath, weight, isCyclic, isPointingUpwards, declarationEdges: [...declarationEdges] })

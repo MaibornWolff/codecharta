@@ -22,7 +22,7 @@ export interface LeveledNode {
 
 export type LeavesByFile = Readonly<Record<string, Record<string, DependencyLeaf>>>
 
-const LEVEL_WHEN_ABSENT = 0
+export const LEVEL_WHEN_ABSENT = 0
 const NO_LEAVES: LeavesByFile = {}
 
 export function buildLeveledTree(root: CodeMapNode, levels: DependencyLevelData, leaves: LeavesByFile = NO_LEAVES): LeveledNode | null {

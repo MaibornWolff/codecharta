@@ -7,6 +7,7 @@ import {
     LineStyleMeaning
 } from "../../../model/dependencyGraph.model"
 import { IsInside } from "./boxNesting"
+import { parentPathOf } from "./boxPaths"
 import { CycleMarks } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
@@ -67,7 +68,7 @@ export function searchMatcher(searchedPaths: ReadonlySet<string> | null, boxes: 
     }
     const boxAround = new Map(boxes.map(box => [box.path, box.parentPath]))
     const foundOrHoldingFound = new Set<string>()
-    const holderOf = (path: string) => (boxAround.has(path) ? (boxAround.get(path) ?? "") : parentOf(path))
+    const holderOf = (path: string) => (boxAround.has(path) ? (boxAround.get(path) ?? "") : parentPathOf(path))
     for (const path of searchedPaths) {
         for (let holder = path; holder !== "" && !foundOrHoldingFound.has(holder); holder = holderOf(holder)) {
             foundOrHoldingFound.add(holder)
@@ -76,13 +77,9 @@ export function searchMatcher(searchedPaths: ReadonlySet<string> | null, boxes: 
     return boxPath => foundOrHoldingFound.has(boxPath) || ancestorsOf(boxPath).some(ancestor => searchedPaths.has(ancestor))
 }
 
-function parentOf(path: string): string {
-    return path.slice(0, Math.max(path.lastIndexOf("/"), 0))
-}
-
 function ancestorsOf(path: string): string[] {
     const ancestors: string[] = []
-    for (let ancestor = parentOf(path); ancestor !== ""; ancestor = parentOf(ancestor)) {
+    for (let ancestor = parentPathOf(path); ancestor !== ""; ancestor = parentPathOf(ancestor)) {
         ancestors.push(ancestor)
     }
     return ancestors

@@ -1,29 +1,28 @@
+import { NAMESPACE_SEPARATOR } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeaf, DependencyNamespace } from "../../../model/codeCharta.model"
 import { packageKeyOf, packagePathOf } from "./boxPaths"
-import { LeavesByFile, LeveledNode } from "./leveledTree"
+import { addToGroup } from "./collections"
+import { LEVEL_WHEN_ABSENT, LeavesByFile, LeveledNode } from "./leveledTree"
 
 export type Namespaces = Readonly<Record<string, DependencyNamespace>>
 
-export interface PackagePlacement {
+interface PackagePlacement {
     packageKey: string
     /** The file's level among what its package holds. */
     level: number
 }
 
-const NAMESPACE_SEPARATOR = "."
-const LEVEL_WHEN_ABSENT = 0
-
 /** A file goes where most of its declarations are declared, the first package by name among equals, and as
  * high there as the highest of them: a file has no level of its own among packages. A file declaring no package
  * the map knows has no place among them. */
-export function packagePlacementOf(
+function packagePlacementOf(
     leavesOfFile: Readonly<Record<string, DependencyLeaf>> | undefined,
     namespaces: Namespaces
 ): PackagePlacement | null {
     const levelsByPackage = new Map<string, number[]>()
     for (const { namespace, level = LEVEL_WHEN_ABSENT } of Object.values(leavesOfFile ?? {})) {
         if (namespace !== undefined && namespaces[namespace] !== undefined) {
-            levelsByPackage.set(namespace, [...(levelsByPackage.get(namespace) ?? []), level])
+            addToGroup(levelsByPackage, namespace, level)
         }
     }
     const [mostDeclared] = [...levelsByPackage].sort(
@@ -43,10 +42,7 @@ export function arrangedByPackages(tree: LeveledNode, namespaces: Namespaces, le
     const place = (file: LeveledNode): boolean => {
         const placement = packagePlacementOf(leaves[file.path], namespaces)
         if (placement) {
-            filesByPackage.set(placement.packageKey, [
-                ...(filesByPackage.get(placement.packageKey) ?? []),
-                { ...file, level: placement.level }
-            ])
+            addToGroup(filesByPackage, placement.packageKey, { ...file, level: placement.level })
         }
         return placement !== null
     }
@@ -70,8 +66,7 @@ class PackageNodes {
         private readonly filesByPackage: ReadonlyMap<string, LeveledNode[]>
     ) {
         for (const key of Object.keys(namespaces)) {
-            const parentKey = this.parentOf(key)
-            this.keysByParent.set(parentKey, [...(this.keysByParent.get(parentKey) ?? []), key])
+            addToGroup(this.keysByParent, this.parentOf(key), key)
         }
     }
 

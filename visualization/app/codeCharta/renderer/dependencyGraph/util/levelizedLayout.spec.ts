@@ -1,5 +1,9 @@
 import { LeveledNode } from "./leveledTree"
-import { LAYOUT_SPACING, LayoutBox, layoutLevelized, namedByOwnLevel } from "./levelizedLayout"
+import { LAYOUT_SPACING, LayoutBox, LayoutOptions, layoutLevelized, namedByOwnLevel } from "./levelizedLayout"
+
+function layout(tree: LeveledNode, expandedPaths: ReadonlySet<string>, options: Partial<LayoutOptions> = {}) {
+    return layoutLevelized(tree, expandedPaths, { levelPathOfTree: [], declarationArrangement: "stacked", ...options })
+}
 
 function leveledFile(path: string, level = 0): LeveledNode {
     return { path, name: path.split("/").pop(), level, kind: "file", children: [] }
@@ -50,7 +54,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [leveledFile("/root/base", 0), leveledFile("/root/top", 2), leveledFile("/root/middle", 1)])
 
         // Act
-        const { boxes } = layoutLevelized(tree, new Set(["/root"]))
+        const { boxes } = layout(tree, new Set(["/root"]))
 
         // Assert
         const [top, middle, base] = ["/root/top", "/root/middle", "/root/base"].map(path => boxOf(boxes, path))
@@ -63,7 +67,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [leveledFile("/root/b"), leveledFile("/root/a")])
 
         // Act
-        const { boxes } = layoutLevelized(tree, new Set(["/root"]))
+        const { boxes } = layout(tree, new Set(["/root"]))
 
         // Assert
         expect(boxOf(boxes, "/root/a").x).toBeLessThan(boxOf(boxes, "/root/b").x)
@@ -74,7 +78,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", filesNamed(6))
 
         // Act
-        const { boxes } = layoutLevelized(tree, new Set(["/root"]))
+        const { boxes } = layout(tree, new Set(["/root"]))
 
         // Assert
         expect(new Set(boxes.filter(box => box.kind !== "folder").map(box => box.y)).size).toBe(1)
@@ -85,7 +89,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", filesNamed(100))
 
         // Act
-        const { boxes, width, height } = layoutLevelized(tree, new Set(["/root"]))
+        const { boxes, width, height } = layout(tree, new Set(["/root"]))
 
         // Assert
         const fileBoxes = boxes.filter(box => box.kind !== "folder")
@@ -99,7 +103,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [leveledFolder("/root/closed", [leveledFile("/root/closed/a")])])
 
         // Act
-        const { boxes } = layoutLevelized(tree, new Set(["/root"]))
+        const { boxes } = layout(tree, new Set(["/root"]))
 
         // Assert
         expect(boxOf(boxes, "/root/closed")).toMatchObject({
@@ -115,7 +119,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [leveledFolder("/root/open", [leveledFile("/root/open/a"), leveledFile("/root/open/b", 1)])])
 
         // Act
-        const { boxes } = layoutLevelized(tree, new Set(["/root", "/root/open"]))
+        const { boxes } = layout(tree, new Set(["/root", "/root/open"]))
 
         // Assert
         const open = boxOf(boxes, "/root/open")
@@ -130,7 +134,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [leveledFile("/root/a", 1), leveledFile("/root/b", 0), leveledFile("/root/c", 0)])
 
         // Act
-        const { bands, boxes } = layoutLevelized(tree, new Set(["/root"]))
+        const { bands, boxes } = layout(tree, new Set(["/root"]))
 
         // Assert
         expect(bands.map(band => band.level)).toEqual([1, 0])
@@ -144,7 +148,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [nested, ...filesNamed(8)])
 
         // Act
-        const { bands, boxes } = layoutLevelized(tree, new Set(["/root", "/root/open"]))
+        const { bands, boxes } = layout(tree, new Set(["/root", "/root/open"]))
 
         // Assert
         const rootBand = bands.find(band => band.folderPath === "/root")
@@ -159,7 +163,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root", [nested, leveledFile("/root/a", 0)])
 
         // Act
-        const { bands, boxes } = layoutLevelized(tree, new Set(["/root", "/root/open"]))
+        const { bands, boxes } = layout(tree, new Set(["/root", "/root/open"]))
 
         // Assert
         expect(bands.map(band => band.levelPath)).toEqual([[1], [1, 2], [1, 0], [0]])
@@ -173,7 +177,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root/open", [leveledFile("/root/open/x", 2)])
 
         // Act
-        const { bands, boxes } = layoutLevelized(tree, new Set(["/root/open"]), { levelPathOfTree: [0, 1] })
+        const { bands, boxes } = layout(tree, new Set(["/root/open"]), { levelPathOfTree: [0, 1] })
 
         // Assert
         expect(bands.map(band => band.levelPath)).toEqual([[0, 1, 2]])
@@ -187,7 +191,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root"])
 
         // Act
-        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+        const { boxes } = layout(DECLARING_TREE, expanded)
 
         // Assert
         expect(boxes.map(box => box.path)).toEqual(["/root", FILE, "/root/b.ts"])
@@ -200,7 +204,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root", "/root/b.ts"])
 
         // Act
-        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+        const { boxes } = layout(DECLARING_TREE, expanded)
 
         // Assert
         expect(boxOf(boxes, "/root/b.ts").isExpanded).toBe(false)
@@ -211,7 +215,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root", FILE])
 
         // Act
-        const { boxes, bands } = layoutLevelized(DECLARING_TREE, expanded)
+        const { boxes, bands } = layout(DECLARING_TREE, expanded)
 
         // Assert
         const file = boxOf(boxes, FILE)
@@ -227,7 +231,7 @@ describe("layoutLevelized with declarations", () => {
         const filePath = FILE
 
         // Act
-        const { bands, boxes } = layoutLevelized(nested, new Set(["/root", "/root/app", filePath]))
+        const { bands, boxes } = layout(nested, new Set(["/root", "/root/app", filePath]))
 
         // Assert
         const [upper, lower] = bands.filter(band => band.folderPath === filePath)
@@ -246,7 +250,7 @@ describe("layoutLevelized with declarations", () => {
         ])
         const expanded = new Set(["/root", FILE])
         const bandsInFile = (tree: LeveledNode, declarationArrangement: "stacked" | "list" | "chips") =>
-            layoutLevelized(tree, expanded, { declarationArrangement }).bands.filter(band => band.folderPath === FILE).length
+            layout(tree, expanded, { declarationArrangement }).bands.filter(band => band.folderPath === FILE).length
 
         // Act
         const counts = [bandsInFile(oneLevel, "stacked"), bandsInFile(DECLARING_TREE, "list"), bandsInFile(DECLARING_TREE, "chips")]
@@ -260,7 +264,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root", FILE])
 
         // Act
-        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+        const { boxes } = layout(DECLARING_TREE, expanded)
 
         // Assert
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
@@ -276,7 +280,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root", FILE])
 
         // Act
-        const { boxes } = layoutLevelized(DECLARING_TREE, expanded, { declarationArrangement: "list" })
+        const { boxes } = layout(DECLARING_TREE, expanded, { declarationArrangement: "list" })
 
         // Assert
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
@@ -291,7 +295,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root", FILE])
 
         // Act
-        const { boxes } = layoutLevelized(DECLARING_TREE, expanded, { declarationArrangement: "chips" })
+        const { boxes } = layout(DECLARING_TREE, expanded, { declarationArrangement: "chips" })
 
         // Assert
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
@@ -304,7 +308,7 @@ describe("layoutLevelized with declarations", () => {
         const lone = leveledFolder("/root", [{ ...leveledFile(FILE), children: [leveledDeclaration(FILE, "A")] }])
 
         // Act
-        const { boxes } = layoutLevelized(lone, new Set(["/root", FILE]), { declarationArrangement: "chips" })
+        const { boxes } = layout(lone, new Set(["/root", FILE]), { declarationArrangement: "chips" })
 
         // Assert
         expect(boxOf(boxes, FILE).width).toBe(160)
@@ -315,7 +319,7 @@ describe("layoutLevelized with declarations", () => {
         const expanded = new Set(["/root"])
 
         // Act
-        const { boxes } = layoutLevelized(DECLARING_TREE, expanded)
+        const { boxes } = layout(DECLARING_TREE, expanded)
 
         // Assert
         expect(boxes.map(box => box.parentPath)).toEqual([null, "/root", "/root"])
@@ -326,10 +330,10 @@ describe("namedByOwnLevel", () => {
     it("should name every band and box by its own level alone, leaving the root without one", () => {
         // Arrange
         const nested = leveledFolder("/root/open", [leveledFile("/root/open/x", 2)], 1)
-        const layout = layoutLevelized(leveledFolder("/root", [nested]), new Set(["/root", "/root/open"]))
+        const nestedLayout = layout(leveledFolder("/root", [nested]), new Set(["/root", "/root/open"]))
 
         // Act
-        const { bands, boxes } = namedByOwnLevel(layout)
+        const { bands, boxes } = namedByOwnLevel(nestedLayout)
 
         // Assert
         expect(bands.map(band => band.levelPath)).toEqual([[1], [2]])

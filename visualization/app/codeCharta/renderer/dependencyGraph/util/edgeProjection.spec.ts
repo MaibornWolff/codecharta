@@ -29,6 +29,8 @@ function edge(fromNodeName: string, toNodeName: string, extra: Partial<Edge> = {
     return { fromNodeName, toNodeName, attributes: { dependencies: 1 }, ...extra }
 }
 
+const NO_DECLARATION_EDGES = { leafEdges: [], hierarchy: "folders" } as const
+
 const tree = leveledFolder("/root", [
     leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts"), leveledFile("/root/ui/menu.ts")]),
     leveledFolder("/root/model", [leveledFile("/root/model/node.ts"), leveledFile("/root/model/edge.ts")])
@@ -82,7 +84,7 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(leveledFolder("/root", [chain, leveledFile("/root/b.ts")]), new Set(["/root"]))
 
             // Act
-            const projected = projectEdges([edge("/root/b.ts", "/root/src")], representatives, "dependencies")
+            const projected = projectEdges([edge("/root/b.ts", "/root/src")], representatives, "dependencies", NO_DECLARATION_EDGES)
 
             // Assert
             expect(projected.map(({ fromPath, toPath }) => [fromPath, toPath])).toEqual([["/root/b.ts", "/root/src/main"]])
@@ -97,7 +99,7 @@ describe("edgeProjection", () => {
             ]
 
             // Act
-            const projected = projectEdges(edges, representatives, "dependencies")
+            const projected = projectEdges(edges, representatives, "dependencies", NO_DECLARATION_EDGES)
 
             // Assert
             expect(projected).toEqual([
@@ -121,7 +123,7 @@ describe("edgeProjection", () => {
             ]
 
             // Act
-            const [projected] = projectEdges(edges, representatives, "dependencies")
+            const [projected] = projectEdges(edges, representatives, "dependencies", NO_DECLARATION_EDGES)
 
             // Assert
             expect(projected.type).toBe("feedbackContainerLevel")
@@ -133,7 +135,7 @@ describe("edgeProjection", () => {
             const edges = [edge("/root/ui/view.ts", "/root/ui/menu.ts"), edge("/root/ui/view.ts", "/root/docs/readme.md")]
 
             // Act
-            const projected = projectEdges(edges, representatives, "dependencies")
+            const projected = projectEdges(edges, representatives, "dependencies", NO_DECLARATION_EDGES)
 
             // Assert
             expect(projected).toEqual([])
@@ -148,8 +150,8 @@ describe("edgeProjection", () => {
             ]
 
             // Act
-            const dependencies = projectEdges(edges, representatives, "dependencies")
-            const coupling = projectEdges(edges, representatives, "temporal_coupling")
+            const dependencies = projectEdges(edges, representatives, "dependencies", NO_DECLARATION_EDGES)
+            const coupling = projectEdges(edges, representatives, "temporal_coupling", NO_DECLARATION_EDGES)
 
             // Assert
             expect(dependencies.map(projected => projected.id)).toEqual(["/root/ui/view.ts|/root/model/node.ts"])
@@ -177,7 +179,7 @@ describe("edgeProjection", () => {
             ]
 
             // Act
-            const [projected] = projectEdges(edges, representatives, "temporal_coupling")
+            const [projected] = projectEdges(edges, representatives, "temporal_coupling", NO_DECLARATION_EDGES)
 
             // Assert
             expect(projected.type).toBe("regular")
@@ -188,7 +190,7 @@ describe("edgeProjection", () => {
             const representatives = visibleRepresentatives(tree, new Set(["/root", "/root/ui", "/root/model"]))
 
             // Act
-            const projected = projectEdges([edge("/root/ui/view.ts", "/root/model/node.ts")], representatives, null)
+            const projected = projectEdges([edge("/root/ui/view.ts", "/root/model/node.ts")], representatives, null, NO_DECLARATION_EDGES)
 
             // Assert
             expect(projected).toEqual([])

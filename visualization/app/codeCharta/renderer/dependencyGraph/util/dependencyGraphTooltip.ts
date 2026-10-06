@@ -8,6 +8,7 @@ import { GraphEdge } from "./edgeProjection"
 import { canBeOpened, describeLevelPath, LayoutBox } from "./levelizedLayout"
 import { usageLabelOf, usagesOf } from "./lineStyle"
 import { GraphItem } from "./paintOrder"
+import { counted } from "./wording"
 
 interface TooltipParams {
     dataIndex: number
@@ -41,7 +42,7 @@ function describeBox(box: LayoutBox, { hiddenCycles, declarationsInCycles }: Cyc
     }
     const hiddenCount = box.isExpanded ? 0 : (hiddenCycles.get(box.path) ?? 0)
     if (hiddenCount > 0) {
-        rows.push(`${hiddenCount} ${hiddenCount === 1 ? "cycle" : "cycles"} inside`)
+        rows.push(`${counted(hiddenCount, "cycle")} inside`)
     }
     if (canBeOpened(box)) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
@@ -59,7 +60,7 @@ function describeEdge(edge: GraphEdge, boxesByPath: ReadonlyMap<string, LayoutBo
     const type = EDGE_TYPE_LABELS[edge.type]
     const [only, ...others] = edge.declarationEdges
     if (only === undefined) {
-        return [title, `${edge.weight} ${edge.weight === 1 ? "dependency" : "dependencies"} · ${type}`].join("<br/>")
+        return [title, `${counted(edge.weight, "dependency", "dependencies")} · ${type}`].join("<br/>")
     }
     if (others.length > 0) {
         return [title, `${edge.declarationEdges.length} declaration edges · ${type}`, "<i>Click to list them</i>"].join("<br/>")

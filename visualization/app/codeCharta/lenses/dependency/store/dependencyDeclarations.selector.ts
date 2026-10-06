@@ -6,7 +6,7 @@ import { getUpdatedPath } from "../../../util/nodePathHelper"
 
 export type DependencyDeclarations = Required<DependencyDeclarationData>
 
-const NAMESPACE_SEPARATOR = "."
+export const NAMESPACE_SEPARATOR = "."
 
 export const dependencyDeclarationsSelector = createSelector(visibleFileStatesSelector, visibleFileStates =>
     mergeDependencyDeclarations(getCCFiles(visibleFileStates), isPartialState(visibleFileStates))

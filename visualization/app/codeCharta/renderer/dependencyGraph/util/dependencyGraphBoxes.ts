@@ -1,6 +1,5 @@
 import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
 import {
-    CYCLE_BADGE_INFO,
     CycleLook,
     drawCycleMark,
     drawDeclarationCount,
@@ -52,10 +51,6 @@ export interface BoxLook {
     kindMark: DeclarationKindMark
     cycle: CycleLook
 }
-
-export { CYCLE_BADGE_INFO }
-export type { CycleLook }
-export const NO_CYCLE: CycleLook = { hiddenCount: 0, isInCycle: false, color: "" }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
 
