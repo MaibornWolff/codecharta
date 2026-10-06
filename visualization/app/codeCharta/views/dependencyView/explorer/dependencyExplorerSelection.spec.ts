@@ -4,7 +4,7 @@ import { provideMockStore } from "@ngrx/store/testing"
 import { DependencyMapViewStore } from "../../../features/dependencyMap/facade"
 import { provideMockState } from "../../../mocks/state.mocks"
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { indexTree, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { defaultState } from "../../../stores/rootStore/state.manager"
 import { hoveredNodePathSelector, selectedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { setHoveredNodePath, setSelectedNodePath } from "../../../stores/sharedView/sharedView.write.facade"
@@ -58,7 +58,7 @@ describe("DependencyExplorerSelection", () => {
         // Arrange
         const { selection } = setup()
         const viewStore = TestBed.inject(DependencyMapViewStore)
-        viewStore.adoptTree(TREE)
+        viewStore.adoptTree(indexTree(TREE))
         const folder = { name: "app", path: "/root/app", id: 1, type: NodeType.FOLDER, children: [LEAF] } as unknown as CodeMapNode
 
         // Act
@@ -86,7 +86,7 @@ describe("DependencyExplorerSelection", () => {
         selection.select(LEAF)
 
         // Act
-        viewStore.adoptTree(TREE)
+        viewStore.adoptTree(indexTree(TREE))
 
         // Assert
         expect([...viewStore.expandedPaths()]).toEqual(["/root", "/root/app", "/root/app/ui"])

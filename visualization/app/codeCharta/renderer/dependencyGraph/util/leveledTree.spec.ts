@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { boxPathOf, buildLeveledTree, collapsedFirstLook, containerPathsOf, LeveledNode, levelPathOf } from "./leveledTree"
+import { buildLeveledTree, collapsedFirstLook, LeveledNode } from "./leveledTree"
 
 function file(path: string): CodeMapNode {
     return { name: path.split("/").pop(), path, type: NodeType.FILE }
@@ -142,35 +142,6 @@ describe("leveledTree", () => {
         })
     })
 
-    describe("boxPathOf", () => {
-        it("should find a folder's own box, the chain box it is folded into, and nothing for a folder the graph lacks", () => {
-            // Arrange
-            const chain = { ...leveledFolder("/root/lib/core", [leveledFile("/root/lib/core/io.ts")]), foldedPaths: ["/root/lib"] }
-            const tree = leveledFolder("/root", [chain, leveledFolder("/root/ui", [leveledFile("/root/ui/view.ts")])])
-
-            // Act
-            const boxPaths = ["/root/ui", "/root/lib", "/root/docs"].map(path => boxPathOf(tree, path))
-
-            // Assert
-            expect(boxPaths).toEqual(["/root/ui", "/root/lib/core", null])
-        })
-    })
-
-    describe("levelPathOf", () => {
-        it("should list the levels down to a folder's box, counting a folded chain once, and nothing for a folder the graph lacks", () => {
-            // Arrange
-            const core = { ...leveledFolder("/root/lib/core/io", [leveledFile("/root/lib/core/io/file.ts")]), level: 2 }
-            const chain = { ...leveledFolder("/root/lib/core", [core]), level: 1, foldedPaths: ["/root/lib"] }
-            const tree = leveledFolder("/root", [chain])
-
-            // Act
-            const levelPaths = ["/root", "/root/lib", "/root/lib/core/io", "/root/docs"].map(path => levelPathOf(tree, path))
-
-            // Assert
-            expect(levelPaths).toEqual([[], [1], [1, 2], null])
-        })
-    })
-
     describe("collapsedFirstLook", () => {
         it("should open only the root, leaving every folder in it closed", () => {
             // Arrange
@@ -216,27 +187,6 @@ describe("leveledTree", () => {
 
             // Assert
             expect([...opened]).toEqual(["/root", "/root/src", "/root/src/main"])
-        })
-    })
-
-    describe("containerPathsOf", () => {
-        const chain = { ...leveledFolder("/root/src/main", [leveledFile("/root/src/main/a.ts")]), foldedPaths: ["/root/src"] }
-        const tree = leveledFolder("/root", [chain, leveledFile("/root/b.ts")])
-
-        it("should name the boxes around a node, outermost first, a chain box once", () => {
-            // Act
-            const containers = containerPathsOf(tree, "/root/src/main/a.ts")
-
-            // Assert
-            expect(containers).toEqual(["/root", "/root/src/main"])
-        })
-
-        it("should name the boxes around a folder folded into a chain box, none around the root, and null for an unknown path", () => {
-            // Act
-            const containers = ["/root/src", "/root", "/root/unknown.ts"].map(path => containerPathsOf(tree, path))
-
-            // Assert
-            expect(containers).toEqual([["/root"], [], null])
         })
     })
 })

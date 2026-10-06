@@ -3,8 +3,8 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
     arrangedByPackages,
+    indexTree,
     isPackagePath,
-    type LeveledNode,
     layoutLevelized,
     movedLayout,
     namedByOwnLevel,
@@ -41,10 +41,12 @@ export class DependencyGraphModelStore {
         const { namespaces, leaves } = this.declarations()
         return folderTree && this.hierarchy() === "packages" ? arrangedByPackages(folderTree, namespaces, leaves) : folderTree
     })
-    readonly nodesByPath = computed(() => indexedByPath(this.tree()))
-    readonly parentsByPath = computed(() => parentsIn(this.tree()))
+    readonly treeIndex = computed(() => {
+        const tree = this.tree()
+        return tree && indexTree(tree)
+    })
     private readonly drawnFilePaths = computed(
-        () => new Set([...this.nodesByPath().values()].flatMap(node => (node.kind === "file" ? [node.path] : [])))
+        () => new Set([...(this.treeIndex()?.nodeAt.values() ?? [])].flatMap(node => (node.kind === "file" ? [node.path] : [])))
     )
     readonly declarationIndex = computed(() => indexDeclarations(this.declarations(), this.drawnFilePaths()))
     /** Every cycle between drawn declarations, found once: the badges count them and the inspector tells them. */
@@ -99,32 +101,4 @@ export class DependencyGraphModelStore {
     nodePathOf(path: string): string | null {
         return isPackagePath(path) ? null : (this.declarationIndex().declarations.get(path)?.filePath ?? path)
     }
-}
-
-function indexedByPath(tree: LeveledNode | null): ReadonlyMap<string, LeveledNode> {
-    const nodes = new Map<string, LeveledNode>()
-    const visit = (node: LeveledNode) => {
-        for (const path of [node.path, ...(node.foldedPaths ?? [])]) {
-            nodes.set(path, node)
-        }
-        node.children.forEach(visit)
-    }
-    if (tree) {
-        visit(tree)
-    }
-    return nodes
-}
-
-function parentsIn(tree: LeveledNode | null): ReadonlyMap<string, LeveledNode> {
-    const parents = new Map<string, LeveledNode>()
-    const visit = (node: LeveledNode) => {
-        for (const child of node.children) {
-            parents.set(child.path, node)
-            visit(child)
-        }
-    }
-    if (tree) {
-        visit(tree)
-    }
-    return parents
 }

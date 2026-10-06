@@ -60,48 +60,6 @@ function leveledDeclaration(path: string, leaf: DependencyLeaf): LeveledNode {
     return { path, name: leaf.name, level: leaf.level ?? LEVEL_WHEN_ABSENT, kind: "declaration", children: [], declarationKind: leaf.kind }
 }
 
-/** The box a folder is drawn as: its own, or the chain box it is folded into. */
-export function boxPathOf(tree: LeveledNode, containerPath: string): string | null {
-    if (tree.path === containerPath || tree.foldedPaths?.includes(containerPath)) {
-        return tree.path
-    }
-    for (const child of tree.children) {
-        const boxPath = boxPathOf(child, containerPath)
-        if (boxPath !== null) {
-            return boxPath
-        }
-    }
-    return null
-}
-
-/** The boxes around a node or declaration, outermost first; null for one the tree does not hold. */
-export function containerPathsOf(tree: LeveledNode, path: string): string[] | null {
-    if (tree.path === path || tree.foldedPaths?.includes(path)) {
-        return []
-    }
-    for (const child of tree.children) {
-        const containersBelow = containerPathsOf(child, path)
-        if (containersBelow !== null) {
-            return [tree.path, ...containersBelow]
-        }
-    }
-    return null
-}
-
-/** The levels to walk down from the tree's root to reach a folder's box, outermost first. */
-export function levelPathOf(tree: LeveledNode, containerPath: string): number[] | null {
-    if (tree.path === containerPath || tree.foldedPaths?.includes(containerPath)) {
-        return []
-    }
-    for (const child of tree.children) {
-        const levelPathBelowChild = levelPathOf(child, containerPath)
-        if (levelPathBelowChild !== null) {
-            return [child.level, ...levelPathBelowChild]
-        }
-    }
-    return null
-}
-
 /** Only the root is open, and the folders and packages below it for as long as each holds nothing but one of
  * them: a lone box would show nothing. */
 const HOLDING_FILES: ReadonlySet<BoxKind> = new Set(["folder", "package"])
