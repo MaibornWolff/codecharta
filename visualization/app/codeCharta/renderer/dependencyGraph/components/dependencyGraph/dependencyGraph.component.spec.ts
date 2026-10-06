@@ -98,18 +98,20 @@ describe("DependencyGraphComponent", () => {
         // Arrange
         const boxClicked = jest.fn()
         const boxToggled = jest.fn()
+        const cycleBadgeClicked = jest.fn()
         const boxHovered = jest.fn()
         const boxRightClicked = jest.fn()
         const rendered = jest.fn()
         await render(DependencyGraphComponent, {
             inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY },
-            on: { boxClicked, boxToggled, boxHovered, boxRightClicked, rendered }
+            on: { boxClicked, boxToggled, cycleBadgeClicked, boxHovered, boxRightClicked, rendered }
         })
         const box = { seriesId: GRAPH_SERIES_ID, name: "/root/a.ts" }
 
         // Act
         fireChartEvent("click", box)
         screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
+        fireChartEvent("click", { ...box, info: "cycleBadge" })
         fireChartEvent("mouseover", box)
         fireChartEvent("contextmenu", { ...box, event: { event: { clientX: 1, clientY: 2 } } })
         fireChartEvent("finished")
@@ -117,6 +119,7 @@ describe("DependencyGraphComponent", () => {
         // Assert
         expect(boxClicked).toHaveBeenCalledWith("/root/a.ts")
         expect(boxToggled).toHaveBeenCalledWith("/root/a.ts")
+        expect(cycleBadgeClicked).toHaveBeenCalledWith("/root/a.ts")
         expect(boxHovered).toHaveBeenCalledWith("/root/a.ts")
         expect(boxRightClicked).toHaveBeenCalledWith({ path: "/root/a.ts", clientX: 1, clientY: 2 })
         expect(rendered).toHaveBeenCalled()

@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
+import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
 import {
     boxAtPoint,
     canBeOpened,
     DependencyGraphComponent,
     DependencyGraphScene,
     type DraggedBox,
+    findCycleMarks,
     isDraggable,
     layoutLevelized,
     movedLayout,
+    NO_CYCLE_MARKS,
     namedByOwnLevel,
     type Point,
     projectEdges,
@@ -85,6 +88,11 @@ export class DependencyMapComponent {
     private readonly projectedEdges = computed(() =>
         projectEdges(this.edges(), this.representatives(), this.edgeMetric(), this.declarations().leafEdges)
     )
+    private readonly cycleMarks = computed(() =>
+        this.settings().showsCycleBadges && isDependencyEdgeMetric(this.edgeMetric())
+            ? findCycleMarks(this.declarations().leafEdges, this.representatives())
+            : NO_CYCLE_MARKS
+    )
     private readonly boxes = computed(() => new Map(this.layout()?.boxes.map(box => [box.path, box])))
     private readonly selectedBoxPath = computed(() => {
         const inGraph = this.viewStore.graphSelection()
@@ -97,9 +105,10 @@ export class DependencyMapComponent {
         if (!layout) {
             return null
         }
-        const { levelLabel, declarationArrangement, ...looks } = this.settings()
+        const { levelLabel, declarationArrangement, showsCycleBadges, ...looks } = this.settings()
         return {
             ...looks,
+            cycleMarks: this.cycleMarks(),
             layout,
             edges: this.projectedEdges(),
             edgeMetric: this.edgeMetric(),
@@ -129,6 +138,10 @@ export class DependencyMapComponent {
         const nodePath = this.nodePathOf(path)
         this.viewStore.selectInGraph(nodePath === path ? null : { path, sharedPath: nodePath })
         this.writeStore.selectNode(nodePath)
+    }
+
+    protected showCyclesOf(path: string): void {
+        this.select(path)
     }
 
     protected toggle(path: string): void {

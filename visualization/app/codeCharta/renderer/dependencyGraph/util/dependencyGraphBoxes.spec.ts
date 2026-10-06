@@ -1,5 +1,5 @@
 import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
-import { BoxEmphasis, BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
+import { BoxEmphasis, BoxLook, CycleLook, drawBox, drawFolderTitle, drawLevelBand, NO_CYCLE } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
 
@@ -12,7 +12,7 @@ interface DrawnElement {
 }
 
 function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false, kindMark: DeclarationKindMark = "off"): BoxLook {
-    return { emphasis, isSeeThrough, isMissedBySearch, kindMark }
+    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, cycle: NO_CYCLE }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -163,6 +163,67 @@ describe("dependencyGraphBoxes", () => {
 
                 // Assert
                 expect(children.map(child => child.type)).toEqual(["rect", "text"])
+            })
+        })
+
+        describe("cycle marks", () => {
+            const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, color: "#2563eb", ...cycle } })
+
+            it("should count the cyclic dependencies a closed box hides in a round badge on its corner", () => {
+                // Arrange
+                const box = aBox("/root/app", { kind: "folder", x: 10, y: 20 })
+
+                // Act
+                const [, , badge, count] = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 7 }), identityPixels))
+
+                // Assert
+                expect(badge).toMatchObject({
+                    type: "circle",
+                    info: "cycleBadge",
+                    shape: { cx: 170, cy: 20, r: 8 },
+                    style: { fill: "#2563eb" }
+                })
+                expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 170, y: 20 } })
+            })
+
+            it("should cap the count so it stays inside the badge", () => {
+                // Arrange
+                const box = aBox("/root/a.ts")
+
+                // Act
+                const count = childrenOf(drawBox(box, cyclic({ hiddenEdgeCount: 250 }), identityPixels)).at(-1)
+
+                // Assert
+                expect(count.style.text).toBe("99+")
+            })
+
+            it("should draw no badge on a box that hides no cyclic dependency, nor on an open one", () => {
+                // Arrange
+                const closed = aBox("/root/a.ts")
+                const open = aBox("/root/app", { kind: "folder", isExpanded: true })
+
+                // Act
+                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ hiddenEdgeCount: 3 }), identityPixels)]
+
+                // Assert
+                expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])
+            })
+
+            it("should ring a declaration that takes part in a cycle", () => {
+                // Arrange
+                const box = aBox("/root/a.ts/Creature", { kind: "declaration", x: 0, y: 0, width: 132, height: 26 })
+
+                // Act
+                const ring = childrenOf(drawBox(box, cyclic({ isInCycle: true }), identityPixels)).at(-1)
+                const unringed = childrenOf(drawBox(box, cyclic({}), identityPixels))
+
+                // Assert
+                expect(ring).toMatchObject({
+                    type: "circle",
+                    shape: { cx: 132, cy: 0, r: 4 },
+                    style: { stroke: "#2563eb", fill: "#ffffff" }
+                })
+                expect(unringed.map(child => child.type)).toEqual(["rect", "text"])
             })
         })
 

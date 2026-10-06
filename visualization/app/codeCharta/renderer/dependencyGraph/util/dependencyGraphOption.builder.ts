@@ -153,7 +153,12 @@ function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }
         emphasis: emphasisOf(box, scene),
         isSeeThrough: isDragged || seeThroughPaths.has(box.path),
         isMissedBySearch: !isFound,
-        kindMark: scene.declarationKindMark
+        kindMark: scene.declarationKindMark,
+        cycle: {
+            hiddenEdgeCount: scene.cycleMarks.hiddenCyclicEdges.get(box.path) ?? 0,
+            isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path),
+            color: scene.edgeColors.cyclic
+        }
     }
 }
 

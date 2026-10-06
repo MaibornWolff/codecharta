@@ -5,7 +5,7 @@ import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
-import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
+import { CYCLE_BADGE_INFO, TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { AxisWindow, Viewport, windowResizedTo } from "../../util/dependencyGraphOption.builder"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
@@ -16,6 +16,7 @@ echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent
 export interface DependencyGraphHandlers extends BoxDragHandlers {
     onBoxClicked: (path: string) => void
     onBoxToggled: (path: string) => void
+    onCycleBadgeClicked: (path: string) => void
     onBoxHovered: (path: string | null) => void
     onBoxRightClicked: (path: string, clientX: number, clientY: number) => void
     onRendered: () => void
@@ -50,6 +51,10 @@ export class DependencyGraphHost {
     private chartSize?: Viewport
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
+    private readonly partClickHandlers: Record<string, (path: string) => void> = {
+        [TOGGLE_INFO]: path => this.handlers.onBoxToggled(path),
+        [CYCLE_BADGE_INFO]: path => this.handlers.onCycleBadgeClicked(path)
+    }
 
     readonly containerSize = this.containerSizeObserver.size
 
@@ -165,9 +170,10 @@ export class DependencyGraphHost {
         if (this.dragGesture?.takeClickThatEndedDrag() || path === null) {
             return
         }
-        if (event.info === TOGGLE_INFO) {
+        const onPartClicked = this.partClickHandlers[String(event.info)]
+        if (onPartClicked) {
             this.lastBoxClick = null
-            this.handlers.onBoxToggled(path)
+            onPartClicked(path)
             return
         }
         this.lastBoxClick = { path, at: Date.now() }

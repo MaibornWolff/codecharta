@@ -13,6 +13,7 @@
         [boxAt]="boxAt"
         (boxClicked)="select($event)"
         (boxToggled)="toggle($event)"
+        (cycleBadgeClicked)="showCyclesOf($event)"
         (boxHovered)="hover($event)"
         (boxRightClicked)="openContextMenu($event)"
         (rendered)="markReady()"

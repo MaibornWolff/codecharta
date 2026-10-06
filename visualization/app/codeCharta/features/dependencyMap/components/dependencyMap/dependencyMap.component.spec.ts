@@ -390,6 +390,64 @@ describe("DependencyMapComponent", () => {
             expect(outlineWidthOf(VIEW)).toBe(1)
         })
 
+        describe("cycle badges", () => {
+            const CYCLIC: DependencyDeclarations = {
+                ...DECLARATIONS,
+                leafEdges: DECLARATIONS.leafEdges.map(leafEdge => ({ ...leafEdge, isCyclic: true }))
+            }
+            const badgeTextOf = (path: string) => {
+                const dataIndex = drawnSeries().data.findIndex(item => item.name === path)
+                const parts = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children as unknown as {
+                    info?: string
+                    style: { text?: string }
+                }[]
+                return parts.findLast(part => part.info === "cycleBadge")?.style.text ?? null
+            }
+
+            it("should count the hidden cyclic dependencies on the closed files and stop once a file is opened", async () => {
+                // Arrange
+                await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
+                const whileClosed = [VIEW, NODE].map(badgeTextOf)
+
+                // Act
+                doubleClickBox(VIEW)
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(whileClosed).toEqual(["2", "1"])
+                expect([VIEW, NODE].map(badgeTextOf)).toEqual([null, "1"])
+            })
+
+            it("should draw no badge once the reader switches them off, or for another edge metric", async () => {
+                // Arrange
+                const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
+
+                // Act
+                await changeSettings(store, { showsCycleBadges: false })
+                fixture.detectChanges()
+                const switchedOff = badgeTextOf(VIEW)
+                await changeSettings(store, { showsCycleBadges: true })
+                store.overrideSelector(edgeMetricSelector, "temporal_coupling")
+                store.refreshState()
+                fixture.detectChanges()
+
+                // Assert
+                expect(switchedOff).toBeNull()
+                expect(badgeTextOf(VIEW)).toBeNull()
+            })
+
+            it("should select the box whose badge is clicked", async () => {
+                // Arrange
+                const { store } = await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
+
+                // Act
+                fireChartEvent("click", { ...boxEvent(VIEW), info: "cycleBadge" })
+
+                // Assert
+                expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: VIEW }))
+            })
+        })
+
         it("should mark the file again once another view selects it", async () => {
             // Arrange
             const { store, fixture } = await setup({ tree: DECLARING_TREE, openedFolders: [...EVERY_FOLDER, VIEW] })

@@ -47,4 +47,6 @@ export interface DependencyGraphSettings {
     levelLabel: DependencyLevelLabel
     declarationArrangement: DeclarationArrangement
     declarationKindMark: DeclarationKindMark
+    /** Whether a closed box counts the cyclic dependencies it hides. */
+    showsCycleBadges: boolean
 }
