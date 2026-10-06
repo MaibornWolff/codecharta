@@ -6,7 +6,8 @@ import {
     boxPathOf,
     collapsedFirstLook,
     containerPathsOf,
-    LeveledNode
+    LeveledNode,
+    ViewRequest
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
@@ -37,6 +38,7 @@ export class DependencyMapViewStore {
     private readonly selectedInGraph = signal<GraphSelection | null>(null)
     private readonly hoveredInGraph = signal<string | null>(null)
     private readonly shownHierarchy = signal<DependencyHierarchy>("folders")
+    private readonly askedIntoView = signal<ViewRequest | null>(null)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: LeveledNode | null = null
 
@@ -52,6 +54,7 @@ export class DependencyMapViewStore {
     readonly hoveredBoxPath = this.hoveredInGraph.asReadonly()
     /** What the reader asked for; a map without packages is shown by its folders all the same. */
     readonly hierarchy = this.shownHierarchy.asReadonly()
+    readonly viewRequest = this.askedIntoView.asReadonly()
 
     adoptTree(tree: LeveledNode): void {
         const layoutIdentity = this.currentLayoutIdentity()
@@ -78,6 +81,11 @@ export class DependencyMapViewStore {
 
     hoverInGraph(path: string | null): void {
         this.hoveredInGraph.set(path)
+    }
+
+    /** Asks the graph to move so far that these boxes are in view; it stays where it is when they are already. */
+    bringIntoView(paths: readonly string[]): void {
+        this.askedIntoView.update(request => ({ id: (request?.id ?? 0) + 1, paths }))
     }
 
     requestFit(): void {

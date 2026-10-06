@@ -48,6 +48,7 @@ export class DependencyMapComponent {
     protected readonly isFocused = toSignal(this.readStore.isFocused$, { requireSync: true })
     protected readonly graphIdentity = computed(() => this.viewStore.adoptedLayoutIdentity() ?? "")
     protected readonly fitRequest = this.viewStore.fitRequest
+    protected readonly viewRequest = this.viewStore.viewRequest
 
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
     private readonly searchedPaths = toSignal(this.readStore.searchedPaths$, { requireSync: true })
