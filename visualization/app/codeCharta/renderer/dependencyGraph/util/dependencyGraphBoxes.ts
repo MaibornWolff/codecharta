@@ -6,8 +6,10 @@ import {
     drawDeclarationCount,
     drawInnerFrame,
     drawKindIcon,
+    drawListedLevel,
     drawMovedOutline,
     KIND_ICON_WIDTH_PX,
+    LISTED_LEVEL_WIDTH_PX,
     outlineOf
 } from "./boxMarks"
 import { declarationKindLookOf } from "./declarationKinds"
@@ -108,7 +110,11 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
 function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark }: BoxLook): object[] {
     const opacity = opacityOf(isMissedBySearch)
     const hasKindIcon = box.kind === "declaration" && kindMark === "icon"
-    const marks = [...drawFileMarks(box, rect, opacity), ...(hasKindIcon ? drawKindIcon(box, rect, opacity) : [])]
+    const marks = [
+        ...drawFileMarks(box, rect, opacity),
+        ...(hasKindIcon ? drawKindIcon(box, rect, opacity) : []),
+        ...drawListedLevel(box, rect, opacity)
+    ]
     const label = drawLabel(box, rect, { opacity, hasKindIcon })
     return label ? [label, ...marks] : marks
 }
@@ -241,7 +247,8 @@ interface LabelLook {
 function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon }: LabelLook) {
     const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX : 0
     const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX : 0
-    const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth
+    const levelWidth = box.listedLevel === undefined ? 0 : LISTED_LEVEL_WIDTH_PX
+    const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth - levelWidth
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -252,7 +259,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon }: La
         silent: true,
         style: {
             text: box.name,
-            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + (rect.width + iconWidth) / 2,
+            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + (rect.width + iconWidth - levelWidth) / 2,
             y: nameCentreY(box, rect),
             width,
             overflow: "truncate",

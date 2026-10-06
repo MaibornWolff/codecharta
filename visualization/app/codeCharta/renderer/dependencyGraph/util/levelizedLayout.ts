@@ -17,6 +17,8 @@ export interface LayoutBox extends Rectangle {
     declarationKind?: string
     /** How many declarations a file holds, whether it shows them or not. */
     declarationCount?: number
+    /** The level a listed declaration names at its side, as no row tells it there. */
+    listedLevel?: number
 }
 
 export interface LevelBand extends Rectangle {
@@ -100,6 +102,14 @@ const DECLARATION_LEVEL_GAP = 16
 const UNWRAPPED_DECLARATION_ROW_WIDTH =
     MIN_DECLARATIONS_PER_ROW * LAYOUT_SPACING.declarationWidth + (MIN_DECLARATIONS_PER_ROW - 1) * DECLARATION_GAP
 
+/** Levels inside a file get the room a folder gives them, for their label and separator. */
+const LEVELED_FILE_CONTENT: ContentSpacing = {
+    gapBetweenNodes: DECLARATION_GAP,
+    gapBetweenRows: DECLARATION_ROW_GAP,
+    gapBetweenGroups: LAYOUT_SPACING.gapBetweenLevels,
+    unwrappedRowWidth: UNWRAPPED_DECLARATION_ROW_WIDTH
+}
+
 const FILE_CONTENT: Record<DeclarationArrangement, ContentSpacing> = {
     stacked: {
         gapBetweenNodes: DECLARATION_GAP,
@@ -139,6 +149,8 @@ interface ContainerPlan extends Size {
     rows: Row[]
     innerWidth: number
     spacing: ContentSpacing
+    /** Whether the rows are told apart by level, with a label and a separator each. */
+    isLeveled: boolean
 }
 
 export interface LayoutOptions {
@@ -191,15 +203,31 @@ class ContainerMeasurer {
 
     private planContainer(container: LeveledNode): ContainerPlan {
         const isFile = container.kind === "file"
-        const spacing = isFile ? FILE_CONTENT[this.declarationArrangement] : FOLDER_CONTENT
+        const isLeveled = !isFile || this.stacksSeveralLevels(container)
+        const spacing = isFile ? (isLeveled ? LEVELED_FILE_CONTENT : FILE_CONTENT[this.declarationArrangement]) : FOLDER_CONTENT
         const groups = isFile ? groupDeclarations(container.children, this.declarationArrangement) : groupByLevelFromTop(container.children)
         const candidates = rowWidthCandidates(groups, node => this.sizeOf(node).width, spacing)
         const minInnerWidth = isFile ? LAYOUT_SPACING.nodeWidth - 2 * LAYOUT_SPACING.padding : 0
-        const planFor = (maxRowWidth: number) => this.packRows(groups, maxRowWidth, spacing, minInnerWidth)
+        const planFor = (maxRowWidth: number) => ({ ...this.packRows(groups, maxRowWidth, spacing, minInnerWidth), isLeveled })
         return chooseClosestToTargetAspect(candidates, planFor)
     }
 
-    private packRows(groups: LeveledNode[][], maxRowWidth: number, spacing: ContentSpacing, minInnerWidth: number): ContainerPlan {
+    /** A file whose declarations all share one level has no levels to tell apart. */
+    private stacksSeveralLevels(file: LeveledNode): boolean {
+        return this.declarationArrangement === "stacked" && new Set(file.children.map(declaration => declaration.level)).size > 1
+    }
+
+    /** In a list no row stands for a level, so each declaration names its own. */
+    listedLevelOf(node: LeveledNode): number | undefined {
+        return node.kind === "declaration" && this.declarationArrangement === "list" ? node.level : undefined
+    }
+
+    private packRows(
+        groups: LeveledNode[][],
+        maxRowWidth: number,
+        spacing: ContentSpacing,
+        minInnerWidth: number
+    ): Omit<ContainerPlan, "isLeveled"> {
         const rows = groups.flatMap((groupNodes, group) => this.wrapGroup(groupNodes, group, maxRowWidth, spacing))
         const innerWidth = Math.max(minInnerWidth, maxOf(rows.map(row => row.width)))
         const innerHeight = rows.reduce(
@@ -243,11 +271,14 @@ function declarationSize(declaration: LeveledNode, arrangement: DeclarationArran
 }
 
 function groupDeclarations(declarations: LeveledNode[], arrangement: DeclarationArrangement): LeveledNode[][] {
-    if (arrangement === "stacked") {
-        return groupByLevelFromTop(declarations)
+    switch (arrangement) {
+        case "stacked":
+            return groupByLevelFromTop(declarations)
+        case "list":
+            return groupByLevelFromTop(declarations).flatMap(level => level.map(declaration => [declaration]))
+        default:
+            return [sortedByName(declarations)]
     }
-    const byName = sortedByName(declarations)
-    return arrangement === "list" ? byName.map(declaration => [declaration]) : [byName]
 }
 
 function groupByLevelFromTop(nodes: LeveledNode[]): LeveledNode[][] {
@@ -344,6 +375,7 @@ class LayoutPlacer {
             levelPath: this.levelPaths.get(node.path) ?? NO_LEVEL_PATH,
             depth,
             ...declarationFactsOf(node),
+            ...(this.measurer.listedLevelOf(node) !== undefined && { listedLevel: node.level }),
             x,
             y,
             ...size
@@ -354,7 +386,7 @@ class LayoutPlacer {
     }
 
     private placeRows(container: LeveledNode, x: number, top: number, childDepth: number) {
-        const { rows, innerWidth, width, spacing } = this.measurer.planOf(container)
+        const { rows, innerWidth, width, spacing, isLeveled } = this.measurer.planOf(container)
         let rowTop = top
         let band: LevelBand | null = null
         rows.forEach((row, index) => {
@@ -362,7 +394,7 @@ class LayoutPlacer {
             if (previous) {
                 rowTop += gapAbove(row, previous, spacing)
             }
-            if (container.kind !== "file") {
+            if (isLeveled) {
                 band = this.bandReaching(row, previous, band, container, { x, y: rowTop, width, height: 0 })
             }
             const left = x + LAYOUT_SPACING.padding + (innerWidth - row.width) / 2
@@ -375,7 +407,9 @@ class LayoutPlacer {
     private bandReaching(row: Row, previous: Row | undefined, current: LevelBand | null, folder: LeveledNode, rectangle: Rectangle) {
         let band = current
         if (band === null || previous?.level !== row.level) {
-            const levelPath = [...this.levelPaths.get(folder.path), row.level]
+            // The levels inside a file are those of its declarations' packages, which the levels around the file say nothing of.
+            const levelsAround = folder.kind === "file" ? [] : this.levelPaths.get(folder.path)
+            const levelPath = [...levelsAround, row.level]
             band = { folderPath: folder.path, level: row.level, levelPath, isTopmost: !previous, memberPaths: [], ...rectangle }
             this.layout.bands.push(band)
         }
@@ -388,6 +422,8 @@ class LayoutPlacer {
         for (const child of row.nodes) {
             if (band) {
                 band.memberPaths.push(child.path)
+            }
+            if (band && child.kind !== "declaration") {
                 this.levelPaths.set(child.path, band.levelPath)
             }
             this.place(child, { x: nodeLeft, y }, childDepth, parentPath)

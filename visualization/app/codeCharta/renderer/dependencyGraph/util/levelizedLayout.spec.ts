@@ -206,7 +206,7 @@ describe("layoutLevelized with declarations", () => {
         expect(boxOf(boxes, "/root/b.ts").isExpanded).toBe(false)
     })
 
-    it("should lay the declarations of an opened file inside it, each knowing its file and its kind, without level bands", () => {
+    it("should lay the declarations of an opened file inside it, each knowing its file and its kind", () => {
         // Arrange
         const expanded = new Set(["/root", FILE])
 
@@ -218,7 +218,41 @@ describe("layoutLevelized with declarations", () => {
         const declarations = DECLARATIONS.map(path => boxOf(boxes, path))
         expect(declarations.every(declaration => isInside(declaration, file))).toBe(true)
         expect(declarations[0]).toMatchObject({ kind: "declaration", parentPath: FILE, declarationKind: "class", levelPath: [], depth: 2 })
-        expect(bands.map(band => band.folderPath)).toEqual(["/root"])
+        expect(bands.map(band => band.folderPath)).toEqual(["/root", FILE, FILE])
+    })
+
+    it("should tell the levels inside a stacked file apart as a folder's are, by the declarations' own levels alone", () => {
+        // Arrange
+        const nested = leveledFolder("/root", [leveledFolder("/root/app", [DECLARING_TREE.children[0]], 3)])
+        const filePath = FILE
+
+        // Act
+        const { bands, boxes } = layoutLevelized(nested, new Set(["/root", "/root/app", filePath]))
+
+        // Assert
+        const [upper, lower] = bands.filter(band => band.folderPath === filePath)
+        const file = boxOf(boxes, filePath)
+        expect([upper, lower].map(band => band.levelPath)).toEqual([[1], [0]])
+        expect([upper.isTopmost, lower.isTopmost]).toEqual([true, false])
+        expect(upper.memberPaths).toEqual([`${FILE}/Zebra`])
+        expect(lower.y - (upper.y + upper.height)).toBe(LAYOUT_SPACING.gapBetweenLevels)
+        expect([upper.x, upper.width]).toEqual([file.x, file.width])
+    })
+
+    it("should draw no levels in a file whose declarations share one, nor in a list or among chips", () => {
+        // Arrange
+        const oneLevel = leveledFolder("/root", [
+            { ...leveledFile(FILE), children: [leveledDeclaration(FILE, "A", 2), leveledDeclaration(FILE, "B", 2)] }
+        ])
+        const expanded = new Set(["/root", FILE])
+        const bandsInFile = (tree: LeveledNode, declarationArrangement: "stacked" | "list" | "chips") =>
+            layoutLevelized(tree, expanded, { declarationArrangement }).bands.filter(band => band.folderPath === FILE).length
+
+        // Act
+        const counts = [bandsInFile(oneLevel, "stacked"), bandsInFile(DECLARING_TREE, "list"), bandsInFile(DECLARING_TREE, "chips")]
+
+        // Assert
+        expect(counts).toEqual([0, 0, 0])
     })
 
     it("should stack the declarations by level by default, the higher level above", () => {
@@ -231,12 +265,13 @@ describe("layoutLevelized with declarations", () => {
         // Assert
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
         expect(zebra.y).toBeLessThan(long.y)
+        expect(zebra.listedLevel).toBeUndefined()
         expect(long.y).toBe(bee.y)
         expect(long.x).toBeLessThan(bee.x)
         expect(zebra).toMatchObject({ width: 132, height: 26 })
     })
 
-    it("should list the declarations one below the other by name", () => {
+    it("should list the declarations one below the other, the higher level first and by name within one, each naming its level", () => {
         // Arrange
         const expanded = new Set(["/root", FILE])
 
@@ -245,8 +280,10 @@ describe("layoutLevelized with declarations", () => {
 
         // Assert
         const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
-        expect([long.y, bee.y, zebra.y]).toEqual([long.y, long.y + 32, long.y + 64])
+        expect([long.y, bee.y]).toEqual([zebra.y + 32, zebra.y + 64])
         expect(new Set([zebra.x, long.x, bee.x]).size).toBe(1)
+        expect([zebra.listedLevel, long.listedLevel, bee.listedLevel]).toEqual([1, 0, 0])
+        expect(boxOf(boxes, FILE).listedLevel).toBeUndefined()
     })
 
     it("should draw the declarations as chips as wide as their names", () => {

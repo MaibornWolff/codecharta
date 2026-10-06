@@ -79,6 +79,27 @@ export function drawKindIcon(box: LayoutBox, rect: Rectangle, opacity: number): 
     ]
 }
 
+const LISTED_LEVEL = { insetPx: 7, fontSizePx: 10 }
+/** What the level takes from the room for a listed declaration's name. */
+export const LISTED_LEVEL_WIDTH_PX = 12
+
+export function drawListedLevel(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+    if (box.listedLevel === undefined) {
+        return []
+    }
+    const style = {
+        text: String(box.listedLevel),
+        x: rect.x + rect.width - LISTED_LEVEL.insetPx,
+        y: rect.y + rect.height / 2,
+        align: "right",
+        verticalAlign: "middle",
+        fontSize: LISTED_LEVEL.fontSizePx,
+        fill: QUIET_BADGE_COLOR,
+        opacity
+    }
+    return [{ type: "text", ...UNTRANSFORMED, silent: true, style }]
+}
+
 /** A closed file says how many declarations it holds once there is more than the one its name stands for. */
 export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
     if (box.isExpanded || box.declarationCount < 2) {
