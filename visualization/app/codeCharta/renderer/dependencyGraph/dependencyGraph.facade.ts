@@ -1,4 +1,4 @@
-export type { DraggedBox, RightClickedBox } from "./components/dependencyGraph/dependencyGraph.component"
+export type { DraggedBox, RightClickedBox, ViewRequest } from "./components/dependencyGraph/dependencyGraph.component"
 export { DependencyGraphComponent } from "./components/dependencyGraph/dependencyGraph.component"
 export type { BoxOffset } from "./util/boxMoves"
 export { isDraggable, movedLayout } from "./util/boxMoves"

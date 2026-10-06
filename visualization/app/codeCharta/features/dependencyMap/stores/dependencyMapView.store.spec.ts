@@ -297,4 +297,18 @@ describe("DependencyMapViewStore", () => {
         expect(store.boxOffsets().size).toBe(0)
         expect(store.fitRequest()).toBe(1)
     })
+
+    it("should ask anew for every request to bring boxes into view, also for the same boxes", () => {
+        // Arrange
+        const paths = ["/root/a.ts/Creature"]
+
+        // Act
+        store.bringIntoView(paths)
+        const first = store.viewRequest()
+        store.bringIntoView(paths)
+
+        // Assert
+        expect(first).toEqual({ id: 1, paths })
+        expect(store.viewRequest()).toEqual({ id: 2, paths })
+    })
 })

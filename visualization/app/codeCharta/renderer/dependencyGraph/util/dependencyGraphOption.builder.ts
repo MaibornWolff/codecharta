@@ -250,9 +250,29 @@ export function fitWindowOf(layout: DependencyGraphLayout, viewport: Viewport): 
     return windowAround(root ?? { x: 0, y: 0, width: layout.width, height: layout.height }, viewport, FIT_SHARE)
 }
 
+/** The part of the graph the reader asked to see, at no more than its natural size plus a half: a single
+ * declaration filling the screen would lose the boxes around it that say where it is. */
+const FOCUS = { share: 0.8, maxPixelsPerUnit: 1.5 }
+
+/** The window to show so that the boxes of the given paths are in view: the one shown already when it holds them
+ * all, so nothing moves without need, or else one around them. Null when none of them is on screen. */
+export function windowHolding(paths: readonly string[], layout: DependencyGraphLayout, viewport: Viewport, shownWindow: AxisWindow | null) {
+    const wanted = new Set(paths)
+    const boxes = layout.boxes.filter(box => wanted.has(box.path))
+    if (boxes.length === 0) {
+        return null
+    }
+    const area = enclosingRectangle(boxes)
+    return shownWindow && holds(shownWindow, area) ? shownWindow : windowAround(area, viewport, FOCUS.share, FOCUS.maxPixelsPerUnit)
+}
+
+function holds({ x, y }: AxisWindow, area: Rectangle): boolean {
+    return x[0] <= area.x && area.x + area.width <= x[1] && y[0] <= area.y && area.y + area.height <= y[1]
+}
+
 /** Both axes get the same number of pixels per layout unit, so the graph is never squashed. */
-function windowAround(area: Rectangle, viewport: Viewport, share: number): AxisWindow {
-    const pixelsPerUnit = Math.min(viewport.width / area.width, viewport.height / area.height) * share
+function windowAround(area: Rectangle, viewport: Viewport, share: number, maxPixelsPerUnit = Number.POSITIVE_INFINITY): AxisWindow {
+    const pixelsPerUnit = Math.min(Math.min(viewport.width / area.width, viewport.height / area.height) * share, maxPixelsPerUnit)
     if (!(Number.isFinite(pixelsPerUnit) && pixelsPerUnit > 0)) {
         return windowOf(area)
     }

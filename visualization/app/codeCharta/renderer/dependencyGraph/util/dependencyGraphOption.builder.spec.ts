@@ -1,5 +1,5 @@
 import { DEPENDENCY_EDGE_TYPES } from "../../../model/dependencyGraph.model"
-import { AxisWindow, buildDependencyGraphOption, fitWindowOf, windowResizedTo } from "./dependencyGraphOption.builder"
+import { AxisWindow, buildDependencyGraphOption, fitWindowOf, windowHolding, windowResizedTo } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
 import { aBand, aBox, anEdge, DEFAULT_LOOKS, identityPixels } from "./dependencyGraphTestData"
@@ -524,6 +524,57 @@ describe("buildDependencyGraphOption", () => {
 
         // Assert
         expect([xAxis.min, xAxis.max, yAxis.min, yAxis.max].every(Number.isFinite)).toBe(true)
+    })
+})
+
+describe("windowHolding", () => {
+    const layout = { boxes: [root, view, model, util], bands: [], width: 400, height: 200 }
+    const viewport = { width: 800, height: 400 }
+
+    it("should keep the window shown when it holds the boxes asked for already", () => {
+        // Arrange
+        const shownWindow: AxisWindow = { x: [0, 400], y: [0, 200] }
+
+        // Act
+        const window = windowHolding([view.path, model.path], layout, viewport, shownWindow)
+
+        // Assert
+        expect(window).toBe(shownWindow)
+    })
+
+    it("should centre on the boxes asked for when one of them lies outside the window shown, no larger than one and a half times their size", () => {
+        // Arrange
+        const lookingElsewhere: AxisWindow = { x: [1000, 1400], y: [1000, 1200] }
+
+        // Act
+        const window = windowHolding([view.path], layout, viewport, lookingElsewhere)
+
+        // Assert
+        const centre = [(window.x[0] + window.x[1]) / 2, (window.y[0] + window.y[1]) / 2]
+        expect(centre).toEqual([view.x + view.width / 2, view.y + view.height / 2])
+        expect(800 / (window.x[1] - window.x[0])).toBeCloseTo(1.5)
+    })
+
+    it("should zoom out as far as it takes to hold boxes lying far apart, with room around them", () => {
+        // Arrange
+        const far = aBox("/root/far.ts", { x: 3000, y: 44 })
+        const wide = { ...layout, boxes: [...layout.boxes, far] }
+
+        // Act
+        const window = windowHolding([view.path, far.path], wide, viewport, null)
+
+        // Assert
+        expect(window.x[0]).toBeLessThan(view.x)
+        expect(window.x[1]).toBeGreaterThan(far.x + far.width)
+        expect((far.x + far.width - view.x) / (window.x[1] - window.x[0])).toBeCloseTo(0.8)
+    })
+
+    it("should have no window for boxes that are not on screen", () => {
+        // Act
+        const window = windowHolding(["/root/hidden.ts"], layout, viewport, null)
+
+        // Assert
+        expect(window).toBeNull()
     })
 })
 

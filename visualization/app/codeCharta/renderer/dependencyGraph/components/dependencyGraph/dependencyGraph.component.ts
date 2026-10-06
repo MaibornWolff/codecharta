@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, OnDestroy, output, viewChild } from "@angular/core"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
-import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport } from "../../util/dependencyGraphOption.builder"
+import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport, windowHolding } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
 import { BoxKind } from "../../util/leveledTree"
@@ -11,6 +11,12 @@ export interface RightClickedBox {
     path: string
     clientX: number
     clientY: number
+}
+
+/** A request to bring boxes into view; a new id asks again for the same boxes. */
+export interface ViewRequest {
+    id: number
+    paths: readonly string[]
 }
 
 export interface DraggedBox {
@@ -35,6 +41,8 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly graphIdentity = input.required<string>()
     /** Raising this counter fits the whole graph into view with the next drawing. */
     readonly fitRequest = input(0)
+    /** The boxes to bring into view with the next drawing, unless they are in view already. */
+    readonly viewRequest = input<ViewRequest | null>(null)
     /** Whether pressing this box drags it rather than the graph. */
     readonly canDragBox = input<(path: string) => boolean>(NOTHING_DRAGGABLE)
     /** The box painted on top at a layout point, which takes the clicks on an edge lying over it. */
@@ -53,6 +61,7 @@ export class DependencyGraphComponent implements OnDestroy {
     private readonly chartContainer = viewChild.required<ElementRef<HTMLElement>>("chartContainer")
     private fittedGraphIdentity: string | null = null
     private handledFitRequest = 0
+    private handledViewRequest: number | null = null
 
     private readonly chartHost = new DependencyGraphHost(inject(DependencyGraphChartRegistry), {
         onBoxClicked: path => this.boxClicked.emit(path),
@@ -102,7 +111,18 @@ export class DependencyGraphComponent implements OnDestroy {
 
     private windowToShow(scene: DependencyGraphScene, viewport: Viewport): AxisWindow {
         const shownWindow = this.consumeDueFit() ? null : this.chartHost.shownWindowFor(viewport)
-        return shownWindow ?? fitWindowOf(scene.layout, viewport)
+        const asked = this.consumeDueViewRequest()
+        const windowHoldingTheAsked = asked && windowHolding(asked, scene.layout, viewport, shownWindow)
+        return windowHoldingTheAsked ?? shownWindow ?? fitWindowOf(scene.layout, viewport)
+    }
+
+    private consumeDueViewRequest(): readonly string[] | null {
+        const request = this.viewRequest()
+        if (request === null || request.id === this.handledViewRequest) {
+            return null
+        }
+        this.handledViewRequest = request.id
+        return request.paths
     }
 
     private consumeDueFit(): boolean {

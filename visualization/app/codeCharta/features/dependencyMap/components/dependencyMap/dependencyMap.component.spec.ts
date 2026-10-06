@@ -576,6 +576,7 @@ describe("DependencyMapComponent", () => {
                 // Assert
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: NODE }))
                 expect(drawnBoxPaths()).toContain(`${NODE}/Node`)
+                expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${NODE}/Node`])
                 expect(panelTitle()).toBe("Node")
                 expect(screen.getByTestId("dependency-panel-subtitle").textContent).toBe("Class")
             })
@@ -612,6 +613,7 @@ describe("DependencyMapComponent", () => {
                 // Assert
                 expect(drawnBoxPaths()).toEqual(expect.arrayContaining([`${VIEW}/View`, `${NODE}/Node`]))
                 expect(edgeOpacities()).toMatchObject({ [`${VIEW}/View|${NODE}/Node`]: 1, [`${NODE}/Node|${VIEW}/View`]: 1 })
+                expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${VIEW}/View`, `${NODE}/Node`])
             })
 
             it("should bring the cycles into view when a cycle badge is clicked", async () => {

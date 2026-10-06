@@ -275,6 +275,31 @@ describe("DependencyGraphComponent", () => {
         expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
     })
 
+    it("should move to the boxes it is asked to bring into view, once per request, and stay put when they are in view already", async () => {
+        // Arrange
+        const far = aBox("/root/far.ts", { x: 5000, y: 5000 })
+        const inView = aBox("/root/inView.ts", { x: 200, y: 200 })
+        const scene = { ...SCENE, layout: { ...SCENE.layout, boxes: [...SCENE.layout.boxes, far, inView] } }
+        const { fixture } = await render(DependencyGraphComponent, { inputs: { scene, graphIdentity: GRAPH_IDENTITY } })
+        stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
+        const centreOf = ({ x, y }: AxisWindow) => [(x[0] + x[1]) / 2, (y[0] + y[1]) / 2]
+
+        // Act
+        fixture.componentRef.setInput("viewRequest", { id: 1, paths: [far.path] })
+        fixture.detectChanges()
+        const onRequest = shownWindowOf(lastDrawnOption())
+        fixture.componentRef.setInput("scene", { ...scene, hoveredPath: far.path })
+        fixture.detectChanges()
+        const afterAnotherDrawing = shownWindowOf(lastDrawnOption())
+        fixture.componentRef.setInput("viewRequest", { id: 2, paths: [inView.path] })
+        fixture.detectChanges()
+
+        // Assert
+        expect(centreOf(onRequest)).toEqual([5080, 5020])
+        expect(afterAnotherDrawing).toEqual(PANNED_AND_ZOOMED_WINDOW)
+        expect(shownWindowOf(lastDrawnOption())).toEqual(PANNED_AND_ZOOMED_WINDOW)
+    })
+
     it("should report the end of a drag", async () => {
         // Arrange
         const boxDragEnded = jest.fn()

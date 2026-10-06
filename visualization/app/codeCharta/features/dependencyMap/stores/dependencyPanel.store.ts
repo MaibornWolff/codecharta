@@ -108,6 +108,7 @@ export class DependencyPanelStore {
     goTo(ref: PanelRef): void {
         this.viewStore.reveal(ref.path)
         this.select(ref.path)
+        this.bringIntoView([ref.path])
     }
 
     pointAt(leafEdges: readonly DependencyLeafEdge[] | null): void {
@@ -137,9 +138,16 @@ export class DependencyPanelStore {
         this.pointAt(null)
     }
 
+    /** Opens what hides the two declarations of each dependency and moves the graph so that they are in view. */
     private revealEndsOf(leafEdges: readonly DependencyLeafEdge[]): void {
-        for (const path of new Set(leafEdges.flatMap(leafEdge => [fromPathOf(leafEdge), toPathOf(leafEdge)]))) {
+        const ends = [...new Set(leafEdges.flatMap(leafEdge => [fromPathOf(leafEdge), toPathOf(leafEdge)]))]
+        for (const path of ends) {
             this.viewStore.reveal(path)
         }
+        this.bringIntoView(ends)
+    }
+
+    private bringIntoView(paths: readonly string[]): void {
+        this.viewStore.bringIntoView(paths.flatMap(path => this.graphModel.boxStandingFor(path) ?? []))
     }
 }
