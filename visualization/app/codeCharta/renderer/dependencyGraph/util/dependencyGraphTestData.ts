@@ -5,7 +5,7 @@ export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBo
     return {
         path,
         name: path.split("/").pop(),
-        isFolder: false,
+        kind: "file",
         isExpanded: false,
         level: 0,
         levelPath: [0],

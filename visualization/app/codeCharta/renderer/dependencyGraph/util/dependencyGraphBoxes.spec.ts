@@ -34,7 +34,7 @@ describe("dependencyGraphBoxes", () => {
 
         it("should leave an open folder's name to its title, which is painted over the edges", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+            const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
 
             // Act
             const children = childrenOf(drawBox(box, look("none"), identityPixels))
@@ -45,7 +45,7 @@ describe("dependencyGraphBoxes", () => {
 
         it("should centre a closed folder's name across its whole box", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true, x: 0 })
+            const box = aBox("/root/app", { kind: "folder", x: 0 })
 
             // Act
             const [, label] = childrenOf(drawBox(box, look("none"), identityPixels))
@@ -56,7 +56,7 @@ describe("dependencyGraphBoxes", () => {
 
         it("should leave out the name when the box is too small on screen", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true })
+            const box = aBox("/root/app", { kind: "folder" })
             const zoomedOut = ([x, y]: [number, number]) => [x / 4, y / 4]
 
             // Act
@@ -90,7 +90,7 @@ describe("dependencyGraphBoxes", () => {
 
         it("should let what lies behind a see-through box show through its fill", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true, isExpanded: true, depth: 1, width: 400, height: 200 })
+            const box = aBox("/root/app", { kind: "folder", isExpanded: true, depth: 1, width: 400, height: 200 })
 
             // Act
             const [rect] = childrenOf(drawBox(box, look("none", true), identityPixels))
@@ -125,7 +125,7 @@ describe("dependencyGraphBoxes", () => {
     describe("drawFolderTitle", () => {
         it("should name an open folder in its header", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+            const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
 
             // Act
             const children = childrenOf(drawFolderTitle(box, look("none"), identityPixels))
@@ -137,7 +137,7 @@ describe("dependencyGraphBoxes", () => {
 
         it("should fade the name of a folder the search missed", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 400, height: 200 })
+            const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
 
             // Act
             const [title] = childrenOf(drawFolderTitle(box, look("none", false, true), identityPixels))
@@ -148,7 +148,7 @@ describe("dependencyGraphBoxes", () => {
 
         it("should draw no name for a folder too narrow on screen", () => {
             // Arrange
-            const box = aBox("/root/app", { isFolder: true, isExpanded: true, width: 40, height: 200 })
+            const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 40, height: 200 })
 
             // Act
             const children = childrenOf(drawFolderTitle(box, look("none"), identityPixels))

@@ -3,11 +3,11 @@ import { projectEdges, visibleRepresentatives } from "./edgeProjection"
 import { LeveledNode } from "./leveledTree"
 
 function leveledFile(path: string): LeveledNode {
-    return { path, name: path.split("/").pop(), level: 0, isFolder: false, children: [] }
+    return { path, name: path.split("/").pop(), level: 0, kind: "file", children: [] }
 }
 
 function leveledFolder(path: string, children: LeveledNode[]): LeveledNode {
-    return { path, name: path.split("/").pop(), level: 0, isFolder: true, children }
+    return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
 }
 
 function edge(fromNodeName: string, toNodeName: string, extra: Partial<Edge> = {}): Edge {

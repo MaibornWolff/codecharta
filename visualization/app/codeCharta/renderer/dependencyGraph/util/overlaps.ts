@@ -51,7 +51,7 @@ export function bandSeparator(band: LevelBand): BandSeparator {
 function seeThroughFolders(boxes: PaintedBox[], grid: PaintedBoxGrid): Set<string> {
     const seeThroughPaths = new Set<string>()
     for (const upper of boxes) {
-        if (upper.box.isFolder && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower))) {
+        if (upper.box.kind === "folder" && grid.itemsNear(upper.box).some(lower => isPaintedOverUnrelated(upper, lower))) {
             seeThroughPaths.add(upper.box.path)
         }
     }

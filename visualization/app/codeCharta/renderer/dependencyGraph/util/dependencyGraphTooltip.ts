@@ -28,7 +28,7 @@ function describeBox(box: LayoutBox): string {
     if (box.levelPath.length > 0) {
         rows.push(`Level ${describeLevelPath(box.levelPath)}`)
     }
-    if (box.isFolder) {
+    if (box.kind === "folder") {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
     }
     return rows.join("<br/>")
