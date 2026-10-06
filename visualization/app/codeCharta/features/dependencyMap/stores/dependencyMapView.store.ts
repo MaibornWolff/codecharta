@@ -1,6 +1,12 @@
 import { Injectable, inject, signal, untracked } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
-import { BoxOffset, boxPathOf, collapsedFirstLook, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
+import {
+    BoxOffset,
+    boxPathOf,
+    collapsedFirstLook,
+    containerPathsOf,
+    LeveledNode
+} from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 
 /** Something only the graph can select: a declaration is no node of the map, so the shared selection holds its
@@ -140,10 +146,12 @@ export class DependencyMapViewStore {
     }
 
     private openFoldersHolding(paths: string[]): void {
-        this.openedFolders.update(opened => new Set([...opened, ...paths.flatMap(ancestorsOf)]))
+        const boxesAround = (path: string) => (this.adoptedTree && containerPathsOf(this.adoptedTree, path)) ?? []
+        this.openedFolders.update(opened => new Set([...opened, ...paths.flatMap(ancestorsOf), ...paths.flatMap(boxesAround)]))
     }
 }
 
+/** The folders around a node, read from its path: all that is known of it before the tree it lies in is. */
 function ancestorsOf(path: string): string[] {
     const segments = path.split("/")
     return segments.slice(2).map((_, index) => segments.slice(0, index + 2).join("/"))

@@ -1,5 +1,5 @@
 import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
-import { boxPathOf, buildLeveledTree, collapsedFirstLook, LeveledNode, levelPathOf } from "./leveledTree"
+import { boxPathOf, buildLeveledTree, collapsedFirstLook, containerPathsOf, LeveledNode, levelPathOf } from "./leveledTree"
 
 function file(path: string): CodeMapNode {
     return { name: path.split("/").pop(), path, type: NodeType.FILE }
@@ -202,6 +202,27 @@ describe("leveledTree", () => {
 
             // Assert
             expect([...opened]).toEqual(["/root", "/root/src", "/root/src/main"])
+        })
+    })
+
+    describe("containerPathsOf", () => {
+        const chain = { ...leveledFolder("/root/src/main", [leveledFile("/root/src/main/a.ts")]), foldedPaths: ["/root/src"] }
+        const tree = leveledFolder("/root", [chain, leveledFile("/root/b.ts")])
+
+        it("should name the boxes around a node, outermost first, a chain box once", () => {
+            // Act
+            const containers = containerPathsOf(tree, "/root/src/main/a.ts")
+
+            // Assert
+            expect(containers).toEqual(["/root", "/root/src/main"])
+        })
+
+        it("should name the boxes around a folder folded into a chain box, none around the root, and null for an unknown path", () => {
+            // Act
+            const containers = ["/root/src", "/root", "/root/unknown.ts"].map(path => containerPathsOf(tree, path))
+
+            // Assert
+            expect(containers).toEqual([["/root"], [], null])
         })
     })
 })

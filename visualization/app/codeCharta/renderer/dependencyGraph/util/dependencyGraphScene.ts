@@ -6,7 +6,7 @@ import {
     DependencyEdgeWidth,
     LineStyleMeaning
 } from "../../../model/dependencyGraph.model"
-import { isWithin } from "./boxPaths"
+import { IsInside } from "./boxNesting"
 import { CycleMarks } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
@@ -44,8 +44,8 @@ export type ToPixels = (layoutPoint: Point) => number[]
 
 /** A hovered box's edges are the ones crossing its border. An open folder holds edges between its own
  * children too, and the root holds every edge; showing those would light up the whole graph. */
-export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null): boolean {
-    return hoveredPath !== null && isWithin(edge.fromPath, hoveredPath) !== isWithin(edge.toPath, hoveredPath)
+export function isEdgeOfHovered(edge: GraphEdge, hoveredPath: string | null, isInside: IsInside): boolean {
+    return hoveredPath !== null && isInside(edge.fromPath, hoveredPath) !== isInside(edge.toPath, hoveredPath)
 }
 
 /** Drawn whatever its type, and never dimmed. */
@@ -59,15 +59,22 @@ export function boxesByPath(layout: DependencyGraphLayout): Map<string, LayoutBo
     return new Map(layout.boxes.map(box => [box.path, box]))
 }
 
-/** A box counts as found when it holds something the search found, or lies in a folder it found. */
-export function searchMatcher(searchedPaths: ReadonlySet<string> | null): (boxPath: string) => boolean {
+/** A box counts as found when it holds something the search found, or lies in a folder it found. What a box
+ * holds is read from the layout, what folder a node lies in from its path. */
+export function searchMatcher(searchedPaths: ReadonlySet<string> | null, boxes: readonly LayoutBox[]): (boxPath: string) => boolean {
     if (searchedPaths === null) {
         return () => true
     }
+    const boxAround = new Map(boxes.map(box => [box.path, box.parentPath]))
     const foundOrHoldingFound = new Set<string>()
     for (const path of searchedPaths) {
         for (let ancestor = path; ancestor !== "" && !foundOrHoldingFound.has(ancestor); ancestor = parentOf(ancestor)) {
             foundOrHoldingFound.add(ancestor)
+        }
+    }
+    for (const path of searchedPaths) {
+        for (let around = boxAround.get(path); around != null && !foundOrHoldingFound.has(around); around = boxAround.get(around)) {
+            foundOrHoldingFound.add(around)
         }
     }
     return boxPath => foundOrHoldingFound.has(boxPath) || ancestorsOf(boxPath).some(ancestor => searchedPaths.has(ancestor))

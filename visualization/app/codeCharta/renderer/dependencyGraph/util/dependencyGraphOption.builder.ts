@@ -1,4 +1,5 @@
 import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
+import { nestingOf } from "./boxNesting"
 import { minOf } from "./collections"
 import { BoxLook, drawBox, drawFolderTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { drawEdge } from "./dependencyGraphEdges"
@@ -41,8 +42,10 @@ interface DrawableGraph {
 
 export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport: Viewport, shownWindow: AxisWindow) {
     const byPath = boxesByPath(scene.layout)
-    const shownEdges = edgesToDraw(scene)
-    const graph = drawableGraph(scene, shownEdges, byPath)
+    const isInside = nestingOf(scene.layout.boxes)
+    const isOfHovered: EdgeTest = edge => isEdgeOfHovered(edge, scene.hoveredPath, isInside)
+    const shownEdges = edgesToDraw(scene, isOfHovered)
+    const graph = drawableGraph(scene, shownEdges, { byPath, isOfHovered })
     return {
         animation: false,
         aria: { enabled: true, label: { description: describeGraph(scene.layout, shownEdges) } },
@@ -55,14 +58,22 @@ export function buildDependencyGraphOption(scene: DependencyGraphScene, viewport
     }
 }
 
-function drawableGraph(scene: DependencyGraphScene, shownEdges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>): DrawableGraph {
+type EdgeTest = (edge: GraphEdge) => boolean
+
+interface EdgeContext {
+    byPath: ReadonlyMap<string, LayoutBox>
+    isOfHovered: EdgeTest
+}
+
+function drawableGraph(scene: DependencyGraphScene, shownEdges: GraphEdge[], context: EdgeContext): DrawableGraph {
     const painted = paintOrder(scene.layout, scene.raisedPaths)
     const overlaps = scene.raisedPaths.length > 0 ? findOverlaps(painted) : NO_OVERLAPS
-    const isFound = searchMatcher(scene.searchedPaths)
+    const isFound = searchMatcher(scene.searchedPaths, scene.layout.boxes)
     const lookOfBox = (box: LayoutBox) => lookOf(box, scene, overlaps, isFound(box.path))
     const { underEdges, overEdges } = aroundEdges(painted)
+    const isDimmed = dimmerOf(scene, shownEdges, { isFound, isOfHovered: context.isOfHovered })
     return {
-        items: [...underEdges, ...edgeItems(scene, shownEdges, byPath, isFound), ...overEdges],
+        items: [...underEdges, ...edgeItems(scene, shownEdges, context.byPath, isDimmed), ...overEdges],
         draw: (item, toPixels) => drawItem(item, lookOfBox, overlaps, toPixels)
     }
 }
@@ -83,10 +94,9 @@ function edgeItems(
     scene: DependencyGraphScene,
     shownEdges: GraphEdge[],
     byPath: ReadonlyMap<string, LayoutBox>,
-    isFound: (boxPath: string) => boolean
+    isDimmed: EdgeTest
 ): EdgeItem[] {
     const routes = routeEdges(shownEdges, byPath, scene.edgeStyle, scene.isAnchoredAtSideMiddle)
-    const isDimmed = dimmerOf(scene, shownEdges, isFound)
     const lightestWeight = minOf(shownEdges.map(edge => edge.weight))
     return shownEdges.map((edge, index) => ({
         kind: "edge",
@@ -104,14 +114,19 @@ function edgeItems(
 
 /** The edges the reader points at stand out against all others; without any, those of the hovered box do, and
  * without a hover, those a search found. */
-function dimmerOf(scene: DependencyGraphScene, shownEdges: GraphEdge[], isFound: (boxPath: string) => boolean) {
+function dimmerOf(scene: DependencyGraphScene, shownEdges: GraphEdge[], { isFound, isOfHovered }: Dimming): EdgeTest {
     if (scene.highlightedEdgeIds.size > 0) {
-        return (edge: GraphEdge) => !isEdgeInFocus(edge, scene)
+        return edge => !isEdgeInFocus(edge, scene)
     }
-    if (shownEdges.some(edge => isEdgeOfHovered(edge, scene.hoveredPath))) {
-        return (edge: GraphEdge) => !isEdgeOfHovered(edge, scene.hoveredPath) && !isEdgeInFocus(edge, scene)
+    if (shownEdges.some(isOfHovered)) {
+        return edge => !isOfHovered(edge) && !isEdgeInFocus(edge, scene)
     }
-    return (edge: GraphEdge) => !isFound(edge.fromPath) && !isFound(edge.toPath) && !isEdgeInFocus(edge, scene)
+    return edge => !isFound(edge.fromPath) && !isFound(edge.toPath) && !isEdgeInFocus(edge, scene)
+}
+
+interface Dimming {
+    isFound: (boxPath: string) => boolean
+    isOfHovered: EdgeTest
 }
 
 /** Painted in rising order: edges often share a corridor, and one red edge painted under fifteen grey ones
@@ -124,12 +139,11 @@ const PAINT_RANK: Record<DependencyEdgeType, number> = {
 }
 const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
 
-function edgesToDraw(scene: DependencyGraphScene): GraphEdge[] {
-    const { edges, shownEdgeTypes, hoveredPath } = scene
-    const isRaised = (edge: GraphEdge) => isEdgeOfHovered(edge, hoveredPath) || isEdgeInFocus(edge, scene)
+function edgesToDraw(scene: DependencyGraphScene, isOfHovered: EdgeTest): GraphEdge[] {
+    const isRaised: EdgeTest = edge => isOfHovered(edge) || isEdgeInFocus(edge, scene)
     const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (isRaised(edge) ? HOVERED_PAINT_RANK : 0)
-    return edges
-        .filter(edge => shownEdgeTypes.includes(edge.type) || isRaised(edge))
+    return scene.edges
+        .filter(edge => scene.shownEdgeTypes.includes(edge.type) || isRaised(edge))
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
