@@ -25,6 +25,7 @@ export interface CCFile {
             markedPackages: Array<MarkedPackage>
             domainWords: DomainLensData
             dependencyLevels: DependencyLevelData
+            dependencyDeclarations: DependencyDeclarationData
         }
     }
     fileMeta: FileMeta
@@ -123,6 +124,38 @@ export interface DependencyLensSource {
 
 /** A node's levelization depth in the dependency graph, keyed by node path. */
 export type DependencyLevelData = Record<string, number>
+
+export interface DependencyNamespace {
+    parent?: string
+    level: number
+}
+
+export interface DependencyLeaf {
+    name: string
+    kind: string
+    namespace?: string
+    level?: number
+}
+
+export interface DependencyLeafEdge {
+    fromNodeName: string
+    fromLeaf: string
+    toNodeName: string
+    toLeaf: string
+    attributes: KeyValuePair
+    usage: string[]
+    isCyclic?: boolean
+    isPointingUpwards?: boolean
+}
+
+/** The dependency graph as the code declares it: packages and declarations rather than folders and files. The
+ * leaves are keyed by the path of their file, then by a key unique within it. Every table is optional, so an
+ * empty object is a file without the layer. */
+export interface DependencyDeclarationData {
+    namespaces?: Record<string, DependencyNamespace>
+    leaves?: Record<string, Record<string, DependencyLeaf>>
+    leafEdges?: DependencyLeafEdge[]
+}
 
 export type DomainLensData = Record<string, DomainWord[]>
 

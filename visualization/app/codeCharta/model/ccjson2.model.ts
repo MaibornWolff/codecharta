@@ -56,7 +56,7 @@ interface MetricsLensData {
     attributeTypes: Record<string, AttributeTypeValue>
 }
 
-interface DependencyLensData {
+export interface DependencyLensData {
     edges: DependencyEdge[]
     attributeTypes: Record<string, AttributeTypeValue>
     attributeDescriptors: AttributeDescriptors
@@ -76,7 +76,7 @@ interface DependencyLensNamespace {
     level: number
 }
 
-interface DependencyLensLeaf {
+export interface DependencyLensLeaf {
     name?: string
     kind: string
     language?: string

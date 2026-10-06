@@ -121,6 +121,91 @@ describe("mapCcJson2ToCCFile", () => {
         expect(result.settings.fileSettings.dependencyLevels).toEqual({})
     })
 
+    describe("declarations of the dependency lens", () => {
+        beforeEach(() => {
+            file.lenses.dependency.namespaces = { com: { level: 0 }, "com.game": { parent: "com", level: 1 } }
+            file.lenses.dependency.leaves = {
+                "/root/big.ts": { "com.game.Big": { name: "Big", kind: "class", language: "java", namespace: "com.game", level: 2 } },
+                "/root/Parent/small.ts": { small: { kind: "function" } },
+                "missing-id": { ghost: { kind: "class" } }
+            }
+            file.lenses.dependency.leafEdges = [
+                {
+                    fromId: "/root/big.ts",
+                    fromLeaf: "com.game.Big",
+                    toId: "/root/Parent/small.ts",
+                    toLeaf: "small",
+                    attributes: { dependencies: 2 },
+                    usage: ["inheritance", "usage"],
+                    isCyclic: true,
+                    isPointingUpwards: true
+                },
+                { fromId: "/root/big.ts", fromLeaf: "com.game.Big", toId: "/root/big.ts", toLeaf: "com.game.Big" },
+                { fromId: "/root/big.ts", fromLeaf: "com.game.Big", toId: "missing-id", toLeaf: "ghost" }
+            ]
+        })
+
+        it("should keep the namespaces and re-key the leaves from node id to node path, named by their key unless they carry a name", () => {
+            // Arrange
+            jest.spyOn(console, "warn").mockImplementation(() => {})
+
+            // Act
+            const { dependencyDeclarations } = mapCcJson2ToCCFile(file, nameDataPair(file)).settings.fileSettings
+
+            // Assert
+            expect(dependencyDeclarations.namespaces).toEqual({ com: { level: 0 }, "com.game": { parent: "com", level: 1 } })
+            expect(dependencyDeclarations.leaves).toEqual({
+                "/root/big.ts": { "com.game.Big": { name: "Big", kind: "class", namespace: "com.game", level: 2 } },
+                "/root/Parent/small.ts": { small: { name: "small", kind: "function" } }
+            })
+            expect(console.warn).toHaveBeenCalledWith("Dropping dependency-lens declarations with unresolved node id: missing-id")
+        })
+
+        it("should resolve the ends of the leaf edges and drop one with an unresolved end", () => {
+            // Arrange
+            jest.spyOn(console, "warn").mockImplementation(() => {})
+
+            // Act
+            const { leafEdges } = mapCcJson2ToCCFile(file, nameDataPair(file)).settings.fileSettings.dependencyDeclarations
+
+            // Assert
+            expect(leafEdges).toEqual([
+                {
+                    fromNodeName: "/root/big.ts",
+                    fromLeaf: "com.game.Big",
+                    toNodeName: "/root/Parent/small.ts",
+                    toLeaf: "small",
+                    attributes: { dependencies: 2 },
+                    usage: ["inheritance", "usage"],
+                    isCyclic: true,
+                    isPointingUpwards: true
+                },
+                {
+                    fromNodeName: "/root/big.ts",
+                    fromLeaf: "com.game.Big",
+                    toNodeName: "/root/big.ts",
+                    toLeaf: "com.game.Big",
+                    attributes: {},
+                    usage: [],
+                    isCyclic: undefined,
+                    isPointingUpwards: undefined
+                }
+            ])
+            expect(console.warn).toHaveBeenCalledWith("Dropping declaration edge with unresolved endpoint(s): /root/big.ts -> missing-id")
+        })
+
+        it("should leave a file without the layer without its tables", () => {
+            // Arrange
+            const plain = clone(TEST_FILE_CONTENT_CC_JSON_2)
+
+            // Act
+            const { dependencyDeclarations } = mapCcJson2ToCCFile(plain, nameDataPair(plain)).settings.fileSettings
+
+            // Assert
+            expect(dependencyDeclarations).toEqual({})
+        })
+    })
+
     it("should re-key domain words from node id to node path", () => {
         // Arrange
         ;(file.lenses as Record<string, unknown>).domain = {

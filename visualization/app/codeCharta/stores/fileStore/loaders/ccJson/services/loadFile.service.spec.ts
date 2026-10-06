@@ -125,7 +125,8 @@ describe("loadFileService", () => {
                     edges: [],
                     markedPackages: [],
                     domainWords: {},
-                    dependencyLevels: {}
+                    dependencyLevels: {},
+                    dependencyDeclarations: {}
                 }
             }
         }

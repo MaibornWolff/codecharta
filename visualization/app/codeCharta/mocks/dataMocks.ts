@@ -84,7 +84,8 @@ export const DEFAULT_SETTINGS = {
         edges: VALID_EDGES,
         markedPackages: [],
         domainWords: {},
-        dependencyLevels: {}
+        dependencyLevels: {},
+        dependencyDeclarations: {}
     }
 }
 export const DEFAULT_CC_FILE_MOCK: CCFile = {
@@ -1081,7 +1082,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_DYNAMIC_ONES_MAP_FILE: CCFile = {
             edges: [],
             markedPackages: [],
             domainWords: {},
-            dependencyLevels: {}
+            dependencyLevels: {},
+            dependencyDeclarations: {}
         }
     }
 }
@@ -1185,7 +1187,8 @@ export const FIXED_FOLDERS_NESTED_MIXED_WITH_A_FILE_MAP_FILE: CCFile = {
             edges: [],
             markedPackages: [],
             domainWords: {},
-            dependencyLevels: {}
+            dependencyLevels: {},
+            dependencyDeclarations: {}
         }
     }
 }
