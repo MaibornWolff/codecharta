@@ -134,6 +134,10 @@ export class DependencyMapComponent {
         }
     }
 
+    protected bringIntoView(path: string): void {
+        this.viewStore.bringIntoView([path])
+    }
+
     protected hover(path: string | null): void {
         this.viewStore.hoverInGraph(path)
         this.writeStore.hoverNode(path === null ? null : this.graphModel.nodePathOf(path))

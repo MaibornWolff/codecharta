@@ -3,8 +3,7 @@ import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChar
 import { AxisWindow, buildDependencyGraphOption, fitWindowOf, Viewport, windowHolding } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { Point } from "../../util/geometry"
-import { BoxKind } from "../../util/leveledTree"
-import { canBeOpened, LayoutBox } from "../../util/levelizedLayout"
+import { DependencyGraphBoxListComponent } from "../dependencyGraphBoxList/dependencyGraphBoxList.component"
 import { DependencyGraphHost } from "./dependencyGraphHost"
 
 export interface RightClickedBox {
@@ -25,13 +24,13 @@ export interface DraggedBox {
     deltaY: number
 }
 
-const BOX_KIND_NAMES: Record<BoxKind, string> = { folder: "Folder", package: "Package", file: "File", declaration: "Declaration" }
 const NOTHING_DRAGGABLE = () => false
 const NO_BOX_ANYWHERE = () => null
 
 @Component({
     selector: "cc-dependency-graph",
     templateUrl: "./dependencyGraph.component.html",
+    imports: [DependencyGraphBoxListComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "relative block h-full w-full" }
 })
@@ -53,6 +52,8 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly cycleBadgeClicked = output<string>()
     readonly edgeClicked = output<string>()
     readonly boxHovered = output<string | null>()
+    /** A box the keyboard reached, which may lie outside the part of the graph in view. */
+    readonly boxFocused = output<string>()
     readonly boxRightClicked = output<RightClickedBox>()
     readonly rendered = output<void>()
     readonly boxDragged = output<DraggedBox>()
@@ -86,17 +87,10 @@ export class DependencyGraphComponent implements OnDestroy {
         this.chartHost.dispose()
     }
 
-    protected readonly canBeOpened = canBeOpened
-
-    protected labelOf(box: LayoutBox): string {
-        return `${BOX_KIND_NAMES[box.kind]} ${box.name}`
-    }
-
-    /** A button takes the space key as a click, which selects; here it opens and closes instead. */
-    protected toggleFromKeyboard(event: Event, box: LayoutBox): void {
-        event.preventDefault()
-        if (canBeOpened(box)) {
-            this.boxToggled.emit(box.path)
+    protected focusBox(path: string | null): void {
+        this.boxHovered.emit(path)
+        if (path !== null) {
+            this.boxFocused.emit(path)
         }
     }
 

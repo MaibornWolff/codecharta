@@ -1,0 +1,18 @@
+<ul class="sr-only" aria-label="Boxes of the dependency graph" data-testid="dependency-graph-boxes" (keydown)="moveFocus($event)">
+    @for (box of boxes(); track box.path) {
+        <li>
+            <button
+                type="button"
+                [attr.tabindex]="box.path === tabStop() ? 0 : -1"
+                [attr.aria-label]="labelOf(box)"
+                [attr.aria-expanded]="canBeOpened(box) ? box.isExpanded : null"
+                [attr.aria-pressed]="box.path === selectedPath()"
+                (focus)="focus(box.path)"
+                (blur)="boxFocused.emit(null)"
+                (click)="boxClicked.emit(box.path)"
+                (keydown.space)="toggleFromKeyboard($event, box)"
+                (keyup.space)="$event.preventDefault()"
+            ></button>
+        </li>
+    }
+</ul>
