@@ -12,6 +12,12 @@ export interface CycleLook {
     color: string
 }
 
+/** How a mark inside a box is drawn: as faded as its box, and as much smaller as the zoom makes the box. */
+export interface MarkLook {
+    opacity: number
+    scale: number
+}
+
 const KIND_ICON = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10, lineWidthPx: 0.8 }
 /** What the icon takes from the room for a declaration's name. */
 export const KIND_ICON_WIDTH_PX = 18
@@ -69,13 +75,13 @@ export function drawInnerFrame(rect: Rectangle, opacity: number) {
     return { type: "rect", ...UNTRANSFORMED, silent: true, shape, style: { fill: null, stroke: FILE_STROKE, lineWidth: 1, opacity } }
 }
 
-export function drawKindIcon(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+export function drawKindIcon(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
     const { letter, tint } = declarationKindLookOf(box.declarationKind)
-    const centre = { cx: rect.x + KIND_ICON.centreInsetPx, cy: rect.y + rect.height / 2 }
+    const centre = { cx: rect.x + KIND_ICON.centreInsetPx * scale, cy: rect.y + rect.height / 2 }
     const disc = { fill: tint, stroke: KIND_ICON_COLORS.stroke, lineWidth: KIND_ICON.lineWidthPx, opacity }
     return [
-        { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: KIND_ICON.radiusPx }, style: disc },
-        centredText(letter, centre, { fontSize: KIND_ICON.fontSizePx, fill: KIND_ICON_COLORS.letter, opacity })
+        { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: KIND_ICON.radiusPx * scale }, style: disc },
+        centredText(letter, centre, { fontSize: KIND_ICON.fontSizePx * scale, fill: KIND_ICON_COLORS.letter, opacity })
     ]
 }
 
@@ -83,17 +89,17 @@ const LISTED_LEVEL = { insetPx: 7, fontSizePx: 10 }
 /** What the level takes from the room for a listed declaration's name. */
 export const LISTED_LEVEL_WIDTH_PX = 12
 
-export function drawListedLevel(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+export function drawListedLevel(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
     if (box.listedLevel === undefined) {
         return []
     }
     const style = {
         text: String(box.listedLevel),
-        x: rect.x + rect.width - LISTED_LEVEL.insetPx,
+        x: rect.x + rect.width - LISTED_LEVEL.insetPx * scale,
         y: rect.y + rect.height / 2,
         align: "right",
         verticalAlign: "middle",
-        fontSize: LISTED_LEVEL.fontSizePx,
+        fontSize: LISTED_LEVEL.fontSizePx * scale,
         fill: QUIET_BADGE_COLOR,
         opacity
     }
@@ -101,39 +107,60 @@ export function drawListedLevel(box: LayoutBox, rect: Rectangle, opacity: number
 }
 
 /** A closed file says how many declarations it holds once there is more than the one its name stands for. */
-export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
+export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
     if (box.isExpanded || box.declarationCount < 2) {
         return []
     }
-    const centre = { cx: rect.x + rect.width - COUNT_BADGE.centreInsetPx, cy: rect.y + rect.height / 2 }
+    const centre = { cx: rect.x + rect.width - COUNT_BADGE.centreInsetPx * scale, cy: rect.y + rect.height / 2 }
     const disc = { fill: FILE_FILL, stroke: QUIET_BADGE_COLOR, lineWidth: 1, opacity }
     return [
-        { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: COUNT_BADGE.radiusPx }, style: disc },
-        centredText(String(box.declarationCount), centre, { fontSize: COUNT_BADGE.fontSizePx, fill: QUIET_BADGE_COLOR, opacity })
+        { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: COUNT_BADGE.radiusPx * scale }, style: disc },
+        centredText(String(box.declarationCount), centre, { fontSize: COUNT_BADGE.fontSizePx * scale, fill: QUIET_BADGE_COLOR, opacity })
     ]
 }
 
+export interface CycleMarkLook {
+    opacity: number
+    /** How many pixels a layout unit takes. */
+    zoom: number
+}
+
+/** A cycle mark leads the reader to a cycle from far out, so it shrinks with the graph only this far. */
+const SMALLEST_CYCLE_MARK_SCALE = 0.7
+
 /** Both sit on the box's upper right corner: the badge of a closed box, the ring of a declaration. */
-export function drawCycleMark(box: LayoutBox, rect: Rectangle, { hiddenCount, isInCycle, color }: CycleLook, opacity: number): object[] {
+export function drawCycleMark(
+    box: LayoutBox,
+    rect: Rectangle,
+    { hiddenCount, isInCycle, color }: CycleLook,
+    { opacity, zoom }: CycleMarkLook
+): object[] {
+    const scale = Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom))
     if (box.kind === "declaration") {
         const centre = { cx: rect.x + rect.width - CYCLE_RING.insetPx, cy: rect.y + CYCLE_RING.insetPx }
-        const style = { fill: FILE_FILL, stroke: color, lineWidth: CYCLE_RING.lineWidthPx, opacity }
-        return isInCycle ? [{ type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx }, style }] : []
+        const style = { fill: FILE_FILL, stroke: color, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
+        const ring = { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
+        return isInCycle ? [ring] : []
     }
-    return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { color, opacity })
+    return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { color, opacity, scale })
 }
 
 /** A pill with the sign of a cycle, and the count once it hides more than one. */
-function drawCycleBadge(rect: Rectangle, count: number, { color, opacity }: { color: string; opacity: number }): object[] {
+function drawCycleBadge(
+    rect: Rectangle,
+    count: number,
+    { color, opacity, scale }: { color: string; opacity: number; scale: number }
+): object[] {
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
-    const { heightPx, numberLeftPx, numberRoomPx, digitWidthPx } = CYCLE_BADGE
-    const width = count > 1 ? numberLeftPx + text.length * digitWidthPx + numberRoomPx : heightPx
-    const left = rect.x + rect.width + CYCLE_BADGE.overhangPx - width
-    const top = rect.y - CYCLE_BADGE.risePx
+    const height = CYCLE_BADGE.heightPx * scale
+    const numberLeft = CYCLE_BADGE.numberLeftPx * scale
+    const width = count > 1 ? numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale : height
+    const left = rect.x + rect.width + CYCLE_BADGE.overhangPx * scale - width
+    const top = rect.y - CYCLE_BADGE.risePx * scale
     const part = { info: CYCLE_BADGE_INFO, cursor: "pointer" }
-    const pill = { x: left, y: top, width, height: heightPx, r: heightPx / 2 }
+    const pill = { x: left, y: top, width, height, r: height / 2 }
     const pillStyle = { fill: color, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_BADGE.outlinePx, opacity }
-    const glyphAt = { x: left + heightPx / 2, y: top + heightPx / 2, rotation: 0, silent: true }
+    const glyphAt = { x: left + height / 2, y: top + height / 2, scaleX: scale, scaleY: scale, rotation: 0, silent: true }
     const glyphLine = { fill: null, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_GLYPH.lineWidthPx, lineCap: "round", opacity }
     const number = {
         type: "text",
@@ -141,11 +168,11 @@ function drawCycleBadge(rect: Rectangle, count: number, { color, opacity }: { co
         ...part,
         style: {
             text,
-            x: left + numberLeftPx,
-            y: top + heightPx / 2,
+            x: left + numberLeft,
+            y: top + height / 2,
             align: "left",
             verticalAlign: "middle",
-            fontSize: CYCLE_BADGE.fontSizePx,
+            fontSize: CYCLE_BADGE.fontSizePx * scale,
             fontWeight: "bold",
             fill: CYCLE_BADGE_TEXT_COLOR,
             opacity

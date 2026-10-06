@@ -101,6 +101,69 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ x: 60, width: 104 })
         })
 
+        describe("zoomed out", () => {
+            const atZoom =
+                (zoom: number) =>
+                ([x, y]: [number, number]) => [x * zoom, y * zoom]
+            const file = aBox("/root/a.ts", { declarationCount: 3, x: 0, y: 0 })
+            const declaration = aBox("/root/a.ts/Creature", {
+                kind: "declaration",
+                declarationKind: "class",
+                x: 0,
+                y: 0,
+                width: 132,
+                height: 26
+            })
+            const iconLook = look("none", false, false, "icon")
+
+            it("should shrink the marks inside a box with the box, keeping them in their place", () => {
+                // Act
+                const [, , toggle, countDisc, count] = childrenOf(drawBox(file, look("none"), atZoom(0.75)))
+                const [, , icon, letter] = childrenOf(drawBox(declaration, iconLook, atZoom(0.75)))
+
+                // Assert
+                expect(toggle.style.fontSize).toBe(7.5)
+                expect(countDisc.shape).toMatchObject({ cx: 109.5, cy: 15, r: 5.25 })
+                expect(count.style.fontSize).toBe(7.5)
+                expect(icon.shape).toMatchObject({ cx: 10.5, cy: 9.75, r: 5.25 })
+                expect(letter.style.fontSize).toBe(7.5)
+            })
+
+            it("should leave the marks out once they would be too small to read, and give their room to the name", () => {
+                // Act
+                const fileParts = childrenOf(drawBox(file, look("none"), atZoom(0.5)))
+                const declarationParts = childrenOf(drawBox(declaration, iconLook, atZoom(0.5)))
+
+                // Assert
+                expect(fileParts.map(part => part.type)).toEqual(["rect", "text"])
+                expect(fileParts[1].style).toMatchObject({ text: "a.ts", width: 64, x: 40 })
+                expect(declarationParts.map(part => part.type)).toEqual(["rect", "text"])
+            })
+
+            it("should keep the marks at their size when zoomed in, as the names keep theirs", () => {
+                // Act
+                const [, , icon] = childrenOf(drawBox(declaration, iconLook, atZoom(3)))
+
+                // Assert
+                expect(icon.shape).toMatchObject({ cx: 14, r: 7 })
+            })
+
+            it("should shrink a cycle badge and a cycle ring only so far, since they lead to the cycles from far out", () => {
+                // Arrange
+                const cyclic = { ...look("none"), cycle: { hiddenCount: 7, isInCycle: true, color: "#2563eb" } }
+
+                // Act
+                const pill = childrenOf(drawBox(aBox("/root/app", { kind: "folder", x: 0, y: 0 }), cyclic, atZoom(0.2))).find(
+                    part => part.info === "cycleBadge"
+                )
+                const ring = childrenOf(drawBox(declaration, cyclic, atZoom(0.2))).at(-1)
+
+                // Assert
+                expect(pill.shape).toMatchObject({ height: 10.5 })
+                expect(ring.shape.r).toBeCloseTo(2.45)
+            })
+        })
+
         describe("declaration kind", () => {
             const declaration = (declarationKind: string) =>
                 aBox("/root/a.ts/Creature", { kind: "declaration", declarationKind, x: 0, y: 0, width: 132, height: 26 })

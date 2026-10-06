@@ -10,6 +10,7 @@ import {
     drawMovedOutline,
     KIND_ICON_WIDTH_PX,
     LISTED_LEVEL_WIDTH_PX,
+    MarkLook,
     outlineOf
 } from "./boxMarks"
 import { declarationKindLookOf } from "./declarationKinds"
@@ -81,18 +82,33 @@ const HOVERED_LINE_WIDTH_PX = 2
 const LEVEL_LABEL_LIFT_PX = 2
 const SEPARATOR_DASH_PX = [4, 4]
 const DASHED_OUTLINE = [4, 3]
+const SMALLEST_READABLE_MARK_SCALE = 0.6
 
 export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     const opacity = opacityOf(look.isMissedBySearch)
     const outline = [...drawOutline(box, rect, look), ...(look.isMoved ? [drawMovedOutline(rect, opacity)] : [])]
-    const cycleMark = drawCycleMark(box, rect, look.cycle, opacity)
-    return drawnItem(box.isExpanded ? outline : [...outline, ...drawName(box, rect, look), ...cycleMark])
+    const zoom = zoomOf(box, rect)
+    const cycleMark = drawCycleMark(box, rect, look.cycle, { opacity, zoom })
+    return drawnItem(box.isExpanded ? outline : [...outline, ...drawName(box, rect, look, zoom), ...cycleMark])
 }
 
 /** Drawn apart from the open box so the edges pass under it. */
 export function drawFolderTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
-    return drawnItem(drawName(box, pixelRectOf(box, toPixels), look))
+    const rect = pixelRectOf(box, toPixels)
+    return drawnItem(drawName(box, rect, look, zoomOf(box, rect)))
+}
+
+/** How many pixels a layout unit takes. */
+function zoomOf(box: LayoutBox, rect: Rectangle): number {
+    return rect.height / box.height
+}
+
+/** The marks inside a box shrink with it once the graph is zoomed out, so they stay in their place and in
+ * proportion, and are left out once too small to read. Zoomed in they keep their size, as the names do. */
+function markScaleOf(zoom: number): number | null {
+    const scale = Math.min(1, zoom)
+    return scale < SMALLEST_READABLE_MARK_SCALE ? null : scale
 }
 
 /** The box itself, and inside it the second frame of a kind told by a double border. */
@@ -107,27 +123,32 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
     return shape === "double" ? [outline, drawInnerFrame(rect, opacity)] : [outline]
 }
 
-function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark }: BoxLook): object[] {
+function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark }: BoxLook, zoom: number): object[] {
     const opacity = opacityOf(isMissedBySearch)
+    const scale = markScaleOf(zoom)
     const hasKindIcon = box.kind === "declaration" && kindMark === "icon"
-    const marks = [
-        ...drawFileMarks(box, rect, opacity),
-        ...(hasKindIcon ? drawKindIcon(box, rect, opacity) : []),
-        ...drawListedLevel(box, rect, opacity)
-    ]
-    const label = drawLabel(box, rect, { opacity, hasKindIcon })
+    const mark = { opacity, scale: scale ?? 0 }
+    const marks =
+        scale === null
+            ? []
+            : [
+                  ...drawFileMarks(box, rect, mark),
+                  ...(hasKindIcon ? drawKindIcon(box, rect, mark) : []),
+                  ...drawListedLevel(box, rect, mark)
+              ]
+    const label = drawLabel(box, rect, { opacity, hasKindIcon, markScale: scale ?? 0 })
     return label ? [label, ...marks] : marks
 }
 
-function drawFileMarks(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
-    return holdsDeclarations(box) ? [drawToggle(box, rect, opacity), ...drawDeclarationCount(box, rect, opacity)] : []
+function drawFileMarks(box: LayoutBox, rect: Rectangle, mark: MarkLook): object[] {
+    return holdsDeclarations(box) ? [drawToggle(box, rect, mark), ...drawDeclarationCount(box, rect, mark)] : []
 }
 
 function holdsDeclarations(box: LayoutBox): boolean {
     return box.kind === "file" && box.declarationCount > 0
 }
 
-function drawToggle(box: LayoutBox, rect: Rectangle, opacity: number) {
+function drawToggle(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook) {
     return {
         type: "text",
         ...UNTRANSFORMED,
@@ -135,12 +156,12 @@ function drawToggle(box: LayoutBox, rect: Rectangle, opacity: number) {
         cursor: "pointer",
         style: {
             text: box.isExpanded ? TOGGLE_GLYPHS.open : TOGGLE_GLYPHS.closed,
-            x: rect.x + LABEL_INSET_PX - TOGGLE_HIT_PADDING_PX,
+            x: rect.x + (LABEL_INSET_PX - TOGGLE_HIT_PADDING_PX) * scale,
             y: nameCentreY(box, rect),
             padding: TOGGLE_HIT_PADDING_PX,
             align: "left",
             verticalAlign: "middle",
-            fontSize: QUIET_FONT_SIZE_PX,
+            fontSize: QUIET_FONT_SIZE_PX * scale,
             fill: QUIET_TEXT_COLOR,
             opacity
         }
@@ -242,12 +263,14 @@ function baseStyle(box: LayoutBox) {
 interface LabelLook {
     opacity: number
     hasKindIcon: boolean
+    /** How large the marks beside the name are drawn; zero when they are left out. */
+    markScale: number
 }
 
-function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon }: LabelLook) {
-    const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX : 0
-    const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX : 0
-    const levelWidth = box.listedLevel === undefined ? 0 : LISTED_LEVEL_WIDTH_PX
+function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon, markScale }: LabelLook) {
+    const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX * markScale : 0
+    const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX * markScale : 0
+    const levelWidth = box.listedLevel === undefined ? 0 : LISTED_LEVEL_WIDTH_PX * markScale
     const width = rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth - levelWidth
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
