@@ -241,7 +241,7 @@ describe("buildDependencyGraphOption", () => {
 
         // Assert
         expect(draw(indexOf(view.path)).children.at(-3)).toMatchObject({ info: "cycleBadge", shape: { width: 15 } })
-        expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#2563eb" })
+        expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#dc2626" })
         expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>1 cycle inside")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>Takes part in a cycle")
     })

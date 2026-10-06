@@ -1,6 +1,6 @@
 import { DeclarationShape, declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
 import { UNTRANSFORMED } from "./dependencyGraphElements"
-import { FILE_FILL, FILE_STROKE, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
+import { CYCLE_MARK_COLOR, FILE_FILL, FILE_STROKE, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
 import { LayoutBox } from "./layoutModel"
 
@@ -8,7 +8,6 @@ export interface CycleLook {
     /** The cycles a closed box hides; none draws no badge. */
     hiddenCount: number
     isInCycle: boolean
-    color: string
 }
 
 export interface MarkLook {
@@ -126,26 +125,20 @@ const SMALLEST_CYCLE_MARK_SCALE = 0.7
 export function drawCycleMark(
     box: LayoutBox,
     rect: Rectangle,
-    { hiddenCount, isInCycle, color }: CycleLook,
+    { hiddenCount, isInCycle }: CycleLook,
     { opacity, zoom }: CycleMarkLook
 ): object[] {
     const scale = Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom))
     if (box.kind === "declaration") {
         const centre = { cx: rect.x + rect.width - CYCLE_RING.insetPx, cy: rect.y + CYCLE_RING.insetPx }
-        const style = { fill: FILE_FILL, stroke: color, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
+        const style = { fill: FILE_FILL, stroke: CYCLE_MARK_COLOR, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
         const ring = { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
         return isInCycle ? [ring] : []
     }
-    return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { color, opacity, scale })
+    return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { opacity, scale })
 }
 
-interface BadgeLook {
-    color: string
-    opacity: number
-    scale: number
-}
-
-function drawCycleBadge(rect: Rectangle, count: number, { color, opacity, scale }: BadgeLook): object[] {
+function drawCycleBadge(rect: Rectangle, count: number, { opacity, scale }: MarkLook): object[] {
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
     const height = CYCLE_BADGE.heightPx * scale
     const numberLeft = CYCLE_BADGE.numberLeftPx * scale
@@ -154,7 +147,7 @@ function drawCycleBadge(rect: Rectangle, count: number, { color, opacity, scale 
     const left = rect.x + rect.width + CYCLE_BADGE.overhangPx * scale - width
     const top = rect.y - CYCLE_BADGE.risePx * scale
     const pill = { x: left, y: top, width, height, r: height / 2 }
-    const pillStyle = { fill: color, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_BADGE.outlinePx, opacity }
+    const pillStyle = { fill: CYCLE_MARK_COLOR, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_BADGE.outlinePx, opacity }
     const middle = top + height / 2
     return [
         { type: "rect", ...UNTRANSFORMED, ...CYCLE_BADGE_PART, shape: pill, style: pillStyle },
