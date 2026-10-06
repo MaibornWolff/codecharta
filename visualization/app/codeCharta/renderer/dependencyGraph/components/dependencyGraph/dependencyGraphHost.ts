@@ -11,6 +11,7 @@ import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
+import { PanKey } from "./panKey"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
 
@@ -51,6 +52,7 @@ export class DependencyGraphHost {
     private lastBoxClick: { path: string; at: number } | null = null
     private dragGesture?: BoxDragGesture
     private chartSize?: Viewport
+    private readonly panKey = new PanKey()
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
     private readonly partClickHandlers: Record<string, (path: string) => void> = {
@@ -72,7 +74,10 @@ export class DependencyGraphHost {
         this.dispose()
         this.attachedContainer = container
         this.chart = echarts.init(container)
-        this.dragGesture = new BoxDragGesture(this.chart, this.handlers)
+        this.dragGesture = new BoxDragGesture(this.chart, {
+            ...this.handlers,
+            canDragBox: path => !this.panKey.isHeld && this.handlers.canDragBox(path)
+        })
         this.listenToChart(this.chart)
         this.listenToRenderSurface(this.chart.getZr(), this.dragGesture)
         this.listenToContainer(container)
@@ -103,6 +108,7 @@ export class DependencyGraphHost {
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
         this.attachedContainer?.removeEventListener("dblclick", this.reportDoubleClick)
         this.containerSizeObserver.disconnect()
+        this.panKey.stopListening()
         this.dragGesture?.cancel()
         this.dragGesture = undefined
         if (this.chart) {
@@ -142,6 +148,7 @@ export class DependencyGraphHost {
         container.addEventListener("contextmenu", suppressBrowserMenu)
         container.addEventListener("dblclick", this.reportDoubleClick)
         this.containerSizeObserver.observe(container)
+        this.panKey.listenOver(container)
     }
 
     private shownWindow(chart: echarts.ECharts, { width, height }: Viewport): AxisWindow {

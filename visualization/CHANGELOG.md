@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Kinds of use in the dependency view**: the dashes and arrowhead of an edge can tell how one declaration uses the other, such as inheriting from it or creating it.
 - **Edge colours in the dependency view**: the colours of the four edge types can be changed.
 - **Keyboard in the dependency view**: the boxes of the graph can be reached with the Tab key, walked through with the arrow keys, selected with Enter and opened or closed with Space.
+- **Panning the dependency view**: holding Space turns a drag into a pan from anywhere in the graph, also from a box that a drag would otherwise move.
 
 ## [2.8.0] - 2026-10-05
 

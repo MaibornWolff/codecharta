@@ -1,4 +1,4 @@
-<div #chartContainer class="h-full w-full" data-testid="dependency-graph"></div>
+<div #chartContainer class="h-full w-full data-panning:*:cursor-grab!" data-testid="dependency-graph"></div>
 <cc-dependency-graph-box-list
     [boxes]="scene().layout.boxes"
     [selectedPath]="scene().selectedPath"

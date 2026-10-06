@@ -224,6 +224,23 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxClicked).toHaveBeenCalledWith("/root/app/a.ts")
     })
 
+    it("should leave a press on a box to the graph's pan while space is held over the graph", () => {
+        // Arrange
+        jest.useFakeTimers()
+        container.dispatchEvent(new MouseEvent("mouseenter"))
+        window.dispatchEvent(new KeyboardEvent("keydown", { key: " ", cancelable: true }))
+
+        // Act
+        fireChartEvent("mousedown", { ...BOX, event: PRIMARY_PRESS })
+        fireRenderSurfaceEvent("mousemove", { offsetX: 40, offsetY: 30, target: {} })
+        fireRenderSurfaceEvent("mouseup")
+        jest.runAllTimers()
+        window.dispatchEvent(new KeyboardEvent("keyup", { key: " " }))
+
+        // Assert
+        expect(handlers.onBoxDragged).not.toHaveBeenCalled()
+    })
+
     it("should not start a drag on a press outside every box", () => {
         // Arrange
         handlers.boxAt = jest.fn(() => null)
