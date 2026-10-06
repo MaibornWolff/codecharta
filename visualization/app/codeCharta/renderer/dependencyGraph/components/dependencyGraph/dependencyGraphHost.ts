@@ -187,7 +187,7 @@ export class DependencyGraphHost {
         if (path === null) {
             return
         }
-        const onPartClicked = this.partClickHandlers[String(event.info)]
+        const onPartClicked = typeof event.info === "string" ? this.partClickHandlers[event.info] : undefined
         if (onPartClicked) {
             this.letNoDoubleClickToggle()
             onPartClicked(path)

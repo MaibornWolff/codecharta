@@ -589,7 +589,10 @@ const DEPENDENCY_LENS_FILE_SETTINGS = ["dependencyLevels", "dependencyDeclaratio
 /** Files persisted before the dependency lens grew levels or declarations carry neither. They are seeded as they
  * are read, not by an upgrade transform, because the upgrade leaves the files record unread. */
 function withSeededDependencyLens(files: FileState[]): FileState[] {
-    return files.map(fileState => DEPENDENCY_LENS_FILE_SETTINGS.reduce<unknown>(withSeededFileSetting, fileState) as FileState)
+    return files.map(
+        fileState =>
+            DEPENDENCY_LENS_FILE_SETTINGS.reduce<unknown>((seeded, key) => withSeededFileSetting(seeded, key), fileState) as FileState
+    )
 }
 
 function withoutFiles(state: CcState): Omit<CcState, "files"> {
