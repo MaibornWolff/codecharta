@@ -105,8 +105,6 @@ export interface InspectorModel {
     /** The cycles running through the selection; a hub's are cut like its rows. */
     cycles: InspectorCycle[]
     cycleCount: number
-    /** Whether the map is too tangled for its cycles to have been searched to the end. */
-    mayMissCycles: boolean
     action: InspectorActionKind | null
 }
 
@@ -124,7 +122,6 @@ export type InspectorSubject = BoxSubject | { kind: "edge"; edge: GraphEdge; fro
 export interface InspectorContext {
     index: DeclarationIndex
     cycles: readonly CycleChain[]
-    mayMissCycles: boolean
     edgeMetric: string | null
     /** A hub's rows are cut at this many per group and list, so the inspector of a hub stays one. */
     rowLimit: number
@@ -296,7 +293,6 @@ function describeEdge(edge: GraphEdge, title: string, context: InspectorContext)
         sections: [section("Stands for", [{ heading: null, declarationEdges: indexedEdges }], new Set(), context)],
         cycles: [],
         cycleCount: 0,
-        mayMissCycles: false,
         action: indexedEdges.length > 0 && !isUnfolded ? "unfold" : null
     }
 }
@@ -413,15 +409,14 @@ function byNames(dependencyA: InspectorDependency, dependencyB: InspectorDepende
     return dependencyA.from.name.localeCompare(dependencyB.from.name) || dependencyA.to.name.localeCompare(dependencyB.to.name)
 }
 
-type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount" | "mayMissCycles">
+type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">
 
 function cyclesOf(declarations: readonly IndexedDeclaration[], context: InspectorContext): InspectorCycles {
-    const { index, cycles, rowLimit, mayMissCycles } = context
+    const { index, cycles, rowLimit } = context
     const ownPaths = pathsOf(declarations)
     const chains = cyclesThrough(ownPaths, cycles)
     return {
         cycleCount: chains.length,
-        mayMissCycles,
         cycles: chains.slice(0, rowLimit).map(chain => {
             const walked = startingAt(chain, ownPaths)
             return {

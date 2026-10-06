@@ -1,7 +1,7 @@
 import { DependencyDeclarations } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { GraphEdge, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { findCycleChains, MAX_CYCLE_WALKS } from "../declarations/cycleChains"
+import { findCycleChains } from "../declarations/cycleChains"
 import { indexDeclarations } from "../declarations/declarationIndex"
 import { describeSubject, INSPECTOR_ROW_LIMIT, InspectorContext, InspectorModel } from "./inspectorModel"
 
@@ -58,8 +58,7 @@ function context(overrides: Partial<InspectorContext> = {}, declarationEdges = D
         index,
         rowLimit: INSPECTOR_ROW_LIMIT,
         pointsUpward: declarationEdge => Boolean(declarationEdge.isPointingUpwards),
-        cycles: findCycleChains(index, MAX_CYCLE_WALKS).chains,
-        mayMissCycles: false,
+        cycles: findCycleChains(index),
         edgeMetric: "dependencies",
         ...overrides
     }
@@ -256,18 +255,7 @@ describe("describeSubject", () => {
             const model = describeSubject(box(fileOutsideEveryCycle), context())
 
             // Assert
-            expect(model).toMatchObject({ cycleCount: 0, cycles: [], mayMissCycles: false })
-        })
-
-        it("should say that there may be more cycles when the map was too tangled to search to its end", () => {
-            // Arrange
-            const stoppedEarly = context({ mayMissCycles: true })
-
-            // Act
-            const model = describeSubject(box(CREATURE_NODE), stoppedEarly)
-
-            // Assert
-            expect(model.mayMissCycles).toBe(true)
+            expect(model).toMatchObject({ cycleCount: 0, cycles: [] })
         })
 
         it("should cut a hub's declarations and the rows of each group, and say how many it left out", () => {

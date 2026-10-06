@@ -116,12 +116,10 @@ export class DependencyInspectorStore {
         if (!subject || index.declarations.size === 0 || isDismissed) {
             return null
         }
-        const { chains, isComplete } = this.graphModel.cycleSearch()
         return describeSubject(subject, {
             index,
             rowLimit: showsAllRows ? Number.POSITIVE_INFINITY : INSPECTOR_ROW_LIMIT,
-            cycles: chains,
-            mayMissCycles: !isComplete,
+            cycles: this.graphModel.cycleChains(),
             edgeMetric: this.graphModel.edgeMetric(),
             pointsUpward: this.graphModel.pointsUpward()
         })

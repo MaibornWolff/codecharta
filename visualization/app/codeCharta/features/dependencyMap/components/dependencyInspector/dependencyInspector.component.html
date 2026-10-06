@@ -78,11 +78,6 @@
                 </button>
             }
         </div>
-        @if (model.mayMissCycles) {
-            <p class="m-0 mt-1 text-xs opacity-60" data-testid="dependency-inspector-cycles-incomplete">
-                This map is too tangled to search all its cycles: there may be more than shown.
-            </p>
-        }
         @if (model.action; as action) {
             <button type="button" class="btn btn-xs btn-outline mt-2" data-testid="dependency-inspector-action" (click)="perform(action)">
                 {{ actionLabels[action] }}

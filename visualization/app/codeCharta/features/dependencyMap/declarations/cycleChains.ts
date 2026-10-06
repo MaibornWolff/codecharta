@@ -5,31 +5,16 @@ import { DeclarationIndex, fromPathOf, toPathOf } from "./declarationIndex"
  * and the last ends where the first started. */
 export type CycleChain = readonly DependencyLeafEdge[]
 
-/** How many cyclic dependencies are walked back at most: a map tangled beyond that is not searched to its end,
- * since each walk can cross the whole tangle. */
-export const MAX_CYCLE_WALKS = 4000
-
-export interface CycleSearch {
-    chains: CycleChain[]
-    /** False for a map so tangled that the search was stopped: there may be cycles it did not get to. */
-    isComplete: boolean
-}
-
 type CyclicSteps = ReadonlyMap<string, readonly DependencyLeafEdge[]>
 
 /** The cycles of a map: for every dependency the parser marked cyclic, the shortest way back to where it starts,
  * each cycle told once. Only cyclic dependencies are walked, so a walk never leaves the strongly connected part
  * it starts in. A longer way round that a shorter one makes unnecessary is not told. */
-export function findCycleChains(index: DeclarationIndex, maxWalks: number): CycleSearch {
+export function findCycleChains(index: DeclarationIndex): CycleChain[] {
     const cyclicSteps = cyclicStepsOf(index)
     const chains = new Map<string, CycleChain>()
-    let walks = 0
     for (const [start, firstSteps] of cyclicSteps) {
         for (const firstStep of firstSteps) {
-            if (walks >= maxWalks) {
-                return { chains: [...chains.values()], isComplete: false }
-            }
-            walks++
             const wayBack = shortestWay(toPathOf(firstStep), start, cyclicSteps)
             if (wayBack !== null) {
                 const chain = [firstStep, ...wayBack]
@@ -38,7 +23,7 @@ export function findCycleChains(index: DeclarationIndex, maxWalks: number): Cycl
             }
         }
     }
-    return { chains: [...chains.values()], isComplete: true }
+    return [...chains.values()]
 }
 
 function cyclicStepsOf(index: DeclarationIndex): CyclicSteps {

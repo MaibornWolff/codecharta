@@ -69,7 +69,7 @@ export class DependencyMapComponent {
     })
     private readonly cycleMarks = computed(() =>
         this.graphModel.settings().showsCycleBadges && isDependencyEdgeMetric(this.graphModel.edgeMetric())
-            ? findCycleMarks(this.graphModel.cycleSearch().chains.map(declarationsOn), this.graphModel.representatives())
+            ? findCycleMarks(this.graphModel.cycleChains().map(declarationsOn), this.graphModel.representatives())
             : NO_CYCLE_MARKS
     )
 
