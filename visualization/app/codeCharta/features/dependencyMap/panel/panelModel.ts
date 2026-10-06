@@ -73,7 +73,15 @@ export interface PanelCycle {
     steps: PanelRef[]
     /** The files the cycle runs through. */
     files: PanelRef[]
+    /** How each step is drawn in the graph: one per dependency walked, the last leading back to the start. */
+    links: PanelLink[]
     leafEdges: CycleChain
+}
+
+/** The look of an edge: the dashes and arrowhead of its strongest way of use, and the edge type it is drawn in. */
+interface PanelLink {
+    line: LineStyle
+    type: DependencyEdgeType
 }
 
 export type PanelActionKind = "open" | "close" | "unfold"
@@ -346,9 +354,15 @@ function dependencyOf(leafEdge: DependencyLeafEdge, own: ReadonlySet<string>, { 
         isFromOwn: own.has(fromPathOf(leafEdge)),
         isToOwn: own.has(toPathOf(leafEdge)),
         usages: leafEdge.usage.map(usageLabelOf),
-        line: lineStyleOfUsages(leafEdge.usage),
-        type: dependencyEdgeTypeOf({ isCyclic: leafEdge.isCyclic, isPointingUpwards: pointsUpward(leafEdge) }),
+        ...linkOf(leafEdge, { pointsUpward }),
         leafEdge
+    }
+}
+
+function linkOf(leafEdge: DependencyLeafEdge, { pointsUpward }: Pick<PanelContext, "pointsUpward">): PanelLink {
+    return {
+        line: lineStyleOfUsages(leafEdge.usage),
+        type: dependencyEdgeTypeOf({ isCyclic: leafEdge.isCyclic, isPointingUpwards: pointsUpward(leafEdge) })
     }
 }
 
@@ -356,10 +370,8 @@ function byNames(dependencyA: PanelDependency, dependencyB: PanelDependency): nu
     return dependencyA.from.name.localeCompare(dependencyB.from.name) || dependencyA.to.name.localeCompare(dependencyB.to.name)
 }
 
-function cyclesOf(
-    declarations: readonly IndexedDeclaration[],
-    { index, cycles, rowLimit }: PanelContext
-): Pick<PanelModel, "cycles" | "cycleCount"> {
+function cyclesOf(declarations: readonly IndexedDeclaration[], context: PanelContext): Pick<PanelModel, "cycles" | "cycleCount"> {
+    const { index, cycles, rowLimit } = context
     const own = pathsOf(declarations)
     const chains = cyclesThrough(own, cycles)
     return {
@@ -369,6 +381,7 @@ function cyclesOf(
             return {
                 steps: [fromPathOf(walked[0]), ...walked.map(toPathOf)].map(path => declarationRef(index.declarations.get(path))),
                 files: [...new Set(walked.map(leafEdge => leafEdge.fromNodeName))].map(fileRef),
+                links: walked.map(leafEdge => linkOf(leafEdge, context)),
                 leafEdges: walked
             }
         })

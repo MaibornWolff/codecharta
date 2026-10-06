@@ -122,14 +122,23 @@
                     (focusout)="dependenciesPointedAt.emit(null)"
                 >
                     <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
-                        @for (step of cycle.steps; track $index; let isFirst = $first; let isLast = $last) {
+                        @for (step of cycle.steps; track $index; let position = $index; let isFirst = $first; let isLast = $last) {
                             @if (isLast) {
-                                <span class="ml-1 text-xs" [style.color]="edgeColors().cyclic" data-testid="dependency-panel-cycle-closing">↩ {{ step.name }}</span>
+                                <span
+                                    class="ml-1 text-xs"
+                                    [style.color]="edgeColors()[cycle.links[position - 1].type]"
+                                    data-testid="dependency-panel-cycle-closing"
+                                    >↩ {{ step.name }}</span
+                                >
                             } @else {
                                 @if (!isFirst) {
                                     <ng-container
                                         [ngTemplateOutlet]="connector"
-                                        [ngTemplateOutletContext]="{ $implicit: plainLine, color: edgeColors().cyclic, label: 'uses' }"
+                                        [ngTemplateOutletContext]="{
+                                            $implicit: cycle.links[position - 1].line,
+                                            color: edgeColors()[cycle.links[position - 1].type],
+                                            label: 'uses'
+                                        }"
                                     ></ng-container>
                                 }
                                 <ng-container [ngTemplateOutlet]="chip" [ngTemplateOutletContext]="{ $implicit: step, isOwn: false }"></ng-container>
