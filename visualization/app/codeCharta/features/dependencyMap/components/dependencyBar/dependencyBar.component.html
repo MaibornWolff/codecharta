@@ -10,6 +10,10 @@
 
 <cc-level-label-segment></cc-level-label-segment>
 
+@if (hasNamespaces()) {
+    <cc-hierarchy-segment></cc-hierarchy-segment>
+}
+
 @if (hasDeclarations()) {
     <cc-declarations-segment></cc-declarations-segment>
 }

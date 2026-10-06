@@ -82,7 +82,11 @@ export class DependencyPanelStore {
         const nodePath = this.graphModel.nodePathOf(boxPath)
         this.viewStore.selectInGraph(nodePath === boxPath ? null : { kind: "box", path: boxPath, sharedPath: nodePath })
         this.dismissedSubject.set(null)
-        this.writeStore.selectNode(nodePath)
+        if (nodePath === null) {
+            this.writeStore.clearSelection()
+        } else {
+            this.writeStore.selectNode(nodePath)
+        }
     }
 
     selectEdge(edgeId: string): void {

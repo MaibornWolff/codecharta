@@ -4,7 +4,7 @@ import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
-import { hasDeclarationsSelector } from "../../../../lenses/dependency/dependencyLens.facade"
+import { hasDeclarationsSelector, hasNamespacesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { edgeMetricDataSelector } from "../../../../renderer/renderModel/renderModel.facade"
 import { edgeMetricSelector } from "../../../../stores/mapState/mapState.read.facade"
@@ -12,6 +12,8 @@ import { defaultDependencyGraphSettings, dependencyGraphSettingsSelector } from 
 import { setDependencyGraphSettings } from "../../../../stores/preferences/preferences.write.facade"
 import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
+import { dependencyLayoutIdentitySelector } from "../../selectors/dependencyMap.selectors"
+import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
 const EDGE_METRICS = [
@@ -22,11 +24,13 @@ const EDGE_METRICS = [
 async function renderBar({
     edgeMetric = "dependencies",
     settings = {},
-    hasDeclarations = false
+    hasDeclarations = false,
+    hasNamespaces = false
 }: {
     edgeMetric?: string
     settings?: Partial<DependencyGraphSettings>
     hasDeclarations?: boolean
+    hasNamespaces?: boolean
 } = {}) {
     const rendered = await render(DependencyBarComponent, {
         providers: [
@@ -37,6 +41,8 @@ async function renderBar({
                     { selector: edgeMetricSelector, value: edgeMetric },
                     { selector: edgeMetricDataSelector, value: EDGE_METRICS },
                     { selector: hasDeclarationsSelector, value: hasDeclarations },
+                    { selector: hasNamespacesSelector, value: hasNamespaces },
+                    { selector: dependencyLayoutIdentitySelector, value: "project" },
                     { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
                 ]
             })
@@ -313,5 +319,34 @@ describe("DependencyBarComponent", () => {
 
         // Assert
         expect(dispatch).toHaveBeenCalledWith(changed({ showsCycleBadges: false }))
+    })
+
+    it("should offer the hierarchy only for a map with packages, and switch the graph to the packages for this session", async () => {
+        // Arrange
+        await renderBar()
+        const withoutPackages = screen.queryByTestId("dependency-bar-hierarchy-segment")
+        TestBed.resetTestingModule()
+        const dispatch = await renderBar({ hasNamespaces: true })
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-hierarchy-packages"))
+        dispatch.fixture.detectChanges()
+
+        // Assert
+        expect(withoutPackages).toBeNull()
+        expect(TestBed.inject(DependencyMapViewStore).hierarchy()).toBe("packages")
+        expect(screen.getByTestId("dependency-bar-hierarchy-segment").textContent).toContain("Packages")
+        expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: "SET_DEPENDENCY_GRAPH_SETTINGS" }))
+    })
+
+    it("should mark what moves between the hierarchies once the reader ticks it", async () => {
+        // Arrange
+        const dispatch = await renderBar({ hasNamespaces: true })
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-hierarchy-marks"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ marksHierarchyDifferences: true }))
     })
 })

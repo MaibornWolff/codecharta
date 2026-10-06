@@ -37,6 +37,9 @@ export type DeclarationKindMark = "icon" | "shape" | "tint" | "off"
  * one declaration uses the other. */
 export type LineStyleMeaning = "edgeType" | "usage"
 
+/** What the graph nests its files in: the folders they lie in, or the packages their declarations declare. */
+export type DependencyHierarchy = "folders" | "packages"
+
 export interface DependencyGraphSettings {
     shownEdgeTypes: DependencyEdgeType[]
     edgeColors: DependencyEdgeColors
@@ -49,4 +52,6 @@ export interface DependencyGraphSettings {
     declarationKindMark: DeclarationKindMark
     /** Whether a closed box counts the cyclic dependencies it hides. */
     showsCycleBadges: boolean
+    /** Whether the graph marks what sits elsewhere, or reads differently, in the other hierarchy. */
+    marksHierarchyDifferences: boolean
 }

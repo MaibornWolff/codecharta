@@ -1997,7 +1997,8 @@ export const STATE: CcState = {
             levelLabel: "number",
             declarationArrangement: "stacked",
             declarationKindMark: "icon",
-            showsCycleBadges: true
+            showsCycleBadges: true,
+            marksHierarchyDifferences: false
         },
         dependencyViewEnabled: false
     },
@@ -2081,7 +2082,8 @@ export const DEFAULT_STATE: CcState = {
             levelLabel: "number",
             declarationArrangement: "stacked",
             declarationKindMark: "icon",
-            showsCycleBadges: true
+            showsCycleBadges: true,
+            marksHierarchyDifferences: false
         },
         dependencyViewEnabled: false
     },

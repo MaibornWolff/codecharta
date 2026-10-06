@@ -1,6 +1,6 @@
 import { DEPENDENCIES_EDGE_METRIC, dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge, Edge } from "../../../model/codeCharta.model"
-import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
+import { DependencyEdgeType, DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import { declarationPathOf } from "./boxPaths"
 import { addToGroup } from "./collections"
 import { LeveledNode } from "./leveledTree"
@@ -56,20 +56,28 @@ interface MergedEdge extends Flags {
     declarationEdges: DependencyLeafEdge[]
 }
 
+/** The dependencies between declarations, and the hierarchy they are lifted into. */
+export interface DeclarationLayer {
+    leafEdges: readonly DependencyLeafEdge[]
+    hierarchy: DependencyHierarchy
+}
+
 const WEIGHT_OF_AN_UNWEIGHTED_LEAF_EDGE = 1
 const NO_LEAF_EDGES: readonly DependencyLeafEdge[] = []
+const NO_DECLARATIONS: DeclarationLayer = { leafEdges: NO_LEAF_EDGES, hierarchy: "folders" }
 
 /** The cycle and upward flags describe the dependency graph alone, so every other metric draws its edges as
  * regular ones, and only the dependencies open into the edges between declarations.
  *
- * Two files that both stay closed keep their file edge. Once one of them shows its declarations, the edge gives
- * way to the declaration edges it stands for, each still pointing upward as the file edge does: the levels of
- * the file tree say which way is up between two files, and those of the declarations only inside one file. */
+ * Among folders, two files that both stay closed keep their file edge. Once one of them shows its declarations,
+ * the edge gives way to the declaration edges it stands for, each still pointing upward as the file edge does:
+ * the levels of the file tree say which way is up between two files, and those of the declarations only inside
+ * one file. Among packages the file tree has no say: every edge is its declaration edges, flags and all. */
 export function projectEdges(
     edges: Edge[],
     representatives: ReadonlyMap<string, string>,
     edgeMetric: string | null,
-    leafEdges: readonly DependencyLeafEdge[] = NO_LEAF_EDGES
+    { leafEdges, hierarchy }: DeclarationLayer = NO_DECLARATIONS
 ): GraphEdge[] {
     const merged = new Map<string, MergedEdge>()
     const isDependencies = isDependencyEdgeMetric(edgeMetric)
@@ -81,7 +89,7 @@ export function projectEdges(
             continue
         }
         const parts = declarationEdgesByFiles.get(filesKeyOf(edge.fromNodeName, edge.toNodeName)) ?? NO_LEAF_EDGES
-        for (const part of partsOfFileEdge(edge, value, parts, representatives)) {
+        for (const part of partsOfFileEdge({ edge, weight: value, declarationEdges: parts, hierarchy }, representatives)) {
             mergeInto(merged, part)
         }
     }
@@ -100,21 +108,29 @@ function isInsideOneFile(leafEdge: DependencyLeafEdge): boolean {
     return leafEdge.fromNodeName === leafEdge.toNodeName
 }
 
+interface FileEdge {
+    edge: Edge
+    weight: number
+    declarationEdges: readonly DependencyLeafEdge[]
+    hierarchy: DependencyHierarchy
+}
+
 function partsOfFileEdge(
-    edge: Edge,
-    weight: number,
-    declarationEdges: readonly DependencyLeafEdge[],
+    { edge, weight, declarationEdges, hierarchy }: FileEdge,
     representatives: ReadonlyMap<string, string>
 ): EdgePart[] {
     const fromPath = representatives.get(edge.fromNodeName)
     const toPath = representatives.get(edge.toNodeName)
-    const isPointingUpwards = Boolean(edge.isPointingUpwards)
     const ends = declarationEdges.map(leafEdge => boxesOf(leafEdge, representatives))
     const showsDeclarations = ends.some(end => end.fromPath !== fromPath || end.toPath !== toPath)
-    if (!showsDeclarations) {
+    const isDecidedByDeclarations = hierarchy === "packages" && declarationEdges.length > 0
+    if (!showsDeclarations && !isDecidedByDeclarations) {
+        const isPointingUpwards = Boolean(edge.isPointingUpwards)
         return [{ fromPath, toPath, weight, isCyclic: Boolean(edge.isCyclic), isPointingUpwards, declarationEdges }]
     }
-    return declarationEdges.map((leafEdge, index) => ({ ...ends[index], ...leafEdgePart(leafEdge, isPointingUpwards) }))
+    const pointsUpward = (leafEdge: DependencyLeafEdge) =>
+        Boolean(hierarchy === "packages" ? leafEdge.isPointingUpwards : edge.isPointingUpwards)
+    return declarationEdges.map((leafEdge, index) => ({ ...ends[index], ...leafEdgePart(leafEdge, pointsUpward(leafEdge)) }))
 }
 
 function leafEdgePart(leafEdge: DependencyLeafEdge, isPointingUpwards: boolean) {

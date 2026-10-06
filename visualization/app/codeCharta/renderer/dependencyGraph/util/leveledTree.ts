@@ -7,7 +7,7 @@ import { declarationPathOf } from "./boxPaths"
  * per link would leave the files too small to read. The box keeps the deepest folder's path, and the folders
  * folded into it keep theirs in foldedPaths, outermost first. A file holds its declarations, which no level
  * of the file tree orders: they borrow the level they have within their package. */
-export type BoxKind = "folder" | "file" | "declaration"
+export type BoxKind = "folder" | "package" | "file" | "declaration"
 
 export interface LeveledNode {
     path: string

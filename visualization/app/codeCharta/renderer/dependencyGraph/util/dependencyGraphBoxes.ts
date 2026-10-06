@@ -5,6 +5,8 @@ import { ToPixels } from "./dependencyGraphScene"
 import {
     CLOSED_FOLDER_FILL,
     CLOSED_FOLDER_STROKE,
+    CLOSED_PACKAGE_FILL,
+    CLOSED_PACKAGE_STROKE,
     DECLARATION_STROKE,
     FILE_FILL,
     FILE_STROKE,
@@ -14,14 +16,17 @@ import {
     HOVERED_COLOR,
     LEVEL_SEPARATOR_COLOR,
     MISSED_BY_SEARCH_OPACITY,
+    MOVED_COLOR,
     OPEN_FILE_FILL,
+    PACKAGE_STROKE,
+    packageFill,
     QUIET_TEXT_COLOR,
     SELECTED_COLOR,
     seeThrough,
     TEXT_COLOR
 } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
-import { describeLevelPath, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
+import { describeLevelPath, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./levelizedLayout"
 import { BandCutout, BandSeparator, bandSeparator } from "./overlaps"
 
 export type BoxEmphasis = "selected" | "hovered" | "none"
@@ -34,6 +39,8 @@ export interface BoxLook {
     /** How a declaration tells what it is. */
     kindMark: DeclarationKindMark
     cycle: CycleLook
+    /** Sits elsewhere in the other hierarchy, or holds something that does. */
+    isMoved: boolean
 }
 
 export interface CycleLook {
@@ -73,6 +80,7 @@ const CORNER_RADIUS_PX = 4
 const LINE_WIDTH_PX = 1
 const SELECTED_LINE_WIDTH_PX = 2.5
 const HOVERED_LINE_WIDTH_PX = 2
+const MOVED_OUTLINE = { lineWidth: 2, lineDash: [4, 3] }
 const LEVEL_LABEL_LIFT_PX = 2
 const SEPARATOR_DASH_PX = [4, 4]
 
@@ -88,8 +96,8 @@ export function drawFolderTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixel
     return drawnItem(drawName(box, pixelRectOf(box, toPixels), look))
 }
 
-function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark }: BoxLook) {
-    const style = boxStyle(box, emphasis)
+function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark, isMoved }: BoxLook) {
+    const style = boxStyle(box, emphasis, isMoved)
     const kindLook = box.kind === "declaration" ? declarationKindLookOf(box.declarationKind) : null
     const ownFill = kindLook && kindMark === "tint" ? kindLook.tint : style.fill
     const fill = isSeeThrough ? seeThrough(ownFill) : ownFill
@@ -324,8 +332,9 @@ function pixelRectOf(box: LayoutBox, toPixels: ToPixels): Rectangle {
     return { x: left, y: top, width: right - left, height: bottom - top }
 }
 
-function boxStyle(box: LayoutBox, emphasis: BoxEmphasis) {
-    const base = baseStyle(box)
+function boxStyle(box: LayoutBox, emphasis: BoxEmphasis, isMoved: boolean) {
+    // The dash is stated for every box: ECharts keeps on a reused element whatever the next style leaves out.
+    const base = isMoved ? { ...baseStyle(box), stroke: MOVED_COLOR, ...MOVED_OUTLINE } : { ...baseStyle(box), lineDash: null }
     if (emphasis === "selected") {
         return { ...base, stroke: SELECTED_COLOR, lineWidth: SELECTED_LINE_WIDTH_PX }
     }
@@ -341,6 +350,10 @@ function baseStyle(box: LayoutBox) {
             return { fill: FILE_FILL, stroke: DECLARATION_STROKE, lineWidth: LINE_WIDTH_PX }
         case "file":
             return { fill: box.isExpanded ? OPEN_FILE_FILL : FILE_FILL, stroke: FILE_STROKE, lineWidth: LINE_WIDTH_PX }
+        case "package":
+            return box.isExpanded
+                ? { fill: packageFill(box.depth), stroke: PACKAGE_STROKE, lineWidth: LINE_WIDTH_PX }
+                : { fill: CLOSED_PACKAGE_FILL, stroke: CLOSED_PACKAGE_STROKE, lineWidth: LINE_WIDTH_PX }
         default:
             return box.isExpanded
                 ? { fill: folderFill(box.depth), stroke: FOLDER_STROKE, lineWidth: LINE_WIDTH_PX }
@@ -374,7 +387,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, { opacity, hasKindIcon }: La
             align: isHeader ? "left" : "center",
             verticalAlign: "middle",
             fontSize: box.kind === "declaration" ? DECLARATION_FONT_SIZE_PX : LABEL_FONT_SIZE_PX,
-            fontWeight: box.kind === "folder" ? "bold" : "normal",
+            fontWeight: isContainerKind(box.kind) ? "bold" : "normal",
             fill: TEXT_COLOR,
             opacity
         }

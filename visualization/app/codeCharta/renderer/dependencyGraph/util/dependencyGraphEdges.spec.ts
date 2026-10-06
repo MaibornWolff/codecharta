@@ -15,7 +15,15 @@ interface DrawnEdge {
 }
 
 function draw(route: EdgeRoute, look: Partial<EdgeLook> = {}): DrawnEdge {
-    const edgeLook = { isDimmed: false, isSelected: false, widthPx: 1.2, color: EDGE_COLORS.regular, line: PLAIN_LINE, ...look }
+    const edgeLook = {
+        isDimmed: false,
+        isSelected: false,
+        isMoved: false,
+        widthPx: 1.2,
+        color: EDGE_COLORS.regular,
+        line: PLAIN_LINE,
+        ...look
+    }
     return drawEdge(route, edgeLook, identityPixels) as unknown as DrawnEdge
 }
 
@@ -118,6 +126,19 @@ describe("drawEdge", () => {
         expect(children).toHaveLength(3)
         expect(children[0].style).toMatchObject({ stroke: SELECTED_COLOR, lineWidth: 8 })
         expect(children[0].shape).toEqual(children[1].shape)
+    })
+
+    it("should lay a halo in the colour of what moves under an edge of another type in the other hierarchy, the selection's when selected too", () => {
+        // Arrange
+        const moved = { isMoved: true }
+
+        // Act
+        const [movedHalo] = draw(downward, moved).children
+        const [selectedHalo] = draw(downward, { ...moved, isSelected: true }).children
+
+        // Assert
+        expect(movedHalo.style.stroke).toBe("#d97706")
+        expect(selectedHalo.style.stroke).toBe(SELECTED_COLOR)
     })
 
     it("should fade a dimmed edge and its arrow", () => {

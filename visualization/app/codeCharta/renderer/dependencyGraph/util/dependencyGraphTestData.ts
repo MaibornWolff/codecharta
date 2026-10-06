@@ -17,7 +17,9 @@ export const DEFAULT_LOOKS = {
     declarationKindMark: "icon",
     cycleMarks: NO_CYCLE_MARKS,
     selectedEdgeId: null,
-    highlightedEdgeIds: new Set<string>()
+    highlightedEdgeIds: new Set<string>(),
+    movedPaths: new Set<string>(),
+    movedEdgeIds: new Set<string>()
 } as const
 
 export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBox {

@@ -281,4 +281,19 @@ describe("DependencyMapViewStore", () => {
         // Assert
         expect(store.expandedPaths().has("package:game")).toBe(true)
     })
+
+    it("should show the folders until the reader asks for the packages, and put every dragged box back when the hierarchy changes", () => {
+        // Arrange
+        store.adoptTree(TWO_TOP_FOLDERS)
+        store.placeBox("/root/src", [40, 0])
+        const atFirst = store.hierarchy()
+
+        // Act
+        store.showHierarchy("packages")
+
+        // Assert
+        expect(atFirst).toBe("folders")
+        expect(store.hierarchy()).toBe("packages")
+        expect(store.boxOffsets().size).toBe(0)
+    })
 })

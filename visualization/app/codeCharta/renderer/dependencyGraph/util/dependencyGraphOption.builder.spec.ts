@@ -234,6 +234,26 @@ describe("buildDependencyGraphOption", () => {
         expect(opacityById).toEqual({ [`${view.path}|${model.path}`]: 0.12, [`${util.path}|${view.path}`]: 1 })
     })
 
+    it("should mark the boxes and edges that differ between the hierarchies and say so in the tooltip, a package by its name", () => {
+        // Arrange
+        const gamePackage = aBox("package:com.game", { kind: "package", name: "com.game", x: 200, y: 44 })
+        const layout = { boxes: [root, view, model, gamePackage], bands: [], width: 400, height: 200 }
+        const edges = [anEdge(view.path, model.path)]
+        const moved = { movedPaths: new Set([gamePackage.path]), movedEdgeIds: new Set([edges[0].id]) }
+
+        // Act
+        const { describe, draw, indexOf, edgeIndices } = drawnGraph(sceneWith({ layout, edges, ...moved }))
+
+        // Assert
+        expect(draw(indexOf(gamePackage.path)).children[0].style).toMatchObject({ stroke: "#d97706" })
+        expect(draw(indexOf(view.path)).children[0].style.stroke).not.toBe("#d97706")
+        expect(draw(edgeIndices[0]).children[0].style).toMatchObject({ stroke: "#d97706" })
+        expect(describe(indexOf(gamePackage.path))).toBe(
+            "<b>Package com.game</b><br/>Level 0<br/><i>Double-click to open</i><br/>Sits elsewhere among the folders and the packages"
+        )
+        expect(describe(edgeIndices[0])).toContain("Of another type among the folders than among the packages")
+    })
+
     it("should name the metric and its value in the tooltip of another metric's edge", () => {
         // Arrange
         const edges = [anEdge(view.path, model.path, { weight: 0.375 })]
