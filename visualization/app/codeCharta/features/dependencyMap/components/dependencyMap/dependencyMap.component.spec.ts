@@ -43,6 +43,7 @@ import {
     isDependencyMapFocusedSelector
 } from "../../selectors/dependencyMap.selectors"
 import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
+import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyMapComponent } from "./dependencyMap.component"
 
@@ -521,6 +522,37 @@ describe("DependencyMapComponent", () => {
                 expect(withoutSelection).toBeNull()
                 expect(inspectorTitle()).toBe("view.ts")
                 expect(screen.getByRole("region", { name: "Declarations" }).textContent).toContain("Menu")
+            })
+
+            it("should say that it is shown only while it explains a selection outside compare mode", async () => {
+                // Arrange
+                const { store, fixture } = await setupSelected(null)
+                const isShown = TestBed.inject(DependencyInspectorStore).isShown
+                const withoutSelection = isShown()
+
+                // Act
+                await select(store, fixture, VIEW)
+                const withSelection = isShown()
+                store.overrideSelector(isDeltaStateSelector, true)
+                store.refreshState()
+                fixture.detectChanges()
+
+                // Assert
+                expect([withoutSelection, withSelection, isShown()]).toEqual([false, true, false])
+            })
+
+            it("should slide in over the right edge of the graph once it has something to explain", async () => {
+                // Arrange
+                const { store, fixture, container } = await setupSelected(null)
+                const inspector = container.querySelector("cc-dependency-inspector")
+                const isSlidOut = () => inspector.classList.contains("translate-x-full")
+                const whileClosed = isSlidOut()
+
+                // Act
+                await select(store, fixture, VIEW)
+
+                // Assert
+                expect([whileClosed, isSlidOut()]).toEqual([true, false])
             })
 
             it("should stay away for a map that tells no declarations", async () => {

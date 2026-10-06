@@ -43,8 +43,10 @@ export class DependencyInspectorStore {
     private readonly graphModel = inject(DependencyGraphModelStore)
     private readonly viewStore = inject(DependencyMapViewStore)
     private readonly writeStore = inject(DependencyMapWriteStore)
-    private readonly selectedNodePath$ = inject(DependencyMapReadStore).selectedNodePath$
+    private readonly readStore = inject(DependencyMapReadStore)
+    private readonly selectedNodePath$ = this.readStore.selectedNodePath$
     private readonly sharedSelectedPath = toSignal(this.selectedNodePath$, { requireSync: true })
+    private readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
 
     private readonly selectedInGraph = signal<GraphSelection | null>(null)
     private readonly pointedAt = signal(NOTHING_POINTED_AT)
@@ -124,6 +126,9 @@ export class DependencyInspectorStore {
             pointsUpward: this.graphModel.pointsUpward()
         })
     })
+
+    /** Compare mode draws no graph, and no inspector beside it. */
+    readonly isShown = computed(() => this.model() !== null && !this.isDeltaState())
 
     /** Each dependency pointed at lights up the edge it is drawn as, or drawn in. */
     readonly highlightedEdgeIds = computed((): ReadonlySet<string> => {

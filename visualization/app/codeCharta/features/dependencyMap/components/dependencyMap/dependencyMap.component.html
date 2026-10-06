@@ -5,8 +5,8 @@
         </output>
     </div>
 } @else if (scene(); as scene) {
-    <div class="flex h-full">
-        <div class="h-full min-w-0 flex-1">
+    <div class="relative h-full overflow-hidden">
+        <div class="h-full">
             <cc-dependency-graph
                 [scene]="scene"
                 [graphIdentity]="graphIdentity()"
