@@ -18,23 +18,7 @@
         <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-usage-legend">
             @for (entry of usageLegend(); track entry.usage) {
                 <li class="flex items-center gap-2">
-                    <svg class="h-3 w-8" viewBox="0 0 32 12" aria-hidden="true" [attr.stroke]="usageColor()" [attr.fill]="usageColor()">
-                        <line x1="0" y1="6" x2="22" y2="6" stroke-width="1.5" [attr.stroke-dasharray]="entry.dash?.join(' ') ?? null" />
-                        @switch (entry.head) {
-                            @case ("hollow") {
-                                <polygon points="31,6 22,2 22,10" fill="var(--color-base-100, #fff)" stroke-width="1.2" />
-                            }
-                            @case ("open") {
-                                <polyline points="22,2 31,6 22,10" fill="none" stroke-width="1.2" />
-                            }
-                            @case ("dot") {
-                                <circle cx="27" cy="6" r="3.5" stroke="none" />
-                            }
-                            @default {
-                                <polygon points="31,6 22,2 22,10" stroke="none" />
-                            }
-                        }
-                    </svg>
+                    <cc-line-style-sample [line]="entry" [color]="usageColor()"></cc-line-style-sample>
                     <span>{{ entry.label }}</span>
                 </li>
             }
@@ -51,14 +35,7 @@
                 <li class="flex items-center gap-2">
                     @switch (kindMark()) {
                         @case ("icon") {
-                            <span
-                                class="flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full border text-[10px] leading-none font-bold"
-                                [style.background-color]="entry.tint"
-                                [style.border-color]="iconColors.stroke"
-                                [style.color]="iconColors.letter"
-                                aria-hidden="true"
-                                >{{ entry.letter }}</span
-                            >
+                            <cc-declaration-kind-icon [kind]="entry.kind"></cc-declaration-kind-icon>
                         }
                         @case ("tint") {
                             <span class="h-3.5 w-6 shrink-0 rounded-sm border border-base-300" [style.background-color]="entry.tint" aria-hidden="true"></span>

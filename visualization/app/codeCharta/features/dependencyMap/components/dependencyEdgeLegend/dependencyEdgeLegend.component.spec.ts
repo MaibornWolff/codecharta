@@ -86,7 +86,7 @@ describe("DependencyEdgeLegendComponent", () => {
     })
 
     it.each([
-        ["icon", "span[aria-hidden]"],
+        ["icon", "cc-declaration-kind-icon"],
         ["tint", "span[aria-hidden]"],
         ["shape", "svg"]
     ] as const)("should explain the declaration kinds told by %s", async (declarationKindMark, mark) => {
