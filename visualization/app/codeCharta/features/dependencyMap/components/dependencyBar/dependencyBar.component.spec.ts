@@ -339,17 +339,6 @@ describe("DependencyBarComponent", () => {
         expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: "SET_DEPENDENCY_GRAPH_SETTINGS" }))
     })
 
-    it("should mark what moves between the hierarchies once the reader ticks it", async () => {
-        // Arrange
-        const dispatch = await renderBar({ hasNamespaces: true })
-
-        // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-hierarchy-marks"))
-
-        // Assert
-        expect(dispatch).toHaveBeenCalledWith(changed({ marksHierarchyDifferences: true }))
-    })
-
     it("should say that the upward edge closing a cycle shares the upward colour until the line style shows the kind of use, and still let its own colour be picked", async () => {
         // Arrange
         const { fixture } = await renderBar()

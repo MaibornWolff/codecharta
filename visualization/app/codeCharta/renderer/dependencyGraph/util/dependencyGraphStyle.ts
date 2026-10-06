@@ -13,8 +13,6 @@ const PACKAGE_FILLS_BY_DEPTH = ["#f8f6fd", "#f0ecfa", "#e9e3f7", "#e1d9f3"]
 export const PACKAGE_STROKE = "#c6bce2"
 export const CLOSED_PACKAGE_FILL = "#e6e0f7"
 export const CLOSED_PACKAGE_STROKE = "#8f7fc7"
-/** What sits elsewhere, or reads differently, in the other hierarchy. */
-export const MOVED_COLOR = "#b45309"
 export const FILE_FILL = "#ffffff"
 export const DECLARATION_FILL = "#f7f9fc"
 export const FILE_STROKE = "#9aa5b4"

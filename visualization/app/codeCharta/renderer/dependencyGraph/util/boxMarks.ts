@@ -1,6 +1,6 @@
 import { DeclarationShape, declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
 import { UNTRANSFORMED } from "./dependencyGraphElements"
-import { FILE_FILL, FILE_STROKE, MOVED_COLOR, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
+import { FILE_FILL, FILE_STROKE, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
 import { LayoutBox } from "./levelizedLayout"
 
@@ -38,7 +38,6 @@ const CYCLE_BADGE_TEXT_COLOR = "#ffffff"
 const MOST_COUNTED = 99
 const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
 const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
-const MOVED_OUTLINE = { outsetPx: 3, cornerRadiusPx: 6, lineWidthPx: 1.4, dash: [5, 3] }
 
 /** What a click on a box's cycle badge carries, to tell it from a click on the box. */
 export const CYCLE_BADGE_INFO = "cycleBadge"
@@ -184,25 +183,6 @@ function drawCycleBadge(
         { type: "path", ...glyphAt, shape: { pathData: CYCLE_GLYPH.head }, style: { fill: CYCLE_BADGE_TEXT_COLOR, stroke: null, opacity } },
         ...(count > 1 ? [number] : [])
     ]
-}
-
-/** Drawn around the box rather than on its border, which keeps saying whether the box is selected. */
-export function drawMovedOutline(rect: Rectangle, opacity: number) {
-    const { outsetPx, cornerRadiusPx, lineWidthPx, dash } = MOVED_OUTLINE
-    const shape = {
-        x: rect.x - outsetPx,
-        y: rect.y - outsetPx,
-        width: rect.width + 2 * outsetPx,
-        height: rect.height + 2 * outsetPx,
-        r: cornerRadiusPx
-    }
-    return {
-        type: "rect",
-        ...UNTRANSFORMED,
-        silent: true,
-        shape,
-        style: { fill: null, stroke: MOVED_COLOR, lineWidth: lineWidthPx, lineDash: dash, opacity }
-    }
 }
 
 interface TextLook {

@@ -52,6 +52,4 @@ export interface DependencyGraphSettings {
     declarationKindMark: DeclarationKindMark
     /** Whether a closed box counts the cyclic dependencies it hides. */
     showsCycleBadges: boolean
-    /** Whether the graph marks what sits elsewhere, or reads differently, in the other hierarchy. */
-    marksHierarchyDifferences: boolean
 }

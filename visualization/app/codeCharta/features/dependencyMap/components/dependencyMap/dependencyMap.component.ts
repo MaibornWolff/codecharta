@@ -84,7 +84,7 @@ export class DependencyMapComponent {
         if (!layout) {
             return null
         }
-        const { levelLabel, declarationArrangement, showsCycleBadges, marksHierarchyDifferences, ...looks } = this.graphModel.settings()
+        const { levelLabel, declarationArrangement, showsCycleBadges, ...looks } = this.graphModel.settings()
         return {
             ...looks,
             cycleMarks: this.cycleMarks(),
@@ -95,8 +95,6 @@ export class DependencyMapComponent {
             selectedPath: this.panelStore.selectedBoxPath(),
             selectedEdgeId: this.panelStore.selectedEdgeId(),
             highlightedEdgeIds: this.panelStore.highlightedEdgeIds(),
-            movedPaths: this.graphModel.movedPaths(),
-            movedEdgeIds: this.graphModel.movedEdgeIds(),
             raisedPaths: this.viewStore.raisedPaths(),
             draggingPath: this.viewStore.draggingPath(),
             searchedPaths: this.searchedBoxPaths()

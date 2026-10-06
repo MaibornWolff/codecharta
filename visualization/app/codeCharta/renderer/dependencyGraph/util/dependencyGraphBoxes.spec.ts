@@ -12,7 +12,7 @@ interface DrawnElement {
 }
 
 function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false, kindMark: DeclarationKindMark = "off"): BoxLook {
-    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, cycle: NO_CYCLE, isMoved: false }
+    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, cycle: NO_CYCLE }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -318,19 +318,6 @@ describe("dependencyGraphBoxes", () => {
             expect(name.style.fontWeight).toBe("bold")
         })
 
-        it("should draw a dashed outline around a box that sits elsewhere in the other hierarchy, leaving its own border to say whether it is selected", () => {
-            // Arrange
-            const box = aBox("/root/a.ts", { x: 10, y: 20 })
-
-            // Act
-            const [border, around] = childrenOf(drawBox(box, { ...look("selected"), isMoved: true }, identityPixels))
-            const unmoved = childrenOf(drawBox(box, look("none"), identityPixels))
-
-            // Assert
-            expect(border.style).toMatchObject({ stroke: SELECTED_COLOR, lineDash: null })
-            expect(around).toMatchObject({ shape: { x: 7, y: 17, width: 166, height: 46 }, style: { stroke: "#b45309", lineDash: [5, 3] } })
-            expect(unmoved.map(child => child.type)).toEqual(["rect", "text"])
-        })
         it("should leave an open folder's name to its title, which is painted over the edges", () => {
             // Arrange
             const box = aBox("/root/app", { kind: "folder", isExpanded: true, width: 400, height: 200 })
