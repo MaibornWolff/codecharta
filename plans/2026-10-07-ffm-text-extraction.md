@@ -24,7 +24,7 @@ JNI binding, with identical output and a measured speedup. Detailed plan:
 
 ### 3. Parse and walk text extraction with FFM (behavioural)
 - `DirectTextExtractor` uses `FfmSyntaxTree`; `getNodeText` returns `node.text`
-- Test that no helper keeps a node beyond its visit
+- Architecture rule against a node kept in a field of an extractor
 
 ### 4. Verify and benchmark
 - Module and `DomainLanguageParser` test suites, ktlint
@@ -43,17 +43,20 @@ JNI binding, with identical output and a measured speedup. Detailed plan:
 - [x] Complete Task 4: Verify and benchmark
 - [x] Complete Task 5: Clean-up
 
+## Review Feedback Addressed
+
+1. **Remembered parent**: a child fetched by field name and a previous sibling got the wrong parent; both ask tree-sitter again
+2. **Null-node checks**: the rewritten checks reach fallbacks that used to throw; an Objective-C method without a selector name no longer reports its parameter as the name
+3. **Walk**: one stack of open ancestors, allocator marks named as marks
+4. **Node contract**: lifetime and null nodes are stated on `SyntaxNode` and `FfmNode`
+5. **Clean-up**: `orNull()` and `ancestors()`, dead code and suppressed warnings removed, tree helpers moved next to `SyntaxNode`, JNI adapter in its own package
+6. **Tests**: JNI adapter covered, architecture rule states what it checks, invisible characters escaped
+7. **Changelog**: entries for U+FEFF/U+FFFE/U+FFFF inside a file and for the Objective-C case
+
 ## Notes
 
-- Scope is text extraction; dependency extraction keeps the JNI parse (follow-up in the detailed plan)
-- All extractor files take `SyntaxNode`, the dependency ones too, because they share `TreeTraversal`; the
-  dependency path reaches them through the `TsNodeSyntaxNode` adapter
-- Beyond the detailed plan: nodes remember the parent they were reached from. tree-sitter finds a parent by
-  searching from the root, which was most of the extraction time and independent of the binding
-- The JNI binding drops U+FEFF, U+FFFE and U+FFFF and replaces form feed, vertical tab and U+001F before parsing;
-  the old `TreeSitterExtraction` returned shifted text for such files. These are the only differences at the API.
-  The parsers strip a leading byte order mark in the shared file scanner, so in `ccsh domainlanguageparser` only
-  the form feed case is visible
-- Results and benchmark: `analysis/ideas/treesitter-binding/RESULTS-text-extraction-domain.md` (local, the folder
-  is git-ignored)
-- Open: `TreeSitterDependencies` still returns shifted text for the three dropped characters, since it parses with JNI
+- Scope is text extraction; dependency extraction keeps the JNI parse and reaches the extractors through `TsNodeSyntaxNode`
+- Beyond the detailed plan: nodes remember their parent, which gave most of the speedup
+- Output differs from `main` only for files with U+FEFF, U+FFFE, U+FFFF, form feed, vertical tab or U+001F, and for files `main` skipped
+- Open: `TreeSitterDependencies` returns shifted text behind U+FEFF, U+FFFE and U+FFFF; ten ancestor loops in the dependency extractors could use `ancestors()`
+- Results and benchmark are in `analysis/ideas/treesitter-binding/RESULTS-text-extraction-domain.md`, a git-ignored folder
