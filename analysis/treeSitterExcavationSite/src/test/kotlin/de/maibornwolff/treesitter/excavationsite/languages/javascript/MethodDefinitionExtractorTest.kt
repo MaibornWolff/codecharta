@@ -15,15 +15,13 @@ class MethodDefinitionExtractorTest {
     inner class NullSiblingRobustness {
         @Test
         fun `should not throw when the node has no previous sibling`() {
-            // Arrange - a node that is the first child of its parent has a null-node sentinel as its
-            // prevSibling. The decorator look-behind walk previously called `.type` on that null node,
-            // throwing `TSException: Node is a null node`.
+            // Arrange
             val code = "class A { foo() {} }"
             val root = TsNodeSyntaxNode.parse(code, TreeSitterJavascript())
-            val firstChild = root.getChild(0) // class_declaration, index 0 of program -> prevSibling is null
+            val firstChildOfProgram = root.getChild(0)
 
             // Act / Assert
-            assertThatCode { extractIdentifiersFromMethodDefinition(firstChild) }
+            assertThatCode { extractIdentifiersFromMethodDefinition(firstChildOfProgram) }
                 .doesNotThrowAnyException()
         }
     }

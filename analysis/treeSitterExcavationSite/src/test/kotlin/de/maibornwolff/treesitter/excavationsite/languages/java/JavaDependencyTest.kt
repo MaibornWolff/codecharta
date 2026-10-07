@@ -502,7 +502,7 @@ class JavaDependencyTest {
 
         @Test
         fun `should exclude unparsable types from results`() {
-            // Arrange - standalone method calls have no object node, producing a null TSNode
+            // Arrange - standalone method calls have no object node, producing a null node
             val code = """
             package com.example;
 
