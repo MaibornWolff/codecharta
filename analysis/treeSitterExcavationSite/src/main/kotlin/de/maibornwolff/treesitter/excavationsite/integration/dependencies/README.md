@@ -29,7 +29,7 @@ API                          Integration                    Languages
 Source code string
   → TreeSitterDependencies.analyze(code, Language.JAVA)
     → DependenciesFacade applies preprocessor, passes mapping to collector
-      → DependencyCollector parses AST via TreeSitterParser
+      → DependencyCollector parses with the JNI binding (TsNodeSyntaxNode.parse)
         → LanguageDependencyMapping lambdas called:
           1. extractPackagePath()  → ["com", "example", "service"]
           2. extractImports()      → [ImportDeclaration(path, isWildcard, namespacePath, kind)]

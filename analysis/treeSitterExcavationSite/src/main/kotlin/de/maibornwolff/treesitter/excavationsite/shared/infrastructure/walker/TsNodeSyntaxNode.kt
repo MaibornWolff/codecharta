@@ -3,11 +3,13 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import org.treesitter.TSLanguage
 import org.treesitter.TSNode
+import org.treesitter.TSParser
 
 /**
- * A node of the JNI binding seen as a [SyntaxNode], for the code that still parses with that binding.
+ * A node of the JNI binding seen as a [SyntaxNode], for dependency extraction, which parses with that binding.
  *
- * @param utf8Source the parsed source as UTF-8, which the byte offsets of the node refer to
+ * @param utf8Source the source as UTF-8. The JNI binding drops U+FEFF, U+FFFE and U+FFFF before it parses, so
+ * [text] is shifted behind such a character
  */
 internal class TsNodeSyntaxNode(private val node: TSNode, private val utf8Source: ByteArray) : SyntaxNode {
     override val type: String get() = node.type
@@ -35,7 +37,10 @@ internal class TsNodeSyntaxNode(private val node: TSNode, private val utf8Source
     override fun hashCode(): Int = node.hashCode()
 
     companion object {
-        fun parse(content: String, language: TSLanguage): SyntaxNode =
-            TsNodeSyntaxNode(TreeSitterParser.parse(content, language), content.toByteArray(Charsets.UTF_8))
+        fun parse(content: String, language: TSLanguage): SyntaxNode {
+            val parser = TSParser()
+            parser.language = language
+            return TsNodeSyntaxNode(parser.parseString(null, content).rootNode, content.toByteArray(Charsets.UTF_8))
+        }
     }
 }

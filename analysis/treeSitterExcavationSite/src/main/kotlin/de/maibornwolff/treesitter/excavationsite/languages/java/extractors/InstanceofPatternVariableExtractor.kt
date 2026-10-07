@@ -23,5 +23,5 @@ internal fun extractInstanceofPatternVariable(node: SyntaxNode): String? {
             IDENTIFIER -> if (foundType) lastIdentifier = child
         }
     }
-    return lastIdentifier?.let { it.text }
+    return lastIdentifier?.text
 }

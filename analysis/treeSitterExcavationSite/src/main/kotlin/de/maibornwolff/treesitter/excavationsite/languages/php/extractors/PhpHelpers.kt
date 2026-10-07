@@ -27,7 +27,7 @@ internal fun findFirstVariableName(node: SyntaxNode): String? = node
 internal fun findFirstChildTextByType(node: SyntaxNode, type: String): String? = node
     .children()
     .firstOrNull { it.type == type }
-    ?.let { it.text }
+    ?.text
 
 /**
  * Finds last name child in a node.
@@ -36,4 +36,4 @@ internal fun findFirstChildTextByType(node: SyntaxNode, type: String): String? =
 internal fun findLastNameChild(node: SyntaxNode): String? = node
     .children()
     .lastOrNull { it.type == NAME }
-    ?.let { it.text }
+    ?.text

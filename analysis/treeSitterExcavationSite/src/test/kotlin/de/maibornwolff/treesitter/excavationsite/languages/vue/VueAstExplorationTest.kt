@@ -47,11 +47,11 @@ class VueAstExplorationTest {
             </style>
         """.trimIndent()
 
-        val language = LanguageRegistry.getTreeSitterLanguage(Language.VUE)
+        val language = LanguageRegistry.getJniLanguage(Language.VUE)
         val root = TsNodeSyntaxNode.parse(code, language)
 
         println("=== Vue AST Structure ===")
-        printAst(root, code, 0)
+        printAst(root, 0)
     }
 
     @Test
@@ -73,11 +73,11 @@ class VueAstExplorationTest {
             </script>
         """.trimIndent()
 
-        val language = LanguageRegistry.getTreeSitterLanguage(Language.VUE)
+        val language = LanguageRegistry.getJniLanguage(Language.VUE)
         val root = TsNodeSyntaxNode.parse(code, language)
 
         println("=== Vue Script Section AST ===")
-        printAst(root, code, 0)
+        printAst(root, 0)
     }
 
     @Test
@@ -94,45 +94,27 @@ class VueAstExplorationTest {
             </script>
         """.trimIndent()
 
-        val language = LanguageRegistry.getTreeSitterLanguage(Language.VUE)
+        val language = LanguageRegistry.getJniLanguage(Language.VUE)
         val root = TsNodeSyntaxNode.parse(code, language)
 
         println("=== Vue Comments AST ===")
-        printAst(root, code, 0)
+        printAst(root, 0)
     }
 
-    private fun printAst(node: SyntaxNode, code: String, depth: Int) {
+    private fun printAst(node: SyntaxNode, depth: Int) {
         val indent = "  ".repeat(depth)
-        val nodeText = getNodeTextPreview(node, code)
+        val nodeText = textPreview(node)
         println("$indent${node.type}${if (nodeText.isNotEmpty()) " [$nodeText]" else ""}")
 
         for (child in node.children()) {
             if (!child.isNull) {
-                printAst(child, code, depth + 1)
+                printAst(child, depth + 1)
             }
         }
     }
 
-    private fun buildAstString(node: SyntaxNode, code: String, depth: Int, sb: StringBuilder) {
-        val indent = "  ".repeat(depth)
-        val nodeText = getNodeTextPreview(node, code)
-        sb.appendLine("$indent${node.type}${if (nodeText.isNotEmpty()) " [$nodeText]" else ""}")
-
-        for (child in node.children()) {
-            if (!child.isNull) {
-                buildAstString(child, code, depth + 1, sb)
-            }
-        }
-    }
-
-    private fun getNodeTextPreview(node: SyntaxNode, code: String, maxLength: Int = 30): String {
-        val bytes = code.toByteArray(Charsets.UTF_8)
-        val start = node.startByte
-        val end = node.endByte
-        val text = String(bytes, start, end - start, Charsets.UTF_8)
-            .replace("\n", "\\n")
-            .replace("\t", "\\t")
-
+    private fun textPreview(node: SyntaxNode, maxLength: Int = 30): String {
+        val text = node.text.replace("\n", "\\n").replace("\t", "\\t")
         return if (text.length > maxLength) text.take(maxLength) + "..." else text
     }
 }

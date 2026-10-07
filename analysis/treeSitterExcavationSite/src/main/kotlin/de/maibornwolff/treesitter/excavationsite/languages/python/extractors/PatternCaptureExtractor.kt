@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
@@ -72,7 +73,7 @@ private fun isClassNameInPattern(node: SyntaxNode): Boolean {
             !classField.isNull &&
                 (classField == node || TreeTraversal.isDescendantOf(node, classField))
         }
-        "dotted_name" -> parent.parent.let { !it.isNull && it.type == "class_pattern" }
+        "dotted_name" -> parent.parent.orNull()?.type == "class_pattern"
         else -> false
     }
 }

@@ -42,7 +42,7 @@ private fun findVariableAfterType(children: List<SyntaxNode>): String? {
     return children
         .drop(indexOfType + 1)
         .firstOrNull { it.type == IDENTIFIER }
-        ?.let { it.text }
+        ?.text
 }
 
 private fun isTypeNode(node: SyntaxNode): Boolean = node.type in typeNodes || node.type == IDENTIFIER

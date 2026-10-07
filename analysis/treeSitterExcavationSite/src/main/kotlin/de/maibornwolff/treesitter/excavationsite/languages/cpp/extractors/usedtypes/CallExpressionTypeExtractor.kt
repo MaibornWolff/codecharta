@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -40,8 +41,8 @@ internal object CallExpressionTypeExtractor {
     }
 
     private fun extractCallTypes(call: SyntaxNode): List<UsedType> {
-        val function = call.getChildByFieldName(FUNCTION_FIELD).takeIf { !it.isNull } ?: return emptyList()
-        val parentType = call.parent.takeIf { !it.isNull }?.type
+        val function = call.getChildByFieldName(FUNCTION_FIELD).orNull() ?: return emptyList()
+        val parentType = call.parent.orNull()?.type
         return when (function.type) {
             TEMPLATE_FUNCTION -> extractTemplateFunctionTypes(function, isInThrow = parentType == THROW_STATEMENT)
 
@@ -64,8 +65,9 @@ internal object CallExpressionTypeExtractor {
         if (!isInThrow) return generics
         val name = function
             .getChildByFieldName(NAME_FIELD)
-            .takeIf { !it.isNull }
-            ?.let { it.text.trim() }
+            .orNull()
+            ?.text
+            ?.trim()
             .orEmpty()
         return if (name.isEmpty()) generics else generics + UsedType(name = name, genericTypes = generics)
     }

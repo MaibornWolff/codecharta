@@ -42,7 +42,8 @@ internal object DeclarationExtractor {
     private fun extractName(node: SyntaxNode): String = node
         .children()
         .firstOrNull { it.type == TYPE_IDENTIFIER }
-        ?.let { it.text.trim() }
+        ?.text
+        ?.trim()
         ?: ""
 
     private fun findParentPath(node: SyntaxNode, namesByStartByte: Map<Int, String>): List<String> {

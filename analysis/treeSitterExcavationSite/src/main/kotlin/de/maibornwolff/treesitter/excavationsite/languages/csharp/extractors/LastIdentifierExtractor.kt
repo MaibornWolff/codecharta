@@ -13,4 +13,4 @@ private const val IDENTIFIER = "identifier"
 internal fun findLastIdentifier(node: SyntaxNode): String? = node
     .children()
     .lastOrNull { it.type == IDENTIFIER }
-    ?.let { it.text }
+    ?.text

@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -27,14 +28,14 @@ internal object AliasConstraintExtractor {
         val parent = declaration.parent
         if (parent.isNull || parent.type != TEMPLATE_DECLARATION) return emptyList()
         val requiresClause = parent.children().firstOrNull { it.type == REQUIRES_CLAUSE } ?: return emptyList()
-        val constraint = requiresClause.getChildByFieldName(CONSTRAINT_FIELD).takeIf { !it.isNull } ?: return emptyList()
+        val constraint = requiresClause.getChildByFieldName(CONSTRAINT_FIELD).orNull() ?: return emptyList()
         return collectConstraintTypes(constraint)
     }
 
     private fun collectConstraintTypes(node: SyntaxNode): List<UsedType> {
         if (node.type == CONSTRAINT_DISJUNCTION || node.type == CONSTRAINT_CONJUNCTION) {
-            val left = node.getChildByFieldName(LEFT_FIELD).takeIf { !it.isNull }
-            val right = node.getChildByFieldName(RIGHT_FIELD).takeIf { !it.isNull }
+            val left = node.getChildByFieldName(LEFT_FIELD).orNull()
+            val right = node.getChildByFieldName(RIGHT_FIELD).orNull()
             return listOfNotNull(left, right).flatMap { collectConstraintTypes(it) }
         }
         if (CppTypeHelper.isTypeNode(node)) {

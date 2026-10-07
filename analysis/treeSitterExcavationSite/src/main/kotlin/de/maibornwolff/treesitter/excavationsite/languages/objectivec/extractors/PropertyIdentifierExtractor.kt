@@ -23,12 +23,12 @@ internal fun extractPropertyIdentifier(node: SyntaxNode): String? {
                 if (!declarator.isNull) {
                     return CDeclaratorParser.findIdentifierInDeclarator(declarator)
                 }
-                val result = TreeTraversal.findChildByType(child, IDENTIFIER)
-                    ?: TreeTraversal.findChildByType(child, FIELD_IDENTIFIER)
+                val result = TreeTraversal.findFirstChildTextByType(child, IDENTIFIER)
+                    ?: TreeTraversal.findFirstChildTextByType(child, FIELD_IDENTIFIER)
                 if (result != null) return result
             }
         }
     }
-    return TreeTraversal.findChildByType(node, IDENTIFIER)
-        ?: TreeTraversal.findChildByType(node, FIELD_IDENTIFIER)
+    return TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
+        ?: TreeTraversal.findFirstChildTextByType(node, FIELD_IDENTIFIER)
 }

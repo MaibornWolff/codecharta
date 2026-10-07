@@ -55,7 +55,8 @@ internal object ImportExtractor {
                         .firstOrNull { it.type == NAMESPACE_IMPORT }
                         ?.children()
                         ?.firstOrNull { it.type == IDENTIFIER }
-                        ?.let { it.text.trim() }
+                        ?.text
+                        ?.trim()
                     listOf(ImportDeclaration(path = basePath, isWildcard = true, bindingName = nsName))
                 }
                 else -> {
@@ -132,7 +133,8 @@ internal object ImportExtractor {
                     val rawName = specifier
                         .children()
                         .firstOrNull { it.type == IDENTIFIER }
-                        ?.let { it.text.trim() }
+                        ?.text
+                        ?.trim()
                         ?: return@mapNotNull null
                     val name = normalizeDefaultKeyword(rawName)
                     ImportDeclaration(path = basePath + name, isWildcard = false)
@@ -175,10 +177,12 @@ internal object ImportExtractor {
                     val children = prop.children().toList()
                     val realName = children
                         .firstOrNull { it.type == IDENTIFIER || it.type == PROPERTY_IDENTIFIER }
-                        ?.let { it.text.trim() }
+                        ?.text
+                        ?.trim()
                     val binding = children
                         .lastOrNull { it.type == IDENTIFIER }
-                        ?.let { it.text.trim() }
+                        ?.text
+                        ?.trim()
                     if (realName.isNullOrBlank()) {
                         null
                     } else {

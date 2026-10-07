@@ -101,7 +101,7 @@ internal object DeclarationExtractor {
         var current = node.parent
         while (!current.isNull) {
             if (current.type == MOD_ITEM) {
-                val name = TreeTraversal.findChildByType(current, IDENTIFIER)
+                val name = TreeTraversal.findFirstChildTextByType(current, IDENTIFIER)
                 if (!name.isNullOrBlank()) modules.add(0, name)
             }
             current = current.parent
@@ -111,7 +111,7 @@ internal object DeclarationExtractor {
 
     private fun extractName(node: SyntaxNode): String? {
         val childType = if (node.type in TYPE_NAMED_ITEMS) TYPE_IDENTIFIER else IDENTIFIER
-        return TreeTraversal.findChildByType(node, childType)?.takeIf { it.isNotBlank() }
+        return TreeTraversal.findFirstChildTextByType(node, childType)?.takeIf { it.isNotBlank() }
     }
 
     private fun mapDeclarationType(nodeType: String): DeclarationType = when (nodeType) {

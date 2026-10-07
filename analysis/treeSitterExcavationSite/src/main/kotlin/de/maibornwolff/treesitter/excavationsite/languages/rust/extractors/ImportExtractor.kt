@@ -69,7 +69,7 @@ internal object ImportExtractor {
                 if (segments.isEmpty()) {
                     emptyList()
                 } else {
-                    val binding = aliasNode?.let { it.text.trim() } ?: segments.last()
+                    val binding = aliasNode?.text?.trim() ?: segments.last()
                     listOf(ImportDeclaration(path = prefix + segments, isWildcard = false, kind = kind, bindingName = binding))
                 }
             }
@@ -84,8 +84,7 @@ internal object ImportExtractor {
         }
     }
 
-    private fun segmentsOf(node: SyntaxNode): List<String> = node
-        .text
+    private fun segmentsOf(node: SyntaxNode): List<String> = node.text
         .split(SCOPE_SEPARATOR)
         .map { it.trim() }
         .filter { it.isNotEmpty() }

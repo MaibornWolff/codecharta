@@ -30,7 +30,7 @@ private fun extractSelectorBaseName(selector: SyntaxNode): String? = when (selec
     SELECTOR -> selector.text
     KEYWORD_SELECTOR -> extractFirstKeyword(selector)
     IDENTIFIER -> selector.text
-    else -> TreeTraversal.findChildByType(selector, IDENTIFIER)
+    else -> TreeTraversal.findFirstChildTextByType(selector, IDENTIFIER)
         ?: extractFirstKeyword(selector)
 }
 

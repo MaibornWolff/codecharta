@@ -2,11 +2,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.swift
 
 import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractAllBoundVariables
 import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractClassOrExtensionIdentifier
-import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractDeinitKeyword
 import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractFromPattern
-import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractInitKeyword
 import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractParameterName
-import de.maibornwolff.treesitter.excavationsite.languages.swift.extractors.extractSubscriptKeyword
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CommentFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionMapping
@@ -27,6 +24,9 @@ object SwiftExtractionMapping : ExtractionMapping {
     private const val INIT_DECLARATION = "init_declaration"
     private const val DEINIT_DECLARATION = "deinit_declaration"
     private const val SUBSCRIPT_DECLARATION = "subscript_declaration"
+    private const val INIT_KEYWORD = "init"
+    private const val DEINIT_KEYWORD = "deinit"
+    private const val SUBSCRIPT_KEYWORD = "subscript"
     private const val PROPERTY_DECLARATION = "property_declaration"
     private const val PROTOCOL_PROPERTY_DECLARATION = "protocol_property_declaration"
     private const val TYPEALIAS_DECLARATION = "typealias_declaration"
@@ -58,9 +58,9 @@ object SwiftExtractionMapping : ExtractionMapping {
 
         // Identifiers - custom extractors
         put(CLASS_DECLARATION, Extract.Identifier(customSingle = ::extractClassOrExtensionIdentifier))
-        put(INIT_DECLARATION, Extract.Identifier(customSingle = ::extractInitKeyword))
-        put(DEINIT_DECLARATION, Extract.Identifier(customSingle = ::extractDeinitKeyword))
-        put(SUBSCRIPT_DECLARATION, Extract.Identifier(customSingle = ::extractSubscriptKeyword))
+        put(INIT_DECLARATION, Extract.Identifier(customSingle = { INIT_KEYWORD }))
+        put(DEINIT_DECLARATION, Extract.Identifier(customSingle = { DEINIT_KEYWORD }))
+        put(SUBSCRIPT_DECLARATION, Extract.Identifier(customSingle = { SUBSCRIPT_KEYWORD }))
         put(PROPERTY_DECLARATION, Extract.Identifier(customSingle = ::extractFromPattern))
         put(PROTOCOL_PROPERTY_DECLARATION, Extract.Identifier(customSingle = ::extractFromPattern))
         put(PARAMETER, Extract.Identifier(customSingle = ::extractParameterName))
