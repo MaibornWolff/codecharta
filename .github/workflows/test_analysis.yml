@@ -70,3 +70,37 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           JAVA_HOME: ${{ env.JAVA_HOME }}
 
+ native_tree_sitter_libraries:
+    name: "Native tree-sitter libraries (${{ matrix.os }})"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # one runner per platform the native libraries are bundled for
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-15-intel, windows-latest]
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./analysis
+
+    steps:
+      - uses: actions/checkout@v6
+
+      # The build compiles with JDK 25; the last version listed is the default one, which runs ccsh below
+      - name: Setup Java JDKs
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'zulu'
+          java-version: |
+            25
+            22
+
+      - name: Load and parse with every grammar
+        run: ./gradlew :treeSitterExcavationSite:test --tests "*.GrammarLoadingContractTest" --tests "*.shared.infrastructure.ffm.*" -x jacocoTestReport
+
+      - name: Run ccsh on the oldest supported Java
+        run: |
+          ./gradlew installDist
+          java -version
+          build/install/codecharta-analysis/bin/ccsh unifiedparser treeSitterExcavationSite/src/main -o native-smoke.cc.json
+          test -s native-smoke.cc.json.gz
