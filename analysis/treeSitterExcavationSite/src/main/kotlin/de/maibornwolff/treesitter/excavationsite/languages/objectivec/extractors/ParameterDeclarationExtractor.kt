@@ -2,7 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractor
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val IDENTIFIER = "identifier"
 private const val POINTER_DECLARATOR = "pointer_declarator"

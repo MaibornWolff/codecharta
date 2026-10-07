@@ -1,4 +1,4 @@
-package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
+package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

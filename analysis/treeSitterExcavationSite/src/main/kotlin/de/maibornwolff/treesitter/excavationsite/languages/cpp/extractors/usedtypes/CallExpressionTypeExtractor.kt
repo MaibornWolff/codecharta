@@ -3,9 +3,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
 internal object CallExpressionTypeExtractor {
     private const val CALL_EXPRESSION = "call_expression"

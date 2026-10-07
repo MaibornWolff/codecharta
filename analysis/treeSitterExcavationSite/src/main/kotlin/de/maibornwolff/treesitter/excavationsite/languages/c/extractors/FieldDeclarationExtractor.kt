@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val FIELD_IDENTIFIER = "field_identifier"
 private const val POINTER_DECLARATOR = "pointer_declarator"

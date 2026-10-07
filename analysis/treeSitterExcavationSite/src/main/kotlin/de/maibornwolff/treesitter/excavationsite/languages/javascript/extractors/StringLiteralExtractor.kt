@@ -6,8 +6,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.IMPORT_STA
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.REQUIRE
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 private const val IMPORT = "import"
 

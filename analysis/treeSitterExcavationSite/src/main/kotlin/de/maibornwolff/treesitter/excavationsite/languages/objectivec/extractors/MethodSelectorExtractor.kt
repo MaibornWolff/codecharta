@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 private const val IDENTIFIER = "identifier"
 private const val KEYWORD_DECLARATOR = "keyword_declarator"

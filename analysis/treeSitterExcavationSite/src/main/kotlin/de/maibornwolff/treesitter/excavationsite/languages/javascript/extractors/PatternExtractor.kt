@@ -6,8 +6,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.OBJECT_PAT
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.PAIR_PATTERN
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.SHORTHAND_PROPERTY_IDENTIFIER_PATTERN
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val REST_PATTERN = "rest_pattern"
 private const val OBJECT_ASSIGNMENT_PATTERN = "object_assignment_pattern"

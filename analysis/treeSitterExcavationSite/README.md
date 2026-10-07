@@ -203,8 +203,11 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 │       ├── *ExtractionMapping.kt  # Extraction node mappings
 │       └── extractors/            # Language-specific extractors
 └── shared/                        # Cross-cutting concerns
-    ├── domain/                    # Core types (Metric, Extract, ExtractionResult, etc.)
-    └── infrastructure/walker/     # Tree traversal utilities
+    ├── domain/                    # Core types (Metric, Extract, SyntaxNode, TreeTraversal, etc.)
+    └── infrastructure/
+        ├── ffm/                   # FFM binding to tree-sitter (metrics and text extraction)
+        ├── jni/                   # JNI node adapter (dependency extraction)
+        └── walker/                # Node type matching for metrics
 ```
 
 ## License

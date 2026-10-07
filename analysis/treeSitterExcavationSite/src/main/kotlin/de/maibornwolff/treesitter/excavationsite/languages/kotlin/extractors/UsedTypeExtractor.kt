@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 internal object UsedTypeExtractor {
     // Declaration structure
