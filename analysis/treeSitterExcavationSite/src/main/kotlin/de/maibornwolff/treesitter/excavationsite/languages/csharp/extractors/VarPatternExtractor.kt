@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val IDENTIFIER = "identifier"
 private const val SINGLE_VARIABLE_DESIGNATION = "single_variable_designation"

@@ -3,7 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.extractIdentifiersFromMethodDefinition
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.junit.jupiter.api.Nested

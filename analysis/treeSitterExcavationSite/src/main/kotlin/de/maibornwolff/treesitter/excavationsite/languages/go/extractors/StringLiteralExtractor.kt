@@ -2,7 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.go.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 private const val IMPORT_DECLARATION = "import_declaration"
 private const val IMPORT_SPEC = "import_spec"

@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.go.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 private const val FIELD_IDENTIFIER = "field_identifier"
 

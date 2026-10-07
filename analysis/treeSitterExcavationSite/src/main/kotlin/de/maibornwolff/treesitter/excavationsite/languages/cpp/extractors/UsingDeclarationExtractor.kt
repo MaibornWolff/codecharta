@@ -2,7 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val IDENTIFIER = "identifier"
 private const val QUALIFIED_IDENTIFIER = "qualified_identifier"

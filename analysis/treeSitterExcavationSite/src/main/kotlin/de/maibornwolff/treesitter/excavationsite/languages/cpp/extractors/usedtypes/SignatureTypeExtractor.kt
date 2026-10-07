@@ -3,8 +3,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 internal object SignatureTypeExtractor {
     private const val BASE_CLASS_CLAUSE = "base_class_clause"

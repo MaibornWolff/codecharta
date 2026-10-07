@@ -43,7 +43,8 @@ class ArchitectureTest {
                     "$BASE_PACKAGE.integration.metrics.adapters..",
                     "$BASE_PACKAGE.integration.extraction.extractors..",
                     "$BASE_PACKAGE.integration.extraction.parsers..",
-                    "$BASE_PACKAGE.shared.infrastructure.walker.."
+                    "$BASE_PACKAGE.shared.infrastructure.walker..",
+                    "$BASE_PACKAGE.shared.infrastructure.jni.."
                 ).because("API should only depend on public interfaces, not internal implementations")
                 .check(classes)
         }

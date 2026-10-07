@@ -4,7 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.ARRAY_PATT
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.OBJECT_PATTERN
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts binding identifiers from for-in statements and catch clauses.

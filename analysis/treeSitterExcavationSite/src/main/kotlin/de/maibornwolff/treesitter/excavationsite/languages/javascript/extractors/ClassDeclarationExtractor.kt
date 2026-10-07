@@ -4,8 +4,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.DECORATOR
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts identifiers from class declaration including decorators.

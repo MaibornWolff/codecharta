@@ -2,7 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
 import org.treesitter.TSLanguage
 
 /**

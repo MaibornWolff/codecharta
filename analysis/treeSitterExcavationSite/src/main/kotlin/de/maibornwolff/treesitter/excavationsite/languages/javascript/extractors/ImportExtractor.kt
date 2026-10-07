@@ -21,8 +21,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.VARIABLE_D
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.normalizeDefaultKeyword
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 internal object ImportExtractor {
     private const val ARGUMENTS = "arguments"

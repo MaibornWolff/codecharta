@@ -1,4 +1,4 @@
-package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
+package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import org.treesitter.TSLanguage

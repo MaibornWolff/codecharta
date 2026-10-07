@@ -7,7 +7,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedty
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.SignatureTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 internal object UsedTypeExtractor {
     private const val CLASS_SPECIFIER = "class_specifier"

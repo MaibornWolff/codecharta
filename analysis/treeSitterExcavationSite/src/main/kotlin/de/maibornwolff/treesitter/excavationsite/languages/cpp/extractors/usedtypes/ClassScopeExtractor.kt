@@ -3,7 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
+import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 internal object ClassScopeExtractor {
     private const val FRIEND_DECLARATION = "friend_declaration"

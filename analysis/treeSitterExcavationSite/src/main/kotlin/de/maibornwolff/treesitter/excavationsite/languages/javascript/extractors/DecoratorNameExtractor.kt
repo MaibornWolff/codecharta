@@ -3,8 +3,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.CALL_EXPRESSION
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts decorator name from a decorator node.

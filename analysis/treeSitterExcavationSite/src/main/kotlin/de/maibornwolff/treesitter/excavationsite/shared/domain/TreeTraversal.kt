@@ -1,7 +1,4 @@
-package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
-
-import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
+package de.maibornwolff.treesitter.excavationsite.shared.domain
 
 /**
  * Tree navigation shared by text and dependency extraction.

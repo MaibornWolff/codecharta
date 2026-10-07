@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
  * Extracts as-pattern alias: `with open(f) as file` -> "file".

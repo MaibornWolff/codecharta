@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 /**
  * Extracts pattern capture variables from case_clause.

@@ -2,9 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
 internal object CppTypeHelper {
     private const val TYPE_IDENTIFIER = "type_identifier"

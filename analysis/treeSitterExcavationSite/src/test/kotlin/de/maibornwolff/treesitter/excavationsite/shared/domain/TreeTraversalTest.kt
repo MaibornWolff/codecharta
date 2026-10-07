@@ -1,5 +1,6 @@
-package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
+package de.maibornwolff.treesitter.excavationsite.shared.domain
 
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

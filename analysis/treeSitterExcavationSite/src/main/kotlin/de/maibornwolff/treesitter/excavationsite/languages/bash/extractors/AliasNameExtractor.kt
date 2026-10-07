@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.bash.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
+import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val COMMAND_NAME = "command_name"
 private const val ALIAS = "alias"

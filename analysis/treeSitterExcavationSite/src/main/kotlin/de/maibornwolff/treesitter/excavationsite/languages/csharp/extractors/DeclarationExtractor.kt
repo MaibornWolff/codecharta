@@ -3,7 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 internal object DeclarationExtractor {
     private const val FILE_SCOPED_NAMESPACE = "file_scoped_namespace_declaration"
