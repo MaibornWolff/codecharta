@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Panning the dependency view**: holding Space turns a drag into a pan from anywhere in the graph, also from a box that a drag would otherwise move.
 - **Steady view in the dependency view**: a box that is opened or closed keeps its place on screen, and an opened box that does not fit is brought into view whole.
 
+### Changed
+
+- **Edge styles in the dependency view**: edges are drawn combined, spread or aside, combined and spread with curved or straight lines, and aside now bows downward edges out to the left as it bows upward ones out to the right.
+
 ## [2.8.0] - 2026-10-05
 
 ### Added 🚀

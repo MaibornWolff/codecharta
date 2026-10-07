@@ -1,4 +1,4 @@
-import { canAnchorAtSideMiddle, DependencyEdgeStyle } from "../../../model/dependencyGraph.model"
+import { canAnchorAtSideMiddle, canDrawStraight, DependencyEdgeDrawing, DependencyEdgeStyle } from "../../../model/dependencyGraph.model"
 import { addToGroup } from "./collections"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
@@ -44,24 +44,21 @@ type Lane = "low" | "high"
  * (see `along` in the edges), so the two edges of a two-way dependency run apart and never cross, whichever box
  * is above. Leaving through the bottom travels down, whose left on screen is the higher x. */
 const LANE_BY_START_SIDE: Record<Side, Lane> = { bottom: "high", top: "low", right: "low", left: "high" }
-const CURVED_PORT: Record<Lane, number> = { low: 0.42, high: 0.58 }
+const COMBINED_PORT: Record<Lane, number> = { low: 0.42, high: 0.58 }
 const PORT_MARGIN = 0.1
 const SIDE_MIDDLE = 0.5
 
-export function routeEdges(
-    edges: GraphEdge[],
-    byPath: ReadonlyMap<string, LayoutBox>,
-    style: DependencyEdgeStyle,
-    isAnchoredAtSideMiddle = false
-): EdgeRoute[] {
+export function routeEdges(edges: GraphEdge[], byPath: ReadonlyMap<string, LayoutBox>, drawing: DependencyEdgeDrawing): EdgeRoute[] {
+    const { edgeStyle: style } = drawing
     const sides = edges.map(edge => sidesOf(byPath.get(edge.fromPath), byPath.get(edge.toPath), style))
-    const isAnchored = isAnchoredAtSideMiddle && canAnchorAtSideMiddle(style)
+    const isAnchored = drawing.isAnchoredAtSideMiddle && canAnchorAtSideMiddle(style)
+    const isStraight = drawing.edgeShape === "straight" && canDrawStraight(style)
     const portOf = portsFor({ edges, sides, byPath }, style, isAnchored)
     const edgeIds = new Set(edges.map(edge => edge.id))
     return edges.map((edge, index) => {
         const { startSide, endSide } = sides[index]
         const runsBothWays = edgeIds.has(`${edge.toPath}|${edge.fromPath}`)
-        const bend = bendOf(style, sides[index], runsBothWays)
+        const bend = bendOf(sides[index], isStraight, runsBothWays)
         return {
             start: pointOn(byPath.get(edge.fromPath), startSide, portOf(index, "start")),
             startSide,
@@ -78,24 +75,27 @@ function portsFor(input: RoutingInput, style: DependencyEdgeStyle, isAnchoredAtS
     if (isAnchoredAtSideMiddle) {
         return () => SIDE_MIDDLE
     }
-    return style === "curved" ? (index: number) => CURVED_PORT[laneOf(input.sides[index])] : spreadPorts(input)
+    return style === "combined" ? (index: number) => COMBINED_PORT[laneOf(input.sides[index])] : spreadPorts(input)
 }
 
 function sidesOf(from: LayoutBox, to: LayoutBox, style: DependencyEdgeStyle): Sides {
     if (to.y >= from.y + from.height) {
-        return { startSide: "bottom", endSide: "top" }
+        return style === "aside" ? { startSide: "left", endSide: "left" } : { startSide: "bottom", endSide: "top" }
     }
     if (to.y + to.height <= from.y) {
-        return style === "upwardAside" ? { startSide: "right", endSide: "right" } : { startSide: "top", endSide: "bottom" }
+        return style === "aside" ? { startSide: "right", endSide: "right" } : { startSide: "top", endSide: "bottom" }
     }
     return to.x >= from.x + from.width ? { startSide: "right", endSide: "left" } : { startSide: "left", endSide: "right" }
 }
 
-function bendOf(style: DependencyEdgeStyle, { startSide, endSide }: Sides, runsBothWays: boolean): Bend {
-    if (style === "straight") {
+function bendOf({ startSide, endSide }: Sides, isStraight: boolean, runsBothWays: boolean): Bend {
+    if (startSide === endSide) {
+        return "aside"
+    }
+    if (isStraight) {
         return runsBothWays ? "arc" : "straight"
     }
-    return style === "upwardAside" && startSide === "right" && endSide === "right" ? "aside" : "sCurve"
+    return "sCurve"
 }
 
 function laneOf({ startSide }: Sides): Lane {

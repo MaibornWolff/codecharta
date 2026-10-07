@@ -21,7 +21,7 @@ import {
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 30
+export const DB_VERSION = 31
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -755,6 +755,42 @@ export function migrateCcStateRecordToV30<T>(state: T): T {
     return { ...record, preferences: { ...preferences, dependencyGraph: settingsOfToday } } as T
 }
 
+const EDGE_DRAWING_BY_REMOVED_STYLE: Record<string, { edgeStyle: string; edgeShape: string }> = {
+    curved: { edgeStyle: "combined", edgeShape: "curved" },
+    upwardAside: { edgeStyle: "aside", edgeShape: "curved" },
+    straight: { edgeStyle: "spread", edgeShape: "straight" }
+}
+const STRAIGHT_FROM_THE_MIDDLE = { edgeStyle: "combined", edgeShape: "straight" }
+
+// v31: curved and straight left the edge styles of the dependency graph to become its line shape
+export function migrateCcStateRecordToV31<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"] as Record<string, unknown> | undefined
+    const dependencyGraph = preferences?.["dependencyGraph"] as Record<string, unknown> | undefined
+    if (!dependencyGraph || typeof dependencyGraph !== "object") {
+        return state
+    }
+    const drawing = edgeDrawingOfToday(dependencyGraph)
+    if (!drawing) {
+        return state
+    }
+    return { ...record, preferences: { ...preferences, dependencyGraph: { ...dependencyGraph, ...drawing } } } as T
+}
+
+function edgeDrawingOfToday(dependencyGraph: Record<string, unknown>): Record<string, string> | null {
+    const removedStyle = String(dependencyGraph["edgeStyle"])
+    if (removedStyle === "straight" && dependencyGraph["isAnchoredAtSideMiddle"] === true) {
+        return STRAIGHT_FROM_THE_MIDDLE
+    }
+    if (removedStyle in EDGE_DRAWING_BY_REMOVED_STYLE) {
+        return EDGE_DRAWING_BY_REMOVED_STYLE[removedStyle]
+    }
+    return "edgeShape" in dependencyGraph ? null : { edgeShape: "curved" }
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -782,7 +818,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 27, migrate: migrateCcStateRecordToV27 },
     { version: 28, migrate: migrateCcStateRecordToV28 },
     { version: 29, migrate: migrateCcStateRecordToV29 },
-    { version: 30, migrate: migrateCcStateRecordToV30 }
+    { version: 30, migrate: migrateCcStateRecordToV30 },
+    { version: 31, migrate: migrateCcStateRecordToV31 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

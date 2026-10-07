@@ -89,6 +89,17 @@ describe("drawEdge", () => {
         expect(curve.shape).toMatchObject({ cpx1: 160 + 40, cpy1: 120, cpx2: 160 + 40, cpy2: 20 })
     })
 
+    it("should swing an aside edge that leaves through the left out to the left of both ends", () => {
+        // Arrange
+        const route: EdgeRoute = { start: [0, 20], startSide: "left", end: [30, 120], endSide: "left", bend: "aside" }
+
+        // Act
+        const [curve] = draw(route).children
+
+        // Assert
+        expect(curve.shape).toMatchObject({ cpx1: -40, cpy1: 20, cpx2: -40, cpy2: 120 })
+    })
+
     it("should draw the line in the colour and dashes its look says, with a filled arrow", () => {
         // Arrange
         const dashedRed: Partial<EdgeLook> = { color: "#dc2626", line: { dash: [5, 4], head: "filled" } }

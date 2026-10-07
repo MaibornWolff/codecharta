@@ -21,28 +21,30 @@
     [chosen]="edgeStyle()"
     (choose)="drawEdgesAs($event)"
 >
-    <div class="flex flex-col gap-1 border-t border-base-300 pt-2.5">
-        <label
-            class="flex items-center gap-2"
-            [class]="canAnchorAtSideMiddle() ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'"
-        >
-            <input
-                #sideMiddleCheckbox
-                type="checkbox"
-                class="checkbox checkbox-sm checkbox-primary"
-                data-testid="dependency-bar-edge-style-side-middle"
-                [checked]="isAnchoredAtSideMiddle()"
-                [disabled]="!canAnchorAtSideMiddle()"
-                (change)="anchorAtSideMiddle(sideMiddleCheckbox.checked)"
-            />
-            <span class="text-sm">Start and end at the middle of the side</span>
-        </label>
-        @if (!canAnchorAtSideMiddle()) {
-            <p class="m-0 text-xs opacity-70" data-testid="dependency-bar-edge-style-side-middle-note">
-                Not for {{ edgeStyleLabel() }}, which gives each edge its own spot.
-            </p>
-        }
-    </div>
+    @if (canDrawStraight()) {
+        <div class="flex flex-col gap-2.5 border-t border-base-300 pt-2.5">
+            <cc-choice-row
+                label="Line shape"
+                idPrefix="dependency-bar-edge-shape"
+                [choices]="edgeShapeChoices"
+                [chosen]="edgeShape()"
+                (choose)="shapeEdges($event)"
+            ></cc-choice-row>
+            @if (canAnchorAtSideMiddle()) {
+                <label class="flex cursor-pointer items-center gap-2">
+                    <input
+                        #sideMiddleCheckbox
+                        type="checkbox"
+                        class="checkbox checkbox-sm checkbox-primary"
+                        data-testid="dependency-bar-edge-style-side-middle"
+                        [checked]="isAnchoredAtSideMiddle()"
+                        (change)="anchorAtSideMiddle(sideMiddleCheckbox.checked)"
+                    />
+                    <span class="text-sm">Start and end at the middle of the side</span>
+                </label>
+            }
+        </div>
+    }
 </cc-choice-list-popover>
 
 <cc-edge-style-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-edge-style-settings-popover>

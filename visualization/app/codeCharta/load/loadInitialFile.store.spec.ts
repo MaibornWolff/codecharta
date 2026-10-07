@@ -274,7 +274,7 @@ describe("LoadInitialFileStore", () => {
             const dependencyGraph = {
                 ...defaultPreferences.dependencyGraph,
                 shownEdgeTypes: ["cyclic" as const],
-                edgeStyle: "straight" as const
+                edgeStyle: "aside" as const
             }
             const savedPreferences = { ...defaultPreferences, dependencyGraph }
 

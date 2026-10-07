@@ -4,13 +4,13 @@ import { defaultDependencyGraphSettings, dependencyGraph } from "./dependencyGra
 describe("dependencyGraph", () => {
     it("should change the given settings and keep the others", () => {
         // Arrange
-        const action = setDependencyGraphSettings({ value: { edgeStyle: "straight" } })
+        const action = setDependencyGraphSettings({ value: { edgeStyle: "aside" } })
 
         // Act
         const result = dependencyGraph(defaultDependencyGraphSettings, action)
 
         // Assert
-        expect(result).toEqual({ ...defaultDependencyGraphSettings, edgeStyle: "straight" })
+        expect(result).toEqual({ ...defaultDependencyGraphSettings, edgeStyle: "aside" })
     })
 
     it("should reset to the defaults when the value is undefined", () => {

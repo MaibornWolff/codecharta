@@ -93,7 +93,7 @@ function edgeItems(
     byPath: ReadonlyMap<string, LayoutBox>,
     isDimmed: EdgeTest
 ): EdgeItem[] {
-    const routes = routeEdges(shownEdges, byPath, scene.edgeStyle, scene.isAnchoredAtSideMiddle)
+    const routes = routeEdges(shownEdges, byPath, scene)
     const lightestWeight = minOf(shownEdges.map(edge => edge.weight))
     const colors = edgeColorsAsDrawn(scene.edgeColors, scene.lineStyleShows)
     return shownEdges.map((edge, index) => ({

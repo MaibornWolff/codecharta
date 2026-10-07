@@ -1,5 +1,6 @@
 import {
     DependencyEdgeColors,
+    DependencyEdgeShape,
     DependencyEdgeStyle,
     DependencyEdgeType,
     DependencyEdgeWidth,
@@ -25,6 +26,7 @@ export interface DependencyGraphScene {
     lineStyleShows: LineStyleMeaning
     cycleMarks: CycleMarks
     edgeStyle: DependencyEdgeStyle
+    edgeShape: DependencyEdgeShape
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth
     hoveredPath: string | null
