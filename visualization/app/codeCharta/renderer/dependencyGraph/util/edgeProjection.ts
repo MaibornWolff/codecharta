@@ -78,7 +78,9 @@ const NO_DECLARATION_EDGES: readonly DependencyLeafEdge[] = []
  * Among folders, two files that both stay closed keep their file edge. Once one of them shows its declarations,
  * the edge gives way to the declaration edges it stands for, each still pointing upward as the file edge does:
  * the levels of the file tree say which way is up between two files, and those of the declarations only inside
- * one file. Among packages the file tree has no say: every edge is its declaration edges, flags and all. */
+ * one file. Among packages the file tree has no say: every edge is its declaration edges, flags and all.
+ *
+ * A dependency between two files that the map tells no file edge for is drawn all the same, on its own flags. */
 export function projectEdges(
     edges: Edge[],
     representatives: ReadonlyMap<string, string>,
@@ -90,6 +92,7 @@ export function projectEdges(
     const declarationEdges = isDependencies ? everyDeclarationEdge : NO_DECLARATION_EDGES
     const declarationEdgesByFiles = groupedByFiles(declarationEdges)
     const pointsUpward = upwardRuleOf(edges, hierarchy)
+    const filePairsWithAnEdge = upwardByFilePair(edges)
     for (const edge of edges) {
         const value = edgeMetric === null ? undefined : edge.attributes?.[edgeMetric]
         if (!isCarried(value)) {
@@ -100,7 +103,9 @@ export function projectEdges(
             mergeInto(merged, part, isInside)
         }
     }
-    for (const declarationEdge of declarationEdges.filter(isInsideOneFile)) {
+    const isLeftToItself = (declarationEdge: DependencyLeafEdge) =>
+        isInsideOneFile(declarationEdge) || !filePairsWithAnEdge.has(filesKeyOf(declarationEdge.fromNodeName, declarationEdge.toNodeName))
+    for (const declarationEdge of declarationEdges.filter(isLeftToItself)) {
         const part = {
             ...boxesOf(declarationEdge, representatives),
             ...declarationEdgePart(declarationEdge, pointsUpward(declarationEdge))
@@ -131,15 +136,26 @@ type UpwardRule = (declarationEdge: DependencyLeafEdge) => boolean
 
 /** Which way is up for a dependency between declarations. Among folders the levels of the file tree say so
  * between two files, so the dependency points upward when their file edge does, and its own flag counts only
- * inside one file. Among packages the file tree has no say, and its own flag always counts. */
+ * inside one file or between two files without a file edge. Among packages the file tree has no say, and its
+ * own flag always counts. */
 export function upwardRuleOf(edges: readonly Edge[], hierarchy: DependencyHierarchy): UpwardRule {
-    const upwardFilePairs = new Set(
-        edges.flatMap(edge => (edge.isPointingUpwards && isDependency(edge) ? [filesKeyOf(edge.fromNodeName, edge.toNodeName)] : []))
-    )
-    return declarationEdge =>
-        hierarchy === "packages" || isInsideOneFile(declarationEdge)
-            ? Boolean(declarationEdge.isPointingUpwards)
-            : upwardFilePairs.has(filesKeyOf(declarationEdge.fromNodeName, declarationEdge.toNodeName))
+    const upwardOfFilePair = upwardByFilePair(edges)
+    return declarationEdge => {
+        const isSaidByTheFiles = hierarchy !== "packages" && !isInsideOneFile(declarationEdge)
+        const saidByTheFiles = isSaidByTheFiles
+            ? upwardOfFilePair.get(filesKeyOf(declarationEdge.fromNodeName, declarationEdge.toNodeName))
+            : undefined
+        return saidByTheFiles ?? Boolean(declarationEdge.isPointingUpwards)
+    }
+}
+
+function upwardByFilePair(edges: readonly Edge[]): Map<string, boolean> {
+    const upwardOfFilePair = new Map<string, boolean>()
+    for (const edge of edges.filter(isDependency)) {
+        const filePair = filesKeyOf(edge.fromNodeName, edge.toNodeName)
+        upwardOfFilePair.set(filePair, Boolean(edge.isPointingUpwards) || upwardOfFilePair.get(filePair) === true)
+    }
+    return upwardOfFilePair
 }
 
 function isDependency(edge: Edge): boolean {
