@@ -3,7 +3,7 @@
 # Usage: `mise install` to get tools, then `mise run install` to install deps.
 
 [tools]
-java = "zulu-21"
+java = "zulu-25"
 node = "24"
 
 [tasks.install]
