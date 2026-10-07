@@ -401,6 +401,25 @@ describe("edgeProjection", () => {
             expect(projected.map(({ id }) => id)).toEqual([`${packaged}|/root/lib`])
         })
 
+        it("should draw a dependency between two files the map tells no file edge for, pointing upward as it says itself", () => {
+            // Arrange
+            const withoutAFileEdge: Edge[] = []
+            const representatives = visibleRepresentatives(declaringTree, new Set(everyFolder))
+            const upward = [declarationEdge(`${VIEW}#View`, `${NODE}#Node`, { isPointingUpwards: true })]
+
+            // Act
+            const projected = projectEdges(withoutAFileEdge, representatives, "dependencies", {
+                declarationEdges: upward,
+                hierarchy: "folders",
+                isInside
+            })
+
+            // Assert
+            expect(projected).toMatchObject([
+                { id: `${VIEW}|${NODE}`, weight: 1, type: "feedbackContainerLevel", declarationEdges: upward }
+            ])
+        })
+
         it("should leave the declarations out of another edge metric", () => {
             // Arrange
             const openedFiles = [VIEW, NODE]
