@@ -1,9 +1,12 @@
 package de.maibornwolff.treesitter.excavationsite.architecture
 
+import com.tngtech.archunit.core.domain.JavaClass.Predicates.assignableTo
 import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.TestInstance
 class ArchitectureTest {
     companion object {
         private const val BASE_PACKAGE = "de.maibornwolff.treesitter.excavationsite"
+        private const val RESULT_OF_THE_DEPENDENCY_EXTRACTION_ON_JNI_NODES = "QualifiedIdentifierPath"
     }
 
     private val classes = ClassFileImporter()
@@ -232,6 +236,33 @@ class ArchitectureTest {
                 .should()
                 .beFreeOfCycles()
                 .because("Metrics sub-packages should not have cyclic dependencies")
+                .check(classes)
+        }
+    }
+
+    // endregion
+
+    // region Node Lifetime Rules
+
+    @Nested
+    @DisplayName("Node Lifetime Rules")
+    inner class NodeLifetimeRules {
+        @Test
+        fun `should keep no syntax node in a field of an extractor`() {
+            // Arrange & Act & Assert
+            noFields()
+                .that()
+                .areDeclaredInClassesThat()
+                .resideInAnyPackage("$BASE_PACKAGE.languages..", "$BASE_PACKAGE.integration.extraction..")
+                .and()
+                .areDeclaredInClassesThat()
+                .areNotAnonymousClasses()
+                .and()
+                .areDeclaredInClassesThat()
+                .doNotHaveSimpleName(RESULT_OF_THE_DEPENDENCY_EXTRACTION_ON_JNI_NODES)
+                .should()
+                .haveRawType(assignableTo(SyntaxNode::class.java))
+                .because("a node of the FFM binding is valid only while the walk visits it, its memory is reused afterwards")
                 .check(classes)
         }
     }

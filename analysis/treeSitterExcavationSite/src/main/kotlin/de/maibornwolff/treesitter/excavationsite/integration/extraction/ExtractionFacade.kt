@@ -2,8 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction
 
 import de.maibornwolff.treesitter.excavationsite.integration.extraction.adapters.LanguageDefinitionExtractionAdapter
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
-import org.treesitter.TSLanguage
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 /**
  * Public entry point for the extraction feature.
@@ -16,15 +17,15 @@ object ExtractionFacade {
      * Extracts text from the given source code.
      *
      * @param content The source code to extract from
-     * @param treeSitterLanguage The TreeSitter language parser
+     * @param grammarLibrary The native grammar library to parse the content with
      * @param definition The language definition containing extraction mappings
      * @return A list of extracted text items
      */
-    fun extract(content: String, treeSitterLanguage: TSLanguage, definition: LanguageDefinition): List<ExtractedText> {
+    fun extract(content: String, grammarLibrary: GrammarLibrary, definition: LanguageDefinition): List<ExtractedText> {
         val processedContent = definition.preprocessor?.invoke(content) ?: content
         val extractionNodeTypes = LanguageDefinitionExtractionAdapter(definition)
         val extractor = DirectTextExtractor(
-            treeSitterLanguage = treeSitterLanguage,
+            grammar = NativeTreeSitter.grammar(grammarLibrary),
             extractionNodeTypes = extractionNodeTypes
         )
         return extractor.extract(processedContent)

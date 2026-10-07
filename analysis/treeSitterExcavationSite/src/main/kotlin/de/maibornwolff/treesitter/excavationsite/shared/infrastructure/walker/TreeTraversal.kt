@@ -10,17 +10,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
  */
 object TreeTraversal {
     /**
-     * Utility function to get the text of a node from the source code.
-     *
-     * Tree-sitter uses byte offsets, not character offsets, so we must
-     * convert properly for multi-byte UTF-8 characters.
+     * Returns the text of a node. The source code is not read: the node knows the source it was parsed from.
      */
-    fun getNodeText(node: SyntaxNode, sourceCode: String): String {
-        val bytes = sourceCode.toByteArray(Charsets.UTF_8)
-        val start = node.startByte
-        val end = node.endByte
-        return String(bytes, start, end - start, Charsets.UTF_8)
-    }
+    fun getNodeText(node: SyntaxNode, sourceCode: String): String = node.text
 
     /**
      * Finds the first child of the given types and returns its text.
