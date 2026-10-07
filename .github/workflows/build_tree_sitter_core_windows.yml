@@ -1,0 +1,56 @@
+name: Build tree-sitter core for Windows
+
+# The bonede jars carry the tree-sitter core for every platform, but their Windows DLL exports only its JNI
+# functions and not the C API the analysis calls. This builds the core from the pinned upstream commit; the
+# resulting DLL is checked in under analysis/treeSitterExcavationSite/src/main/resources/lib.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/build_tree_sitter_core_windows.yml'
+
+env:
+  # v0.26.3, the version of the core in analysis/gradle/libs.versions.toml
+  TREE_SITTER_COMMIT: cd4b6e2ef996d4baca12caadb78dffc8b55bc869
+  LIBRARY: x86_64-windows-tree-sitter-core.dll
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install the Windows cross compiler
+        run: sudo apt-get update && sudo apt-get install --yes gcc-mingw-w64-x86-64
+
+      - name: Fetch the pinned tree-sitter commit
+        run: |
+          git init tree-sitter
+          cd tree-sitter
+          git fetch --depth 1 https://github.com/tree-sitter/tree-sitter "$TREE_SITTER_COMMIT"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$TREE_SITTER_COMMIT"
+
+      - name: Compile
+        working-directory: tree-sitter
+        run: |
+          x86_64-w64-mingw32-gcc --version
+          x86_64-w64-mingw32-gcc -O2 -std=c11 -shared -static-libgcc -s \
+            -Ilib/include -Ilib/src lib/src/lib.c -o "$LIBRARY"
+
+      - name: Check the exported C API
+        working-directory: tree-sitter
+        run: |
+          x86_64-w64-mingw32-objdump -p "$LIBRARY" > exports.txt
+          for function in ts_parser_new ts_parser_parse_string ts_tree_root_node ts_tree_cursor_new ts_node_symbol ts_node_child_by_field_name ts_language_symbol_name; do
+            grep --quiet --word-regexp "$function" exports.txt || { echo "$function is not exported"; exit 1; }
+          done
+          grep "DLL Name" exports.txt
+          sha256sum "$LIBRARY"
+
+      - name: Upload the library with its license
+        uses: actions/upload-artifact@v4
+        with:
+          name: tree-sitter-core-windows
+          path: |
+            tree-sitter/x86_64-windows-tree-sitter-core.dll
+            tree-sitter/LICENSE
+          if-no-files-found: error

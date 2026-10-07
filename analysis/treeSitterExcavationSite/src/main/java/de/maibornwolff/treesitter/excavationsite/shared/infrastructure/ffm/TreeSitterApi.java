@@ -48,7 +48,7 @@ final class TreeSitterApi {
     );
 
     private static final Linker LINKER = Linker.nativeLinker();
-    private static final SymbolLookup CORE = NativeTreeSitter.INSTANCE.library("tree-sitter");
+    private static final SymbolLookup CORE = NativeTreeSitter.INSTANCE.coreLibrary();
 
     private static final MethodHandle PARSER_NEW = core("ts_parser_new", FunctionDescriptor.of(ADDRESS));
     private static final MethodHandle PARSER_DELETE = core("ts_parser_delete", FunctionDescriptor.ofVoid(ADDRESS));

@@ -27,6 +27,23 @@ class PlatformTest {
         assertThat(fileName).isEqualTo(expectedFileName)
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "Linux, tree-sitter",
+        "Mac OS X, tree-sitter",
+        "Windows 11, tree-sitter-core"
+    )
+    fun `should use the core library that exports the C API on the platform`(osName: String, expectedCoreLibrary: String) {
+        // Arrange
+        val platform = Platform.of(osName, "amd64")
+
+        // Act
+        val coreLibrary = platform.coreLibraryName
+
+        // Assert
+        assertThat(coreLibrary).isEqualTo(expectedCoreLibrary)
+    }
+
     @Test
     fun `should name the unsupported architecture when it is unknown`() {
         // Arrange
