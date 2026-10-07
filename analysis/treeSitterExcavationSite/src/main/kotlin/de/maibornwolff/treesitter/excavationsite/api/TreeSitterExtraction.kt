@@ -61,11 +61,10 @@ object TreeSitterExtraction {
         }
 
         val definition = LanguageRegistry.getLanguageDefinition(language)
-        val treeSitterLanguage = LanguageRegistry.getTreeSitterLanguage(language)
 
         val extractedTexts = ExtractionFacade.extract(
             content = content,
-            treeSitterLanguage = treeSitterLanguage,
+            grammarLibrary = LanguageRegistry.getGrammarLibrary(language),
             definition = definition
         )
 

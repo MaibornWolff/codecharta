@@ -7,11 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionContext
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeSitterParser
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeWalker
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
-import org.treesitter.TSLanguage
-import org.treesitter.TSTreeCursor
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmGrammar
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 
 /**
  * Extracts text using an ExtractionNodeTypes port.
@@ -19,7 +16,7 @@ import org.treesitter.TSTreeCursor
  * Walks the AST and looks up each node type in the port's nodeExtractions map
  * to determine what to extract.
  */
-class DirectTextExtractor(private val treeSitterLanguage: TSLanguage, private val extractionNodeTypes: ExtractionNodeTypes) {
+internal class DirectTextExtractor(private val grammar: FfmGrammar, private val extractionNodeTypes: ExtractionNodeTypes) {
     private val commentExtractor = CommentExtractor(extractionNodeTypes.commentFormats)
     private val stringExtractor = StringExtractor(extractionNodeTypes.stringFormats)
 
@@ -34,12 +31,10 @@ class DirectTextExtractor(private val treeSitterLanguage: TSLanguage, private va
             return emptyList()
         }
 
-        val rootNode = TreeSitterParser.parse(content, treeSitterLanguage)
-        val utf8Source = content.toByteArray(Charsets.UTF_8)
         val results = mutableListOf<ExtractedText>()
 
-        TreeWalker.walk(TSTreeCursor(rootNode)) { node, nodeType ->
-            processNode(TsNodeSyntaxNode(node, utf8Source), nodeType, content, results)
+        FfmSyntaxTree.parse(content, grammar).use { tree ->
+            tree.walk { node, nodeType -> processNode(node, nodeType, content, results) }
         }
 
         return results
