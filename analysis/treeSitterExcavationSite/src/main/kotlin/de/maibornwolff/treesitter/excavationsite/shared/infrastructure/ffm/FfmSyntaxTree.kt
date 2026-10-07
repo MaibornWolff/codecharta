@@ -40,27 +40,43 @@ internal class FfmSyntaxTree private constructor(
 
     /**
      * Visits all nodes depth-first in pre-order; iterative, so deeply nested code cannot overflow the stack. A visited
-     * node and every node reached from it are valid only during that visit, which keeps the memory of a walk constant.
+     * node and every node reached from it are valid only during that visit; only the ancestors of the visited node
+     * are kept, so the memory of a walk grows with the depth of the tree and not with its size.
      */
     fun walk(visitor: (FfmNode, String) -> Unit) {
         val cursor = TreeSitterApi.cursorNew(arena, rootNode.segment)
+        val ancestors = ArrayList<FfmNode>()
+        val nodesBeforeAncestor = ArrayList<Long>()
         try {
             var hasNode = true
             while (hasNode) {
+                val nodesBeforeNode = nodeAllocator.mark()
+                val node = FfmNode(TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor), this, ancestors.lastOrNull())
                 val nodesBeforeVisit = nodeAllocator.mark()
-                val node = FfmNode(TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor), this)
                 visitor(node, node.type)
                 nodeAllocator.release(nodesBeforeVisit)
-                hasNode = TreeSitterApi.cursorGotoFirstChild(cursor) || gotoNextInPreOrder(cursor)
+                if (TreeSitterApi.cursorGotoFirstChild(cursor)) {
+                    ancestors.add(node)
+                    nodesBeforeAncestor.add(nodesBeforeNode)
+                } else {
+                    nodeAllocator.release(nodesBeforeNode)
+                    hasNode = gotoNextSiblingOfNodeOrAncestor(cursor, ancestors, nodesBeforeAncestor)
+                }
             }
         } finally {
             TreeSitterApi.cursorDelete(cursor)
         }
     }
 
-    private fun gotoNextInPreOrder(cursor: MemorySegment): Boolean {
+    private fun gotoNextSiblingOfNodeOrAncestor(
+        cursor: MemorySegment,
+        ancestors: ArrayList<FfmNode>,
+        nodesBeforeAncestor: ArrayList<Long>
+    ): Boolean {
         while (!TreeSitterApi.cursorGotoNextSibling(cursor)) {
             if (!TreeSitterApi.cursorGotoParent(cursor)) return false
+            ancestors.removeLast()
+            nodeAllocator.release(nodesBeforeAncestor.removeLast())
         }
         return true
     }
