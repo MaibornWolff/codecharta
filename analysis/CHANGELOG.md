@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Changed
+
+- **Java 22 or newer (breaking)**: `ccsh` no longer starts on Java 17 or 21; the Docker image already ships a
+  newer Java.
+
 ## [2.1.0] - 2026-10-05
 
 ### Added 🚀

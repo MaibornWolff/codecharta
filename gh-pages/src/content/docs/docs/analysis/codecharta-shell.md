@@ -9,7 +9,7 @@ While the main purpose of the CodeCharta Shell (ccsh) is to use its various tool
 #### Requirements
 
 - Node **>= 22.19**
-- Java **>= 17**
+- Java **>= 22**
 
 #### npm
 

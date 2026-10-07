@@ -11,7 +11,7 @@ A Kotlin library for calculating code metrics and extracting text from source co
 
 ## Requirements
 
-- Java 17 or higher
+- Java 22 or higher
 
 ## Installation
 

@@ -1,4 +1,5 @@
 import org.cyclonedx.model.Component
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.sonarqube.gradle.SonarExtension
 
@@ -17,6 +18,10 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.cyclonedx)
 }
+
+// The tree-sitter binding uses the foreign function and memory API, which is final from Java 22 on.
+val minimumJavaVersion = 22
+val buildJavaVersion = 25
 
 allprojects {
     group = "de.maibornwolff.codecharta"
@@ -58,6 +63,7 @@ subprojects {
     }
 
     tasks.test {
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
         testLogging {
             events("passed", "skipped", "failed")
         }
@@ -76,7 +82,15 @@ subprojects {
     }
 
     configure<KotlinJvmProjectExtension> {
-        jvmToolchain(17)
+        jvmToolchain(buildJavaVersion)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(minimumJavaVersion.toString()))
+            freeCompilerArgs.add("-Xjdk-release=$minimumJavaVersion")
+        }
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        options.release.set(minimumJavaVersion)
     }
 }
 
