@@ -62,7 +62,7 @@ Components that export data from visualisation data to other formats.
 ## Requirements
 
 - Bash or similar
-- Java >= 11, <= 21
+- Java >= 22
 
 # JSON structure
 
@@ -86,7 +86,7 @@ You can start with **Codecharta Analysis** on multiple ways:
 
 ## Installation via npm
 
-This installs all binaries to run the analysis. Java 11 is recommended, while Java 8 might work.
+This installs all binaries to run the analysis. It needs Java 22 or newer.
 
 `npm install -g codecharta-analysis`
 

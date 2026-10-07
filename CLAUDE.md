@@ -11,7 +11,7 @@ CodeCharta is a code visualization tool that generates 3D treemap visualizations
 
 ## Requirements
 
-- Java >= 11, <= 21
+- Java >= 22 to run `ccsh`; the build compiles with JDK 25, which Gradle downloads when it is missing
 - Node >= 22.19 (working on the visualization needs 22.x from 22.22.3, 24.x from 24.15, or >= 26)
 - Git (with bash utilities for Windows)
 

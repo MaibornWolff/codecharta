@@ -94,7 +94,7 @@ Load two versions and compare them. Green grew, red shrank, and you see where a 
 
 ## Quickstart
 
-**1. Install the CodeCharta Shell** (Node ≥ 22.19 and Java 17 to 21)
+**1. Install the CodeCharta Shell** (Node ≥ 22.19 and Java 22 or newer)
 
 ```bash
 npm i -g codecharta-analysis

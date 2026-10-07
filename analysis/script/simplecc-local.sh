@@ -24,10 +24,10 @@ if [ ! -x "$CCSH_BIN_DIR/ccsh" ]; then
     exit 1
 fi
 
-# The distribution targets Java 17-21; honor an existing JAVA_HOME, otherwise fall back
-# to a local JDK 21 if one is present (the gradle launcher uses JAVA_HOME when set).
-if [ -z "${JAVA_HOME:-}" ] && [ -d /usr/lib/jvm/java-21-openjdk-arm64 ]; then
-    export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-arm64
+# The distribution needs Java 22 or newer; honor an existing JAVA_HOME, otherwise fall back
+# to a local JDK 25 if one is present (the gradle launcher uses JAVA_HOME when set).
+if [ -z "${JAVA_HOME:-}" ] && [ -d /usr/lib/jvm/java-25-openjdk-arm64 ]; then
+    export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-arm64
 fi
 
 export PATH="$(cd "$CCSH_BIN_DIR" && pwd):$PATH"
