@@ -23,7 +23,7 @@ internal object NativeTreeSitter {
     }
 
     private fun symbolNames(language: MemorySegment): Array<String> = Array(TreeSitterApi.languageSymbolCount(language)) { symbol ->
-        val name = TreeSitterApi.languageSymbolName(language, symbol.toShort())
+        val name = TreeSitterApi.languageSymbolName(language, symbol.toChar())
         if (name == MemorySegment.NULL) "" else name.reinterpret(Long.MAX_VALUE).getString(0)
     }
 

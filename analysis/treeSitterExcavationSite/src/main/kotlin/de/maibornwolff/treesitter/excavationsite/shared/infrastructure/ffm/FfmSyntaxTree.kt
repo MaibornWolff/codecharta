@@ -11,12 +11,12 @@ import java.lang.foreign.ValueLayout.JAVA_INT
  */
 internal class FfmSyntaxTree private constructor(private val arena: Arena, private val tree: MemorySegment, val grammar: FfmGrammar) :
     AutoCloseable {
-        val nodeAllocator: SegmentAllocator = BlockAllocator(arena)
+        val nodeAllocator = BlockAllocator(arena)
         private val pointBuffer = arena.allocate(TreeSitterApi.POINT)
         val pointAllocator = SegmentAllocator { _, _ -> pointBuffer }
         private val fieldNames = HashMap<String, MemorySegment>()
 
-        val rootNode: FfmNode by lazy { FfmNode(TreeSitterApi.treeRootNode(nodeAllocator, tree), this) }
+        val rootNode = FfmNode(TreeSitterApi.treeRootNode(nodeAllocator, tree), this)
 
         fun fieldName(name: String): MemorySegment = fieldNames.getOrPut(name) { arena.allocateFrom(name) }
 
@@ -27,14 +27,19 @@ internal class FfmSyntaxTree private constructor(private val arena: Arena, priva
             return (row shl Int.SIZE_BITS) or (column and UNSIGNED_INT_MASK)
         }
 
-        /** Visits all nodes depth-first in pre-order; iterative, so deeply nested code cannot overflow the stack. */
+        /**
+         * Visits all nodes depth-first in pre-order; iterative, so deeply nested code cannot overflow the stack. A visited
+         * node and every node reached from it are valid only during that visit, which keeps the memory of a walk constant.
+         */
         fun walk(visitor: (FfmNode, String) -> Unit) {
             val cursor = TreeSitterApi.cursorNew(arena, rootNode.segment)
             try {
                 var hasNode = true
                 while (hasNode) {
+                    val nodesBeforeVisit = nodeAllocator.mark()
                     val node = FfmNode(TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor), this)
                     visitor(node, node.type)
+                    nodeAllocator.release(nodesBeforeVisit)
                     hasNode = TreeSitterApi.cursorGotoFirstChild(cursor) || gotoNextInPreOrder(cursor)
                 }
             } finally {
@@ -50,8 +55,9 @@ internal class FfmSyntaxTree private constructor(private val arena: Arena, priva
         }
 
         override fun close() {
-            TreeSitterApi.treeDelete(tree)
+            if (!arena.scope().isAlive) return
             arena.close()
+            TreeSitterApi.treeDelete(tree)
         }
 
         companion object {

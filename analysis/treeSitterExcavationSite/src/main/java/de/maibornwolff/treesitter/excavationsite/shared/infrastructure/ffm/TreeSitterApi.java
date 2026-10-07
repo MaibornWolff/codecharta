@@ -2,8 +2,8 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
+import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
-import static java.lang.foreign.ValueLayout.JAVA_SHORT;
 
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
@@ -12,6 +12,7 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SegmentAllocator;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.SymbolLookup;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 /**
@@ -22,6 +23,9 @@ import java.lang.invoke.MethodHandle;
  * polymorphic signature once it targets an older JDK release than the one it builds with.
  */
 final class TreeSitterApi {
+    /** {@code TSSymbol} is a {@code uint16_t}, which is Java's {@code char}. */
+    private static final ValueLayout.OfChar SYMBOL = JAVA_CHAR;
+
     /** {@code TSNode { uint32_t context[4]; const void *id; const TSTree *tree; }} */
     static final StructLayout NODE = MemoryLayout.structLayout(
         MemoryLayout.sequenceLayout(4, JAVA_INT).withName("context"),
@@ -64,7 +68,7 @@ final class TreeSitterApi {
         core("ts_tree_cursor_goto_next_sibling", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
     private static final MethodHandle CURSOR_GOTO_PARENT =
         core("ts_tree_cursor_goto_parent", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
-    private static final MethodHandle NODE_SYMBOL = core("ts_node_symbol", FunctionDescriptor.of(JAVA_SHORT, NODE));
+    private static final MethodHandle NODE_SYMBOL = core("ts_node_symbol", FunctionDescriptor.of(SYMBOL, NODE));
     private static final MethodHandle NODE_START_POINT = core("ts_node_start_point", FunctionDescriptor.of(POINT, NODE));
     private static final MethodHandle NODE_END_POINT = core("ts_node_end_point", FunctionDescriptor.of(POINT, NODE));
     private static final MethodHandle NODE_CHILD_COUNT = core("ts_node_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
@@ -75,7 +79,7 @@ final class TreeSitterApi {
     private static final MethodHandle LANGUAGE_SYMBOL_COUNT =
         core("ts_language_symbol_count", FunctionDescriptor.of(JAVA_INT, ADDRESS));
     private static final MethodHandle LANGUAGE_SYMBOL_NAME =
-        core("ts_language_symbol_name", FunctionDescriptor.of(ADDRESS, ADDRESS, JAVA_SHORT));
+        core("ts_language_symbol_name", FunctionDescriptor.of(ADDRESS, ADDRESS, SYMBOL));
 
     private TreeSitterApi() {}
 
@@ -193,9 +197,9 @@ final class TreeSitterApi {
         }
     }
 
-    static short nodeSymbol(MemorySegment node) {
+    static char nodeSymbol(MemorySegment node) {
         try {
-            return (short) NODE_SYMBOL.invokeExact(node);
+            return (char) NODE_SYMBOL.invokeExact(node);
         } catch (Throwable failure) {
             throw rethrow(failure);
         }
@@ -257,7 +261,7 @@ final class TreeSitterApi {
         }
     }
 
-    static MemorySegment languageSymbolName(MemorySegment language, short symbol) {
+    static MemorySegment languageSymbolName(MemorySegment language, char symbol) {
         try {
             return (MemorySegment) LANGUAGE_SYMBOL_NAME.invokeExact(language, symbol);
         } catch (Throwable failure) {

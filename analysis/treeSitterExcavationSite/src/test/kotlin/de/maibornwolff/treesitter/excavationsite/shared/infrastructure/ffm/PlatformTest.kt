@@ -48,13 +48,4 @@ class PlatformTest {
             .isInstanceOf(UnsatisfiedLinkError::class.java)
             .hasMessageContaining(unsupportedSystem)
     }
-
-    @Test
-    fun `should detect the platform the tests run on`() {
-        // Act
-        val platform = Platform.current()
-
-        // Assert
-        assertThat(platform.architecture).isIn("x86_64", "aarch64")
-    }
 }

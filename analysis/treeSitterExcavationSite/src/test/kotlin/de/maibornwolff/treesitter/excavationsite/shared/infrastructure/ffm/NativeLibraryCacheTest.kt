@@ -3,9 +3,12 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledOnOs
+import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.attribute.PosixFilePermissions
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import kotlin.io.path.listDirectoryEntries
@@ -46,6 +49,47 @@ class NativeLibraryCacheTest {
 
         // Assert
         assertThat(unpacked).exists().hasParentRaw(missingDirectory)
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    fun `should let only the owner into a cache directory it creates`() {
+        // Arrange
+        val missingDirectory = cacheDirectory.resolve("cache")
+        val cache = NativeLibraryCache(missingDirectory, linux) { bundledLibraries[it] }
+
+        // Act
+        cache.unpack("tree-sitter")
+
+        // Assert
+        assertThat(PosixFilePermissions.toString(Files.getPosixFilePermissions(missingDirectory))).isEqualTo("rwx------")
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    fun `should refuse a cache directory other users can write to`() {
+        // Arrange
+        val sharedDirectory = Files.createDirectory(cacheDirectory.resolve("shared"))
+        Files.setPosixFilePermissions(sharedDirectory, PosixFilePermissions.fromString("rwxrwxrwx"))
+        val cache = NativeLibraryCache(sharedDirectory, linux) { bundledLibraries[it] }
+
+        // Act & Assert
+        assertThatThrownBy { cache.unpack("tree-sitter") }
+            .isInstanceOf(UnsatisfiedLinkError::class.java)
+            .hasMessageContaining("codecharta.treesitter.library.dir")
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    fun `should refuse a cache directory that is a symbolic link`() {
+        // Arrange
+        val realDirectory = Files.createDirectory(cacheDirectory.resolve("real"))
+        val linkedDirectory = Files.createSymbolicLink(cacheDirectory.resolve("link"), realDirectory)
+        val cache = NativeLibraryCache(linkedDirectory, linux) { bundledLibraries[it] }
+
+        // Act & Assert
+        assertThatThrownBy { cache.unpack("tree-sitter") }.isInstanceOf(UnsatisfiedLinkError::class.java)
+        assertThat(realDirectory.listDirectoryEntries()).isEmpty()
     }
 
     @Test

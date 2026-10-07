@@ -7,7 +7,7 @@ import org.treesitter.TSParser
 /**
  * Shared TreeSitter parsing utility.
  *
- * Centralizes the parsing logic used by both MetricCollector and TextExtractor.
+ * Centralizes the parsing logic of text and dependency extraction.
  */
 object TreeSitterParser {
     /**

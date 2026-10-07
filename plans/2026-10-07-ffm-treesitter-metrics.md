@@ -1,7 +1,7 @@
 ---
 name: FFM tree-sitter binding for metrics in all languages
 issue: none yet
-state: complete
+state: progress
 version: 1
 ---
 
@@ -43,13 +43,14 @@ bonede JNI binding, with identical output. Detailed background: `analysis/ideas/
 
 - [x] Complete Task 1: Foundation
 - [x] Complete Task 2: Roll out all languages
-- [x] Complete Task 3: CI
+- [ ] Complete Task 3: CI (the platform matrix has not run green yet)
 - [x] Complete Task 4: Clean-up
 
 ## Notes
 
-- Verified: 0 differing metric values in 23 corpora covering all 19 languages (results in
-  `analysis/ideas/treesitter-binding/RESULTS-metrics-all-languages.md`); `./gradlew build integrationTest` green.
+- Verified on 34 code bases covering all 19 languages: the metric values are identical to the JNI binding, except
+  for one file with a form feed, which the JNI binding handed to tree-sitter as a question mark.
+- A byte order mark inside a file is now parsed as it is; the JNI binding dropped it.
 - Open: the struct layouts in `TreeSitterApi.java` are hand-written, because jextract could not be downloaded in
   the sandbox. The CI platform matrix has not run yet.
 - Text extraction and the DependencyParser keep the bonede JNI binding; the bonede jars stay as carriers of

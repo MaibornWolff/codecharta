@@ -4,7 +4,7 @@
 
 Install via npm
 
-This installs all binaries to run the analysis. Java 9 is required.
+This installs all binaries to run the analysis. Java 22 or newer is required.
 
 `npm install -g @maibornwolff/codecharta-analysis`
 
