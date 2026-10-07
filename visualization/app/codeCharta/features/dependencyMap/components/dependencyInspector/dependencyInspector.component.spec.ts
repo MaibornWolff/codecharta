@@ -127,6 +127,8 @@ describe("DependencyInspectorComponent", () => {
         const badges = [...screen.getByTestId("dependency-inspector-badges").children]
         expect(badges.map(badge => badge.textContent)).toEqual(["file", "package game", "6 cycles"])
         expect(badges.map(badge => badge.classList.contains("badge-info"))).toEqual([false, false, true])
+        expect(badges.map(badge => badge.classList.contains("border-info"))).toEqual([false, false, true])
+        expect(badges.map(badge => badge.classList.contains("border-base-300"))).toEqual([true, true, false])
         expect(referenceChosen).toHaveBeenCalledWith(ROOT_FOLDER)
     })
 

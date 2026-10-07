@@ -61,7 +61,7 @@
                 </h2>
                 <div class="mt-1 flex flex-wrap gap-1" data-testid="dependency-inspector-badges">
                     @for (badge of model.badges; track badge.text) {
-                        <span class="badge badge-sm" [class]="badge.isAboutCycles ? 'badge-info badge-soft' : 'badge-ghost'">{{ badge.text }}</span>
+                        <span class="badge badge-sm" [class]="badge.isAboutCycles ? 'badge-info badge-soft border-info' : 'badge-ghost border-base-300'">{{ badge.text }}</span>
                     }
                 </div>
             </div>
