@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Form feeds in source files**: a file that contains a form feed or a vertical tab no longer gets wrong function
   and complexity counts from `unifiedparser`.
 
+- **Start folder on Windows**: `ccsh` no longer loads code from the folder it is started in, so analysing a
+  project from inside its folder cannot run files that project brings along.
+
 ## [2.1.0] - 2026-10-05
 
 ### Added 🚀

@@ -79,7 +79,7 @@ tasks.named<CreateStartScripts>("startScripts") {
         windowsScript.writeText(
             windowsScript
                 .readText()
-                .replace(Regex("set CLASSPATH=.*"), "set CLASSPATH=.;%APP_HOME%/lib/*")
+                .replace(Regex("set CLASSPATH=.*"), "set CLASSPATH=%APP_HOME%/lib/*")
         )
         unixScript.writeText(
             unixScript
