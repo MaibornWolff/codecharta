@@ -7,12 +7,16 @@ import java.lang.foreign.SymbolLookup
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Loads the native libraries the bonede jars ship (`lib/<platform>-tree-sitter[-<grammar>].<ext>`): the tree-sitter
- * core and one library per grammar. They stay loaded for the lifetime of the process.
+ * Loads the native libraries bundled as `lib/<platform>-tree-sitter[-<grammar>].<ext>`: the tree-sitter core and one
+ * library per grammar. They come from the bonede jars, except for the Windows core, which is built from the
+ * tree-sitter sources by the workflow `build_tree_sitter_core_windows.yml`. They stay loaded for the lifetime of
+ * the process.
  */
 internal object NativeTreeSitter {
     private val libraries = NativeLibraryCache()
     private val grammars = ConcurrentHashMap<GrammarLibrary, FfmGrammar>()
+
+    fun coreLibrary(): SymbolLookup = library(Platform.current().coreLibraryName)
 
     fun library(baseName: String): SymbolLookup = SymbolLookup.libraryLookup(libraries.unpack(baseName), Arena.global())
 
