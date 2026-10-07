@@ -781,7 +781,8 @@ export function migrateCcStateRecordToV31<T>(state: T): T {
 }
 
 function edgeDrawingOfToday(dependencyGraph: Record<string, unknown>): Record<string, string> | null {
-    const removedStyle = String(dependencyGraph["edgeStyle"])
+    const persistedStyle = dependencyGraph["edgeStyle"]
+    const removedStyle = typeof persistedStyle === "string" ? persistedStyle : ""
     if (removedStyle === "straight" && dependencyGraph["isAnchoredAtSideMiddle"] === true) {
         return STRAIGHT_FROM_THE_MIDDLE
     }
