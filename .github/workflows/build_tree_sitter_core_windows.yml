@@ -9,8 +9,7 @@ on:
     paths:
       - '.github/workflows/build_tree_sitter_core_windows.yml'
 
-permissions:
-  contents: read
+permissions: {}
 
 env:
   # v0.26.3, the version of the core in analysis/gradle/libs.versions.toml
