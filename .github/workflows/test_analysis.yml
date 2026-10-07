@@ -86,21 +86,28 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # The build compiles with JDK 25; the last version listed is the default one, which runs ccsh below
-      - name: Setup Java JDKs
+      # Gradle has to run on the JDK it compiles with: the Kotlin compiler reads that JDK's class image inside
+      # Gradle's own JVM, which fails across versions for a JDK with CRaC support such as Zulu
+      - name: Setup the JDK to build with
         uses: actions/setup-java@v5.2.0
         with:
-          distribution: 'zulu'
-          java-version: |
-            25
-            22
+          distribution: 'temurin'
+          java-version: 25
 
       - name: Load and parse with every grammar
         run: ./gradlew :treeSitterExcavationSite:test --tests "*.GrammarLoadingContractTest" --tests "*.shared.infrastructure.ffm.*" -x jacocoTestReport
 
+      - name: Build ccsh
+        run: ./gradlew installDist
+
+      - name: Setup the oldest supported Java
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 22
+
       - name: Run ccsh on the oldest supported Java
         run: |
-          ./gradlew installDist
           java -version
           build/install/codecharta-analysis/bin/ccsh unifiedparser treeSitterExcavationSite/src/main -o native-smoke.cc.json
           test -s native-smoke.cc.json.gz
