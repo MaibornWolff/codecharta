@@ -2,10 +2,10 @@ package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 /**
  * Flattens every `use` declaration into one [ImportDeclaration] per imported leaf.
@@ -34,7 +34,7 @@ internal object ImportExtractor {
 
     private val PATH_LEAF_TYPES = setOf(SCOPED_IDENTIFIER, IDENTIFIER, CRATE, SELF, SUPER, METAVARIABLE)
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, USE_DECLARATION)
         .flatMap { useDeclaration ->
             val kind = if (useDeclaration.children().any { it.type == VISIBILITY_MODIFIER }) {
@@ -46,7 +46,7 @@ internal object ImportExtractor {
             content?.let { flattenUseTree(it, emptyList(), kind, sourceCode) } ?: emptyList()
         }
 
-    private fun flattenUseTree(node: TSNode, prefix: List<String>, kind: ImportKind, sourceCode: String): List<ImportDeclaration> {
+    private fun flattenUseTree(node: SyntaxNode, prefix: List<String>, kind: ImportKind, sourceCode: String): List<ImportDeclaration> {
         return when (node.type) {
             in PATH_LEAF_TYPES -> {
                 val segments = segmentsOf(node, sourceCode)
@@ -84,7 +84,7 @@ internal object ImportExtractor {
         }
     }
 
-    private fun segmentsOf(node: TSNode, sourceCode: String): List<String> = TreeTraversal
+    private fun segmentsOf(node: SyntaxNode, sourceCode: String): List<String> = TreeTraversal
         .getNodeText(node, sourceCode)
         .split(SCOPE_SEPARATOR)
         .map { it.trim() }

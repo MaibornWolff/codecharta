@@ -1,6 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.go.extractors
 
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 private const val VAR_SPEC = "var_spec"
 
@@ -8,5 +8,5 @@ private const val VAR_SPEC = "var_spec"
  * Extracts all identifiers from var declaration.
  * Handles both single spec and spec_list (block) patterns.
  */
-internal fun extractAllFromVarDeclaration(node: TSNode, sourceCode: String): List<String> =
+internal fun extractAllFromVarDeclaration(node: SyntaxNode, sourceCode: String): List<String> =
     extractAllFromVarOrConstDeclaration(node, sourceCode, VAR_SPEC)

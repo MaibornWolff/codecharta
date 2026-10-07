@@ -2,8 +2,8 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction.extract
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 /**
  * Generic string extractor that handles various string literal formats.
@@ -14,7 +14,7 @@ class StringExtractor(private val stringFormats: Map<String, StringFormats>) {
     /**
      * Extracts string content from a node, stripping appropriate delimiters.
      */
-    fun extract(node: TSNode, sourceCode: String): String {
+    fun extract(node: SyntaxNode, sourceCode: String): String {
         val text = TreeTraversal.getNodeText(node, sourceCode)
         val format = stringFormats[node.type] ?: return text
 
@@ -48,7 +48,7 @@ class StringExtractor(private val stringFormats: Map<String, StringFormats>) {
         text.removeSurrounding("\"")
     }
 
-    private fun extractFromChild(node: TSNode, sourceCode: String, childType: String): String {
+    private fun extractFromChild(node: SyntaxNode, sourceCode: String, childType: String): String {
         for (i in 0 until node.childCount) {
             val child = node.getChild(i)
             if (child.type == childType) {

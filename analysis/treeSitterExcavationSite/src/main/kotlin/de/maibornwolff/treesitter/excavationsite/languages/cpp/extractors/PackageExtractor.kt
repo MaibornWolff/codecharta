@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 internal object PackageExtractor {
-    fun extract(rootNode: TSNode, sourceCode: String): List<String> = CppNamespaceWalker.firstFileNamespace(rootNode, sourceCode)
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<String> = CppNamespaceWalker.firstFileNamespace(rootNode, sourceCode)
 }

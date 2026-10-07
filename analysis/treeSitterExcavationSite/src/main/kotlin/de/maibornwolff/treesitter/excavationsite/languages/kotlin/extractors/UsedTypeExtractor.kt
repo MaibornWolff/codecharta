@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object UsedTypeExtractor {
     // Declaration structure
@@ -41,7 +41,7 @@ internal object UsedTypeExtractor {
         NAVIGATION_EXPRESSION
     )
 
-    fun extract(declaration: TSNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
         val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
 
         val inheritanceTypes = extractInheritanceTypes(buckets, sourceCode)
@@ -58,12 +58,12 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun extractInheritanceTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[DELEGATION_SPECIFIER]
             .orEmpty()
             .mapNotNull { extractTypeFromConstructorOrUserType(it, sourceCode) }
 
-    private fun extractPropertyTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractPropertyTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val fromProperties = buckets[PROPERTY_DECLARATION].orEmpty().mapNotNull { property ->
             val varDecl = property.children().firstOrNull { it.type == VARIABLE_DECLARATION }
             varDecl?.let { extractTypeAfterColon(it, sourceCode) }
@@ -74,7 +74,7 @@ internal object UsedTypeExtractor {
         return fromProperties + fromClassParams
     }
 
-    private fun extractParameterTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractParameterTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         return buckets[FUNCTION_DECLARATION].orEmpty().flatMap { function ->
             val params = function.children().firstOrNull { it.type == FUNCTION_VALUE_PARAMETERS }
                 ?: return@flatMap emptyList()
@@ -86,15 +86,15 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractReturnTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractReturnTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[FUNCTION_DECLARATION].orEmpty().mapNotNull { function ->
             extractTypeAfterColon(function, sourceCode)
         }
 
-    private fun extractAnnotationTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractAnnotationTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[ANNOTATION].orEmpty().mapNotNull { extractTypeFromConstructorOrUserType(it, sourceCode) }
 
-    private fun extractUppercaseCallTypes(buckets: Map<String, List<TSNode>>, nodeType: String, sourceCode: String): List<UsedType> {
+    private fun extractUppercaseCallTypes(buckets: Map<String, List<SyntaxNode>>, nodeType: String, sourceCode: String): List<UsedType> {
         return buckets[nodeType].orEmpty().mapNotNull { node ->
             val firstChild = node.getNamedChild(0)
             if (firstChild.isNull) return@mapNotNull null
@@ -106,14 +106,14 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractTypeFromConstructorOrUserType(node: TSNode, sourceCode: String): UsedType? {
+    private fun extractTypeFromConstructorOrUserType(node: SyntaxNode, sourceCode: String): UsedType? {
         val constructorInvocation = node.children().firstOrNull { it.type == CONSTRUCTOR_INVOCATION }
         val typeParent = constructorInvocation ?: node
         val userType = typeParent.children().firstOrNull { it.type == USER_TYPE }
         return userType?.let { extractType(it, sourceCode) }
     }
 
-    private fun extractTypeAfterColon(node: TSNode, sourceCode: String): UsedType? {
+    private fun extractTypeAfterColon(node: SyntaxNode, sourceCode: String): UsedType? {
         val children = node.children().toList()
         val colonIndex = children.indexOfFirst { it.type == COLON }
         if (colonIndex < 0 || colonIndex + 1 >= children.size) return null
@@ -125,12 +125,12 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractTypeFromNullable(nullableNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractTypeFromNullable(nullableNode: SyntaxNode, sourceCode: String): UsedType? {
         val userType = nullableNode.children().firstOrNull { it.type == USER_TYPE }
         return userType?.let { extractType(it, sourceCode) }
     }
 
-    private fun extractType(userTypeNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractType(userTypeNode: SyntaxNode, sourceCode: String): UsedType? {
         if (userTypeNode.isNull) return null
         val typeIdentifier = userTypeNode.children().firstOrNull { it.type == TYPE_IDENTIFIER }
             ?: return null
@@ -140,7 +140,7 @@ internal object UsedTypeExtractor {
         return UsedType(name = name, genericTypes = genericTypes)
     }
 
-    private fun extractTypeArguments(typeArgsNode: TSNode, sourceCode: String): List<UsedType> = typeArgsNode
+    private fun extractTypeArguments(typeArgsNode: SyntaxNode, sourceCode: String): List<UsedType> = typeArgsNode
         .children()
         .filter { it.type == TYPE_PROJECTION }
         .mapNotNull { projection ->
@@ -154,7 +154,7 @@ internal object UsedTypeExtractor {
             }
         }.toList()
 
-    private fun extractGenericTypesFromCallSuffix(callSuffix: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractGenericTypesFromCallSuffix(callSuffix: SyntaxNode, sourceCode: String): List<UsedType> {
         val typeArgs = callSuffix.children().firstOrNull { it.type == TYPE_ARGUMENTS }
             ?: return emptyList()
         return extractTypeArguments(typeArgs, sourceCode)

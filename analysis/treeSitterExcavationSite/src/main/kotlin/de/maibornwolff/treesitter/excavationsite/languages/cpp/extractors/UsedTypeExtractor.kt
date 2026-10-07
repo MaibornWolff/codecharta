@@ -5,9 +5,9 @@ import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedty
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.ClassScopeExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.DeclarationTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.SignatureTypeExtractor
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object UsedTypeExtractor {
     private const val CLASS_SPECIFIER = "class_specifier"
@@ -24,7 +24,7 @@ internal object UsedTypeExtractor {
             SignatureTypeExtractor.nodeTypes +
             AliasConstraintExtractor.nodeTypes
 
-    fun extract(declaration: TSNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
         val buckets = groupDescendantsStoppingAtNestedDeclarations(declaration, ALL_NODE_TYPES)
         return (
             DeclarationTypeExtractor.extractFieldAndVariableTypes(buckets, sourceCode) +
@@ -41,12 +41,12 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun groupDescendantsStoppingAtNestedDeclarations(root: TSNode, targetTypes: Set<String>): Map<String, List<TSNode>> {
-        val buckets = mutableMapOf<String, MutableList<TSNode>>()
+    private fun groupDescendantsStoppingAtNestedDeclarations(root: SyntaxNode, targetTypes: Set<String>): Map<String, List<SyntaxNode>> {
+        val buckets = mutableMapOf<String, MutableList<SyntaxNode>>()
         if (!root.isNull && root.type in targetTypes) {
             buckets.getOrPut(root.type) { mutableListOf() }.add(root)
         }
-        val stack = ArrayDeque<TSNode>()
+        val stack = ArrayDeque<SyntaxNode>()
         root.children().forEach(stack::addLast)
         while (stack.isNotEmpty()) {
             val node = stack.removeLast()

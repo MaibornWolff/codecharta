@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 private const val SIMPLE_IDENTIFIER = "simple_identifier"
 private const val UNDERSCORE = "_"
@@ -15,7 +15,7 @@ private const val UNDERSCORE = "_"
  *
  * Returns null if underscore identifier.
  */
-internal fun extractAnnotationClassFromInfixExpression(node: TSNode, sourceCode: String): String? {
+internal fun extractAnnotationClassFromInfixExpression(node: SyntaxNode, sourceCode: String): String? {
     if (node.childCount != 3) return null
 
     val first = node.getChild(0)

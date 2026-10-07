@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val STRING_CONTENT = "string_content"
 private const val ESCAPE_SEQUENCE = "escape_sequence"
@@ -19,7 +19,7 @@ private const val ESCAPE_SEQUENCE = "escape_sequence"
  *   is therefore naturally excluded;
  * - empty literals, which have no content children and yield "".
  */
-internal fun extractRustStringLiteralContent(node: TSNode, sourceCode: String): String = node
+internal fun extractRustStringLiteralContent(node: SyntaxNode, sourceCode: String): String = node
     .children()
     .filter { it.type == STRING_CONTENT || it.type == ESCAPE_SEQUENCE }
     .joinToString("") { TreeTraversal.getNodeText(it, sourceCode) }

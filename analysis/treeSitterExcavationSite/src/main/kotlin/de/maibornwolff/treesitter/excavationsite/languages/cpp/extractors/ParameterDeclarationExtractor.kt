@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
-internal fun extractFromParameterDeclaration(node: TSNode, sourceCode: String): String? =
+internal fun extractFromParameterDeclaration(node: SyntaxNode, sourceCode: String): String? =
     CDeclaratorParser.extractIdentifierFromDeclaratorField(node, sourceCode)

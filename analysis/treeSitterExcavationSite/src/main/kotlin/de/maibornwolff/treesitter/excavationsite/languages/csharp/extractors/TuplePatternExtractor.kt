@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val TUPLE_PATTERN = "tuple_pattern"
@@ -12,10 +12,10 @@ private const val TUPLE_PATTERN = "tuple_pattern"
  *
  * Recursively collects all identifiers from nested tuple patterns.
  */
-internal fun extractAllTuplePatternVariables(node: TSNode, sourceCode: String): List<String> =
+internal fun extractAllTuplePatternVariables(node: SyntaxNode, sourceCode: String): List<String> =
     collectTuplePatternVariables(node, sourceCode)
 
-private fun collectTuplePatternVariables(node: TSNode, sourceCode: String): List<String> = node
+private fun collectTuplePatternVariables(node: SyntaxNode, sourceCode: String): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {

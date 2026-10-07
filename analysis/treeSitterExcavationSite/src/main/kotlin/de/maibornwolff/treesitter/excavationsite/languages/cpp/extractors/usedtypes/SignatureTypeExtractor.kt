@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object SignatureTypeExtractor {
     private const val BASE_CLASS_CLAUSE = "base_class_clause"
@@ -17,7 +17,7 @@ internal object SignatureTypeExtractor {
 
     val nodeTypes: Set<String> = setOf(BASE_CLASS_CLAUSE, FUNCTION_DEFINITION, FUNCTION_DECLARATOR)
 
-    fun extractInheritance(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractInheritance(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[BASE_CLASS_CLAUSE].orEmpty().flatMap { baseClause ->
             baseClause
                 .namedChildren()
@@ -26,7 +26,7 @@ internal object SignatureTypeExtractor {
                 .toList()
         }
 
-    fun extractMethodReturnAndParamTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractMethodReturnAndParamTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[FUNCTION_DEFINITION].orEmpty().flatMap { fnDef ->
             val leadingReturnType = fnDef
                 .children()
@@ -39,10 +39,10 @@ internal object SignatureTypeExtractor {
             paramTypes + listOfNotNull(leadingReturnType, trailingReturnType)
         }
 
-    fun extractDeclaratorParamTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractDeclaratorParamTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[FUNCTION_DECLARATOR].orEmpty().flatMap { extractParameterTypes(it, sourceCode) }
 
-    private fun extractParameterTypes(fnDeclarator: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractParameterTypes(fnDeclarator: SyntaxNode, sourceCode: String): List<UsedType> {
         val paramList = fnDeclarator.children().firstOrNull { it.type == PARAMETER_LIST } ?: return emptyList()
         return paramList
             .children()
@@ -53,7 +53,7 @@ internal object SignatureTypeExtractor {
             }.toList()
     }
 
-    private fun extractTrailingReturnType(fnDeclarator: TSNode, sourceCode: String): UsedType? {
+    private fun extractTrailingReturnType(fnDeclarator: SyntaxNode, sourceCode: String): UsedType? {
         val trailing = fnDeclarator.children().firstOrNull { it.type == TRAILING_RETURN_TYPE } ?: return null
         val typeDescriptor = trailing.children().firstOrNull { it.type == TYPE_DESCRIPTOR } ?: return null
         val typeNode = typeDescriptor.namedChildren().firstOrNull { CppTypeHelper.isTypeNode(it) } ?: return null

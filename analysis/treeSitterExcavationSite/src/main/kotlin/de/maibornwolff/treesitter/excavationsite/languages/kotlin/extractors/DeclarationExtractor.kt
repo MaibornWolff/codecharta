@@ -2,9 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object DeclarationExtractor {
     private const val CLASS_DECLARATION = "class_declaration"
@@ -22,7 +22,7 @@ internal object DeclarationExtractor {
 
     private val DECLARATION_TYPES = setOf(CLASS_DECLARATION, OBJECT_DECLARATION)
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
         val allDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         val namesByStartByte = allDeclarations.associate { node ->
@@ -39,13 +39,13 @@ internal object DeclarationExtractor {
             }.toList()
     }
 
-    private fun extractName(node: TSNode, sourceCode: String): String = node
+    private fun extractName(node: SyntaxNode, sourceCode: String): String = node
         .children()
         .firstOrNull { it.type == TYPE_IDENTIFIER }
         ?.let { TreeTraversal.getNodeText(it, sourceCode).trim() }
         ?: ""
 
-    private fun findParentPath(node: TSNode, namesByStartByte: Map<Int, String>): List<String> {
+    private fun findParentPath(node: SyntaxNode, namesByStartByte: Map<Int, String>): List<String> {
         val parents = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {
@@ -60,7 +60,7 @@ internal object DeclarationExtractor {
         return parents
     }
 
-    private fun declarationType(node: TSNode): DeclarationType {
+    private fun declarationType(node: SyntaxNode): DeclarationType {
         if (node.type == OBJECT_DECLARATION) return DeclarationType.CLASS
 
         // class_declaration: check for enum/interface keywords as direct children

@@ -6,10 +6,11 @@ import de.maibornwolff.treesitter.excavationsite.integration.extraction.ports.Ex
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionContext
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeSitterParser
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeWalker
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
 import org.treesitter.TSLanguage
-import org.treesitter.TSNode
 import org.treesitter.TSTreeCursor
 
 /**
@@ -34,16 +35,17 @@ class DirectTextExtractor(private val treeSitterLanguage: TSLanguage, private va
         }
 
         val rootNode = TreeSitterParser.parse(content, treeSitterLanguage)
+        val utf8Source = content.toByteArray(Charsets.UTF_8)
         val results = mutableListOf<ExtractedText>()
 
         TreeWalker.walk(TSTreeCursor(rootNode)) { node, nodeType ->
-            processNode(node, nodeType, content, results)
+            processNode(TsNodeSyntaxNode(node, utf8Source), nodeType, content, results)
         }
 
         return results
     }
 
-    private fun processNode(node: TSNode, nodeType: String, sourceCode: String, results: MutableList<ExtractedText>) {
+    private fun processNode(node: SyntaxNode, nodeType: String, sourceCode: String, results: MutableList<ExtractedText>) {
         val extraction = extractionNodeTypes.nodeExtractions[nodeType] ?: return
 
         when (extraction) {
@@ -53,7 +55,12 @@ class DirectTextExtractor(private val treeSitterLanguage: TSLanguage, private va
         }
     }
 
-    private fun extractIdentifiers(node: TSNode, sourceCode: String, extraction: Extract.Identifier, results: MutableList<ExtractedText>) {
+    private fun extractIdentifiers(
+        node: SyntaxNode,
+        sourceCode: String,
+        extraction: Extract.Identifier,
+        results: MutableList<ExtractedText>
+    ) {
         // Priority: customMulti > multi strategy > customSingle > single strategy
         extraction.customMulti?.let { customMulti ->
             val identifiers = customMulti(node, sourceCode)
@@ -85,7 +92,7 @@ class DirectTextExtractor(private val treeSitterLanguage: TSLanguage, private va
         }
     }
 
-    private fun extractComment(node: TSNode, sourceCode: String, extraction: Extract.Comment, results: MutableList<ExtractedText>) {
+    private fun extractComment(node: SyntaxNode, sourceCode: String, extraction: Extract.Comment, results: MutableList<ExtractedText>) {
         // Custom extractors can return null to indicate "skip this node"
         val text = if (extraction.custom != null) {
             extraction.custom.invoke(node, sourceCode) ?: return
@@ -96,7 +103,12 @@ class DirectTextExtractor(private val treeSitterLanguage: TSLanguage, private va
         results.add(ExtractedText(text, ExtractionContext.COMMENT))
     }
 
-    private fun extractString(node: TSNode, sourceCode: String, extraction: Extract.StringLiteral, results: MutableList<ExtractedText>) {
+    private fun extractString(
+        node: SyntaxNode,
+        sourceCode: String,
+        extraction: Extract.StringLiteral,
+        results: MutableList<ExtractedText>
+    ) {
         // Custom extractors can return null to indicate "skip this node"
         val text = if (extraction.custom != null) {
             extraction.custom.invoke(node, sourceCode) ?: return

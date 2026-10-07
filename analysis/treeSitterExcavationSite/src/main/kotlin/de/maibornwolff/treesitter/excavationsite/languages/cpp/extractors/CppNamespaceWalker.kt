@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 internal object CppNamespaceWalker {
     private const val NAMESPACE_DEFINITION = "namespace_definition"
@@ -9,7 +9,7 @@ internal object CppNamespaceWalker {
     private const val NESTED_NAMESPACE_SPECIFIER = "nested_namespace_specifier"
     private const val NAMESPACE_SEPARATOR = "::"
 
-    fun walkAncestorsFrom(node: TSNode, sourceCode: String): List<String> {
+    fun walkAncestorsFrom(node: SyntaxNode, sourceCode: String): List<String> {
         val segments = mutableListOf<List<String>>()
         var current = node.parent
         while (!current.isNull) {
@@ -21,14 +21,14 @@ internal object CppNamespaceWalker {
         return segments.flatten()
     }
 
-    fun firstFileNamespace(rootNode: TSNode, sourceCode: String): List<String> {
+    fun firstFileNamespace(rootNode: SyntaxNode, sourceCode: String): List<String> {
         val namespaceNode = TreeTraversal
             .findAllDescendantsOfType(rootNode, NAMESPACE_DEFINITION)
             .firstOrNull() ?: return emptyList()
         return extractSegments(namespaceNode, sourceCode)
     }
 
-    private fun extractSegments(namespaceDef: TSNode, sourceCode: String): List<String> {
+    private fun extractSegments(namespaceDef: SyntaxNode, sourceCode: String): List<String> {
         val text = TreeTraversal.findFirstChildTextByType(
             namespaceDef,
             sourceCode,

@@ -2,8 +2,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 internal object DeclarationExtractor {
     private const val CLASS_DECLARATION = "class_declaration"
@@ -21,7 +21,7 @@ internal object DeclarationExtractor {
         ANNOTATION_TYPE_DECLARATION
     )
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<Declaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         .map { declarationNode ->
             val name = TreeTraversal.getNodeText(declarationNode.getChildByFieldName(NAME_FIELD), sourceCode)
@@ -30,7 +30,7 @@ internal object DeclarationExtractor {
             Declaration(name = name, type = type, usedTypes = usedTypes)
         }.toList()
 
-    private fun declarationType(node: TSNode): DeclarationType = when (node.type) {
+    private fun declarationType(node: SyntaxNode): DeclarationType = when (node.type) {
         CLASS_DECLARATION -> DeclarationType.CLASS
         RECORD_DECLARATION -> DeclarationType.RECORD
         INTERFACE_DECLARATION -> DeclarationType.INTERFACE

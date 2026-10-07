@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object CppTypeHelper {
     private const val TYPE_IDENTIFIER = "type_identifier"
@@ -26,9 +26,9 @@ internal object CppTypeHelper {
     private val TEMPLATE_LIKE_TYPES = setOf(TEMPLATE_TYPE, TEMPLATE_FUNCTION)
     private val TEMPLATE_NAME_TYPES = setOf(TYPE_IDENTIFIER, IDENTIFIER)
 
-    fun isTypeNode(node: TSNode): Boolean = node.type in TYPE_NODE_TYPES
+    fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES
 
-    fun extractType(typeNode: TSNode, sourceCode: String): UsedType? {
+    fun extractType(typeNode: SyntaxNode, sourceCode: String): UsedType? {
         if (typeNode.isNull) return null
         return when (typeNode.type) {
             in LEAF_TYPE_NODES -> extractLeafName(typeNode, sourceCode)
@@ -38,10 +38,10 @@ internal object CppTypeHelper {
         }
     }
 
-    private fun extractLeafName(node: TSNode, sourceCode: String): UsedType =
+    private fun extractLeafName(node: SyntaxNode, sourceCode: String): UsedType =
         UsedType(name = TreeTraversal.getNodeText(node, sourceCode).trim())
 
-    fun extractTypeFromTypeField(node: TSNode, sourceCode: String): UsedType? {
+    fun extractTypeFromTypeField(node: SyntaxNode, sourceCode: String): UsedType? {
         val typeField = node.getChildByFieldName(TYPE_FIELD).takeIf { !it.isNull }
             ?: node.namedChildren().firstOrNull { isTypeNode(it) || it.type == TYPE_DESCRIPTOR }
             ?: return null
@@ -54,7 +54,7 @@ internal object CppTypeHelper {
         return extractType(unwrapped, sourceCode)
     }
 
-    private fun extractTemplateLike(templateNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractTemplateLike(templateNode: SyntaxNode, sourceCode: String): UsedType? {
         // Accepts template_type (name=type_identifier, used for types) and
         // template_function (name=identifier, used for function-call forms and, per
         // tree-sitter-cpp, also for nested template arguments like C<T> inside list<C<T>>).
@@ -71,14 +71,14 @@ internal object CppTypeHelper {
         )
     }
 
-    private fun extractGenericArgument(argNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractGenericArgument(argNode: SyntaxNode, sourceCode: String): UsedType? {
         if (argNode.type == TYPE_DESCRIPTOR) {
             return argNode.namedChildren().firstNotNullOfOrNull { extractType(it, sourceCode) }
         }
         return extractType(argNode, sourceCode)
     }
 
-    fun extractRightmostSegment(qualifiedId: TSNode, sourceCode: String): UsedType? {
+    fun extractRightmostSegment(qualifiedId: SyntaxNode, sourceCode: String): UsedType? {
         val path = QualifiedIdentifierPath.walk(qualifiedId, sourceCode)
         val leafNode = path.leaf ?: return null
         if (leafNode.type in TEMPLATE_LIKE_TYPES) {
@@ -88,14 +88,14 @@ internal object CppTypeHelper {
         return if (text.isEmpty()) null else UsedType(name = text, namespacePrefix = path.segments)
     }
 
-    fun extractSingleSegmentScope(qualifiedId: TSNode, sourceCode: String): UsedType? {
+    fun extractSingleSegmentScope(qualifiedId: SyntaxNode, sourceCode: String): UsedType? {
         val scope = qualifiedId.getChildByFieldName(SCOPE_FIELD).takeIf { !it.isNull } ?: return null
         if (scope.type != NAMESPACE_IDENTIFIER) return null
         val text = TreeTraversal.getNodeText(scope, sourceCode).trim()
         return if (text.isEmpty()) null else UsedType(name = text)
     }
 
-    fun extractSecondToLastSegment(qualifiedId: TSNode, sourceCode: String): UsedType? {
+    fun extractSecondToLastSegment(qualifiedId: SyntaxNode, sourceCode: String): UsedType? {
         val segments = QualifiedIdentifierPath.walk(qualifiedId, sourceCode).segments
         val name = segments.lastOrNull() ?: return null
         return UsedType(name = name, namespacePrefix = segments.dropLast(1))

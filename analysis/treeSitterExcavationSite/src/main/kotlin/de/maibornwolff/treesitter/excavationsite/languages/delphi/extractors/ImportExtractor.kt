@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 /**
  * Extracts `uses` clauses from a Delphi file.
@@ -23,7 +23,7 @@ internal object ImportExtractor {
     private const val MODULE_NAME = "moduleName"
     private const val IDENTIFIER = "identifier"
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, DECL_USES)
         .flatMap { usesNode ->
             usesNode.children().filter { it.type == MODULE_NAME }.mapNotNull { moduleNode ->

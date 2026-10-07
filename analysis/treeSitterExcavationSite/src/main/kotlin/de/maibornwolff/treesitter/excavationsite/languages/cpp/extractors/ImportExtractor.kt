@@ -2,9 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object ImportExtractor {
     private const val PREPROC_INCLUDE = "preproc_include"
@@ -31,7 +31,7 @@ internal object ImportExtractor {
         "compound_statement"
     )
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, PREPROC_INCLUDE, USING_DECLARATION)
         .mapNotNull { node ->
             when (node.type) {
@@ -41,7 +41,7 @@ internal object ImportExtractor {
             }
         }
 
-    private fun toIncludeImport(node: TSNode, sourceCode: String): ImportDeclaration? {
+    private fun toIncludeImport(node: SyntaxNode, sourceCode: String): ImportDeclaration? {
         val rawPath = TreeTraversal.findFirstChildTextByType(node, sourceCode, SYSTEM_LIB_STRING, STRING_LITERAL)
             ?: return null
         val cleanedPath = stripPathDelimiters(rawPath).replace(LINE_CONTINUATION, "")
@@ -49,7 +49,7 @@ internal object ImportExtractor {
         return ImportDeclaration(path = segments, isWildcard = false, kind = ImportKind.INCLUDE)
     }
 
-    private fun toUsingImport(node: TSNode, sourceCode: String): ImportDeclaration? {
+    private fun toUsingImport(node: SyntaxNode, sourceCode: String): ImportDeclaration? {
         if (TreeTraversal.hasAncestorOfTypes(node, *CLASS_SCOPES.toTypedArray())) return null
         if (isOrphanedLocalScope(node)) return null
         val namespacePath = CppNamespaceWalker.walkAncestorsFrom(node, sourceCode)
@@ -61,12 +61,12 @@ internal object ImportExtractor {
     }
 
     // A function/block-scope using outside any namespace has no enclosing scope to attach to.
-    private fun isOrphanedLocalScope(node: TSNode): Boolean {
+    private fun isOrphanedLocalScope(node: SyntaxNode): Boolean {
         val isLocal = TreeTraversal.hasAncestorOfTypes(node, *LOCAL_SCOPES.toTypedArray())
         return isLocal && !TreeTraversal.hasAncestorOfTypes(node, NAMESPACE_DEFINITION)
     }
 
-    private fun toUsingDirective(node: TSNode, sourceCode: String, namespacePath: List<String>): ImportDeclaration? {
+    private fun toUsingDirective(node: SyntaxNode, sourceCode: String, namespacePath: List<String>): ImportDeclaration? {
         val nameText = TreeTraversal.findFirstChildTextByType(node, sourceCode, QUALIFIED_IDENTIFIER, IDENTIFIER)
             ?: return null
         return ImportDeclaration(
@@ -76,7 +76,7 @@ internal object ImportExtractor {
         )
     }
 
-    private fun toUsingDeclaration(node: TSNode, sourceCode: String, namespacePath: List<String>): ImportDeclaration? {
+    private fun toUsingDeclaration(node: SyntaxNode, sourceCode: String, namespacePath: List<String>): ImportDeclaration? {
         val qualifiedName = TreeTraversal.findFirstChildTextByType(node, sourceCode, QUALIFIED_IDENTIFIER)
             ?: return null
         return ImportDeclaration(
@@ -86,7 +86,7 @@ internal object ImportExtractor {
         )
     }
 
-    private fun isUsingDirective(node: TSNode): Boolean = node.children().any { it.type == NAMESPACE_KEYWORD }
+    private fun isUsingDirective(node: SyntaxNode): Boolean = node.children().any { it.type == NAMESPACE_KEYWORD }
 
     private fun splitNamespacePath(qualifiedName: String): List<String> =
         qualifiedName.split(NAMESPACE_SEPARATOR).filter { it.isNotEmpty() }

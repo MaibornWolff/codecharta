@@ -1,14 +1,14 @@
 package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val FIELD_NAME = "name"
 
-internal fun extractKeywordDeclaratorParameter(node: TSNode, sourceCode: String): String? {
+internal fun extractKeywordDeclaratorParameter(node: SyntaxNode, sourceCode: String): String? {
     val name = node.getChildByFieldName(FIELD_NAME)
-    if (name != null) {
+    if (!name.isNull) {
         return TreeTraversal.getNodeText(name, sourceCode)
     }
 

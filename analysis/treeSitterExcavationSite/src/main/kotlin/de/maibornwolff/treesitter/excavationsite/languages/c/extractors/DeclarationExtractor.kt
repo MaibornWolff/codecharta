@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val INIT_DECLARATOR = "init_declarator"
@@ -14,9 +14,9 @@ private const val FIELD_DECLARATOR = "declarator"
  * Extracts identifier from a declaration.
  * Handles various declarator types: int *ptr, int arr[10], int func(), etc.
  */
-internal fun extractFromDeclaration(node: TSNode, sourceCode: String): String? {
+internal fun extractFromDeclaration(node: SyntaxNode, sourceCode: String): String? {
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
-    if (declarator != null) {
+    if (!declarator.isNull) {
         return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
     }
 

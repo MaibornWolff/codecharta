@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 private const val IDENTIFIER = "identifier"
 private const val INIT_DECLARATOR = "init_declarator"
@@ -10,9 +10,9 @@ private const val ARRAY_DECLARATOR = "array_declarator"
 private const val FUNCTION_DECLARATOR = "function_declarator"
 private const val FIELD_DECLARATOR = "declarator"
 
-internal fun extractFromDeclaration(node: TSNode, sourceCode: String): String? {
+internal fun extractFromDeclaration(node: SyntaxNode, sourceCode: String): String? {
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
-    if (declarator != null) {
+    if (!declarator.isNull) {
         return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
     }
 

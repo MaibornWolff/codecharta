@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object ImportExtractor {
     private const val IMPORT_DECLARATION = "import_declaration"
@@ -12,7 +12,7 @@ internal object ImportExtractor {
     private const val IDENTIFIER = "identifier"
     private const val IMPORT_SEPARATOR = "."
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<ImportDeclaration> = rootNode
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = rootNode
         .children()
         .filter { it.type == IMPORT_DECLARATION }
         .map { importNode ->

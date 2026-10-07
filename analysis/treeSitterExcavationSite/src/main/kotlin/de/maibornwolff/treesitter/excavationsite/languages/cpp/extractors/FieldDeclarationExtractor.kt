@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 private const val FIELD_IDENTIFIER = "field_identifier"
 private const val FIELD_DECLARATOR = "declarator"
@@ -16,9 +16,9 @@ private val NESTED_DECLARATOR_TYPES = setOf(
     REFERENCE_DECLARATOR
 )
 
-internal fun extractFromFieldDeclaration(node: TSNode, sourceCode: String): String? {
+internal fun extractFromFieldDeclaration(node: SyntaxNode, sourceCode: String): String? {
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
-    if (declarator != null) {
+    if (!declarator.isNull) {
         return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
     }
 

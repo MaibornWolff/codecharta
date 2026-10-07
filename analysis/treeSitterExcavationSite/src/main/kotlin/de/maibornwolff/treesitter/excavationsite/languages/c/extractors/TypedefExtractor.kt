@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val TYPE_IDENTIFIER = "type_identifier"
 private const val POINTER_DECLARATOR = "pointer_declarator"
@@ -14,9 +14,9 @@ private const val FIELD_DECLARATOR = "declarator"
  * Extracts identifier from typedef.
  * Example: typedef int (*func_ptr)(int); extracts "func_ptr"
  */
-internal fun extractFromTypedef(node: TSNode, sourceCode: String): String? {
+internal fun extractFromTypedef(node: SyntaxNode, sourceCode: String): String? {
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
-    if (declarator != null) {
+    if (!declarator.isNull) {
         return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
     }
 

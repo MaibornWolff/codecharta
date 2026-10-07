@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object CSharpTypeHelper {
     private const val GENERIC_NAME = "generic_name"
@@ -17,9 +17,9 @@ internal object CSharpTypeHelper {
 
     private val TYPE_NODE_TYPES = setOf(IDENTIFIER, PREDEFINED_TYPE, GENERIC_NAME, QUALIFIED_NAME, NULLABLE_TYPE, ARRAY_TYPE)
 
-    fun isTypeNode(node: TSNode): Boolean = node.type in TYPE_NODE_TYPES
+    fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES
 
-    fun extractType(typeNode: TSNode, sourceCode: String): UsedType? {
+    fun extractType(typeNode: SyntaxNode, sourceCode: String): UsedType? {
         if (typeNode.isNull) return null
         return when (typeNode.type) {
             GENERIC_NAME -> extractGenericType(typeNode, sourceCode)
@@ -31,7 +31,7 @@ internal object CSharpTypeHelper {
         }
     }
 
-    private fun extractGenericType(genericNameNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractGenericType(genericNameNode: SyntaxNode, sourceCode: String): UsedType? {
         val nameNode = genericNameNode.children().firstOrNull { it.type == IDENTIFIER } ?: return null
         val typeArgs = genericNameNode.children().firstOrNull { it.type == TYPE_ARGUMENT_LIST }
         val genericTypes = typeArgs
@@ -45,15 +45,15 @@ internal object CSharpTypeHelper {
         )
     }
 
-    private fun extractQualifiedType(qualifiedNameNode: TSNode, sourceCode: String): UsedType? =
+    private fun extractQualifiedType(qualifiedNameNode: SyntaxNode, sourceCode: String): UsedType? =
         UsedType(name = TreeTraversal.getNodeText(qualifiedNameNode, sourceCode).trim())
 
-    private fun extractNullableType(nullableNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractNullableType(nullableNode: SyntaxNode, sourceCode: String): UsedType? {
         val innerType = nullableNode.namedChildren().firstOrNull { isTypeNode(it) }
         return innerType?.let { extractType(it, sourceCode) }
     }
 
-    private fun extractArrayElementType(arrayTypeNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractArrayElementType(arrayTypeNode: SyntaxNode, sourceCode: String): UsedType? {
         val elementType = arrayTypeNode.namedChildren().firstOrNull { isTypeNode(it) }
         return elementType?.let { extractType(it, sourceCode) }
     }

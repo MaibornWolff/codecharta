@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val STRUCTURED_BINDING_DECLARATOR = "structured_binding_declarator"
@@ -11,7 +11,7 @@ private const val FIELD_DECLARATOR = "declarator"
 private const val REFERENCE_DECLARATOR = "reference_declarator"
 private const val POINTER_DECLARATOR = "pointer_declarator"
 
-internal fun extractFromForRangeLoop(node: TSNode, sourceCode: String): String? {
+internal fun extractFromForRangeLoop(node: SyntaxNode, sourceCode: String): String? {
     if (TreeTraversal.containsNodeOfType(node, STRUCTURED_BINDING_DECLARATOR)) {
         return null
     }

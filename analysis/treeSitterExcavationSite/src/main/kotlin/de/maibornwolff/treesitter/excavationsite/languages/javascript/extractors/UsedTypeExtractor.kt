@@ -4,10 +4,10 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.CALL_EXPRE
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.PROPERTY_IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_IDENTIFIER
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object UsedTypeExtractor {
     private const val TYPE_ANNOTATION = "type_annotation"
@@ -43,7 +43,12 @@ internal object UsedTypeExtractor {
         TYPE_ARGUMENTS
     )
 
-    fun extract(declaration: TSNode, sourceCode: String, aliasMap: Map<String, String>, localDeclarationNames: Set<String>): Set<UsedType> {
+    fun extract(
+        declaration: SyntaxNode,
+        sourceCode: String,
+        aliasMap: Map<String, String>,
+        localDeclarationNames: Set<String>
+    ): Set<UsedType> {
         val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
 
         val typeIdentifiers = collectTypeIdentifiersFromNodes(buckets[TYPE_ANNOTATION].orEmpty(), sourceCode)
@@ -76,12 +81,12 @@ internal object UsedTypeExtractor {
             .toSet()
     }
 
-    private fun collectTypeIdentifiersFromNodes(nodes: List<TSNode>, sourceCode: String): List<UsedType> = nodes
+    private fun collectTypeIdentifiersFromNodes(nodes: List<SyntaxNode>, sourceCode: String): List<UsedType> = nodes
         .flatMap { TreeTraversal.findAllDescendantsOfType(it, TYPE_IDENTIFIER) }
         .map { UsedType(name = TreeTraversal.getNodeText(it, sourceCode).trim()) }
 
     private fun extractConstructorCalls(
-        buckets: Map<String, List<TSNode>>,
+        buckets: Map<String, List<SyntaxNode>>,
         sourceCode: String,
         aliasMap: Map<String, String>
     ): List<UsedType> = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { node ->
@@ -96,7 +101,7 @@ internal object UsedTypeExtractor {
     }
 
     private fun extractMemberAccesses(
-        buckets: Map<String, List<TSNode>>,
+        buckets: Map<String, List<SyntaxNode>>,
         sourceCode: String,
         aliasMap: Map<String, String>
     ): List<UsedType> = buckets[MEMBER_EXPRESSION].orEmpty().mapNotNull { node ->
@@ -107,7 +112,7 @@ internal object UsedTypeExtractor {
         extractNsAliasMember(node, sourceCode, aliasMap)
     }
 
-    private fun extractNsAliasMember(memberExpr: TSNode?, sourceCode: String, aliasMap: Map<String, String>): UsedType? {
+    private fun extractNsAliasMember(memberExpr: SyntaxNode?, sourceCode: String, aliasMap: Map<String, String>): UsedType? {
         memberExpr ?: return null
         val directId = memberExpr.children().firstOrNull { it.type == IDENTIFIER } ?: return null
         val objName = TreeTraversal.getNodeText(directId, sourceCode).trim()
@@ -118,7 +123,7 @@ internal object UsedTypeExtractor {
         return UsedType(name = propName)
     }
 
-    private fun extractMethodCalls(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[CALL_EXPRESSION].orEmpty().mapNotNull { callNode ->
             val memberExpr = callNode.children().firstOrNull { it.type == MEMBER_EXPRESSION }
                 ?: return@mapNotNull null
@@ -129,7 +134,7 @@ internal object UsedTypeExtractor {
             UsedType(name = name)
         }
 
-    private fun extractExtensions(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractExtensions(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val clauseNodes = buckets[EXTENDS_CLAUSE].orEmpty() + buckets[EXTENDS_TYPE_CLAUSE].orEmpty() + buckets[IMPLEMENTS_CLAUSE].orEmpty()
         return clauseNodes.flatMap { clauseNode ->
             TreeTraversal
@@ -141,7 +146,7 @@ internal object UsedTypeExtractor {
     // JS uses `identifier` nodes for class names (unlike TS which uses `type_identifier`),
     // so PascalCase class names are captured here via the uppercase check.
     private fun extractRelevantIdentifiers(
-        buckets: Map<String, List<TSNode>>,
+        buckets: Map<String, List<SyntaxNode>>,
         sourceCode: String,
         aliasMap: Map<String, String>,
         localDeclarationNames: Set<String>
@@ -151,7 +156,7 @@ internal object UsedTypeExtractor {
         UsedType(name = name)
     }
 
-    private fun extractJsxComponents(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractJsxComponents(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val jsxNodes = buckets[JSX_OPENING_ELEMENT].orEmpty() + buckets[JSX_SELF_CLOSING_ELEMENT].orEmpty()
         return jsxNodes.mapNotNull { node ->
             val tagNode = node.children().firstOrNull {
@@ -172,7 +177,7 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractTypeAliasRhsTypes(declaration: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractTypeAliasRhsTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
         val children = declaration.children().toList()
         val nameNodeIndex = children.indexOfFirst { it.type == TYPE_IDENTIFIER }
         return children
@@ -181,7 +186,7 @@ internal object UsedTypeExtractor {
             .map { UsedType(name = TreeTraversal.getNodeText(it, sourceCode).trim()) }
     }
 
-    private fun findLeftmostIdentifier(node: TSNode): TSNode? {
+    private fun findLeftmostIdentifier(node: SyntaxNode): SyntaxNode? {
         var current = node
         while (current.type == JSX_MEMBER_EXPRESSION || current.type == MEMBER_EXPRESSION) {
             current = current.children().firstOrNull() ?: return null

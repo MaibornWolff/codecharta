@@ -14,10 +14,10 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.VARIABLE_D
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.normalizeDefaultKeyword
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val CLASS_DECLARATION = "class_declaration"
 private const val ABSTRACT_CLASS_DECLARATION = "abstract_class_declaration"
@@ -51,11 +51,11 @@ private val DECLARATION_NODE_TYPES = setOf(
     INTERNAL_MODULE
 )
 
-private fun hasExportClause(node: TSNode): Boolean = node.children().any { it.type == EXPORT_CLAUSE }
+private fun hasExportClause(node: SyntaxNode): Boolean = node.children().any { it.type == EXPORT_CLAUSE }
 
-private fun hasSource(node: TSNode): Boolean = node.children().any { it.type == STRING }
+private fun hasSource(node: SyntaxNode): Boolean = node.children().any { it.type == STRING }
 
-private fun extractName(node: TSNode, sourceCode: String): String {
+private fun extractName(node: SyntaxNode, sourceCode: String): String {
     val nameTypes = when (node.type) {
         CLASS_DECLARATION, ABSTRACT_CLASS_DECLARATION,
         INTERFACE_DECLARATION, TYPE_ALIAS_DECLARATION -> arrayOf(TYPE_IDENTIFIER, IDENTIFIER)
@@ -80,7 +80,7 @@ internal object DeclarationPrepass {
             localName to realName
         }.toMap()
 
-    internal fun extractLocalDeclarationNames(rootNode: TSNode, sourceCode: String): Set<String> = rootNode
+    internal fun extractLocalDeclarationNames(rootNode: SyntaxNode, sourceCode: String): Set<String> = rootNode
         .children()
         .flatMap { child ->
             when (child.type) {
@@ -91,7 +91,7 @@ internal object DeclarationPrepass {
         }.filter { it.isNotBlank() }
         .toSet()
 
-    private fun extractNamesFromExportStatement(node: TSNode, sourceCode: String): List<String> {
+    private fun extractNamesFromExportStatement(node: SyntaxNode, sourceCode: String): List<String> {
         if (hasSource(node)) return emptyList()
         val hasExportClause = hasExportClause(node)
         if (hasExportClause) {
@@ -114,7 +114,7 @@ internal object DeclarationPrepass {
             .toList()
     }
 
-    private fun extractNamesFromNode(node: TSNode, sourceCode: String): List<String> {
+    private fun extractNamesFromNode(node: SyntaxNode, sourceCode: String): List<String> {
         if (node.type == LEXICAL_DECLARATION || node.type == VARIABLE_DECLARATION) {
             return node
                 .children()
@@ -143,7 +143,7 @@ internal object DeclarationExtractor {
         data object None : DefaultExport // no export default
     }
 
-    internal fun classifyDefaultExport(rootNode: TSNode, sourceCode: String): DefaultExport = rootNode
+    internal fun classifyDefaultExport(rootNode: SyntaxNode, sourceCode: String): DefaultExport = rootNode
         .children()
         .filter { it.type == EXPORT_STATEMENT }
         .firstNotNullOfOrNull { exportNode ->
@@ -161,7 +161,7 @@ internal object DeclarationExtractor {
             DefaultExport.Value
         } ?: DefaultExport.None
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
         val imports = ImportExtractor.extract(rootNode, sourceCode)
         val aliasMap = DeclarationPrepass.buildAliasMap(imports)
         val localDeclarationNames = DeclarationPrepass.extractLocalDeclarationNames(rootNode, sourceCode)
@@ -204,7 +204,7 @@ internal object DeclarationExtractor {
     }
 
     private fun extractFromAmbientDeclaration(
-        node: TSNode,
+        node: SyntaxNode,
         sourceCode: String,
         aliasMap: Map<String, String>,
         localDeclarationNames: Set<String>
@@ -233,7 +233,7 @@ internal object DeclarationExtractor {
     }
 
     private fun extractFromExportStatement(
-        node: TSNode,
+        node: SyntaxNode,
         sourceCode: String,
         parentPath: List<String> = emptyList(),
         aliasMap: Map<String, String>,
@@ -258,7 +258,7 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun extractReexportDeclarations(node: TSNode, sourceCode: String): List<Declaration> {
+    private fun extractReexportDeclarations(node: SyntaxNode, sourceCode: String): List<Declaration> {
         val exportClause = node.children().firstOrNull { it.type == EXPORT_CLAUSE } ?: return emptyList()
         return exportClause
             .children()
@@ -295,7 +295,7 @@ internal object DeclarationExtractor {
     }
 
     private fun extractFromNode(
-        node: TSNode,
+        node: SyntaxNode,
         sourceCode: String,
         parentPath: List<String> = emptyList(),
         aliasMap: Map<String, String>,
@@ -321,7 +321,7 @@ internal object DeclarationExtractor {
     }
 
     private fun extractVariableDeclarations(
-        node: TSNode,
+        node: SyntaxNode,
         sourceCode: String,
         parentPath: List<String> = emptyList(),
         aliasMap: Map<String, String>,

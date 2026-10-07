@@ -19,7 +19,7 @@ class TreeTraversalTest {
                     private String y;
                 }
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val fields = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration")
@@ -38,7 +38,7 @@ class TreeTraversalTest {
                     public void bar() {}
                 }
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val nodes = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration", "method_declaration")
@@ -59,7 +59,7 @@ class TreeTraversalTest {
                     }
                 }
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val invocations = TreeTraversal.findAllDescendantsOfType(rootNode, "method_invocation")
@@ -74,7 +74,7 @@ class TreeTraversalTest {
             val code = """
                 public class Foo {}
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val fields = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration")
@@ -95,7 +95,7 @@ class TreeTraversalTest {
                     public void bar() {}
                 }
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val buckets = TreeTraversal.findAllDescendantsGroupedByType(
@@ -115,7 +115,7 @@ class TreeTraversalTest {
             val code = """
                 public class Foo {}
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val buckets = TreeTraversal.findAllDescendantsGroupedByType(
@@ -136,7 +136,7 @@ class TreeTraversalTest {
                     public void bar() {}
                 }
             """.trimIndent()
-            val rootNode = TreeSitterParser.parse(code, java)
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
 
             // Act
             val buckets = TreeTraversal.findAllDescendantsGroupedByType(

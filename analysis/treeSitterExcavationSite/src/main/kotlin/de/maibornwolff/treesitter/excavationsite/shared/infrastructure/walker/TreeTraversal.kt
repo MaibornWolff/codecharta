@@ -1,6 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
 
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
  * Shared tree traversal utilities for text extraction.
@@ -15,7 +15,7 @@ object TreeTraversal {
      * Tree-sitter uses byte offsets, not character offsets, so we must
      * convert properly for multi-byte UTF-8 characters.
      */
-    fun getNodeText(node: TSNode, sourceCode: String): String {
+    fun getNodeText(node: SyntaxNode, sourceCode: String): String {
         val bytes = sourceCode.toByteArray(Charsets.UTF_8)
         val start = node.startByte
         val end = node.endByte
@@ -25,13 +25,13 @@ object TreeTraversal {
     /**
      * Finds the first child of the given types and returns its text.
      */
-    fun findFirstChildTextByType(node: TSNode, sourceCode: String, vararg types: String): String? =
+    fun findFirstChildTextByType(node: SyntaxNode, sourceCode: String, vararg types: String): String? =
         node.children().firstOrNull { it.type in types }?.let { getNodeText(it, sourceCode) }
 
     /**
      * Finds all children of the given types and returns their text.
      */
-    fun findAllChildrenTextByType(node: TSNode, sourceCode: String, vararg types: String): List<String> = node
+    fun findAllChildrenTextByType(node: SyntaxNode, sourceCode: String, vararg types: String): List<String> = node
         .children()
         .filter { it.type in types }
         .map { getNodeText(it, sourceCode) }
@@ -40,21 +40,21 @@ object TreeTraversal {
     /**
      * Finds the last child of the given types and returns its text.
      */
-    fun findLastChildTextByType(node: TSNode, sourceCode: String, vararg types: String): String? =
+    fun findLastChildTextByType(node: SyntaxNode, sourceCode: String, vararg types: String): String? =
         node.children().lastOrNull { it.type in types }?.let { getNodeText(it, sourceCode) }
 
     /**
      * Finds a single child by type and returns its text.
      */
-    fun findChildByType(node: TSNode, childType: String, sourceCode: String): String? =
+    fun findChildByType(node: SyntaxNode, childType: String, sourceCode: String): String? =
         node.children().firstOrNull { it.type == childType }?.let { getNodeText(it, sourceCode) }
 
     /**
      * Checks if the node has an ancestor of the given type.
      */
-    fun hasAncestorOfType(node: TSNode, type: String): Boolean {
+    fun hasAncestorOfType(node: SyntaxNode, type: String): Boolean {
         var current = node.parent
-        while (current != null && !current.isNull) {
+        while (!current.isNull) {
             if (current.type == type) return true
             current = current.parent
         }
@@ -64,10 +64,10 @@ object TreeTraversal {
     /**
      * Checks if the node has an ancestor of any of the given types.
      */
-    fun hasAncestorOfTypes(node: TSNode, vararg types: String): Boolean {
+    fun hasAncestorOfTypes(node: SyntaxNode, vararg types: String): Boolean {
         val typeSet = types.toSet()
         var current = node.parent
-        while (current != null && !current.isNull) {
+        while (!current.isNull) {
             if (current.type in typeSet) return true
             current = current.parent
         }
@@ -77,9 +77,9 @@ object TreeTraversal {
     /**
      * Finds the first ancestor of the given type, or null if none exists.
      */
-    fun findAncestorOfType(node: TSNode, type: String): TSNode? {
+    fun findAncestorOfType(node: SyntaxNode, type: String): SyntaxNode? {
         var current = node.parent
-        while (current != null && !current.isNull) {
+        while (!current.isNull) {
             if (current.type == type) return current
             current = current.parent
         }
@@ -89,9 +89,9 @@ object TreeTraversal {
     /**
      * Checks if the node is a descendant of the given ancestor node.
      */
-    fun isDescendantOf(node: TSNode, ancestor: TSNode): Boolean {
+    fun isDescendantOf(node: SyntaxNode, ancestor: SyntaxNode): Boolean {
         var current = node.parent
-        while (current != null && !current.isNull) {
+        while (!current.isNull) {
             if (current == ancestor) return true
             current = current.parent
         }
@@ -101,14 +101,14 @@ object TreeTraversal {
     /**
      * Finds all descendants matching any of the given types via recursive descent.
      */
-    fun findAllDescendantsOfType(node: TSNode, vararg types: String): List<TSNode> {
+    fun findAllDescendantsOfType(node: SyntaxNode, vararg types: String): List<SyntaxNode> {
         val typeSet = types.toSet()
-        val result = mutableListOf<TSNode>()
+        val result = mutableListOf<SyntaxNode>()
         collectDescendantsOfType(node, typeSet, result)
         return result
     }
 
-    private fun collectDescendantsOfType(node: TSNode, types: Set<String>, result: MutableList<TSNode>) {
+    private fun collectDescendantsOfType(node: SyntaxNode, types: Set<String>, result: MutableList<SyntaxNode>) {
         for (child in node.children()) {
             if (child.isNull) continue
             if (child.type in types) result.add(child)
@@ -120,13 +120,13 @@ object TreeTraversal {
      * Finds all descendants matching any of the given types in a single pass,
      * returning them bucketed by node type.
      */
-    fun findAllDescendantsGroupedByType(node: TSNode, types: Set<String>): Map<String, List<TSNode>> {
-        val result = mutableMapOf<String, MutableList<TSNode>>()
+    fun findAllDescendantsGroupedByType(node: SyntaxNode, types: Set<String>): Map<String, List<SyntaxNode>> {
+        val result = mutableMapOf<String, MutableList<SyntaxNode>>()
         collectDescendantsByTypes(node, types, result)
         return result
     }
 
-    private fun collectDescendantsByTypes(node: TSNode, types: Set<String>, result: MutableMap<String, MutableList<TSNode>>) {
+    private fun collectDescendantsByTypes(node: SyntaxNode, types: Set<String>, result: MutableMap<String, MutableList<SyntaxNode>>) {
         for (child in node.children()) {
             if (child.isNull) continue
             if (child.type in types) {
@@ -139,7 +139,7 @@ object TreeTraversal {
     /**
      * Recursively checks if any descendant has the given type.
      */
-    fun containsNodeOfType(node: TSNode, type: String): Boolean {
+    fun containsNodeOfType(node: SyntaxNode, type: String): Boolean {
         for (child in node.children()) {
             if (child.isNull) continue
             if (child.type == type) return true
@@ -150,18 +150,18 @@ object TreeTraversal {
 }
 
 /**
- * Extension function to iterate over all children of a TSNode.
+ * Extension function to iterate over all children of a SyntaxNode.
  */
-fun TSNode.children(): Sequence<TSNode> = sequence {
+fun SyntaxNode.children(): Sequence<SyntaxNode> = sequence {
     for (i in 0 until childCount) {
         yield(getChild(i))
     }
 }
 
 /**
- * Extension function to iterate over all named children of a TSNode.
+ * Extension function to iterate over all named children of a SyntaxNode.
  */
-fun TSNode.namedChildren(): Sequence<TSNode> = sequence {
+fun SyntaxNode.namedChildren(): Sequence<SyntaxNode> = sequence {
     for (i in 0 until namedChildCount) {
         yield(getNamedChild(i))
     }

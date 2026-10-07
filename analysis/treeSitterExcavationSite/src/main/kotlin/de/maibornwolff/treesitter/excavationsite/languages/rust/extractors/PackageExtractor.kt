@@ -1,6 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
  * Rust has no in-content package declaration: a file's module path from the crate
@@ -13,5 +13,5 @@ import org.treesitter.TSNode
  * ignoring both the root node and the source content.
  */
 internal object PackageExtractor {
-    val extract: (TSNode, String) -> List<String> = { _, _ -> emptyList() }
+    val extract: (SyntaxNode, String) -> List<String> = { _, _ -> emptyList() }
 }

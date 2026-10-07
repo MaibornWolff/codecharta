@@ -2,7 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction.extract
 
 import de.maibornwolff.treesitter.excavationsite.integration.extraction.ExtractionExecutor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionStrategy
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
  * Generic identifier extractor that combines method-based and custom extraction.
@@ -18,15 +18,15 @@ import org.treesitter.TSNode
 class IdentifierExtractor(
     private val singleExtractors: Map<String, ExtractionStrategy> = emptyMap(),
     private val multiExtractors: Map<String, ExtractionStrategy> = emptyMap(),
-    private val customSingleExtractors: Map<String, (TSNode, String) -> String?> = emptyMap(),
-    private val customMultiExtractors: Map<String, (TSNode, String) -> List<String>> = emptyMap()
+    private val customSingleExtractors: Map<String, (SyntaxNode, String) -> String?> = emptyMap(),
+    private val customMultiExtractors: Map<String, (SyntaxNode, String) -> List<String>> = emptyMap()
 ) {
     /**
      * Extracts a single identifier from a node.
      *
      * Priority: custom extractors > method extractors
      */
-    fun extractSingle(node: TSNode, sourceCode: String): String? {
+    fun extractSingle(node: SyntaxNode, sourceCode: String): String? {
         val nodeType = node.type
 
         customSingleExtractors[nodeType]?.let { extractor ->
@@ -45,7 +45,7 @@ class IdentifierExtractor(
      *
      * Priority: custom multi extractors > multi method extractors > single extraction
      */
-    fun extractMultiple(node: TSNode, sourceCode: String): List<String> {
+    fun extractMultiple(node: SyntaxNode, sourceCode: String): List<String> {
         val nodeType = node.type
 
         customMultiExtractors[nodeType]?.let { extractor ->

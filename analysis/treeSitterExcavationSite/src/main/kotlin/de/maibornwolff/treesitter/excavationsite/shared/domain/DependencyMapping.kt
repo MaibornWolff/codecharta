@@ -1,7 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.shared.domain
 
-import org.treesitter.TSNode
-
 /**
  * Holds language-specific dependency extraction functions.
  *
@@ -11,9 +9,9 @@ import org.treesitter.TSNode
  * [Extract] stores custom extraction functions.
  */
 data class LanguageDependencyMapping(
-    val extractPackagePath: (TSNode, String) -> List<String>,
-    val extractImports: (TSNode, String) -> List<ImportDeclaration>,
-    val extractDeclarations: (TSNode, String) -> List<Declaration>
+    val extractPackagePath: (SyntaxNode, String) -> List<String>,
+    val extractImports: (SyntaxNode, String) -> List<ImportDeclaration>,
+    val extractDeclarations: (SyntaxNode, String) -> List<Declaration>
 )
 
 /**

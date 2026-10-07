@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object AliasConstraintExtractor {
     private const val TYPE_DEFINITION = "type_definition"
@@ -19,11 +19,11 @@ internal object AliasConstraintExtractor {
 
     val nodeTypes: Set<String> = setOf(TYPE_DEFINITION, ALIAS_DECLARATION)
 
-    fun extractAliasTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractAliasTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         (buckets[TYPE_DEFINITION].orEmpty() + buckets[ALIAS_DECLARATION].orEmpty())
             .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
 
-    fun extractConstraintTypes(declaration: TSNode, sourceCode: String): List<UsedType> {
+    fun extractConstraintTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
         val parent = declaration.parent
         if (parent.isNull || parent.type != TEMPLATE_DECLARATION) return emptyList()
         val requiresClause = parent.children().firstOrNull { it.type == REQUIRES_CLAUSE } ?: return emptyList()
@@ -31,7 +31,7 @@ internal object AliasConstraintExtractor {
         return collectConstraintTypes(constraint, sourceCode)
     }
 
-    private fun collectConstraintTypes(node: TSNode, sourceCode: String): List<UsedType> {
+    private fun collectConstraintTypes(node: SyntaxNode, sourceCode: String): List<UsedType> {
         if (node.type == CONSTRAINT_DISJUNCTION || node.type == CONSTRAINT_CONJUNCTION) {
             val left = node.getChildByFieldName(LEFT_FIELD).takeIf { !it.isNull }
             val right = node.getChildByFieldName(RIGHT_FIELD).takeIf { !it.isNull }

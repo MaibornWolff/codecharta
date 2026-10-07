@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object ImportExtractor {
     private const val IMPORT_LIST = "import_list"
@@ -12,7 +12,7 @@ internal object ImportExtractor {
     private const val WILDCARD_IMPORT = "wildcard_import"
     private const val IMPORT_SEPARATOR = "."
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<ImportDeclaration> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> {
         val importList = rootNode.children().firstOrNull { it.type == IMPORT_LIST }
             ?: return emptyList()
         return importList

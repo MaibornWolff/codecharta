@@ -2,10 +2,10 @@ package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 /**
  * Extracts Rust item declarations with their signature used types.
@@ -39,7 +39,7 @@ internal object DeclarationExtractor {
 
     private val NON_DECLARATION_CONTEXTS = setOf(IMPL_ITEM, TRAIT_ITEM, BLOCK)
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
         val baseDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
             .filter { isDeclarationContext(it) }
@@ -55,7 +55,7 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun toDeclaration(node: TSNode, sourceCode: String): Declaration? {
+    private fun toDeclaration(node: SyntaxNode, sourceCode: String): Declaration? {
         val name = extractName(node, sourceCode) ?: return null
         return Declaration(
             name = name,
@@ -65,7 +65,7 @@ internal object DeclarationExtractor {
         )
     }
 
-    private fun collectImplContributions(rootNode: TSNode, sourceCode: String): Map<DeclarationKey, List<UsedType>> {
+    private fun collectImplContributions(rootNode: SyntaxNode, sourceCode: String): Map<DeclarationKey, List<UsedType>> {
         val contributions = LinkedHashMap<DeclarationKey, MutableList<UsedType>>()
         TreeTraversal
             .findAllDescendantsOfType(rootNode, IMPL_ITEM)
@@ -86,7 +86,7 @@ internal object DeclarationExtractor {
         return contributions
     }
 
-    private fun isDeclarationContext(node: TSNode): Boolean {
+    private fun isDeclarationContext(node: SyntaxNode): Boolean {
         var current = node.parent
         while (!current.isNull) {
             if (current.type in NON_DECLARATION_CONTEXTS) return false
@@ -96,7 +96,7 @@ internal object DeclarationExtractor {
         return true
     }
 
-    private fun findModulePath(node: TSNode, sourceCode: String): List<String> {
+    private fun findModulePath(node: SyntaxNode, sourceCode: String): List<String> {
         val modules = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {
@@ -109,7 +109,7 @@ internal object DeclarationExtractor {
         return modules
     }
 
-    private fun extractName(node: TSNode, sourceCode: String): String? {
+    private fun extractName(node: SyntaxNode, sourceCode: String): String? {
         val childType = if (node.type in TYPE_NAMED_ITEMS) TYPE_IDENTIFIER else IDENTIFIER
         return TreeTraversal.findChildByType(node, childType, sourceCode)?.takeIf { it.isNotBlank() }
     }

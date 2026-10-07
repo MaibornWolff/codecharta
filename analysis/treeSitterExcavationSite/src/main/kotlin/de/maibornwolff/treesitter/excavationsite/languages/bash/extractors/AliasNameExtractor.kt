@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.bash.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val COMMAND_NAME = "command_name"
 private const val ALIAS = "alias"
@@ -14,7 +14,7 @@ private const val ALIAS = "alias"
  *
  * Returns null if the command is not an alias definition.
  */
-internal fun extractAliasName(node: TSNode, sourceCode: String): String? {
+internal fun extractAliasName(node: SyntaxNode, sourceCode: String): String? {
     val children = node.children().toList()
     if (children.size < 2) return null
 

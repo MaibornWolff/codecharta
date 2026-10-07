@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.ruby.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val ARGUMENT_LIST = "argument_list"
@@ -13,7 +13,7 @@ private val ATTR_METHODS = setOf("attr_reader", "attr_writer", "attr_accessor")
 /**
  * Extracts symbols from attr_reader/attr_writer/attr_accessor calls as identifiers.
  */
-internal fun extractAttrSymbols(callNode: TSNode, sourceCode: String): List<String> {
+internal fun extractAttrSymbols(callNode: SyntaxNode, sourceCode: String): List<String> {
     val methodName = TreeTraversal.findFirstChildTextByType(
         callNode,
         sourceCode,

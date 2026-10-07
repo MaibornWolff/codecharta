@@ -2,8 +2,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 internal object DeclarationExtractor {
     private const val FILE_SCOPED_NAMESPACE = "file_scoped_namespace_declaration"
@@ -22,7 +22,7 @@ internal object DeclarationExtractor {
         "delegate_declaration"
     )
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
         val allDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         val namesByStartByte = allDeclarations.associate { node ->
@@ -41,10 +41,10 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun findNamespacePath(node: TSNode, sourceCode: String): List<String> {
+    private fun findNamespacePath(node: SyntaxNode, sourceCode: String): List<String> {
         val ancestorSegments = mutableListOf<List<String>>()
         var current = node.parent
-        var compilationUnit: TSNode? = null
+        var compilationUnit: SyntaxNode? = null
         while (!current.isNull) {
             if (current.type == NAMESPACE_DECLARATION || current.type == FILE_SCOPED_NAMESPACE) {
                 ancestorSegments.add(0, extractNamespacePath(current, sourceCode))
@@ -65,7 +65,7 @@ internal object DeclarationExtractor {
         return ancestorSegments.flatten()
     }
 
-    private fun findParentClassPath(node: TSNode, namesByStartByte: Map<Int, String?>): List<String> {
+    private fun findParentClassPath(node: SyntaxNode, namesByStartByte: Map<Int, String?>): List<String> {
         val parents = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {
@@ -88,7 +88,7 @@ internal object DeclarationExtractor {
         else -> DeclarationType.UNKNOWN
     }
 
-    private fun extractNamespacePath(node: TSNode, sourceCode: String): List<String> {
+    private fun extractNamespacePath(node: SyntaxNode, sourceCode: String): List<String> {
         val text = TreeTraversal.findFirstChildTextByType(node, sourceCode, QUALIFIED_NAME, IDENTIFIER)
             ?: return emptyList()
         return text.split(NAMESPACE_SEPARATOR)

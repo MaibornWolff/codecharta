@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val SHORTHAND_FIELD_IDENTIFIER = "shorthand_field_identifier"
@@ -22,7 +22,7 @@ private const val TYPE_ANNOTATION = ":"
  * (`field_identifier`) are not collected either. So neither constructor/type
  * references, nor the type annotation, nor the right-hand side leak as declarations.
  */
-internal fun extractLetBindingIdentifiers(node: TSNode, sourceCode: String): List<String> {
+internal fun extractLetBindingIdentifiers(node: SyntaxNode, sourceCode: String): List<String> {
     val identifiers = mutableListOf<String>()
     for (child in node.children()) {
         if (child.type == TYPE_ANNOTATION || child.type == ASSIGNMENT) break
@@ -31,7 +31,7 @@ internal fun extractLetBindingIdentifiers(node: TSNode, sourceCode: String): Lis
     return identifiers
 }
 
-private fun collectPatternBindings(node: TSNode, sourceCode: String, out: MutableList<String>) {
+private fun collectPatternBindings(node: SyntaxNode, sourceCode: String, out: MutableList<String>) {
     when (node.type) {
         IDENTIFIER, SHORTHAND_FIELD_IDENTIFIER -> out.add(TreeTraversal.getNodeText(node, sourceCode))
         STRUCT_PATTERN, TUPLE_STRUCT_PATTERN ->

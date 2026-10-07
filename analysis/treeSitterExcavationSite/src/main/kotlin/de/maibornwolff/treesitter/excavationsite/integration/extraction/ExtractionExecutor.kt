@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.integration.extraction
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionStrategy
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 /**
  * Executes generic extraction strategies to extract text from AST nodes.
@@ -16,7 +16,7 @@ object ExtractionExecutor {
     /**
      * Executes an extraction strategy to extract a single identifier from a node.
      */
-    fun extractSingle(node: TSNode, sourceCode: String, method: ExtractionStrategy): String? = when (method) {
+    fun extractSingle(node: SyntaxNode, sourceCode: String, method: ExtractionStrategy): String? = when (method) {
         is ExtractionStrategy.FirstChildByType ->
             TreeTraversal.findFirstChildTextByType(node, sourceCode, method.type)
 
@@ -36,7 +36,7 @@ object ExtractionExecutor {
     /**
      * Executes an extraction strategy to extract multiple identifiers from a node.
      */
-    fun extractMultiple(node: TSNode, sourceCode: String, method: ExtractionStrategy): List<String> = when (method) {
+    fun extractMultiple(node: SyntaxNode, sourceCode: String, method: ExtractionStrategy): List<String> = when (method) {
         is ExtractionStrategy.AllChildrenByType ->
             TreeTraversal.findAllChildrenTextByType(node, sourceCode, method.type)
 

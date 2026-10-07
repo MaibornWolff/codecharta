@@ -2,7 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeSitterParser
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
 import org.treesitter.TSLanguage
 
 /**
@@ -11,7 +11,7 @@ import org.treesitter.TSLanguage
  */
 class DependencyCollector(private val treeSitterLanguage: TSLanguage, private val mapping: LanguageDependencyMapping) {
     fun collectDependencies(content: String): DependencyResult {
-        val rootNode = TreeSitterParser.parse(content, treeSitterLanguage)
+        val rootNode = TsNodeSyntaxNode.parse(content, treeSitterLanguage)
         return DependencyResult(
             packagePath = mapping.extractPackagePath(rootNode, content),
             imports = mapping.extractImports(rootNode, content),

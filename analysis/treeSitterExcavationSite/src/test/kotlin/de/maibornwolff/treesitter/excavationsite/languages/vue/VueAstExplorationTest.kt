@@ -2,11 +2,11 @@ package de.maibornwolff.treesitter.excavationsite.languages.vue
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeSitterParser
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.treesitter.TSNode
 
 /**
  * Exploration tests to understand the Vue AST structure.
@@ -48,7 +48,7 @@ class VueAstExplorationTest {
         """.trimIndent()
 
         val language = LanguageRegistry.getTreeSitterLanguage(Language.VUE)
-        val root = TreeSitterParser.parse(code, language)
+        val root = TsNodeSyntaxNode.parse(code, language)
 
         println("=== Vue AST Structure ===")
         printAst(root, code, 0)
@@ -74,7 +74,7 @@ class VueAstExplorationTest {
         """.trimIndent()
 
         val language = LanguageRegistry.getTreeSitterLanguage(Language.VUE)
-        val root = TreeSitterParser.parse(code, language)
+        val root = TsNodeSyntaxNode.parse(code, language)
 
         println("=== Vue Script Section AST ===")
         printAst(root, code, 0)
@@ -95,13 +95,13 @@ class VueAstExplorationTest {
         """.trimIndent()
 
         val language = LanguageRegistry.getTreeSitterLanguage(Language.VUE)
-        val root = TreeSitterParser.parse(code, language)
+        val root = TsNodeSyntaxNode.parse(code, language)
 
         println("=== Vue Comments AST ===")
         printAst(root, code, 0)
     }
 
-    private fun printAst(node: TSNode, code: String, depth: Int) {
+    private fun printAst(node: SyntaxNode, code: String, depth: Int) {
         val indent = "  ".repeat(depth)
         val nodeText = getNodeTextPreview(node, code)
         println("$indent${node.type}${if (nodeText.isNotEmpty()) " [$nodeText]" else ""}")
@@ -113,7 +113,7 @@ class VueAstExplorationTest {
         }
     }
 
-    private fun buildAstString(node: TSNode, code: String, depth: Int, sb: StringBuilder) {
+    private fun buildAstString(node: SyntaxNode, code: String, depth: Int, sb: StringBuilder) {
         val indent = "  ".repeat(depth)
         val nodeText = getNodeTextPreview(node, code)
         sb.appendLine("$indent${node.type}${if (nodeText.isNotEmpty()) " [$nodeText]" else ""}")
@@ -125,7 +125,7 @@ class VueAstExplorationTest {
         }
     }
 
-    private fun getNodeTextPreview(node: TSNode, code: String, maxLength: Int = 30): String {
+    private fun getNodeTextPreview(node: SyntaxNode, code: String, maxLength: Int = 30): String {
         val bytes = code.toByteArray(Charsets.UTF_8)
         val start = node.startByte
         val end = node.endByte
