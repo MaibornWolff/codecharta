@@ -7,8 +7,9 @@ import java.lang.foreign.ValueLayout.JAVA_BYTE
 import java.lang.foreign.ValueLayout.JAVA_INT
 
 /**
- * A parsed file. All native memory of the tree and its nodes lives in one confined arena that [close] frees, so a
- * tree and its nodes must stay on the thread that parsed them and must not be used after [close].
+ * A parsed file and the source it was parsed from. The source and all nodes live in one confined arena that [close]
+ * frees together with the tree, so a tree and its nodes must stay on the thread that parsed them and must not be
+ * used after [close].
  */
 internal class FfmSyntaxTree private constructor(
     private val arena: Arena,
@@ -25,7 +26,7 @@ internal class FfmSyntaxTree private constructor(
 
     fun fieldName(name: String): MemorySegment = fieldNames.getOrPut(name) { arena.allocateFrom(name) }
 
-    /** The source between two byte offsets of a node, read from the UTF-8 bytes tree-sitter parsed. */
+    /** The source between two byte offsets, read from the UTF-8 bytes tree-sitter parsed. */
     fun sourceText(startByte: Int, endByte: Int): String {
         val bytes = source.asSlice(startByte.toLong(), (endByte - startByte).toLong()).toArray(JAVA_BYTE)
         return String(bytes, Charsets.UTF_8)
@@ -40,27 +41,24 @@ internal class FfmSyntaxTree private constructor(
 
     /**
      * Visits all nodes depth-first in pre-order; iterative, so deeply nested code cannot overflow the stack. A visited
-     * node and every node reached from it are valid only during that visit; only the ancestors of the visited node
-     * are kept, so the memory of a walk grows with the depth of the tree and not with its size.
+     * node and every node reached from it are valid only during that visit. Only the ancestors of the visited node
+     * are kept, as its remembered parents, so the memory of a walk grows with the depth of the tree and not with its
+     * size.
      */
-    fun walk(visitor: (FfmNode, String) -> Unit) {
+    fun walk(visitor: (node: FfmNode, nodeType: String) -> Unit) {
         val cursor = TreeSitterApi.cursorNew(arena, rootNode.segment)
-        val ancestors = ArrayList<FfmNode>()
-        val nodesBeforeAncestor = ArrayList<Long>()
+        val openAncestors = ArrayList<OpenAncestor>()
         try {
             var hasNode = true
             while (hasNode) {
-                val nodesBeforeNode = nodeAllocator.mark()
-                val node = FfmNode(TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor), this, ancestors.lastOrNull())
-                val nodesBeforeVisit = nodeAllocator.mark()
-                visitor(node, node.type)
-                nodeAllocator.release(nodesBeforeVisit)
+                val markBeforeNode = nodeAllocator.mark()
+                val node = FfmNode(TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor), this, openAncestors.lastOrNull()?.node)
+                visitAndReleaseWhatTheVisitorReached(node, visitor)
                 if (TreeSitterApi.cursorGotoFirstChild(cursor)) {
-                    ancestors.add(node)
-                    nodesBeforeAncestor.add(nodesBeforeNode)
+                    openAncestors.add(OpenAncestor(node, markBeforeNode))
                 } else {
-                    nodeAllocator.release(nodesBeforeNode)
-                    hasNode = gotoNextSiblingOfNodeOrAncestor(cursor, ancestors, nodesBeforeAncestor)
+                    nodeAllocator.release(markBeforeNode)
+                    hasNode = gotoNextSiblingClosingFinishedAncestors(cursor, openAncestors)
                 }
             }
         } finally {
@@ -68,18 +66,21 @@ internal class FfmSyntaxTree private constructor(
         }
     }
 
-    private fun gotoNextSiblingOfNodeOrAncestor(
-        cursor: MemorySegment,
-        ancestors: ArrayList<FfmNode>,
-        nodesBeforeAncestor: ArrayList<Long>
-    ): Boolean {
+    private fun visitAndReleaseWhatTheVisitorReached(node: FfmNode, visitor: (node: FfmNode, nodeType: String) -> Unit) {
+        val markBeforeVisit = nodeAllocator.mark()
+        visitor(node, node.type)
+        nodeAllocator.release(markBeforeVisit)
+    }
+
+    private fun gotoNextSiblingClosingFinishedAncestors(cursor: MemorySegment, openAncestors: ArrayList<OpenAncestor>): Boolean {
         while (!TreeSitterApi.cursorGotoNextSibling(cursor)) {
             if (!TreeSitterApi.cursorGotoParent(cursor)) return false
-            ancestors.removeLast()
-            nodeAllocator.release(nodesBeforeAncestor.removeLast())
+            nodeAllocator.release(openAncestors.removeLast().markBeforeNode)
         }
         return true
     }
+
+    private class OpenAncestor(val node: FfmNode, val markBeforeNode: Long)
 
     override fun close() {
         if (!arena.scope().isAlive) return
