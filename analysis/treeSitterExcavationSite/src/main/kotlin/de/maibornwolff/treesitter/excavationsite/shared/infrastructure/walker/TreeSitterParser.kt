@@ -7,7 +7,7 @@ import org.treesitter.TSParser
 /**
  * Shared TreeSitter parsing utility.
  *
- * Centralizes the parsing logic of text and dependency extraction.
+ * Parses for dependency extraction, the last user of the JNI binding in this module.
  */
 object TreeSitterParser {
     /**
