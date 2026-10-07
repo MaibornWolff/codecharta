@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Form feeds in source files**: a file that contains a form feed or a vertical tab no longer gets wrong function
   and complexity counts from `unifiedparser`, nor wrong words from `domainlanguageparser`.
 
+- **Rare characters in source files**: `domainlanguageparser` no longer returns cut-off words for a file that
+  contains a byte order mark after its first character or one of the characters U+FFFE and U+FFFF.
+
 - **Objective-C methods without a selector name**: `domainlanguageparser` no longer skips a file that declares a
   method such as `- (void):(int)amount`.
 
