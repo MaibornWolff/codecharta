@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import java.util.HexFormat
 
 class PlatformTest {
     @ParameterizedTest
@@ -42,6 +43,30 @@ class PlatformTest {
 
         // Assert
         assertThat(coreLibrary).isEqualTo(expectedCoreLibrary)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "Linux, amd64, 7f454c46",
+        "Linux, aarch64, 7f454c46",
+        "Mac OS X, x86_64, cffaedfe",
+        "Mac OS X, aarch64, cffaedfe",
+        "Windows 11, amd64, 4d5a9000"
+    )
+    fun `should find a bundled core library in the binary format of every supported platform`(
+        osName: String,
+        osArch: String,
+        expectedFileSignature: String
+    ) {
+        // Arrange
+        val platform = Platform.of(osName, osArch)
+        val coreLibrary = "lib/${platform.libraryFileName(platform.coreLibraryName)}"
+
+        // Act
+        val fileSignature = javaClass.classLoader.getResourceAsStream(coreLibrary)!!.use { it.readNBytes(4) }
+
+        // Assert
+        assertThat(HexFormat.of().formatHex(fileSignature)).isEqualTo(expectedFileSignature)
     }
 
     @Test
