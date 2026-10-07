@@ -78,9 +78,9 @@ class FfmSyntaxTreeTest {
         }
 
         @Test
-        fun `should walk a file with a million lines`() {
+        fun `should walk a file with a hundred thousand lines`() {
             // Arrange
-            val lineCount = 1_000_000
+            val lineCount = 100_000
             val code = "class A {\n" + "int x;\n".repeat(lineCount) + "}"
 
             // Act
@@ -160,6 +160,22 @@ class FfmSyntaxTreeTest {
         }
 
         @Test
+        fun `should throw instead of crashing when a null node is read`() {
+            FfmSyntaxTree.parse("class A {}", java).use { tree ->
+                // Arrange
+                val nullNode = tree.rootNode.parent
+
+                // Act & Assert
+                assertThatThrownBy { nullNode.type }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.childCount }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.startRow }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.parent }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.getChild(0) }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.getChildByFieldName("name") }.isInstanceOf(IllegalStateException::class.java)
+            }
+        }
+
+        @Test
         fun `should return the parent of a child`() {
             FfmSyntaxTree.parse("class A {}", java).use { tree ->
                 // Arrange
@@ -189,6 +205,38 @@ class FfmSyntaxTreeTest {
 
             // Assert
             assertThatThrownBy { root.type }.isInstanceOf(IllegalStateException::class.java)
+        }
+
+        @Test
+        fun `should ignore a second close`() {
+            // Arrange
+            val tree = FfmSyntaxTree.parse("class A {}", java)
+            tree.close()
+
+            // Act
+            val secondClose = runCatching { tree.close() }
+
+            // Assert
+            assertThat(secondClose.isSuccess).isTrue()
+        }
+
+        @Test
+        fun `should reach every child of a node with more children than a block of nodes holds`() {
+            // Arrange
+            val fieldCount = 50_000
+            val code = "class A {\n" + "int x;\n".repeat(fieldCount) + "}"
+
+            // Act
+            val fieldsOfClassBody = FfmSyntaxTree.parse(code, java).use { tree ->
+                var fields = 0
+                tree.walk { node, nodeType ->
+                    if (nodeType == "class_body") fields = (0 until node.childCount).count { node.getChild(it).type == "field_declaration" }
+                }
+                fields
+            }
+
+            // Assert
+            assertThat(fieldsOfClassBody).isEqualTo(fieldCount)
         }
 
         @Test

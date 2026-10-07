@@ -15,7 +15,7 @@ typealias NodeVisitor = (node: TSNode, nodeType: String) -> Unit
  * Generic AST tree walker using depth-first traversal.
  *
  * Uses [DeepRecursiveFunction] to avoid stack overflow on deeply nested code.
- * Both MetricCollector and TextExtractor use this shared walker.
+ * Text and dependency extraction use this shared walker.
  */
 object TreeWalker {
     /**

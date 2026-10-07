@@ -58,7 +58,8 @@ tasks.jar {
         attributes(
             "Main-Class" to application.mainClass,
             "Implementation-Title" to "CodeCharta ccsh",
-            "Implementation-Version" to project.version
+            "Implementation-Version" to project.version,
+            "Enable-Native-Access" to "ALL-UNNAMED"
         )
     }
     isZip64 = true

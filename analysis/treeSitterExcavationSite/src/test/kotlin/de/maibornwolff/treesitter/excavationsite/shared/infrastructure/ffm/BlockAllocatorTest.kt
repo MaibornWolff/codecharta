@@ -58,6 +58,60 @@ class BlockAllocatorTest {
     }
 
     @Test
+    fun `should align a segment to an alignment larger than the one of its blocks`() {
+        Arena.ofConfined().use { arena ->
+            // Arrange
+            val allocator = BlockAllocator(arena)
+            val alignment = 64L
+            allocator.allocate(8, 8)
+
+            // Act
+            val aligned = allocator.allocate(alignment, alignment)
+
+            // Assert
+            assertThat(aligned.address() % alignment).isZero()
+        }
+    }
+
+    @Test
+    fun `should reuse the memory released since a mark`() {
+        Arena.ofConfined().use { arena ->
+            // Arrange
+            val allocator = BlockAllocator(arena)
+            val kept = allocator.allocate(JAVA_LONG)
+            val mark = allocator.mark()
+            val released = allocator.allocate(JAVA_LONG)
+
+            // Act
+            allocator.release(mark)
+            val reused = allocator.allocate(JAVA_LONG)
+
+            // Assert
+            assertThat(reused.address()).isEqualTo(released.address())
+            assertThat(reused.address()).isEqualTo(kept.address() + JAVA_LONG.byteSize())
+        }
+    }
+
+    @Test
+    fun `should reuse the blocks released since a mark`() {
+        Arena.ofConfined().use { arena ->
+            // Arrange
+            val allocator = BlockAllocator(arena)
+            val halfBlock = 600L * 1024
+            val mark = allocator.mark()
+            val firstBlockSegment = allocator.allocate(halfBlock, 1)
+            val secondBlockSegment = allocator.allocate(halfBlock, 1)
+
+            // Act
+            allocator.release(mark)
+            val reusedSegments = listOf(allocator.allocate(halfBlock, 1), allocator.allocate(halfBlock, 1))
+
+            // Assert
+            assertThat(reusedSegments.map { it.address() }).containsExactly(firstBlockSegment.address(), secondBlockSegment.address())
+        }
+    }
+
+    @Test
     fun `should allocate a segment larger than a block`() {
         Arena.ofConfined().use { arena ->
             // Arrange

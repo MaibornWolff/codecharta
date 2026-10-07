@@ -11,7 +11,7 @@ class FfmGrammarTest {
     @Test
     fun `should name a symbol of the grammar`() {
         // Act
-        val name = grammar.symbolName(1)
+        val name = grammar.symbolName(1.toChar())
 
         // Assert
         assertThat(name).isEqualTo("identifier")
@@ -20,7 +20,7 @@ class FfmGrammarTest {
     @Test
     fun `should name the builtin error symbol that is not part of the grammar`() {
         // Arrange
-        val builtinErrorSymbol = 0xFFFF.toShort()
+        val builtinErrorSymbol = 0xFFFF.toChar()
 
         // Act
         val name = grammar.symbolName(builtinErrorSymbol)
@@ -32,7 +32,7 @@ class FfmGrammarTest {
     @Test
     fun `should name the builtin error repeat symbol that is not part of the grammar`() {
         // Arrange
-        val builtinErrorRepeatSymbol = 0xFFFE.toShort()
+        val builtinErrorRepeatSymbol = 0xFFFE.toChar()
 
         // Act
         val name = grammar.symbolName(builtinErrorRepeatSymbol)
@@ -44,7 +44,7 @@ class FfmGrammarTest {
     @Test
     fun `should reject a symbol the grammar does not know`() {
         // Arrange
-        val unknownSymbol: Short = 500
+        val unknownSymbol = 500.toChar()
 
         // Act & Assert
         assertThatThrownBy { grammar.symbolName(unknownSymbol) }
