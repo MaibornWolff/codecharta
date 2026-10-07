@@ -24,6 +24,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      # to cancel the other runs of the commit when the library does not match
+      actions: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -74,3 +78,15 @@ jobs:
           echo "built:      $built"
           echo "checked in: $checked_in"
           test "$built" = "$checked_in"
+
+      # A library that is not the build of the pinned sources must not be tested or packaged any further
+      - name: Stop the other runs of this commit
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          gh run list --repo "$GITHUB_REPOSITORY" --commit "$COMMIT" --limit 100 --json databaseId,status \
+            --jq '.[] | select(.status != "completed") | .databaseId' |
+            grep --invert-match --line-regexp "$GITHUB_RUN_ID" |
+            xargs --no-run-if-empty --max-args 1 gh run cancel --repo "$GITHUB_REPOSITORY"
