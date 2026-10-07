@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test
 
 class TextExtractionEncodingTest {
     @Test
-    fun `should extract whole identifiers from a file that starts with a byte order mark`() {
+    fun `should extract unshifted identifiers from a file that starts with a byte order mark`() {
         // Arrange
-        val byteOrderMark = "﻿"
+        val byteOrderMark = "\uFEFF"
         val code = byteOrderMark + "// Licensed\nclass BenchmarkRunner { int assembly; }"
 
         // Act
@@ -19,16 +19,16 @@ class TextExtractionEncodingTest {
     }
 
     @Test
-    fun `should extract whole identifiers after the noncharacters U+FFFE and U+FFFF`() {
+    fun `should extract unshifted identifiers after the noncharacters U+FFFE and U+FFFF`() {
         // Arrange
-        val code = "class A { String range = \"￾-￿\"; int afterTheRange; }"
+        val code = "class A { String range = \"\uFFFE-\uFFFF\"; int afterTheRange; }"
 
         // Act
         val result = TreeSitterExtraction.extract(code, Language.JAVA)
 
         // Assert
         assertThat(result.identifiers).containsExactly("A", "range", "afterTheRange")
-        assertThat(result.strings).containsExactly("￾-￿")
+        assertThat(result.strings).containsExactly("\uFFFE-\uFFFF")
     }
 
     @Test
@@ -59,7 +59,7 @@ class TextExtractionEncodingTest {
     }
 
     @Test
-    fun `should extract a lone surrogate as a question mark instead of failing`() {
+    fun `should extract a lone surrogate as a question mark`() {
         // Arrange
         val loneSurrogate = "\uD83D"
         val code = "class A { String label = \"x${loneSurrogate}y\"; int after; }"
