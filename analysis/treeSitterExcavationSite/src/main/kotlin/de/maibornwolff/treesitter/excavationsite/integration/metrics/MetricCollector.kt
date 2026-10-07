@@ -5,10 +5,9 @@ import de.maibornwolff.treesitter.excavationsite.integration.metrics.adapters.La
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeSitterParser
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeWalker
-import org.treesitter.TSLanguage
-import org.treesitter.TSTreeCursor
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmGrammar
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 import kotlin.collections.iterator
 import kotlin.math.round
 
@@ -17,7 +16,7 @@ import kotlin.math.round
  *
  * Uses the restored calculator architecture with MetricsToCalculatorsMap.
  */
-class MetricCollector(private val treeSitterLanguage: TSLanguage, private val definition: LanguageDefinition) {
+internal class MetricCollector(private val grammar: FfmGrammar, private val definition: LanguageDefinition) {
     companion object {
         private const val LONG_METHOD_THRESHOLD = 10
         private const val LONG_PARAMETER_LIST_THRESHOLD = 4
@@ -38,34 +37,45 @@ class MetricCollector(private val treeSitterLanguage: TSLanguage, private val de
      * @param content The source code content to analyze
      * @return A map of metric names to their values
      */
-    fun collectMetrics(content: String): Map<String, Double> {
-        val rootNode = TreeSitterParser.parse(content, treeSitterLanguage)
-        rootNodeType = rootNode.type
+    fun collectMetrics(content: String): Map<String, Double> = FfmSyntaxTree.parse(content, grammar).use { tree ->
+        rootNodeType = tree.rootNode.type
 
-        val metricValues = mutableMapOf<AvailableFileMetrics, Int>()
-        AvailableFileMetrics.entries.forEach { metricValues[it] = 0 }
-
+        val metricValues = newMetricValues()
         val perFileMetricInfo = calculatorsMap.getPerFileMetricInfo()
 
-        TreeWalker.walk(TSTreeCursor(rootNode)) { node, nodeType ->
-            if (nodeType == rootNodeType) return@walk
+        tree.walk { node, nodeType -> visitNode(node, nodeType, perFileMetricInfo, metricValues) }
 
-            val startRow = node.startPoint.row
-            val endRow = node.endPoint.row
+        buildMetricsResult(metricValues, totalLines(content, tree.rootNode.endRow))
+    }
 
-            for ((metric, calculator) in perFileMetricInfo) {
-                metricValues[metric] = metricValues.getOrDefault(metric, 0) + calculator(node, nodeType, startRow, endRow)
-            }
+    private fun newMetricValues(): MutableMap<AvailableFileMetrics, Int> {
+        val metricValues = mutableMapOf<AvailableFileMetrics, Int>()
+        AvailableFileMetrics.entries.forEach { metricValues[it] = 0 }
+        return metricValues
+    }
 
-            calculatorsMap.processPerFunctionMetricsForNode(node, nodeType, startRow, endRow)
+    private fun visitNode(
+        node: SyntaxNode,
+        nodeType: String,
+        perFileMetricInfo: Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int>,
+        metricValues: MutableMap<AvailableFileMetrics, Int>
+    ) {
+        if (nodeType == rootNodeType) return
+
+        val startRow = node.startRow
+        val endRow = node.endRow
+
+        for ((metric, calculator) in perFileMetricInfo) {
+            metricValues[metric] = metricValues.getOrDefault(metric, 0) + calculator(node, nodeType, startRow, endRow)
         }
 
-        val totalLines = when {
-            content.isEmpty() -> 0
-            content.endsWith("\n") -> rootNode.endPoint.row
-            else -> rootNode.endPoint.row + 1
-        }
-        return buildMetricsResult(metricValues, totalLines)
+        calculatorsMap.processPerFunctionMetricsForNode(node, nodeType, startRow, endRow)
+    }
+
+    private fun totalLines(content: String, rootEndRow: Int): Int = when {
+        content.isEmpty() -> 0
+        content.endsWith("\n") -> rootEndRow
+        else -> rootEndRow + 1
     }
 
     private fun buildMetricsResult(metricValues: Map<AvailableFileMetrics, Int>, totalLines: Int): Map<String, Double> {

@@ -19,6 +19,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.rust.RustDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.swift.SwiftDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.tsx.TsxDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDefinition
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import org.treesitter.TSLanguage
@@ -71,6 +72,31 @@ object LanguageRegistry {
         Language.ABL -> TreeSitterAbl()
         Language.DELPHI -> TreeSitterPascal()
         Language.RUST -> TreeSitterRust()
+    }
+
+    /**
+     * Returns the native grammar library the metric calculation parses the given language with.
+     */
+    fun getGrammarLibrary(language: Language): GrammarLibrary = when (language) {
+        Language.JAVA -> GrammarLibrary("java")
+        Language.KOTLIN -> GrammarLibrary("kotlin")
+        Language.TYPESCRIPT -> GrammarLibrary("typescript")
+        Language.TSX -> GrammarLibrary("tsx")
+        Language.JAVASCRIPT -> GrammarLibrary("javascript")
+        Language.PYTHON -> GrammarLibrary("python")
+        Language.GO -> GrammarLibrary("go")
+        Language.PHP -> GrammarLibrary("php")
+        Language.RUBY -> GrammarLibrary("ruby")
+        Language.SWIFT -> GrammarLibrary("swift")
+        Language.BASH -> GrammarLibrary("bash")
+        Language.CSHARP -> GrammarLibrary("c-sharp", "c_sharp")
+        Language.CPP -> GrammarLibrary("cpp")
+        Language.C -> GrammarLibrary("c")
+        Language.OBJECTIVE_C -> GrammarLibrary("objc")
+        Language.VUE -> GrammarLibrary("javascript")
+        Language.ABL -> GrammarLibrary("abl")
+        Language.DELPHI -> GrammarLibrary("pascal")
+        Language.RUST -> GrammarLibrary("rust")
     }
 
     /**

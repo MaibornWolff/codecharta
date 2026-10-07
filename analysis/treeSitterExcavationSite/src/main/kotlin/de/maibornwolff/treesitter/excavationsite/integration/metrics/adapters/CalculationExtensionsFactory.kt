@@ -4,7 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationConfig
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationExtensions
 import de.maibornwolff.treesitter.excavationsite.shared.domain.IgnoreRule
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LeafNodeRule
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**
  * Factory that converts declarative CalculationConfig to executable CalculationExtensions.
@@ -26,7 +26,7 @@ object CalculationExtensionsFactory {
         countNodeAsLeafNode = buildLeafNodeFunction(config.countAsLeafNode)
     )
 
-    private fun buildIgnoreFunction(rules: List<IgnoreRule>): (TSNode, String) -> Boolean {
+    private fun buildIgnoreFunction(rules: List<IgnoreRule>): (SyntaxNode, String) -> Boolean {
         if (rules.isEmpty()) {
             return { _, _ -> false }
         }
@@ -35,7 +35,7 @@ object CalculationExtensionsFactory {
         }
     }
 
-    private fun evaluateRule(rule: IgnoreRule, node: TSNode, nodeType: String): Boolean = when (rule) {
+    private fun evaluateRule(rule: IgnoreRule, node: SyntaxNode, nodeType: String): Boolean = when (rule) {
         is IgnoreRule.TypeWithParentType -> {
             nodeType == rule.nodeType && node.parent.type == rule.parentType
         }
@@ -61,7 +61,7 @@ object CalculationExtensionsFactory {
         }
     }
 
-    private fun buildLeafNodeFunction(rule: LeafNodeRule?): (TSNode) -> Boolean {
+    private fun buildLeafNodeFunction(rule: LeafNodeRule?): (SyntaxNode) -> Boolean {
         if (rule == null) {
             return { false }
         }

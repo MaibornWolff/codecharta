@@ -3,8 +3,8 @@ package de.maibornwolff.treesitter.excavationsite.integration.metrics.calculator
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.AvailableFunctionMetrics
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.CalculationContext
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.NodeTypeMatcher
-import org.treesitter.TSNode
 import kotlin.math.round
 
 abstract class MetricPerFunctionCalc {
@@ -37,27 +37,27 @@ abstract class MetricPerFunctionCalc {
         }
     }
 
-    private fun checkLeavingFunction(startRow: Int, node: TSNode) {
+    private fun checkLeavingFunction(startRow: Int, node: SyntaxNode) {
         if (startRow > endRowOfLastFunction ||
-            (startRow == endRowOfLastFunction && node.startPoint.column > endColumnOfLastFunction)
+            (startRow == endRowOfLastFunction && node.startColumn > endColumnOfLastFunction)
         ) {
             isInFunction = false
             isInFunctionBody = false
         }
     }
 
-    private fun checkEnteringFunctionBody(node: TSNode, nodeType: String, nodeTypeProvider: MetricNodeTypes) {
+    private fun checkEnteringFunctionBody(node: SyntaxNode, nodeType: String, nodeTypeProvider: MetricNodeTypes) {
         if (!isInFunctionBody && NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
             isInFunctionBody = true
         }
     }
 
-    private fun handleEnteringNextFunction(endRow: Int, node: TSNode) {
+    private fun handleEnteringNextFunction(endRow: Int, node: SyntaxNode) {
         isInFunction = true
         idOfCurrentFunction++
         metricPerFunction.add(0)
         endRowOfLastFunction = endRow
-        endColumnOfLastFunction = node.endPoint.column
+        endColumnOfLastFunction = node.endColumn
     }
 
     fun addToMetricForFunction(value: Int) {

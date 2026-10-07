@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
 
-import org.treesitter.TSNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 object NodeTypeMatcher {
-    fun isNodeTypeAllowed(node: TSNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
+    fun isNodeTypeAllowed(node: SyntaxNode, nodeType: String, allowedTypes: TreeNodeTypes): Boolean {
         if (allowedTypes.simpleNodeTypes.contains(nodeType)) {
             return true
         } else if (allowedTypes.nestedNodeTypes != null) {
@@ -12,7 +12,7 @@ object NodeTypeMatcher {
         return false
     }
 
-    fun isNestedTypeAllowed(node: TSNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
+    fun isNestedTypeAllowed(node: SyntaxNode, nodeType: String, nestedTypes: Set<NestedNodeType>): Boolean {
         for (nestedType in nestedTypes) {
             if (nestedType.baseNodeType != nodeType) continue
 
