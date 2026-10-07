@@ -11,7 +11,7 @@ internal class FfmGrammar(val language: MemorySegment, private val symbolNames: 
         return when (index) {
             BUILTIN_SYMBOL_ERROR -> "ERROR"
             BUILTIN_SYMBOL_ERROR_REPEAT -> "_ERROR"
-            else -> throw IllegalStateException("Unknown tree-sitter symbol $index")
+            else -> error("Unknown tree-sitter symbol $index")
         }
     }
 
