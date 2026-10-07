@@ -62,8 +62,12 @@ internal class NativeLibraryCache(
 
     private fun createPrivately(newDirectory: Path) {
         if (Files.exists(newDirectory, LinkOption.NOFOLLOW_LINKS)) return
-        Files.createDirectories(newDirectory)
-        if (posixAttributes(newDirectory) != null) Files.setPosixFilePermissions(newDirectory, OWNER_ONLY)
+        val hasPosixPermissions = POSIX_VIEW in newDirectory.fileSystem.supportedFileAttributeViews()
+        if (hasPosixPermissions) {
+            Files.createDirectories(newDirectory, PosixFilePermissions.asFileAttribute(OWNER_ONLY))
+        } else {
+            Files.createDirectories(newDirectory)
+        }
     }
 
     // A library is loaded from here, so nobody else may be able to replace a file after its content was checked.
@@ -98,6 +102,7 @@ internal class NativeLibraryCache(
         private const val CHECKSUM_LENGTH = 16
         private const val DIRECTORY_PROPERTY = "codecharta.treesitter.library.dir"
         private const val OWNER_PROBE_PREFIX = "codecharta-owner"
+        private const val POSIX_VIEW = "posix"
         private val OWNER_ONLY = PosixFilePermissions.fromString("rwx------")
         private val WRITE_BY_OTHERS = setOf(PosixFilePermission.GROUP_WRITE, PosixFilePermission.OTHERS_WRITE)
 
