@@ -172,6 +172,12 @@ class FfmSyntaxTreeTest {
                 assertThatThrownBy { nullNode.parent }.isInstanceOf(IllegalStateException::class.java)
                 assertThatThrownBy { nullNode.getChild(0) }.isInstanceOf(IllegalStateException::class.java)
                 assertThatThrownBy { nullNode.getChildByFieldName("name") }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.namedChildCount }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.getNamedChild(0) }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.startByte }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.endByte }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.text }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.prevSibling }.isInstanceOf(IllegalStateException::class.java)
             }
         }
 
@@ -189,6 +195,192 @@ class FfmSyntaxTreeTest {
                 assertThat(parent.type).isEqualTo("class_declaration")
                 assertThat(parent.childCount).isEqualTo(classDeclaration.childCount)
             }
+        }
+    }
+
+    @Nested
+    inner class NamedChildrenAndSiblings {
+        @Test
+        fun `should count and return only the named children`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val classBody = tree.rootNode.getChild(0).getChildByFieldName("body")
+
+                // Act
+                val onlyNamedChild = classBody.getNamedChild(0)
+
+                // Assert
+                assertThat(classBody.childCount).isEqualTo(3)
+                assertThat(classBody.namedChildCount).isEqualTo(1)
+                assertThat(onlyNamedChild.type).isEqualTo("field_declaration")
+            }
+        }
+
+        @Test
+        fun `should return a null node for a named child index out of range`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val classBody = tree.rootNode.getChild(0).getChildByFieldName("body")
+
+                // Act
+                val missingChild = classBody.getNamedChild(classBody.namedChildCount)
+
+                // Assert
+                assertThat(missingChild.isNull).isTrue()
+            }
+        }
+
+        @Test
+        fun `should return the previous sibling and a null node before the first child`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val classBody = tree.rootNode.getChild(0).getChildByFieldName("body")
+                val field = classBody.getChild(1)
+
+                // Act
+                val openingBrace = field.prevSibling
+
+                // Assert
+                assertThat(openingBrace.type).isEqualTo("{")
+                assertThat(openingBrace.prevSibling.isNull).isTrue()
+            }
+        }
+    }
+
+    @Nested
+    inner class Equality {
+        @Test
+        fun `should treat two views of the same node as equal`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val classDeclaration = tree.rootNode.getChild(0)
+
+                // Act
+                val sameNodeReachedTwice = classDeclaration.getChildByFieldName("name").parent
+
+                // Assert
+                assertThat(sameNodeReachedTwice).isEqualTo(classDeclaration)
+                assertThat(sameNodeReachedTwice.hashCode()).isEqualTo(classDeclaration.hashCode())
+            }
+        }
+
+        @Test
+        fun `should tell different nodes apart`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val classDeclaration = tree.rootNode.getChild(0)
+
+                // Act
+                val name = classDeclaration.getChildByFieldName("name")
+
+                // Assert
+                assertThat(name).isNotEqualTo(classDeclaration)
+                assertThat(name).isNotEqualTo("A")
+            }
+        }
+
+        @Test
+        fun `should tell the same position in two trees apart`() {
+            // Arrange
+            val code = "class A { int x; }"
+
+            FfmSyntaxTree.parse(code, java).use { firstTree ->
+                FfmSyntaxTree.parse(code, java).use { secondTree ->
+                    // Act
+                    val rootsAreEqual = firstTree.rootNode == secondTree.rootNode
+
+                    // Assert
+                    assertThat(rootsAreEqual).isFalse()
+                }
+            }
+        }
+    }
+
+    @Nested
+    inner class Text {
+        private fun textsOfType(code: String, wantedType: String): List<String> = FfmSyntaxTree.parse(code, java).use { tree ->
+            val texts = mutableListOf<String>()
+            tree.walk { node, nodeType -> if (nodeType == wantedType) texts.add(node.text) }
+            texts
+        }
+
+        @Test
+        fun `should report the byte offsets of a node`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Act
+                val name = tree.rootNode.getChild(0).getChildByFieldName("name")
+
+                // Assert
+                assertThat(listOf(name.startByte, name.endByte)).containsExactly(6, 7)
+                assertThat(name.text).isEqualTo("A")
+            }
+        }
+
+        @Test
+        fun `should return non-ASCII text and the text after it unshifted`() {
+            // Arrange
+            val code = "class Größe { String 名前 = \"😀 ä\"; int after; }"
+
+            // Act
+            val identifiers = textsOfType(code, "identifier")
+            val strings = textsOfType(code, "string_literal")
+
+            // Assert
+            assertThat(identifiers).containsExactly("Größe", "名前", "after")
+            assertThat(strings).containsExactly("\"😀 ä\"")
+        }
+
+        @Test
+        fun `should return the text of a node that ends with the file`() {
+            // Arrange
+            val code = "class A {} // schließt"
+
+            // Act
+            val comments = textsOfType(code, "line_comment")
+
+            // Assert
+            assertThat(comments).containsExactly("// schließt")
+        }
+
+        @Test
+        fun `should return the whole source as the text of the root`() {
+            // Arrange
+            val code = "class A { String s = \"ä\"; }"
+
+            // Act
+            val rootText = FfmSyntaxTree.parse(code, java).use { tree -> tree.rootNode.text }
+
+            // Assert
+            assertThat(rootText).isEqualTo(code)
+        }
+
+        @Test
+        fun `should return an empty text for a node without source`() {
+            // Arrange
+            val codeMissingASemicolon = "class A { int x }"
+
+            // Act
+            val textsOfEmptyNodes = FfmSyntaxTree.parse(codeMissingASemicolon, java).use { tree ->
+                val texts = mutableListOf<String>()
+                tree.walk { node, _ -> if (node.startByte == node.endByte) texts.add(node.text) }
+                texts
+            }
+
+            // Assert
+            assertThat(textsOfEmptyNodes).containsExactly("")
+        }
+
+        @Test
+        fun `should not shift the text after a byte order mark`() {
+            // Arrange
+            val byteOrderMark = "\uFEFF"
+            val code = byteOrderMark + "class A { int x; }"
+
+            // Act
+            val identifiers = textsOfType(code, "identifier")
+
+            // Assert
+            assertThat(identifiers).containsExactly("A", "x")
         }
     }
 

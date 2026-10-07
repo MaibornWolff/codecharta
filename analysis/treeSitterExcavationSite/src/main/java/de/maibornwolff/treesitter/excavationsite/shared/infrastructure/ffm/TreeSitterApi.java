@@ -16,7 +16,7 @@ import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 /**
- * Downcalls into the tree-sitter C API, for the functions metric calculation needs.
+ * Downcalls into the tree-sitter C API, for the functions metric calculation and text extraction need.
  *
  * <p>The struct layouts mirror {@code tree_sitter/api.h} of tree-sitter 0.26 and have to be checked against it on
  * every upgrade of the core library. This is Java because Kotlin compiles {@code invokeExact} without its
@@ -71,9 +71,15 @@ final class TreeSitterApi {
     private static final MethodHandle NODE_SYMBOL = core("ts_node_symbol", FunctionDescriptor.of(SYMBOL, NODE));
     private static final MethodHandle NODE_START_POINT = core("ts_node_start_point", FunctionDescriptor.of(POINT, NODE));
     private static final MethodHandle NODE_END_POINT = core("ts_node_end_point", FunctionDescriptor.of(POINT, NODE));
+    private static final MethodHandle NODE_START_BYTE = core("ts_node_start_byte", FunctionDescriptor.of(JAVA_INT, NODE));
+    private static final MethodHandle NODE_END_BYTE = core("ts_node_end_byte", FunctionDescriptor.of(JAVA_INT, NODE));
     private static final MethodHandle NODE_CHILD_COUNT = core("ts_node_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
     private static final MethodHandle NODE_CHILD = core("ts_node_child", FunctionDescriptor.of(NODE, NODE, JAVA_INT));
+    private static final MethodHandle NODE_NAMED_CHILD_COUNT =
+        core("ts_node_named_child_count", FunctionDescriptor.of(JAVA_INT, NODE));
+    private static final MethodHandle NODE_NAMED_CHILD = core("ts_node_named_child", FunctionDescriptor.of(NODE, NODE, JAVA_INT));
     private static final MethodHandle NODE_PARENT = core("ts_node_parent", FunctionDescriptor.of(NODE, NODE));
+    private static final MethodHandle NODE_PREV_SIBLING = core("ts_node_prev_sibling", FunctionDescriptor.of(NODE, NODE));
     private static final MethodHandle NODE_CHILD_BY_FIELD_NAME =
         core("ts_node_child_by_field_name", FunctionDescriptor.of(NODE, NODE, ADDRESS, JAVA_INT));
     private static final MethodHandle LANGUAGE_SYMBOL_COUNT =
@@ -221,6 +227,22 @@ final class TreeSitterApi {
         }
     }
 
+    static int nodeStartByte(MemorySegment node) {
+        try {
+            return (int) NODE_START_BYTE.invokeExact(node);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    static int nodeEndByte(MemorySegment node) {
+        try {
+            return (int) NODE_END_BYTE.invokeExact(node);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
     static int nodeChildCount(MemorySegment node) {
         try {
             return (int) NODE_CHILD_COUNT.invokeExact(node);
@@ -232,6 +254,30 @@ final class TreeSitterApi {
     static MemorySegment nodeChild(SegmentAllocator allocator, MemorySegment node, int index) {
         try {
             return (MemorySegment) NODE_CHILD.invokeExact(allocator, node, index);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    static int nodeNamedChildCount(MemorySegment node) {
+        try {
+            return (int) NODE_NAMED_CHILD_COUNT.invokeExact(node);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    static MemorySegment nodeNamedChild(SegmentAllocator allocator, MemorySegment node, int index) {
+        try {
+            return (MemorySegment) NODE_NAMED_CHILD.invokeExact(allocator, node, index);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    static MemorySegment nodePrevSibling(SegmentAllocator allocator, MemorySegment node) {
+        try {
+            return (MemorySegment) NODE_PREV_SIBLING.invokeExact(allocator, node);
         } catch (Throwable failure) {
             throw rethrow(failure);
         }

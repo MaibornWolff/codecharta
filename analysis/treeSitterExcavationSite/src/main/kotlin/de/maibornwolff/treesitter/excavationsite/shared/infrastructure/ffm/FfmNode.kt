@@ -6,25 +6,38 @@ import java.lang.foreign.ValueLayout.ADDRESS
 
 /** A node of an [FfmSyntaxTree]; valid only while that tree is open. Positions are fetched once and cached. */
 internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTree) : SyntaxNode {
+    private val id = segment.get(ADDRESS, TreeSitterApi.NODE_ID_OFFSET).address()
     private var start = UNREAD_POINT
     private var end = UNREAD_POINT
 
     override val type: String get() = tree.grammar.symbolName(TreeSitterApi.nodeSymbol(existingNode()))
-    override val isNull: Boolean get() = segment.get(ADDRESS, TreeSitterApi.NODE_ID_OFFSET) == MemorySegment.NULL
+    override val isNull: Boolean get() = id == NULL_ID
     override val childCount: Int get() = TreeSitterApi.nodeChildCount(existingNode())
+    override val namedChildCount: Int get() = TreeSitterApi.nodeNamedChildCount(existingNode())
     override val startRow: Int get() = FfmSyntaxTree.row(startPoint())
     override val startColumn: Int get() = FfmSyntaxTree.column(startPoint())
     override val endRow: Int get() = FfmSyntaxTree.row(endPoint())
     override val endColumn: Int get() = FfmSyntaxTree.column(endPoint())
+    override val startByte: Int get() = TreeSitterApi.nodeStartByte(existingNode())
+    override val endByte: Int get() = TreeSitterApi.nodeEndByte(existingNode())
+    override val text: String get() = tree.sourceText(startByte, endByte)
     override val parent: SyntaxNode get() = FfmNode(TreeSitterApi.nodeParent(tree.nodeAllocator, existingNode()), tree)
+    override val prevSibling: SyntaxNode get() = FfmNode(TreeSitterApi.nodePrevSibling(tree.nodeAllocator, existingNode()), tree)
 
     override fun getChild(index: Int): SyntaxNode = FfmNode(TreeSitterApi.nodeChild(tree.nodeAllocator, existingNode(), index), tree)
+
+    override fun getNamedChild(index: Int): SyntaxNode =
+        FfmNode(TreeSitterApi.nodeNamedChild(tree.nodeAllocator, existingNode(), index), tree)
 
     override fun getChildByFieldName(name: String): SyntaxNode {
         val field = tree.fieldName(name)
         val nameLength = (field.byteSize() - 1).toInt()
         return FfmNode(TreeSitterApi.nodeChildByFieldName(tree.nodeAllocator, existingNode(), field, nameLength), tree)
     }
+
+    override fun equals(other: Any?): Boolean = other is FfmNode && other.id == id && other.tree === tree
+
+    override fun hashCode(): Int = id.hashCode()
 
     // tree-sitter dereferences a null node, which would crash the JVM instead of throwing
     private fun existingNode(): MemorySegment {
@@ -44,5 +57,6 @@ internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTr
 
     companion object {
         private const val UNREAD_POINT = -1L
+        private const val NULL_ID = 0L
     }
 }
