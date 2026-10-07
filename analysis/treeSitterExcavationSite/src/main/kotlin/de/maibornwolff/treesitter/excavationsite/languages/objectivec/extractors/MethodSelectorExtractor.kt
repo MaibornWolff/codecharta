@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 private const val IDENTIFIER = "identifier"
@@ -37,11 +38,8 @@ private fun extractFirstKeyword(node: SyntaxNode): String? {
     for (i in 0 until node.childCount) {
         val child = node.getChild(i)
         if (child.type == KEYWORD_DECLARATOR) {
-            val keyword = child.getChildByFieldName(FIELD_KEYWORD)
-            if (!keyword.isNull) {
-                return keyword.text
-            }
-            return TreeTraversal.findChildByType(child, IDENTIFIER)
+            // Without a keyword, as in `- (void):(int)x`, the only identifier is the parameter, not a method name
+            return child.getChildByFieldName(FIELD_KEYWORD).orNull()?.text
         }
     }
     return null

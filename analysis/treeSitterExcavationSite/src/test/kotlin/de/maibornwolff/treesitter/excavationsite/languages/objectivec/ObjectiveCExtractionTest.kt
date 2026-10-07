@@ -2014,4 +2014,20 @@ class ObjectiveCExtractionTest {
         // Assert
         assertThat(result.identifiers).containsExactly("test", "constPtr", "ptrConst", "bothConst")
     }
+
+    @Test
+    fun `should extract only the parameter of a method whose selector has no name`() {
+        // Arrange
+        val code = """
+            @interface Calculator
+            - (void):(int)amount;
+            @end
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterExtraction.extract(code, Language.OBJECTIVE_C)
+
+        // Assert
+        assertThat(result.identifiers).containsExactly("Calculator", "amount")
+    }
 }
