@@ -249,7 +249,7 @@ class FfmSyntaxTreeTest {
     }
 
     @Nested
-    inner class KnownParents {
+    inner class RememberedParents {
         private val nestedCode = """
             class A<T extends Comparable<T>> {
                 @Deprecated int[] x = {1, 2, 3};
@@ -257,25 +257,36 @@ class FfmSyntaxTreeTest {
             }
         """.trimIndent()
 
-        private fun FfmSyntaxTree.parentFoundFromTheRoot(node: FfmNode): FfmNode =
-            FfmNode(TreeSitterApi.nodeParent(nodeAllocator, node.segment), this)
+        private fun FfmSyntaxTree.parentFoundFromTheRoot(node: SyntaxNode): FfmNode =
+            FfmNode(TreeSitterApi.nodeParent(nodeAllocator, (node as FfmNode).segment), this)
+
+        private fun FfmSyntaxTree.hasTheParentFoundFromTheRoot(node: SyntaxNode): Boolean = node.parent == parentFoundFromTheRoot(node)
+
+        private fun parentTypeOfField(grammarName: String, code: String, ownerType: String, field: String): String? {
+            val grammar = NativeTreeSitter.grammar(GrammarLibrary(grammarName))
+            return FfmSyntaxTree.parse(code, grammar).use { tree ->
+                var parentType: String? = null
+                tree.walk { node, nodeType -> if (nodeType == ownerType) parentType = node.getChildByFieldName(field).parent.type }
+                parentType
+            }
+        }
 
         @Test
         fun `should give every visited node the parent tree-sitter finds from the root`() {
             FfmSyntaxTree.parse(nestedCode, java).use { tree ->
                 // Arrange
-                var visitedNodes = 0
-                var nodesWithAnotherParent = 0
+                val comparedTypes = mutableListOf<String>()
+                val typesWithAnotherParent = mutableListOf<String>()
 
                 // Act
-                tree.walk { node, _ ->
-                    visitedNodes++
-                    if (node.parent != tree.parentFoundFromTheRoot(node)) nodesWithAnotherParent++
+                tree.walk { node, nodeType ->
+                    comparedTypes.add(nodeType)
+                    if (!tree.hasTheParentFoundFromTheRoot(node)) typesWithAnotherParent.add(nodeType)
                 }
 
                 // Assert
-                assertThat(visitedNodes).isEqualTo(87)
-                assertThat(nodesWithAnotherParent).isZero()
+                assertThat(comparedTypes).isEqualTo(visitedTypes(nestedCode))
+                assertThat(typesWithAnotherParent).isEmpty()
             }
         }
 
@@ -303,29 +314,94 @@ class FfmSyntaxTreeTest {
         }
 
         @Test
-        fun `should give children and siblings reached from a node the parent tree-sitter finds from the root`() {
+        fun `should give every child of a node the parent tree-sitter finds from the root`() {
             FfmSyntaxTree.parse(nestedCode, java).use { tree ->
                 // Arrange
-                var reachedNodes = 0
-                var nodesWithAnotherParent = 0
+                val typesOfEveryNodeBelowTheRoot = visitedTypes(nestedCode).drop(1)
+                val comparedChildTypes = mutableListOf<String>()
+                val typesWithAnotherParent = mutableListOf<String>()
 
-                fun check(reached: SyntaxNode) {
-                    if (reached.isNull) return
-                    reachedNodes++
-                    if (reached.parent != tree.parentFoundFromTheRoot(reached as FfmNode)) nodesWithAnotherParent++
+                fun compareParentOf(child: SyntaxNode) {
+                    if (!tree.hasTheParentFoundFromTheRoot(child)) typesWithAnotherParent.add(child.type)
                 }
 
                 // Act
                 tree.walk { node, _ ->
-                    (0 until node.childCount).forEach { check(node.getChild(it)) }
-                    (0 until node.namedChildCount).forEach { check(node.getNamedChild(it)) }
-                    listOf("name", "body", "type", "condition").forEach { check(node.getChildByFieldName(it)) }
-                    check(node.prevSibling)
+                    (0 until node.childCount).forEach {
+                        comparedChildTypes.add(node.getChild(it).type)
+                        compareParentOf(node.getChild(it))
+                    }
+                    (0 until node.namedChildCount).forEach { compareParentOf(node.getNamedChild(it)) }
                 }
 
                 // Assert
-                assertThat(reachedNodes).isEqualTo(204)
-                assertThat(nodesWithAnotherParent).isZero()
+                assertThat(comparedChildTypes).containsExactlyInAnyOrderElementsOf(typesOfEveryNodeBelowTheRoot)
+                assertThat(typesWithAnotherParent).isEmpty()
+            }
+        }
+
+        @Test
+        fun `should ask tree-sitter for the parent of a field that a nested node passes up in C++`() {
+            // Arrange
+            val code = "void g() { (a.b = *c); }"
+
+            // Act
+            val parentOfTheLeftOperand = parentTypeOfField("cpp", code, ownerType = "parenthesized_expression", field = "left")
+
+            // Assert
+            assertThat(parentOfTheLeftOperand).isEqualTo("assignment_expression")
+        }
+
+        @Test
+        fun `should ask tree-sitter for the parent of a field that a nested node passes up in TypeScript`() {
+            // Arrange
+            val code = "let a: -1 = -1;"
+
+            // Act
+            val parentOfTheArgument = parentTypeOfField("typescript", code, ownerType = "literal_type", field = "argument")
+
+            // Assert
+            assertThat(parentOfTheArgument).isEqualTo("unary_expression")
+        }
+
+        @Test
+        fun `should give a previous sibling the parent tree-sitter finds from the root`() {
+            FfmSyntaxTree.parse(nestedCode, java).use { tree ->
+                // Arrange
+                var nodesBelowTheRoot = -1
+                var firstChildren = 0
+                var comparedSiblings = 0
+                val typesWithAnotherParent = mutableListOf<String>()
+
+                // Act
+                tree.walk { node, _ ->
+                    nodesBelowTheRoot++
+                    if (node.childCount > 0) firstChildren++
+                    val sibling = node.prevSibling
+                    if (!sibling.isNull) {
+                        comparedSiblings++
+                        if (!tree.hasTheParentFoundFromTheRoot(sibling)) typesWithAnotherParent.add(sibling.type)
+                    }
+                }
+
+                // Assert
+                assertThat(comparedSiblings).isEqualTo(nodesBelowTheRoot - firstChildren)
+                assertThat(typesWithAnotherParent).isEmpty()
+            }
+        }
+
+        @Test
+        fun `should throw for the parent of a null node that was reached from a node`() {
+            FfmSyntaxTree.parse("class A {}", java).use { tree ->
+                // Arrange
+                val root = tree.rootNode
+
+                // Act
+                val childOutOfRange = root.getChild(root.childCount)
+
+                // Assert
+                assertThat(childOutOfRange.isNull).isTrue()
+                assertThatThrownBy { childOutOfRange.parent }.isInstanceOf(IllegalStateException::class.java)
             }
         }
 
@@ -413,14 +489,18 @@ class FfmSyntaxTreeTest {
         }
 
         @Test
-        fun `should report the byte offsets of a node`() {
-            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+        fun `should report the offsets of a node in UTF-8 bytes`() {
+            // Arrange
+            val twoByteCharacter = "ä"
+            val code = "/*$twoByteCharacter*/class A { int x; }"
+
+            FfmSyntaxTree.parse(code, java).use { tree ->
                 // Act
-                val name = tree.rootNode.getChild(0).getChildByFieldName("name")
+                val name = tree.rootNode.getChild(1).getChildByFieldName("name")
 
                 // Assert
-                assertThat(listOf(name.startByte, name.endByte)).containsExactly(6, 7)
                 assertThat(name.text).isEqualTo("A")
+                assertThat(listOf(name.startByte, name.endByte)).containsExactly(12, 13)
             }
         }
 
@@ -463,7 +543,7 @@ class FfmSyntaxTreeTest {
         }
 
         @Test
-        fun `should return an empty text for a node without source`() {
+        fun `should return an empty text for a missing node`() {
             // Arrange
             val codeMissingASemicolon = "class A { int x }"
 
