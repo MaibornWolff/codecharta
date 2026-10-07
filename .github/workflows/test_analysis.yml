@@ -34,6 +34,13 @@ jobs:
         with:
           node-version: '24'
 
+      # ccsh needs Java 22 or newer, and the integration tests start the built ccsh with the java on the PATH
+      - name: Setup Java JDK for the build
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+
       - name: Build
         run: |
           chmod +x ./gradlew
@@ -95,7 +102,7 @@ jobs:
           java-version: 25
 
       - name: Load and parse with every grammar
-        run: ./gradlew :treeSitterExcavationSite:test --tests "*.GrammarLoadingContractTest" --tests "*.shared.infrastructure.ffm.*" -x jacocoTestReport
+        run: ./gradlew :treeSitterExcavationSite:test --tests "*.shared.infrastructure.ffm.*" -x jacocoTestReport
 
       - name: Build ccsh
         run: ./gradlew installDist
@@ -111,3 +118,8 @@ jobs:
           java -version
           build/install/codecharta-analysis/bin/ccsh unifiedparser treeSitterExcavationSite/src/main -o native-smoke.cc.json
           test -s native-smoke.cc.json.gz
+
+      - name: Run the Windows start script
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: build\install\codecharta-analysis\bin\ccsh.bat unifiedparser treeSitterExcavationSite\src\main -o native-smoke-bat.cc.json
