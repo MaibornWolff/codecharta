@@ -36,7 +36,7 @@ private fun leadingNameIdentifier(nameNode: SyntaxNode): String? {
             TreeTraversal
                 .findAllDescendantsOfType(nameNode, IDENTIFIER)
                 .firstOrNull()
-                ?.let { it.text }
+                ?.text
     }
 }
 

@@ -14,4 +14,4 @@ private const val SIMPLE_IDENTIFIER = "simple_identifier"
 internal fun extractParameterName(node: SyntaxNode): String? = node
     .children()
     .lastOrNull { it.type == SIMPLE_IDENTIFIER }
-    ?.let { it.text }
+    ?.text

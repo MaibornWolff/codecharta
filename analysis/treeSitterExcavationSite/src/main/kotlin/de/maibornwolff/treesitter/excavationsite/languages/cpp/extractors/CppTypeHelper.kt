@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -40,7 +41,7 @@ internal object CppTypeHelper {
     private fun extractLeafName(node: SyntaxNode): UsedType = UsedType(name = node.text.trim())
 
     fun extractTypeFromTypeField(node: SyntaxNode): UsedType? {
-        val typeField = node.getChildByFieldName(TYPE_FIELD).takeIf { !it.isNull }
+        val typeField = node.getChildByFieldName(TYPE_FIELD).orNull()
             ?: node.namedChildren().firstOrNull { isTypeNode(it) || it.type == TYPE_DESCRIPTOR }
             ?: return null
         val unwrapped = if (typeField.type == TYPE_DESCRIPTOR) {
@@ -87,7 +88,7 @@ internal object CppTypeHelper {
     }
 
     fun extractSingleSegmentScope(qualifiedId: SyntaxNode): UsedType? {
-        val scope = qualifiedId.getChildByFieldName(SCOPE_FIELD).takeIf { !it.isNull } ?: return null
+        val scope = qualifiedId.getChildByFieldName(SCOPE_FIELD).orNull() ?: return null
         if (scope.type != NAMESPACE_IDENTIFIER) return null
         val text = scope.text.trim()
         return if (text.isEmpty()) null else UsedType(name = text)

@@ -31,5 +31,5 @@ internal fun findNameAfterAs(node: SyntaxNode): String? {
     return children
         .drop(asIndex + 1)
         .firstOrNull { it.type == NAME }
-        ?.let { it.text }
+        ?.text
 }

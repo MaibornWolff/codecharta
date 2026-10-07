@@ -104,7 +104,8 @@ internal object DeclarationPrepass {
                         .children()
                         .filter { it.type == IDENTIFIER }
                         .firstOrNull()
-                        ?.let { it.text.trim() }
+                        ?.text
+                        ?.trim()
                 }.toList()
         }
         return node
@@ -211,7 +212,8 @@ internal object DeclarationExtractor {
             .firstOrNull { it.type == STRING }
             ?.children()
             ?.firstOrNull { it.type == STRING_FRAGMENT }
-            ?.let { it.text.trim() }
+            ?.text
+            ?.trim()
             ?: return emptyList()
         if (moduleName.contains("*")) return emptyList()
         val parentPath = moduleName.split("/")

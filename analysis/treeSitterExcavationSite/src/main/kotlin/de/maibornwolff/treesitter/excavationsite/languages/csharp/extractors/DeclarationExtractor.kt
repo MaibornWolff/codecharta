@@ -26,7 +26,7 @@ internal object DeclarationExtractor {
         val allDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         val namesByStartByte = allDeclarations.associate { node ->
-            node.startByte to TreeTraversal.findChildByType(node, IDENTIFIER)
+            node.startByte to TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
         }
         return allDeclarations.mapNotNull { declarationNode ->
             val name = namesByStartByte[declarationNode.startByte] ?: return@mapNotNull null

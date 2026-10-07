@@ -16,5 +16,5 @@ internal fun extractCategoryIdentifier(node: SyntaxNode): String? {
             foundFirst = true
         }
     }
-    return TreeTraversal.findChildByType(node, IDENTIFIER)
+    return TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
 }

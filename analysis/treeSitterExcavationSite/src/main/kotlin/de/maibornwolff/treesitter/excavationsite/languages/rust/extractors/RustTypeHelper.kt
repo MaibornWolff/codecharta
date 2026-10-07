@@ -114,8 +114,7 @@ internal object RustTypeHelper {
         return base.copy(genericTypes = genericTypes)
     }
 
-    private fun segmentsOf(node: SyntaxNode): List<String> = node
-        .text
+    private fun segmentsOf(node: SyntaxNode): List<String> = node.text
         .split(SCOPE_SEPARATOR)
         .map { it.trim() }
         .filter { it.isNotEmpty() }

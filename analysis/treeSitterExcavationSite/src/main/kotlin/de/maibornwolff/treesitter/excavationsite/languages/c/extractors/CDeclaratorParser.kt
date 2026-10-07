@@ -96,7 +96,7 @@ object CDeclaratorParser {
             .children()
             .filter { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
             .lastOrNull()
-            ?.let { it.text }
+            ?.text
     }
 
     /**

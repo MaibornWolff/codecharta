@@ -19,7 +19,7 @@ internal fun extractNonImportString(node: SyntaxNode): String? {
 }
 
 private fun extractStringContent(node: SyntaxNode): String {
-    val content = TreeTraversal.findChildByType(node, STRING_CONTENT)
+    val content = TreeTraversal.findFirstChildTextByType(node, STRING_CONTENT)
     if (content != null) return content
     val text = node.text
     return text.removeSurrounding("\"").removeSurrounding("'")
@@ -27,6 +27,6 @@ private fun extractStringContent(node: SyntaxNode): String {
 
 private fun isRequireCall(node: SyntaxNode): Boolean {
     val call = TreeTraversal.findAncestorOfType(node, CALL) ?: return false
-    val methodName = TreeTraversal.findChildByType(call, "identifier")
+    val methodName = TreeTraversal.findFirstChildTextByType(call, "identifier")
     return methodName in REQUIRE_METHODS
 }

@@ -11,4 +11,4 @@ internal fun extractFromAssignment(node: SyntaxNode): String? = node
     .children()
     .firstOrNull()
     ?.takeIf { it.type == "identifier" }
-    ?.let { it.text }
+    ?.text

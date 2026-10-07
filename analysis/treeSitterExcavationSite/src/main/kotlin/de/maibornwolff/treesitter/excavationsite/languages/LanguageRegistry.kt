@@ -43,16 +43,13 @@ import org.treesitter.TreeSitterTsx
 import org.treesitter.TreeSitterTypescript
 
 /**
- * Registry that maps Language enum values to their TreeSitter language and definition.
- *
- * This centralizes the mapping between the Language enum and its associated
- * TreeSitter parser and language definition.
+ * Maps a language to its definition and to its grammar in each of the two tree-sitter bindings.
  */
 object LanguageRegistry {
     /**
-     * Returns a new TreeSitter language parser instance of the JNI binding, which dependency extraction parses with.
+     * Returns the grammar of the JNI binding, which dependency extraction parses with.
      */
-    fun getTreeSitterLanguage(language: Language): TSLanguage = when (language) {
+    fun getJniLanguage(language: Language): TSLanguage = when (language) {
         Language.JAVA -> TreeSitterJava()
         Language.KOTLIN -> TreeSitterKotlin()
         Language.TYPESCRIPT -> TreeSitterTypescript()
