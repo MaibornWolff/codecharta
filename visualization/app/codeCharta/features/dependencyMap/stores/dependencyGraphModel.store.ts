@@ -1,4 +1,4 @@
-import { computed, Injectable, inject, signal } from "@angular/core"
+import { computed, Injectable, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DependencyHierarchy } from "../../../model/dependencyGraph.model"
 import {
@@ -16,11 +16,13 @@ import {
 import { findCycleChains } from "../declarations/cycleChains"
 import { indexDeclarations } from "../declarations/declarationIndex"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
+import { DependencyMapWriteStore } from "./dependencyMap.write.store"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
 @Injectable({ providedIn: "root" })
 export class DependencyGraphModelStore {
     private readonly readStore = inject(DependencyMapReadStore)
+    private readonly writeStore = inject(DependencyMapWriteStore)
     private readonly viewStore = inject(DependencyMapViewStore)
 
     private readonly focusedFolderLevelPath = toSignal(this.readStore.focusedFolderLevelPath$, { requireSync: true })
@@ -33,9 +35,8 @@ export class DependencyGraphModelStore {
     readonly edgeMetric = toSignal(this.readStore.sharedEdgeMetric$, { requireSync: true })
     readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
 
-    private readonly askedHierarchy = signal<DependencyHierarchy>("folders")
     /** What the reader asked for; a map without packages is shown by its folders all the same. */
-    readonly hierarchy = computed((): DependencyHierarchy => (this.hasPackages() ? this.askedHierarchy() : "folders"))
+    readonly hierarchy = computed((): DependencyHierarchy => (this.hasPackages() ? this.settings().hierarchy : "folders"))
     readonly tree = computed(() => {
         const folderTree = this.folderTree()
         const { namespaces, leaves } = this.declarations()
@@ -57,12 +58,8 @@ export class DependencyGraphModelStore {
         if (!tree) {
             return null
         }
-        const { levelLabel, declarationArrangement } = this.settings()
-        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), {
-            levelPathOfTree: this.focusedFolderLevelPath(),
-            declarationArrangement
-        })
-        return levelLabel === "path" ? layout : namedByOwnLevel(layout)
+        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), this.focusedFolderLevelPath())
+        return this.settings().levelLabel === "path" ? layout : namedByOwnLevel(layout)
     })
     readonly shownLayout = computed(() => {
         const layout = this.layout()
@@ -87,7 +84,7 @@ export class DependencyGraphModelStore {
     /** The boxes move to other places, so where the reader dragged them to no longer means anything, and the
      * part of the graph that was in view may be empty now. */
     showHierarchy(hierarchy: DependencyHierarchy): void {
-        this.askedHierarchy.set(hierarchy)
+        this.writeStore.changeSettings({ hierarchy })
         this.viewStore.resetLayout()
         this.viewStore.requestFit()
     }

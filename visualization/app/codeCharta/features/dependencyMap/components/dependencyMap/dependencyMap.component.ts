@@ -79,7 +79,7 @@ export class DependencyMapComponent {
         if (!layout) {
             return null
         }
-        const { levelLabel, showsCycleBadges, ...looks } = this.graphModel.settings()
+        const { levelLabel, showsCycleBadges, hierarchy, ...looks } = this.graphModel.settings()
         return {
             ...looks,
             cycleMarks: this.cycleMarks(),

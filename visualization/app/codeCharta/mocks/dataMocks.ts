@@ -1995,8 +1995,7 @@ export const STATE: CcState = {
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
             levelLabel: "number",
-            declarationArrangement: "stacked",
-            declarationKindMark: "icon",
+            hierarchy: "folders",
             showsCycleBadges: true
         },
         dependencyViewEnabled: false
@@ -2079,8 +2078,7 @@ export const DEFAULT_STATE: CcState = {
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
             levelLabel: "number",
-            declarationArrangement: "stacked",
-            declarationKindMark: "icon",
+            hierarchy: "folders",
             showsCycleBadges: true
         },
         dependencyViewEnabled: false

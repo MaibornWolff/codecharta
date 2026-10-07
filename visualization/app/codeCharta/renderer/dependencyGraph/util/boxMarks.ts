@@ -1,6 +1,6 @@
-import { DeclarationShape, declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
+import { declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
 import { UNTRANSFORMED } from "./dependencyGraphElements"
-import { CYCLE_MARK_COLOR, FILE_FILL, FILE_STROKE, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
+import { CYCLE_MARK_COLOR, FILE_FILL, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
 import { LayoutBox } from "./layoutModel"
 
@@ -18,8 +18,6 @@ export interface MarkLook {
 const KIND_ICON = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10, lineWidthPx: 0.8 }
 /** What the icon takes from the room for a declaration's name. */
 export const KIND_ICON_WIDTH_PX = 18
-const HEXAGON = { maxNotchPx: 8, heightsPerNotch: 2.5 }
-const INNER_FRAME = { insetPx: 2.5, cornerRadiusPx: 1.5 }
 const COUNT_BADGE = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10, outlinePx: 1 }
 /** One declaration is what the file's name stands for already. */
 const FEWEST_COUNTED_DECLARATIONS = 2
@@ -41,38 +39,6 @@ const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
 /** What a click on a box's cycle badge carries, to tell it from a click on the box. */
 export const CYCLE_BADGE_INFO = "cycleBadge"
 
-export function outlineOf(rect: Rectangle, shape: DeclarationShape, cornerRadiusPx: number) {
-    if (shape !== "hexagon") {
-        return { type: "rect", shape: { ...rect, r: cornerRadiusPx } }
-    }
-    const notch = Math.min(HEXAGON.maxNotchPx, rect.height / HEXAGON.heightsPerNotch)
-    const { x: left, y: top } = rect
-    const right = left + rect.width
-    const bottom = top + rect.height
-    const middle = top + rect.height / 2
-    const points = [
-        [left + notch, top],
-        [right - notch, top],
-        [right, middle],
-        [right - notch, bottom],
-        [left + notch, bottom],
-        [left, middle]
-    ]
-    return { type: "polygon", shape: { points } }
-}
-
-export function drawInnerFrame(rect: Rectangle, opacity: number) {
-    const inset = INNER_FRAME.insetPx
-    const shape = {
-        x: rect.x + inset,
-        y: rect.y + inset,
-        width: rect.width - 2 * inset,
-        height: rect.height - 2 * inset,
-        r: INNER_FRAME.cornerRadiusPx
-    }
-    return { type: "rect", ...UNTRANSFORMED, silent: true, shape, style: { fill: null, stroke: FILE_STROKE, lineWidth: 1, opacity } }
-}
-
 export function drawKindIcon(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
     const { letter, tint } = declarationKindLookOf(box.declarationKind)
     const centre = { cx: rect.x + KIND_ICON.centreInsetPx * scale, cy: rect.y + rect.height / 2 }
@@ -81,24 +47,6 @@ export function drawKindIcon(box: LayoutBox, rect: Rectangle, { opacity, scale }
         { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: KIND_ICON.radiusPx * scale }, style: disc },
         centredText(letter, centre, { fontSize: KIND_ICON.fontSizePx * scale, fill: KIND_ICON_COLORS.letter, opacity })
     ]
-}
-
-const LISTED_LEVEL = { insetPx: 7, fontSizePx: 10 }
-/** What the level takes from the room for a listed declaration's name. */
-export const LISTED_LEVEL_WIDTH_PX = 12
-
-export function drawListedLevel(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
-    const style = {
-        text: String(box.level),
-        x: rect.x + rect.width - LISTED_LEVEL.insetPx * scale,
-        y: rect.y + rect.height / 2,
-        align: "right",
-        verticalAlign: "middle",
-        fontSize: LISTED_LEVEL.fontSizePx * scale,
-        fill: QUIET_BADGE_COLOR,
-        opacity
-    }
-    return [{ type: "text", ...UNTRANSFORMED, silent: true, style }]
 }
 
 /** A closed file says how many declarations it holds once there is more than the one its name stands for. */

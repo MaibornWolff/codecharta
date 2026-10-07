@@ -1,4 +1,3 @@
-import { DeclarationArrangement } from "../../../model/dependencyGraph.model"
 import { addToGroup, maxOf } from "./collections"
 import { LAYOUT_SPACING } from "./layoutModel"
 import { LeveledNode } from "./leveledTree"
@@ -11,9 +10,6 @@ const TARGET_ASPECT_RATIO = 16 / 10
  * of files into a column. A row of six still fits a laptop screen at full size. */
 const MIN_NODES_PER_ROW = 6
 const MIN_DECLARATIONS_PER_ROW = 2
-
-/** A chip is as wide as its name, estimated from its length since nothing is drawn yet. */
-const CHIP_WIDTH = { perCharacter: 6.5, padding: 16, min: 44, max: 220 }
 
 export interface ContentSpacing {
     gapBetweenNodes: number
@@ -32,7 +28,6 @@ const FOLDER_CONTENT: ContentSpacing = {
 
 const DECLARATION_GAP = 8
 const DECLARATION_ROW_GAP = 6
-const DECLARATION_LEVEL_GAP = 16
 const UNWRAPPED_DECLARATION_ROW_WIDTH =
     MIN_DECLARATIONS_PER_ROW * LAYOUT_SPACING.declarationWidth + (MIN_DECLARATIONS_PER_ROW - 1) * DECLARATION_GAP
 
@@ -45,12 +40,6 @@ const DECLARATION_CONTENT: ContentSpacing = {
 
 /** Levels inside a file get the room a folder gives them, for their label and separator. */
 const LEVELED_FILE_CONTENT: ContentSpacing = { ...DECLARATION_CONTENT, gapBetweenGroups: LAYOUT_SPACING.gapBetweenLevels }
-
-const FILE_CONTENT: Record<DeclarationArrangement, ContentSpacing> = {
-    stacked: { ...DECLARATION_CONTENT, gapBetweenGroups: DECLARATION_LEVEL_GAP },
-    list: { ...DECLARATION_CONTENT, unwrappedRowWidth: LAYOUT_SPACING.declarationWidth },
-    chips: DECLARATION_CONTENT
-}
 
 interface Size {
     width: number
@@ -77,10 +66,7 @@ interface ContainerPlan extends Size {
 export class ContainerMeasurer {
     private readonly plans = new Map<string, ContainerPlan>()
 
-    constructor(
-        private readonly expandedPaths: ReadonlySet<string>,
-        private readonly declarationArrangement: DeclarationArrangement
-    ) {}
+    constructor(private readonly expandedPaths: ReadonlySet<string>) {}
 
     isOpen(node: LeveledNode): boolean {
         return node.children.length > 0 && this.expandedPaths.has(node.path)
@@ -91,7 +77,7 @@ export class ContainerMeasurer {
             return this.planOf(node)
         }
         return node.kind === "declaration"
-            ? declarationSize(node, this.declarationArrangement)
+            ? { width: LAYOUT_SPACING.declarationWidth, height: LAYOUT_SPACING.declarationHeight }
             : { width: LAYOUT_SPACING.nodeWidth, height: LAYOUT_SPACING.nodeHeight }
     }
 
@@ -107,9 +93,9 @@ export class ContainerMeasurer {
     private planContainer(container: LeveledNode): ContainerPlan {
         const isFile = container.kind === "file"
         const isLeveled = !isFile || this.stacksSeveralLevels(container)
-        const fileSpacing = isLeveled ? LEVELED_FILE_CONTENT : FILE_CONTENT[this.declarationArrangement]
+        const fileSpacing = isLeveled ? LEVELED_FILE_CONTENT : DECLARATION_CONTENT
         const spacing = isFile ? fileSpacing : FOLDER_CONTENT
-        const groups = isFile ? groupDeclarations(container.children, this.declarationArrangement) : groupByLevelFromTop(container.children)
+        const groups = groupByLevelFromTop(container.children)
         const candidates = rowWidthCandidates(groups, node => this.sizeOf(node).width, spacing)
         const widthOfAClosedFileInside = LAYOUT_SPACING.nodeWidth - 2 * LAYOUT_SPACING.padding
         const minInnerWidth = isFile ? widthOfAClosedFileInside : 0
@@ -119,7 +105,7 @@ export class ContainerMeasurer {
 
     /** A file whose declarations all share one level has no levels to tell apart. */
     private stacksSeveralLevels(file: LeveledNode): boolean {
-        return this.declarationArrangement === "stacked" && new Set(file.children.map(declaration => declaration.level)).size > 1
+        return new Set(file.children.map(declaration => declaration.level)).size > 1
     }
 
     private packRows(
@@ -159,25 +145,6 @@ export class ContainerMeasurer {
             }
         }
         return rows
-    }
-}
-
-function declarationSize(declaration: LeveledNode, arrangement: DeclarationArrangement): Size {
-    if (arrangement !== "chips") {
-        return { width: LAYOUT_SPACING.declarationWidth, height: LAYOUT_SPACING.declarationHeight }
-    }
-    const widthOfName = declaration.name.length * CHIP_WIDTH.perCharacter + CHIP_WIDTH.padding
-    return { width: Math.min(CHIP_WIDTH.max, Math.max(CHIP_WIDTH.min, widthOfName)), height: LAYOUT_SPACING.chipHeight }
-}
-
-function groupDeclarations(declarations: LeveledNode[], arrangement: DeclarationArrangement): LeveledNode[][] {
-    switch (arrangement) {
-        case "stacked":
-            return groupByLevelFromTop(declarations)
-        case "list":
-            return groupByLevelFromTop(declarations).flatMap(level => level.map(declaration => [declaration]))
-        default:
-            return [sortedByName(declarations)]
     }
 }
 

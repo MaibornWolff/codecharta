@@ -1,9 +1,9 @@
 import { LAYOUT_SPACING, LayoutBox, namedByOwnLevel } from "./layoutModel"
 import { LeveledNode } from "./leveledTree"
-import { LayoutOptions, layoutLevelized } from "./levelizedLayout"
+import { layoutLevelized } from "./levelizedLayout"
 
-function layout(tree: LeveledNode, expandedPaths: ReadonlySet<string>, options: Partial<LayoutOptions> = {}) {
-    return layoutLevelized(tree, expandedPaths, { levelPathOfTree: [], declarationArrangement: "stacked", ...options })
+function layout(tree: LeveledNode, expandedPaths: ReadonlySet<string>, levelPathOfTree: number[] = []) {
+    return layoutLevelized(tree, expandedPaths, levelPathOfTree)
 }
 
 function leveledFile(path: string, level = 0): LeveledNode {
@@ -178,7 +178,7 @@ describe("layoutLevelized", () => {
         const tree = leveledFolder("/root/open", [leveledFile("/root/open/x", 2)])
 
         // Act
-        const { bands, boxes } = layout(tree, new Set(["/root/open"]), { levelPathOfTree: [0, 1] })
+        const { bands, boxes } = layout(tree, new Set(["/root/open"]), [0, 1])
 
         // Assert
         expect(bands.map(band => band.levelPath)).toEqual([[0, 1, 2]])
@@ -226,7 +226,7 @@ describe("layoutLevelized with declarations", () => {
         expect(bands.map(band => band.containerPath)).toEqual(["/root", FILE, FILE])
     })
 
-    it("should tell the levels inside a stacked file apart as a folder's are, by the declarations' own levels alone", () => {
+    it("should tell the levels inside a file apart as a folder's are, by the declarations' own levels alone", () => {
         // Arrange
         const nested = leveledFolder("/root", [leveledFolder("/root/app", [DECLARING_TREE.children[0]], 3)])
         const filePath = FILE
@@ -244,23 +244,20 @@ describe("layoutLevelized with declarations", () => {
         expect([upper.x, upper.width]).toEqual([file.x, file.width])
     })
 
-    it("should draw no levels in a file whose declarations share one, nor in a list or among chips", () => {
+    it("should draw no levels in a file whose declarations share one", () => {
         // Arrange
         const oneLevel = leveledFolder("/root", [
             { ...leveledFile(FILE), children: [leveledDeclaration(FILE, "A", 2), leveledDeclaration(FILE, "B", 2)] }
         ])
-        const expanded = new Set(["/root", FILE])
-        const bandsInFile = (tree: LeveledNode, declarationArrangement: "stacked" | "list" | "chips") =>
-            layout(tree, expanded, { declarationArrangement }).bands.filter(band => band.containerPath === FILE).length
 
         // Act
-        const counts = [bandsInFile(oneLevel, "stacked"), bandsInFile(DECLARING_TREE, "list"), bandsInFile(DECLARING_TREE, "chips")]
+        const { bands } = layout(oneLevel, new Set(["/root", FILE]))
 
         // Assert
-        expect(counts).toEqual([0, 0, 0])
+        expect(bands.filter(band => band.containerPath === FILE)).toEqual([])
     })
 
-    it("should stack the declarations by level by default, the higher level above", () => {
+    it("should stack the declarations by level, the higher level above", () => {
         // Arrange
         const expanded = new Set(["/root", FILE])
 
@@ -275,39 +272,12 @@ describe("layoutLevelized with declarations", () => {
         expect(zebra).toMatchObject({ width: 132, height: 26 })
     })
 
-    it("should list the declarations one below the other, the higher level first and by name within one", () => {
-        // Arrange
-        const expanded = new Set(["/root", FILE])
-
-        // Act
-        const { boxes } = layout(DECLARING_TREE, expanded, { declarationArrangement: "list" })
-
-        // Assert
-        const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
-        expect([long.y, bee.y]).toEqual([zebra.y + 32, zebra.y + 64])
-        expect(new Set([zebra.x, long.x, bee.x]).size).toBe(1)
-        expect([zebra.level, long.level, bee.level]).toEqual([1, 0, 0])
-    })
-
-    it("should draw the declarations as chips as wide as their names", () => {
-        // Arrange
-        const expanded = new Set(["/root", FILE])
-
-        // Act
-        const { boxes } = layout(DECLARING_TREE, expanded, { declarationArrangement: "chips" })
-
-        // Assert
-        const [zebra, long, bee] = DECLARATIONS.map(path => boxOf(boxes, path))
-        expect([bee.width, zebra.width, long.width]).toEqual([44, 48.5, 220])
-        expect(bee.height).toBe(22)
-    })
-
     it("should keep an opened file wide enough for its name", () => {
         // Arrange
         const lone = leveledFolder("/root", [{ ...leveledFile(FILE), children: [leveledDeclaration(FILE, "A")] }])
 
         // Act
-        const { boxes } = layout(lone, new Set(["/root", FILE]), { declarationArrangement: "chips" })
+        const { boxes } = layout(lone, new Set(["/root", FILE]))
 
         // Assert
         expect(boxOf(boxes, FILE).width).toBe(160)

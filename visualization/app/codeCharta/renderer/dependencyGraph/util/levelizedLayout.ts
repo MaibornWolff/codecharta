@@ -1,21 +1,15 @@
-import { DeclarationArrangement } from "../../../model/dependencyGraph.model"
 import { ContainerMeasurer, ContentSpacing, gapAbove, Row } from "./containerPlan"
 import { Rectangle } from "./geometry"
 import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 import { LeveledNode } from "./leveledTree"
 
-export interface LayoutOptions {
-    /** The levels above the tree's root, when the tree is a focused folder of a larger one. */
-    levelPathOfTree: number[]
-    declarationArrangement: DeclarationArrangement
-}
-
 export function layoutLevelized(
     tree: LeveledNode,
     expandedPaths: ReadonlySet<string>,
-    { levelPathOfTree, declarationArrangement }: LayoutOptions
+    /** The levels above the tree's root, when the tree is a focused folder of a larger one. */
+    levelPathOfTree: number[]
 ): DependencyGraphLayout {
-    const measurer = new ContainerMeasurer(expandedPaths, declarationArrangement)
+    const measurer = new ContainerMeasurer(expandedPaths)
     const rootSize = measurer.sizeOf(tree)
     const layout: DependencyGraphLayout = { boxes: [], bands: [], width: rootSize.width, height: rootSize.height }
     new LayoutPlacer(measurer, layout, new Map([[tree.path, levelPathOfTree]])).place(tree, { x: 0, y: 0 }, 0, null)

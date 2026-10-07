@@ -1,17 +1,4 @@
-import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
-import {
-    CycleLook,
-    drawCycleMark,
-    drawDeclarationCount,
-    drawInnerFrame,
-    drawKindIcon,
-    drawListedLevel,
-    KIND_ICON_WIDTH_PX,
-    LISTED_LEVEL_WIDTH_PX,
-    MarkLook,
-    outlineOf
-} from "./boxMarks"
-import { declarationKindLookOf } from "./declarationKinds"
+import { CycleLook, drawCycleMark, drawDeclarationCount, drawKindIcon, KIND_ICON_WIDTH_PX, MarkLook } from "./boxMarks"
 import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import {
@@ -47,9 +34,6 @@ export interface BoxLook {
     isSeeThrough: boolean
     /** A search is on and the box holds nothing it found. */
     isMissedBySearch: boolean
-    kindMark: DeclarationKindMark
-    /** In a list no row stands for a level, so each declaration names its own. */
-    listsLevels: boolean
     cycle: CycleLook
 }
 
@@ -74,7 +58,6 @@ const SELECTED_LINE_WIDTH_PX = 2.5
 const HOVERED_LINE_WIDTH_PX = 2
 const LEVEL_LABEL_LIFT_PX = 2
 const SEPARATOR_DASH_PX = [4, 4]
-const DASHED_OUTLINE = [4, 3]
 const SMALLEST_READABLE_MARK_SCALE = 0.6
 
 export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
@@ -103,32 +86,20 @@ function markScaleOf(zoom: number): number | null {
     return scale < SMALLEST_READABLE_MARK_SCALE ? null : scale
 }
 
-function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch, kindMark }: BoxLook): object[] {
-    const kindLook = box.kind === "declaration" ? declarationKindLookOf(box.declarationKind) : null
-    const shape = kindLook && kindMark === "shape" ? kindLook.shape : "plain"
-    const style = { ...boxStyle(box, emphasis), lineDash: shape === "dashed" ? DASHED_OUTLINE : null }
-    const ownFill = kindLook && kindMark === "tint" ? kindLook.tint : style.fill
-    const fill = isSeeThrough ? seeThrough(ownFill) : ownFill
+function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, isMissedBySearch }: BoxLook): object[] {
+    const style = boxStyle(box, emphasis)
+    const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
     const opacity = opacityOf(isMissedBySearch)
-    const outline = { ...UNTRANSFORMED, ...outlineOf(rect, shape, CORNER_RADIUS_PX), style: { ...style, fill, opacity } }
-    return shape === "double" ? [outline, drawInnerFrame(rect, opacity)] : [outline]
+    return [{ type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }]
 }
 
-function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch, kindMark, listsLevels }: BoxLook, zoom: number): object[] {
+function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch }: BoxLook, zoom: number): object[] {
     const opacity = opacityOf(isMissedBySearch)
     const scale = markScaleOf(zoom)
-    const hasKindIcon = box.kind === "declaration" && kindMark === "icon"
-    const hasListedLevel = box.kind === "declaration" && listsLevels
+    const hasKindIcon = box.kind === "declaration"
     const mark = { opacity, scale: scale ?? 0 }
-    const marks =
-        scale === null
-            ? []
-            : [
-                  ...drawFileMarks(box, rect, mark),
-                  ...(hasKindIcon ? drawKindIcon(box, rect, mark) : []),
-                  ...(hasListedLevel ? drawListedLevel(box, rect, mark) : [])
-              ]
-    const label = drawLabel(box, rect, { opacity, hasKindIcon, hasListedLevel, markScale: scale ?? 0 })
+    const marks = scale === null ? [] : [...drawFileMarks(box, rect, mark), ...(hasKindIcon ? drawKindIcon(box, rect, mark) : [])]
+    const label = drawLabel(box, rect, { opacity, hasKindIcon, markScale: scale ?? 0 })
     return label ? [label, ...marks] : marks
 }
 
@@ -255,7 +226,6 @@ function baseStyle(box: LayoutBox) {
 interface LabelLook {
     opacity: number
     hasKindIcon: boolean
-    hasListedLevel: boolean
     /** How large the marks beside the name are drawn; zero when they are left out. */
     markScale: number
 }
@@ -264,19 +234,17 @@ interface LabelLook {
 interface LabelRoom {
     marksWidth: number
     iconWidth: number
-    levelWidth: number
     width: number
 }
 
-function labelRoomOf(box: LayoutBox, rect: Rectangle, { hasKindIcon, hasListedLevel, markScale }: LabelLook): LabelRoom {
+function labelRoomOf(box: LayoutBox, rect: Rectangle, { hasKindIcon, markScale }: LabelLook): LabelRoom {
     const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX * markScale : 0
     const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX * markScale : 0
-    const levelWidth = hasListedLevel ? LISTED_LEVEL_WIDTH_PX * markScale : 0
-    return { marksWidth, iconWidth, levelWidth, width: rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth - levelWidth }
+    return { marksWidth, iconWidth, width: rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth }
 }
 
 function drawLabel(box: LayoutBox, rect: Rectangle, look: LabelLook) {
-    const { marksWidth, iconWidth, levelWidth, width } = labelRoomOf(box, rect, look)
+    const { marksWidth, iconWidth, width } = labelRoomOf(box, rect, look)
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -287,7 +255,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, look: LabelLook) {
         silent: true,
         style: {
             text: box.name,
-            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + (rect.width + iconWidth - levelWidth) / 2,
+            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + (rect.width + iconWidth) / 2,
             y: nameCentreY(box, rect),
             width,
             overflow: "truncate",

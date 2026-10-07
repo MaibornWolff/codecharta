@@ -28,7 +28,6 @@ export class DependencyEdgeLegendComponent {
     readonly usageLegend = computed(() =>
         this.isDependencyMetric() && this.hasDeclarations() && this.settings().lineStyleShows === "usage" ? USAGE_LEGEND : []
     )
-    readonly kindMark = computed(() => this.settings().declarationKindMark)
-    readonly kindLegend = computed(() => (this.hasDeclarations() && this.kindMark() !== "off" ? DECLARATION_KIND_LEGEND : []))
+    readonly kindLegend = computed(() => (this.hasDeclarations() ? DECLARATION_KIND_LEGEND : []))
     readonly usageColor = computed(() => this.settings().edgeColors.regular)
 }

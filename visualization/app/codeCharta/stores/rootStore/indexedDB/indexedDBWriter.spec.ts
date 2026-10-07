@@ -42,6 +42,7 @@ import {
     migrateCcStateRecordToV27,
     migrateCcStateRecordToV28,
     migrateCcStateRecordToV29,
+    migrateCcStateRecordToV30,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcFiles,
@@ -1087,8 +1088,6 @@ describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted 
         expect(migrated.preferences["centerMapZoom"]).toBe(165)
         expect(migrated.preferences["dependencyGraph"]).toEqual({ ...defaultDependencyGraphSettings, ...persistedBefore })
         expect(migrated.preferences["dependencyGraph"]).toMatchObject({
-            declarationArrangement: "stacked",
-            declarationKindMark: "icon",
             lineStyleShows: "edgeType",
             showsCycleBadges: true
         })
@@ -1096,7 +1095,7 @@ describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted 
 
     it("should pass complete settings, a blob without them, or a nullish one through unchanged", () => {
         // Arrange
-        const alreadyMigrated = { preferences: { dependencyGraph: { ...defaultDependencyGraphSettings, declarationArrangement: "chips" } } }
+        const alreadyMigrated = { preferences: { dependencyGraph: { ...defaultDependencyGraphSettings, edgeStyle: "straight" } } }
         const withoutSettings = { preferences: { centerMapZoom: 165 } }
 
         // Act
@@ -1106,6 +1105,34 @@ describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted 
         expect(migrated[0]).toBe(alreadyMigrated)
         expect(migrated[1]).toBe(withoutSettings)
         expect(migrateCcStateRecordToV29(null)).toBeNull()
+    })
+})
+
+describe("migrateCcStateRecordToV30 (dependency graph settings without the declaration looks, with the hierarchy)", () => {
+    it("should drop the settings the graph lost, seed the hierarchy and keep the ones the reader had set", () => {
+        // Arrange
+        const keptBefore = { edgeStyle: "straight", showsCycleBadges: false }
+        const persistedBefore = { ...keptBefore, declarationArrangement: "chips", declarationKindMark: "tint" }
+        const oldShapeState = { preferences: { centerMapZoom: 165, dependencyGraph: persistedBefore } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV30(oldShapeState) as unknown as { preferences: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.preferences["centerMapZoom"]).toBe(165)
+        expect(migrated.preferences["dependencyGraph"]).toEqual({ ...defaultDependencyGraphSettings, ...keptBefore, hierarchy: "folders" })
+    })
+
+    it("should pass a blob without the settings, or a nullish one, through unchanged", () => {
+        // Arrange
+        const withoutSettings = { preferences: { centerMapZoom: 165 } }
+
+        // Act
+        const migrated = migrateCcStateRecordToV30(withoutSettings)
+
+        // Assert
+        expect(migrated).toBe(withoutSettings)
+        expect(migrateCcStateRecordToV30(null)).toBeNull()
     })
 })
 

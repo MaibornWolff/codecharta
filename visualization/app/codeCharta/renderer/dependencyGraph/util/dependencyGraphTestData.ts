@@ -8,8 +8,6 @@ export const EDGE_COLORS = defaultDependencyGraphSettings.edgeColors
 export const DEFAULT_LOOKS = {
     edgeColors: EDGE_COLORS,
     lineStyleShows: "edgeType",
-    declarationKindMark: "icon",
-    declarationArrangement: "stacked",
     cycleMarks: NO_CYCLE_MARKS,
     selectedEdgeId: null,
     highlightedEdgeIds: new Set<string>()

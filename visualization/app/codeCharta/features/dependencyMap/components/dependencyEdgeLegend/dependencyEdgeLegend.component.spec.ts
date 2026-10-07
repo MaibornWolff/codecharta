@@ -85,13 +85,9 @@ describe("DependencyEdgeLegendComponent", () => {
         expect(screen.getByTestId("dependency-usage-legend").querySelectorAll("polyline, circle")).toHaveLength(3)
     })
 
-    it.each([
-        ["icon", "cc-declaration-kind-icon"],
-        ["tint", "span[aria-hidden]"],
-        ["shape", "svg"]
-    ] as const)("should explain the declaration kinds told by %s", async (declarationKindMark, mark) => {
+    it("should explain the icons of the declaration kinds", async () => {
         // Act
-        await renderLegend({ settings: { declarationKindMark } })
+        await renderLegend()
 
         // Assert
         const entries = entriesOf("dependency-kind-legend")
@@ -105,10 +101,10 @@ describe("DependencyEdgeLegendComponent", () => {
             "Variable",
             "Other"
         ])
-        expect(screen.getByTestId("dependency-kind-legend").querySelectorAll(`li > ${mark}`)).toHaveLength(8)
+        expect(screen.getByTestId("dependency-kind-legend").querySelectorAll("li > cc-declaration-kind-icon")).toHaveLength(8)
     })
 
-    it("should leave the declarations out for a map without any, or when their kind is not shown", async () => {
+    it("should leave the declarations out for a map without any", async () => {
         // Arrange
         const withoutDeclarations = { hasDeclarations: false, settings: { lineStyleShows: "usage" } } as const
 
@@ -118,16 +114,5 @@ describe("DependencyEdgeLegendComponent", () => {
         // Assert
         expect(screen.queryByTestId("dependency-kind-legend")).toBeNull()
         expect(screen.queryByTestId("dependency-usage-legend")).toBeNull()
-    })
-
-    it("should leave the declaration kinds out when the reader switched them off", async () => {
-        // Arrange
-        const settings = { declarationKindMark: "off" } as const
-
-        // Act
-        await renderLegend({ settings })
-
-        // Assert
-        expect(screen.queryByTestId("dependency-kind-legend")).toBeNull()
     })
 })
