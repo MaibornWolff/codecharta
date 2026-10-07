@@ -13,24 +13,24 @@ internal object UsingDirectiveExtractor {
     private const val IDENTIFIER = "identifier"
     private const val NAMESPACE_SEPARATOR = "."
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, USING_DIRECTIVE)
-        .mapNotNull { toImportDeclaration(it, sourceCode, aggregateNamespacePath(it, sourceCode)) }
+        .mapNotNull { toImportDeclaration(it, aggregateNamespacePath(it)) }
 
-    private fun aggregateNamespacePath(node: SyntaxNode, sourceCode: String): List<String> {
+    private fun aggregateNamespacePath(node: SyntaxNode): List<String> {
         val segments = mutableListOf<List<String>>()
         var current = node.parent
         while (!current.isNull) {
             if (current.type == NAMESPACE_DECLARATION || current.type == FILE_SCOPED_NAMESPACE) {
-                segments.add(0, extractNamespacePath(current, sourceCode))
+                segments.add(0, extractNamespacePath(current))
             }
             current = current.parent
         }
         return segments.flatten()
     }
 
-    private fun toImportDeclaration(node: SyntaxNode, sourceCode: String, namespacePath: List<String>): ImportDeclaration? {
-        val nameText = extractImportPath(node, sourceCode) ?: return null
+    private fun toImportDeclaration(node: SyntaxNode, namespacePath: List<String>): ImportDeclaration? {
+        val nameText = extractImportPath(node) ?: return null
         return ImportDeclaration(
             path = nameText.split(NAMESPACE_SEPARATOR),
             isWildcard = true,
@@ -38,21 +38,20 @@ internal object UsingDirectiveExtractor {
         )
     }
 
-    private fun extractImportPath(node: SyntaxNode, sourceCode: String): String? = extractQualifiedOrAliasedPath(node, sourceCode)
-        ?: extractSimpleIdentifierPath(node, sourceCode)
+    private fun extractImportPath(node: SyntaxNode): String? = extractQualifiedOrAliasedPath(node)
+        ?: extractSimpleIdentifierPath(node)
 
-    private fun extractQualifiedOrAliasedPath(node: SyntaxNode, sourceCode: String): String? =
-        TreeTraversal.findFirstChildTextByType(node, sourceCode, QUALIFIED_NAME)
+    private fun extractQualifiedOrAliasedPath(node: SyntaxNode): String? = TreeTraversal.findFirstChildTextByType(node, QUALIFIED_NAME)
 
-    private fun extractSimpleIdentifierPath(node: SyntaxNode, sourceCode: String): String? = node
+    private fun extractSimpleIdentifierPath(node: SyntaxNode): String? = node
         .children()
         .filter { it.type == IDENTIFIER }
-        .map { TreeTraversal.getNodeText(it, sourceCode) }
+        .map { it.text }
         .toList()
         .lastOrNull()
 
-    private fun extractNamespacePath(node: SyntaxNode, sourceCode: String): List<String> {
-        val text = TreeTraversal.findFirstChildTextByType(node, sourceCode, QUALIFIED_NAME, IDENTIFIER)
+    private fun extractNamespacePath(node: SyntaxNode): List<String> {
+        val text = TreeTraversal.findFirstChildTextByType(node, QUALIFIED_NAME, IDENTIFIER)
             ?: return emptyList()
         return text.split(NAMESPACE_SEPARATOR)
     }

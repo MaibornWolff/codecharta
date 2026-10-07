@@ -12,16 +12,16 @@ private const val QUALIFIED_TYPE = "qualified_type"
  * Extracts first identifier from var or const declaration.
  * Handles both single spec and spec_list patterns.
  */
-internal fun extractFromVarOrConstDeclaration(node: SyntaxNode, sourceCode: String, specType: String): String? = node
+internal fun extractFromVarOrConstDeclaration(node: SyntaxNode, specType: String): String? = node
     .children()
     .firstOrNull { it.type == specType }
-    ?.let { TreeTraversal.findFirstChildTextByType(it, sourceCode, IDENTIFIER) }
+    ?.let { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER) }
 
 /**
  * Extracts all identifiers from var or const declaration.
  * Handles both single spec and spec_list (block) patterns.
  */
-internal fun extractAllFromVarOrConstDeclaration(node: SyntaxNode, sourceCode: String, specType: String): List<String> {
+internal fun extractAllFromVarOrConstDeclaration(node: SyntaxNode, specType: String): List<String> {
     val specListType = "${specType}_list"
     return node
         .children()
@@ -31,7 +31,6 @@ internal fun extractAllFromVarOrConstDeclaration(node: SyntaxNode, sourceCode: S
                     TreeTraversal
                         .findAllChildrenTextByType(
                             child,
-                            sourceCode,
                             IDENTIFIER
                         ).asSequence()
                 specListType ->
@@ -42,7 +41,6 @@ internal fun extractAllFromVarOrConstDeclaration(node: SyntaxNode, sourceCode: S
                             TreeTraversal
                                 .findAllChildrenTextByType(
                                     it,
-                                    sourceCode,
                                     IDENTIFIER
                                 ).asSequence()
                         }
@@ -55,13 +53,12 @@ internal fun extractAllFromVarOrConstDeclaration(node: SyntaxNode, sourceCode: S
  * Extracts identifier from embedded field.
  * Embedded fields use type_identifier directly or qualified_type.
  */
-internal fun extractEmbeddedFieldIdentifier(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractEmbeddedFieldIdentifier(node: SyntaxNode): String? {
     val firstChild = node.children().firstOrNull() ?: return null
     return when (firstChild.type) {
-        TYPE_IDENTIFIER -> TreeTraversal.getNodeText(firstChild, sourceCode)
+        TYPE_IDENTIFIER -> firstChild.text
         QUALIFIED_TYPE -> TreeTraversal.findFirstChildTextByType(
             firstChild,
-            sourceCode,
             TYPE_IDENTIFIER
         )
         else -> null

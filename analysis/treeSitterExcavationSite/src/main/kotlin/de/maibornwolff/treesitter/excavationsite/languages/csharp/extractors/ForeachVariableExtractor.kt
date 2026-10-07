@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val IDENTIFIER = "identifier"
@@ -28,22 +27,22 @@ private val typeNodes = setOf(
  *
  * Finds the identifier after the type and before the "in" keyword.
  */
-internal fun extractForeachVariable(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractForeachVariable(node: SyntaxNode): String? {
     val childrenBeforeIn = node
         .children()
         .takeWhile { it.type != IN_KEYWORD }
         .toList()
-    return findVariableAfterType(childrenBeforeIn, sourceCode)
+    return findVariableAfterType(childrenBeforeIn)
 }
 
-private fun findVariableAfterType(children: List<SyntaxNode>, sourceCode: String): String? {
+private fun findVariableAfterType(children: List<SyntaxNode>): String? {
     val indexOfType = children.indexOfFirst { isTypeNode(it) }
     if (indexOfType < 0) return null
 
     return children
         .drop(indexOfType + 1)
         .firstOrNull { it.type == IDENTIFIER }
-        ?.let { TreeTraversal.getNodeText(it, sourceCode) }
+        ?.let { it.text }
 }
 
 private fun isTypeNode(node: SyntaxNode): Boolean = node.type in typeNodes || node.type == IDENTIFIER

@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 private const val VARIABLE_NAME = "variable_name"
 
@@ -9,11 +8,11 @@ private const val VARIABLE_NAME = "variable_name"
  * Extracts left-hand variable name from assignment.
  * Example: `$count = 5;` -> "count"
  */
-internal fun extractAssignmentTargetName(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractAssignmentTargetName(node: SyntaxNode): String? {
     val left = node.getChildByFieldName("left")
     if (left.isNull) return null
     return if (left.type == VARIABLE_NAME) {
-        stripDollarPrefix(TreeTraversal.getNodeText(left, sourceCode))
+        stripDollarPrefix(left.text)
     } else {
         null
     }

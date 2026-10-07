@@ -14,22 +14,22 @@ private const val FIELD_DECLARATOR = "declarator"
  * Extracts identifier from a declaration.
  * Handles various declarator types: int *ptr, int arr[10], int func(), etc.
  */
-internal fun extractFromDeclaration(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromDeclaration(node: SyntaxNode): String? {
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
     if (!declarator.isNull) {
-        return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
+        return CDeclaratorParser.findIdentifierInDeclarator(declarator)
     }
 
     for (child in node.children()) {
         when (child.type) {
             INIT_DECLARATOR -> {
-                return CDeclaratorParser.extractFromInitDeclarator(child, sourceCode)
+                return CDeclaratorParser.extractFromInitDeclarator(child)
             }
             POINTER_DECLARATOR,
             ARRAY_DECLARATOR,
             FUNCTION_DECLARATOR,
             IDENTIFIER -> {
-                return CDeclaratorParser.findIdentifierInDeclarator(child, sourceCode)
+                return CDeclaratorParser.findIdentifierInDeclarator(child)
             }
         }
     }

@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val IDENTIFIER = "identifier"
@@ -11,7 +10,7 @@ private const val IDENTIFIER = "identifier"
  *
  * Used for parameter, catch_declaration, and declaration_pattern.
  */
-internal fun findLastIdentifier(node: SyntaxNode, sourceCode: String): String? = node
+internal fun findLastIdentifier(node: SyntaxNode): String? = node
     .children()
     .lastOrNull { it.type == IDENTIFIER }
-    ?.let { TreeTraversal.getNodeText(it, sourceCode) }
+    ?.let { it.text }

@@ -11,22 +11,22 @@ private const val FIELD_DECLARATOR = "declarator"
 private const val REFERENCE_DECLARATOR = "reference_declarator"
 private const val POINTER_DECLARATOR = "pointer_declarator"
 
-internal fun extractFromForRangeLoop(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromForRangeLoop(node: SyntaxNode): String? {
     if (TreeTraversal.containsNodeOfType(node, STRUCTURED_BINDING_DECLARATOR)) {
         return null
     }
 
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
     if (!declarator.isNull) {
-        return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
+        return CDeclaratorParser.findIdentifierInDeclarator(declarator)
     }
 
     for (child in node.children()) {
         if (child.isNull) continue
         when (child.type) {
-            IDENTIFIER -> return TreeTraversal.getNodeText(child, sourceCode)
+            IDENTIFIER -> return child.text
             REFERENCE_DECLARATOR, POINTER_DECLARATOR -> {
-                return CDeclaratorParser.findIdentifierInDeclarator(child, sourceCode)
+                return CDeclaratorParser.findIdentifierInDeclarator(child)
             }
         }
     }

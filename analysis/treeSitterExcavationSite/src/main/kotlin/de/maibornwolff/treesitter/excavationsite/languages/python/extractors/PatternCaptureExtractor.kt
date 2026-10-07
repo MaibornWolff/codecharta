@@ -8,68 +8,52 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
  * Extracts pattern capture variables from case_clause.
  * Recursively finds all captured identifiers in pattern matching.
  */
-internal fun extractPatternCaptureVariables(
-    node: SyntaxNode,
-    sourceCode: String,
-    findFirstIdentifier: (SyntaxNode, String) -> String?
-): List<String> {
+internal fun extractPatternCaptureVariables(node: SyntaxNode, findFirstIdentifier: (SyntaxNode) -> String?): List<String> {
     val patternNode = node.getChildByFieldName("pattern")
 
     return if (!patternNode.isNull) {
-        extractCapturesFromNode(patternNode, sourceCode, findFirstIdentifier)
+        extractCapturesFromNode(patternNode, findFirstIdentifier)
     } else {
         node
             .children()
             .takeWhile {
                 it.type != ":" && it.type != "block"
             }.filter { it.type != "case" }
-            .flatMap { extractCapturesFromNode(it, sourceCode, findFirstIdentifier) }
+            .flatMap { extractCapturesFromNode(it, findFirstIdentifier) }
             .toList()
     }
 }
 
-private fun extractCapturesFromNode(
-    node: SyntaxNode,
-    sourceCode: String,
-    findFirstIdentifier: (SyntaxNode, String) -> String?
-): List<String> = when (node.type) {
-    "as_pattern" -> extractCapturesFromAsPattern(node, sourceCode, findFirstIdentifier)
-    "keyword_pattern" -> extractCapturesFromKeywordPattern(node, sourceCode, findFirstIdentifier)
-    "splat_pattern" -> listOfNotNull(findFirstIdentifier(node, sourceCode))
+private fun extractCapturesFromNode(node: SyntaxNode, findFirstIdentifier: (SyntaxNode) -> String?): List<String> = when (node.type) {
+    "as_pattern" -> extractCapturesFromAsPattern(node, findFirstIdentifier)
+    "keyword_pattern" -> extractCapturesFromKeywordPattern(node, findFirstIdentifier)
+    "splat_pattern" -> listOfNotNull(findFirstIdentifier(node))
     "identifier" -> {
-        val text = TreeTraversal.getNodeText(node, sourceCode)
+        val text = node.text
         if (text != "_" && !isClassNameInPattern(node)) {
             listOf(text)
         } else {
             emptyList()
         }
     }
-    else -> node.children().flatMap { extractCapturesFromNode(it, sourceCode, findFirstIdentifier) }.toList()
+    else -> node.children().flatMap { extractCapturesFromNode(it, findFirstIdentifier) }.toList()
 }
 
-private fun extractCapturesFromAsPattern(
-    node: SyntaxNode,
-    sourceCode: String,
-    findFirstIdentifier: (SyntaxNode, String) -> String?
-): List<String> = node
+private fun extractCapturesFromAsPattern(node: SyntaxNode, findFirstIdentifier: (SyntaxNode) -> String?): List<String> = node
     .children()
     .flatMap { child ->
         if (child.type == "identifier") {
-            val text = TreeTraversal.getNodeText(child, sourceCode)
+            val text = child.text
             if (text != "_") listOf(text) else emptyList()
         } else {
-            extractCapturesFromNode(child, sourceCode, findFirstIdentifier)
+            extractCapturesFromNode(child, findFirstIdentifier)
         }
     }.toList()
 
-private fun extractCapturesFromKeywordPattern(
-    node: SyntaxNode,
-    sourceCode: String,
-    findFirstIdentifier: (SyntaxNode, String) -> String?
-): List<String> {
+private fun extractCapturesFromKeywordPattern(node: SyntaxNode, findFirstIdentifier: (SyntaxNode) -> String?): List<String> {
     val valueNode = node.getChildByFieldName("value")
     return if (!valueNode.isNull) {
-        extractCapturesFromNode(valueNode, sourceCode, findFirstIdentifier)
+        extractCapturesFromNode(valueNode, findFirstIdentifier)
     } else {
         emptyList()
     }

@@ -34,7 +34,7 @@ internal object ImportExtractor {
 
     private val PATH_LEAF_TYPES = setOf(SCOPED_IDENTIFIER, IDENTIFIER, CRATE, SELF, SUPER, METAVARIABLE)
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, USE_DECLARATION)
         .flatMap { useDeclaration ->
             val kind = if (useDeclaration.children().any { it.type == VISIBILITY_MODIFIER }) {
@@ -43,13 +43,13 @@ internal object ImportExtractor {
                 ImportKind.STANDARD
             }
             val content = useDeclaration.namedChildren().firstOrNull { it.type != VISIBILITY_MODIFIER }
-            content?.let { flattenUseTree(it, emptyList(), kind, sourceCode) } ?: emptyList()
+            content?.let { flattenUseTree(it, emptyList(), kind) } ?: emptyList()
         }
 
-    private fun flattenUseTree(node: SyntaxNode, prefix: List<String>, kind: ImportKind, sourceCode: String): List<ImportDeclaration> {
+    private fun flattenUseTree(node: SyntaxNode, prefix: List<String>, kind: ImportKind): List<ImportDeclaration> {
         return when (node.type) {
             in PATH_LEAF_TYPES -> {
-                val segments = segmentsOf(node, sourceCode)
+                val segments = segmentsOf(node)
                 if (segments.isEmpty()) {
                     emptyList()
                 } else {
@@ -58,34 +58,34 @@ internal object ImportExtractor {
             }
             USE_WILDCARD -> {
                 val pathNode = node.namedChildren().firstOrNull()
-                val segments = pathNode?.let { segmentsOf(it, sourceCode) } ?: emptyList()
+                val segments = pathNode?.let { segmentsOf(it) } ?: emptyList()
                 listOf(ImportDeclaration(path = prefix + segments, isWildcard = true, kind = kind))
             }
             USE_AS_CLAUSE -> {
                 val children = node.namedChildren().toList()
                 val pathNode = children.firstOrNull()
                 val aliasNode = children.getOrNull(1)
-                val segments = pathNode?.let { segmentsOf(it, sourceCode) } ?: emptyList()
+                val segments = pathNode?.let { segmentsOf(it) } ?: emptyList()
                 if (segments.isEmpty()) {
                     emptyList()
                 } else {
-                    val binding = aliasNode?.let { TreeTraversal.getNodeText(it, sourceCode).trim() } ?: segments.last()
+                    val binding = aliasNode?.let { it.text.trim() } ?: segments.last()
                     listOf(ImportDeclaration(path = prefix + segments, isWildcard = false, kind = kind, bindingName = binding))
                 }
             }
             SCOPED_USE_LIST -> {
                 val listNode = node.namedChildren().firstOrNull { it.type == USE_LIST } ?: return emptyList()
                 val pathNode = node.namedChildren().firstOrNull { it.type != USE_LIST }
-                val newPrefix = prefix + (pathNode?.let { segmentsOf(it, sourceCode) } ?: emptyList())
-                flattenUseTree(listNode, newPrefix, kind, sourceCode)
+                val newPrefix = prefix + (pathNode?.let { segmentsOf(it) } ?: emptyList())
+                flattenUseTree(listNode, newPrefix, kind)
             }
-            USE_LIST -> node.namedChildren().flatMap { flattenUseTree(it, prefix, kind, sourceCode) }.toList()
+            USE_LIST -> node.namedChildren().flatMap { flattenUseTree(it, prefix, kind) }.toList()
             else -> emptyList()
         }
     }
 
-    private fun segmentsOf(node: SyntaxNode, sourceCode: String): List<String> = TreeTraversal
-        .getNodeText(node, sourceCode)
+    private fun segmentsOf(node: SyntaxNode): List<String> = node
+        .text
         .split(SCOPE_SEPARATOR)
         .map { it.trim() }
         .filter { it.isNotEmpty() }

@@ -6,7 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependenc
 
 internal object TypescriptDependencyMapping {
     val dependencyMapping = LanguageDependencyMapping(
-        extractPackagePath = { _, _ -> emptyList() }, // JS/TS have no package declarations
+        extractPackagePath = { emptyList() }, // JS/TS have no package declarations
         extractImports = ImportExtractor::extract,
         extractDeclarations = DeclarationExtractor::extract
     )

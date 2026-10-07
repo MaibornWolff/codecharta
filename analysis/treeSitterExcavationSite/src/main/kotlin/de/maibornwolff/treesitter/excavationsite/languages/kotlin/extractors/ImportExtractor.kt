@@ -12,14 +12,14 @@ internal object ImportExtractor {
     private const val WILDCARD_IMPORT = "wildcard_import"
     private const val IMPORT_SEPARATOR = "."
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> {
+    fun extract(rootNode: SyntaxNode): List<ImportDeclaration> {
         val importList = rootNode.children().firstOrNull { it.type == IMPORT_LIST }
             ?: return emptyList()
         return importList
             .children()
             .filter { it.type == IMPORT_HEADER }
             .mapNotNull { importNode ->
-                val identifierText = TreeTraversal.findFirstChildTextByType(importNode, sourceCode, IDENTIFIER)
+                val identifierText = TreeTraversal.findFirstChildTextByType(importNode, IDENTIFIER)
                 if (identifierText.isNullOrBlank()) return@mapNotNull null
                 val isWildcard = importNode.children().any { it.type == WILDCARD_IMPORT }
                 ImportDeclaration(path = identifierText.split(IMPORT_SEPARATOR), isWildcard = isWildcard)

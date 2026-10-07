@@ -60,74 +60,49 @@ object PythonExtractionMapping : ExtractionMapping {
         put(EXCEPT_CLAUSE, Extract.Identifier(customSingle = ::extractFromExceptClause))
         put(
             TYPE_ALIAS_STATEMENT,
-            Extract.Identifier(customSingle = {
-                n,
-                s
-                ->
-                extractFromTypeAlias(n, s, ::findFirstIdentifier)
-            })
+            Extract.Identifier(customSingle = { node -> extractFromTypeAlias(node, ::findFirstIdentifier) })
         )
         put(
             AS_PATTERN,
-            Extract.Identifier(customSingle = {
-                n,
-                s
-                ->
-                extractFromAsPattern(
-                    n,
-                    s,
-                    ::findFirstIdentifier,
-                    ::findLastIdentifier
-                )
-            })
+            Extract.Identifier(customSingle = { node -> extractFromAsPattern(node, ::findFirstIdentifier, ::findLastIdentifier) })
         )
         put(
             DECORATOR,
-            Extract.Identifier(customSingle = {
-                n,
-                s
-                ->
-                extractDecoratorName(n, s, ::findFirstIdentifier)
-            })
+            Extract.Identifier(customSingle = { node -> extractDecoratorName(node, ::findFirstIdentifier) })
         )
 
         // Identifiers - multi extractors for nodes that can contain multiple identifiers
         put(
             FOR_IN_CLAUSE,
             Extract.Identifier(
-                customSingle = { n, s -> extractLoopVariables(n, s).firstOrNull() },
+                customSingle = { node -> extractLoopVariables(node).firstOrNull() },
                 customMulti = ::extractLoopVariables
             )
         )
         put(
             FOR_STATEMENT,
             Extract.Identifier(
-                customSingle = { n, s -> extractLoopVariables(n, s).firstOrNull() },
+                customSingle = { node -> extractLoopVariables(node).firstOrNull() },
                 customMulti = ::extractLoopVariables
             )
         )
         put(
             GLOBAL_STATEMENT,
             Extract.Identifier(
-                customSingle = { n, s -> extractAllIdentifiers(n, s).firstOrNull() },
+                customSingle = { node -> extractAllIdentifiers(node).firstOrNull() },
                 customMulti = ::extractAllIdentifiers
             )
         )
         put(
             NONLOCAL_STATEMENT,
             Extract.Identifier(
-                customSingle = { n, s -> extractAllIdentifiers(n, s).firstOrNull() },
+                customSingle = { node -> extractAllIdentifiers(node).firstOrNull() },
                 customMulti = ::extractAllIdentifiers
             )
         )
         put(
             CASE_CLAUSE,
-            Extract.Identifier(customMulti = {
-                n,
-                s
-                ->
-                extractPatternCaptureVariables(n, s, ::findFirstIdentifier)
-            })
+            Extract.Identifier(customMulti = { node -> extractPatternCaptureVariables(node, ::findFirstIdentifier) })
         )
 
         // Comments - line comments and docstrings

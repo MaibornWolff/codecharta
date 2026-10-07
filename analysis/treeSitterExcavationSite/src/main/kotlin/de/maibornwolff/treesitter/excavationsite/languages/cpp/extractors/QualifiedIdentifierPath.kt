@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 internal data class QualifiedIdentifierPath(val segments: List<String>, val leaf: SyntaxNode?) {
     companion object {
@@ -9,13 +8,13 @@ internal data class QualifiedIdentifierPath(val segments: List<String>, val leaf
         private const val SCOPE_FIELD = "scope"
         private const val NAME_FIELD = "name"
 
-        fun walk(qualifiedId: SyntaxNode, sourceCode: String): QualifiedIdentifierPath {
+        fun walk(qualifiedId: SyntaxNode): QualifiedIdentifierPath {
             val scopeSegments = mutableListOf<String>()
             var node = qualifiedId
             while (node.type == QUALIFIED_IDENTIFIER) {
                 val scope = node.getChildByFieldName(SCOPE_FIELD)
                 if (!scope.isNull) {
-                    scopeSegments.add(TreeTraversal.getNodeText(scope, sourceCode).trim())
+                    scopeSegments.add(scope.text.trim())
                 }
                 val nameField = node.getChildByFieldName(NAME_FIELD)
                 if (nameField.isNull) return QualifiedIdentifierPath(scopeSegments, null)

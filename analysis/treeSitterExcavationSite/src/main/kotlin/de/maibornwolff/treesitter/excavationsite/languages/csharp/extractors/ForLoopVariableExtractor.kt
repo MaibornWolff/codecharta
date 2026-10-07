@@ -8,10 +8,10 @@ private const val VARIABLE_DECLARATION = "variable_declaration"
 /**
  * Extracts variable from for loop: `for (int i = 0; ...)`
  */
-internal fun extractForLoopVariable(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractForLoopVariable(node: SyntaxNode): String? {
     for (child in node.children()) {
         if (child.type == VARIABLE_DECLARATION) {
-            return findIdentifierInVariableDeclarator(child, sourceCode)
+            return findIdentifierInVariableDeclarator(child)
         }
     }
     return null

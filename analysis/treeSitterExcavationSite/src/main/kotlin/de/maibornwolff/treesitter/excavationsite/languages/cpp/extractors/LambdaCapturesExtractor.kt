@@ -7,14 +7,14 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
 private const val IDENTIFIER = "identifier"
 private const val LAMBDA_CAPTURE_INITIALIZER = "lambda_capture_initializer"
 
-internal fun extractFromLambdaCaptures(node: SyntaxNode, sourceCode: String): List<String> = node
+internal fun extractFromLambdaCaptures(node: SyntaxNode): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {
-            IDENTIFIER -> listOf(TreeTraversal.getNodeText(child, sourceCode))
+            IDENTIFIER -> listOf(child.text)
             LAMBDA_CAPTURE_INITIALIZER -> {
                 listOfNotNull(
-                    TreeTraversal.findFirstChildTextByType(child, sourceCode, IDENTIFIER)
+                    TreeTraversal.findFirstChildTextByType(child, IDENTIFIER)
                 )
             }
             else -> emptyList()

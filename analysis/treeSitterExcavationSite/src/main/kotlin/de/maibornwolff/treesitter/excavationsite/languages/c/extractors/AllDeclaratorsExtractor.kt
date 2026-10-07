@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val IDENTIFIER = "identifier"
@@ -14,28 +13,28 @@ private const val FUNCTION_DECLARATOR = "function_declarator"
  * Extracts all declarator identifiers from a declaration with multiple declarators.
  * Example: int a, b, c; extracts ["a", "b", "c"]
  */
-internal fun extractAllDeclarators(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractAllDeclarators(node: SyntaxNode): List<String> {
     val identifiers = node
         .children()
-        .mapNotNull { extractIdentifierFromDeclaratorChild(it, sourceCode) }
+        .mapNotNull { extractIdentifierFromDeclaratorChild(it) }
         .distinct()
         .toList()
 
-    return identifiers.ifEmpty { listOfNotNull(extractFromDeclaration(node, sourceCode)) }
+    return identifiers.ifEmpty { listOfNotNull(extractFromDeclaration(node)) }
 }
 
 /**
  * Extracts identifier from a single declarator child node.
  */
-private fun extractIdentifierFromDeclaratorChild(child: SyntaxNode, sourceCode: String): String? = when (child.type) {
+private fun extractIdentifierFromDeclaratorChild(child: SyntaxNode): String? = when (child.type) {
     INIT_DECLARATOR -> {
-        CDeclaratorParser.extractFromInitDeclarator(child, sourceCode)
+        CDeclaratorParser.extractFromInitDeclarator(child)
     }
     POINTER_DECLARATOR,
     ARRAY_DECLARATOR,
     FUNCTION_DECLARATOR -> {
-        CDeclaratorParser.findIdentifierInDeclarator(child, sourceCode)
+        CDeclaratorParser.findIdentifierInDeclarator(child)
     }
-    IDENTIFIER -> TreeTraversal.getNodeText(child, sourceCode)
+    IDENTIFIER -> child.text
     else -> null
 }

@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction.extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 /**
  * Generic string extractor that handles various string literal formats.
@@ -14,8 +13,8 @@ class StringExtractor(private val stringFormats: Map<String, StringFormats>) {
     /**
      * Extracts string content from a node, stripping appropriate delimiters.
      */
-    fun extract(node: SyntaxNode, sourceCode: String): String {
-        val text = TreeTraversal.getNodeText(node, sourceCode)
+    fun extract(node: SyntaxNode): String {
+        val text = node.text
         val format = stringFormats[node.type] ?: return text
 
         return when (format) {
@@ -34,7 +33,7 @@ class StringExtractor(private val stringFormats: Map<String, StringFormats>) {
             is StringFormats.CSharpVerbatim -> StringParser.stripCSharpVerbatimString(text)
             is StringFormats.CSharpInterpolated -> StringParser.stripCSharpInterpolatedString(text)
             is StringFormats.Python -> StringParser.stripPythonString(text)
-            is StringFormats.FromChild -> extractFromChild(node, sourceCode, format.childType)
+            is StringFormats.FromChild -> extractFromChild(node, format.childType)
             is StringFormats.Trimmed -> text.trim()
             is StringFormats.Regex -> text.removePrefix("/").removeSuffix("/")
             is StringFormats.PhpHeredoc -> extractPhpHeredoc(text)
@@ -48,14 +47,14 @@ class StringExtractor(private val stringFormats: Map<String, StringFormats>) {
         text.removeSurrounding("\"")
     }
 
-    private fun extractFromChild(node: SyntaxNode, sourceCode: String, childType: String): String {
+    private fun extractFromChild(node: SyntaxNode, childType: String): String {
         for (i in 0 until node.childCount) {
             val child = node.getChild(i)
             if (child.type == childType) {
-                return TreeTraversal.getNodeText(child, sourceCode)
+                return child.text
             }
         }
-        val text = TreeTraversal.getNodeText(node, sourceCode)
+        val text = node.text
         return StringParser.stripTripleQuotes(text).removeSurrounding("\"")
     }
 

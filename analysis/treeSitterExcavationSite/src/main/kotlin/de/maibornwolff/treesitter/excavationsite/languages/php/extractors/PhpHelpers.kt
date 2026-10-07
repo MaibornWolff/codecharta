@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val DOLLAR_PREFIX = "$"
@@ -17,24 +16,24 @@ internal fun stripDollarPrefix(text: String): String = if (text.startsWith(DOLLA
  * Finds first variable_name child and strips dollar prefix.
  * Used for parameters, catch clauses, and static variables.
  */
-internal fun findFirstVariableName(node: SyntaxNode, sourceCode: String): String? = node
+internal fun findFirstVariableName(node: SyntaxNode): String? = node
     .children()
     .firstOrNull { it.type == VARIABLE_NAME }
-    ?.let { stripDollarPrefix(TreeTraversal.getNodeText(it, sourceCode)) }
+    ?.let { stripDollarPrefix(it.text) }
 
 /**
  * Finds first child of a given type and returns its text.
  */
-internal fun findFirstChildTextByType(node: SyntaxNode, sourceCode: String, type: String): String? = node
+internal fun findFirstChildTextByType(node: SyntaxNode, type: String): String? = node
     .children()
     .firstOrNull { it.type == type }
-    ?.let { TreeTraversal.getNodeText(it, sourceCode) }
+    ?.let { it.text }
 
 /**
  * Finds last name child in a node.
  * Used for extracting final name component from qualified names.
  */
-internal fun findLastNameChild(node: SyntaxNode, sourceCode: String): String? = node
+internal fun findLastNameChild(node: SyntaxNode): String? = node
     .children()
     .lastOrNull { it.type == NAME }
-    ?.let { TreeTraversal.getNodeText(it, sourceCode) }
+    ?.let { it.text }

@@ -11,15 +11,15 @@ private const val SCOPE_RESOLUTION = "scope_resolution"
  * Extracts identifiers from class/module with potential nested namespaces.
  * For `class Outer::Inner::Deep`, extracts [Outer, Inner, Deep].
  */
-internal fun extractFromClassOrModuleMultiple(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractFromClassOrModuleMultiple(node: SyntaxNode): List<String> {
     val scopeResolution = node.children().firstOrNull {
         it.type == SCOPE_RESOLUTION
     }
     return if (scopeResolution != null) {
-        extractConstantsFromScopeResolution(scopeResolution, sourceCode)
+        extractConstantsFromScopeResolution(scopeResolution)
     } else {
         listOfNotNull(
-            TreeTraversal.findFirstChildTextByType(node, sourceCode, CONSTANT)
+            TreeTraversal.findFirstChildTextByType(node, CONSTANT)
         )
     }
 }
@@ -27,12 +27,12 @@ internal fun extractFromClassOrModuleMultiple(node: SyntaxNode, sourceCode: Stri
 /**
  * Recursively extracts all constants from a scope_resolution node.
  */
-private fun extractConstantsFromScopeResolution(node: SyntaxNode, sourceCode: String): List<String> = node
+private fun extractConstantsFromScopeResolution(node: SyntaxNode): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {
-            SCOPE_RESOLUTION -> extractConstantsFromScopeResolution(child, sourceCode)
-            CONSTANT -> listOf(TreeTraversal.getNodeText(child, sourceCode))
+            SCOPE_RESOLUTION -> extractConstantsFromScopeResolution(child)
+            CONSTANT -> listOf(child.text)
             else -> emptyList()
         }
     }.toList()

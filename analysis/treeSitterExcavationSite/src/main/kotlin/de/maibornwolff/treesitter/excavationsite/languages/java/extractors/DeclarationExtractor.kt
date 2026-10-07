@@ -21,12 +21,12 @@ internal object DeclarationExtractor {
         ANNOTATION_TYPE_DECLARATION
     )
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode): List<Declaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         .map { declarationNode ->
-            val name = TreeTraversal.getNodeText(declarationNode.getChildByFieldName(NAME_FIELD), sourceCode)
+            val name = declarationNode.getChildByFieldName(NAME_FIELD).text
             val type = declarationType(declarationNode)
-            val usedTypes = UsedTypeExtractor.extract(declarationNode, sourceCode)
+            val usedTypes = UsedTypeExtractor.extract(declarationNode)
             Declaration(name = name, type = type, usedTypes = usedTypes)
         }.toList()
 

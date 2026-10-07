@@ -39,13 +39,13 @@ internal object DeclarationExtractor {
 
     private val NON_DECLARATION_CONTEXTS = setOf(IMPL_ITEM, TRAIT_ITEM, BLOCK)
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode): List<Declaration> {
         val baseDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
             .filter { isDeclarationContext(it) }
-            .mapNotNull { toDeclaration(it, sourceCode) }
+            .mapNotNull { toDeclaration(it) }
 
-        val implContributions = collectImplContributions(rootNode, sourceCode)
+        val implContributions = collectImplContributions(rootNode)
         if (implContributions.isEmpty()) return baseDeclarations
 
         return baseDeclarations.map { declaration ->
@@ -55,17 +55,17 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun toDeclaration(node: SyntaxNode, sourceCode: String): Declaration? {
-        val name = extractName(node, sourceCode) ?: return null
+    private fun toDeclaration(node: SyntaxNode): Declaration? {
+        val name = extractName(node) ?: return null
         return Declaration(
             name = name,
             type = mapDeclarationType(node.type),
-            usedTypes = UsedTypeExtractor.extract(node, sourceCode),
-            parentPath = findModulePath(node, sourceCode)
+            usedTypes = UsedTypeExtractor.extract(node),
+            parentPath = findModulePath(node)
         )
     }
 
-    private fun collectImplContributions(rootNode: SyntaxNode, sourceCode: String): Map<DeclarationKey, List<UsedType>> {
+    private fun collectImplContributions(rootNode: SyntaxNode): Map<DeclarationKey, List<UsedType>> {
         val contributions = LinkedHashMap<DeclarationKey, MutableList<UsedType>>()
         TreeTraversal
             .findAllDescendantsOfType(rootNode, IMPL_ITEM)
@@ -73,14 +73,14 @@ internal object DeclarationExtractor {
             .forEach { impl ->
                 val typeChildren = impl.children().filter { RustTypeHelper.isTypeNode(it) }.toList()
                 val targetNode = typeChildren.lastOrNull() ?: return@forEach
-                val targetName = RustTypeHelper.extractTypes(targetNode, sourceCode).firstOrNull()?.name ?: return@forEach
+                val targetName = RustTypeHelper.extractTypes(targetNode).firstOrNull()?.name ?: return@forEach
 
                 val hasFor = impl.children().any { it.type == FOR }
                 val traitNode = if (hasFor) typeChildren.firstOrNull() else null
-                val traitTypes = traitNode?.let { RustTypeHelper.extractTypes(it, sourceCode) } ?: emptyList()
-                val methodTypes = UsedTypeExtractor.extract(impl, sourceCode)
+                val traitTypes = traitNode?.let { RustTypeHelper.extractTypes(it) } ?: emptyList()
+                val methodTypes = UsedTypeExtractor.extract(impl)
 
-                val key = DeclarationKey(targetName, findModulePath(impl, sourceCode))
+                val key = DeclarationKey(targetName, findModulePath(impl))
                 contributions.getOrPut(key) { mutableListOf() }.addAll(traitTypes + methodTypes)
             }
         return contributions
@@ -96,12 +96,12 @@ internal object DeclarationExtractor {
         return true
     }
 
-    private fun findModulePath(node: SyntaxNode, sourceCode: String): List<String> {
+    private fun findModulePath(node: SyntaxNode): List<String> {
         val modules = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {
             if (current.type == MOD_ITEM) {
-                val name = TreeTraversal.findChildByType(current, IDENTIFIER, sourceCode)
+                val name = TreeTraversal.findChildByType(current, IDENTIFIER)
                 if (!name.isNullOrBlank()) modules.add(0, name)
             }
             current = current.parent
@@ -109,9 +109,9 @@ internal object DeclarationExtractor {
         return modules
     }
 
-    private fun extractName(node: SyntaxNode, sourceCode: String): String? {
+    private fun extractName(node: SyntaxNode): String? {
         val childType = if (node.type in TYPE_NAMED_ITEMS) TYPE_IDENTIFIER else IDENTIFIER
-        return TreeTraversal.findChildByType(node, childType, sourceCode)?.takeIf { it.isNotBlank() }
+        return TreeTraversal.findChildByType(node, childType)?.takeIf { it.isNotBlank() }
     }
 
     private fun mapDeclarationType(nodeType: String): DeclarationType = when (nodeType) {

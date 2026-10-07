@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val VARIABLE_NAME = "variable_name"
@@ -15,16 +14,16 @@ private const val PAIR = "pair"
  * - Closure use clauses: `function() use ($x, $y)`
  * - List destructuring: `list($a, $b) = [1, 2]`
  */
-internal fun collectVariables(node: SyntaxNode, sourceCode: String): List<String> = node
+internal fun collectVariables(node: SyntaxNode): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {
             VARIABLE_NAME ->
-                listOf(stripDollarPrefix(TreeTraversal.getNodeText(child, sourceCode)))
+                listOf(stripDollarPrefix(child.text))
             BY_REF ->
-                listOfNotNull(findFirstVariableName(child, sourceCode))
+                listOfNotNull(findFirstVariableName(child))
             PAIR ->
-                collectVariables(child, sourceCode)
+                collectVariables(child)
             else -> emptyList()
         }
     }.toList()

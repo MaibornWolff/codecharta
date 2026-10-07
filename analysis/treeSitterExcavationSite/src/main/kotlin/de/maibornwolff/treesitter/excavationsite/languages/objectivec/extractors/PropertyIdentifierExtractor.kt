@@ -11,24 +11,24 @@ private const val ARRAY_DECLARATOR = "array_declarator"
 private const val FIELD_DECLARATION = "field_declaration"
 private const val FIELD_DECLARATOR = "declarator"
 
-internal fun extractPropertyIdentifier(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractPropertyIdentifier(node: SyntaxNode): String? {
     for (i in 0 until node.childCount) {
         val child = node.getChild(i)
         when (child.type) {
             POINTER_DECLARATOR, ARRAY_DECLARATOR -> {
-                return CDeclaratorParser.findIdentifierInDeclarator(child, sourceCode)
+                return CDeclaratorParser.findIdentifierInDeclarator(child)
             }
             FIELD_DECLARATION -> {
                 val declarator = child.getChildByFieldName(FIELD_DECLARATOR)
                 if (!declarator.isNull) {
-                    return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
+                    return CDeclaratorParser.findIdentifierInDeclarator(declarator)
                 }
-                val result = TreeTraversal.findChildByType(child, IDENTIFIER, sourceCode)
-                    ?: TreeTraversal.findChildByType(child, FIELD_IDENTIFIER, sourceCode)
+                val result = TreeTraversal.findChildByType(child, IDENTIFIER)
+                    ?: TreeTraversal.findChildByType(child, FIELD_IDENTIFIER)
                 if (result != null) return result
             }
         }
     }
-    return TreeTraversal.findChildByType(node, IDENTIFIER, sourceCode)
-        ?: TreeTraversal.findChildByType(node, FIELD_IDENTIFIER, sourceCode)
+    return TreeTraversal.findChildByType(node, IDENTIFIER)
+        ?: TreeTraversal.findChildByType(node, FIELD_IDENTIFIER)
 }

@@ -7,15 +7,14 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
 private const val IDENTIFIER = "identifier"
 private const val SYNTHESIZE_PROPERTY = "synthesize_property"
 
-internal fun extractFromSynthesizeOrDynamic(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromSynthesizeOrDynamic(node: SyntaxNode): String? {
     for (child in node.children()) {
         when (child.type) {
-            SYNTHESIZE_PROPERTY -> return extractFromSynthesizeProperty(child, sourceCode)
-            IDENTIFIER -> return TreeTraversal.getNodeText(child, sourceCode)
+            SYNTHESIZE_PROPERTY -> return extractFromSynthesizeProperty(child)
+            IDENTIFIER -> return child.text
         }
     }
     return null
 }
 
-private fun extractFromSynthesizeProperty(node: SyntaxNode, sourceCode: String): String? =
-    TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER)
+private fun extractFromSynthesizeProperty(node: SyntaxNode): String? = TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)

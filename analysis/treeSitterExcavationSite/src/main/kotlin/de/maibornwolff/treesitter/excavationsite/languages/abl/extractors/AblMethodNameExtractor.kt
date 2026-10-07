@@ -9,7 +9,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
  * ABL method structure: METHOD [access] [return_type] [method_name](params)
  * The method name is the second identifier child (first is return type).
  */
-fun extractAblMethodName(node: SyntaxNode, code: String): String? {
+fun extractAblMethodName(node: SyntaxNode): String? {
     val identifiers = node
         .children()
         .filter { it.type == "identifier" }
@@ -18,13 +18,8 @@ fun extractAblMethodName(node: SyntaxNode, code: String): String? {
     // Method name is the second identifier (after return type)
     // For VOID methods, there's only one identifier (the method name)
     return when {
-        identifiers.size >= 2 -> extractText(identifiers[1], code)
-        identifiers.size == 1 -> extractText(identifiers[0], code)
+        identifiers.size >= 2 -> identifiers[1].text.trim()
+        identifiers.size == 1 -> identifiers[0].text.trim()
         else -> null
     }
-}
-
-private fun extractText(node: SyntaxNode, code: String): String {
-    val bytes = code.toByteArray(Charsets.UTF_8)
-    return String(bytes, node.startByte, node.endByte - node.startByte, Charsets.UTF_8).trim()
 }

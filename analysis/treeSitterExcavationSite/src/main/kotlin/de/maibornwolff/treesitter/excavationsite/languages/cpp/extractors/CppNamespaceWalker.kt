@@ -9,29 +9,28 @@ internal object CppNamespaceWalker {
     private const val NESTED_NAMESPACE_SPECIFIER = "nested_namespace_specifier"
     private const val NAMESPACE_SEPARATOR = "::"
 
-    fun walkAncestorsFrom(node: SyntaxNode, sourceCode: String): List<String> {
+    fun walkAncestorsFrom(node: SyntaxNode): List<String> {
         val segments = mutableListOf<List<String>>()
         var current = node.parent
         while (!current.isNull) {
             if (current.type == NAMESPACE_DEFINITION) {
-                segments.add(0, extractSegments(current, sourceCode))
+                segments.add(0, extractSegments(current))
             }
             current = current.parent
         }
         return segments.flatten()
     }
 
-    fun firstFileNamespace(rootNode: SyntaxNode, sourceCode: String): List<String> {
+    fun firstFileNamespace(rootNode: SyntaxNode): List<String> {
         val namespaceNode = TreeTraversal
             .findAllDescendantsOfType(rootNode, NAMESPACE_DEFINITION)
             .firstOrNull() ?: return emptyList()
-        return extractSegments(namespaceNode, sourceCode)
+        return extractSegments(namespaceNode)
     }
 
-    private fun extractSegments(namespaceDef: SyntaxNode, sourceCode: String): List<String> {
+    private fun extractSegments(namespaceDef: SyntaxNode): List<String> {
         val text = TreeTraversal.findFirstChildTextByType(
             namespaceDef,
-            sourceCode,
             NAMESPACE_IDENTIFIER,
             NESTED_NAMESPACE_SPECIFIER
         ) ?: return emptyList()

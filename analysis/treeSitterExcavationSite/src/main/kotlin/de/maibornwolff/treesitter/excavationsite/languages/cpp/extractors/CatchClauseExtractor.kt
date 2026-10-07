@@ -5,10 +5,10 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
 
 private const val PARAMETER_DECLARATION = "parameter_declaration"
 
-internal fun extractFromCatchClause(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromCatchClause(node: SyntaxNode): String? {
     for (child in node.children()) {
         if (child.type == PARAMETER_DECLARATION) {
-            return extractFromParameterDeclaration(child, sourceCode)
+            return extractFromParameterDeclaration(child)
         }
     }
     return null

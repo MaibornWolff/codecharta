@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val IDENTIFIER = "identifier"
@@ -13,12 +12,12 @@ private const val TYPE_PARAMETER_LIST = "type_parameter_list"
  *
  * Finds the last identifier before parameter_list or type_parameter_list.
  */
-internal fun findMethodName(node: SyntaxNode, sourceCode: String): String? {
+internal fun findMethodName(node: SyntaxNode): String? {
     var lastIdentifier: String? = null
     for (child in node.children()) {
         when (child.type) {
             IDENTIFIER ->
-                lastIdentifier = TreeTraversal.getNodeText(child, sourceCode)
+                lastIdentifier = child.text
             PARAMETER_LIST,
             TYPE_PARAMETER_LIST -> return lastIdentifier
         }

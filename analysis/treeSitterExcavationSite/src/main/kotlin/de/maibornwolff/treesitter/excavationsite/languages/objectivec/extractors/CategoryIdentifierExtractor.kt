@@ -5,16 +5,16 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
 
 private const val IDENTIFIER = "identifier"
 
-internal fun extractCategoryIdentifier(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractCategoryIdentifier(node: SyntaxNode): String? {
     var foundFirst = false
     for (i in 0 until node.childCount) {
         val child = node.getChild(i)
         if (child.type == IDENTIFIER) {
             if (foundFirst) {
-                return TreeTraversal.getNodeText(child, sourceCode)
+                return child.text
             }
             foundFirst = true
         }
     }
-    return TreeTraversal.findChildByType(node, IDENTIFIER, sourceCode)
+    return TreeTraversal.findChildByType(node, IDENTIFIER)
 }

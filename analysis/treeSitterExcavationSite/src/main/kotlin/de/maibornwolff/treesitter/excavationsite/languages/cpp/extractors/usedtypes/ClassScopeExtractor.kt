@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
 internal object ClassScopeExtractor {
@@ -23,12 +22,12 @@ internal object ClassScopeExtractor {
 
     val nodeTypes: Set<String> = setOf(FRIEND_DECLARATION, USING_DECLARATION)
 
-    fun extractFriendAndUsingTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    fun extractFriendAndUsingTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val friendTypes = buckets[FRIEND_DECLARATION].orEmpty().flatMap { friend ->
             friend
                 .namedChildren()
                 .mapNotNull { child ->
-                    if (CppTypeHelper.isTypeNode(child)) CppTypeHelper.extractType(child, sourceCode) else null
+                    if (CppTypeHelper.isTypeNode(child)) CppTypeHelper.extractType(child) else null
                 }.toList()
         }
         val inClassUsingTypes = buckets[USING_DECLARATION]
@@ -37,11 +36,11 @@ internal object ClassScopeExtractor {
             .mapNotNull { usingDecl ->
                 val qualified = usingDecl.namedChildren().firstOrNull { it.type == QUALIFIED_IDENTIFIER }
                 if (qualified != null) {
-                    CppTypeHelper.extractSecondToLastSegment(qualified, sourceCode)
+                    CppTypeHelper.extractSecondToLastSegment(qualified)
                 } else {
                     val plain = usingDecl.namedChildren().firstOrNull { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
                     plain?.let {
-                        val text = TreeTraversal.getNodeText(it, sourceCode).trim()
+                        val text = it.text.trim()
                         if (text.isEmpty()) null else UsedType(name = text)
                     }
                 }

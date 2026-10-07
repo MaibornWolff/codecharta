@@ -11,7 +11,7 @@ private const val VARIABLE_DECLARATION = "variable_declaration"
  *
  * Finds identifier inside variable_declaration -> variable_declarator.
  */
-internal fun findIdentifierInVariableDeclaration(node: SyntaxNode, sourceCode: String): String? = node
+internal fun findIdentifierInVariableDeclaration(node: SyntaxNode): String? = node
     .children()
     .firstOrNull { it.type == VARIABLE_DECLARATION }
-    ?.let { findIdentifierInVariableDeclarator(it, sourceCode) }
+    ?.let { findIdentifierInVariableDeclarator(it) }

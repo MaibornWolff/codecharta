@@ -10,15 +10,14 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
 /**
  * Extracts identifiers from class declaration including decorators.
  */
-internal fun extractIdentifiersFromClassDeclaration(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractIdentifiersFromClassDeclaration(node: SyntaxNode): List<String> {
     val decorators = node
         .children()
         .filter { it.type == DECORATOR }
-        .mapNotNull { extractDecoratorName(it, sourceCode) }
+        .mapNotNull { extractDecoratorName(it) }
         .toList()
     val className = TreeTraversal.findFirstChildTextByType(
         node,
-        sourceCode,
         IDENTIFIER,
         TYPE_IDENTIFIER
     )

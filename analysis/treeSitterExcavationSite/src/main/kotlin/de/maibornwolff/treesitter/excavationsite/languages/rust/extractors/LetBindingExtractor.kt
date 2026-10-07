@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val IDENTIFIER = "identifier"
@@ -22,21 +21,21 @@ private const val TYPE_ANNOTATION = ":"
  * (`field_identifier`) are not collected either. So neither constructor/type
  * references, nor the type annotation, nor the right-hand side leak as declarations.
  */
-internal fun extractLetBindingIdentifiers(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractLetBindingIdentifiers(node: SyntaxNode): List<String> {
     val identifiers = mutableListOf<String>()
     for (child in node.children()) {
         if (child.type == TYPE_ANNOTATION || child.type == ASSIGNMENT) break
-        collectPatternBindings(child, sourceCode, identifiers)
+        collectPatternBindings(child, identifiers)
     }
     return identifiers
 }
 
-private fun collectPatternBindings(node: SyntaxNode, sourceCode: String, out: MutableList<String>) {
+private fun collectPatternBindings(node: SyntaxNode, out: MutableList<String>) {
     when (node.type) {
-        IDENTIFIER, SHORTHAND_FIELD_IDENTIFIER -> out.add(TreeTraversal.getNodeText(node, sourceCode))
+        IDENTIFIER, SHORTHAND_FIELD_IDENTIFIER -> out.add(node.text)
         STRUCT_PATTERN, TUPLE_STRUCT_PATTERN ->
             // Skip the leading constructor/type path; recurse the remaining sub-patterns.
-            node.children().drop(1).forEach { collectPatternBindings(it, sourceCode, out) }
-        else -> node.children().forEach { collectPatternBindings(it, sourceCode, out) }
+            node.children().drop(1).forEach { collectPatternBindings(it, out) }
+        else -> node.children().forEach { collectPatternBindings(it, out) }
     }
 }

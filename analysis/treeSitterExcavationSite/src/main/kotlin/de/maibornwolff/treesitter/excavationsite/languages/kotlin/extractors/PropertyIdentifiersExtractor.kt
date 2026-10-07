@@ -17,10 +17,10 @@ private const val UNDERSCORE = "_"
  *
  * Filters out underscore identifiers.
  */
-internal fun extractPropertyIdentifiers(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractPropertyIdentifiers(node: SyntaxNode): List<String> {
     for (child in node.children()) {
         if (child.type == VARIABLE_DECLARATION) {
-            val identifier = TreeTraversal.findFirstChildTextByType(child, sourceCode, SIMPLE_IDENTIFIER)
+            val identifier = TreeTraversal.findFirstChildTextByType(child, SIMPLE_IDENTIFIER)
             return listOfNotNull(identifier?.takeIf { it != UNDERSCORE })
         }
         if (child.type == MULTI_VARIABLE_DECLARATION) {

@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val FIELD_IDENTIFIER = "field_identifier"
@@ -12,20 +11,20 @@ private const val FIELD_DECLARATOR = "declarator"
 /**
  * Extracts identifier from field declaration in struct/union.
  */
-internal fun extractFromFieldDeclaration(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromFieldDeclaration(node: SyntaxNode): String? {
     val declarator = node.getChildByFieldName(FIELD_DECLARATOR)
     if (!declarator.isNull) {
-        return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
+        return CDeclaratorParser.findIdentifierInDeclarator(declarator)
     }
 
     for (child in node.children()) {
         when (child.type) {
             FIELD_IDENTIFIER -> {
-                return TreeTraversal.getNodeText(child, sourceCode)
+                return child.text
             }
             POINTER_DECLARATOR,
             ARRAY_DECLARATOR -> {
-                return CDeclaratorParser.findIdentifierInDeclarator(child, sourceCode)
+                return CDeclaratorParser.findIdentifierInDeclarator(child)
             }
         }
     }

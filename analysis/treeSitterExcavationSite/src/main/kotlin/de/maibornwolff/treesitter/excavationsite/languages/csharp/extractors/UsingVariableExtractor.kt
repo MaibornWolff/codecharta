@@ -8,10 +8,10 @@ private const val VARIABLE_DECLARATION = "variable_declaration"
 /**
  * Extracts variable from using statement: `using (var reader = ...)`
  */
-internal fun extractUsingVariable(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractUsingVariable(node: SyntaxNode): String? {
     for (child in node.children()) {
         if (child.type == VARIABLE_DECLARATION) {
-            return findIdentifierInVariableDeclarator(child, sourceCode)
+            return findIdentifierInVariableDeclarator(child)
         }
     }
     return null

@@ -6,5 +6,5 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
 private const val IDENTIFIER = "identifier"
 private const val TYPE_IDENTIFIER = "type_identifier"
 
-internal fun extractFromProtocolForwardDeclaration(node: SyntaxNode, sourceCode: String): String? =
-    TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER, TYPE_IDENTIFIER)
+internal fun extractFromProtocolForwardDeclaration(node: SyntaxNode): String? =
+    TreeTraversal.findFirstChildTextByType(node, IDENTIFIER, TYPE_IDENTIFIER)

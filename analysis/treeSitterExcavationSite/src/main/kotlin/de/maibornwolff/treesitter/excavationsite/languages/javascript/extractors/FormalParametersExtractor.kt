@@ -13,7 +13,7 @@ private const val REQUIRED_PARAMETER = "required_parameter"
 /**
  * Extracts identifiers from formal parameters, handling rest patterns.
  */
-internal fun extractIdentifiersFromFormalParameters(node: SyntaxNode, sourceCode: String): List<String> = node
+internal fun extractIdentifiersFromFormalParameters(node: SyntaxNode): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {
@@ -21,22 +21,21 @@ internal fun extractIdentifiersFromFormalParameters(node: SyntaxNode, sourceCode
                 listOfNotNull(
                     TreeTraversal.findFirstChildTextByType(
                         child,
-                        sourceCode,
                         IDENTIFIER
                     )
                 )
             }
             OBJECT_PATTERN,
-            ARRAY_PATTERN -> extractIdentifiersFromPattern(child, sourceCode)
+            ARRAY_PATTERN -> extractIdentifiersFromPattern(child)
             REQUIRED_PARAMETER -> {
                 val patternChild = child.children().firstOrNull {
                     it.type == OBJECT_PATTERN || it.type == ARRAY_PATTERN
                 }
                 val restPattern = child.children().firstOrNull { it.type == REST_PATTERN }
                 when {
-                    patternChild != null -> extractIdentifiersFromPattern(patternChild, sourceCode)
+                    patternChild != null -> extractIdentifiersFromPattern(patternChild)
                     restPattern != null -> listOfNotNull(
-                        TreeTraversal.findFirstChildTextByType(restPattern, sourceCode, IDENTIFIER)
+                        TreeTraversal.findFirstChildTextByType(restPattern, IDENTIFIER)
                     )
                     else -> emptyList()
                 }

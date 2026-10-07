@@ -8,5 +8,4 @@ private const val CONST_SPEC = "const_spec"
  * Extracts all identifiers from const declaration.
  * Handles both single spec and spec_list (block) patterns.
  */
-internal fun extractAllFromConstDeclaration(node: SyntaxNode, sourceCode: String): List<String> =
-    extractAllFromVarOrConstDeclaration(node, sourceCode, CONST_SPEC)
+internal fun extractAllFromConstDeclaration(node: SyntaxNode): List<String> = extractAllFromVarOrConstDeclaration(node, CONST_SPEC)

@@ -23,14 +23,14 @@ internal object ImportExtractor {
     private const val MODULE_NAME = "moduleName"
     private const val IDENTIFIER = "identifier"
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = TreeTraversal
+    fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, DECL_USES)
         .flatMap { usesNode ->
             usesNode.children().filter { it.type == MODULE_NAME }.mapNotNull { moduleNode ->
                 val path = moduleNode
                     .children()
                     .filter { it.type == IDENTIFIER }
-                    .map { TreeTraversal.getNodeText(it, sourceCode) }
+                    .map { it.text }
                     .toList()
                 if (path.isEmpty()) null else ImportDeclaration(path = path, isWildcard = false)
             }

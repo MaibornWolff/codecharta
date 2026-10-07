@@ -7,8 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 internal object DependencyDeclarationExtractor {
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> = DeclarationMerger.merge(
-        InClassDeclarationFinder.find(rootNode, sourceCode) +
-            OutOfClassMethodPromoter.promote(rootNode, sourceCode)
+    fun extract(rootNode: SyntaxNode): List<Declaration> = DeclarationMerger.merge(
+        InClassDeclarationFinder.find(rootNode) +
+            OutOfClassMethodPromoter.promote(rootNode)
     )
 }

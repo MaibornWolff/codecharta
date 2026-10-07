@@ -1,22 +1,21 @@
 package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 /**
  * Extracts loop variables from for statement or for_in_clause.
  * Handles single variables and tuple unpacking: `for x, y in pairs`.
  */
-internal fun extractLoopVariables(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractLoopVariables(node: SyntaxNode): List<String> {
     for (child in node.children()) {
         when (child.type) {
             "identifier" -> {
-                return listOf(TreeTraversal.getNodeText(child, sourceCode))
+                return listOf(child.text)
             }
             "pattern_list",
             "tuple_pattern" -> {
-                return extractAllIdentifiers(child, sourceCode)
+                return extractAllIdentifiers(child)
             }
         }
     }

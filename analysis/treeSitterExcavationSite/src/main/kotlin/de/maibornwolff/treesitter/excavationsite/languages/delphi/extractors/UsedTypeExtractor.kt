@@ -94,7 +94,7 @@ internal object UsedTypeExtractor {
         RTTI_ATTRIBUTES, GENERIC_TPL
     )
 
-    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> = extractFromRoots(listOf(declaration), sourceCode)
+    fun extract(declaration: SyntaxNode): Set<UsedType> = extractFromRoots(listOf(declaration))
 
     /**
      * Aggregates used types across multiple AST roots.
@@ -104,21 +104,21 @@ internal object UsedTypeExtractor {
      * under the `implementation` section while the class shape lives in a
      * `declType` under `interface`.
      */
-    fun extractFromRoots(roots: List<SyntaxNode>, sourceCode: String): Set<UsedType> {
+    fun extractFromRoots(roots: List<SyntaxNode>): Set<UsedType> {
         val buckets = mergeBuckets(roots)
 
-        val inheritance = extractInheritance(buckets, sourceCode)
-        val parameters = extractWrappedTypes(buckets, DECL_ARG, sourceCode)
-        val returnTypes = extractReturnTypes(buckets, sourceCode)
-        val fieldTypes = extractWrappedTypes(buckets, DECL_FIELD, sourceCode)
-        val propertyTypes = extractWrappedTypes(buckets, DECL_PROP, sourceCode)
-        val constTypes = extractWrappedTypes(buckets, DECL_CONST, sourceCode)
-        val variableTypes = extractWrappedTypes(buckets, DECL_VAR, sourceCode)
-        val constructorCalls = extractConstructorCalls(buckets, sourceCode)
-        val methodCalls = extractMethodCalls(buckets, sourceCode)
-        val castTypes = extractCastTypes(buckets, sourceCode)
-        val attributeTypes = extractAttributeTypes(buckets, sourceCode)
-        val genericConstraintTypes = extractGenericConstraintTypes(buckets, sourceCode)
+        val inheritance = extractInheritance(buckets)
+        val parameters = extractWrappedTypes(buckets, DECL_ARG)
+        val returnTypes = extractReturnTypes(buckets)
+        val fieldTypes = extractWrappedTypes(buckets, DECL_FIELD)
+        val propertyTypes = extractWrappedTypes(buckets, DECL_PROP)
+        val constTypes = extractWrappedTypes(buckets, DECL_CONST)
+        val variableTypes = extractWrappedTypes(buckets, DECL_VAR)
+        val constructorCalls = extractConstructorCalls(buckets)
+        val methodCalls = extractMethodCalls(buckets)
+        val castTypes = extractCastTypes(buckets)
+        val attributeTypes = extractAttributeTypes(buckets)
+        val genericConstraintTypes = extractGenericConstraintTypes(buckets)
 
         return (
             inheritance +
@@ -157,13 +157,13 @@ internal object UsedTypeExtractor {
      * a direct `typeref` child (reached via `kFor typeref`); capturing it too is acceptable —
      * it is a type used in the declaration.
      */
-    private fun extractInheritance(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractInheritance(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val containers = buckets[DECL_CLASS].orEmpty() + buckets[DECL_INTF].orEmpty() + buckets[DECL_HELPER].orEmpty()
         return containers.flatMap { container ->
             container
                 .children()
                 .filter { it.type == TYPEREF }
-                .mapNotNull { TyperefResolver.toUsedType(it, sourceCode) }
+                .mapNotNull { TyperefResolver.toUsedType(it) }
                 .toList()
         }
     }
@@ -174,45 +174,45 @@ internal object UsedTypeExtractor {
      * `declVar`, `declConst`, `declProp`. The wrapper unwrapping (including nested
      * array-of-array shapes) is handled by [TyperefResolver.fromTypeWrapper].
      */
-    private fun extractWrappedTypes(buckets: Map<String, List<SyntaxNode>>, nodeType: String, sourceCode: String): List<UsedType> =
+    private fun extractWrappedTypes(buckets: Map<String, List<SyntaxNode>>, nodeType: String): List<UsedType> =
         buckets[nodeType].orEmpty().mapNotNull {
-            TyperefResolver.fromTypeWrapper(it.getChildByFieldName(TYPE_FIELD), sourceCode)
+            TyperefResolver.fromTypeWrapper(it.getChildByFieldName(TYPE_FIELD))
         }
 
-    private fun extractReturnTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractReturnTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val declProcReturns = buckets[DECL_PROC].orEmpty().mapNotNull { declProc ->
-            TyperefResolver.fromTypeWrapperOrTyperef(declProc.getChildByFieldName(TYPE_FIELD), sourceCode)
+            TyperefResolver.fromTypeWrapperOrTyperef(declProc.getChildByFieldName(TYPE_FIELD))
         }
         val defProcReturns = buckets[DEF_PROC].orEmpty().mapNotNull { defProc ->
             val header = defProc.getChildByFieldName(HEADER_FIELD)
-            if (header.isNull) null else TyperefResolver.fromTypeWrapperOrTyperef(header.getChildByFieldName(TYPE_FIELD), sourceCode)
+            if (header.isNull) null else TyperefResolver.fromTypeWrapperOrTyperef(header.getChildByFieldName(TYPE_FIELD))
         }
         return declProcReturns + defProcReturns
     }
 
-    private fun extractConstructorCalls(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractConstructorCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[EXPR_CALL].orEmpty().mapNotNull { callNode ->
             val entity = callNode.getChildByFieldName(ENTITY_FIELD)
             if (entity.isNull || entity.type != EXPR_DOT) return@mapNotNull null
             val rhs = entity.getChildByFieldName(RHS_FIELD)
             if (rhs.isNull || rhs.type != IDENTIFIER) return@mapNotNull null
-            if (TreeTraversal.getNodeText(rhs, sourceCode) != CONSTRUCTOR_NAME) return@mapNotNull null
+            if (rhs.text != CONSTRUCTOR_NAME) return@mapNotNull null
             val lhs = entity.getChildByFieldName(LHS_FIELD)
-            expressionToUsedType(lhs, sourceCode)?.takeIf { isPotentialTypeReceiver(it.name) }
+            expressionToUsedType(lhs)?.takeIf { isPotentialTypeReceiver(it.name) }
         }
 
-    private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[EXPR_DOT].orEmpty().mapNotNull { dotNode ->
             // Exclude receivers that belong to a constructor call captured above.
             val parent = dotNode.parent
             if (!parent.isNull && parent.type == EXPR_CALL) {
                 val rhs = dotNode.getChildByFieldName(RHS_FIELD)
-                if (!rhs.isNull && rhs.type == IDENTIFIER && TreeTraversal.getNodeText(rhs, sourceCode) == CONSTRUCTOR_NAME) {
+                if (!rhs.isNull && rhs.type == IDENTIFIER && rhs.text == CONSTRUCTOR_NAME) {
                     return@mapNotNull null
                 }
             }
             val lhs = dotNode.getChildByFieldName(LHS_FIELD)
-            expressionToUsedType(lhs, sourceCode)?.takeIf { isPotentialTypeReceiver(it.name) }
+            expressionToUsedType(lhs)?.takeIf { isPotentialTypeReceiver(it.name) }
         }
 
     /**
@@ -230,12 +230,12 @@ internal object UsedTypeExtractor {
      * or an exprTpl (generic invocation like `TList<string>`). We want the left-most identifier
      * (the head of the chain), which is treated as a type when its first letter is uppercase.
      */
-    private fun expressionToUsedType(node: SyntaxNode, sourceCode: String): UsedType? {
+    private fun expressionToUsedType(node: SyntaxNode): UsedType? {
         if (node.isNull) return null
         return when (node.type) {
-            IDENTIFIER -> UsedType(name = TreeTraversal.getNodeText(node, sourceCode).trim())
-            EXPR_DOT -> expressionToUsedType(node.getChildByFieldName(LHS_FIELD), sourceCode)
-            EXPR_CALL, EXPR_TPL -> expressionToUsedType(node.getChildByFieldName(ENTITY_FIELD), sourceCode)
+            IDENTIFIER -> UsedType(name = node.text.trim())
+            EXPR_DOT -> expressionToUsedType(node.getChildByFieldName(LHS_FIELD))
+            EXPR_CALL, EXPR_TPL -> expressionToUsedType(node.getChildByFieldName(ENTITY_FIELD))
             else -> null
         }
     }
@@ -246,15 +246,15 @@ internal object UsedTypeExtractor {
      * uppercase-first heuristic prevents pattern guards like `Foo is nil` from leaking
      * non-types into usedTypes.
      */
-    private fun extractCastTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractCastTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[EXPR_BINARY].orEmpty().mapNotNull { binary ->
             val operator = binary.getChildByFieldName(OPERATOR_FIELD)
             if (operator.isNull || operator.type !in CAST_OPERATORS) return@mapNotNull null
             val rhs = binary.getChildByFieldName(RHS_FIELD)
             if (rhs.isNull) return@mapNotNull null
             val candidate = when (rhs.type) {
-                IDENTIFIER -> UsedType(name = TreeTraversal.getNodeText(rhs, sourceCode).trim())
-                TYPEREF -> TyperefResolver.toUsedType(rhs, sourceCode)
+                IDENTIFIER -> UsedType(name = rhs.text.trim())
+                TYPEREF -> TyperefResolver.toUsedType(rhs)
                 else -> null
             }
             candidate?.takeIf { isPotentialTypeReceiver(it.name) }
@@ -267,7 +267,7 @@ internal object UsedTypeExtractor {
      * surface the attribute name only — argument types are intentionally not captured
      * (mirrors Java/Kotlin/C#).
      */
-    private fun extractAttributeTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractAttributeTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[RTTI_ATTRIBUTES].orEmpty().flatMap { attributes ->
             attributes
                 .namedChildren()
@@ -277,7 +277,7 @@ internal object UsedTypeExtractor {
                         EXPR_CALL -> attribute.getChildByFieldName(ENTITY_FIELD).takeIf { !it.isNull && it.type == IDENTIFIER }
                         else -> null
                     } ?: return@mapNotNull null
-                    val name = TreeTraversal.getNodeText(nameNode, sourceCode).trim()
+                    val name = nameNode.text.trim()
                     if (name.isBlank()) null else UsedType(name = name)
                 }.toList()
         }
@@ -293,7 +293,7 @@ internal object UsedTypeExtractor {
      * strict capture is documented in `KNOWN_ISSUES.md`. Keyword constraints
      * (`<T: class>`) emit no `typeref` so we silently skip.
      */
-    private fun extractGenericConstraintTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractGenericConstraintTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[GENERIC_TPL].orEmpty().flatMap { genericTpl ->
             val args = genericTpl.getChildByFieldName(ARGS_FIELD)
             if (args.isNull || args.type != GENERIC_ARGS) return@flatMap emptyList()
@@ -305,8 +305,8 @@ internal object UsedTypeExtractor {
                         .namedChildren()
                         .mapNotNull { child ->
                             when (child.type) {
-                                TYPEREF -> TyperefResolver.toUsedType(child, sourceCode)
-                                TYPE_FIELD -> TyperefResolver.fromTypeWrapper(child, sourceCode)
+                                TYPEREF -> TyperefResolver.toUsedType(child)
+                                TYPE_FIELD -> TyperefResolver.fromTypeWrapper(child)
                                 else -> null
                             }
                         }.firstOrNull { it.name !in GENERIC_CONSTRAINT_KEYWORDS }

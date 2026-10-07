@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction.extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CommentFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CommentParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 /**
  * Generic comment extractor that handles various comment formats.
@@ -14,8 +13,8 @@ class CommentExtractor(private val commentFormats: Map<String, CommentFormats>) 
     /**
      * Extracts comment text from a node, stripping appropriate markers.
      */
-    fun extract(node: SyntaxNode, sourceCode: String): String {
-        val text = TreeTraversal.getNodeText(node, sourceCode)
+    fun extract(node: SyntaxNode): String {
+        val text = node.text
         val format = commentFormats[node.type] ?: return text
 
         return when (format) {

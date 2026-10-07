@@ -61,13 +61,13 @@ internal object DeclarationExtractor {
 
     private val CLASS_KEYWORDS = setOf(K_CLASS, K_OBJECT, K_OBJC_CLASS, K_OBJC_CATEGORY, K_OBJC_PROTOCOL)
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
-        val defProcsByClass = collectDefProcsByClass(rootNode, sourceCode)
+    fun extract(rootNode: SyntaxNode): List<Declaration> {
+        val defProcsByClass = collectDefProcsByClass(rootNode)
         // Build the full declType→name lookup before filtering forward decls so that the parent-path
         // walk can still resolve any ancestor that we don't end up emitting (e.g. an outer forward
         // wrapper that the parser may produce).
         val allDeclTypes = TreeTraversal.findAllDescendantsOfType(rootNode, DECL_TYPE)
-        val namesByStartByte = allDeclTypes.associate { it.startByte to extractDelphiDeclTypeName(it, sourceCode) }
+        val namesByStartByte = allDeclTypes.associate { it.startByte to extractDelphiDeclTypeName(it) }
         return allDeclTypes
             .filter { !isForwardDeclaration(it) }
             .mapNotNull { declTypeNode ->
@@ -76,7 +76,7 @@ internal object DeclarationExtractor {
 
                 val declarationType = resolveDeclarationType(declTypeNode) ?: return@mapNotNull null
                 val additionalRoots = defProcsByClass[name].orEmpty()
-                val usedTypes = UsedTypeExtractor.extractFromRoots(listOf(declTypeNode) + additionalRoots, sourceCode)
+                val usedTypes = UsedTypeExtractor.extractFromRoots(listOf(declTypeNode) + additionalRoots)
                 Declaration(
                     name = name,
                     type = declarationType,
@@ -128,29 +128,29 @@ internal object DeclarationExtractor {
      * resolve the owning class, operator implementations are bound just like any other
      * method.
      */
-    private fun collectDefProcsByClass(rootNode: SyntaxNode, sourceCode: String): Map<String, List<SyntaxNode>> {
+    private fun collectDefProcsByClass(rootNode: SyntaxNode): Map<String, List<SyntaxNode>> {
         val result = mutableMapOf<String, MutableList<SyntaxNode>>()
         TreeTraversal.findAllDescendantsOfType(rootNode, DEF_PROC).forEach { defProc ->
             val header = defProc.getChildByFieldName(HEADER_FIELD)
             if (header.isNull) return@forEach
             val nameNode = header.getChildByFieldName(NAME_FIELD)
             if (nameNode.isNull) return@forEach
-            val className = qualifiedNameClassPrefix(nameNode, sourceCode) ?: return@forEach
+            val className = qualifiedNameClassPrefix(nameNode) ?: return@forEach
             result.getOrPut(className) { mutableListOf() } += defProc
         }
         return result
     }
 
-    private fun qualifiedNameClassPrefix(nameNode: SyntaxNode, sourceCode: String): String? {
+    private fun qualifiedNameClassPrefix(nameNode: SyntaxNode): String? {
         if (nameNode.type != GENERIC_DOT) return null
         val lhs = nameNode.getChildByFieldName(LHS_FIELD)
         if (lhs.isNull) return null
         return when (lhs.type) {
-            IDENTIFIER -> TreeTraversal.getNodeText(lhs, sourceCode)
+            IDENTIFIER -> lhs.text
             GENERIC_TPL -> {
                 val entity = lhs.getChildByFieldName(ENTITY_FIELD)
                 if (!entity.isNull && entity.type == IDENTIFIER) {
-                    TreeTraversal.getNodeText(entity, sourceCode)
+                    entity.text
                 } else {
                     null
                 }
@@ -160,7 +160,7 @@ internal object DeclarationExtractor {
                 // segment as the class name, which is the rhs of the outer lhs.
                 val innerRhs = lhs.getChildByFieldName("rhs")
                 if (!innerRhs.isNull && innerRhs.type == IDENTIFIER) {
-                    TreeTraversal.getNodeText(innerRhs, sourceCode)
+                    innerRhs.text
                 } else {
                     null
                 }

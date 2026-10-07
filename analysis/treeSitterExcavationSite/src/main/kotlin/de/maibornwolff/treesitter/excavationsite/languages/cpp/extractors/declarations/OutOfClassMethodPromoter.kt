@@ -14,18 +14,18 @@ internal object OutOfClassMethodPromoter {
     private const val FUNCTION_DECLARATOR = "function_declarator"
     private const val QUALIFIED_IDENTIFIER = "qualified_identifier"
 
-    fun promote(rootNode: SyntaxNode, sourceCode: String): List<Declaration> = TreeTraversal
+    fun promote(rootNode: SyntaxNode): List<Declaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, FUNCTION_DEFINITION)
-        .mapNotNull { toOutOfClassDeclaration(it, sourceCode) }
+        .mapNotNull { toOutOfClassDeclaration(it) }
 
-    private fun toOutOfClassDeclaration(functionDef: SyntaxNode, sourceCode: String): Declaration? {
+    private fun toOutOfClassDeclaration(functionDef: SyntaxNode): Declaration? {
         val qualifiedDeclarator = findQualifiedDeclarator(functionDef) ?: return null
-        val enclosing = CppTypeHelper.extractSecondToLastSegment(qualifiedDeclarator, sourceCode) ?: return null
+        val enclosing = CppTypeHelper.extractSecondToLastSegment(qualifiedDeclarator) ?: return null
         return Declaration(
             name = enclosing.name,
             type = DeclarationType.CLASS,
-            usedTypes = UsedTypeExtractor.extract(functionDef, sourceCode),
-            parentPath = CppNamespaceWalker.walkAncestorsFrom(functionDef, sourceCode) + enclosing.namespacePrefix
+            usedTypes = UsedTypeExtractor.extract(functionDef),
+            parentPath = CppNamespaceWalker.walkAncestorsFrom(functionDef) + enclosing.namespacePrefix
         )
     }
 

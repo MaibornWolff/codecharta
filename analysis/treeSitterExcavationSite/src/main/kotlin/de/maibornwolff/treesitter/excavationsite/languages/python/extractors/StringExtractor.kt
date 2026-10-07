@@ -2,15 +2,14 @@ package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 /**
  * Extracts string content, but returns null for docstrings.
  * A docstring is a string that is the only child of an expression_statement.
  */
-internal fun extractString(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractString(node: SyntaxNode): String? {
     if (isDocstring(node)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return StringParser.stripPythonString(text)
 }
 

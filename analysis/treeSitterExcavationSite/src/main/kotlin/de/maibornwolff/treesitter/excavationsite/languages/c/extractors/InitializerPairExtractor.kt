@@ -11,12 +11,11 @@ private const val FIELD_IDENTIFIER = "field_identifier"
  * Extracts field name from designated initializer.
  * Example: .x = 10 extracts "x"
  */
-internal fun extractFromInitializerPair(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromInitializerPair(node: SyntaxNode): String? {
     for (child in node.children()) {
         if (child.type == FIELD_DESIGNATOR) {
             return TreeTraversal.findFirstChildTextByType(
                 child,
-                sourceCode,
                 FIELD_IDENTIFIER
             )
         }

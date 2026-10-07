@@ -5,5 +5,4 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
 
 private const val IDENTIFIER = "identifier"
 
-internal fun extractProtocolIdentifier(node: SyntaxNode, sourceCode: String): String? =
-    TreeTraversal.findChildByType(node, IDENTIFIER, sourceCode)
+internal fun extractProtocolIdentifier(node: SyntaxNode): String? = TreeTraversal.findChildByType(node, IDENTIFIER)

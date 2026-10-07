@@ -18,8 +18,8 @@ sealed class Extract {
     data class Identifier(
         val single: ExtractionStrategy? = null,
         val multi: ExtractionStrategy? = null,
-        val customSingle: ((SyntaxNode, String) -> String?)? = null,
-        val customMulti: ((SyntaxNode, String) -> List<String>)? = null
+        val customSingle: ((SyntaxNode) -> String?)? = null,
+        val customMulti: ((SyntaxNode) -> List<String>)? = null
     ) : Extract()
 
     /**
@@ -28,7 +28,7 @@ sealed class Extract {
      * @param format The comment format to use for parsing (optional)
      * @param custom Custom function for comment extraction (optional)
      */
-    data class Comment(val format: CommentFormats? = null, val custom: ((SyntaxNode, String) -> String?)? = null) : Extract() {
+    data class Comment(val format: CommentFormats? = null, val custom: ((SyntaxNode) -> String?)? = null) : Extract() {
         init {
             require(format != null || custom != null) {
                 "Either format or custom must be provided for Comment extraction"
@@ -42,7 +42,7 @@ sealed class Extract {
      * @param format The string format to use for parsing (optional)
      * @param custom Custom function for string extraction (optional)
      */
-    data class StringLiteral(val format: StringFormats? = null, val custom: ((SyntaxNode, String) -> String?)? = null) : Extract() {
+    data class StringLiteral(val format: StringFormats? = null, val custom: ((SyntaxNode) -> String?)? = null) : Extract() {
         init {
             require(format != null || custom != null) {
                 "Either format or custom must be provided for StringLiteral extraction"

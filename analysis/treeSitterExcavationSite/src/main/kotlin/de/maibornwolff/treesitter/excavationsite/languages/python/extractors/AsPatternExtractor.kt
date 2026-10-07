@@ -9,20 +9,19 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
  */
 internal fun extractFromAsPattern(
     node: SyntaxNode,
-    sourceCode: String,
-    findFirstIdentifier: (SyntaxNode, String) -> String?,
-    findLastIdentifier: (SyntaxNode, String) -> String?
+    findFirstIdentifier: (SyntaxNode) -> String?,
+    findLastIdentifier: (SyntaxNode) -> String?
 ): String? {
     if (TreeTraversal.hasAncestorOfType(node, "case_clause")) return null
 
     val aliasNode = node.getChildByFieldName("alias")
     if (aliasNode.isNull) {
-        return findLastIdentifier(node, sourceCode)
+        return findLastIdentifier(node)
     }
 
     return if (aliasNode.type == "identifier") {
-        TreeTraversal.getNodeText(aliasNode, sourceCode)
+        aliasNode.text
     } else {
-        findFirstIdentifier(aliasNode, sourceCode)
+        findFirstIdentifier(aliasNode)
     }
 }

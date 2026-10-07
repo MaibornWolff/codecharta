@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 private const val UNDERSCORE = "_"
 
@@ -10,8 +9,8 @@ private const val UNDERSCORE = "_"
  *
  * Returns null if underscore identifier.
  */
-internal fun extractLabelIdentifier(node: SyntaxNode, sourceCode: String): String? {
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+internal fun extractLabelIdentifier(node: SyntaxNode): String? {
+    val text = node.text
     val identifier = if (text.endsWith("@")) text.dropLast(1) else text
     return identifier.takeIf { it != UNDERSCORE }
 }

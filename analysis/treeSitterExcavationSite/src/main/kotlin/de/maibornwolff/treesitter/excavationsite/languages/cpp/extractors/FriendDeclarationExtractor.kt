@@ -6,17 +6,16 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
 
 private const val TYPE_IDENTIFIER = "type_identifier"
 
-internal fun extractFromFriendDeclaration(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromFriendDeclaration(node: SyntaxNode): String? {
     for (child in node.children()) {
         if (child.isNull) continue
         when (child.type) {
             TYPE_IDENTIFIER -> {
-                return TreeTraversal.getNodeText(child, sourceCode)
+                return child.text
             }
             "class_specifier", "struct_specifier" -> {
                 return TreeTraversal.findFirstChildTextByType(
                     child,
-                    sourceCode,
                     TYPE_IDENTIFIER
                 )
             }

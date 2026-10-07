@@ -13,20 +13,20 @@ private val REQUIRE_METHODS = setOf("require", "require_relative", "load", "auto
  * Returns null for strings inside require/require_relative/load calls,
  * allowing them to be skipped during extraction.
  */
-internal fun extractNonImportString(node: SyntaxNode, sourceCode: String): String? {
-    if (isRequireCall(node, sourceCode)) return null
-    return extractStringContent(node, sourceCode)
+internal fun extractNonImportString(node: SyntaxNode): String? {
+    if (isRequireCall(node)) return null
+    return extractStringContent(node)
 }
 
-private fun extractStringContent(node: SyntaxNode, sourceCode: String): String {
-    val content = TreeTraversal.findChildByType(node, STRING_CONTENT, sourceCode)
+private fun extractStringContent(node: SyntaxNode): String {
+    val content = TreeTraversal.findChildByType(node, STRING_CONTENT)
     if (content != null) return content
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return text.removeSurrounding("\"").removeSurrounding("'")
 }
 
-private fun isRequireCall(node: SyntaxNode, sourceCode: String): Boolean {
+private fun isRequireCall(node: SyntaxNode): Boolean {
     val call = TreeTraversal.findAncestorOfType(node, CALL) ?: return false
-    val methodName = TreeTraversal.findChildByType(call, "identifier", sourceCode)
+    val methodName = TreeTraversal.findChildByType(call, "identifier")
     return methodName in REQUIRE_METHODS
 }

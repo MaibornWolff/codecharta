@@ -8,6 +8,5 @@ private const val DEINIT_KEYWORD = "deinit"
  * Returns the constant keyword "deinit" for deinit declarations.
  */
 internal fun extractDeinitKeyword(
-    @Suppress("UNUSED_PARAMETER") node: SyntaxNode,
-    @Suppress("UNUSED_PARAMETER") sourceCode: String
+    @Suppress("UNUSED_PARAMETER") node: SyntaxNode
 ): String = DEINIT_KEYWORD

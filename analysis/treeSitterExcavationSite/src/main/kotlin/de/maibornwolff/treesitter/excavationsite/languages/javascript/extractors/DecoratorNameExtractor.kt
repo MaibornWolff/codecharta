@@ -10,17 +10,16 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.ch
  * Extracts decorator name from a decorator node.
  * Handles both simple decorators (@Decorator) and call expression decorators (@Decorator()).
  */
-internal fun extractDecoratorName(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractDecoratorName(node: SyntaxNode): String? {
     for (child in node.children()) {
         when (child.type) {
             IDENTIFIER -> {
-                return TreeTraversal.getNodeText(child, sourceCode)
+                return child.text
             }
             CALL_EXPRESSION -> {
                 TreeTraversal
                     .findFirstChildTextByType(
                         child,
-                        sourceCode,
                         IDENTIFIER
                     )?.let { return it }
             }

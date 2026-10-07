@@ -9,9 +9,9 @@ private const val FIELD_IDENTIFIER = "field_identifier"
  * Extracts first identifier from field declaration.
  * Handles both named fields and embedded fields.
  */
-internal fun extractFieldDeclarationIdentifier(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFieldDeclarationIdentifier(node: SyntaxNode): String? {
     TreeTraversal
-        .findFirstChildTextByType(node, sourceCode, FIELD_IDENTIFIER)
+        .findFirstChildTextByType(node, FIELD_IDENTIFIER)
         ?.let { return it }
-    return extractEmbeddedFieldIdentifier(node, sourceCode)
+    return extractEmbeddedFieldIdentifier(node)
 }

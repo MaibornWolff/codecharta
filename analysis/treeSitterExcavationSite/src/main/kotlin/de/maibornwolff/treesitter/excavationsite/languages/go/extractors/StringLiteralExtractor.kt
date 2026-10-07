@@ -13,9 +13,9 @@ private const val IMPORT_SPEC = "import_spec"
  * Returns null for strings inside import declarations,
  * allowing them to be skipped during extraction.
  */
-internal fun extractNonImportInterpretedString(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractNonImportInterpretedString(node: SyntaxNode): String? {
     if (isImportString(node)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return text.removeSurrounding("\"")
 }
 
@@ -24,9 +24,9 @@ internal fun extractNonImportInterpretedString(node: SyntaxNode, sourceCode: Str
  *
  * Returns null for strings inside import declarations.
  */
-internal fun extractNonImportRawString(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractNonImportRawString(node: SyntaxNode): String? {
     if (isImportString(node)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return StringParser.stripBackticks(text)
 }
 

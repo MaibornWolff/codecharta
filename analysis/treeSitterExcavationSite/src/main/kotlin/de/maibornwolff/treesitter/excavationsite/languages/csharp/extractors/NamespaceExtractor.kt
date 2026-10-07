@@ -10,11 +10,11 @@ internal object NamespaceExtractor {
     private const val IDENTIFIER = "identifier"
     private const val NAMESPACE_SEPARATOR = "."
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<String> {
+    fun extract(rootNode: SyntaxNode): List<String> {
         val namespaceNode = TreeTraversal
             .findAllDescendantsOfType(rootNode, FILE_SCOPED_NAMESPACE, NAMESPACE_DECLARATION)
             .firstOrNull() ?: return emptyList()
-        val namespaceText = TreeTraversal.findFirstChildTextByType(namespaceNode, sourceCode, QUALIFIED_NAME, IDENTIFIER)
+        val namespaceText = TreeTraversal.findFirstChildTextByType(namespaceNode, QUALIFIED_NAME, IDENTIFIER)
             ?: return emptyList()
         return namespaceText.split(NAMESPACE_SEPARATOR)
     }
