@@ -52,11 +52,10 @@ object TreeSitterMetrics {
      */
     fun parse(content: String, language: Language): MetricsResult {
         val definition = LanguageRegistry.getLanguageDefinition(language)
-        val treeSitterLanguage = LanguageRegistry.getTreeSitterLanguage(language)
 
         val metrics = MetricsFacade.collectMetrics(
             content = content,
-            treeSitterLanguage = treeSitterLanguage,
+            grammarLibrary = LanguageRegistry.getGrammarLibrary(language),
             definition = definition
         )
 

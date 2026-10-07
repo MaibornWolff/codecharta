@@ -2,9 +2,12 @@ plugins {
     application
 }
 
+val nativeAccessFlag = "--enable-native-access=ALL-UNNAMED"
+
 application {
     applicationName = "ccsh"
     mainClass = "de.maibornwolff.codecharta.ccsh.Ccsh"
+    applicationDefaultJvmArgs = listOf(nativeAccessFlag)
 }
 
 dependencies {
@@ -80,7 +83,7 @@ tasks.named<CreateStartScripts>("startScripts") {
         unixScript.writeText(
             unixScript
                 .readText()
-                .replace(Regex("DEFAULT_JVM_OPTS=.*"), "")
+                .replace(Regex("DEFAULT_JVM_OPTS=.*")) { "DEFAULT_JVM_OPTS=\"$nativeAccessFlag \${DEFAULT_JVM_OPTS:-}\"" }
                 .replace("#!/usr/bin/env sh", "")
         )
     }

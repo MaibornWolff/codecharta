@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Java 22 or newer (breaking)**: `ccsh` no longer starts on Java 17 or 21; the Docker image already ships a
   newer Java.
 
+- **Faster `unifiedparser`**: the metrics of a code base are calculated many times faster, with unchanged results.
+
+### Fixed 🐞
+
+- **Form feeds in source files**: a file that contains a form feed or another control character no longer gets
+  wrong function and complexity counts from `unifiedparser`.
+
 ## [2.1.0] - 2026-10-05
 
 ### Added 🚀

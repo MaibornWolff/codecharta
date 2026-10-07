@@ -1,7 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.shared.domain
 
-import org.treesitter.TSNode
-
 /**
  * Language-specific calculation extensions for metrics collection.
  *
@@ -10,11 +8,11 @@ import org.treesitter.TSNode
  */
 data class CalculationExtensions(
     val hasFunctionBodyStartOrEndNode: Boolean = true,
-    val ignoreNodeForComplexity: (TSNode, String) -> Boolean = { _, _ -> false },
-    val ignoreNodeForCommentLines: (TSNode, String) -> Boolean = { _, _ -> false },
-    val ignoreNodeForNumberOfFunctions: (TSNode, String) -> Boolean = { _, _ -> false },
-    val ignoreNodeForRealLinesOfCode: (TSNode, String) -> Boolean = { _, _ -> false },
-    val ignoreNodeForParameterOfFunctions: (TSNode, String) -> Boolean = { _, _ -> false },
-    val ignoreNodeForMessageChainCall: (TSNode, String) -> Boolean = { _, _ -> false },
-    val countNodeAsLeafNode: (TSNode) -> Boolean = { false }
+    val ignoreNodeForComplexity: (SyntaxNode, String) -> Boolean = { _, _ -> false },
+    val ignoreNodeForCommentLines: (SyntaxNode, String) -> Boolean = { _, _ -> false },
+    val ignoreNodeForNumberOfFunctions: (SyntaxNode, String) -> Boolean = { _, _ -> false },
+    val ignoreNodeForRealLinesOfCode: (SyntaxNode, String) -> Boolean = { _, _ -> false },
+    val ignoreNodeForParameterOfFunctions: (SyntaxNode, String) -> Boolean = { _, _ -> false },
+    val ignoreNodeForMessageChainCall: (SyntaxNode, String) -> Boolean = { _, _ -> false },
+    val countNodeAsLeafNode: (SyntaxNode) -> Boolean = { false }
 )

@@ -87,8 +87,8 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
         }
 
         if (isInFunction && isInFunctionBody) {
-            val startCol = node.startPoint.column
-            val endCol = node.endPoint.column
+            val startCol = node.startColumn
+            val endCol = node.endColumn
 
             if (NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes) &&
                 !functionBodyBoundariesSet
