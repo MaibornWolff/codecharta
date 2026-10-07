@@ -22,6 +22,9 @@ on:
       - 'analysis/ccsh/build.gradle.kts'
       - '.github/workflows/test_native_tree_sitter_libraries.yml'
 
+permissions:
+  contents: read
+
 jobs:
  native_tree_sitter_libraries:
     name: "Native tree-sitter libraries (${{ matrix.os }})"
@@ -39,6 +42,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       # Gradle has to run on the JDK it compiles with: the Kotlin compiler reads that JDK's class image inside
       # Gradle's own JVM, which fails across versions for a JDK with CRaC support such as Zulu
