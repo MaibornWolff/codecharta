@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Faster `unifiedparser`**: the metrics of a code base are calculated many times faster, with unchanged results.
 
+- **Faster `domainlanguageparser`**: the words of a code base are extracted several times faster.
+
 ### Fixed 🐞
 
 - **Form feeds in source files**: a file that contains a form feed or a vertical tab no longer gets wrong function
-  and complexity counts from `unifiedparser`.
+  and complexity counts from `unifiedparser`, nor wrong words from `domainlanguageparser`.
 
 - **Start folder on Windows**: `ccsh` no longer loads code from the folder it is started in, so analysing a
   project from inside its folder cannot run files that project brings along.
