@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Nested
@@ -244,6 +245,113 @@ class FfmSyntaxTreeTest {
                 assertThat(openingBrace.type).isEqualTo("{")
                 assertThat(openingBrace.prevSibling.isNull).isTrue()
             }
+        }
+    }
+
+    @Nested
+    inner class KnownParents {
+        private val nestedCode = """
+            class A<T extends Comparable<T>> {
+                @Deprecated int[] x = {1, 2, 3};
+                void f(String s) { if (s.isEmpty()) { g(s -> s + "a"); } }
+            }
+        """.trimIndent()
+
+        private fun FfmSyntaxTree.parentFoundFromTheRoot(node: FfmNode): FfmNode =
+            FfmNode(TreeSitterApi.nodeParent(nodeAllocator, node.segment), this)
+
+        @Test
+        fun `should give every visited node the parent tree-sitter finds from the root`() {
+            FfmSyntaxTree.parse(nestedCode, java).use { tree ->
+                // Arrange
+                var visitedNodes = 0
+                var nodesWithAnotherParent = 0
+
+                // Act
+                tree.walk { node, _ ->
+                    visitedNodes++
+                    if (node.parent != tree.parentFoundFromTheRoot(node)) nodesWithAnotherParent++
+                }
+
+                // Assert
+                assertThat(visitedNodes).isEqualTo(87)
+                assertThat(nodesWithAnotherParent).isZero()
+            }
+        }
+
+        @Test
+        fun `should give the ancestors of a visited node up to the null node above the root`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val ancestorsOfTheFieldName = mutableListOf<String>()
+
+                // Act
+                tree.walk { node, nodeType ->
+                    if (nodeType == "identifier" && node.text == "x") {
+                        var ancestor = node.parent
+                        while (!ancestor.isNull) {
+                            ancestorsOfTheFieldName.add(ancestor.type)
+                            ancestor = ancestor.parent
+                        }
+                    }
+                }
+
+                // Assert
+                assertThat(ancestorsOfTheFieldName)
+                    .containsExactly("variable_declarator", "field_declaration", "class_body", "class_declaration", "program")
+            }
+        }
+
+        @Test
+        fun `should give children and siblings reached from a node the parent tree-sitter finds from the root`() {
+            FfmSyntaxTree.parse(nestedCode, java).use { tree ->
+                // Arrange
+                var reachedNodes = 0
+                var nodesWithAnotherParent = 0
+
+                fun check(reached: SyntaxNode) {
+                    if (reached.isNull) return
+                    reachedNodes++
+                    if (reached.parent != tree.parentFoundFromTheRoot(reached as FfmNode)) nodesWithAnotherParent++
+                }
+
+                // Act
+                tree.walk { node, _ ->
+                    (0 until node.childCount).forEach { check(node.getChild(it)) }
+                    (0 until node.namedChildCount).forEach { check(node.getNamedChild(it)) }
+                    listOf("name", "body", "type", "condition").forEach { check(node.getChildByFieldName(it)) }
+                    check(node.prevSibling)
+                }
+
+                // Assert
+                assertThat(reachedNodes).isEqualTo(204)
+                assertThat(nodesWithAnotherParent).isZero()
+            }
+        }
+
+        @Test
+        fun `should keep the ancestors readable while a deep subtree below them is visited`() {
+            // Arrange
+            val nestingDepth = 5_000
+            val code = "class A { int x = " + "(".repeat(nestingDepth) + "1" + ")".repeat(nestingDepth) + "; }"
+
+            // Act
+            val ancestorsOfTheInnermostLiteral = FfmSyntaxTree.parse(code, java).use { tree ->
+                var ancestors = 0
+                tree.walk { node, nodeType ->
+                    if (nodeType == "decimal_integer_literal") {
+                        var ancestor = node.parent
+                        while (!ancestor.isNull) {
+                            if (ancestor.type == "parenthesized_expression") ancestors++
+                            ancestor = ancestor.parent
+                        }
+                    }
+                }
+                ancestors
+            }
+
+            // Assert
+            assertThat(ancestorsOfTheInnermostLiteral).isEqualTo(nestingDepth)
         }
     }
 
