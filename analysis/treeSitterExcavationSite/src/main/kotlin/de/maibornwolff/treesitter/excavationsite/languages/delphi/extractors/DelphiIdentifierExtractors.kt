@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val NAME_FIELD = "name"
@@ -18,7 +18,7 @@ private const val GENERIC_TPL = "genericTpl"
  * Used by declarations where a qualified name's leading segment is the declaration's own
  * identifier (e.g., `TFoo<T>` → `TFoo`, a bare `identifier` → itself).
  */
-private fun leadingNameIdentifier(nameNode: TSNode, sourceCode: String): String? {
+private fun leadingNameIdentifier(nameNode: SyntaxNode, sourceCode: String): String? {
     if (nameNode.isNull) return null
     return when (nameNode.type) {
         IDENTIFIER -> TreeTraversal.getNodeText(nameNode, sourceCode)
@@ -46,7 +46,7 @@ private fun leadingNameIdentifier(nameNode: TSNode, sourceCode: String): String?
  * Used for method names, where a qualified name like `TFoo.Create` carries the method's
  * own identifier (`Create`) as the rhs of a `genericDot`.
  */
-private fun trailingNameIdentifier(nameNode: TSNode, sourceCode: String): String? {
+private fun trailingNameIdentifier(nameNode: SyntaxNode, sourceCode: String): String? {
     if (nameNode.isNull) return null
     return when (nameNode.type) {
         IDENTIFIER -> TreeTraversal.getNodeText(nameNode, sourceCode)
@@ -68,7 +68,7 @@ private fun trailingNameIdentifier(nameNode: TSNode, sourceCode: String): String
  * Top-level type declarations have simple `identifier` or `genericTpl` names; we return
  * the leading identifier.
  */
-internal fun extractDelphiDeclTypeName(node: TSNode, sourceCode: String): String? {
+internal fun extractDelphiDeclTypeName(node: SyntaxNode, sourceCode: String): String? {
     val nameNode = node.getChildByFieldName(NAME_FIELD)
     return leadingNameIdentifier(nameNode, sourceCode)
 }
@@ -80,7 +80,7 @@ internal fun extractDelphiDeclTypeName(node: TSNode, sourceCode: String): String
  * `procedure Foo;`) or qualified `genericDot` (`TFoo.Method` in some contexts). For
  * extraction purposes we want the method's own identifier — the trailing segment.
  */
-internal fun extractDelphiDeclProcName(node: TSNode, sourceCode: String): String? {
+internal fun extractDelphiDeclProcName(node: SyntaxNode, sourceCode: String): String? {
     val nameNode = node.getChildByFieldName(NAME_FIELD)
     return trailingNameIdentifier(nameNode, sourceCode)
 }
@@ -91,7 +91,7 @@ internal fun extractDelphiDeclProcName(node: TSNode, sourceCode: String): String
  * The name lives at `defProc.header.name`. For method implementations the name is typically
  * `TFoo.Create` — we want `Create` (the method's own name), not `TFoo` (the class prefix).
  */
-internal fun extractDelphiDefProcName(node: TSNode, sourceCode: String): String? {
+internal fun extractDelphiDefProcName(node: SyntaxNode, sourceCode: String): String? {
     val header = node.getChildByFieldName(HEADER_FIELD)
     if (header.isNull) return null
     val nameNode = header.getChildByFieldName(NAME_FIELD)
@@ -111,7 +111,7 @@ internal fun extractDelphiDefProcName(node: TSNode, sourceCode: String): String?
  * we see a non-identifier / non-comma token — identifier lists are always
  * comma-separated at the front.
  */
-internal fun extractDelphiMultipleNames(node: TSNode, sourceCode: String): List<String> {
+internal fun extractDelphiMultipleNames(node: SyntaxNode, sourceCode: String): List<String> {
     val names = mutableListOf<String>()
     for (child in node.children()) {
         when (child.type) {

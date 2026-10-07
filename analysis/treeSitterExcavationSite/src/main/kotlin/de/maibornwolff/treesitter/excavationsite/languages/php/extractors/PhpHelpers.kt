@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val DOLLAR_PREFIX = "$"
 private const val VARIABLE_NAME = "variable_name"
@@ -17,7 +17,7 @@ internal fun stripDollarPrefix(text: String): String = if (text.startsWith(DOLLA
  * Finds first variable_name child and strips dollar prefix.
  * Used for parameters, catch clauses, and static variables.
  */
-internal fun findFirstVariableName(node: TSNode, sourceCode: String): String? = node
+internal fun findFirstVariableName(node: SyntaxNode, sourceCode: String): String? = node
     .children()
     .firstOrNull { it.type == VARIABLE_NAME }
     ?.let { stripDollarPrefix(TreeTraversal.getNodeText(it, sourceCode)) }
@@ -25,7 +25,7 @@ internal fun findFirstVariableName(node: TSNode, sourceCode: String): String? = 
 /**
  * Finds first child of a given type and returns its text.
  */
-internal fun findFirstChildTextByType(node: TSNode, sourceCode: String, type: String): String? = node
+internal fun findFirstChildTextByType(node: SyntaxNode, sourceCode: String, type: String): String? = node
     .children()
     .firstOrNull { it.type == type }
     ?.let { TreeTraversal.getNodeText(it, sourceCode) }
@@ -34,7 +34,7 @@ internal fun findFirstChildTextByType(node: TSNode, sourceCode: String, type: St
  * Finds last name child in a node.
  * Used for extracting final name component from qualified names.
  */
-internal fun findLastNameChild(node: TSNode, sourceCode: String): String? = node
+internal fun findLastNameChild(node: SyntaxNode, sourceCode: String): String? = node
     .children()
     .lastOrNull { it.type == NAME }
     ?.let { TreeTraversal.getNodeText(it, sourceCode) }

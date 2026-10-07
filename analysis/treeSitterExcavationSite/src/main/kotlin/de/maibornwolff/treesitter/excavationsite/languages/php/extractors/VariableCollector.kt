@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val VARIABLE_NAME = "variable_name"
 private const val BY_REF = "by_ref"
@@ -15,7 +15,7 @@ private const val PAIR = "pair"
  * - Closure use clauses: `function() use ($x, $y)`
  * - List destructuring: `list($a, $b) = [1, 2]`
  */
-internal fun collectVariables(node: TSNode, sourceCode: String): List<String> = node
+internal fun collectVariables(node: SyntaxNode, sourceCode: String): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {

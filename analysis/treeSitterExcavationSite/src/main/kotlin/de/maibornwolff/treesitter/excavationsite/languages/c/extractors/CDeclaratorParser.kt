@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 /**
  * Shared parser for C-family declarator syntax.
@@ -42,7 +42,7 @@ object CDeclaratorParser {
      * @param sourceCode The full source code string
      * @return The identifier text, or null if not found
      */
-    fun findIdentifierInDeclarator(node: TSNode, sourceCode: String): String? {
+    fun findIdentifierInDeclarator(node: SyntaxNode, sourceCode: String): String? {
         if (node.isNull) return null
 
         return when (node.type) {
@@ -69,9 +69,9 @@ object CDeclaratorParser {
      * @param sourceCode The full source code string
      * @return The identifier text, or null if not found
      */
-    fun extractIdentifierFromDeclaratorField(node: TSNode, sourceCode: String): String? {
+    fun extractIdentifierFromDeclaratorField(node: SyntaxNode, sourceCode: String): String? {
         val declarator = node.getChildByFieldName("declarator")
-        return declarator?.let { findIdentifierInDeclarator(it, sourceCode) }
+        return findIdentifierInDeclarator(declarator, sourceCode)
     }
 
     /**
@@ -83,9 +83,9 @@ object CDeclaratorParser {
      * @param sourceCode The full source code string
      * @return The rightmost identifier text, or null if not found
      */
-    fun extractFromQualifiedIdentifier(node: TSNode, sourceCode: String): String? {
+    fun extractFromQualifiedIdentifier(node: SyntaxNode, sourceCode: String): String? {
         val name = node.getChildByFieldName("name")
-        if (name != null) {
+        if (!name.isNull) {
             return when (name.type) {
                 IDENTIFIER, TYPE_IDENTIFIER -> TreeTraversal.getNodeText(name, sourceCode)
                 QUALIFIED_IDENTIFIER -> extractFromQualifiedIdentifier(name, sourceCode)
@@ -111,14 +111,14 @@ object CDeclaratorParser {
      * @param sourceCode The full source code string
      * @return The identifier text, or null if not found
      */
-    fun extractFromInitDeclarator(initDeclarator: TSNode, sourceCode: String): String? {
+    fun extractFromInitDeclarator(initDeclarator: SyntaxNode, sourceCode: String): String? {
         val innerDeclarator = initDeclarator.getChildByFieldName("declarator")
-        return innerDeclarator?.let { findIdentifierInDeclarator(it, sourceCode) }
+        return findIdentifierInDeclarator(innerDeclarator, sourceCode)
     }
 
-    private fun extractIdentifierFromNestedDeclarator(node: TSNode, sourceCode: String): String? {
+    private fun extractIdentifierFromNestedDeclarator(node: SyntaxNode, sourceCode: String): String? {
         val childDeclarator = node.getChildByFieldName("declarator")
-        if (childDeclarator != null && !childDeclarator.isNull) {
+        if (!childDeclarator.isNull) {
             return findIdentifierInDeclarator(childDeclarator, sourceCode)
         }
         // Fallback: search children for identifier
@@ -131,7 +131,7 @@ object CDeclaratorParser {
         return null
     }
 
-    private fun extractFromDestructorName(node: TSNode, sourceCode: String): String? =
+    private fun extractFromDestructorName(node: SyntaxNode, sourceCode: String): String? =
         TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER)
             ?: TreeTraversal.findFirstChildTextByType(node, sourceCode, TYPE_IDENTIFIER)
 }

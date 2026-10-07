@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import org.treesitter.TSNode
 
 internal object DeclarationTypeExtractor {
     private const val FIELD_DECLARATION = "field_declaration"
@@ -21,14 +21,14 @@ internal object DeclarationTypeExtractor {
         ALIGNOF_EXPRESSION
     )
 
-    fun extractFieldAndVariableTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractFieldAndVariableTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         (buckets[FIELD_DECLARATION].orEmpty() + buckets[DECLARATION].orEmpty())
             .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
 
-    fun extractCStyleCasts(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractCStyleCasts(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[CAST_EXPRESSION].orEmpty().mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
 
-    fun extractTypeOperandTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> = TYPE_OPERAND_EXPRESSIONS
+    fun extractTypeOperandTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> = TYPE_OPERAND_EXPRESSIONS
         .flatMap { buckets[it].orEmpty() }
         .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
 }

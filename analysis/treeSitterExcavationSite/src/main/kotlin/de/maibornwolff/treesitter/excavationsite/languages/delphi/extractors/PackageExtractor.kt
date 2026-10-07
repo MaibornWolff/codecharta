@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 /**
  * Extracts the package (unit) path from a Delphi file.
@@ -41,7 +41,7 @@ internal object PackageExtractor {
     private val CONTAINERS = setOf(UNIT, PROGRAM, LIBRARY)
     private val KEYWORD_FALLBACK = setOf("kUnit", "kProgram", "kLibrary")
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<String> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<String> {
         val moduleNameNode = findModuleNameViaContainerAtRoot(rootNode)
             ?: findModuleNameViaContainerDescendant(rootNode)
             ?: findModuleNameViaKeywordSibling(rootNode)
@@ -50,27 +50,28 @@ internal object PackageExtractor {
         return readDottedIdentifiers(moduleNameNode, sourceCode)
     }
 
-    private fun findModuleNameViaContainerAtRoot(rootNode: TSNode): TSNode? {
+    private fun findModuleNameViaContainerAtRoot(rootNode: SyntaxNode): SyntaxNode? {
         val container = rootNode.children().firstOrNull { it.type in CONTAINERS } ?: return null
         return container.children().firstOrNull { it.type == MODULE_NAME }
     }
 
-    private fun findModuleNameViaContainerDescendant(rootNode: TSNode): TSNode? {
+    private fun findModuleNameViaContainerDescendant(rootNode: SyntaxNode): SyntaxNode? {
         val container = TreeTraversal.findAllDescendantsOfType(rootNode, *CONTAINERS.toTypedArray()).firstOrNull()
             ?: return null
         return container.children().firstOrNull { it.type == MODULE_NAME }
     }
 
-    private fun findModuleNameViaKeywordSibling(rootNode: TSNode): TSNode? {
+    private fun findModuleNameViaKeywordSibling(rootNode: SyntaxNode): SyntaxNode? {
         val keyword = TreeTraversal.findAllDescendantsOfType(rootNode, *KEYWORD_FALLBACK.toTypedArray()).firstOrNull()
             ?: return null
-        val parent = keyword.parent ?: return null
+        val parent = keyword.parent
+        if (parent.isNull) return null
         return parent.children().firstOrNull {
             it.type == MODULE_NAME && it.startByte >= keyword.endByte
         }
     }
 
-    private fun readDottedIdentifiers(moduleNameNode: TSNode, sourceCode: String): List<String> = moduleNameNode
+    private fun readDottedIdentifiers(moduleNameNode: SyntaxNode, sourceCode: String): List<String> = moduleNameNode
         .children()
         .filter { it.type == IDENTIFIER }
         .map { TreeTraversal.getNodeText(it, sourceCode) }

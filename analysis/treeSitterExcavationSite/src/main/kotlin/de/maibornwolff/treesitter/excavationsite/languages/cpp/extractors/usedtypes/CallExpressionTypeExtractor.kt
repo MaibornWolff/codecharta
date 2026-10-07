@@ -1,11 +1,11 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object CallExpressionTypeExtractor {
     private const val CALL_EXPRESSION = "call_expression"
@@ -31,7 +31,7 @@ internal object CallExpressionTypeExtractor {
         FIELD_INITIALIZER_LIST
     )
 
-    fun extractInstantiationTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    fun extractInstantiationTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val newTypes = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
         val throwCallees = buckets[THROW_STATEMENT].orEmpty().mapNotNull { throwStmt ->
             throwStmt.namedChildren().firstOrNull { it.type == CALL_EXPRESSION }
@@ -40,7 +40,7 @@ internal object CallExpressionTypeExtractor {
         return newTypes + callTypes
     }
 
-    private fun extractCallTypes(call: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractCallTypes(call: SyntaxNode, sourceCode: String): List<UsedType> {
         val function = call.getChildByFieldName(FUNCTION_FIELD).takeIf { !it.isNull } ?: return emptyList()
         val parentType = call.parent.takeIf { !it.isNull }?.type
         return when (function.type) {
@@ -61,7 +61,7 @@ internal object CallExpressionTypeExtractor {
         }
     }
 
-    private fun extractTemplateFunctionTypes(function: TSNode, sourceCode: String, isInThrow: Boolean): List<UsedType> {
+    private fun extractTemplateFunctionTypes(function: SyntaxNode, sourceCode: String, isInThrow: Boolean): List<UsedType> {
         val generics = extractTemplateArgumentTypes(function, sourceCode)
         if (!isInThrow) return generics
         val name = function
@@ -76,13 +76,13 @@ internal object CallExpressionTypeExtractor {
     Mirrors DC's empty-namespace-wildcard fallthrough so a free function used as
     `someCall(helper(...))` or `throw helper(...)` still emits `helper`.
      */
-    private fun extractBareFunctionName(function: TSNode, sourceCode: String, isNestedOrThrown: Boolean): List<UsedType> {
+    private fun extractBareFunctionName(function: SyntaxNode, sourceCode: String, isNestedOrThrown: Boolean): List<UsedType> {
         if (!isNestedOrThrown) return emptyList()
         val text = TreeTraversal.getNodeText(function, sourceCode).trim()
         return if (text.isEmpty()) emptyList() else listOf(UsedType(name = text))
     }
 
-    fun extractConstructorInitializerTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    fun extractConstructorInitializerTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[FIELD_INITIALIZER_LIST].orEmpty().flatMap { initList ->
             initList
                 .namedChildren()
@@ -93,7 +93,7 @@ internal object CallExpressionTypeExtractor {
                 }.toList()
         }
 
-    private fun collectInitializerArgumentTypes(argList: TSNode, sourceCode: String): Sequence<UsedType> {
+    private fun collectInitializerArgumentTypes(argList: SyntaxNode, sourceCode: String): Sequence<UsedType> {
         val isBraceInit = argList.type == INITIALIZER_LIST
         return argList.namedChildren().flatMap { arg ->
             when (arg.type) {
@@ -115,7 +115,7 @@ internal object CallExpressionTypeExtractor {
         }
     }
 
-    private fun extractTemplateArgumentTypes(templateFunction: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractTemplateArgumentTypes(templateFunction: SyntaxNode, sourceCode: String): List<UsedType> {
         val argList = templateFunction
             .getChildByFieldName(ARGUMENTS_FIELD)
             .takeIf { !it.isNull && it.type == TEMPLATE_ARGUMENT_LIST }

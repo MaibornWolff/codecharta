@@ -4,9 +4,9 @@ import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppNam
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.UsedTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 internal object InClassDeclarationFinder {
     private const val CLASS_SPECIFIER = "class_specifier"
@@ -19,7 +19,7 @@ internal object InClassDeclarationFinder {
 
     private val DECLARATION_NODE_TYPES = setOf(CLASS_SPECIFIER, STRUCT_SPECIFIER, UNION_SPECIFIER, ENUM_SPECIFIER)
 
-    fun find(rootNode: TSNode, sourceCode: String): List<Declaration> {
+    fun find(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
         val allDeclarationNodes = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_NODE_TYPES.toTypedArray())
         val nameByStartByte = allDeclarationNodes.associate { node ->
@@ -28,7 +28,7 @@ internal object InClassDeclarationFinder {
         return allDeclarationNodes.mapNotNull { toDeclaration(it, sourceCode, nameByStartByte) }
     }
 
-    private fun toDeclaration(node: TSNode, sourceCode: String, nameByStartByte: Map<Int, String?>): Declaration? {
+    private fun toDeclaration(node: SyntaxNode, sourceCode: String, nameByStartByte: Map<Int, String?>): Declaration? {
         // Forward declarations have no body — DC legacy emits no Declaration for them.
         if (!hasBody(node)) return null
         val name = nameByStartByte[node.startByte] ?: return null
@@ -40,12 +40,12 @@ internal object InClassDeclarationFinder {
         )
     }
 
-    private fun hasBody(node: TSNode): Boolean {
+    private fun hasBody(node: SyntaxNode): Boolean {
         val bodyType = if (node.type == ENUM_SPECIFIER) ENUMERATOR_LIST else FIELD_DECLARATION_LIST
         return node.children().any { it.type == bodyType }
     }
 
-    private fun findParentClassPath(node: TSNode, nameByStartByte: Map<Int, String?>): List<String> {
+    private fun findParentClassPath(node: SyntaxNode, nameByStartByte: Map<Int, String?>): List<String> {
         val parents = mutableListOf<String>()
         var current = node.parent
         while (!current.isNull) {

@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.ruby.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 private const val METHOD_PARAMETERS = "method_parameters"
 private const val BLOCK_PARAMETERS = "block_parameters"
@@ -13,7 +13,7 @@ private const val ARRAY_PATTERN = "array_pattern"
 /**
  * Extracts identifier only when in valid parameter/destructuring context.
  */
-internal fun extractFromIdentifierInContext(node: TSNode, sourceCode: String): String? {
+internal fun extractFromIdentifierInContext(node: SyntaxNode, sourceCode: String): String? {
     val validParentTypes = setOf(
         METHOD_PARAMETERS,
         BLOCK_PARAMETERS,
@@ -22,7 +22,7 @@ internal fun extractFromIdentifierInContext(node: TSNode, sourceCode: String): S
         LEFT_ASSIGNMENT_LIST,
         ARRAY_PATTERN
     )
-    return if (node.parent?.type in validParentTypes) {
+    return if (node.parent.type in validParentTypes) {
         TreeTraversal.getNodeText(node, sourceCode)
     } else {
         null

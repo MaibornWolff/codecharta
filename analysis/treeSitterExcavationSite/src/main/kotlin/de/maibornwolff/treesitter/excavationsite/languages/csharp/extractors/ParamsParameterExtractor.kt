@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val PARAMS = "params"
@@ -13,7 +13,7 @@ private const val ARRAY_TYPE = "array_type"
  *
  * Finds identifiers that follow the pattern: params -> array_type -> identifier
  */
-internal fun extractParamsParametersInOrder(node: TSNode, sourceCode: String): List<String> {
+internal fun extractParamsParametersInOrder(node: SyntaxNode, sourceCode: String): List<String> {
     data class State(val foundParams: Boolean, val foundArrayType: Boolean)
 
     return buildList {

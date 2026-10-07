@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 /**
  * Extracts the types referenced in a declaration's **signature** — never its body.
@@ -32,7 +32,7 @@ internal object UsedTypeExtractor {
 
     private val FUNCTION_TYPES = setOf(FUNCTION_ITEM, FUNCTION_SIGNATURE_ITEM)
 
-    fun extract(declaration: TSNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
         val supertraits = extractSupertraits(declaration, sourceCode)
         val fields = extractFieldTypes(declaration, sourceCode)
         val parameters = extractParameterTypes(declaration, sourceCode)
@@ -49,7 +49,7 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun extractSupertraits(declaration: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractSupertraits(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
         if (declaration.type != TRAIT_ITEM) return emptyList()
         return declaration
             .children()
@@ -59,28 +59,28 @@ internal object UsedTypeExtractor {
             .toList()
     }
 
-    private fun extractFieldTypes(declaration: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractFieldTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
         val namedFields = signatureDescendants(declaration, FIELD_DECLARATION)
         val tupleFields = signatureDescendants(declaration, ORDERED_FIELD_DECLARATION_LIST)
         return (namedFields + tupleFields)
             .flatMap { typeNodesOf(it).flatMap { typeNode -> RustTypeHelper.extractTypes(typeNode, sourceCode) } }
     }
 
-    private fun extractParameterTypes(declaration: TSNode, sourceCode: String): List<UsedType> =
+    private fun extractParameterTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> =
         signatureDescendants(declaration, PARAMETER)
             .flatMap { typeNodesOf(it).take(1).flatMap { typeNode -> RustTypeHelper.extractTypes(typeNode, sourceCode) } }
 
-    private fun extractReturnTypes(declaration: TSNode, sourceCode: String): List<UsedType> = signatureFunctions(declaration)
+    private fun extractReturnTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> = signatureFunctions(declaration)
         .mapNotNull { function -> function.children().firstOrNull { RustTypeHelper.isTypeNode(it) } }
         .flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
 
-    private fun extractBoundTypes(declaration: TSNode, parentType: String, sourceCode: String): List<UsedType> =
+    private fun extractBoundTypes(declaration: SyntaxNode, parentType: String, sourceCode: String): List<UsedType> =
         signatureDescendants(declaration, parentType)
             .flatMap { parent -> parent.children().filter { it.type == TRAIT_BOUNDS } }
             .flatMap { it.namedChildren() }
             .flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
 
-    private fun extractTypeAliasRhs(declaration: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractTypeAliasRhs(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
         val typeItems = selfAndSignatureDescendants(declaration, TYPE_ITEM)
         return typeItems.flatMap { typeItem ->
             typeNodesOf(typeItem)
@@ -89,7 +89,7 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun extractConstStaticTypes(declaration: TSNode, sourceCode: String): List<UsedType> {
+    private fun extractConstStaticTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
         val items = selfAndSignatureDescendants(declaration, CONST_ITEM) +
             selfAndSignatureDescendants(declaration, STATIC_ITEM)
         return items.flatMap { item ->
@@ -97,14 +97,14 @@ internal object UsedTypeExtractor {
         }
     }
 
-    private fun typeNodesOf(node: TSNode): List<TSNode> = node.namedChildren().filter { RustTypeHelper.isTypeNode(it) }.toList()
+    private fun typeNodesOf(node: SyntaxNode): List<SyntaxNode> = node.namedChildren().filter { RustTypeHelper.isTypeNode(it) }.toList()
 
-    private fun signatureFunctions(declaration: TSNode): List<TSNode> {
+    private fun signatureFunctions(declaration: SyntaxNode): List<SyntaxNode> {
         val self = if (declaration.type in FUNCTION_TYPES) listOf(declaration) else emptyList()
         return self + FUNCTION_TYPES.flatMap { signatureDescendants(declaration, it) }
     }
 
-    private fun selfAndSignatureDescendants(declaration: TSNode, type: String): List<TSNode> {
+    private fun selfAndSignatureDescendants(declaration: SyntaxNode, type: String): List<SyntaxNode> {
         val self = if (declaration.type == type) listOf(declaration) else emptyList()
         return self + signatureDescendants(declaration, type)
     }
@@ -113,13 +113,13 @@ internal object UsedTypeExtractor {
      * Descendants of [type] reachable without entering a `block` (function/method body),
      * so only signature-level nodes are returned.
      */
-    private fun signatureDescendants(node: TSNode, type: String): List<TSNode> {
-        val result = mutableListOf<TSNode>()
+    private fun signatureDescendants(node: SyntaxNode, type: String): List<SyntaxNode> {
+        val result = mutableListOf<SyntaxNode>()
         collectSignatureDescendants(node, type, result)
         return result
     }
 
-    private fun collectSignatureDescendants(node: TSNode, type: String, result: MutableList<TSNode>) {
+    private fun collectSignatureDescendants(node: SyntaxNode, type: String, result: MutableList<SyntaxNode>) {
         for (child in node.children()) {
             if (child.isNull || child.type == BLOCK) continue
             if (child.type == type) result.add(child)

@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 internal object NamespaceExtractor {
     private const val FILE_SCOPED_NAMESPACE = "file_scoped_namespace_declaration"
@@ -10,7 +10,7 @@ internal object NamespaceExtractor {
     private const val IDENTIFIER = "identifier"
     private const val NAMESPACE_SEPARATOR = "."
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<String> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<String> {
         val namespaceNode = TreeTraversal
             .findAllDescendantsOfType(rootNode, FILE_SCOPED_NAMESPACE, NAMESPACE_DECLARATION)
             .firstOrNull() ?: return emptyList()

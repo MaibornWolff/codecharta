@@ -2,9 +2,9 @@ package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 /**
  * Extracts type declarations (classes, interfaces, records, enums, helpers) from a Delphi file.
@@ -61,7 +61,7 @@ internal object DeclarationExtractor {
 
     private val CLASS_KEYWORDS = setOf(K_CLASS, K_OBJECT, K_OBJC_CLASS, K_OBJC_CATEGORY, K_OBJC_PROTOCOL)
 
-    fun extract(rootNode: TSNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
         val defProcsByClass = collectDefProcsByClass(rootNode, sourceCode)
         // Build the full declType→name lookup before filtering forward decls so that the parent-path
         // walk can still resolve any ancestor that we don't end up emitting (e.g. an outer forward
@@ -90,10 +90,10 @@ internal object DeclarationExtractor {
      * Walks the AST parent chain collecting names of ancestor `declType` nodes, outer-to-inner.
      * Mirrors the Kotlin/C# approach so nested-type declarations carry their enclosing-class chain.
      */
-    private fun findParentPath(declTypeNode: TSNode, namesByStartByte: Map<Int, String?>): List<String> {
+    private fun findParentPath(declTypeNode: SyntaxNode, namesByStartByte: Map<Int, String?>): List<String> {
         val parents = mutableListOf<String>()
         var current = declTypeNode.parent
-        while (current != null && !current.isNull) {
+        while (!current.isNull) {
             if (current.type == DECL_TYPE) {
                 val parentName = namesByStartByte[current.startByte]
                 if (!parentName.isNullOrBlank()) parents.add(0, parentName)
@@ -108,7 +108,7 @@ internal object DeclarationExtractor {
      * only the kind keyword (`kClass` / `kRecord` / …) — no `kEnd`, no parent clause, no members.
      * We skip these so the later full definition wins as the unique entry for the type name.
      */
-    private fun isForwardDeclaration(declTypeNode: TSNode): Boolean {
+    private fun isForwardDeclaration(declTypeNode: SyntaxNode): Boolean {
         val typeFieldNode = declTypeNode.getChildByFieldName(TYPE_FIELD)
         if (typeFieldNode.isNull) return false
         if (typeFieldNode.type != DECL_CLASS && typeFieldNode.type != DECL_INTF) return false
@@ -128,8 +128,8 @@ internal object DeclarationExtractor {
      * resolve the owning class, operator implementations are bound just like any other
      * method.
      */
-    private fun collectDefProcsByClass(rootNode: TSNode, sourceCode: String): Map<String, List<TSNode>> {
-        val result = mutableMapOf<String, MutableList<TSNode>>()
+    private fun collectDefProcsByClass(rootNode: SyntaxNode, sourceCode: String): Map<String, List<SyntaxNode>> {
+        val result = mutableMapOf<String, MutableList<SyntaxNode>>()
         TreeTraversal.findAllDescendantsOfType(rootNode, DEF_PROC).forEach { defProc ->
             val header = defProc.getChildByFieldName(HEADER_FIELD)
             if (header.isNull) return@forEach
@@ -141,7 +141,7 @@ internal object DeclarationExtractor {
         return result
     }
 
-    private fun qualifiedNameClassPrefix(nameNode: TSNode, sourceCode: String): String? {
+    private fun qualifiedNameClassPrefix(nameNode: SyntaxNode, sourceCode: String): String? {
         if (nameNode.type != GENERIC_DOT) return null
         val lhs = nameNode.getChildByFieldName(LHS_FIELD)
         if (lhs.isNull) return null
@@ -169,7 +169,7 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun resolveDeclarationType(declTypeNode: TSNode): DeclarationType? {
+    private fun resolveDeclarationType(declTypeNode: SyntaxNode): DeclarationType? {
         val typeFieldNode = declTypeNode.getChildByFieldName(TYPE_FIELD)
         if (typeFieldNode.isNull) return null
 
@@ -190,7 +190,7 @@ internal object DeclarationExtractor {
      * the first keyword child (`kClass` / `kRecord` / `kObject` / ObjC variants)
      * distinguishes them.
      */
-    private fun classifyDeclClass(declClassNode: TSNode): DeclarationType {
+    private fun classifyDeclClass(declClassNode: SyntaxNode): DeclarationType {
         val keyword = declClassNode
             .children()
             .firstOrNull { it.type in CLASS_KEYWORDS || it.type == K_RECORD }
@@ -202,7 +202,7 @@ internal object DeclarationExtractor {
      * A `type` wrapper that contains a `declEnum` child is an enum declaration.
      * Other wrapped types (arrays, sets, aliases, …) are not modelled as declarations.
      */
-    private fun classifyTypeWrapper(typeNode: TSNode): DeclarationType? {
+    private fun classifyTypeWrapper(typeNode: SyntaxNode): DeclarationType? {
         val hasEnum = typeNode.children().any { it.type == DECL_ENUM }
         return if (hasEnum) DeclarationType.ENUM else null
     }

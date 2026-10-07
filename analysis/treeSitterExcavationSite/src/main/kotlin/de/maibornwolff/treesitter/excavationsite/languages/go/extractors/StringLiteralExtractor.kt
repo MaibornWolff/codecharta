@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.go.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 private const val IMPORT_DECLARATION = "import_declaration"
 private const val IMPORT_SPEC = "import_spec"
@@ -13,7 +13,7 @@ private const val IMPORT_SPEC = "import_spec"
  * Returns null for strings inside import declarations,
  * allowing them to be skipped during extraction.
  */
-internal fun extractNonImportInterpretedString(node: TSNode, sourceCode: String): String? {
+internal fun extractNonImportInterpretedString(node: SyntaxNode, sourceCode: String): String? {
     if (isImportString(node)) return null
     val text = TreeTraversal.getNodeText(node, sourceCode)
     return text.removeSurrounding("\"")
@@ -24,10 +24,10 @@ internal fun extractNonImportInterpretedString(node: TSNode, sourceCode: String)
  *
  * Returns null for strings inside import declarations.
  */
-internal fun extractNonImportRawString(node: TSNode, sourceCode: String): String? {
+internal fun extractNonImportRawString(node: SyntaxNode, sourceCode: String): String? {
     if (isImportString(node)) return null
     val text = TreeTraversal.getNodeText(node, sourceCode)
     return StringParser.stripBackticks(text)
 }
 
-private fun isImportString(node: TSNode): Boolean = TreeTraversal.hasAncestorOfTypes(node, IMPORT_DECLARATION, IMPORT_SPEC)
+private fun isImportString(node: SyntaxNode): Boolean = TreeTraversal.hasAncestorOfTypes(node, IMPORT_DECLARATION, IMPORT_SPEC)

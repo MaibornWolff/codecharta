@@ -1,8 +1,8 @@
 package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractors
 
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
-import org.treesitter.TSNode
 
 private const val IDENTIFIER = "identifier"
 private const val FIELD_IDENTIFIER = "field_identifier"
@@ -11,7 +11,7 @@ private const val ARRAY_DECLARATOR = "array_declarator"
 private const val FIELD_DECLARATION = "field_declaration"
 private const val FIELD_DECLARATOR = "declarator"
 
-internal fun extractPropertyIdentifier(node: TSNode, sourceCode: String): String? {
+internal fun extractPropertyIdentifier(node: SyntaxNode, sourceCode: String): String? {
     for (i in 0 until node.childCount) {
         val child = node.getChild(i)
         when (child.type) {
@@ -20,7 +20,7 @@ internal fun extractPropertyIdentifier(node: TSNode, sourceCode: String): String
             }
             FIELD_DECLARATION -> {
                 val declarator = child.getChildByFieldName(FIELD_DECLARATOR)
-                if (declarator != null) {
+                if (!declarator.isNull) {
                     return CDeclaratorParser.findIdentifierInDeclarator(declarator, sourceCode)
                 }
                 val result = TreeTraversal.findChildByType(child, IDENTIFIER, sourceCode)

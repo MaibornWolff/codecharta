@@ -5,9 +5,9 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.OBJECT_PATTERN
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.PAIR_PATTERN
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.SHORTHAND_PROPERTY_IDENTIFIER_PATTERN
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
-import org.treesitter.TSNode
 
 private const val REST_PATTERN = "rest_pattern"
 private const val OBJECT_ASSIGNMENT_PATTERN = "object_assignment_pattern"
@@ -16,7 +16,7 @@ private const val ASSIGNMENT_PATTERN = "assignment_pattern"
 /**
  * Recursively extracts identifiers from destructuring patterns.
  */
-internal fun extractIdentifiersFromPattern(node: TSNode, sourceCode: String): List<String> = when (node.type) {
+internal fun extractIdentifiersFromPattern(node: SyntaxNode, sourceCode: String): List<String> = when (node.type) {
     SHORTHAND_PROPERTY_IDENTIFIER_PATTERN,
     IDENTIFIER -> {
         listOf(TreeTraversal.getNodeText(node, sourceCode))
@@ -41,7 +41,7 @@ internal fun extractIdentifiersFromPattern(node: TSNode, sourceCode: String): Li
 /**
  * Extracts identifiers from pair patterns in object destructuring.
  */
-internal fun extractIdentifiersFromPairPattern(node: TSNode, sourceCode: String): List<String> = node
+internal fun extractIdentifiersFromPairPattern(node: SyntaxNode, sourceCode: String): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {
@@ -57,6 +57,7 @@ internal fun extractIdentifiersFromPairPattern(node: TSNode, sourceCode: String)
 /**
  * Extracts identifiers from assignment patterns with default values.
  */
-internal fun extractIdentifiersFromAssignmentPattern(node: TSNode, sourceCode: String): List<String> = node.children().firstOrNull()?.let {
-    extractIdentifiersFromPattern(it, sourceCode)
-} ?: emptyList()
+internal fun extractIdentifiersFromAssignmentPattern(node: SyntaxNode, sourceCode: String): List<String> =
+    node.children().firstOrNull()?.let {
+        extractIdentifiersFromPattern(it, sourceCode)
+    } ?: emptyList()

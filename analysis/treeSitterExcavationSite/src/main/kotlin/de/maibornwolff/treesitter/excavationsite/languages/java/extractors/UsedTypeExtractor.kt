@@ -1,9 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object UsedTypeExtractor {
     // Node types for type source extraction
@@ -40,7 +40,7 @@ internal object UsedTypeExtractor {
         METHOD_DECLARATION, CONSTRUCTOR_DECLARATION
     )
 
-    fun extract(declaration: TSNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
         val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
 
         val fieldTypes = buckets[FIELD_DECLARATION].orEmpty().mapNotNull {
@@ -66,7 +66,7 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun extractMethodInvocationAndFieldAccessTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractMethodInvocationAndFieldAccessTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         (buckets[METHOD_INVOCATION].orEmpty() + buckets[FIELD_ACCESS].orEmpty())
             .mapNotNull { capturedNode ->
                 val objectNode = capturedNode.getChildByFieldName(OBJECT_FIELD)
@@ -77,7 +77,7 @@ internal object UsedTypeExtractor {
             // uppercase variables like LOGGER as types, but matches DC's existing behavior.
             .filter { it.isUppercase() }
 
-    private fun extractInheritanceTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val implementsAndExtends = (buckets[SUPER_INTERFACES].orEmpty() + buckets[EXTENDS_INTERFACES].orEmpty())
             .flatMap { typeListNode ->
                 val namedChild = typeListNode.getNamedChild(0)
@@ -92,7 +92,7 @@ internal object UsedTypeExtractor {
         return implementsAndExtends + superClasses
     }
 
-    private fun extractThrownTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractThrownTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[THROWS].orEmpty().flatMap { throwsNode ->
             throwsNode
                 .namedChildren()
@@ -100,18 +100,18 @@ internal object UsedTypeExtractor {
                 .toList()
         }
 
-    private fun extractMethodAndConstructorTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractMethodAndConstructorTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val constructorParams = buckets[CONSTRUCTOR_DECLARATION]
             .orEmpty()
             .flatMap { constructor ->
                 val parameters = constructor.getChildByFieldName(PARAMETERS_FIELD)
-                    ?: return@flatMap emptyList()
+                if (parameters.isNull) return@flatMap emptyList()
                 extractParameterTypes(parameters, sourceCode)
             }
 
         val methodTypes = buckets[METHOD_DECLARATION].orEmpty().flatMap { method ->
             val parameters = method.getChildByFieldName(PARAMETERS_FIELD)
-                ?: return@flatMap emptyList<UsedType>()
+            if (parameters.isNull) return@flatMap emptyList<UsedType>()
             val paramTypes = extractParameterTypes(parameters, sourceCode)
             val returnType = extractType(method.getChildByFieldName(TYPE_FIELD), sourceCode)
             paramTypes + listOfNotNull(returnType)
@@ -119,14 +119,14 @@ internal object UsedTypeExtractor {
         return constructorParams + methodTypes
     }
 
-    private fun extractParameterTypes(parametersNode: TSNode, sourceCode: String): List<UsedType> = parametersNode
+    private fun extractParameterTypes(parametersNode: SyntaxNode, sourceCode: String): List<UsedType> = parametersNode
         .namedChildren()
         .mapNotNull {
             val parameterType = it.getChildByFieldName(TYPE_FIELD)
             extractType(parameterType, sourceCode)
         }.toList()
 
-    private fun extractType(typeNode: TSNode, sourceCode: String): UsedType? {
+    private fun extractType(typeNode: SyntaxNode, sourceCode: String): UsedType? {
         if (typeNode.isNull) return null
         if (typeNode.type == GENERIC_TYPE) {
             val typeIdentifier = typeNode.getNamedChild(0)

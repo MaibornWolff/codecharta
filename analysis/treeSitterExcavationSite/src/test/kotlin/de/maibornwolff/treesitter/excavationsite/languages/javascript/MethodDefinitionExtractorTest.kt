@@ -3,7 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.extractIdentifiersFromMethodDefinition
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeSitterParser
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TsNodeSyntaxNode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.junit.jupiter.api.Nested
@@ -19,7 +19,7 @@ class MethodDefinitionExtractorTest {
             // prevSibling. The decorator look-behind walk previously called `.type` on that null node,
             // throwing `TSException: Node is a null node`.
             val code = "class A { foo() {} }"
-            val root = TreeSitterParser.parse(code, TreeSitterJavascript())
+            val root = TsNodeSyntaxNode.parse(code, TreeSitterJavascript())
             val firstChild = root.getChild(0) // class_declaration, index 0 of program -> prevSibling is null
 
             // Act / Assert

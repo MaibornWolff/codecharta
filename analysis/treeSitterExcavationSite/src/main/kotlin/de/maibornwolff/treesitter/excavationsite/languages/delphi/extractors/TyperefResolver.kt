@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 /**
  * Resolves tree-sitter-pascal type-reference nodes (`typeref`, `typerefTpl`, `typerefDot`,
@@ -43,7 +43,7 @@ internal object TyperefResolver {
      * additional `declArray` / `declSet` node — we descend into the inner element type so
      * that `array of Byte` surfaces `Byte`.
      */
-    fun fromTypeWrapper(typeWrapper: TSNode, sourceCode: String): UsedType? {
+    fun fromTypeWrapper(typeWrapper: SyntaxNode, sourceCode: String): UsedType? {
         if (typeWrapper.isNull) return null
         val inner = typeWrapper.children().firstOrNull { it.type in TYPE_WRAPPER_INNER_TYPES }
             ?: return null
@@ -61,7 +61,7 @@ internal object TyperefResolver {
      * for nested `array of array of X` / `array of set of X` shapes). Bounded arrays carry
      * their range bounds as siblings; only the element type is captured.
      */
-    private fun fromArrayOrSetElement(node: TSNode, sourceCode: String): UsedType? {
+    private fun fromArrayOrSetElement(node: SyntaxNode, sourceCode: String): UsedType? {
         val elementWrapper = node.children().firstOrNull { it.type == TYPE_NODE } ?: return null
         return fromTypeWrapper(elementWrapper, sourceCode)
     }
@@ -69,7 +69,7 @@ internal object TyperefResolver {
     /**
      * `declProc.type` (return type) may be either `type` (wrapper) or `typeref` directly.
      */
-    fun fromTypeWrapperOrTyperef(typeNode: TSNode, sourceCode: String): UsedType? {
+    fun fromTypeWrapperOrTyperef(typeNode: SyntaxNode, sourceCode: String): UsedType? {
         if (typeNode.isNull) return null
         return when (typeNode.type) {
             TYPEREF -> toUsedType(typeNode, sourceCode)
@@ -82,7 +82,7 @@ internal object TyperefResolver {
      * Converts a `typeref` (or sub-shape: `typerefTpl`, `typerefDot`, `typerefPtr`) into a
      * [UsedType], capturing generic type arguments where present.
      */
-    fun toUsedType(node: TSNode, sourceCode: String): UsedType? {
+    fun toUsedType(node: SyntaxNode, sourceCode: String): UsedType? {
         if (node.isNull) return null
         return when (node.type) {
             TYPEREF, TYPEREF_PTR -> unwrapInnerType(node, sourceCode)
@@ -100,12 +100,12 @@ internal object TyperefResolver {
      * shapes (not wrapped in `typeref`); pointer indirection doesn't introduce a distinct
      * used type, so both are resolved by unwrapping to the inner type.
      */
-    private fun unwrapInnerType(node: TSNode, sourceCode: String): UsedType? {
+    private fun unwrapInnerType(node: SyntaxNode, sourceCode: String): UsedType? {
         val inner = node.children().firstOrNull { it.type in INNER_TYPES } ?: return null
         return toUsedType(inner, sourceCode)
     }
 
-    private fun genericTemplate(node: TSNode, sourceCode: String): UsedType {
+    private fun genericTemplate(node: SyntaxNode, sourceCode: String): UsedType {
         val entity = node.getChildByFieldName(ENTITY_FIELD)
         val args = node.getChildByFieldName(ARGS_FIELD)
         val name = entityName(entity, sourceCode)
@@ -124,7 +124,7 @@ internal object TyperefResolver {
      * is how downstream resolvers match used types to project declarations. The intermediate
      * namespace segments are discarded.
      */
-    private fun qualifiedName(node: TSNode, sourceCode: String): UsedType {
+    private fun qualifiedName(node: SyntaxNode, sourceCode: String): UsedType {
         val rhs = node.getChildByFieldName(RHS_FIELD)
         val name = if (!rhs.isNull) rightmostName(rhs, sourceCode) else ""
         return UsedType(name = name)
@@ -134,7 +134,7 @@ internal object TyperefResolver {
      * Extracts the simple type name from a `typerefTpl.entity`, which may itself be
      * `identifier`, `typerefDot`, or nested `typerefTpl`.
      */
-    private fun entityName(entity: TSNode, sourceCode: String): String {
+    private fun entityName(entity: SyntaxNode, sourceCode: String): String {
         if (entity.isNull) return ""
         return when (entity.type) {
             IDENTIFIER -> TreeTraversal.getNodeText(entity, sourceCode).trim()
@@ -154,7 +154,7 @@ internal object TyperefResolver {
      * Descends through chained `typerefDot` / `typerefTpl` nodes to the rightmost identifier —
      * the simple type name of a qualified reference.
      */
-    private fun rightmostName(node: TSNode, sourceCode: String): String {
+    private fun rightmostName(node: SyntaxNode, sourceCode: String): String {
         var current = node
         while (!current.isNull) {
             current = when (current.type) {

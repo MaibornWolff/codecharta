@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 /**
  * Extracts all types referenced inside a Delphi declaration.
@@ -94,7 +94,7 @@ internal object UsedTypeExtractor {
         RTTI_ATTRIBUTES, GENERIC_TPL
     )
 
-    fun extract(declaration: TSNode, sourceCode: String): Set<UsedType> = extractFromRoots(listOf(declaration), sourceCode)
+    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> = extractFromRoots(listOf(declaration), sourceCode)
 
     /**
      * Aggregates used types across multiple AST roots.
@@ -104,7 +104,7 @@ internal object UsedTypeExtractor {
      * under the `implementation` section while the class shape lives in a
      * `declType` under `interface`.
      */
-    fun extractFromRoots(roots: List<TSNode>, sourceCode: String): Set<UsedType> {
+    fun extractFromRoots(roots: List<SyntaxNode>, sourceCode: String): Set<UsedType> {
         val buckets = mergeBuckets(roots)
 
         val inheritance = extractInheritance(buckets, sourceCode)
@@ -132,11 +132,11 @@ internal object UsedTypeExtractor {
             .toSet()
     }
 
-    private fun mergeBuckets(roots: List<TSNode>): Map<String, List<TSNode>> {
+    private fun mergeBuckets(roots: List<SyntaxNode>): Map<String, List<SyntaxNode>> {
         if (roots.size == 1) {
             return TreeTraversal.findAllDescendantsGroupedByType(roots.first(), ALL_NODE_TYPES)
         }
-        val merged = linkedMapOf<String, MutableList<TSNode>>()
+        val merged = linkedMapOf<String, MutableList<SyntaxNode>>()
         roots.forEach { root ->
             TreeTraversal.findAllDescendantsGroupedByType(root, ALL_NODE_TYPES).forEach { (type, nodes) ->
                 merged.getOrPut(type) { mutableListOf() } += nodes
@@ -157,7 +157,7 @@ internal object UsedTypeExtractor {
      * a direct `typeref` child (reached via `kFor typeref`); capturing it too is acceptable —
      * it is a type used in the declaration.
      */
-    private fun extractInheritance(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractInheritance(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val containers = buckets[DECL_CLASS].orEmpty() + buckets[DECL_INTF].orEmpty() + buckets[DECL_HELPER].orEmpty()
         return containers.flatMap { container ->
             container
@@ -174,12 +174,12 @@ internal object UsedTypeExtractor {
      * `declVar`, `declConst`, `declProp`. The wrapper unwrapping (including nested
      * array-of-array shapes) is handled by [TyperefResolver.fromTypeWrapper].
      */
-    private fun extractWrappedTypes(buckets: Map<String, List<TSNode>>, nodeType: String, sourceCode: String): List<UsedType> =
+    private fun extractWrappedTypes(buckets: Map<String, List<SyntaxNode>>, nodeType: String, sourceCode: String): List<UsedType> =
         buckets[nodeType].orEmpty().mapNotNull {
             TyperefResolver.fromTypeWrapper(it.getChildByFieldName(TYPE_FIELD), sourceCode)
         }
 
-    private fun extractReturnTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    private fun extractReturnTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val declProcReturns = buckets[DECL_PROC].orEmpty().mapNotNull { declProc ->
             TyperefResolver.fromTypeWrapperOrTyperef(declProc.getChildByFieldName(TYPE_FIELD), sourceCode)
         }
@@ -190,7 +190,7 @@ internal object UsedTypeExtractor {
         return declProcReturns + defProcReturns
     }
 
-    private fun extractConstructorCalls(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractConstructorCalls(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[EXPR_CALL].orEmpty().mapNotNull { callNode ->
             val entity = callNode.getChildByFieldName(ENTITY_FIELD)
             if (entity.isNull || entity.type != EXPR_DOT) return@mapNotNull null
@@ -201,7 +201,7 @@ internal object UsedTypeExtractor {
             expressionToUsedType(lhs, sourceCode)?.takeIf { isPotentialTypeReceiver(it.name) }
         }
 
-    private fun extractMethodCalls(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractMethodCalls(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[EXPR_DOT].orEmpty().mapNotNull { dotNode ->
             // Exclude receivers that belong to a constructor call captured above.
             val parent = dotNode.parent
@@ -230,7 +230,7 @@ internal object UsedTypeExtractor {
      * or an exprTpl (generic invocation like `TList<string>`). We want the left-most identifier
      * (the head of the chain), which is treated as a type when its first letter is uppercase.
      */
-    private fun expressionToUsedType(node: TSNode, sourceCode: String): UsedType? {
+    private fun expressionToUsedType(node: SyntaxNode, sourceCode: String): UsedType? {
         if (node.isNull) return null
         return when (node.type) {
             IDENTIFIER -> UsedType(name = TreeTraversal.getNodeText(node, sourceCode).trim())
@@ -246,7 +246,7 @@ internal object UsedTypeExtractor {
      * uppercase-first heuristic prevents pattern guards like `Foo is nil` from leaking
      * non-types into usedTypes.
      */
-    private fun extractCastTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractCastTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[EXPR_BINARY].orEmpty().mapNotNull { binary ->
             val operator = binary.getChildByFieldName(OPERATOR_FIELD)
             if (operator.isNull || operator.type !in CAST_OPERATORS) return@mapNotNull null
@@ -267,7 +267,7 @@ internal object UsedTypeExtractor {
      * surface the attribute name only — argument types are intentionally not captured
      * (mirrors Java/Kotlin/C#).
      */
-    private fun extractAttributeTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractAttributeTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[RTTI_ATTRIBUTES].orEmpty().flatMap { attributes ->
             attributes
                 .namedChildren()
@@ -286,14 +286,14 @@ internal object UsedTypeExtractor {
      * Generic type-parameter constraints (`TFoo<T: TBase> = class`) parse as
      * `genericTpl(args=genericArgs(genericArg(name=…, type=…)))`. The `[type]` field
      * actually carries multiple children in tree-sitter-pascal — both the `:` punctuation
-     * and the constraint itself — so [TSNode.getChildByFieldName] would return the `:`
+     * and the constraint itself — so [SyntaxNode.getChildByFieldName] would return the `:`
      * token first. We walk named children instead and pick the first `typeref` (or `type`
      * wrapper that contains a `typeref`/`declArray`/`declSet`) per genericArg. Multi-
      * constraint (`<T: A, B>`) drops everything past the first into ERROR siblings —
      * strict capture is documented in `KNOWN_ISSUES.md`. Keyword constraints
      * (`<T: class>`) emit no `typeref` so we silently skip.
      */
-    private fun extractGenericConstraintTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> =
+    private fun extractGenericConstraintTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
         buckets[GENERIC_TPL].orEmpty().flatMap { genericTpl ->
             val args = genericTpl.getChildByFieldName(ARGS_FIELD)
             if (args.isNull || args.type != GENERIC_ARGS) return@flatMap emptyList()

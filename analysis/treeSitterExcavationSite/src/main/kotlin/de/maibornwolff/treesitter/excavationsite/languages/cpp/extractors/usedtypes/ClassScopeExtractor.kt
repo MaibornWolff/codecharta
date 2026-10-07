@@ -1,10 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
-import org.treesitter.TSNode
 
 internal object ClassScopeExtractor {
     private const val FRIEND_DECLARATION = "friend_declaration"
@@ -23,7 +23,7 @@ internal object ClassScopeExtractor {
 
     val nodeTypes: Set<String> = setOf(FRIEND_DECLARATION, USING_DECLARATION)
 
-    fun extractFriendAndUsingTypes(buckets: Map<String, List<TSNode>>, sourceCode: String): List<UsedType> {
+    fun extractFriendAndUsingTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
         val friendTypes = buckets[FRIEND_DECLARATION].orEmpty().flatMap { friend ->
             friend
                 .namedChildren()
@@ -49,7 +49,7 @@ internal object ClassScopeExtractor {
         return friendTypes + inClassUsingTypes
     }
 
-    private fun isInsideClassBody(usingDecl: TSNode): Boolean {
+    private fun isInsideClassBody(usingDecl: SyntaxNode): Boolean {
         var current = usingDecl.parent
         while (!current.isNull) {
             if (current.type in SCOPE_BOUNDARY_TYPES) {
