@@ -2,12 +2,10 @@ name: Build tree-sitter core for Windows
 
 # The bonede jars carry the tree-sitter core for every platform, but their Windows DLL exports only its JNI
 # functions and not the C API the analysis calls. This builds the core from the pinned upstream commit; the
-# resulting DLL is checked in under analysis/treeSitterExcavationSite/src/main/resources/lib.
+# resulting DLL is checked in under analysis/treeSitterExcavationSite/src/main/resources/lib. Run it by hand
+# after changing the pinned commit below, and check in the DLL from the run's artifact.
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - '.github/workflows/build_tree_sitter_core_windows.yml'
 
 permissions: {}
 
