@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -52,15 +51,15 @@ internal object RustTypeHelper {
      * Extracts every user-defined [UsedType] reachable from a type position.
      * Primitives, lifetimes, the unit/never types and `Self` resolve to no entries.
      */
-    fun extractTypes(node: SyntaxNode, sourceCode: String): List<UsedType> {
+    fun extractTypes(node: SyntaxNode): List<UsedType> {
         if (node.isNull) return emptyList()
         return when (node.type) {
-            TYPE_IDENTIFIER -> extractNamedType(node, sourceCode)
-            SCOPED_TYPE_IDENTIFIER -> listOfNotNull(extractScopedType(node, sourceCode))
-            GENERIC_TYPE -> listOfNotNull(extractGenericType(node, sourceCode))
-            FUNCTION_TYPE -> extractFunctionType(node, sourceCode)
-            TUPLE_TYPE -> node.namedChildren().flatMap { extractTypes(it, sourceCode) }.toList()
-            in UNWRAPPED_TYPES -> node.namedChildren().flatMap { extractTypes(it, sourceCode) }.toList()
+            TYPE_IDENTIFIER -> extractNamedType(node)
+            SCOPED_TYPE_IDENTIFIER -> listOfNotNull(extractScopedType(node))
+            GENERIC_TYPE -> listOfNotNull(extractGenericType(node))
+            FUNCTION_TYPE -> extractFunctionType(node)
+            TUPLE_TYPE -> node.namedChildren().flatMap { extractTypes(it) }.toList()
+            in UNWRAPPED_TYPES -> node.namedChildren().flatMap { extractTypes(it) }.toList()
             else -> emptyList()
         }
     }
@@ -69,54 +68,54 @@ internal object RustTypeHelper {
      * `fn(P) -> R` and `Fn(Arg) -> Inner`: collect the optional trait name, the parameter
      * types (nested inside a `parameters` node), and the return type.
      */
-    private fun extractFunctionType(node: SyntaxNode, sourceCode: String): List<UsedType> = node
+    private fun extractFunctionType(node: SyntaxNode): List<UsedType> = node
         .namedChildren()
         .flatMap { child ->
             if (child.type == PARAMETERS) {
-                child.namedChildren().flatMap { extractTypes(it, sourceCode) }.toList()
+                child.namedChildren().flatMap { extractTypes(it) }.toList()
             } else {
-                extractTypes(child, sourceCode)
+                extractTypes(child)
             }
         }.toList()
 
-    private fun extractNamedType(node: SyntaxNode, sourceCode: String): List<UsedType> {
-        val name = TreeTraversal.getNodeText(node, sourceCode).trim()
+    private fun extractNamedType(node: SyntaxNode): List<UsedType> {
+        val name = node.text.trim()
         if (name.isEmpty() || name == SELF_TYPE) return emptyList()
         return listOf(UsedType(name = name))
     }
 
-    private fun extractScopedType(node: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractScopedType(node: SyntaxNode): UsedType? {
         val nameNode = node.children().lastOrNull { it.type == TYPE_IDENTIFIER } ?: return null
-        val name = TreeTraversal.getNodeText(nameNode, sourceCode).trim()
+        val name = nameNode.text.trim()
         if (name.isEmpty() || name == SELF_TYPE) return null
         val prefixNode = node.namedChildren().firstOrNull { it != nameNode }
         val prefix = prefixNode
-            ?.let { segmentsOf(it, sourceCode) }
+            ?.let { segmentsOf(it) }
             ?.filter { it != SELF_TYPE && isPathSegment(it) }
             ?: emptyList()
         return UsedType(name = name, namespacePrefix = prefix)
     }
 
-    private fun extractGenericType(node: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractGenericType(node: SyntaxNode): UsedType? {
         val baseNode = node
             .namedChildren()
             .firstOrNull { it.type == TYPE_IDENTIFIER || it.type == SCOPED_TYPE_IDENTIFIER }
             ?: return null
         val base = when (baseNode.type) {
-            SCOPED_TYPE_IDENTIFIER -> extractScopedType(baseNode, sourceCode)
-            else -> extractNamedType(baseNode, sourceCode).firstOrNull()
+            SCOPED_TYPE_IDENTIFIER -> extractScopedType(baseNode)
+            else -> extractNamedType(baseNode).firstOrNull()
         } ?: return null
         val typeArguments = node.children().firstOrNull { it.type == TYPE_ARGUMENTS }
         val genericTypes = typeArguments
             ?.namedChildren()
-            ?.flatMap { extractTypes(it, sourceCode) }
+            ?.flatMap { extractTypes(it) }
             ?.toList()
             ?: emptyList()
         return base.copy(genericTypes = genericTypes)
     }
 
-    private fun segmentsOf(node: SyntaxNode, sourceCode: String): List<String> = TreeTraversal
-        .getNodeText(node, sourceCode)
+    private fun segmentsOf(node: SyntaxNode): List<String> = node
+        .text
         .split(SCOPE_SEPARATOR)
         .map { it.trim() }
         .filter { it.isNotEmpty() }

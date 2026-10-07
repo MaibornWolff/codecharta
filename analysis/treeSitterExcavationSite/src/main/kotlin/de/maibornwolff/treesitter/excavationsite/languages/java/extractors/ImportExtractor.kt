@@ -12,12 +12,12 @@ internal object ImportExtractor {
     private const val IDENTIFIER = "identifier"
     private const val IMPORT_SEPARATOR = "."
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<ImportDeclaration> = rootNode
+    fun extract(rootNode: SyntaxNode): List<ImportDeclaration> = rootNode
         .children()
         .filter { it.type == IMPORT_DECLARATION }
         .map { importNode ->
             val isWildcard = importNode.children().any { it.type == ASTERISK }
-            val identifierText = TreeTraversal.findFirstChildTextByType(importNode, sourceCode, SCOPED_IDENTIFIER, IDENTIFIER)
+            val identifierText = TreeTraversal.findFirstChildTextByType(importNode, SCOPED_IDENTIFIER, IDENTIFIER)
             val path = identifierText?.split(IMPORT_SEPARATOR) ?: emptyList()
             ImportDeclaration(path = path, isWildcard = isWildcard)
         }.toList()

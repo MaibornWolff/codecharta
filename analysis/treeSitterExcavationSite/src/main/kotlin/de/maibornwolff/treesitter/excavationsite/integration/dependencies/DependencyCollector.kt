@@ -13,9 +13,9 @@ class DependencyCollector(private val treeSitterLanguage: TSLanguage, private va
     fun collectDependencies(content: String): DependencyResult {
         val rootNode = TsNodeSyntaxNode.parse(content, treeSitterLanguage)
         return DependencyResult(
-            packagePath = mapping.extractPackagePath(rootNode, content),
-            imports = mapping.extractImports(rootNode, content),
-            declarations = mapping.extractDeclarations(rootNode, content)
+            packagePath = mapping.extractPackagePath(rootNode),
+            imports = mapping.extractImports(rootNode),
+            declarations = mapping.extractDeclarations(rootNode)
         )
     }
 }

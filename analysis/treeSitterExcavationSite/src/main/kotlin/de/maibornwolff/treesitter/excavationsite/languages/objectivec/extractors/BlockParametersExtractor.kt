@@ -8,13 +8,13 @@ private const val IDENTIFIER = "identifier"
 private const val PARAMETER_DECLARATION = "parameter_declaration"
 private const val POINTER_DECLARATOR = "pointer_declarator"
 
-internal fun extractAllBlockParameters(node: SyntaxNode, sourceCode: String): List<String> = node
+internal fun extractAllBlockParameters(node: SyntaxNode): List<String> = node
     .children()
     .mapNotNull { child ->
         when (child.type) {
-            PARAMETER_DECLARATION -> extractFromParameterDeclaration(child, sourceCode)
+            PARAMETER_DECLARATION -> extractFromParameterDeclaration(child)
             POINTER_DECLARATOR, IDENTIFIER -> {
-                CDeclaratorParser.findIdentifierInDeclarator(child, sourceCode)
+                CDeclaratorParser.findIdentifierInDeclarator(child)
             }
             else -> null
         }

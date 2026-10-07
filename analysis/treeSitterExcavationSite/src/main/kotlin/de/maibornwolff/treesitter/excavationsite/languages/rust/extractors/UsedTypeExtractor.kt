@@ -32,16 +32,16 @@ internal object UsedTypeExtractor {
 
     private val FUNCTION_TYPES = setOf(FUNCTION_ITEM, FUNCTION_SIGNATURE_ITEM)
 
-    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
-        val supertraits = extractSupertraits(declaration, sourceCode)
-        val fields = extractFieldTypes(declaration, sourceCode)
-        val parameters = extractParameterTypes(declaration, sourceCode)
-        val returnTypes = extractReturnTypes(declaration, sourceCode)
-        val genericBounds = extractBoundTypes(declaration, TYPE_PARAMETER, sourceCode)
-        val whereBounds = extractBoundTypes(declaration, WHERE_PREDICATE, sourceCode)
-        val associatedBounds = extractBoundTypes(declaration, ASSOCIATED_TYPE, sourceCode)
-        val typeAliasRhs = extractTypeAliasRhs(declaration, sourceCode)
-        val constStaticTypes = extractConstStaticTypes(declaration, sourceCode)
+    fun extract(declaration: SyntaxNode): Set<UsedType> {
+        val supertraits = extractSupertraits(declaration)
+        val fields = extractFieldTypes(declaration)
+        val parameters = extractParameterTypes(declaration)
+        val returnTypes = extractReturnTypes(declaration)
+        val genericBounds = extractBoundTypes(declaration, TYPE_PARAMETER)
+        val whereBounds = extractBoundTypes(declaration, WHERE_PREDICATE)
+        val associatedBounds = extractBoundTypes(declaration, ASSOCIATED_TYPE)
+        val typeAliasRhs = extractTypeAliasRhs(declaration)
+        val constStaticTypes = extractConstStaticTypes(declaration)
 
         return (
             supertraits + fields + parameters + returnTypes +
@@ -49,51 +49,50 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun extractSupertraits(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractSupertraits(declaration: SyntaxNode): List<UsedType> {
         if (declaration.type != TRAIT_ITEM) return emptyList()
         return declaration
             .children()
             .filter { it.type == TRAIT_BOUNDS }
             .flatMap { it.namedChildren() }
-            .flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
+            .flatMap { RustTypeHelper.extractTypes(it) }
             .toList()
     }
 
-    private fun extractFieldTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractFieldTypes(declaration: SyntaxNode): List<UsedType> {
         val namedFields = signatureDescendants(declaration, FIELD_DECLARATION)
         val tupleFields = signatureDescendants(declaration, ORDERED_FIELD_DECLARATION_LIST)
         return (namedFields + tupleFields)
-            .flatMap { typeNodesOf(it).flatMap { typeNode -> RustTypeHelper.extractTypes(typeNode, sourceCode) } }
+            .flatMap { typeNodesOf(it).flatMap { typeNode -> RustTypeHelper.extractTypes(typeNode) } }
     }
 
-    private fun extractParameterTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> =
-        signatureDescendants(declaration, PARAMETER)
-            .flatMap { typeNodesOf(it).take(1).flatMap { typeNode -> RustTypeHelper.extractTypes(typeNode, sourceCode) } }
+    private fun extractParameterTypes(declaration: SyntaxNode): List<UsedType> = signatureDescendants(declaration, PARAMETER)
+        .flatMap { typeNodesOf(it).take(1).flatMap { typeNode -> RustTypeHelper.extractTypes(typeNode) } }
 
-    private fun extractReturnTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> = signatureFunctions(declaration)
+    private fun extractReturnTypes(declaration: SyntaxNode): List<UsedType> = signatureFunctions(declaration)
         .mapNotNull { function -> function.children().firstOrNull { RustTypeHelper.isTypeNode(it) } }
-        .flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
+        .flatMap { RustTypeHelper.extractTypes(it) }
 
-    private fun extractBoundTypes(declaration: SyntaxNode, parentType: String, sourceCode: String): List<UsedType> =
+    private fun extractBoundTypes(declaration: SyntaxNode, parentType: String): List<UsedType> =
         signatureDescendants(declaration, parentType)
             .flatMap { parent -> parent.children().filter { it.type == TRAIT_BOUNDS } }
             .flatMap { it.namedChildren() }
-            .flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
+            .flatMap { RustTypeHelper.extractTypes(it) }
 
-    private fun extractTypeAliasRhs(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractTypeAliasRhs(declaration: SyntaxNode): List<UsedType> {
         val typeItems = selfAndSignatureDescendants(declaration, TYPE_ITEM)
         return typeItems.flatMap { typeItem ->
             typeNodesOf(typeItem)
                 .drop(1) // the first type node is the alias's own name
-                .flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
+                .flatMap { RustTypeHelper.extractTypes(it) }
         }
     }
 
-    private fun extractConstStaticTypes(declaration: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractConstStaticTypes(declaration: SyntaxNode): List<UsedType> {
         val items = selfAndSignatureDescendants(declaration, CONST_ITEM) +
             selfAndSignatureDescendants(declaration, STATIC_ITEM)
         return items.flatMap { item ->
-            typeNodesOf(item).take(1).flatMap { RustTypeHelper.extractTypes(it, sourceCode) }
+            typeNodesOf(item).take(1).flatMap { RustTypeHelper.extractTypes(it) }
         }
     }
 

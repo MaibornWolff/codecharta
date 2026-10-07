@@ -17,46 +17,46 @@ internal object SignatureTypeExtractor {
 
     val nodeTypes: Set<String> = setOf(BASE_CLASS_CLAUSE, FUNCTION_DEFINITION, FUNCTION_DECLARATOR)
 
-    fun extractInheritance(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    fun extractInheritance(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[BASE_CLASS_CLAUSE].orEmpty().flatMap { baseClause ->
             baseClause
                 .namedChildren()
                 .filter { CppTypeHelper.isTypeNode(it) }
-                .mapNotNull { CppTypeHelper.extractType(it, sourceCode) }
+                .mapNotNull { CppTypeHelper.extractType(it) }
                 .toList()
         }
 
-    fun extractMethodReturnAndParamTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    fun extractMethodReturnAndParamTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[FUNCTION_DEFINITION].orEmpty().flatMap { fnDef ->
             val leadingReturnType = fnDef
                 .children()
                 .takeWhile { it.type != FUNCTION_DECLARATOR }
                 .firstOrNull { CppTypeHelper.isTypeNode(it) }
-                ?.let { CppTypeHelper.extractType(it, sourceCode) }
+                ?.let { CppTypeHelper.extractType(it) }
             val fnDeclarator = fnDef.children().firstOrNull { it.type == FUNCTION_DECLARATOR }
-            val paramTypes = fnDeclarator?.let { extractParameterTypes(it, sourceCode) } ?: emptyList()
-            val trailingReturnType = fnDeclarator?.let { extractTrailingReturnType(it, sourceCode) }
+            val paramTypes = fnDeclarator?.let { extractParameterTypes(it) } ?: emptyList()
+            val trailingReturnType = fnDeclarator?.let { extractTrailingReturnType(it) }
             paramTypes + listOfNotNull(leadingReturnType, trailingReturnType)
         }
 
-    fun extractDeclaratorParamTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
-        buckets[FUNCTION_DECLARATOR].orEmpty().flatMap { extractParameterTypes(it, sourceCode) }
+    fun extractDeclaratorParamTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
+        buckets[FUNCTION_DECLARATOR].orEmpty().flatMap { extractParameterTypes(it) }
 
-    private fun extractParameterTypes(fnDeclarator: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractParameterTypes(fnDeclarator: SyntaxNode): List<UsedType> {
         val paramList = fnDeclarator.children().firstOrNull { it.type == PARAMETER_LIST } ?: return emptyList()
         return paramList
             .children()
             .filter { it.type == PARAMETER_DECLARATION }
             .mapNotNull { param ->
                 val typeNode = param.children().firstOrNull { CppTypeHelper.isTypeNode(it) }
-                typeNode?.let { CppTypeHelper.extractType(it, sourceCode) }
+                typeNode?.let { CppTypeHelper.extractType(it) }
             }.toList()
     }
 
-    private fun extractTrailingReturnType(fnDeclarator: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractTrailingReturnType(fnDeclarator: SyntaxNode): UsedType? {
         val trailing = fnDeclarator.children().firstOrNull { it.type == TRAILING_RETURN_TYPE } ?: return null
         val typeDescriptor = trailing.children().firstOrNull { it.type == TYPE_DESCRIPTOR } ?: return null
         val typeNode = typeDescriptor.namedChildren().firstOrNull { CppTypeHelper.isTypeNode(it) } ?: return null
-        return CppTypeHelper.extractType(typeNode, sourceCode)
+        return CppTypeHelper.extractType(typeNode)
     }
 }

@@ -8,6 +8,5 @@ private const val INIT_KEYWORD = "init"
  * Returns the constant keyword "init" for init declarations.
  */
 internal fun extractInitKeyword(
-    @Suppress("UNUSED_PARAMETER") node: SyntaxNode,
-    @Suppress("UNUSED_PARAMETER") sourceCode: String
+    @Suppress("UNUSED_PARAMETER") node: SyntaxNode
 ): String = INIT_KEYWORD

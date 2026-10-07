@@ -24,20 +24,20 @@ internal object UsedTypeExtractor {
             SignatureTypeExtractor.nodeTypes +
             AliasConstraintExtractor.nodeTypes
 
-    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode): Set<UsedType> {
         val buckets = groupDescendantsStoppingAtNestedDeclarations(declaration, ALL_NODE_TYPES)
         return (
-            DeclarationTypeExtractor.extractFieldAndVariableTypes(buckets, sourceCode) +
-                DeclarationTypeExtractor.extractCStyleCasts(buckets, sourceCode) +
-                CallExpressionTypeExtractor.extractInstantiationTypes(buckets, sourceCode) +
-                CallExpressionTypeExtractor.extractConstructorInitializerTypes(buckets, sourceCode) +
-                DeclarationTypeExtractor.extractTypeOperandTypes(buckets, sourceCode) +
-                ClassScopeExtractor.extractFriendAndUsingTypes(buckets, sourceCode) +
-                SignatureTypeExtractor.extractInheritance(buckets, sourceCode) +
-                SignatureTypeExtractor.extractMethodReturnAndParamTypes(buckets, sourceCode) +
-                SignatureTypeExtractor.extractDeclaratorParamTypes(buckets, sourceCode) +
-                AliasConstraintExtractor.extractAliasTypes(buckets, sourceCode) +
-                AliasConstraintExtractor.extractConstraintTypes(declaration, sourceCode)
+            DeclarationTypeExtractor.extractFieldAndVariableTypes(buckets) +
+                DeclarationTypeExtractor.extractCStyleCasts(buckets) +
+                CallExpressionTypeExtractor.extractInstantiationTypes(buckets) +
+                CallExpressionTypeExtractor.extractConstructorInitializerTypes(buckets) +
+                DeclarationTypeExtractor.extractTypeOperandTypes(buckets) +
+                ClassScopeExtractor.extractFriendAndUsingTypes(buckets) +
+                SignatureTypeExtractor.extractInheritance(buckets) +
+                SignatureTypeExtractor.extractMethodReturnAndParamTypes(buckets) +
+                SignatureTypeExtractor.extractDeclaratorParamTypes(buckets) +
+                AliasConstraintExtractor.extractAliasTypes(buckets) +
+                AliasConstraintExtractor.extractConstraintTypes(declaration)
         ).toSet()
     }
 

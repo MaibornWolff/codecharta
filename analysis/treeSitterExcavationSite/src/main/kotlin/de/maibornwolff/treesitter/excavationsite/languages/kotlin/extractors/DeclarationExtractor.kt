@@ -22,27 +22,27 @@ internal object DeclarationExtractor {
 
     private val DECLARATION_TYPES = setOf(CLASS_DECLARATION, OBJECT_DECLARATION)
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode): List<Declaration> {
         val allDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         val namesByStartByte = allDeclarations.associate { node ->
-            node.startByte to extractName(node, sourceCode)
+            node.startByte to extractName(node)
         }
         return allDeclarations
             .mapNotNull { declarationNode ->
                 val name = namesByStartByte[declarationNode.startByte]
                 if (name.isNullOrBlank()) return@mapNotNull null
                 val type = declarationType(declarationNode)
-                val usedTypes = UsedTypeExtractor.extract(declarationNode, sourceCode)
+                val usedTypes = UsedTypeExtractor.extract(declarationNode)
                 val parentPath = findParentPath(declarationNode, namesByStartByte)
                 Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath)
             }.toList()
     }
 
-    private fun extractName(node: SyntaxNode, sourceCode: String): String = node
+    private fun extractName(node: SyntaxNode): String = node
         .children()
         .firstOrNull { it.type == TYPE_IDENTIFIER }
-        ?.let { TreeTraversal.getNodeText(it, sourceCode).trim() }
+        ?.let { it.text.trim() }
         ?: ""
 
     private fun findParentPath(node: SyntaxNode, namesByStartByte: Map<Int, String>): List<String> {

@@ -40,20 +40,20 @@ internal object UsedTypeExtractor {
         ATTRIBUTE, IS_PATTERN_EXPRESSION
     )
 
-    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode): Set<UsedType> {
         val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
 
-        val constructorTypes = extractConstructorParameterTypes(declaration, buckets, sourceCode)
-        val methodTypes = extractMethodTypes(buckets, sourceCode)
-        val castTypes = extractCastTypes(buckets, sourceCode)
-        val genericParamTypes = extractGenericTypeArguments(buckets, sourceCode)
-        val genericConstraintTypes = extractGenericConstraintTypes(buckets, sourceCode)
-        val inheritanceTypes = extractInheritanceTypes(buckets, sourceCode)
-        val variableTypes = extractVariableTypes(buckets, sourceCode)
-        val objectCreationTypes = extractObjectCreationTypes(buckets, sourceCode)
-        val memberAccessTypes = extractMemberAccessTypes(buckets, sourceCode)
-        val attributeTypes = extractAttributeTypesWithSuffix(buckets, sourceCode)
-        val isTypeCheckTypes = extractPatternMatchingTypes(buckets, sourceCode)
+        val constructorTypes = extractConstructorParameterTypes(declaration, buckets)
+        val methodTypes = extractMethodTypes(buckets)
+        val castTypes = extractCastTypes(buckets)
+        val genericParamTypes = extractGenericTypeArguments(buckets)
+        val genericConstraintTypes = extractGenericConstraintTypes(buckets)
+        val inheritanceTypes = extractInheritanceTypes(buckets)
+        val variableTypes = extractVariableTypes(buckets)
+        val objectCreationTypes = extractObjectCreationTypes(buckets)
+        val memberAccessTypes = extractMemberAccessTypes(buckets)
+        val attributeTypes = extractAttributeTypesWithSuffix(buckets)
+        val isTypeCheckTypes = extractPatternMatchingTypes(buckets)
 
         return (
             constructorTypes + methodTypes + castTypes +
@@ -62,112 +62,108 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun extractConstructorParameterTypes(
-        declaration: SyntaxNode,
-        buckets: Map<String, List<SyntaxNode>>,
-        sourceCode: String
-    ): List<UsedType> {
+    private fun extractConstructorParameterTypes(declaration: SyntaxNode, buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val regularCtorTypes = buckets[CONSTRUCTOR_DECLARATION].orEmpty().flatMap { ctor ->
             val paramList = ctor.children().firstOrNull { it.type == PARAMETER_LIST }
                 ?: return@flatMap emptyList()
-            extractParameterTypes(paramList, sourceCode)
+            extractParameterTypes(paramList)
         }
         val primaryCtorTypes = declaration
             .children()
             .firstOrNull { it.type == PARAMETER_LIST }
-            ?.let { extractParameterTypes(it, sourceCode) }
+            ?.let { extractParameterTypes(it) }
             ?: emptyList()
         return primaryCtorTypes + regularCtorTypes
     }
 
-    private fun extractMethodTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractMethodTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[METHOD_DECLARATION].orEmpty().flatMap { method ->
             val children = method.children().toList()
             val returnType = children
                 .firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-                ?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+                ?.let { CSharpTypeHelper.extractType(it) }
             val paramList = children.firstOrNull { it.type == PARAMETER_LIST }
-            val paramTypes = paramList?.let { extractParameterTypes(it, sourceCode) } ?: emptyList()
+            val paramTypes = paramList?.let { extractParameterTypes(it) } ?: emptyList()
             paramTypes + listOfNotNull(returnType)
         }
 
-    private fun extractCastTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractCastTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val explicitCasts = buckets[CAST_EXPRESSION].orEmpty().mapNotNull { cast ->
             val typeNode = cast.namedChildren().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-            typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+            typeNode?.let { CSharpTypeHelper.extractType(it) }
         }
         val asCasts = buckets[AS_EXPRESSION].orEmpty().mapNotNull { asExpr ->
             val typeNode = asExpr.namedChildren().lastOrNull { CSharpTypeHelper.isTypeNode(it) }
-            typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+            typeNode?.let { CSharpTypeHelper.extractType(it) }
         }
         return explicitCasts + asCasts
     }
 
-    private fun extractGenericTypeArguments(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractGenericTypeArguments(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[TYPE_ARGUMENT_LIST].orEmpty().flatMap { typeArgList ->
             typeArgList
                 .namedChildren()
                 .filter { CSharpTypeHelper.isTypeNode(it) }
-                .mapNotNull { CSharpTypeHelper.extractType(it, sourceCode) }
+                .mapNotNull { CSharpTypeHelper.extractType(it) }
                 .toList()
         }
 
-    private fun extractGenericConstraintTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractGenericConstraintTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[TYPE_PARAMETER_CONSTRAINTS_CLAUSE].orEmpty().flatMap { clause ->
             clause
                 .children()
                 .filter { it.type == TYPE_PARAMETER_CONSTRAINT }
                 .mapNotNull { constraint ->
                     val typeNode = constraint.namedChildren().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-                    typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+                    typeNode?.let { CSharpTypeHelper.extractType(it) }
                 }.toList()
         }
 
-    private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[BASE_LIST].orEmpty().flatMap { baseList ->
             baseList
                 .namedChildren()
                 .filter { CSharpTypeHelper.isTypeNode(it) }
-                .mapNotNull { CSharpTypeHelper.extractType(it, sourceCode) }
+                .mapNotNull { CSharpTypeHelper.extractType(it) }
                 .toList()
         }
 
-    private fun extractVariableTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractVariableTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val fieldTypes = buckets[FIELD_DECLARATION].orEmpty().mapNotNull { field ->
             val varDecl = field.children().firstOrNull { it.type == VARIABLE_DECLARATION }
                 ?: return@mapNotNull null
-            extractVariableDeclarationType(varDecl, sourceCode)
+            extractVariableDeclarationType(varDecl)
         }
         val localTypes = buckets[LOCAL_DECLARATION_STATEMENT].orEmpty().mapNotNull { stmt ->
             val varDecl = stmt.children().firstOrNull { it.type == VARIABLE_DECLARATION }
                 ?: return@mapNotNull null
-            extractVariableDeclarationType(varDecl, sourceCode)
+            extractVariableDeclarationType(varDecl)
         }
         return fieldTypes + localTypes
     }
 
-    private fun extractVariableDeclarationType(varDecl: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractVariableDeclarationType(varDecl: SyntaxNode): UsedType? {
         val typeNode = varDecl.children().firstOrNull { CSharpTypeHelper.isTypeNode(it) || it.type == IMPLICIT_TYPE }
             ?: return null
         if (typeNode.type == IMPLICIT_TYPE) return null
-        val type = CSharpTypeHelper.extractType(typeNode, sourceCode) ?: return null
+        val type = CSharpTypeHelper.extractType(typeNode) ?: return null
         if (type.name in FILTERED_VARIABLE_TYPES) return null
         return type
     }
 
-    private fun extractObjectCreationTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractObjectCreationTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[OBJECT_CREATION_EXPRESSION].orEmpty().mapNotNull { objCreation ->
             val typeNode = objCreation.namedChildren().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-            typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+            typeNode?.let { CSharpTypeHelper.extractType(it) }
         }
 
-    private fun extractMemberAccessTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractMemberAccessTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[MEMBER_ACCESS_EXPRESSION].orEmpty().mapNotNull { memberAccess ->
             val firstChild = memberAccess.getNamedChild(0)
             if (firstChild.isNull) return@mapNotNull null
-            val type = CSharpTypeHelper.extractType(firstChild, sourceCode)
+            val type = CSharpTypeHelper.extractType(firstChild)
                 ?: if (firstChild.type == MEMBER_ACCESS_EXPRESSION) {
-                    UsedType(name = TreeTraversal.getNodeText(firstChild, sourceCode).trim())
+                    UsedType(name = firstChild.text.trim())
                 } else {
                     null
                 }
@@ -175,37 +171,37 @@ internal object UsedTypeExtractor {
             type
         }
 
-    private fun extractAttributeTypesWithSuffix(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractAttributeTypesWithSuffix(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val attributes = buckets[ATTRIBUTE].orEmpty().mapNotNull { attr ->
             val nameNode = attr.namedChildren().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-            nameNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+            nameNode?.let { CSharpTypeHelper.extractType(it) }
         }
         return attributes + attributes.map { UsedType(name = it.name + "Attribute") }
     }
 
-    private fun extractPatternMatchingTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractPatternMatchingTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[IS_PATTERN_EXPRESSION].orEmpty().mapNotNull { isExpr ->
             val declarationPattern = isExpr.children().firstOrNull { it.type == DECLARATION_PATTERN }
             if (declarationPattern != null) {
                 val typeNode = declarationPattern.namedChildren().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-                return@mapNotNull typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+                return@mapNotNull typeNode?.let { CSharpTypeHelper.extractType(it) }
             }
             val typeNode = isExpr.namedChildren().lastOrNull { CSharpTypeHelper.isTypeNode(it) }
-            typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+            typeNode?.let { CSharpTypeHelper.extractType(it) }
         }
 
-    private fun extractParameterTypes(paramList: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractParameterTypes(paramList: SyntaxNode): List<UsedType> {
         val regularParams = paramList
             .children()
             .filter { it.type == PARAMETER }
             .mapNotNull { param ->
                 val typeNode = param.children().firstOrNull { CSharpTypeHelper.isTypeNode(it) }
-                typeNode?.let { CSharpTypeHelper.extractType(it, sourceCode) }
+                typeNode?.let { CSharpTypeHelper.extractType(it) }
             }.toList()
         val paramsArrayTypes = paramList
             .children()
             .filter { it.type == ARRAY_TYPE }
-            .mapNotNull { CSharpTypeHelper.extractType(it, sourceCode) }
+            .mapNotNull { CSharpTypeHelper.extractType(it) }
             .toList()
         return regularParams + paramsArrayTypes
     }

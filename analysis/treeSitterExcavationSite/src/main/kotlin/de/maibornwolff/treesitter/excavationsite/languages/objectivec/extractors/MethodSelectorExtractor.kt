@@ -9,39 +9,39 @@ private const val KEYWORD_SELECTOR = "keyword_selector"
 private const val SELECTOR = "selector"
 private const val FIELD_KEYWORD = "keyword"
 
-internal fun extractMethodSelector(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractMethodSelector(node: SyntaxNode): String? {
     val selector = node.getChildByFieldName(SELECTOR)
     if (!selector.isNull) {
-        return extractSelectorBaseName(selector, sourceCode)
+        return extractSelectorBaseName(selector)
     }
 
     for (i in 0 until node.childCount) {
         val child = node.getChild(i)
         when (child.type) {
-            SELECTOR -> return TreeTraversal.getNodeText(child, sourceCode)
-            KEYWORD_SELECTOR -> return extractFirstKeyword(child, sourceCode)
+            SELECTOR -> return child.text
+            KEYWORD_SELECTOR -> return extractFirstKeyword(child)
         }
     }
     return null
 }
 
-private fun extractSelectorBaseName(selector: SyntaxNode, sourceCode: String): String? = when (selector.type) {
-    SELECTOR -> TreeTraversal.getNodeText(selector, sourceCode)
-    KEYWORD_SELECTOR -> extractFirstKeyword(selector, sourceCode)
-    IDENTIFIER -> TreeTraversal.getNodeText(selector, sourceCode)
-    else -> TreeTraversal.findChildByType(selector, IDENTIFIER, sourceCode)
-        ?: extractFirstKeyword(selector, sourceCode)
+private fun extractSelectorBaseName(selector: SyntaxNode): String? = when (selector.type) {
+    SELECTOR -> selector.text
+    KEYWORD_SELECTOR -> extractFirstKeyword(selector)
+    IDENTIFIER -> selector.text
+    else -> TreeTraversal.findChildByType(selector, IDENTIFIER)
+        ?: extractFirstKeyword(selector)
 }
 
-private fun extractFirstKeyword(node: SyntaxNode, sourceCode: String): String? {
+private fun extractFirstKeyword(node: SyntaxNode): String? {
     for (i in 0 until node.childCount) {
         val child = node.getChild(i)
         if (child.type == KEYWORD_DECLARATOR) {
             val keyword = child.getChildByFieldName(FIELD_KEYWORD)
             if (!keyword.isNull) {
-                return TreeTraversal.getNodeText(keyword, sourceCode)
+                return keyword.text
             }
-            return TreeTraversal.findChildByType(child, IDENTIFIER, sourceCode)
+            return TreeTraversal.findChildByType(child, IDENTIFIER)
         }
     }
     return null

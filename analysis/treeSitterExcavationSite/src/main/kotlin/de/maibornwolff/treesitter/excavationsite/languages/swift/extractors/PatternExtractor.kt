@@ -13,9 +13,9 @@ private const val PATTERN = "pattern"
  * Swift properties have structure: `let/var pattern: Type = value`
  * where pattern contains the simple_identifier.
  */
-internal fun extractFromPattern(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractFromPattern(node: SyntaxNode): String? {
     val patternChild = node.children().firstOrNull {
         it.type == PATTERN
     } ?: return null
-    return TreeTraversal.findFirstChildTextByType(patternChild, sourceCode, SIMPLE_IDENTIFIER)
+    return TreeTraversal.findFirstChildTextByType(patternChild, SIMPLE_IDENTIFIER)
 }

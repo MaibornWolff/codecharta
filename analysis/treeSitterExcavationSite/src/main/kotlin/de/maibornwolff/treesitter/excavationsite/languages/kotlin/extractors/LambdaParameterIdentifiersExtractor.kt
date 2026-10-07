@@ -16,10 +16,10 @@ private const val UNDERSCORE = "_"
  *
  * Filters out underscore identifiers.
  */
-internal fun extractLambdaParameterIdentifiers(node: SyntaxNode, sourceCode: String): List<String> = node
+internal fun extractLambdaParameterIdentifiers(node: SyntaxNode): List<String> = node
     .children()
     .filter { it.type == VARIABLE_DECLARATION }
     .mapNotNull {
-        TreeTraversal.findFirstChildTextByType(it, sourceCode, SIMPLE_IDENTIFIER)
+        TreeTraversal.findFirstChildTextByType(it, SIMPLE_IDENTIFIER)
     }.filter { it != UNDERSCORE }
     .toList()

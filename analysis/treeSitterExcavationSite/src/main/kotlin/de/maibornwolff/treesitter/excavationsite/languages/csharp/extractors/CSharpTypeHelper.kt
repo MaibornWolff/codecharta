@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -19,42 +18,41 @@ internal object CSharpTypeHelper {
 
     fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES
 
-    fun extractType(typeNode: SyntaxNode, sourceCode: String): UsedType? {
+    fun extractType(typeNode: SyntaxNode): UsedType? {
         if (typeNode.isNull) return null
         return when (typeNode.type) {
-            GENERIC_NAME -> extractGenericType(typeNode, sourceCode)
-            QUALIFIED_NAME -> extractQualifiedType(typeNode, sourceCode)
-            NULLABLE_TYPE -> extractNullableType(typeNode, sourceCode)
-            ARRAY_TYPE -> extractArrayElementType(typeNode, sourceCode)
-            IDENTIFIER, PREDEFINED_TYPE -> UsedType(name = TreeTraversal.getNodeText(typeNode, sourceCode).trim())
+            GENERIC_NAME -> extractGenericType(typeNode)
+            QUALIFIED_NAME -> extractQualifiedType(typeNode)
+            NULLABLE_TYPE -> extractNullableType(typeNode)
+            ARRAY_TYPE -> extractArrayElementType(typeNode)
+            IDENTIFIER, PREDEFINED_TYPE -> UsedType(name = typeNode.text.trim())
             else -> null
         }
     }
 
-    private fun extractGenericType(genericNameNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractGenericType(genericNameNode: SyntaxNode): UsedType? {
         val nameNode = genericNameNode.children().firstOrNull { it.type == IDENTIFIER } ?: return null
         val typeArgs = genericNameNode.children().firstOrNull { it.type == TYPE_ARGUMENT_LIST }
         val genericTypes = typeArgs
             ?.namedChildren()
             ?.filter { isTypeNode(it) }
-            ?.mapNotNull { extractType(it, sourceCode) }
+            ?.mapNotNull { extractType(it) }
             ?.toList() ?: emptyList()
         return UsedType(
-            name = TreeTraversal.getNodeText(nameNode, sourceCode).trim(),
+            name = nameNode.text.trim(),
             genericTypes = genericTypes
         )
     }
 
-    private fun extractQualifiedType(qualifiedNameNode: SyntaxNode, sourceCode: String): UsedType? =
-        UsedType(name = TreeTraversal.getNodeText(qualifiedNameNode, sourceCode).trim())
+    private fun extractQualifiedType(qualifiedNameNode: SyntaxNode): UsedType? = UsedType(name = qualifiedNameNode.text.trim())
 
-    private fun extractNullableType(nullableNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractNullableType(nullableNode: SyntaxNode): UsedType? {
         val innerType = nullableNode.namedChildren().firstOrNull { isTypeNode(it) }
-        return innerType?.let { extractType(it, sourceCode) }
+        return innerType?.let { extractType(it) }
     }
 
-    private fun extractArrayElementType(arrayTypeNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractArrayElementType(arrayTypeNode: SyntaxNode): UsedType? {
         val elementType = arrayTypeNode.namedChildren().firstOrNull { isTypeNode(it) }
-        return elementType?.let { extractType(it, sourceCode) }
+        return elementType?.let { extractType(it) }
     }
 }

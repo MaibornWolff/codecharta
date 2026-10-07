@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 /**
  * Custom Delphi comment extractor.
@@ -15,8 +14,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
  * `CommentFormats.AutoDetect` does not recognize the `{}` and `(**)` styles,
  * so we strip the markers here.
  */
-internal fun extractDelphiComment(node: SyntaxNode, sourceCode: String): String? {
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+internal fun extractDelphiComment(node: SyntaxNode): String? {
+    val text = node.text
     return when {
         text.startsWith("//") -> text.removePrefix("//").trim()
         text.startsWith("{") && text.endsWith("}") -> text.removePrefix("{").removeSuffix("}").trim()

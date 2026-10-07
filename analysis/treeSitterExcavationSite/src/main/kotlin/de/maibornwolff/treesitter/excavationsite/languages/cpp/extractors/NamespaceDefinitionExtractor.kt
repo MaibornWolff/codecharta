@@ -6,6 +6,5 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
 private const val IDENTIFIER = "identifier"
 private const val NAMESPACE_IDENTIFIER = "namespace_identifier"
 
-internal fun extractFromNamespaceDefinition(node: SyntaxNode, sourceCode: String): String? =
-    TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER)
-        ?: TreeTraversal.findFirstChildTextByType(node, sourceCode, NAMESPACE_IDENTIFIER)
+internal fun extractFromNamespaceDefinition(node: SyntaxNode): String? = TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
+    ?: TreeTraversal.findFirstChildTextByType(node, NAMESPACE_IDENTIFIER)

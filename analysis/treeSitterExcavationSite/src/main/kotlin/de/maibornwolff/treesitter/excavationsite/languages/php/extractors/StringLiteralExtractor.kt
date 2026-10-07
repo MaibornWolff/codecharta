@@ -15,9 +15,9 @@ private const val REQUIRE_ONCE_EXPRESSION = "require_once_expression"
  * Returns null for strings inside include/require expressions,
  * allowing them to be skipped during extraction.
  */
-internal fun extractNonImportString(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractNonImportString(node: SyntaxNode): String? {
     if (isIncludeString(node)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return StringParser.stripAnyQuotes(text)
 }
 
@@ -26,9 +26,9 @@ internal fun extractNonImportString(node: SyntaxNode, sourceCode: String): Strin
  *
  * Returns null for strings inside include/require expressions.
  */
-internal fun extractNonImportEncapsedString(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractNonImportEncapsedString(node: SyntaxNode): String? {
     if (isIncludeString(node)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return text.removeSurrounding("\"")
 }
 

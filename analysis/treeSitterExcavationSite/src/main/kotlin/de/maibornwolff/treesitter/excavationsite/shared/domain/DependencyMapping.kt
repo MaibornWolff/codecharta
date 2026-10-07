@@ -9,9 +9,9 @@ package de.maibornwolff.treesitter.excavationsite.shared.domain
  * [Extract] stores custom extraction functions.
  */
 data class LanguageDependencyMapping(
-    val extractPackagePath: (SyntaxNode, String) -> List<String>,
-    val extractImports: (SyntaxNode, String) -> List<ImportDeclaration>,
-    val extractDeclarations: (SyntaxNode, String) -> List<Declaration>
+    val extractPackagePath: (SyntaxNode) -> List<String>,
+    val extractImports: (SyntaxNode) -> List<ImportDeclaration>,
+    val extractDeclarations: (SyntaxNode) -> List<Declaration>
 )
 
 /**

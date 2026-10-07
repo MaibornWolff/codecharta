@@ -8,17 +8,17 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 internal object JavascriptDependencyMapping {
     val dependencyMapping = LanguageDependencyMapping(
-        extractPackagePath = { _, _ -> emptyList() }, // JS/TS have no package declarations
+        extractPackagePath = { emptyList() }, // JS/TS have no package declarations
         extractImports = ImportExtractor::extract,
-        extractDeclarations = { node, code -> extractJsDeclarations(node, code) }
+        extractDeclarations = ::extractJsDeclarations
     )
 
     // Intentional JS/TS divergence: DC's legacy JS analyzer produces both the named declaration
     // AND a DEFAULT_EXPORT copy (same DeclarationType) for `export default function/class Foo`.
     // TypeScript does NOT add the DEFAULT_EXPORT copy. This matches DC main's behavior per language.
-    private fun extractJsDeclarations(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
-        val declarations = DeclarationExtractor.extract(rootNode, sourceCode)
-        val shape = DeclarationExtractor.classifyDefaultExport(rootNode, sourceCode)
+    private fun extractJsDeclarations(rootNode: SyntaxNode): List<Declaration> {
+        val declarations = DeclarationExtractor.extract(rootNode)
+        val shape = DeclarationExtractor.classifyDefaultExport(rootNode)
         if (shape !is DeclarationExtractor.DefaultExport.Named) return declarations
         val inlineDecl = declarations.firstOrNull { it.name == shape.name } ?: return declarations
         return declarations + inlineDecl.copy(name = DEFAULT_EXPORT)

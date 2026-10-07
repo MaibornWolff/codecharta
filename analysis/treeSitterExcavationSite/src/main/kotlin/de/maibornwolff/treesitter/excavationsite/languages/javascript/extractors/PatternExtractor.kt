@@ -16,40 +16,39 @@ private const val ASSIGNMENT_PATTERN = "assignment_pattern"
 /**
  * Recursively extracts identifiers from destructuring patterns.
  */
-internal fun extractIdentifiersFromPattern(node: SyntaxNode, sourceCode: String): List<String> = when (node.type) {
+internal fun extractIdentifiersFromPattern(node: SyntaxNode): List<String> = when (node.type) {
     SHORTHAND_PROPERTY_IDENTIFIER_PATTERN,
     IDENTIFIER -> {
-        listOf(TreeTraversal.getNodeText(node, sourceCode))
+        listOf(node.text)
     }
-    PAIR_PATTERN -> extractIdentifiersFromPairPattern(node, sourceCode)
+    PAIR_PATTERN -> extractIdentifiersFromPairPattern(node)
     OBJECT_ASSIGNMENT_PATTERN,
     ASSIGNMENT_PATTERN -> {
-        extractIdentifiersFromAssignmentPattern(node, sourceCode)
+        extractIdentifiersFromAssignmentPattern(node)
     }
     REST_PATTERN -> {
         listOfNotNull(
             TreeTraversal.findFirstChildTextByType(
                 node,
-                sourceCode,
                 IDENTIFIER
             )
         )
     }
-    else -> node.children().flatMap { extractIdentifiersFromPattern(it, sourceCode) }.toList()
+    else -> node.children().flatMap { extractIdentifiersFromPattern(it) }.toList()
 }
 
 /**
  * Extracts identifiers from pair patterns in object destructuring.
  */
-internal fun extractIdentifiersFromPairPattern(node: SyntaxNode, sourceCode: String): List<String> = node
+internal fun extractIdentifiersFromPairPattern(node: SyntaxNode): List<String> = node
     .children()
     .flatMap { child ->
         when (child.type) {
             IDENTIFIER -> {
-                listOf(TreeTraversal.getNodeText(child, sourceCode))
+                listOf(child.text)
             }
             OBJECT_PATTERN,
-            ARRAY_PATTERN -> extractIdentifiersFromPattern(child, sourceCode)
+            ARRAY_PATTERN -> extractIdentifiersFromPattern(child)
             else -> emptyList()
         }
     }.toList()
@@ -57,7 +56,6 @@ internal fun extractIdentifiersFromPairPattern(node: SyntaxNode, sourceCode: Str
 /**
  * Extracts identifiers from assignment patterns with default values.
  */
-internal fun extractIdentifiersFromAssignmentPattern(node: SyntaxNode, sourceCode: String): List<String> =
-    node.children().firstOrNull()?.let {
-        extractIdentifiersFromPattern(it, sourceCode)
-    } ?: emptyList()
+internal fun extractIdentifiersFromAssignmentPattern(node: SyntaxNode): List<String> = node.children().firstOrNull()?.let {
+    extractIdentifiersFromPattern(it)
+} ?: emptyList()

@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val NAME = "name"
@@ -14,23 +13,23 @@ private const val AS_KEYWORD = "as"
  * - `use App\Model\User;` -> "User"
  * - `use App\Model\User as Customer;` -> "Customer"
  */
-internal fun extractUseClauseName(node: SyntaxNode, sourceCode: String): String? = findNameAfterAs(node, sourceCode)
+internal fun extractUseClauseName(node: SyntaxNode): String? = findNameAfterAs(node)
     ?: node
         .children()
         .firstOrNull { it.type == QUALIFIED_NAME }
-        ?.let { findLastNameChild(it, sourceCode) }
-    ?: findFirstChildTextByType(node, sourceCode, NAME)
+        ?.let { findLastNameChild(it) }
+    ?: findFirstChildTextByType(node, NAME)
 
 /**
  * Finds name child that appears after "as" keyword.
  * Used for trait adaptation: `use SomeTrait { method as newName; }`
  */
-internal fun findNameAfterAs(node: SyntaxNode, sourceCode: String): String? {
+internal fun findNameAfterAs(node: SyntaxNode): String? {
     val children = node.children().toList()
-    val asIndex = children.indexOfFirst { TreeTraversal.getNodeText(it, sourceCode) == AS_KEYWORD }
+    val asIndex = children.indexOfFirst { it.text == AS_KEYWORD }
     if (asIndex < 0) return null
     return children
         .drop(asIndex + 1)
         .firstOrNull { it.type == NAME }
-        ?.let { TreeTraversal.getNodeText(it, sourceCode) }
+        ?.let { it.text }
 }

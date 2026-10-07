@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedt
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -31,29 +30,28 @@ internal object CallExpressionTypeExtractor {
         FIELD_INITIALIZER_LIST
     )
 
-    fun extractInstantiationTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
-        val newTypes = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
+    fun extractInstantiationTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
+        val newTypes = buckets[NEW_EXPRESSION].orEmpty().mapNotNull { CppTypeHelper.extractTypeFromTypeField(it) }
         val throwCallees = buckets[THROW_STATEMENT].orEmpty().mapNotNull { throwStmt ->
             throwStmt.namedChildren().firstOrNull { it.type == CALL_EXPRESSION }
         }
-        val callTypes = (buckets[CALL_EXPRESSION].orEmpty() + throwCallees).flatMap { extractCallTypes(it, sourceCode) }
+        val callTypes = (buckets[CALL_EXPRESSION].orEmpty() + throwCallees).flatMap { extractCallTypes(it) }
         return newTypes + callTypes
     }
 
-    private fun extractCallTypes(call: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractCallTypes(call: SyntaxNode): List<UsedType> {
         val function = call.getChildByFieldName(FUNCTION_FIELD).takeIf { !it.isNull } ?: return emptyList()
         val parentType = call.parent.takeIf { !it.isNull }?.type
         return when (function.type) {
-            TEMPLATE_FUNCTION -> extractTemplateFunctionTypes(function, sourceCode, isInThrow = parentType == THROW_STATEMENT)
+            TEMPLATE_FUNCTION -> extractTemplateFunctionTypes(function, isInThrow = parentType == THROW_STATEMENT)
 
             QUALIFIED_IDENTIFIER -> listOfNotNull(
-                CppTypeHelper.extractRightmostSegment(function, sourceCode),
-                CppTypeHelper.extractSingleSegmentScope(function, sourceCode)
+                CppTypeHelper.extractRightmostSegment(function),
+                CppTypeHelper.extractSingleSegmentScope(function)
             )
 
             IDENTIFIER -> extractBareFunctionName(
                 function,
-                sourceCode,
                 isNestedOrThrown = parentType == THROW_STATEMENT || parentType == ARGUMENT_LIST
             )
 
@@ -61,13 +59,13 @@ internal object CallExpressionTypeExtractor {
         }
     }
 
-    private fun extractTemplateFunctionTypes(function: SyntaxNode, sourceCode: String, isInThrow: Boolean): List<UsedType> {
-        val generics = extractTemplateArgumentTypes(function, sourceCode)
+    private fun extractTemplateFunctionTypes(function: SyntaxNode, isInThrow: Boolean): List<UsedType> {
+        val generics = extractTemplateArgumentTypes(function)
         if (!isInThrow) return generics
         val name = function
             .getChildByFieldName(NAME_FIELD)
             .takeIf { !it.isNull }
-            ?.let { TreeTraversal.getNodeText(it, sourceCode).trim() }
+            ?.let { it.text.trim() }
             .orEmpty()
         return if (name.isEmpty()) generics else generics + UsedType(name = name, genericTypes = generics)
     }
@@ -76,29 +74,29 @@ internal object CallExpressionTypeExtractor {
     Mirrors DC's empty-namespace-wildcard fallthrough so a free function used as
     `someCall(helper(...))` or `throw helper(...)` still emits `helper`.
      */
-    private fun extractBareFunctionName(function: SyntaxNode, sourceCode: String, isNestedOrThrown: Boolean): List<UsedType> {
+    private fun extractBareFunctionName(function: SyntaxNode, isNestedOrThrown: Boolean): List<UsedType> {
         if (!isNestedOrThrown) return emptyList()
-        val text = TreeTraversal.getNodeText(function, sourceCode).trim()
+        val text = function.text.trim()
         return if (text.isEmpty()) emptyList() else listOf(UsedType(name = text))
     }
 
-    fun extractConstructorInitializerTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    fun extractConstructorInitializerTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[FIELD_INITIALIZER_LIST].orEmpty().flatMap { initList ->
             initList
                 .namedChildren()
                 .filter { it.type == FIELD_INITIALIZER }
                 .flatMap { fieldInit ->
                     val argList = fieldInit.namedChildren().firstOrNull { it.type == ARGUMENT_LIST || it.type == INITIALIZER_LIST }
-                    if (argList == null) emptySequence() else collectInitializerArgumentTypes(argList, sourceCode)
+                    if (argList == null) emptySequence() else collectInitializerArgumentTypes(argList)
                 }.toList()
         }
 
-    private fun collectInitializerArgumentTypes(argList: SyntaxNode, sourceCode: String): Sequence<UsedType> {
+    private fun collectInitializerArgumentTypes(argList: SyntaxNode): Sequence<UsedType> {
         val isBraceInit = argList.type == INITIALIZER_LIST
         return argList.namedChildren().flatMap { arg ->
             when (arg.type) {
                 QUALIFIED_IDENTIFIER ->
-                    listOfNotNull(CppTypeHelper.extractSecondToLastSegment(arg, sourceCode)).asSequence()
+                    listOfNotNull(CppTypeHelper.extractSecondToLastSegment(arg)).asSequence()
 
                 CALL_EXPRESSION ->
                     if (isBraceInit) {
@@ -107,7 +105,7 @@ internal object CallExpressionTypeExtractor {
                         arg
                             .children()
                             .filter { it.type == QUALIFIED_IDENTIFIER }
-                            .mapNotNull { CppTypeHelper.extractSecondToLastSegment(it, sourceCode) }
+                            .mapNotNull { CppTypeHelper.extractSecondToLastSegment(it) }
                     }
 
                 else -> emptySequence()
@@ -115,7 +113,7 @@ internal object CallExpressionTypeExtractor {
         }
     }
 
-    private fun extractTemplateArgumentTypes(templateFunction: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractTemplateArgumentTypes(templateFunction: SyntaxNode): List<UsedType> {
         val argList = templateFunction
             .getChildByFieldName(ARGUMENTS_FIELD)
             .takeIf { !it.isNull && it.type == TEMPLATE_ARGUMENT_LIST }
@@ -128,7 +126,7 @@ internal object CallExpressionTypeExtractor {
                 } else {
                     arg.takeIf { CppTypeHelper.isTypeNode(it) }
                 }
-                inner?.let { CppTypeHelper.extractType(it, sourceCode) }
+                inner?.let { CppTypeHelper.extractType(it) }
             }.toList()
     }
 }

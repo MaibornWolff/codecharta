@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 
 private const val IDENTIFIER = "identifier"
@@ -14,7 +13,7 @@ private const val RECORD_PATTERN = "record_pattern"
  * Pattern matching syntax: after the type_identifier, an identifier declares
  * the pattern variable. Returns null if using record patterns.
  */
-internal fun extractInstanceofPatternVariable(node: SyntaxNode, sourceCode: String): String? {
+internal fun extractInstanceofPatternVariable(node: SyntaxNode): String? {
     var lastIdentifier: SyntaxNode? = null
     var foundType = false
     for (child in node.children()) {
@@ -24,5 +23,5 @@ internal fun extractInstanceofPatternVariable(node: SyntaxNode, sourceCode: Stri
             IDENTIFIER -> if (foundType) lastIdentifier = child
         }
     }
-    return lastIdentifier?.let { TreeTraversal.getNodeText(it, sourceCode) }
+    return lastIdentifier?.let { it.text }
 }

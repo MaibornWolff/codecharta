@@ -10,10 +10,10 @@ internal object PackageExtractor {
     private const val IDENTIFIER = "identifier"
     private const val PACKAGE_SEPARATOR = "."
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<String> {
+    fun extract(rootNode: SyntaxNode): List<String> {
         val packageNode = rootNode.children().firstOrNull { it.type == PACKAGE_DECLARATION }
             ?: return emptyList()
-        val packageText = TreeTraversal.findFirstChildTextByType(packageNode, sourceCode, SCOPED_IDENTIFIER, IDENTIFIER)
+        val packageText = TreeTraversal.findFirstChildTextByType(packageNode, SCOPED_IDENTIFIER, IDENTIFIER)
             ?: return emptyList()
         return packageText.split(PACKAGE_SEPARATOR)
     }

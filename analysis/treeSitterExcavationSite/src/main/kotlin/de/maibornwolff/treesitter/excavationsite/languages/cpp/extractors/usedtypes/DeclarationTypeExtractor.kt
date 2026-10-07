@@ -21,14 +21,14 @@ internal object DeclarationTypeExtractor {
         ALIGNOF_EXPRESSION
     )
 
-    fun extractFieldAndVariableTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    fun extractFieldAndVariableTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         (buckets[FIELD_DECLARATION].orEmpty() + buckets[DECLARATION].orEmpty())
-            .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
+            .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it) }
 
-    fun extractCStyleCasts(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
-        buckets[CAST_EXPRESSION].orEmpty().mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
+    fun extractCStyleCasts(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
+        buckets[CAST_EXPRESSION].orEmpty().mapNotNull { CppTypeHelper.extractTypeFromTypeField(it) }
 
-    fun extractTypeOperandTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> = TYPE_OPERAND_EXPRESSIONS
+    fun extractTypeOperandTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> = TYPE_OPERAND_EXPRESSIONS
         .flatMap { buckets[it].orEmpty() }
-        .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it, sourceCode) }
+        .mapNotNull { CppTypeHelper.extractTypeFromTypeField(it) }
 }

@@ -10,7 +10,7 @@ private const val NAME = "name"
  * Extracts constant name from const_element child.
  * Example: `const MAX_SIZE = 100;` -> "MAX_SIZE"
  */
-internal fun extractConstName(node: SyntaxNode, sourceCode: String): String? = node
+internal fun extractConstName(node: SyntaxNode): String? = node
     .children()
     .firstOrNull { it.type == CONST_ELEMENT }
-    ?.let { findFirstChildTextByType(it, sourceCode, NAME) }
+    ?.let { findFirstChildTextByType(it, NAME) }

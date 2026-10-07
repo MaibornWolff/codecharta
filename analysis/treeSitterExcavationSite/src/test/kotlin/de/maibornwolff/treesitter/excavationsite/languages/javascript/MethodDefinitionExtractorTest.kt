@@ -23,7 +23,7 @@ class MethodDefinitionExtractorTest {
             val firstChild = root.getChild(0) // class_declaration, index 0 of program -> prevSibling is null
 
             // Act / Assert
-            assertThatCode { extractIdentifiersFromMethodDefinition(firstChild, code) }
+            assertThatCode { extractIdentifiersFromMethodDefinition(firstChild) }
                 .doesNotThrowAnyException()
         }
     }

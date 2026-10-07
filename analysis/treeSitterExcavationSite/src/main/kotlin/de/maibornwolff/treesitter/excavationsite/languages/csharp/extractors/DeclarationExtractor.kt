@@ -22,32 +22,32 @@ internal object DeclarationExtractor {
         "delegate_declaration"
     )
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
+    fun extract(rootNode: SyntaxNode): List<Declaration> {
         val allDeclarations = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
         val namesByStartByte = allDeclarations.associate { node ->
-            node.startByte to TreeTraversal.findChildByType(node, IDENTIFIER, sourceCode)
+            node.startByte to TreeTraversal.findChildByType(node, IDENTIFIER)
         }
         return allDeclarations.mapNotNull { declarationNode ->
             val name = namesByStartByte[declarationNode.startByte] ?: return@mapNotNull null
-            val namespacePath = findNamespacePath(declarationNode, sourceCode)
+            val namespacePath = findNamespacePath(declarationNode)
             val parentClassPath = findParentClassPath(declarationNode, namesByStartByte)
             Declaration(
                 name = name,
                 type = mapDeclarationTypeToClosestEquivalent(declarationNode.type),
-                usedTypes = UsedTypeExtractor.extract(declarationNode, sourceCode),
+                usedTypes = UsedTypeExtractor.extract(declarationNode),
                 parentPath = namespacePath + parentClassPath
             )
         }
     }
 
-    private fun findNamespacePath(node: SyntaxNode, sourceCode: String): List<String> {
+    private fun findNamespacePath(node: SyntaxNode): List<String> {
         val ancestorSegments = mutableListOf<List<String>>()
         var current = node.parent
         var compilationUnit: SyntaxNode? = null
         while (!current.isNull) {
             if (current.type == NAMESPACE_DECLARATION || current.type == FILE_SCOPED_NAMESPACE) {
-                ancestorSegments.add(0, extractNamespacePath(current, sourceCode))
+                ancestorSegments.add(0, extractNamespacePath(current))
             }
             if (current.type == COMPILATION_UNIT) {
                 compilationUnit = current
@@ -59,7 +59,7 @@ internal object DeclarationExtractor {
                 .findAllDescendantsOfType(compilationUnit, FILE_SCOPED_NAMESPACE)
                 .firstOrNull()
             if (namespaceNode != null) {
-                ancestorSegments.add(extractNamespacePath(namespaceNode, sourceCode))
+                ancestorSegments.add(extractNamespacePath(namespaceNode))
             }
         }
         return ancestorSegments.flatten()
@@ -88,8 +88,8 @@ internal object DeclarationExtractor {
         else -> DeclarationType.UNKNOWN
     }
 
-    private fun extractNamespacePath(node: SyntaxNode, sourceCode: String): List<String> {
-        val text = TreeTraversal.findFirstChildTextByType(node, sourceCode, QUALIFIED_NAME, IDENTIFIER)
+    private fun extractNamespacePath(node: SyntaxNode): List<String> {
+        val text = TreeTraversal.findFirstChildTextByType(node, QUALIFIED_NAME, IDENTIFIER)
             ?: return emptyList()
         return text.split(NAMESPACE_SEPARATOR)
     }

@@ -5,5 +5,4 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
 
 private const val IDENTIFIER = "identifier"
 
-internal fun extractFromPreprocessorDef(node: SyntaxNode, sourceCode: String): String? =
-    TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER)
+internal fun extractFromPreprocessorDef(node: SyntaxNode): String? = TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)

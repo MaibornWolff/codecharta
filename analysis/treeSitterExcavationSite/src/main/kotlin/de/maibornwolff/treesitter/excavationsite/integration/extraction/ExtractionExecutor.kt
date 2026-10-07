@@ -16,30 +16,30 @@ object ExtractionExecutor {
     /**
      * Executes an extraction strategy to extract a single identifier from a node.
      */
-    fun extractSingle(node: SyntaxNode, sourceCode: String, method: ExtractionStrategy): String? = when (method) {
+    fun extractSingle(node: SyntaxNode, method: ExtractionStrategy): String? = when (method) {
         is ExtractionStrategy.FirstChildByType ->
-            TreeTraversal.findFirstChildTextByType(node, sourceCode, method.type)
+            TreeTraversal.findFirstChildTextByType(node, method.type)
 
         is ExtractionStrategy.FirstChildByTypes ->
-            TreeTraversal.findFirstChildTextByType(node, sourceCode, *method.types.toTypedArray())
+            TreeTraversal.findFirstChildTextByType(node, *method.types.toTypedArray())
 
         is ExtractionStrategy.NestedInChild ->
             node
                 .children()
                 .firstOrNull { it.type == method.containerType }
-                ?.let { TreeTraversal.findFirstChildTextByType(it, sourceCode, method.targetType) }
+                ?.let { TreeTraversal.findFirstChildTextByType(it, method.targetType) }
 
         is ExtractionStrategy.AllChildrenByType ->
-            TreeTraversal.findFirstChildTextByType(node, sourceCode, method.type)
+            TreeTraversal.findFirstChildTextByType(node, method.type)
     }
 
     /**
      * Executes an extraction strategy to extract multiple identifiers from a node.
      */
-    fun extractMultiple(node: SyntaxNode, sourceCode: String, method: ExtractionStrategy): List<String> = when (method) {
+    fun extractMultiple(node: SyntaxNode, method: ExtractionStrategy): List<String> = when (method) {
         is ExtractionStrategy.AllChildrenByType ->
-            TreeTraversal.findAllChildrenTextByType(node, sourceCode, method.type)
+            TreeTraversal.findAllChildrenTextByType(node, method.type)
 
-        else -> listOfNotNull(extractSingle(node, sourceCode, method))
+        else -> listOfNotNull(extractSingle(node, method))
     }
 }

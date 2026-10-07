@@ -39,23 +39,22 @@ object CDeclaratorParser {
      * - parenthesized_declarator -> declarator -> ...
      *
      * @param node The declarator node to search
-     * @param sourceCode The full source code string
      * @return The identifier text, or null if not found
      */
-    fun findIdentifierInDeclarator(node: SyntaxNode, sourceCode: String): String? {
+    fun findIdentifierInDeclarator(node: SyntaxNode): String? {
         if (node.isNull) return null
 
         return when (node.type) {
-            IDENTIFIER, FIELD_IDENTIFIER, TYPE_IDENTIFIER -> TreeTraversal.getNodeText(node, sourceCode)
+            IDENTIFIER, FIELD_IDENTIFIER, TYPE_IDENTIFIER -> node.text
             POINTER_DECLARATOR, ARRAY_DECLARATOR, FUNCTION_DECLARATOR,
             PARENTHESIZED_DECLARATOR, REFERENCE_DECLARATOR -> {
-                extractIdentifierFromNestedDeclarator(node, sourceCode)
+                extractIdentifierFromNestedDeclarator(node)
             }
-            QUALIFIED_IDENTIFIER -> extractFromQualifiedIdentifier(node, sourceCode)
-            DESTRUCTOR_NAME -> extractFromDestructorName(node, sourceCode)
+            QUALIFIED_IDENTIFIER -> extractFromQualifiedIdentifier(node)
+            DESTRUCTOR_NAME -> extractFromDestructorName(node)
             else -> {
-                TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER)
-                    ?: TreeTraversal.findFirstChildTextByType(node, sourceCode, FIELD_IDENTIFIER)
+                TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
+                    ?: TreeTraversal.findFirstChildTextByType(node, FIELD_IDENTIFIER)
             }
         }
     }
@@ -66,12 +65,11 @@ object CDeclaratorParser {
      * Common pattern for function_definition, parameter_declaration, etc.
      *
      * @param node The parent node containing a declarator field
-     * @param sourceCode The full source code string
      * @return The identifier text, or null if not found
      */
-    fun extractIdentifierFromDeclaratorField(node: SyntaxNode, sourceCode: String): String? {
+    fun extractIdentifierFromDeclaratorField(node: SyntaxNode): String? {
         val declarator = node.getChildByFieldName("declarator")
-        return findIdentifierInDeclarator(declarator, sourceCode)
+        return findIdentifierInDeclarator(declarator)
     }
 
     /**
@@ -80,16 +78,15 @@ object CDeclaratorParser {
      * For C++: MyNamespace::MyClass::myMethod -> myMethod
      *
      * @param node The qualified_identifier node
-     * @param sourceCode The full source code string
      * @return The rightmost identifier text, or null if not found
      */
-    fun extractFromQualifiedIdentifier(node: SyntaxNode, sourceCode: String): String? {
+    fun extractFromQualifiedIdentifier(node: SyntaxNode): String? {
         val name = node.getChildByFieldName("name")
         if (!name.isNull) {
             return when (name.type) {
-                IDENTIFIER, TYPE_IDENTIFIER -> TreeTraversal.getNodeText(name, sourceCode)
-                QUALIFIED_IDENTIFIER -> extractFromQualifiedIdentifier(name, sourceCode)
-                DESTRUCTOR_NAME -> extractFromDestructorName(name, sourceCode)
+                IDENTIFIER, TYPE_IDENTIFIER -> name.text
+                QUALIFIED_IDENTIFIER -> extractFromQualifiedIdentifier(name)
+                DESTRUCTOR_NAME -> extractFromDestructorName(name)
                 else -> null
             }
         }
@@ -99,7 +96,7 @@ object CDeclaratorParser {
             .children()
             .filter { it.type == IDENTIFIER || it.type == TYPE_IDENTIFIER }
             .lastOrNull()
-            ?.let { TreeTraversal.getNodeText(it, sourceCode) }
+            ?.let { it.text }
     }
 
     /**
@@ -108,30 +105,28 @@ object CDeclaratorParser {
      * Used for: int x = 5; where init_declarator contains declarator and value.
      *
      * @param initDeclarator The init_declarator node
-     * @param sourceCode The full source code string
      * @return The identifier text, or null if not found
      */
-    fun extractFromInitDeclarator(initDeclarator: SyntaxNode, sourceCode: String): String? {
+    fun extractFromInitDeclarator(initDeclarator: SyntaxNode): String? {
         val innerDeclarator = initDeclarator.getChildByFieldName("declarator")
-        return findIdentifierInDeclarator(innerDeclarator, sourceCode)
+        return findIdentifierInDeclarator(innerDeclarator)
     }
 
-    private fun extractIdentifierFromNestedDeclarator(node: SyntaxNode, sourceCode: String): String? {
+    private fun extractIdentifierFromNestedDeclarator(node: SyntaxNode): String? {
         val childDeclarator = node.getChildByFieldName("declarator")
         if (!childDeclarator.isNull) {
-            return findIdentifierInDeclarator(childDeclarator, sourceCode)
+            return findIdentifierInDeclarator(childDeclarator)
         }
         // Fallback: search children for identifier
         for (child in node.children()) {
             if (!child.isNull) {
-                val result = findIdentifierInDeclarator(child, sourceCode)
+                val result = findIdentifierInDeclarator(child)
                 if (result != null) return result
             }
         }
         return null
     }
 
-    private fun extractFromDestructorName(node: SyntaxNode, sourceCode: String): String? =
-        TreeTraversal.findFirstChildTextByType(node, sourceCode, IDENTIFIER)
-            ?: TreeTraversal.findFirstChildTextByType(node, sourceCode, TYPE_IDENTIFIER)
+    private fun extractFromDestructorName(node: SyntaxNode): String? = TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
+        ?: TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER)
 }

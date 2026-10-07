@@ -15,21 +15,20 @@ private const val EXTENSION = "extension"
  * For regular classes, extracts the type_identifier child.
  * For extensions (`extension SomeClass { ... }`), extracts from the user_type child.
  */
-internal fun extractClassOrExtensionIdentifier(node: SyntaxNode, sourceCode: String): String? = if (hasExtensionKeyword(node)) {
-    extractExtensionTypeName(node, sourceCode)
+internal fun extractClassOrExtensionIdentifier(node: SyntaxNode): String? = if (hasExtensionKeyword(node)) {
+    extractExtensionTypeName(node)
 } else {
-    TreeTraversal.findFirstChildTextByType(node, sourceCode, TYPE_IDENTIFIER)
+    TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER)
 }
 
 private fun hasExtensionKeyword(node: SyntaxNode): Boolean = node.children().any { it.type == EXTENSION }
 
-private fun extractExtensionTypeName(node: SyntaxNode, sourceCode: String): String? {
+private fun extractExtensionTypeName(node: SyntaxNode): String? {
     val userTypeChild = node.children().firstOrNull {
         it.type == USER_TYPE
     } ?: return null
     return TreeTraversal.findFirstChildTextByType(
         userTypeChild,
-        sourceCode,
         TYPE_IDENTIFIER,
         SIMPLE_IDENTIFIER
     )

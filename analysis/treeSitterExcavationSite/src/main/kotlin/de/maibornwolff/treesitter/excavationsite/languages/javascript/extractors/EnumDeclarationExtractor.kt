@@ -13,10 +13,9 @@ private const val ENUM_ASSIGNMENT = "enum_assignment"
 /**
  * Extracts enum name and all member names from enum declaration.
  */
-internal fun extractIdentifiersFromEnumDeclaration(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractIdentifiersFromEnumDeclaration(node: SyntaxNode): List<String> {
     val enumName = TreeTraversal.findFirstChildTextByType(
         node,
-        sourceCode,
         IDENTIFIER,
         TYPE_IDENTIFIER
     )
@@ -27,12 +26,11 @@ internal fun extractIdentifiersFromEnumDeclaration(node: SyntaxNode, sourceCode:
         .mapNotNull { child ->
             when (child.type) {
                 PROPERTY_IDENTIFIER -> {
-                    TreeTraversal.getNodeText(child, sourceCode)
+                    child.text
                 }
                 ENUM_ASSIGNMENT -> {
                     TreeTraversal.findFirstChildTextByType(
                         child,
-                        sourceCode,
                         PROPERTY_IDENTIFIER,
                         IDENTIFIER
                     )

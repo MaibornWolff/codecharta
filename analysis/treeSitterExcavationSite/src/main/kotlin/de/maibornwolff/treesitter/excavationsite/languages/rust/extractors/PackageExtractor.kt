@@ -10,8 +10,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
  *
  * The in-file inline-`mod` chain is carried per declaration via [Declaration.parentPath]
  * instead (see [DeclarationExtractor]). This extractor therefore always returns empty,
- * ignoring both the root node and the source content.
+ * ignoring the root node.
  */
 internal object PackageExtractor {
-    val extract: (SyntaxNode, String) -> List<String> = { _, _ -> emptyList() }
+    val extract: (SyntaxNode) -> List<String> = { emptyList() }
 }

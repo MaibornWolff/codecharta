@@ -8,5 +8,4 @@ private const val VAR_SPEC = "var_spec"
  * Extracts first identifier from var declaration.
  * Handles both single spec and spec_list patterns.
  */
-internal fun extractFromVarDeclaration(node: SyntaxNode, sourceCode: String): String? =
-    extractFromVarOrConstDeclaration(node, sourceCode, VAR_SPEC)
+internal fun extractFromVarDeclaration(node: SyntaxNode): String? = extractFromVarOrConstDeclaration(node, VAR_SPEC)

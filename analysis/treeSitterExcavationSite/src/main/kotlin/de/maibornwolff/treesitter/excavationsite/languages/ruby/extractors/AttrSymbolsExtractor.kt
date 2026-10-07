@@ -13,10 +13,9 @@ private val ATTR_METHODS = setOf("attr_reader", "attr_writer", "attr_accessor")
 /**
  * Extracts symbols from attr_reader/attr_writer/attr_accessor calls as identifiers.
  */
-internal fun extractAttrSymbols(callNode: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractAttrSymbols(callNode: SyntaxNode): List<String> {
     val methodName = TreeTraversal.findFirstChildTextByType(
         callNode,
-        sourceCode,
         IDENTIFIER
     )
     if (methodName !in ATTR_METHODS) return emptyList()
@@ -28,6 +27,6 @@ internal fun extractAttrSymbols(callNode: SyntaxNode, sourceCode: String): List<
             argList
                 .children()
                 .filter { it.type == SIMPLE_SYMBOL }
-                .map { TreeTraversal.getNodeText(it, sourceCode).removePrefix(":") }
+                .map { it.text.removePrefix(":") }
         }.toList()
 }

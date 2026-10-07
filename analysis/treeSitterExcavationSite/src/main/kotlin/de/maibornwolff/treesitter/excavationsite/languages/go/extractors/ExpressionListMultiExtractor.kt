@@ -11,10 +11,10 @@ private const val EXPRESSION_LIST = "expression_list"
  * Extracts all identifiers from short variable declaration or receive statement.
  * Both use expression_list for multiple variables.
  */
-internal fun extractAllFromExpressionList(node: SyntaxNode, sourceCode: String): List<String> {
+internal fun extractAllFromExpressionList(node: SyntaxNode): List<String> {
     val exprList = node.children().firstOrNull { it.type == EXPRESSION_LIST }
     if (exprList != null) {
-        return TreeTraversal.findAllChildrenTextByType(exprList, sourceCode, IDENTIFIER)
+        return TreeTraversal.findAllChildrenTextByType(exprList, IDENTIFIER)
     }
-    return TreeTraversal.findAllChildrenTextByType(node, sourceCode, IDENTIFIER)
+    return TreeTraversal.findAllChildrenTextByType(node, IDENTIFIER)
 }

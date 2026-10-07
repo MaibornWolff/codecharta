@@ -16,9 +16,9 @@ private const val IMPORT = "import"
  * Returns null for strings inside import/export statements or require() calls,
  * allowing them to be skipped during extraction.
  */
-internal fun extractNonImportString(node: SyntaxNode, sourceCode: String): String? {
-    if (isImportString(node, sourceCode)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+internal fun extractNonImportString(node: SyntaxNode): String? {
+    if (isImportString(node)) return null
+    val text = node.text
     if (!text.startsWith("\"") && !text.startsWith("'")) return null
     return StringParser.stripAnyQuotes(text)
 }
@@ -28,17 +28,17 @@ internal fun extractNonImportString(node: SyntaxNode, sourceCode: String): Strin
  *
  * Returns null for strings inside import/export statements or require() calls.
  */
-internal fun extractNonImportTemplateString(node: SyntaxNode, sourceCode: String): String? {
-    if (isImportString(node, sourceCode)) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+internal fun extractNonImportTemplateString(node: SyntaxNode): String? {
+    if (isImportString(node)) return null
+    val text = node.text
     return StringParser.stripBackticks(text)
 }
 
-private fun isImportString(node: SyntaxNode, sourceCode: String): Boolean {
+private fun isImportString(node: SyntaxNode): Boolean {
     if (TreeTraversal.hasAncestorOfTypes(node, IMPORT_STATEMENT, EXPORT_STATEMENT)) return true
 
     val callExpr = TreeTraversal.findAncestorOfType(node, CALL_EXPRESSION) ?: return false
-    val funcName = TreeTraversal.findChildByType(callExpr, "identifier", sourceCode)
-        ?: callExpr.getChild(0).takeUnless { it.isNull }?.let { TreeTraversal.getNodeText(it, sourceCode) }
+    val funcName = TreeTraversal.findChildByType(callExpr, "identifier")
+        ?: callExpr.getChild(0).takeUnless { it.isNull }?.let { it.text }
     return funcName == REQUIRE || funcName == IMPORT
 }

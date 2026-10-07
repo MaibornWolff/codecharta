@@ -3,5 +3,4 @@ package de.maibornwolff.treesitter.excavationsite.languages.objectivec.extractor
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
-internal fun extractFromFunctionDefinition(node: SyntaxNode, sourceCode: String): String? =
-    CDeclaratorParser.extractIdentifierFromDeclaratorField(node, sourceCode)
+internal fun extractFromFunctionDefinition(node: SyntaxNode): String? = CDeclaratorParser.extractIdentifierFromDeclaratorField(node)

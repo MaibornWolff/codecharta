@@ -34,31 +34,26 @@ internal class DirectTextExtractor(private val grammar: FfmGrammar, private val 
         val results = mutableListOf<ExtractedText>()
 
         FfmSyntaxTree.parse(content, grammar).use { tree ->
-            tree.walk { node, nodeType -> processNode(node, nodeType, content, results) }
+            tree.walk { node, nodeType -> processNode(node, nodeType, results) }
         }
 
         return results
     }
 
-    private fun processNode(node: SyntaxNode, nodeType: String, sourceCode: String, results: MutableList<ExtractedText>) {
+    private fun processNode(node: SyntaxNode, nodeType: String, results: MutableList<ExtractedText>) {
         val extraction = extractionNodeTypes.nodeExtractions[nodeType] ?: return
 
         when (extraction) {
-            is Extract.Identifier -> extractIdentifiers(node, sourceCode, extraction, results)
-            is Extract.Comment -> extractComment(node, sourceCode, extraction, results)
-            is Extract.StringLiteral -> extractString(node, sourceCode, extraction, results)
+            is Extract.Identifier -> extractIdentifiers(node, extraction, results)
+            is Extract.Comment -> extractComment(node, extraction, results)
+            is Extract.StringLiteral -> extractString(node, extraction, results)
         }
     }
 
-    private fun extractIdentifiers(
-        node: SyntaxNode,
-        sourceCode: String,
-        extraction: Extract.Identifier,
-        results: MutableList<ExtractedText>
-    ) {
+    private fun extractIdentifiers(node: SyntaxNode, extraction: Extract.Identifier, results: MutableList<ExtractedText>) {
         // Priority: customMulti > multi strategy > customSingle > single strategy
         extraction.customMulti?.let { customMulti ->
-            val identifiers = customMulti(node, sourceCode)
+            val identifiers = customMulti(node)
             identifiers.forEach { identifier ->
                 results.add(ExtractedText(identifier, ExtractionContext.IDENTIFIER))
             }
@@ -66,7 +61,7 @@ internal class DirectTextExtractor(private val grammar: FfmGrammar, private val 
         }
 
         extraction.multi?.let { multiStrategy ->
-            val identifiers = ExtractionExecutor.extractMultiple(node, sourceCode, multiStrategy)
+            val identifiers = ExtractionExecutor.extractMultiple(node, multiStrategy)
             identifiers.forEach { identifier ->
                 results.add(ExtractedText(identifier, ExtractionContext.IDENTIFIER))
             }
@@ -74,41 +69,36 @@ internal class DirectTextExtractor(private val grammar: FfmGrammar, private val 
         }
 
         extraction.customSingle?.let { customSingle ->
-            customSingle(node, sourceCode)?.let { identifier ->
+            customSingle(node)?.let { identifier ->
                 results.add(ExtractedText(identifier, ExtractionContext.IDENTIFIER))
             }
             return
         }
 
         extraction.single?.let { singleStrategy ->
-            ExtractionExecutor.extractSingle(node, sourceCode, singleStrategy)?.let { identifier ->
+            ExtractionExecutor.extractSingle(node, singleStrategy)?.let { identifier ->
                 results.add(ExtractedText(identifier, ExtractionContext.IDENTIFIER))
             }
         }
     }
 
-    private fun extractComment(node: SyntaxNode, sourceCode: String, extraction: Extract.Comment, results: MutableList<ExtractedText>) {
+    private fun extractComment(node: SyntaxNode, extraction: Extract.Comment, results: MutableList<ExtractedText>) {
         // Custom extractors can return null to indicate "skip this node"
         val text = if (extraction.custom != null) {
-            extraction.custom.invoke(node, sourceCode) ?: return
+            extraction.custom.invoke(node) ?: return
         } else {
-            commentExtractor.extract(node, sourceCode)
+            commentExtractor.extract(node)
         }
 
         results.add(ExtractedText(text, ExtractionContext.COMMENT))
     }
 
-    private fun extractString(
-        node: SyntaxNode,
-        sourceCode: String,
-        extraction: Extract.StringLiteral,
-        results: MutableList<ExtractedText>
-    ) {
+    private fun extractString(node: SyntaxNode, extraction: Extract.StringLiteral, results: MutableList<ExtractedText>) {
         // Custom extractors can return null to indicate "skip this node"
         val text = if (extraction.custom != null) {
-            extraction.custom.invoke(node, sourceCode) ?: return
+            extraction.custom.invoke(node) ?: return
         } else {
-            stringExtractor.extract(node, sourceCode)
+            stringExtractor.extract(node)
         }
 
         results.add(ExtractedText(text, ExtractionContext.STRING))

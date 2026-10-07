@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.namedChildren
 
@@ -28,20 +27,19 @@ internal object CppTypeHelper {
 
     fun isTypeNode(node: SyntaxNode): Boolean = node.type in TYPE_NODE_TYPES
 
-    fun extractType(typeNode: SyntaxNode, sourceCode: String): UsedType? {
+    fun extractType(typeNode: SyntaxNode): UsedType? {
         if (typeNode.isNull) return null
         return when (typeNode.type) {
-            in LEAF_TYPE_NODES -> extractLeafName(typeNode, sourceCode)
-            in TEMPLATE_LIKE_TYPES -> extractTemplateLike(typeNode, sourceCode)
-            QUALIFIED_IDENTIFIER -> extractRightmostSegment(typeNode, sourceCode)
+            in LEAF_TYPE_NODES -> extractLeafName(typeNode)
+            in TEMPLATE_LIKE_TYPES -> extractTemplateLike(typeNode)
+            QUALIFIED_IDENTIFIER -> extractRightmostSegment(typeNode)
             else -> null
         }
     }
 
-    private fun extractLeafName(node: SyntaxNode, sourceCode: String): UsedType =
-        UsedType(name = TreeTraversal.getNodeText(node, sourceCode).trim())
+    private fun extractLeafName(node: SyntaxNode): UsedType = UsedType(name = node.text.trim())
 
-    fun extractTypeFromTypeField(node: SyntaxNode, sourceCode: String): UsedType? {
+    fun extractTypeFromTypeField(node: SyntaxNode): UsedType? {
         val typeField = node.getChildByFieldName(TYPE_FIELD).takeIf { !it.isNull }
             ?: node.namedChildren().firstOrNull { isTypeNode(it) || it.type == TYPE_DESCRIPTOR }
             ?: return null
@@ -51,10 +49,10 @@ internal object CppTypeHelper {
             typeField
         }
         if (!isTypeNode(unwrapped)) return null
-        return extractType(unwrapped, sourceCode)
+        return extractType(unwrapped)
     }
 
-    private fun extractTemplateLike(templateNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractTemplateLike(templateNode: SyntaxNode): UsedType? {
         // Accepts template_type (name=type_identifier, used for types) and
         // template_function (name=identifier, used for function-call forms and, per
         // tree-sitter-cpp, also for nested template arguments like C<T> inside list<C<T>>).
@@ -62,41 +60,41 @@ internal object CppTypeHelper {
         val argList = templateNode.children().firstOrNull { it.type == TEMPLATE_ARGUMENT_LIST }
         val genericTypes = argList
             ?.namedChildren()
-            ?.mapNotNull { extractGenericArgument(it, sourceCode) }
+            ?.mapNotNull { extractGenericArgument(it) }
             ?.toList()
             ?: emptyList()
         return UsedType(
-            name = TreeTraversal.getNodeText(nameNode, sourceCode).trim(),
+            name = nameNode.text.trim(),
             genericTypes = genericTypes
         )
     }
 
-    private fun extractGenericArgument(argNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractGenericArgument(argNode: SyntaxNode): UsedType? {
         if (argNode.type == TYPE_DESCRIPTOR) {
-            return argNode.namedChildren().firstNotNullOfOrNull { extractType(it, sourceCode) }
+            return argNode.namedChildren().firstNotNullOfOrNull { extractType(it) }
         }
-        return extractType(argNode, sourceCode)
+        return extractType(argNode)
     }
 
-    fun extractRightmostSegment(qualifiedId: SyntaxNode, sourceCode: String): UsedType? {
-        val path = QualifiedIdentifierPath.walk(qualifiedId, sourceCode)
+    fun extractRightmostSegment(qualifiedId: SyntaxNode): UsedType? {
+        val path = QualifiedIdentifierPath.walk(qualifiedId)
         val leafNode = path.leaf ?: return null
         if (leafNode.type in TEMPLATE_LIKE_TYPES) {
-            return extractTemplateLike(leafNode, sourceCode)?.copy(namespacePrefix = path.segments)
+            return extractTemplateLike(leafNode)?.copy(namespacePrefix = path.segments)
         }
-        val text = TreeTraversal.getNodeText(leafNode, sourceCode).trim()
+        val text = leafNode.text.trim()
         return if (text.isEmpty()) null else UsedType(name = text, namespacePrefix = path.segments)
     }
 
-    fun extractSingleSegmentScope(qualifiedId: SyntaxNode, sourceCode: String): UsedType? {
+    fun extractSingleSegmentScope(qualifiedId: SyntaxNode): UsedType? {
         val scope = qualifiedId.getChildByFieldName(SCOPE_FIELD).takeIf { !it.isNull } ?: return null
         if (scope.type != NAMESPACE_IDENTIFIER) return null
-        val text = TreeTraversal.getNodeText(scope, sourceCode).trim()
+        val text = scope.text.trim()
         return if (text.isEmpty()) null else UsedType(name = text)
     }
 
-    fun extractSecondToLastSegment(qualifiedId: SyntaxNode, sourceCode: String): UsedType? {
-        val segments = QualifiedIdentifierPath.walk(qualifiedId, sourceCode).segments
+    fun extractSecondToLastSegment(qualifiedId: SyntaxNode): UsedType? {
+        val segments = QualifiedIdentifierPath.walk(qualifiedId).segments
         val name = segments.lastOrNull() ?: return null
         return UsedType(name = name, namespacePrefix = segments.dropLast(1))
     }

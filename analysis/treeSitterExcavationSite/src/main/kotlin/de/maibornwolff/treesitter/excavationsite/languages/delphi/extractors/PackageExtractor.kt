@@ -41,13 +41,13 @@ internal object PackageExtractor {
     private val CONTAINERS = setOf(UNIT, PROGRAM, LIBRARY)
     private val KEYWORD_FALLBACK = setOf("kUnit", "kProgram", "kLibrary")
 
-    fun extract(rootNode: SyntaxNode, sourceCode: String): List<String> {
+    fun extract(rootNode: SyntaxNode): List<String> {
         val moduleNameNode = findModuleNameViaContainerAtRoot(rootNode)
             ?: findModuleNameViaContainerDescendant(rootNode)
             ?: findModuleNameViaKeywordSibling(rootNode)
             ?: return emptyList()
 
-        return readDottedIdentifiers(moduleNameNode, sourceCode)
+        return readDottedIdentifiers(moduleNameNode)
     }
 
     private fun findModuleNameViaContainerAtRoot(rootNode: SyntaxNode): SyntaxNode? {
@@ -71,9 +71,9 @@ internal object PackageExtractor {
         }
     }
 
-    private fun readDottedIdentifiers(moduleNameNode: SyntaxNode, sourceCode: String): List<String> = moduleNameNode
+    private fun readDottedIdentifiers(moduleNameNode: SyntaxNode): List<String> = moduleNameNode
         .children()
         .filter { it.type == IDENTIFIER }
-        .map { TreeTraversal.getNodeText(it, sourceCode) }
+        .map { it.text }
         .toList()
 }

@@ -11,9 +11,8 @@ private const val SCOPE_RESOLUTION = "scope_resolution"
  * Extracts class/module name, skipping if using scope resolution (::).
  * Scope resolution is handled by the multi-identifier extractor.
  */
-internal fun extractFromClassOrModule(node: SyntaxNode, sourceCode: String): String? =
-    if (node.children().any { it.type == SCOPE_RESOLUTION }) {
-        null
-    } else {
-        TreeTraversal.findFirstChildTextByType(node, sourceCode, CONSTANT)
-    }
+internal fun extractFromClassOrModule(node: SyntaxNode): String? = if (node.children().any { it.type == SCOPE_RESOLUTION }) {
+    null
+} else {
+    TreeTraversal.findFirstChildTextByType(node, CONSTANT)
+}

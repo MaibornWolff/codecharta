@@ -10,36 +10,31 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
  */
 object TreeTraversal {
     /**
-     * Returns the text of a node. The source code is not read: the node knows the source it was parsed from.
-     */
-    fun getNodeText(node: SyntaxNode, sourceCode: String): String = node.text
-
-    /**
      * Finds the first child of the given types and returns its text.
      */
-    fun findFirstChildTextByType(node: SyntaxNode, sourceCode: String, vararg types: String): String? =
-        node.children().firstOrNull { it.type in types }?.let { getNodeText(it, sourceCode) }
+    fun findFirstChildTextByType(node: SyntaxNode, vararg types: String): String? =
+        node.children().firstOrNull { it.type in types }?.let { it.text }
 
     /**
      * Finds all children of the given types and returns their text.
      */
-    fun findAllChildrenTextByType(node: SyntaxNode, sourceCode: String, vararg types: String): List<String> = node
+    fun findAllChildrenTextByType(node: SyntaxNode, vararg types: String): List<String> = node
         .children()
         .filter { it.type in types }
-        .map { getNodeText(it, sourceCode) }
+        .map { it.text }
         .toList()
 
     /**
      * Finds the last child of the given types and returns its text.
      */
-    fun findLastChildTextByType(node: SyntaxNode, sourceCode: String, vararg types: String): String? =
-        node.children().lastOrNull { it.type in types }?.let { getNodeText(it, sourceCode) }
+    fun findLastChildTextByType(node: SyntaxNode, vararg types: String): String? =
+        node.children().lastOrNull { it.type in types }?.let { it.text }
 
     /**
      * Finds a single child by type and returns its text.
      */
-    fun findChildByType(node: SyntaxNode, childType: String, sourceCode: String): String? =
-        node.children().firstOrNull { it.type == childType }?.let { getNodeText(it, sourceCode) }
+    fun findChildByType(node: SyntaxNode, childType: String): String? =
+        node.children().firstOrNull { it.type == childType }?.let { it.text }
 
     /**
      * Checks if the node has an ancestor of the given type.

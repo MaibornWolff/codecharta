@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.ruby.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeTraversal
 
 private const val IDENTIFIER = "identifier"
 private const val INSTANCE_VARIABLE = "instance_variable"
@@ -12,15 +11,14 @@ private const val CONSTANT = "constant"
 /**
  * Extracts identifier from assignment, stripping variable prefixes.
  */
-internal fun extractFromAssignment(node: SyntaxNode, sourceCode: String): String? =
-    extractFromAssignmentTarget(node.getChildByFieldName("left"), sourceCode)
+internal fun extractFromAssignment(node: SyntaxNode): String? = extractFromAssignmentTarget(node.getChildByFieldName("left"))
 
 /**
  * Extracts identifier from assignment target, stripping @, @@, $ prefixes.
  */
-private fun extractFromAssignmentTarget(node: SyntaxNode?, sourceCode: String): String? {
+private fun extractFromAssignmentTarget(node: SyntaxNode?): String? {
     if (node == null) return null
-    val text = TreeTraversal.getNodeText(node, sourceCode)
+    val text = node.text
     return when (node.type) {
         IDENTIFIER -> text
         INSTANCE_VARIABLE -> text.removePrefix("@")

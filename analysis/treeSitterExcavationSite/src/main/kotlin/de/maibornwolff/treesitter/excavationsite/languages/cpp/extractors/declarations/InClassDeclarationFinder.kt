@@ -19,24 +19,24 @@ internal object InClassDeclarationFinder {
 
     private val DECLARATION_NODE_TYPES = setOf(CLASS_SPECIFIER, STRUCT_SPECIFIER, UNION_SPECIFIER, ENUM_SPECIFIER)
 
-    fun find(rootNode: SyntaxNode, sourceCode: String): List<Declaration> {
+    fun find(rootNode: SyntaxNode): List<Declaration> {
         val allDeclarationNodes = TreeTraversal
             .findAllDescendantsOfType(rootNode, *DECLARATION_NODE_TYPES.toTypedArray())
         val nameByStartByte = allDeclarationNodes.associate { node ->
-            node.startByte to TreeTraversal.findFirstChildTextByType(node, sourceCode, TYPE_IDENTIFIER)
+            node.startByte to TreeTraversal.findFirstChildTextByType(node, TYPE_IDENTIFIER)
         }
-        return allDeclarationNodes.mapNotNull { toDeclaration(it, sourceCode, nameByStartByte) }
+        return allDeclarationNodes.mapNotNull { toDeclaration(it, nameByStartByte) }
     }
 
-    private fun toDeclaration(node: SyntaxNode, sourceCode: String, nameByStartByte: Map<Int, String?>): Declaration? {
+    private fun toDeclaration(node: SyntaxNode, nameByStartByte: Map<Int, String?>): Declaration? {
         // Forward declarations have no body — DC legacy emits no Declaration for them.
         if (!hasBody(node)) return null
         val name = nameByStartByte[node.startByte] ?: return null
         return Declaration(
             name = name,
             type = mapType(node.type),
-            usedTypes = UsedTypeExtractor.extract(node, sourceCode),
-            parentPath = CppNamespaceWalker.walkAncestorsFrom(node, sourceCode) + findParentClassPath(node, nameByStartByte)
+            usedTypes = UsedTypeExtractor.extract(node),
+            parentPath = CppNamespaceWalker.walkAncestorsFrom(node) + findParentClassPath(node, nameByStartByte)
         )
     }
 

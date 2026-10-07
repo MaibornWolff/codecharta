@@ -41,16 +41,16 @@ internal object UsedTypeExtractor {
         NAVIGATION_EXPRESSION
     )
 
-    fun extract(declaration: SyntaxNode, sourceCode: String): Set<UsedType> {
+    fun extract(declaration: SyntaxNode): Set<UsedType> {
         val buckets = TreeTraversal.findAllDescendantsGroupedByType(declaration, ALL_NODE_TYPES)
 
-        val inheritanceTypes = extractInheritanceTypes(buckets, sourceCode)
-        val propertyTypes = extractPropertyTypes(buckets, sourceCode)
-        val parameterTypes = extractParameterTypes(buckets, sourceCode)
-        val returnTypes = extractReturnTypes(buckets, sourceCode)
-        val annotationTypes = extractAnnotationTypes(buckets, sourceCode)
-        val constructorCallTypes = extractUppercaseCallTypes(buckets, CALL_EXPRESSION, sourceCode)
-        val callExpressionTypes = extractUppercaseCallTypes(buckets, NAVIGATION_EXPRESSION, sourceCode)
+        val inheritanceTypes = extractInheritanceTypes(buckets)
+        val propertyTypes = extractPropertyTypes(buckets)
+        val parameterTypes = extractParameterTypes(buckets)
+        val returnTypes = extractReturnTypes(buckets)
+        val annotationTypes = extractAnnotationTypes(buckets)
+        val constructorCallTypes = extractUppercaseCallTypes(buckets, CALL_EXPRESSION)
+        val callExpressionTypes = extractUppercaseCallTypes(buckets, NAVIGATION_EXPRESSION)
 
         return (
             inheritanceTypes + propertyTypes + parameterTypes + returnTypes +
@@ -58,89 +58,88 @@ internal object UsedTypeExtractor {
         ).toSet()
     }
 
-    private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
-        buckets[DELEGATION_SPECIFIER]
-            .orEmpty()
-            .mapNotNull { extractTypeFromConstructorOrUserType(it, sourceCode) }
+    private fun extractInheritanceTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> = buckets[DELEGATION_SPECIFIER]
+        .orEmpty()
+        .mapNotNull { extractTypeFromConstructorOrUserType(it) }
 
-    private fun extractPropertyTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractPropertyTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         val fromProperties = buckets[PROPERTY_DECLARATION].orEmpty().mapNotNull { property ->
             val varDecl = property.children().firstOrNull { it.type == VARIABLE_DECLARATION }
-            varDecl?.let { extractTypeAfterColon(it, sourceCode) }
+            varDecl?.let { extractTypeAfterColon(it) }
         }
         val fromClassParams = buckets[CLASS_PARAMETER].orEmpty().mapNotNull { param ->
-            extractTypeAfterColon(param, sourceCode)
+            extractTypeAfterColon(param)
         }
         return fromProperties + fromClassParams
     }
 
-    private fun extractParameterTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> {
+    private fun extractParameterTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> {
         return buckets[FUNCTION_DECLARATION].orEmpty().flatMap { function ->
             val params = function.children().firstOrNull { it.type == FUNCTION_VALUE_PARAMETERS }
                 ?: return@flatMap emptyList()
             params
                 .namedChildren()
                 .filter { it.type == PARAMETER }
-                .mapNotNull { extractTypeAfterColon(it, sourceCode) }
+                .mapNotNull { extractTypeAfterColon(it) }
                 .toList()
         }
     }
 
-    private fun extractReturnTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
+    private fun extractReturnTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
         buckets[FUNCTION_DECLARATION].orEmpty().mapNotNull { function ->
-            extractTypeAfterColon(function, sourceCode)
+            extractTypeAfterColon(function)
         }
 
-    private fun extractAnnotationTypes(buckets: Map<String, List<SyntaxNode>>, sourceCode: String): List<UsedType> =
-        buckets[ANNOTATION].orEmpty().mapNotNull { extractTypeFromConstructorOrUserType(it, sourceCode) }
+    private fun extractAnnotationTypes(buckets: Map<String, List<SyntaxNode>>): List<UsedType> =
+        buckets[ANNOTATION].orEmpty().mapNotNull { extractTypeFromConstructorOrUserType(it) }
 
-    private fun extractUppercaseCallTypes(buckets: Map<String, List<SyntaxNode>>, nodeType: String, sourceCode: String): List<UsedType> {
+    private fun extractUppercaseCallTypes(buckets: Map<String, List<SyntaxNode>>, nodeType: String): List<UsedType> {
         return buckets[nodeType].orEmpty().mapNotNull { node ->
             val firstChild = node.getNamedChild(0)
             if (firstChild.isNull) return@mapNotNull null
-            val name = TreeTraversal.getNodeText(firstChild, sourceCode).trim()
+            val name = firstChild.text.trim()
             if (name.firstOrNull()?.isUpperCase() != true) return@mapNotNull null
             val callSuffix = node.children().firstOrNull { it.type == CALL_SUFFIX }
-            val genericTypes = callSuffix?.let { extractGenericTypesFromCallSuffix(it, sourceCode) } ?: emptyList()
+            val genericTypes = callSuffix?.let { extractGenericTypesFromCallSuffix(it) } ?: emptyList()
             UsedType(name = name, genericTypes = genericTypes)
         }
     }
 
-    private fun extractTypeFromConstructorOrUserType(node: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractTypeFromConstructorOrUserType(node: SyntaxNode): UsedType? {
         val constructorInvocation = node.children().firstOrNull { it.type == CONSTRUCTOR_INVOCATION }
         val typeParent = constructorInvocation ?: node
         val userType = typeParent.children().firstOrNull { it.type == USER_TYPE }
-        return userType?.let { extractType(it, sourceCode) }
+        return userType?.let { extractType(it) }
     }
 
-    private fun extractTypeAfterColon(node: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractTypeAfterColon(node: SyntaxNode): UsedType? {
         val children = node.children().toList()
         val colonIndex = children.indexOfFirst { it.type == COLON }
         if (colonIndex < 0 || colonIndex + 1 >= children.size) return null
         val typeNode = children[colonIndex + 1]
         return when (typeNode.type) {
-            USER_TYPE -> extractType(typeNode, sourceCode)
-            NULLABLE_TYPE -> extractTypeFromNullable(typeNode, sourceCode)
+            USER_TYPE -> extractType(typeNode)
+            NULLABLE_TYPE -> extractTypeFromNullable(typeNode)
             else -> null
         }
     }
 
-    private fun extractTypeFromNullable(nullableNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractTypeFromNullable(nullableNode: SyntaxNode): UsedType? {
         val userType = nullableNode.children().firstOrNull { it.type == USER_TYPE }
-        return userType?.let { extractType(it, sourceCode) }
+        return userType?.let { extractType(it) }
     }
 
-    private fun extractType(userTypeNode: SyntaxNode, sourceCode: String): UsedType? {
+    private fun extractType(userTypeNode: SyntaxNode): UsedType? {
         if (userTypeNode.isNull) return null
         val typeIdentifier = userTypeNode.children().firstOrNull { it.type == TYPE_IDENTIFIER }
             ?: return null
-        val name = TreeTraversal.getNodeText(typeIdentifier, sourceCode).trim()
+        val name = typeIdentifier.text.trim()
         val typeArgs = userTypeNode.children().firstOrNull { it.type == TYPE_ARGUMENTS }
-        val genericTypes = typeArgs?.let { extractTypeArguments(it, sourceCode) } ?: emptyList()
+        val genericTypes = typeArgs?.let { extractTypeArguments(it) } ?: emptyList()
         return UsedType(name = name, genericTypes = genericTypes)
     }
 
-    private fun extractTypeArguments(typeArgsNode: SyntaxNode, sourceCode: String): List<UsedType> = typeArgsNode
+    private fun extractTypeArguments(typeArgsNode: SyntaxNode): List<UsedType> = typeArgsNode
         .children()
         .filter { it.type == TYPE_PROJECTION }
         .mapNotNull { projection ->
@@ -149,14 +148,14 @@ internal object UsedTypeExtractor {
                 ?: projection.children().firstOrNull { it.type == NULLABLE_TYPE }
             when {
                 userType == null -> null
-                userType.type == NULLABLE_TYPE -> extractTypeFromNullable(userType, sourceCode)
-                else -> extractType(userType, sourceCode)
+                userType.type == NULLABLE_TYPE -> extractTypeFromNullable(userType)
+                else -> extractType(userType)
             }
         }.toList()
 
-    private fun extractGenericTypesFromCallSuffix(callSuffix: SyntaxNode, sourceCode: String): List<UsedType> {
+    private fun extractGenericTypesFromCallSuffix(callSuffix: SyntaxNode): List<UsedType> {
         val typeArgs = callSuffix.children().firstOrNull { it.type == TYPE_ARGUMENTS }
             ?: return emptyList()
-        return extractTypeArguments(typeArgs, sourceCode)
+        return extractTypeArguments(typeArgs)
     }
 }
