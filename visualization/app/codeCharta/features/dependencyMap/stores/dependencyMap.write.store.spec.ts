@@ -63,7 +63,7 @@ describe("DependencyMapWriteStore", () => {
 
     it("should change the bar's settings that are kept across reloads", () => {
         // Arrange
-        const settings = { edgeStyle: "straight" as const }
+        const settings = { edgeStyle: "aside" as const }
 
         // Act
         writeStore.changeSettings(settings)

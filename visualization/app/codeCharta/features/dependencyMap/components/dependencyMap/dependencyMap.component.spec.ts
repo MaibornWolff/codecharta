@@ -1192,7 +1192,7 @@ describe("DependencyMapComponent", () => {
         const { store, fixture } = await setup()
 
         // Act
-        await changeSettings(store, { edgeStyle: "straight" })
+        await changeSettings(store, { edgeShape: "straight" })
         fixture.detectChanges()
 
         // Assert

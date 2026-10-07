@@ -4,10 +4,13 @@ export type DependencyEdgeType = "regular" | "cyclic" | "feedbackContainerLevel"
 
 export const DEPENDENCY_EDGE_TYPES: readonly DependencyEdgeType[] = ["regular", "cyclic", "feedbackContainerLevel", "feedbackLeafLevel"]
 
-/** How edges are drawn. Curved leaves and enters every box at one point per direction; the others spread a box's edges
- * along its side by where their other end lies. Upward aside swings upward edges out to the right, and
- * straight draws straight lines as DependaCharta does, bending only a dependency that runs both ways. */
-export type DependencyEdgeStyle = "curved" | "spread" | "upwardAside" | "straight"
+/** Where edges meet their boxes. Combined gathers a side's outgoing edges at one spot and its incoming ones at
+ * another; the others spread a box's edges along its side by where their other end lies. Aside swings upward
+ * edges out to the right of the boxes and downward ones out to the left. */
+export type DependencyEdgeStyle = "combined" | "spread" | "aside"
+
+/** Straight draws straight lines as DependaCharta does, bending only a dependency that runs both ways. */
+export type DependencyEdgeShape = "curved" | "straight"
 
 export type DependencyEdgeThickness = "byCount" | "thin" | "uniform" | "strong"
 
@@ -16,9 +19,20 @@ export interface DependencyEdgeWidth {
     factor: number
 }
 
-/** Spread hands every edge its own spot on a side, so it has no middle to gather them at. */
+/** Only Combined gathers the edges of a side, so only it has a middle to gather them at. */
 export function canAnchorAtSideMiddle(edgeStyle: DependencyEdgeStyle): boolean {
-    return edgeStyle !== "spread"
+    return edgeStyle === "combined"
+}
+
+/** An edge that goes aside is a bow by nature. */
+export function canDrawStraight(edgeStyle: DependencyEdgeStyle): boolean {
+    return edgeStyle !== "aside"
+}
+
+export interface DependencyEdgeDrawing {
+    edgeStyle: DependencyEdgeStyle
+    edgeShape: DependencyEdgeShape
+    isAnchoredAtSideMiddle: boolean
 }
 
 /** A level band is named by its own number, or by the levels of the folders around it first, as in 0.1.2. */
@@ -35,6 +49,7 @@ export interface DependencyGraphSettings {
     edgeColors: DependencyEdgeColors
     lineStyleShows: LineStyleMeaning
     edgeStyle: DependencyEdgeStyle
+    edgeShape: DependencyEdgeShape
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth
     levelLabel: DependencyLevelLabel

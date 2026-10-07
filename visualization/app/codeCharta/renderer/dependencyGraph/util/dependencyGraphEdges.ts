@@ -111,13 +111,17 @@ function bend(route: EdgeRoute, start: Point, end: Point): Curve {
             return pulledAlong(start, end, ON_THE_LINE_PX)
         case "arc":
             return pulledAlong(start, end, TWO_WAY_ARC_PX)
-        case "aside": {
-            const bulgeX = Math.max(start[0], end[0]) + Math.max(MIN_ASIDE_BULGE_PX, Math.abs(end[1] - start[1]) * ASIDE_BULGE_PER_HEIGHT)
-            return { start, startPull: [bulgeX, start[1]], endPull: [bulgeX, end[1]], end }
-        }
+        case "aside":
+            return bowedAside(route.startSide, start, end)
         default:
             return sCurve(route, start, end)
     }
+}
+
+function bowedAside(side: Side, start: Point, end: Point): Curve {
+    const bulge = Math.max(MIN_ASIDE_BULGE_PX, Math.abs(end[1] - start[1]) * ASIDE_BULGE_PER_HEIGHT)
+    const bulgeX = side === "left" ? Math.min(start[0], end[0]) - bulge : Math.max(start[0], end[0]) + bulge
+    return { start, startPull: [bulgeX, start[1]], endPull: [bulgeX, end[1]], end }
 }
 
 function pulledAlong(start: Point, end: Point, sidewaysPx: number): Curve {

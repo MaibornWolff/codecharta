@@ -1,10 +1,19 @@
-import { DependencyEdgeStyle, DependencyEdgeThickness, LineStyleMeaning } from "../../../../model/dependencyGraph.model"
+import {
+    DependencyEdgeShape,
+    DependencyEdgeStyle,
+    DependencyEdgeThickness,
+    LineStyleMeaning
+} from "../../../../model/dependencyGraph.model"
 import { Choice } from "../choiceRow/choiceRow.component"
 
 export const EDGE_STYLE_CHOICES: Choice<DependencyEdgeStyle>[] = [
+    { value: "combined", label: "Combined", hint: "One spot on each side for the edges leaving and one for those arriving" },
+    { value: "spread", label: "Spread", hint: "Each edge with its own spot on the box" },
+    { value: "aside", label: "Aside", hint: "Upward edges bow out to the right of the boxes, downward ones to the left" }
+]
+
+export const EDGE_SHAPE_CHOICES: Choice<DependencyEdgeShape>[] = [
     { value: "curved", label: "Curved", hint: "Leave and enter each box square to its side" },
-    { value: "spread", label: "Spread", hint: "Curved, each edge with its own spot on the box" },
-    { value: "upwardAside", label: "Upward aside", hint: "Upward edges bow out to the right of the boxes" },
     { value: "straight", label: "Straight", hint: "A straight line from box to box" }
 ]
 

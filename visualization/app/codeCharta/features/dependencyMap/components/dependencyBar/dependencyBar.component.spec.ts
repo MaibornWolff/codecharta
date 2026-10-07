@@ -93,7 +93,7 @@ describe("DependencyBarComponent", () => {
             "dependency-bar-level-label-segment"
         ])
         expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
-        expect(screen.getByTestId("dependency-bar-edge-style-segment").textContent).toContain("Curved")
+        expect(screen.getByTestId("dependency-bar-edge-style-segment").textContent).toContain("Combined")
         expect(screen.getByTestId("dependency-bar-edge-thickness-value").textContent).toContain("By count")
         expect(screen.getByTestId("dependency-bar-edge-metric-segment").textContent).toContain("dependencies")
         expect(screen.getByTestId("dependency-bar-level-label-segment").textContent).toContain("Number")
@@ -101,16 +101,18 @@ describe("DependencyBarComponent", () => {
 
     it("should describe every edge style, mark the chosen one and explain the chosen line thickness", async () => {
         // Arrange
-        const settings = { edgeStyle: "straight", edgeWidth: { thickness: "thin", factor: 1 } } as const
+        const settings = { edgeStyle: "spread", edgeShape: "straight", edgeWidth: { thickness: "thin", factor: 1 } } as const
 
         // Act
         await renderBar({ settings })
 
         // Assert
-        expect(screen.getByTestId("dependency-bar-edge-style-title").textContent).toBe("Straight")
-        expect(screen.getByTestId("dependency-bar-edge-style-straight").textContent).toContain("A straight line from box to box")
-        expect(screen.getByTestId("dependency-bar-edge-style-straight").querySelector("input").checked).toBe(true)
-        expect(screen.getByTestId("dependency-bar-edge-style-curved").querySelector("input").checked).toBe(false)
+        expect(screen.getByTestId("dependency-bar-edge-style-title").textContent).toBe("Spread")
+        expect(screen.getByTestId("dependency-bar-edge-style-spread").textContent).toContain("Each edge with its own spot on the box")
+        expect(screen.getByTestId("dependency-bar-edge-style-spread").querySelector("input").checked).toBe(true)
+        expect(screen.getByTestId("dependency-bar-edge-style-combined").querySelector("input").checked).toBe(false)
+        expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edge-shape-straight").checked).toBe(true)
+        expect(screen.getByTestId("dependency-bar-edge-shape-hint").textContent).toBe("A straight line from box to box")
         expect(screen.getByTestId("dependency-bar-edge-thickness-hint").textContent).toBe("Every edge a hairline, easiest to see through")
     })
 
@@ -131,15 +133,17 @@ describe("DependencyBarComponent", () => {
 
     it("should reset the edge style and line thickness to their defaults", async () => {
         // Arrange
-        const dispatch = await renderBar({ settings: { edgeStyle: "straight", isAnchoredAtSideMiddle: true } })
+        const dispatch = await renderBar({ settings: { edgeStyle: "spread", edgeShape: "straight", isAnchoredAtSideMiddle: true } })
 
         // Act
         await userEvent.click(screen.getByRole("button", { name: "Reset edge style" }))
 
         // Assert
-        const { edgeStyle, isAnchoredAtSideMiddle, edgeWidth, lineStyleShows } = defaultDependencyGraphSettings
+        const { edgeStyle, edgeShape, isAnchoredAtSideMiddle, edgeWidth, lineStyleShows } = defaultDependencyGraphSettings
         expect(dispatch).toHaveBeenCalledWith(
-            setState({ value: { preferences: { dependencyGraph: { edgeStyle, isAnchoredAtSideMiddle, edgeWidth, lineStyleShows } } } })
+            setState({
+                value: { preferences: { dependencyGraph: { edgeStyle, edgeShape, isAnchoredAtSideMiddle, edgeWidth, lineStyleShows } } }
+            })
         )
     })
 
@@ -187,10 +191,21 @@ describe("DependencyBarComponent", () => {
         const dispatch = await renderBar()
 
         // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-edge-style-straight"))
+        await userEvent.click(screen.getByTestId("dependency-bar-edge-style-aside"))
 
         // Assert
-        expect(dispatch).toHaveBeenCalledWith(changed({ edgeStyle: "straight" }))
+        expect(dispatch).toHaveBeenCalledWith(changed({ edgeStyle: "aside" }))
+    })
+
+    it("should draw the edges in the line shape the reader picks", async () => {
+        // Arrange
+        const dispatch = await renderBar()
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-edge-shape-straight"))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ edgeShape: "straight" }))
     })
 
     it("should draw the edges as thick as the reader picks", async () => {
@@ -230,7 +245,7 @@ describe("DependencyBarComponent", () => {
         expect(dispatch).toHaveBeenCalledWith(changed({ isAnchoredAtSideMiddle: true }))
     })
 
-    it("should not let the reader anchor the edges at the middle of the sides for Spread, and show a remembered tick as off", async () => {
+    it("should offer the line shape but not the middle of the sides for Spread, which gives each edge its own spot", async () => {
         // Arrange
         const settings = { edgeStyle: "spread", isAnchoredAtSideMiddle: true } as const
 
@@ -238,10 +253,20 @@ describe("DependencyBarComponent", () => {
         await renderBar({ settings })
 
         // Assert
-        const checkbox = screen.getByTestId<HTMLInputElement>("dependency-bar-edge-style-side-middle")
-        expect(checkbox.disabled).toBe(true)
-        expect(checkbox.checked).toBe(false)
-        expect(screen.getByTestId("dependency-bar-edge-style-side-middle-note").textContent).toContain("Not for Spread")
+        expect(screen.queryByTestId("dependency-bar-edge-shape-straight")).not.toBeNull()
+        expect(screen.queryByTestId("dependency-bar-edge-style-side-middle")).toBeNull()
+    })
+
+    it("should offer neither the line shape nor the middle of the sides for Aside, whose edges always bow", async () => {
+        // Arrange
+        const settings = { edgeStyle: "aside", edgeShape: "straight" } as const
+
+        // Act
+        await renderBar({ settings })
+
+        // Assert
+        expect(screen.queryByTestId("dependency-bar-edge-shape-straight")).toBeNull()
+        expect(screen.queryByTestId("dependency-bar-edge-style-side-middle")).toBeNull()
     })
 
     it("should label the levels by their path once the reader picks it", async () => {

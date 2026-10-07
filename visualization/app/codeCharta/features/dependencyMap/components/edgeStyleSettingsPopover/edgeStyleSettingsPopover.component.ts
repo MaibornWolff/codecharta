@@ -28,6 +28,7 @@ export class EdgeStyleSettingsPopoverComponent {
     readonly widthFactorRange = EDGE_WIDTH_FACTOR_RANGE
     readonly resetKeys = [
         "preferences.dependencyGraph.edgeStyle",
+        "preferences.dependencyGraph.edgeShape",
         "preferences.dependencyGraph.isAnchoredAtSideMiddle",
         "preferences.dependencyGraph.edgeWidth",
         "preferences.dependencyGraph.lineStyleShows"
