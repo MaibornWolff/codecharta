@@ -24,11 +24,7 @@ export function canAnchorAtSideMiddle(edgeStyle: DependencyEdgeStyle): boolean {
 /** A level band is named by its own number, or by the levels of the folders around it first, as in 0.1.2. */
 export type DependencyLevelLabel = "number" | "path"
 
-export type DeclarationArrangement = "stacked" | "list" | "chips"
-
 export type DependencyEdgeColors = Record<DependencyEdgeType, string>
-
-export type DeclarationKindMark = "icon" | "shape" | "tint" | "off"
 
 export type LineStyleMeaning = "edgeType" | "usage"
 
@@ -42,7 +38,6 @@ export interface DependencyGraphSettings {
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth
     levelLabel: DependencyLevelLabel
-    declarationArrangement: DeclarationArrangement
-    declarationKindMark: DeclarationKindMark
+    hierarchy: DependencyHierarchy
     showsCycleBadges: boolean
 }

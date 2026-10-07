@@ -14,7 +14,6 @@ import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { reportResize, stubElementSize, stubResizeObserver } from "../../../../util/testUtils/domStubs"
 import { dependencyLayoutIdentitySelector } from "../../selectors/dependencyMap.selectors"
-import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
@@ -283,10 +282,10 @@ describe("DependencyBarComponent", () => {
         expect(viewTools).not.toBeNull()
     })
 
-    it("should offer the declaration settings only for a map that tells its declarations", async () => {
+    it("should offer to count the hidden cycles only for a map that tells its declarations", async () => {
         // Arrange
         const { fixture } = await renderBar()
-        const segmentWithoutDeclarations = screen.queryByTestId("dependency-bar-declarations-segment")
+        const checkboxWithoutDeclarations = screen.queryByTestId("dependency-bar-cycle-badges")
 
         // Act
         TestBed.inject(MockStore).overrideSelector(hasDeclarationsSelector, true)
@@ -294,19 +293,10 @@ describe("DependencyBarComponent", () => {
         fixture.detectChanges()
 
         // Assert
-        expect(segmentWithoutDeclarations).toBeNull()
-        expect(screen.getByTestId("dependency-bar-declarations-segment").textContent).toContain("Stacked")
-    })
-
-    it("should arrange the declarations of an opened file the way the reader picks", async () => {
-        // Arrange
-        const dispatch = await renderBar({ hasDeclarations: true })
-
-        // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-declaration-arrangement-chips"))
-
-        // Assert
-        expect(dispatch).toHaveBeenCalledWith(changed({ declarationArrangement: "chips" }))
+        expect(checkboxWithoutDeclarations).toBeNull()
+        expect(screen.getByTestId("dependency-bar-level-label-popover").contains(screen.getByTestId("dependency-bar-cycle-badges"))).toBe(
+            true
+        )
     })
 
     it("should let the dashes and arrowheads show the kind of use once the reader picks it", async () => {
@@ -338,17 +328,6 @@ describe("DependencyBarComponent", () => {
         )
     })
 
-    it("should tell a declaration's kind the way the reader picks", async () => {
-        // Arrange
-        const dispatch = await renderBar({ hasDeclarations: true })
-
-        // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-declaration-kind-shape"))
-
-        // Assert
-        expect(dispatch).toHaveBeenCalledWith(changed({ declarationKindMark: "shape" }))
-    })
-
     it("should stop counting hidden cycles once the reader unticks it", async () => {
         // Arrange
         const dispatch = await renderBar({ hasDeclarations: true })
@@ -360,7 +339,7 @@ describe("DependencyBarComponent", () => {
         expect(dispatch).toHaveBeenCalledWith(changed({ showsCycleBadges: false }))
     })
 
-    it("should offer the hierarchy only for a map with packages, and switch the graph to the packages for this session", async () => {
+    it("should offer the hierarchy only for a map with packages, and remember the one the reader picks", async () => {
         // Arrange
         await renderBar()
         const withoutPackages = screen.queryByTestId("dependency-bar-hierarchy-segment")
@@ -369,13 +348,21 @@ describe("DependencyBarComponent", () => {
 
         // Act
         await userEvent.click(screen.getByTestId("dependency-bar-hierarchy-packages"))
-        dispatch.fixture.detectChanges()
 
         // Assert
         expect(withoutPackages).toBeNull()
-        expect(TestBed.inject(DependencyGraphModelStore).hierarchy()).toBe("packages")
+        expect(dispatch).toHaveBeenCalledWith(changed({ hierarchy: "packages" }))
+    })
+
+    it("should name the remembered hierarchy", async () => {
+        // Arrange
+        const settings = { hierarchy: "packages" } as const
+
+        // Act
+        await renderBar({ hasPackages: true, settings })
+
+        // Assert
         expect(screen.getByTestId("dependency-bar-hierarchy-segment").textContent).toContain("Packages")
-        expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: "SET_DEPENDENCY_GRAPH_SETTINGS" }))
     })
 
     it("should say that the upward edge closing a cycle shares the upward colour until the line style shows the kind of use, and still let its own colour be picked", async () => {

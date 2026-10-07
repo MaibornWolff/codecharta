@@ -325,7 +325,6 @@ describe("buildDependencyGraphOption", () => {
             layout,
             edges,
             cycleMarks,
-            declarationArrangement: "list",
             selectedEdgeId: edges[0].id
         })
 

@@ -60,6 +60,5 @@ export const LAYOUT_SPACING = {
     gapBetweenRows: 14,
     gapBetweenLevels: 36,
     declarationWidth: 132,
-    declarationHeight: 26,
-    chipHeight: 22
+    declarationHeight: 26
 } as const

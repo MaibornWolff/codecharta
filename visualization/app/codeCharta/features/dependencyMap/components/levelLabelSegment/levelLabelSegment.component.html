@@ -14,4 +14,18 @@
     [choices]="levelLabelChoices"
     [chosen]="levelLabel()"
     (choose)="labelLevelsBy($event)"
-></cc-choice-list-popover>
+>
+    @if (hasDeclarations()) {
+        <label class="flex cursor-pointer items-center gap-2 border-t border-base-300 pt-2.5">
+            <input
+                #cycleBadgesCheckbox
+                type="checkbox"
+                class="checkbox checkbox-sm checkbox-primary"
+                data-testid="dependency-bar-cycle-badges"
+                [checked]="showsCycleBadges()"
+                (change)="showCycleBadges(cycleBadgesCheckbox.checked)"
+            />
+            <span class="text-sm">Count the cyclic dependencies a closed box hides</span>
+        </label>
+    }
+</cc-choice-list-popover>

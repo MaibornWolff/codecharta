@@ -1,4 +1,3 @@
-import { DeclarationKindMark } from "../../../model/dependencyGraph.model"
 import { CycleLook } from "./boxMarks"
 import { BoxEmphasis, BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
@@ -12,8 +11,8 @@ interface DrawnElement {
     children?: DrawnElement[]
 }
 
-function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false, kindMark: DeclarationKindMark = "off"): BoxLook {
-    return { emphasis, isSeeThrough, isMissedBySearch, kindMark, listsLevels: false, cycle: NO_CYCLE }
+function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false): BoxLook {
+    return { emphasis, isSeeThrough, isMissedBySearch, cycle: NO_CYCLE }
 }
 
 function childrenOf(element: object): DrawnElement[] {
@@ -92,19 +91,6 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "Creature", fontSize: 11 })
         })
 
-        it("should name a listed declaration's level at its right, and leave the name that much less room", () => {
-            // Arrange
-            const box = aBox("/root/a.ts/Creature", { kind: "declaration", x: 0, y: 0, width: 132, height: 26, level: 3 })
-            const listed = { ...look("none"), listsLevels: true }
-
-            // Act
-            const [, label, level] = childrenOf(drawBox(box, listed, identityPixels))
-
-            // Assert
-            expect(level.style).toMatchObject({ text: "3", x: 125, y: 13, align: "right", fill: "#8a94a3" })
-            expect(label.style).toMatchObject({ x: 60, width: 104 })
-        })
-
         describe("zoomed out", () => {
             const atZoom =
                 (zoom: number) =>
@@ -118,7 +104,7 @@ describe("dependencyGraphBoxes", () => {
                 width: 132,
                 height: 26
             })
-            const iconLook = look("none", false, false, "icon")
+            const iconLook = look("none")
 
             it("should shrink the marks inside a box with the box, keeping them in their place", () => {
                 // Arrange
@@ -186,7 +172,7 @@ describe("dependencyGraphBoxes", () => {
                 const box = declaration("interface")
 
                 // Act
-                const [, label, icon, letter] = childrenOf(drawBox(box, look("none", false, false, "icon"), identityPixels))
+                const [, label, icon, letter] = childrenOf(drawBox(box, look("none"), identityPixels))
 
                 // Assert
                 expect(icon).toMatchObject({
@@ -198,54 +184,12 @@ describe("dependencyGraphBoxes", () => {
                 expect(label.style).toMatchObject({ x: 75, width: 98 })
             })
 
-            it("should dash an interface's outline, frame an enum twice and point an annotation's box when the shape tells the kind", () => {
-                // Arrange
-                const shaped = look("selected", false, false, "shape")
-
-                // Act
-                const [interfaceBox, enumBox, annotationBox, classBox] = ["interface", "enum", "annotation", "class"].map(kind =>
-                    childrenOf(drawBox(declaration(kind), shaped, identityPixels))
-                )
-
-                // Assert
-                expect(interfaceBox[0].style.lineDash).toEqual([4, 3])
-                expect(enumBox.slice(0, 2).map(part => part.shape)).toMatchObject([
-                    { x: 0, y: 0, width: 132, height: 26 },
-                    { x: 2.5, y: 2.5, width: 127, height: 21 }
-                ])
-                expect(annotationBox[0].shape.points).toEqual([
-                    [8, 0],
-                    [124, 0],
-                    [132, 13],
-                    [124, 26],
-                    [8, 26],
-                    [0, 13]
-                ])
-                expect(annotationBox[0].style.stroke).toBe(SELECTED_COLOR)
-                expect(classBox.map(part => part.type)).toEqual(["rect", "text"])
-                expect(classBox[0].style.lineDash).toBeNull()
-            })
-
-            it("should fill the box in the kind's tint, and leave the box plain when the kind is not shown", () => {
-                // Arrange
-                const box = declaration("enum")
-
-                // Act
-                const [tinted] = childrenOf(drawBox(box, look("none", false, false, "tint"), identityPixels))
-                const plain = childrenOf(drawBox(box, look("none"), identityPixels))
-
-                // Assert
-                expect(tinted.style.fill).toBe("#fdecc8")
-                expect(plain.map(child => child.type)).toEqual(["rect", "text"])
-                expect(plain[0].style).toMatchObject({ fill: "#f7f9fc", stroke: "#9aa5b4" })
-            })
-
-            it("should not mark a file by the kind setting", () => {
+            it("should give a file no kind icon", () => {
                 // Arrange
                 const file = aBox("/root/a.ts")
 
                 // Act
-                const children = childrenOf(drawBox(file, look("none", false, false, "icon"), identityPixels))
+                const children = childrenOf(drawBox(file, look("none"), identityPixels))
 
                 // Assert
                 expect(children.map(child => child.type)).toEqual(["rect", "text"])
@@ -313,7 +257,7 @@ describe("dependencyGraphBoxes", () => {
                     shape: { cx: 131, cy: 1, r: 3.5 },
                     style: { stroke: "#dc2626", fill: "#ffffff" }
                 })
-                expect(unringed.map(child => child.type)).toEqual(["rect", "text"])
+                expect(unringed.map(child => child.type)).toEqual(["rect", "text", "circle", "text"])
             })
         })
         it("should tell a package from a folder by its colours, closed and open, and name it in bold", () => {

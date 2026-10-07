@@ -42,7 +42,6 @@ import {
     dependencyTreeSelector,
     isDependencyMapFocusedSelector
 } from "../../selectors/dependencyMap.selectors"
-import { DependencyGraphModelStore } from "../../stores/dependencyGraphModel.store"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyMapComponent } from "./dependencyMap.component"
@@ -142,7 +141,8 @@ async function setup({
                     { selector: dependencySearchedPathsOrNullSelector, value: searchedPaths },
                     { selector: dependencyLayoutIdentitySelector, value: PROJECT_A },
                     { selector: hasDependencyDataSelector, value: hasDependencyData },
-                    { selector: isDependencyMapFocusedSelector, value: isFocused }
+                    { selector: isDependencyMapFocusedSelector, value: isFocused },
+                    { selector: dependencyGraphSettingsSelector, value: defaultDependencyGraphSettings }
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
@@ -353,25 +353,6 @@ describe("DependencyMapComponent", () => {
             // Assert
             expect(opened).toContain(`${VIEW}/View`)
             expect(drawnBoxPaths()).not.toContain(`${VIEW}/View`)
-        })
-
-        it("should arrange the declarations the way the reader set", async () => {
-            // Arrange
-            const { store, fixture } = await setup({ tree: DECLARING_TREE, openedBoxes: [...EVERY_FOLDER, VIEW] })
-            const drawnWidth = () => {
-                const dataIndex = drawnSeries().data.findIndex(item => item.name === `${VIEW}/View`)
-                const [outline] = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children
-                return (outline as unknown as { shape: { width: number } }).shape.width
-            }
-            const stacked = drawnWidth()
-
-            // Act
-            await changeSettings(store, { declarationArrangement: "chips" })
-            fixture.detectChanges()
-
-            // Assert
-            expect(stacked).toBe(132)
-            expect(drawnWidth()).toBe(44)
         })
 
         it("should tell the other views the file of a selected, hovered or right-clicked declaration, and mark the declaration itself", async () => {
@@ -859,9 +840,8 @@ describe("DependencyMapComponent", () => {
             const DATA = "package:app.data"
 
             async function showPackages(fixture: { detectChanges: () => void }) {
-                TestBed.inject(DependencyGraphModelStore).showHierarchy("packages")
+                await changeSettings(TestBed.inject(MockStore), { hierarchy: "packages" })
                 fixture.detectChanges()
-                await screen.findByTestId("dependency-graph")
             }
 
             it("should nest the files in their packages once the reader asks for them", async () => {

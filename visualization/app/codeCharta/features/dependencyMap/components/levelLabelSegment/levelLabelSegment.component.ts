@@ -22,7 +22,8 @@ const LEVEL_LABEL_CHOICES: Choice<DependencyLevelLabel>[] = [
 })
 export class LevelLabelSegmentComponent {
     private readonly writeStore = inject(DependencyMapWriteStore)
-    private readonly settings = toSignal(inject(DependencyMapReadStore).persistedSettings$, { requireSync: true })
+    private readonly readStore = inject(DependencyMapReadStore)
+    private readonly settings = toSignal(this.readStore.persistedSettings$, { requireSync: true })
 
     readonly popoverId = "dependency-bar-level-label-popover"
     readonly anchorName = "dependency-bar-level-label-card"
@@ -30,8 +31,15 @@ export class LevelLabelSegmentComponent {
 
     readonly levelLabel = computed(() => this.settings().levelLabel)
     readonly chosenLabel = computed(() => labelOf(LEVEL_LABEL_CHOICES, this.levelLabel()))
+    /** Cycles are found between declarations, so a map without them has none to count. */
+    readonly hasDeclarations = toSignal(this.readStore.hasDeclarations$, { requireSync: true })
+    readonly showsCycleBadges = computed(() => this.settings().showsCycleBadges)
 
     labelLevelsBy(levelLabel: DependencyLevelLabel): void {
         this.writeStore.changeSettings({ levelLabel })
+    }
+
+    showCycleBadges(showsCycleBadges: boolean): void {
+        this.writeStore.changeSettings({ showsCycleBadges })
     }
 }
