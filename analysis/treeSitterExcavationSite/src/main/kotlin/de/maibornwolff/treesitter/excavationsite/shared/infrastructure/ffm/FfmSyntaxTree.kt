@@ -82,22 +82,27 @@ internal class FfmSyntaxTree private constructor(
     }
 
     /**
-     * The children of [parent] in one pass. They are all fetched before the first is handed out, so the one cursor
-     * of the tree is free again when a caller descends into a child.
+     * The children of [parent] behind the first [skippedCount], or its named children behind that many named ones,
+     * in one pass. They are all fetched before the first is handed out, so the one cursor of the tree is free again
+     * when a caller descends into a child.
      */
-    fun childrenOf(parent: FfmNode, onlyNamed: Boolean): List<FfmNode> {
+    fun childrenBehind(skippedCount: Int, parent: FfmNode, onlyNamed: Boolean): List<FfmNode> {
         val cursor = childCursorAt(parent)
-        if (!TreeSitterApi.cursorGotoFirstChild(cursor)) return emptyList()
         val children = ArrayList<FfmNode>()
-        do {
+        var leftToSkip = skippedCount
+        var hasChild = TreeSitterApi.cursorGotoFirstChild(cursor)
+        while (hasChild) {
             val markBeforeChild = nodeAllocator.mark()
             val child = TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor)
-            if (onlyNamed && !TreeSitterApi.nodeIsNamed(child)) {
-                nodeAllocator.release(markBeforeChild)
-            } else {
+            val isAskedFor = !onlyNamed || TreeSitterApi.nodeIsNamed(child)
+            if (isAskedFor && leftToSkip == 0) {
                 children.add(FfmNode(child, this, parent))
+            } else {
+                nodeAllocator.release(markBeforeChild)
+                if (isAskedFor) leftToSkip--
             }
-        } while (TreeSitterApi.cursorGotoNextSibling(cursor))
+            hasChild = TreeSitterApi.cursorGotoNextSibling(cursor)
+        }
         return children
     }
 
