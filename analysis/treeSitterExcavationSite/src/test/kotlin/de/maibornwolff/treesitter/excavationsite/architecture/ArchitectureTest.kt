@@ -6,7 +6,6 @@ import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.QualifiedIdentifierPath
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -258,15 +257,11 @@ class ArchitectureTest {
                 .and()
                 .areDeclaredInClassesThat()
                 .areNotAnonymousClasses()
-                .and()
-                .areDeclaredInClassesThat()
-                .areNotAssignableTo(QualifiedIdentifierPath::class.java)
                 .should()
                 .haveRawType(assignableTo(SyntaxNode::class.java))
                 .because(
-                    "a node of the FFM binding is reused once the call that handed it over returns. This catches a plain field; " +
-                        "collections and captured variables are not checked. QualifiedIdentifierPath is exempt, " +
-                        "it is read and dropped by the function that walked the path"
+                    "a node is reused once the call that handed it over returns. This catches a plain field; " +
+                        "collections and captured variables are not checked"
                 ).check(classes)
         }
     }

@@ -75,14 +75,12 @@ internal object CppTypeHelper {
         return extractType(argNode)
     }
 
-    fun extractRightmostSegment(qualifiedId: SyntaxNode): UsedType? {
-        val path = QualifiedIdentifierPath.walk(qualifiedId)
-        val leafNode = path.leaf ?: return null
-        if (leafNode.type in TEMPLATE_LIKE_TYPES) {
-            return extractTemplateLike(leafNode)?.copy(namespacePrefix = path.segments)
+    fun extractRightmostSegment(qualifiedId: SyntaxNode): UsedType? = QualifiedIdentifierPath.readLeaf(qualifiedId) { scopeSegments, leaf ->
+        when {
+            leaf == null -> null
+            leaf.type in TEMPLATE_LIKE_TYPES -> extractTemplateLike(leaf)?.copy(namespacePrefix = scopeSegments)
+            else -> leaf.text.trim().takeIf { it.isNotEmpty() }?.let { UsedType(name = it, namespacePrefix = scopeSegments) }
         }
-        val text = leafNode.text.trim()
-        return if (text.isEmpty()) null else UsedType(name = text, namespacePrefix = path.segments)
     }
 
     fun extractSingleSegmentScope(qualifiedId: SyntaxNode): UsedType? {
@@ -93,7 +91,7 @@ internal object CppTypeHelper {
     }
 
     fun extractSecondToLastSegment(qualifiedId: SyntaxNode): UsedType? {
-        val segments = QualifiedIdentifierPath.walk(qualifiedId).segments
+        val segments = QualifiedIdentifierPath.scopeSegments(qualifiedId)
         val name = segments.lastOrNull() ?: return null
         return UsedType(name = name, namespacePrefix = segments.dropLast(1))
     }
