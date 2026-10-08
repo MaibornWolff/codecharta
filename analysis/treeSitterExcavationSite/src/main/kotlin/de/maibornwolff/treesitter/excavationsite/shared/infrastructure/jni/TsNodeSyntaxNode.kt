@@ -6,7 +6,7 @@ import org.treesitter.TSNode
 import org.treesitter.TSParser
 
 /**
- * A node of the JNI binding seen as a [SyntaxNode], for dependency extraction, which parses with that binding.
+ * A node of the JNI binding seen as a [SyntaxNode]. Only tests still parse with it.
  *
  * @param utf8Source the source as UTF-8. The JNI binding drops U+FEFF, U+FFFE and U+FFFF before it parses, so
  * [text] is shifted behind such a character

@@ -12,11 +12,10 @@ object TreeSitterDependencies {
                 "Dependency analysis is not supported for ${language.name}. " +
                     "Supported languages: ${getSupportedLanguages().joinToString { it.name }}"
             )
-        val treeSitterLanguage = LanguageRegistry.getJniLanguage(language)
 
         return DependenciesFacade.analyze(
             content = content,
-            treeSitterLanguage = treeSitterLanguage,
+            grammarLibrary = LanguageRegistry.getGrammarLibrary(language),
             mapping = mapping,
             preprocessor = definition.preprocessor
         )
