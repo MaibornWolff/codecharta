@@ -1,95 +1,76 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.nodeAsString
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.queries.PhpNamespaceQueries
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.toImport
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.resolveRelativePath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toNodeType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
-import org.treesitter.TSLanguage
-import org.treesitter.TSNode
-import org.treesitter.TSParser
-import org.treesitter.TreeSitterPhp
+import de.maibornwolff.treesitter.excavationsite.api.Declaration
+import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.ImportKind
+import de.maibornwolff.treesitter.excavationsite.api.Language
+import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 
 class PhpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
-    private val namespaceQueries = PhpNamespaceQueries()
-
-    private lateinit var aliasedTypesExtractor: AliasedTypesExtractor
-    private lateinit var dependencyExtractor: DependencyExtractor
-    private lateinit var usedTypesExtractor: UsedTypesExtractor
-    private lateinit var nodeExtractor: NodeExtractor
-
     override fun analyze(): FileReport {
-        val code = fileInfo.content
-        val rootNode = parseCode(code, TreeSitterPhp())
-
-        dependencyExtractor = DependencyExtractor(fileInfo, rootNode)
-        val dependencies = dependencyExtractor.extract()
-
-        aliasedTypesExtractor = AliasedTypesExtractor(code, rootNode)
-        val aliasedTypes = aliasedTypesExtractor.extract()
-
-        usedTypesExtractor = UsedTypesExtractor(aliasedTypes, dependencies)
-        nodeExtractor = NodeExtractor(fileInfo, code)
-
-        return processToFileReport(nodeExtractor.getNodes(rootNode), rootNode)
-    }
-
-    private fun processToFileReport(nodes: List<NodeWrapper>, rootNode: TSNode): FileReport {
-        val namespaceName = namespaceQueries.getName(rootNode)
-        if (namespaceName != null) {
-            return FileReport(
-                nodes.map {
-                    toNodeFromNamespace(
-                        it,
-                        namespaceName
-                    )
+        val result = TreeSitterDependencies.analyze(fileInfo.content, Language.PHP)
+        val declaredNamespace = result.packagePath.takeIf { it.isNotEmpty() }?.let { Path(it) }
+        val namespace = declaredNamespace ?: fileInfo.physicalPathAsPath()
+        val pathOfFile = pathOfFile(declaredNamespace)
+        val imports = result.imports.map {
+            Dependency(
+                if (it.kind ==
+                    ImportKind.INCLUDE
+                ) {
+                    resolveInclude(it, pathOfFile)
+                } else {
+                    Path(it.path)
                 }
             )
         }
-
-        return FileReport(nodes.map { toNodeFromPhysicalPath(it) })
-    }
-
-    private fun toNodeFromNamespace(node: NodeWrapper, namespaceName: TSNode): Node {
-        val path = extractPathFromNamespace(namespaceName)
-        return toNode(node, path)
-    }
-
-    private fun toNodeFromPhysicalPath(node: NodeWrapper): Node {
-        val path = extractPathFromFileInfo()
-        return toNode(node, path)
-    }
-
-    private fun toNode(node: NodeWrapper, path: Path): Node {
-        val implicitNamespaceImport = Dependency(path = path, isWildcard = true)
-        val dependencies = dependencyExtractor.extract()
-        return Node(
-            pathWithName = path + node.getName(),
-            physicalPath = fileInfo.physicalPath,
-            language = fileInfo.language,
-            nodeType = node.nodeType,
-            dependencies = dependencies.map { it.dependency }.toSet() + implicitNamespaceImport,
-            usedTypes = usedTypesExtractor.extract(
-                node.treesitterNode,
-                fileInfo.content
+        val dependencies = imports.toSet() + Dependency(path = namespace, isWildcard = true)
+        val nodes = result.declarations.map { declaration ->
+            Node(
+                pathWithName = namespace + nameOf(declaration),
+                physicalPath = fileInfo.physicalPath,
+                language = fileInfo.language,
+                nodeType = declaration.type.toNodeType(),
+                dependencies = dependencies,
+                usedTypes = declaration.usedTypes.map { it.toType() }.toSet()
             )
-        )
+        }
+        return FileReport(nodes)
     }
 
-    private fun extractPathFromNamespace(node: TSNode): Path {
-        val namespace = nodeAsString(node, fileInfo.content)
-        return Path(namespace.split('\\'))
+    private fun nameOf(declaration: Declaration): String =
+        if (declaration.type == DeclarationType.SCRIPT) fileNameWithoutEnding() + SCRIPT_SUFFIX else declaration.name
+
+    private fun resolveInclude(include: ImportDeclaration, pathOfFile: Path): Path {
+        val includedFile = include.path.joinToString(PATH_SEPARATOR).trimFileEnding()
+        return resolveRelativePath(includedFile.toImport(), pathOfFile)
     }
 
-    private fun extractPathFromFileInfo(): Path = fileInfo.physicalPathAsPath()
+    // An include is resolved as if the file lay in the directory its namespace names
+    private fun pathOfFile(declaredNamespace: Path?): Path {
+        if (declaredNamespace == null) return Path(physicalPathSegments())
+        return Path(declaredNamespace.parts.map { it.trim(';') } + fileNameWithoutEnding())
+    }
 
-    private fun parseCode(code: String, language: TSLanguage): TSNode {
-        val parser = TSParser()
-        parser.language = language
-        val tree = parser.parseString(null, code)
-        return tree.rootNode
+    private fun fileNameWithoutEnding(): String = physicalPathSegments().last()
+
+    private fun physicalPathSegments(): List<String> = fileInfo.physicalPath.trimFileEnding().split("/", "\\")
+
+    private fun String.trimFileEnding(): String = removeSuffix(PHP_ENDING)
+
+    companion object {
+        private const val PHP_ENDING = ".php"
+        private const val SCRIPT_SUFFIX = ".script"
+        private const val PATH_SEPARATOR = "/"
     }
 }

@@ -4,8 +4,10 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.De
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
+import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 // The sentinel name TSE assigns to default export declarations (e.g. `export default ...`)
@@ -28,11 +30,16 @@ fun ImportDeclaration.defaultImportPath(): List<String> {
     return path
 }
 
-fun UsedType.toType(): Type {
-    if (genericTypes.isEmpty()) {
-        return Type.simple(name)
-    }
-    return Type.generic(name, genericTypes.map { it.toType() })
+fun UsedType.toType(): Type = Type.generic(name, genericTypes.map { it.toType() }, usage.toTypeOfUsage())
+
+fun TypeUsage.toTypeOfUsage(): TypeOfUsage = when (this) {
+    TypeUsage.USAGE -> TypeOfUsage.USAGE
+    TypeUsage.INHERITANCE -> TypeOfUsage.INHERITANCE
+    TypeUsage.IMPLEMENTATION -> TypeOfUsage.IMPLEMENTATION
+    TypeUsage.CONSTANT_ACCESS -> TypeOfUsage.CONSTANT_ACCESS
+    TypeUsage.RETURN_VALUE -> TypeOfUsage.RETURN_VALUE
+    TypeUsage.INSTANTIATION -> TypeOfUsage.INSTANTIATION
+    TypeUsage.ARGUMENT -> TypeOfUsage.ARGUMENT
 }
 
 fun DeclarationType.toNodeType(): NodeType = when (this) {
@@ -43,5 +50,6 @@ fun DeclarationType.toNodeType(): NodeType = when (this) {
     DeclarationType.FUNCTION -> NodeType.FUNCTION
     DeclarationType.VARIABLE -> NodeType.VARIABLE
     DeclarationType.REEXPORT -> NodeType.REEXPORT
+    DeclarationType.SCRIPT -> NodeType.SCRIPT
     DeclarationType.UNKNOWN -> NodeType.UNKNOWN
 }
