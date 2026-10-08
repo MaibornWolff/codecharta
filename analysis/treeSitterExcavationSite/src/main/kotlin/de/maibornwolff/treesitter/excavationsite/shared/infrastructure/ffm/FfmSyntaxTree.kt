@@ -82,6 +82,19 @@ internal class FfmSyntaxTree private constructor(
 
     private class OpenAncestor(val node: FfmNode, val markBeforeNode: Long)
 
+    /**
+     * Hands the root to [read] and releases every node reached from it when [read] returns, for extraction that
+     * traverses on its own instead of being visited by [walk]. The result must not hold a node.
+     */
+    fun <T> readReleasingReachedNodes(read: (root: FfmNode) -> T): T {
+        val markBeforeRead = nodeAllocator.mark()
+        try {
+            return read(rootNode)
+        } finally {
+            nodeAllocator.release(markBeforeRead)
+        }
+    }
+
     override fun close() {
         if (!arena.scope().isAlive) return
         arena.close()

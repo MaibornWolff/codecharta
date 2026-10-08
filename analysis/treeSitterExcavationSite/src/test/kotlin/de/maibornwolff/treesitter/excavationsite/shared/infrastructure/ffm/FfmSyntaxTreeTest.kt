@@ -17,6 +17,74 @@ class FfmSyntaxTreeTest {
     }
 
     @Nested
+    inner class ReadReleasingReachedNodes {
+        private val code = "class A { int x; int y; }"
+
+        private fun typesOfAllDescendants(node: SyntaxNode): List<String> =
+            (0 until node.childCount).map { node.getChild(it) }.flatMap { listOf(it.type) + typesOfAllDescendants(it) }
+
+        @Test
+        fun `should return what was read from the root`() {
+            FfmSyntaxTree.parse(code, java).use { tree ->
+                // Act
+                val types = tree.readReleasingReachedNodes { root -> typesOfAllDescendants(root) }
+
+                // Assert
+                assertThat(types).isEqualTo(visitedTypes(code).drop(1))
+            }
+        }
+
+        @Test
+        fun `should release the nodes that were reached`() {
+            FfmSyntaxTree.parse(code, java).use { tree ->
+                // Arrange
+                val markBeforeRead = tree.nodeAllocator.mark()
+
+                // Act
+                tree.readReleasingReachedNodes { root -> typesOfAllDescendants(root) }
+
+                // Assert
+                assertThat(tree.nodeAllocator.mark()).isEqualTo(markBeforeRead)
+            }
+        }
+
+        @Test
+        fun `should release the nodes that were reached before a failure`() {
+            FfmSyntaxTree.parse(code, java).use { tree ->
+                // Arrange
+                val markBeforeRead = tree.nodeAllocator.mark()
+
+                // Act
+                val read = runCatching {
+                    tree.readReleasingReachedNodes { root ->
+                        typesOfAllDescendants(root)
+                        error("extraction failed")
+                    }
+                }
+
+                // Assert
+                assertThat(read.isFailure).isTrue()
+                assertThat(tree.nodeAllocator.mark()).isEqualTo(markBeforeRead)
+            }
+        }
+
+        @Test
+        fun `should keep the root readable after the read`() {
+            FfmSyntaxTree.parse(code, java).use { tree ->
+                // Arrange
+                tree.readReleasingReachedNodes { root -> typesOfAllDescendants(root) }
+
+                // Act
+                val typesOfSecondRead = tree.readReleasingReachedNodes { root -> typesOfAllDescendants(root) }
+
+                // Assert
+                assertThat(tree.rootNode.type).isEqualTo("program")
+                assertThat(typesOfSecondRead).isEqualTo(visitedTypes(code).drop(1))
+            }
+        }
+    }
+
+    @Nested
     inner class Walk {
         @Test
         fun `should visit every node in pre-order`() {
