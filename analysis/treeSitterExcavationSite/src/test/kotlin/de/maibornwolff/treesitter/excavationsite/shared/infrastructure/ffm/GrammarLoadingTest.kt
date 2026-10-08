@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
@@ -42,5 +43,18 @@ class GrammarLoadingTest {
 
         // Assert
         assertThat(rootType).isEqualTo(expectedRootType)
+    }
+
+    @Test
+    fun `should load the native grammar dependency extraction parses a whole Vue component with`() {
+        // Arrange
+        val grammarOfWholeFile = LanguageRegistry.getLanguageDefinition(Language.VUE).dependencyMapping?.grammarOfWholeFile
+        val grammar = NativeTreeSitter.grammar(grammarOfWholeFile!!)
+
+        // Act
+        val rootType = FfmSyntaxTree.parse("<template></template>", grammar).use { it.rootNode.type }
+
+        // Assert
+        assertThat(rootType).isEqualTo("component")
     }
 }
