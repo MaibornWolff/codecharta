@@ -13,12 +13,14 @@ object TreeSitterDependencies {
                     "Supported languages: ${getSupportedLanguages().joinToString { it.name }}"
             )
 
-        return DependenciesFacade.analyze(
+        val collected = DependenciesFacade.analyze(
             content = content,
-            grammarLibrary = LanguageRegistry.getGrammarLibrary(language),
+            grammarLibrary = mapping.grammarOfWholeFile ?: LanguageRegistry.getGrammarLibrary(language),
             mapping = mapping,
-            preprocessor = definition.preprocessor
+            preprocessor = definition.preprocessor.takeIf { mapping.grammarOfWholeFile == null }
         )
+        val importsOfEmbeddedSources = collected.embeddedSources.flatMap { analyze(it.content, it.language).imports }
+        return collected.ofFile.copy(imports = collected.ofFile.imports + importsOfEmbeddedSources)
     }
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {

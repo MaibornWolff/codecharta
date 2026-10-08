@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.Javascript
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationConfig
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
+import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 
 /**
@@ -11,11 +12,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
  *
  * Reuses JavaScript's metric and extraction mappings since Vue SFCs
  * contain JavaScript/TypeScript in their <script> sections.
- * The preprocessor extracts the script content before parsing.
+ * The preprocessor extracts the script content before parsing. Dependency extraction parses the whole component
+ * with the Vue grammar instead.
  */
 object VueDefinition : LanguageDefinition {
     override val nodeMetrics: Map<String, Set<Metric>> = JavascriptDefinition.nodeMetrics
     override val nodeExtractions: Map<String, Extract> = JavascriptDefinition.nodeExtractions
     override val calculationConfig: CalculationConfig = JavascriptDefinition.calculationConfig
+    override val dependencyMapping: LanguageDependencyMapping = VueDependencyMapping.dependencyMapping
     override val preprocessor: ((String) -> String)? = VueScriptExtractor::extractScriptContent
 }

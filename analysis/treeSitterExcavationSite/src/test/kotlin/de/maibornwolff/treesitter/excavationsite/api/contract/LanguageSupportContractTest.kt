@@ -303,7 +303,8 @@ class LanguageSupportContractTest {
                     Language.RUST,
                     Language.GO,
                     Language.PYTHON,
-                    Language.PHP
+                    Language.PHP,
+                    Language.VUE
                 )
         }
     }
