@@ -28,6 +28,9 @@ enum class DeclarationType {
     FUNCTION,
     VARIABLE,
     REEXPORT,
+
+    /** A file that declares nothing: it has no name of its own and carries what the file uses. */
+    SCRIPT,
     UNKNOWN
 }
 
@@ -37,6 +40,17 @@ data class Declaration(
     val usedTypes: Set<UsedType>,
     val parentPath: List<String> = emptyList()
 )
+
+/** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */
+enum class TypeUsage {
+    USAGE,
+    INHERITANCE,
+    IMPLEMENTATION,
+    CONSTANT_ACCESS,
+    RETURN_VALUE,
+    INSTANTIATION,
+    ARGUMENT
+}
 
 /**
  * A type referenced inside a declaration body.
@@ -52,6 +66,11 @@ data class Declaration(
  * wildcard imports per qualified usage, which feeds the resolver the same
  * hint a `using namespace A::B;` directive would.
  */
-data class UsedType(val name: String, val genericTypes: List<UsedType> = emptyList(), val namespacePrefix: List<String> = emptyList()) {
+data class UsedType(
+    val name: String,
+    val genericTypes: List<UsedType> = emptyList(),
+    val namespacePrefix: List<String> = emptyList(),
+    val usage: TypeUsage = TypeUsage.USAGE
+) {
     fun isUppercase(): Boolean = name.firstOrNull()?.isUpperCase() == true
 }

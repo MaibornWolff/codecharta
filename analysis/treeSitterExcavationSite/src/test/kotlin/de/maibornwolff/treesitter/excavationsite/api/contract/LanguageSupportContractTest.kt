@@ -302,7 +302,8 @@ class LanguageSupportContractTest {
                     Language.TSX,
                     Language.RUST,
                     Language.GO,
-                    Language.PYTHON
+                    Language.PYTHON,
+                    Language.PHP
                 )
         }
     }
