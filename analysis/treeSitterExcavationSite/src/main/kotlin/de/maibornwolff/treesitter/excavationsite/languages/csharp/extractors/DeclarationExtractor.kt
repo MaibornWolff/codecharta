@@ -28,9 +28,10 @@ internal object DeclarationExtractor {
         val namesByStartByte = allDeclarations.associate { node ->
             node.startByte to TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
         }
+        val fileScopedNamespacePaths = mutableMapOf<SyntaxNode, List<String>>()
         return allDeclarations.mapNotNull { declarationNode ->
             val name = namesByStartByte[declarationNode.startByte] ?: return@mapNotNull null
-            val namespacePath = findNamespacePath(declarationNode)
+            val namespacePath = findNamespacePath(declarationNode, fileScopedNamespacePaths)
             val parentClassPath = findParentClassPath(declarationNode, namesByStartByte)
             Declaration(
                 name = name,
@@ -41,7 +42,7 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun findNamespacePath(node: SyntaxNode): List<String> {
+    private fun findNamespacePath(node: SyntaxNode, fileScopedNamespacePaths: MutableMap<SyntaxNode, List<String>>): List<String> {
         val ancestorSegments = mutableListOf<List<String>>()
         var current = node.parent
         var compilationUnit: SyntaxNode? = null
@@ -55,14 +56,14 @@ internal object DeclarationExtractor {
             current = current.parent
         }
         if (ancestorSegments.isEmpty() && compilationUnit != null) {
-            val namespaceNode = TreeTraversal
-                .findAllDescendantsOfType(compilationUnit, FILE_SCOPED_NAMESPACE)
-                .firstOrNull()
-            if (namespaceNode != null) {
-                ancestorSegments.add(extractNamespacePath(namespaceNode))
-            }
+            return fileScopedNamespacePaths.getOrPut(compilationUnit) { findFileScopedNamespacePath(compilationUnit) }
         }
         return ancestorSegments.flatten()
+    }
+
+    private fun findFileScopedNamespacePath(compilationUnit: SyntaxNode): List<String> {
+        val namespaceNode = TreeTraversal.findAllDescendantsOfType(compilationUnit, FILE_SCOPED_NAMESPACE).firstOrNull()
+        return namespaceNode?.let { extractNamespacePath(it) } ?: emptyList()
     }
 
     private fun findParentClassPath(node: SyntaxNode, namesByStartByte: Map<Int, String?>): List<String> {
