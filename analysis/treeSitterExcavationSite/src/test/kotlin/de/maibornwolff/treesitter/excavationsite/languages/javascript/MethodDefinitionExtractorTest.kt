@@ -3,12 +3,13 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.extractIdentifiersFromMethodDefinition
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.treesitter.TreeSitterJavascript
 
 class MethodDefinitionExtractorTest {
     @Nested
@@ -17,12 +18,15 @@ class MethodDefinitionExtractorTest {
         fun `should not throw when the node has no previous sibling`() {
             // Arrange
             val code = "class A { foo() {} }"
-            val root = TsNodeSyntaxNode.parse(code, TreeSitterJavascript())
-            val firstChildOfProgram = root.getChild(0)
+            val javascript = NativeTreeSitter.grammar(GrammarLibrary("javascript"))
 
-            // Act / Assert
-            assertThatCode { extractIdentifiersFromMethodDefinition(firstChildOfProgram) }
-                .doesNotThrowAnyException()
+            FfmSyntaxTree.parse(code, javascript).use { tree ->
+                val firstChildOfProgram = tree.rootNode.getChild(0)
+
+                // Act / Assert
+                assertThatCode { extractIdentifiersFromMethodDefinition(firstChildOfProgram) }
+                    .doesNotThrowAnyException()
+            }
         }
     }
 

@@ -1,13 +1,22 @@
 package de.maibornwolff.treesitter.excavationsite.shared.domain
 
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.treesitter.TreeSitterJava
 
 class TreeTraversalTest {
-    private val java = TreeSitterJava()
+    private val java = NativeTreeSitter.grammar(GrammarLibrary("java"))
+    private val parsedTrees = mutableListOf<FfmSyntaxTree>()
+
+    private fun parse(code: String): SyntaxNode = FfmSyntaxTree.parse(code, java).also { parsedTrees.add(it) }.rootNode
+
+    @AfterEach
+    fun closeParsedTrees() {
+        parsedTrees.forEach { it.close() }
+    }
 
     @Nested
     inner class FindAllDescendantsOfType {
@@ -20,7 +29,7 @@ class TreeTraversalTest {
                     private String y;
                 }
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val fields = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration")
@@ -39,7 +48,7 @@ class TreeTraversalTest {
                     public void bar() {}
                 }
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val nodes = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration", "method_declaration")
@@ -60,7 +69,7 @@ class TreeTraversalTest {
                     }
                 }
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val invocations = TreeTraversal.findAllDescendantsOfType(rootNode, "method_invocation")
@@ -73,7 +82,7 @@ class TreeTraversalTest {
         fun `should find descendants in the order they appear in the source`() {
             // Arrange
             val code = "class Outer { int first; class Inner { int second; } int third; }"
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val matches = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration", "class_declaration")
@@ -88,7 +97,7 @@ class TreeTraversalTest {
             // Arrange
             val concatenatedStrings = 50_000
             val code = "class A { String s = " + "\"a\" + ".repeat(concatenatedStrings - 1) + "\"a\"; }"
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val strings = TreeTraversal.findAllDescendantsOfType(rootNode, "string_literal")
@@ -103,7 +112,7 @@ class TreeTraversalTest {
             val code = """
                 public class Foo {}
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val fields = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration")
@@ -124,7 +133,7 @@ class TreeTraversalTest {
                     public void bar() {}
                 }
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val buckets = TreeTraversal.findAllDescendantsGroupedByType(
@@ -144,7 +153,7 @@ class TreeTraversalTest {
             val code = """
                 public class Foo {}
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val buckets = TreeTraversal.findAllDescendantsGroupedByType(
@@ -165,7 +174,7 @@ class TreeTraversalTest {
                     public void bar() {}
                 }
             """.trimIndent()
-            val rootNode = TsNodeSyntaxNode.parse(code, java)
+            val rootNode = parse(code)
 
             // Act
             val buckets = TreeTraversal.findAllDescendantsGroupedByType(
@@ -181,7 +190,7 @@ class TreeTraversalTest {
 
     @Nested
     inner class ContainsNodeOfType {
-        private val rootNode = TsNodeSyntaxNode.parse("class A { void f() { g(x -> x); } }", java)
+        private val rootNode = parse("class A { void f() { g(x -> x); } }")
 
         @Test
         fun `should find a type that occurs deep below the node`() {
