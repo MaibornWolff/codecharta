@@ -3,7 +3,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.vue
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -46,11 +47,7 @@ class VueAstExplorationTest {
             </style>
         """.trimIndent()
 
-        val language = LanguageRegistry.getJniLanguage(Language.VUE)
-        val root = TsNodeSyntaxNode.parse(code, language)
-
-        println("=== Vue AST Structure ===")
-        printAst(root, 0)
+        printAst("=== Vue AST Structure ===", code)
     }
 
     @Test
@@ -72,11 +69,7 @@ class VueAstExplorationTest {
             </script>
         """.trimIndent()
 
-        val language = LanguageRegistry.getJniLanguage(Language.VUE)
-        val root = TsNodeSyntaxNode.parse(code, language)
-
-        println("=== Vue Script Section AST ===")
-        printAst(root, 0)
+        printAst("=== Vue Script Section AST ===", code)
     }
 
     @Test
@@ -93,11 +86,13 @@ class VueAstExplorationTest {
             </script>
         """.trimIndent()
 
-        val language = LanguageRegistry.getJniLanguage(Language.VUE)
-        val root = TsNodeSyntaxNode.parse(code, language)
+        printAst("=== Vue Comments AST ===", code)
+    }
 
-        println("=== Vue Comments AST ===")
-        printAst(root, 0)
+    private fun printAst(title: String, code: String) {
+        val grammar = NativeTreeSitter.grammar(LanguageRegistry.getGrammarLibrary(Language.VUE))
+        println(title)
+        FfmSyntaxTree.parse(code, grammar).use { tree -> printAst(tree.rootNode, 0) }
     }
 
     private fun printAst(node: SyntaxNode, depth: Int) {
