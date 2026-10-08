@@ -731,4 +731,21 @@ class JavaDependencyTest {
                 .hasMessageContaining("PYTHON")
         }
     }
+
+    @Nested
+    inner class DeepNesting {
+        @Test
+        fun `should extract the declaration of a class with a very long chain of concatenations`() {
+            // Arrange
+            val concatenatedStrings = 50_000
+            val code = "class Deep extends Base { String s = " + "\"a\" + ".repeat(concatenatedStrings - 1) + "\"a\"; }"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.JAVA)
+
+            // Assert
+            assertThat(result.declarations.map { it.name }).containsExactly("Deep")
+            assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactlyInAnyOrder("Base", "String")
+        }
+    }
 }
