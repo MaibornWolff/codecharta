@@ -78,7 +78,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
   more than once in its file, when each declaration that references the target counts once. **Only PHP reports
   more than `usage` today**: its extractor in `TreeSitterExcavationSite` classifies a type by the clause it
-  appears in and says so in `UsedType.usage`. The extractors of the other languages make the same distinction
+  appears in and says so in `UsedType.usage`. The extractors of Java, Kotlin and C# make the same distinction
   internally — separate `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`,
   `extractObjectCreationTypes` passes — but do not fill `usage` yet. DependaCharta has the same gap.
 - A declaration split across files — a C# partial class, a Go function name reused within a package — is

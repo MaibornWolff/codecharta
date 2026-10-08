@@ -65,7 +65,7 @@ data class ImportDeclaration(
 
 enum class ImportKind {
     STANDARD,  // e.g., Java `import`, Kotlin `import`, C# `using`, C++ `using namespace`/`using X::Y`
-    INCLUDE,   // C++ `#include`, PHP `require`/`include` — the adapter resolves the path against the file
+    INCLUDE,   // C++ `#include`, PHP `require`/`include` — the adapter resolves the path
     REEXPORT,  // Rust `pub use`
     MEMBER     // Python `from module import name` — the last path segment is the imported name
 }
@@ -92,12 +92,11 @@ data class UsedType(
 | Kind | Source | Adapter handling |
 |---|---|---|
 | `STANDARD` (default) | Java `import`, Kotlin `import`, C# `using`, C++ `using namespace` / `using X::Y`, Rust `use` | Consumed as-is — the `path` is already the canonical reference |
-| `INCLUDE` | C++ `#include "…"` or `#include <…>`, PHP `require`/`include` (and their `_once` forms) of a single-quoted path | Adapter resolves relative paths (`./`, `../`) against the file's physical path; for C++ it rewrites the final segment's `.` → `_` to match DC's node-naming convention, for PHP it drops the `.php` ending |
+| `INCLUDE` | C++ `#include "…"` or `#include <…>`, PHP `require`/`include` (and their `_once` forms) of a single-quoted path directly behind the keyword, not in parentheses | Adapter resolves relative paths (`./`, `../`): for C++ against the file's physical path, rewriting the final segment's `.` → `_` to match DC's node-naming convention; for PHP against the namespace of the file plus its file name, or the physical path where it has no namespace, dropping the `.php` ending |
 | `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) | Adapter models it as a forwarding node — a crate flattens its public API via `pub use`, so consumers import the short `crate::Type` path; the forwarding node `crate::Type` points at the real `crate::module::Type` so the consumer's reference resolves transitively |
-
 | `MEMBER` | Python `from module import name` and `from module import *` | The last path segment is the imported name (none for a wildcard). A relative module starts with one `.` segment per leading dot, which the adapter resolves against the module path of the file. A name can live in `module.py` or in `module/__init__.py`, so the adapter emits a dependency on both |
 
-Without this tag, a C++ DC adapter cannot tell `#include "foo"` (needs path normalization) from `using foo;` (must not be normalized) — both produce the same `(path, isWildcard, namespacePath)` triple. TSE extractors tag the AST source; adapters branch on `kind`.
+Without the `INCLUDE` tag, a C++ DC adapter cannot tell `#include "foo"` (needs path normalization) from `using foo;` (must not be normalized) — both produce the same `(path, isWildcard, namespacePath)` triple. TSE extractors tag the AST source; adapters branch on `kind`.
 
 Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at its default (`STANDARD`).
 
@@ -113,7 +112,7 @@ Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at 
 | C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified inline reference. |
 | TypeScript, JavaScript, Go, Vue | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
 | Python | `import shop.orders` followed by `shop.orders.Order` is how a module import is used. | Yes — every attribute access `a.b.C` is the used type `C` with the prefix `[a, b]`; the adapter keeps those whose prefix is an imported module or its alias. |
-| PHP | Has namespaces similar to C++; only plain names are extracted, so a qualified use is left out. | No — always empty. |
+| PHP | Has namespaces similar to C++. A declared type (return, parameter, property) is taken as written, qualifier included, in `UsedType.name`; a qualified base class, interface or instantiated class is left out. | No — always empty. |
 | Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | Yes — populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). |
 
 **How a DC-side adapter consumes it:** when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
@@ -131,7 +130,7 @@ dependency gets.
 ### Declarations without a name of their own
 
 - `DeclarationType.SCRIPT` (PHP): a file that declares nothing is one declaration with an empty name that carries
-  what the whole file uses. The adapter names it after the file.
+  what the whole file uses. The adapter names it `<file>.script`.
 - A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
   are the components its template names. The adapter names it after the file.
 
@@ -307,7 +306,7 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 |---|---|---|
 | Java | `package_declaration` | empty |
 | Kotlin | `package_header` | parent class chain only (package not duplicated) |
-| Go | names of the package clauses; the adapter uses the directory of the file instead, where there is one | empty |
+| Go | names of the package clauses, not a path; the adapter depends on them as the own package of the file and takes the directory of the file as its package path, where there is one | empty |
 | PHP | `namespace` declaration, otherwise empty and the adapter uses the file path | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
 | Delphi | `unit` declaration | empty (top-level types only in v1) |

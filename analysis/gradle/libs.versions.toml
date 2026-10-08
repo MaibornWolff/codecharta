@@ -15,10 +15,7 @@ kasechange = "1.4.1"
 kotlinx-serialization-json = "1.7.3"
 kotter = "1.2.1"
 picocli = "4.7.7"
-# TreeSitter core plus every grammar binding the treeSitterExcavationSite module loads. The go,
-# javascript, php, python and vue pins are also compile-visible to the dependency parser, which
-# queries those grammars directly; they must stay on the versions the module declares, or the ccsh
-# fat jar carries two conflicting sets of natives.
+# TreeSitter core plus every grammar binding the treeSitterExcavationSite module loads.
 tree-sitter = "0.26.3"
 tree-sitter-bash = "0.23.3"
 tree-sitter-c = "0.23.2"
