@@ -20,17 +20,21 @@ class FfmSyntaxTreeTest {
     inner class ReadReleasingReachedNodes {
         private val code = "class A { int x; int y; }"
 
+        private val typesBelowTheRoot = visitedTypes(code).drop(1)
+
         private fun typesOfAllDescendants(node: SyntaxNode): List<String> =
-            (0 until node.childCount).map { node.getChild(it) }.flatMap { listOf(it.type) + typesOfAllDescendants(it) }
+            node.children().flatMap { listOf(it.type) + typesOfAllDescendants(it) }.toList()
 
         @Test
         fun `should return what was read from the root`() {
             FfmSyntaxTree.parse(code, java).use { tree ->
+                // Arrange: the parsed code
+
                 // Act
                 val types = tree.readReleasingReachedNodes { root -> typesOfAllDescendants(root) }
 
                 // Assert
-                assertThat(types).isEqualTo(visitedTypes(code).drop(1))
+                assertThat(types).isEqualTo(typesBelowTheRoot)
             }
         }
 
@@ -79,7 +83,7 @@ class FfmSyntaxTreeTest {
 
                 // Assert
                 assertThat(tree.rootNode.type).isEqualTo("program")
-                assertThat(typesOfSecondRead).isEqualTo(visitedTypes(code).drop(1))
+                assertThat(typesOfSecondRead).isEqualTo(typesBelowTheRoot)
             }
         }
     }
@@ -317,30 +321,36 @@ class FfmSyntaxTreeTest {
     }
 
     @Nested
-    inner class ChildrenInLinearTime {
+    inner class Children {
         private val codeByGrammar = mapOf(
             "java" to "class A<T> { int[] x = {1, 2, 3}; void f(String s) { g(s -> s + \"a\"); } int y = ; int a, b, c, d, e; }",
             "cpp" to "void g() { (a.b = *c); std::vector<int> v; }",
             "typescript" to "let a: -1 = -1; export const f = (x: A<B>) => x?.y ?? [1, 2];"
         )
 
-        private fun mismatchesInEveryNode(mismatchOf: FfmSyntaxTree.(SyntaxNode) -> String?): List<String> =
+        private fun typesOfNodesWhere(isWrong: FfmSyntaxTree.(SyntaxNode) -> Boolean): List<String> =
             codeByGrammar.flatMap { (grammarName, code) ->
                 FfmSyntaxTree.parse(code, NativeTreeSitter.grammar(GrammarLibrary(grammarName))).use { tree ->
-                    tree.readReleasingReachedNodes { root -> tree.mismatchesBelow(root, mismatchOf) }
+                    tree.readReleasingReachedNodes { root -> withAllDescendants(root).filter { tree.isWrong(it) }.map { it.type } }
                 }
             }
 
-        private fun FfmSyntaxTree.mismatchesBelow(node: SyntaxNode, mismatchOf: FfmSyntaxTree.(SyntaxNode) -> String?): List<String> =
-            listOfNotNull(mismatchOf(node)) + node.children().flatMap { mismatchesBelow(it, mismatchOf) }
+        private fun withAllDescendants(node: SyntaxNode): List<SyntaxNode> =
+            listOf(node) + node.children().flatMap { withAllDescendants(it) }
+
+        private fun childrenByIndex(node: SyntaxNode): List<SyntaxNode> = (0 until node.childCount).map { node.getChild(it) }
+
+        private fun namedChildrenByIndex(node: SyntaxNode): List<SyntaxNode> = (0 until node.namedChildCount).map { node.getNamedChild(it) }
+
+        private fun FfmSyntaxTree.parentFoundFromTheRoot(node: SyntaxNode): FfmNode =
+            FfmNode(TreeSitterApi.nodeParent(nodeAllocator, (node as FfmNode).segment), this)
 
         @Test
         fun `should hand out the children tree-sitter finds by index`() {
+            // Arrange: every node of codeByGrammar
+
             // Act
-            val nodesWithOtherChildren = mismatchesInEveryNode { node ->
-                val childrenByIndex = (0 until node.childCount).map { node.getChild(it) }
-                node.type.takeIf { node.children().toList() != childrenByIndex }
-            }
+            val nodesWithOtherChildren = typesOfNodesWhere { node -> node.children().toList() != childrenByIndex(node) }
 
             // Assert
             assertThat(nodesWithOtherChildren).isEmpty()
@@ -348,11 +358,10 @@ class FfmSyntaxTreeTest {
 
         @Test
         fun `should hand out the named children tree-sitter finds by index`() {
+            // Arrange: every node of codeByGrammar
+
             // Act
-            val nodesWithOtherNamedChildren = mismatchesInEveryNode { node ->
-                val namedChildrenByIndex = (0 until node.namedChildCount).map { node.getNamedChild(it) }
-                node.type.takeIf { node.namedChildren().toList() != namedChildrenByIndex }
-            }
+            val nodesWithOtherNamedChildren = typesOfNodesWhere { node -> node.namedChildren().toList() != namedChildrenByIndex(node) }
 
             // Assert
             assertThat(nodesWithOtherNamedChildren).isEmpty()
@@ -360,20 +369,19 @@ class FfmSyntaxTreeTest {
 
         @Test
         fun `should give a child the parent tree-sitter finds from the root`() {
+            // Arrange: every node of codeByGrammar
+
             // Act
-            val nodesWithAnotherParent = mismatchesInEveryNode { node ->
-                val childrenWithAnotherParent = (node.children() + node.namedChildren()).filter { child ->
-                    child.parent != FfmNode(TreeSitterApi.nodeParent(nodeAllocator, (child as FfmNode).segment), this)
-                }
-                node.type.takeIf { childrenWithAnotherParent.any() }
+            val nodesWithAChildOfAnotherParent = typesOfNodesWhere { node ->
+                (node.children() + node.namedChildren()).any { child -> child.parent != parentFoundFromTheRoot(child) }
             }
 
             // Assert
-            assertThat(nodesWithAnotherParent).isEmpty()
+            assertThat(nodesWithAChildOfAnotherParent).isEmpty()
         }
 
         @Test
-        fun `should hand out the children of a node with only a few and of one with many`() {
+        fun `should hand out all children and the named ones among them`() {
             FfmSyntaxTree.parse("class A { int a, b; int c, d, e, f, g; }", java).use { tree ->
                 // Arrange
                 val classBody = tree.rootNode.getChild(0).getChildByFieldName("body")
@@ -451,7 +459,7 @@ class FfmSyntaxTreeTest {
         }
 
         @Test
-        fun `should reach every child of a node with more children than a block of nodes holds`() {
+        fun `should hand out every named child of a node with more children than a block of nodes holds`() {
             // Arrange
             val fieldCount = 50_000
             val code = "class A {\n" + "int x;\n".repeat(fieldCount) + "}"
