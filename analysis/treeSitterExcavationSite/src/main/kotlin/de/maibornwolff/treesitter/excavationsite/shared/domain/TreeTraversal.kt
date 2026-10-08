@@ -1,8 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.shared.domain
 
-/**
- * Tree navigation shared by text and dependency extraction.
- */
 object TreeTraversal {
     fun findFirstChildTextByType(node: SyntaxNode, vararg types: String): String? = node.children().firstOrNull { it.type in types }?.text
 
@@ -23,58 +20,31 @@ object TreeTraversal {
 
     fun isDescendantOf(node: SyntaxNode, ancestor: SyntaxNode): Boolean = node.ancestors().any { it == ancestor }
 
-    /**
-     * Finds all descendants matching any of the given types via recursive descent.
-     */
     fun findAllDescendantsOfType(node: SyntaxNode, vararg types: String): List<SyntaxNode> {
         val typeSet = types.toSet()
-        val result = mutableListOf<SyntaxNode>()
-        collectDescendantsOfType(node, typeSet, result)
-        return result
+        return descendantsInPreOrder(node).filter { it.type in typeSet }.toList()
     }
 
-    private fun collectDescendantsOfType(node: SyntaxNode, types: Set<String>, result: MutableList<SyntaxNode>) {
-        for (child in node.children()) {
-            if (child.isNull) continue
-            if (child.type in types) result.add(child)
-            collectDescendantsOfType(child, types, result)
-        }
-    }
+    fun findAllDescendantsGroupedByType(node: SyntaxNode, types: Set<String>): Map<String, List<SyntaxNode>> =
+        descendantsInPreOrder(node).filter { it.type in types }.groupBy { it.type }
 
-    /**
-     * Finds all descendants matching any of the given types in a single pass,
-     * returning them bucketed by node type.
-     */
-    fun findAllDescendantsGroupedByType(node: SyntaxNode, types: Set<String>): Map<String, List<SyntaxNode>> {
-        val result = mutableMapOf<String, MutableList<SyntaxNode>>()
-        collectDescendantsByTypes(node, types, result)
-        return result
-    }
+    fun containsNodeOfType(node: SyntaxNode, type: String): Boolean = descendantsInPreOrder(node).any { it.type == type }
 
-    private fun collectDescendantsByTypes(node: SyntaxNode, types: Set<String>, result: MutableMap<String, MutableList<SyntaxNode>>) {
-        for (child in node.children()) {
-            if (child.isNull) continue
-            if (child.type in types) {
-                result.getOrPut(child.type) { mutableListOf() }.add(child)
+    // Iterative: a recursive descent overflows the stack on deeply nested code, such as a long chain of concatenations
+    private fun descendantsInPreOrder(node: SyntaxNode): Sequence<SyntaxNode> = sequence {
+        val openSiblingLists = ArrayDeque<Iterator<SyntaxNode>>()
+        openSiblingLists.addLast(node.children().iterator())
+        while (openSiblingLists.isNotEmpty()) {
+            val siblings = openSiblingLists.last()
+            if (siblings.hasNext()) {
+                val descendant = siblings.next()
+                yield(descendant)
+                openSiblingLists.addLast(descendant.children().iterator())
+            } else {
+                openSiblingLists.removeLast()
             }
-            collectDescendantsByTypes(child, types, result)
         }
-    }
-
-    /**
-     * Recursively checks if any descendant has the given type.
-     */
-    fun containsNodeOfType(node: SyntaxNode, type: String): Boolean {
-        for (child in node.children()) {
-            if (child.isNull) continue
-            if (child.type == type) return true
-            if (containsNodeOfType(child, type)) return true
-        }
-        return false
     }
 }
 
-/**
- * The parent, its parent and so on up to the root.
- */
 fun SyntaxNode.ancestors(): Sequence<SyntaxNode> = generateSequence(parent.orNull()) { it.parent.orNull() }

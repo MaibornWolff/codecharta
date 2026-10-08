@@ -70,6 +70,34 @@ class TreeTraversalTest {
         }
 
         @Test
+        fun `should find descendants in the order they appear in the source`() {
+            // Arrange
+            val code = "class Outer { int first; class Inner { int second; } int third; }"
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
+
+            // Act
+            val matches = TreeTraversal.findAllDescendantsOfType(rootNode, "field_declaration", "class_declaration")
+
+            // Assert
+            assertThat(matches.map { it.text.substringBefore(" {") })
+                .containsExactly("class Outer", "int first;", "class Inner", "int second;", "int third;")
+        }
+
+        @Test
+        fun `should find descendants of code nested too deeply for a recursive descent`() {
+            // Arrange
+            val concatenatedStrings = 50_000
+            val code = "class A { String s = " + "\"a\" + ".repeat(concatenatedStrings - 1) + "\"a\"; }"
+            val rootNode = TsNodeSyntaxNode.parse(code, java)
+
+            // Act
+            val strings = TreeTraversal.findAllDescendantsOfType(rootNode, "string_literal")
+
+            // Assert
+            assertThat(strings).hasSize(concatenatedStrings)
+        }
+
+        @Test
         fun `should return empty list when no matches found`() {
             // Arrange
             val code = """
@@ -148,6 +176,31 @@ class TreeTraversalTest {
             // Assert
             assertThat(buckets).containsOnlyKeys("field_declaration")
             assertThat(buckets["field_declaration"]).hasSize(1)
+        }
+    }
+
+    @Nested
+    inner class ContainsNodeOfType {
+        private val rootNode = TsNodeSyntaxNode.parse("class A { void f() { g(x -> x); } }", java)
+
+        @Test
+        fun `should find a type that occurs deep below the node`() {
+            // Act
+            val containsLambda = TreeTraversal.containsNodeOfType(rootNode, "lambda_expression")
+
+            // Assert
+            assertThat(containsLambda).isTrue()
+        }
+
+        @Test
+        fun `should not find the type of the node itself or a type that does not occur`() {
+            // Act
+            val containsItself = TreeTraversal.containsNodeOfType(rootNode, "program")
+            val containsField = TreeTraversal.containsNodeOfType(rootNode, "field_declaration")
+
+            // Assert
+            assertThat(containsItself).isFalse()
+            assertThat(containsField).isFalse()
         }
     }
 }
