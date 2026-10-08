@@ -9,6 +9,7 @@ class ProgressTracker {
     private var lastLineLength = 0
 
     // function based on java implementation by Alexander Shuev: https://stackoverflow.com/questions/1001290/console-based-progress-in-java
+    @Synchronized
     fun updateProgress(total: Long, parsed: Long, unit: String, filename: String = "") {
         val eta = if (parsed == 0L) 0 else (total - parsed) * (System.currentTimeMillis() - startTime) / parsed
         val etaHms =
