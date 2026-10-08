@@ -5,7 +5,10 @@ data class DependencyResult(val packagePath: List<String>, val imports: List<Imp
 enum class ImportKind {
     STANDARD,
     INCLUDE,
-    REEXPORT
+    REEXPORT,
+
+    /** A name imported out of a module (Python `from module import name`): the last path segment is that name. */
+    MEMBER
 }
 
 data class ImportDeclaration(

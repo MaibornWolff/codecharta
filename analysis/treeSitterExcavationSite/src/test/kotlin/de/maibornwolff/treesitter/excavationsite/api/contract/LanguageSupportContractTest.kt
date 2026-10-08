@@ -301,7 +301,8 @@ class LanguageSupportContractTest {
                     Language.JAVASCRIPT,
                     Language.TSX,
                     Language.RUST,
-                    Language.GO
+                    Language.GO,
+                    Language.PYTHON
                 )
         }
     }
