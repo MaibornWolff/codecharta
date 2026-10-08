@@ -31,7 +31,7 @@ style of the other languages. After plan 1 they then parse with FFM without furt
 
 ### 3. Port Vue
 - Today a Vue file is parsed with the Vue grammar for the template and the script block, then the script goes
-  through `TreeSitterDependencies`
+  through `TreeSitterDependencies`, which parses with FFM since plan 1
 - Decide after reading `VueAnalyzer`: keep the Vue grammar through FFM (add its `GrammarLibrary`, check the library
   is bundled for all five platforms), or reuse the `VueScriptExtractor` preprocessor of metrics and text extraction
   and find component usages in the template another way
@@ -58,6 +58,16 @@ style of the other languages. After plan 1 they then parse with FFM without furt
 ## Review Feedback Addressed
 
 ## Notes
+
+From plan 1:
+- A node must not outlive the `extract` call that received the root, and every node reached in that call stays in
+  memory until it returns: no whole-tree search per declaration (C# needed 6.7 GiB for one file that way). Run
+  `bench/DepMemory.java` on the large repositories of each ported language
+- Open decision: a cap on node memory per file that skips the file instead of exhausting memory
+- Descend with `TreeTraversal`, which is iterative; a recursive descent of one's own overflows on deeply nested code
+- The changelog entries on U+FFFE/U+FFFF and on deeply nested code name nine languages; extend them when Go, Python
+  and PHP move
+- Nine early-exit loops over `getChild(i)` remain in the Objective-C, C++ field and string extractors
 
 - Gate: 0 differing outputs, or each difference explained and fixed
 - This is a rewrite, not a switch: queries and traversal can disagree on aliased and error nodes, so the corpus

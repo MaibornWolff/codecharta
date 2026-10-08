@@ -16,7 +16,8 @@ import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 /**
- * Downcalls into the tree-sitter C API, for the functions metric calculation and text extraction need.
+ * Downcalls into the tree-sitter C API. A function that returns a struct, such as a {@code TSNode}, writes it into
+ * memory of the allocator it is given.
  *
  * <p>The struct layouts mirror {@code tree_sitter/api.h} of tree-sitter 0.26 and have to be checked against it on
  * every upgrade of the core library. This is Java because Kotlin compiles {@code invokeExact} without its

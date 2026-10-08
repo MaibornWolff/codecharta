@@ -42,13 +42,8 @@ import org.treesitter.TreeSitterSwift
 import org.treesitter.TreeSitterTsx
 import org.treesitter.TreeSitterTypescript
 
-/**
- * Maps a language to its definition and to its grammar in each of the two tree-sitter bindings.
- */
 object LanguageRegistry {
-    /**
-     * Returns the grammar of the JNI binding, which only tests still parse with.
-     */
+    // Only tests still parse with the JNI binding
     fun getJniLanguage(language: Language): TSLanguage = when (language) {
         Language.JAVA -> TreeSitterJava()
         Language.KOTLIN -> TreeSitterKotlin()
@@ -71,9 +66,6 @@ object LanguageRegistry {
         Language.RUST -> TreeSitterRust()
     }
 
-    /**
-     * Returns the native grammar library that metric calculation and both extractions parse the given language with.
-     */
     fun getGrammarLibrary(language: Language): GrammarLibrary = when (language) {
         Language.JAVA -> GrammarLibrary("java")
         Language.KOTLIN -> GrammarLibrary("kotlin")
@@ -96,9 +88,6 @@ object LanguageRegistry {
         Language.RUST -> GrammarLibrary("rust")
     }
 
-    /**
-     * Returns the language definition for the given language.
-     */
     fun getLanguageDefinition(language: Language): LanguageDefinition = when (language) {
         Language.JAVA -> JavaDefinition
         Language.KOTLIN -> KotlinDefinition
