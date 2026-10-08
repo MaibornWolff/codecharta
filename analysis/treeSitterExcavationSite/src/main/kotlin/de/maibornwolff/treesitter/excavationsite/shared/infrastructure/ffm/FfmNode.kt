@@ -53,10 +53,19 @@ internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTr
         return FfmNode(TreeSitterApi.nodeChildByFieldName(tree.nodeAllocator, existingNode(), field, nameLength), tree)
     }
 
-    // tree-sitter finds the child at an index by counting from the first one, a cursor steps from child to child
-    override fun children(): Sequence<SyntaxNode> = Sequence { tree.childrenOf(this, onlyNamed = false).iterator() }
+    override fun children(): Sequence<SyntaxNode> = childrenInLinearTime(onlyNamed = false)
 
-    override fun namedChildren(): Sequence<SyntaxNode> = Sequence { tree.childrenOf(this, onlyNamed = true).iterator() }
+    override fun namedChildren(): Sequence<SyntaxNode> = childrenInLinearTime(onlyNamed = true)
+
+    // tree-sitter finds the child at an index by counting from the first one, which is the fastest way to the
+    // first few and takes quadratic time for all children of a long list; a cursor steps from child to child
+    private fun childrenInLinearTime(onlyNamed: Boolean): Sequence<SyntaxNode> = sequence {
+        val count = if (onlyNamed) namedChildCount else childCount
+        for (index in 0 until minOf(count, CHILDREN_FOUND_BY_INDEX)) {
+            yield(if (onlyNamed) getNamedChild(index) else getChild(index))
+        }
+        if (count > CHILDREN_FOUND_BY_INDEX) yieldAll(tree.childrenBehind(CHILDREN_FOUND_BY_INDEX, this@FfmNode, onlyNamed))
+    }
 
     override fun equals(other: Any?): Boolean = other is FfmNode && other.subtreeAddress == subtreeAddress && other.tree === tree
 
@@ -81,5 +90,6 @@ internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTr
     companion object {
         private const val UNREAD_POINT = -1L
         private const val NULL_ADDRESS = 0L
+        private const val CHILDREN_FOUND_BY_INDEX = 4
     }
 }

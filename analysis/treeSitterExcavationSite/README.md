@@ -205,8 +205,8 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 └── shared/                        # Cross-cutting concerns
     ├── domain/                    # Core types (Metric, Extract, SyntaxNode, TreeTraversal, etc.)
     └── infrastructure/
-        ├── ffm/                   # FFM binding to tree-sitter (metrics and text extraction)
-        ├── jni/                   # JNI node adapter (dependency extraction)
+        ├── ffm/                   # FFM binding to tree-sitter (metrics, text and dependency extraction)
+        ├── jni/                   # JNI node adapter (tests only)
         └── walker/                # Node type matching for metrics
 ```
 

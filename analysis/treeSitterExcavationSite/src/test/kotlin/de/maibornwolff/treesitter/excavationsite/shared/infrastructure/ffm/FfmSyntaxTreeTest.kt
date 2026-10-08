@@ -317,9 +317,9 @@ class FfmSyntaxTreeTest {
     }
 
     @Nested
-    inner class ChildrenInOnePass {
+    inner class ChildrenInLinearTime {
         private val codeByGrammar = mapOf(
-            "java" to "class A<T> { @Deprecated int[] x = {1, 2, 3}; void f(String s) { g(s -> s + \"a\"); } int y = ; }",
+            "java" to "class A<T> { int[] x = {1, 2, 3}; void f(String s) { g(s -> s + \"a\"); } int y = ; int a, b, c, d, e; }",
             "cpp" to "void g() { (a.b = *c); std::vector<int> v; }",
             "typescript" to "let a: -1 = -1; export const f = (x: A<B>) => x?.y ?? [1, 2];"
         )
@@ -370,6 +370,26 @@ class FfmSyntaxTreeTest {
 
             // Assert
             assertThat(nodesWithAnotherParent).isEmpty()
+        }
+
+        @Test
+        fun `should hand out the children of a node with only a few and of one with many`() {
+            FfmSyntaxTree.parse("class A { int a, b; int c, d, e, f, g; }", java).use { tree ->
+                // Arrange
+                val classBody = tree.rootNode.getChild(0).getChildByFieldName("body")
+                val fewDeclarators = classBody.getNamedChild(0)
+                val manyDeclarators = classBody.getNamedChild(1)
+
+                // Act
+                val textsOfFew = fewDeclarators.children().map { it.text }.toList()
+                val textsOfMany = manyDeclarators.children().map { it.text }.toList()
+                val namedTextsOfMany = manyDeclarators.namedChildren().map { it.text }.toList()
+
+                // Assert
+                assertThat(textsOfFew).containsExactly("int", "a", ",", "b", ";")
+                assertThat(textsOfMany).containsExactly("int", "c", ",", "d", ",", "e", ",", "f", ",", "g", ";")
+                assertThat(namedTextsOfMany).containsExactly("int", "c", "d", "e", "f", "g")
+            }
         }
 
         @Test
