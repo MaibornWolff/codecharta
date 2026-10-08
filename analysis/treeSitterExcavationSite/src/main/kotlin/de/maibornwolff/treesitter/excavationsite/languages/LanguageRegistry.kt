@@ -22,50 +22,8 @@ import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
-import org.treesitter.TSLanguage
-import org.treesitter.TreeSitterAbl
-import org.treesitter.TreeSitterBash
-import org.treesitter.TreeSitterC
-import org.treesitter.TreeSitterCSharp
-import org.treesitter.TreeSitterCpp
-import org.treesitter.TreeSitterGo
-import org.treesitter.TreeSitterJava
-import org.treesitter.TreeSitterJavascript
-import org.treesitter.TreeSitterKotlin
-import org.treesitter.TreeSitterObjc
-import org.treesitter.TreeSitterPascal
-import org.treesitter.TreeSitterPhp
-import org.treesitter.TreeSitterPython
-import org.treesitter.TreeSitterRuby
-import org.treesitter.TreeSitterRust
-import org.treesitter.TreeSitterSwift
-import org.treesitter.TreeSitterTsx
-import org.treesitter.TreeSitterTypescript
 
 object LanguageRegistry {
-    // Only tests still parse with the JNI binding
-    fun getJniLanguage(language: Language): TSLanguage = when (language) {
-        Language.JAVA -> TreeSitterJava()
-        Language.KOTLIN -> TreeSitterKotlin()
-        Language.TYPESCRIPT -> TreeSitterTypescript()
-        Language.TSX -> TreeSitterTsx()
-        Language.JAVASCRIPT -> TreeSitterJavascript()
-        Language.PYTHON -> TreeSitterPython()
-        Language.GO -> TreeSitterGo()
-        Language.PHP -> TreeSitterPhp()
-        Language.RUBY -> TreeSitterRuby()
-        Language.SWIFT -> TreeSitterSwift()
-        Language.BASH -> TreeSitterBash()
-        Language.CSHARP -> TreeSitterCSharp()
-        Language.CPP -> TreeSitterCpp()
-        Language.C -> TreeSitterC()
-        Language.OBJECTIVE_C -> TreeSitterObjc()
-        Language.VUE -> TreeSitterJavascript()
-        Language.ABL -> TreeSitterAbl()
-        Language.DELPHI -> TreeSitterPascal()
-        Language.RUST -> TreeSitterRust()
-    }
-
     fun getGrammarLibrary(language: Language): GrammarLibrary = when (language) {
         Language.JAVA -> GrammarLibrary("java")
         Language.KOTLIN -> GrammarLibrary("kotlin")
