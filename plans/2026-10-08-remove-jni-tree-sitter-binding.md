@@ -1,7 +1,7 @@
 ---
 name: Remove the JNI tree-sitter binding (3 of 3)
 issue: -
-state: todo
+state: complete
 version: -
 ---
 
@@ -44,11 +44,38 @@ extraction of all languages run on the FFM layer, and the JNI code paths are gon
 
 ## Steps
 
-- [ ] Complete Task 1: Close what plans 1 and 2 left on JNI
-- [ ] Complete Task 2: Remove the JNI code
-- [ ] Complete Task 3: Decide what happens to the bonede jars
-- [ ] Complete Task 4: Verify
-- [ ] Complete Task 5: Clean-up
+- [x] Complete Task 1: Close what plans 1 and 2 left on JNI
+- [x] Complete Task 2: Remove the JNI code
+- [x] Complete Task 3: Decide what happens to the bonede jars
+- [x] Complete Task 4: Verify
+- [x] Complete Task 5: Clean-up
+
+## Decisions
+
+- Bonede jars: kept as carriers of the native libraries, on the runtime class path only, so `org.treesitter` can
+  no longer be compiled against. The distribution is unchanged apart from the removed classes; no changelog entry
+- `SyntaxNode` stays as the seam for extractors; `children()` and `namedChildren()` are abstract
+- `QualifiedIdentifierPath` hands the leaf to a reader instead of holding it; the node lifetime rule has no exemption
+
+## Results
+
+- Task 1: main code used `org.treesitter` only in `TsNodeSyntaxNode` and `getJniLanguage`; no language parsed with
+  JNI. Three tests did and now parse with `FfmSyntaxTree`; the cases of `TsNodeSyntaxNodeTest` were already covered
+  by `FfmSyntaxTreeTest`
+- Unit tests (6,323), `ktlintCheck` and the integration tests pass
+- `unifiedparser`, `domainlanguageparser` and `dependencyparser`, build before this plan against the build after,
+  on 24 projects (17 corpora of plan 1, Go standard library, cpython, wordpress, vue2 and the edge cases of plan 2,
+  `analysis` and `visualization/app` of this repository): all 72 outputs byte-identical
+- The fat jar differs from the one before only by the removed classes
+
+## Not done
+
+- The 18 sample projects of plan 1 are not on this machine; only their outputs are
+- `ccsh` on Java 22 was not started locally: no JDK 22 here and the download is blocked. The CI job
+  `native_tree_sitter_libraries` runs `ccsh` on Java 22 on all five platforms
+- One `unifiedparser` run on vue2 failed in `ProgressTracker.getClearingSpaces` (`repeat` with a negative count,
+  `lastLineLength` is written by several threads without synchronisation); six reruns were identical to the
+  reference. The class is untouched by this plan and the failure is not fixed here
 
 ## Review Feedback Addressed
 
