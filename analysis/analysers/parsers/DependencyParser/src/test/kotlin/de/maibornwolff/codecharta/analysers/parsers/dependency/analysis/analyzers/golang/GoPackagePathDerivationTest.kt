@@ -1,12 +1,9 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.queries
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.treesitter.TreeSitterGo
 
-class GoPackageQueryDerivePathTest {
-    private val goPackageQuery = GoPackageQuery(TreeSitterGo())
-
+class GoPackagePathDerivationTest {
     @Test
     fun `should use directory structure for main packages`() {
         // Arrange
@@ -21,7 +18,7 @@ class GoPackageQueryDerivePathTest {
 
         testCases.forEach { (filePath, packageName, expected) ->
             // Act
-            val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+            val result = GoPackagePath.derive(filePath, packageName)
 
             // Assert
             assertThat(result)
@@ -43,7 +40,7 @@ class GoPackageQueryDerivePathTest {
 
         testCases.forEach { (filePath, packageName, expected) ->
             // Act
-            val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+            val result = GoPackagePath.derive(filePath, packageName)
 
             // Assert
             assertThat(result)
@@ -55,20 +52,20 @@ class GoPackageQueryDerivePathTest {
     @Test
     fun `should handle edge cases`() {
         // Act & Assert
-        assertThat(goPackageQuery.derivePackagePathFromFilePath("some/path/file.go", emptyList()))
+        assertThat(GoPackagePath.derive("some/path/file.go", emptyList()))
             .isEqualTo(listOf("some", "path"))
 
-        assertThat(goPackageQuery.derivePackagePathFromFilePath("file.go", listOf("mypackage")))
+        assertThat(GoPackagePath.derive("file.go", listOf("mypackage")))
             .isEqualTo(listOf("mypackage"))
 
-        assertThat(goPackageQuery.derivePackagePathFromFilePath("some/path", listOf("mypackage")))
+        assertThat(GoPackagePath.derive("some/path", listOf("mypackage")))
             .isEqualTo(listOf("some", "path"))
     }
 
     @Test
     fun `should handle Windows-style paths`() {
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath("cmd\\server\\main.go", listOf("main"))
+        val result = GoPackagePath.derive("cmd\\server\\main.go", listOf("main"))
 
         // Assert
         assertThat(result).isEqualTo(listOf("cmd", "server"))
@@ -85,7 +82,7 @@ class GoPackageQueryDerivePathTest {
 
         testCases.forEach { (filePath, expected) ->
             // Act
-            val result = goPackageQuery.derivePackagePathFromFilePath(filePath, listOf("main"))
+            val result = GoPackagePath.derive(filePath, listOf("main"))
 
             // Assert
             assertThat(result)
@@ -97,8 +94,8 @@ class GoPackageQueryDerivePathTest {
     @Test
     fun `should ensure unique paths for different main packages`() {
         // Act
-        val server = goPackageQuery.derivePackagePathFromFilePath("cmd/server/main.go", listOf("main"))
-        val cc = goPackageQuery.derivePackagePathFromFilePath("cmd/cc/main.go", listOf("main"))
+        val server = GoPackagePath.derive("cmd/server/main.go", listOf("main"))
+        val cc = GoPackagePath.derive("cmd/cc/main.go", listOf("main"))
 
         // Assert
         assertThat(server).isNotEqualTo(cc)
