@@ -16,13 +16,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Faster `domainlanguageparser`**: the words of a code base are extracted several times faster.
 
+- **Faster `dependencyparser`**: the dependencies of a Java, Kotlin, C#, C, C++, JavaScript, TypeScript, Delphi or Rust
+  code base are extracted many times faster, with unchanged results.
+
 ### Fixed 🐞
 
 - **Form feeds in source files**: a file that contains a form feed or a vertical tab no longer gets wrong function
   and complexity counts from `unifiedparser`, nor wrong words from `domainlanguageparser`.
 
-- **Rare characters in source files**: `domainlanguageparser` no longer returns cut-off words for a file that
-  contains a byte order mark after its first character or one of the characters U+FFFE and U+FFFF.
+- **Rare characters in source files**: `domainlanguageparser` no longer returns cut-off words, and `dependencyparser`
+  no longer cut-off names, for a file that contains a byte order mark after its first character or one of the
+  characters U+FFFE and U+FFFF.
 
 - **Objective-C methods without a selector name**: `domainlanguageparser` no longer skips a file that declares a
   method such as `- (void):(int)amount`.

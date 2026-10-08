@@ -1,7 +1,7 @@
 ---
 name: FFM binding for dependency extraction in the excavation site (1 of 3)
 issue: -
-state: progress
+state: complete
 version: -
 ---
 
@@ -51,19 +51,31 @@ difference is explained, and the speedup is measured. Continues on `tech/-/ffm-t
 
 ## Steps
 
-- [ ] Complete Task 1: A node scope for extraction without a walk
-- [ ] Complete Task 2: Children in linear time
-- [ ] Complete Task 3: Switch the parse
-- [ ] Complete Task 4: Verify and benchmark
-- [ ] Complete Task 5: Clean-up
+- [x] Complete Task 1: A node scope for extraction without a walk
+- [x] Complete Task 2: Children in linear time
+- [x] Complete Task 3: Switch the parse
+- [x] Complete Task 4: Verify and benchmark
+- [x] Complete Task 5: Clean-up
 
 ## Review Feedback Addressed
 
 ## Notes
 
-- Gate: 0 differing outputs, or each difference explained and fixed, as for text extraction
-- The 41 dependency extractors already take `SyntaxNode`, so this is a change of the parse and of node lifetime,
-  not of extractor code
-- A remembered parent exists only for nodes reached through `getChild`/`getNamedChild`; ten extractors climb
-  ancestors from collected descendants, which keeps that path fast
+- Gate met: `ccsh dependencyparser` is byte-identical to `main` on the 18 sample projects and 12 large corpora
+- API level: 1,154 of 46,768 files differ from JNI, all start with a byte order mark that JNI dropped; with the six
+  characters neutralised 0 differ
+- Speedup of `ccsh dependencyparser`: 3.5× (guava) to 111× (efcore); the graph phases are what is left
+- One scope per function is enough (at most 65 MiB per file). The one exception was C#, 6.7 GiB for a generated file:
+  its extractor searched the whole tree for the file-scoped namespace per declaration. That search was fixed instead
+  of scoping the per-declaration loops, so this plan does change one extractor
+- Children: the first 4 by index, the rest by cursor. A cursor for all children costs "first child of type X" the
+  whole list; an index for all costs 20–25 % on vscode and godot. Text extraction is unchanged in output and speed
+- `QualifiedIdentifierPath` keeps its exemption: it is read and dropped by the function that walked the path
+- Timeout: the analysis of a file is one blocking call on one thread of the parse dispatcher; a tree on a second
+  thread would fail `should extract every file with a per-file timeout enabled`
+- Changelog: a leading byte order mark never reached `ccsh`, so the only Fixed entry is U+FEFF/U+FFFE/U+FFFF inside
+  a file, added to the existing entry
+- `getJniLanguage` and `TsNodeSyntaxNode` are used by tests only; the four query-based analyzers create their
+  grammars themselves
+- Results, benchmark and tools: `analysis/ideas/treesitter-binding/RESULTS-dependency-extraction.md` (git-ignored)
 - Go, Python, PHP and Vue are not touched here: plan 2 of 3
