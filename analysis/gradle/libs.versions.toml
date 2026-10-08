@@ -15,7 +15,8 @@ kasechange = "1.4.1"
 kotlinx-serialization-json = "1.7.3"
 kotter = "1.2.1"
 picocli = "4.7.7"
-# TreeSitter core plus every grammar binding the treeSitterExcavationSite module loads.
+# TreeSitter core plus every grammar the treeSitterExcavationSite module loads. Only the native libraries in these
+# jars are used.
 tree-sitter = "0.26.3"
 tree-sitter-bash = "0.23.3"
 tree-sitter-c = "0.23.2"

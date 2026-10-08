@@ -122,8 +122,9 @@ By default, it is not necessary to implement further logic in the language-speci
 
 #### 1. Add tree-sitter dependency
 - Add version and library entries in `analysis/gradle/libs.versions.toml`
-- Add dependency to `analysis/analysers/parsers/UnifiedParser/build.gradle.kts`
-- Tree-sitter implementations: [tree-sitter-ng](https://github.com/bonede/tree-sitter-ng)
+- Add it as `runtimeOnly` in `analysis/treeSitterExcavationSite/build.gradle.kts`; only the native grammar library in the jar is used
+- Name that library in `LanguageRegistry.getGrammarLibrary`
+- Jars with the grammar libraries: [tree-sitter-ng](https://github.com/bonede/tree-sitter-ng)
 
 #### 2. Add FileExtension enum entry
 Add entry in `analysis/model/src/main/kotlin/de/maibornwolff/codecharta/serialization/FileExtension.kt` (sorted alphabetically)
