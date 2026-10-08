@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 
 internal object DeclarationExtractor {
     private const val FILE_SCOPED_NAMESPACE = "file_scoped_namespace_declaration"
@@ -28,10 +29,11 @@ internal object DeclarationExtractor {
         val namesByStartByte = allDeclarations.associate { node ->
             node.startByte to TreeTraversal.findFirstChildTextByType(node, IDENTIFIER)
         }
-        val fileScopedNamespacePaths = mutableMapOf<SyntaxNode, List<String>>()
+        val fileScopedNamespacePath by lazy { findFileScopedNamespacePath(rootNode) }
         return allDeclarations.mapNotNull { declarationNode ->
             val name = namesByStartByte[declarationNode.startByte] ?: return@mapNotNull null
-            val namespacePath = findNamespacePath(declarationNode, fileScopedNamespacePaths)
+            val enclosingNamespacePaths = findEnclosingNamespacePaths(declarationNode)
+            val namespacePath = if (enclosingNamespacePaths.isEmpty()) fileScopedNamespacePath else enclosingNamespacePaths.flatten()
             val parentClassPath = findParentClassPath(declarationNode, namesByStartByte)
             Declaration(
                 name = name,
@@ -42,27 +44,17 @@ internal object DeclarationExtractor {
         }
     }
 
-    private fun findNamespacePath(node: SyntaxNode, fileScopedNamespacePaths: MutableMap<SyntaxNode, List<String>>): List<String> {
-        val ancestorSegments = mutableListOf<List<String>>()
-        var current = node.parent
-        var compilationUnit: SyntaxNode? = null
-        while (!current.isNull) {
-            if (current.type == NAMESPACE_DECLARATION || current.type == FILE_SCOPED_NAMESPACE) {
-                ancestorSegments.add(0, extractNamespacePath(current))
-            }
-            if (current.type == COMPILATION_UNIT) {
-                compilationUnit = current
-            }
-            current = current.parent
-        }
-        if (ancestorSegments.isEmpty() && compilationUnit != null) {
-            return fileScopedNamespacePaths.getOrPut(compilationUnit) { findFileScopedNamespacePath(compilationUnit) }
-        }
-        return ancestorSegments.flatten()
-    }
+    private fun findEnclosingNamespacePaths(node: SyntaxNode): List<List<String>> = node
+        .ancestors()
+        .filter { it.type == NAMESPACE_DECLARATION || it.type == FILE_SCOPED_NAMESPACE }
+        .map { extractNamespacePath(it) }
+        .toList()
+        .asReversed()
 
-    private fun findFileScopedNamespacePath(compilationUnit: SyntaxNode): List<String> {
-        val namespaceNode = TreeTraversal.findAllDescendantsOfType(compilationUnit, FILE_SCOPED_NAMESPACE).firstOrNull()
+    // The declarations behind a file-scoped namespace are its siblings, not its children
+    private fun findFileScopedNamespacePath(rootNode: SyntaxNode): List<String> {
+        if (rootNode.type != COMPILATION_UNIT) return emptyList()
+        val namespaceNode = TreeTraversal.findAllDescendantsOfType(rootNode, FILE_SCOPED_NAMESPACE).firstOrNull()
         return namespaceNode?.let { extractNamespacePath(it) } ?: emptyList()
     }
 

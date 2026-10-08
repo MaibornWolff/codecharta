@@ -581,6 +581,45 @@ class CSharpDependencyTest {
         }
 
         @Test
+        fun `should give every declaration behind a file-scoped namespace that namespace as parentPath`() {
+            // Arrange
+            val code = """
+                namespace My.FileScoped;
+
+                public class First {}
+                public interface Second {}
+                public enum Third { A }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.CSHARP)
+
+            // Assert
+            assertThat(result.declarations.map { it.name }).containsExactly("First", "Second", "Third")
+            assertThat(result.declarations.map { it.parentPath }.distinct()).containsExactly(listOf("My", "FileScoped"))
+        }
+
+        @Test
+        fun `should keep a declaration outside a block namespace apart from one inside it`() {
+            // Arrange
+            val code = """
+                class Loose {}
+                namespace Block.Scoped { class Inside {} }
+                class AlsoLoose {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.CSHARP)
+
+            // Assert
+            assertThat(result.declarations.map { it.name to it.parentPath }).containsExactly(
+                "Loose" to emptyList(),
+                "Inside" to listOf("Block", "Scoped"),
+                "AlsoLoose" to emptyList()
+            )
+        }
+
+        @Test
         fun `should extract declarations from file-scoped namespace with parentPath`() {
             // Arrange
             val code = """
