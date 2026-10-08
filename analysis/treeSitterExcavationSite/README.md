@@ -182,7 +182,7 @@ Run from `analysis/`:
 
 ```
 src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
-├── api/                           # Public API (TreeSitterMetrics, TreeSitterExtraction)
+├── api/                           # Public API (TreeSitterMetrics, TreeSitterExtraction, TreeSitterDependencies)
 ├── integration/                   # Feature integration (vertical slice architecture)
 │   ├── metrics/                   # Metrics feature
 │   │   ├── domain/                # Feature-specific models
@@ -193,9 +193,7 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 │   │   ├── ports/                 # Interfaces (ExtractionNodeTypes)
 │   │   ├── adapters/              # Language definition adapters
 │   │   └── extractors/common/     # Shared extractors
-│   └── dependencies/              # Dependencies feature
-│       ├── ports/                 # Interfaces (DependencyExtractor)
-│       └── adapters/              # Language definition adapters
+│   └── dependencies/              # Dependencies feature (facade and collector, no ports or adapters)
 ├── languages/                     # Language definitions (19 languages and frameworks)
 │   └── <lang>/                    # Per-language directory
 │       ├── *Definition.kt         # Combines metric and extraction mappings

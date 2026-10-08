@@ -21,7 +21,9 @@ extraction of all languages run on the FFM layer, and the JNI code paths are gon
 - Delete `TsNodeSyntaxNode`, `getJniLanguage` and the JNI language table; tests parse with `FfmSyntaxTree`
 - `SyntaxNode` then has one implementation: decide whether the interface stays as the seam for extractors
   (recommended, it keeps `FfmNode` internal) and simplify the architecture rule on node lifetime
-- Remove the exemption for `QualifiedIdentifierPath` if plan 1 did not
+- Plan 1 kept the exemption for `QualifiedIdentifierPath` on purpose; removing it means the class stops holding
+  a node
+- The default `children()` and `namedChildren()` of `SyntaxNode` serve only `TsNodeSyntaxNode`: make them abstract
 
 ### 3. Decide what happens to the bonede jars
 - The native grammar libraries are unpacked from the bonede jars, so the jars stay on the class path even without

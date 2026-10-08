@@ -167,6 +167,11 @@ object NewLangDependencyMapping {
 
 Each extractor is an `internal object` with an `extract` function. Use direct tree traversal (`TreeTraversal.findAllDescendantsOfType`, `findAllDescendantsGroupedByType`, etc.) — not TSQuery.
 
+Two rules follow from how nodes are stored:
+
+- **Never keep a `SyntaxNode` beyond the `extract` call that received the root**, in a field, a cache or the result. Its memory is reused afterwards, and a kept node then reads as another node without any error. Return names and paths, not nodes.
+- **Do not search the whole tree once per declaration.** Every node reached during one `extract` call stays in memory until it returns, so such a search costs memory as well as time: a generated C# file once needed 6.7 GiB that way. Search once and reuse the result.
+
 Required extractors:
 - **PackageExtractor** — extracts the package/module path as `List<String>`
 - **ImportExtractor** — extracts imports as `List<ImportDeclaration>`

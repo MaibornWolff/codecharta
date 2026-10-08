@@ -264,7 +264,7 @@ class ArchitectureTest {
                 .should()
                 .haveRawType(assignableTo(SyntaxNode::class.java))
                 .because(
-                    "a node of the FFM binding is valid only while the walk visits it. This catches a plain field; " +
+                    "a node of the FFM binding is reused once the call that handed it over returns. This catches a plain field; " +
                         "collections and captured variables are not checked. QualifiedIdentifierPath is exempt, " +
                         "it is read and dropped by the function that walked the path"
                 ).check(classes)
