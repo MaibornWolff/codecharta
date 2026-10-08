@@ -34,6 +34,59 @@ class DependencyEncodingTest {
     }
 
     @Test
+    fun `should extract whole names after the noncharacters in a Go file`() {
+        // Arrange
+        val code = "package shop\n\nvar label = \"\uFFFE-\uFFFF\"\n\ntype AfterTheRange struct {\n\tBase RangeBase\n}\n"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.GO)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("AfterTheRange", "RangeBase")
+    }
+
+    @Test
+    fun `should extract whole names after the noncharacters in a Python file`() {
+        // Arrange
+        val code = "LABEL = \"\uFFFE-\uFFFF\"\n\nclass AfterTheRange(RangeBase):\n    pass\n"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.PYTHON)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange", "LABEL")
+        assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("AfterTheRange", "RangeBase")
+    }
+
+    @Test
+    fun `should extract whole names after the noncharacters in a PHP file`() {
+        // Arrange
+        val code = "<?php\n\$label = \"\uFFFE-\uFFFF\";\nclass AfterTheRange extends RangeBase {}\n"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.PHP)
+
+        // Assert
+        assertThat(result.declarations.map { it.name }).containsExactly("AfterTheRange")
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("RangeBase")
+    }
+
+    @Test
+    fun `should extract whole names after the noncharacters in a Vue file`() {
+        // Arrange
+        val code = "<template><p>\uFFFE-\uFFFF</p><order-list/></template>\n" +
+            "<script>\nconst label = \"\uFFFE\"\nimport { total } from \"../billing\"\n</script>\n"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.VUE)
+
+        // Assert
+        assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("OrderList")
+        assertThat(result.imports.map { it.path }).containsExactly(listOf("..", "billing", "total"))
+    }
+
+    @Test
     fun `should extract the includes on both sides of a form feed`() {
         // Arrange
         val formFeed = "\u000C"

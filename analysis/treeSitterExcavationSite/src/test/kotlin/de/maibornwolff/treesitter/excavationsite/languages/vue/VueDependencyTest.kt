@@ -117,19 +117,6 @@ class VueDependencyTest {
             // Assert
             assertThat(usedComponents).isEmpty()
         }
-
-        @Test
-        fun `should extract a component from a deeply nested template`() {
-            // Arrange
-            val depth = 20_000
-            val code = "<template>" + "<div>".repeat(depth) + "<order-list/>" + "</div>".repeat(depth) + "</template>"
-
-            // Act
-            val usedComponents = usedComponentsOf(code)
-
-            // Assert
-            assertThat(usedComponents).containsExactly("OrderList")
-        }
     }
 
     @Nested

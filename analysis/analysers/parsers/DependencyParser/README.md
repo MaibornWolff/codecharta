@@ -77,13 +77,10 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   kind, the first the extractor found, because a used type is identified by its name alone — the same
   rule DependaCharta applies, and why a pair weighs 1 at declaration level unless the source is declared
   more than once in its file, when each declaration that references the target counts once. **Only PHP reports
-  more than `usage` today**, because `PhpAnalyzer` runs its own tree-sitter queries and classifies types by
-  the clause they appear in. Every other language goes through `TreeSitterExcavationSite`, which already
-  makes the same distinction internally — its per-language `UsedTypeExtractor` has separate
-  `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`, `extractObjectCreationTypes`
-  passes — but flattens it into a public `UsedType` of `(name, genericTypes, namespacePrefix)`. Carrying
-  the position on `UsedType` upstream would light all of these up at once; `TseMappings.toType()` is the
-  only place here that would change. DependaCharta has the same gap for the same reason.
+  more than `usage` today**: its extractor in `TreeSitterExcavationSite` classifies a type by the clause it
+  appears in and says so in `UsedType.usage`. The extractors of the other languages make the same distinction
+  internally — separate `extractInheritanceTypes`, `extractParameterTypes`, `extractReturnTypes`,
+  `extractObjectCreationTypes` passes — but do not fill `usage` yet. DependaCharta has the same gap.
 - A declaration split across files — a C# partial class, a Go function name reused within a package — is
   one leaf per file, with the same key and, where it has one, the same `namespace`. Each part's dependencies leave the file they are
   written in, in both layers, while a dependency *on* the split declaration points at the first of its

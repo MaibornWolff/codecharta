@@ -107,7 +107,7 @@ println(result.declarations)  // [Declaration(name=UserService, type=CLASS, used
 
 // Check language support
 println(TreeSitterDependencies.isDependencyAnalysisSupported(Language.JAVA))   // true
-println(TreeSitterDependencies.getSupportedLanguages())                        // [JAVA, KOTLIN, TYPESCRIPT, TSX, JAVASCRIPT, CSHARP, CPP, DELPHI, RUST]
+println(TreeSitterDependencies.getSupportedLanguages())                        // [JAVA, KOTLIN, TYPESCRIPT, TSX, JAVASCRIPT, PYTHON, GO, PHP, CSHARP, CPP, VUE, DELPHI, RUST]
 ```
 
 ## Supported Languages and Frameworks
@@ -118,9 +118,9 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | Kotlin | `.kt`, `.kts` | Stable | Stable | Experimental |
 | TypeScript | `.ts`, `.tsx` | Stable | Stable | Experimental |
 | JavaScript | `.js`, `.jsx`, `.mjs`, `.cjs` | Stable | Stable | Experimental |
-| Python | `.py` | Stable | Stable | — |
-| Go | `.go` | Stable | Stable | — |
-| PHP | `.php` | Stable | Stable | — |
+| Python | `.py` | Stable | Stable | Experimental |
+| Go | `.go` | Stable | Stable | Experimental |
+| PHP | `.php` | Stable | Stable | Experimental |
 | Ruby | `.rb` | Stable | Stable | — |
 | Swift | `.swift` | Stable | Stable | — |
 | Bash | `.sh`, `.bash` | Stable | Stable | — |
@@ -128,7 +128,7 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | C++ | `.cpp`, `.cc`, `.cxx`, `.hpp`, `.hxx`, `.h` | Stable | Stable | Experimental |
 | C | `.c` | Stable | Stable | — |
 | Objective-C | `.m`, `.mm` | Stable | Stable | — |
-| Vue | `.vue` | Stable | Stable | — |
+| Vue | `.vue` | Stable | Stable | Experimental |
 | ABL | `.p`, `.cls`, `.w`, `.i` | Experimental | Experimental | — |
 | Delphi | `.pas`, `.dpr` | Stable | Stable | Experimental |
 | Rust | `.rs` | Stable | Stable | Experimental |
