@@ -7,7 +7,6 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_IDENT
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 internal object UsedTypeExtractor {
     private const val TYPE_ANNOTATION = "type_annotation"

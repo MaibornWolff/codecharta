@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.php.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val CONST_ELEMENT = "const_element"
 private const val NAME = "name"

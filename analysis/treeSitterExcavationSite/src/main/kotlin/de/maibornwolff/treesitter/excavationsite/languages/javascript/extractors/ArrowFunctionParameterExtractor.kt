@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts identifier from arrow function without parentheses: `c => c !== " "`

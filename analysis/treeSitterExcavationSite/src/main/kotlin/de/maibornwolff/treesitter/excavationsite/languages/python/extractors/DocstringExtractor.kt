@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts docstring content from an expression_statement.

@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val IDENTIFIER = "identifier"
 private const val SHORTHAND_FIELD_IDENTIFIER = "shorthand_field_identifier"

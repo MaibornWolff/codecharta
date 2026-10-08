@@ -5,7 +5,6 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.PROPERTY_I
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val ENUM_BODY = "enum_body"
 private const val ENUM_ASSIGNMENT = "enum_assignment"

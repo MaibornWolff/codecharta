@@ -4,7 +4,6 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.CALL_EXPRE
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts decorator name from a decorator node.

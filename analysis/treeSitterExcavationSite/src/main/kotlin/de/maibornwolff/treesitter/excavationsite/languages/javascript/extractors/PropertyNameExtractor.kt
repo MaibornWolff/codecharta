@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.PROPERTY_IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val PRIVATE_PROPERTY_IDENTIFIER = "private_property_identifier"
 private const val CONSTRUCTOR = "constructor"

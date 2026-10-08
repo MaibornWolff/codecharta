@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts the package (unit) path from a Delphi file.

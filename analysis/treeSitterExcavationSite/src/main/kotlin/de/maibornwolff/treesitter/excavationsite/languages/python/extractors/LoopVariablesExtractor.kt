@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts loop variables from for statement or for_in_clause.

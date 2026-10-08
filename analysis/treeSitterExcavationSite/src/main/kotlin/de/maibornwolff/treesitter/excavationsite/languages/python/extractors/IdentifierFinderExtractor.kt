@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.python.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Finds the first identifier child in a node.

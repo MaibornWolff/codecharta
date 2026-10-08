@@ -4,8 +4,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
-import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 /**
  * Flattens every `use` declaration into one [ImportDeclaration] per imported leaf.

@@ -59,6 +59,7 @@ final class TreeSitterApi {
     private static final MethodHandle TREE_DELETE = core("ts_tree_delete", FunctionDescriptor.ofVoid(ADDRESS));
     private static final MethodHandle TREE_ROOT_NODE = core("ts_tree_root_node", FunctionDescriptor.of(NODE, ADDRESS));
     private static final MethodHandle CURSOR_NEW = core("ts_tree_cursor_new", FunctionDescriptor.of(CURSOR, NODE));
+    private static final MethodHandle CURSOR_RESET = core("ts_tree_cursor_reset", FunctionDescriptor.ofVoid(ADDRESS, NODE));
     private static final MethodHandle CURSOR_DELETE = core("ts_tree_cursor_delete", FunctionDescriptor.ofVoid(ADDRESS));
     private static final MethodHandle CURSOR_CURRENT_NODE =
         core("ts_tree_cursor_current_node", FunctionDescriptor.of(NODE, ADDRESS));
@@ -69,6 +70,7 @@ final class TreeSitterApi {
     private static final MethodHandle CURSOR_GOTO_PARENT =
         core("ts_tree_cursor_goto_parent", FunctionDescriptor.of(JAVA_BOOLEAN, ADDRESS));
     private static final MethodHandle NODE_SYMBOL = core("ts_node_symbol", FunctionDescriptor.of(SYMBOL, NODE));
+    private static final MethodHandle NODE_IS_NAMED = core("ts_node_is_named", FunctionDescriptor.of(JAVA_BOOLEAN, NODE));
     private static final MethodHandle NODE_START_POINT = core("ts_node_start_point", FunctionDescriptor.of(POINT, NODE));
     private static final MethodHandle NODE_END_POINT = core("ts_node_end_point", FunctionDescriptor.of(POINT, NODE));
     private static final MethodHandle NODE_START_BYTE = core("ts_node_start_byte", FunctionDescriptor.of(JAVA_INT, NODE));
@@ -163,6 +165,14 @@ final class TreeSitterApi {
         }
     }
 
+    static void cursorReset(MemorySegment cursor, MemorySegment node) {
+        try {
+            CURSOR_RESET.invokeExact(cursor, node);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
     static void cursorDelete(MemorySegment cursor) {
         try {
             CURSOR_DELETE.invokeExact(cursor);
@@ -206,6 +216,14 @@ final class TreeSitterApi {
     static char nodeSymbol(MemorySegment node) {
         try {
             return (char) NODE_SYMBOL.invokeExact(node);
+        } catch (Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    static boolean nodeIsNamed(MemorySegment node) {
+        try {
+            return (boolean) NODE_IS_NAMED.invokeExact(node);
         } catch (Throwable failure) {
             throw rethrow(failure);
         }

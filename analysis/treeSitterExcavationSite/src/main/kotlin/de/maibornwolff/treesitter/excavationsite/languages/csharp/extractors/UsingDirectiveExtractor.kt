@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 internal object UsingDirectiveExtractor {
     private const val USING_DIRECTIVE = "using_directive"

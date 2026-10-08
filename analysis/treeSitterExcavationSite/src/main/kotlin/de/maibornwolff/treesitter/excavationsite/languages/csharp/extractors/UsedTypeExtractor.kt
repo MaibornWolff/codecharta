@@ -3,8 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
-import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 internal object UsedTypeExtractor {
     private const val CONSTRUCTOR_DECLARATION = "constructor_declaration"

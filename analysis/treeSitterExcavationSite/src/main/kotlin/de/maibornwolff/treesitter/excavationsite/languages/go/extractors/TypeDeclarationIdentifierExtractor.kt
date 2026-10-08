@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.go.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val TYPE_SPEC = "type_spec"
 private const val TYPE_IDENTIFIER = "type_identifier"

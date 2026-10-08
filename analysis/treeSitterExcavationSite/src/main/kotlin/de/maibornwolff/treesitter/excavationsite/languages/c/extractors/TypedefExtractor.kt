@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val TYPE_IDENTIFIER = "type_identifier"
 private const val POINTER_DECLARATOR = "pointer_declarator"
