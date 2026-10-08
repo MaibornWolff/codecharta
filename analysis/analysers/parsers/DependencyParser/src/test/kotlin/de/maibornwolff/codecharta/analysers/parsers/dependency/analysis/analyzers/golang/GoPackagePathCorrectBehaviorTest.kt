@@ -1,17 +1,14 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.queries
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.treesitter.TreeSitterGo
 
-class GoPackageQueryCorrectBehaviorTest {
-    private val goPackageQuery = GoPackageQuery(TreeSitterGo())
-
+class GoPackagePathCorrectBehaviorTest {
     @Test
     fun `should use the directory path for main packages to prevent collisions`() {
         // Act
-        val serverMain = goPackageQuery.derivePackagePathFromFilePath("cmd/server/main.go", listOf("main"))
-        val ccMain = goPackageQuery.derivePackagePathFromFilePath("cmd/cc/main.go", listOf("main"))
+        val serverMain = GoPackagePath.derive("cmd/server/main.go", listOf("main"))
+        val ccMain = GoPackagePath.derive("cmd/cc/main.go", listOf("main"))
 
         // Assert
         assertThat(serverMain).isNotEqualTo(ccMain)
@@ -22,7 +19,7 @@ class GoPackageQueryCorrectBehaviorTest {
     @Test
     fun `should use the directory path for regular packages for consistency with imports`() {
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath("project/internal/utils/helper.go", listOf("utils"))
+        val result = GoPackagePath.derive("project/internal/utils/helper.go", listOf("utils"))
 
         // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "utils"))
@@ -31,8 +28,8 @@ class GoPackageQueryCorrectBehaviorTest {
     @Test
     fun `should use the package name for root level files`() {
         // Act
-        val mainInRoot = goPackageQuery.derivePackagePathFromFilePath("main.go", listOf("main"))
-        val pkgInRoot = goPackageQuery.derivePackagePathFromFilePath("utils.go", listOf("utils"))
+        val mainInRoot = GoPackagePath.derive("main.go", listOf("main"))
+        val pkgInRoot = GoPackagePath.derive("utils.go", listOf("utils"))
 
         // Assert
         assertThat(mainInRoot).isEqualTo(listOf("main"))
@@ -51,7 +48,7 @@ class GoPackageQueryCorrectBehaviorTest {
 
         // Act
         val results = paths.map { path ->
-            goPackageQuery.derivePackagePathFromFilePath(path, listOf("main"))
+            GoPackagePath.derive(path, listOf("main"))
         }
 
         // Assert

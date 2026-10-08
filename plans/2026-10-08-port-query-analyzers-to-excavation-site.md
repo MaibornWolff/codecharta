@@ -1,7 +1,7 @@
 ---
 name: Port the query-based dependency analyzers into the excavation site (2 of 3)
 issue: -
-state: todo
+state: progress
 version: -
 ---
 
@@ -42,7 +42,11 @@ style of the other languages. After plan 1 they then parse with FFM without furt
 - Sample projects and large corpora against the reference, whole `dependency` lens
 - Wall time per language, before and after
 
-### 5. Clean-up
+### 5. Port the bundler config reading
+- `BundlerConfigParser` parses vite/webpack configs with the JNI JavaScript grammar; move that behind the
+  excavation site too, so the module has no direct tree-sitter dependency left
+
+### 6. Clean-up
 - Delete the query utilities (`TreeSitterUtils.kt`) and the direct tree-sitter dependencies of the
   `DependencyParser` module
 - Changelog only for a difference a user can see
@@ -53,7 +57,8 @@ style of the other languages. After plan 1 they then parse with FFM without furt
 - [ ] Complete Task 2: Port Go, Python, PHP
 - [ ] Complete Task 3: Port Vue
 - [ ] Complete Task 4: Verify and benchmark
-- [ ] Complete Task 5: Clean-up
+- [ ] Complete Task 5: Port the bundler config reading
+- [ ] Complete Task 6: Clean-up
 
 ## Review Feedback Addressed
 
@@ -68,6 +73,14 @@ From plan 1:
 - The changelog entries on U+FFFE/U+FFFF and on deeply nested code name nine languages; extend them when Go, Python
   and PHP move
 - Nine early-exit loops over `getChild(i)` remain in the Objective-C, C++ field and string extractors
+
+Decided on 2026-10-08:
+- Vue keeps its grammar, parsed through FFM; the jar bundles the library for all five platforms
+- Quirks of the old analyzers are reproduced exactly and listed here, not fixed
+- No cap on node memory per file; `DepMemory` only measures
+- `BundlerConfigParser` moves in this plan (task 5)
+- Reference build is this branch before the port: plan 1 left the four analyzers untouched and was byte-identical
+  to `main`
 
 - Gate: 0 differing outputs, or each difference explained and fixed
 - This is a rewrite, not a switch: queries and traversal can disagree on aliased and error nodes, so the corpus

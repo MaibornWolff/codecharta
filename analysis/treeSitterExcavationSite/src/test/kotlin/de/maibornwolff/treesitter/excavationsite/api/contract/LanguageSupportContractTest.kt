@@ -300,7 +300,8 @@ class LanguageSupportContractTest {
                     Language.TYPESCRIPT,
                     Language.JAVASCRIPT,
                     Language.TSX,
-                    Language.RUST
+                    Language.RUST,
+                    Language.GO
                 )
         }
     }

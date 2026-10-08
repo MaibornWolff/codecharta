@@ -1,18 +1,9 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang.queries
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.golang
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.treesitter.TreeSitterGo
 
-class GoPackageQueryTest {
-    private lateinit var goPackageQuery: GoPackageQuery
-
-    @BeforeEach
-    fun setUp() {
-        goPackageQuery = GoPackageQuery(TreeSitterGo())
-    }
-
+class GoPackagePathTest {
     @Test
     fun `should return directory path when packageName is main`() {
         // Arrange
@@ -20,7 +11,7 @@ class GoPackageQueryTest {
         val packageName = listOf("main")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("some", "path", "to"))
@@ -33,7 +24,7 @@ class GoPackageQueryTest {
         val packageName = listOf("config")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "config"))
@@ -46,7 +37,7 @@ class GoPackageQueryTest {
         val packageName = listOf("somepackage")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("somepackage"))
@@ -59,7 +50,7 @@ class GoPackageQueryTest {
         val packageName = emptyList<String>()
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("unknown"))
@@ -72,7 +63,7 @@ class GoPackageQueryTest {
         val packageName = emptyList<String>()
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("unknown"))
@@ -85,7 +76,7 @@ class GoPackageQueryTest {
         val packageName = listOf("handler")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("github.com", "myuser", "myproject", "internal", "service", "handler"))
@@ -98,7 +89,7 @@ class GoPackageQueryTest {
         val packageName = listOf("config")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "config"))
@@ -111,7 +102,7 @@ class GoPackageQueryTest {
         val packageName = listOf("complex", "package", "name")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("complex", "package", "name"))
@@ -124,7 +115,7 @@ class GoPackageQueryTest {
         val packageName = listOf("main")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isNotEqualTo(listOf("main"))
@@ -138,7 +129,7 @@ class GoPackageQueryTest {
         val packageName = listOf("main", "extra")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("some", "path"))
@@ -151,7 +142,7 @@ class GoPackageQueryTest {
         val packageName = listOf("config")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("some", "path", "to", "file"))
@@ -164,7 +155,7 @@ class GoPackageQueryTest {
         val packageName = listOf("config")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("config"))
@@ -177,7 +168,7 @@ class GoPackageQueryTest {
         val packageName = listOf("config")
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("usr", "local", "src", "project", "internal", "config"))
@@ -190,7 +181,7 @@ class GoPackageQueryTest {
         val packageName = emptyList<String>()
 
         // Act
-        val result = goPackageQuery.derivePackagePathFromFilePath(filePath, packageName)
+        val result = GoPackagePath.derive(filePath, packageName)
 
         // Assert
         assertThat(result).isEqualTo(listOf("project", "internal", "config"))
