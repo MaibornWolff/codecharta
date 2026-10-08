@@ -1,7 +1,9 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript
 
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.BundlerAliasExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DeclarationExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.ImportExtractor
+import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -12,6 +14,8 @@ internal object JavascriptDependencyMapping {
         extractImports = ImportExtractor::extract,
         extractDeclarations = ::extractJsDeclarations
     )
+
+    val extractBundlerAliases: (SyntaxNode) -> List<BundlerAlias> = BundlerAliasExtractor::extract
 
     // Intentional JS/TS divergence: DC's legacy JS analyzer produces both the named declaration
     // AND a DEFAULT_EXPORT copy (same DeclarationType) for `export default function/class Foo`.

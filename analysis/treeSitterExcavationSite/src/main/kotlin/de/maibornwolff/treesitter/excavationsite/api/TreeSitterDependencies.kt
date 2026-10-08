@@ -2,6 +2,8 @@ package de.maibornwolff.treesitter.excavationsite.api
 
 import de.maibornwolff.treesitter.excavationsite.integration.dependencies.DependenciesFacade
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.JavascriptDependencyMapping
+import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
 
 object TreeSitterDependencies {
@@ -22,6 +24,13 @@ object TreeSitterDependencies {
         val importsOfEmbeddedSources = collected.embeddedSources.flatMap { analyze(it.content, it.language).imports }
         return collected.ofFile.copy(imports = collected.ofFile.imports + importsOfEmbeddedSources)
     }
+
+    /** The module aliases of a webpack, vite or vue-cli configuration, which is parsed as JavaScript whatever its file ending. */
+    fun bundlerAliases(configuration: String): List<BundlerAlias> = DependenciesFacade.bundlerAliases(
+        configuration = configuration,
+        javascript = LanguageRegistry.getGrammarLibrary(Language.JAVASCRIPT),
+        extractAliases = JavascriptDependencyMapping.extractBundlerAliases
+    )
 
     fun isDependencyAnalysisSupported(language: Language): Boolean {
         val definition = LanguageRegistry.getLanguageDefinition(language)

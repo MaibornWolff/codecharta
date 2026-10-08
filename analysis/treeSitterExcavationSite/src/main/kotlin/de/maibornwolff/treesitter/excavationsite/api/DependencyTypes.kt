@@ -2,6 +2,8 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AliasPathStart
+import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
@@ -18,3 +20,5 @@ typealias ImportDeclaration = ImportDeclaration
 typealias ImportKind = ImportKind
 typealias TypeUsage = TypeUsage
 typealias UsedType = UsedType
+typealias BundlerAlias = BundlerAlias
+typealias AliasPathStart = AliasPathStart
