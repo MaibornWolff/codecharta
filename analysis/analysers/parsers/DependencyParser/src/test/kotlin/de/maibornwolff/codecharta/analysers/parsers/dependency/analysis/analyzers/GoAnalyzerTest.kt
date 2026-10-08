@@ -1018,4 +1018,17 @@ class GoAnalyzerTest {
         val companyNodeDeps = companyNode.resolvedNodeDependencies.internalDependencies.map { it.path.withDots() }
         assertThat(companyNodeDeps).containsAll(listOf("models.Address", "models.User"))
     }
+
+    @Test
+    fun `should keep the line break a used type name starts with next to a missing token`() {
+        // Arrange
+        val goCode = "func T({\"\",//\n.go}"
+        val fileInfo = FileInfo(SupportedLanguage.GO, "broken.go", goCode)
+
+        // Act
+        val report = GoAnalyzer(fileInfo).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly("go", "\n.go")
+    }
 }

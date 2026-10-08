@@ -52,11 +52,11 @@ internal object UsedTypeExtractor {
         val nodesByType = relevantNodes.groupBy({ (type, _) -> type }, { (_, node) -> node })
         val calls = nodesByType[CALL_EXPRESSION].orEmpty()
         val qualifiedTypes = nodesByType[QUALIFIED_TYPE].orEmpty()
-        return nodesByType[PARAMETER_DECLARATION].orEmpty().mapNotNull { parameterTypeName(it) } +
+        return nodesByType[PARAMETER_DECLARATION].orEmpty().mapNotNull { parameterTypeName(it) }.filter { it.isNotEmpty() } +
             resultTypeNames(function, nodesByType) +
             calledMethodNames(calls) +
             calledFunctionNames(calls) +
-            qualifiedTypes.mapNotNull { nameOfPackageQualifiedType(it) }
+            namesOfPackageQualifiedTypes(qualifiedTypes)
     }
 
     private fun parameterTypeName(parameter: SyntaxNode): String? = parameter.children().firstNotNullOfOrNull { child ->
@@ -85,24 +85,25 @@ internal object UsedTypeExtractor {
         else -> emptyList()
     }
 
-    // In the order the method names stand in the source, so `a.B().C()` yields B before C although the call of C
-    // is the outer node
     private fun calledMethodNames(calls: List<SyntaxNode>): List<String> = calls
         .mapNotNull { call -> call.getChildByFieldName(FUNCTION_FIELD).orNull()?.takeIf { it.type == SELECTOR_EXPRESSION } }
         .mapNotNull { selector -> selector.getChildByFieldName(FIELD_FIELD).orNull()?.takeIf { it.type == FIELD_IDENTIFIER } }
-        .map { methodName -> methodName.startByte to methodName.text }
-        .sortedBy { (startByte, _) -> startByte }
-        .map { (_, name) -> name }
+        .let { methodNames -> textsInSourceOrder(methodNames) }
         .filter { it.isNotEmpty() }
 
     private fun calledFunctionNames(calls: List<SyntaxNode>): List<String> = calls
         .mapNotNull { call -> call.getChildByFieldName(FUNCTION_FIELD).orNull()?.takeIf { it.type == IDENTIFIER }?.text }
         .filter { it.isNotEmpty() }
 
-    private fun nameOfPackageQualifiedType(qualifiedType: SyntaxNode): String? {
-        val packageName = qualifiedType.getChildByFieldName(PACKAGE_FIELD).orNull()
-        val name = qualifiedType.getChildByFieldName(NAME_FIELD).orNull()
-        if (packageName?.type != PACKAGE_IDENTIFIER || name?.type != TYPE_IDENTIFIER) return null
-        return name.text
-    }
+    private fun namesOfPackageQualifiedTypes(qualifiedTypes: List<SyntaxNode>): List<String> = qualifiedTypes
+        .filter { qualifiedType -> qualifiedType.getChildByFieldName(PACKAGE_FIELD).orNull()?.type == PACKAGE_IDENTIFIER }
+        .mapNotNull { qualifiedType -> qualifiedType.getChildByFieldName(NAME_FIELD).orNull()?.takeIf { it.type == TYPE_IDENTIFIER } }
+        .let { names -> textsInSourceOrder(names) }
+
+    // The names stand behind what they belong to, so the outer of two nested nodes has the later name: `a.B().C()`
+    // yields B before C although the call of C is the outer node
+    private fun textsInSourceOrder(names: List<SyntaxNode>): List<String> = names
+        .map { name -> name.startByte to name.text }
+        .sortedBy { (startByte, _) -> startByte }
+        .map { (_, text) -> text }
 }

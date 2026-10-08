@@ -416,6 +416,157 @@ class GoDependencyTest {
     }
 
     @Nested
+    inner class CallsInUnusualPlaces {
+        @Test
+        fun `should extract calls inside nested blocks`() {
+            // Arrange
+            val code = """
+                package main
+
+                func complexProcessing() {
+                    if condition {
+                        data := resources.LoadConfigFile("config.json")
+                        for _, item := range data {
+                            result := processor.Transform(item)
+                            output := formatter.ToJson(result)
+                        }
+                    }
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "complexProcessing")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("LoadConfigFile", "Transform", "ToJson")
+        }
+
+        @Test
+        fun `should extract the method called on a field, however deep the field chain`() {
+            // Arrange
+            val code = """
+                package main
+
+                func processFieldMethods() {
+                    config.Logger.Info("message")
+                    server.Config.Security.Validate()
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "processFieldMethods")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Info", "Validate")
+        }
+
+        @Test
+        fun `should extract the method called on the result of a function after that function`() {
+            // Arrange
+            val code = """
+                package main
+
+                func processWithInterface(logger Logger) {
+                    logger.Info("Processing started")
+                    getLogger().Warn("Warning message")
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "processWithInterface")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Logger", "Info", "Warn", "getLogger")
+        }
+
+        @Test
+        fun `should extract a call that spreads a slice into its arguments`() {
+            // Arrange
+            val code = """
+                package main
+
+                func processVariadicCalls() {
+                    fmt.Printf("Hello %s %d", name, age)
+                    formatter.Sprintf("Format: %s %d %t", args...)
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "processVariadicCalls")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("Printf", "Sprintf")
+        }
+
+        @Test
+        fun `should extract generic functions and the types they are called with`() {
+            // Arrange
+            val code = """
+                package main
+
+                func processGenericCalls() {
+                    result := utils.Map[string, int](data, transformer)
+                    container := storage.NewContainer[Data]()
+                    container.Add(item)
+                    processed := pipeline.Transform[Input, Output](mapper.Convert[Raw, Input](rawData), processor)
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "processGenericCalls")
+
+            // Assert
+            assertThat(usedTypes).contains("Map", "NewContainer", "Add", "Transform", "Convert", "Data", "Input", "Output", "Raw")
+        }
+
+        @Test
+        fun `should extract a function called in a variable declaration`() {
+            // Arrange
+            val code = """
+                package main
+
+                func NewQueryFromClauseError(qr *QueryRequest, detail string) *QueryError {
+                    var err = NewQueryError(qr, MSG_QUERY_INVALID_FROM_CLAUSE, detail)
+                    return err
+                }
+            """.trimIndent()
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "NewQueryFromClauseError")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("QueryRequest", "string", "QueryError", "NewQueryError")
+        }
+    }
+
+    @Nested
+    inner class BrokenCode {
+        @Test
+        fun `should extract the name of a qualified type inside another one before the name of the outer one`() {
+            // Arrange
+            val code = "func F()struct{e t.p.N"
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "F")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("p", "N", "e t.p.N", "t.p")
+        }
+
+        @Test
+        fun `should extract the empty name of a missing parameter type as a type reference only`() {
+            // Arrange
+            val code = "func p`r(i,b)a.t)"
+
+            // Act
+            val usedTypes = usedTypeNamesOf(code, "p")
+
+            // Assert
+            assertThat(usedTypes).containsExactly("t", "", "a.t")
+        }
+    }
+
+    @Nested
     inner class MethodsOfReceiverTypes {
         @Test
         fun `should add what a method uses to its receiver type`() {
