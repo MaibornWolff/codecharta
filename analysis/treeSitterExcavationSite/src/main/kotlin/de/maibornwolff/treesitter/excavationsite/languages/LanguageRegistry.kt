@@ -47,7 +47,7 @@ import org.treesitter.TreeSitterTypescript
  */
 object LanguageRegistry {
     /**
-     * Returns the grammar of the JNI binding, which dependency extraction parses with.
+     * Returns the grammar of the JNI binding, which only tests still parse with.
      */
     fun getJniLanguage(language: Language): TSLanguage = when (language) {
         Language.JAVA -> TreeSitterJava()
@@ -72,7 +72,7 @@ object LanguageRegistry {
     }
 
     /**
-     * Returns the native grammar library that metric calculation and text extraction parse the given language with.
+     * Returns the native grammar library that metric calculation and both extractions parse the given language with.
      */
     fun getGrammarLibrary(language: Language): GrammarLibrary = when (language) {
         Language.JAVA -> GrammarLibrary("java")

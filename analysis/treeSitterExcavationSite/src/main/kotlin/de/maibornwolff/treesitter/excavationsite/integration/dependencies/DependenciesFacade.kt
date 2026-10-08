@@ -1,18 +1,19 @@
 package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
-import org.treesitter.TSLanguage
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 object DependenciesFacade {
     fun analyze(
         content: String,
-        treeSitterLanguage: TSLanguage,
+        grammarLibrary: GrammarLibrary,
         mapping: LanguageDependencyMapping,
         preprocessor: ((String) -> String)? = null
     ): DependencyResult {
         val processedContent = preprocessor?.invoke(content) ?: content
-        val collector = DependencyCollector(treeSitterLanguage, mapping)
+        val collector = DependencyCollector(NativeTreeSitter.grammar(grammarLibrary), mapping)
         return collector.collectDependencies(processedContent)
     }
 }

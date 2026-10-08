@@ -266,7 +266,7 @@ class ArchitectureTest {
                 .because(
                     "a node of the FFM binding is valid only while the walk visits it. This catches a plain field; " +
                         "collections and captured variables are not checked. QualifiedIdentifierPath is exempt, " +
-                        "it belongs to dependency extraction, whose JNI nodes stay valid"
+                        "it is read and dropped by the function that walked the path"
                 ).check(classes)
         }
     }
