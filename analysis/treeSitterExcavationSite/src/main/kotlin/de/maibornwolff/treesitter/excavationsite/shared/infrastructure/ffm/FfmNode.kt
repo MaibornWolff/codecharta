@@ -53,12 +53,17 @@ internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTr
         return FfmNode(TreeSitterApi.nodeChildByFieldName(tree.nodeAllocator, existingNode(), field, nameLength), tree)
     }
 
+    // tree-sitter finds the child at an index by counting from the first one, a cursor steps from child to child
+    override fun children(): Sequence<SyntaxNode> = Sequence { tree.childrenOf(this, onlyNamed = false).iterator() }
+
+    override fun namedChildren(): Sequence<SyntaxNode> = Sequence { tree.childrenOf(this, onlyNamed = true).iterator() }
+
     override fun equals(other: Any?): Boolean = other is FfmNode && other.subtreeAddress == subtreeAddress && other.tree === tree
 
     override fun hashCode(): Int = subtreeAddress.hashCode()
 
     // tree-sitter dereferences a null node, which would crash the JVM instead of throwing
-    private fun existingNode(): MemorySegment {
+    fun existingNode(): MemorySegment {
         check(!isNull) { "The node is a null node" }
         return segment
     }

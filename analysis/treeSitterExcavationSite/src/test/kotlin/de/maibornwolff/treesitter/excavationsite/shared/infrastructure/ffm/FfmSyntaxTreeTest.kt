@@ -317,6 +317,140 @@ class FfmSyntaxTreeTest {
     }
 
     @Nested
+    inner class ChildrenInOnePass {
+        private val codeByGrammar = mapOf(
+            "java" to "class A<T> { @Deprecated int[] x = {1, 2, 3}; void f(String s) { g(s -> s + \"a\"); } int y = ; }",
+            "cpp" to "void g() { (a.b = *c); std::vector<int> v; }",
+            "typescript" to "let a: -1 = -1; export const f = (x: A<B>) => x?.y ?? [1, 2];"
+        )
+
+        private fun mismatchesInEveryNode(mismatchOf: FfmSyntaxTree.(SyntaxNode) -> String?): List<String> =
+            codeByGrammar.flatMap { (grammarName, code) ->
+                FfmSyntaxTree.parse(code, NativeTreeSitter.grammar(GrammarLibrary(grammarName))).use { tree ->
+                    tree.readReleasingReachedNodes { root -> tree.mismatchesBelow(root, mismatchOf) }
+                }
+            }
+
+        private fun FfmSyntaxTree.mismatchesBelow(node: SyntaxNode, mismatchOf: FfmSyntaxTree.(SyntaxNode) -> String?): List<String> =
+            listOfNotNull(mismatchOf(node)) + node.children().flatMap { mismatchesBelow(it, mismatchOf) }
+
+        @Test
+        fun `should hand out the children tree-sitter finds by index`() {
+            // Act
+            val nodesWithOtherChildren = mismatchesInEveryNode { node ->
+                val childrenByIndex = (0 until node.childCount).map { node.getChild(it) }
+                node.type.takeIf { node.children().toList() != childrenByIndex }
+            }
+
+            // Assert
+            assertThat(nodesWithOtherChildren).isEmpty()
+        }
+
+        @Test
+        fun `should hand out the named children tree-sitter finds by index`() {
+            // Act
+            val nodesWithOtherNamedChildren = mismatchesInEveryNode { node ->
+                val namedChildrenByIndex = (0 until node.namedChildCount).map { node.getNamedChild(it) }
+                node.type.takeIf { node.namedChildren().toList() != namedChildrenByIndex }
+            }
+
+            // Assert
+            assertThat(nodesWithOtherNamedChildren).isEmpty()
+        }
+
+        @Test
+        fun `should give a child the parent tree-sitter finds from the root`() {
+            // Act
+            val nodesWithAnotherParent = mismatchesInEveryNode { node ->
+                val childrenWithAnotherParent = (node.children() + node.namedChildren()).filter { child ->
+                    child.parent != FfmNode(TreeSitterApi.nodeParent(nodeAllocator, (child as FfmNode).segment), this)
+                }
+                node.type.takeIf { childrenWithAnotherParent.any() }
+            }
+
+            // Assert
+            assertThat(nodesWithAnotherParent).isEmpty()
+        }
+
+        @Test
+        fun `should hand out no child for a node without children`() {
+            FfmSyntaxTree.parse("class A {}", java).use { tree ->
+                // Arrange
+                val className = tree.rootNode.getChild(0).getChildByFieldName("name")
+
+                // Act
+                val children = className.children().toList()
+                val namedChildren = className.namedChildren().toList()
+
+                // Assert
+                assertThat(children).isEmpty()
+                assertThat(namedChildren).isEmpty()
+            }
+        }
+
+        @Test
+        fun `should hand out the same children every time they are asked for`() {
+            FfmSyntaxTree.parse("class A { int x; }", java).use { tree ->
+                // Arrange
+                val children = tree.rootNode.getChild(0).children()
+
+                // Act
+                val typesOfFirstPass = children.map { it.type }.toList()
+                val typesOfSecondPass = children.map { it.type }.toList()
+
+                // Assert
+                assertThat(typesOfFirstPass).containsExactly("class", "identifier", "class_body")
+                assertThat(typesOfSecondPass).isEqualTo(typesOfFirstPass)
+            }
+        }
+
+        @Test
+        fun `should keep handing out siblings after a caller went through the children of one`() {
+            FfmSyntaxTree.parse("class A { int x; int y; }", java).use { tree ->
+                // Arrange
+                val classBody = tree.rootNode.getChild(0).getChildByFieldName("body")
+
+                // Act
+                val grandchildCounts = classBody.children().map { child -> child.children().count() }.toList()
+
+                // Assert
+                assertThat(grandchildCounts).containsExactly(0, 3, 3, 0)
+            }
+        }
+
+        @Test
+        fun `should throw instead of crashing when the children of a null node are read`() {
+            FfmSyntaxTree.parse("class A {}", java).use { tree ->
+                // Arrange
+                val nullNode = tree.rootNode.parent
+
+                // Act & Assert
+                assertThatThrownBy { nullNode.children().toList() }.isInstanceOf(IllegalStateException::class.java)
+                assertThatThrownBy { nullNode.namedChildren().toList() }.isInstanceOf(IllegalStateException::class.java)
+            }
+        }
+
+        @Test
+        fun `should reach every child of a node with more children than a block of nodes holds`() {
+            // Arrange
+            val fieldCount = 50_000
+            val code = "class A {\n" + "int x;\n".repeat(fieldCount) + "}"
+
+            // Act
+            val fieldsOfClassBody = FfmSyntaxTree.parse(code, java).use { tree ->
+                tree.rootNode
+                    .getChild(0)
+                    .getChildByFieldName("body")
+                    .namedChildren()
+                    .count { it.type == "field_declaration" }
+            }
+
+            // Assert
+            assertThat(fieldsOfClassBody).isEqualTo(fieldCount)
+        }
+    }
+
+    @Nested
     inner class RememberedParents {
         private val nestedCode = """
             class A<T extends Comparable<T>> {

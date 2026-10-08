@@ -75,24 +75,6 @@ object TreeTraversal {
 }
 
 /**
- * Extension function to iterate over all children of a SyntaxNode.
- */
-fun SyntaxNode.children(): Sequence<SyntaxNode> = sequence {
-    for (i in 0 until childCount) {
-        yield(getChild(i))
-    }
-}
-
-/**
- * Extension function to iterate over all named children of a SyntaxNode.
- */
-fun SyntaxNode.namedChildren(): Sequence<SyntaxNode> = sequence {
-    for (i in 0 until namedChildCount) {
-        yield(getNamedChild(i))
-    }
-}
-
-/**
  * The parent, its parent and so on up to the root.
  */
 fun SyntaxNode.ancestors(): Sequence<SyntaxNode> = generateSequence(parent.orNull()) { it.parent.orNull() }

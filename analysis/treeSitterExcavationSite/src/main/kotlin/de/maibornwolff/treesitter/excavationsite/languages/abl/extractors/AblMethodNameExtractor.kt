@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.abl.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Extracts the method name from an ABL method_definition node.

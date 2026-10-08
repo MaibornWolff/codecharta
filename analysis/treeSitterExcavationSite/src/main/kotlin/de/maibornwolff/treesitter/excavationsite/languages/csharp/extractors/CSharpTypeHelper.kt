@@ -2,8 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.csharp.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
-import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 internal object CSharpTypeHelper {
     private const val GENERIC_NAME = "generic_name"

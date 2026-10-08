@@ -17,7 +17,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val CLASS_DECLARATION = "class_declaration"
 private const val ABSTRACT_CLASS_DECLARATION = "abstract_class_declaration"

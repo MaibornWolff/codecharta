@@ -5,7 +5,6 @@ import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.OBJECT_PATTERN
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val REST_PATTERN = "rest_pattern"
 private const val REQUIRED_PARAMETER = "required_parameter"

@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.c.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Shared parser for C-family declarator syntax.

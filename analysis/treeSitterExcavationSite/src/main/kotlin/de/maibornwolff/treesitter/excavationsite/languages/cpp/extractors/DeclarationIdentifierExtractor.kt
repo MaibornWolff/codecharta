@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
 import de.maibornwolff.treesitter.excavationsite.languages.c.extractors.CDeclaratorParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val STRUCTURED_BINDING_DECLARATOR = "structured_binding_declarator"
 private const val INIT_DECLARATOR = "init_declarator"

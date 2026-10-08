@@ -21,6 +21,7 @@ internal class FfmSyntaxTree private constructor(
     private val pointBuffer = arena.allocate(TreeSitterApi.POINT)
     val pointAllocator = SegmentAllocator { _, _ -> pointBuffer }
     private val fieldNames = HashMap<String, MemorySegment>()
+    private var childCursor: MemorySegment? = null
 
     val rootNode = FfmNode(TreeSitterApi.treeRootNode(nodeAllocator, tree), this)
 
@@ -80,6 +81,34 @@ internal class FfmSyntaxTree private constructor(
         return true
     }
 
+    /**
+     * The children of [parent] in one pass. They are all fetched before the first is handed out, so the one cursor
+     * of the tree is free again when a caller descends into a child.
+     */
+    fun childrenOf(parent: FfmNode, onlyNamed: Boolean): List<FfmNode> {
+        val cursor = childCursorAt(parent)
+        if (!TreeSitterApi.cursorGotoFirstChild(cursor)) return emptyList()
+        val children = ArrayList<FfmNode>()
+        do {
+            val markBeforeChild = nodeAllocator.mark()
+            val child = TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor)
+            if (onlyNamed && !TreeSitterApi.nodeIsNamed(child)) {
+                nodeAllocator.release(markBeforeChild)
+            } else {
+                children.add(FfmNode(child, this, parent))
+            }
+        } while (TreeSitterApi.cursorGotoNextSibling(cursor))
+        return children
+    }
+
+    private fun childCursorAt(parent: FfmNode): MemorySegment {
+        val parentSegment = parent.existingNode()
+        val existingCursor = childCursor
+        if (existingCursor == null) return TreeSitterApi.cursorNew(arena, parentSegment).also { childCursor = it }
+        TreeSitterApi.cursorReset(existingCursor, parentSegment)
+        return existingCursor
+    }
+
     private class OpenAncestor(val node: FfmNode, val markBeforeNode: Long)
 
     /**
@@ -97,6 +126,7 @@ internal class FfmSyntaxTree private constructor(
 
     override fun close() {
         if (!arena.scope().isAlive) return
+        childCursor?.let { TreeSitterApi.cursorDelete(it) }
         arena.close()
         TreeSitterApi.treeDelete(tree)
     }

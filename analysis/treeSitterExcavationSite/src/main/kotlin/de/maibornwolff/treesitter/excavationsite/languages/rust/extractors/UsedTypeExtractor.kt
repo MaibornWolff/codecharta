@@ -2,8 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
-import de.maibornwolff.treesitter.excavationsite.shared.domain.namedChildren
 
 /**
  * Extracts the types referenced in a declaration's **signature** — never its body.

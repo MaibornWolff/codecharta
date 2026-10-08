@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.integration.extraction
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionStrategy
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 /**
  * Executes generic extraction strategies to extract text from AST nodes.

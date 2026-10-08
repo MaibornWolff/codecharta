@@ -3,7 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.vue
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.jni.TsNodeSyntaxNode
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test

@@ -2,7 +2,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.swift.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val SIMPLE_IDENTIFIER = "simple_identifier"
 private const val PATTERN = "pattern"

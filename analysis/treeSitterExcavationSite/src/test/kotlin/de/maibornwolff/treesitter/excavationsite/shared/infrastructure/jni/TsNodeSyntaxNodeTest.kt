@@ -50,6 +50,21 @@ class TsNodeSyntaxNodeTest {
     }
 
     @Test
+    fun `should hand out all children and the named ones among them`() {
+        // Arrange
+        val code = "class A { int x; }"
+        val classBody = TsNodeSyntaxNode.parse(code, java).getChild(0).getChildByFieldName("body")
+
+        // Act
+        val childTypes = classBody.children().map { it.type }.toList()
+        val namedChildTypes = classBody.namedChildren().map { it.type }.toList()
+
+        // Assert
+        assertThat(childTypes).containsExactly("{", "field_declaration", "}")
+        assertThat(namedChildTypes).containsExactly("field_declaration")
+    }
+
+    @Test
     fun `should return null nodes above the root and before the first child`() {
         // Arrange
         val root = TsNodeSyntaxNode.parse("class A {}", java)

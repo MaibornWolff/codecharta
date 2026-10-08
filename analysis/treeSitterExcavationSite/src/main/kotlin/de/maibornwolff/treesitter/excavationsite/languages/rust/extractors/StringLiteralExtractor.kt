@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.rust.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val STRING_CONTENT = "string_content"
 private const val ESCAPE_SEQUENCE = "escape_sequence"

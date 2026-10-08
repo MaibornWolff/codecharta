@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.domain.children
 
 private const val IDENTIFIER = "identifier"
 
