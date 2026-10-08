@@ -27,7 +27,6 @@ internal class FfmSyntaxTree private constructor(
 
     fun fieldName(name: String): MemorySegment = fieldNames.getOrPut(name) { arena.allocateFrom(name) }
 
-    /** The source between two byte offsets, read from the UTF-8 bytes tree-sitter parsed. */
     fun sourceText(startByte: Int, endByte: Int): String {
         val bytes = source.asSlice(startByte.toLong(), (endByte - startByte).toLong()).toArray(JAVA_BYTE)
         return String(bytes, Charsets.UTF_8)
@@ -41,7 +40,7 @@ internal class FfmSyntaxTree private constructor(
     }
 
     /**
-     * Visits all nodes depth-first in pre-order; iterative, so deeply nested code cannot overflow the stack. A visited
+     * Pre-order and iterative, so deeply nested code cannot overflow the stack. A visited
      * node and every node reached from it are valid only during that visit. Only the ancestors of the visited node
      * are kept, as its remembered parents, so the memory of a walk grows with the depth of the tree and not with its
      * size.
@@ -54,7 +53,7 @@ internal class FfmSyntaxTree private constructor(
             while (hasNode) {
                 val markBeforeNode = nodeAllocator.mark()
                 val node = FfmNode(TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor), this, openAncestors.lastOrNull()?.node)
-                visitAndReleaseWhatTheVisitorReached(node, visitor)
+                releasingReachedNodes { visitor(node, node.type) }
                 if (TreeSitterApi.cursorGotoFirstChild(cursor)) {
                     openAncestors.add(OpenAncestor(node, markBeforeNode))
                 } else {
@@ -67,12 +66,6 @@ internal class FfmSyntaxTree private constructor(
         }
     }
 
-    private fun visitAndReleaseWhatTheVisitorReached(node: FfmNode, visitor: (node: FfmNode, nodeType: String) -> Unit) {
-        val markBeforeVisit = nodeAllocator.mark()
-        visitor(node, node.type)
-        nodeAllocator.release(markBeforeVisit)
-    }
-
     private fun gotoNextSiblingClosingFinishedAncestors(cursor: MemorySegment, openAncestors: ArrayList<OpenAncestor>): Boolean {
         while (!TreeSitterApi.cursorGotoNextSibling(cursor)) {
             if (!TreeSitterApi.cursorGotoParent(cursor)) return false
@@ -81,52 +74,50 @@ internal class FfmSyntaxTree private constructor(
         return true
     }
 
+    private class OpenAncestor(val node: FfmNode, val markBeforeNode: Long)
+
     /**
-     * The children of [parent] behind the first [skippedCount], or its named children behind that many named ones,
-     * in one pass. They are all fetched before the first is handed out, so the one cursor of the tree is free again
-     * when a caller descends into a child.
+     * For extraction that traverses on its own instead of being visited by [walk]. What [read] returns must not hold
+     * a node.
      */
-    fun childrenBehind(skippedCount: Int, parent: FfmNode, onlyNamed: Boolean): List<FfmNode> {
-        val cursor = childCursorAt(parent)
+    fun <T> readReleasingReachedNodes(read: (root: FfmNode) -> T): T = releasingReachedNodes { read(rootNode) }
+
+    private inline fun <T> releasingReachedNodes(reach: () -> T): T {
+        val markBeforeReaching = nodeAllocator.mark()
+        try {
+            return reach()
+        } finally {
+            nodeAllocator.release(markBeforeReaching)
+        }
+    }
+
+    /**
+     * All children are fetched before the first is handed out, so the one cursor of the tree is free again when a
+     * caller descends into a child.
+     */
+    fun childrenOf(parent: FfmNode, onlyNamed: Boolean): List<FfmNode> {
+        val cursor = childCursorResetTo(parent)
         val children = ArrayList<FfmNode>()
-        var leftToSkip = skippedCount
         var hasChild = TreeSitterApi.cursorGotoFirstChild(cursor)
         while (hasChild) {
             val markBeforeChild = nodeAllocator.mark()
             val child = TreeSitterApi.cursorCurrentNode(nodeAllocator, cursor)
-            val isAskedFor = !onlyNamed || TreeSitterApi.nodeIsNamed(child)
-            if (isAskedFor && leftToSkip == 0) {
-                children.add(FfmNode(child, this, parent))
-            } else {
+            if (onlyNamed && !TreeSitterApi.nodeIsNamed(child)) {
                 nodeAllocator.release(markBeforeChild)
-                if (isAskedFor) leftToSkip--
+            } else {
+                children.add(FfmNode(child, this, parent))
             }
             hasChild = TreeSitterApi.cursorGotoNextSibling(cursor)
         }
         return children
     }
 
-    private fun childCursorAt(parent: FfmNode): MemorySegment {
-        val parentSegment = parent.existingNode()
+    private fun childCursorResetTo(parent: FfmNode): MemorySegment {
+        val parentSegment = parent.segmentUnlessNull()
         val existingCursor = childCursor
         if (existingCursor == null) return TreeSitterApi.cursorNew(arena, parentSegment).also { childCursor = it }
         TreeSitterApi.cursorReset(existingCursor, parentSegment)
         return existingCursor
-    }
-
-    private class OpenAncestor(val node: FfmNode, val markBeforeNode: Long)
-
-    /**
-     * Hands the root to [read] and releases every node reached from it when [read] returns, for extraction that
-     * traverses on its own instead of being visited by [walk]. The result must not hold a node.
-     */
-    fun <T> readReleasingReachedNodes(read: (root: FfmNode) -> T): T {
-        val markBeforeRead = nodeAllocator.mark()
-        try {
-            return read(rootNode)
-        } finally {
-            nodeAllocator.release(markBeforeRead)
-        }
     }
 
     override fun close() {

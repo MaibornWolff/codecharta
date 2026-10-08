@@ -5,11 +5,9 @@ import java.lang.foreign.MemorySegment
 import java.lang.foreign.ValueLayout.ADDRESS
 
 /**
- * A node of an [FfmSyntaxTree]. Reached from [FfmSyntaxTree.rootNode] it is valid until the tree is closed; handed to
- * a visitor of [FfmSyntaxTree.walk] or reached inside one, only until that visitor returns. A node kept longer is not
- * detected: its memory is reused, so it reads as another node.
- *
- * Rows and columns are fetched once and cached; every other member asks tree-sitter on each access.
+ * A node of an [FfmSyntaxTree]. It lives until the innermost visit of [FfmSyntaxTree.walk] or read of
+ * [FfmSyntaxTree.readReleasingReachedNodes] it was reached in returns; outside both, and the root itself, until the
+ * tree is closed. A node kept longer is not detected: its memory is reused, so it reads as another node.
  *
  * @param rememberedParent the parent, where the way the node was reached makes it certain: tree-sitter finds a
  * parent by descending from the root, which costs more with every sibling on the way and adds up for extractors that
@@ -21,75 +19,69 @@ internal class FfmNode(val segment: MemorySegment, private val tree: FfmSyntaxTr
     private var start = UNREAD_POINT
     private var end = UNREAD_POINT
 
-    override val type: String get() = tree.grammar.symbolName(TreeSitterApi.nodeSymbol(existingNode()))
+    override val type: String get() = tree.grammar.symbolName(TreeSitterApi.nodeSymbol(segmentUnlessNull()))
     override val isNull: Boolean get() = subtreeAddress == NULL_ADDRESS
-    override val childCount: Int get() = TreeSitterApi.nodeChildCount(existingNode())
-    override val namedChildCount: Int get() = TreeSitterApi.nodeNamedChildCount(existingNode())
+    override val childCount: Int get() = TreeSitterApi.nodeChildCount(segmentUnlessNull())
+    override val namedChildCount: Int get() = TreeSitterApi.nodeNamedChildCount(segmentUnlessNull())
     override val startRow: Int get() = FfmSyntaxTree.row(startPoint())
     override val startColumn: Int get() = FfmSyntaxTree.column(startPoint())
     override val endRow: Int get() = FfmSyntaxTree.row(endPoint())
     override val endColumn: Int get() = FfmSyntaxTree.column(endPoint())
-    override val startByte: Int get() = TreeSitterApi.nodeStartByte(existingNode())
-    override val endByte: Int get() = TreeSitterApi.nodeEndByte(existingNode())
+    override val startByte: Int get() = TreeSitterApi.nodeStartByte(segmentUnlessNull())
+    override val endByte: Int get() = TreeSitterApi.nodeEndByte(segmentUnlessNull())
     override val text: String get() = tree.sourceText(startByte, endByte)
     override val parent: SyntaxNode
         get() {
-            val existingNode = existingNode()
-            return rememberedParent ?: FfmNode(TreeSitterApi.nodeParent(tree.nodeAllocator, existingNode), tree)
+            val segment = segmentUnlessNull()
+            return rememberedParent ?: FfmNode(TreeSitterApi.nodeParent(tree.nodeAllocator, segment), tree)
         }
 
-    // A missing token can be the previous sibling of a node and still hang below a deeper node, so it has to ask
-    override val prevSibling: SyntaxNode get() = FfmNode(TreeSitterApi.nodePrevSibling(tree.nodeAllocator, existingNode()), tree)
+    // A missing token can be the previous sibling of a node and still hang below a deeper node, so the parent of a
+    // sibling is not remembered
+    override val prevSibling: SyntaxNode get() = FfmNode(TreeSitterApi.nodePrevSibling(tree.nodeAllocator, segmentUnlessNull()), tree)
 
-    override fun getChild(index: Int): SyntaxNode = FfmNode(TreeSitterApi.nodeChild(tree.nodeAllocator, existingNode(), index), tree, this)
+    override fun getChild(index: Int): SyntaxNode =
+        FfmNode(TreeSitterApi.nodeChild(tree.nodeAllocator, segmentUnlessNull(), index), tree, this)
 
     override fun getNamedChild(index: Int): SyntaxNode =
-        FfmNode(TreeSitterApi.nodeNamedChild(tree.nodeAllocator, existingNode(), index), tree, this)
+        FfmNode(TreeSitterApi.nodeNamedChild(tree.nodeAllocator, segmentUnlessNull(), index), tree, this)
 
     // A field can be inherited from a child that an alias made visible, so its node is not always a direct child
+    // and this node is not remembered as its parent
     override fun getChildByFieldName(name: String): SyntaxNode {
         val field = tree.fieldName(name)
         val nameLength = (field.byteSize() - 1).toInt()
-        return FfmNode(TreeSitterApi.nodeChildByFieldName(tree.nodeAllocator, existingNode(), field, nameLength), tree)
+        return FfmNode(TreeSitterApi.nodeChildByFieldName(tree.nodeAllocator, segmentUnlessNull(), field, nameLength), tree)
     }
 
-    override fun children(): Sequence<SyntaxNode> = childrenInLinearTime(onlyNamed = false)
+    // tree-sitter finds the child at an index by counting from the first one, which takes quadratic time for all
+    // children of a long list; a cursor steps from child to child
+    override fun children(): Sequence<SyntaxNode> = Sequence { tree.childrenOf(this, onlyNamed = false).iterator() }
 
-    override fun namedChildren(): Sequence<SyntaxNode> = childrenInLinearTime(onlyNamed = true)
-
-    // tree-sitter finds the child at an index by counting from the first one, which is the fastest way to the
-    // first few and takes quadratic time for all children of a long list; a cursor steps from child to child
-    private fun childrenInLinearTime(onlyNamed: Boolean): Sequence<SyntaxNode> = sequence {
-        val count = if (onlyNamed) namedChildCount else childCount
-        for (index in 0 until minOf(count, CHILDREN_FOUND_BY_INDEX)) {
-            yield(if (onlyNamed) getNamedChild(index) else getChild(index))
-        }
-        if (count > CHILDREN_FOUND_BY_INDEX) yieldAll(tree.childrenBehind(CHILDREN_FOUND_BY_INDEX, this@FfmNode, onlyNamed))
-    }
+    override fun namedChildren(): Sequence<SyntaxNode> = Sequence { tree.childrenOf(this, onlyNamed = true).iterator() }
 
     override fun equals(other: Any?): Boolean = other is FfmNode && other.subtreeAddress == subtreeAddress && other.tree === tree
 
     override fun hashCode(): Int = subtreeAddress.hashCode()
 
     // tree-sitter dereferences a null node, which would crash the JVM instead of throwing
-    fun existingNode(): MemorySegment {
+    fun segmentUnlessNull(): MemorySegment {
         check(!isNull) { "The node is a null node" }
         return segment
     }
 
     private fun startPoint(): Long {
-        if (start == UNREAD_POINT) start = tree.packPoint(TreeSitterApi.nodeStartPoint(tree.pointAllocator, existingNode()))
+        if (start == UNREAD_POINT) start = tree.packPoint(TreeSitterApi.nodeStartPoint(tree.pointAllocator, segmentUnlessNull()))
         return start
     }
 
     private fun endPoint(): Long {
-        if (end == UNREAD_POINT) end = tree.packPoint(TreeSitterApi.nodeEndPoint(tree.pointAllocator, existingNode()))
+        if (end == UNREAD_POINT) end = tree.packPoint(TreeSitterApi.nodeEndPoint(tree.pointAllocator, segmentUnlessNull()))
         return end
     }
 
     companion object {
         private const val UNREAD_POINT = -1L
         private const val NULL_ADDRESS = 0L
-        private const val CHILDREN_FOUND_BY_INDEX = 4
     }
 }
