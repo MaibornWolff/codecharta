@@ -9,7 +9,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
  * A Vue file is one component, the default export of the file. It uses the components its first template names in
- * a tag: every tag that is no common HTML element, written in kebab case or Pascal case, as its Pascal case name.
+ * a tag: every tag that is not one of [HTML_ELEMENTS], converted to Pascal case.
  */
 internal object ComponentExtractor {
     private const val TEMPLATE_ELEMENT = "template_element"

@@ -13,9 +13,9 @@ internal object PackageExtractor {
     private const val NAMESPACE_NAME = "namespace_name"
 
     fun extract(rootNode: SyntaxNode): List<String> {
-        val namespaceNodes = TreeTraversal.findAllDescendantsOfType(rootNode, NAMESPACE_DEFINITION, NAMESPACE_NAME).map { it.type to it }
-        if (namespaceNodes.none { (type, _) -> type == NAMESPACE_DEFINITION }) return emptyList()
-        val firstName = namespaceNodes.firstOrNull { (type, _) -> type == NAMESPACE_NAME }?.second ?: return emptyList()
-        return firstName.text.split(NamespaceUses.NAMESPACE_SEPARATOR)
+        val nodesByType = TreeTraversal.findAllDescendantsGroupedByType(rootNode, setOf(NAMESPACE_DEFINITION, NAMESPACE_NAME))
+        if (NAMESPACE_DEFINITION !in nodesByType) return emptyList()
+        val firstNamespaceName = nodesByType[NAMESPACE_NAME]?.firstOrNull() ?: return emptyList()
+        return firstNamespaceName.text.split(NamespaceUses.NAMESPACE_SEPARATOR)
     }
 }

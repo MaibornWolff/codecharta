@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.fieldOfType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
@@ -12,8 +13,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * functions, then the decorated ones, then the variables.
  *
  * Python declares no types to tell a used type from any other name, so a class or function uses every identifier
- * below it, and every attribute access `a.b.C` as the name `C` with the namespace prefix `[a, b]`. The consumer
- * keeps those that match an import.
+ * below it, and every attribute access `a.b.C` as the name `C` with the namespace prefix `[a, b]`.
  */
 internal object DeclarationExtractor {
     private const val MODULE = "module"
@@ -33,15 +33,15 @@ internal object DeclarationExtractor {
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         if (rootNode.type != MODULE) return emptyList()
         val statements = rootNode.children().toList()
-        val definitions = statements.filter { it.type in DEFINITION_TYPES }.map { toDeclaration(it, it) }
+        val definitions = statements.filter { it.type in DEFINITION_TYPES }.map { toDeclaration(definition = it, outermostNode = it) }
         val decoratedDefinitions = statements.filter { it.type == DECORATED_DEFINITION }.map { decorated ->
-            toDeclaration(decorated, decorated.getChildByFieldName(DEFINITION_FIELD).orNull())
+            toDeclaration(definition = decorated.getChildByFieldName(DEFINITION_FIELD).orNull(), outermostNode = decorated)
         }
         val variables = statements.filter { it.type == EXPRESSION_STATEMENT }.flatMap { assignedVariables(it) }
         return definitions + decoratedDefinitions + variables
     }
 
-    private fun toDeclaration(outermostNode: SyntaxNode, definition: SyntaxNode?): Declaration = Declaration(
+    private fun toDeclaration(definition: SyntaxNode?, outermostNode: SyntaxNode): Declaration = Declaration(
         name = definition?.getChildByFieldName(NAME_FIELD)?.orNull()?.text.orEmpty(),
         type = declarationType(definition?.type),
         usedTypes = usedNames(outermostNode)
@@ -68,7 +68,7 @@ internal object DeclarationExtractor {
     private fun assignedVariables(statement: SyntaxNode): List<Declaration> = statement
         .children()
         .filter { it.type == ASSIGNMENT }
-        .mapNotNull { assignment -> assignment.getChildByFieldName(LEFT_FIELD).orNull()?.takeIf { it.type == IDENTIFIER }?.text }
+        .mapNotNull { assignment -> assignment.fieldOfType(LEFT_FIELD, IDENTIFIER)?.text }
         .map { name -> Declaration(name = name, type = DeclarationType.VARIABLE, usedTypes = emptySet()) }
         .toList()
 }

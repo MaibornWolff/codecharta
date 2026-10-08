@@ -12,8 +12,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
  *
  * Reuses JavaScript's metric and extraction mappings since Vue SFCs
  * contain JavaScript/TypeScript in their <script> sections.
- * The preprocessor extracts the script content before parsing. Dependency extraction parses the whole component
- * with the Vue grammar instead.
+ * The preprocessor extracts the script content before parsing.
  */
 object VueDefinition : LanguageDefinition {
     override val nodeMetrics: Map<String, Set<Metric>> = JavascriptDefinition.nodeMetrics

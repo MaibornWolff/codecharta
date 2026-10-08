@@ -516,7 +516,20 @@ class GoDependencyTest {
             val usedTypes = usedTypeNamesOf(code, "processGenericCalls")
 
             // Assert
-            assertThat(usedTypes).contains("Map", "NewContainer", "Add", "Transform", "Convert", "Data", "Input", "Output", "Raw")
+            assertThat(usedTypes).containsExactly(
+                "Map",
+                "NewContainer",
+                "Add",
+                "Transform",
+                "Convert",
+                "string",
+                "int",
+                "Data",
+                "Input",
+                "Output",
+                "mapper.Convert",
+                "Raw"
+            )
         }
 
         @Test

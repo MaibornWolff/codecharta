@@ -26,7 +26,7 @@ class PythonImports private constructor(
 ) {
     companion object {
         const val PACKAGE_FILE = "__init__"
-        private const val PARENT_LEVEL = "."
+        private const val RELATIVE_LEVEL = "."
         private const val SEGMENT_SEPARATOR = "."
 
         fun of(imports: List<ImportDeclaration>, modulePath: List<String>): PythonImports {
@@ -35,37 +35,37 @@ class PythonImports private constructor(
                 resolveAgainst(modulePath, import.path)?.let { import.copy(path = it) }
             }
             val (wildcards, members) = resolvedMemberImports.partition { it.isWildcard }
-            val (aliasedMembers, plainMembers) = members.partition { it.bindingName != null }
-            val (aliasedModules, plainModules) = moduleImports.partition { it.bindingName != null }
             return PythonImports(
-                memberDependencies = plainMembers.flatMap { inModuleOrPackage(it.path.dropLast(1), segmentsOf(it.path.last())) },
-                wildcardDependencies = wildcards.flatMap {
-                    listOf(
-                        Dependency.asWildcard(it.path),
-                        Dependency.asWildcard(
-                            it.path + PACKAGE_FILE
-                        )
-                    )
-                },
-                aliasedMembers = aliasedMembers.associate { it.bindingName!! to it.path.dropLast(1) + segmentsOf(it.path.last()) },
-                modules = plainModules.map { it.path.joinToString(SEGMENT_SEPARATOR) }.toSet(),
-                aliasedModules = aliasedModules.associate { it.bindingName!! to it.path }
+                memberDependencies = members.filter { it.bindingName == null }.flatMap { inModuleOrPackage(moduleOf(it), nameOf(it)) },
+                wildcardDependencies = wildcards.flatMap { wildcardOnModuleOrPackage(it.path) },
+                aliasedMembers = pathsByAlias(members) { moduleOf(it) + nameOf(it) },
+                modules = moduleImports.filter { it.bindingName == null }.map { it.path.joinToString(SEGMENT_SEPARATOR) }.toSet(),
+                aliasedModules = pathsByAlias(moduleImports) { it.path }
             )
         }
 
         fun inModuleOrPackage(module: List<String>, name: List<String>): List<Dependency> =
             listOf(Dependency(Path(module + name)), Dependency(Path(module + PACKAGE_FILE + name)))
 
-        // One leading dot is the package of the file, every further one its parent. A relative import that
-        // leaves the analysed tree cannot be resolved
+        private fun wildcardOnModuleOrPackage(module: List<String>): List<Dependency> =
+            listOf(Dependency.asWildcard(module), Dependency.asWildcard(module + PACKAGE_FILE))
+
+        private fun pathsByAlias(imports: List<ImportDeclaration>, pathOf: (ImportDeclaration) -> List<String>): Map<String, List<String>> =
+            imports.mapNotNull { import -> import.bindingName?.let { alias -> alias to pathOf(import) } }.toMap()
+
+        private fun moduleOf(memberImport: ImportDeclaration): List<String> = memberImport.path.dropLast(1)
+
+        // The extractor leaves the imported name one segment, whatever dots it holds
+        private fun nameOf(memberImport: ImportDeclaration): List<String> = memberImport.path.last().split(SEGMENT_SEPARATOR)
+
+        // One leading dot is the package of the file, every further one its parent. An import that reaches the
+        // root of the analysed tree or beyond is dropped
         private fun resolveAgainst(modulePath: List<String>, importPath: List<String>): List<String>? {
-            val levels = importPath.takeWhile { it == PARENT_LEVEL }.size
+            val levels = importPath.takeWhile { it == RELATIVE_LEVEL }.size
             if (levels == 0) return importPath
             val packagePath = modulePath.dropLast(levels)
             if (packagePath.isEmpty()) return null
             return packagePath + importPath.drop(levels)
         }
-
-        private fun segmentsOf(dottedName: String): List<String> = dottedName.split(SEGMENT_SEPARATOR)
     }
 }

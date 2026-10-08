@@ -4,8 +4,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
- * The names of all package clauses of the file. The import path of a Go package follows its directory, so the
- * consumer derives the package path from the file path and uses these names only where no directory is known.
+ * The names of all package clauses of the file, not a path: the import path of a Go package follows its directory,
+ * which only the consumer knows.
  */
 internal object PackageExtractor {
     private const val PACKAGE_CLAUSE = "package_clause"

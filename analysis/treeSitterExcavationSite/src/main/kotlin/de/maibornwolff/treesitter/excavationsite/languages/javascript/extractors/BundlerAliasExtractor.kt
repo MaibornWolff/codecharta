@@ -70,7 +70,7 @@ internal object BundlerAliasExtractor {
         val key = pair.getChildByFieldName(KEY_FIELD).orNull() ?: return null
         return when (key.type) {
             PROPERTY_IDENTIFIER, IDENTIFIER -> key.text
-            STRING -> key.text.trim('"', '\'')
+            STRING -> key.text.withoutQuotes()
             else -> null
         }
     }
@@ -79,7 +79,7 @@ internal object BundlerAliasExtractor {
         val name = keyOf(pair) ?: return null
         val value = pair.getChildByFieldName(VALUE_FIELD).orNull() ?: return null
         return when (value.type) {
-            STRING -> BundlerAlias(name, listOf(value.text.trim('"', '\'')), AliasPathStart.AS_WRITTEN)
+            STRING -> BundlerAlias(name, listOf(value.text.withoutQuotes()), AliasPathStart.AS_WRITTEN)
             CALL_EXPRESSION -> aliasOfResolvedPath(name, value)
             else -> null
         }
@@ -87,20 +87,13 @@ internal object BundlerAliasExtractor {
 
     private fun aliasOfResolvedPath(name: String, call: SyntaxNode): BundlerAlias? {
         if (call.getChildByFieldName(FUNCTION_FIELD).orNull()?.text != PATH_RESOLVE) return null
-        val arguments =
-            call
-                .getChildByFieldName(ARGUMENTS_FIELD)
-                .orNull()
-                ?.namedChildren()
-                ?.map { it.type to it.text }
-                ?.toList() ?: return null
-        val pathParts = arguments.filter { (type, _) -> type == STRING }.map { (_, text) -> text.trim('"', '\'') }
+        val arguments = call.getChildByFieldName(ARGUMENTS_FIELD).orNull()?.namedChildren()?.toList() ?: return null
+        val pathParts = arguments.filter { it.type == STRING }.map { it.text.withoutQuotes() }
         if (pathParts.isEmpty()) return null
-        val startsAtConfigDirectory = arguments.any { (type, text) -> type == IDENTIFIER && text == DIRNAME }
-        return BundlerAlias(
-            name,
-            pathParts,
-            if (startsAtConfigDirectory) AliasPathStart.CONFIG_DIRECTORY else AliasPathStart.WORKING_DIRECTORY
-        )
+        val startsAtConfigDirectory = arguments.any { it.type == IDENTIFIER && it.text == DIRNAME }
+        val pathStart = if (startsAtConfigDirectory) AliasPathStart.CONFIG_DIRECTORY else AliasPathStart.WORKING_DIRECTORY
+        return BundlerAlias(name, pathParts, pathStart)
     }
+
+    private fun String.withoutQuotes(): String = trim('"', '\'')
 }

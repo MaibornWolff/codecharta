@@ -6,12 +6,11 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
- * The types a PHP declaration uses and how, in this order: imported constants, base class, interfaces, classes whose
- * constants are read, return types, parameter types, instantiated classes, and with [TypeUsage.USAGE] property
- * types, classes called statically and traits. Only plain names count: a base class, interface or instantiated
- * class written as a qualified name, a union type, a nullable parameter type and the nullable return type of a
- * function are left out. An alias is replaced by
- * the name it stands for.
+ * The types a PHP declaration uses and how, imported constants first, then in the order of [Role]. A type is taken
+ * as written where a type is declared (return, parameter, property). Where a class is named (base class, interface,
+ * instantiation, static call, constant access, trait) only a plain name counts, a qualified one is left out. Also
+ * left out: a union type, a nullable parameter type and the nullable return type of a function. An alias is replaced
+ * by the name it stands for.
  *
  * An imported constant counts as used as soon as its name occurs anywhere in the text of the declaration.
  */
@@ -36,6 +35,7 @@ internal object UsedTypeExtractor {
 
     private val RELEVANT_TYPES = arrayOf(NAME, NAMED_TYPE, CLASS_CONSTANT_ACCESS_EXPRESSION)
 
+    // The order of the entries is the order of the used types
     private enum class Role(val usage: TypeUsage) {
         INHERITED(TypeUsage.INHERITANCE),
         IMPLEMENTED(TypeUsage.IMPLEMENTATION),
@@ -48,22 +48,20 @@ internal object UsedTypeExtractor {
         USED_TRAIT(TypeUsage.USAGE)
     }
 
-    fun extract(declaration: SyntaxNode, namesByAlias: Map<String, String>, importedConstants: List<String>): Set<UsedType> {
+    fun extract(declaration: SyntaxNode, importedNames: ImportedNames): Set<UsedType> {
         val namesByRole = TreeTraversal
             .findAllDescendantsOfType(declaration, *RELEVANT_TYPES)
             .flatMap { node -> rolesOf(node) }
             .groupBy({ (role, _) -> role }, { (_, name) -> name })
-        val declarationText = declaration.text
-        val usedConstants = importedConstants
-            .filter {
-                declarationText.contains(
-                    it
-                )
-            }.map { UsedType(it, usage = TypeUsage.CONSTANT_ACCESS) }
         val usedTypes = Role.entries.flatMap { role ->
-            namesByRole[role].orEmpty().map { name -> UsedType(namesByAlias[name.trim()] ?: name, usage = role.usage) }
+            namesByRole[role].orEmpty().map { name -> UsedType(importedNames.namesByAlias[name.trim()] ?: name, usage = role.usage) }
         }
-        return (usedConstants + usedTypes).toCollection(LinkedHashSet())
+        return (usedConstants(declaration, importedNames.constants) + usedTypes).toCollection(LinkedHashSet())
+    }
+
+    private fun usedConstants(declaration: SyntaxNode, importedConstants: List<String>): List<UsedType> {
+        val declarationText = declaration.text
+        return importedConstants.filter { declarationText.contains(it) }.map { UsedType(it, usage = TypeUsage.CONSTANT_ACCESS) }
     }
 
     private fun rolesOf(node: SyntaxNode): List<Pair<Role, String>> = when (node.type) {
@@ -102,7 +100,7 @@ internal object UsedTypeExtractor {
         return memberList.type == DECLARATION_LIST && memberList.parent.type == CLASS_DECLARATION
     }
 
-    // In `Order::LIMIT` both sides are names; the owner is every name that another one follows
+    // In `Order::LIMIT` both sides are names: every name but the last is an owner
     private fun ownersOfReadConstants(constantAccess: SyntaxNode): List<String> =
         TreeTraversal.findAllChildrenTextByType(constantAccess, NAME).dropLast(1)
 }

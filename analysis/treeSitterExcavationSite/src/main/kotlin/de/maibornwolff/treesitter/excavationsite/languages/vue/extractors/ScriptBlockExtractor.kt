@@ -7,7 +7,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
  * Every script block of a component that is not empty; a component may pair a plain `<script>` with a
- * `<script setup>`. The language is that of a quoted `lang` attribute, otherwise JavaScript.
+ * `<script setup>`. The language is TypeScript or TSX for `lang="ts"` and `lang="tsx"`, otherwise JavaScript, also
+ * for an unquoted `lang=ts`.
  */
 internal object ScriptBlockExtractor {
     private const val SCRIPT_ELEMENT = "script_element"

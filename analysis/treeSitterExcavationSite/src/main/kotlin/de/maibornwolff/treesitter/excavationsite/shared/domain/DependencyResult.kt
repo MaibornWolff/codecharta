@@ -7,7 +7,10 @@ enum class ImportKind {
     INCLUDE,
     REEXPORT,
 
-    /** A name imported out of a module (Python `from module import name`): the last path segment is that name. */
+    /**
+     * A name imported out of a module (Python `from module import name`): the last path segment is that name, for a
+     * wildcard there is none. A relative module starts with one `.` segment per leading dot.
+     */
     MEMBER
 }
 

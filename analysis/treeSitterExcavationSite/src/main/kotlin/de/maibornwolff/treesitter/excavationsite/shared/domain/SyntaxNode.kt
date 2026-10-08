@@ -45,3 +45,7 @@ interface SyntaxNode {
 }
 
 fun SyntaxNode.orNull(): SyntaxNode? = takeUnless { it.isNull }
+
+fun SyntaxNode.fieldOfType(fieldName: String, type: String): SyntaxNode? = getChildByFieldName(fieldName).orNull()?.takeIf {
+    it.type == type
+}
