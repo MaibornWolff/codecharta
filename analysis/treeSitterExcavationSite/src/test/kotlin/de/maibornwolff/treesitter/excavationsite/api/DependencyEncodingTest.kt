@@ -7,7 +7,7 @@ class DependencyEncodingTest {
     @Test
     fun `should extract whole names from a file that starts with a byte order mark`() {
         // Arrange
-        val byteOrderMark = "﻿"
+        val byteOrderMark = "\uFEFF"
         val code = byteOrderMark + "using System.Text;\nnamespace Benchmarks;\nclass BenchmarkRunner : RunnerBase {}"
 
         // Act
@@ -23,7 +23,7 @@ class DependencyEncodingTest {
     @Test
     fun `should extract whole names after the noncharacters U+FFFE and U+FFFF`() {
         // Arrange
-        val code = "class A { String range = \"￾-￿\"; }\nclass AfterTheRange extends RangeBase {}"
+        val code = "class A { String range = \"\uFFFE-\uFFFF\"; }\nclass AfterTheRange extends RangeBase {}"
 
         // Act
         val result = TreeSitterDependencies.analyze(code, Language.JAVA)
@@ -44,6 +44,21 @@ class DependencyEncodingTest {
 
         // Assert
         assertThat(result.imports.map { it.path }).containsExactly(listOf("before.h"), listOf("after.h"))
+        assertThat(result.declarations.map { it.name }).containsExactly("Widget")
+    }
+
+    @Test
+    fun `should extract the includes on both sides of a vertical tab and of a unit separator`() {
+        // Arrange
+        val verticalTab = "\u000B"
+        val unitSeparator = "\u001F"
+        val code = "#include \"first.h\"\n$verticalTab\n#include \"second.h\"\n$unitSeparator\n#include \"third.h\"\nclass Widget {};"
+
+        // Act
+        val result = TreeSitterDependencies.analyze(code, Language.CPP)
+
+        // Assert
+        assertThat(result.imports.map { it.path }).containsExactly(listOf("first.h"), listOf("second.h"), listOf("third.h"))
         assertThat(result.declarations.map { it.name }).containsExactly("Widget")
     }
 
