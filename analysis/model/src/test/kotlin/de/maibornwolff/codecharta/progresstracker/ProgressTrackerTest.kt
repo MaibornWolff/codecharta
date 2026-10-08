@@ -4,8 +4,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.io.PrintStream
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
 
 class ProgressTrackerTest {
     private val errContent = ByteArrayOutputStream()
@@ -129,5 +134,40 @@ class ProgressTrackerTest {
         // Then
         val output = errContent.toString()
         assertThat(output).isEmpty()
+    }
+
+    @Test
+    @Timeout(10)
+    fun `should finish printing one update before the next one starts`() {
+        // Arrange
+        val firstUpdateIsPrinting = CountDownLatch(1)
+        val firstUpdateMayFinish = CountDownLatch(1)
+        val updatesPrinting = AtomicInteger()
+        val mostUpdatesPrintingAtOnce = AtomicInteger()
+        System.setErr(
+            object : PrintStream(OutputStream.nullOutputStream()) {
+                override fun print(line: Any?) {
+                    mostUpdatesPrintingAtOnce.accumulateAndGet(updatesPrinting.incrementAndGet(), ::maxOf)
+                    firstUpdateIsPrinting.countDown()
+                    firstUpdateMayFinish.await()
+                    updatesPrinting.decrementAndGet()
+                }
+            }
+        )
+        val progressTracker = ProgressTracker()
+
+        // Act
+        val firstUpdate = thread { progressTracker.updateProgress(2, 1, "files", "first.kt") }
+        firstUpdateIsPrinting.await()
+        val secondUpdate = thread { progressTracker.updateProgress(2, 2, "files", "second.kt") }
+        while (secondUpdate.state != Thread.State.BLOCKED && mostUpdatesPrintingAtOnce.get() == 1) {
+            Thread.onSpinWait()
+        }
+        firstUpdateMayFinish.countDown()
+        firstUpdate.join()
+        secondUpdate.join()
+
+        // Assert
+        assertThat(mostUpdatesPrintingAtOnce.get()).isEqualTo(1)
     }
 }

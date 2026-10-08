@@ -75,7 +75,7 @@ extraction of all languages run on the FFM layer, and the JNI code paths are gon
   `native_tree_sitter_libraries` runs `ccsh` on Java 22 on all five platforms
 - One `unifiedparser` run on vue2 failed in `ProgressTracker.getClearingSpaces` (`repeat` with a negative count,
   `lastLineLength` is written by several threads without synchronisation); six reruns were identical to the
-  reference. The class is untouched by this plan and the failure is not fixed here
+  reference. The class is untouched by this plan; fixed in `2026-10-08-progress-bar-thread-safety.md`
 
 ## Review Feedback Addressed
 
