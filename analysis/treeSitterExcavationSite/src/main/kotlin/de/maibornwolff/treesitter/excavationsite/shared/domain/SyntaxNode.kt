@@ -31,17 +31,9 @@ interface SyntaxNode {
 
     fun getChildByFieldName(name: String): SyntaxNode
 
-    fun children(): Sequence<SyntaxNode> = sequence {
-        for (index in 0 until childCount) {
-            yield(getChild(index))
-        }
-    }
+    fun children(): Sequence<SyntaxNode>
 
-    fun namedChildren(): Sequence<SyntaxNode> = sequence {
-        for (index in 0 until namedChildCount) {
-            yield(getNamedChild(index))
-        }
-    }
+    fun namedChildren(): Sequence<SyntaxNode>
 }
 
 fun SyntaxNode.orNull(): SyntaxNode? = takeUnless { it.isNull }
