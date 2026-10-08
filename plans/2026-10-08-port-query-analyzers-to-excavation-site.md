@@ -62,6 +62,32 @@ style of the other languages. After plan 1 they then parse with FFM without furt
 
 ## Review Feedback Addressed
 
+Five reviewers (clean code, comments, readability, bugs by fuzzing both builds, plan check).
+
+1. **Three differences on broken Go code**, found in 7 of about 16,000 mutated files: nested qualified types came
+   out in the order of the outer nodes, an empty parameter type was no longer left out, a name starting with a line
+   break was trimmed. Fixed and pinned by tests
+2. **Python on broken code** differs and stays different: the old analyzer parsed the text of every definition
+   again and failed where that text alone does not parse, so the file was skipped (81 of about 7,400 mutated
+   files); in 4 more the two parses recovered differently and a used type is extra. Changelog entry added
+3. **Go tests**: the six cases of the removed query tests without a counterpart are back (calls in nested blocks,
+   on field chains, on a returned value, with a spread slice, generic calls, in a variable declaration)
+4. **Clean code**: the PHP declaration extractor is one function per kind; pairs of type and node, a lambda passed
+   through helpers and two `!!` are gone; one helper for "the field, if of this type", used ten times; literals
+   named; expressions the formatter had wrapped got a named value
+5. **Comments**: a dozen KDoc and README sentences contradicted the code (what the Go package names are for, what a
+   PHP include is resolved against, a wildcard under `ImportKind.MEMBER`, which PHP names are left out) and are
+   corrected; narrating class comments removed; a broken README table row repaired
+6. **Changelog**: "many times faster" overstated Go and Vue and is reworded
+7. **Sample projects**: the eight that ship with the repository are byte-identical too; they hold only five Go,
+   Python, PHP and Vue files, so the corpora remain the evidence. The 18 of plan 1 were not on this machine
+8. **Stale build comment** in `libs.versions.toml` on the parser querying grammars directly removed
+9. **Not done**: `BundlerAlias` stays a class with an enum, since a sealed type's nested classes do not resolve
+   through the type aliases of the API; the recursion over pointer and parenthesised result types in Go stays, it is
+   bounded by the nesting of a type; two restored package path tests keep their old style; the commit subjects over
+   72 characters and the query counts in two commit messages (Go has 14 queries, Python 17, not 7 and 15) stay as
+   committed
+
 ## Notes
 
 ### Result
@@ -106,8 +132,8 @@ style of the other languages. After plan 1 they then parse with FFM without furt
   in backquotes is ignored
 - Python: every identifier of a class or function is a used type; an attribute access is split at every dot of
   its text, calls included; only top-level definitions exist, decorated ones after the others; a relative import
-  that leaves the analysed tree is dropped; the old analyzer parsed every definition a second time from its text,
-  which made no difference on 4,740 files and is gone
+  that reaches the root of the analysed tree or beyond is dropped; the old analyzer parsed every definition a
+  second time from its text, which made no difference on 4,740 files and is gone (see the review for broken code)
 - PHP: the namespace is the first namespace name of the file, also one of a `use` clause; `use Foo;` is no
   import; an aliased clause keeps ` as Alias` in its last segment; a qualified member of a group is also imported
   without the prefix of the group; an import with `const` in any segment counts as a constant, and a constant is

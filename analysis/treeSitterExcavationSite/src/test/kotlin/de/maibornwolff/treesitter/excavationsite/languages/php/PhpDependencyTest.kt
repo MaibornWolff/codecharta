@@ -335,6 +335,18 @@ class PhpDependencyTest {
         }
 
         @Test
+        fun `should extract a qualified return type as written`() {
+            // Arrange
+            val code = "function latest(): \\App\\Models\\Order {}"
+
+            // Act
+            val usedTypes = usedTypesOf(code, "latest")
+
+            // Assert
+            assertThat(usedTypes).containsExactly(UsedType("\\App\\Models\\Order", usage = TypeUsage.RETURN_VALUE))
+        }
+
+        @Test
         fun `should replace an alias by the name it stands for`() {
             // Arrange
             val code = "use App\\Models\\Order as Purchase;\nfunction latest(): Purchase {}"

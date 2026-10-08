@@ -16,7 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Faster `domainlanguageparser`**: the words of a code base are extracted several times faster.
 
-- **Faster `dependencyparser`**: the dependencies of a code base are extracted many times faster.
+- **Faster `dependencyparser`**: a run takes a fraction of the time on most code bases, most of all on PHP; where
+  cycle detection and levelling dominate, as on very large graphs, the gain is smaller.
 
 ### Fixed 🐞
 
@@ -28,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Rare characters in `dependencyparser`**: a file that contains one of the characters U+FFFE and U+FFFF no longer
   loses the dependencies of the code behind it.
+
+- **Python files with a syntax error**: `dependencyparser` no longer leaves a Python file out because one of its
+  classes or functions does not parse.
 
 - **Deeply nested code**: `dependencyparser` no longer aborts on a Java, Kotlin, C#, C, C++, JavaScript, TypeScript,
   Delphi or Rust file with a very long chained expression, such as thousands of concatenated strings.
