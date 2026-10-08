@@ -4,7 +4,7 @@
 
 The dependencies feature extracts structural dependency information from source files: package declarations, imports, class/interface/enum declarations, and the types each declaration uses. This data is consumed by DependaCharta (DC) to build dependency graphs, detect cycles, and assign architectural levels.
 
-Java, Kotlin, C#, C++, TypeScript, JavaScript, Delphi, and Rust are implemented. Other languages will be migrated from DC's legacy analyzers over time.
+Java, Kotlin, C#, C++, TypeScript, JavaScript, Go, Python, PHP, Vue, Delphi, and Rust are implemented.
 
 ## Architecture
 
@@ -60,17 +60,19 @@ data class ImportDeclaration(
     val path: List<String>,                 // ["java", "util", "List"]
     val isWildcard: Boolean,                // true for "import java.util.*"
     val namespacePath: List<String> = [],   // namespace scope: [] = global, ["My", "Namespace"] = scoped to that namespace
-    val kind: ImportKind = STANDARD         // INCLUDE for C++ #include; STANDARD for everything else (Java/Kotlin/C#/C++ `using`)
+    val kind: ImportKind = STANDARD         // see "Import kinds"
 )
 
 enum class ImportKind {
     STANDARD,  // e.g., Java `import`, Kotlin `import`, C# `using`, C++ `using namespace`/`using X::Y`
-    INCLUDE    // C++ `#include` — downstream adapter applies path resolution + extension normalization
+    INCLUDE,   // C++ `#include`, PHP `require`/`include` — the adapter resolves the path against the file
+    REEXPORT,  // Rust `pub use`
+    MEMBER     // Python `from module import name` — the last path segment is the imported name
 }
 
 data class Declaration(
     val name: String,                       // "MyService"
-    val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION
+    val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
     val parentPath: List<String> = []       // namespace/package path: ["com", "example"]
 )
@@ -79,6 +81,7 @@ data class UsedType(
     val name: String,                       // "List"
     val genericTypes: List<UsedType> = [],  // [UsedType("String")] for List<String>
     val namespacePrefix: List<String> = [], // ["A", "B"] for A::B::Settings; [] for unqualified
+    val usage: TypeUsage = USAGE            // how the declaration uses the type; only PHP tells the ways apart
 )
 ```
 
@@ -89,12 +92,14 @@ data class UsedType(
 | Kind | Source | Adapter handling |
 |---|---|---|
 | `STANDARD` (default) | Java `import`, Kotlin `import`, C# `using`, C++ `using namespace` / `using X::Y`, Rust `use` | Consumed as-is — the `path` is already the canonical reference |
-| `INCLUDE` | C++ `#include "…"` or `#include <…>` only | Adapter resolves relative paths (`./`, `../`) against the file's physical path and rewrites the final segment's `.` → `_` to match DC's node-naming convention |
+| `INCLUDE` | C++ `#include "…"` or `#include <…>`, PHP `require`/`include` (and their `_once` forms) of a single-quoted path | Adapter resolves relative paths (`./`, `../`) against the file's physical path; for C++ it rewrites the final segment's `.` → `_` to match DC's node-naming convention, for PHP it drops the `.php` ending |
 | `REEXPORT` | Rust `pub use module::Type` (incl. `pub(crate) use`) | Adapter models it as a forwarding node — a crate flattens its public API via `pub use`, so consumers import the short `crate::Type` path; the forwarding node `crate::Type` points at the real `crate::module::Type` so the consumer's reference resolves transitively |
+
+| `MEMBER` | Python `from module import name` and `from module import *` | The last path segment is the imported name (none for a wildcard). A relative module starts with one `.` segment per leading dot, which the adapter resolves against the module path of the file. A name can live in `module.py` or in `module/__init__.py`, so the adapter emits a dependency on both |
 
 Without this tag, a C++ DC adapter cannot tell `#include "foo"` (needs path normalization) from `using foo;` (must not be normalized) — both produce the same `(path, isWildcard, namespacePath)` triple. TSE extractors tag the AST source; adapters branch on `kind`.
 
-All non-C++ languages leave the field at its default (`STANDARD`), so adding the field is source- and binary-compatible with existing callers.
+Java, Kotlin, C#, TypeScript, JavaScript, Go, Delphi and Vue leave the field at its default (`STANDARD`).
 
 ### Namespace-prefix handling
 
@@ -106,13 +111,45 @@ All non-C++ languages leave the field at its default (`STANDARD`), so adding the
 |---|---|---|
 | Java, Kotlin, C# | Import types at the top, use short names inline. Qualified inline usage (`com.other.Settings s`) is rare and idiomatically discouraged. | No — always empty. The import list already carries the neighborhood info the resolver needs. |
 | C++ | `using namespace` is discouraged in headers because it pollutes scope. Writing `cppcheck::Settings` inline is **the normal way** to reference cross-namespace types. | Yes — populated on every qualified inline reference. |
-| TypeScript, JavaScript, Python, Go, Vue | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
-| PHP | Has namespaces similar to C++; could opt in if the same resolver gap appears. | Optional; opt-in per extractor. |
+| TypeScript, JavaScript, Go, Vue | Import-aliased usage (`pkg.Type`) is idiomatic but stored as a dotted string in `UsedType.name`; the resolver splits on `.`. | No — always empty. |
+| Python | `import shop.orders` followed by `shop.orders.Order` is how a module import is used. | Yes — every attribute access `a.b.C` is the used type `C` with the prefix `[a, b]`; the adapter keeps those whose prefix is an imported module or its alias. |
+| PHP | Has namespaces similar to C++; only plain names are extracted, so a qualified use is left out. | No — always empty. |
 | Rust | A `use` brings most types into scope, but fully-qualified inline references (`crate::a::Foo`, `super::B`) without a `use` are legal and common. | Yes — populated for `scoped_type_identifier` references (the scope segments before the final name, verbatim incl. `crate`/`self`/`super`). |
 
 **How a DC-side adapter consumes it:** when building a node's `dependencies` set, emit a synthetic `Dependency(Path(namespacePrefix), isWildcard = true)` per `UsedType` that has a non-empty prefix. This mirrors what DC's legacy C++ analyzer did implicitly via `TypeExtractionService.extractTypeWithFoundNamespacesAsDependencies`: for every qualified usage, add a wildcard pointing at the type's neighborhood so the resolver can match the short name against classes declared there.
 
 The resolver itself needs no changes — the existing wildcard-matching loop in `Node.resolveTypeImport` already prepends wildcards to type names and looks for project matches.
+
+### Usage of a type
+
+`UsedType.usage` says how a declaration uses a type: `INHERITANCE`, `IMPLEMENTATION`, `CONSTANT_ACCESS`,
+`RETURN_VALUE`, `INSTANTIATION`, `ARGUMENT`, or `USAGE` for any other way. Only the PHP extractor fills it; every
+other language leaves it at `USAGE`. Two used types that differ only in `usage` are two entries of the set. DC
+identifies a type by its name alone, so its adapter keeps the first: the order of the set decides which usage a
+dependency gets.
+
+### Declarations without a name of their own
+
+- `DeclarationType.SCRIPT` (PHP): a file that declares nothing is one declaration with an empty name that carries
+  what the whole file uses. The adapter names it after the file.
+- A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
+  are the components its template names. The adapter names it after the file.
+
+### Embedded sources
+
+A Vue file holds JavaScript or TypeScript in its script blocks. `LanguageDependencyMapping.extractEmbeddedSources`
+returns them as `EmbeddedSource(content, language)`; `TreeSitterDependencies.analyze` analyses each one in its own
+language and appends its imports to the imports of the file. What an embedded source declares is dropped.
+
+Metrics and text extraction parse only the script of a Vue file, with the JavaScript grammar and a preprocessor that
+cuts the script out. Dependency extraction needs the template as well, so `VueDependencyMapping` sets
+`grammarOfWholeFile` to the Vue grammar: the whole, unprocessed file is then parsed with it.
+
+### Bundler aliases
+
+`TreeSitterDependencies.bundlerAliases(configuration)` reads `resolve.alias` of a webpack, vite or vue-cli
+configuration. An alias is a name, the path parts and where the path starts (`AS_WRITTEN`, `CONFIG_DIRECTORY`,
+`WORKING_DIRECTORY`); the adapter joins the parts on the file system.
 
 ### Primitive and sized-type representation
 
@@ -239,13 +276,13 @@ A different concatenation order with the same types produces identical dependenc
 | **Java** | inheritance, variables, annotations, methodInvocations, constructorCalls, thrownTypes, fields, methods | `JavaAnalyzer.kt` |
 | **Kotlin** | inheritance, properties, parameters, returnTypes, annotations, constructorCalls, callExpressions | `KotlinAnalyzer.kt` |
 | **TypeScript** | typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers | `TypeScriptAnalyzer.kt` |
-| **PHP** | constants, inherited, implemented, const, return, argument, instantiations, properties, staticAccess, traits | `UsedTypesExtractor.kt` |
+| **PHP** | imported constants, inherited, implemented, constant owners, return, argument, instantiations, properties, static call owners, traits | `UsedTypesExtractor.kt` |
 | **C#** | constructors, methods, casts, genericParams, genericConstraints, inherited, variables, objectCreations, memberAccesses, attributes, isTypeChecks | `CsharpAnalyzer.kt` |
 | **C++** | processor list order: typeDecl, inheritance, methods, typeDef, alias, generic, define | `BodyProcessor.kt` |
-| **Go** | functionQuery, typeQuery | `GoAnalyzer.kt` |
-| **Python** | N/A — imports only, no multi-category concatenation | `PythonAnalyzer.kt` |
+| **Go** | for a function: parameter types, result types, methods called through a selector, functions called directly, package-qualified types; then for every declaration all type identifiers and qualified types in source order. The used types of a method are appended to its receiver type | `GoAnalyzer.kt` |
+| **Python** | all identifiers in source order, then all attribute accesses in source order | `PythonAnalyzer.kt` |
 | **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
-| **Vue** | script imports, template components | `VueAnalyzer.kt` |
+| **Vue** | template components in source order; the script imports are imports, which the adapter appends as used types | `VueAnalyzer.kt` |
 | **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
 
@@ -270,9 +307,9 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 |---|---|---|
 | Java | `package_declaration` | empty |
 | Kotlin | `package_header` | parent class chain only (package not duplicated) |
-| Go | package declaration or file path | empty (planned) |
-| PHP | `namespace` declaration or file path | empty (planned) |
-| Python / JavaScript / Vue | file path | empty (planned) |
+| Go | names of the package clauses; the adapter uses the directory of the file instead, where there is one | empty |
+| PHP | `namespace` declaration, otherwise empty and the adapter uses the file path | empty |
+| Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
 | Delphi | `unit` declaration | empty (top-level types only in v1) |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.

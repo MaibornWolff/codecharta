@@ -16,8 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Faster `domainlanguageparser`**: the words of a code base are extracted several times faster.
 
-- **Faster `dependencyparser`**: the dependencies of a Java, Kotlin, C#, C, C++, JavaScript, TypeScript, Delphi or Rust
-  code base are extracted many times faster.
+- **Faster `dependencyparser`**: the dependencies of a code base are extracted many times faster.
 
 ### Fixed 🐞
 
@@ -27,8 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Rare characters in source files**: `domainlanguageparser` no longer returns cut-off words for a file that
   contains a byte order mark after its first character or one of the characters U+FFFE and U+FFFF.
 
-- **Rare characters in `dependencyparser`**: a Java, Kotlin, C#, C, C++, JavaScript, TypeScript, Delphi or Rust file
-  that contains one of the characters U+FFFE and U+FFFF no longer loses the dependencies of the code behind it.
+- **Rare characters in `dependencyparser`**: a file that contains one of the characters U+FFFE and U+FFFF no longer
+  loses the dependencies of the code behind it.
 
 - **Deeply nested code**: `dependencyparser` no longer aborts on a Java, Kotlin, C#, C, C++, JavaScript, TypeScript,
   Delphi or Rust file with a very long chained expression, such as thousands of concatenated strings.
