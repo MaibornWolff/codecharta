@@ -10,7 +10,6 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
-import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
@@ -48,18 +47,15 @@ class PythonAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
 
     private fun dependenciesOnImportedModule(qualifiedName: UsedType, imports: PythonImports): List<Dependency> {
         val qualifier = qualifiedName.namespacePrefix
-        val module = if (qualifier.joinToString(SEGMENT_SEPARATOR) in imports.modules) {
-            qualifier
-        } else {
-            imports.aliasedModules[qualifier.joinToString(SEGMENT_SEPARATOR)] ?: return emptyList()
-        }
-        return PythonImports.inModuleOrPackage(module, listOf(qualifiedName.name))
+        val dottedQualifier = qualifier.joinToString(SEGMENT_SEPARATOR)
+        val module = if (dottedQualifier in imports.modules) qualifier else imports.aliasedModules[dottedQualifier]
+        return module?.let { PythonImports.inModuleOrPackage(it, listOf(qualifiedName.name)) }.orEmpty()
     }
 
     private fun node(name: String, nodeType: NodeType, dependencies: Set<Dependency>, usedTypes: Set<Type>) = Node(
         pathWithName = Path(modulePath + name),
         physicalPath = fileInfo.physicalPath,
-        language = SupportedLanguage.PYTHON,
+        language = fileInfo.language,
         nodeType = nodeType,
         dependencies = dependencies,
         usedTypes = usedTypes

@@ -5,7 +5,6 @@ import de.maibornwolff.treesitter.excavationsite.api.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import java.io.File
 
-/** Reads the alias mappings of a bundler config file (webpack.config.js, vite.config.js, vue.config.js). */
 object BundlerConfigParser {
     private const val WORKING_DIRECTORY = "."
 

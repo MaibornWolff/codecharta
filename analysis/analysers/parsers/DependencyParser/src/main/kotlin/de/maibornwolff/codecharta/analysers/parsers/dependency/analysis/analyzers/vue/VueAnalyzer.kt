@@ -17,14 +17,10 @@ import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 
-/**
- * A Vue file is one node named after the file. It depends on what its script blocks import and on the components
- * its template uses, which are resolved by name like any used type.
- */
 class VueAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, Language.VUE)
-        val templateComponents = result.declarations.flatMap { it.usedTypes }.map { it.name }
+        val templateComponents = result.declarations.single().usedTypes.map { it.name }
         val scriptDependencies = result.imports.map { import ->
             Dependency(path = Path(resolveImportPath(import.defaultImportPath(), fileInfo)), isWildcard = import.isWildcard)
         }

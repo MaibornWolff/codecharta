@@ -6,12 +6,15 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
 
 object VueDependencyMapping {
-    // A component is named after its file, which only the consumer knows, and imports through its script blocks
+    private const val VUE_GRAMMAR = "vue"
+
+    // A component is named after its file, which only the consumer knows. Its imports are those of its script
+    // blocks, which come in as embedded sources
     val dependencyMapping = LanguageDependencyMapping(
         extractPackagePath = { emptyList() },
         extractImports = { emptyList() },
         extractDeclarations = ComponentExtractor::extract,
         extractEmbeddedSources = ScriptBlockExtractor::extract,
-        grammarOfWholeFile = GrammarLibrary("vue")
+        grammarOfWholeFile = GrammarLibrary(VUE_GRAMMAR)
     )
 }

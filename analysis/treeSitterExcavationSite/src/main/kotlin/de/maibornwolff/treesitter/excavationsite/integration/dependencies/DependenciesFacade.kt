@@ -21,8 +21,8 @@ object DependenciesFacade {
 
     fun bundlerAliases(
         configuration: String,
-        javascript: GrammarLibrary,
+        grammarLibrary: GrammarLibrary,
         extractAliases: (SyntaxNode) -> List<BundlerAlias>
     ): List<BundlerAlias> =
-        FfmSyntaxTree.parse(configuration, NativeTreeSitter.grammar(javascript)).use { it.readReleasingReachedNodes(extractAliases) }
+        FfmSyntaxTree.parse(configuration, NativeTreeSitter.grammar(grammarLibrary)).use { it.readReleasingReachedNodes(extractAliases) }
 }

@@ -36,3 +36,5 @@ internal fun findLastNameChild(node: SyntaxNode): String? = node
     .children()
     .lastOrNull { it.type == NAME }
     ?.text
+
+internal fun String.withoutQuotes(): String = trim('"', '\'')

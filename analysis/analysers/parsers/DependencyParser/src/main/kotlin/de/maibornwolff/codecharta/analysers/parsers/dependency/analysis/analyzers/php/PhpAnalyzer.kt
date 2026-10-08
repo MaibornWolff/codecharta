@@ -23,17 +23,7 @@ class PhpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         val declaredNamespace = result.packagePath.takeIf { it.isNotEmpty() }?.let { Path(it) }
         val namespace = declaredNamespace ?: fileInfo.physicalPathAsPath()
         val pathOfFile = pathOfFile(declaredNamespace)
-        val imports = result.imports.map {
-            Dependency(
-                if (it.kind ==
-                    ImportKind.INCLUDE
-                ) {
-                    resolveInclude(it, pathOfFile)
-                } else {
-                    Path(it.path)
-                }
-            )
-        }
+        val imports = result.imports.map { toDependency(it, pathOfFile) }
         val dependencies = imports.toSet() + Dependency(path = namespace, isWildcard = true)
         val nodes = result.declarations.map { declaration ->
             Node(
@@ -48,23 +38,24 @@ class PhpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return FileReport(nodes)
     }
 
-    private fun nameOf(declaration: Declaration): String =
-        if (declaration.type == DeclarationType.SCRIPT) fileNameWithoutEnding() + SCRIPT_SUFFIX else declaration.name
-
-    private fun resolveInclude(include: ImportDeclaration, pathOfFile: Path): Path {
-        val includedFile = include.path.joinToString(PATH_SEPARATOR).trimFileEnding()
-        return resolveRelativePath(includedFile.toImport(), pathOfFile)
-    }
-
     // An include is resolved as if the file lay in the directory its namespace names
     private fun pathOfFile(declaredNamespace: Path?): Path {
         if (declaredNamespace == null) return Path(physicalPathSegments())
-        return Path(declaredNamespace.parts.map { it.trim(';') } + fileNameWithoutEnding())
+        return Path(declaredNamespace.parts + fileNameWithoutEnding())
     }
+
+    private fun toDependency(import: ImportDeclaration, pathOfFile: Path): Dependency {
+        if (import.kind != ImportKind.INCLUDE) return Dependency(Path(import.path))
+        val includedFile = import.path.joinToString(PATH_SEPARATOR).trimFileEnding()
+        return Dependency(resolveRelativePath(includedFile.toImport(), pathOfFile))
+    }
+
+    private fun nameOf(declaration: Declaration): String =
+        if (declaration.type == DeclarationType.SCRIPT) fileNameWithoutEnding() + SCRIPT_SUFFIX else declaration.name
 
     private fun fileNameWithoutEnding(): String = physicalPathSegments().last()
 
-    private fun physicalPathSegments(): List<String> = fileInfo.physicalPath.trimFileEnding().split("/", "\\")
+    private fun physicalPathSegments(): List<String> = fileInfo.physicalPath.trimFileEnding().split(PATH_SEPARATOR, WINDOWS_PATH_SEPARATOR)
 
     private fun String.trimFileEnding(): String = removeSuffix(PHP_ENDING)
 
@@ -72,5 +63,6 @@ class PhpAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         private const val PHP_ENDING = ".php"
         private const val SCRIPT_SUFFIX = ".script"
         private const val PATH_SEPARATOR = "/"
+        private const val WINDOWS_PATH_SEPARATOR = "\\"
     }
 }

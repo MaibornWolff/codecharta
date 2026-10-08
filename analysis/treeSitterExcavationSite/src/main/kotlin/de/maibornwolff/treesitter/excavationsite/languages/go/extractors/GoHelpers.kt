@@ -63,3 +63,6 @@ internal fun extractEmbeddedFieldIdentifier(node: SyntaxNode): String? {
         else -> null
     }
 }
+
+internal fun pointedAtTypeIdentifier(pointerType: SyntaxNode): String? =
+    pointerType.namedChildren().firstOrNull()?.takeIf { it.type == TYPE_IDENTIFIER }?.text

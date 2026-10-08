@@ -11,7 +11,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * added to the first declaration that carries the name of its receiver type.
  *
  * A type declaration is named after its first type spec, so of a group `type ( A …; B … )` only `A` is found, and a
- * declaration without one, such as the alias `type A = B`, is named [UNNAMED].
+ * declaration without one, such as the alias `type A = B`, is named [UNKNOWN_NAME].
  */
 internal object DeclarationExtractor {
     private const val TYPE_DECLARATION = "type_declaration"
@@ -25,24 +25,24 @@ internal object DeclarationExtractor {
     private const val NAME_FIELD = "name"
     private const val TYPE_FIELD = "type"
     private const val RECEIVER_FIELD = "receiver"
-    private const val UNNAMED = "unknown"
+    private const val UNKNOWN_NAME = "unknown"
 
     fun extract(rootNode: SyntaxNode): List<Declaration> {
-        val (methods, others) = TreeTraversal
+        val (methods, functionsAndTypes) = TreeTraversal
             .findAllDescendantsOfType(rootNode, TYPE_DECLARATION, FUNCTION_DECLARATION, METHOD_DECLARATION)
             .partition { it.type == METHOD_DECLARATION }
-        val declarations = others.map { toDeclaration(it) }.toMutableList()
+        val declarations = functionsAndTypes.map { toDeclaration(it) }.toMutableList()
         methods.forEach { method -> addUsedTypesToReceiverType(method, declarations) }
         return declarations
     }
 
     private fun toDeclaration(declaration: SyntaxNode): Declaration {
         if (declaration.type == FUNCTION_DECLARATION) {
-            val name = declaration.getChildByFieldName(NAME_FIELD).orNull()?.text ?: UNNAMED
+            val name = declaration.getChildByFieldName(NAME_FIELD).orNull()?.text ?: UNKNOWN_NAME
             return Declaration(name, DeclarationType.FUNCTION, UsedTypeExtractor.extract(declaration))
         }
         val typeSpec = declaration.children().firstOrNull { it.type == TYPE_SPEC }
-        val name = typeSpec?.getChildByFieldName(NAME_FIELD)?.orNull()?.text ?: UNNAMED
+        val name = typeSpec?.getChildByFieldName(NAME_FIELD)?.orNull()?.text ?: UNKNOWN_NAME
         val isInterface = typeSpec?.getChildByFieldName(TYPE_FIELD)?.orNull()?.type == INTERFACE_TYPE
         val type = if (isInterface) DeclarationType.INTERFACE else DeclarationType.CLASS
         return Declaration(name, type, UsedTypeExtractor.extract(declaration))
@@ -62,6 +62,6 @@ internal object DeclarationExtractor {
         val parameter = receiver.children().firstOrNull { it.type == PARAMETER_DECLARATION } ?: return null
         val type = parameter.children().firstOrNull { it.type == TYPE_IDENTIFIER || it.type == POINTER_TYPE } ?: return null
         if (type.type == TYPE_IDENTIFIER) return type.text
-        return type.namedChildren().firstOrNull()?.takeIf { it.type == TYPE_IDENTIFIER }?.text
+        return pointedAtTypeIdentifier(type)
     }
 }

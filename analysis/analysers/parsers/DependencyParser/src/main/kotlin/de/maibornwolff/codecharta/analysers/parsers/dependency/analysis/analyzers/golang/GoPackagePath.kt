@@ -7,6 +7,10 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyze
 object GoPackagePath {
     private const val MAIN_PACKAGE = "main"
     private const val UNKNOWN_PACKAGE = "unknown"
+    private const val WINDOWS_SEPARATOR = "\\"
+    private const val SEPARATOR = "/"
+    private const val CURRENT_DIRECTORY = '.'
+    private const val FILE_ENDING_MARK = "."
 
     fun derive(filePath: String, declaredPackageNames: List<String>): List<String> {
         val directoryParts = directoryPartsOf(filePath)
@@ -19,8 +23,9 @@ object GoPackagePath {
     }
 
     private fun directoryPartsOf(filePath: String): List<String> {
-        val pathParts = filePath.replace("\\", "/").trimStart('.', '/').split("/").filter { it.isNotEmpty() }
-        val endsWithFileName = pathParts.isNotEmpty() && pathParts.last().contains(".")
+        val relativePath = filePath.replace(WINDOWS_SEPARATOR, SEPARATOR).trimStart(CURRENT_DIRECTORY, SEPARATOR.single())
+        val pathParts = relativePath.split(SEPARATOR).filter { it.isNotEmpty() }
+        val endsWithFileName = pathParts.isNotEmpty() && pathParts.last().contains(FILE_ENDING_MARK)
         return if (endsWithFileName) pathParts.dropLast(1) else pathParts
     }
 }
