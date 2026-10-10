@@ -36,7 +36,7 @@ jobs:
 
       # ccsh needs Java 22 or newer, and the integration tests start the built ccsh with the java on the PATH
       - name: Setup Java JDK for the build
-        uses: actions/setup-java@v5.2.0
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: 'temurin'
           java-version: 25
@@ -63,7 +63,7 @@ jobs:
         working-directory: ${{env.project-directory}}
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v5.2.0
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: 'zulu'
           java-version: 17
