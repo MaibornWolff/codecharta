@@ -1,243 +1,268 @@
 # Java
 
+Round 3, 2026-10-08. The expected values below were fixed before the parsers ran. Where my own count was wrong it is marked "my miscount".
+
 ## Project
-- Layout: `src/main/java/de/sots/cellarsandcentaurs/{domain/model,domain/service,adapter/persistence,application,application/dto}` and
-  `src/test/java/de/sots/cellarsandcentaurs/domain/service/CreatureServiceTest.java`. 23 `.java` files (22 main + 1 test), 24 declarations.
-- Stress constructs present: wildcard import (`CreatureUtil`: `import ...domain.model.*`), static import
-  (`CreatureFacade`: `import static ...domain.model.Dice.rollD20`), fully qualified references without import
-  (`CreatureFacade`: `de.sots.cellarsandcentaurs.domain.model.Speed` as parameter types and
-  `de.sots.cellarsandcentaurs.application.dto.Creature` as return type + `new`), inheritance (`Centaur extends Creature`),
-  interfaces (`Creature implements Fightable`, `PersistedCreatures implements Creatures`), generic base
-  (`abstract class Repository<T>`, `CreatureRepository extends Repository<CreatureEntity>`), annotation-only usage
-  (`@Persisted(table = "creatures")` on `CreatureEntity`, annotation declared in `adapter/persistence/Persisted.java`),
-  type-position only (`ArmorClass` parameter in `CreatureFacade.create`), `new` only (`Centaur` in `CreatureFacade.createCentaur`,
-  `CreatureEntity` in `PersistedCreatures.save`), static-member only (`SpeedType.WALKING` etc. and
-  `CreatureFacade.STANDARD_CREATURE_TYPE` from `Creature` and `PersistedCreatures`), same simple name in two packages
-  (`domain.model.Creature` and `application.dto.Creature`, both used from `CreatureFacade`), unused import
-  (`Fightable` in `CreatureUtil`, redundant next to the wildcard), stdlib/third-party (`UUID`, `Map`, `Optional`, `Random`,
-  slf4j `Logger`, `jakarta.persistence.Entity`, JUnit 5, Mockito), two declarations in one file (`Dice.java`: `Dice` +
-  package-private `record DiceRoll`), file name different from declaration (`Experience.java` holds `record XPValue`),
-  records (`CreatureId`, `DiceRoll`, `XPValue`, `dto.Creature`), enums (`CreatureType`, `SpeedType`), test file.
-- Round 2 (see "Round 2: additional dependency forms" below) adds `module-info.java`, `adapter/cli/EncounterCommand.java`,
-  `domain/service/InitiativeOrder.java`, `application/{CreatureFactories,CreatureInspector,LairGuide,Trap,Herd}.java` and a nested
-  class `CreatureFacade.Builder`: 31 `.java` files (30 main + 1 test), 33 declarations. No round-1 file was changed except the
-  appended nested class.
-- Not applicable in Java: import alias (no syntax), barrel / re-export module (no syntax; the upward dependencies
-  `ArmorClass -> CreatureUtil`, `Creature -> CreatureFacade`, `PersistedCreatures -> CreatureFacade` are therefore direct
-  imports of the application classes), free function (`rollD20` is a static method of `Dice`).
+- Layout: `src/main/java/de/sots/cellarsandcentaurs/{domain/model,domain/service,adapter/persistence,adapter/cli,application,application/dto}`, `src/main/java/module-info.java`, `src/test/java/.../domain/service/CreatureServiceTest.java`. 34 `.java` files (33 main + 1 test).
+- Round 3 adds `domain/service/EncounterResolver.java`, `domain/service/EncounterEdgeCases.java` and `domain/model/Zentaurenhöhle.java` (NFC file name, field `rüstungsklasse`). No older file was changed.
+- Stress constructs from rounds 1 and 2 are unchanged: wildcard import, static import, fully qualified references, inheritance, interfaces, generic base, annotation-only use, same simple name in two packages, unused import, stdlib and third-party use, two declarations in one file, file name different from declaration, records, enums, nested class, `module-info.java`, method and constructor references, `instanceof`, array type, anonymous subclass, Javadoc `{@link}`.
+- `EncounterResolver`: Java has no nested named function; `initiativeOrder` holds a local class `Ranking` with a method `rank` as the closest idiom. That makes 6 methods instead of the 5 of the README table.
+- `EncounterEdgeCases` holds: static and instance initializer, two constructors, enhanced and classic `for`, `do … while`, old `switch` with fallthrough, arrow `switch` expression with `yield`, colon-form `switch` expression, pattern `switch` with a `when` guard and `case null`, `instanceof` type and record patterns, multi-catch, try-with-resources with `throws`, expression lambda, block lambda, method references, a 7-call stream chain, anonymous class, varargs, generic bound with nested generics and an annotated `final` parameter, receiver parameter, labelled `break` / `continue`, nested ternary, `&&` / `||` without `if`, bitwise operators, `assert`, text block holding `//` and `/* */`, comment markers in strings, Javadoc / block / line / inline / trailing comments, `///` Markdown doc comment, cast, class literal, wildcard bound, umlaut identifiers, a record with a compact constructor, an interface with abstract, default and static methods, an enum with constant-specific bodies and an abstract method.
+- Not applicable in Java: import alias, barrel / re-export, free function, null-coalescing and optional chaining, `unless` / `until`, `guard` / `defer`, `goto`, exception filters, preprocessor, operator overloads, extension functions, generators, `async` / `await`, default parameters, nested comments.
+- Extension variants: none. All three parsers list only `.java` for Java.
+- Locale: with `LC_CTYPE=POSIX` all three parsers skip `Zentaurenhöhle.java` without a message (33 instead of 34 files). The results below are from runs with `LC_ALL=C.UTF-8`; the POSIX runs are kept as `output/*-posix-locale.cc.json`.
 
 ## Dependency parser
-- Commands (all exit 0, no crash, no warnings apart from the JDK native-access notice):
-  - `ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json` -> 22 leaves, 42 file edges
-  - `... --include-tests -o output/dependency-with-tests.cc.json` -> 23 leaves, 47 file edges
-  - `... --verbose -o output/dependency-verbose.cc.json` -> same result; the log adds only timings and "Found 1 strongly connected components / 6 cycles"
+- Commands, both exit 0:
+  - `ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json`: 32 files, 38 leaves, 53 file edges, 61 leaf edges, 9 cycles in one strongly connected component.
+  - `... --include-tests -o output/dependency-with-tests.cc.json`: 33 files, 39 leaves, 58 file edges, 66 leaf edges.
+- Expected 70 file edges without tests (54 from rounds 1 and 2 + 16 new) and 75 with tests. Found 53 and 58, 0 extra.
+- Old files: 45 of 54, exactly the edges and the 9 misses of 2026-09-06.
 
-Expected file edges, written down before the first run (44 edges; the scratch note mis-added the total as 45, the list itself
-had 44 entries). Found 42 of 44, 0 extra.
+Round 3, expected before the run:
 
-Expected file-level edges added in round 2, written down before the second run (10 new edges expected, 44 + 10 = 54 in total;
-`LairGuide -> Creature` and `module-info.java` are expected to yield **no** edge):
-
-| From | To | Form (the only way the from-file uses the to-file) |
-| --- | --- | --- |
-| `adapter/cli/EncounterCommand` | `application/CreatureFacade` | import of a nested class `import ...CreatureFacade.Builder`, `new Builder().build()` |
-| `domain/service/InitiativeOrder` | `domain/model/Dice` | static wildcard import `import static ...Dice.*` + call `rollD20()` |
-| `application/CreatureFactories` | `domain/model/Dice` | method reference `Dice::rollD20` |
-| `application/CreatureFactories` | `domain/model/Centaur` | constructor reference `Centaur::new` |
-| `application/CreatureFactories` | `domain/model/CreatureId` | incidental: only inside the generic argument `Function<CreatureId, Object>` |
-| `application/CreatureInspector` | `domain/model/Centaur` | `creature instanceof Centaur` |
-| `application/CreatureInspector` | `domain/model/Speed` | array type `Speed[]` as parameter type |
-| `application/Trap` | `domain/model/Fightable` | anonymous subclass `new Fightable() { ... }` |
-| `application/Herd` | `domain/model/Centaur` | only inside the generic argument `List<Centaur>` (field type) |
-| `application/LairGuide` | `domain/model/Creature` | import + Javadoc `{@link Creature}` only: **no edge expected** (comment); an edge would be a defensible extra |
-| `module-info.java` | - | `requires org.slf4j`, `requires jakarta.persistence`, `exports ...application`, `exports ...application.dto`: **no edge expected**, must not break parsing |
-| `application/CreatureFacade` (nested `Builder`) | - | new nested class inside an existing file; no new file edge expected (uses only `CreatureService`, already an edge) |
-
-| Construct | Expected edge(s) | Found | Verdict |
+| Construct | Expected edge | Found | Verdict |
 | --- | --- | --- | --- |
-| Aliased import | n/a in Java | - | n/a |
-| Wildcard import `domain.model.*` in `CreatureUtil` | `CreatureUtil -> Creature`, `-> HitPoints`; nothing to the other 10 model files | exactly those two | ok |
-| Static import `Dice.rollD20` in `CreatureFacade` | `CreatureFacade -> Dice` | none (`Dice` has 0 incoming) | missing |
-| Barrel / re-export | n/a in Java | - | n/a |
-| Upward deps via direct import | `ArmorClass -> CreatureUtil`, `Creature -> CreatureFacade`, `PersistedCreatures -> CreatureFacade` | all three | ok |
-| Inheritance `Centaur extends Creature` | `Centaur -> Creature` | found | ok |
-| `Creature implements Fightable` | `Creature -> Fightable` | found | ok |
-| `PersistedCreatures implements Creatures` | `PersistedCreatures -> Creatures` | found | ok |
-| Generic base `Repository<CreatureEntity>` | `CreatureRepository -> Repository`, `-> CreatureEntity` | both | ok |
-| Type position only (`ArmorClass` param in facade) | `CreatureFacade -> ArmorClass` | found | ok |
-| `new` only (`Centaur` in facade, `CreatureEntity` in `PersistedCreatures`) | `CreatureFacade -> Centaur`, `PersistedCreatures -> CreatureEntity` | both | ok |
-| Static member only (`SpeedType.X` in facade; `CreatureFacade.STANDARD_CREATURE_TYPE` in `Creature`, `PersistedCreatures`) | `CreatureFacade -> SpeedType`, `Creature -> CreatureFacade`, `PersistedCreatures -> CreatureFacade` | all three | ok |
-| Annotation only (`@Persisted` on `CreatureEntity`, same package) | `CreatureEntity -> Persisted` | found, leaf kind `ANNOTATION` | ok |
-| Same simple name: `domain.model.Creature` (imported) and FQN `application.dto.Creature` in `CreatureFacade` | `CreatureFacade -> domain/model/Creature` and `-> application/dto/Creature` | only `-> domain/model/Creature`; `dto/Creature` has 0 incoming | missing (wrong target: the FQN collapsed onto the imported `Creature`) |
-| Fully qualified without import (`...domain.model.Speed` in `CreatureFacade`) | `CreatureFacade -> Speed` | found | ok |
-| Unused import (`Fightable` in `CreatureUtil`) | no edge | no edge | ok |
-| Stdlib / third-party (`UUID`, `Map`, `Optional`, `Random`, slf4j, jakarta, JUnit, Mockito) | no internal edges | none | ok |
-| Same-package reference without import (`CreatureId` in `NoSuchCreatureException`, `XPValue` in `Creature`, `Persisted`, `Repository`) | edges to the same-package files | all found | ok |
-| Two declarations in one file (`Dice`, `DiceRoll`) | leaf edge `Dice -> DiceRoll`, no file edge | leaf edge found, no self file edge | ok |
-| File name differs from declaration (`Experience.java` / `XPValue`) | `Creature -> Experience.java` | found (leaf `XPValue`, file `Experience.java`) | ok |
-| Test file `CreatureServiceTest` | default: absent; `--include-tests`: `-> CreatureService`, `-> Creatures`, `-> Creature`, `-> CreatureId`, `-> Speed` | default: absent (22 leaves); with tests: all five | ok |
+| Parameter type, `List<Creature>` (`EncounterResolver`) | `EncounterResolver -> Creature` | yes, x2 | ok |
+| Parameter type `Dice` (`EncounterResolver.safeRoll`) | `EncounterResolver -> Dice` | yes | ok |
+| Enhanced-`for` variable type `for (Speed speed : …)` | `EncounterResolver -> Speed` | no | missing |
+| Parameter types (`EncounterEdgeCases`) | `-> Creature`, `-> CreatureType` | yes | ok |
+| `throws NoSuchCreatureException` | `-> NoSuchCreatureException` | yes | ok |
+| Static call in a lambda body `() -> Dice.rollD20()` | `-> Dice` | yes | ok |
+| Parameter type with non-ASCII name `Zentaurenhöhle höhle` | `-> Zentaurenhöhle.java` | yes (UTF-8 locale only) | ok |
+| Field, parameter and return type, same package | `Zentaurenhöhle.java -> ArmorClass` | yes | ok |
+| Switch type pattern `case Centaur mare when …` | `-> Centaur` | no | missing |
+| Record pattern `instanceof CreatureId(var basilisk)` | `-> CreatureId` | no | missing |
+| Generic bound `<T extends Fightable>` | `-> Fightable` | no | missing |
+| Method reference `HitPoints::getCurrent` | `-> HitPoints` | no | missing |
+| Cast `(ArmorClass) target` | `-> ArmorClass` | no | missing |
+| Class literal `Speed.class` | `-> Speed` | no | missing |
+| Wildcard bound `List<? extends SpeedType>` | `-> SpeedType` | no | missing |
 
-- False positives: none. No edge to any stdlib or third-party type, no edge for the unused `Fightable` import, no edge from the
-  wildcard import to the unused model files.
-- Cycles: 12 file edges flagged `isCyclic`, one strongly connected component (`Creature`, `CreatureFacade`, `CreatureService`,
-  `Creatures`, `ArmorClass`, `CreatureUtil`, `Centaur`). Matches the expectation (`Creature -> CreatureFacade -> Creature`,
-  `Creature -> CreatureFacade -> CreatureService -> Creatures -> Creature`, `ArmorClass -> CreatureUtil -> Creature -> ArmorClass`,
-  `Creature -> CreatureFacade -> Centaur -> Creature`). `PersistedCreatures -> CreatureFacade` correctly not cyclic.
-- Upward edges: only `ArmorClass -> CreatureUtil` and `Creature -> CreatureFacade` are `isPointingUpwards`.
-  `PersistedCreatures -> CreatureFacade` is not flagged, because the leveling puts `application` at level 1 and `adapter` at
-  level 2 (`adapter` depends on `application`, `application` depends on `domain`, `domain` is level 0). That is consistent with
-  the level algorithm; it just means "upward" is relative to the computed levels, not to the intended layering
-  (adapter -> application is the wrong direction in a ports-and-adapters sense but not detectable without configuration).
-- Levels: `domain/model` leaves level 0 except `Creature` 1, `Centaur` 2, `NoSuchCreatureException` 1; `CreatureService` 1;
-  `CreatureEntity` 1, `CreatureRepository` 2, `PersistedCreatures` 3. `Dice` level 1 (because of the intra-file `Dice -> DiceRoll`
-  edge), `DiceRoll` 0. Plausible throughout.
-- Metrics: `incoming_dependencies` / `outgoing_dependencies` equal the file-edge counts in every file (e.g. `CreatureId` in 7,
-  `Creature` out 9 / in 6, `PersistedCreatures` out 7 / in 0). With `--include-tests` the five test edges raise `Creature`,
-  `CreatureId`, `Speed`, `CreatureService`, `Creatures` by one each. Because the two missing edges are missing, `CreatureFacade`
-  reports out 9 instead of 11 and `Dice` / `dto/Creature` report in 0 instead of 1.
-- Leaf kinds: `CLASS` for classes, `INTERFACE` for `Fightable` and `Creatures`, `ENUM` for `CreatureType` and `SpeedType`,
-  `ANNOTATION` for `Persisted`. Records (`CreatureId`, `DiceRoll`, `XPValue`, `dto.Creature`) are reported as `CLASS`; acceptable
-  (no `RECORD` kind exists), but a record is closer to a value type than to a class. The package-private `DiceRoll` and `XPValue`
-  are correctly listed as their own leaves.
-- Native vs. resolved: Java has packages and explicit imports, so single-type imports and same-package references resolve
-  cleanly and the parser gets them all. What CodeCharta has to resolve itself and where it fails: (a) `import static` of a
-  member is not turned into a dependency on the enclosing type, (b) a fully qualified type reference whose simple name equals an
-  imported type is resolved to the import instead of to the qualified package. Plain FQN references (`Speed`) and wildcard
-  imports are resolved correctly.
+Rounds 1 and 2, re-verified against the fresh output:
+
+| Construct | Found | Verdict |
+| --- | --- | --- |
+| Wildcard import, plain fully qualified `Speed`, same-package references, inheritance, interfaces, generic base, type position, `new`, static member, annotation-only, anonymous subclass, types in generic arguments | all edges present | ok |
+| `CreatureFacade`: fully qualified `application.dto.Creature` | resolves to `domain/model/Creature`; `dto/Creature` has 0 incoming | wrong |
+| `CreatureFacade`: `import static …Dice.rollD20`; `InitiativeOrder`: `import static …Dice.*` | no edge | missing |
+| `EncounterCommand`: `import …CreatureFacade.Builder` + `new Builder()` | no edge, 0 outgoing | missing |
+| `CreatureFactories`: `Dice::rollD20`, `Centaur::new` | no edge | missing |
+| `CreatureInspector`: `creature instanceof Centaur`, `Speed[]` parameter | no edge, 0 outgoing | missing |
+| Unused import `Fightable`, Javadoc `{@link Creature}`, stdlib and third-party types | no edge | ok |
+| Test file | absent by default; five edges with `--include-tests` | ok |
+
+- Which usages produce an edge (`UsedTypeExtractor.kt`): field type, local variable type, annotation, `new`, method call or field access on a capitalised name, `extends` / `implements`, `throws`, parameter and return types. Nothing else does. A scratch experiment confirms no edge for a catch parameter type, a typed lambda parameter, `instanceof`, an array parameter and the enhanced-`for` variable, and an edge for a local variable type.
+- False positives: none.
+- Cycles: 12 edges flagged `isCyclic`, one strongly connected component, as before. The new files add none, as expected.
+- Upward edges: `ArmorClass -> CreatureUtil` and `Creature -> CreatureFacade`, as before. `PersistedCreatures -> CreatureFacade` is not flagged because `adapter` is level 2 and `application` level 1.
+- Levels: `adapter` 2, `application` 1, `domain` 0, `domain/service` 1, `domain/model` 0; `Zentaurenhöhle.java` 1.
+- Leaf kinds: `class`, `interface`, `enum`, `annotation`, in lower case. Records (`CreatureId`, `DiceRoll`, `XPValue`, `dto.Creature`, `Ambush`) are `class`. `Scout` is `interface`, `Mood` is `enum`.
+- Nested and local types become top-level leaves of the package: `Ambush`, `Scout`, `Mood`, `Builder`, and the local class `Ranking` as `de.sots.cellarsandcentaurs.domain.service.Ranking`. Because `Ranking` is its own leaf, `EncounterResolver -> Creature` counts x2 and `outgoing_dependencies` is 3 for 2 file edges.
+- `module-info.java` is not in the dependency tree (32 nodes for 33 main files).
+- Native versus resolved: Java gives packages and explicit imports, so single-type imports and same-package names resolve. CodeCharta has to resolve static imports, qualified names, nested-class imports and every usage form inside expressions itself; that is where the misses are.
+
+## Unified parser
+- Command: `ccsh unifiedparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/unified.cc.json`, exit 0, 34 of 34 files analysed, including `module-info.java` (rloc 6, no functions) and the test file.
+- It prints `No .gitignore found at root level, excluding common build folders as fallback`: the repository's `.gitignore` is not consulted when the project is a subfolder.
+- Conventions of the hand count where the README rule is open:
+  - rloc of a function = code lines strictly between signature line and closing brace.
+  - A lambda's +1 and its branches belong to the enclosing method.
+  - A method of a local or anonymous class is a function of its own.
+  - Abstract methods are no functions; constructors and compact constructors are.
+  - `when` guard +0, `case A, B ->` one case, `default` +0.
+  - Initializer blocks are no functions.
+
+`EncounterResolver` (6 methods: `resolve`, `describe`, `safeRoll`, `initiativeOrder`, `Ranking.rank`, `isEmpty`):
+
+| Metric | Expected | Reported | Verdict |
+| --- | --- | --- | --- |
+| loc | 94 | 94 | ok |
+| rloc | 74 | 74 | ok |
+| comment_lines | 13 | 13 | ok |
+| logic_complexity | 14 | 15 | wrong: `default:` counts (`switch_label`) |
+| complexity | 21 | 22 | wrong, same cause |
+| number_of_functions | 6 | 6 | ok |
+| parameters max / min / mean / median | 5 / 0 / 1.5 / 1 | 5 / 0 / 1.6 / 1 | mean wrong: `rank` is not in the per-function list (8 / 5) |
+| complexity per function max / min / mean / median (12, 1, 4, 2, 1, 1) | 12 / 1 / 3.5 / 1.5 | 12 / 0 / 3.4 / 2 | wrong: the parser's list is 12, 0, 3, 2, 0 (own +1 left out, `default` and nested function added) |
+| rloc per function max / min / mean / median (32, 3, 10, 8, 1, 1) | 32 / 1 / 9.17 / 5.5 | 32 / 1 / 10.8 / 8 | mean and median wrong: `rank` missing (54 / 5) |
+| long_method | 1 | 1 | ok |
+| long_parameter_list | 1 | 1 | ok |
+| message_chains | 1 | 1 | ok |
+| excessive_comments | 1 | 1 | ok |
+
+`EncounterEdgeCases`, file level:
+
+| Metric | Expected | Reported | Verdict |
+| --- | --- | --- | --- |
+| loc / rloc / comment_lines | 324 / 262 / 20 | 324 / 262 / 20 | ok |
+| logic_complexity | 32 | 36 | wrong: 4 `default` labels |
+| complexity | 77 | 84 | wrong: 4 `default` + 2 abstract methods + 1 static initializer |
+| number_of_functions | 40 | 42 | wrong: 2 abstract methods |
+| parameters max / min / mean / median | 3 / 0 / 0.75 / 1 | 3 / 0 / 0.66 / 1 | mean wrong: varargs 0, `compare` dropped, 41 entries |
+| complexity per function max / min / mean / median | 5 / 1 / 1.875 / 2 | 4 / 0 / 0.95 / 1 | wrong: own +1 left out |
+| rloc per function max / min / mean / median | 14 / 1 / 3.375 / 1.5 | 14 / 0 / 3.17 / 1 | wrong: constructors and abstract methods at 0 |
+| long_method | 2 | 2 | ok |
+| long_parameter_list | 0 | 0 | ok |
+| message_chains | 2 | 2 | ok |
+| excessive_comments | 1 | 1 | ok |
+
+`EncounterEdgeCases`, per construct. The reported values come from a scratch copy split into one class per member. Columns are parameters / logic_complexity / complexity / functions.
+
+| Construct | Expected | Reported | Verdict |
+| --- | --- | --- | --- |
+| static initializer with `if` | - / 1 / 1 / 0 | - / 1 / 2 / 0 | wrong: +1 like a function |
+| instance initializer with `for` | - / 1 / 1 / 0 | - / 1 / 1 / 0 | ok |
+| `EncounterEdgeCases()` with `this(1)` | 0 / 0 / 1 / 1, body rloc 1 | 0 / 0 / 1 / 1, body rloc 0 | wrong: constructor body not seen |
+| `EncounterEdgeCases(int)` with `if` | 1 / 1 / 2 / 1, body rloc 4 | 1 / 1 / 2 / 1, body rloc 1, per-function complexity 0 | wrong: only the `if` block is taken as the body |
+| `enhancedFor`, `classicFor`, `doWhile` | 1 / 1 / 2 / 1 each | same | ok |
+| `fallthroughSwitch` (3 labels + `default`) | 1 / 3 / 4 / 1 | 1 / 4 / 5 / 1 | wrong: `default` |
+| `arrowSwitch` (`case BEAST, DRAGON ->`, `case FIEND -> { yield }`, `default ->`) | 1 / 2 / 3 / 1 | 1 / 3 / 4 / 1 | wrong: `default` |
+| `colonSwitchExpression` | 1 / 2 / 3 / 1 | 1 / 3 / 4 / 1 | wrong: `default` |
+| `patternSwitch` (`when` guard, `case null`, `default`) | 1 / 3 / 4 / 1 | 1 / 4 / 5 / 1 | wrong: `default`; the guard adds nothing, as the rule says |
+| `instanceofPattern` (`if`, `&&`, record pattern) | 1 / 2 / 3 / 1 | same | ok |
+| `multiCatch` (`A \| B`) | 1 / 1 / 2 / 1 | same | ok |
+| `tryWithResources` | 1 / 1 / 2 / 1 | same | ok |
+| `expressionLambda` | 0 / 0 / 2 / 1 | same | ok |
+| `blockLambda` with `if` | 0 / 1 / 3 / 1 | same | ok |
+| `methodReference` (4-call chain) | 1 / 0 / 1 / 1, chain 1 | same | ok |
+| `streamChain` (7 calls on 7 lines, 2 lambdas) | 1 / 0 / 3 / 1, chain 1 | same | ok |
+| `anonymousClass` + `compare(left, right)` | 0 and 2 / 0 / 2 / 2 | max parameters 0, 0 / 2 / 2 | wrong: the nested method's 2 parameters are lost |
+| `varargs(int... rolls)` | 1 | 0 | wrong: `spread_parameter` is no parameter |
+| `genericBound(Map<String, List<T>> parties, @Deprecated final String name)` | 2 | 2 | ok |
+| `receiverParameter(EncounterEdgeCases this)` | 0 | 0 | ok |
+| `labelledBreak` | 1 / 4 / 5 / 1, body rloc 14 | same | ok |
+| `nestedTernary` | 1 / 2 / 3 / 1 | same | ok |
+| `shortCircuit` (`&&`, `\|\|`) | 3 / 2 / 3 / 1 | same | ok |
+| `bitwiseOperators` (`&`, `\|`, `^`) | 2 / 0 / 1 / 1 | same | ok |
+| `assertion` (`assert a && b`) | 1 / 1 / 2 / 1 | same | ok |
+| `textBlock` | body rloc 4, comment lines 0 | same | ok |
+| `commentMarkersInStrings` | body rloc 3, comment lines 1 | same | ok |
+| `commentSyntaxes` | body rloc 2, comment lines 13 | same | ok |
+| `markdownDocComment` (`///` x 2) | comment lines 2 | same | ok |
+| `cast`, `classLiteral`, `wildcard`, `unicodeIdentifiers` | complexity 1, 1 function each | same | ok |
+| `record Ambush`: compact constructor with `if`, `none()` | 0 / 1 / 3 / 2, body rloc 3 and 1 | same | ok |
+| `interface Scout`: abstract `scout()`, default `scoutTwice()`, static `none()` with lambda | 0 / 1 / 4 / 2 | 0 / 1 / 5 / 3 | wrong: abstract method counted |
+| `enum Mood`: two constant bodies, abstract `bonus()` | 0 / 0 / 2 / 2 | 0 / 0 / 3 / 3 | wrong: abstract method counted |
+
+- `Zentaurenhöhle.java`: loc 20, rloc 13, comment_lines 3, complexity 3, 3 functions, parameters 1 / 0 / 0.33 / 0 as expected. rloc per function is 1 / 0 / 0.67 / 1 instead of 1 / 1 / 1 / 1, because the constructor body counts 0.
+- Line counting is right in all three new files: loc, rloc, comment lines, a line with code and a comment counts for both, comment markers inside strings and text blocks are not comments, `///` and inline `/* */` are.
+- Other files:
+  - `Fightable.java` (1 function) and `Creatures.java` (2 functions) report bodiless interface methods as functions with complexity 1 each.
+  - `rloc_per_function` minimum is 0 in every class with a constructor (`HitPoints`, `ArmorClass`, `Speed`, `Creature`, `NoSuchCreatureException`).
+  - `Trap.java` reports per-function complexity 1 for the method that holds the anonymous class.
+  - `Persisted.java` (annotation elements) and `dto/Creature.java` (record without body) report 0 functions.
+- Scratch experiment: a lambda assigned to a local variable counts as a function (1 method + 2 lambda variables = 3), a lambda that is returned or passed does not.
 
 ## Domain language parser
-- Commands (exit 0 unless noted):
-  - `ccsh domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json` -> 23 files, 89 distinct root words
-  - `--identifier-weight 1` (`output/domain-ident1.cc.json`), `--string-weight 5` (`domain-string5`), `--stop-word-level MINIMAL`
-    (`domain-minimal`), `--stop-word-level AGGRESSIVE` (`domain-aggressive`), `--exclude-tests` (`domain-notests`): all exit 0
-  - `--string-weight 0` and `--comment-weight 0` exit 1 with `IllegalArgumentException: --string-weight must be positive, got 0`
-    (same for comment weight). A weight of 0 is the natural way to switch a source off; the parser refuses it. Finding.
-- Default weights, derived by comparing the runs: identifier declaration 3, comment word 2, string word 1. Only *declared*
-  identifiers count (class, method, field, parameter, local names); type references and calls do not. Example `CreatureFacade`:
-  `creature` = 7 declarations x 3 + 1 comment word x 2 = 23; `speed` = 5 speed parameters x 3 = 15 although `Speed` occurs 5 more
-  times as a type.
-- Expected words at the root node (all 17 present): creature 106, hit 37, points 34, armor 30, speed 27, centaur 16, damage 14,
-  roll 13, dice 9, initiative 9, stable 8, hoard 5, treasure 5, dungeon 3, cellar 2, encounter 2, lair 2.
-  `cellar`, `lair`, `encounter` come only from comments (weight 2); `dungeon` = 2 (comment) + 1 (string).
-- Keyword leakage: none. `class`, `public`, `private`, `int`, `String`, `void`, `record`, `enum`, `static`, `final`, `var`,
-  `throws`, `assert` are all absent. Correct.
-- Technical stop-word leakage at MODERATE: filtered correctly: `util`, `exception`, `service`, `test`, `mock`/`mockito`, `get`,
-  `save`, `find`, `create`. Leaking: `entity` 12, `repository` 12,
-  `facade` 6, `persisted` 9, `dto` 3, `logger` 6, `random` 6, `standard` 6, `description` 12, `id` 57, `type` 39, `value` 18,
-  `max` 15, `row` 9, `rows` 3, `table` 3, `all` 5, `init` 3, `such` 7, `per` 18, `feet` 15, `round` 15.
-  - `entity`, `repository`, `facade`, `dto`, `logger`, `persisted`, `init` are technical for Java and should be filtered at
-    MODERATE (the README lists `entity` and `repository` as expected stop words). `AGGRESSIVE` removes `entity`, `repository`,
-    `facade`, `dto`, `logger`, `init`, `type`, `value` but keeps `persisted`, `id` 57 (the top-2 word!), `max`, `row`, `table`.
-    `id` at 57 is the most visible wrong word: it is a Java idiom (`id`, `getId`, `CreatureId`) and drowns the domain words.
-  - `such` 7 (from `NoSuchCreatureException` and the string) is an English function word missing from the english stop list.
-  - `per`, `feet`, `round`, `description`, `max`, `bonus`, `current` are domain-adjacent and acceptable.
-- MINIMAL vs AGGRESSIVE in one line: MINIMAL additionally shows `get` 42, `service` 18, `find` 15, `save` 15, `base` 9,
-  `create` 6 (CRUD and pattern words); AGGRESSIVE removes `type`, `value`, `entity`, `repository`, `facade`, `logger`, `dto`,
-  `init` on top of MODERATE, but neither level touches `id`.
-- Identifier splitting:
+- Command: `ccsh domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json`, exit 0, 34 files, 280 distinct words.
+- Variant runs:
+  - Exit 0: `--stop-word-level MINIMAL`, `--stop-word-level AGGRESSIVE`, `--no-technical-stopwords`, `--exclude-tests`, `--ngrams 2`, `--string-weight 5`, `--identifier-weight 1`.
+  - Exit 1: `--string-weight 0` and `--comment-weight 0`, with `IllegalArgumentException: … must be positive, got 0`.
+- The lens holds one node per file and none for folders or the root. The numbers called "root" below are sums over the files. Each word carries `frequency` and `tfidf`.
+- Expected words, all 17 present: creature 145, hit 40, armor 37, speed 35, roll 35, points 34, damage 25, initiative 24, encounter 24, centaur 22, lair 18, dice 12, stable 8, treasure 5, hoard 5, cellar 4, dungeon 4.
+- Weights: declared identifier 3, comment word 2, string word 1. Confirmed by `--string-weight 5` (`dungeon` 4 -> 12) and `--identifier-weight 1` (`creature` 145 -> 59).
+- New files against the expectation:
+  - `EncounterResolver.java`: encounter 5, damage 11, lair 3, cellar 1, dungeon 1, attacker 7, defender 7, terrain 7, bonus 3, all as expected. Commented-out code counts as comment text (`damage` twice at weight 2).
+  - `EncounterEdgeCases.java`: found at 3 each: `minion`, `torch`, `mare`, `wyvern`, `drake`, `basilisk`, `mishap`, `scroll`, `failure`, `ogre`, `troll`, `goblin`, `kobold`, `skittish`, `furious`, `mood`, `höhle`, `größe`. Also `tally` 6, `threat` 6, `banshee` 5, `raiders` 4. Comment words at 2: `catacomb`, `gargoyle`, `wails`, `chimera`. String words at 1: `portcullis`, `drawbridge`, `sarcophagus`, `crypt`, `kicking`, `roaming`, `graze`, `miss`.
+  - My miscounts: `ambush` is 5, not 3 (I overlooked the class Javadoc); `scout` is 9, not 3 (interface, `scout()`, `scoutTwice()`).
+  - Missing: the label `corridor` is not extracted.
+  - Constructor names count as declarations (`encounter`, `edge`, `cases` 9 each); the compact constructor name does not.
+- Keyword leakage: none. `class`, `public`, `int`, `void`, `return`, `record`, `enum`, `static`, `final`, `var`, `throws`, `assert`, `yield`, `default` are absent. `override` and `deprecated` are absent because annotations are not extracted.
+- Technical leakage at MODERATE:
+  - Filtered: `util`, `exception`, `service`, `test`, `mock`, `get`, `save`, `find`, `create`, `name`.
+  - Leaking: `id` 60 and `type` 45 (2nd and 3rd most frequent), `value` 21, `entity` 12, `repository` 12, `facade` 9, `persisted` 9, `logger` 6, `dto` 3, `init` 3, `such` 7.
+  - AGGRESSIVE removes `type`, `value`, `entity`, `repository`, `facade`, `logger`, `method`, `dto`, `command`, `run`, `init`, `parameter`, `types`, `param`; it keeps `id` and `persisted`.
+  - MINIMAL adds `get` 42, `service` 27, `find` 15, `save` 15, `base` 9, `create` 6, `builder` 3. `--no-technical-stopwords` adds `name`, `temporary`, `util` on top of that.
+- Javadoc tags and URL schemes count as words: `param` 2, `code` 4, `link` 2, `http` 1.
 
 | Form | Identifier | Words found | Verdict |
 | --- | --- | --- | --- |
 | camelCase | `walkingSpeed` | walking, speed | ok |
 | snake_case | `walking_speed` (test) | walking, speed | ok |
 | SCREAMING_SNAKE | `MAX_HIT_POINTS` | max, hit, points | ok |
-| PascalCase | `ArmorClass` | armor (class filtered as keyword) | ok |
+| PascalCase | `ArmorClass` | armor | ok |
 | Acronym | `XPValue` | xp, value | ok |
-| Digit | `d20Roll` | 20, roll (the `d` is dropped as a one-letter token) | wrong |
+| Digit | `d20Roll` | 20, roll | wrong: bare number |
 | Digit, other position | `rollD20`, `D20_SIDES` | roll, d20 / d20, sides | inconsistent with the row above |
 | Kebab in string | `"centaur-stable"` | centaur, stable | ok |
-| Plural / singular | `Creature` vs `Creatures`, `Centaurs`, `dragons`, `rests`/`rest` | counted as separate words | no stemming; acceptable but halves some counts |
-| Test method | `should_save_creature_to_the_stable` | creature, stable (`should`, `to`, `the` English stop words, `save` technical) | ok |
+| Umlaut identifier | `rüstungsklasse`, `größe`, `höhle`, `Zentaurenhöhle` | kept whole | ok |
+| Test method | `should_save_creature_to_the_stable` | creature, stable | ok |
 
-  The digit handling: a lowercase letter followed by a digit is split (`d20Roll` -> `d`, `20`, `roll`), an uppercase letter
-  followed by a digit is not (`rollD20` -> `roll`, `d20`). Result: the pure number `20` appears as a domain word (root `20` 6).
-  Number-only tokens should be dropped; a letter-digit run should be kept together consistently (`d20` in both cases).
-- Comments and strings: all planted sentences are counted. Doc comment on `Creature`: roams 2, cellar 2, centaurs 2, beasts 2,
-  dragons 2, share 2 (hit/points/armor/speeds merge with identifier counts). Doc comment on `HitPoints`: drop 2, lair 2,
-  recover 2, rests 2, takes 2. Line comment in `CreatureFacade.create`: rolls 2, initiative (+2), dungeon 2, before 2,
-  encounter 2, starts 2. Block comment in `CreatureUtil`: counts 2, treasure (+2), hoard (+2), guards 2. Strings:
-  `"No such creature in the dungeon: "` -> dungeon 1, such/creature +1; `"centaur-stable"` -> centaur +1, stable +1;
-  `"Natural Armor"` -> natural 1, armor +1. Weights are visible: with `--string-weight 5` `dungeon` in
-  `NoSuchCreatureException` goes 1 -> 5 and `stable` in `CreatureFacade` 5 -> 13; with `--identifier-weight 1` root
-  `creature` goes 106 -> 42. The `// Arrange` / `// Act` / `// Assert` comments yield nothing because `arrange`, `act`,
-  `should` are in the English stop list and `assert` is a Java keyword; good.
-- Test file handling: included by default (root `creature` 106 vs 97 with `--exclude-tests`; `stable` 8 vs 5, `walking` 9 vs 6).
-  `--exclude-tests` drops `src/test` completely. The test's `CreatureServiceTest` contributes only `creature` (`service`,
-  `test` filtered), `@Mock`/`MockitoExtension`/`ExtendWith` produce nothing (imports and annotations are not counted as
-  declarations).
+- Comments and strings: all planted sentences are counted (`roams`, `beasts`, `dragons`, `share`; `drop`, `recover`, `rests`, `takes`; `before`, `starts`; `counts`, `guards`; `dungeon` from the exception string). Text block words are counted and its `//` and `/* */` lines are treated as string text.
+- Test file: included by default (`creature` 145, `stable` 8), dropped by `--exclude-tests` (136 and 5, 33 files).
+- `module-info.java` is kept with an empty word list.
+- `--ngrams 2` adds bigrams such as `hit points` 30, `feet per` 18, `xp value` 15, `centaur stable` 3, `treasure hoard` 3.
 
-## Round 2: additional dependency forms
-- Commands rerun unchanged (all exit 0, only the JDK native-access notice and the `.gitignore` fallback warning):
-  - default -> 31 leaves (incl. the nested `Builder`), 45 file edges (round 1: 23 leaves, 42 edges)
-  - `--include-tests` -> 32 leaves, 50 file edges (the same five test edges as in round 1)
-  - domain -> 31 files (incl. `module-info.java`), 135 `creature` at the root (round 1: 106)
-  - Only `dependency.cc.json`, `dependency-with-tests.cc.json` and `domain.cc.json` (plus their `.log`) were regenerated; the other
-    files in `output/` (`*-verbose`, `domain-*`) are still the round-1 runs.
-- Expected: 10 new file edges (44 + 10 = 54). Found 3 of 10, 45 of 54 in total, 0 extra.
+- German words, `Zentaurenhöhle.java`:
+  - Expected: `zentaurenhöhle` 5 (8 if the constructor counts), `rüstungsklasse` 11, `größe` 4, `höhle` 1, `verlies` 2, `trefferpunkte` 2, `kreatur` 2.
+  - Reported: `rüstungsklasse` 9, `zentaurenhöhle` 6, `größe` 3, `verlies` 2, `trefferpunkte` 2, `kreatur` 2, `liegt` 2, plus the fragments `hle` 3, `zentaurenh` 2, `stungsklasse` 2, `geh` 2, `ren` 2.
+  - All seven words appear in the project, but `zentaurenhöhle`, `rüstungsklasse`, `größe` and `höhle` only through identifiers (`höhle` only as the parameter in `EncounterEdgeCases`).
+  - Comments and strings are matched with `[a-zA-Z]{3,}` (`SplitStage.kt`), so every umlaut and `ß` cuts the word: `Zentaurenhöhle` -> `zentaurenh` + `hle`, `Rüstungsklasse` -> `stungsklasse`, `gehören` -> `geh` + `ren`, `Höhle` -> `hle`, `Größe` -> nothing.
+  - German stop words leak: `die` 2, `dem` 2, `und` 2, `unter` 2, `jeder` 2, `der` 1. Only an English stop list exists. `zu` is absent because comment words need three letters.
 
-| Form | File(s) | Expected edge | Found | Note |
-| --- | --- | --- | --- | --- |
-| Import of a nested class `import ...CreatureFacade.Builder` + `new Builder().build()` | `adapter/cli/EncounterCommand.java` | `EncounterCommand -> application/CreatureFacade` | no | `EncounterCommand` has 0 outgoing. The nested class is registered as a top-level leaf `de.sots.cellarsandcentaurs.application.Builder` (the `CreatureFacade.` qualifier is dropped), so the import path `...application.CreatureFacade.Builder` matches nothing. Experiment (scratch copy): the same file placed in package `application` gets the edge via the same-package simple name `Builder`; `new CreatureFacade.Builder()` with a plain `import ...CreatureFacade` gets **no** edge at all. |
-| Static wildcard import `import static ...Dice.*` + `rollD20()` | `domain/service/InitiativeOrder.java` | `InitiativeOrder -> domain/model/Dice` | no | Same failure as the single static import of round 1; `Dice` still has 0 incoming. |
-| Method reference `Dice::rollD20` | `application/CreatureFactories.java` | `CreatureFactories -> domain/model/Dice` | no | `Dice` is imported and named in the reference; not counted as a usage. |
-| Constructor reference `Centaur::new` | `application/CreatureFactories.java` | `CreatureFactories -> domain/model/Centaur` | no | Same: the identifier before `::` is not resolved. |
-| Type only inside the generic argument `Function<CreatureId, Object>` (incidental) | `application/CreatureFactories.java` | `CreatureFactories -> domain/model/CreatureId` | yes | Generic arguments of a field type resolve. |
-| `creature instanceof Centaur` | `application/CreatureInspector.java` | `CreatureInspector -> domain/model/Centaur` | no | Experiment: the pattern form `instanceof Centaur centaur` and a cast `(Centaur) creature` are missed as well. |
-| Array type `Speed[]` as parameter type | `application/CreatureInspector.java` | `CreatureInspector -> domain/model/Speed` | no | `CreatureInspector` has 0 outgoing. Experiment: a field `Speed[] speeds = new Speed[5]` is missed too, so array types are not unwrapped anywhere (a plain `Speed` parameter resolves, see round 1). |
-| Anonymous subclass `new Fightable() { ... }` | `application/Trap.java` | `Trap -> domain/model/Fightable` | yes | Leaf kind of `Fightable` stays `INTERFACE`; no extra leaf for the anonymous class. |
-| Type only inside the generic argument `List<Centaur>` (field) | `application/Herd.java` | `Herd -> domain/model/Centaur` | yes | |
-| Javadoc `{@link Creature}` with an import used only there | `application/LairGuide.java` | none (comment) | none | Correct for the dependency parser. The domain parser counts the tag name: `link` 2 in `LairGuide.java` (Javadoc tags should be stop words). |
-| `module-info.java` (`requires org.slf4j`, `requires jakarta.persistence`, `exports ...application`, `exports ...application.dto`) | `src/main/java/module-info.java` | none | none, no crash | The dependency parser drops the file from the tree altogether (29 file nodes for 30 main files); the domain parser keeps it with an empty word list. Acceptable; a `MODULE` leaf with `requires` edges to external modules would be the informative alternative. |
-| Nested class declaration `CreatureFacade.Builder` | `application/CreatureFacade.java` | no new file edge | ok | Leaf `application.Builder` (kind `CLASS`, level 1) with leaf edges `Builder -> CreatureFacade`, `Builder -> CreatureService`, `CreatureFacade -> Builder`; the file edge `CreatureFacade -> CreatureService` goes from `x1` to `x2`. The leaf name loses the enclosing class; two nested `Builder` classes in one package would collide. |
-
-- Round-1 edges: all 42 round-1 file edges are still present with the same `isCyclic` / `isPointingUpwards` flags, and all
-  round-1 leaf levels and folder levels are unchanged (`adapter` 2, `application` 1, `domain` 0, new `adapter/cli` 0). The two
-  round-1 misses (`CreatureFacade -> Dice`, `CreatureFacade -> dto/Creature`) are still missing. Changes caused by the nested
-  class: `CreatureFacade -> CreatureService` is counted `x2`, `CreatureFacade.outgoing_dependencies` rises 9 -> 10 although it
-  still has 9 file edges (the metric sums the per-edge `dependencies` count, it is not the number of edges as stated in round 1),
-  and the log reports 9 cycles instead of 6 (leaf-level cycles through `Builder`, e.g. `CreatureFacade -> Builder -> CreatureFacade`;
-  the strongly connected component and the file-level flags are unchanged). Incoming counts rise as expected: `Centaur` 1 -> 2,
-  `Fightable` 1 -> 2, `CreatureId` 7 -> 8.
-- New false positives: none. `EncounterCommand`, `CreatureInspector`, `InitiativeOrder`, `LairGuide` report 0 outgoing rather
-  than a wrong target; nothing points to `java.util.function`, `List`, `ArrayList` or the module names.
-- Domain parser after round 2: the planted words still lead (`creature` 135, `hit` 37, `points` 34, `armor` 30, `speed` 30,
-  `centaur` 22, `initiative` 21, `roll` 19, `lair` 14, `encounter` 10); the new class-name suffixes leak like `facade` does:
-  `factories` 6, `inspector` 6, `guide` 6, `trap` 6 (the last one is domain), plus `command` 3, `run` 3, `build` 3, `size` 3,
-  `total` 6, `link` 2 (Javadoc tag). `module-info.java` yields nothing, which is right.
+## Changed since 2026-09-06
+- The domain lens no longer has a root or folder node; the old report read "89 distinct root words" from one. Totals now have to be summed over the files.
+- Each domain word has a `tfidf` value; the CLI has `--no-tfidf`, `--sort-by`, `--limit` and `--ngrams`.
+- Leaf kinds are printed in lower case (`class`, `interface`, `enum`, `annotation`); the old report wrote `CLASS`. The old output is gone, so this is not verified as a real change.
+- `--no-technical-stopwords` brings back `get`, `service`, `find`, `save`, `name`, `base`, `temporary`, `create`, `util`, `builder`.
+- Still true on the old files:
+  - 45 of 54 expected file edges with the same 9 misses, no false positive.
+  - 12 cyclic and 2 upward edges, 9 cycles.
+  - `module-info.java` dropped from the dependency tree.
+  - Nested `Builder` is a top-level leaf and `CreatureFacade -> CreatureService` counts x2.
+  - Weights 3 / 2 / 1; weight 0 rejected.
+  - `id`, `entity`, `repository`, `facade`, `persisted`, `logger`, `dto`, `init`, `such` leak.
+  - `d20Roll` gives `20`; `link` is counted.
+  - No keyword leaks; no stemming (`creature` 145 next to `creatures` 31).
+- New on the old files: the unified parser was not part of the earlier report; its findings on `Fightable.java`, `Creatures.java`, `Trap.java` and the constructors are listed above.
+- Not rerun: `--verbose` on the dependency parser.
 
 ## Verdict
-- Good: 42 of 44 expected file edges in round 1 and 45 of 54 after round 2, with zero false positives in both rounds; wildcard import, plain FQN reference, same-package
-  references, annotation-only usage, `new`-only, static-member-only, generic base, records and package-private types in
-  oddly named files all resolve; cycle detection and the test-file default are right; all 17 expected domain words appear;
-  no Java keyword leaks; all planted comments and strings are counted with visible, adjustable weights; camelCase,
-  snake_case, SCREAMING_SNAKE, acronym and kebab-in-string splitting are correct. Round 2 adds: anonymous subclasses, types inside
-  generic arguments (`List<Centaur>`, `Function<CreatureId, Object>`) and a Javadoc-only reference (correctly no edge) are handled;
-  `module-info.java` does not break the run.
+
+### Unified parser
 - Wrong:
-  1. `application/CreatureFacade.java`: the fully qualified `de.sots.cellarsandcentaurs.application.dto.Creature` (return type
-     and `new`) is resolved to the imported `domain.model.Creature`; `application/dto/Creature.java` gets 0 incoming instead of 1.
-  2. `application/CreatureFacade.java`: `import static de.sots.cellarsandcentaurs.domain.model.Dice.rollD20` plus the call
-     `rollD20()` produce no edge to `domain/model/Dice.java`.
-  3. Domain parser, `Dice.java` / `CreatureFacade.java`: `d20Roll` is split into `20` + `roll` while `rollD20` and `D20_SIDES`
-     yield `d20`; the bare number `20` becomes a root word (6).
-  4. Domain parser: `id` (57, the second most frequent root word), `entity` 12, `repository` 12, `persisted` 9, `facade` 6,
-     `logger` 6, `dto` 3, `init` 3 pass the MODERATE technical filter; AGGRESSIVE still keeps `id` and `persisted`. `such` 7
-     passes the English stop list.
-  5. `--string-weight 0` and `--comment-weight 0` are rejected (`must be positive`), so a source cannot be switched off.
-  6. Round 2, usages that name a type but produce no edge (each file has 0 outgoing): `application/CreatureInspector.java`
-     `creature instanceof Centaur` and the array parameter `Speed[] speeds`; `application/CreatureFactories.java` the method
-     reference `Dice::rollD20` and the constructor reference `Centaur::new`; `domain/service/InitiativeOrder.java`
-     `import static ...Dice.*` + `rollD20()`; `adapter/cli/EncounterCommand.java` `import ...CreatureFacade.Builder` +
-     `new Builder()`. Casts (`(Centaur) creature`) and `new CreatureFacade.Builder()` are missed as well (scratch experiment).
-  7. Round 2, `application/CreatureFacade.java`: the nested class is exported as the top-level leaf
-     `de.sots.cellarsandcentaurs.application.Builder`, which is why the qualified import from another package cannot resolve it
-     and which makes same-named nested classes in one package collide.
+  1. `default` in a `switch` counts as a branch: `EncounterResolver.resolve` (`default:`), `EncounterEdgeCases.fallthroughSwitch`, `arrowSwitch`, `colonSwitchExpression`, `patternSwitch`. logic_complexity and complexity are 1 too high per `default`. **Decision: ignore — the docs list `switch_label` as intended.**
+  2. Constructor bodies are not function bodies: `EncounterEdgeCases()` reports 0 body rloc, `EncounterEdgeCases(int)` reports 1 instead of 4 and loses its `if` in the per-function complexity; the same holds for `Zentaurenhöhle`, `HitPoints`, `ArmorClass`, `Speed`, `Creature`, `NoSuchCreatureException` **Decision: accept.**
+  3. `EncounterEdgeCases.varargs(int... rolls)` reports 0 parameters. **Decision: accept.**
+  4. Abstract methods count as functions with complexity 1: `Scout.scout()`, `Mood.bonus()`, `Fightable.initiative()`, `Creatures.save` / `find`. **Decision: ignore.**
+  5. The static initializer in `EncounterEdgeCases` adds +1 complexity like a function; the instance initializer does not. **Decision: ignore — the docs list `static_initializer` as intended.**
+  6. Per-function complexity leaves out the function's own +1: `describe` and `isEmpty` report 0, and the per-function values do not sum to the file's complexity. **Decision: ignore — the docs define it as the complexity inside the body.**
+- Bad:
+  1. Nested functions are counted in `number_of_functions` but have no entry in the per-function statistics: `Ranking.rank` in `EncounterResolver`, `compare(left, right)` in `EncounterEdgeCases.anonymousClass`. Their parameters disappear and mean and median shift. **Decision: accept.**
+  2. A lambda assigned to a variable is a function, a returned or passed lambda is not (scratch experiment). **Decision: accept, although the docs state this rule.**
+  3. A pattern guard `case Centaur mare when …` adds no complexity. **Decision: accept.**
+  4. Under a non-UTF-8 locale `Zentaurenhöhle.java` is skipped without a message. **Decision: accept.**
+- Missing: nothing in Java is skipped outright; `module-info.java` is analysed.
+- Good: loc, rloc and comment lines in all three new files; text blocks and comment markers in strings; `///`; multi-catch; try-with-resources; `do … while`; labelled `break`; nested ternary; `&&` / `||` against bitwise operators; `assert`; receiver parameter; generics in parameter lists; message chains across lines; long_method; long_parameter_list; compact record constructor; enum constant bodies.
+
+### Dependency parser
 - Missing:
-  - No `RECORD` leaf kind: `CreatureId`, `DiceRoll`, `XPValue`, `dto.Creature` are reported as `CLASS` (minor).
-  - `PersistedCreatures -> CreatureFacade` is not marked upward because levels are computed from the actual graph; a
-    layering-aware "upward" would need configured layer order (not a parser bug, noted for completeness).
-  - No stemming: `creature`/`creatures`, `centaur`/`centaurs`, `rest`/`rests` count separately.
-  - Not applicable in Java, therefore not testable here: import alias, barrel / re-export, free function.
-  - Round 2: no `MODULE` leaf or `requires` edges for `module-info.java` (the file is silently dropped from the dependency
-    tree); `outgoing_dependencies` is documented nowhere as "sum of dependency counts" versus "number of edges".
-  - Round 2, domain parser: Javadoc tag names (`link`) and pattern suffixes (`factories`, `inspector`, `guide`) are counted as words.
+  1. `EncounterResolver.java`: the type of the enhanced-`for` variable (`for (Speed speed : …)`) gives no edge. **Decision: accept.**
+  2. `EncounterEdgeCases.java`: no edge for the switch type pattern `case Centaur mare`, the record pattern `instanceof CreatureId(var basilisk)`, the generic bound `<T extends Fightable>`, the method reference `HitPoints::getCurrent`, the cast `(ArmorClass) target`, the class literal `Speed.class`, the wildcard `List<? extends SpeedType>`. **Decision: accept.**
+  3. Unchanged: `CreatureInspector.java` (`instanceof Centaur`, `Speed[]`), `CreatureFactories.java` (`Dice::rollD20`, `Centaur::new`), `InitiativeOrder.java` and `CreatureFacade.java` (static imports), `EncounterCommand.java` (import of the nested `Builder`). **Decision: accept.**
+  4. Scratch experiment: catch parameter type and typed lambda parameter give no edge. **Decision: accept.**
+  5. No record leaf kind; no leaf or edge for `module-info.java`. **Decision: accept, although mapping records to `class` is deliberate in the code.**
+- Wrong:
+  1. `CreatureFacade.java`: the fully qualified `de.sots.cellarsandcentaurs.application.dto.Creature` resolves to the imported domain `Creature`. **Decision: accept.**
+- Bad:
+  1. Nested and local types are exported as top-level leaves of the package: `Ranking` (local class in `EncounterResolver.initiativeOrder`), `Ambush`, `Scout`, `Mood`, `Builder`. Same-named nested types in one package would collide, and `EncounterResolver` reports 3 outgoing dependencies for 2 file edges. **Decision: accept.**
+  2. Under a non-UTF-8 locale `Zentaurenhöhle.java` and its two edges disappear without a message. **Decision: accept.**
+- Good: no false positive in 53 edges; parameter, return, field and local variable types, `new`, static calls (also inside a lambda), `throws`, annotations, inheritance, generic arguments and a non-ASCII type name resolve; cycle and upward flags are stable; tests are skipped by default.
+
+### Domain language parser
+- Wrong:
+  1. `Zentaurenhöhle.java`: words in comments and strings are cut at umlauts and `ß` (`zentaurenh` + `hle`, `stungsklasse`, `geh` + `ren`; `Größe` vanishes). Identifiers are not affected. **Decision: accept.**
+  2. `Dice.java` / `CreatureFacade.java`: `d20Roll` yields the bare number `20`, while `rollD20` and `D20_SIDES` yield `d20`. **Decision: ignore.**
+  3. `id` 60 and `type` 45 are the second and third most frequent words; `entity`, `repository`, `facade`, `persisted`, `logger`, `dto`, `init`, `such` pass MODERATE; AGGRESSIVE keeps `id` and `persisted`. **Decision: ignore.**
+- Missing:
+  1. No German stop list: `die`, `dem`, `und`, `unter`, `jeder`, `der` are counted. **Decision: ignore.**
+  2. No root or folder word list in the lens. **Decision: ignore — documented as deliberate.**
+  3. `EncounterEdgeCases.labelledBreak`: the label `corridor` is not extracted. **Decision: accept.**
+  4. No stemming. **Decision: ignore.**
+- Bad:
+  1. Javadoc tags and URL schemes are words: `param` and `code` in `EncounterEdgeCases.commentSyntaxes`, `link` in `LairGuide.java`, `http` from `"http://crypt.example/sarcophagus"`. **Decision: ignore.**
+  2. Commented-out code counts as comment text (`// damage = damage * 2;` in `EncounterResolver`). **Decision: ignore.**
+  3. `--string-weight 0` and `--comment-weight 0` are rejected, so a source cannot be switched off. **Decision: accept.**
+  4. Under a non-UTF-8 locale `Zentaurenhöhle.java` is skipped without a message. **Decision: accept.**
+- Good: all 17 expected words; no Java keyword; every declaring construct in `EncounterEdgeCases` except the label is extracted (pattern, lambda, catch, resource and loop variables, record components, enum constants, varargs); text block and string words are counted; weights 3 / 2 / 1 are visible and adjustable; camelCase, snake_case, SCREAMING_SNAKE, acronym and kebab splitting; umlaut identifiers stay whole; tests are included by default and removable.

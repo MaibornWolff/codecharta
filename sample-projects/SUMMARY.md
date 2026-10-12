@@ -1,223 +1,286 @@
 # Summary across languages
 
-Generated 2026-09-06 from the 18 `FINDINGS.md` reports. Each language folder holds the same
-"Cellars and Centaurs" model plus the stress constructs from `README.md`; the numbers below are what the
-language's own report counted (expected edges include test edges where the report says so).
+Round 3, 2026-10-08. Built from the 18 `FINDINGS.md` reports and cross-checked against the raw results in
+`<language>/output/`. Every language got an `EncounterResolver` with hand-counted expected values, an
+`EncounterEdgeCases` file with constructs a parser is likely to miss, a German-words file and the rarer file
+extensions; then `unifiedparser`, `dependencyparser` and `domainlanguageparser` ran on it. The round-1 and
+round-2 summary of 2026-09-06 is in the git history of this file; what changed since is at the end.
+
+All runs used `LC_ALL=C.UTF-8`. JavaScript keeps the UTF-8 runs as `output/*-utf8.cc.json` beside the POSIX ones.
 
 ## Overview
 
-| Language | Dependency parser: expected / found file edges | Domain parser: expected words found (of 17) | Biggest issue |
+`EncounterResolver` columns are logic complexity / complexity / functions, expected -> reported. Dependency
+edges are file edges without tests, expected / found.
+
+| Language | Unified: `EncounterResolver` | Dependency edges | Domain: words of 17 / German of 7 | Biggest issue |
+| --- | --- | --- | --- | --- |
+| abl | not supported | not supported (67 / 0) | 17 / 4 | unified has no ABL although the grammar library ships a metric mapping |
+| bash | 14/20/6 -> 15/21/6 | not supported (78 / 0) | 17 / 3 | parameters and message chains are always 0; `::` glues words (`creatureset`) |
+| c | 14/20/6 -> 15/23/6 | 110 / 24, 3 of them wrong | 17 / 3 | every prototype adds complexity; only struct fields give edges, 22 of 51 files absent |
+| cpp | 14/21/5 -> 15/22/7 | new files 28 / 16 (62 in total) | 17 / 5 | prototypes and pointer return types add complexity; `domain::model::Creature` resolves to the dto |
+| csharp | 15/22/6 -> 16/23/7 | new files 21 / 13 (61 in total) | 17 / 5 | auto-accessors are functions, real expression-bodied properties are not; partial class hides the cycle |
+| delphi | 13/20/6 -> 16/23/6 | 82 / 50 | not supported (exit 1, stack trace) | parameters counted per group (5 -> 3); alias-only unit and `.dpr` dropped with both cycles |
+| go | 14/22/5 -> 15/23/8 | new files 17 / 13 (58 in total) | 17 / 5 | receiver and results count as parameters; method names resolved as type names (false edges) |
+| java | 14/21/6 -> 15/22/6 | 70 / 53 | 17 / 7 (4 only as identifiers) | constructor bodies are no function bodies; patterns, casts, method references give no edge |
+| javascript | 14/21/6 -> 15/22/7 | 67 / 43, 1 wrong | 17 / 5 | JSDoc-only dependencies invisible; every string inside an `export` dropped |
+| kotlin | 14/21/6 -> 15/22/7 | 79 / 57 | 17 / 6 | functions with a receiver and return type, `where` or modifiers are not counted as functions |
+| objectivec | 14/21/5 -> 14/16/5 | not supported (77 / 0) | 17 / 3 | methods add no complexity, message chains never found, headers parsed as C |
+| php | 14/21/6 -> 15/22/7 | new files 16 / 9 (49 in total) | 17 / 5 | promoted constructor parameters count nowhere (parameters and edges); `desotscellars` is word #2 |
+| python | 14/21/6 -> 19/25/7 | 77 / 70 | 17 / 5 | type hints and `self` count as parameters (5 -> 12); every list literal adds complexity |
+| ruby | 14/21/6 -> 15/22/7 | not supported (78 / 0) | 17 / 5 | `do … end` adds complexity and `{ }` does not; `unless` and `case … in` are not counted |
+| rust | 15/22/6 -> 16/23/6 | 71 / 50 | 17 / 5 | nothing inside a macro is seen; types used in function bodies give no edge, so no cycle is found |
+| swift | 14/21/6 -> 15/23/6 | not supported (74 / 0) | 17 / 5 | computed properties are no functions; `"/* … */"` in a string is a comment line; `mark` is word #2 |
+| typescript | 14/21/6 -> 15/22/7 | 79 / 71, 1 wrong | 17 / 6 | conditional types count as branches; second import of the same name dropped |
+| vue | 14/21/6 -> 15/22/6 (`.ts` and `.vue`) | 93 / 81, 1 wrong | 17 / 5 | only the first `<script>` is read, the template never; `X.vue` and `X.ts` collapse into one node |
+
+`loc`, `rloc` and `comment_lines` of `EncounterResolver` are exact in every language that is analysed, and so
+are `long_method`, `message_chains` (except bash, objectivec) and `excessive_comments`.
+
+## All three parsers
+
+1. **A file with a non-ASCII name is left out silently without a UTF-8 locale.** Under `LC_CTYPE=POSIX` the JVM
+   cannot decode `Zentaurenhöhle.*`; the file is not analysed, not listed as ignored, exit code 0. Seen in every
+   language with such a file name, in all three parsers. Not checked on macOS.
+2. **The `.gitignore` is looked up in the scanned folder only.** Every run on a sub-folder warns `No .gitignore
+   found at root level` and falls back to built-in exclusions; a probe file in a git-ignored folder was analysed
+   by all three parsers (typescript).
+3. **The three parsers disagree about file extensions.**
+
+| Extension | Unified | Dependency | Domain |
 | --- | --- | --- | --- |
-| abl | not supported | 17 | qualified `CLASS de.sots...Creature:` header yields no class name; temp-table fields not extracted |
-| bash | not supported | 17 | `::` in function names deleted (`creatureset`), `# shellcheck source=` and `dirname` path noise dominate |
-| c | 71 / 14 | 17 | `#include` never becomes an edge; `.c` files and declaration-less headers vanish; `Creature` resolves to the dto |
-| cpp | 40 / 35 | 17 | dto `Creature` never resolved; `using Entity = ...` alias invisible; hpp/cpp pairs collapse onto the `.cpp` |
-| csharp | 47 / 41 | 17 | property declaration types give no edge; `using Entity = ...`, `using static`, `global using`, `is` pattern ignored |
-| delphi | 52 / 32 | not supported | alias-only unit `Api.pas` and the `.dpr` vanish (with both cycles); same-named `TCreature` resolves to first `uses` entry |
-| go | 49 / 36 | 17 | dot import resolves nothing; package consts are neither leaves nor usages, so the cycle and upward edges vanish |
-| java | 44 / 42 | 17 | FQN `application.dto.Creature` resolved to the imported domain `Creature`; `import static ...rollD20` gives no edge |
-| javascript | 43 / 25 | 17 | JSDoc-only dependencies invisible (15 edges); `export *` barrel is a dead leaf; strings in exported declarations not counted |
-| kotlin | 44 / 39 | 17 | `import ... as Entity` alias and FQN-without-import give no edge; top-level `fun rollD20` invisible |
-| objectivec | not supported | 17 | `.h` parsed as C: `interface`, `end`, `protocol`, `nonnull` leak, header declarations lost |
-| php | 50 / 33 | 17 | constructor property promotion gives no edge (hides the 3-cycle); namespace not split at `\` (`desotscellars` is word #2) |
-| python | 52 / 51 | 17 | `src/` layout drops every absolute import (51 -> 24 edges); stdlib decorators counted as domain words |
-| ruby | not supported | 17 | `should_save_creature_to_the_stable` in a string yields no words; namespace segments are the top words |
-| rust | 41 / 31 | 17 | types used only in function bodies (`CreatureId::new`) give no edge, so all upward edges and cycles vanish |
-| swift | not supported | 17 | `Package.swift` treated as source; `*Tests.swift` not recognised as test |
-| typescript | 49 / 47 | 17 | second import of the same original name (`Creature as CreatureDto`) dropped; `export { default as }` has no outgoing edge |
-| vue | 62 / 60 | 17 | `.vue` components only reachable from same-folder `.vue` files (`@/` alias default import lost); only first `<script>` read |
+| `.kts` | analysed (README says `.kt` only) | analysed | analysed |
+| `.jsx` | analysed (README does not list it) | analysed | analysed |
+| `.cts`, `.mts`, `.cjs`, `.mjs`, `.cc`, `.cxx`, `.hxx` | analysed | analysed | analysed |
+| `.c++`, `.hh` | analysed | analysed | skipped silently |
+| `.h++` | skipped, named | skipped silently | analysed |
+| `.h` | as C | as C++ | as C |
+| `.C`, `.H` (upper case) | skipped, named | analysed | analysed |
+| `.mm` | skipped, named | skipped | analysed |
+| `.pyw` | skipped, named | skipped silently | analysed |
+| `.pyi` | skipped, named | skipped silently | skipped silently |
+| `.phtml` | skipped, named | skipped silently | analysed |
+| `.bash`, `.zsh` | skipped, named | - | analysed |
+| `.rake`, `.gemspec` | skipped, named | - | analysed |
+| `.dpr` | analysed | scanned, dropped (no type declared) | - |
+| `.dpk`, `.pp`, `.lpr`, `.inc` | skipped, named | skipped silently | - |
+| `.i` (ABL), `.pch`, `.csx`, `.ru` | skipped | skipped | skipped silently |
+| no extension (`Rakefile`, `Gemfile`, shebang script) | skipped, shown as `.` | - | skipped silently |
 
-## What works everywhere
+4. **An unsupported language ends three different ways.** Unified: exit 0, empty map, the ignored extensions are
+   named. Dependency: exit 0, empty map, two warnings that name neither the language nor the reason, `Created
+   Project with 1 leaves`. Domain (delphi): exit 1 with an `IllegalArgumentException` stack trace.
 
-- No false-positive file edge in any of the 12 dependency-parser languages with the round-1 constructs
-  (round 2 found some in cpp and typescript, see below). Standard library and third-party packages never
-  become internal edges, an unused import never produces an edge.
-- Cycles and upward edges are flagged correctly whenever the underlying edges exist.
-- All 17 planted domain words reach the root node in all 17 domain-parser languages.
-- No language keyword leaks into the word list in any language.
-- camelCase, snake_case, SCREAMING_SNAKE, PascalCase, the acronym `XPValue` and the kebab string
-  `centaur-stable` split correctly everywhere.
-- Comments and strings are weighted identifier 3 / comment 2 / string 1 as documented (with the exceptions below).
-- Tests are skipped by default in the dependency parser and included by default in the domain parser, and the
-  directory-based rules (`test/`, `tests/`, `spec/`) work.
+## Unified parser
 
-## Dependency parser: defects ranked by impact
+Never run on the samples before; everything here is new.
 
-1. **Same simple name in two packages collapses to one target.** The second import, alias, FQN or qualified
-   reference to `application.dto.Creature` resolves to the domain `Creature` (or the first-seen declaration).
-   Seen in typescript, javascript, vue, java, kotlin, rust, go, php, python, delphi, cpp and c. The dto file
-   ends with 0 incoming edges in every one of them.
-2. **Usages inside function bodies and static members are not extracted in several analyzers.** Rust path
-   expressions (`CreatureId::new`, `SpeedType::Walking`, `CreatureFacade::STANDARD_CREATURE_TYPE`), C++ static
-   calls inside bodies, Go package consts, C# `is` pattern / `typeof`. Because the planted upward dependency is a
-   static-member access, those languages report no cycle and no upward edge at all.
-3. **Type aliases and aliased imports are not followed.** `import ... as Entity` (kotlin), `use ... as Entity`
-   (rust), `using Entity = ...` (csharp, cpp), `TEntity = TCreatureEntity` (delphi), `type Fightable = model.Fightable`
-   (go, becomes leaf `application.unknown`). PHP, TypeScript, JavaScript and Python aliases work.
-4. **Free functions, top-level constants and static imports are neither leaves nor edge sources.** Kotlin
-   top-level `fun rollD20`, C++ free functions and gtest bodies, Java `import static ...Dice.rollD20`, PHP
-   `use function`, Delphi `RollD20`, all C functions. Only PHP, Rust, Go and Vue/TS report FUNCTION leaves.
-5. **Files without a class-like declaration vanish from the map.** All nine `.c` files and include-only headers,
-   the C++ umbrella header, Rust `lib.rs` and every `mod.rs`, Delphi `Api.pas` and the `.dpr`, Vue `main.ts` and
-   the spec. Barrels and include graphs cannot be judged when the file is gone, and `--include-tests` then has no
-   effect (c, vue).
-6. **C is effectively unsupported.** `#include` lines never produce edges, `struct X *` tag references are not
-   extracted (the only cycle is missed), 14 of 71 expected edges found, all of them struct-field types.
-7. **Barrels are inconsistent.** TypeScript `export { default as X }` and JavaScript `export *` yield a REEXPORT
-   leaf without outgoing edge; `.ts` importers stop at `index.ts` while a `.vue` importer of the same barrel is
-   resolved straight through; Python `__init__` re-exports have kind UNKNOWN.
-8. **Language-specific resolution gaps.** C#: property declaration types, `using static`, `global using`.
-   PHP: constructor property promotion, FQN without `use`, namespace import `use ...\Model;`, `require_once`,
-   attribute-only usage. Go: dot import, `var _ Iface = (*T)(nil)`. Python: `src/` layout loses absolute
-   `de.sots...` imports. Vue: `@/` alias default import of a `.vue`, `.vue` only reachable from the same folder.
-   C++: hpp/cpp pairs credited to the `.cpp`, the `.hpp` becomes a 0/0 node. Rust: inline `#[cfg(test)] mod`
-   counted as production, `tests/` crate root taken from the directory name instead of the Cargo package.
-9. **Test detection is directory-only for c, cpp, delphi, objectivec, swift, bash and abl.** `FooTest.cpp`,
-   `*_test.c`, `*Tests.pas`, `*Tests.swift`, `*_test.sh` next to the sources are analysed as production code.
-10. **Leaf kinds and usage kinds are coarse.** Records, structs, value classes, named int types, Python `Enum`
-    and `ABC`, TypeScript type aliases all report CLASS; every leaf edge has `usage=usage`, inheritance and
-    implementation are not distinguished; `export default` adds a synthetic `_DEFAULT_EXPORT` leaf (ts, vue, js).
-11. **Upward flag follows inferred levels, not layer names.** `adapter -> application` is not flagged upward in
-    java, kotlin, php and vue because levelling puts the adapter above the application layer. Defensible, but
-    the hexagonal reading of the sample projects expects it flagged.
-12. `--verbose` prints timing only; nothing about unresolved imports (typescript, rust).
+### Wrong in (nearly) every language
+1. **The default branch of a switch counts as a decision.** `default:`, `else ->` (kotlin `when`), `_ =>`
+   (rust, csharp switch expression), `case _` (python), `*)` (bash), `else` of a ruby `case`, `default =>`
+   (php `match`). This is the +1 on logic complexity in 15 of the 16 analysed `EncounterResolver` files. In
+   delphi the `case` statement itself counts on top of its arms.
+2. **Per-function complexity leaves out the function itself; file complexity adds 1 per function.** A
+   branch-free function reports 0, the per-function values never add up to `complexity`. Every language.
+3. **Nested functions count in `number_of_functions` but get no per-function entry.** Their parameters vanish,
+   their lines and branches go to the parent, mean and median run over fewer functions than the file reports.
+   In delphi the body lines even shift to the next routine.
+4. **What is a function is inconsistent.** A lambda or arrow assigned to a variable is a function, the same
+   lambda passed, returned or stored in a field / object property is not (java, csharp, kotlin, python, ruby,
+   php, js, ts, cpp, go counts every func literal). Bodyless declarations count in java (abstract and interface
+   methods), rust (trait signatures, `extern`), csharp, cpp (`= default`, `= delete`) but not in kotlin, ts.
+5. **Parameter counts break on anything but plain names.**
 
-## Domain language parser: defects ranked by impact
+| Language | What goes wrong |
+| --- | --- |
+| python | `self` / `cls`, every type hint, the return type and PEP 695 type parameters count (`resolve` 12 for 5) |
+| go | receiver and results count, a group `(a, b, c int)` counts 1, variadic `...int` counts 0 |
+| delphi | a group `(A, B: Integer)` counts 1; `long_parameter_list` is never raised |
+| vue | `<script lang="ts">` is parsed as JavaScript: typed parameters count double (11 for 5) |
+| javascript | arrow components, generators and default values with a call over-count; object patterns count 0 |
+| typescript, vue | optional `bonus?: number` not counted, the `this` parameter is |
+| java, csharp, php, cpp | varargs / `params` / variadic / parameter pack count 0; php promoted constructor parameters count 0 |
+| cpp | parameters with a default value count 0; `(void)` is 1 (also c, objectivec); function-pointer parameters add their own |
+| ruby | `def self.x(arg)` counts the method name; endless methods count body identifiers |
+| rust | `self: Box<Self>` counts |
+| bash | always 0 (positional parameters) |
 
-1. **`--comment-weight 0` and `--string-weight 0` abort with an `IllegalArgumentException` stack trace**
-   (every language). The spec here suggested 0 to isolate a source; either allow 0 or fail with a one-line
-   message. Weight 1 versus a high weight works as a substitute.
-2. **Digit splitting is inconsistent and leaks bare numbers.** `rollD20` becomes `roll` + `20` (the `d` is
-   dropped, `20` becomes a root word) while `d20Roll` becomes `d20` + `roll`. Every language.
-3. **Strings inside declarations are not counted in TypeScript, JavaScript and Vue.** Anything under an
-   `export`-prefixed declaration or inside a class body (`'No such creature in the dungeon: '`,
-   `'centaur-stable'`) contributes nothing, so string weight is effectively unused there. Rust, Kotlin, Java,
-   Python, Go, PHP and the others count them.
-4. **Underscore-joined words inside strings and comments are never split.** `should_save_creature_to_the_stable`
-   yields no words (ruby, vue) because the word regex `\b[a-zA-Z]{3,}\b` treats `_` as a word character.
-5. **Paths and namespace lines pollute the vocabulary.** `#include` paths counted as strings (c, cpp: `hpp` is
-   word #4, objectivec), include guards counted as identifiers (c: `sots`, `cellarsandcentaurs` are #2 and #3),
-   PHP namespaces not split at `\` (`desotscellars`), Ruby module lines make `de`/`sots`/`cellars`/`centaurs` the
-   top words, Bash `::` deleted (`creatureset`) and `$(dirname ...)` source paths counted.
-6. **`.h` is always C.** Objective-C headers are parsed with the C grammar and keyword list: `interface`, `end`,
-   `protocol`, `ns`, `nonnull` leak, method signatures and protocol names are lost.
-7. **Documentation tags and tool directives are counted as words.** JSDoc `param`/`returns`/`typedef` (js),
-   docblock tags (php), YARD `param` (ruby), `summary` from XML docs (csharp), `# shellcheck` (bash: word #2).
-8. **MODERATE stop-word level lets architecture words through.** `entity`, `repository`, `facade`, `dto`,
-   `logger`, `id`, `type`, `new` survive in every language; only AGGRESSIVE removes most of them, and `id` /
-   `persisted` survive even there. Whether they are domain words is a policy decision; today `util`, `service`
-   and `exception` are filtered at the same level, which is inconsistent.
-9. **Language-specific extraction gaps.** Python: stdlib decorators `dataclass`, `abstractmethod`, `property`
-   counted as domain words, typed parameters with defaults skipped. Vue: only the first `<script>` block read,
-   `defineProps<{...}>()` swallows the following declaration, `CreatureList.vue` comes out empty. ABL: qualified
-   class header name lost, temp-table fields skipped. Kotlin: `value` (soft keyword) stripped from `XPValue`.
-   Swift: `class` filtered inside the comment "armor class". C: strings inside `#define` not counted.
-10. **Only declarations are counted, not usages.** Type references, calls and member accesses add nothing
-    (noted for abl, csharp, swift, objectivec, bash, js). Frequencies therefore reflect how often a word is
-    declared, not how often the code talks about it. Design decision, but worth stating in the docs.
-11. **Test and build-file detection.** `*Tests.swift`, XCTest `<Target>Tests/` (objectivec), `*_test.sh`,
-    `*Test.cls`, `*_test.c` are not recognised; `Package.swift` and `.kts` build scripts are analysed as source
-    and add `github`, `apple`, `mockk`, `jvm`; extension-less `Rakefile` is skipped; Rust inline `#[cfg(test)]`
-    cannot be excluded.
-12. **No stemming.** `creature`/`creatures`, `centaur`/`centaurs`, `cellar`/`cellars` are separate words in every
-    language.
+6. **Null-coalescing is half counted.** `??` / `?:` (elvis) is a decision, `??=`, `||=`, `&&=`, `?.` are not
+   (csharp, kotlin, swift, php, js, ts). Type tests likewise: `x is T` counts, `x is T t` does not (csharp).
 
-## Not supported at all
+### Wrong in one language family
+- **C, C++, Objective-C headers:** every function prototype, function-pointer field and pointer-returning
+  function adds 1 to complexity, so a header with 0 functions reports complexity 4 to 11. In C++ a local
+  `T name(args);` is read as a declaration. Code under `#if 0` is counted; in objectivec the whole `#else`
+  branch is ignored. A `.h` with C++ content is parsed as C.
+- **Objective-C:** a method is a function but adds 0 to complexity (16 for 21); `for … in` is no loop; nested
+  message sends and dot chains are never a message chain (0 in all 54 files).
+- **Python:** every list literal adds 1 (`[]`, `__all__ = [...]`, `[int]` in a type hint); nested sub-patterns
+  of `match` count as cases; `except*` is not counted.
+- **Ruby:** `do … end` adds 1, `{ }` adds 0; from the second `elsif` on nothing is counted; `unless`, `case … in`,
+  `lambda {}` / `proc {}` are not counted; `__END__` data is code.
+- **Kotlin:** a function is only recognised when its body is the last of 4 to 7 syntax children, so extension
+  functions with a return type, `inline fun <reified T>` and `where` clauses are not functions; getters, setters,
+  secondary constructors and `val f = { }` are.
+- **C#:** auto-accessors `{ get; set; }` are functions (`Creature.cs` 14), expression-bodied properties with logic
+  are not; finalizers and operators are not; expression-bodied methods have rloc 0 and complexity 0.
+- **Java:** constructor bodies are not function bodies (rloc 0, their `if` belongs to no function); a static
+  initializer adds 1 like a function.
+- **Swift:** `if let x = try await f() { }` is counted as a closure, not an `if`; `defer` adds 1 like a closure;
+  computed properties with an implicit getter are no function; the string `"/* not a comment */"` is a comment line.
+- **Rust:** nothing inside a macro is seen (`macro_rules!` bodies, `assert!(a && b)`, an `if` in `println!`);
+  match guards, `let … else` and the `&&` of a let chain add nothing; a chain interrupted by `?` is no chain.
+- **Delphi:** `try` counts as a decision, bitwise `and` / `or` count as logic, catch-all handlers do not count.
+- **TypeScript:** the conditional type `T extends U ? A : B` counts as a branch.
+- **PHP:** rloc is one too high after `?>` (rloc can exceed loc); `xor` counts.
+- **Vue:** only the first `<script>` block is measured (`EncounterEdgeCases.vue`: 3 functions for 16); template,
+  style and tag lines are in no line count (a script-less component has loc 0); `v-if`, `v-for` and expressions
+  in the template add nothing.
+- **Bash:** parameters and message chains always 0; functions with a `( )` or `[[ ]]` body have rloc 0.
 
-| Parser | Missing languages | What a report says it would need |
-| --- | --- | --- |
-| dependencyparser | abl, bash, objectivec, ruby, swift | a grammar plus `USING`/`RUN` (abl), `source` path resolution (bash), `#import` + `@class` (objectivec), `require_relative` + nested module constant lookup (ruby), whole-module name resolution (swift) |
-| domainlanguageparser | delphi | tree-sitter Pascal grammar, Pascal keyword list, `//`, `{ }`, `(* *)` comments, `T`/`I`/`E` prefix stripping |
+### Missing
+- ABL as a whole (the mapping exists in `treeSitterExcavationSite`, `AvailableCollectors` has no entry).
+- The extensions in the table above; most hurt in real projects: `.mm`, `.pyw`, `.phtml`, `.bash`, `.rake`,
+  `.pp` / `.lpr` / `.inc`, extension-less scripts.
+
+### Good
+- `loc`, `rloc` and `comment_lines` are exact in every language and nearly every probe: doc, block, line, nested
+  and trailing comments, comment markers in strings, raw strings, heredocs, templates and regex literals.
+  Exceptions: swift block-comment marker in a string, php inline HTML, ruby `__END__`, objectivec directive lines.
+- Loops, `if` / `else if`, ternaries, `&&` / `||`, `catch` are counted as expected in every language outside
+  the exceptions above; `long_method` and `excessive_comments` are right everywhere.
+
+## Dependency parser
+
+### Unchanged since 2026-09-06
+Every language reports the edges of rounds 1 and 2 again, with the same flags and the same misses. The port of
+php, go, python and vue into `treeSitterExcavationSite` changed no result. The ranking of the earlier summary
+still stands: same simple name in two packages collapses, usages in function bodies missing in rust / go / cpp,
+aliases not followed, free functions and constants neither leaves nor edges, files without a class-like
+declaration vanish, C is effectively unsupported, barrels inconsistent, test detection by directory only.
+
+### New in round 3
+1. **New sources of false edges.**
+   - go: a called method name is resolved as a type name (`creature.HitPoints()` -> `hit_points.go`; a probe
+     `animals.Centaur()` on an unrelated interface -> `centaur.go`).
+   - rust: one qualified usage (`model::Speed`) makes every bare type name of the file resolve by substring; a
+     probe file without imports got four edges. The round-2 edge `creature_report.rs -> lair.rs` only exists
+     because of it.
+   - vue: `X.vue` and `X.ts` in one folder become one node (extension stripped), the `.vue` gets 0 incoming.
+   - typescript: `declare module "winston"` in a `.d.ts` still gives `CreatureService.ts` a false edge (the
+     typings exist again, under `src/.../types/`).
+   - c, cpp: `Creature` still resolves to the dto (3 wrong edges each).
+2. **Expression-level and declaration-level references that give no edge**, by language:
+
+| Language | No edge for |
+| --- | --- |
+| java | enhanced-`for` variable type, switch type pattern, record pattern, generic bound, method reference, cast, class literal, wildcard bound, `catch` type, typed lambda parameter |
+| kotlin | secondary-constructor parameter, `catch`, `as?`, `is`, lambda parameter type, `where T : X`, `<T : X>`, `emptyList<T>()` (only upper-case callees are read) |
+| csharp | type patterns in `switch`, `is T`, `is not T`, tuple element type, `default(T)`, `new T[n]`, extension method call; a file with top-level statements is absent entirely |
+| cpp | `Type::member` in a body, `typeid`, `using enum`, lambda parameter, pointer to member, concept-constrained parameter, template specialization |
+| rust | everything in a function body, associated-type binding `Iterator<Item = T>`, re-exports in a nested `mod.rs` (only `lib.rs` is folded) |
+| go | package `var` declarations, `var _ I = (*T)(nil)`, dot import, method values |
+| php | promoted constructor parameters, interface `extends`, enum `implements`, anonymous class, nullable / variadic / intersection types, trait bodies |
+| python | `TypeVar(bound=T)`, `type` alias, string hints, `importlib` |
+| typescript | type predicate `x is T`, `import x = require()`, inline `import("…").T` |
+| delphi | `on E: X do`, pointer types, `class of`, free routines, unit-level `var`, bodyless class `E = class(Exception);` |
+| javascript | all 13 JSDoc-only dependencies, `export *`, side-effect import, directory `require` |
+| vue | static default import of a `.vue` by path, `import x = require()`, the spec file |
+
+3. **Unicode identifiers:** delphi cuts leaf names at umlauts (`TZentaurenhöhle` -> `TZentaurenh`); every other
+   language resolves the unicode type and file.
+4. **Leaves and metrics:** `incoming_dependencies` / `outgoing_dependencies` count declaration pairs, not
+   files (ts, kotlin, delphi, java); nested and local types become top-level leaves (java `Ranking`, kotlin
+   `Builder`, go function-local `mount`); every leaf edge still has usage `usage`; records and structs are `class`.
+5. **Cycles that stay invisible:** rust (0 of 2 file cycles, the log's "1 cycle" is `Dice <-> DiceRoll` in one
+   file), go (0 of 4 cyclic edges), delphi (0 of 2), csharp (0, partial class), c (0 of 1).
+
+### Not supported
+abl, bash, objectivec, ruby, swift: 0 of 67 to 78 expected edges each. Each report lists the edges a parser
+would have to find.
+
+## Domain language parser
+
+### Wrong
+1. **Umlauts and `ß` cut words in comments and strings, not in identifiers.** `Zentaurenhöhle` -> `zentaurenh`
+   + `hle`, `Rüstungsklasse` -> `stungsklasse`, `gehören` -> `geh` + `ren`, `Größe` -> nothing. The prose
+   pattern is `[a-zA-Z]{3,}` (`SplitStage`). One word shows up in two or three spellings. Every language;
+   `größe` and `höhle` are found nowhere as prose.
+2. **Strings below an `export` statement are dropped** (js, ts, vue): `StringLiteralExtractor` treats them as
+   module paths. Nearly every string of a module is gone.
+3. **`d20Roll` gives `20` + `roll`, `rollD20` gives `roll` + `d20`, `roll_d20` gives `roll` + `20`.** A leading
+   lower-case `d` before digits is dropped and the bare number becomes a word. Confirmed with one identifier per
+   file; six reports attributed it the other way round and carry a correction note.
+4. **String escapes are not decoded:** `"ooze\ngolem"` gives `ngolem` (c, cpp, rust, bash).
+5. **Underscore-joined and digit-carrying words in strings and comments yield nothing** (ruby, go, vue).
+6. **Documentation tags and directives are words:** `summary` 22 (csharp), `param` 32 (js), `mark` 80 (swift),
+   `shellcheck` 86 (bash), `nodoc`, `brief`, `todo`, go directives and the cgo preamble.
+7. **Structure noise:** include paths and guards (c: `sots` 239, cpp: `hpp` 91), namespaces not split
+   (php `desotscellars` 111), module lines (ruby `centaurs` 96), `::` deleted (bash), `construct` 54 (php),
+   objectivec headers read as C (`ns`, `assume`, `nonnull`, `end`, `interface` on top).
+8. **`describe` is an English stop word**, so the shared function name leaves no trace (abl, csharp, ruby).
+9. **`--comment-weight 0` / `--string-weight 0` still abort with a stack trace.**
+
+### Missing
+1. **No root or folder word list.** The lens holds file nodes only (it had folder and root nodes on
+   2026-09-06). The 17 expected words can only be confirmed by summing over files; all 17 are there in all 17
+   languages.
+2. **No German stop words:** `die`, `unter`, `dem`, `und`, `jeder`, `der`, `liegt` are counted everywhere
+   (php filters `die` only because it is a PHP keyword).
+3. **Declarations that are not extracted:** rust bindings outside `let` (`for x in`, `if let`, match arms);
+   swift pattern bindings and loop variables; python typed parameters with a default and `self.x = …`; js plain
+   parameters and all parameters in `.vue` scripts; objectivec pointer-declared locals and most header
+   declarations; abl qualified class headers, temp-table fields, `.i` files; csharp LINQ range variables, `out var`,
+   tuple element names; JSX text and Vue templates; inline HTML (php); raw strings (swift).
+4. **Usages are not counted**, only declarations (the earlier kotlin report claimed weight 1 for usages).
+5. **Test detection by file name** outside `kt kts java cs php` (swift, objectivec, c, bash, abl); rust inline
+   test modules cannot be excluded; objectivec `--exclude-tests` leaves the test file in.
+6. **Delphi** as a whole, although `DelphiExtractionMapping` exists in the tree-sitter layer.
+
+### Bad
+- `id`, `type`, `value`, `new` rank in the top five in most languages; `entity`, `repository`, `facade`, `dto`,
+  `logger` pass MODERATE while `util`, `service`, `exception` do not; `temporary` and `name` are removed although
+  they are domain words here.
+- Standard-library names count as domain words: python `dataclass` 21, `abstractmethod` 12; rust `fmt`, `deref`;
+  objectivec `init` 54; kotlin English number words (`one` 75).
+- Commented-out code is read as prose in every language; build files are read as source (`Package.swift`, `.kts`).
+- The Vue keyword list removes `store`, `state`, `model`, `key`, `name`, `data` from every `.vue`.
+- `tfidf` is the same value for a word in every file (objectivec, vue).
+
+### Good
+- All 17 expected words in all 17 languages; no language keyword leaks anywhere.
+- camelCase, snake_case, SCREAMING_SNAKE, PascalCase, acronyms, kebab strings and unicode identifiers split
+  correctly; weights 3 / 2 / 1 are visible and adjustable; tests are included by default.
+
+## Changed since 2026-09-06
+
+- The domain lens lost its folder and root nodes; words carry `tfidf`.
+- Dependency leaf kinds are lower case; leaves carry no namespace (go, rust).
+- csharp: the partial class is now two leaves and the "share a logical path" warning is gone; the wrong edge
+  target and the missing cycle remain.
+- rust: "barrels resolve through `pub use`" and "0 false positives" no longer hold as stated (see above).
+- delphi: `[TableAttribute('x')]` does give an edge, only the short `[Table(...)]` form is missed.
+- objectivec: non-pointer locals are extracted, pointer-declared ones are not.
+- typescript, vue: JSX tag names (`article`, `li`, `strong`) now appear as words.
+- The dependency parser now runs on unsupported languages and writes an empty map instead of not running.
+- Corrected counts of the earlier reports: c 84 expected edges (not 80), typescript 11 round-2 edges (not 12),
+  abl `hit` / `points` 19 (not 18), cpp `memory` comes from `InMemoryCreatures`, not from `#include <memory>`.
+
+## How far to trust this
+
+- Expected values were hand-counted by one agent per language and checked against the parser by the same agent.
+  Each report marks its own miscounts (kotlin, c, cpp, python, ruby, javascript, typescript, vue, delphi); the
+  counting rule left room for a per-language reading where it names no construct (`??=`, `let … else`, guards),
+  and each report states its reading.
+- In java, csharp and typescript the expected values reached the file in the same step as the first run; in all
+  other languages before it.
+- Per-construct values come from scratch runs with one construct per file, because the parser reports file totals
+  only; the sums were reconciled with the file totals where a report says so.
+- The numbers in the overview table were re-read from `output/` after the agents finished and match the reports.
+- Nothing was compiled; the projects only have to parse. Not checked on macOS.
 
 ## Where to look
 
-Every `sample-projects/<language>/FINDINGS.md` starts with the expected edge list written before the parser ran, then
-the per-construct table with the exact file and construct, then the domain parser tables. The raw outputs and
-the variant runs (`--include-tests`, `MINIMAL`, `AGGRESSIVE`, changed weights) are in `sample-projects/<language>/output/`.
-
-## Round 2: the less common dependency forms
-
-Added 2026-09-06 after the first round. Each language got the forms it did not show yet (dynamic loading,
-textual includes, type references without an import, alternate module layouts); every language's
-`FINDINGS.md` has a "Round 2" table with the file and the exact construct. Round-1 edges stayed unchanged
-in every language except C# (see below).
-
-| Language | Round-2 forms found | Missed or wrong |
-| --- | --- | --- |
-| typescript | dynamic `import()`, `export * as`, `export type {} from`, `export { type X }`, `.js`-suffixed import, `namespace` member access | side-effect import, `import x = require()`, inline `import("…").T` type, triple-slash reference; `declare module "winston"` creates a false edge from `CreatureService.ts` to the `.d.ts`; `export * as` loses the namespace and doubles counts |
-| javascript | dynamic `import()`, extension-less import | side-effect import, `export * as`, `export { default } from`, `require("./dir")` and directory imports (no `index.js` probing: the directory import lands on `CreatureFacade.js` by name coincidence) |
-| vue | `defineAsyncComponent(() => import())` across folders, `<component :is>` same folder, both script blocks, `<script lang="js">` | `.ts` default-importing a `.vue`, `app.component()` global registration, relative cross-folder `.vue` import |
-| java | generic argument `List<Centaur>`, anonymous subclass | nested class import, static wildcard import, method and constructor references, `instanceof`, array type `Speed[]`; nested `Builder` exported as a top-level leaf; `module-info.java` silently dropped |
-| kotlin | nested class import | `typealias` (a typealias-only file has no node), `is`, delegation `by`, extension function and its import, top-level function import, `::class`, lambda parameter type; a function-only file vanishes with all its edges |
-| csharp | generic argument, interface default method, `using` inside a namespace block, second partial part | `typeof`, `nameof`, `catch` type, lambda parameter, `extern alias`; **partial class maps the leaf to the alphabetically first part, which moved both round-1 incoming edges and dropped all 14 cycle flags** |
-| go | `internal/` package, `//go:build` file, generic argument, type switch | `//go:embed`, `replace` directive in `go.mod`, method value `dice.Roll` |
-| python | `from . import x`, try-branch import, `import … as module`, conditional import, namespace package | `except ImportError` fallback (first import wins), `importlib.import_module`, string forward reference, `List["Centaur"]` |
-| php | `use const`, `new $className` via `::class`, closure parameter type | `instanceof`, `include` and `require`, `catch` type, docblock `@var`, `enum implements`, interface `extends` |
-| rust | 2018-style `foo.rs` + `foo/`, `use x::{self, y}`, `pub(crate) use`, generic argument, `impl Trait` argument | `#[path]`, `macro_rules!` invocation, `match` pattern path, `use` inside a function body |
-| cpp | forward declaration, `friend class`, casts, template argument, include under `#ifdef` | `typedef` alias, `catch` type, template specialization (file vanishes); using-declaration resolves to the dto `Creature`; **three new false positives: `domain::model::Creature` in a parameter or return type resolves to `application/dto/Creature.hpp`** |
-| c | conditional include, `.c` including `.c` (both via struct fields, not via the include) | opaque pointer, macro as field type, prototype-only parameter, extern global, macro-only header |
-| delphi | class helper, interface delegation, `ClassName` reference, both `uses` halves, generic argument | `{$I x.inc}` (`.inc` not scanned), `.dpk` (not scanned), `initialization`-only usage |
-
-Only the domain parser exists for ruby, swift, objectivec, abl and bash; their round-2 files record the expected
-edges for a future parser. Domain-parser observations from the new files: `.pch` and `.inc` are not mapped to a
-language and vanish; `Package.swift` and `//go:build` / `//go:embed` directives add noise; a switch pattern
-binding (`case let centaur as Centaur`) is not extracted in Swift.
-
-### What round 2 adds to the ranking
-
-1. **Files without a class-like declaration vanish, now confirmed for typealias-only and function-only
-   Kotlin files, C++ template specializations, `module-info.java`, `.inc`, `.dpk`, `.pch`.** This is the
-   same root cause as round-1 item 5 and now costs whole edge sets, not just barrels.
-2. **Partial classes (C#) break the leaf-to-file mapping and with it cycle detection.** New, high impact for
-   any real C# code base.
-3. **Simple-name resolution with an own-namespace wildcard produces false positives in C++** whenever two
-   types share a name, even with a qualified `domain::model::Creature`. Round 1 saw the wrong target, round 2
-   shows it also invents edges.
-4. **Expression-level references are consistently ignored across languages**: `instanceof` / `is` / type
-   switch (java, kotlin, php; Go and C++ casts do work), `typeof` / `nameof` / `::class`, method references,
-   `catch` parameter types (csharp, php, cpp), lambda parameter types, `match` patterns (rust), array types
-   (java). A type referenced only this way has no edge.
-5. **Module-system details**: no `index.js` probing for directory imports (javascript), `replace` in
-   `go.mod` and `#[path]` ignored, TypeScript `import = require` and triple-slash references ignored,
-   `export * as` loses its namespace (ts) or is dead (js), `app.component()` registration not followed (vue).
-6. **Textual includes and dynamic loading are out of scope by design** (`{$I}`, `.pch`, `importlib`,
-   `import.meta.url`, computed `require`), which is acceptable but should be documented per language.
-
-## File view versus logical view
-
-Both views come from one extraction and resolution stage, so the resolution defects (same-name collapse, the
-C++ and TypeScript false positives, vanished files, ignored expression-level references) appear identically
-in `edges` and in `leaves` / `leafEdges` / `namespaces`. Differences:
-
-- Only the file view: C# partial classes credit all edges to the alphabetically first part (the leaf is
-  correct, but the cycle flags are zero in both views); C++ hpp/cpp pairs are credited to the `.cpp`; barrels
-  become an extra `index.ts` node in the map.
-- Only the logical view: Java nested classes become top-level leaves (`application.Builder`); synthetic
-  `_DEFAULT_EXPORT` leaves (ts, js, vue) and VARIABLE leaves for Python module assignments; coarse leaf kinds
-  and `usage=usage` everywhere; namespace levels that put `Adapter` above `Application`.
-
-## Where the defects live: TSE or the CodeCharta parser
-
-TreeSitterExcavationSite (TSE, `v0.12.0`) does the extraction for java, kotlin, typescript, tsx, javascript,
-csharp, cpp (also used for c), delphi and rust: it returns declarations (name, type, parent path, used types
-with a namespace prefix and generics) and imports (path, wildcard flag, namespace path, binding name).
-CodeCharta's own tree-sitter analyzers handle php, go, python and vue entirely, so every finding for those four
-languages is ours. For the TSE languages, `sample-projects/tools/TseProbe.java` shows what TSE delivers; the split
-from running it on the defect files:
-
-| Defect | Where | Evidence |
-| --- | --- | --- |
-| Same simple name collapses (java FQN `application.dto.Creature`, rust `crate::application::dto::creature::Creature`, csharp `Dto.Creature`) | CodeCharta | TSE delivers the qualified name or the prefix; `UsedType.toType()` keeps only the simple name and `Node.resolveTypeImport` prefers the direct import of that simple name |
-| C++ false positives for `domain::model::Creature` | CodeCharta | TSE delivers `prefix=[domain, model]`; `CppAnalyzer` turns it into a wildcard that is never joined with the enclosing namespace, and the self-namespace wildcard's substring match wins |
-| C# partial classes, hpp/cpp attribution | CodeCharta | TSE returns one CLASS per part with the same parent path; the file mapping is ours |
-| Rust `use … as Entity` | CodeCharta | TSE delivers `binding=Entity`; the base analyzer ignores `bindingName` except for default imports |
-| Kotlin `import … as Entity`, C# `using Entity = …` | TSE | binding is null (C# even marks the alias as wildcard), so the alias name cannot be mapped back |
-| Java nested class as top-level leaf | TSE | Java declarations come with `parent=[]`, while Kotlin gets `parent=[CreatureFacade]` and our `KotlinAnalyzer` uses it |
-| Kotlin top-level functions, extension functions, `typealias`; C++ `typedef` / `using X = Y`; Delphi type alias | TSE | no declaration is returned, so the file has nothing to hang edges on |
-| `instanceof` / `is`, `typeof`, `catch` types, C++ `struct X *` tag references, Rust body paths (`CreatureId::new`), C# nullable property types, TS aliased binding used as `new CreatureDto()` | TSE | the used-type set of the declaration does not contain the type |
-| TS side-effect import, inline `import("…").Speed` type | both | TSE returns the import but no used type; our edges need a used type to resolve, so an import alone never produces one |
-| TS `import x = require()`, triple-slash reference, C# namespace alias `using Dto = …` | TSE | not in the import list at all |
-| Delphi unit-qualified `dto.Creature.TCreature` | TSE | arrives as the fragments `Creature` and `TCreature` |
-| `Speed[]` array type (java) | CodeCharta | TSE returns the name `Speed[]`; we do not strip the brackets |
-| RECORD reported as CLASS | CodeCharta | TSE has `DeclarationType.RECORD`; `TseMappings` folds it into CLASS |
-| Test detection, extension mapping (`.inc`, `.pch`, `.dpk`), levelling, cycle flags, barrel hops | CodeCharta | after extraction |
+`sample-projects/<language>/FINDINGS.md`: Project, Unified parser, Dependency parser, Domain language parser,
+Changed since 2026-09-06, Verdict (Missing / Wrong / Bad / Good per parser, each item with file and construct).
+`sample-projects/<language>/output/`: the `.cc.json` results; print them with `tools/dump_lenses.py`.
