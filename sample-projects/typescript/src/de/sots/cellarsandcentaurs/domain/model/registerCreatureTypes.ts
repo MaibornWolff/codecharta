@@ -1,4 +1,4 @@
-/// <reference path="../../typings/creatureGlobals.d.ts" />
+/// <reference path="../../types/creatureGlobals.d.ts" />
 
 const knownCreatureTypes = ["monstrosity", "beast", "aberration", "celestial", "dragon", "fiend", "humanoid", "undead"];
 
