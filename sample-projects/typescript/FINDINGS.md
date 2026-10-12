@@ -1,213 +1,395 @@
 # TypeScript
 
-## Expected file-level edges (written before running the parser)
+> Correction (2026-10-08, cross-check with one identifier per file): the digit split is attributed the wrong way
+> round wherever this report mentions it. `d20Roll` gives `20` + `roll` (the leading `d` is dropped), `rollD20` gives
+> `roll` + `d20`, `roll_d20` gives `roll` + `20`. Both identifiers sit in the same file here, so the file's word list
+> could not tell them apart.
 
-Paths relative to `src/de/sots/cellarsandcentaurs/`. `application/index.ts` is the barrel; a `->` to it is what
-the source literally says, whether the parser resolves it through to the re-exported file is judged below.
+## Expected values for round 3 (fixed 2026-10-08 before any parser output was read)
 
-| from | to |
-| --- | --- |
-| domain/model/Creature.ts | CreatureId.ts, CreatureType.ts (default import), ArmorClass.ts, SpeedType.ts, Speed.ts, HitPoints.ts, Fightable.ts (implements), application/index.ts (upward, static member) |
-| domain/model/ArmorClass.ts | application/index.ts (upward, static member) |
-| domain/model/NoSuchCreatureException.ts | CreatureId.ts |
-| domain/model/Centaur.ts | Creature.ts (extends), CreatureId.ts, CreatureType.ts, SpeedType.ts |
-| domain/model/Dice.ts | none (DiceRoll used by Dice inside the same file) |
-| domain/service/Creatures.ts | model/Creature.ts, model/CreatureId.ts |
-| domain/service/CreatureService.ts | Creatures.ts, model/Creature.ts (winston is external, no edge) |
-| domain/service/CreatureService.test.ts | CreatureService.ts, Creatures.ts, model/Creature.ts, CreatureId.ts, Speed.ts, SpeedType.ts (only with --include-tests; vitest external) |
-| adapter/persistence/CreatureEntity.ts | decorators.ts (decorator call), CreatureTable.ts (only as decorator argument) |
-| adapter/persistence/CreatureRepository.ts | CreatureEntity.ts (aliased import), Repository.ts (generic base) |
-| adapter/persistence/creatureEntityMapper.ts | CreatureEntity.ts (`import type`), model/Creature.ts, model/CreatureId.ts |
-| adapter/persistence/PersistedCreatures.ts | CreatureRepository.ts, CreatureEntity.ts, creatureEntityMapper.ts, service/Creatures.ts (implements), model/Creature.ts, model/CreatureId.ts, model/NoSuchCreatureException.ts, application/index.ts |
-| application/CreatureFacade.ts | service/CreatureService.ts, service/Creatures.ts, model/Creature.ts, dto/Creature.ts, model/CreatureId.ts, model/CreatureType.ts, model/HitPoints.ts, model/Speed.ts, model/SpeedType.ts, model/ArmorClass.ts (node:crypto external) |
-| application/CreatureUtil.ts | model/Creature.ts (`import * as model`), model/Fightable.ts (unused import; an edge is defensible because the import statement exists) |
-| application/index.ts | CreatureFacade.ts (named re-export), CreatureUtil.ts (`export *`), ui/CreatureCard.tsx (`export { default as }`) |
-| application/ui/CreatureCard.tsx | model/Creature.ts (`import type`, relative), model/SpeedType.ts (`@model/*` alias) |
+### EncounterResolver.ts
 
-Round 2 additions (each row is the only way the `from` file depends on the `to` file):
+Readings fixed before the run: a lambda adds 1 to `complexity` but is not a function, so `clamp` in `safeRoll`
+counts into `safeRoll`; the nested named function `fastestFirst` is a function of its own; rloc of a function is
+the code lines strictly between its signature line and its closing brace.
 
-| from | to | form |
-| --- | --- | --- |
-| domain/model/Stable.ts | registerCreatureTypes.ts | side-effect import `import "./registerCreatureTypes"` |
-| domain/model/registerCreatureTypes.ts | typings/creatureGlobals.d.ts | triple-slash `/// <reference path="../../typings/creatureGlobals.d.ts" />` |
-| typings/winstonAugmentation.d.ts | none | `declare module "winston" { interface Logger {...} }` augmentation; winston is external |
-| domain/model/Movement.ts | Speed.ts | explicit extension `import { Speed } from "./Speed.js"` pointing at Speed.ts |
-| domain/service/SpeedLimit.ts | model/Speed.ts | inline type `import("../model/Speed").Speed` in a field type and a parameter type |
-| application/CreatureLoader.ts | CreatureUtil.ts | CommonJS interop `import util = require("./CreatureUtil")`, used as `util.CreatureUtil` |
-| application/CreatureLoader.ts | model/Stable.ts | `import { Stable }` used as `Stable.Groom` (TS namespace member) |
-| application/CreatureLoader.ts | model/Centaur.ts | dynamic `await import("../domain/model/Centaur")` inside a method |
-| application/CreatureLoader.ts | model/CreatureId.ts | plain named import (control, not a new form) |
-| application/index.ts | model/Dice.ts | `export * as dice from "../domain/model/Dice"` |
-| application/index.ts | model/Fightable.ts | `export type { Fightable } from "../domain/model/Fightable"` |
-| application/index.ts | model/HitPoints.ts | inline modifier `export { type HitPoints } from "../domain/model/HitPoints"` |
+| function | parameters | complexity | rloc (body) |
+| --- | --- | --- | --- |
+| resolve | 5 | 12 (if, else if, for, if, &&, while, 3 case, ternary, \|\|) | 32 |
+| describe | 1 | 1 | 3 |
+| safeRoll | 1 | 4 (catch, lambda, if in the lambda) | 13 |
+| initiativeOrder | 1 | 1 | 8 |
+| fastestFirst (nested) | 1 | 2 | 5 |
+| isEmpty | 0 | 1 | 1 |
 
-None of the round-2 targets has an outgoing edge that leads back into the barrel SCC, so the expected cycles and
-upward edges below are unchanged; `CreatureLoader -> Centaur -> Creature -> index` is not a cycle because nothing
-points at `CreatureLoader`. `typings/` is a new top-level folder next to `domain`, `application`, `adapter`.
+File: loc 91, rloc 73, comment_lines 13, number_of_functions 6, logic_complexity 14, complexity 21,
+parameters max 5 / min 0 / mean 1.5 / median 1, complexity per function max 12 / min 1 / mean 3.5 / median 1.5,
+rloc per function max 32 / min 1 / mean 10.33 / median 6.5, long_method 2, long_parameter_list 1,
+message_chains 1, excessive_comments 1.
 
-Expected cycles: `Creature -> index -> CreatureFacade -> CreatureService -> Creature`,
-`Creature -> ArmorClass -> index -> CreatureFacade -> Creature`, `index -> CreatureUtil -> Creature -> index`,
-`index -> CreatureCard -> Creature -> index`.
-Expected upward edges: `domain/model/Creature.ts -> application/index.ts`, `domain/model/ArmorClass.ts -> application/index.ts`.
-Whether `adapter/persistence/PersistedCreatures.ts -> application/index.ts` counts as upward depends on the level
-the parser assigns to `adapter` versus `application`; in a hexagonal reading the adapter is the outer ring.
+### EncounterEdgeCases.ts
+
+File: loc 336, rloc 271, comment_lines 12, number_of_functions 49, logic_complexity 21, complexity 72,
+max parameters 5, long_method 0, long_parameter_list 1, message_chains 2, excessive_comments 1.
+Per construct: see the table under "Unified parser" (columns "expected").
+
+### Other new files
+
+| file | loc | rloc | comment_lines | functions | logic | complexity |
+| --- | --- | --- | --- | --- | --- | --- |
+| application/ui/CreatureCard.tsx | 30 | 27 | 1 | 1 | 2 | 4 |
+| application/ui/SpeedBadge.tsx | 12 | 10 | 0 | 1 | 1 | 2 |
+| domain/model/Zentaurenhöhle.ts | 15 | 11 | 1 | 2 | 1 | 3 |
+| domain/model/lairKeeper.mts | 5 | 4 | 0 | 1 | 0 | 1 |
+| domain/model/hoardLedger.cts | 12 | 11 | 0 | 1 | 2 | 3 |
+| types/creatureGlobals.d.ts | 6 | 5 | 0 | 0 | 0 | 0 |
+| types/winstonAugmentation.d.ts | 7 | 6 | 0 | 0 | 0 | 0 |
+
+### Dependency edges of the new files
+
+CreatureCard.tsx -> SpeedBadge.tsx; SpeedBadge.tsx -> Speed.ts; Zentaurenhöhle.ts -> ArmorClass.ts;
+lairKeeper.mts -> Zentaurenhöhle.ts; hoardLedger.cts -> Dice.ts, Speed.ts; EncounterResolver.ts -> Creature.ts,
+Dice.ts, SpeedType.ts; EncounterEdgeCases.ts -> Creature.ts, Centaur.ts, HitPoints.ts, Speed.ts, SpeedType.ts,
+CreatureId.ts, NoSuchCreatureException.ts, Dice.ts, lairKeeper.mts, hoardLedger.cts;
+registerCreatureTypes.ts -> types/creatureGlobals.d.ts (already expected in round 2, new path);
+winstonAugmentation.d.ts -> none. 19 new edges, 80 in the default run, 86 with tests. No new cycle, no new
+upward edge.
+
+### Domain words of the new files
+
+EncounterResolver.ts: encounter, attacker, defender, roll, bonus, terrain, damage, armor, dice, initiative,
+dungeon, cellar, lair, stable. EncounterEdgeCases.ts: hoard, treasure, lair, cellar, roll, speed, xp, value, map,
+http, gate, https, url, swamp, volcano, gallop. CreatureCard.tsx: creature, card, wandering, centaur, walking, speed,
+hit, points. SpeedBadge.tsx: speed, badge, galloping, pace, fast, slow. Zentaurenhöhle.ts: zentaurenhöhle, verlies,
+rüstungsklasse, trefferpunkte, kreatur, größe, höhle. lairKeeper.mts: lair, keeper. hoardLedger.cts: hoard, ledger,
+coin.
+
+Corrections to the block above, made after the run and left visible:
+
+- The block was fixed before any output was read, but the first parser run was started in the same step in which
+  the block was saved to this file, so "written into FINDINGS.md before the run" is true for the values, not for
+  the file timestamp.
+- Edge total: 79 in the default run and 85 with tests, not 80 / 86. The 2026-09-06 report counted 12 round-2 edges,
+  but one of its 12 rows (`winstonAugmentation.d.ts -> none`) is not an edge; the miscount was copied.
+- `lairKeeper.mts: keeper` and `hoardLedger.cts: ledger` were wrong expectations: both words occur only in the file
+  name, and a file name is not a text source for the domain parser.
+- `CreatureCard.tsx` rloc 27 treated the line `{/* The heading shows the creature id. */}` as comment-only; the
+  braces of the JSX expression are code tokens, so the reported 28 is defensible.
 
 ## Project
 
-- Layout: `tsconfig.json` (with `baseUrl` and a `paths` alias `@model/*`), `package.json` (react, winston, vitest),
+- Layout: `tsconfig.json` (`baseUrl`, `paths` alias `@model/*`), `package.json` (react, winston, vitest),
   `src/de/sots/cellarsandcentaurs/{domain/model, domain/service, adapter/persistence, application, application/dto,
-  application/ui}`. 26 source files: 25 `.ts` plus `application/ui/CreatureCard.tsx`.
-- Round 2 added `typings/` and seven files (33 in total): `domain/model/registerCreatureTypes.ts`, `domain/model/Stable.ts`,
-  `domain/model/Movement.ts`, `domain/service/SpeedLimit.ts`, `application/CreatureLoader.ts`,
-  `typings/creatureGlobals.d.ts`, `typings/winstonAugmentation.d.ts`, plus three lines in `application/index.ts`.
-- Modelled on `Ideas/DC/DependaCharta/exampleProjects/TypescriptExample` (same barrel, same static-member usage of
-  `CreatureFacade.STANDARD_CREATURE_TYPE` from `Creature` and `PersistedCreatures`, same cycle).
-- Stress constructs present: aliased import (`CreatureEntity as Entity`, `Creature as CreatureDto`), namespace import
-  (`import * as model`), barrel with three re-export forms (`export { X } from`, `export * from`,
-  `export { default as X } from`), a default export (`export default CreatureType`, `export default function CreatureCard`),
-  inheritance + `implements`, abstract generic base `Repository<T>`, `import type`, a class only referenced as a
-  decorator argument (`@Persistent(CreatureTable)`), two `Creature` classes in different packages, unused import
-  (`Fightable` in `CreatureUtil`), third-party imports (`winston`, `node:crypto`, `react`, `vitest`), a `.test.ts`
-  file, `Dice.ts` with three declarations, `decorators.ts` and `creatureEntityMapper.ts` whose names differ from
-  what they declare, a `tsconfig.json` path alias (`@model/SpeedType` in the `.tsx`).
-- Not in the language: a fully qualified reference without an import (construct 8). TypeScript has no global
-  namespace across files; every cross-file reference goes through an `import`, so there is nothing to test.
+  application/ui, types}`. 39 source files: 33 `.ts` (one of them `CreatureService.test.ts`), 2 `.d.ts`, 2 `.tsx`,
+  1 `.cts`, 1 `.mts`.
+- Round 3 added `domain/service/EncounterResolver.ts`, `domain/service/EncounterEdgeCases.ts` (55 constructs, one
+  declaration each), `application/ui/SpeedBadge.tsx`, `domain/model/Zentaurenhöhle.ts`, `domain/model/lairKeeper.mts`,
+  `domain/model/hoardLedger.cts`, `types/creatureGlobals.d.ts`, `types/winstonAugmentation.d.ts`, and changed
+  `application/ui/CreatureCard.tsx` (`<SpeedBadge />`, `&&`, ternary, `.map()`, `Wandering centaur`, a JSX comment)
+  and the triple-slash path in `domain/model/registerCreatureTypes.ts`.
+- The round-2 `typings/` folder never reached the repository (root `.gitignore` line 269 ignores `typings/`); the two
+  files are recreated in `types/`. `git check-ignore` reports none of the new files as ignored.
+- Dependency stress constructs present: all of 1-7 and 9-12 from the README plus the round-2 import forms. Not in
+  the language: a fully qualified reference without an import (8).
+- Unified stress constructs not in the language: `goto`, preprocessor branches and macros, operator overloads,
+  extension functions, pattern guards, comprehensions, `unless` / `until`, `guard` / `defer`, `select`, exception
+  filters, heredocs, nested comments. Closest idioms used: `for...of` as the `for` loop of `resolve`, a `const`
+  arrow function as the lambda of `safeRoll`, a nested `function` declaration in `initiativeOrder`.
+- Environment: the sandbox runs with a POSIX locale (`sun.jnu.encoding = ANSI_X3.4-1968`). With it all three parsers
+  drop `Zentaurenhöhle.ts` without any message (38 / 37 / 38 files instead of 39 / 38 / 39), and
+  `unifiedparser <path to that file>` fails with `Could not find resource ...Zentaurenh??hle.ts`. Every number below
+  is from runs with `LC_ALL=C.UTF-8`.
+- `.gitignore`: every run prints `No .gitignore found at root level, excluding common build folders as fallback`,
+  because only the scanned folder is searched. A probe file in a `typings/` folder (git-ignored by the repository
+  root) was analysed by all three parsers; the probe was removed again.
 
 ## Dependency parser
 
-Commands (all exit 0, no warnings apart from the JDK native-access notice and "No .gitignore found"):
+Commands (all exit 0):
 
 ```
-ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json                  # 25 files
-ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" --include-tests -o output/dependency-with-tests.cc.json  # 26 files
+ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json                            # 38 files
+ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" --include-tests -o output/dependency-with-tests.cc.json  # 39 files
 ```
 
-Result: 47 file edges, 32 leaves, 52 leaf edges (default run); 53 / 33 / 58 with tests. Expected 49 file edges
-(50 counting the unused import).
+Result: 72 file edges, 109 leaves, 91 leaf edges (default); 78 / 110 / 97 with tests. Expected 79 / 85 file edges:
+71 / 77 found, 8 missing, 1 extra. Console: `Found 1 strongly connected components`, `Found a total of 6 cycles`.
+
+Missing edges: `CreatureFacade.ts -> dto/Creature.ts`, `index.ts -> ui/CreatureCard.tsx`,
+`Stable.ts -> registerCreatureTypes.ts`, `SpeedLimit.ts -> Speed.ts`, `CreatureLoader.ts -> CreatureUtil.ts`,
+`registerCreatureTypes.ts -> types/creatureGlobals.d.ts`, `hoardLedger.cts -> Dice.ts`,
+`EncounterEdgeCases.ts -> Centaur.ts`. Extra edge: `CreatureService.ts -> types/winstonAugmentation.d.ts`.
 
 | construct | expected edge(s) | found | verdict |
 | --- | --- | --- | --- |
-| 1 aliased import `CreatureEntity as Entity` (CreatureRepository) | CreatureRepository -> CreatureEntity | yes | ok |
-| 2 namespace import `import * as model` (CreatureUtil, `model.Creature`) | CreatureUtil -> model/Creature | yes | ok |
-| 3 barrel `export { CreatureFacade } from` (index.ts) | index -> CreatureFacade | yes, leaf `index.CreatureFacade` kind REEXPORT | ok |
-| 3 barrel `export * from './CreatureUtil'` | index -> CreatureUtil | yes, expanded to a named REEXPORT leaf `index.CreatureUtil` | ok |
-| 3 barrel `export { default as CreatureCard } from './ui/CreatureCard'` | index -> ui/CreatureCard.tsx | **no**; leaf `index.CreatureCard` (REEXPORT) exists but has no outgoing edge, `CreatureCard.tsx` has 0 incoming | **missing** |
-| 3 upward import of the barrel (`Creature`, `ArmorClass` -> `../../application`) | Creature -> index, ArmorClass -> index | yes, both flagged `isPointingUpwards` and `isCyclic` | ok |
-| 3 import from barrel in `PersistedCreatures` | PersistedCreatures -> index | yes (not upward: `adapter` is levelled above `application`) | ok |
-| 4 `Centaur extends Creature` | Centaur -> Creature | yes (usage only, no "extends" marker) | ok |
-| 4 `Creature implements Fightable`, `PersistedCreatures implements Creatures` | Creature -> Fightable, PersistedCreatures -> Creatures | yes | ok |
-| 5 generic base `Repository<Entity>` | CreatureRepository -> Repository | yes | ok |
-| 6 type position only (`import type { Creature }` in CreatureCard.tsx, `import type { CreatureEntity }` in the mapper) | CreatureCard -> Creature, mapper -> CreatureEntity | yes, indistinguishable from a value import | ok |
-| 6 `new` only (`new CreatureId(...)` in mapper, Facade) | mapper -> CreatureId, Facade -> CreatureId | yes | ok |
-| 6 static member only (`CreatureFacade.STANDARD_CREATURE_TYPE`) | Creature -> index, PersistedCreatures -> index | yes | ok |
-| 6 decorator argument only (`@Persistent(CreatureTable)`) | CreatureEntity -> CreatureTable, CreatureEntity -> decorators | yes, both | ok |
-| 7 same simple name: `import { Creature } from '../domain/model/Creature'` and `import { Creature as CreatureDto } from './dto/Creature'` in CreatureFacade | Facade -> model/Creature, Facade -> dto/Creature | model edge yes, **dto edge missing**; `dto/Creature.ts` has 0 incoming | **missing** |
-| 8 fully qualified reference | n/a | n/a | language has no such construct |
-| 9 unused import `Fightable` in CreatureUtil | defensible either way | no edge | ok (usage-based) |
-| 10 `winston`, `node:crypto`, `react`, `vitest`, `Map`, `Promise`, `Error` | no internal edge | none | ok |
-| 11 test file `CreatureService.test.ts` | skipped by default; 6 edges with `--include-tests` | 25 vs 26 files; the 6 expected edges appear only with `--include-tests`, `vitest` gives no edge | ok |
-| 12 `Dice.ts` with `Dice`, `DiceRoll`, `rollD20` | three leaves, two intra-file leaf edges, no file edge | yes: `Dice.Dice`, `Dice.DiceRoll`, `Dice.rollD20` (FUNCTION), edges Dice -> DiceRoll, rollD20 -> Dice | ok |
-| 12 `decorators.ts` holds `Persistent`, `creatureEntityMapper.ts` holds `toDomain` | leaves named after the file, edges to them | `decorators.Persistent`, `creatureEntityMapper.toDomain`, PersistedCreatures -> toDomain | ok |
-| tsconfig `paths` alias `@model/SpeedType` in CreatureCard.tsx | CreatureCard.tsx -> SpeedType | yes | ok |
-| `.tsx` file | analysed as TSX | yes, leaves `CreatureCard` (FUNCTION) and `CreatureCardProps` | ok |
-| default import `import CreatureType from './CreatureType'` in Creature | Creature -> CreatureType | yes, resolved to the named enum leaf | ok |
+| 1 aliased import `CreatureEntity as Entity` (CreatureRepository.ts) | -> CreatureEntity.ts | yes | ok |
+| 2 namespace import `import * as model` (CreatureUtil.ts) | -> model/Creature.ts | yes | ok |
+| 3 barrel `export { CreatureFacade } from` (index.ts) | index -> CreatureFacade.ts | yes, leaf kind `reexport` | ok |
+| 3 barrel `export * from "./CreatureUtil"` | index -> CreatureUtil.ts | yes, but `x2` with one leaf edge | wrong count |
+| 3 barrel `export { default as CreatureCard } from "./ui/CreatureCard"` | index -> ui/CreatureCard.tsx | no; `reexport` leaf without outgoing edge | missing |
+| 3 upward import of the barrel (Creature.ts, ArmorClass.ts) | -> application/index.ts | yes, `isPointingUpwards` and `isCyclic` | ok |
+| 4 `Centaur extends Creature`, `implements Fightable`, `implements Creatures` | 3 edges | yes, all `usage=usage` | ok |
+| 5 generic base `Repository<Entity>` | CreatureRepository -> Repository.ts | yes | ok |
+| 6 type position only (`import type` in CreatureCard.tsx, creatureEntityMapper.ts, SpeedBadge.tsx) | 3 edges | yes | ok |
+| 6 `new` only, static member only, decorator argument only | Facade -> CreatureId, Creature -> index, CreatureEntity -> CreatureTable | yes | ok |
+| 7 same simple name (`Creature` and `Creature as CreatureDto` in CreatureFacade.ts) | -> model/Creature.ts, -> dto/Creature.ts | only the first | missing |
+| 8 fully qualified reference | n/a | n/a | not in the language |
+| 9 unused import `Fightable` (CreatureUtil.ts) | defensible either way | no edge | ok (usage-based) |
+| 10 `winston`, `node:crypto`, `react`, `vitest`, `Map`, `Promise`, `Error` | no edge | `winston` gives one (see `declare module`) | extra |
+| 11 test file | 6 edges only with `--include-tests` | yes, 38 vs 39 files | ok |
+| 12 `Dice.ts` with `Dice`, `DiceRoll`, `rollD20`; `decorators.ts`, `creatureEntityMapper.ts` | leaves per declaration | yes | ok |
+| tsconfig alias `@model/SpeedType` (CreatureCard.tsx) | -> SpeedType.ts | yes | ok |
+| default import `import CreatureType from` (Creature.ts) | -> CreatureType.ts | yes | ok |
+| side-effect import `import "./registerCreatureTypes"` (Stable.ts) | -> registerCreatureTypes.ts | no | missing |
+| dynamic `await import("../domain/model/Centaur")` (CreatureLoader.ts) | -> Centaur.ts | yes | ok |
+| inline type `import("../model/Speed").Speed` (SpeedLimit.ts) | -> Speed.ts | no, 0 outgoing | missing |
+| `export * as dice from` (index.ts) | index -> Dice.ts | yes, `x6` with three leaf edges, namespace name `dice` lost | wrong count |
+| `export type { Fightable } from`, `export { type HitPoints } from` | index -> Fightable.ts, HitPoints.ts | yes | ok |
+| `import util = require("./CreatureUtil")` (CreatureLoader.ts), `import dice = require("./Dice")` (hoardLedger.cts) | 2 edges | none | missing |
+| `/// <reference path="../../types/creatureGlobals.d.ts" />` (registerCreatureTypes.ts) | -> creatureGlobals.d.ts | no | missing |
+| namespace member `Stable.Groom` (CreatureLoader.ts) | -> Stable.ts | yes | ok |
+| `declare module "winston"` (types/winstonAugmentation.d.ts) | none in, none out | `CreatureService.ts -> winstonAugmentation.d.ts` | extra |
+| explicit extension `"./Speed.js"` (Movement.ts), `"./Zentaurenhöhle.js"` (lairKeeper.mts) | -> Speed.ts, -> Zentaurenhöhle.ts | yes | ok |
+| `.mjs` / `.cjs` specifier (`lairKeeper.mjs`, `hoardLedger.cjs` in EncounterEdgeCases.ts) | -> lairKeeper.mts, -> hoardLedger.cts | yes | ok |
+| component used only as a JSX tag (`<SpeedBadge speed={speed} />` in CreatureCard.tsx) | -> SpeedBadge.tsx | yes | ok |
+| type predicate only (`creature is Centaur` in `isCentaur`, EncounterEdgeCases.ts) | -> Centaur.ts | no | missing |
+| `satisfies Pick<HitPoints, ...>`, conditional type `T extends Speed ? ...`, `keyof typeof SpeedType`, constraint `<T extends CreatureId>` | 4 edges | yes | ok |
+| `instanceof NoSuchCreatureException`, default parameter value `rollD20()` | 2 edges | yes | ok |
+| EncounterResolver.ts | -> Creature.ts, Dice.ts, SpeedType.ts | yes | ok |
+| Zentaurenhöhle.ts (unicode file and class name) | -> ArmorClass.ts, and lairKeeper.mts -> it | yes with a UTF-8 locale | ok |
 
-Isolated reproductions (scratch, not in this folder):
+Isolated reproductions (scratch folder, not in this project): the same-name collision, `export { default as X } from`
+and `import x = require()` give no edge on their own; a type predicate gives no edge with `import type`, with a value
+import and with `asserts candidate is X`; `typeof import("./domain/Hydra")` as a return type gives no edge.
 
-- Same-name collision: `Facade.ts` importing `{ Creature }` from `domain/Creature` and `{ Creature as CreatureDto }`
-  from `dto/Creature` yields only `Facade -> domain/Creature`. Renaming the dto class to `CreatureDto` (same alias)
-  yields both edges. So the second import whose *original* name equals an earlier import's original name is lost; the
-  alias does not rescue it. This is the most important dependency-parser defect: DTO/domain pairs with the same name
-  are common in TypeScript.
-- `export { default as X } from './file'`: for all three default forms (`export default function Card`,
-  `export default class {}`, `export default Named` after a named class) the barrel gets a REEXPORT leaf `index.X` with
-  no outgoing edge, so the barrel never points at the file. A direct `import Card from './ui/Card'` does resolve.
-- `--verbose` on the dependency parser prints 22 timing lines and nothing about unresolved imports, so neither of the
-  two losses above is visible in the log.
+False positives: one, `domain/service/CreatureService.ts -> types/winstonAugmentation.d.ts` (leaf edge
+`CreatureService -> Logger`). `CreatureService.ts` imports `Logger` from the package `winston`; the `.d.ts` only
+augments that module.
 
-False positives: none. Every reported edge corresponds to an import in the source; no external module produced an edge.
-
-Cycles: 1 strongly connected component, 6 cycles reported. The SCC is {CreatureFacade, Creature, ArmorClass,
-CreatureService, Creatures, CreatureUtil, index}, which matches the three expected cycles through the barrel. The
-fourth expected cycle (`index -> CreatureCard -> Creature -> index`) is absent because the `index -> CreatureCard.tsx`
-edge is missing. Edges into the barrel are modelled as a hop: `Creature.Creature -> index.CreatureFacade` (REEXPORT
-leaf) `-> CreatureFacade.CreatureFacade`; the parser does not collapse the barrel to the real file.
-
-Upward edges: exactly the two expected (`Creature -> index`, `ArmorClass -> index`). Folder levels: `domain` 0,
-`application` 1, `adapter` 2, so `PersistedCreatures -> application/index` is downward, which is the hexagonal reading.
+Cycles and upward edges: 1 SCC, 6 cycles, 13 edges flagged `isCyclic`, all inside {CreatureFacade, Creature,
+ArmorClass, CreatureService, Creatures, CreatureUtil, index}; expected the same set plus the cycle through
+`CreatureCard.tsx`, which is absent because `index.ts -> CreatureCard.tsx` is missing. Upward: exactly the two
+expected (`Creature.ts -> index.ts`, `ArmorClass.ts -> index.ts`). Folder levels: `types` 0, `domain` 1,
+`application` 2, `adapter` 3.
 
 Leaf kinds:
 
-- right: CLASS for classes (abstract `Repository` included), INTERFACE for `Fightable` and `Creatures`, ENUM for
-  `CreatureType` and `SpeedType`, FUNCTION for `rollD20`, `toDomain`, `Persistent`, `CreatureCard`,
-  `should_save_creature_to_the_stable`, REEXPORT for the three barrel entries.
-- wrong: `type TableConstructor = ...` and `type CreatureCardProps = {...}` are reported as CLASS; `NodeType` has no
-  kind for a type alias. `export default CreatureType` adds a synthetic second leaf
-  `CreatureType.src_de_sots_cellarsandcentaurs_domain_model_CreatureType_DEFAULT_EXPORT` (kind ENUM, level 1) whose
-  only edge points at the named enum and which nothing imports (the default import in `Creature.ts` resolves to the
-  named leaf), so it is noise. In the scratch run an anonymous `export default class {}` came out as kind REEXPORT.
-- The test file's leaf is prefixed `CreatureService_test.` (dot in the file name escaped to underscore).
+- right: `class`, `interface` (`Fightable`, `Creatures`, `LairPort`, `CreatureTypeRegistry`), `enum` (`CreatureType`,
+  `SpeedType`, `ComputedLair`), `function` for function declarations, `reexport` for the eight barrel entries.
+- wrong: type aliases are `class` (`TableConstructor`, `CreatureCardProps`, `SpeedBadgeProps`, and in
+  EncounterEdgeCases.ts `SpeedValue`, `RollCallback`, `SpeedName`, `Terrain`); namespaces are `unknown`
+  (`Stable`, `EdgeNamespace`) and their members (`Groom`, `CAPACITY`, `innerRoll`) are not leaves; functions bound
+  to a `const` are `variable` (`SpeedBadge`, `arrowExpressionBody`, `arrowBlockBody`, `functionExpression`).
+- missing: no leaf for `declare function ambientRoll` (EncounterEdgeCases.ts) and for
+  `declare var creatureTypeRegistry` (types/creatureGlobals.d.ts).
+- noise: `export default CreatureType` adds the leaf
+  `src_de_sots_cellarsandcentaurs_domain_model_CreatureType_DEFAULT_EXPORT` (kind `enum`), which nothing references.
 
-Metrics: `incoming_dependencies` / `outgoing_dependencies` count distinct files and agree with the edge list
-(`Creature.ts` 8/8, `CreatureId.ts` 0/7, `index.ts` 2/3). They inherit the two missing edges: `dto/Creature.ts` 0
-incoming, `CreatureCard.tsx` 0 incoming, `CreatureFacade.ts` 9 outgoing instead of 10.
+Metrics: `incoming_dependencies` / `outgoing_dependencies` are sums of the edge attribute `dependencies`, not counts
+of files: `EncounterEdgeCases.ts` has 9 target files and `outgoing_dependencies` 15, `index.ts` 5 target files and 11,
+`Dice.ts` 4 source files and `incoming_dependencies` 8. The `x2` / `x6` duplication of the star exports goes
+straight into these numbers.
 
-Native vs. resolved: TypeScript has an explicit module system, so every edge is an `import`/`export ... from` with a
-relative or aliased path. CodeCharta resolves the relative paths, appends `index` for directory imports, reads
-`tsconfig.json` (`baseUrl` + `paths`) for the `@model/*` alias, expands `export *` by parsing the target file, and
-maps names through aliases. What it does not do: follow a barrel through to the file behind it, resolve
-`export { default as }`, or keep two imports with the same original name apart.
+`--verbose` prints the same lines as the default run; nothing about the eight unresolved references.
+
+Native vs. resolved: every TypeScript dependency is an `import` / `export ... from` with a path. CodeCharta resolves
+relative paths, directory imports to `index.ts`, the `tsconfig.json` alias, `.js` / `.mjs` / `.cjs` specifiers to
+`.ts` / `.mts` / `.cts`, aliases, `export *` and dynamic `import()`. It does not read `import x = require()`,
+`import("...").X` in type positions, side-effect imports, triple-slash references, `export { default as }`, and it
+does not treat a type predicate as a use of the type.
+
+## Unified parser
+
+Command (exit 0): `ccsh unifiedparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/unified.cc.json`, 39 files.
+The file also carries an empty `lenses.dependency` block.
+
+| extension | unified | dependency | domain |
+| --- | --- | --- | --- |
+| `.ts` | analysed | analysed | analysed |
+| `.tsx` (CreatureCard.tsx, SpeedBadge.tsx) | analysed | analysed | analysed |
+| `.cts` (hoardLedger.cts) | analysed | analysed | analysed |
+| `.mts` (lairKeeper.mts) | analysed | analysed | analysed |
+| `.d.ts` (types/*.d.ts) | analysed, 0 functions | analysed, interface leaves | analysed |
+| `.test.ts` | analysed | only with `--include-tests` | analysed, dropped by `--exclude-tests` |
+
+### EncounterResolver.ts
+
+| metric | expected | reported | verdict |
+| --- | --- | --- | --- |
+| loc | 91 | 91 | ok |
+| rloc | 73 | 73 | ok |
+| comment_lines | 13 | 13 | ok |
+| number_of_functions | 6 | 7 | deviates: the arrow function `const clamp = (...) => {...}` counts as a function (`variable_declarator` with an arrow value); the README calls it a lambda |
+| logic_complexity | 14 | 15 | wrong: `default:` in `resolve` counts (`switch_default`) |
+| complexity | 21 | 22 | wrong, follows from `default:` (15 + 7 function nodes) |
+| max_parameters_per_function | 5 | 5 | ok |
+| min_parameters_per_function | 0 | 0 | ok |
+| mean_parameters_per_function | 1.5 | 1.6 | wrong: 5 functions in the statistic, `fastestFirst` is folded into `initiativeOrder` |
+| median_parameters_per_function | 1 | 1 | ok |
+| max_complexity_per_function | 12 | 12 | equal by accident: 11 + `default` and no 1 for the function itself |
+| min_complexity_per_function | 1 | 0 | wrong: a straight-line function has 0 here, 1 in `complexity` |
+| mean_complexity_per_function | 3.5 | 3.4 | wrong (values 12, 0, 3, 2, 0) |
+| median_complexity_per_function | 1.5 | 2 | wrong |
+| max_rloc_per_function | 32 | 32 | ok |
+| min_rloc_per_function | 1 | 1 | ok |
+| mean_rloc_per_function | 10.33 | 11.4 | wrong: 5 values (32, 3, 13, 8, 1), nested function not separate |
+| median_rloc_per_function | 6.5 | 8 | wrong, same reason |
+| long_method | 2 | 2 | ok |
+| long_parameter_list | 1 | 1 | ok |
+| message_chains | 1 | 1 | ok |
+| excessive_comments | 1 | 1 | ok |
+
+Classification from `TypescriptMetricMapping.kt` and `MetricPerFunctionCalc.kt`: `switch_default` is a
+logic-complexity node; a function starts at the outermost function node and everything up to its end belongs to it,
+so nested functions and lambdas are counted in `number_of_functions` (7) but not in the per-function statistics (5);
+per-function complexity adds logic nodes and nested function nodes inside the body, never the function itself.
+
+### EncounterEdgeCases.ts
+
+Whole file: loc 336 / 336, rloc 271 / 271, comment_lines 12 / 12, number_of_functions 49 expected / 47 reported,
+logic_complexity 21 / 24, complexity 72 / 76, max parameters 5 / 5, long_method 0 / 0, long_parameter_list 1 / 1,
+message_chains 2 / 3, excessive_comments 1 / 1. Each construct was also run as a file of its own in a scratch
+folder; the table gives logic / complexity / functions from those runs. The per-construct sums match the whole file.
+
+| construct (declaration) | expected | reported | verdict |
+| --- | --- | --- | --- |
+| `for...of` (`forOfLoop`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| `for...in` (`forInLoop`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| `for (;;)` (`classicForLoop`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| `do ... while` (`doWhileLoop`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| `??` (`nullishCoalescing`) | 0 / 1 / 1 | 1 / 2 / 1 | deviates from the README rule; `??` is in the operator list next to `&&` and `\|\|` |
+| `??=` (`nullishAssignment`) | 0 / 1 / 1 | 0 / 1 / 1 | ok by the rule, inconsistent with `??` |
+| `\|\|=` and `&&=` (`logicalAssignment`) | 0 / 1 / 1 | 0 / 1 / 1 | ok by the rule, inconsistent with `\|\|` and `&&` |
+| `?.` (`optionalChaining`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| arrow, expression body (`const arrowExpressionBody`) | 0 / 1 / 1 | 0 / 1 / 1 | ok; rloc per function 0 |
+| arrow, block body with `if` (`const arrowBlockBody`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| function expression (`const functionExpression`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| inline callbacks `.map(...).filter(...)` (`inlineCallbacks`) | 0 / 3 / 1 | 0 / 3 / 1 | ok |
+| overload signatures (`overloaded`, 2 signatures + 1 body) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| abstract method + concrete method (`AbstractLair`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| interface method signatures (`LairPort`) | 0 / 0 / 0 | 0 / 0 / 0 | ok |
+| constructor parameter properties (`ParameterProperties`) | 0 / 1 / 1, 2 parameters | 0 / 1 / 1, 2 | ok |
+| getter + setter with `if` (`Accessors`) | 1 / 3 / 2 | 1 / 3 / 2 | ok |
+| `#secretPassage()` + caller (`PrivateMethods`) | 0 / 2 / 2 | 0 / 2 / 2 | ok |
+| `static { if ... }` (`StaticBlock`) | 1 / 1 / 0 | 1 / 2 / 0 | deviates: the static block adds 1 to complexity without being a function |
+| generator `function*` (`generatorRolls`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| `async` / `await` (`asyncLoad`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| `for await` (`forAwaitLoop`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| default parameter (`defaultParameter`) | 2 parameters | 2 | ok |
+| rest parameter (`restParameter`) | 1 parameter | 1 | ok |
+| optional parameter `bonus?: number` (`optionalParameter`) | 2 parameters | 1 | wrong: `optional_parameter` is not a parameter node |
+| the same in `nullishCoalescing(bonus?)` and `optionalChaining(creature?)` | 1 parameter each | 0 each | wrong, same cause |
+| destructured parameter (`destructuredParameter`) | 1 parameter | 1 | ok |
+| `this` parameter (`thisParameter(this: {...}, roll)`) | 1 parameter | 2 | wrong: `this` is counted |
+| type guard `creature is Centaur` (`isCentaur`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| conditional type `T extends Speed ? number : never` (`SpeedValue`) | 0 / 0 / 0 | 1 / 1 / 0 | wrong: `conditional_type` is a logic-complexity node |
+| enum with computed members (`ComputedLair`) | 0 / 0 / 0 | 0 / 0 / 0 | ok |
+| namespace with a function (`EdgeNamespace`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| decorator function + decorated method (`logged`, `Decorated`) | 0 / 2 / 2 | 0 / 2 / 2 | ok |
+| `satisfies` (`lairConfig`) | 0 / 0 / 0 | 0 / 0 / 0 | ok |
+| template literal with `//`, `/* */` and `${wounded ? ... : ...}` (`templateLiteral`) | 1 / 2 / 1, 0 comment lines | 1 / 2 / 1, 0 | ok |
+| TSDoc, block, line, `// @ts-ignore`, two trailing comments (`commented`) | 9 comment lines, rloc 4 | 9, 4 | ok |
+| comment markers in strings (`commentMarkersInStrings`) | 0 comment lines, rloc 3 | 0, 3 | ok |
+| multi-line template with a `//` line (`multiLineTemplate`) | 0 comment lines, rloc 3 | 0, 3 | ok |
+| labelled `break outer` (`labelledBreak`) | 3 / 4 / 1 | 3 / 4 / 1 | ok |
+| `switch` with grouped cases and `default` (`switchFallthrough`) | 3 / 4 / 1 | 4 / 5 / 1 | wrong: `default:` counts |
+| `catch {` without binding (`optionalCatchBinding`) | 1 / 2 / 1 | 1 / 2 / 1 | ok |
+| nested ternary (`nestedTernary`) | 2 / 3 / 1 | 2 / 3 / 1 | ok |
+| class field holding an arrow function (`ArrowProperty.handleRoll`) | 0 / 1 / 1 | 0 / 1 / 0 | deviates: not a function, although a `const` arrow is one |
+| object literal `open() {}`, `close: () => {}`, `get size()` (`lairObject`) | 0 / 3 / 3 | 0 / 3 / 2 | deviates: the arrow-valued property is not a function |
+| generic constraint `<T extends CreatureId>` (`genericConstraint`) | 0 / 1 / 1 | 0 / 1 / 1 | ok |
+| `catch` + `if (... instanceof ...)` (`instanceofInCatch`) | 2 / 3 / 1 | 2 / 3 / 1 | ok |
+| `declare function` (`ambientRoll`) | 0 / 0 / 0 | 0 / 0 / 0 | ok |
+| function type alias (`RollCallback`), `keyof typeof` (`SpeedName`), literal union (`Terrain`) | 0 / 0 / 0 | 0 / 0 / 0 | ok |
+| four calls joined by `?.` (`optionalMessageChain`) | message_chains 1 | 1 | ok |
+| three calls after a property access (`creature.getId().id.trim().toLowerCase().toUpperCase()`, `propertyInChain`) | message_chains 0 | 1 | deviates from "consecutive calls"; four calls in one member chain, defensible |
+| four calls over four lines (`multiLineChain`) | message_chains 1 | 1 | ok |
+| constructor with five parameter properties (`LongConstructor`) | long_parameter_list 1 | 1 | ok |
+| `extensionVariants`, `identifierForms` | 0 / 1 / 1, 0 / 0 / 0 | same | ok |
+
+Own miscount found on the way: the body of `labelledBreak` has 10 code lines, not 9 as assumed while planning
+`long_method 0`; the expected 0 still holds because the threshold is "more than 10".
+
+### Line counting
+
+loc, rloc and comment_lines match the hand count in every new file except the one JSX comment line in
+`CreatureCard.tsx` (rloc 28 instead of 27, see corrections). Comment markers inside strings and template literals
+are not counted as comments. A trailing comment counts for both rloc and comment_lines. `// @ts-ignore` and the
+triple-slash directive in `registerCreatureTypes.ts` count as comment lines.
+
+### Other files
+
+| file | expected (functions / logic / complexity) | reported | verdict |
+| --- | --- | --- | --- |
+| application/ui/CreatureCard.tsx | 1 / 2 / 4 | 1 / 2 / 4 | ok: `&&`, ternary and the `.map()` callback inside the markup are counted |
+| application/ui/SpeedBadge.tsx | 1 / 1 / 2 | 1 / 1 / 2 | ok for the file; `max_complexity_per_function` 0 and `max_rloc_per_function` 0 although the component holds a ternary over 4 lines |
+| domain/model/Zentaurenhöhle.ts | 2 / 1 / 3 | 2 / 1 / 3 | ok |
+| domain/model/lairKeeper.mts | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| domain/model/hoardLedger.cts | 1 / 2 / 3 | 1 / 2 / 3 | ok |
+| types/creatureGlobals.d.ts, types/winstonAugmentation.d.ts | 0 / 0 / 0 | 0 / 0 / 0 | ok |
+
+- Expression-bodied arrow functions never enter a "function body" (`statement_block`), so their per-function
+  complexity and rloc are 0 (`SpeedBadge.tsx`, `arrowExpressionBody`).
+- `adapter/persistence/CreatureEntity.ts`: `constructor(id?: string)` has `max_parameters_per_function` 0.
+- `??` adds 1 in `Centaur.ts`, `CreatureEntity.ts`, `CreatureFacade.ts`, `CreatureUtil.ts`, `SpeedLimit.ts`.
+- `application/CreatureFacade.ts`: 4 functions, 8 parameters on `create`, `long_parameter_list` 1,
+  `message_chains` 1 (the five `.set(...)` calls), `long_method` 1; all as the source reads.
+- `domain/service/CreatureService.test.ts`: 1 function, complexity 4 (three arrow callbacks); as the source reads.
 
 ## Domain language parser
 
-Commands (exit 0 unless noted):
+Commands (exit 0 unless noted); outputs `output/domain*.cc.json`:
 
 ```
-ccsh domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json                       # 26 files, 39 nodes
-ccsh domainlanguageparser ... --stop-word-level MINIMAL   -o output/domain-minimal.cc.json
-ccsh domainlanguageparser ... --stop-word-level AGGRESSIVE -o output/domain-aggressive.cc.json
-ccsh domainlanguageparser ... --exclude-tests            -o output/domain-no-tests.cc.json                    # 25 files, 38 nodes
-ccsh domainlanguageparser ... --string-weight 0           # exit 1: "--string-weight must be positive, got 0"
-ccsh domainlanguageparser ... --comment-weight 0          # exit 1: "--comment-weight must be positive, got 0"
+ccsh domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json   # 39 files, 39 nodes, 262 distinct words
+... --stop-word-level MINIMAL      # 271 words
+... --stop-word-level AGGRESSIVE   # 249 words
+... --exclude-tests                # 38 nodes, 260 words
+... --no-technical-stopwords       # 275 words
+... --ngrams 2                     # 343 entries
+... --string-weight 0 / --comment-weight 0   # exit 1, IllegalArgumentException with stack trace (scratch run)
 ```
 
-Weights are identifier 3, comment 2, string 1 (`ExtractionWeights` defaults); the `frequency` in the output is the
-weighted sum, not an occurrence count. A weight of 0 is rejected, so a source cannot be switched off; the README's
-suggestion of `--comment-weight 0` does not work and the crash is a stack trace rather than a usage message.
+The lens holds one node per file and none for folders or the root, so there is no "root node's word list". The
+frequencies below are sums over the 39 file nodes. Weights: identifier 3, comment 2, string 1.
 
-Expected words at the root node (94 words in total): all 17 present.
+Expected words: all 17 appear.
 
 | word | frequency | word | frequency | word | frequency |
 | --- | --- | --- | --- | --- | --- |
-| creature | 91 | speed | 45 | hit | 28 |
-| points | 28 | armor | 23 | roll | 12 |
-| damage | 8 | stable | 7 | dice | 6 |
-| hoard | 5 | centaur | 4 | cellar | 2 |
-| dungeon | 2 | lair | 2 | initiative | 2 |
-| encounter | 2 | treasure | 2 | | |
+| creature | 155 | speed | 87 | roll | 78 |
+| hit | 35 | lair | 32 | points | 31 |
+| armor | 28 | damage | 21 | hoard | 17 |
+| centaur | 16 | dice | 16 | stable | 13 |
+| treasure | 8 | encounter | 7 | initiative | 5 |
+| cellar | 4 | dungeon | 4 | | |
 
-`cellar`, `dungeon`, `lair`, `initiative`, `encounter`, `treasure` come only from comments (frequency 2 = one
-comment hit each); `stable` 7 = `STABLE_NAME` (3) + `should_save_creature_to_the_stable` (3) + the test description
-string (1). Package name `cellarsandcentaurs` is not split (it is a folder, not an identifier).
+`cellar` and `dungeon` come only from comments (two comments each). Plural forms are separate words
+(`creatures` 23, `speeds` 20, `rolls` 16): no stemming.
+
+Expected words of the new files that are missing, all for the same two reasons:
+
+- strings inside an exported declaration: `lair`, `stable` (the `case` labels in `EncounterResolver.ts`), `cellar`,
+  `swamp`, `volcano`, `gallop` (`EncounterEdgeCases.ts`), `galloping`, `pace`, `fast`, `slow` (`SpeedBadge.tsx`,
+  attribute and JSX expression strings), `höhle` (`Zentaurenhöhle.ts`).
+- JSX text: `centaur` from `Wandering centaur` and `hit`, `points` from `Hit points:` in `CreatureCard.tsx`.
 
 Keyword and technical leakage:
 
-- Language keywords: none. `class`, `type`, `interface`, `enum`, `constructor`, `readonly`, `static`, `private`,
-  `string`, `number`, `void`, `async`, `await`, `default`, `export`, `import` all absent; `ArmorClass` yields only
-  `armor`, `CreatureType` only `creature`. Right.
-- Technical words at MODERATE: `entity` (12), `repository` (6), `facade` (3), `dto` (3), `logger` (3), `persisted`,
-  `persistent` leak. `util`, `exception`, `service`, `test`, `save`, `find`, `create`, `base`, `name`, `props` are
-  filtered. Leaking `entity`/`repository`/`facade` at MODERATE is by design (they are only in the AGGRESSIVE list);
-  whether it is right is debatable, since `CreatureRepository` and `CreatureFacade` carry no domain meaning beyond
-  `creature`. `dto` and `logger` are not in any list.
-- Other noise at the root: `id` (42, second most frequent, from every `id` field and parameter), `value` (12),
-  `table` (12), `target` (9), `all` (8), `20` (3), `one`, `other`, `such`, `every`, `before`, `starts` (English
-  words that are not in the stop list). `saved` (3) and `saves` (1) survive although `save` is filtered: no stemming.
-- React was detected from `package.json` (framework keywords apply): `props` from `CreatureCardProps` is filtered,
-  JSX tag and attribute names (`article`, `className`, `h2`) and JSX text (`Hit points:`) are not extracted at all.
-- `--stop-word-level MINIMAL` adds `find` 15, `save` 12, `service` 10, `base` 6, `create` 6, `exception` 3 (100 words);
-  `AGGRESSIVE` removes `entity`, `value`, `repository`, `dto`, `facade`, `init`, `logger` (87 words); nothing else
-  changes.
+- Language keywords: none of `class`, `type`, `string`, `number`, `public`, `private`, `readonly`, `static`,
+  `export`, `import`, `const`, `let`, `var`, `function`, `return`, `void`, `async`, `await`, `interface`, `enum`,
+  `constructor` appears. Right.
+- Technical words at MODERATE: `entity` 12, `repository` 6, `logger` 6, `facade` 3, `dto` 3 appear; `util`,
+  `exception`, `test`, `service`, `save`, `find`, `create`, `props`, `key`, `title`, `name` are filtered. The five
+  that leak are in `technical-aggressive.txt` only; AGGRESSIVE removes them together with `value` 39,
+  `parameter` 18, `template`, `types`, `handle`, `init`, `method`, `param`.
+- Other noise: `id` 51 (fourth most frequent word), `value` 39, `total` 18, `max` 14, `all`, `one`, `such`,
+  `every`, `before`; `math`, `max` from the commented-out line in `EncounterResolver.ts`; `ts`, `ignore` from
+  `// @ts-ignore`; `script` from the word `TypeScript` in a comment (`type` is filtered as a keyword);
+  `reference`, `path`, `globals` from the triple-slash directive.
+- JSX tag names are identifiers: `article` 3 and `li` 3 from `CreatureCard.tsx`. `h2`, `p`, `ul` and `span` do not
+  appear; in scratch files `<article className=...>` was extracted and `<article>` without attributes was not
+  (cause not verified).
 
 Identifier splitting:
 
@@ -216,132 +398,166 @@ Identifier splitting:
 | camelCase | `walkingSpeed` | walking, speed |
 | snake_case | `walking_speed` (test file) | walking, speed |
 | SCREAMING_SNAKE | `MAX_HIT_POINTS` | max, hit, points |
-| PascalCase | `ArmorClass` | armor (`class` filtered as keyword) |
-| Acronym | `XPValue` | xp, value |
+| PascalCase | `ArmorClass` | armor (`class` filtered) |
+| Acronym | `XPValue`, `storedXPValue` | xp, value |
+| Acronym | `lairHTTPGate`, `HTTPSLairURL` | lair, http, gate / https, lair, url |
 | Digit | `d20Roll` | d20, roll |
-| Digit | `rollD20` | roll, 20 (the `D` is dropped as a one-letter word; inconsistent with `d20Roll`) |
-| Kebab in string | `"centaur-stable"` (CreatureFacade) | nothing, see below; in a plain function the same literal gives centaur, stable |
+| Digit | `rollD20` | roll, 20 |
+| Prefix | `$treasureMap`, `_hoardSize` | treasure, map / hoard, size |
+| Private name | `#secretPassage` | secret, passage |
+| Kebab in string | `"centaur-stable"` (CreatureFacade.ts, exported class) | nothing; in a non-exported scratch file centaur, stable |
 
 Comments and strings:
 
-- All four planted comments are counted with weight 2: `Creature` doc comment (cellar, roams, beasts, dragons, share),
-  `HitPoints` doc comment (lair, drop, recover, rests), the line comment in `CreatureFacade.create` (initiative,
-  encounter, dungeon, rolls, starts), the block comment in `CreatureUtil` (counts, treasure, hoard, guards). English
-  stop words (`a`, `the`, `and`, `in`, `when`, `it`, `its`) are removed; `all`, `every`, `before` are not.
-- String literals inside an `export`-prefixed declaration are **not extracted** (identifiers and comments inside it
-  are). Verified with one file per shape: `export class C { m() { g("x y") } }` and `export function f() { g("x y") }`
-  yield nothing, the same code without `export` (or with `export { C }` after the declaration) yields the words with
-  weight 1; call argument, `new` argument, concatenation, template literal, initializer, array, object, `return`,
-  `super(...)` all count outside an export. Consequence in this project: `"No such creature in the dungeon: "`
-  (`NoSuchCreatureException`, exported class), `"centaur-stable"` and `"Natural Armor"` (static fields of exported
-  classes) and the `saving creature` template in `CreatureService` contribute nothing; `dungeon` only survives via
-  the Facade comment. Since almost every TypeScript declaration is exported, string weight is effectively unused for
-  TypeScript, so `--string-weight` makes no visible difference on real code.
-- The test file's strings are counted (`"saves a creature to the stable"` -> saves 1, `"centaur-1"` -> centaur 1)
-  because they sit in a non-exported function; this is what made the defect visible.
+- All four planted comments are counted with weight 2 (`cellar`, `lair`, `initiative` / `encounter` / `dungeon`,
+  `treasure` / `hoard`), so are the 6-line doc comment and the block comment of `EncounterResolver.ts` and the JSX
+  comment in `CreatureCard.tsx` (`heading`, `shows`).
+- A string literal below an `export` statement is never extracted. `StringLiteralExtractor.kt` skips every string
+  that has an `export_statement` ancestor, which is meant for `export ... from "path"` and also hits
+  `export class`, `export function`, `export const` and `export default`. Scratch files: `export class`,
+  `export function`, `export const x = "..."`, `export default function` and an exported TSX component yield no
+  string word; the same code without `export`, or with `export { alpha }` after the declaration, yields them with
+  weight 1. In this project that removes `"No such creature in the dungeon: "`, `"centaur-stable"`,
+  `"Natural Armor"`, `"Größe der Höhle"`, every string in `EncounterResolver.ts` and `EncounterEdgeCases.ts`.
+- Non-exported strings that are counted: string-literal types, enum values, object keys and values, JSX attribute
+  values and `{"..."}` expressions (scratch), the test file's strings (`saves` 1, `centaur` 1) and `"winston"` in
+  `declare module "winston"`.
+- JSX text is not extracted in any form (`jsx_text` has no mapping).
 
-Test file handling: included by default (26 files, 39 nodes). `--exclude-tests` drops `CreatureService.test.ts`
-(38 nodes) and with it `saved`, `saves`, and lowers `creature` 91 -> 80, `stable` 7 -> 3, `centaur` 4 -> 3.
-`should`, `describe`, `it`, `expect`, `test` are filtered by the BDD stop list; `should_save_creature_to_the_stable`
-contributes creature, stable.
+Test file handling: included by default. `--exclude-tests` drops `CreatureService.test.ts` (38 nodes), removes
+`saved`, `saves` and lowers `creature` 155 -> 144, `stable` 13 -> 9, `centaur` 16 -> 15, `walking` 18 -> 15.
+`should_save_creature_to_the_stable` yields creature, stable; `should`, `save` are filtered.
 
-## Round 2: additional dependency forms
+- German words (`domain/model/Zentaurenhöhle.ts`): six of seven appear. From identifiers, intact:
+  `zentaurenhöhle` 3, `rüstungsklasse` 9, `größe` 3. From the comment, intact because they are ASCII: `verlies` 2,
+  `trefferpunkte` 2, `kreatur` 2. `höhle` is missing (only in the exported string). The umlaut words of the comment
+  are cut at every non-ASCII letter: `Zentaurenhöhle` -> `zentaurenh`, `hle`; `Rüstungsklasse` -> `stungsklasse`;
+  `gehören` -> `geh`, `ren`. The comment and string splitter is `\b[a-zA-Z]{3,}\b` (`SplitStage.kt`); a scratch
+  string `"Größe der Höhle"` gives `der`, `hle` and nothing for `Größe`. German stop words leak: `die`, `dem`,
+  `und`, `unter`, `jeder` (2 each), also `liegt`; there is only an English stop word list.
 
-Commands as in round 1, rerun after the additions (all exit 0). Default run: 32 files, 55 file edges, 44 leaves,
-62 leaf edges; with `--include-tests` 33 files, 61 / 45 / 68. Still 1 SCC and 6 cycles. New warning on both runs:
-`4 declaration(s) share a logical path with an earlier one, e.g. '...application.index.CreatureUtil'; keeping the
-first of each.` Expected: 12 new edges (11 forms + 1 control import), found 8 of them plus 1 false positive.
+## Changed since 2026-09-06
 
-| form | file(s) | expected edge | found | note |
-| --- | --- | --- | --- | --- |
-| side-effect import `import "./registerCreatureTypes"` | domain/model/Stable.ts | Stable -> registerCreatureTypes | **no** | `registerCreatureTypes.ts` has 0 incoming; the import binds no name, and the parser only creates edges for used names |
-| dynamic `await import("../domain/model/Centaur")` in a method | application/CreatureLoader.ts | CreatureLoader -> Centaur | yes | resolved to the leaf `Centaur.Centaur`; `Centaur.ts` now has 1 incoming |
-| inline type `import("../model/Speed").Speed` in a field and a parameter type | domain/service/SpeedLimit.ts | SpeedLimit -> Speed | **no** | `SpeedLimit.ts` has 0 outgoing; no `import` statement, so the type reference is never resolved |
-| `export * as dice from "../domain/model/Dice"` in the barrel | application/index.ts | index -> Dice | yes, but | expanded like a plain `export *`: three REEXPORT leaves `index.Dice`, `index.DiceRoll`, `index.rollD20`; the namespace name `dice` is lost, and the edge counts `x6` (see below) |
-| `export type { Fightable } from "../domain/model/Fightable"` | application/index.ts | index -> Fightable | yes | REEXPORT leaf `index.Fightable`, indistinguishable from a value re-export |
-| `import util = require("./CreatureUtil")`, used as `util.CreatureUtil.countHoard` | application/CreatureLoader.ts | CreatureLoader -> CreatureUtil | **no** | `CreatureUtil.ts` incoming stays at 2 (index, ArmorClass); the `import x = require()` clause is not read as an import |
-| `/// <reference path="../../typings/creatureGlobals.d.ts" />` | domain/model/registerCreatureTypes.ts | registerCreatureTypes -> creatureGlobals.d.ts | **no** | the `.d.ts` is analysed (leaf `typings.creatureGlobals_d.CreatureTypeRegistry`, INTERFACE) but the directive is a comment to the parser; `declare var creatureTypeRegistry` yields no leaf |
-| `export namespace Stable { export class Groom }` used as `Stable.Groom` | domain/model/Stable.ts, application/CreatureLoader.ts | CreatureLoader -> Stable | yes | file edge and leaf edge `CreatureLoader -> Stable.Stable` exist, but the namespace leaf has kind UNKNOWN and `Groom` / `CAPACITY` inside it are not leaves |
-| `declare module "winston" { interface Logger {...} }` in a `.d.ts` | typings/winstonAugmentation.d.ts | none | **wrong target** | no outgoing edge (right), but the file gets a leaf with logical path `winston.Logger` outside the `src` tree, and `CreatureService.ts -> typings/winstonAugmentation.d.ts` appears as a new edge (see false positives) |
-| explicit extension `import { Speed } from "./Speed.js"` | domain/model/Movement.ts | Movement -> Speed | yes | `.js` mapped to `Speed.ts` |
-| inline modifier `export { type HitPoints } from "../domain/model/HitPoints"` | application/index.ts | index -> HitPoints | yes | REEXPORT leaf `index.HitPoints` |
-| control: `import { CreatureId }` | application/CreatureLoader.ts | CreatureLoader -> CreatureId | yes | |
+No unified-parser report existed; that section is new.
 
-Isolated reproductions (scratch, not in this folder):
+Dependency parser, no longer true:
 
-- `export * as dice from "./Dice"` as the only line of a barrel gives one edge `index -> Dice x3` and the same three
-  un-namespaced REEXPORT leaves, so the namespace is dropped regardless of context.
-- Two plain star exports in one barrel (`export * from "./Dice"; export * from "./Other"`) give `index -> Dice x6`,
-  `index -> Other x2` and the warning `4 declaration(s) share a logical path`. Every `export *` is expanded once per
-  star export in the file, so with N star exports every re-exported leaf is created N times; the duplicates are
-  dropped for the leaf list but not for the file-edge `dependencies` count. Round 1 had a single `export *` and could
-  not see this.
-- `import { createLogger } from "winston"` next to the augmentation `.d.ts` gives no edge; `import type { Logger }
-  from "winston"` gives `Service.ts -> typings/winstonAugmentation.d.ts`. The ambient `declare module "winston"` is
-  registered as an internal module named `winston`, and any import of a name it declares is resolved to the `.d.ts`.
+- The warning `4 declaration(s) share a logical path with an earlier one` is no longer printed; the `x2` / `x6`
+  duplication it pointed at is still in the output.
+- "Metrics count distinct files" does not hold on the current output: they sum declaration-level dependencies
+  (see Metrics above). Whether the parser changed or the earlier files simply had one declaration pair per edge
+  was not verified.
+- "The leaf `winston.Logger` lives outside the `src` logical tree": leaves are stored per file and name
+  (`types/winstonAugmentation.d.ts` / `Logger`) without a logical path, so the statement can no longer be checked.
+- The earlier count of 12 expected round-2 edges was 11.
 
-Round-1 edges: all 47 are still present with the same `isCyclic` / `isPointingUpwards` flags, and the cycle count is
-unchanged (1 SCC, 6 cycles). Two things did change:
+Dependency parser, still true: all six missing round-1 / round-2 edges, the false `winston` edge, the star-export
+duplication, type aliases as `class`, namespaces as `unknown`, the synthetic `..._DEFAULT_EXPORT` leaf, no
+information from `--verbose`, 1 SCC / 6 cycles, the two upward edges, the folder order.
 
-- `application/index.ts -> application/CreatureUtil.ts` went from `x1` to `x2` (the star-export duplication above),
-  and the `CreatureUtil` REEXPORT leaf is one of the four duplicates named in the warning.
-- Folder levels shifted by one (`domain` 0 -> 1, `application` 1 -> 2, `adapter` 2 -> 3) because the new `typings`
-  folder sits at level 0 below `domain`; the relative order and both upward flags are as before.
+Dependency parser, new: a type predicate does not create an edge (`EncounterEdgeCases.ts -> Centaur.ts`);
+`import = require` is also unread in a `.cts` file; functions bound to a `const` have the leaf kind `variable`.
 
-New false positives: one. `domain/service/CreatureService.ts -> typings/winstonAugmentation.d.ts` (leaf edge
-`CreatureService.CreatureService -> winston.Logger`). `CreatureService` imports `Logger` from the external package
-`winston`; the augmentation file only adds a field to that interface. The edge raises `CreatureService.ts` from 2 to
-3 outgoing dependencies and gives the `.d.ts` an incoming dependency. The round-1 statement "no external module
-produced an edge" no longer holds once a module augmentation is present in the tree.
+Domain parser, no longer true:
 
-Domain parser after round 2 (33 files, 47 nodes, 116 root words, all 17 expected words still present): `creature`
-91 -> 114, `speed` 45 -> 51, `stable` 7 -> 13, `centaur` 4 -> 13; new words `groom`, `registry`, `movement`,
-`loader`, `capacity`, `fastest`, and from the triple-slash directive (a comment) `reference`, `path`, `typings`,
-`globals`. The string `"winston"` in `declare module "winston"` is counted (weight 1, non-exported context) while
-`"cellar"` in `new Stable.Groom("cellar")` and the template in `Groom.brush` are not (exported declarations), which
-matches the round-1 export finding.
+- "39 nodes for 26 files" and "words at the root node": the lens now has file nodes only.
+- "JSX tag names are not extracted at all": `article` and `li` are now words of `CreatureCard.tsx`.
+- "`dto` and `logger` are not in any list": both are in `technical-aggressive.txt`.
+- The longer MINIMAL / AGGRESSIVE differences (`error`, `load`, `index`; `parameter`, `template`, `handle`,
+  `method`) come from words of the new files, not from a changed list.
+
+Domain parser, still true: all 17 words present, no keyword leakage, strings below `export` are dropped, weight 0
+aborts with a stack trace, `rollD20` -> `roll`, `20`, no stemming, `id` among the top words.
 
 ## Verdict
 
-- Good: every round-1 import form except items 1 and 2 under Wrong resolves to the right file: relative paths, `.tsx`, the `tsconfig`
-  `paths` alias, aliased imports, `import type`, `import * as`, default imports, `export *` expansion, decorator
-  arguments, generic base classes, `implements`; no external module produces an edge; tests are skipped by default and
-  fully resolved with `--include-tests`; cycle and upward flags match expectations; metrics agree with the edge list.
-  Domain parser: all 17 expected words at the root, no keyword leakage, all four comment forms counted, all identifier
-  forms split correctly except the `rollD20` digit case.
-  Round 2: dynamic `import()`, `export type { } from`, `export { type X } from`, an explicit `.js` extension and a
-  namespace member reference (`Stable.Groom`) all resolve to the right file.
-- Wrong:
-  1. `application/CreatureFacade.ts`: the second of two imports with the same original name (`import { Creature }
-     from '../domain/model/Creature'` and `import { Creature as CreatureDto } from './dto/Creature'`) is dropped, so
-     `CreatureFacade -> application/dto/Creature.ts` is missing. Reproduced in isolation; renaming the class fixes it.
-  2. `application/index.ts`: `export { default as CreatureCard } from './ui/CreatureCard'` produces a REEXPORT leaf
-     with no outgoing edge, so `index.ts -> ui/CreatureCard.tsx` and the cycle through it are missing.
-  3. Domain parser: string literals inside `export`ed declarations are never extracted (`NoSuchCreatureException`,
-     `CreatureFacade.STABLE_NAME`, `CreatureUtil.STANDARD_ARMOR_CLASS_DESCRIPTION`), which silences string weight for
-     practically all TypeScript code.
-  4. `--string-weight 0` / `--comment-weight 0` abort with a stack trace instead of disabling that source.
-  5. Type aliases (`TableConstructor`, `CreatureCardProps`) are reported as kind CLASS; `export default CreatureType`
-     adds an unreferenced synthetic `..._DEFAULT_EXPORT` leaf.
-  6. `rollD20` splits to `roll`, `20` while `d20Roll` splits to `d20`, `roll`.
-  7. `application/index.ts`: with more than one star export (`export * from './CreatureUtil'` and
-     `export * as dice from '../domain/model/Dice'`) every re-exported leaf is expanded once per star export, so the
-     file edges count double (`index -> CreatureUtil x2`, `index -> Dice x6`) and the parser warns about duplicate
-     declarations. `export * as dice` also loses the namespace name and is flattened into plain re-exports.
-  8. `typings/winstonAugmentation.d.ts`: `declare module "winston"` is registered as an internal module, so
-     `CreatureService.ts` (which imports `Logger` from the real `winston` package) gets a false edge to the `.d.ts`,
-     and the leaf `winston.Logger` lives outside the `src` logical tree.
-  9. `domain/model/Stable.ts`: the `namespace Stable` leaf has kind UNKNOWN and its members `Groom`, `CAPACITY` are
-     not leaves.
+### Unified parser
+
 - Missing:
-  - The barrel is not collapsed: edges stop at `index.ts`, so `Creature -> CreatureFacade` only exists as a two-hop
-    leaf path; the dependency lens has no notion of "this edge is a re-export hop".
-  - `--verbose` on the dependency parser reports nothing about imports it could not resolve.
-  - No stemming (`saved`/`saves` next to a filtered `save`), no filtering of `id`, `dto`, `logger`.
-  - Construct 8 (fully qualified reference without import) does not exist in TypeScript.
-  - Round 2, four import forms that never produce an edge: the side-effect import `import "./registerCreatureTypes"`
-    (`Stable.ts`), the CommonJS interop `import util = require("./CreatureUtil")` (`CreatureLoader.ts`), the inline
-    type `import("../model/Speed").Speed` (`SpeedLimit.ts`) and the triple-slash `/// <reference path=...>`
-    (`registerCreatureTypes.ts`). The first is consistent with the usage-based approach (no name to use); the other
-    three are real references that the parser does not read.
-  - `declare var creatureTypeRegistry` in the `.d.ts` yields no leaf, so a global declared there cannot be a target.
+  - `domain/model/Zentaurenhöhle.ts` is skipped without a message when the JVM runs with a non-UTF-8 locale; the
+    same holds for the other two parsers. **Decision: accept for all three parsers (derived from Java).**
+  - A `.gitignore` above the scanned folder is not read (`No .gitignore found at root level`); a probe in an
+    ignored `typings/` folder was analysed. **Decision: ignore (derived from Kotlin).**
+- Wrong:
+  1. `EncounterResolver.ts` `resolve` and `EncounterEdgeCases.ts` `switchFallthrough`: `default:` adds 1 to
+     `logic_complexity` and `complexity` (15 / 22 instead of 14 / 21). **Decision: ignore (derived from Java).**
+  2. `EncounterResolver.ts`: `number_of_functions` is 7, but the per-function statistics hold 5 values, because
+     `fastestFirst` and `clamp` are folded into `initiativeOrder` and `safeRoll` (mean parameters 1.6 instead of 1.5,
+     mean rloc 11.4 instead of 10.33, median rloc 8 instead of 6.5). **Decision: accept (derived from Java).**
+  3. Per-function complexity leaves out the function itself: `describe` and `isEmpty` have 0, so
+     `min_complexity_per_function` is 0 while `complexity` counts 1 per function. **Decision: ignore (derived from Java).**
+  4. `EncounterEdgeCases.ts` `SpeedValue`: the conditional type `T extends Speed ? number : never` adds 1 to
+     `logic_complexity`. **Decision: ignore — documented.**
+  5. Parameters: `bonus?: number` is not counted (`optionalParameter` 1 instead of 2, `CreatureEntity` constructor
+     0 instead of 1) and the `this` parameter is counted (`thisParameter` 2 instead of 1). **Decision: accept — optional parameters should count; the `this` parameter counting is fine, ignore.**
+  6. `SpeedBadge.tsx`, `arrowExpressionBody`: an arrow function with an expression body has per-function
+     complexity 0 and rloc 0. **Decision: accept.**
+- Bad:
+  - `??` counts as a branch (`nullishCoalescing`), `??=`, `||=`, `&&=` and `?.` do not. **Decision: accept — `??=`, `||=`, `&&=` should count like their long forms.**
+  - A `const` arrow function is a function (`clamp`, `arrowBlockBody`, `SpeedBadge`), a class field or object
+    property holding an arrow function is not (`ArrowProperty.handleRoll`, `lairObject.close`). **Decision: accept (derived from Java).**
+  - `StaticBlock`: a static block adds 1 to `complexity` and 0 to `number_of_functions`. **Decision: ignore (derived from Java).**
+  - `propertyInChain`: a property access inside a chain does not interrupt `message_chains`. **Decision: ignore — matches the documented node lists.**
+  - `CreatureCard.tsx`: the JSX comment line counts as code and as comment. **Decision: ignore.**
+- Good: loc, rloc and comment_lines in every file; comment markers in strings and template literals; all loop
+  forms including `for await`; `catch` with and without binding; ternaries inside template literals and JSX; `&&`
+  and callbacks inside JSX; overload signatures, abstract methods, interface signatures, `declare function` and
+  function types are not functions; getters, setters, `#private` methods, generators, constructors, namespace
+  functions and decorated methods are; default, rest and destructured parameters; `extends` in a generic
+  constraint is not a branch; `.cts`, `.mts`, `.d.ts`, `.tsx` are all analysed.
+
+### Dependency parser
+
+- Missing:
+  1. `application/CreatureFacade.ts`: the second of two imports with the same original name
+     (`import { Creature as CreatureDto } from "./dto/Creature"`) gives no edge; `dto/Creature.ts` has 0 incoming. **Decision: accept (derived from Java).**
+  2. `application/index.ts`: `export { default as CreatureCard } from "./ui/CreatureCard"` gives a `reexport` leaf
+     without an edge, so the cycle through `CreatureCard.tsx` is not found. **Decision: accept.**
+  3. `application/CreatureLoader.ts`, `domain/model/hoardLedger.cts`: `import x = require("...")` is not read. **Decision: accept.**
+  4. `domain/service/SpeedLimit.ts`: `import("../model/Speed").Speed` in a type position gives no edge. **Decision: accept (derived from Java).**
+  5. `domain/service/EncounterEdgeCases.ts` `isCentaur`: a type used only in a type predicate
+     (`creature is Centaur`) gives no edge. **Decision: accept (derived from Java).**
+  6. `domain/model/registerCreatureTypes.ts`: `/// <reference path=...>` gives no edge, and
+     `declare var creatureTypeRegistry` in `types/creatureGlobals.d.ts` is no leaf. **Decision: ignore.**
+  7. `domain/model/Stable.ts`: the side-effect import `import "./registerCreatureTypes"` gives no edge. **Decision: accept.**
+  8. `--verbose` says nothing about unresolved imports. **Decision: ignore.**
+- Wrong:
+  1. `types/winstonAugmentation.d.ts`: `declare module "winston"` makes
+     `CreatureService.ts -> winstonAugmentation.d.ts` appear, an edge to a file `CreatureService.ts` never imports. **Decision: accept.**
+  2. `application/index.ts`: two star exports double the count of every star-exported declaration
+     (`-> CreatureUtil.ts x2`, `-> Dice.ts x6`), and `outgoing_dependencies` 11 / `Dice.ts` incoming 8 inherit it. **Decision: accept.**
+  3. Leaf kinds: type aliases are `class`, namespaces `unknown` without member leaves, `const` functions `variable`. **Decision: accept.**
+- Bad:
+  - `incoming_dependencies` / `outgoing_dependencies` count declaration pairs, not files; the name suggests files. **Decision: accept (derived from Java).**
+  - `CreatureType.ts`: the unreferenced `..._DEFAULT_EXPORT` leaf. **Decision: accept.**
+  - `export * as dice` is flattened, the namespace name is lost. **Decision: ignore.**
+  - The barrel is a hop of its own; `Creature.ts -> CreatureFacade.ts` exists only via `index.ts`. **Decision: accept — an import through a barrel should point at the real target.**
+- Good: relative paths, directory import, `tsconfig` alias, `.js` / `.mjs` / `.cjs` specifiers, aliased, namespace,
+  default, type-only and dynamic imports, `export *`, `export type`, decorators, `extends` / `implements`, generic
+  arguments and constraints, `satisfies`, conditional types, `keyof typeof`, `instanceof`, a component used only as
+  a JSX tag, unicode file and class names, test exclusion and `--include-tests`, cycle and upward flags.
+
+### Domain language parser
+
+- Missing:
+  1. JSX text is not extracted: `Wandering centaur`, `Hit points:`, `Walking speed:` in `CreatureCard.tsx`. **Decision: accept.**
+  2. No folder or root nodes in the lens; a word list for the project has to be summed from the file nodes. **Decision: ignore (derived from Java).**
+  3. No German stop words: `die`, `dem`, `und`, `unter`, `jeder` from `Zentaurenhöhle.ts` are reported. **Decision: ignore (derived from Java).**
+  4. No stemming: `creature` / `creatures`, `speed` / `speeds`, `roll` / `rolls`, `saved` / `saves`. **Decision: ignore (derived from Java).**
+- Wrong:
+  1. Strings below `export` are dropped (`NoSuchCreatureException.ts`, `CreatureFacade.ts`, `CreatureUtil.ts`,
+     `EncounterResolver.ts`, `EncounterEdgeCases.ts`, `SpeedBadge.tsx`, `Zentaurenhöhle.ts`); with almost every
+     TypeScript declaration exported, the string weight has next to no effect. **Decision: ignore.**
+  2. `Zentaurenhöhle.ts`: umlaut words in comments and strings are cut into `zentaurenh`, `hle`, `stungsklasse`,
+     `geh`, `ren`, while the same words as identifiers stay whole. **Decision: accept (derived from Java).**
+  3. `--string-weight 0` / `--comment-weight 0` abort with a stack trace. **Decision: accept (derived from Java).**
+  4. `rollD20` gives `roll`, `20`; `d20Roll` gives `d20`, `roll`. **Decision: ignore (derived from Java).**
+- Bad:
+  - `id` 51 and `value` 39 are among the five most frequent words; `entity`, `repository`, `facade`, `dto`,
+    `logger` pass at the default level. **Decision: ignore (derived from Java).**
+  - JSX tag names (`article`, `li`) are counted as identifiers with weight 3, and not consistently. **Decision: accept.**
+  - Commented-out code and compiler directives feed words (`math`, `max`, `ts`, `ignore`, `reference`, `path`). **Decisions derived from Java: ignore — commented-out code.**
+- Good: all 17 expected words; no language keyword leaks; every comment form including JSX comments; camelCase,
+  snake_case, SCREAMING_SNAKE, PascalCase, acronym, `$` / `_` / `#` prefixed identifiers; unicode identifiers stay
+  whole; `.cts`, `.mts`, `.d.ts`, `.tsx` are read; test files are included by default and removed by
+  `--exclude-tests`; the stop-word levels and `--ngrams 2` (`hit points` 27, `walking speed` 15) work.

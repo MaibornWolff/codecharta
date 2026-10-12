@@ -1,7 +1,7 @@
 # Sample projects
 
-One small "Cellars and Centaurs" project per language, used to check what the `dependencyparser` and the
-`domainlanguageparser` of CodeCharta find in each language. The projects do not need to compile. They are
+One small "Cellars and Centaurs" project per language, used to check what the `unifiedparser`, the
+`dependencyparser` and the `domainlanguageparser` of CodeCharta find in each language. The projects do not need to compile. They are
 modelled on `Ideas/DC/DependaCharta/exampleProjects/*` and share one domain model so that results are
 comparable across languages.
 
@@ -24,6 +24,7 @@ Language folders: `abl`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `
 
 | Parser | Languages |
 | --- | --- |
+| `unifiedparser` | every language except abl (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`) |
 | `dependencyparser` | php, csharp, typescript (+tsx), javascript, java, go, python, c and cpp (one C++ grammar), kotlin, vue, delphi, rust |
 | `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, abl, rust |
 
@@ -88,7 +89,7 @@ Identifier forms to use somewhere in the project, so identifier splitting can be
 | Digit | `d20Roll` |
 | Kebab in string | `centaur-stable` |
 
-Expected domain words (must appear in the root node's word list): creature, centaur, cellar, dungeon, armor,
+Expected domain words (the domain lens holds file nodes only, so sum the frequencies over all files): creature, centaur, cellar, dungeon, armor,
 hit, points, speed, damage, lair, initiative, encounter, treasure, hoard, stable, dice, roll.
 
 Words that must not appear: language keywords (`class`, `public`, `def`, `func`, `fn`, `let`, `var`,
@@ -96,9 +97,65 @@ Words that must not appear: language keywords (`class`, `public`, `def`, `func`,
 `facade`?, `entity`, `repository`, `exception`, `test`, `mock`, ...). Report which of these leak through and
 say whether that is right or wrong for the language.
 
+## Stress content for the unified parser
+
+`domain/service` holds one `EncounterResolver` (file and identifier casing as the language wants it) with the
+same logic in every language, so the numbers are comparable. The expected values are written into
+FINDINGS.md **before** the parser runs, counted by hand with the rule below, not taken from the parser.
+
+| Function | Parameters | Body |
+| --- | --- | --- |
+| `resolve(attacker, defender, roll, bonus, terrain)` | 5 | `if` with early return, `else if`, `else`; a `for` loop over the attacker's speeds holding an `if` with one `&&`; a `while` loop; a `switch` / `when` / `match` with 3 cases and a default; one ternary (or the language's conditional expression); one `||`. More than 10 real lines. |
+| `describe(creature)` | 1 | one chain of exactly 5 consecutive method calls on one expression and one chain of exactly 3 |
+| `safeRoll(dice)` | 1 | `try` with one `catch` (and `finally` where it exists); a lambda / closure / anonymous function holding one `if` |
+| `initiativeOrder(creatures)` | 1 | a nested named function where the language has them, and one recursive call |
+| `isEmpty()` | 0 | a single `return` |
+
+Comments in the file: a 6-line doc comment on the type, three line comments, one 2-line block comment, one
+trailing comment after code, one line of commented-out code. Where the language lacks a construct, use the
+closest idiom and say so.
+
+Counting rule for the expected values:
+
+| Metric | Expected by |
+| --- | --- |
+| `logic_complexity` | +1 per `if`, `else if`, loop, `case` (not `default`), `catch`, conditional expression, `&&`, `\|\|` |
+| `complexity` | `logic_complexity` + 1 per function, method, lambda |
+| `number_of_functions` | named functions and methods, lambdas excluded |
+| `loc` / `rloc` / `comment_lines` | all lines / lines with code / lines with a comment (a trailing comment line counts for both) |
+| `max` / `min` / `mean` / `median` of parameters, complexity and rloc per function | from the table above; rloc of a function is its body |
+| `long_method` | functions with more than 10 rloc |
+| `long_parameter_list` | functions with more than 4 parameters |
+| `message_chains` | chains of 4 or more consecutive calls |
+| `excessive_comments` | 1 when the file has more than 10 comment lines |
+
+A second file `EncounterEdgeCases` in the same folder holds what the language has beyond that and what a
+parser is likely to miss: null-coalescing and optional chaining, pattern guards, comprehensions, `unless` /
+`until`, `guard` / `defer`, `select`, `do … while`, `goto`, labelled breaks, fallthrough, exception filters,
+preprocessor branches and macros, local functions, constructors, initialisers, property accessors, operator
+overloads, extension functions, generators, `async` / `await`, default and variadic parameters, expression
+bodies, comment markers inside strings, multi-line strings and heredocs, nested comments, doc comments in
+every syntax the language has. One function per construct, each with its expected value. The same file may
+carry constructs the dependency and the domain parser are likely to miss that rounds 1 and 2 did not cover.
+
+## Round 3 additions (2026-10-08)
+
+| Addition | Where | What to judge |
+| --- | --- | --- |
+| German words | `domain/model`, a type `Zentaurenhöhle` (file `Zentaurenhoehle` if the file system or language objects) with a field `rüstungsklasse`, the comment `Die Zentaurenhöhle liegt unter dem Verlies. Rüstungsklasse und Trefferpunkte gehören zu jeder Kreatur.` and the string `Größe der Höhle`. Where identifiers must be ASCII, use `Zentaurenhoehle` / `ruestungsklasse` and keep comment and string. | Domain parser: do `zentaurenhöhle`, `verlies`, `rüstungsklasse`, `trefferpunkte`, `kreatur`, `größe`, `höhle` appear, are umlaut words cut apart, do German stop words (`die`, `unter`, `dem`, `und`, `jeder`) leak. The other two parsers: is the file handled at all. |
+| JSX / TSX | javascript: `CreatureCard.jsx`, typescript: `CreatureCard.tsx`, importing the domain `Creature`, rendering a `<SpeedBadge />` from a second component file that is used only as a tag, with `&&`, a ternary and `.map()` inside the markup and the text `Wandering centaur` | all three parsers |
+| TypeScript typings | the `declare module` files from round 2 again, in a folder the root `.gitignore` does not ignore (`typings/` is ignored) | dependency parser |
+| Extension variants | one small file for every rarer extension any parser lists for the language (`.cc .cxx .hh .hxx .h++`, `.mm`, `.kts`, `.pyw`, `.phtml`, `.bash .zsh`, `.cts .mts`, `.cjs .mjs`, `.rake .gemspec`, `.p .w`, `.dpr`) | table extension x parser: analysed or skipped |
+
+Run every command with `LC_ALL=C.UTF-8` (or another UTF-8 locale). Under a POSIX locale the JVM cannot decode
+`Zentaurenhöhle.*` and all three parsers leave the file out without a message.
+
+The parsers look for a `.gitignore` in the scanned folder only, so the repository's root `.gitignore` does not
+apply to a run on `sample-projects/<language>`; `-e "output,FINDINGS.md"` is what keeps the results out.
+
 ## How to run
 
-The built CLI is `analysis/build/install/codecharta-analysis/bin/ccsh`. Both parsers need absolute paths,
+The built CLI is `analysis/build/install/codecharta-analysis/bin/ccsh`. The parsers need absolute paths,
 so the commands below derive them from the repository root and work from any directory. Do not rebuild the
 CLI and do not change anything under `analysis/` or `visualization/`.
 
@@ -107,9 +164,11 @@ REPO=$(git rev-parse --show-toplevel)
 CCSH="$REPO/analysis/build/install/codecharta-analysis/bin/ccsh"
 LANG_DIR="$REPO/sample-projects/<language>"
 mkdir -p "$LANG_DIR/output"
+"$CCSH" unifiedparser -nc "$LANG_DIR" -e "output,FINDINGS.md" -o "$LANG_DIR/output/unified.cc.json"
 "$CCSH" dependencyparser -nc "$LANG_DIR" -e "output,FINDINGS.md" -o "$LANG_DIR/output/dependency.cc.json"
 "$CCSH" dependencyparser -nc "$LANG_DIR" -e "output,FINDINGS.md" --include-tests -o "$LANG_DIR/output/dependency-with-tests.cc.json"
 "$CCSH" domainlanguageparser -nc "$LANG_DIR" -e "output,FINDINGS.md" -o "$LANG_DIR/output/domain.cc.json"
+python3 "$REPO/sample-projects/tools/dump_lenses.py" "$LANG_DIR/output/unified.cc.json"
 python3 "$REPO/sample-projects/tools/dump_lenses.py" "$LANG_DIR/output/dependency.cc.json"
 python3 "$REPO/sample-projects/tools/dump_lenses.py" "$LANG_DIR/output/domain.cc.json" --words 40
 ```
@@ -120,7 +179,9 @@ Options worth a second run when judging a finding: `--verbose` on both parsers, 
 The `.cc.json` uses API version 2.1: `files` holds the tree, `lenses.dependency.edges` the file-level edges
 (with `isCyclic` and `isPointingUpwards` flags), `lenses.dependency.leaves` / `leafEdges` the
 declaration-level graph, `lenses.metrics.attributes` the per-file `incoming_dependencies` /
-`outgoing_dependencies`, and `lenses.domain.nodes` the word list per file and folder.
+`outgoing_dependencies` and, from the unified parser, the code metrics, and `lenses.domain.nodes` the word
+list per file (no folder or root entry). A parser run on a language it does not support is still part of the report: say
+whether it fails, writes an empty map or skips the files silently.
 
 ## FINDINGS.md template
 
@@ -137,16 +198,31 @@ declaration-level graph, `lenses.metrics.attributes` the per-file `incoming_depe
 - leaf kinds (CLASS, INTERFACE, ENUM, REEXPORT, ...): right or wrong
 - what the language offers natively (module system, namespaces) and what CodeCharta has to resolve itself
 
+## Unified parser
+- command(s) and whether they ran without error, which files and extensions were analysed or skipped
+- `EncounterResolver`: table metric | expected (written before the run) | reported | verdict
+- `EncounterEdgeCases`: table construct | expected | reported | verdict
+- line counting: loc, rloc, comment lines, comment markers in strings
+- everything else that looks off in the other files (functions not counted, wrong parameter counts)
+
 ## Domain language parser
 - command(s) and whether they ran without error
-- expected words: which of the 17 appear at the root node, with frequency
+- expected words: which of the 17 appear, with the frequency summed over the files
 - keyword and technical-word leakage: which appear, and whether that is right
 - identifier splitting: table form | identifier | words found
 - comments and strings: are the planted sentences counted, are weights visible
 - test file handling
 
+- German words: which of the seven appear, how umlauts are split
+
+## Changed since 2026-09-06
+- findings of the earlier report that no longer hold, and new ones on the old files
+
 ## Verdict
-- Good: ...
-- Wrong: ... (most important first, with the file and the exact construct)
-- Missing: ...
+One block per parser (unified, dependency, domain), most important first, each item with the file and the
+exact construct:
+- Missing: not supported or not extracted at all
+- Wrong: a result that is incorrect
+- Bad: works, but noisy, misleading or awkward to use
+- Good: what can be relied on
 ```

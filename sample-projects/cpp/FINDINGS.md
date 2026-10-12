@@ -1,248 +1,513 @@
 # C++
 
+> Correction (2026-10-08, cross-check with one identifier per file): the digit split is attributed the wrong way
+> round wherever this report mentions it. `d20Roll` gives `20` + `roll` (the leading `d` is dropped), `rollD20` gives
+> `roll` + `d20`, `roll_d20` gives `roll` + `20`. Both identifiers sit in the same file here, so the file's word list
+> could not tell them apart.
+
+Report of 2026-10-08 (round 3). Every claim below was re-checked against the output of this day's runs; the expectations
+in the appendix were written before the parsers ran and are kept unchanged, corrections to them are marked as such.
+
 ## Project
 
-- Layout: `CMakeLists.txt`, `src/de/sots/cellarsandcentaurs/{domain/model,domain/service,adapter/persistence,application,application/dto}`
+- Layout: `CMakeLists.txt`, `src/de/sots/cellarsandcentaurs/{domain/model,domain/service,adapter/persistence,application,application/dto,variants}`
   with `.hpp` headers and `.cpp` sources, `test/de/sots/cellarsandcentaurs/domain/service/CreatureServiceTest.cpp` (gtest).
-  26 source files under `src/` (13 in `domain/model`, 3 in `domain/service`, 5 in `adapter/persistence`, 5 in `application`),
-  1 test file, 28 files in total. Namespaces `de::sots::cellarsandcentaurs::...` mirror the folders. `#include "..."` uses
-  relative paths inside `src/`; the test uses include-root paths (`de/sots/.../CreatureService.hpp`, the `-I src` convention).
-- Stress constructs that exist in C++ and are in the project:
-  1. alias `using Entity = CreatureEntity;` in `CreatureRepository.hpp`
-  2. wildcard `using namespace de::sots::cellarsandcentaurs::domain::model;` in `CreatureUtil.hpp`
-  3. barrel = umbrella header `application/Application.hpp` (only `#include`s), included by `Creature.cpp`, `ArmorClass.cpp`, `PersistedCreatures.cpp`
-  4. `Centaur : public Creature`, `Creature : public Fightable`, `PersistedCreatures : public domain::service::Creatures` (pure virtual classes as interfaces)
-  5. `template <typename T> class Repository`, `CreatureRepository : public Repository<Entity>`
-  6. type-position only: `Speed` in `CreatureFacade`; instantiation only: `CreatureId` in `CreatureFacade.cpp`; static member only:
-     `application::CreatureFacade::STANDARD_CREATURE_TYPE` in `Creature.cpp` (member initializer) and `PersistedCreatures.cpp` (function body),
-     `application::CreatureUtil::STANDARD_ARMOR_CLASS_DESCRIPTION` in `ArmorClass.cpp` (member initializer), `HitPoints::init(...)` in `CreatureFacade.cpp`
-  7. `domain::model::Creature` and `application::dto::Creature`, both used in `CreatureFacade.hpp/.cpp`
-  8. fully qualified `de::sots::cellarsandcentaurs::domain::model::Speed` in `CreatureFacade.cpp` (without a direct `#include "Speed.hpp"` in that file)
-  9. unused `#include "../domain/model/Fightable.hpp"` in `CreatureUtil.hpp`
-  10. `std::map/optional/shared_ptr/string`, `boost::uuids`, `spdlog`, `gtest`
-  11. `CreatureServiceTest.cpp` in `test/`, references `CreatureService`
-  12. `Dice.hpp` holds `DiceRoll`, `Dice` and the free function `rollD20`; `Application.hpp` holds no declaration at all
-- Round 2 adds 10 header-only files (one per additional dependency form, see "Round 2" below): 36 files under `src/`,
-  37 in total. `CMakeLists.txt` is unchanged (it globs `.cpp` only).
-- Not available in C++: annotations/decorators that reference a type (C++ attributes such as `[[nodiscard]]` carry no type),
-  a module system with re-exports (an umbrella header is the closest thing), `interface` (pure virtual class instead).
+  47 files under `src/`, 1 test file, `CMakeLists.txt`: 49 project files. Namespaces `de::sots::cellarsandcentaurs::...`
+  mirror the folders; `#include "..."` uses relative paths, the test uses include-root paths.
+- Dependency stress constructs of rounds 1 and 2 (unchanged): alias `using Entity = CreatureEntity;`, `using namespace`,
+  umbrella header `Application.hpp` as barrel, inheritance and pure virtual classes as interfaces, `template <typename T>
+  class Repository`, type-position / instantiation / static-member-only uses, `domain::model::Creature` vs
+  `application::dto::Creature`, fully qualified reference, unused include, std / boost / spdlog / gtest, test file,
+  `Dice.hpp` with `Dice`, `DiceRoll` and the free function `rollD20`; round 2: forward declaration, using-declaration,
+  namespace alias, typedef, friend class, casts, template argument, catch type, `#ifdef` member, explicit specialization.
+- Round 3 adds 11 files:
+  - `domain/service/EncounterResolver.hpp`: header-only class with the five shared methods.
+  - `domain/service/EncounterEdgeCases.hpp` / `.cpp`: 59 constructs, each preceded by a
+    `// case: <construct> | functions F, parameters P, complexity C` line that holds its expected value. The `.cpp` also
+    holds `EncounterWitness` (one dependency construct per method) and the planted words for the domain parser.
+  - `domain/model/Zentaurenhöhle.hpp`: class `Zentaurenhöhle`, field `rüstungsklasse`, German comment and string. C++
+    accepts UTF-8 identifiers and the file system the umlaut file name, so no ASCII fallback was needed.
+  - `variants/`: `GriffinNest.cc`, `BasiliskNest.cxx`, `ChimeraNest.c++`, `ManticoreNest.hh`, `CockatriceNest.hxx`,
+    `HippogriffNest.h++`, `OwlbearNest.h` - the same class with one method, one `if`, one `domain::model::Speed`
+    parameter and one planted word each. `.h` is added because C++ projects use it and the parsers disagree about it.
+  - `git check-ignore -v` reports none of the new files as ignored.
+- Not available in C++: `finally` (`safeRoll` has `try` / `catch` only), nested named functions (`initiativeOrder` holds
+  the named lambda `strongerFirst`; `EncounterEdgeCases.cpp` adds a local class with a method), annotations that
+  reference a type, a module system with re-exports, an `interface` keyword, null-coalescing / optional chaining,
+  pattern guards, comprehensions, `defer`, labelled breaks, exception filters, extension functions, property accessors,
+  nested comments.
+- Run environment: the sandbox shell has the POSIX locale. With it all three parsers drop `Zentaurenhöhle.hpp` without
+  any message (unified 46 instead of 47 files, dependency 43 instead of 44, domain 45 instead of 46). All results below
+  are from runs with `LC_ALL=C.utf8`, where the file is analysed.
+
+## Unified parser
+
+- Command: `ccsh unifiedparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/unified.cc.json`, exit 0. Messages:
+  `No .gitignore found at root level, excluding common build folders as fallback...` (the `.gitignore` of the repository
+  root is not looked up when a sub-folder is analysed) and `2 Files with the following extensions were ignored as they
+  are currently not supported: [.txt, .h++]`. With stderr redirected the progress bar prints one line per file and the
+  counter runs backwards in between (`23/46` followed by `18/46`).
+- 47 files analysed: all `.cpp .hpp .cc .cxx .c++ .hh .hxx .h`. Skipped: `HippogriffNest.h++` and `CMakeLists.txt`, both
+  named in the message. `OwlbearNest.h` is analysed with the C grammar (see below). The output also carries an empty
+  `dependency` lens (`edges: []`).
+
+### `EncounterResolver.hpp`
+
+| metric | expected | reported | verdict |
+| --- | --- | --- | --- |
+| logic_complexity | 14 | 15 | wrong: `default:` of the `switch` in `resolve` is counted like a `case` |
+| complexity | 21 | 22 | wrong: same `default:` |
+| number_of_functions | 5 | 7 | wrong: the lambda variables `capped` and `strongerFirst` are counted as functions |
+| loc | 99 | 99 | ok |
+| rloc | 77 | 77 | ok |
+| comment_lines | 13 | 13 | ok |
+| max / min / mean / median parameters per function | 5 / 0 / 1.6 / 1 | 5 / 0 / 1.6 / 1 | ok (computed over the 5 methods, not over the 7 "functions") |
+| max / min / mean / median complexity per function | 12 / 1 / 3.8 / 2 | 12 / 0 / 3.4 / 2 | different definition: the function's own +1 is left out (isEmpty and describe are 0), a nested lambda adds +1 to its enclosing function, and `default:` adds +1; values are resolve 12, describe 0, safeRoll 3, initiativeOrder 2, isEmpty 0. The max only matches by coincidence |
+| max / min / mean / median rloc per function | 36 / 3 / 12.4 / 8 | 34 / 1 / 10.4 / 6 | my count was off by 2 per function: I included the signature line and the closing brace, the parser counts the lines between the braces, which is what the README means by "its body". Corrected expectation 34 / 1 / 10.4 / 6 = reported |
+| long_method | 1 | 1 | ok |
+| long_parameter_list | 1 | 1 | ok |
+| message_chains | 1 | 1 | ok (the chain of 5 counts, the chain of 3 does not) |
+| excessive_comments | 1 | 1 | ok |
+
+### `EncounterEdgeCases.hpp` / `.cpp`
+
+File totals:
+
+| file | metric | expected | reported | verdict |
+| --- | --- | --- | --- | --- |
+| EncounterEdgeCases.hpp | number_of_functions | 11 | 14 | +3 defaulted / deleted members |
+| EncounterEdgeCases.hpp | complexity | 16 | 27 | +11, all explained by the rows below |
+| EncounterEdgeCases.hpp | logic_complexity | 5 | 5 | ok |
+| EncounterEdgeCases.hpp | loc / rloc / comment_lines | 89 / 52 / 18 | 89 / 52 / 18 | ok |
+| EncounterEdgeCases.hpp | max_parameters_per_function | 2 | 2 | ok |
+| EncounterEdgeCases.cpp | number_of_functions | 55 | 61 | +5 lambda variables, +1 function under `#if 0` |
+| EncounterEdgeCases.cpp | complexity | 91 | 104 | +13, all explained by the rows below |
+| EncounterEdgeCases.cpp | logic_complexity | 31 | 33 | +1 `default:`, +1 `if` under `#if 0` |
+| EncounterEdgeCases.cpp | loc / rloc / comment_lines | 402 / 301 / 53 | 402 / 301 / 53 | ok |
+| EncounterEdgeCases.cpp | max_parameters_per_function | 3 | 4 | function pointer parameter, see below |
+
+The parser reports file totals only, so the per-construct values come from a scratch copy in which every `// case:` block
+is a file of its own (in-class members wrapped in `class EncounterTally { public: ... };`). The sums of those values
+equal the reported totals of both files. Columns are functions / max parameters / complexity.
+
+| file | construct | expected | reported | verdict |
+| --- | --- | --- | --- | --- |
+| hpp | constructor with initializer list holding a ternary | 1 / 2 / 2 | 1 / 2 / 2 | ok |
+| hpp | constructor as function try block | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| hpp | defaulted and deleted members | 0 / - / 0 | 2 / - / 3 | wrong by the rule: `= default` and `= delete` are counted as functions, +1 for the `EncounterTally&` return type |
+| hpp | destructor | 1 / 0 / 2 | 1 / 0 / 2 | ok |
+| hpp | in-class inline method | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| hpp | member declarations defined in the source file | 0 / - / 0 | 0 / - / 2 | wrong: +1 complexity per declaration, although no function is counted |
+| hpp | compound assignment operator | 1 / 1 / 1 | 1 / 1 / 2 | wrong: +1 complexity for the reference return type |
+| hpp | comparison operator with && | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| hpp | conversion operator with \|\| | 1 / 0 / 2 | 1 / 0 / 3 | wrong: the conversion operator is counted twice |
+| hpp | call operator | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| hpp | friend stream operator defined in the class | 1 / 2 / 1 | 1 / 2 / 2 | wrong: +1 complexity for the reference return type |
+| hpp | class template with one inline member and one declaration | 1 / 1 / 1 | 1 / 1 / 2 | wrong: +1 complexity for the declaration `int size() const;` |
+| hpp | out-of-line member of a class template | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| hpp | pure virtual member and defaulted virtual destructor | 0 / - / 0 | 1 / - / 2 | wrong by the rule: the `= default` destructor is a function, the pure virtual declaration adds +1 |
+| cpp | out-of-line member definition | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| cpp | out-of-line static member definition | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| cpp | range based for | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | do while | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | classic for with && in its condition | 1 / 1 / 3 | 1 / 1 / 3 | ok |
+| cpp | lambda with captures and one && | 1 / 2 / 3 | 2 / 2 / 3 | wrong: the lambda variable `beats` is counted as a function |
+| cpp | lambda nested in a lambda, one ternary | 1 / 1 / 4 | 3 / 1 / 4 | wrong: the lambda variables `outer` and `inner` are counted as functions |
+| cpp | lambda at namespace scope | 0 / 1 / 1 | 1 / 1 / 1 | wrong by the rule: counted as a function |
+| cpp | if constexpr | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | if with initializer | 1 / 2 / 2 | 1 / 2 / 2 | ok |
+| cpp | structured binding and a ternary | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | function try block | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | try with three catch clauses | 1 / 1 / 4 | 1 / 1 / 4 | ok |
+| cpp | function template with a ternary | 1 / 2 / 2 | 1 / 2 / 2 | ok |
+| cpp | explicit specialization of a function template | 1 / 2 / 2 | 1 / 2 / 2 | ok |
+| cpp | default arguments | 1 / 3 / 1 | 1 / 1 / 1 | wrong: parameters with a default value are not counted (1 of 3) |
+| cpp | variadic template with fold expression | 1 / 1 / 1 | 1 / 0 / 1 | wrong: the parameter pack `Rolls... rolls` is not counted |
+| cpp | C style variadic function | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | one if in each preprocessor branch | 1 / 1 / 4 | 1 / 1 / 4 | ok |
+| cpp | function disabled with #if 0 | 0 / - / 0 | 1 / - / 2 | bad: code under `#if 0` is counted as a live function with its `if` |
+| cpp | macro definitions holding a ternary and an if | 0 / - / 0 | 0 / - / 0 | ok |
+| cpp | function body made of macro calls | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | comment markers and operators inside string literals | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| cpp | multi line raw string holding code-like text | 1 / 0 / 1 | 1 / 0 / 2 | wrong: +1 complexity for the pointer return type `const char*` |
+| cpp | prefixed string literals | 1 / 0 / 1 | 1 / 0 / 2 | wrong: +1 complexity for the pointer return type `const wchar_t*` |
+| cpp | character literals and digit separators before a comment | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| cpp | line comment continued with a backslash | 1 / 0 / 1 | 1 / 0 / 1 | ok |
+| cpp | co_await and co_return | 1 / 1 / 1 | 1 / 1 / 4 | wrong: +1 complexity for each of the three member declarations of `RollAwaiter` |
+| cpp | co_yield in a loop | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | goto with a label | 1 / 1 / 2 | 1 / 1 / 2 | ok |
+| cpp | switch with grouped cases and fallthrough | 1 / 1 / 5 | 1 / 1 / 6 | wrong: `default:` is counted like a `case` |
+| cpp | nested ternary | 1 / 1 / 3 | 1 / 1 / 3 | ok |
+| cpp | alternative operator tokens and, or, not | 1 / 3 / 3 | 1 / 3 / 3 | ok |
+| cpp | local class with a method | 2 / 0 / 2 | 2 / 0 / 2 | ok |
+| cpp | trailing return type | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | function pointer parameter | 1 / 2 / 1 | 1 / 4 / 2 | wrong: the function pointer adds +1 complexity and its two parameter types count as parameters |
+| cpp | void parameter list | 1 / 0 / 1 | 1 / 1 / 1 | wrong: `(void)` is counted as one parameter |
+| cpp | user defined literal | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | rvalue reference parameter | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | requires clause joined with && | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | attributes and noexcept | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | enum class | 0 / - / 0 | 0 / - / 0 | ok |
+| cpp | doc comment with tags | 1 / 1 / 3 | 1 / 1 / 3 | ok |
+| cpp | namespace scope variable and free function with project types | 1 / 1 / 1 | 1 / 1 / 1 | ok |
+| cpp | class whose methods each reference one project type | 14 / - / 15 | 15 / - / 19 | wrong: lambda variable `total` counted as function; +1 complexity each for the declarations `tag` and `audit`, the `const char*` return of `name` and the member function pointer parameter of `store` |
+
+Additional single-statement probes (scratch files, not kept) that explain numbers in the round-1 files:
+
+| statement | reported | meaning |
+| --- | --- | --- |
+| `int declared(int value);` | 0 functions, complexity 1 | every prototype adds +1 complexity |
+| `const char* name() { ... }`, `int& first(int& value) { ... }` | complexity 2 | pointer or reference return type adds +1 |
+| `void f() { Service service(creatures); }` | complexity 2 | a local variable built with `T name(identifier);` is read as a function declaration, +1 |
+| `void f() { Creature creature(CreatureId(generateUuid()), type); }` | complexity 4 | the same with a nested call, +3 |
+| `void f() { Speed speed(30); }` | complexity 1 | ok with a literal argument |
+| `std::count_if(..., [](int roll) { return roll > 10; })` in a function | 1 function, complexity 2 | a lambda passed as argument is no function, a lambda stored in a variable is |
+| `TEST(Suite, name) { if ... }` | 1 function, 2 parameters, complexity 2 | a gtest macro body is a function with the macro arguments as parameters |
+| `a.b().c().d().e()` / `a->b()->c()->d()->e()` / `a.b.c.d.e` | message_chains 1 / 1 / 0 | arrow chains count, pure field chains do not |
+
+### Line counting
+
+- loc, rloc and comment_lines equal my own count in all 47 analysed files (checked with a separate line classifier).
+- `EncounterEdgeCases.cpp`: `//`, `/* */`, `&&`, `||` and `?` inside `"..."`, inside `R"(...)"` and inside the four-line
+  `R"scroll(...)scroll"` are neither comments nor logic; the raw string lines count as rloc. `'"'` followed by a trailing
+  comment and `1'000'000` are handled. The line after `// ... \` is counted as a comment line, not as code.
+- `///`, `//!`, `/*! */` and `/** */` all count as comment lines. A line with code and a trailing comment counts for both.
+- Lines under `#if 0` count as rloc, and the function in them as function and complexity (construct table).
+- Per-function rloc is the number of code lines between the braces; `{}` and one-line bodies give 0 or 1.
+
+### Other files
+
+- `variants/`: `.cc .cxx .c++ .hh .hxx` all report the expected 1 function, complexity 2, 1 parameter, loc / rloc 16 / 12
+  or 18 / 13. `OwlbearNest.h` reports 2 functions, complexity 4, 0 parameters for the identical class: `.h` is always
+  parsed as C. `HippogriffNest.h++` is not analysed.
+- `Zentaurenhöhle.hpp`: 2 functions, complexity 2, loc / rloc / comment_lines 17 / 10 / 1, as expected.
+- Headers that only declare get complexity without functions: `CreatureFacade.hpp` 0 functions / complexity 4,
+  `PersistedCreatures.hpp` 0 / 3, `CreatureService.hpp` 0 / 3. `Creature.hpp`: 10 inline methods, complexity 16
+  (+4 declarations, +2 for `const CreatureId&` and `const std::map<...>&` return types). `ArmorClass.hpp`: 4 / 9.
+- `CreatureFacade.cpp`: 4 functions, logic 2, complexity 9 instead of 6; the 3 extra come from
+  `domain::model::Creature creature(domain::model::CreatureId(generateUuid()), type);`. `max_parameters_per_function` 8
+  and `long_parameter_list` 1 for `create` are right.
+- `CreatureServiceTest.cpp`: 4 functions (two methods, two `TEST` bodies), logic 2, complexity 9; the 3 extra come from
+  the constructor-call declarations in the `TEST` bodies (not broken down further).
+- `Fightable.hpp`, `Creatures.hpp`: 1 function each, which is the `= default` virtual destructor.
 
 ## Dependency parser
 
-- Commands (both exit 0, no warnings apart from the JVM native-access notice; `--verbose` adds nothing C++-specific):
-  - `ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json` -> 25 leaves, 35 file edges
-  - `ccsh dependencyparser ... --include-tests -o output/dependency-with-tests.cc.json` -> 26 leaves, 39 file edges
-- Expected file-level edge list (written before the first run) is kept at the bottom of this file.
-- General behaviour that shapes every result below: a declaration is one leaf keyed by its namespace path. `Creature.hpp` and
-  `Creature.cpp` both yield the leaf `de.sots.cellarsandcentaurs.domain.model.Creature`, and the leaf is attached to the
-  `.cpp` file. All file edges of the pair are therefore drawn from/to the `.cpp`: `Creature.hpp`, `ArmorClass.hpp`,
-  `CreatureService.hpp`, `CreatureFacade.hpp`, `PersistedCreatures.hpp` have 0 incoming / 0 outgoing and no edge touches them,
-  while e.g. `Creature.cpp -> Fightable.hpp` is reported although the inheritance is written in `Creature.hpp`. Types are
-  resolved by simple name against the project-wide dictionary; `#include`s only disambiguate, so an include on its own never
-  produces an edge and an include-less use still resolves.
+- Commands (both exit 0, only the `.gitignore` warning):
+  - `ccsh dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/dependency.cc.json` -> 44 files in the tree,
+    46 leaves, 62 file edges, 63 leaf edges, `Found a total of 5 cycles`
+  - `... --include-tests -o output/dependency-with-tests.cc.json` -> 45 files, 47 leaves, 66 file edges
+- Not in the tree and not mentioned: `Application.hpp` and `CentaurRepository.hpp` (no declaration), `HippogriffNest.h++`.
+- General behaviour, unchanged: one declaration is one leaf keyed by namespace path; a header / source pair shares the
+  leaf and it is attached to the `.cpp`, so `Creature.hpp`, `ArmorClass.hpp`, `CreatureService.hpp`,
+  `CreatureFacade.hpp`, `PersistedCreatures.hpp` and now `EncounterEdgeCases.hpp` (for `EncounterTally`) have no edge of
+  that class. Types resolve by simple name; an `#include` alone never makes an edge.
 
-| # | Construct | Expected edge(s) | Found | Verdict |
-| --- | --- | --- | --- | --- |
-| 1 | `using Entity = CreatureEntity;` (`CreatureRepository.hpp`) | CreatureRepository -> CreatureEntity | only CreatureRepository -> Repository | missing: the alias is neither a leaf nor resolved back to `CreatureEntity`; `Repository<Entity>` resolves `Repository` but drops `Entity` (scratch test: `using X = a::Beta; X field;` and `typedef` targets both give no edge) |
-| 2 | `using namespace ...domain::model` (`CreatureUtil.hpp`) | CreatureUtil -> Creature, HitPoints | both found | ok |
-| 3 | umbrella header `Application.hpp` | Creature.cpp / ArmorClass.cpp / PersistedCreatures.cpp -> CreatureFacade / CreatureUtil | Creature.cpp -> CreatureFacade.cpp and ArmorClass.cpp -> CreatureUtil.hpp found; `Application.hpp` itself has no leaf and is dropped from the file tree (not in metrics, no REEXPORT leaf) | ok for the resolved targets (by name, not through the barrel); the barrel is invisible |
-| 4 | `Centaur : public Creature` | Centaur -> Creature | found, `usage=usage` | ok (no INHERITANCE usage kind is emitted, every leaf edge says `usage`) |
-| 4 | `Creature : public Fightable`, `PersistedCreatures : public Creatures` | Creature -> Fightable, PersistedCreatures -> Creatures | both found | ok |
-| 5 | `Repository<Entity>` | CreatureRepository -> Repository | found | ok (generic base resolved; the argument `Entity` lost, see 1) |
-| 6a | type position only (`Speed` params in `CreatureFacade`) | CreatureFacade -> Speed | found | ok |
-| 6b | instantiation only (`domain::model::CreatureId(generateUuid())`) | CreatureFacade -> CreatureId | found | ok |
-| 6c | static member in member-initializer (`Creature.cpp`, `ArmorClass.cpp`) | Creature -> CreatureFacade, ArmorClass -> CreatureUtil | both found | ok |
-| 6d | static member / static call in a function body (`PersistedCreatures.cpp`: `CreatureFacade::STANDARD_CREATURE_TYPE`; `CreatureFacade.cpp`: `HitPoints::init`) | PersistedCreatures -> CreatureFacade, CreatureFacade -> HitPoints | neither | missing (scratch test confirms: `a::Alpha::VALUE` and `a::Alpha::make()` inside a method body give no edge, the same in an initializer list does) |
-| 6e | attribute referencing a type | - | - | language has no such construct |
-| 7 | `domain::model::Creature` vs `application::dto::Creature` in `CreatureFacade` | CreatureFacade -> both | only -> domain.model.Creature; `dto.Creature` has 0 incoming | wrong: one target per simple name, the qualified `dto::` prefix does not lead to the second leaf |
-| 8 | fully qualified `de::sots::...::model::Speed` without direct include | CreatureFacade -> Speed | found | ok (but `Speed` is also used unqualified there, so not a clean proof) |
-| 9 | unused `#include "Fightable.hpp"` in `CreatureUtil.hpp` | no edge | no edge | ok |
-| 10 | `std::`, `boost::uuids`, `spdlog`, `gtest` | no internal edge, no leaf | none | ok |
-| 11 | `CreatureServiceTest.cpp` | skipped by default, present with `--include-tests` | skipped by default (detected by the `test/` directory); with `--include-tests`: `InMemoryCreatures` leaf plus edges to Creature, CreatureId, NoSuchCreatureException, Creatures | partly wrong: the edge to `CreatureService` (the point of the test) is missing, so are Speed, CreatureType, SpeedType - everything used only inside the `TEST(...)` bodies |
-| 12 | `Dice.hpp`: `Dice`, `DiceRoll`, `rollD20` | leaves Dice, DiceRoll, rollD20; Creature.cpp -> Dice.hpp (calls `rollD20()`) | leaves `Dice` and `DiceRoll` (both CLASS) and `Dice -> DiceRoll`; no `rollD20` leaf; no Creature -> Dice edge | missing: free functions are not leaves and calls are not usages (scratch test: a free function `a::Delta buildDelta()` gives neither leaf nor edge) |
-| 12 | file without declaration (`Application.hpp`) | file node with 0/0 | file absent from the tree | wrong-ish: the file disappears from the map |
+Rounds 1 and 2, re-verified on today's output:
 
-- False positives: none. No edge exists that the source does not justify.
-- Cycles: reported `Creature.cpp -> CreatureFacade.cpp -> CreatureService.cpp -> Creature.cpp` (isCyclic on all three) and
-  `ArmorClass.cpp -> CreatureUtil.hpp -> Creature.cpp -> ArmorClass.cpp`, also `Creatures.hpp <-> CreatureService.cpp <-> Creature.cpp`.
-  These are the expected declaration-level cycles; at file level they only close because the hpp/cpp pair is collapsed onto the `.cpp`.
-- Upward edges: `ArmorClass.cpp -> CreatureUtil.hpp` and `Creature.cpp -> CreatureFacade.cpp` flagged isPointingUpwards - correct.
-  `PersistedCreatures.cpp -> application/*` should be a third upward edge but is missing (6d).
-- Levels: domain/model files 0, `Creature` 1, `Centaur` 2, `NoSuchCreatureException` 1, `CreatureRepository` 1, `PersistedCreatures` 2,
-  `application` folder 1 - plausible. Metrics: `Creature.cpp` 8 out / 6 in, `CreatureId.hpp` 7 in; all `.hpp` halves of a pair 0/0.
-- Leaf kinds: `CreatureType`, `SpeedType` = ENUM (right). `Fightable`, `Creatures` = CLASS - C++ has no interface keyword, so CLASS
-  is defensible, but a class with only pure virtual members could be reported as INTERFACE. `DiceRoll` (struct), `Repository`
-  (template) = CLASS (fine). No FUNCTION, VARIABLE or REEXPORT leaves at all for C++ (`rollD20`, `Entity`, `Application.hpp`).
-- Test detection: only the directory names (`test`, `tests`, ...) count for C++; a `FooTest.cpp` outside such a folder is
-  analysed in the default run (scratch test). The `_test.cpp` / `Test.cpp` naming conventions are not recognised.
-- What the language offers: C++ has no module system in this project style; `#include` is textual, namespaces are independent
-  of folders, and `using` aliases/`using namespace` change name lookup. CodeCharta resolves everything itself by simple type
-  name, using the namespace path as leaf key and includes / `using namespace` / qualified prefixes as tie-breakers. That works
-  well for class-to-class references in signatures, fields and initializers, and breaks for aliases, free functions,
-  same-name types in different namespaces and anything referenced only inside a function body via `::`.
+| construct | expected edge(s) | found | verdict |
+| --- | --- | --- | --- |
+| `using Entity = CreatureEntity;` (`CreatureRepository.hpp`) | CreatureRepository -> CreatureEntity | only -> Repository | missing |
+| `typedef CreatureEntity Entity;` (`EntityMapper.hpp`) | EntityMapper -> CreatureEntity | file is 0 / 0 | missing |
+| `using namespace ...domain::model` (`CreatureUtil.hpp`) | -> Creature, HitPoints | both | ok |
+| umbrella header `Application.hpp` | Creature.cpp -> CreatureFacade, ArmorClass.cpp -> CreatureUtil | both, resolved by name; the header itself is absent | ok / barrel invisible |
+| inheritance (`Centaur`, `Creature`, `PersistedCreatures`) | -> Creature, Fightable, Creatures | all | ok, usage kind is `usage` for every leaf edge |
+| `Repository<Entity>` | CreatureRepository -> Repository | found | ok |
+| type position / instantiation (`CreatureFacade`) | -> Speed, CreatureId | both | ok |
+| static member in a member initializer (`Creature.cpp`, `ArmorClass.cpp`) | -> CreatureFacade, CreatureUtil | both, flagged upward | ok |
+| static member / static call in a body (`PersistedCreatures.cpp`, `CreatureFacade.cpp`) | -> CreatureFacade, HitPoints | neither | missing |
+| `domain::model::Creature` and `dto::Creature` in `CreatureFacade` | -> both | only domain model | missing |
+| relative qualifier in namespace `application` (`CentaurInspector`, `CreatureDescriber`, `SafeCreatureLookup`) | -> domain/model/Creature | -> application/dto/Creature.hpp, three times | wrong target |
+| unused include, std / boost / spdlog / gtest | no edge | none | ok |
+| test file | skipped by default; with `--include-tests` -> CreatureService and 7 more | skipped; with tests -> Creature, CreatureId, NoSuchCreatureException, Creatures only | the edge to `CreatureService` is missing |
+| free function `rollD20` (`Dice.hpp`), called in `Creature.cpp` | leaf, Creature -> Dice | no leaf, no edge | missing |
+| forward declaration (`Lair.hpp`), `friend class` (`TreasureLedger.hpp`), casts (`CentaurInspector.hpp`), template argument (`CentaurHerd.hpp`), member under `#ifdef` (`CreatureTrace.hpp`) | one edge each | all found | ok |
+| namespace alias (`SpeedMapper.hpp`) | -> Speed | found | ok (round 2 showed it resolves by a substring accident; not re-probed) |
+| `catch (const NoSuchCreatureException&)` (`SafeCreatureLookup.hpp`) | -> NoSuchCreatureException | no | missing |
+| `template <> class Repository<Centaur>` (`CentaurRepository.hpp`) | -> Repository, Centaur | file absent | missing |
+
+Round 3:
+
+| construct | expected edge | found | verdict |
+| --- | --- | --- | --- |
+| `EncounterResolver.hpp`: parameter types | -> Creature.cpp, Dice.hpp | both | ok |
+| `EncounterResolver.hpp`: `model::SpeedType::WALKING` in bodies only | -> SpeedType.hpp | no | missing |
+| `EncounterWitness::summon`: `std::make_unique<model::Centaur>()` in a body | -> Centaur.hpp | yes | ok |
+| `EncounterWitness::weigh`: `sizeof(model::HitPoints)` | -> HitPoints.hpp | yes | ok |
+| `EncounterWitness::stride`: local variable `model::Speed pace(30);` | -> Speed.hpp | yes | ok |
+| `EncounterWitness::lastRoll`: trailing return type `-> model::DiceRoll` | -> Dice.hpp#DiceRoll | yes | ok |
+| `EncounterWitness::dig`: `new model::Lair(nullptr)` | -> Lair.hpp | yes | ok |
+| `EncounterWitness::herd`: `alignof(CentaurHerd)` | -> CentaurHerd.hpp | yes | ok |
+| `EncounterWitness::tag`: default argument `model::CreatureId("none")` | -> CreatureId.hpp | yes | ok |
+| `friend int audit(const EncounterResolver&);` | -> EncounterResolver.hpp | yes | ok |
+| `EncounterWitness::name`: `typeid(model::Fightable)` | -> Fightable.hpp | no | missing |
+| `EncounterWitness::isDragon`: `model::CreatureType::DRAGON` in a body | -> CreatureType.hpp | no | missing |
+| `EncounterWitness::walking`: `using enum model::SpeedType;` | -> SpeedType.hpp | no | missing |
+| `EncounterWitness::armored`: lambda parameter `const model::ArmorClass&` | -> ArmorClass | no | missing |
+| `EncounterWitness::cast`: temporary `model::Dice{6}` | leaf edge -> Dice | no (the file edge to `Dice.hpp` exists only through `DiceRoll`) | missing |
+| `EncounterWitness::depth`: pointer to member `&model::Zentaurenhöhle::rüstungsklasse` | -> Zentaurenhöhle.hpp | no | missing (probe: also with an ASCII type; a `model::Höhle` field does resolve, so it is the construct, not the umlaut) |
+| `EncounterWitness::store`: parameter `int (CreatureService::*counter)() const` | -> CreatureService | no | missing |
+| `template <std::derived_from<Creatures> Port>` | -> Creatures.hpp | no | missing |
+| free function `freeFunctionUse(const model::NoSuchCreatureException&)` | -> NoSuchCreatureException.hpp | no | missing (free functions have no leaf) |
+| namespace-scope variable `static const model::Creature* lastAttacker` | -> Creature | no | missing |
+| out-of-line `EncounterTally::misses` / `::empty` | .cpp -> own header | no edge; the `EncounterTally` leaf sits on the `.cpp` | header / source fold |
+| `variants/*.cc .cxx .c++ .hh .hxx .h` | -> Speed.hpp each | all 6 | ok |
+| `variants/HippogriffNest.h++` | -> Speed.hpp | file not analysed | missing |
+
+- Count for the new files: I wrote "27 at most" before the run; that was an addition error, the list holds 28
+  (3 + 18 + 7). 16 are reported, all in the expected set, 12 are missing. Whole project: 62 file edges = the 46 of round 2
+  plus these 16; with tests 66 = 50 + 16.
+- False positives: the three `-> application/dto/Creature.hpp` edges of round 2, nothing new.
+- Cycles and upward edges: unchanged. `isCyclic` on the edges among `Creature.cpp`, `CreatureFacade.cpp`,
+  `CreatureService.cpp`, `Creatures.hpp`, `ArmorClass.cpp`, `CreatureUtil.hpp`; `isPointingUpwards` on
+  `ArmorClass.cpp -> CreatureUtil.hpp` and `Creature.cpp -> CreatureFacade.cpp`. `PersistedCreatures.cpp -> application`
+  is still missing as third upward edge. No new cycle and no new upward edge, as expected.
+- Leaf kinds: `class` for classes, structs, templates and pure virtual classes, `enum` for `CreatureType`, `SpeedType`
+  and `Outcome`. New and questionable: `EncounterEdgeCases.hpp#Pool<Combatant>` is a second leaf next to `Pool`,
+  created by the out-of-line member definition `int Pool<Combatant>::size() const`; `EncounterEdgeCases.cpp#Counter`
+  is the function-local struct of `localClass()`. The forward declaration `struct Task;` makes no leaf (right). No leaf
+  for free functions, lambdas, aliases, variables or macros.
+- Test detection: only by directory. Probe: `NamedTest.cpp` and `named_test.cpp` outside a `test` folder are analysed in
+  the default run.
+- What the language offers: no module system in this project style; `#include` is textual, namespaces are independent
+  of folders. CodeCharta resolves by simple type name with the namespace path as key. That works for types in
+  signatures, fields, base lists, local variable declarations, `new`, `sizeof` / `alignof`, casts, template arguments
+  and default arguments; it does not see `Type::member` expressions in bodies, `typeid`, braced temporaries, lambda
+  parameters, pointers to members, constrained template parameters, aliases, catch types, or anything outside a class.
 
 ## Domain language parser
 
-- Commands (all exit 0): default -> `output/domain.cc.json` (27 files, 45 nodes); `--stop-word-level MINIMAL` -> `domain-minimal.cc.json`;
-  `--stop-word-level AGGRESSIVE` -> `domain-aggressive.cc.json`; `--exclude-tests` -> `domain-exclude-tests.cc.json`;
-  `--comment-weight 1 --string-weight 1` -> `domain-weights-1-1-1.cc.json`.
-- `--comment-weight 0` and `--string-weight 0` (the README suggestion) are rejected: exit 1 with a raw Java stack trace
-  `IllegalArgumentException: --comment-weight must be positive, got 0` (`DomainLanguageParser.kt:141/142`), captured in
-  `output/domain-comment-weight-0.error.txt` and `output/domain-string-weight-0.error.txt`. `--identifier-weight 0` fails the same way.
-  Weights cannot be switched off, only lowered to 1.
-- `CMakeLists.txt` is ignored (not in the tree), the test file is included by default.
+- Commands, all exit 0: default -> `output/domain.cc.json`; `--stop-word-level MINIMAL` / `AGGRESSIVE`,
+  `--exclude-tests`, `--no-technical-stopwords`, `--ngrams 2`, `--comment-weight 1 --string-weight 1
+  --identifier-weight 1` -> `output/domain-<variant>.cc.json`. `--comment-weight 0` exits 1 with a Java stack trace
+  (`IllegalArgumentException: --comment-weight must be positive, got 0`).
+- 46 files, 46 nodes: the lens holds one node per file and nothing else. There is no root node and no folder node, so
+  "the root node's word list" does not exist; the numbers below are the sum over all file nodes. Every word carries
+  `frequency` and `tfidf`.
+- Not analysed and not mentioned: `ManticoreNest.hh`, `ChimeraNest.c++`, `CMakeLists.txt`.
 
-Expected words at the root node (all 17 present):
+Expected words (sum over all files, all 17 present):
 
 | word | freq | word | freq | word | freq |
 | --- | --- | --- | --- | --- | --- |
-| creature | 144 | armor | 45 | treasure | 5 |
-| speed | 57 | hit | 43 | hoard | 5 |
-| centaur | 13 | points | 43 | stable | 4 |
-| roll | 12 | damage | 8 | dungeon | 3 |
-| dice | 10 | cellar | 2 | lair | 2 |
-| initiative | 2 | encounter | 2 | | |
+| creature | 187 | hit | 58 | lair | 9 |
+| speed | 95 | armor | 56 | initiative | 5 |
+| roll | 93 | points | 44 | stable | 4 |
+| encounter | 31 | dice | 22 | dungeon | 3 |
+| centaur | 27 | damage | 15 | cellar | 2 |
+| treasure | 11 | hoard | 11 | | |
 
-- Keyword leakage: none of `class public private def var string int override const explicit noexcept virtual namespace
-  using struct enum void bool auto std map optional vector shared_ptr` appears - the C++ keyword list covers the STL names.
-  Only `memory(3)` leaks, from `#include <memory>` (see below) - a system header name is not on the keyword list. Right.
-- Technical-word leakage at MODERATE: `entity(20)`, `repository(20)`, `facade(11)`, `dto(7)`, `persisted(10)`, `model(24)`,
-  `domain(21)`, `application(6)`, `assert(4)`, `such(9)`. `entity/repository/facade/dto/model` are on the AGGRESSIVE list
-  only, so leaking at MODERATE is by design (AGGRESSIVE removes `type, model, value, entity, repository, facade, dto, init, result`;
-  MINIMAL adds back `get(42), service(31), base(30), find(27), save(24), create(6)`). `util`, `exception`, `test`, `service`
-  are correctly removed. `such(9)` comes from `NoSuchCreatureException` (`no` is a stop word, `such` is not) - harmless.
-  `hpp(52)`, `domain(21)`, `model(24)`, `sots(6)`, `cellarsandcentaurs(6)`, `memory(3)` are wrong: they come from `#include`
-  paths, which the parser counts as string literals (weight 1: `CreatureFacade.hpp` has 4 includes of `../domain/model/*.hpp`
-  and shows `domain(5) model(4) hpp(6)`). Include paths should not be text. Namespace declarations themselves are not counted
-  (`sots` only appears via the test file's include-root paths), which is right.
+- Keyword leakage: none of the C++ keywords, STL names, attribute names or preprocessor words appears (`class`, `std`,
+  `vector`, `constexpr`, `noexcept`, `nullptr`, `nodiscard`, `pragma`, `include`, `define`, `co_await` parts ...).
+  Leaks: `public(3)` and `variants(3)` in `OwlbearNest.h`, because `.h` is treated as C; `brief(2)` and `param(2)` from
+  the `@brief` / `@param` tags in `EncounterEdgeCases.cpp`. `await`, `yield`, `fallthrough`, `cast`, `once`, `defined`
+  in the lists come from my own identifiers and comments, not from keywords.
+- Technical words at MODERATE: `hpp(91)`, `model(55)`, `domain(36)`, `sots(6)`, `cellarsandcentaurs(6)` come mostly from
+  `#include "..."` paths, which are counted as string literals (probe: a file with only
+  `#include "de/sots/Creature.hpp"` yields `creature, hpp, sots`). `entity(27)`, `repository(21)`, `facade(11)`,
+  `dto(7)`, `type(59)`, `value(33)` stay at MODERATE and go at AGGRESSIVE, which also removes `model, init, result,
+  trace, method, call, arguments, param, parameter(s)`; `id(90)` stays at every level. `util, exception, test, service,
+  get, find, save, create, base` do not appear at MODERATE; MINIMAL brings back `get(50), service(37), find(33),
+  base(30), save(27), error(12), index(6), create(6)`, `--no-technical-stopwords` additionally `name, util, temporary`.
+  `such(11)` from `NoSuchCreatureException`, `mapper, inspector, describer, lookup` are not on any list.
+- The top of the summed list is `creature 187, complexity 120, functions 120, parameters 104, speed 95, roll 93, hpp 91,
+  id 90`; `complexity / functions / parameters` are the words of my `// case:` comment lines, not a parser defect.
 
 Identifier splitting:
 
 | form | identifier | where | words found |
 | --- | --- | --- | --- |
-| camelCase | `walkingSpeed` | `Centaur.hpp`, `CreatureFacade` | walking, speed (Centaur.hpp: walking(9), speed(10)) |
-| snake_case | `walking_speed` | test file | walking(3), speed |
-| SCREAMING_SNAKE | `MAX_HIT_POINTS` | `HitPoints.hpp` | max, hit, points (max(15)) |
-| PascalCase | `ArmorClass` | `ArmorClass.hpp` | armor(9); `class` removed as keyword - right |
+| camelCase | `walkingSpeed` | `Centaur.hpp` | walking(9), speed(10) |
+| snake_case | `walking_speed` | test file | walking(3), speed(4) |
+| SCREAMING_SNAKE | `MAX_HIT_POINTS` | `HitPoints.hpp` | max(15), hit(11), points(11) |
+| PascalCase | `ArmorClass` | `ArmorClass.hpp` | armor(9); `class` removed |
 | acronym | `XPValue` | `Centaur.hpp` | xp(3), value(3) |
 | digit | `d20Roll` | `Dice.hpp` | d20(3), roll |
-| digit | `rollD20` | `Dice.hpp` | roll, 20(3) (`d` dropped as a 1-letter word) - inconsistent with `d20Roll` |
-| kebab in string | `"centaur-stable"` | `CreatureFacade.hpp` | centaur(1), stable(1) (plus stable(3) from `STABLE_NAME`) |
+| digit | `rollD20` | `Dice.hpp` | roll, 20(3): the `d` is lost |
+| kebab in string | `"centaur-stable"` | `CreatureFacade.hpp` | centaur(1), stable(4 = 3 from `STABLE_NAME` + 1) |
+| user-defined literal | `operator""_fathoms` | `EncounterEdgeCases.cpp` | fathoms(3) |
+| enum values | `CRITICAL_HIT, GLANCING_BLOW, FUMBLE` | `EncounterEdgeCases.cpp` | critical, hit, glancing(3), blow(3), fumble(3) |
+| macro name | `TROGLODYTE_BONUS`, `RETURN_ZERO_IF_FUMBLED` | `EncounterEdgeCases.cpp` | none: neither `#define` names nor macro calls are extracted |
 
-- Comments and strings: all planted texts are counted and the weights are visible in the frequencies.
-  Doc comment on `Creature` -> `roams(2) share(2) cellar(2) beasts(2) dragons(2)` (weight 2); doc comment on `HitPoints` ->
-  `damage(8)=3+3+2`, `lair(2) recover(2) rests(2)`; line comment in `CreatureFacade::create` -> `rolls(2) initiative(2)
-  dungeon(2) encounter(2) starts(2)`; block comment in `CreatureUtil` -> `treasure(5)=3+2, hoard(5), guards(2), counts(2)`;
-  string in `NoSuchCreatureException` -> `dungeon(1) such(7)=3+3+1`; `"centaur-stable"` -> `centaur(1) stable(1)`.
-  Words that only occur in comments (`roams`, `lair`, `initiative`) sit at the bottom of the list with frequency 2.
-- Test file handling: included by default (`test` node with creature(10), centaur(6), walking(3), ...); `--exclude-tests`
-  removes it cleanly (root loses `sots`, `cellarsandcentaurs`, `assert`, `memory`, `saved`, `unknown`; `centaur` 13 -> 7).
-  The test name `should_save_creature_to_the_stable` is NOT extracted: it is an argument of the gtest `TEST(...)` macro, not a
-  declaration, so the test node has no `stable` at all (`should` and `save` would be filtered anyway). `ASSERT_EQ`/`EXPECT_EQ`
-  are not counted either; `assert(4)` comes from the `// Assert` comments.
-- Stop-word levels in one line: MINIMAL lets the CRUD/architecture words back in (`get 42, service 31, base 30, find 27, save 24`),
-  AGGRESSIVE additionally removes `type, model, value, entity, repository, facade, dto, init, result` - the 17 domain words are
-  unchanged at every level.
+- Comments and strings: all planted sentences of rounds 1 and 2 are counted, comment words with weight 2, string words
+  with weight 1, identifiers with weight 3 (`Creature.hpp`: `roams(2) cellar(2) beasts(2) dragons(2)`; `HitPoints.hpp`:
+  `damage(8) lair(2)`; `CreatureFacade.cpp`: `initiative(2) dungeon(2) encounter(2)`; `CreatureUtil.hpp`:
+  `treasure(5) hoard(5)`; `NoSuchCreatureException.hpp`: `dungeon(1)`).
+- Round 3 strings in `EncounterEdgeCases.cpp`: raw string `wyvern(1)`, multi-line raw string `ogre(2) troll(1)` (the
+  delimiter `scroll` is not counted), `u8"minotaur"(1)`, `L"kobold"(1)`, adjacent literals `hydra(1) gorgon(1)`,
+  attribute string `phoenix(1)`, doc comment `sphinx(2)`. Wrong: `"ghoul\nbanshee\tspectre"` yields `ghoul(1),
+  nbanshee(1), tspectre(1)`; the escape letter is glued to the next word and `banshee` / `spectre` are missing.
+- Commented-out code is text like any comment: `// int cover = defender.getCover();` in `EncounterResolver.hpp` gives
+  `cover(4)`.
+- Extension variants: griffin(5), basilisk(5), cockatrice(5), hippogriff(5), owlbear(5) are found; `manticore` (`.hh`)
+  and `chimera` (`.c++`) are missing because those files are skipped.
+- Test file handling: included by default (`creature(10), creatures(7), centaur(6), walking(3), ...`), removed by
+  `--exclude-tests` (45 nodes; `assert, cellarsandcentaurs, memory, saved, sots, unknown` disappear). The gtest name
+  `should_save_creature_to_the_stable` is not extracted (probe: a file with only that `TEST` yields `saved`), so the
+  test file has no `stable`. `memory(3)` comes from the class name `InMemoryCreatures`.
+- `--ngrams 2` adds `hit points(36)`, `per round(24)`, `feet per(24)`, `walking speed(18)`, `encounter tally(15)`,
+  `critical hit(6)`, `dice roll(6)`, `glancing blow(3)` and others; the single words stay.
+- German words (`Zentaurenhöhle.hpp`): 5 of the 7 appear, 2 of them only through identifiers.
 
-## Round 2: additional dependency forms
+  | word | found | how |
+  | --- | --- | --- |
+  | zentaurenhöhle | 6 | class name and constructor (identifier weight 3 each); the comment occurrence is cut into `zentaurenh(2)` + `hle` |
+  | rüstungsklasse | 6 | field and parameter; the comment occurrence becomes `stungsklasse(2)` |
+  | verlies | 2 | comment |
+  | trefferpunkte | 2 | comment |
+  | kreatur | 2 | comment |
+  | größe | - | string `Größe der Höhle` yields only `der(1)` and `hle(1)` |
+  | höhle | - | cut to `hle` |
 
-- Ten new header-only files, each holding one form as the only path from that file to its target (the expected edges were
-  added to the appendix before the run). Commands as in round 1, all exit 0, `output/dependency.cc.json`,
-  `output/dependency-with-tests.cc.json` and `output/domain.cc.json` overwritten. Default run: 46 file edges (35 + 11),
-  30 leaves; with tests: 50 file edges, 31 leaves. Scratch probes (copies of the project with extra `Probe*.hpp` files, not
-  kept) are quoted where they sharpen a finding.
+  Identifiers keep their umlauts; comments and strings are split at every `ä ö ü ß`, and pieces shorter than three
+  letters vanish (`gehören` -> `geh(2)`, `ren(2)`). The include path `"../model/Zentaurenhöhle.hpp"` in
+  `EncounterEdgeCases.cpp` is cut the same way (`zentaurenh(1)`, `hle(1)`). German stop words are not filtered:
+  `die(2)`, `unter(2)`, `dem(2)`, `und(2)`, `jeder(2)`, `der(1)`, also `liegt(2)`; only the two-letter `zu` is gone.
 
-| form | file(s) | expected edge | found | note |
-| --- | --- | --- | --- | --- |
-| forward declaration `class Creature;` + `Creature*` member, no include | `domain/model/Lair.hpp` | Lair.hpp -> Creature.cpp | yes | resolved by simple name; the forward declaration neither creates a second `Creature` leaf nor moves the leaf off `Creature.cpp` |
-| using-declaration `using domain::model::Creature;` then `Creature` | `application/CreatureDescriber.hpp` | -> domain/model/Creature.cpp | wrong target: -> application/dto/Creature.hpp | the relative using-declaration is dropped (an import whose path `domain.model.Creature` is no leaf path); `Creature` then resolves like a bare name and the self-namespace wildcard `…application` captures `application.dto.Creature` (substring match). Probe: the rooted `using de::sots::cellarsandcentaurs::domain::model::Creature;` resolves right; `using application::dto::Creature;` in `domain/service` gives no edge at all |
-| namespace alias `namespace model = de::…::domain::model;` then `model::Speed` | `adapter/persistence/SpeedMapper.hpp` | -> Speed.hpp | yes (by accident) | the alias is not understood; `Speed` resolves because the prefix `model` is a substring of `…domain.model.Speed`. Probe: `namespace fullmodel = …; fullmodel::Creature` gives no edge |
-| `typedef CreatureEntity Entity;` then `Entity` in a signature | `adapter/persistence/EntityMapper.hpp` | -> CreatureEntity.hpp | no | the file is 0/0: a typedef is as invisible as `using X = Y` (round 1 #1); probe: a typedef without any further use gives no edge either |
-| `friend class CreatureUtil;` and nothing else | `application/TreasureLedger.hpp` | -> CreatureUtil.hpp | yes | the friend declaration alone is a usage |
-| `dynamic_cast<const Centaur*>` / `static_cast<Centaur*>` only | `application/CentaurInspector.hpp` | -> Centaur.hpp | yes | probe: each cast on its own gives the edge, inside a function body. The same file's `domain::model::Creature` parameters land on `dto/Creature.hpp` (see false positives) |
-| type only as template argument `std::vector<model::Centaur>` | `domain/service/CentaurHerd.hpp` | -> Centaur.hpp | yes | as in round 1 for `std::map<SpeedType, Speed>` |
-| type only in `catch (const NoSuchCreatureException&)` | `application/SafeCreatureLookup.hpp` | -> NoSuchCreatureException.hpp | no | the catch parameter type is not collected (probe: also not with a named parameter); a `throw domain::model::NoSuchCreatureException(id)` in a body is (probe, and round-1 `PersistedCreatures.cpp`). The signature types resolve (-> CreatureId.hpp, -> CreatureService.cpp), `domain::model::Creature` again -> dto |
-| `#include` and a `Dice` member both under `#ifdef CELLARS_TRACE_ROLLS` | `application/CreatureTrace.hpp` | -> Dice.hpp | yes | the member inside the `#ifdef` block is parsed like any other; the parser has no notion of the macro being undefined |
-| `template <> class Repository<domain::model::Centaur>` | `adapter/persistence/CentaurRepository.hpp` | -> Repository.hpp, -> Centaur.hpp | no, file absent | the specialization is no declaration: the file disappears from the dependency tree like `Application.hpp` (it is present in the domain tree). Primary `Repository` leaf and `CreatureRepository -> Repository` unchanged. Probe: with a second ordinary class in the file the file appears with that class only, still no edge to `Repository` or `Centaur` |
+## Extension variants
 
-- Round-1 edges: none changed. All 35 default and 39 with-tests edges of round 1 are present with the same `isCyclic` /
-  `isPointingUpwards` flags; the diff of the two dumps contains only additions. Only incoming counts grew:
-  `Creature.cpp` 6 -> 7, `Centaur.hpp` 0 -> 2, `CreatureId.hpp` 7 -> 8, `Speed.hpp` 3 -> 4, `Dice.hpp` 0 -> 1,
-  `CreatureUtil.hpp` 1 -> 2, `CreatureService.cpp` 1 -> 2, `dto/Creature.hpp` 0 -> 3 (all three wrong, see below). The four
-  test-file edges of the `--include-tests` run are identical. No new cycle, no new upward edge (none expected).
-- New false-positive edges (three, all the same defect): `CentaurInspector.hpp -> dto/Creature.hpp`,
-  `CreatureDescriber.hpp -> dto/Creature.hpp`, `SafeCreatureLookup.hpp -> dto/Creature.hpp`. Each stands in for the correct
-  edge to `Creature.cpp`, so they are three wrong targets = three false positives plus three missing edges. Root cause
-  (`analysis/model/Node.kt`, `resolveTypeImport`; `TseMappings.toType`): a used type carries only its simple name, the
-  `domain::model::` qualifier becomes a wildcard candidate; for an ambiguous simple name without a rooted wildcard the
-  wildcards are tried in the order file imports, own namespace, qualifier prefixes, and matched by substring (`contains`).
-  In namespace `application` the own-namespace wildcard `de.sots.cellarsandcentaurs.application` is a substring of
-  `…application.dto.Creature` and wins; in `adapter::persistence` it is not, so `PersistedCreatures.cpp` gets the right
-  target. Round-1 `CreatureFacade` only resolved to `domain.model` because the same declaration also references
-  `de::sots::cellarsandcentaurs::domain::model::Speed` fully qualified, which registers a rooted wildcard
-  `…domain.model.*` that passes the exact-package check first. Probe: a plain `application` class with both
-  `domain::model::Creature` and `dto::Creature` gets `dto.Creature` only, a class with a fully qualified
-  `de::sots::cellarsandcentaurs::domain::model::Creature` gets `domain.model.Creature`. So the round-1 verdict item 1 is
-  not "dto is never resolved" but "the relative qualifier is ignored and one of the two same-named types wins by a
-  substring accident".
-- Score for the new forms: 11 new file edges reported, 8 right, 3 wrong target; 7 expected edges missing (typedef, catch,
-  specialization x2, and the 3 displaced `Creature` targets). Found: forward declaration, friend, casts, template
-  argument, `#ifdef`; found by accident: namespace alias; wrong: using-declaration; missing: typedef, catch, template
-  specialization (file vanishes).
-- Domain parser rerun (37 files, 55 nodes): all 17 expected words still at the root (creature 178, speed 67, centaur 25,
-  roll 15, dice 14, hoard 11, lair 8, treasure 8, damage 8, stable 4, dungeon 3, cellar 2, initiative 2, encounter 2, armor
-  45, hit 43, points 43). New identifiers add `occupant(9)`, `trace(9)`, `mapper(6)` and the class-name words `ledger,
-  herd, inspector, describer, lookup, safe` (3 each) - `herd`/`ledger` are domain-ish, `mapper/inspector/describer/lookup`
-  are technical and not on the stop list. `hpp` grows 52 -> 65 with the new include paths (round-1 wrong #4 unchanged).
-  No round-1 domain finding changes.
+| extension | unified parser | dependency parser | domain language parser |
+| --- | --- | --- | --- |
+| `.cpp`, `.hpp` | analysed | analysed | analysed |
+| `.cc` | analysed | analysed | analysed |
+| `.cxx` | analysed | analysed | analysed |
+| `.c++` | analysed | analysed | skipped silently |
+| `.hh` | analysed | analysed | skipped silently |
+| `.hxx` | analysed | analysed | analysed |
+| `.h++` | skipped, named in the "not supported" message | skipped silently | analysed |
+| `.h` | analysed as C: wrong values | analysed as C++: edge found | analysed as C: `public`, `variants` leak |
+
+## Changed since 2026-09-06
+
+- The domain lens no longer has folder and root nodes. The earlier report read the 17 words and all leakage from the
+  root node (37 files, 55 nodes); today the lens has exactly one node per file (46), so project-level numbers have to be
+  summed by the reader. Words now carry a `tfidf` value. `--no-technical-stopwords` and `--ngrams` were not covered
+  before.
+- Corrected: `memory(3)` was attributed to `#include <memory>`; it comes from `InMemoryCreatures`. System includes in
+  angle brackets are not counted (probe).
+- Leaf kinds are written in lower case (`class`, `enum`); the earlier report quoted `CLASS` / `ENUM` (the earlier raw
+  output is not available, so whether the casing changed is not verified).
+- Everything else of the earlier dependency report still holds: the 46 file edges of round 2 are all present with the
+  same flags (62 = 46 + 16 new), the same expected edges are missing, the same 3 edges point to `dto/Creature.hpp`,
+  `Application.hpp` and `CentaurRepository.hpp` are still absent from the tree, the test file still yields 4 edges and
+  none to `CreatureService`, test detection is still by directory only.
+- Still true for the domain parser: weight 0 aborts with a stack trace, include paths are counted (`hpp` 65 -> 91 with
+  the new files), `rollD20` loses its `d`, the gtest test name is not extracted.
+- New on old files (the unified parser was not part of the earlier report): complexity of declaration-only headers,
+  `CreatureFacade.cpp` and `CreatureServiceTest.cpp` complexity inflated by constructor-call declarations.
 
 ## Verdict
 
-- Good: no false positive edge in round 1; std/boost/spdlog/gtest never leak; inheritance, generic base, `using namespace`,
-  template arguments (`std::map<SpeedType, Speed>`, `std::vector<Centaur>`), instantiation, type positions and
-  member-initializer static access all resolve; cycles and upward edges are flagged as expected; test directory skipped by
-  default. Round 2 adds: a forward declaration is harmless (no duplicate leaf) and the pointer member resolves; `friend
-  class X;` alone is an edge; `static_cast`/`dynamic_cast` inside a body are edges; a member under `#ifdef` is seen.
-  Domain parser: all 17 words at the root (also after round 2), no keyword leakage, every planted comment/string counted
-  with visible weights, all identifier forms split (except the `rollD20` digit case), `--exclude-tests` works.
-- Wrong (most important first):
-  1. Relative namespace qualifiers are ignored and same-named types are picked by substring accident (round 2 sharpens
-     round 1): in namespace `application` every `domain::model::Creature` resolves to `application.dto.Creature`
-     (`CentaurInspector.hpp`, `CreatureDescriber.hpp`, `SafeCreatureLookup.hpp` -> `dto/Creature.hpp`, three false
-     positives), while `CreatureFacade` gets `domain.model.Creature` only because a fully qualified
-     `de::sots::cellarsandcentaurs::domain::model::Speed` in the same declaration registers a rooted wildcard; its own
-     `dto::Creature` uses stay unresolved (`dto.Creature` had 0 incoming in round 1). Only rooted names (`using
-     de::sots::…::Creature;`, a fully qualified reference, `using namespace de::sots::…`) resolve reliably.
-  2. hpp/cpp collapse: `Creature.hpp`, `ArmorClass.hpp`, `CreatureService.hpp`, `CreatureFacade.hpp`, `PersistedCreatures.hpp`
-     are 0/0 nodes; all their edges are credited to the `.cpp` (e.g. `Creature.cpp -> Fightable.hpp` for an inheritance written
-     in the header). Defensible as "one declaration = one unit", but the header files are dead weight on the map.
-  3. Files without an own declaration vanish from the file tree entirely: `Application.hpp` (umbrella header, round 1) and
-     `CentaurRepository.hpp` (holds only `template <> class Repository<Centaur>`, round 2).
-  4. `SpeedMapper.hpp`: `namespace model = …; model::Speed` resolves only because `model` is a substring of the target
-     path; the namespace alias itself is not understood (`namespace fullmodel = …` gives nothing).
-  5. Domain parser: `#include` paths are counted as strings -> `hpp(65)` is the 4th most frequent word, `model/domain/sots/
-     cellarsandcentaurs/memory` leak.
-  6. `--comment-weight 0` / `--string-weight 0` (as suggested in the README) abort with a stack trace instead of disabling the source.
-  7. `rollD20` splits to `roll, 20` while `d20Roll` splits to `d20, roll`.
-- Missing:
-  1. `PersistedCreatures.cpp`: `application::CreatureFacade::STANDARD_CREATURE_TYPE` inside `find()` and `CreatureFacade.cpp`:
-     `domain::model::HitPoints::init(...)` inside `create()` - static member access / static call in a function body gives no edge
-     (the identical access in a member-initializer list does).
-  2. Aliases: `CreatureRepository.hpp`: `using Entity = CreatureEntity;` and `EntityMapper.hpp`: `typedef CreatureEntity Entity;`
-     - alias declarations are invisible and `Entity` is not resolved, so `CreatureRepository -> CreatureEntity` and
-     `EntityMapper -> CreatureEntity` are missing.
-  3. `Dice.hpp` / `Creature.cpp`: the free function `rollD20` is no leaf and its call produces no `Creature -> Dice` edge;
-     free functions in general yield nothing (and therefore the gtest `TEST` bodies contribute nothing, so with
-     `--include-tests` the edge `CreatureServiceTest -> CreatureService` is missing).
-  4. `SafeCreatureLookup.hpp`: a type used only as `catch (const NoSuchCreatureException&)` parameter gives no edge
-     (a `throw` of the same type in a body does).
-  5. `CentaurRepository.hpp`: an explicit template specialization `template <> class Repository<Centaur>` is neither a leaf
-     nor a usage: no edge to `Repository.hpp` or `Centaur.hpp` (and the file is dropped, see wrong #3).
-  6. Name-based test detection for C++ (`*Test.cpp`, `*_test.cpp`); only the `test/` directory is recognised.
-  7. Domain parser: the gtest test name `should_save_creature_to_the_stable` (macro argument) is not extracted.
-  8. Language limitation, not a parser bug: no type-carrying attribute, no module re-export, no interface keyword.
+### Unified parser
 
-## Appendix: expected file-level edges (written before the first run)
+- Missing:
+  1. `variants/HippogriffNest.h++`: the extension is not supported (reported in the run message). **Decision: accept.**
+  2. `EncounterEdgeCases.cpp` `defaultArguments(int roll, int bonus = 2, bool advantage = false)`: parameters with a
+     default value are not counted (1 instead of 3). **Decision: accept (derived from JavaScript).**
+  3. `EncounterEdgeCases.cpp` `variadicTemplate(Rolls... rolls)`: a parameter pack is not counted (0 instead of 1). **Decision: accept (derived from Java).**
+- Wrong:
+  1. Complexity of declarations: every function prototype adds +1 complexity without being a function
+     (`EncounterEdgeCases.hpp` `int misses() const noexcept;`, `static EncounterTally empty();`, `int size() const;`,
+     `virtual int score() const = 0;`; `CreatureFacade.hpp` 0 functions / complexity 4). `complexity` is therefore not
+     `logic_complexity` + functions in any header. **Decision: ignore.**
+  2. Pointer and reference return types add +1 complexity: `const char* multiLineRawString()`,
+     `const wchar_t* prefixedStrings()`, `EncounterTally& operator+=`, `std::ostream& operator<<`,
+     `Creature.hpp` `const CreatureId& getId()`. **Decision: accept.**
+  3. Local variables constructed with parentheses are read as function declarations: `CreatureFacade.cpp`
+     `domain::model::Creature creature(domain::model::CreatureId(generateUuid()), type);` adds +3 complexity,
+     `CreatureService service(creatures);` in the test +1. **Decision: ignore.**
+  4. `OwlbearNest.h`: a C++ header with the `.h` extension is parsed as C and reports 2 functions, complexity 4 and
+     0 parameters instead of 1 / 2 / 1. **Decision: accept.**
+  5. `default:` counts as a branch: `EncounterResolver.hpp` `resolve` (logic 15 instead of 14),
+     `EncounterEdgeCases.cpp` `switchFallthrough`. **Decision: ignore (derived from Java).**
+  6. Lambdas stored in a variable count as functions (`capped`, `strongerFirst`, `beats`, `outer`, `inner`,
+     `criticalHit`, `total`): `EncounterResolver.hpp` number_of_functions 7 instead of 5. A lambda passed directly as
+     an argument does not, and the per-function statistics ignore both. **Decision: accept (derived from Java).**
+  7. `EncounterEdgeCases.cpp` `functionPointerParameter(int (*combine)(int, int), int roll)`: 4 parameters and +1
+     complexity; `EncounterWitness::store` likewise. `voidParameterList(void)`: 1 parameter. **Decisions derived from Objective-C: accept — a function pointer parameter adds its own parameters; ignore — `(void)`.**
+  8. `EncounterEdgeCases.hpp` `explicit operator bool() const`: complexity 3 instead of 2. **Decision: accept.**
+  9. `EncounterEdgeCases.hpp` `= default`, `= delete` and the defaulted destructor of `Scorable` count as functions
+     (also `Fightable.hpp`, `Creatures.hpp`). **Decision: ignore.**
+- Bad:
+  1. `*_complexity_per_function` leaves out the function's own +1 while `complexity` includes it, and adds +1 for a
+     nested lambda: `isEmpty` has 0, `safeRoll` 3. The two metrics cannot be compared. **Decision: ignore (derived from Java).**
+  2. `EncounterEdgeCases.cpp` `disabledRoll` under `#if 0` is counted as function, complexity and rloc. **Decision: ignore.**
+  3. With a non-UTF-8 locale `Zentaurenhöhle.hpp` is dropped without a message. **Decision: accept (derived from Java).**
+  4. The `.gitignore` of the repository is not used when a sub-folder is analysed; redirected progress output is
+     one line per file with a counter that jumps back. **Decision derived from Kotlin: ignore — `.gitignore` of the repository not used.** **Decision derived from JavaScript: ignore — progress output.**
+- Good: loc, rloc and comment_lines are exact in all 47 files, including comment markers in strings and raw strings,
+  char literals, digit separators, backslash-continued comments and all four doc comment syntaxes. `if`, `else if`,
+  `if constexpr`, `if` with initializer, range-for, classic `for`, `while`, `do … while`, `case`, ternary and nested
+  ternary, `&&`, `||`, `and`, `or`, every `catch` including function try blocks of functions and constructors, `goto`
+  loops, `co_yield` loops, all three `#if` branches. `&&` in `requires` and in rvalue references is not counted.
+  Constructors, destructors, operators, user-defined literals, templates, specializations, out-of-line members, local
+  class methods are functions. `long_method`, `long_parameter_list`, `message_chains` (5 yes, 3 no),
+  `excessive_comments`, rloc per function and the parameter statistics of `EncounterResolver.hpp` are right.
+  `.cc .cxx .c++ .hh .hxx` behave like `.cpp`.
+
+### Dependency parser
+
+- Missing:
+  1. `Type::member` in a function body: `EncounterResolver.hpp` `model::SpeedType::WALKING`, `EncounterWitness::isDragon`
+     `model::CreatureType::DRAGON`, `PersistedCreatures.cpp` `CreatureFacade::STANDARD_CREATURE_TYPE`,
+     `CreatureFacade.cpp` `HitPoints::init(...)`. **Decision: accept (derived from Java).**
+  2. Everything outside a class: free functions (`rollD20`, `freeFunctionUse`), namespace-scope variables
+     (`lastAttacker`), gtest `TEST` bodies; with `--include-tests` the edge `CreatureServiceTest -> CreatureService`. **Decision: accept (derived from Kotlin).**
+  3. Aliases: `using Entity = CreatureEntity;` (`CreatureRepository.hpp`), `typedef` (`EntityMapper.hpp`). **Decision: accept (derived from Kotlin).**
+  4. `EncounterWitness`: `typeid(model::Fightable)`, `using enum model::SpeedType;`, lambda parameter
+     `const model::ArmorClass&`, temporary `model::Dice{6}`, pointer to member `&model::Zentaurenhöhle::rüstungsklasse`,
+     member function pointer parameter `int (CreatureService::*)() const`, constrained template parameter
+     `std::derived_from<Creatures>`. **Decision: accept (derived from Java).**
+  5. `catch (const NoSuchCreatureException&)` (`SafeCreatureLookup.hpp`). **Decision: accept (derived from Java).**
+  6. `template <> class Repository<Centaur>` (`CentaurRepository.hpp`): no leaf, no edge, file absent. **Decision: accept.**
+  7. `variants/HippogriffNest.h++`: not analysed, no message. **Decision: accept.**
+  8. Test detection by file name (`*Test.cpp`, `*_test.cpp`). **Decision: accept.**
+- Wrong:
+  1. `CentaurInspector.hpp`, `CreatureDescriber.hpp`, `SafeCreatureLookup.hpp`: `domain::model::Creature` resolves to
+     `application/dto/Creature.hpp`; `CreatureFacade` never reaches `dto::Creature`. **Decision: accept (derived from Java).**
+  2. `EncounterEdgeCases.hpp`: the out-of-line definition `int Pool<Combatant>::size() const` creates a leaf
+     `Pool<Combatant>` next to `Pool`. **Decision: accept.**
+  3. Files without a declaration (`Application.hpp`, `CentaurRepository.hpp`) are absent from the tree. **Decision: accept (derived from Java).**
+- Bad:
+  1. Header / source fold: the leaf sits on the `.cpp`, the header of the pair is a 0 / 0 node (`Creature.hpp`,
+     `ArmorClass.hpp`, `CreatureService.hpp`, `CreatureFacade.hpp`, `PersistedCreatures.hpp`; `EncounterTally` sits on
+     `EncounterEdgeCases.cpp`). **Decision: ignore.**
+  2. `EncounterEdgeCases.cpp#Counter`: a function-local struct is a leaf. **Decision: accept (derived from Java).**
+  3. Every leaf edge has usage `usage`; inheritance is not distinguished. **Decision: ignore — documented (derived from Kotlin).**
+  4. With a non-UTF-8 locale `Zentaurenhöhle.hpp` is dropped without a message. **Decision: accept (derived from Java).**
+- Good: no new false positive. Types in signatures, fields, base lists, template arguments (also of a call in a body),
+  local variable declarations, `new`, `sizeof`, `alignof`, casts, default arguments, trailing return types, friend
+  declarations and forward declarations resolve. Umlaut type names resolve. std / boost / spdlog / gtest never leak.
+  Cycles and upward edges are flagged as expected. `.cc .cxx .c++ .hh .hxx .h` are analysed as C++.
+
+### Domain language parser
+
+- Missing:
+  1. No root or folder node: the lens has file nodes only, a project-level word list is not in the output. **Decision: ignore (derived from Java).**
+  2. `variants/ManticoreNest.hh` and `variants/ChimeraNest.c++` are skipped without a message. **Decision: accept.**
+  3. Macro names: `#define TROGLODYTE_BONUS`, `RETURN_ZERO_IF_FUMBLED` in `EncounterEdgeCases.cpp` yield no word. **Decision: accept.**
+  4. gtest name `should_save_creature_to_the_stable` in `CreatureServiceTest.cpp`. **Decision: ignore.**
+  5. German stop words: `die, unter, dem, und, jeder, der` in `Zentaurenhöhle.hpp` are not filtered. **Decision: ignore (derived from Java).**
+- Wrong:
+  1. Umlauts in comments and strings cut the word: `Zentaurenhöhle` -> `zentaurenh` + `hle`, `Rüstungsklasse` ->
+     `stungsklasse`, `gehören` -> `geh` + `ren`, `Größe` and `Höhle` -> nothing but `hle`. Identifiers are kept whole. **Decision: accept (derived from Java).**
+  2. Escape sequences in strings: `"ghoul\nbanshee\tspectre"` in `EncounterEdgeCases.cpp` -> `nbanshee`, `tspectre`. **Decision: accept.**
+  3. `#include "..."` paths are counted as strings: `hpp(91)`, `model`, `domain`, `sots`, `cellarsandcentaurs`. **Decision: accept (derived from Objective-C).**
+  4. `OwlbearNest.h` is treated as C: `public(3)` and the namespace segment `variants(3)` leak. **Decision: accept.**
+  5. `rollD20` in `Dice.hpp` -> `roll`, `20`, while `d20Roll` -> `d20`, `roll`. **Decision: ignore (derived from Java).**
+- Bad:
+  1. `--comment-weight 0` / `--string-weight 0` abort with a Java stack trace. **Decision: accept (derived from Java).**
+  2. Doc comment tags leak: `brief(2)`, `param(2)` from `@brief` / `@param` in `EncounterEdgeCases.cpp`. **Decision: ignore (derived from Java).**
+  3. Commented-out code counts as comment text (`cover(4)` in `EncounterResolver.hpp`). **Decision: ignore (derived from Java).**
+  4. With a non-UTF-8 locale `Zentaurenhöhle.hpp` is dropped without a message. **Decision: accept (derived from Java).**
+- Good: all 17 expected words are found, no C++ keyword, STL name, attribute or preprocessor directive leaks, raw
+  string delimiters are not counted. Raw, multi-line raw, `u8`, `L` and adjacent string literals, attribute strings,
+  doc comments, enum values and user-defined literal suffixes are extracted. Weights are visible (identifier 3,
+  comment 2, string 1) and configurable. camelCase, snake_case, SCREAMING_SNAKE, PascalCase, acronym and kebab
+  identifiers split correctly. `--exclude-tests`, the three stop word levels, `--no-technical-stopwords` and
+  `--ngrams 2` work as described. `.cc .cxx .hxx .h++` are analysed as C++.
+
+## Appendix A: expected file-level edges of rounds 1 and 2 (written before those runs, unchanged)
 
 Paths relative to `src/de/sots/cellarsandcentaurs/` unless prefixed with `test/`.
 
@@ -269,13 +534,6 @@ Expected cycle (declaration level): Creature -> CreatureFacade -> CreatureServic
 parser treats Creature.hpp and Creature.cpp as one unit.
 No internal edge expected for: std::*, boost::uuids::*, spdlog::*, gtest.
 
-Counting the expectation against the result (checked by script): 64 distinct (from, to) pairs were expected on the
-header/source level; after folding each hpp/cpp pair onto its `.cpp` (the parser's model) and dropping the 5 edges of the
-declaration-less `Application.hpp`, 40 pairs remain. 35 file edges were reported, all 35 are in the expected set (0 extra),
-5 are missing: `CreatureRepository.hpp -> CreatureEntity.hpp` (alias), `PersistedCreatures.cpp -> CreatureFacade.cpp` and
-`CreatureFacade.cpp -> HitPoints.hpp` (static access in a function body), `CreatureFacade.cpp -> dto/Creature.hpp` (same
-simple name) and `Creature.cpp -> Dice.hpp` (free-function call).
-
 ### Round 2 additions to the expected file-level edges (written before the round-2 run)
 
 Every form lives in a new header-only file so that the form is the only path from that file to its target (`#include`s
@@ -296,3 +554,83 @@ No new cycle and no new upward edge is expected. No round-1 edge should change; 
 `adapter.persistence.Repository` (primary template plus specialization), which could move the `Repository` leaf or the
 `CreatureRepository -> Repository` edge, and the forward declaration in `Lair.hpp`, which could be taken for a second
 `domain.model.Creature` declaration.
+
+## Appendix B: round 3 expectations (2026-10-08, written before any parser ran, unchanged)
+
+### Unified parser: `domain/service/EncounterResolver.hpp`
+
+Header-only class, five in-class methods. C++ has no nested named function and no `finally`: `initiativeOrder` holds a
+named lambda (`strongerFirst`) instead, `safeRoll` a `try` / `catch` only. Per-function rloc is counted from the signature
+line to the closing brace, comment-only lines left out. Logic inside a lambda is credited to the enclosing function, the
+lambda's own +1 only to the file.
+
+| metric | expected |
+| --- | --- |
+| logic_complexity | 14 (resolve 11: if, else if, for, if, &&, while, 3 case, ternary, \|\|; safeRoll 2: if, catch; initiativeOrder 1: if) |
+| complexity | 21 (14 + 5 methods + 2 lambdas) |
+| number_of_functions | 5 |
+| loc / rloc / comment_lines | 99 / 77 / 13 (10 blank, 12 comment-only, 1 line with code and trailing comment) |
+| parameters per function max / min / mean / median | 5 / 0 / 1.6 / 1 |
+| complexity per function max / min / mean / median | 12 / 1 / 3.8 / 2 (resolve 12, describe 1, safeRoll 3, initiativeOrder 2, isEmpty 1) |
+| rloc per function max / min / mean / median | 36 / 3 / 12.4 / 8 (resolve 36, describe 5, safeRoll 8, initiativeOrder 10, isEmpty 3) |
+| long_method | 1 (resolve) |
+| long_parameter_list | 1 (resolve) |
+| message_chains | 1 (the chain of 5 in describe; the chain of 3 must not count) |
+| excessive_comments | 1 |
+
+### Unified parser: `EncounterEdgeCases.hpp` / `.cpp`
+
+Every construct is preceded by a `// case: <construct> | functions F, parameters P, complexity C` line; that line is the
+expectation (C = logic + named functions + lambdas of the construct). File totals:
+
+| file | functions | complexity | logic | loc / rloc / comment_lines | max parameters |
+| --- | --- | --- | --- | --- | --- |
+| EncounterEdgeCases.hpp | 11 | 16 | 5 | 89 / 52 / 18 | 2 |
+| EncounterEdgeCases.cpp | 55 | 91 | 31 (91 - 55 functions - 5 lambdas) | 402 / 301 / 53 (1 line both) | 3 |
+
+Judgement calls in these numbers: `= default`, `= delete`, pure virtual and plain declarations are no functions; the three
+`if`s in the `#if` / `#elif` / `#else` branches all count; the function inside `#if 0` counts neither as function nor as
+complexity, its lines count as rloc; the ternary and the `if` inside `#define` bodies count nothing and neither do the
+macro calls; `&&` in a `requires` clause and in `std::vector<int>&&` is no logic; `and` / `or` are logic like `&&` / `\|\|`;
+the `...` of a C variadic function is no parameter; text inside string and raw string literals is code, never a comment;
+the line after a `// ... \` comment is a comment line.
+
+Other new files: `Zentaurenhöhle.hpp` 1 function (constructor) + 1 (`beschreibung`) = 2 functions, complexity 2,
+loc / rloc / comment_lines 17 / 10 / 1. Each of the seven `variants/*Nest.*` files: 1 function, complexity 2, 1 parameter,
+comment_lines 1, loc / rloc 16 / 12 (`.cc .cxx .c++`) or 18 / 13 (`.hh .hxx .h++ .h`).
+
+### Dependency parser: expected file edges of the new files
+
+- domain/service/EncounterResolver.hpp -> Creature (parameter type), Dice.hpp (parameter type), SpeedType.hpp (`model::SpeedType::WALKING` in a body only)
+- domain/service/EncounterEdgeCases.cpp, class `EncounterWitness`, one construct per target:
+  Centaur.hpp (`std::make_unique<model::Centaur>()`), HitPoints.hpp (`sizeof`), Fightable.hpp (`typeid`), Speed.hpp (local
+  variable), CreatureType.hpp (`model::CreatureType::DRAGON` in a body), SpeedType.hpp (`using enum`), ArmorClass (lambda
+  parameter), Dice.hpp (`model::Dice{6}` temporary and `-> model::DiceRoll` trailing return type), Lair.hpp (`new`),
+  Zentaurenhöhle.hpp (pointer to member), CentaurHerd.hpp (`alignof`), CreatureService (member function pointer
+  parameter), Creatures.hpp (concept argument `std::derived_from<Creatures>`), CreatureId.hpp (default argument),
+  EncounterResolver.hpp (friend function declaration)
+- domain/service/EncounterEdgeCases.cpp outside a class: NoSuchCreatureException.hpp (parameter of the free function
+  `freeFunctionUse`), Creature (namespace-scope variable `lastAttacker`), EncounterEdgeCases.hpp (out-of-line
+  `EncounterTally::misses` / `::empty`, expected to fold into one unit with the header)
+- variants/GriffinNest.cc, BasiliskNest.cxx, ChimeraNest.c++, ManticoreNest.hh, CockatriceNest.hxx, HippogriffNest.h++,
+  OwlbearNest.h -> domain/model/Speed.hpp each (7 edges)
+- Zentaurenhöhle.hpp and EncounterEdgeCases.hpp: no outgoing edge
+
+That is 3 + 17 (16 `EncounterWitness` / free targets to other files, `Dice.hpp` counted once, plus the own header) + 7 = 27
+new file edges at most; no new cycle, no new upward edge. Expected leaves: EncounterResolver, EncounterTally, Pool,
+Scorable, RollAwaiter, EncounterWitness (CLASS), Outcome (ENUM), Zentaurenhöhle, the seven `*Nest` classes.
+
+### Domain language parser: expected words of the new files
+
+- the 17 shared words stay at the root
+- German (`Zentaurenhöhle.hpp`): zentaurenhöhle, verlies, rüstungsklasse, trefferpunkte, kreatur, größe, höhle, each as
+  one uncut word; `die`, `unter`, `dem`, `und`, `jeder` should not appear
+- one planted word per variant file: griffin (.cc), basilisk (.cxx), chimera (.c++), manticore (.hh), cockatrice (.hxx),
+  hippogriff (.h++), owlbear (.h)
+- `EncounterEdgeCases.cpp`: wraith, wyvern (raw string), ghoul / banshee / spectre (around `\n` and `\t`), hydra / gorgon
+  (adjacent literals), ogre / troll (multi-line raw string), minotaur (`u8""`), kobold (`L""`), troglodyte (macro name),
+  sphinx (doc comment with tags), phoenix (attribute string), fathoms (user-defined literal), glancing / blow / fumble
+  (enum values)
+- must not appear: nbanshee, tspectre, scroll (raw string delimiter), brief, param, nodiscard, maybe, unused, deprecated,
+  fallthrough, co, await, yield, constexpr, noexcept, typename, template, requires, nullptr, sizeof, typeid, alignof,
+  pragma, once, include, define, endif, elif, defined

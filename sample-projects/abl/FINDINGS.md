@@ -1,113 +1,218 @@
 # OpenEdge ABL (Progress)
 
+> **Decision (2026-10-08): ABL support is dropped completely.** No finding in this report is to be fixed; the
+> per-finding decisions further down are superseded by this one.
+
+Report of 2026-10-08 (round 3). It replaces the report of 2026-09-06; every claim below was checked against the
+output of this run. `M` = `src/de/sots/cellarsandcentaurs`, `S` = `M/domain/service`.
+
 ## Project
-- Layout: `src/de/sots/cellarsandcentaurs/{domain/model,domain/service,adapter/persistence,adapter/ui,application,application/dto}`
-  plus `test/de/sots/cellarsandcentaurs/domain/service/CreatureServiceTest.cls`. ABL packages map to directories, one
-  class per `.cls`, procedures in lower-case `.p`, one AppBuilder window `.w`. 22 files, none larger than 80 lines.
-- Declarations: all of the README table. `CreatureType` and `SpeedType` are `ENUM` types, `Fightable` and `Creatures`
-  are `INTERFACE`s, `NoSuchCreatureException INHERITS Progress.Lang.AppError`, `Centaur INHERITS Creature`,
-  `Creature IMPLEMENTS Fightable`, `PersistedCreatures IMPLEMENTS Creatures`. `dice.p` holds two temp-tables
-  (`Dice`, `DiceRoll`), the free function `rollD20` and the internal procedure `rollInitiative` (file name differs
-  from its declarations; a `.cls` may only hold one class, so a procedure file is the ABL way to do this).
-- Stress constructs present: wildcard `USING de.sots.cellarsandcentaurs.domain.model.*` (CreatureUtil, creaturestable.p,
-  test), unused `USING ...Fightable` (CreatureUtil), inheritance and interface implementation, static member access
-  `CreatureFacade:STANDARD_CREATURE_TYPE` (Creature, PersistedCreatures), type-position-only use (`AS Creatures`),
-  instantiation-only use (`NEW CreatureEntity(...)`), fully qualified reference without USING
-  (`de.sots.cellarsandcentaurs.application.dto.Creature` in CreatureFacade), same simple name `Creature` in
-  `domain.model` and `application.dto` both used from CreatureFacade, standard library / framework usage
-  (`Progress.Lang.AppError`, `Progress.Lang.Object`, `Progress.Json.ObjectModel.JsonObject`, `LOG-MANAGER`,
-  `GUID(GENERATE-UUID)`, `OpenEdge.Core.Assert`), the upward cycle `Creature -> CreatureFacade -> CreatureService ->
-  Creatures -> Creature` and `ArmorClass -> CreatureUtil`, `PersistedCreatures -> CreatureFacade`, procedure-level
-  dependencies via `RUN de/sots/.../dice.p PERSISTENT SET hDice` and `RUN .../creaturebrowser.w`, ABLUnit
-  annotations `@Setup.` / `@Test.` in the test.
-- Not applicable in ABL: aliased import (`USING` has no `AS`), generics (`Repository<T>` — user classes cannot be
-  generic; `CreatureRepository` is a plain class backed by a temp-table), barrel / re-export module (no such
-  concept; the upward dependency goes straight to `CreatureFacade` / `CreatureUtil`), a type referenced only in an
-  annotation (ABL annotations are bare names such as `@Test.`, they cannot name a type).
+- Layout: `M/{domain/model,domain/service,adapter/persistence,adapter/ui,application,application/dto}`, `src/include`
+  and `test/de/sots/cellarsandcentaurs/domain/service/CreatureServiceTest.cls`. ABL packages map to directories, one
+  class per `.cls`, procedures in lower-case `.p`, one AppBuilder window `.w`, includes in `.i`.
+  31 source files: 22 `.cls`, 6 `.p`, 1 `.w`, 2 `.i`.
+- Round 3 files: `S/EncounterResolver.cls`, `S/EncounterEdgeCases.cls` (class constructs), `S/encounteredgecases.p`
+  (constructs that only exist in procedure files), `M/domain/model/Zentaurenhöhle.cls` (German words, umlauts in file
+  name, class name and property name), `src/include/ttencounter.i` (a temp-table include, used by both edge-case
+  files). `git check-ignore -v` reports none of them as ignored.
+- Extension variants: every extension a parser lists for ABL is present (`.p`, `.cls`, `.w`, `.i`); no further file
+  was needed.
+- Stress constructs present (rounds 1 and 2, unchanged): wildcard `USING ...model.*`, unused `USING ...Fightable`,
+  `INHERITS` / `IMPLEMENTS`, static member access, type-position-only and `NEW`-only use, fully qualified reference
+  without `USING`, same simple name `Creature` in two packages, stdlib usage (`Progress.Lang.*`, `OpenEdge.Core.*`),
+  the upward cycle through `CreatureFacade`, `RUN file.p [PERSISTENT]`, `{include.i}`, super procedures, `CAST`,
+  `TYPE-OF`, `Progress.Lang.Class:GetClass("...")`, a preprocessor-defined type name, ABLUnit `@Test.` annotations.
+- Not applicable in ABL: aliased import (`USING` has no `AS`), user-defined generic classes, barrel / re-export
+  module, a type referenced only in an annotation, lambdas / closures, nested functions, optional chaining,
+  comprehensions, generators, `async` / `await`, operator overloads, extension functions, default and variadic
+  parameters, `goto`, fallthrough. `EncounterResolver` therefore has the `if` of the lambda directly in `SafeRoll`
+  and no nested function in `InitiativeOrder`; its `try` is the method block with `CATCH` and `FINALLY`, its `for`
+  is `DO i = 1 TO n`, its `while` is `DO WHILE`, its `switch` is `CASE` / `WHEN` / `OTHERWISE`, its ternary is the
+  `IF ... THEN ... ELSE` expression.
+
+All commands were run as in the README. One addition was needed: `LC_ALL=C.UTF-8`. With an unset locale (POSIX) the
+JVM does not see `Zentaurenhöhle.cls` at all: the unified parser reports 30 instead of 31 ignored files and the domain
+parser processes 28 instead of 29 files, without any warning (`output/domain-posix-locale.cc.json`). This depends on
+the environment (Linux sandbox); not verified on macOS.
 
 ## Dependency parser
-- Not run: `dependencyparser` has no ABL grammar. It would need the extensions `.p`, `.cls`, `.w` (and ideally
-  `.i` include files) and a resolver for `USING package.Class FROM PROPATH`, `USING package.*`, fully qualified
-  type names, `INHERITS` / `IMPLEMENTS`, `NEW Type(...)`, `Type:StaticMember`, and the procedure-level
-  `RUN path/name.p` / `RUN name.p PERSISTENT SET h` / `{include.i}` forms. Names resolve by PROPATH (a search path),
-  not by relative file paths, so package-to-directory mapping is the only thing CodeCharta could do without a
-  PROPATH.
-- Expected file-level edges, written before any run so an ABL front end can be checked against them
-  (`M` = `src/de/sots/cellarsandcentaurs`):
+- `dependencyparser -nc $LANG_DIR -e "output,FINDINGS.md"` and the same with `--include-tests` and `--verbose`:
+  exit 0. stderr: `No supported source files found under .../sample-projects/abl` and `No analyzable declarations
+  were found, so the dependency lens stays empty. ...`. The output holds one `root` folder, no file nodes,
+  `lenses.dependency.edges` is `[]`, no `leaves`, no `leafEdges`, no metric attributes. There is no ABL analyzer
+  under `analysis/analysers/parsers/DependencyParser/.../analysis/analyzers/`.
+- File edges: expected 67 without tests and 75 with tests, found 0 and 0. "found" is `no` for every row.
 
-| from | to |
-| --- | --- |
-| M/domain/model/Creature.cls | CreatureId, CreatureType, ArmorClass, HitPoints, Speed, SpeedType, Fightable (all model), application/CreatureFacade.cls (upward, cyclic) |
-| M/domain/model/ArmorClass.cls | application/CreatureUtil.cls (upward) |
-| M/domain/model/NoSuchCreatureException.cls | model/CreatureId.cls (`Progress.Lang.AppError` is stdlib: no edge) |
-| M/domain/model/Centaur.cls | model/Creature.cls, model/CreatureId.cls, model/CreatureType.cls |
-| M/domain/model/dice.p | none |
-| M/domain/service/Creatures.cls | model/Creature.cls, model/CreatureId.cls |
-| M/domain/service/CreatureService.cls | model/Creature.cls, service/Creatures.cls |
-| M/adapter/persistence/CreatureRepository.cls | persistence/CreatureEntity.cls (`Progress.Lang.Object`, `JsonObject` are stdlib: no edge) |
-| M/adapter/persistence/PersistedCreatures.cls | CreatureRepository, CreatureEntity, service/Creatures, model/Creature, model/CreatureId, model/NoSuchCreatureException, application/CreatureFacade.cls (upward) |
-| M/application/CreatureFacade.cls | service/CreatureService, model/Creature, CreatureId, CreatureType, HitPoints, Speed, SpeedType, ArmorClass, application/dto/Creature.cls (fully qualified, no USING) |
-| M/application/CreatureUtil.cls | model/Creature, model/Speed, model/SpeedType (via wildcard USING); the `Fightable` USING is unused: no edge |
-| M/application/creaturestable.p | CreatureFacade, service/CreatureService, persistence/PersistedCreatures, persistence/CreatureRepository, model/Creature, CreatureType, Speed, ArmorClass, model/dice.p (RUN), adapter/ui/creaturebrowser.w (RUN) |
-| M/adapter/ui/creaturebrowser.w | model/Creature.cls, model/SpeedType.cls, model/dice.p (RUN) |
-| test/.../CreatureServiceTest.cls | service/CreatureService, persistence/PersistedCreatures, persistence/CreatureRepository, model/Speed, Creature, CreatureId, CreatureType, SpeedType (`OpenEdge.Core.Assert` is stdlib) |
-| (round 2) M/domain/model/Speed.cls | src/include/constants.i (textual include `{include/constants.i}`, `{&SPEED-LIMIT}` used in a property INITIAL) |
-| (round 2) M/domain/model/dice.p | src/include/constants.i (textual include `{include/constants.i}`, `{&D20-SIDES}` used in `maxRoll`) |
-| (round 2) M/application/encounter.p | model/dice.p (`RUN dice.p PERSISTENT SET hDice` with a bare PROPATH name, then `RUN rollInitiative IN hDice`) |
-| (round 2) M/application/encounter.p | service/creaturerules.p (`RUN applyDamage (...)` resolved only through the session super procedure; no file is named) |
-| (round 2) M/application/startup.p | service/creaturerules.p (`RUN de/sots/.../creaturerules.p PERSISTENT SET hRules` + `SESSION:ADD-SUPER-PROCEDURE(hRules)`), application/encounter.p (`RUN de/sots/.../encounter.p`) |
-| (round 2) M/adapter/ui/creaturebrowser.w | model/Centaur.cls (`DEFINE VARIABLE oCentaur AS CLASS Centaur NO-UNDO.` with no USING for Centaur) |
-| (round 2) M/application/CreatureUtil.cls | model/Centaur.cls (`CAST(pCreature, Centaur)` is the only usage; resolved through the wildcard USING) |
-| (round 2) M/domain/service/CreatureService.cls | model/Fightable.cls (`TYPE-OF(pCreature, Fightable)` is the only usage, USING added) |
-| (round 2) M/application/CreatureFacade.cls | model/Centaur.cls (`Progress.Lang.Class:GetClass("de.sots.cellarsandcentaurs.domain.model.Centaur"):New(pId)` string lookup, no USING) |
-| (round 2) M/domain/service/creaturerules.p | model/Speed.cls (`&SCOPED-DEFINE SPEED-CLASS de.sots...Speed` + `AS {&SPEED-CLASS}` parameter type, no USING) |
+| from | expected edge(s) | found |
+| --- | --- | --- |
+| M/domain/model/Creature.cls | CreatureId, CreatureType, ArmorClass, HitPoints, Speed, SpeedType, Fightable, application/CreatureFacade.cls (upward, cyclic) | no |
+| M/domain/model/ArmorClass.cls | application/CreatureUtil.cls (upward) | no |
+| M/domain/model/NoSuchCreatureException.cls | model/CreatureId.cls | no |
+| M/domain/model/Centaur.cls | model/Creature.cls, CreatureId.cls, CreatureType.cls | no |
+| M/domain/model/Speed.cls | src/include/constants.i (`{include/constants.i}`) | no |
+| M/domain/model/dice.p | src/include/constants.i | no |
+| M/domain/service/Creatures.cls | model/Creature.cls, model/CreatureId.cls | no |
+| M/domain/service/CreatureService.cls | model/Creature.cls, service/Creatures.cls, model/Fightable.cls (`TYPE-OF`) | no |
+| M/domain/service/creaturerules.p | model/Speed.cls (`&SCOPED-DEFINE SPEED-CLASS` + `AS {&SPEED-CLASS}`) | no |
+| M/adapter/persistence/CreatureRepository.cls | persistence/CreatureEntity.cls | no |
+| M/adapter/persistence/PersistedCreatures.cls | CreatureRepository, CreatureEntity, service/Creatures, model/Creature, CreatureId, NoSuchCreatureException, application/CreatureFacade.cls (upward) | no |
+| M/application/CreatureFacade.cls | service/CreatureService, model/Creature, CreatureId, CreatureType, HitPoints, Speed, SpeedType, ArmorClass, application/dto/Creature.cls (fully qualified), model/Centaur.cls (`GetClass("...")` string) | no |
+| M/application/CreatureUtil.cls | model/Creature, Speed, SpeedType (wildcard USING), model/Centaur.cls (`CAST`) | no |
+| M/application/creaturestable.p | CreatureFacade, CreatureService, PersistedCreatures, CreatureRepository, model/Creature, CreatureType, Speed, ArmorClass, model/dice.p (RUN), adapter/ui/creaturebrowser.w (RUN) | no |
+| M/application/encounter.p | model/dice.p (`RUN dice.p PERSISTENT`), service/creaturerules.p (super procedure) | no |
+| M/application/startup.p | service/creaturerules.p, application/encounter.p | no |
+| M/adapter/ui/creaturebrowser.w | model/Creature.cls, SpeedType.cls, dice.p (RUN), Centaur.cls (`AS CLASS Centaur`, no USING) | no |
+| test/.../CreatureServiceTest.cls (tests only) | CreatureService, PersistedCreatures, CreatureRepository, model/Speed, Creature, CreatureId, CreatureType, SpeedType | no |
+| (round 3) S/EncounterResolver.cls | model/Creature.cls (`USING` + `AS Creature`); `DYNAMIC-FUNCTION("rollD20" IN pDice)` names no file: no edge | no |
+| (round 3) S/EncounterEdgeCases.cls | model/Creature.cls (`AS Creature`, `List<Creature>`), model/HitPoints.cls (`USING` + fully qualified `NEW`), src/include/ttencounter.i (`{include/ttencounter.i}` inside the class body) | no |
+| (round 3) S/encounteredgecases.p | src/include/ttencounter.i (`{include/ttencounter.i &ACCESS-MODE=PRIVATE}`), model/dice.p (`RUN ... PERSISTENT SET hDice`); `RUN VALUE(cRitualProgram)` and `PUBLISH` / `SUBSCRIBE` name no file: no edge | no |
+| (round 3) Zentaurenhöhle.cls, ttencounter.i | none | - |
 
-- Expected cycle: `Creature -> CreatureFacade -> CreatureService -> Creatures -> Creature` (plus `CreatureFacade -> Creature`
-  directly). Expected upward edges: `Creature -> CreatureFacade`, `ArmorClass -> CreatureUtil`, `PersistedCreatures -> CreatureFacade`.
-- Expected leaf kinds: CLASS (13), INTERFACE (Fightable, Creatures), ENUM (CreatureType, SpeedType), no REEXPORT;
-  `dice.p` would need kinds for temp-table / function / procedure, which the current kind set does not have.
+- False positives: none (no edges at all). Cycles and upward edges: expected the cycle `Creature -> CreatureFacade ->
+  CreatureService -> Creatures -> Creature` and the upward edges `Creature -> CreatureFacade`, `ArmorClass ->
+  CreatureUtil`, `PersistedCreatures -> CreatureFacade`; reported none.
+- Leaf kinds: expected CLASS, INTERFACE (`Fightable`, `Creatures`), ENUM (`CreatureType`, `SpeedType`); reported
+  none. Procedure files would need kinds for temp-table, function and internal procedure.
+- What the language offers: packages are directories resolved through PROPATH (a search path), `USING package.Class`
+  and `USING package.*`, includes and `RUN` targets are PROPATH-relative paths. CodeCharta would have to map packages
+  to directories itself, index simple class names project-wide and expand `{&NAME}` preprocessor references.
+
+## Unified parser
+- `unifiedparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/unified.cc.json`: exit 0. stderr: `31 Files with the
+  following extensions were ignored as they are currently not supported: [.p, .cls, .w, .i]` and `No files with
+  specified file extension(s) were found within the given folder - generating empty output file!`. The output holds
+  one `root` folder, no file nodes and no metric attributes. No file of any extension was analysed, including
+  `Zentaurenhöhle.cls`.
+- Classification: `AvailableCollectors.kt` of the unified parser has no ABL entry, although the tree-sitter library
+  ships one (`treeSitterExcavationSite/.../languages/abl/AblMetricMapping.kt`, registered in `LanguageRegistry.kt`
+  with the extensions `.p .cls .w .i`). The domain parser uses that grammar; the unified parser does not offer it.
+- `EncounterResolver` (`S/EncounterResolver.cls`), expected values written before the run:
+
+| metric | expected | reported | verdict |
+| --- | --- | --- | --- |
+| loc | 98 | - | missing |
+| rloc | 68 | - | missing |
+| comment_lines | 13 | - | missing |
+| number_of_functions | 5 | - | missing |
+| logic_complexity | 13 | - | missing |
+| complexity | 18 | - | missing |
+| complexity per function (Resolve 12, Describe 1, SafeRoll 3, InitiativeOrder 1, IsEmpty 1) | max 12, min 1, mean 3.6, median 1 | - | missing |
+| parameters per function (5, 1, 1, 1, 0) | max 5, min 0, mean 1.6, median 1 | - | missing |
+| rloc per function (29, 5, 10, 3, 1) | max 29, min 1, mean 9.6, median 5 | - | missing |
+| long_method | 1 | - | missing |
+| long_parameter_list | 1 | - | missing |
+| message_chains | 1 | - | missing |
+| excessive_comments | 1 | - | missing |
+
+  Complexity is 18 and not 19 as in a language with lambdas: the lambda of `safeRoll` does not exist in ABL.
+- `EncounterEdgeCases` (`S/EncounterEdgeCases.cls`), expected per construct; reported is `-` (missing) for all:
+
+| construct (method) | expected complexity | note |
+| --- | --- | --- |
+| property accessor bodies `GET():` / `SET(...):` (`Morale`) | 2 / 1 | two functions; GET holds an `IF` |
+| `CONSTRUCTOR STATIC`, `CONSTRUCTOR PUBLIC ()`, `CONSTRUCTOR PUBLIC (1)` | 1 / 1 / 1 | three functions, overloads |
+| `DESTRUCTOR PUBLIC` | 2 | a function with an `IF` |
+| event handler `OnAmbushSprung` (subscribed with `AmbushSprung:Subscribe`) | 2 | the ABL substitute for a callback |
+| `REPEAT:` with `LEAVE` (`RepeatLoop`) | 3 | loop + `IF` |
+| `IF ... THEN DO: END. ELSE DO: END.` (`IfThenDoElseDo`) | 2 | a plain `DO:` block is not a loop |
+| `DO TRANSACTION ON ERROR UNDO, LEAVE:` (`TransactionBlock`) | 1 | not a loop |
+| `DO i = 10 TO 1 BY -1 WHILE cond:` (`DoToByWhile`) | 2 | one loop |
+| `FOR EACH ... WHERE a AND b BY ...` (`ForEachWhere`) | 3 | loop + `AND` in the `WHERE` |
+| `FOR FIRST ... WHERE` (`ForFirst`) | 2 | counted as a loop (runs at most once) |
+| `OPEN QUERY ... FOR EACH` + `DO WHILE NOT QUERY-OFF-END` (`QueryLoop`) | 2 | the `FOR EACH` of `OPEN QUERY` is not a loop |
+| labelled block with `NEXT label` / `LEAVE label` (`LabelledLeave`) | 5 | two loops, two `IF`; 12 rloc = the long method |
+| `WHEN "a" OR WHEN "b" THEN` (`CaseOrWhen`) | 4 | three case labels, `OTHERWISE` not counted |
+| nested `IF` expression (`NestedIfExpression`) | 3 | two conditional expressions |
+| `a AND (b OR c) AND NOT d` (`AndOrNot`) | 4 | |
+| lower-case keywords `if a and b then` (`LowerCaseKeywords`) | 3 | ABL is case-insensitive |
+| mixed-case keywords `If a And b Or c Then` (`MixedCaseKeywords`) | 4 | |
+| `ASSIGN x = 5 WHEN cond.` (`AssignWhen`) | 2 | guarded assignment, counted like an `if` |
+| two `CATCH` blocks + `FINALLY` (`CatchTwice`) | 3 | |
+| `NO-ERROR` + `IF ERROR-STATUS:ERROR` + `UNDO, THROW` (`NoErrorCheck`) | 2 | |
+| `&IF ... &THEN ... &ELSEIF ... &ELSE ... &ENDIF`, `{&MAX-ROUNDS}` (`PreprocessorBranch`) | 1 | compile-time branches |
+| `INPUT`, `OUTPUT`, `INPUT-OUTPUT`, `TABLE`, `BUFFER` parameters (`ParameterModes`) | 1 | 5 parameters = the long parameter list |
+| parameter without mode (`ImplicitInput`) | 1 | 1 parameter |
+| overloads `Heal()` / `Heal(INPUT)` | 1 / 1 | two functions |
+| `METHOD PUBLIC STATIC FINAL` (`StaticFinal`) | 1 | |
+| comment markers and keywords inside `"..."`, `'...'`, `~"` escape, `:U` (`CommentMarkersInStrings`) | 1 | 0 comment lines |
+| string over three lines holding `IF`, `AND`, `//` (`MultiLineString`) | 1 | 3 rloc, 0 comment lines |
+| nested comment `/* /* */ */` over 3 lines and as trailing comment (`NestedComment`) | 1 | 4 comment lines |
+| ABLDoc `/** ... @param ... */` (`AblDocComment`) | 1 | 5 comment lines |
+| five property accesses, no call (`PropertyChain`) | 1 | no message chain |
+| exactly four calls (`CallChainFour`) | 1 | one message chain |
+| handle attributes `SESSION:FIRST-PROCEDURE:NEXT-SIBLING:PRIVATE-DATA` (`HandleChain`) | 1 | no message chain |
+| `VAR INTEGER a = 2, b.` and `+=` (`VarStatement`) | 1 | |
+| `DEF VAR ... AS INT`, `INIT` (`AbbreviatedKeywords`) | 1 | |
+| `List<Creature>` (`GenericCollection`) | 1 | |
+| `DYNAMIC-NEW`, `DYNAMIC-INVOKE`, qualified return type (`DynamicTypes`) | 1 | |
+
+  File totals expected: loc 296, rloc 237, comment_lines 13, number_of_functions 40, logic_complexity 32,
+  complexity 72, long_method 1, long_parameter_list 1, message_chains 1, excessive_comments 1.
+- `S/encounteredgecases.p`, expected: loc 63, rloc 47, comment_lines 4, number_of_functions 3 (`criticalDamage`,
+  `startAmbush`, `onAmbushSprung`; `FUNCTION ... FORWARD`, `FUNCTION ... IN hDice` and `PROCEDURE ... EXTERNAL` are
+  declarations), logic_complexity 6 (`IF` in the `ON CHOOSE` trigger, `REPEAT`, `IF`, `OR`, `IF` expression, `IF`),
+  complexity 10 (3 functions + the anonymous trigger block), parameters 1 / 3 / 1 (`DEFINE INPUT PARAMETER`
+  statements inside the procedure). Reported: nothing.
+- Line counting, functions, parameter counts in the other files: nothing is reported for any file.
+- Not verifiable without ABL being wired into the unified parser; read from `AblMetricMapping.kt` only: `do_block`
+  is mapped to logic complexity without a condition (the plain `DO:` blocks of `IfThenDoElseDo` and
+  `TransactionBlock` would count), `case_statement` and `case_otherwise_clause` are both mapped (`Resolve` would get
+  5 instead of 3 for its `CASE`), `binary_expression` only accepts the spellings `AND`, `OR`, `and`, `or`
+  (`MixedCaseKeywords` would lose 2), and there is no entry for destructors, property accessors or `ON` triggers.
 
 ## Domain language parser
-- Commands (all from the README, `LANG_DIR=sample-projects/abl`, stderr in `output/*.stderr.log`); all exit 0 unless noted:
-  - `domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json` (22 files, 41 nodes)
-  - `--exclude-tests` -> `output/domain-exclude-tests.cc.json`
-  - `--comment-weight 0` and `--string-weight 0` fail with `IllegalArgumentException: --comment-weight must be positive, got 0`
-    (a weight cannot be switched off); `--comment-weight 3` / `--string-weight 3` were used instead
-  - `--stop-word-level MINIMAL`, `--stop-word-level AGGRESSIVE`, `--no-technical-stopwords`, `--verbose` (no extra output
-    beyond the default log; no parse warnings for any file, including the `.w`)
-- Default weights observed: identifier 3, comment 2, string 1.
-- Expected words at the root node: all 17 present. creature(95), speed(46), armor(18), hit(18), points(18),
-  stable(15), dice(15), initiative(13), roll(13), damage(8), centaur(6), cellar(5), treasure(5), dungeon(3),
-  lair(2), encounter(2), hoard(2).
-- What the ABL grammar extracts (checked with probe files outside the project): only *declarations* are counted —
-  variable, parameter, property, method, constructor, procedure, function, temp-table and enum member names, plus a
-  simple (unqualified) class name. Not counted: type references (`AS Creature`, `INHERITS`, `IMPLEMENTS`), method
-  calls and object references (`oCreature:SetSpeed(...)`, `CreatureFacade:STANDARD_CREATURE_TYPE`), `NEW Type()`,
-  `RUN` targets, `USING` statements, numeric literals, single-letter tokens, preprocessor names (`&Scoped-define`).
-- Keyword and technical-word leakage (default level MODERATE):
-  - ABL keywords (`CLASS`, `DEFINE`, `METHOD`, `NO-UNDO`, `CHARACTER`, `INTEGER`, `PUBLIC`, `STATIC`, `OVERRIDE`, ...)
-    do not leak at all: right, the grammar does not emit them. `class(17)` and `string(3)` come from the identifiers
-    `ArmorClass` / `STANDARD_ARMOR_CLASS_DESCRIPTION` and `ToString`, not from keywords; acceptable for `class`
-    (armor class is domain), `string` is noise.
-  - `de(6)` is the first segment of the package name in `ENUM de.sots.cellarsandcentaurs.domain.model.CreatureType:`
-    (only for ENUM headers, and only the first segment): wrong, that is a package prefix.
-  - `app(3)` from `INHERITS AppError`: the keyword list contains `AppError`, but matching happens after splitting, so
-    only `error` (technical stop word) is removed and `app` stays: wrong. Same mechanism removes `json` from `ToJson`
-    because `Json` is a listed keyword, which is right by accident.
-  - Architecture words that leak at MODERATE: `entity(12)`, `repository(9)`, `facade(9)`, `dto(3)`, `persisted(3)`,
-    `standard(6)`, `description(9)`, `value(9)`, `type(18)`, `init(3)`, `info(2)` (the LOG-MANAGER level string). Of
-    these `entity`, `repository`, `facade`, `dto`, `type`, `value`, `init`, `info` are filtered at AGGRESSIVE. Filtered
-    correctly at MODERATE: `save`, `find`, `create`, `get`, `set`, `service`, `exception`, `base`, `name`, `temporary`
-    (they reappear with `--no-technical-stopwords`, and `save`, `find`, `service`, `exception`, `set`, `get`, `create`,
-    `base` reappear at MINIMAL).
-  - ABL naming prefixes leak when they are two letters: `tt(6)` (temp-tables `ttSpeed`, `ttCreature`), `fi(6)`
-    (fill-ins `fiCreatureId`, `fiWalkingSpeed`); one-letter prefixes (`o`, `p`, `h`, `i`) are dropped. Wrong for ABL,
-    where `tt`, `fi`, `btn`, `cb`, `bf`, `tb` prefixes are the convention.
-  - File header comments leak: `file(8)`, `purpose(8)`, `cls(4)`, `connected(2)`, `databases(2)` (AppBuilder /
-    Developer Studio template headers). Not a parser bug, but a real-world ABL project will have these in every file.
-  - Others: `such(4)` (`NoSuchCreatureException`), `up(3)` (`setUp`), `one(3)` (`FindOne`), `max(3)`, `20(3)` (see below).
-  - MINIMAL vs AGGRESSIVE in one line: MINIMAL adds `save(15) service(12) base(9) find(9) set(6) create(3) exception(3)
-    get(3)`; AGGRESSIVE removes `type entity facade repository value dto init info` from the MODERATE list and nothing else.
+- Commands (`LC_ALL=C.UTF-8`, logs in `output/*.stderr.log`, word lists in `output/*.dump.txt`):
+  - `domainlanguageparser -nc $LANG_DIR -e "output,FINDINGS.md" -o output/domain.cc.json`: exit 0, `29 files
+    processed`, 29 nodes. The two `.i` files are not scanned (`Language.kt` lists `p`, `cls`, `w`).
+  - `--verbose`: exit 0, no additional output. `--stop-word-level MINIMAL` / `AGGRESSIVE`, `--no-technical-stopwords`,
+    `--ngrams 2`, `--comment-weight 3`, `--string-weight 3`: exit 0. `--exclude-tests`: exit 0, 28 files.
+  - `--comment-weight 0`: exit 1, `IllegalArgumentException: --comment-weight must be positive, got 0`.
+- The lens holds file nodes only, with `frequency` and `tfidf` per word. There is no root node and no folder node,
+  so "must appear in the root node's word list" cannot be read from the output; the numbers below are the sums over
+  the 29 file nodes.
+- Expected words: all 17 appear. creature(110), speed(66), roll(43), encounter(36), damage(33), dice(26), armor(25),
+  hit(22), initiative(20), points(19), stable(16), centaur(13), cellar(11), dungeon(5), treasure(5), lair(2), hoard(2).
+- Weights observed: identifier 3, comment 2, string 1 (`--comment-weight 3` moves `roams`, `lair`, `basilisk` from 2
+  to 3; `--string-weight 3` moves `swamp`, `gargoyle`, `mellon` from 1 to 3).
+- Expected words of the new files, expected before the run:
+
+| file | found | not found |
+| --- | --- | --- |
+| EncounterResolver.cls | resolve, attacker, defender, roll, bonus, terrain, damage, speed, remaining, creature, health, armor, safe, dice, initiative, order, rank, empty, swamp, cave, stable; encounter(4) and resolver(2) from comments only | describe (`describe` is in `english-stopwords.txt`, listed as BDD terminology); the class name as an identifier |
+| EncounterEdgeCases.cls | morale, ambush, sprung, torch, potion, arrow, quiver, wound, goblin, smite, rune, gold, silver, copper, scroll, lantern, password, mellon, patrol, summoned, gargoyle, portcullis, basilisk, bow, sling, lance | mimic, wraith (`VAR INTEGER iMimic = 2, iWraith.`) |
+| encounteredgecases.p | hit, point, pool, trap, damage, total, ritual, ambush, critical, remote, location, ticks, crypt, goblin | - |
+| ttencounter.i | - | ambusher, rounds (file not scanned; `ambusher(3)` in the two edge-case files comes from the parameters `pAmbusher`) |
+| Zentaurenhöhle.cls | see German words | |
+
+- What is extracted, checked with one-line probe files outside the project: names of variables (`DEFINE VARIABLE`
+  and `DEF VAR`), parameters, properties, methods, constructors, procedures, functions, temp-tables, enum members,
+  `CATCH` variables, the record of `FOR EACH` / `FOR FIRST`, the table of an `INPUT TABLE` parameter, and an
+  unqualified class name. Not extracted: a qualified class or interface name, type references (`AS Creature`,
+  `INHERITS`, `IMPLEMENTS`, `List<Creature>`), every usage (`oCreature:SetSpeed(40)`, `NEW`, `RUN`, `CAST`,
+  `TYPE-OF`), `USING`, `{include.i}`, `&SCOPED-DEFINE` / `&GLOBAL-DEFINE` names and `{&NAME}` references.
+- Keyword and technical-word leakage at MODERATE:
+  - ABL statement keywords in code do not leak. They leak from comments and from identifiers, because
+    `abl-keywords.txt` only lists framework terms (`Progress`, `AppError`, `Json`, `Method`, ...): `assign(5)` (2 from
+    the commented-out line `// ASSIGN iRemaining = iRemaining * 2.` in EncounterResolver.cls), `end(2)` (comment in
+    EncounterEdgeCases.cls), and `repeat`, `case`, `while`, `each`, `else`, `catch`, `var`, `static`, `final`, `input`,
+    `leave`, `query`, `transaction` (3 each, from the edge-case method names such as `RepeatLoop`). Leaking from a
+    method name is right; `assign` from commented-out code is noise.
+  - `param(2)` and `return(2)` come from the ABLDoc tags `@param` / `@return` in EncounterEdgeCases.cls: wrong.
+  - `de(6)`: first package segment of `ENUM de.sots....CreatureType:` and `...SpeedType:`: wrong.
+  - `app(3)` from `INHERITS AppError` in NoSuchCreatureException.cls: the list holds `AppError`, the filter runs
+    after splitting, only `error` is removed: wrong.
+  - `tt(12)` (`ttSpeed`, `ttCreature`, `ttEncounter`), `fi(6)` (`fiCreatureId`, `fiWalkingSpeed`): two-letter ABL
+    prefixes leak; one-letter prefixes (`p`, `i`, `c`, `o`, `h`, `e`, `b`) are dropped.
+  - Header template words: `file(20)`, `purpose(20)`, `cls(8)`, `connected(2)`, `databases(2)`, and the file's own
+    name split into words (`creaturestable(2)`, `encounteredgecases(2)`).
+  - Architecture words that stay at MODERATE: `type(21)`, `entity(12)`, `repository(9)`, `facade(9)`, `value(9)`,
+    `description(9)`, `standard(6)`, `dto(3)`, `persisted(3)`, `init(3)`, `info(2)`. AGGRESSIVE removes `type`,
+    `types`, `entity`, `repository`, `facade`, `value`, `dto`, `init`, `info`, `model`, `param`, `call`, `handle`,
+    `start` and nothing else. MINIMAL adds `save(15)`, `service(12)`, `base(9)`, `find(9)`, `create(6)`, `get(6)`,
+    `set(6)`, `exception(3)`, `index(3)`; `--no-technical-stopwords` adds the same plus `name(19)`, `temporary(6)`.
+  - Others: `id(45)`, `one(11)`, `such(4)`, `up(3)` (`setUp`), `20(3)`, `ididid(1)` (the string `"ididid"` in
+    CreatureEntity.cls), `sots(1)`, `cellarsandcentaurs(1)`, `domain(1)`, `model(1)` (the dotted class name in the
+    `GetClass("...")` string in CreatureFacade.cls).
 - Identifier splitting:
 
 | form | identifier | words found |
@@ -117,106 +222,128 @@
 | SCREAMING_SNAKE | `MAX_HIT_POINTS` (HitPoints.cls) | max, hit, points |
 | PascalCase | `ArmorClass` | armor, class |
 | Acronym | `XPValue` (Creature.cls) | xp, value |
-| Digit | `d20Roll` (dice.p) | `20`, roll — the `d` is dropped as a one-letter token and the bare number `20` becomes a word |
-| Digit (other side) | `rollD20` (dice.p) | roll, d20 — inconsistent with `d20Roll`: lower-case letter before a digit splits, upper-case does not |
+| Digit | `d20Roll` (dice.p) | `20`, roll: the `d` is dropped, the bare number becomes a word |
+| Digit (other side) | `rollD20` (dice.p) | roll, d20 |
 | Kebab in string | `"centaur-stable"` (CreatureFacade.cls) | centaur, stable |
+| Hyphenated ABL name | `hit-point-pool`, `trap-damage-total` (encounteredgecases.p) | hit, point, pool / trap, damage, total |
 | Prefix convention | `ttSpeed`, `fiCreatureId` | tt, speed / fi, creature, id |
-| Qualified class header | `CLASS de.sots.cellarsandcentaurs.domain.model.Creature` | nothing — the class name is lost (see Wrong) |
+| Umlaut identifier | `rüstungsklasse` (Zentaurenhöhle.cls) | rüstungsklasse |
+| Qualified class header | `CLASS de.sots.cellarsandcentaurs.domain.model.Creature` | nothing |
 
-- Comments and strings: all planted sentences are counted. Doc comment on `Creature` (roams(2), cellar(2), share(2),
-  beasts(2), dragons(2), centaurs(2)), doc comment on `HitPoints` (damage(2 of 8), lair(2), rests(2), recover(2),
-  drop(2)), line comment in `CreatureFacade:Create` (initiative(2), dungeon(2), encounter(2), rolls(2)), block comment
-  in `CreatureUtil` (treasure(2), hoard(2), guards(2), counts(2)), the string `"No such creature in the dungeon: "`
-  (dungeon(1), such(1)) and `"centaur-stable"` (centaur(1), stable(1)). Weights are visible: `--comment-weight 3`
-  moves the comment-only words from 2 to 3 (`roams`, `lair`, `encounter`, ...), `--string-weight 3` moves `dungeon`
-  in NoSuchCreatureException from 1 to 3 and `centaur` / `stable` in CreatureFacade from 1 to 3. `//` line comments
-  and `/* */` block comments are both recognised; the AppBuilder `&ANALYZE-SUSPEND` header lines are ignored.
-- Test file handling: `test/.../CreatureServiceTest.cls` is included by default (creature(6), repository(3), speed(3),
-  stable(3), up(3), walking(3), centaur(2)); `--exclude-tests` drops the whole `test/` subtree (0 nodes). It is only
-  recognised as a test because of the `test/` directory: `TestFileDetector` checks the `Test` name suffix only for
-  kt/java/cs/php, so a `CreatureServiceTest.cls` next to its production class (also common in ABL projects) would not be
-  excluded. `should_save_creature_to_the_stable` splits into creature, stable (`should`, `to`, `the` are English stop
-  words, `save` is technical); `setUp` leaves `up`; the `@Test.` / `@Setup.` annotations are not counted, and the word
-  `test` never appears because the qualified class name is lost anyway.
+- Comments and strings: all planted sentences are counted. Creature.cls doc comment: roams, cellar, share, beasts,
+  dragons, centaurs (2 each). HitPoints.cls: drop, lair, rests, recover, takes (2 each). CreatureFacade.cls line
+  comment: rolls, initiative, dungeon, encounter, every, before, starts (2 each). CreatureUtil.cls block comment:
+  counts, hoard, guards (2 each), treasure. NoSuchCreatureException.cls string: dungeon(1), such(+1).
+  `"centaur-stable"`: centaur, stable. In EncounterEdgeCases.cls the strings with comment markers are counted as
+  strings (`neither(1)`, `said(1)`, `tilde(1)`, `escapes(1)`, `quote(1)`), the three-line string is counted
+  (`gargoyle(1)`, `whispers(1)`, `portcullis(1)`), the nested comment is counted as one comment (`outer(4)`,
+  `inside(2)`), the ABLDoc comment is counted (`basilisk(2)`). Not counted: the string argument of
+  `DYNAMIC-FUNCTION("rollD20" IN pDice)` (EncounterResolver.cls) and the library name in `PROCEDURE GetTickCount
+  EXTERNAL "kernel32.dll":` (encounteredgecases.p).
+- Test file handling: `test/.../CreatureServiceTest.cls` is included by default (creature(6), repository(3),
+  speed(3), stable(3), up(3), walking(3), centaur(2)). `--exclude-tests` removes it (28 files) because of the `test`
+  directory. A probe `GoblinTest.cls` outside a test directory stays in with `--exclude-tests`: `TestFileDetector`
+  knows the `Test` suffix only for `kt`, `kts`, `java`, `cs`, `php`. `should_save_creature_to_the_stable` yields
+  creature, stable (`should`, `to`, `the` are stop words, `save` is technical).
+
+- German words (Zentaurenhöhle.cls reports beschreibung(3), hle(3), rüstungsklasse(3), dem(2), die(2), geh(2),
+  jeder(2), kreatur(2), liegt(2), ren(2), stungsklasse(2), trefferpunkte(2), und(2), unter(2), verlies(2),
+  zentaurenh(2), der(1)): 4 of 7 appear.
+
+| word | found | how |
+| --- | --- | --- |
+| zentaurenhöhle | no | comment -> `zentaurenh(2)` + `hle`; the qualified class name is not extracted |
+| verlies | yes (2) | comment |
+| rüstungsklasse | yes (3) | from the property name only; the comment occurrence becomes `stungsklasse(2)` |
+| trefferpunkte | yes (2) | comment |
+| kreatur | yes (2) | comment |
+| größe | no | string `"Größe der Höhle"` -> `gr` and `e`, both too short, nothing left |
+| höhle | no | -> `hle` (2 from the comment, 1 from the string) |
+
+  Comments and strings are tokenised with `[a-zA-Z]{3,}` (`SplitStage.kt`), so every umlaut and `ß` cuts the word;
+  `gehören` becomes `geh(2)` and `ren(2)`. Identifiers keep umlauts (probe: `CLASS Zentaurenhöhle:` with a property
+  `Größe` yields `zentaurenhöhle(3)`, `größe(3)`). German stop words leak: `die(2)`, `unter(2)`, `dem(2)`, `und(2)`,
+  `jeder(2)`, `der(1)`; only `english-stopwords.txt` exists. `zu` is dropped because it has two letters.
+
+## Changed since 2026-09-06
+- Domain parser: the lens no longer holds folder and root nodes (2026-09-06: 44 nodes for 25 files; now one node per
+  file, 29 for 29). Aggregated words have to be summed by the reader.
+- Domain parser: every word now carries a `tfidf` value besides `frequency`.
+- Domain parser: the per-file word lists of the 25 old files are unchanged. Summed over the old files the expected
+  words give the numbers of the earlier report (creature 101, speed 55, centaur 13, damage 14, initiative 17, roll 16,
+  dice 18, encounter 8, dungeon 5, cellar 7, armor 18, stable 15, treasure 5, lair 2, hoard 2), except hit and points:
+  19 each, not 18. The extra 1 is the string `"hit points left"` in encounter.p; the earlier report had not added it.
+- Still true: qualified class names yield nothing, `de` from ENUM headers, `app` from `AppError`, `tt` / `fi`
+  prefixes, `d20Roll` -> `20`, temp-table fields and `DEFINE BUTTON` / `DEFINE FRAME` names not extracted, usages not
+  counted, `.i` not scanned, `--comment-weight 0` rejected, test detection by directory only, package segments from
+  the `GetClass` string.
+- Dependency parser: it was not run on 2026-09-06. It now runs, exits 0, warns and writes an empty lens.
+- Unified parser: not part of the earlier report. It ignores all ABL files.
+- New on the old files: none beyond the above.
 
 ## Verdict
-- Good: all 17 expected words reach the root; no ABL keyword leaks; comments (`//` and `/* */`) and strings are
-  counted with visible weights; camelCase, snake_case, SCREAMING_SNAKE, PascalCase and the acronym split cleanly;
-  hyphenated strings split; `USING`, type references, numeric literals and one-letter prefixes are ignored;
-  `.p`, `.cls` and `.w` files all parse without warnings; `--exclude-tests` works through the `test/` directory.
-- Good (round 2): the include reference `{include/constants.i}`, the preprocessor references `{&SPEED-LIMIT}` /
-  `{&D20-SIDES}` / `{&SPEED-CLASS}` and the `&SCOPED-DEFINE` line do not disturb parsing of `.cls` / `.p`; the three
-  new procedure files parse without warnings; all 17 expected words are still at the root and none was lost.
-- Wrong:
-  1. `CLASS de.sots.cellarsandcentaurs.domain.model.Creature:` (every `.cls` in the project) — a fully qualified
-     class, interface or enum name yields no word at all, so the single most important identifier of each file is
-     missing (`creature` in Creature.cls comes only from constructors and the comment). An unqualified `CLASS Wyvern:`
-     is counted. For `ENUM` headers only the first package segment survives (`de(6)`).
-  2. `DEFINE TEMP-TABLE Dice ... FIELD sides ... FIELD label` (dice.p, Creature.cls `ttSpeed`, CreatureRepository.cls
-     `ttCreature`) — temp-table field names are not extracted; only the table name is. Fields are where ABL keeps
-     its domain vocabulary.
-  3. `d20Roll` -> `20`, `roll` vs `rollD20` -> `roll`, `d20` (dice.p) — digit boundary splitting depends on the case of
-     the preceding letter, and a bare number leaks as a word.
-  4. `INHERITS AppError` (NoSuchCreatureException.cls) -> `app(3)`: compound entries in `abl-keywords.txt` (`AppError`,
-     `JsonObject`, `ProDataSet`, ...) never match because the token is split before the keyword filter.
-  5. `ttSpeed`, `fiCreatureId`, `btnRoll` — the two-letter ABL prefixes `tt` and `fi` leak (`btn` is not counted at
-     all, see Missing); they are noise in every ABL code base.
-  6. (round 2) `Progress.Lang.Class:GetClass("de.sots.cellarsandcentaurs.domain.model.Centaur")` (CreatureFacade.cls) —
-     a dotted type name inside a string is split on the dots, so the package segments `sots`, `cellarsandcentaurs`,
-     `domain`, `model` leak as words (weight 1); `de` is dropped because two-letter tokens from strings and comments are
-     discarded while two-letter identifiers (`tt`, `fi`, `de` from ENUM headers) are kept — inconsistent.
+
+**Decision (2026-10-08): ABL support is dropped completely. Everything below is kept as a record only.**
+
+### Unified parser
+- Missing: ABL is not analysed at all. All 31 files (`.p`, `.cls`, `.w`, `.i`) are listed as unsupported and the
+  output has no file node and no metric, although `AblMetricMapping.kt` exists in the tree-sitter library.
+- Wrong: nothing to judge.
+- Bad: exit code 0 and a written `unified.cc.json` although nothing was analysed; only the stderr warning says so.
+- Bad: with a non-UTF-8 locale the count of ignored files is 30, `Zentaurenhöhle.cls` is not even listed. **Decision: accept (derived from Java).**
+- Good: the message names the ignored extensions and the file count.
+
+### Dependency parser
+- Missing: no ABL analyzer. 0 of 67 expected file edges (0 of 75 with tests), no leaves, no cycle, no upward edge.
+- Wrong: nothing to judge.
+- Bad: exit code 0 and an output file with an empty lens.
+- Good: two clear warnings (`No supported source files found`, `No analyzable declarations were found`).
+
+### Domain language parser
 - Missing:
-  1. `DEFINE BUTTON btnRoll` (creaturebrowser.w) — button and other widget definitions are not extracted, nor are
-     `&Scoped-define WINDOW-NAME wCreatureBrowser` preprocessor names.
-  2. Usages: `oCreature:SetSpeed(...)`, `CreatureFacade:STANDARD_CREATURE_TYPE`, `NEW Speed(40)`, `RUN rollInitiative
-     IN hDice`, `Creature.cls` `AS ArmorClass` — no usage of an identifier counts, so word frequencies reflect the
-     number of declarations only (`speed(46)` is high only because of many parameters and properties named speed).
-  3. `--comment-weight 0` / `--string-weight 0` are rejected, so a source category cannot be switched off for
-     comparison.
-  4. Name-based test detection for `.cls` / `.p` (`*Test.cls`), only the directory rule applies.
-  5. (round 2) `.i` include files are not scanned at all (`Language.kt` lists only `p`, `cls`, `w` for ABL):
-     `src/include/constants.i` is missing from the tree (26 files on disk, 25 processed). Real ABL projects keep shared
-     temp-table, constant and even class-body definitions in includes, so their vocabulary is lost.
-  6. (round 2) `RUN dice.p PERSISTENT SET hDice`, `RUN rollInitiative IN hDice`, `RUN applyDamage` (super-procedure call),
-     `SESSION:ADD-SUPER-PROCEDURE`, `CAST(pCreature, Centaur)`, `TYPE-OF(pCreature, Fightable)`, `AS CLASS Centaur` and
-     `{&SPEED-CLASS}` contribute no word: `encounter.p` has no `roll` or `apply`, `CreatureUtil.cls` no `centaur`,
-     `CreatureService.cls` no `fightable` — confirmed with one-line probe files outside the project.
-
-## Round 2: additional dependency forms
-- Added files: `src/include/constants.i` (`&GLOBAL-DEFINE SPEED-LIMIT 120`, `&GLOBAL-DEFINE D20-SIDES 20`),
-  `M/domain/service/creaturerules.p` (super procedure with `applyDamage`, `halveSpeed`; `&SCOPED-DEFINE SPEED-CLASS`),
-  `M/application/startup.p` (installs the super procedure, runs the encounter), `M/application/encounter.p`
-  (bare `RUN dice.p PERSISTENT`, `RUN rollInitiative IN hDice`, `RUN applyDamage` through the super procedure).
-  Added declarations: `Speed:SpeedLimit` (`{&SPEED-LIMIT}`), `maxRoll` in dice.p (`{&D20-SIDES}`), `oCentaur AS CLASS Centaur`
-  in creaturebrowser.w, `CreatureUtil:BowRangeOf` (`CAST`), `CreatureService:CanFight` (`TYPE-OF`, plus a `USING Fightable`),
-  `CreatureFacade:CreateCentaur` (`Progress.Lang.Class:GetClass(...):New(pId)`). No round-1 construct, comment, string or
-  identifier was changed. 26 files on disk now; the expected-edge table above carries one `(round 2)` row per form.
-- No ABL dependency parser exists, so "found" is `no` for every row; the rows are the acceptance list for a future ABL front end.
-  Each edge is the only way its `from` file depends on its `to` file (`M` = `src/de/sots/cellarsandcentaurs`).
-
-| form | file(s) | expected edge | found | note |
-| --- | --- | --- | --- | --- |
-| textual include `{include/constants.i}` (two users) | src/include/constants.i, M/domain/model/Speed.cls, M/domain/model/dice.p | Speed.cls -> constants.i, dice.p -> constants.i | no | resolved by PROPATH, not relative to the includer; `{&SPEED-LIMIT}` / `{&D20-SIDES}` only exist after inclusion. The domain parser does not scan `.i` |
-| `RUN dice.p PERSISTENT SET hDice` + `RUN rollInitiative IN hDice` | M/application/encounter.p | encounter.p -> M/domain/model/dice.p | no | bare file name (round 1 used the full `de/sots/.../dice.p` path); the `IN hDice` call names an internal procedure of that file |
-| super procedure: `SESSION:ADD-SUPER-PROCEDURE(hRules)` then `RUN applyDamage` with no `IN` | M/application/startup.p, M/domain/service/creaturerules.p, M/application/encounter.p | startup.p -> creaturerules.p (RUN PERSISTENT + ADD-SUPER-PROCEDURE); encounter.p -> creaturerules.p (implicit) | no | the encounter.p edge is only knowable by tracing the session super-procedure stack; a static parser can at best flag `RUN applyDamage` as unresolved. startup.p -> encounter.p is a plain `RUN` |
-| `DEFINE VARIABLE oCentaur AS CLASS Centaur` without USING | M/adapter/ui/creaturebrowser.w | creaturebrowser.w -> M/domain/model/Centaur.cls | no | no `USING` names Centaur in that file (only Creature, SpeedType); resolution needs a project-wide simple-name index |
-| `CAST(pCreature, Centaur)` as the only usage | M/application/CreatureUtil.cls | CreatureUtil.cls -> M/domain/model/Centaur.cls | no | reached through the wildcard `USING ...model.*`; the type name is a CAST argument, not a declaration |
-| `TYPE-OF(pCreature, Fightable)` check | M/domain/service/CreatureService.cls | CreatureService.cls -> M/domain/model/Fightable.cls | no | a `USING Fightable` was added with it; the USING alone must not count (see stress 9), only the TYPE-OF argument makes the edge |
-| `Progress.Lang.Class:GetClass("...Centaur"):New(pId)` | M/application/CreatureFacade.cls | CreatureFacade.cls -> M/domain/model/Centaur.cls | no | the type name lives only in a string literal; `Progress.Lang.Class` is stdlib, no edge |
-| `&SCOPED-DEFINE SPEED-CLASS ...Speed` + `AS {&SPEED-CLASS}` | M/domain/service/creaturerules.p | creaturerules.p -> M/domain/model/Speed.cls | no | the type is only visible after preprocessor expansion; no USING, no literal `Speed` token outside the define line |
-
-- Domain parser after round 2 (same README command, exit 0, no warnings): 25 files processed (26 on disk, `constants.i`
-  skipped), 44 nodes instead of 41; all 17 expected words still at the root, nothing lost, changed counts creature 95->101,
-  speed 46->55, centaur 6->13, damage 8->14, initiative 13->17, roll 13->16, dice 15->18, encounter 2->8, dungeon 3->5,
-  cellar 5->7. New leaked words: `procedure(6)`, `super(4)`, `rules(7)`, `combat(4)`, `startup(4)`, `starts(4)`,
-  `installs(2)`, `runs(2)`, `holding(2)` (all from the three new file-header comments and `hRules`), `remaining(6)`,
-  `apply(3)`, `halve(3)`, `limit(3)`, `range(6)`, `bow(6)`, `fight(3)` (new declarations), `sots(1)`,
-  `cellarsandcentaurs(1)`, `domain(1)`, `model(1)`, `left(1)` (strings), `file` / `purpose` 8->14, `max` 3->6, `one` 3->5.
-- Per form, what the domain parser sees of the new constructs: nothing from the dependency-carrying token itself in every
-  case — `{include/constants.i}`, `{&...}` references, the `&SCOPED-DEFINE` line, `RUN` targets, `IN hDice`,
-  `SESSION:ADD-SUPER-PROCEDURE`, the `AS CLASS Centaur` type, the `CAST` / `TYPE-OF` type arguments all yield no word
-  (probe files: `oObj = CAST(pCreature, Centaur).` and `lOk = TYPE-OF(pCreature, Fightable).` produce an empty word list).
-  Only the surrounding declarations count: `oCentaur` -> centaur(3), `BowRangeOf` -> bow, range, `CanFight` -> fight,
-  `CreateCentaur` -> centaur(3), `SpeedLimit` -> speed, limit, `maxRoll` -> max, roll, `applyDamage` / `pDamage` ->
-  apply, damage(6), `halveSpeed` / `pSpeed` -> halve, speed(6), `hRules` -> rules(3), `iInitiative` -> initiative(3).
-  The GetClass string adds centaur(1) plus the package segments (see Verdict, Wrong 6).
+  1. `CLASS de.sots.cellarsandcentaurs.domain.service.EncounterResolver:` (every `.cls`): a qualified class or
+     interface name yields no word. `resolver` in EncounterResolver.cls comes from the header comment only.
+  2. `src/include/ttencounter.i`, `src/include/constants.i`: `.i` files are not scanned (31 files, 29 processed).
+  3. `DEFINE TEMP-TABLE ... FIELD round / damage / ambusher / INDEX idxRound` (ttencounter.i, dice.p, Creature.cls):
+     field and index names are not extracted, only the table name.
+  4. `VAR INTEGER iMimic = 2, iWraith.` (EncounterEdgeCases.cls `VarStatement`): the OpenEdge 12 variable statement
+     yields nothing.
+  5. `DEFINE PUBLIC EVENT AmbushSprung SIGNATURE VOID (INPUT pAmbusher AS CHARACTER).` (EncounterEdgeCases.cls):
+     neither the event name nor its parameter.
+  6. `SET(INPUT pMorale AS INTEGER):` (EncounterEdgeCases.cls property `Morale`): accessor parameters are not
+     extracted. `DESTRUCTOR PUBLIC EncounterEdgeCases ()`: the destructor name is not extracted.
+  7. `DEFINE BUTTON btnAmbush`, `DEFINE FRAME fAmbush` (encounteredgecases.p, creaturebrowser.w), `DEFINE QUERY
+     qEncounter`, `BUFFER pEncounter FOR ttEncounter` as a parameter: no word.
+  8. `DYNAMIC-FUNCTION("rollD20" IN pDice)` (EncounterResolver.cls) and `EXTERNAL "kernel32.dll"`
+     (encounteredgecases.p): these strings are not counted.
+  9. Usages (`pCreature:GetHitPoints()`, `NEW`, `RUN startAmbush`, `CAST`, `TYPE-OF`, `AS Creature`): frequencies
+     reflect declarations only. **Decision: ignore (derived from Kotlin) — every language counts declarations only.**
+  10. German stop words: there is no list. **Decision: ignore (derived from Java).**
+  11. Name-based test detection for `.cls` / `.p` (`GoblinTest.cls` probe).
+  12. `--comment-weight 0` / `--string-weight 0` are rejected. **Decision: accept (derived from Java).**
+- Wrong:
+  1. Zentaurenhöhle.cls comment and string: words are cut at umlauts and `ß` (`zentaurenh`, `hle`, `stungsklasse`,
+     `geh`, `ren`; `Größe` vanishes). The identifier `rüstungsklasse` stays whole, so the same word appears in two
+     forms. **Decision: accept (derived from Java).**
+  2. `METHOD PUBLIC CHARACTER Describe` (EncounterResolver.cls): `describe` is removed as an English stop word. **Decision: ignore (derived from Kotlin: stop and keyword lists removing ordinary words).**
+  3. `ENUM de.sots....CreatureType:` -> `de(6)`; `INHERITS AppError` -> `app(3)`.
+  4. `FUNCTION criticalDamage RETURNS INTEGER (INPUT pRoll AS INTEGER) FORWARD.` (encounteredgecases.p): the file
+     reports critical(6), i.e. the name is counted twice. A probe with only the prototype lines yields `roll(3)` and
+     no function name, so the result of a prototype depends on what follows it. Cause not traced.
+  5. `d20Roll` -> `20`, `roll` (dice.p): a bare number becomes a word. **Decision: ignore (derived from Java).**
+  6. `@param` / `@return` in the ABLDoc comment (EncounterEdgeCases.cls) -> `param(2)`, `return(2)`. **Decision: ignore (derived from Java).**
+- Bad:
+  1. No root or folder node in the lens. **Decision: ignore (derived from Java).**
+  2. Under a POSIX locale `Zentaurenhöhle.cls` is dropped silently (28 instead of 29 files, no warning). **Decision: accept (derived from Java).**
+  3. Header template words dominate real ABL files: `file(20)`, `purpose(20)`, `cls(8)`, plus the file name.
+  4. `tt(12)`, `fi(6)`: two-letter ABL prefixes are kept, one-letter prefixes are dropped.
+  5. `// ASSIGN iRemaining = iRemaining * 2.` (EncounterResolver.cls): commented-out code counts like prose
+     (`assign(2)`, `remaining(+2)`). **Decision: ignore (derived from Java).**
+  6. `Progress.Lang.Class:GetClass("de.sots.cellarsandcentaurs.domain.model.Centaur")` (CreatureFacade.cls): package
+     segments `sots`, `cellarsandcentaurs`, `domain`, `model` become words.
+- Good: all 17 expected words are found; ABL statement keywords in code do not leak; lower-case and mixed-case
+  keywords, abbreviated `DEF VAR ... AS INT`, hyphenated names, generics in a type position, preprocessor lines,
+  `{include.i}` references and `&IF` blocks do not disturb extraction of the surrounding declarations; `//`,
+  `/* */`, nested and ABLDoc comments, single- and double-quoted strings, `~"` escapes, `:U` attributes and
+  multi-line strings are recognised, comment markers inside strings are not taken for comments; weights are visible;
+  `.p`, `.cls`, `.w` (also upper-case `.P`, probe) are processed; `--exclude-tests` works through the `test` directory.
