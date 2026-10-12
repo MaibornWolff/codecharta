@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Extension variant without an extension: only the shebang says this is Bash.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+cellars::raise_drawbridge() {
+  if [[ -x "$SCRIPT_DIR/cellars.sh" ]]; then
+    printf 'the drawbridge goes up\n'
+  fi
+}
+
+cellars::raise_drawbridge
+exec bash "$SCRIPT_DIR/cellars.sh" "$@"

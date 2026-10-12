@@ -11,6 +11,7 @@ pub mod lair;
 pub mod no_such_creature_exception;
 pub mod speed;
 pub mod speed_type;
+pub mod zentaurenhoehle;
 
 pub use armor_class::ArmorClass;
 pub use centaur::Centaur;
@@ -23,5 +24,6 @@ pub use hit_points::HitPoints;
 pub use no_such_creature_exception::NoSuchCreatureException;
 pub use speed::Speed;
 pub use speed_type::SpeedType;
+pub use zentaurenhoehle::Zentaurenhöhle;
 
 pub(crate) use lair::Lair;

@@ -25,6 +25,10 @@ uses
   de.sots.cellarsandcentaurs.application.dto.Creature in 'src\application\dto\de.sots.cellarsandcentaurs.application.dto.Creature.pas',
   de.sots.cellarsandcentaurs.application.CreatureFacade in 'src\application\de.sots.cellarsandcentaurs.application.CreatureFacade.pas',
   de.sots.cellarsandcentaurs.application.CreatureUtil in 'src\application\de.sots.cellarsandcentaurs.application.CreatureUtil.pas',
+  de.sots.cellarsandcentaurs.domain.model.Zentaurenhöhle in 'src\domain\model\de.sots.cellarsandcentaurs.domain.model.Zentaurenhöhle.pas',
+  de.sots.cellarsandcentaurs.domain.service.EncounterResolver in 'src\domain\service\de.sots.cellarsandcentaurs.domain.service.EncounterResolver.pas',
+  de.sots.cellarsandcentaurs.domain.service.EncounterEdgeCases in 'src\domain\service\de.sots.cellarsandcentaurs.domain.service.EncounterEdgeCases.pas',
+  de.sots.cellarsandcentaurs.domain.service.EncounterModernSyntax in 'src\domain\service\de.sots.cellarsandcentaurs.domain.service.EncounterModernSyntax.pas',
   de.sots.cellarsandcentaurs.application.Api in 'src\application\de.sots.cellarsandcentaurs.application.Api.pas';
 
 var

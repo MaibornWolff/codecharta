@@ -1,0 +1,20 @@
+<?php
+
+use De\Sots\CellarsAndCentaurs\Application\CreatureFacade;
+
+// Renders one bestiary card
+$standardType = CreatureFacade::STANDARD_CREATURE_TYPE;
+?>
+<article class="creature-card">
+    <h1>Tavern notice</h1>
+    <?php if ($creature->getType() === $standardType): ?>
+        <p>Standard creature</p>
+    <?php else: ?>
+        <p>Rare creature</p>
+    <?php endif; ?>
+    <ul>
+    <?php foreach ($creature->getSpeeds() as $speedKey => $speed): ?>
+        <li><?= htmlspecialchars($speedKey) ?>: <?= $speed->getFeetPerRound() ?></li>
+    <?php endforeach; ?>
+    </ul>
+</article>

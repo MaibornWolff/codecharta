@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gemspec
+
+# The warhorse group is only needed in the tiltyard.
+def tiltyard?(group = ENV['GROUP'])
+  group == 'warhorse' || group.nil?
+end
+
+gem 'rack' if tiltyard?
