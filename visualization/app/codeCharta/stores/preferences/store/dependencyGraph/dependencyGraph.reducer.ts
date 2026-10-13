@@ -5,6 +5,7 @@ import { setDependencyGraphSettings } from "./dependencyGraph.actions"
 
 export const defaultDependencyGraphSettings: DependencyGraphSettings = {
     shownEdgeTypes: ["cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
+    isHoverLimitedToShownEdgeTypes: false,
     edgeColors: { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" },
     lineStyleShows: "edgeType",
     edgeStyle: "combined",

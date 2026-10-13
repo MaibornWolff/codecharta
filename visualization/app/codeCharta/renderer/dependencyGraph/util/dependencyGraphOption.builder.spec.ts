@@ -116,6 +116,24 @@ describe("buildDependencyGraphOption", () => {
         expect(edgeIndices).toHaveLength(1)
     })
 
+    it("should draw of the hovered box only the edges of the shown types once the hover is limited to them, and still the selected edge", () => {
+        // Arrange
+        const selectedEdgeId = `${util.path}|${view.path}`
+        const limited = { shownEdgeTypes: [], hoveredPath: model.path, isHoverLimitedToShownEdgeTypes: true }
+
+        // Act
+        const whileHovering = drawnGraph(sceneWith(limited))
+        const withTheTypeShown = drawnGraph(sceneWith({ ...limited, shownEdgeTypes: ["regular"] }))
+        const withAnEdgeSelected = drawnGraph(sceneWith({ ...limited, selectedEdgeId }))
+
+        // Assert
+        const titlesOf = ({ edgeIndices, describe }: ReturnType<typeof drawnGraph>) =>
+            edgeIndices.map(index => describe(index).split("<br/>")[0])
+        expect(titlesOf(whileHovering)).toEqual([])
+        expect(titlesOf(withTheTypeShown)).toEqual(["<b>view.ts → model.ts</b>"])
+        expect(titlesOf(withAnEdgeSelected)).toEqual(["<b>util.ts → view.ts</b>"])
+    })
+
     it("should draw every edge of the hovered box, whatever its type", () => {
         // Arrange
         const scene = sceneWith({ shownEdgeTypes: [], hoveredPath: model.path })

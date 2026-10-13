@@ -174,9 +174,39 @@ describe("DependencyBarComponent", () => {
         await userEvent.click(screen.getByRole("button", { name: "Reset edges shown" }))
 
         // Assert
-        const { shownEdgeTypes } = defaultDependencyGraphSettings
+        const { shownEdgeTypes, isHoverLimitedToShownEdgeTypes } = defaultDependencyGraphSettings
         expect(shownEdgeTypes).not.toContain("regular")
-        expect(dispatch).toHaveBeenCalledWith(setState({ value: { preferences: { dependencyGraph: { shownEdgeTypes } } } }))
+        expect(dispatch).toHaveBeenCalledWith(
+            setState({ value: { preferences: { dependencyGraph: { shownEdgeTypes, isHoverLimitedToShownEdgeTypes } } } })
+        )
+    })
+
+    it("should hold the hover to the ticked edge types once the reader asks for it, and say what the hover shows", async () => {
+        // Arrange
+        const dispatch = await renderBar()
+        const noteBefore = screen.getByTestId("dependency-bar-edges-hover-note").textContent
+
+        // Act
+        await userEvent.click(screen.getByTestId("dependency-bar-edges-respect-on-hover"))
+
+        // Assert
+        expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-respect-on-hover").labels[0].textContent).toContain(
+            "Respect on hover"
+        )
+        expect(noteBefore).toContain("shows all of its edges")
+        expect(dispatch).toHaveBeenCalledWith(changed({ isHoverLimitedToShownEdgeTypes: true }))
+    })
+
+    it("should say that the hover shows only the ticked types while it is held to them", async () => {
+        // Arrange
+        const settings = { isHoverLimitedToShownEdgeTypes: true }
+
+        // Act
+        await renderBar({ settings })
+
+        // Assert
+        expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-respect-on-hover").checked).toBe(true)
+        expect(screen.getByTestId("dependency-bar-edges-hover-note").textContent).toContain("only its edges of the ticked types")
     })
 
     it("should stop showing an edge type the reader unticks", async () => {

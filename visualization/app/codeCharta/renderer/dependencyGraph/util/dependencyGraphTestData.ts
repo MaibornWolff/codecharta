@@ -9,6 +9,7 @@ export const DEFAULT_LOOKS = {
     edgeColors: EDGE_COLORS,
     lineStyleShows: "edgeType",
     cycleMarks: NO_CYCLE_MARKS,
+    isHoverLimitedToShownEdgeTypes: false,
     selectedEdgeId: null,
     highlightedEdgeIds: new Set<string>()
 } as const
