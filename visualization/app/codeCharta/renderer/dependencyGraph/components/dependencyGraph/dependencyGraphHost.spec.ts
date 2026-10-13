@@ -10,13 +10,8 @@ import {
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
-import {
-    DependencyGraphHandlers,
-    DependencyGraphHost,
-    DOUBLE_CLICK_MS,
-    POINTER_LEAVE_GRACE_MS,
-    SINGLE_CLICK_WAIT_MS
-} from "./dependencyGraphHost"
+import { DOUBLE_CLICK_MS, SINGLE_CLICK_WAIT_MS } from "./boxClickGesture"
+import { DependencyGraphHandlers, DependencyGraphHost, POINTER_LEAVE_GRACE_MS } from "./dependencyGraphHost"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGraph.stub").echartsCoreStub)
 

@@ -114,7 +114,7 @@ describe("windowDraggedBy", () => {
         const draggedRightAndUp: [number, number] = [100, -50]
 
         // Act
-        const dragged = windowDraggedBy(shownAtHalfAPixelPerUnit, draggedRightAndUp, viewport, reach)
+        const dragged = windowDraggedBy({ shownWindow: shownAtHalfAPixelPerUnit, reach, viewport }, draggedRightAndUp)
 
         // Assert
         expect(dragged).toEqual({ x: [-200, 1400], y: [100, 1300] })
@@ -125,7 +125,7 @@ describe("windowDraggedBy", () => {
         const draggedFarRightAndUp: [number, number] = [5000, -5000]
 
         // Act
-        const dragged = windowDraggedBy(shownAtHalfAPixelPerUnit, draggedFarRightAndUp, viewport, reach)
+        const dragged = windowDraggedBy({ shownWindow: shownAtHalfAPixelPerUnit, reach, viewport }, draggedFarRightAndUp)
 
         // Assert
         expect(dragged).toEqual({ x: [-1000, 600], y: [1800, 3000] })

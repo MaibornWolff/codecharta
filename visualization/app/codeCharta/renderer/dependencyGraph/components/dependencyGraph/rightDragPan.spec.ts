@@ -1,11 +1,11 @@
-import { AxisWindow } from "../../util/axisWindow"
+import { AxisWindow, PannableView } from "../../util/axisWindow"
 import { PANNING_ATTRIBUTE } from "./panKey"
-import { PannableView, PannedChart, RightDragPan } from "./rightDragPan"
+import { PannedChart, RightDragPan } from "./rightDragPan"
 
 const VIEW: PannableView = {
     shownWindow: { x: [0, 800], y: [0, 600] },
     reach: { x: [-1000, 2000], y: [-1000, 2000] },
-    size: { width: 800, height: 600 }
+    viewport: { width: 800, height: 600 }
 }
 const SECONDARY = { button: 2, buttons: 2 }
 
@@ -117,7 +117,7 @@ describe("RightDragPan", () => {
         const openMenu = jest.fn()
 
         // Act
-        pan.menuRequested(openMenu)
+        pan.openMenuUnlessDragStarts(openMenu)
 
         // Assert
         expect(openMenu).toHaveBeenCalledTimes(1)
@@ -128,7 +128,7 @@ describe("RightDragPan", () => {
         const openMenu = jest.fn()
         pressAt(100, 100)
         mouse("contextmenu", {}, container)
-        pan.menuRequested(openMenu)
+        pan.openMenuUnlessDragStarts(openMenu)
         const openedBeforeTheRelease = openMenu.mock.calls.length
 
         // Act
@@ -148,7 +148,7 @@ describe("RightDragPan", () => {
         container.addEventListener("contextmenu", heardByThePage)
         pressAt(100, 100)
         mouse("contextmenu", {}, container)
-        pan.menuRequested(openMenu)
+        pan.openMenuUnlessDragStarts(openMenu)
         dragTo(150, 80)
         letGo()
 
@@ -179,15 +179,15 @@ describe("RightDragPan", () => {
         expect(heardByThePage).toHaveBeenCalledTimes(1)
     })
 
-    it("should swallow no menu after a drag once another press followed it", () => {
+    it("should swallow no menu after a drag once another press followed it, anywhere on the page", () => {
         // Arrange
         pressAt(100, 100)
         dragTo(150, 80)
         letGo()
 
         // Act
-        pressAt(100, 100, { button: 0, buttons: 1 })
-        const menu = mouse("contextmenu", {}, container)
+        mouse("mousedown", { button: 2, buttons: 2 }, document.body)
+        const menu = mouse("contextmenu", {}, document.body)
 
         // Assert
         expect(menu.defaultPrevented).toBe(false)

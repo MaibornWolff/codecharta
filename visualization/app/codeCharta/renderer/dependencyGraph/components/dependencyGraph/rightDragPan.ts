@@ -1,17 +1,12 @@
-import { AxisWindow, Viewport, windowDraggedBy } from "../../util/axisWindow"
+import { AxisWindow, PannableView, windowDraggedBy } from "../../util/axisWindow"
 import { Point } from "../../util/geometry"
 import { DRAG_THRESHOLD_PX } from "./boxDragGesture"
 import { PANNING_ATTRIBUTE } from "./panKey"
 
+/** `MouseEvent.button` of a press or release. */
 const SECONDARY_BUTTON = 2
-const SECONDARY_BUTTON_HELD = 2
-
-export interface PannableView {
-    shownWindow: AxisWindow
-    /** How far the axes reach, which is as far as the graph can be panned. */
-    reach: AxisWindow
-    size: Viewport
-}
+/** The bit of `MouseEvent.buttons` that says the secondary button is down. */
+const SECONDARY_BUTTON_MASK = 2
 
 export interface PannedChart {
     /** Null before anything is drawn. */
@@ -24,25 +19,25 @@ interface Pan {
     pressedAt: Point
     pointer: Point
     hasMoved: boolean
-    hasMarkedContainer: boolean
-    isMenuAskedFor: boolean
+    hasSetPanningAttribute: boolean
+    hasSystemAskedForMenu: boolean
     openMenu?: () => void
 }
 
-/** A drag with the secondary mouse button pans the graph from anywhere. ECharts' own pan answers to the primary
- * button alone, so the shown window is moved here. A press that drags nothing still opens the context menu: some
- * systems ask for it on the press already and others on the release, so it is held back until the release. */
+/** ECharts' own pan answers to the primary button alone, so the shown window is moved here. Some systems ask for
+ * the context menu on the press and others on the release, so it is held back until the release. */
 export class RightDragPan {
     private container?: HTMLElement
     private pan: Pan | null = null
     private frame?: number
-    private hasJustPanned = false
+    private swallowsNextContextMenu = false
 
     constructor(private readonly chart: PannedChart) {}
 
     listenOver(container: HTMLElement): void {
         this.container = container
         container.addEventListener("mousedown", this.press)
+        window.addEventListener("mousedown", this.forgetThePan, true)
         window.addEventListener("mousemove", this.move)
         window.addEventListener("mouseup", this.release)
         window.addEventListener("contextmenu", this.noteMenuAskedFor, true)
@@ -51,15 +46,15 @@ export class RightDragPan {
     stopListening(): void {
         this.release()
         this.container?.removeEventListener("mousedown", this.press)
+        window.removeEventListener("mousedown", this.forgetThePan, true)
         window.removeEventListener("mousemove", this.move)
         window.removeEventListener("mouseup", this.release)
         window.removeEventListener("contextmenu", this.noteMenuAskedFor, true)
         this.container = undefined
-        this.hasJustPanned = false
+        this.swallowsNextContextMenu = false
     }
 
-    /** Opens the menu at once, or on the release when the button that asked for it is still down and may yet drag. */
-    menuRequested(openMenu: () => void): void {
+    openMenuUnlessDragStarts(openMenu: () => void): void {
         if (this.pan) {
             this.pan.openMenu = openMenu
             return
@@ -67,14 +62,19 @@ export class RightDragPan {
         openMenu()
     }
 
+    // A drag released where no menu request reaches the page, as outside the window, would otherwise swallow
+    // the menu of the next right click anywhere.
+    private readonly forgetThePan = (): void => {
+        this.swallowsNextContextMenu = false
+    }
+
     private readonly press = (event: MouseEvent): void => {
-        this.hasJustPanned = false
         const view = event.button === SECONDARY_BUTTON ? this.chart.view() : null
         if (view === null) {
             return
         }
         const pressedAt: Point = [event.clientX, event.clientY]
-        this.pan = { view, pressedAt, pointer: pressedAt, hasMoved: false, hasMarkedContainer: false, isMenuAskedFor: false }
+        this.pan = { view, pressedAt, pointer: pressedAt, hasMoved: false, hasSetPanningAttribute: false, hasSystemAskedForMenu: false }
     }
 
     private readonly move = (event: MouseEvent): void => {
@@ -83,7 +83,7 @@ export class RightDragPan {
             return
         }
         // The button was let go where no release could be heard, as outside the window.
-        if ((event.buttons & SECONDARY_BUTTON_HELD) === 0) {
+        if ((event.buttons & SECONDARY_BUTTON_MASK) === 0) {
             this.release()
             return
         }
@@ -92,7 +92,7 @@ export class RightDragPan {
             return
         }
         pan.hasMoved = true
-        this.markContainerPanned(pan)
+        this.setPanningAttribute(pan)
         this.frame ??= requestAnimationFrame(() => this.showPanned(pan))
     }
 
@@ -103,11 +103,12 @@ export class RightDragPan {
             return
         }
         this.showPanned(pan)
-        if (pan.hasMarkedContainer) {
+        if (pan.hasSetPanningAttribute) {
             this.container?.removeAttribute(PANNING_ATTRIBUTE)
         }
         if (pan.hasMoved) {
-            this.hasJustPanned = !pan.isMenuAskedFor
+            // A system that asks for the menu on the release has not asked yet; that one request belongs to the drag.
+            this.swallowsNextContextMenu = !pan.hasSystemAskedForMenu
             return
         }
         pan.openMenu?.()
@@ -115,11 +116,11 @@ export class RightDragPan {
 
     private readonly noteMenuAskedFor = (event: Event): void => {
         if (this.pan) {
-            this.pan.isMenuAskedFor = true
+            this.pan.hasSystemAskedForMenu = true
             return
         }
-        if (this.hasJustPanned) {
-            this.hasJustPanned = false
+        if (this.swallowsNextContextMenu) {
+            this.swallowsNextContextMenu = false
             event.preventDefault()
             event.stopPropagation()
         }
@@ -133,17 +134,16 @@ export class RightDragPan {
         if (!pan.hasMoved) {
             return
         }
-        const { shownWindow, reach, size } = pan.view
         const dragged: Point = [pan.pointer[0] - pan.pressedAt[0], pan.pointer[1] - pan.pressedAt[1]]
-        this.chart.show(windowDraggedBy(shownWindow, dragged, size, reach))
+        this.chart.show(windowDraggedBy(pan.view, dragged))
     }
 
-    // The space bar may hold the mark already, and it is then the space bar's to take away.
-    private markContainerPanned(pan: Pan): void {
-        if (pan.hasMarkedContainer || !this.container || this.container.hasAttribute(PANNING_ATTRIBUTE)) {
+    // The space bar may have set it already, and it is then the space bar's to remove.
+    private setPanningAttribute(pan: Pan): void {
+        if (pan.hasSetPanningAttribute || !this.container || this.container.hasAttribute(PANNING_ATTRIBUTE)) {
             return
         }
-        pan.hasMarkedContainer = true
+        pan.hasSetPanningAttribute = true
         this.container.setAttribute(PANNING_ATTRIBUTE, "")
     }
 }

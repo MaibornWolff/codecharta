@@ -1,4 +1,5 @@
 import type { ECharts } from "echarts/core"
+import { GRAPH_GRID } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
 
 export interface BoxDragHandlers {
@@ -111,6 +112,6 @@ function isPrimaryPress({ event }: PointerEvent): boolean {
 }
 
 export function layoutPointAt(chart: ECharts, { offsetX, offsetY }: { offsetX: number; offsetY: number }): Point {
-    const [x, y] = chart.convertFromPixel({ gridIndex: 0 }, [offsetX, offsetY]) as number[]
+    const [x, y] = chart.convertFromPixel(GRAPH_GRID, [offsetX, offsetY]) as number[]
     return [x, y]
 }

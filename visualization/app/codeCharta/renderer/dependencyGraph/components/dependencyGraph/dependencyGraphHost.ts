@@ -5,19 +5,18 @@ import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
-import { AxisWindow, panBothAxesTo, Viewport, windowResizedTo } from "../../util/axisWindow"
+import { AxisWindow, PannableView, panBothAxesTo, Viewport, windowResizedTo } from "../../util/axisWindow"
 import { CYCLE_BADGE_INFO } from "../../util/boxMarks"
-import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
+import { GRAPH_GRID, GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point, Rectangle } from "../../util/geometry"
+import { BoxClickGesture, BoxClickHandlers } from "./boxClickGesture"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 import { PanKey } from "./panKey"
-import { PannableView, RightDragPan } from "./rightDragPan"
+import { RightDragPan } from "./rightDragPan"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
 
-export interface DependencyGraphHandlers extends BoxDragHandlers {
-    onBoxClicked: (path: string) => void
-    onBoxToggled: (path: string) => void
+export interface DependencyGraphHandlers extends BoxDragHandlers, BoxClickHandlers {
     onCycleBadgeClicked: (path: string) => void
     onEdgeClicked: (edgeId: string) => void
     onBoxHovered: (path: string | null) => void
@@ -49,19 +48,13 @@ interface DrawnAxes {
 }
 
 export const POINTER_LEAVE_GRACE_MS = 120
-/** A redraw replaces the element under the pointer, and ECharts then loses the second click of a double click.
- * The browser's own double click still arrives on the container, and it toggles the box the first click landed on. */
-export const DOUBLE_CLICK_MS = 500
-/** A click selects its box only once no second click has made a double click of it, which selects nothing. */
-export const SINGLE_CLICK_WAIT_MS = 250
 
 export class DependencyGraphHost {
     private chart?: echarts.ECharts
     private attachedContainer?: HTMLElement
     private pathUnderPointer: string | null = null
     private pointerLeaveTimeout?: ReturnType<typeof setTimeout>
-    private lastBoxClick: { path: string; at: number } | null = null
-    private pendingSelection?: ReturnType<typeof setTimeout>
+    private readonly clickGesture = new BoxClickGesture(this.handlers)
     private dragGesture?: BoxDragGesture
     private chartSize?: Viewport
     private readonly panKey = new PanKey()
@@ -122,17 +115,17 @@ export class DependencyGraphHost {
         if (!this.chart || !this.chartSize) {
             return null
         }
-        const [left, top] = this.chart.convertToPixel({ gridIndex: 0 }, [x, y])
-        const [right, bottom] = this.chart.convertToPixel({ gridIndex: 0 }, [x + width, y + height])
+        const [left, top] = this.chart.convertToPixel(GRAPH_GRID, [x, y])
+        const [right, bottom] = this.chart.convertToPixel(GRAPH_GRID, [x + width, y + height])
         return { x: left, y: top, width: right - left, height: bottom - top }
     }
 
     dispose(): void {
-        this.cancelPendingSelection()
+        this.clickGesture.forget()
         this.cancelPointerLeave()
         this.reportPointerLeft()
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
-        this.attachedContainer?.removeEventListener("dblclick", this.reportDoubleClick)
+        this.attachedContainer?.removeEventListener("dblclick", this.clickGesture.doubleClick)
         this.containerSizeObserver.disconnect()
         this.panKey.stopListening()
         this.rightDragPan.stopListening()
@@ -173,7 +166,7 @@ export class DependencyGraphHost {
 
     private listenToContainer(container: HTMLElement): void {
         container.addEventListener("contextmenu", suppressBrowserMenu)
-        container.addEventListener("dblclick", this.reportDoubleClick)
+        container.addEventListener("dblclick", this.clickGesture.doubleClick)
         this.containerSizeObserver.observe(container)
         this.panKey.listenOver(container)
         this.rightDragPan.listenOver(container)
@@ -183,9 +176,7 @@ export class DependencyGraphHost {
         if (!this.chart || !this.chartSize) {
             return null
         }
-        const { xAxis, yAxis } = this.chart.getOption() as unknown as DrawnAxes
-        const reach: AxisWindow = { x: [xAxis[0].min, xAxis[0].max], y: [yAxis[0].min, yAxis[0].max] }
-        return { shownWindow: this.shownWindow(this.chart, this.chartSize), reach, size: this.chartSize }
+        return { shownWindow: this.shownWindow(this.chart, this.chartSize), reach: axisReachOf(this.chart), viewport: this.chartSize }
     }
 
     private shownWindow(chart: echarts.ECharts, { width, height }: Viewport): AxisWindow {
@@ -216,7 +207,7 @@ export class DependencyGraphHost {
             return
         }
         if (event.data?.edgeId !== undefined) {
-            this.letNoDoubleClickToggle()
+            this.clickGesture.forget()
             this.handlers.onEdgeClicked(event.data.edgeId)
             return
         }
@@ -226,39 +217,11 @@ export class DependencyGraphHost {
         }
         const onPartClicked = typeof event.info === "string" ? this.partClickHandlers[event.info] : undefined
         if (onPartClicked) {
-            this.letNoDoubleClickToggle()
+            this.clickGesture.forget()
             onPartClicked(path)
             return
         }
-        this.lastBoxClick = { path, at: Date.now() }
-        this.selectUnlessDoubleClicked(path)
-    }
-
-    private selectUnlessDoubleClicked(path: string): void {
-        this.cancelPendingSelection()
-        this.pendingSelection = setTimeout(() => {
-            this.pendingSelection = undefined
-            this.handlers.onBoxClicked(path)
-        }, SINGLE_CLICK_WAIT_MS)
-    }
-
-    private cancelPendingSelection(): void {
-        clearTimeout(this.pendingSelection)
-        this.pendingSelection = undefined
-    }
-
-    private letNoDoubleClickToggle(): void {
-        this.cancelPendingSelection()
-        this.lastBoxClick = null
-    }
-
-    private readonly reportDoubleClick = (): void => {
-        this.cancelPendingSelection()
-        const click = this.lastBoxClick
-        this.lastBoxClick = null
-        if (click && Date.now() - click.at <= DOUBLE_CLICK_MS) {
-            this.handlers.onBoxToggled(click.path)
-        }
+        this.clickGesture.click(path)
     }
 
     private reportRightClick(event: ChartItemEvent): void {
@@ -266,7 +229,7 @@ export class DependencyGraphHost {
         const mouseEvent = event.event?.event
         if (path !== null && mouseEvent) {
             const { clientX, clientY } = mouseEvent
-            this.rightDragPan.menuRequested(() => this.handlers.onBoxRightClicked(path, clientX, clientY))
+            this.rightDragPan.openMenuUnlessDragStarts(() => this.handlers.onBoxRightClicked(path, clientX, clientY))
         }
     }
 
@@ -324,6 +287,12 @@ export class DependencyGraphHost {
             this.pointerLeaveTimeout = undefined
         }
     }
+}
+
+/** What the chart was last drawn with tells how far its axes reach; ECharts types that option loosely. */
+function axisReachOf(chart: echarts.ECharts): AxisWindow {
+    const { xAxis, yAxis } = chart.getOption() as unknown as DrawnAxes
+    return { x: [xAxis[0].min, xAxis[0].max], y: [yAxis[0].min, yAxis[0].max] }
 }
 
 function boxPathOf({ seriesId, name, data }: ChartItemEvent): string | null {
