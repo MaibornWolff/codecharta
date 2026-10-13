@@ -1,5 +1,5 @@
 import { declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
-import { UNTRANSFORMED } from "./dependencyGraphElements"
+import { CLICKABLE, UNTRANSFORMED } from "./dependencyGraphElements"
 import { CYCLE_MARK_COLOR, FILE_FILL, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
 import { inkCentreShiftOf, MARK_FONT_FAMILY } from "./inkCentre"
@@ -36,15 +36,13 @@ const CYCLE_BADGE = {
     gapPx: 3
 }
 
-interface BadgeColors {
+interface CycleMarkColors {
     fill: string
     line: string
 }
 
 const CYCLE_BADGE_CONTRAST_COLOR = "#ffffff"
-/** Outlined for the cycles within a file, filled for those between files: a cycle across files is the wider tangle. */
-const INSIDE_FILES_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
-const BETWEEN_FILES_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
+const MARK_FONT_WEIGHT = "bold"
 const MOST_COUNTED = 99
 /** Drawn around its own centre. */
 export const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
@@ -52,10 +50,27 @@ const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
 
 export type CycleMarkKind = "insideFiles" | "betweenFiles" | "declaration"
 
-export const CYCLE_MARK_COLORS: Record<CycleMarkKind, BadgeColors> = {
-    insideFiles: INSIDE_FILES_BADGE_COLORS,
-    betweenFiles: BETWEEN_FILES_BADGE_COLORS,
+/** Outlined for the cycles within a file, filled for those between files: a cycle across files is the wider tangle. */
+export const CYCLE_MARK_COLORS: Record<CycleMarkKind, CycleMarkColors> = {
+    insideFiles: { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR },
+    betweenFiles: { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR },
     declaration: { fill: FILE_FILL, line: CYCLE_MARK_COLOR }
+}
+
+const SAMPLE_COUNT = "2"
+
+/** The sizes the marks are drawn in, for a sample of one outside the graph. */
+export const CYCLE_MARK_SAMPLE = {
+    count: SAMPLE_COUNT,
+    widthPx: CYCLE_BADGE.numberLeftPx + SAMPLE_COUNT.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx,
+    heightPx: CYCLE_BADGE.heightPx,
+    outlinePx: CYCLE_BADGE.outlinePx,
+    numberLeftPx: CYCLE_BADGE.numberLeftPx,
+    fontSizePx: CYCLE_BADGE.fontSizePx,
+    fontWeight: MARK_FONT_WEIGHT,
+    fontFamily: MARK_FONT_FAMILY,
+    ringRadiusPx: CYCLE_RING.radiusPx,
+    ringLineWidthPx: CYCLE_RING.lineWidthPx
 }
 
 export const CYCLE_MARK_LEGEND: readonly { mark: CycleMarkKind; label: string }[] = [
@@ -104,18 +119,25 @@ export function drawCycleMark(
     { insideFilesCount, betweenFilesCount, isInCycle }: CycleLook,
     { opacity, zoom }: CycleMarkLook
 ): object[] {
-    const scale = Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom))
+    const mark = { opacity, scale: Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom)) }
     if (box.kind === "declaration") {
-        const centre = { cx: rect.x + rect.width - CYCLE_RING.insetPx, cy: rect.y + CYCLE_RING.insetPx }
-        const { fill, line } = CYCLE_MARK_COLORS.declaration
-        const style = { fill, stroke: line, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
-        const ring = { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
-        return isInCycle ? [ring] : []
+        return isInCycle ? [drawCycleRing(rect, mark)] : []
     }
-    const mark = { opacity, scale }
-    const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * scale, top: rect.y - CYCLE_BADGE.risePx * scale }
-    const betweenFiles = drawCycleBadge(corner, betweenFilesCount, BETWEEN_FILES_BADGE_COLORS, mark)
-    const insideFiles = drawCycleBadge({ ...corner, right: betweenFiles.left }, insideFilesCount, INSIDE_FILES_BADGE_COLORS, mark)
+    return drawCycleBadges(rect, { insideFilesCount, betweenFilesCount }, mark)
+}
+
+function drawCycleRing(rect: Rectangle, { opacity, scale }: MarkLook): object {
+    const centre = { cx: rect.x + rect.width - CYCLE_RING.insetPx, cy: rect.y + CYCLE_RING.insetPx }
+    const { fill, line } = CYCLE_MARK_COLORS.declaration
+    const style = { fill, stroke: line, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
+    return { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
+}
+
+function drawCycleBadges(rect: Rectangle, counts: Pick<CycleLook, "insideFilesCount" | "betweenFilesCount">, mark: MarkLook): object[] {
+    const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * mark.scale, top: rect.y - CYCLE_BADGE.risePx * mark.scale }
+    const betweenFiles = drawCycleBadge(corner, counts.betweenFilesCount, CYCLE_MARK_COLORS.betweenFiles, mark)
+    const cornerOfNextBadge = { ...corner, right: betweenFiles.rightOfNextBadge }
+    const insideFiles = drawCycleBadge(cornerOfNextBadge, counts.insideFilesCount, CYCLE_MARK_COLORS.insideFiles, mark)
     return [...insideFiles.elements, ...betweenFiles.elements]
 }
 
@@ -125,14 +147,13 @@ interface BadgeCorner {
 }
 
 interface DrawnBadge {
-    /** Where the next badge to the left ends; the corner itself when nothing is counted and so nothing drawn. */
-    left: number
+    rightOfNextBadge: number
     elements: object[]
 }
 
-function drawCycleBadge({ right, top }: BadgeCorner, count: number, colors: BadgeColors, mark: MarkLook): DrawnBadge {
+function drawCycleBadge({ right, top }: BadgeCorner, count: number, colors: CycleMarkColors, mark: MarkLook): DrawnBadge {
     if (count === 0) {
-        return { left: right, elements: [] }
+        return { rightOfNextBadge: right, elements: [] }
     }
     const { opacity, scale } = mark
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
@@ -148,10 +169,10 @@ function drawCycleBadge({ right, top }: BadgeCorner, count: number, colors: Badg
         ...cycleGlyph({ x: left + height / 2, y: middle }, colors.line, mark),
         cycleCount(text, { x: left + numberLeft, y: middle }, colors.line, mark)
     ]
-    return { left: left - CYCLE_BADGE.gapPx * scale, elements }
+    return { rightOfNextBadge: left - CYCLE_BADGE.gapPx * scale, elements }
 }
 
-const CYCLE_BADGE_PART = { info: CYCLE_BADGE_INFO, cursor: "pointer" }
+const CYCLE_BADGE_PART = { info: CYCLE_BADGE_INFO, ...CLICKABLE }
 
 function cycleGlyph(centre: { x: number; y: number }, color: string, { opacity, scale }: MarkLook): object[] {
     const placed = { ...UNTRANSFORMED, ...centre, scaleX: scale, scaleY: scale, silent: true }
@@ -179,8 +200,6 @@ interface TextLook {
     fill: string
     opacity: number
 }
-
-const MARK_FONT_WEIGHT = "bold"
 
 function centredText(text: string, { cx, cy }: { cx: number; cy: number }, look: TextLook) {
     const [shiftX, shiftY] = inkCentreShiftOf(text, MARK_FONT_WEIGHT, look.fontSize)

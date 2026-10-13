@@ -3,7 +3,7 @@ import { fireEvent, render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { defaultDependencyGraphSettings } from "../../../../stores/preferences/preferences.read.facade"
-import { InspectorDependency, InspectorModel, InspectorReference } from "../../inspector/inspectorModel"
+import { InspectorDependency, InspectorModel, InspectorReference, InspectorSectionId } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyInspectorComponent } from "./dependencyInspector.component"
 
@@ -29,7 +29,7 @@ const DEPENDENCY: InspectorDependency = {
     to: WEAPON,
     isFromOwn: true,
     isToOwn: false,
-    usages: ["Inherits from"],
+    specificUsages: ["Inherits from"],
     line: { dash: [7, 4], head: "hollow" },
     type: "feedbackLeafLevel",
     declarationEdge: DECLARATION_EDGE
@@ -44,14 +44,15 @@ const FILE_MODEL: InspectorModel = {
     badges: [{ text: "file" }, { text: "package game" }, { text: "6 cycles", isAboutCycles: true }],
     declarations: { count: 3, items: [{ reference: CREATURE, detail: "class · level 2" }], hiddenCount: 2 },
     sections: [
-        { title: "Used by", count: 0, groups: [] },
+        { id: "usedBy", title: "Used by", count: 0, groups: [] },
         {
+            id: "uses",
             title: "Uses",
             count: 5,
             groups: [
                 {
                     heading: "this file",
-                    dependencies: [{ ...DEPENDENCY, to: CREATURE, isToOwn: true, type: "regular", usages: [] }],
+                    dependencies: [{ ...DEPENDENCY, to: CREATURE, isToOwn: true, type: "regular", specificUsages: [] }],
                     hiddenCount: 0
                 },
                 { heading: WEAPON_FILE, dependencies: [DEPENDENCY], hiddenCount: 3 }
@@ -77,7 +78,7 @@ interface Shown {
     cyclesRequest?: number | null
 }
 
-const EVERY_SECTION = ["Cycles", "Uses", "Used by", "Declarations"]
+const EVERY_SECTION: InspectorSectionId[] = ["cycles", "uses", "usedBy", "declarations"]
 
 async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest: number | null = null, openSections = EVERY_SECTION) {
     const handlers = {
@@ -89,17 +90,17 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         closed: jest.fn(),
         cyclesRequestAnswered: jest.fn(),
         sectionToggled: jest.fn(),
-        boxPointedAt: jest.fn()
+        nodePointedAt: jest.fn()
     }
     const shown = { model: signal<InspectorModel | null>(model), cyclesRequest: signal(cyclesRequest) }
     const store: Partial<DependencyInspectorStore> = {
         ...shown,
         edgeColors: signal(EDGE_COLORS),
-        openSections: signal<ReadonlySet<string>>(new Set(openSections)),
+        openSections: signal<ReadonlySet<InspectorSectionId>>(new Set(openSections)),
         toggleSection: handlers.sectionToggled,
-        pointAtBox: handlers.boxPointedAt,
+        pointAtNode: handlers.nodePointedAt,
         goTo: handlers.referenceChosen,
-        pointAt: handlers.dependenciesPointedAt,
+        pointAtEdges: handlers.dependenciesPointedAt,
         perform: handlers.actionChosen,
         showCycle: handlers.cycleShown,
         showAllRows: handlers.allRowsRequested,
@@ -215,7 +216,7 @@ describe("DependencyInspectorComponent", () => {
 
     it("should show of a section the reader has not opened only its title and count, and open it on a click", async () => {
         // Arrange
-        const { sectionToggled } = await renderInspector(FILE_MODEL, null, ["Uses"])
+        const { sectionToggled } = await renderInspector(FILE_MODEL, null, ["uses"])
         const cycles = screen.getByRole("region", { name: "Cycles" })
 
         // Act
@@ -236,7 +237,7 @@ describe("DependencyInspectorComponent", () => {
                 .getByRole("button", { name: /Uses/ })
                 .getAttribute("aria-expanded")
         ).toBe("true")
-        expect(sectionToggled).toHaveBeenCalledWith("Cycles")
+        expect(sectionToggled).toHaveBeenCalledWith("cycles")
     })
 
     it("should draw a dependency as a chain: its two declarations with the edge between them, in the edge's dashes, head and colour", async () => {
@@ -257,11 +258,12 @@ describe("DependencyInspectorComponent", () => {
         expect(screen.getByTestId("dependency-inspector-row-type").textContent).toContain("Points upward and closes a cycle")
     })
 
-    it("should not repeat under a row that one declaration uses the other, and still name a closer kind of use and the edge type", async () => {
+    it("should name under a row its closer kinds of use and its edge type, and only the edge type where there is none", async () => {
         // Arrange
-        const usesAndCreates = { ...DEPENDENCY, usages: ["Creates", "Uses"] }
-        const onlyUses = { ...DEPENDENCY, usages: ["Uses"] }
-        const section = {
+        const usesAndCreates = { ...DEPENDENCY, specificUsages: ["Creates"] }
+        const onlyUses = { ...DEPENDENCY, specificUsages: [] }
+        const section: InspectorModel["sections"][number] = {
+            id: "uses",
             title: "Uses",
             count: 2,
             groups: [{ heading: WEAPON_FILE, dependencies: [usesAndCreates, onlyUses], hiddenCount: 0 }]
@@ -333,7 +335,7 @@ describe("DependencyInspectorComponent", () => {
 
     it("should point at the file of a group and at a listed declaration while the pointer or the focus is on it", async () => {
         // Arrange
-        const { boxPointedAt } = await renderInspector()
+        const { nodePointedAt } = await renderInspector()
         const file = screen.getByTestId("dependency-inspector-group-file")
         const declaration = screen.getByTestId("dependency-inspector-declaration")
 
@@ -344,7 +346,7 @@ describe("DependencyInspectorComponent", () => {
         fireEvent.focusOut(declaration)
 
         // Assert
-        expect(boxPointedAt.mock.calls).toEqual([[WEAPON_FILE.path], [null], [CREATURE.path], [null]])
+        expect(nodePointedAt.mock.calls).toEqual([[WEAPON_FILE.path], [null], [CREATURE.path], [null]])
     })
 
     it("should draw a cycle as the same chain, each step in its edge's own line and colour, closed back to its start, and show it in the graph on request", async () => {
@@ -414,6 +416,7 @@ describe("DependencyInspectorComponent", () => {
             declarations: null,
             sections: [
                 {
+                    id: "standsFor",
                     title: "Stands for",
                     count: 1,
                     groups: [{ heading: null, dependencies: [{ ...DEPENDENCY, line: { dash: null, head: "dot" } }], hiddenCount: 0 }]
@@ -442,6 +445,7 @@ describe("DependencyInspectorComponent", () => {
             declarations: { count: 0, items: [], hiddenCount: 0 },
             sections: [
                 {
+                    id: "uses",
                     title: "Uses",
                     count: 1,
                     groups: [

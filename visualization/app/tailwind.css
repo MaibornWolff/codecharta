@@ -41,12 +41,13 @@
        visible. Opacity only, so the compositor keeps animating it while a slow one blocks the main thread. */
     --animate-fade-in-delayed: fade-in 150ms ease-out 200ms both;
 
-    /* The dashes of a border travel around it by one dash and gap, so the loop has no seam. */
+    /* The dashes of a border travel around it by one dash and gap, which whoever draws the border tells in
+       --marching-ants-period, so the loop has no seam. */
     --animate-marching-ants: marching-ants 0.6s linear infinite;
 
     @keyframes marching-ants {
         to {
-            stroke-dashoffset: -10;
+            stroke-dashoffset: calc(-1 * var(--marching-ants-period));
         }
     }
 

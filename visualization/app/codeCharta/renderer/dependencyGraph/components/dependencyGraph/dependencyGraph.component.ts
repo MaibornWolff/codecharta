@@ -1,7 +1,6 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    computed,
     ElementRef,
     effect,
     inject,
@@ -9,14 +8,15 @@ import {
     OnDestroy,
     output,
     signal,
+    untracked,
     viewChild
 } from "@angular/core"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import { AxisWindow, fitWindowOf, Viewport, windowHolding, windowKeepingInPlace } from "../../util/axisWindow"
 import { buildDependencyGraphOption } from "../../util/dependencyGraphOption.builder"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
-import { HOVERED_COLOR } from "../../util/dependencyGraphStyle"
-import { Point } from "../../util/geometry"
+import { CORNER_RADIUS_PX, HOVERED_COLOR, HOVERED_LINE_WIDTH_PX } from "../../util/dependencyGraphStyle"
+import { Point, Rectangle } from "../../util/geometry"
 import { DependencyGraphLayout, LayoutBox } from "../../util/layoutModel"
 import { DependencyGraphBoxListComponent } from "../dependencyGraphBoxList/dependencyGraphBoxList.component"
 import { DependencyGraphHost } from "./dependencyGraphHost"
@@ -48,8 +48,7 @@ interface ToggledBox {
 const NOTHING_DRAGGABLE = () => false
 const NO_BOX_ANYWHERE = () => null
 const NO_PATHS: ReadonlySet<string> = new Set()
-/** One dash and one gap are what the travelling dashes move by in a loop. */
-const MARK_DASH = "6 4"
+const POINTED_AT_DASH = { dashPx: 6, gapPx: 4 }
 
 @Component({
     selector: "cc-dependency-graph",
@@ -74,7 +73,7 @@ export class DependencyGraphComponent implements OnDestroy {
 
     /** Boxes pointed at from outside the graph: dashes travel around each for as long as it is. They are drawn over
      * the chart, since moving them in it would redraw the whole graph for every step. */
-    readonly markedPaths = input(NO_PATHS)
+    readonly pointedAtPaths = input(NO_PATHS)
 
     readonly boxClicked = output<string>()
     readonly boxToggled = output<string>()
@@ -94,17 +93,16 @@ export class DependencyGraphComponent implements OnDestroy {
     private coveredBottomAtTheFit = 0
     private handledViewRequest: number | null = null
     private toggledBox: ToggledBox | null = null
-    private readonly drawnCount = signal(0)
 
-    protected readonly markColor = HOVERED_COLOR
-    protected readonly markDash = MARK_DASH
-    /** Read anew after every drawing, which is when the boxes may have moved on screen. */
-    protected readonly markedRects = computed(() => {
-        this.drawnCount()
-        const marked = this.markedPaths()
-        const boxes = marked.size === 0 ? [] : this.scene().layout.boxes.filter(box => marked.has(box.path))
-        return boxes.flatMap(box => this.chartHost.pixelRectOf(box) ?? [])
-    })
+    protected readonly pointedAtRects = signal<Rectangle[]>([])
+    protected readonly pointedAtOutline = {
+        color: HOVERED_COLOR,
+        lineWidthPx: HOVERED_LINE_WIDTH_PX,
+        cornerRadiusPx: CORNER_RADIUS_PX,
+        dashes: `${POINTED_AT_DASH.dashPx} ${POINTED_AT_DASH.gapPx}`,
+        /** What the dashes travel by in one loop, which the keyframes read so that the loop has no seam. */
+        dashPeriodPx: POINTED_AT_DASH.dashPx + POINTED_AT_DASH.gapPx
+    }
 
     private readonly chartHost = new DependencyGraphHost(inject(DependencyGraphChartRegistry), {
         onBoxClicked: path => this.boxClicked.emit(path),
@@ -123,6 +121,7 @@ export class DependencyGraphComponent implements OnDestroy {
     constructor() {
         effect(() => this.chartHost.attachTo(this.chartContainer().nativeElement))
         effect(() => this.renderOnceTheContainerIsMeasured())
+        effect(() => this.placePointedAtRects())
     }
 
     ngOnDestroy(): void {
@@ -130,8 +129,15 @@ export class DependencyGraphComponent implements OnDestroy {
     }
 
     private reportDrawn(): void {
-        this.drawnCount.update(count => count + 1)
+        this.placePointedAtRects()
         this.rendered.emit()
+    }
+
+    /** The chart tells where a box lies only for what it last drew, so the rects are placed anew after every drawing. */
+    private placePointedAtRects(): void {
+        const pointedAt = this.pointedAtPaths()
+        const boxes = pointedAt.size === 0 ? [] : untracked(this.scene).layout.boxes.filter(box => pointedAt.has(box.path))
+        this.pointedAtRects.set(boxes.flatMap(box => this.chartHost.pixelRectOf(box) ?? []))
     }
 
     protected focusBox(path: string | null): void {

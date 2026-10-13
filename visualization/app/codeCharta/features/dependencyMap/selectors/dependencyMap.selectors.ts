@@ -33,7 +33,9 @@ export const focusedFolderLevelPathSelector = createSelector(
 )
 
 function sortedChecksumsOf(visibleFileStates: FileState[]): string[] {
-    return visibleFileStates.map(({ file }) => file.fileMeta.fileChecksum).sort()
+    return visibleFileStates
+        .map(({ file }) => file.fileMeta.fileChecksum)
+        .toSorted((checksumA, checksumB) => checksumA.localeCompare(checksumB))
 }
 
 /** What the reader opened and moved is kept for as long as the same files are loaded. */

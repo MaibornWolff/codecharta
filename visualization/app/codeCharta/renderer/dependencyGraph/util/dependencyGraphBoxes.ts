@@ -1,11 +1,12 @@
-import { CycleLook, drawCycleMark, drawDeclarationCount, drawKindIcon, KIND_ICON_WIDTH_PX, MarkLook } from "./boxMarks"
-import { drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
+import { CycleLook, drawCycleMark, drawDeclarationCount, drawKindIcon, KIND_ICON_WIDTH_PX } from "./boxMarks"
+import { CLICKABLE, drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import {
     CLOSED_FOLDER_FILL,
     CLOSED_FOLDER_STROKE,
     CLOSED_PACKAGE_FILL,
     CLOSED_PACKAGE_STROKE,
+    CORNER_RADIUS_PX,
     DECLARATION_FILL,
     FILE_FILL,
     FILE_STROKE,
@@ -13,6 +14,7 @@ import {
     FOUND_OPACITY,
     folderFill,
     HOVERED_COLOR,
+    HOVERED_LINE_WIDTH_PX,
     LEVEL_SEPARATOR_COLOR,
     MISSED_BY_SEARCH_OPACITY,
     OPEN_FILE_FILL,
@@ -40,16 +42,14 @@ const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
 
 const LABEL_FONT_SIZE_PX = 12
 const DECLARATION_FONT_SIZE_PX = 11
-/** What the count takes from the name of a closed file that holds declarations, on either side so the name stays centred. */
-const FILE_MARK_WIDTH_PX = 16
+/** Taken from the name on either side of it, so the name stays centred. */
+const DECLARATION_COUNT_WIDTH_PX = 16
 const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
-const CORNER_RADIUS_PX = 4
-const STACK_OFFSET_PX = 4
+const SHEET_OFFSET_PX = 4
 const LINE_WIDTH_PX = 1
 const SELECTED_LINE_WIDTH_PX = 2.5
-const HOVERED_LINE_WIDTH_PX = 2
 const LEVEL_LABEL_LIFT_PX = 2
 const SEPARATOR_DASH_PX = [4, 4]
 const SMALLEST_READABLE_MARK_SCALE = 0.6
@@ -86,11 +86,10 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
     const style = boxStyle(box, emphasis)
     const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
     const opacity = opacityOf(isMissedBySearch)
-    const cursor = canBeOpened(box) && !box.isExpanded ? { cursor: "pointer" } : {}
     const outline = {
         type: "rect",
         ...UNTRANSFORMED,
-        ...cursor,
+        ...(canBeOpened(box) && !box.isExpanded ? CLICKABLE : {}),
         shape: { ...rect, r: CORNER_RADIUS_PX },
         style: { ...style, fill, opacity }
     }
@@ -101,12 +100,12 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
  * there is more in it than its name, and it opens. The sheet is an outline alone, or it would cover the head of
  * an edge that arrives at the file from below. */
 function drawSheetBehind(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
-    if (!holdsDeclarations(box) || box.isExpanded) {
+    if (!isClosedFileWithDeclarations(box)) {
         return []
     }
-    const offset = STACK_OFFSET_PX * Math.min(1, zoomOf(box, rect))
+    const offset = SHEET_OFFSET_PX * Math.min(1, zoomOf(box, rect))
     const sheet = { ...rect, x: rect.x + offset, y: rect.y + offset, r: CORNER_RADIUS_PX }
-    return [{ type: "rect", ...UNTRANSFORMED, cursor: "pointer", shape: sheet, style: { ...baseStyle(box), fill: null, opacity } }]
+    return [{ type: "rect", ...UNTRANSFORMED, ...CLICKABLE, shape: sheet, style: { ...baseStyle(box), fill: null, opacity } }]
 }
 
 function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch }: BoxLook, zoom: number): object[] {
@@ -114,17 +113,18 @@ function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch }: BoxLook
     const scale = markScaleOf(zoom)
     const hasKindIcon = box.kind === "declaration"
     const mark = { opacity, scale: scale ?? 0 }
-    const marks = scale === null ? [] : [...drawFileMarks(box, rect, mark), ...(hasKindIcon ? drawKindIcon(box, rect, mark) : [])]
+    const count = holdsDeclarations(box) ? drawDeclarationCount(box, rect, mark) : []
+    const marks = scale === null ? [] : [...count, ...(hasKindIcon ? drawKindIcon(box, rect, mark) : [])]
     const label = drawLabel(box, rect, { opacity, hasKindIcon, markScale: scale ?? 0 })
     return label ? [label, ...marks] : marks
 }
 
-function drawFileMarks(box: LayoutBox, rect: Rectangle, mark: MarkLook): object[] {
-    return holdsDeclarations(box) ? drawDeclarationCount(box, rect, mark) : []
-}
-
 function holdsDeclarations(box: LayoutBox): boolean {
     return box.kind === "file" && box.declarationCount > 0
+}
+
+function isClosedFileWithDeclarations(box: LayoutBox): boolean {
+    return holdsDeclarations(box) && !box.isExpanded
 }
 
 function opacityOf(isMissedBySearch: boolean): number {
@@ -228,19 +228,19 @@ interface LabelLook {
 
 /** What the marks beside a name take from the room for it. */
 interface LabelRoom {
-    marksWidth: number
+    countWidth: number
     iconWidth: number
     width: number
 }
 
 function labelRoomOf(box: LayoutBox, rect: Rectangle, { hasKindIcon, markScale }: LabelLook): LabelRoom {
-    const marksWidth = holdsDeclarations(box) && !box.isExpanded ? FILE_MARK_WIDTH_PX * markScale : 0
+    const countWidth = isClosedFileWithDeclarations(box) ? DECLARATION_COUNT_WIDTH_PX * markScale : 0
     const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX * markScale : 0
-    return { marksWidth, iconWidth, width: rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth }
+    return { countWidth, iconWidth, width: rect.width - 2 * (LABEL_INSET_PX + countWidth) - iconWidth }
 }
 
 function drawLabel(box: LayoutBox, rect: Rectangle, look: LabelLook) {
-    const { marksWidth, iconWidth, width } = labelRoomOf(box, rect, look)
+    const { countWidth, iconWidth, width } = labelRoomOf(box, rect, look)
     if (width < MIN_LABEL_WIDTH_PX) {
         return null
     }
@@ -251,7 +251,7 @@ function drawLabel(box: LayoutBox, rect: Rectangle, look: LabelLook) {
         silent: true,
         style: {
             text: box.name,
-            x: isHeader ? rect.x + LABEL_INSET_PX + marksWidth : rect.x + (rect.width + iconWidth) / 2,
+            x: isHeader ? rect.x + LABEL_INSET_PX + countWidth : rect.x + (rect.width + iconWidth) / 2,
             y: nameCentreY(box, rect),
             width,
             overflow: "truncate",

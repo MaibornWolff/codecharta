@@ -1,18 +1,23 @@
 <div #chartContainer class="h-full w-full data-panning:*:cursor-grab!" data-testid="dependency-graph"></div>
-@if (markedRects().length > 0) {
-    <svg class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" data-testid="dependency-graph-marks">
-        @for (rect of markedRects(); track $index) {
+@if (pointedAtRects().length > 0) {
+    <svg
+        class="pointer-events-none absolute inset-0 h-full w-full"
+        aria-hidden="true"
+        data-testid="dependency-graph-pointed-at"
+        [style.--marching-ants-period.px]="pointedAtOutline.dashPeriodPx"
+    >
+        @for (rect of pointedAtRects(); track $index) {
             <rect
                 class="animate-marching-ants motion-reduce:animate-none"
-                rx="4"
                 fill="none"
-                stroke-width="2"
                 [attr.x]="rect.x"
                 [attr.y]="rect.y"
                 [attr.width]="rect.width"
                 [attr.height]="rect.height"
-                [attr.stroke]="markColor"
-                [attr.stroke-dasharray]="markDash"
+                [attr.rx]="pointedAtOutline.cornerRadiusPx"
+                [attr.stroke]="pointedAtOutline.color"
+                [attr.stroke-width]="pointedAtOutline.lineWidthPx"
+                [attr.stroke-dasharray]="pointedAtOutline.dashes"
             />
         }
     </svg>

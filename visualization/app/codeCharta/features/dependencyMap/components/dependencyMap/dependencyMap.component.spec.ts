@@ -36,6 +36,7 @@ import {
     setSelectedNodePath,
     unfocusNode
 } from "../../../../stores/sharedView/sharedView.write.facade"
+import { InspectorSectionId } from "../../inspector/inspectorModel"
 import {
     dependencyLayoutIdentitySelector,
     dependencyLoadedFilesIdentitySelector,
@@ -112,11 +113,11 @@ interface Setup {
     /** The graph starts with every folder closed; most tests look into them. */
     openedBoxes?: string[]
     /** The inspector starts with every section closed; most tests look into them. */
-    openedSections?: string[]
+    openedSections?: InspectorSectionId[]
 }
 
 const EVERY_FOLDER = ["/root/ui", "/root/model"]
-const INSPECTOR_SECTIONS = ["Cycles", "Uses", "Used by", "Declarations"]
+const INSPECTOR_SECTIONS: InspectorSectionId[] = ["cycles", "uses", "usedBy", "declarations"]
 const SETTINGS_SHOWING_EVERY_EDGE: DependencyGraphSettings = {
     ...defaultDependencyGraphSettings,
     shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES]
@@ -660,7 +661,7 @@ describe("DependencyMapComponent", () => {
             it("should mark the boxes standing for what the inspector points at: both ends of a row, the files of a cycle, a file named above a group", async () => {
                 // Arrange
                 const { fixture } = await setupSelected(VIEW)
-                const marked = () => [...TestBed.inject(DependencyInspectorStore).markedBoxPaths()].sort()
+                const marked = () => [...TestBed.inject(DependencyInspectorStore).pointedAtBoxPaths()].sort()
                 const usesRow = within(screen.getByRole("region", { name: "Uses" }))
                     .getAllByTestId("dependency-inspector-row")
                     .at(-1)
@@ -685,7 +686,7 @@ describe("DependencyMapComponent", () => {
                 expect(forNothing).toEqual([])
                 expect(forTheCycle).toEqual([NODE, VIEW])
                 expect(forTheFile).toEqual([NODE])
-                expect(screen.getByTestId("dependency-graph-marks").querySelectorAll("rect")).toHaveLength(1)
+                expect(screen.getByTestId("dependency-graph-pointed-at").querySelectorAll("rect")).toHaveLength(1)
             })
 
             it("should show a cycle in the graph: open the files on it and light up its chain", async () => {

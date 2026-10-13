@@ -21,23 +21,23 @@ export interface DrawnBoxes {
     fileOf: (declarationPath: string) => string | undefined
 }
 
-/** A box counts apart the cycles that stay within single files and those between different files, which are the
- * wider tangle. A closed box counts both for all it hides. An opened file still counts the cycles it shares with
- * other files; an opened folder counts nothing, since the boxes in it count for themselves, and a cycle within an
- * opened file is on screen. Each cycle is given as the paths of the declarations it runs through. */
+/** Each cycle is given as the paths of the declarations it runs through. An opened folder counts nothing, since
+ * the boxes in it count for themselves, and a cycle within an opened file is on screen. */
 export function findCycleMarks(cycles: readonly (readonly string[])[], boxes: DrawnBoxes): CycleMarks {
     const cyclesInsideFiles = new Map<string, number>()
     const cyclesBetweenFiles = new Map<string, number>()
     const declarationsInCycles = new Map<string, DeclarationCycles>()
     for (const declarationPaths of cycles) {
-        const files = new Set(declarationPaths.map(boxes.fileOf))
-        const isBetweenFiles = files.size > 1
+        const filePathsOfCycle = new Set(declarationPaths.map(boxes.fileOf))
+        const isBetweenFiles = filePathsOfCycle.size > 1
         noteDeclarations(declarationPaths, isBetweenFiles, declarationsInCycles)
-        const closedBoxes = new Set(declarationPaths.map(path => boxes.representatives.get(path)))
+        const representativesOfCycle = new Set(declarationPaths.map(path => boxes.representatives.get(path)))
         for (const box of boxesHolding(declarationPaths, boxes)) {
-            if (isBetweenFiles && (closedBoxes.has(box) || files.has(box))) {
+            const hidesPartOfTheCycle = representativesOfCycle.has(box)
+            const isOpenedFileOfTheCycle = !hidesPartOfTheCycle && filePathsOfCycle.has(box)
+            if (isBetweenFiles && (hidesPartOfTheCycle || isOpenedFileOfTheCycle)) {
                 countOneMore(cyclesBetweenFiles, box)
-            } else if (!isBetweenFiles && closedBoxes.has(box)) {
+            } else if (!isBetweenFiles && hidesPartOfTheCycle) {
                 countOneMore(cyclesInsideFiles, box)
             }
         }

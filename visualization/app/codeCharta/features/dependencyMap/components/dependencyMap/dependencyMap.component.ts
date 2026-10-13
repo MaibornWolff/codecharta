@@ -48,7 +48,7 @@ export class DependencyMapComponent {
     protected readonly graphIdentity = computed(() => this.viewStore.adoptedLayoutIdentity() ?? "")
     protected readonly fitRequest = this.viewStore.fitRequest
     protected readonly viewRequest = this.viewStore.viewRequest
-    protected readonly markedPaths = this.inspectorStore.markedBoxPaths
+    protected readonly pointedAtBoxPaths = this.inspectorStore.pointedAtBoxPaths
     protected readonly coveredBottom = this.viewStore.coveredBottom
 
     private readonly hoveredPath = toSignal(this.readStore.hoveredNodePath$, { requireSync: true })
