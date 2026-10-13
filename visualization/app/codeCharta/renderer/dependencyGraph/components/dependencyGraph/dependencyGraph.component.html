@@ -1,4 +1,22 @@
 <div #chartContainer class="h-full w-full data-panning:*:cursor-grab!" data-testid="dependency-graph"></div>
+@if (markedRects().length > 0) {
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" data-testid="dependency-graph-marks">
+        @for (rect of markedRects(); track $index) {
+            <rect
+                class="animate-marching-ants motion-reduce:animate-none"
+                rx="4"
+                fill="none"
+                stroke-width="2"
+                [attr.x]="rect.x"
+                [attr.y]="rect.y"
+                [attr.width]="rect.width"
+                [attr.height]="rect.height"
+                [attr.stroke]="markColor"
+                [attr.stroke-dasharray]="markDash"
+            />
+        }
+    </svg>
+}
 <cc-dependency-graph-box-list
     [boxes]="scene().layout.boxes"
     [selectedPath]="scene().selectedPath"

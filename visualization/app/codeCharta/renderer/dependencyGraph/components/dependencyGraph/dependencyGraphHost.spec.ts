@@ -479,6 +479,20 @@ describe("DependencyGraphHost", () => {
         expect(windowAtHalfWidth).toEqual({ x: [200, 400], y: [100, 400] })
     })
 
+    it("should tell where a part of the graph lies on the container, and nothing before it has drawn anything", () => {
+        // Arrange
+        stubbedChart.convertToPixel.mockImplementation((_finder: unknown, [x, y]: number[]) => [x * 2, y * 2 + 10])
+        const box = { x: 10, y: 20, width: 100, height: 40 }
+        const beforeDrawing = host.pixelRectOf(box)
+
+        // Act
+        host.render({})
+
+        // Assert
+        expect(beforeDrawing).toBeNull()
+        expect(host.pixelRectOf(box)).toEqual({ x: 20, y: 50, width: 200, height: 80 })
+    })
+
     it("should know no shown window before it has drawn anything", () => {
         // Arrange
         const viewport = { width: 800, height: 600 }

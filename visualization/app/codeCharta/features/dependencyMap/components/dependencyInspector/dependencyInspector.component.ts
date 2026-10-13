@@ -106,6 +106,10 @@ export class DependencyInspectorComponent {
         this.store.pointAt(declarationEdges)
     }
 
+    protected pointAtBox(path: string | null): void {
+        this.store.pointAtBox(path)
+    }
+
     protected perform(action: InspectorActionKind): void {
         this.store.perform(action)
     }

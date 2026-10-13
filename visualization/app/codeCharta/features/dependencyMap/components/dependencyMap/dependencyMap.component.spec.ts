@@ -654,6 +654,37 @@ describe("DependencyMapComponent", () => {
                 expect(edgeOpacities()).toEqual({ [EDGE_ID]: 1, [`${NODE}|${VIEW}`]: 1 })
             })
 
+            it("should mark the boxes standing for what the inspector points at: both ends of a row, the files of a cycle, a file named above a group", async () => {
+                // Arrange
+                const { fixture } = await setupSelected(VIEW)
+                const marked = () => [...TestBed.inject(DependencyInspectorStore).markedBoxPaths()].sort()
+                const usesRow = within(screen.getByRole("region", { name: "Uses" }))
+                    .getAllByTestId("dependency-inspector-row")
+                    .at(-1)
+                const [cycle] = screen.getAllByTestId("dependency-inspector-cycle")
+                const [file] = screen.getAllByTestId("dependency-inspector-group-file")
+
+                // Act
+                fireEvent.mouseEnter(usesRow)
+                const forTheRow = marked()
+                fireEvent.mouseLeave(usesRow)
+                const forNothing = marked()
+                fireEvent.mouseEnter(cycle)
+                const forTheCycle = marked()
+                fireEvent.mouseLeave(cycle)
+                fireEvent.mouseEnter(file)
+                const forTheFile = marked()
+                fireChartEvent("finished")
+                fixture.detectChanges()
+
+                // Assert
+                expect(forTheRow).toEqual([NODE, VIEW])
+                expect(forNothing).toEqual([])
+                expect(forTheCycle).toEqual([NODE, VIEW])
+                expect(forTheFile).toEqual([NODE])
+                expect(screen.getByTestId("dependency-graph-marks").querySelectorAll("rect")).toHaveLength(1)
+            })
+
             it("should show a cycle in the graph: open the files on it and light up its chain", async () => {
                 // Arrange
                 const { fixture } = await setupSelected(VIEW)

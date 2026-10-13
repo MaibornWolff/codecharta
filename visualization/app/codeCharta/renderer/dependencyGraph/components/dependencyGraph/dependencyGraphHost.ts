@@ -9,7 +9,7 @@ import { AxisWindow, panBothAxesTo, Viewport, windowResizedTo } from "../../util
 import { CYCLE_BADGE_INFO } from "../../util/boxMarks"
 import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
-import { Point } from "../../util/geometry"
+import { Point, Rectangle } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 import { PanKey } from "./panKey"
 import { PannableView, RightDragPan } from "./rightDragPan"
@@ -117,6 +117,16 @@ export class DependencyGraphHost {
         }
         const shownWindow = windowResizedTo(this.shownWindow(this.chart, this.chartSize), this.chartSize, viewport)
         return [...shownWindow.x, ...shownWindow.y].every(Number.isFinite) ? shownWindow : null
+    }
+
+    /** Where a part of the graph lies on the container, in pixels; null before anything is drawn. */
+    pixelRectOf({ x, y, width, height }: Rectangle): Rectangle | null {
+        if (!this.chart || !this.chartSize) {
+            return null
+        }
+        const [left, top] = this.chart.convertToPixel({ gridIndex: 0 }, [x, y])
+        const [right, bottom] = this.chart.convertToPixel({ gridIndex: 0 }, [x + width, y + height])
+        return { x: left, y: top, width: right - left, height: bottom - top }
     }
 
     dispose(): void {
