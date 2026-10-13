@@ -1,21 +1,20 @@
 import { NgTemplateOutlet } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, untracked, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
-import { EDGE_TYPE_LABELS, usageLabelOf } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { InspectorResizeHandleComponent } from "../../../shared/facade"
 import {
-    CYCLES_SECTION_TITLE,
-    DECLARATIONS_SECTION_TITLE,
+    INSPECTOR_SECTION_TITLES,
     InspectorActionKind,
     InspectorCycle,
-    InspectorDependency,
-    InspectorModel,
-    InspectorReference
+    InspectorReference,
+    InspectorSectionId
 } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
 import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
+import { PointingDirective } from "../pointing/pointing.directive"
 
 const ACTION_LABELS: Record<InspectorActionKind, string> = {
     open: "Open in graph",
@@ -23,14 +22,12 @@ const ACTION_LABELS: Record<InspectorActionKind, string> = {
     unfold: "Unfold in graph"
 }
 
-const PLAIN_USAGE_LABEL = usageLabelOf("usage")
-
 const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-folder-o", file: "fa fa-file-o" }
 
 @Component({
     selector: "cc-dependency-inspector",
     templateUrl: "./dependencyInspector.component.html",
-    imports: [NgTemplateOutlet, DeclarationKindIconComponent, InspectorResizeHandleComponent, LineStyleSampleComponent],
+    imports: [NgTemplateOutlet, DeclarationKindIconComponent, InspectorResizeHandleComponent, LineStyleSampleComponent, PointingDirective],
     providers: [CopyToClipboardService],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
@@ -77,37 +74,32 @@ export class DependencyInspectorComponent {
     }
 
     readonly icons = REFERENCE_ICONS
-    protected readonly cyclesTitle = CYCLES_SECTION_TITLE
-    protected readonly declarationsTitle = DECLARATIONS_SECTION_TITLE
-
-    protected isOpen(sectionTitle: string): boolean {
-        return this.store.openSections().has(sectionTitle)
-    }
-
-    protected toggleSection(sectionTitle: string): void {
-        this.store.toggleSection(sectionTitle)
-    }
-
-    /** That one declaration uses the other is what every row shows; only a closer kind of use adds to it. */
-    protected closerUsagesOf(dependency: InspectorDependency): string[] {
-        return dependency.usages.filter(usage => usage !== PLAIN_USAGE_LABEL)
-    }
-
+    protected readonly sectionTitles = INSPECTOR_SECTION_TITLES
     /** An edge has one section and nothing else to tell, so it is not folded away. */
-    protected isCollapsible(model: InspectorModel): boolean {
-        return model.kind !== "edge"
+    protected readonly foldsItsSections = computed(() => this.model()?.kind !== "edge")
+
+    protected isOpen(sectionId: InspectorSectionId): boolean {
+        return this.store.openSections().has(sectionId)
+    }
+
+    protected showsBodyOf(sectionId: InspectorSectionId): boolean {
+        return !this.foldsItsSections() || this.isOpen(sectionId)
+    }
+
+    protected toggleSection(sectionId: InspectorSectionId): void {
+        this.store.toggleSection(sectionId)
     }
 
     protected goTo(reference: InspectorReference): void {
         this.store.goTo(reference)
     }
 
-    protected pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
-        this.store.pointAt(declarationEdges)
+    protected pointAtEdges(declarationEdges: readonly DependencyLeafEdge[] | null): void {
+        this.store.pointAtEdges(declarationEdges)
     }
 
-    protected pointAtBox(path: string | null): void {
-        this.store.pointAtBox(path)
+    protected pointAtNode(path: string | null): void {
+        this.store.pointAtNode(path)
     }
 
     protected perform(action: InspectorActionKind): void {

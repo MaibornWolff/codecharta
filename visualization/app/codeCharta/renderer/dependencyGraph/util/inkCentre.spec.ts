@@ -1,4 +1,4 @@
-type InkCentre = typeof import("./inkCentre")
+import { createInkMeasurer } from "./inkCentre"
 
 interface Ink {
     actualBoundingBoxLeft: number
@@ -7,27 +7,20 @@ interface Ink {
     actualBoundingBoxDescent: number
 }
 
-/** The module keeps what it measured, so each test loads it anew, measuring on a canvas that tells the given ink. */
-async function loadedWith(context: { measureText: jest.Mock } | null): Promise<InkCentre> {
-    jest.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(context as never)
-    let inkCentre: InkCentre
-    await jest.isolateModulesAsync(async () => {
-        inkCentre = await import("./inkCentre")
-    })
-    return inkCentre
+function canvasTelling(ink: Partial<Ink>) {
+    return {
+        measureText: jest.fn(() => ink as TextMetrics),
+        font: "",
+        textAlign: "start" as CanvasTextAlign,
+        textBaseline: "top" as CanvasTextBaseline
+    }
 }
 
-const measuring = (ink: Partial<Ink>) => ({ measureText: jest.fn(() => ink) })
-
-describe("inkCentreShiftOf", () => {
-    afterEach(() => {
-        jest.restoreAllMocks()
-    })
-
-    it("should move a text by half of what its ink lies off the point a canvas centres it on, at the size it is drawn", async () => {
+describe("createInkMeasurer", () => {
+    it("should move a text by half of what its ink lies off the point a canvas centres it on, at the size it is drawn", () => {
         // Arrange
         const ink = { actualBoundingBoxLeft: 20, actualBoundingBoxRight: 30, actualBoundingBoxAscent: 40, actualBoundingBoxDescent: 24 }
-        const { inkCentreShiftOf } = await loadedWith(measuring(ink))
+        const inkCentreShiftOf = createInkMeasurer(canvasTelling(ink))
 
         // Act
         const shift = inkCentreShiftOf("7", "bold", 10)
@@ -36,15 +29,15 @@ describe("inkCentreShiftOf", () => {
         expect(shift).toEqual([-0.5, 0.8])
     })
 
-    it("should measure a text once, whatever size it is drawn at later", async () => {
+    it("should measure a text once, whatever size it is drawn at later", () => {
         // Arrange
-        const canvas = measuring({
+        const canvas = canvasTelling({
             actualBoundingBoxLeft: 10,
             actualBoundingBoxRight: 10,
             actualBoundingBoxAscent: 30,
             actualBoundingBoxDescent: 10
         })
-        const { inkCentreShiftOf } = await loadedWith(canvas)
+        const inkCentreShiftOf = createInkMeasurer(canvas)
 
         // Act
         const shifts = [inkCentreShiftOf("C", "bold", 10), inkCentreShiftOf("C", "bold", 20)]
@@ -58,11 +51,11 @@ describe("inkCentreShiftOf", () => {
     })
 
     it.each([
-        ["its ink cannot be measured", measuring({})],
+        ["its ink cannot be measured", canvasTelling({})],
         ["there is no canvas to measure on", null]
-    ])("should leave a text where the canvas centres it when %s", async (_, canvas) => {
+    ])("should leave a text where the canvas centres it when %s", (_, canvas) => {
         // Arrange
-        const { inkCentreShiftOf } = await loadedWith(canvas)
+        const inkCentreShiftOf = createInkMeasurer(canvas)
 
         // Act
         const shift = inkCentreShiftOf("7", "bold", 10)

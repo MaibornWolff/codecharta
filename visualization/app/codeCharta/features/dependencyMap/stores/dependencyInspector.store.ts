@@ -1,16 +1,16 @@
-import { computed, Injectable, inject, signal, untracked } from "@angular/core"
+import { computed, effect, Injectable, inject, signal, untracked } from "@angular/core"
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../declarations/declarationIndex"
 import {
-    CYCLES_SECTION_TITLE,
     describeSubject,
     INSPECTOR_ROW_LIMIT,
     InspectorActionKind,
     InspectorCycle,
     InspectorModel,
     InspectorReference,
+    InspectorSectionId,
     InspectorSubject
 } from "../inspector/inspectorModel"
 import { DependencyGraphModelStore } from "./dependencyGraphModel.store"
@@ -50,11 +50,11 @@ export class DependencyInspectorStore {
     private readonly isDeltaState = toSignal(this.readStore.isDeltaState$, { requireSync: true })
 
     private readonly selectedInGraph = signal<GraphSelection | null>(null)
-    private readonly pointedAt = signal(NOTHING_POINTED_AT)
-    private readonly pointedAtPath = signal<string | null>(null)
+    private readonly pointedAtEdges = signal(NOTHING_POINTED_AT)
+    private readonly pointedAtNodePath = signal<string | null>(null)
     private readonly touchedView = signal(UNTOUCHED)
     private readonly cyclesAskedFor = signal<{ id: number; boxPath: string } | null>(null)
-    private readonly openedSections = signal<ReadonlySet<string>>(new Set())
+    private readonly openedSections = signal<ReadonlySet<InspectorSectionId>>(new Set())
 
     readonly edgeColors = computed(() => {
         const { edgeColors, lineStyleShows } = this.graphModel.settings()
@@ -74,11 +74,10 @@ export class DependencyInspectorStore {
         return selection?.kind === "edge" ? (this.graphModel.projectedEdges().find(edge => edge.id === selection.id) ?? null) : null
     })
 
-    /** The request to bring the cycles into view, for as long as the box they were asked of is selected. */
-    /** The sections the reader opened, by their titles: every section starts closed, and one opened stays open for
-     * whatever is selected next. */
+    /** Every section starts closed, and one the reader opened stays open for whatever is selected next. */
     readonly openSections = this.openedSections.asReadonly()
 
+    /** The request to bring the cycles into view, for as long as the box they were asked of is selected. */
     readonly cyclesRequest = computed(() => {
         const asked = this.cyclesAskedFor()
         const selection = this.selection()
@@ -139,16 +138,14 @@ export class DependencyInspectorStore {
     readonly highlightedEdgeIds = computed((): ReadonlySet<string> => {
         const boxOf = (path: string) => this.graphModel.boxStandingFor(path)
         return new Set(
-            this.pointedAt().map(declarationEdge => edgeIdOf(boxOf(fromPathOf(declarationEdge)), boxOf(toPathOf(declarationEdge))))
+            this.pointedAtEdges().map(declarationEdge => edgeIdOf(boxOf(fromPathOf(declarationEdge)), boxOf(toPathOf(declarationEdge))))
         )
     })
 
-    /** The boxes standing for what is pointed at: a dependency's two ends, every declaration of a cycle, a file or a
-     * declaration named in a list. */
-    readonly markedBoxPaths = computed((): ReadonlySet<string> => {
-        const endsOfEdges = this.pointedAt().flatMap(declarationEdge => [fromPathOf(declarationEdge), toPathOf(declarationEdge)])
-        const pointedAtPath = this.pointedAtPath()
-        const paths = pointedAtPath === null ? endsOfEdges : [...endsOfEdges, pointedAtPath]
+    readonly pointedAtBoxPaths = computed((): ReadonlySet<string> => {
+        const endsOfEdges = this.pointedAtEdges().flatMap(declarationEdge => [fromPathOf(declarationEdge), toPathOf(declarationEdge)])
+        const nodePath = this.pointedAtNodePath()
+        const paths = nodePath === null ? endsOfEdges : [...endsOfEdges, nodePath]
         return new Set(paths.map(path => this.graphModel.boxStandingFor(path)).filter(boxPath => boxPath !== null))
     })
 
@@ -161,6 +158,11 @@ export class DependencyInspectorStore {
                 this.selectedInGraph.set(null)
             }
             this.showAgain()
+        })
+        // A row that is replaced under a resting pointer tells of no leave, and its box would stay pointed at.
+        effect(() => {
+            this.subjectId()
+            untracked(() => this.pointAtNode(null))
         })
     }
 
@@ -183,15 +185,15 @@ export class DependencyInspectorStore {
     showCyclesOf(boxPath: string): void {
         const id = (this.cyclesAskedFor()?.id ?? 0) + 1
         this.select(boxPath)
-        this.openedSections.update(opened => new Set([...opened, CYCLES_SECTION_TITLE]))
+        this.openedSections.update(opened => new Set<InspectorSectionId>([...opened, "cycles"]))
         this.cyclesAskedFor.set({ id, boxPath })
     }
 
-    toggleSection(title: string): void {
+    toggleSection(sectionId: InspectorSectionId): void {
         this.openedSections.update(opened => {
             const next = new Set(opened)
-            if (!next.delete(title)) {
-                next.add(title)
+            if (!next.delete(sectionId)) {
+                next.add(sectionId)
             }
             return next
         })
@@ -205,17 +207,18 @@ export class DependencyInspectorStore {
     goTo(reference: InspectorReference): void {
         this.viewStore.reveal([reference.path])
         this.select(reference.path)
-        this.pointAt(null)
-        this.pointAtBox(null)
+        this.pointAtEdges(null)
+        this.pointAtNode(null)
         this.bringIntoView([reference.path])
     }
 
-    pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
-        this.pointedAt.set(declarationEdges ?? NOTHING_POINTED_AT)
+    pointAtEdges(declarationEdges: readonly DependencyLeafEdge[] | null): void {
+        this.pointedAtEdges.set(declarationEdges ?? NOTHING_POINTED_AT)
     }
 
-    pointAtBox(path: string | null): void {
-        this.pointedAtPath.set(path)
+    /** A file or a declaration, by its path; the graph marks the box standing for it. */
+    pointAtNode(path: string | null): void {
+        this.pointedAtNodePath.set(path)
     }
 
     perform(action: InspectorActionKind): void {
@@ -233,7 +236,7 @@ export class DependencyInspectorStore {
 
     showCycle(cycle: InspectorCycle): void {
         this.revealEndsOf(cycle.declarationEdges)
-        this.pointAt(cycle.declarationEdges)
+        this.pointAtEdges(cycle.declarationEdges)
     }
 
     showAllRows(): void {
@@ -242,7 +245,8 @@ export class DependencyInspectorStore {
 
     dismiss(): void {
         this.touchedView.set({ ...this.subjectView(), subjectId: this.subjectId(), isDismissed: true })
-        this.pointAt(null)
+        this.pointAtEdges(null)
+        this.pointAtNode(null)
     }
 
     private selectInGraph(selection: Selection | null, sharedPath: string | null): void {

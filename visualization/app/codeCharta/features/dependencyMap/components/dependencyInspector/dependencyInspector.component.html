@@ -24,28 +24,33 @@
     </span>
 </ng-template>
 
-<ng-template #sectionHeader let-title let-count="count" let-isCollapsible="isCollapsible">
-    @if (isCollapsible) {
-        <h3 class="m-0 text-xs font-normal">
+<ng-template #sectionTitleAndCount let-sectionId let-count="count">
+    <span class="flex items-center gap-1.5">
+        @if (foldsItsSections()) {
+            <i class="fa w-2.5 text-[10px]" [class]="isOpen(sectionId) ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true"></i>
+        }
+        {{ sectionTitles[sectionId] }}
+    </span>
+    <span class="tracking-normal tabular-nums">{{ count }}</span>
+</ng-template>
+
+<ng-template #sectionHeader let-sectionId let-count="count">
+    <h3 class="m-0 text-xs font-normal tracking-widest uppercase">
+        @if (foldsItsSections()) {
             <button
                 type="button"
-                class="flex w-full cursor-pointer items-center justify-between gap-2 border-0 bg-transparent p-0 text-xs tracking-widest uppercase opacity-60 hover:opacity-100"
-                [attr.aria-expanded]="isOpen(title)"
-                (click)="toggleSection(title)"
+                class="flex w-full cursor-pointer items-center justify-between gap-2 border-0 bg-transparent p-0 tracking-widest uppercase opacity-60 hover:opacity-100"
+                [attr.aria-expanded]="isOpen(sectionId)"
+                (click)="toggleSection(sectionId)"
             >
-                <span class="flex items-center gap-1.5">
-                    <i class="fa w-2.5 text-[10px]" [class]="isOpen(title) ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true"></i>
-                    {{ title }}
-                </span>
-                <span class="tracking-normal tabular-nums">{{ count }}</span>
+                <ng-container [ngTemplateOutlet]="sectionTitleAndCount" [ngTemplateOutletContext]="{ $implicit: sectionId, count: count }"></ng-container>
             </button>
-        </h3>
-    } @else {
-        <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-            <h3 class="m-0 text-xs font-normal">{{ title }}</h3>
-            <span class="tracking-normal tabular-nums">{{ count }}</span>
-        </div>
-    }
+        } @else {
+            <div class="flex items-center justify-between gap-2 opacity-60">
+                <ng-container [ngTemplateOutlet]="sectionTitleAndCount" [ngTemplateOutletContext]="{ $implicit: sectionId, count: count }"></ng-container>
+            </div>
+        }
+    </h3>
 </ng-template>
 
 <ng-template #moreRows let-hiddenCount let-testId="testId">
@@ -108,154 +113,160 @@
             <section
                 #cyclesSection
                 class="flex flex-col gap-2 border-t border-base-300 px-3 py-2"
-                [attr.aria-label]="cyclesTitle"
+                [attr.aria-label]="sectionTitles.cycles"
                 data-testid="dependency-inspector-cycles"
             >
-                <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: cyclesTitle, count: model.cycleCount, isCollapsible: true }"></ng-container>
-                @if (isOpen(cyclesTitle)) {
-                @for (cycle of model.cycles; track $index) {
-                    <div
-                        class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
-                        data-testid="dependency-inspector-cycle"
-                        (mouseenter)="pointAt(cycle.declarationEdges)"
-                        (mouseleave)="pointAt(null)"
-                        (focusin)="pointAt(cycle.declarationEdges)"
-                        (focusout)="pointAt(null)"
-                    >
-                        <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
-                            @for (step of cycle.steps; track $index; let isLast = $last) {
-                                <ng-container
-                                    [ngTemplateOutlet]="chip"
-                                    [ngTemplateOutletContext]="{ $implicit: step.reference, isOwn: false }"
-                                ></ng-container>
-                                @if (isLast) {
-                                    <span
-                                        class="ml-1 text-xs"
-                                        [style.color]="edgeColors()[step.linkToNext.type]"
-                                        data-testid="dependency-inspector-cycle-closing"
-                                        >↩ {{ cycle.steps[0].reference.name }}</span
-                                    >
-                                } @else {
-                                    <cc-line-style-sample [line]="step.linkToNext.line" [color]="edgeColors()[step.linkToNext.type]" [label]="'uses'"></cc-line-style-sample>
+                <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'cycles', count: model.cycleCount }"></ng-container>
+                @if (showsBodyOf("cycles")) {
+                    @for (cycle of model.cycles; track $index) {
+                        <div
+                            class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
+                            data-testid="dependency-inspector-cycle"
+                            ccPointing
+                            (pointingChange)="pointAtEdges($event ? cycle.declarationEdges : null)"
+                        >
+                            <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
+                                @for (step of cycle.steps; track $index; let isLast = $last) {
+                                    <ng-container
+                                        [ngTemplateOutlet]="chip"
+                                        [ngTemplateOutletContext]="{ $implicit: step.reference, isOwn: false }"
+                                    ></ng-container>
+                                    @if (isLast) {
+                                        <span
+                                            class="ml-1 text-xs"
+                                            [style.color]="edgeColors()[step.linkToNext.type]"
+                                            data-testid="dependency-inspector-cycle-closing"
+                                            >↩ {{ cycle.steps[0].reference.name }}</span
+                                        >
+                                    } @else {
+                                        <cc-line-style-sample
+                                            [line]="step.linkToNext.line"
+                                            [color]="edgeColors()[step.linkToNext.type]"
+                                            [label]="'uses'"
+                                        ></cc-line-style-sample>
+                                    }
                                 }
-                            }
+                            </div>
+                            <div class="flex items-baseline justify-between gap-2 text-xs">
+                                <span class="min-w-0 opacity-60 [overflow-wrap:anywhere]" data-testid="dependency-inspector-cycle-where">
+                                    {{ cycle.files.length === 1 ? "inside" : "across" }}
+                                    @for (file of cycle.files; track file.path; let isLast = $last) {
+                                        {{ file.name }}{{ isLast ? "" : "," }}
+                                    }
+                                </span>
+                                <button type="button" class="btn btn-ghost btn-xs shrink-0" (click)="showCycle(cycle)">Show in graph</button>
+                            </div>
                         </div>
-                        <div class="flex items-baseline justify-between gap-2 text-xs">
-                            <span class="min-w-0 opacity-60 [overflow-wrap:anywhere]" data-testid="dependency-inspector-cycle-where">
-                                {{ cycle.files.length === 1 ? "inside" : "across" }}
-                                @for (file of cycle.files; track file.path; let isLast = $last) {
-                                    {{ file.name }}{{ isLast ? "" : "," }}
-                                }
-                            </span>
-                            <button type="button" class="btn btn-ghost btn-xs shrink-0" (click)="showCycle(cycle)">Show in graph</button>
-                        </div>
-                    </div>
-                }
-                @if (model.cycleCount > model.cycles.length) {
-                    <ng-container
-                    [ngTemplateOutlet]="moreRows"
-                    [ngTemplateOutletContext]="{ $implicit: model.cycleCount - model.cycles.length, testId: 'dependency-inspector-more-cycles' }"
-                ></ng-container>
-                }
+                    }
+                    @if (model.cycleCount > model.cycles.length) {
+                        <ng-container
+                            [ngTemplateOutlet]="moreRows"
+                            [ngTemplateOutletContext]="{ $implicit: model.cycleCount - model.cycles.length, testId: 'dependency-inspector-more-cycles' }"
+                        ></ng-container>
+                    }
                 }
             </section>
         }
 
-        @for (section of model.sections; track section.title) {
+        @for (section of model.sections; track section.id) {
             @if (section.count > 0) {
                 <section class="flex flex-col gap-2 border-t border-base-300 px-3 py-2" [attr.aria-label]="section.title">
-                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: section.title, count: section.count, isCollapsible: isCollapsible(model) }"></ng-container>
-                    @if (!isCollapsible(model) || isOpen(section.title)) {
-                    @for (group of section.groups; track $index) {
-                        <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
-                            @if (group.heading; as heading) {
-                                <div class="flex min-w-0 items-baseline justify-between gap-2 text-[13px] opacity-70">
-                                    @if (typeof heading === "string") {
-                                        <span>{{ heading }}</span>
-                                    } @else {
-                                        <span
-                                            class="inline-flex min-w-0"
-                                            data-testid="dependency-inspector-group-file"
-                                            (mouseenter)="pointAtBox(heading.path)"
-                                            (mouseleave)="pointAtBox(null)"
-                                            (focusin)="pointAtBox(heading.path)"
-                                            (focusout)="pointAtBox(null)"
-                                        >
-                                            <ng-container
-                                                [ngTemplateOutlet]="referenceButton"
-                                                [ngTemplateOutletContext]="{ $implicit: heading }"
-                                            ></ng-container>
-                                        </span>
-                                    }
-                                    <span class="shrink-0 tabular-nums">{{ group.dependencies.length + group.hiddenCount }}</span>
-                                </div>
-                            }
-                            @for (dependency of group.dependencies; track $index) {
-                                <div
-                                    class="flex flex-col gap-0.5 rounded-sm px-0.5 hover:bg-base-200/60"
-                                    data-testid="dependency-inspector-row"
-                                    (mouseenter)="pointAt([dependency.declarationEdge])"
-                                    (mouseleave)="pointAt(null)"
-                                    (focusin)="pointAt([dependency.declarationEdge])"
-                                    (focusout)="pointAt(null)"
-                                >
-                                    <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
-                                        <ng-container
-                                            [ngTemplateOutlet]="chip"
-                                            [ngTemplateOutletContext]="{ $implicit: dependency.from, isOwn: dependency.isFromOwn }"
-                                        ></ng-container>
-                                        <cc-line-style-sample [line]="dependency.line" [color]="edgeColors()[dependency.type]" [label]="dependency.usages.join(', ') || 'uses'"></cc-line-style-sample>
-                                        <ng-container
-                                            [ngTemplateOutlet]="chip"
-                                            [ngTemplateOutletContext]="{ $implicit: dependency.to, isOwn: dependency.isToOwn }"
-                                        ></ng-container>
+                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: section.id, count: section.count }"></ng-container>
+                    @if (showsBodyOf(section.id)) {
+                        @for (group of section.groups; track $index) {
+                            <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
+                                @if (group.heading; as heading) {
+                                    <div class="flex min-w-0 items-baseline justify-between gap-2 text-[13px] opacity-70">
+                                        @if (typeof heading === "string") {
+                                            <span>{{ heading }}</span>
+                                        } @else {
+                                            <span
+                                                class="inline-flex min-w-0"
+                                                data-testid="dependency-inspector-group-file"
+                                                ccPointing
+                                                (pointingChange)="pointAtNode($event ? heading.path : null)"
+                                            >
+                                                <ng-container
+                                                    [ngTemplateOutlet]="referenceButton"
+                                                    [ngTemplateOutletContext]="{ $implicit: heading }"
+                                                ></ng-container>
+                                            </span>
+                                        }
+                                        <span class="shrink-0 tabular-nums">{{ group.dependencies.length + group.hiddenCount }}</span>
                                     </div>
-                                    @let closerUsages = closerUsagesOf(dependency);
-                                    @if (closerUsages.length > 0 || dependency.type !== "regular") {
-                                        <div class="pl-0.5 text-xs">
-                                            <span class="opacity-60">{{ closerUsages.join(", ") }}</span>
-                                            @if (dependency.type !== "regular") {
-                                                <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-inspector-row-type">
-                                                    {{ closerUsages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
-                                                >
-                                            }
+                                }
+                                @for (dependency of group.dependencies; track $index) {
+                                    <div
+                                        class="flex flex-col gap-0.5 rounded-sm px-0.5 hover:bg-base-200/60"
+                                        data-testid="dependency-inspector-row"
+                                        ccPointing
+                                        (pointingChange)="pointAtEdges($event ? [dependency.declarationEdge] : null)"
+                                    >
+                                        <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
+                                            <ng-container
+                                                [ngTemplateOutlet]="chip"
+                                                [ngTemplateOutletContext]="{ $implicit: dependency.from, isOwn: dependency.isFromOwn }"
+                                            ></ng-container>
+                                            <cc-line-style-sample
+                                                [line]="dependency.line"
+                                                [color]="edgeColors()[dependency.type]"
+                                                [label]="dependency.specificUsages.join(', ') || 'uses'"
+                                            ></cc-line-style-sample>
+                                            <ng-container
+                                                [ngTemplateOutlet]="chip"
+                                                [ngTemplateOutletContext]="{ $implicit: dependency.to, isOwn: dependency.isToOwn }"
+                                            ></ng-container>
                                         </div>
-                                    }
-                                </div>
-                            }
-                            @if (group.hiddenCount > 0) {
-                                <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: group.hiddenCount }"></ng-container>
-                            }
-                        </div>
+                                        @if (dependency.specificUsages.length > 0 || dependency.type !== "regular") {
+                                            <div class="pl-0.5 text-xs">
+                                                <span class="opacity-60">{{ dependency.specificUsages.join(", ") }}</span>
+                                                @if (dependency.type !== "regular") {
+                                                    <span
+                                                        class="font-semibold"
+                                                        [style.color]="edgeColors()[dependency.type]"
+                                                        data-testid="dependency-inspector-row-type"
+                                                    >
+                                                        {{ dependency.specificUsages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
+                                                    >
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                @if (group.hiddenCount > 0) {
+                                    <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: group.hiddenCount }"></ng-container>
+                                }
+                            </div>
+                        }
                     }
-                }
                 </section>
             }
         }
 
         @if (model.declarations; as declarations) {
             @if (declarations.count > 0) {
-                <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" [attr.aria-label]="declarationsTitle">
-                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: declarationsTitle, count: declarations.count, isCollapsible: true }"></ng-container>
-                    @if (isOpen(declarationsTitle)) {
-                    <ul class="m-0 flex list-none flex-col gap-1 p-0">
-                        @for (item of declarations.items; track item.reference.path) {
-                            <li
-                                class="flex min-w-0 items-baseline justify-between gap-2"
-                                data-testid="dependency-inspector-declaration"
-                                (mouseenter)="pointAtBox(item.reference.path)"
-                                (mouseleave)="pointAtBox(null)"
-                                (focusin)="pointAtBox(item.reference.path)"
-                                (focusout)="pointAtBox(null)"
-                            >
-                                <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: item.reference }"></ng-container>
-                                <span class="shrink-0 text-xs opacity-60">{{ item.detail }}</span>
-                            </li>
+                <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" [attr.aria-label]="sectionTitles.declarations">
+                    <ng-container
+                        [ngTemplateOutlet]="sectionHeader"
+                        [ngTemplateOutletContext]="{ $implicit: 'declarations', count: declarations.count }"
+                    ></ng-container>
+                    @if (showsBodyOf("declarations")) {
+                        <ul class="m-0 flex list-none flex-col gap-1 p-0">
+                            @for (item of declarations.items; track item.reference.path) {
+                                <li
+                                    class="flex min-w-0 items-baseline justify-between gap-2"
+                                    data-testid="dependency-inspector-declaration"
+                                    ccPointing
+                                    (pointingChange)="pointAtNode($event ? item.reference.path : null)"
+                                >
+                                    <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: item.reference }"></ng-container>
+                                    <span class="shrink-0 text-xs opacity-60">{{ item.detail }}</span>
+                                </li>
+                            }
+                        </ul>
+                        @if (declarations.hiddenCount > 0) {
+                            <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: declarations.hiddenCount }"></ng-container>
                         }
-                    </ul>
-                    @if (declarations.hiddenCount > 0) {
-                        <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: declarations.hiddenCount }"></ng-container>
-                    }
                     }
                 </section>
             }

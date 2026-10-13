@@ -75,7 +75,7 @@ function rowsOf(model: InspectorModel, title: string): string[] {
     const headingOf = (heading: InspectorModel["sections"][number]["groups"][number]["heading"]) =>
         typeof heading === "string" ? heading : (heading?.name ?? "-")
     return section.groups.flatMap(group =>
-        group.dependencies.map(row => `${headingOf(group.heading)}: ${row.from.name} → ${row.to.name} (${row.usages.join(", ")})`)
+        group.dependencies.map(row => `${headingOf(group.heading)}: ${row.from.name} → ${row.to.name} (${row.specificUsages.join(", ")})`)
     )
 }
 
@@ -140,11 +140,11 @@ describe("describeSubject", () => {
                 ["Used by", 1]
             ])
             expect(rowsOf(model, "Uses")).toEqual([
-                "this file: Creature → Armor (Uses)",
+                "this file: Creature → Armor ()",
                 "text.ts: Armor → format (Takes as argument)",
-                "weapon.ts: Creature → Weapon (Inherits from, Uses)"
+                "weapon.ts: Creature → Weapon (Inherits from)"
             ])
-            expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature (Uses)"])
+            expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature ()"])
         })
 
         it("should say which end of a dependency is the file's own, so the direction reads at a glance", () => {
@@ -367,11 +367,8 @@ describe("describeSubject", () => {
             const model = describeSubject(subject, context())
 
             // Assert
-            expect(rowsOf(model, "Uses")).toEqual([
-                "creature.ts: Creature → Armor (Uses)",
-                "weapon.ts: Creature → Weapon (Inherits from, Uses)"
-            ])
-            expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature (Uses)"])
+            expect(rowsOf(model, "Uses")).toEqual(["creature.ts: Creature → Armor ()", "weapon.ts: Creature → Weapon (Inherits from)"])
+            expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature ()"])
             expect(model.cycles).toHaveLength(1)
         })
 
@@ -469,9 +466,9 @@ describe("describeSubject", () => {
             expect(model).toMatchObject({ kind: "edge", title: "creature.ts → weapon.ts", path: edge.id, parent: null, copyText: null })
             expect(badgesOf(model)).toEqual(["3 dependencies", "Uses 2", "Takes as argument 1", "Inherits from 1"])
             expect(rowsOf(model, "Stands for")).toEqual([
-                "-: Creature → Weapon (Inherits from, Uses)",
+                "-: Creature → Weapon (Inherits from)",
                 "-: Armor → format (Takes as argument)",
-                "-: Creature → Armor (Uses)"
+                "-: Creature → Armor ()"
             ])
             expect(model.sections[0].groups[0].dependencies.every(row => !row.isFromOwn && !row.isToOwn)).toBe(true)
         })

@@ -4,6 +4,8 @@ import { isDashedEdgeType } from "./lineStyle"
 export const TEXT_COLOR = "#1f2937"
 export const SELECTED_COLOR = "#1b9cfc"
 export const HOVERED_COLOR = "#1f2937"
+export const HOVERED_LINE_WIDTH_PX = 2
+export const CORNER_RADIUS_PX = 4
 
 const FOLDER_FILLS_BY_DEPTH = ["#f4f6f9", "#e9edf2", "#dfe5ec", "#d5dce5"]
 export const FOLDER_STROKE = "#b8c2cf"

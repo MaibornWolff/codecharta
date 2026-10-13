@@ -20,6 +20,9 @@ const DASH_DOTTED = [9, 3, 2, 3]
 
 export const PLAIN_LINE: LineStyle = { dash: null, head: "filled" }
 
+/** That one declaration uses the other, with nothing closer said of how. */
+export const PLAIN_USAGE = "usage"
+
 /** The strongest tie first: an edge used in several ways shows the first of them it carries. Inheritance and
  * implementation are drawn as in a class diagram. */
 export const USAGE_LEGEND: readonly UsageLegendEntry[] = [
@@ -29,7 +32,7 @@ export const USAGE_LEGEND: readonly UsageLegendEntry[] = [
     { usage: "argument", label: "Takes as argument", dash: DOTTED, head: "open" },
     { usage: "return_value", label: "Returns", dash: DASH_DOTTED, head: "filled" },
     { usage: "constant_access", label: "Reads a constant of", dash: null, head: "dot" },
-    { usage: "usage", label: "Uses", ...PLAIN_LINE }
+    { usage: PLAIN_USAGE, label: "Uses", ...PLAIN_LINE }
 ]
 
 const DASHED_EDGE_TYPE: DependencyEdgeType = "feedbackContainerLevel"

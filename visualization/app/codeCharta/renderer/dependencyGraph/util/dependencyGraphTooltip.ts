@@ -30,28 +30,30 @@ export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<st
     }
 }
 
-function describeBox(box: LayoutBox, { cyclesInsideFiles, cyclesBetweenFiles, declarationsInCycles }: CycleMarks): string {
+function describeBox(box: LayoutBox, cycleMarks: CycleMarks): string {
     if (box.kind === "declaration") {
         const rows = [`<b>${escapeHtml(box.name)}</b>`, escapeHtml(box.declarationKind ?? "")]
-        return [...rows, ...describeCyclesOfDeclaration(declarationsInCycles.get(box.path))].join("<br/>")
+        return [...rows, ...describeCyclesOfDeclaration(cycleMarks.declarationsInCycles.get(box.path))].join("<br/>")
     }
     const title = isPackagePath(box.path) ? `Package ${box.name}` : nameOfPath(box.path)
     const rows = [`<b>${escapeHtml(title)}</b>`]
     if (box.levelPath.length > 0) {
         rows.push(`Level ${describeLevelPath(box.levelPath)}`)
     }
-    const insideFilesCount = cyclesInsideFiles.get(box.path) ?? 0
-    if (insideFilesCount > 0) {
-        rows.push(`${counted(insideFilesCount, "cycle")} inside ${box.kind === "file" ? "this file" : "files"}`)
-    }
-    const betweenFilesCount = cyclesBetweenFiles.get(box.path) ?? 0
-    if (betweenFilesCount > 0) {
-        rows.push(`${counted(betweenFilesCount, "cycle")} between files`)
-    }
+    rows.push(...describeCyclesOfBox(box, cycleMarks))
     if (canBeOpened(box)) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
     }
     return rows.join("<br/>")
+}
+
+function describeCyclesOfBox(box: LayoutBox, { cyclesInsideFiles, cyclesBetweenFiles }: CycleMarks): string[] {
+    const insideFilesCount = cyclesInsideFiles.get(box.path) ?? 0
+    const betweenFilesCount = cyclesBetweenFiles.get(box.path) ?? 0
+    return [
+        ...(insideFilesCount > 0 ? [`${counted(insideFilesCount, "cycle")} inside ${box.kind === "file" ? "this file" : "files"}`] : []),
+        ...(betweenFilesCount > 0 ? [`${counted(betweenFilesCount, "cycle")} between files`] : [])
+    ]
 }
 
 function describeCyclesOfDeclaration(cycles: DeclarationCycles | undefined): string[] {

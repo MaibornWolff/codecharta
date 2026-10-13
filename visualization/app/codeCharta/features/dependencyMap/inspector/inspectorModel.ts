@@ -11,6 +11,7 @@ import {
     LineStyle,
     lineStyleOfUsages,
     nameOfPath,
+    PLAIN_USAGE,
     usageLabelOf
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CycleChain, cyclesThrough } from "../declarations/cycleChains"
@@ -42,7 +43,8 @@ export interface InspectorDependency {
     /** Whether the end belongs to the selection, so the reader sees at once which way the dependency runs. */
     isFromOwn: boolean
     isToOwn: boolean
-    usages: string[]
+    /** The closer kinds of use; that one declaration uses the other is what every row shows already. */
+    specificUsages: string[]
     line: LineStyle
     type: DependencyEdgeType
     declarationEdge: DependencyLeafEdge
@@ -55,7 +57,18 @@ interface InspectorGroup {
     hiddenCount: number
 }
 
+export type InspectorSectionId = "cycles" | "uses" | "usedBy" | "standsFor" | "declarations"
+
+export const INSPECTOR_SECTION_TITLES: Record<InspectorSectionId, string> = {
+    cycles: "Cycles",
+    uses: "Uses",
+    usedBy: "Used by",
+    standsFor: "Stands for",
+    declarations: "Declarations"
+}
+
 interface InspectorSection {
+    id: InspectorSectionId
     title: string
     count: number
     groups: InspectorGroup[]
@@ -89,9 +102,6 @@ interface InspectorLink {
     line: LineStyle
     type: DependencyEdgeType
 }
-
-export const CYCLES_SECTION_TITLE = "Cycles"
-export const DECLARATIONS_SECTION_TITLE = "Declarations"
 
 export type InspectorActionKind = "open" | "close" | "unfold"
 
@@ -269,9 +279,9 @@ interface Uses {
 function usesAndUsedBy({ insideOwnFile = [], uses, usedBy }: Uses, ownPaths: ReadonlySet<string>, context: InspectorContext) {
     const ownFile = { heading: THIS_FILE, declarationEdges: insideOwnFile }
     return [
-        section("Uses", [ownFile, ...groupedByFile(uses, edge => edge.toNodeName)], ownPaths, context),
+        section("uses", [ownFile, ...groupedByFile(uses, edge => edge.toNodeName)], ownPaths, context),
         section(
-            "Used by",
+            "usedBy",
             groupedByFile(usedBy, edge => edge.fromNodeName),
             ownPaths,
             context
@@ -293,7 +303,7 @@ function describeEdge(edge: GraphEdge, title: string, context: InspectorContext)
         copyText: null,
         badges: [{ text: weightOf(edge, context.edgeMetric) }, ...usageCounts(indexedEdges)],
         declarations: null,
-        sections: [section("Stands for", [{ heading: null, declarationEdges: indexedEdges }], new Set(), context)],
+        sections: [section("standsFor", [{ heading: null, declarationEdges: indexedEdges }], new Set(), context)],
         cycles: [],
         cycleCount: 0,
         action: indexedEdges.length > 0 && !isUnfolded ? "unfold" : null
@@ -375,11 +385,17 @@ function groupedByFile(
         )
 }
 
-function section(title: string, groups: readonly EdgeGroup[], ownPaths: ReadonlySet<string>, context: InspectorContext): InspectorSection {
+function section(
+    id: InspectorSectionId,
+    groups: readonly EdgeGroup[],
+    ownPaths: ReadonlySet<string>,
+    context: InspectorContext
+): InspectorSection {
     const { rowLimit } = context
     const filled = groups.filter(group => group.declarationEdges.length > 0)
     return {
-        title,
+        id,
+        title: INSPECTOR_SECTION_TITLES[id],
         count: filled.reduce((count, group) => count + group.declarationEdges.length, 0),
         groups: filled.map(({ heading, declarationEdges }) => {
             const dependencies = declarationEdges
@@ -400,7 +416,7 @@ function dependencyOf(
         to: declarationReference(index.declarations.get(toPathOf(declarationEdge))),
         isFromOwn: ownPaths.has(fromPathOf(declarationEdge)),
         isToOwn: ownPaths.has(toPathOf(declarationEdge)),
-        usages: declarationEdge.usage.map(usageLabelOf),
+        specificUsages: declarationEdge.usage.filter(usage => usage !== PLAIN_USAGE).map(usageLabelOf),
         ...linkOf(declarationEdge, { pointsUpward }),
         declarationEdge
     }
@@ -434,7 +450,7 @@ type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">
 function cyclesOf(declarations: readonly IndexedDeclaration[], context: InspectorContext): InspectorCycles {
     const { index, cycles, rowLimit } = context
     const ownPaths = pathsOf(declarations)
-    const told = cyclesThrough(ownPaths, cycles).map((chain): InspectorCycle => {
+    const cyclesOfSelection = cyclesThrough(ownPaths, cycles).map((chain): InspectorCycle => {
         const walked = startingAt(chain, ownPaths)
         return {
             steps: walked.map(declarationEdge => ({
@@ -445,7 +461,7 @@ function cyclesOf(declarations: readonly IndexedDeclaration[], context: Inspecto
             declarationEdges: walked
         }
     })
-    return { cycleCount: told.length, cycles: told.sort(widestCycleFirst).slice(0, rowLimit) }
+    return { cycleCount: cyclesOfSelection.length, cycles: cyclesOfSelection.toSorted(widestCycleFirst).slice(0, rowLimit) }
 }
 
 /** The cycle across the most files first, then the one through the most declarations: the widest tangle is the
