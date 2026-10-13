@@ -438,7 +438,7 @@ describe("DependencyMapComponent", () => {
                 return badge.length === 0 ? null : (badge.find(part => part.style.text)?.style.text ?? "1")
             }
 
-            it("should count on each file the cycle it shares with the other, also once a file is opened", async () => {
+            it("should count on each file the cycle between the two files, also once a file is opened", async () => {
                 // Arrange
                 await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
                 const whileClosed = [VIEW, NODE].map(badgeCountOf)
@@ -658,35 +658,78 @@ describe("DependencyMapComponent", () => {
                 expect(edgeOpacities()).toEqual({ [EDGE_ID]: 1, [`${NODE}|${VIEW}`]: 1 })
             })
 
-            it("should mark the boxes standing for what the inspector points at: both ends of a row, the files of a cycle, a file named above a group", async () => {
-                // Arrange
-                const { fixture } = await setupSelected(VIEW)
-                const marked = () => [...TestBed.inject(DependencyInspectorStore).pointedAtBoxPaths()].sort()
-                const usesRow = within(screen.getByRole("region", { name: "Uses" }))
-                    .getAllByTestId("dependency-inspector-row")
-                    .at(-1)
-                const [cycle] = screen.getAllByTestId("dependency-inspector-cycle")
-                const [file] = screen.getAllByTestId("dependency-inspector-group-file")
+            describe("pointing at boxes", () => {
+                const pointedAtBoxPaths = () => [...TestBed.inject(DependencyInspectorStore).pointedAtBoxPaths()].sort()
+                const lastUsesRow = () =>
+                    within(screen.getByRole("region", { name: "Uses" }))
+                        .getAllByTestId("dependency-inspector-row")
+                        .at(-1)
 
-                // Act
-                fireEvent.mouseEnter(usesRow)
-                const forTheRow = marked()
-                fireEvent.mouseLeave(usesRow)
-                const forNothing = marked()
-                fireEvent.mouseEnter(cycle)
-                const forTheCycle = marked()
-                fireEvent.mouseLeave(cycle)
-                fireEvent.mouseEnter(file)
-                const forTheFile = marked()
-                fireChartEvent("finished")
-                fixture.detectChanges()
+                it("should point at the boxes of both ends of a row while the pointer rests on it, and at none once it leaves", async () => {
+                    // Arrange
+                    await setupSelected(VIEW)
 
-                // Assert
-                expect(forTheRow).toEqual([NODE, VIEW])
-                expect(forNothing).toEqual([])
-                expect(forTheCycle).toEqual([NODE, VIEW])
-                expect(forTheFile).toEqual([NODE])
-                expect(screen.getByTestId("dependency-graph-pointed-at").querySelectorAll("rect")).toHaveLength(1)
+                    // Act
+                    fireEvent.mouseEnter(lastUsesRow())
+                    const whilePointing = pointedAtBoxPaths()
+                    fireEvent.mouseLeave(lastUsesRow())
+
+                    // Assert
+                    expect(whilePointing).toEqual([NODE, VIEW])
+                    expect(pointedAtBoxPaths()).toEqual([])
+                })
+
+                it("should point at every box a cycle runs through", async () => {
+                    // Arrange
+                    await setupSelected(VIEW)
+                    const [cycle] = screen.getAllByTestId("dependency-inspector-cycle")
+
+                    // Act
+                    fireEvent.mouseEnter(cycle)
+
+                    // Assert
+                    expect(pointedAtBoxPaths()).toEqual([NODE, VIEW])
+                })
+
+                it("should outline in the graph the box of a file named above a group", async () => {
+                    // Arrange
+                    const { fixture } = await setupSelected(VIEW)
+                    const [file] = screen.getAllByTestId("dependency-inspector-group-file")
+
+                    // Act
+                    fireEvent.mouseEnter(file)
+                    fireChartEvent("finished")
+                    fixture.detectChanges()
+
+                    // Assert
+                    expect(pointedAtBoxPaths()).toEqual([NODE])
+                    expect(screen.getByTestId("dependency-graph-pointed-at").querySelectorAll("rect")).toHaveLength(1)
+                })
+
+                it("should point at no box once the inspector is closed under a resting pointer", async () => {
+                    // Arrange
+                    await setupSelected(VIEW)
+                    fireEvent.mouseEnter(screen.getAllByTestId("dependency-inspector-group-file")[0])
+
+                    // Act
+                    await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
+
+                    // Assert
+                    expect(pointedAtBoxPaths()).toEqual([])
+                })
+
+                it("should point at no box once another box is selected under a resting pointer", async () => {
+                    // Arrange
+                    const { store, fixture } = await setupSelected(VIEW)
+                    fireEvent.mouseEnter(screen.getAllByTestId("dependency-inspector-group-file")[0])
+
+                    // Act
+                    await select(store, fixture, NODE)
+                    TestBed.tick()
+
+                    // Assert
+                    expect(pointedAtBoxPaths()).toEqual([])
+                })
             })
 
             it("should show a cycle in the graph: open the files on it and light up its chain", async () => {
@@ -705,36 +748,50 @@ describe("DependencyMapComponent", () => {
                 expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${VIEW}/View`, `${NODE}/Node`])
             })
 
-            it("should start with every section closed, keep one the reader opened for the next selection and open the cycles on a badge click", async () => {
-                // Arrange
-                Element.prototype.scrollIntoView = jest.fn()
-                const { store, fixture } = await setup({
-                    tree: DECLARING_TREE,
-                    declarations: CYCLIC,
-                    selectedPath: VIEW,
-                    openedSections: []
-                })
-                const inspector = within(screen.getByTestId("dependency-inspector-body"))
+            describe("folded sections", () => {
                 const openTitles = () =>
-                    inspector
-                        .getAllByRole("button", { expanded: true })
+                    within(screen.getByTestId("dependency-inspector-body"))
+                        .queryAllByRole("button", { expanded: true })
                         .map(header => header.textContent.trim().split(/\s+/)[0])
                         .sort()
-                const closedAtFirst = inspector.queryAllByRole("button", { expanded: true }).length
+                const setupFolded = () => setup({ tree: DECLARING_TREE, declarations: CYCLIC, selectedPath: VIEW, openedSections: [] })
+                const openUses = () =>
+                    userEvent.click(within(screen.getByRole("region", { name: "Uses" })).getByRole("button", { name: /Uses/ }))
 
-                // Act
-                await userEvent.click(within(screen.getByRole("region", { name: "Uses" })).getByRole("button", { name: /Uses/ }))
-                fixture.detectChanges()
-                await select(store, fixture, NODE)
-                const afterAnotherSelection = openTitles()
-                fireChartEvent("click", { ...boxEvent(NODE), info: "cycleBadge" })
-                fixture.detectChanges()
+                it("should start with every section closed", async () => {
+                    // Arrange & Act
+                    await setupFolded()
 
-                // Assert
-                expect(closedAtFirst).toBe(0)
-                expect(afterAnotherSelection).toEqual(["Uses"])
-                expect(openTitles()).toEqual(["Cycles", "Uses"])
-                expect(screen.getAllByTestId("dependency-inspector-cycle").length).toBeGreaterThan(0)
+                    // Assert
+                    expect(openTitles()).toEqual([])
+                })
+
+                it("should keep a section the reader opened open for the next selection", async () => {
+                    // Arrange
+                    const { store, fixture } = await setupFolded()
+                    await openUses()
+                    fixture.detectChanges()
+
+                    // Act
+                    await select(store, fixture, NODE)
+
+                    // Assert
+                    expect(openTitles()).toEqual(["Uses"])
+                })
+
+                it("should open the cycles on a click on a cycle badge", async () => {
+                    // Arrange
+                    Element.prototype.scrollIntoView = jest.fn()
+                    const { fixture } = await setupFolded()
+
+                    // Act
+                    fireChartEvent("click", { ...boxEvent(VIEW), info: "cycleBadge" })
+                    fixture.detectChanges()
+
+                    // Assert
+                    expect(openTitles()).toEqual(["Cycles"])
+                    expect(screen.getAllByTestId("dependency-inspector-cycle").length).toBeGreaterThan(0)
+                })
             })
 
             it("should bring the cycles into view when a cycle badge is clicked", async () => {

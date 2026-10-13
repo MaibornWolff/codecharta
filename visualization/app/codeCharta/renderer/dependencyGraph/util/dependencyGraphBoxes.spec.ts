@@ -37,7 +37,7 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "a.ts", x: 90, y: 40, align: "center", overflow: "truncate" })
         })
 
-        it("should give a closed file that holds declarations their count, and no arrow", () => {
+        it("should give a closed file that holds declarations their count and nothing else", () => {
             // Arrange
             const box = aBox("/root/a.ts", { declarationCount: 3 })
 
@@ -222,7 +222,7 @@ describe("dependencyGraphBoxes", () => {
         describe("cycle marks", () => {
             const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, ...cycle } })
 
-            it("should count the cycles a closed box hides in a pill hanging over its upper right corner", () => {
+            it("should count the cycles inside the files of a closed box in an outlined badge hanging over its upper right corner", () => {
                 // Arrange
                 const box = aBox("/root/app", { kind: "folder", x: 10, y: 20 })
 
@@ -240,7 +240,7 @@ describe("dependencyGraphBoxes", () => {
                 expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 165 } })
             })
 
-            it("should number a single hidden cycle too, and cap a large count", () => {
+            it("should number a single cycle too, and cap a large count", () => {
                 // Arrange
                 const box = aBox("/root/a.ts")
 
@@ -267,7 +267,7 @@ describe("dependencyGraphBoxes", () => {
                 expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])
             })
 
-            it("should count the cycles a box shares with others in a filled pill, to the right of the outlined one for those inside", () => {
+            it("should draw the between-files badge filled, to the right of the outlined inside-files badge", () => {
                 // Arrange
                 const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
@@ -287,9 +287,9 @@ describe("dependencyGraphBoxes", () => {
                 ])
             })
 
-            it("should keep the filled pill on the title of an open box, which holds its own cycles in view", () => {
+            it("should keep the between-files badge on the title of an opened file", () => {
                 // Arrange
-                const open = aBox("/root/app", { kind: "folder", isExpanded: true, x: 10, y: 20 })
+                const open = aBox("/root/a.ts", { declarationCount: 2, isExpanded: true, x: 10, y: 20 })
 
                 // Act
                 const pills = childrenOf(drawContainerTitle(open, cyclic({ betweenFilesCount: 1 }), identityPixels)).filter(

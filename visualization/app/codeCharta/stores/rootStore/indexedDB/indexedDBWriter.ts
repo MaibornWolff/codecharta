@@ -726,6 +726,10 @@ export function migrateCcStateRecordToV29<T>(state: T): T {
     if (!state || typeof state !== "object") {
         return state
     }
+    return withMissingDependencyGraphSettings(state)
+}
+
+function withMissingDependencyGraphSettings<T>(state: T): T {
     const record = state as Record<string, unknown>
     const preferences = record["preferences"] as Record<string, unknown> | undefined
     const dependencyGraph = preferences?.["dependencyGraph"]
@@ -794,7 +798,7 @@ function edgeDrawingOfToday(dependencyGraph: Record<string, unknown>): Record<st
 
 // v32: the dependency graph settings gained whether the hover is held to the shown edge types
 export function migrateCcStateRecordToV32<T>(state: T): T {
-    return migrateCcStateRecordToV29(state)
+    return state && typeof state === "object" ? withMissingDependencyGraphSettings(state) : state
 }
 
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [

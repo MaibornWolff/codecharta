@@ -34,7 +34,6 @@ export class DependencyEdgeLegendComponent {
     readonly usageLegend = computed(() =>
         this.isDependencyMetric() && this.hasDeclarations() && this.settings().lineStyleShows === "usage" ? USAGE_LEGEND : []
     )
-    /** The marks are told only while the graph draws them. */
     readonly cycleLegend = computed(() =>
         this.isDependencyMetric() && this.hasDeclarations() && this.settings().showsCycleBadges ? CYCLE_MARK_LEGEND : []
     )
