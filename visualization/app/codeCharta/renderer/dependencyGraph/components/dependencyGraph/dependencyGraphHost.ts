@@ -7,7 +7,6 @@ import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import { AxisWindow, panBothAxesTo, Viewport, windowResizedTo } from "../../util/axisWindow"
 import { CYCLE_BADGE_INFO } from "../../util/boxMarks"
-import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point, Rectangle } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
@@ -73,7 +72,6 @@ export class DependencyGraphHost {
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
     private readonly partClickHandlers: Record<string, (path: string) => void> = {
-        [TOGGLE_INFO]: path => this.handlers.onBoxToggled(path),
         [CYCLE_BADGE_INFO]: path => this.handlers.onCycleBadgeClicked(path)
     }
 

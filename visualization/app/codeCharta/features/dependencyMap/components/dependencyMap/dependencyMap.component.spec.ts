@@ -361,15 +361,15 @@ describe("DependencyMapComponent", () => {
             expect(drawnEdgeCount()).toBe(3)
         })
 
-        it("should open and close a file from its toggle", async () => {
+        it("should open and close a file on a double click each", async () => {
             // Arrange
             await setup({ tree: DECLARING_TREE, declarations: DECLARATIONS })
 
             // Act
-            fireChartEvent("click", { ...boxEvent(VIEW), info: "toggle" })
+            doubleClickBox(VIEW)
             await screen.findByTestId("dependency-graph")
             const opened = drawnBoxPaths()
-            fireChartEvent("click", { ...boxEvent(VIEW), info: "toggle" })
+            doubleClickBox(VIEW)
             await screen.findByTestId("dependency-graph")
 
             // Assert

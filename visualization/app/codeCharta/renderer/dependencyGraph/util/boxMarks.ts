@@ -2,6 +2,7 @@ import { declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
 import { UNTRANSFORMED } from "./dependencyGraphElements"
 import { CYCLE_MARK_COLOR, FILE_FILL, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
+import { inkCentreShiftOf, MARK_FONT_FAMILY } from "./inkCentre"
 import { LayoutBox } from "./layoutModel"
 
 export interface CycleLook {
@@ -162,12 +163,14 @@ function cycleGlyph(centre: { x: number; y: number }, color: string, { opacity, 
 }
 
 function cycleCount(text: string, leftMiddle: { x: number; y: number }, color: string, { opacity, scale }: MarkLook) {
-    const look = { align: "left", verticalAlign: "middle", fontSize: CYCLE_BADGE.fontSizePx * scale, fontWeight: "bold" }
+    const fontSize = CYCLE_BADGE.fontSizePx * scale
+    const [, shiftY] = inkCentreShiftOf(text, MARK_FONT_WEIGHT, fontSize)
+    const look = { align: "left", verticalAlign: "middle", fontSize, fontWeight: MARK_FONT_WEIGHT, fontFamily: MARK_FONT_FAMILY }
     return {
         type: "text",
         ...UNTRANSFORMED,
         ...CYCLE_BADGE_PART,
-        style: { text, ...leftMiddle, ...look, fill: color, opacity }
+        style: { text, x: leftMiddle.x, y: leftMiddle.y + shiftY, ...look, fill: color, opacity }
     }
 }
 
@@ -177,11 +180,15 @@ interface TextLook {
     opacity: number
 }
 
+const MARK_FONT_WEIGHT = "bold"
+
 function centredText(text: string, { cx, cy }: { cx: number; cy: number }, look: TextLook) {
+    const [shiftX, shiftY] = inkCentreShiftOf(text, MARK_FONT_WEIGHT, look.fontSize)
+    const font = { fontWeight: MARK_FONT_WEIGHT, fontFamily: MARK_FONT_FAMILY }
     return {
         type: "text",
         ...UNTRANSFORMED,
         silent: true,
-        style: { text, x: cx, y: cy, align: "center", verticalAlign: "middle", fontWeight: "bold", ...look }
+        style: { text, x: cx + shiftX, y: cy + shiftY, align: "center", verticalAlign: "middle", ...font, ...look }
     }
 }
