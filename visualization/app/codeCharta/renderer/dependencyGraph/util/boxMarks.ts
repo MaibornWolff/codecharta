@@ -42,9 +42,9 @@ interface BadgeColors {
 }
 
 const CYCLE_BADGE_CONTRAST_COLOR = "#ffffff"
-/** Filled for the cycles a box keeps to itself, outlined for those that leave it. */
-const INSIDE_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
-const SHARED_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
+/** Outlined for the cycles a box keeps to itself, filled for those that leave it: a cycle across files is the wider tangle. */
+const INSIDE_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
+const SHARED_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
 const MOST_COUNTED = 99
 /** Drawn around its own centre. */
 export const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
