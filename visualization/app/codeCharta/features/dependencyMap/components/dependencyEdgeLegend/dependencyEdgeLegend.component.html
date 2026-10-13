@@ -13,7 +13,7 @@
 </section>
 
 @if (usageLegend().length > 0) {
-    <section class="flex flex-col gap-1" aria-labelledby="dependency-usage-legend-title">
+    <section class="flex flex-col gap-1 border-t border-base-300 pt-2" aria-labelledby="dependency-usage-legend-title">
         <span id="dependency-usage-legend-title" class="text-xs uppercase tracking-wider opacity-60">Kind of use</span>
         <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-usage-legend">
             @for (entry of usageLegend(); track entry.usage) {
@@ -28,7 +28,7 @@
 }
 
 @if (cycleLegend().length > 0) {
-    <section class="flex flex-col gap-1" aria-labelledby="dependency-cycle-legend-title">
+    <section class="flex flex-col gap-1 border-t border-base-300 pt-2" aria-labelledby="dependency-cycle-legend-title">
         <span id="dependency-cycle-legend-title" class="text-xs uppercase tracking-wider opacity-60">Cycles</span>
         <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-cycle-legend">
             @for (entry of cycleLegend(); track entry.mark) {
@@ -42,7 +42,7 @@
 }
 
 @if (kindLegend().length > 0) {
-    <section class="flex flex-col gap-1" aria-labelledby="dependency-kind-legend-title">
+    <section class="flex flex-col gap-1 border-t border-base-300 pt-2" aria-labelledby="dependency-kind-legend-title">
         <span id="dependency-kind-legend-title" class="text-xs uppercase tracking-wider opacity-60">Declarations</span>
         <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-kind-legend">
             @for (entry of kindLegend(); track entry.kind) {
