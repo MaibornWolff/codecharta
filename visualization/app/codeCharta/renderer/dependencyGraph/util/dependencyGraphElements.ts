@@ -4,6 +4,8 @@
 // nearer to the corner of the graph.
 export const UNTRANSFORMED = { x: 0, y: 0, rotation: 0, scaleX: 1, scaleY: 1 }
 
+export const CLICKABLE = { cursor: "pointer" }
+
 /** One drawn item. ECharts' own hover would lift it ten layers up, and an open folder would then cover
  * its children and catch every hover and click meant for them; the scene marks the hovered box itself.
  *

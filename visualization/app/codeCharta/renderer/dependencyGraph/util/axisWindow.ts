@@ -16,6 +16,16 @@ export interface AxisWindow {
     y: [number, number]
 }
 
+export interface PannableView {
+    shownWindow: AxisWindow
+    /** How far the axes reach, which is as far as the graph can be panned. */
+    reach: AxisWindow
+    viewport: Viewport
+}
+
+/** Where the zoom of each axis lies among the zooms of the chart. */
+const DATA_ZOOM_INDEX = { x: 0, y: 1 }
+
 /** The axes reach the laid-out graph plus this share of its size on every side, room that dragged boxes can
  * grow the graph into and still be panned to. */
 const DRAGGING_ROOM_SHARE = 1
@@ -34,18 +44,18 @@ export function axesReaching(layout: DependencyGraphLayout, viewport: Viewport, 
 // Values rather than percentages: ECharts maps a percentage onto the axes' reach, and that grows and shrinks
 // with the graph, which would move and rescale the view on every redraw.
 export function zoomBothAxesInsideTo({ x, y }: AxisWindow) {
-    return [
-        { type: "inside", xAxisIndex: 0, filterMode: "none", startValue: x[0], endValue: x[1] },
-        { type: "inside", yAxisIndex: 0, filterMode: "none", startValue: y[0], endValue: y[1] }
-    ]
+    const zooms: object[] = []
+    zooms[DATA_ZOOM_INDEX.x] = { type: "inside", xAxisIndex: 0, filterMode: "none", startValue: x[0], endValue: x[1] }
+    zooms[DATA_ZOOM_INDEX.y] = { type: "inside", yAxisIndex: 0, filterMode: "none", startValue: y[0], endValue: y[1] }
+    return zooms
 }
 
 export function panBothAxesTo({ x, y }: AxisWindow) {
     return {
         type: "dataZoom",
         batch: [
-            { dataZoomIndex: 0, startValue: x[0], endValue: x[1] },
-            { dataZoomIndex: 1, startValue: y[0], endValue: y[1] }
+            { dataZoomIndex: DATA_ZOOM_INDEX.x, startValue: x[0], endValue: x[1] },
+            { dataZoomIndex: DATA_ZOOM_INDEX.y, startValue: y[0], endValue: y[1] }
         ]
     }
 }
@@ -117,7 +127,7 @@ function freePartOf({ x, y }: AxisWindow, viewport: Viewport): AxisWindow {
 
 /** The window after the pointer dragged the graph by so many pixels, at the same scale and within the reach of the
  * axes: ECharts cuts a window that reaches past them, which would stretch the graph. */
-export function windowDraggedBy(shownWindow: AxisWindow, [draggedX, draggedY]: Point, viewport: Viewport, reach: AxisWindow): AxisWindow {
+export function windowDraggedBy({ shownWindow, reach, viewport }: PannableView, [draggedX, draggedY]: Point): AxisWindow {
     return {
         x: shiftedWithin(shownWindow.x, (-draggedX * spanOf(shownWindow.x)) / viewport.width, reach.x),
         y: shiftedWithin(shownWindow.y, (-draggedY * spanOf(shownWindow.y)) / viewport.height, reach.y)

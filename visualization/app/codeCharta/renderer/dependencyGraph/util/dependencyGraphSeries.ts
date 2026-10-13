@@ -1,6 +1,9 @@
 /** One series draws everything, so the paint order alone decides what covers what. */
 export const GRAPH_SERIES_ID = "graph"
 
+/** The one grid the graph is drawn in, which is what its pixels are converted against. */
+export const GRAPH_GRID = { gridIndex: 0 }
+
 export interface GraphDatum {
     name?: string
     /** The box a title drawn apart from it belongs to. */
