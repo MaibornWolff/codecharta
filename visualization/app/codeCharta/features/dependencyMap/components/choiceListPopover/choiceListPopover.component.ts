@@ -16,6 +16,7 @@ export class ChoiceListPopoverComponent<Value extends string> {
     readonly idPrefix = input.required<string>()
     readonly choices = input.required<Choice<Value>[]>()
     readonly chosen = input.required<Value>()
+    readonly widthClass = input("w-80")
     readonly choose = output<Value>()
 
     readonly chosenLabel = computed(() => this.choices().find(choice => choice.value === this.chosen())?.label ?? "")

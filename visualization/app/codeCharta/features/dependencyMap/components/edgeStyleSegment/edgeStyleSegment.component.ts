@@ -6,7 +6,7 @@ import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { ChoiceListPopoverComponent } from "../choiceListPopover/choiceListPopover.component"
 import { ChoiceRowComponent } from "../choiceRow/choiceRow.component"
-import { EdgeStyleSettingsPopoverComponent } from "../edgeStyleSettingsPopover/edgeStyleSettingsPopover.component"
+import { EdgeLineSettingsComponent } from "../edgeLineSettings/edgeLineSettings.component"
 import { EDGE_SHAPE_CHOICES, EDGE_STYLE_CHOICES, EDGE_THICKNESS_CHOICES, labelOf } from "./edgeStyleChoices"
 
 @Component({
@@ -14,7 +14,7 @@ import { EDGE_SHAPE_CHOICES, EDGE_STYLE_CHOICES, EDGE_THICKNESS_CHOICES, labelOf
     templateUrl: "./edgeStyleSegment.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "contents" },
-    imports: [AxisCardComponent, ChoiceListPopoverComponent, ChoiceRowComponent, EdgeStyleSettingsPopoverComponent]
+    imports: [AxisCardComponent, ChoiceListPopoverComponent, ChoiceRowComponent, EdgeLineSettingsComponent]
 })
 export class EdgeStyleSegmentComponent {
     private readonly writeStore = inject(DependencyMapWriteStore)
@@ -22,8 +22,6 @@ export class EdgeStyleSegmentComponent {
 
     readonly stylePopoverId = "dependency-bar-edge-style-popover"
     readonly styleAnchorName = "dependency-bar-edge-style-card"
-    readonly settingsPopoverId = "dependency-bar-edge-style-settings-popover"
-    readonly settingsAnchorName = "dependency-bar-edge-style-cog"
     readonly edgeStyleChoices = EDGE_STYLE_CHOICES
     readonly edgeShapeChoices = EDGE_SHAPE_CHOICES
 
