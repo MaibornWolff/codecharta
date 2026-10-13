@@ -59,7 +59,7 @@ export class DependencyMapViewStore {
         }
         const loadedFilesIdentity = untracked(this.currentLoadedFilesIdentity)
         if (loadedFilesIdentity === this.loadedFilesIdentityOfTheOpenedBoxes) {
-            this.keepOverTheFocusChange(tree, layoutIdentity, previousRootPath)
+            this.keepOpenedBoxesAcrossFocusChange(tree, layoutIdentity, previousRootPath)
             return
         }
         this.loadedFilesIdentityOfTheOpenedBoxes = loadedFilesIdentity
@@ -132,14 +132,16 @@ export class DependencyMapViewStore {
         this.revealTheAwaitingPaths(layoutIdentity)
     }
 
-    /** Focusing a folder or leaving it shows other boxes of the same files, so what the reader opened and moved
-     * stays, and the folder that was left is shown where it lies in the graph around it. */
-    private keepOverTheFocusChange(tree: TreeIndex, layoutIdentity: string, previousRootPath: string | undefined): void {
+    /** A reveal that waited for this focus says what to show; without one, the folder whose focus was left is
+     * shown where it lies in the graph around it. */
+    private keepOpenedBoxesAcrossFocusChange(tree: TreeIndex, layoutIdentity: string, previousRootPath: string | undefined): void {
         this.layoutIdentityOfTheOpenedBoxes.set(layoutIdentity)
         this.openTheMovedRoot(tree.root)
-        const isShownSomethingElse = this.revealTheAwaitingPaths(layoutIdentity)
+        const hasRevealedAwaitingPaths = this.revealTheAwaitingPaths(layoutIdentity)
+        // The folder that was the root lies inside the new tree only when its focus was left, not when one was entered.
         const leftFolder = previousRootPath === undefined ? null : boxPathOf(tree, previousRootPath)
-        if (!isShownSomethingElse && leftFolder !== null && leftFolder !== tree.root.path) {
+        const hasLeftAFocusedFolder = leftFolder !== null && leftFolder !== tree.root.path
+        if (hasLeftAFocusedFolder && !hasRevealedAwaitingPaths) {
             this.openBoxesHolding([previousRootPath])
             this.bringIntoView([leftFolder])
         }
@@ -159,6 +161,7 @@ export class DependencyMapViewStore {
         this.revealsAwaitingAdoption = { layoutIdentity, paths: [...earlierPaths, ...paths] }
     }
 
+    /** Tells whether there were any. */
     private revealTheAwaitingPaths(layoutIdentity: string): boolean {
         const awaiting = this.revealsAwaitingAdoption
         this.revealsAwaitingAdoption = null

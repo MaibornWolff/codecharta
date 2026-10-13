@@ -6,6 +6,7 @@ import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { ChoiceListPopoverComponent } from "../choiceListPopover/choiceListPopover.component"
 import { ChoiceRowComponent } from "../choiceRow/choiceRow.component"
+import { WIDE_BAR_POPOVER_WIDTH_CLASS } from "../dependencyBar/dependencyBarPopover"
 import { EdgeLineSettingsComponent } from "../edgeLineSettings/edgeLineSettings.component"
 import { EDGE_SHAPE_CHOICES, EDGE_STYLE_CHOICES, EDGE_THICKNESS_CHOICES, labelOf } from "./edgeStyleChoices"
 
@@ -22,6 +23,7 @@ export class EdgeStyleSegmentComponent {
 
     readonly stylePopoverId = "dependency-bar-edge-style-popover"
     readonly styleAnchorName = "dependency-bar-edge-style-card"
+    readonly popoverWidthClass = WIDE_BAR_POPOVER_WIDTH_CLASS
     readonly edgeStyleChoices = EDGE_STYLE_CHOICES
     readonly edgeShapeChoices = EDGE_SHAPE_CHOICES
 

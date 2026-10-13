@@ -247,6 +247,23 @@ describe("describeSubject", () => {
             expect(model.cycles).toHaveLength(1)
         })
 
+        it("should tell of a row only its closer kinds of use, since that one declaration uses the other is what every row shows", () => {
+            // Arrange
+            const subject = box(CREATURE_NODE)
+
+            // Act
+            const model = describeSubject(subject, context())
+            const usesOf = (row: { from: { name: string }; to: { name: string }; specificUsages: string[] }) =>
+                `${row.from.name} → ${row.to.name}: ${row.specificUsages.join(", ") || "none"}`
+
+            // Assert
+            expect(model.sections[0].groups.flatMap(group => group.dependencies.map(usesOf))).toEqual([
+                "Creature → Armor: none",
+                "Armor → format: Takes as argument",
+                "Creature → Weapon: Inherits from"
+            ])
+        })
+
         it("should order the files by name and, within a file, the dependencies pointing upward first, then those closing a cycle, then those in a cycle, then the rest by name", () => {
             // Arrange
             const toWeapon = (fromLeaf: string, extra: Partial<DependencyLeafEdge>) =>

@@ -42,6 +42,14 @@ window for all edge style settings.
 - A filled badge counts the cycles a closed box keeps to itself, an outlined one, on open boxes too, those it shares
   with files outside it; the tooltips of boxes and declarations name both
 
+### 7. Review follow-ups
+- Four reviewers (bugs, clean code, comments, magic values) and SonarCloud on the pull request
+- Fixed: a right drag released off the page swallowed the next context menu; a box stayed pointed at after the
+  inspector closed or showed something else
+- Kept on purpose: a double click on a box that cannot open selects nothing; a slow double click selects and toggles
+- Structure: one resize handle for explorer and inspector, sections told apart by an id, the click timing and the
+  ink measuring as their own units, values that were typed twice named once
+
 ## Steps
 
 - [x] Complete Task 1: Double click opens the box only
@@ -50,6 +58,7 @@ window for all edge style settings.
 - [x] Complete Task 4: Edges shown: three types by default
 - [x] Complete Task 5: One window for the edge style
 - [x] Complete Task 6: Follow-ups
+- [x] Complete Task 7: Review follow-ups
 - [x] Changelog, format check, unit tests, lint, type check
 
 ## Notes

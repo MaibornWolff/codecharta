@@ -21,7 +21,6 @@ export interface DependencyGraphScene {
     /** The edges' weight is its value. */
     edgeMetric: string | null
     shownEdgeTypes: readonly DependencyEdgeType[]
-    /** Unless it is, the hovered box's edges are drawn whatever their type. */
     isHoverLimitedToShownEdgeTypes: boolean
     edgeColors: DependencyEdgeColors
     lineStyleShows: LineStyleMeaning
