@@ -1,5 +1,7 @@
 export type { DraggedBox, RightClickedBox, ViewRequest } from "./components/dependencyGraph/dependencyGraph.component"
 export { DependencyGraphComponent } from "./components/dependencyGraph/dependencyGraph.component"
+export type { CycleMarkKind } from "./util/boxMarks"
+export { CYCLE_GLYPH, CYCLE_MARK_COLORS, CYCLE_MARK_LEGEND } from "./util/boxMarks"
 export type { BoxOffset } from "./util/boxMoves"
 export { isDraggable, movedLayout } from "./util/boxMoves"
 export { declarationPathOf, isPackagePath, nameOfPath } from "./util/boxPaths"

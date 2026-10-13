@@ -115,4 +115,31 @@ describe("DependencyEdgeLegendComponent", () => {
         expect(screen.queryByTestId("dependency-kind-legend")).toBeNull()
         expect(screen.queryByTestId("dependency-usage-legend")).toBeNull()
     })
+
+    it("should explain the three cycle marks as the graph draws them: filled, outlined and the ring of a declaration", async () => {
+        // Arrange
+        const marksDrawn = { hasDeclarations: true, settings: { showsCycleBadges: true } }
+
+        // Act
+        await renderLegend(marksDrawn)
+
+        // Assert
+        const samples = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("svg")]
+        const labels = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("li > span")].map(label => label.textContent)
+        expect(labels).toEqual(["Cycles hidden inside the box", "Cycles shared with files outside the box", "Declaration in a cycle"])
+        expect(samples.map(sample => sample.querySelector("rect, circle").getAttribute("fill"))).toEqual(["#dc2626", "#ffffff", "#ffffff"])
+        expect(samples.map(sample => sample.querySelector("rect, circle").tagName)).toEqual(["rect", "rect", "circle"])
+    })
+
+    it.each<[string, Setup]>([
+        ["the reader switched the cycle marks off", { settings: { showsCycleBadges: false } }],
+        ["another edge metric is drawn", { edgeMetric: "temporal_coupling" }],
+        ["the map tells no declarations", { hasDeclarations: false }]
+    ])("should leave the cycle marks out while %s", async (_, setup) => {
+        // Arrange & Act
+        await renderLegend(setup)
+
+        // Assert
+        expect(screen.queryByTestId("dependency-cycle-legend")).toBeNull()
+    })
 })
