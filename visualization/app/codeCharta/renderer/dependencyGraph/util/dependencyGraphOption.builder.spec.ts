@@ -314,12 +314,12 @@ describe("buildDependencyGraphOption", () => {
         const { describe, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
 
         // Assert
-        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>2 cycles inside this file<br/>1 cycle between files")
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 cycle between files<br/>2 cycles inside this file")
         expect(describe(indexOf(folder.path))).toBe(
-            "<b>app</b><br/>Level 0<br/>1 cycle inside files<br/>3 cycles between files<br/><i>Double-click to open</i>"
+            "<b>app</b><br/>Level 0<br/>3 cycles between files<br/>1 cycle inside files<br/><i>Double-click to open</i>"
         )
         expect(describe(indexOf(declaration.path))).toBe(
-            "<b>Creature</b><br/>class<br/>In a cycle inside this file<br/>In a cycle with other files"
+            "<b>Creature</b><br/>class<br/>In a cycle with other files<br/>In a cycle inside this file"
         )
     })
 

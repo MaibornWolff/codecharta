@@ -51,15 +51,15 @@ function describeCyclesOfBox(box: LayoutBox, { cyclesInsideFiles, cyclesBetweenF
     const insideFilesCount = cyclesInsideFiles.get(box.path) ?? 0
     const betweenFilesCount = cyclesBetweenFiles.get(box.path) ?? 0
     return [
-        ...(insideFilesCount > 0 ? [`${counted(insideFilesCount, "cycle")} inside ${box.kind === "file" ? "this file" : "files"}`] : []),
-        ...(betweenFilesCount > 0 ? [`${counted(betweenFilesCount, "cycle")} between files`] : [])
+        ...(betweenFilesCount > 0 ? [`${counted(betweenFilesCount, "cycle")} between files`] : []),
+        ...(insideFilesCount > 0 ? [`${counted(insideFilesCount, "cycle")} inside ${box.kind === "file" ? "this file" : "files"}`] : [])
     ]
 }
 
 function describeCyclesOfDeclaration(cycles: DeclarationCycles | undefined): string[] {
     return [
-        ...(cycles?.isWithinItsFile ? ["In a cycle inside this file"] : []),
-        ...(cycles?.isWithOtherFiles ? ["In a cycle with other files"] : [])
+        ...(cycles?.isWithOtherFiles ? ["In a cycle with other files"] : []),
+        ...(cycles?.isWithinItsFile ? ["In a cycle inside this file"] : [])
     ]
 }
 

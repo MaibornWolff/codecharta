@@ -116,7 +116,7 @@ describe("DependencyEdgeLegendComponent", () => {
         expect(screen.queryByTestId("dependency-usage-legend")).toBeNull()
     })
 
-    it("should explain the three cycle marks as the graph draws them: outlined, filled and the ring of a declaration", async () => {
+    it("should explain the three cycle marks as the graph draws them, those between files first: filled, outlined and the ring of a declaration", async () => {
         // Arrange
         const marksDrawn = { hasDeclarations: true, settings: { showsCycleBadges: true } }
 
@@ -126,8 +126,8 @@ describe("DependencyEdgeLegendComponent", () => {
         // Assert
         const samples = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("svg")]
         const labels = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("li > span")].map(label => label.textContent)
-        expect(labels).toEqual(["Cycles inside a file", "Cycles between files", "Declaration in a cycle"])
-        expect(samples.map(sample => sample.querySelector("rect, circle").getAttribute("fill"))).toEqual(["#ffffff", "#dc2626", "#ffffff"])
+        expect(labels).toEqual(["Cycles between files", "Cycles inside a file", "Declaration in a cycle"])
+        expect(samples.map(sample => sample.querySelector("rect, circle").getAttribute("fill"))).toEqual(["#dc2626", "#ffffff", "#ffffff"])
         expect(samples.map(sample => sample.querySelector("rect, circle").tagName)).toEqual(["rect", "rect", "circle"])
     })
 
