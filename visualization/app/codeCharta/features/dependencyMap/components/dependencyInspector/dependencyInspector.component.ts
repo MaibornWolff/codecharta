@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, injec
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
+import { InspectorResizeHandleComponent } from "../../../shared/facade"
 import { InspectorActionKind, InspectorCycle, InspectorReference } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
@@ -19,7 +20,7 @@ const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-fold
 @Component({
     selector: "cc-dependency-inspector",
     templateUrl: "./dependencyInspector.component.html",
-    imports: [NgTemplateOutlet, DeclarationKindIconComponent, LineStyleSampleComponent],
+    imports: [NgTemplateOutlet, DeclarationKindIconComponent, InspectorResizeHandleComponent, LineStyleSampleComponent],
     providers: [CopyToClipboardService],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Edge colours in the dependency view**: the colours of the four edge types can be changed.
 - **Keyboard in the dependency view**: the boxes of the graph can be reached with the Tab key, walked through with the arrow keys, selected with Enter and opened or closed with Space.
 - **Panning the dependency view**: holding Space or dragging with the right mouse button pans from anywhere in the graph, also from a box that a drag would otherwise move.
+- **Resizable inspector**: the inspector of every view is resized by dragging its left edge, and a double click on that edge brings the default width back.
 - **Steady view in the dependency view**: a box that is opened or closed keeps its place on screen, and an opened box that does not fit is brought into view whole.
 
 ### Changed

@@ -15,6 +15,7 @@ export { ContextMenuItemComponent } from "./components/contextMenuItem/contextMe
 export { ErrorDialogComponent } from "./components/errorDialog/errorDialog.component"
 export { FloatingMenuAnchor, FloatingMenuComponent } from "./components/floatingMenu/floatingMenu.component"
 export { InlineColorPickerComponent } from "./components/inlineColorPicker/inlineColorPicker.component"
+export { InspectorResizeHandleComponent } from "./components/inspectorResizeHandle/inspectorResizeHandle.component"
 export { LoadingFileProgressSpinnerComponent } from "./components/loadingFileProgressSpinner/loadingFileProgressSpinner.component"
 export { MetricOption } from "./components/metricSelectPopover/metricOption"
 export { MetricSelectPopoverComponent } from "./components/metricSelectPopover/metricSelectPopover.component"
