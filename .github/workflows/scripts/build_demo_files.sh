@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 analysis/gradlew -p analysis/ installDist
 
 mkdir temp_dir
