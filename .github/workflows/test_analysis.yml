@@ -62,12 +62,6 @@ jobs:
           docker build ./analysis -t local-ccsh --no-cache
         working-directory: ${{env.project-directory}}
 
-      - name: Setup Java JDK
-        uses: actions/setup-java@v5.2.0
-        with:
-          distribution: 'zulu'
-          java-version: 17
-
       - name: SonarCloud Scan Gradle
         run: |
           ./gradlew sonar

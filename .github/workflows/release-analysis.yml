@@ -57,6 +57,12 @@ jobs:
           git tag "ana-${{ env.VERSION }}"
           git push origin "ana-${{ env.VERSION }}"
 
+      - name: Setup the JDK to build with
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+
       - name: Build analysis
         working-directory: ./analysis
         run: |

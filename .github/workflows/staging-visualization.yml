@@ -56,6 +56,12 @@ jobs:
             codecharta/codecharta-visualization:staging
             codecharta/codecharta-visualization:staging-${{ env.SHORT_SHA }}
 
+      - name: Setup the JDK to run ccsh with
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+
       - name: Create Sample File for Web Demo
         run: sh ./.github/workflows/scripts/build_demo_files.sh
 
