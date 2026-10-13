@@ -4,6 +4,7 @@ import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../declarations/declarationIndex"
 import {
+    CYCLES_SECTION_TITLE,
     describeSubject,
     INSPECTOR_ROW_LIMIT,
     InspectorActionKind,
@@ -52,6 +53,7 @@ export class DependencyInspectorStore {
     private readonly pointedAt = signal(NOTHING_POINTED_AT)
     private readonly touchedView = signal(UNTOUCHED)
     private readonly cyclesAskedFor = signal<{ id: number; boxPath: string } | null>(null)
+    private readonly openedSections = signal<ReadonlySet<string>>(new Set())
 
     readonly edgeColors = computed(() => {
         const { edgeColors, lineStyleShows } = this.graphModel.settings()
@@ -72,6 +74,10 @@ export class DependencyInspectorStore {
     })
 
     /** The request to bring the cycles into view, for as long as the box they were asked of is selected. */
+    /** The sections the reader opened, by their titles: every section starts closed, and one opened stays open for
+     * whatever is selected next. */
+    readonly openSections = this.openedSections.asReadonly()
+
     readonly cyclesRequest = computed(() => {
         const asked = this.cyclesAskedFor()
         const selection = this.selection()
@@ -167,7 +173,18 @@ export class DependencyInspectorStore {
     showCyclesOf(boxPath: string): void {
         const id = (this.cyclesAskedFor()?.id ?? 0) + 1
         this.select(boxPath)
+        this.openedSections.update(opened => new Set([...opened, CYCLES_SECTION_TITLE]))
         this.cyclesAskedFor.set({ id, boxPath })
+    }
+
+    toggleSection(title: string): void {
+        this.openedSections.update(opened => {
+            const next = new Set(opened)
+            if (!next.delete(title)) {
+                next.add(title)
+            }
+            return next
+        })
     }
 
     /** A request is answered once, so an inspector shown anew does not answer it again. */

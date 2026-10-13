@@ -90,6 +90,9 @@ interface InspectorLink {
     type: DependencyEdgeType
 }
 
+export const CYCLES_SECTION_TITLE = "Cycles"
+export const DECLARATIONS_SECTION_TITLE = "Declarations"
+
 export type InspectorActionKind = "open" | "close" | "unfold"
 
 export interface InspectorModel {

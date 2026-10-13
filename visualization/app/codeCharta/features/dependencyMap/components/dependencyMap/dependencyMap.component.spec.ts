@@ -111,9 +111,12 @@ interface Setup {
     isFocused?: boolean
     /** The graph starts with every folder closed; most tests look into them. */
     openedBoxes?: string[]
+    /** The inspector starts with every section closed; most tests look into them. */
+    openedSections?: string[]
 }
 
 const EVERY_FOLDER = ["/root/ui", "/root/model"]
+const INSPECTOR_SECTIONS = ["Cycles", "Uses", "Used by", "Declarations"]
 const SETTINGS_SHOWING_EVERY_EDGE: DependencyGraphSettings = {
     ...defaultDependencyGraphSettings,
     shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES]
@@ -128,7 +131,8 @@ async function setup({
     searchedPaths = null,
     hasDependencyData = true,
     isFocused = false,
-    openedBoxes = EVERY_FOLDER
+    openedBoxes = EVERY_FOLDER,
+    openedSections = INSPECTOR_SECTIONS
 }: Setup = {}) {
     const rendered = await render(DependencyMapComponent, {
         providers: [
@@ -157,6 +161,9 @@ async function setup({
     })
     for (const folder of openedBoxes) {
         TestBed.inject(DependencyMapViewStore).toggle(folder)
+    }
+    for (const section of openedSections) {
+        TestBed.inject(DependencyInspectorStore).toggleSection(section)
     }
     rendered.fixture.detectChanges()
     const store = TestBed.inject(MockStore)
@@ -661,6 +668,38 @@ describe("DependencyMapComponent", () => {
                 expect(drawnBoxPaths()).toEqual(expect.arrayContaining([`${VIEW}/View`, `${NODE}/Node`]))
                 expect(edgeOpacities()).toMatchObject({ [`${VIEW}/View|${NODE}/Node`]: 1, [`${NODE}/Node|${VIEW}/View`]: 1 })
                 expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${VIEW}/View`, `${NODE}/Node`])
+            })
+
+            it("should start with every section closed, keep one the reader opened for the next selection and open the cycles on a badge click", async () => {
+                // Arrange
+                Element.prototype.scrollIntoView = jest.fn()
+                const { store, fixture } = await setup({
+                    tree: DECLARING_TREE,
+                    declarations: CYCLIC,
+                    selectedPath: VIEW,
+                    openedSections: []
+                })
+                const inspector = within(screen.getByTestId("dependency-inspector-body"))
+                const openTitles = () =>
+                    inspector
+                        .getAllByRole("button", { expanded: true })
+                        .map(header => header.textContent.trim().split(/\s+/)[0])
+                        .sort()
+                const closedAtFirst = inspector.queryAllByRole("button", { expanded: true }).length
+
+                // Act
+                await userEvent.click(within(screen.getByRole("region", { name: "Uses" })).getByRole("button", { name: /Uses/ }))
+                fixture.detectChanges()
+                await select(store, fixture, NODE)
+                const afterAnotherSelection = openTitles()
+                fireChartEvent("click", { ...boxEvent(NODE), info: "cycleBadge" })
+                fixture.detectChanges()
+
+                // Assert
+                expect(closedAtFirst).toBe(0)
+                expect(afterAnotherSelection).toEqual(["Uses"])
+                expect(openTitles()).toEqual(["Cycles", "Uses"])
+                expect(screen.getAllByTestId("dependency-inspector-cycle").length).toBeGreaterThan(0)
             })
 
             it("should bring the cycles into view when a cycle badge is clicked", async () => {

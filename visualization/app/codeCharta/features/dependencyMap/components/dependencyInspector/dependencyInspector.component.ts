@@ -4,7 +4,14 @@ import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { InspectorResizeHandleComponent } from "../../../shared/facade"
-import { InspectorActionKind, InspectorCycle, InspectorReference } from "../../inspector/inspectorModel"
+import {
+    CYCLES_SECTION_TITLE,
+    DECLARATIONS_SECTION_TITLE,
+    InspectorActionKind,
+    InspectorCycle,
+    InspectorModel,
+    InspectorReference
+} from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
 import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
@@ -67,6 +74,21 @@ export class DependencyInspectorComponent {
     }
 
     readonly icons = REFERENCE_ICONS
+    protected readonly cyclesTitle = CYCLES_SECTION_TITLE
+    protected readonly declarationsTitle = DECLARATIONS_SECTION_TITLE
+
+    protected isOpen(sectionTitle: string): boolean {
+        return this.store.openSections().has(sectionTitle)
+    }
+
+    protected toggleSection(sectionTitle: string): void {
+        this.store.toggleSection(sectionTitle)
+    }
+
+    /** An edge has one section and nothing else to tell, so it is not folded away. */
+    protected isCollapsible(model: InspectorModel): boolean {
+        return model.kind !== "edge"
+    }
 
     protected goTo(reference: InspectorReference): void {
         this.store.goTo(reference)
