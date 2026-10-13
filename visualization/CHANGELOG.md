@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Edges shown in the dependency view**: the graph starts with the edges in cycles and those pointing upward, without the plain dependencies, and a reset button brings that choice back.
 - **Tooltips in the dependency view**: the tooltip of a folder, file or package names it by its own name instead of its whole path.
-- **Edge styles in the dependency view**: edges are drawn combined, spread or aside, combined and spread with curved or straight lines, and aside now bows downward edges out to the left as it bows upward ones out to the right.
+- **Edge styles in the dependency view**: edges are drawn combined, spread or aside, combined and spread with curved or straight lines, aside now bows downward edges out to the left as it bows upward ones out to the right, and one window holds every setting of the edge style.
 
 ## [2.8.0] - 2026-10-05
 

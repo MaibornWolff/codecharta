@@ -1,13 +1,9 @@
 <cc-axis-card
     label="Edge style"
     [metricName]="edgeStyleLabel()"
-    [hasCog]="true"
-    [cogPopoverId]="settingsPopoverId"
-    [cogAnchorName]="settingsAnchorName"
     [searchPopoverId]="stylePopoverId"
     [searchAnchorName]="styleAnchorName"
     testId="dependency-bar-edge-style-segment"
-    cogTestId="dependency-bar-edge-style-cog"
 >
     <div body class="text-center text-xs opacity-70" data-testid="dependency-bar-edge-thickness-value">{{ edgeThicknessLabel() }}</div>
 </cc-axis-card>
@@ -16,6 +12,7 @@
     [popoverId]="stylePopoverId"
     [anchorName]="styleAnchorName"
     title="Edges drawn"
+    widthClass="w-96 max-w-[95vw]"
     idPrefix="dependency-bar-edge-style"
     [choices]="edgeStyleChoices"
     [chosen]="edgeStyle()"
@@ -45,6 +42,5 @@
             }
         </div>
     }
+    <cc-edge-line-settings></cc-edge-line-settings>
 </cc-choice-list-popover>
-
-<cc-edge-style-settings-popover [popoverId]="settingsPopoverId" [anchorName]="settingsAnchorName"></cc-edge-style-settings-popover>

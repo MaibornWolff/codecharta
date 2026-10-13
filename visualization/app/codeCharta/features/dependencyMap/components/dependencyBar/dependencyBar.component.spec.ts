@@ -118,19 +118,22 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId("dependency-bar-edge-thickness-hint").textContent).toBe("Every edge a hairline, easiest to see through")
     })
 
-    it("should open the edge styles from the card's name and the edge style settings from its cog", async () => {
+    it("should open one window from the edge style card, holding the edge styles and every setting of the lines", async () => {
         // Arrange
         await renderBar()
 
         // Act
         const card = screen.getByTestId("dependency-bar-edge-style-segment")
-        const nameButton = card.querySelector("button[popovertarget]:not([data-testid])")
+        const openers = [...card.querySelectorAll("button[popovertarget]")]
+        const popover = screen.getByTestId("dependency-bar-edge-style-popover")
 
         // Assert
-        expect(nameButton.getAttribute("popovertarget")).toBe(screen.getByTestId("dependency-bar-edge-style-popover").id)
-        expect(screen.getByTestId("dependency-bar-edge-style-cog").getAttribute("popovertarget")).toBe(
-            screen.getByTestId("dependency-bar-edge-style-settings-popover").id
-        )
+        expect(openers.map(opener => opener.getAttribute("popovertarget"))).toEqual([popover.id])
+        expect(popover.contains(screen.getByTestId("dependency-bar-edge-style-combined"))).toBe(true)
+        expect(popover.contains(screen.getByTestId("dependency-bar-edge-thickness-byCount"))).toBe(true)
+        expect(screen.getAllByLabelText("Line width factor").every(input => popover.contains(input))).toBe(true)
+        expect(popover.contains(screen.getByTestId("dependency-bar-line-style-shows-edgeType"))).toBe(true)
+        expect(popover.contains(screen.getByRole("button", { name: "Reset edge style" }))).toBe(true)
     })
 
     it("should reset the edge style and line thickness to their defaults", async () => {

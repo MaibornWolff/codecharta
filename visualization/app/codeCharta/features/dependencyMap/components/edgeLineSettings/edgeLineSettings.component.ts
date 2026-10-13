@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { DependencyEdgeThickness, LineStyleMeaning } from "../../../../model/dependencyGraph.model"
-import { ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent } from "../../../shared/facade"
+import { ResetSettingsButtonComponent, SliderNumberInputComponent } from "../../../shared/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { ChoiceRowComponent } from "../choiceRow/choiceRow.component"
@@ -10,18 +10,15 @@ import { EDGE_THICKNESS_CHOICES, LINE_STYLE_MEANING_CHOICES } from "../edgeStyle
 const EDGE_WIDTH_FACTOR_RANGE = { min: 0.25, max: 3, step: 0.25 }
 
 @Component({
-    selector: "cc-edge-style-settings-popover",
-    templateUrl: "./edgeStyleSettingsPopover.component.html",
+    selector: "cc-edge-line-settings",
+    templateUrl: "./edgeLineSettings.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: "contents" },
-    imports: [ChoiceRowComponent, ResetSettingsButtonComponent, SettingsPopoverShellComponent, SliderNumberInputComponent]
+    host: { class: "flex flex-col gap-2.5 border-t border-base-300 pt-2.5" },
+    imports: [ChoiceRowComponent, ResetSettingsButtonComponent, SliderNumberInputComponent]
 })
-export class EdgeStyleSettingsPopoverComponent {
+export class EdgeLineSettingsComponent {
     private readonly writeStore = inject(DependencyMapWriteStore)
     private readonly settings = toSignal(inject(DependencyMapReadStore).persistedSettings$, { requireSync: true })
-
-    readonly popoverId = input.required<string>()
-    readonly anchorName = input.required<string>()
 
     readonly edgeThicknessChoices = EDGE_THICKNESS_CHOICES
     readonly lineStyleMeaningChoices = LINE_STYLE_MEANING_CHOICES
