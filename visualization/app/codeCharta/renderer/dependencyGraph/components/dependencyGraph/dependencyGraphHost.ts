@@ -173,7 +173,7 @@ export class DependencyGraphHost {
     }
 
     private pannableView(): PannableView | null {
-        if (!this.chart || !this.chartSize) {
+        if (!this.chart || !this.chartSize || this.chartSize.width <= 0 || this.chartSize.height <= 0) {
             return null
         }
         return { shownWindow: this.shownWindow(this.chart, this.chartSize), reach: axisReachOf(this.chart), viewport: this.chartSize }

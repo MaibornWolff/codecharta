@@ -95,6 +95,41 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
+    it("should toggle neither box when the two clicks of a double click landed on different boxes, and select the second", () => {
+        // Arrange
+        jest.useFakeTimers()
+        const otherBox = { ...BOX, name: "/root/app/b.ts" }
+
+        // Act
+        fireChartEvent("click", BOX)
+        fireChartEvent("click", otherBox)
+        container.dispatchEvent(new MouseEvent("dblclick"))
+        jest.runAllTimers()
+
+        // Assert
+        expect(handlers.onBoxToggled).not.toHaveBeenCalled()
+        expect(handlers.onBoxClicked).toHaveBeenCalledTimes(1)
+        expect(handlers.onBoxClicked).toHaveBeenCalledWith("/root/app/b.ts")
+    })
+
+    it("should toggle a box double clicked right after a click on another box", () => {
+        // Arrange
+        jest.useFakeTimers()
+        const otherBox = { ...BOX, name: "/root/app/b.ts" }
+        fireChartEvent("click", BOX)
+
+        // Act
+        fireChartEvent("click", otherBox)
+        fireChartEvent("click", otherBox)
+        container.dispatchEvent(new MouseEvent("dblclick"))
+        jest.runAllTimers()
+
+        // Assert
+        expect(handlers.onBoxToggled).toHaveBeenCalledTimes(1)
+        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app/b.ts")
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
     it("should report the click on an edge alone when it follows a click on a box", () => {
         // Arrange
         jest.useFakeTimers()
@@ -336,6 +371,21 @@ describe("DependencyGraphHost", () => {
         })
         expect(handlers.onBoxRightClicked).not.toHaveBeenCalled()
         expect(handlers.onBoxDragged).not.toHaveBeenCalled()
+    })
+
+    it("should pan nothing with the right button while the chart has no size to tell a drag's length by", () => {
+        // Arrange
+        const emptyContainer = elementOfSize(0, 0)
+        host.attachTo(emptyContainer)
+        host.render({})
+
+        // Act
+        emptyContainer.dispatchEvent(new MouseEvent("mousedown", { button: 2, buttons: 2, clientX: 100, clientY: 100 }))
+        window.dispatchEvent(new MouseEvent("mousemove", { buttons: 2, clientX: 150, clientY: 80 }))
+        window.dispatchEvent(new MouseEvent("mouseup", { button: 2 }))
+
+        // Assert
+        expect(stubbedChart.dispatchAction).not.toHaveBeenCalled()
     })
 
     it("should pan nothing with the right button before anything is drawn or once disposed", () => {

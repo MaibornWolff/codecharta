@@ -10,14 +10,19 @@ export interface BoxClickHandlers {
     onBoxToggled: (path: string) => void
 }
 
+interface BoxClick {
+    path: string
+    at: number
+}
+
 export class BoxClickGesture {
-    private lastClick: { path: string; at: number } | null = null
+    private firstClick: BoxClick | null = null
     private pendingSelection?: ReturnType<typeof setTimeout>
 
     constructor(private readonly handlers: BoxClickHandlers) {}
 
     click(path: string): void {
-        this.lastClick = { path, at: Date.now() }
+        this.firstClick = this.firstClickAfter({ path, at: Date.now() })
         this.cancelPendingSelection()
         this.pendingSelection = setTimeout(() => {
             this.pendingSelection = undefined
@@ -26,22 +31,36 @@ export class BoxClickGesture {
     }
 
     readonly doubleClick = (): void => {
-        this.cancelPendingSelection()
-        const click = this.lastClick
-        this.lastClick = null
-        if (click && Date.now() - click.at <= DOUBLE_CLICK_MS) {
-            this.handlers.onBoxToggled(click.path)
+        const firstClick = this.firstClick
+        this.firstClick = null
+        if (firstClick && isWithinADoubleClick(firstClick, Date.now())) {
+            this.cancelPendingSelection()
+            this.handlers.onBoxToggled(firstClick.path)
         }
     }
 
     /** A click on something else, as an edge or a badge, ends what a click on a box began. */
     forget(): void {
         this.cancelPendingSelection()
-        this.lastClick = null
+        this.firstClick = null
+    }
+
+    /** A second click on the same box keeps the first as the start of the double click. One on another box, which
+     * a redraw may have put under the resting pointer, makes no double click of either. */
+    private firstClickAfter(click: BoxClick): BoxClick | null {
+        const firstClick = this.firstClick
+        if (!firstClick || !isWithinADoubleClick(firstClick, click.at)) {
+            return click
+        }
+        return firstClick.path === click.path ? firstClick : null
     }
 
     private cancelPendingSelection(): void {
         clearTimeout(this.pendingSelection)
         this.pendingSelection = undefined
     }
+}
+
+function isWithinADoubleClick(firstClick: BoxClick, now: number): boolean {
+    return now - firstClick.at <= DOUBLE_CLICK_MS
 }
