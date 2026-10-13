@@ -35,6 +35,11 @@ window for all edge style settings.
 - The cog on the Edge style card and its own window go away
 - Defaults stay combined, curved, by count, factor 1, edge type
 
+### 6. Follow-ups
+- The two reset buttons of the Edges shown window share one row and fill it
+- Focusing a folder or leaving it keeps the boxes opened and moved; leaving it brings that folder into view
+- The inspector of the metrics and the dependency view is resized by dragging its left edge, with one shared width
+
 ## Steps
 
 - [x] Complete Task 1: Double click opens the box only
@@ -42,6 +47,7 @@ window for all edge style settings.
 - [x] Complete Task 3: Pan with the right mouse button
 - [x] Complete Task 4: Edges shown: three types by default
 - [x] Complete Task 5: One window for the edge style
+- [x] Complete Task 6: Follow-ups
 - [x] Changelog, format check, unit tests, lint, type check
 
 ## Notes
@@ -52,4 +58,4 @@ window for all edge style settings.
 - Open: a map whose edge metric is not `dependencies` carries plain dependencies only, so with the new default it
   starts without edges until Dependency is ticked.
 - Verified in Chromium on a build: double click, single click with the inspector, right drag, context menu, both
-  windows of the bar.
+  windows of the bar, focus and unfocus, resizing the inspector. The one row of reset buttons was not looked at.
