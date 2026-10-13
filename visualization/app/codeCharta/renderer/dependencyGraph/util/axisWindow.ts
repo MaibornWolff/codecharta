@@ -1,4 +1,4 @@
-import { enclosingRectangle, Rectangle } from "./geometry"
+import { enclosingRectangle, Point, Rectangle } from "./geometry"
 import { DependencyGraphLayout } from "./layoutModel"
 
 export interface Viewport {
@@ -38,6 +38,16 @@ export function zoomBothAxesInsideTo({ x, y }: AxisWindow) {
         { type: "inside", xAxisIndex: 0, filterMode: "none", startValue: x[0], endValue: x[1] },
         { type: "inside", yAxisIndex: 0, filterMode: "none", startValue: y[0], endValue: y[1] }
     ]
+}
+
+export function panBothAxesTo({ x, y }: AxisWindow) {
+    return {
+        type: "dataZoom",
+        batch: [
+            { dataZoomIndex: 0, startValue: x[0], endValue: x[1] },
+            { dataZoomIndex: 1, startValue: y[0], endValue: y[1] }
+        ]
+    }
 }
 
 function enclosingWindow(first: AxisWindow, second: AxisWindow): AxisWindow {
@@ -103,6 +113,19 @@ function freeHeightOf({ height, coveredBottom = 0 }: Viewport): number {
 function freePartOf({ x, y }: AxisWindow, viewport: Viewport): AxisWindow {
     const freeShare = viewport.height > 0 ? freeHeightOf(viewport) / viewport.height : 1
     return { x, y: [y[0], y[0] + spanOf(y) * freeShare] }
+}
+
+/** The window after the pointer dragged the graph by so many pixels, at the same scale and within the reach of the
+ * axes: ECharts cuts a window that reaches past them, which would stretch the graph. */
+export function windowDraggedBy(shownWindow: AxisWindow, [draggedX, draggedY]: Point, viewport: Viewport, reach: AxisWindow): AxisWindow {
+    return {
+        x: shiftedWithin(shownWindow.x, (-draggedX * spanOf(shownWindow.x)) / viewport.width, reach.x),
+        y: shiftedWithin(shownWindow.y, (-draggedY * spanOf(shownWindow.y)) / viewport.height, reach.y)
+    }
+}
+
+function shiftedWithin(axis: [number, number], by: number, [min, max]: [number, number]): [number, number] {
+    return shifted(axis, Math.min(Math.max(by, min - axis[0]), max - axis[1]))
 }
 
 function shifted([start, end]: [number, number], by: number): [number, number] {

@@ -1,4 +1,4 @@
-import { AxisWindow, fitWindowOf, windowHolding, windowKeepingInPlace } from "./axisWindow"
+import { AxisWindow, fitWindowOf, panBothAxesTo, windowDraggedBy, windowHolding, windowKeepingInPlace } from "./axisWindow"
 import { aBox } from "./dependencyGraphTestData"
 import { Rectangle } from "./geometry"
 
@@ -101,5 +101,52 @@ describe("the bottom of the viewport lying under a bar", () => {
 
         // Assert
         expect(rounded(kept)).toEqual({ x: [0, 800], y: [65, 665] })
+    })
+})
+
+describe("windowDraggedBy", () => {
+    const viewport = { width: 800, height: 600 }
+    const shownAtHalfAPixelPerUnit: AxisWindow = { x: [0, 1600], y: [0, 1200] }
+    const reach: AxisWindow = { x: [-1000, 3000], y: [-1000, 3000] }
+
+    it("should move the window against the drag by as many layout units as the pixels dragged stand for", () => {
+        // Arrange
+        const draggedRightAndUp: [number, number] = [100, -50]
+
+        // Act
+        const dragged = windowDraggedBy(shownAtHalfAPixelPerUnit, draggedRightAndUp, viewport, reach)
+
+        // Assert
+        expect(dragged).toEqual({ x: [-200, 1400], y: [100, 1300] })
+    })
+
+    it("should stop at the reach of the axes and keep its scale", () => {
+        // Arrange
+        const draggedFarRightAndUp: [number, number] = [5000, -5000]
+
+        // Act
+        const dragged = windowDraggedBy(shownAtHalfAPixelPerUnit, draggedFarRightAndUp, viewport, reach)
+
+        // Assert
+        expect(dragged).toEqual({ x: [-1000, 600], y: [1800, 3000] })
+    })
+})
+
+describe("panBothAxesTo", () => {
+    it("should ask the zoom of each axis to show its part of the window", () => {
+        // Arrange
+        const shownWindow: AxisWindow = { x: [10, 20], y: [30, 40] }
+
+        // Act
+        const action = panBothAxesTo(shownWindow)
+
+        // Assert
+        expect(action).toEqual({
+            type: "dataZoom",
+            batch: [
+                { dataZoomIndex: 0, startValue: 10, endValue: 20 },
+                { dataZoomIndex: 1, startValue: 30, endValue: 40 }
+            ]
+        })
     })
 })

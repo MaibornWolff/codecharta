@@ -7,12 +7,15 @@ const renderSurfaceEventHandlers = new Map<string, ChartEventHandler>()
 
 const pixelsAsLayoutUnits = (_finder: unknown, [x, y]: number[]) => [x, y]
 
+export const STUBBED_AXIS_REACH = { min: -1000, max: 2000 }
+
 export const stubbedChart = {
     getZr: jest.fn(() => ({
         on: (eventName: string, handler: ChartEventHandler) => renderSurfaceEventHandlers.set(eventName, handler)
     })),
     setOption: jest.fn(),
     dispatchAction: jest.fn(),
+    getOption: jest.fn(() => ({ xAxis: [STUBBED_AXIS_REACH], yAxis: [STUBBED_AXIS_REACH] })),
     convertFromPixel: jest.fn(pixelsAsLayoutUnits),
     resize: jest.fn(),
     dispose: jest.fn(),

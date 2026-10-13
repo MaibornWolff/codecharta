@@ -320,6 +320,47 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxRightClicked).toHaveBeenCalledWith("/root/app/a.ts", 12, 34)
     })
 
+    it("should pan the graph with a drag of the right button, from a box too, and open no context menu for it", () => {
+        // Arrange
+        host.render({})
+        const rightClick = { ...BOX, event: { event: { clientX: 100, clientY: 100 } } }
+        container.dispatchEvent(new MouseEvent("mousedown", { button: 2, buttons: 2, clientX: 100, clientY: 100 }))
+        fireChartEvent("contextmenu", rightClick)
+
+        // Act
+        window.dispatchEvent(new MouseEvent("mousemove", { buttons: 2, clientX: 150, clientY: 80 }))
+        window.dispatchEvent(new MouseEvent("mouseup", { button: 2 }))
+
+        // Assert
+        expect(stubbedChart.dispatchAction).toHaveBeenCalledWith({
+            type: "dataZoom",
+            batch: [
+                { dataZoomIndex: 0, startValue: -50, endValue: 750 },
+                { dataZoomIndex: 1, startValue: 20, endValue: 620 }
+            ]
+        })
+        expect(handlers.onBoxRightClicked).not.toHaveBeenCalled()
+        expect(handlers.onBoxDragged).not.toHaveBeenCalled()
+    })
+
+    it("should pan nothing with the right button before anything is drawn or once disposed", () => {
+        // Arrange
+        const dragWithTheRightButton = () => {
+            container.dispatchEvent(new MouseEvent("mousedown", { button: 2, buttons: 2, clientX: 100, clientY: 100 }))
+            window.dispatchEvent(new MouseEvent("mousemove", { buttons: 2, clientX: 150, clientY: 80 }))
+            window.dispatchEvent(new MouseEvent("mouseup", { button: 2 }))
+        }
+
+        // Act
+        dragWithTheRightButton()
+        host.render({})
+        host.dispose()
+        dragWithTheRightButton()
+
+        // Assert
+        expect(stubbedChart.dispatchAction).not.toHaveBeenCalled()
+    })
+
     it("should report a hover at once and its end only after a grace period", () => {
         // Arrange
         jest.useFakeTimers()
