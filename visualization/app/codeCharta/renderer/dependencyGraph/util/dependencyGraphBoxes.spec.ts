@@ -234,7 +234,7 @@ describe("dependencyGraphBoxes", () => {
                     type: "rect",
                     info: "cycleBadge",
                     shape: { x: 148, y: 11, width: 28, height: 15 },
-                    style: { fill: "#dc2626" }
+                    style: { fill: "#ffffff", stroke: "#dc2626" }
                 })
                 expect([arc, arrowHead].map(part => part.type)).toEqual(["path", "path"])
                 expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 165 } })
@@ -267,7 +267,7 @@ describe("dependencyGraphBoxes", () => {
                 expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])
             })
 
-            it("should count the cycles a box shares with others in an outlined pill, to the right of the filled one", () => {
+            it("should count the cycles a box shares with others in a filled pill, to the right of the outlined one for those inside", () => {
                 // Arrange
                 const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
@@ -278,8 +278,8 @@ describe("dependencyGraphBoxes", () => {
 
                 // Assert
                 expect(pills.map(pill => pill.style)).toMatchObject([
-                    { fill: "#dc2626", stroke: "#ffffff" },
-                    { fill: "#ffffff", stroke: "#dc2626" }
+                    { fill: "#ffffff", stroke: "#dc2626" },
+                    { fill: "#dc2626", stroke: "#ffffff" }
                 ])
                 expect(pills.map(pill => pill.shape)).toMatchObject([
                     { x: 117, width: 28 },
@@ -287,7 +287,7 @@ describe("dependencyGraphBoxes", () => {
                 ])
             })
 
-            it("should keep the outlined pill on the title of an open box, which holds its own cycles in view", () => {
+            it("should keep the filled pill on the title of an open box, which holds its own cycles in view", () => {
                 // Arrange
                 const open = aBox("/root/app", { kind: "folder", isExpanded: true, x: 10, y: 20 })
 
@@ -297,7 +297,7 @@ describe("dependencyGraphBoxes", () => {
                 )
 
                 // Assert
-                expect(pills).toMatchObject([{ shape: { x: 148, width: 28 }, style: { fill: "#ffffff", stroke: "#dc2626" } }])
+                expect(pills).toMatchObject([{ shape: { x: 148, width: 28 }, style: { fill: "#dc2626", stroke: "#ffffff" } }])
             })
 
             it("should ring a declaration that takes part in a cycle", () => {
