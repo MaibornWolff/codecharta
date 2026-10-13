@@ -269,7 +269,7 @@ describe("buildDependencyGraphOption", () => {
         const { describe, draw, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
 
         // Assert
-        expect(draw(indexOf(view.path)).children.at(-3)).toMatchObject({ info: "cycleBadge", shape: { width: 15 } })
+        expect(draw(indexOf(view.path)).children.at(-1)).toMatchObject({ info: "cycleBadge", style: { text: "1" } })
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#dc2626" })
         expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 cycle inside")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>In a cycle inside this file")

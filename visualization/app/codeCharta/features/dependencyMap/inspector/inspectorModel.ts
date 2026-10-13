@@ -414,21 +414,28 @@ type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">
 function cyclesOf(declarations: readonly IndexedDeclaration[], context: InspectorContext): InspectorCycles {
     const { index, cycles, rowLimit } = context
     const ownPaths = pathsOf(declarations)
-    const chains = cyclesThrough(ownPaths, cycles)
-    return {
-        cycleCount: chains.length,
-        cycles: chains.slice(0, rowLimit).map(chain => {
-            const walked = startingAt(chain, ownPaths)
-            return {
-                steps: walked.map(declarationEdge => ({
-                    reference: declarationReference(index.declarations.get(fromPathOf(declarationEdge))),
-                    linkToNext: linkOf(declarationEdge, context)
-                })),
-                files: [...new Set(walked.map(declarationEdge => declarationEdge.fromNodeName))].map(fileReference),
-                declarationEdges: walked
-            }
-        })
-    }
+    const told = cyclesThrough(ownPaths, cycles).map((chain): InspectorCycle => {
+        const walked = startingAt(chain, ownPaths)
+        return {
+            steps: walked.map(declarationEdge => ({
+                reference: declarationReference(index.declarations.get(fromPathOf(declarationEdge))),
+                linkToNext: linkOf(declarationEdge, context)
+            })),
+            files: [...new Set(walked.map(declarationEdge => declarationEdge.fromNodeName))].map(fileReference),
+            declarationEdges: walked
+        }
+    })
+    return { cycleCount: told.length, cycles: told.sort(widestCycleFirst).slice(0, rowLimit) }
+}
+
+/** The cycle across the most files first, then the one through the most declarations: the widest tangle is the
+ * one to see, and the one a cut list must not lose. */
+function widestCycleFirst(cycleA: InspectorCycle, cycleB: InspectorCycle): number {
+    return (
+        cycleB.files.length - cycleA.files.length ||
+        cycleB.steps.length - cycleA.steps.length ||
+        cycleA.steps[0].reference.name.localeCompare(cycleB.steps[0].reference.name)
+    )
 }
 
 /** A cycle has no first declaration; it is told from one of the selection's own, since that is where the reader stands. */

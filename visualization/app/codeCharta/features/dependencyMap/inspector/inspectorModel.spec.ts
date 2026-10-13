@@ -247,6 +247,36 @@ describe("describeSubject", () => {
             expect(model.cycles).toHaveLength(1)
         })
 
+        it("should tell the cycle across the most files first, then the one through the most declarations, then by name", () => {
+            // Arrange
+            const chain = (...declarations: string[]) =>
+                declarations.map((from, position) => declarationEdge(from, declarations[(position + 1) % declarations.length]))
+            const [creature, armor, weapon, format] = [`${CREATURE}#Creature`, `${CREATURE}#Armor`, `${WEAPON}#Weapon`, `${UTIL}#format`]
+            const cycles = [
+                chain(creature, armor),
+                chain(creature, weapon),
+                chain(armor, weapon),
+                chain(creature, armor, weapon),
+                chain(creature, weapon, format)
+            ]
+
+            // Act
+            const whole = describeSubject(box(CREATURE_NODE), context({ cycles }))
+            const cut = describeSubject(box(CREATURE_NODE), context({ cycles, rowLimit: 2 }))
+
+            // Assert
+            const namesOf = (model: InspectorModel) => model.cycles.map(cycle => cycle.steps.map(step => step.reference.name).join(" → "))
+            expect(namesOf(whole)).toEqual([
+                "Creature → Weapon → format",
+                "Creature → Armor → Weapon",
+                "Armor → Weapon",
+                "Creature → Weapon",
+                "Creature → Armor"
+            ])
+            expect(namesOf(cut)).toEqual(["Creature → Weapon → format", "Creature → Armor → Weapon"])
+            expect(cut.cycleCount).toBe(5)
+        })
+
         it("should tell no cycle of a file none runs through", () => {
             // Arrange
             const fileOutsideEveryCycle = fileNode(UTIL, [declarationNode(UTIL, "format", "function")])
