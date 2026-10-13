@@ -24,7 +24,7 @@ infrastructure and writing into the cc.json 2.0 **`dependency` lens** instead of
   declaration that uses another counts once, however many times it references it, as in DependaCharta.
 - `isCyclic` — the edge takes part in a dependency cycle.
 - `isPointingUpwards` — the edge runs against the levelized flow, i.e. its target sits at the same
-  level as or above its source.
+  level as or above its source. A dependency between a class and a declaration nested in it never does.
 
 Both flags are absent when false. Together they name the four edge types DependaCharta defines:
 

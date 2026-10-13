@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Rare characters in source files**: `domainlanguageparser` no longer returns cut-off words for a file that
   contains a byte order mark after its first character or one of the characters U+FFFE and U+FFFF.
 
+- **Upward edges into nested classes**: `dependencyparser` no longer marks a dependency between a class and a
+  class nested in it as pointing upwards.
+
 - **Rare characters in `dependencyparser`**: a file that contains one of the characters U+FFFE and U+FFFF no longer
   loses the dependencies of the code behind it.
 
