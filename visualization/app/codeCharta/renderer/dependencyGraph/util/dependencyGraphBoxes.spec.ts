@@ -67,7 +67,7 @@ describe("dependencyGraphBoxes", () => {
             expect(sheet).toMatchObject({
                 cursor: "pointer",
                 shape: { x: 14, y: 24, width: 160, height: 40 },
-                style: { stroke: "#9aa5b4" }
+                style: { stroke: "#9aa5b4", fill: null }
             })
             expect(front).toMatchObject({ cursor: "pointer", shape: { x: 10, y: 20 }, style: { stroke: SELECTED_COLOR } })
             expect([plain, opened].map(box => rectsOf(box).map(rect => rect.cursor))).toEqual([[undefined], [undefined]])
