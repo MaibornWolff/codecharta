@@ -35,6 +35,7 @@ export class EdgeTypesSegmentComponent {
 
     readonly popoverId = "dependency-bar-edges-popover"
     readonly anchorName = "dependency-bar-edges-card"
+    readonly shownTypesResetKeys = ["preferences.dependencyGraph.shownEdgeTypes"]
     readonly colorResetKeys = ["preferences.dependencyGraph.edgeColors"]
 
     private readonly carriedTypes = computed(() => edgeTypesCarriedBy(this.edgeMetric()))

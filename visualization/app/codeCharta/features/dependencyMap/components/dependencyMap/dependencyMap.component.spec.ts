@@ -13,7 +13,7 @@ import {
     hasPackagesSelector
 } from "../../../../lenses/dependency/dependencyLens.facade"
 import { Edge } from "../../../../model/codeCharta.model"
-import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
+import { DEPENDENCY_EDGE_TYPES, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { DependencyGraphComponent, LeveledNode } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import {
     fireChartEvent,
@@ -113,6 +113,10 @@ interface Setup {
 }
 
 const EVERY_FOLDER = ["/root/ui", "/root/model"]
+const SETTINGS_SHOWING_EVERY_EDGE: DependencyGraphSettings = {
+    ...defaultDependencyGraphSettings,
+    shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES]
+}
 const PROJECT_A = "project A"
 
 async function setup({
@@ -142,7 +146,7 @@ async function setup({
                     { selector: dependencyLayoutIdentitySelector, value: PROJECT_A },
                     { selector: hasDependencyDataSelector, value: hasDependencyData },
                     { selector: isDependencyMapFocusedSelector, value: isFocused },
-                    { selector: dependencyGraphSettingsSelector, value: defaultDependencyGraphSettings }
+                    { selector: dependencyGraphSettingsSelector, value: SETTINGS_SHOWING_EVERY_EDGE }
                 ]
             }),
             { provide: State, useValue: { getValue: () => defaultState } },
@@ -192,8 +196,16 @@ function drawnEdgeIndices(): number[] {
 
 const boxEvent = (name: string) => ({ seriesId: "graph", name })
 
+/** A click selects its box only once no second click has made a double click of it. */
+function clickBox(event: object): void {
+    jest.useFakeTimers()
+    fireChartEvent("click", event)
+    jest.runAllTimers()
+    jest.useRealTimers()
+}
+
 async function changeSettings(store: MockStore, settings: Partial<DependencyGraphSettings>) {
-    store.overrideSelector(dependencyGraphSettingsSelector, { ...defaultDependencyGraphSettings, ...settings })
+    store.overrideSelector(dependencyGraphSettingsSelector, { ...SETTINGS_SHOWING_EVERY_EDGE, ...settings })
     store.refreshState()
     await screen.findByTestId("dependency-graph")
 }
@@ -365,7 +377,7 @@ describe("DependencyMapComponent", () => {
             const declaration = boxEvent(`${VIEW}/View`)
 
             // Act
-            fireChartEvent("click", declaration)
+            clickBox(declaration)
             fireChartEvent("mouseover", declaration)
             fireChartEvent("contextmenu", { ...declaration, event: { event: { clientX: 5, clientY: 6 } } })
             store.overrideSelector(selectedNodePathSelector, VIEW)
@@ -668,7 +680,7 @@ describe("DependencyMapComponent", () => {
                 await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
                 fixture.detectChanges()
                 const afterClosing = inspectorTitle()
-                fireChartEvent("click", boxEvent(NODE))
+                clickBox(boxEvent(NODE))
                 await select(store, fixture, NODE)
 
                 // Assert
@@ -681,7 +693,7 @@ describe("DependencyMapComponent", () => {
                 const { store, fixture } = await setupSelected(VIEW)
                 TestBed.inject(DependencyMapViewStore).toggle(VIEW)
                 fixture.detectChanges()
-                fireChartEvent("click", boxEvent(`${VIEW}/Menu`))
+                clickBox(boxEvent(`${VIEW}/Menu`))
                 fixture.detectChanges()
                 const whileSelected = inspectorTitle()
 
@@ -718,7 +730,7 @@ describe("DependencyMapComponent", () => {
                 // Act
                 await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
                 fixture.detectChanges()
-                fireChartEvent("click", boxEvent(NODE))
+                clickBox(boxEvent(NODE))
                 await select(store, fixture, NODE)
 
                 // Assert
@@ -948,7 +960,7 @@ describe("DependencyMapComponent", () => {
                 fixture.detectChanges()
 
                 // Act
-                fireChartEvent("click", boxEvent(SCREENS))
+                clickBox(boxEvent(SCREENS))
                 fireChartEvent("mouseover", boxEvent(SCREENS))
                 fireChartEvent("contextmenu", { ...boxEvent(SCREENS), event: { event: { clientX: 5, clientY: 6 } } })
                 fixture.detectChanges()
@@ -992,7 +1004,7 @@ describe("DependencyMapComponent", () => {
                 declarations: DECLARATIONS,
                 openedBoxes: [...EVERY_FOLDER, VIEW]
             })
-            fireChartEvent("click", boxEvent(`${VIEW}/View`))
+            clickBox(boxEvent(`${VIEW}/View`))
 
             // Act
             store.overrideSelector(selectedNodePathSelector, NODE)
@@ -1049,7 +1061,7 @@ describe("DependencyMapComponent", () => {
         const { store } = await setup()
 
         // Act
-        fireChartEvent("click", boxEvent("/root/ui/view.ts"))
+        clickBox(boxEvent("/root/ui/view.ts"))
         fireChartEvent("mouseover", boxEvent("/root/ui"))
         fireChartEvent("contextmenu", { ...boxEvent("/root/ui"), event: { event: { clientX: 5, clientY: 6 } } })
 
