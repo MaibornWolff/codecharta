@@ -259,7 +259,11 @@ describe("buildDependencyGraphOption", () => {
         // Arrange
         const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
         const layout = { boxes: [root, view, declaration], bands: [], width: 800, height: 500 }
-        const cycleMarks = { hiddenCycles: new Map([[view.path, 1]]), declarationsInCycles: new Set([declaration.path]) }
+        const cycleMarks = {
+            insideCycles: new Map([[view.path, 1]]),
+            sharedCycles: new Map(),
+            declarationsInCycles: new Map([[declaration.path, { isWithinItsFile: true, isWithOtherFiles: false }]])
+        }
 
         // Act
         const { describe, draw, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
@@ -268,7 +272,34 @@ describe("buildDependencyGraphOption", () => {
         expect(draw(indexOf(view.path)).children.at(-3)).toMatchObject({ info: "cycleBadge", shape: { width: 15 } })
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#dc2626" })
         expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 cycle inside")
-        expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>Takes part in a cycle")
+        expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>In a cycle inside this file")
+    })
+
+    it("should tell in the tooltip the cycles a box keeps to itself apart from those it shares with others", () => {
+        // Arrange
+        const folder = aBox("/root/app", { kind: "folder", isExpanded: true, width: 300, height: 200 })
+        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
+        const layout = { boxes: [root, folder, view, declaration], bands: [], width: 800, height: 500 }
+        const cycleMarks = {
+            insideCycles: new Map([[view.path, 2]]),
+            sharedCycles: new Map([
+                [view.path, 1],
+                [folder.path, 3]
+            ]),
+            declarationsInCycles: new Map([[declaration.path, { isWithinItsFile: true, isWithOtherFiles: true }]])
+        }
+
+        // Act
+        const { describe, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
+
+        // Assert
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>2 cycles inside<br/>In 1 cycle with other files")
+        expect(describe(indexOf(folder.path))).toBe(
+            "<b>app</b><br/>Level 0<br/>In 3 cycles with files outside<br/><i>Double-click to close</i>"
+        )
+        expect(describe(indexOf(declaration.path))).toBe(
+            "<b>Creature</b><br/>class<br/>In a cycle inside this file<br/>In a cycle with other files"
+        )
     })
 
     it("should draw the selected edge though its type is hidden, with a halo, and tell each edge's id to the chart", () => {
@@ -344,7 +375,11 @@ describe("buildDependencyGraphOption", () => {
             level: 1
         })
         const layout = { boxes: [root, file, declaration], bands: [aBand()], width: 400, height: 200 }
-        const cycleMarks = { hiddenCycles: new Map([[file.path, 3]]), declarationsInCycles: new Set([declaration.path]) }
+        const cycleMarks = {
+            insideCycles: new Map([[file.path, 3]]),
+            sharedCycles: new Map(),
+            declarationsInCycles: new Map([[declaration.path, { isWithinItsFile: true, isWithOtherFiles: false }]])
+        }
         const edges = [anEdge(file.path, declaration.path)]
         const scene = sceneWith({
             layout,

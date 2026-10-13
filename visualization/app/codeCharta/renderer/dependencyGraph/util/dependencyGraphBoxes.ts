@@ -72,7 +72,9 @@ export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
 /** Drawn apart from the open box so the edges pass under it. */
 export function drawContainerTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
-    return drawnItem(drawName(box, rect, look, zoomOf(box, rect)))
+    const zoom = zoomOf(box, rect)
+    const cycleMark = drawCycleMark(box, rect, look.cycle, { opacity: opacityOf(look.isMissedBySearch), zoom })
+    return drawnItem([...drawName(box, rect, look, zoom), ...cycleMark])
 }
 
 function zoomOf(box: LayoutBox, rect: Rectangle): number {

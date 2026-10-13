@@ -167,7 +167,7 @@ async function setup({
 
 interface DrawnSeries {
     id: string
-    data: { name?: string; isEdge?: boolean }[]
+    data: { name?: string; titledBoxPath?: string; isEdge?: boolean }[]
     renderItem: (
         params: { dataIndex: number },
         api: { coord: (point: number[]) => number[] }
@@ -416,8 +416,10 @@ describe("DependencyMapComponent", () => {
                 ]
             }
             const badgeCountOf = (path: string) => {
-                const dataIndex = drawnSeries().data.findIndex(item => item.name === path)
-                const parts = drawnSeries().renderItem({ dataIndex }, { coord: point => point }).children as unknown as {
+                const { data, renderItem } = drawnSeries()
+                const parts = data
+                    .flatMap((item, dataIndex) => (item.name === path || item.titledBoxPath === path ? [dataIndex] : []))
+                    .flatMap(dataIndex => renderItem({ dataIndex }, { coord: point => point }).children) as unknown as {
                     info?: string
                     style: { text?: string }
                 }[]
@@ -425,7 +427,7 @@ describe("DependencyMapComponent", () => {
                 return badge.length === 0 ? null : (badge.find(part => part.style.text)?.style.text ?? "1")
             }
 
-            it("should count on each closed file the cycles it hides a part of, and stop counting on a file once it is opened", async () => {
+            it("should count on each file the cycle it shares with the other, also once a file is opened", async () => {
                 // Arrange
                 await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
                 const whileClosed = [VIEW, NODE].map(badgeCountOf)
@@ -436,7 +438,7 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect(whileClosed).toEqual(["1", "1"])
-                expect([VIEW, NODE].map(badgeCountOf)).toEqual([null, "1"])
+                expect([VIEW, NODE].map(badgeCountOf)).toEqual(["1", "1"])
             })
 
             it("should draw no badge once the reader switches them off, or for another edge metric", async () => {

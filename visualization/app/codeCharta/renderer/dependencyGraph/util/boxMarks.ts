@@ -5,8 +5,10 @@ import { Rectangle } from "./geometry"
 import { LayoutBox } from "./layoutModel"
 
 export interface CycleLook {
-    /** The cycles a closed box hides; none draws no badge. */
-    hiddenCount: number
+    /** The cycles a closed box keeps to itself; none draws no badge. */
+    insideCount: number
+    /** The cycles a box shares with what lies outside it; none draws no badge. */
+    sharedCount: number
     isInCycle: boolean
 }
 
@@ -29,9 +31,19 @@ const CYCLE_BADGE = {
     fontSizePx: 10,
     numberLeftPx: 17,
     numberRoomPx: 5,
-    digitWidthPx: 6
+    digitWidthPx: 6,
+    gapPx: 3
 }
-const CYCLE_BADGE_TEXT_COLOR = "#ffffff"
+
+interface BadgeColors {
+    fill: string
+    line: string
+}
+
+const CYCLE_BADGE_CONTRAST_COLOR = "#ffffff"
+/** Filled for the cycles a box keeps to itself, outlined for those that leave it. */
+const INSIDE_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
+const SHARED_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
 const MOST_COUNTED = 99
 const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
 const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
@@ -73,7 +85,7 @@ const SMALLEST_CYCLE_MARK_SCALE = 0.7
 export function drawCycleMark(
     box: LayoutBox,
     rect: Rectangle,
-    { hiddenCount, isInCycle }: CycleLook,
+    { insideCount, sharedCount, isInCycle }: CycleLook,
     { opacity, zoom }: CycleMarkLook
 ): object[] {
     const scale = Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom))
@@ -83,45 +95,64 @@ export function drawCycleMark(
         const ring = { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
         return isInCycle ? [ring] : []
     }
-    return box.isExpanded || hiddenCount === 0 ? [] : drawCycleBadge(rect, hiddenCount, { opacity, scale })
+    const mark = { opacity, scale }
+    const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * scale, top: rect.y - CYCLE_BADGE.risePx * scale }
+    const shared = drawCycleBadge(corner, sharedCount, SHARED_BADGE_COLORS, mark)
+    const inside = drawCycleBadge({ ...corner, right: shared.left }, insideCount, INSIDE_BADGE_COLORS, mark)
+    return [...inside.elements, ...shared.elements]
 }
 
-function drawCycleBadge(rect: Rectangle, count: number, { opacity, scale }: MarkLook): object[] {
+interface BadgeCorner {
+    right: number
+    top: number
+}
+
+interface DrawnBadge {
+    /** Where the next badge to the left ends; the corner itself when nothing is counted and so nothing drawn. */
+    left: number
+    elements: object[]
+}
+
+function drawCycleBadge({ right, top }: BadgeCorner, count: number, colors: BadgeColors, mark: MarkLook): DrawnBadge {
+    if (count === 0) {
+        return { left: right, elements: [] }
+    }
+    const { opacity, scale } = mark
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
     const height = CYCLE_BADGE.heightPx * scale
     const numberLeft = CYCLE_BADGE.numberLeftPx * scale
     const isCounted = count > 1
     const width = isCounted ? numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale : height
-    const left = rect.x + rect.width + CYCLE_BADGE.overhangPx * scale - width
-    const top = rect.y - CYCLE_BADGE.risePx * scale
+    const left = right - width
     const pill = { x: left, y: top, width, height, r: height / 2 }
-    const pillStyle = { fill: CYCLE_MARK_COLOR, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_BADGE.outlinePx, opacity }
+    const pillStyle = { fill: colors.fill, stroke: colors.line, lineWidth: CYCLE_BADGE.outlinePx, opacity }
     const middle = top + height / 2
-    return [
+    const elements = [
         { type: "rect", ...UNTRANSFORMED, ...CYCLE_BADGE_PART, shape: pill, style: pillStyle },
-        ...cycleGlyph({ x: left + height / 2, y: middle }, { opacity, scale }),
-        ...(isCounted ? [cycleCount(text, { x: left + numberLeft, y: middle }, { opacity, scale })] : [])
+        ...cycleGlyph({ x: left + height / 2, y: middle }, colors.line, mark),
+        ...(isCounted ? [cycleCount(text, { x: left + numberLeft, y: middle }, colors.line, mark)] : [])
     ]
+    return { left: left - CYCLE_BADGE.gapPx * scale, elements }
 }
 
 const CYCLE_BADGE_PART = { info: CYCLE_BADGE_INFO, cursor: "pointer" }
 
-function cycleGlyph(centre: { x: number; y: number }, { opacity, scale }: MarkLook): object[] {
+function cycleGlyph(centre: { x: number; y: number }, color: string, { opacity, scale }: MarkLook): object[] {
     const placed = { ...UNTRANSFORMED, ...centre, scaleX: scale, scaleY: scale, silent: true }
-    const line = { fill: null, stroke: CYCLE_BADGE_TEXT_COLOR, lineWidth: CYCLE_GLYPH.lineWidthPx, lineCap: "round", opacity }
+    const line = { fill: null, stroke: color, lineWidth: CYCLE_GLYPH.lineWidthPx, lineCap: "round", opacity }
     return [
         { type: "path", ...placed, shape: { pathData: CYCLE_GLYPH.arc }, style: line },
-        { type: "path", ...placed, shape: { pathData: CYCLE_GLYPH.head }, style: { fill: CYCLE_BADGE_TEXT_COLOR, stroke: null, opacity } }
+        { type: "path", ...placed, shape: { pathData: CYCLE_GLYPH.head }, style: { fill: color, stroke: null, opacity } }
     ]
 }
 
-function cycleCount(text: string, leftMiddle: { x: number; y: number }, { opacity, scale }: MarkLook) {
+function cycleCount(text: string, leftMiddle: { x: number; y: number }, color: string, { opacity, scale }: MarkLook) {
     const look = { align: "left", verticalAlign: "middle", fontSize: CYCLE_BADGE.fontSizePx * scale, fontWeight: "bold" }
     return {
         type: "text",
         ...UNTRANSFORMED,
         ...CYCLE_BADGE_PART,
-        style: { text, ...leftMiddle, ...look, fill: CYCLE_BADGE_TEXT_COLOR, opacity }
+        style: { text, ...leftMiddle, ...look, fill: color, opacity }
     }
 }
 

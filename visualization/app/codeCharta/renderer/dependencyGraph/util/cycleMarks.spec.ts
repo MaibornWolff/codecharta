@@ -1,73 +1,84 @@
-import { findCycleMarks, NO_CYCLE_MARKS } from "./cycleMarks"
+import { DrawnBoxes, findCycleMarks, NO_CYCLE_MARKS } from "./cycleMarks"
 
+const ROOT = "/root"
+const FOLDER = "/root/app"
 const FIRST_FILE = "/root/app/a.ts"
 const SECOND_FILE = "/root/app/b.ts"
+const FILE_ELSEWHERE = "/root/lib/c.ts"
 
-const CYCLES = [
-    [`${FIRST_FILE}/One`, `${SECOND_FILE}/Two`],
-    [`${FIRST_FILE}/One`, `${FIRST_FILE}/Inner`],
-    [`${SECOND_FILE}/Two`, `${SECOND_FILE}/Three`, `${FIRST_FILE}/One`]
-]
+const BETWEEN_THE_FILES = [`${FIRST_FILE}/One`, `${SECOND_FILE}/Two`]
+const WITHIN_THE_FIRST_FILE = [`${FIRST_FILE}/One`, `${FIRST_FILE}/Inner`]
+const OUT_OF_THE_FOLDER = [`${SECOND_FILE}/Two`, `${FILE_ELSEWHERE}/Far`]
+const CYCLES = [BETWEEN_THE_FILES, WITHIN_THE_FIRST_FILE, OUT_OF_THE_FOLDER]
 
-function representativesWith(shownAs: Record<string, string>): Map<string, string> {
-    return new Map(Object.entries(shownAs))
+const fileOf = (path: string) => path.slice(0, path.lastIndexOf("/"))
+const PARENTS: Record<string, string | null> = { [ROOT]: null, [FOLDER]: ROOT, "/root/lib": ROOT }
+const parentOf = (path: string) => (path in PARENTS ? PARENTS[path] : fileOf(path))
+
+function boxesShowing(representativeOf: (declarationPath: string) => string | undefined): DrawnBoxes {
+    const shown = CYCLES.flat().flatMap(path => {
+        const representative = representativeOf(path)
+        return representative === undefined ? [] : [[path, representative] as const]
+    })
+    return { representatives: new Map(shown), parentOf, fileOf }
 }
 
-const hiddenIn = (box: (path: string) => string) => Object.fromEntries(CYCLES.flat().map(path => [path, box(path)]))
-const fileOf = (path: string) => path.slice(0, path.lastIndexOf("/"))
-
 describe("findCycleMarks", () => {
-    it("should count on a closed file the cycles running through something it hides, each once", () => {
+    it("should count on a closed file the cycles it keeps to itself apart from those it shares with other files", () => {
         // Arrange
-        const representatives = representativesWith(hiddenIn(fileOf))
+        const everyFileClosed = boxesShowing(fileOf)
 
         // Act
-        const { hiddenCycles } = findCycleMarks(CYCLES, representatives)
+        const { insideCycles, sharedCycles } = findCycleMarks(CYCLES, everyFileClosed)
 
         // Assert
-        expect([...hiddenCycles]).toEqual([
-            [FIRST_FILE, 3],
-            [SECOND_FILE, 2]
-        ])
+        expect([...insideCycles]).toEqual([[FIRST_FILE, 1]])
+        expect(sharedCycles.get(FIRST_FILE)).toBe(1)
+        expect(sharedCycles.get(SECOND_FILE)).toBe(2)
+        expect(sharedCycles.get(FILE_ELSEWHERE)).toBe(1)
     })
 
-    it("should count on a closed folder every cycle of the files in it once", () => {
+    it("should count on a closed folder the cycles of the files in it as inside, and only those that leave it as shared", () => {
         // Arrange
-        const representatives = representativesWith(hiddenIn(() => "/root/app"))
+        const folderClosed = boxesShowing(path => (path.startsWith(FOLDER) ? FOLDER : fileOf(path)))
 
         // Act
-        const { hiddenCycles } = findCycleMarks(CYCLES, representatives)
+        const { insideCycles, sharedCycles } = findCycleMarks(CYCLES, folderClosed)
 
         // Assert
-        expect([...hiddenCycles]).toEqual([["/root/app", 3]])
+        expect(insideCycles.get(FOLDER)).toBe(2)
+        expect(sharedCycles.get(FOLDER)).toBe(1)
     })
 
-    it("should leave an opened file without a count and keep counting on the closed file its cycles also run through", () => {
+    it("should keep telling on an opened folder or file the cycles that leave it, but none it holds whole", () => {
         // Arrange
-        const representatives = representativesWith(hiddenIn(path => (fileOf(path) === FIRST_FILE ? path : SECOND_FILE)))
+        const firstFileOpened = boxesShowing(path => (fileOf(path) === FIRST_FILE ? path : fileOf(path)))
 
         // Act
-        const { hiddenCycles } = findCycleMarks(CYCLES, representatives)
+        const { insideCycles, sharedCycles } = findCycleMarks(CYCLES, firstFileOpened)
 
         // Assert
-        expect([...hiddenCycles]).toEqual([[SECOND_FILE, 2]])
+        expect(insideCycles.size).toBe(0)
+        expect(sharedCycles.get(FIRST_FILE)).toBe(1)
+        expect(sharedCycles.get(FOLDER)).toBe(1)
+        expect(sharedCycles.has(ROOT)).toBe(false)
     })
 
-    it("should name the declarations taking part in a cycle, also those the graph does not show", () => {
+    it("should say of each declaration whether its cycles stay in its file, leave it or both, also of those the graph does not show", () => {
         // Arrange
-        const nothingShown = representativesWith({})
+        const nothingShown = boxesShowing(() => undefined)
 
         // Act
-        const { declarationsInCycles, hiddenCycles } = findCycleMarks(CYCLES, nothingShown)
+        const { declarationsInCycles, insideCycles, sharedCycles } = findCycleMarks(CYCLES, nothingShown)
 
         // Assert
-        expect([...declarationsInCycles].sort()).toEqual([
-            `${FIRST_FILE}/Inner`,
-            `${FIRST_FILE}/One`,
-            `${SECOND_FILE}/Three`,
-            `${SECOND_FILE}/Two`
-        ])
-        expect(hiddenCycles.size).toBe(0)
+        expect(Object.fromEntries(declarationsInCycles)).toEqual({
+            [`${FIRST_FILE}/One`]: { isWithinItsFile: true, isWithOtherFiles: true },
+            [`${FIRST_FILE}/Inner`]: { isWithinItsFile: true, isWithOtherFiles: false },
+            [`${SECOND_FILE}/Two`]: { isWithinItsFile: false, isWithOtherFiles: true },
+            [`${FILE_ELSEWHERE}/Far`]: { isWithinItsFile: false, isWithOtherFiles: true }
+        })
+        expect([insideCycles.size, sharedCycles.size]).toEqual([0, 0])
     })
 
     it("should mark nothing while there is no cycle", () => {
@@ -75,7 +86,7 @@ describe("findCycleMarks", () => {
         const noCycles: string[][] = []
 
         // Act
-        const marks = findCycleMarks(noCycles, representativesWith({}))
+        const marks = findCycleMarks(noCycles, boxesShowing(fileOf))
 
         // Assert
         expect(marks).toEqual(NO_CYCLE_MARKS)

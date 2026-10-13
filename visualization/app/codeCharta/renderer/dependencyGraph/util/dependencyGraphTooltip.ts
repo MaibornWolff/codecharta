@@ -1,7 +1,7 @@
 import { isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { escapeHtml } from "../../../util/escapeHtml"
 import { isPackagePath, nameOfPath } from "./boxPaths"
-import { CycleMarks } from "./cycleMarks"
+import { CycleMarks, DeclarationCycles } from "./cycleMarks"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { EDGE_TYPE_LABELS } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
@@ -30,24 +30,35 @@ export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<st
     }
 }
 
-function describeBox(box: LayoutBox, { hiddenCycles, declarationsInCycles }: CycleMarks): string {
+function describeBox(box: LayoutBox, { insideCycles, sharedCycles, declarationsInCycles }: CycleMarks): string {
     if (box.kind === "declaration") {
         const rows = [`<b>${escapeHtml(box.name)}</b>`, escapeHtml(box.declarationKind ?? "")]
-        return [...rows, ...(declarationsInCycles.has(box.path) ? ["Takes part in a cycle"] : [])].join("<br/>")
+        return [...rows, ...describeCyclesOfDeclaration(declarationsInCycles.get(box.path))].join("<br/>")
     }
     const title = isPackagePath(box.path) ? `Package ${box.name}` : nameOfPath(box.path)
     const rows = [`<b>${escapeHtml(title)}</b>`]
     if (box.levelPath.length > 0) {
         rows.push(`Level ${describeLevelPath(box.levelPath)}`)
     }
-    const hiddenCount = box.isExpanded ? 0 : (hiddenCycles.get(box.path) ?? 0)
-    if (hiddenCount > 0) {
-        rows.push(`${counted(hiddenCount, "cycle")} inside`)
+    const insideCount = insideCycles.get(box.path) ?? 0
+    if (insideCount > 0) {
+        rows.push(`${counted(insideCount, "cycle")} inside`)
+    }
+    const sharedCount = sharedCycles.get(box.path) ?? 0
+    if (sharedCount > 0) {
+        rows.push(`In ${counted(sharedCount, "cycle")} with ${box.kind === "file" ? "other files" : "files outside"}`)
     }
     if (canBeOpened(box)) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
     }
     return rows.join("<br/>")
+}
+
+function describeCyclesOfDeclaration(cycles: DeclarationCycles | undefined): string[] {
+    return [
+        ...(cycles?.isWithinItsFile ? ["In a cycle inside this file"] : []),
+        ...(cycles?.isWithOtherFiles ? ["In a cycle with other files"] : [])
+    ]
 }
 
 function describeEdge(edge: GraphEdge, boxesByPath: ReadonlyMap<string, LayoutBox>, { edgeMetric }: TooltipSettings): string {

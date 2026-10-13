@@ -19,7 +19,7 @@ function childrenOf(element: object): DrawnElement[] {
     return (element as DrawnElement).children
 }
 
-const NO_CYCLE: CycleLook = { hiddenCount: 0, isInCycle: false }
+const NO_CYCLE: CycleLook = { insideCount: 0, sharedCount: 0, isInCycle: false }
 
 describe("dependencyGraphBoxes", () => {
     describe("drawBox", () => {
@@ -149,7 +149,7 @@ describe("dependencyGraphBoxes", () => {
 
             it("should shrink a cycle badge and a cycle ring only so far, since they lead to the cycles from far out", () => {
                 // Arrange
-                const cyclic = { ...look("none"), cycle: { hiddenCount: 7, isInCycle: true } }
+                const cyclic = { ...look("none"), cycle: { insideCount: 7, sharedCount: 0, isInCycle: true } }
 
                 // Act
                 const pill = childrenOf(drawBox(aBox("/root/app", { kind: "folder", x: 0, y: 0 }), cyclic, atZoom(0.2))).find(
@@ -204,7 +204,7 @@ describe("dependencyGraphBoxes", () => {
                 const box = aBox("/root/app", { kind: "folder", x: 10, y: 20 })
 
                 // Act
-                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ hiddenCount: 7 }), identityPixels))
+                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ insideCount: 7 }), identityPixels))
 
                 // Assert
                 expect(pill).toMatchObject({
@@ -222,8 +222,8 @@ describe("dependencyGraphBoxes", () => {
                 const box = aBox("/root/a.ts")
 
                 // Act
-                const single = childrenOf(drawBox(box, cyclic({ hiddenCount: 1 }), identityPixels))
-                const many = childrenOf(drawBox(box, cyclic({ hiddenCount: 250 }), identityPixels))
+                const single = childrenOf(drawBox(box, cyclic({ insideCount: 1 }), identityPixels))
+                const many = childrenOf(drawBox(box, cyclic({ insideCount: 250 }), identityPixels))
 
                 // Assert
                 expect(single.map(part => part.type)).toEqual(["rect", "text", "rect", "path", "path"])
@@ -231,16 +231,49 @@ describe("dependencyGraphBoxes", () => {
                 expect(many.at(-1).style.text).toBe("99+")
             })
 
-            it("should draw no badge on a box that hides no cycle, nor on an open one", () => {
+            it("should draw no badge on a box that is in no cycle, and none on the outline of an open one", () => {
                 // Arrange
                 const closed = aBox("/root/a.ts")
                 const open = aBox("/root/app", { kind: "folder", isExpanded: true })
 
                 // Act
-                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ hiddenCount: 3 }), identityPixels)]
+                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ sharedCount: 3 }), identityPixels)]
 
                 // Assert
                 expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])
+            })
+
+            it("should count the cycles a box shares with others in an outlined pill, to the right of the filled one", () => {
+                // Arrange
+                const box = aBox("/root/a.ts", { x: 10, y: 20 })
+
+                // Act
+                const pills = childrenOf(drawBox(box, cyclic({ insideCount: 2, sharedCount: 3 }), identityPixels)).filter(
+                    part => part.type === "rect" && part.info === "cycleBadge"
+                )
+
+                // Assert
+                expect(pills.map(pill => pill.style)).toMatchObject([
+                    { fill: "#dc2626", stroke: "#ffffff" },
+                    { fill: "#ffffff", stroke: "#dc2626" }
+                ])
+                expect(pills.map(pill => pill.shape)).toMatchObject([
+                    { x: 117, width: 28 },
+                    { x: 148, width: 28 }
+                ])
+            })
+
+            it("should keep the outlined pill on the title of an open box, which holds its own cycles in view", () => {
+                // Arrange
+                const open = aBox("/root/app", { kind: "folder", isExpanded: true, x: 10, y: 20 })
+
+                // Act
+                const pills = childrenOf(drawContainerTitle(open, cyclic({ sharedCount: 1 }), identityPixels)).filter(
+                    part => part.type === "rect" && part.info === "cycleBadge"
+                )
+
+                // Assert
+                expect(pills).toMatchObject([{ shape: { x: 161, width: 15 }, style: { fill: "#ffffff", stroke: "#dc2626" } }])
             })
 
             it("should ring a declaration that takes part in a cycle", () => {
