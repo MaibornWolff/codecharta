@@ -92,7 +92,9 @@ describe("DependencyBarComponent", () => {
             "dependency-bar-edge-metric-segment",
             "dependency-bar-level-label-segment"
         ])
-        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain("All")
+        expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain(
+            "In a cycle, Points upward, Points upward and closes a cycle"
+        )
         expect(screen.getByTestId("dependency-bar-edge-style-segment").textContent).toContain("Combined")
         expect(screen.getByTestId("dependency-bar-edge-thickness-value").textContent).toContain("By count")
         expect(screen.getByTestId("dependency-bar-edge-metric-segment").textContent).toContain("dependencies")
@@ -160,9 +162,22 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId<HTMLInputElement>("dependency-bar-edges-cyclic").checked).toBe(true)
     })
 
+    it("should show the edge types of the defaults again on reset", async () => {
+        // Arrange
+        const dispatch = await renderBar({ settings: { shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES] } })
+
+        // Act
+        await userEvent.click(screen.getByRole("button", { name: "Reset edges shown" }))
+
+        // Assert
+        const { shownEdgeTypes } = defaultDependencyGraphSettings
+        expect(shownEdgeTypes).not.toContain("regular")
+        expect(dispatch).toHaveBeenCalledWith(setState({ value: { preferences: { dependencyGraph: { shownEdgeTypes } } } }))
+    })
+
     it("should stop showing an edge type the reader unticks", async () => {
         // Arrange
-        const dispatch = await renderBar()
+        const dispatch = await renderBar({ settings: { shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES] } })
 
         // Act
         await userEvent.click(screen.getByTestId("dependency-bar-edges-regular"))
@@ -282,7 +297,7 @@ describe("DependencyBarComponent", () => {
 
     it("should offer only the dependency toggle for another edge metric, and flip only it", async () => {
         // Arrange
-        const dispatch = await renderBar({ edgeMetric: "temporal_coupling" })
+        const dispatch = await renderBar({ edgeMetric: "temporal_coupling", settings: { shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES] } })
 
         // Act
         await userEvent.click(screen.getByRole("button", { name: "Invert" }))

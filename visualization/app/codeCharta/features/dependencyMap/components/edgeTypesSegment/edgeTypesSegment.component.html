@@ -45,9 +45,18 @@
         </p>
     }
     <p class="m-0 px-2 text-xs opacity-70">With none ticked, only the edges of the box under the pointer show.</p>
-    <cc-reset-settings-button
-        [settingsKeys]="colorResetKeys"
-        tooltip="Reset the edge colours to their defaults"
-        label="Reset colours"
-    ></cc-reset-settings-button>
+    <div class="flex flex-wrap gap-2">
+        <cc-reset-settings-button
+            [settingsKeys]="shownTypesResetKeys"
+            [small]="true"
+            tooltip="Show the edges in cycles and those pointing upward again, and no plain dependencies"
+            label="Reset edges shown"
+        ></cc-reset-settings-button>
+        <cc-reset-settings-button
+            [settingsKeys]="colorResetKeys"
+            [small]="true"
+            tooltip="Reset the edge colours to their defaults"
+            label="Reset colours"
+        ></cc-reset-settings-button>
+    </div>
 </cc-settings-popover-shell>

@@ -1,10 +1,10 @@
 import { createReducer, on } from "@ngrx/store"
-import { DEPENDENCY_EDGE_TYPES, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
+import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { mergeState } from "../../../../util/setState.reducer.factory"
 import { setDependencyGraphSettings } from "./dependencyGraph.actions"
 
 export const defaultDependencyGraphSettings: DependencyGraphSettings = {
-    shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES],
+    shownEdgeTypes: ["cyclic", "feedbackContainerLevel", "feedbackLeafLevel"],
     edgeColors: { regular: "#8c96a3", cyclic: "#2563eb", feedbackContainerLevel: "#dc2626", feedbackLeafLevel: "#7f1d1d" },
     lineStyleShows: "edgeType",
     edgeStyle: "combined",
