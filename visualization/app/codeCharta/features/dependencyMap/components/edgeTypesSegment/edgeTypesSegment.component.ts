@@ -35,7 +35,10 @@ export class EdgeTypesSegmentComponent {
 
     readonly popoverId = "dependency-bar-edges-popover"
     readonly anchorName = "dependency-bar-edges-card"
-    readonly shownTypesResetKeys = ["preferences.dependencyGraph.shownEdgeTypes"]
+    readonly shownTypesResetKeys = [
+        "preferences.dependencyGraph.shownEdgeTypes",
+        "preferences.dependencyGraph.isHoverLimitedToShownEdgeTypes"
+    ]
     readonly colorResetKeys = ["preferences.dependencyGraph.edgeColors"]
 
     private readonly carriedTypes = computed(() => edgeTypesCarriedBy(this.edgeMetric()))
@@ -48,6 +51,7 @@ export class EdgeTypesSegmentComponent {
         })
     )
     readonly showsEveryColor = computed(() => this.settings().lineStyleShows === "usage")
+    readonly isHoverLimited = computed(() => this.settings().isHoverLimitedToShownEdgeTypes)
     readonly chosenLabel = computed(() => nameOfShownEdgeTypes(this.shownTypes(), this.carriedTypes()))
 
     toggle(type: DependencyEdgeType, isShown: boolean): void {
@@ -64,6 +68,10 @@ export class EdgeTypesSegmentComponent {
 
     invert(): void {
         this.show(invertedEdgeTypes(this.shownTypes(), this.carriedTypes()))
+    }
+
+    limitHover(isHoverLimitedToShownEdgeTypes: boolean): void {
+        this.writeStore.changeSettings({ isHoverLimitedToShownEdgeTypes })
     }
 
     recolor(type: DependencyEdgeType, color: string): void {

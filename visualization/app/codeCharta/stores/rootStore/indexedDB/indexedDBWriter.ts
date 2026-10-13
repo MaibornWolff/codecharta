@@ -21,7 +21,7 @@ import {
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 31
+export const DB_VERSION = 32
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -792,6 +792,11 @@ function edgeDrawingOfToday(dependencyGraph: Record<string, unknown>): Record<st
     return "edgeShape" in dependencyGraph ? null : { edgeShape: "curved" }
 }
 
+// v32: the dependency graph settings gained whether the hover is held to the shown edge types
+export function migrateCcStateRecordToV32<T>(state: T): T {
+    return migrateCcStateRecordToV29(state)
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -820,7 +825,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 28, migrate: migrateCcStateRecordToV28 },
     { version: 29, migrate: migrateCcStateRecordToV29 },
     { version: 30, migrate: migrateCcStateRecordToV30 },
-    { version: 31, migrate: migrateCcStateRecordToV31 }
+    { version: 31, migrate: migrateCcStateRecordToV31 },
+    { version: 32, migrate: migrateCcStateRecordToV32 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

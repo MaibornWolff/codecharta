@@ -138,10 +138,12 @@ const PAINT_RANK: Record<DependencyEdgeType, number> = {
 const HOVERED_PAINT_RANK = Object.keys(PAINT_RANK).length
 
 function edgesToDraw(scene: DependencyGraphScene, isOfHovered: EdgeTest): GraphEdge[] {
-    const raised = new Set(scene.edges.filter(edge => isOfHovered(edge) || isEdgeInFocus(edge, scene)))
+    const isOfShownType = (edge: GraphEdge) => scene.shownEdgeTypes.includes(edge.type)
+    const isDrawnForTheHover = (edge: GraphEdge) => isOfHovered(edge) && (!scene.isHoverLimitedToShownEdgeTypes || isOfShownType(edge))
+    const raised = new Set(scene.edges.filter(edge => isDrawnForTheHover(edge) || isEdgeInFocus(edge, scene)))
     const paintRankOf = (edge: GraphEdge) => PAINT_RANK[edge.type] + (raised.has(edge) ? HOVERED_PAINT_RANK : 0)
     return scene.edges
-        .filter(edge => scene.shownEdgeTypes.includes(edge.type) || raised.has(edge))
+        .filter(edge => isOfShownType(edge) || raised.has(edge))
         .sort((edgeA, edgeB) => paintRankOf(edgeA) - paintRankOf(edgeB))
 }
 
