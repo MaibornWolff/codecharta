@@ -2,10 +2,12 @@ import { CycleLook } from "./boxMarks"
 import { BoxEmphasis, BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
+import { LayoutBox } from "./layoutModel"
 
 interface DrawnElement {
     type: string
     info?: string
+    cursor?: string
     shape?: Record<string, unknown> & { points?: number[][] }
     style?: Record<string, unknown>
     children?: DrawnElement[]
@@ -40,13 +42,36 @@ describe("dependencyGraphBoxes", () => {
             const box = aBox("/root/a.ts", { declarationCount: 3 })
 
             // Act
-            const [, label, countDisc, count, ...rest] = childrenOf(drawBox(box, look("none"), identityPixels))
+            const [, , label, countDisc, count, ...rest] = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
             expect(label.style).toMatchObject({ text: "a.ts", width: 112 })
             expect(rest).toEqual([])
             expect(countDisc).toMatchObject({ type: "circle", shape: { cx: 146, cy: 20, r: 7 }, style: { stroke: "#8a94a3" } })
             expect(count.style).toMatchObject({ text: "3", x: 146, fill: "#8a94a3" })
+        })
+
+        it("should lay a closed file that holds declarations on a second sheet and give it a hand cursor, as it opens; no other box", () => {
+            // Arrange
+            const openable = aBox("/root/a.ts", { declarationCount: 1, x: 10, y: 20 })
+            const plain = aBox("/root/b.ts", { declarationCount: 0 })
+            const opened = aBox("/root/c.ts", { declarationCount: 2, isExpanded: true, width: 300, height: 140 })
+            const closedFolder = aBox("/root/app", { kind: "folder" })
+            const rectsOf = (box: LayoutBox) =>
+                childrenOf(drawBox(box, look("selected"), identityPixels)).filter(part => part.type === "rect")
+
+            // Act
+            const [sheet, front] = rectsOf(openable)
+
+            // Assert
+            expect(sheet).toMatchObject({
+                cursor: "pointer",
+                shape: { x: 14, y: 24, width: 160, height: 40 },
+                style: { stroke: "#9aa5b4" }
+            })
+            expect(front).toMatchObject({ cursor: "pointer", shape: { x: 10, y: 20 }, style: { stroke: SELECTED_COLOR } })
+            expect([plain, opened].map(box => rectsOf(box).map(rect => rect.cursor))).toEqual([[undefined], [undefined]])
+            expect(rectsOf(closedFolder).map(rect => rect.cursor)).toEqual(["pointer"])
         })
 
         it("should not count the one declaration a file's name already stands for, nor mark a file without any", () => {
@@ -59,7 +84,7 @@ describe("dependencyGraphBoxes", () => {
 
             // Assert
             expect(drawn).toEqual([
-                [undefined, "a.ts"],
+                [undefined, undefined, "a.ts"],
                 [undefined, "b.ts"]
             ])
         })
@@ -110,7 +135,7 @@ describe("dependencyGraphBoxes", () => {
                 const zoomedOutALittle = atZoom(0.75)
 
                 // Act
-                const [, , countDisc, count] = childrenOf(drawBox(file, look("none"), zoomedOutALittle))
+                const [, , , countDisc, count] = childrenOf(drawBox(file, look("none"), zoomedOutALittle))
                 const [, , icon, letter] = childrenOf(drawBox(declaration, iconLook, zoomedOutALittle))
 
                 // Assert
@@ -129,8 +154,8 @@ describe("dependencyGraphBoxes", () => {
                 const declarationParts = childrenOf(drawBox(declaration, iconLook, zoomedOutFar))
 
                 // Assert
-                expect(fileParts.map(part => part.type)).toEqual(["rect", "text"])
-                expect(fileParts[1].style).toMatchObject({ text: "a.ts", width: 64, x: 40 })
+                expect(fileParts.map(part => part.type)).toEqual(["rect", "rect", "text"])
+                expect(fileParts[2].style).toMatchObject({ text: "a.ts", width: 64, x: 40 })
                 expect(declarationParts.map(part => part.type)).toEqual(["rect", "text"])
             })
 
