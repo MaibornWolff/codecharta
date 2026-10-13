@@ -32,13 +32,15 @@ class GraphIndex(root: GraphNode) {
      * Whether a dependency runs against the levelized flow. Nodes in one namespace compare their own
      * levels; nodes in different ones compare the levels of the sub-namespaces that are siblings under
      * their lowest common ancestor. A node the levelizer left without a level counts as not pointing
-     * upwards, since there is nothing to compare.
+     * upwards, since there is nothing to compare. Neither does an edge between a class and a declaration
+     * nested in it: the class is its own namespace there, so both ends meet in the same node.
      *
      * @throws IllegalStateException when either id is not in this graph, or the two share no ancestor —
      *   which for separate top-level roots means they were not wrapped in a virtual root first.
      */
     fun isPointingUpwards(sourceId: String, targetId: String): Boolean {
         val (sourceSibling, targetSibling) = siblingsUnderLowestCommonAncestor(sourceId, targetId)
+        if (sourceSibling.id == targetSibling.id) return false
         val sourceLevel = sourceSibling.level ?: return false
         val targetLevel = targetSibling.level ?: return false
         return sourceLevel <= targetLevel

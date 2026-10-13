@@ -1,5 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphEdge
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphNode
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphNodeBuilder
 import org.assertj.core.api.Assertions.assertThat
@@ -398,6 +401,39 @@ class IsPointingUpwardsTest {
         assertThat(isCreatureViolation).isTrue
     }
 
+    @Test
+    fun `should return false when a class depends on a declaration nested in it`() {
+        // Arrange
+        val index = indexOfClassWithNestedDeclaration(GraphEdge(OUTER_CLASS, NESTED_CLASS, 1, TypeOfUsage.USAGE.rawValue))
+
+        // Act
+        val isPointingUpwards = index.isPointingUpwards(OUTER_CLASS, NESTED_CLASS)
+
+        // Assert
+        assertThat(isPointingUpwards).isFalse
+    }
+
+    @Test
+    fun `should return false when a nested declaration depends on the class around it`() {
+        // Arrange
+        val index = indexOfClassWithNestedDeclaration(GraphEdge(NESTED_CLASS, OUTER_CLASS, 1, TypeOfUsage.USAGE.rawValue))
+
+        // Act
+        val isPointingUpwards = index.isPointingUpwards(NESTED_CLASS, OUTER_CLASS)
+
+        // Assert
+        assertThat(isPointingUpwards).isFalse
+    }
+
+    private fun indexOfClassWithNestedDeclaration(edge: GraphEdge): GraphIndex {
+        val levelizedRoots = levelize(
+            listOf(OUTER_CLASS, NESTED_CLASS)
+                .map { declaration -> GraphLeaf(Path(declaration.split(".")), setOf(edge).filter { it.source == declaration }.toSet()) }
+                .toGraphTree()
+        )
+        return GraphIndex(GraphNode.wrapInVirtualRootIfNeeded(levelizedRoots).second)
+    }
+
     // Helper functions to simulate the logic that needs to be implemented
 
     /**
@@ -423,4 +459,9 @@ class IsPointingUpwardsTest {
      */
     private fun checkIsPointingUpwards(source: GraphNode, target: GraphNode, root: GraphNode): Boolean =
         GraphIndex(root).isPointingUpwards(source.id, target.id)
+
+    companion object {
+        private const val OUTER_CLASS = "application.Outer"
+        private const val NESTED_CLASS = "application.Outer.Nested"
+    }
 }
