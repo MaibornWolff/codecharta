@@ -1,6 +1,6 @@
 import { isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { escapeHtml } from "../../../util/escapeHtml"
-import { isPackagePath, packageKeyOf } from "./boxPaths"
+import { isPackagePath } from "./boxPaths"
 import { CycleMarks } from "./cycleMarks"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { EDGE_TYPE_LABELS } from "./dependencyGraphStyle"
@@ -35,7 +35,7 @@ function describeBox(box: LayoutBox, { hiddenCycles, declarationsInCycles }: Cyc
         const rows = [`<b>${escapeHtml(box.name)}</b>`, escapeHtml(box.declarationKind ?? "")]
         return [...rows, ...(declarationsInCycles.has(box.path) ? ["Takes part in a cycle"] : [])].join("<br/>")
     }
-    const title = isPackagePath(box.path) ? `Package ${packageKeyOf(box.path)}` : box.path
+    const title = isPackagePath(box.path) ? `Package ${box.name}` : box.name
     const rows = [`<b>${escapeHtml(title)}</b>`]
     if (box.levelPath.length > 0) {
         rows.push(`Level ${describeLevelPath(box.levelPath)}`)

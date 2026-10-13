@@ -140,7 +140,7 @@ describe("buildDependencyGraphOption", () => {
         expect([view.path, model.path, util.path].map(strokeWidthOf)).toEqual([2.5, 2, 1])
     })
 
-    it("should describe boxes and edges in the tooltip, and nothing for a level band", () => {
+    it("should describe boxes by their name and edges in the tooltip, and nothing for a level band", () => {
         // Arrange
         const scene = sceneWith()
 
@@ -148,10 +148,22 @@ describe("buildDependencyGraphOption", () => {
         const { describe, edgeIndices, indexOf } = drawnGraph(scene)
 
         // Assert
-        expect(describe(0)).toBe("<b>/root</b><br/><i>Double-click to close</i>")
+        expect(describe(0)).toBe("<b>root</b><br/><i>Double-click to close</i>")
         expect(describe(1)).toBe("")
-        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0")
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0")
         expect(describe(edgeIndices[1])).toBe("<b>util.ts → view.ts</b><br/>1 dependency · Points upward")
+    })
+
+    it("should name a package in the tooltip by what its name adds to the package around it", () => {
+        // Arrange
+        const nestedPackage = aBox("package:org.creatures.model", { kind: "package", name: "model", parentPath: root.path })
+        const layout = { boxes: [root, nestedPackage], bands: [], width: 800, height: 500 }
+
+        // Act
+        const { describe, indexOf } = drawnGraph(sceneWith({ layout, edges: [] }))
+
+        // Assert
+        expect(describe(indexOf(nestedPackage.path))).toBe("<b>Package model</b><br/>Level 0<br/><i>Double-click to open</i>")
     })
 
     it("should say in the tooltip that a file holding declarations opens, and what kind of declaration a box is", () => {
@@ -164,7 +176,7 @@ describe("buildDependencyGraphOption", () => {
         const { describe, indexOf, option } = drawnGraph(sceneWith({ layout, edges: [] }))
 
         // Assert
-        expect(describe(indexOf(file.path))).toBe("<b>/root/creature.ts</b><br/>Level 0<br/><i>Double-click to close</i>")
+        expect(describe(indexOf(file.path))).toBe("<b>creature.ts</b><br/>Level 0<br/><i>Double-click to close</i>")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class")
         expect(option.aria.label.description).toContain("with 1 files")
     })
@@ -243,7 +255,7 @@ describe("buildDependencyGraphOption", () => {
         // Assert
         expect(draw(indexOf(view.path)).children.at(-3)).toMatchObject({ info: "cycleBadge", shape: { width: 15 } })
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#dc2626" })
-        expect(describe(indexOf(view.path))).toBe("<b>/root/view.ts</b><br/>Level 0<br/>1 cycle inside")
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 cycle inside")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>Takes part in a cycle")
     })
 
