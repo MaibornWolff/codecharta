@@ -39,6 +39,8 @@ window for all edge style settings.
 - The two reset buttons of the Edges shown window share one row and fill it
 - Focusing a folder or leaving it keeps the boxes opened and moved; leaving it brings that folder into view
 - The inspector of the metrics and the dependency view is resized by dragging its left edge, with one shared width
+- A filled badge counts the cycles a closed box keeps to itself, an outlined one, on open boxes too, those it shares
+  with files outside it; the tooltips of boxes and declarations name both
 
 ## Steps
 
