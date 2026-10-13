@@ -255,6 +255,26 @@ describe("DependencyInspectorComponent", () => {
         expect(screen.getByTestId("dependency-inspector-row-type").textContent).toContain("Points upward and closes a cycle")
     })
 
+    it("should not repeat under a row that one declaration uses the other, and still name a closer kind of use and the edge type", async () => {
+        // Arrange
+        const usesAndCreates = { ...DEPENDENCY, usages: ["Creates", "Uses"] }
+        const onlyUses = { ...DEPENDENCY, usages: ["Uses"] }
+        const section = {
+            title: "Uses",
+            count: 2,
+            groups: [{ heading: WEAPON_FILE, dependencies: [usesAndCreates, onlyUses], hiddenCount: 0 }]
+        }
+
+        // Act
+        await renderInspector({ ...FILE_MODEL, sections: [section] })
+
+        // Assert
+        const rowTexts = screen
+            .getAllByTestId("dependency-inspector-row")
+            .map(row => row.lastElementChild.textContent.replaceAll(/\s+/g, " ").trim())
+        expect(rowTexts).toEqual(["Creates · Points upward and closes a cycle", "Points upward and closes a cycle"])
+    })
+
     it("should outline the selection's own declarations in a row, and say nothing under a plain dependency", async () => {
         // Arrange
         await renderInspector()

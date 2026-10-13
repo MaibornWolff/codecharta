@@ -201,12 +201,13 @@
                                             [ngTemplateOutletContext]="{ $implicit: dependency.to, isOwn: dependency.isToOwn }"
                                         ></ng-container>
                                     </div>
-                                    @if (dependency.usages.length > 0 || dependency.type !== "regular") {
+                                    @let closerUsages = closerUsagesOf(dependency);
+                                    @if (closerUsages.length > 0 || dependency.type !== "regular") {
                                         <div class="pl-0.5 text-xs">
-                                            <span class="opacity-60">{{ dependency.usages.join(", ") }}</span>
+                                            <span class="opacity-60">{{ closerUsages.join(", ") }}</span>
                                             @if (dependency.type !== "regular") {
                                                 <span class="font-semibold" [style.color]="edgeColors()[dependency.type]" data-testid="dependency-inspector-row-type">
-                                                    {{ dependency.usages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
+                                                    {{ closerUsages.length > 0 ? "· " : "" }}{{ edgeTypeLabels[dependency.type] }}</span
                                                 >
                                             }
                                         </div>

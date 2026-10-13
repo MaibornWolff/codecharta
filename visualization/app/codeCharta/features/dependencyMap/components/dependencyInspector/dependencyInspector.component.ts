@@ -1,7 +1,7 @@
 import { NgTemplateOutlet } from "@angular/common"
 import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, untracked, viewChild } from "@angular/core"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
-import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import { EDGE_TYPE_LABELS, usageLabelOf } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { InspectorResizeHandleComponent } from "../../../shared/facade"
 import {
@@ -9,6 +9,7 @@ import {
     DECLARATIONS_SECTION_TITLE,
     InspectorActionKind,
     InspectorCycle,
+    InspectorDependency,
     InspectorModel,
     InspectorReference
 } from "../../inspector/inspectorModel"
@@ -21,6 +22,8 @@ const ACTION_LABELS: Record<InspectorActionKind, string> = {
     close: "Close in graph",
     unfold: "Unfold in graph"
 }
+
+const PLAIN_USAGE_LABEL = usageLabelOf("usage")
 
 const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-folder-o", file: "fa fa-file-o" }
 
@@ -83,6 +86,11 @@ export class DependencyInspectorComponent {
 
     protected toggleSection(sectionTitle: string): void {
         this.store.toggleSection(sectionTitle)
+    }
+
+    /** That one declaration uses the other is what every row shows; only a closer kind of use adds to it. */
+    protected closerUsagesOf(dependency: InspectorDependency): string[] {
+        return dependency.usages.filter(usage => usage !== PLAIN_USAGE_LABEL)
     }
 
     /** An edge has one section and nothing else to tell, so it is not folded away. */
