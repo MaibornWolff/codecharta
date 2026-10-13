@@ -77,7 +77,9 @@ interface Shown {
     cyclesRequest?: number | null
 }
 
-async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest: number | null = null) {
+const EVERY_SECTION = ["Cycles", "Uses", "Used by", "Declarations"]
+
+async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest: number | null = null, openSections = EVERY_SECTION) {
     const handlers = {
         referenceChosen: jest.fn(),
         dependenciesPointedAt: jest.fn(),
@@ -85,12 +87,15 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         cycleShown: jest.fn(),
         allRowsRequested: jest.fn(),
         closed: jest.fn(),
-        cyclesRequestAnswered: jest.fn()
+        cyclesRequestAnswered: jest.fn(),
+        sectionToggled: jest.fn()
     }
     const shown = { model: signal<InspectorModel | null>(model), cyclesRequest: signal(cyclesRequest) }
     const store: Partial<DependencyInspectorStore> = {
         ...shown,
         edgeColors: signal(EDGE_COLORS),
+        openSections: signal<ReadonlySet<string>>(new Set(openSections)),
+        toggleSection: handlers.sectionToggled,
         goTo: handlers.referenceChosen,
         pointAt: handlers.dependenciesPointedAt,
         perform: handlers.actionChosen,
@@ -204,6 +209,32 @@ describe("DependencyInspectorComponent", () => {
         expect(sections).toEqual(["Cycles", "Uses", "Declarations"])
         expect(screen.getByRole("region", { name: "Cycles" }).textContent).toContain("6")
         expect(screen.getByRole("region", { name: "Uses" }).textContent).toContain("5")
+    })
+
+    it("should show of a section the reader has not opened only its title and count, and open it on a click", async () => {
+        // Arrange
+        const { sectionToggled } = await renderInspector(FILE_MODEL, null, ["Uses"])
+        const cycles = screen.getByRole("region", { name: "Cycles" })
+
+        // Act
+        await userEvent.click(within(cycles).getByRole("button", { name: /Cycles/ }))
+
+        // Assert
+        expect(
+            within(cycles)
+                .getByRole("button", { name: /Cycles/ })
+                .getAttribute("aria-expanded")
+        ).toBe("false")
+        expect(cycles.textContent).toContain("6")
+        expect(screen.queryByTestId("dependency-inspector-cycle")).toBeNull()
+        expect(screen.queryByText("class · level 2")).toBeNull()
+        expect(screen.getAllByTestId("dependency-inspector-group")).toHaveLength(2)
+        expect(
+            within(screen.getByRole("region", { name: "Uses" }))
+                .getByRole("button", { name: /Uses/ })
+                .getAttribute("aria-expanded")
+        ).toBe("true")
+        expect(sectionToggled).toHaveBeenCalledWith("Cycles")
     })
 
     it("should draw a dependency as a chain: its two declarations with the edge between them, in the edge's dashes, head and colour", async () => {

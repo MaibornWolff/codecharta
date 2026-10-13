@@ -24,11 +24,28 @@
     </span>
 </ng-template>
 
-<ng-template #sectionHeader let-title let-count="count">
-    <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
-        <h3 class="m-0 text-xs font-normal">{{ title }}</h3>
-        <span class="tracking-normal tabular-nums">{{ count }}</span>
-    </div>
+<ng-template #sectionHeader let-title let-count="count" let-isCollapsible="isCollapsible">
+    @if (isCollapsible) {
+        <h3 class="m-0 text-xs font-normal">
+            <button
+                type="button"
+                class="flex w-full cursor-pointer items-center justify-between gap-2 border-0 bg-transparent p-0 text-xs tracking-widest uppercase opacity-60 hover:opacity-100"
+                [attr.aria-expanded]="isOpen(title)"
+                (click)="toggleSection(title)"
+            >
+                <span class="flex items-center gap-1.5">
+                    <i class="fa w-2.5 text-[10px]" [class]="isOpen(title) ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true"></i>
+                    {{ title }}
+                </span>
+                <span class="tracking-normal tabular-nums">{{ count }}</span>
+            </button>
+        </h3>
+    } @else {
+        <div class="flex items-center justify-between text-xs tracking-widest uppercase opacity-60">
+            <h3 class="m-0 text-xs font-normal">{{ title }}</h3>
+            <span class="tracking-normal tabular-nums">{{ count }}</span>
+        </div>
+    }
 </ng-template>
 
 <ng-template #moreRows let-hiddenCount let-testId="testId">
@@ -91,10 +108,11 @@
             <section
                 #cyclesSection
                 class="flex flex-col gap-2 border-t border-base-300 px-3 py-2"
-                aria-label="Cycles"
+                [attr.aria-label]="cyclesTitle"
                 data-testid="dependency-inspector-cycles"
             >
-                <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'Cycles', count: model.cycleCount }"></ng-container>
+                <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: cyclesTitle, count: model.cycleCount, isCollapsible: true }"></ng-container>
+                @if (isOpen(cyclesTitle)) {
                 @for (cycle of model.cycles; track $index) {
                     <div
                         class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
@@ -139,13 +157,15 @@
                     [ngTemplateOutletContext]="{ $implicit: model.cycleCount - model.cycles.length, testId: 'dependency-inspector-more-cycles' }"
                 ></ng-container>
                 }
+                }
             </section>
         }
 
         @for (section of model.sections; track section.title) {
             @if (section.count > 0) {
                 <section class="flex flex-col gap-2 border-t border-base-300 px-3 py-2" [attr.aria-label]="section.title">
-                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: section.title, count: section.count }"></ng-container>
+                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: section.title, count: section.count, isCollapsible: isCollapsible(model) }"></ng-container>
+                    @if (!isCollapsible(model) || isOpen(section.title)) {
                     @for (group of section.groups; track $index) {
                         <div class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5" data-testid="dependency-inspector-group">
                             @if (group.heading; as heading) {
@@ -198,14 +218,16 @@
                             }
                         </div>
                     }
+                }
                 </section>
             }
         }
 
         @if (model.declarations; as declarations) {
             @if (declarations.count > 0) {
-                <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" aria-label="Declarations">
-                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'Declarations', count: declarations.count }"></ng-container>
+                <section class="flex flex-col gap-1.5 border-t border-base-300 px-3 py-2" [attr.aria-label]="declarationsTitle">
+                    <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: declarationsTitle, count: declarations.count, isCollapsible: true }"></ng-container>
+                    @if (isOpen(declarationsTitle)) {
                     <ul class="m-0 flex list-none flex-col gap-1 p-0">
                         @for (item of declarations.items; track item.reference.path) {
                             <li class="flex min-w-0 items-baseline justify-between gap-2">
@@ -216,6 +238,7 @@
                     </ul>
                     @if (declarations.hiddenCount > 0) {
                         <ng-container [ngTemplateOutlet]="moreRows" [ngTemplateOutletContext]="{ $implicit: declarations.hiddenCount }"></ng-container>
+                    }
                     }
                 </section>
             }
