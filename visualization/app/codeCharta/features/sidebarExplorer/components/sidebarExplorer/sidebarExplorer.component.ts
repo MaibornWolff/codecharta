@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, OnDestroy, viewChild } from "@angular/core"
+import { ChangeDetectionStrategy, Component, computed, ElementRef, effect, inject, viewChild } from "@angular/core"
+import { ColumnResizeHandleDirective } from "../../../shared/facade"
 import { EXPLORER_CAPABILITIES } from "../../explorerCapabilities"
 import { EXPLORER_METRIC_RULES } from "../../explorerMetricRules.port"
 import { ExplorerCollapseService } from "../../services/explorerCollapse.service"
@@ -20,6 +21,7 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
     templateUrl: "./sidebarExplorer.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
+        ColumnResizeHandleDirective,
         ExplorerFocusBannerComponent,
         ExplorerHeaderComponent,
         ExplorerSearchBarComponent,
@@ -38,7 +40,7 @@ export const COLLAPSED_STRIP_WIDTH_PX = 300
             "isCollapsed() ? 'auto' : 'calc(100vh - var(--cc-bars-height, 49px) - var(--cc-file-extension-bar-height, 0px) - var(--cc-bottom-bar-height, 32px))'"
     }
 })
-export class SidebarExplorerComponent implements OnDestroy {
+export class SidebarExplorerComponent {
     private readonly collapseService = inject(ExplorerCollapseService)
     private readonly widthService = inject(ExplorerWidthService)
     private readonly scrollHostService = inject(ExplorerScrollHostService)
@@ -60,46 +62,15 @@ export class SidebarExplorerComponent implements OnDestroy {
         effect(() => this.scrollHostService.register(this.scrollHost()?.nativeElement ?? null))
     }
 
-    private isResizing = false
-    private readonly onPointerMove = (event: PointerEvent) => this.resize(event)
-    private readonly onPointerUp = () => this.stopResize()
-
     toggle() {
         this.collapseService.toggle()
     }
 
-    startResize(event: PointerEvent) {
-        event.preventDefault()
-        this.isResizing = true
-        document.body.style.userSelect = "none"
-        globalThis.addEventListener("pointermove", this.onPointerMove)
-        globalThis.addEventListener("pointerup", this.onPointerUp)
-        globalThis.addEventListener("pointercancel", this.onPointerUp)
+    setWidth(width: number) {
+        this.widthService.setWidth(width)
     }
 
     resetWidth() {
         this.widthService.reset()
-    }
-
-    ngOnDestroy() {
-        this.stopResize()
-    }
-
-    private resize(event: PointerEvent) {
-        if (!this.isResizing) {
-            return
-        }
-        this.widthService.setWidth(event.clientX)
-    }
-
-    private stopResize() {
-        if (!this.isResizing) {
-            return
-        }
-        this.isResizing = false
-        document.body.style.userSelect = ""
-        globalThis.removeEventListener("pointermove", this.onPointerMove)
-        globalThis.removeEventListener("pointerup", this.onPointerUp)
-        globalThis.removeEventListener("pointercancel", this.onPointerUp)
     }
 }

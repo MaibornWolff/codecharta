@@ -1,7 +1,8 @@
 import { Component } from "@angular/core"
 import { TestBed } from "@angular/core/testing"
 import { render, screen } from "@testing-library/angular"
-import { INSPECTOR_DEFAULT_WIDTH, InspectorWidthService } from "../../services/inspectorWidth.service"
+import { INSPECTOR_WIDTH_KEY, InspectorWidthService } from "../../services/inspectorWidth.service"
+import { SIDE_PANEL_WIDTH_PX } from "../../util/sidePanelWidth"
 import { InspectorResizeHandleComponent } from "./inspectorResizeHandle.component"
 
 const INSPECTOR_RIGHT_EDGE = 1200
@@ -15,51 +16,25 @@ class InspectorHostComponent {}
 describe("InspectorResizeHandleComponent", () => {
     async function renderHandle() {
         localStorage.clear()
-        const rendered = await render(InspectorHostComponent)
+        await render(InspectorHostComponent)
         jest.spyOn(screen.getByTestId("inspector"), "getBoundingClientRect").mockReturnValue({ right: INSPECTOR_RIGHT_EDGE } as DOMRect)
-        return { ...rendered, handle: screen.getByTestId("inspector-resize-handle"), widthService: TestBed.inject(InspectorWidthService) }
+        return { handle: screen.getByTestId("inspector-resize-handle"), widthService: TestBed.inject(InspectorWidthService) }
     }
 
-    it("should make the inspector as wide as its right edge lies from the dragged handle", async () => {
+    it("should make the inspector as wide as its right edge lies from the dragged handle, and remember the width once it is let go", async () => {
         // Arrange
         const { handle, widthService } = await renderHandle()
 
         // Act
         handle.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }))
         window.dispatchEvent(new MouseEvent("pointermove", { clientX: 700 }))
+        const rememberedWhileDragging = localStorage.getItem(INSPECTOR_WIDTH_KEY)
         window.dispatchEvent(new MouseEvent("pointerup"))
 
         // Assert
         expect(widthService.width()).toBe(INSPECTOR_RIGHT_EDGE - 700)
-    })
-
-    it("should stop resizing once the pointer is released or the handle is gone", async () => {
-        // Arrange
-        const { handle, widthService, fixture } = await renderHandle()
-        handle.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }))
-        window.dispatchEvent(new MouseEvent("pointermove", { clientX: 700 }))
-        window.dispatchEvent(new MouseEvent("pointerup"))
-
-        // Act
-        window.dispatchEvent(new MouseEvent("pointermove", { clientX: 600 }))
-        handle.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }))
-        fixture.destroy()
-        window.dispatchEvent(new MouseEvent("pointermove", { clientX: 600 }))
-
-        // Assert
-        expect(widthService.width()).toBe(INSPECTOR_RIGHT_EDGE - 700)
-        expect(document.body.style.userSelect).toBe("")
-    })
-
-    it("should leave the width alone while the pointer moves without a drag", async () => {
-        // Arrange
-        const { widthService } = await renderHandle()
-
-        // Act
-        window.dispatchEvent(new MouseEvent("pointermove", { clientX: 700 }))
-
-        // Assert
-        expect(widthService.width()).toBe(INSPECTOR_DEFAULT_WIDTH)
+        expect(rememberedWhileDragging).toBeNull()
+        expect(localStorage.getItem(INSPECTOR_WIDTH_KEY)).toBe(String(INSPECTOR_RIGHT_EDGE - 700))
     })
 
     it("should put the default width back on a double click", async () => {
@@ -71,6 +46,6 @@ describe("InspectorResizeHandleComponent", () => {
         handle.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }))
 
         // Assert
-        expect(widthService.width()).toBe(INSPECTOR_DEFAULT_WIDTH)
+        expect(widthService.width()).toBe(SIDE_PANEL_WIDTH_PX.default)
     })
 })
