@@ -24,44 +24,44 @@ function boxesShowing(representativeOf: (declarationPath: string) => string | un
 }
 
 describe("findCycleMarks", () => {
-    it("should count on a closed file the cycles it keeps to itself apart from those it shares with other files", () => {
+    it("should count on a closed file the cycles that stay inside it apart from those between it and other files", () => {
         // Arrange
         const everyFileClosed = boxesShowing(fileOf)
 
         // Act
-        const { insideCycles, sharedCycles } = findCycleMarks(CYCLES, everyFileClosed)
+        const { cyclesInsideFiles, cyclesBetweenFiles } = findCycleMarks(CYCLES, everyFileClosed)
 
         // Assert
-        expect([...insideCycles]).toEqual([[FIRST_FILE, 1]])
-        expect(sharedCycles.get(FIRST_FILE)).toBe(1)
-        expect(sharedCycles.get(SECOND_FILE)).toBe(2)
-        expect(sharedCycles.get(FILE_ELSEWHERE)).toBe(1)
+        expect([...cyclesInsideFiles]).toEqual([[FIRST_FILE, 1]])
+        expect(cyclesBetweenFiles.get(FIRST_FILE)).toBe(1)
+        expect(cyclesBetweenFiles.get(SECOND_FILE)).toBe(2)
+        expect(cyclesBetweenFiles.get(FILE_ELSEWHERE)).toBe(1)
     })
 
-    it("should count on a closed folder the cycles of the files in it as inside, and only those that leave it as shared", () => {
+    it("should count on a closed folder every cycle between files running through it, those between its own files too, apart from the cycles inside single files", () => {
         // Arrange
         const folderClosed = boxesShowing(path => (path.startsWith(FOLDER) ? FOLDER : fileOf(path)))
 
         // Act
-        const { insideCycles, sharedCycles } = findCycleMarks(CYCLES, folderClosed)
+        const { cyclesInsideFiles, cyclesBetweenFiles } = findCycleMarks(CYCLES, folderClosed)
 
         // Assert
-        expect(insideCycles.get(FOLDER)).toBe(2)
-        expect(sharedCycles.get(FOLDER)).toBe(1)
+        expect(cyclesInsideFiles.get(FOLDER)).toBe(1)
+        expect(cyclesBetweenFiles.get(FOLDER)).toBe(2)
     })
 
-    it("should keep telling on an opened folder or file the cycles that leave it, but none it holds whole", () => {
+    it("should keep counting on an opened file the cycles between it and other files, but none inside it, and count nothing on an opened folder", () => {
         // Arrange
         const firstFileOpened = boxesShowing(path => (fileOf(path) === FIRST_FILE ? path : fileOf(path)))
 
         // Act
-        const { insideCycles, sharedCycles } = findCycleMarks(CYCLES, firstFileOpened)
+        const { cyclesInsideFiles, cyclesBetweenFiles } = findCycleMarks(CYCLES, firstFileOpened)
 
         // Assert
-        expect(insideCycles.size).toBe(0)
-        expect(sharedCycles.get(FIRST_FILE)).toBe(1)
-        expect(sharedCycles.get(FOLDER)).toBe(1)
-        expect(sharedCycles.has(ROOT)).toBe(false)
+        expect(cyclesInsideFiles.size).toBe(0)
+        expect(cyclesBetweenFiles.get(FIRST_FILE)).toBe(1)
+        expect(cyclesBetweenFiles.get(SECOND_FILE)).toBe(2)
+        expect([FOLDER, ROOT].map(openFolder => cyclesBetweenFiles.has(openFolder))).toEqual([false, false])
     })
 
     it("should say of each declaration whether its cycles stay in its file, leave it or both, also of those the graph does not show", () => {
@@ -69,7 +69,7 @@ describe("findCycleMarks", () => {
         const nothingShown = boxesShowing(() => undefined)
 
         // Act
-        const { declarationsInCycles, insideCycles, sharedCycles } = findCycleMarks(CYCLES, nothingShown)
+        const { declarationsInCycles, cyclesInsideFiles, cyclesBetweenFiles } = findCycleMarks(CYCLES, nothingShown)
 
         // Assert
         expect(Object.fromEntries(declarationsInCycles)).toEqual({
@@ -78,7 +78,7 @@ describe("findCycleMarks", () => {
             [`${SECOND_FILE}/Two`]: { isWithinItsFile: false, isWithOtherFiles: true },
             [`${FILE_ELSEWHERE}/Far`]: { isWithinItsFile: false, isWithOtherFiles: true }
         })
-        expect([insideCycles.size, sharedCycles.size]).toEqual([0, 0])
+        expect([cyclesInsideFiles.size, cyclesBetweenFiles.size]).toEqual([0, 0])
     })
 
     it("should mark nothing while there is no cycle", () => {

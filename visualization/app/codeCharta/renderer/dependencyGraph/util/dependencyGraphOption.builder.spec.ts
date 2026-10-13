@@ -278,8 +278,8 @@ describe("buildDependencyGraphOption", () => {
         const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
         const layout = { boxes: [root, view, declaration], bands: [], width: 800, height: 500 }
         const cycleMarks = {
-            insideCycles: new Map([[view.path, 1]]),
-            sharedCycles: new Map(),
+            cyclesInsideFiles: new Map([[view.path, 1]]),
+            cyclesBetweenFiles: new Map(),
             declarationsInCycles: new Map([[declaration.path, { isWithinItsFile: true, isWithOtherFiles: false }]])
         }
 
@@ -289,18 +289,21 @@ describe("buildDependencyGraphOption", () => {
         // Assert
         expect(draw(indexOf(view.path)).children.at(-1)).toMatchObject({ info: "cycleBadge", style: { text: "1" } })
         expect(draw(indexOf(declaration.path)).children.at(-1).style).toMatchObject({ stroke: "#dc2626" })
-        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 cycle inside")
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 cycle inside this file")
         expect(describe(indexOf(declaration.path))).toBe("<b>Creature</b><br/>class<br/>In a cycle inside this file")
     })
 
-    it("should tell in the tooltip the cycles a box keeps to itself apart from those it shares with others", () => {
+    it("should tell in the tooltip the cycles inside files apart from those between files", () => {
         // Arrange
-        const folder = aBox("/root/app", { kind: "folder", isExpanded: true, width: 300, height: 200 })
+        const folder = aBox("/root/app", { kind: "folder", width: 300, height: 200 })
         const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
         const layout = { boxes: [root, folder, view, declaration], bands: [], width: 800, height: 500 }
         const cycleMarks = {
-            insideCycles: new Map([[view.path, 2]]),
-            sharedCycles: new Map([
+            cyclesInsideFiles: new Map([
+                [view.path, 2],
+                [folder.path, 1]
+            ]),
+            cyclesBetweenFiles: new Map([
                 [view.path, 1],
                 [folder.path, 3]
             ]),
@@ -311,9 +314,9 @@ describe("buildDependencyGraphOption", () => {
         const { describe, indexOf } = drawnGraph(sceneWith({ layout, edges: [], cycleMarks }))
 
         // Assert
-        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>2 cycles inside<br/>In 1 cycle with other files")
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>2 cycles inside this file<br/>1 cycle between files")
         expect(describe(indexOf(folder.path))).toBe(
-            "<b>app</b><br/>Level 0<br/>In 3 cycles with files outside<br/><i>Double-click to close</i>"
+            "<b>app</b><br/>Level 0<br/>1 cycle inside files<br/>3 cycles between files<br/><i>Double-click to open</i>"
         )
         expect(describe(indexOf(declaration.path))).toBe(
             "<b>Creature</b><br/>class<br/>In a cycle inside this file<br/>In a cycle with other files"
@@ -394,8 +397,8 @@ describe("buildDependencyGraphOption", () => {
         })
         const layout = { boxes: [root, file, declaration], bands: [aBand()], width: 400, height: 200 }
         const cycleMarks = {
-            insideCycles: new Map([[file.path, 3]]),
-            sharedCycles: new Map(),
+            cyclesInsideFiles: new Map([[file.path, 3]]),
+            cyclesBetweenFiles: new Map(),
             declarationsInCycles: new Map([[declaration.path, { isWithinItsFile: true, isWithOtherFiles: false }]])
         }
         const edges = [anEdge(file.path, declaration.path)]

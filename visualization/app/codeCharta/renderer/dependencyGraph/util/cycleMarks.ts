@@ -4,14 +4,14 @@ export interface DeclarationCycles {
 }
 
 export interface CycleMarks {
-    /** Per closed box, the cycles between declarations that run through nothing but what it hides. */
-    insideCycles: ReadonlyMap<string, number>
-    /** Per file, folder or package, open or closed, the cycles that run through it and through something outside it. */
-    sharedCycles: ReadonlyMap<string, number>
+    /** Per closed box, the cycles that stay within one file it hides. */
+    cyclesInsideFiles: ReadonlyMap<string, number>
+    /** Per closed box and per opened file, the cycles between different files that run through it. */
+    cyclesBetweenFiles: ReadonlyMap<string, number>
     declarationsInCycles: ReadonlyMap<string, DeclarationCycles>
 }
 
-export const NO_CYCLE_MARKS: CycleMarks = { insideCycles: new Map(), sharedCycles: new Map(), declarationsInCycles: new Map() }
+export const NO_CYCLE_MARKS: CycleMarks = { cyclesInsideFiles: new Map(), cyclesBetweenFiles: new Map(), declarationsInCycles: new Map() }
 
 export interface DrawnBoxes {
     /** The box a declaration is drawn as or hidden in. */
@@ -21,30 +21,31 @@ export interface DrawnBoxes {
     fileOf: (declarationPath: string) => string | undefined
 }
 
-/** A box counts apart the cycles it keeps to itself and those it shares with what lies outside it, so a file that
- * has cycles of its own and is part of a cycle with other files says both. A cycle a box holds whole is counted
- * only while the box is closed: once it is open, the cycle is on screen or counted by a closed box inside.
- * Each cycle is given as the paths of the declarations it runs through. */
+/** A box counts apart the cycles that stay within single files and those between different files, which are the
+ * wider tangle. A closed box counts both for all it hides. An opened file still counts the cycles it shares with
+ * other files; an opened folder counts nothing, since the boxes in it count for themselves, and a cycle within an
+ * opened file is on screen. Each cycle is given as the paths of the declarations it runs through. */
 export function findCycleMarks(cycles: readonly (readonly string[])[], boxes: DrawnBoxes): CycleMarks {
-    const insideCycles = new Map<string, number>()
-    const sharedCycles = new Map<string, number>()
+    const cyclesInsideFiles = new Map<string, number>()
+    const cyclesBetweenFiles = new Map<string, number>()
     const declarationsInCycles = new Map<string, DeclarationCycles>()
     for (const declarationPaths of cycles) {
-        noteDeclarations(declarationPaths, boxes, declarationsInCycles)
-        const closedBoxes = new Set(declarationPaths.map(path => boxes.representatives.get(path)).filter(box => box !== undefined))
-        for (const [box, heldCount] of declarationsHeldByBox(declarationPaths, boxes)) {
-            if (heldCount < declarationPaths.length) {
-                countOneMore(sharedCycles, box)
-            } else if (closedBoxes.has(box)) {
-                countOneMore(insideCycles, box)
+        const files = new Set(declarationPaths.map(boxes.fileOf))
+        const isBetweenFiles = files.size > 1
+        noteDeclarations(declarationPaths, isBetweenFiles, declarationsInCycles)
+        const closedBoxes = new Set(declarationPaths.map(path => boxes.representatives.get(path)))
+        for (const box of boxesHolding(declarationPaths, boxes)) {
+            if (isBetweenFiles && (closedBoxes.has(box) || files.has(box))) {
+                countOneMore(cyclesBetweenFiles, box)
+            } else if (!isBetweenFiles && closedBoxes.has(box)) {
+                countOneMore(cyclesInsideFiles, box)
             }
         }
     }
-    return { insideCycles, sharedCycles, declarationsInCycles }
+    return { cyclesInsideFiles, cyclesBetweenFiles, declarationsInCycles }
 }
 
-function noteDeclarations(declarationPaths: readonly string[], { fileOf }: DrawnBoxes, noted: Map<string, DeclarationCycles>): void {
-    const isWithOtherFiles = new Set(declarationPaths.map(fileOf)).size > 1
+function noteDeclarations(declarationPaths: readonly string[], isWithOtherFiles: boolean, noted: Map<string, DeclarationCycles>): void {
     for (const declarationPath of declarationPaths) {
         const known = noted.get(declarationPath) ?? { isWithinItsFile: false, isWithOtherFiles: false }
         noted.set(declarationPath, {
@@ -54,18 +55,18 @@ function noteDeclarations(declarationPaths: readonly string[], { fileOf }: Drawn
     }
 }
 
-/** How many declarations of a cycle each box holds, the boxes around a box included; a declaration drawn as
- * itself is no box that holds it. */
-function declarationsHeldByBox(declarationPaths: readonly string[], { representatives, parentOf }: DrawnBoxes): Map<string, number> {
-    const heldByBox = new Map<string, number>()
+/** The boxes holding a declaration of the cycle, the boxes around a box included; a declaration drawn as itself
+ * is no box that holds it. */
+function boxesHolding(declarationPaths: readonly string[], { representatives, parentOf }: DrawnBoxes): Set<string> {
+    const holding = new Set<string>()
     for (const declarationPath of declarationPaths) {
         const representative = representatives.get(declarationPath)
         const innermostBox = representative === declarationPath ? parentOf(declarationPath) : representative
         for (let box = innermostBox; box; box = parentOf(box)) {
-            countOneMore(heldByBox, box)
+            holding.add(box)
         }
     }
-    return heldByBox
+    return holding
 }
 
 function countOneMore(counts: Map<string, number>, key: string): void {
