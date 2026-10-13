@@ -244,7 +244,10 @@ function shownWindowOf({ dataZoom: [xZoom, yZoom] }: { dataZoom: ZoomOption[] })
 
 function outlineWidthOf(path: string): unknown {
     const index = drawnSeries().data.findIndex(item => item.name === path)
-    return drawnSeries().renderItem({ dataIndex: index }, { coord: point => point }).children[0].style.lineWidth
+    const outlines = drawnSeries()
+        .renderItem({ dataIndex: index }, { coord: point => point })
+        .children.filter(child => (child as { type?: string }).type === "rect")
+    return outlines.at(-1).style.lineWidth
 }
 
 function dragBox(path: string) {

@@ -23,7 +23,7 @@ import {
     TEXT_COLOR
 } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
-import { describeLevelPath, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
+import { canBeOpened, describeLevelPath, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 import { BandCutout, BandSeparator, bandSeparator } from "./overlaps"
 
 export type BoxEmphasis = "selected" | "hovered" | "none"
@@ -46,6 +46,7 @@ const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
 const CORNER_RADIUS_PX = 4
+const STACK_OFFSET_PX = 4
 const LINE_WIDTH_PX = 1
 const SELECTED_LINE_WIDTH_PX = 2.5
 const HOVERED_LINE_WIDTH_PX = 2
@@ -85,7 +86,26 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
     const style = boxStyle(box, emphasis)
     const fill = isSeeThrough ? seeThrough(style.fill) : style.fill
     const opacity = opacityOf(isMissedBySearch)
-    return [{ type: "rect", ...UNTRANSFORMED, shape: { ...rect, r: CORNER_RADIUS_PX }, style: { ...style, fill, opacity } }]
+    const cursor = canBeOpened(box) && !box.isExpanded ? { cursor: "pointer" } : {}
+    const outline = {
+        type: "rect",
+        ...UNTRANSFORMED,
+        ...cursor,
+        shape: { ...rect, r: CORNER_RADIUS_PX },
+        style: { ...style, fill, opacity }
+    }
+    return [...drawSheetBehind(box, rect, { fill, opacity }), outline]
+}
+
+/** A closed file that holds declarations lies on a second sheet that peeks out below and to the right of it:
+ * there is more in it than its name, and it opens. */
+function drawSheetBehind(box: LayoutBox, rect: Rectangle, look: { fill: string; opacity: number }): object[] {
+    if (!holdsDeclarations(box) || box.isExpanded) {
+        return []
+    }
+    const offset = STACK_OFFSET_PX * Math.min(1, zoomOf(box, rect))
+    const sheet = { ...rect, x: rect.x + offset, y: rect.y + offset, r: CORNER_RADIUS_PX }
+    return [{ type: "rect", ...UNTRANSFORMED, cursor: "pointer", shape: sheet, style: { ...baseStyle(box), ...look } }]
 }
 
 function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch }: BoxLook, zoom: number): object[] {
