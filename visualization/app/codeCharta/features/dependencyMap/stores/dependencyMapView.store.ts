@@ -18,7 +18,9 @@ interface RevealsAwaitingAdoption {
 
 @Injectable({ providedIn: "root" })
 export class DependencyMapViewStore {
-    private readonly currentLayoutIdentity = toSignal(inject(DependencyMapReadStore).layoutIdentity$, { requireSync: true })
+    private readonly readStore = inject(DependencyMapReadStore)
+    private readonly currentLayoutIdentity = toSignal(this.readStore.layoutIdentity$, { requireSync: true })
+    private readonly currentLoadedFilesIdentity = toSignal(this.readStore.loadedFilesIdentity$, { requireSync: true })
     private readonly layoutIdentityOfTheOpenedBoxes = signal<string | null>(null)
     private readonly openedBoxes = signal<ReadonlySet<string>>(new Set())
     private readonly movedBoxes = signal<ReadonlyMap<string, BoxOffset>>(new Map())
@@ -30,6 +32,7 @@ export class DependencyMapViewStore {
     private readonly pixelsUnderTheBar = signal(0)
     private revealsAwaitingAdoption: RevealsAwaitingAdoption | null = null
     private adoptedTree: TreeIndex | null = null
+    private loadedFilesIdentityOfTheOpenedBoxes: string | null = null
 
     readonly adoptedLayoutIdentity = this.layoutIdentityOfTheOpenedBoxes.asReadonly()
     readonly expandedPaths = this.openedBoxes.asReadonly()
@@ -46,13 +49,21 @@ export class DependencyMapViewStore {
 
     adoptTree(tree: TreeIndex): void {
         const layoutIdentity = this.currentLayoutIdentity()
-        const hasRootMoved = tree.root.path !== this.adoptedTree?.root.path
+        const previousRootPath = this.adoptedTree?.root.path
         this.adoptedTree = tree
-        if (layoutIdentity !== untracked(this.layoutIdentityOfTheOpenedBoxes)) {
-            this.startOver(tree.root, layoutIdentity)
-        } else if (hasRootMoved) {
-            this.openTheMovedRoot(tree.root)
+        if (layoutIdentity === untracked(this.layoutIdentityOfTheOpenedBoxes)) {
+            if (tree.root.path !== previousRootPath) {
+                this.openTheMovedRoot(tree.root)
+            }
+            return
         }
+        const loadedFilesIdentity = untracked(this.currentLoadedFilesIdentity)
+        if (loadedFilesIdentity === this.loadedFilesIdentityOfTheOpenedBoxes) {
+            this.keepOverTheFocusChange(tree, layoutIdentity, previousRootPath)
+            return
+        }
+        this.loadedFilesIdentityOfTheOpenedBoxes = loadedFilesIdentity
+        this.startOver(tree.root, layoutIdentity)
     }
 
     coverBottom(pixels: number): void {
@@ -121,6 +132,19 @@ export class DependencyMapViewStore {
         this.revealTheAwaitingPaths(layoutIdentity)
     }
 
+    /** Focusing a folder or leaving it shows other boxes of the same files, so what the reader opened and moved
+     * stays, and the folder that was left is shown where it lies in the graph around it. */
+    private keepOverTheFocusChange(tree: TreeIndex, layoutIdentity: string, previousRootPath: string | undefined): void {
+        this.layoutIdentityOfTheOpenedBoxes.set(layoutIdentity)
+        this.openTheMovedRoot(tree.root)
+        const isShownSomethingElse = this.revealTheAwaitingPaths(layoutIdentity)
+        const leftFolder = previousRootPath === undefined ? null : boxPathOf(tree, previousRootPath)
+        if (!isShownSomethingElse && leftFolder !== null && leftFolder !== tree.root.path) {
+            this.openBoxesHolding([previousRootPath])
+            this.bringIntoView([leftFolder])
+        }
+    }
+
     /** An exclusion can fold the one folder left into the root, which then carries that folder's path; left closed,
      * the whole graph would be one box. */
     private openTheMovedRoot(tree: LeveledNode): void {
@@ -135,12 +159,14 @@ export class DependencyMapViewStore {
         this.revealsAwaitingAdoption = { layoutIdentity, paths: [...earlierPaths, ...paths] }
     }
 
-    private revealTheAwaitingPaths(layoutIdentity: string): void {
+    private revealTheAwaitingPaths(layoutIdentity: string): boolean {
         const awaiting = this.revealsAwaitingAdoption
         this.revealsAwaitingAdoption = null
-        if (awaiting?.layoutIdentity === layoutIdentity) {
-            this.openBoxesHolding(awaiting.paths)
+        if (awaiting?.layoutIdentity !== layoutIdentity) {
+            return false
         }
+        this.openBoxesHolding(awaiting.paths)
+        return true
     }
 
     private openBoxesHolding(paths: readonly string[]): void {

@@ -2,6 +2,7 @@ import { CodeMapNode, NodeType } from "../../../model/codeCharta.model"
 import { FileState } from "../../../model/files/files"
 import {
     dependencyLayoutIdentitySelector,
+    dependencyLoadedFilesIdentitySelector,
     dependencySearchedPathsOrNullSelector,
     dependencyTreeSelector,
     focusedFolderLevelPathSelector,
@@ -130,6 +131,22 @@ describe("dependencySearchedPathsOrNullSelector", () => {
 function fileStateWithChecksum(fileChecksum: string): FileState {
     return { file: { fileMeta: { fileChecksum } } } as FileState
 }
+
+describe("dependencyLoadedFilesIdentitySelector", () => {
+    it("should stay the same for the same files in another order and change for other files", () => {
+        // Arrange
+        const fileStates = [fileStateWithChecksum("a"), fileStateWithChecksum("b")]
+
+        // Act
+        const identity = dependencyLoadedFilesIdentitySelector.projector(fileStates)
+        const reorderedIdentity = dependencyLoadedFilesIdentitySelector.projector([...fileStates].reverse())
+        const otherIdentity = dependencyLoadedFilesIdentitySelector.projector([fileStateWithChecksum("c")])
+
+        // Assert
+        expect(reorderedIdentity).toBe(identity)
+        expect(otherIdentity).not.toBe(identity)
+    })
+})
 
 describe("dependencyLayoutIdentitySelector", () => {
     it("should stay the same for the same files in another order and the same focus", () => {

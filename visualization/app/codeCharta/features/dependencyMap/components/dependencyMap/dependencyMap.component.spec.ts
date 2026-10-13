@@ -38,6 +38,7 @@ import {
 } from "../../../../stores/sharedView/sharedView.write.facade"
 import {
     dependencyLayoutIdentitySelector,
+    dependencyLoadedFilesIdentitySelector,
     dependencySearchedPathsOrNullSelector,
     dependencyTreeSelector,
     isDependencyMapFocusedSelector
@@ -144,6 +145,7 @@ async function setup({
                     { selector: isDeltaStateSelector, value: isDeltaState },
                     { selector: dependencySearchedPathsOrNullSelector, value: searchedPaths },
                     { selector: dependencyLayoutIdentitySelector, value: PROJECT_A },
+                    { selector: dependencyLoadedFilesIdentitySelector, value: PROJECT_A },
                     { selector: hasDependencyDataSelector, value: hasDependencyData },
                     { selector: isDependencyMapFocusedSelector, value: isFocused },
                     { selector: dependencyGraphSettingsSelector, value: SETTINGS_SHOWING_EVERY_EDGE }
@@ -212,6 +214,7 @@ async function changeSettings(store: MockStore, settings: Partial<DependencyGrap
 
 async function loadOtherFiles(store: MockStore, tree: LeveledNode = TREE) {
     store.overrideSelector(dependencyLayoutIdentitySelector, "project B")
+    store.overrideSelector(dependencyLoadedFilesIdentitySelector, "project B")
     store.overrideSelector(dependencyTreeSelector, { ...tree })
     store.refreshState()
     await screen.findByTestId("dependency-graph")

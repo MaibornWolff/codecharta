@@ -3,7 +3,7 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { indexTree, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { currentFocusedNodePathSelector } from "../../../stores/sharedView/sharedView.read.facade"
 import { unfocusNode } from "../../../stores/sharedView/sharedView.write.facade"
-import { dependencyLayoutIdentitySelector } from "../selectors/dependencyMap.selectors"
+import { dependencyLayoutIdentitySelector, dependencyLoadedFilesIdentitySelector } from "../selectors/dependencyMap.selectors"
 import { DependencyMapArrival } from "./dependencyMapArrival"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
@@ -23,7 +23,8 @@ describe("DependencyMapArrival", () => {
                 provideMockStore({
                     selectors: [
                         { selector: currentFocusedNodePathSelector, value: focusedNodePath },
-                        { selector: dependencyLayoutIdentitySelector, value: focusedNodePath ? FOCUSED_LAYOUT : UNFOCUSED_LAYOUT }
+                        { selector: dependencyLayoutIdentitySelector, value: focusedNodePath ? FOCUSED_LAYOUT : UNFOCUSED_LAYOUT },
+                        { selector: dependencyLoadedFilesIdentitySelector, value: "the loaded files" }
                     ]
                 })
             ]
@@ -89,6 +90,6 @@ describe("DependencyMapArrival", () => {
         )
 
         // Assert
-        expect([...viewStore.expandedPaths()]).toEqual(["/root", "/root/lib", "/root/lib/util"])
+        expect([...viewStore.expandedPaths()].sort()).toEqual(["/root", "/root/lib", "/root/lib/util", FOCUSED_FOLDER, "/root/src/ui"])
     })
 })
