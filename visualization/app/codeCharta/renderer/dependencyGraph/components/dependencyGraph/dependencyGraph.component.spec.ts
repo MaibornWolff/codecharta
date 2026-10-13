@@ -124,8 +124,11 @@ describe("DependencyGraphComponent", () => {
             on: { boxClicked, boxToggled, cycleBadgeClicked, edgeClicked, boxHovered, boxRightClicked, rendered }
         })
         const box = { seriesId: GRAPH_SERIES_ID, name: "/root/a.ts" }
+        jest.useFakeTimers()
 
         // Act
+        fireChartEvent("click", box)
+        jest.runAllTimers()
         fireChartEvent("click", box)
         screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
         fireChartEvent("click", { ...box, info: "cycleBadge" })
@@ -133,9 +136,10 @@ describe("DependencyGraphComponent", () => {
         fireChartEvent("mouseover", box)
         fireChartEvent("contextmenu", { ...box, event: { event: { clientX: 1, clientY: 2 } } })
         fireChartEvent("finished")
+        jest.useRealTimers()
 
         // Assert
-        expect(boxClicked).toHaveBeenCalledWith("/root/a.ts")
+        expect(boxClicked.mock.calls).toEqual([["/root/a.ts"]])
         expect(boxToggled).toHaveBeenCalledWith("/root/a.ts")
         expect(cycleBadgeClicked).toHaveBeenCalledWith("/root/a.ts")
         expect(edgeClicked).toHaveBeenCalledWith("/root/a.ts|/root/b.ts")

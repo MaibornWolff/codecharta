@@ -1,0 +1,51 @@
+---
+name: Dependency view release polish
+issue: none
+state: progress
+version: unreleased
+---
+
+## Goal
+
+Five changes to the dependency view of the visualization, asked for by a colleague before its release: a calmer
+double click, shorter tooltips, panning with the right mouse button, fewer edge types shown by default and one
+window for all edge style settings.
+
+## Tasks
+
+### 1. Double click opens the box only
+- A single click selects the box, and so opens the inspector, only once no second click followed (about 250 ms)
+- A double click opens or closes the box and leaves the inspector as it was
+
+### 2. Tooltip names the box, not its path
+- A folder or file is named by the last part of its path, a package by its last segment
+- The other rows (level, cycles inside, double-click hint) stay
+
+### 3. Pan with the right mouse button
+- Dragging with the right button pans the whole graph, from anywhere, also from a box
+- A right click that does not drag still opens the context menu of the box
+- Space panning and dragging a box with the left button stay as they are
+
+### 4. Edges shown: three types by default
+- Default: in cycles, points upward, points upward and closes a cycle; plain dependencies are off
+- A reset button in the Edges shown window brings the default back; a choice made stays saved
+
+### 5. One window for the edge style
+- Line thickness, width factor, what the line style shows and the reset move into the Edges drawn window
+- The cog on the Edge style card and its own window go away
+- Defaults stay combined, curved, by count, factor 1, edge type
+
+## Steps
+
+- [ ] Complete Task 1: Double click opens the box only
+- [ ] Complete Task 2: Tooltip names the box, not its path
+- [ ] Complete Task 3: Pan with the right mouse button
+- [ ] Complete Task 4: Edges shown: three types by default
+- [ ] Complete Task 5: One window for the edge style
+- [ ] Changelog, format check, unit tests, lint, type check
+
+## Notes
+
+- Decided with Christian: wait briefly for the single click rather than open the inspector and take it back;
+  default plus reset button for the shown edge types; tooltip keeps its extra rows.
+- ECharts' own pan ignores the right button, so the right drag moves the shown window itself.

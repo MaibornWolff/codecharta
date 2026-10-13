@@ -10,7 +10,13 @@ import {
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
-import { DependencyGraphHandlers, DependencyGraphHost, DOUBLE_CLICK_MS, POINTER_LEAVE_GRACE_MS } from "./dependencyGraphHost"
+import {
+    DependencyGraphHandlers,
+    DependencyGraphHost,
+    DOUBLE_CLICK_MS,
+    POINTER_LEAVE_GRACE_MS,
+    SINGLE_CLICK_WAIT_MS
+} from "./dependencyGraphHost"
 
 jest.mock("echarts/core", () => jest.requireActual("../../testing/dependencyGraph.stub").echartsCoreStub)
 
@@ -63,16 +69,62 @@ describe("DependencyGraphHost", () => {
         expect(host.containerSize()).toEqual({ width: 800, height: 600 })
     })
 
-    it("should report a click on a box with its path", () => {
+    it("should report a click on a box with its path once no second click followed it", () => {
         // Arrange
-        const clickOnBox = BOX
+        jest.useFakeTimers()
 
         // Act
-        fireChartEvent("click", clickOnBox)
+        fireChartEvent("click", BOX)
+        const reportedAtOnce = (handlers.onBoxClicked as jest.Mock).mock.calls.length
+        jest.advanceTimersByTime(SINGLE_CLICK_WAIT_MS)
 
         // Assert
+        expect(reportedAtOnce).toBe(0)
         expect(handlers.onBoxClicked).toHaveBeenCalledWith("/root/app/a.ts")
         expect(handlers.onBoxToggled).not.toHaveBeenCalled()
+    })
+
+    it("should toggle a double clicked box without reporting a click on it", () => {
+        // Arrange
+        jest.useFakeTimers()
+
+        // Act
+        fireChartEvent("click", BOX)
+        fireChartEvent("click", BOX)
+        container.dispatchEvent(new MouseEvent("dblclick"))
+        jest.runAllTimers()
+
+        // Assert
+        expect(handlers.onBoxToggled).toHaveBeenCalledTimes(1)
+        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app/a.ts")
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
+    it("should report the click on an edge alone when it follows a click on a box", () => {
+        // Arrange
+        jest.useFakeTimers()
+        fireChartEvent("click", BOX)
+
+        // Act
+        fireChartEvent("click", { ...EDGE, event: { offsetX: 30, offsetY: 40 } })
+        jest.runAllTimers()
+
+        // Assert
+        expect(handlers.onEdgeClicked).toHaveBeenCalledTimes(1)
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
+    })
+
+    it("should report no click once disposed", () => {
+        // Arrange
+        jest.useFakeTimers()
+        fireChartEvent("click", BOX)
+
+        // Act
+        host.dispose()
+        jest.runAllTimers()
+
+        // Assert
+        expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
     it("should toggle a box on a click on its toggle rather than select it, and let no double click toggle it back", () => {
@@ -137,7 +189,7 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxToggled).not.toHaveBeenCalled()
     })
 
-    it("should toggle the box the first click landed on when the browser reports a double click", () => {
+    it("should toggle the box the first click landed on when the browser reports a slow double click", () => {
         // Arrange
         jest.useFakeTimers()
         fireChartEvent("click", BOX)
@@ -188,6 +240,7 @@ describe("DependencyGraphHost", () => {
         fireChartEvent("mousedown", { ...BOX, event: PRIMARY_PRESS })
         fireRenderSurfaceEvent("mouseup")
         fireChartEvent("click", BOX)
+        jest.runAllTimers()
 
         // Assert
         expect(handlers.onBoxDragged).toHaveBeenCalledWith("/root/app/a.ts", 30, 20)
@@ -196,12 +249,14 @@ describe("DependencyGraphHost", () => {
 
     it("should not select a box on the click that still follows a drag within the click tolerance", () => {
         // Arrange
+        jest.useFakeTimers()
         fireChartEvent("mousedown", { ...BOX, event: PRIMARY_PRESS })
         fireRenderSurfaceEvent("mousemove", { offsetX: 14, offsetY: 10, target: {} })
         fireRenderSurfaceEvent("mouseup")
 
         // Act
         fireChartEvent("click", BOX)
+        jest.runAllTimers()
 
         // Assert
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
@@ -209,6 +264,7 @@ describe("DependencyGraphHost", () => {
 
     it("should end a drag when the pointer leaves the chart and select a box on the next click", () => {
         // Arrange
+        jest.useFakeTimers()
         fireChartEvent("mousedown", { ...BOX, event: PRIMARY_PRESS })
         fireRenderSurfaceEvent("mousemove", { offsetX: 40, offsetY: 30, target: {} })
         fireRenderSurfaceEvent("globalout")
@@ -218,6 +274,7 @@ describe("DependencyGraphHost", () => {
         fireRenderSurfaceEvent("mousemove", { offsetX: 90, offsetY: 90, target: {} })
         fireChartEvent("mousedown", { ...BOX, event: PRIMARY_PRESS })
         fireChartEvent("click", BOX)
+        jest.runAllTimers()
 
         // Assert
         expect(handlers.onBoxDragged).toHaveBeenCalledTimes(dragsBeforeLeaving)
