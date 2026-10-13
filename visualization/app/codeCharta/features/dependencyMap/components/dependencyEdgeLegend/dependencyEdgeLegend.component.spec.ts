@@ -126,7 +126,7 @@ describe("DependencyEdgeLegendComponent", () => {
         // Assert
         const samples = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("svg")]
         const labels = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("li > span")].map(label => label.textContent)
-        expect(labels).toEqual(["Cycles hidden inside the box", "Cycles shared with files outside the box", "Declaration in a cycle"])
+        expect(labels).toEqual(["Cycles inside a file", "Cycles between files", "Declaration in a cycle"])
         expect(samples.map(sample => sample.querySelector("rect, circle").getAttribute("fill"))).toEqual(["#ffffff", "#dc2626", "#ffffff"])
         expect(samples.map(sample => sample.querySelector("rect, circle").tagName)).toEqual(["rect", "rect", "circle"])
     })

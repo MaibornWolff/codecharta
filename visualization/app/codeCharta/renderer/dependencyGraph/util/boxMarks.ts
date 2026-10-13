@@ -6,10 +6,10 @@ import { inkCentreShiftOf, MARK_FONT_FAMILY } from "./inkCentre"
 import { LayoutBox } from "./layoutModel"
 
 export interface CycleLook {
-    /** The cycles a closed box keeps to itself; none draws no badge. */
-    insideCount: number
-    /** The cycles a box shares with what lies outside it; none draws no badge. */
-    sharedCount: number
+    /** The cycles that stay within single files a closed box hides; none draws no badge. */
+    insideFilesCount: number
+    /** The cycles between different files that run through the box; none draws no badge. */
+    betweenFilesCount: number
     isInCycle: boolean
 }
 
@@ -42,25 +42,25 @@ interface BadgeColors {
 }
 
 const CYCLE_BADGE_CONTRAST_COLOR = "#ffffff"
-/** Outlined for the cycles a box keeps to itself, filled for those that leave it: a cycle across files is the wider tangle. */
-const INSIDE_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
-const SHARED_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
+/** Outlined for the cycles within a file, filled for those between files: a cycle across files is the wider tangle. */
+const INSIDE_FILES_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
+const BETWEEN_FILES_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
 const MOST_COUNTED = 99
 /** Drawn around its own centre. */
 export const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
 const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
 
-export type CycleMarkKind = "inside" | "shared" | "declaration"
+export type CycleMarkKind = "insideFiles" | "betweenFiles" | "declaration"
 
 export const CYCLE_MARK_COLORS: Record<CycleMarkKind, BadgeColors> = {
-    inside: INSIDE_BADGE_COLORS,
-    shared: SHARED_BADGE_COLORS,
+    insideFiles: INSIDE_FILES_BADGE_COLORS,
+    betweenFiles: BETWEEN_FILES_BADGE_COLORS,
     declaration: { fill: FILE_FILL, line: CYCLE_MARK_COLOR }
 }
 
 export const CYCLE_MARK_LEGEND: readonly { mark: CycleMarkKind; label: string }[] = [
-    { mark: "inside", label: "Cycles hidden inside the box" },
-    { mark: "shared", label: "Cycles shared with files outside the box" },
+    { mark: "insideFiles", label: "Cycles inside a file" },
+    { mark: "betweenFiles", label: "Cycles between files" },
     { mark: "declaration", label: "Declaration in a cycle" }
 ]
 
@@ -101,7 +101,7 @@ const SMALLEST_CYCLE_MARK_SCALE = 0.7
 export function drawCycleMark(
     box: LayoutBox,
     rect: Rectangle,
-    { insideCount, sharedCount, isInCycle }: CycleLook,
+    { insideFilesCount, betweenFilesCount, isInCycle }: CycleLook,
     { opacity, zoom }: CycleMarkLook
 ): object[] {
     const scale = Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom))
@@ -114,9 +114,9 @@ export function drawCycleMark(
     }
     const mark = { opacity, scale }
     const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * scale, top: rect.y - CYCLE_BADGE.risePx * scale }
-    const shared = drawCycleBadge(corner, sharedCount, SHARED_BADGE_COLORS, mark)
-    const inside = drawCycleBadge({ ...corner, right: shared.left }, insideCount, INSIDE_BADGE_COLORS, mark)
-    return [...inside.elements, ...shared.elements]
+    const betweenFiles = drawCycleBadge(corner, betweenFilesCount, BETWEEN_FILES_BADGE_COLORS, mark)
+    const insideFiles = drawCycleBadge({ ...corner, right: betweenFiles.left }, insideFilesCount, INSIDE_FILES_BADGE_COLORS, mark)
+    return [...insideFiles.elements, ...betweenFiles.elements]
 }
 
 interface BadgeCorner {

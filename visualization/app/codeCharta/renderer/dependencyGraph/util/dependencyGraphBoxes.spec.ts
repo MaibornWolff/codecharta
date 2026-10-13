@@ -21,7 +21,7 @@ function childrenOf(element: object): DrawnElement[] {
     return (element as DrawnElement).children
 }
 
-const NO_CYCLE: CycleLook = { insideCount: 0, sharedCount: 0, isInCycle: false }
+const NO_CYCLE: CycleLook = { insideFilesCount: 0, betweenFilesCount: 0, isInCycle: false }
 
 describe("dependencyGraphBoxes", () => {
     describe("drawBox", () => {
@@ -172,7 +172,7 @@ describe("dependencyGraphBoxes", () => {
 
             it("should shrink a cycle badge and a cycle ring only so far, since they lead to the cycles from far out", () => {
                 // Arrange
-                const cyclic = { ...look("none"), cycle: { insideCount: 7, sharedCount: 0, isInCycle: true } }
+                const cyclic = { ...look("none"), cycle: { insideFilesCount: 7, betweenFilesCount: 0, isInCycle: true } }
 
                 // Act
                 const pill = childrenOf(drawBox(aBox("/root/app", { kind: "folder", x: 0, y: 0 }), cyclic, atZoom(0.2))).find(
@@ -227,7 +227,7 @@ describe("dependencyGraphBoxes", () => {
                 const box = aBox("/root/app", { kind: "folder", x: 10, y: 20 })
 
                 // Act
-                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ insideCount: 7 }), identityPixels))
+                const [, , pill, arc, arrowHead, count] = childrenOf(drawBox(box, cyclic({ insideFilesCount: 7 }), identityPixels))
 
                 // Assert
                 expect(pill).toMatchObject({
@@ -245,8 +245,8 @@ describe("dependencyGraphBoxes", () => {
                 const box = aBox("/root/a.ts")
 
                 // Act
-                const single = childrenOf(drawBox(box, cyclic({ insideCount: 1 }), identityPixels))
-                const many = childrenOf(drawBox(box, cyclic({ insideCount: 250 }), identityPixels))
+                const single = childrenOf(drawBox(box, cyclic({ insideFilesCount: 1 }), identityPixels))
+                const many = childrenOf(drawBox(box, cyclic({ insideFilesCount: 250 }), identityPixels))
 
                 // Assert
                 expect(single.map(part => part.type)).toEqual(["rect", "text", "rect", "path", "path", "text"])
@@ -261,7 +261,7 @@ describe("dependencyGraphBoxes", () => {
                 const open = aBox("/root/app", { kind: "folder", isExpanded: true })
 
                 // Act
-                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ sharedCount: 3 }), identityPixels)]
+                const drawn = [drawBox(closed, cyclic({}), identityPixels), drawBox(open, cyclic({ betweenFilesCount: 3 }), identityPixels)]
 
                 // Assert
                 expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])
@@ -272,7 +272,7 @@ describe("dependencyGraphBoxes", () => {
                 const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
                 // Act
-                const pills = childrenOf(drawBox(box, cyclic({ insideCount: 2, sharedCount: 3 }), identityPixels)).filter(
+                const pills = childrenOf(drawBox(box, cyclic({ insideFilesCount: 2, betweenFilesCount: 3 }), identityPixels)).filter(
                     part => part.type === "rect" && part.info === "cycleBadge"
                 )
 
@@ -292,7 +292,7 @@ describe("dependencyGraphBoxes", () => {
                 const open = aBox("/root/app", { kind: "folder", isExpanded: true, x: 10, y: 20 })
 
                 // Act
-                const pills = childrenOf(drawContainerTitle(open, cyclic({ sharedCount: 1 }), identityPixels)).filter(
+                const pills = childrenOf(drawContainerTitle(open, cyclic({ betweenFilesCount: 1 }), identityPixels)).filter(
                     part => part.type === "rect" && part.info === "cycleBadge"
                 )
 
