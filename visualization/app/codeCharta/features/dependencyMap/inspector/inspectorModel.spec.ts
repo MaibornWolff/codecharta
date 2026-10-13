@@ -141,8 +141,8 @@ describe("describeSubject", () => {
             ])
             expect(rowsOf(model, "Uses")).toEqual([
                 "this file: Creature → Armor (Uses)",
-                "weapon.ts: Creature → Weapon (Inherits from, Uses)",
-                "text.ts: Armor → format (Takes as argument)"
+                "text.ts: Armor → format (Takes as argument)",
+                "weapon.ts: Creature → Weapon (Inherits from, Uses)"
             ])
             expect(rowsOf(model, "Used by")).toEqual(["weapon.ts: Weapon → Creature (Uses)"])
         })
@@ -154,7 +154,7 @@ describe("describeSubject", () => {
             // Act
             const model = describeSubject(subject, context())
             const [inside] = model.sections[0].groups[0].dependencies
-            const [outgoing] = model.sections[0].groups[1].dependencies
+            const [outgoing] = model.sections[0].groups[2].dependencies
             const [incoming] = model.sections[1].groups[0].dependencies
 
             // Assert
@@ -170,7 +170,7 @@ describe("describeSubject", () => {
             // Act
             const model = describeSubject(subject, context())
             const [usedBy] = model.sections[1].groups[0].dependencies
-            const [inherits] = model.sections[0].groups[1].dependencies
+            const [inherits] = model.sections[0].groups[2].dependencies
 
             // Assert
             expect(usedBy).toMatchObject({
@@ -189,7 +189,7 @@ describe("describeSubject", () => {
             const model = describeSubject(box(CREATURE_NODE), upwardByFileEdge)
 
             // Assert
-            expect(model.sections[0].groups[1].dependencies[0].type).toBe("feedbackLeafLevel")
+            expect(model.sections[0].groups[2].dependencies[0].type).toBe("feedbackLeafLevel")
             expect(model.sections[1].groups[0].dependencies[0].type).toBe("cyclic")
         })
 
@@ -247,6 +247,45 @@ describe("describeSubject", () => {
             expect(model.cycles).toHaveLength(1)
         })
 
+        it("should order the files by name and, within a file, the dependencies pointing upward first, then those closing a cycle, then those in a cycle, then the rest by name", () => {
+            // Arrange
+            const toWeapon = (fromLeaf: string, extra: Partial<DependencyLeafEdge>) =>
+                declarationEdge(`${CREATURE}#${fromLeaf}`, `${WEAPON}#Weapon`, extra)
+            const declarationEdges = [
+                toWeapon("Zebra", {}),
+                toWeapon("Armor", {}),
+                toWeapon("Cyclic", { isCyclic: true }),
+                toWeapon("Closing", { isCyclic: true, isPointingUpwards: true }),
+                toWeapon("Upward", { isPointingUpwards: true }),
+                declarationEdge(`${CREATURE}#Armor`, `${UTIL}#format`)
+            ]
+            const kinds = { name: "", kind: "class" }
+            const leavesOfCreature = Object.fromEntries(
+                ["Zebra", "Armor", "Cyclic", "Closing", "Upward"].map(name => [name, { ...kinds, name }])
+            )
+            const index = indexDeclarations({
+                leaves: { ...DECLARATIONS.leaves, [CREATURE]: leavesOfCreature },
+                leafEdges: declarationEdges
+            })
+            const file = fileNode(
+                CREATURE,
+                Object.keys(leavesOfCreature).map(name => declarationNode(CREATURE, name, "class"))
+            )
+
+            // Act
+            const model = describeSubject(box(file), context({ index, cycles: [] }))
+
+            // Assert
+            expect(rowsOf(model, "Uses").map(row => row.split(" (")[0])).toEqual([
+                "text.ts: Armor → format",
+                "weapon.ts: Upward → Weapon",
+                "weapon.ts: Closing → Weapon",
+                "weapon.ts: Cyclic → Weapon",
+                "weapon.ts: Armor → Weapon",
+                "weapon.ts: Zebra → Weapon"
+            ])
+        })
+
         it("should tell the cycle across the most files first, then the one through the most declarations, then by name", () => {
             // Arrange
             const chain = (...declarations: string[]) =>
@@ -300,8 +339,8 @@ describe("describeSubject", () => {
             expect(model.declarations.items).toHaveLength(1)
             expect(model.sections[0].groups.map(group => [group.dependencies.length, group.hiddenCount])).toEqual([
                 [1, 0],
-                [1, 1],
-                [1, 0]
+                [1, 0],
+                [1, 1]
             ])
         })
     })
@@ -430,9 +469,9 @@ describe("describeSubject", () => {
             expect(model).toMatchObject({ kind: "edge", title: "creature.ts → weapon.ts", path: edge.id, parent: null, copyText: null })
             expect(badgesOf(model)).toEqual(["3 dependencies", "Uses 2", "Takes as argument 1", "Inherits from 1"])
             expect(rowsOf(model, "Stands for")).toEqual([
+                "-: Creature → Weapon (Inherits from, Uses)",
                 "-: Armor → format (Takes as argument)",
-                "-: Creature → Armor (Uses)",
-                "-: Creature → Weapon (Inherits from, Uses)"
+                "-: Creature → Armor (Uses)"
             ])
             expect(model.sections[0].groups[0].dependencies.every(row => !row.isFromOwn && !row.isToOwn)).toBe(true)
         })

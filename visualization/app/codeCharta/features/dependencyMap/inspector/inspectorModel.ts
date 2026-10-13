@@ -368,8 +368,11 @@ function groupedByFile(
         addToGroup(byFile, fileOf(declarationEdge), declarationEdge)
     }
     return [...byFile.entries()]
-        .sort(([fileA], [fileB]) => fileA.localeCompare(fileB))
         .map(([filePath, edgesOfFile]) => ({ heading: fileReference(filePath), declarationEdges: edgesOfFile }))
+        .sort(
+            (groupA, groupB) =>
+                groupA.heading.name.localeCompare(groupB.heading.name) || groupA.heading.path.localeCompare(groupB.heading.path)
+        )
 }
 
 function section(title: string, groups: readonly EdgeGroup[], ownPaths: ReadonlySet<string>, context: InspectorContext): InspectorSection {
@@ -379,7 +382,9 @@ function section(title: string, groups: readonly EdgeGroup[], ownPaths: Readonly
         title,
         count: filled.reduce((count, group) => count + group.declarationEdges.length, 0),
         groups: filled.map(({ heading, declarationEdges }) => {
-            const dependencies = declarationEdges.map(declarationEdge => dependencyOf(declarationEdge, ownPaths, context)).sort(byNames)
+            const dependencies = declarationEdges
+                .map(declarationEdge => dependencyOf(declarationEdge, ownPaths, context))
+                .sort(byTypeThenNames)
             return { heading, dependencies: dependencies.slice(0, rowLimit), hiddenCount: hiddenCountOf(dependencies, rowLimit) }
         })
     }
@@ -408,8 +413,20 @@ function linkOf(declarationEdge: DependencyLeafEdge, { pointsUpward }: Pick<Insp
     }
 }
 
-function byNames(dependencyA: InspectorDependency, dependencyB: InspectorDependency): number {
-    return dependencyA.from.name.localeCompare(dependencyB.from.name) || dependencyA.to.name.localeCompare(dependencyB.to.name)
+/** The dependencies a reader came for first, and what is cut from a long list last. */
+const ROW_RANK: Record<DependencyEdgeType, number> = {
+    feedbackContainerLevel: 0,
+    feedbackLeafLevel: 1,
+    cyclic: 2,
+    regular: 3
+}
+
+function byTypeThenNames(dependencyA: InspectorDependency, dependencyB: InspectorDependency): number {
+    return (
+        ROW_RANK[dependencyA.type] - ROW_RANK[dependencyB.type] ||
+        dependencyA.from.name.localeCompare(dependencyB.from.name) ||
+        dependencyA.to.name.localeCompare(dependencyB.to.name)
+    )
 }
 
 type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">
