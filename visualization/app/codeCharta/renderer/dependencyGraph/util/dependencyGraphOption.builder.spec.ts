@@ -154,6 +154,18 @@ describe("buildDependencyGraphOption", () => {
         expect(describe(edgeIndices[1])).toBe("<b>util.ts → view.ts</b><br/>1 dependency · Points upward")
     })
 
+    it("should name a box that stands for a chain of folders by the last of them in the tooltip", () => {
+        // Arrange
+        const chainOfFolders = aBox("/root/src/main", { kind: "folder", name: "src/main" })
+        const layout = { boxes: [root, chainOfFolders], bands: [], width: 800, height: 500 }
+
+        // Act
+        const { describe, indexOf } = drawnGraph(sceneWith({ layout, edges: [] }))
+
+        // Assert
+        expect(describe(indexOf(chainOfFolders.path)).split("<br/>")[0]).toBe("<b>main</b>")
+    })
+
     it("should name a package in the tooltip by what its name adds to the package around it", () => {
         // Arrange
         const nestedPackage = aBox("package:org.creatures.model", { kind: "package", name: "model", parentPath: root.path })

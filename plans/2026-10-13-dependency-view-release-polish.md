@@ -1,7 +1,7 @@
 ---
 name: Dependency view release polish
 issue: none
-state: progress
+state: complete
 version: unreleased
 ---
 
@@ -37,15 +37,19 @@ window for all edge style settings.
 
 ## Steps
 
-- [ ] Complete Task 1: Double click opens the box only
-- [ ] Complete Task 2: Tooltip names the box, not its path
-- [ ] Complete Task 3: Pan with the right mouse button
-- [ ] Complete Task 4: Edges shown: three types by default
-- [ ] Complete Task 5: One window for the edge style
-- [ ] Changelog, format check, unit tests, lint, type check
+- [x] Complete Task 1: Double click opens the box only
+- [x] Complete Task 2: Tooltip names the box, not its path
+- [x] Complete Task 3: Pan with the right mouse button
+- [x] Complete Task 4: Edges shown: three types by default
+- [x] Complete Task 5: One window for the edge style
+- [x] Changelog, format check, unit tests, lint, type check
 
 ## Notes
 
 - Decided with Christian: wait briefly for the single click rather than open the inspector and take it back;
   default plus reset button for the shown edge types; tooltip keeps its extra rows.
 - ECharts' own pan ignores the right button, so the right drag moves the shown window itself.
+- Open: a map whose edge metric is not `dependencies` carries plain dependencies only, so with the new default it
+  starts without edges until Dependency is ticked.
+- Verified in Chromium on a build: double click, single click with the inspector, right drag, context menu, both
+  windows of the bar.
