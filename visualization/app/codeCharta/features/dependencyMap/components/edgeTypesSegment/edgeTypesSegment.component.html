@@ -5,7 +5,7 @@
     [searchAnchorName]="anchorName"
     testId="dependency-bar-edges-segment"
 ></cc-axis-card>
-<cc-settings-popover-shell [popoverId]="popoverId" [anchorName]="anchorName" ariaLabel="Edges shown" widthClass="w-72" contentClass="gap-2 p-2">
+<cc-settings-popover-shell [popoverId]="popoverId" [anchorName]="anchorName" ariaLabel="Edges shown" widthClass="w-96 max-w-[95vw]" contentClass="gap-2 p-2">
     <cc-selection-shortcuts (selectAll)="showAll()" (selectNone)="showNone()" (invert)="invert()"></cc-selection-shortcuts>
     <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
         @for (entry of entries(); track entry.type) {
@@ -45,7 +45,7 @@
         </p>
     }
     <p class="m-0 px-2 text-xs opacity-70">With none ticked, only the edges of the box under the pointer show.</p>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex gap-2">
         <cc-reset-settings-button
             [settingsKeys]="shownTypesResetKeys"
             [small]="true"
