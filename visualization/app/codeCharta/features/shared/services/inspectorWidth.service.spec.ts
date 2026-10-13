@@ -1,12 +1,6 @@
 import { TestBed } from "@angular/core/testing"
-import {
-    INSPECTOR_DEFAULT_WIDTH,
-    INSPECTOR_MAX_WIDTH,
-    INSPECTOR_MIN_WIDTH,
-    INSPECTOR_WIDTH_CSS_VARIABLE,
-    INSPECTOR_WIDTH_KEY,
-    InspectorWidthService
-} from "./inspectorWidth.service"
+import { SIDE_PANEL_WIDTH_PX } from "../util/sidePanelWidth"
+import { INSPECTOR_WIDTH_CSS_VARIABLE, INSPECTOR_WIDTH_KEY, InspectorWidthService } from "./inspectorWidth.service"
 
 describe("InspectorWidthService", () => {
     const publishedWidth = () => document.documentElement.style.getPropertyValue(INSPECTOR_WIDTH_CSS_VARIABLE)
@@ -21,26 +15,29 @@ describe("InspectorWidthService", () => {
         const service = TestBed.inject(InspectorWidthService)
 
         // Assert
-        expect(service.width()).toBe(INSPECTOR_DEFAULT_WIDTH)
-        expect(publishedWidth()).toBe(`${INSPECTOR_DEFAULT_WIDTH}px`)
+        expect(service.width()).toBe(SIDE_PANEL_WIDTH_PX.default)
+        expect(publishedWidth()).toBe(`${SIDE_PANEL_WIDTH_PX.default}px`)
     })
 
-    it("should publish and remember a new width", () => {
+    it("should publish a new width at once and remember it only when asked to", () => {
         // Arrange
         const service = TestBed.inject(InspectorWidthService)
 
         // Act
         service.setWidth(480)
+        const rememberedWhileDragging = localStorage.getItem(INSPECTOR_WIDTH_KEY)
+        service.rememberWidth()
 
         // Assert
         expect(service.width()).toBe(480)
         expect(publishedWidth()).toBe("480px")
+        expect(rememberedWhileDragging).toBeNull()
         expect(localStorage.getItem(INSPECTOR_WIDTH_KEY)).toBe("480")
     })
 
     it.each([
-        ["narrower than allowed", 10, INSPECTOR_MIN_WIDTH],
-        ["wider than allowed", 9000, INSPECTOR_MAX_WIDTH]
+        ["narrower than allowed", 10, SIDE_PANEL_WIDTH_PX.min],
+        ["wider than allowed", 9000, SIDE_PANEL_WIDTH_PX.max]
     ])("should hold a width %s within the allowed widths", (_, asked, expected) => {
         // Arrange
         const service = TestBed.inject(InspectorWidthService)
@@ -52,23 +49,25 @@ describe("InspectorWidthService", () => {
         expect(service.width()).toBe(expected)
     })
 
-    it("should go back to the default width on reset", () => {
+    it("should go back to the default width on reset, and remember that", () => {
         // Arrange
         const service = TestBed.inject(InspectorWidthService)
         service.setWidth(500)
+        service.rememberWidth()
 
         // Act
         service.reset()
 
         // Assert
-        expect(service.width()).toBe(INSPECTOR_DEFAULT_WIDTH)
-        expect(publishedWidth()).toBe(`${INSPECTOR_DEFAULT_WIDTH}px`)
+        expect(service.width()).toBe(SIDE_PANEL_WIDTH_PX.default)
+        expect(publishedWidth()).toBe(`${SIDE_PANEL_WIDTH_PX.default}px`)
+        expect(localStorage.getItem(INSPECTOR_WIDTH_KEY)).toBe(String(SIDE_PANEL_WIDTH_PX.default))
     })
 
     it.each([
         ["a remembered width", "500", 500],
-        ["a remembered width out of bounds, held within them", "9000", INSPECTOR_MAX_WIDTH],
-        ["the default for a remembered value that is no width", "wide", INSPECTOR_DEFAULT_WIDTH]
+        ["a remembered width out of bounds, held within them", "9000", SIDE_PANEL_WIDTH_PX.max],
+        ["the default for a remembered value that is no width", "wide", SIDE_PANEL_WIDTH_PX.default]
     ])("should start at %s", (_, remembered, expected) => {
         // Arrange
         localStorage.setItem(INSPECTOR_WIDTH_KEY, remembered)

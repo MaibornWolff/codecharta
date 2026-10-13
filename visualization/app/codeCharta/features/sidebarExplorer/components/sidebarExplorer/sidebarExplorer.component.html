@@ -46,11 +46,5 @@
             anchorName="explorer-search-actions"
         ></cc-metric-rule-editor>
     }
-    <div
-        class="absolute right-0 top-0 h-full w-1.5 cursor-col-resize select-none hover:bg-primary/40 active:bg-primary/60"
-        (pointerdown)="startResize($event)"
-        (dblclick)="resetWidth()"
-        title="Drag to resize, double-click to reset"
-        data-testid="explorer-resize-handle"
-    ></div>
+    <div ccColumnResizeHandle="right" data-testid="explorer-resize-handle" (widthChange)="setWidth($event)" (widthReset)="resetWidth()"></div>
 }

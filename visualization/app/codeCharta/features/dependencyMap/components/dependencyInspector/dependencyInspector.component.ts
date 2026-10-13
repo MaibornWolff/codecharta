@@ -31,7 +31,7 @@ const REFERENCE_ICONS: Record<"folder" | "file", string> = { folder: "fa fa-fold
     providers: [CopyToClipboardService],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
-        class: "absolute inset-y-0 right-0 flex w-[var(--cc-inspector-width)] flex-col bg-base-100 shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)] transition-transform duration-300",
+        class: "absolute inset-y-0 right-0 flex w-[var(--cc-inspector-width)] max-w-[90vw] flex-col bg-base-100 shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)] transition-transform duration-300",
         "[class.translate-x-full]": "model() === null",
         "[class.pointer-events-none]": "model() === null",
         "[attr.aria-hidden]": "model() === null"

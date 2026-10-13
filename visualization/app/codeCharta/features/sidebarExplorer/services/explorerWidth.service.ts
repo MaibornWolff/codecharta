@@ -1,9 +1,10 @@
 import { Injectable, inject, signal } from "@angular/core"
+import { clampToSidePanelWidth, SIDE_PANEL_WIDTH_PX } from "../../shared/facade"
 import { ExplorerWidthRepo } from "../repos/explorerWidth.repo"
 
-export const EXPLORER_MIN_WIDTH = 240
-export const EXPLORER_MAX_WIDTH = 720
-export const EXPLORER_DEFAULT_WIDTH = 320
+export const EXPLORER_MIN_WIDTH = SIDE_PANEL_WIDTH_PX.min
+export const EXPLORER_MAX_WIDTH = SIDE_PANEL_WIDTH_PX.max
+export const EXPLORER_DEFAULT_WIDTH = SIDE_PANEL_WIDTH_PX.default
 
 @Injectable()
 export class ExplorerWidthService {
@@ -12,7 +13,7 @@ export class ExplorerWidthService {
     readonly width = signal(this.persistedOrDefaultWidth())
 
     setWidth(width: number) {
-        this.width.set(clampToAllowedWidth(width))
+        this.width.set(clampToSidePanelWidth(width))
         this.persist()
     }
 
@@ -27,10 +28,6 @@ export class ExplorerWidthService {
 
     private persistedOrDefaultWidth() {
         const persistedWidth = this.explorerWidthRepo.readWidth()
-        return persistedWidth === null ? EXPLORER_DEFAULT_WIDTH : clampToAllowedWidth(persistedWidth)
+        return persistedWidth === null ? EXPLORER_DEFAULT_WIDTH : clampToSidePanelWidth(persistedWidth)
     }
-}
-
-function clampToAllowedWidth(width: number) {
-    return Math.min(EXPLORER_MAX_WIDTH, Math.max(EXPLORER_MIN_WIDTH, width))
 }
