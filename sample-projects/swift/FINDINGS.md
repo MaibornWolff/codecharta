@@ -247,19 +247,19 @@ Which declarations are extracted, judged by words that occur nowhere else in `En
 
 ### Unified parser
 - Missing:
-  - `EncounterEdgeCases.swift`, `var area: Int { … }`, `var worth: Int { switch self … }`, `var steps: Int { … }`; `Creature+Description.swift`, `Dice.swift` `isCriticalHit`, `Creature.swift` `walkingSpeed`: a computed property with an implicit getter is no function, its branches belong to no function.
-  - `EncounterEdgeCases.swift` `willSet` / `didSet`, and `get` / `set` of the property and the subscript; `NonNegative.swift`, `Rolled.swift`: accessor bodies have no rloc, no complexity and no parameters in the per-function statistics.
+  - `EncounterEdgeCases.swift`, `var area: Int { … }`, `var worth: Int { switch self … }`, `var steps: Int { … }`; `Creature+Description.swift`, `Dice.swift` `isCriticalHit`, `Creature.swift` `walkingSpeed`: a computed property with an implicit getter is no function, its branches belong to no function. **Decision: accept (derived from Java).**
+  - `EncounterEdgeCases.swift` `willSet` / `didSet`, and `get` / `set` of the property and the subscript; `NonNegative.swift`, `Rolled.swift`: accessor bodies have no rloc, no complexity and no parameters in the per-function statistics. **Decision: accept.**
   - `EncounterResolver.swift` `initiativeOf`, `EncounterEdgeCases.swift` `double` / `clamp` / `limit`: nested functions count in `number_of_functions` but have no entry in the per-function statistics, so mean and median are computed over fewer functions than reported. **Decision: accept (derived from Java).**
   - `Zentaurenhöhle.swift`: dropped without a message when the JVM runs under a POSIX locale. **Decision: accept (derived from Java).**
 - Wrong:
-  - `EncounterEdgeCases.swift` `summon`: `if let creature = try await creatures.find(id) { … }` is counted as a closure instead of an `if`.
-  - `EncounterResolver.swift` `safeRoll`, `EncounterEdgeCases.swift` `deferBlock`: `defer { }` adds 1 to complexity like a closure and nothing to logic_complexity, although the mapping lists it as a branch.
+  - `EncounterEdgeCases.swift` `summon`: `if let creature = try await creatures.find(id) { … }` is counted as a closure instead of an `if`. **Decision: accept.**
+  - `EncounterResolver.swift` `safeRoll`, `EncounterEdgeCases.swift` `deferBlock`: `defer { }` adds 1 to complexity like a closure and nothing to logic_complexity, although the mapping lists it as a branch. **Decision: accept.**
   - `EncounterResolver.swift` `resolve`, `EncounterEdgeCases.swift` `switchPatterns`, `fallthroughCase`, `ifSwitchExpressions`, `InitiativeOrder.swift`: `default:` counts as a branch. **Decision: ignore (derived from Java).**
-  - `EncounterEdgeCases.swift` `commentMarkersInStrings`: the string `"/* not a comment */"` is a comment line.
-  - `EncounterEdgeCases.swift` `TreasureHoard.subscript`: one subscript is 2 functions and 3 complexity; the same subscript with an implicit getter is 0 functions and 1 complexity.
+  - `EncounterEdgeCases.swift` `commentMarkersInStrings`: the string `"/* not a comment */"` is a comment line. **Decision: ignore.**
+  - `EncounterEdgeCases.swift` `TreasureHoard.subscript`: one subscript is 2 functions and 3 complexity; the same subscript with an implicit getter is 0 functions and 1 complexity. **Decision: accept.**
 - Bad:
   - Complexity per function leaves out the function itself while file complexity counts it: every branch-free function has complexity 0 (`isEmpty`, `describe`). **Decision: ignore (derived from Java).**
-  - `??` (`tryOptional`, `nilCoalescing`, `genericWhere`, `nestedFunctions`, `CreatureMapper.swift`, `Encounter.swift`) and `willSet` / `didSet` count as branches, `?.` does not; the README rule counts none of them.
+  - `??` (`tryOptional`, `nilCoalescing`, `genericWhere`, `nestedFunctions`, `CreatureMapper.swift`, `Encounter.swift`) and `willSet` / `didSet` count as branches, `?.` does not; the README rule counts none of them. **Decision derived from Kotlin: ignore — `??`, documented.** **Decision: accept — `willSet` / `didSet` count as functions like `get` / `set`, not as branches.**
   - The root `.gitignore` of the repository is not found when a sub-folder is analysed; the parser falls back to its own exclusion list with a warning. **Decision: ignore (derived from Kotlin).**
 - Good: loc, rloc and comment_lines (nested comments, `///`, `/** */`, `"""` strings with comment markers, raw strings, trailing and inline comments); parameter counts for labels, `_`, defaults, variadics, `inout`, generics and function-typed parameters; `guard`, `if let`, `if case`, `for … where`, `for case let`, `for await`, `repeat … while`, labelled loops, typed `catch` and `catch … where`, `switch` with tuples, ranges and several patterns, `if` / `switch` expressions, closures with `$0`, operator functions, `init` / `deinit`, actors, result builders, `#if` conditions; message chains through optional chaining and trailing closures; `long_method`, `long_parameter_list`, `excessive_comments`.
 
@@ -272,18 +272,18 @@ Which declarations are extracted, judged by words that occur nowhere else in `En
 ### Domain language parser
 - Missing:
   - `Zentaurenhöhle.swift`: `größe` and `höhle` from the string `"Größe der Höhle"`; no German stop-word list (`die`, `unter`, `dem`, `und`, `jeder`, `der` appear). **Decisions derived from Java: accept — words lost at umlauts; ignore — German stop words.**
-  - `EncounterEdgeCases.swift`: the raw string `#"… hoard … still text"#` and the text of `#warning("the hoard is unguarded")` are not read.
-  - `EncounterEdgeCases.swift` and `InitiativeOrder.swift`: switch-pattern bindings (`let amount`, `contents`, `centaur`), loop variables (`row`, `cell`, `tick`, `speed` in `EncounterResolver.swift`), the second enum case in `case lost, stolen`, external argument labels (`single`).
+  - `EncounterEdgeCases.swift`: the raw string `#"… hoard … still text"#` and the text of `#warning("the hoard is unguarded")` are not read. **Decision: accept.**
+  - `EncounterEdgeCases.swift` and `InitiativeOrder.swift`: switch-pattern bindings (`let amount`, `contents`, `centaur`), loop variables (`row`, `cell`, `tick`, `speed` in `EncounterResolver.swift`), the second enum case in `case lost, stolen`, external argument labels (`single`). **Decision: accept — all four, external argument labels included.**
   - No folder or root node in the lens; no stemming (`creature` 143 and `creatures` 47 are two words). **Decision: ignore (derived from Java).**
   - Under a POSIX locale `Zentaurenhöhle.swift` is dropped without a message. **Decision: accept (derived from Java).**
 - Wrong:
   - `Zentaurenhöhle.swift`: words in comments and strings are cut at umlauts and `ß` (`zentaurenh`, `hle`, `stungsklasse`, `geh`, `ren`), while identifiers keep them. **Decision: accept (derived from Java).**
   - `Dice.swift` `rollD20`: `roll` + `20`, against `d20` + `roll` for `d20Roll`. **Decision: ignore (derived from Java).**
   - `--comment-weight 0` / `--string-weight 0`: exception with stack trace. **Decision: accept (derived from Java).**
-  - `CreatureServiceTests.swift`: recognised as a test only through the `Tests/` folder, not through its name.
+  - `CreatureServiceTests.swift`: recognised as a test only through the `Tests/` folder, not through its name. **Decision: accept (derived from C++).**
 - Bad:
-  - `EncounterEdgeCases.swift`: `mark(80)` from `// MARK:` outranks every domain word except `creature`; `todo`, `swiftlint` leak as well.
+  - `EncounterEdgeCases.swift`: `mark(80)` from `// MARK:` outranks every domain word except `creature`; `todo`, `swiftlint` leak as well. **Decisions: ignore — `mark`, `todo`; ignore — `swiftlint` (derived from Bash).**
   - `entity(16)`, `repository(13)`, `facade(6)`, `logger(6)`, `dto(3)`, `mapper(3)`, `wrapped(9)`, `projected(3)` at the default level. **Decision: ignore (derived from Java).**
-  - `Package.swift` adds `swift`, `package`, `tools`, `version`, `github`, `https`, `apple`, `com`, `git`.
-  - `EncounterResolver.swift`: commented-out code (`// total = total * 2`) counts as prose; interpolated expressions count as string text; `class` in "armor class" is dropped from comments and strings. **Decisions derived from Java: ignore — commented-out code.** **Decision derived from Kotlin: ignore — `class` dropped from comments and strings.**
+  - `Package.swift` adds `swift`, `package`, `tools`, `version`, `github`, `https`, `apple`, `com`, `git`. **Decision: ignore.**
+  - `EncounterResolver.swift`: commented-out code (`// total = total * 2`) counts as prose; interpolated expressions count as string text; `class` in "armor class" is dropped from comments and strings. **Decisions derived from Java: ignore — commented-out code.** **Decision derived from Kotlin: ignore — `class` dropped from comments and strings.** **Decision: accept — interpolated expressions are no string text.**
 - Good: all 17 expected words; no Swift keyword leaks, backtick identifiers included; unicode identifiers stay whole; camelCase, snake_case, SCREAMING_SNAKE, PascalCase, acronym and `d20Roll` split correctly; `///`, `/** */`, nested `/* */`, `"""` strings and result-builder strings are read with weights 3 / 2 / 1; `--exclude-tests`, the three stop-word levels and `--ngrams 2` (`hit points(33)`, `walking speed(12)`, `treasure hoard(6)`) work.

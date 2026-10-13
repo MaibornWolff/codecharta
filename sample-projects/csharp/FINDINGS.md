@@ -376,15 +376,15 @@ Extraction positions in `EncounterEdgeCases.cs`:
 ### Unified parser
 - Missing: finalizer (`~EncounterEdgeCases`), `operator +` and `implicit operator` (`Ambush`), expression-bodied
   properties (`IsRouted`, `Dice.IsCritical`) are not functions; an anonymous `delegate` block adds no complexity;
-  a `?.` call chain is not a message chain.
+  a `?.` call chain is not a message chain. **Decision derived from Java: accept — expression-bodied properties are no functions (function by form, as the implicit getter in Swift).** **Decisions: accept — finalizer, `operator +` and `implicit operator` are functions; accept — the anonymous `delegate` block counts like a lambda.** **Decision derived from PHP: accept — a `?.` call chain is a message chain (as `?->`).**
 - Wrong: expression-bodied methods have rloc 0 and complexity 0 per function (`ExpressionBodied`,
   `Repository.FindOne`); auto-accessors count as functions (`Creature.cs` 14, `HitPoints.cs` 9); `params`
   parameters are not counted (`ParamsParameter`); `default:` and the `_` arm count as branches (`Resolve`,
   `SwitchStatement`, `SwitchExpression`); per-function complexity lacks the function's own +1; a local function
-  (`Compare`) is in `number_of_functions` but not in the per-function statistics, its parameters are dropped. **Decisions derived from Java: accept — expression-bodied methods measured as empty (as constructor bodies), `params` not counted, local function without per-function entry; ignore — `default:` and `_` arm, per-function complexity without the own +1.**
+  (`Compare`) is in `number_of_functions` but not in the per-function statistics, its parameters are dropped. **Decisions derived from Java: accept — expression-bodied methods measured as empty (as constructor bodies), `params` not counted, local function without per-function entry; ignore — `default:` and `_` arm, per-function complexity without the own +1.** **Decision: ignore — auto-accessors count as functions, documented.**
 - Bad: `??` counts and `??=` / `?.` do not; `x is T` counts and `x is T t` / `is not T` do not; a lambda assigned
   to a variable or field counts as a function (`check`, `HAS_HIT_POINTS`); both `#if` branches are counted; under
-  a POSIX locale `Zentaurenhöhle.cs` is dropped without a message. **Decisions derived from Java: accept — lambda counted as a function only when assigned, file dropped under a POSIX locale.**
+  a POSIX locale `Zentaurenhöhle.cs` is dropped without a message. **Decisions derived from Java: accept — lambda counted as a function only when assigned, file dropped under a POSIX locale.** **Decision derived from TypeScript: accept — `??=` counts like `??`.** **Decision derived from Kotlin: ignore — `??` counts, documented.** **Decision: accept — `x is T`, `x is T t` and `is not T` count alike.** **Decision derived from C++: ignore — both `#if` branches are counted.**
 - Good: loc, rloc and comment lines in every file, including `///`, `/** */`, trailing comments and comment
   markers in verbatim, raw and interpolated strings; `foreach`, `do … while`, `await foreach`, `catch … when`,
   `and` / `or` patterns, LINQ, ternaries, `goto`; optional, `out`, `ref` and `this` parameters; primary
@@ -399,20 +399,20 @@ Extraction positions in `EncounterEdgeCases.cs`:
   (`CreatureLookup.cs`); typed lambda parameters (`CreatureChecks.cs`); `Alias::` and `global::` names
   (`BestiaryImport.cs`). **Decisions derived from Java: accept — every usage form that names a project type should give an edge; a file without a type declaration should stay in the tree.**
 - Wrong: partial class `CreatureFacade`: incoming edges go to `CreatureFacade.Stable.cs` only, so the cycle
-  `Creature <-> CreatureFacade` is not reported.
-- Bad: every usage kind is `usage`; records and structs are `class`; `.csx` is skipped without a message. **Decisions derived from Java: accept — records reported as `class`.** **Decision derived from Kotlin: ignore — every usage kind is `usage`, documented.**
+  `Creature <-> CreatureFacade` is not reported. **Decision: ignore — documented.**
+- Bad: every usage kind is `usage`; records and structs are `class`; `.csx` is skipped without a message. **Decisions derived from Java: accept — records reported as `class`.** **Decision derived from Kotlin: ignore — every usage kind is `usage`, documented.** **Decision derived from Objective-C: accept — `.csx` skipped without a message, skipped extensions are listed.** **Decision derived from Go: ignore — structs reported as `class`.**
 - Good: namespace usings, fully qualified names, generic arguments and constraints, array parameter types,
   nullable types, attributes on classes and methods, property-pattern constants, non-ASCII type names, no false
   positive from doc comments, strings or library types, test detection.
 
 ### Domain language parser
 - Missing: German stop words; root and folder word lists; LINQ range variables (`goblin`), `out var`
-  (`plunder`), tuple element names (`gallop`, `feet`), labels (`retry`), `#region` names. **Decisions derived from Java: accept — labels; ignore — German stop words, root and folder word lists.**
+  (`plunder`), tuple element names (`gallop`, `feet`), labels (`retry`), `#region` names. **Decisions derived from Java: accept — labels; ignore — German stop words, root and folder word lists.** **Decision derived from Swift: accept — LINQ range variables, `out var`, tuple element names (every declared name is a word).** **Decision: ignore — `#region` names.**
 - Wrong: comment and string words are cut at umlauts and `ß` (`Zentaurenhöhle.cs`); XML doc tags become words
   (`summary(22)`, `param`, `returns`, `see`, `cref`); `catch (InvalidOperationException)` yields `invalid`,
-  `operation`; `d20Roll` yields a bare `20`. **Decisions derived from Java: accept — words cut at umlauts; ignore — doc tags as words, bare `20`.**
+  `operation`; `d20Roll` yields a bare `20`. **Decisions derived from Java: accept — words cut at umlauts; ignore — doc tags as words, bare `20`.** **Decision: accept — `catch (InvalidOperationException)` yields `invalid`, `operation`.**
 - Bad: `id(54)`; commented-out code and `TODO` feed words; identifier fragments `such`, `one`, `per`, `all`;
-  `temporary` is filtered as technical; `--string-weight 0` ends in a stack trace. **Decisions derived from Java: accept — a weight of 0 is rejected; ignore — `id`, commented-out code.** **Decision derived from Kotlin: ignore — identifier fragments `such`, `one`, `per`, `all`.**
+  `temporary` is filtered as technical; `--string-weight 0` ends in a stack trace. **Decisions derived from Java: accept — a weight of 0 is rejected; ignore — `id`, commented-out code.** **Decision derived from Kotlin: ignore — identifier fragments `such`, `one`, `per`, `all`.** **Decision derived from Swift: ignore — `TODO`.** **Decision derived from Java: ignore — `temporary` filtered as technical.**
 - Good: all 17 expected words; no keyword and no MODERATE word leaks; identifier splitting for camel, snake,
   screaming, Pascal, acronym and kebab forms; umlauts in identifiers; verbatim, raw and interpolated strings;
   pattern, `catch`, `foreach`, lambda, delegate and primary-constructor names; weights 3 / 2 / 1; test files

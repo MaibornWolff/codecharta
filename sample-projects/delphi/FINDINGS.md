@@ -467,35 +467,35 @@ entry with its extensions and a keyword list (`unit`, `interface`, `implementati
 - Missing:
   - `.pp`, `.lpr`, `.inc` (`encounterlog.pp`, `CellarsAndCentaursLazarus.lpr`, `EncounterRules.inc`,
     `Constants.inc`) and `.dpk` are not analysed, although the grammar measures all of them correctly under a
-    supported extension.
+    supported extension. **Decision: accept.**
   - `EncounterModernSyntax.ConditionalExpression`: the Delphi 13 expression `if ARoll > 15 then 2 else 1` adds
-    nothing to the logic complexity.
+    nothing to the logic complexity. **Decision: ignore.**
   - `Zentaurenhöhle.pas`: without a UTF-8 locale the file is left out and nothing says so. **Decision: accept (derived from Java).**
 - Wrong:
   - Parameters are counted per group, not per name: `EncounterResolver.Resolve(AAttacker, ADefender: TCreature;
     ARoll, ABonus: Integer; ATerrain: TSpeedType)` is 3 instead of 5, `EncounterEdgeCases.ParameterGroups` 4
     instead of 6, `CreatureFacade.CreateCreature` 4 instead of 8. `long_parameter_list` is 0 in all three files
-    where it should be 1.
+    where it should be 1. **Decision: accept (derived from JavaScript).**
   - `try` counts as a decision: `EncounterEdgeCases.TryFinally` (`try … finally`) has logic 1 instead of 0,
-    `EncounterResolver.SafeRoll` gets +2 for its two `try` keywords.
+    `EncounterResolver.SafeRoll` gets +2 for its two `try` keywords. **Decision: accept.**
   - The `case` statement counts in addition to its arms: `EncounterEdgeCases.CaseRanges` 5 instead of 4,
-    `EncounterResolver.Resolve` +1.
+    `EncounterResolver.Resolve` +1. **Decision: accept.**
   - Bitwise `and` / `or` count as logical operators: `EncounterEdgeCases.BitwiseOperators`
-    (`(AMask and AFlags) or (AMask shl 2)`) has logic 2 instead of 0.
+    (`(AMask and AFlags) or (AMask shl 2)`) has logic 2 instead of 0. **Decision: ignore.**
   - Catch-all handlers are not counted: the `else` handler in `EncounterEdgeCases.ExceptHandlers` and the bare
-    `except` in `BareExcept`. The totals look right only because the `try` is counted instead.
+    `except` in `BareExcept`. The totals look right only because the `try` is counted instead. **Decision: accept.**
   - Nested routines break the per-function statistics: `EncounterResolver.InitiativeOrder` and its nested
     `CountAlive`, and `EncounterEdgeCases.NestedRoutines` with `Bump` and `Twice`, each become one entry
     (parameters and complexity added up); the body lines shift to the next routine, so `IsEmpty` is reported
     with 2 lines and `AnonymousMethods` with 19 instead of 14. **Decision: accept (derived from Java).**
   - `message_chains` 1 in `CreatureFacade.pas` for the unit-qualified name
-    `de.sots.cellarsandcentaurs.application.dto.Creature.TCreature.Create`.
+    `de.sots.cellarsandcentaurs.application.dto.Creature.TCreature.Create`. **Decision: ignore.**
 - Bad:
   - `xor` counts as a decision (`EncounterEdgeCases.BooleanOperators` 4 instead of 3 by the README rule). **Decision: ignore — the docs list `kXor` (derived from PHP).**
   - `complexity` includes +1 per function, the `*_complexity_per_function` values do not; simple routines
     show 0. **Decision: ignore (derived from Java).**
-  - rloc per function is the inside of `begin … end` only; the local `var` section is not part of it.
-  - A path of property reads counts as a message chain, because a call without parentheses looks the same.
+  - rloc per function is the inside of `begin … end` only; the local `var` section is not part of it. **Decision: ignore.**
+  - A path of property reads counts as a message chain, because a call without parentheses looks the same. **Decision: ignore.**
   - The `.gitignore` warning appears on every run of a sub-folder of a repository. **Decision: ignore (derived from Kotlin).**
 - Good: `loc`, `rloc`, `comment_lines` exact in every checked file; all comment syntaxes including nesting and
   markers in strings; `number_of_functions` right in all 35 files (constructors, destructors, class methods,
@@ -513,30 +513,30 @@ entry with its extensions and a keyword list (`unit`, `interface`, `implementati
     type; 13 edges, both cycles and three upward edges go with them. Nothing is printed about it. **Decision: accept (derived from Java).**
   - References outside a class / record / interface and its methods: the free routine
     `EncounterEdgeCases.Announce(const AArmor: TArmorClass)`, the unit-level `var LastHitPoints: THitPoints`,
-    the `initialization` section of `Bootstrap`.
+    the `initialization` section of `Bootstrap`. **Decision: accept (derived from Kotlin).**
   - Type declarations other than class / record / interface / enum get no leaf and no edge:
     `PTreasure = ^TTreasure`, `TCreatureFormClass = class of TCreatureForm` (the fourth upward edge),
-    `TEntity = TCreatureEntity` in `CreatureRepository`, procedural types.
+    `TEntity = TCreatureEntity` in `CreatureRepository`, procedural types. **Decision derived from Kotlin: accept — the alias `TEntity`.** **Decision: accept — pointer, class-reference and procedural types.**
   - `on E: ENoSuchCreatureException do` in `EncounterResolver.SafeRoll`: the handler type gives no edge. **Decision: accept (derived from Java).**
   - `ACreature is not TCreature` in `EncounterModernSyntax.NegatedOperators`; a hard cast without a member
     access; an inline typed variable (`var Plain: TPlain := nil`, scratch). **Decision: accept (derived from Java).**
-  - A class declared without a body (`EShort = class(Exception);`, scratch) gets no leaf.
+  - A class declared without a body (`EShort = class(Exception);`, scratch) gets no leaf. **Decision: accept.**
   - Free function calls (`RollD20` in `Centaur`), enum values (`ctMonstrosity`, `stWalking`), the short
-    attribute form `[Table('creatures')]` in `CreatureEntity`.
+    attribute form `[Table('creatures')]` in `CreatureEntity`. **Decision derived from Kotlin: accept — free function calls.** **Decisions: accept — enum values; accept — the short attribute form.**
   - `.dpk`, `.pp`, `.lpr`, `.inc` are not scanned (`CellarsAndCentaurs.dpk` 33 edges, `encounterlog.pp`,
-    `CellarsAndCentaursLazarus.lpr`, `{$I EncounterRules.inc}`, `{$I Constants.inc}`).
-  - `uses SpeedType;` in `CreatureUtil` (unit scope names).
-  - No test-file name rule for `.pas`.
+    `CellarsAndCentaursLazarus.lpr`, `{$I EncounterRules.inc}`, `{$I Constants.inc}`). **Decision: accept.**
+  - `uses SpeedType;` in `CreatureUtil` (unit scope names). **Decision: ignore.**
+  - No test-file name rule for `.pas`. **Decision: accept (derived from C++).**
 - Wrong:
   - `application/CreatureFacade.pas`: with two units that declare `TCreature`, every reference resolves to
     the first `uses` entry, the unit-qualified name is ignored, the edge to the domain `Creature` is lost. **Decision: accept (derived from Java).**
-  - `Zentaurenhöhle.pas`: the leaf is named `TZentaurenh`; identifiers are cut at non-ASCII letters.
+  - `Zentaurenhöhle.pas`: the leaf is named `TZentaurenh`; identifiers are cut at non-ASCII letters. **Decision: accept.**
   - Records are reported as `class` (`TCreatureId`, `THitPoints`, `TSpeed`, `TDice`, `TDiceRoll`, `TTreasure`,
     `TModifier`, `TRollRecord`). **Decision: accept (derived from Java).**
 - Bad:
   - `incoming_dependencies` / `outgoing_dependencies` count leaf edges, so a file with two declarations that
     use the same type counts it twice (`EncounterEdgeCases.pas` 8 for 7 files). **Decision: accept (derived from Java).**
-  - Dropped files and skipped extensions are silent, also with `--verbose`.
+  - Dropped files and skipped extensions are silent, also with `--verbose`. **Decision: accept (derived from Objective-C).**
   - Without a UTF-8 locale `Zentaurenhöhle.pas` is left out silently. **Decision: accept (derived from Java).**
 - Good: no false positive in 50 file edges; both `uses` clauses are read; inheritance, interface
   implementation, class helpers, interface delegation, generic bases, generic arguments and constraints,
@@ -547,8 +547,8 @@ entry with its extensions and a keyword list (`unit`, `interface`, `implementati
 ### Domain language parser
 
 - Missing: Delphi is not supported at all. Exit 1 with a stack trace, no output file, 0 of 17 expected words,
-  0 of 7 German words.
+  0 of 7 German words. **Decision: accept.**
 - Wrong: nothing to judge.
 - Bad: an unsupported language ends in an `IllegalArgumentException` with a Java stack trace instead of a
-  plain message; the extraction mapping for Delphi exists in the tree-sitter layer and is not wired in.
+  plain message; the extraction mapping for Delphi exists in the tree-sitter layer and is not wired in. **Decision: accept.**
 - Good: the message names the supported extensions.

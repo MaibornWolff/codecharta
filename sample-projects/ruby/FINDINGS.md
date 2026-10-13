@@ -340,40 +340,40 @@ Expected per function: `resolve` 5 parameters, complexity 12 (`if`, `elsif`, ter
 ### Unified parser
 - Missing:
   1. `.rake`, `.gemspec`, `.ru`, `Rakefile`, `Gemfile` are not analysed (`lib/tasks/encounters.rake`
-     with `def encounter_terrain`, `config.ru`, `Gemfile`); the domain parser reads `.rake` and `.gemspec`.
-  2. `encounter_edge_cases.rb`, `pattern_match`: `case … in` clauses are not counted (2 instead of 5).
+     with `def encounter_terrain`, `config.ru`, `Gemfile`); the domain parser reads `.rake` and `.gemspec`. **Decision derived from C++: accept — `.rake` and `.gemspec`, one extension list for all three parsers.** **Decision: ignore — `.ru`, `Rakefile`, `Gemfile`.**
+  2. `encounter_edge_cases.rb`, `pattern_match`: `case … in` clauses are not counted (2 instead of 5). **Decision: accept.**
   3. `encounter_edge_cases.rb`, `unless_block` and `modifier_unless`; `creature_repository.rb`, `raise …
-     unless …`: `unless` is not counted in either form.
+     unless …`: `unless` is not counted in either form. **Decision: accept.**
   4. `encounter_edge_cases.rb`, `lambda_keyword`, `proc_keyword`, `proc_new`: `lambda { }`, `proc { }`,
-     `Proc.new { }` are not counted as lambdas; only `->` is.
-  5. `encounter_edge_cases.rb`, `define_method(:dynamic_roll) { … }`: no function.
-  6. `encounter_edge_cases.rb`, `conditional_assignment`: `||=` and `&&=` are not counted.
+     `Proc.new { }` are not counted as lambdas; only `->` is. **Decision: accept.**
+  5. `encounter_edge_cases.rb`, `define_method(:dynamic_roll) { … }`: no function. **Decision: ignore.**
+  6. `encounter_edge_cases.rb`, `conditional_assignment`: `||=` and `&&=` are not counted. **Decision: accept.**
 - Wrong:
   1. `encounter_edge_cases.rb`, `do_block` vs `brace_block`; `catch_and_throw`; `dto/creature.rb`
      (`Struct.new … do`); `creature_service_spec.rb`; `spec_helper.rb`: every `do … end` block adds 1 to
-     the complexity, the same block written with braces adds 0.
+     the complexity, the same block written with braces adds 0. **Decision: accept.**
   2. `encounter_resolver.rb`, `resolve`; `encounter_edge_cases.rb`, `case_values_and_ranges`,
      `case_without_subject`: the `else` of a `case` counts as a branch (logic 15 instead of 14). **Decision: ignore (derived from Java).**
   3. `encounter_edge_cases.rb`, `elsif_ladder`: from the second `elsif` on nothing is counted (3 instead
-     of 4).
+     of 4). **Decision: accept.**
   4. Parameter counts: `def self.singleton_roll(dice)` 2 (also `creature_type.rb`, `summoner.rb`,
      `trap.rb`, `creature_util.rb`), `cover=(value)` 2, `endless_total(roll, bonus) = roll + bonus` 4,
      `endless_verdict(roll) = …` 2, `creature_service.rb` `initialize(creatures, logger =
-     Logger.new($stdout))` 3, `encounter.rb` `initialize(surprise_dice = Dice.new(6))` 2.
+     Logger.new($stdout))` 3, `encounter.rb` `initialize(surprise_dice = Dice.new(6))` 2. **Decision: accept (derived from JavaScript).**
   5. Per-function complexity leaves out the function itself: `encounter_resolver.rb` reports min 0,
      mean 3.4, median 2 (expected 1 / 3.5 / 1.5); `encounter_edge_cases.rb` median 0. **Decision: ignore (derived from Java).**
   6. `encounter_resolver.rb`: `number_of_functions` 7 counts the nested `def best_of` and the lambda
      `clamp = ->(value) { … }`, the per-function statistics have 5 entries (mean rloc 11.0 instead of 9.33). **Decision: accept (derived from Java).**
   7. `encounter_edge_cases.rb`, `__END__`: the data section counts as code, 6 rloc for 5 lines (file rloc
-     253 instead of 247).
+     253 instead of 247). **Decision: ignore.**
   8. `encounter_edge_cases.rb`, endless methods: rloc per function 0, and the ternary of
      `endless_verdict` is not attributed to the method. **Decisions derived from Java: accept — a function body that is not recognised is measured as empty, as with constructor bodies.**
 - Bad:
   1. `zentaurenhöhle.rb` disappears without a message when the process runs under a non-UTF-8 locale. **Decision: accept (derived from Java).**
-  2. Skipped files are reported as one line of extensions; the extension-less files show up as `.`.
+  2. Skipped files are reported as one line of extensions; the extension-less files show up as `.`. **Decision: ignore.**
   3. `WARN No .gitignore found at root level` for a folder inside a repository that has one. **Decision: ignore (derived from Kotlin).**
-  4. Progress output on a redirected stderr is not in order (18/35 printed after 23/35).
-  5. RSpec examples are invisible: `creature_service_spec.rb` has 0 functions and complexity 2.
+  4. Progress output on a redirected stderr is not in order (18/35 printed after 23/35). **Decision: ignore (derived from JavaScript).**
+  5. RSpec examples are invisible: `creature_service_spec.rb` has 0 functions and complexity 2. **Decision: ignore.**
 - Good: `loc`, `rloc`, `comment_lines` in `encounter_resolver.rb` exact, including `=begin` blocks,
   trailing comments and comment markers in strings and heredocs; `if`, modifier `if`, `elsif` (first),
   `while` / `until` in all forms, `for`, `when`, ternaries (nested and inside `#{}`), `&&` / `||` / `and` /
@@ -388,14 +388,14 @@ Expected per function: `resolve` 5 parameters, complexity 12 (`if`, `elsif`, ter
      `outgoing_dependencies`. **Decision: ignore (derived from Objective-C).**
 - Wrong: nothing; no edge is reported.
 - Bad:
-  1. `Created Project with 1 leaves.` for a map that contains only an empty root folder.
+  1. `Created Project with 1 leaves.` for a map that contains only an empty root folder. **Decision: ignore.**
   2. The warning names no extensions or languages, so it does not say that Ruby is the reason. **Decision: accept (derived from Objective-C).**
 - Good: exit code 0 with two clear warnings instead of a crash or a silent empty file; `--include-tests`
   behaves the same.
 
 ### Domain language parser
 - Missing:
-  1. `config.ru`, `Rakefile`, `Gemfile` are skipped without any message.
+  1. `config.ru`, `Rakefile`, `Gemfile` are skipped without any message. **Decision: ignore.**
   2. No root or folder word list in `lenses.domain.nodes`. **Decision: ignore (derived from Java).**
   3. `zentaurenhöhle.rb`: `größe` and `höhle` from the string `'Größe der Höhle'`. **Decision: accept (derived from Java).**
   4. No German stop words: `die`, `unter`, `dem`, `und`, `jeder`, `liegt`, `der` are counted. **Decision: ignore (derived from Java).**
@@ -406,20 +406,20 @@ Expected per function: `resolve` 5 parameters, complexity 12 (`if`, `elsif`, ter
   2. `creature_service_spec.rb` `'should_save_creature_to_the_stable'`, `encounter_edge_cases.rb`
      `define_method(:dynamic_roll)` and `hidden_vault` in the `=begin` block: a token with an underscore in
      a string, symbol or comment yields no word. **Decision: accept (derived from Vue).**
-  3. `dice.rb` `attr_reader :sides` and every other `attr_*` symbol: counted twice (identifier 3 + string 1).
-  4. `encounter_edge_cases.rb`, `heredoc_with_hash`: the end tag `TEXT` is counted as the word `text`.
+  3. `dice.rb` `attr_reader :sides` and every other `attr_*` symbol: counted twice (identifier 3 + string 1). **Decision: accept.**
+  4. `encounter_edge_cases.rb`, `heredoc_with_hash`: the end tag `TEXT` is counted as the word `text`. **Decision: ignore.**
   5. `dice.rb`: `D20` -> `20`, a bare number as a word. **Decision: ignore (derived from Java).**
   6. `--comment-weight 0` aborts with an `IllegalArgumentException` stack trace. **Decision: accept (derived from Java).**
-  7. `domain/model.rb`: the `autoload` path is counted, `require` / `load` paths are not.
+  7. `domain/model.rb`: the `autoload` path is counted, `require` / `load` paths are not. **Decision: ignore — the path is skipped like `require` paths; `centaur` 1 comes from the symbol `:Centaur`.**
 - Bad:
   1. `zentaurenhöhle.rb` is dropped without a message under a non-UTF-8 locale. **Decision: accept (derived from Java).**
   2. Namespace words (`centaurs` 96, `cellars` 94, `sots` 94, `de` 93, `domain` 69, `model` 60) outrank
-     every domain word except `creature`.
+     every domain word except `creature`. **Decision: ignore.**
   3. `entity`, `repository`, `facade`, `dto`, `adapter`, `model`, `param`, `id`, `type`, `value` leak at
      the default level. **Decision: ignore (derived from Java).**
   4. Stop word and keyword lists hit domain names: `describe` (`encounter_resolver.rb`) and `exception`
      (`NoSuchCreatureException`) vanish; `class` is removed from the comment "armor class". **Decision: ignore (derived from Kotlin).**
-  5. `# :nodoc:` leaks `nodoc`.
+  5. `# :nodoc:` leaks `nodoc`. **Decision: ignore (derived from Java).**
 - Good: all 17 expected words; no Ruby keyword from the old files; camelCase, snake_case,
   SCREAMING_SNAKE, acronym, kebab, sigils and `?` / `!` / `=` suffixes split correctly; `#`, doc and
   `=begin` comments, strings, symbols, `%w[]` / `%i[]`, regex and heredoc text are read with weights

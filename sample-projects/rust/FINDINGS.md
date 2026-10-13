@@ -323,17 +323,17 @@ min 0 as expected. L = logic_complexity, C = complexity, F = functions, P = para
   `vec![…]` (`macro_hides_closure`), the four-call chain in `info!(…)` (`macro_hides_chain`). 2. the `&&`
   of a let chain (`if_let_chain`). 3. `let … else` (`let_else`). 4. match guards (`match_guards`). 5. a
   message chain interrupted by `?` (`question_mark_chain`); `?` itself adds no complexity
-  (`question_mark`). **Decisions derived from Java: accept — 4 (match guards).**
+  (`question_mark`). **Decisions derived from Java: accept — 4 (match guards).** **Decision derived from Objective-C: ignore — 1, the body of the `macro_rules!` definition.** **Decisions: ignore — 1 (code inside a macro invocation); accept — 2 (let chain), 3 (`let … else`), 5 (a chain interrupted by `?`); ignore — 5 (`?` adds no complexity).**
 - Wrong: 1. the `_ =>` arm counts as a case (`resolve`, `match_or_patterns`, `match_ranges`,
   `match_guards`): +1 per `match` with a wildcard. 2. complexity per function leaves out the function
   itself, so `is_empty` has 0 and the file-level complexity is not the sum of the per-function values.
   3. nested functions (`initiative_of`, `halve`) count in number_of_functions but have no entry in the
   per-function statistics, their complexity and lines go to the parent. 4. `self: Box<Self>` counts as a
-  parameter (`boxed`). **Decisions derived from Java: accept — 3 (nested functions); ignore — 1 (`_` arm), 2 (per-function complexity without the own +1).**
+  parameter (`boxed`). **Decisions derived from Java: accept — 3 (nested functions); ignore — 1 (`_` arm), 2 (per-function complexity without the own +1).** **Decision: ignore — 4 (`self: Box<Self>`).**
 - Bad: bodyless trait signatures (`Scarable::scare`, `Fightable`, `Creatures`, `Identified`) and
   `extern "C"` declarations count as functions with rloc 0 and distort min / mean / median; inline test
   modules and the `tests/` file are part of the metrics; iterator chains are no loops; the progress bar
-  goes backwards when piped. **Decisions derived from Java: ignore — bodiless signatures counted as functions.**
+  goes backwards when piped. **Decisions derived from Java: ignore — bodiless signatures counted as functions.** **Decision derived from Java: ignore — `extern "C"` declarations counted as functions.** **Decision derived from JavaScript: ignore — the progress bar.** **Decisions: ignore — test code in the metrics, iterator chains.**
 - Good: loc, rloc and comment_lines in every file and probe, including raw strings, byte strings, char
   literals, nested block comments, `//!`, `/** */`, doc tests and trailing comments; `if let`,
   `while let`, `loop`, labelled loops, `else if`, `&&` / `||` outside macros, or-patterns and ranges as
@@ -353,17 +353,17 @@ min 0 as expected. L = logic_complexity, C = complexity, F = functions, P = para
   (`creature_repository.rs`). 4. the crate name from `Cargo.toml`: `tests/creature_service_test.rs` has
   0 edges with `--include-tests`. 5. associated-type bindings: `impl Iterator<Item = Creature>`
   (`wandering`). 6. `#[path = "creature_naming.rs"]` (`application/mod.rs`). 7. macro invocations and
-  function calls (`creature_count!`, `roll_d20()`). 8. `lib.rs` and `mod`-only files as nodes. **Decisions derived from Java: accept — 1 (types used only inside a function body), 8 (files without a type declaration as nodes).**
+  function calls (`creature_count!`, `roll_d20()`). 8. `lib.rs` and `mod`-only files as nodes. **Decisions derived from Java: accept — 1 (types used only inside a function body), 8 (files without a type declaration as nodes).** **Decision derived from Kotlin and Java: accept — 7 (function calls and macro invocations in a body).** **Decisions: accept — 2 (re-exports in a nested `mod.rs`), 3 (`use … as`), 4 (crate name from `Cargo.toml`), 5 (associated-type bindings); ignore — 6 (`#[path]`).**
 - Wrong: 1. the name-only fallback: one qualified usage (`model::Speed` in `creature_report.rs`) lets
   every bare type name of the file resolve by substring; the edge creature_report.rs -> lair.rs is an
   accident of it, and a file without imports gets edges the same way. 2. `creature_facade.rs`: the fully
   qualified `crate::application::dto::creature::Creature` resolves to the imported domain `Creature`,
   `dto/creature.rs` has no incoming edge. 3. inline `#[cfg(test)] mod tests` are in the default graph
-  (`creature_service.rs`: two extra and two doubled edges; `encounter_edge_cases.rs` -> creature_service.rs). **Decisions derived from Java: accept — 2 (fully qualified name resolves to the imported type).**
+  (`creature_service.rs`: two extra and two doubled edges; `encounter_edge_cases.rs` -> creature_service.rs). **Decisions derived from Java: accept — 2 (fully qualified name resolves to the imported type).** **Decisions: accept — 1 (name-only fallback), 3 (inline test modules).**
 - Bad: no diagnostic for an unresolved import even with `--verbose`; the only reported cycle is the
   leaf pair `Dice <-> DiceRoll` inside one file while the planted file cycles are invisible, so the
   layering looks clean; macros and type aliases are `function` / `class` leaves; `extern "C"`
-  declarations are leaves, `impl` methods are not.
+  declarations are leaves, `impl` methods are not. **Decision derived from TypeScript: ignore — no diagnostic with `--verbose`.** **Decision derived from Kotlin: ignore — the cycle count is at declaration level, documented; the planted file cycles come with the body usages of Missing 1.** **Decisions: ignore — macros and type aliases as `function` / `class`; ignore — `extern "C"` declarations as leaves, `impl` methods folded onto their type.**
 - Good: `crate::`, `super::` and unimported relative paths, `mod.rs` and 2018-style modules; field,
   tuple-struct, enum-variant, parameter, return, const, type-alias, associated-type, where-clause,
   generic-argument, `&impl Trait`, `&dyn Trait` and function-pointer positions; trait implementations;
@@ -374,17 +374,17 @@ min 0 as expected. L = logic_complexity, C = complexity, F = functions, P = para
 - Missing: 1. bindings outside `let`: `for kobold in`, `if let Some(wraith)`, `while let Some(zombie)`,
   the match binding `banshee` (`encounter_edge_cases.rs`). 2. declarations inside a macro invocation:
   `static TROLL_BRIDGE` in `thread_local!`. 3. a word list for the root and for folders. 4. German stop
-  words. 5. stemming (`creature` / `creatures`). **Decisions derived from Java: ignore — 3 (root and folder word list), 4 (German stop words), 5 (stemming).**
+  words. 5. stemming (`creature` / `creatures`). **Decisions derived from Java: ignore — 3 (root and folder word list), 4 (German stop words), 5 (stemming).** **Decision derived from Swift: accept — 1 (bindings outside `let`).** **Decision: ignore — 2 (declarations inside a macro invocation).**
 - Wrong: 1. `zentaurenhoehle.rs`: umlauts and `ß` cut words in comments and strings (`zentaurenh`,
   `hle`, `stungsklasse`, `geh`, `ren`); `größe` and `höhle` never appear. 2. string escapes are not
   decoded: `"ooze\ngolem"` gives `ngolem`. 3. `d20` becomes the bare number `20` (`dice.rs`, test file).
   4. `new` 48, `id` 57, `fmt`, `formatter`, `deref`, `target`, `uuid` pass as domain words;
   `temporary` (`hit_points.rs`) and `name` are removed as technical. 5. `--comment-weight 0` throws
-  with a stack trace. **Decisions derived from Java: accept — 1 (umlauts), 5 (weight 0); ignore — 3 (bare `20`), 4 (technical words).**
+  with a stack trace. **Decisions derived from Java: accept — 1 (umlauts), 5 (weight 0); ignore — 3 (bare `20`), 4 (technical words).** **Decision: accept — 2 (string escapes).**
 - Bad: doc-test code counts as comment prose (`gargoyle` 6); `#[doc = "…"]` is weighted as a string;
   `repository`, `entity`, `facade`, `dto` and the layer names survive MODERATE; `--exclude-tests` cannot
   drop inline test modules (`creature_service.rs`: memory, saved); die, unter, dem, und, jeder, der,
-  liegt rank as words. **Decisions derived from Java: ignore — technical words, German stop words.**
+  liegt rank as words. **Decisions derived from Java: ignore — technical words, German stop words.** **Decision derived from Go: ignore — doc-test code as comment prose.** **Decisions: ignore — `#[doc = "…"]` weighted as a string; accept — `--exclude-tests` drops inline test modules.**
 - Good: all 17 expected words; no Rust keyword leaks; snake_case, camelCase, SCREAMING_SNAKE, PascalCase,
   acronym and kebab splitting; non-ASCII identifiers stay whole; `//`, `///`, `//!`, `/* */`, `/** */`
   and nested block comments, strings, raw strings, byte strings and strings inside macro arguments are
