@@ -217,7 +217,7 @@ describe("dependencyGraphBoxes", () => {
                 expect(count).toMatchObject({ info: "cycleBadge", style: { text: "7", x: 165 } })
             })
 
-            it("should show the sign of a cycle alone for a single hidden cycle, and cap a large count", () => {
+            it("should number a single hidden cycle too, and cap a large count", () => {
                 // Arrange
                 const box = aBox("/root/a.ts")
 
@@ -226,8 +226,9 @@ describe("dependencyGraphBoxes", () => {
                 const many = childrenOf(drawBox(box, cyclic({ insideCount: 250 }), identityPixels))
 
                 // Assert
-                expect(single.map(part => part.type)).toEqual(["rect", "text", "rect", "path", "path"])
-                expect(single[2].shape).toMatchObject({ width: 15, height: 15 })
+                expect(single.map(part => part.type)).toEqual(["rect", "text", "rect", "path", "path", "text"])
+                expect(single[2].shape).toMatchObject({ width: 28, height: 15 })
+                expect(single.at(-1).style.text).toBe("1")
                 expect(many.at(-1).style.text).toBe("99+")
             })
 
@@ -273,7 +274,7 @@ describe("dependencyGraphBoxes", () => {
                 )
 
                 // Assert
-                expect(pills).toMatchObject([{ shape: { x: 161, width: 15 }, style: { fill: "#ffffff", stroke: "#dc2626" } }])
+                expect(pills).toMatchObject([{ shape: { x: 148, width: 28 }, style: { fill: "#ffffff", stroke: "#dc2626" } }])
             })
 
             it("should ring a declaration that takes part in a cycle", () => {

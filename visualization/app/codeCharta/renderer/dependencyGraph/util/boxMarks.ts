@@ -121,8 +121,7 @@ function drawCycleBadge({ right, top }: BadgeCorner, count: number, colors: Badg
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
     const height = CYCLE_BADGE.heightPx * scale
     const numberLeft = CYCLE_BADGE.numberLeftPx * scale
-    const isCounted = count > 1
-    const width = isCounted ? numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale : height
+    const width = numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale
     const left = right - width
     const pill = { x: left, y: top, width, height, r: height / 2 }
     const pillStyle = { fill: colors.fill, stroke: colors.line, lineWidth: CYCLE_BADGE.outlinePx, opacity }
@@ -130,7 +129,7 @@ function drawCycleBadge({ right, top }: BadgeCorner, count: number, colors: Badg
     const elements = [
         { type: "rect", ...UNTRANSFORMED, ...CYCLE_BADGE_PART, shape: pill, style: pillStyle },
         ...cycleGlyph({ x: left + height / 2, y: middle }, colors.line, mark),
-        ...(isCounted ? [cycleCount(text, { x: left + numberLeft, y: middle }, colors.line, mark)] : [])
+        cycleCount(text, { x: left + numberLeft, y: middle }, colors.line, mark)
     ]
     return { left: left - CYCLE_BADGE.gapPx * scale, elements }
 }
