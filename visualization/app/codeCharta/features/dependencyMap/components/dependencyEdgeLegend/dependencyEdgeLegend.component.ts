@@ -1,15 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core"
 import { toSignal } from "@angular/core/rxjs-interop"
 import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
-import { DECLARATION_KIND_LEGEND, edgeLegend, USAGE_LEGEND } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
+import {
+    CYCLE_MARK_LEGEND,
+    DECLARATION_KIND_LEGEND,
+    edgeLegend,
+    USAGE_LEGEND
+} from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
+import { CycleMarkSampleComponent } from "../cycleMarkSample/cycleMarkSample.component"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
 import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
 
 @Component({
     selector: "cc-dependency-edge-legend",
     templateUrl: "./dependencyEdgeLegend.component.html",
-    imports: [DeclarationKindIconComponent, LineStyleSampleComponent],
+    imports: [CycleMarkSampleComponent, DeclarationKindIconComponent, LineStyleSampleComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "flex flex-col gap-3" }
 })
@@ -27,6 +33,10 @@ export class DependencyEdgeLegendComponent {
     })
     readonly usageLegend = computed(() =>
         this.isDependencyMetric() && this.hasDeclarations() && this.settings().lineStyleShows === "usage" ? USAGE_LEGEND : []
+    )
+    /** The marks are told only while the graph draws them. */
+    readonly cycleLegend = computed(() =>
+        this.isDependencyMetric() && this.hasDeclarations() && this.settings().showsCycleBadges ? CYCLE_MARK_LEGEND : []
     )
     readonly kindLegend = computed(() => (this.hasDeclarations() ? DECLARATION_KIND_LEGEND : []))
     readonly usageColor = computed(() => this.settings().edgeColors.regular)

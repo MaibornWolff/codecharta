@@ -1,0 +1,12 @@
+<svg class="h-[15px] w-7" viewBox="0 0 28 15" aria-hidden="true" [attr.data-mark]="mark()">
+    @if (mark() === "declaration") {
+        <circle cx="14" cy="7.5" r="3.5" stroke-width="2" [attr.fill]="colors().fill" [attr.stroke]="colors().line" />
+    } @else {
+        <rect x="0.6" y="0.6" width="26.8" height="13.8" rx="6.9" stroke-width="1.2" [attr.fill]="colors().fill" [attr.stroke]="colors().line" />
+        <g transform="translate(7.5 7.5)">
+            <path fill="none" stroke-linecap="round" [attr.d]="glyph.arc" [attr.stroke-width]="glyph.lineWidthPx" [attr.stroke]="colors().line" />
+            <path stroke="none" [attr.d]="glyph.head" [attr.fill]="colors().line" />
+        </g>
+        <text x="17" y="7.5" dominant-baseline="central" font-size="10" font-weight="bold" [attr.fill]="colors().line">2</text>
+    }
+</svg>

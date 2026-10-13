@@ -45,8 +45,23 @@ const CYCLE_BADGE_CONTRAST_COLOR = "#ffffff"
 const INSIDE_BADGE_COLORS: BadgeColors = { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR }
 const SHARED_BADGE_COLORS: BadgeColors = { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR }
 const MOST_COUNTED = 99
-const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
+/** Drawn around its own centre. */
+export const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
 const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
+
+export type CycleMarkKind = "inside" | "shared" | "declaration"
+
+export const CYCLE_MARK_COLORS: Record<CycleMarkKind, BadgeColors> = {
+    inside: INSIDE_BADGE_COLORS,
+    shared: SHARED_BADGE_COLORS,
+    declaration: { fill: FILE_FILL, line: CYCLE_MARK_COLOR }
+}
+
+export const CYCLE_MARK_LEGEND: readonly { mark: CycleMarkKind; label: string }[] = [
+    { mark: "inside", label: "Cycles hidden inside the box" },
+    { mark: "shared", label: "Cycles shared with files outside the box" },
+    { mark: "declaration", label: "Declaration in a cycle" }
+]
 
 /** What a click on a box's cycle badge carries, to tell it from a click on the box. */
 export const CYCLE_BADGE_INFO = "cycleBadge"
@@ -91,7 +106,8 @@ export function drawCycleMark(
     const scale = Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom))
     if (box.kind === "declaration") {
         const centre = { cx: rect.x + rect.width - CYCLE_RING.insetPx, cy: rect.y + CYCLE_RING.insetPx }
-        const style = { fill: FILE_FILL, stroke: CYCLE_MARK_COLOR, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
+        const { fill, line } = CYCLE_MARK_COLORS.declaration
+        const style = { fill, stroke: line, lineWidth: CYCLE_RING.lineWidthPx * scale, opacity }
         const ring = { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
         return isInCycle ? [ring] : []
     }
