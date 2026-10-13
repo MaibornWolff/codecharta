@@ -1,0 +1,60 @@
+name: Bundle - Analysis
+
+# A release publishes straight to npm, so this builds the same two bundles from any branch for a manual
+# test beforehand, on Windows above all, where the npm package installs its own start scripts.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    name: Bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Setup the JDK to build with
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+
+      - name: Build the distribution archive
+        working-directory: ./analysis
+        run: |
+          chmod +x ./gradlew
+          ./gradlew distZip
+
+      - name: Pack the npm package
+        working-directory: ./analysis/node-wrapper
+        run: npm pack
+
+      - name: Fail on an npm package without ccsh
+        # npm pack only fills the package through its prepare script, and stays green when that is skipped
+        working-directory: ./analysis/node-wrapper
+        run: |
+          tar -tzf codecharta-analysis-*.tgz > package-contents.txt
+          grep -q '^package/public/bin/ccsh.bat$' package-contents.txt
+          grep -q '^package/public/lib/ccsh-.*\.jar$' package-contents.txt
+
+      - name: Upload the bundles
+        uses: actions/upload-artifact@v7
+        with:
+          name: codecharta-analysis-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            analysis/build/distributions/*.zip
+            analysis/node-wrapper/*.tgz
