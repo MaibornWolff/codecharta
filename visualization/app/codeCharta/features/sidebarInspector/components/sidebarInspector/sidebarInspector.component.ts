@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core"
+import { InspectorResizeHandleComponent } from "../../../shared/facade"
 import { InspectorVisibilityService } from "../../services/inspectorVisibility.service"
 import { InspectorHeaderComponent } from "../inspectorHeader/inspectorHeader.component"
 import { InspectorMetricMappingComponent } from "../inspectorMetricMapping/inspectorMetricMapping.component"
@@ -8,7 +9,7 @@ import { InspectorMetricsListComponent } from "../inspectorMetricsList/inspector
     selector: "cc-sidebar-inspector",
     templateUrl: "./sidebarInspector.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [InspectorHeaderComponent, InspectorMetricMappingComponent, InspectorMetricsListComponent],
+    imports: [InspectorHeaderComponent, InspectorMetricMappingComponent, InspectorMetricsListComponent, InspectorResizeHandleComponent],
     host: {
         class: "fixed right-0 z-[60] w-[var(--cc-inspector-width)] bg-base-100 overflow-hidden flex flex-col shadow-[-2px_0_8px_-2px_rgba(0,0,0,0.15)] transition-transform duration-300",
         "[class.translate-x-full]": "!isVisible()",
