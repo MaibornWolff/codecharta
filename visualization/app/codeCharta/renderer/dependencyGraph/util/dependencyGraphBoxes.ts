@@ -94,18 +94,19 @@ function drawOutline(box: LayoutBox, rect: Rectangle, { emphasis, isSeeThrough, 
         shape: { ...rect, r: CORNER_RADIUS_PX },
         style: { ...style, fill, opacity }
     }
-    return [...drawSheetBehind(box, rect, { fill, opacity }), outline]
+    return [...drawSheetBehind(box, rect, opacity), outline]
 }
 
 /** A closed file that holds declarations lies on a second sheet that peeks out below and to the right of it:
- * there is more in it than its name, and it opens. */
-function drawSheetBehind(box: LayoutBox, rect: Rectangle, look: { fill: string; opacity: number }): object[] {
+ * there is more in it than its name, and it opens. The sheet is an outline alone, or it would cover the head of
+ * an edge that arrives at the file from below. */
+function drawSheetBehind(box: LayoutBox, rect: Rectangle, opacity: number): object[] {
     if (!holdsDeclarations(box) || box.isExpanded) {
         return []
     }
     const offset = STACK_OFFSET_PX * Math.min(1, zoomOf(box, rect))
     const sheet = { ...rect, x: rect.x + offset, y: rect.y + offset, r: CORNER_RADIUS_PX }
-    return [{ type: "rect", ...UNTRANSFORMED, cursor: "pointer", shape: sheet, style: { ...baseStyle(box), ...look } }]
+    return [{ type: "rect", ...UNTRANSFORMED, cursor: "pointer", shape: sheet, style: { ...baseStyle(box), fill: null, opacity } }]
 }
 
 function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch }: BoxLook, zoom: number): object[] {
