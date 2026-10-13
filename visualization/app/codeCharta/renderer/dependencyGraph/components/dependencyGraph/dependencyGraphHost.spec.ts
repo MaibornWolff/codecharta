@@ -127,29 +127,29 @@ describe("DependencyGraphHost", () => {
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
-    it("should toggle a box on a click on its toggle rather than select it, and let no double click toggle it back", () => {
+    it("should let no double click toggle a box whose cycle badge the first click landed on", () => {
         // Arrange
-        const toggleOfBox = { ...BOX, info: "toggle" }
+        const badgeOfBox = { ...BOX, info: "cycleBadge" }
 
         // Act
-        fireChartEvent("click", toggleOfBox)
+        fireChartEvent("click", badgeOfBox)
         container.dispatchEvent(new MouseEvent("dblclick"))
 
         // Assert
-        expect(handlers.onBoxToggled).toHaveBeenCalledTimes(1)
-        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app/a.ts")
+        expect(handlers.onCycleBadgeClicked).toHaveBeenCalledTimes(1)
+        expect(handlers.onBoxToggled).not.toHaveBeenCalled()
         expect(handlers.onBoxClicked).not.toHaveBeenCalled()
     })
 
-    it("should toggle an open box on a click on the toggle in its title, which is drawn apart from the box", () => {
+    it("should report a click on the cycle badge of an open box, which is drawn with its title apart from the box", () => {
         // Arrange
-        const toggleInTitle = { seriesId: GRAPH_SERIES_ID, name: "", data: { titledBoxPath: "/root/app" }, info: "toggle" }
+        const badgeInTitle = { seriesId: GRAPH_SERIES_ID, name: "", data: { titledBoxPath: "/root/app" }, info: "cycleBadge" }
 
         // Act
-        fireChartEvent("click", toggleInTitle)
+        fireChartEvent("click", badgeInTitle)
 
         // Assert
-        expect(handlers.onBoxToggled).toHaveBeenCalledWith("/root/app")
+        expect(handlers.onCycleBadgeClicked).toHaveBeenCalledWith("/root/app")
     })
 
     it("should report a click on a box's cycle badge as such, not as a click on the box", () => {

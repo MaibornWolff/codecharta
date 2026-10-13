@@ -35,16 +35,16 @@ describe("dependencyGraphBoxes", () => {
             expect(label.style).toMatchObject({ text: "a.ts", x: 90, y: 40, align: "center", overflow: "truncate" })
         })
 
-        it("should give a closed file that holds declarations a toggle and their count", () => {
+        it("should give a closed file that holds declarations their count, and no arrow", () => {
             // Arrange
             const box = aBox("/root/a.ts", { declarationCount: 3 })
 
             // Act
-            const [, label, toggle, countDisc, count] = childrenOf(drawBox(box, look("none"), identityPixels))
+            const [, label, countDisc, count, ...rest] = childrenOf(drawBox(box, look("none"), identityPixels))
 
             // Assert
             expect(label.style).toMatchObject({ text: "a.ts", width: 112 })
-            expect(toggle).toMatchObject({ info: "toggle", style: { text: "▸" } })
+            expect(rest).toEqual([])
             expect(countDisc).toMatchObject({ type: "circle", shape: { cx: 146, cy: 20, r: 7 }, style: { stroke: "#8a94a3" } })
             expect(count.style).toMatchObject({ text: "3", x: 146, fill: "#8a94a3" })
         })
@@ -59,23 +59,22 @@ describe("dependencyGraphBoxes", () => {
 
             // Assert
             expect(drawn).toEqual([
-                [undefined, "a.ts", "▸"],
+                [undefined, "a.ts"],
                 [undefined, "b.ts"]
             ])
         })
 
-        it("should head an opened file with its name and a toggle to close it, painted over the edges", () => {
+        it("should head an opened file with its name alone, painted over the edges", () => {
             // Arrange
             const box = aBox("/root/a.ts", { declarationCount: 3, isExpanded: true, width: 300, height: 140 })
 
             // Act
             const outline = childrenOf(drawBox(box, look("none"), identityPixels))
-            const [label, toggle, ...rest] = childrenOf(drawContainerTitle(box, look("none"), identityPixels))
+            const [label, ...rest] = childrenOf(drawContainerTitle(box, look("none"), identityPixels))
 
             // Assert
             expect(outline.map(child => child.type)).toEqual(["rect"])
-            expect(label.style).toMatchObject({ text: "a.ts", align: "left", x: 24, y: 14, fontWeight: "normal" })
-            expect(toggle.style.text).toBe("▾")
+            expect(label.style).toMatchObject({ text: "a.ts", align: "left", x: 8, y: 14, fontWeight: "normal" })
             expect(rest).toEqual([])
         })
 
@@ -111,11 +110,10 @@ describe("dependencyGraphBoxes", () => {
                 const zoomedOutALittle = atZoom(0.75)
 
                 // Act
-                const [, , toggle, countDisc, count] = childrenOf(drawBox(file, look("none"), zoomedOutALittle))
+                const [, , countDisc, count] = childrenOf(drawBox(file, look("none"), zoomedOutALittle))
                 const [, , icon, letter] = childrenOf(drawBox(declaration, iconLook, zoomedOutALittle))
 
                 // Assert
-                expect(toggle.style.fontSize).toBe(7.5)
                 expect(countDisc.shape).toMatchObject({ cx: 109.5, cy: 15, r: 5.25 })
                 expect(count.style.fontSize).toBe(7.5)
                 expect(icon.shape).toMatchObject({ cx: 10.5, cy: 9.75, r: 5.25 })

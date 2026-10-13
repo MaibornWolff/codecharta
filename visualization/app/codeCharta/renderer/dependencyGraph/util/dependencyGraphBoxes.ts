@@ -18,7 +18,6 @@ import {
     OPEN_FILE_FILL,
     PACKAGE_STROKE,
     packageFill,
-    QUIET_TEXT_COLOR,
     SELECTED_COLOR,
     seeThrough,
     TEXT_COLOR
@@ -41,14 +40,8 @@ const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
 
 const LABEL_FONT_SIZE_PX = 12
 const DECLARATION_FONT_SIZE_PX = 11
-const QUIET_FONT_SIZE_PX = 10
-/** What the toggle and the count each take from the name of a file that holds declarations. */
+/** What the count takes from the name of a closed file that holds declarations, on either side so the name stays centred. */
 const FILE_MARK_WIDTH_PX = 16
-const TOGGLE_HIT_PADDING_PX = 4
-const TOGGLE_GLYPHS = { open: "▾", closed: "▸" }
-
-/** What a click on a box's toggle carries, to tell it from a click on the box. */
-export const TOGGLE_INFO = "toggle"
 const LEVEL_FONT_SIZE_PX = 10
 const LABEL_INSET_PX = 8
 const MIN_LABEL_WIDTH_PX = 36
@@ -106,31 +99,11 @@ function drawName(box: LayoutBox, rect: Rectangle, { isMissedBySearch }: BoxLook
 }
 
 function drawFileMarks(box: LayoutBox, rect: Rectangle, mark: MarkLook): object[] {
-    return holdsDeclarations(box) ? [drawToggle(box, rect, mark), ...drawDeclarationCount(box, rect, mark)] : []
+    return holdsDeclarations(box) ? drawDeclarationCount(box, rect, mark) : []
 }
 
 function holdsDeclarations(box: LayoutBox): boolean {
     return box.kind === "file" && box.declarationCount > 0
-}
-
-function drawToggle(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook) {
-    return {
-        type: "text",
-        ...UNTRANSFORMED,
-        info: TOGGLE_INFO,
-        cursor: "pointer",
-        style: {
-            text: box.isExpanded ? TOGGLE_GLYPHS.open : TOGGLE_GLYPHS.closed,
-            x: rect.x + (LABEL_INSET_PX - TOGGLE_HIT_PADDING_PX) * scale,
-            y: nameCentreY(box, rect),
-            padding: TOGGLE_HIT_PADDING_PX,
-            align: "left",
-            verticalAlign: "middle",
-            fontSize: QUIET_FONT_SIZE_PX * scale,
-            fill: QUIET_TEXT_COLOR,
-            opacity
-        }
-    }
 }
 
 function opacityOf(isMissedBySearch: boolean): number {
@@ -240,7 +213,7 @@ interface LabelRoom {
 }
 
 function labelRoomOf(box: LayoutBox, rect: Rectangle, { hasKindIcon, markScale }: LabelLook): LabelRoom {
-    const marksWidth = holdsDeclarations(box) ? FILE_MARK_WIDTH_PX * markScale : 0
+    const marksWidth = holdsDeclarations(box) && !box.isExpanded ? FILE_MARK_WIDTH_PX * markScale : 0
     const iconWidth = hasKindIcon ? KIND_ICON_WIDTH_PX * markScale : 0
     return { marksWidth, iconWidth, width: rect.width - 2 * (LABEL_INSET_PX + marksWidth) - iconWidth }
 }

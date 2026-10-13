@@ -12,7 +12,6 @@ import {
     stubResizeObserver
 } from "../../testing/dependencyGraph.stub"
 import { AxisWindow, fitWindowOf } from "../../util/axisWindow"
-import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { DependencyGraphScene } from "../../util/dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "../../util/dependencyGraphSeries"
 import { aBox, DEFAULT_LOOKS } from "../../util/dependencyGraphTestData"
@@ -55,7 +54,10 @@ function sceneWithOpenedFolder(extent: { x: number; y: number; width: number; he
     return { ...SCENE, layout: { boxes: [openedFolder], bands: [], width: 2400, height: 1200 } }
 }
 
-const TOGGLE_OF_THE_FOLDER = { seriesId: GRAPH_SERIES_ID, name: FOLDER, info: TOGGLE_INFO }
+function doubleClickBox(name: string): void {
+    fireChartEvent("click", { seriesId: GRAPH_SERIES_ID, name })
+    screen.getByTestId("dependency-graph").dispatchEvent(new MouseEvent("dblclick"))
+}
 
 const PANNED_AND_ZOOMED = (_finder: unknown, [x, y]: number[]) => [x / 2 + 100, y / 2 + 100]
 const PANNED_AND_ZOOMED_WINDOW: AxisWindow = { x: [100, 500], y: [100, 400] }
@@ -291,7 +293,7 @@ describe("DependencyGraphComponent", () => {
             inputs: { scene: CLOSED_FOLDER_SCENE, graphIdentity: GRAPH_IDENTITY }
         })
         stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
-        fireChartEvent("click", TOGGLE_OF_THE_FOLDER)
+        doubleClickBox(FOLDER)
 
         // Act
         fixture.componentRef.setInput("scene", sceneWithOpenedFolder({ x: 260, y: 180, width: 200, height: 120 }))
@@ -307,7 +309,7 @@ describe("DependencyGraphComponent", () => {
             inputs: { scene: CLOSED_FOLDER_SCENE, graphIdentity: GRAPH_IDENTITY }
         })
         stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
-        fireChartEvent("click", TOGGLE_OF_THE_FOLDER)
+        doubleClickBox(FOLDER)
         const openedScene = sceneWithOpenedFolder({ x: 260, y: 180, width: 2000, height: 900 })
 
         // Act
@@ -324,8 +326,8 @@ describe("DependencyGraphComponent", () => {
             inputs: { scene: CLOSED_FOLDER_SCENE, graphIdentity: GRAPH_IDENTITY }
         })
         stubbedChart.convertFromPixel.mockImplementation(PANNED_AND_ZOOMED)
-        fireChartEvent("click", { seriesId: GRAPH_SERIES_ID, name: "/root/unknown", info: TOGGLE_INFO })
-        fireChartEvent("click", TOGGLE_OF_THE_FOLDER)
+        doubleClickBox("/root/unknown")
+        doubleClickBox(FOLDER)
         const movedButStillClosed = {
             ...CLOSED_FOLDER_SCENE,
             layout: { ...CLOSED_FOLDER_SCENE.layout, boxes: [aBox(FOLDER, { kind: "folder", x: 900 })] }
