@@ -39,10 +39,11 @@ interface ChartItemEvent {
 }
 
 export const POINTER_LEAVE_GRACE_MS = 120
-/** A click selects the box and so redraws the graph, which replaces the element under the pointer, and
- * ECharts then loses the second click of a double click. The browser's own double click still arrives on
- * the container, and it toggles the box the first click landed on. */
+/** A redraw replaces the element under the pointer, and ECharts then loses the second click of a double click.
+ * The browser's own double click still arrives on the container, and it toggles the box the first click landed on. */
 export const DOUBLE_CLICK_MS = 500
+/** A click selects its box only once no second click has made a double click of it, which selects nothing. */
+export const SINGLE_CLICK_WAIT_MS = 250
 
 export class DependencyGraphHost {
     private chart?: echarts.ECharts
@@ -50,6 +51,7 @@ export class DependencyGraphHost {
     private pathUnderPointer: string | null = null
     private pointerLeaveTimeout?: ReturnType<typeof setTimeout>
     private lastBoxClick: { path: string; at: number } | null = null
+    private pendingSelection?: ReturnType<typeof setTimeout>
     private dragGesture?: BoxDragGesture
     private chartSize?: Viewport
     private readonly panKey = new PanKey()
@@ -103,6 +105,7 @@ export class DependencyGraphHost {
     }
 
     dispose(): void {
+        this.cancelPendingSelection()
         this.cancelPointerLeave()
         this.reportPointerLeft()
         this.attachedContainer?.removeEventListener("contextmenu", suppressBrowserMenu)
@@ -194,14 +197,29 @@ export class DependencyGraphHost {
             return
         }
         this.lastBoxClick = { path, at: Date.now() }
-        this.handlers.onBoxClicked(path)
+        this.selectUnlessDoubleClicked(path)
+    }
+
+    private selectUnlessDoubleClicked(path: string): void {
+        this.cancelPendingSelection()
+        this.pendingSelection = setTimeout(() => {
+            this.pendingSelection = undefined
+            this.handlers.onBoxClicked(path)
+        }, SINGLE_CLICK_WAIT_MS)
+    }
+
+    private cancelPendingSelection(): void {
+        clearTimeout(this.pendingSelection)
+        this.pendingSelection = undefined
     }
 
     private letNoDoubleClickToggle(): void {
+        this.cancelPendingSelection()
         this.lastBoxClick = null
     }
 
     private readonly reportDoubleClick = (): void => {
+        this.cancelPendingSelection()
         const click = this.lastBoxClick
         this.lastBoxClick = null
         if (click && Date.now() - click.at <= DOUBLE_CLICK_MS) {
