@@ -340,12 +340,12 @@ their sums equal the totals of the real file. Format: parameters / logic / compl
 - Wrong:
   1. Grouped parameters count once per group: `groupedLongParameterList(strength, dexterity, constitution, wisdom,
      charisma int)` has 1 parameter, so `long_parameter_list` is 0 instead of 1; `groupedParameters` 2 instead of 4,
-     `logicalOperators` 1 instead of 3, `genericMax` 1 instead of 2.
-  2. Receivers count as parameters: every method is one too high (`IsEmpty()` 1, `Resolve` 6; creature.go min 1).
+     `logicalOperators` 1 instead of 3, `genericMax` 1 instead of 2. **Decision: accept (derived from JavaScript).**
+  2. Receivers count as parameters: every method is one too high (`IsEmpty()` 1, `Resolve` 6; creature.go min 1). **Decision: ignore.**
   3. Results count as parameters: `multipleReturns(roll int) (int, error)` 3, `namedReturns` 3, `SafeRoll(dice) (result
-     int)` 3, `deferRecover() (failed bool)` 1.
+     int)` 3, `deferRecover() (failed bool)` 1. **Decision: accept.**
   4. `callbackParameter(apply func(int, string) error, fallback damageRule)`: 4, the parameters of the func type are
-     added to those of the function.
+     added to those of the function. **Decision: accept (derived from Objective-C).**
   5. `number_of_functions` includes func literals (encounter_resolver.go 8 instead of 5, edge cases 62 instead of 54,
      test file 6 instead of 4, package-level `var rollTwice = func…`), while the per-function statistics leave nested
      closures out; the two numbers of one file do not describe the same set. **Decision: accept (derived from Java).**
@@ -356,7 +356,7 @@ their sums equal the totals of the real file. Format: parameters / logic / compl
   1. `max/min/mean/median_complexity_per_function` is the logic complexity of the function without the +1 that
      `complexity` adds per function, so a branch-free function has 0 and the file-level and function-level numbers
      cannot be added up. **Decision: ignore (derived from Java).**
-  2. `//go:` directives count as comment lines.
+  2. `//go:` directives count as comment lines. **Decision: ignore.**
   3. "No .gitignore found at root level" when a sub-folder of a repository is scanned. **Decision: ignore (derived from Kotlin).**
 - Good: loc, rloc and comment_lines are exact in all new files, including raw strings with comment markers, the cgo
   preamble and a doc-only file; all three `for` forms, `range` over slice, integer and channel, `if` with init,
@@ -371,28 +371,28 @@ their sums equal the totals of the real file. Format: parameters / logic / compl
   1. Package-level constants and variables are neither leaves nor usages: `model.Flying` (encounter_resolver.go,
      `dependencyEnumConstOnly`), `model.MAX_HIT_POINTS` (`dependencyConstOnly`), `Monstrosity` / `Walking`
      (centaur.go), `application.StandardCreatureType` (creature.go, persisted_creatures.go). With the last one the
-     planted upward dependency and the cycle creature -> facade -> service -> creatures -> creature are invisible.
-  2. Dot import (`application/creature_util.go`): no outgoing edge at all.
+     planted upward dependency and the cycle creature -> facade -> service -> creatures -> creature are invisible. **Decision: accept (derived from Kotlin).**
+  2. Dot import (`application/creature_util.go`): no outgoing edge at all. **Decision: accept.**
   3. Package-level `var` declarations are not scanned: `var fallbackArmor model.ArmorClass` (encounter_edge_cases.go),
      `var _ Fightable = (*Creature)(nil)`, `var _ service.Creatures = (*PersistedCreatures)(nil)`, so Go's way of
-     stating "implements" yields no edge.
+     stating "implements" yields no edge. **Decision: accept.**
   4. `replace de.sots/dicebag => ./libs/dicebag`: `domain/model/dice_bag.go -> libs/dicebag/bag.go` is absent, `go.mod`
-     is not read, nothing is logged.
+     is not read, nothing is logged. **Decision: ignore.**
   5. Method value `reroll := dice.Roll` (initiative.go) and `//go:embed lair_manifest.txt`: no edge. **Decision: accept (derived from Java).**
-  6. Scratch probe only: types after the first in a `type ( … )` group and methods on a generic receiver.
+  6. Scratch probe only: types after the first in a `type ( … )` group and methods on a generic receiver. **Decision: accept.**
 - Wrong:
   1. `application/creature_facade.go`: `model.Creature` and `dto.Creature` collapse onto the package imported first
      (dto as written, model after swapping the two import lines in a scratch copy). **Decision: accept (derived from Java).**
   2. Called method names are resolved as type names: `creature.HitPoints()` / `defender.ArmorClass()` in
      encounter_resolver.go create `EncounterResolver -> HitPoints` / `-> ArmorClass`; the probe `animals.Centaur()` on
-     an unrelated local interface creates an edge to `domain/model/centaur.go`.
-  3. `application/aliases.go`: the alias `Fightable` is a leaf named `unknown`.
-  4. Kinds: `CreatureType`, `SpeedType` (named int) and `damageRule` (func type) are `class`.
+     an unrelated local interface creates an edge to `domain/model/centaur.go`. **Decision: accept.**
+  3. `application/aliases.go`: the alias `Fightable` is a leaf named `unknown`. **Decision: accept (derived from Kotlin).**
+  4. Kinds: `CreatureType`, `SpeedType` (named int) and `damageRule` (func type) are `class`. **Decision: ignore.**
 - Bad:
-  1. The log reports "1 cycle" while no file edge is cyclic (it is `Dice <-> DiceRoll` inside dice.go).
-  2. encounter_edge_cases.go: the function-local type `mount` is a file-level leaf; two `init` functions are one leaf. **Decisions derived from Java: accept — function-local type exported as a file-level leaf.**
+  1. The log reports "1 cycle" while no file edge is cyclic (it is `Dice <-> DiceRoll` inside dice.go). **Decision: ignore — the cycle count is at declaration level, documented (derived from Kotlin).**
+  2. encounter_edge_cases.go: the function-local type `mount` is a file-level leaf; two `init` functions are one leaf. **Decisions derived from Java: accept — function-local type exported as a file-level leaf.** **Decision: ignore — two `init` functions as one leaf.**
   3. `doc.go` is not a node, so the file count differs from the other two parsers (34 vs 35 non-test files). **Decision: accept (derived from Java).**
-  4. Leaf levels are per package; unresolved imports leave no trace even with `--verbose`.
+  4. Leaf levels are per package; unresolved imports leave no trace even with `--verbose`. **Decisions: ignore — leaf levels per package, documented; ignore — `--verbose` (derived from TypeScript).**
 - Good: 13 of the 17 expected new edges and all 43 old ones are present; a type is found as parameter, result,
   field, embedded field (also in a local struct), composite literal inside a goroutine, generic argument, generic
   constraint, channel element, map key of a local variable, pointer target of a local variable, type assertion,
@@ -406,15 +406,15 @@ their sums equal the totals of the real file. Format: parameters / logic / compl
   2. German words in comments and strings: `Größe` and `Höhle` (string in zentaurenhöhle.go) are lost, every
      umlaut word in the comment is cut (`zentaurenh` / `hle`, `stungsklasse`, `geh` / `ren`). **Decision: accept (derived from Java).**
   3. snake_case and digit-carrying words in comments and strings vanish (`roll_loaded_dice` in encounter_cgo.go;
-     probe `gelatinous_cube`, `owlbear2`). **Decision derived from Vue: accept — snake_case words in comments and strings.**
+     probe `gelatinous_cube`, `owlbear2`). **Decision derived from Vue: accept — snake_case words in comments and strings.** **Decision: accept — digit-carrying words in comments and strings.**
   4. No German stop words: die, unter, dem, und, jeder, der stay. **Decision: ignore (derived from Java).**
-  5. `application/aliases.go`: the alias name `Fightable` is not extracted.
+  5. `application/aliases.go`: the alias name `Fightable` is not extracted. **Decision: accept.**
 - Wrong:
   1. `d20Roll` -> `20` + `roll`, `rollD20` -> `roll` + `d20` (dice.go). **Decision: ignore (derived from Java).**
   2. `--comment-weight 0`: stack trace instead of a message. **Decision: accept (derived from Java).**
 - Bad:
   1. Directives and embedded code are read as prose: `//go:generate`, `//go:noinline`, `//go:build`, `//go:embed`,
-     the C preamble of encounter_cgo.go (`include`, `stdlib`, `static`), commented-out code. **Decisions derived from Java: ignore — commented-out code.**
+     the C preamble of encounter_cgo.go (`include`, `stdlib`, `static`), commented-out code. **Decisions derived from Java: ignore — commented-out code.** **Decision derived from Bash: ignore — `//go:` directives.** **Decision: ignore — the C preamble.**
   2. Go-specific technical words pass MODERATE: `json` (struct tags), `benchmark`, `fuzz`, `output`, `http`, `id`,
      `key`. **Decision: ignore (derived from Java).**
   3. Plural and singular are separate words (creature 130 / creatures 25, roll 55 / rolls 20). **Decision: ignore (derived from Java).**

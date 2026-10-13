@@ -513,12 +513,12 @@ Function definitions count with weight 3. Calls of functions are not counted: `c
 ### Unified parser
 - Missing:
   1. Parameters: `max` / `min` / `mean` / `median_parameters_per_function` and `long_parameter_list` are 0 for
-     every Bash file (`encounter_resolver::resolve` reads `$1`..`$5`, expected 5 and 1).
+     every Bash file (`encounter_resolver::resolve` reads `$1`..`$5`, expected 5 and 1). **Decision: ignore.**
   2. `message_chains` is always 0: the pipeline of 5 commands in `encounter_resolver::describe`, the 6-command
-     pipeline in `long_pipeline` and the `|&` pipeline in `pipeline_stderr` are not chains.
+     pipeline in `long_pipeline` and the `|&` pipeline in `pipeline_stderr` are not chains. **Decision: ignore.**
   3. `tools/lair.bash` is skipped although the grammar library lists `.bash`; `tools/stable.zsh` and the
-     extension-less `bin/cellars` (shebang `#!/usr/bin/env bash`) are skipped too.
-  4. `-a` / `-o` inside `[ ]` (`single_bracket_dash_a`) add nothing.
+     extension-less `bin/cellars` (shebang `#!/usr/bin/env bash`) are skipped too. **Decision derived from C++: accept — `.bash` and `.zsh`.** **Decision: accept — the extension-less script with a shebang.**
+  4. `-a` / `-o` inside `[ ]` (`single_bracket_dash_a`) add nothing. **Decision: accept.**
 - Wrong:
   1. The default arm `*)` of a `case` counts as a branch: `encounter_resolver::resolve` (15 instead of 14),
      `case_alternatives`, `getopts_loop`. **Decision: ignore (derived from Java).**
@@ -531,10 +531,10 @@ Function definitions count with weight 3. Calls of functions are not counted: `c
      0 and complexity 0; the `||` in `subshell_body` reaches the file total only. **Decisions derived from Java: accept — a function body that is not recognised is measured as empty, as with constructor bodies.**
   5. With a POSIX locale `lib/domain/model/zentaurenhöhle.sh` vanishes from the map without a warning. **Decision: accept (derived from Java).**
 - Bad:
-  1. An extension-less file is reported as ignored extension `.`.
+  1. An extension-less file is reported as ignored extension `.`. **Decision: ignore (derived from Ruby).**
   2. The `.gitignore` is looked up in the analysed folder only; the run warns and falls back to the default
      build-folder exclusion. **Decision: ignore (derived from Kotlin).**
-  3. The shebang counts as a comment line in every script; the no-op heredoc block comment counts as code.
+  3. The shebang counts as a comment line in every script; the no-op heredoc block comment counts as code. **Decisions: ignore — the shebang; ignore — the no-op heredoc.**
 - Good: `loc`, `rloc`, `comment_lines` match the hand count in all new files; `#` in heredocs, strings and
   parameter expansions is never a comment; `if`, `elif`, `for`, `for (( ))`, `for x; do`, `while`, `until`,
   `select`, `case` arms with `|`, `;&`, `;;&`, `&&` / `||` in `[[ ]]`, `(( ))` and lists, the arithmetic
@@ -549,10 +549,10 @@ Function definitions count with weight 3. Calls of functions are not counted: `c
      resolution, glob sources (`creature_util.sh`, `tools/check_model.sh`), conditional and in-function
      sources (`encounter_edge_cases.sh`), `exec` / call by path (`bin/encounter.sh`, `bin/cellars`,
      `bin/cellars.sh`), zsh `${0:A:h}` (`tools/stable.zsh`), extension-less scripts, and a test rule for
-     shell.
+     shell. **Decision: ignore.**
 - Wrong: nothing; the parser claims nothing.
 - Bad: `Created Project with 1 leaves` for an empty result; exit code 0, so a pipeline cannot tell the empty
-  map from a real one without reading the warnings. **Decision derived from Objective-C: ignore — exit code 0.**
+  map from a real one without reading the warnings. **Decision derived from Objective-C: ignore — exit code 0.** **Decision derived from Ruby: ignore — `Created Project with 1 leaves`.**
 - Good: no crash, two clear warnings (`No supported source files found under ...`, `No analyzable
   declarations were found ...`), a valid 2.1 map with an empty dependency lens.
 
@@ -561,25 +561,25 @@ Function definitions count with weight 3. Calls of functions are not counted: `c
   1. Umlaut words in comments and strings: `Zentaurenhöhle`, `Rüstungsklasse`, `Größe`, `Höhle`, `gehören`
      (`zentaurenhöhle.sh`) are cut at the umlaut; 3 of 7 German words survive. **Decision: accept (derived from Java).**
   2. German stop words: `die`, `unter`, `dem`, `und`, `jeder`, `der` leak. **Decision: ignore (derived from Java).**
-  3. Extension-less scripts (`bin/cellars`) are skipped without a message; `drawbridge` never appears.
-  4. No file-name rule for shell tests (`*_test.sh`, `test_*.sh`).
+  3. Extension-less scripts (`bin/cellars`) are skipped without a message; `drawbridge` never appears. **Decision: accept.**
+  4. No file-name rule for shell tests (`*_test.sh`, `test_*.sh`). **Decision: accept (derived from C++).**
   5. Calls of functions are not counted, only definitions. **Decision: ignore (derived from Kotlin) — every language counts declarations only.**
 - Wrong:
   1. `::` in function names is deleted instead of splitting: 88 glued words at the root
      (`creatureset`, `resolverinitiative`, `casesarithmetic`, `lairlower`, `utiltreasure`); `initiative` in
-     `encounter_resolver.sh` and `treasure` in `creature_util.sh` lose their identifier counts to them.
-  2. Escape sequences in strings: `'goblin\nkobold'` (`while_read_or`) yields `nkobold`.
+     `encounter_resolver.sh` and `treasure` in `creature_util.sh` lose their identifier counts to them. **Decision: accept (derived from PHP).**
+  2. Escape sequences in strings: `'goblin\nkobold'` (`while_read_or`) yields `nkobold`. **Decision: accept.**
   3. `20` from `roll_d20` / `d20Roll` (`dice.sh`) is a word. **Decision: ignore (derived from Java).**
-  4. `--comment-weight 0` / `--string-weight 0` and a single extension-less file end in a stack trace. **Decisions derived from Java: accept — a weight of 0 is rejected.**
+  4. `--comment-weight 0` / `--string-weight 0` and a single extension-less file end in a stack trace. **Decisions derived from Java: accept — a weight of 0 is rejected.** **Decision derived from Delphi: accept — the stack trace for a path without analysable files.**
   5. With a POSIX locale `zentaurenhöhle.sh` is dropped without a message. **Decision: accept (derived from Java).**
 - Bad:
-  1. `shellcheck(86)` from tooling directives is the fourth most frequent word.
+  1. `shellcheck(86)` from tooling directives is the fourth most frequent word. **Decision: ignore.**
   2. `source` paths and their shellcheck twins: `dirname(56)`, `model(67)`, `domain(51)`, `lib(30)`,
-     `application(20)`; commands and variables inside `"$( )"` / `"$var"` count as string words.
-  3. `SCRIPT_DIR` / `LIB_DIR` give `script(20)`, `dir(9)`.
-  4. The file prefix of every function name dominates: `encounter(136)`, `edge(109)`.
+     `application(20)`; commands and variables inside `"$( )"` / `"$var"` count as string words. **Decision: accept.**
+  3. `SCRIPT_DIR` / `LIB_DIR` give `script(20)`, `dir(9)`. **Decision: ignore.**
+  4. The file prefix of every function name dominates: `encounter(136)`, `edge(109)`. **Decision: ignore.**
   5. `entity`, `dto`, `port`, `repository`, `adapter`, `facade`, `persistence` leak at MODERATE. **Decision: ignore (derived from Java).**
-  6. No root or folder node in the lens; the heredoc block comment has string weight. **Decisions derived from Java: ignore — no root or folder node.**
+  6. No root or folder node in the lens; the heredoc block comment has string weight. **Decisions derived from Java: ignore — no root or folder node.** **Decision: ignore — the heredoc block comment.**
 - Good: all 17 expected words are present; `.bash` and `.zsh` are analysed; Bash keywords, builtins and the
   shebang words never leak and `class` rightly stays; snake_case, camelCase, SCREAMING_SNAKE, PascalCase in
   comments, the `XP` acronym, `centaur-stable`, `roll-initiative`, alias names and the `select` variable
