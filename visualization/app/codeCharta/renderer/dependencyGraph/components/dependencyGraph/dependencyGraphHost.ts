@@ -5,13 +5,14 @@ import { CanvasRenderer } from "echarts/renderers"
 import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
-import { AxisWindow, Viewport, windowResizedTo } from "../../util/axisWindow"
+import { AxisWindow, panBothAxesTo, Viewport, windowResizedTo } from "../../util/axisWindow"
 import { CYCLE_BADGE_INFO } from "../../util/boxMarks"
 import { TOGGLE_INFO } from "../../util/dependencyGraphBoxes"
 import { GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point } from "../../util/geometry"
 import { BoxDragGesture, BoxDragHandlers, layoutPointAt } from "./boxDragGesture"
 import { PanKey } from "./panKey"
+import { PannableView, RightDragPan } from "./rightDragPan"
 
 echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent, TooltipComponent, AriaComponent])
 
@@ -38,6 +39,16 @@ interface ChartItemEvent {
     event?: { event?: MouseEvent; offsetX: number; offsetY: number }
 }
 
+interface AxisReach {
+    min: number
+    max: number
+}
+
+interface DrawnAxes {
+    xAxis: AxisReach[]
+    yAxis: AxisReach[]
+}
+
 export const POINTER_LEAVE_GRACE_MS = 120
 /** A redraw replaces the element under the pointer, and ECharts then loses the second click of a double click.
  * The browser's own double click still arrives on the container, and it toggles the box the first click landed on. */
@@ -55,6 +66,10 @@ export class DependencyGraphHost {
     private dragGesture?: BoxDragGesture
     private chartSize?: Viewport
     private readonly panKey = new PanKey()
+    private readonly rightDragPan = new RightDragPan({
+        view: () => this.pannableView(),
+        show: shownWindow => this.chart?.dispatchAction(panBothAxesTo(shownWindow))
+    })
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
     private readonly partClickHandlers: Record<string, (path: string) => void> = {
@@ -112,6 +127,7 @@ export class DependencyGraphHost {
         this.attachedContainer?.removeEventListener("dblclick", this.reportDoubleClick)
         this.containerSizeObserver.disconnect()
         this.panKey.stopListening()
+        this.rightDragPan.stopListening()
         this.dragGesture?.cancel()
         this.dragGesture = undefined
         if (this.chart) {
@@ -152,6 +168,16 @@ export class DependencyGraphHost {
         container.addEventListener("dblclick", this.reportDoubleClick)
         this.containerSizeObserver.observe(container)
         this.panKey.listenOver(container)
+        this.rightDragPan.listenOver(container)
+    }
+
+    private pannableView(): PannableView | null {
+        if (!this.chart || !this.chartSize) {
+            return null
+        }
+        const { xAxis, yAxis } = this.chart.getOption() as unknown as DrawnAxes
+        const reach: AxisWindow = { x: [xAxis[0].min, xAxis[0].max], y: [yAxis[0].min, yAxis[0].max] }
+        return { shownWindow: this.shownWindow(this.chart, this.chartSize), reach, size: this.chartSize }
     }
 
     private shownWindow(chart: echarts.ECharts, { width, height }: Viewport): AxisWindow {
@@ -231,7 +257,8 @@ export class DependencyGraphHost {
         const path = this.boxUnder(event)
         const mouseEvent = event.event?.event
         if (path !== null && mouseEvent) {
-            this.handlers.onBoxRightClicked(path, mouseEvent.clientX, mouseEvent.clientY)
+            const { clientX, clientY } = mouseEvent
+            this.rightDragPan.menuRequested(() => this.handlers.onBoxRightClicked(path, clientX, clientY))
         }
     }
 
