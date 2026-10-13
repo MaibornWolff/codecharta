@@ -50,7 +50,8 @@ const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
 
 export type CycleMarkKind = "insideFiles" | "betweenFiles" | "declaration"
 
-/** Outlined for the cycles within a file, filled for those between files: a cycle across files is the wider tangle. */
+/** Filled for the cycles between files, outlined for those within a file: a cycle across files is the wider
+ * tangle, so wherever the two are told together it comes first. */
 export const CYCLE_MARK_COLORS: Record<CycleMarkKind, CycleMarkColors> = {
     insideFiles: { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR },
     betweenFiles: { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR },
@@ -74,8 +75,8 @@ export const CYCLE_MARK_SAMPLE = {
 }
 
 export const CYCLE_MARK_LEGEND: readonly { mark: CycleMarkKind; label: string }[] = [
-    { mark: "insideFiles", label: "Cycles inside a file" },
     { mark: "betweenFiles", label: "Cycles between files" },
+    { mark: "insideFiles", label: "Cycles inside a file" },
     { mark: "declaration", label: "Declaration in a cycle" }
 ]
 
@@ -135,10 +136,10 @@ function drawCycleRing(rect: Rectangle, { opacity, scale }: MarkLook): object {
 
 function drawCycleBadges(rect: Rectangle, counts: Pick<CycleLook, "insideFilesCount" | "betweenFilesCount">, mark: MarkLook): object[] {
     const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * mark.scale, top: rect.y - CYCLE_BADGE.risePx * mark.scale }
-    const betweenFiles = drawCycleBadge(corner, counts.betweenFilesCount, CYCLE_MARK_COLORS.betweenFiles, mark)
-    const cornerOfNextBadge = { ...corner, right: betweenFiles.rightOfNextBadge }
-    const insideFiles = drawCycleBadge(cornerOfNextBadge, counts.insideFilesCount, CYCLE_MARK_COLORS.insideFiles, mark)
-    return [...insideFiles.elements, ...betweenFiles.elements]
+    const insideFiles = drawCycleBadge(corner, counts.insideFilesCount, CYCLE_MARK_COLORS.insideFiles, mark)
+    const cornerOfNextBadge = { ...corner, right: insideFiles.rightOfNextBadge }
+    const betweenFiles = drawCycleBadge(cornerOfNextBadge, counts.betweenFilesCount, CYCLE_MARK_COLORS.betweenFiles, mark)
+    return [...betweenFiles.elements, ...insideFiles.elements]
 }
 
 interface BadgeCorner {

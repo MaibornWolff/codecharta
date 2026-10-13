@@ -267,7 +267,7 @@ describe("dependencyGraphBoxes", () => {
                 expect(drawn.map(item => childrenOf(item).map(child => child.type))).toEqual([["rect", "text"], ["rect"]])
             })
 
-            it("should draw the between-files badge filled, to the right of the outlined inside-files badge", () => {
+            it("should draw the between-files badge filled, to the left of the outlined inside-files badge", () => {
                 // Arrange
                 const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
@@ -278,8 +278,8 @@ describe("dependencyGraphBoxes", () => {
 
                 // Assert
                 expect(pills.map(pill => pill.style)).toMatchObject([
-                    { fill: "#ffffff", stroke: "#dc2626" },
-                    { fill: "#dc2626", stroke: "#ffffff" }
+                    { fill: "#dc2626", stroke: "#ffffff" },
+                    { fill: "#ffffff", stroke: "#dc2626" }
                 ])
                 expect(pills.map(pill => pill.shape)).toMatchObject([
                     { x: 117, width: 28 },
