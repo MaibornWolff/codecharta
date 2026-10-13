@@ -19,6 +19,7 @@ import {
 } from "../../../stores/sharedView/sharedView.read.facade"
 import {
     dependencyLayoutIdentitySelector,
+    dependencyLoadedFilesIdentitySelector,
     dependencySearchedPathsOrNullSelector,
     dependencyTreeSelector,
     focusedFolderLevelPathSelector,
@@ -32,6 +33,7 @@ export class DependencyMapReadStore {
     readonly tree$ = this.store.select(dependencyTreeSelector)
     readonly focusedFolderLevelPath$ = this.store.select(focusedFolderLevelPathSelector)
     readonly layoutIdentity$ = this.store.select(dependencyLayoutIdentitySelector)
+    readonly loadedFilesIdentity$ = this.store.select(dependencyLoadedFilesIdentitySelector)
     readonly hasDependencyData$ = this.store.select(hasDependencyDataSelector)
     readonly isFocused$ = this.store.select(isDependencyMapFocusedSelector)
     readonly focusedNodePath$ = this.store.select(currentFocusedNodePathSelector)

@@ -1,5 +1,6 @@
 import { createSelector } from "@ngrx/store"
 import { dependencyDeclarationsSelector, dependencyLevelsSelector } from "../../../lenses/dependency/dependencyLens.facade"
+import { FileState } from "../../../model/files/files"
 import { buildLeveledTree, indexTree, levelPathOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { accumulatedDataSelector, pathToNodeSelector, searchedNodePathsSelector } from "../../../renderer/renderModel/renderModel.facade"
 import { visibleFileStatesSelector } from "../../../stores/fileStore/fileStore.facade"
@@ -31,15 +32,21 @@ export const focusedFolderLevelPathSelector = createSelector(
     }
 )
 
+function sortedChecksumsOf(visibleFileStates: FileState[]): string[] {
+    return visibleFileStates.map(({ file }) => file.fileMeta.fileChecksum).sort()
+}
+
+/** What the reader opened and moved is kept for as long as the same files are loaded. */
+export const dependencyLoadedFilesIdentitySelector = createSelector(visibleFileStatesSelector, visibleFileStates =>
+    JSON.stringify(sortedChecksumsOf(visibleFileStates))
+)
+
 /** Excluding a node can move the tree's root, so the layout is kept for the loaded files and the focus instead. */
 export const dependencyLayoutIdentitySelector = createSelector(
     visibleFileStatesSelector,
     currentFocusedNodePathSelector,
     (visibleFileStates, focusedNodePath) =>
-        JSON.stringify({
-            fileChecksums: visibleFileStates.map(({ file }) => file.fileMeta.fileChecksum).sort(),
-            focusedNodePath: focusedNodePath ?? null
-        })
+        JSON.stringify({ fileChecksums: sortedChecksumsOf(visibleFileStates), focusedNodePath: focusedNodePath ?? null })
 )
 
 export const isDependencyMapFocusedSelector = createSelector(currentFocusedNodePathSelector, Boolean)

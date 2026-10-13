@@ -13,7 +13,7 @@ import { setDependencyGraphSettings } from "../../../../stores/preferences/prefe
 import { setState } from "../../../../stores/rootStore/state.actions"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
 import { reportResize, stubElementSize, stubResizeObserver } from "../../../../util/testUtils/domStubs"
-import { dependencyLayoutIdentitySelector } from "../../selectors/dependencyMap.selectors"
+import { dependencyLayoutIdentitySelector, dependencyLoadedFilesIdentitySelector } from "../../selectors/dependencyMap.selectors"
 import { DependencyMapViewStore } from "../../stores/dependencyMapView.store"
 import { DependencyBarComponent } from "./dependencyBar.component"
 
@@ -44,6 +44,7 @@ async function renderBar({
                     { selector: hasDeclarationsSelector, value: hasDeclarations },
                     { selector: hasPackagesSelector, value: hasPackages },
                     { selector: dependencyLayoutIdentitySelector, value: "project" },
+                    { selector: dependencyLoadedFilesIdentitySelector, value: "project" },
                     { selector: dependencyGraphSettingsSelector, value: { ...defaultDependencyGraphSettings, ...settings } }
                 ]
             })

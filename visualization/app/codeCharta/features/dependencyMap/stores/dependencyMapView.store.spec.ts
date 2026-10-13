@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { indexTree, LeveledNode } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { dependencyLayoutIdentitySelector } from "../selectors/dependencyMap.selectors"
+import { dependencyLayoutIdentitySelector, dependencyLoadedFilesIdentitySelector } from "../selectors/dependencyMap.selectors"
 import { DependencyMapViewStore } from "./dependencyMapView.store"
 
 function leveledFolder(path: string, children: LeveledNode[] = []): LeveledNode {
@@ -9,7 +9,9 @@ function leveledFolder(path: string, children: LeveledNode[] = []): LeveledNode 
 }
 
 const PROJECT_A = "project A"
+const PROJECT_A_FOCUSED = "project A, focused"
 const PROJECT_B = "project B"
+const SRC_FOLDER = leveledFolder("/root/src", [leveledFolder("/root/src/ui"), leveledFolder("/root/src/api")])
 const TWO_TOP_FOLDERS = leveledFolder("/root", [leveledFolder("/root/src", [leveledFolder("/root/src/ui")]), leveledFolder("/root/lib")])
 
 describe("DependencyMapViewStore", () => {
@@ -18,14 +20,27 @@ describe("DependencyMapViewStore", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [provideMockStore({ selectors: [{ selector: dependencyLayoutIdentitySelector, value: PROJECT_A }] })]
+            providers: [
+                provideMockStore({
+                    selectors: [
+                        { selector: dependencyLayoutIdentitySelector, value: PROJECT_A },
+                        { selector: dependencyLoadedFilesIdentitySelector, value: PROJECT_A }
+                    ]
+                })
+            ]
         })
         mockStore = TestBed.inject(MockStore)
         store = TestBed.inject(DependencyMapViewStore)
     })
 
-    function loadLayoutIdentity(layoutIdentity: string) {
-        mockStore.overrideSelector(dependencyLayoutIdentitySelector, layoutIdentity)
+    function loadOtherFiles() {
+        mockStore.overrideSelector(dependencyLayoutIdentitySelector, PROJECT_B)
+        mockStore.overrideSelector(dependencyLoadedFilesIdentitySelector, PROJECT_B)
+        mockStore.refreshState()
+    }
+
+    function changeTheFocus() {
+        mockStore.overrideSelector(dependencyLayoutIdentitySelector, PROJECT_A_FOCUSED)
         mockStore.refreshState()
     }
 
@@ -100,7 +115,7 @@ describe("DependencyMapViewStore", () => {
     it("should keep a reveal made while the focus changes until the tree of the new focus is adopted", () => {
         // Arrange
         store.adoptTree(indexTree(leveledFolder("/root/src", [leveledFolder("/root/src/ui")])))
-        loadLayoutIdentity(PROJECT_B)
+        changeTheFocus()
         store.reveal(["/root/lib/util/strings.ts"])
 
         // Act
@@ -109,7 +124,39 @@ describe("DependencyMapViewStore", () => {
         )
 
         // Assert
-        expect([...store.expandedPaths()]).toEqual(["/root", "/root/lib", "/root/lib/util"])
+        expect([...store.expandedPaths()].sort()).toEqual(["/root", "/root/lib", "/root/lib/util", "/root/src", "/root/src/ui"])
+        expect(store.viewRequest()).toBeNull()
+    })
+
+    it("should keep what the reader opened and moved when a folder is focused, and open that folder", () => {
+        // Arrange
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
+        store.toggle("/root/lib")
+        store.placeBox("/root/lib", [200, 0])
+        changeTheFocus()
+
+        // Act
+        store.adoptTree(indexTree(SRC_FOLDER))
+
+        // Assert
+        expect([...store.expandedPaths()].sort()).toEqual(["/root", "/root/lib", "/root/src"])
+        expect(store.boxOffsets().get("/root/lib")).toEqual([200, 0])
+        expect(store.adoptedLayoutIdentity()).toBe(PROJECT_A_FOCUSED)
+        expect(store.viewRequest()).toBeNull()
+    })
+
+    it("should show the folder that was focused where it lies once the focus is left, with all that was opened in it", () => {
+        // Arrange
+        store.adoptTree(indexTree(SRC_FOLDER))
+        store.toggle("/root/src/ui")
+        changeTheFocus()
+
+        // Act
+        store.adoptTree(indexTree(TWO_TOP_FOLDERS))
+
+        // Assert
+        expect([...store.expandedPaths()].sort()).toEqual(["/root", "/root/src", "/root/src/ui"])
+        expect(store.viewRequest().paths).toEqual(["/root/src"])
     })
 
     it("should start over with nothing opened or moved when other files with the same root are loaded", () => {
@@ -117,7 +164,7 @@ describe("DependencyMapViewStore", () => {
         store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.toggle("/root/src")
         store.placeBox("/root/src", [200, 0])
-        loadLayoutIdentity(PROJECT_B)
+        loadOtherFiles()
 
         // Act
         store.adoptTree(indexTree(TWO_TOP_FOLDERS))
@@ -232,7 +279,7 @@ describe("DependencyMapViewStore", () => {
     it("should not carry a reveal made for other files over to the files adopted next", () => {
         // Arrange
         store.reveal(["/root/src/ui/button.ts"])
-        loadLayoutIdentity(PROJECT_B)
+        loadOtherFiles()
 
         // Act
         store.adoptTree(indexTree(TWO_TOP_FOLDERS))
@@ -245,7 +292,7 @@ describe("DependencyMapViewStore", () => {
         // Arrange
         store.adoptTree(indexTree(TWO_TOP_FOLDERS))
         store.reveal(["/root/src/ui/button.ts"])
-        loadLayoutIdentity(PROJECT_B)
+        loadOtherFiles()
 
         // Act
         store.adoptTree(indexTree(TWO_TOP_FOLDERS))
