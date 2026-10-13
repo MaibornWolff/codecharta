@@ -17,6 +17,7 @@ export const stubbedChart = {
     dispatchAction: jest.fn(),
     getOption: jest.fn(() => ({ xAxis: [STUBBED_AXIS_REACH], yAxis: [STUBBED_AXIS_REACH] })),
     convertFromPixel: jest.fn(pixelsAsLayoutUnits),
+    convertToPixel: jest.fn(pixelsAsLayoutUnits),
     resize: jest.fn(),
     dispose: jest.fn(),
     on: jest.fn((eventName: string, handler: ChartEventHandler) => chartEventHandlers.set(eventName, handler))
@@ -39,6 +40,7 @@ export function fireRenderSurfaceEvent(eventName: string, event: unknown = {}): 
 export function resetStubbedChart(): void {
     jest.clearAllMocks()
     stubbedChart.convertFromPixel.mockImplementation(pixelsAsLayoutUnits)
+    stubbedChart.convertToPixel.mockImplementation(pixelsAsLayoutUnits)
     chartEventHandlers.clear()
     renderSurfaceEventHandlers.clear()
 }

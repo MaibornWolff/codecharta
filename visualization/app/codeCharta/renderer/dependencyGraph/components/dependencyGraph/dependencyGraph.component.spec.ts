@@ -241,6 +241,25 @@ describe("DependencyGraphComponent", () => {
         })
     })
 
+    it("should draw travelling dashes around the boxes pointed at from outside the graph, where they lie once drawn, and none otherwise", async () => {
+        // Arrange
+        const { rerender, fixture } = await render(DependencyGraphComponent, {
+            inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY, markedPaths: new Set(["/root/a.ts"]) }
+        })
+
+        // Act
+        fireChartEvent("finished")
+        fixture.detectChanges()
+        const [mark] = [...screen.getByTestId("dependency-graph-marks").querySelectorAll("rect")]
+        await rerender({ inputs: { scene: SCENE, graphIdentity: GRAPH_IDENTITY, markedPaths: new Set<string>() } })
+
+        // Assert
+        expect(["x", "y", "width", "height"].map(side => mark.getAttribute(side))).toEqual(["0", "0", "160", "40"])
+        expect(mark.getAttribute("stroke-dasharray")).toBe("6 4")
+        expect(mark.classList.contains("animate-marching-ants")).toBe(true)
+        expect(screen.queryByTestId("dependency-graph-marks")).toBeNull()
+    })
+
     it("should fit a new graph into view with its first drawing", async () => {
         // Arrange
         const inputs = { scene: SCENE, graphIdentity: GRAPH_IDENTITY }

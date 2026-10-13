@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Declarations in the dependency view**: a file of a map that carries declarations opens into its classes, functions and other declarations.
-- **Inspector in the dependency view**: an inspector beside the graph explains the selected file, declaration, folder or edge with its dependencies and cycles, in sections that open on a click.
+- **Inspector in the dependency view**: an inspector beside the graph explains the selected file, declaration, folder or edge with its dependencies and cycles, in sections that open on a click, and marks in the graph the boxes of what the pointer rests on in it.
 - **Cycle badges in the dependency view**: a filled badge on a closed box counts the cycles hidden inside it, and an outlined badge on any box counts the cycles it shares with files outside it, and the legend explains both.
 - **Folders or packages in the dependency view**: a map that declares packages can nest its files in those packages instead of their folders.
 - **Kinds of use in the dependency view**: the dashes and arrowhead of an edge can tell how one declaration uses the other, such as inheriting from it or creating it.

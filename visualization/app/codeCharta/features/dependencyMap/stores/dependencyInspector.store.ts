@@ -51,6 +51,7 @@ export class DependencyInspectorStore {
 
     private readonly selectedInGraph = signal<GraphSelection | null>(null)
     private readonly pointedAt = signal(NOTHING_POINTED_AT)
+    private readonly pointedAtPath = signal<string | null>(null)
     private readonly touchedView = signal(UNTOUCHED)
     private readonly cyclesAskedFor = signal<{ id: number; boxPath: string } | null>(null)
     private readonly openedSections = signal<ReadonlySet<string>>(new Set())
@@ -142,6 +143,15 @@ export class DependencyInspectorStore {
         )
     })
 
+    /** The boxes standing for what is pointed at: a dependency's two ends, every declaration of a cycle, a file or a
+     * declaration named in a list. */
+    readonly markedBoxPaths = computed((): ReadonlySet<string> => {
+        const endsOfEdges = this.pointedAt().flatMap(declarationEdge => [fromPathOf(declarationEdge), toPathOf(declarationEdge)])
+        const pointedAtPath = this.pointedAtPath()
+        const paths = pointedAtPath === null ? endsOfEdges : [...endsOfEdges, pointedAtPath]
+        return new Set(paths.map(path => this.graphModel.boxStandingFor(path)).filter(boxPath => boxPath !== null))
+    })
+
     /** The graph's own selection ends for good once the shared one has moved on: selecting the same node again
      * later selects that node, not what the graph once showed of it. And a subject the reader selects anew is
      * shown again, whichever view it is selected in. */
@@ -196,11 +206,16 @@ export class DependencyInspectorStore {
         this.viewStore.reveal([reference.path])
         this.select(reference.path)
         this.pointAt(null)
+        this.pointAtBox(null)
         this.bringIntoView([reference.path])
     }
 
     pointAt(declarationEdges: readonly DependencyLeafEdge[] | null): void {
         this.pointedAt.set(declarationEdges ?? NOTHING_POINTED_AT)
+    }
+
+    pointAtBox(path: string | null): void {
+        this.pointedAtPath.set(path)
     }
 
     perform(action: InspectorActionKind): void {

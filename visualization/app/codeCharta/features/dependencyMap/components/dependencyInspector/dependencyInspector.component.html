@@ -173,10 +173,19 @@
                                     @if (typeof heading === "string") {
                                         <span>{{ heading }}</span>
                                     } @else {
-                                        <ng-container
-                                            [ngTemplateOutlet]="referenceButton"
-                                            [ngTemplateOutletContext]="{ $implicit: heading }"
-                                        ></ng-container>
+                                        <span
+                                            class="inline-flex min-w-0"
+                                            data-testid="dependency-inspector-group-file"
+                                            (mouseenter)="pointAtBox(heading.path)"
+                                            (mouseleave)="pointAtBox(null)"
+                                            (focusin)="pointAtBox(heading.path)"
+                                            (focusout)="pointAtBox(null)"
+                                        >
+                                            <ng-container
+                                                [ngTemplateOutlet]="referenceButton"
+                                                [ngTemplateOutletContext]="{ $implicit: heading }"
+                                            ></ng-container>
+                                        </span>
                                     }
                                     <span class="shrink-0 tabular-nums">{{ group.dependencies.length + group.hiddenCount }}</span>
                                 </div>
@@ -231,7 +240,14 @@
                     @if (isOpen(declarationsTitle)) {
                     <ul class="m-0 flex list-none flex-col gap-1 p-0">
                         @for (item of declarations.items; track item.reference.path) {
-                            <li class="flex min-w-0 items-baseline justify-between gap-2">
+                            <li
+                                class="flex min-w-0 items-baseline justify-between gap-2"
+                                data-testid="dependency-inspector-declaration"
+                                (mouseenter)="pointAtBox(item.reference.path)"
+                                (mouseleave)="pointAtBox(null)"
+                                (focusin)="pointAtBox(item.reference.path)"
+                                (focusout)="pointAtBox(null)"
+                            >
                                 <ng-container [ngTemplateOutlet]="referenceButton" [ngTemplateOutletContext]="{ $implicit: item.reference }"></ng-container>
                                 <span class="shrink-0 text-xs opacity-60">{{ item.detail }}</span>
                             </li>

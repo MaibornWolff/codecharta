@@ -88,7 +88,8 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         allRowsRequested: jest.fn(),
         closed: jest.fn(),
         cyclesRequestAnswered: jest.fn(),
-        sectionToggled: jest.fn()
+        sectionToggled: jest.fn(),
+        boxPointedAt: jest.fn()
     }
     const shown = { model: signal<InspectorModel | null>(model), cyclesRequest: signal(cyclesRequest) }
     const store: Partial<DependencyInspectorStore> = {
@@ -96,6 +97,7 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         edgeColors: signal(EDGE_COLORS),
         openSections: signal<ReadonlySet<string>>(new Set(openSections)),
         toggleSection: handlers.sectionToggled,
+        pointAtBox: handlers.boxPointedAt,
         goTo: handlers.referenceChosen,
         pointAt: handlers.dependenciesPointedAt,
         perform: handlers.actionChosen,
@@ -327,6 +329,22 @@ describe("DependencyInspectorComponent", () => {
 
         // Assert
         expect(dependenciesPointedAt.mock.calls).toEqual([[[DECLARATION_EDGE]], [null], [[DECLARATION_EDGE]], [null]])
+    })
+
+    it("should point at the file of a group and at a listed declaration while the pointer or the focus is on it", async () => {
+        // Arrange
+        const { boxPointedAt } = await renderInspector()
+        const file = screen.getByTestId("dependency-inspector-group-file")
+        const declaration = screen.getByTestId("dependency-inspector-declaration")
+
+        // Act
+        fireEvent.mouseEnter(file)
+        fireEvent.mouseLeave(file)
+        fireEvent.focusIn(declaration)
+        fireEvent.focusOut(declaration)
+
+        // Assert
+        expect(boxPointedAt.mock.calls).toEqual([[WEAPON_FILE.path], [null], [CREATURE.path], [null]])
     })
 
     it("should draw a cycle as the same chain, each step in its edge's own line and colour, closed back to its start, and show it in the graph on request", async () => {
