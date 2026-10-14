@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline
+package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

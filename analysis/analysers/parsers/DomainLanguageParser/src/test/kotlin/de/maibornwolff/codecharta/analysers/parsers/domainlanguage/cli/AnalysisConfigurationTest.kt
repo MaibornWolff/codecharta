@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionWeights
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.ExtractionWeights
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

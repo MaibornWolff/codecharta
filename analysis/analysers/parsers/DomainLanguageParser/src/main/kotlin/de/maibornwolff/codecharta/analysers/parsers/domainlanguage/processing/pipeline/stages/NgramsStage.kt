@@ -1,8 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionContext
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
-
 class NgramsStage(private val ngrams: Int = 1, private val enableSsr: Boolean = true) {
     private val substringReduction = StatisticalSubstringReduction()
 

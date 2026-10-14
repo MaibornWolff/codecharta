@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
 import java.nio.file.Path
 
 class FilterStage(private val stopWordFilter: StopWordFilter) {

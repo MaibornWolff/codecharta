@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
-
 class StatisticalSubstringReduction {
     private data class Ngram(val text: String, val words: List<String>, val frequency: Int) {
         fun subsumes(other: Ngram): Boolean = words.size > other.words.size &&

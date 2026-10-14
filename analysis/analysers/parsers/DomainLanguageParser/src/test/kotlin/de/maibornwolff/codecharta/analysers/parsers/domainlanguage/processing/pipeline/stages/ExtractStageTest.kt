@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionContext
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import kotlin.test.Test
 import kotlin.test.assertEquals

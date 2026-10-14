@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.ExtractionWeights
 import java.nio.file.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals

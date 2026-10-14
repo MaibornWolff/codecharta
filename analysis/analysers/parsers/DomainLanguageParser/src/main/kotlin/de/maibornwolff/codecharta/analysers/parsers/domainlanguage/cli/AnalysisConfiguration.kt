@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Framework
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionWeights
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.ExtractionWeights
 import java.nio.file.Path
 
 data class AnalysisConfiguration(

@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionContext
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
