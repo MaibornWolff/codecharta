@@ -16,12 +16,13 @@
             [attr.height]="pill.height"
             [attr.rx]="pill.cornerRadius"
             [attr.stroke-width]="sizes.outlinePx"
+            [attr.stroke-dasharray]="dash()"
             [attr.fill]="colors().fill"
             [attr.stroke]="colors().line"
         />
         <g [attr.transform]="glyphPlace">
-            <path fill="none" stroke-linecap="round" [attr.d]="glyph.arc" [attr.stroke-width]="glyph.lineWidthPx" [attr.stroke]="colors().line" />
-            <path stroke="none" [attr.d]="glyph.head" [attr.fill]="colors().line" />
+            <path fill="none" stroke-linecap="round" [attr.d]="glyph().line" [attr.stroke-width]="glyph().lineWidthPx" [attr.stroke]="colors().line" />
+            <path stroke="none" [attr.d]="glyph().head" [attr.fill]="colors().line" />
         </g>
         <text
             dominant-baseline="central"

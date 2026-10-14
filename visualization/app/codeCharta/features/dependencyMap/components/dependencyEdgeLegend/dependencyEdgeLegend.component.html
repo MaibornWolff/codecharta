@@ -27,13 +27,13 @@
     </section>
 }
 
-@if (cycleLegend().length > 0) {
-    <section class="flex flex-col gap-1 border-t border-base-300 pt-2" aria-labelledby="dependency-cycle-legend-title">
-        <span id="dependency-cycle-legend-title" class="text-xs uppercase tracking-wider opacity-60">Cycles</span>
-        <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-cycle-legend">
-            @for (entry of cycleLegend(); track entry.mark) {
+@if (badgeLegend().length > 0) {
+    <section class="flex flex-col gap-1 border-t border-base-300 pt-2" aria-labelledby="dependency-badge-legend-title">
+        <span id="dependency-badge-legend-title" class="text-xs uppercase tracking-wider opacity-60">Badges</span>
+        <ul class="m-0 flex list-none flex-col gap-1 p-0 text-sm" data-testid="dependency-badge-legend">
+            @for (entry of badgeLegend(); track entry.mark) {
                 <li class="flex items-center gap-2">
-                    <cc-cycle-mark-sample [mark]="entry.mark"></cc-cycle-mark-sample>
+                    <cc-box-badge-sample [mark]="entry.mark" [upwardLine]="upwardLine()"></cc-box-badge-sample>
                     <span>{{ entry.label }}</span>
                 </li>
             }

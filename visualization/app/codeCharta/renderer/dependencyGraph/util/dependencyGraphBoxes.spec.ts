@@ -1,4 +1,4 @@
-import { CycleLook } from "./boxMarks"
+import { BadgeLook } from "./boxMarks"
 import { BoxEmphasis, BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
 import { SELECTED_COLOR } from "./dependencyGraphStyle"
 import { aBand, aBox, identityPixels } from "./dependencyGraphTestData"
@@ -14,14 +14,20 @@ interface DrawnElement {
 }
 
 function look(emphasis: BoxEmphasis, isSeeThrough = false, isMissedBySearch = false): BoxLook {
-    return { emphasis, isSeeThrough, isMissedBySearch, cycle: NO_CYCLE }
+    return { emphasis, isSeeThrough, isMissedBySearch, badges: NO_BADGES }
 }
 
 function childrenOf(element: object): DrawnElement[] {
     return (element as DrawnElement).children
 }
 
-const NO_CYCLE: CycleLook = { insideFilesCount: 0, betweenFilesCount: 0, isInCycle: false }
+const NO_BADGES: BadgeLook = {
+    insideFilesCount: 0,
+    betweenFilesCount: 0,
+    isInCycle: false,
+    upwardCount: 0,
+    upwardLine: { color: "#dc2626", isDashed: true }
+}
 
 describe("dependencyGraphBoxes", () => {
     describe("drawBox", () => {
@@ -172,7 +178,7 @@ describe("dependencyGraphBoxes", () => {
 
             it("should shrink a cycle badge and a cycle ring only so far, since they lead to the cycles from far out", () => {
                 // Arrange
-                const cyclic = { ...look("none"), cycle: { insideFilesCount: 7, betweenFilesCount: 0, isInCycle: true } }
+                const cyclic = { ...look("none"), badges: { ...NO_BADGES, insideFilesCount: 7, isInCycle: true } }
 
                 // Act
                 const pill = childrenOf(drawBox(aBox("/root/app", { kind: "folder", x: 0, y: 0 }), cyclic, atZoom(0.2))).find(
@@ -219,8 +225,8 @@ describe("dependencyGraphBoxes", () => {
             })
         })
 
-        describe("cycle marks", () => {
-            const cyclic = (cycle: Partial<CycleLook>): BoxLook => ({ ...look("none"), cycle: { ...NO_CYCLE, ...cycle } })
+        describe("badges", () => {
+            const cyclic = (badges: Partial<BadgeLook>): BoxLook => ({ ...look("none"), badges: { ...NO_BADGES, ...badges } })
 
             it("should count the cycles inside the files of a closed box in an outlined badge hanging over its upper right corner", () => {
                 // Arrange
@@ -298,6 +304,41 @@ describe("dependencyGraphBoxes", () => {
 
                 // Assert
                 expect(pills).toMatchObject([{ shape: { x: 148, width: 28 }, style: { fill: "#dc2626", stroke: "#ffffff" } }])
+            })
+
+            it("should count the hidden upward dependencies in a dashed badge with an arrow up, to the left of the cycle badges", () => {
+                // Arrange
+                const box = aBox("/root/a.ts", { x: 10, y: 20 })
+
+                // Act
+                const parts = childrenOf(drawBox(box, cyclic({ insideFilesCount: 2, upwardCount: 4 }), identityPixels))
+
+                // Assert
+                const pills = parts.filter(part => part.type === "rect" && part.info !== undefined)
+                expect(pills.map(pill => pill.info)).toEqual(["upwardBadge", "cycleBadge"])
+                expect(pills[0]).toMatchObject({
+                    cursor: "pointer",
+                    shape: { x: 117, width: 28 },
+                    style: { fill: "#ffffff", stroke: "#dc2626", lineDash: [3, 2] }
+                })
+                expect(parts.find(part => part.type === "text" && part.info === "upwardBadge").style.text).toBe("4")
+            })
+
+            it("should outline the upward badge in the colour of the upward edges, solid while they are drawn solid", () => {
+                // Arrange
+                const box = aBox("/root/a.ts")
+                const upwardLine = { color: "#123456", isDashed: false }
+
+                // Act
+                const parts = childrenOf(drawBox(box, cyclic({ upwardCount: 1, upwardLine }), identityPixels))
+
+                // Assert
+                const pill = parts.find(part => part.info === "upwardBadge")
+                expect(pill.style).toMatchObject({ stroke: "#123456", lineDash: null })
+                expect(parts.filter(part => part.type === "path").map(part => part.style.fill ?? part.style.stroke)).toEqual([
+                    "#123456",
+                    "#123456"
+                ])
             })
 
             it("should ring a declaration that takes part in a cycle", () => {

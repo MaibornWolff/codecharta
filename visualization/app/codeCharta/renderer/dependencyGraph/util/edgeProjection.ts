@@ -132,7 +132,7 @@ interface FileEdge {
     pointsUpward: UpwardRule
 }
 
-type UpwardRule = (declarationEdge: DependencyLeafEdge) => boolean
+export type UpwardRule = (declarationEdge: DependencyLeafEdge) => boolean
 
 /** Which way is up for a dependency between declarations. Among folders the levels of the file tree say so
  * between two files, so the dependency points upward when their file edge does, and its own flag counts only
@@ -187,7 +187,7 @@ function declarationEdgePart(declarationEdge: DependencyLeafEdge, isPointingUpwa
 }
 
 /** A declaration the tree does not hold is stood for by whatever stands for its file. */
-function boxesOf(declarationEdge: DependencyLeafEdge, representatives: ReadonlyMap<string, string>) {
+export function boxesOf(declarationEdge: DependencyLeafEdge, representatives: ReadonlyMap<string, string>) {
     const boxOf = (filePath: string, leafKey: string) =>
         representatives.get(declarationPathOf(filePath, leafKey)) ?? representatives.get(filePath)
     return {

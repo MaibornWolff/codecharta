@@ -1,4 +1,4 @@
-import { CycleLook, drawCycleMark, drawDeclarationCount, drawKindIcon, KIND_ICON_WIDTH_PX } from "./boxMarks"
+import { BadgeLook, drawBadges, drawDeclarationCount, drawKindIcon, KIND_ICON_WIDTH_PX } from "./boxMarks"
 import { CLICKABLE, drawnItem, UNTRANSFORMED } from "./dependencyGraphElements"
 import { ToPixels } from "./dependencyGraphScene"
 import {
@@ -35,7 +35,7 @@ export interface BoxLook {
     isSeeThrough: boolean
     /** A search is on and the box holds nothing it found. */
     isMissedBySearch: boolean
-    cycle: CycleLook
+    badges: BadgeLook
 }
 
 const NOTHING_CUT_OUT: BandCutout = { hiddenSpans: [], isLabelHidden: false }
@@ -59,16 +59,16 @@ export function drawBox(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const opacity = opacityOf(look.isMissedBySearch)
     const outline = drawOutline(box, rect, look)
     const zoom = zoomOf(box, rect)
-    const cycleMark = drawCycleMark(box, rect, look.cycle, { opacity, zoom })
-    return drawnItem(box.isExpanded ? outline : [...outline, ...drawName(box, rect, look, zoom), ...cycleMark])
+    const badges = drawBadges(box, rect, look.badges, { opacity, zoom })
+    return drawnItem(box.isExpanded ? outline : [...outline, ...drawName(box, rect, look, zoom), ...badges])
 }
 
 /** Drawn apart from the open box so the edges pass under it. */
 export function drawContainerTitle(box: LayoutBox, look: BoxLook, toPixels: ToPixels) {
     const rect = pixelRectOf(box, toPixels)
     const zoom = zoomOf(box, rect)
-    const cycleMark = drawCycleMark(box, rect, look.cycle, { opacity: opacityOf(look.isMissedBySearch), zoom })
-    return drawnItem([...drawName(box, rect, look, zoom), ...cycleMark])
+    const badges = drawBadges(box, rect, look.badges, { opacity: opacityOf(look.isMissedBySearch), zoom })
+    return drawnItem([...drawName(box, rect, look, zoom), ...badges])
 }
 
 function zoomOf(box: LayoutBox, rect: Rectangle): number {

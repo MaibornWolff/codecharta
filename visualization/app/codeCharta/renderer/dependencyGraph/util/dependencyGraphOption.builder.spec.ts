@@ -3,7 +3,7 @@ import { AxisWindow, fitWindowOf, windowHolding, windowResizedTo } from "./axisW
 import { buildDependencyGraphOption } from "./dependencyGraphOption.builder"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { GRAPH_SERIES_ID } from "./dependencyGraphSeries"
-import { aBand, aBox, anEdge, DEFAULT_LOOKS, identityPixels } from "./dependencyGraphTestData"
+import { aBand, aBox, anEdge, DEFAULT_LOOKS, EDGE_COLORS, identityPixels } from "./dependencyGraphTestData"
 
 interface DrawnElement {
     emphasisDisabled?: boolean
@@ -325,6 +325,28 @@ describe("buildDependencyGraphOption", () => {
         )
         expect(describe(indexOf(declaration.path))).toBe(
             "<b>Creature</b><br/>class<br/>In a cycle with other files<br/>In a cycle inside this file"
+        )
+    })
+
+    it("should draw and tell in the tooltip the upward dependencies a box hides, in the colour of the upward edges", () => {
+        // Arrange
+        const folder = aBox("/root/app", { kind: "folder", width: 300, height: 200 })
+        const layout = { boxes: [root, folder, view], bands: [], width: 800, height: 500 }
+        const upwardMarks = new Map([
+            [view.path, 1],
+            [folder.path, 4]
+        ])
+        const edgeColors = { ...EDGE_COLORS, feedbackContainerLevel: "#123456" }
+
+        // Act
+        const { describe, draw, indexOf } = drawnGraph(sceneWith({ layout, edges: [], upwardMarks, edgeColors }))
+
+        // Assert
+        const upwardPill = draw(indexOf(folder.path)).children.find(part => part.info === "upwardBadge")
+        expect(upwardPill.style).toMatchObject({ stroke: "#123456", lineDash: [3, 2] })
+        expect(describe(indexOf(view.path))).toBe("<b>view.ts</b><br/>Level 0<br/>1 upward dependency inside")
+        expect(describe(indexOf(folder.path))).toBe(
+            "<b>app</b><br/>Level 0<br/>4 upward dependencies inside<br/><i>Double-click to open</i>"
         )
     })
 

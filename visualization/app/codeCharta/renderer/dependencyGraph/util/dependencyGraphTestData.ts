@@ -2,6 +2,7 @@ import { defaultDependencyGraphSettings } from "../../../stores/preferences/pref
 import { NO_CYCLE_MARKS } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { LayoutBox, LevelBand } from "./layoutModel"
+import { NO_UPWARD_MARKS } from "./upwardMarks"
 
 export const EDGE_COLORS = defaultDependencyGraphSettings.edgeColors
 
@@ -9,6 +10,7 @@ export const DEFAULT_LOOKS = {
     edgeColors: EDGE_COLORS,
     lineStyleShows: "edgeType",
     cycleMarks: NO_CYCLE_MARKS,
+    upwardMarks: NO_UPWARD_MARKS,
     isHoverLimitedToShownEdgeTypes: false,
     selectedEdgeId: null,
     highlightedEdgeIds: new Set<string>()
