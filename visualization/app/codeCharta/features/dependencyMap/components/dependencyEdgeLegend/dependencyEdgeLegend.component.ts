@@ -11,12 +11,13 @@ import {
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { BoxBadgeSampleComponent } from "../boxBadgeSample/boxBadgeSample.component"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
+import { EdgeTypeSampleComponent } from "../edgeTypeSample/edgeTypeSample.component"
 import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
 
 @Component({
     selector: "cc-dependency-edge-legend",
     templateUrl: "./dependencyEdgeLegend.component.html",
-    imports: [BoxBadgeSampleComponent, DeclarationKindIconComponent, LineStyleSampleComponent],
+    imports: [BoxBadgeSampleComponent, DeclarationKindIconComponent, EdgeTypeSampleComponent, LineStyleSampleComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: { class: "flex flex-col gap-3" }
 })
