@@ -9,7 +9,8 @@ import {
     InspectorActionKind,
     InspectorCycle,
     InspectorReference,
-    InspectorSectionId
+    InspectorSectionId,
+    InspectorUpwardDependency
 } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
@@ -44,6 +45,7 @@ export class DependencyInspectorComponent {
     protected readonly edgeColors = this.store.edgeColors
 
     private readonly cyclesSection = viewChild<ElementRef<HTMLElement>>("cyclesSection")
+    private readonly upwardSection = viewChild<ElementRef<HTMLElement>>("upwardSection")
     private readonly shownPath = computed(() => this.model()?.path)
     private readonly clipboard = inject(CopyToClipboardService)
 
@@ -53,10 +55,11 @@ export class DependencyInspectorComponent {
 
     constructor() {
         effect(() => {
-            const section = this.cyclesSection()?.nativeElement
-            if (section && this.store.cyclesRequest() !== null) {
+            const request = this.store.sectionRequest()
+            const section = (request?.sectionId === "upward" ? this.upwardSection() : this.cyclesSection())?.nativeElement
+            if (section && request !== null) {
                 section.scrollIntoView({ block: "start" })
-                untracked(() => this.store.answerCyclesRequest())
+                untracked(() => this.store.answerSectionRequest())
             }
         })
         effect(() => {
@@ -108,6 +111,10 @@ export class DependencyInspectorComponent {
 
     protected showCycle(cycle: InspectorCycle): void {
         this.store.showCycle(cycle)
+    }
+
+    protected showUpwardDependency(upward: InspectorUpwardDependency): void {
+        this.store.showUpwardDependency(upward)
     }
 
     protected showAllRows(): void {

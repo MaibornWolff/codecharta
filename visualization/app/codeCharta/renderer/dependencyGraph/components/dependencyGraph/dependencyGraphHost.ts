@@ -6,7 +6,7 @@ import { ContainerSizeObserver } from "../../../../util/containerSizeObserver"
 import { suppressBrowserMenu } from "../../../../util/suppressBrowserMenu"
 import { DependencyGraphChartRegistry } from "../../services/dependencyGraphChart.registry"
 import { AxisWindow, PannableView, panBothAxesTo, Viewport, windowResizedTo } from "../../util/axisWindow"
-import { CYCLE_BADGE_INFO } from "../../util/boxMarks"
+import { CYCLE_BADGE_INFO, UPWARD_BADGE_INFO } from "../../util/boxMarks"
 import { GRAPH_GRID, GRAPH_SERIES_ID, GraphDatum } from "../../util/dependencyGraphSeries"
 import { Point, Rectangle } from "../../util/geometry"
 import { BoxClickGesture, BoxClickHandlers } from "./boxClickGesture"
@@ -18,6 +18,7 @@ echarts.use([CustomChart, CanvasRenderer, GridComponent, DataZoomInsideComponent
 
 export interface DependencyGraphHandlers extends BoxDragHandlers, BoxClickHandlers {
     onCycleBadgeClicked: (path: string) => void
+    onUpwardBadgeClicked: (path: string) => void
     onEdgeClicked: (edgeId: string) => void
     onBoxHovered: (path: string | null) => void
     onBoxRightClicked: (path: string, clientX: number, clientY: number) => void
@@ -65,7 +66,8 @@ export class DependencyGraphHost {
 
     private readonly containerSizeObserver = new ContainerSizeObserver()
     private readonly partClickHandlers: Record<string, (path: string) => void> = {
-        [CYCLE_BADGE_INFO]: path => this.handlers.onCycleBadgeClicked(path)
+        [CYCLE_BADGE_INFO]: path => this.handlers.onCycleBadgeClicked(path),
+        [UPWARD_BADGE_INFO]: path => this.handlers.onUpwardBadgeClicked(path)
     }
 
     readonly containerSize = this.containerSizeObserver.size

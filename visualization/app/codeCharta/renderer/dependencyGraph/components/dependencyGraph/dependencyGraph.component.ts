@@ -78,6 +78,7 @@ export class DependencyGraphComponent implements OnDestroy {
     readonly boxClicked = output<string>()
     readonly boxToggled = output<string>()
     readonly cycleBadgeClicked = output<string>()
+    readonly upwardBadgeClicked = output<string>()
     readonly edgeClicked = output<string>()
     readonly boxHovered = output<string | null>()
     /** A box the keyboard reached, which may lie outside the part of the graph in view. */
@@ -108,6 +109,7 @@ export class DependencyGraphComponent implements OnDestroy {
         onBoxClicked: path => this.boxClicked.emit(path),
         onBoxToggled: path => this.toggle(path),
         onCycleBadgeClicked: path => this.cycleBadgeClicked.emit(path),
+        onUpwardBadgeClicked: path => this.upwardBadgeClicked.emit(path),
         onEdgeClicked: edgeId => this.edgeClicked.emit(edgeId),
         onBoxHovered: path => this.boxHovered.emit(path),
         onBoxRightClicked: (path, clientX, clientY) => this.boxRightClicked.emit({ path, clientX, clientY }),

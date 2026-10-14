@@ -114,7 +114,7 @@ export const BOX_BADGE_LEGEND: readonly { mark: DependencyBoxBadge; label: strin
 
 /** What a click on a box's badge carries, to tell it from a click on the box. */
 export const CYCLE_BADGE_INFO = "cycleBadge"
-const UPWARD_BADGE_INFO = "upwardBadge"
+export const UPWARD_BADGE_INFO = "upwardBadge"
 
 /** The upward badge is white inside, as the outlined cycle badge is. */
 const UPWARD_BADGE_FILL = CYCLE_BADGE_CONTRAST_COLOR

@@ -3,7 +3,7 @@ import { fireEvent, render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { defaultDependencyGraphSettings } from "../../../../stores/preferences/preferences.read.facade"
-import { InspectorDependency, InspectorModel, InspectorReference, InspectorSectionId } from "../../inspector/inspectorModel"
+import { BadgeSectionId, InspectorDependency, InspectorModel, InspectorReference, InspectorSectionId } from "../../inspector/inspectorModel"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DependencyInspectorComponent } from "./dependencyInspector.component"
 
@@ -70,29 +70,34 @@ const FILE_MODEL: InspectorModel = {
         }
     ],
     cycleCount: 6,
+    upward: [],
+    upwardCount: 0,
     action: "open"
 }
 
+type SectionRequest = { id: number; sectionId: BadgeSectionId } | null
+
 interface Shown {
     model: InspectorModel
-    cyclesRequest?: number | null
+    sectionRequest?: SectionRequest
 }
 
-const EVERY_SECTION: InspectorSectionId[] = ["cycles", "uses", "usedBy", "declarations"]
+const EVERY_SECTION: InspectorSectionId[] = ["cycles", "upward", "uses", "usedBy", "declarations"]
 
-async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest: number | null = null, openSections = EVERY_SECTION) {
+async function renderInspector(model: InspectorModel = FILE_MODEL, sectionRequest: SectionRequest = null, openSections = EVERY_SECTION) {
     const handlers = {
         referenceChosen: jest.fn(),
         dependenciesPointedAt: jest.fn(),
         actionChosen: jest.fn(),
         cycleShown: jest.fn(),
+        upwardDependencyShown: jest.fn(),
         allRowsRequested: jest.fn(),
         closed: jest.fn(),
-        cyclesRequestAnswered: jest.fn(),
+        sectionRequestAnswered: jest.fn(),
         sectionToggled: jest.fn(),
         nodePointedAt: jest.fn()
     }
-    const shown = { model: signal<InspectorModel | null>(model), cyclesRequest: signal(cyclesRequest) }
+    const shown = { model: signal<InspectorModel | null>(model), sectionRequest: signal(sectionRequest) }
     const store: Partial<DependencyInspectorStore> = {
         ...shown,
         edgeColors: signal(EDGE_COLORS),
@@ -103,15 +108,16 @@ async function renderInspector(model: InspectorModel = FILE_MODEL, cyclesRequest
         pointAtEdges: handlers.dependenciesPointedAt,
         perform: handlers.actionChosen,
         showCycle: handlers.cycleShown,
+        showUpwardDependency: handlers.upwardDependencyShown,
         showAllRows: handlers.allRowsRequested,
         dismiss: handlers.closed,
-        answerCyclesRequest: handlers.cyclesRequestAnswered.mockImplementation(() => shown.cyclesRequest.set(null))
+        answerSectionRequest: handlers.sectionRequestAnswered.mockImplementation(() => shown.sectionRequest.set(null))
     }
     const rendered = await render(DependencyInspectorComponent, { providers: [{ provide: DependencyInspectorStore, useValue: store }] })
     const rerender = async ({ inputs }: { inputs: Shown }) => {
         shown.model.set(inputs.model)
-        if (inputs.cyclesRequest !== undefined) {
-            shown.cyclesRequest.set(inputs.cyclesRequest)
+        if (inputs.sectionRequest !== undefined) {
+            shown.sectionRequest.set(inputs.sectionRequest)
         }
         rendered.fixture.detectChanges()
     }
@@ -423,6 +429,8 @@ describe("DependencyInspectorComponent", () => {
                 }
             ],
             cycles: [],
+            upward: [],
+            upwardCount: 0,
             cycleCount: 0,
             action: null
         }
@@ -471,16 +479,59 @@ describe("DependencyInspectorComponent", () => {
         // Arrange
         const scrollIntoView = jest.fn()
         Element.prototype.scrollIntoView = scrollIntoView
-        const { rerender, fixture, cyclesRequestAnswered } = await renderInspector(FILE_MODEL, null)
+        const { rerender, fixture, sectionRequestAnswered } = await renderInspector(FILE_MODEL, null)
 
         // Act
-        await rerender({ inputs: { model: FILE_MODEL, cyclesRequest: 1 } })
+        await rerender({ inputs: { model: FILE_MODEL, sectionRequest: { id: 1, sectionId: "cycles" } } })
         fixture.detectChanges()
         await rerender({ inputs: { model: { ...FILE_MODEL, path: "/root/other.ts" } } })
         fixture.detectChanges()
 
         // Assert
         expect(scrollIntoView).toHaveBeenCalledTimes(1)
-        expect(cyclesRequestAnswered).toHaveBeenCalledTimes(1)
+        expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByTestId("dependency-inspector-cycles"))
+        expect(sectionRequestAnswered).toHaveBeenCalledTimes(1)
+    })
+
+    it("should list the upward dependencies inside the selection in the colour of their type, each with where it runs and a way to it", async () => {
+        // Arrange
+        const upwardDependency = { ...DEPENDENCY, type: "feedbackContainerLevel" as const }
+        const withUpward: InspectorModel = {
+            ...FILE_MODEL,
+            upward: [
+                { dependency: upwardDependency, files: [CREATURE_FILE] },
+                { dependency: { ...upwardDependency, to: CREATURE }, files: [CREATURE_FILE, WEAPON_FILE] }
+            ],
+            upwardCount: 3
+        }
+        const { upwardDependencyShown, dependenciesPointedAt } = await renderInspector(withUpward)
+        const [firstCard] = screen.getAllByTestId("dependency-inspector-upward-dependency")
+
+        // Act
+        await userEvent.click(within(firstCard).getByRole("button", { name: "Show in graph" }))
+        fireEvent.mouseEnter(firstCard)
+
+        // Assert
+        const where = screen.getAllByTestId("dependency-inspector-upward-where").map(row => row.textContent.replace(/\s+/g, " ").trim())
+        expect(where).toEqual(["Points upward inside creature.ts", "Points upward from creature.ts to weapon.ts"])
+        expect(within(screen.getByTestId("dependency-inspector-upward")).getByRole("heading").textContent).toContain("3")
+        expect(screen.getByTestId("dependency-inspector-more-upward").textContent).toContain("and 1 more")
+        expect(upwardDependencyShown).toHaveBeenCalledWith(withUpward.upward[0])
+        expect(dependenciesPointedAt).toHaveBeenCalledWith([DECLARATION_EDGE])
+    })
+
+    it("should bring the upward dependencies into view when their badge asks for them", async () => {
+        // Arrange
+        const scrollIntoView = jest.fn()
+        Element.prototype.scrollIntoView = scrollIntoView
+        const withUpward: InspectorModel = { ...FILE_MODEL, upward: [{ dependency: DEPENDENCY, files: [CREATURE_FILE] }], upwardCount: 1 }
+        const { rerender, fixture } = await renderInspector(withUpward, null)
+
+        // Act
+        await rerender({ inputs: { model: withUpward, sectionRequest: { id: 1, sectionId: "upward" } } })
+        fixture.detectChanges()
+
+        // Assert
+        expect(scrollIntoView.mock.contexts).toEqual([screen.getByTestId("dependency-inspector-upward")])
     })
 })

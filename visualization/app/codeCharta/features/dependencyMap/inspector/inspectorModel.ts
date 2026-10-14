@@ -57,10 +57,14 @@ interface InspectorGroup {
     hiddenCount: number
 }
 
-export type InspectorSectionId = "cycles" | "uses" | "usedBy" | "standsFor" | "declarations"
+export type InspectorSectionId = "cycles" | "upward" | "uses" | "usedBy" | "standsFor" | "declarations"
+
+/** The sections a badge in the graph leads to. */
+export type BadgeSectionId = Extract<InspectorSectionId, "cycles" | "upward">
 
 export const INSPECTOR_SECTION_TITLES: Record<InspectorSectionId, string> = {
     cycles: "Cycles",
+    upward: "Upward",
     uses: "Uses",
     usedBy: "Used by",
     standsFor: "Stands for",
@@ -103,6 +107,12 @@ interface InspectorLink {
     type: DependencyEdgeType
 }
 
+/** An upward dependency between the selection's own declarations, and the files it runs inside or between. */
+export interface InspectorUpwardDependency {
+    dependency: InspectorDependency
+    files: InspectorReference[]
+}
+
 export type InspectorActionKind = "open" | "close" | "unfold"
 
 export interface InspectorModel {
@@ -118,6 +128,9 @@ export interface InspectorModel {
     /** The cycles running through the selection; a hub's are cut like its rows. */
     cycles: InspectorCycle[]
     cycleCount: number
+    /** The upward dependencies between the selection's own declarations, which a closed box hides; cut like its rows. */
+    upward: InspectorUpwardDependency[]
+    upwardCount: number
     action: InspectorActionKind | null
 }
 
@@ -185,6 +198,7 @@ function describeFile(file: LeveledNode, isOpen: boolean, context: InspectorCont
         declarations: declarationList(declarations, context.rowLimit),
         sections: usesAndUsedBy({ insideOwnFile: inside, uses: outgoing, usedBy: incoming }, pathsOf(declarations), context),
         ...cycles,
+        ...upwardOf(inside, pathsOf(declarations), context),
         action: actionOf(declarations, isOpen)
     }
 }
@@ -222,6 +236,7 @@ function describeDeclaration(node: LeveledNode, context: InspectorContext): Insp
         declarations: null,
         sections: usesAndUsedBy({ uses, usedBy }, pathsOf(declarations), context),
         ...cycles,
+        ...NO_UPWARD,
         action: null
     }
 }
@@ -239,6 +254,7 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
     const files = filesIn(folder)
     const declarations = files.flatMap(file => context.index.declarationsOfFile.get(file.path) ?? [])
     const cycles = cyclesOf(declarations, context)
+    const { inside } = dependenciesOf(declarations, context.index)
     const isPackage = folder.kind === "package"
     return {
         kind: "folder",
@@ -255,6 +271,7 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
         declarations: null,
         sections: [],
         ...cycles,
+        ...upwardOf(inside, pathsOf(declarations), context),
         action: null
     }
 }
@@ -306,6 +323,7 @@ function describeEdge(edge: GraphEdge, title: string, context: InspectorContext)
         sections: [section("standsFor", [{ heading: null, declarationEdges: indexedEdges }], new Set(), context)],
         cycles: [],
         cycleCount: 0,
+        ...NO_UPWARD,
         action: indexedEdges.length > 0 && !isUnfolded ? "unfold" : null
     }
 }
@@ -443,6 +461,21 @@ function byTypeThenNames(dependencyA: InspectorDependency, dependencyB: Inspecto
         dependencyA.from.name.localeCompare(dependencyB.from.name) ||
         dependencyA.to.name.localeCompare(dependencyB.to.name)
     )
+}
+
+type InspectorUpward = Pick<InspectorModel, "upward" | "upwardCount">
+
+const NO_UPWARD: InspectorUpward = { upward: [], upwardCount: 0 }
+
+function upwardOf(inside: readonly DependencyLeafEdge[], ownPaths: ReadonlySet<string>, context: InspectorContext): InspectorUpward {
+    const upward = inside
+        .filter(context.pointsUpward)
+        .map(declarationEdge => ({
+            dependency: dependencyOf(declarationEdge, ownPaths, context),
+            files: [...new Set([declarationEdge.fromNodeName, declarationEdge.toNodeName])].map(fileReference)
+        }))
+        .sort((upwardA, upwardB) => byTypeThenNames(upwardA.dependency, upwardB.dependency))
+    return { upward: upward.slice(0, context.rowLimit), upwardCount: upward.length }
 }
 
 type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">
