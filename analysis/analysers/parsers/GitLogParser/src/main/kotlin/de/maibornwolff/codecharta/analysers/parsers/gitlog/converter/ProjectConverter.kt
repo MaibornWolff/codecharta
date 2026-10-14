@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesInGitProject
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesList
 import de.maibornwolff.codecharta.model.Edge

@@ -1,5 +1,7 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.input
+package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser
 
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.Metric
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
 import io.mockk.every

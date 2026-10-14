@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser
 
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
-
 class VersionControlledFilesInGitProject(
     private val vcFList: MutableMap<String, VersionControlledFile>,
     private val filesInGitLog: List<String>
