@@ -13,6 +13,7 @@ import {
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { WIDE_BAR_POPOVER_WIDTH_CLASS } from "../dependencyBar/dependencyBarPopover"
+import { EdgeTypeSampleComponent } from "../edgeTypeSample/edgeTypeSample.component"
 import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeTypes } from "./shownEdgeTypes"
 
 @Component({
@@ -22,6 +23,7 @@ import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeT
     host: { class: "contents" },
     imports: [
         AxisCardComponent,
+        EdgeTypeSampleComponent,
         InlineColorPickerComponent,
         ResetSettingsButtonComponent,
         SettingsPopoverShellComponent,
