@@ -945,11 +945,19 @@ class DialogProviderTest {
                                     text(directoryContent)
                                 }
                             }
+                            val blockUntilCompletionIsOffered: (String) -> Unit = { completedInput ->
+                                blockUntilRenderWhen {
+                                    terminal.resolveRerenders().stripFormatting().any { it.startsWith("> $completedInput") }
+                                }
+                            }
                             terminal.type("sr")
+                            blockUntilCompletionIsOffered("src$slash")
                             terminal.press(Keys.RIGHT)
                             terminal.type("test${slash}resour")
+                            blockUntilCompletionIsOffered("src${slash}test${slash}resources$slash")
                             terminal.press(Keys.RIGHT)
                             terminal.type("valid")
+                            blockUntilCompletionIsOffered(File(inputFileName).toString())
                             terminal.press(Keys.RIGHT)
                             terminal.press(Keys.ENTER)
                         }
