@@ -1,7 +1,5 @@
-package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
+package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywordLoader
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 

@@ -1,6 +1,5 @@
-package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
+package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals

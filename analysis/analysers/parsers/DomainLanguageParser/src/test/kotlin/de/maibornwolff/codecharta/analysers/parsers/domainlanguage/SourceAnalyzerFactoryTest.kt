@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ExtractionWeights
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Framework
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Framework
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionWeights
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path

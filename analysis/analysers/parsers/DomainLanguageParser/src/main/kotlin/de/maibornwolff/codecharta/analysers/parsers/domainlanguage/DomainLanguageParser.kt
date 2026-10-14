@@ -10,7 +10,7 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.StopWordLevel
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.rootDirectoryOf
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainProjectGenerator
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporterFactory
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer

@@ -9,8 +9,8 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.WordFr
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessingResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessor
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.analysis.TfIdfCalculator
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.SilentProgressReporter
 import de.maibornwolff.codecharta.util.Logger

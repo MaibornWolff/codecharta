@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Framework
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Framework
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path

@@ -9,10 +9,10 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Fi
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessingResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessor
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileResult
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.PathScopedKeywordProvider
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.analysis.TfIdfCalculator
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.PathScopedKeywordProvider
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path

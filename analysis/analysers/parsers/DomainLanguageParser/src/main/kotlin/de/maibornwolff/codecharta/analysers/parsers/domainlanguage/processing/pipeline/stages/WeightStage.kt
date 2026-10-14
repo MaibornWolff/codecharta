@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ExtractionWeights
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractedText
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionContext
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionWeights
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
 
 class WeightStage(private val weights: ExtractionWeights = ExtractionWeights()) {
