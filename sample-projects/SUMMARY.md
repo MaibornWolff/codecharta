@@ -95,6 +95,14 @@ ignored in most cases, a form of one construct that counts differently from its 
 3. **Nested functions count in `number_of_functions` but get no per-function entry.** Their parameters vanish,
    their lines and branches go to the parent, mean and median run over fewer functions than the file reports.
    In delphi the body lines even shift to the next routine. **→ accept**
+   Open since 2026-10-14, after the fix gave nested functions an entry of their own: how lines split between a
+   function and the one nested in it was never decided, and the reports disagree. python expects the host to
+   keep every line (`initiative_order` 8 with the nested `initiative_of` 1), delphi expects a nested routine's
+   lines not to count again in the host. The parser now does neither consistently: the header line of a
+   multi-line nested function counts for no function (python `initiative_order` 6, line 67 nowhere), the line
+   of a one-line lambda counts for both (cpp `applyLambda` 2 and the lambda 1 on line 117). Recommended: each
+   line to exactly one function, the header line of a nested function to its host (7 / 1, cpp 1 / 1), so the
+   per-function lines add up to the file's rloc. No decision yet.
 4. **What is a function is inconsistent.** A lambda or arrow assigned to a variable is a function, the same
    lambda passed, returned or stored in a field / object property is not (java, csharp, kotlin, python, ruby,
    php, js, ts, cpp, go counts every func literal). Bodyless declarations count in java (abstract and interface
