@@ -25,7 +25,7 @@ import {
     TEXT_COLOR
 } from "./dependencyGraphStyle"
 import { Rectangle } from "./geometry"
-import { canBeOpened, describeLevelPath, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
+import { canBeOpened, isContainerKind, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 import { BandCutout, BandSeparator, bandSeparator } from "./overlaps"
 
 export type BoxEmphasis = "selected" | "hovered" | "none"
@@ -145,7 +145,7 @@ function drawLevelLabel(band: LevelBand, { left }: BandSeparator, toPixels: ToPi
         ...UNTRANSFORMED,
         silent: true,
         style: {
-            text: `level ${describeLevelPath(band.levelPath)}`,
+            text: `level ${band.level}`,
             x: labelX,
             y: labelY - LEVEL_LABEL_LIFT_PX,
             align: "left",

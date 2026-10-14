@@ -35,16 +35,6 @@ export function containerPathsOf(index: TreeIndex, path: string): string[] | nul
     return node ? nodesAround(index, node).map(container => container.path) : null
 }
 
-/** The levels to walk down from the tree's root to reach a folder's box, outermost first. */
-export function levelPathOf(index: TreeIndex, containerPath: string): number[] | null {
-    const node = index.nodeAt.get(containerPath)
-    if (!node) {
-        return null
-    }
-    const [, ...belowTheRoot] = [...nodesAround(index, node), node]
-    return belowTheRoot.map(below => below.level)
-}
-
 /** Whether one box is drawn somewhere inside another, which the paths of the two do not tell among packages. */
 export function isDrawnInside({ parentOf }: TreeIndex, path: string, holderPath: string): boolean {
     for (let parent = parentOf.get(path); parent; parent = parentOf.get(parent.path)) {
