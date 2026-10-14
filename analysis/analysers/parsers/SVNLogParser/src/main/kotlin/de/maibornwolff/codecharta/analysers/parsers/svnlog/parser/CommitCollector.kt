@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.parser
 
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Commit
-import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import java.util.stream.Collector
 
