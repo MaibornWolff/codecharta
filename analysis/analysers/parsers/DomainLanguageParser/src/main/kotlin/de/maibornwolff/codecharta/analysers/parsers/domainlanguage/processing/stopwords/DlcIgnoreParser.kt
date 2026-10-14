@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.stopwords
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.parseWordLines
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.parseWordLines
 import java.io.File
 import java.nio.file.Path
 
