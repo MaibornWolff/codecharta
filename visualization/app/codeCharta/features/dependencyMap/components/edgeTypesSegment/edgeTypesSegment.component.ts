@@ -54,6 +54,8 @@ export class EdgeTypesSegmentComponent {
             return { ...entry, isCarried, isShown: isCarried && this.shownTypes().includes(entry.type) }
         })
     )
+    /** The card shows what the graph draws, as it is drawn there, and names it for a pointer resting on it. */
+    readonly shownEntries = computed(() => this.entries().filter(entry => entry.isShown))
     readonly showsEveryColor = computed(() => this.settings().lineStyleShows === "usage")
     readonly isHoverLimited = computed(() => this.settings().isHoverLimitedToShownEdgeTypes)
     readonly chosenLabel = computed(() => nameOfShownEdgeTypes(this.shownTypes(), this.carriedTypes()))

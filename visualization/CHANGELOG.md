@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Declarations in the dependency view**: a file of a map that carries declarations opens on a double click into its classes, functions and other declarations, and is drawn as a small stack while it is closed.
 - **Inspector in the dependency view**: an inspector beside the graph explains the selected file, declaration, folder or edge with its dependencies, cycles and upward dependencies, in sections that open on a click, and marks in the graph the boxes of what the pointer rests on in it.
-- **Badges in the dependency view**: badges on a closed box count the cycles that stay inside single files, the cycles between different files and the upward dependencies it hides, the Badges card switches each of them on and off, and a click on a badge lists what it counts in the inspector.
+- **Badges in the dependency view**: badges on a closed box count the cycles that stay inside single files, the cycles between different files and the upward dependencies it hides, the Badges card switches each of them on and off and shows the ones it keeps, and a click on a badge lists what it counts in the inspector.
 - **Folders or packages in the dependency view**: a map that declares packages can nest its files in those packages instead of their folders.
 - **Kinds of use in the dependency view**: the dashes and arrowhead of an edge can tell how one declaration uses the other, such as inheriting from it or creating it.
 - **Edge colours in the dependency view**: the colours of the four edge types can be changed.
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - **Focus in the dependency view**: focusing a folder or leaving it again keeps the boxes you opened and moved, and leaving it shows that folder where it lies in the whole graph.
-- **Edges shown in the dependency view**: the graph starts with the edges in cycles and those pointing upward, without the plain dependencies, a reset button brings that choice back, and a checkbox holds the edges shown for the box under the pointer to that choice too.
+- **Edges shown in the dependency view**: the graph starts with the edges in cycles and those pointing upward, without the plain dependencies, a reset button brings that choice back, a checkbox holds the edges shown for the box under the pointer to that choice too, and the card shows the lines of the edges shown instead of their names.
 - **Tooltips in the dependency view**: the tooltip of a folder, file or package names it by its own name instead of its whole path.
 - **Edge styles in the dependency view**: edges are drawn combined, spread or aside, combined and spread with curved or straight lines, aside now bows downward edges out to the left as it bows upward ones out to the right, and one window holds every setting of the edge style.
 
