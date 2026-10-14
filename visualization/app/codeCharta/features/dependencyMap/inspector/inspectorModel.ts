@@ -255,7 +255,8 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
     const files = filesIn(folder)
     const declarations = files.flatMap(file => context.index.declarationsOfFile.get(file.path) ?? [])
     const cycles = cyclesOf(declarations, context)
-    const { inside } = dependenciesOf(declarations, context.index)
+    const dependencies = dependenciesOf(declarations, context.index)
+    const ownPaths = pathsOf(declarations)
     const isPackage = folder.kind === "package"
     return {
         kind: "folder",
@@ -266,22 +267,25 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
         badges: [
             { text: isPackage ? "package" : "folder" },
             { text: counted(files.length, "file") },
-            ...dependencyBadges(declarations, context),
+            ...dependencyBadges(declarations.length, dependencies, context),
             ...cycleBadge(cycles.cycleCount)
         ],
         declarations: null,
-        sections: [],
+        sections: usesAndUsedBy({ uses: dependencies.outgoing, usedBy: dependencies.incoming }, ownPaths, context),
         ...cycles,
-        ...upwardOf(inside, pathsOf(declarations), context),
+        ...upwardOf(dependencies.inside, ownPaths, context),
         action: null
     }
 }
 
-function dependencyBadges(declarations: readonly IndexedDeclaration[], context: InspectorContext): InspectorBadge[] {
-    const { inside, outgoing, incoming } = dependenciesOf(declarations, context.index)
+function dependencyBadges(
+    declarationCount: number,
+    { inside, outgoing, incoming }: Dependencies,
+    context: InspectorContext
+): InspectorBadge[] {
     const touching = [...inside, ...outgoing, ...incoming]
     return [
-        { text: counted(declarations.length, "declaration") },
+        { text: counted(declarationCount, "declaration") },
         { text: `${touching.filter(edge => edge.isCyclic).length} cyclic` },
         { text: `${touching.filter(context.pointsUpward).length} upward` }
     ]

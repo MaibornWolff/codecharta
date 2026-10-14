@@ -451,7 +451,6 @@ describe("describeSubject", () => {
             expect(model).toMatchObject({
                 kind: "folder",
                 title: "game",
-                sections: [],
                 action: null,
                 declarations: null,
                 copyText: "/root/game"
@@ -459,6 +458,37 @@ describe("describeSubject", () => {
             expect(model.parent).toEqual({ path: "/root", name: "root", kind: "folder", shownAs: "/root" })
             expect(badgesOf(model)).toEqual(["folder", "2 files", "3 declarations", "2 cyclic", "1 upward", "1 cycle"])
             expect(model.cycles).toHaveLength(1)
+        })
+
+        it("should tell what it uses and what uses it across its border, each group under the other file, and none of the dependencies inside it", () => {
+            // Arrange
+            const formatUsesWeapon = declarationEdge(`${UTIL}#format`, `${WEAPON}#Weapon`)
+            const crossingBothWays = context({}, [...DECLARATION_EDGES, formatUsesWeapon])
+
+            // Act
+            const model = describeSubject(box(GAME_FOLDER), crossingBothWays)
+
+            // Assert
+            expect(model.sections.map(section => [section.title, section.count])).toEqual([
+                ["Uses", 1],
+                ["Used by", 1]
+            ])
+            expect(rowsOf(model, "Uses")).toEqual(["text.ts: Armor → format (Takes as argument)"])
+            expect(rowsOf(model, "Used by")).toEqual(["text.ts: format → Weapon ()"])
+        })
+
+        it("should say which end of a dependency crossing its border is its own", () => {
+            // Arrange
+            const formatUsesWeapon = declarationEdge(`${UTIL}#format`, `${WEAPON}#Weapon`)
+
+            // Act
+            const model = describeSubject(box(GAME_FOLDER), context({}, [...DECLARATION_EDGES, formatUsesWeapon]))
+            const [outgoing] = model.sections[0].groups[0].dependencies
+            const [incoming] = model.sections[1].groups[0].dependencies
+
+            // Assert
+            expect([outgoing.isFromOwn, outgoing.isToOwn]).toEqual([true, false])
+            expect([incoming.isFromOwn, incoming.isToOwn]).toEqual([false, true])
         })
 
         it("should tell the upward dependencies between its files, those closing a cycle first, and cut them as it cuts a hub's rows", () => {
@@ -510,6 +540,19 @@ describe("describeSubject", () => {
             // Assert
             expect(model).toMatchObject({ title: "game", path: "package:game", parent: null, copyText: "game" })
             expect(badgesOf(model).slice(0, 2)).toEqual(["package", "2 files"])
+        })
+
+        it("should tell what it uses and what uses it as a folder does", () => {
+            // Arrange
+            const gamePackage: LeveledNode = { ...GAME_FOLDER, path: "package:game", kind: "package" }
+            const formatUsesWeapon = declarationEdge(`${UTIL}#format`, `${WEAPON}#Weapon`)
+
+            // Act
+            const model = describeSubject(box(gamePackage), context({}, [...DECLARATION_EDGES, formatUsesWeapon]))
+
+            // Assert
+            expect(rowsOf(model, "Uses")).toEqual(["text.ts: Armor → format (Takes as argument)"])
+            expect(rowsOf(model, "Used by")).toEqual(["text.ts: format → Weapon ()"])
         })
     })
 
