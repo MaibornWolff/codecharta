@@ -73,7 +73,7 @@ class InteractiveAnalyserSuggestionTest {
         val usableAnalysers =
             InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
 
-        assertThat(errContent.toString()).contains(Ccsh.NO_USABLE_ANALYSER_FOUND_MESSAGE)
+        assertThat(errContent.toString()).contains(InteractiveAnalyserSuggestion.NO_USABLE_ANALYSER_FOUND_MESSAGE)
         assertThat(usableAnalysers).isNotNull
         assertThat(usableAnalysers).isEmpty()
     }
