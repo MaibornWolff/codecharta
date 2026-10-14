@@ -1,6 +1,6 @@
 import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 import { AxisWindow, axesReaching, Viewport, zoomBothAxesInsideTo } from "./axisWindow"
-import { upwardLineOf } from "./boxMarks"
+import { BadgeLook, upwardLineOf } from "./boxMarks"
 import { IsInside } from "./boxNesting"
 import { minOf } from "./collections"
 import { BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
@@ -67,7 +67,8 @@ function drawableGraph(scene: DependencyGraphScene, shownEdges: GraphEdge[], con
     const painted = paintOrder(scene.layout, scene.raisedPaths)
     const overlaps = scene.raisedPaths.length > 0 ? findOverlaps(painted, context.isInside) : NO_OVERLAPS
     const isFound = searchMatcher(scene.searchedPaths, context.byPath)
-    const lookOfBox = (box: LayoutBox) => lookOf(box, scene, overlaps, isFound(box.path))
+    const badgesOf = badgeLooksOf(scene)
+    const lookOfBox = (box: LayoutBox): BoxLook => ({ ...lookOf(box, scene, overlaps, isFound(box.path)), badges: badgesOf(box) })
     const { underEdges, overEdges } = aroundEdges(painted)
     const isDimmed = dimmerOf(scene, shownEdges, { isFound, isOfHovered: context.isOfHovered })
     return {
@@ -178,20 +179,24 @@ function datumOf(item: GraphItem, byPath: ReadonlyMap<string, LayoutBox>): Graph
     }
 }
 
-function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps, isFound: boolean): BoxLook {
+function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }: Overlaps, isFound: boolean): Omit<BoxLook, "badges"> {
     const isDragged = canBeOpened(box) && box.path === scene.draggingPath
     return {
         emphasis: emphasisOf(box, scene),
         isSeeThrough: isDragged || seeThroughPaths.has(box.path),
-        isMissedBySearch: !isFound,
-        badges: {
-            insideFilesCount: scene.cycleMarks.cyclesInsideFiles.get(box.path) ?? 0,
-            betweenFilesCount: scene.cycleMarks.cyclesBetweenFiles.get(box.path) ?? 0,
-            isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path),
-            upwardCount: scene.upwardMarks.get(box.path) ?? 0,
-            upwardLine: upwardLineOf(scene.edgeColors, scene.lineStyleShows)
-        }
+        isMissedBySearch: !isFound
     }
+}
+
+function badgeLooksOf({ cycleMarks, upwardMarks, edgeColors, lineStyleShows }: DependencyGraphScene): (box: LayoutBox) => BadgeLook {
+    const upwardLine = upwardLineOf(edgeColors, lineStyleShows)
+    return ({ path }) => ({
+        insideFilesCount: cycleMarks.cyclesInsideFiles.get(path) ?? 0,
+        betweenFilesCount: cycleMarks.cyclesBetweenFiles.get(path) ?? 0,
+        isInCycle: cycleMarks.declarationsInCycles.has(path),
+        upwardCount: upwardMarks.get(path) ?? 0,
+        upwardLine
+    })
 }
 
 function emphasisOf(box: LayoutBox, { selectedPath, hoveredPath }: DependencyGraphScene) {

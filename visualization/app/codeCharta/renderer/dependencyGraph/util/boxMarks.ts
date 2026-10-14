@@ -39,7 +39,7 @@ export const KIND_ICON_WIDTH_PX = 18
 const COUNT_BADGE = { radiusPx: 7, centreInsetPx: 14, fontSizePx: 10, outlinePx: 1 }
 /** One declaration is what the file's name stands for already. */
 const FEWEST_COUNTED_DECLARATIONS = 2
-const CYCLE_BADGE = {
+const BADGE_PILL = {
     heightPx: 15,
     overhangPx: 6,
     risePx: 9,
@@ -62,43 +62,50 @@ interface BadgeGlyph {
     lineWidthPx: number
 }
 
-interface BadgeDesign {
+export interface PillLook {
     colors: BadgeColors
     glyph: BadgeGlyph
     lineDash: number[] | null
+}
+
+interface BadgeDesign extends PillLook {
     info: string
 }
 
-const CYCLE_BADGE_CONTRAST_COLOR = "#ffffff"
+const BADGE_CONTRAST_COLOR = "#ffffff"
 const MARK_FONT_WEIGHT = "bold"
 const MOST_COUNTED = 99
 /** Drawn around its own centre, as is the arrow up. */
-export const CYCLE_GLYPH: BadgeGlyph = { line: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
-export const UPWARD_GLYPH: BadgeGlyph = { line: "M0 4.4V-1.2", head: "M-3.3-.6L0-4.7L3.3-.6z", lineWidthPx: 1.5 }
+const CYCLE_GLYPH: BadgeGlyph = { line: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
+const UPWARD_GLYPH: BadgeGlyph = { line: "M0 4.4V-1.2", head: "M-3.3-.6L0-4.7L3.3-.6z", lineWidthPx: 1.5 }
 /** Shorter than the dashes of an upward edge, so the short outline of a badge still reads as dashed. */
-export const BADGE_DASH = [3, 2]
+const BADGE_DASH = [3, 2]
 const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
 
 export type CycleMarkKind = Exclude<DependencyBoxBadge, "upward">
 
+export const CYCLE_MARK_KINDS: readonly CycleMarkKind[] = ["betweenFiles", "insideFiles", "declaration"]
+
+type PillKind = Exclude<DependencyBoxBadge, "declaration">
+
 /** Filled for the cycles between files, outlined for those within a file: a cycle across files is the wider
  * tangle, so wherever the two are told together it comes first. */
 export const CYCLE_MARK_COLORS: Record<CycleMarkKind, BadgeColors> = {
-    insideFiles: { fill: CYCLE_BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR },
-    betweenFiles: { fill: CYCLE_MARK_COLOR, line: CYCLE_BADGE_CONTRAST_COLOR },
+    insideFiles: { fill: BADGE_CONTRAST_COLOR, line: CYCLE_MARK_COLOR },
+    betweenFiles: { fill: CYCLE_MARK_COLOR, line: BADGE_CONTRAST_COLOR },
     declaration: { fill: FILE_FILL, line: CYCLE_MARK_COLOR }
 }
 
 const SAMPLE_COUNT = "2"
 
 /** The sizes the marks are drawn in, for a sample of one outside the graph. */
-export const CYCLE_MARK_SAMPLE = {
+export const BOX_BADGE_SAMPLE = {
     count: SAMPLE_COUNT,
-    widthPx: CYCLE_BADGE.numberLeftPx + SAMPLE_COUNT.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx,
-    heightPx: CYCLE_BADGE.heightPx,
-    outlinePx: CYCLE_BADGE.outlinePx,
-    numberLeftPx: CYCLE_BADGE.numberLeftPx,
-    fontSizePx: CYCLE_BADGE.fontSizePx,
+    widthPx: BADGE_PILL.numberLeftPx + SAMPLE_COUNT.length * BADGE_PILL.digitWidthPx + BADGE_PILL.numberRoomPx,
+    heightPx: BADGE_PILL.heightPx,
+    outlinePx: BADGE_PILL.outlinePx,
+    numberLeftPx: BADGE_PILL.numberLeftPx,
+    fontSizePx: BADGE_PILL.fontSizePx,
     fontWeight: MARK_FONT_WEIGHT,
     fontFamily: MARK_FONT_FAMILY,
     ringRadiusPx: CYCLE_RING.radiusPx,
@@ -116,8 +123,12 @@ export const BOX_BADGE_LEGEND: readonly { mark: DependencyBoxBadge; label: strin
 export const CYCLE_BADGE_INFO = "cycleBadge"
 export const UPWARD_BADGE_INFO = "upwardBadge"
 
-/** The upward badge is white inside, as the outlined cycle badge is. */
-const UPWARD_BADGE_FILL = CYCLE_BADGE_CONTRAST_COLOR
+export function pillLookOf(mark: PillKind, { color, isDashed }: UpwardLine): PillLook {
+    if (mark === "upward") {
+        return { colors: { fill: BADGE_CONTRAST_COLOR, line: color }, glyph: UPWARD_GLYPH, lineDash: isDashed ? BADGE_DASH : null }
+    }
+    return { colors: CYCLE_MARK_COLORS[mark], glyph: CYCLE_GLYPH, lineDash: null }
+}
 
 export function drawKindIcon(box: LayoutBox, rect: Rectangle, { opacity, scale }: MarkLook): object[] {
     const { letter, tint } = declarationKindLookOf(box.declarationKind)
@@ -142,16 +153,16 @@ export function drawDeclarationCount(box: LayoutBox, rect: Rectangle, { opacity,
     ]
 }
 
-export interface CycleMarkLook {
+export interface BadgeMarkLook {
     opacity: number
     zoom: number
 }
 
 /** A cycle mark leads the reader to a cycle from far out, so it shrinks with the graph only this far. */
-const SMALLEST_CYCLE_MARK_SCALE = 0.7
+const SMALLEST_BADGE_SCALE = 0.7
 
-export function drawBadges(box: LayoutBox, rect: Rectangle, badges: BadgeLook, { opacity, zoom }: CycleMarkLook): object[] {
-    const mark = { opacity, scale: Math.max(SMALLEST_CYCLE_MARK_SCALE, Math.min(1, zoom)) }
+export function drawBadges(box: LayoutBox, rect: Rectangle, badges: BadgeLook, { opacity, zoom }: BadgeMarkLook): object[] {
+    const mark = { opacity, scale: Math.max(SMALLEST_BADGE_SCALE, Math.min(1, zoom)) }
     if (box.kind === "declaration") {
         return badges.isInCycle ? [drawCycleRing(rect, mark)] : []
     }
@@ -165,32 +176,17 @@ function drawCycleRing(rect: Rectangle, { opacity, scale }: MarkLook): object {
     return { type: "circle", ...UNTRANSFORMED, silent: true, shape: { ...centre, r: CYCLE_RING.radiusPx * scale }, style }
 }
 
-const CYCLE_BADGE_DESIGN = { glyph: CYCLE_GLYPH, lineDash: null, info: CYCLE_BADGE_INFO }
-
 /** Read from the left, the badges tell the cycles between files, those inside files, then the upward dependencies,
  * which hang over the upper right corner; a badge without a count leaves its place to the next. */
 function drawCountBadges(rect: Rectangle, badges: BadgeLook, mark: MarkLook): object[] {
-    const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * mark.scale, top: rect.y - CYCLE_BADGE.risePx * mark.scale }
-    const upward = drawCountBadge(corner, badges.upwardCount, upwardDesignOf(badges.upwardLine), mark)
-    const insideFilesDesign = { ...CYCLE_BADGE_DESIGN, colors: CYCLE_MARK_COLORS.insideFiles }
-    const insideFiles = drawCountBadge({ ...corner, right: upward.rightOfNextBadge }, badges.insideFilesCount, insideFilesDesign, mark)
-    const betweenFilesDesign = { ...CYCLE_BADGE_DESIGN, colors: CYCLE_MARK_COLORS.betweenFiles }
-    const betweenFiles = drawCountBadge(
-        { ...corner, right: insideFiles.rightOfNextBadge },
-        badges.betweenFilesCount,
-        betweenFilesDesign,
-        mark
-    )
+    const corner = { right: rect.x + rect.width + BADGE_PILL.overhangPx * mark.scale, top: rect.y - BADGE_PILL.risePx * mark.scale }
+    const designOf = (mark: PillKind, info: string): BadgeDesign => ({ ...pillLookOf(mark, badges.upwardLine), info })
+    const upward = drawCountBadge(corner, badges.upwardCount, designOf("upward", UPWARD_BADGE_INFO), mark)
+    const insideFilesCorner = { ...corner, right: upward.rightOfNextBadge }
+    const insideFiles = drawCountBadge(insideFilesCorner, badges.insideFilesCount, designOf("insideFiles", CYCLE_BADGE_INFO), mark)
+    const betweenFilesCorner = { ...corner, right: insideFiles.rightOfNextBadge }
+    const betweenFiles = drawCountBadge(betweenFilesCorner, badges.betweenFilesCount, designOf("betweenFiles", CYCLE_BADGE_INFO), mark)
     return [...betweenFiles.elements, ...insideFiles.elements, ...upward.elements]
-}
-
-function upwardDesignOf({ color, isDashed }: UpwardLine): BadgeDesign {
-    return {
-        colors: { fill: UPWARD_BADGE_FILL, line: color },
-        glyph: UPWARD_GLYPH,
-        lineDash: isDashed ? BADGE_DASH : null,
-        info: UPWARD_BADGE_INFO
-    }
 }
 
 interface BadgeCorner {
@@ -210,12 +206,12 @@ function drawCountBadge({ right, top }: BadgeCorner, count: number, design: Badg
     const { colors, glyph, lineDash, info } = design
     const { opacity, scale } = mark
     const text = count > MOST_COUNTED ? `${MOST_COUNTED}+` : String(count)
-    const height = CYCLE_BADGE.heightPx * scale
-    const numberLeft = CYCLE_BADGE.numberLeftPx * scale
-    const width = numberLeft + (text.length * CYCLE_BADGE.digitWidthPx + CYCLE_BADGE.numberRoomPx) * scale
+    const height = BADGE_PILL.heightPx * scale
+    const numberLeft = BADGE_PILL.numberLeftPx * scale
+    const width = numberLeft + (text.length * BADGE_PILL.digitWidthPx + BADGE_PILL.numberRoomPx) * scale
     const left = right - width
     const pill = { x: left, y: top, width, height, r: height / 2 }
-    const pillStyle = { fill: colors.fill, stroke: colors.line, lineWidth: CYCLE_BADGE.outlinePx, lineDash, opacity }
+    const pillStyle = { fill: colors.fill, stroke: colors.line, lineWidth: BADGE_PILL.outlinePx, lineDash, opacity }
     const middle = top + height / 2
     const badgePart = { info, ...CLICKABLE }
     const elements = [
@@ -223,7 +219,7 @@ function drawCountBadge({ right, top }: BadgeCorner, count: number, design: Badg
         ...badgeGlyph(glyph, { x: left + height / 2, y: middle }, colors.line, mark),
         { ...badgeCount(text, { x: left + numberLeft, y: middle }, colors.line, mark), ...badgePart }
     ]
-    return { rightOfNextBadge: left - CYCLE_BADGE.gapPx * scale, elements }
+    return { rightOfNextBadge: left - BADGE_PILL.gapPx * scale, elements }
 }
 
 function badgeGlyph(glyph: BadgeGlyph, centre: { x: number; y: number }, color: string, { opacity, scale }: MarkLook): object[] {
@@ -236,7 +232,7 @@ function badgeGlyph(glyph: BadgeGlyph, centre: { x: number; y: number }, color: 
 }
 
 function badgeCount(text: string, leftMiddle: { x: number; y: number }, color: string, { opacity, scale }: MarkLook) {
-    const fontSize = CYCLE_BADGE.fontSizePx * scale
+    const fontSize = BADGE_PILL.fontSizePx * scale
     const [, shiftY] = inkCentreShiftOf(text, MARK_FONT_WEIGHT, fontSize)
     const look = { align: "left", verticalAlign: "middle", fontSize, fontWeight: MARK_FONT_WEIGHT, fontFamily: MARK_FONT_FAMILY }
     return {

@@ -35,8 +35,6 @@ export interface DependencyEdgeDrawing {
     isAnchoredAtSideMiddle: boolean
 }
 
-/** The marks on a box: the counts of the cycles it hides inside files and between files, the ring on a declaration
- * in a cycle, and the count of the upward dependencies it hides. */
 export type DependencyBoxBadge = "betweenFiles" | "insideFiles" | "declaration" | "upward"
 
 export const DEPENDENCY_BOX_BADGES: readonly DependencyBoxBadge[] = ["betweenFiles", "insideFiles", "declaration", "upward"]

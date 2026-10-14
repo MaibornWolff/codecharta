@@ -2,7 +2,6 @@ import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { declarationPathOf } from "./boxPaths"
 import { boxesOf, UpwardRule } from "./edgeProjection"
 
-/** Per box, the upward dependencies between declarations it hides. */
 export type UpwardMarks = ReadonlyMap<string, number>
 
 export const NO_UPWARD_MARKS: UpwardMarks = new Map()
