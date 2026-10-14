@@ -12,7 +12,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Typescript   | .ts, .cts, .mts                        |
 | TSX          | .tsx                                   |
 | Java         | .java                                  |
-| Kotlin       | .kt                                    |
+| Kotlin       | .kt, .kts                              |
 | C#           | .cs                                    |
 | C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
 | C            | .c, .h                                 |

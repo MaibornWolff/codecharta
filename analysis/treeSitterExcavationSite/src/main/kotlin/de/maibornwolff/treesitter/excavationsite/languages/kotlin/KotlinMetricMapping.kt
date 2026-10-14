@@ -11,8 +11,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricMapping
  * - Logic complexity: if, for, while, elvis, conjunctions, when entries, catch blocks
  * - Function complexity: function/lambda/constructor declarations
  * - Comments: line and multiline comments
- * - Functions: counted via nested matching on function_declaration with function_body
- * - Function bodies: for RLOC per function calculation
+ * - Functions: function_declaration with a function_body, accessors and secondary constructors; no lambda
+ * - Function bodies: for RLOC per function calculation, the statements of a secondary constructor included
  * - Parameters: function parameter nodes
  * - Message chains: call and navigation expressions
  */
@@ -48,58 +48,13 @@ object KotlinMetricMapping : MetricMapping {
         // Comment line nodes
         listOf("line_comment", "multiline_comment").forEach { put(it, setOf(Metric.CommentLine)) }
 
-        // Function nodes with conditional matching requirements
-        // property_declaration with 4 children and lambda/function/initializer at position 3
         put(
-            "property_declaration",
-            setOf(
-                Metric.FunctionConditional(
-                    MetricCondition.ChildPositionMatches(
-                        position = 3,
-                        requiredChildCount = 4,
-                        allowedTypes = setOf("lambda_literal", "anonymous_function", "anonymous_initializer")
-                    )
-                )
-            )
+            "function_declaration",
+            setOf(Metric.FunctionComplexity, Metric.FunctionConditional(MetricCondition.AnyChildMatches(setOf("function_body"))))
         )
 
-        // function_declaration with function_body at various positions
-        // Includes FunctionComplexity for complexity calculation plus conditional matching for function counting
-        val functionDeclarationMetrics = setOf(
-            Metric.FunctionComplexity,
-            Metric.FunctionConditional(
-                MetricCondition.ChildPositionMatches(
-                    position = 3,
-                    requiredChildCount = 4,
-                    allowedTypes = setOf("function_body")
-                )
-            ),
-            Metric.FunctionConditional(
-                MetricCondition.ChildPositionMatches(
-                    position = 4,
-                    requiredChildCount = 5,
-                    allowedTypes = setOf("function_body")
-                )
-            ),
-            Metric.FunctionConditional(
-                MetricCondition.ChildPositionMatches(
-                    position = 5,
-                    requiredChildCount = 6,
-                    allowedTypes = setOf("function_body")
-                )
-            ),
-            Metric.FunctionConditional(
-                MetricCondition.ChildPositionMatches(
-                    position = 6,
-                    requiredChildCount = 7,
-                    allowedTypes = setOf("function_body")
-                )
-            )
-        )
-        put("function_declaration", functionDeclarationMetrics)
-
-        // Function body nodes
         put("function_body", setOf(Metric.FunctionBody))
+        put("statements", setOf(Metric.FunctionBodyConditional(MetricCondition.ParentMatches(setOf("secondary_constructor")))))
 
         // Parameter nodes
         put("parameter", setOf(Metric.Parameter))

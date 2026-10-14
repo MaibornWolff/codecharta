@@ -54,6 +54,9 @@ Some metrics are calculated on a per-function basis rather than per-file. Each o
 | complexity_per_function | The complexity inside the body of a function         |
 | rloc_per_function       | The real lines of code inside the body of a function |
 
+A function nested in another one, such as a local function or a method of an object expression, is a function of its own: its
+parameters, complexity and lines count for it and not for the enclosing function.
+
 ### Usage and Parameters
 
 | Parameter                                 | Description                                                                                                                                       |
@@ -163,6 +166,7 @@ contribute to complexity:
   `disjunction_expression`, `when_entry`, `catch_block`
 - **Functions**: `function_declaration`, `anonymous_function`, `anonymous_initializer`, `lambda_literal`, `secondary_constructor`, `setter`,
   `getter`
+- **Not counted**: a guard on a `when` branch (`is X if condition ->`), which the grammar does not parse
 
 ##### C# (.cs)
 
@@ -293,8 +297,9 @@ Function counting identifies different types of function definitions per languag
 ##### Kotlin (.kt, .kts)
 
 - **Simple functions**: `secondary_constructor`, `setter`, `getter`
-- **Complex functions**: Property declarations with lambda literals, anonymous functions, or initializers; function declarations with
-  function bodies
+- **Complex functions**: function declarations with a function body, whatever their signature holds (receiver, return type, modifiers,
+  type parameters, `where` clause)
+- **Not counted**: lambda literals and anonymous functions, wherever they stand; they contribute only to complexity
 
 ##### C# (.cs)
 

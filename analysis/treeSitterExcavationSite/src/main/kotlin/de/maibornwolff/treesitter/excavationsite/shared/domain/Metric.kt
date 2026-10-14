@@ -31,6 +31,9 @@ sealed class Metric {
     /** Node marks function body boundaries (for RLOC per function). */
     data object FunctionBody : Metric()
 
+    /** Node marks function body boundaries with conditional matching requirements. */
+    data class FunctionBodyConditional(val condition: MetricCondition) : Metric()
+
     /** Node is a function parameter. */
     data object Parameter : Metric()
 

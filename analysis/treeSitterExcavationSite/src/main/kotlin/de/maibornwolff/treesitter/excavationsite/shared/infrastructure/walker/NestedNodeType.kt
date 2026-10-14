@@ -12,11 +12,15 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
  * @param childNodeCount Required number of children for position-based matching (optional)
  * @param childNodePosition Position of the child to check (optional)
  * @param childNodeTypes Set of allowed child node types
+ * @param matchesAnyChild Whether any direct child of an allowed type is enough (optional)
+ * @param parentNodeTypes Set of allowed parent node types, checked instead of the children (optional)
  */
 class NestedNodeType(
     val baseNodeType: String,
     val childNodeFieldName: String? = null,
     val childNodeCount: Int? = null,
     val childNodePosition: Int? = null,
-    val childNodeTypes: Set<String>
+    val childNodeTypes: Set<String> = emptySet(),
+    val matchesAnyChild: Boolean = false,
+    val parentNodeTypes: Set<String>? = null
 )

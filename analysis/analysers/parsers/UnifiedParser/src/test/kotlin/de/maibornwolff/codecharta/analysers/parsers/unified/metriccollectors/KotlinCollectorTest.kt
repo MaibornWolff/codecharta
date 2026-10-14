@@ -197,7 +197,7 @@ class KotlinCollectorTest {
     }
 
     @Test
-    fun `should count lambda function for number of functions only when they are assigned to a variable`() {
+    fun `should not count a lambda as a function wherever it stands`() {
         // given
         val fileContent = """
             val sum = { x: Int, y: Int -> x + y }
@@ -210,11 +210,11 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(0.0)
     }
 
     @Test
-    fun `should count anonymous function for number of functions only when they are assigned to a variable`() {
+    fun `should not count an anonymous function as a function wherever it stands`() {
         // given
         val fileContent = """
             val adder = fun(x: Int, y: Int): Int {
@@ -229,7 +229,7 @@ class KotlinCollectorTest {
         val result = collector.collectMetricsForFile(input)
 
         // then
-        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(1.0)
+        Assertions.assertThat(result.attributes[AvailableFileMetrics.NUMBER_OF_FUNCTIONS.metricName]).isEqualTo(0.0)
     }
 
     @Test

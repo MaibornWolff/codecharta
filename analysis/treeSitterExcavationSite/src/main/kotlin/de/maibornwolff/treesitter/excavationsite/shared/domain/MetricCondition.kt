@@ -29,4 +29,18 @@ sealed class MetricCondition {
      * @param allowedTypes The set of allowed node types
      */
     data class ChildPositionMatches(val position: Int, val requiredChildCount: Int, val allowedTypes: Set<String>) : MetricCondition()
+
+    /**
+     * Matches when any direct child node has one of the allowed types.
+     *
+     * @param allowedTypes The set of allowed node types
+     */
+    data class AnyChildMatches(val allowedTypes: Set<String>) : MetricCondition()
+
+    /**
+     * Matches when the parent node has one of the allowed types.
+     *
+     * @param allowedTypes The set of allowed node types
+     */
+    data class ParentMatches(val allowedTypes: Set<String>) : MetricCondition()
 }

@@ -16,7 +16,11 @@ object NodeTypeMatcher {
         for (nestedType in nestedTypes) {
             if (nestedType.baseNodeType != nodeType) continue
 
-            if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
+            if (nestedType.parentNodeTypes != null) {
+                if (nestedType.parentNodeTypes.contains(node.parent.type)) return true
+            } else if (nestedType.matchesAnyChild) {
+                if (node.children().any { nestedType.childNodeTypes.contains(it.type) }) return true
+            } else if (nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount) {
                 val childNode = node.getChild(nestedType.childNodePosition)
                 if (!childNode.isNull && nestedType.childNodeTypes.contains(childNode.type)) return true
             } else if (nestedType.childNodeFieldName != null) {
