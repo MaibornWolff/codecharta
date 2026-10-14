@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractedText
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionContext
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import de.maibornwolff.treesitter.excavationsite.api.ExtractionContext as LibraryExtractionContext

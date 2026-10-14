@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ke
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.ExtractionWeights
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.ExtractionWeights
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.stopwords.DlcIgnoreParser
 import java.nio.file.Path
 import java.nio.file.Paths

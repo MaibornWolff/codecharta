@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
-
 class AggregateStage {
     fun aggregate(weightedTexts: List<WeightedText>): Map<String, Int> {
         val wordCounts = mutableMapOf<String, Int>()
