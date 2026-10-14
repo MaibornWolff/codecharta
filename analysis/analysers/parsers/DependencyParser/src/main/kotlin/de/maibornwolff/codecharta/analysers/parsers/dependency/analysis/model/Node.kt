@@ -67,6 +67,11 @@ data class Node(
         // Exclude self-references to prevent REEXPORT nodes from depending on themselves
         val possibleImports = projectDictionary[plainTypeName]?.filter { it != pathWithName }
 
+        // A name written with its full path means that type, whatever an import of the same simple name says
+        if (fullName.contains(".")) {
+            possibleImports?.find { it.withDots() == fullName }?.let { return it }
+        }
+
         // An explicit import shadows a same-package type of the same name, as Java's single-type import does.
         val directImports = dependencies
             .filter { it.isWildcard.not() && it.isDotImport.not() && it.path.parts.lastOrNull() == plainTypeName }
