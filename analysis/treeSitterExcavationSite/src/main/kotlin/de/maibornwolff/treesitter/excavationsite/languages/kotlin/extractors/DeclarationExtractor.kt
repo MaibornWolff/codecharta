@@ -4,6 +4,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
  * The classes, objects and `fun interface`s of a Kotlin file wherever they stand, and its top-level functions,
@@ -23,6 +24,7 @@ internal object DeclarationExtractor {
     private const val MODIFIERS = "modifiers"
     private const val CLASS_MODIFIER = "class_modifier"
     private const val ANNOTATION_KEYWORD = "annotation"
+    private const val INNER_KEYWORD = "inner"
 
     private val DECLARATION_TYPES = setOf(CLASS_DECLARATION, OBJECT_DECLARATION)
 
@@ -46,11 +48,24 @@ internal object DeclarationExtractor {
                 val name = namesByStartByte[declarationNode.startByte]
                 if (name.isNullOrBlank()) return@mapNotNull null
                 val type = declarationType(declarationNode)
-                val usedTypes = UsedTypeExtractor.extract(declarationNode, importedNames)
                 val parentPath = findParentPath(declarationNode, namesByStartByte)
+                val usedTypes = UsedTypeExtractor.extract(declarationNode, importedNames) + hostOfInnerClass(declarationNode, parentPath)
                 Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath)
             }.toList()
     }
+
+    // An inner class holds the instance of the class around it, whether it names that class or not
+    private fun hostOfInnerClass(declaration: SyntaxNode, parentPath: List<String>): Set<UsedType> {
+        val host = parentPath.lastOrNull() ?: return emptySet()
+        return if (hasClassModifier(declaration, INNER_KEYWORD)) setOf(UsedType(host)) else emptySet()
+    }
+
+    private fun hasClassModifier(declaration: SyntaxNode, keyword: String): Boolean = declaration
+        .children()
+        .firstOrNull { it.type == MODIFIERS }
+        ?.children()
+        ?.any { modifier -> modifier.type == CLASS_MODIFIER && modifier.children().any { it.type == keyword } }
+        ?: false
 
     private fun extractName(node: SyntaxNode): String = node
         .children()
@@ -82,15 +97,7 @@ internal object DeclarationExtractor {
         if (children.any { it.type == ENUM_KEYWORD }) return DeclarationType.ENUM
         if (children.any { it.type == INTERFACE_KEYWORD }) return DeclarationType.INTERFACE
 
-        // Check modifiers for annotation class
-        val modifiers = children.firstOrNull { it.type == MODIFIERS }
-        if (modifiers != null) {
-            val hasAnnotationModifier = modifiers.children().any { modifier ->
-                modifier.type == CLASS_MODIFIER &&
-                    modifier.children().any { it.type == ANNOTATION_KEYWORD }
-            }
-            if (hasAnnotationModifier) return DeclarationType.ANNOTATION
-        }
+        if (hasClassModifier(node, ANNOTATION_KEYWORD)) return DeclarationType.ANNOTATION
 
         return DeclarationType.CLASS
     }

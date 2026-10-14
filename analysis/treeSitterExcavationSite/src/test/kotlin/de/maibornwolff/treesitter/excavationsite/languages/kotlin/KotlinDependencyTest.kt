@@ -884,6 +884,50 @@ class KotlinDependencyTest {
         }
 
         @Test
+        fun `should make an inner class use the class around it`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Ccsh {
+                inner class Quiet { fun one() = 1 }
+                class Plain { fun one() = 1 }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val byName = result.declarations.associateBy { it.name }
+            assertThat(byName["Quiet"]?.usedTypes).containsExactly(UsedType("Ccsh"))
+            assertThat(byName["Plain"]?.usedTypes).isEmpty()
+        }
+
+        @Test
+        fun `should not extract a call of a member function as a top-level function`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Ccsh {
+                fun version() = "1"
+                fun use() = version() + rollD20()
+
+                inner class Implicit { fun show() = version() }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val byName = result.declarations.associateBy { it.name }
+            assertThat(byName["Ccsh"]?.usedTypes).containsExactly(UsedType("rollD20"))
+            assertThat(byName["Implicit"]?.usedTypes).containsExactly(UsedType("Ccsh"))
+        }
+
+        @Test
         fun `should not extract the name of a named argument`() {
             // Arrange
             val code = """
