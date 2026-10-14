@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.Local
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesResult
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.FileMetrics
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
