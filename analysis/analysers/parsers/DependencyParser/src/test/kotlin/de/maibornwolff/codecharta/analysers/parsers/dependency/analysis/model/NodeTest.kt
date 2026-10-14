@@ -306,4 +306,23 @@ class NodeTest {
         // Assert
         Assertions.assertThat(resolved.usedTypes.single().resolvedPath).isEqualTo(importedFoo)
     }
+
+    @Test
+    fun `should prefer a fully qualified name over an import of the same simple name`() {
+        // Arrange
+        val importedCreature = Path(listOf("domain", "Creature"))
+        val dtoCreature = Path(listOf("dto", "Creature"))
+        val projectDictionary = mapOf("Creature" to listOf(importedCreature, dtoCreature))
+        val node = Node.build(
+            pathWithName = Path(listOf("application", "Facade")),
+            dependencies = setOf(Dependency(importedCreature)),
+            usedTypes = setOf(Type.simple("dto.Creature"))
+        )
+
+        // Act
+        val resolved = node.resolveTypes(projectDictionary, emptyMap(), setOf())
+
+        // Assert
+        Assertions.assertThat(resolved.usedTypes.single().resolvedPath).isEqualTo(dtoCreature)
+    }
 }
