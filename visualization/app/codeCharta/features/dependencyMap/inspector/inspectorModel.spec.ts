@@ -247,6 +247,22 @@ describe("describeSubject", () => {
             expect(model.cycles).toHaveLength(1)
         })
 
+        it("should tell the upward dependencies between its own declarations alone, inside it, and none leaving it", () => {
+            // Arrange
+            const creatureUsesArmorUpward = context({
+                pointsUpward: declarationEdge => declarationEdge === DECLARATION_EDGES[1] || declarationEdge === DECLARATION_EDGES[2]
+            })
+
+            // Act
+            const { upward, upwardCount } = describeSubject(box(CREATURE_NODE), creatureUsesArmorUpward)
+
+            // Assert
+            expect(upwardCount).toBe(1)
+            expect(upward.map(({ dependency }) => `${dependency.from.name} → ${dependency.to.name}`)).toEqual(["Creature → Armor"])
+            expect(upward[0].dependency).toMatchObject({ type: "feedbackContainerLevel", declarationEdge: DECLARATION_EDGES[2] })
+            expect(upward[0].files.map(file => file.name)).toEqual(["creature.ts"])
+        })
+
         it("should tell of a row only its closer kinds of use, since that one declaration uses the other is what every row shows", () => {
             // Arrange
             const subject = box(CREATURE_NODE)
@@ -423,6 +439,21 @@ describe("describeSubject", () => {
             expect(model.parent).toEqual({ path: "/root", name: "root", kind: "folder", shownAs: "/root" })
             expect(badgesOf(model)).toEqual(["folder", "2 files", "3 declarations", "2 cyclic", "1 upward", "1 cycle"])
             expect(model.cycles).toHaveLength(1)
+        })
+
+        it("should tell the upward dependencies between its files, from the one file to the other, and cut them as it cuts a hub's rows", () => {
+            // Arrange
+            const everyDependencyUpward = context({ pointsUpward: () => true, rowLimit: 2 })
+
+            // Act
+            const { upward, upwardCount } = describeSubject(box(GAME_FOLDER), everyDependencyUpward)
+
+            // Assert
+            expect(upwardCount).toBe(3)
+            expect(upward).toHaveLength(2)
+            expect(describeSubject(box(GAME_FOLDER), context()).upward.map(({ files }) => files.map(file => file.name))).toEqual([
+                ["weapon.ts", "creature.ts"]
+            ])
         })
 
         it("should head the root folder with nothing above it", () => {

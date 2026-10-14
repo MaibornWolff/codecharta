@@ -168,6 +168,64 @@
             </section>
         }
 
+        @if (model.upwardCount > 0) {
+            <section
+                #upwardSection
+                class="flex flex-col gap-2 border-t border-base-300 px-3 py-2"
+                [attr.aria-label]="sectionTitles.upward"
+                data-testid="dependency-inspector-upward"
+            >
+                <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'upward', count: model.upwardCount }"></ng-container>
+                @if (showsBodyOf("upward")) {
+                    @for (upward of model.upward; track $index) {
+                        <div
+                            class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
+                            data-testid="dependency-inspector-upward-dependency"
+                            ccPointing
+                            (pointingChange)="pointAtEdges($event ? [upward.dependency.declarationEdge] : null)"
+                        >
+                            <div class="flex min-w-0 flex-wrap items-center gap-x-0.5 gap-y-1">
+                                <ng-container
+                                    [ngTemplateOutlet]="chip"
+                                    [ngTemplateOutletContext]="{ $implicit: upward.dependency.from, isOwn: false }"
+                                ></ng-container>
+                                <cc-line-style-sample
+                                    [line]="upward.dependency.line"
+                                    [color]="edgeColors()[upward.dependency.type]"
+                                    [label]="upward.dependency.specificUsages.join(', ') || 'uses'"
+                                ></cc-line-style-sample>
+                                <ng-container
+                                    [ngTemplateOutlet]="chip"
+                                    [ngTemplateOutletContext]="{ $implicit: upward.dependency.to, isOwn: false }"
+                                ></ng-container>
+                            </div>
+                            <div class="flex items-baseline justify-between gap-2 text-xs">
+                                <span class="min-w-0 [overflow-wrap:anywhere]" data-testid="dependency-inspector-upward-where">
+                                    <span class="font-semibold" [style.color]="edgeColors()[upward.dependency.type]">{{
+                                        edgeTypeLabels[upward.dependency.type]
+                                    }}</span>
+                                    <span class="opacity-60">
+                                        @if (upward.files.length === 1) {
+                                            inside {{ upward.files[0].name }}
+                                        } @else {
+                                            from {{ upward.files[0].name }} to {{ upward.files[1].name }}
+                                        }
+                                    </span>
+                                </span>
+                                <button type="button" class="btn btn-ghost btn-xs shrink-0" (click)="showUpwardDependency(upward)">Show in graph</button>
+                            </div>
+                        </div>
+                    }
+                    @if (model.upwardCount > model.upward.length) {
+                        <ng-container
+                            [ngTemplateOutlet]="moreRows"
+                            [ngTemplateOutletContext]="{ $implicit: model.upwardCount - model.upward.length, testId: 'dependency-inspector-more-upward' }"
+                        ></ng-container>
+                    }
+                }
+            </section>
+        }
+
         @for (section of model.sections; track section.id) {
             @if (section.count > 0) {
                 <section class="flex flex-col gap-2 border-t border-base-300 px-3 py-2" [attr.aria-label]="section.title">

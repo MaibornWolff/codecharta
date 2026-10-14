@@ -4,6 +4,7 @@ import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../declarations/declarationIndex"
 import {
+    BadgeSectionId,
     describeSubject,
     INSPECTOR_ROW_LIMIT,
     InspectorActionKind,
@@ -11,7 +12,8 @@ import {
     InspectorModel,
     InspectorReference,
     InspectorSectionId,
-    InspectorSubject
+    InspectorSubject,
+    InspectorUpwardDependency
 } from "../inspector/inspectorModel"
 import { DependencyGraphModelStore } from "./dependencyGraphModel.store"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
@@ -53,7 +55,7 @@ export class DependencyInspectorStore {
     private readonly pointedAtEdges = signal(NOTHING_POINTED_AT)
     private readonly pointedAtNodePath = signal<string | null>(null)
     private readonly touchedView = signal(UNTOUCHED)
-    private readonly cyclesAskedFor = signal<{ id: number; boxPath: string } | null>(null)
+    private readonly sectionAskedFor = signal<{ id: number; boxPath: string; sectionId: BadgeSectionId } | null>(null)
     private readonly openedSections = signal<ReadonlySet<InspectorSectionId>>(new Set())
 
     readonly edgeColors = computed(() => {
@@ -77,11 +79,11 @@ export class DependencyInspectorStore {
     /** Every section starts closed, and one the reader opened stays open for whatever is selected next. */
     readonly openSections = this.openedSections.asReadonly()
 
-    /** The request to bring the cycles into view, for as long as the box they were asked of is selected. */
-    readonly cyclesRequest = computed(() => {
-        const asked = this.cyclesAskedFor()
+    /** The request to bring a section into view, for as long as the box it was asked of is selected. */
+    readonly sectionRequest = computed(() => {
+        const asked = this.sectionAskedFor()
         const selection = this.selection()
-        return asked && selection?.kind === "box" && selection.path === asked.boxPath ? asked.id : null
+        return asked && selection?.kind === "box" && selection.path === asked.boxPath ? { id: asked.id, sectionId: asked.sectionId } : null
     })
 
     readonly selectedBoxPath = computed(() => {
@@ -169,7 +171,7 @@ export class DependencyInspectorStore {
     select(boxPath: string): void {
         const nodePath = this.graphModel.nodePathOf(boxPath)
         this.selectInGraph(nodePath === boxPath ? null : { kind: "box", path: boxPath }, nodePath)
-        this.cyclesAskedFor.set(null)
+        this.sectionAskedFor.set(null)
         if (nodePath === null) {
             this.writeStore.clearSelection()
         } else {
@@ -182,11 +184,11 @@ export class DependencyInspectorStore {
         this.writeStore.clearSelection()
     }
 
-    showCyclesOf(boxPath: string): void {
-        const id = (this.cyclesAskedFor()?.id ?? 0) + 1
+    showSectionOf(boxPath: string, sectionId: BadgeSectionId): void {
+        const id = (this.sectionAskedFor()?.id ?? 0) + 1
         this.select(boxPath)
-        this.openedSections.update(opened => new Set<InspectorSectionId>([...opened, "cycles"]))
-        this.cyclesAskedFor.set({ id, boxPath })
+        this.openedSections.update(opened => new Set<InspectorSectionId>([...opened, sectionId]))
+        this.sectionAskedFor.set({ id, boxPath, sectionId })
     }
 
     toggleSection(sectionId: InspectorSectionId): void {
@@ -200,8 +202,8 @@ export class DependencyInspectorStore {
     }
 
     /** A request is answered once, so an inspector shown anew does not answer it again. */
-    answerCyclesRequest(): void {
-        this.cyclesAskedFor.set(null)
+    answerSectionRequest(): void {
+        this.sectionAskedFor.set(null)
     }
 
     goTo(reference: InspectorReference): void {
@@ -237,6 +239,11 @@ export class DependencyInspectorStore {
     showCycle(cycle: InspectorCycle): void {
         this.revealEndsOf(cycle.declarationEdges)
         this.pointAtEdges(cycle.declarationEdges)
+    }
+
+    showUpwardDependency({ dependency }: InspectorUpwardDependency): void {
+        this.revealEndsOf([dependency.declarationEdge])
+        this.pointAtEdges([dependency.declarationEdge])
     }
 
     showAllRows(): void {

@@ -137,7 +137,11 @@ export class DependencyMapComponent {
     }
 
     protected showCyclesOf(path: string): void {
-        this.inspectorStore.showCyclesOf(path)
+        this.inspectorStore.showSectionOf(path, "cycles")
+    }
+
+    protected showUpwardOf(path: string): void {
+        this.inspectorStore.showSectionOf(path, "upward")
     }
 
     protected toggle(path: string): void {

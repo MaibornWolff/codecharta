@@ -822,6 +822,58 @@ describe("DependencyMapComponent", () => {
                     expect(openTitles()).toEqual(["Cycles"])
                     expect(screen.getAllByTestId("dependency-inspector-cycle").length).toBeGreaterThan(0)
                 })
+
+                it("should open the upward dependencies hidden in a file on a click on its upward badge, and bring them into view", async () => {
+                    // Arrange
+                    const scrollIntoView = jest.fn()
+                    Element.prototype.scrollIntoView = scrollIntoView
+                    const menuUsesViewUpward = {
+                        fromNodeName: VIEW,
+                        fromLeaf: "Menu",
+                        toNodeName: VIEW,
+                        toLeaf: "View",
+                        attributes: { dependencies: 1 },
+                        usage: [],
+                        isPointingUpwards: true
+                    }
+                    const declarations = { ...CYCLIC, leafEdges: [...CYCLIC.leafEdges, menuUsesViewUpward] }
+                    const { fixture } = await setup({ tree: DECLARING_TREE, declarations, selectedPath: VIEW, openedSections: [] })
+
+                    // Act
+                    fireChartEvent("click", { ...boxEvent(VIEW), info: "upwardBadge" })
+                    fixture.detectChanges()
+
+                    // Assert
+                    expect(openTitles()).toEqual(["Upward"])
+                    expect(screen.getByTestId("dependency-inspector-upward-dependency").textContent).toContain("Menu")
+                    expect(scrollIntoView.mock.contexts).toEqual([screen.getByTestId("dependency-inspector-upward")])
+                })
+
+                it("should show an upward dependency in the graph: open its file and bring both ends into view", async () => {
+                    // Arrange
+                    Element.prototype.scrollIntoView = jest.fn()
+                    const menuUsesViewUpward = {
+                        fromNodeName: VIEW,
+                        fromLeaf: "Menu",
+                        toNodeName: VIEW,
+                        toLeaf: "View",
+                        attributes: { dependencies: 1 },
+                        usage: [],
+                        isPointingUpwards: true
+                    }
+                    const declarations = { ...CYCLIC, leafEdges: [...CYCLIC.leafEdges, menuUsesViewUpward] }
+                    const { fixture } = await setup({ tree: DECLARING_TREE, declarations, selectedPath: VIEW, openedSections: ["upward"] })
+
+                    // Act
+                    const card = screen.getByTestId("dependency-inspector-upward-dependency")
+                    await userEvent.click(within(card).getByRole("button", { name: "Show in graph" }))
+                    fixture.detectChanges()
+                    await screen.findByTestId("dependency-graph")
+
+                    // Assert
+                    expect(drawnBoxPaths()).toEqual(expect.arrayContaining([`${VIEW}/Menu`, `${VIEW}/View`]))
+                    expect(TestBed.inject(DependencyMapViewStore).viewRequest().paths).toEqual([`${VIEW}/Menu`, `${VIEW}/View`])
+                })
             })
 
             it("should bring the cycles into view when a cycle badge is clicked", async () => {
