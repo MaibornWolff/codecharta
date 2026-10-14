@@ -7,6 +7,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.leveli
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.model.GraphNode
 import de.maibornwolff.codecharta.model.withAncestors
 
+private const val PATH_SEPARATOR = "."
+
 internal class LogicalProjection(
     private val resolvedNodes: Collection<Node>,
     private val cyclicEdgesByDeclaration: Map<String, Set<String>>,
@@ -84,14 +86,23 @@ internal class LogicalProjection(
         val targetPath = dependency.withDots()
         val targetFile = firstFileByLogicalPath[targetPath]
         if (targetFile == null || targetPath == sourcePath) return null
+        val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         return DeclarationEdge(
             from = addressOf(FileLevelAggregator.filePathOf(node), sourcePath),
             to = addressOf(targetFile, targetPath),
             weight = 1,
             usage = listOf(dependency.type.rawValue),
-            isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty(),
-            isPointingUpwards = namespaceTree?.pointsUpwards(sourcePath, targetPath) == true
+            isCyclic = isCyclic,
+            isPointingUpwards = pointsUpwards(sourcePath, targetPath, isCyclic)
         )
+    }
+
+    // A class and a declaration nested in it cannot be ranked, so neither edge between them points upwards on its
+    // own; when they form a cycle, the edge from the nested declaration back to its host is the one closing it.
+    private fun pointsUpwards(sourcePath: String, targetPath: String, isCyclic: Boolean): Boolean {
+        val tree = namespaceTree ?: return false
+        if (isCyclic && sourcePath.startsWith(targetPath + PATH_SEPARATOR)) return true
+        return tree.pointsUpwards(sourcePath, targetPath)
     }
 
     private fun fold(first: DeclarationEdge, second: DeclarationEdge): DeclarationEdge = first.copy(

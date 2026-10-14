@@ -319,6 +319,83 @@ class ProcessingPipelineTest {
     }
 
     @Test
+    fun `should mark the edge from a nested class back to its host as the one closing their cycle`() {
+        // Arrange: the host names its nested class, and the nested class names its host.
+        val source =
+            """
+            package de.sots
+
+            @Command(versionProvider = Ccsh.ManifestVersionProvider::class)
+            class Ccsh {
+                object ManifestVersionProvider {
+                    fun version() = Ccsh::class.java.name
+                }
+            }
+            """.trimIndent()
+        File(sampleDirectory, "Ccsh.kt").writeText(source)
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.KOTLIN), omitGraphAnalysis = false)
+
+        // Assert
+        val flagsByEdge = graph.declarationEdges.associate { (it.from.key to it.to.key) to (it.isCyclic to it.isPointingUpwards) }
+        assertThat(flagsByEdge).containsExactlyInAnyOrderEntriesOf(
+            mapOf(
+                ("Ccsh" to "ManifestVersionProvider") to (true to false),
+                ("ManifestVersionProvider" to "Ccsh") to (true to true)
+            )
+        )
+    }
+
+    @Test
+    fun `should close a cycle between a host and an inner class it uses even when the inner class never names it`() {
+        // Arrange: an inner class holds its host's instance, so it depends on the host without naming it.
+        val source =
+            """
+            package de.sots
+
+            class Ccsh {
+                fun quiet() = Quiet()
+
+                inner class Quiet { fun one() = 1 }
+            }
+            """.trimIndent()
+        File(sampleDirectory, "Ccsh.kt").writeText(source)
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.KOTLIN), omitGraphAnalysis = false)
+
+        // Assert
+        val flagsByEdge = graph.declarationEdges.associate { (it.from.key to it.to.key) to (it.isCyclic to it.isPointingUpwards) }
+        assertThat(flagsByEdge).containsExactlyInAnyOrderEntriesOf(
+            mapOf(("Ccsh" to "Quiet") to (true to false), ("Quiet" to "Ccsh") to (true to true))
+        )
+    }
+
+    @Test
+    fun `should not mark the edge from a nested class to its host as pointing upwards outside a cycle`() {
+        // Arrange: only the nested class names its host.
+        val source =
+            """
+            package de.sots
+
+            class Ccsh {
+                object Version {
+                    fun of() = Ccsh::class.java.name
+                }
+            }
+            """.trimIndent()
+        File(sampleDirectory, "Ccsh.kt").writeText(source)
+
+        // Act
+        val graph = ProcessingPipeline.run(extractFrom(sampleDirectory.path, SupportedLanguage.KOTLIN), omitGraphAnalysis = false)
+
+        // Assert
+        val flagsByEdge = graph.declarationEdges.associate { (it.from.key to it.to.key) to (it.isCyclic to it.isPointingUpwards) }
+        assertThat(flagsByEdge).containsExactlyEntriesOf(mapOf(("Version" to "Ccsh") to (false to false)))
+    }
+
+    @Test
     fun `should emit one declaration per file of a split declaration and point edges into it at the first`() {
         // Arrange: a partial class in two files, and a class that depends on it.
         File(sampleDirectory, "FooA.cs").writeText("namespace N { public partial class Foo { private Bar bar; } }")
