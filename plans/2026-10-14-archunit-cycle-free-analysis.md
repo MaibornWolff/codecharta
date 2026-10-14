@@ -1,7 +1,7 @@
 ---
 name: ArchUnit cycle-free analysis
 issue: <#issueid>
-state: progress
+state: complete
 version: -
 ---
 
@@ -32,10 +32,10 @@ production classes.
 
 ## Steps
 
-- [ ] Complete Task 1: Cross-check with the DependencyParser
-- [ ] Complete Task 2: Failing cycle rule
-- [ ] Complete Task 3: Fix the cycles
-- [ ] Complete Task 4: Full suite
+- [x] Complete Task 1: Cross-check with the DependencyParser
+- [x] Complete Task 2: Failing cycle rule
+- [x] Complete Task 3: Fix the cycles
+- [x] Complete Task 4: Full suite
 
 ## Notes
 
@@ -53,3 +53,9 @@ production classes.
   - ccsh ↔ ccsh.analyser exists only in source: `Ccsh.NO_USABLE_ANALYSER_FOUND_MESSAGE` is a `const val`,
     inlined by kotlinc, so bytecode (ArchUnit) cannot see it. Fixed anyway
   - None of these gaps is documented in the parser docs
+- After the fixes both ArchUnit and the DependencyParser report 0 package tangles. Cycles between classes
+  of one package remain (merge resolvers, model nodes, FFM tree) and are outside the package rule
+- Blind spot of the rule: Kotlin inlines `const val`, so a cycle made only of constant reads exists in
+  the source but not in the bytecode (the ccsh case)
+- `integrationTest` needs `build/distributions/*.tar`; after `clean`, run `./gradlew distTar` on its own
+  first
