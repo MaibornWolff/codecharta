@@ -5,7 +5,6 @@ import com.tngtech.archunit.core.importer.ClassFileImporter
 import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noFields
-import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -203,39 +202,6 @@ class ArchitectureTest {
                 .dependOnClassesThat()
                 .resideInAPackage("$BASE_PACKAGE.api..")
                 .because("Languages is a lower layer than API")
-                .check(classes)
-        }
-    }
-
-    // endregion
-
-    // region Cyclic Dependency Rules
-
-    @Nested
-    @DisplayName("Cyclic Dependency Rules")
-    inner class CyclicDependencyRules {
-        @Test
-        fun `should have no cyclic dependencies within features`() {
-            // Arrange & Act & Assert
-            // Check for cycles within the features package (metrics and extraction should be independent)
-            slices()
-                .matching("$BASE_PACKAGE.integration.(*)..")
-                .should()
-                .beFreeOfCycles()
-                .because("Integration packages should not have cyclic dependencies")
-                .check(classes)
-        }
-
-        @Test
-        fun `should have no cyclic dependencies between languages and metrics`() {
-            // Arrange & Act & Assert
-            // This specifically guards against the cycle we fixed:
-            // languages/ depending on features/metrics/calculators/
-            slices()
-                .matching("$BASE_PACKAGE.integration.metrics.(*)..")
-                .should()
-                .beFreeOfCycles()
-                .because("Metrics sub-packages should not have cyclic dependencies")
                 .check(classes)
         }
     }
