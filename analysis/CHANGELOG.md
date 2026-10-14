@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Switching off comments or strings**: `domainlanguageparser` accepts a comment or string weight of 0 to leave those
+  words out.
+
 ### Changed
 
 - **Java 22 or newer (breaking)**: `ccsh` no longer starts on Java 17 or 21; the Docker image already ships a
@@ -20,6 +25,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   cycle detection and levelling dominate, as on very large graphs, the gain is smaller.
 
 ### Fixed 🐞
+
+- **Kotlin dependencies**: `dependencyparser` finds the Kotlin dependencies it missed, such as casts and type checks,
+  caught exceptions, type bounds, lambda and function types, class literals, objects used as values, aliased imports,
+  fully qualified names, delegated interfaces and `fun interface`s.
+
+- **Kotlin top-level declarations**: top-level functions, properties and typealiases are leaves of their own in
+  `dependencyparser`, and a Kotlin file without any declaration keeps its node.
+
+- **Fully qualified names**: `dependencyparser` resolves a type written with its full package to that type, also when
+  a type of the same name is imported.
+
+- **Kotlin functions**: `unifiedparser` counts every Kotlin function with a body, whatever its signature holds, and no
+  longer counts a lambda as a function.
+
+- **Kotlin secondary constructors**: `unifiedparser` measures the body of a secondary constructor in the per-function
+  metrics.
+
+- **Nested functions**: the per-function metrics of `unifiedparser` give a nested function an entry of its own.
+
+- **Expression bodies**: `unifiedparser` counts the line of a function whose expression body is a single value, and of
+  a C# expression-bodied method, in the per-function lines of code.
+
+- **Umlauts in comments and strings**: `domainlanguageparser` keeps words with umlauts and `ß` whole in comments and
+  strings, and an escape sequence in a string separates words.
+
+- **Non-ASCII file names**: a file whose name holds non-ASCII characters is analysed also when the system locale is not
+  UTF-8.
 
 - **Crash while showing progress**: a parser no longer aborts now and then with an error from its progress bar.
 

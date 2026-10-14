@@ -504,9 +504,9 @@ three. This is the JVM's file-name decoding, not the parsers' logic, but nothing
 - Missing: files without a class or object have no node (`Entity.kt`, `CreatureDtoMapper.kt`, the two Gradle scripts), so
   their own dependencies vanish as well. **Decision: accept (derived from Java).**
 - Missing (round 4): a `fun interface` is no leaf, so every edge into it is lost, also as supertype and property type
-  (probe `a/Strategy.kt`; in `analysis/` `NodeMaxAttributeMerger : NodeMergerStrategy`).
+  (probe `a/Strategy.kt`; in `analysis/` `NodeMaxAttributeMerger : NodeMergerStrategy`). **Decision: accept.**
 - Missing (round 4): an object or companion used by its bare name as a value gives no edge (`fun single(): Plain = Single`,
-  `listOf(Single)`; in `analysis/` `getDialog() = Dialog`), while a member access `Single.run(1)` does.
+  `listOf(Single)`; in `analysis/` `getDialog() = Dialog`), while a member access `Single.run(1)` does. **Decision: accept.**
 - Wrong: nothing; no reported edge is false, no edge points to the wrong `Creature`.
 - Bad: nested declarations are leaves under their simple name without the enclosing class (`Builder`, `Resolvable`);
   `object` is kind `class`; every leaf edge has the usage `usage`; `outgoing_dependencies` counts declaration-level edges
