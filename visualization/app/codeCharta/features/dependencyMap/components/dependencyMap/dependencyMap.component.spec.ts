@@ -410,7 +410,7 @@ describe("DependencyMapComponent", () => {
             expect(outlineWidthOf(VIEW)).toBe(1)
         })
 
-        describe("cycle badges", () => {
+        describe("badges", () => {
             const CYCLIC: DependencyDeclarations = {
                 ...DECLARATIONS,
                 leafEdges: [
@@ -426,7 +426,7 @@ describe("DependencyMapComponent", () => {
                     }
                 ]
             }
-            const badgeCountOf = (path: string) => {
+            const badgeCountOf = (path: string, badgeInfo = "cycleBadge") => {
                 const { data, renderItem } = drawnSeries()
                 const parts = data
                     .flatMap((item, dataIndex) => (item.name === path || item.titledBoxPath === path ? [dataIndex] : []))
@@ -434,14 +434,14 @@ describe("DependencyMapComponent", () => {
                     info?: string
                     style: { text?: string }
                 }[]
-                const badge = parts.filter(part => part.info === "cycleBadge")
+                const badge = parts.filter(part => part.info === badgeInfo)
                 return badge.length === 0 ? null : (badge.find(part => part.style.text)?.style.text ?? "1")
             }
 
             it("should count on each file the cycle between the two files, also once a file is opened", async () => {
                 // Arrange
                 await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
-                const whileClosed = [VIEW, NODE].map(badgeCountOf)
+                const whileClosed = [VIEW, NODE].map(path => badgeCountOf(path))
 
                 // Act
                 doubleClickBox(VIEW)
@@ -449,7 +449,7 @@ describe("DependencyMapComponent", () => {
 
                 // Assert
                 expect(whileClosed).toEqual(["1", "1"])
-                expect([VIEW, NODE].map(badgeCountOf)).toEqual(["1", "1"])
+                expect([VIEW, NODE].map(path => badgeCountOf(path))).toEqual(["1", "1"])
             })
 
             it("should draw no badge once the reader switches them off, or for another edge metric", async () => {
@@ -468,6 +468,36 @@ describe("DependencyMapComponent", () => {
                 // Assert
                 expect(switchedOff).toBeNull()
                 expect(badgeCountOf(VIEW)).toBeNull()
+            })
+
+            it("should count on a closed file the upward dependency between its declarations, and none once it is opened or switched off", async () => {
+                // Arrange
+                const menuUsesViewUpward = {
+                    fromNodeName: VIEW,
+                    fromLeaf: "Menu",
+                    toNodeName: VIEW,
+                    toLeaf: "View",
+                    attributes: { dependencies: 1 },
+                    usage: [],
+                    isPointingUpwards: true
+                }
+                const upward: DependencyDeclarations = { ...DECLARATIONS, leafEdges: [...DECLARATIONS.leafEdges, menuUsesViewUpward] }
+                const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: upward })
+                const whileClosed = badgeCountOf(VIEW, "upwardBadge")
+
+                // Act
+                await changeSettings(store, { shownBoxBadges: ["betweenFiles", "insideFiles", "declaration"] })
+                fixture.detectChanges()
+                const switchedOff = badgeCountOf(VIEW, "upwardBadge")
+                await changeSettings(store, { shownBoxBadges: ["upward"] })
+                fixture.detectChanges()
+                doubleClickBox(VIEW)
+                await screen.findByTestId("dependency-graph")
+
+                // Assert
+                expect(whileClosed).toBe("1")
+                expect(switchedOff).toBeNull()
+                expect(badgeCountOf(VIEW, "upwardBadge")).toBeNull()
             })
 
             it("should select the box whose badge is clicked", async () => {

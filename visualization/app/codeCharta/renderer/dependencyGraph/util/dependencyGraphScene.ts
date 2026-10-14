@@ -12,6 +12,7 @@ import { CycleMarks } from "./cycleMarks"
 import { GraphEdge } from "./edgeProjection"
 import { Point } from "./geometry"
 import { DependencyGraphLayout, LayoutBox } from "./layoutModel"
+import { UpwardMarks } from "./upwardMarks"
 
 /** The paths are box paths: a selection or hover deeper than the boxes on screen arrives already lifted onto
  * the box standing for it. */
@@ -25,6 +26,7 @@ export interface DependencyGraphScene {
     edgeColors: DependencyEdgeColors
     lineStyleShows: LineStyleMeaning
     cycleMarks: CycleMarks
+    upwardMarks: UpwardMarks
     edgeStyle: DependencyEdgeStyle
     edgeShape: DependencyEdgeShape
     isAnchoredAtSideMiddle: boolean

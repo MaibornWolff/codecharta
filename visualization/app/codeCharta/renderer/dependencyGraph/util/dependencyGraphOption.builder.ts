@@ -1,5 +1,6 @@
 import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
 import { AxisWindow, axesReaching, Viewport, zoomBothAxesInsideTo } from "./axisWindow"
+import { upwardLineOf } from "./boxMarks"
 import { IsInside } from "./boxNesting"
 import { minOf } from "./collections"
 import { BoxLook, drawBox, drawContainerTitle, drawLevelBand } from "./dependencyGraphBoxes"
@@ -183,10 +184,12 @@ function lookOf(box: LayoutBox, scene: DependencyGraphScene, { seeThroughPaths }
         emphasis: emphasisOf(box, scene),
         isSeeThrough: isDragged || seeThroughPaths.has(box.path),
         isMissedBySearch: !isFound,
-        cycle: {
+        badges: {
             insideFilesCount: scene.cycleMarks.cyclesInsideFiles.get(box.path) ?? 0,
             betweenFilesCount: scene.cycleMarks.cyclesBetweenFiles.get(box.path) ?? 0,
-            isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path)
+            isInCycle: scene.cycleMarks.declarationsInCycles.has(box.path),
+            upwardCount: scene.upwardMarks.get(box.path) ?? 0,
+            upwardLine: upwardLineOf(scene.edgeColors, scene.lineStyleShows)
         }
     }
 }

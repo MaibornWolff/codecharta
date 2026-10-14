@@ -8,8 +8,10 @@ import {
     DependencyGraphScene,
     type DraggedBox,
     findCycleMarks,
+    findUpwardMarks,
     isDraggable,
     NO_CYCLE_MARKS,
+    NO_UPWARD_MARKS,
     type Point,
     type RightClickedBox,
     shownCycleMarks
@@ -83,6 +85,11 @@ export class DependencyMapComponent {
         })
         return shownCycleMarks(cycleMarks, shownBoxBadges)
     })
+    private readonly upwardMarks = computed(() =>
+        this.graphModel.settings().shownBoxBadges.includes("upward") && isDependencyEdgeMetric(this.graphModel.edgeMetric())
+            ? findUpwardMarks(this.graphModel.declarations().leafEdges, this.graphModel.representatives(), this.graphModel.pointsUpward())
+            : NO_UPWARD_MARKS
+    )
 
     protected readonly scene = computed((): DependencyGraphScene | null => {
         const layout = this.graphModel.shownLayout()
@@ -93,6 +100,7 @@ export class DependencyMapComponent {
         return {
             ...looks,
             cycleMarks: this.cycleMarks(),
+            upwardMarks: this.upwardMarks(),
             layout,
             edges: this.graphModel.projectedEdges(),
             edgeMetric: this.graphModel.edgeMetric(),

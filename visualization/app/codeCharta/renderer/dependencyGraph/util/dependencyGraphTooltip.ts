@@ -14,14 +14,14 @@ interface TooltipParams {
     dataIndex: number
 }
 
-type TooltipSettings = Pick<DependencyGraphScene, "edgeMetric" | "cycleMarks">
+type TooltipSettings = Pick<DependencyGraphScene, "edgeMetric" | "cycleMarks" | "upwardMarks">
 
 export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<string, LayoutBox>, settings: TooltipSettings) {
     return ({ dataIndex }: TooltipParams): string => {
         const item = items[dataIndex]
         switch (item?.kind) {
             case "box":
-                return describeBox(item.box, settings.cycleMarks)
+                return describeBox(item.box, settings)
             case "edge":
                 return describeEdge(item.edge, byPath, settings)
             default:
@@ -30,7 +30,7 @@ export function buildTooltipFormatter(items: GraphItem[], byPath: ReadonlyMap<st
     }
 }
 
-function describeBox(box: LayoutBox, cycleMarks: CycleMarks): string {
+function describeBox(box: LayoutBox, { cycleMarks, upwardMarks }: TooltipSettings): string {
     if (box.kind === "declaration") {
         const rows = [`<b>${escapeHtml(box.name)}</b>`, escapeHtml(box.declarationKind ?? "")]
         return [...rows, ...describeCyclesOfDeclaration(cycleMarks.declarationsInCycles.get(box.path))].join("<br/>")
@@ -40,7 +40,7 @@ function describeBox(box: LayoutBox, cycleMarks: CycleMarks): string {
     if (box.isInLevelBand) {
         rows.push(`Level ${box.level}`)
     }
-    rows.push(...describeCyclesOfBox(box, cycleMarks))
+    rows.push(...describeCyclesOfBox(box, cycleMarks), ...describeUpwardOfBox(upwardMarks.get(box.path) ?? 0))
     if (canBeOpened(box)) {
         rows.push(`<i>Double-click to ${box.isExpanded ? "close" : "open"}</i>`)
     }
@@ -54,6 +54,10 @@ function describeCyclesOfBox(box: LayoutBox, { cyclesInsideFiles, cyclesBetweenF
         ...(betweenFilesCount > 0 ? [`${counted(betweenFilesCount, "cycle")} between files`] : []),
         ...(insideFilesCount > 0 ? [`${counted(insideFilesCount, "cycle")} inside ${box.kind === "file" ? "this file" : "files"}`] : [])
     ]
+}
+
+function describeUpwardOfBox(upwardCount: number): string[] {
+    return upwardCount > 0 ? [`${counted(upwardCount, "upward dependency", "upward dependencies")} inside`] : []
 }
 
 function describeCyclesOfDeclaration(cycles: DeclarationCycles | undefined): string[] {

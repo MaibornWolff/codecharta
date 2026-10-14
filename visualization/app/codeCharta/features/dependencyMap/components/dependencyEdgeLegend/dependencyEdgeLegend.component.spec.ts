@@ -116,7 +116,7 @@ describe("DependencyEdgeLegendComponent", () => {
         expect(screen.queryByTestId("dependency-usage-legend")).toBeNull()
     })
 
-    it("should explain the three cycle marks as the graph draws them, those between files first: filled, outlined and the ring of a declaration", async () => {
+    it("should explain the badges as the graph draws them: the cycles between files filled, inside a file outlined, the ring of a declaration, and the dashed upward badge", async () => {
         // Arrange
         const marksDrawn = { hasDeclarations: true }
 
@@ -124,34 +124,39 @@ describe("DependencyEdgeLegendComponent", () => {
         await renderLegend(marksDrawn)
 
         // Assert
-        const samples = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("svg")]
-        const labels = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("li > span")].map(label => label.textContent)
-        expect(labels).toEqual(["Cycles between files", "Cycles inside a file", "Declaration in a cycle"])
-        expect(samples.map(sample => sample.querySelector("rect, circle").getAttribute("fill"))).toEqual(["#dc2626", "#ffffff", "#ffffff"])
-        expect(samples.map(sample => sample.querySelector("rect, circle").tagName)).toEqual(["rect", "rect", "circle"])
+        const samples = [...screen.getByTestId("dependency-badge-legend").querySelectorAll("svg")]
+        const labels = [...screen.getByTestId("dependency-badge-legend").querySelectorAll("li > span")].map(label => label.textContent)
+        const outlines = samples.map(sample => sample.querySelector("rect, circle"))
+        expect(labels).toEqual(["Cycles between files", "Cycles inside a file", "Declaration in a cycle", "Upward dependencies inside"])
+        expect(outlines.map(outline => outline.getAttribute("fill"))).toEqual(["#dc2626", "#ffffff", "#ffffff", "#ffffff"])
+        expect(outlines.map(outline => outline.tagName)).toEqual(["rect", "rect", "circle", "rect"])
+        expect(outlines.map(outline => outline.getAttribute("stroke-dasharray"))).toEqual([null, null, null, "3 2"])
     })
 
-    it("should explain only the cycle marks the reader keeps shown", async () => {
+    it("should explain only the badges the reader keeps shown, the upward one in the colour of the upward edges", async () => {
         // Arrange
-        const someMarksShown: Setup = { hasDeclarations: true, settings: { shownBoxBadges: ["insideFiles", "upward"] } }
+        const edgeColors = { ...defaultDependencyGraphSettings.edgeColors, feedbackContainerLevel: "#123456" }
+        const someMarksShown: Setup = { hasDeclarations: true, settings: { shownBoxBadges: ["insideFiles", "upward"], edgeColors } }
 
         // Act
         await renderLegend(someMarksShown)
 
         // Assert
-        const labels = [...screen.getByTestId("dependency-cycle-legend").querySelectorAll("li > span")].map(label => label.textContent)
-        expect(labels).toEqual(["Cycles inside a file"])
+        const labels = [...screen.getByTestId("dependency-badge-legend").querySelectorAll("li > span")].map(label => label.textContent)
+        const upwardOutline = screen.getByTestId("dependency-badge-legend").querySelector("[data-mark='upward'] rect")
+        expect(labels).toEqual(["Cycles inside a file", "Upward dependencies inside"])
+        expect(upwardOutline.getAttribute("stroke")).toBe("#123456")
     })
 
     it.each<[string, Setup]>([
-        ["the reader switched the cycle marks off", { settings: { shownBoxBadges: ["upward"] } }],
+        ["the reader switched the badges off", { settings: { shownBoxBadges: [] } }],
         ["another edge metric is drawn", { edgeMetric: "temporal_coupling" }],
         ["the map tells no declarations", { hasDeclarations: false }]
-    ])("should leave the cycle marks out while %s", async (_, setup) => {
+    ])("should leave the badges out while %s", async (_, setup) => {
         // Arrange & Act
         await renderLegend(setup)
 
         // Assert
-        expect(screen.queryByTestId("dependency-cycle-legend")).toBeNull()
+        expect(screen.queryByTestId("dependency-badge-legend")).toBeNull()
     })
 })
