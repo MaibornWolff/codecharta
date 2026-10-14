@@ -43,7 +43,7 @@ class SourceFileScanner(
         rootDirectory
             .walkTopDown()
             .onEnter { directory -> !isExcluded(directory, rootDirectory, gitignoreHandler) }
-            .filter { it.isFile }
+            .filter { !UndecodableFileName.reportIfUndecodable(it) && it.isFile }
             .filter { file -> !isExcluded(file, rootDirectory, gitignoreHandler) && isAnalysable(file, testFileDetector) }
             .toList()
 

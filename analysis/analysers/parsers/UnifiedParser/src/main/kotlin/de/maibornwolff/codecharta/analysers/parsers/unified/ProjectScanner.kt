@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
+import de.maibornwolff.codecharta.analysers.analyserinterface.scan.UndecodableFileName
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
@@ -136,7 +137,7 @@ class ProjectScanner(
     }
 
     private fun isParsableFile(file: File): Boolean {
-        if (!file.isFile) return false
+        if (UndecodableFileName.reportIfUndecodable(file) || !file.isFile) return false
 
         if (useGitignore && gitignoreHandler.shouldExclude(file)) return false
 
