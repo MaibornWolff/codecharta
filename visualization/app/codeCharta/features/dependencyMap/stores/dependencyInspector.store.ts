@@ -129,7 +129,8 @@ export class DependencyInspectorStore {
             rowLimit: showsAllRows ? Number.POSITIVE_INFINITY : INSPECTOR_ROW_LIMIT,
             cycles: this.graphModel.cycleChains(),
             edgeMetric: this.graphModel.edgeMetric(),
-            pointsUpward: this.graphModel.pointsUpward()
+            pointsUpward: this.graphModel.pointsUpward(),
+            lineStyleShows: this.graphModel.settings().lineStyleShows
         })
     })
 
