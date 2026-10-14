@@ -266,16 +266,21 @@ describe("describeSubject", () => {
 
         it("should draw an upward dependency dashed as the graph does while the dashes tell the edge types, and by its kind of use otherwise", () => {
             // Arrange
-            const upwardInside = { pointsUpward: (declarationEdge: DependencyLeafEdge) => declarationEdge === DECLARATION_EDGES[2] }
-            const kindsOfUse = { ...upwardInside, lineStyleShows: "usage" as const }
+            const creatureTakesArmorUpward = declarationEdge(`${CREATURE}#Creature`, `${CREATURE}#Armor`, {
+                usage: ["argument"],
+                isPointingUpwards: true
+            })
+            const describedAs = (lineStyleShows: InspectorContext["lineStyleShows"]) =>
+                describeSubject(box(CREATURE_NODE), context({ lineStyleShows }, [creatureTakesArmorUpward])).upwardDependencies[0]
+                    .dependency
 
             // Act
-            const byEdgeType = describeSubject(box(CREATURE_NODE), context(upwardInside)).upwardDependencies[0].dependency
-            const byKindOfUse = describeSubject(box(CREATURE_NODE), context(kindsOfUse)).upwardDependencies[0].dependency
+            const byEdgeType = describedAs("edgeType")
+            const byKindOfUse = describedAs("usage")
 
             // Assert
             expect(byEdgeType.line).toEqual({ dash: [5, 4], head: "filled" })
-            expect(byKindOfUse.line).toMatchObject({ dash: null, head: "filled" })
+            expect(byKindOfUse.line).toMatchObject({ dash: [2, 4], head: "open" })
         })
 
         it("should tell of a row only its closer kinds of use, since that one declaration uses the other is what every row shows", () => {
