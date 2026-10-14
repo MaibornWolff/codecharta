@@ -70,7 +70,7 @@ const FILE_MODEL: InspectorModel = {
         }
     ],
     cycleCount: 6,
-    upward: [],
+    upwardDependencies: [],
     upwardCount: 0,
     action: "open"
 }
@@ -429,7 +429,7 @@ describe("DependencyInspectorComponent", () => {
                 }
             ],
             cycles: [],
-            upward: [],
+            upwardDependencies: [],
             upwardCount: 0,
             cycleCount: 0,
             action: null
@@ -498,7 +498,7 @@ describe("DependencyInspectorComponent", () => {
         const upwardDependency = { ...DEPENDENCY, type: "feedbackContainerLevel" as const }
         const withUpward: InspectorModel = {
             ...FILE_MODEL,
-            upward: [
+            upwardDependencies: [
                 { dependency: upwardDependency, files: [CREATURE_FILE] },
                 { dependency: { ...upwardDependency, to: CREATURE }, files: [CREATURE_FILE, WEAPON_FILE] }
             ],
@@ -516,7 +516,7 @@ describe("DependencyInspectorComponent", () => {
         expect(where).toEqual(["Points upward inside creature.ts", "Points upward from creature.ts to weapon.ts"])
         expect(within(screen.getByTestId("dependency-inspector-upward")).getByRole("heading").textContent).toContain("3")
         expect(screen.getByTestId("dependency-inspector-more-upward").textContent).toContain("and 1 more")
-        expect(upwardDependencyShown).toHaveBeenCalledWith(withUpward.upward[0])
+        expect(upwardDependencyShown).toHaveBeenCalledWith(withUpward.upwardDependencies[0])
         expect(dependenciesPointedAt).toHaveBeenCalledWith([DECLARATION_EDGE])
     })
 
@@ -524,7 +524,11 @@ describe("DependencyInspectorComponent", () => {
         // Arrange
         const scrollIntoView = jest.fn()
         Element.prototype.scrollIntoView = scrollIntoView
-        const withUpward: InspectorModel = { ...FILE_MODEL, upward: [{ dependency: DEPENDENCY, files: [CREATURE_FILE] }], upwardCount: 1 }
+        const withUpward: InspectorModel = {
+            ...FILE_MODEL,
+            upwardDependencies: [{ dependency: DEPENDENCY, files: [CREATURE_FILE] }],
+            upwardCount: 1
+        }
         const { rerender, fixture } = await renderInspector(withUpward, null)
 
         // Act

@@ -1,15 +1,7 @@
 export type { DraggedBox, RightClickedBox, ViewRequest } from "./components/dependencyGraph/dependencyGraph.component"
 export { DependencyGraphComponent } from "./components/dependencyGraph/dependencyGraph.component"
 export type { UpwardLine } from "./util/boxMarks"
-export {
-    BADGE_DASH,
-    BOX_BADGE_LEGEND,
-    CYCLE_GLYPH,
-    CYCLE_MARK_COLORS,
-    CYCLE_MARK_SAMPLE,
-    UPWARD_GLYPH,
-    upwardLineOf
-} from "./util/boxMarks"
+export { BOX_BADGE_LEGEND, BOX_BADGE_SAMPLE, CYCLE_MARK_COLORS, CYCLE_MARK_KINDS, pillLookOf, upwardLineOf } from "./util/boxMarks"
 export type { BoxOffset } from "./util/boxMoves"
 export { isDraggable, movedLayout } from "./util/boxMoves"
 export { declarationPathOf, isPackagePath, nameOfPath } from "./util/boxPaths"
@@ -26,7 +18,7 @@ export type { LeveledNode } from "./util/leveledTree"
 export { buildLeveledTree, collapsedFirstLook } from "./util/leveledTree"
 export { layoutLevelized } from "./util/levelizedLayout"
 export type { LineStyle } from "./util/lineStyle"
-export { lineStyleOfEdgeType, lineStyleOfUsages, PLAIN_USAGE, USAGE_LEGEND, usageLabelOf } from "./util/lineStyle"
+export { EDGE_TYPE_DASH, lineStyleOfEdgeType, lineStyleOfUsages, PLAIN_USAGE, USAGE_LEGEND, usageLabelOf } from "./util/lineStyle"
 export { arrangedByPackages } from "./util/packageTree"
 export { boxAtPoint } from "./util/paintOrder"
 export type { TreeIndex } from "./util/treeIndex"

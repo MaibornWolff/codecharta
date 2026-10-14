@@ -5,7 +5,7 @@
     [minWidthClass]="cardWidthClass"
     testId="dependency-bar-box-badges-segment"
 >
-    <div body class="flex min-h-[17.5px] items-center justify-center gap-1" [title]="chosenLabel()" data-testid="dependency-bar-box-badges-shown">
+    <div body [class]="sampleRowClass + ' gap-1'" [title]="chosenLabel()" data-testid="dependency-bar-box-badges-shown">
         @for (entry of shownEntries(); track entry.mark) {
             <cc-box-badge-sample [mark]="entry.mark" [upwardLine]="upwardLine()"></cc-box-badge-sample>
         } @empty {

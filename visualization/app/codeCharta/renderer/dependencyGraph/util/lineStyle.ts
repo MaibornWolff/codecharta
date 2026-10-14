@@ -13,7 +13,7 @@ export interface UsageLegendEntry extends LineStyle {
     label: string
 }
 
-const EDGE_TYPE_DASH = [5, 4]
+export const EDGE_TYPE_DASH = [5, 4]
 const DASHED = [7, 4]
 const DOTTED = [2, 4]
 const DASH_DOTTED = [9, 3, 2, 3]

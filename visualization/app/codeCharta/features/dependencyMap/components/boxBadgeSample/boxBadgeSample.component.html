@@ -1,28 +1,19 @@
 <svg aria-hidden="true" [attr.viewBox]="viewBox" [attr.width]="sizes.widthPx" [attr.height]="sizes.heightPx" [attr.data-mark]="mark()">
-    @if (mark() === "declaration") {
-        <circle
-            [attr.cx]="centre.x"
-            [attr.cy]="centre.y"
-            [attr.r]="sizes.ringRadiusPx"
-            [attr.stroke-width]="sizes.ringLineWidthPx"
-            [attr.fill]="colors().fill"
-            [attr.stroke]="colors().line"
-        />
-    } @else {
+    @if (pill(); as pill) {
         <rect
-            [attr.x]="pill.x"
-            [attr.y]="pill.y"
-            [attr.width]="pill.width"
-            [attr.height]="pill.height"
-            [attr.rx]="pill.cornerRadius"
+            [attr.x]="pillShape.x"
+            [attr.y]="pillShape.y"
+            [attr.width]="pillShape.width"
+            [attr.height]="pillShape.height"
+            [attr.rx]="pillShape.cornerRadius"
             [attr.stroke-width]="sizes.outlinePx"
             [attr.stroke-dasharray]="dash()"
-            [attr.fill]="colors().fill"
-            [attr.stroke]="colors().line"
+            [attr.fill]="pill.colors.fill"
+            [attr.stroke]="pill.colors.line"
         />
         <g [attr.transform]="glyphPlace">
-            <path fill="none" stroke-linecap="round" [attr.d]="glyph().line" [attr.stroke-width]="glyph().lineWidthPx" [attr.stroke]="colors().line" />
-            <path stroke="none" [attr.d]="glyph().head" [attr.fill]="colors().line" />
+            <path fill="none" stroke-linecap="round" [attr.d]="pill.glyph.line" [attr.stroke-width]="pill.glyph.lineWidthPx" [attr.stroke]="pill.colors.line" />
+            <path stroke="none" [attr.d]="pill.glyph.head" [attr.fill]="pill.colors.line" />
         </g>
         <text
             dominant-baseline="central"
@@ -31,9 +22,18 @@
             [attr.font-size]="sizes.fontSizePx"
             [attr.font-weight]="sizes.fontWeight"
             [attr.font-family]="sizes.fontFamily"
-            [attr.fill]="colors().line"
+            [attr.fill]="pill.colors.line"
         >
             {{ sizes.count }}
         </text>
+    } @else {
+        <circle
+            [attr.cx]="centre.x"
+            [attr.cy]="centre.y"
+            [attr.r]="sizes.ringRadiusPx"
+            [attr.stroke-width]="sizes.ringLineWidthPx"
+            [attr.fill]="ringColors.fill"
+            [attr.stroke]="ringColors.line"
+        />
     }
 </svg>

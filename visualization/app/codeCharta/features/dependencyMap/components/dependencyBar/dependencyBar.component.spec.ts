@@ -387,7 +387,7 @@ describe("DependencyBarComponent", () => {
 
         // Assert
         const cards = ["dependency-bar-box-badges-segment", "dependency-bar-edges-segment"].map(testId => screen.getByTestId(testId))
-        expect(cards.map(card => card.classList.contains("w-[140px]"))).toEqual([true, true])
+        expect(cards.map(card => card.classList.contains("min-w-[148px]"))).toEqual([true, true])
     })
 
     it("should show on the card the samples of the shown badges in their order, named on hover", async () => {

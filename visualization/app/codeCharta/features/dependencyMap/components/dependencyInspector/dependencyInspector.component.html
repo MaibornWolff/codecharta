@@ -177,7 +177,7 @@
             >
                 <ng-container [ngTemplateOutlet]="sectionHeader" [ngTemplateOutletContext]="{ $implicit: 'upward', count: model.upwardCount }"></ng-container>
                 @if (showsBodyOf("upward")) {
-                    @for (upward of model.upward; track $index) {
+                    @for (upward of model.upwardDependencies; track $index) {
                         <div
                             class="flex flex-col gap-1 rounded-md border border-base-300 p-1.5 hover:bg-base-200/60"
                             data-testid="dependency-inspector-upward-dependency"
@@ -216,10 +216,10 @@
                             </div>
                         </div>
                     }
-                    @if (model.upwardCount > model.upward.length) {
+                    @if (model.upwardCount > model.upwardDependencies.length) {
                         <ng-container
                             [ngTemplateOutlet]="moreRows"
-                            [ngTemplateOutletContext]="{ $implicit: model.upwardCount - model.upward.length, testId: 'dependency-inspector-more-upward' }"
+                            [ngTemplateOutletContext]="{ $implicit: model.upwardCount - model.upwardDependencies.length, testId: 'dependency-inspector-more-upward' }"
                         ></ng-container>
                     }
                 }

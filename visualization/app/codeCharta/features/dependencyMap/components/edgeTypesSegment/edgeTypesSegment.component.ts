@@ -12,7 +12,7 @@ import {
 } from "../../../shared/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
-import { SAMPLE_CARD_WIDTH_CLASS } from "../dependencyBar/dependencyBarCard"
+import { SAMPLE_CARD_WIDTH_CLASS, SAMPLE_ROW_CLASS } from "../dependencyBar/dependencyBarCard"
 import { WIDE_BAR_POPOVER_WIDTH_CLASS } from "../dependencyBar/dependencyBarPopover"
 import { EdgeTypeSampleComponent } from "../edgeTypeSample/edgeTypeSample.component"
 import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeTypes } from "./shownEdgeTypes"
@@ -41,6 +41,7 @@ export class EdgeTypesSegmentComponent {
     readonly anchorName = "dependency-bar-edges-card"
     readonly popoverWidthClass = WIDE_BAR_POPOVER_WIDTH_CLASS
     readonly cardWidthClass = SAMPLE_CARD_WIDTH_CLASS
+    readonly sampleRowClass = SAMPLE_ROW_CLASS
     readonly shownTypesResetKeys = [
         "preferences.dependencyGraph.shownEdgeTypes",
         "preferences.dependencyGraph.isHoverLimitedToShownEdgeTypes"
@@ -56,7 +57,6 @@ export class EdgeTypesSegmentComponent {
             return { ...entry, isCarried, isShown: isCarried && this.shownTypes().includes(entry.type) }
         })
     )
-    /** The card shows what the graph draws, as it is drawn there, and names it for a pointer resting on it. */
     readonly shownEntries = computed(() => this.entries().filter(entry => entry.isShown))
     readonly showsEveryColor = computed(() => this.settings().lineStyleShows === "usage")
     readonly isHoverLimited = computed(() => this.settings().isHoverLimitedToShownEdgeTypes)

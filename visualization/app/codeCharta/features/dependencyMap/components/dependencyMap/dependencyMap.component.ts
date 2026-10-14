@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop"
 import { isDependencyEdgeMetric } from "../../../../lenses/dependency/dependencyLens.facade"
 import {
     boxAtPoint,
+    CYCLE_MARK_KINDS,
     canBeOpened,
     DependencyGraphComponent,
     DependencyGraphScene,
@@ -74,7 +75,7 @@ export class DependencyMapComponent {
     })
     private readonly cycleMarks = computed(() => {
         const { shownBoxBadges } = this.graphModel.settings()
-        const showsCycleMarks = shownBoxBadges.some(badge => badge !== "upward")
+        const showsCycleMarks = CYCLE_MARK_KINDS.some(kind => shownBoxBadges.includes(kind))
         if (!showsCycleMarks || !isDependencyEdgeMetric(this.graphModel.edgeMetric())) {
             return NO_CYCLE_MARKS
         }

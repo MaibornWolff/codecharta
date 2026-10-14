@@ -255,7 +255,7 @@ describe("describeSubject", () => {
             })
 
             // Act
-            const { upward, upwardCount } = describeSubject(box(CREATURE_NODE), creatureUsesArmorUpward)
+            const { upwardDependencies: upward, upwardCount } = describeSubject(box(CREATURE_NODE), creatureUsesArmorUpward)
 
             // Assert
             expect(upwardCount).toBe(1)
@@ -270,8 +270,8 @@ describe("describeSubject", () => {
             const kindsOfUse = { ...upwardInside, lineStyleShows: "usage" as const }
 
             // Act
-            const byEdgeType = describeSubject(box(CREATURE_NODE), context(upwardInside)).upward[0].dependency
-            const byKindOfUse = describeSubject(box(CREATURE_NODE), context(kindsOfUse)).upward[0].dependency
+            const byEdgeType = describeSubject(box(CREATURE_NODE), context(upwardInside)).upwardDependencies[0].dependency
+            const byKindOfUse = describeSubject(box(CREATURE_NODE), context(kindsOfUse)).upwardDependencies[0].dependency
 
             // Assert
             expect(byEdgeType.line).toEqual({ dash: [5, 4], head: "filled" })
@@ -461,14 +461,14 @@ describe("describeSubject", () => {
             const everyDependencyUpward = context({ pointsUpward: () => true, rowLimit: 2 })
 
             // Act
-            const { upward, upwardCount } = describeSubject(box(GAME_FOLDER), everyDependencyUpward)
+            const { upwardDependencies: upward, upwardCount } = describeSubject(box(GAME_FOLDER), everyDependencyUpward)
 
             // Assert
             expect(upwardCount).toBe(3)
             expect(upward.map(({ dependency }) => dependency.type)).toEqual(["feedbackLeafLevel", "feedbackLeafLevel"])
-            expect(describeSubject(box(GAME_FOLDER), context()).upward.map(({ files }) => files.map(file => file.name))).toEqual([
-                ["weapon.ts", "creature.ts"]
-            ])
+            expect(
+                describeSubject(box(GAME_FOLDER), context()).upwardDependencies.map(({ files }) => files.map(file => file.name))
+            ).toEqual([["weapon.ts", "creature.ts"]])
         })
 
         it("should head the root folder with nothing above it", () => {

@@ -56,8 +56,9 @@ export class DependencyInspectorComponent {
     constructor() {
         effect(() => {
             const request = this.store.sectionRequest()
-            const section = (request?.sectionId === "upward" ? this.upwardSection() : this.cyclesSection())?.nativeElement
-            if (section && request !== null) {
+            const badgeSections = { cycles: this.cyclesSection(), upward: this.upwardSection() }
+            const section = request && badgeSections[request.sectionId]?.nativeElement
+            if (section) {
                 section.scrollIntoView({ block: "start" })
                 untracked(() => this.store.answerSectionRequest())
             }
