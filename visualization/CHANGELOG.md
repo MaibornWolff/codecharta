@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Level labels by path in the dependency view**: the levels are labelled by their own number alone.
 
+### Fixed 🐞
+
+- **Zooming out in the dependency view after closing a box**: the graph stays in the middle and can still be moved, instead of getting stuck in a corner until the whole graph is shown again.
+
 ## [2.8.0] - 2026-10-05
 
 ### Added 🚀

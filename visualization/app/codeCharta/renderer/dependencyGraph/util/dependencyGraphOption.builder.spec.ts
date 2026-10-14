@@ -630,9 +630,45 @@ describe("buildDependencyGraphOption", () => {
         const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), VIEWPORT, windowBeyondTheRoom)
 
         // Assert
-        expect(xAxis.min).toBe(-5000)
-        expect(yAxis.max).toBe(9000)
+        expect(xAxis.min).toBeLessThanOrEqual(-5000)
+        expect(yAxis.max).toBeGreaterThanOrEqual(9000)
         expect(xAxis.max).toBeGreaterThan(400)
+    })
+
+    it("should keep the graph centred and unsquashed in axes stretched to a window left over from a larger graph", () => {
+        // Arrange
+        const coveredViewport = { ...VIEWPORT, coveredBottom: 100 }
+        const windowOfTheLargerGraph: AxisWindow = { x: [-3000, 1000], y: [-500, 2500] }
+
+        // Act
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), coveredViewport, windowOfTheLargerGraph)
+
+        // Assert
+        expect([(xAxis.min + xAxis.max) / 2, (yAxis.min + yAxis.max) / 2]).toEqual([200, 100])
+        expect((xAxis.max - xAxis.min) / VIEWPORT.width).toBeCloseTo((yAxis.max - yAxis.min) / VIEWPORT.height)
+        expect(xAxis.min).toBeLessThanOrEqual(-3000)
+        expect(yAxis.max).toBeGreaterThanOrEqual(2500)
+    })
+
+    it("should not grow the axes stretched to a window when that window is shown again", () => {
+        // Arrange
+        const coveredViewport = { ...VIEWPORT, coveredBottom: 100 }
+        const stretched = buildDependencyGraphOption(sceneWith(), coveredViewport, { x: [-3000, 1000], y: [-500, 2500] })
+        const zoomedOutToTheReach: AxisWindow = {
+            x: [stretched.xAxis.min, stretched.xAxis.max],
+            y: [stretched.yAxis.min, stretched.yAxis.max]
+        }
+
+        // Act
+        const { xAxis, yAxis } = buildDependencyGraphOption(sceneWith(), coveredViewport, zoomedOutToTheReach)
+
+        // Assert
+        expect([xAxis.min, xAxis.max, yAxis.min, yAxis.max]).toEqual([
+            stretched.xAxis.min,
+            stretched.xAxis.max,
+            stretched.yAxis.min,
+            stretched.yAxis.max
+        ])
     })
 
     it("should draw a scene without edges", () => {
