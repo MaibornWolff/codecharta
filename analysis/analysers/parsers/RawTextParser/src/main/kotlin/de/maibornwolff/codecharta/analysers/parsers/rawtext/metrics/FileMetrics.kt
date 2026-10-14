@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.rawtext
+package de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics
 
 class FileMetrics {
     val metricsMap = mutableMapOf<String, Double>()

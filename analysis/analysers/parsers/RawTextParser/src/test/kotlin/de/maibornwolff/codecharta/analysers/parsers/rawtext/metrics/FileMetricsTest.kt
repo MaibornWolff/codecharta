@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.rawtext
+package de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

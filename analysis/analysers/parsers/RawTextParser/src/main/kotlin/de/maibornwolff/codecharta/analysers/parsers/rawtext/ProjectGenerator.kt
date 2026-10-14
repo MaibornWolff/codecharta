@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.FileMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project

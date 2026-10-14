@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics
 
-import de.maibornwolff.codecharta.analysers.parsers.rawtext.FileMetrics
-
 class LinesOfCodeMetric : Metric {
     private var lineCount = 0
 

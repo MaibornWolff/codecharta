@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.FileMetrics
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.IndentationMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.LinesOfCodeMetric
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.Metric

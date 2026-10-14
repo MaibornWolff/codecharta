@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.rawtext
 
+import de.maibornwolff.codecharta.analysers.parsers.rawtext.metrics.FileMetrics
 import java.util.concurrent.ConcurrentHashMap
 
 class ProjectMetrics {
