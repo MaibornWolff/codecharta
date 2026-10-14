@@ -42,6 +42,25 @@ class SourceCodePipelineTest {
     }
 
     @Test
+    fun `should read backslashes of a Kotlin raw string as text and those of a plain string as escapes`() {
+        // Arrange
+        val pipeline =
+            SourceCodePipeline(
+                Language.KOTLIN,
+                weights = ExtractionWeights(),
+                ngrams = 1,
+                stopWordFilter = emptyFilter
+            )
+        val sourceCode = "val folder = \"\"\"C:\\temp\\notes\"\"\"\nval line = \"goblin\\tkobold\""
+
+        // Act
+        val result = pipeline.process(sourceCode, sourcePath)
+
+        // Assert
+        assertEquals(setOf("folder", "line", "temp", "notes", "goblin", "kobold"), result.keys)
+    }
+
+    @Test
     fun `should return empty map for blank source code`() {
         // Arrange
         val pipeline =

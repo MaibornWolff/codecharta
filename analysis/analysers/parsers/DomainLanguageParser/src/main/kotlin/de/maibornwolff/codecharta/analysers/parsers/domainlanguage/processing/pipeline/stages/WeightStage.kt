@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 
 class WeightStage(private val weights: ExtractionWeights = ExtractionWeights()) {
     fun weight(extractedTexts: List<ExtractedText>): List<WeightedText> = extractedTexts
-        .map { extracted -> WeightedText(extracted.text, weightOf(extracted.context), extracted.context) }
+        .map { extracted -> WeightedText(extracted.text, weightOf(extracted.context), extracted.context, extracted.interpretsEscapes) }
         .filter { it.weight > 0 }
 
     private fun weightOf(context: ExtractionContext): Int = when (context) {

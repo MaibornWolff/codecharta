@@ -351,6 +351,20 @@ class SplitStageTest {
     }
 
     @Test
+    fun `should keep a backslash in a raw string as plain text`() {
+        // Arrange
+        val stage = SplitStage()
+        val input = listOf(WeightedText("C:\\temp\\notes", 1, ExtractionContext.STRING, interpretsEscapes = false))
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.first().words.map { it.text }
+        assertEquals(listOf("temp", "notes"), words)
+    }
+
+    @Test
     fun `should treat tabs and line breaks in comments and strings as separators`() {
         // Arrange
         val stage = SplitStage()

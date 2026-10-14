@@ -379,6 +379,22 @@ class KotlinExtractionTest {
         assertThat(result.strings[0]).isEqualTo("\n    This is a\n    multiline string\n")
     }
 
+    @Test
+    fun `should mark a raw string as not interpreting escapes and a plain string as interpreting them`() {
+        // Arrange
+        val code = "val folder = ${"\"\"\""}C:\\temp${"\"\"\""}\nval line = \"goblin\\tkobold\""
+
+        // Act
+        val result = TreeSitterExtraction.extract(code, Language.KOTLIN)
+
+        // Assert
+        val strings = result.extractedTexts.filter { it.context == ExtractionContext.STRING }
+        assertThat(strings.map { it.text to it.interpretsEscapes }).containsExactly(
+            "C:\\temp" to false,
+            "goblin\\tkobold" to true
+        )
+    }
+
     // === ExtractionResult Tests ===
 
     @Test

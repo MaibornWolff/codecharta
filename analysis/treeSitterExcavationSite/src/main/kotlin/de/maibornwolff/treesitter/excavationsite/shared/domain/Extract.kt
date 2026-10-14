@@ -41,8 +41,13 @@ sealed class Extract {
      *
      * @param format The string format to use for parsing (optional)
      * @param custom Custom function for string extraction (optional)
+     * @param isRaw Whether a string node is raw, so its backslashes are text (optional)
      */
-    data class StringLiteral(val format: StringFormats? = null, val custom: ((SyntaxNode) -> String?)? = null) : Extract() {
+    data class StringLiteral(
+        val format: StringFormats? = null,
+        val custom: ((SyntaxNode) -> String?)? = null,
+        val isRaw: (SyntaxNode) -> Boolean = { false }
+    ) : Extract() {
         init {
             require(format != null || custom != null) {
                 "Either format or custom must be provided for StringLiteral extraction"

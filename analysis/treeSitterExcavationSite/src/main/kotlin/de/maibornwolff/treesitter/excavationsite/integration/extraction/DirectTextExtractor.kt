@@ -101,6 +101,6 @@ internal class DirectTextExtractor(private val grammar: FfmGrammar, private val 
             stringExtractor.extract(node)
         }
 
-        results.add(ExtractedText(text, ExtractionContext.STRING))
+        results.add(ExtractedText(text, ExtractionContext.STRING, interpretsEscapes = !extraction.isRaw(node)))
     }
 }
