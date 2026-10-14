@@ -1,9 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.CALL_EXPRESSION
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.EXPORT_STATEMENT
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.IMPORT_STATEMENT
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.REQUIRE
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringParser
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal

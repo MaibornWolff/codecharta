@@ -1,6 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.DECORATOR
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
 /**

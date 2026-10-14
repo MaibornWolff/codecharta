@@ -1,17 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.DECORATOR
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.DEFAULT_EXPORT
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.DEFAULT_KEYWORD
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.EXPORT_CLAUSE
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.EXPORT_SPECIFIER
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.EXPORT_STATEMENT
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.STRING
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_ALIAS_DECLARATION
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_IDENTIFIER
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.VARIABLE_DECLARATOR
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.normalizeDefaultKeyword
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode

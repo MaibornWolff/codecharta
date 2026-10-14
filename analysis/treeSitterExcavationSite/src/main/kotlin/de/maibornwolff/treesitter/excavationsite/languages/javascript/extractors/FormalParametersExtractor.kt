@@ -1,8 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.ARRAY_PATTERN
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.OBJECT_PATTERN
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 

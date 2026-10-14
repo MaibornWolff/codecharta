@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript
 
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationConfig
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.IgnoreRule

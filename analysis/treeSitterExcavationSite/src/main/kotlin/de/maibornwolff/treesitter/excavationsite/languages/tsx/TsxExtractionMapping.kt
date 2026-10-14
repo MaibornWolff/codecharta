@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.tsx
 
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.IDENTIFIER
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.TYPE_IDENTIFIER
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.IDENTIFIER
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.TYPE_IDENTIFIER
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.extractArrowFunctionSingleParameter
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.extractFirstBindingIdentifiers
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.extractIdentifiersFromClassDeclaration
