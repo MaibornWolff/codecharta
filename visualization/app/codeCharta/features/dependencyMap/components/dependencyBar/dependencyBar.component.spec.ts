@@ -372,6 +372,24 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId("dependency-bar-box-badges-segment").textContent).toContain("None")
     })
 
+    it.each([
+        [
+            "every badge and edge type",
+            { shownBoxBadges: ["betweenFiles", "insideFiles", "declaration", "upward"], shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES] }
+        ],
+        ["none of them", { shownBoxBadges: [], shownEdgeTypes: [] }]
+    ] as [
+        string,
+        Partial<DependencyGraphSettings>
+    ][])("should keep the Badges and Edges shown cards at one width while %s is shown, so the bar does not move", async (_, settings) => {
+        // Arrange & Act
+        await renderBar({ hasDeclarations: true, settings })
+
+        // Assert
+        const cards = ["dependency-bar-box-badges-segment", "dependency-bar-edges-segment"].map(testId => screen.getByTestId(testId))
+        expect(cards.map(card => card.classList.contains("w-[140px]"))).toEqual([true, true])
+    })
+
     it("should show on the card the samples of the shown badges in their order, named on hover", async () => {
         // Arrange & Act
         await renderBar({ hasDeclarations: true, settings: { shownBoxBadges: ["upward", "betweenFiles"] } })
