@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing"
 import { By } from "@angular/platform-browser"
 import { State } from "@ngrx/store"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
-import { fireEvent, render, screen } from "@testing-library/angular"
+import { fireEvent, render, screen, within } from "@testing-library/angular"
 import userEvent from "@testing-library/user-event"
 import { hasDeclarationsSelector, hasPackagesSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { DEPENDENCY_EDGE_TYPES, DependencyEdgeType, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
@@ -90,8 +90,7 @@ describe("DependencyBarComponent", () => {
         expect(segments).toEqual([
             "dependency-bar-edges-segment",
             "dependency-bar-edge-style-segment",
-            "dependency-bar-edge-metric-segment",
-            "dependency-bar-level-label-segment"
+            "dependency-bar-edge-metric-segment"
         ])
         expect(screen.getByTestId("dependency-bar-edges-segment").textContent).toContain(
             "In a cycle, Points upward, Points upward and closes a cycle"
@@ -99,7 +98,6 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId("dependency-bar-edge-style-segment").textContent).toContain("Combined")
         expect(screen.getByTestId("dependency-bar-edge-thickness-value").textContent).toContain("By count")
         expect(screen.getByTestId("dependency-bar-edge-metric-segment").textContent).toContain("dependencies")
-        expect(screen.getByTestId("dependency-bar-level-label-segment").textContent).toContain("Number")
     })
 
     it("should describe every edge style, mark the chosen one and explain the chosen line thickness", async () => {
@@ -318,17 +316,6 @@ describe("DependencyBarComponent", () => {
         expect(screen.queryByTestId("dependency-bar-edge-style-side-middle")).toBeNull()
     })
 
-    it("should label the levels by their path once the reader picks it", async () => {
-        // Arrange
-        const dispatch = await renderBar()
-
-        // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-level-label-path"))
-
-        // Assert
-        expect(dispatch).toHaveBeenCalledWith(changed({ levelLabel: "path" }))
-    })
-
     it("should offer only the dependency toggle for another edge metric, and flip only it", async () => {
         // Arrange
         const dispatch = await renderBar({ edgeMetric: "temporal_coupling", settings: { shownEdgeTypes: [...DEPENDENCY_EDGE_TYPES] } })
@@ -356,10 +343,10 @@ describe("DependencyBarComponent", () => {
         expect(viewTools).not.toBeNull()
     })
 
-    it("should offer to count the hidden cycles only for a map that tells its declarations", async () => {
+    it("should offer the badges only for a map that tells its declarations, as All while every badge is shown", async () => {
         // Arrange
         const { fixture } = await renderBar()
-        const checkboxWithoutDeclarations = screen.queryByTestId("dependency-bar-cycle-badges")
+        const cardWithoutDeclarations = screen.queryByTestId("dependency-bar-box-badges-segment")
 
         // Act
         TestBed.inject(MockStore).overrideSelector(hasDeclarationsSelector, true)
@@ -367,10 +354,22 @@ describe("DependencyBarComponent", () => {
         fixture.detectChanges()
 
         // Assert
-        expect(checkboxWithoutDeclarations).toBeNull()
-        expect(screen.getByTestId("dependency-bar-level-label-popover").contains(screen.getByTestId("dependency-bar-cycle-badges"))).toBe(
-            true
-        )
+        expect(cardWithoutDeclarations).toBeNull()
+        expect(screen.getByTestId("dependency-bar-box-badges-segment").textContent).toContain("All")
+    })
+
+    it("should name the shown badges, or None once the reader shows none", async () => {
+        // Arrange
+        await renderBar({ hasDeclarations: true, settings: { shownBoxBadges: ["insideFiles", "declaration"] } })
+        const someShown = screen.getByTestId("dependency-bar-box-badges-segment").textContent
+
+        // Act
+        TestBed.resetTestingModule()
+        await renderBar({ hasDeclarations: true, settings: { shownBoxBadges: [] } })
+
+        // Assert
+        expect(someShown).toContain("Cycles inside a file, Declaration in a cycle")
+        expect(screen.getByTestId("dependency-bar-box-badges-segment").textContent).toContain("None")
     })
 
     it("should let the dashes and arrowheads show the kind of use once the reader picks it", async () => {
@@ -402,15 +401,37 @@ describe("DependencyBarComponent", () => {
         )
     })
 
-    it("should stop counting hidden cycles once the reader unticks it", async () => {
+    it("should hide a badge once the reader unticks it, and show it again once ticked", async () => {
         // Arrange
-        const dispatch = await renderBar({ hasDeclarations: true })
+        const dispatch = await renderBar({ hasDeclarations: true, settings: { shownBoxBadges: ["betweenFiles", "upward"] } })
 
         // Act
-        await userEvent.click(screen.getByTestId("dependency-bar-cycle-badges"))
+        await userEvent.click(screen.getByTestId("dependency-bar-box-badges-betweenFiles"))
+        await userEvent.click(screen.getByTestId("dependency-bar-box-badges-declaration"))
 
         // Assert
-        expect(dispatch).toHaveBeenCalledWith(changed({ showsCycleBadges: false }))
+        expect(dispatch).toHaveBeenCalledWith(changed({ shownBoxBadges: ["upward"] }))
+        expect(dispatch).toHaveBeenCalledWith(changed({ shownBoxBadges: ["betweenFiles", "declaration", "upward"] }))
+    })
+
+    it("should show every badge, none or the others with the shortcuts, and every badge again on reset", async () => {
+        // Arrange
+        const dispatch = await renderBar({ hasDeclarations: true, settings: { shownBoxBadges: ["insideFiles"] } })
+        const popover = within(screen.getByRole("dialog", { name: "Badges", hidden: true }))
+
+        // Act
+        await userEvent.click(popover.getByRole("button", { name: "All", hidden: true }))
+        await userEvent.click(popover.getByRole("button", { name: "None", hidden: true }))
+        await userEvent.click(popover.getByRole("button", { name: "Invert", hidden: true }))
+        await userEvent.click(popover.getByRole("button", { name: "Reset badges", hidden: true }))
+
+        // Assert
+        expect(dispatch).toHaveBeenCalledWith(changed({ shownBoxBadges: ["betweenFiles", "insideFiles", "declaration", "upward"] }))
+        expect(dispatch).toHaveBeenCalledWith(changed({ shownBoxBadges: [] }))
+        expect(dispatch).toHaveBeenCalledWith(changed({ shownBoxBadges: ["betweenFiles", "declaration", "upward"] }))
+        expect(dispatch).toHaveBeenCalledWith(
+            setState({ value: { preferences: { dependencyGraph: { shownBoxBadges: defaultDependencyGraphSettings.shownBoxBadges } } } })
+        )
     })
 
     it("should offer the hierarchy only for a map with packages, and remember the one the reader picks", async () => {

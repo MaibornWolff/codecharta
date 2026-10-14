@@ -35,7 +35,9 @@ export class DependencyEdgeLegendComponent {
         this.isDependencyMetric() && this.hasDeclarations() && this.settings().lineStyleShows === "usage" ? USAGE_LEGEND : []
     )
     readonly cycleLegend = computed(() =>
-        this.isDependencyMetric() && this.hasDeclarations() && this.settings().showsCycleBadges ? CYCLE_MARK_LEGEND : []
+        this.isDependencyMetric() && this.hasDeclarations()
+            ? CYCLE_MARK_LEGEND.filter(entry => this.settings().shownBoxBadges.includes(entry.mark))
+            : []
     )
     readonly kindLegend = computed(() => (this.hasDeclarations() ? DECLARATION_KIND_LEGEND : []))
     readonly usageColor = computed(() => this.settings().edgeColors.regular)

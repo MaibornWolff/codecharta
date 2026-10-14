@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store"
-import { DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
+import { DEPENDENCY_BOX_BADGES, DependencyGraphSettings } from "../../../../model/dependencyGraph.model"
 import { mergeState } from "../../../../util/setState.reducer.factory"
 import { setDependencyGraphSettings } from "./dependencyGraph.actions"
 
@@ -12,9 +12,8 @@ export const defaultDependencyGraphSettings: DependencyGraphSettings = {
     edgeShape: "curved",
     isAnchoredAtSideMiddle: false,
     edgeWidth: { thickness: "byCount", factor: 1 },
-    levelLabel: "number",
     hierarchy: "folders",
-    showsCycleBadges: true
+    shownBoxBadges: [...DEPENDENCY_BOX_BADGES]
 }
 
 export const dependencyGraph = createReducer(

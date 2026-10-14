@@ -8,7 +8,9 @@
 
 <cc-edge-metric-segment></cc-edge-metric-segment>
 
-<cc-level-label-segment></cc-level-label-segment>
+@if (hasDeclarations()) {
+    <cc-box-badges-segment></cc-box-badges-segment>
+}
 
 @if (hasPackages()) {
     <cc-hierarchy-segment></cc-hierarchy-segment>

@@ -1,3 +1,5 @@
+import { DependencyBoxBadge } from "../../../model/dependencyGraph.model"
+
 export interface DeclarationCycles {
     isWithinItsFile: boolean
     isWithOtherFiles: boolean
@@ -12,6 +14,16 @@ export interface CycleMarks {
 }
 
 export const NO_CYCLE_MARKS: CycleMarks = { cyclesInsideFiles: new Map(), cyclesBetweenFiles: new Map(), declarationsInCycles: new Map() }
+
+/** A badge the reader switched off counts nothing, so neither its box nor the box's tooltip tells it. */
+export function shownCycleMarks(marks: CycleMarks, shownBoxBadges: readonly DependencyBoxBadge[]): CycleMarks {
+    const isShown = (badge: DependencyBoxBadge) => shownBoxBadges.includes(badge)
+    return {
+        cyclesInsideFiles: isShown("insideFiles") ? marks.cyclesInsideFiles : NO_CYCLE_MARKS.cyclesInsideFiles,
+        cyclesBetweenFiles: isShown("betweenFiles") ? marks.cyclesBetweenFiles : NO_CYCLE_MARKS.cyclesBetweenFiles,
+        declarationsInCycles: isShown("declaration") ? marks.declarationsInCycles : NO_CYCLE_MARKS.declarationsInCycles
+    }
+}
 
 export interface DrawnBoxes {
     /** The box a declaration is drawn as or hidden in. */

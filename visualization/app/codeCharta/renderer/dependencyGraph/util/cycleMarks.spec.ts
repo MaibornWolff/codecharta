@@ -1,4 +1,4 @@
-import { DrawnBoxes, findCycleMarks, NO_CYCLE_MARKS } from "./cycleMarks"
+import { DrawnBoxes, findCycleMarks, NO_CYCLE_MARKS, shownCycleMarks } from "./cycleMarks"
 
 const ROOT = "/root"
 const FOLDER = "/root/app"
@@ -90,5 +90,20 @@ describe("findCycleMarks", () => {
 
         // Assert
         expect(marks).toEqual(NO_CYCLE_MARKS)
+    })
+})
+
+describe("shownCycleMarks", () => {
+    it("should keep the marks of the badges the reader shows and count nothing for the others", () => {
+        // Arrange
+        const marks = findCycleMarks(CYCLES, boxesShowing(fileOf))
+
+        // Act
+        const insideFilesOnly = shownCycleMarks(marks, ["insideFiles", "upward"])
+        const declarationsOnly = shownCycleMarks(marks, ["declaration"])
+
+        // Assert
+        expect(insideFilesOnly).toEqual({ ...NO_CYCLE_MARKS, cyclesInsideFiles: marks.cyclesInsideFiles })
+        expect(declarationsOnly).toEqual({ ...NO_CYCLE_MARKS, declarationsInCycles: marks.declarationsInCycles })
     })
 })

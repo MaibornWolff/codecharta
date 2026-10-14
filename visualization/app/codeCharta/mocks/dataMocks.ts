@@ -1996,9 +1996,8 @@ export const STATE: CcState = {
             edgeShape: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
-            levelLabel: "number",
             hierarchy: "folders",
-            showsCycleBadges: true
+            shownBoxBadges: ["betweenFiles", "insideFiles", "declaration", "upward"]
         },
         dependencyViewEnabled: false
     },
@@ -2081,9 +2080,8 @@ export const DEFAULT_STATE: CcState = {
             edgeShape: "curved",
             isAnchoredAtSideMiddle: false,
             edgeWidth: { thickness: "byCount", factor: 1 },
-            levelLabel: "number",
             hierarchy: "folders",
-            showsCycleBadges: true
+            shownBoxBadges: ["betweenFiles", "insideFiles", "declaration", "upward"]
         },
         dependencyViewEnabled: false
     },

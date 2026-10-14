@@ -1,3 +1,4 @@
+import { DependencyBoxBadge } from "../../../model/dependencyGraph.model"
 import { declarationKindLookOf, KIND_ICON_COLORS } from "./declarationKinds"
 import { CLICKABLE, UNTRANSFORMED } from "./dependencyGraphElements"
 import { CYCLE_MARK_COLOR, FILE_FILL, QUIET_BADGE_COLOR } from "./dependencyGraphStyle"
@@ -48,7 +49,7 @@ const MOST_COUNTED = 99
 export const CYCLE_GLYPH = { arc: "M2.9 1.7A3.4 3.4 0 1 1 1.7-2.9", head: "M4.1-1.5L2.8-5.1L.3-1.2z", lineWidthPx: 1.5 }
 const CYCLE_RING = { radiusPx: 3.5, lineWidthPx: 2, insetPx: 1 }
 
-export type CycleMarkKind = "insideFiles" | "betweenFiles" | "declaration"
+export type CycleMarkKind = Exclude<DependencyBoxBadge, "upward">
 
 /** Filled for the cycles between files, outlined for those within a file: a cycle across files is the wider
  * tangle, so wherever the two are told together it comes first. */

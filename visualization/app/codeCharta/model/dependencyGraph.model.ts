@@ -35,8 +35,11 @@ export interface DependencyEdgeDrawing {
     isAnchoredAtSideMiddle: boolean
 }
 
-/** A level band is named by its own number, or by the levels of the folders around it first, as in 0.1.2. */
-export type DependencyLevelLabel = "number" | "path"
+/** The marks on a box: the counts of the cycles it hides inside files and between files, the ring on a declaration
+ * in a cycle, and the count of the upward dependencies it hides. */
+export type DependencyBoxBadge = "betweenFiles" | "insideFiles" | "declaration" | "upward"
+
+export const DEPENDENCY_BOX_BADGES: readonly DependencyBoxBadge[] = ["betweenFiles", "insideFiles", "declaration", "upward"]
 
 export type DependencyEdgeColors = Record<DependencyEdgeType, string>
 
@@ -53,7 +56,6 @@ export interface DependencyGraphSettings {
     edgeShape: DependencyEdgeShape
     isAnchoredAtSideMiddle: boolean
     edgeWidth: DependencyEdgeWidth
-    levelLabel: DependencyLevelLabel
     hierarchy: DependencyHierarchy
-    showsCycleBadges: boolean
+    shownBoxBadges: DependencyBoxBadge[]
 }

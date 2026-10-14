@@ -21,7 +21,7 @@ import {
 import { defaultSharedView } from "../../sharedView/sharedView.read.facade"
 
 export const DB_NAME = "CodeCharta"
-export const DB_VERSION = 32
+export const DB_VERSION = 33
 export const CCSTATE_STORE_NAME = "ccstate"
 export const SCENARIOS_STORE_NAME = "scenarios"
 export const CCSTATE_PRIMARY_KEY = "id"
@@ -801,6 +801,25 @@ export function migrateCcStateRecordToV32<T>(state: T): T {
     return state && typeof state === "object" ? withMissingDependencyGraphSettings(state) : state
 }
 
+const BOX_BADGES_OF_V33 = ["betweenFiles", "insideFiles", "declaration", "upward"]
+const BOX_BADGES_OF_V33_WITHOUT_CYCLES = ["upward"]
+
+// v33: the dependency graph lost its level labels by path, and each box badge is switched on its own instead of the cycle badges together
+export function migrateCcStateRecordToV33<T>(state: T): T {
+    if (!state || typeof state !== "object") {
+        return state
+    }
+    const record = state as Record<string, unknown>
+    const preferences = record["preferences"] as Record<string, unknown> | undefined
+    const dependencyGraph = preferences?.["dependencyGraph"] as Record<string, unknown> | undefined
+    if (!dependencyGraph || typeof dependencyGraph !== "object" || "shownBoxBadges" in dependencyGraph) {
+        return state
+    }
+    const { levelLabel, showsCycleBadges, ...keptSettings } = dependencyGraph
+    const shownBoxBadges = showsCycleBadges === false ? BOX_BADGES_OF_V33_WITHOUT_CYCLES : BOX_BADGES_OF_V33
+    return { ...record, preferences: { ...preferences, dependencyGraph: { ...keptSettings, shownBoxBadges: [...shownBoxBadges] } } } as T
+}
+
 const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (state: unknown) => unknown }> = [
     { version: 3, migrate: migrateCcStateRecordToV3 },
     { version: 4, migrate: migrateCcStateRecordToV4 },
@@ -830,7 +849,8 @@ const CCSTATE_RECORD_MIGRATIONS: ReadonlyArray<{ version: number; migrate: (stat
     { version: 29, migrate: migrateCcStateRecordToV29 },
     { version: 30, migrate: migrateCcStateRecordToV30 },
     { version: 31, migrate: migrateCcStateRecordToV31 },
-    { version: 32, migrate: migrateCcStateRecordToV32 }
+    { version: 32, migrate: migrateCcStateRecordToV32 },
+    { version: 33, migrate: migrateCcStateRecordToV33 }
 ]
 
 function migrateCcStateRecord(state: unknown, oldVersion: number): unknown {

@@ -11,7 +11,8 @@ import {
     isDraggable,
     NO_CYCLE_MARKS,
     type Point,
-    type RightClickedBox
+    type RightClickedBox,
+    shownCycleMarks
 } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { ViewReadinessStore } from "../../../../routing/viewReadiness.store"
 import { FileStoreReadWindow } from "../../../../stores/fileStore/fileStore.facade"
@@ -69,22 +70,26 @@ export class DependencyMapComponent {
         const boxOf = this.graphModel.representatives()
         return searchedPaths && new Set([...searchedPaths, ...[...searchedPaths].flatMap(path => boxOf.get(path) ?? [])])
     })
-    private readonly cycleMarks = computed(() =>
-        this.graphModel.settings().showsCycleBadges && isDependencyEdgeMetric(this.graphModel.edgeMetric())
-            ? findCycleMarks(this.graphModel.cycleChains().map(declarationsOn), {
-                  representatives: this.graphModel.representatives(),
-                  parentOf: boxPath => this.graphModel.boxes().get(boxPath)?.parentPath,
-                  fileOf: declarationPath => this.graphModel.declarationIndex().declarations.get(declarationPath)?.filePath
-              })
-            : NO_CYCLE_MARKS
-    )
+    private readonly cycleMarks = computed(() => {
+        const { shownBoxBadges } = this.graphModel.settings()
+        const showsCycleMarks = shownBoxBadges.some(badge => badge !== "upward")
+        if (!showsCycleMarks || !isDependencyEdgeMetric(this.graphModel.edgeMetric())) {
+            return NO_CYCLE_MARKS
+        }
+        const cycleMarks = findCycleMarks(this.graphModel.cycleChains().map(declarationsOn), {
+            representatives: this.graphModel.representatives(),
+            parentOf: boxPath => this.graphModel.boxes().get(boxPath)?.parentPath,
+            fileOf: declarationPath => this.graphModel.declarationIndex().declarations.get(declarationPath)?.filePath
+        })
+        return shownCycleMarks(cycleMarks, shownBoxBadges)
+    })
 
     protected readonly scene = computed((): DependencyGraphScene | null => {
         const layout = this.graphModel.shownLayout()
         if (!layout) {
             return null
         }
-        const { levelLabel, showsCycleBadges, hierarchy, ...looks } = this.graphModel.settings()
+        const { shownBoxBadges, hierarchy, ...looks } = this.graphModel.settings()
         return {
             ...looks,
             cycleMarks: this.cycleMarks(),
