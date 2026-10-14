@@ -10,12 +10,34 @@ import kotlin.math.round
 abstract class MetricPerFunctionCalc {
     abstract val metric: AvailableFunctionMetrics
 
-    protected var isInFunction = false
-    private var idOfCurrentFunction = -1
-    private var endRowOfLastFunction = -1
-    private var endColumnOfLastFunction = -1
+    protected class OpenFunction(val index: Int, val startByte: Int, var endRow: Int, var endColumn: Int) {
+        var isInBody = false
+        var body: FunctionBodyBounds? = null
 
-    protected var isInFunctionBody = false
+        fun hasEndedBefore(node: SyntaxNode): Boolean = node.startRow > endRow || (node.startRow == endRow && node.startColumn > endColumn)
+    }
+
+    protected class FunctionBodyBounds(body: SyntaxNode, val isDelimited: Boolean) {
+        private val startRow = body.startRow
+        private val startColumn = body.startColumn
+        private val endRow = body.endRow
+        private val endColumn = body.endColumn
+
+        fun startsWith(node: SyntaxNode): Boolean = node.startRow == startRow && node.startColumn == startColumn
+
+        fun endsWith(node: SyntaxNode): Boolean = node.endRow == endRow && node.endColumn == endColumn
+    }
+
+    private val openFunctions = ArrayDeque<OpenFunction>()
+
+    protected val currentFunction: OpenFunction?
+        get() = openFunctions.lastOrNull()
+
+    protected val isInFunction: Boolean
+        get() = openFunctions.isNotEmpty()
+
+    protected val isInFunctionBody: Boolean
+        get() = currentFunction?.isInBody == true
 
     private val metricPerFunction = mutableListOf<Int>()
 
@@ -24,44 +46,42 @@ abstract class MetricPerFunctionCalc {
     protected fun updateInFunctionStatus(nodeContext: CalculationContext, nodeTypeProvider: MetricNodeTypes) {
         val node = nodeContext.node
         val nodeType = node.type
-        val startRow = nodeContext.startRow
-        val endRow = nodeContext.endRow
 
-        if (isInFunction) {
-            checkLeavingFunction(startRow, node)
-            checkEnteringFunctionBody(node, nodeType, nodeTypeProvider)
-        }
+        closeFunctionsEndedBefore(node)
+        enterFunctionBodyIfReached(node, nodeType, nodeTypeProvider)
 
-        if (!isInFunction && NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes)) {
-            handleEnteringNextFunction(endRow, node)
+        if (NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.numberOfFunctionsNodeTypes) && !isOpenedBy(node)) {
+            openFunction(node)
         }
     }
 
-    private fun checkLeavingFunction(startRow: Int, node: SyntaxNode) {
-        if (startRow > endRowOfLastFunction ||
-            (startRow == endRowOfLastFunction && node.startColumn > endColumnOfLastFunction)
-        ) {
-            isInFunction = false
-            isInFunctionBody = false
+    private fun closeFunctionsEndedBefore(node: SyntaxNode) {
+        while (currentFunction?.hasEndedBefore(node) == true) {
+            openFunctions.removeLast()
         }
     }
 
-    private fun checkEnteringFunctionBody(node: SyntaxNode, nodeType: String, nodeTypeProvider: MetricNodeTypes) {
-        if (!isInFunctionBody && NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
-            isInFunctionBody = true
+    private fun enterFunctionBodyIfReached(node: SyntaxNode, nodeType: String, nodeTypeProvider: MetricNodeTypes) {
+        val function = currentFunction ?: return
+        if (!function.isInBody && NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes)) {
+            function.isInBody = true
         }
     }
 
-    private fun handleEnteringNextFunction(endRow: Int, node: SyntaxNode) {
-        isInFunction = true
-        idOfCurrentFunction++
+    private fun isOpenedBy(node: SyntaxNode): Boolean = currentFunction?.startByte == node.startByte && currentFunction?.isInBody == false
+
+    private fun openFunction(node: SyntaxNode) {
+        openFunctions.addLast(OpenFunction(metricPerFunction.size, node.startByte, node.endRow, node.endColumn))
         metricPerFunction.add(0)
-        endRowOfLastFunction = endRow
-        endColumnOfLastFunction = node.endColumn
     }
 
     fun addToMetricForFunction(value: Int) {
-        metricPerFunction[idOfCurrentFunction] += value
+        val function = currentFunction ?: return
+        addToMetricOfFunction(function.index, value)
+    }
+
+    protected fun addToMetricOfFunction(index: Int, value: Int) {
+        metricPerFunction[index] += value
     }
 
     fun getMeasureMetricsForMetricType(): Map<String, Double> {
@@ -77,11 +97,6 @@ abstract class MetricPerFunctionCalc {
     }
 
     fun getMetricPerFunction(): List<Int> = metricPerFunction
-
-    fun updateFunctionEndPos(endRow: Int, endColumn: Int) {
-        endRowOfLastFunction = endRow
-        endColumnOfLastFunction = endColumn
-    }
 
     private fun calculateMean(metrics: List<Int>): Double {
         if (metrics.isEmpty()) return 0.0

@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.metrics.calculator
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.AvailableFunctionMetrics
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.CalculationContext
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.NodeTypeMatcher
 
 class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
@@ -13,12 +14,9 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
     private var isFirstOrLastNodeInFunction = false
     private var isStartOfFunctionBody = false
     private var isFirstAllowedNodeInFunctionBody = false
-    private var functionBodyBoundariesSet = false
+    private var lastLineGivenToFunction: LineGivenToFunction? = null
 
-    private var functionBodyStartRow = -1
-    private var functionBodyStartColumn = -1
-    private var functionBodyEndRow = -1
-    private var functionBodyEndColumn = -1
+    private class LineGivenToFunction(val functionIndex: Int, val startRow: Int, val startColumn: Int)
 
     override fun processMetricForNode(nodeContext: CalculationContext) {
         // nothing needed as we update the rloc per function with the normal rloc
@@ -30,7 +28,11 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
         val startRow = nodeContext.startRow
         val endRow = nodeContext.endRow
 
+        val functionBeforeNode = currentFunction
         updateInFunctionStatusForRloc(nodeContext, nodeTypeProvider)
+        if (currentFunction !== functionBeforeNode && currentFunction?.startByte == node.startByte) {
+            takeBackLineOfNestedFunctionStart(node)
+        }
 
         if (nodeContext.shouldIgnoreNode(node, nodeType) ||
             NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.commentLineNodeTypes)
@@ -53,21 +55,30 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
         }
 
         if (isInFunction && isInFunctionBodyAndAllowedNode()) {
-            addToRlocPerFunction(rlocForNode, rlocForFunctionAdder)
+            addToRlocPerFunction(node, rlocForNode, rlocForFunctionAdder)
         }
 
         return rlocForNode
     }
 
-    private fun addToRlocPerFunction(rlocForNode: Int, rlocForFunctionAdder: Int) {
+    private fun addToRlocPerFunction(node: SyntaxNode, rlocForNode: Int, rlocForFunctionAdder: Int) {
         var additionalRlocForFunction = 0
         if (isFirstAllowedNodeInFunctionBody) {
             additionalRlocForFunction = rlocForFunctionAdder
             isFirstAllowedNodeInFunctionBody = false
             isStartOfFunctionBody = false
         }
-        if (!isStartOfFunctionBody) {
+        if (!isStartOfFunctionBody && rlocForNode + additionalRlocForFunction > 0) {
             addToMetricForFunction(rlocForNode + additionalRlocForFunction)
+            lastLineGivenToFunction = currentFunction?.let { LineGivenToFunction(it.index, node.startRow, node.startColumn) }
+        }
+    }
+
+    private fun takeBackLineOfNestedFunctionStart(nestedFunction: SyntaxNode) {
+        val line = lastLineGivenToFunction ?: return
+        if (line.startRow == nestedFunction.startRow && line.startColumn == nestedFunction.startColumn) {
+            addToMetricOfFunction(line.functionIndex, -1)
+            lastLineGivenToFunction = null
         }
     }
 
@@ -75,10 +86,6 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
 
     private fun updateInFunctionStatusForRloc(nodeContext: CalculationContext, nodeTypeProvider: MetricNodeTypes) {
         val node = nodeContext.node
-        val nodeType = nodeContext.nodeType
-        val startRow = nodeContext.startRow
-        val endRow = nodeContext.endRow
-        val functionBodyUsesBrackets = nodeContext.functionBodyUsesBrackets
 
         updateInFunctionStatus(nodeContext, nodeTypeProvider)
 
@@ -86,41 +93,33 @@ class RealLinesOfCodeCalc(val nodeTypeProvider: MetricNodeTypes) :
             isFirstAllowedNodeInFunctionBody = true
         }
 
-        if (isInFunction && isInFunctionBody) {
-            val startCol = node.startColumn
-            val endCol = node.endColumn
-
-            if (NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, nodeTypeProvider.functionBodyNodeTypes) &&
-                !functionBodyBoundariesSet
-            ) {
-                setFunctionBodyBoundaries(startRow, startCol, endRow, endCol)
-            } else if (functionBodyUsesBrackets) {
-                val isFirstNode = (startRow == functionBodyStartRow && startCol == functionBodyStartColumn)
-                val isLastNode = (endRow == functionBodyEndRow && endCol == functionBodyEndColumn)
-
-                isFirstOrLastNodeInFunction = isFirstNode || isLastNode
-            }
-        } else {
-            resetBoundaries()
-            isFirstOrLastNodeInFunction = false
+        val function = currentFunction
+        val body = function?.body
+        when {
+            function == null || !function.isInBody -> isFirstOrLastNodeInFunction = false
+            body == null -> enterFunctionBody(function, node)
+            nodeContext.functionBodyUsesBrackets ->
+                isFirstOrLastNodeInFunction = body.startsWith(node) || (body.isDelimited && body.endsWith(node))
         }
     }
 
-    private fun setFunctionBodyBoundaries(startRow: Int, startCol: Int, endRow: Int, endCol: Int) {
-        functionBodyBoundariesSet = true
+    private fun enterFunctionBody(function: OpenFunction, body: SyntaxNode) {
         isStartOfFunctionBody = true
-        functionBodyStartRow = startRow
-        functionBodyStartColumn = startCol
-        functionBodyEndRow = endRow
-        functionBodyEndColumn = endCol
-        updateFunctionEndPos(endRow, endCol)
+        isFirstOrLastNodeInFunction = false
+        function.body = FunctionBodyBounds(body, isDelimitedOnBothSides(body))
+        function.endRow = body.endRow
+        function.endColumn = body.endColumn
     }
 
-    private fun resetBoundaries() {
-        functionBodyBoundariesSet = false
-        functionBodyStartRow = -1
-        functionBodyStartColumn = -1
-        functionBodyEndRow = -1
-        functionBodyEndColumn = -1
+    private fun isDelimitedOnBothSides(body: SyntaxNode): Boolean {
+        val opening = body.getChild(0)
+        val closing = body.getChild(body.childCount - 1)
+        return isToken(opening) && isToken(closing) && opening.text !in EXPRESSION_BODY_MARKERS
+    }
+
+    private fun isToken(node: SyntaxNode): Boolean = !node.isNull && node.childCount == 0
+
+    companion object {
+        private val EXPRESSION_BODY_MARKERS = setOf("=", "=>")
     }
 }

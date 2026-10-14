@@ -177,7 +177,7 @@ class KotlinMetricsTest {
     }
 
     @Test
-    fun `should count lambda function for number of functions only when they are assigned to a variable`() {
+    fun `should not count a lambda as a function wherever it stands`() {
         // Arrange
         val code = """
             val sum = { x: Int, y: Int -> x + y }
@@ -189,11 +189,12 @@ class KotlinMetricsTest {
         val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
 
         // Assert
-        assertThat(result.numberOfFunctions).isEqualTo(1.0)
+        assertThat(result.numberOfFunctions).isEqualTo(0.0)
+        assertThat(result.complexity).isEqualTo(2.0)
     }
 
     @Test
-    fun `should count anonymous function for number of functions only when they are assigned to a variable`() {
+    fun `should not count an anonymous function as a function wherever it stands`() {
         // Arrange
         val code = """
             val adder = fun(x: Int, y: Int): Int {
@@ -207,7 +208,28 @@ class KotlinMetricsTest {
         val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
 
         // Assert
-        assertThat(result.numberOfFunctions).isEqualTo(1.0)
+        assertThat(result.numberOfFunctions).isEqualTo(0.0)
+        assertThat(result.complexity).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should count a function with a body whatever its signature holds`() {
+        // Arrange
+        val code = """
+            fun Creature.shout(): String { return "x" }
+            private fun <T> first(items: List<T>): T = items[0]
+            fun <T> strongest(items: List<T>): T? where T : Fightable = items.firstOrNull()
+            inline fun <reified T> countOf(items: List<Any>): Int = items.count { it is T }
+            private suspend fun Creature.rest(hours: Int): Unit { }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
+
+        // Assert
+        assertThat(result.numberOfFunctions).isEqualTo(5.0)
+        assertThat(result.perFunctionMetrics["max_parameters_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["min_parameters_per_function"]).isEqualTo(0.0)
     }
 
     @Test
@@ -227,6 +249,104 @@ class KotlinMetricsTest {
 
         // Assert
         assertThat(result.numberOfFunctions).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should measure the body of a secondary constructor`() {
+        // Arrange
+        val code = """
+            class Creature(val name: String) {
+                constructor(name: String, roll: Int) : this(name) {
+                    if (roll > 10) {
+                        println(roll)
+                    }
+                }
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(3.0)
+        assertThat(result.perFunctionMetrics["max_complexity_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["max_parameters_per_function"]).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should give a nested function its own entry in the per function metrics`() {
+        // Arrange
+        val code = """
+            fun outer(roll: Int): Int {
+                fun clamp(value: Int, floor: Int, ceiling: Int): Int {
+                    if (value < floor) return floor
+                    return minOf(value, ceiling)
+                }
+                return clamp(roll, 1, 20)
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
+
+        // Assert
+        assertThat(result.numberOfFunctions).isEqualTo(2.0)
+        assertThat(result.perFunctionMetrics["max_parameters_per_function"]).isEqualTo(3.0)
+        assertThat(result.perFunctionMetrics["min_parameters_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["max_complexity_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["min_complexity_per_function"]).isEqualTo(0.0)
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(2.0)
+        assertThat(result.perFunctionMetrics["min_rloc_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should give the methods of an object expression their own entry in the per function metrics`() {
+        // Arrange
+        val code = """
+            fun byRoll(): Comparator<Int> {
+                val comparator = object : Comparator<Int> {
+                    override fun compare(first: Int, second: Int): Int = first - second
+                }
+                return comparator
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
+
+        // Assert
+        assertThat(result.numberOfFunctions).isEqualTo(2.0)
+        assertThat(result.perFunctionMetrics["max_parameters_per_function"]).isEqualTo(2.0)
+        assertThat(result.perFunctionMetrics["min_parameters_per_function"]).isEqualTo(0.0)
+    }
+
+    @Test
+    fun `should count one line for an expression body that is a single identifier`() {
+        // Arrange
+        val code = """
+            fun kDocTags(roll: Int): Int = roll
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count only the body lines of a multi line expression body`() {
+        // Arrange
+        val code = """
+            fun double(roll: Int): Int =
+                roll * 2
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.KOTLIN)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(1.0)
     }
 
     @Test

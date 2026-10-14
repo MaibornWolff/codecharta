@@ -59,6 +59,7 @@ object CSharpMetricMapping : MetricMapping {
 
         // Function body
         put("block", setOf(Metric.FunctionBody))
+        put("arrow_expression_clause", setOf(Metric.FunctionBody))
 
         // Function parameters
         put("parameter", setOf(Metric.Parameter))

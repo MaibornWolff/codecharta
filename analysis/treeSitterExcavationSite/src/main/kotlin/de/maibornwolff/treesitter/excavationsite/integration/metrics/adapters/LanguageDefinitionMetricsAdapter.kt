@@ -33,6 +33,7 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
         val functionSimple = mutableSetOf<String>()
         val functionNested = mutableSetOf<NestedNodeType>()
         val functionBodySimple = mutableSetOf<String>()
+        val functionBodyNested = mutableSetOf<NestedNodeType>()
         val parameterSimple = mutableSetOf<String>()
         val chainSimple = mutableSetOf<String>()
         val chainCallSimple = mutableSetOf<String>()
@@ -54,6 +55,9 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
                         toNestedNodeType(nodeType, metric.condition)?.let { functionNested.add(it) }
                     }
                     is Metric.FunctionBody -> functionBodySimple.add(nodeType)
+                    is Metric.FunctionBodyConditional -> {
+                        toNestedNodeType(nodeType, metric.condition)?.let { functionBodyNested.add(it) }
+                    }
                     is Metric.Parameter -> parameterSimple.add(nodeType)
                     is Metric.MessageChain -> chainSimple.add(nodeType)
                     is Metric.MessageChainCall -> chainCallSimple.add(nodeType)
@@ -74,7 +78,10 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
             functionSimple,
             functionNested.takeIf { it.isNotEmpty() }
         )
-        functionBodyNodeTypes = TreeNodeTypes(functionBodySimple)
+        functionBodyNodeTypes = TreeNodeTypes(
+            functionBodySimple,
+            functionBodyNested.takeIf { it.isNotEmpty() }
+        )
         functionParameterNodeTypes = TreeNodeTypes(parameterSimple)
         messageChainsNodeTypes = TreeNodeTypes(chainSimple)
         messageChainsCallNodeTypes = TreeNodeTypes(chainCallSimple)
@@ -95,6 +102,15 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
             childNodeCount = condition.requiredChildCount,
             childNodePosition = condition.position,
             childNodeTypes = condition.allowedTypes
+        )
+        is MetricCondition.AnyChildMatches -> NestedNodeType(
+            baseNodeType = nodeType,
+            childNodeTypes = condition.allowedTypes,
+            matchesAnyChild = true
+        )
+        is MetricCondition.ParentMatches -> NestedNodeType(
+            baseNodeType = nodeType,
+            parentNodeTypes = condition.allowedTypes
         )
     }
 }

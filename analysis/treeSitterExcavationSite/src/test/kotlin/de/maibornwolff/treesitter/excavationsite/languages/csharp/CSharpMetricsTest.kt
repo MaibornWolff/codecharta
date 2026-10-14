@@ -355,6 +355,26 @@ class CSharpMetricsTest {
     }
 
     @Test
+    fun `should measure the body of an expression bodied method`() {
+        // Arrange
+        val code = """
+            class Dice {
+                public int Clamp(int roll) => roll > 20 ? 20 : roll;
+
+                public int Sides() => sides;
+            }
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.CSHARP)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["min_rloc_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["max_complexity_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should detect message chains with 4 or more method calls`() {
         // Arrange
         val code = """obj.a().field.b().c().d();"""
