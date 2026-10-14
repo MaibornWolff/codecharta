@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.InputFormatNames.SVN_LOG
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.converter.ProjectConverter
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.converter.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.LogParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.svn.SVNLogParserStrategy
