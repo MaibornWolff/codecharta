@@ -1,5 +1,5 @@
 import { LeveledNode } from "./leveledTree"
-import { boxPathOf, containerPathsOf, indexTree, isDrawnInside, levelPathOf } from "./treeIndex"
+import { boxPathOf, containerPathsOf, indexTree, isDrawnInside } from "./treeIndex"
 
 function leveledFolder(path: string, children: LeveledNode[]): LeveledNode {
     return { path, name: path.split("/").pop(), level: 0, kind: "folder", children }
@@ -42,21 +42,6 @@ describe("treeIndex", () => {
 
             // Assert
             expect(inside).toEqual([true, true, false, true, false])
-        })
-    })
-
-    describe("levelPathOf", () => {
-        it("should list the levels down to a folder's box, counting a folded chain once, and nothing for a folder the graph lacks", () => {
-            // Arrange
-            const core = { ...leveledFolder("/root/lib/core/io", [leveledFile("/root/lib/core/io/file.ts")]), level: 2 }
-            const chain = { ...leveledFolder("/root/lib/core", [core]), level: 1, foldedPaths: ["/root/lib"] }
-            const tree = leveledFolder("/root", [chain])
-
-            // Act
-            const levelPaths = ["/root", "/root/lib", "/root/lib/core/io", "/root/docs"].map(path => levelPathOf(indexTree(tree), path))
-
-            // Assert
-            expect(levelPaths).toEqual([[], [1], [1, 2], null])
         })
     })
 

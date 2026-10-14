@@ -1,9 +1,9 @@
-import { LAYOUT_SPACING, LayoutBox, namedByOwnLevel } from "./layoutModel"
+import { LAYOUT_SPACING, LayoutBox } from "./layoutModel"
 import { LeveledNode } from "./leveledTree"
 import { layoutLevelized } from "./levelizedLayout"
 
-function layout(tree: LeveledNode, expandedPaths: ReadonlySet<string>, levelPathOfTree: number[] = []) {
-    return layoutLevelized(tree, expandedPaths, levelPathOfTree)
+function layout(tree: LeveledNode, expandedPaths: ReadonlySet<string>) {
+    return layoutLevelized(tree, expandedPaths)
 }
 
 function leveledFile(path: string, level = 0): LeveledNode {
@@ -158,7 +158,7 @@ describe("layoutLevelized", () => {
         expect(bands.filter(band => band.containerPath === "/root/open").map(band => band.isTopmost)).toEqual([true, false])
     })
 
-    it("should number each band and box by the levels of the boxes around it, outermost first", () => {
+    it("should number each band by its own level, and tell of each box whether it stands in a band, the root in none", () => {
         // Arrange
         const nested = leveledFolder("/root/open", [leveledFile("/root/open/x", 2), leveledFile("/root/open/y", 0)], 1)
         const tree = leveledFolder("/root", [nested, leveledFile("/root/a", 0)])
@@ -167,22 +167,8 @@ describe("layoutLevelized", () => {
         const { bands, boxes } = layout(tree, new Set(["/root", "/root/open"]))
 
         // Assert
-        expect(bands.map(band => band.levelPath)).toEqual([[1], [1, 2], [1, 0], [0]])
-        expect(boxOf(boxes, "/root").levelPath).toEqual([])
-        expect(boxOf(boxes, "/root/open").levelPath).toEqual([1])
-        expect(boxOf(boxes, "/root/open/x").levelPath).toEqual([1, 2])
-    })
-
-    it("should keep counting from the levels above the tree it is given", () => {
-        // Arrange
-        const tree = leveledFolder("/root/open", [leveledFile("/root/open/x", 2)])
-
-        // Act
-        const { bands, boxes } = layout(tree, new Set(["/root/open"]), [0, 1])
-
-        // Assert
-        expect(bands.map(band => band.levelPath)).toEqual([[0, 1, 2]])
-        expect(boxOf(boxes, "/root/open").levelPath).toEqual([0, 1])
+        expect(bands.map(band => band.level)).toEqual([1, 2, 0, 0])
+        expect(["/root", "/root/open", "/root/open/x"].map(path => boxOf(boxes, path).isInLevelBand)).toEqual([false, true, true])
     })
 })
 
@@ -222,7 +208,13 @@ describe("layoutLevelized with declarations", () => {
         const file = boxOf(boxes, FILE)
         const declarations = DECLARATIONS.map(path => boxOf(boxes, path))
         expect(declarations.every(declaration => isInside(declaration, file))).toBe(true)
-        expect(declarations[0]).toMatchObject({ kind: "declaration", parentPath: FILE, declarationKind: "class", levelPath: [], depth: 2 })
+        expect(declarations[0]).toMatchObject({
+            kind: "declaration",
+            parentPath: FILE,
+            declarationKind: "class",
+            isInLevelBand: true,
+            depth: 2
+        })
         expect(bands.map(band => band.containerPath)).toEqual(["/root", FILE, FILE])
     })
 
@@ -237,7 +229,7 @@ describe("layoutLevelized with declarations", () => {
         // Assert
         const [upper, lower] = bands.filter(band => band.containerPath === filePath)
         const file = boxOf(boxes, filePath)
-        expect([upper, lower].map(band => band.levelPath)).toEqual([[1], [0]])
+        expect([upper, lower].map(band => band.level)).toEqual([1, 0])
         expect([upper.isTopmost, lower.isTopmost]).toEqual([true, false])
         expect(upper.memberPaths).toEqual([`${FILE}/Zebra`])
         expect(lower.y - (upper.y + upper.height)).toBe(LAYOUT_SPACING.gapBetweenLevels)
@@ -292,20 +284,5 @@ describe("layoutLevelized with declarations", () => {
 
         // Assert
         expect(boxes.map(box => box.parentPath)).toEqual([null, "/root", "/root"])
-    })
-})
-
-describe("namedByOwnLevel", () => {
-    it("should name every band and box by its own level alone, leaving the root without one", () => {
-        // Arrange
-        const nested = leveledFolder("/root/open", [leveledFile("/root/open/x", 2)], 1)
-        const nestedLayout = layout(leveledFolder("/root", [nested]), new Set(["/root", "/root/open"]))
-
-        // Act
-        const { bands, boxes } = namedByOwnLevel(nestedLayout)
-
-        // Assert
-        expect(bands.map(band => band.levelPath)).toEqual([[1], [2]])
-        expect(boxes.map(box => box.levelPath)).toEqual([[], [1], [2]])
     })
 })

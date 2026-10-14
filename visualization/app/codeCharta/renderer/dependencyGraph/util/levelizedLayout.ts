@@ -3,29 +3,21 @@ import { Rectangle } from "./geometry"
 import { DependencyGraphLayout, LAYOUT_SPACING, LayoutBox, LevelBand } from "./layoutModel"
 import { LeveledNode } from "./leveledTree"
 
-export function layoutLevelized(
-    tree: LeveledNode,
-    expandedPaths: ReadonlySet<string>,
-    /** The levels above the tree's root, when the tree is a focused folder of a larger one. */
-    levelPathOfTree: number[]
-): DependencyGraphLayout {
+export function layoutLevelized(tree: LeveledNode, expandedPaths: ReadonlySet<string>): DependencyGraphLayout {
     const measurer = new ContainerMeasurer(expandedPaths)
     const rootSize = measurer.sizeOf(tree)
     const layout: DependencyGraphLayout = { boxes: [], bands: [], width: rootSize.width, height: rootSize.height }
-    new LayoutPlacer(measurer, layout, new Map([[tree.path, levelPathOfTree]])).place(tree, { x: 0, y: 0 }, 0, null)
+    new LayoutPlacer(measurer, layout).place(tree, { x: 0, y: 0 }, { depth: 0, parentPath: null, isInLevelBand: false })
     return layout
 }
-
-const NO_LEVEL_PATH: number[] = []
 
 class LayoutPlacer {
     constructor(
         private readonly measurer: ContainerMeasurer,
-        private readonly layout: DependencyGraphLayout,
-        private readonly levelPaths: Map<string, number[]>
+        private readonly layout: DependencyGraphLayout
     ) {}
 
-    place(node: LeveledNode, { x, y }: Position, depth: number, parentPath: string | null) {
+    place(node: LeveledNode, { x, y }: Position, { depth, parentPath, isInLevelBand }: BoxPlacement) {
         const isExpanded = this.measurer.isOpen(node)
         const size = this.measurer.sizeOf(node)
         this.layout.boxes.push({
@@ -35,7 +27,7 @@ class LayoutPlacer {
             kind: node.kind,
             isExpanded,
             level: node.level,
-            levelPath: this.levelPaths.get(node.path) ?? NO_LEVEL_PATH,
+            isInLevelBand,
             depth,
             ...declarationFactsOf(node),
             x,
@@ -69,10 +61,7 @@ class LayoutPlacer {
     private bandReaching({ row, previous, current }: BandRows, container: LeveledNode, rectangle: Rectangle) {
         let band = current
         if (band === null || previous?.level !== row.level) {
-            // The levels inside a file are those of its declarations' packages, which the levels around the file say nothing of.
-            const levelsAround = container.kind === "file" ? [] : this.levelPaths.get(container.path)
-            const levelPath = [...levelsAround, row.level]
-            band = { containerPath: container.path, level: row.level, levelPath, isTopmost: !previous, memberPaths: [], ...rectangle }
+            band = { containerPath: container.path, level: row.level, isTopmost: !previous, memberPaths: [], ...rectangle }
             this.layout.bands.push(band)
         }
         band.height = rectangle.y + row.height - band.y
@@ -82,13 +71,8 @@ class LayoutPlacer {
     private placeRow(row: Row, { x, y }: Position, { parentPath, childDepth, band, spacing }: RowPlacement) {
         let nodeLeft = x
         for (const child of row.nodes) {
-            if (band) {
-                band.memberPaths.push(child.path)
-            }
-            if (band && child.kind !== "declaration") {
-                this.levelPaths.set(child.path, band.levelPath)
-            }
-            this.place(child, { x: nodeLeft, y }, childDepth, parentPath)
+            band?.memberPaths.push(child.path)
+            this.place(child, { x: nodeLeft, y }, { depth: childDepth, parentPath, isInLevelBand: band !== null })
             nodeLeft += this.measurer.sizeOf(child).width + spacing.gapBetweenNodes
         }
     }
@@ -97,6 +81,12 @@ class LayoutPlacer {
 interface Position {
     x: number
     y: number
+}
+
+interface BoxPlacement {
+    depth: number
+    parentPath: string | null
+    isInLevelBand: boolean
 }
 
 interface BandRows {

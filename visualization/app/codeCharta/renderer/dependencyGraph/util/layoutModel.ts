@@ -8,8 +8,8 @@ export interface LayoutBox extends Rectangle {
     kind: BoxKind
     isExpanded: boolean
     level: number
-    /** The levels it is named by: those of the boxes around it, outermost first, then its own. */
-    levelPath: number[]
+    /** Whether it stands in a level band of the box around it, which tells its level. */
+    isInLevelBand: boolean
     depth: number
     declarationKind?: string
     /** How many declarations a file holds, whether it shows them or not. */
@@ -19,7 +19,6 @@ export interface LayoutBox extends Rectangle {
 export interface LevelBand extends Rectangle {
     containerPath: string
     level: number
-    levelPath: number[]
     isTopmost: boolean
     /** The band spans them once the reader drags them around. */
     memberPaths: string[]
@@ -33,11 +32,6 @@ export interface DependencyGraphLayout {
     height: number
 }
 
-export function namedByOwnLevel(layout: DependencyGraphLayout): DependencyGraphLayout {
-    const ownLevelOnly = <Item extends { levelPath: number[] }>(item: Item): Item => ({ ...item, levelPath: item.levelPath.slice(-1) })
-    return { ...layout, boxes: layout.boxes.map(ownLevelOnly), bands: layout.bands.map(ownLevelOnly) }
-}
-
 /** A folder or package opens into what it holds, and so does a file once the map tells its declarations. */
 export function canBeOpened(box: LayoutBox): boolean {
     return isContainerKind(box.kind) || (box.kind === "file" && box.declarationCount > 0)
@@ -45,10 +39,6 @@ export function canBeOpened(box: LayoutBox): boolean {
 
 export function isContainerKind(kind: BoxKind): boolean {
     return kind === "folder" || kind === "package"
-}
-
-export function describeLevelPath(levelPath: number[]): string {
-    return levelPath.join(".")
 }
 
 export const LAYOUT_SPACING = {

@@ -22,7 +22,7 @@ export function aBox(path: string, overrides: Partial<LayoutBox> = {}): LayoutBo
         kind: "file",
         isExpanded: false,
         level: 0,
-        levelPath: [0],
+        isInLevelBand: true,
         depth: 1,
         x: 0,
         y: 0,
@@ -40,7 +40,6 @@ export function aBand(overrides: Partial<LevelBand> = {}): LevelBand {
     return {
         containerPath: "/root",
         level: 1,
-        levelPath: [1],
         isTopmost: false,
         memberPaths: [],
         x: 0,

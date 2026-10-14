@@ -8,7 +8,6 @@ import {
     isPackagePath,
     layoutLevelized,
     movedLayout,
-    namedByOwnLevel,
     projectEdges,
     upwardRuleOf,
     visibleRepresentatives
@@ -25,7 +24,6 @@ export class DependencyGraphModelStore {
     private readonly writeStore = inject(DependencyMapWriteStore)
     private readonly viewStore = inject(DependencyMapViewStore)
 
-    private readonly focusedFolderLevelPath = toSignal(this.readStore.focusedFolderLevelPath$, { requireSync: true })
     private readonly edges = toSignal(this.readStore.edges$, { requireSync: true })
 
     private readonly folderTree = toSignal(this.readStore.tree$, { requireSync: true })
@@ -58,7 +56,7 @@ export class DependencyGraphModelStore {
         if (!tree) {
             return null
         }
-        return namedByOwnLevel(layoutLevelized(tree, this.viewStore.expandedPaths(), this.focusedFolderLevelPath()))
+        return layoutLevelized(tree, this.viewStore.expandedPaths())
     })
     readonly shownLayout = computed(() => {
         const layout = this.layout()

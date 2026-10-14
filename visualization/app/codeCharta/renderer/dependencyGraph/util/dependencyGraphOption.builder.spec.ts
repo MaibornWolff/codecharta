@@ -16,7 +16,7 @@ interface BuiltSeries {
     renderItem: (params: { dataIndex: number }, api: { coord: typeof identityPixels }) => DrawnElement
 }
 
-const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, levelPath: [], width: 400, height: 200 })
+const root = aBox("/root", { kind: "folder", isExpanded: true, depth: 0, isInLevelBand: false, width: 400, height: 200 })
 const view = aBox("/root/view.ts", { x: 16, y: 44 })
 const model = aBox("/root/model.ts", { x: 16, y: 120 })
 const util = aBox("/root/util.ts", { x: 200, y: 120 })
@@ -199,7 +199,12 @@ describe("buildDependencyGraphOption", () => {
     it("should say in the tooltip that a file holding declarations opens, and what kind of declaration a box is", () => {
         // Arrange
         const file = aBox("/root/creature.ts", { declarationCount: 2, isExpanded: true, width: 300, height: 120 })
-        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", depth: 2, levelPath: [] })
+        const declaration = aBox("/root/creature.ts/Creature", {
+            kind: "declaration",
+            declarationKind: "class",
+            depth: 2,
+            isInLevelBand: false
+        })
         const layout = { boxes: [root, file, declaration], bands: [], width: 800, height: 500 }
 
         // Act
@@ -275,7 +280,7 @@ describe("buildDependencyGraphOption", () => {
 
     it("should badge a closed box hiding cycles, ring a declaration in a cycle and say both in the tooltip", () => {
         // Arrange
-        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
+        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", isInLevelBand: false })
         const layout = { boxes: [root, view, declaration], bands: [], width: 800, height: 500 }
         const cycleMarks = {
             cyclesInsideFiles: new Map([[view.path, 1]]),
@@ -296,7 +301,7 @@ describe("buildDependencyGraphOption", () => {
     it("should tell in the tooltip the cycles inside files apart from those between files", () => {
         // Arrange
         const folder = aBox("/root/app", { kind: "folder", width: 300, height: 200 })
-        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", levelPath: [] })
+        const declaration = aBox("/root/creature.ts/Creature", { kind: "declaration", declarationKind: "class", isInLevelBand: false })
         const layout = { boxes: [root, folder, view, declaration], bands: [], width: 800, height: 500 }
         const cycleMarks = {
             cyclesInsideFiles: new Map([

@@ -5,7 +5,7 @@ import { CycleMarks, DeclarationCycles } from "./cycleMarks"
 import { DependencyGraphScene } from "./dependencyGraphScene"
 import { EDGE_TYPE_LABELS } from "./dependencyGraphStyle"
 import { GraphEdge } from "./edgeProjection"
-import { canBeOpened, describeLevelPath, LayoutBox } from "./layoutModel"
+import { canBeOpened, LayoutBox } from "./layoutModel"
 import { usageLabelOf, usagesOf } from "./lineStyle"
 import { GraphItem } from "./paintOrder"
 import { counted } from "./wording"
@@ -37,8 +37,8 @@ function describeBox(box: LayoutBox, cycleMarks: CycleMarks): string {
     }
     const title = isPackagePath(box.path) ? `Package ${box.name}` : nameOfPath(box.path)
     const rows = [`<b>${escapeHtml(title)}</b>`]
-    if (box.levelPath.length > 0) {
-        rows.push(`Level ${describeLevelPath(box.levelPath)}`)
+    if (box.isInLevelBand) {
+        rows.push(`Level ${box.level}`)
     }
     rows.push(...describeCyclesOfBox(box, cycleMarks))
     if (canBeOpened(box)) {
