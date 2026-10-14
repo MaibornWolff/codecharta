@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.kotter.test)
 
     testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.archunit.junit5)
 }
 
 tasks.jar {
