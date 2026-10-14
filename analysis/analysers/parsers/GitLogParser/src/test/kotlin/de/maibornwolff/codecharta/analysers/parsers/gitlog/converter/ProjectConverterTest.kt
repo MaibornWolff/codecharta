@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesList
 import io.mockk.every
 import io.mockk.mockk

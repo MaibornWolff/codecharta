@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
 
 class StandardCommitParser : CommitParser {
     override fun canParse(commit: Commit): Boolean = !commit.isEmpty && !commit.isMergeCommit()

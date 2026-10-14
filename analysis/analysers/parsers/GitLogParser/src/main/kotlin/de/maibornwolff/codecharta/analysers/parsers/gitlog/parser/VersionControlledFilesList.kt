@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser
 
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
 
 class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
