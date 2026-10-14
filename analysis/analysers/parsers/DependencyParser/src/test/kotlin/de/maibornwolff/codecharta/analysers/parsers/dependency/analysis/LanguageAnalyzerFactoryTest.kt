@@ -1,5 +1,6 @@
-package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
+package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi.DelphiAnalyzer
