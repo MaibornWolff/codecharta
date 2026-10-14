@@ -167,12 +167,13 @@ function drawCycleRing(rect: Rectangle, { opacity, scale }: MarkLook): object {
 
 const CYCLE_BADGE_DESIGN = { glyph: CYCLE_GLYPH, lineDash: null, info: CYCLE_BADGE_INFO }
 
-/** The badges line up leftward from the upper right corner: the cycles inside files, those between files, then
- * the upward dependencies. */
+/** Read from the left, the badges tell the cycles between files, those inside files, then the upward dependencies,
+ * which hang over the upper right corner; a badge without a count leaves its place to the next. */
 function drawCountBadges(rect: Rectangle, badges: BadgeLook, mark: MarkLook): object[] {
     const corner = { right: rect.x + rect.width + CYCLE_BADGE.overhangPx * mark.scale, top: rect.y - CYCLE_BADGE.risePx * mark.scale }
+    const upward = drawCountBadge(corner, badges.upwardCount, upwardDesignOf(badges.upwardLine), mark)
     const insideFilesDesign = { ...CYCLE_BADGE_DESIGN, colors: CYCLE_MARK_COLORS.insideFiles }
-    const insideFiles = drawCountBadge(corner, badges.insideFilesCount, insideFilesDesign, mark)
+    const insideFiles = drawCountBadge({ ...corner, right: upward.rightOfNextBadge }, badges.insideFilesCount, insideFilesDesign, mark)
     const betweenFilesDesign = { ...CYCLE_BADGE_DESIGN, colors: CYCLE_MARK_COLORS.betweenFiles }
     const betweenFiles = drawCountBadge(
         { ...corner, right: insideFiles.rightOfNextBadge },
@@ -180,13 +181,7 @@ function drawCountBadges(rect: Rectangle, badges: BadgeLook, mark: MarkLook): ob
         betweenFilesDesign,
         mark
     )
-    const upward = drawCountBadge(
-        { ...corner, right: betweenFiles.rightOfNextBadge },
-        badges.upwardCount,
-        upwardDesignOf(badges.upwardLine),
-        mark
-    )
-    return [...upward.elements, ...betweenFiles.elements, ...insideFiles.elements]
+    return [...betweenFiles.elements, ...insideFiles.elements, ...upward.elements]
 }
 
 function upwardDesignOf({ color, isDashed }: UpwardLine): BadgeDesign {
