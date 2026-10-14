@@ -482,8 +482,15 @@ function upwardOf(inside: readonly DependencyLeafEdge[], ownPaths: ReadonlySet<s
             dependency: { ...dependency, line: lineAsDrawn(dependency) },
             files: [...new Set([dependency.declarationEdge.fromNodeName, dependency.declarationEdge.toNodeName])].map(fileReference)
         }))
-        .sort((upwardA, upwardB) => byTypeThenNames(upwardA.dependency, upwardB.dependency))
+        .sort((upwardA, upwardB) => byUpwardTypeThenNames(upwardA.dependency, upwardB.dependency))
     return { upward: upward.slice(0, context.rowLimit), upwardCount: upward.length }
+}
+
+/** Among upward dependencies, the ones that also close a cycle are the tangle to see first. */
+const UPWARD_ROW_RANK: Partial<Record<DependencyEdgeType, number>> = { feedbackLeafLevel: 0, feedbackContainerLevel: 1 }
+
+function byUpwardTypeThenNames(dependencyA: InspectorDependency, dependencyB: InspectorDependency): number {
+    return UPWARD_ROW_RANK[dependencyA.type] - UPWARD_ROW_RANK[dependencyB.type] || byTypeThenNames(dependencyA, dependencyB)
 }
 
 type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">

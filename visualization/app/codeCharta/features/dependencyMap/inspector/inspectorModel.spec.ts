@@ -456,7 +456,7 @@ describe("describeSubject", () => {
             expect(model.cycles).toHaveLength(1)
         })
 
-        it("should tell the upward dependencies between its files, from the one file to the other, and cut them as it cuts a hub's rows", () => {
+        it("should tell the upward dependencies between its files, those closing a cycle first, and cut them as it cuts a hub's rows", () => {
             // Arrange
             const everyDependencyUpward = context({ pointsUpward: () => true, rowLimit: 2 })
 
@@ -465,7 +465,7 @@ describe("describeSubject", () => {
 
             // Assert
             expect(upwardCount).toBe(3)
-            expect(upward).toHaveLength(2)
+            expect(upward.map(({ dependency }) => dependency.type)).toEqual(["feedbackLeafLevel", "feedbackLeafLevel"])
             expect(describeSubject(box(GAME_FOLDER), context()).upward.map(({ files }) => files.map(file => file.name))).toEqual([
                 ["weapon.ts", "creature.ts"]
             ])
