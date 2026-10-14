@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.importers.sonar
+package de.maibornwolff.codecharta.analysers.importers.sonar.model
 
 class SonarImporterException : RuntimeException {
     constructor(e: Exception) : super(e)
