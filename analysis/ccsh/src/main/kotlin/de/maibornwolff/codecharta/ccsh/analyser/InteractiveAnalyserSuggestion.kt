@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.ccsh.analyser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
-import de.maibornwolff.codecharta.ccsh.Ccsh
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
@@ -9,6 +8,8 @@ import java.io.File
 
 class InteractiveAnalyserSuggestion {
     companion object {
+        const val NO_USABLE_ANALYSER_FOUND_MESSAGE = "No usable analyser was found for the input file path!"
+
         fun offerAndGetAnalyserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
             val applicableAnalysers = getApplicableAnalyser(commandLine)
 
@@ -40,7 +41,7 @@ class InteractiveAnalyserSuggestion {
                 AnalyserService.getAnalyserSuggestions(commandLine, PicocliAnalyserRepository(), inputFilePath)
 
             if (applicableAnalysers.isEmpty()) {
-                Logger.info { Ccsh.NO_USABLE_ANALYSER_FOUND_MESSAGE }
+                Logger.info { NO_USABLE_ANALYSER_FOUND_MESSAGE }
                 return emptyList()
             }
 

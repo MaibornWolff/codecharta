@@ -86,8 +86,6 @@ class Ccsh : Callable<Unit?> {
     }
 
     companion object {
-        const val NO_USABLE_ANALYSER_FOUND_MESSAGE = "No usable analyser was found for the input file path!"
-
         @JvmStatic
         fun main(args: Array<String>) {
             KotlinLoggingConfiguration.logStartupMessage = false
