@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.resolveImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.resolveImportPath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
