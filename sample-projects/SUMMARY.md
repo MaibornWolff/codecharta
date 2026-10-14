@@ -227,6 +227,17 @@ declaration vanish, C is effectively unsupported, barrels inconsistent, test det
    back with the accepted edges (body usages, files without a declaration, tag references). **→ ignore**: the cycle
    count at declaration level and the csharp partial class, both documented.
 
+### Found 2026-10-14, open
+1. **Declarations of different files that share a logical path become one target.** A run over the repository root
+   (all sample projects in one map) gave 79 file edges kotlin -> cpp, 56 java -> cpp and 50 php -> csharp, and 8
+   cross-project cycles, e.g. `kotlin/.../domain/model/Creature.kt -> cpp/.../domain/model/ArmorClass.cpp`. Every
+   sample project declares the same packages and class names (`de.sots.cellarsandcentaurs.domain.model.Creature`),
+   and a declaration is identified by its logical path alone, without language or file: `Node.resolveTypeImport`
+   looks names up across all languages, and `FileLevelAggregator.firstFilePathByDeclaration` joins each path to the
+   first file that arrives with it, which is the C++ one after the header/source merge. Cycles are found per logical
+   path, so the copies also mark each other cyclic. In one single-language project this needs two files declaring the
+   same path; in a mixed-language repository it needs only a shared package name. No decision yet.
+
 ### Not supported
 bash, objectivec, ruby, swift: 0 of 74 to 78 expected edges each. Each report lists the edges a parser
 would have to find. **→ ignore**: no support is planned.

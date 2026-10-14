@@ -577,6 +577,9 @@ Derived to others: nothing, every other report was closed.
 Nothing is left. Every language carries a decision on every verdict item, and `SUMMARY.md` states the decision
 behind each of its items and no longer lists ABL. The accepted items are the backlog for the parser work.
 
+Open since 2026-10-14: `SUMMARY.md`, dependency parser, "Found 2026-10-14, open" — declarations that share a logical
+path across files and languages become one target. Not yet explained to Christian per finding or decided.
+
 Helpers: a decision is one appended sentence, so `Edit` on the last line of the item is enough. For many items
 at once, `.claude/skills/triage-findings/scripts/append_decisions.py` appends a note to the last line of each item
 that starts with a given text.
