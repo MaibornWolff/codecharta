@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.kotlin.extractors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 
 /**
  * Names a declaration uses as values: an object, a companion or a constant named on its own (`= Single`),
@@ -19,6 +20,8 @@ internal object ValueReferenceExtractor {
     private const val VALUE_ARGUMENT = "value_argument"
     private const val INFIX_EXPRESSION = "infix_expression"
     private const val NAMED_ARGUMENT_SIGN = "="
+    private const val FUNCTION_DECLARATION = "function_declaration"
+    private val TYPE_DECLARATIONS = setOf("class_declaration", "object_declaration")
 
     // Parents whose identifier is a declared name, a member of something else or part of a header, not a reference
     private val NON_REFERENCE_PARENTS = setOf(
@@ -37,17 +40,27 @@ internal object ValueReferenceExtractor {
             declaration,
             setOf(SIMPLE_IDENTIFIER, CALLABLE_REFERENCE)
         )
+        val memberFunctions = memberFunctionNames(declaration)
         val identifiers = buckets[SIMPLE_IDENTIFIER].orEmpty()
-        val references = identifiers.mapNotNull { referencedName(it, importedNames) } +
+        val references = identifiers.mapNotNull { referencedName(it, importedNames, memberFunctions) } +
             buckets[CALLABLE_REFERENCE].orEmpty().flatMap { callableReferenceNames(it, importedNames) }
         return references.map { UsedType(it) }
     }
 
-    private fun referencedName(identifier: SyntaxNode, importedNames: Set<String>): String? {
+    // A bare call of a function the outermost class declares, nested classes included, calls that member
+    private fun memberFunctionNames(declaration: SyntaxNode): Set<String> {
+        val outermostType = (sequenceOf(declaration) + declaration.ancestors()).lastOrNull { it.type in TYPE_DECLARATIONS } ?: declaration
+        return TreeTraversal
+            .findAllDescendantsOfType(outermostType, FUNCTION_DECLARATION)
+            .mapNotNull { function -> function.children().firstOrNull { it.type == SIMPLE_IDENTIFIER }?.text?.trim() }
+            .toSet()
+    }
+
+    private fun referencedName(identifier: SyntaxNode, importedNames: Set<String>, memberFunctions: Set<String>): String? {
         val name = identifier.text.trim()
         val parent = identifier.parent
         return when {
-            parent.type == CALL_EXPRESSION -> name.takeUnless { KotlinNames.isUppercase(it) }
+            parent.type == CALL_EXPRESSION -> name.takeUnless { KotlinNames.isUppercase(it) || it in memberFunctions }
             parent.type == NAVIGATION_SUFFIX || parent.type == NAVIGATION_EXPRESSION -> name.takeIf { it in importedNames }
             parent.type in NON_REFERENCE_PARENTS || isArgumentName(identifier) || isInfixFunctionName(identifier) -> null
             KotlinNames.isUppercase(name) || name in importedNames -> name
