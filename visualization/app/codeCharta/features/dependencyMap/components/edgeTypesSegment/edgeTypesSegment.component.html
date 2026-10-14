@@ -1,4 +1,10 @@
-<cc-axis-card label="Edges shown" [searchPopoverId]="popoverId" [searchAnchorName]="anchorName" testId="dependency-bar-edges-segment">
+<cc-axis-card
+    label="Edges shown"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    [minWidthClass]="cardWidthClass"
+    testId="dependency-bar-edges-segment"
+>
     <div body class="flex min-h-[17.5px] items-center justify-center gap-1.5" [title]="chosenLabel()" data-testid="dependency-bar-edges-shown">
         @for (entry of shownEntries(); track entry.type) {
             <cc-edge-type-sample [color]="entry.color" [isDashed]="entry.isDashed"></cc-edge-type-sample>

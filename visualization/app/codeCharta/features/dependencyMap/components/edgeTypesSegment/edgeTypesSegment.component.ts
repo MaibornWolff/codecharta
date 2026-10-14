@@ -12,6 +12,7 @@ import {
 } from "../../../shared/facade"
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
+import { SAMPLE_CARD_WIDTH_CLASS } from "../dependencyBar/dependencyBarCard"
 import { WIDE_BAR_POPOVER_WIDTH_CLASS } from "../dependencyBar/dependencyBarPopover"
 import { EdgeTypeSampleComponent } from "../edgeTypeSample/edgeTypeSample.component"
 import { invertedEdgeTypes, nameOfShownEdgeTypes, withAllEdgeTypes, withoutEdgeTypes } from "./shownEdgeTypes"
@@ -39,6 +40,7 @@ export class EdgeTypesSegmentComponent {
     readonly popoverId = "dependency-bar-edges-popover"
     readonly anchorName = "dependency-bar-edges-card"
     readonly popoverWidthClass = WIDE_BAR_POPOVER_WIDTH_CLASS
+    readonly cardWidthClass = SAMPLE_CARD_WIDTH_CLASS
     readonly shownTypesResetKeys = [
         "preferences.dependencyGraph.shownEdgeTypes",
         "preferences.dependencyGraph.isHoverLimitedToShownEdgeTypes"

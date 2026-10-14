@@ -11,6 +11,7 @@ import {
 import { DependencyMapReadStore } from "../../stores/dependencyMap.read.store"
 import { DependencyMapWriteStore } from "../../stores/dependencyMap.write.store"
 import { BoxBadgeSampleComponent } from "../boxBadgeSample/boxBadgeSample.component"
+import { SAMPLE_CARD_WIDTH_CLASS } from "../dependencyBar/dependencyBarCard"
 import { invertedBoxBadges, nameOfShownBoxBadges, withBoxBadge } from "./shownBoxBadges"
 
 @Component({
@@ -34,6 +35,7 @@ export class BoxBadgesSegmentComponent {
     readonly popoverId = "dependency-bar-box-badges-popover"
     readonly anchorName = "dependency-bar-box-badges-card"
     readonly resetKeys = ["preferences.dependencyGraph.shownBoxBadges"]
+    readonly cardWidthClass = SAMPLE_CARD_WIDTH_CLASS
 
     private readonly shownBadges = computed(() => this.settings().shownBoxBadges)
     readonly entries = computed(() => BOX_BADGE_LEGEND.map(entry => ({ ...entry, isShown: this.shownBadges().includes(entry.mark) })))
