@@ -1,8 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations
 
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppNamespaceWalker
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.UsedTypeExtractor
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.CppTypeHelper
+import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.UsedTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode

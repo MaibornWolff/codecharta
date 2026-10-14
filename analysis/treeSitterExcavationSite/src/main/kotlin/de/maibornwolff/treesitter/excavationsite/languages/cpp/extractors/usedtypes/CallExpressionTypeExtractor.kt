@@ -1,6 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.CppTypeHelper
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull

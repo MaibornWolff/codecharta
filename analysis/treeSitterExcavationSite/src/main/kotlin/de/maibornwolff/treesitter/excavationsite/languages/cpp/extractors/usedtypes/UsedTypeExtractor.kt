@@ -1,10 +1,5 @@
-package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
+package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes
 
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.AliasConstraintExtractor
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.CallExpressionTypeExtractor
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.ClassScopeExtractor
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.DeclarationTypeExtractor
-import de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.usedtypes.SignatureTypeExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 

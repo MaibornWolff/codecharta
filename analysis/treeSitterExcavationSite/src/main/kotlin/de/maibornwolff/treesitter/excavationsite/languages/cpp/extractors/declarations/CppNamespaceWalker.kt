@@ -1,4 +1,4 @@
-package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors
+package de.maibornwolff.treesitter.excavationsite.languages.cpp.extractors.declarations
 
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
