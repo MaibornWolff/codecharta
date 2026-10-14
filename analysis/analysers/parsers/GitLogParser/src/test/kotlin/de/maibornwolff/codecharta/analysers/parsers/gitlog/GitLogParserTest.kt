@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser.Companion.main
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.converter.getAttributeDescriptors
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals

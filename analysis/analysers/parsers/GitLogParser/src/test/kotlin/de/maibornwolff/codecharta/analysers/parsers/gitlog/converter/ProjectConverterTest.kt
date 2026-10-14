@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Commit
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile

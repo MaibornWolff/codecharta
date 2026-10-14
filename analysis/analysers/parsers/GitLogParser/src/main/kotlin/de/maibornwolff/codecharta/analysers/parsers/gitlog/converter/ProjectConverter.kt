@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.VersionControlledFilesInGitProject
