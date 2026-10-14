@@ -306,19 +306,26 @@ describe("dependencyGraphBoxes", () => {
                 expect(pills).toMatchObject([{ shape: { x: 148, width: 28 }, style: { fill: "#dc2626", stroke: "#ffffff" } }])
             })
 
-            it("should count the hidden upward dependencies in a dashed badge with an arrow up, to the left of the cycle badges", () => {
+            it("should count the hidden upward dependencies in a dashed badge with an arrow up, after the cycle badges at the corner", () => {
                 // Arrange
                 const box = aBox("/root/a.ts", { x: 10, y: 20 })
 
                 // Act
-                const parts = childrenOf(drawBox(box, cyclic({ insideFilesCount: 2, upwardCount: 4 }), identityPixels))
+                const parts = childrenOf(
+                    drawBox(box, cyclic({ betweenFilesCount: 1, insideFilesCount: 2, upwardCount: 4 }), identityPixels)
+                )
 
                 // Assert
                 const pills = parts.filter(part => part.type === "rect" && part.info !== undefined)
-                expect(pills.map(pill => pill.info)).toEqual(["upwardBadge", "cycleBadge"])
-                expect(pills[0]).toMatchObject({
+                expect(pills.map(pill => [pill.info, pill.shape.x])).toEqual([
+                    ["cycleBadge", 86],
+                    ["cycleBadge", 117],
+                    ["upwardBadge", 148]
+                ])
+                expect(pills.map(pill => pill.style.fill)).toEqual(["#dc2626", "#ffffff", "#ffffff"])
+                expect(pills[2]).toMatchObject({
                     cursor: "pointer",
-                    shape: { x: 117, width: 28 },
+                    shape: { width: 28 },
                     style: { fill: "#ffffff", stroke: "#dc2626", lineDash: [3, 2] }
                 })
                 expect(parts.find(part => part.type === "text" && part.info === "upwardBadge").style.text).toBe("4")
