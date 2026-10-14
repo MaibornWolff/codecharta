@@ -1678,6 +1678,30 @@ class KotlinAnalyzerTest {
     }
 
     @Test
+    fun `should resolve an aliased import beside an import of the same simple name`() {
+        // Arrange
+        val facade = kotlinFile(
+            "a/CreatureFacade.kt",
+            """
+            package a
+
+            import m.Creature
+            import a.dto.Creature as CreatureDto
+
+            class CreatureFacade { fun toDto(creature: Creature): CreatureDto? = null }
+            """
+        )
+        val domainCreature = kotlinFile("m/Creature.kt", "package m\n\nclass Creature")
+        val dtoCreature = kotlinFile("a/dto/Creature.kt", "package a.dto\n\nclass Creature")
+
+        // Act
+        val targets = internalTargetsOf("CreatureFacade", facade, domainCreature, dtoCreature)
+
+        // Assert
+        assertThat(targets).containsExactlyInAnyOrder("m.Creature", "a.dto.Creature")
+    }
+
+    @Test
     fun `should resolve a fully qualified type without an import`() {
         // Arrange
         val service = kotlinFile(
