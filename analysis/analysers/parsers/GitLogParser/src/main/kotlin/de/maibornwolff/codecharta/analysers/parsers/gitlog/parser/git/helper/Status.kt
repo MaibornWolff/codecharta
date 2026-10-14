@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git
+package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.helper
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
 

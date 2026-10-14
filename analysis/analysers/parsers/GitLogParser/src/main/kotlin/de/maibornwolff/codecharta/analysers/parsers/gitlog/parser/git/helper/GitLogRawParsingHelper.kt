@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.helper
 
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.Modification
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.Status
 
 class GitLogRawParsingHelper {
     companion object {
