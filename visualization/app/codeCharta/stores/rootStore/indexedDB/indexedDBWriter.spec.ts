@@ -45,6 +45,7 @@ import {
     migrateCcStateRecordToV30,
     migrateCcStateRecordToV31,
     migrateCcStateRecordToV32,
+    migrateCcStateRecordToV33,
     readCcState,
     SCENARIOS_STORE_NAME,
     writeCcFiles,
@@ -1091,7 +1092,7 @@ describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted 
         expect(migrated.preferences["dependencyGraph"]).toEqual({ ...defaultDependencyGraphSettings, ...persistedBefore })
         expect(migrated.preferences["dependencyGraph"]).toMatchObject({
             lineStyleShows: "edgeType",
-            showsCycleBadges: true
+            hierarchy: "folders"
         })
     })
 
@@ -1113,7 +1114,7 @@ describe("migrateCcStateRecordToV29 (declaration settings seed on the persisted 
 describe("migrateCcStateRecordToV30 (dependency graph settings without the declaration looks, with the hierarchy)", () => {
     it("should drop the settings the graph lost, seed the hierarchy and keep the ones the reader had set", () => {
         // Arrange
-        const keptBefore = { edgeStyle: "straight", showsCycleBadges: false }
+        const keptBefore = { edgeStyle: "straight", isAnchoredAtSideMiddle: true }
         const persistedBefore = { ...keptBefore, declarationArrangement: "chips", declarationKindMark: "tint" }
         const oldShapeState = { preferences: { centerMapZoom: 165, dependencyGraph: persistedBefore } }
 
@@ -1203,6 +1204,38 @@ describe("migrateCcStateRecordToV32 (the hover held to the shown edge types)", (
 
         // Assert
         expect(migrated).toEqual([saidAlready, withoutSettings, null])
+    })
+})
+
+describe("migrateCcStateRecordToV33 (levels by number only, each box badge on its own)", () => {
+    it.each([
+        [true, ["betweenFiles", "insideFiles", "declaration", "upward"]],
+        [false, ["upward"]]
+    ])("should drop the level label and, for cycle badges shown %s, show the badges %j", (showsCycleBadges, shownBoxBadges) => {
+        // Arrange
+        const { shownBoxBadges: _notSavedYet, ...savedBefore } = { ...defaultDependencyGraphSettings, edgeStyle: "aside" }
+        const oldShapeState = {
+            preferences: { centerMapZoom: 165, dependencyGraph: { ...savedBefore, levelLabel: "path", showsCycleBadges } }
+        }
+
+        // Act
+        const migrated = migrateCcStateRecordToV33(oldShapeState) as unknown as { preferences: Record<string, unknown> }
+
+        // Assert
+        expect(migrated.preferences).toEqual({ centerMapZoom: 165, dependencyGraph: { ...savedBefore, shownBoxBadges } })
+    })
+
+    it("should leave settings of today, a state without any, and a nullish one as they are", () => {
+        // Arrange
+        const ofToday = { preferences: { dependencyGraph: { ...defaultDependencyGraphSettings, shownBoxBadges: ["upward"] } } }
+        const withoutSettings = { preferences: {} }
+
+        // Act
+        const migrated = [ofToday, withoutSettings, null].map(state => migrateCcStateRecordToV33(state))
+
+        // Assert
+        expect(migrated).toEqual([ofToday, withoutSettings, null])
+        expect(migrated[0]).toBe(ofToday)
     })
 })
 

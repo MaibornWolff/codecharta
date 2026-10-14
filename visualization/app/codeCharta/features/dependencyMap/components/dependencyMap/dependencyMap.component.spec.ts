@@ -457,10 +457,10 @@ describe("DependencyMapComponent", () => {
                 const { store, fixture } = await setup({ tree: DECLARING_TREE, declarations: CYCLIC })
 
                 // Act
-                await changeSettings(store, { showsCycleBadges: false })
+                await changeSettings(store, { shownBoxBadges: ["upward"] })
                 fixture.detectChanges()
                 const switchedOff = badgeCountOf(VIEW)
-                await changeSettings(store, { showsCycleBadges: true })
+                await changeSettings(store, { shownBoxBadges: ["betweenFiles", "insideFiles"] })
                 store.overrideSelector(edgeMetricSelector, "temporal_coupling")
                 store.refreshState()
                 fixture.detectChanges()
@@ -1321,18 +1321,12 @@ describe("DependencyMapComponent", () => {
         expect(movedBoxCount()).toBeGreaterThan(0)
     })
 
-    it("should label each level by its own number, and by the levels around it once the reader picks the path", async () => {
-        // Arrange
-        const { store, fixture } = await setup()
-        const numberLabels = drawnLevelLabels()
-
-        // Act
-        await changeSettings(store, { levelLabel: "path" })
-        fixture.detectChanges()
+    it("should label each level by its own number, also the levels nested in an opened folder", async () => {
+        // Arrange & Act
+        await setup()
 
         // Assert
-        expect(numberLabels).toEqual(["level 1", "level 0", "level 0", "level 0"])
-        expect(drawnLevelLabels()).toEqual(["level 1", "level 0", "level 1.0", "level 0.0"])
+        expect(drawnLevelLabels()).toEqual(["level 1", "level 0", "level 0", "level 0"])
     })
 
     it("should redraw the edges in the style the reader picks, bowing a dependency that runs both ways when straight", async () => {

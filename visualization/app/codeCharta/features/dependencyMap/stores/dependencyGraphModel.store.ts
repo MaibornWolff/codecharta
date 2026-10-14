@@ -58,8 +58,7 @@ export class DependencyGraphModelStore {
         if (!tree) {
             return null
         }
-        const layout = layoutLevelized(tree, this.viewStore.expandedPaths(), this.focusedFolderLevelPath())
-        return this.settings().levelLabel === "path" ? layout : namedByOwnLevel(layout)
+        return namedByOwnLevel(layoutLevelized(tree, this.viewStore.expandedPaths(), this.focusedFolderLevelPath()))
     })
     readonly shownLayout = computed(() => {
         const layout = this.layout()

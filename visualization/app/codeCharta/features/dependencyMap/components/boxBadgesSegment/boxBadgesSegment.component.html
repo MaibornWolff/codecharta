@@ -1,0 +1,33 @@
+<cc-axis-card
+    label="Badges"
+    [metricName]="chosenLabel()"
+    [searchPopoverId]="popoverId"
+    [searchAnchorName]="anchorName"
+    testId="dependency-bar-box-badges-segment"
+></cc-axis-card>
+<cc-settings-popover-shell [popoverId]="popoverId" [anchorName]="anchorName" ariaLabel="Badges" contentClass="gap-2 p-2">
+    <cc-selection-shortcuts (selectAll)="showAll()" (selectNone)="showNone()" (invert)="invert()"></cc-selection-shortcuts>
+    <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
+        @for (entry of entries(); track entry.mark) {
+            <li class="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-base-200">
+                <input
+                    #boxBadgeCheckbox
+                    type="checkbox"
+                    class="checkbox checkbox-sm checkbox-primary shrink-0"
+                    [id]="'dependency-bar-box-badges-' + entry.mark"
+                    [checked]="entry.isShown"
+                    [attr.data-testid]="'dependency-bar-box-badges-' + entry.mark"
+                    (change)="toggle(entry.mark, boxBadgeCheckbox.checked)"
+                />
+                <cc-cycle-mark-sample [mark]="entry.mark"></cc-cycle-mark-sample>
+                <label class="min-w-0 flex-1 cursor-pointer text-sm" [attr.for]="'dependency-bar-box-badges-' + entry.mark">{{ entry.label }}</label>
+            </li>
+        }
+    </ul>
+    <cc-reset-settings-button
+        [settingsKeys]="resetKeys"
+        [small]="true"
+        tooltip="Show every badge again"
+        label="Reset badges"
+    ></cc-reset-settings-button>
+</cc-settings-popover-shell>
