@@ -58,6 +58,7 @@ function context(overrides: Partial<InspectorContext> = {}, declarationEdges = D
         index,
         rowLimit: INSPECTOR_ROW_LIMIT,
         pointsUpward: declarationEdge => Boolean(declarationEdge.isPointingUpwards),
+        lineStyleShows: "edgeType",
         cycles: findCycleChains(index),
         edgeMetric: "dependencies",
         ...overrides
@@ -261,6 +262,20 @@ describe("describeSubject", () => {
             expect(upward.map(({ dependency }) => `${dependency.from.name} → ${dependency.to.name}`)).toEqual(["Creature → Armor"])
             expect(upward[0].dependency).toMatchObject({ type: "feedbackContainerLevel", declarationEdge: DECLARATION_EDGES[2] })
             expect(upward[0].files.map(file => file.name)).toEqual(["creature.ts"])
+        })
+
+        it("should draw an upward dependency dashed as the graph does while the dashes tell the edge types, and by its kind of use otherwise", () => {
+            // Arrange
+            const upwardInside = { pointsUpward: (declarationEdge: DependencyLeafEdge) => declarationEdge === DECLARATION_EDGES[2] }
+            const kindsOfUse = { ...upwardInside, lineStyleShows: "usage" as const }
+
+            // Act
+            const byEdgeType = describeSubject(box(CREATURE_NODE), context(upwardInside)).upward[0].dependency
+            const byKindOfUse = describeSubject(box(CREATURE_NODE), context(kindsOfUse)).upward[0].dependency
+
+            // Assert
+            expect(byEdgeType.line).toEqual({ dash: [5, 4], head: "filled" })
+            expect(byKindOfUse.line).toMatchObject({ dash: null, head: "filled" })
         })
 
         it("should tell of a row only its closer kinds of use, since that one declaration uses the other is what every row shows", () => {

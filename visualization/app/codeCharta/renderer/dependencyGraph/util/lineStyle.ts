@@ -41,9 +41,13 @@ export function isDashedEdgeType(type: DependencyEdgeType, lineStyleShows: LineS
     return lineStyleShows === "edgeType" && type === DASHED_EDGE_TYPE
 }
 
+export function lineStyleOfEdgeType(type: DependencyEdgeType, lineStyleShows: LineStyleMeaning): LineStyle {
+    return isDashedEdgeType(type, lineStyleShows) ? { dash: EDGE_TYPE_DASH, head: "filled" } : PLAIN_LINE
+}
+
 export function lineStyleOf(edge: GraphEdge, lineStyleShows: LineStyleMeaning): LineStyle {
     if (lineStyleShows === "edgeType") {
-        return isDashedEdgeType(edge.type, lineStyleShows) ? { dash: EDGE_TYPE_DASH, head: "filled" } : PLAIN_LINE
+        return lineStyleOfEdgeType(edge.type, lineStyleShows)
     }
     return USAGE_LEGEND.find(entry => entry.usage === usageShownBy(edge)) ?? PLAIN_LINE
 }

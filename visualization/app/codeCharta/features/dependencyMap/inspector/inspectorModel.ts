@@ -1,6 +1,6 @@
 import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
-import { DependencyEdgeType } from "../../../model/dependencyGraph.model"
+import { DependencyEdgeType, LineStyleMeaning } from "../../../model/dependencyGraph.model"
 import {
     addToGroup,
     counted,
@@ -9,6 +9,7 @@ import {
     isPackagePath,
     LeveledNode,
     LineStyle,
+    lineStyleOfEdgeType,
     lineStyleOfUsages,
     nameOfPath,
     PLAIN_USAGE,
@@ -154,6 +155,8 @@ export interface InspectorContext {
     /** Whether a dependency is drawn pointing upward in the hierarchy shown: between two files the folders
      * decide that by the file edge, the packages by the dependency itself. */
     pointsUpward: (declarationEdge: DependencyLeafEdge) => boolean
+    /** Whether the graph's dashes tell the edge types or the kinds of use. */
+    lineStyleShows: LineStyleMeaning
 }
 
 export const INSPECTOR_ROW_LIMIT = 20
@@ -467,12 +470,17 @@ type InspectorUpward = Pick<InspectorModel, "upward" | "upwardCount">
 
 const NO_UPWARD: InspectorUpward = { upward: [], upwardCount: 0 }
 
+/** Every row of the section points upward, so it is drawn as the graph draws its edge: dashed while the dashes
+ * tell the edge types, and by its kind of use otherwise. */
 function upwardOf(inside: readonly DependencyLeafEdge[], ownPaths: ReadonlySet<string>, context: InspectorContext): InspectorUpward {
+    const lineAsDrawn = (dependency: InspectorDependency): LineStyle =>
+        context.lineStyleShows === "edgeType" ? lineStyleOfEdgeType(dependency.type, context.lineStyleShows) : dependency.line
     const upward = inside
         .filter(context.pointsUpward)
-        .map(declarationEdge => ({
-            dependency: dependencyOf(declarationEdge, ownPaths, context),
-            files: [...new Set([declarationEdge.fromNodeName, declarationEdge.toNodeName])].map(fileReference)
+        .map(declarationEdge => dependencyOf(declarationEdge, ownPaths, context))
+        .map(dependency => ({
+            dependency: { ...dependency, line: lineAsDrawn(dependency) },
+            files: [...new Set([dependency.declarationEdge.fromNodeName, dependency.declarationEdge.toNodeName])].map(fileReference)
         }))
         .sort((upwardA, upwardB) => byTypeThenNames(upwardA.dependency, upwardB.dependency))
     return { upward: upward.slice(0, context.rowLimit), upwardCount: upward.length }
