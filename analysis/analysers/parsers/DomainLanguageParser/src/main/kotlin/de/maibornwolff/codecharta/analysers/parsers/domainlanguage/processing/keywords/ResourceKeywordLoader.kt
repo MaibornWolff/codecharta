@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.parseWordLines
-
 class ResourceKeywordLoader {
     fun loadFromResource(resourcePath: String): Set<String> {
         val inputStream =

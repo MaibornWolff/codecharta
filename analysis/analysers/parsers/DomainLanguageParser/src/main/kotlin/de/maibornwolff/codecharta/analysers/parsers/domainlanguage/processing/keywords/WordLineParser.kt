@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
+package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
 // Lowercased because SplitStage sanitizes every extracted word to lower case before it is compared:
 // an entry that keeps its capitals (`False`, `String`, `Hash`) could never match anything.
