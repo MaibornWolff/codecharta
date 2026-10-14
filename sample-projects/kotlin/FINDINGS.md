@@ -126,6 +126,47 @@ bounds, callable references, function types or receiver types. Declarations are 
 `object_declaration` only, so top-level functions, properties and typealiases are neither leaves nor targets, and a file
 without a class has no node. The import extractor reads the path only; the alias name is not kept.
 
+### Round 4 probes (2026-10-14)
+
+Running the dependency parser over CodeCharta's own `analysis/` (for the ArchUnit cycle check) missed two package
+cycles that the probes above do not cover. Both were isolated in a scratch project (package `a` declares, package `b`
+uses, one file per form):
+
+```kotlin
+// a/Strategy.kt
+fun interface Strategy { fun run(value: Int): Int }        // reported: no leaf at all    expected: leaf, kind interface
+
+// a/FunImplNoCtor.kt
+class FunImplNoCtor : Strategy { ... }                      // reported: no edge           expected: -> Strategy
+// a/FunHolder.kt
+class FunHolder(val strategy: Strategy)                     // reported: no edge           expected: -> Strategy
+// b/FunImplOtherPackage.kt (import a.Strategy)
+class FunImplOtherPackage(var flag: Boolean = false) : Strategy { ... }   // reported: no edge   expected: -> Strategy
+
+// a/PlainImplWithCtor.kt, same shape with `interface Plain`
+class PlainImplWithCtor(var flag: Boolean = false) : Plain { ... }        // reported: -> Plain   (ok)
+```
+
+```kotlin
+// b/ObjectAsValue.kt (import a.Single, `object Single : Plain`)
+fun single(): Plain = Single                                // reported: -> Plain only     expected: -> Single as well
+// b/CompanionAsValue.kt (import a.Dialog, `class Dialog { companion object : Plain }`)
+fun dialog(): Plain = Dialog                                // reported: -> Plain only     expected: -> Dialog as well
+// b/ObjectAsArgument.kt
+fun pass(): List<Any> = listOf(Single)                      // reported: no edge           expected: -> Single
+```
+
+- A `fun interface` is never a leaf, so nothing can point at it: same package or imported, as supertype or property
+  type. The declaration extractor accepts `class_declaration` and `object_declaration` only; how tree-sitter-kotlin
+  parses `fun interface` was not inspected, so the exact node is an assumption (it is evidently not a
+  `class_declaration`). In `analysis/` this hid `NodeMaxAttributeMerger : NodeMergerStrategy` and the property
+  `MutableNode.nodeMergingStrategy`; the only `NodeMergerStrategy` leaf in that run was the plain `interface` of the same
+  name in `mergefilter`.
+- An object or a companion referenced by its bare name as a value is not a used type, because only call and navigation
+  expressions with an upper-case first child are collected (`Single.run(1)` resolves, `Single` alone does not). In
+  `analysis/` this hid `GitLogParser.getDialog() = Dialog`. Not documented in the parser README, the docs page or
+  `KNOWN_ISSUES.md`.
+
 ### False positives, cycles, upward edges
 - False positives: none in the project and none in the probes.
 - Cycles: 1 strongly connected component `{Creature, CreatureFacade, CreatureService, Creatures, ArmorClass, CreatureUtil}`;
@@ -462,6 +503,10 @@ three. This is the JVM's file-name decoding, not the parsers' logic, but nothing
   (`rollD20`, `DEFAULT_DIE_SIDES`, `toDto`, `Entity`). **Decision: accept (derived from Java).**
 - Missing: files without a class or object have no node (`Entity.kt`, `CreatureDtoMapper.kt`, the two Gradle scripts), so
   their own dependencies vanish as well. **Decision: accept (derived from Java).**
+- Missing (round 4): a `fun interface` is no leaf, so every edge into it is lost, also as supertype and property type
+  (probe `a/Strategy.kt`; in `analysis/` `NodeMaxAttributeMerger : NodeMergerStrategy`).
+- Missing (round 4): an object or companion used by its bare name as a value gives no edge (`fun single(): Plain = Single`,
+  `listOf(Single)`; in `analysis/` `getDialog() = Dialog`), while a member access `Single.run(1)` does.
 - Wrong: nothing; no reported edge is false, no edge points to the wrong `Creature`.
 - Bad: nested declarations are leaves under their simple name without the enclosing class (`Builder`, `Resolvable`);
   `object` is kind `class`; every leaf edge has the usage `usage`; `outgoing_dependencies` counts declaration-level edges
