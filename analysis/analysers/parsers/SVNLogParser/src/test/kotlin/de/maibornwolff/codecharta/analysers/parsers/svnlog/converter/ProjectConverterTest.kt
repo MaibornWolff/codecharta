@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Commit
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Modification
-import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.parser.VersionControlledFile
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat

@@ -1,5 +1,7 @@
-package de.maibornwolff.codecharta.analysers.parsers.svnlog.input
+package de.maibornwolff.codecharta.analysers.parsers.svnlog.parser
 
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Commit
+import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.Modification
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.Metric
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import io.mockk.every
