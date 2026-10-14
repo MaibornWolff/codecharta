@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - **Kotlin dependencies**: `dependencyparser` finds the Kotlin dependencies it missed, such as casts and type checks,
   caught exceptions, type bounds, lambda and function types, class literals, objects used as values, aliased imports,
-  fully qualified names, delegated interfaces and `fun interface`s.
+  fully qualified names, delegated interfaces and `fun interface`s; an inner class depends on the class around it.
 
 - **Kotlin top-level declarations**: top-level functions, properties and typealiases are leaves of their own in
   `dependencyparser`, and a Kotlin file without any declaration keeps its node.
@@ -61,8 +61,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Rare characters in source files**: `domainlanguageparser` no longer returns cut-off words for a file that
   contains a byte order mark after its first character or one of the characters U+FFFE and U+FFFF.
 
-- **Upward edges into nested classes**: `dependencyparser` no longer marks a dependency between a class and a
-  class nested in it as pointing upwards.
+- **Upward edges into nested classes**: `dependencyparser` marks a dependency between a class and a class nested
+  in it as pointing upwards only when the two form a cycle, and then only the one from the nested class back.
 
 - **Rare characters in `dependencyparser`**: a file that contains one of the characters U+FFFE and U+FFFF no longer
   loses the dependencies of the code behind it.
