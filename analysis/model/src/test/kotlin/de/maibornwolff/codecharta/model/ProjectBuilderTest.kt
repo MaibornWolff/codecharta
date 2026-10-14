@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.model
 
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
