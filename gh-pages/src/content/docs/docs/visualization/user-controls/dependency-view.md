@@ -55,4 +55,4 @@ The bar at the bottom controls which edges are drawn and how:
 
   **Start and end at the middle of the side** bundles the edges of a box at one point. The gear icon opens the line thickness — **By count**, **Thin**, **Uniform** or **Strong** — and a **Width factor**, plus **Reset edge style**.
 - **Edge metric** – which edge metric of the map the graph draws.
-- **Level labels** – label the levels by **Number** (`level 0`, `level 1`, …) or by **Path**, which names the levels of nested folders by the folders around them.
+- **Badges** – for a map with declarations, tick which badges the boxes carry, with **All**, **None** and **Invert** as shortcuts: the counts of the **Cycles between files** and the **Cycles inside a file** a box hides, the ring of a **Declaration in a cycle**, and the count of the **Upward dependencies inside** a closed box, outlined like the upward edges. A click on a badge selects its box and opens the cycles or upward dependencies in the inspector.
