@@ -34,11 +34,26 @@ export function axesReaching(layout: DependencyGraphLayout, viewport: Viewport, 
     const room = Math.max(layout.width, layout.height) * DRAGGING_ROOM_SHARE
     const roomyGraph = windowAround({ x: -room, y: -room, width: layout.width + 2 * room, height: layout.height + 2 * room }, viewport, 1)
     // ECharts clamps the shown window to the axes, which would cut a window reaching past a graph that shrank.
-    const reach = enclosingWindow(roomyGraph, shownWindow)
+    const reach = isWithin(shownWindow, roomyGraph) ? roomyGraph : windowCentredOnGraph(layout, [roomyGraph, shownWindow], viewport)
     return {
         xAxis: { type: "value", show: false, min: reach.x[0], max: reach.x[1] },
         yAxis: { type: "value", show: false, inverse: true, min: reach.y[0], max: reach.y[1] }
     }
+}
+
+/** Zooming out ends at the reach of the axes and cannot be panned from there, so the graph is in its middle, and
+ * zooms of both axes reach it together only when it keeps the viewport's proportions. */
+function windowCentredOnGraph(layout: DependencyGraphLayout, held: AxisWindow[], { width, height }: Viewport): AxisWindow {
+    const centreX = layout.width / 2
+    const centreY = layout.height / 2
+    const halfWidth = Math.max(...held.flatMap(({ x }) => x.map(end => Math.abs(end - centreX))))
+    const halfHeight = Math.max(...held.flatMap(({ y }) => y.map(end => Math.abs(end - centreY))))
+    const area = { x: centreX - halfWidth, y: centreY - halfHeight, width: 2 * halfWidth, height: 2 * halfHeight }
+    return windowAround(area, { width, height }, 1)
+}
+
+function isWithin(inner: AxisWindow, outer: AxisWindow): boolean {
+    return outer.x[0] <= inner.x[0] && inner.x[1] <= outer.x[1] && outer.y[0] <= inner.y[0] && inner.y[1] <= outer.y[1]
 }
 
 // Values rather than percentages: ECharts maps a percentage onto the axes' reach, and that grows and shrinks
@@ -57,13 +72,6 @@ export function panBothAxesTo({ x, y }: AxisWindow) {
             { dataZoomIndex: DATA_ZOOM_INDEX.x, startValue: x[0], endValue: x[1] },
             { dataZoomIndex: DATA_ZOOM_INDEX.y, startValue: y[0], endValue: y[1] }
         ]
-    }
-}
-
-function enclosingWindow(first: AxisWindow, second: AxisWindow): AxisWindow {
-    return {
-        x: [Math.min(first.x[0], second.x[0]), Math.max(first.x[1], second.x[1])],
-        y: [Math.min(first.y[0], second.y[0]), Math.max(first.y[1], second.y[1])]
     }
 }
 
