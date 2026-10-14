@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.importers.sonar.model
 
-import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

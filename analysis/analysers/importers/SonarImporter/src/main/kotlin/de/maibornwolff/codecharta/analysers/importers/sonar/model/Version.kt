@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.analysers.importers.sonar.model
 
-import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
-
 class Version(val major: Int, val minor: Int) {
     companion object {
         fun parse(version: String): Version {

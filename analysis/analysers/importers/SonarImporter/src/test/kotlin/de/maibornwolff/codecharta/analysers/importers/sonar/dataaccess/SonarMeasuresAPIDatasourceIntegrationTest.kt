@@ -8,11 +8,11 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import com.google.gson.GsonBuilder
-import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
 import de.maibornwolff.codecharta.analysers.importers.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.ErrorEntity
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.ErrorResponse
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Measures
+import de.maibornwolff.codecharta.analysers.importers.sonar.model.SonarImporterException
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Version
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows

@@ -1,11 +1,11 @@
 package de.maibornwolff.codecharta.analysers.importers.sonar.dataaccess
 
-import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
 import de.maibornwolff.codecharta.analysers.importers.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Component
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Measures
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Qualifier
+import de.maibornwolff.codecharta.analysers.importers.sonar.model.SonarImporterException
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Version
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker

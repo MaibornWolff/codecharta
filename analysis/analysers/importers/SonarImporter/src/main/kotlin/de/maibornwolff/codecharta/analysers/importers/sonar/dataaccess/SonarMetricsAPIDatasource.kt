@@ -1,8 +1,8 @@
 package de.maibornwolff.codecharta.analysers.importers.sonar.dataaccess
 
-import de.maibornwolff.codecharta.analysers.importers.sonar.SonarImporterException
 import de.maibornwolff.codecharta.analysers.importers.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.analysers.importers.sonar.model.Metrics
+import de.maibornwolff.codecharta.analysers.importers.sonar.model.SonarImporterException
 import de.maibornwolff.codecharta.util.Logger
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
