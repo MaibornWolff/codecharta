@@ -279,4 +279,92 @@ class SplitStageTest {
         val words = result.first().words.map { it.text }
         assertEquals(listOf("max", "tree", "map", "files"), words)
     }
+
+    @Test
+    fun `should keep umlauts and sharp s inside words of a comment`() {
+        // Arrange
+        val stage = SplitStage()
+        val input = listOf(WeightedText("Die Zentaurenhöhle gehören zur Rüstungsklasse", 2, ExtractionContext.COMMENT))
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.first().words.map { it.text }
+        assertEquals(listOf("die", "zentaurenhöhle", "gehören", "zur", "rüstungsklasse"), words)
+    }
+
+    @Test
+    fun `should keep words that start with an umlaut or hold a sharp s in a string`() {
+        // Arrange
+        val stage = SplitStage()
+        val input = listOf(WeightedText("Größe der Übelkeit", 1, ExtractionContext.STRING))
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.first().words.map { it.text }
+        assertEquals(listOf("größe", "der", "übelkeit"), words)
+    }
+
+    @Test
+    fun `should separate words at tab and newline escapes in a string`() {
+        // Arrange
+        val stage = SplitStage()
+        val input = listOf(WeightedText("goblin\\tkobold \\nghoul", 1, ExtractionContext.STRING))
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.first().words.map { it.text }
+        assertEquals(listOf("goblin", "kobold", "ghoul"), words)
+    }
+
+    @Test
+    fun `should separate an umlaut word from a unicode escape in a string`() {
+        // Arrange
+        val stage = SplitStage()
+        val input = listOf(WeightedText("höhle\\u00e4wyvern \\x41basilisk", 1, ExtractionContext.STRING))
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.first().words.map { it.text }
+        assertEquals(listOf("höhle", "wyvern", "basilisk"), words)
+    }
+
+    @Test
+    fun `should keep a backslash in a comment as plain prose`() {
+        // Arrange
+        val stage = SplitStage()
+        val input = listOf(WeightedText("stored in C:\\temp\\notes", 2, ExtractionContext.COMMENT))
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.first().words.map { it.text }
+        assertEquals(listOf("stored", "temp", "notes"), words)
+    }
+
+    @Test
+    fun `should treat tabs and line breaks in comments and strings as separators`() {
+        // Arrange
+        val stage = SplitStage()
+        val input =
+            listOf(
+                WeightedText("dragon\tlair\r\nhoard", 2, ExtractionContext.COMMENT),
+                WeightedText("griffin\tnest\u000Bcave", 1, ExtractionContext.STRING)
+            )
+
+        // Act
+        val result = stage.split(input)
+
+        // Assert
+        val words = result.flatMap { split -> split.words.map { it.text } }
+        assertEquals(listOf("dragon", "lair", "hoard", "griffin", "nest", "cave"), words)
+    }
 }

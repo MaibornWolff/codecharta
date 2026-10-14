@@ -97,18 +97,59 @@ class DomainLanguageParserTest {
         assertThat(isApplicable).isFalse()
     }
 
+    @Test
+    fun `should stop execution when the identifier weight is not positive`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = sourceProject(tempDir)
+
+        // Act
+        val exitCode = CommandLine(DomainLanguageParser()).execute(projectDir, "--identifier-weight", "0")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(errorStream.toString()).contains("--identifier-weight must be positive")
+    }
+
     @ParameterizedTest
-    @ValueSource(strings = ["--identifier-weight", "--comment-weight", "--string-weight"])
-    fun `should stop execution when a weight option is not positive`(
+    @ValueSource(strings = ["--comment-weight", "--string-weight"])
+    fun `should stop execution when a comment or string weight is negative`(
         weightOption: String,
         @TempDir tempDir: Path
     ) {
+        // Arrange
         val projectDir = sourceProject(tempDir)
 
-        val exitCode = CommandLine(DomainLanguageParser()).execute(projectDir, weightOption, "0")
+        // Act
+        val exitCode = CommandLine(DomainLanguageParser()).execute(projectDir, weightOption, "-1")
 
+        // Assert
         assertThat(exitCode).isNotZero()
-        assertThat(errorStream.toString()).contains("$weightOption must be positive")
+        assertThat(errorStream.toString()).contains("$weightOption must not be negative")
+    }
+
+    @Test
+    fun `should leave out comment and string words when their weights are zero`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("InventoryService.kt").writeText(
+            """
+            // warehouse
+            class InventoryService {
+                val label = "shipment"
+            }
+            """.trimIndent()
+        )
+
+        // Act
+        val result = runParser(tempDir.toString(), "--comment-weight", "0", "--string-weight", "0")
+
+        // Assert
+        assertThat(result).contains("inventory")
+        assertThat(result).doesNotContain("warehouse")
+        assertThat(result).doesNotContain("shipment")
     }
 
     @Test

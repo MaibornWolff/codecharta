@@ -51,10 +51,10 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
     @CommandLine.Option(names = ["--identifier-weight"], description = ["weight for identifier words (class/function/variable names)"])
     private var identifierWeight: Int = DEFAULT_IDENTIFIER_WEIGHT
 
-    @CommandLine.Option(names = ["--comment-weight"], description = ["weight for words in comments"])
+    @CommandLine.Option(names = ["--comment-weight"], description = ["weight for words in comments (0 leaves comments out)"])
     private var commentWeight: Int = DEFAULT_COMMENT_WEIGHT
 
-    @CommandLine.Option(names = ["--string-weight"], description = ["weight for words in string literals"])
+    @CommandLine.Option(names = ["--string-weight"], description = ["weight for words in string literals (0 leaves strings out)"])
     private var stringWeight: Int = DEFAULT_STRING_WEIGHT
 
     @CommandLine.Option(
@@ -137,8 +137,8 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
 
     private fun validateOptions() {
         require(identifierWeight > 0) { "--identifier-weight must be positive, got $identifierWeight" }
-        require(commentWeight > 0) { "--comment-weight must be positive, got $commentWeight" }
-        require(stringWeight > 0) { "--string-weight must be positive, got $stringWeight" }
+        require(commentWeight >= 0) { "--comment-weight must not be negative, got $commentWeight" }
+        require(stringWeight >= 0) { "--string-weight must not be negative, got $stringWeight" }
         require((limit ?: 0) >= 0) { "--limit must not be negative, got $limit" }
     }
 

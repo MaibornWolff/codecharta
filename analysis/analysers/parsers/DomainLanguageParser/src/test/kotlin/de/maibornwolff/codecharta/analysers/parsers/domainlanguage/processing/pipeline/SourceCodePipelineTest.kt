@@ -165,6 +165,32 @@ class SourceCodePipelineTest {
     }
 
     @Test
+    fun `should take no words from comments and strings when their weight is zero`() {
+        // Arrange
+        val pipeline =
+            SourceCodePipeline(
+                Language.KOTLIN,
+                weights = ExtractionWeights(commentWeight = 0, stringWeight = 0),
+                stopWordFilter = emptyFilter
+            )
+        val sourceCode =
+            """
+            // customer orders
+            class OrderProcessor {
+                val label = "invoice"
+            }
+            """.trimIndent()
+
+        // Act
+        val result = pipeline.process(sourceCode, sourcePath)
+
+        // Assert
+        assertFalse(result.containsKey("customer"))
+        assertFalse(result.containsKey("invoice"))
+        assertEquals(3, result["order"])
+    }
+
+    @Test
     fun `should aggregate duplicate identifiers`() {
         // Arrange
         val pipeline =

@@ -39,8 +39,8 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `--stop-word-level=<MINIMAL\|MODERATE\|AGGRESSIVE>` | technical stop word filtering level (default MODERATE)                               |
 | `--no-technical-stopwords`                | disable filtering of common technical words (e.g. `test`, `util`, `handler`)                  |
 | `--identifier-weight=<n>`                 | weight for identifier words (class/function/variable names; default 3)                         |
-| `--comment-weight=<n>`                    | weight for words in comments (default 2)                                                        |
-| `--string-weight=<n>`                     | weight for words in string literals (default 1)                                                |
+| `--comment-weight=<n>`                    | weight for words in comments (default 2; 0 leaves comments out)                                |
+| `--string-weight=<n>`                     | weight for words in string literals (default 1; 0 leaves strings out)                         |
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |
 | `-h, --help`                              | displays this help and exits                                                                    |
 

@@ -14,7 +14,8 @@ class SplitStage(private val ngrams: Int = 1) {
         val words =
             when (weighted.context) {
                 ExtractionContext.IDENTIFIER -> splitIdentifier(weighted.text)
-                ExtractionContext.COMMENT, ExtractionContext.STRING -> extractWords(weighted.text)
+                ExtractionContext.COMMENT -> extractWords(weighted.text)
+                ExtractionContext.STRING -> extractWords(weighted.text.replace(ESCAPE_SEQUENCE_PATTERN, " "))
             }
 
         val weightedWords = words.map { WeightedText(it, weighted.weight, weighted.context) }
@@ -47,6 +48,8 @@ class SplitStage(private val ngrams: Int = 1) {
         private const val MIN_WORD_LENGTH = 2
 
         private const val MIN_MATCHED_RUN_LENGTH = 3
-        private val WORD_PATTERN = Regex("""\b[a-zA-Z]{$MIN_MATCHED_RUN_LENGTH,}\b""")
+        private val WORD_PATTERN = Regex("""(?U)\b\p{L}{$MIN_MATCHED_RUN_LENGTH,}\b""")
+        private val ESCAPE_SEQUENCE_PATTERN =
+            Regex("""\\(?:u\{\p{XDigit}+}|u\p{XDigit}{4}|U\p{XDigit}{8}|x\p{XDigit}{1,2}|[0-7]{1,3}|.)""")
     }
 }
