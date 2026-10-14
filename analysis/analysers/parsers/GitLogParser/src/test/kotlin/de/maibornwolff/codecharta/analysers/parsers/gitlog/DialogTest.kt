@@ -7,10 +7,6 @@ import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.Dialog.Companion.collectGeneralArgs
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.Dialog.Companion.collectSubcommand
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.LogScanCommand
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.LogScanDialog
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.RepoScanCommand
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.RepoScanDialog
 import io.mockk.every
 import io.mockk.mockkObject
 import org.assertj.core.api.Assertions.assertThat

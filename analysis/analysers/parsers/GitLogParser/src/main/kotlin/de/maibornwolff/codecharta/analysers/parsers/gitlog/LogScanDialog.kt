@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands
+package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session

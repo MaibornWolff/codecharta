@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands
+package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import de.maibornwolff.codecharta.util.InputHelper
 import io.mockk.every

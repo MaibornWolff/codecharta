@@ -10,8 +10,6 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.Metrics
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.LogParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.helper.GitPathUnquoter
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.LogScanCommand
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands.RepoScanCommand
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 import de.maibornwolff.codecharta.model.AttributeGenerator
 import de.maibornwolff.codecharta.model.Project

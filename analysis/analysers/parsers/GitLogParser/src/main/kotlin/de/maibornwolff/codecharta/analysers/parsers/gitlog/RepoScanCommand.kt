@@ -1,10 +1,9 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog.subcommands
+package de.maibornwolff.codecharta.analysers.parsers.gitlog
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.commit.GitWorktreeManager
-import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.util.GitAdapter
 import de.maibornwolff.codecharta.util.InputHelper
 import picocli.CommandLine
