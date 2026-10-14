@@ -1,10 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.AliasPathResolver
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.DirectImport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.Import
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.model.RelativeImport
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import java.io.File
 
@@ -67,32 +65,6 @@ fun String.stripSourceFileExtension(): String {
 }
 
 private val SOURCE_FILE_EXTENSIONS = listOf(".vue", ".tsx", ".jsx", ".mts", ".cts", ".mjs", ".cjs", ".ts", ".js")
-
-/**
- * Resolves a TSE import path (List<String>) to a flat list of path segments.
- *
- * - Relative paths (starting with "." or "..") are resolved against the containing file's location.
- * - Bare specifiers (e.g. "@shared/utils") are resolved through config-based alias resolution
- *   (tsconfig/jsconfig `paths` -> bundler aliases -> federation remotes) via [AliasPathResolver],
- *   falling back to the unresolved literal path so real npm packages stay external.
- */
-fun resolveImportPath(tsePath: List<String>, fileInfo: FileInfo): List<String> {
-    val stripped = tsePath.map { it.stripSourceFileExtension() }.filter { it.isNotEmpty() }
-    if (stripped.isEmpty()) return stripped
-    if (stripped.first() != "." && stripped.first() != "..") {
-        // Bare specifier (e.g. "@shared/utils"): try config-based alias resolution
-        // (tsconfig paths -> bundler aliases -> federation remotes). Falls back to the
-        // unresolved literal path, so real npm packages stay external as before.
-        return AliasPathResolver.resolve(stripped.joinToString("/"), fileInfo)?.parts ?: stripped
-    }
-    var dirParts = fileInfo.physicalPathAsPath().parts.dropLast(1)
-    var remaining = stripped
-    while (remaining.isNotEmpty() && (remaining.first() == "." || remaining.first() == "..")) {
-        if (remaining.first() == "..") dirParts = dirParts.dropLast(1)
-        remaining = remaining.drop(1)
-    }
-    return dirParts + remaining
-}
 
 /**
  * Converts an absolute file path to a Path relative to the analysis root.
