@@ -235,6 +235,8 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 
 
 <table><thead><tr><th>Metric per function</th><th>Description</th></tr></thead><tbody><tr><td>parameters_per_function</td><td>The number of parameters for each function</td></tr><tr><td>complexity_per_function</td><td>The complexity inside the body of a function</td></tr><tr><td>rloc_per_function</td><td>The real lines of code inside the body of a function</td></tr></tbody></table>
+<p>A function nested in another one, such as a local function or a method of an object expression, is a function of its own: its
+parameters, complexity and lines count for it and not for the enclosing function.</p>
 <div class="sl-heading-wrapper level-h3"><h3 id="usage-and-parameters">Usage and Parameters</h3><a class="sl-anchor-link" href="#usage-and-parameters"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Usage and Parameters”</span></a></div>
 
 
@@ -354,6 +356,7 @@ contribute to complexity:</p>
 <code dir="auto">disjunction_expression</code>, <code dir="auto">when_entry</code>, <code dir="auto">catch_block</code></li>
 <li><strong>Functions</strong>: <code dir="auto">function_declaration</code>, <code dir="auto">anonymous_function</code>, <code dir="auto">anonymous_initializer</code>, <code dir="auto">lambda_literal</code>, <code dir="auto">secondary_constructor</code>, <code dir="auto">setter</code>,
 <code dir="auto">getter</code></li>
+<li><strong>Not counted</strong>: a guard on a <code dir="auto">when</code> branch (<code dir="auto">is X if condition -></code>), which the grammar does not parse</li>
 </ul>
 <div class="sl-heading-wrapper level-h5"><h5 id="c-cs">C# (.cs)</h5><a class="sl-anchor-link" href="#c-cs"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “C# (.cs)”</span></a></div>
 <ul>
@@ -481,8 +484,9 @@ contribute to complexity:</p>
 <div class="sl-heading-wrapper level-h5"><h5 id="kotlin-kt-kts-1">Kotlin (.kt, .kts)</h5><a class="sl-anchor-link" href="#kotlin-kt-kts-1"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “Kotlin (.kt, .kts)”</span></a></div>
 <ul>
 <li><strong>Simple functions</strong>: <code dir="auto">secondary_constructor</code>, <code dir="auto">setter</code>, <code dir="auto">getter</code></li>
-<li><strong>Complex functions</strong>: Property declarations with lambda literals, anonymous functions, or initializers; function declarations with
-function bodies</li>
+<li><strong>Complex functions</strong>: function declarations with a function body, whatever their signature holds (receiver, return type, modifiers,
+type parameters, <code dir="auto">where</code> clause)</li>
+<li><strong>Not counted</strong>: lambda literals and anonymous functions, wherever they stand; they contribute only to complexity</li>
 </ul>
 <div class="sl-heading-wrapper level-h5"><h5 id="c-cs-1">C# (.cs)</h5><a class="sl-anchor-link" href="#c-cs-1"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “C# (.cs)”</span></a></div>
 <ul>
