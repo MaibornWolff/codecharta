@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
-import de.maibornwolff.codecharta.analysers.parsers.svnlog.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.VersionControlledFile
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.Edge

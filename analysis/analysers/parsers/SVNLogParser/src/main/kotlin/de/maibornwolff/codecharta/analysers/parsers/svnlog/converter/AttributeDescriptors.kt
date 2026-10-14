@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.svnlog
+package de.maibornwolff.codecharta.analysers.parsers.svnlog.converter
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
