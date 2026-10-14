@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.input
 
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

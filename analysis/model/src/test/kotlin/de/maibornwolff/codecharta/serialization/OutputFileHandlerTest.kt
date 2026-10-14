@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.util.FileExtension
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

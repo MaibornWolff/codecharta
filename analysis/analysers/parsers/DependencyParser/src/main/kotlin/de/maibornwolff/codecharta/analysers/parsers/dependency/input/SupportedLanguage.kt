@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.input
 
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 
 /**
  * The languages this parser can extract dependencies from, each backed by the [FileExtension] entries

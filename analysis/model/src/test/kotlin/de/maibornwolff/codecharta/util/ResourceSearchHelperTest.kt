@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.util
 
-import de.maibornwolff.codecharta.serialization.FileExtension
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 

@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.util
 
-import de.maibornwolff.codecharta.serialization.FileExtension
 import java.io.File
 
 class ResourceSearchHelper {

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.dialogProvider
 
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
