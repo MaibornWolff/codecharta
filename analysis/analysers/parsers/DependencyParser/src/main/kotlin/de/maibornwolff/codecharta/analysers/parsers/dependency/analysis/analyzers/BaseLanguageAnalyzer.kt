@@ -29,7 +29,7 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
                 emptySet()
             }
             val dependencies = importDeps + packageDep + extraDependencies(declaration)
-            toNode(result.packagePath, dependencies, declaration)
+            toNode(result.packagePath, dependencies, declaration, result.imports)
         }
         return FileReport(nodes)
     }
@@ -44,14 +44,19 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
 
     protected open fun extraDependencies(declaration: Declaration): Set<Dependency> = emptySet()
 
-    protected open fun selectUsedTypes(declaration: Declaration): Set<UsedType> = declaration.usedTypes
+    protected open fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> = declaration.usedTypes
 
-    private fun toNode(packagePath: List<String>, dependencies: Set<Dependency>, declaration: Declaration): Node = Node(
+    private fun toNode(
+        packagePath: List<String>,
+        dependencies: Set<Dependency>,
+        declaration: Declaration,
+        imports: List<ImportDeclaration>
+    ): Node = Node(
         pathWithName = buildPathWithName(packagePath, declaration),
         physicalPath = fileInfo.physicalPath,
         language = language,
         nodeType = declaration.type.toNodeType(),
         dependencies = dependencies,
-        usedTypes = selectUsedTypes(declaration).map { it.toType() }.toSet()
+        usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet()
     )
 }

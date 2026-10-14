@@ -7,6 +7,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.DependencyResolverService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -1652,5 +1653,153 @@ class KotlinAnalyzerTest {
         // MyEnum.Entry.CONSTANT should extract MyEnum.Entry as the type
         assertThat(typeNames).contains("MyEnum.Entry")
         assertThat(typeNames).contains("MyEnum")
+    }
+
+    @Test
+    fun `should resolve an aliased import through its alias`() {
+        // Arrange
+        val repository = kotlinFile(
+            "p/CreatureRepository.kt",
+            """
+            package p
+
+            import p.entity.CreatureEntity as Entity
+
+            class CreatureRepository { fun load(): Entity? = null }
+            """
+        )
+        val entity = kotlinFile("p/entity/CreatureEntity.kt", "package p.entity\n\nclass CreatureEntity")
+
+        // Act
+        val targets = internalTargetsOf("CreatureRepository", repository, entity)
+
+        // Assert
+        assertThat(targets).containsExactly("p.entity.CreatureEntity")
+    }
+
+    @Test
+    fun `should resolve a fully qualified type without an import`() {
+        // Arrange
+        val service = kotlinFile(
+            "s/CreatureService.kt",
+            "package s\n\nclass CreatureService { fun pace(): m.Speed? = null }"
+        )
+        val speed = kotlinFile("m/Speed.kt", "package m\n\nclass Speed")
+
+        // Act
+        val targets = internalTargetsOf("CreatureService", service, speed)
+
+        // Assert
+        assertThat(targets).containsExactly("m.Speed")
+    }
+
+    @Test
+    fun `should resolve a fully qualified type beside an import of the same simple name`() {
+        // Arrange
+        val facade = kotlinFile(
+            "a/CreatureFacade.kt",
+            """
+            package a
+
+            import m.Creature
+
+            class CreatureFacade { fun toDto(creature: Creature): a.dto.Creature = a.dto.Creature() }
+            """
+        )
+        val domainCreature = kotlinFile("m/Creature.kt", "package m\n\nclass Creature")
+        val dtoCreature = kotlinFile("a/dto/Creature.kt", "package a.dto\n\nclass Creature")
+
+        // Act
+        val targets = internalTargetsOf("CreatureFacade", facade, domainCreature, dtoCreature)
+
+        // Assert
+        assertThat(targets).containsExactlyInAnyOrder("m.Creature", "a.dto.Creature")
+    }
+
+    @Test
+    fun `should resolve top-level functions, constants and typealiases`() {
+        // Arrange
+        val dice = kotlinFile(
+            "m/Dice.kt",
+            """
+            package m
+
+            const val DEFAULT_DIE_SIDES = 20
+            fun rollD20(): Int = 20
+            typealias Sides = Int
+            """
+        )
+        val creature = kotlinFile(
+            "m/Creature.kt",
+            "package m\n\nclass Creature { fun initiative(sides: Sides) = rollD20() + DEFAULT_DIE_SIDES }"
+        )
+
+        // Act
+        val targets = internalTargetsOf("Creature", dice, creature)
+
+        // Assert
+        assertThat(targets).containsExactlyInAnyOrder("m.rollD20", "m.DEFAULT_DIE_SIDES", "m.Sides")
+    }
+
+    @Test
+    fun `should resolve an imported extension function and an object used as a value`() {
+        // Arrange
+        val mapper = kotlinFile("a/CreatureDtoMapper.kt", "package a\n\nfun String.toDto(): Int = length")
+        val single = kotlinFile("a/Single.kt", "package a\n\nobject Single")
+        val presenter = kotlinFile(
+            "w/CreaturePresenter.kt",
+            """
+            package w
+
+            import a.Single
+            import a.toDto
+
+            class CreaturePresenter { fun show(name: String): Any = name.toDto() to Single }
+            """
+        )
+
+        // Act
+        val targets = internalTargetsOf("CreaturePresenter", mapper, single, presenter)
+
+        // Assert
+        assertThat(targets).containsExactlyInAnyOrder("a.toDto", "a.Single")
+    }
+
+    @Test
+    fun `should resolve a fun interface as the target of its implementations`() {
+        // Arrange
+        val strategy = kotlinFile("a/Strategy.kt", "package a\n\nfun interface Strategy { fun run(value: Int): Int }")
+        val implementation = kotlinFile(
+            "b/Doubling.kt",
+            "package b\n\nimport a.Strategy\n\nclass Doubling : Strategy { override fun run(value: Int) = value * 2 }"
+        )
+
+        // Act
+        val targets = internalTargetsOf("Doubling", strategy, implementation)
+
+        // Assert
+        assertThat(targets).containsExactly("a.Strategy")
+    }
+
+    @Test
+    fun `should name a file without declarations after the file`() {
+        // Arrange
+        val buildScript = kotlinFile("build.gradle.kts", "import m.Dice\n\nplugins { id(\"kotlin\") }\nprintln(Dice())")
+
+        // Act
+        val report = KotlinAnalyzer(buildScript).analyze()
+
+        // Assert
+        assertThat(report.nodes).hasSize(1)
+        assertThat(report.nodes.first().pathWithName).isEqualTo(Path(listOf("build.gradle.script")))
+        assertThat(report.nodes.first().nodeType).isEqualTo(NodeType.SCRIPT)
+    }
+
+    private fun kotlinFile(physicalPath: String, content: String) = FileInfo(SupportedLanguage.KOTLIN, physicalPath, content.trimIndent())
+
+    private fun internalTargetsOf(nodeName: String, vararg files: FileInfo): List<String> {
+        val reports = files.map { KotlinAnalyzer(it).analyze() }
+        val node = DependencyResolverService.resolveNodes(reports).first { it.name() == nodeName }
+        return node.resolvedNodeDependencies.internalDependencies.map { it.withDots() }
     }
 }

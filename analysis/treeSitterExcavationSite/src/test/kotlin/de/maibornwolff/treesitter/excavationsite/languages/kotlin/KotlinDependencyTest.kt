@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.kotlin
 
+import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -7,6 +8,8 @@ import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 
 class KotlinDependencyTest {
     @Nested
@@ -131,6 +134,7 @@ class KotlinDependencyTest {
             assertThat(result.imports).hasSize(1)
             assertThat(result.imports[0].path).containsExactly("com", "example", "util", "StringUtils")
             assertThat(result.imports[0].isWildcard).isFalse()
+            assertThat(result.imports[0].bindingName).isEqualTo("Utils")
         }
 
         @Test
@@ -181,7 +185,7 @@ class KotlinDependencyTest {
         }
 
         @Test
-        fun `should return empty declarations when no type declarations`() {
+        fun `should extract a top-level function as a function declaration`() {
             // Arrange
             val code = """
             package com.example
@@ -193,7 +197,9 @@ class KotlinDependencyTest {
             val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
 
             // Assert
-            assertThat(result.declarations).isEmpty()
+            assertThat(result.declarations).containsExactly(
+                Declaration(name = "topLevelFunction", type = DeclarationType.FUNCTION, usedTypes = emptySet())
+            )
         }
 
         @Test
@@ -433,7 +439,9 @@ class KotlinDependencyTest {
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
                 UsedType("List", listOf(UsedType("String"))),
-                UsedType("Map", listOf(UsedType("String"), UsedType("List", listOf(UsedType("Int")))))
+                UsedType("Map", listOf(UsedType("String"), UsedType("List", listOf(UsedType("Int"))))),
+                UsedType("emptyList"),
+                UsedType("emptyMap")
             )
         }
 
@@ -453,7 +461,7 @@ class KotlinDependencyTest {
 
             // Assert
             val usedTypes = result.declarations.first().usedTypes
-            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("List"))
+            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("List"), UsedType("emptyList"), UsedType("Any"))
         }
 
         @Test
@@ -788,6 +796,222 @@ class KotlinDependencyTest {
     }
 
     @Nested
+    inner class UsageForms {
+        @ParameterizedTest(name = "should extract the type of {0}")
+        @CsvSource(
+            delimiter = '|',
+            value = [
+                "a secondary-constructor parameter|class Holder(val x: Int) { constructor(x: Int, cave: Target) : this(x) }|Int Target",
+                "a catch parameter|class Holder { fun f() { try { } catch (failure: Target) { } } }|Target",
+                "a safe cast|class Holder { fun f(candidate: Any) = candidate as? Target }|Any Target",
+                "a type check|class Holder { fun f(candidate: Any) = candidate is Target }|Any Target",
+                "a call type argument|class Holder { fun f() = emptyList<Target>() }|emptyList Target",
+                "a lambda parameter|class Holder { val reader = { roll: Target -> roll } }|Target",
+                "a where clause|class Holder { fun <T> f(items: List<T>): T? where T : Target = null }|List T Target",
+                "a type parameter bound of a function|class Holder { fun <T : Target> f(item: T) { } }|Target T",
+                "a type parameter bound of a class|class Holder<T : Target>|Target",
+                "a function type|class Holder { val visit: (Target) -> Unit = { } }|Target Unit",
+                "an extension receiver|class Holder { fun Target.run() { } }|Target",
+                "a delegated supertype|class Holder : Target by Other()|Target Other",
+                "a class literal|class Holder { val kind = Target::class }|Target",
+                "an object used as a value|class Holder { fun single(): Any = Target }|Any Target",
+                "an object passed as an argument|class Holder { fun pass() = listOf(Target) }|listOf Target"
+            ]
+        )
+        fun `should extract the type of every usage form`(form: String, code: String, expectedNames: String) {
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val usedTypeNames = result.declarations.first { it.name == "Holder" }.usedTypes.map { it.name }
+            assertThat(usedTypeNames).describedAs(form).containsExactlyInAnyOrder(*expectedNames.split(" ").toTypedArray())
+        }
+
+        @Test
+        fun `should keep the package of a fully qualified type`() {
+            // Arrange
+            val code = """
+            package b
+
+            class Holder {
+                val target: com.example.Target = com.example.Target()
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.first().usedTypes).containsExactlyInAnyOrder(UsedType("com.example.Target"))
+        }
+
+        @Test
+        fun `should extract a called top-level function and an imported extension function`() {
+            // Arrange
+            val code = """
+            package b
+
+            import a.toDto
+
+            class Holder {
+                fun f(creature: Creature) = creature.toDto() + rollD20()
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactlyInAnyOrder("Creature", "toDto", "rollD20")
+        }
+
+        @Test
+        fun `should not extract a member call that is not imported`() {
+            // Arrange
+            val code = """
+            package b
+
+            class Holder {
+                fun f(creature: Creature) = creature.describe()
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactly("Creature")
+        }
+
+        @Test
+        fun `should not extract the name of a named argument`() {
+            // Arrange
+            val code = """
+            package b
+
+            class Holder {
+                fun f() = Creature(Name = Title)
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactlyInAnyOrder("Creature", "Title")
+        }
+    }
+
+    @Nested
+    inner class TopLevelDeclarations {
+        @Test
+        fun `should extract top-level functions, properties and typealiases with their used types`() {
+            // Arrange
+            val code = """
+            package b
+
+            fun Creature.toDto(): CreatureDto = CreatureDto(name)
+            const val DEFAULT_DIE_SIDES = 20
+            val standard: Speed? = null
+            typealias Entity = CreatureEntity
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val byName = result.declarations.associateBy { it.name }
+            assertThat(byName.keys).containsExactlyInAnyOrder("toDto", "DEFAULT_DIE_SIDES", "standard", "Entity")
+            assertThat(byName["toDto"]?.type).isEqualTo(DeclarationType.FUNCTION)
+            assertThat(byName["toDto"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Creature"), UsedType("CreatureDto"))
+            assertThat(byName["DEFAULT_DIE_SIDES"]?.type).isEqualTo(DeclarationType.VARIABLE)
+            assertThat(byName["standard"]?.usedTypes).containsExactly(UsedType("Speed"))
+            assertThat(byName["Entity"]?.type).isEqualTo(DeclarationType.CLASS)
+            assertThat(byName["Entity"]?.usedTypes).containsExactly(UsedType("CreatureEntity"))
+        }
+
+        @Test
+        fun `should merge the overloads of a top-level function into one declaration`() {
+            // Arrange
+            val code = """
+            fun roll(): Dice = Dice()
+            fun roll(sides: Int): DiceRoll = DiceRoll(sides)
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations).hasSize(1)
+            assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactlyInAnyOrder("Dice", "Int", "DiceRoll")
+        }
+
+        @Test
+        fun `should extract a file holding only statements as a script`() {
+            // Arrange
+            val code = """
+            import a.Dice
+
+            plugins { id("kotlin") }
+            println(Dice().roll())
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations).hasSize(1)
+            assertThat(result.declarations.first().type).isEqualTo(DeclarationType.SCRIPT)
+            assertThat(result.declarations.first().usedTypes.map { it.name }).containsExactlyInAnyOrder("plugins", "id", "println", "Dice")
+        }
+
+        @Test
+        fun `should extract a fun interface as an interface`() {
+            // Arrange
+            val code = """
+            package a
+
+            fun interface Strategy { fun run(value: Speed): Int }
+
+            class FunHolder(val strategy: Strategy)
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val byName = result.declarations.associateBy { it.name }
+            assertThat(byName["Strategy"]?.type).isEqualTo(DeclarationType.INTERFACE)
+            assertThat(byName["Strategy"]?.usedTypes).containsExactlyInAnyOrder(UsedType("Speed"), UsedType("Int"))
+            assertThat(byName["FunHolder"]?.usedTypes).containsExactly(UsedType("Strategy"))
+        }
+
+        @Test
+        fun `should extract a fun interface whose method takes parameters as an interface and not as a function`() {
+            // Arrange
+            val code = """
+            package a
+
+            fun interface NodeMergerStrategy {
+                fun merge(tree: MutableNode, otherTrees: List<MutableNode>): MutableNode
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(
+                Declaration(
+                    name = "NodeMergerStrategy",
+                    type = DeclarationType.INTERFACE,
+                    usedTypes = setOf(UsedType("MutableNode"), UsedType("List", listOf(UsedType("MutableNode"))))
+                )
+            )
+        }
+    }
+
+    @Nested
     inner class CompletenessCheck {
         @Test
         fun `should extract all dependency types from a realistic multi-declaration file`() {
@@ -846,8 +1070,6 @@ class KotlinDependencyTest {
 
             // Assert - Creature used types (class params, properties, generics, inheritance,
             //          annotations, function params/returns, constructor calls, call expressions)
-            // Note: entries like "DamageCalculator()" and "DamageCalculator().compute" preserve full
-            // navigation expression text (including parentheses) to match DC legacy concatenation order
             assertThat(byName["Creature"]?.usedTypes).containsExactlyInAnyOrder(
                 UsedType("Fightable"),
                 UsedType("BaseEntity"),
@@ -861,8 +1083,7 @@ class KotlinDependencyTest {
                 UsedType("Logger"),
                 UsedType("Logger.info"),
                 UsedType("DamageCalculator"),
-                UsedType("DamageCalculator().compute"),
-                UsedType("DamageCalculator()")
+                UsedType("emptyMap")
             )
 
             // Assert - Movable scoped separately
@@ -876,7 +1097,8 @@ class KotlinDependencyTest {
             assertThat(byName["CreatureRegistry"]?.usedTypes).containsExactlyInAnyOrder(
                 UsedType("Registry"),
                 UsedType("Serializable"),
-                UsedType("List", listOf(UsedType("Creature")))
+                UsedType("List", listOf(UsedType("Creature"))),
+                UsedType("emptyList")
             )
         }
     }
