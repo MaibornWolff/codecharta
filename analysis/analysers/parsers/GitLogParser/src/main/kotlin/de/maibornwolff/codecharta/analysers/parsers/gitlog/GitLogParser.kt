@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.InputFormatNames.GIT_LOG_NUMSTAT_RAW_REVERSED
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.converter.ProjectConverter
+import de.maibornwolff.codecharta.analysers.parsers.gitlog.converter.getAttributeDescriptors
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.LogParserStrategy
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.parser.git.GitLogNumstatRawParserStrategy

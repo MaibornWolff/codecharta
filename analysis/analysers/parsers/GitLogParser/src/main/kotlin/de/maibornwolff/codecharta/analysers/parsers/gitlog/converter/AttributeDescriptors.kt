@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.gitlog
+package de.maibornwolff.codecharta.analysers.parsers.gitlog.converter
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
