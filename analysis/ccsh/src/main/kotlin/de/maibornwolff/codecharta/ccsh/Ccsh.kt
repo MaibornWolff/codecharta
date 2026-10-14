@@ -25,7 +25,7 @@ import de.maibornwolff.codecharta.ccsh.analyser.AnalyserService
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveAnalyserSuggestion
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
-import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
+import de.maibornwolff.codecharta.model.AttributeGeneratorRegistry
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.Logger
 import io.github.oshai.kotlinlogging.KotlinLoggingConfiguration

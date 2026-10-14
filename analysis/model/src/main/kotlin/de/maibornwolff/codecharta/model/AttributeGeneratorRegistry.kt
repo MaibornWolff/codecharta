@@ -1,7 +1,4 @@
-package de.maibornwolff.codecharta.util
-
-import de.maibornwolff.codecharta.model.AttributeDescriptor
-import de.maibornwolff.codecharta.model.AttributeGenerator
+package de.maibornwolff.codecharta.model
 
 object AttributeGeneratorRegistry {
     private val generators = mutableListOf<AttributeGenerator>()

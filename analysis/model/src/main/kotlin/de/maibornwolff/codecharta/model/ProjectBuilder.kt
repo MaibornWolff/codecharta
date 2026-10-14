@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.model
 
 import com.google.gson.JsonElement
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import de.maibornwolff.codecharta.util.AttributeGeneratorRegistry
 import org.apache.commons.text.similarity.JaccardSimilarity
 import org.apache.commons.text.similarity.JaroWinklerSimilarity
 
