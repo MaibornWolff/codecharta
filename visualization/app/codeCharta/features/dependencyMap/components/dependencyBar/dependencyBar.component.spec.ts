@@ -372,6 +372,35 @@ describe("DependencyBarComponent", () => {
         expect(screen.getByTestId("dependency-bar-box-badges-segment").textContent).toContain("None")
     })
 
+    it("should show on the card the samples of the shown badges in their order, named on hover", async () => {
+        // Arrange & Act
+        await renderBar({ hasDeclarations: true, settings: { shownBoxBadges: ["upward", "betweenFiles"] } })
+
+        // Assert
+        const shown = screen.getByTestId("dependency-bar-box-badges-shown")
+        expect([...shown.querySelectorAll("svg")].map(sample => sample.getAttribute("data-mark"))).toEqual(["betweenFiles", "upward"])
+        expect(shown.getAttribute("title")).toBe("Cycles between files, Upward dependencies inside")
+    })
+
+    it("should show on the card the lines of the shown edge types as the graph draws them, or None", async () => {
+        // Arrange
+        await renderBar({ settings: { shownEdgeTypes: ["regular", "feedbackContainerLevel"] } })
+        const lines = [...screen.getByTestId("dependency-bar-edges-shown").querySelectorAll("line")]
+
+        // Act
+        TestBed.resetTestingModule()
+        await renderBar({ settings: { shownEdgeTypes: [] } })
+
+        // Assert
+        const { regular, feedbackContainerLevel } = defaultDependencyGraphSettings.edgeColors
+        expect(lines.map(line => [line.getAttribute("stroke"), line.getAttribute("stroke-dasharray")])).toEqual([
+            [regular, null],
+            [feedbackContainerLevel, "5 4"]
+        ])
+        expect(screen.getByTestId("dependency-bar-edges-shown").querySelector("line")).toBeNull()
+        expect(screen.getByTestId("dependency-bar-edges-shown").textContent).toContain("None")
+    })
+
     it("should let the dashes and arrowheads show the kind of use once the reader picks it", async () => {
         // Arrange
         const dispatch = await renderBar()

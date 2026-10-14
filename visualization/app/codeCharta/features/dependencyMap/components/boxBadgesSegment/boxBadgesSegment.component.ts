@@ -37,6 +37,8 @@ export class BoxBadgesSegmentComponent {
 
     private readonly shownBadges = computed(() => this.settings().shownBoxBadges)
     readonly entries = computed(() => BOX_BADGE_LEGEND.map(entry => ({ ...entry, isShown: this.shownBadges().includes(entry.mark) })))
+    /** The card shows what the graph carries, as it is drawn there, and names it for a pointer resting on it. */
+    readonly shownEntries = computed(() => this.entries().filter(entry => entry.isShown))
     readonly chosenLabel = computed(() => nameOfShownBoxBadges(this.shownBadges(), BOX_BADGE_LEGEND))
     readonly upwardLine = computed(() => upwardLineOf(this.settings().edgeColors, this.settings().lineStyleShows))
 

@@ -1,10 +1,13 @@
-<cc-axis-card
-    label="Edges shown"
-    [metricName]="chosenLabel()"
-    [searchPopoverId]="popoverId"
-    [searchAnchorName]="anchorName"
-    testId="dependency-bar-edges-segment"
-></cc-axis-card>
+<cc-axis-card label="Edges shown" [searchPopoverId]="popoverId" [searchAnchorName]="anchorName" testId="dependency-bar-edges-segment">
+    <div body class="flex min-h-[17.5px] items-center justify-center gap-1.5" [title]="chosenLabel()" data-testid="dependency-bar-edges-shown">
+        @for (entry of shownEntries(); track entry.type) {
+            <cc-edge-type-sample [color]="entry.color" [isDashed]="entry.isDashed"></cc-edge-type-sample>
+        } @empty {
+            <span class="text-sm font-semibold leading-tight" aria-hidden="true">None</span>
+        }
+        <span class="sr-only">{{ chosenLabel() }}</span>
+    </div>
+</cc-axis-card>
 <cc-settings-popover-shell [popoverId]="popoverId" [anchorName]="anchorName" ariaLabel="Edges shown" [widthClass]="popoverWidthClass" contentClass="gap-2 p-2">
     <cc-selection-shortcuts (selectAll)="showAll()" (selectNone)="showNone()" (invert)="invert()"></cc-selection-shortcuts>
     <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
