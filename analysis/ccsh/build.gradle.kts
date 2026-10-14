@@ -4,6 +4,18 @@ plugins {
 
 val nativeAccessFlag = "--enable-native-access=ALL-UNNAMED"
 
+// The JVM decodes file names with the charset of LC_CTYPE, a value it does not let -Dsun.jnu.encoding override, and
+// cannot open a file whose name that charset cannot decode. macOS JVMs always decode file names as UTF-8.
+val utf8FileNamesGuard =
+    """
+    if ! "${'$'}darwin" ; then
+        case "${'$'}{LC_ALL:-${'$'}{LC_CTYPE:-${'$'}{LANG:-}}}" in
+            *.[Uu][Tt][Ff]-8* | *.[Uu][Tt][Ff]8* ) ;;
+            * ) if [ -n "${'$'}{LC_ALL:-}" ] ; then export LC_ALL=C.UTF-8 ; else export LC_CTYPE=C.UTF-8 ; fi ;;
+        esac
+    fi
+    """.trimIndent()
+
 application {
     applicationName = "ccsh"
     mainClass = "de.maibornwolff.codecharta.ccsh.Ccsh"
@@ -85,8 +97,9 @@ tasks.named<CreateStartScripts>("startScripts") {
         unixScript.writeText(
             unixScript
                 .readText()
-                .replace(Regex("DEFAULT_JVM_OPTS=.*")) { "DEFAULT_JVM_OPTS=\"$nativeAccessFlag \${DEFAULT_JVM_OPTS:-}\"" }
-                .replace("#!/usr/bin/env sh", "")
+                .replace(Regex("DEFAULT_JVM_OPTS=.*")) {
+                    "DEFAULT_JVM_OPTS=\"$nativeAccessFlag \${DEFAULT_JVM_OPTS:-}\"\n\n$utf8FileNamesGuard"
+                }.replace("#!/usr/bin/env sh", "")
         )
     }
 }
