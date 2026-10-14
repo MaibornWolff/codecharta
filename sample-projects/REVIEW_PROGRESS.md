@@ -51,7 +51,7 @@ Only the reports change. No parser code is touched in this review. `SUMMARY.md` 
 | Language | State | Open verdict items |
 | --- | --- | --- |
 | Java | done | 0 |
-| Kotlin | reopened | 2 (round 4 dependency parser items, 2026-10-14) |
+| Kotlin | done | 0 (round 4 items accepted 2026-10-14; the accepted Kotlin items are implemented, see `plans/2026-10-14-kotlin-parser-findings.md`) |
 | TypeScript | done | 0 |
 | JavaScript | done | 0 |
 | Vue | done | 0 |
