@@ -81,9 +81,6 @@ class TokeiImporter(
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine(TokeiImporter(input, output, error)).setOut(PrintWriter(output)).execute(*args)
         }
-
-        @JvmStatic
-        val TOP_LEVEL_OBJECT = "inner"
     }
 
     @Throws(IOException::class)
@@ -111,7 +108,7 @@ class TokeiImporter(
     private fun determineImporterStrategy(root: JsonElement) {
         val json = root.asJsonObject
         importerStrategy =
-            if (json.has(TOP_LEVEL_OBJECT)) {
+            if (json.has(TokeiInnerStrategy.TOP_LEVEL_OBJECT)) {
                 TokeiInnerStrategy(rootName, pathSeparator)
             } else {
                 TokeiTwelveStrategy(rootName, pathSeparator)

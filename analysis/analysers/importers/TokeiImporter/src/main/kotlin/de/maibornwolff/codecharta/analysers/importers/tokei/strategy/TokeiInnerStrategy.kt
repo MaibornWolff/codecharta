@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.importers.tokei.strategy
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import de.maibornwolff.codecharta.analysers.importers.tokei.TokeiImporter
 import de.maibornwolff.codecharta.analysers.importers.tokei.analysisObject.AnalysisObject
 import de.maibornwolff.codecharta.analysers.importers.tokei.analysisObject.Stats
 import de.maibornwolff.codecharta.model.MutableNode
@@ -11,6 +10,10 @@ import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 
 class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStrategy {
+    companion object {
+        const val TOP_LEVEL_OBJECT = "inner"
+    }
+
     override var rootName = ""
     override var pathSeparator = ""
 
@@ -32,7 +35,7 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
         }
     }
 
-    override fun getLanguageSummaries(root: JsonElement): JsonObject = root.asJsonObject.get(TokeiImporter.TOP_LEVEL_OBJECT).asJsonObject
+    override fun getLanguageSummaries(root: JsonElement): JsonObject = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
 
     override fun determinePathSeparator(languageSummaries: JsonObject) {
         val gson = Gson()
