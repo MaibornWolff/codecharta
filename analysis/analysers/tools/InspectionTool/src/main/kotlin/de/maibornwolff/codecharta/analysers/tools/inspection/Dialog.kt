@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.dialogProvider.InputType
 import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedInput
 import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {

@@ -13,7 +13,7 @@ import com.varabyte.kotter.foundation.text.text
 import com.varabyte.kotter.foundation.text.yellow
 import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.Session
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 
 const val DEFAULT_INVALID_INPUT_MESSAGE = "Input is invalid!"
 

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
+import de.maibornwolff.codecharta.util.FileExtension
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream

@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.Import
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.JacocoStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.LcovStrategy
 import de.maibornwolff.codecharta.analysers.importers.coverage.strategies.PHPUnitStrategy
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.codecharta.util.ResourceSearchHelper.Companion.isFileWithOneOrMoreOfEndingsPresent
 
 internal enum class Format(

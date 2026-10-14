@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.serialization
+package de.maibornwolff.codecharta.util
 
 /** Canonical file extensions recognized by CodeCharta analysers. */
 enum class FileExtension(

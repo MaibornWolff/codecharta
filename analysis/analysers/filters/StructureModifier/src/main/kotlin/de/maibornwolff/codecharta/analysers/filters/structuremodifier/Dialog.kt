@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.dialogProvider.promptDefaultDirectoryAssistedI
 import de.maibornwolff.codecharta.dialogProvider.promptInput
 import de.maibornwolff.codecharta.dialogProvider.promptInputNumber
 import de.maibornwolff.codecharta.dialogProvider.promptList
-import de.maibornwolff.codecharta.serialization.FileExtension
+import de.maibornwolff.codecharta.util.FileExtension
 
 class Dialog {
     companion object : AnalyserDialogInterface {

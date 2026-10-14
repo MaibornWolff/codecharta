@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.Gson
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.io.IOException
