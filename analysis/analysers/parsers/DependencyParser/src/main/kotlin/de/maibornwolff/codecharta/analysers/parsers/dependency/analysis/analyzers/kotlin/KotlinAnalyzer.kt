@@ -17,15 +17,16 @@ class KotlinAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         Path(packagePath + declaration.parentPath + nameOf(declaration))
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
-        val importedNameByAlias = imports
-            .mapNotNull { import -> import.bindingName?.let { alias -> import.path.lastOrNull()?.let { alias to it } } }
+        val importedPathByAlias = imports
+            .mapNotNull { import -> import.bindingName?.let { alias -> alias to import.path.joinToString(PACKAGE_SEPARATOR) } }
             .toMap()
-        return declaration.usedTypes.map { it.withAliasesResolved(importedNameByAlias) }.toSet()
+        return declaration.usedTypes.map { it.withAliasesResolved(importedPathByAlias) }.toSet()
     }
 
-    private fun UsedType.withAliasesResolved(importedNameByAlias: Map<String, String>): UsedType = copy(
-        name = importedNameByAlias[name] ?: name,
-        genericTypes = genericTypes.map { it.withAliasesResolved(importedNameByAlias) }
+    // The full path, not only its last segment, as an alias often exists because another import shares that name
+    private fun UsedType.withAliasesResolved(importedPathByAlias: Map<String, String>): UsedType = copy(
+        name = importedPathByAlias[name] ?: name,
+        genericTypes = genericTypes.map { it.withAliasesResolved(importedPathByAlias) }
     )
 
     private fun nameOf(declaration: Declaration): String {
@@ -38,5 +39,6 @@ class KotlinAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         private const val SOURCE_ENDING = ".kt"
         private const val SCRIPT_ENDING = ".kts"
         private const val SCRIPT_SUFFIX = ".script"
+        private const val PACKAGE_SEPARATOR = "."
     }
 }
