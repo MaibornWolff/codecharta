@@ -80,3 +80,13 @@ The following issues were investigated but **not found**:
 - **Excessive comments**: Comments are appropriate and explain non-obvious logic
 - **Unused variables**: All declared variables are used
 - **Complex if conditions**: Multi-condition checks exist but are well-formatted with each condition on its own line
+
+### Kotlin grammar (tree-sitter-kotlin 0.3.8)
+
+**Severity: Low**
+
+- **`when` guards are not counted.** `is Creature if roll > 10 ->` (Kotlin 2.1) parses as an ERROR node, so the
+  guard adds nothing to `logic_complexity`.
+- **`fun interface` has no rule of its own.** It parses as an ERROR plus a lambda, or as a function declaration
+  with `interface` as its receiver type. `FunInterfaceExtractor` recognises both shapes, so the dependency parser
+  makes it an `interface` leaf; the unified parser still measures it in the shape the grammar produced.
