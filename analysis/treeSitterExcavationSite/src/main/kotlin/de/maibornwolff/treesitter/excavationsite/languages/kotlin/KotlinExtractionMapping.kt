@@ -29,6 +29,7 @@ object KotlinExtractionMapping : ExtractionMapping {
     private const val TYPE_IDENTIFIER = "type_identifier"
     private const val VARIABLE_DECLARATION = "variable_declaration"
     private const val MULTI_VARIABLE_DECLARATION = "multi_variable_declaration"
+    private const val RAW_STRING_DELIMITER = "\"\"\""
 
     override val nodeExtractions: Map<String, Extract> = buildMap {
         // Identifiers with generic extraction strategies
@@ -115,6 +116,9 @@ object KotlinExtractionMapping : ExtractionMapping {
         put("multiline_comment", Extract.Comment(CommentFormats.Block))
 
         // Strings
-        put("string_literal", Extract.StringLiteral(format = StringFormats.FromChild("string_content")))
+        put(
+            "string_literal",
+            Extract.StringLiteral(format = StringFormats.FromChild("string_content"), isRaw = { it.text.startsWith(RAW_STRING_DELIMITER) })
+        )
     }
 }

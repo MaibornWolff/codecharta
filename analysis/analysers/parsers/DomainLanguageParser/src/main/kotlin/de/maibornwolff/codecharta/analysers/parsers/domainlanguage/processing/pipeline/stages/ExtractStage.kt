@@ -20,7 +20,8 @@ class ExtractStage(private val language: Language) {
                         LibraryExtractionContext.IDENTIFIER -> ExtractionContext.IDENTIFIER
                         LibraryExtractionContext.COMMENT -> ExtractionContext.COMMENT
                         LibraryExtractionContext.STRING -> ExtractionContext.STRING
-                    }
+                    },
+                interpretsEscapes = extracted.interpretsEscapes
             )
         }
     }

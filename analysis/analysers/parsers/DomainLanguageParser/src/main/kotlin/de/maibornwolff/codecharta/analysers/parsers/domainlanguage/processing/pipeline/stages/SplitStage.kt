@@ -15,7 +15,7 @@ class SplitStage(private val ngrams: Int = 1) {
             when (weighted.context) {
                 ExtractionContext.IDENTIFIER -> splitIdentifier(weighted.text)
                 ExtractionContext.COMMENT -> extractWords(weighted.text)
-                ExtractionContext.STRING -> extractWords(weighted.text.replace(ESCAPE_SEQUENCE_PATTERN, " "))
+                ExtractionContext.STRING -> extractWords(withoutEscapes(weighted))
             }
 
         val weightedWords = words.map { WeightedText(it, weighted.weight, weighted.context) }
@@ -27,6 +27,9 @@ class SplitStage(private val ngrams: Int = 1) {
             context = weighted.context
         )
     }
+
+    private fun withoutEscapes(string: WeightedText): String =
+        if (string.interpretsEscapes) string.text.replace(ESCAPE_SEQUENCE_PATTERN, " ") else string.text
 
     private fun splitIdentifier(identifier: String): List<String> = identifier
         .splitToWords()
