@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Framework
 import de.maibornwolff.codecharta.util.Logger
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -7,13 +8,6 @@ import kotlinx.serialization.json.jsonObject
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.readText
-
-enum class Framework {
-    REACT,
-    ANGULAR,
-    ASPNET,
-    ENTITYFRAMEWORK
-}
 
 class FrameworkDetector {
     private data class Ecosystem(

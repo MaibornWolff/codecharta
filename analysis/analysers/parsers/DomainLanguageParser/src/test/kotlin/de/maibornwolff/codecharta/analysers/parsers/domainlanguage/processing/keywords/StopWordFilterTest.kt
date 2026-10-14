@@ -1,8 +1,7 @@
-package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
+package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywordLoader
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.filter
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.isExcluded
 import java.nio.file.Paths
 import kotlin.test.Test
 import kotlin.test.assertEquals

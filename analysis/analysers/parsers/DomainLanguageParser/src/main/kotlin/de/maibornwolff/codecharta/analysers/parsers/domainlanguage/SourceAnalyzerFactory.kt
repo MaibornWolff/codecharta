@@ -4,9 +4,9 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileSca
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.CoroutineFileProcessor
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.PathScopedKeywordProvider
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.analysis.TfIdfCalculator
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.PathScopedKeywordProvider
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.SilentProgressReporter
 

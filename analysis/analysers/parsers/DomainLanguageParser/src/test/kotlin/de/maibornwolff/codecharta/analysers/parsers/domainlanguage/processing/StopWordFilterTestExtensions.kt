@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
 import java.nio.file.Path
 import java.nio.file.Paths
 

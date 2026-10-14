@@ -1,8 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.ExtractionWeights
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.AggregateStage
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.ExtractStage
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages.FilterStage

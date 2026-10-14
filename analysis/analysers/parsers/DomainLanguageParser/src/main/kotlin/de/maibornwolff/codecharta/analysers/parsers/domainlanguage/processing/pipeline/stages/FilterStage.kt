@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.Language
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.StopWordFilter
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.WeightedText
 import java.nio.file.Path
 

@@ -1,7 +1,5 @@
-package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
+package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.LanguageKeywords
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.ResourceKeywords
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
 
 enum class Language(val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>, private val keywordResource: String) {
