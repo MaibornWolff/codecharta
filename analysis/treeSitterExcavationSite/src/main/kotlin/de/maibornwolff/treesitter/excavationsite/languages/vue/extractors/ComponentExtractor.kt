@@ -1,6 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.vue.extractors
 
-import de.maibornwolff.treesitter.excavationsite.languages.javascript.DEFAULT_EXPORT
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DEFAULT_EXPORT
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode

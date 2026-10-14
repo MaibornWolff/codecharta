@@ -1,4 +1,4 @@
-package de.maibornwolff.treesitter.excavationsite.languages.javascript
+package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
 internal const val DEFAULT_EXPORT = "DEFAULT_EXPORT"
 internal const val DEFAULT_KEYWORD = "default"

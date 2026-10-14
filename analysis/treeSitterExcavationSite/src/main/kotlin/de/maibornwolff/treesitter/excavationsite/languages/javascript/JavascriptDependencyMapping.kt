@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript
 
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.BundlerAliasExtractor
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DEFAULT_EXPORT
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DeclarationExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.ImportExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
