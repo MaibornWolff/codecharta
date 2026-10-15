@@ -120,8 +120,8 @@ class CycleRuleEvaluatorTest {
         assertThat(violations).containsExactly(
             DependenciesNotChecked(
                 Severity.WARNING,
-                "The map has no dependency analysis, so cycles and upward dependencies could not be checked. " +
-                    "Switch on the dependencyparser and leave out its --omit-graph-analysis."
+                "Cycles and upward dependencies could not be checked: the map has no dependency analysis. The dependencyparser " +
+                    "is switched off, found no source code it supports, or ran with --omit-graph-analysis."
             )
         )
     }

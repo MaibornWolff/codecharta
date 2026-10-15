@@ -35,7 +35,7 @@ class AnalysedProject(private val project: Project) {
     }
 
     private fun upwardOfFilePair(edges: List<Edge>, pathById: Map<String, String>): Map<Pair<String, String>, Boolean> = edges
-        .filter { DEPENDENCIES_METRIC in it.attributes }
+        .filter { ((it.attributes[DEPENDENCIES_METRIC] as? Number)?.toDouble() ?: 0.0) > 0.0 }
         .mapNotNull { edge ->
             val from = pathById[NodeId.fromEndpoint(edge.fromNodeName)] ?: return@mapNotNull null
             val to = pathById[NodeId.fromEndpoint(edge.toNodeName)] ?: return@mapNotNull null

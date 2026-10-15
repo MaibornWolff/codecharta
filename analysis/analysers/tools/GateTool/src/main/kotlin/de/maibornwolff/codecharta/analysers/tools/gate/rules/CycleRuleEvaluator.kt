@@ -18,8 +18,8 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
 
     private fun dependenciesNotChecked() = DependenciesNotChecked(
         Severity.WARNING,
-        "The map has no dependency analysis, so cycles and upward dependencies could not be checked. " +
-            "Switch on the dependencyparser and leave out its --omit-graph-analysis."
+        "Cycles and upward dependencies could not be checked: the map has no dependency analysis. The dependencyparser " +
+            "is switched off, found no source code it supports, or ran with --omit-graph-analysis."
     )
 
     private fun isInsideOneFile(declarations: List<Declaration>): Boolean = declarations.map { it.file }.distinct().size == 1
