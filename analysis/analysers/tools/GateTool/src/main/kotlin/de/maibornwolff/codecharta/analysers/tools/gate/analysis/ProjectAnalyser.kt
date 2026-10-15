@@ -13,8 +13,10 @@ import kotlin.io.path.createTempDirectory
 
 class AnalysisException(message: String) : RuntimeException(message)
 
+data class ConfiguredAnalyser(val analyser: AnalyserInterface, val arguments: List<String> = emptyList())
+
 class ProjectAnalyser {
-    fun analyse(projectFolder: File, analysers: List<AnalyserInterface>, outputFolder: File): Project {
+    fun analyse(projectFolder: File, analysers: List<ConfiguredAnalyser>, outputFolder: File): Project {
         if (analysers.isEmpty()) throw AnalysisException("No analyser is switched on that applies to ${projectFolder.path}.")
 
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
@@ -27,9 +29,12 @@ class ProjectAnalyser {
         }
     }
 
-    private fun runAnalyser(analyser: AnalyserInterface, projectFolder: File, workFolder: File, excludePattern: String?): Project {
+    private fun runAnalyser(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project {
+        val analyser = configured.analyser
         val mapFile = File(workFolder, analyser.name + FileExtension.CCJSON.primaryExtension)
-        val arguments = listOf(projectFolder.path, "--output-file", mapFile.path) + listOfNotNull(excludePattern?.let { "--exclude=$it" })
+        val arguments =
+            listOf(projectFolder.path, "--output-file", mapFile.path) + configured.arguments +
+                listOfNotNull(excludePattern?.let { "--exclude=$it" })
         val exitCode = CommandLine(analyser).execute(*arguments.toTypedArray())
         val writtenFile = File(OutputFileHandler.checkAndFixFileExtension(mapFile.path, true, FileExtension.JSON))
         val succeeded = exitCode == 0 && writtenFile.exists()

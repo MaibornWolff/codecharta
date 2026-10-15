@@ -37,6 +37,10 @@ output: .codecharta-gate-output   # where the map and report.json go, relative t
 
 analysers:                        # every applicable analyser runs unless switched off
   domainlanguageparser: off
+  unifiedparser:                  # options instead of on: the analyser's own options, without the leading --
+    exclude:
+      - generated/
+    bypass-gitignore: true
 
 exitCodes:                        # the exit code per severity; 2 is reserved for tool failures
   error: 1
@@ -82,6 +86,10 @@ overrides:                        # other limits for the files the patterns matc
   once, at the worst level it exceeds. Per-function rules use the file metrics the Unified Parser writes, such as
   `max_complexity_per_function`.
 - **A level, metric or setting left out** is not checked or keeps its default.
+- **Analyser options** are the long options of the analyser's own command, such as `ccsh unifiedparser --exclude`.
+  A list repeats the option, `true` sets a flag and `false` leaves it out. `--init` lists the options of every
+  analyser, and `--doctor` checks names and values the way the analyser itself would. The gate sets the output
+  options itself.
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console and in
   the report.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.

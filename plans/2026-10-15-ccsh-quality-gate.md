@@ -15,6 +15,8 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 
 ### 1. Analyse
 - `input:` names the folder to analyse, relative to the config (default: the config's folder)
+- Each analyser is `on`, `off`, or a mapping of its own long options; names and values are checked
+  with the analyser's picocli spec (no duplicated option knowledge)
 - Run the applicable and switched-on ones of RawTextParser, UnifiedParser, DependencyParser and
   DomainLanguageParser as they are, merge their maps with the MergeFilter's `ProjectMerger`
 - Leave the output folder out of the analysis, write the merged map into it

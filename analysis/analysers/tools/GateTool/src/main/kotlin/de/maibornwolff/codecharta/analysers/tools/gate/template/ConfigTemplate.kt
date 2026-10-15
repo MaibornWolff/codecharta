@@ -1,11 +1,12 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.template
 
+import de.maibornwolff.codecharta.analysers.tools.gate.config.AnalyserCatalog
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedFile
 
-class ConfigTemplate(private val files: List<AnalysedFile>, private val analyserNames: List<String>) {
+class ConfigTemplate(private val files: List<AnalysedFile>, private val analyserNames: List<String>, private val catalog: AnalyserCatalog) {
     fun render(): String = listOf(header(), input(), output(), analysers(), exitCodes(), metrics(), cycles(), overrides())
         .joinToString("\n\n") { section -> section.joinToString("\n") }
         .plus("\n")
@@ -19,7 +20,10 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
 
     private fun output() = commented("output: ${GateConfig.DEFAULT_OUTPUT}")
 
-    private fun analysers() = commented(listOf("analysers:") + analyserNames.map { "  $it: on" })
+    private fun analysers() = commented(
+        listOf("analysers:  ## on, off, or the analyser's options instead of on, e.g. exclude: [generated/]") +
+            analyserNames.flatMap { listOf("  $it: on", "    ## options: ${catalog.optionNames(it).joinToString()}") }
+    )
 
     private fun exitCodes() = commented(
         listOf("exitCodes:") + Severity.entries.reversed().map { "  ${it.key}: ${GateConfig.DEFAULT_EXIT_CODES.getValue(it)}" }
