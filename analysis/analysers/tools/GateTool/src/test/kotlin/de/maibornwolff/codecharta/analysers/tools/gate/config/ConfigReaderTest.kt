@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.tools.gate.config
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
 
 class ConfigReaderTest {
     private val reader = ConfigReader(setOf("rawtextparser", "unifiedparser"))
@@ -139,7 +141,7 @@ class ConfigReaderTest {
         assertThat(
             result.problems
         ).containsExactly(
-            ConfigProblem(2, "unknown key 'metrix', expected one of: output, analysers, exitCodes, metrics, cycles, overrides")
+            ConfigProblem(2, "unknown key 'metrix', expected one of: input, output, analysers, exitCodes, metrics, cycles, overrides")
         )
     }
 
@@ -321,5 +323,34 @@ class ConfigReaderTest {
 
         // Assert
         assertThat(result.problems.map { it.line }).containsExactly(2, 4)
+    }
+
+    @Test
+    fun `should read the input folder relative to the folder of the config`(
+        @TempDir configFolder: File
+    ) {
+        // Arrange
+        File(configFolder, "src").mkdirs()
+
+        // Act
+        val result = ConfigReader(setOf(), configFolder).read("input: src\n")
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.input).isEqualTo("src")
+    }
+
+    @Test
+    fun `should report an input folder that does not exist`(
+        @TempDir configFolder: File
+    ) {
+        // Arrange
+        val text = "input: missing\n"
+
+        // Act
+        val result = ConfigReader(setOf(), configFolder).read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(1, "input folder 'missing' does not exist"))
     }
 }

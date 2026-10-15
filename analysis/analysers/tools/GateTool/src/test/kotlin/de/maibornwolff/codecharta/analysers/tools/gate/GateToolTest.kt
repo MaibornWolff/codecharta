@@ -268,6 +268,21 @@ class GateToolTest {
         assertThat(analyserOutput.toString()).contains("Checking if UnifiedParser is applicable")
     }
 
+    @Test
+    fun `should analyse the input folder the config names, relative to the config`() {
+        // Arrange
+        configFile.writeText("input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
+
+        // Act
+        val exitCode = run(projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("  App.kt  6", "1 error, 0 warnings, 1 file checked")
+        assertThat(output.toString()).doesNotContain("Util.kt")
+        assertThat(File(projectFolder, ".codecharta-gate-output/report.json")).exists()
+    }
+
     private fun <T> withSystemOut(stream: ByteArrayOutputStream, action: () -> T): T {
         val originalOut = System.out
         System.setOut(PrintStream(stream))

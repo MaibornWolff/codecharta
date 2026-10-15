@@ -8,7 +8,7 @@ import java.io.StringReader
 
 data class ConfigReadResult(val config: GateConfig, val problems: List<ConfigProblem>)
 
-class ConfigReader(private val knownAnalysers: Set<String>) {
+class ConfigReader(private val knownAnalysers: Set<String>, private val configFolder: File = File(".")) {
     fun read(file: File): ConfigReadResult = read(file.readText())
 
     fun read(text: String): ConfigReadResult {
@@ -35,6 +35,7 @@ class ConfigReader(private val knownAnalysers: Set<String>) {
         val sections = nodes.entries(root, "", TOP_LEVEL_KEYS) ?: return GateConfig()
         val ruleReader = MetricRuleReader(nodes)
         return GateConfig(
+            input = sections[INPUT]?.let { readInput(it.value, nodes) },
             output = sections[OUTPUT]?.let { nodes.text(it.value, OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
             analysers = sections[ANALYSERS]?.let { readAnalysers(it.value, nodes) } ?: emptyMap(),
             exitCodes = GateConfig.DEFAULT_EXIT_CODES + (sections[EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap()),
@@ -42,6 +43,12 @@ class ConfigReader(private val knownAnalysers: Set<String>) {
             cycles = sections[CYCLES]?.let { CycleRuleReader(nodes).read(it.value, CYCLES) } ?: CycleRules(),
             overrides = sections[OVERRIDES]?.let { ruleReader.readOverrides(it.value, OVERRIDES) } ?: emptyList()
         )
+    }
+
+    private fun readInput(node: Node, nodes: YamlNodes): String? {
+        val input = nodes.text(node, INPUT) ?: return null
+        if (!GateConfig.resolve(configFolder, input).isDirectory) nodes.report(node, "$INPUT folder '$input' does not exist")
+        return input
     }
 
     private fun readAnalysers(node: Node, nodes: YamlNodes): Map<String, Boolean> {
@@ -72,13 +79,14 @@ class ConfigReader(private val knownAnalysers: Set<String>) {
     }
 
     companion object {
+        private const val INPUT = "input"
         private const val OUTPUT = "output"
         private const val ANALYSERS = "analysers"
         private const val EXIT_CODES = "exitCodes"
         private const val METRICS = "metrics"
         private const val CYCLES = "cycles"
         private const val OVERRIDES = "overrides"
-        private val TOP_LEVEL_KEYS = listOf(OUTPUT, ANALYSERS, EXIT_CODES, METRICS, CYCLES, OVERRIDES)
+        private val TOP_LEVEL_KEYS = listOf(INPUT, OUTPUT, ANALYSERS, EXIT_CODES, METRICS, CYCLES, OVERRIDES)
         private val EXIT_CODE_RANGE = 0..255
     }
 }
