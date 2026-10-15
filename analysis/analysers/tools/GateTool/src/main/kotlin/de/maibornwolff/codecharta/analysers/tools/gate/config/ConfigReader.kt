@@ -39,6 +39,7 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val projectFold
             input = sections[ConfigKeys.INPUT]?.let { readInput(it.value, nodes) },
             output = sections[ConfigKeys.OUTPUT]?.let { nodes.text(it.value, ConfigKeys.OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
             parallel = sections[ConfigKeys.PARALLEL]?.let { nodes.switch(it.value, ConfigKeys.PARALLEL) } ?: false,
+            exclude = sections[ConfigKeys.EXCLUDE]?.let { PathPatternReader(nodes).read(it.value, ConfigKeys.EXCLUDE) } ?: emptyList(),
             analysers =
                 sections[ConfigKeys.ANALYSERS]?.let { AnalyserSettingsReader(nodes, catalog).read(it.value, ConfigKeys.ANALYSERS) }
                     ?: emptyMap(),

@@ -151,7 +151,7 @@ class ConfigReaderTest {
         ).containsExactly(
             ConfigProblem(
                 2,
-                "unknown key 'metrix', expected one of: input, output, parallel, analysers, exitCodes, metrics, dependencies, overrides"
+                "unknown key 'metrix', expected one of: input, output, parallel, exclude, analysers, exitCodes, metrics, dependencies, overrides"
             )
         )
     }
@@ -516,5 +516,18 @@ class ConfigReaderTest {
         assertThat(invalidResult.problems).containsExactly(
             ConfigProblem(4, "metrics.coverage.warning.min (70) must not be below metrics.coverage.error.min (80)")
         )
+    }
+
+    @Test
+    fun `should read the files the gate leaves out`() {
+        // Arrange
+        val text = "exclude:\n  - \"**/generated/**\"\n  - legacy/\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.exclude).containsExactly("**/generated/**", "legacy/")
     }
 }

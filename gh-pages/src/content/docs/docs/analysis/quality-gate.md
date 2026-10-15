@@ -51,12 +51,14 @@ that cycles and upward dependencies could not be checked.
 input: .                          # the folder to analyse (default: the project folder)
 output: .codecharta-gate-output   # where the map and report.json go
 parallel: off                     # on runs the analysers at the same time, like --parallel
+exclude:                          # files no rule checks, in .gitignore syntax
+  - "**/generated/**"
 
 analysers:                        # every applicable analyser runs unless switched off
   domainlanguageparser: off
   unifiedparser:                  # options instead of on: the analyser's own options, without the leading --
-    exclude:
-      - generated/
+    exclude:                      # a regular expression, as on the command line: leaves files out of the analysis
+      - /generated/
     bypass-gitignore: true
 
 exitCodes:                        # the exit code per severity; 2 is reserved for tool failures
@@ -108,6 +110,9 @@ overrides:                        # other limits for the files the patterns matc
   once, at the worst level it exceeds. Per-function rules use the file metrics the Unified Parser writes, such as
   `max_complexity_per_function`.
 - **A level, metric or setting left out** is not checked or keeps its default.
+- **`exclude`** leaves files out of every rule and out of the dependency analysis the rules see, in `.gitignore`
+  syntax relative to `input`. An analyser's own `exclude` option is a regular expression instead, and keeps the files
+  out of the analysis itself.
 - **Analyser options** are the long options of the analyser's own command, such as `ccsh unifiedparser --exclude`.
   A list repeats the option, `true` sets a flag and `false` leaves it out. `--init` lists the options of every
   analyser, and `--doctor` checks names and values the way the analyser itself would. The gate sets the output

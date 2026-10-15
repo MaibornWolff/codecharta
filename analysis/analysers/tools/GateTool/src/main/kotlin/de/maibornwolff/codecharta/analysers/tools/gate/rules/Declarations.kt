@@ -14,4 +14,9 @@ data class DeclarationDependency(
 data class DependencyAnalysis(
     val declarationDependencies: List<DeclarationDependency>,
     val upwardOfFilePair: Map<Pair<String, String>, Boolean> = emptyMap()
-)
+) {
+    fun withoutFiles(isExcluded: (String) -> Boolean) = DependencyAnalysis(
+        declarationDependencies.filterNot { isExcluded(it.from.file) || isExcluded(it.to.file) },
+        upwardOfFilePair.filterKeys { (from, to) -> !isExcluded(from) && !isExcluded(to) }
+    )
+}
