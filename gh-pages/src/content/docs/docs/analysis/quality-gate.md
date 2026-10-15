@@ -147,7 +147,6 @@ Analysing . with rawtextparser, unifiedparser, dependencyparser, domainlanguagep
 
 ────────────────────────────────────────────────────────────────────────
 Analysis done: 418 files with rawtextparser, unifiedparser, dependencyparser, domainlanguageparser in 4.2 s
-Map: ./.codecharta-gate-output/map.cc.json.gz
 
 ERROR  rloc > 400
 ┌ Instruction ────────────────────────────────────────
@@ -172,10 +171,11 @@ ERROR  1 cycle between files
 
 3 errors, 1 warning, 418 files checked
 Report: ./.codecharta-gate-output/report.json
+Map: ./.codecharta-gate-output/map.cc.json.gz
 ```
 
-The first line appears with `--quiet` only. The `Map` line tells where the merged map of the analysis was written, to
-open it in the visualization. Each cycle is walked through the declarations it runs through, from the
+The first line appears with `--quiet` only. The last line tells where the merged map of the analysis was written, to open
+it in the visualization. Each cycle is walked through the declarations it runs through, from the
 folder its files share.
 
 `report.json` holds the exit code, the counts per severity and every finding with its rule and severity: a metric

@@ -15,7 +15,7 @@ import java.util.Locale
 import kotlin.time.DurationUnit
 import kotlin.time.measureTimedValue
 
-class LoadedProject(val project: AnalysedProject, val analyserNames: List<String>)
+class LoadedProject(val project: AnalysedProject, val analyserNames: List<String>, val writtenMap: File? = null)
 
 class ProjectSource(
     private val options: GateOptions,
@@ -44,11 +44,10 @@ class ProjectSource(
         val analyserNames = analysers.map { it.analyser.name }
         console.printInPlaceOfAnalyserOutput("Analysing ${analysisFolder(config).path} with ${analyserNames.joinToString()} ...")
         val (project, duration) = measureTimedValue { console.whileAnalysing { analyseAndKeepMap(analysers, config) } }
-        val loaded = LoadedProject(AnalysedProject(project), analyserNames)
+        val loaded = LoadedProject(AnalysedProject(project), analyserNames, mapFile(config))
         val seconds = String.format(Locale.ROOT, "%.1f", duration.toDouble(DurationUnit.SECONDS))
         console.printSeparated(
-            "Analysis done: ${counted(loaded.project.files.size, "file")} with ${analyserNames.joinToString()} in $seconds s",
-            "Map: ${mapFile(config).path}"
+            "Analysis done: ${counted(loaded.project.files.size, "file")} with ${analyserNames.joinToString()} in $seconds s"
         )
         return loaded
     }

@@ -30,6 +30,7 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
         configFile.writeText(ConfigTemplate(metrics, analyserNames, catalog).render())
         console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         gitignoreHint()?.let(console::println)
+        printWrittenMap(loaded)
         return SUCCESS
     }
 
@@ -43,13 +44,19 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
     fun check(): Int {
         val configFromFile = readConfig()
         val config = if (options.parallel) configFromFile.copy(parallel = true) else configFromFile
-        val result = evaluate(projectSource.load(config).project, config)
+        val loaded = projectSource.load(config)
+        val result = evaluate(loaded.project, config)
         if (!config.hasActiveRules) console.println(NO_ACTIVE_RULES)
         ConsoleReport(console.output, config.configuredMetrics).print(result)
         val reportFile = File(projectSource.outputFolder(config).apply { mkdirs() }, REPORT_FILE_NAME)
         reportFile.writeText(JsonReport.render(result, config))
         console.println("Report: ${reportFile.path}")
+        printWrittenMap(loaded)
         return result.exitCode(config)
+    }
+
+    private fun printWrittenMap(loaded: LoadedProject) {
+        loaded.writtenMap?.let { console.println("Map: ${it.path}") }
     }
 
     private fun gitignoreHint(): String? {
