@@ -1,0 +1,54 @@
+---
+name: ccsh quality gate
+issue: none
+state: complete
+version: <version number>
+---
+
+## Goal
+
+A `ccsh gate` command that analyses a codebase, checks the result against rules in `.codecharta.yml`
+(metric limits per file, dependency cycles) and reports on the console, as JSON and through a configurable
+exit code, so developers and AI agents get fast, scriptable feedback on code quality.
+
+## Tasks
+
+### 1. Analyse
+- Run the applicable and switched-on ones of RawTextParser, UnifiedParser, DependencyParser and
+  DomainLanguageParser as they are, merge their maps with the MergeFilter's `ProjectMerger`
+- Leave the output folder out of the analysis, write the merged map into it
+
+### 2. `ccsh gate init`
+- Analyse, write `.codecharta.yml` fully commented out: every metric with a warning and an error level and
+  its min/max found, the applicable analysers, exit codes, output folder, cycles and an example override
+- Refuse to overwrite without `--force`
+
+### 3. `ccsh gate doctor`
+- Validate the config without analysing; every problem with its line; exit 0 or 2
+
+### 4. `ccsh gate`
+- Metric rules per file, worst level only; anything left out is off; gitignore-style override patterns,
+  last match wins, `<metric>: off`
+- File and package cycles via the DependencyParser's strongly connected component detection; allowed cycles
+- Unknown metrics as warnings; exit code = highest code mapped to a found severity, 2 for tool failures
+
+### 5. Report
+- Console grouped by severity and rule with the rule's message; `report.json` in the output folder
+
+## Steps
+
+- [x] Complete Task 1: Analyse
+- [x] Complete Task 2: `ccsh gate init`
+- [x] Complete Task 3: `ccsh gate doctor`
+- [x] Complete Task 4: `ccsh gate`
+- [x] Complete Task 5: Report
+- [x] Docs (gh-pages, module README), CHANGELOG
+
+## Notes
+
+- Named `gate` because `ccsh check` is the ValidationTool
+- Reuse: parsers run through picocli unchanged, `ProjectMerger`, `StronglyConnectedComponentDetection`,
+  `GitignorePatternMatcher` (refactored to expose pattern parsing and path matching)
+- A package is the folder of a file
+- Out of scope for v1: checking only changed files, naming the offending function, SARIF, git log / SVN
+- Known noise: some parsers print "Checking if … is applicable" to stdout before the report

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.Timeout
+import org.junit.jupiter.api.io.TempDir
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -395,5 +396,23 @@ class CcshTest {
         // then
         assertThat(exitCode).isZero()
         assertThat(mergedOutputFile).exists()
+    }
+
+    @Test
+    fun `should return the exit code of the gate subcommand that ran`(
+        @TempDir projectFolder: File
+    ) {
+        // Arrange
+        File(projectFolder, ".codecharta.yml").writeText("exitCodes:\n  error: 2\n")
+        val validProjectFolder = File(projectFolder, "valid").apply { mkdirs() }
+        File(validProjectFolder, ".codecharta.yml").writeText("output: out\n")
+
+        // Act
+        val invalidConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "doctor", projectFolder.path))
+        val validConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "doctor", validProjectFolder.path))
+
+        // Assert
+        assertThat(invalidConfigExitCode).isEqualTo(2)
+        assertThat(validConfigExitCode).isZero()
     }
 }

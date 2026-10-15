@@ -1,0 +1,49 @@
+package de.maibornwolff.codecharta.analysers.tools.gate.analysis
+
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
+import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.OutputFileHandler
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
+import de.maibornwolff.codecharta.util.FileExtension
+import picocli.CommandLine
+import java.io.File
+import kotlin.io.path.createTempDirectory
+
+class AnalysisException(message: String) : RuntimeException(message)
+
+class ProjectAnalyser {
+    fun analyse(projectFolder: File, analysers: List<AnalyserInterface>, outputFolder: File): Project {
+        if (analysers.isEmpty()) throw AnalysisException("No analyser is switched on that applies to ${projectFolder.path}.")
+
+        val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
+        try {
+            val excludePattern = excludePatternFor(projectFolder, outputFolder)
+            val projects = analysers.map { runAnalyser(it, projectFolder, workFolder, excludePattern) }
+            return ProjectMerger(projects, MergeResolverStrategy.recursive()).merge()
+        } finally {
+            workFolder.deleteRecursively()
+        }
+    }
+
+    private fun runAnalyser(analyser: AnalyserInterface, projectFolder: File, workFolder: File, excludePattern: String?): Project {
+        val mapFile = File(workFolder, analyser.name + FileExtension.CCJSON.primaryExtension)
+        val arguments = listOf(projectFolder.path, "--output-file", mapFile.path) + listOfNotNull(excludePattern?.let { "--exclude=$it" })
+        val exitCode = CommandLine(analyser).execute(*arguments.toTypedArray())
+        val writtenFile = File(OutputFileHandler.checkAndFixFileExtension(mapFile.path, true, FileExtension.JSON))
+        val succeeded = exitCode == 0 && writtenFile.exists()
+        if (!succeeded) throw AnalysisException("The analyser ${analyser.name} failed on ${projectFolder.path}.")
+        return writtenFile.inputStream().use { ProjectDeserializer.deserializeProject(it) }
+    }
+
+    private fun excludePatternFor(projectFolder: File, outputFolder: File): String? {
+        val relativeOutput = outputFolder.absoluteFile.normalize().relativeToOrNull(projectFolder.absoluteFile.normalize()) ?: return null
+        if (relativeOutput.path.isEmpty() || relativeOutput.startsWith("..")) return null
+        return "/" + Regex.escape(relativeOutput.invariantSeparatorsPath) + "(/|$)"
+    }
+
+    companion object {
+        private const val WORK_FOLDER_PREFIX = "codecharta-gate"
+    }
+}

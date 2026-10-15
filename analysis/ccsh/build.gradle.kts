@@ -42,6 +42,7 @@ dependencies {
             ":analysers:parsers:RawTextParser",
             ":analysers:tools:InspectionTool",
             ":analysers:tools:ConvertTool",
+            ":analysers:tools:GateTool",
             ":analysers:AnalyserInterface",
             ":analysers:parsers:UnifiedParser",
             ":dialogProvider",
