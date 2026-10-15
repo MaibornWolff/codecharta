@@ -12,14 +12,14 @@ class AnalysedProject(private val project: Project) {
     val files: List<AnalysedFile> by lazy {
         project.rootNode.nodes
             .filter { (_, node) -> node.type == NodeType.File }
-            .map { (path, node) -> AnalysedFile(path.edgesList.joinToString(PATH_SEPARATOR), numericAttributes(node.attributes)) }
+            .map { (path, node) -> AnalysedFile(path.edgesList.joinToString(NodeId.SEPARATOR), numericAttributes(node.attributes)) }
     }
 
     val dependencyAnalysis: DependencyAnalysis? by lazy {
         val lens = project.lenses.dependency
         if (lens.nodes.isEmpty()) return@lazy null
-        val pathById = files.associate { NodeId.fromSegments(it.path.split(PATH_SEPARATOR)) to it.path }
-        DependencyAnalysis(declarationDependencies(lens, pathById), upwardOfFilePair(lens.edges))
+        val pathById = files.associate { NodeId.fromSegments(it.path.split(NodeId.SEPARATOR)) to it.path }
+        DependencyAnalysis(declarationDependencies(lens, pathById), upwardOfFilePair(lens.edges, pathById))
     }
 
     private fun declarationDependencies(lens: DependencyLens, pathById: Map<String, String>): List<DeclarationDependency> =
@@ -34,20 +34,20 @@ class AnalysedProject(private val project: Project) {
         return if (lens.leaves[fileId]?.containsKey(leafKey) == true) Declaration(path, leafKey) else null
     }
 
-    private fun upwardOfFilePair(edges: List<Edge>): Map<Pair<String, String>, Boolean> {
-        val rootPrefix = "$PATH_SEPARATOR${project.rootNode.name}$PATH_SEPARATOR"
-        return edges
-            .filter { DEPENDENCIES_METRIC in it.attributes }
-            .groupBy({ it.fromNodeName.removePrefix(rootPrefix) to it.toNodeName.removePrefix(rootPrefix) }, { it.isPointingUpwards })
-            .mapValues { (_, marks) -> marks.any { it } }
-    }
+    private fun upwardOfFilePair(edges: List<Edge>, pathById: Map<String, String>): Map<Pair<String, String>, Boolean> = edges
+        .filter { DEPENDENCIES_METRIC in it.attributes }
+        .mapNotNull { edge ->
+            val from = pathById[NodeId.fromEndpoint(edge.fromNodeName)] ?: return@mapNotNull null
+            val to = pathById[NodeId.fromEndpoint(edge.toNodeName)] ?: return@mapNotNull null
+            (from to to) to edge.isPointingUpwards
+        }.groupBy({ it.first }, { it.second })
+        .mapValues { (_, marks) -> marks.any { it } }
 
     private fun numericAttributes(attributes: Map<String, Any>): Map<String, Double> = attributes
         .mapNotNull { (name, value) -> (value as? Number)?.let { name to it.toDouble() } }
         .toMap()
 
     companion object {
-        private const val PATH_SEPARATOR = "/"
         private const val DEPENDENCIES_METRIC = "dependencies"
     }
 }
