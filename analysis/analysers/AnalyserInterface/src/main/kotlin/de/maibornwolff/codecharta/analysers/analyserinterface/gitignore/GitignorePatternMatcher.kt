@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.analyserinterface.gitignore
 import de.maibornwolff.codecharta.util.Logger
 import java.io.File
 import java.nio.file.FileSystems
-import java.nio.file.Path
 import java.nio.file.PathMatcher
 
 class GitignorePatternMatcher(private val baseDir: File) {
@@ -34,7 +33,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
             return false
         }
 
-        return rules.lastOrNull { matchesRule(relativePath, file.isDirectory, it) }?.let { !it.isNegation } ?: false
+        return rules.lastOrNull { it.matches(relativePath, file.isDirectory) }?.let { !it.isNegation } ?: false
     }
 
     fun parsePattern(line: String): GitignoreRule? {
@@ -131,14 +130,6 @@ class GitignorePatternMatcher(private val baseDir: File) {
         }
 
         return result
-    }
-
-    private fun matchesRule(relativePath: Path, isDirectory: Boolean, rule: GitignoreRule): Boolean {
-        if (rule.isDirOnly && !isDirectory) {
-            return false
-        }
-
-        return rule.matchesPath(relativePath)
     }
 
     private fun escapeGlobSpecialChars(pattern: String): String = pattern.replace("{", "\\{").replace("}", "\\}")
