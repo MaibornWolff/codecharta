@@ -53,8 +53,8 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ## Notes
 
 - Named `gate` because `ccsh check` is the ValidationTool
-- Reuse: parsers run through picocli unchanged, `ProjectMerger`, `StronglyConnectedComponentDetection`,
-  `GitignorePatternMatcher` (refactored to expose pattern parsing and path matching)
+- Reuse: parsers run through picocli unchanged, `ProjectMerger`, `GitignorePatternParser` (extracted from the matcher),
+  `EditDistance` (moved from the MergeFilter's mimo merge into the model), `NodeId` for paths
 - Package cycles (direct folder of each file) were dropped: merging a folder's files into one node made parent ↔ child
   folders look tangled where the parser's levels show nothing
 - Not done from the review: a shared test fixture for the ported cycle search (both sides point to each other instead)
