@@ -294,7 +294,7 @@ class ConfigReaderTest {
     @Test
     fun `should read an override level that only replaces the instruction`() {
         // Arrange
-        val text = "overrides:\n  - paths:\n      - src/**\n    metrics:\n      rloc:\n        error:\n          instruction: Shrink it.\n"
+        val text = "metrics:\n  rloc:\n    error:\n      max: 400\noverrides:\n  - paths:\n      - src/**\n    metrics:\n      rloc:\n        error:\n          instruction: Shrink it.\n"
 
         // Act
         val result = reader.read(text)
@@ -529,5 +529,136 @@ class ConfigReaderTest {
         // Assert
         assertThat(result.problems).isEmpty()
         assertThat(result.config.exclude).containsExactly("**/generated/**", "legacy/")
+    }
+
+    @Test
+    fun `should list the problems in the order of their lines`() {
+        // Arrange
+        val text = "dependencies:\n  upward:\n    severity: fatal\nexitCodes:\n  error: 2\nmetrix: 1\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems.map { it.line }).containsExactly(3, 5, 6)
+    }
+
+    @Test
+    fun `should only report the unknown key of a level, not that the level then lacks a limit`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    error:\n      maximum: 400\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(4, "unknown key 'maximum' in metrics.rloc.error, expected one of: min, max, instruction"))
+    }
+
+    @Test
+    fun `should accept a single pattern where a list of patterns is expected`() {
+        // Arrange
+        val text = "exclude: legacy/\noverrides:\n  - paths: src/**\n    metrics:\n      rloc: off\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.exclude).containsExactly("legacy/")
+        assertThat(result.config.overrides.single().paths).containsExactly("src/**")
+    }
+
+    @Test
+    fun `should accept plain numbers with underscores and refuse special ones`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    warning:\n      max: 1_000\n    error:\n      max: NaN\n  loc:\n    error:\n      max: Infinity\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(6, "metrics.rloc.error.max must be a number, found 'NaN'"),
+            ConfigProblem(9, "metrics.loc.error.max must be a number, found 'Infinity'")
+        )
+        assertThat(
+            result.config.metrics
+                .getValue("rloc")
+                .levels
+                .getValue(Severity.WARNING)
+                .max
+        ).isEqualTo(1000.0)
+    }
+
+    @Test
+    fun `should read severities in any case and warn as warning`() {
+        // Arrange
+        val text = "dependencies:\n  upward:\n    severity: Warn\n  cyclesBetweenFiles:\n    severity: ERROR\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.dependencies.upward?.severity).isEqualTo(Severity.WARNING)
+        assertThat(result.config.dependencies.cyclesBetweenFiles?.severity).isEqualTo(Severity.ERROR)
+    }
+
+    @Test
+    fun `should report a metric rule without any level`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n  complexity: {}\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(2, "metrics.rloc has no level; give it a warning or error with a max or min, or remove it"),
+            ConfigProblem(3, "metrics.complexity has no level; give it a warning or error with a max or min, or remove it")
+        )
+    }
+
+    @Test
+    fun `should report an override that changes no metric`() {
+        // Arrange
+        val text = "overrides:\n  - paths:\n      - src/**\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(2, "overrides[0] changes no metric; give it metrics or remove it"))
+    }
+
+    @Test
+    fun `should report an override that puts the warning limit above the error limit`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    error:\n      max: 400\noverrides:\n  - paths:\n      - legacy/\n    metrics:\n      rloc:\n        warning:\n          max: 1000\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(9, "overrides[0].metrics.rloc: warning max (1000) must not be above error max (400) for the files it matches")
+        )
+    }
+
+    @Test
+    fun `should report an override level without a limit for a metric that has none to keep`() {
+        // Arrange
+        val text = "overrides:\n  - paths:\n      - legacy/\n    metrics:\n      complexity:\n        warning:\n          instruction: Simplify.\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(6, "overrides[0].metrics.complexity.warning sets no max or min, and metrics.complexity has none it could keep")
+        )
     }
 }

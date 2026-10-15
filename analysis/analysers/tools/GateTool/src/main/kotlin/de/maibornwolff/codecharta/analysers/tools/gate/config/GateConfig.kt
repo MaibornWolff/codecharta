@@ -7,7 +7,11 @@ enum class Severity(val key: String) {
     ERROR("error");
 
     companion object {
+        private const val WARNING_SHORTHAND = "warn"
+
         fun ofKey(key: String): Severity? = entries.find { it.key == key }
+
+        fun parse(value: String): Severity? = value.lowercase().let { if (it == WARNING_SHORTHAND) WARNING else ofKey(it) }
     }
 }
 
@@ -15,12 +19,23 @@ data class LevelRule(val max: Double?, val instruction: String? = null, val min:
 
 data class MetricRule(val levels: Map<Severity, LevelRule>)
 
-data class LevelOverride(val max: Double? = null, val instruction: String? = null, val min: Double? = null)
+data class LevelOverride(val max: Double? = null, val instruction: String? = null, val min: Double? = null) {
+    fun applyTo(current: LevelRule?): LevelRule? {
+        val max = max ?: current?.max
+        val min = min ?: current?.min
+        if (max == null && min == null) return null
+        return LevelRule(max, instruction ?: current?.instruction, min)
+    }
+}
 
 sealed interface MetricOverride {
     data object Off : MetricOverride
 
-    data class Levels(val levels: Map<Severity, LevelOverride>) : MetricOverride
+    data class Levels(val levels: Map<Severity, LevelOverride>) : MetricOverride {
+        fun applyTo(current: Map<Severity, LevelRule>): Map<Severity, LevelRule> = current + levels.mapNotNull { (severity, change) ->
+            change.applyTo(current[severity])?.let { severity to it }
+        }
+    }
 }
 
 data class PathOverride(val paths: List<String>, val metrics: Map<String, MetricOverride>)
