@@ -10,10 +10,13 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.FileExtension
 import picocli.CommandLine
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
 
 class AnalysisException(message: String) : GateException(message)
@@ -42,7 +45,8 @@ class ProjectAnalyser {
                 .map { analyser -> threadPool.submit(Callable { runOne(analyser) }) }
                 .map { future -> resultOf(future) }
         } finally {
-            threadPool.shutdownNow()
+            threadPool.shutdown()
+            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS)
         }
     }
 
@@ -58,11 +62,30 @@ class ProjectAnalyser {
         val arguments =
             listOf(projectFolder.path, "--output-file", mapFile.path) + configured.arguments +
                 listOfNotNull(excludePattern?.let { "--exclude=$it" })
-        val exitCode = CommandLine(analyser).execute(*arguments.toTypedArray())
+        val failureReason = execute(analyser, arguments)
         val writtenFile = File(OutputFileHandler.checkAndFixFileExtension(mapFile.path, true, FileExtension.JSON))
-        val succeeded = exitCode == 0 && writtenFile.exists()
-        if (!succeeded) throw AnalysisException("The analyser ${analyser.name} failed on ${projectFolder.path}.")
+        if (failureReason != null || !writtenFile.exists()) {
+            throw AnalysisException("The analyser ${analyser.name} failed on ${projectFolder.path}: ${failureReason ?: "it wrote no map"}")
+        }
         return writtenFile.inputStream().use { ProjectDeserializer.deserializeProject(it) }
+    }
+
+    private fun execute(analyser: AnalyserInterface, arguments: List<String>): String? {
+        var failureReason: String? = null
+        val commandLine = CommandLine(analyser)
+        commandLine.setExecutionExceptionHandler { exception, _, _ ->
+            failureReason = exception.message ?: exception::class.simpleName
+            FAILURE_EXIT_CODE
+        }
+        commandLine.setParameterExceptionHandler { exception, _ ->
+            failureReason = exception.message
+            FAILURE_EXIT_CODE
+        }
+        val errors = StringWriter()
+        commandLine.err = PrintWriter(errors)
+        val exitCode = commandLine.execute(*arguments.toTypedArray())
+        if (exitCode == 0) return null
+        return failureReason ?: errors.toString().lineSequence().firstOrNull { it.isNotBlank() } ?: "it ended with exit code $exitCode"
     }
 
     private fun excludePatternFor(projectFolder: File, outputFolder: File): String? {
@@ -72,6 +95,7 @@ class ProjectAnalyser {
     }
 
     companion object {
+        private const val FAILURE_EXIT_CODE = 1
         private const val WORK_FOLDER_PREFIX = "codecharta-gate"
     }
 }
