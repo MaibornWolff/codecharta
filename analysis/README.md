@@ -58,6 +58,7 @@ Components that export data from visualisation data to other formats.
 | ------------------------------------------------ |-------------------------------------------|
 | [ValidationTool](analysers/tools/ValidationTool/README.md) | validates a given json file               |
 | [InspectionTool](analysers/tools/InspectionTool/README.md) | shows information about a given json file |
+| [GateTool](analysers/tools/GateTool/README.md) (experimental) | checks a project against metric and cycle rules |
 
 ## Requirements
 

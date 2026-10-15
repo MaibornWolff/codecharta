@@ -99,7 +99,7 @@ class GateTool(
 
     companion object {
         const val NAME = "gate"
-        const val DESCRIPTION = "checks a project against the metric and cycle rules in its ${GateConfig.FILE_NAME}"
+        const val DESCRIPTION = "[experimental] checks a project against the metric and cycle rules in its ${GateConfig.FILE_NAME}"
 
         fun defaultAnalysers(): List<AnalyserInterface> =
             listOf(RawTextParser(), UnifiedParser(), DependencyParser(), DomainLanguageParser())

@@ -6,6 +6,10 @@ title: "Quality Gate"
 file, and dependency cycles between files or packages. It prints every broken rule, writes a JSON report and exits
 with a code you choose, so a build, a git hook or an AI agent can act on the result.
 
+:::caution[Experimental]
+The quality gate is still in development. Its commands, its config format and its report may change between releases.
+:::
+
 ### Getting started
 
 ```bash

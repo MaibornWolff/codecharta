@@ -33,6 +33,15 @@ class GateToolTest {
     }
 
     @Test
+    fun `should label itself experimental wherever ccsh lists it`() {
+        // Act
+        val description = GateTool().getAnalyserDescription()
+
+        // Assert
+        assertThat(description).startsWith("[experimental]")
+    }
+
+    @Test
     fun `should write a fully commented config on init`() {
         // Arrange & Act
         val exitCode = run("--init", projectFolder.path)
