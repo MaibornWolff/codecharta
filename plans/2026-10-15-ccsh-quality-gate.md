@@ -37,9 +37,9 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ### 4. `ccsh gate`
 - Metric rules per file, worst level only; anything left out is off; gitignore-style override patterns,
   last match wins, `<metric>: off`
-- `cycles.file` and `cycles.upward` report the cyclic and upward-pointing edges the DependencyParser marks (the same
-  ones the dependency view shows), file cycles grouped with its strongly connected component detection; `ignore`
-  patterns per rule take files or folders out
+- `cycles.betweenFiles`, `cycles.insideFiles` and `cycles.upward` count exactly like the dependency view: loops via the
+  view's shortest-way-back search over the declaration edges the parser marks cyclic (ported from cycleChains.ts),
+  upward via the view's upward rule (file pair decides between files); `ignore` drops loops/edges touching a match
 - Unknown metrics as warnings; exit code = highest code mapped to a found severity, 2 for tool failures
 
 ### 5. Report

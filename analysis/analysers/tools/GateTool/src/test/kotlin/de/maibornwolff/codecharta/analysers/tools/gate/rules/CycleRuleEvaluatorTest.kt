@@ -7,115 +7,76 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CycleRuleEvaluatorTest {
-    private val fileRule = CycleRule(Severity.ERROR, "Break the cycle.")
+    private val cycleRule = CycleRule(Severity.ERROR, "Break the cycle.")
     private val upwardRule = CycleRule(Severity.WARNING, "Turn the dependency around.")
+    private val foo = Declaration("a/Foo.kt", "Foo")
+    private val bar = Declaration("b/Bar.kt", "Bar")
+    private val baz = Declaration("b/Bar.kt", "Baz")
 
     @Test
-    fun `should report each file cycle the dependency parser marked, once, with its members`() {
+    fun `should report a cycle between files with the declarations it runs through`() {
         // Arrange
-        val dependencies = listOf(cyclic("a/Foo.kt", "b/Bar.kt"), cyclic("b/Bar.kt", "a/Foo.kt"), regular("a/Foo.kt", "c/Leaf.kt"))
+        val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo)))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules(file = fileRule)).evaluate(dependencies)
+        val violations = CycleRuleEvaluator(CycleRules(betweenFiles = cycleRule)).evaluate(analysis)
 
         // Assert
         assertThat(violations).containsExactly(
             Violation(
-                ViolationKind.FILE_CYCLE,
+                ViolationKind.CYCLE_BETWEEN_FILES,
                 Severity.ERROR,
                 "Break the cycle.",
                 members = listOf("a/Foo.kt", "b/Bar.kt"),
-                dependencies = mapOf("a/Foo.kt" to listOf("b/Bar.kt"), "b/Bar.kt" to listOf("a/Foo.kt"))
+                declarations = listOf(foo, bar)
             )
         )
     }
 
     @Test
-    fun `should not report files that depend on each other when the dependency parser did not mark a cycle`() {
+    fun `should report a cycle inside one file only under its own rule`() {
         // Arrange
-        val dependencies = listOf(regular("a/Foo.kt", "b/Bar.kt"), regular("b/Bar.kt", "a/Foo.kt"))
+        val analysis = DependencyAnalysis(listOf(cyclic(bar, baz), cyclic(baz, bar)))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules(file = fileRule)).evaluate(dependencies)
+        val betweenFilesOnly = CycleRuleEvaluator(CycleRules(betweenFiles = cycleRule)).evaluate(analysis)
+        val insideFiles = CycleRuleEvaluator(CycleRules(insideFiles = cycleRule)).evaluate(analysis)
 
         // Assert
-        assertThat(violations).isEmpty()
-    }
-
-    @Test
-    fun `should list for each member only the marked dependencies of its own cycle`() {
-        // Arrange
-        val dependencies =
-            listOf(
-                cyclic("Foo.kt", "Bar.kt"),
-                cyclic("Foo.kt", "Baz.kt"),
-                cyclic("Bar.kt", "Foo.kt"),
-                cyclic("Baz.kt", "Foo.kt"),
-                regular("Foo.kt", "Outside.kt")
+        assertThat(betweenFilesOnly).isEmpty()
+        assertThat(insideFiles).containsExactly(
+            Violation(
+                ViolationKind.CYCLE_INSIDE_FILE,
+                Severity.ERROR,
+                "Break the cycle.",
+                path = "b/Bar.kt",
+                members = listOf("b/Bar.kt"),
+                declarations = listOf(bar, baz)
             )
-
-        // Act
-        val violations = CycleRuleEvaluator(CycleRules(file = fileRule)).evaluate(dependencies)
-
-        // Assert
-        assertThat(violations.single().dependencies).isEqualTo(
-            mapOf("Bar.kt" to listOf("Foo.kt"), "Baz.kt" to listOf("Foo.kt"), "Foo.kt" to listOf("Bar.kt", "Baz.kt"))
         )
     }
 
     @Test
-    fun `should not report a cycle that only exists through an ignored file`() {
+    fun `should not report a cycle that runs through an ignored file`() {
         // Arrange
-        val dependencies =
-            listOf(
-                cyclic("a/Foo.kt", "b/Bar.kt"),
-                cyclic("b/Bar.kt", "a/Foo.kt"),
-                cyclic("c/One.kt", "c/Two.kt"),
-                cyclic("c/Two.kt", "c/One.kt")
-            )
-        val rules = CycleRules(file = fileRule.copy(ignore = listOf("b/Bar.kt")))
+        val other = Declaration("c/Other.kt", "Other")
+        val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo), cyclic(foo, other), cyclic(other, foo)))
+        val rules = CycleRules(betweenFiles = cycleRule.copy(ignore = listOf("b/")))
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
+        val violations = CycleRuleEvaluator(rules).evaluate(analysis)
 
         // Assert
-        assertThat(violations.map { it.members }).containsExactly(listOf("c/One.kt", "c/Two.kt"))
+        assertThat(violations.map { it.members }).containsExactly(listOf("a/Foo.kt", "c/Other.kt"))
     }
 
     @Test
-    fun `should still report the part of a cycle that does not run through the ignored file`() {
+    fun `should report each upward dependency between declarations with its files`() {
         // Arrange
-        val dependencies =
-            listOf(cyclic("Foo.kt", "Bar.kt"), cyclic("Bar.kt", "Baz.kt"), cyclic("Baz.kt", "Foo.kt"), cyclic("Foo.kt", "Baz.kt"))
-        val rules = CycleRules(file = fileRule.copy(ignore = listOf("Bar.kt")))
+        val analysis = DependencyAnalysis(listOf(plain(foo, bar), plain(bar, foo)), mapOf(("a/Foo.kt" to "b/Bar.kt") to true))
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
-
-        // Assert
-        assertThat(violations.single().members).containsExactly("Baz.kt", "Foo.kt")
-    }
-
-    @Test
-    fun `should leave out every file a pattern matches`() {
-        // Arrange
-        val dependencies = listOf(cyclic("generated/A.kt", "generated/B.kt"), cyclic("generated/B.kt", "generated/A.kt"))
-        val rules = CycleRules(file = fileRule.copy(ignore = listOf("generated/")))
-
-        // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
-
-        // Assert
-        assertThat(violations).isEmpty()
-    }
-
-    @Test
-    fun `should report every dependency the dependency parser marked as pointing upwards`() {
-        // Arrange
-        val dependencies = listOf(upward("src/a/One.kt", "src/b/Two.kt"), regular("src/b/Three.kt", "src/a/Four.kt"))
-
-        // Act
-        val violations = CycleRuleEvaluator(CycleRules(upward = upwardRule)).evaluate(dependencies)
+        val violations = CycleRuleEvaluator(CycleRules(upward = upwardRule)).evaluate(analysis)
 
         // Assert
         assertThat(violations).containsExactly(
@@ -123,20 +84,33 @@ class CycleRuleEvaluatorTest {
                 ViolationKind.UPWARD_DEPENDENCY,
                 Severity.WARNING,
                 "Turn the dependency around.",
-                path = "src/a/One.kt",
-                target = "src/b/Two.kt"
+                path = "a/Foo.kt",
+                target = "b/Bar.kt",
+                declarations = listOf(foo, bar)
             )
         )
     }
 
     @Test
-    fun `should leave out upward dependencies from or to an ignored folder`() {
+    fun `should report an upward dependency inside one file`() {
         // Arrange
-        val dependencies = listOf(upward("src/a/One.kt", "src/legacy/Two.kt"), upward("src/legacy/Three.kt", "src/a/Four.kt"))
-        val rules = CycleRules(upward = upwardRule.copy(ignore = listOf("src/legacy")))
+        val analysis = DependencyAnalysis(listOf(DeclarationDependency(bar, baz, isPointingUpwards = true)))
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
+        val violations = CycleRuleEvaluator(CycleRules(upward = upwardRule)).evaluate(analysis)
+
+        // Assert
+        assertThat(violations.single().declarations).containsExactly(bar, baz)
+    }
+
+    @Test
+    fun `should leave out upward dependencies from or to an ignored folder`() {
+        // Arrange
+        val analysis = DependencyAnalysis(listOf(plain(foo, bar)), mapOf(("a/Foo.kt" to "b/Bar.kt") to true))
+        val rules = CycleRules(upward = upwardRule.copy(ignore = listOf("b")))
+
+        // Act
+        val violations = CycleRuleEvaluator(rules).evaluate(analysis)
 
         // Assert
         assertThat(violations).isEmpty()
@@ -145,10 +119,10 @@ class CycleRuleEvaluatorTest {
     @Test
     fun `should check nothing when no dependency rule is set`() {
         // Arrange
-        val dependencies = listOf(cyclic("a/Foo.kt", "b/Bar.kt"), cyclic("b/Bar.kt", "a/Foo.kt"), upward("a/Foo.kt", "c/Baz.kt"))
+        val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo)), mapOf(("a/Foo.kt" to "b/Bar.kt") to true))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules()).evaluate(dependencies)
+        val violations = CycleRuleEvaluator(CycleRules()).evaluate(analysis)
 
         // Assert
         assertThat(violations).isEmpty()
@@ -157,10 +131,10 @@ class CycleRuleEvaluatorTest {
     @Test
     fun `should warn once that dependencies could not be checked when the map has no dependency analysis`() {
         // Arrange
-        val rules = CycleRules(file = fileRule, upward = upwardRule)
+        val rules = CycleRules(betweenFiles = cycleRule, insideFiles = cycleRule, upward = upwardRule)
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(emptyList(), hasDependencyAnalysis = false)
+        val violations = CycleRuleEvaluator(rules).evaluate(null)
 
         // Assert
         assertThat(violations).containsExactly(
@@ -179,15 +153,13 @@ class CycleRuleEvaluatorTest {
         val rules = CycleRules()
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(emptyList(), hasDependencyAnalysis = false)
+        val violations = CycleRuleEvaluator(rules).evaluate(null)
 
         // Assert
         assertThat(violations).isEmpty()
     }
 
-    private fun regular(from: String, to: String) = FileDependency(from, to)
+    private fun cyclic(from: Declaration, to: Declaration) = DeclarationDependency(from, to, isCyclic = true)
 
-    private fun cyclic(from: String, to: String) = FileDependency(from, to, isCyclic = true)
-
-    private fun upward(from: String, to: String) = FileDependency(from, to, isPointingUpwards = true)
+    private fun plain(from: Declaration, to: Declaration) = DeclarationDependency(from, to)
 }

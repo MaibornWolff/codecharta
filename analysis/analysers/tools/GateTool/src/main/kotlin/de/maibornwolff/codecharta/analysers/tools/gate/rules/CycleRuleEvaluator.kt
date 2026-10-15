@@ -1,18 +1,18 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.algorithms.StronglyConnectedComponentDetection
-import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
 import de.maibornwolff.codecharta.analysers.tools.gate.config.CycleRule
 import de.maibornwolff.codecharta.analysers.tools.gate.config.CycleRules
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 
 class CycleRuleEvaluator(private val rules: CycleRules) {
-    fun evaluate(dependencies: List<FileDependency>, hasDependencyAnalysis: Boolean = true): List<Violation> {
-        val hasDependencyRule = rules.file != null || rules.upward != null
-        if (hasDependencyRule && !hasDependencyAnalysis) return listOf(dependenciesNotChecked())
-        val fileCycles = rules.file?.let { rule -> findFileCycles(dependencies, rule) } ?: emptyList()
-        val upwardDependencies = rules.upward?.let { rule -> findUpwardDependencies(dependencies, rule) } ?: emptyList()
-        return fileCycles + upwardDependencies
+    fun evaluate(analysis: DependencyAnalysis?): List<Violation> {
+        val hasDependencyRule = rules.betweenFiles != null || rules.insideFiles != null || rules.upward != null
+        if (!hasDependencyRule) return emptyList()
+        if (analysis == null) return listOf(dependenciesNotChecked())
+        val chains = findCycleChains(analysis.declarationDependencies)
+        return cycles(chains, rules.betweenFiles, ViolationKind.CYCLE_BETWEEN_FILES) +
+            cycles(chains, rules.insideFiles, ViolationKind.CYCLE_INSIDE_FILE) +
+            upwardDependencies(analysis, rules.upward)
     }
 
     private fun dependenciesNotChecked() = Violation(
@@ -22,44 +22,40 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
             "Switch on the dependencyparser and leave out its --omit-graph-analysis."
     )
 
-    private fun findFileCycles(dependencies: List<FileDependency>, rule: CycleRule): List<Violation> {
-        val cyclicDependencies = withoutIgnored(dependencies.filter { it.isCyclic }, rule)
-        return StronglyConnectedComponentDetection()
-            .run(toNodeInformations(cyclicDependencies))
-            .map { component -> component.nodes.map { it.id }.toSet() }
-            .filter { members -> members.size > 1 }
-            .map { members -> toFileCycle(members, cyclicDependencies, rule) }
-            .sortedBy { it.members.first() }
-    }
-
-    private fun findUpwardDependencies(dependencies: List<FileDependency>, rule: CycleRule): List<Violation> =
-        withoutIgnored(dependencies.filter { it.isPointingUpwards }, rule)
-            .sortedWith(compareBy({ it.from }, { it.to }))
-            .map { Violation(ViolationKind.UPWARD_DEPENDENCY, rule.severity, rule.instruction, path = it.from, target = it.to) }
-
-    private fun withoutIgnored(dependencies: List<FileDependency>, rule: CycleRule): List<FileDependency> {
+    private fun cycles(chains: List<CycleChain>, rule: CycleRule?, kind: ViolationKind): List<Violation> {
+        if (rule == null) return emptyList()
         val ignored = PathPatterns(rule.ignore)
-        return dependencies.filterNot { ignored.matches(it.from) || ignored.matches(it.to) }
+        val isBetweenFiles = kind == ViolationKind.CYCLE_BETWEEN_FILES
+        return chains
+            .map { chain -> chain.map { it.from } }
+            .filter { declarations -> (declarations.map { it.file }.distinct().size > 1) == isBetweenFiles }
+            .filterNot { declarations -> declarations.any { ignored.matches(it.file) } }
+            .map { declarations -> toCycle(declarations, kind, rule) }
+            .sortedBy { it.declarations.joinToString { declaration -> "${declaration.file}/${declaration.name}" } }
     }
 
-    private fun toFileCycle(members: Set<String>, dependencies: List<FileDependency>, rule: CycleRule): Violation {
-        val dependenciesInCycle = dependencies
-            .filter { it.from in members && it.to in members }
-            .groupBy({ it.from }, { it.to })
-            .mapValues { (_, targets) -> targets.distinct().sorted() }
-            .toSortedMap()
-        return Violation(
-            ViolationKind.FILE_CYCLE,
-            rule.severity,
-            rule.instruction,
-            members = members.sorted(),
-            dependencies = dependenciesInCycle
-        )
+    private fun toCycle(declarations: List<Declaration>, kind: ViolationKind, rule: CycleRule): Violation {
+        val files = declarations.map { it.file }.distinct().sorted()
+        val path = if (kind == ViolationKind.CYCLE_INSIDE_FILE) files.single() else null
+        return Violation(kind, rule.severity, rule.instruction, path = path, members = files, declarations = declarations)
     }
 
-    private fun toNodeInformations(dependencies: List<FileDependency>): Set<NodeInformation> {
-        val targetsBySource = dependencies.groupBy({ it.from }, { it.to })
-        val allNodes = dependencies.flatMap { listOf(it.from, it.to) }.toSet()
-        return allNodes.map { node -> NodeInformation(node, targetsBySource[node]?.toSet() ?: emptySet()) }.toSet()
+    private fun upwardDependencies(analysis: DependencyAnalysis, rule: CycleRule?): List<Violation> {
+        if (rule == null) return emptyList()
+        val ignored = PathPatterns(rule.ignore)
+        return analysis.declarationDependencies
+            .filter { isUpward(it, analysis.upwardOfFilePair) }
+            .filterNot { ignored.matches(it.from.file) || ignored.matches(it.to.file) }
+            .sortedWith(compareBy({ it.from.file }, { it.from.name }, { it.to.file }, { it.to.name }))
+            .map { toUpwardDependency(it, rule) }
     }
+
+    private fun toUpwardDependency(dependency: DeclarationDependency, rule: CycleRule) = Violation(
+        ViolationKind.UPWARD_DEPENDENCY,
+        rule.severity,
+        rule.instruction,
+        path = dependency.from.file,
+        target = dependency.to.file,
+        declarations = listOf(dependency.from, dependency.to)
+    )
 }

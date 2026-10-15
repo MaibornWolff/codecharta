@@ -32,9 +32,10 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
 
     private fun sectionOf(violation: Violation): Int = when (violation.kind) {
         ViolationKind.METRIC, ViolationKind.UNKNOWN_METRIC -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: metricOrder.size
-        ViolationKind.FILE_CYCLE -> metricOrder.size + 1
-        ViolationKind.UPWARD_DEPENDENCY -> metricOrder.size + 2
-        ViolationKind.CYCLES_NOT_CHECKED -> metricOrder.size + 3
+        ViolationKind.CYCLE_BETWEEN_FILES -> metricOrder.size + 1
+        ViolationKind.CYCLE_INSIDE_FILE -> metricOrder.size + 2
+        ViolationKind.UPWARD_DEPENDENCY -> metricOrder.size + 3
+        ViolationKind.CYCLES_NOT_CHECKED -> metricOrder.size + 4
     }
 
     private fun printGroup(group: List<Violation>) {
@@ -43,7 +44,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         first.instruction?.let { output.println(" ".repeat(LABEL_WIDTH) + INSTRUCTION_LABEL + it) }
         when (first.kind) {
             ViolationKind.METRIC -> printMetricValues(group)
-            ViolationKind.FILE_CYCLE -> CycleText.lines(group).forEach(output::println)
+            ViolationKind.CYCLE_BETWEEN_FILES, ViolationKind.CYCLE_INSIDE_FILE -> CycleText.lines(group).forEach(output::println)
             ViolationKind.UPWARD_DEPENDENCY -> UpwardText.lines(group).forEach(output::println)
             ViolationKind.CYCLES_NOT_CHECKED -> Unit
             ViolationKind.UNKNOWN_METRIC -> Unit
@@ -54,7 +55,8 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         val first = group.first()
         return when (first.kind) {
             ViolationKind.METRIC -> "${first.metric} > ${first.threshold!!.toDisplayText()}"
-            ViolationKind.FILE_CYCLE -> counted(group.size, "file cycle")
+            ViolationKind.CYCLE_BETWEEN_FILES -> counted(group.size, "cycle between files", "cycles between files")
+            ViolationKind.CYCLE_INSIDE_FILE -> counted(group.size, "cycle inside a file", "cycles inside files")
             ViolationKind.UPWARD_DEPENDENCY -> counted(group.size, "upward dependency", "upward dependencies")
             ViolationKind.UNKNOWN_METRIC -> "unknown metric: ${first.metric}"
             ViolationKind.CYCLES_NOT_CHECKED -> "cycles not checked"

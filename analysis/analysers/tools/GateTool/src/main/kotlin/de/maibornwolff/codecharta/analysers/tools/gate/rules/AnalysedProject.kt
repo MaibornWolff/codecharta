@@ -1,11 +1,12 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
+import de.maibornwolff.codecharta.model.DependencyLens
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 
 data class AnalysedFile(val path: String, val metrics: Map<String, Double>)
-
-data class FileDependency(val from: String, val to: String, val isCyclic: Boolean = false, val isPointingUpwards: Boolean = false)
 
 class AnalysedProject(private val project: Project) {
     val files: List<AnalysedFile> by lazy {
@@ -14,20 +15,32 @@ class AnalysedProject(private val project: Project) {
             .map { (path, node) -> AnalysedFile(path.edgesList.joinToString(PATH_SEPARATOR), numericAttributes(node.attributes)) }
     }
 
-    val dependencies: List<FileDependency> by lazy {
-        val rootPrefix = "$PATH_SEPARATOR${project.rootNode.name}$PATH_SEPARATOR"
-        project.lenses.dependency.edges.map { edge ->
-            FileDependency(
-                edge.fromNodeName.removePrefix(rootPrefix),
-                edge.toNodeName.removePrefix(rootPrefix),
-                edge.isCyclic,
-                edge.isPointingUpwards
-            )
-        }
+    val dependencyAnalysis: DependencyAnalysis? by lazy {
+        val lens = project.lenses.dependency
+        if (lens.nodes.isEmpty()) return@lazy null
+        val pathById = files.associate { NodeId.fromSegments(it.path.split(PATH_SEPARATOR)) to it.path }
+        DependencyAnalysis(declarationDependencies(lens, pathById), upwardOfFilePair(lens.edges))
     }
 
-    val hasDependencyAnalysis: Boolean
-        get() = project.lenses.dependency.nodes.isNotEmpty()
+    private fun declarationDependencies(lens: DependencyLens, pathById: Map<String, String>): List<DeclarationDependency> =
+        lens.leafEdges.mapNotNull { leafEdge ->
+            val from = declarationOf(lens, pathById, leafEdge.fromId, leafEdge.fromLeaf) ?: return@mapNotNull null
+            val to = declarationOf(lens, pathById, leafEdge.toId, leafEdge.toLeaf) ?: return@mapNotNull null
+            DeclarationDependency(from, to, leafEdge.isCyclic, leafEdge.isPointingUpwards)
+        }
+
+    private fun declarationOf(lens: DependencyLens, pathById: Map<String, String>, fileId: String, leafKey: String): Declaration? {
+        val path = pathById[fileId] ?: return null
+        return if (lens.leaves[fileId]?.containsKey(leafKey) == true) Declaration(path, leafKey) else null
+    }
+
+    private fun upwardOfFilePair(edges: List<Edge>): Map<Pair<String, String>, Boolean> {
+        val rootPrefix = "$PATH_SEPARATOR${project.rootNode.name}$PATH_SEPARATOR"
+        return edges
+            .filter { DEPENDENCIES_METRIC in it.attributes }
+            .groupBy({ it.fromNodeName.removePrefix(rootPrefix) to it.toNodeName.removePrefix(rootPrefix) }, { it.isPointingUpwards })
+            .mapValues { (_, marks) -> marks.any { it } }
+    }
 
     private fun numericAttributes(attributes: Map<String, Any>): Map<String, Double> = attributes
         .mapNotNull { (name, value) -> (value as? Number)?.let { name to it.toDouble() } }
@@ -35,5 +48,6 @@ class AnalysedProject(private val project: Project) {
 
     companion object {
         private const val PATH_SEPARATOR = "/"
+        private const val DEPENDENCIES_METRIC = "dependencies"
     }
 }

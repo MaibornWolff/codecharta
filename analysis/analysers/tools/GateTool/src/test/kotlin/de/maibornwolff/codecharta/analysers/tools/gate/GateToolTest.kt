@@ -107,7 +107,7 @@ class GateToolTest {
     fun `should report broken rules, write the map and the report and exit with the error code`() {
         // Arrange
         configFile.writeText(
-            "metrics:\n  rloc:\n    error:\n      max: 1\n      instruction: Keep files tiny.\ncycles:\n  file:\n    severity: warning\n"
+            "metrics:\n  rloc:\n    error:\n      max: 1\n      instruction: Keep files tiny.\ncycles:\n  betweenFiles:\n    severity: warning\n"
         )
 
         // Act
@@ -121,8 +121,8 @@ class GateToolTest {
             "ERROR  rloc > 1",
             "Keep files tiny.",
             "src/main/kotlin/app/App.kt",
-            "WARN   1 file cycle",
-            "app/App.kt   → util/Util.kt"
+            "WARN   1 cycle between files",
+            "app/App.kt: main   → util/Util.kt: Util"
         )
         val outputFolder = File(projectFolder, ".codecharta-gate-output")
         assertThat(File(outputFolder, "report.json").readText()).contains("\"exitCode\": 1")
@@ -157,7 +157,7 @@ class GateToolTest {
     @Test
     fun `should not run an analyser the config switches off`() {
         // Arrange
-        configFile.writeText("analysers:\n  dependencyparser: off\ncycles:\n  file:\n    severity: error\n")
+        configFile.writeText("analysers:\n  dependencyparser: off\ncycles:\n  betweenFiles:\n    severity: error\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -325,7 +325,7 @@ class GateToolTest {
     @Test
     fun `should report the same result when the analysers run in parallel`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\ncycles:\n  file:\n    severity: warning\n")
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\ncycles:\n  betweenFiles:\n    severity: warning\n")
 
         // Act
         val exitCode = run("--parallel", projectFolder.path)
@@ -354,7 +354,7 @@ class GateToolTest {
     fun `should warn that cycles could not be checked when the map has no dependencies`() {
         // Arrange
         val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
-        configFile.writeText("cycles:\n  file:\n    severity: error\n")
+        configFile.writeText("cycles:\n  betweenFiles:\n    severity: error\n")
 
         // Act
         val exitCode = run("--map", mapFile.path, projectFolder.path)

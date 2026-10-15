@@ -108,7 +108,7 @@ class QualityGate(
     private fun evaluate(project: AnalysedProject, config: GateConfig): GateResult {
         val violations =
             MetricRuleEvaluator(config).evaluate(project.files) +
-                CycleRuleEvaluator(config.cycles).evaluate(project.dependencies, project.hasDependencyAnalysis)
+                CycleRuleEvaluator(config.cycles).evaluate(project.dependencyAnalysis)
         return GateResult(violations, project.files.size)
     }
 
