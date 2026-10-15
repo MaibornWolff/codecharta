@@ -25,9 +25,9 @@ sealed interface MetricOverride {
 
 data class PathOverride(val paths: List<String>, val metrics: Map<String, MetricOverride>)
 
-data class CycleRule(val severity: Severity, val instruction: String? = null)
+data class CycleRule(val severity: Severity, val instruction: String? = null, val ignore: List<String> = emptyList())
 
-data class CycleRules(val file: CycleRule? = null, val packages: CycleRule? = null, val allowed: List<Set<String>> = emptyList())
+data class CycleRules(val file: CycleRule? = null, val packages: CycleRule? = null)
 
 data class AnalyserSetting(val enabled: Boolean, val arguments: List<String> = emptyList())
 

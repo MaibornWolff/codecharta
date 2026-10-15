@@ -70,11 +70,12 @@ class ConfigReaderTest {
               file:
                 severity: error
                 instruction: Break the cycle.
+                ignore:
+                  - src/a.kt
               package:
                 severity: warning
-              allow:
-                - - src/a.kt
-                  - src/b.kt
+                ignore:
+                  - src/legacy
             overrides:
               - paths:
                   - src/legacy/**
@@ -107,9 +108,8 @@ class ConfigReaderTest {
                     ),
                 cycles =
                     CycleRules(
-                        file = CycleRule(Severity.ERROR, "Break the cycle."),
-                        packages = CycleRule(Severity.WARNING),
-                        allowed = listOf(setOf("src/a.kt", "src/b.kt"))
+                        file = CycleRule(Severity.ERROR, "Break the cycle.", ignore = listOf("src/a.kt")),
+                        packages = CycleRule(Severity.WARNING, ignore = listOf("src/legacy"))
                     ),
                 overrides =
                     listOf(
@@ -261,15 +261,15 @@ class ConfigReaderTest {
     }
 
     @Test
-    fun `should report an allowed cycle with fewer than two members`() {
+    fun `should report an ignore pattern that is not valid`() {
         // Arrange
-        val text = "cycles:\n  allow:\n    - - src/a.kt\n"
+        val text = "cycles:\n  file:\n    severity: error\n    ignore:\n      - \"src/[a\"\n"
 
         // Act
         val result = reader.read(text)
 
         // Assert
-        assertThat(result.problems).containsExactly(ConfigProblem(3, "cycles.allow[0] must list at least two paths"))
+        assertThat(result.problems).containsExactly(ConfigProblem(5, "cycles.file.ignore[0] is not a valid path pattern: 'src/[a'"))
     }
 
     @Test

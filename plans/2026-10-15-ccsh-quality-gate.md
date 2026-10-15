@@ -37,7 +37,8 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ### 4. `ccsh gate`
 - Metric rules per file, worst level only; anything left out is off; gitignore-style override patterns,
   last match wins, `<metric>: off`
-- File and package cycles via the DependencyParser's strongly connected component detection; allowed cycles
+- File and package cycles via the DependencyParser's strongly connected component detection; `ignore` patterns per level take
+  files or packages out of the graph
 - Unknown metrics as warnings; exit code = highest code mapped to a found severity, 2 for tool failures
 
 ### 5. Report

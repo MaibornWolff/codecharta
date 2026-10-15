@@ -22,13 +22,18 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
         "The map has no dependency data, so cycles could not be checked. Switch on the dependencyparser."
     )
 
-    private fun findCycles(dependencies: List<FileDependency>, kind: ViolationKind, rule: CycleRule): List<Violation> =
-        StronglyConnectedComponentDetection()
-            .run(toNodeInformations(dependencies))
+    private fun findCycles(dependencies: List<FileDependency>, kind: ViolationKind, rule: CycleRule): List<Violation> {
+        val considered = withoutIgnored(dependencies, PathPatterns(rule.ignore), kind == ViolationKind.PACKAGE_CYCLE)
+        return StronglyConnectedComponentDetection()
+            .run(toNodeInformations(considered))
             .map { component -> component.nodes.map { it.id }.toSet() }
-            .filter { members -> members.size > 1 && members !in rules.allowed }
-            .map { members -> toViolation(members, dependencies, kind, rule) }
+            .filter { members -> members.size > 1 }
+            .map { members -> toViolation(members, considered, kind, rule) }
             .sortedBy { it.members.first() }
+    }
+
+    private fun withoutIgnored(dependencies: List<FileDependency>, ignored: PathPatterns, areFolders: Boolean): List<FileDependency> =
+        dependencies.filterNot { ignored.matches(it.from, areFolders) || ignored.matches(it.to, areFolders) }
 
     private fun toViolation(members: Set<String>, dependencies: List<FileDependency>, kind: ViolationKind, rule: CycleRule): Violation {
         val dependenciesInCycle = dependencies

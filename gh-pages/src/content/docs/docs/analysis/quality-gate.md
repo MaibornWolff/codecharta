@@ -76,11 +76,13 @@ cycles:
   file:
     severity: error
     instruction: Break the cycle by moving the shared part into its own file.
+    ignore:                       # left out of the dependency graph before cycles are searched
+      - src/model/Node.kt
+      - "**/generated/**"
   package:
     severity: warning
-  allow:                          # cycles that are accepted as they are
-    - - src/model/Node.kt
-      - src/model/Edge.kt
+    ignore:
+      - src/legacy
 
 overrides:                        # other limits for the files the patterns match; the last match wins
   - paths:
@@ -106,8 +108,9 @@ overrides:                        # other limits for the files the patterns matc
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console and in
   the report.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
-- **Cycles** are found in the dependency graph of the Dependency Parser. A package is the folder of a file. An
-  allowed cycle is reported again once it gains a member.
+- **Cycles** are found in the dependency graph of the Dependency Parser. A package is the folder of a file.
+  `ignore` takes files (or, for `package`, folders) out of that graph, in `.gitignore` syntax: a cycle that only
+  runs through an ignored file is not reported, while the rest of a cycle that does not need it still is.
 - A rule for a metric the analysis did not produce is reported as a warning.
 
 ### The result
