@@ -111,7 +111,8 @@ overrides:                        # other limits for the files the patterns matc
   analyser, and `--doctor` checks names and values the way the analyser itself would. The gate sets the output
   options itself.
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console in a box
-  under the rule they belong to, and in the report.
+  under the rule they belong to, wrapped at about 76 characters, and in the report. A YAML block (`instruction: |`)
+  keeps the line breaks you write.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
 - **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
   what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `betweenFiles` and `insideFiles`

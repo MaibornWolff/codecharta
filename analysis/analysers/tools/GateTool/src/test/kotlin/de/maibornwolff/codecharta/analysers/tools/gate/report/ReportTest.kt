@@ -159,6 +159,41 @@ class ReportTest {
     }
 
     @Test
+    fun `should wrap a long instruction inside its box and keep the line breaks it was written with`() {
+        // Arrange
+        val output = ByteArrayOutputStream()
+        val instruction =
+            "Split the file by responsibility into smaller files, so that each of them has one reason to change " +
+                "and stays easy to read.\nAsk before splitting generated code."
+        val violation =
+            Violation(
+                ViolationKind.METRIC,
+                Severity.ERROR,
+                instruction,
+                path = "src/Big.kt",
+                metric = "rloc",
+                value = 812.0,
+                threshold = 400.0
+            )
+
+        // Act
+        ConsoleReport(PrintStream(output), listOf("rloc")).print(GateResult(listOf(violation), filesChecked = 1))
+
+        // Assert
+        assertThat(output.toString()).startsWith(
+            """
+            ERROR  rloc > 400
+            ┌ Instruction ─────────────────────────────────────────────────────────────
+            │ Split the file by responsibility into smaller files, so that each of them
+            │ has one reason to change and stays easy to read.
+            │ Ask before splitting generated code.
+            └──────────────────────────────────────────────────────────────────────────
+              src/Big.kt  812
+            """.trimIndent()
+        )
+    }
+
+    @Test
     fun `should say so when nothing broke a rule`() {
         // Arrange
         val output = ByteArrayOutputStream()
