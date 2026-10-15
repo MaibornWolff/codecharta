@@ -43,7 +43,7 @@ object JsonReport {
         is UnknownMetric -> "unknown-metric"
         is CycleViolation -> if (violation.isInsideOneFile) "cycle-inside-file" else "cycle-between-files"
         is UpwardViolation -> "upward-dependency"
-        is DependenciesNotChecked -> "cycles-not-checked"
+        is DependenciesNotChecked -> "dependencies-not-checked"
     }
 
     private fun addDetails(json: JsonObject, violation: Violation) {

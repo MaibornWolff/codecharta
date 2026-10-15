@@ -25,9 +25,13 @@ sealed interface MetricOverride {
 
 data class PathOverride(val paths: List<String>, val metrics: Map<String, MetricOverride>)
 
-data class CycleRule(val severity: Severity, val instruction: String? = null, val ignore: List<String> = emptyList())
+data class DependencyRule(val severity: Severity, val instruction: String? = null, val ignore: List<String> = emptyList())
 
-data class CycleRules(val betweenFiles: CycleRule? = null, val insideFiles: CycleRule? = null, val upward: CycleRule? = null)
+data class DependencyRules(
+    val cyclesBetweenFiles: DependencyRule? = null,
+    val cyclesInsideFiles: DependencyRule? = null,
+    val upward: DependencyRule? = null
+)
 
 data class AnalyserSetting(val enabled: Boolean, val arguments: List<String> = emptyList())
 
@@ -38,14 +42,14 @@ data class GateConfig(
     val analysers: Map<String, AnalyserSetting> = emptyMap(),
     val exitCodes: Map<Severity, Int> = emptyMap(),
     val metrics: Map<String, MetricRule> = emptyMap(),
-    val cycles: CycleRules = CycleRules(),
+    val dependencies: DependencyRules = DependencyRules(),
     val overrides: List<PathOverride> = emptyList()
 ) {
     val hasActiveRules: Boolean
         get() = metrics.isNotEmpty() ||
-            cycles.betweenFiles != null ||
-            cycles.insideFiles != null ||
-            cycles.upward != null ||
+            dependencies.cyclesBetweenFiles != null ||
+            dependencies.cyclesInsideFiles != null ||
+            dependencies.upward != null ||
             overrides.any { it.metrics.isNotEmpty() }
 
     val configuredMetrics: List<String>

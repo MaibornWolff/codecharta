@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.analysers.tools.gate.report.ConsoleReport
 import de.maibornwolff.codecharta.analysers.tools.gate.report.JsonReport
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedProject
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleRuleEvaluator
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependencyRuleEvaluator
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricRuleEvaluator
 import de.maibornwolff.codecharta.analysers.tools.gate.template.ConfigTemplate
@@ -50,7 +50,7 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
     private fun evaluate(project: AnalysedProject, config: GateConfig): GateResult {
         val violations =
             MetricRuleEvaluator(config).evaluate(project.files) +
-                CycleRuleEvaluator(config.cycles).evaluate(project.dependencyAnalysis)
+                DependencyRuleEvaluator(config.dependencies).evaluate(project.dependencyAnalysis)
         return GateResult(violations, project.files.size)
     }
 

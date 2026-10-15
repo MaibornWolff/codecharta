@@ -1,14 +1,14 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
-import de.maibornwolff.codecharta.analysers.tools.gate.config.CycleRule
-import de.maibornwolff.codecharta.analysers.tools.gate.config.CycleRules
+import de.maibornwolff.codecharta.analysers.tools.gate.config.DependencyRule
+import de.maibornwolff.codecharta.analysers.tools.gate.config.DependencyRules
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class CycleRuleEvaluatorTest {
-    private val cycleRule = CycleRule(Severity.ERROR, "Break the cycle.")
-    private val upwardRule = CycleRule(Severity.WARNING, "Turn the dependency around.")
+class DependencyRuleEvaluatorTest {
+    private val cycleRule = DependencyRule(Severity.ERROR, "Break the cycle.")
+    private val upwardRule = DependencyRule(Severity.WARNING, "Turn the dependency around.")
     private val foo = Declaration("a/Foo.kt", "Foo")
     private val bar = Declaration("b/Bar.kt", "Bar")
     private val baz = Declaration("b/Bar.kt", "Baz")
@@ -19,7 +19,7 @@ class CycleRuleEvaluatorTest {
         val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo)))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules(betweenFiles = cycleRule)).evaluate(analysis)
+        val violations = DependencyRuleEvaluator(DependencyRules(cyclesBetweenFiles = cycleRule)).evaluate(analysis)
 
         // Assert
         assertThat(violations).containsExactly(
@@ -33,12 +33,12 @@ class CycleRuleEvaluatorTest {
         val analysis = DependencyAnalysis(listOf(cyclic(bar, baz), cyclic(baz, bar)))
 
         // Act
-        val betweenFilesOnly = CycleRuleEvaluator(CycleRules(betweenFiles = cycleRule)).evaluate(analysis)
-        val insideFiles = CycleRuleEvaluator(CycleRules(insideFiles = cycleRule)).evaluate(analysis)
+        val betweenFilesOnly = DependencyRuleEvaluator(DependencyRules(cyclesBetweenFiles = cycleRule)).evaluate(analysis)
+        val insideFilesOnly = DependencyRuleEvaluator(DependencyRules(cyclesInsideFiles = cycleRule)).evaluate(analysis)
 
         // Assert
         assertThat(betweenFilesOnly).isEmpty()
-        assertThat(insideFiles).containsExactly(
+        assertThat(insideFilesOnly).containsExactly(
             CycleViolation(Severity.ERROR, "Break the cycle.", listOf(bar, baz))
         )
     }
@@ -48,10 +48,10 @@ class CycleRuleEvaluatorTest {
         // Arrange
         val other = Declaration("c/Other.kt", "Other")
         val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo), cyclic(foo, other), cyclic(other, foo)))
-        val rules = CycleRules(betweenFiles = cycleRule.copy(ignore = listOf("b/")))
+        val rules = DependencyRules(cyclesBetweenFiles = cycleRule.copy(ignore = listOf("b/")))
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(analysis)
+        val violations = DependencyRuleEvaluator(rules).evaluate(analysis)
 
         // Assert
         assertThat(violations.map { (it as CycleViolation).files }).containsExactly(listOf("a/Foo.kt", "c/Other.kt"))
@@ -63,7 +63,7 @@ class CycleRuleEvaluatorTest {
         val analysis = DependencyAnalysis(listOf(plain(foo, bar), plain(bar, foo)), mapOf(("a/Foo.kt" to "b/Bar.kt") to true))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules(upward = upwardRule)).evaluate(analysis)
+        val violations = DependencyRuleEvaluator(DependencyRules(upward = upwardRule)).evaluate(analysis)
 
         // Assert
         assertThat(violations).containsExactly(
@@ -77,7 +77,7 @@ class CycleRuleEvaluatorTest {
         val analysis = DependencyAnalysis(listOf(DeclarationDependency(bar, baz, isPointingUpwards = true)))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules(upward = upwardRule)).evaluate(analysis)
+        val violations = DependencyRuleEvaluator(DependencyRules(upward = upwardRule)).evaluate(analysis)
 
         // Assert
         assertThat(violations.single()).isEqualTo(UpwardViolation(Severity.WARNING, "Turn the dependency around.", bar, baz))
@@ -87,10 +87,10 @@ class CycleRuleEvaluatorTest {
     fun `should leave out upward dependencies from or to an ignored folder`() {
         // Arrange
         val analysis = DependencyAnalysis(listOf(plain(foo, bar)), mapOf(("a/Foo.kt" to "b/Bar.kt") to true))
-        val rules = CycleRules(upward = upwardRule.copy(ignore = listOf("b")))
+        val rules = DependencyRules(upward = upwardRule.copy(ignore = listOf("b")))
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(analysis)
+        val violations = DependencyRuleEvaluator(rules).evaluate(analysis)
 
         // Assert
         assertThat(violations).isEmpty()
@@ -102,7 +102,7 @@ class CycleRuleEvaluatorTest {
         val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo)), mapOf(("a/Foo.kt" to "b/Bar.kt") to true))
 
         // Act
-        val violations = CycleRuleEvaluator(CycleRules()).evaluate(analysis)
+        val violations = DependencyRuleEvaluator(DependencyRules()).evaluate(analysis)
 
         // Assert
         assertThat(violations).isEmpty()
@@ -111,10 +111,10 @@ class CycleRuleEvaluatorTest {
     @Test
     fun `should warn once that dependencies could not be checked when the map has no dependency analysis`() {
         // Arrange
-        val rules = CycleRules(betweenFiles = cycleRule, insideFiles = cycleRule, upward = upwardRule)
+        val rules = DependencyRules(cyclesBetweenFiles = cycleRule, cyclesInsideFiles = cycleRule, upward = upwardRule)
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(null)
+        val violations = DependencyRuleEvaluator(rules).evaluate(null)
 
         // Assert
         assertThat(violations).containsExactly(
@@ -129,10 +129,10 @@ class CycleRuleEvaluatorTest {
     @Test
     fun `should not warn about a missing dependency analysis when no dependency rule is set`() {
         // Arrange
-        val rules = CycleRules()
+        val rules = DependencyRules()
 
         // Act
-        val violations = CycleRuleEvaluator(rules).evaluate(null)
+        val violations = DependencyRuleEvaluator(rules).evaluate(null)
 
         // Assert
         assertThat(violations).isEmpty()

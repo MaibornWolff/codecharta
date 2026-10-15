@@ -70,7 +70,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
                 counted(group.size, "cycle between files", "cycles between files")
             }
         is UpwardViolation -> counted(group.size, "upward dependency", "upward dependencies")
-        is DependenciesNotChecked -> "cycles not checked"
+        is DependenciesNotChecked -> "dependencies not checked"
     }
 
     private fun bodyLines(group: List<Violation>): List<String> = when (group.first()) {
