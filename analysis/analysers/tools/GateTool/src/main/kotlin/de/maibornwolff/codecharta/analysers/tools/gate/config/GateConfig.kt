@@ -80,7 +80,7 @@ data class GateConfig(
         return levels.maxOrNull() ?: Severity.WARNING
     }
 
-    fun isAnalyserEnabled(analyserName: String): Boolean = analysers[analyserName]?.enabled ?: true
+    fun isAnalyserEnabled(analyserName: String): Boolean = analysers[analyserName]?.enabled ?: false
 
     fun argumentsFor(analyserName: String): List<String> = analysers[analyserName]?.arguments ?: emptyList()
 

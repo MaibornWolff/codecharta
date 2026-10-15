@@ -13,7 +13,7 @@ Full documentation: https://maibornwolff.github.io/codecharta/docs/analysis/qual
 | Parameter              | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
 | `FOLDER`               | project folder (default: the current folder)                                |
-| `--init`               | analyses the project and writes a fully commented-out `.codecharta.yml`     |
+| `--init`               | analyses the project and writes a `.codecharta.yml` with its rules commented out |
 | `--doctor`             | validates the config without analysing                                      |
 | `-c, --config=<file>`  | config file (default: `.codecharta.yml` in the project folder)              |
 | `-f, --force`          | lets `--init` overwrite an existing config                                  |

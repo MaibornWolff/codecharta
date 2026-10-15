@@ -33,7 +33,10 @@ class GateTool(
     @CommandLine.Option(names = ["-c", "--config"], description = ["config file (default: ${GateConfig.FILE_NAME} in the project folder)"])
     private var configFile: File? = null
 
-    @CommandLine.Option(names = ["--init"], description = ["analyses the project and writes a fully commented-out ${GateConfig.FILE_NAME}"])
+    @CommandLine.Option(
+        names = ["--init"],
+        description = ["analyses the project and writes a ${GateConfig.FILE_NAME} with its rules commented out"]
+    )
     private var init = false
 
     @CommandLine.Option(names = ["--doctor"], description = ["validates the config without analysing the project"])

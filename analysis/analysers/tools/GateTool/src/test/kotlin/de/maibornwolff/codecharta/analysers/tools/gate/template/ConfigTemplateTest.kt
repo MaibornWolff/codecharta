@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.analysers.tools.gate.template
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigReader
 import de.maibornwolff.codecharta.analysers.tools.gate.config.FakeAnalyserCatalog
-import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedFile
 import org.assertj.core.api.Assertions.assertThat
@@ -39,15 +38,16 @@ class ConfigTemplateTest {
     }
 
     @Test
-    fun `should list every analyser switched on with the options it takes`() {
+    fun `should switch on every analyser, run them in parallel and set the exit codes`() {
         // Act
         val text = template.render()
 
         // Assert
-        assertThat(
-            text
-        ).contains(
-            "#   rawtextparser: on\n#     ## options: tab-width\n#   unifiedparser: on\n#     ## options: exclude, file-extensions\n"
+        assertThat(text).contains(
+            "analysers:  ## ",
+            "  rawtextparser: on\n    ## options: tab-width\n  unifiedparser: on\n    ## options: exclude, file-extensions\n",
+            "parallel: on\n",
+            "exitCodes:\n  error: 1\n  warning: 0\n"
         )
     }
 
@@ -66,15 +66,16 @@ class ConfigTemplateTest {
     }
 
     @Test
-    fun `should leave every line commented out so the file checks nothing yet`() {
+    fun `should leave every rule commented out so the file checks nothing yet`() {
         // Act
-        val text = template.render()
+        val result = ConfigReader(catalog).read(template.render())
 
         // Assert
-        assertThat(text.lines().filter { it.isNotBlank() }).allMatch { it.startsWith("#") }
-        val result = ConfigReader(catalog).read(text)
         assertThat(result.problems).isEmpty()
-        assertThat(result.config).isEqualTo(GateConfig())
+        assertThat(result.config.hasActiveRules).isFalse()
+        assertThat(result.config.parallel).isTrue()
+        assertThat(result.config.isAnalyserEnabled("rawtextparser")).isTrue()
+        assertThat(result.config.isAnalyserEnabled("unifiedparser")).isTrue()
     }
 
     @Test
@@ -88,7 +89,7 @@ class ConfigTemplateTest {
         // Assert
         assertThat(result.problems).isEmpty()
         assertThat(result.config.metrics.keys).containsExactly("rloc")
-        assertThat(result.config.parallel).isFalse()
+        assertThat(result.config.parallel).isTrue()
     }
 
     @Test
