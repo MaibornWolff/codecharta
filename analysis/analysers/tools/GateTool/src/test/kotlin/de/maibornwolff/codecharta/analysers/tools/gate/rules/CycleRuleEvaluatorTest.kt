@@ -21,7 +21,13 @@ class CycleRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(ViolationKind.FILE_CYCLE, Severity.ERROR, "Break the cycle.", members = listOf("a/Foo.kt", "b/Bar.kt"))
+            Violation(
+                ViolationKind.FILE_CYCLE,
+                Severity.ERROR,
+                "Break the cycle.",
+                members = listOf("a/Foo.kt", "b/Bar.kt"),
+                dependencies = mapOf("a/Foo.kt" to listOf("b/Bar.kt"), "b/Bar.kt" to listOf("a/Foo.kt"))
+            )
         )
     }
 
@@ -35,7 +41,13 @@ class CycleRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(ViolationKind.PACKAGE_CYCLE, Severity.WARNING, "Untangle the packages.", members = listOf("a", "b"))
+            Violation(
+                ViolationKind.PACKAGE_CYCLE,
+                Severity.WARNING,
+                "Untangle the packages.",
+                members = listOf("a", "b"),
+                dependencies = mapOf("a" to listOf("b"), "b" to listOf("a"))
+            )
         )
     }
 
@@ -87,6 +99,27 @@ class CycleRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `should list for each member only the members of its own cycle it depends on`() {
+        // Arrange
+        val dependencies =
+            listOf(
+                dependency("Foo.kt", "Bar.kt"),
+                dependency("Foo.kt", "Baz.kt"),
+                dependency("Bar.kt", "Foo.kt"),
+                dependency("Baz.kt", "Foo.kt"),
+                dependency("Foo.kt", "Outside.kt")
+            )
+
+        // Act
+        val violations = CycleRuleEvaluator(CycleRules(file = fileRule)).evaluate(dependencies)
+
+        // Assert
+        assertThat(violations.single().dependencies).isEqualTo(
+            mapOf("Bar.kt" to listOf("Foo.kt"), "Baz.kt" to listOf("Foo.kt"), "Foo.kt" to listOf("Bar.kt", "Baz.kt"))
+        )
     }
 
     private fun dependency(from: String, to: String) = FileDependency(from, to)
