@@ -3,8 +3,8 @@ title: "Quality Gate"
 ---
 
 `ccsh gate` analyses a project and checks it against the rules in its `.codecharta.yml`: limits per metric and
-file, and the dependency cycles and upward dependencies the Dependency Parser finds. It prints every broken rule, writes a JSON report and exits
-with a code you choose, so a build, a git hook or an AI agent can act on the result.
+file, and the dependency cycles and upward dependencies the Dependency Parser finds. It prints every broken rule,
+writes a JSON report and exits with a code you choose, so a build, a git hook or an AI agent can act on the result.
 
 :::caution[Experimental]
 The quality gate is still in development. Its commands, its config format and its report may change between releases.
@@ -19,9 +19,10 @@ ccsh gate             # analyse and check
 ```
 
 Each takes the project folder as an optional argument (default: the current folder) and `--config <file>` to read
-the config from elsewhere, `--quiet` to keep the output of the analysers off the console, and `--parallel` to run the analysers at the same time. `--init` refuses to overwrite an existing config unless you add `--force`. Called
-without arguments in a terminal, `ccsh gate` starts right away when the current folder has a `.codecharta.yml`,
-and asks what to do otherwise.
+the config from elsewhere. `--quiet` keeps the output of the analysers off the console, and `--parallel` runs the
+analysers at the same time. `--init` refuses to overwrite an existing config unless you add `--force`. Called without
+arguments in a terminal, `ccsh gate` starts right away when the current folder has a `.codecharta.yml`, and asks what
+to do otherwise.
 
 `--init` lists every metric the analysis found, with the range of its values and what it measures, and one worked rule
 that today's worst file still passes. Everything in the generated file is commented out: a fresh file checks nothing.
@@ -92,7 +93,7 @@ dependencies:
     ignore:
       - src/legacy
 
-overrides:                        # other limits for the files the patterns match; the last match wins
+overrides:                        # other limits for the files the patterns match, applied in order
   - paths:
       - src/legacy/**
     metrics:
@@ -105,11 +106,12 @@ overrides:                        # other limits for the files the patterns matc
       rloc: off
 ```
 
-- **Metric rules** compare each file's own value with the limits, a `max` it must not exceed and/or a `min` it must
-  not fall below (e.g. `coverage: { error: { min: 80 } }` with a map from the coverage importer); folders are never
-  summed up. A file is reported
-  once, at the worst level it exceeds. Per-function rules use the file metrics the Unified Parser writes, such as
-  `max_complexity_per_function`.
+- **Metric rules** compare each file's own value with a `max` it must not exceed and/or a `min` it must not fall
+  below, such as `coverage: { error: { min: 80 } }` on a map from the coverage importer. Folders are never summed up.
+  A file is reported once, at the worst level it breaks. Per-function rules use the file metrics the Unified Parser
+  writes, such as `max_complexity_per_function`.
+- **Overrides** apply in order to the files their patterns match. One replaces only the levels and fields it names,
+  so `error: { max: 2000 }` keeps the warning and the instruction, and `off` drops the metric for those files.
 - **A level, metric or setting left out** is not checked or keeps its default.
 - **`exclude`** leaves files out of every rule and out of the dependency analysis the rules see, in `.gitignore`
   syntax relative to `input`. An analyser's own `exclude` option is a regular expression instead, and keeps the files
@@ -118,19 +120,23 @@ overrides:                        # other limits for the files the patterns matc
   A list repeats the option, `true` sets a flag and `false` leaves it out. `--init` lists the options of every
   analyser, and `--doctor` checks names and values the way the analyser itself would. The gate sets the output
   options itself.
-- **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console in a box
-  under the rule they belong to, wrapped at about 76 characters, and in the report. A YAML block (`instruction: |`)
-  keeps the line breaks you write.
+- **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console in a
+  box under the rule they belong to, wrapped at about 76 characters, and in the report. A YAML block
+  (`instruction: |`) keeps the line breaks and indentation you write.
 - **Paths** in the config (`input`, `output`) are relative to the project folder: the folder you pass to `ccsh gate`,
   otherwise the current folder, wherever the config file lives.
-- **Path patterns** in `exclude`, `overrides` and `ignore` follow `.gitignore` syntax, relative to the `input` folder. A
-  pattern that matches no file is reported as a warning, so a typo does not go unnoticed.
+- **Path patterns** in `exclude`, `overrides` and `ignore` follow `.gitignore` syntax, relative to the `input`
+  folder, `!` included. A pattern that matches no file is reported as a warning, so a typo does not go unnoticed.
 - **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
-  what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `cyclesBetweenFiles` and `cyclesInsideFiles`
-  report each loop through declarations: for every dependency the parser marks cyclic, the shortest way back, each
-  loop once. `upward` reports each dependency between declarations that runs against the levels of its folder. A
-  loop or an upward dependency that touches a file `ignore` matches is not reported.
-- A rule for a metric the analysis did not produce is reported as a warning.
+  what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `cyclesBetweenFiles` and
+  `cyclesInsideFiles` report each loop through declarations: for every dependency the parser marks cyclic, the
+  shortest way back, each loop once. `upward` reports each dependency between declarations that runs against the
+  levels of its folder. A loop or an upward dependency that touches a file `ignore` matches is not reported.
+- **A rule for a metric the analysis did not produce** is reported at the worst severity the rule sets, with the
+  closest metric name the analysis did produce, so a typo cannot let the gate pass.
+- **`--doctor`** reports every problem with its line: unknown keys, wrong values, patterns that are no valid
+  `.gitignore` patterns, analyser options the analyser would refuse, a warning limit beyond its error limit, and rules
+  or overrides that would check nothing.
 
 ### The result
 
@@ -170,8 +176,10 @@ Report: ./.codecharta-gate-output/report.json
 The first line appears with `--quiet` only. Each cycle is walked through the declarations it runs through, from the
 folder its files share.
 
-`report.json` holds the exit code, the counts per severity and every violation with its rule, severity, path, metric,
-value, `max` or `min` and instruction; a cycle lists its members instead of a path.
+`report.json` holds the exit code, the counts per severity and every finding with its rule and severity: a metric
+finding with its path, metric, value and the `max` or `min` it breaks; a cycle with its files and the declarations it
+runs through; an upward dependency with its path, target and both declarations; and a pattern that matches no file
+with the setting it is in. Every finding carries its instruction.
 
 The exit code is the code the config maps the worst severity found to, 0 when no rule is broken, and 2 when the gate
 itself fails: no config, an invalid config or a failing analyser.
