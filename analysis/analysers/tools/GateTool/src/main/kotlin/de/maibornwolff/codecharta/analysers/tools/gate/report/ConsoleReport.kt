@@ -52,8 +52,23 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     }
 
     private fun instructionBox(instruction: String): List<String> {
-        val width = maxOf(instruction.length + 2, INSTRUCTION_TITLE.length + 2)
-        return listOf(INSTRUCTION_TITLE.padEnd(width, BOX_LINE), "│ $instruction", "└".padEnd(width, BOX_LINE))
+        val lines = instruction.lines().flatMap { wrapped(it, INSTRUCTION_LINE_WIDTH) }
+        val width = maxOf(lines.maxOf { it.length } + 2, INSTRUCTION_TITLE.length + 2)
+        return listOf(INSTRUCTION_TITLE.padEnd(width, BOX_LINE)) + lines.map { "│ $it" } + "└".padEnd(width, BOX_LINE)
+    }
+
+    private fun wrapped(text: String, width: Int): List<String> {
+        val lines = mutableListOf<String>()
+        var current = ""
+        text.split(" ").filter { it.isNotEmpty() }.forEach { word ->
+            if (current.isNotEmpty() && current.length + 1 + word.length > width) {
+                lines.add(current)
+                current = word
+            } else {
+                current = if (current.isEmpty()) word else "$current $word"
+            }
+        }
+        return lines + current
     }
 
     private fun title(group: List<Violation>): String {
@@ -86,6 +101,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         private const val INDENT = "  "
         private const val INSTRUCTION_TITLE = "┌ Instruction "
         private const val BOX_LINE = '─'
+        private const val INSTRUCTION_LINE_WIDTH = 76
         private val SEVERITY_LABELS = mapOf(Severity.ERROR to "ERROR", Severity.WARNING to "WARN")
     }
 }
