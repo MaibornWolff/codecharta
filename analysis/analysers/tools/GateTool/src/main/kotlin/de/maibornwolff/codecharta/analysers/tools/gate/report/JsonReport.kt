@@ -34,6 +34,12 @@ object JsonReport {
         addProperty("files", result.filesChecked)
     }
 
+    private fun dependenciesInCycle(dependencies: Map<String, List<String>>) = JsonObject().apply {
+        dependencies.forEach { (member, targets) -> add(member, jsonArrayOf(targets)) }
+    }
+
+    private fun jsonArrayOf(values: List<String>) = JsonArray().apply { values.forEach(::add) }
+
     private fun toJson(violation: Violation) = JsonObject().apply {
         addProperty("rule", RULE_NAMES.getValue(violation.kind))
         addProperty("severity", violation.severity.key)
@@ -41,7 +47,8 @@ object JsonReport {
         violation.metric?.let { addProperty("metric", it) }
         violation.value?.let { addProperty("value", it.toJsonNumber()) }
         violation.threshold?.let { addProperty("threshold", it.toJsonNumber()) }
-        if (violation.members.isNotEmpty()) add("members", JsonArray().apply { violation.members.forEach(::add) })
+        if (violation.members.isNotEmpty()) add("members", jsonArrayOf(violation.members))
+        if (violation.dependencies.isNotEmpty()) add("dependencies", dependenciesInCycle(violation.dependencies))
         violation.instruction?.let { addProperty("instruction", it) }
     }
 }

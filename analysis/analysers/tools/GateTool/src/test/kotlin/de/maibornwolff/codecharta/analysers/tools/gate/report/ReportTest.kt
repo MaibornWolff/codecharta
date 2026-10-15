@@ -159,7 +159,8 @@ class ReportTest {
         val violations = json["violations"].asJsonArray.map { it.toString() }
         assertThat(violations).contains(
             """{"rule":"metric","severity":"error","path":"src/Big.kt","metric":"rloc","value":812,"threshold":400,"instruction":"Split it."}""",
-            """{"rule":"file-cycle","severity":"error","members":["a/Foo.kt","b/Bar.kt"],"instruction":"Break the cycle."}""",
+            """{"rule":"file-cycle","severity":"error","members":["a/Foo.kt","b/Bar.kt"],""" +
+                """"dependencies":{"a/Foo.kt":["b/Bar.kt"],"b/Bar.kt":["a/Foo.kt"]},"instruction":"Break the cycle."}""",
             """{"rule":"unknown-metric","severity":"warning","metric":"lines_of_doc","instruction":"No such metric."}"""
         )
     }
