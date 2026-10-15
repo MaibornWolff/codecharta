@@ -36,6 +36,9 @@ data class CycleViolation(override val severity: Severity, override val instruct
 data class UpwardViolation(override val severity: Severity, override val instruction: String?, val from: Declaration, val to: Declaration) :
     Violation
 
+data class UnmatchedPattern(override val severity: Severity, override val instruction: String?, val pattern: String, val setting: String) :
+    Violation
+
 data class DependenciesNotChecked(override val severity: Severity, override val instruction: String?) : Violation
 
 data class GateResult(val violations: List<Violation>, val filesChecked: Int) {

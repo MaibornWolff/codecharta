@@ -446,6 +446,19 @@ class GateToolTest {
         assertThat(output.toString()).contains("Add .codecharta-gate-output/ to ")
     }
 
+    @Test
+    fun `should warn about an override pattern that matches no file`() {
+        // Arrange
+        configFile.writeText("overrides:\n  - paths:\n      - ./src/**\n    metrics:\n      rloc: off\n")
+
+        // Act
+        val exitCode = run(projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isZero()
+        assertThat(output.toString()).contains("WARN   1 pattern that matches no file", "overrides[0].paths  ./src/**")
+    }
+
     private fun writeMap(vararg files: Node): File {
         val project = Project("given", listOf(Node("root", NodeType.Folder, children = files.toSet())))
         val mapFile = File(projectFolder, "given.cc.json")

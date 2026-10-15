@@ -123,7 +123,8 @@ overrides:                        # other limits for the files the patterns matc
   keeps the line breaks you write.
 - **Paths** in the config (`input`, `output`) are relative to the project folder: the folder you pass to `ccsh gate`,
   otherwise the current folder, wherever the config file lives.
-- **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
+- **Path patterns** in `exclude`, `overrides` and `ignore` follow `.gitignore` syntax, relative to the `input` folder. A
+  pattern that matches no file is reported as a warning, so a typo does not go unnoticed.
 - **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
   what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `cyclesBetweenFiles` and `cyclesInsideFiles`
   report each loop through declarations: for every dependency the parser marks cyclic, the shortest way back, each

@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependenciesNotChec
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnmatchedPattern
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
 
@@ -44,6 +45,7 @@ object JsonReport {
         is CycleViolation -> if (violation.isInsideOneFile) "cycle-inside-file" else "cycle-between-files"
         is UpwardViolation -> "upward-dependency"
         is DependenciesNotChecked -> "dependencies-not-checked"
+        is UnmatchedPattern -> "unmatched-pattern"
     }
 
     private fun addDetails(json: JsonObject, violation: Violation) {
@@ -64,6 +66,10 @@ object JsonReport {
                 json.addProperty("path", violation.from.file)
                 json.addProperty("target", violation.to.file)
                 json.add("declarations", declarationsOf(listOf(violation.from, violation.to)))
+            }
+            is UnmatchedPattern -> {
+                json.addProperty("setting", violation.setting)
+                json.addProperty("pattern", violation.pattern)
             }
             is DependenciesNotChecked -> Unit
         }

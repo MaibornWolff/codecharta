@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependenciesNotChec
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnmatchedPattern
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
 import java.io.PrintStream
@@ -41,6 +42,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         is CycleViolation -> listOf(CycleViolation::class, violation.isInsideOneFile, violation.severity, violation.instruction)
         is UpwardViolation -> listOf(UpwardViolation::class, violation.severity, violation.instruction)
         is DependenciesNotChecked -> listOf(DependenciesNotChecked::class)
+        is UnmatchedPattern -> listOf(UnmatchedPattern::class)
     }
 
     private fun sectionOf(violation: Violation): Int {
@@ -51,6 +53,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             is CycleViolation -> if (violation.isInsideOneFile) afterMetrics + 2 else afterMetrics + 1
             is UpwardViolation -> afterMetrics + 3
             is DependenciesNotChecked -> afterMetrics + 4
+            is UnmatchedPattern -> afterMetrics + 5
         }
     }
 
@@ -72,12 +75,14 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             }
         is UpwardViolation -> counted(group.size, "upward dependency", "upward dependencies")
         is DependenciesNotChecked -> "dependencies not checked"
+        is UnmatchedPattern -> counted(group.size, "pattern that matches no file", "patterns that match no file")
     }
 
     private fun bodyLines(group: List<Violation>): List<String> = when (group.first()) {
         is MetricViolation -> metricLines(group.filterIsInstance<MetricViolation>())
         is CycleViolation -> CycleText.lines(group.filterIsInstance<CycleViolation>())
         is UpwardViolation -> UpwardText.lines(group.filterIsInstance<UpwardViolation>())
+        is UnmatchedPattern -> unmatchedPatternLines(group.filterIsInstance<UnmatchedPattern>())
         is UnknownMetric, is DependenciesNotChecked -> emptyList()
     }
 
@@ -91,6 +96,11 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             violations.sortedByDescending { it.value }
         }
         return worstFirst.map { INDENT + it.path.padEnd(pathWidth) + INDENT + it.value.toDisplayText() }
+    }
+
+    private fun unmatchedPatternLines(unmatched: List<UnmatchedPattern>): List<String> {
+        val settingWidth = unmatched.maxOf { it.setting.length }
+        return unmatched.map { INDENT + it.setting.padEnd(settingWidth) + INDENT + it.pattern }
     }
 
     private fun summary(result: GateResult): String {
