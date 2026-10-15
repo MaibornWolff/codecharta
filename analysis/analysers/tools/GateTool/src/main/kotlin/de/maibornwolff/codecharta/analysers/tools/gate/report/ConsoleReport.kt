@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.tools.gate.report
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.Bound
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependenciesNotChecked
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
@@ -31,11 +32,11 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             compareBy<List<Violation>> { sectionOf(it.first()) }
                 .thenBy { it.first() is UnknownMetric }
                 .thenByDescending { it.first().severity }
-                .thenByDescending { (it.first() as? MetricViolation)?.threshold }
+                .thenByDescending { (it.first() as? MetricViolation)?.limit?.value }
         )
 
     private fun groupKey(violation: Violation): List<Any?> = when (violation) {
-        is MetricViolation -> listOf(violation.severity, violation.metric, violation.threshold, violation.instruction)
+        is MetricViolation -> listOf(violation.severity, violation.metric, violation.limit, violation.instruction)
         is UnknownMetric -> listOf(UnknownMetric::class, violation.metric)
         is CycleViolation -> listOf(CycleViolation::class, violation.isInsideOneFile, violation.severity, violation.instruction)
         is UpwardViolation -> listOf(UpwardViolation::class, violation.severity, violation.instruction)
@@ -61,7 +62,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     }
 
     private fun title(group: List<Violation>): String = when (val first = group.first()) {
-        is MetricViolation -> "${first.metric} > ${first.threshold.toDisplayText()}"
+        is MetricViolation -> "${first.metric} ${first.limit.bound.symbol} ${first.limit.value.toDisplayText()}"
         is UnknownMetric -> "unknown metric: ${first.metric}"
         is CycleViolation ->
             if (first.isInsideOneFile) {
@@ -82,7 +83,14 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
 
     private fun metricLines(violations: List<MetricViolation>): List<String> {
         val pathWidth = violations.maxOf { it.path.length }
-        return violations.sortedByDescending { it.value }.map { INDENT + it.path.padEnd(pathWidth) + INDENT + it.value.toDisplayText() }
+        val worstFirst = if (violations.first().limit.bound ==
+            Bound.MIN
+        ) {
+            violations.sortedBy { it.value }
+        } else {
+            violations.sortedByDescending { it.value }
+        }
+        return worstFirst.map { INDENT + it.path.padEnd(pathWidth) + INDENT + it.value.toDisplayText() }
     }
 
     private fun summary(result: GateResult): String {

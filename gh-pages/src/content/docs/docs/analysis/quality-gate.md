@@ -102,7 +102,9 @@ overrides:                        # other limits for the files the patterns matc
       rloc: off
 ```
 
-- **Metric rules** compare each file's own value with the limits; folders are never summed up. A file is reported
+- **Metric rules** compare each file's own value with the limits, a `max` it must not exceed and/or a `min` it must
+  not fall below (e.g. `coverage: { error: { min: 80 } }` with a map from the coverage importer); folders are never
+  summed up. A file is reported
   once, at the worst level it exceeds. Per-function rules use the file metrics the Unified Parser writes, such as
   `max_complexity_per_function`.
 - **A level, metric or setting left out** is not checked or keeps its default.
@@ -162,7 +164,7 @@ The first line appears with `--quiet` only. Each cycle is walked through the dec
 folder its files share.
 
 `report.json` holds the exit code, the counts per severity and every violation with its rule, severity, path, metric,
-value, limit and instruction; a cycle lists its members instead of a path.
+value, `max` or `min` and instruction; a cycle lists its members instead of a path.
 
 The exit code is the code the config maps the worst severity found to, 0 when no rule is broken, and 2 when the gate
 itself fails: no config, an invalid config or a failing analyser.

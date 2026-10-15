@@ -157,7 +157,7 @@ class ConfigReaderTest {
     }
 
     @Test
-    fun `should report a metric level without a limit`() {
+    fun `should report a metric level with neither a maximum nor a minimum`() {
         // Arrange
         val text = "metrics:\n  rloc:\n    error:\n      max:\n      instruction: Split it.\n"
 
@@ -165,7 +165,7 @@ class ConfigReaderTest {
         val result = reader.read(text)
 
         // Assert
-        assertThat(result.problems).containsExactly(ConfigProblem(4, "metrics.rloc.error.max needs a number"))
+        assertThat(result.problems).containsExactly(ConfigProblem(4, "metrics.rloc.error needs a max or a min"))
     }
 
     @Test
@@ -494,5 +494,27 @@ class ConfigReaderTest {
         // Assert
         assertThat(result.problems).isEmpty()
         assertThat(result.config.input).isEqualTo("anywhere")
+    }
+
+    @Test
+    fun `should read a minimum and report a warning minimum below the error minimum`() {
+        // Arrange
+        val valid = "metrics:\n  coverage:\n    warning:\n      min: 90\n    error:\n      min: 80\n"
+        val invalid = "metrics:\n  coverage:\n    warning:\n      min: 70\n    error:\n      min: 80\n"
+
+        // Act
+        val validResult = reader.read(valid)
+        val invalidResult = reader.read(invalid)
+
+        // Assert
+        assertThat(
+            validResult.config.metrics
+                .getValue("coverage")
+                .levels
+                .getValue(Severity.ERROR)
+        ).isEqualTo(LevelRule(max = null, min = 80.0))
+        assertThat(invalidResult.problems).containsExactly(
+            ConfigProblem(4, "metrics.coverage.warning.min (70) must not be below metrics.coverage.error.min (80)")
+        )
     }
 }

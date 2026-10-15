@@ -52,7 +52,7 @@ object JsonReport {
                 json.addProperty("path", violation.path)
                 json.addProperty("metric", violation.metric)
                 json.addProperty("value", violation.value.toJsonNumber())
-                json.addProperty("threshold", violation.threshold.toJsonNumber())
+                json.addProperty(violation.limit.bound.key, violation.limit.value.toJsonNumber())
             }
             is UnknownMetric -> json.addProperty("metric", violation.metric)
             is CycleViolation -> {

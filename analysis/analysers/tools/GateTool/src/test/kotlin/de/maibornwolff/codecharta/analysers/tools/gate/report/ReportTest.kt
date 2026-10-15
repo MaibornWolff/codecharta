@@ -3,9 +3,11 @@ package de.maibornwolff.codecharta.analysers.tools.gate.report
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.Bound
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.Limit
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
@@ -82,7 +84,7 @@ class ReportTest {
         val violations =
             listOf(
                 metricViolation(Severity.ERROR, "src/Big.kt", 812.0, 400.0, "Split it."),
-                MetricViolation(Severity.WARNING, null, "src/Big.kt", "mcc", 30.0, 20.0)
+                MetricViolation(Severity.WARNING, null, "src/Big.kt", "mcc", 30.0, Limit(Bound.MAX, 20.0))
             )
 
         // Act
@@ -149,7 +151,7 @@ class ReportTest {
             "Split the file by responsibility into smaller files, so that each of them has one reason to change " +
                 "and stays easy to read.\nAsk before splitting generated code."
         val violation =
-            MetricViolation(Severity.ERROR, instruction, "src/Big.kt", "rloc", 812.0, 400.0)
+            MetricViolation(Severity.ERROR, instruction, "src/Big.kt", "rloc", 812.0, Limit(Bound.MAX, 400.0))
 
         // Act
         ConsoleReport(PrintStream(output), listOf("rloc")).print(GateResult(listOf(violation), filesChecked = 1))
@@ -165,6 +167,45 @@ class ReportTest {
             └──────────────────────────────────────────────────────────────────────────
               src/Big.kt  812
             """.trimIndent()
+        )
+    }
+
+    @Test
+    fun `should show a minimum the files fall below, the lowest value first`() {
+        // Arrange
+        val output = ByteArrayOutputStream()
+        val belowMinimum = {
+            path: String,
+            value: Double
+            ->
+            MetricViolation(Severity.ERROR, null, path, "coverage", value, Limit(Bound.MIN, 80.0))
+        }
+
+        // Act
+        ConsoleReport(
+            PrintStream(output),
+            listOf("coverage")
+        ).print(GateResult(listOf(belowMinimum("src/A.kt", 70.0), belowMinimum("src/B.kt", 20.0)), filesChecked = 2))
+
+        // Assert
+        assertThat(output.toString()).startsWith("ERROR  coverage < 80\n  src/B.kt  20\n  src/A.kt  70\n")
+    }
+
+    @Test
+    fun `should write the minimum a file falls below into the json report`() {
+        // Arrange
+        val result =
+            GateResult(
+                listOf(MetricViolation(Severity.ERROR, null, "src/A.kt", "coverage", 70.0, Limit(Bound.MIN, 80.0))),
+                filesChecked = 1
+            )
+
+        // Act
+        val json = JsonParser.parseString(JsonReport.render(result, GateConfig())).asJsonObject
+
+        // Assert
+        assertThat(json["violations"].asJsonArray.single().toString()).isEqualTo(
+            """{"rule":"metric","severity":"error","path":"src/A.kt","metric":"coverage","value":70,"min":80}"""
         )
     }
 
@@ -193,7 +234,7 @@ class ReportTest {
         assertThat(json["summary"].toString()).isEqualTo("""{"error":3,"warning":3,"files":418}""")
         val violations = json["violations"].asJsonArray.map { it.toString() }
         assertThat(violations).contains(
-            """{"rule":"metric","severity":"error","path":"src/Big.kt","metric":"rloc","value":812,"threshold":400,"instruction":"Split it."}""",
+            """{"rule":"metric","severity":"error","path":"src/Big.kt","metric":"rloc","value":812,"max":400,"instruction":"Split it."}""",
             """{"rule":"cycle-between-files","severity":"error","members":["a/Foo.kt","b/Bar.kt"],""" +
                 """"declarations":[{"file":"a/Foo.kt","name":"Foo"},{"file":"b/Bar.kt","name":"Bar"}],"instruction":"Break the cycle."}""",
             """{"rule":"upward-dependency","severity":"warning","path":"src/a/One.kt","target":"src/b/Two.kt",""" +
@@ -223,5 +264,5 @@ class ReportTest {
         value: Double,
         threshold: Double,
         instruction: String
-    ) = MetricViolation(severity, instruction, path, "rloc", value, threshold)
+    ) = MetricViolation(severity, instruction, path, "rloc", value, Limit(Bound.MAX, threshold))
 }

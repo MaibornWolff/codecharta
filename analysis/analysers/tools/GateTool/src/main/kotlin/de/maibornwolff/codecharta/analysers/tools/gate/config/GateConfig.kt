@@ -11,11 +11,11 @@ enum class Severity(val key: String) {
     }
 }
 
-data class LevelRule(val max: Double, val instruction: String? = null)
+data class LevelRule(val max: Double?, val instruction: String? = null, val min: Double? = null)
 
 data class MetricRule(val levels: Map<Severity, LevelRule>)
 
-data class LevelOverride(val max: Double? = null, val instruction: String? = null)
+data class LevelOverride(val max: Double? = null, val instruction: String? = null, val min: Double? = null)
 
 sealed interface MetricOverride {
     data object Off : MetricOverride
