@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
-import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
+import de.maibornwolff.codecharta.util.EditDistance
 
 class MetricRuleEvaluator(private val config: GateConfig) {
     private val resolver = RuleResolver(config)
@@ -24,9 +24,16 @@ class MetricRuleEvaluator(private val config: GateConfig) {
         val measuredMetrics = files.flatMap { it.metrics.keys }.toSet()
         return config.configuredMetrics
             .filter { it !in measuredMetrics }
-            .map { metric -> UnknownMetric(Severity.WARNING, unknownMetricInstruction(metric), metric) }
+            .map { metric -> UnknownMetric(config.worstSeverityFor(metric), unknownMetricInstruction(metric, measuredMetrics), metric) }
     }
 
-    private fun unknownMetricInstruction(metric: String): String =
-        "The analysis produced no metric named '$metric'. Check the name, or switch on the analyser that measures it."
+    private fun unknownMetricInstruction(metric: String, measuredMetrics: Set<String>): String {
+        val closest = measuredMetrics.minByOrNull { EditDistance.between(it, metric) }
+        val suggestion = closest?.takeIf { EditDistance.between(it, metric) <= MAX_TYPO_DISTANCE }?.let { "Did you mean '$it'? " } ?: ""
+        return "The analysis produced no metric named '$metric'. ${suggestion}Check the name, or switch on the analyser that measures it."
+    }
+
+    companion object {
+        private const val MAX_TYPO_DISTANCE = 2
+    }
 }

@@ -54,6 +54,12 @@ data class GateConfig(
             return (metrics.keys + overriddenMetrics).distinct()
         }
 
+    fun worstSeverityFor(metric: String): Severity {
+        val overriddenLevels = overrides.mapNotNull { (it.metrics[metric] as? MetricOverride.Levels)?.levels?.keys }.flatten()
+        val levels = metrics[metric]?.levels?.keys.orEmpty() + overriddenLevels
+        return levels.maxOrNull() ?: Severity.WARNING
+    }
+
     fun isAnalyserEnabled(analyserName: String): Boolean = analysers[analyserName]?.enabled ?: true
 
     fun argumentsFor(analyserName: String): List<String> = analysers[analyserName]?.arguments ?: emptyList()
