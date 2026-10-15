@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
-import de.maibornwolff.codecharta.analysers.tools.gate.config.MetricOverride
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 
 class MetricRuleEvaluator(private val config: GateConfig) {
@@ -31,18 +30,11 @@ class MetricRuleEvaluator(private val config: GateConfig) {
 
     private fun unknownMetrics(files: List<AnalysedFile>): List<Violation> {
         val measuredMetrics = files.flatMap { it.metrics.keys }.toSet()
-        return configuredMetrics()
+        return config.configuredMetrics
             .filter { it !in measuredMetrics }
             .map { metric ->
                 Violation(ViolationKind.UNKNOWN_METRIC, Severity.WARNING, unknownMetricMessage(metric), metric = metric)
             }
-    }
-
-    private fun configuredMetrics(): Set<String> {
-        val overriddenMetrics = config.overrides.flatMap { override ->
-            override.metrics.filterValues { it is MetricOverride.Levels }.keys
-        }
-        return config.metrics.keys + overriddenMetrics
     }
 
     private fun unknownMetricMessage(metric: String): String =

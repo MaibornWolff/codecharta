@@ -38,6 +38,12 @@ data class GateConfig(
     val hasActiveRules: Boolean
         get() = metrics.isNotEmpty() || cycles.file != null || cycles.packages != null || overrides.any { it.metrics.isNotEmpty() }
 
+    val configuredMetrics: List<String>
+        get() {
+            val overriddenMetrics = overrides.flatMap { override -> override.metrics.filterValues { it is MetricOverride.Levels }.keys }
+            return (metrics.keys + overriddenMetrics).distinct()
+        }
+
     fun isAnalyserEnabled(analyserName: String): Boolean = analysers[analyserName] ?: true
 
     fun exitCodeFor(severity: Severity): Int = exitCodes[severity] ?: DEFAULT_EXIT_CODES.getValue(severity)
