@@ -75,6 +75,7 @@ class GateTool(
     private fun usageProblem(folder: File): String? = when {
         init && doctor -> "Use either --init or --doctor, not both."
         force && !init -> "--force only works with --init."
+        doctor && (mapFile != null || parallel) -> "--map and --parallel do nothing with --doctor."
         !folder.isDirectory -> "The folder ${folder.path} does not exist."
         else -> null
     }

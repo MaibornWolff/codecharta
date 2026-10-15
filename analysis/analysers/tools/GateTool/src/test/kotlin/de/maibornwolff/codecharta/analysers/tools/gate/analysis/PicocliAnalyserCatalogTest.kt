@@ -10,7 +10,7 @@ class PicocliAnalyserCatalogTest {
 
     @Test
     fun `should name every analyser`() {
-        // Arrange & Act
+        // Act
         val names = catalog.names
 
         // Assert
@@ -19,7 +19,7 @@ class PicocliAnalyserCatalogTest {
 
     @Test
     fun `should offer the long options of an analyser except the ones the gate sets itself`() {
-        // Arrange & Act
+        // Act
         val options = catalog.optionNames("unifiedparser")
 
         // Assert
@@ -65,7 +65,7 @@ class PicocliAnalyserCatalogTest {
 
     @Test
     fun `should tell flags from options that take a value`() {
-        // Arrange & Act
+        // Act
         val bypassIsFlag = catalog.isFlag("unifiedparser", "bypass-gitignore")
         val excludeIsFlag = catalog.isFlag("unifiedparser", "exclude")
 
