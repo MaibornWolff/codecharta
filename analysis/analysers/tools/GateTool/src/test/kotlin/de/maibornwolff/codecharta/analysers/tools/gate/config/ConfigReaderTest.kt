@@ -148,7 +148,10 @@ class ConfigReaderTest {
         assertThat(
             result.problems
         ).containsExactly(
-            ConfigProblem(2, "unknown key 'metrix', expected one of: input, output, analysers, exitCodes, metrics, cycles, overrides")
+            ConfigProblem(
+                2,
+                "unknown key 'metrix', expected one of: input, output, parallel, analysers, exitCodes, metrics, cycles, overrides"
+            )
         )
     }
 
@@ -433,5 +436,31 @@ class ConfigReaderTest {
         assertThat(
             result.problems
         ).containsExactly(ConfigProblem(3, "analysers.rawtextparser.tab-width: Invalid value: 'lots' is not an int"))
+    }
+
+    @Test
+    fun `should read whether the analysers run in parallel`() {
+        // Arrange
+        val text = "parallel: on\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.parallel).isTrue()
+        assertThat(reader.read("").config.parallel).isFalse()
+    }
+
+    @Test
+    fun `should report a parallel switch that is neither on nor off`() {
+        // Arrange
+        val text = "parallel: sometimes\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(1, "parallel must be on or off, found 'sometimes'"))
     }
 }

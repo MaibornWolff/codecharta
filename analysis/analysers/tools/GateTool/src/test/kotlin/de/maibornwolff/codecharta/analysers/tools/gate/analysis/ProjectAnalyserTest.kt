@@ -78,6 +78,35 @@ class ProjectAnalyserTest {
             .hasMessageContaining("No analyser")
     }
 
+    @Test
+    fun `should merge the same project whether the analysers run in parallel or one after another`() {
+        // Arrange
+        writeSource("src/App.kt", "fun main() {\n    if (true) println(1)\n}\n")
+        writeSource("src/Util.kt", "fun help() = 1\n")
+        val outputFolder = File(projectFolder, "out")
+
+        // Act
+        val sequential = ProjectAnalyser().analyse(projectFolder, bothAnalysers(), outputFolder)
+        val parallel = ProjectAnalyser().analyse(projectFolder, bothAnalysers(), outputFolder, parallel = true)
+
+        // Assert
+        assertThat(AnalysedProject(parallel).files).containsExactlyInAnyOrderElementsOf(AnalysedProject(sequential).files)
+    }
+
+    @Test
+    fun `should name the analyser that failed while running in parallel`() {
+        // Arrange
+        writeSource("src/App.kt", "fun main() {}\n")
+        val analysers = listOf(ConfiguredAnalyser(UnifiedParser()), ConfiguredAnalyser(FailingAnalyser()))
+
+        // Act & Assert
+        assertThatThrownBy { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out"), parallel = true) }
+            .isInstanceOf(AnalysisException::class.java)
+            .hasMessageContaining("failingparser")
+    }
+
+    private fun bothAnalysers() = listOf(ConfiguredAnalyser(RawTextParser()), ConfiguredAnalyser(UnifiedParser()))
+
     private fun writeSource(path: String, content: String) {
         File(projectFolder, path).apply { parentFile.mkdirs() }.writeText(content)
     }

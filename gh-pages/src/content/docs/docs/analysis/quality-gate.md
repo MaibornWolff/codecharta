@@ -15,7 +15,7 @@ ccsh gate             # analyse and check
 ```
 
 Each takes the project folder as an optional argument (default: the current folder) and `--config <file>` to read
-the config from elsewhere, and `--quiet` to keep the output of the analysers off the console. `--init` refuses to overwrite an existing config unless you add `--force`. Called
+the config from elsewhere, `--quiet` to keep the output of the analysers off the console, and `--parallel` to run the analysers at the same time. `--init` refuses to overwrite an existing config unless you add `--force`. Called
 without arguments in a terminal, `ccsh gate` starts right away when the current folder has a `.codecharta.yml`,
 and asks what to do otherwise.
 
@@ -34,6 +34,7 @@ report, so you can open it in the visualization.
 ```yaml
 input: .                          # the folder to analyse, relative to this file (default: its folder)
 output: .codecharta-gate-output   # where the map and report.json go, relative to this file
+parallel: off                     # on runs the analysers at the same time, like --parallel
 
 analysers:                        # every applicable analyser runs unless switched off
   domainlanguageparser: off

@@ -9,6 +9,10 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.util.FileExtension
 import picocli.CommandLine
 import java.io.File
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import kotlin.io.path.createTempDirectory
 
 class AnalysisException(message: String) : RuntimeException(message)
@@ -16,17 +20,35 @@ class AnalysisException(message: String) : RuntimeException(message)
 data class ConfiguredAnalyser(val analyser: AnalyserInterface, val arguments: List<String> = emptyList())
 
 class ProjectAnalyser {
-    fun analyse(projectFolder: File, analysers: List<ConfiguredAnalyser>, outputFolder: File): Project {
+    fun analyse(projectFolder: File, analysers: List<ConfiguredAnalyser>, outputFolder: File, parallel: Boolean = false): Project {
         if (analysers.isEmpty()) throw AnalysisException("No analyser is switched on that applies to ${projectFolder.path}.")
 
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
         try {
             val excludePattern = excludePatternFor(projectFolder, outputFolder)
-            val projects = analysers.map { runAnalyser(it, projectFolder, workFolder, excludePattern) }
+            val runOne = { analyser: ConfiguredAnalyser -> runAnalyser(analyser, projectFolder, workFolder, excludePattern) }
+            val projects = if (parallel) runInParallel(analysers, runOne) else analysers.map(runOne)
             return ProjectMerger(projects, MergeResolverStrategy.recursive()).merge()
         } finally {
             workFolder.deleteRecursively()
         }
+    }
+
+    private fun runInParallel(analysers: List<ConfiguredAnalyser>, runOne: (ConfiguredAnalyser) -> Project): List<Project> {
+        val threadPool = Executors.newFixedThreadPool(minOf(analysers.size, Runtime.getRuntime().availableProcessors()))
+        try {
+            return analysers
+                .map { analyser -> threadPool.submit(Callable { runOne(analyser) }) }
+                .map { future -> resultOf(future) }
+        } finally {
+            threadPool.shutdownNow()
+        }
+    }
+
+    private fun resultOf(future: Future<Project>): Project = try {
+        future.get()
+    } catch (exception: ExecutionException) {
+        throw exception.cause ?: exception
     }
 
     private fun runAnalyser(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project {

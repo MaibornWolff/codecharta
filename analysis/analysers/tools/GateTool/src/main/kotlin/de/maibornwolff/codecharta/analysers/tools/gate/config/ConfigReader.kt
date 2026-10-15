@@ -37,6 +37,7 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val configFolde
         return GateConfig(
             input = sections[INPUT]?.let { readInput(it.value, nodes) },
             output = sections[OUTPUT]?.let { nodes.text(it.value, OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
+            parallel = sections[PARALLEL]?.let { nodes.switch(it.value, PARALLEL) } ?: false,
             analysers = sections[ANALYSERS]?.let { AnalyserSettingsReader(nodes, catalog).read(it.value, ANALYSERS) } ?: emptyMap(),
             exitCodes = GateConfig.DEFAULT_EXIT_CODES + (sections[EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap()),
             metrics = sections[METRICS]?.let { ruleReader.readMetrics(it.value, METRICS) } ?: emptyMap(),
@@ -74,12 +75,13 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val configFolde
     companion object {
         private const val INPUT = "input"
         private const val OUTPUT = "output"
+        private const val PARALLEL = "parallel"
         private const val ANALYSERS = "analysers"
         private const val EXIT_CODES = "exitCodes"
         private const val METRICS = "metrics"
         private const val CYCLES = "cycles"
         private const val OVERRIDES = "overrides"
-        private val TOP_LEVEL_KEYS = listOf(INPUT, OUTPUT, ANALYSERS, EXIT_CODES, METRICS, CYCLES, OVERRIDES)
+        private val TOP_LEVEL_KEYS = listOf(INPUT, OUTPUT, PARALLEL, ANALYSERS, EXIT_CODES, METRICS, CYCLES, OVERRIDES)
         private val EXIT_CODE_RANGE = 0..255
     }
 }

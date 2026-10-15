@@ -309,6 +309,19 @@ class GateToolTest {
         assertThat(output.toString()).contains("line 3: unifiedparser has no option 'output-file'")
     }
 
+    @Test
+    fun `should report the same result when the analysers run in parallel`() {
+        // Arrange
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\ncycles:\n  file:\n    severity: warning\n")
+
+        // Act
+        val exitCode = run("--parallel", projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("2 errors, 1 warning, 2 files checked")
+    }
+
     private fun <T> withSystemOut(stream: ByteArrayOutputStream, action: () -> T): T {
         val originalOut = System.out
         System.setOut(PrintStream(stream))

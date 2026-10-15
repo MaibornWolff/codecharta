@@ -20,6 +20,8 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 - Run the applicable and switched-on ones of RawTextParser, UnifiedParser, DependencyParser and
   DomainLanguageParser as they are, merge their maps with the MergeFilter's `ProjectMerger`
 - Leave the output folder out of the analysis, write the merged map into it
+- `--parallel` / `parallel: on` runs the analysers in a thread pool; merge order stays the list order, so the
+  result is identical to a sequential run
 
 ### 2. `ccsh gate --init`
 - Analyse, write `.codecharta.yml` fully commented out: every metric with a warning and an error level and
