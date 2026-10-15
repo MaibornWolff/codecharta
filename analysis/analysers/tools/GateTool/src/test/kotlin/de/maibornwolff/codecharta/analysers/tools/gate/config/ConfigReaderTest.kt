@@ -11,7 +11,8 @@ class ConfigReaderTest {
             mapOf(
                 "rawtextparser" to listOf("tab-width", "exclude"),
                 "unifiedparser" to listOf("exclude", "include-build-folders", "file-extensions")
-            )
+            ),
+            flags = setOf("include-build-folders")
         )
     private val reader = ConfigReader(catalog)
 
@@ -466,5 +467,17 @@ class ConfigReaderTest {
 
         // Assert
         assertThat(result.problems).containsExactly(ConfigProblem(1, "parallel must be on or off, found 'sometimes'"))
+    }
+
+    @Test
+    fun `should pass on and off as plain values to an option that is no flag`() {
+        // Arrange
+        val text = "analysers:\n  unifiedparser:\n    exclude: off\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.config.argumentsFor("unifiedparser")).containsExactly("--exclude=off")
     }
 }

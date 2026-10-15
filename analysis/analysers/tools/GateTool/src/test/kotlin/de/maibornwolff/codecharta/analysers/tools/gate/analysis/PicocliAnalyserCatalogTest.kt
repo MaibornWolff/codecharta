@@ -50,4 +50,27 @@ class PicocliAnalyserCatalogTest {
         // Assert
         assertThat(problem).contains("lots")
     }
+
+    @Test
+    fun `should refuse an exclude pattern that is not a regular expression`() {
+        // Arrange
+        val arguments = listOf("--exclude=**/generated/**")
+
+        // Act
+        val problem = catalog.checkArguments("unifiedparser", arguments)
+
+        // Assert
+        assertThat(problem).startsWith("--exclude takes regular expressions, and '**/generated/**' is none")
+    }
+
+    @Test
+    fun `should tell flags from options that take a value`() {
+        // Arrange & Act
+        val bypassIsFlag = catalog.isFlag("unifiedparser", "bypass-gitignore")
+        val excludeIsFlag = catalog.isFlag("unifiedparser", "exclude")
+
+        // Assert
+        assertThat(bypassIsFlag).isTrue()
+        assertThat(excludeIsFlag).isFalse()
+    }
 }
