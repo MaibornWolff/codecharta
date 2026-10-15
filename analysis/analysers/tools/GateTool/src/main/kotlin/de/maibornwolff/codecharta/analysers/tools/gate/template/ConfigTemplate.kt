@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.template
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.AnalyserCatalog
+import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigKeys
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
@@ -16,19 +17,20 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
         "## Anything left commented out is not checked or keeps its default."
     )
 
-    private fun input() = commented("input: .")
+    private fun input() = commented("${ConfigKeys.INPUT}: .")
 
-    private fun parallel() = commented("parallel: off")
+    private fun parallel() = commented("${ConfigKeys.PARALLEL}: off")
 
-    private fun output() = commented("output: ${GateConfig.DEFAULT_OUTPUT}")
+    private fun output() = commented("${ConfigKeys.OUTPUT}: ${GateConfig.DEFAULT_OUTPUT}")
 
     private fun analysers() = commented(
-        listOf("analysers:  ## on, off, or the analyser's options instead of on, e.g. exclude: [generated/]") +
+        listOf("${ConfigKeys.ANALYSERS}:  ## on, off, or the analyser's options instead of on, e.g. exclude: [generated/]") +
             analyserNames.flatMap { listOf("  $it: on", "    ## options: ${catalog.optionNames(it).joinToString()}") }
     )
 
     private fun exitCodes() = commented(
-        listOf("exitCodes:") + Severity.entries.reversed().map { "  ${it.key}: ${GateConfig.DEFAULT_EXIT_CODES.getValue(it)}" }
+        listOf("${ConfigKeys.EXIT_CODES}:") +
+            Severity.entries.reversed().map { "  ${it.key}: ${GateConfig.DEFAULT_EXIT_CODES.getValue(it)}" }
     )
 
     private fun metrics(): List<String> {
@@ -38,7 +40,7 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
             val found = "# found: min ${range.start.toDisplayText()}, max ${range.endInclusive.toDisplayText()}"
             listOf("  ${"$metric:".padEnd(nameWidth + 1)} $found") + levelLines()
         }
-        return commented(listOf("metrics:") + lines)
+        return commented(listOf("${ConfigKeys.METRICS}:") + lines)
     }
 
     private fun metricRanges(): Map<String, ClosedFloatingPointRange<Double>> = files
@@ -47,20 +49,33 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
         .toSortedMap()
         .mapValues { (_, values) -> values.min()..values.max() }
 
-    private fun levelLines() = Severity.entries.flatMap { listOf("    ${it.key}:", "      max:", "      instruction:") }
+    private fun levelLines() = Severity.entries.flatMap {
+        listOf("    ${it.key}:", "      ${ConfigKeys.MAX}:", "      ${ConfigKeys.INSTRUCTION}:")
+    }
 
     private fun cycles() = commented(
-        listOf("cycles:") +
-            cycleLevelLines("betweenFiles", "path/to/Generated.kt") +
-            cycleLevelLines("insideFiles", "path/to/Generated.kt") +
-            cycleLevelLines("upward", "path/to/legacy")
+        listOf("${ConfigKeys.CYCLES}:") +
+            cycleRuleLines(ConfigKeys.BETWEEN_FILES, "path/to/Generated.kt") +
+            cycleRuleLines(ConfigKeys.INSIDE_FILES, "path/to/Generated.kt") +
+            cycleRuleLines(ConfigKeys.UPWARD, "path/to/legacy")
     )
 
-    private fun cycleLevelLines(level: String, ignoredExample: String) =
-        listOf("  $level:", "    severity: ${Severity.ERROR.key}", "    instruction:", "    ignore:", "      - $ignoredExample")
+    private fun cycleRuleLines(rule: String, ignoredExample: String) = listOf(
+        "  $rule:",
+        "    ${ConfigKeys.SEVERITY}: ${Severity.ERROR.key}",
+        "    ${ConfigKeys.INSTRUCTION}:",
+        "    ${ConfigKeys.IGNORE}:",
+        "      - $ignoredExample"
+    )
 
     private fun overrides() = commented(
-        listOf("overrides:", "  - paths:", "      - src/legacy/**", "    metrics:", "      ${exampleMetric()}: off")
+        listOf(
+            "${ConfigKeys.OVERRIDES}:",
+            "  - ${ConfigKeys.PATHS}:",
+            "      - src/legacy/**",
+            "    ${ConfigKeys.METRICS}:",
+            "      ${exampleMetric()}: off"
+        )
     )
 
     private fun exampleMetric(): String = metricRanges().keys.firstOrNull() ?: "rloc"
