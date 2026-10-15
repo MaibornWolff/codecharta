@@ -8,8 +8,15 @@ class GateConsole(val output: PrintStream, private val quiet: Boolean) {
         output.println(line)
     }
 
-    fun announceAnalysis(line: String) {
+    fun printInPlaceOfAnalyserOutput(line: String) {
         if (quiet) output.println(line)
+    }
+
+    fun printSeparated(line: String) {
+        output.println()
+        output.println(SEPARATOR)
+        output.println(line)
+        output.println()
     }
 
     fun <T> whileAnalysing(action: () -> T): T {
@@ -25,5 +32,9 @@ class GateConsole(val output: PrintStream, private val quiet: Boolean) {
             System.setOut(originalOut)
             System.setErr(originalErr)
         }
+    }
+
+    companion object {
+        private val SEPARATOR = "─".repeat(72)
     }
 }

@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.tools.gate.analysis
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
+import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -15,7 +16,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import kotlin.io.path.createTempDirectory
 
-class AnalysisException(message: String) : RuntimeException(message)
+class AnalysisException(message: String) : GateException(message)
 
 data class ConfiguredAnalyser(val analyser: AnalyserInterface, val arguments: List<String> = emptyList())
 

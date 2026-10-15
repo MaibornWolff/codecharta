@@ -7,7 +7,11 @@ import picocli.CommandLine
 class PicocliAnalyserCatalog(private val createAnalysers: () -> List<AnalyserInterface>) : AnalyserCatalog {
     override val names: List<String> by lazy { createAnalysers().map { it.name } }
 
-    override fun optionNames(analyser: String): List<String> = CommandLine(create(analyser))
+    private val optionNamesByAnalyser = mutableMapOf<String, List<String>>()
+
+    override fun optionNames(analyser: String): List<String> = optionNamesByAnalyser.getOrPut(analyser) { longOptionNamesOf(analyser) }
+
+    private fun longOptionNamesOf(analyser: String): List<String> = CommandLine(create(analyser))
         .commandSpec
         .options()
         .filterNot { it.usageHelp() || it.versionHelp() || it.hidden() }

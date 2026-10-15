@@ -7,8 +7,8 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguag
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
+import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.util.CodeChartaConstants
-import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
 import java.io.File
 import java.io.PrintStream
@@ -63,15 +63,12 @@ class GateTool(
 
     private fun run(): Int {
         val folder = projectFolder ?: workingFolder
-        usageProblem(folder)?.let { message ->
-            output.println(message)
-            return GateConfig.TOOL_FAILURE_EXIT_CODE
-        }
-        val gate = QualityGate(folder, configFile, GateConsole(output, quiet), createAnalysers)
+        usageProblem(folder)?.let { throw GateException(it) }
+        val gate = QualityGate(GateOptions(folder, configFile, parallel, mapFile), GateConsole(output, quiet), createAnalysers)
         return when {
-            init -> gate.init(force, parallel, mapFile)
+            init -> gate.init(force)
             doctor -> gate.doctor()
-            else -> gate.check(parallel, mapFile)
+            else -> gate.check()
         }
     }
 
@@ -92,9 +89,15 @@ class GateTool(
 
     private fun guarded(action: () -> Int): Int = try {
         action()
+    } catch (exception: GateException) {
+        failure(exception.message)
     } catch (exception: Exception) {
-        Logger.error { "ccsh gate failed: ${exception.message}" }
-        GateConfig.TOOL_FAILURE_EXIT_CODE
+        failure("ccsh gate failed: ${exception.message ?: exception::class.simpleName}")
+    }
+
+    private fun failure(message: String?): Int {
+        output.println(message)
+        return GateConfig.TOOL_FAILURE_EXIT_CODE
     }
 
     companion object {
