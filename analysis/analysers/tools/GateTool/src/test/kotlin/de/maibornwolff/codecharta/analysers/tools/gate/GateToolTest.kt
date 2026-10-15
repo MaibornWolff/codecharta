@@ -3,6 +3,10 @@ package de.maibornwolff.codecharta.analysers.tools.gate
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -320,6 +324,68 @@ class GateToolTest {
         // Assert
         assertThat(exitCode).isEqualTo(1)
         assertThat(output.toString()).contains("2 errors, 1 warning, 2 files checked")
+    }
+
+    @Test
+    fun `should check an existing map instead of analysing the project`() {
+        // Arrange
+        val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 10\n")
+
+        // Act
+        val exitCode = run("--map", mapFile.path, projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("Map read: 1 file from ${mapFile.path}", "  Only.kt  50")
+        assertThat(output.toString()).doesNotContain("App.kt", "Analysis done")
+    }
+
+    @Test
+    fun `should warn that cycles could not be checked when the map has no dependencies`() {
+        // Arrange
+        val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
+        configFile.writeText("cycles:\n  file:\n    severity: error\n")
+
+        // Act
+        val exitCode = run("--map", mapFile.path, projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(0)
+        assertThat(output.toString()).contains("WARN   cycles not checked", "0 errors, 1 warning")
+    }
+
+    @Test
+    fun `should write the config from the metrics of an existing map`() {
+        // Arrange
+        val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("coverage" to 80)))
+
+        // Act
+        val exitCode = run("--init", "--map", mapFile.path, projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(0)
+        assertThat(configFile.readText()).contains("#   coverage: # found: min 80, max 80").doesNotContain("#   rloc:")
+    }
+
+    @Test
+    fun `should fail with the tool failure code when the map does not exist`() {
+        // Arrange
+        configFile.writeText("output: out\n")
+
+        // Act
+        val exitCode = run("--map", File(projectFolder, "missing.cc.json").path, projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("missing.cc.json does not exist")
+    }
+
+    private fun writeMap(vararg files: Node): File {
+        val project = Project("given", listOf(Node("root", NodeType.Folder, children = files.toSet())))
+        val mapFile = File(projectFolder, "given.cc.json")
+        ProjectSerializer.serializeToFileOrStream(project, mapFile.path, System.out, false)
+        return mapFile
     }
 
     private fun <T> withSystemOut(stream: ByteArrayOutputStream, action: () -> T): T {

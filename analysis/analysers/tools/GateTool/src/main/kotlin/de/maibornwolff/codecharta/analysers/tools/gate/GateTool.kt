@@ -42,6 +42,9 @@ class GateTool(
     @CommandLine.Option(names = ["-f", "--force"], description = ["lets --init overwrite an existing config"])
     private var force = false
 
+    @CommandLine.Option(names = ["-m", "--map"], description = ["checks this cc.json map instead of analysing the project"])
+    private var mapFile: File? = null
+
     @CommandLine.Option(names = ["-p", "--parallel"], description = ["runs the analysers at the same time"])
     private var parallel = false
 
@@ -66,9 +69,9 @@ class GateTool(
         }
         val gate = QualityGate(folder, configFile, GateConsole(output, quiet), createAnalysers)
         return when {
-            init -> gate.init(force, parallel)
+            init -> gate.init(force, parallel, mapFile)
             doctor -> gate.doctor()
-            else -> gate.check(parallel)
+            else -> gate.check(parallel, mapFile)
         }
     }
 

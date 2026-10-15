@@ -34,6 +34,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         ViolationKind.METRIC, ViolationKind.UNKNOWN_METRIC -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: metricOrder.size
         ViolationKind.FILE_CYCLE -> metricOrder.size + 1
         ViolationKind.PACKAGE_CYCLE -> metricOrder.size + 2
+        ViolationKind.CYCLES_NOT_CHECKED -> metricOrder.size + 3
     }
 
     private fun printGroup(group: List<Violation>) {
@@ -44,6 +45,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             ViolationKind.METRIC -> printMetricValues(group)
             ViolationKind.FILE_CYCLE -> CycleText("file").lines(group).forEach(output::println)
             ViolationKind.PACKAGE_CYCLE -> CycleText("package").lines(group).forEach(output::println)
+            ViolationKind.CYCLES_NOT_CHECKED -> Unit
             ViolationKind.UNKNOWN_METRIC -> Unit
         }
     }
@@ -55,6 +57,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             ViolationKind.FILE_CYCLE -> counted(group.size, "file cycle")
             ViolationKind.PACKAGE_CYCLE -> counted(group.size, "package cycle")
             ViolationKind.UNKNOWN_METRIC -> "unknown metric: ${first.metric}"
+            ViolationKind.CYCLES_NOT_CHECKED -> "cycles not checked"
         }
     }
 
@@ -70,8 +73,6 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         val warnings = counted(result.count(Severity.WARNING), "warning")
         return "$errors, $warnings, ${counted(result.filesChecked, "file")} checked"
     }
-
-    private fun counted(count: Int, noun: String) = if (count == 1) "1 $noun" else "$count ${noun}s"
 
     companion object {
         private const val LABEL_WIDTH = 7

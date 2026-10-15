@@ -54,4 +54,14 @@ class AnalysedProjectTest {
         // Assert
         assertThat(dependencies).containsExactly(FileDependency("Main.kt", "src/Util.kt"))
     }
+
+    @Test
+    fun `should know whether the map carries dependency data`() {
+        // Arrange
+        val withoutDependencies = Project("bare", listOf(Node("root", NodeType.Folder)))
+
+        // Act & Assert
+        assertThat(AnalysedProject(project).hasDependencyData).isTrue()
+        assertThat(AnalysedProject(withoutDependencies).hasDependencyData).isFalse()
+    }
 }
