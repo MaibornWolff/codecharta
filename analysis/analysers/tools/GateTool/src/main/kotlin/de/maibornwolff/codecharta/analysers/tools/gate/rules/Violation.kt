@@ -34,5 +34,5 @@ data class DependenciesNotChecked(override val severity: Severity, override val 
 data class GateResult(val violations: List<Violation>, val filesChecked: Int) {
     fun count(severity: Severity): Int = violations.count { it.severity == severity }
 
-    fun exitCode(config: GateConfig): Int = violations.map { it.severity }.distinct().maxOfOrNull(config::exitCodeFor) ?: 0
+    fun exitCode(config: GateConfig): Int = violations.maxOfOrNull { it.severity }?.let(config::exitCodeFor) ?: 0
 }

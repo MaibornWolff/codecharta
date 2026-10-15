@@ -162,5 +162,5 @@ folder its files share.
 `report.json` holds the exit code, the counts per severity and every violation with its rule, severity, path, metric,
 value, limit and instruction; a cycle lists its members instead of a path.
 
-The exit code is the highest code the config maps a found severity to, 0 when no rule is broken, and 2 when the gate
+The exit code is the code the config maps the worst severity found to, 0 when no rule is broken, and 2 when the gate
 itself fails: no config, an invalid config or a failing analyser.
