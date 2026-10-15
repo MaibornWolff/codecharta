@@ -62,9 +62,13 @@ class ProjectSource(
 
     private fun mapFile(config: GateConfig): File = File(outputFolder(config), MAP_FILE_NAME)
 
-    private fun applicableAnalysers(config: GateConfig): List<ConfiguredAnalyser> = createAnalysers()
-        .filter { config.isAnalyserEnabled(it.name) && it.isApplicable(analysisFolder(config).path) }
-        .map { ConfiguredAnalyser(it, config.argumentsFor(it.name)) }
+    private fun applicableAnalysers(config: GateConfig): List<ConfiguredAnalyser> {
+        val switchedOn = createAnalysers().filter { config.isAnalyserEnabled(it.name) }
+        if (switchedOn.isEmpty()) throw GateException("No analyser is switched on. List the ones to run under analysers in the config.")
+        return switchedOn
+            .filter { it.isApplicable(analysisFolder(config).path) }
+            .map { ConfiguredAnalyser(it, config.argumentsFor(it.name)) }
+    }
 
     private fun analysisFolder(config: GateConfig): File =
         config.input?.let { GateConfig.resolve(options.projectFolder, it) } ?: options.projectFolder

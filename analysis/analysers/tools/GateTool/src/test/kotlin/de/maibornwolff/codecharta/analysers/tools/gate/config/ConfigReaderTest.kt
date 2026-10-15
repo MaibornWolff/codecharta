@@ -672,4 +672,18 @@ class ConfigReaderTest {
             ConfigProblem(6, "overrides[0].metrics.complexity.warning sets no max or min, and metrics.complexity has none it could keep")
         )
     }
+
+    @Test
+    fun `should run only the analysers the config switches on`() {
+        // Arrange
+        val text = "analysers:\n  unifiedparser: on\n  rawtextparser: off\n"
+
+        // Act
+        val config = reader.read(text).config
+
+        // Assert
+        assertThat(config.isAnalyserEnabled("unifiedparser")).isTrue()
+        assertThat(config.isAnalyserEnabled("rawtextparser")).isFalse()
+        assertThat(config.isAnalyserEnabled("dependencyparser")).isFalse()
+    }
 }

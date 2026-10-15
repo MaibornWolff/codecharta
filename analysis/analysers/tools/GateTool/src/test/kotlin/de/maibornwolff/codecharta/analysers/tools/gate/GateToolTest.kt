@@ -42,14 +42,15 @@ class GateToolTest {
     }
 
     @Test
-    fun `should write a fully commented config on init`() {
+    fun `should write a config on init that runs the analysers but checks no rule yet`() {
         // Act
         val exitCode = run("--init", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(0)
-        assertThat(configFile.readText()).contains("#   rloc:", "#   unifiedparser: on")
-        assertThat(configFile.readLines().filter { it.isNotBlank() }).allMatch { it.startsWith("#") }
+        val config = configFile.readText()
+        assertThat(config).contains("\n  unifiedparser: on\n", "\nparallel: on\n", "\n# metrics:\n", "\n# dependencies:")
+        assertThat(config).doesNotContain("\nmetrics:", "\ndependencies:", "\noverrides:")
     }
 
     @Test
@@ -68,7 +69,7 @@ class GateToolTest {
     @Test
     fun `should overwrite an existing config with force`() {
         // Arrange
-        configFile.writeText("output: mine\n")
+        writeConfig("output: mine\n")
 
         // Act
         val exitCode = run("--init", "--force", projectFolder.path)
@@ -81,7 +82,7 @@ class GateToolTest {
     @Test
     fun `should accept a valid config in doctor and say that no rule is active`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
 
         // Act
         val exitCode = run("--doctor", projectFolder.path)
@@ -94,7 +95,7 @@ class GateToolTest {
     @Test
     fun `should list every problem of an invalid config in doctor`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: lots\nexitCodes:\n  error: 2\n")
+        writeConfig("metrics:\n  rloc:\n    error:\n      max: lots\nexitCodes:\n  error: 2\n")
 
         // Act
         val exitCode = run("--doctor", projectFolder.path)
@@ -117,7 +118,7 @@ class GateToolTest {
     @Test
     fun `should report broken rules, write the map and the report and exit with the error code`() {
         // Arrange
-        configFile.writeText(
+        writeConfig(
             "metrics:\n  rloc:\n    error:\n      max: 1\n      instruction: Keep files tiny.\ndependencies:\n  cyclesBetweenFiles:\n    severity: warning\n"
         )
 
@@ -143,7 +144,7 @@ class GateToolTest {
     @Test
     fun `should exit with the code the config maps to warnings`() {
         // Arrange
-        configFile.writeText("exitCodes:\n  warning: 3\nmetrics:\n  rloc:\n    warning:\n      max: 1\n")
+        writeConfig("exitCodes:\n  warning: 3\nmetrics:\n  rloc:\n    warning:\n      max: 1\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -155,7 +156,7 @@ class GateToolTest {
     @Test
     fun `should pass when every file keeps to the rules`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1000\n")
+        writeConfig("metrics:\n  rloc:\n    error:\n      max: 1000\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -168,7 +169,7 @@ class GateToolTest {
     @Test
     fun `should not run an analyser the config switches off`() {
         // Arrange
-        configFile.writeText("analysers:\n  dependencyparser: off\ndependencies:\n  cyclesBetweenFiles:\n    severity: error\n")
+        writeConfig("analysers:\n  unifiedparser: on\n  dependencyparser: off\ndependencies:\n  cyclesBetweenFiles:\n    severity: error\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -180,7 +181,7 @@ class GateToolTest {
     @Test
     fun `should refuse to check against an invalid config`() {
         // Arrange
-        configFile.writeText("metrix: 1\n")
+        writeConfig("metrix: 1\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -203,7 +204,7 @@ class GateToolTest {
     @Test
     fun `should refuse options that do nothing when only validating the config`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
 
         // Act
         val exitCode = run("--doctor", "--parallel", projectFolder.path)
@@ -216,7 +217,7 @@ class GateToolTest {
     @Test
     fun `should refuse force without init`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
 
         // Act
         val exitCode = run("--force", projectFolder.path)
@@ -242,7 +243,7 @@ class GateToolTest {
     @Test
     fun `should run without asking for arguments when the current folder has a config`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
 
         // Act
         val asksForArguments = GateTool(PrintStream(output), workingFolder = projectFolder).shouldAskForArguments()
@@ -266,7 +267,7 @@ class GateToolTest {
     @Test
     fun `should mark the end of the analysis before the result`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\n")
+        writeConfig("metrics:\n  rloc:\n    error:\n      max: 1\n")
 
         // Act
         run(projectFolder.path)
@@ -280,7 +281,7 @@ class GateToolTest {
     @Test
     fun `should tell where the map of the analysis was written, last, below the report`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
         val outputFolder = File(projectFolder, "out")
 
         // Act
@@ -295,7 +296,7 @@ class GateToolTest {
     @Test
     fun `should keep the output of the analysers off the console when quiet`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\n")
+        writeConfig("metrics:\n  rloc:\n    error:\n      max: 1\n")
         val analyserOutput = ByteArrayOutputStream()
 
         // Act
@@ -310,7 +311,7 @@ class GateToolTest {
     @Test
     fun `should leave the output of the analysers on the console when not quiet`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
         val analyserOutput = ByteArrayOutputStream()
 
         // Act
@@ -323,7 +324,7 @@ class GateToolTest {
     @Test
     fun `should analyse the input folder the config names, relative to the project folder`() {
         // Arrange
-        configFile.writeText("input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
+        writeConfig("input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -338,7 +339,7 @@ class GateToolTest {
     @Test
     fun `should pass the options the config gives an analyser`() {
         // Arrange
-        configFile.writeText("analysers:\n  unifiedparser:\n    exclude:\n      - util\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
+        writeConfig("analysers:\n  unifiedparser:\n    exclude:\n      - util\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -351,7 +352,7 @@ class GateToolTest {
     @Test
     fun `should report an option an analyser does not have in doctor`() {
         // Arrange
-        configFile.writeText("analysers:\n  unifiedparser:\n    output-file: elsewhere.cc.json\n")
+        writeConfig("analysers:\n  unifiedparser:\n    output-file: elsewhere.cc.json\n")
 
         // Act
         val exitCode = run("--doctor", projectFolder.path)
@@ -364,7 +365,7 @@ class GateToolTest {
     @Test
     fun `should report the same result when the analysers run in parallel`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\ndependencies:\n  cyclesBetweenFiles:\n    severity: warning\n")
+        writeConfig("metrics:\n  rloc:\n    error:\n      max: 1\ndependencies:\n  cyclesBetweenFiles:\n    severity: warning\n")
 
         // Act
         val exitCode = run("--parallel", projectFolder.path)
@@ -378,7 +379,7 @@ class GateToolTest {
     fun `should check an existing map instead of analysing the project`() {
         // Arrange
         val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 10\n")
+        writeConfig("metrics:\n  rloc:\n    error:\n      max: 10\n")
 
         // Act
         val exitCode = run("--map", mapFile.path, projectFolder.path)
@@ -393,7 +394,7 @@ class GateToolTest {
     fun `should warn that dependencies could not be checked when the map has no dependency analysis`() {
         // Arrange
         val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
-        configFile.writeText("dependencies:\n  cyclesBetweenFiles:\n    severity: error\n")
+        writeConfig("dependencies:\n  cyclesBetweenFiles:\n    severity: error\n")
 
         // Act
         val exitCode = run("--map", mapFile.path, projectFolder.path)
@@ -419,7 +420,7 @@ class GateToolTest {
     @Test
     fun `should fail with the tool failure code when the map does not exist`() {
         // Arrange
-        configFile.writeText("output: out\n")
+        writeConfig("output: out\n")
 
         // Act
         val exitCode = run("--map", File(projectFolder, "missing.cc.json").path, projectFolder.path)
@@ -433,7 +434,9 @@ class GateToolTest {
     fun `should resolve the paths of a config kept elsewhere against the project folder`() {
         // Arrange
         val configElsewhere = File(projectFolder.parentFile, "${projectFolder.name}-ci/gate.yml").apply { parentFile.mkdirs() }
-        configElsewhere.writeText("input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
+        configElsewhere.writeText(
+            "input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\nanalysers:\n  unifiedparser: on\n"
+        )
 
         // Act
         val exitCode = run("--config", configElsewhere.path, projectFolder.path)
@@ -449,7 +452,7 @@ class GateToolTest {
     fun `should not require the input folder when checking an existing map`() {
         // Arrange
         val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
-        configFile.writeText("input: not/there\nmetrics:\n  rloc:\n    error:\n      max: 10\n")
+        writeConfig("input: not/there\nmetrics:\n  rloc:\n    error:\n      max: 10\n")
 
         // Act
         val exitCode = run("--map", mapFile.path, projectFolder.path)
@@ -461,7 +464,7 @@ class GateToolTest {
     @Test
     fun `should leave the files the config excludes out of every check`() {
         // Arrange
-        configFile.writeText(
+        writeConfig(
             "exclude:\n  - util/\nmetrics:\n  rloc:\n    error:\n      max: 1\ndependencies:\n  cyclesBetweenFiles:\n    severity: error\n"
         )
 
@@ -488,7 +491,7 @@ class GateToolTest {
     @Test
     fun `should warn about an override pattern that matches no file`() {
         // Arrange
-        configFile.writeText("overrides:\n  - paths:\n      - ./src/**\n    metrics:\n      rloc: off\n")
+        writeConfig("overrides:\n  - paths:\n      - ./src/**\n    metrics:\n      rloc: off\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -496,6 +499,24 @@ class GateToolTest {
         // Assert
         assertThat(exitCode).isZero()
         assertThat(output.toString()).contains("WARN   1 pattern that matches no file", "overrides[0].paths  ./src/**")
+    }
+
+    @Test
+    fun `should refuse to analyse when the config switches on no analyser`() {
+        // Arrange
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\n")
+
+        // Act
+        val exitCode = run(projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("No analyser is switched on")
+    }
+
+    private fun writeConfig(text: String) {
+        val analysers = if (ANALYSERS_SECTION in text) "" else "$ANALYSERS_SECTION\n  unifiedparser: on\n  dependencyparser: on\n"
+        configFile.writeText(text + analysers)
     }
 
     private fun writeMap(vararg files: Node): File {
@@ -524,5 +545,9 @@ class GateToolTest {
 
     private fun writeSource(path: String, content: String) {
         File(projectFolder, path).apply { parentFile.mkdirs() }.writeText(content)
+    }
+
+    private companion object {
+        const val ANALYSERS_SECTION = "analysers:"
     }
 }

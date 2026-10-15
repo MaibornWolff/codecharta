@@ -13,7 +13,7 @@ The quality gate is still in development. Its commands, its config format and it
 ### Getting started
 
 ```bash
-ccsh gate --init      # analyse the project and write a fully commented-out .codecharta.yml
+ccsh gate --init      # analyse the project and write a .codecharta.yml whose rules are commented out
 ccsh gate --doctor    # validate .codecharta.yml without analysing
 ccsh gate             # analyse and check
 ```
@@ -25,14 +25,15 @@ arguments in a terminal, `ccsh gate` starts right away when the current folder h
 to do otherwise.
 
 `--init` lists every metric the analysis found, with the range of its values and what it measures, and one worked rule
-that today's worst file still passes. Everything in the generated file is commented out: a fresh file checks nothing.
-Uncomment what you want, and copy the example rule for each metric you want to limit.
+that today's worst file still passes. It switches on all four analysers, runs them in parallel and sets the exit
+codes; every rule is commented out, so a fresh file analyses but checks nothing. Uncomment what you want, and copy the
+example rule for each metric you want to limit.
 
 ### The analysis
 
 The gate runs those of the [Raw Text Parser](/docs/parser/raw-text), [Unified Parser](/docs/parser/unified),
-[Dependency Parser](/docs/parser/dependency) and [Domain Language Parser](/docs/parser/domain-language) that apply to
-the project, merges their maps into one and checks that map. The merged map lands in the output folder next to the
+[Dependency Parser](/docs/parser/dependency) and [Domain Language Parser](/docs/parser/domain-language) that the config
+switches on and that apply to the project, merges their maps into one and checks that map. The merged map lands in the output folder next to the
 report, so you can open it in the visualization.
 
 ### Checking an existing map
@@ -56,7 +57,9 @@ parallel: off                     # on runs the analysers at the same time, like
 exclude:                          # files no rule checks, in .gitignore syntax
   - "**/generated/**"
 
-analysers:                        # every applicable analyser runs unless switched off
+analysers:                        # only the analysers listed as on (or with options) run
+  rawtextparser: on
+  dependencyparser: on
   domainlanguageparser: off
   unifiedparser:                  # options instead of on: the analyser's own options, without the leading --
     exclude:                      # a regular expression, as on the command line: leaves files out of the analysis

@@ -21,27 +21,22 @@ class ConfigTemplate(
     private fun header() = listOf(
         "## Quality gate for `ccsh gate`: https://maibornwolff.github.io/codecharta/docs/analysis/quality-gate",
         "## Uncomment what you want to check, then run `ccsh gate --doctor`. Anything left commented out is not checked or",
-        "## keeps its default. Paths are relative to the project folder."
+        "## keeps its default; only the analysers listed as on run. Paths are relative to the project folder."
     )
 
-    private fun settings() = commented(
-        listOf("${ConfigKeys.INPUT}: .", "${ConfigKeys.OUTPUT}: ${GateConfig.DEFAULT_OUTPUT}", "${ConfigKeys.PARALLEL}: off")
-    )
+    private fun settings() =
+        commented(listOf("${ConfigKeys.INPUT}: .", "${ConfigKeys.OUTPUT}: ${GateConfig.DEFAULT_OUTPUT}")) + "${ConfigKeys.PARALLEL}: on"
 
     private fun exclude() =
         commented(listOf("${ConfigKeys.EXCLUDE}:  ## .gitignore patterns of files no rule checks", "  - \"**/generated/**\""))
 
-    private fun analysers() = commented(
-        listOf(
-            "${ConfigKeys.ANALYSERS}:  ## on, off, or the analyser's own options instead of on (its exclude takes regular expressions)"
-        ) +
-            analyserNames.flatMap { listOf("  $it: on", "    ## options: ${catalog.optionNames(it).joinToString()}") }
-    )
+    private fun analysers() = listOf(
+        "${ConfigKeys.ANALYSERS}:  ## on, off, or the analyser's own options instead of on (its exclude takes regular expressions)"
+    ) +
+        analyserNames.flatMap { listOf("  $it: on", "    ## options: ${catalog.optionNames(it).joinToString()}") }
 
-    private fun exitCodes() = commented(
-        listOf("${ConfigKeys.EXIT_CODES}:") +
-            Severity.entries.reversed().map { "  ${it.key}: ${GateConfig.DEFAULT_EXIT_CODES.getValue(it)}" }
-    )
+    private fun exitCodes() = listOf("${ConfigKeys.EXIT_CODES}:") +
+        Severity.entries.reversed().map { "  ${it.key}: ${GateConfig.DEFAULT_EXIT_CODES.getValue(it)}" }
 
     private fun metricRules(): List<String> {
         val example = exampleMetric ?: return listOf(NO_METRICS)

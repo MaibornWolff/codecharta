@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.tools.gate.analysis.PicocliAnalyserCatalog
+import de.maibornwolff.codecharta.analysers.tools.gate.config.AnalyserSetting
 import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigReader
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
@@ -24,10 +25,10 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
 
     fun init(force: Boolean): Int {
         if (configFile.exists() && !force) throw GateException("${configFile.path} already exists. Add --force to overwrite it.")
-        val loaded = projectSource.load(GateConfig(parallel = options.parallel))
-        val analyserNames = loaded.analyserNames.ifEmpty { catalog.names }
+        val allAnalysers = catalog.names.associateWith { AnalyserSetting(true) }
+        val loaded = projectSource.load(GateConfig(parallel = options.parallel, analysers = allAnalysers))
         val metrics = MetricSummary.allOf(loaded.project.files, loaded.project.metricTitles)
-        configFile.writeText(ConfigTemplate(metrics, analyserNames, catalog).render())
+        configFile.writeText(ConfigTemplate(metrics, catalog.names, catalog).render())
         console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         gitignoreHint()?.let(console::println)
         printWrittenMap(loaded)
