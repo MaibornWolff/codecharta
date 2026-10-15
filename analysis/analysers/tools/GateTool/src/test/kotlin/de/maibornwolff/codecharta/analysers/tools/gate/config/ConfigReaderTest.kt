@@ -366,7 +366,7 @@ class ConfigReaderTest {
         val result = ConfigReader(FakeAnalyserCatalog(emptyMap()), configFolder).read(text)
 
         // Assert
-        assertThat(result.problems).containsExactly(ConfigProblem(1, "input folder 'missing' does not exist"))
+        assertThat(result.problems).containsExactly(ConfigProblem(1, "input folder 'missing' does not exist in ${configFolder.path}"))
     }
 
     @Test
@@ -479,5 +479,18 @@ class ConfigReaderTest {
 
         // Assert
         assertThat(result.config.argumentsFor("unifiedparser")).containsExactly("--exclude=off")
+    }
+
+    @Test
+    fun `should not check the input folder when no project folder is given`() {
+        // Arrange
+        val text = "input: anywhere\n"
+
+        // Act
+        val result = ConfigReader(catalog, projectFolder = null).read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.input).isEqualTo("anywhere")
     }
 }

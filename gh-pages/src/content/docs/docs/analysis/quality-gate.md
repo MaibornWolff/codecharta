@@ -48,8 +48,8 @@ that cycles and upward dependencies could not be checked.
 ### The config
 
 ```yaml
-input: .                          # the folder to analyse, relative to this file (default: its folder)
-output: .codecharta-gate-output   # where the map and report.json go, relative to this file
+input: .                          # the folder to analyse (default: the project folder)
+output: .codecharta-gate-output   # where the map and report.json go
 parallel: off                     # on runs the analysers at the same time, like --parallel
 
 analysers:                        # every applicable analyser runs unless switched off
@@ -113,6 +113,8 @@ overrides:                        # other limits for the files the patterns matc
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console in a box
   under the rule they belong to, wrapped at about 76 characters, and in the report. A YAML block (`instruction: |`)
   keeps the line breaks you write.
+- **Paths** in the config (`input`, `output`) are relative to the project folder: the folder you pass to `ccsh gate`,
+  otherwise the current folder, wherever the config file lives.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
 - **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
   what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `betweenFiles` and `insideFiles`

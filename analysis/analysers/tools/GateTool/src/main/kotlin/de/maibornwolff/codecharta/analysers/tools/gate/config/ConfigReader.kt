@@ -9,7 +9,7 @@ import java.io.StringReader
 
 data class ConfigReadResult(val config: GateConfig, val problems: List<ConfigProblem>)
 
-class ConfigReader(private val catalog: AnalyserCatalog, private val configFolder: File = File(".")) {
+class ConfigReader(private val catalog: AnalyserCatalog, private val projectFolder: File? = File(".")) {
     fun read(file: File): ConfigReadResult = read(file.readText())
 
     fun read(text: String): ConfigReadResult {
@@ -51,7 +51,12 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val configFolde
 
     private fun readInput(node: Node, nodes: YamlNodes): String? {
         val input = nodes.text(node, ConfigKeys.INPUT) ?: return null
-        if (!GateConfig.resolve(configFolder, input).isDirectory) nodes.report(node, "${ConfigKeys.INPUT} folder '$input' does not exist")
+        val folder = projectFolder?.let { GateConfig.resolve(it, input) }
+        if (folder != null &&
+            !folder.isDirectory
+        ) {
+            nodes.report(node, "${ConfigKeys.INPUT} folder '$input' does not exist in ${projectFolder.path}")
+        }
         return input
     }
 
