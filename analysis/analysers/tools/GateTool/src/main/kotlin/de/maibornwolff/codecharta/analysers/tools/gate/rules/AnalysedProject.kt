@@ -15,6 +15,12 @@ class AnalysedProject(private val project: Project) {
             .map { (path, node) -> AnalysedFile(path.edgesList.joinToString(NodeId.SEPARATOR), numericAttributes(node.attributes)) }
     }
 
+    val metricTitles: Map<String, String> by lazy {
+        project.lenses.metrics.attributeDescriptors
+            .mapValues { (_, descriptor) -> descriptor.title.ifBlank { descriptor.description } }
+            .filterValues { it.isNotBlank() }
+    }
+
     val dependencyAnalysis: DependencyAnalysis? by lazy {
         val lens = project.lenses.dependency
         if (lens.nodes.isEmpty()) return@lazy null
