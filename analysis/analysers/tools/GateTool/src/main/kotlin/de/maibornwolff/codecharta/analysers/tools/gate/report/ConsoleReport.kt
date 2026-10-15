@@ -10,7 +10,7 @@ import java.io.PrintStream
 class ConsoleReport(private val output: PrintStream, private val metricOrder: List<String>) {
     fun print(result: GateResult) {
         if (result.violations.isEmpty()) {
-            output.println("No rule broken, ${result.filesChecked} files checked")
+            output.println("No rule broken, ${counted(result.filesChecked, "file")} checked")
             return
         }
         groupsInConfigOrder(result.violations).forEach { group ->
@@ -68,7 +68,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     private fun summary(result: GateResult): String {
         val errors = counted(result.count(Severity.ERROR), "error")
         val warnings = counted(result.count(Severity.WARNING), "warning")
-        return "$errors, $warnings, ${result.filesChecked} files checked"
+        return "$errors, $warnings, ${counted(result.filesChecked, "file")} checked"
     }
 
     private fun counted(count: Int, noun: String) = if (count == 1) "1 $noun" else "$count ${noun}s"

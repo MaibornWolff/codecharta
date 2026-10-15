@@ -32,7 +32,8 @@ report, so you can open it in the visualization.
 ### The config
 
 ```yaml
-output: .codecharta-gate-output   # where the map and report.json go
+input: .                          # the folder to analyse, relative to this file (default: its folder)
+output: .codecharta-gate-output   # where the map and report.json go, relative to this file
 
 analysers:                        # every applicable analyser runs unless switched off
   domainlanguageparser: off
@@ -83,7 +84,7 @@ overrides:                        # other limits for the files the patterns matc
 - **A level, metric or setting left out** is not checked or keeps its default.
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console and in
   the report.
-- **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the project folder.
+- **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
 - **Cycles** are found in the dependency graph of the Dependency Parser. A package is the folder of a file. An
   allowed cycle is reported again once it gains a member.
 - A rule for a metric the analysis did not produce is reported as a warning.

@@ -14,6 +14,7 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ## Tasks
 
 ### 1. Analyse
+- `input:` names the folder to analyse, relative to the config (default: the config's folder)
 - Run the applicable and switched-on ones of RawTextParser, UnifiedParser, DependencyParser and
   DomainLanguageParser as they are, merge their maps with the MergeFilter's `ProjectMerger`
 - Leave the output folder out of the analysis, write the merged map into it

@@ -1,5 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.config
 
+import java.io.File
+
 enum class Severity(val key: String) {
     WARNING("warning"),
     ERROR("error");
@@ -28,6 +30,7 @@ data class CycleRule(val severity: Severity, val instruction: String? = null)
 data class CycleRules(val file: CycleRule? = null, val packages: CycleRule? = null, val allowed: List<Set<String>> = emptyList())
 
 data class GateConfig(
+    val input: String? = null,
     val output: String = DEFAULT_OUTPUT,
     val analysers: Map<String, Boolean> = emptyMap(),
     val exitCodes: Map<Severity, Int> = DEFAULT_EXIT_CODES,
@@ -53,5 +56,7 @@ data class GateConfig(
         const val DEFAULT_OUTPUT = ".codecharta-gate-output"
         const val TOOL_FAILURE_EXIT_CODE = 2
         val DEFAULT_EXIT_CODES = mapOf(Severity.ERROR to 1, Severity.WARNING to 0)
+
+        fun resolve(folder: File, path: String): File = File(path).let { if (it.isAbsolute) it else File(folder, path) }
     }
 }

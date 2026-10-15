@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedFile
 
 class ConfigTemplate(private val files: List<AnalysedFile>, private val analyserNames: List<String>) {
-    fun render(): String = listOf(header(), output(), analysers(), exitCodes(), metrics(), cycles(), overrides())
+    fun render(): String = listOf(header(), input(), output(), analysers(), exitCodes(), metrics(), cycles(), overrides())
         .joinToString("\n\n") { section -> section.joinToString("\n") }
         .plus("\n")
 
@@ -14,6 +14,8 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
         "## Quality gate for `ccsh gate`. Uncomment the settings and rules you want, then run `ccsh gate --doctor`.",
         "## Anything left commented out is not checked or keeps its default."
     )
+
+    private fun input() = commented("input: .")
 
     private fun output() = commented("output: ${GateConfig.DEFAULT_OUTPUT}")
 

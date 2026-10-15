@@ -26,6 +26,7 @@ class QualityGate(
     private val createAnalysers: () -> List<AnalyserInterface>
 ) {
     private val configFile = configFile ?: File(projectFolder, GateConfig.FILE_NAME)
+    private val configFolder = this.configFile.parentFile ?: File(".")
 
     fun init(force: Boolean): Int {
         if (configFile.exists() && !force) return failure("${configFile.path} already exists. Add --force to overwrite it.")
@@ -56,7 +57,7 @@ class QualityGate(
     private fun analyse(config: GateConfig): Analysis {
         val analysers = console.whileAnalysing { applicableAnalysers(config) }
         val analyserNames = analysers.map { it.name }
-        console.announceAnalysis("Analysing ${projectFolder.path} with ${analyserNames.joinToString()} ...")
+        console.announceAnalysis("Analysing ${analysisFolder(config).path} with ${analyserNames.joinToString()} ...")
         val (project, duration) = measureTimedValue { console.whileAnalysing { analyseAndKeepMap(analysers, config) } }
         val analysis = Analysis(AnalysedProject(project), analyserNames)
         printAnalysisDone(analysis, duration)
@@ -65,7 +66,7 @@ class QualityGate(
 
     private fun analyseAndKeepMap(analysers: List<AnalyserInterface>, config: GateConfig): Project {
         val outputFolder = outputFolder(config)
-        val project = ProjectAnalyser().analyse(projectFolder, analysers, outputFolder)
+        val project = ProjectAnalyser().analyse(analysisFolder(config), analysers, outputFolder)
         outputFolder.mkdirs()
         ProjectSerializer.serializeToFileOrStream(project, File(outputFolder, MAP_FILE_NAME).path, console.output, true)
         return project
@@ -88,7 +89,7 @@ class QualityGate(
     private fun readConfig(): GateConfig? {
         if (!configFile.exists()) return null.also { failure("No ${configFile.path} found. Run `ccsh gate --init` to create one.") }
         val knownAnalysers = createAnalysers().map { it.name }.toSet()
-        val result = ConfigReader(knownAnalysers).read(configFile)
+        val result = ConfigReader(knownAnalysers, configFolder).read(configFile)
         if (result.problems.isEmpty()) return result.config
 
         console.println("${configFile.path} has ${result.problems.size} problem(s):")
@@ -99,11 +100,11 @@ class QualityGate(
     private class Analysis(val project: AnalysedProject, val analyserNames: List<String>)
 
     private fun applicableAnalysers(config: GateConfig): List<AnalyserInterface> =
-        createAnalysers().filter { config.isAnalyserEnabled(it.name) && it.isApplicable(projectFolder.path) }
+        createAnalysers().filter { config.isAnalyserEnabled(it.name) && it.isApplicable(analysisFolder(config).path) }
 
-    private fun outputFolder(config: GateConfig): File = File(config.output).let {
-        if (it.isAbsolute) it else File(projectFolder, config.output)
-    }
+    private fun analysisFolder(config: GateConfig): File = config.input?.let { GateConfig.resolve(configFolder, it) } ?: projectFolder
+
+    private fun outputFolder(config: GateConfig): File = GateConfig.resolve(configFolder, config.output)
 
     private fun failure(message: String): Int {
         console.println(message)
