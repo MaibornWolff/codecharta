@@ -23,8 +23,9 @@ the config from elsewhere, `--quiet` to keep the output of the analysers off the
 without arguments in a terminal, `ccsh gate` starts right away when the current folder has a `.codecharta.yml`,
 and asks what to do otherwise.
 
-`--init` lists every metric the analysis found, with the lowest and highest value as a comment, so you can pick
-limits. Everything in the generated file is commented out: a fresh file checks nothing. Uncomment what you want.
+`--init` lists every metric the analysis found, with the range of its values and what it measures, and one worked rule
+that today's worst file still passes. Everything in the generated file is commented out: a fresh file checks nothing.
+Uncomment what you want, and copy the example rule for each metric you want to limit.
 
 ### The analysis
 

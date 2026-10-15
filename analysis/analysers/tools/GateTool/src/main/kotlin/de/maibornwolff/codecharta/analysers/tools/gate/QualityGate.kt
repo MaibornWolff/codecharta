@@ -13,6 +13,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricRuleEvaluator
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.PathPatterns
 import de.maibornwolff.codecharta.analysers.tools.gate.template.ConfigTemplate
+import de.maibornwolff.codecharta.analysers.tools.gate.template.MetricSummary
 import java.io.File
 
 class QualityGate(private val options: GateOptions, private val console: GateConsole, createAnalysers: () -> List<AnalyserInterface>) {
@@ -24,8 +25,10 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
         if (configFile.exists() && !force) throw GateException("${configFile.path} already exists. Add --force to overwrite it.")
         val loaded = projectSource.load(GateConfig(parallel = options.parallel))
         val analyserNames = loaded.analyserNames.ifEmpty { catalog.names }
-        configFile.writeText(ConfigTemplate(loaded.project.files, analyserNames, catalog).render())
+        val metrics = MetricSummary.allOf(loaded.project.files, loaded.project.metricTitles)
+        configFile.writeText(ConfigTemplate(metrics, analyserNames, catalog).render())
         console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
+        gitignoreHint()?.let(console::println)
         return SUCCESS
     }
 
@@ -46,6 +49,13 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
         reportFile.writeText(JsonReport.render(result, config))
         console.println("Report: ${reportFile.path}")
         return result.exitCode(config)
+    }
+
+    private fun gitignoreHint(): String? {
+        val gitignore = File(options.projectFolder, GITIGNORE)
+        val outputFolder = GateConfig.DEFAULT_OUTPUT
+        if (!gitignore.isFile || gitignore.readLines().any { it.trim().trim('/') == outputFolder }) return null
+        return "Add $outputFolder/ to ${gitignore.path} so the gate's map and report stay out of version control."
     }
 
     private fun evaluate(project: AnalysedProject, config: GateConfig): GateResult {
@@ -69,6 +79,7 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
     companion object {
         private const val SUCCESS = 0
         private const val REPORT_FILE_NAME = "report.json"
+        private const val GITIGNORE = ".gitignore"
         private const val NO_ACTIVE_RULES = "No rule is active yet, so nothing is checked. Uncomment the rules you want in the config."
     }
 }

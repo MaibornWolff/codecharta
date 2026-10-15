@@ -374,7 +374,7 @@ class GateToolTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(0)
-        assertThat(configFile.readText()).contains("#   coverage: # found: min 80, max 80").doesNotContain("#   rloc:")
+        assertThat(configFile.readText()).contains("##   coverage  80 – 80", "#   coverage:").doesNotContain("rloc")
     }
 
     @Test
@@ -432,6 +432,18 @@ class GateToolTest {
         // Assert
         assertThat(exitCode).isEqualTo(1)
         assertThat(output.toString()).contains("1 error, 0 warnings, 1 file checked").doesNotContain("Util.kt", "cycle")
+    }
+
+    @Test
+    fun `should suggest keeping the output folder out of version control after init`() {
+        // Arrange
+        File(projectFolder, ".gitignore").writeText("build/\n")
+
+        // Act
+        run("--init", projectFolder.path)
+
+        // Assert
+        assertThat(output.toString()).contains("Add .codecharta-gate-output/ to ")
     }
 
     private fun writeMap(vararg files: Node): File {

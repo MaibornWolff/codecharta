@@ -5,26 +5,36 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigKeys
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedFile
+import kotlin.math.roundToLong
 
-class ConfigTemplate(private val files: List<AnalysedFile>, private val analyserNames: List<String>, private val catalog: AnalyserCatalog) {
-    fun render(): String = listOf(header(), input(), output(), parallel(), analysers(), exitCodes(), metrics(), dependencies(), overrides())
+class ConfigTemplate(
+    private val metrics: List<MetricSummary>,
+    private val analyserNames: List<String>,
+    private val catalog: AnalyserCatalog
+) {
+    private val exampleMetric = metrics.find { it.name == PREFERRED_EXAMPLE_METRIC } ?: metrics.firstOrNull()
+
+    fun render(): String = listOf(header(), settings(), exclude(), analysers(), exitCodes(), metricRules(), dependencies(), overrides())
         .joinToString("\n\n") { section -> section.joinToString("\n") }
         .plus("\n")
 
     private fun header() = listOf(
-        "## Quality gate for `ccsh gate`. Uncomment the settings and rules you want, then run `ccsh gate --doctor`.",
-        "## Anything left commented out is not checked or keeps its default."
+        "## Quality gate for `ccsh gate`: https://maibornwolff.github.io/codecharta/docs/analysis/quality-gate",
+        "## Uncomment what you want to check, then run `ccsh gate --doctor`. Anything left commented out is not checked or",
+        "## keeps its default. Paths are relative to the project folder."
     )
 
-    private fun input() = commented("${ConfigKeys.INPUT}: .")
+    private fun settings() = commented(
+        listOf("${ConfigKeys.INPUT}: .", "${ConfigKeys.OUTPUT}: ${GateConfig.DEFAULT_OUTPUT}", "${ConfigKeys.PARALLEL}: off")
+    )
 
-    private fun parallel() = commented("${ConfigKeys.PARALLEL}: off")
-
-    private fun output() = commented("${ConfigKeys.OUTPUT}: ${GateConfig.DEFAULT_OUTPUT}")
+    private fun exclude() =
+        commented(listOf("${ConfigKeys.EXCLUDE}:  ## .gitignore patterns of files no rule checks", "  - \"**/generated/**\""))
 
     private fun analysers() = commented(
-        listOf("${ConfigKeys.ANALYSERS}:  ## on, off, or the analyser's options instead of on, e.g. exclude: [generated/]") +
+        listOf(
+            "${ConfigKeys.ANALYSERS}:  ## on, off, or the analyser's own options instead of on (its exclude takes regular expressions)"
+        ) +
             analyserNames.flatMap { listOf("  $it: on", "    ## options: ${catalog.optionNames(it).joinToString()}") }
     )
 
@@ -33,54 +43,60 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
             Severity.entries.reversed().map { "  ${it.key}: ${GateConfig.DEFAULT_EXIT_CODES.getValue(it)}" }
     )
 
-    private fun metrics(): List<String> {
-        val ranges = metricRanges()
-        val nameWidth = ranges.keys.maxOfOrNull { it.length } ?: 0
-        val lines = ranges.flatMap { (metric, range) ->
-            val found = "# found: min ${range.start.toDisplayText()}, max ${range.endInclusive.toDisplayText()}"
-            listOf("  ${"$metric:".padEnd(nameWidth + 1)} $found") + levelLines()
-        }
-        return commented(listOf("${ConfigKeys.METRICS}:") + lines)
+    private fun metricRules(): List<String> {
+        val example = exampleMetric ?: return listOf(NO_METRICS)
+        return listOf("## Metrics found in this project, with the range of their values:") + metricOverview() +
+            "## An example rule that today's worst file still passes; copy it for each metric you want to limit:" +
+            commented(listOf("${ConfigKeys.METRICS}:") + exampleRule(example))
     }
 
-    private fun metricRanges(): Map<String, ClosedFloatingPointRange<Double>> = files
-        .flatMap { it.metrics.entries }
-        .groupBy({ it.key }, { it.value })
-        .toSortedMap()
-        .mapValues { (_, values) -> values.min()..values.max() }
+    private fun metricOverview(): List<String> {
+        val nameWidth = metrics.maxOf { it.name.length } + COLUMN_GAP
+        val ranges = metrics.map { "${it.lowest.toDisplayText()} – ${it.highest.toDisplayText()}" }
+        val rangeWidth = ranges.maxOf { it.length } + COLUMN_GAP
+        return metrics.zip(
+            ranges
+        ) { metric, range -> "##   ${metric.name.padEnd(nameWidth)}${range.padEnd(rangeWidth)}${metric.title.orEmpty()}".trimEnd() }
+    }
 
-    private fun levelLines() = Severity.entries.flatMap {
-        listOf("    ${it.key}:", "      ${ConfigKeys.MAX}:", "      ${ConfigKeys.INSTRUCTION}:")
+    private fun exampleRule(metric: MetricSummary): List<String> {
+        val warningMax = (metric.highest * WARNING_SHARE_OF_WORST).roundToLong().toDouble()
+        return listOf(
+            "  ${metric.name}:",
+            "    ${Severity.WARNING.key}:",
+            "      ${ConfigKeys.MAX}: ${warningMax.toDisplayText()}",
+            "      ${ConfigKeys.INSTRUCTION}: Tell whoever breaks this rule what to do about it.",
+            "    ${Severity.ERROR.key}:",
+            "      ${ConfigKeys.MAX}: ${metric.highest.toDisplayText()}"
+        )
     }
 
     private fun dependencies() = commented(
-        listOf("${ConfigKeys.DEPENDENCIES}:") +
-            cycleRuleLines(ConfigKeys.CYCLES_BETWEEN_FILES, "path/to/Generated.kt") +
-            cycleRuleLines(ConfigKeys.CYCLES_INSIDE_FILES, "path/to/Generated.kt") +
-            cycleRuleLines(ConfigKeys.UPWARD, "path/to/legacy")
+        listOf("${ConfigKeys.DEPENDENCIES}:  ## counted like the dependency view in the visualization") +
+            dependencyRuleLines(ConfigKeys.CYCLES_BETWEEN_FILES, Severity.ERROR) +
+            "    ${ConfigKeys.INSTRUCTION}: Break the cycle by moving what both files need into a file of its own." +
+            dependencyRuleLines(ConfigKeys.CYCLES_INSIDE_FILES, Severity.WARNING) +
+            dependencyRuleLines(ConfigKeys.UPWARD, Severity.WARNING)
     )
 
-    private fun cycleRuleLines(rule: String, ignoredExample: String) = listOf(
-        "  $rule:",
-        "    ${ConfigKeys.SEVERITY}: ${Severity.ERROR.key}",
-        "    ${ConfigKeys.INSTRUCTION}:",
-        "    ${ConfigKeys.IGNORE}:",
-        "      - $ignoredExample"
-    )
+    private fun dependencyRuleLines(rule: String, severity: Severity) = listOf("  $rule:", "    ${ConfigKeys.SEVERITY}: ${severity.key}")
 
     private fun overrides() = commented(
         listOf(
-            "${ConfigKeys.OVERRIDES}:",
+            "${ConfigKeys.OVERRIDES}:  ## other limits for the files the patterns match; a later override changes an earlier one",
             "  - ${ConfigKeys.PATHS}:",
-            "      - src/legacy/**",
+            "      - \"**/test/**\"",
             "    ${ConfigKeys.METRICS}:",
-            "      ${exampleMetric()}: off"
+            "      ${exampleMetric?.name ?: PREFERRED_EXAMPLE_METRIC}: off"
         )
     )
 
-    private fun exampleMetric(): String = metricRanges().keys.firstOrNull() ?: "rloc"
-
-    private fun commented(line: String) = commented(listOf(line))
-
     private fun commented(lines: List<String>) = lines.map { "# $it" }
+
+    companion object {
+        private const val PREFERRED_EXAMPLE_METRIC = "rloc"
+        private const val WARNING_SHARE_OF_WORST = 0.75
+        private const val COLUMN_GAP = 2
+        private const val NO_METRICS = "## The analysis found no metrics, so there is no metric rule to suggest."
+    }
 }
