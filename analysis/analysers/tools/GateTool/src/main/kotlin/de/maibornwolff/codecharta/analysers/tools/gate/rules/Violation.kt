@@ -7,6 +7,7 @@ enum class ViolationKind {
     METRIC,
     FILE_CYCLE,
     PACKAGE_CYCLE,
+    CYCLES_NOT_CHECKED,
     UNKNOWN_METRIC
 }
 

@@ -21,6 +21,9 @@ class AnalysedProject(private val project: Project) {
         }
     }
 
+    val hasDependencyData: Boolean
+        get() = project.lenses.dependency.edges.isNotEmpty() || project.lenses.dependency.nodes.isNotEmpty()
+
     private fun numericAttributes(attributes: Map<String, Any>): Map<String, Double> = attributes
         .mapNotNull { (name, value) -> (value as? Number)?.let { name to it.toDouble() } }
         .toMap()

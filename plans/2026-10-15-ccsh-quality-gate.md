@@ -23,6 +23,9 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 - `--parallel` / `parallel: on` runs the analysers in a thread pool; merge order stays the list order, so the
   result is identical to a sequential run
 
+- `--map <file>` checks (or `--init`s from) an existing cc.json instead of analysing; cycle rules on a map
+  without dependency data give a "cycles not checked" warning
+
 ### 2. `ccsh gate --init`
 - Analyse, write `.codecharta.yml` fully commented out: every metric with a warning and an error level and
   its min/max found, the applicable analysers, exit codes, output folder, cycles and an example override

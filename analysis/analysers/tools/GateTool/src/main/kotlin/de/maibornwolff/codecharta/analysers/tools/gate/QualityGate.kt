@@ -8,16 +8,17 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigReader
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.report.ConsoleReport
 import de.maibornwolff.codecharta.analysers.tools.gate.report.JsonReport
+import de.maibornwolff.codecharta.analysers.tools.gate.report.counted
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedProject
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleRuleEvaluator
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricRuleEvaluator
 import de.maibornwolff.codecharta.analysers.tools.gate.template.ConfigTemplate
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.File
 import java.util.Locale
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.measureTimedValue
 
@@ -31,10 +32,11 @@ class QualityGate(
     private val configFolder = this.configFile.parentFile ?: File(".")
     private val catalog = PicocliAnalyserCatalog(createAnalysers)
 
-    fun init(force: Boolean, parallel: Boolean): Int {
+    fun init(force: Boolean, parallel: Boolean, mapFile: File?): Int {
         if (configFile.exists() && !force) return failure("${configFile.path} already exists. Add --force to overwrite it.")
-        val analysis = analyse(GateConfig(parallel = parallel))
-        configFile.writeText(ConfigTemplate(analysis.project.files, analysis.analyserNames, catalog).render())
+        val analysis = projectToCheck(GateConfig(parallel = parallel), mapFile) ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
+        val analyserNames = analysis.analyserNames.ifEmpty { catalog.names }
+        configFile.writeText(ConfigTemplate(analysis.project.files, analyserNames, catalog).render())
         console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         return SUCCESS
     }
@@ -46,16 +48,34 @@ class QualityGate(
         return SUCCESS
     }
 
-    fun check(parallel: Boolean): Int {
+    fun check(parallel: Boolean, mapFile: File?): Int {
         val readConfig = readConfig() ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
         val config = if (parallel) readConfig.copy(parallel = true) else readConfig
-        val analysis = analyse(config)
+        val analysis = projectToCheck(config, mapFile) ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
         val result = evaluate(analysis.project, config)
         if (!config.hasActiveRules) console.println(NO_ACTIVE_RULES)
         ConsoleReport(console.output, config.configuredMetrics).print(result)
-        val reportFile = File(outputFolder(config), REPORT_FILE_NAME).apply { writeText(JsonReport.render(result, config)) }
+        val reportFile = File(
+            outputFolder(config).apply { mkdirs() },
+            REPORT_FILE_NAME
+        ).apply { writeText(JsonReport.render(result, config)) }
         console.println("Report: ${reportFile.path}")
         return result.exitCode(config)
+    }
+
+    private fun projectToCheck(config: GateConfig, mapFile: File?): Analysis? = if (mapFile == null) analyse(config) else readMap(mapFile)
+
+    private fun readMap(mapFile: File): Analysis? {
+        if (!mapFile.isFile) return null.also { failure("The map ${mapFile.path} does not exist.") }
+        val project =
+            try {
+                mapFile.inputStream().use { ProjectDeserializer.deserializeProject(it) }
+            } catch (exception: Exception) {
+                return null.also { failure("${mapFile.path} is not a readable cc.json map: ${exception.message}") }
+            }
+        val analysis = Analysis(AnalysedProject(project), emptyList())
+        printSeparator("Map read: ${counted(analysis.project.files.size, "file")} from ${mapFile.path}")
+        return analysis
     }
 
     private fun analyse(config: GateConfig): Analysis {
@@ -64,7 +84,9 @@ class QualityGate(
         console.announceAnalysis("Analysing ${analysisFolder(config).path} with ${analyserNames.joinToString()} ...")
         val (project, duration) = measureTimedValue { console.whileAnalysing { analyseAndKeepMap(analysers, config) } }
         val analysis = Analysis(AnalysedProject(project), analyserNames)
-        printAnalysisDone(analysis, duration)
+        val seconds = String.format(Locale.ROOT, "%.1f", duration.toDouble(DurationUnit.SECONDS))
+        val analysed = counted(analysis.project.files.size, "file")
+        printSeparator("Analysis done: $analysed with ${analyserNames.joinToString()} in $seconds s")
         return analysis
     }
 
@@ -76,17 +98,17 @@ class QualityGate(
         return project
     }
 
-    private fun printAnalysisDone(analysis: Analysis, duration: Duration) {
-        val seconds = String.format(Locale.ROOT, "%.1f", duration.toDouble(DurationUnit.SECONDS))
+    private fun printSeparator(line: String) {
         console.println()
         console.println(SEPARATOR)
-        console.println("Analysis done: ${analysis.project.files.size} files with ${analysis.analyserNames.joinToString()} in $seconds s")
+        console.println(line)
         console.println()
     }
 
     private fun evaluate(project: AnalysedProject, config: GateConfig): GateResult {
         val violations =
-            MetricRuleEvaluator(config).evaluate(project.files) + CycleRuleEvaluator(config.cycles).evaluate(project.dependencies)
+            MetricRuleEvaluator(config).evaluate(project.files) +
+                CycleRuleEvaluator(config.cycles).evaluate(project.dependencies, project.hasDependencyData)
         return GateResult(violations, project.files.size)
     }
 

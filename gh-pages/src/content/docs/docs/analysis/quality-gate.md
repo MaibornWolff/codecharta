@@ -29,6 +29,18 @@ The gate runs those of the [Raw Text Parser](/docs/parser/raw-text), [Unified Pa
 the project, merges their maps into one and checks that map. The merged map lands in the output folder next to the
 report, so you can open it in the visualization.
 
+### Checking an existing map
+
+```bash
+ccsh gate --map build/project.cc.json.gz          # check a map instead of analysing
+ccsh gate --init --map build/project.cc.json.gz   # write the config from the metrics of that map
+```
+
+`--map` skips the analysis and checks the given map, so you can gate maps from any importer or parser, such as the
+Sonar importer or the Git Log Parser. `input`, `analysers` and `parallel` in the config are then not used. Cycle rules
+need the dependency data of the [Dependency Parser](/docs/parser/dependency); a map without it gets a warning that
+cycles could not be checked.
+
 ### The config
 
 ```yaml

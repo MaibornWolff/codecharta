@@ -4,14 +4,23 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycled
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
 import de.maibornwolff.codecharta.analysers.tools.gate.config.CycleRule
 import de.maibornwolff.codecharta.analysers.tools.gate.config.CycleRules
+import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 
 class CycleRuleEvaluator(private val rules: CycleRules) {
-    fun evaluate(dependencies: List<FileDependency>): List<Violation> {
+    fun evaluate(dependencies: List<FileDependency>, hasDependencyData: Boolean = true): List<Violation> {
+        val hasCycleRule = rules.file != null || rules.packages != null
+        if (hasCycleRule && !hasDependencyData) return listOf(cyclesNotChecked())
         val fileCycles = rules.file?.let { rule -> findCycles(dependencies, ViolationKind.FILE_CYCLE, rule) } ?: emptyList()
         val packageCycles =
             rules.packages?.let { rule -> findCycles(packageDependencies(dependencies), ViolationKind.PACKAGE_CYCLE, rule) } ?: emptyList()
         return fileCycles + packageCycles
     }
+
+    private fun cyclesNotChecked() = Violation(
+        ViolationKind.CYCLES_NOT_CHECKED,
+        Severity.WARNING,
+        "The map has no dependency data, so cycles could not be checked. Switch on the dependencyparser."
+    )
 
     private fun findCycles(dependencies: List<FileDependency>, kind: ViolationKind, rule: CycleRule): List<Violation> =
         StronglyConnectedComponentDetection()

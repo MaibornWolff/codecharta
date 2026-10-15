@@ -17,7 +17,8 @@ object JsonReport {
         ViolationKind.METRIC to "metric",
         ViolationKind.FILE_CYCLE to "file-cycle",
         ViolationKind.PACKAGE_CYCLE to "package-cycle",
-        ViolationKind.UNKNOWN_METRIC to "unknown-metric"
+        ViolationKind.UNKNOWN_METRIC to "unknown-metric",
+        ViolationKind.CYCLES_NOT_CHECKED to "cycles-not-checked"
     )
 
     fun render(result: GateResult, config: GateConfig): String {

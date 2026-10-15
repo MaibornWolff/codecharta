@@ -122,5 +122,35 @@ class CycleRuleEvaluatorTest {
         )
     }
 
+    @Test
+    fun `should warn once that cycles could not be checked when there is no dependency data`() {
+        // Arrange
+        val rules = CycleRules(file = fileRule, packages = packageRule)
+
+        // Act
+        val violations = CycleRuleEvaluator(rules).evaluate(emptyList(), hasDependencyData = false)
+
+        // Assert
+        assertThat(violations).containsExactly(
+            Violation(
+                ViolationKind.CYCLES_NOT_CHECKED,
+                Severity.WARNING,
+                "The map has no dependency data, so cycles could not be checked. Switch on the dependencyparser."
+            )
+        )
+    }
+
+    @Test
+    fun `should not warn about missing dependency data when no cycle rule is set`() {
+        // Arrange
+        val rules = CycleRules()
+
+        // Act
+        val violations = CycleRuleEvaluator(rules).evaluate(emptyList(), hasDependencyData = false)
+
+        // Assert
+        assertThat(violations).isEmpty()
+    }
+
     private fun dependency(from: String, to: String) = FileDependency(from, to)
 }
