@@ -5,7 +5,8 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 
 enum class ViolationKind {
     METRIC,
-    FILE_CYCLE,
+    CYCLE_BETWEEN_FILES,
+    CYCLE_INSIDE_FILE,
     UPWARD_DEPENDENCY,
     CYCLES_NOT_CHECKED,
     UNKNOWN_METRIC
@@ -21,7 +22,7 @@ data class Violation(
     val value: Double? = null,
     val threshold: Double? = null,
     val members: List<String> = emptyList(),
-    val dependencies: Map<String, List<String>> = emptyMap()
+    val declarations: List<Declaration> = emptyList()
 )
 
 data class GateResult(val violations: List<Violation>, val filesChecked: Int) {

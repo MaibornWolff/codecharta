@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.tools.gate.report
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.ViolationKind
@@ -19,14 +20,14 @@ class ReportTest {
                 metricViolation(Severity.ERROR, "src/Small.kt", 455.0, 400.0, "Split it."),
                 metricViolation(Severity.ERROR, "src/Big.kt", 812.0, 400.0, "Split it."),
                 Violation(
-                    ViolationKind.FILE_CYCLE,
+                    ViolationKind.CYCLE_BETWEEN_FILES,
                     Severity.ERROR,
                     "Break the cycle.",
                     members = listOf("a/Foo.kt", "b/Bar.kt"),
-                    dependencies = mapOf("a/Foo.kt" to listOf("b/Bar.kt"), "b/Bar.kt" to listOf("a/Foo.kt"))
+                    declarations = listOf(Declaration("a/Foo.kt", "Foo"), Declaration("b/Bar.kt", "Bar"))
                 ),
                 Violation(ViolationKind.UNKNOWN_METRIC, Severity.WARNING, "No such metric.", metric = "lines_of_doc"),
-                Violation(ViolationKind.UPWARD_DEPENDENCY, Severity.WARNING, null, path = "src/a/One.kt", target = "src/b/Two.kt")
+                upward("src/a/One.kt", "one", "src/b/Two.kt", "Two")
             ),
             filesChecked = 418
         )
@@ -54,15 +55,15 @@ class ReportTest {
             WARN   unknown metric: lines_of_doc
                    Instruction: No such metric.
 
-            ERROR  1 file cycle
+            ERROR  1 cycle between files
                    Instruction: Break the cycle.
               cycle 1 of 1, 2 files
-                a/Foo.kt → b/Bar.kt
-                b/Bar.kt → a/Foo.kt
+                a/Foo.kt: Foo → b/Bar.kt: Bar
+                b/Bar.kt: Bar → a/Foo.kt: Foo
 
             WARN   1 upward dependency
               in src/
-                a/One.kt → b/Two.kt
+                a/One.kt: one → b/Two.kt: Two
 
             3 errors, 3 warnings, 418 files checked
 
@@ -88,27 +89,35 @@ class ReportTest {
     }
 
     @Test
-    fun `should show each cycle with its shared folder and the upward dependencies by the folder they cross`() {
+    fun `should walk each cycle through its declarations and show the upward dependencies by the folder they cross`() {
         // Arrange
         val output = ByteArrayOutputStream()
         val folder = "src/main/model"
+        val node = Declaration("$folder/Node.kt", "Node")
+        val mutableNode = Declaration("$folder/MutableNode.kt", "MutableNode")
+        val inserter = Declaration("$folder/sub/Inserter.kt", "Inserter")
+        val parse = Declaration("lib/Parser.kt", "parse")
+        val parseBlock = Declaration("lib/Parser.kt", "parseBlock")
         val cycles =
             listOf(
                 Violation(
-                    ViolationKind.FILE_CYCLE,
+                    ViolationKind.CYCLE_BETWEEN_FILES,
                     Severity.ERROR,
                     null,
-                    members = listOf("$folder/MutableNode.kt", "$folder/Node.kt", "$folder/sub/Inserter.kt"),
-                    dependencies =
-                        mapOf(
-                            "$folder/MutableNode.kt" to listOf("$folder/Node.kt", "$folder/sub/Inserter.kt"),
-                            "$folder/Node.kt" to listOf("$folder/MutableNode.kt"),
-                            "$folder/sub/Inserter.kt" to listOf("$folder/MutableNode.kt")
-                        )
+                    members = listOf(mutableNode.file, node.file, inserter.file),
+                    declarations = listOf(mutableNode, inserter, node)
                 ),
-                Violation(ViolationKind.UPWARD_DEPENDENCY, Severity.WARNING, null, path = "src/a/One.kt", target = "src/b/Two.kt"),
-                Violation(ViolationKind.UPWARD_DEPENDENCY, Severity.WARNING, null, path = "src/a/deep/Three.kt", target = "src/c/Four.kt"),
-                Violation(ViolationKind.UPWARD_DEPENDENCY, Severity.WARNING, null, path = "Main.kt", target = "lib/Util.kt")
+                Violation(
+                    ViolationKind.CYCLE_INSIDE_FILE,
+                    Severity.ERROR,
+                    null,
+                    path = parse.file,
+                    members = listOf(parse.file),
+                    declarations = listOf(parse, parseBlock)
+                ),
+                upward("src/a/One.kt", "one", "src/b/Two.kt", "Two"),
+                upward("src/a/deep/Three.kt", "three", "src/c/Four.kt", "Four"),
+                upward("Main.kt", "main", "lib/Util.kt", "Util")
             )
 
         // Act
@@ -117,20 +126,25 @@ class ReportTest {
         // Assert
         assertThat(output.toString()).isEqualTo(
             """
-            ERROR  1 file cycle
+            ERROR  1 cycle between files
               cycle 1 of 1, 3 files in src/main/model/
-                MutableNode.kt  → Node.kt, sub/Inserter.kt
-                Node.kt         → MutableNode.kt
-                sub/Inserter.kt → MutableNode.kt
+                MutableNode.kt: MutableNode → sub/Inserter.kt: Inserter
+                sub/Inserter.kt: Inserter   → Node.kt: Node
+                Node.kt: Node               → MutableNode.kt: MutableNode
+
+            ERROR  1 cycle inside a file
+              cycle 1 of 1 in lib/Parser.kt
+                parse      → parseBlock
+                parseBlock → parse
 
             WARN   3 upward dependencies
               in ./
-                Main.kt → lib/Util.kt
+                Main.kt: main → lib/Util.kt: Util
               in src/
-                a/One.kt        → b/Two.kt
-                a/deep/Three.kt → c/Four.kt
+                a/One.kt: one          → b/Two.kt: Two
+                a/deep/Three.kt: three → c/Four.kt: Four
 
-            1 error, 3 warnings, 3 files checked
+            2 errors, 3 warnings, 3 files checked
 
             """.trimIndent()
         )
@@ -162,9 +176,10 @@ class ReportTest {
         val violations = json["violations"].asJsonArray.map { it.toString() }
         assertThat(violations).contains(
             """{"rule":"metric","severity":"error","path":"src/Big.kt","metric":"rloc","value":812,"threshold":400,"instruction":"Split it."}""",
-            """{"rule":"file-cycle","severity":"error","members":["a/Foo.kt","b/Bar.kt"],""" +
-                """"dependencies":{"a/Foo.kt":["b/Bar.kt"],"b/Bar.kt":["a/Foo.kt"]},"instruction":"Break the cycle."}""",
-            """{"rule":"upward-dependency","severity":"warning","path":"src/a/One.kt","target":"src/b/Two.kt"}""",
+            """{"rule":"cycle-between-files","severity":"error","members":["a/Foo.kt","b/Bar.kt"],""" +
+                """"declarations":[{"file":"a/Foo.kt","name":"Foo"},{"file":"b/Bar.kt","name":"Bar"}],"instruction":"Break the cycle."}""",
+            """{"rule":"upward-dependency","severity":"warning","path":"src/a/One.kt","target":"src/b/Two.kt",""" +
+                """"declarations":[{"file":"src/a/One.kt","name":"one"},{"file":"src/b/Two.kt","name":"Two"}]}""",
             """{"rule":"unknown-metric","severity":"warning","metric":"lines_of_doc","instruction":"No such metric."}"""
         )
     }
@@ -180,6 +195,15 @@ class ReportTest {
         // Assert
         assertThat(json).endsWith("}\n")
     }
+
+    private fun upward(fromFile: String, fromName: String, toFile: String, toName: String) = Violation(
+        ViolationKind.UPWARD_DEPENDENCY,
+        Severity.WARNING,
+        null,
+        path = fromFile,
+        target = toFile,
+        declarations = listOf(Declaration(fromFile, fromName), Declaration(toFile, toName))
+    )
 
     private fun metricViolation(
         severity: Severity,

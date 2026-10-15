@@ -10,11 +10,7 @@ object UpwardText {
         .groupBy { sharedFolder(listOf(it.path!!, it.target!!)) }
         .toSortedMap()
         .flatMap { (folder, dependencies) ->
-            listOf("${INDENT}in ${folder.ifEmpty { TOP_FOLDER }}") + dependencyLines(folder, dependencies)
+            listOf("${INDENT}in ${folder.ifEmpty { TOP_FOLDER }}") +
+                arrowLines(dependencies.map { declarationText(it.declarations[0], folder) to declarationText(it.declarations[1], folder) })
         }
-
-    private fun dependencyLines(folder: String, dependencies: List<Violation>): List<String> {
-        val width = dependencies.maxOf { it.path!!.length } - folder.length
-        return dependencies.map { "$INDENT$INDENT${it.path!!.removePrefix(folder).padEnd(width)} → ${it.target!!.removePrefix(folder)}" }
-    }
 }

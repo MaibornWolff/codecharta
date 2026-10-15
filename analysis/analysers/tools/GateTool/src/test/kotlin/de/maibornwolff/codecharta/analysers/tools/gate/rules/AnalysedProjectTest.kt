@@ -1,10 +1,13 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
+import de.maibornwolff.codecharta.model.DependencyLeaf
 import de.maibornwolff.codecharta.model.DependencyLens
 import de.maibornwolff.codecharta.model.DependencyNode
 import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.LeafEdge
 import de.maibornwolff.codecharta.model.LensSet
 import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeId
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
 import org.assertj.core.api.Assertions.assertThat
@@ -30,8 +33,23 @@ class AnalysedProjectTest {
                 LensSet(
                     dependency =
                         DependencyLens(
-                            listOf(Edge("/root/Main.kt", "/root/src/Util.kt", isCyclic = true, isPointingUpwards = true)),
-                            nodes = mapOf("main" to DependencyNode(0))
+                            edges =
+                                listOf(
+                                    Edge("/root/Main.kt", "/root/src/Util.kt", mapOf("dependencies" to 2), isPointingUpwards = true),
+                                    Edge("/root/src/Util.kt", "/root/Main.kt", mapOf("coupling" to 1), isPointingUpwards = true)
+                                ),
+                            nodes = mapOf(mainId to DependencyNode(0)),
+                            leaves =
+                                mapOf(
+                                    mainId to mapOf("main" to DependencyLeaf("function")),
+                                    utilId to mapOf("Util" to DependencyLeaf("class"))
+                                ),
+                            leafEdges =
+                                listOf(
+                                    LeafEdge(mainId, "main", utilId, "Util", isCyclic = true),
+                                    LeafEdge(utilId, "Util", mainId, "main", isPointingUpwards = true),
+                                    LeafEdge(mainId, "main", utilId, "Undeclared")
+                                )
                         )
                 )
         )
@@ -52,19 +70,34 @@ class AnalysedProjectTest {
     }
 
     @Test
-    fun `should list the dependencies between files by their paths from the project root`() {
+    fun `should list the dependencies between declared declarations with their files and marks`() {
         // Arrange
         val analysedProject = AnalysedProject(project)
 
         // Act
-        val dependencies = analysedProject.dependencies
+        val analysis = analysedProject.dependencyAnalysis!!
 
         // Assert
-        assertThat(dependencies).containsExactly(FileDependency("Main.kt", "src/Util.kt", isCyclic = true, isPointingUpwards = true))
+        assertThat(analysis.declarationDependencies).containsExactly(
+            DeclarationDependency(Declaration("Main.kt", "main"), Declaration("src/Util.kt", "Util"), isCyclic = true),
+            DeclarationDependency(Declaration("src/Util.kt", "Util"), Declaration("Main.kt", "main"), isPointingUpwards = true)
+        )
     }
 
     @Test
-    fun `should know whether the map carries the dependency analysis`() {
+    fun `should tell which file pairs the dependencies between files mark as upward`() {
+        // Arrange
+        val analysedProject = AnalysedProject(project)
+
+        // Act
+        val upwardOfFilePair = analysedProject.dependencyAnalysis!!.upwardOfFilePair
+
+        // Assert
+        assertThat(upwardOfFilePair).isEqualTo(mapOf(("Main.kt" to "src/Util.kt") to true))
+    }
+
+    @Test
+    fun `should have no dependency analysis when the map carries none`() {
         // Arrange
         val withoutAnalysis =
             Project(
@@ -74,11 +107,14 @@ class AnalysedProjectTest {
             )
 
         // Act
-        val withAnalysisFound = AnalysedProject(project).hasDependencyAnalysis
-        val withoutAnalysisFound = AnalysedProject(withoutAnalysis).hasDependencyAnalysis
+        val analysis = AnalysedProject(withoutAnalysis).dependencyAnalysis
 
         // Assert
-        assertThat(withAnalysisFound).isTrue()
-        assertThat(withoutAnalysisFound).isFalse()
+        assertThat(analysis).isNull()
+    }
+
+    private companion object {
+        val mainId = NodeId.fromSegments(listOf("Main.kt"))
+        val utilId = NodeId.fromSegments(listOf("src", "Util.kt"))
     }
 }

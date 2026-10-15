@@ -6,6 +6,7 @@ import com.google.gson.JsonObject
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toJsonNumber
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.ViolationKind
@@ -15,7 +16,8 @@ object JsonReport {
 
     private val RULE_NAMES = mapOf(
         ViolationKind.METRIC to "metric",
-        ViolationKind.FILE_CYCLE to "file-cycle",
+        ViolationKind.CYCLE_BETWEEN_FILES to "cycle-between-files",
+        ViolationKind.CYCLE_INSIDE_FILE to "cycle-inside-file",
         ViolationKind.UPWARD_DEPENDENCY to "upward-dependency",
         ViolationKind.UNKNOWN_METRIC to "unknown-metric",
         ViolationKind.CYCLES_NOT_CHECKED to "cycles-not-checked"
@@ -34,8 +36,15 @@ object JsonReport {
         addProperty("files", result.filesChecked)
     }
 
-    private fun dependenciesInCycle(dependencies: Map<String, List<String>>) = JsonObject().apply {
-        dependencies.forEach { (member, targets) -> add(member, jsonArrayOf(targets)) }
+    private fun declarationsOf(declarations: List<Declaration>) = JsonArray().apply {
+        declarations.forEach { declaration ->
+            add(
+                JsonObject().apply {
+                    addProperty("file", declaration.file)
+                    addProperty("name", declaration.name)
+                }
+            )
+        }
     }
 
     private fun jsonArrayOf(values: List<String>) = JsonArray().apply { values.forEach(::add) }
@@ -49,7 +58,7 @@ object JsonReport {
         violation.value?.let { addProperty("value", it.toJsonNumber()) }
         violation.threshold?.let { addProperty("threshold", it.toJsonNumber()) }
         if (violation.members.isNotEmpty()) add("members", jsonArrayOf(violation.members))
-        if (violation.dependencies.isNotEmpty()) add("dependencies", dependenciesInCycle(violation.dependencies))
+        if (violation.declarations.isNotEmpty()) add("declarations", declarationsOf(violation.declarations))
         violation.instruction?.let { addProperty("instruction", it) }
     }
 }

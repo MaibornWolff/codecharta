@@ -77,12 +77,13 @@ metrics:                          # checked per file
       instruction: Extract branches into named helper functions.
 
 cycles:
-  file:
+  betweenFiles:
     severity: error
     instruction: Break the cycle by moving the shared part into its own file.
-    ignore:                       # left out of the dependency graph before cycles are searched
-      - src/model/Node.kt
+    ignore:                       # files or folders whose cycles are not reported
       - "**/generated/**"
+  insideFiles:
+    severity: warning
   upward:
     severity: warning
     ignore:
@@ -112,12 +113,11 @@ overrides:                        # other limits for the files the patterns matc
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console and in
   the report.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
-- **Cycles and upward dependencies** are the ones the [Dependency Parser](/docs/parser/dependency) marks, the same
-  ones the dependency view in the visualization shows. `file` reports each group of files tied together by cyclic
-  dependencies. `upward` reports each dependency that runs against the levels of its folder: within one folder, the
-  parser orders the subfolders and files so that what something depends on lies below it, and an upward dependency
-  is one that breaks that order. `ignore` takes files or folders out, in `.gitignore` syntax: a cycle that only runs
-  through an ignored file is not reported, while the rest of a cycle that does not need it still is.
+- **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
+  what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `betweenFiles` and `insideFiles`
+  report each loop through declarations: for every dependency the parser marks cyclic, the shortest way back, each
+  loop once. `upward` reports each dependency between declarations that runs against the levels of its folder. A
+  loop or an upward dependency that touches a file `ignore` matches is not reported.
 - A rule for a metric the analysis did not produce is reported as a warning.
 
 ### The result
@@ -139,19 +139,18 @@ WARN   max_complexity_per_function > 10
        Instruction: Extract branches into named helper functions.
   src/parser/Parser.kt  37
 
-ERROR  1 file cycle
+ERROR  1 cycle between files
        Instruction: Break the cycle by moving the shared part into its own file.
-  cycle 1 of 1, 3 files in src/model/
-    MutableNode.kt  → Node.kt, NodeInserter.kt
-    Node.kt         → MutableNode.kt
-    NodeInserter.kt → MutableNode.kt
+  cycle 1 of 1, 2 files in src/model/
+    MutableNode.kt: MutableNode → Node.kt: Node
+    Node.kt: Node               → MutableNode.kt: MutableNode
 
 3 errors, 1 warning, 418 files checked
 Report: ./.codecharta-gate-output/report.json
 ```
 
-The first line appears with `--quiet` only. Each cycle names the folder its members share and, per member, the
-members of the cycle it depends on.
+The first line appears with `--quiet` only. Each cycle is walked through the declarations it runs through, from the
+folder its files share.
 
 `report.json` holds the exit code, the counts per severity and every violation with its rule, severity, path, metric,
 value, limit and instruction; a cycle lists its members instead of a path.

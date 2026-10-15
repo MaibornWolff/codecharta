@@ -67,7 +67,7 @@ class ConfigReaderTest {
                 error:
                   max: 400
             cycles:
-              file:
+              betweenFiles:
                 severity: error
                 instruction: Break the cycle.
                 ignore:
@@ -108,7 +108,7 @@ class ConfigReaderTest {
                     ),
                 cycles =
                     CycleRules(
-                        file = CycleRule(Severity.ERROR, "Break the cycle.", ignore = listOf("src/a.kt")),
+                        betweenFiles = CycleRule(Severity.ERROR, "Break the cycle.", ignore = listOf("src/a.kt")),
                         upward = CycleRule(Severity.WARNING, ignore = listOf("src/legacy"))
                     ),
                 overrides =
@@ -251,25 +251,27 @@ class ConfigReaderTest {
     @Test
     fun `should report a cycle rule with an unknown severity`() {
         // Arrange
-        val text = "cycles:\n  file:\n    severity: fatal\n"
+        val text = "cycles:\n  betweenFiles:\n    severity: fatal\n"
 
         // Act
         val result = reader.read(text)
 
         // Assert
-        assertThat(result.problems).containsExactly(ConfigProblem(3, "cycles.file.severity must be one of: warning, error, found 'fatal'"))
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(3, "cycles.betweenFiles.severity must be one of: warning, error, found 'fatal'"))
     }
 
     @Test
     fun `should report an ignore pattern that is not valid`() {
         // Arrange
-        val text = "cycles:\n  file:\n    severity: error\n    ignore:\n      - \"src/[a\"\n"
+        val text = "cycles:\n  betweenFiles:\n    severity: error\n    ignore:\n      - \"src/[a\"\n"
 
         // Act
         val result = reader.read(text)
 
         // Assert
-        assertThat(result.problems).containsExactly(ConfigProblem(5, "cycles.file.ignore[0] is not a valid path pattern: 'src/[a'"))
+        assertThat(result.problems).containsExactly(ConfigProblem(5, "cycles.betweenFiles.ignore[0] is not a valid path pattern: 'src/[a'"))
     }
 
     @Test
