@@ -113,6 +113,19 @@ class AnalysedProjectTest {
         assertThat(analysis).isNull()
     }
 
+    @Test
+    fun `should leave the dependencies of excluded files out of the dependency analysis`() {
+        // Arrange
+        val analysis = AnalysedProject(project).dependencyAnalysis!!
+
+        // Act
+        val withoutUtil = analysis.withoutFiles { it.startsWith("src/") }
+
+        // Assert
+        assertThat(withoutUtil.declarationDependencies).isEmpty()
+        assertThat(withoutUtil.upwardOfFilePair).isEmpty()
+    }
+
     private companion object {
         val mainId = NodeId.fromSegments(listOf("Main.kt"))
         val utilId = NodeId.fromSegments(listOf("src", "Util.kt"))

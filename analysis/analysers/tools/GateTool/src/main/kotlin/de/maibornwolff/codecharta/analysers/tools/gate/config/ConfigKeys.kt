@@ -4,12 +4,13 @@ object ConfigKeys {
     const val INPUT = "input"
     const val OUTPUT = "output"
     const val PARALLEL = "parallel"
+    const val EXCLUDE = "exclude"
     const val ANALYSERS = "analysers"
     const val EXIT_CODES = "exitCodes"
     const val METRICS = "metrics"
     const val DEPENDENCIES = "dependencies"
     const val OVERRIDES = "overrides"
-    val TOP_LEVEL = listOf(INPUT, OUTPUT, PARALLEL, ANALYSERS, EXIT_CODES, METRICS, DEPENDENCIES, OVERRIDES)
+    val TOP_LEVEL = listOf(INPUT, OUTPUT, PARALLEL, EXCLUDE, ANALYSERS, EXIT_CODES, METRICS, DEPENDENCIES, OVERRIDES)
 
     const val MIN = "min"
     const val MAX = "max"

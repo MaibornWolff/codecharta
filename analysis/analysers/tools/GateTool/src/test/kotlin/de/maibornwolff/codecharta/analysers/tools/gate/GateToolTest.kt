@@ -419,6 +419,21 @@ class GateToolTest {
         assertThat(exitCode).isEqualTo(1)
     }
 
+    @Test
+    fun `should leave the files the config excludes out of every check`() {
+        // Arrange
+        configFile.writeText(
+            "exclude:\n  - util/\nmetrics:\n  rloc:\n    error:\n      max: 1\ndependencies:\n  cyclesBetweenFiles:\n    severity: error\n"
+        )
+
+        // Act
+        val exitCode = run(projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("1 error, 0 warnings, 1 file checked").doesNotContain("Util.kt", "cycle")
+    }
+
     private fun writeMap(vararg files: Node): File {
         val project = Project("given", listOf(Node("root", NodeType.Folder, children = files.toSet())))
         val mapFile = File(projectFolder, "given.cc.json")

@@ -39,6 +39,7 @@ data class GateConfig(
     val input: String? = null,
     val output: String = DEFAULT_OUTPUT,
     val parallel: Boolean = false,
+    val exclude: List<String> = emptyList(),
     val analysers: Map<String, AnalyserSetting> = emptyMap(),
     val exitCodes: Map<Severity, Int> = emptyMap(),
     val metrics: Map<String, MetricRule> = emptyMap(),
