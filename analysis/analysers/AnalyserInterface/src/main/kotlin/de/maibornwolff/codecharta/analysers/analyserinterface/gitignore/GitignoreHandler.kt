@@ -130,14 +130,10 @@ class GitignoreHandler(private val root: File) {
 
     private fun getRelativePath(directory: File, file: File): Path = directory.toPath().relativize(file.toPath())
 
-    private fun ruleMatchesFile(rule: GitignoreRule, relPath: Path, file: File): Boolean {
-        val pathMatches = try {
-            rule.matchesPath(relPath)
-        } catch (_: Exception) {
-            false
-        }
-
-        return pathMatches && (!rule.isDirOnly || file.isDirectory)
+    private fun ruleMatchesFile(rule: GitignoreRule, relPath: Path, file: File): Boolean = try {
+        rule.matches(relPath, file.isDirectory)
+    } catch (_: Exception) {
+        false
     }
 
     fun getStatistics(): Pair<Int, List<String>> = Pair(excludedFileCount.get(), discoveredGitignoreFiles.toList())
