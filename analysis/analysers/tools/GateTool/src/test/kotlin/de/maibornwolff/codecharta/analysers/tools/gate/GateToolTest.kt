@@ -226,6 +226,58 @@ class GateToolTest {
         assertThat(asksForArguments).isTrue()
     }
 
+    @Test
+    fun `should mark the end of the analysis before the result`() {
+        // Arrange
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\n")
+
+        // Act
+        run(projectFolder.path)
+
+        // Assert
+        val printed = output.toString()
+        assertThat(printed).contains("Analysis done: 2 files with unifiedparser, dependencyparser in ")
+        assertThat(printed.indexOf("Analysis done")).isLessThan(printed.indexOf("ERROR  rloc > 1"))
+    }
+
+    @Test
+    fun `should keep the output of the analysers off the console when quiet`() {
+        // Arrange
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\n")
+        val analyserOutput = ByteArrayOutputStream()
+
+        // Act
+        val exitCode = withSystemOut(analyserOutput) { run("--quiet", projectFolder.path) }
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(analyserOutput.toString()).doesNotContain("Checking if UnifiedParser is applicable")
+        assertThat(output.toString()).contains("Analysing ${projectFolder.path} with unifiedparser, dependencyparser", "ERROR  rloc > 1")
+    }
+
+    @Test
+    fun `should leave the output of the analysers on the console when not quiet`() {
+        // Arrange
+        configFile.writeText("output: out\n")
+        val analyserOutput = ByteArrayOutputStream()
+
+        // Act
+        withSystemOut(analyserOutput) { run(projectFolder.path) }
+
+        // Assert
+        assertThat(analyserOutput.toString()).contains("Checking if UnifiedParser is applicable")
+    }
+
+    private fun <T> withSystemOut(stream: ByteArrayOutputStream, action: () -> T): T {
+        val originalOut = System.out
+        System.setOut(PrintStream(stream))
+        try {
+            return action()
+        } finally {
+            System.setOut(originalOut)
+        }
+    }
+
     private fun run(vararg arguments: String): Int {
         val tool = GateTool(PrintStream(output), createAnalysers = { testAnalysers() })
         return CommandLine(tool).apply { executionStrategy = CommandLine.RunAll() }.execute(*arguments)

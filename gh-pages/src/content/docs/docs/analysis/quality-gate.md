@@ -15,7 +15,7 @@ ccsh gate             # analyse and check
 ```
 
 Each takes the project folder as an optional argument (default: the current folder) and `--config <file>` to read
-the config from elsewhere. `--init` refuses to overwrite an existing config unless you add `--force`. Called
+the config from elsewhere, and `--quiet` to keep the output of the analysers off the console. `--init` refuses to overwrite an existing config unless you add `--force`. Called
 without arguments in a terminal, `ccsh gate` starts right away when the current folder has a `.codecharta.yml`,
 and asks what to do otherwise.
 
@@ -90,7 +90,14 @@ overrides:                        # other limits for the files the patterns matc
 
 ### The result
 
+The rules are reported in the order the config lists them, below a line that marks the end of the analysis:
+
 ```
+Analysing . with rawtextparser, unifiedparser, dependencyparser, domainlanguageparser ...
+
+────────────────────────────────────────────────────────────────────────
+Analysis done: 418 files with rawtextparser, unifiedparser, dependencyparser, domainlanguageparser in 4.2 s
+
 ERROR  rloc > 400
        Split the file by responsibility into smaller files.
   src/parser/Parser.kt     812
@@ -100,9 +107,19 @@ WARN   max_complexity_per_function > 10
        Extract branches into named helper functions.
   src/parser/Parser.kt  37
 
-2 errors, 1 warning, 418 files checked
+ERROR  1 file cycle
+       Break the cycle by moving the shared part into its own file.
+  cycle 1 of 1, 3 files in src/model/
+    MutableNode.kt  → Node.kt, NodeInserter.kt
+    Node.kt         → MutableNode.kt
+    NodeInserter.kt → MutableNode.kt
+
+3 errors, 1 warning, 418 files checked
 Report: ./.codecharta-gate-output/report.json
 ```
+
+The first line appears with `--quiet` only. Each cycle names the folder its members share and, per member, the
+members of the cycle it depends on.
 
 `report.json` holds the exit code, the counts per severity and every violation with its rule, severity, path, metric,
 value, limit and message; a cycle lists its members instead of a path.

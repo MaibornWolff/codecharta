@@ -42,6 +42,9 @@ class GateTool(
     @CommandLine.Option(names = ["-f", "--force"], description = ["lets --init overwrite an existing config"])
     private var force = false
 
+    @CommandLine.Option(names = ["-q", "--quiet"], description = ["keeps the output of the analysers off the console"])
+    private var quiet = false
+
     private var exitCode = 0
 
     override val name = NAME
@@ -58,7 +61,7 @@ class GateTool(
             output.println(message)
             return GateConfig.TOOL_FAILURE_EXIT_CODE
         }
-        val gate = QualityGate(folder, configFile, output, createAnalysers)
+        val gate = QualityGate(folder, configFile, GateConsole(output, quiet), createAnalysers)
         return when {
             init -> gate.init(force)
             doctor -> gate.doctor()

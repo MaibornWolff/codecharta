@@ -14,44 +14,69 @@ import de.maibornwolff.codecharta.analysers.tools.gate.template.ConfigTemplate
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.File
-import java.io.PrintStream
+import java.util.Locale
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.measureTimedValue
 
 class QualityGate(
     private val projectFolder: File,
     configFile: File?,
-    private val output: PrintStream,
+    private val console: GateConsole,
     private val createAnalysers: () -> List<AnalyserInterface>
 ) {
     private val configFile = configFile ?: File(projectFolder, GateConfig.FILE_NAME)
 
     fun init(force: Boolean): Int {
         if (configFile.exists() && !force) return failure("${configFile.path} already exists. Add --force to overwrite it.")
-        val analysers = applicableAnalysers(GateConfig())
-        val project = analyse(analysers, GateConfig())
-        configFile.writeText(ConfigTemplate(AnalysedProject(project).files, analysers.map { it.name }).render())
-        output.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
+        val analysis = analyse(GateConfig())
+        configFile.writeText(ConfigTemplate(analysis.project.files, analysis.analyserNames).render())
+        console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         return SUCCESS
     }
 
     fun doctor(): Int {
         val config = readConfig() ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
-        output.println("${configFile.path} is valid.")
-        if (!config.hasActiveRules) output.println(NO_ACTIVE_RULES)
+        console.println("${configFile.path} is valid.")
+        if (!config.hasActiveRules) console.println(NO_ACTIVE_RULES)
         return SUCCESS
     }
 
     fun check(): Int {
         val config = readConfig() ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
-        val project = analyse(applicableAnalysers(config), config)
-        val outputFolder = outputFolder(config).apply { mkdirs() }
-        ProjectSerializer.serializeToFileOrStream(project, File(outputFolder, MAP_FILE_NAME).path, output, true)
-
-        val result = evaluate(AnalysedProject(project), config)
-        if (!config.hasActiveRules) output.println(NO_ACTIVE_RULES)
-        ConsoleReport(output, config.configuredMetrics).print(result)
-        val reportFile = File(outputFolder, REPORT_FILE_NAME).apply { writeText(JsonReport.render(result, config)) }
-        output.println("Report: ${reportFile.path}")
+        val analysis = analyse(config)
+        val result = evaluate(analysis.project, config)
+        if (!config.hasActiveRules) console.println(NO_ACTIVE_RULES)
+        ConsoleReport(console.output, config.configuredMetrics).print(result)
+        val reportFile = File(outputFolder(config), REPORT_FILE_NAME).apply { writeText(JsonReport.render(result, config)) }
+        console.println("Report: ${reportFile.path}")
         return result.exitCode(config)
+    }
+
+    private fun analyse(config: GateConfig): Analysis {
+        val analysers = console.whileAnalysing { applicableAnalysers(config) }
+        val analyserNames = analysers.map { it.name }
+        console.announceAnalysis("Analysing ${projectFolder.path} with ${analyserNames.joinToString()} ...")
+        val (project, duration) = measureTimedValue { console.whileAnalysing { analyseAndKeepMap(analysers, config) } }
+        val analysis = Analysis(AnalysedProject(project), analyserNames)
+        printAnalysisDone(analysis, duration)
+        return analysis
+    }
+
+    private fun analyseAndKeepMap(analysers: List<AnalyserInterface>, config: GateConfig): Project {
+        val outputFolder = outputFolder(config)
+        val project = ProjectAnalyser().analyse(projectFolder, analysers, outputFolder)
+        outputFolder.mkdirs()
+        ProjectSerializer.serializeToFileOrStream(project, File(outputFolder, MAP_FILE_NAME).path, console.output, true)
+        return project
+    }
+
+    private fun printAnalysisDone(analysis: Analysis, duration: Duration) {
+        val seconds = String.format(Locale.ROOT, "%.1f", duration.toDouble(DurationUnit.SECONDS))
+        console.println()
+        console.println(SEPARATOR)
+        console.println("Analysis done: ${analysis.project.files.size} files with ${analysis.analyserNames.joinToString()} in $seconds s")
+        console.println()
     }
 
     private fun evaluate(project: AnalysedProject, config: GateConfig): GateResult {
@@ -66,23 +91,22 @@ class QualityGate(
         val result = ConfigReader(knownAnalysers).read(configFile)
         if (result.problems.isEmpty()) return result.config
 
-        output.println("${configFile.path} has ${result.problems.size} problem(s):")
-        result.problems.forEach { output.println("  $it") }
+        console.println("${configFile.path} has ${result.problems.size} problem(s):")
+        result.problems.forEach { console.println("  $it") }
         return null
     }
 
+    private class Analysis(val project: AnalysedProject, val analyserNames: List<String>)
+
     private fun applicableAnalysers(config: GateConfig): List<AnalyserInterface> =
         createAnalysers().filter { config.isAnalyserEnabled(it.name) && it.isApplicable(projectFolder.path) }
-
-    private fun analyse(analysers: List<AnalyserInterface>, config: GateConfig): Project =
-        ProjectAnalyser().analyse(projectFolder, analysers, outputFolder(config))
 
     private fun outputFolder(config: GateConfig): File = File(config.output).let {
         if (it.isAbsolute) it else File(projectFolder, config.output)
     }
 
     private fun failure(message: String): Int {
-        output.println(message)
+        console.println(message)
         return GateConfig.TOOL_FAILURE_EXIT_CODE
     }
 
@@ -90,6 +114,7 @@ class QualityGate(
         private const val SUCCESS = 0
         private const val MAP_FILE_NAME = "map.cc.json"
         private const val REPORT_FILE_NAME = "report.json"
+        private val SEPARATOR = "─".repeat(72)
         private const val NO_ACTIVE_RULES = "No rule is active yet, so nothing is checked. Uncomment the rules you want in the config."
     }
 }
