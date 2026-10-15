@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.tools.gate.analysis
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedProject
@@ -49,6 +51,20 @@ class ProjectAnalyserTest {
 
         // Assert
         assertThat(AnalysedProject(project).files.map { it.path }).containsExactly("src/App.kt")
+    }
+
+    @Test
+    fun `should keep a nested folder that only shares its name with the output folder`() {
+        // Arrange
+        writeSource("src/checks/Kept.kt", "package checks\n\nfun kept() {}\n")
+        writeSource("checks/Old.kt", "fun old() {}\n")
+        val analysers = listOf(RawTextParser(), UnifiedParser(), DependencyParser(), DomainLanguageParser()).map { ConfiguredAnalyser(it) }
+
+        // Act
+        val project = ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "checks"))
+
+        // Assert
+        assertThat(AnalysedProject(project).files.map { it.path }).containsExactly("src/checks/Kept.kt")
     }
 
     @Test

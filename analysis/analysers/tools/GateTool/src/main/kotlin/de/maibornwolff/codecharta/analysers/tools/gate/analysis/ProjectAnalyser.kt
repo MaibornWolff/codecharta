@@ -68,7 +68,7 @@ class ProjectAnalyser {
     private fun excludePatternFor(projectFolder: File, outputFolder: File): String? {
         val relativeOutput = outputFolder.absoluteFile.normalize().relativeToOrNull(projectFolder.absoluteFile.normalize()) ?: return null
         if (relativeOutput.path.isEmpty() || relativeOutput.startsWith("..")) return null
-        return "/" + Regex.escape(relativeOutput.invariantSeparatorsPath) + "(/|$)"
+        return "^/" + Regex.escape(relativeOutput.invariantSeparatorsPath) + "(/|$)"
     }
 
     companion object {
