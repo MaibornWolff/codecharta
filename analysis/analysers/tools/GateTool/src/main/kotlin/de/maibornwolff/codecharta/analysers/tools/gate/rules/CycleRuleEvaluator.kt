@@ -18,8 +18,17 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
             .run(toNodeInformations(dependencies))
             .map { component -> component.nodes.map { it.id }.toSet() }
             .filter { members -> members.size > 1 && members !in rules.allowed }
-            .map { members -> Violation(kind, rule.severity, rule.message, members = members.sorted()) }
+            .map { members -> toViolation(members, dependencies, kind, rule) }
             .sortedBy { it.members.first() }
+
+    private fun toViolation(members: Set<String>, dependencies: List<FileDependency>, kind: ViolationKind, rule: CycleRule): Violation {
+        val dependenciesInCycle = dependencies
+            .filter { it.from in members && it.to in members }
+            .groupBy({ it.from }, { it.to })
+            .mapValues { (_, targets) -> targets.distinct().sorted() }
+            .toSortedMap()
+        return Violation(kind, rule.severity, rule.message, members = members.sorted(), dependencies = dependenciesInCycle)
+    }
 
     private fun toNodeInformations(dependencies: List<FileDependency>): Set<NodeInformation> {
         val targetsBySource = dependencies.groupBy({ it.from }, { it.to })

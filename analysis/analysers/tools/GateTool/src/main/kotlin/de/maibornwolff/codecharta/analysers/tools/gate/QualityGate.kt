@@ -48,7 +48,7 @@ class QualityGate(
 
         val result = evaluate(AnalysedProject(project), config)
         if (!config.hasActiveRules) output.println(NO_ACTIVE_RULES)
-        ConsoleReport(output).print(result)
+        ConsoleReport(output, config.configuredMetrics).print(result)
         val reportFile = File(outputFolder, REPORT_FILE_NAME).apply { writeText(JsonReport.render(result, config)) }
         output.println("Report: ${reportFile.path}")
         return result.exitCode(config)

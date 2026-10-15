@@ -102,7 +102,15 @@ class GateToolTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(1)
-        assertThat(output.toString()).contains("ERROR  rloc > 1", "Keep files tiny.", "src/main/kotlin/app/App.kt", "WARN   file cycle")
+        assertThat(
+            output.toString()
+        ).contains(
+            "ERROR  rloc > 1",
+            "Keep files tiny.",
+            "src/main/kotlin/app/App.kt",
+            "WARN   1 file cycle",
+            "app/App.kt   → util/Util.kt"
+        )
         val outputFolder = File(projectFolder, ".codecharta-gate-output")
         assertThat(File(outputFolder, "report.json").readText()).contains("\"exitCode\": 1")
         assertThat(File(outputFolder, "map.cc.json.gz")).exists()

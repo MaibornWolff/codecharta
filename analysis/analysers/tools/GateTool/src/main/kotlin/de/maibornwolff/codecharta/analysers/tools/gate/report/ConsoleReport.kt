@@ -7,49 +7,55 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.ViolationKind
 import java.io.PrintStream
 
-class ConsoleReport(private val output: PrintStream) {
+class ConsoleReport(private val output: PrintStream, private val metricOrder: List<String>) {
     fun print(result: GateResult) {
         if (result.violations.isEmpty()) {
             output.println("No rule broken, ${result.filesChecked} files checked")
             return
         }
-        groupsInReadingOrder(result.violations).forEach { group ->
+        groupsInConfigOrder(result.violations).forEach { group ->
             printGroup(group)
             output.println()
         }
         output.println(summary(result))
     }
 
-    private fun groupsInReadingOrder(violations: List<Violation>): List<List<Violation>> = violations
+    private fun groupsInConfigOrder(violations: List<Violation>): List<List<Violation>> = violations
         .groupBy { listOf(it.severity, it.kind, it.metric, it.threshold, it.message) }
         .values
         .sortedWith(
-            compareByDescending<List<Violation>> { it.first().severity }
+            compareBy<List<Violation>> { sectionOf(it.first()) }
                 .thenBy { it.first().kind }
-                .thenBy { it.first().metric }
+                .thenByDescending { it.first().severity }
                 .thenByDescending { it.first().threshold }
         )
 
+    private fun sectionOf(violation: Violation): Int = when (violation.kind) {
+        ViolationKind.METRIC, ViolationKind.UNKNOWN_METRIC -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: metricOrder.size
+        ViolationKind.FILE_CYCLE -> metricOrder.size + 1
+        ViolationKind.PACKAGE_CYCLE -> metricOrder.size + 2
+    }
+
     private fun printGroup(group: List<Violation>) {
         val first = group.first()
-        output.println(SEVERITY_LABELS.getValue(first.severity).padEnd(LABEL_WIDTH) + title(first))
+        output.println(SEVERITY_LABELS.getValue(first.severity).padEnd(LABEL_WIDTH) + title(group))
         first.message?.let { output.println(" ".repeat(LABEL_WIDTH) + it) }
         when (first.kind) {
             ViolationKind.METRIC -> printMetricValues(group)
-            ViolationKind.FILE_CYCLE, ViolationKind.PACKAGE_CYCLE -> group.forEach {
-                output.println(
-                    INDENT + it.members.joinToString(", ")
-                )
-            }
+            ViolationKind.FILE_CYCLE -> CycleText("file").lines(group).forEach(output::println)
+            ViolationKind.PACKAGE_CYCLE -> CycleText("package").lines(group).forEach(output::println)
             ViolationKind.UNKNOWN_METRIC -> Unit
         }
     }
 
-    private fun title(violation: Violation): String = when (violation.kind) {
-        ViolationKind.METRIC -> "${violation.metric} > ${violation.threshold!!.toDisplayText()}"
-        ViolationKind.FILE_CYCLE -> "file cycle"
-        ViolationKind.PACKAGE_CYCLE -> "package cycle"
-        ViolationKind.UNKNOWN_METRIC -> "unknown metric: ${violation.metric}"
+    private fun title(group: List<Violation>): String {
+        val first = group.first()
+        return when (first.kind) {
+            ViolationKind.METRIC -> "${first.metric} > ${first.threshold!!.toDisplayText()}"
+            ViolationKind.FILE_CYCLE -> counted(group.size, "file cycle")
+            ViolationKind.PACKAGE_CYCLE -> counted(group.size, "package cycle")
+            ViolationKind.UNKNOWN_METRIC -> "unknown metric: ${first.metric}"
+        }
     }
 
     private fun printMetricValues(group: List<Violation>) {

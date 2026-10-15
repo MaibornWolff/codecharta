@@ -18,7 +18,8 @@ data class Violation(
     val metric: String? = null,
     val value: Double? = null,
     val threshold: Double? = null,
-    val members: List<String> = emptyList()
+    val members: List<String> = emptyList(),
+    val dependencies: Map<String, List<String>> = emptyMap()
 )
 
 data class GateResult(val violations: List<Violation>, val filesChecked: Int) {
