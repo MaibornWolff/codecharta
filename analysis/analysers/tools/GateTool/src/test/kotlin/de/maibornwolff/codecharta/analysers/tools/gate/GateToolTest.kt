@@ -278,6 +278,20 @@ class GateToolTest {
     }
 
     @Test
+    fun `should tell where the map of the analysis was written, right below the end of the analysis`() {
+        // Arrange
+        configFile.writeText("output: out\n")
+        val mapFile = File(File(projectFolder, "out"), "map.cc.json.gz")
+
+        // Act
+        run(projectFolder.path)
+
+        // Assert
+        assertThat(output.toString()).containsPattern("Analysis done: .* s\nMap: \\Q${mapFile.path}\\E\n")
+        assertThat(mapFile).exists()
+    }
+
+    @Test
     fun `should keep the output of the analysers off the console when quiet`() {
         // Arrange
         configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\n")
