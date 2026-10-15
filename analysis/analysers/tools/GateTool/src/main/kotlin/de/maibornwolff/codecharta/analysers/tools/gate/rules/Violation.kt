@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 enum class ViolationKind {
     METRIC,
     FILE_CYCLE,
-    PACKAGE_CYCLE,
+    UPWARD_DEPENDENCY,
     CYCLES_NOT_CHECKED,
     UNKNOWN_METRIC
 }
@@ -16,6 +16,7 @@ data class Violation(
     val severity: Severity,
     val instruction: String?,
     val path: String? = null,
+    val target: String? = null,
     val metric: String? = null,
     val value: Double? = null,
     val threshold: Double? = null,

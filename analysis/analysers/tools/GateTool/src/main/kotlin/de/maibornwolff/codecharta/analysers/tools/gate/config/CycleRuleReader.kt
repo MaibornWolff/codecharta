@@ -7,7 +7,7 @@ class CycleRuleReader(private val nodes: YamlNodes) {
         val entries = nodes.entries(node, path, CYCLE_KEYS) ?: return CycleRules()
         return CycleRules(
             file = entries[FILE]?.let { readCycleRule(it, "$path.$FILE") },
-            packages = entries[PACKAGE]?.let { readCycleRule(it, "$path.$PACKAGE") }
+            upward = entries[UPWARD]?.let { readCycleRule(it, "$path.$UPWARD") }
         )
     }
 
@@ -26,11 +26,11 @@ class CycleRuleReader(private val nodes: YamlNodes) {
 
     companion object {
         private const val FILE = "file"
-        private const val PACKAGE = "package"
+        private const val UPWARD = "upward"
         private const val IGNORE = "ignore"
         private const val SEVERITY = "severity"
         private const val INSTRUCTION = "instruction"
-        private val CYCLE_KEYS = listOf(FILE, PACKAGE)
+        private val CYCLE_KEYS = listOf(FILE, UPWARD)
         private val RULE_KEYS = listOf(SEVERITY, INSTRUCTION, IGNORE)
     }
 }

@@ -33,7 +33,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     private fun sectionOf(violation: Violation): Int = when (violation.kind) {
         ViolationKind.METRIC, ViolationKind.UNKNOWN_METRIC -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: metricOrder.size
         ViolationKind.FILE_CYCLE -> metricOrder.size + 1
-        ViolationKind.PACKAGE_CYCLE -> metricOrder.size + 2
+        ViolationKind.UPWARD_DEPENDENCY -> metricOrder.size + 2
         ViolationKind.CYCLES_NOT_CHECKED -> metricOrder.size + 3
     }
 
@@ -43,8 +43,8 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         first.instruction?.let { output.println(" ".repeat(LABEL_WIDTH) + INSTRUCTION_LABEL + it) }
         when (first.kind) {
             ViolationKind.METRIC -> printMetricValues(group)
-            ViolationKind.FILE_CYCLE -> CycleText("file").lines(group).forEach(output::println)
-            ViolationKind.PACKAGE_CYCLE -> CycleText("package").lines(group).forEach(output::println)
+            ViolationKind.FILE_CYCLE -> CycleText.lines(group).forEach(output::println)
+            ViolationKind.UPWARD_DEPENDENCY -> UpwardText.lines(group).forEach(output::println)
             ViolationKind.CYCLES_NOT_CHECKED -> Unit
             ViolationKind.UNKNOWN_METRIC -> Unit
         }
@@ -55,7 +55,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
         return when (first.kind) {
             ViolationKind.METRIC -> "${first.metric} > ${first.threshold!!.toDisplayText()}"
             ViolationKind.FILE_CYCLE -> counted(group.size, "file cycle")
-            ViolationKind.PACKAGE_CYCLE -> counted(group.size, "package cycle")
+            ViolationKind.UPWARD_DEPENDENCY -> counted(group.size, "upward dependency", "upward dependencies")
             ViolationKind.UNKNOWN_METRIC -> "unknown metric: ${first.metric}"
             ViolationKind.CYCLES_NOT_CHECKED -> "cycles not checked"
         }

@@ -3,7 +3,7 @@
 > **Experimental:** the commands, the config format and the report of the gate may still change between releases.
 
 `ccsh gate` analyses a project with the applicable parsers, merges their maps and checks the result against the
-metric and dependency-cycle rules in the project's `.codecharta.yml`. It prints every broken rule, writes the merged
+metric and dependency rules in the project's `.codecharta.yml`. It prints every broken rule, writes the merged
 map and a JSON report into its output folder and exits with the code the config maps the worst finding to.
 
 Full documentation: https://maibornwolff.github.io/codecharta/docs/analysis/quality-gate
