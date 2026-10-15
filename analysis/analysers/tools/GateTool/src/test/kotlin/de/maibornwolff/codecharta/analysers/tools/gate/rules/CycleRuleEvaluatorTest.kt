@@ -64,10 +64,48 @@ class CycleRuleEvaluatorTest {
     }
 
     @Test
-    fun `should skip a cycle the config allows`() {
+    fun `should not report a cycle that only exists through an ignored file`() {
         // Arrange
-        val dependencies = listOf(dependency("a/Foo.kt", "b/Bar.kt"), dependency("b/Bar.kt", "a/Foo.kt"))
-        val rules = CycleRules(file = fileRule, packages = packageRule, allowed = listOf(setOf("b/Bar.kt", "a/Foo.kt"), setOf("a", "b")))
+        val dependencies =
+            listOf(
+                dependency("a/Foo.kt", "b/Bar.kt"),
+                dependency("b/Bar.kt", "a/Foo.kt"),
+                dependency("c/One.kt", "c/Two.kt"),
+                dependency("c/Two.kt", "c/One.kt")
+            )
+        val rules = CycleRules(file = fileRule.copy(ignore = listOf("b/Bar.kt")))
+
+        // Act
+        val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
+
+        // Assert
+        assertThat(violations.map { it.members }).containsExactly(listOf("c/One.kt", "c/Two.kt"))
+    }
+
+    @Test
+    fun `should still report the part of a cycle that does not run through the ignored file`() {
+        // Arrange
+        val dependencies =
+            listOf(
+                dependency("Foo.kt", "Bar.kt"),
+                dependency("Bar.kt", "Baz.kt"),
+                dependency("Baz.kt", "Foo.kt"),
+                dependency("Foo.kt", "Baz.kt")
+            )
+        val rules = CycleRules(file = fileRule.copy(ignore = listOf("Bar.kt")))
+
+        // Act
+        val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
+
+        // Assert
+        assertThat(violations.single().members).containsExactly("Baz.kt", "Foo.kt")
+    }
+
+    @Test
+    fun `should leave out every file a pattern matches`() {
+        // Arrange
+        val dependencies = listOf(dependency("generated/A.kt", "generated/B.kt"), dependency("generated/B.kt", "generated/A.kt"))
+        val rules = CycleRules(file = fileRule.copy(ignore = listOf("generated/")))
 
         // Act
         val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
@@ -77,16 +115,16 @@ class CycleRuleEvaluatorTest {
     }
 
     @Test
-    fun `should still report an allowed cycle once it grows`() {
+    fun `should leave out an ignored package when looking for package cycles`() {
         // Arrange
-        val dependencies = listOf(dependency("Foo.kt", "Bar.kt"), dependency("Bar.kt", "Baz.kt"), dependency("Baz.kt", "Foo.kt"))
-        val rules = CycleRules(file = fileRule, allowed = listOf(setOf("Foo.kt", "Bar.kt")))
+        val dependencies = listOf(dependency("src/a/One.kt", "src/legacy/Two.kt"), dependency("src/legacy/Three.kt", "src/a/Four.kt"))
+        val rules = CycleRules(packages = packageRule.copy(ignore = listOf("src/legacy")))
 
         // Act
         val violations = CycleRuleEvaluator(rules).evaluate(dependencies)
 
         // Assert
-        assertThat(violations.single().members).containsExactly("Bar.kt", "Baz.kt", "Foo.kt")
+        assertThat(violations).isEmpty()
     }
 
     @Test

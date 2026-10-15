@@ -51,9 +51,12 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
 
     private fun cycles() = commented(
         listOf("cycles:") +
-            listOf("file", "package").flatMap { listOf("  $it:", "    severity: ${Severity.ERROR.key}", "    instruction:") } +
-            listOf("  allow:", "    - - path/to/First.kt", "      - path/to/Second.kt")
+            cycleLevelLines("file", "path/to/Generated.kt") +
+            cycleLevelLines("package", "path/to/legacy")
     )
+
+    private fun cycleLevelLines(level: String, ignoredExample: String) =
+        listOf("  $level:", "    severity: ${Severity.ERROR.key}", "    instruction:", "    ignore:", "      - $ignoredExample")
 
     private fun overrides() = commented(
         listOf("overrides:", "  - paths:", "      - src/legacy/**", "    metrics:", "      ${exampleMetric()}: off")
