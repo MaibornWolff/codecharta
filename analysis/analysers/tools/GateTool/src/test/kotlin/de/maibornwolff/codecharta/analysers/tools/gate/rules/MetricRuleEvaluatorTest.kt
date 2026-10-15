@@ -35,7 +35,7 @@ class MetricRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            MetricViolation(Severity.ERROR, "Split it.", "src/Big.kt", "rloc", 812.0, 400.0)
+            MetricViolation(Severity.ERROR, "Split it.", "src/Big.kt", "rloc", 812.0, Limit(Bound.MAX, 400.0))
         )
     }
 
@@ -49,7 +49,7 @@ class MetricRuleEvaluatorTest {
 
         // Assert
         assertThat(violations.single().severity).isEqualTo(Severity.WARNING)
-        assertThat((violations.single() as MetricViolation).threshold).isEqualTo(200.0)
+        assertThat((violations.single() as MetricViolation).limit).isEqualTo(Limit(Bound.MAX, 200.0))
     }
 
     @Test
@@ -130,6 +130,21 @@ class MetricRuleEvaluatorTest {
                     "Check the name, or switch on the analyser that measures it.",
                 "rlco"
             )
+        )
+    }
+
+    @Test
+    fun `should report a file below a minimum`() {
+        // Arrange
+        val coverageRule = MetricRule(mapOf(Severity.ERROR to LevelRule(max = null, instruction = "Add tests.", min = 80.0)))
+        val files = listOf(AnalysedFile("src/Thin.kt", mapOf("coverage" to 70.0)), AnalysedFile("src/Fine.kt", mapOf("coverage" to 80.0)))
+
+        // Act
+        val violations = MetricRuleEvaluator(GateConfig(metrics = mapOf("coverage" to coverageRule))).evaluate(files)
+
+        // Assert
+        assertThat(violations).containsExactly(
+            MetricViolation(Severity.ERROR, "Add tests.", "src/Thin.kt", "coverage", 70.0, Limit(Bound.MIN, 80.0))
         )
     }
 }

@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
+import de.maibornwolff.codecharta.analysers.tools.gate.config.LevelRule
+import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.util.EditDistance
 
 class MetricRuleEvaluator(private val config: GateConfig) {
@@ -10,15 +12,20 @@ class MetricRuleEvaluator(private val config: GateConfig) {
 
     private fun evaluateFile(file: AnalysedFile): List<Violation> = resolver.rulesFor(file.path).mapNotNull { (metric, levels) ->
         val value = file.metrics[metric] ?: return@mapNotNull null
-        worstExceededLevel(value, levels)?.let { (severity, level) ->
-            MetricViolation(severity, level.instruction, file.path, metric, value, level.max)
+        worstBreach(value, levels)?.let { (severity, level, limit) ->
+            MetricViolation(severity, level.instruction, file.path, metric, value, limit)
         }
     }
 
-    private fun worstExceededLevel(value: Double, levels: LevelRules) = levels.entries
+    private fun worstBreach(value: Double, levels: LevelRules): Triple<Severity, LevelRule, Limit>? = levels.entries
         .sortedByDescending { it.key }
-        .firstOrNull { value > it.value.max }
-        ?.toPair()
+        .firstNotNullOfOrNull { (severity, level) -> breachedLimit(value, level)?.let { Triple(severity, level, it) } }
+
+    private fun breachedLimit(value: Double, level: LevelRule): Limit? = when {
+        level.max != null && value > level.max -> Limit(Bound.MAX, level.max)
+        level.min != null && value < level.min -> Limit(Bound.MIN, level.min)
+        else -> null
+    }
 
     private fun unknownMetrics(files: List<AnalysedFile>): List<Violation> {
         val measuredMetrics = files.flatMap { it.metrics.keys }.toSet()

@@ -11,9 +11,10 @@ object ConfigKeys {
     const val OVERRIDES = "overrides"
     val TOP_LEVEL = listOf(INPUT, OUTPUT, PARALLEL, ANALYSERS, EXIT_CODES, METRICS, DEPENDENCIES, OVERRIDES)
 
+    const val MIN = "min"
     const val MAX = "max"
     const val INSTRUCTION = "instruction"
-    val LEVEL = listOf(MAX, INSTRUCTION)
+    val LEVEL = listOf(MIN, MAX, INSTRUCTION)
 
     const val PATHS = "paths"
     val OVERRIDE = listOf(PATHS, METRICS)

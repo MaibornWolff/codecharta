@@ -30,8 +30,10 @@ class RuleResolver(private val config: GateConfig) {
     private fun overriddenLevels(levels: LevelRules, change: MetricOverride.Levels): LevelRules {
         val changedLevels = change.levels.mapNotNull { (severity, levelOverride) ->
             val current = levels[severity]
-            val max = levelOverride.max ?: current?.max ?: return@mapNotNull null
-            severity to LevelRule(max, levelOverride.instruction ?: current?.instruction)
+            val max = levelOverride.max ?: current?.max
+            val min = levelOverride.min ?: current?.min
+            if (max == null && min == null) return@mapNotNull null
+            severity to LevelRule(max, levelOverride.instruction ?: current?.instruction, min)
         }
         return levels + changedLevels
     }

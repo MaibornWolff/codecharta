@@ -30,26 +30,45 @@ class MetricRuleReader(private val nodes: YamlNodes) {
     }
 
     private fun toLevelRule(levelNode: LevelNode, path: String): LevelRule? {
-        val max = levelNode.level.max
-        if (max != null) return LevelRule(max, levelNode.level.instruction)
-        val maxNode = levelNode.maxNode
-        if (maxNode == null ||
-            nodes.isEmpty(maxNode)
+        val level = levelNode.level
+        if (level.max != null || level.min != null) return LevelRule(level.max, level.instruction, level.min)
+        val givenLimits = listOfNotNull(levelNode.minNode, levelNode.maxNode)
+        if (givenLimits.none {
+                !nodes.isEmpty(
+                    it
+                )
+            }
         ) {
-            nodes.report(maxNode ?: levelNode.keyNode, "${childPath(path, ConfigKeys.MAX)} needs a number")
+            nodes.report(givenLimits.firstOrNull() ?: levelNode.keyNode, "$path needs a max or a min")
         }
         return null
     }
 
     private fun checkLevelOrder(levels: Map<Severity, LevelRule>, levelNodes: Map<Severity, LevelNode>, path: String) {
-        val warningMax = levels[Severity.WARNING]?.max ?: return
-        val errorMax = levels[Severity.ERROR]?.max ?: return
-        if (warningMax <= errorMax) return
-        val warningPath = childPath(childPath(path, Severity.WARNING.key), ConfigKeys.MAX)
-        val errorPath = childPath(childPath(path, Severity.ERROR.key), ConfigKeys.MAX)
+        val warning = levels[Severity.WARNING] ?: return
+        val error = levels[Severity.ERROR] ?: return
+        val warningNode = levelNodes.getValue(Severity.WARNING)
+        if (warning.max != null && error.max != null && warning.max > error.max) {
+            reportOrder(warningNode.maxNode!!, path, ConfigKeys.MAX, "above", warning.max to error.max)
+        }
+        if (warning.min != null && error.min != null && warning.min < error.min) {
+            reportOrder(warningNode.minNode!!, path, ConfigKeys.MIN, "below", warning.min to error.min)
+        }
+    }
+
+    private fun reportOrder(
+        node: Node,
+        path: String,
+        limitKey: String,
+        direction: String,
+        limits: Pair<Double, Double>
+    ) {
+        val warningPath = childPath(childPath(path, Severity.WARNING.key), limitKey)
+        val errorPath = childPath(childPath(path, Severity.ERROR.key), limitKey)
+        val (warningLimit, errorLimit) = limits
         nodes.report(
-            levelNodes.getValue(Severity.WARNING).maxNode!!,
-            "$warningPath (${warningMax.toDisplayText()}) must not be above $errorPath (${errorMax.toDisplayText()})"
+            node,
+            "$warningPath (${warningLimit.toDisplayText()}) must not be $direction $errorPath (${errorLimit.toDisplayText()})"
         )
     }
 
@@ -89,11 +108,13 @@ class MetricRuleReader(private val nodes: YamlNodes) {
 
     private fun readLevel(entry: YamlEntry, path: String): LevelNode? {
         val entries = nodes.entries(entry.value, path, ConfigKeys.LEVEL) ?: return null
+        val minNode = entries[ConfigKeys.MIN]?.value
         val maxNode = entries[ConfigKeys.MAX]?.value
+        val min = minNode?.let { nodes.number(it, childPath(path, ConfigKeys.MIN)) }
         val max = maxNode?.let { nodes.number(it, childPath(path, ConfigKeys.MAX)) }
         val instruction = entries[ConfigKeys.INSTRUCTION]?.let { nodes.text(it.value, childPath(path, ConfigKeys.INSTRUCTION)) }
-        return LevelNode(entry.keyNode, maxNode, LevelOverride(max, instruction))
+        return LevelNode(entry.keyNode, minNode, maxNode, LevelOverride(max, instruction, min))
     }
 
-    private class LevelNode(val keyNode: Node, val maxNode: Node?, val level: LevelOverride)
+    private class LevelNode(val keyNode: Node, val minNode: Node?, val maxNode: Node?, val level: LevelOverride)
 }

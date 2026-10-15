@@ -8,13 +8,20 @@ sealed interface Violation {
     val instruction: String?
 }
 
+enum class Bound(val symbol: String, val key: String) {
+    MAX(">", "max"),
+    MIN("<", "min")
+}
+
+data class Limit(val bound: Bound, val value: Double)
+
 data class MetricViolation(
     override val severity: Severity,
     override val instruction: String?,
     val path: String,
     val metric: String,
     val value: Double,
-    val threshold: Double
+    val limit: Limit
 ) : Violation
 
 data class UnknownMetric(override val severity: Severity, override val instruction: String?, val metric: String) : Violation
