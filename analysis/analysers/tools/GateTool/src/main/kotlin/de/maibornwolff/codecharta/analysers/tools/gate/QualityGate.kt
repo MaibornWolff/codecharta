@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.tools.gate.analysis.ConfiguredAnalyser
+import de.maibornwolff.codecharta.analysers.tools.gate.analysis.PicocliAnalyserCatalog
 import de.maibornwolff.codecharta.analysers.tools.gate.analysis.ProjectAnalyser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigReader
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
@@ -27,11 +29,12 @@ class QualityGate(
 ) {
     private val configFile = configFile ?: File(projectFolder, GateConfig.FILE_NAME)
     private val configFolder = this.configFile.parentFile ?: File(".")
+    private val catalog = PicocliAnalyserCatalog(createAnalysers)
 
     fun init(force: Boolean): Int {
         if (configFile.exists() && !force) return failure("${configFile.path} already exists. Add --force to overwrite it.")
         val analysis = analyse(GateConfig())
-        configFile.writeText(ConfigTemplate(analysis.project.files, analysis.analyserNames).render())
+        configFile.writeText(ConfigTemplate(analysis.project.files, analysis.analyserNames, catalog).render())
         console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         return SUCCESS
     }
@@ -56,7 +59,7 @@ class QualityGate(
 
     private fun analyse(config: GateConfig): Analysis {
         val analysers = console.whileAnalysing { applicableAnalysers(config) }
-        val analyserNames = analysers.map { it.name }
+        val analyserNames = analysers.map { it.analyser.name }
         console.announceAnalysis("Analysing ${analysisFolder(config).path} with ${analyserNames.joinToString()} ...")
         val (project, duration) = measureTimedValue { console.whileAnalysing { analyseAndKeepMap(analysers, config) } }
         val analysis = Analysis(AnalysedProject(project), analyserNames)
@@ -64,7 +67,7 @@ class QualityGate(
         return analysis
     }
 
-    private fun analyseAndKeepMap(analysers: List<AnalyserInterface>, config: GateConfig): Project {
+    private fun analyseAndKeepMap(analysers: List<ConfiguredAnalyser>, config: GateConfig): Project {
         val outputFolder = outputFolder(config)
         val project = ProjectAnalyser().analyse(analysisFolder(config), analysers, outputFolder)
         outputFolder.mkdirs()
@@ -88,8 +91,7 @@ class QualityGate(
 
     private fun readConfig(): GateConfig? {
         if (!configFile.exists()) return null.also { failure("No ${configFile.path} found. Run `ccsh gate --init` to create one.") }
-        val knownAnalysers = createAnalysers().map { it.name }.toSet()
-        val result = ConfigReader(knownAnalysers, configFolder).read(configFile)
+        val result = ConfigReader(catalog, configFolder).read(configFile)
         if (result.problems.isEmpty()) return result.config
 
         console.println("${configFile.path} has ${result.problems.size} problem(s):")
@@ -99,8 +101,9 @@ class QualityGate(
 
     private class Analysis(val project: AnalysedProject, val analyserNames: List<String>)
 
-    private fun applicableAnalysers(config: GateConfig): List<AnalyserInterface> =
-        createAnalysers().filter { config.isAnalyserEnabled(it.name) && it.isApplicable(analysisFolder(config).path) }
+    private fun applicableAnalysers(config: GateConfig): List<ConfiguredAnalyser> = createAnalysers()
+        .filter { config.isAnalyserEnabled(it.name) && it.isApplicable(analysisFolder(config).path) }
+        .map { ConfiguredAnalyser(it, config.argumentsFor(it.name)) }
 
     private fun analysisFolder(config: GateConfig): File = config.input?.let { GateConfig.resolve(configFolder, it) } ?: projectFolder
 

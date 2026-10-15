@@ -85,6 +85,8 @@ class YamlNodes {
 
     fun isScalar(node: Node): Boolean = node is ScalarNode && !isEmpty(node)
 
+    fun isList(node: Node): Boolean = node is SequenceNode
+
     private fun unknownKeyMessage(key: String, path: String, allowedKeys: Collection<String>): String {
         val location = if (path.isEmpty()) "" else " in $path"
         return "unknown key '$key'$location, expected one of: ${allowedKeys.joinToString()}"
@@ -96,5 +98,7 @@ class YamlNodes {
         fun lineOf(node: Node): Int = node.startMark.line + 1
 
         fun isOff(value: String): Boolean = SWITCH_VALUES[value.lowercase()] == false
+
+        fun isOn(value: String): Boolean = SWITCH_VALUES[value.lowercase()] == true
     }
 }

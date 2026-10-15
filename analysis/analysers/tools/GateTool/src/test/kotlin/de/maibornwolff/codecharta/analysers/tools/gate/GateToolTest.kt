@@ -283,6 +283,32 @@ class GateToolTest {
         assertThat(File(projectFolder, ".codecharta-gate-output/report.json")).exists()
     }
 
+    @Test
+    fun `should pass the options the config gives an analyser`() {
+        // Arrange
+        configFile.writeText("analysers:\n  unifiedparser:\n    exclude:\n      - util\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
+
+        // Act
+        val exitCode = run(projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("src/main/kotlin/app/App.kt").doesNotContain("src/main/kotlin/util/Util.kt  ")
+    }
+
+    @Test
+    fun `should report an option an analyser does not have in doctor`() {
+        // Arrange
+        configFile.writeText("analysers:\n  unifiedparser:\n    output-file: elsewhere.cc.json\n")
+
+        // Act
+        val exitCode = run("--doctor", projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("line 3: unifiedparser has no option 'output-file'")
+    }
+
     private fun <T> withSystemOut(stream: ByteArrayOutputStream, action: () -> T): T {
         val originalOut = System.out
         System.setOut(PrintStream(stream))

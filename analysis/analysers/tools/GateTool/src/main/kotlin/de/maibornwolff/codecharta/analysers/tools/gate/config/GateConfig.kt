@@ -29,10 +29,12 @@ data class CycleRule(val severity: Severity, val instruction: String? = null)
 
 data class CycleRules(val file: CycleRule? = null, val packages: CycleRule? = null, val allowed: List<Set<String>> = emptyList())
 
+data class AnalyserSetting(val enabled: Boolean, val arguments: List<String> = emptyList())
+
 data class GateConfig(
     val input: String? = null,
     val output: String = DEFAULT_OUTPUT,
-    val analysers: Map<String, Boolean> = emptyMap(),
+    val analysers: Map<String, AnalyserSetting> = emptyMap(),
     val exitCodes: Map<Severity, Int> = DEFAULT_EXIT_CODES,
     val metrics: Map<String, MetricRule> = emptyMap(),
     val cycles: CycleRules = CycleRules(),
@@ -47,7 +49,9 @@ data class GateConfig(
             return (metrics.keys + overriddenMetrics).distinct()
         }
 
-    fun isAnalyserEnabled(analyserName: String): Boolean = analysers[analyserName] ?: true
+    fun isAnalyserEnabled(analyserName: String): Boolean = analysers[analyserName]?.enabled ?: true
+
+    fun argumentsFor(analyserName: String): List<String> = analysers[analyserName]?.arguments ?: emptyList()
 
     fun exitCodeFor(severity: Severity): Int = exitCodes[severity] ?: DEFAULT_EXIT_CODES.getValue(severity)
 

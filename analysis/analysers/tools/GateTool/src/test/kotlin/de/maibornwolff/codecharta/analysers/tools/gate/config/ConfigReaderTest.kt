@@ -6,7 +6,14 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class ConfigReaderTest {
-    private val reader = ConfigReader(setOf("rawtextparser", "unifiedparser"))
+    private val catalog =
+        FakeAnalyserCatalog(
+            mapOf(
+                "rawtextparser" to listOf("tab-width", "exclude"),
+                "unifiedparser" to listOf("exclude", "include-build-folders", "file-extensions")
+            )
+        )
+    private val reader = ConfigReader(catalog)
 
     @Test
     fun `should read an empty file as the default config`() {
@@ -89,7 +96,7 @@ class ConfigReaderTest {
         assertThat(result.config).isEqualTo(
             GateConfig(
                 output = "build/check",
-                analysers = mapOf("rawtextparser" to false, "unifiedparser" to true),
+                analysers = mapOf("rawtextparser" to AnalyserSetting(false), "unifiedparser" to AnalyserSetting(true)),
                 exitCodes = mapOf(Severity.ERROR to 3, Severity.WARNING to 1),
                 metrics =
                     mapOf(
@@ -333,7 +340,7 @@ class ConfigReaderTest {
         File(configFolder, "src").mkdirs()
 
         // Act
-        val result = ConfigReader(setOf(), configFolder).read("input: src\n")
+        val result = ConfigReader(FakeAnalyserCatalog(emptyMap()), configFolder).read("input: src\n")
 
         // Assert
         assertThat(result.problems).isEmpty()
@@ -348,9 +355,83 @@ class ConfigReaderTest {
         val text = "input: missing\n"
 
         // Act
-        val result = ConfigReader(setOf(), configFolder).read(text)
+        val result = ConfigReader(FakeAnalyserCatalog(emptyMap()), configFolder).read(text)
 
         // Assert
         assertThat(result.problems).containsExactly(ConfigProblem(1, "input folder 'missing' does not exist"))
+    }
+
+    @Test
+    fun `should turn the options of an analyser into its command line arguments`() {
+        // Arrange
+        val text =
+            """
+            analysers:
+              unifiedparser:
+                exclude:
+                  - generated/
+                  - build/
+                include-build-folders: true
+                file-extensions: kt
+              rawtextparser:
+                exclude: []
+            """.trimIndent()
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.analysers).isEqualTo(
+            mapOf(
+                "unifiedparser" to
+                    AnalyserSetting(
+                        true,
+                        listOf("--exclude=generated/", "--exclude=build/", "--include-build-folders", "--file-extensions=kt")
+                    ),
+                "rawtextparser" to AnalyserSetting(true)
+            )
+        )
+    }
+
+    @Test
+    fun `should leave out a flag that is switched off`() {
+        // Arrange
+        val text = "analysers:\n  unifiedparser:\n    include-build-folders: false\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.config.argumentsFor("unifiedparser")).isEmpty()
+        assertThat(result.config.isAnalyserEnabled("unifiedparser")).isTrue()
+    }
+
+    @Test
+    fun `should report an option the analyser does not have`() {
+        // Arrange
+        val text = "analysers:\n  unifiedparser:\n    excludes: generated/\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(3, "unifiedparser has no option 'excludes', expected one of: exclude, include-build-folders, file-extensions")
+        )
+    }
+
+    @Test
+    fun `should report an option value the analyser refuses`() {
+        // Arrange
+        val text = "analysers:\n  rawtextparser:\n    tab-width: lots\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(3, "analysers.rawtextparser.tab-width: Invalid value: 'lots' is not an int"))
     }
 }

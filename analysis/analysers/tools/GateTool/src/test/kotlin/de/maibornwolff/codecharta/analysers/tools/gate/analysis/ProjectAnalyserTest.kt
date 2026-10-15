@@ -23,7 +23,11 @@ class ProjectAnalyserTest {
         writeSource("src/App.kt", "fun main() {\n    if (true) println(1)\n}\n")
 
         // Act
-        val project = ProjectAnalyser().analyse(projectFolder, listOf(RawTextParser(), UnifiedParser()), File(projectFolder, "out"))
+        val project = ProjectAnalyser().analyse(
+            projectFolder,
+            listOf(ConfiguredAnalyser(RawTextParser()), ConfiguredAnalyser(UnifiedParser())),
+            File(projectFolder, "out")
+        )
 
         // Assert
         val metrics = AnalysedProject(project).files.single { it.path == "src/App.kt" }.metrics
@@ -37,7 +41,11 @@ class ProjectAnalyserTest {
         writeSource("check-output/Old.kt", "fun old() {}\n")
 
         // Act
-        val project = ProjectAnalyser().analyse(projectFolder, listOf(UnifiedParser()), File(projectFolder, "check-output"))
+        val project = ProjectAnalyser().analyse(
+            projectFolder,
+            listOf(ConfiguredAnalyser(UnifiedParser())),
+            File(projectFolder, "check-output")
+        )
 
         // Assert
         assertThat(AnalysedProject(project).files.map { it.path }).containsExactly("src/App.kt")
@@ -49,15 +57,20 @@ class ProjectAnalyserTest {
         writeSource("src/App.kt", "fun main() {}\n")
 
         // Act & Assert
-        assertThatThrownBy { ProjectAnalyser().analyse(projectFolder, listOf(FailingAnalyser()), File(projectFolder, "out")) }
-            .isInstanceOf(AnalysisException::class.java)
+        assertThatThrownBy {
+            ProjectAnalyser().analyse(
+                projectFolder,
+                listOf(ConfiguredAnalyser(FailingAnalyser())),
+                File(projectFolder, "out")
+            )
+        }.isInstanceOf(AnalysisException::class.java)
             .hasMessageContaining("failingparser")
     }
 
     @Test
     fun `should refuse to analyse with no analyser`() {
         // Arrange
-        val analysers = emptyList<AnalyserInterface>()
+        val analysers = emptyList<ConfiguredAnalyser>()
 
         // Act & Assert
         assertThatThrownBy { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out")) }

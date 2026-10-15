@@ -8,7 +8,7 @@ import java.io.StringReader
 
 data class ConfigReadResult(val config: GateConfig, val problems: List<ConfigProblem>)
 
-class ConfigReader(private val knownAnalysers: Set<String>, private val configFolder: File = File(".")) {
+class ConfigReader(private val catalog: AnalyserCatalog, private val configFolder: File = File(".")) {
     fun read(file: File): ConfigReadResult = read(file.readText())
 
     fun read(text: String): ConfigReadResult {
@@ -37,7 +37,7 @@ class ConfigReader(private val knownAnalysers: Set<String>, private val configFo
         return GateConfig(
             input = sections[INPUT]?.let { readInput(it.value, nodes) },
             output = sections[OUTPUT]?.let { nodes.text(it.value, OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
-            analysers = sections[ANALYSERS]?.let { readAnalysers(it.value, nodes) } ?: emptyMap(),
+            analysers = sections[ANALYSERS]?.let { AnalyserSettingsReader(nodes, catalog).read(it.value, ANALYSERS) } ?: emptyMap(),
             exitCodes = GateConfig.DEFAULT_EXIT_CODES + (sections[EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap()),
             metrics = sections[METRICS]?.let { ruleReader.readMetrics(it.value, METRICS) } ?: emptyMap(),
             cycles = sections[CYCLES]?.let { CycleRuleReader(nodes).read(it.value, CYCLES) } ?: CycleRules(),
@@ -49,13 +49,6 @@ class ConfigReader(private val knownAnalysers: Set<String>, private val configFo
         val input = nodes.text(node, INPUT) ?: return null
         if (!GateConfig.resolve(configFolder, input).isDirectory) nodes.report(node, "$INPUT folder '$input' does not exist")
         return input
-    }
-
-    private fun readAnalysers(node: Node, nodes: YamlNodes): Map<String, Boolean> {
-        val entries = nodes.entries(node, ANALYSERS, knownAnalysers) ?: return emptyMap()
-        return entries.values
-            .mapNotNull { entry -> nodes.switch(entry.value, "$ANALYSERS.${entry.key}")?.let { entry.key to it } }
-            .toMap()
     }
 
     private fun readExitCodes(node: Node, nodes: YamlNodes): Map<Severity, Int> {
