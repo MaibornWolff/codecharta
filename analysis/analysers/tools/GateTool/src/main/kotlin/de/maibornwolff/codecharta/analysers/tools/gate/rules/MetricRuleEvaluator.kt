@@ -11,15 +11,7 @@ class MetricRuleEvaluator(private val config: GateConfig) {
     private fun evaluateFile(file: AnalysedFile): List<Violation> = resolver.rulesFor(file.path).mapNotNull { (metric, levels) ->
         val value = file.metrics[metric] ?: return@mapNotNull null
         worstExceededLevel(value, levels)?.let { (severity, level) ->
-            Violation(
-                ViolationKind.METRIC,
-                severity,
-                level.instruction,
-                path = file.path,
-                metric = metric,
-                value = value,
-                threshold = level.max
-            )
+            MetricViolation(severity, level.instruction, file.path, metric, value, level.max)
         }
     }
 
@@ -32,9 +24,7 @@ class MetricRuleEvaluator(private val config: GateConfig) {
         val measuredMetrics = files.flatMap { it.metrics.keys }.toSet()
         return config.configuredMetrics
             .filter { it !in measuredMetrics }
-            .map { metric ->
-                Violation(ViolationKind.UNKNOWN_METRIC, Severity.WARNING, unknownMetricInstruction(metric), metric = metric)
-            }
+            .map { metric -> UnknownMetric(Severity.WARNING, unknownMetricInstruction(metric), metric) }
     }
 
     private fun unknownMetricInstruction(metric: String): String =

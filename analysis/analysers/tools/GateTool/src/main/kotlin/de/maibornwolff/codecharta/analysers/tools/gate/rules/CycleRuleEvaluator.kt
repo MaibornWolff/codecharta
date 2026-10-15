@@ -10,34 +10,27 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
         if (!hasDependencyRule) return emptyList()
         if (analysis == null) return listOf(dependenciesNotChecked())
         val chains = findCycleChains(analysis.declarationDependencies)
-        return cycles(chains, rules.betweenFiles, ViolationKind.CYCLE_BETWEEN_FILES) +
-            cycles(chains, rules.insideFiles, ViolationKind.CYCLE_INSIDE_FILE) +
+        val cycles = chains.map { chain -> chain.map { it.from } }
+        return cycles(cycles.filterNot(::isInsideOneFile), rules.betweenFiles) +
+            cycles(cycles.filter(::isInsideOneFile), rules.insideFiles) +
             upwardDependencies(analysis, rules.upward)
     }
 
-    private fun dependenciesNotChecked() = Violation(
-        ViolationKind.CYCLES_NOT_CHECKED,
+    private fun dependenciesNotChecked() = DependenciesNotChecked(
         Severity.WARNING,
         "The map has no dependency analysis, so cycles and upward dependencies could not be checked. " +
             "Switch on the dependencyparser and leave out its --omit-graph-analysis."
     )
 
-    private fun cycles(chains: List<CycleChain>, rule: CycleRule?, kind: ViolationKind): List<Violation> {
+    private fun isInsideOneFile(declarations: List<Declaration>): Boolean = declarations.map { it.file }.distinct().size == 1
+
+    private fun cycles(cycles: List<List<Declaration>>, rule: CycleRule?): List<Violation> {
         if (rule == null) return emptyList()
         val ignored = PathPatterns(rule.ignore)
-        val isBetweenFiles = kind == ViolationKind.CYCLE_BETWEEN_FILES
-        return chains
-            .map { chain -> chain.map { it.from } }
-            .filter { declarations -> (declarations.map { it.file }.distinct().size > 1) == isBetweenFiles }
+        return cycles
             .filterNot { declarations -> declarations.any { ignored.matches(it.file) } }
-            .map { declarations -> toCycle(declarations, kind, rule) }
-            .sortedBy { it.declarations.joinToString { declaration -> "${declaration.file}/${declaration.name}" } }
-    }
-
-    private fun toCycle(declarations: List<Declaration>, kind: ViolationKind, rule: CycleRule): Violation {
-        val files = declarations.map { it.file }.distinct().sorted()
-        val path = if (kind == ViolationKind.CYCLE_INSIDE_FILE) files.single() else null
-        return Violation(kind, rule.severity, rule.instruction, path = path, members = files, declarations = declarations)
+            .map { declarations -> CycleViolation(rule.severity, rule.instruction, declarations) }
+            .sortedBy { cycle -> cycle.declarations.joinToString { "${it.file}/${it.name}" } }
     }
 
     private fun upwardDependencies(analysis: DependencyAnalysis, rule: CycleRule?): List<Violation> {
@@ -50,12 +43,6 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
             .map { toUpwardDependency(it, rule) }
     }
 
-    private fun toUpwardDependency(dependency: DeclarationDependency, rule: CycleRule) = Violation(
-        ViolationKind.UPWARD_DEPENDENCY,
-        rule.severity,
-        rule.instruction,
-        path = dependency.from.file,
-        target = dependency.to.file,
-        declarations = listOf(dependency.from, dependency.to)
-    )
+    private fun toUpwardDependency(dependency: DeclarationDependency, rule: CycleRule) =
+        UpwardViolation(rule.severity, rule.instruction, dependency.from, dependency.to)
 }

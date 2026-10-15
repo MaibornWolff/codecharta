@@ -6,22 +6,17 @@ import com.google.gson.JsonObject
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toJsonNumber
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependenciesNotChecked
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.ViolationKind
 
 object JsonReport {
     private val gson = GsonBuilder().setPrettyPrinting().create()
-
-    private val RULE_NAMES = mapOf(
-        ViolationKind.METRIC to "metric",
-        ViolationKind.CYCLE_BETWEEN_FILES to "cycle-between-files",
-        ViolationKind.CYCLE_INSIDE_FILE to "cycle-inside-file",
-        ViolationKind.UPWARD_DEPENDENCY to "upward-dependency",
-        ViolationKind.UNKNOWN_METRIC to "unknown-metric",
-        ViolationKind.CYCLES_NOT_CHECKED to "cycles-not-checked"
-    )
 
     fun render(result: GateResult, config: GateConfig): String {
         val report = JsonObject()
@@ -36,6 +31,44 @@ object JsonReport {
         addProperty("files", result.filesChecked)
     }
 
+    private fun toJson(violation: Violation) = JsonObject().apply {
+        addProperty("rule", ruleNameOf(violation))
+        addProperty("severity", violation.severity.key)
+        addDetails(this, violation)
+        violation.instruction?.let { addProperty("instruction", it) }
+    }
+
+    private fun ruleNameOf(violation: Violation): String = when (violation) {
+        is MetricViolation -> "metric"
+        is UnknownMetric -> "unknown-metric"
+        is CycleViolation -> if (violation.isInsideOneFile) "cycle-inside-file" else "cycle-between-files"
+        is UpwardViolation -> "upward-dependency"
+        is DependenciesNotChecked -> "cycles-not-checked"
+    }
+
+    private fun addDetails(json: JsonObject, violation: Violation) {
+        when (violation) {
+            is MetricViolation -> {
+                json.addProperty("path", violation.path)
+                json.addProperty("metric", violation.metric)
+                json.addProperty("value", violation.value.toJsonNumber())
+                json.addProperty("threshold", violation.threshold.toJsonNumber())
+            }
+            is UnknownMetric -> json.addProperty("metric", violation.metric)
+            is CycleViolation -> {
+                if (violation.isInsideOneFile) json.addProperty("path", violation.files.single())
+                json.add("members", JsonArray().apply { violation.files.forEach(::add) })
+                json.add("declarations", declarationsOf(violation.declarations))
+            }
+            is UpwardViolation -> {
+                json.addProperty("path", violation.from.file)
+                json.addProperty("target", violation.to.file)
+                json.add("declarations", declarationsOf(listOf(violation.from, violation.to)))
+            }
+            is DependenciesNotChecked -> Unit
+        }
+    }
+
     private fun declarationsOf(declarations: List<Declaration>) = JsonArray().apply {
         declarations.forEach { declaration ->
             add(
@@ -45,20 +78,5 @@ object JsonReport {
                 }
             )
         }
-    }
-
-    private fun jsonArrayOf(values: List<String>) = JsonArray().apply { values.forEach(::add) }
-
-    private fun toJson(violation: Violation) = JsonObject().apply {
-        addProperty("rule", RULE_NAMES.getValue(violation.kind))
-        addProperty("severity", violation.severity.key)
-        violation.path?.let { addProperty("path", it) }
-        violation.target?.let { addProperty("target", it) }
-        violation.metric?.let { addProperty("metric", it) }
-        violation.value?.let { addProperty("value", it.toJsonNumber()) }
-        violation.threshold?.let { addProperty("threshold", it.toJsonNumber()) }
-        if (violation.members.isNotEmpty()) add("members", jsonArrayOf(violation.members))
-        if (violation.declarations.isNotEmpty()) add("declarations", declarationsOf(violation.declarations))
-        violation.instruction?.let { addProperty("instruction", it) }
     }
 }
