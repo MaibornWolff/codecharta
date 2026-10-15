@@ -39,5 +39,5 @@ ccsh gate path/to/project --config=ci/codecharta.yml
 ccsh gate --map=build/project.cc.json.gz
 ```
 
-Exit codes: 0 when no rule is broken, the code `exitCodes` maps a found severity to (default `error: 1`,
+Exit codes: 0 when no rule is broken, the code `exitCodes` maps the worst severity found to (default `error: 1`,
 `warning: 0`), and 2 when the gate itself fails.

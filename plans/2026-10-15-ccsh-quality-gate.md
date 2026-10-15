@@ -14,38 +14,31 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ## Tasks
 
 ### 1. Analyse
-- `input:` names the folder to analyse, relative to the config (default: the config's folder)
-- Each analyser is `on`, `off`, or a mapping of its own long options; names and values are checked
-  with the analyser's picocli spec (no duplicated option knowledge)
-- Run the applicable and switched-on ones of RawTextParser, UnifiedParser, DependencyParser and
-  DomainLanguageParser as they are, merge their maps with the MergeFilter's `ProjectMerger`
-- Leave the output folder out of the analysis, write the merged map into it
-- `--parallel` / `parallel: on` runs the analysers in a thread pool; merge order stays the list order, so the
-  result is identical to a sequential run
-
-- `--map <file>` checks (or `--init`s from) an existing cc.json instead of analysing; cycle rules on a map
-  without dependency data give a "cycles not checked" warning
+- Run the applicable, switched-on ones of RawTextParser, UnifiedParser, DependencyParser and DomainLanguageParser
+  unchanged through picocli, merge their maps with the MergeFilter's `ProjectMerger`, keep the map in the output folder
+- Analyser options come from the config and are checked against each analyser's picocli spec
+- `--parallel` / `parallel: on` runs the analysers in a thread pool, merged in list order
+- `--map <file>` checks an existing cc.json instead of analysing
+- Paths in the config are relative to the project folder; `input` names the folder to analyse
 
 ### 2. `ccsh gate --init`
-- Analyse, write `.codecharta.yml` fully commented out: every metric with a warning and an error level and
-  its min/max found, the applicable analysers, exit codes, output folder, cycles and an example override
-- Refuse to overwrite without `--force`
+- Commented-out config: settings, analysers with their options, one line per metric with range and description,
+  one worked rule, dependency rules, an override example; a hint to keep the output folder out of version control
 
 ### 3. `ccsh gate --doctor`
-- Validate the config without analysing; every problem with its line; exit 0 or 2
+- Every problem with its line, in line order; rules and overrides that would check nothing are reported
 
 ### 4. `ccsh gate`
-- Metric rules per file, worst level only; anything left out is off; gitignore-style override patterns,
-  last match wins, `<metric>: off`
-- `dependencies.cyclesBetweenFiles`, `dependencies.cyclesInsideFiles` and `dependencies.upward` count exactly like the dependency view: loops via the
-  view's shortest-way-back search over the declaration edges the parser marks cyclic (ported from cycleChains.ts),
-  upward via the view's upward rule (file pair decides between files); `ignore` drops loops/edges touching a match
-- Unknown metrics as warnings; exit code = highest code mapped to a found severity, 2 for tool failures
+- Metric rules per file with `max` and/or `min` per level, worst level only; `exclude` and overrides in `.gitignore`
+  syntax (negation included), applied in order
+- `dependencies.cyclesBetweenFiles`, `cyclesInsideFiles` and `upward` count like the dependency view (ported
+  `cycleChains.ts` and `upwardRuleOf`); `ignore` per rule
+- A rule for an unknown metric is reported at its worst severity with the closest metric name; patterns that match
+  no file are warnings; exit code = code of the worst severity found, 2 for tool failures
 
 ### 5. Report
-- Console in config order: each metric (errors before warnings), then file and package cycles; each cycle with
-  its shared folder and every member's in-cycle dependencies; `report.json` in the output folder
-- A separator line and "Analysis done" before the result; `--quiet` keeps the analysers' output off the console
+- Console in config order with an instruction box per rule, cycles walked through their declarations, upward
+  dependencies by the folder they cross; `--quiet`; `report.json` in the output folder
 
 ## Steps
 
@@ -55,6 +48,7 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 - [x] Complete Task 4: `ccsh gate`
 - [x] Complete Task 5: Report
 - [x] Docs (gh-pages, module README), CHANGELOG
+- [x] Independent config and code review, findings addressed
 
 ## Notes
 
@@ -63,5 +57,6 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
   `GitignorePatternMatcher` (refactored to expose pattern parsing and path matching)
 - Package cycles (direct folder of each file) were dropped: merging a folder's files into one node made parent ↔ child
   folders look tangled where the parser's levels show nothing
+- Not done from the review: a shared test fixture for the ported cycle search (both sides point to each other instead)
 - Out of scope for v1: checking only changed files, naming the offending function, SARIF, git log / SVN
 - `--quiet` redirects System.out/err while the analysers run, since they print directly
