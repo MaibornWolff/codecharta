@@ -15,13 +15,13 @@ class CycleRuleReader(private val nodes: YamlNodes) {
     private fun readCycleRule(entry: YamlEntry, path: String): CycleRule? {
         val entries = nodes.entries(entry.value, path, RULE_KEYS) ?: return null
         val severityEntry = entries[SEVERITY]
-        val message = entries[MESSAGE]?.let { nodes.text(it.value, "$path.$MESSAGE") }
+        val instruction = entries[INSTRUCTION]?.let { nodes.text(it.value, "$path.$INSTRUCTION") }
         if (severityEntry == null || nodes.isEmpty(severityEntry.value)) {
             nodes.report(severityEntry?.value ?: entry.keyNode, "$path.$SEVERITY needs one of: ${Severity.entries.joinToString { it.key }}")
             return null
         }
         val severity = nodes.severity(severityEntry.value, "$path.$SEVERITY") ?: return null
-        return CycleRule(severity, message)
+        return CycleRule(severity, instruction)
     }
 
     private fun readAllowed(node: Node, path: String): List<Set<String>> {
@@ -43,9 +43,9 @@ class CycleRuleReader(private val nodes: YamlNodes) {
         private const val PACKAGE = "package"
         private const val ALLOW = "allow"
         private const val SEVERITY = "severity"
-        private const val MESSAGE = "message"
+        private const val INSTRUCTION = "instruction"
         private const val MINIMUM_CYCLE_SIZE = 2
         private val CYCLE_KEYS = listOf(FILE, PACKAGE, ALLOW)
-        private val RULE_KEYS = listOf(SEVERITY, MESSAGE)
+        private val RULE_KEYS = listOf(SEVERITY, INSTRUCTION)
     }
 }

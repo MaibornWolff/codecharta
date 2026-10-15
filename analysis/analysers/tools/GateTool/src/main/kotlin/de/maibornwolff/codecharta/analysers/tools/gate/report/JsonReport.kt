@@ -41,6 +41,6 @@ object JsonReport {
         violation.value?.let { addProperty("value", it.toJsonNumber()) }
         violation.threshold?.let { addProperty("threshold", it.toJsonNumber()) }
         if (violation.members.isNotEmpty()) add("members", JsonArray().apply { violation.members.forEach(::add) })
-        violation.message?.let { addProperty("message", it) }
+        violation.instruction?.let { addProperty("instruction", it) }
     }
 }

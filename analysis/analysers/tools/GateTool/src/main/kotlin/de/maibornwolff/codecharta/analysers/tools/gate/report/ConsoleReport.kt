@@ -21,7 +21,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     }
 
     private fun groupsInConfigOrder(violations: List<Violation>): List<List<Violation>> = violations
-        .groupBy { listOf(it.severity, it.kind, it.metric, it.threshold, it.message) }
+        .groupBy { listOf(it.severity, it.kind, it.metric, it.threshold, it.instruction) }
         .values
         .sortedWith(
             compareBy<List<Violation>> { sectionOf(it.first()) }
@@ -39,7 +39,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     private fun printGroup(group: List<Violation>) {
         val first = group.first()
         output.println(SEVERITY_LABELS.getValue(first.severity).padEnd(LABEL_WIDTH) + title(group))
-        first.message?.let { output.println(" ".repeat(LABEL_WIDTH) + it) }
+        first.instruction?.let { output.println(" ".repeat(LABEL_WIDTH) + INSTRUCTION_LABEL + it) }
         when (first.kind) {
             ViolationKind.METRIC -> printMetricValues(group)
             ViolationKind.FILE_CYCLE -> CycleText("file").lines(group).forEach(output::println)
@@ -76,6 +76,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     companion object {
         private const val LABEL_WIDTH = 7
         private const val INDENT = "  "
+        private const val INSTRUCTION_LABEL = "Instruction: "
         private val SEVERITY_LABELS = mapOf(Severity.ERROR to "ERROR", Severity.WARNING to "WARN")
     }
 }

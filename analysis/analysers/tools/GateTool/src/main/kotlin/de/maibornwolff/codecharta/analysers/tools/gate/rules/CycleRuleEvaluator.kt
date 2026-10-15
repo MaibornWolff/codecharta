@@ -27,7 +27,7 @@ class CycleRuleEvaluator(private val rules: CycleRules) {
             .groupBy({ it.from }, { it.to })
             .mapValues { (_, targets) -> targets.distinct().sorted() }
             .toSortedMap()
-        return Violation(kind, rule.severity, rule.message, members = members.sorted(), dependencies = dependenciesInCycle)
+        return Violation(kind, rule.severity, rule.instruction, members = members.sorted(), dependencies = dependenciesInCycle)
     }
 
     private fun toNodeInformations(dependencies: List<FileDependency>): Set<NodeInformation> {

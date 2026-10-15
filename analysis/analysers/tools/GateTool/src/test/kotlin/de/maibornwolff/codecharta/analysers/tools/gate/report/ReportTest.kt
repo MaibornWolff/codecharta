@@ -42,19 +42,19 @@ class ReportTest {
         assertThat(output.toString()).isEqualTo(
             """
             ERROR  rloc > 400
-                   Split it.
+                   Instruction: Split it.
               src/Big.kt    812
               src/Small.kt  455
 
             WARN   rloc > 200
-                   Plan a split.
+                   Instruction: Plan a split.
               src/Mid.kt  263
 
             WARN   unknown metric: lines_of_doc
-                   No such metric.
+                   Instruction: No such metric.
 
             ERROR  1 file cycle
-                   Break the cycle.
+                   Instruction: Break the cycle.
               cycle 1 of 1, 2 files
                 a/Foo.kt → b/Bar.kt
                 b/Bar.kt → a/Foo.kt
@@ -158,9 +158,9 @@ class ReportTest {
         assertThat(json["summary"].toString()).isEqualTo("""{"error":3,"warning":2,"files":418}""")
         val violations = json["violations"].asJsonArray.map { it.toString() }
         assertThat(violations).contains(
-            """{"rule":"metric","severity":"error","path":"src/Big.kt","metric":"rloc","value":812,"threshold":400,"message":"Split it."}""",
-            """{"rule":"file-cycle","severity":"error","members":["a/Foo.kt","b/Bar.kt"],"message":"Break the cycle."}""",
-            """{"rule":"unknown-metric","severity":"warning","metric":"lines_of_doc","message":"No such metric."}"""
+            """{"rule":"metric","severity":"error","path":"src/Big.kt","metric":"rloc","value":812,"threshold":400,"instruction":"Split it."}""",
+            """{"rule":"file-cycle","severity":"error","members":["a/Foo.kt","b/Bar.kt"],"instruction":"Break the cycle."}""",
+            """{"rule":"unknown-metric","severity":"warning","metric":"lines_of_doc","instruction":"No such metric."}"""
         )
     }
 
@@ -181,6 +181,6 @@ class ReportTest {
         path: String,
         value: Double,
         threshold: Double,
-        message: String
-    ) = Violation(ViolationKind.METRIC, severity, message, path = path, metric = "rloc", value = value, threshold = threshold)
+        instruction: String
+    ) = Violation(ViolationKind.METRIC, severity, instruction, path = path, metric = "rloc", value = value, threshold = threshold)
 }

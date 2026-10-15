@@ -74,7 +74,7 @@ class RuleResolverTest {
     @Test
     fun `should add a rule that only exists for the files an override matches`() {
         // Arrange
-        val override = MetricOverride.Levels(mapOf(Severity.WARNING to LevelOverride(max = 5.0, message = "Keep it small.")))
+        val override = MetricOverride.Levels(mapOf(Severity.WARNING to LevelOverride(max = 5.0, instruction = "Keep it small.")))
         val config = GateConfig(overrides = listOf(PathOverride(listOf("**/generated/**"), mapOf("mcc" to override))))
 
         // Act

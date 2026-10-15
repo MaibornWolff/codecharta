@@ -94,7 +94,7 @@ class GateToolTest {
     fun `should report broken rules, write the map and the report and exit with the error code`() {
         // Arrange
         configFile.writeText(
-            "metrics:\n  rloc:\n    error:\n      max: 1\n      message: Keep files tiny.\ncycles:\n  file:\n    severity: warning\n"
+            "metrics:\n  rloc:\n    error:\n      max: 1\n      instruction: Keep files tiny.\ncycles:\n  file:\n    severity: warning\n"
         )
 
         // Act

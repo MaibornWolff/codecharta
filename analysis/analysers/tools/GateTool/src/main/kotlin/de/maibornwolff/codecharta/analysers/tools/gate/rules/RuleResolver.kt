@@ -36,7 +36,7 @@ class RuleResolver(private val config: GateConfig) {
         val changedLevels = change.levels.mapNotNull { (severity, levelOverride) ->
             val current = levels[severity]
             val max = levelOverride.max ?: current?.max ?: return@mapNotNull null
-            severity to LevelRule(max, levelOverride.message ?: current?.message)
+            severity to LevelRule(max, levelOverride.instruction ?: current?.instruction)
         }
         return levels + changedLevels
     }
