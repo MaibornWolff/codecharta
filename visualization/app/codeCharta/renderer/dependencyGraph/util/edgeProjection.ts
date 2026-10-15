@@ -137,7 +137,8 @@ export type UpwardRule = (declarationEdge: DependencyLeafEdge) => boolean
 /** Which way is up for a dependency between declarations. Among folders the levels of the file tree say so
  * between two files, so the dependency points upward when their file edge does, and its own flag counts only
  * inside one file or between two files without a file edge. Among packages the file tree has no say, and its
- * own flag always counts. */
+ * own flag always counts. `ccsh gate` applies the folders rule through a Kotlin copy (isUpward in CycleChains.kt
+ * of the analysis GateTool), so a change here belongs there too. */
 export function upwardRuleOf(edges: readonly Edge[], hierarchy: DependencyHierarchy): UpwardRule {
     const upwardOfFilePair = upwardByFilePair(edges)
     return declarationEdge => {
