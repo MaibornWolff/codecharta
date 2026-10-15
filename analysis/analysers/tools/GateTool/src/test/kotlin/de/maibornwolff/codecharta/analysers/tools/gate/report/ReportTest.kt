@@ -44,19 +44,27 @@ class ReportTest {
         assertThat(output.toString()).isEqualTo(
             """
             ERROR  rloc > 400
-                   Instruction: Split it.
+            ┌ Instruction ──
+            │ Split it.
+            └───────────────
               src/Big.kt    812
               src/Small.kt  455
 
             WARN   rloc > 200
-                   Instruction: Plan a split.
+            ┌ Instruction ──
+            │ Plan a split.
+            └───────────────
               src/Mid.kt  263
 
             WARN   unknown metric: lines_of_doc
-                   Instruction: No such metric.
+            ┌ Instruction ───
+            │ No such metric.
+            └────────────────
 
             ERROR  1 cycle between files
-                   Instruction: Break the cycle.
+            ┌ Instruction ────
+            │ Break the cycle.
+            └─────────────────
               cycle 1 of 1, 2 files
                 a/Foo.kt: Foo → b/Bar.kt: Bar
                 b/Bar.kt: Bar → a/Foo.kt: Foo

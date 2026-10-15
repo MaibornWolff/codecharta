@@ -41,7 +41,7 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     private fun printGroup(group: List<Violation>) {
         val first = group.first()
         output.println(SEVERITY_LABELS.getValue(first.severity).padEnd(LABEL_WIDTH) + title(group))
-        first.instruction?.let { output.println(" ".repeat(LABEL_WIDTH) + INSTRUCTION_LABEL + it) }
+        first.instruction?.let { instructionBox(it).forEach(output::println) }
         when (first.kind) {
             ViolationKind.METRIC -> printMetricValues(group)
             ViolationKind.CYCLE_BETWEEN_FILES, ViolationKind.CYCLE_INSIDE_FILE -> CycleText.lines(group).forEach(output::println)
@@ -49,6 +49,11 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
             ViolationKind.CYCLES_NOT_CHECKED -> Unit
             ViolationKind.UNKNOWN_METRIC -> Unit
         }
+    }
+
+    private fun instructionBox(instruction: String): List<String> {
+        val width = maxOf(instruction.length + 2, INSTRUCTION_TITLE.length + 2)
+        return listOf(INSTRUCTION_TITLE.padEnd(width, BOX_LINE), "│ $instruction", "└".padEnd(width, BOX_LINE))
     }
 
     private fun title(group: List<Violation>): String {
@@ -79,7 +84,8 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     companion object {
         private const val LABEL_WIDTH = 7
         private const val INDENT = "  "
-        private const val INSTRUCTION_LABEL = "Instruction: "
+        private const val INSTRUCTION_TITLE = "┌ Instruction "
+        private const val BOX_LINE = '─'
         private val SEVERITY_LABELS = mapOf(Severity.ERROR to "ERROR", Severity.WARNING to "WARN")
     }
 }
