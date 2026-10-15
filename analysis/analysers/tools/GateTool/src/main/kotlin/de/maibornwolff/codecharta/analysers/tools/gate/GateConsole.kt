@@ -12,10 +12,10 @@ class GateConsole(val output: PrintStream, private val quiet: Boolean) {
         if (quiet) output.println(line)
     }
 
-    fun printSeparated(line: String) {
+    fun printSeparated(vararg lines: String) {
         output.println()
         output.println(SEPARATOR)
-        output.println(line)
+        lines.forEach(output::println)
         output.println()
     }
 

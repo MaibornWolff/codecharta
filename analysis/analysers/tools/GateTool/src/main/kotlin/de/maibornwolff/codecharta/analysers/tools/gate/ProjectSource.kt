@@ -47,7 +47,8 @@ class ProjectSource(
         val loaded = LoadedProject(AnalysedProject(project), analyserNames)
         val seconds = String.format(Locale.ROOT, "%.1f", duration.toDouble(DurationUnit.SECONDS))
         console.printSeparated(
-            "Analysis done: ${counted(loaded.project.files.size, "file")} with ${analyserNames.joinToString()} in $seconds s"
+            "Analysis done: ${counted(loaded.project.files.size, "file")} with ${analyserNames.joinToString()} in $seconds s",
+            "Map: ${mapFile(config).path}"
         )
         return loaded
     }
@@ -56,9 +57,11 @@ class ProjectSource(
         val outputFolder = outputFolder(config)
         val project = ProjectAnalyser().analyse(analysisFolder(config), analysers, outputFolder, config.parallel)
         outputFolder.mkdirs()
-        ProjectSerializer.serializeToFileOrStream(project, File(outputFolder, MAP_FILE_NAME).path, console.output, true)
+        ProjectSerializer.serializeToFileOrStream(project, mapFile(config).path, console.output, true)
         return project
     }
+
+    private fun mapFile(config: GateConfig): File = File(outputFolder(config), MAP_FILE_NAME)
 
     private fun applicableAnalysers(config: GateConfig): List<ConfiguredAnalyser> = createAnalysers()
         .filter { config.isAnalyserEnabled(it.name) && it.isApplicable(analysisFolder(config).path) }
@@ -68,6 +71,6 @@ class ProjectSource(
         config.input?.let { GateConfig.resolve(options.projectFolder, it) } ?: options.projectFolder
 
     companion object {
-        private const val MAP_FILE_NAME = "map.cc.json"
+        private const val MAP_FILE_NAME = "map.cc.json.gz"
     }
 }
