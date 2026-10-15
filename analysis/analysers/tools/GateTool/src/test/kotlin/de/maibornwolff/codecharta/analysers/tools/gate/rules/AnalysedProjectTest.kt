@@ -36,8 +36,7 @@ class AnalysedProjectTest {
                             edges =
                                 listOf(
                                     Edge("/root/Main.kt", "/root/src/Util.kt", mapOf("dependencies" to 2), isPointingUpwards = true),
-                                    Edge("/root/src/Util.kt", "/root/Main.kt", mapOf("coupling" to 1), isPointingUpwards = true),
-                                    Edge("/root/src/Util.kt", "/root/Other.kt", mapOf("dependencies" to 0), isPointingUpwards = true)
+                                    Edge("/root/src/Util.kt", "/root/Main.kt", mapOf("dependencies" to 0), isPointingUpwards = true)
                                 ),
                             nodes = mapOf(mainId to DependencyNode(0)),
                             leaves =
