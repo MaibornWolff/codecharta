@@ -6,4 +6,6 @@ interface AnalyserCatalog {
     fun optionNames(analyser: String): List<String>
 
     fun checkArguments(analyser: String, arguments: List<String>): String?
+
+    fun isFlag(analyser: String, option: String): Boolean
 }
