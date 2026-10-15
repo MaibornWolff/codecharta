@@ -12,9 +12,9 @@ data class GitignoreRule(
     val rootLevelMatcher: PathMatcher? = null,
     val collapsedGlobstarMatcher: PathMatcher? = null
 ) {
-    fun matches(relativePath: Path, isDirectory: Boolean): Boolean = (!isDirOnly || isDirectory) && matchesPath(relativePath)
+    fun matches(relativePath: Path, isDirectory: () -> Boolean): Boolean = matchesPath(relativePath) && (!isDirOnly || isDirectory())
 
-    fun matchesPath(relativePath: Path): Boolean = pathMatcher.matches(relativePath) ||
+    private fun matchesPath(relativePath: Path): Boolean = pathMatcher.matches(relativePath) ||
         rootLevelMatcher?.matches(relativePath) == true ||
         collapsedGlobstarMatcher?.matches(relativePath) == true
 }

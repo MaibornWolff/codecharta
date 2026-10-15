@@ -271,7 +271,9 @@ class ConfigReaderTest {
         val result = reader.read(text)
 
         // Assert
-        assertThat(result.problems).containsExactly(ConfigProblem(5, "cycles.betweenFiles.ignore[0] is not a valid path pattern: 'src/[a'"))
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(5, "cycles.betweenFiles.ignore[0] is not a valid path pattern: 'src/[a' (Missing '] near index 5)"))
     }
 
     @Test
