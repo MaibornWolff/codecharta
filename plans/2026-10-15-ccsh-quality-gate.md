@@ -33,7 +33,9 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 - Unknown metrics as warnings; exit code = highest code mapped to a found severity, 2 for tool failures
 
 ### 5. Report
-- Console grouped by severity and rule with the rule's message; `report.json` in the output folder
+- Console in config order: each metric (errors before warnings), then file and package cycles; each cycle with
+  its shared folder and every member's in-cycle dependencies; `report.json` in the output folder
+- A separator line and "Analysis done" before the result; `--quiet` keeps the analysers' output off the console
 
 ## Steps
 
@@ -51,4 +53,4 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
   `GitignorePatternMatcher` (refactored to expose pattern parsing and path matching)
 - A package is the folder of a file
 - Out of scope for v1: checking only changed files, naming the offending function, SARIF, git log / SVN
-- Known noise: some parsers print "Checking if … is applicable" to stdout before the report
+- `--quiet` redirects System.out/err while the analysers run, since they print directly

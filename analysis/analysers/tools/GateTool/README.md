@@ -15,6 +15,7 @@ Full documentation: https://maibornwolff.github.io/codecharta/docs/analysis/qual
 | `--doctor`             | validates the config without analysing                                      |
 | `-c, --config=<file>`  | config file (default: `.codecharta.yml` in the project folder)              |
 | `-f, --force`          | lets `--init` overwrite an existing config                                  |
+| `-q, --quiet`          | keeps the output of the analysers off the console                           |
 | `-h, --help`           | displays help and exits                                                     |
 
 Without `--init` or `--doctor`, the gate analyses the project and checks it against the config. Called without
@@ -22,7 +23,7 @@ arguments in a terminal, it starts right away when the current folder has a `.co
 otherwise.
 
 ```
-Usage: ccsh gate [-fh] [--doctor] [--init] [-c=<configFile>] [FOLDER]
+Usage: ccsh gate [-fhq] [--doctor] [--init] [-c=<configFile>] [FOLDER]
 ```
 
 ## Examples
