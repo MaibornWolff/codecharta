@@ -36,7 +36,7 @@ data class GateConfig(
     val output: String = DEFAULT_OUTPUT,
     val parallel: Boolean = false,
     val analysers: Map<String, AnalyserSetting> = emptyMap(),
-    val exitCodes: Map<Severity, Int> = DEFAULT_EXIT_CODES,
+    val exitCodes: Map<Severity, Int> = emptyMap(),
     val metrics: Map<String, MetricRule> = emptyMap(),
     val cycles: CycleRules = CycleRules(),
     val overrides: List<PathOverride> = emptyList()

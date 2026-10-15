@@ -39,6 +39,13 @@ class YamlNodes {
         return entries
     }
 
+    fun <T> readMap(node: Node, path: String, allowedKeys: Collection<String>? = null, read: (YamlEntry, String) -> T?): Map<String, T> {
+        val entries = entries(node, path, allowedKeys) ?: return emptyMap()
+        return entries.values
+            .mapNotNull { entry -> read(entry, childPath(path, entry.key))?.let { entry.key to it } }
+            .toMap()
+    }
+
     fun items(node: Node, path: String): List<Node>? {
         if (isEmpty(node)) return emptyList()
         if (node !is SequenceNode) {
@@ -47,6 +54,8 @@ class YamlNodes {
         }
         return node.value
     }
+
+    fun texts(node: Node, path: String): List<String>? = items(node, path)?.mapIndexedNotNull { index, item -> text(item, "$path[$index]") }
 
     fun text(node: Node, path: String): String? {
         if (isEmpty(node)) return null
@@ -94,6 +103,10 @@ class YamlNodes {
 
     companion object {
         private val SWITCH_VALUES = mapOf("on" to true, "true" to true, "yes" to true, "off" to false, "false" to false, "no" to false)
+
+        fun childPath(path: String, key: String): String = if (path.isEmpty()) key else "$path.$key"
+
+        fun <T> Map<String, T>.bySeverity(): Map<Severity, T> = mapKeys { (key, _) -> Severity.ofKey(key)!! }
 
         fun lineOf(node: Node): Int = node.startMark.line + 1
 

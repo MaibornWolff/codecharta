@@ -1,15 +1,14 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.config
 
+import de.maibornwolff.codecharta.analysers.tools.gate.config.YamlNodes.Companion.bySeverity
+import de.maibornwolff.codecharta.analysers.tools.gate.config.YamlNodes.Companion.childPath
 import org.yaml.snakeyaml.nodes.Node
 
 class MetricRuleReader(private val nodes: YamlNodes) {
     private val patternReader = PathPatternReader(nodes)
 
-    fun readMetrics(node: Node, path: String): Map<String, MetricRule> {
-        val entries = nodes.entries(node, path) ?: return emptyMap()
-        return entries.values
-            .mapNotNull { entry -> readMetricRule(entry.value, "$path.${entry.key}")?.let { entry.key to it } }
-            .toMap()
+    fun readMetrics(node: Node, path: String): Map<String, MetricRule> = nodes.readMap(node, path) { entry, metricPath ->
+        readMetricRule(entry.value, metricPath)
     }
 
     fun readOverrides(node: Node, path: String): List<PathOverride> {
@@ -19,29 +18,35 @@ class MetricRuleReader(private val nodes: YamlNodes) {
 
     private fun readMetricRule(node: Node, path: String): MetricRule? {
         val levelNodes = readLevels(node, path)
-        val levels =
-            levelNodes
-                .mapNotNull { (severity, levelNode) -> toLevelRule(levelNode, "$path.${severity.key}")?.let { severity to it } }
-                .toMap()
+        val levels = levelNodes
+            .mapNotNull { (severity, levelNode) ->
+                toLevelRule(levelNode, childPath(path, severity.key))?.let {
+                    severity to
+                        it
+                }
+            }.toMap()
         checkLevelOrder(levels, levelNodes, path)
         return if (levels.isEmpty()) null else MetricRule(levels)
     }
 
     private fun toLevelRule(levelNode: LevelNode, path: String): LevelRule? {
         val max = levelNode.level.max
-        if (max == null) {
-            if (!levelNode.hasInvalidMax) nodes.report(levelNode.maxNode ?: levelNode.keyNode, "$path.$MAX needs a number")
-            return null
+        if (max != null) return LevelRule(max, levelNode.level.instruction)
+        val maxNode = levelNode.maxNode
+        if (maxNode == null ||
+            nodes.isEmpty(maxNode)
+        ) {
+            nodes.report(maxNode ?: levelNode.keyNode, "${childPath(path, ConfigKeys.MAX)} needs a number")
         }
-        return LevelRule(max, levelNode.level.instruction)
+        return null
     }
 
     private fun checkLevelOrder(levels: Map<Severity, LevelRule>, levelNodes: Map<Severity, LevelNode>, path: String) {
         val warningMax = levels[Severity.WARNING]?.max ?: return
         val errorMax = levels[Severity.ERROR]?.max ?: return
         if (warningMax <= errorMax) return
-        val warningPath = "$path.${Severity.WARNING.key}.$MAX"
-        val errorPath = "$path.${Severity.ERROR.key}.$MAX"
+        val warningPath = childPath(childPath(path, Severity.WARNING.key), ConfigKeys.MAX)
+        val errorPath = childPath(childPath(path, Severity.ERROR.key), ConfigKeys.MAX)
         nodes.report(
             levelNodes.getValue(Severity.WARNING).maxNode!!,
             "$warningPath (${warningMax.toDisplayText()}) must not be above $errorPath (${errorMax.toDisplayText()})"
@@ -49,21 +54,21 @@ class MetricRuleReader(private val nodes: YamlNodes) {
     }
 
     private fun readOverride(node: Node, path: String): PathOverride? {
-        val entries = nodes.entries(node, path, OVERRIDE_KEYS) ?: return null
-        val paths = entries[PATHS]?.let { patternReader.read(it.value, "$path.$PATHS") } ?: emptyList()
+        val entries = nodes.entries(node, path, ConfigKeys.OVERRIDE) ?: return null
+        val pathsPath = childPath(path, ConfigKeys.PATHS)
+        val paths = entries[ConfigKeys.PATHS]?.let { patternReader.read(it.value, pathsPath) } ?: emptyList()
         if (paths.isEmpty()) {
-            nodes.report(entries[PATHS]?.keyNode ?: node, "$path.$PATHS needs at least one path pattern")
+            nodes.report(entries[ConfigKeys.PATHS]?.keyNode ?: node, "$pathsPath needs at least one path pattern")
             return null
         }
-        val metrics = entries[METRICS]?.let { readMetricOverrides(it.value, "$path.$METRICS") } ?: emptyMap()
-        return PathOverride(paths, metrics)
-    }
-
-    private fun readMetricOverrides(node: Node, path: String): Map<String, MetricOverride> {
-        val entries = nodes.entries(node, path) ?: return emptyMap()
-        return entries.values
-            .mapNotNull { entry -> readMetricOverride(entry.value, "$path.${entry.key}")?.let { entry.key to it } }
-            .toMap()
+        val metrics =
+            entries[ConfigKeys.METRICS]?.let { metricsEntry ->
+                nodes.readMap(
+                    metricsEntry.value,
+                    childPath(path, ConfigKeys.METRICS)
+                ) { entry, metricPath -> readMetricOverride(entry.value, metricPath) }
+            }
+        return PathOverride(paths, metrics ?: emptyMap())
     }
 
     private fun readMetricOverride(node: Node, path: String): MetricOverride? {
@@ -79,30 +84,16 @@ class MetricRuleReader(private val nodes: YamlNodes) {
         return null
     }
 
-    private fun readLevels(node: Node, path: String): Map<Severity, LevelNode> {
-        val entries = nodes.entries(node, path, Severity.entries.map { it.key }) ?: return emptyMap()
-        return entries.values
-            .mapNotNull { entry -> readLevel(entry, "$path.${entry.key}")?.let { Severity.ofKey(entry.key)!! to it } }
-            .toMap()
-    }
+    private fun readLevels(node: Node, path: String): Map<Severity, LevelNode> =
+        nodes.readMap(node, path, Severity.entries.map { it.key }, ::readLevel).bySeverity()
 
     private fun readLevel(entry: YamlEntry, path: String): LevelNode? {
-        val entries = nodes.entries(entry.value, path, LEVEL_KEYS) ?: return null
-        val maxNode = entries[MAX]?.value
-        val max = maxNode?.let { nodes.number(it, "$path.$MAX") }
-        val instruction = entries[INSTRUCTION]?.let { nodes.text(it.value, "$path.$INSTRUCTION") }
-        val hasInvalidMax = maxNode != null && max == null && !nodes.isEmpty(maxNode)
-        return LevelNode(entry.keyNode, maxNode, hasInvalidMax, LevelOverride(max, instruction))
+        val entries = nodes.entries(entry.value, path, ConfigKeys.LEVEL) ?: return null
+        val maxNode = entries[ConfigKeys.MAX]?.value
+        val max = maxNode?.let { nodes.number(it, childPath(path, ConfigKeys.MAX)) }
+        val instruction = entries[ConfigKeys.INSTRUCTION]?.let { nodes.text(it.value, childPath(path, ConfigKeys.INSTRUCTION)) }
+        return LevelNode(entry.keyNode, maxNode, LevelOverride(max, instruction))
     }
 
-    private class LevelNode(val keyNode: Node, val maxNode: Node?, val hasInvalidMax: Boolean, val level: LevelOverride)
-
-    companion object {
-        private const val MAX = "max"
-        private const val INSTRUCTION = "instruction"
-        private const val PATHS = "paths"
-        private const val METRICS = "metrics"
-        private val LEVEL_KEYS = listOf(MAX, INSTRUCTION)
-        private val OVERRIDE_KEYS = listOf(PATHS, METRICS)
-    }
+    private class LevelNode(val keyNode: Node, val maxNode: Node?, val level: LevelOverride)
 }

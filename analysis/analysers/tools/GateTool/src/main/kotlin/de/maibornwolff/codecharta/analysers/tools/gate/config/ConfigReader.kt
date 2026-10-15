@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.config
 
+import de.maibornwolff.codecharta.analysers.tools.gate.config.YamlNodes.Companion.bySeverity
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.error.MarkedYAMLException
 import org.yaml.snakeyaml.nodes.Node
@@ -32,56 +33,53 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val configFolde
     }
 
     private fun readConfig(root: Node, nodes: YamlNodes): GateConfig {
-        val sections = nodes.entries(root, "", TOP_LEVEL_KEYS) ?: return GateConfig()
+        val sections = nodes.entries(root, "", ConfigKeys.TOP_LEVEL) ?: return GateConfig()
         val ruleReader = MetricRuleReader(nodes)
         return GateConfig(
-            input = sections[INPUT]?.let { readInput(it.value, nodes) },
-            output = sections[OUTPUT]?.let { nodes.text(it.value, OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
-            parallel = sections[PARALLEL]?.let { nodes.switch(it.value, PARALLEL) } ?: false,
-            analysers = sections[ANALYSERS]?.let { AnalyserSettingsReader(nodes, catalog).read(it.value, ANALYSERS) } ?: emptyMap(),
-            exitCodes = GateConfig.DEFAULT_EXIT_CODES + (sections[EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap()),
-            metrics = sections[METRICS]?.let { ruleReader.readMetrics(it.value, METRICS) } ?: emptyMap(),
-            cycles = sections[CYCLES]?.let { CycleRuleReader(nodes).read(it.value, CYCLES) } ?: CycleRules(),
-            overrides = sections[OVERRIDES]?.let { ruleReader.readOverrides(it.value, OVERRIDES) } ?: emptyList()
+            input = sections[ConfigKeys.INPUT]?.let { readInput(it.value, nodes) },
+            output = sections[ConfigKeys.OUTPUT]?.let { nodes.text(it.value, ConfigKeys.OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
+            parallel = sections[ConfigKeys.PARALLEL]?.let { nodes.switch(it.value, ConfigKeys.PARALLEL) } ?: false,
+            analysers =
+                sections[ConfigKeys.ANALYSERS]?.let { AnalyserSettingsReader(nodes, catalog).read(it.value, ConfigKeys.ANALYSERS) }
+                    ?: emptyMap(),
+            exitCodes = sections[ConfigKeys.EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap(),
+            metrics = sections[ConfigKeys.METRICS]?.let { ruleReader.readMetrics(it.value, ConfigKeys.METRICS) } ?: emptyMap(),
+            cycles = sections[ConfigKeys.CYCLES]?.let { CycleRuleReader(nodes).read(it.value, ConfigKeys.CYCLES) } ?: CycleRules(),
+            overrides = sections[ConfigKeys.OVERRIDES]?.let { ruleReader.readOverrides(it.value, ConfigKeys.OVERRIDES) } ?: emptyList()
         )
     }
 
     private fun readInput(node: Node, nodes: YamlNodes): String? {
-        val input = nodes.text(node, INPUT) ?: return null
-        if (!GateConfig.resolve(configFolder, input).isDirectory) nodes.report(node, "$INPUT folder '$input' does not exist")
+        val input = nodes.text(node, ConfigKeys.INPUT) ?: return null
+        if (!GateConfig.resolve(configFolder, input).isDirectory) nodes.report(node, "${ConfigKeys.INPUT} folder '$input' does not exist")
         return input
     }
 
-    private fun readExitCodes(node: Node, nodes: YamlNodes): Map<Severity, Int> {
-        val entries = nodes.entries(node, EXIT_CODES, Severity.entries.map { it.key }) ?: return emptyMap()
-        return entries.values
-            .mapNotNull { entry -> readExitCode(entry, nodes)?.let { Severity.ofKey(entry.key)!! to it } }
-            .toMap()
-    }
+    private fun readExitCodes(node: Node, nodes: YamlNodes): Map<Severity, Int> = nodes
+        .readMap(
+            node,
+            ConfigKeys.EXIT_CODES,
+            Severity.entries.map { it.key }
+        ) { entry, path -> readExitCode(entry, path, nodes) }
+        .bySeverity()
 
-    private fun readExitCode(entry: YamlEntry, nodes: YamlNodes): Int? {
-        val path = "$EXIT_CODES.${entry.key}"
-        val value = nodes.text(entry.value, path) ?: return null.also { nodes.report(entry.keyNode, "$path needs a number") }
-        val exitCode = value.toIntOrNull()?.takeIf { it in EXIT_CODE_RANGE }
-        return when (exitCode) {
-            null -> null.also { nodes.report(entry.value, "$path must be a whole number from 0 to 255, found '$value'") }
-            GateConfig.TOOL_FAILURE_EXIT_CODE -> null.also {
-                nodes.report(entry.value, "$path must not be $exitCode, that code is reserved for tool failures")
-            }
-            else -> exitCode
+    private fun readExitCode(entry: YamlEntry, path: String, nodes: YamlNodes): Int? {
+        if (nodes.isEmpty(entry.value)) {
+            nodes.report(entry.keyNode, "$path needs a number")
+            return null
         }
+        val value = nodes.text(entry.value, path) ?: return null
+        val exitCode = value.toIntOrNull()?.takeIf { it in EXIT_CODE_RANGE }
+        val problem = when (exitCode) {
+            null -> "$path must be a whole number from 0 to 255, found '$value'"
+            GateConfig.TOOL_FAILURE_EXIT_CODE -> "$path must not be $exitCode, that code is reserved for tool failures"
+            else -> return exitCode
+        }
+        nodes.report(entry.value, problem)
+        return null
     }
 
     companion object {
-        private const val INPUT = "input"
-        private const val OUTPUT = "output"
-        private const val PARALLEL = "parallel"
-        private const val ANALYSERS = "analysers"
-        private const val EXIT_CODES = "exitCodes"
-        private const val METRICS = "metrics"
-        private const val CYCLES = "cycles"
-        private const val OVERRIDES = "overrides"
-        private val TOP_LEVEL_KEYS = listOf(INPUT, OUTPUT, PARALLEL, ANALYSERS, EXIT_CODES, METRICS, CYCLES, OVERRIDES)
         private val EXIT_CODE_RANGE = 0..255
     }
 }
