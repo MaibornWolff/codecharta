@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.analyserinterface.gitignore
 
+import java.nio.file.Path
 import java.nio.file.PathMatcher
 
 data class GitignoreRule(
@@ -10,4 +11,8 @@ data class GitignoreRule(
     val pathMatcher: PathMatcher,
     val rootLevelMatcher: PathMatcher? = null,
     val collapsedGlobstarMatcher: PathMatcher? = null
-)
+) {
+    fun matchesPath(relativePath: Path): Boolean = pathMatcher.matches(relativePath) ||
+        rootLevelMatcher?.matches(relativePath) == true ||
+        collapsedGlobstarMatcher?.matches(relativePath) == true
+}

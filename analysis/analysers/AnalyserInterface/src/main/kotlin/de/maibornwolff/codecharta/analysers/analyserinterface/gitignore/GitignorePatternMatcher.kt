@@ -18,7 +18,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
         }
 
         return try {
-            gitignoreFile.readLines().mapNotNull { parseGitignoreLine(it) }
+            gitignoreFile.readLines().mapNotNull { parsePattern(it) }
         } catch (e: Exception) {
             Logger.error { "Error: Failed to parse ${gitignoreFile.path}: ${e.message}" }
             emptyList()
@@ -37,7 +37,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
         return rules.lastOrNull { matchesRule(relativePath, file.isDirectory, it) }?.let { !it.isNegation } ?: false
     }
 
-    private fun parseGitignoreLine(line: String): GitignoreRule? {
+    fun parsePattern(line: String): GitignoreRule? {
         var normalizedPattern = removeUnquotedTrailingSpaces(line)
 
         if (normalizedPattern.isEmpty() || isComment(normalizedPattern)) {
@@ -138,9 +138,7 @@ class GitignorePatternMatcher(private val baseDir: File) {
             return false
         }
 
-        return rule.pathMatcher.matches(relativePath) ||
-            rule.rootLevelMatcher?.matches(relativePath) == true ||
-            rule.collapsedGlobstarMatcher?.matches(relativePath) == true
+        return rule.matchesPath(relativePath)
     }
 
     private fun escapeGlobSpecialChars(pattern: String): String = pattern.replace("{", "\\{").replace("}", "\\}")

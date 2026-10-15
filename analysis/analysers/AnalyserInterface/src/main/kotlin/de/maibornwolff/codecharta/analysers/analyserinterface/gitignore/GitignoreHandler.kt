@@ -132,9 +132,7 @@ class GitignoreHandler(private val root: File) {
 
     private fun ruleMatchesFile(rule: GitignoreRule, relPath: Path, file: File): Boolean {
         val pathMatches = try {
-            rule.pathMatcher.matches(relPath) ||
-                rule.rootLevelMatcher?.matches(relPath) == true ||
-                rule.collapsedGlobstarMatcher?.matches(relPath) == true
+            rule.matchesPath(relPath)
         } catch (_: Exception) {
             false
         }
