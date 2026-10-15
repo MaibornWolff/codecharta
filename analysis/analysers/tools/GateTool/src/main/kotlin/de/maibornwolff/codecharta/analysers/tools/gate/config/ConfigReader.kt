@@ -35,6 +35,7 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val projectFold
     private fun readConfig(root: Node, nodes: YamlNodes): GateConfig {
         val sections = nodes.entries(root, "", ConfigKeys.TOP_LEVEL) ?: return GateConfig()
         val ruleReader = MetricRuleReader(nodes)
+        val metrics = sections[ConfigKeys.METRICS]?.let { ruleReader.readMetrics(it.value, ConfigKeys.METRICS) } ?: emptyMap()
         return GateConfig(
             input = sections[ConfigKeys.INPUT]?.let { readInput(it.value, nodes) },
             output = sections[ConfigKeys.OUTPUT]?.let { nodes.text(it.value, ConfigKeys.OUTPUT) } ?: GateConfig.DEFAULT_OUTPUT,
@@ -44,11 +45,12 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val projectFold
                 sections[ConfigKeys.ANALYSERS]?.let { AnalyserSettingsReader(nodes, catalog).read(it.value, ConfigKeys.ANALYSERS) }
                     ?: emptyMap(),
             exitCodes = sections[ConfigKeys.EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap(),
-            metrics = sections[ConfigKeys.METRICS]?.let { ruleReader.readMetrics(it.value, ConfigKeys.METRICS) } ?: emptyMap(),
+            metrics = metrics,
             dependencies =
                 sections[ConfigKeys.DEPENDENCIES]?.let { DependencyRuleReader(nodes).read(it.value, ConfigKeys.DEPENDENCIES) }
                     ?: DependencyRules(),
-            overrides = sections[ConfigKeys.OVERRIDES]?.let { ruleReader.readOverrides(it.value, ConfigKeys.OVERRIDES) } ?: emptyList()
+            overrides =
+                sections[ConfigKeys.OVERRIDES]?.let { ruleReader.readOverrides(it.value, ConfigKeys.OVERRIDES, metrics) } ?: emptyList()
         )
     }
 

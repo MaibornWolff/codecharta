@@ -14,12 +14,16 @@ data class YamlEntry(val key: String, val keyNode: Node, val value: Node)
 
 class YamlNodes {
     private val collectedProblems = mutableListOf<ConfigProblem>()
+    private val reportedNodes = mutableListOf<Node>()
 
-    val problems: List<ConfigProblem> get() = collectedProblems
+    val problems: List<ConfigProblem> get() = collectedProblems.distinctBy { it.line }.sortedBy { it.line }
 
     fun report(node: Node, message: String) {
         collectedProblems.add(ConfigProblem(lineOf(node), message))
+        reportedNodes.add(node)
     }
+
+    fun hasProblemsWithin(node: Node): Boolean = reportedNodes.any { it.startMark.index in node.startMark.index..node.endMark.index }
 
     fun entries(node: Node, path: String, allowedKeys: Collection<String>? = null): Map<String, YamlEntry>? {
         if (isEmpty(node)) return emptyMap()
@@ -48,6 +52,7 @@ class YamlNodes {
 
     fun items(node: Node, path: String): List<Node>? {
         if (isEmpty(node)) return emptyList()
+        if (isScalar(node)) return listOf(node)
         if (node !is SequenceNode) {
             report(node, "$path must be a list")
             return null
@@ -68,7 +73,8 @@ class YamlNodes {
 
     fun number(node: Node, path: String): Double? {
         val value = text(node, path) ?: return null
-        return value.toDoubleOrNull() ?: run {
+        val plainNumber = value.replace("_", "").takeIf { PLAIN_NUMBER.matches(it) }
+        return plainNumber?.toDouble() ?: run {
             report(node, "$path must be a number, found '$value'")
             null
         }
@@ -84,7 +90,7 @@ class YamlNodes {
 
     fun severity(node: Node, path: String): Severity? {
         val value = text(node, path) ?: return null
-        return Severity.ofKey(value) ?: run {
+        return Severity.parse(value) ?: run {
             report(node, "$path must be one of: ${Severity.entries.joinToString { it.key }}, found '$value'")
             null
         }
@@ -102,6 +108,7 @@ class YamlNodes {
     }
 
     companion object {
+        private val PLAIN_NUMBER = Regex("[+-]?\\d+(\\.\\d+)?")
         private val SWITCH_VALUES = mapOf("on" to true, "true" to true, "yes" to true, "off" to false, "false" to false, "no" to false)
 
         fun childPath(path: String, key: String): String = if (path.isEmpty()) key else "$path.$key"

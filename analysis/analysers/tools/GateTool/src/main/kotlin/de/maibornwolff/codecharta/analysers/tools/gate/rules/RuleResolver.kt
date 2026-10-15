@@ -23,18 +23,7 @@ class RuleResolver(private val config: GateConfig) {
     private fun applyOverride(rules: MutableMap<String, LevelRules>, metric: String, change: MetricOverride) {
         when (change) {
             MetricOverride.Off -> rules.remove(metric)
-            is MetricOverride.Levels -> rules[metric] = overriddenLevels(rules[metric] ?: emptyMap(), change)
+            is MetricOverride.Levels -> rules[metric] = change.applyTo(rules[metric] ?: emptyMap())
         }
-    }
-
-    private fun overriddenLevels(levels: LevelRules, change: MetricOverride.Levels): LevelRules {
-        val changedLevels = change.levels.mapNotNull { (severity, levelOverride) ->
-            val current = levels[severity]
-            val max = levelOverride.max ?: current?.max
-            val min = levelOverride.min ?: current?.min
-            if (max == null && min == null) return@mapNotNull null
-            severity to LevelRule(max, levelOverride.instruction ?: current?.instruction, min)
-        }
-        return levels + changedLevels
     }
 }
