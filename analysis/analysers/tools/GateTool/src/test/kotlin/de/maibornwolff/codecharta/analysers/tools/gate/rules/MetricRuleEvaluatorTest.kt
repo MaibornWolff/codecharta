@@ -96,7 +96,7 @@ class MetricRuleEvaluatorTest {
     }
 
     @Test
-    fun `should warn about a rule for a metric no file has`() {
+    fun `should report a rule for a metric no file has at the worst severity the rule sets`() {
         // Arrange
         val files = listOf(AnalysedFile("src/Big.kt", mapOf("complexity" to 3.0)))
 
@@ -106,9 +106,29 @@ class MetricRuleEvaluatorTest {
         // Assert
         assertThat(violations).containsExactly(
             UnknownMetric(
-                Severity.WARNING,
+                Severity.ERROR,
                 "The analysis produced no metric named 'rloc'. Check the name, or switch on the analyser that measures it.",
                 "rloc"
+            )
+        )
+    }
+
+    @Test
+    fun `should suggest the measured metric whose name is closest to a misspelt one`() {
+        // Arrange
+        val misspelt = GateConfig(metrics = mapOf("rlco" to MetricRule(mapOf(Severity.WARNING to LevelRule(200.0)))))
+        val files = listOf(AnalysedFile("src/Big.kt", mapOf("rloc" to 10.0, "mcc" to 3.0)))
+
+        // Act
+        val violations = MetricRuleEvaluator(misspelt).evaluate(files)
+
+        // Assert
+        assertThat(violations).containsExactly(
+            UnknownMetric(
+                Severity.WARNING,
+                "The analysis produced no metric named 'rlco'. Did you mean 'rloc'? " +
+                    "Check the name, or switch on the analyser that measures it.",
+                "rlco"
             )
         )
     }
