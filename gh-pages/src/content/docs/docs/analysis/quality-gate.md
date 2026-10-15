@@ -110,8 +110,8 @@ overrides:                        # other limits for the files the patterns matc
   A list repeats the option, `true` sets a flag and `false` leaves it out. `--init` lists the options of every
   analyser, and `--doctor` checks names and values the way the analyser itself would. The gate sets the output
   options itself.
-- **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console and in
-  the report.
+- **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console in a box
+  under the rule they belong to, and in the report.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
 - **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
   what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `betweenFiles` and `insideFiles`
@@ -131,16 +131,22 @@ Analysing . with rawtextparser, unifiedparser, dependencyparser, domainlanguagep
 Analysis done: 418 files with rawtextparser, unifiedparser, dependencyparser, domainlanguageparser in 4.2 s
 
 ERROR  rloc > 400
-       Instruction: Split the file by responsibility into smaller files.
+┌ Instruction ────────────────────────────────────────
+│ Split the file by responsibility into smaller files.
+└─────────────────────────────────────────────────────
   src/parser/Parser.kt     812
   src/export/CsvWriter.kt  455
 
 WARN   max_complexity_per_function > 10
-       Instruction: Extract branches into named helper functions.
+┌ Instruction ─────────────────────────────────
+│ Extract branches into named helper functions.
+└──────────────────────────────────────────────
   src/parser/Parser.kt  37
 
 ERROR  1 cycle between files
-       Instruction: Break the cycle by moving the shared part into its own file.
+┌ Instruction ────────────────────────────────────────────────
+│ Break the cycle by moving the shared part into its own file.
+└─────────────────────────────────────────────────────────────
   cycle 1 of 1, 2 files in src/model/
     MutableNode.kt: MutableNode → Node.kt: Node
     Node.kt: Node               → MutableNode.kt: MutableNode
