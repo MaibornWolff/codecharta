@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependencyRuleEvalu
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricRuleEvaluator
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.PathPatterns
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnmatchedPatternFinder
 import de.maibornwolff.codecharta.analysers.tools.gate.template.ConfigTemplate
 import de.maibornwolff.codecharta.analysers.tools.gate.template.MetricSummary
 import java.io.File
@@ -63,7 +64,9 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
         val files = project.files.filterNot { excluded.matches(it.path) }
         val dependencyAnalysis = project.dependencyAnalysis?.withoutFiles(excluded::matches)
         val violations =
-            MetricRuleEvaluator(config).evaluate(files) + DependencyRuleEvaluator(config.dependencies).evaluate(dependencyAnalysis)
+            MetricRuleEvaluator(config).evaluate(files) +
+                DependencyRuleEvaluator(config.dependencies).evaluate(dependencyAnalysis) +
+                UnmatchedPatternFinder(project.files.map { it.path }).find(config)
         return GateResult(violations, files.size)
     }
 

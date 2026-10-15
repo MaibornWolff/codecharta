@@ -10,6 +10,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Limit
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnmatchedPattern
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -206,6 +207,30 @@ class ReportTest {
         // Assert
         assertThat(json["violations"].asJsonArray.single().toString()).isEqualTo(
             """{"rule":"metric","severity":"error","path":"src/A.kt","metric":"coverage","value":70,"min":80}"""
+        )
+    }
+
+    @Test
+    fun `should list the patterns that match no file with the setting they are in`() {
+        // Arrange
+        val output = ByteArrayOutputStream()
+        val unmatched =
+            listOf(
+                UnmatchedPattern(Severity.WARNING, "Check the patterns.", "./src/**", "exclude"),
+                UnmatchedPattern(Severity.WARNING, "Check the patterns.", "legacy/", "overrides[0].paths")
+            )
+
+        // Act
+        ConsoleReport(PrintStream(output), emptyList()).print(GateResult(unmatched, filesChecked = 2))
+        val json = JsonParser.parseString(JsonReport.render(GateResult(unmatched.take(1), filesChecked = 2), GateConfig())).asJsonObject
+
+        // Assert
+        assertThat(output.toString()).startsWith(
+            "WARN   2 patterns that match no file\n┌ Instruction ───────\n│ Check the patterns.\n└────────────────────\n" +
+                "  exclude             ./src/**\n  overrides[0].paths  legacy/\n"
+        )
+        assertThat(json["violations"].asJsonArray.single().toString()).isEqualTo(
+            """{"rule":"unmatched-pattern","severity":"warning","setting":"exclude","pattern":"./src/**","instruction":"Check the patterns."}"""
         )
     }
 
