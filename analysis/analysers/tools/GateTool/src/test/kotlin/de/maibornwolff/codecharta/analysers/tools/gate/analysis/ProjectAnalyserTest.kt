@@ -9,7 +9,7 @@ import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedProject
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import picocli.CommandLine
@@ -68,19 +68,16 @@ class ProjectAnalyserTest {
     }
 
     @Test
-    fun `should name the analyser that failed`() {
+    fun `should name the analyser that failed and why`() {
         // Arrange
         writeSource("src/App.kt", "fun main() {}\n")
+        val analysers = listOf(ConfiguredAnalyser(FailingAnalyser()))
 
-        // Act & Assert
-        assertThatThrownBy {
-            ProjectAnalyser().analyse(
-                projectFolder,
-                listOf(ConfiguredAnalyser(FailingAnalyser())),
-                File(projectFolder, "out")
-            )
-        }.isInstanceOf(AnalysisException::class.java)
-            .hasMessageContaining("failingparser")
+        // Act
+        val failure = catchThrowable { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out")) }
+
+        // Assert
+        assertThat(failure).isInstanceOf(AnalysisException::class.java).hasMessageContaining("failingparser").hasMessageContaining("broken")
     }
 
     @Test
@@ -88,10 +85,11 @@ class ProjectAnalyserTest {
         // Arrange
         val analysers = emptyList<ConfiguredAnalyser>()
 
-        // Act & Assert
-        assertThatThrownBy { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out")) }
-            .isInstanceOf(AnalysisException::class.java)
-            .hasMessageContaining("No analyser")
+        // Act
+        val failure = catchThrowable { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out")) }
+
+        // Assert
+        assertThat(failure).isInstanceOf(AnalysisException::class.java).hasMessageContaining("No analyser")
     }
 
     @Test
@@ -110,15 +108,18 @@ class ProjectAnalyserTest {
     }
 
     @Test
-    fun `should name the analyser that failed while running in parallel`() {
+    fun `should let the other analysers finish before giving up on a failed parallel run`() {
         // Arrange
         writeSource("src/App.kt", "fun main() {}\n")
-        val analysers = listOf(ConfiguredAnalyser(UnifiedParser()), ConfiguredAnalyser(FailingAnalyser()))
+        val slowAnalyser = SlowAnalyser()
+        val analysers = listOf(ConfiguredAnalyser(FailingAnalyser()), ConfiguredAnalyser(slowAnalyser))
 
-        // Act & Assert
-        assertThatThrownBy { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out"), parallel = true) }
-            .isInstanceOf(AnalysisException::class.java)
-            .hasMessageContaining("failingparser")
+        // Act
+        val failure = catchThrowable { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out"), parallel = true) }
+
+        // Assert
+        assertThat(failure).isInstanceOf(AnalysisException::class.java).hasMessageContaining("failingparser")
+        assertThat(slowAnalyser.hasFinished).isTrue()
     }
 
     private fun bothAnalysers() = listOf(ConfiguredAnalyser(RawTextParser()), ConfiguredAnalyser(UnifiedParser()))
@@ -132,13 +133,39 @@ class ProjectAnalyserTest {
         override val name = "failingparser"
         override val description = "always fails"
 
-        @CommandLine.Parameters
-        private var arguments: List<String> = emptyList()
+        @CommandLine.Unmatched
+        private var arguments: MutableList<String> = mutableListOf()
 
         override fun call(): Unit? = throw IllegalStateException("broken")
 
         override fun getDialog(): AnalyserDialogInterface = mockk()
 
         override fun isApplicable(resourceToBeParsed: String) = true
+    }
+
+    @CommandLine.Command(name = "slowparser")
+    private class SlowAnalyser : AnalyserInterface {
+        override val name = "slowparser"
+        override val description = "takes its time and writes nothing"
+
+        @Volatile
+        var hasFinished = false
+
+        @CommandLine.Unmatched
+        private var arguments: MutableList<String> = mutableListOf()
+
+        override fun call(): Unit? {
+            Thread.sleep(SLOW_ANALYSIS_MILLISECONDS)
+            hasFinished = true
+            return null
+        }
+
+        override fun getDialog(): AnalyserDialogInterface = mockk()
+
+        override fun isApplicable(resourceToBeParsed: String) = true
+    }
+
+    private companion object {
+        const val SLOW_ANALYSIS_MILLISECONDS = 500L
     }
 }
