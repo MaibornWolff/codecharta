@@ -1,0 +1,325 @@
+package de.maibornwolff.codecharta.analysers.tools.gate.config
+
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+class ConfigReaderTest {
+    private val reader = ConfigReader(setOf("rawtextparser", "unifiedparser"))
+
+    @Test
+    fun `should read an empty file as the default config`() {
+        // Arrange
+        val text = ""
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config).isEqualTo(GateConfig())
+    }
+
+    @Test
+    fun `should read a fully commented file as the default config`() {
+        // Arrange
+        val text =
+            """
+            # metrics:
+            #   rloc:
+            #     error:
+            #       max:
+            """.trimIndent()
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config).isEqualTo(GateConfig())
+    }
+
+    @Test
+    fun `should read every section of a complete config`() {
+        // Arrange
+        val text =
+            """
+            output: build/check
+            analysers:
+              rawtextparser: off
+              unifiedparser: on
+            exitCodes:
+              error: 3
+              warning: 1
+            metrics:
+              rloc:
+                warning:
+                  max: 200
+                  message: Watch the size.
+                error:
+                  max: 400
+            cycles:
+              file:
+                severity: error
+                message: Break the cycle.
+              package:
+                severity: warning
+              allow:
+                - - src/a.kt
+                  - src/b.kt
+            overrides:
+              - paths:
+                  - src/legacy/**
+                metrics:
+                  rloc:
+                    error:
+                      max: 2000
+              - paths:
+                  - "**/generated/**"
+                metrics:
+                  rloc: off
+            """.trimIndent()
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config).isEqualTo(
+            GateConfig(
+                output = "build/check",
+                analysers = mapOf("rawtextparser" to false, "unifiedparser" to true),
+                exitCodes = mapOf(Severity.ERROR to 3, Severity.WARNING to 1),
+                metrics =
+                    mapOf(
+                        "rloc" to
+                            MetricRule(
+                                mapOf(Severity.WARNING to LevelRule(200.0, "Watch the size."), Severity.ERROR to LevelRule(400.0))
+                            )
+                    ),
+                cycles =
+                    CycleRules(
+                        file = CycleRule(Severity.ERROR, "Break the cycle."),
+                        packages = CycleRule(Severity.WARNING),
+                        allowed = listOf(setOf("src/a.kt", "src/b.kt"))
+                    ),
+                overrides =
+                    listOf(
+                        PathOverride(
+                            listOf("src/legacy/**"),
+                            mapOf("rloc" to MetricOverride.Levels(mapOf(Severity.ERROR to LevelOverride(max = 2000.0))))
+                        ),
+                        PathOverride(listOf("**/generated/**"), mapOf("rloc" to MetricOverride.Off))
+                    )
+            )
+        )
+    }
+
+    @Test
+    fun `should report broken yaml syntax with its line`() {
+        // Arrange
+        val text = "metrics:\n  rloc: [unclosed\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).hasSize(1)
+        assertThat(result.problems.first().line).isEqualTo(3)
+    }
+
+    @Test
+    fun `should report an unknown top level key with its line`() {
+        // Arrange
+        val text = "output: out\nmetrix:\n  rloc: {}\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(
+            result.problems
+        ).containsExactly(
+            ConfigProblem(2, "unknown key 'metrix', expected one of: output, analysers, exitCodes, metrics, cycles, overrides")
+        )
+    }
+
+    @Test
+    fun `should report a metric level without a limit`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    error:\n      max:\n      message: Split it.\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(4, "metrics.rloc.error.max needs a number"))
+    }
+
+    @Test
+    fun `should report a limit that is not a number`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    error:\n      max: many\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(4, "metrics.rloc.error.max must be a number, found 'many'"))
+    }
+
+    @Test
+    fun `should report a warning limit above the error limit`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    warning:\n      max: 500\n    error:\n      max: 400\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(4, "metrics.rloc.warning.max (500) must not be above metrics.rloc.error.max (400)"))
+    }
+
+    @Test
+    fun `should report an unknown severity in a metric`() {
+        // Arrange
+        val text = "metrics:\n  rloc:\n    critical:\n      max: 10\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(3, "unknown key 'critical' in metrics.rloc, expected one of: warning, error"))
+    }
+
+    @Test
+    fun `should report an exit code that collides with the tool failure code`() {
+        // Arrange
+        val text = "exitCodes:\n  error: 2\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(
+            result.problems
+        ).containsExactly(ConfigProblem(2, "exitCodes.error must not be 2, that code is reserved for tool failures"))
+    }
+
+    @Test
+    fun `should report an exit code outside the range a process can return`() {
+        // Arrange
+        val text = "exitCodes:\n  warning: 300\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(2, "exitCodes.warning must be a whole number from 0 to 255, found '300'"))
+    }
+
+    @Test
+    fun `should report an unknown analyser and a switch that is neither on nor off`() {
+        // Arrange
+        val text = "analysers:\n  gitlogparser: on\n  unifiedparser: maybe\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(2, "unknown key 'gitlogparser' in analysers, expected one of: rawtextparser, unifiedparser"),
+            ConfigProblem(3, "analysers.unifiedparser must be on or off, found 'maybe'")
+        )
+    }
+
+    @Test
+    fun `should report a cycle rule with an unknown severity`() {
+        // Arrange
+        val text = "cycles:\n  file:\n    severity: fatal\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(3, "cycles.file.severity must be one of: warning, error, found 'fatal'"))
+    }
+
+    @Test
+    fun `should report an allowed cycle with fewer than two members`() {
+        // Arrange
+        val text = "cycles:\n  allow:\n    - - src/a.kt\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(3, "cycles.allow[0] must list at least two paths"))
+    }
+
+    @Test
+    fun `should report an override without paths`() {
+        // Arrange
+        val text = "overrides:\n  - metrics:\n      rloc: off\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(2, "overrides[0].paths needs at least one path pattern"))
+    }
+
+    @Test
+    fun `should read an override level that only replaces the message`() {
+        // Arrange
+        val text = "overrides:\n  - paths:\n      - src/**\n    metrics:\n      rloc:\n        error:\n          message: Shrink it.\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).isEmpty()
+        assertThat(result.config.overrides.single().metrics).isEqualTo(
+            mapOf("rloc" to MetricOverride.Levels(mapOf(Severity.ERROR to LevelOverride(message = "Shrink it."))))
+        )
+    }
+
+    @Test
+    fun `should report a key given twice`() {
+        // Arrange
+        val text = "output: a\noutput: b\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(2, "key 'output' is given twice"))
+    }
+
+    @Test
+    fun `should report a section that is not a mapping`() {
+        // Arrange
+        val text = "metrics: rloc\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(ConfigProblem(1, "metrics must be a mapping"))
+    }
+
+    @Test
+    fun `should collect every problem of a file instead of stopping at the first`() {
+        // Arrange
+        val text = "output: out\nmetrix: 1\nexitCodes:\n  error: 2\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems.map { it.line }).containsExactly(2, 4)
+    }
+}

@@ -80,6 +80,11 @@ cat demo.cc.json | ccsh inspect --levels=2
 
 This behaviour is currently supported by `ccsh modify`, `ccsh inspect` and `ccsh convert`. `ccsh merge` and `ccsh edgefilter` need their input as files.
 
+### Checking a project against rules
+
+`ccsh gate` analyses a project and checks it against the metric limits and dependency-cycle rules in its
+`.codecharta.yml`, with an exit code for builds, git hooks and AI agents (see [Quality Gate](/docs/analysis/quality-gate)).
+
 ### Validating cc.json files
 
 CodeCharta also provides the `ccsh check` command, which can verify the syntax of a `cc.json` file (see [Validation Tool](/docs/filter/validation-tool)). This can be useful in case you want to manually create or modify a `cc.json` file. While it is possible, we advise against manually adjusting `cc.json` files. If you want to use metrics that are not available with our tools, it is much easier and safer to create them in CSV format and use our [CSVimporter](/docs/importer/csv).
