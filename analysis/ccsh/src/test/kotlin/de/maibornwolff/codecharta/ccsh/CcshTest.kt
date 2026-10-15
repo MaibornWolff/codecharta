@@ -399,20 +399,30 @@ class CcshTest {
     }
 
     @Test
-    fun `should return the exit code of the gate`(
+    fun `should return the tool failure code of the gate for an invalid config`(
         @TempDir projectFolder: File
     ) {
         // Arrange
         File(projectFolder, ".codecharta.yml").writeText("exitCodes:\n  error: 2\n")
-        val validProjectFolder = File(projectFolder, "valid").apply { mkdirs() }
-        File(validProjectFolder, ".codecharta.yml").writeText("output: out\n")
 
         // Act
-        val invalidConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "--doctor", projectFolder.path))
-        val validConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "--doctor", validProjectFolder.path))
+        val exitCode = Ccsh.executeCommandLine(arrayOf("gate", "--doctor", projectFolder.path))
 
         // Assert
-        assertThat(invalidConfigExitCode).isEqualTo(2)
-        assertThat(validConfigExitCode).isZero()
+        assertThat(exitCode).isEqualTo(2)
+    }
+
+    @Test
+    fun `should return 0 from the gate for a valid config`(
+        @TempDir projectFolder: File
+    ) {
+        // Arrange
+        File(projectFolder, ".codecharta.yml").writeText("output: out\n")
+
+        // Act
+        val exitCode = Ccsh.executeCommandLine(arrayOf("gate", "--doctor", projectFolder.path))
+
+        // Assert
+        assertThat(exitCode).isZero()
     }
 }

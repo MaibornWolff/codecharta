@@ -43,7 +43,7 @@ class GateToolTest {
 
     @Test
     fun `should write a fully commented config on init`() {
-        // Arrange & Act
+        // Act
         val exitCode = run("--init", projectFolder.path)
 
         // Assert
@@ -59,11 +59,22 @@ class GateToolTest {
 
         // Act
         val exitCode = run("--init", projectFolder.path)
-        val forcedExitCode = run("--init", "--force", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(2)
-        assertThat(forcedExitCode).isEqualTo(0)
+        assertThat(configFile.readText()).isEqualTo("output: mine\n")
+    }
+
+    @Test
+    fun `should overwrite an existing config with force`() {
+        // Arrange
+        configFile.writeText("output: mine\n")
+
+        // Act
+        val exitCode = run("--init", "--force", projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isZero()
         assertThat(configFile.readText()).doesNotContain("output: mine")
     }
 
@@ -95,7 +106,7 @@ class GateToolTest {
 
     @Test
     fun `should fail with the tool failure code when there is no config to check against`() {
-        // Arrange & Act
+        // Act
         val exitCode = run(projectFolder.path)
 
         // Assert
@@ -181,12 +192,25 @@ class GateToolTest {
 
     @Test
     fun `should refuse to init and doctor in one run`() {
-        // Arrange & Act
+        // Act
         val exitCode = run("--init", "--doctor", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(2)
         assertThat(output.toString()).contains("either --init or --doctor")
+    }
+
+    @Test
+    fun `should refuse options that do nothing when only validating the config`() {
+        // Arrange
+        configFile.writeText("output: out\n")
+
+        // Act
+        val exitCode = run("--doctor", "--parallel", projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("--map and --parallel do nothing with --doctor")
     }
 
     @Test

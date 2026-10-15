@@ -14,16 +14,18 @@ object InstructionBox {
     }
 
     private fun wrapped(text: String): List<String> {
+        val indent = text.takeWhile { it == ' ' }
+        val width = TEXT_WIDTH - indent.length
         val lines = mutableListOf<String>()
         var current = ""
         text.split(" ").filter { it.isNotEmpty() }.forEach { word ->
-            if (current.isNotEmpty() && current.length + 1 + word.length > TEXT_WIDTH) {
+            if (current.isNotEmpty() && current.length + 1 + word.length > width) {
                 lines.add(current)
                 current = word
             } else {
                 current = if (current.isEmpty()) word else "$current $word"
             }
         }
-        return lines + current
+        return (lines + current).map { indent + it }
     }
 }
