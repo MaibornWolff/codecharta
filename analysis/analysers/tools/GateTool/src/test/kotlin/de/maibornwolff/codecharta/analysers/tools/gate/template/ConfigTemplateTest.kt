@@ -51,6 +51,18 @@ class ConfigTemplateTest {
     }
 
     @Test
+    fun `should offer running the analysers in parallel, switched off`() {
+        // Arrange
+        val template = ConfigTemplate(files, analysers, catalog)
+
+        // Act
+        val text = template.render()
+
+        // Assert
+        assertThat(text).contains("# parallel: off")
+    }
+
+    @Test
     fun `should leave every line commented out so the file checks nothing yet`() {
         // Arrange
         val template = ConfigTemplate(files, analysers, catalog)

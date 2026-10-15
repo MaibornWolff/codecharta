@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedFile
 
 class ConfigTemplate(private val files: List<AnalysedFile>, private val analyserNames: List<String>, private val catalog: AnalyserCatalog) {
-    fun render(): String = listOf(header(), input(), output(), analysers(), exitCodes(), metrics(), cycles(), overrides())
+    fun render(): String = listOf(header(), input(), output(), parallel(), analysers(), exitCodes(), metrics(), cycles(), overrides())
         .joinToString("\n\n") { section -> section.joinToString("\n") }
         .plus("\n")
 
@@ -17,6 +17,8 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
     )
 
     private fun input() = commented("input: .")
+
+    private fun parallel() = commented("parallel: off")
 
     private fun output() = commented("output: ${GateConfig.DEFAULT_OUTPUT}")
 

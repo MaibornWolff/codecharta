@@ -34,6 +34,7 @@ data class AnalyserSetting(val enabled: Boolean, val arguments: List<String> = e
 data class GateConfig(
     val input: String? = null,
     val output: String = DEFAULT_OUTPUT,
+    val parallel: Boolean = false,
     val analysers: Map<String, AnalyserSetting> = emptyMap(),
     val exitCodes: Map<Severity, Int> = DEFAULT_EXIT_CODES,
     val metrics: Map<String, MetricRule> = emptyMap(),

@@ -15,6 +15,7 @@ Full documentation: https://maibornwolff.github.io/codecharta/docs/analysis/qual
 | `--doctor`             | validates the config without analysing                                      |
 | `-c, --config=<file>`  | config file (default: `.codecharta.yml` in the project folder)              |
 | `-f, --force`          | lets `--init` overwrite an existing config                                  |
+| `-p, --parallel`       | runs the analysers at the same time (also `parallel: on` in the config)     |
 | `-q, --quiet`          | keeps the output of the analysers off the console                           |
 | `-h, --help`           | displays help and exits                                                     |
 
@@ -23,7 +24,7 @@ arguments in a terminal, it starts right away when the current folder has a `.co
 otherwise.
 
 ```
-Usage: ccsh gate [-fhq] [--doctor] [--init] [-c=<configFile>] [FOLDER]
+Usage: ccsh gate [-fhpq] [--doctor] [--init] [-c=<configFile>] [FOLDER]
 ```
 
 ## Examples

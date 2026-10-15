@@ -31,9 +31,9 @@ class QualityGate(
     private val configFolder = this.configFile.parentFile ?: File(".")
     private val catalog = PicocliAnalyserCatalog(createAnalysers)
 
-    fun init(force: Boolean): Int {
+    fun init(force: Boolean, parallel: Boolean): Int {
         if (configFile.exists() && !force) return failure("${configFile.path} already exists. Add --force to overwrite it.")
-        val analysis = analyse(GateConfig())
+        val analysis = analyse(GateConfig(parallel = parallel))
         configFile.writeText(ConfigTemplate(analysis.project.files, analysis.analyserNames, catalog).render())
         console.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         return SUCCESS
@@ -46,8 +46,9 @@ class QualityGate(
         return SUCCESS
     }
 
-    fun check(): Int {
-        val config = readConfig() ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
+    fun check(parallel: Boolean): Int {
+        val readConfig = readConfig() ?: return GateConfig.TOOL_FAILURE_EXIT_CODE
+        val config = if (parallel) readConfig.copy(parallel = true) else readConfig
         val analysis = analyse(config)
         val result = evaluate(analysis.project, config)
         if (!config.hasActiveRules) console.println(NO_ACTIVE_RULES)
@@ -69,7 +70,7 @@ class QualityGate(
 
     private fun analyseAndKeepMap(analysers: List<ConfiguredAnalyser>, config: GateConfig): Project {
         val outputFolder = outputFolder(config)
-        val project = ProjectAnalyser().analyse(analysisFolder(config), analysers, outputFolder)
+        val project = ProjectAnalyser().analyse(analysisFolder(config), analysers, outputFolder, config.parallel)
         outputFolder.mkdirs()
         ProjectSerializer.serializeToFileOrStream(project, File(outputFolder, MAP_FILE_NAME).path, console.output, true)
         return project
