@@ -107,7 +107,7 @@ class GateToolTest {
     fun `should report broken rules, write the map and the report and exit with the error code`() {
         // Arrange
         configFile.writeText(
-            "metrics:\n  rloc:\n    error:\n      max: 1\n      instruction: Keep files tiny.\ncycles:\n  betweenFiles:\n    severity: warning\n"
+            "metrics:\n  rloc:\n    error:\n      max: 1\n      instruction: Keep files tiny.\ndependencies:\n  cyclesBetweenFiles:\n    severity: warning\n"
         )
 
         // Act
@@ -157,7 +157,7 @@ class GateToolTest {
     @Test
     fun `should not run an analyser the config switches off`() {
         // Arrange
-        configFile.writeText("analysers:\n  dependencyparser: off\ncycles:\n  betweenFiles:\n    severity: error\n")
+        configFile.writeText("analysers:\n  dependencyparser: off\ndependencies:\n  cyclesBetweenFiles:\n    severity: error\n")
 
         // Act
         val exitCode = run(projectFolder.path)
@@ -325,7 +325,7 @@ class GateToolTest {
     @Test
     fun `should report the same result when the analysers run in parallel`() {
         // Arrange
-        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\ncycles:\n  betweenFiles:\n    severity: warning\n")
+        configFile.writeText("metrics:\n  rloc:\n    error:\n      max: 1\ndependencies:\n  cyclesBetweenFiles:\n    severity: warning\n")
 
         // Act
         val exitCode = run("--parallel", projectFolder.path)
@@ -351,17 +351,17 @@ class GateToolTest {
     }
 
     @Test
-    fun `should warn that cycles could not be checked when the map has no dependencies`() {
+    fun `should warn that dependencies could not be checked when the map has no dependency analysis`() {
         // Arrange
         val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
-        configFile.writeText("cycles:\n  betweenFiles:\n    severity: error\n")
+        configFile.writeText("dependencies:\n  cyclesBetweenFiles:\n    severity: error\n")
 
         // Act
         val exitCode = run("--map", mapFile.path, projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(0)
-        assertThat(output.toString()).contains("WARN   cycles not checked", "0 errors, 1 warning")
+        assertThat(output.toString()).contains("WARN   dependencies not checked", "0 errors, 1 warning")
     }
 
     @Test

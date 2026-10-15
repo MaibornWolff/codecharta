@@ -76,13 +76,13 @@ metrics:                          # checked per file
       max: 10
       instruction: Extract branches into named helper functions.
 
-cycles:
-  betweenFiles:
+dependencies:
+  cyclesBetweenFiles:
     severity: error
     instruction: Break the cycle by moving the shared part into its own file.
     ignore:                       # files or folders whose cycles are not reported
       - "**/generated/**"
-  insideFiles:
+  cyclesInsideFiles:
     severity: warning
   upward:
     severity: warning
@@ -117,7 +117,7 @@ overrides:                        # other limits for the files the patterns matc
   otherwise the current folder, wherever the config file lives.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
 - **Cycles and upward dependencies** are counted the way the dependency view in the visualization counts them, from
-  what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `betweenFiles` and `insideFiles`
+  what the [Dependency Parser](/docs/parser/dependency) marks between declarations. `cyclesBetweenFiles` and `cyclesInsideFiles`
   report each loop through declarations: for every dependency the parser marks cyclic, the shortest way back, each
   loop once. `upward` reports each dependency between declarations that runs against the levels of its folder. A
   loop or an upward dependency that touches a file `ignore` matches is not reported.

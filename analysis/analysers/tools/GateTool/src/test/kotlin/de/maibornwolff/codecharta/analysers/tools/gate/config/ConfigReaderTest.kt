@@ -67,8 +67,8 @@ class ConfigReaderTest {
                   instruction: Watch the size.
                 error:
                   max: 400
-            cycles:
-              betweenFiles:
+            dependencies:
+              cyclesBetweenFiles:
                 severity: error
                 instruction: Break the cycle.
                 ignore:
@@ -107,10 +107,10 @@ class ConfigReaderTest {
                                 mapOf(Severity.WARNING to LevelRule(200.0, "Watch the size."), Severity.ERROR to LevelRule(400.0))
                             )
                     ),
-                cycles =
-                    CycleRules(
-                        betweenFiles = CycleRule(Severity.ERROR, "Break the cycle.", ignore = listOf("src/a.kt")),
-                        upward = CycleRule(Severity.WARNING, ignore = listOf("src/legacy"))
+                dependencies =
+                    DependencyRules(
+                        cyclesBetweenFiles = DependencyRule(Severity.ERROR, "Break the cycle.", ignore = listOf("src/a.kt")),
+                        upward = DependencyRule(Severity.WARNING, ignore = listOf("src/legacy"))
                     ),
                 overrides =
                     listOf(
@@ -151,7 +151,7 @@ class ConfigReaderTest {
         ).containsExactly(
             ConfigProblem(
                 2,
-                "unknown key 'metrix', expected one of: input, output, parallel, analysers, exitCodes, metrics, cycles, overrides"
+                "unknown key 'metrix', expected one of: input, output, parallel, analysers, exitCodes, metrics, dependencies, overrides"
             )
         )
     }
@@ -252,7 +252,7 @@ class ConfigReaderTest {
     @Test
     fun `should report a cycle rule with an unknown severity`() {
         // Arrange
-        val text = "cycles:\n  betweenFiles:\n    severity: fatal\n"
+        val text = "dependencies:\n  cyclesBetweenFiles:\n    severity: fatal\n"
 
         // Act
         val result = reader.read(text)
@@ -260,13 +260,13 @@ class ConfigReaderTest {
         // Assert
         assertThat(
             result.problems
-        ).containsExactly(ConfigProblem(3, "cycles.betweenFiles.severity must be one of: warning, error, found 'fatal'"))
+        ).containsExactly(ConfigProblem(3, "dependencies.cyclesBetweenFiles.severity must be one of: warning, error, found 'fatal'"))
     }
 
     @Test
     fun `should report an ignore pattern that is not valid`() {
         // Arrange
-        val text = "cycles:\n  betweenFiles:\n    severity: error\n    ignore:\n      - \"src/[a\"\n"
+        val text = "dependencies:\n  cyclesBetweenFiles:\n    severity: error\n    ignore:\n      - \"src/[a\"\n"
 
         // Act
         val result = reader.read(text)
@@ -274,7 +274,9 @@ class ConfigReaderTest {
         // Assert
         assertThat(
             result.problems
-        ).containsExactly(ConfigProblem(5, "cycles.betweenFiles.ignore[0] is not a valid path pattern: 'src/[a' (Missing '] near index 5)"))
+        ).containsExactly(
+            ConfigProblem(5, "dependencies.cyclesBetweenFiles.ignore[0] is not a valid path pattern: 'src/[a' (Missing '] near index 5)")
+        )
     }
 
     @Test

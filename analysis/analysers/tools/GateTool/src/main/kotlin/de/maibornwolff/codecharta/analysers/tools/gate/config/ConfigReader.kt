@@ -44,7 +44,9 @@ class ConfigReader(private val catalog: AnalyserCatalog, private val projectFold
                     ?: emptyMap(),
             exitCodes = sections[ConfigKeys.EXIT_CODES]?.let { readExitCodes(it.value, nodes) } ?: emptyMap(),
             metrics = sections[ConfigKeys.METRICS]?.let { ruleReader.readMetrics(it.value, ConfigKeys.METRICS) } ?: emptyMap(),
-            cycles = sections[ConfigKeys.CYCLES]?.let { CycleRuleReader(nodes).read(it.value, ConfigKeys.CYCLES) } ?: CycleRules(),
+            dependencies =
+                sections[ConfigKeys.DEPENDENCIES]?.let { DependencyRuleReader(nodes).read(it.value, ConfigKeys.DEPENDENCIES) }
+                    ?: DependencyRules(),
             overrides = sections[ConfigKeys.OVERRIDES]?.let { ruleReader.readOverrides(it.value, ConfigKeys.OVERRIDES) } ?: emptyList()
         )
     }

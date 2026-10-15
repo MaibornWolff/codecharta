@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedFile
 
 class ConfigTemplate(private val files: List<AnalysedFile>, private val analyserNames: List<String>, private val catalog: AnalyserCatalog) {
-    fun render(): String = listOf(header(), input(), output(), parallel(), analysers(), exitCodes(), metrics(), cycles(), overrides())
+    fun render(): String = listOf(header(), input(), output(), parallel(), analysers(), exitCodes(), metrics(), dependencies(), overrides())
         .joinToString("\n\n") { section -> section.joinToString("\n") }
         .plus("\n")
 
@@ -53,10 +53,10 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
         listOf("    ${it.key}:", "      ${ConfigKeys.MAX}:", "      ${ConfigKeys.INSTRUCTION}:")
     }
 
-    private fun cycles() = commented(
-        listOf("${ConfigKeys.CYCLES}:") +
-            cycleRuleLines(ConfigKeys.BETWEEN_FILES, "path/to/Generated.kt") +
-            cycleRuleLines(ConfigKeys.INSIDE_FILES, "path/to/Generated.kt") +
+    private fun dependencies() = commented(
+        listOf("${ConfigKeys.DEPENDENCIES}:") +
+            cycleRuleLines(ConfigKeys.CYCLES_BETWEEN_FILES, "path/to/Generated.kt") +
+            cycleRuleLines(ConfigKeys.CYCLES_INSIDE_FILES, "path/to/Generated.kt") +
             cycleRuleLines(ConfigKeys.UPWARD, "path/to/legacy")
     )
 
