@@ -18,12 +18,12 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
   DomainLanguageParser as they are, merge their maps with the MergeFilter's `ProjectMerger`
 - Leave the output folder out of the analysis, write the merged map into it
 
-### 2. `ccsh gate init`
+### 2. `ccsh gate --init`
 - Analyse, write `.codecharta.yml` fully commented out: every metric with a warning and an error level and
   its min/max found, the applicable analysers, exit codes, output folder, cycles and an example override
 - Refuse to overwrite without `--force`
 
-### 3. `ccsh gate doctor`
+### 3. `ccsh gate --doctor`
 - Validate the config without analysing; every problem with its line; exit 0 or 2
 
 ### 4. `ccsh gate`
@@ -38,8 +38,8 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ## Steps
 
 - [x] Complete Task 1: Analyse
-- [x] Complete Task 2: `ccsh gate init`
-- [x] Complete Task 3: `ccsh gate doctor`
+- [x] Complete Task 2: `ccsh gate --init`
+- [x] Complete Task 3: `ccsh gate --doctor`
 - [x] Complete Task 4: `ccsh gate`
 - [x] Complete Task 5: Report
 - [x] Docs (gh-pages, module README), CHANGELOG

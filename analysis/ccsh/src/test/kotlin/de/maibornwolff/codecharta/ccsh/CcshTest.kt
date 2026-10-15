@@ -399,7 +399,7 @@ class CcshTest {
     }
 
     @Test
-    fun `should return the exit code of the gate subcommand that ran`(
+    fun `should return the exit code of the gate`(
         @TempDir projectFolder: File
     ) {
         // Arrange
@@ -408,8 +408,8 @@ class CcshTest {
         File(validProjectFolder, ".codecharta.yml").writeText("output: out\n")
 
         // Act
-        val invalidConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "doctor", projectFolder.path))
-        val validConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "doctor", validProjectFolder.path))
+        val invalidConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "--doctor", projectFolder.path))
+        val validConfigExitCode = Ccsh.executeCommandLine(arrayOf("gate", "--doctor", validProjectFolder.path))
 
         // Assert
         assertThat(invalidConfigExitCode).isEqualTo(2)

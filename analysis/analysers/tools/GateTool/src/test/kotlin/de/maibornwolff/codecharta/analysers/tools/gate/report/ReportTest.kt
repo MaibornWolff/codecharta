@@ -88,6 +88,18 @@ class ReportTest {
         )
     }
 
+    @Test
+    fun `should end the json report with a line break`() {
+        // Arrange
+        val config = GateConfig()
+
+        // Act
+        val json = JsonReport.render(result, config)
+
+        // Assert
+        assertThat(json).endsWith("}\n")
+    }
+
     private fun metricViolation(
         severity: Severity,
         path: String,

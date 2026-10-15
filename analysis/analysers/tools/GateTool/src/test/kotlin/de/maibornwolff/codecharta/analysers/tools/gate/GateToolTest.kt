@@ -31,7 +31,7 @@ class GateToolTest {
     @Test
     fun `should write a fully commented config on init`() {
         // Arrange & Act
-        val exitCode = run("init", projectFolder.path)
+        val exitCode = run("--init", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(0)
@@ -45,8 +45,8 @@ class GateToolTest {
         configFile.writeText("output: mine\n")
 
         // Act
-        val exitCode = run("init", projectFolder.path)
-        val forcedExitCode = run("init", projectFolder.path, "--force")
+        val exitCode = run("--init", projectFolder.path)
+        val forcedExitCode = run("--init", "--force", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(2)
@@ -60,7 +60,7 @@ class GateToolTest {
         configFile.writeText("output: out\n")
 
         // Act
-        val exitCode = run("doctor", projectFolder.path)
+        val exitCode = run("--doctor", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(0)
@@ -73,7 +73,7 @@ class GateToolTest {
         configFile.writeText("metrics:\n  rloc:\n    error:\n      max: lots\nexitCodes:\n  error: 2\n")
 
         // Act
-        val exitCode = run("doctor", projectFolder.path)
+        val exitCode = run("--doctor", projectFolder.path)
 
         // Assert
         assertThat(exitCode).isEqualTo(2)
@@ -87,7 +87,7 @@ class GateToolTest {
 
         // Assert
         assertThat(exitCode).isEqualTo(2)
-        assertThat(output.toString()).contains("ccsh gate init")
+        assertThat(output.toString()).contains("ccsh gate --init")
     }
 
     @Test
@@ -158,8 +158,68 @@ class GateToolTest {
         assertThat(output.toString()).contains("line 1: unknown key 'metrix'")
     }
 
+    @Test
+    fun `should refuse to init and doctor in one run`() {
+        // Arrange & Act
+        val exitCode = run("--init", "--doctor", projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("either --init or --doctor")
+    }
+
+    @Test
+    fun `should refuse force without init`() {
+        // Arrange
+        configFile.writeText("output: out\n")
+
+        // Act
+        val exitCode = run("--force", projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("--force only works with --init")
+    }
+
+    @Test
+    fun `should name a project folder that does not exist`() {
+        // Arrange
+        val missingFolder = File(projectFolder, "init")
+
+        // Act
+        val exitCode = run(missingFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(2)
+        assertThat(output.toString()).contains("The folder ${missingFolder.path} does not exist.")
+    }
+
+    @Test
+    fun `should run without asking for arguments when the current folder has a config`() {
+        // Arrange
+        configFile.writeText("output: out\n")
+
+        // Act
+        val asksForArguments = GateTool(PrintStream(output), workingFolder = projectFolder).shouldAskForArguments()
+
+        // Assert
+        assertThat(asksForArguments).isFalse()
+    }
+
+    @Test
+    fun `should ask for arguments when the current folder has no config`() {
+        // Arrange
+        val tool = GateTool(PrintStream(output), workingFolder = projectFolder)
+
+        // Act
+        val asksForArguments = tool.shouldAskForArguments()
+
+        // Assert
+        assertThat(asksForArguments).isTrue()
+    }
+
     private fun run(vararg arguments: String): Int {
-        val tool = GateTool(PrintStream(output)) { testAnalysers() }
+        val tool = GateTool(PrintStream(output), createAnalysers = { testAnalysers() })
         return CommandLine(tool).apply { executionStrategy = CommandLine.RunAll() }.execute(*arguments)
     }
 

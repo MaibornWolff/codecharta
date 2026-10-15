@@ -12,7 +12,7 @@ class Dialog {
         private const val CHECK = "check the project"
         private const val INIT = "init: write a new config"
         private const val DOCTOR = "doctor: validate the config"
-        private val SUBCOMMANDS = mapOf(INIT to "init", DOCTOR to "doctor")
+        private val MODE_OPTIONS = mapOf(INIT to "--init", DOCTOR to "--doctor")
 
         override fun collectAnalyserArgs(session: Session): List<String> {
             val action = session.promptList(
@@ -25,7 +25,7 @@ class Dialog {
                 fileExtensionList = listOf(),
                 onInputReady = testCallback()
             )
-            return listOfNotNull(SUBCOMMANDS[action], projectFolder)
+            return listOfNotNull(MODE_OPTIONS[action], projectFolder)
         }
 
         internal fun testCallback(): suspend RunScope.() -> Unit = {}

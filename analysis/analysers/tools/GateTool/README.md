@@ -8,25 +8,28 @@ Full documentation: https://maibornwolff.github.io/codecharta/docs/analysis/qual
 
 ### Usage and Parameters
 
-| Command / Parameter    | Description                                                                 |
+| Parameter              | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| `ccsh gate [FOLDER]`   | analyses the project and checks it against the config                       |
-| `ccsh gate init`       | analyses the project and writes a fully commented-out `.codecharta.yml`     |
-| `ccsh gate doctor`     | validates the config without analysing                                      |
 | `FOLDER`               | project folder (default: the current folder)                                |
+| `--init`               | analyses the project and writes a fully commented-out `.codecharta.yml`     |
+| `--doctor`             | validates the config without analysing                                      |
 | `-c, --config=<file>`  | config file (default: `.codecharta.yml` in the project folder)              |
-| `-f, --force`          | `init` only: overwrites an existing config                                  |
+| `-f, --force`          | lets `--init` overwrite an existing config                                  |
 | `-h, --help`           | displays help and exits                                                     |
 
+Without `--init` or `--doctor`, the gate analyses the project and checks it against the config. Called without
+arguments in a terminal, it starts right away when the current folder has a `.codecharta.yml`, and asks what to do
+otherwise.
+
 ```
-Usage: ccsh gate [-h] [-c=<configFile>] [FOLDER] [COMMAND]
+Usage: ccsh gate [-fh] [--doctor] [--init] [-c=<configFile>] [FOLDER]
 ```
 
 ## Examples
 
 ```
-ccsh gate init
-ccsh gate doctor
+ccsh gate --init
+ccsh gate --doctor
 ccsh gate path/to/project --config=ci/codecharta.yml
 ```
 

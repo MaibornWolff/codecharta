@@ -56,7 +56,7 @@ class DialogTest {
         }
 
         // Assert
-        assertThat(arguments).containsExactly("doctor", projectFolder.path)
+        assertThat(arguments).containsExactly("--doctor", projectFolder.path)
     }
 
     private fun choose(terminal: InMemoryTerminal, downPresses: Int): suspend RunScope.() -> Unit = {
