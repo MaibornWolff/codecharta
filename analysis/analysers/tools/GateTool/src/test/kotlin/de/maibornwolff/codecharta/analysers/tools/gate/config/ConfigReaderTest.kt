@@ -294,7 +294,10 @@ class ConfigReaderTest {
     @Test
     fun `should read an override level that only replaces the instruction`() {
         // Arrange
-        val text = "metrics:\n  rloc:\n    error:\n      max: 400\noverrides:\n  - paths:\n      - src/**\n    metrics:\n      rloc:\n        error:\n          instruction: Shrink it.\n"
+        val text =
+            "metrics:\n  rloc:\n    error:\n      max: 400\noverrides:\n" +
+                "  - paths:\n      - src/**\n    metrics:\n      rloc:\n" +
+                "        error:\n          instruction: Shrink it.\n"
 
         // Act
         val result = reader.read(text)
@@ -574,7 +577,9 @@ class ConfigReaderTest {
     @Test
     fun `should accept plain numbers with underscores and refuse special ones`() {
         // Arrange
-        val text = "metrics:\n  rloc:\n    warning:\n      max: 1_000\n    error:\n      max: NaN\n  loc:\n    error:\n      max: Infinity\n"
+        val text =
+            "metrics:\n  rloc:\n    warning:\n      max: 1_000\n    error:\n" +
+                "      max: NaN\n  loc:\n    error:\n      max: Infinity\n"
 
         // Act
         val result = reader.read(text)
@@ -637,7 +642,10 @@ class ConfigReaderTest {
     @Test
     fun `should report an override that puts the warning limit above the error limit`() {
         // Arrange
-        val text = "metrics:\n  rloc:\n    error:\n      max: 400\noverrides:\n  - paths:\n      - legacy/\n    metrics:\n      rloc:\n        warning:\n          max: 1000\n"
+        val text =
+            "metrics:\n  rloc:\n    error:\n      max: 400\noverrides:\n" +
+                "  - paths:\n      - legacy/\n    metrics:\n      rloc:\n" +
+                "        warning:\n          max: 1000\n"
 
         // Act
         val result = reader.read(text)
@@ -651,7 +659,10 @@ class ConfigReaderTest {
     @Test
     fun `should report an override level without a limit for a metric that has none to keep`() {
         // Arrange
-        val text = "overrides:\n  - paths:\n      - legacy/\n    metrics:\n      complexity:\n        warning:\n          instruction: Simplify.\n"
+        val text =
+            "overrides:\n  - paths:\n      - legacy/\n    metrics:\n" +
+                "      complexity:\n        warning:\n" +
+                "          instruction: Simplify.\n"
 
         // Act
         val result = reader.read(text)

@@ -238,7 +238,9 @@ class ReportTest {
     fun `should keep the indentation of a line when wrapping it inside the box`() {
         // Arrange
         val output = ByteArrayOutputStream()
-        val instruction = "Split the file:\n  - move the parsing of every supported language into a parser of its own, one file per language"
+        val instruction =
+            "Split the file:\n  - move the parsing of every supported language into a parser of its own, " +
+                "one file per language"
         val violation = MetricViolation(Severity.ERROR, instruction, "src/Big.kt", "rloc", 812.0, Limit(Bound.MAX, 400.0))
 
         // Act
