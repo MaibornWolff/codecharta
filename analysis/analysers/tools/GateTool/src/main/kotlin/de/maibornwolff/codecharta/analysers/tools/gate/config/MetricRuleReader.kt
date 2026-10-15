@@ -35,7 +35,7 @@ class MetricRuleReader(private val nodes: YamlNodes) {
             if (!levelNode.hasInvalidMax) nodes.report(levelNode.maxNode ?: levelNode.keyNode, "$path.$MAX needs a number")
             return null
         }
-        return LevelRule(max, levelNode.level.message)
+        return LevelRule(max, levelNode.level.instruction)
     }
 
     private fun checkLevelOrder(levels: Map<Severity, LevelRule>, levelNodes: Map<Severity, LevelNode>, path: String) {
@@ -104,19 +104,19 @@ class MetricRuleReader(private val nodes: YamlNodes) {
         val entries = nodes.entries(entry.value, path, LEVEL_KEYS) ?: return null
         val maxNode = entries[MAX]?.value
         val max = maxNode?.let { nodes.number(it, "$path.$MAX") }
-        val message = entries[MESSAGE]?.let { nodes.text(it.value, "$path.$MESSAGE") }
+        val instruction = entries[INSTRUCTION]?.let { nodes.text(it.value, "$path.$INSTRUCTION") }
         val hasInvalidMax = maxNode != null && max == null && !nodes.isEmpty(maxNode)
-        return LevelNode(entry.keyNode, maxNode, hasInvalidMax, LevelOverride(max, message))
+        return LevelNode(entry.keyNode, maxNode, hasInvalidMax, LevelOverride(max, instruction))
     }
 
     private class LevelNode(val keyNode: Node, val maxNode: Node?, val hasInvalidMax: Boolean, val level: LevelOverride)
 
     companion object {
         private const val MAX = "max"
-        private const val MESSAGE = "message"
+        private const val INSTRUCTION = "instruction"
         private const val PATHS = "paths"
         private const val METRICS = "metrics"
-        private val LEVEL_KEYS = listOf(MAX, MESSAGE)
+        private val LEVEL_KEYS = listOf(MAX, INSTRUCTION)
         private val OVERRIDE_KEYS = listOf(PATHS, METRICS)
     }
 }

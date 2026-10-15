@@ -13,7 +13,7 @@ enum class ViolationKind {
 data class Violation(
     val kind: ViolationKind,
     val severity: Severity,
-    val message: String?,
+    val instruction: String?,
     val path: String? = null,
     val metric: String? = null,
     val value: Double? = null,

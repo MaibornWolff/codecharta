@@ -9,11 +9,11 @@ enum class Severity(val key: String) {
     }
 }
 
-data class LevelRule(val max: Double, val message: String? = null)
+data class LevelRule(val max: Double, val instruction: String? = null)
 
 data class MetricRule(val levels: Map<Severity, LevelRule>)
 
-data class LevelOverride(val max: Double? = null, val message: String? = null)
+data class LevelOverride(val max: Double? = null, val instruction: String? = null)
 
 sealed interface MetricOverride {
     data object Off : MetricOverride
@@ -23,7 +23,7 @@ sealed interface MetricOverride {
 
 data class PathOverride(val paths: List<String>, val metrics: Map<String, MetricOverride>)
 
-data class CycleRule(val severity: Severity, val message: String? = null)
+data class CycleRule(val severity: Severity, val instruction: String? = null)
 
 data class CycleRules(val file: CycleRule? = null, val packages: CycleRule? = null, val allowed: List<Set<String>> = emptyList())
 

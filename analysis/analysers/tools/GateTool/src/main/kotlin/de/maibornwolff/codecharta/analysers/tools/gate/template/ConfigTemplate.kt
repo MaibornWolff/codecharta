@@ -39,11 +39,11 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
         .toSortedMap()
         .mapValues { (_, values) -> values.min()..values.max() }
 
-    private fun levelLines() = Severity.entries.flatMap { listOf("    ${it.key}:", "      max:", "      message:") }
+    private fun levelLines() = Severity.entries.flatMap { listOf("    ${it.key}:", "      max:", "      instruction:") }
 
     private fun cycles() = commented(
         listOf("cycles:") +
-            listOf("file", "package").flatMap { listOf("  $it:", "    severity: ${Severity.ERROR.key}", "    message:") } +
+            listOf("file", "package").flatMap { listOf("  $it:", "    severity: ${Severity.ERROR.key}", "    instruction:") } +
             listOf("  allow:", "    - - path/to/First.kt", "      - path/to/Second.kt")
     )
 

@@ -54,13 +54,13 @@ class ConfigReaderTest {
               rloc:
                 warning:
                   max: 200
-                  message: Watch the size.
+                  instruction: Watch the size.
                 error:
                   max: 400
             cycles:
               file:
                 severity: error
-                message: Break the cycle.
+                instruction: Break the cycle.
               package:
                 severity: warning
               allow:
@@ -146,7 +146,7 @@ class ConfigReaderTest {
     @Test
     fun `should report a metric level without a limit`() {
         // Arrange
-        val text = "metrics:\n  rloc:\n    error:\n      max:\n      message: Split it.\n"
+        val text = "metrics:\n  rloc:\n    error:\n      max:\n      instruction: Split it.\n"
 
         // Act
         val result = reader.read(text)
@@ -273,9 +273,9 @@ class ConfigReaderTest {
     }
 
     @Test
-    fun `should read an override level that only replaces the message`() {
+    fun `should read an override level that only replaces the instruction`() {
         // Arrange
-        val text = "overrides:\n  - paths:\n      - src/**\n    metrics:\n      rloc:\n        error:\n          message: Shrink it.\n"
+        val text = "overrides:\n  - paths:\n      - src/**\n    metrics:\n      rloc:\n        error:\n          instruction: Shrink it.\n"
 
         // Act
         val result = reader.read(text)
@@ -283,7 +283,7 @@ class ConfigReaderTest {
         // Assert
         assertThat(result.problems).isEmpty()
         assertThat(result.config.overrides.single().metrics).isEqualTo(
-            mapOf("rloc" to MetricOverride.Levels(mapOf(Severity.ERROR to LevelOverride(message = "Shrink it."))))
+            mapOf("rloc" to MetricOverride.Levels(mapOf(Severity.ERROR to LevelOverride(instruction = "Shrink it."))))
         )
     }
 

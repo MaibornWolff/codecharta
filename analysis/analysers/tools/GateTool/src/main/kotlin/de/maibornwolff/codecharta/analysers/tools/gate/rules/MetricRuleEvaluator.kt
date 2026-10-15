@@ -14,7 +14,7 @@ class MetricRuleEvaluator(private val config: GateConfig) {
             Violation(
                 ViolationKind.METRIC,
                 severity,
-                level.message,
+                level.instruction,
                 path = file.path,
                 metric = metric,
                 value = value,
@@ -33,10 +33,10 @@ class MetricRuleEvaluator(private val config: GateConfig) {
         return config.configuredMetrics
             .filter { it !in measuredMetrics }
             .map { metric ->
-                Violation(ViolationKind.UNKNOWN_METRIC, Severity.WARNING, unknownMetricMessage(metric), metric = metric)
+                Violation(ViolationKind.UNKNOWN_METRIC, Severity.WARNING, unknownMetricInstruction(metric), metric = metric)
             }
     }
 
-    private fun unknownMetricMessage(metric: String): String =
+    private fun unknownMetricInstruction(metric: String): String =
         "The analysis produced no metric named '$metric'. Check the name, or switch on the analyser that measures it."
 }
