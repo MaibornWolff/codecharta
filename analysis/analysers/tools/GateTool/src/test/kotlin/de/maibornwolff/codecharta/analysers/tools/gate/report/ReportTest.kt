@@ -3,10 +3,12 @@ package de.maibornwolff.codecharta.analysers.tools.gate.report
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.ViolationKind
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -19,14 +21,8 @@ class ReportTest {
                 metricViolation(Severity.WARNING, "src/Mid.kt", 263.0, 200.0, "Plan a split."),
                 metricViolation(Severity.ERROR, "src/Small.kt", 455.0, 400.0, "Split it."),
                 metricViolation(Severity.ERROR, "src/Big.kt", 812.0, 400.0, "Split it."),
-                Violation(
-                    ViolationKind.CYCLE_BETWEEN_FILES,
-                    Severity.ERROR,
-                    "Break the cycle.",
-                    members = listOf("a/Foo.kt", "b/Bar.kt"),
-                    declarations = listOf(Declaration("a/Foo.kt", "Foo"), Declaration("b/Bar.kt", "Bar"))
-                ),
-                Violation(ViolationKind.UNKNOWN_METRIC, Severity.WARNING, "No such metric.", metric = "lines_of_doc"),
+                CycleViolation(Severity.ERROR, "Break the cycle.", listOf(Declaration("a/Foo.kt", "Foo"), Declaration("b/Bar.kt", "Bar"))),
+                UnknownMetric(Severity.WARNING, "No such metric.", "lines_of_doc"),
                 upward("src/a/One.kt", "one", "src/b/Two.kt", "Two")
             ),
             filesChecked = 418
@@ -86,7 +82,7 @@ class ReportTest {
         val violations =
             listOf(
                 metricViolation(Severity.ERROR, "src/Big.kt", 812.0, 400.0, "Split it."),
-                Violation(ViolationKind.METRIC, Severity.WARNING, null, path = "src/Big.kt", metric = "mcc", value = 30.0, threshold = 20.0)
+                MetricViolation(Severity.WARNING, null, "src/Big.kt", "mcc", 30.0, 20.0)
             )
 
         // Act
@@ -108,21 +104,8 @@ class ReportTest {
         val parseBlock = Declaration("lib/Parser.kt", "parseBlock")
         val cycles =
             listOf(
-                Violation(
-                    ViolationKind.CYCLE_BETWEEN_FILES,
-                    Severity.ERROR,
-                    null,
-                    members = listOf(mutableNode.file, node.file, inserter.file),
-                    declarations = listOf(mutableNode, inserter, node)
-                ),
-                Violation(
-                    ViolationKind.CYCLE_INSIDE_FILE,
-                    Severity.ERROR,
-                    null,
-                    path = parse.file,
-                    members = listOf(parse.file),
-                    declarations = listOf(parse, parseBlock)
-                ),
+                CycleViolation(Severity.ERROR, null, listOf(mutableNode, inserter, node)),
+                CycleViolation(Severity.ERROR, null, listOf(parse, parseBlock)),
                 upward("src/a/One.kt", "one", "src/b/Two.kt", "Two"),
                 upward("src/a/deep/Three.kt", "three", "src/c/Four.kt", "Four"),
                 upward("Main.kt", "main", "lib/Util.kt", "Util")
@@ -166,15 +149,7 @@ class ReportTest {
             "Split the file by responsibility into smaller files, so that each of them has one reason to change " +
                 "and stays easy to read.\nAsk before splitting generated code."
         val violation =
-            Violation(
-                ViolationKind.METRIC,
-                Severity.ERROR,
-                instruction,
-                path = "src/Big.kt",
-                metric = "rloc",
-                value = 812.0,
-                threshold = 400.0
-            )
+            MetricViolation(Severity.ERROR, instruction, "src/Big.kt", "rloc", 812.0, 400.0)
 
         // Act
         ConsoleReport(PrintStream(output), listOf("rloc")).print(GateResult(listOf(violation), filesChecked = 1))
@@ -239,14 +214,8 @@ class ReportTest {
         assertThat(json).endsWith("}\n")
     }
 
-    private fun upward(fromFile: String, fromName: String, toFile: String, toName: String) = Violation(
-        ViolationKind.UPWARD_DEPENDENCY,
-        Severity.WARNING,
-        null,
-        path = fromFile,
-        target = toFile,
-        declarations = listOf(Declaration(fromFile, fromName), Declaration(toFile, toName))
-    )
+    private fun upward(fromFile: String, fromName: String, toFile: String, toName: String) =
+        UpwardViolation(Severity.WARNING, null, Declaration(fromFile, fromName), Declaration(toFile, toName))
 
     private fun metricViolation(
         severity: Severity,
@@ -254,5 +223,5 @@ class ReportTest {
         value: Double,
         threshold: Double,
         instruction: String
-    ) = Violation(ViolationKind.METRIC, severity, instruction, path = path, metric = "rloc", value = value, threshold = threshold)
+    ) = MetricViolation(severity, instruction, path, "rloc", value, threshold)
 }

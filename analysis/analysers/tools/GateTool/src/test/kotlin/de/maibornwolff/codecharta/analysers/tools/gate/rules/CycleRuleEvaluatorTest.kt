@@ -23,13 +23,7 @@ class CycleRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(
-                ViolationKind.CYCLE_BETWEEN_FILES,
-                Severity.ERROR,
-                "Break the cycle.",
-                members = listOf("a/Foo.kt", "b/Bar.kt"),
-                declarations = listOf(foo, bar)
-            )
+            CycleViolation(Severity.ERROR, "Break the cycle.", listOf(foo, bar))
         )
     }
 
@@ -45,14 +39,7 @@ class CycleRuleEvaluatorTest {
         // Assert
         assertThat(betweenFilesOnly).isEmpty()
         assertThat(insideFiles).containsExactly(
-            Violation(
-                ViolationKind.CYCLE_INSIDE_FILE,
-                Severity.ERROR,
-                "Break the cycle.",
-                path = "b/Bar.kt",
-                members = listOf("b/Bar.kt"),
-                declarations = listOf(bar, baz)
-            )
+            CycleViolation(Severity.ERROR, "Break the cycle.", listOf(bar, baz))
         )
     }
 
@@ -67,7 +54,7 @@ class CycleRuleEvaluatorTest {
         val violations = CycleRuleEvaluator(rules).evaluate(analysis)
 
         // Assert
-        assertThat(violations.map { it.members }).containsExactly(listOf("a/Foo.kt", "c/Other.kt"))
+        assertThat(violations.map { (it as CycleViolation).files }).containsExactly(listOf("a/Foo.kt", "c/Other.kt"))
     }
 
     @Test
@@ -80,14 +67,7 @@ class CycleRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(
-                ViolationKind.UPWARD_DEPENDENCY,
-                Severity.WARNING,
-                "Turn the dependency around.",
-                path = "a/Foo.kt",
-                target = "b/Bar.kt",
-                declarations = listOf(foo, bar)
-            )
+            UpwardViolation(Severity.WARNING, "Turn the dependency around.", foo, bar)
         )
     }
 
@@ -100,7 +80,7 @@ class CycleRuleEvaluatorTest {
         val violations = CycleRuleEvaluator(CycleRules(upward = upwardRule)).evaluate(analysis)
 
         // Assert
-        assertThat(violations.single().declarations).containsExactly(bar, baz)
+        assertThat(violations.single()).isEqualTo(UpwardViolation(Severity.WARNING, "Turn the dependency around.", bar, baz))
     }
 
     @Test
@@ -138,8 +118,7 @@ class CycleRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(
-                ViolationKind.CYCLES_NOT_CHECKED,
+            DependenciesNotChecked(
                 Severity.WARNING,
                 "The map has no dependency analysis, so cycles and upward dependencies could not be checked. " +
                     "Switch on the dependencyparser and leave out its --omit-graph-analysis."

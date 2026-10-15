@@ -35,15 +35,7 @@ class MetricRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(
-                ViolationKind.METRIC,
-                Severity.ERROR,
-                "Split it.",
-                path = "src/Big.kt",
-                metric = "rloc",
-                value = 812.0,
-                threshold = 400.0
-            )
+            MetricViolation(Severity.ERROR, "Split it.", "src/Big.kt", "rloc", 812.0, 400.0)
         )
     }
 
@@ -57,7 +49,7 @@ class MetricRuleEvaluatorTest {
 
         // Assert
         assertThat(violations.single().severity).isEqualTo(Severity.WARNING)
-        assertThat(violations.single().threshold).isEqualTo(200.0)
+        assertThat((violations.single() as MetricViolation).threshold).isEqualTo(200.0)
     }
 
     @Test
@@ -113,11 +105,10 @@ class MetricRuleEvaluatorTest {
 
         // Assert
         assertThat(violations).containsExactly(
-            Violation(
-                ViolationKind.UNKNOWN_METRIC,
+            UnknownMetric(
                 Severity.WARNING,
                 "The analysis produced no metric named 'rloc'. Check the name, or switch on the analyser that measures it.",
-                metric = "rloc"
+                "rloc"
             )
         )
     }

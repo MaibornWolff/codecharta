@@ -2,9 +2,13 @@ package de.maibornwolff.codecharta.analysers.tools.gate.report
 
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
 import de.maibornwolff.codecharta.analysers.tools.gate.config.toDisplayText
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.CycleViolation
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependenciesNotChecked
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Violation
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.ViolationKind
 import java.io.PrintStream
 
 class ConsoleReport(private val output: PrintStream, private val metricOrder: List<String>) {
@@ -21,73 +25,64 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     }
 
     private fun groupsInConfigOrder(violations: List<Violation>): List<List<Violation>> = violations
-        .groupBy { listOf(it.severity, it.kind, it.metric, it.threshold, it.instruction) }
+        .groupBy(::groupKey)
         .values
         .sortedWith(
             compareBy<List<Violation>> { sectionOf(it.first()) }
-                .thenBy { it.first().kind }
+                .thenBy { it.first() is UnknownMetric }
                 .thenByDescending { it.first().severity }
-                .thenByDescending { it.first().threshold }
+                .thenByDescending { (it.first() as? MetricViolation)?.threshold }
         )
 
-    private fun sectionOf(violation: Violation): Int = when (violation.kind) {
-        ViolationKind.METRIC, ViolationKind.UNKNOWN_METRIC -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: metricOrder.size
-        ViolationKind.CYCLE_BETWEEN_FILES -> metricOrder.size + 1
-        ViolationKind.CYCLE_INSIDE_FILE -> metricOrder.size + 2
-        ViolationKind.UPWARD_DEPENDENCY -> metricOrder.size + 3
-        ViolationKind.CYCLES_NOT_CHECKED -> metricOrder.size + 4
+    private fun groupKey(violation: Violation): List<Any?> = when (violation) {
+        is MetricViolation -> listOf(violation.severity, violation.metric, violation.threshold, violation.instruction)
+        is UnknownMetric -> listOf(UnknownMetric::class, violation.metric)
+        is CycleViolation -> listOf(CycleViolation::class, violation.isInsideOneFile, violation.severity, violation.instruction)
+        is UpwardViolation -> listOf(UpwardViolation::class, violation.severity, violation.instruction)
+        is DependenciesNotChecked -> listOf(DependenciesNotChecked::class)
+    }
+
+    private fun sectionOf(violation: Violation): Int {
+        val afterMetrics = metricOrder.size
+        return when (violation) {
+            is MetricViolation -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: afterMetrics
+            is UnknownMetric -> metricOrder.indexOf(violation.metric).takeIf { it >= 0 } ?: afterMetrics
+            is CycleViolation -> if (violation.isInsideOneFile) afterMetrics + 2 else afterMetrics + 1
+            is UpwardViolation -> afterMetrics + 3
+            is DependenciesNotChecked -> afterMetrics + 4
+        }
     }
 
     private fun printGroup(group: List<Violation>) {
         val first = group.first()
         output.println(SEVERITY_LABELS.getValue(first.severity).padEnd(LABEL_WIDTH) + title(group))
-        first.instruction?.let { instructionBox(it).forEach(output::println) }
-        when (first.kind) {
-            ViolationKind.METRIC -> printMetricValues(group)
-            ViolationKind.CYCLE_BETWEEN_FILES, ViolationKind.CYCLE_INSIDE_FILE -> CycleText.lines(group).forEach(output::println)
-            ViolationKind.UPWARD_DEPENDENCY -> UpwardText.lines(group).forEach(output::println)
-            ViolationKind.CYCLES_NOT_CHECKED -> Unit
-            ViolationKind.UNKNOWN_METRIC -> Unit
-        }
+        first.instruction?.let { InstructionBox.lines(it).forEach(output::println) }
+        bodyLines(group).forEach(output::println)
     }
 
-    private fun instructionBox(instruction: String): List<String> {
-        val lines = instruction.lines().flatMap { wrapped(it, INSTRUCTION_LINE_WIDTH) }
-        val width = maxOf(lines.maxOf { it.length } + 2, INSTRUCTION_TITLE.length + 2)
-        return listOf(INSTRUCTION_TITLE.padEnd(width, BOX_LINE)) + lines.map { "│ $it" } + "└".padEnd(width, BOX_LINE)
-    }
-
-    private fun wrapped(text: String, width: Int): List<String> {
-        val lines = mutableListOf<String>()
-        var current = ""
-        text.split(" ").filter { it.isNotEmpty() }.forEach { word ->
-            if (current.isNotEmpty() && current.length + 1 + word.length > width) {
-                lines.add(current)
-                current = word
+    private fun title(group: List<Violation>): String = when (val first = group.first()) {
+        is MetricViolation -> "${first.metric} > ${first.threshold.toDisplayText()}"
+        is UnknownMetric -> "unknown metric: ${first.metric}"
+        is CycleViolation ->
+            if (first.isInsideOneFile) {
+                counted(group.size, "cycle inside a file", "cycles inside files")
             } else {
-                current = if (current.isEmpty()) word else "$current $word"
+                counted(group.size, "cycle between files", "cycles between files")
             }
-        }
-        return lines + current
+        is UpwardViolation -> counted(group.size, "upward dependency", "upward dependencies")
+        is DependenciesNotChecked -> "cycles not checked"
     }
 
-    private fun title(group: List<Violation>): String {
-        val first = group.first()
-        return when (first.kind) {
-            ViolationKind.METRIC -> "${first.metric} > ${first.threshold!!.toDisplayText()}"
-            ViolationKind.CYCLE_BETWEEN_FILES -> counted(group.size, "cycle between files", "cycles between files")
-            ViolationKind.CYCLE_INSIDE_FILE -> counted(group.size, "cycle inside a file", "cycles inside files")
-            ViolationKind.UPWARD_DEPENDENCY -> counted(group.size, "upward dependency", "upward dependencies")
-            ViolationKind.UNKNOWN_METRIC -> "unknown metric: ${first.metric}"
-            ViolationKind.CYCLES_NOT_CHECKED -> "cycles not checked"
-        }
+    private fun bodyLines(group: List<Violation>): List<String> = when (group.first()) {
+        is MetricViolation -> metricLines(group.filterIsInstance<MetricViolation>())
+        is CycleViolation -> CycleText.lines(group.filterIsInstance<CycleViolation>())
+        is UpwardViolation -> UpwardText.lines(group.filterIsInstance<UpwardViolation>())
+        is UnknownMetric, is DependenciesNotChecked -> emptyList()
     }
 
-    private fun printMetricValues(group: List<Violation>) {
-        val pathWidth = group.maxOf { it.path!!.length }
-        group.sortedByDescending { it.value }.forEach {
-            output.println(INDENT + it.path!!.padEnd(pathWidth) + INDENT + it.value!!.toDisplayText())
-        }
+    private fun metricLines(violations: List<MetricViolation>): List<String> {
+        val pathWidth = violations.maxOf { it.path.length }
+        return violations.sortedByDescending { it.value }.map { INDENT + it.path.padEnd(pathWidth) + INDENT + it.value.toDisplayText() }
     }
 
     private fun summary(result: GateResult): String {
@@ -99,9 +94,6 @@ class ConsoleReport(private val output: PrintStream, private val metricOrder: Li
     companion object {
         private const val LABEL_WIDTH = 7
         private const val INDENT = "  "
-        private const val INSTRUCTION_TITLE = "┌ Instruction "
-        private const val BOX_LINE = '─'
-        private const val INSTRUCTION_LINE_WIDTH = 76
         private val SEVERITY_LABELS = mapOf(Severity.ERROR to "ERROR", Severity.WARNING to "WARN")
     }
 }
