@@ -29,7 +29,7 @@ class QualityGate(
         val analysers = applicableAnalysers(GateConfig())
         val project = analyse(analysers, GateConfig())
         configFile.writeText(ConfigTemplate(AnalysedProject(project).files, analysers.map { it.name }).render())
-        output.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate doctor`.")
+        output.println("Wrote ${configFile.path}. Uncomment the rules you want, then run `ccsh gate --doctor`.")
         return SUCCESS
     }
 
@@ -61,7 +61,7 @@ class QualityGate(
     }
 
     private fun readConfig(): GateConfig? {
-        if (!configFile.exists()) return null.also { failure("No ${configFile.path} found. Run `ccsh gate init` to create one.") }
+        if (!configFile.exists()) return null.also { failure("No ${configFile.path} found. Run `ccsh gate --init` to create one.") }
         val knownAnalysers = createAnalysers().map { it.name }.toSet()
         val result = ConfigReader(knownAnalysers).read(configFile)
         if (result.problems.isEmpty()) return result.config

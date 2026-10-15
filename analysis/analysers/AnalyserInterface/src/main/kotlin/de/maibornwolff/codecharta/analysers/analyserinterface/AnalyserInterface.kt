@@ -13,6 +13,8 @@ interface AnalyserInterface : Callable<Unit?> {
 
     fun isApplicable(resourceToBeParsed: String): Boolean
 
+    fun shouldAskForArguments(): Boolean = true
+
     fun getAnalyserName(): String = name
 
     fun getAnalyserDescription(): String = description

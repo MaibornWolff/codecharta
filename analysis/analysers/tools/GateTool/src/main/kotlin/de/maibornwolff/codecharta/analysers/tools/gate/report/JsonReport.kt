@@ -25,7 +25,7 @@ object JsonReport {
         report.addProperty("exitCode", result.exitCode(config))
         report.add("summary", summary(result))
         report.add("violations", JsonArray().apply { result.violations.forEach { add(toJson(it)) } })
-        return gson.toJson(report)
+        return gson.toJson(report) + "\n"
     }
 
     private fun summary(result: GateResult) = JsonObject().apply {

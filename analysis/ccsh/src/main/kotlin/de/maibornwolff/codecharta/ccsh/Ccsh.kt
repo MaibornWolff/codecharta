@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.ccsh
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
 import de.maibornwolff.codecharta.analysers.exporters.csv.CSVExporter
 import de.maibornwolff.codecharta.analysers.filters.edgefilter.EdgeFilter
@@ -104,7 +105,7 @@ class Ccsh : Callable<Unit?> {
                 (shouldStartInteractiveMode(args) || isUnknownAnalyser(args, commandLine)) ->
                     selectAndExecuteInteractiveAnalyser(commandLine)
 
-                (isAnalyserKnownButWithoutArgs(args, commandLine) && isInInteractiveTerminal()) ->
+                (isAnalyserKnownButWithoutArgs(args, commandLine) && isInInteractiveTerminal() && asksForArguments(args, commandLine)) ->
                     executeInteractiveAnalyser(args.first(), commandLine)
 
                 else -> commandLine.execute(*sanitizeArgs(args))
@@ -234,6 +235,11 @@ class Ccsh : Callable<Unit?> {
             val firstArg = args.first()
             val analyserList: Set<String> = commandLine.subcommands.keys
             return analyserList.contains(firstArg)
+        }
+
+        private fun asksForArguments(args: Array<String>, commandLine: CommandLine): Boolean {
+            val analyser = commandLine.subcommands.getValue(args.first()).commandSpec.userObject() as? AnalyserInterface
+            return analyser?.shouldAskForArguments() ?: true
         }
 
         private fun isAnalyserKnownButWithoutArgs(args: Array<String>, commandLine: CommandLine): Boolean =

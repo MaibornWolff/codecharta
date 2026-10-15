@@ -11,7 +11,7 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
         .plus("\n")
 
     private fun header() = listOf(
-        "## Quality gate for `ccsh gate`. Uncomment the settings and rules you want, then run `ccsh gate doctor`.",
+        "## Quality gate for `ccsh gate`. Uncomment the settings and rules you want, then run `ccsh gate --doctor`.",
         "## Anything left commented out is not checked or keeps its default."
     )
 

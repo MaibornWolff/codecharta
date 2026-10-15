@@ -20,20 +20,27 @@ import java.io.PrintStream
 )
 class GateTool(
     private val output: PrintStream = System.out,
+    private val workingFolder: File = File("."),
     private val createAnalysers: () -> List<AnalyserInterface> = ::defaultAnalysers
 ) : AnalyserInterface,
     CommandLine.IExitCodeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
-    @CommandLine.Parameters(arity = "0..1", paramLabel = "FOLDER", description = [FOLDER_DESCRIPTION])
-    private var projectFolder: File = File(".")
+    @CommandLine.Parameters(arity = "0..1", paramLabel = "FOLDER", description = ["project folder (default: the current folder)"])
+    private var projectFolder: File? = null
 
-    @CommandLine.Option(names = ["-c", "--config"], description = [CONFIG_DESCRIPTION])
+    @CommandLine.Option(names = ["-c", "--config"], description = ["config file (default: ${GateConfig.FILE_NAME} in the project folder)"])
     private var configFile: File? = null
 
-    @CommandLine.Spec
-    private lateinit var spec: CommandLine.Model.CommandSpec
+    @CommandLine.Option(names = ["--init"], description = ["analyses the project and writes a fully commented-out ${GateConfig.FILE_NAME}"])
+    private var init = false
+
+    @CommandLine.Option(names = ["--doctor"], description = ["validates the config without analysing the project"])
+    private var doctor = false
+
+    @CommandLine.Option(names = ["-f", "--force"], description = ["lets --init overwrite an existing config"])
+    private var force = false
 
     private var exitCode = 0
 
@@ -41,26 +48,29 @@ class GateTool(
     override val description = DESCRIPTION
 
     override fun call(): Unit? {
-        if (spec.commandLine().parseResult.subcommand() != null) return null
-        exitCode = guarded { QualityGate(projectFolder, configFile, output, createAnalysers).check() }
+        exitCode = guarded(::run)
         return null
     }
 
-    @CommandLine.Command(name = "init", description = ["analyses the project and writes a fully commented-out ${GateConfig.FILE_NAME}"])
-    fun init(
-        @CommandLine.Parameters(arity = "0..1", paramLabel = "FOLDER", description = [FOLDER_DESCRIPTION]) folder: File?,
-        @CommandLine.Option(names = ["-c", "--config"], description = [CONFIG_DESCRIPTION]) config: File?,
-        @CommandLine.Option(names = ["-f", "--force"], description = ["overwrites an existing config"]) force: Boolean
-    ) {
-        exitCode = guarded { QualityGate(folder ?: File("."), config, output, createAnalysers).init(force) }
+    private fun run(): Int {
+        val folder = projectFolder ?: workingFolder
+        usageProblem(folder)?.let { message ->
+            output.println(message)
+            return GateConfig.TOOL_FAILURE_EXIT_CODE
+        }
+        val gate = QualityGate(folder, configFile, output, createAnalysers)
+        return when {
+            init -> gate.init(force)
+            doctor -> gate.doctor()
+            else -> gate.check()
+        }
     }
 
-    @CommandLine.Command(name = "doctor", description = ["validates the config without analysing the project"])
-    fun doctor(
-        @CommandLine.Parameters(arity = "0..1", paramLabel = "FOLDER", description = [FOLDER_DESCRIPTION]) folder: File?,
-        @CommandLine.Option(names = ["-c", "--config"], description = [CONFIG_DESCRIPTION]) config: File?
-    ) {
-        exitCode = guarded { QualityGate(folder ?: File("."), config, output, createAnalysers).doctor() }
+    private fun usageProblem(folder: File): String? = when {
+        init && doctor -> "Use either --init or --doctor, not both."
+        force && !init -> "--force only works with --init."
+        !folder.isDirectory -> "The folder ${folder.path} does not exist."
+        else -> null
     }
 
     override fun getExitCode(): Int = exitCode
@@ -68,6 +78,8 @@ class GateTool(
     override fun getDialog(): AnalyserDialogInterface = Dialog
 
     override fun isApplicable(resourceToBeParsed: String): Boolean = false
+
+    override fun shouldAskForArguments(): Boolean = !File(workingFolder, GateConfig.FILE_NAME).exists()
 
     private fun guarded(action: () -> Int): Int = try {
         action()
@@ -79,8 +91,6 @@ class GateTool(
     companion object {
         const val NAME = "gate"
         const val DESCRIPTION = "checks a project against the metric and cycle rules in its ${GateConfig.FILE_NAME}"
-        private const val FOLDER_DESCRIPTION = "project folder (default: the current folder)"
-        private const val CONFIG_DESCRIPTION = "config file (default: ${GateConfig.FILE_NAME} in the project folder)"
 
         fun defaultAnalysers(): List<AnalyserInterface> =
             listOf(RawTextParser(), UnifiedParser(), DependencyParser(), DomainLanguageParser())

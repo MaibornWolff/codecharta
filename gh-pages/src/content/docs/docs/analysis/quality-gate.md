@@ -9,15 +9,17 @@ with a code you choose, so a build, a git hook or an AI agent can act on the res
 ### Getting started
 
 ```bash
-ccsh gate init      # analyse the project and write a fully commented-out .codecharta.yml
-ccsh gate doctor    # validate .codecharta.yml without analysing
-ccsh gate           # analyse and check
+ccsh gate --init      # analyse the project and write a fully commented-out .codecharta.yml
+ccsh gate --doctor    # validate .codecharta.yml without analysing
+ccsh gate             # analyse and check
 ```
 
-Each command takes the project folder as an optional argument (default: the current folder) and `--config <file>`
-to read the config from elsewhere. `init` refuses to overwrite an existing config unless you add `--force`.
+Each takes the project folder as an optional argument (default: the current folder) and `--config <file>` to read
+the config from elsewhere. `--init` refuses to overwrite an existing config unless you add `--force`. Called
+without arguments in a terminal, `ccsh gate` starts right away when the current folder has a `.codecharta.yml`,
+and asks what to do otherwise.
 
-`init` lists every metric the analysis found, with the lowest and highest value as a comment, so you can pick
+`--init` lists every metric the analysis found, with the lowest and highest value as a comment, so you can pick
 limits. Everything in the generated file is commented out: a fresh file checks nothing. Uncomment what you want.
 
 ### The analysis
