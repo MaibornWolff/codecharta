@@ -278,16 +278,17 @@ class GateToolTest {
     }
 
     @Test
-    fun `should tell where the map of the analysis was written, right below the end of the analysis`() {
+    fun `should tell where the map of the analysis was written, last, below the report`() {
         // Arrange
         configFile.writeText("output: out\n")
-        val mapFile = File(File(projectFolder, "out"), "map.cc.json.gz")
+        val outputFolder = File(projectFolder, "out")
 
         // Act
         run(projectFolder.path)
 
         // Assert
-        assertThat(output.toString()).containsPattern("Analysis done: .* s\nMap: \\Q${mapFile.path}\\E\n")
+        val mapFile = File(outputFolder, "map.cc.json.gz")
+        assertThat(output.toString()).endsWith("Report: ${File(outputFolder, "report.json").path}\nMap: ${mapFile.path}\n")
         assertThat(mapFile).exists()
     }
 
