@@ -9,7 +9,8 @@ type CyclicSteps = ReadonlyMap<string, readonly DependencyLeafEdge[]>
 
 /** The cycles of a map: for every dependency the parser marked cyclic, the shortest way back to where it starts,
  * each cycle told once. Only cyclic dependencies are walked, so a walk never leaves the strongly connected part
- * it starts in. A longer way round that a shorter one makes unnecessary is not told. */
+ * it starts in. A longer way round that a shorter one makes unnecessary is not told. `ccsh gate` counts cycles with a
+ * Kotlin copy of this (CycleChains.kt in the analysis GateTool), so a change here belongs there too. */
 export function findCycleChains(index: DeclarationIndex): CycleChain[] {
     const cyclicSteps = cyclicStepsOf(index)
     const chains = new Map<string, CycleChain>()
