@@ -24,9 +24,7 @@ class ProjectSource(
 ) {
     fun load(config: GateConfig): LoadedProject = options.mapFile?.let(::readMap) ?: analyse(config)
 
-    fun outputFolder(config: GateConfig): File = GateConfig.resolve(configFolder, config.output)
-
-    private val configFolder: File get() = options.configFile?.parentFile ?: options.projectFolder
+    fun outputFolder(config: GateConfig): File = GateConfig.resolve(options.projectFolder, config.output)
 
     private fun readMap(mapFile: File): LoadedProject {
         if (!mapFile.isFile) throw GateException("The map ${mapFile.path} does not exist.")
@@ -67,7 +65,7 @@ class ProjectSource(
         .map { ConfiguredAnalyser(it, config.argumentsFor(it.name)) }
 
     private fun analysisFolder(config: GateConfig): File =
-        config.input?.let { GateConfig.resolve(configFolder, it) } ?: options.projectFolder
+        config.input?.let { GateConfig.resolve(options.projectFolder, it) } ?: options.projectFolder
 
     companion object {
         private const val MAP_FILE_NAME = "map.cc.json"

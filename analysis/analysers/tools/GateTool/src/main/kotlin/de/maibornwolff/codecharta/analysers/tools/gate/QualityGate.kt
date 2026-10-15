@@ -17,7 +17,7 @@ import java.io.File
 class QualityGate(private val options: GateOptions, private val console: GateConsole, createAnalysers: () -> List<AnalyserInterface>) {
     private val configFile = options.configFile ?: File(options.projectFolder, GateConfig.FILE_NAME)
     private val catalog = PicocliAnalyserCatalog(createAnalysers)
-    private val projectSource = ProjectSource(options.copy(configFile = configFile), console, createAnalysers)
+    private val projectSource = ProjectSource(options, console, createAnalysers)
 
     fun init(force: Boolean): Int {
         if (configFile.exists() && !force) throw GateException("${configFile.path} already exists. Add --force to overwrite it.")
@@ -56,7 +56,8 @@ class QualityGate(private val options: GateOptions, private val console: GateCon
 
     private fun readConfig(): GateConfig {
         if (!configFile.exists()) throw GateException("No ${configFile.path} found. Run `ccsh gate --init` to create one.")
-        val result = ConfigReader(catalog, configFile.parentFile ?: File(".")).read(configFile)
+        val inputBase = if (options.mapFile == null) options.projectFolder else null
+        val result = ConfigReader(catalog, inputBase).read(configFile)
         if (result.problems.isEmpty()) return result.config
         val problems = result.problems.joinToString("\n") { "  $it" }
         throw GateException("${configFile.path} has ${result.problems.size} problem(s):\n$problems")

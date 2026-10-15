@@ -282,7 +282,7 @@ class GateToolTest {
     }
 
     @Test
-    fun `should analyse the input folder the config names, relative to the config`() {
+    fun `should analyse the input folder the config names, relative to the project folder`() {
         // Arrange
         configFile.writeText("input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
 
@@ -388,6 +388,35 @@ class GateToolTest {
         // Assert
         assertThat(exitCode).isEqualTo(2)
         assertThat(output.toString()).contains("missing.cc.json does not exist")
+    }
+
+    @Test
+    fun `should resolve the paths of a config kept elsewhere against the project folder`() {
+        // Arrange
+        val configElsewhere = File(projectFolder.parentFile, "${projectFolder.name}-ci/gate.yml").apply { parentFile.mkdirs() }
+        configElsewhere.writeText("input: src/main/kotlin/app\nmetrics:\n  rloc:\n    error:\n      max: 1\n")
+
+        // Act
+        val exitCode = run("--config", configElsewhere.path, projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("  App.kt  6")
+        assertThat(File(projectFolder, ".codecharta-gate-output/report.json")).exists()
+        assertThat(File(configElsewhere.parentFile, ".codecharta-gate-output")).doesNotExist()
+    }
+
+    @Test
+    fun `should not require the input folder when checking an existing map`() {
+        // Arrange
+        val mapFile = writeMap(Node("Only.kt", NodeType.File, mapOf("rloc" to 50)))
+        configFile.writeText("input: not/there\nmetrics:\n  rloc:\n    error:\n      max: 10\n")
+
+        // Act
+        val exitCode = run("--map", mapFile.path, projectFolder.path)
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
     }
 
     private fun writeMap(vararg files: Node): File {
