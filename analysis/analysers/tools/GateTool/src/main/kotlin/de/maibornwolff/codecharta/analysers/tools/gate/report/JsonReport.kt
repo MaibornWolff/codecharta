@@ -16,7 +16,7 @@ object JsonReport {
     private val RULE_NAMES = mapOf(
         ViolationKind.METRIC to "metric",
         ViolationKind.FILE_CYCLE to "file-cycle",
-        ViolationKind.PACKAGE_CYCLE to "package-cycle",
+        ViolationKind.UPWARD_DEPENDENCY to "upward-dependency",
         ViolationKind.UNKNOWN_METRIC to "unknown-metric",
         ViolationKind.CYCLES_NOT_CHECKED to "cycles-not-checked"
     )
@@ -44,6 +44,7 @@ object JsonReport {
         addProperty("rule", RULE_NAMES.getValue(violation.kind))
         addProperty("severity", violation.severity.key)
         violation.path?.let { addProperty("path", it) }
+        violation.target?.let { addProperty("target", it) }
         violation.metric?.let { addProperty("metric", it) }
         violation.value?.let { addProperty("value", it.toJsonNumber()) }
         violation.threshold?.let { addProperty("threshold", it.toJsonNumber()) }

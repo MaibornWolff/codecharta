@@ -27,7 +27,7 @@ data class PathOverride(val paths: List<String>, val metrics: Map<String, Metric
 
 data class CycleRule(val severity: Severity, val instruction: String? = null, val ignore: List<String> = emptyList())
 
-data class CycleRules(val file: CycleRule? = null, val packages: CycleRule? = null)
+data class CycleRules(val file: CycleRule? = null, val upward: CycleRule? = null)
 
 data class AnalyserSetting(val enabled: Boolean, val arguments: List<String> = emptyList())
 
@@ -42,7 +42,7 @@ data class GateConfig(
     val overrides: List<PathOverride> = emptyList()
 ) {
     val hasActiveRules: Boolean
-        get() = metrics.isNotEmpty() || cycles.file != null || cycles.packages != null || overrides.any { it.metrics.isNotEmpty() }
+        get() = metrics.isNotEmpty() || cycles.file != null || cycles.upward != null || overrides.any { it.metrics.isNotEmpty() }
 
     val configuredMetrics: List<String>
         get() {

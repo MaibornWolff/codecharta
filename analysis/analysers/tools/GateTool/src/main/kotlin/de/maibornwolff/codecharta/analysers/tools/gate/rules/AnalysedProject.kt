@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.Project
 
 data class AnalysedFile(val path: String, val metrics: Map<String, Double>)
 
-data class FileDependency(val from: String, val to: String)
+data class FileDependency(val from: String, val to: String, val isCyclic: Boolean = false, val isPointingUpwards: Boolean = false)
 
 class AnalysedProject(private val project: Project) {
     val files: List<AnalysedFile> by lazy {
@@ -17,12 +17,17 @@ class AnalysedProject(private val project: Project) {
     val dependencies: List<FileDependency> by lazy {
         val rootPrefix = "$PATH_SEPARATOR${project.rootNode.name}$PATH_SEPARATOR"
         project.lenses.dependency.edges.map { edge ->
-            FileDependency(edge.fromNodeName.removePrefix(rootPrefix), edge.toNodeName.removePrefix(rootPrefix))
+            FileDependency(
+                edge.fromNodeName.removePrefix(rootPrefix),
+                edge.toNodeName.removePrefix(rootPrefix),
+                edge.isCyclic,
+                edge.isPointingUpwards
+            )
         }
     }
 
-    val hasDependencyData: Boolean
-        get() = project.lenses.dependency.edges.isNotEmpty() || project.lenses.dependency.nodes.isNotEmpty()
+    val hasDependencyAnalysis: Boolean
+        get() = project.lenses.dependency.nodes.isNotEmpty()
 
     private fun numericAttributes(attributes: Map<String, Any>): Map<String, Double> = attributes
         .mapNotNull { (name, value) -> (value as? Number)?.let { name to it.toDouble() } }

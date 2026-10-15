@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- **Quality gate (experimental)**: `ccsh gate` checks a project against the metric limits and dependency-cycle rules
+- **Quality gate (experimental)**: `ccsh gate` checks a project against the metric limits and dependency rules
   in its `.codecharta.yml` and reports every broken rule on the console, as JSON and through an exit code you choose.
 
 - **Switching off comments or strings**: `domainlanguageparser` accepts a comment or string weight of 0 to leave those

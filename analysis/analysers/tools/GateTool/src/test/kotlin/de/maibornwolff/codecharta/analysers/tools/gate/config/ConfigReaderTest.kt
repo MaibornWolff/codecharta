@@ -72,7 +72,7 @@ class ConfigReaderTest {
                 instruction: Break the cycle.
                 ignore:
                   - src/a.kt
-              package:
+              upward:
                 severity: warning
                 ignore:
                   - src/legacy
@@ -109,7 +109,7 @@ class ConfigReaderTest {
                 cycles =
                     CycleRules(
                         file = CycleRule(Severity.ERROR, "Break the cycle.", ignore = listOf("src/a.kt")),
-                        packages = CycleRule(Severity.WARNING, ignore = listOf("src/legacy"))
+                        upward = CycleRule(Severity.WARNING, ignore = listOf("src/legacy"))
                     ),
                 overrides =
                     listOf(

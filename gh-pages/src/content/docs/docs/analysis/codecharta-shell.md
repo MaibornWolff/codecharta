@@ -82,7 +82,7 @@ This behaviour is currently supported by `ccsh modify`, `ccsh inspect` and `ccsh
 
 ### Checking a project against rules
 
-`ccsh gate` (experimental) analyses a project and checks it against the metric limits and dependency-cycle rules in its
+`ccsh gate` (experimental) analyses a project and checks it against the metric limits and dependency rules in its
 `.codecharta.yml`, with an exit code for builds, git hooks and AI agents (see [Quality Gate](/docs/analysis/quality-gate)).
 
 ### Validating cc.json files

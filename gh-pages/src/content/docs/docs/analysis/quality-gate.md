@@ -3,7 +3,7 @@ title: "Quality Gate"
 ---
 
 `ccsh gate` analyses a project and checks it against the rules in its `.codecharta.yml`: limits per metric and
-file, and dependency cycles between files or packages. It prints every broken rule, writes a JSON report and exits
+file, and the dependency cycles and upward dependencies the Dependency Parser finds. It prints every broken rule, writes a JSON report and exits
 with a code you choose, so a build, a git hook or an AI agent can act on the result.
 
 :::caution[Experimental]
@@ -41,9 +41,9 @@ ccsh gate --init --map build/project.cc.json.gz   # write the config from the me
 ```
 
 `--map` skips the analysis and checks the given map, so you can gate maps from any importer or parser, such as the
-Sonar importer or the Git Log Parser. `input`, `analysers` and `parallel` in the config are then not used. Cycle rules
-need the dependency data of the [Dependency Parser](/docs/parser/dependency); a map without it gets a warning that
-cycles could not be checked.
+Sonar importer or the Git Log Parser. `input`, `analysers` and `parallel` in the config are then not used. The cycle
+rules need the dependency analysis of the [Dependency Parser](/docs/parser/dependency); a map without it gets a warning
+that cycles and upward dependencies could not be checked.
 
 ### The config
 
@@ -83,7 +83,7 @@ cycles:
     ignore:                       # left out of the dependency graph before cycles are searched
       - src/model/Node.kt
       - "**/generated/**"
-  package:
+  upward:
     severity: warning
     ignore:
       - src/legacy
@@ -112,9 +112,12 @@ overrides:                        # other limits for the files the patterns matc
 - **Instructions** tell the reader, often an AI agent, what to do about a broken rule. They appear on the console and in
   the report.
 - **Path patterns** in `overrides` follow `.gitignore` syntax, relative to the `input` folder.
-- **Cycles** are found in the dependency graph of the Dependency Parser. A package is the folder of a file.
-  `ignore` takes files (or, for `package`, folders) out of that graph, in `.gitignore` syntax: a cycle that only
-  runs through an ignored file is not reported, while the rest of a cycle that does not need it still is.
+- **Cycles and upward dependencies** are the ones the [Dependency Parser](/docs/parser/dependency) marks, the same
+  ones the dependency view in the visualization shows. `file` reports each group of files tied together by cyclic
+  dependencies. `upward` reports each dependency that runs against the levels of its folder: within one folder, the
+  parser orders the subfolders and files so that what something depends on lies below it, and an upward dependency
+  is one that breaks that order. `ignore` takes files or folders out, in `.gitignore` syntax: a cycle that only runs
+  through an ignored file is not reported, while the rest of a cycle that does not need it still is.
 - A rule for a metric the analysis did not produce is reported as a warning.
 
 ### The result

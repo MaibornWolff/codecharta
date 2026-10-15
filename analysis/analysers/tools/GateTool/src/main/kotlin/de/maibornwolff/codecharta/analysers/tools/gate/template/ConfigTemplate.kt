@@ -52,7 +52,7 @@ class ConfigTemplate(private val files: List<AnalysedFile>, private val analyser
     private fun cycles() = commented(
         listOf("cycles:") +
             cycleLevelLines("file", "path/to/Generated.kt") +
-            cycleLevelLines("package", "path/to/legacy")
+            cycleLevelLines("upward", "path/to/legacy")
     )
 
     private fun cycleLevelLines(level: String, ignoredExample: String) =

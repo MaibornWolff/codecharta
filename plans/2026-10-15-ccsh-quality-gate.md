@@ -37,8 +37,9 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 ### 4. `ccsh gate`
 - Metric rules per file, worst level only; anything left out is off; gitignore-style override patterns,
   last match wins, `<metric>: off`
-- File and package cycles via the DependencyParser's strongly connected component detection; `ignore` patterns per level take
-  files or packages out of the graph
+- `cycles.file` and `cycles.upward` report the cyclic and upward-pointing edges the DependencyParser marks (the same
+  ones the dependency view shows), file cycles grouped with its strongly connected component detection; `ignore`
+  patterns per rule take files or folders out
 - Unknown metrics as warnings; exit code = highest code mapped to a found severity, 2 for tool failures
 
 ### 5. Report
@@ -60,6 +61,7 @@ exit code, so developers and AI agents get fast, scriptable feedback on code qua
 - Named `gate` because `ccsh check` is the ValidationTool
 - Reuse: parsers run through picocli unchanged, `ProjectMerger`, `StronglyConnectedComponentDetection`,
   `GitignorePatternMatcher` (refactored to expose pattern parsing and path matching)
-- A package is the folder of a file
+- Package cycles (direct folder of each file) were dropped: merging a folder's files into one node made parent ↔ child
+  folders look tangled where the parser's levels show nothing
 - Out of scope for v1: checking only changed files, naming the offending function, SARIF, git log / SVN
 - `--quiet` redirects System.out/err while the analysers run, since they print directly
