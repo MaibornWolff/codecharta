@@ -400,8 +400,9 @@ Function counting identifies different types of function definitions per languag
   `BEGIN`, also inside a PL/SQL package body, and a MySQL routine whose body is a single statement (after the
   parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger). Forward declarations in
   a package specification and a PostgreSQL trigger that only names its function are not counted. A body without
-  `BEGIN` (T-SQL) goes on up to `GO`, the next `CREATE` or the end of the file, and the `END` line of a body does not
-  count for the routine's rloc, like a closing brace.
+  `BEGIN` (T-SQL) goes on up to `GO`, the next `CREATE` or the end of the file, unless a bare `BEGIN … END` stands in
+  its middle: the body ends there. Neither the `END` line of a body nor, in PostgreSQL, the line with its closing
+  `$$` counts for the routine's rloc, like a closing brace.
 
 ##### Rust (.rs)
 

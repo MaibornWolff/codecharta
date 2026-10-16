@@ -32,7 +32,8 @@ The Unified Parser is parser to generate code metrics from a source code file or
 SQL covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL in one go, without choosing a dialect. Procedures,
 functions and triggers with a body count as functions, MySQL's single-statement routines included; branches, loops,
 the `WHEN`s of a `CASE`, `IIF`, `EXIT WHEN`, `CONTINUE WHEN`, exception handlers and `AND`/`OR` add to the
-complexity. The `END` line of a routine counts for its rloc no more than a closing brace does.
+complexity. The `END` line of a routine, and in PostgreSQL the line with the closing `$$`, counts for its rloc no more
+than a closing brace does.
 
 ## Supported Metrics
 
