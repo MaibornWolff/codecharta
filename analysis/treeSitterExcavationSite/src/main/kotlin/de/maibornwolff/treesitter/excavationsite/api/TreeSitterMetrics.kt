@@ -2,11 +2,7 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
-import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.MetricsFacade
-import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
-import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
-import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricsResult
 import java.io.File
@@ -32,9 +28,6 @@ typealias MetricsResult = MetricsResult
  * ```
  */
 object TreeSitterMetrics {
-    private val COMPLEXITY_METRICS =
-        listOf(AvailableFileMetrics.COMPLEXITY.metricName, AvailableFileMetrics.LOGIC_COMPLEXITY.metricName)
-
     /**
      * Parses a file and returns its code metrics.
      *
@@ -56,42 +49,7 @@ object TreeSitterMetrics {
      * @param language The programming language of the content
      * @return MetricsResult containing all calculated metrics
      */
-    fun parse(content: String, language: Language): MetricsResult {
-        val definition = LanguageRegistry.getLanguageDefinition(language)
-        val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
-
-        val metrics = MetricsFacade.collectMetrics(
-            content = content,
-            grammarLibrary = grammarLibrary,
-            definition = definition
-        )
-        val embeddedSources = EmbeddedSourcesFacade.embeddedSources(content, grammarLibrary, definition)
-
-        return toMetricsResult(withComplexityOf(embeddedSources, metrics))
-    }
-
-    // An embedded source, such as an inline template, adds its decisions to the file; its lines are the file's already
-    private fun withComplexityOf(embeddedSources: List<EmbeddedSource>, metrics: Map<String, Double>): Map<String, Double> {
-        if (embeddedSources.isEmpty()) return metrics
-        val embeddedMetrics = embeddedSources.map { parse(it.content, it.language).metrics }
-        return metrics +
-            COMPLEXITY_METRICS.associateWith { metric -> metrics.getValue(metric) + embeddedMetrics.sumOf { it.getValue(metric) } }
-    }
-
-    private fun toMetricsResult(metrics: Map<String, Double>): MetricsResult {
-        val perFunctionMetrics = metrics.filterKeys { key ->
-            key.endsWith("_per_function")
-        }
-
-        val fileMetrics = metrics.filterKeys { key ->
-            !key.endsWith("_per_function")
-        }
-
-        return MetricsResult(
-            metrics = fileMetrics,
-            perFunctionMetrics = perFunctionMetrics
-        )
-    }
+    fun parse(content: String, language: Language): MetricsResult = MetricsFacade.parse(content, language)
 
     /**
      * Returns whether the given file extension is supported.

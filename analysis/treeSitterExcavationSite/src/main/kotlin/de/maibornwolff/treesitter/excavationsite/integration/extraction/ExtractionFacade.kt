@@ -1,9 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.integration.extraction
 
+import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
 import de.maibornwolff.treesitter.excavationsite.integration.extraction.adapters.LanguageDefinitionExtractionAdapter
+import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
-import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
-import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
+import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 /**
@@ -14,20 +15,24 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.Nativ
  */
 object ExtractionFacade {
     /**
-     * Extracts text from the given source code.
+     * Extracts text from the given source code, together with the texts of the sources in another language it embeds,
+     * which are marked with their language.
      *
      * @param content The source code to extract from
-     * @param grammarLibrary The native grammar library to parse the content with
-     * @param definition The language definition containing extraction mappings
+     * @param language The language of the content
      * @return A list of extracted text items
      */
-    fun extract(content: String, grammarLibrary: GrammarLibrary, definition: LanguageDefinition): List<ExtractedText> {
+    fun extract(content: String, language: Language): List<ExtractedText> {
+        val definition = LanguageRegistry.getLanguageDefinition(language)
+        val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
         val processedContent = definition.preprocessor?.invoke(content) ?: content
-        val extractionNodeTypes = LanguageDefinitionExtractionAdapter(definition)
         val extractor = DirectTextExtractor(
             grammar = NativeTreeSitter.grammar(grammarLibrary),
-            extractionNodeTypes = extractionNodeTypes
+            extractionNodeTypes = LanguageDefinitionExtractionAdapter(definition)
         )
-        return extractor.extract(processedContent)
+        val embeddedTexts = EmbeddedSourcesFacade.embeddedSources(content, grammarLibrary, definition).flatMap { embedded ->
+            extract(embedded.content, embedded.language).map { it.copy(language = embedded.language) }
+        }
+        return extractor.extract(processedContent) + embeddedTexts
     }
 }

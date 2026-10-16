@@ -1,6 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.api
 
-import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
 import de.maibornwolff.treesitter.excavationsite.integration.extraction.ExtractionFacade
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionResult
@@ -61,19 +60,7 @@ object TreeSitterExtraction {
             )
         }
 
-        val definition = LanguageRegistry.getLanguageDefinition(language)
-        val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
-
-        val extractedTexts = ExtractionFacade.extract(
-            content = content,
-            grammarLibrary = grammarLibrary,
-            definition = definition
-        )
-        val embeddedTexts = EmbeddedSourcesFacade.embeddedSources(content, grammarLibrary, definition).flatMap { embedded ->
-            extract(embedded.content, embedded.language).extractedTexts.map { it.copy(language = embedded.language) }
-        }
-
-        return ExtractionResult(extractedTexts + embeddedTexts)
+        return ExtractionResult(ExtractionFacade.extract(content, language))
     }
 
     /**
