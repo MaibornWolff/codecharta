@@ -150,6 +150,19 @@ class LanguageTest {
     }
 
     @Test
+    fun `should have ResourceKeywords for SQL with the dialect names, the catalog words and id`() {
+        // Arrange
+        val dialects = listOf("postgre", "postgres", "postgresql", "oracle", "ansi", "mariadb", "sqlserver")
+        val words = dialects + listOf("tables", "objects", "columns", "dba", "id")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
     fun `should handle uppercase extensions`() {
         // Arrange & Act
         val language = Language.fromExtension("KT")

@@ -333,3 +333,41 @@ pg_catalog
 public
 sys
 sysobjects
+syscolumns
+sysindexes
+systables
+catalog
+information
+
+# Catalog views and the objects they list (dba_objects, all_tables, information_schema.columns)
+dba
+tables
+columns
+objects
+views
+indexes
+schemas
+schemata
+routines
+procedures
+triggers
+sequences
+constraints
+
+# Dialects and database products, as comments and names mention them
+ansi
+db2
+mariadb
+mssql
+oracle
+pg
+pgsql
+postgre
+postgres
+postgresql
+sqlite
+sqlserver
+transact
+
+# Technical columns
+id

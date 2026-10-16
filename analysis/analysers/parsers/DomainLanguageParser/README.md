@@ -24,6 +24,10 @@ comments, its text, and the values of the attributes that hold text a user reads
 `title`, `text`, `tooltip`, `placeholder`, `description` or `message` (`hoverHint`, `empty-message`). The values of
 all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out.
 
+In SQL the keywords, types and built-in functions of every dialect are stop words, and so are the names of the
+dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`), the words of the catalog views
+(`tables`, `columns`, `objects`, `dba`) and `id`.
+
 ## Usage and Parameters
 
 | Parameter                                 | Description                                                                                     |
