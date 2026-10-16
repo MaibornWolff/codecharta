@@ -260,6 +260,8 @@ contribute to complexity:
   `<ng-template>`
 - **Logical operators**: `&&`, `||`, the ternary `? :` and `??` in bindings, event handlers and interpolations
 - **Functions**: a template has none, so its complexity is its logic complexity
+- **Not counted**: an interpolation inside a plain attribute value, such as `class="icon {{ done ? 'check' : 'copy' }}"`,
+  because the grammar reads the whole value as text
 
 #### Comment Lines
 
