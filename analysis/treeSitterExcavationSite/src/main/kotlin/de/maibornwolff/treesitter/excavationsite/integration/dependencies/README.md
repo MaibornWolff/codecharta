@@ -150,11 +150,11 @@ and class selectors name no element and are left out. The adapter matches the us
 ### Embedded sources
 
 A file can hold sources in another language: a Vue component its script blocks, an Angular component in TypeScript
-its inline template. The `EmbeddedSourceMapping` of `LanguageDependencyMapping.embeddedSources` finds them as
-`EmbeddedSource(content, language, owner)`. TypeScript registers the same mapping as `LanguageDefinition.embeddedSources`,
-so the inline templates count for metrics and text extraction as well; Vue registers its script blocks for dependencies
-only, as its metrics and text extraction read the script through a preprocessor. `DependenciesFacade` analyses each
-source in its own language:
+its inline template. An `EmbeddedSourceMapping` finds them as `EmbeddedSource(content, language, owner)`: the one of
+`LanguageDependencyMapping.embeddedSources`, or else the one of `LanguageDefinition.embeddedSources`. TypeScript
+registers its inline templates once, in the definition, so they count for metrics and text extraction as well; Vue
+registers its script blocks in the dependency mapping only, as its metrics and text extraction read the script through
+a preprocessor. `DependenciesFacade` analyses each source in its own language:
 
 - A source without an owner, such as a script block, belongs to the file: its imports are appended to the imports of
   the file, and what it declares is dropped.

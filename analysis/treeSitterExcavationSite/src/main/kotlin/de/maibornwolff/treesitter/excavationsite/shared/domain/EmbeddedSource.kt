@@ -11,8 +11,8 @@ data class EmbeddedSource(val content: String, val language: Language, val owner
 
 /**
  * Finds the sources in another language inside a file. Only a file that contains [marker] is parsed for them, which
- * spares the files without any a second parse. A language registers it as [LanguageDefinition.embeddedSources], which
- * metrics, text extraction and dependencies read, or, where its preprocessor hands the sources to metrics and text
- * extraction already, as [LanguageDependencyMapping.embeddedSources] only.
+ * spares the files without any a second parse. A language registers it once as [LanguageDefinition.embeddedSources],
+ * which metrics, text extraction and dependencies read, or, where its preprocessor hands the sources to metrics and text
+ * extraction already, as [LanguageDependencyMapping.embeddedSources], which dependencies read instead.
  */
 data class EmbeddedSourceMapping(val marker: String, val extract: (SyntaxNode) -> List<EmbeddedSource>)

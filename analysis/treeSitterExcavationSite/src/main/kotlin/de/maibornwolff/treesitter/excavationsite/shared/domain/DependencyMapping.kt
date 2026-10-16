@@ -8,7 +8,8 @@ package de.maibornwolff.treesitter.excavationsite.shared.domain
  * Functions are stored as data (lambdas), consistent with how
  * [Extract] stores custom extraction functions.
  *
- * @property embeddedSources the sources in another language inside a file, see [EmbeddedSource]
+ * @property embeddedSources the sources in another language inside a file that count for its dependencies only, in
+ * place of the [LanguageDefinition.embeddedSources], see [EmbeddedSourceMapping]
  * @property grammarOfWholeFile set where metrics and text extraction parse only a part of the file with the grammar
  * of that part: dependency extraction then parses the whole, unprocessed file with this grammar instead
  */
