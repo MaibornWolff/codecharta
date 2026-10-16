@@ -208,6 +208,38 @@ class AngularMetricsTest {
         }
 
         @Test
+        fun `should count decisions in a unary operand, a call argument and a pipe argument for logic complexity`() {
+            // Arrange
+            val code = """
+                <span>{{ wounds > 0 ? -wounds : 0 }}</span>
+                <p (click)="flee(lit ? cave.exit : cave.tunnel)"></p>
+                <p>{{ "gold" | coins: hoard() ?? 0 }}</p>
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.logicComplexity).isEqualTo(3.0)
+        }
+
+        @Test
+        fun `should count a for block whose collection has a fallback and whose lets precede the track`() {
+            // Arrange
+            val code = """
+                @for (creature of creatures() ?? []; let i = ${'$'}index; track creature.id) {
+                  <p>{{ i }}</p>
+                }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.logicComplexity).isEqualTo(2.0)
+        }
+
+        @Test
         fun `should not count arithmetic and comparison operators for logic complexity`() {
             // Arrange
             val code = """

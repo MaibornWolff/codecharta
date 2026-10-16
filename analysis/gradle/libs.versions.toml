@@ -38,7 +38,7 @@ tree-sitter-vue = "0.2.1a"
 tree-sitter-abl = "de274a6"
 # tree-sitter-tsx and tree-sitter-pascal are not on Maven Central; the module bundles them as
 # treeSitterExcavationSite/libs/*.jar, built with the `gen` and `buildNative` tasks of https://github.com/bonede/tree-sitter-ng.
-# So are tree-sitter-sql-island, CodeCharta's own SQL grammar, and tree-sitter-angular 0.9.2-codecharta.1, a patched
+# So are tree-sitter-sql-island, CodeCharta's own SQL grammar, and tree-sitter-angular 0.9.2-codecharta.2, a patched
 # copy of https://github.com/dlvandenberg/tree-sitter-angular, both from treeSitterExcavationSite/grammars
 slf4j = "2.0.17"
 snakeyaml = "2.4"

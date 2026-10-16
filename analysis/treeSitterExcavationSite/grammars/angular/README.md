@@ -11,6 +11,14 @@ marked with a `CodeCharta:` comment and covered by `test/corpus/codecharta.txt`:
 | Identifiers of every script             | ASCII only, `höhle.rüstungsklasse` breaks into `ERROR` nodes     | `identifier` and `binding_identifier` take any Unicode letter or digit |
 | Interpolation in a plain attribute      | `class="w-4 {{ a ? 'x' : 'y' }}"` is one `attribute_value`         | `quoted_attribute_value` holds `attribute_value` and `interpolation` nodes |
 | Event of a global target                | `(window:resize)` is an `ERROR` node                               | `binding_name` with a `target` field                             |
+| Unary minus, plus and `typeof`          | `-1` and `typeof heading === "string"` are `ERROR` nodes          | `unary_operator` takes `-`, `+` and `typeof`; a unary expression is a left operand |
+| Optional, chained and asserted calls    | `isFocused?.()`, `action()(row)`, `itemAction()!(row)` and `errors?.['max']` are `ERROR` nodes | `call_expression` calls a call or a non-null assertion, optionally with `?.(`; `bracket_expression` takes `?.[` |
+| Non-null assertion                      | `cipher()!` is an `ERROR` node                                    | `non_null_expression`                                          |
+| Operators in nested positions           | a ternary, `??` or pipe in a call argument, an operator in a ternary's true branch, array element or pipe argument is an `ERROR` node | each position takes the expressions Angular allows there, with trailing commas |
+| Pipe after the last operand             | `a && b$ \| async` and `a ?? b \| currency` are `ERROR` nodes        | the pipe is part of the last operand                           |
+| Attributes                              | `attr.viewBox="0 0 {{ size }}"` and `[popupBackAction]` without a value are `ERROR` nodes | `attribute_name` holds a dot; `property_binding` without a value |
+| `@for` lets                             | `let` before `track`, `let` before each alias and `items ?? []` are `ERROR` nodes | `for_declaration` takes any expression and lets before `track`; `for_reference` takes `let` before each alias |
+| Structural directive values             | `trackBy: trackBy()`, `templateCacheSize: 0` and `columns.name; let row` are `ERROR` nodes | `structural_assignment` takes a call, member, number or string; `structural_expression` takes trailing lets |
 
 The version `0.9.2-codecharta.<n>` names the upstream release and the patch level.
 
@@ -39,7 +47,7 @@ x86_64 and aarch64 and for Windows on x86_64, built with the `gen` and `buildNat
 ```bash
 # 1. The grammar as the source archive tree-sitter-ng downloads, with one top folder and an entry per folder
 cd analysis/treeSitterExcavationSite/grammars
-VERSION=0.9.2-codecharta.1
+VERSION=0.9.2-codecharta.2
 rm -rf /tmp/angular && mkdir -p /tmp/angular
 cp -r angular /tmp/angular/tree-sitter-angular-$VERSION
 (cd /tmp/angular && zip -qr tree-sitter-angular-$VERSION.zip tree-sitter-angular-$VERSION)

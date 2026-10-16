@@ -162,3 +162,554 @@ Event binding with a target
               function: (identifier))))))
     (end_tag
       (tag_name))))
+
+===============================
+Unary minus as the false branch
+===============================
+
+<li [tabindex]="active ? 0 : -1"></li>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (binding_name
+            (identifier))
+          (ternary_expression
+            condition: (expression
+              (identifier))
+            (ternary_operator)
+            consequence: (number)
+            (ternary_operator)
+            alternative: (unary_expression
+              operator: (unary_operator)
+              value: (expression
+                (number)))))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Typeof as the left operand
+==============================
+
+@if (typeof heading === "string") {
+  <span>{{ heading }}</span>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (binary_expression
+        left: (unary_expression
+          operator: (unary_operator)
+          value: (expression
+            (identifier)))
+        right: (expression
+          (string))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (interpolation
+          (expression
+            (identifier)))
+        (end_tag
+          (tag_name))))))
+
+==============================
+Optional call
+==============================
+
+@if (isFocused?.()) {
+  <p>focused</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (expression
+        (call_expression
+          function: (identifier))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name))))))
+
+==============================
+Optional element access
+==============================
+
+<p>{{ errors?.['maxLength'] }}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (bracket_expression
+          object: (identifier)
+          property: (expression
+            (string)))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Call of a call result
+==============================
+
+<button (click)="buttonAction()(row)"></button>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (event_binding
+          (binding_name
+            (identifier))
+          (expression
+            (call_expression
+              function: (call_expression
+                function: (identifier))
+              arguments: (arguments
+                (identifier)))))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Call of a non-null assertion
+==============================
+
+<button (click)="itemAction()!(row)"></button>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (event_binding
+          (binding_name
+            (identifier))
+          (expression
+            (call_expression
+              function: (non_null_expression
+                value: (call_expression
+                  function: (identifier)))
+              arguments: (arguments
+                (identifier)))))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Non-null assertion
+==============================
+
+<ng-container *ngTemplateOutlet="filter.optionsTemplate()!"></ng-container>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (structural_directive
+          (identifier)
+          (structural_expression
+            (expression
+              (non_null_expression
+                value: (member_expression
+                  object: (identifier)
+                  call: (call_expression
+                    function: (identifier)))))))))
+    (end_tag
+      (tag_name))))
+
+======================================
+Ternary, nullish and pipe as arguments
+======================================
+
+<p (pointingChange)="point($event ? cycle.edges : null, $event ?? 0, rows$ | async,)"></p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (event_binding
+          (binding_name
+            (identifier))
+          (expression
+            (call_expression
+              function: (identifier)
+              arguments: (arguments
+                (ternary_expression
+                  condition: (expression
+                    (identifier))
+                  (ternary_operator)
+                  consequence: (member_expression
+                    object: (identifier)
+                    property: (identifier))
+                  (ternary_operator)
+                  alternative: (expression
+                    (identifier)))
+                (nullish_coalescing_expression
+                  condition: (expression
+                    (identifier))
+                  (coalescing_operator)
+                  default: (number))
+                (expression
+                  (identifier)
+                  pipes: (pipe_sequence
+                    (pipe_operator)
+                    (pipe_call
+                      name: (identifier))))))))))
+    (end_tag
+      (tag_name))))
+
+=====================================
+Nested ternary and binary true branch
+=====================================
+
+<p>{{ a ? b ? c : d : price / 12 }}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (ternary_expression
+        condition: (expression
+          (identifier))
+        (ternary_operator)
+        consequence: (ternary_expression
+          condition: (expression
+            (identifier))
+          (ternary_operator)
+          consequence: (identifier)
+          (ternary_operator)
+          alternative: (expression
+            (identifier)))
+        (ternary_operator)
+        alternative: (binary_expression
+          left: (expression
+            (identifier))
+          right: (expression
+            (number)))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Pipe after the last operand
+==============================
+
+<div *ngIf="!loading && view$ | async as view"></div>
+<p>{{ estimated ?? total | currency }}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (structural_directive
+          (identifier)
+          (structural_expression
+            (conditional_expression
+              left: (unary_expression
+                operator: (unary_operator)
+                value: (expression
+                  (identifier)))
+              (conditional_operator)
+              right: (expression
+                (identifier)
+                pipes: (pipe_sequence
+                  (pipe_operator)
+                  (pipe_call
+                    name: (identifier)))))
+            (special_keyword)
+            alias: (identifier)))))
+    (end_tag
+      (tag_name)))
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (nullish_coalescing_expression
+        condition: (expression
+          (identifier))
+        (coalescing_operator)
+        default: (expression
+          (identifier)
+          pipes: (pipe_sequence
+            (pipe_operator)
+            (pipe_call
+              name: (identifier))))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Pipe arguments with operators
+==============================
+
+<p>{{ "seats" | i18n: remaining() ?? 0 : seats || "0" }}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (string)
+        pipes: (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            name: (identifier)
+            arguments: (pipe_arguments
+              (nullish_coalescing_expression
+                condition: (call_expression
+                  function: (identifier))
+                (coalescing_operator)
+                default: (number))
+              (binary_expression
+                left: (identifier)
+                right: (string)))))))
+    (end_tag
+      (tag_name))))
+
+=========================================
+Ternary array element with trailing comma
+=========================================
+
+<p [ngClass]="[open ? 'a' : 'b',]"></p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (binding_name
+            (identifier))
+          (expression
+            (array
+              (ternary_expression
+                condition: (expression
+                  (identifier))
+                (ternary_operator)
+                consequence: (string)
+                (ternary_operator)
+                alternative: (expression
+                  (string))))))))
+    (end_tag
+      (tag_name))))
+
+================================
+Property binding without a value
+================================
+
+<button [popupBackAction]></button>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (binding_name
+            (identifier)))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Attribute name with a dot
+==============================
+
+<svg attr.viewBox="0 0 {{ size }}"></svg>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value)
+          (interpolation
+            (expression
+              (identifier))))))
+    (end_tag
+      (tag_name))))
+
+==============================
+For with lets before the track
+==============================
+
+@for (item of items() ?? []; let i = $index; let first = $first; track item.id) {
+  <p>{{ i }}</p>
+}
+
+---
+
+(document
+  (for_statement
+    (control_keyword)
+    declaration: (for_declaration
+      name: (identifier)
+      (special_keyword)
+      value: (nullish_coalescing_expression
+        condition: (expression
+          (call_expression
+            function: (identifier)))
+        (coalescing_operator)
+        default: (array))
+      (special_keyword)
+      alias: (assignment_expression
+        name: (identifier)
+        value: (expression
+          (identifier)))
+      (special_keyword)
+      alias: (assignment_expression
+        name: (identifier)
+        value: (expression
+          (identifier)))
+      (special_keyword)
+      track: (expression
+        (member_expression
+          object: (identifier)
+          property: (identifier))))
+    body: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (interpolation
+          (expression
+            (identifier)))
+        (end_tag
+          (tag_name))))))
+
+================================
+For with a let before each alias
+================================
+
+@for (item of items; track item; let i = $index; let last = $last) {
+  <p>{{ i }}</p>
+}
+
+---
+
+(document
+  (for_statement
+    (control_keyword)
+    declaration: (for_declaration
+      name: (identifier)
+      (special_keyword)
+      value: (expression
+        (identifier))
+      (special_keyword)
+      track: (expression
+        (identifier)))
+    reference: (for_reference
+      (special_keyword)
+      alias: (assignment_expression
+        name: (identifier)
+        value: (expression
+          (identifier)))
+      (special_keyword)
+      alias: (assignment_expression
+        name: (identifier)
+        value: (expression
+          (identifier))))
+    body: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (interpolation
+          (expression
+            (identifier)))
+        (end_tag
+          (tag_name))))))
+
+==============================================================
+Structural directive with expression values and a trailing let
+==============================================================
+
+<tr *cdkVirtualFor="let r of rows$; trackBy: trackBy(); templateCacheSize: 0"></tr>
+<td *bitCellDef="table.columns.name; let row"></td>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (structural_directive
+          (identifier)
+          (structural_declaration
+            (special_keyword)
+            (structural_assignment
+              name: (identifier)
+              operator: (identifier)
+              value: (expression
+                (identifier)))
+            (structural_assignment
+              name: (identifier)
+              value: (call_expression
+                function: (identifier)))
+            (structural_assignment
+              name: (identifier)
+              value: (number))))))
+    (end_tag
+      (tag_name)))
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (structural_directive
+          (identifier)
+          (structural_expression
+            (expression
+              (member_expression
+                object: (member_expression
+                  object: (identifier)
+                  property: (identifier))
+                property: (identifier)))
+            (special_keyword)
+            (structural_assignment
+              name: (identifier))))))
+    (end_tag
+      (tag_name))))

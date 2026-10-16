@@ -87,6 +87,15 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
   armor 14, hit 29, points 20, speed 30, damage 9, lair 6, initiative 7, encounter 7, treasure 6, hoard 3, stable 9, roll 9.
   The inline template of `treasure-chest.component.ts` counts for that file: treasure 6, hoard 3, guards 3.
 
+## Changed by the grammar fixes (2026-10-16, tree-sitter-angular 0.9.2-codecharta.2)
+- The grammar reads the rest of the expression syntax real templates use: unary `-`, `+` and `typeof`, `?.()`, `?.[]`,
+  calls of a call or of `!`, the non-null `!`, any expression as call argument, ternary branch, array element or pipe
+  argument, a pipe after the last operand, `attr.x="{{ }}"`, a binding without a value, `@for` lets before `track` and
+  structural directives with expression values and trailing lets.
+- The sample's numbers are unchanged, it holds none of these. Templates that parse without an `ERROR` node: visualization
+  180 -> 184 of 184, Bitwarden 756 -> 811 of 811; `inspectorNodeBadges.component.html` gains the ternary around
+  `-count.removed` (logic 5 -> 6).
+
 ## Verdict
 Unified: Good – all templates and inline templates measured, counts exact, ICU cases counted. Bad – every .html is measured.
 Dependency: Good – every template edge expected, a component points at its template, ambiguous names resolve through the

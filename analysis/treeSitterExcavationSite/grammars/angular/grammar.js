@@ -18,7 +18,12 @@ const PREC = {
 module.exports = grammar(HTML, {
     name: "angular",
 
-    conflicts: $ => [[$.arrow_function_parameters, $._primitive]],
+    // CodeCharta: whether a non-null assertion is called, itemAction()!(row), shows only after the "!"
+    conflicts: $ => [
+        [$.arrow_function_parameters, $._primitive],
+        [$._primitive, $._non_null_call],
+        [$.member_expression, $._non_null_call]
+    ],
 
     externals: ($, original) =>
         original.concat([$._interpolation_start, $._interpolation_end, $._control_flow_start, $._empty_quoted_string]),
@@ -28,7 +33,8 @@ module.exports = grammar(HTML, {
         _node: ($, original) => choice(prec(1, $.icu_expression), prec(1, $.interpolation), prec(1, $._any_statement), original),
 
         // ---------- Overrides ----------
-        attribute_name: _ => /[^<>\*.\[\]\(\)"'=\s]+/,
+        // CodeCharta: a dot inside a plain attribute name, attr.viewBox="0 0 {{ size }}"
+        attribute_name: _ => /[^<>\*.\[\]\(\)"'=\s][^<>\*\[\]\(\)"'=\s]*/,
         text: _ => /[^<>@{}&\s]([^<>@{}&]*[^<>@{}&\s])?/,
 
         // ----------- Statement block --------
@@ -156,10 +162,20 @@ module.exports = grammar(HTML, {
             seq(
                 field("name", $.identifier),
                 alias("of", $.special_keyword),
-                field("value", $.expression),
+                // CodeCharta: any expression to iterate and lets before the track, @for (a of b ?? []; let i = $index; track i)
+                field("value", $._any_expression),
+                repeat($._for_let),
                 ";",
                 alias("track", $.special_keyword),
                 field("track", $.expression)
+            ),
+
+        _for_let: $ =>
+            seq(
+                ";",
+                alias("let", $.special_keyword),
+                field("alias", $.assignment_expression),
+                repeat(seq(",", field("alias", $.assignment_expression)))
             ),
 
         for_reference: $ =>
@@ -167,7 +183,8 @@ module.exports = grammar(HTML, {
                 ";",
                 alias("let", $.special_keyword),
                 field("alias", $.assignment_expression),
-                repeat(seq(choice(";", ","), field("alias", $.assignment_expression)))
+                // CodeCharta: a let before each alias, ; let i = $index; let first = $first
+                repeat(seq(choice(";", ","), optional(alias("let", $.special_keyword)), field("alias", $.assignment_expression)))
             ),
 
         // ---------- If Statement ----------
@@ -299,15 +316,27 @@ module.exports = grammar(HTML, {
                 )
             ),
 
+        // CodeCharta: lets after the expression, *bitCellDef="table.columns.name; let row"
         structural_expression: $ =>
-            seq($._any_expression, optional($._alias), optional($._else_template_expression), optional($._context_expression)),
+            seq(
+                $._any_expression,
+                optional($._alias),
+                optional($._else_template_expression),
+                optional($._context_expression),
+                repeat(seq(";", alias("let", $.special_keyword), $.structural_assignment))
+            ),
 
         structural_declaration: $ =>
             seq(alias("let", $.special_keyword), seq($.structural_assignment, repeat(seq(choice(";", ","), $.structural_assignment)))),
 
         structural_assignment: $ =>
             choice(
-                seq(field("name", $.identifier), ":", field("value", $.identifier)),
+                // CodeCharta: an expression as a keyed value, trackBy: trackBy(); templateCacheSize: 0
+                seq(
+                    field("name", $.identifier),
+                    ":",
+                    field("value", choice($.identifier, $.call_expression, $.member_expression, $.number, $.string))
+                ),
                 prec.left(
                     PREC.ALIAS,
                     seq(
@@ -327,7 +356,8 @@ module.exports = grammar(HTML, {
             seq(";", choice(alias("context", $.special_keyword), field("named", $.identifier)), ":", $._any_expression),
 
         // ---------- Bindings ----------
-        property_binding: $ => seq("[", choice($.binding_name, $.class_binding), "]", $._binding_assignment),
+        // CodeCharta: a property binding without a value, [popupBackAction]
+        property_binding: $ => seq("[", choice($.binding_name, $.class_binding), "]", optional($._binding_assignment)),
         // CodeCharta: an event of a global target, (window:resize) or (document:keydown.escape)
         event_binding: $ => seq("(", alias($._event_binding_name, $.binding_name), ")", $._binding_assignment),
         _event_binding_name: $ => seq(optional(seq(field("target", alias($.binding_identifier, $.identifier)), ":")), $._binding_primitive),
@@ -388,17 +418,27 @@ module.exports = grammar(HTML, {
         template_substitution: $ => seq("${", $._any_expression, "}"),
 
         // Expression
-        expression: $ => seq($._primitive, optional(field("pipes", $.pipe_sequence))),
+        expression: $ => prec.right(seq($._primitive, optional(field("pipes", $.pipe_sequence)))),
+        _piped_expression: $ => prec(-1, seq($._primitive, field("pipes", $.pipe_sequence))),
 
         // Unary expression
+        // CodeCharta: unary minus, plus and typeof, -1, -count and typeof heading
         unary_expression: $ =>
-            seq(field("operator", alias("!", $.unary_operator)), field("value", choice($.expression, $.unary_expression))),
+            seq(
+                field("operator", alias(choice("!", "-", "+", "typeof"), $.unary_operator)),
+                field("value", choice($.expression, $.unary_expression))
+            ),
 
         // Binary expression
         binary_expression: $ =>
             prec.left(
                 PREC.CALL,
-                seq(field("left", $.expression), field("operator", $._binary_op), field("right", choice($.binary_expression, $.expression)))
+                // CodeCharta: a unary expression as the left operand, typeof heading === "string"
+                seq(
+                    field("left", choice($.expression, $.unary_expression)),
+                    field("operator", $._binary_op),
+                    field("right", choice($.binary_expression, $.expression))
+                )
             ),
 
         // Ternary expression
@@ -408,17 +448,35 @@ module.exports = grammar(HTML, {
                 seq(
                     field("condition", $._any_expression),
                     alias("?", $.ternary_operator),
-                    field("consequence", choice($.group, $._primitive, $._short_concat_expression)),
+                    // CodeCharta: any expression but an arrow function as the true branch, a ? b / 12 : c
+                    field(
+                        "consequence",
+                        choice(
+                            $.group,
+                            $._primitive,
+                            $._short_concat_expression,
+                            $.binary_expression,
+                            $.unary_expression,
+                            $.ternary_expression,
+                            $.conditional_expression,
+                            $.nullish_coalescing_expression
+                        )
+                    ),
                     alias(":", $.ternary_operator),
                     field("alternative", choice($.group, $._any_expression))
                 )
             ),
 
-        _short_concat_expression: $ => seq($._primitive, "+", $._primitive),
+        _short_concat_expression: $ => prec(PREC.ALIAS, seq($._primitive, "+", $._primitive)),
 
         // Nullish coalescing expression
         nullish_coalescing_expression: $ =>
-            seq(field("condition", $._any_expression), alias("??", $.coalescing_operator), field("default", $._primitive)),
+            seq(
+                field("condition", $._any_expression),
+                alias("??", $.coalescing_operator),
+                // CodeCharta: a pipe after the default applies to the whole, a ?? b | currency
+                field("default", choice($._primitive, alias($._piped_expression, $.expression)))
+            ),
 
         // Conditional expression
         conditional_expression: $ =>
@@ -427,17 +485,45 @@ module.exports = grammar(HTML, {
                 seq(
                     field("left", choice($._primitive, $.unary_expression, $.binary_expression)),
                     alias(choice("||", "&&"), $.conditional_operator),
-                    field("right", choice($._primitive, $.unary_expression, $.binary_expression, $.conditional_expression))
+                    // CodeCharta: a pipe after the last operand applies to the whole, a && b$ | async
+                    field(
+                        "right",
+                        choice(
+                            $._primitive,
+                            $.unary_expression,
+                            $.binary_expression,
+                            $.conditional_expression,
+                            alias($._piped_expression, $.expression)
+                        )
+                    )
                 )
             ),
 
         // ---------- Pipes ---------
-        pipe_sequence: $ => repeat1(seq(alias("|", $.pipe_operator), $.pipe_call)),
+        pipe_sequence: $ => prec.right(repeat1(seq(alias("|", $.pipe_operator), $.pipe_call))),
 
-        pipe_call: $ => seq(field("name", $.identifier), optional(field("arguments", $.pipe_arguments))),
+        pipe_call: $ => prec.right(seq(field("name", $.identifier), optional(field("arguments", $.pipe_arguments)))),
 
-        pipe_arguments: $ => repeat1($._pipe_argument),
-        _pipe_argument: $ => seq(":", $._primitive),
+        pipe_arguments: $ => prec.right(repeat1($._pipe_argument)),
+        // CodeCharta: operators in a pipe argument bind tighter than the next argument, | i18n: a ?? 0 : b || "0"
+        _pipe_argument: $ => prec.right(PREC.ALIAS, seq(":", $._pipe_argument_value)),
+        _pipe_argument_value: $ =>
+            choice(
+                $._primitive,
+                $.unary_expression,
+                alias($._pipe_binary_expression, $.binary_expression),
+                alias($._pipe_nullish_coalescing_expression, $.nullish_coalescing_expression)
+            ),
+        _pipe_binary_expression: $ =>
+            prec.left(
+                PREC.ALIAS,
+                seq(field("left", $._pipe_argument_value), field("operator", $._binary_op), field("right", $._primitive))
+            ),
+        _pipe_nullish_coalescing_expression: $ =>
+            prec.left(
+                PREC.ALIAS,
+                seq(field("condition", $._pipe_argument_value), alias("??", $.coalescing_operator), field("default", $._primitive))
+            ),
 
         // ---------- Primitives ----------
         _primitive: $ =>
@@ -451,8 +537,12 @@ module.exports = grammar(HTML, {
                 $.group,
                 $.call_expression,
                 $.member_expression,
-                $.bracket_expression
+                $.bracket_expression,
+                $.non_null_expression
             ),
+
+        // CodeCharta: the non-null assertion of TypeScript, cipher()!
+        non_null_expression: $ => prec(PREC.CALL, seq(field("value", $._primitive), "!")),
 
         // Object
         object: $ => seq("{", repeat(choice($.pair, $._shorthand, seq($.spread, optional(",")))), "}"),
@@ -466,13 +556,20 @@ module.exports = grammar(HTML, {
         array: $ =>
             seq(
                 "[",
-                optional(
-                    seq(
-                        choice($.expression, $.unary_expression, $.spread),
-                        repeat(seq(",", choice($.expression, $.unary_expression, $.spread)))
-                    )
-                ),
+                // CodeCharta: any expression as an element and a trailing comma, [a ? 'x' : 'y',]
+                optional(seq($._array_element, repeat(seq(",", $._array_element)), optional(","))),
                 "]"
+            ),
+
+        _array_element: $ =>
+            choice(
+                $.expression,
+                $.unary_expression,
+                $.spread,
+                $.binary_expression,
+                $.ternary_expression,
+                $.conditional_expression,
+                $.nullish_coalescing_expression
             ),
 
         // Identifier
@@ -501,12 +598,31 @@ module.exports = grammar(HTML, {
         group: $ => seq("(", $._any_expression, ")"),
 
         // Call expression
+        // CodeCharta: the call of a call result and an optional call, action()(), itemAction()!(row) and isFocused?.()
         call_expression: $ =>
-            prec.left(PREC.CALL, seq(field("function", $.identifier), "(", optional(field("arguments", $.arguments)), ")")),
-        arguments: $ =>
-            seq(
-                choice($._primitive, $.binary_expression, $.unary_expression, $._timed_argument, $.spread, $.arrow_function),
-                repeat(seq(",", choice($._primitive, $.spread, $.arrow_function)))
+            prec.left(
+                PREC.CALL,
+                seq(
+                    field("function", choice($.identifier, $.call_expression, alias($._non_null_call, $.non_null_expression))),
+                    choice("(", "?.("),
+                    optional(field("arguments", $.arguments)),
+                    ")"
+                )
+            ),
+        _non_null_call: $ => seq(field("value", $.call_expression), "!"),
+        // CodeCharta: any expression as an argument, fn(a ? b : c), $any(rows$ | async)
+        arguments: $ => seq(choice($._argument, $._timed_argument), repeat(seq(",", $._argument)), optional(",")),
+        _argument: $ =>
+            choice(
+                $._primitive,
+                $.binary_expression,
+                $.unary_expression,
+                $.ternary_expression,
+                $.conditional_expression,
+                $.nullish_coalescing_expression,
+                alias($._piped_expression, $.expression),
+                $.spread,
+                $.arrow_function
             ),
 
         _timed_argument: $ => seq($.number, $.unit),
@@ -521,7 +637,9 @@ module.exports = grammar(HTML, {
         style_unit: () => choice("px", "%"),
 
         // Bracket expression
-        bracket_expression: $ => prec.left(PREC.CALL, seq(field("object", $._primitive), "[", field("property", $._any_expression), "]")),
+        // CodeCharta: an optional element access, errors?.['maxLength']
+        bracket_expression: $ =>
+            prec.left(PREC.CALL, seq(field("object", $._primitive), choice("[", "?.["), field("property", $._any_expression), "]")),
 
         // ---------- Base ----------
         unit: () => choice("ms", "s"),

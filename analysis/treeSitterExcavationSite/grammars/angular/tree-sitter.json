@@ -11,7 +11,7 @@
     }
   ],
   "metadata": {
-    "version": "0.9.2-codecharta.1",
+    "version": "0.9.2-codecharta.2",
     "license": "MIT",
     "description": "tree-sitter-angular 0.9.2 by Dennis van den Berg with the patches CodeCharta needs",
     "authors": [{ "name": "Dennis van den Berg" }, { "name": "MaibornWolff GmbH" }],

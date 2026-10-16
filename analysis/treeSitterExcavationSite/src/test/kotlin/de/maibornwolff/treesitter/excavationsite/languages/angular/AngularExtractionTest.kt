@@ -70,6 +70,18 @@ class AngularExtractionTest {
         }
 
         @Test
+        fun `should extract identifiers of optional, chained and asserted calls`() {
+            // Arrange
+            val code = """<p (click)="rollDice()(sides)" [class.lit]="isLit?.()" [title]="torch()!.label"></p>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.identifiers).containsExactly("rollDice", "sides", "isLit", "torch", "label")
+        }
+
+        @Test
         fun `should extract identifiers of an interpolation inside a plain attribute value`() {
             // Arrange
             val code = """<i class="w-4 {{ wasPathCopied() ? 'done' : 'copy' }}"></i>"""
