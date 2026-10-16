@@ -1,7 +1,7 @@
 # SQL
 
-Report of 2026-10-16 (first round). All numbers come from the runs in `output/` made that day with the CLI built
-from branch `feature/sql-support`.
+Report of 2026-10-16 (second round). All numbers come from the runs in `output/` made that day with the CLI built
+from branch `fix/sql-gaps`.
 
 ## Project
 - One project in five dialects, chosen per file as a real code base would mix them: ANSI SQL (`schema/creature.sql`,
@@ -43,7 +43,8 @@ from branch `feature/sql-support`.
 
 ## Dependency parser
 - `dependencyparser -nc … -e "output,FINDINGS.md"` with and without `--include-tests`: exit 0. Default run: 22 file
-  nodes, 30 file edges, 62 leaves; `--include-tests`: 23 nodes, 32 edges, 63 leaves. One cycle.
+  nodes, 30 file edges, 61 leaves, 46 leaf edges; `--include-tests`: 23 nodes, 32 edges, 62 leaves, 48 leaf edges.
+  One cycle.
 
 | construct | expected edge(s) | found | verdict |
 | --- | --- | --- | --- |
@@ -63,20 +64,21 @@ from branch `feature/sql-support`.
 | 10 `sys.objects`, `information_schema.tables`, `sp_executesql`, built-in functions | no edges | none | ok |
 | 11 test file | skipped by default; with tests -> creature_facade.sql, -> creature.sql | as expected | ok |
 | `migrations/V1__seed_types.sql`, only statements | one script leaf -> creature.sql, -> speed.sql | `V1__seed_types_script` with both edges | ok |
-| `edge_without_begin` (T-SQL procedure without `BEGIN … END`, statements ended by `;`) | its `SELECT … FROM creature` in the procedure | the statements after the first `;` end up in the file's script leaf `encounter_edge_cases_tsql_script` | wrong (known limit of the grammar: such a body ends at the first `;` before a statement keyword) |
+| `edge_without_begin` (T-SQL procedure without `BEGIN … END`, statements ended by `;`) | its `SELECT … FROM creature` in the procedure | `edge_without_begin` -> `creature`; the file has no script leaf any more | ok |
 | `EXEC dbo.roll_initiative` (a procedure the project does not create) | no edge | none | ok |
 
 - False positives: none found. Every unresolved name (built-in functions, types, variables) stays out of the edges.
 - Leaf kinds: tables, views, synonyms and packages are `class`, procedures, functions and triggers `function`,
   statements outside any definition `script`. There is no kind for a table; `class` is the closest the schema offers.
-- Leaf names are lower case (`armorclass`, `creaturefacade_create`, `zentaurenhöhle`): SQL compares unquoted names
-  case-insensitively, so the parser does too. A quoted name that only differs in case from another one is folded
-  into it.
+- Leaf names are lower case (`armorclass`, `creaturefacade_create`): SQL compares unquoted names case-insensitively,
+  so the parser does too. A name in double quotes in mixed case keeps it (`Zentaurenhöhle`) and only matches the
+  same spelling, as in PostgreSQL; a quoted name all in one case (`"creature"`, `"CREATURE"`) is what an unquoted name
+  folds to and matches it.
 - What SQL offers natively: no imports and no module system. CodeCharta resolves every name on its own: a name with
   a schema finds the object of that schema, a name without one the object of the same schema, then one created
   without a schema, then one of any schema. Two objects of one name in two schemas stay apart (construct 7). An
   object created in several files (a `CREATE OR REPLACE VIEW` repeated by migrations, a package specification and
-  its body) is one leaf per file, and a use points at the first of these files in path order.
+  its body) is one leaf per file, and a use points at the last of these files in path order, the latest migration.
 
 ## Unified parser
 - `unifiedparser -nc … -e "output,FINDINGS.md"`: exit 0, all 23 files analysed including `.pks`, `.pkb`, `.pls`.
@@ -93,7 +95,7 @@ from branch `feature/sql-support`.
 | comment_lines | 13 (doc 6, three line comments, block 2, trailing 1, commented-out code 1) | 13 | ok |
 | max / min / mean / median parameters | 5 / 0 / 1.5 / 1 | 5 / 0 / 1.5 / 1 | ok |
 | max / min / mean / median complexity per function | 11 / 0 / 2.17 / 0.5 | 11 / 0 / 2.17 / 0.5 | ok |
-| max / min / mean / median rloc per function | 25 / 2 / 7.5 / 4.5 (body without the `END name;` line, like a closing brace) | 26 / 3 / 8.67 / 5.5 | different: the `END` line counts for the routine |
+| max / min / mean / median rloc per function | 25 / 2 / 7.67 / 4.5 (body without the `END name;` line, like a closing brace; the first round wrote 7.5 for the mean, a slip: 46 lines over 6 functions) | 25 / 2 / 7.67 / 4.5 | ok |
 | long_method | 1 (resolve) | 1 | ok |
 | long_parameter_list | 1 (resolve, 5 parameters) | 1 | ok |
 | message_chains | 0 (SQL has none) | 0 | ok |
@@ -105,41 +107,64 @@ from branch `feature/sql-support`.
 | --- | --- | --- | --- | --- |
 | tsql | `BEGIN TRY … END TRY BEGIN CATCH … END CATCH` | 1 | 1 | ok |
 | tsql | `IF … ELSE IF … ELSE IF … ELSE` | 3 | 3 | ok |
-| tsql | `IIF(@hp > 0, …)` | 1 (conditional expression) | 0 | missing: `IIF` is a function call to the grammar |
+| tsql | `IIF(@hp > 0, …)` | 1 (conditional expression) | 1 | ok |
 | tsql | `WHILE` with `IF … CONTINUE`, `IF … BREAK` | 3 | 3 | ok |
 | tsql | `GOTO done` and its label | 0 | 0 | ok |
 | tsql | nested block comment `/* outer /* inner */ still outer */` | 1 comment line, no error | 1, no error | ok (the comment ends at the first `*/`, `still outer */` is read as code on the same line) |
 | tsql | `'-- not a comment'`, `'/* nor this */'` in strings | 0 comment lines | 0 | ok |
 | tsql | default and `OUTPUT` parameters `@roll INT = 10, @result INT OUTPUT` | 2 parameters | 2 | ok |
 | tsql | `EXEC sp_executesql N'IF 1 = 1 SELECT 1'` | 0 (dynamic SQL is a string) | 0 | ok |
-| tsql | procedure without `BEGIN … END` | 1 inside the routine | counted for the file, not for the routine | wrong (known limit, see dependency table) |
+| tsql | procedure without `BEGIN … END` | 1 inside the routine | 1 inside the routine, its body up to `GO` | ok |
 | tsql | trigger `ON dbo.creature AFTER UPDATE AS BEGIN IF UPDATE(name) … END` | a function with 1 | function, 1 | ok |
 | tsql | view with `CASE WHEN … WHEN … ELSE` in `WHERE` | 2, no function | 2, no function | ok |
-| tsql | whole file | 11 functions, logic 12, complexity 23 | 11, 11, 22 | `IIF` |
+| tsql | whole file | 11 functions, logic 12, complexity 23 | 11, 12, 23 | ok |
 | mysql | `REPEAT … UNTIL … END REPEAT` | 1 | 1 | ok |
 | mysql | labelled `LOOP` with `ITERATE` and `LEAVE` behind two `IF`s | 3 | 3 | ok |
 | mysql | `DECLARE CONTINUE HANDLER FOR NOT FOUND` | 1 | 1 | ok |
 | mysql | `IF(p_hp > 0, 'alive', 'dead')` | 1 | 1 | ok |
 | mysql | `CASE … WHEN … WHEN … ELSE … END CASE` | 2 | 2 | ok |
-| mysql | function with a single statement body (`RETURNS INT DETERMINISTIC RETURN p_x * 2`) | a function | not a function | missing (a body without `BEGIN`, `AS` or `IS` is read as a declaration) |
+| mysql | function with a single statement body (`RETURNS INT DETERMINISTIC RETURN p_x * 2`) | a function | a function, rloc 1 | ok |
 | mysql | `'the dragon\'s hoard'`, `"a \"quoted\" word"` | no error, one string | no error | ok |
 | mysql | `DELIMITER $$` … `END$$` | every routine ends at its `$$` | all routines found | ok |
-| mysql | whole file | 7 functions, logic 8, complexity 15 | 6, 8, 14 | single statement function |
+| mysql | whole file | 7 functions, logic 8, complexity 15 | 7, 8, 15 | ok |
 | plpgsql | `FOREACH … IN ARRAY … LOOP` | 1 | 1 | ok |
-| plpgsql | `LOOP` with `CONTINUE WHEN`, `EXIT WHEN` | 3 (a conditional exit is a branch) | 1 | missing: `EXIT WHEN` and `CONTINUE WHEN` are not counted |
+| plpgsql | `LOOP` with `CONTINUE WHEN`, `EXIT WHEN` | 3 (a conditional exit is a branch) | 3 | ok |
 | plpgsql | `EXCEPTION WHEN a OR b THEN … WHEN OTHERS THEN …` | 3 | 3 | ok |
 | plpgsql | body in `$body$` holding `$$a string$$`, with one `IF` | 1, the inner quote a string | 1 | ok |
 | plpgsql | `LANGUAGE sql AS 'SELECT CASE WHEN … END'` | a function, 0 (the body is a string) | function, 0 | ok |
 | plpgsql | `VARIADIC p_rolls INT[]` | 1 parameter | 1 | ok |
 | plpgsql | anonymous `DO $$ … IF … $$` | 1, no function | 1, no function | ok |
 | plpgsql | `COALESCE(NULLIF(…))`, `E'it\'s /* not */ a comment'` | 0, no comment line | 0, 0 | ok |
-| plpgsql | whole file | 6 functions, logic 9, complexity 15 | 6, 7, 13 | `EXIT WHEN`, `CONTINUE WHEN` |
+| plpgsql | whole file | 6 functions, logic 9, complexity 15 | 6, 9, 15 | ok |
 
 - Line counting: loc, rloc and comment lines of every file match the file; comment markers inside strings are not
   counted.
 - The other files: `persisted_creatures.pkb` 2 functions, `creature_service.sql` 2, `creature_audit.sql` 1 (the
   trigger without a body is no function), `dice.sql` 1 (`roll_d20`), the package specifications 0 (their routines
   have no body). No ERROR node in any of the 23 files.
+- Database objects per file, expected from the `CREATE` statements before the run (procedures count where their body
+  is, like `number_of_functions`; a PostgreSQL trigger that calls its function counts as a trigger):
+
+| file | procedures | triggers | views | tables | verdict |
+| --- | --- | --- | --- | --- | --- |
+| `schema/creature.sql` | 0 | 0 | 0 | 2 (`creature_type`, `creature`) | ok |
+| `schema/speed.sql`, `schema/dice.sql` | 0 | 0 | 0 | 2 each | ok |
+| `schema/armor_class.sql`, `hit_points.sql`, `centaur.sql`, `zentaurenhoehle.sql`, `dto/creature.sql` | 0 | 0 | 0 | 1 each | ok |
+| `views/creature_overview.sql` | 0 | 0 | 1 | 0 | ok |
+| `application/creature_util.sql` (`treasure_hoard` is a function) | 0 | 0 | 1 | 0 | ok |
+| `application/creature_facade.sql`, `domain/service/creature_service.sql` | 1 each | 0 | 0 | 0 | ok |
+| `adapter/persistence/creature_repository.pls`, `persisted_creatures.pkb` | 1 each | 0 | 0 | 0 | ok |
+| `domain/service/creatures.pks`, `encounter_resolver.pks` (specifications) | 0 | 0 | 0 | 0 | ok |
+| `domain/service/encounter_resolver.pkb` (six functions) | 0 | 0 | 0 | 0 | ok |
+| `triggers/creature_audit.sql` (audit table, function, trigger) | 0 | 1 | 0 | 1 | ok |
+| `encounter_edge_cases_tsql.sql` | 9 | 1 | 1 | 0 | ok |
+| `encounter_edge_cases_mysql.sql` | 5 | 0 | 0 | 0 | ok |
+| `encounter_edge_cases_plpgsql.sql` (functions only) | 0 | 0 | 0 | 0 | ok |
+| `tests/test_creature_service.sql` (a tSQLt test procedure) | 1 | 0 | 0 | 0 | ok |
+
+- The same counts on public code: utPLSQL (262 PL/SQL files) 1,577 procedures in 87 files (the test package bodies
+  lead with 158), 16 tables, no view and no trigger; the SQL Server First Responder Kit (33 `.sql` files) 38
+  procedures in 21 files (`Install-All-Scripts.sql` 11), 15 tables, 3 views.
 
 ## Domain language parser
 - `domainlanguageparser -nc … -e "output,FINDINGS.md"`: exit 0, 23 files.
@@ -148,10 +173,9 @@ from branch `feature/sql-support`.
   appear.
 - Keyword leakage: none of `select`, `table`, `varchar`, `int`, `procedure`, `begin`, `end`, `sql`. `max` (from
   `MAX_HIT_POINTS`) is gone too, as `MAX` is a SQL function; `class` (from `ArmorClass`) stays, right for SQL.
-- Leaks of the sample itself: `postgre` 10, `oracle` 8, `ansi` 4 come from the comments that name each file's
-  dialect; `tables` 9 and `objects` 3 from the system views `information_schema.tables` and `sys.objects`, which
-  are read like any table (bad: system schemas could be left out); `id` 69 from all the `*_id` columns;
-  `edge` 81 from the names of the edge case routines.
+- Leaks of the sample itself: `edge` 81 from the names of the edge case routines. The dialect names of the comments
+  (`postgre`, `oracle`, `ansi`), the words of the system views (`tables`, `objects`) and `id` are stop words now and
+  gone.
 - Identifier splitting: `walkingSpeed` and `walking_speed` -> walking, speed; `MAX_HIT_POINTS` -> hit, points;
   `ArmorClass` -> armor, class; `XPValue` -> xp, value; `d20Roll` -> 20, roll; `'centaur-stable'` -> centaur, stable.
 - What counts as an identifier for SQL: the names a script gives (tables, columns, views, synonyms, packages,
@@ -163,26 +187,31 @@ from branch `feature/sql-support`.
 - German words: zentaurenhöhle 5, rüstungsklasse 5, höhle 4, kreatur 2, trefferpunkte 2, verlies 2, größe 1 all
   appear, umlauts intact. German stop words leak: die 2, unter 2, dem 2, und 2, jeder 2.
 
-## Changed since 2026-09-06
-- First report for SQL, nothing to compare.
+## Changed since 2026-10-16 (first round)
+- Unified parser: `IIF`, `EXIT WHEN` and `CONTINUE WHEN` count; MySQL's single statement routines are functions; a
+  T-SQL body without `BEGIN` goes on up to `GO`; the `END` line of a routine no longer counts for its rloc; new
+  counts of stored procedures, triggers, views and tables per file (0 in other languages).
+- Dependency parser: `edge_without_begin` keeps its statements, so the T-SQL edge cases have no script leaf (61
+  leaves instead of 62); an object created in several files resolves to the last file; quoted mixed-case names keep
+  their case (`Zentaurenhöhle`).
+- Domain language parser: dialect names, catalog words and `id` are stop words.
+- Grammar 0.2.0: no ERROR node left in the public fixtures (11 files before).
 
 ## Verdict
 Unified parser:
-- Good: every routine of every dialect is found with its body, nested PL/SQL functions included; branches, loops,
-  `CASE` arms, exception handlers and `AND`/`OR` count as in the other languages; no ERROR node in 23 files.
-- Missing: `IIF` (`encounter_edge_cases_tsql.sql`, `edge_iif`), `EXIT WHEN`/`CONTINUE WHEN`
-  (`encounter_edge_cases_plpgsql.sql`, `edge_exit_when`), MySQL single statement routine bodies
-  (`encounter_edge_cases_mysql.sql`, `edge_single_statement`).
-- Wrong: a T-SQL routine without `BEGIN … END` ends at its first `;` (`edge_without_begin`).
-- Bad: the `END name;` line of a routine counts for its rloc per function, where the other languages leave out the
-  closing brace.
+- Good: every routine of every dialect is found with its body, nested PL/SQL functions and MySQL single statement
+  routines included; branches, loops, `CASE` arms, `IIF`, conditional exits, exception handlers and `AND`/`OR` count
+  as in the other languages; rloc per function leaves out the `END` line like a closing brace; procedures,
+  triggers, views and tables are counted per file; no ERROR node in 23 files.
+- Bad: a PostgreSQL body in dollar quotes still counts the `END;` line of its block for the routine.
 
 Dependency parser:
 - Good: foreign keys, inheritance, synonyms, `%ROWTYPE`, calls, triggers and views resolve across files and
-  dialects; schema-qualified and unqualified names meet; `dto.creature` and `creature` stay apart.
-- Wrong: the statements of `edge_without_begin` after its first `;` belong to the file's script leaf.
-- Bad: an object created in several files is one leaf per file, and uses point at the first file in path order.
+  dialects; schema-qualified and unqualified names meet; `dto.creature` and `creature` stay apart; a T-SQL body
+  without `BEGIN` keeps all its statements.
+- Bad: an object created in several files is still one leaf per file; uses point at the last of them.
 
 Domain language parser:
-- Good: all 17 domain words, German words with umlauts, SQL keywords and types filtered.
-- Bad: system objects (`information_schema.tables`, `sys.objects`) count as domain words.
+- Good: all 17 domain words, German words with umlauts, SQL keywords, types, dialect names and catalog words
+  filtered.
+- Bad: German stop words (`die`, `und`, `unter`) count as domain words, as in every language.
