@@ -9,6 +9,7 @@ internal fun normalizeDefaultKeyword(name: String): String = if (name == DEFAULT
 internal const val TYPE_IDENTIFIER = "type_identifier"
 internal const val IDENTIFIER = "identifier"
 internal const val STRING = "string"
+internal const val STRING_FRAGMENT = "string_fragment"
 internal const val CALL_EXPRESSION = "call_expression"
 internal const val PROPERTY_IDENTIFIER = "property_identifier"
 internal const val IMPORT_CLAUSE = "import_clause"

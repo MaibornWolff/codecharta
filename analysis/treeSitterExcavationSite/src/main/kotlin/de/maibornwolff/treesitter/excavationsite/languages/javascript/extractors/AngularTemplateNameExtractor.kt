@@ -11,7 +11,6 @@ internal object AngularTemplateNameExtractor {
     private const val ARGUMENTS = "arguments"
     private const val OBJECT = "object"
     private const val PAIR = "pair"
-    private const val STRING_FRAGMENT = "string_fragment"
     private const val COMPONENT = "Component"
     private const val SELECTOR = "selector"
     private const val PIPE = "Pipe"

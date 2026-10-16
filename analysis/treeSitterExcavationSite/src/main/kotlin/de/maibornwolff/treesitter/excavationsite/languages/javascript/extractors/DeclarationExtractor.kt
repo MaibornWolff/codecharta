@@ -16,7 +16,6 @@ private const val GENERATOR_FUNCTION_DECLARATION = "generator_function_declarati
 private const val LEXICAL_DECLARATION = "lexical_declaration"
 private const val VARIABLE_DECLARATION = "variable_declaration"
 
-private const val STRING_FRAGMENT = "string_fragment"
 private const val WILDCARD_REEXPORT = "*"
 
 private const val AMBIENT_DECLARATION = "ambient_declaration"
