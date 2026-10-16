@@ -39,4 +39,20 @@ class AngularInlineTemplateExtractionTest {
         assertThat(templateTexts.map { it.text to it.context })
             .containsExactly("Torch" to ExtractionContext.STRING, "flame" to ExtractionContext.IDENTIFIER)
     }
+
+    @Test
+    fun `should extract the texts of a quoted inline template without its escapes`() {
+        // Arrange
+        val code = """
+            @Component({ selector: 'app-esc', template: '<div title=\'Dragon hoard\'>{{ gold ? \'rich\' : \'poor\' }}\n</div>' })
+            export class EscapedComponent {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterExtraction.extract(code, Language.TYPESCRIPT)
+
+        // Assert
+        val templateTexts = result.extractedTexts.filter { it.language == Language.ANGULAR }
+        assertThat(templateTexts.map { it.text }).containsExactly("Dragon hoard", "gold", "rich", "poor")
+    }
 }

@@ -1252,6 +1252,28 @@ class TypescriptDependencyTest {
         }
 
         @Test
+        fun `should declare the components a quoted inline template uses behind escaped quotes`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-lair', template: '<app-dragon size=\'large\'></app-dragon>' })
+                export class LairComponent {}
+            """.trimIndent()
+
+            // Act
+            val declaration = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single()
+
+            // Assert
+            assertThat(
+                declaration.embedded
+                    .single()
+                    .declarations
+                    .single()
+                    .usedTypes
+                    .map { it.name }
+            ).containsExactly("app-dragon")
+        }
+
+        @Test
         fun `should declare a routed component without a selector by its template file`() {
             // Arrange
             val code = """

@@ -41,13 +41,13 @@ internal object AngularDecoratorExtractor {
         return call.parent.type == DECORATOR && TreeTraversal.findFirstChildTextByType(call, IDENTIFIER) == COMPONENT
     }
 
-    // The text between the quotes, as the template is written: escapes and `${}` substitutions stay as they are
+    // The template the literal stands for, its escapes resolved; a `${}` substitution stays as it is written
     fun inlineTemplateOf(decorator: SyntaxNode): String? = callOf(decorator)
         ?.takeIf { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER) == COMPONENT }
         ?.let { valueOf(it, TEMPLATE) }
         ?.takeIf { it.type == STRING || it.type == TEMPLATE_STRING }
         ?.text
-        ?.let { it.substring(1, it.length - 1) }
+        ?.let { unescapeJavascript(it.substring(1, it.length - 1)) }
 
     private fun callOf(decorator: SyntaxNode): SyntaxNode? = decorator.children().firstOrNull { it.type == CALL_EXPRESSION }
 

@@ -421,6 +421,23 @@ class TypescriptMetricsTest {
     }
 
     @Test
+    fun `should read the escaped quotes of a quoted inline template as quotes`() {
+        // Arrange
+        val code = """
+            @Component({ selector: 'app-dq', template: "<div class=\"x\" *ngIf=\"ready && open\">{{ count }}</div>" })
+            export class DoubleQuotedComponent {}
+            @Component({ selector: 'app-sq', template: '<div title=\'Dragon hoard\'>{{ gold ? \'rich\' : \'poor\' }}</div>' })
+            export class SingleQuotedComponent {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.logicComplexity).isEqualTo(3.0)
+    }
+
+    @Test
     fun `should add the logic complexity of a quoted inline template`() {
         // Arrange
         val code = """
