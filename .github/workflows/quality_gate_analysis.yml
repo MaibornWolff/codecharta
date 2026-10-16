@@ -1,0 +1,24 @@
+name: Quality Gate - Analysis
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'analysis/**'
+      - '.github/workflows/quality_gate*.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'analysis/**'
+      - '.github/workflows/quality_gate*.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    uses: ./.github/workflows/quality_gate.yml
+    with:
+      part: analysis

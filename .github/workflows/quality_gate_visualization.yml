@@ -1,0 +1,28 @@
+name: Quality Gate - Visualization
+
+# A change to the gate itself can change the result for the visualization too, so it runs here as well.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'visualization/**'
+      - 'analysis/analysers/tools/GateTool/**'
+      - '.github/workflows/quality_gate*.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'visualization/**'
+      - 'analysis/analysers/tools/GateTool/**'
+      - '.github/workflows/quality_gate*.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    uses: ./.github/workflows/quality_gate.yml
+    with:
+      part: visualization
