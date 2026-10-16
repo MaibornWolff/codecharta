@@ -1,0 +1,52 @@
+============
+Identifier with hyphen
+============
+
+@if (a-foo > b) {
+  <p>a is greater than b</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (binary_expression
+        left: (expression
+          (identifier))
+        right: (binary_expression
+          left: (expression
+            (identifier))
+          right: (expression
+            (identifier)))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name))))))
+
+============
+Directive with hyphen
+============
+
+<a
+  [my-link-directive]="value">Link
+</a>
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (binding_name
+            (identifier))
+          (expression
+            (identifier)))))
+    (text)
+    (end_tag
+      (tag_name))))

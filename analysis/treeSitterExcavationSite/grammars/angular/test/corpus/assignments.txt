@@ -1,0 +1,239 @@
+========================
+Binary assignment - +=
+========================
+
+{{ 10 += 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - -=
+========================
+
+{{ 10 -= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - *=
+========================
+
+{{ 10 *= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - /=
+========================
+
+{{ 10 += 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - %=
+========================
+
+{{ 10 %= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - &=
+========================
+
+{{ 10 &= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - ^=
+========================
+
+{{ 10 ^= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - |=
+========================
+
+{{ 10 |= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - **=
+========================
+
+{{ 10 **= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - <<=
+========================
+
+{{ 10 <<= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - >>=
+========================
+
+{{ 10 >>= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - ||=
+========================
+
+{{ 10 ||= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - &&=
+========================
+
+{{ 10 &&= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - ??=
+========================
+
+{{ 10 ??= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+Binary assignment - >>>=
+========================
+
+{{ 10 >>>= 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))

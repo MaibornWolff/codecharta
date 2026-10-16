@@ -1,0 +1,28 @@
+============
+Let statement
+============
+
+@let sum = a + b;
+<p>a + b = {{ sum }}</p>
+
+---
+
+(document
+  (let_statement
+    (control_keyword)
+    (assignment_expression
+      name: (identifier)
+      value: (binary_expression
+        left: (expression
+          (identifier))
+        right: (expression
+          (identifier)))))
+  (element
+    (start_tag
+      (tag_name))
+    (text)
+    (interpolation
+      (expression
+        (identifier)))
+    (end_tag
+      (tag_name))))

@@ -1,0 +1,157 @@
+================
+Switch statement
+================
+
+@switch (condition) {
+  @case (a) {
+    <element-a/>
+  }
+  @case (b) {
+    <element-b/>
+  }
+}
+
+---
+
+(document
+  (switch_statement
+    (control_keyword)
+    value: (expression
+      (identifier))
+    body: (switch_body
+      (case_statement
+        (control_keyword)
+        value: (expression
+          (identifier))
+        body: (statement_block
+          (element
+            (self_closing_tag
+              (tag_name)))))
+      (case_statement
+        (control_keyword)
+        value: (expression
+          (identifier))
+        body: (statement_block
+          (element
+            (self_closing_tag
+              (tag_name))))))))
+
+================
+Switch case with ternary
+================
+
+@switch (condition) {
+  @case ((field.type === 'integer' ||
+          field.type === 'number') ? field.type : '') {
+    <element-a/>
+  }
+}
+
+---
+
+(document
+  (switch_statement
+    (control_keyword)
+    value: (expression
+      (identifier))
+    body: (switch_body
+      (case_statement
+        (control_keyword)
+        value: (ternary_expression
+          condition: (expression
+            (group
+              (conditional_expression
+                left: (binary_expression
+                  left: (expression
+                    (member_expression
+                      object: (identifier)
+                      property: (identifier)))
+                  right: (expression
+                    (string)))
+                (conditional_operator)
+                right: (binary_expression
+                  left: (expression
+                    (member_expression
+                      object: (identifier)
+                      property: (identifier)))
+                  right: (expression
+                    (string))))))
+          (ternary_operator)
+          consequence: (member_expression
+            object: (identifier)
+            property: (identifier))
+          (ternary_operator)
+          alternative: (expression
+            (string)))
+        body: (statement_block
+          (element
+            (self_closing_tag
+              (tag_name))))))))
+
+==============
+Switch-default
+==============
+
+@switch (condition) {
+  @case (a) {
+    <element-a/>
+  }
+  @default {
+    <default />
+  }
+}
+
+---
+
+(document
+  (switch_statement
+    (control_keyword)
+    value: (expression
+      (identifier))
+    body: (switch_body
+      (case_statement
+        (control_keyword)
+        value: (expression
+          (identifier))
+        body: (statement_block
+          (element
+            (self_closing_tag
+              (tag_name)))))
+      (default_statement
+        (control_keyword)
+        body: (statement_block
+          (element
+            (self_closing_tag
+              (tag_name))))))))
+
+==============
+Switch multiple cases
+==============
+
+@switch (condition) {
+  @case (a)
+  @case (b) {
+    <element-a/>
+  }
+}
+
+---
+
+(document
+  (switch_statement
+    (control_keyword)
+    value: (expression
+      (identifier))
+    body: (switch_body
+      (case_statement
+        (control_keyword)
+        value: (expression
+          (identifier)))
+      (case_statement
+        (control_keyword)
+        value: (expression
+          (identifier))
+        body: (statement_block
+          (element
+            (self_closing_tag
+              (tag_name))))))))

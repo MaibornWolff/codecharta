@@ -1,0 +1,167 @@
+=========================
+Untagged template literal
+=========================
+
+<div [class]="`w-${width()}`">
+  Content
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (class_binding
+            (identifier))
+          (expression
+            (template_string
+              (template_chars)
+              (template_substitution
+                (expression
+                  (call_expression
+                    (identifier)))))))))
+    (text)
+    (end_tag
+      (tag_name))))
+
+=========================
+Untagged template literal - only substitution
+=========================
+
+<div [class]="`${width()}`">
+  Content
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (class_binding
+            (identifier))
+          (expression
+            (template_string
+              (template_substitution
+                (expression
+                  (call_expression
+                    (identifier)))))))))
+    (text)
+    (end_tag
+      (tag_name))))
+
+=========================
+Untagged template literal - multiple
+=========================
+
+<div [class]="`col-${width()} bg-${color()}`">
+  Content
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (class_binding
+            (identifier))
+          (expression
+            (template_string
+              (template_chars)
+              (template_substitution
+                (expression
+                  (call_expression
+                    (identifier))))
+              (template_chars)
+              (template_substitution
+                (expression
+                  (call_expression
+                    (identifier)))))))))
+    (text)
+    (end_tag
+      (tag_name))))
+
+=========================
+Untagged template literal - complex
+=========================
+
+<div [class]="`col-${width | async}`">
+  Content
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (class_binding
+            (identifier))
+          (expression
+            (template_string
+              (template_chars)
+              (template_substitution
+                (expression
+                  (identifier)
+                  (pipe_sequence
+                    (pipe_operator)
+                    (pipe_call
+                      (identifier))))))))))
+    (text)
+    (end_tag
+      (tag_name))))
+
+=========================
+Untagged template literal - interpolation
+=========================
+
+<span>{{ `string with a value: ${prop()}` }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (template_string
+          (template_chars)
+          (template_substitution
+            (expression
+              (call_expression
+                (identifier)))))))
+    (end_tag
+      (tag_name))))
+
+========================
+Untagged template literal - interpolation with pipe
+========================
+
+{{ `Hello, ${name}` | uperrcase }}
+
+---
+
+(document
+  (interpolation
+    (expression
+        (template_string
+        (template_chars)
+        (template_substitution
+          (expression
+            (identifier))))
+      (pipe_sequence
+        (pipe_operator)
+        (pipe_call
+          (identifier))))))
+

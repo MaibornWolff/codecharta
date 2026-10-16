@@ -1,0 +1,111 @@
+============
+Regular HTML
+============
+
+<div>
+  <h1>Title</h1>
+  <span>Some subtext</span>
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (element
+      (start_tag
+        (tag_name))
+      (text)
+      (end_tag
+        (tag_name)))
+    (element
+      (start_tag
+        (tag_name))
+      (text)
+      (end_tag
+        (tag_name)))
+    (end_tag
+      (tag_name))))
+
+
+=======================
+Text without tag - HTML
+=======================
+
+<div>
+  Random Text
+  <span>Some subtext</span>
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (text)
+    (element
+      (start_tag
+        (tag_name))
+      (text)
+      (end_tag
+        (tag_name)))
+    (end_tag
+      (tag_name))))
+
+===============================
+Text without tag - Control Flow
+===============================
+
+<div>
+  Random Text
+  @if (condition) {
+    <span>Conditional text</span>
+  }
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (text)
+    (if_statement
+        (control_keyword)
+        condition: (if_condition
+          (expression
+              (identifier)))
+        consequence: (statement_block
+          (element
+            (start_tag
+              (tag_name))
+            (text)
+            (end_tag
+              (tag_name)))))
+    (end_tag
+      (tag_name))))
+
+================================
+Text without tag - Interpolation
+================================
+
+<div>
+  Random Text
+  {{ property }}
+</div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (text)
+    (interpolation
+      (expression
+        (identifier)))
+    (end_tag
+      (tag_name))))
+

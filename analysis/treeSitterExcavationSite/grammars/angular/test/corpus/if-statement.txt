@@ -1,0 +1,404 @@
+============
+If statement
+============
+
+@if (a > b) {
+  <p>a is greater than b</p>
+}
+
+---
+
+(document
+ (if_statement
+  (control_keyword)
+  condition: (if_condition
+    (binary_expression
+     left: (expression
+       (identifier))
+     right: (expression
+       (identifier))))
+     consequence: (statement_block
+       (element
+        (start_tag
+         (tag_name))
+        (text)
+        (end_tag
+         (tag_name))))))
+
+=================
+If-else statement
+=================
+
+@if (a > b) {
+  <p>a is greater than b</p>
+} @else if (b > 2) {
+  <p>a is less than b</p>
+}
+
+---
+
+(document
+    (if_statement
+        (control_keyword)
+        condition: (if_condition
+          (binary_expression
+            left: (expression
+              (identifier))
+            right: (expression
+              (identifier))))
+        consequence: (statement_block
+          (element
+            (start_tag
+              (tag_name))
+            (text)
+            (end_tag
+              (tag_name)))))
+    alternative_condition: (else_if_statement
+      (control_keyword)
+      (control_keyword)
+      condition: (if_condition
+        (binary_expression
+          left: (expression
+            (identifier))
+          right: (expression
+            (number))))
+      consequence: (statement_block
+        (element
+          (start_tag
+            (tag_name))
+          (text)
+          (end_tag
+            (tag_name))))))
+
+=================
+Else statement
+=================
+
+@if (a > b) {
+  <p>a is greater than b</p>
+} @else {
+  <p>a is less than b</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (binary_expression
+        left: (expression
+          (identifier))
+        right: (expression
+          (identifier))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name)))))
+  alternative: (else_statement
+    (control_keyword)
+    (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name))))))
+
+=========
+Nested if
+=========
+
+@if (a && b) {
+  <p>a and b are true</p>
+  @if (a > b) {
+    <p>a is greater than b</p>
+  } @else {
+    <p>a is less than b</p>
+  }
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (conditional_expression
+        left: (identifier)
+        (conditional_operator)
+        right: (identifier)))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name)))
+      (if_statement
+        (control_keyword)
+        condition: (if_condition
+          (binary_expression
+            left: (expression
+              (identifier))
+            right: (expression
+              (identifier))))
+        consequence: (statement_block
+          (element
+            (start_tag
+              (tag_name))
+            (text)
+            (end_tag
+              (tag_name)))))
+      alternative: (else_statement
+        (control_keyword)
+        (statement_block
+          (element
+            (start_tag
+              (tag_name))
+            (text)
+            (end_tag
+              (tag_name))))))))
+
+=================
+If with reference
+=================
+
+@if (users$ | async; as users) {
+  <p>{{ users | json }}</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (expression
+        (identifier)
+        pipes: (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            name: (identifier)))))
+    reference: (if_reference
+      (special_keyword)
+      (identifier))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (interpolation
+          (expression
+            (identifier)
+            pipes: (pipe_sequence
+              (pipe_operator)
+              (pipe_call
+                name: (identifier)))))
+        (end_tag
+          (tag_name))))))
+
+========================
+If with object reference
+========================
+
+@if ({ data: fromSignal() }; as data) {
+  <p>{{ data | json }}</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (expression
+        (object
+          (pair
+            key: (identifier)
+            value: (expression
+              (call_expression
+                function: (identifier)))))))
+    reference: (if_reference
+      (special_keyword)
+      (identifier))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (interpolation
+          (expression
+            (identifier)
+            pipes: (pipe_sequence
+              (pipe_operator)
+              (pipe_call
+                name: (identifier)))))
+        (end_tag
+          (tag_name))))))
+
+==========================
+Unary and conditional expr
+==========================
+
+@if (!inverted && !anotherInverted) {
+  <p>inverted and anotherInverted are false</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (conditional_expression
+        left: (unary_expression
+          operator: (unary_operator)
+          value: (expression
+            (identifier)))
+        (conditional_operator)
+        right: (unary_expression
+          operator: (unary_operator)
+          value: (expression
+            (identifier)))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name))))))
+
+======================
+Multiple if conditions
+======================
+
+@if (a < b && b < c) {
+  <p>a is less than b and b is less than c</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (conditional_expression
+        left: (binary_expression
+          left: (expression
+            (identifier))
+          right: (expression
+            (identifier)))
+        (conditional_operator)
+        right: (binary_expression
+          left: (expression
+            (identifier))
+          right: (expression
+            (identifier)))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name))))))
+
+======================
+Consecutive if blocks
+======================
+
+@if (somecondition) {
+  <p>somecondition is true</p>
+}
+
+@if (anothercondition) {
+  <p>anothercondition is true</p>
+}
+
+---
+
+(document
+    (if_statement
+        (control_keyword)
+        condition: (if_condition
+          (expression
+            (identifier)))
+        consequence: (statement_block
+          (element
+            (start_tag
+              (tag_name))
+            (text)
+            (end_tag
+              (tag_name)))))
+    (if_statement
+        (control_keyword)
+        condition: (if_condition
+          (expression
+            (identifier)))
+        consequence: (statement_block
+          (element
+            (start_tag
+              (tag_name))
+            (text)
+            (end_tag
+              (tag_name))))))
+
+=============================
+If statement with in operator
+=============================
+
+@if ('model' in car) {
+  <p>{{ car.model }}</p>
+}
+
+---
+
+(document
+ (if_statement
+  (control_keyword)
+  (if_condition
+   (binary_expression
+    (expression
+     (string))
+    (expression
+     (identifier))))
+  (statement_block
+   (element
+    (start_tag
+     (tag_name))
+    (interpolation
+     (expression
+      (member_expression
+       (identifier)
+       (identifier))))
+    (end_tag
+      (tag_name))))))
+
+==========================
+Nested unary
+==========================
+
+@if (!!nonNull) {
+  <p>prop is not nullish</p>
+}
+
+---
+
+(document
+  (if_statement
+    (control_keyword)
+    condition: (if_condition
+      (unary_expression
+        operator: (unary_operator)
+        value: (unary_expression
+          operator: (unary_operator)
+          value: (expression
+            (identifier)))))
+    consequence: (statement_block
+      (element
+        (start_tag
+          (tag_name))
+        (text)
+        (end_tag
+          (tag_name))))))

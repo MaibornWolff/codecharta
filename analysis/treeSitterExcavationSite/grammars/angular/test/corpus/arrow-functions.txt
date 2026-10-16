@@ -1,0 +1,222 @@
+===========================
+Single parameter
+===========================
+
+{{ fn(x => x + 1) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (arrow_function
+            parameters: (identifier)
+            body: (binary_expression
+              left: (expression
+                (identifier))
+              right: (expression
+                (number)))))))))
+
+===========================
+Parenthesized single parameter
+===========================
+
+{{ fn((x) => x + 1) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (arrow_function
+            parameters: (arrow_function_parameters
+              (identifier))
+            body: (binary_expression
+              left: (expression
+                (identifier))
+              right: (expression
+                (number)))))))))
+
+===========================
+Multiple parameters
+===========================
+
+{{ fn((a, b) => a + b) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (arrow_function
+            parameters: (arrow_function_parameters
+              (identifier)
+              (identifier))
+            body: (binary_expression
+              left: (expression
+                (identifier))
+              right: (expression
+                (identifier)))))))))
+
+===========================
+No parameters
+===========================
+
+{{ fn(() => value) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (arrow_function
+            parameters: (arrow_function_parameters)
+            body: (expression
+              (identifier))))))))
+
+===========================
+In member call expression
+===========================
+
+{{ items.filter(x => x.active) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (member_expression
+        object: (identifier)
+        call: (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (arrow_function
+              parameters: (identifier)
+              body: (expression
+                (member_expression
+                  object: (identifier)
+                  property: (identifier))))))))))
+
+===========================
+In property binding
+===========================
+
+<div [items]="list.filter(x => x.visible)"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (binding_name
+            (identifier))
+          (expression
+            (member_expression
+              object: (identifier)
+              call: (call_expression
+                function: (identifier)
+                arguments: (arguments
+                  (arrow_function
+                    parameters: (identifier)
+                    body: (expression
+                      (member_expression
+                        object: (identifier)
+                        property: (identifier)))))))))))))
+
+===========================
+In event binding
+===========================
+
+<div (click)="items.sort((a, b) => a - b)"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      (tag_name)
+      (attribute
+        (event_binding
+          (binding_name
+            (identifier))
+          (expression
+            (member_expression
+              object: (identifier)
+              call: (call_expression
+                function: (identifier)
+                arguments: (arguments
+                  (arrow_function
+                    parameters: (arrow_function_parameters
+                      (identifier)
+                      (identifier))
+                    body: (binary_expression
+                      left: (expression
+                        (identifier))
+                      right: (expression
+                        (identifier)))))))))))))
+
+===========================
+Arrow returning object via group
+===========================
+
+{{ fn(x => ({key: x})) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (arrow_function
+            parameters: (identifier)
+            body: (expression
+              (group
+                (expression
+                  (object
+                    (pair
+                      key: (identifier)
+                      value: (expression
+                        (identifier)))))))))))))
+
+===========================
+Multiple arrow function arguments
+===========================
+
+{{ fn(x => x, y => y + 1) }}
+
+---
+
+(document
+  (interpolation
+    (expression
+      (call_expression
+        function: (identifier)
+        arguments: (arguments
+          (arrow_function
+            parameters: (identifier)
+            body: (expression
+              (identifier)))
+          (arrow_function
+            parameters: (identifier)
+            body: (binary_expression
+              left: (expression
+                (identifier))
+              right: (expression
+                (number)))))))))

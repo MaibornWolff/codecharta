@@ -45,7 +45,8 @@
       "!**/*.gradle.kts",
       "!**/*.toml",
       "!**/sample-projects/**",
-      "!**/treeSitterExcavationSite/grammars/*/src/**"
+      "!**/treeSitterExcavationSite/grammars/*/src/**",
+      "!**/treeSitterExcavationSite/grammars/angular/html/**"
     ]
   },
   "formatter": {

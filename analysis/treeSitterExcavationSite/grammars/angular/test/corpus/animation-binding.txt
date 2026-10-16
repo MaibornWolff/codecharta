@@ -1,0 +1,35 @@
+================
+Animation binding
+================
+
+<element [@fadeIn]="value"/>
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      (tag_name)
+      (attribute
+        (animation_binding
+          (binding_name
+            (identifier))
+          trigger: (expression
+            (identifier)))))))
+
+================
+Animation without trigger
+================
+
+<element [@fadeIn] />
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      (tag_name)
+      (attribute
+        (animation_binding
+          (binding_name
+            (identifier)))))))

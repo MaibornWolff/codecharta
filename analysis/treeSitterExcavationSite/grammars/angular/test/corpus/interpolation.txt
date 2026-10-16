@@ -1,0 +1,278 @@
+=====
+Basic
+=====
+
+{{ value }}
+<span>{{ value }}</span>
+
+---
+
+(document
+  (interpolation
+    (expression
+      (identifier)))
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (identifier)))
+    (end_tag
+      (tag_name))))
+
+==========
+With pipes
+==========
+
+<span>{{ value | pipe }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (identifier)
+        (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            (identifier)))))
+    (end_tag
+      (tag_name))))
+
+===================
+Pipe with arguments
+===================
+
+<span>{{ value | pipe:arg1:arg2 }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (identifier)
+        (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            (identifier)
+            (pipe_arguments
+              (identifier)
+              (identifier))))))
+    (end_tag
+      (tag_name))))
+
+======================
+Conditional expression
+======================
+
+<span>{{ authenticated ? "Logged In" : "Logged Out" }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (ternary_expression
+        (expression
+          (identifier))
+        (ternary_operator)
+        (string)
+        (ternary_operator)
+        (expression
+          (string))))
+    (end_tag
+      (tag_name))))
+
+======================
+Conditional with pipes
+======================
+
+<h1>{{ isNew ? ('entity.new' | translate) : data.entity?.name }}</h1>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (ternary_expression
+        (expression
+          (identifier))
+        (ternary_operator)
+        (group
+          (expression
+            (string)
+            (pipe_sequence
+              (pipe_operator)
+              (pipe_call
+                (identifier)))))
+        (ternary_operator)
+        (expression
+          (member_expression
+            (member_expression
+              (identifier)
+              (identifier))
+            (identifier)))))
+    (end_tag
+      (tag_name))))
+
+========
+Grouping
+========
+
+<span>{{ ((recipe$ | async)?.name) + ' update' }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (concatenation_expression
+        (group
+          (expression
+            (member_expression
+              (group
+                (expression
+                  (identifier)
+                  (pipe_sequence
+                    (pipe_operator)
+                    (pipe_call
+                      (identifier)))))
+              (identifier))))
+        (expression
+         (string))))
+    (end_tag
+      (tag_name))))
+
+========
+Combined
+========
+
+<span>Hello {{ firstName }}, welcome to {{ title | uppercase }}!</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (text)
+    (interpolation
+      (expression
+        (identifier)))
+    (text)
+    (interpolation
+      (expression
+        (identifier)
+        (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            (identifier)))))
+    (text)
+    (end_tag
+      (tag_name))))
+
+====================
+String concatenation
+====================
+
+<span>{{ 'Hello ' + firstName + ', how are you?' }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (concatenation_expression
+        (string)
+        (expression
+          (identifier))
+        (string)))
+    (end_tag
+      (tag_name))))
+
+========================
+String concat with pipes
+========================
+
+{{ 'languages.' + translateService.getActiveLang() | transloco }}
+
+---
+
+(document
+  (interpolation
+    (concatenation_expression
+      (string)
+      (expression
+        (member_expression
+          (identifier)
+          (call_expression
+            (identifier)))
+        (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            (identifier)))))))
+
+========================
+Exponentiation
+========================
+
+{{ 10 ** 3 }}
+
+---
+
+(document
+ (interpolation
+  (binary_expression
+    (expression
+     (number))
+    (expression
+     (number)))))
+
+========================
+String concat with ternary
+========================
+
+{{ obj.member + (obj.list.length < 0 ? ', ' + obj.field : '') }}
+
+---
+
+(document
+  (interpolation
+    (concatenation_expression
+      (member_expression
+        object: (identifier)
+        property: (identifier))
+      (expression
+        (group
+          (ternary_expression
+            condition: (binary_expression
+              left: (expression
+                (member_expression
+                  object: (member_expression
+                    object: (identifier)
+                    property: (identifier))
+                  property: (identifier)))
+              right: (expression
+                (number)))
+            (ternary_operator)
+            consequence: (string)
+            consequence: (member_expression
+              object: (identifier)
+              property: (identifier))
+            (ternary_operator)
+            alternative: (expression
+              (string))))))))

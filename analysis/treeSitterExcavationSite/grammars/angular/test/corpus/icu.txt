@@ -1,0 +1,152 @@
+=====
+Basic
+=====
+
+Updated {minutes, plural,
+=0 {just now}
+=1 {one minute ago}
+other {some minutes ago}}
+
+---
+
+(document
+  (text)
+  (icu_expression
+    (expression
+      (identifier))
+    (icu_clause)
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))))
+
+
+=====
+With interpolation
+=====
+
+Updated {minutes, plural, =0 {just now} =1 {one minute ago} other {{{minutes}} minutes ago}}
+
+---
+
+(document
+  (text)
+  (icu_expression
+    (expression
+      (identifier))
+    (icu_clause)
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (interpolation
+        (expression
+          (identifier)))
+      (text))))
+
+======
+Select
+======
+
+The author is {gender, select, male {male} female {female} other {other}}
+
+---
+
+(document
+  (text)
+  (icu_expression
+    (expression
+      (identifier))
+    (icu_clause)
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))))
+
+=====
+Mixed
+=====
+
+Updated: {minutes, plural,
+    =0 {just now}
+    =1 {one minute ago}
+    other {{{minutes}} minutes ago by {gender, select, male {male} female {female} other {other}}}}
+  
+---
+
+(document
+  (text)
+  (icu_expression
+    (expression
+      (identifier))
+    (icu_clause)
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (interpolation
+        (expression
+          (identifier)))
+      (text)
+      (icu_expression
+        (expression
+          (identifier))
+        (icu_clause)
+        (icu_case
+          (icu_category)
+          (text))
+        (icu_case
+          (icu_category)
+          (text))
+        (icu_case
+          (icu_category)
+          (text))))))
+
+=====
+With pipe
+=====
+
+Updated {minutes | async, plural,
+=0 {just now}
+=1 {one minute ago}
+other {some minutes ago}}
+
+---
+
+(document
+  (text)
+  (icu_expression
+    (expression
+      (identifier)
+      (pipe_sequence
+        (pipe_operator)
+        (pipe_call
+          (identifier))))
+    (icu_clause)
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))
+    (icu_case
+      (icu_category)
+      (text))))

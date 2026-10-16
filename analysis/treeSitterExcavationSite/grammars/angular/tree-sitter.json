@@ -1,0 +1,30 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "angular",
+      "camelcase": "Angular",
+      "title": "Angular template grammar, patched for CodeCharta",
+      "scope": "source.angular",
+      "path": ".",
+      "file-types": ["html"]
+    }
+  ],
+  "metadata": {
+    "version": "0.9.2-codecharta.1",
+    "license": "MIT",
+    "description": "tree-sitter-angular 0.9.2 by Dennis van den Berg with the patches CodeCharta needs",
+    "authors": [{ "name": "Dennis van den Berg" }, { "name": "MaibornWolff GmbH" }],
+    "links": { "repository": "https://github.com/dlvandenberg/tree-sitter-angular" }
+  },
+  "bindings": {
+    "c": false,
+    "go": false,
+    "java": false,
+    "node": false,
+    "python": false,
+    "rust": false,
+    "swift": false,
+    "zig": false
+  }
+}

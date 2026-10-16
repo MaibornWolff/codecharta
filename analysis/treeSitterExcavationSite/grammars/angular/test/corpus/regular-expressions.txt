@@ -1,0 +1,77 @@
+===========
+Basic regexp
+===========
+
+<span>{{ /\d+/ }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (regular_expression
+        pattern: (regular_expression_pattern)))
+    (end_tag
+      (tag_name))))
+
+===========
+Complex regexp
+===========
+
+<span>{{ /^[^a-z][0-9]*?\d+$/ }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (regular_expression
+        pattern: (regular_expression_pattern)))
+    (end_tag
+      (tag_name))))
+
+===========
+Basic regexp with flags
+===========
+
+<span>{{ /\d+/gi }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (regular_expression
+        pattern: (regular_expression_pattern)
+        flags: (regular_expression_flags)))
+    (end_tag
+      (tag_name))))
+
+===========
+Regexp with test call
+===========
+
+<span>{{ /\d+/gi.test(value) }}</span>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (regular_expression
+        pattern: (regular_expression_pattern)
+        flags: (regular_expression_flags)
+        (call_expression
+          function: (identifier)
+          arguments: (arguments
+            (identifier)))))
+    (end_tag
+      (tag_name))))
