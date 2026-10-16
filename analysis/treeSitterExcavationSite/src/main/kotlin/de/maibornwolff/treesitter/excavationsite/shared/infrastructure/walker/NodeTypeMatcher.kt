@@ -17,6 +17,9 @@ object NodeTypeMatcher {
 
     private fun matches(node: SyntaxNode, nestedType: NestedNodeType): Boolean = when {
         nestedType.parentNodeTypes != null -> nestedType.parentNodeTypes.contains(node.parent.type)
+        nestedType.childNodeTexts != null -> node.children().any { child ->
+            nestedType.childNodeTypes.contains(child.type) && nestedType.childNodeTexts.contains(child.text)
+        }
         nestedType.matchesAnyChild -> node.children().any { nestedType.childNodeTypes.contains(it.type) }
         nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount ->
             isAllowedChild(node.getChild(nestedType.childNodePosition), nestedType)

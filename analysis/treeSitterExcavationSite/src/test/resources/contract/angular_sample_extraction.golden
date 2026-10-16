@@ -1,0 +1,77 @@
+# Identifiers
+byName
+cave
+cave
+cave
+cave
+cave
+cave
+cave
+cave
+cave
+cave
+cave
+centaur
+centaur
+centaurs
+danger
+depth
+drained
+enterRoom
+explorer
+gold
+gold
+goldCoins
+hasCentaur
+hasExit
+i
+id
+isFlooded
+isLit
+leader
+mood
+name
+name
+name
+name
+name
+noExit
+party
+party
+party
+party
+room
+room
+room
+room
+rooms
+save
+silver
+size
+size
+titlecase
+total
+trackBy
+viewport
+
+# Comments
+The cave overview
+
+# Strings
+(
+Calm
+Empty
+Exit
+Fine
+Grim
+Loading
+No exit
+No rooms
+Too crowded
+Troll
+dark
+dragon
+grim
+lit
+m)
+troll

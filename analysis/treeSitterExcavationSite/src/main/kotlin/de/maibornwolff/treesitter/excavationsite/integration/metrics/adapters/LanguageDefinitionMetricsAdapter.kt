@@ -112,5 +112,10 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
             baseNodeType = nodeType,
             parentNodeTypes = condition.allowedTypes
         )
+        is MetricCondition.ChildTextMatches -> NestedNodeType(
+            baseNodeType = nodeType,
+            childNodeTypes = setOf(condition.childType),
+            childNodeTexts = condition.allowedTexts
+        )
     }
 }

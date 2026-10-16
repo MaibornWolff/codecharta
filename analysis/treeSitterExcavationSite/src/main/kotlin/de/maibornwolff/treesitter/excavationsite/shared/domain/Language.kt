@@ -22,7 +22,8 @@ enum class Language(val primaryExtension: String, val otherExtensions: Set<Strin
     VUE(primaryExtension = ".vue"),
     ABL(primaryExtension = ".p", otherExtensions = setOf(".cls", ".w", ".i")),
     DELPHI(primaryExtension = ".pas", otherExtensions = setOf(".dpr")),
-    RUST(primaryExtension = ".rs");
+    RUST(primaryExtension = ".rs"),
+    ANGULAR(primaryExtension = ".html");
 
     companion object {
         private val extensionMap: Map<String, Language> by lazy {

@@ -38,6 +38,15 @@ sealed class MetricCondition {
     data class AnyChildMatches(val allowedTypes: Set<String>) : MetricCondition()
 
     /**
+     * Matches when a direct child node of the given type has one of the allowed texts, such as the name of an
+     * Angular structural directive.
+     *
+     * @param childType The type of the child node
+     * @param allowedTexts The set of allowed texts of that child
+     */
+    data class ChildTextMatches(val childType: String, val allowedTexts: Set<String>) : MetricCondition()
+
+    /**
      * Matches when the parent node has one of the allowed types.
      *
      * @param allowedTypes The set of allowed node types

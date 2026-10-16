@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages
 
 import de.maibornwolff.treesitter.excavationsite.languages.abl.AblDefinition
+import de.maibornwolff.treesitter.excavationsite.languages.angular.AngularDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.bash.BashDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.c.CDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.cpp.CppDefinition
@@ -44,6 +45,7 @@ object LanguageRegistry {
         Language.ABL -> GrammarLibrary("abl")
         Language.DELPHI -> GrammarLibrary("pascal")
         Language.RUST -> GrammarLibrary("rust")
+        Language.ANGULAR -> GrammarLibrary("angular")
     }
 
     fun getLanguageDefinition(language: Language): LanguageDefinition = when (language) {
@@ -66,5 +68,6 @@ object LanguageRegistry {
         Language.ABL -> AblDefinition
         Language.DELPHI -> DelphiDefinition
         Language.RUST -> RustDefinition
+        Language.ANGULAR -> AngularDefinition
     }
 }
