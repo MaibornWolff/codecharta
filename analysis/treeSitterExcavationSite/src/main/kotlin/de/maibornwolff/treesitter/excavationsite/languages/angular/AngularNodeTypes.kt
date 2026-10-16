@@ -4,6 +4,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.angular
 internal const val IDENTIFIER = "identifier"
 internal const val COMMENT = "comment"
 internal const val TEXT = "text"
+internal const val ENTITY = "entity"
 internal const val STRING = "string"
 internal const val TEMPLATE_STRING = "template_string"
 internal const val BINDING_NAME = "binding_name"

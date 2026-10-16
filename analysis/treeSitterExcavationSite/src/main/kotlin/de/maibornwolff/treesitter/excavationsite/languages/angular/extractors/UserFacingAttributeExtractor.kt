@@ -6,10 +6,6 @@ import de.maibornwolff.treesitter.excavationsite.languages.angular.QUOTED_ATTRIB
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
-// An entity such as `&nbsp;` or `&#160;` separates words like a space; its name is no word of the text
-private val HTML_ENTITY = Regex("&(?:#[0-9]+|#[xX][0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);")
-private const val ENTITY_REPLACEMENT = " "
-
 /**
  * Extracts the value of a plain attribute that holds text a user reads, such as a `title` or a `hoverHint`. The values
  * of all other attributes (`class`, `style`, `id`, `icon`, `type`, `href`, `src`, ...) are markup, not text.
@@ -21,7 +17,7 @@ internal fun extractUserFacingAttributeText(attributeValue: SyntaxNode): String?
     val attributeName = TreeTraversal.findFirstChildTextByType(attribute, ATTRIBUTE_NAME) ?: return null
     if (!UserFacingTextAttribute.matches(attributeName)) return null
     // A value with an interpolation is several value nodes, padded with the spaces around the interpolation
-    return attributeValue.text.replace(HTML_ENTITY, ENTITY_REPLACEMENT).trim().ifEmpty { null }
+    return decodeHtmlEntities(attributeValue.text).trim().ifEmpty { null }
 }
 
 /**

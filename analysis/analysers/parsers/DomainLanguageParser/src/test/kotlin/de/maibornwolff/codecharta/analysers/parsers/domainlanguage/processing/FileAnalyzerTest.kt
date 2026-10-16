@@ -240,6 +240,22 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should keep a word of a template whole that a letter entity is part of`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "lair.component.html")
+        template.writeText("""<p title="Gr&ouml;&szlig;e">H&ouml;hle&nbsp;der caf&eacute;teria</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("größe" to 3, "höhle" to 3, "der" to 3, "caféteria" to 3), words)
+    }
+
+    @Test
     fun `should keep the string weight of other languages`(
         @TempDir tempDirPath: Path
     ) {

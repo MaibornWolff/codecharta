@@ -280,6 +280,30 @@ class AngularExtractionTest {
         }
 
         @Test
+        fun `should read the letter entities of a text attribute as their letters`() {
+            // Arrange
+            val code = """<p title="caf&eacute;teria&nbsp;in der H&ouml;hle &#228;hnlich"></p>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.texts).containsExactly("caf\u00e9teria in der H\u00f6hle \u00e4hnlich")
+        }
+
+        @Test
+        fun `should join the text of an element around its entities into one text`() {
+            // Arrange
+            val code = """<p>Sword&nbsp;and caf&eacute;teria &mdash; Gr&ouml;&szlig;e &#xE4;hnlich {{ hoard }} H&ouml;hle</p>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.texts).containsExactly("Sword and caf\u00e9teria   Gr\u00f6\u00dfe \u00e4hnlich", "H\u00f6hle")
+        }
+
+        @Test
         fun `should not extract the value of an attribute whose name ends in a text word only inside a word`() {
             // Arrange
             val code = """<cc-card context="turquoise" subtitle="Lair" hint="Quiet"></cc-card>"""

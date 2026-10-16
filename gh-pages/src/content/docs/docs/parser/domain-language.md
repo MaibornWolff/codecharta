@@ -25,7 +25,10 @@ comments, its text, and the values of the attributes that hold text a user reads
 `label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose last word, after a hyphen or
 at a capital letter, is `hint`, `label`, `title`, `text`, `tooltip`, `placeholder`, `description` or `message`
 (`hoverHint`, `empty-message`, but not `context`). The values of
-all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out. The text of a template
+all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out. An HTML entity in text
+or attribute values stands for its letter where it is a numeric one of a letter or a named one of a Latin-1 letter
+(`H&ouml;hle` is `Höhle`); any other entity, such as `&nbsp;`, `&mdash;` or a letter beyond Latin-1 written by name,
+separates words. The text of a template
 and the values of its user-facing attributes weigh like its identifiers, with `--identifier-weight`, because they are
 what the user reads; `--string-weight=0` does not leave them out. The string literals of its expressions, such as
 `'crimson'` in `class="{{ hurt ? 'crimson' : 'calm' }}"`, keep the string weight, like the strings of every other

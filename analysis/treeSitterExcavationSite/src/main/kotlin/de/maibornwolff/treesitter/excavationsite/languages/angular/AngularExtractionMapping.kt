@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.angular
 
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateComment
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateIdentifier
+import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateText
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractUserFacingAttributeText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionMapping
@@ -17,7 +18,8 @@ object AngularExtractionMapping : ExtractionMapping {
 
         put(COMMENT, Extract.Comment(custom = ::extractTemplateComment))
 
-        put(TEXT, Extract.Text { it.text.trim() })
+        put(TEXT, Extract.Text(::extractTemplateText))
+        put(ENTITY, Extract.Text(::extractTemplateText))
         put(ATTRIBUTE_VALUE, Extract.Text(::extractUserFacingAttributeText))
         put(STRING, Extract.StringLiteral(format = StringFormats.Quoted(stripSingleQuotes = true)))
         put(TEMPLATE_STRING, Extract.StringLiteral(format = StringFormats.Template))
