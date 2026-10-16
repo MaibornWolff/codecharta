@@ -28,7 +28,8 @@ class ProjectScanner(
     private val includeExtensions: List<String> = listOf(),
     private val baseFileNodes: Map<String, Node> = emptyMap(),
     private val useGitignore: Boolean = true,
-    private val localChangesFiles: Set<String> = emptySet()
+    private val localChangesFiles: Set<String> = emptySet(),
+    private val fileMeasurer: FileMeasurer = CollectorMeasurer
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -139,10 +140,7 @@ class ProjectScanner(
     private fun applyLanguageSpecificCollector(file: File, fileContent: String, relativeFilePath: String, verbose: Boolean) {
         if (verbose) Logger.info { "Calculating metrics for file $relativeFilePath" }
 
-        val collector = findCollectorForFileType(file.extension)?.collectorFactory
-        require(collector != null) { "Unexpectedly encountered an unsupported file at $relativeFilePath!" }
-
-        fileMetrics[relativeFilePath] = collector().collectMetricsForFile(file, fileContent)
+        fileMetrics[relativeFilePath] = fileMeasurer.measure(file, fileContent)
         filesAnalyzed.incrementAndGet()
     }
 
@@ -169,7 +167,7 @@ class ProjectScanner(
 
         if (isPathExcluded(relativePath) || !isFileExtensionIncluded(file.extension)) return false
 
-        return if (findCollectorForFileType(file.extension) != null) {
+        return if (AvailableCollectors.forExtension(file.extension) != null) {
             true
         } else {
             ignoredFileTypes += file.extension
@@ -183,11 +181,6 @@ class ProjectScanner(
 
     private fun isFileExtensionIncluded(fileExtension: String): Boolean =
         includeExtensions.isEmpty() || includeExtensions.contains(fileExtension)
-
-    private fun findCollectorForFileType(fileExtension: String): AvailableCollectors? = AvailableCollectors.entries.find {
-        val extension = ".$fileExtension"
-        it.fileExtension.primaryExtension == extension || it.fileExtension.otherValidExtensions.contains(extension)
-    }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)

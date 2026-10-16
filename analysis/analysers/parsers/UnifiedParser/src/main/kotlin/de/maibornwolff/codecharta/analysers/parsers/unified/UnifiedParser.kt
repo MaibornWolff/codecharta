@@ -37,7 +37,8 @@ class UnifiedParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
-    private val baseFileHelper: BaseFileResolver = BaseFileResolver()
+    private val baseFileHelper: BaseFileResolver = BaseFileResolver(),
+    private val fileMeasurer: FileMeasurer = CollectorMeasurer
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
     AttributeGenerator {
@@ -94,7 +95,8 @@ class UnifiedParser(
             fileExtensionsToAnalyse,
             baseFileNodeMap,
             useGitignore,
-            localChangesResult.changedFiles
+            localChangesResult.changedFiles,
+            fileMeasurer
         )
 
         projectScanner.traverseInputProject(verbose)
