@@ -64,4 +64,5 @@ jobs:
         with:
           name: quality-gate-${{ inputs.part }}
           path: ${{ inputs.part }}/.codecharta-gate-output/
+          include-hidden-files: true
           if-no-files-found: warn
