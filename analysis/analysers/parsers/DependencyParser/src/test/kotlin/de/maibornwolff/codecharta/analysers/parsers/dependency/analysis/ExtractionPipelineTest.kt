@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.io.PrintStream
 
 class ExtractionPipelineTest {
@@ -35,13 +36,19 @@ class ExtractionPipelineTest {
 
     private fun pipeline(
         fileTimeoutSeconds: Int = ExtractionPipeline.NO_FILE_TIMEOUT,
-        createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer
+        createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
+        readContent: (File) -> String = File::readText
     ) = ExtractionPipeline(
         SourceFileScanner(SupportedLanguage.allSuffixes()),
         SilentProgressReporter,
         fileTimeoutSeconds = fileTimeoutSeconds,
-        createAnalyzer = createAnalyzer
+        createAnalyzer = createAnalyzer,
+        readContent = readContent
     )
+
+    private fun unreadable(vararg fileNames: String): (File) -> String = { file ->
+        if (file.name in fileNames) throw IOException("Permission denied") else file.readText()
+    }
 
     private fun analyzerThatFailsOn(
         fileName: String,
@@ -128,6 +135,34 @@ class ExtractionPipelineTest {
         assertThat(extraction.failures.map { it.path }).containsExactly("Item.kt")
         assertThat(errorStream.toString())
             .contains("1 file could not be analysed and is missing from the output (IllegalStateException: cannot parse): Item.kt")
+    }
+
+    @Test
+    fun `should leave out a file it cannot read and warn which one and why`() {
+        // Arrange
+        writeSources()
+
+        // Act
+        val extraction = pipeline(readContent = unreadable("Item.kt")).run(projectDirectory, bypassGitignore = true)
+
+        // Assert
+        assertThat(extraction.reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Service")
+        assertThat(extraction.failures.map { it.path }).containsExactly("Item.kt")
+        assertThat(errorStream.toString())
+            .contains("1 file could not be analysed and is missing from the output (IOException: Permission denied): Item.kt")
+    }
+
+    @Test
+    fun `should report every file as failed when it can read none`() {
+        // Arrange
+        writeSources()
+
+        // Act
+        val extraction = pipeline(readContent = unreadable("Item.kt", "Service.kt")).run(projectDirectory, bypassGitignore = true)
+
+        // Assert
+        assertThat(extraction.reports).isEmpty()
+        assertThat(extraction.failures.map { it.path }).containsExactly("Item.kt", "Service.kt")
     }
 
     @Test

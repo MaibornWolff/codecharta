@@ -37,6 +37,7 @@ class ExtractionPipeline(
     private val maxConcurrency: Int = Runtime.getRuntime().availableProcessors(),
     private val fileTimeoutSeconds: Int = NO_FILE_TIMEOUT,
     private val createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
+    private val readContent: (File) -> String = { file -> fileScanner.readContent(file) },
     private val parseDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     /** [input] is a project directory or a single source file; see [analysisRootOf] for what it is judged against. */
@@ -96,13 +97,13 @@ class ExtractionPipeline(
         withTimeout(fileTimeoutSeconds * MILLIS_PER_SECOND) { withContext(parseDispatcher) { block() } }
     }
 
+    // Only a file of no supported language is no file to analyse; one that cannot be read fails like one that cannot be parsed
     private fun toFileInfo(sourceFile: File, analysisRoot: File): FileInfo? {
         val language = SupportedLanguage.ofFileName(sourceFile.name) ?: return null
-        val content = fileScanner.readFileContent(sourceFile).getOrNull() ?: return null
         return FileInfo(
             language = language,
             physicalPath = relativePathOf(sourceFile, analysisRoot),
-            content = content,
+            content = readContent(sourceFile),
             analysisRoot = analysisRoot
         )
     }

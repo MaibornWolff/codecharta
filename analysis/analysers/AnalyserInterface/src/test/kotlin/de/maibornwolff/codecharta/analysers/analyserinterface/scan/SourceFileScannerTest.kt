@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.analyserinterface.scan
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -239,5 +240,16 @@ class SourceFileScannerTest {
         // Assert
         assertThat(missing.exceptionOrNull()).isInstanceOf(IllegalArgumentException::class.java)
         assertThat(directory.exceptionOrNull()).isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun `should throw for a missing file when reading its content for the caller to report`() {
+        // Arrange
+        val scanner = SourceFileScanner(listOf("txt"))
+
+        // Act & Assert
+        assertThatThrownBy { scanner.readContent(File(projectDirectory, "missing.txt")) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("missing.txt")
     }
 }
