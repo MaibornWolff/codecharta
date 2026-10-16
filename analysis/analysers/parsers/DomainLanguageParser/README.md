@@ -27,9 +27,10 @@ weighs like its identifiers (`--identifier-weight`), because it is what the user
 leaves it out. Every other language keeps the string weight for its strings. The inline `template` of a `@Component`
 in a `.ts` file is read the same way and counts for the `.ts` file.
 
-In SQL the keywords, types and built-in functions of every dialect are stop words, and so are the names of the
-dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`), the words of the catalog views
-(`tables`, `columns`, `objects`, `dba`) and `id`.
+In SQL the types, built-in functions and system schemas of every dialect are stop words (`varchar`, `coalesce`,
+`dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)
+and `id`. Its keywords are not: a keyword never comes out as a word, and one that is an English word (`order`,
+`group`, `transaction`) names the domain in a name or a comment.
 
 ## Usage and Parameters
 

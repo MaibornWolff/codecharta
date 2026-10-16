@@ -141,25 +141,43 @@ class LanguageTest {
     }
 
     @Test
-    fun `should have ResourceKeywords for SQL with the keywords of every dialect`() {
-        // Arrange & Act
-        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
-
-        // Assert
-        assertEquals(listOf(true, true, true, true, true), listOf("select", "varchar", "nvarchar", "plpgsql", "dbo").map { it in keywords })
-    }
-
-    @Test
-    fun `should have ResourceKeywords for SQL with the dialect names, the catalog words and id`() {
+    fun `should have ResourceKeywords for SQL with the types, built-in functions and system names of every dialect`() {
         // Arrange
-        val dialects = listOf("postgre", "postgres", "postgresql", "oracle", "ansi", "mariadb", "sqlserver")
-        val words = dialects + listOf("tables", "objects", "columns", "dba", "id")
+        val words = listOf("varchar", "nvarchar2", "bigint", "coalesce", "nvl", "getdate", "dbo", "information_schema", "pg_catalog")
 
         // Act
         val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
 
         // Assert
         assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should have ResourceKeywords for SQL with the dialect names and id`() {
+        // Arrange
+        val words = listOf("postgre", "postgres", "postgresql", "oracle", "ansi", "mariadb", "sqlserver", "plpgsql", "id")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should keep the words of a domain that SQL also uses as keywords out of the SQL stop words`() {
+        // Arrange
+        val domainWords = listOf(
+            "order", "statement", "transaction", "catalog", "package", "leave", "default", "views", "security", "group",
+            "case", "check", "sequence", "interval", "money", "character", "comment", "information", "objects", "tables",
+            "columns", "date", "time", "count", "user", "key", "index", "trigger", "table"
+        )
+
+        // Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(emptyList<String>(), domainWords.filter { it in keywords })
     }
 
     @Test
