@@ -61,16 +61,16 @@ object FileLevelAggregator {
         }
     }
 
-    /** The file a logical path is joined to: its first declaration's in path order, for SQL the latest migration's. */
+    /** The file a logical path is joined to: its first declaration's, for SQL the latest migration's in [NaturalPathOrder]. */
     fun filePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
         val filePathByDeclaration = LinkedHashMap<String, FilePath>()
         resolvedNodes.forEach { node ->
             val logicalPath = node.pathWithName.withDots()
-            if (node.language.laterDefinitionReplacesEarlier) {
-                filePathByDeclaration[logicalPath] = filePathOf(node)
-            } else {
-                filePathByDeclaration.putIfAbsent(logicalPath, filePathOf(node))
-            }
+            val filePath = filePathOf(node)
+            val current = filePathByDeclaration[logicalPath]
+            val replacesCurrent =
+                node.language.laterDefinitionReplacesEarlier && current != null && NaturalPathOrder.compare(filePath, current) > 0
+            if (current == null || replacesCurrent) filePathByDeclaration[logicalPath] = filePath
         }
         return filePathByDeclaration
     }

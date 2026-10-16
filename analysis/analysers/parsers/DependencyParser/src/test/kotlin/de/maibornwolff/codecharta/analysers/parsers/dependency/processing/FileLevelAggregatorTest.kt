@@ -190,4 +190,20 @@ class FileLevelAggregatorTest {
         assertThat(edges.single().to.segments).containsExactly("db", "V2__orders.sql")
         assertThat(FileLevelAggregator.filePathByDeclaration(nodes).getValue("orders").segments).containsExactly("db", "V2__orders.sql")
     }
+
+    @Test
+    fun `should order migrations by the numbers in their names, so that V10 comes after V9`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("orders", "db/V10__orders.sql", language = SupportedLanguage.SQL),
+                declaration("orders", "db/V9__orders.sql", language = SupportedLanguage.SQL)
+            )
+
+        // Act
+        val filePath = FileLevelAggregator.filePathByDeclaration(nodes).getValue("orders")
+
+        // Assert
+        assertThat(filePath.segments).containsExactly("db", "V10__orders.sql")
+    }
 }
