@@ -104,6 +104,12 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
   dungeon 13, armor 8, hit 21, points 14, speed 30, damage 9, lair 6, initiative 7, encounter 7, treasure 6, hoard 1,
   stable 7, roll 6. The inline template of `treasure-chest.component.ts` no longer adds `roll`.
 
+## Changed by review round 3 (2026-10-16)
+- Unified, dependency and the template words are unchanged. The `.ts` files gain the strings of their exported code at
+  string weight, which were skipped like module paths: the selectors and `templateUrl`s of the decorators (`card` 3 -> 5
+  in `creature-card.component.ts`, `html` 1 in every component with a template file), `providedIn: 'root'`, and the
+  string values of exported enums and constants (`dragon` 3 -> 4 in `creature-type.ts`).
+
 ## Verdict
 Unified: Good – all templates and inline templates measured, counts exact, ICU cases counted. Bad – every .html is measured.
 Dependency: Good – every template edge expected, a component points at its template, ambiguous names resolve through the
