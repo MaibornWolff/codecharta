@@ -1,7 +1,8 @@
 # SQL
 
-Report of 2026-10-16 (third round). All numbers come from the runs in `output/` made that day with the CLI built
-from branch `fix/review-1-sql`.
+Report of 2026-10-16 (third round), checked again after the fifth review round: a fresh run with the CLI built from
+branch `fix/review-5-sql` (grammar 0.7.0) gives every number of the sample below unchanged; only the counts of the
+public code moved (see the end of the unified parser section).
 
 ## Project
 - One project in five dialects, chosen per file as a real code base would mix them: ANSI SQL (`schema/creature.sql`,
@@ -162,9 +163,9 @@ from branch `fix/review-1-sql`.
 | `encounter_edge_cases_plpgsql.sql` (functions only) | 0 | 0 | 0 | 0 | ok |
 | `tests/test_creature_service.sql` (a tSQLt test procedure) | 1 | 0 | 0 | 0 | ok |
 
-- The same counts on public code: utPLSQL (262 PL/SQL files) 1,577 procedures in 87 files (the test package bodies
-  lead with 158), 16 tables, no view and no trigger; the SQL Server First Responder Kit (33 `.sql` files) 38
-  procedures in 21 files (`Install-All-Scripts.sql` 11), 15 tables, 3 views.
+- The same counts on public code: utPLSQL (262 PL/SQL files) 1,567 procedures in 87 files (the test package bodies
+  lead with 158), 16 tables (4 of them global temporary tables), no view and no trigger; the SQL Server First
+  Responder Kit (33 `.sql` files) 38 procedures in 21 files (`Install-All-Scripts.sql` 11), 13 tables, 3 views.
 
 ## Domain language parser
 - `domainlanguageparser -nc … -e "output,FINDINGS.md"`: exit 0, 23 files.
@@ -190,10 +191,21 @@ from branch `fix/review-1-sql`.
 - German words: zentaurenhöhle 5, rüstungsklasse 5, höhle 4, kreatur 2, trefferpunkte 2, verlies 2, größe 1 all
   appear, umlauts intact. German stop words leak: die 2, unter 2, dem 2, und 2, jeder 2.
 
+## Changed since 2026-10-16 (third round)
+- Grammar 0.4.0 to 0.7.0: `PROMPT`, `REMARK` and `DELIMITER` inside a statement stay names, `SHOW` statements stay
+  whole, the table of a trigger is named; `CREATE GLOBAL TEMPORARY TABLE` counts as a table (Oracle's table of the
+  schema, only its rows belong to a session), while PostgreSQL's `CREATE GLOBAL TEMP TABLE` stays a table of the
+  session; `ON COMMIT DELETE ROWS` is no use of a table named `rows`. No ERROR node in the public code or fixtures.
+- Unified parser: objects are told apart by schema and name as the dependency parser does, triggers by their table
+  and overloaded routines by their parameter types; a PostgreSQL `DO` block's tables count like a T-SQL block's.
+  The sample is unchanged; a fresh run on the public code gives utPLSQL 1,567 procedures (1,577 before) and the
+  First Responder Kit 13 tables (15 before).
+- Dependency parser: Flyway's repeatable migrations (`R__`) come after the versioned ones (`V__`); unchanged here.
+
 ## Changed since 2026-10-16 (second round)
 - Unified parser: the line with the closing `$$` of a PostgreSQL routine counts for its rloc no more than its `END`
   line; the object counts appear for SQL files only, count each object of a file once (a view created and altered is
-  one view) and leave out temporary tables of every dialect and what a routine creates when it runs. The object
+  one view) and leave out the temporary tables of a session and what a routine creates when it runs. The object
   counts of this sample stay as they were; its PostgreSQL routines lose their closing line (max rloc per function of
   `encounter_edge_cases_plpgsql.sql` 9 -> 8).
 - Dependency parser: migrations are ordered by the numbers in their names (`V10__` after `V9__`); unchanged here.
