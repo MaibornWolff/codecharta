@@ -11,7 +11,6 @@ import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.Calc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationExtensions
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
 
 /** Calculates a per-file metric for one node, given its type and its first and last row. */
 typealias PerFileCalculator = (SyntaxNode, String, Int, Int) -> Int
@@ -25,9 +24,10 @@ class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensi
 
     val parametersPerFunctionCalc = ParametersPerFunctionCalc(nodeTypeProvider)
 
-    private val nodeCountCalcs = AvailableFileMetrics.NODE_COUNTS.associateWith { fileMetric ->
-        NodeCountCalc(nodeTypeProvider.countedNodeTypes[fileMetric] ?: TreeNodeTypes(emptySet()))
-    }
+    // Only the counts the language declares, so that a language without database objects reports no table count
+    private val nodeCountCalcs = nodeTypeProvider.countedNodeTypes.mapValues { (_, countedNodeTypes) -> NodeCountCalc(countedNodeTypes) }
+
+    val countedMetrics: Set<AvailableFileMetrics> get() = nodeCountCalcs.keys
 
     fun getPerFileMetricInfo(): Map<AvailableFileMetrics, PerFileCalculator> = codeMetricCalculators() + nodeCountCalculators()
 

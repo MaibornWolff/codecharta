@@ -19,7 +19,7 @@ enum class AvailableFileMetrics(val metricName: String) {
     LINES_OF_CODE("loc");
 
     companion object {
-        /** Each the number of one kind of node, which a language marks with [Metric.Counted]; zero where it marks none. */
+        /** Each the number of one kind of node, which a language marks with [Metric.Counted]; absent where it marks none. */
         val NODE_COUNTS = listOf(NUMBER_OF_STORED_PROCEDURES, NUMBER_OF_TRIGGERS, NUMBER_OF_VIEWS, NUMBER_OF_TABLES)
     }
 }

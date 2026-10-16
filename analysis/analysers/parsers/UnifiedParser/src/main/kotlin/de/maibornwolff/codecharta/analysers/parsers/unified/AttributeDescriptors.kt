@@ -2,6 +2,12 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
 
+// Counts of database objects, which only the languages that have them report
+private val ATTRIBUTES_OF_SOME_LANGUAGES = setOf("number_of_stored_procedures", "number_of_triggers", "number_of_views", "number_of_tables")
+
+internal fun getAttributeDescriptorsOfMeasured(measuredAttributes: Set<String>): Map<String, AttributeDescriptor> =
+    getAttributeDescriptors().filterKeys { it !in ATTRIBUTES_OF_SOME_LANGUAGES || it in measuredAttributes }
+
 internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/unified"
     val analyzerName = setOf("unifiedParser")

@@ -44,6 +44,8 @@ class ProjectScanner(
 
     fun foundParsableFiles(): Boolean = fileMetrics.isNotEmpty()
 
+    fun measuredAttributes(): Set<String> = fileMetrics.values.flatMap { it.attributes.keys }.toSet()
+
     fun getIgnoredFiles(): Pair<Long, Set<String>> = Pair(ignoredFiles, ignoredFileTypes)
 
     fun getGitIgnoreStatistics(): Pair<Int, List<String>> = if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())

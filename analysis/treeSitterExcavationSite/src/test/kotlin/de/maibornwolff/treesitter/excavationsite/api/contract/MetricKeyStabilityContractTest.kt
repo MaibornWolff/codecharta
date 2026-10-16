@@ -133,12 +133,12 @@ class MetricKeyStabilityContractTest {
         }
 
         @Test
-        fun `should contain all AvailableFileMetrics keys`() {
+        fun `should contain all AvailableFileMetrics keys except the counts a language does not declare`() {
             // Act
             val result = TreeSitterMetrics.parse(SAMPLE_CODE, Language.JAVA)
 
             // Assert
-            AvailableFileMetrics.entries.forEach { metric ->
+            (AvailableFileMetrics.entries - AvailableFileMetrics.NODE_COUNTS.toSet()).forEach { metric ->
                 assertThat(result.metrics)
                     .withFailMessage("Missing file metric key: ${metric.metricName}")
                     .containsKey(metric.metricName)

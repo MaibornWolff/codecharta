@@ -178,12 +178,29 @@ class TreeSitterMetricsTest {
     }
 
     @Test
-    fun `should report zero database objects for a language that has none, like every metric it has nothing for`() {
+    fun `should leave out the database object counts for a language without database objects`() {
         // Arrange
         val javaCode = "class Orders { }"
 
         // Act
         val result = TreeSitterMetrics.parse(javaCode, Language.JAVA)
+
+        // Assert
+        assertThat(result.metrics).doesNotContainKeys(
+            "number_of_stored_procedures",
+            "number_of_triggers",
+            "number_of_views",
+            "number_of_tables"
+        )
+    }
+
+    @Test
+    fun `should report the database object counts for SQL, also when they are zero`() {
+        // Arrange
+        val sqlCode = "SELECT 1;"
+
+        // Act
+        val result = TreeSitterMetrics.parse(sqlCode, Language.SQL)
 
         // Assert
         assertThat(result.metrics)

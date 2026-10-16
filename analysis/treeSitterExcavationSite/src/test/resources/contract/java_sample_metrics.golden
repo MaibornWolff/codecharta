@@ -9,10 +9,6 @@ long_method=2.0
 long_parameter_list=1.0
 message_chains=1.0
 number_of_functions=5.0
-number_of_stored_procedures=0.0
-number_of_tables=0.0
-number_of_triggers=0.0
-number_of_views=0.0
 rloc=69.0
 
 # Per-Function Metrics

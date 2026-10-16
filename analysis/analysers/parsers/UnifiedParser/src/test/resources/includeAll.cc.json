@@ -2,7 +2,7 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.1",
-    "checksum": "07eb544a677a3b078373b36f166eacec"
+    "checksum": "b27537ebd6774e24a977fa13de2ca517"
   },
   "files": [
     {
@@ -90,10 +90,6 @@
           "message_chains": 0.0,
           "rloc": 6.0,
           "loc": 8.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -119,10 +115,6 @@
           "message_chains": 0.0,
           "rloc": 31.0,
           "loc": 48.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -148,10 +140,6 @@
           "message_chains": 0.0,
           "rloc": 6.0,
           "loc": 8.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -177,10 +165,6 @@
           "message_chains": 0.0,
           "rloc": 30.0,
           "loc": 41.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -206,10 +190,6 @@
           "message_chains": 0.0,
           "rloc": 9.0,
           "loc": 15.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -235,10 +215,6 @@
           "message_chains": 0.0,
           "rloc": 5.0,
           "loc": 9.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -264,10 +240,6 @@
           "message_chains": 0.0,
           "rloc": 11.0,
           "loc": 13.0,
-          "number_of_stored_procedures": 0.0,
-          "number_of_triggers": 0.0,
-          "number_of_views": 0.0,
-          "number_of_tables": 0.0,
           "long_method": 0.0,
           "long_parameter_list": 0.0,
           "excessive_comments": 0.0,
@@ -532,50 +504,6 @@
         "message_chains": {
           "title": "Message Chains",
           "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
-          "hintLowValue": "",
-          "hintHighValue": "",
-          "link": "https://codecharta.com/docs/parser/unified",
-          "direction": -1,
-          "analyzers": [
-            "unifiedParser"
-          ]
-        },
-        "number_of_stored_procedures": {
-          "title": "Number of stored procedures",
-          "description": "The number of SQL stored procedures the file defines with a body, on their own or in an Oracle package body.",
-          "hintLowValue": "",
-          "hintHighValue": "",
-          "link": "https://codecharta.com/docs/parser/unified",
-          "direction": -1,
-          "analyzers": [
-            "unifiedParser"
-          ]
-        },
-        "number_of_triggers": {
-          "title": "Number of triggers",
-          "description": "The number of SQL triggers the file creates, with a body or calling a function.",
-          "hintLowValue": "",
-          "hintHighValue": "",
-          "link": "https://codecharta.com/docs/parser/unified",
-          "direction": -1,
-          "analyzers": [
-            "unifiedParser"
-          ]
-        },
-        "number_of_views": {
-          "title": "Number of views",
-          "description": "The number of SQL views the file defines, materialized ones included.",
-          "hintLowValue": "",
-          "hintHighValue": "",
-          "link": "https://codecharta.com/docs/parser/unified",
-          "direction": -1,
-          "analyzers": [
-            "unifiedParser"
-          ]
-        },
-        "number_of_tables": {
-          "title": "Number of tables",
-          "description": "The number of SQL tables the file creates, without T-SQL temporary tables (#name).",
           "hintLowValue": "",
           "hintHighValue": "",
           "link": "https://codecharta.com/docs/parser/unified",

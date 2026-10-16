@@ -108,7 +108,7 @@ class UnifiedParser(
         val formattedTime = formatTime(executionTimeMs.milliseconds)
         System.err.println("UnifiedParser completed in $formattedTime, building project...")
 
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptorsOfMeasured(projectScanner.measuredAttributes()))
 
         return projectBuilder.build()
     }
