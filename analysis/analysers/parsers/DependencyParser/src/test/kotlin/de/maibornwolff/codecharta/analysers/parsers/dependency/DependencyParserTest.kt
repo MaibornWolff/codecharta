@@ -413,6 +413,56 @@ class DependencyParserTest {
         assertThat(fileEdgeNames(output)).doesNotContain("a.component.ts" to "b2.component.ts")
     }
 
+    @Test
+    fun `should resolve the selectors of a module's component through the exports its imported modules re-export`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("other").createDirectories()
+        tempDir
+            .resolve(
+                "b1.component.ts"
+            ).writeText("@Component({ selector: 'app-b', template: '<p>b1</p>' })\nexport class B1Component {}")
+        tempDir
+            .resolve(
+                "other/b2.component.ts"
+            ).writeText("@Component({ selector: 'app-b', template: '<p>b2</p>' })\nexport class B2Component {}")
+        tempDir.resolve("inner.module.ts").writeText(
+            """
+            import { B1Component } from './b1.component';
+            @NgModule({ declarations: [B1Component], exports: [B1Component] })
+            export class InnerModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("shared.module.ts").writeText(
+            """
+            import { InnerModule } from './inner.module';
+            @NgModule({ imports: [InnerModule], exports: [InnerModule] })
+            export class SharedModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("app.module.ts").writeText(
+            """
+            import { AComponent } from './a.component';
+            import { SharedModule } from './shared.module';
+            @NgModule({ declarations: [AComponent], imports: [SharedModule] })
+            export class AppModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("a.component.html").writeText("<app-b></app-b>")
+        tempDir
+            .resolve(
+                "a.component.ts"
+            ).writeText("@Component({ selector: 'app-a', templateUrl: './a.component.html' })\nexport class AComponent {}")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).contains("a.component.html" to "b1.component.ts")
+        assertThat(fileEdgeNames(output)).doesNotContain("a.component.html" to "b2.component.ts")
+    }
+
     private fun edgeTargetFolders(output: String, sourceName: String): List<String> {
         val parentNamesById = HashMap<String, String>()
 

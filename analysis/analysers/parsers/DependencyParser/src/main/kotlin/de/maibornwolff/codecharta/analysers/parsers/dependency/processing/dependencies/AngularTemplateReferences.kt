@@ -10,8 +10,8 @@ import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
  * Each such name of a template is rewritten to the full path of the class it means, so it resolves like any type
  * written with its full path. A name one class declares means that class. A name several classes declare means the one
  * in the scope of the template's component, as Angular decides it: what the standalone component imports, or what the
- * module declaring the component declares and imports. An imported module adds what it exports. A name the scope does
- * not decide stays unresolved.
+ * module declaring the component declares and imports. An imported module adds what it exports, and a module it
+ * exports adds what that one exports in turn. A name the scope does not decide stays unresolved.
  *
  * A decorator names classes by their simple name; several classes of that name mean the one the file of the decorator
  * imports, or else the one in that file.
@@ -52,11 +52,15 @@ internal class AngularTemplateReferences private constructor(nodes: List<Node>) 
             val declaration = module.angularDeclaration()
             classesNamed(declaration.declarations, module) + classesNamed(declaration.imports, module)
         }
-        return (ownImports + moduleScope).flatMap { withExports(it) }.mapTo(HashSet()) { it.pathWithName }
+        return (ownImports + moduleScope).flatMap { withExports(it, mutableSetOf()) }.mapTo(HashSet()) { it.pathWithName }
     }
 
-    // An imported module adds what it exports
-    private fun withExports(imported: Node): List<Node> = listOf(imported) + classesNamed(imported.angularDeclaration().exports, imported)
+    // A module stands for what it exports, a re-exported module for what that one exports; a cycle ends at a module seen
+    private fun withExports(imported: Node, visited: MutableSet<Path>): List<Node> {
+        if (!visited.add(imported.pathWithName)) return emptyList()
+        val exports = imported.angularDeclaration().exports
+        return listOf(imported) + classesNamed(exports, imported).flatMap { withExports(it, visited) }
+    }
 
     private fun classesNamed(names: List<String>, holder: Node): List<Node> = names.mapNotNull { classNamed(it, holder) }
 

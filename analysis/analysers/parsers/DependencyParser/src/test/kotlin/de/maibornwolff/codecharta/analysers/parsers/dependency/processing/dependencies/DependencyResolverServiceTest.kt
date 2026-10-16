@@ -410,6 +410,41 @@ class DependencyResolverServiceTest {
     }
 
     @Test
+    fun `should resolve a selector through modules that export each other`() {
+        // Arrange
+        val template = angularTemplate(usedNames = setOf("app-lantern"))
+        val cave = typescriptClass(
+            listOf("src", "cave_component", "CaveComponent"),
+            AngularMetadata(AngularDeclaration(imports = listOf("LightModule")), template.pathWithName)
+        )
+        val lightModule = typescriptClass(
+            listOf("light", "light_module", "LightModule"),
+            AngularMetadata(AngularDeclaration(exports = listOf("FlameModule")))
+        )
+        val flameModule = typescriptClass(
+            listOf("light", "flame_module", "FlameModule"),
+            AngularMetadata(AngularDeclaration(exports = listOf("LightModule", "Lantern")))
+        )
+        val lantern =
+            typescriptClass(
+                listOf("light", "lantern_component", "Lantern"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+            )
+        val otherLantern = typescriptClass(
+            listOf("dungeon", "lantern_component", "OilLantern"),
+            AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+        )
+        val nodes = listOf(template, cave, lightModule, flameModule, lantern, otherLantern)
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(nodes)))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies).containsExactly(Dependency(lantern.pathWithName))
+    }
+
+    @Test
     fun `should leave a selector several classes declare unresolved when the scope of its component does not decide`() {
         // Arrange
         val template = angularTemplate(usedNames = setOf("app-torch"))
