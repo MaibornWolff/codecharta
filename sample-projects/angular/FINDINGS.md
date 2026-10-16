@@ -96,6 +96,14 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
   180 -> 184 of 184, Bitwarden 756 -> 811 of 811; `inspectorNodeBadges.component.html` gains the ternary around
   `-count.removed` (logic 5 -> 6).
 
+## Changed by review round 1 (2026-10-16)
+- Unified and dependency: the sample's numbers are unchanged.
+- Domain: the string literals of template expressions keep the string weight (1 instead of 3), pipe names (`hitPoints`,
+  `armorClass`, `roll`) and the exported values of `*ngFor` (`first`) are no identifiers, and `select` of
+  `select($event)` is no stop word any more. Expected words, templates only: creature 84, centaur 4, cellar 10,
+  dungeon 13, armor 8, hit 21, points 14, speed 30, damage 9, lair 6, initiative 7, encounter 7, treasure 6, hoard 1,
+  stable 7, roll 6. The inline template of `treasure-chest.component.ts` no longer adds `roll`.
+
 ## Verdict
 Unified: Good – all templates and inline templates measured, counts exact, ICU cases counted. Bad – every .html is measured.
 Dependency: Good – every template edge expected, a component points at its template, ambiguous names resolve through the
