@@ -1204,6 +1204,75 @@ class TypescriptDependencyTest {
     }
 
     @Nested
+    inner class AngularTemplateNames {
+        private fun templateNamesOf(code: String, className: String): Set<String> =
+            TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.first { it.name == className }.templateNames
+
+        @Test
+        fun `should name an exported component after its element selector`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-cave-map', templateUrl: './cave-map.component.html' })
+                export class CaveMapComponent {}
+            """.trimIndent()
+
+            // Act
+            val templateNames = templateNamesOf(code, "CaveMapComponent")
+
+            // Assert
+            assertThat(templateNames).containsExactly("app-cave-map")
+        }
+
+        @Test
+        fun `should name a component after each element of a selector list but not after attribute or class selectors`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-torch, App-Lantern[lit], [appGlow], .flame' })
+                class TorchComponent {}
+            """.trimIndent()
+
+            // Act
+            val templateNames = templateNamesOf(code, "TorchComponent")
+
+            // Assert
+            assertThat(templateNames).containsExactly("app-torch", "app-lantern")
+        }
+
+        @Test
+        fun `should name a pipe after its pipe name`() {
+            // Arrange
+            val code = """
+                @Pipe({ name: "goldCoins", standalone: true })
+                export class GoldCoinsPipe implements PipeTransform {}
+            """.trimIndent()
+
+            // Act
+            val templateNames = templateNamesOf(code, "GoldCoinsPipe")
+
+            // Assert
+            assertThat(templateNames).containsExactly("goldCoins")
+        }
+
+        @Test
+        fun `should not name classes without component or pipe decorator`() {
+            // Arrange
+            val code = """
+                @Injectable({ providedIn: 'root' })
+                export class TreasuryService {}
+                @Directive({ selector: 'app-glow' })
+                export class GlowDirective {}
+                export class Centaur {}
+            """.trimIndent()
+
+            // Act
+            val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
+
+            // Assert
+            assertThat(declarations.flatMap { it.templateNames }).isEmpty()
+        }
+    }
+
+    @Nested
     inner class GenericTypeArguments {
         @Test
         fun `should emit type argument of generic function call as usedType`() {

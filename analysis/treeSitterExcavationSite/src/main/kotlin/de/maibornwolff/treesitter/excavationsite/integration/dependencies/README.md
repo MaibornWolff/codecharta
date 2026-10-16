@@ -74,7 +74,8 @@ data class Declaration(
     val name: String,                       // "MyService"
     val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
-    val parentPath: List<String> = []       // namespace/package path: ["com", "example"]
+    val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
+    val templateNames: Set<String> = []     // names a template refers to it by: ["app-cave-map"]
 )
 
 data class UsedType(
@@ -135,6 +136,13 @@ dependency gets.
   are the components its template names. The adapter names it after the file.
 - An Angular template is one `SCRIPT` with an empty name. Its used types are the selectors of the custom elements and
   the names of the pipes it uses, which the adapter resolves to the components and pipes that declare them.
+
+### Template names
+
+An Angular template refers to a component by the element its selector names (`<app-cave-map>`) and to a pipe by its
+pipe name (`| goldCoins`), not by the class name. The TypeScript extractor reads them off the `@Component` and `@Pipe`
+decorators into `Declaration.templateNames`: every element of a selector list, lowercased, and the pipe name. Attribute
+and class selectors name no element and are left out. The adapter matches the used types of a template against them.
 
 ### Embedded sources
 

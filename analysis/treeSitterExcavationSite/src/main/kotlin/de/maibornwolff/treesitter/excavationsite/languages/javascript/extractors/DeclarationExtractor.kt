@@ -227,19 +227,27 @@ internal object DeclarationExtractor {
         hasSource(node) && !hasExportClause(node) ->
             listOf(Declaration(name = WILDCARD_REEXPORT, type = DeclarationType.REEXPORT, usedTypes = emptySet()))
 
-        else -> {
-            val decoratorUsedTypes = node
-                .children()
-                .filter { it.type == DECORATOR }
-                .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
-                .toSet()
-            node
-                .children()
-                .filter { it.type in DECLARATION_NODE_TYPES }
-                .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
-                .map { decl -> if (decoratorUsedTypes.isEmpty()) decl else decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes) }
-                .toList()
-        }
+        else -> extractDecoratedDeclarations(node, parentPath, aliasMap, localDeclarationNames)
+    }
+
+    // The decorators of an exported class are children of the export statement, not of the class declaration
+    private fun extractDecoratedDeclarations(
+        node: SyntaxNode,
+        parentPath: List<String>,
+        aliasMap: Map<String, String>,
+        localDeclarationNames: Set<String>
+    ): List<Declaration> {
+        val decorators = node.children().filter { it.type == DECORATOR }.toList()
+        val decoratorUsedTypes = decorators
+            .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
+            .toSet()
+        val templateNames = AngularTemplateNameExtractor.extract(decorators.asSequence())
+        return node
+            .children()
+            .filter { it.type in DECLARATION_NODE_TYPES }
+            .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
+            .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, templateNames = decl.templateNames + templateNames) }
+            .toList()
     }
 
     private fun extractReexportDeclarations(node: SyntaxNode): List<Declaration> {
@@ -298,7 +306,8 @@ internal object DeclarationExtractor {
             val name = extractName(node)
             val type = declarationType(node.type)
             val usedTypes = UsedTypeExtractor.extract(node, aliasMap, localDeclarationNames - name)
-            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath))
+            val templateNames = AngularTemplateNameExtractor.extract(node.children().filter { it.type == DECORATOR })
+            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, templateNames = templateNames))
         }
     }
 
