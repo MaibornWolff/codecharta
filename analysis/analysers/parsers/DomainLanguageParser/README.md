@@ -18,7 +18,8 @@ The `domain` lens payload keys its entries under `nodes`:
 Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, ABL, shell,
 Angular templates (`.html`) and SQL.
 
-An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, its HTML
+An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, but not the
+names Angular gives (pipe names, `@defer` triggers, the `index` or `trackBy` of `*ngFor`), its HTML
 comments, its text, and the values of the attributes that hold text a user reads: `title`, `alt`, `placeholder`,
 `label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose name ends in `hint`, `label`,
 `title`, `text`, `tooltip`, `placeholder`, `description` or `message` (`hoverHint`, `empty-message`). The values of

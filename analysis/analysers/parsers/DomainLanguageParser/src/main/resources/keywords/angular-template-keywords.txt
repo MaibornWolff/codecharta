@@ -1,6 +1,7 @@
 # Angular Template Keywords
 # The words of Angular's template syntax that the identifiers of a template split into. Control flow keywords
-# such as `@if` or `@for` are not identifiers, so they need no entry.
+# such as `@if` or `@for`, pipe names, `@defer` triggers and the keys and exported values of a structural directive
+# (`trackBy`, `index`, `odd`) are not extracted as identifiers, so they need no entry and stay words of the text.
 # One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 
 # Literals the grammar reads as identifiers
@@ -11,34 +12,3 @@ undefined
 
 # The call of an output: (click)="selected.emit(creature)"
 emit
-
-# *ngFor: trackBy and the exported values of `let i = index`
-track
-by
-index
-even
-odd
-
-# @defer triggers
-viewport
-idle
-interaction
-hover
-immediate
-timer
-
-# Built-in pipes
-async
-json
-date
-currency
-decimal
-percent
-uppercase
-lowercase
-titlecase
-slice
-keyvalue
-i18n
-plural
-select

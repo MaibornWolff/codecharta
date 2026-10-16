@@ -110,12 +110,12 @@ class LanguageTest {
     }
 
     @Test
-    fun `should have ResourceKeywords for ANGULAR with template syntax and built-in pipes`() {
+    fun `should have ResourceKeywords for ANGULAR with the literals and the output call of template syntax`() {
         // Arrange & Act
         val keywords = ResourceKeywords("keywords/angular-template-keywords.txt")
 
         // Assert
-        assertTrue(keywords.getKeywords().containsAll(listOf("true", "emit", "track", "index", "viewport", "async", "titlecase")))
+        assertEquals(setOf("true", "false", "null", "undefined", "emit"), keywords.getKeywords().toSet())
     }
 
     @Test

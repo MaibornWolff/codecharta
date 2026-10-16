@@ -10,7 +10,7 @@ class AngularExtractionTest {
     @Nested
     inner class Identifiers {
         @Test
-        fun `should extract identifiers of interpolations including pipe names`() {
+        fun `should extract identifiers of interpolations but not pipe names`() {
             // Arrange
             val code = """<h2>{{ cave.name | goldCoins: 2 }}</h2>"""
 
@@ -18,7 +18,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.identifiers).containsExactly("cave", "name", "goldCoins")
+            assertThat(result.identifiers).containsExactly("cave", "name")
         }
 
         @Test
@@ -103,7 +103,31 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.identifiers).containsExactly("centaur", "centaurs", "trackBy", "byName", "isLit", "centaur")
+            assertThat(result.identifiers).containsExactly("centaur", "centaurs", "byName", "isLit", "centaur")
+        }
+
+        @Test
+        fun `should extract the local names of a structural directive but not the values it exports`() {
+            // Arrange
+            val code = """<li *ngFor="let centaur of centaurs; let i = index; let e = even; odd as isOdd"></li>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.identifiers).containsExactly("centaur", "centaurs", "i", "e", "isOdd")
+        }
+
+        @Test
+        fun `should not extract the triggers of a defer block`() {
+            // Arrange
+            val code = """@defer (on timer(5s); on hover; prefetch on idle; when dragonAwake) { <p>Lair</p> }"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.identifiers).containsExactly("dragonAwake")
         }
 
         @Test

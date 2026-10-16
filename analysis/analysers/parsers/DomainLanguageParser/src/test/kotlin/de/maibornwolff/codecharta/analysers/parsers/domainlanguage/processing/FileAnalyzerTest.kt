@@ -199,6 +199,31 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should keep the words of a template's text that Angular also names pipes, triggers and loop values after`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "booking.component.html")
+        template.writeText(
+            """
+            <p title="Booking date">Choose the travel date, the currency and the timer of the odd booking</p>
+            @defer (on timer(5s)) { <p *ngFor="let fare of fares; let i = index; odd as isAlternate">{{ fare.price | currency }}</p> }
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(6, words["date"])
+        assertEquals(3, words["currency"])
+        assertEquals(3, words["timer"])
+        assertEquals(3, words["odd"])
+        assertFalse(words.containsKey("index"))
+    }
+
+    @Test
     fun `should keep the string weight of other languages`(
         @TempDir tempDirPath: Path
     ) {

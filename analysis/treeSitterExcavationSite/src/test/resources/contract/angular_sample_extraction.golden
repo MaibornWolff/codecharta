@@ -21,7 +21,6 @@ enterRoom
 explorer
 gold
 gold
-goldCoins
 hasCentaur
 hasExit
 i
@@ -49,10 +48,7 @@ save
 silver
 size
 size
-titlecase
 total
-trackBy
-viewport
 
 # Comments
 The cave overview
