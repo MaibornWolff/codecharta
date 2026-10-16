@@ -14,9 +14,12 @@ internal class DependencyCollector(private val grammar: FfmGrammar, private val 
                 imports = tree.readReleasingReachedNodes(mapping.extractImports),
                 declarations = tree.readReleasingReachedNodes(mapping.extractDeclarations)
             ),
-            embeddedSources = tree.readReleasingReachedNodes(mapping.extractEmbeddedSources)
+            embeddedSources = mapping.embeddedSources
+                ?.takeIf { content.contains(it.marker) }
+                ?.let { tree.readReleasingReachedNodes(it.extract) }
+                .orEmpty()
         )
     }
 }
 
-class CollectedDependencies(val ofFile: DependencyResult, val embeddedSources: List<EmbeddedSource>)
+internal class CollectedDependencies(val ofFile: DependencyResult, val embeddedSources: List<EmbeddedSource>)
