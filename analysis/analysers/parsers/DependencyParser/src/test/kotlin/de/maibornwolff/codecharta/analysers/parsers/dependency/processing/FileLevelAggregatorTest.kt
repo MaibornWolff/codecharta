@@ -165,6 +165,6 @@ class FileLevelAggregatorTest {
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("app", "FooA.kt")
-        assertThat(FileLevelAggregator.firstFilePathByDeclaration(nodes).getValue("app.Foo").segments).containsExactly("app", "FooA.kt")
+        assertThat(FileLevelAggregator.filePathByDeclaration(nodes).getValue("app.Foo").segments).containsExactly("app", "FooA.kt")
     }
 }
