@@ -1,5 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript
 
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.InlineTemplateExtractor
+import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSourceMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
@@ -15,4 +17,5 @@ object TypescriptDefinition : LanguageDefinition {
     override val nodeMetrics: Map<String, Set<Metric>> = TypescriptMetricMapping.nodeMetrics
     override val nodeExtractions: Map<String, Extract> = JavascriptExtractionMapping.nodeExtractions
     override val dependencyMapping: LanguageDependencyMapping = TypescriptDependencyMapping.dependencyMapping
+    override val embeddedSources: EmbeddedSourceMapping = InlineTemplateExtractor.mapping
 }

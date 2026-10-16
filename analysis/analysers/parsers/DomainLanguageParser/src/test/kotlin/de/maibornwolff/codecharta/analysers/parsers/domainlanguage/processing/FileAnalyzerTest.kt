@@ -176,6 +176,29 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should weigh and filter the words of an inline template like those of an Angular template`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val component = File(tempDirPath.toFile(), "vault.component.ts")
+        component.writeText(
+            """
+            @Component({ selector: "cc-vault", template: `<p title="Treasure">{{ dragon | titlecase }}</p>` })
+            export class Vault {}
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(component, component.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(3, words["treasure"])
+        assertEquals(3, words["dragon"])
+        assertFalse(words.containsKey("titlecase"))
+    }
+
+    @Test
     fun `should keep the string weight of other languages`(
         @TempDir tempDirPath: Path
     ) {

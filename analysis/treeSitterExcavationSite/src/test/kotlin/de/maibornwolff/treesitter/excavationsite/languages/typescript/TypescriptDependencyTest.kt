@@ -1221,6 +1221,24 @@ class TypescriptDependencyTest {
         }
 
         @Test
+        fun `should read the inline template of a component without its quotes`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-chest', template: `<app-torch />{{ gold | goldCoins }}` })
+                export class ChestComponent {}
+                @Component({ selector: 'app-lid', template: '<p>Lid</p>' })
+                export class LidComponent {}
+            """.trimIndent()
+
+            // Act
+            val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
+
+            // Assert
+            assertThat(declarations.map { it.angular?.inlineTemplate })
+                .containsExactly("<app-torch />{{ gold | goldCoins }}", "<p>Lid</p>")
+        }
+
+        @Test
         fun `should declare a routed component without a selector by its template file`() {
             // Arrange
             val code = """

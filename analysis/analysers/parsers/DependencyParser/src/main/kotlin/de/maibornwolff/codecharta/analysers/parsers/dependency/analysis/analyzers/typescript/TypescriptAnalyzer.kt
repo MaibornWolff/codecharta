@@ -74,10 +74,21 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         return imports.filter { it.path.isNotEmpty() && it.path.last() in reexportNames }
     }
 
-    // A component uses its template file, which resolves by the full path of the template's node
+    // A component uses its template, which resolves by the full path of the template's node
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
-        val templateUrl = declaration.angular?.templateUrl ?: return declaration.usedTypes
-        return declaration.usedTypes + UsedType(templateFilePath(templateUrl, fileInfo.physicalPath).withDots())
+        val templatePath = templatePathOf(declaration) ?: return declaration.usedTypes
+        return declaration.usedTypes + UsedType(templatePath.withDots())
+    }
+
+    override fun nodesWithin(declaration: Declaration, node: Node): List<Node> {
+        val inlineTemplate = declaration.angular?.inlineTemplate ?: return emptyList()
+        return listOf(inlineTemplateNode(inlineTemplate, node))
+    }
+
+    private fun templatePathOf(declaration: Declaration): Path? {
+        val angular = declaration.angular ?: return null
+        if (angular.inlineTemplate != null) return inlineTemplatePath(buildPathWithName(emptyList(), declaration))
+        return angular.templateUrl?.let { templateFilePath(it, fileInfo.physicalPath) }
     }
 
     override fun extraDependencies(declaration: Declaration): Set<Dependency> {

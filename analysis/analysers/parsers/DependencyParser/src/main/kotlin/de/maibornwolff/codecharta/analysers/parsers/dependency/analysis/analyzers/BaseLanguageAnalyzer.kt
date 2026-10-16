@@ -20,7 +20,7 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
 
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, tseLanguage())
-        val nodes = result.declarations.map { declaration ->
+        val nodes = result.declarations.flatMap { declaration ->
             val selectedImports = selectImports(declaration, result.imports)
             val importDeps = selectedImports.flatMap { convertImport(it) }.toSet()
             val packageDep = if (result.packagePath.isNotEmpty()) {
@@ -29,7 +29,8 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
                 emptySet()
             }
             val dependencies = importDeps + packageDep + extraDependencies(declaration)
-            toNode(result.packagePath, dependencies, declaration, result.imports)
+            val node = toNode(result.packagePath, dependencies, declaration, result.imports)
+            listOf(node) + nodesWithin(declaration, node)
         }
         return FileReport(nodes)
     }
@@ -43,6 +44,9 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
     protected open fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path = Path(packagePath + declaration.name)
 
     protected open fun extraDependencies(declaration: Declaration): Set<Dependency> = emptySet()
+
+    /** Nodes a declaration holds besides its own, such as the inline template of an Angular component. */
+    protected open fun nodesWithin(declaration: Declaration, node: Node): List<Node> = emptyList()
 
     protected open fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> = declaration.usedTypes
 

@@ -330,6 +330,34 @@ class DependencyParserTest {
         assertThat(edgeNames).containsExactly("cave.component.ts" to "cave.component.html")
     }
 
+    @Test
+    fun `should draw an edge from an Angular component to the components and pipes of its inline template`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("vault.component.ts").writeText(
+            """
+            @Component({ selector: 'app-vault', template: `<app-torch />{{ gold | goldCoins }}` })
+            export class VaultComponent {}
+            """.trimIndent()
+        )
+        tempDir.resolve("torch.component.ts").writeText("@Component({ selector: 'app-torch' })\nexport class TorchComponent {}")
+        tempDir.resolve("gold-coins.pipe.ts").writeText("@Pipe({ name: 'goldCoins' })\nexport class GoldCoinsPipe {}")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        val namesById = fileNamesById(output)
+        val edgeNames = dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
+            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
+        }
+        assertThat(edgeNames).containsExactlyInAnyOrder(
+            "vault.component.ts" to "torch.component.ts",
+            "vault.component.ts" to "gold-coins.pipe.ts"
+        )
+    }
+
     private fun fileNamesById(output: String): Map<String, String> {
         val namesById = HashMap<String, String>()
 

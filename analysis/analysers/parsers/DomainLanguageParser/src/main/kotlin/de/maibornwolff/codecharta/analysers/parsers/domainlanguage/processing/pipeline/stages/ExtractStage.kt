@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.p
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language as DomainLanguage
 import de.maibornwolff.treesitter.excavationsite.api.ExtractionContext as LibraryExtractionContext
 
 class ExtractStage(private val language: Language) {
@@ -21,7 +22,8 @@ class ExtractStage(private val language: Language) {
                         LibraryExtractionContext.COMMENT -> ExtractionContext.COMMENT
                         LibraryExtractionContext.STRING -> ExtractionContext.STRING
                     },
-                interpretsEscapes = extracted.interpretsEscapes
+                interpretsEscapes = extracted.interpretsEscapes,
+                language = extracted.language?.let { DomainLanguage.ofLibraryLanguage(it) }
             )
         }
     }

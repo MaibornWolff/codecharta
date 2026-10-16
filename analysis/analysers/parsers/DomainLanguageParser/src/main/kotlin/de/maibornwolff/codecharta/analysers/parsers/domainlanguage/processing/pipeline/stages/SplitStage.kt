@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import net.pearx.kasechange.splitToWords
 
 class SplitStage(private val ngrams: Int = 1) {
@@ -7,7 +8,8 @@ class SplitStage(private val ngrams: Int = 1) {
         val words: List<WeightedText>,
         val sourceWords: List<String>, // Words from original identifier (for n-gram generation)
         val weight: Int,
-        val context: ExtractionContext
+        val context: ExtractionContext,
+        val language: Language? = null
     )
 
     fun split(weightedTexts: List<WeightedText>): List<SplitResult> = weightedTexts.map { weighted ->
@@ -18,13 +20,14 @@ class SplitStage(private val ngrams: Int = 1) {
                 ExtractionContext.STRING -> extractWords(withoutEscapes(weighted))
             }
 
-        val weightedWords = words.map { WeightedText(it, weighted.weight, weighted.context) }
+        val weightedWords = words.map { WeightedText(it, weighted.weight, weighted.context, language = weighted.language) }
 
         SplitResult(
             words = weightedWords,
             sourceWords = words,
             weight = weighted.weight,
-            context = weighted.context
+            context = weighted.context,
+            language = weighted.language
         )
     }
 

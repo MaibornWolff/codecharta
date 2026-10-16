@@ -286,6 +286,8 @@ One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect ha
   in an interpolation inside a plain attribute value, such as `class="icon {{ done ? 'check' : 'copy' }}"`
 - **ICU messages**: each case of a `plural` or `select` message, but not its `other` case, like a `@default`
 - **Functions**: a template has none, so its complexity is its logic complexity
+- **Inline templates**: the `template` of a `@Component` in a `.ts` file is measured the same way, and its complexity
+  adds to the complexity and logic complexity of the `.ts` file
 
 #### Comment Lines
 

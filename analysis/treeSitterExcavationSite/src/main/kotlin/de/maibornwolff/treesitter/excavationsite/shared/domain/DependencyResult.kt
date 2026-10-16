@@ -52,8 +52,13 @@ data class Declaration(
  * @property templateNames the names a template refers to the class by instead of its own: the element selectors of a
  * component and the name of a pipe
  * @property templateUrl the template file of a component, as its `templateUrl` writes it
+ * @property inlineTemplate the template a component writes inline as its `template`, without the quotes around it
  */
-data class AngularDeclaration(val templateNames: Set<String> = emptySet(), val templateUrl: String? = null)
+data class AngularDeclaration(
+    val templateNames: Set<String> = emptySet(),
+    val templateUrl: String? = null,
+    val inlineTemplate: String? = null
+)
 
 /** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */
 enum class TypeUsage {

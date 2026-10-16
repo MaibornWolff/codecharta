@@ -1550,4 +1550,40 @@ class TypescriptExtractionTest {
             assertThat(result.identifiers).containsExactly("name", "age")
         }
     }
+
+    @Nested
+    inner class AngularInlineTemplates {
+        @Test
+        fun `should not extract an inline template as a string of the component file`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-torch', template: `<p>Flame</p>` })
+                class TorchComponent {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(result.extractedTexts.filter { it.language == null }.map { it.text }).doesNotContain("<p>Flame</p>")
+            assertThat(result.extractedTexts.filter { it.language == Language.ANGULAR }.map { it.text }).containsExactly("Flame")
+        }
+
+        @Test
+        fun `should extract the texts of an inline template marked with the Angular language`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-torch', template: `<p title="Torch">{{ flame }}</p>` })
+                export class TorchComponent {}
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.TYPESCRIPT)
+
+            // Assert
+            val templateTexts = result.extractedTexts.filter { it.language == Language.ANGULAR }
+            assertThat(templateTexts.map { it.text to it.context })
+                .containsExactly("Torch" to ExtractionContext.STRING, "flame" to ExtractionContext.IDENTIFIER)
+        }
+    }
 }

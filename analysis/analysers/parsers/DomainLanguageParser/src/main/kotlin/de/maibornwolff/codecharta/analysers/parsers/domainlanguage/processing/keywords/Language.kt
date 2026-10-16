@@ -43,5 +43,7 @@ enum class Language(
         }
 
         fun allExtensions(): List<String> = entries.flatMap { it.extensions.toList() }
+
+        fun ofLibraryLanguage(libraryLanguage: LibraryLanguage): Language? = entries.find { it.libraryLanguage == libraryLanguage }
     }
 }

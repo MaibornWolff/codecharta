@@ -97,7 +97,8 @@ Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, R
 An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
 names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
 class or more than one class declares, such as a library component, draws no edge. A component depends on the template
-file its `templateUrl` names.
+file its `templateUrl` names; the inline `template` of a component is read like a template file, and its edges leave
+the `.ts` file of the component.
 
 Imports are resolved through each language's own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.

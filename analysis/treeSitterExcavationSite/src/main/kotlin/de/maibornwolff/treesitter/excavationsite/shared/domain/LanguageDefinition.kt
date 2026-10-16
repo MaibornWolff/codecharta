@@ -47,4 +47,17 @@ interface LanguageDefinition :
      */
     val preprocessor: ((String) -> String)?
         get() = null
+
+    /**
+     * Sources in another language inside a file of this one, such as the inline templates of Angular components. Their
+     * logic complexity and their extracted texts count for the file.
+     */
+    val embeddedSources: EmbeddedSourceMapping?
+        get() = null
 }
+
+/**
+ * Finds the sources in another language inside a file. Only a file that contains [marker] is parsed for them, which
+ * spares the files without any a second parse.
+ */
+data class EmbeddedSourceMapping(val marker: String, val extract: (SyntaxNode) -> List<EmbeddedSource>)
