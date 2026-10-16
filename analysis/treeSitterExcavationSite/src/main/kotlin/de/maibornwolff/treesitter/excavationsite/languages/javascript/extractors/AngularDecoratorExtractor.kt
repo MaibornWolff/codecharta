@@ -7,9 +7,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * What the Angular decorator of a class declares: the elements its `@Component` selector names and the name of its
- * `@Pipe`, the names a template refers to the class by, the template file or inline template of a component, and the
- * classes a component or an `@NgModule` imports, declares and exports. An attribute or class selector names no element,
- * so it is left out.
+ * `@Pipe`, the names a template refers to the class by, the template file of a component, and the classes a component
+ * or an `@NgModule` imports, declares and exports. An attribute or class selector names no element, so it is left out.
+ * The inline template of a component is a source of its own, see [InlineTemplateExtractor].
  */
 internal object AngularDecoratorExtractor {
     private const val ARGUMENTS = "arguments"
@@ -41,8 +41,18 @@ internal object AngularDecoratorExtractor {
         return call.parent.type == DECORATOR && TreeTraversal.findFirstChildTextByType(call, IDENTIFIER) == COMPONENT
     }
 
+    // The text between the quotes, as the template is written: escapes and `${}` substitutions stay as they are
+    fun inlineTemplateOf(decorator: SyntaxNode): String? = callOf(decorator)
+        ?.takeIf { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER) == COMPONENT }
+        ?.let { valueOf(it, TEMPLATE) }
+        ?.takeIf { it.type == STRING || it.type == TEMPLATE_STRING }
+        ?.text
+        ?.let { it.substring(1, it.length - 1) }
+
+    private fun callOf(decorator: SyntaxNode): SyntaxNode? = decorator.children().firstOrNull { it.type == CALL_EXPRESSION }
+
     private fun declarationOf(decorator: SyntaxNode): AngularDeclaration? {
-        val call = decorator.children().firstOrNull { it.type == CALL_EXPRESSION } ?: return null
+        val call = callOf(decorator) ?: return null
         return when (TreeTraversal.findFirstChildTextByType(call, IDENTIFIER)) {
             COMPONENT -> componentOf(call)
             PIPE -> AngularDeclaration(templateNames = setOfNotNull(stringPropertyOf(call, PIPE_NAME)))
@@ -54,7 +64,6 @@ internal object AngularDecoratorExtractor {
     private fun componentOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
         templateNames = stringPropertyOf(call, SELECTOR)?.let { elementsOf(it) }.orEmpty().toSet(),
         templateUrl = stringPropertyOf(call, TEMPLATE_URL),
-        inlineTemplate = inlineTemplateOf(call),
         imports = classesOf(call, IMPORTS)
     )
 
@@ -76,12 +85,6 @@ internal object AngularDecoratorExtractor {
     private fun stringPropertyOf(call: SyntaxNode, key: String): String? = valueOf(call, key)
         ?.takeIf { it.type == STRING }
         ?.let { TreeTraversal.findFirstChildTextByType(it, STRING_FRAGMENT) }
-
-    // The text between the quotes, as the template is written: escapes and `${}` substitutions stay as they are
-    private fun inlineTemplateOf(call: SyntaxNode): String? = valueOf(call, TEMPLATE)
-        ?.takeIf { it.type == STRING || it.type == TEMPLATE_STRING }
-        ?.text
-        ?.let { it.substring(1, it.length - 1) }
 
     private fun valueOf(call: SyntaxNode, key: String): SyntaxNode? = call
         .children()

@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.resolveImportPath
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
@@ -30,8 +29,7 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
                 emptySet()
             }
             val dependencies = importDeps + packageDep + extraDependencies(declaration)
-            val node = toNode(result.packagePath, dependencies, declaration, result.imports)
-            listOf(node) + nodesWithin(declaration, node)
+            nodesOf(declaration, toNode(result.packagePath, dependencies, declaration, result.imports))
         }
         return FileReport(nodes)
     }
@@ -46,10 +44,8 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
 
     protected open fun extraDependencies(declaration: Declaration): Set<Dependency> = emptySet()
 
-    protected open fun angularOf(declaration: Declaration): AngularMetadata? = declaration.angular?.let { AngularMetadata(it) }
-
-    /** Nodes a declaration holds besides its own, such as the inline template of an Angular component. */
-    protected open fun nodesWithin(declaration: Declaration, node: Node): List<Node> = emptyList()
+    /** The nodes a declaration becomes: its own node, and those of what it holds, such as an inline template. */
+    protected open fun nodesOf(declaration: Declaration, node: Node): List<Node> = listOf(node)
 
     protected open fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> = declaration.usedTypes
 
@@ -64,7 +60,6 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
         language = language,
         nodeType = declaration.type.toNodeType(),
         dependencies = dependencies,
-        usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet(),
-        angular = angularOf(declaration)
+        usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet()
     )
 }

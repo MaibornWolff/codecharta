@@ -8,6 +8,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
+import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportKind
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TypeUsage
@@ -24,3 +25,4 @@ typealias UsedType = UsedType
 typealias BundlerAlias = BundlerAlias
 typealias AliasPathStart = AliasPathStart
 typealias AngularDeclaration = AngularDeclaration
+typealias EmbeddedDeclarations = EmbeddedDeclarations

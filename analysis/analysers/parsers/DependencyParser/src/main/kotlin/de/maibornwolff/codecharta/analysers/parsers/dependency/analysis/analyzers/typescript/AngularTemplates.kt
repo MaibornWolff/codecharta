@@ -6,8 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
-import de.maibornwolff.treesitter.excavationsite.api.Language
-import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.Declaration
 
 private const val INLINE_TEMPLATE_NAME = "template"
 
@@ -30,15 +29,13 @@ internal fun inlineTemplatePath(componentPath: Path): Path = componentPath + INL
  * The inline template of an Angular component as a node in the template language, so the selectors and pipe names it
  * uses resolve like those of a template file. It lives in the file of the component, so its edges leave that file.
  */
-internal fun inlineTemplateNode(template: String, component: Node): Node = Node(
+internal fun inlineTemplateNode(templateDeclarations: List<Declaration>, component: Node): Node = Node(
     pathWithName = inlineTemplatePath(component.pathWithName),
     physicalPath = component.physicalPath,
     nodeType = NodeType.SCRIPT,
     language = SupportedLanguage.ANGULAR,
     dependencies = emptySet(),
-    usedTypes = TreeSitterDependencies
-        .analyze(template, Language.ANGULAR)
-        .declarations
+    usedTypes = templateDeclarations
         .flatMap { it.usedTypes }
         .map { it.toType() }
         .toSet()

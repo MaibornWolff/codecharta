@@ -37,14 +37,22 @@ enum class DeclarationType {
     UNKNOWN
 }
 
-/** @property angular what the Angular decorator of a class declares, null for a declaration without one */
+/**
+ * @property angular what the Angular decorator of a class declares, null for a declaration without one
+ * @property embedded what the sources in another language a declaration holds declare, such as the inline template of
+ * an Angular component
+ */
 data class Declaration(
     val name: String,
     val type: DeclarationType,
     val usedTypes: Set<UsedType>,
     val parentPath: List<String> = emptyList(),
-    val angular: AngularDeclaration? = null
+    val angular: AngularDeclaration? = null,
+    val embedded: List<EmbeddedDeclarations> = emptyList()
 )
+
+/** The declarations of a source in another language inside a declaration, see [EmbeddedSource.owner]. */
+data class EmbeddedDeclarations(val language: Language, val declarations: List<Declaration>)
 
 /** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */
 enum class TypeUsage {

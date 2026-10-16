@@ -81,19 +81,19 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         return declaration.usedTypes + UsedType(templatePath.withDots())
     }
 
-    override fun angularOf(declaration: Declaration): AngularMetadata? =
-        declaration.angular?.let { AngularMetadata(it, templatePathOf(declaration)) }
-
-    override fun nodesWithin(declaration: Declaration, node: Node): List<Node> {
-        val inlineTemplate = declaration.angular?.inlineTemplate ?: return emptyList()
-        return listOf(inlineTemplateNode(inlineTemplate, node))
+    override fun nodesOf(declaration: Declaration, node: Node): List<Node> {
+        val angular = declaration.angular ?: return listOf(node)
+        val component = node.copy(angular = AngularMetadata(angular, templatePathOf(declaration)))
+        return listOf(component) + inlineTemplatesOf(declaration).map { inlineTemplateNode(it.declarations, component) }
     }
 
     private fun templatePathOf(declaration: Declaration): Path? {
         val angular = declaration.angular ?: return null
-        if (angular.inlineTemplate != null) return inlineTemplatePath(buildPathWithName(emptyList(), declaration))
+        if (inlineTemplatesOf(declaration).isNotEmpty()) return inlineTemplatePath(buildPathWithName(emptyList(), declaration))
         return angular.templateUrl?.let { templateFilePath(it, fileInfo.physicalPath) }
     }
+
+    private fun inlineTemplatesOf(declaration: Declaration) = declaration.embedded.filter { it.language == Language.ANGULAR }
 
     override fun extraDependencies(declaration: Declaration): Set<Dependency> {
         if (declaration.name != TSE_DEFAULT_EXPORT_NAME) return emptySet()

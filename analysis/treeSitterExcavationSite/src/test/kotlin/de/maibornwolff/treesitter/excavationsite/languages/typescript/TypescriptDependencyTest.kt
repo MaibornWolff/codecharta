@@ -1221,7 +1221,7 @@ class TypescriptDependencyTest {
         }
 
         @Test
-        fun `should read the inline template of a component without its quotes`() {
+        fun `should declare the components and pipes the inline template of each component uses`() {
             // Arrange
             val code = """
                 @Component({ selector: 'app-chest', template: `<app-torch />{{ gold | goldCoins }}` })
@@ -1234,8 +1234,21 @@ class TypescriptDependencyTest {
             val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
 
             // Assert
-            assertThat(declarations.map { it.angular?.inlineTemplate })
-                .containsExactly("<app-torch />{{ gold | goldCoins }}", "<p>Lid</p>")
+            assertThat(
+                declarations.map { declaration ->
+                    declaration.embedded.single().language
+                }
+            ).containsExactly(Language.ANGULAR, Language.ANGULAR)
+            assertThat(
+                declarations.map { declaration ->
+                    declaration.embedded
+                        .single()
+                        .declarations
+                        .single()
+                        .usedTypes
+                        .map { it.name }
+                }
+            ).containsExactly(listOf("app-torch", "goldCoins"), emptyList())
         }
 
         @Test

@@ -2,10 +2,11 @@ package de.maibornwolff.treesitter.excavationsite.integration.dependencies
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
+import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DependencyResult
+import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
-import de.maibornwolff.treesitter.excavationsite.shared.domain.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
@@ -13,8 +14,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.Nativ
 
 object DependenciesFacade {
     /**
-     * The package, imports and declarations of the given source code. The imports of the sources in another language
-     * it embeds become imports of the file.
+     * The package, imports and declarations of the given source code, with what the sources in another language it
+     * embeds import and declare, see [EmbeddedSource].
      */
     fun analyze(content: String, language: Language): DependencyResult {
         val definition = LanguageRegistry.getLanguageDefinition(language)
@@ -23,11 +24,20 @@ object DependenciesFacade {
         val processedContent = if (wholeFileGrammar == null) definition.preprocessor?.invoke(content) ?: content else content
         val grammar = NativeTreeSitter.grammar(wholeFileGrammar ?: LanguageRegistry.getGrammarLibrary(language))
         val collected = DependencyCollector(grammar, mapping).collectDependencies(processedContent)
-        return collected.ofFile.copy(imports = collected.ofFile.imports + importsOf(collected.embeddedSources))
+        val (ofDeclarations, ofFile) = collected.embeddedSources.partition { it.owner != null }
+        return collected.ofFile.copy(
+            imports = collected.ofFile.imports + ofFile.flatMap { analyze(it.content, it.language).imports },
+            declarations = withEmbedded(collected.ofFile.declarations, ofDeclarations.groupBy { it.owner })
+        )
     }
 
-    private fun importsOf(embeddedSources: List<EmbeddedSource>): List<ImportDeclaration> =
-        embeddedSources.flatMap { analyze(it.content, it.language).imports }
+    private fun withEmbedded(declarations: List<Declaration>, sourcesByOwner: Map<String?, List<EmbeddedSource>>): List<Declaration> {
+        if (sourcesByOwner.isEmpty()) return declarations
+        return declarations.map { declaration ->
+            val sources = sourcesByOwner[declaration.name] ?: return@map declaration
+            declaration.copy(embedded = sources.map { EmbeddedDeclarations(it.language, analyze(it.content, it.language).declarations) })
+        }
+    }
 
     fun bundlerAliases(
         configuration: String,

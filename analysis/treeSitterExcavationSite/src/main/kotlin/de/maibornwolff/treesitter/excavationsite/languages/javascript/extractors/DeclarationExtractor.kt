@@ -6,8 +6,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
-private const val CLASS_DECLARATION = "class_declaration"
-private const val ABSTRACT_CLASS_DECLARATION = "abstract_class_declaration"
 private const val INTERFACE_DECLARATION = "interface_declaration"
 private const val ENUM_DECLARATION = "enum_declaration"
 private const val FUNCTION_DECLARATION = "function_declaration"

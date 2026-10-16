@@ -75,7 +75,8 @@ data class Declaration(
     val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
     val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
-    val angular: AngularDeclaration? = null // what an Angular decorator declares: templateNames, templateUrl, inlineTemplate, imports, ...
+    val angular: AngularDeclaration? = null, // what an Angular decorator declares: templateNames, templateUrl, imports, ...
+    val embedded: List<EmbeddedDeclarations> = [] // what an embedded source of the declaration declares, see below
 )
 
 data class UsedType(
@@ -148,9 +149,18 @@ and class selectors name no element and are left out. The adapter matches the us
 
 ### Embedded sources
 
-A Vue file holds JavaScript or TypeScript in its script blocks. `LanguageDependencyMapping.extractEmbeddedSources`
-returns them as `EmbeddedSource(content, language)`; `TreeSitterDependencies.analyze` analyses each one in its own
-language and appends its imports to the imports of the file. What an embedded source declares is dropped.
+A file can hold sources in another language: a Vue component its script blocks, an Angular component in TypeScript
+its inline template. The `EmbeddedSourceMapping` of `LanguageDependencyMapping.embeddedSources` finds them as
+`EmbeddedSource(content, language, owner)`. TypeScript registers the same mapping as `LanguageDefinition.embeddedSources`,
+so the inline templates count for metrics and text extraction as well; Vue registers its script blocks for dependencies
+only, as its metrics and text extraction read the script through a preprocessor. `DependenciesFacade` analyses each
+source in its own language:
+
+- A source without an owner, such as a script block, belongs to the file: its imports are appended to the imports of
+  the file, and what it declares is dropped.
+- A source with an owner, such as an inline template, belongs to the declaration of that name: what it declares becomes
+  `Declaration.embedded`, an `EmbeddedDeclarations(language, declarations)`. The adapter makes the template a node of
+  its own inside the component, `<Component>.template`.
 
 Metrics and text extraction parse only the script of a Vue file, with the JavaScript grammar and a preprocessor that
 cuts the script out. Dependency extraction needs the template as well, so `VueDependencyMapping` sets

@@ -2,12 +2,14 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript
 
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DeclarationExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.ImportExtractor
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.InlineTemplateExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependencyMapping
 
 internal object TypescriptDependencyMapping {
     val dependencyMapping = LanguageDependencyMapping(
         extractPackagePath = { emptyList() }, // JS/TS have no package declarations
         extractImports = ImportExtractor::extract,
-        extractDeclarations = DeclarationExtractor::extract
+        extractDeclarations = DeclarationExtractor::extract,
+        embeddedSources = InlineTemplateExtractor.mapping
     )
 }
