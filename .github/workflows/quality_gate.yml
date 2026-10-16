@@ -1,0 +1,128 @@
+name: Quality Gate
+
+# Runs the ccsh of the change itself: the staging image is only published after a merge to main, so it
+# would check a PR with the gate of the main before it.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  select_parts:
+    name: Select Parts to Gate
+    runs-on: ubuntu-latest
+    outputs:
+      parts: ${{ steps.select.outputs.parts }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # A part is gated when the change touches it, or touches the gate itself, which can change the
+      # result of every part. A part without a .codecharta.yml is never gated.
+      - name: Select the parts the change touches
+        id: select
+        env:
+          BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          gate_inputs='^(\.github/workflows/quality_gate\.yml|analysis/analysers/tools/GateTool/)'
+          gate_everything=false
+          changed=$(git diff --name-only "$BASE_SHA" "$GITHUB_SHA") || gate_everything=true
+          if grep -qE "$gate_inputs" <<< "$changed"; then gate_everything=true; fi
+
+          parts=()
+          for part in analysis visualization; do
+            if [ ! -f "$part/.codecharta.yml" ]; then
+              echo "::notice::$part has no .codecharta.yml, so the quality gate skips it"
+            elif [ "$gate_everything" = true ] || grep -q "^$part/" <<< "$changed"; then
+              parts+=("\"$part\"")
+            fi
+          done
+          echo "parts=[$(IFS=,; echo "${parts[*]}")]" >> "$GITHUB_OUTPUT"
+
+  build_ccsh:
+    name: Build ccsh
+    needs: select_parts
+    if: needs.select_parts.outputs.parts != '[]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup the JDK to build with
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+          cache: 'gradle'
+
+      - name: Build the distribution
+        run: |
+          chmod +x ./gradlew
+          ./gradlew distTar
+        working-directory: ./analysis
+
+      - name: Upload ccsh
+        uses: actions/upload-artifact@v7
+        with:
+          name: ccsh
+          path: analysis/build/distributions/*.tar
+          retention-days: 1
+
+  gate:
+    name: Quality Gate (${{ matrix.part }})
+    needs: [select_parts, build_ccsh]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        part: ${{ fromJSON(needs.select_parts.outputs.parts) }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Java to run ccsh
+        uses: actions/setup-java@v5.2.0
+        with:
+          distribution: 'temurin'
+          java-version: 25
+          java-package: 'jre'
+
+      - name: Download ccsh
+        uses: actions/download-artifact@v8
+        with:
+          name: ccsh
+          path: ${{ runner.temp }}/ccsh-distribution
+
+      - name: Install ccsh
+        run: |
+          mkdir -p "$RUNNER_TEMP/ccsh"
+          tar -xf "$RUNNER_TEMP"/ccsh-distribution/*.tar -C "$RUNNER_TEMP/ccsh" --strip-components=1
+          echo "$RUNNER_TEMP/ccsh/bin" >> "$GITHUB_PATH"
+
+      # pipefail because the default shell reports tee's exit code, which would hide a broken rule
+      - name: Run the quality gate
+        shell: bash
+        run: |
+          set -o pipefail
+          ccsh gate ${{ matrix.part }} --quiet 2>&1 | tee "$RUNNER_TEMP/gate.log"
+
+      - name: Write the report to the job summary
+        if: always()
+        run: |
+          {
+            echo "## Quality gate: ${{ matrix.part }}"
+            echo '```text'
+            cat "$RUNNER_TEMP/gate.log" 2>/dev/null || echo "The gate did not run."
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the report and the map
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-gate-${{ matrix.part }}
+          path: ${{ matrix.part }}/.codecharta-gate-output/
+          if-no-files-found: warn

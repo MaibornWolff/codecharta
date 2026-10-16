@@ -21,6 +21,8 @@ Ideas/
 /*.cc.json
 /*.cc.json.gz
 **/node-wrapper/public
+# what `ccsh gate` writes next to its .codecharta.yml: the merged map and the report of the last run
+.codecharta-gate-output/
 .scannerwork
 
 # claude
