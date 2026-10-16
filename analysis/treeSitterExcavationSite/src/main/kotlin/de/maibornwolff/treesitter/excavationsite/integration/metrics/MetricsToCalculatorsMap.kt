@@ -3,7 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.metrics
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.CommentLinesCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.ComplexityCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.MessageChainsCalc
-import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.NumberOfFunctionsCalc
+import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.NodeCountCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.ParametersPerFunctionCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.RealLinesOfCodeCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.AvailableFileMetrics
@@ -15,7 +15,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensions: CalculationExtensions) {
     val complexityCalc = ComplexityCalc(nodeTypeProvider)
     val commentCalc = CommentLinesCalc(nodeTypeProvider)
-    val numberOfFunctionsCalc = NumberOfFunctionsCalc(nodeTypeProvider)
+    val numberOfFunctionsCalc = NodeCountCalc(nodeTypeProvider.numberOfFunctionsNodeTypes)
     val realLinesOfCodeCalc = RealLinesOfCodeCalc(nodeTypeProvider)
     val messageChainsCalc = MessageChainsCalc(nodeTypeProvider)
 
