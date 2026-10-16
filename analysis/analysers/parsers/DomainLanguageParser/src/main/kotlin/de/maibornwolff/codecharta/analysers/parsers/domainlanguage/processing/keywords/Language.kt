@@ -6,16 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
 private fun suffixesOf(fileExtension: FileExtension): Set<String> =
     (setOf(fileExtension.primaryExtension) + fileExtension.otherValidExtensions).map { it.removePrefix(".") }.toSet()
 
-/**
- * @property textWeighsLikeIdentifiers whether the text of the language weighs like its identifiers, as in a template,
- * where the text is what the user reads and the identifiers bind it to the code
- */
-enum class Language(
-    val libraryLanguage: LibraryLanguage,
-    internal val extensions: Set<String>,
-    private val keywordResource: String,
-    val textWeighsLikeIdentifiers: Boolean = false
-) {
+enum class Language(val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>, private val keywordResource: String) {
     KOTLIN(LibraryLanguage.KOTLIN, setOf("kt", "kts"), "keywords/kotlin-keywords.txt"),
     TYPESCRIPT(LibraryLanguage.TYPESCRIPT, setOf("ts", "tsx", "cts", "mts"), "keywords/typescript-keywords.txt"),
     JAVASCRIPT(LibraryLanguage.JAVASCRIPT, setOf("js", "jsx", "mjs", "cjs"), "keywords/javascript-keywords.txt"),
@@ -33,7 +24,7 @@ enum class Language(
     VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
     ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
     RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
-    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt", textWeighsLikeIdentifiers = true),
+    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt"),
     SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), "keywords/sql-keywords.txt")
     ;
 

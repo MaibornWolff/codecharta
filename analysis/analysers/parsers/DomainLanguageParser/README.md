@@ -24,8 +24,10 @@ comments, its text, and the values of the attributes that hold text a user reads
 `label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose name ends in `hint`, `label`,
 `title`, `text`, `tooltip`, `placeholder`, `description` or `message` (`hoverHint`, `empty-message`). The values of
 all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out. The text of a template
-weighs like its identifiers (`--identifier-weight`), because it is what the user reads; `--string-weight=0` still
-leaves it out. Every other language keeps the string weight for its strings. The inline `template` of a `@Component`
+and the values of its user-facing attributes weigh like its identifiers, with `--identifier-weight`, because they are
+what the user reads; `--string-weight=0` does not leave them out. The string literals of its expressions, such as
+`'crimson'` in `class="{{ hurt ? 'crimson' : 'calm' }}"`, keep the string weight, like the strings of every other
+language. The inline `template` of a `@Component`
 in a `.ts` file is read the same way and counts for the `.ts` file.
 
 In SQL the types, built-in functions and system schemas of every dialect are stop words (`varchar`, `coalesce`,
@@ -51,7 +53,7 @@ and `id`. Its keywords are not: a keyword never comes out as a word, and one tha
 | `--sort-by=<FREQUENCY\|TFIDF>`            | sort words by frequency (default) or TF-IDF score                                              |
 | `--stop-word-level=<MINIMAL\|MODERATE\|AGGRESSIVE>` | technical stop word filtering level (default MODERATE)                               |
 | `--no-technical-stopwords`                | disable filtering of common technical words (e.g. `test`, `util`, `handler`)                  |
-| `--identifier-weight=<n>`                 | weight for identifier words (class/function/variable names; default 3)                         |
+| `--identifier-weight=<n>`                 | weight for identifier words (class/function/variable names) and template text (default 3)     |
 | `--comment-weight=<n>`                    | weight for words in comments (default 2; 0 leaves comments out)                                |
 | `--string-weight=<n>`                     | weight for words in string literals (default 1; 0 leaves strings out)                         |
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |

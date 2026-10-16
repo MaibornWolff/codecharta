@@ -240,19 +240,35 @@ class FileAnalyzerTest {
     }
 
     @Test
-    fun `should leave the text of an Angular template out when strings weigh nothing`(
+    fun `should keep the string weight for the string literals of a template's expressions`(
         @TempDir tempDirPath: Path
     ) {
         // Arrange
-        val template = File(tempDirPath.toFile(), "vault.component.html")
-        template.writeText("""<p title="Treasure">{{ dragon }}</p>""")
-        val analyzer = FileAnalyzer(StopWordFilter(emptyList()), ExtractionWeights(stringWeight = 0))
+        val template = File(tempDirPath.toFile(), "card.component.html")
+        template.writeText("""<p class="card {{ wounded ? 'crimson' : 'emerald' }}" [ngClass]="'sapphire'">Goblin</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
 
         // Act
         val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
 
         // Assert
-        assertEquals(mapOf("dragon" to 3), words)
+        assertEquals(mapOf("wounded" to 3, "crimson" to 1, "emerald" to 1, "sapphire" to 1, "goblin" to 3), words)
+    }
+
+    @Test
+    fun `should weigh the text of an Angular template with the identifier weight, not the string weight`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "vault.component.html")
+        template.writeText("""<!-- The cellar --><p title="Treasure">{{ dragon }}</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()), ExtractionWeights(identifierWeight = 5, stringWeight = 0))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("cellar" to 2, "treasure" to 5, "dragon" to 5), words)
     }
 
     @Test

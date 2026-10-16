@@ -19,7 +19,7 @@ class SourceCodePipeline(
     enableSsr: Boolean = true
 ) {
     private val extractStage = ExtractStage(language.libraryLanguage)
-    private val weightStage = WeightStage(weights, language)
+    private val weightStage = WeightStage(weights)
     private val splitStage = SplitStage(ngrams)
     private val ngramsStage = NgramsStage(ngrams, enableSsr)
     private val filterStage = FilterStage(stopWordFilter)

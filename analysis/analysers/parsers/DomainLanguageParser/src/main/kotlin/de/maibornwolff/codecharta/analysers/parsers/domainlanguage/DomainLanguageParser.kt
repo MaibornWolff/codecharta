@@ -48,7 +48,10 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
     )
     private var stopWordLevel: StopWordLevel = StopWordLevel.MODERATE
 
-    @CommandLine.Option(names = ["--identifier-weight"], description = ["weight for identifier words (class/function/variable names)"])
+    @CommandLine.Option(
+        names = ["--identifier-weight"],
+        description = ["weight for identifier words (class/function/variable names) and the text of templates"]
+    )
     private var identifierWeight: Int = DEFAULT_IDENTIFIER_WEIGHT
 
     @CommandLine.Option(names = ["--comment-weight"], description = ["weight for words in comments (0 leaves comments out)"])

@@ -1,11 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
+/** The text a user reads in a template weighs like an identifier, as it is what the template is about. */
 data class ExtractionWeights(val identifierWeight: Int = 3, val commentWeight: Int = 2, val stringWeight: Int = 1) {
-    /** A string weighing nothing stays left out, also where text weighs like identifiers. */
-    fun weightOf(context: ExtractionContext, textWeighsLikeIdentifiers: Boolean = false): Int = when (context) {
-        ExtractionContext.IDENTIFIER -> identifierWeight
+    fun weightOf(context: ExtractionContext): Int = when (context) {
+        ExtractionContext.IDENTIFIER, ExtractionContext.TEXT -> identifierWeight
         ExtractionContext.COMMENT -> commentWeight
-        ExtractionContext.STRING -> if (textWeighsLikeIdentifiers && stringWeight > 0) identifierWeight else stringWeight
-        ExtractionContext.TEXT -> if (stringWeight > 0) identifierWeight else stringWeight
+        ExtractionContext.STRING -> stringWeight
     }
 }
