@@ -282,10 +282,9 @@ One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect ha
   `@placeholder` are not counted, like a plain `else`)
 - **Structural directives**: `*ngIf`, `*ngFor`, `*ngSwitchCase`, and `[ngIf]`, `[ngForOf]`, `[ngSwitchCase]` on an
   `<ng-template>`
-- **Logical operators**: `&&`, `||`, the ternary `? :` and `??` in bindings, event handlers and interpolations
+- **Logical operators**: `&&`, `||`, the ternary `? :` and `??` in bindings, event handlers and interpolations, also
+  in an interpolation inside a plain attribute value, such as `class="icon {{ done ? 'check' : 'copy' }}"`
 - **Functions**: a template has none, so its complexity is its logic complexity
-- **Not counted**: an interpolation inside a plain attribute value, such as `class="icon {{ done ? 'check' : 'copy' }}"`,
-  because the grammar reads the whole value as text
 
 #### Comment Lines
 

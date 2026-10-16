@@ -46,6 +46,43 @@ class AngularExtractionTest {
         }
 
         @Test
+        fun `should extract identifiers with letters beyond ASCII`() {
+            // Arrange
+            val code = """<p>{{ höhle.rüstungsklasse }}</p>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.identifiers).containsExactly("höhle", "rüstungsklasse")
+        }
+
+        @Test
+        fun `should extract the handler of an event of a global target but not the target and the event`() {
+            // Arrange
+            val code = """<div (window:resize)="onResize(cellar)"></div>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.identifiers).containsExactly("onResize", "cellar")
+        }
+
+        @Test
+        fun `should extract identifiers of an interpolation inside a plain attribute value`() {
+            // Arrange
+            val code = """<i class="w-4 {{ wasPathCopied() ? 'done' : 'copy' }}"></i>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.identifiers).containsExactly("wasPathCopied")
+            assertThat(result.strings).containsExactly("done", "copy")
+        }
+
+        @Test
         fun `should extract identifiers of structural directives but not the directive names and keywords`() {
             // Arrange
             val code = """<li *ngFor="let centaur of centaurs; trackBy: byName" *ngIf="isLit">{{ centaur }}</li>"""
@@ -179,6 +216,19 @@ class AngularExtractionTest {
                 "Armor class",
                 "Roll initiative"
             )
+        }
+
+        @Test
+        fun `should extract the text around an interpolation of a user-facing attribute without its padding`() {
+            // Arrange
+            val code = """<button title="Copy {{ path }} to the clipboard"></button>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.strings).containsExactly("Copy", "to the clipboard")
+            assertThat(result.identifiers).containsExactly("path")
         }
 
         @Test

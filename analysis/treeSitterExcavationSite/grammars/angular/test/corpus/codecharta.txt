@@ -1,0 +1,164 @@
+==============================
+Non-ASCII identifiers
+==============================
+
+<p>{{ höhle.rüstungsklasse | größe }}</p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (interpolation
+      (expression
+        (member_expression
+          (identifier)
+          (identifier))
+        (pipe_sequence
+          (pipe_operator)
+          (pipe_call
+            (identifier)))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Non-ASCII binding name
+==============================
+
+<cc-lair [rüstung]="höhle" />
+
+---
+
+(document
+  (element
+    (self_closing_tag
+      (tag_name)
+      (attribute
+        (property_binding
+          (binding_name
+            (identifier))
+          (expression
+            (identifier)))))))
+
+==============================
+Interpolation inside a plain attribute value
+==============================
+
+<i class="w-4 {{ copied() ? 'a' : 'b' }} h-4" title="Copy {{ path }}"></i>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value)
+          (interpolation
+            (ternary_expression
+              (expression
+                (call_expression
+                  (identifier)))
+              (ternary_operator)
+              (string)
+              (ternary_operator)
+              (expression
+                (string))))
+          (attribute_value)))
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value)
+          (interpolation
+            (expression
+              (identifier))))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Single-quoted attribute value with an interpolation and lone braces
+==============================
+
+<p title='{ {{ name }} }' data-x="a{b"></p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value)
+          (interpolation
+            (expression
+              (identifier)))
+          (attribute_value)))
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value))))
+    (end_tag
+      (tag_name))))
+
+==============================
+Plain attribute values stay one node
+==============================
+
+<p class="roster" title="" alt=Bare></p>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value)))
+      (attribute
+        (attribute_name)
+        (quoted_attribute_value))
+      (attribute
+        (attribute_name)
+        (attribute_value)))
+    (end_tag
+      (tag_name))))
+
+==============================
+Event binding with a target
+==============================
+
+<div (window:resize)="onResize()" (document:keydown.escape)="close()"></div>
+
+---
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (attribute
+        (event_binding
+          (binding_name
+            target: (identifier)
+            (identifier))
+          (expression
+            (call_expression
+              function: (identifier)))))
+      (attribute
+        (event_binding
+          (binding_name
+            target: (identifier)
+            (member_expression
+              object: (identifier)
+              property: (identifier)))
+          (expression
+            (call_expression
+              function: (identifier))))))
+    (end_tag
+      (tag_name))))

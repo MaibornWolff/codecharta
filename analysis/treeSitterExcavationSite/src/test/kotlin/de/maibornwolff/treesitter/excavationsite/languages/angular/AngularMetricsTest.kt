@@ -169,6 +169,30 @@ class AngularMetricsTest {
         }
 
         @Test
+        fun `should count a ternary inside an interpolation of a plain attribute value for logic complexity`() {
+            // Arrange
+            val code = """<i class="w-4 {{ copied() ? 'fa-check' : 'fa-copy' }}" title="{{ lit && warm ? 'Glow' : 'Dark' }}"></i>"""
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.logicComplexity).isEqualTo(3.0)
+        }
+
+        @Test
+        fun `should count the handler of an event of a global target for logic complexity`() {
+            // Arrange
+            val code = """<div (window:resize)="isOpen && onResize()"></div>"""
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.logicComplexity).isEqualTo(1.0)
+        }
+
+        @Test
         fun `should not count arithmetic and comparison operators for logic complexity`() {
             // Arrange
             val code = """

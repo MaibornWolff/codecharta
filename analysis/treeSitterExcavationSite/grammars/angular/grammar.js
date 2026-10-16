@@ -328,7 +328,9 @@ module.exports = grammar(HTML, {
 
         // ---------- Bindings ----------
         property_binding: $ => seq("[", choice($.binding_name, $.class_binding), "]", $._binding_assignment),
-        event_binding: $ => seq("(", $.binding_name, ")", $._binding_assignment),
+        // CodeCharta: an event of a global target, (window:resize) or (document:keydown.escape)
+        event_binding: $ => seq("(", alias($._event_binding_name, $.binding_name), ")", $._binding_assignment),
+        _event_binding_name: $ => seq(optional(seq(field("target", alias($.binding_identifier, $.identifier)), ":")), $._binding_primitive),
         two_way_binding: $ => seq("[(", $.binding_name, ")]", $._binding_assignment),
         animation_binding: $ => seq("[@", $.binding_name, "]", optional(field("trigger", $._binding_assignment))),
 
@@ -344,7 +346,7 @@ module.exports = grammar(HTML, {
                 )
             ),
 
-        binding_identifier: () => /[-a-zA-Z_\$][-a-zA-Z0-9_\$]*/,
+        binding_identifier: () => /[-\p{L}_\$][-\p{L}\p{N}_\$]*/,
         binding_name: $ => $._binding_primitive,
         _binding_primitive: $ => choice(alias($.binding_identifier, $.identifier), alias($.binding_member_expression, $.member_expression)),
         binding_member_expression: $ =>
@@ -367,6 +369,15 @@ module.exports = grammar(HTML, {
             ),
 
         _normal_attribute: $ => seq($.attribute_name, optional(seq("=", choice($.attribute_value, $.quoted_attribute_value)))),
+
+        // CodeCharta: an interpolation inside a plain attribute value is an expression, class="w-4 {{ a ? 'x' : 'y' }}"
+        quoted_attribute_value: $ =>
+            choice(
+                seq("'", repeat(choice(alias($._single_quoted_attribute_text, $.attribute_value), $.interpolation)), "'"),
+                seq('"', repeat(choice(alias($._double_quoted_attribute_text, $.attribute_value), $.interpolation)), '"')
+            ),
+        _single_quoted_attribute_text: () => token(/(?:[^'{]|\{[^'{])+|\{/),
+        _double_quoted_attribute_text: () => token(/(?:[^"{]|\{[^"{])+|\{/),
 
         // ---------- Expressions ---------
         // untagged template literal
@@ -465,7 +476,8 @@ module.exports = grammar(HTML, {
             ),
 
         // Identifier
-        identifier: () => /[a-zA-Z_\$][a-zA-Z0-9_\$]*/,
+        // CodeCharta: letters of every script, not only ASCII (höhle.rüstungsklasse)
+        identifier: () => /[\p{L}_\$][\p{L}\p{N}_\$]*/,
 
         // String
         string: $ =>

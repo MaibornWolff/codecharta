@@ -16,7 +16,9 @@ internal fun extractUserFacingAttributeText(attributeValue: SyntaxNode): String?
     val attribute = if (valueHolder.type == QUOTED_ATTRIBUTE_VALUE) valueHolder.parent else valueHolder
     if (attribute.type != ATTRIBUTE) return null
     val attributeName = TreeTraversal.findFirstChildTextByType(attribute, ATTRIBUTE_NAME) ?: return null
-    return attributeValue.text.takeIf { UserFacingTextAttribute.matches(attributeName) }
+    if (!UserFacingTextAttribute.matches(attributeName)) return null
+    // A value with an interpolation is several value nodes, padded with the spaces around the interpolation
+    return attributeValue.text.trim().ifEmpty { null }
 }
 
 /**

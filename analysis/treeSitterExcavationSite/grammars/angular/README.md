@@ -3,7 +3,16 @@
 [tree-sitter-angular](https://github.com/dlvandenberg/tree-sitter-angular) 0.9.2 by Dennis van den Berg (MIT, see
 `LICENSE`). It extends [tree-sitter-html](https://github.com/tree-sitter/tree-sitter-html) 0.23.2 by Max Brunsfeld and
 Amaan Qureshi (MIT, see `html/LICENSE`), whose `grammar.js` is vendored in `html/` so the grammar generates without npm.
-The only change to the upstream sources is that `grammar.js` requires `./html/grammar` instead of the npm package.
+`grammar.js` requires `./html/grammar` instead of the npm package and carries the patches CodeCharta needs, each
+marked with a `CodeCharta:` comment and covered by `test/corpus/codecharta.txt`:
+
+| Patch                                   | Upstream                                                         | Patched                                                        |
+|-----------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------|
+| Identifiers of every script             | ASCII only, `höhle.rüstungsklasse` breaks into `ERROR` nodes     | `identifier` and `binding_identifier` take any Unicode letter or digit |
+| Interpolation in a plain attribute      | `class="w-4 {{ a ? 'x' : 'y' }}"` is one `attribute_value`         | `quoted_attribute_value` holds `attribute_value` and `interpolation` nodes |
+| Event of a global target                | `(window:resize)` is an `ERROR` node                               | `binding_name` with a `target` field                             |
+
+The version `0.9.2-codecharta.<n>` names the upstream release and the patch level.
 
 ## Develop
 
@@ -30,7 +39,7 @@ x86_64 and aarch64 and for Windows on x86_64, built with the `gen` and `buildNat
 ```bash
 # 1. The grammar as the source archive tree-sitter-ng downloads, with one top folder and an entry per folder
 cd analysis/treeSitterExcavationSite/grammars
-VERSION=0.9.2
+VERSION=0.9.2-codecharta.1
 rm -rf /tmp/angular && mkdir -p /tmp/angular
 cp -r angular /tmp/angular/tree-sitter-angular-$VERSION
 (cd /tmp/angular && zip -qr tree-sitter-angular-$VERSION.zip tree-sitter-angular-$VERSION)
