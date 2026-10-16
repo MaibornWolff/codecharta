@@ -39,8 +39,24 @@ varbinary
 varchar
 varchar2
 
-# Built-in functions and system routines
+# Built-in functions and system routines; nearly every statement calls some of them, so they are stop words even
+# where they are English words too (count, sum, round)
+abs
 avg
+cast
+ceil
+ceiling
+convert
+count
+extract
+floor
+length
+lower
+now
+round
+sum
+trim
+upper
 coalesce
 concat
 current_date

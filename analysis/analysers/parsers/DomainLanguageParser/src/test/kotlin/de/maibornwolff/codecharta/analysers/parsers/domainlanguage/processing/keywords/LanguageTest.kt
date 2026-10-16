@@ -143,7 +143,8 @@ class LanguageTest {
     @Test
     fun `should have ResourceKeywords for SQL with the types, built-in functions and system names of every dialect`() {
         // Arrange
-        val words = listOf("varchar", "nvarchar2", "bigint", "coalesce", "nvl", "getdate", "dbo", "information_schema", "pg_catalog")
+        val words =
+            listOf("varchar", "nvarchar2", "bigint", "coalesce", "count", "nvl", "getdate", "dbo", "information_schema", "pg_catalog")
 
         // Act
         val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
@@ -170,7 +171,7 @@ class LanguageTest {
         val domainWords = listOf(
             "order", "statement", "transaction", "catalog", "package", "leave", "default", "views", "security", "group",
             "case", "check", "sequence", "interval", "money", "character", "comment", "information", "objects", "tables",
-            "columns", "date", "time", "count", "user", "key", "index", "trigger", "table"
+            "columns", "date", "time", "user", "key", "index", "trigger", "table"
         )
 
         // Act
