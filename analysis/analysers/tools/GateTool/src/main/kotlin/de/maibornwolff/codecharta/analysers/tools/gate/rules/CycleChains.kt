@@ -7,7 +7,7 @@ package de.maibornwolff.codecharta.analysers.tools.gate.rules
 typealias CycleChain = List<DeclarationDependency>
 
 fun findCycleChains(dependencies: List<DeclarationDependency>): List<CycleChain> {
-    val cyclicSteps = dependencies.filter { it.isCyclic }.groupByTo(LinkedHashMap()) { it.from }
+    val cyclicSteps = dependencies.filter { it.isCyclic }.groupBy { it.from }
     val chains = LinkedHashMap<List<Declaration>, CycleChain>()
     cyclicSteps.forEach { (start, firstSteps) ->
         firstSteps.forEach { firstStep ->
