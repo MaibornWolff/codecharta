@@ -305,6 +305,31 @@ class DependencyParserTest {
         )
     }
 
+    @Test
+    fun `should draw an edge from an Angular component to its template file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("cave").createDirectories()
+        tempDir.resolve("cave/cave.component.html").writeText("<p>{{ name }}</p>")
+        tempDir.resolve("cave/cave.component.ts").writeText(
+            """
+            @Component({ selector: 'app-cave', templateUrl: './cave.component.html' })
+            export class CaveComponent {}
+            """.trimIndent()
+        )
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        val namesById = fileNamesById(output)
+        val edgeNames = dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
+            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
+        }
+        assertThat(edgeNames).containsExactly("cave.component.ts" to "cave.component.html")
+    }
+
     private fun fileNamesById(output: String): Map<String, String> {
         val namesById = HashMap<String, String>()
 

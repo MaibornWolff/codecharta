@@ -19,6 +19,7 @@ import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
 
 class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
@@ -71,6 +72,12 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         // imports whose last path segment matches a name being re-exported.
         val reexportNames = setOf(declaration.name) + declaration.usedTypes.map { it.name }
         return imports.filter { it.path.isNotEmpty() && it.path.last() in reexportNames }
+    }
+
+    // A component uses its template file, which resolves by the full path of the template's node
+    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
+        val templateUrl = declaration.angular?.templateUrl ?: return declaration.usedTypes
+        return declaration.usedTypes + UsedType(templateFilePath(templateUrl, fileInfo.physicalPath).withDots())
     }
 
     override fun extraDependencies(declaration: Declaration): Set<Dependency> {

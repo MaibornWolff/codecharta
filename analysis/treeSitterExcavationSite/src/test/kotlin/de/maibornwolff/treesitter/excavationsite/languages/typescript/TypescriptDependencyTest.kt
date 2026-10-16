@@ -1204,6 +1204,40 @@ class TypescriptDependencyTest {
     }
 
     @Nested
+    inner class AngularTemplateFiles {
+        @Test
+        fun `should read the template file of a component as its templateUrl writes it`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-cave', templateUrl: './cave.component.html' })
+                export class CaveComponent {}
+            """.trimIndent()
+
+            // Act
+            val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
+
+            // Assert
+            assertThat(angular?.templateUrl).isEqualTo("./cave.component.html")
+        }
+
+        @Test
+        fun `should declare a routed component without a selector by its template file`() {
+            // Arrange
+            val code = """
+                @Component({ templateUrl: '../pages/lair.page.html' })
+                export class LairPage {}
+            """.trimIndent()
+
+            // Act
+            val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
+
+            // Assert
+            assertThat(angular?.templateNames).isEmpty()
+            assertThat(angular?.templateUrl).isEqualTo("../pages/lair.page.html")
+        }
+    }
+
+    @Nested
     inner class AngularTemplateNames {
         private fun templateNamesOf(code: String, className: String): Set<String> = TreeSitterDependencies
             .analyze(

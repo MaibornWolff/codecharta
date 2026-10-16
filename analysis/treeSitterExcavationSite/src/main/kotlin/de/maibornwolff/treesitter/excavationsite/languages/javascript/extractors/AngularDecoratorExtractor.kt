@@ -5,9 +5,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 /**
- * What the Angular decorators of a class declare: the elements its `@Component` selector names and the name of its
- * `@Pipe`, the names a template refers to the class by. An attribute or class selector names no element, so it is
- * left out.
+ * What the Angular decorator of a class declares: the elements its `@Component` selector names and the name of its
+ * `@Pipe`, the names a template refers to the class by, and the template file of a component. An attribute or class
+ * selector names no element, so it is left out.
  */
 internal object AngularDecoratorExtractor {
     private const val ARGUMENTS = "arguments"
@@ -15,24 +15,28 @@ internal object AngularDecoratorExtractor {
     private const val PAIR = "pair"
     private const val COMPONENT = "Component"
     private const val SELECTOR = "selector"
+    private const val TEMPLATE_URL = "templateUrl"
     private const val PIPE = "Pipe"
     private const val PIPE_NAME = "name"
     private const val SELECTOR_SEPARATOR = ","
     private val ELEMENT_SELECTOR = Regex("^[a-zA-Z][\\w-]*")
 
-    fun extract(decorators: Sequence<SyntaxNode>): AngularDeclaration? {
-        val templateNames = decorators.flatMap { templateNamesOf(it) }.toSet()
-        return AngularDeclaration(templateNames).takeIf { templateNames.isNotEmpty() }
-    }
+    // A class has one Angular decorator
+    fun extract(decorators: Sequence<SyntaxNode>): AngularDeclaration? = decorators.firstNotNullOfOrNull { declarationOf(it) }
 
-    private fun templateNamesOf(decorator: SyntaxNode): List<String> {
-        val call = decorator.children().firstOrNull { it.type == CALL_EXPRESSION } ?: return emptyList()
+    private fun declarationOf(decorator: SyntaxNode): AngularDeclaration? {
+        val call = decorator.children().firstOrNull { it.type == CALL_EXPRESSION } ?: return null
         return when (TreeTraversal.findFirstChildTextByType(call, IDENTIFIER)) {
-            COMPONENT -> stringPropertyOf(call, SELECTOR)?.let { elementsOf(it) }.orEmpty()
-            PIPE -> listOfNotNull(stringPropertyOf(call, PIPE_NAME))
-            else -> emptyList()
+            COMPONENT -> componentOf(call)
+            PIPE -> AngularDeclaration(templateNames = setOfNotNull(stringPropertyOf(call, PIPE_NAME)))
+            else -> null
         }
     }
+
+    private fun componentOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
+        templateNames = stringPropertyOf(call, SELECTOR)?.let { elementsOf(it) }.orEmpty().toSet(),
+        templateUrl = stringPropertyOf(call, TEMPLATE_URL)
+    )
 
     private fun stringPropertyOf(call: SyntaxNode, key: String): String? = call
         .children()
