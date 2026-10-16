@@ -68,3 +68,35 @@ tree-sitter parse some.sql    # prints the tree
 ```
 
 `src/` is generated except `src/scanner.c`; commit it together with `grammar.js`.
+
+## Rebuild the jar
+
+`treeSitterExcavationSite/libs/tree-sitter-sql-island-<version>.jar` carries the native library for Linux and macOS
+on x86_64 and aarch64 and for Windows on x86_64, built with the `gen` and `buildNative` tasks of
+[tree-sitter-ng](https://github.com/bonede/tree-sitter-ng), which cross-compile with Zig. The name `sql-island` keeps
+it apart from tree-sitter-ng's own `tree-sitter-sql`; the library exports `tree_sitter_sql_island`. tree-sitter-ng's
+Gradle 8.7 needs a JDK 17 or 21. The last build used tree-sitter-ng at commit `52f2d14` with Zig 0.11.0.
+
+```bash
+# 1. The grammar as the source archive tree-sitter-ng downloads, with one top folder and an entry per folder
+cd analysis/treeSitterExcavationSite/grammars
+rm -rf /tmp/sql-island && mkdir -p /tmp/sql-island
+cp -r sql /tmp/sql-island/tree-sitter-sql-island-0.1.0
+(cd /tmp/sql-island && zip -qr tree-sitter-sql-island-0.1.0.zip tree-sitter-sql-island-0.1.0)
+
+# 2. A subproject for the grammar, then the native libraries, then the jar (two runs: the jar task does not
+#    depend on buildNative)
+git clone https://github.com/bonede/tree-sitter-ng.git && cd tree-sitter-ng
+./gradlew gen --parser-name=sql-island --parser-version=0.1.0 \
+    --parser-zip=file:///tmp/sql-island/tree-sitter-sql-island-0.1.0.zip
+./gradlew :tree-sitter-sql-island:buildNative \
+    -PtreeSitterTargets=x86_64-windows,x86_64-macos,x86_64-linux-gnu,aarch64-linux-gnu,aarch64-macos
+./gradlew :tree-sitter-sql-island:jar
+
+# 3. Into CodeCharta; raise the version in the file name and in treeSitterExcavationSite/build.gradle.kts together
+cp tree-sitter-sql-island/build/libs/tree-sitter-sql-island-0.1.0.jar <codecharta>/analysis/treeSitterExcavationSite/libs/
+```
+
+Where tree-sitter-ng can not reach the Zig mirrors, download `zig-<os>-<arch>-0.11.0` from ziglang.org into
+`tree-sitter-ng/build/zig/`, check it with the `.minisig` and add `-x downloadZig` to the `buildNative` run.
+`GrammarLoadingTest` loads the bundled library and fails when its ABI does not fit the tree-sitter core.

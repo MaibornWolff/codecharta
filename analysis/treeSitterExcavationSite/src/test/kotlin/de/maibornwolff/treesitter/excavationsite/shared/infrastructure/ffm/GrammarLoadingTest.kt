@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -43,6 +44,20 @@ class GrammarLoadingTest {
 
         // Assert
         assertThat(rootType).isEqualTo(expectedRootType)
+    }
+
+    @Test
+    fun `should load the bundled SQL island grammar and parse a procedure with it`() {
+        // Arrange
+        val grammar = NativeTreeSitter.grammar(GrammarLibrary("sql-island", "sql_island"))
+
+        // Act
+        val firstStatementType = FfmSyntaxTree.parse("CREATE PROCEDURE p AS BEGIN SELECT 1; END", grammar).use {
+            it.rootNode.getNamedChild(0).type
+        }
+
+        // Assert
+        assertThat(firstStatementType).isEqualTo("routine_definition")
     }
 
     @Test
