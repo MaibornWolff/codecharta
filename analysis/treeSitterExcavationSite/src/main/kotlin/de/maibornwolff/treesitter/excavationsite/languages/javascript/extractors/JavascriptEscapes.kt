@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors
 
 private const val HEX_RADIX = 16
+private const val MOST_CODE_POINT_DIGITS = 6
 private val ESCAPE_SEQUENCE = Regex("""\\(?:x(\p{XDigit}{2})|u(\p{XDigit}{4})|u\{(\p{XDigit}+)}|(\r\n|[\s\S]))""")
 private val SINGLE_CHARACTER_ESCAPES = mapOf(
     "n" to "\n",
@@ -19,8 +20,16 @@ internal fun unescapeJavascript(literal: String): String = ESCAPE_SEQUENCE.repla
     when {
         hex.isNotEmpty() -> hex.toInt(HEX_RADIX).toChar().toString()
         unicode.isNotEmpty() -> unicode.toInt(HEX_RADIX).toChar().toString()
-        codePoint.isNotEmpty() -> String(Character.toChars(codePoint.toInt(HEX_RADIX)))
+        codePoint.isNotEmpty() -> characterOf(codePoint) ?: match.value
         character in LINE_CONTINUATIONS -> ""
         else -> SINGLE_CHARACTER_ESCAPES[character] ?: character
     }
+}
+
+// A code point beyond Unicode is no escape a JavaScript parser accepts, so it stays as written
+private fun characterOf(codePoint: String): String? {
+    val digits = codePoint.trimStart('0')
+    if (digits.length > MOST_CODE_POINT_DIGITS) return null
+    val value = digits.ifEmpty { "0" }.toInt(HEX_RADIX)
+    return if (Character.isValidCodePoint(value)) String(Character.toChars(value)) else null
 }

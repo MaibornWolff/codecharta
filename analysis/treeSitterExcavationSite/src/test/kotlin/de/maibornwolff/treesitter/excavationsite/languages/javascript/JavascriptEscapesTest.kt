@@ -40,4 +40,28 @@ class JavascriptEscapesTest {
         // Assert
         assertThat(text).isEqualTo("one two q")
     }
+
+    @Test
+    fun `should keep a code point escape beyond Unicode as written`() {
+        // Arrange
+        val literal = """a \u{110000} b \u{FFFFFFFFFF} c \u{FFFFFFFFFFFFFFFFFFFFFFFF}"""
+
+        // Act
+        val text = unescapeJavascript(literal)
+
+        // Assert
+        assertThat(text).isEqualTo(literal)
+    }
+
+    @Test
+    fun `should resolve the highest code point of Unicode, also behind leading zeros`() {
+        // Arrange
+        val literal = """\u{10FFFF}\u{0010FFFF}"""
+
+        // Act
+        val text = unescapeJavascript(literal)
+
+        // Assert
+        assertThat(text).isEqualTo(String(Character.toChars(0x10FFFF)).repeat(2))
+    }
 }
