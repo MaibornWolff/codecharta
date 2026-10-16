@@ -21,6 +21,7 @@ import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -41,15 +42,20 @@ class UnifiedParser(
     private val fileMeasurer: FileMeasurer = CollectorMeasurer
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
-    AttributeGenerator {
+    AttributeGenerator,
+    CommandLine.IExitCodeGenerator {
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
-        private const val MAX_LISTED_FAILED_FILES = 5
+        private const val FAILED_EXIT_CODE = 1
     }
 
     override val name = NAME
     override val description = DESCRIPTION
+
+    private var exitCode = 0
+
+    override fun getExitCode(): Int = exitCode
 
     override fun call(): Unit? {
         val inputFileIndex = extractNonPipedInputIndex(inputFiles)
@@ -61,7 +67,7 @@ class UnifiedParser(
 
         val context = resolveEffectiveInput(inputFile)
         try {
-            var project = scanInputProject(context.inputDir)
+            var project = scanInputProjectOrNull(context.inputDir) ?: return null
 
             if (shouldProcessPipedInput(inputFiles)) {
                 val pipedProject = extractPipedProject(input)
@@ -77,6 +83,26 @@ class UnifiedParser(
             context.worktreeManager?.cleanup()
         }
 
+        return null
+    }
+
+    // A project nothing could be measured in, or a grammar or native library that cannot be used, ends the run with an
+    // error and without a map, which would only show an empty project
+    private fun scanInputProjectOrNull(inputFile: File): Project? {
+        try {
+            return scanInputProject(inputFile)
+        } catch (failure: NothingMeasuredException) {
+            return failWith(failure.message)
+        } catch (failure: GrammarUnavailableException) {
+            return failWith("Cannot parse the files of a language: ${failure.message}")
+        } catch (failure: LinkageError) {
+            return failWith("Cannot load the native tree-sitter libraries: ${failure.message}")
+        }
+    }
+
+    private fun failWith(message: String?): Project? {
+        Logger.error { message.orEmpty() }
+        exitCode = FAILED_EXIT_CODE
         return null
     }
 
@@ -105,8 +131,9 @@ class UnifiedParser(
         reportNotFoundFileExtensions(projectScanner)
         reportIgnoredFileTypes(projectScanner)
         reportGitIgnoreStatistics(projectScanner)
-        reportNoParsableFiles(projectScanner)
         reportFailedFiles(projectScanner)
+        failIfOnlyFailuresFound(projectScanner)
+        reportNoParsableFiles(projectScanner)
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
@@ -162,12 +189,13 @@ class UnifiedParser(
     }
 
     private fun reportFailedFiles(projectScanner: ProjectScanner) {
-        val failedFiles = projectScanner.failedFiles()
-        if (failedFiles.isEmpty()) return
-        val listed = failedFiles.take(MAX_LISTED_FAILED_FILES).joinToString()
-        val unlisted = failedFiles.size - MAX_LISTED_FAILED_FILES
-        val andMore = if (unlisted > 0) " and $unlisted more" else ""
-        Logger.warn { "${failedFiles.size} file(s) could not be analysed and are missing from the output: $listed$andMore" }
+        FailureReport.warningsOf(projectScanner.failures()).forEach { warning -> Logger.warn { warning } }
+    }
+
+    private fun failIfOnlyFailuresFound(projectScanner: ProjectScanner) {
+        val failures = projectScanner.failures()
+        if (projectScanner.foundParsableFiles() || failures.isEmpty()) return
+        throw NothingMeasuredException("No file could be analysed: all ${failures.size} failed, see the warnings above")
     }
 
     private fun reportNoParsableFiles(projectScanner: ProjectScanner) {
@@ -210,3 +238,5 @@ class UnifiedParser(
         }
     }
 }
+
+private class NothingMeasuredException(message: String) : IllegalStateException(message)

@@ -38,8 +38,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- **Files `unifiedparser` cannot read**: `unifiedparser` no longer stops on a file it cannot analyse but skips it with
-  a warning and still writes the map of all other files.
+- **Files `unifiedparser` cannot analyse**: `unifiedparser` skips a file it cannot analyse with a warning that names
+  the cause instead of stopping, and ends with an error only when no file could be analysed at all.
 
 - **Kotlin dependencies**: `dependencyparser` finds the Kotlin dependencies it missed, such as casts and type checks,
   caught exceptions, type bounds, lambda and function types, class literals, objects used as values, aliased imports,

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.unmockkAll
@@ -134,6 +135,56 @@ class UnifiedParserTest {
 
         // clean up
         System.setErr(originalErr)
+    }
+
+    @Test
+    fun `should end with an error and write no map when every file fails`() {
+        // Arrange
+        val projectDir = kotlin.io.path.createTempDirectory("unified-all-fail").toFile()
+        File(projectDir, "Broken.kt").writeText("fun broken() {}")
+        val output = ByteArrayOutputStream()
+        System.setErr(PrintStream(errContent))
+        val parser = UnifiedParser(output = PrintStream(output), fileMeasurer = { _, _ -> throw IllegalStateException("broken extractor") })
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir.path, "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
+        assertThat(errContent.toString()).contains("No file could be analysed")
+        assertThat(errContent.toString()).doesNotContain("No files with specified file extension(s) were found")
+
+        // clean up
+        System.setErr(originalErr)
+        projectDir.deleteRecursively()
+    }
+
+    @Test
+    fun `should end with an error and write no map when a grammar does not fit the core`() {
+        // Arrange
+        val projectDir = kotlin.io.path.createTempDirectory("unified-grammar").toFile()
+        File(projectDir, "Main.kt").writeText("fun main() {}")
+        val output = ByteArrayOutputStream()
+        System.setErr(PrintStream(errContent))
+        val parser = UnifiedParser(output = PrintStream(output), fileMeasurer = {
+            _,
+            _
+            ->
+            throw GrammarUnavailableException("incompatible")
+        })
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir.path, "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
+        assertThat(errContent.toString()).contains("incompatible")
+
+        // clean up
+        System.setErr(originalErr)
+        projectDir.deleteRecursively()
     }
 
     @Test

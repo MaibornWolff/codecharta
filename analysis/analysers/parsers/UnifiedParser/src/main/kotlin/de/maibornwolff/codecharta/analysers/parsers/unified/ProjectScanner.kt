@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +38,7 @@ class ProjectScanner(
     private val ignoredFileTypes = mutableSetOf<String>()
     private val filesSkipped = AtomicLong(0)
     private val filesAnalyzed = AtomicLong(0)
-    private val failedFiles = ConcurrentLinkedQueue<String>()
+    private val failures = ConcurrentLinkedQueue<FailedFile>()
 
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
@@ -53,7 +54,7 @@ class ProjectScanner(
     fun getIgnoredFiles(): Pair<Long, Set<String>> = Pair(ignoredFiles, ignoredFileTypes)
 
     /** The files whose analysis failed, relative to the root; they are missing from the output. */
-    fun failedFiles(): List<String> = failedFiles.sorted()
+    fun failures(): List<FailedFile> = failures.sortedBy { it.path }
 
     fun getGitIgnoreStatistics(): Pair<Int, List<String>> = if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
 
@@ -99,16 +100,18 @@ class ProjectScanner(
     }
 
     // A file that fails is left out, so one file cannot stop the analysis of a project; the failures are reported
-    // together afterwards, the cause of each only at debug level
+    // together afterwards. A grammar that fits no file of its language stops the analysis instead.
     private fun collectMetricsSkippingFailure(file: File, verbose: Boolean) {
         try {
             collectMetricsForFile(file, verbose)
         } catch (cancellation: CancellationException) {
             throw cancellation
+        } catch (unavailable: GrammarUnavailableException) {
+            throw unavailable
         } catch (failure: Exception) {
             val relativeFilePath = getRelativeFileName(file.toString())
             Logger.debug(failure) { "Failed to analyze $relativeFilePath: ${failure.message}" }
-            failedFiles.add(relativeFilePath)
+            failures.add(FailedFile(relativeFilePath, failure))
         }
     }
 
