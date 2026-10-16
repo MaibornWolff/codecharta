@@ -6,6 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 private const val IMPORT = "import"
+private const val SOURCE_FIELD = "source"
 
 /**
  * Extracts non-import string literals from JavaScript/TypeScript code.
@@ -32,11 +33,17 @@ internal fun extractNonImportTemplateString(node: SyntaxNode): String? {
     return StringParser.stripBackticks(text)
 }
 
+// The module of an import and of an `export … from`; an exported declaration and its decorators hold no module strings
 private fun isImportString(node: SyntaxNode): Boolean {
-    if (TreeTraversal.hasAncestorOfTypes(node, IMPORT_STATEMENT, EXPORT_STATEMENT)) return true
+    if (TreeTraversal.hasAncestorOfTypes(node, IMPORT_STATEMENT) || isReexportSource(node)) return true
 
     val callExpr = TreeTraversal.findAncestorOfType(node, CALL_EXPRESSION) ?: return false
     val funcName = TreeTraversal.findFirstChildTextByType(callExpr, "identifier")
         ?: callExpr.getChild(0).orNull()?.text
     return funcName == REQUIRE || funcName == IMPORT
+}
+
+private fun isReexportSource(node: SyntaxNode): Boolean {
+    val parent = node.parent
+    return parent.type == EXPORT_STATEMENT && parent.getChildByFieldName(SOURCE_FIELD) == node
 }

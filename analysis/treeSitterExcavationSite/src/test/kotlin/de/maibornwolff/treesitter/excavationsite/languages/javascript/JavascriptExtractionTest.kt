@@ -1485,6 +1485,22 @@ class JavascriptExtractionTest {
         }
 
         @Test
+        fun `should extract the strings of exported declarations`() {
+            // Arrange
+            val code = """
+                export const greeting = 'Welcome';
+                export default function greet() { return "Hello"; }
+                export * from './greetings';
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.JAVASCRIPT)
+
+            // Assert
+            assertThat(result.strings).containsExactly("Welcome", "Hello")
+        }
+
+        @Test
         fun `should handle mixed imports and regular strings`() {
             // Arrange
             val code = """

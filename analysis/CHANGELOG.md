@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- **Strings of exported code**: `domainlanguageparser` reads the strings of exported JavaScript and TypeScript code,
+  such as those of a decorator or of a Vue component's `export default`, which it skipped like module paths.
+
 - **Files `unifiedparser` cannot analyse**: `unifiedparser` skips a file it cannot analyse with a warning that names
   the cause instead of stopping, and ends with an error only when no file could be analysed at all.
 

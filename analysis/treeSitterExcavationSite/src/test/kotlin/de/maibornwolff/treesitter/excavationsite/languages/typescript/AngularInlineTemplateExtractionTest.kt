@@ -29,6 +29,23 @@ class AngularInlineTemplateExtractionTest {
     }
 
     @Test
+    fun `should extract the strings of the decorators of exported classes`() {
+        // Arrange
+        val code = """
+            @Component({ selector: 'app-lair', host: { title: 'Dragon lair' } })
+            export class LairComponent {}
+            @Injectable({ providedIn: 'root' })
+            export default class HoardService {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterExtraction.extract(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.strings).containsExactly("app-lair", "Dragon lair", "root")
+    }
+
+    @Test
     fun `should not extract an inline template as a string of the component file`() {
         // Arrange
         val code = """
