@@ -104,21 +104,20 @@ module.exports = grammar({
     ],
 
     rules: {
-        source_file: $ => repeat($._top_item),
+        source_file: $ => seq(repeat($._script_command), repeat($._top_item)),
 
-        // A command of the client running the script (PROMPT, \connect) stands where a statement may start, so that a
-        // column named prompt or remark inside parentheses or a body stays a column.
-        _top_item: $ =>
+        _top_item: $ => choice($._statement_item, $._script_separator, kw("end"), kw("else")),
+
+        // A command of the client running the script (PROMPT, SPOOL, @file, \connect) and MySQL's DELIMITER start a
+        // script or follow a terminator or another such command, so that a line starting with prompt, remark or
+        // delimiter inside a statement stays part of the statement.
+        _script_separator: $ =>
             choice(
-                $._statement_item,
-                $.client_command,
-                $.batch_separator,
-                $.custom_delimiter,
-                $.delimiter_directive,
-                $.slash_terminator,
-                kw("end"),
-                kw("else")
+                prec.right(seq(";", repeat1($._script_command))),
+                prec.right(seq(choice($.batch_separator, $.custom_delimiter, $.slash_terminator), repeat($._script_command)))
             ),
+
+        _script_command: $ => choice($.client_command, $.delimiter_directive),
 
         // Items of a statement sequence: the body of a block, a branch, a loop or a dollar-quoted routine body.
         _statement_item: $ =>
@@ -902,14 +901,17 @@ module.exports = grammar({
         // A statement of a template engine: {% if ... %}, {# comment #}
         template_tag: $ => /\{%([^%]|%[^}])*%\}|\{#([^#]|#[^}])*#\}/,
 
-        identifier: $ => /[A-Za-z_\u00C0-\uFFFF#][A-Za-z0-9_#\u00C0-\uFFFF]*(\$+[A-Za-z0-9_#\u00C0-\uFFFF]+)*/,
+        // Letters beyond ASCII, but not the punctuation, currency signs and symbols from U+2000 to U+2BFF, so that a
+        // MySQL delimiter such as € closes END€
+        identifier: $ =>
+            /[A-Za-z_\u00C0-\u1FFF\u2C00-\uFFFF#][A-Za-z0-9_#\u00C0-\u1FFF\u2C00-\uFFFF]*(\$+[A-Za-z0-9_#\u00C0-\u1FFF\u2C00-\uFFFF]+)*/,
 
         // MySQL escapes a double quote with a backslash; T-SQL lets a bracketed name run over several lines
         quoted_identifier: $ => choice(/"([^"\\]|""|\\(.|\n))*"/, /`([^`]|``)*`/, /\[[^\[\]]*\]/),
 
-        variable: $ => /@@?[A-Za-z_\u00C0-\uFFFF#][A-Za-z0-9_#@$\u00C0-\uFFFF]*/,
+        variable: $ => /@@?[A-Za-z_\u00C0-\u1FFF\u2C00-\uFFFF#][A-Za-z0-9_#@$\u00C0-\u1FFF\u2C00-\uFFFF]*/,
 
-        bind_variable: $ => /:[A-Za-z_\u00C0-\uFFFF][A-Za-z0-9_#$\u00C0-\uFFFF]*/,
+        bind_variable: $ => /:[A-Za-z_\u00C0-\u1FFF\u2C00-\uFFFF][A-Za-z0-9_#$\u00C0-\u1FFF\u2C00-\uFFFF]*/,
 
         parameter_marker: $ => choice(/\$[0-9]+/, "?"),
 

@@ -548,6 +548,21 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count the conditions of a WHERE clause whose line starts with remark`() {
+        // Arrange
+        val code = """
+            SELECT id FROM notes WHERE a = 1 AND
+            remark IS NULL OR b = 2 OR c = 3;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.logicComplexity).isEqualTo(3.0)
+    }
+
+    @Test
     fun `should count comment lines of every comment style`() {
         // Arrange
         val code = """

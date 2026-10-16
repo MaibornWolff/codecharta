@@ -25,7 +25,7 @@ dependencies {
     runtimeOnly(files("libs/tree-sitter-tsx-0.23.2.jar"))
     runtimeOnly(files("libs/tree-sitter-pascal-0.10.2.jar"))
     runtimeOnly(files("libs/tree-sitter-angular-0.9.2-codecharta.2.jar"))
-    runtimeOnly(files("libs/tree-sitter-sql-island-0.3.0.jar"))
+    runtimeOnly(files("libs/tree-sitter-sql-island-0.4.0.jar"))
 
     testImplementation(libs.kotlin.test)
     testImplementation(libs.archunit.junit5)

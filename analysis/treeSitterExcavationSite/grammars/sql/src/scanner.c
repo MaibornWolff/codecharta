@@ -40,8 +40,10 @@ enum TokenType {
 #define MAX_DELIMITER_LENGTH 16
 #define BYTE_ORDER_MARK 0xFEFF
 
+// The delimiter holds code points, so that DELIMITER € closes on the euro sign and not on one of its bytes
 typedef struct {
-    char delimiter[MAX_DELIMITER_LENGTH + 1];
+    int32_t delimiter[MAX_DELIMITER_LENGTH];
+    uint8_t delimiter_length;
     uint8_t depth;
     char tags[MAX_BODY_DEPTH][MAX_TAG_LENGTH + 1];
 } Scanner;
@@ -117,25 +119,25 @@ static bool scan_slash_terminator(TSLexer *lexer) {
 static bool finish_delimiter_directive(Scanner *scanner, TSLexer *lexer) {
     if (!is_horizontal_space(lexer->lookahead)) return false;
     skip_horizontal_space(lexer);
-    char delimiter[MAX_DELIMITER_LENGTH + 1];
-    size_t length = 0;
+    int32_t delimiter[MAX_DELIMITER_LENGTH];
+    uint8_t length = 0;
     while (!lexer->eof(lexer) && !iswspace(lexer->lookahead)) {
         if (length == MAX_DELIMITER_LENGTH) return false;
-        delimiter[length++] = (char)lexer->lookahead;
+        delimiter[length++] = lexer->lookahead;
         advance(lexer);
     }
     if (length == 0) return false;
-    delimiter[length] = '\0';
     lexer->mark_end(lexer);
     bool is_default = length == 1 && delimiter[0] == ';';
-    strcpy(scanner->delimiter, is_default ? "" : delimiter);
+    scanner->delimiter_length = is_default ? 0 : length;
+    memcpy(scanner->delimiter, delimiter, sizeof(int32_t) * scanner->delimiter_length);
     lexer->result_symbol = DELIMITER_DIRECTIVE;
     return true;
 }
 
 static bool scan_custom_delimiter(Scanner *scanner, TSLexer *lexer) {
-    for (const char *character = scanner->delimiter; *character; character++) {
-        if (lexer->lookahead != *character) return false;
+    for (uint8_t index = 0; index < scanner->delimiter_length; index++) {
+        if (lexer->lookahead != scanner->delimiter[index]) return false;
         advance(lexer);
     }
     lexer->mark_end(lexer);
@@ -143,15 +145,23 @@ static bool scan_custom_delimiter(Scanner *scanner, TSLexer *lexer) {
     return true;
 }
 
+// A letter beyond ASCII never belongs to a word the scanner looks for; it is kept as a mark no keyword holds,
+// so that gů does not read as go
+#define NON_ASCII_MARK '\x01'
+
+// Reads a word in lower case, keeping its first MAX_TAG_LENGTH letters, and returns how many letters it has
 static size_t read_word(TSLexer *lexer, char *word) {
     size_t length = 0;
+    size_t kept = 0;
     word[0] = '\0';
     if (!is_tag_start(lexer->lookahead)) return 0;
     while (is_tag_part(lexer->lookahead)) {
-        if (length < MAX_TAG_LENGTH) word[length++] = (char)towlower(lexer->lookahead);
+        int32_t letter = lexer->lookahead;
+        if (kept < MAX_TAG_LENGTH) word[kept++] = letter < 0x80 ? (char)towlower(letter) : NON_ASCII_MARK;
+        length++;
         advance(lexer);
     }
-    word[length] = '\0';
+    word[kept] = '\0';
     return length;
 }
 
@@ -179,10 +189,12 @@ static bool scan_dollar_string_content(TSLexer *lexer, const char *tag) {
 
 static bool is_custom_delimiter(Scanner *scanner, const char *tag) {
     size_t tag_length = strlen(tag);
-    size_t delimiter_length = strlen(scanner->delimiter);
-    if (delimiter_length != tag_length + 2) return false;
-    return scanner->delimiter[0] == '$' && scanner->delimiter[delimiter_length - 1] == '$' &&
-           strncmp(scanner->delimiter + 1, tag, tag_length) == 0;
+    if (scanner->delimiter_length != tag_length + 2) return false;
+    if (scanner->delimiter[0] != '$' || scanner->delimiter[tag_length + 1] != '$') return false;
+    for (size_t index = 0; index < tag_length; index++) {
+        if (scanner->delimiter[index + 1] != (unsigned char)tag[index]) return false;
+    }
+    return true;
 }
 
 static bool is_one_of(const char *word, const char *const *candidates) {
@@ -337,7 +349,14 @@ static bool is_string_prefix(const char *word) {
     return strcmp(word, "n") == 0 || strcmp(word, "e") == 0 || strcmp(word, "b") == 0 || strcmp(word, "x") == 0;
 }
 
-static const char *const SQLPLUS_COMMANDS[] = {"prompt", "rem", "remark", NULL};
+static const char *const SQLPLUS_COMMANDS[] = {"prompt", "rem",     "remark", "spool",  "column", "define", "undefine",
+                                               "whenever", "accept", "pause", "host", "ttitle", "btitle", "clear",
+                                               "show",     "connect", "disconnect", NULL};
+// SET is a statement of SQL too; only SQL*Plus sets these options
+static const char *const SQLPLUS_SET_OPTIONS[] = {"serveroutput", "serverout", "linesize", "lines", "pagesize", "pages",
+                                                  "verify",       "feedback",  "feed",     "echo",  "heading",  "termout",
+                                                  "trimspool",    "trimout",   "timing",   "long",  "define",   "sqlblanklines",
+                                                  "arraysize",    "colsep",    "newpage",  "wrap",  "numwidth", NULL};
 static const char *const SQLCMD_COMMANDS[] = {"r",    "setvar", "on",   "connect", "out",        "error",     "exit", "quit",
                                               "list", "reset",  "ed",   "help",    "serverlist", "perftrace", "xml",  "listvar",
                                               NULL};
@@ -386,9 +405,18 @@ static bool scan_prefixed_client_command(TSLexer *lexer) {
     return finish_client_command(lexer);
 }
 
+// SQL*Plus runs another script with @file or @@file
+static bool scan_script_call(TSLexer *lexer) {
+    advance(lexer);
+    if (lexer->lookahead == '@') advance(lexer);
+    if (iswspace(lexer->lookahead) || lexer->eof(lexer)) return false;
+    return finish_client_command(lexer);
+}
+
 static bool scan_line_start_symbol(TSLexer *lexer, const bool *valid_symbols) {
     if (lexer->lookahead == '/') return valid_symbols[SLASH_TERMINATOR] && scan_slash_terminator(lexer);
-    return valid_symbols[CLIENT_COMMAND] && scan_prefixed_client_command(lexer);
+    if (!valid_symbols[CLIENT_COMMAND]) return false;
+    return lexer->lookahead == '@' ? scan_script_call(lexer) : scan_prefixed_client_command(lexer);
 }
 
 static const char *const LABELLED_STATEMENTS[] = {"begin", "loop", "repeat", "while", NULL};
@@ -406,28 +434,50 @@ static bool finish_label(TSLexer *lexer) {
     return true;
 }
 
-// Tokens that start with a word: N'...', GO, DELIMITER, PROMPT and REM at the start of a line, and labels
-static bool scan_word_led_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool at_line_start) {
+static bool ends_word(TSLexer *lexer) { return is_horizontal_space(lexer->lookahead) || is_line_end(lexer); }
+
+// SET SERVEROUTPUT ON is SQL*Plus's, SET NOCOUNT ON a statement
+static bool finish_sqlplus_set(TSLexer *lexer) {
+    if (!is_horizontal_space(lexer->lookahead)) return false;
+    skip_horizontal_space(lexer);
+    char option[MAX_TAG_LENGTH + 1];
+    read_word(lexer, option);
+    return is_one_of(option, SQLPLUS_SET_OPTIONS) && finish_client_command(lexer);
+}
+
+static bool scan_client_word(TSLexer *lexer, const char *word) {
+    if (strcmp(word, "set") == 0) return finish_sqlplus_set(lexer);
+    return is_one_of(word, SQLPLUS_COMMANDS) && ends_word(lexer) && finish_client_command(lexer);
+}
+
+// Only a word that may be a command needs to know whether it starts its line, which is costly to find out on a long line
+static bool starts_line(TSLexer *lexer, Gap gap, size_t word_length) {
+    if (gap.crossed_newline) return true;
+    if (gap.skipped_any) return false;
+    return lexer->get_column(lexer) == word_length;
+}
+
+// Tokens that start with a word: N'...', and at the start of a line GO, DELIMITER and SQL*Plus commands; labels
+static bool scan_word_led_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, Gap gap) {
     char word[MAX_TAG_LENGTH + 1];
-    read_word(lexer, word);
+    size_t length = read_word(lexer, word);
     if (lexer->lookahead == '\'' && is_string_prefix(word)) {
         return valid_symbols[QUOTED_STRING] && scan_quoted_string(lexer, strcmp(word, "e") == 0);
     }
-    if (at_line_start && strcmp(word, "go") == 0 && valid_symbols[BATCH_SEPARATOR]) return finish_batch_separator(lexer);
-    if (at_line_start && strcmp(word, "delimiter") == 0 && valid_symbols[DELIMITER_DIRECTIVE]) {
-        return finish_delimiter_directive(scanner, lexer);
-    }
-    bool is_sqlplus_command = at_line_start && is_one_of(word, SQLPLUS_COMMANDS);
-    if (is_sqlplus_command && valid_symbols[CLIENT_COMMAND] && (is_horizontal_space(lexer->lookahead) || is_line_end(lexer))) {
-        return finish_client_command(lexer);
+    bool is_go = strcmp(word, "go") == 0 && valid_symbols[BATCH_SEPARATOR];
+    bool is_delimiter = strcmp(word, "delimiter") == 0 && valid_symbols[DELIMITER_DIRECTIVE];
+    bool may_be_command = is_go || is_delimiter || valid_symbols[CLIENT_COMMAND];
+    if (may_be_command && starts_line(lexer, gap, length)) {
+        if (is_go) return finish_batch_separator(lexer);
+        if (is_delimiter) return finish_delimiter_directive(scanner, lexer);
+        if (scan_client_word(lexer, word)) return true;
     }
     return lexer->lookahead == ':' && valid_symbols[LABEL] && finish_label(lexer);
 }
 
-// Only these may start a token that must stand at the start of its line
-static bool may_start_line_token(int32_t character) {
-    int32_t lower = towlower(character);
-    return lower == 'g' || lower == '/' || lower == 'd' || lower == 'p' || lower == 'r' || lower == ':' || lower == '\\';
+// Only these may start a token that must stand at the start of its line and does not start with a word
+static bool may_start_line_symbol(int32_t character) {
+    return character == '/' || character == ':' || character == '\\' || character == '@';
 }
 
 static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
@@ -436,15 +486,15 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     if (lexer->eof(lexer)) return false;
     int32_t first = lexer->lookahead;
 
-    bool delimiter_starts_here = scanner->delimiter[0] != '\0' && scanner->delimiter[0] != '$' && first == scanner->delimiter[0];
+    bool delimiter_starts_here = scanner->delimiter_length > 0 && scanner->delimiter[0] != '$' && first == scanner->delimiter[0];
     if (delimiter_starts_here && valid_symbols[CUSTOM_DELIMITER]) return scan_custom_delimiter(scanner, lexer);
 
     if (first == '$') return scan_dollar_quote(scanner, lexer, valid_symbols, in_error_recovery);
     if (first == '\'') return valid_symbols[QUOTED_STRING] && scan_quoted_string(lexer, false);
 
-    bool at_line_start = may_start_line_token(first) && is_at_line_start(lexer, gap);
-    if (is_tag_start(first)) return scan_word_led_token(scanner, lexer, valid_symbols, at_line_start);
-    return at_line_start && scan_line_start_symbol(lexer, valid_symbols);
+    if (is_tag_start(first)) return scan_word_led_token(scanner, lexer, valid_symbols, gap);
+    bool may_be_symbol = valid_symbols[CLIENT_COMMAND] || valid_symbols[SLASH_TERMINATOR];
+    return may_start_line_symbol(first) && may_be_symbol && is_at_line_start(lexer, gap) && scan_line_start_symbol(lexer, valid_symbols);
 }
 
 void *tree_sitter_sql_island_external_scanner_create(void) {
@@ -457,10 +507,10 @@ void tree_sitter_sql_island_external_scanner_destroy(void *payload) { ts_free(pa
 unsigned tree_sitter_sql_island_external_scanner_serialize(void *payload, char *buffer) {
     Scanner *scanner = (Scanner *)payload;
     unsigned size = 0;
-    size_t delimiter_length = strlen(scanner->delimiter);
-    buffer[size++] = (char)delimiter_length;
-    memcpy(buffer + size, scanner->delimiter, delimiter_length);
-    size += delimiter_length;
+    size_t delimiter_size = sizeof(int32_t) * scanner->delimiter_length;
+    buffer[size++] = (char)scanner->delimiter_length;
+    memcpy(buffer + size, scanner->delimiter, delimiter_size);
+    size += delimiter_size;
     buffer[size++] = (char)scanner->depth;
     for (uint8_t level = 0; level < scanner->depth; level++) {
         size_t tag_length = strlen(scanner->tags[level]);
@@ -476,9 +526,10 @@ void tree_sitter_sql_island_external_scanner_deserialize(void *payload, const ch
     memset(scanner, 0, sizeof(Scanner));
     if (length == 0) return;
     unsigned position = 0;
-    size_t delimiter_length = (uint8_t)buffer[position++];
-    memcpy(scanner->delimiter, buffer + position, delimiter_length);
-    position += delimiter_length;
+    scanner->delimiter_length = (uint8_t)buffer[position++];
+    size_t delimiter_size = sizeof(int32_t) * scanner->delimiter_length;
+    memcpy(scanner->delimiter, buffer + position, delimiter_size);
+    position += delimiter_size;
     scanner->depth = (uint8_t)buffer[position++];
     for (uint8_t level = 0; level < scanner->depth; level++) {
         size_t tag_length = (uint8_t)buffer[position++];

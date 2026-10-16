@@ -349,3 +349,146 @@ CREATE TABLE real_table (id INT);
         (identifier)
         (object_name
           (identifier))))))
+
+================================================================================
+PROMPT, REMARK and DELIMITER inside a statement stay names
+================================================================================
+
+SELECT id FROM notes WHERE a = 1 AND
+remark IS NULL OR b = 2 OR c = 3;
+SELECT id,
+prompt FROM questions JOIN answers ON questions.id = answers.question_id;
+UPDATE csv_settings SET
+delimiter = ',' WHERE id = 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (operator)
+  (number)
+  (logical_operator)
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (logical_operator)
+  (object_name
+    (identifier))
+  (operator)
+  (number)
+  (logical_operator)
+  (object_name
+    (identifier))
+  (operator)
+  (number)
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier)
+    (identifier))
+  (operator)
+  (object_name
+    (identifier)
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (operator)
+  (string)
+  (object_name
+    (identifier))
+  (operator)
+  (number))
+
+================================================================================
+SQL*Plus commands chain from the start of a script and after a terminator
+================================================================================
+
+spool install.log
+set serveroutput on
+@@define_owner.sql
+prompt Installing
+whenever sqlerror exit failure
+column error_count noprint new_value error_count
+prompt Done
+SELECT 1 FROM dual;
+prompt After the query
+SET NOCOUNT ON
+EXEC dbo.log_run
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (client_command)
+  (client_command)
+  (client_command)
+  (client_command)
+  (client_command)
+  (client_command)
+  (client_command)
+  (number)
+  (object_reference
+    (object_name
+      (identifier)))
+  (client_command)
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)
+      (identifier))))
+
+================================================================================
+A delimiter or word beyond ASCII
+================================================================================
+
+DELIMITER €
+CREATE PROCEDURE p() BEGIN SELECT 1; END€
+DELIMITER ;
+SELECT 1 FROM t WHERE a = 1
+gů
+SELECT 2 FROM u;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (delimiter_directive)
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list)
+    (routine_body
+      (number)))
+  (custom_delimiter)
+  (delimiter_directive)
+  (number)
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (operator)
+  (number)
+  (object_name
+    (identifier))
+  (number)
+  (object_reference
+    (object_name
+      (identifier))))
