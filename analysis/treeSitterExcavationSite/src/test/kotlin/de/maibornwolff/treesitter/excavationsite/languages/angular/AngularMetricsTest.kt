@@ -224,6 +224,21 @@ class AngularMetricsTest {
         }
 
         @Test
+        fun `should not count comment markers inside attribute values and string literals as comment lines`() {
+            // Arrange
+            val code = """
+                <p title="<!-- not a comment -->">{{ '<!-- not a comment either -->' }}</p>
+                <!-- a comment -->
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.commentLines).isEqualTo(1.0)
+        }
+
+        @Test
         fun `should count real lines of code without comments and blank lines`() {
             // Arrange
             val code = """

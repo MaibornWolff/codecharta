@@ -1,7 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.languages.angular
 
+import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateComment
 import de.maibornwolff.treesitter.excavationsite.languages.angular.extractors.extractTemplateIdentifier
-import de.maibornwolff.treesitter.excavationsite.shared.domain.CommentFormats
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionMapping
 import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
@@ -14,7 +14,7 @@ object AngularExtractionMapping : ExtractionMapping {
     override val nodeExtractions: Map<String, Extract> = buildMap {
         put("identifier", Extract.Identifier(customSingle = ::extractTemplateIdentifier))
 
-        put("comment", Extract.Comment(CommentFormats.Html))
+        put("comment", Extract.Comment(custom = ::extractTemplateComment))
 
         put("text", Extract.StringLiteral(format = StringFormats.Trimmed))
         put("string", Extract.StringLiteral(format = StringFormats.Quoted(stripSingleQuotes = true)))

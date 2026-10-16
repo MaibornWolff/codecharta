@@ -90,6 +90,18 @@ class AngularExtractionTest {
             // Assert
             assertThat(result.comments).containsExactly("The cave overview")
         }
+
+        @Test
+        fun `should not extract comment markers inside attribute values and string literals as comments`() {
+            // Arrange
+            val code = """<p title="<!-- not a comment -->">{{ '<!-- not a comment either -->' }}</p>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.comments).isEmpty()
+        }
     }
 
     @Nested
