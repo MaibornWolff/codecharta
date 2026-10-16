@@ -1,5 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.CoroutineFileProcessor
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessingResult
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessor
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileResult
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -10,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource
 import picocli.CommandLine
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.PrintStream
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -150,6 +156,60 @@ class DomainLanguageParserTest {
         assertThat(result).contains("inventory")
         assertThat(result).doesNotContain("warehouse")
         assertThat(result).doesNotContain("shipment")
+    }
+
+    private fun failingProcessor(failure: Exception) = object : FileProcessor {
+        override fun processFilesIndividually(
+            files: List<File>,
+            basePath: String,
+            contentReader: (File) -> String,
+            processor: (File, String) -> FileResult,
+            onFileProcessed: (() -> Unit)?
+        ): FileProcessingResult =
+            CoroutineFileProcessor().processFilesIndividually(files, basePath, contentReader, { _, _ -> throw failure })
+    }
+
+    @Test
+    fun `should end with an error and write no map when every file fails`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("InventoryService.kt").writeText("class InventoryService")
+        val output = ByteArrayOutputStream()
+        val parser =
+            DomainLanguageParser(output = PrintStream(output), fileProcessor = failingProcessor(IllegalStateException("broken extractor")))
+
+        // Act
+        val exitCode = CommandLine(parser).execute(tempDir.toString(), "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
+        assertThat(errorStream.toString())
+            .contains(
+                "1 file could not be analysed and is missing from the output (IllegalStateException: broken extractor): InventoryService.kt"
+            ).contains("No file could be analysed")
+    }
+
+    @Test
+    fun `should end with an error and write no map when a grammar does not fit the core`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("InventoryService.kt").writeText("class InventoryService")
+        val output = ByteArrayOutputStream()
+        val parser =
+            DomainLanguageParser(
+                output = PrintStream(output),
+                fileProcessor = failingProcessor(GrammarUnavailableException("incompatible"))
+            )
+
+        // Act
+        val exitCode = CommandLine(parser).execute(tempDir.toString(), "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
     }
 
     @Test
