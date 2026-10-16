@@ -16,7 +16,7 @@ class YamlNodes {
     private val collectedProblems = mutableListOf<ConfigProblem>()
     private val reportedNodes = mutableListOf<Node>()
 
-    val problems: List<ConfigProblem> get() = collectedProblems.distinctBy { it.line }.sortedBy { it.line }
+    val problems: List<ConfigProblem> get() = collectedProblems.distinct().sortedBy { it.line }
 
     fun report(node: Node, message: String) {
         collectedProblems.add(ConfigProblem(lineOf(node), message))

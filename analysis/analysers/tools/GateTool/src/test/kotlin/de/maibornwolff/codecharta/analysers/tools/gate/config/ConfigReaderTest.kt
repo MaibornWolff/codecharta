@@ -235,6 +235,21 @@ class ConfigReaderTest {
     }
 
     @Test
+    fun `should report every problem of a line that holds more than one`() {
+        // Arrange
+        val text = "exitCodes: {warning: 300, error: 400}\n"
+
+        // Act
+        val result = reader.read(text)
+
+        // Assert
+        assertThat(result.problems).containsExactly(
+            ConfigProblem(1, "exitCodes.warning must be a whole number from 0 to 255, found '300'"),
+            ConfigProblem(1, "exitCodes.error must be a whole number from 0 to 255, found '400'")
+        )
+    }
+
+    @Test
     fun `should report an unknown analyser and a switch that is neither on nor off`() {
         // Arrange
         val text = "analysers:\n  gitlogparser: on\n  unifiedparser: maybe\n"
