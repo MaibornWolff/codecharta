@@ -101,6 +101,24 @@ class LanguageTest {
     }
 
     @Test
+    fun `should return ANGULAR for html extension`() {
+        // Arrange & Act
+        val language = Language.fromExtension("html")
+
+        // Assert
+        assertEquals(Language.ANGULAR, language)
+    }
+
+    @Test
+    fun `should have ResourceKeywords for ANGULAR with template syntax and built-in pipes`() {
+        // Arrange & Act
+        val keywords = ResourceKeywords("keywords/angular-template-keywords.txt")
+
+        // Assert
+        assertTrue(keywords.getKeywords().containsAll(listOf("track", "index", "viewport", "async", "titlecase")))
+    }
+
+    @Test
     fun `should have ResourceKeywords for RUST with Rust keywords`() {
         // Arrange & Act
         val keywords = ResourceKeywords("keywords/rust-keywords.txt")

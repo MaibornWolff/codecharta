@@ -19,7 +19,8 @@ enum class Language(val libraryLanguage: LibraryLanguage, internal val extension
     OBJC(LibraryLanguage.OBJECTIVE_C, setOf("m", "mm"), "keywords/objc-keywords.txt"),
     VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
     ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
-    RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt")
+    RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
+    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt")
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`

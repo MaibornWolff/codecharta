@@ -1,0 +1,35 @@
+# Angular Template Keywords
+# The words of Angular's template syntax that the identifiers of a template split into. Control flow keywords
+# such as `@if` or `@for` are not identifiers, so they need no entry.
+# One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
+
+# *ngFor: trackBy and the exported values of `let i = index`
+track
+by
+index
+even
+odd
+
+# @defer triggers
+viewport
+idle
+interaction
+hover
+immediate
+timer
+
+# Built-in pipes
+async
+json
+date
+currency
+decimal
+percent
+uppercase
+lowercase
+titlecase
+slice
+keyvalue
+i18n
+plural
+select

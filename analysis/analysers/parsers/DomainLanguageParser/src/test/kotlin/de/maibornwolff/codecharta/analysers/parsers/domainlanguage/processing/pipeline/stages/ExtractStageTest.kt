@@ -387,4 +387,28 @@ class ExtractStageTest {
         assertTrue(comments.any { it.text.contains("customer order") })
         assertTrue(strings.any { it.text == "Processing order" })
     }
+
+    @Test
+    fun `should extract identifiers comments and text from an Angular template`() {
+        // Arrange
+        val angularStage = ExtractStage(Language.ANGULAR)
+        val sourceCode =
+            """
+            <!-- The treasure vault of the centaurs -->
+            @if (vault.isOpen) {
+              <p>Gold glitters in the dark</p>
+            }
+            """.trimIndent()
+
+        // Act
+        val result = angularStage.extract(sourceCode)
+
+        // Assert
+        val identifiers = result.filter { it.context == ExtractionContext.IDENTIFIER }.map { it.text }
+        val comments = result.filter { it.context == ExtractionContext.COMMENT }.map { it.text }
+        val strings = result.filter { it.context == ExtractionContext.STRING }.map { it.text }
+        assertEquals(listOf("vault", "isOpen"), identifiers)
+        assertEquals(listOf("The treasure vault of the centaurs"), comments)
+        assertEquals(listOf("Gold glitters in the dark"), strings)
+    }
 }

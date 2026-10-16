@@ -16,7 +16,9 @@ The `domain` lens payload keys its entries under `nodes`:
 
 ### Supported Languages
 
-Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, ABL and shell.
+Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, ABL, shell
+and Angular templates (`.html`: the identifiers of bindings, interpolations and control flow blocks, HTML comments
+and the text of the template).
 
 ### Usage and Parameters
 
