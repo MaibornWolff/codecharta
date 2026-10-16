@@ -376,6 +376,43 @@ class DependencyParserTest {
         assertThat(edgeTargetFolders(output, "a.component.html")).containsExactly("new")
     }
 
+    @Test
+    fun `should resolve the selectors of a standalone component through the exports of a module it imports`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("other").createDirectories()
+        tempDir
+            .resolve(
+                "b1.component.ts"
+            ).writeText("@Component({ selector: 'app-b', standalone: true, template: '<p>b1</p>' })\nexport class B1Component {}")
+        tempDir
+            .resolve(
+                "other/b2.component.ts"
+            ).writeText("@Component({ selector: 'app-b', standalone: true, template: '<p>b2</p>' })\nexport class B2Component {}")
+        tempDir.resolve("shared.module.ts").writeText(
+            """
+            import { B1Component } from './b1.component';
+            @NgModule({ imports: [B1Component], exports: [B1Component] })
+            export class SharedModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("a.component.ts").writeText(
+            """
+            import { SharedModule } from './shared.module';
+            @Component({ selector: 'app-a', standalone: true, imports: [SharedModule], template: '<app-b></app-b>' })
+            export class AComponent {}
+            """.trimIndent()
+        )
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).contains("a.component.ts" to "b1.component.ts")
+        assertThat(fileEdgeNames(output)).doesNotContain("a.component.ts" to "b2.component.ts")
+    }
+
     private fun edgeTargetFolders(output: String, sourceName: String): List<String> {
         val parentNamesById = HashMap<String, String>()
 

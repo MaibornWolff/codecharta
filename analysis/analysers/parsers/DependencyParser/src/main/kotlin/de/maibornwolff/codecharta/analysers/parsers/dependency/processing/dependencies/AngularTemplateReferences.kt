@@ -9,9 +9,9 @@ import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
  * A template names a component by its selector and a pipe by its pipe name, which only the class declaring it knows.
  * Each such name of a template is rewritten to the full path of the class it means, so it resolves like any type
  * written with its full path. A name one class declares means that class. A name several classes declare means the one
- * in the scope of the template's component, as Angular decides it: the classes the standalone component imports, or the
- * declarations and imports of the module declaring the component and the exports of the modules that one imports. A
- * name the scope does not decide stays unresolved.
+ * in the scope of the template's component, as Angular decides it: what the standalone component imports, or what the
+ * module declaring the component declares and imports. An imported module adds what it exports. A name the scope does
+ * not decide stays unresolved.
  *
  * A decorator names classes by their simple name; several classes of that name mean the one the file of the decorator
  * imports, or else the one in that file.
@@ -50,9 +50,9 @@ internal class AngularTemplateReferences private constructor(nodes: List<Node>) 
         }
         val moduleScope = declaringModules.flatMap { module ->
             val declaration = module.angularDeclaration()
-            classesNamed(declaration.declarations, module) + classesNamed(declaration.imports, module).flatMap { withExports(it) }
+            classesNamed(declaration.declarations, module) + classesNamed(declaration.imports, module)
         }
-        return (ownImports + moduleScope).mapTo(HashSet()) { it.pathWithName }
+        return (ownImports + moduleScope).flatMap { withExports(it) }.mapTo(HashSet()) { it.pathWithName }
     }
 
     // An imported module adds what it exports
