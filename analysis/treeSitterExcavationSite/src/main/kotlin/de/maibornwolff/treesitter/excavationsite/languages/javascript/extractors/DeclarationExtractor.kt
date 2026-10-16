@@ -240,12 +240,12 @@ internal object DeclarationExtractor {
         val decoratorUsedTypes = decorators
             .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
             .toSet()
-        val templateNames = AngularTemplateNameExtractor.extract(decorators.asSequence())
+        val angular = AngularDecoratorExtractor.extract(decorators.asSequence())
         return node
             .children()
             .filter { it.type in DECLARATION_NODE_TYPES }
             .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
-            .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, templateNames = decl.templateNames + templateNames) }
+            .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, angular = decl.angular ?: angular) }
             .toList()
     }
 
@@ -305,8 +305,8 @@ internal object DeclarationExtractor {
             val name = extractName(node)
             val type = declarationType(node.type)
             val usedTypes = UsedTypeExtractor.extract(node, aliasMap, localDeclarationNames - name)
-            val templateNames = AngularTemplateNameExtractor.extract(node.children().filter { it.type == DECORATOR })
-            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, templateNames = templateNames))
+            val angular = AngularDecoratorExtractor.extract(node.children().filter { it.type == DECORATOR })
+            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, angular = angular))
         }
     }
 

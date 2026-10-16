@@ -50,7 +50,7 @@ class DependencyResolverService {
          */
         private fun qualifyTemplateReferences(nodes: List<Node>): List<Node> {
             val declarationsByTemplateName = nodes
-                .flatMap { node -> node.templateNames.map { templateName -> templateName to node.pathWithName } }
+                .flatMap { node -> node.angular?.templateNames.orEmpty().map { templateName -> templateName to node.pathWithName } }
                 .groupBy({ it.first }, { it.second })
             if (declarationsByTemplateName.isEmpty()) return nodes
             return nodes.map { node ->

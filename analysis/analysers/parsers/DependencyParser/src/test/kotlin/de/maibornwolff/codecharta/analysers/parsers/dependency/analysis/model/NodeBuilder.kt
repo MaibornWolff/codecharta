@@ -10,7 +10,7 @@ fun Node.Companion.build(
     dependencies: Set<Dependency> = setOf(),
     usedTypes: Set<Type> = setOf(),
     resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf()),
-    templateNames: Set<String> = setOf()
+    angular: AngularMetadata? = null
 ): Node = Node(
     pathWithName = pathWithName,
     physicalPath = physicalPath,
@@ -19,5 +19,5 @@ fun Node.Companion.build(
     dependencies = dependencies,
     usedTypes = usedTypes,
     resolvedNodeDependencies = resolvedNodeDependencies,
-    templateNames = templateNames
+    angular = angular
 )

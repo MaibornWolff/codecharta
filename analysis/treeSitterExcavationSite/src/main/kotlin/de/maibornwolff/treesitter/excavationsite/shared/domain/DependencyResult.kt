@@ -37,17 +37,22 @@ enum class DeclarationType {
     UNKNOWN
 }
 
-/**
- * @property templateNames the names a template refers to the declaration by instead of its own: the element selectors
- * of an Angular component and the name of an Angular pipe
- */
+/** @property angular what the Angular decorator of a class declares, null for a declaration without one */
 data class Declaration(
     val name: String,
     val type: DeclarationType,
     val usedTypes: Set<UsedType>,
     val parentPath: List<String> = emptyList(),
-    val templateNames: Set<String> = emptySet()
+    val angular: AngularDeclaration? = null
 )
+
+/**
+ * What an Angular decorator declares of its class.
+ *
+ * @property templateNames the names a template refers to the class by instead of its own: the element selectors of a
+ * component and the name of a pipe
+ */
+data class AngularDeclaration(val templateNames: Set<String> = emptySet())
 
 /** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */
 enum class TypeUsage {

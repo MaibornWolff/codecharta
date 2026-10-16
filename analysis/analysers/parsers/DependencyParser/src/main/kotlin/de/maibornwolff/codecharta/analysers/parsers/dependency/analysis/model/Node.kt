@@ -2,10 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 
-/**
- * @property templateNames the names a template refers to the node by instead of its own: the element selectors of an
- * Angular component and the name of an Angular pipe
- */
+/** @property angular what the Angular decorator of the class declares, null for a node without one */
 data class Node(
     val pathWithName: Path,
     val physicalPath: String,
@@ -14,7 +11,7 @@ data class Node(
     val dependencies: Set<Dependency>,
     val usedTypes: Set<Type>,
     val resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf()),
-    val templateNames: Set<String> = emptySet()
+    val angular: AngularMetadata? = null
 ) {
     fun resolveTypes(
         projectDictionary: Map<String, List<Path>>,

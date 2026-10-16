@@ -53,7 +53,7 @@ class TypescriptAnalyzerTest {
         val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "torch.component.ts", typescriptCode)).analyze()
 
         // Assert
-        assertThat(report.nodes.single().templateNames).containsExactly("app-torch")
+        assertThat(report.nodes.single().angular?.templateNames).containsExactly("app-torch")
     }
 
     @Test

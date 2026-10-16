@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
@@ -364,7 +365,7 @@ class DependencyResolverServiceTest {
         pathWithName = Path(pathWithName),
         physicalPath = pathWithName.dropLast(1).joinToString("/") + ".ts",
         language = SupportedLanguage.TYPESCRIPT,
-        templateNames = templateNames
+        angular = AngularMetadata(templateNames)
     )
 
     @Test

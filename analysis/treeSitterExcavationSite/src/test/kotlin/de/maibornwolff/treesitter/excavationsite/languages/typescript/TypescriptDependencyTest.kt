@@ -1205,8 +1205,15 @@ class TypescriptDependencyTest {
 
     @Nested
     inner class AngularTemplateNames {
-        private fun templateNamesOf(code: String, className: String): Set<String> =
-            TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.first { it.name == className }.templateNames
+        private fun templateNamesOf(code: String, className: String): Set<String> = TreeSitterDependencies
+            .analyze(
+                code,
+                Language.TYPESCRIPT
+            ).declarations
+            .first { it.name == className }
+            .angular
+            ?.templateNames
+            .orEmpty()
 
         @Test
         fun `should name an exported component after its element selector`() {
@@ -1268,7 +1275,7 @@ class TypescriptDependencyTest {
             val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
 
             // Assert
-            assertThat(declarations.flatMap { it.templateNames }).isEmpty()
+            assertThat(declarations.mapNotNull { it.angular }).isEmpty()
         }
     }
 

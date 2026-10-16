@@ -58,6 +58,6 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
         nodeType = declaration.type.toNodeType(),
         dependencies = dependencies,
         usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet(),
-        templateNames = declaration.templateNames
+        angular = declaration.angular?.toAngularMetadata()
     )
 }
