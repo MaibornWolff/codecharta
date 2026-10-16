@@ -65,6 +65,33 @@ class SqlAnalyzerTest {
     }
 
     @Test
+    fun `should resolve an unqualified name to the object of the same schema first`() {
+        // Arrange
+        val salesOrders = analyze("sales/orders.sql", "CREATE TABLE sales.orders (id INT);")
+        val hrOrders = analyze("hr/orders.sql", "CREATE TABLE hr.orders (id INT);")
+        val report = analyze("sales/report.sql", "CREATE VIEW sales.report AS SELECT * FROM orders;")
+
+        // Act
+        val dependencies = resolvedDependenciesOf("report", salesOrders, hrOrders, report)
+
+        // Assert
+        assertThat(dependencies).containsExactly("sales.orders")
+    }
+
+    @Test
+    fun `should resolve a name with a schema to an object created without one when the schema has none`() {
+        // Arrange
+        val orders = analyze("schema/orders.sql", "CREATE TABLE orders (id INT);")
+        val report = analyze("reports/report.sql", "CREATE VIEW report AS SELECT * FROM app.orders;")
+
+        // Act
+        val dependencies = resolvedDependenciesOf("report", orders, report)
+
+        // Assert
+        assertThat(dependencies).containsExactly("orders")
+    }
+
+    @Test
     fun `should resolve a call of a package routine and a use from inside a package`() {
         // Arrange
         val schema = analyze("schema/heroes.sql", "CREATE TABLE heroes (id INT);")
