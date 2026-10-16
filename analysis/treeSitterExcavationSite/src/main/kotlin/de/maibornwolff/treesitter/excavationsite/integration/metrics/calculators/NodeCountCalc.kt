@@ -11,8 +11,9 @@ class NodeCountCalc(
     private val countedNodeTypes: TreeNodeTypes,
     private val objectKeyByNodeType: Map<String, (SyntaxNode) -> String?> = emptyMap()
 ) : MetricPerFileCalc {
-    private val countedKeys = mutableSetOf<String>()
+    private val objectKeys = mutableListOf<String>()
 
+    // A node without a key counts here; the nodes with a key count once the whole file is walked, see [countOfKeyedObjects]
     override fun calculateMetricForNode(nodeContext: CalculationContext): Int {
         val node = nodeContext.node
         val nodeType = nodeContext.nodeType
@@ -21,6 +22,9 @@ class NodeCountCalc(
         if (!NodeTypeMatcher.isNodeTypeAllowed(node, nodeType, countedNodeTypes)) return 0
 
         val objectKey = objectKeyByNodeType[nodeType]?.invoke(node) ?: return 1
-        return if (countedKeys.add(objectKey)) 1 else 0
+        objectKeys.add(objectKey)
+        return 0
     }
+
+    fun countOfKeyedObjects(): Int = objectKeys.distinct().size
 }

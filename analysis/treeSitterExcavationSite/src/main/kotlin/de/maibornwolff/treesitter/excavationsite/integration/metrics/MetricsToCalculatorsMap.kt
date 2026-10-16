@@ -31,6 +31,8 @@ class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensi
 
     val countedMetrics: Set<AvailableFileMetrics> get() = nodeCountCalcs.keys
 
+    fun countOfKeyedObjects(fileMetric: AvailableFileMetrics): Int = nodeCountCalcs[fileMetric]?.countOfKeyedObjects() ?: 0
+
     fun getPerFileMetricInfo(): Map<AvailableFileMetrics, PerFileCalculator> = codeMetricCalculators() + nodeCountCalculators()
 
     private fun nodeCountCalculators(): Map<AvailableFileMetrics, PerFileCalculator> = nodeCountCalcs.mapValues { (_, calc) ->

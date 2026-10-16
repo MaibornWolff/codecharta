@@ -96,7 +96,7 @@ internal class MetricCollector(private val definition: LanguageDefinition) {
             (metricValues[AvailableFileMetrics.REAL_LINES_OF_CODE] ?: 0).toDouble()
         result[AvailableFileMetrics.LINES_OF_CODE.metricName] = totalLines.toDouble()
         calculatorsMap.countedMetrics.forEach { fileMetric ->
-            result[fileMetric.metricName] = (metricValues[fileMetric] ?: 0).toDouble()
+            result[fileMetric.metricName] = ((metricValues[fileMetric] ?: 0) + calculatorsMap.countOfKeyedObjects(fileMetric)).toDouble()
         }
 
         // Code smells
