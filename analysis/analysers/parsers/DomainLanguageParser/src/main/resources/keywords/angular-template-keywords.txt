@@ -3,6 +3,15 @@
 # such as `@if` or `@for` are not identifiers, so they need no entry.
 # One keyword per line. Entries are lowercased when loaded, so case here is cosmetic.
 
+# Literals the grammar reads as identifiers
+true
+false
+null
+undefined
+
+# The call of an output: (click)="selected.emit(creature)"
+emit
+
 # *ngFor: trackBy and the exported values of `let i = index`
 track
 by

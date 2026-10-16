@@ -115,7 +115,7 @@ class LanguageTest {
         val keywords = ResourceKeywords("keywords/angular-template-keywords.txt")
 
         // Assert
-        assertTrue(keywords.getKeywords().containsAll(listOf("track", "index", "viewport", "async", "titlecase")))
+        assertTrue(keywords.getKeywords().containsAll(listOf("true", "emit", "track", "index", "viewport", "async", "titlecase")))
     }
 
     @Test
