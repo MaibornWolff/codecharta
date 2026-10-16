@@ -36,23 +36,22 @@ GO
           (identifier))
         (number)))
     (routine_body
-      (block
-        (object_name
-          (identifier))
-        (object_name
-          (identifier)
-          (identifier))
-        (object_reference
-          (object_name
-            (identifier)
-            (identifier)))
+      (object_name
+        (identifier))
+      (object_name
         (identifier)
+        (identifier))
+      (object_reference
         (object_name
           (identifier)
-          (identifier))
-        (operator)
-        (object_name
-          (variable)))))
+          (identifier)))
+      (identifier)
+      (object_name
+        (identifier)
+        (identifier))
+      (operator)
+      (object_name
+        (variable))))
   (batch_separator))
 
 ================================================================================
@@ -126,7 +125,8 @@ END raise_salary;
         (identifier))
       (object_name
         (identifier))
-      (identifier)
+      (object_name
+        (identifier))
       (object_name
         (identifier))
       (object_name
@@ -151,28 +151,24 @@ END raise_salary;
         (object_name
           (identifier))
         (routine_body
-          (block
-            (object_name
-              (identifier))
-            (number)
-            (identifier))))
-      (block
-        (object_reference
           (object_name
-            (identifier)))
+            (identifier))
+          (number)))
+      (object_reference
         (object_name
-          (identifier))
-        (operator)
-        (object_name
-          (identifier))
-        (operator)
-        (object_name
-          (identifier))
-        (object_name
-          (identifier))
-        (operator)
-        (object_name
-          (identifier))
+          (identifier)))
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
         (identifier))))
   (slash_terminator))
 
@@ -231,9 +227,7 @@ END payroll;
           (object_name
             (identifier))))
       (routine_body
-        (block
-          (object_name
-            (identifier))
+        (object_name
           (identifier))))
     (block
       (object_name
@@ -262,8 +256,6 @@ $function$ SECURITY DEFINER;
       (identifier)
       (identifier))
     (parameter_list)
-    (object_name
-      (identifier))
     (object_name
       (identifier))
     (object_name
@@ -304,9 +296,6 @@ CREATE TRIGGER items_touch BEFORE UPDATE ON public.items FOR EACH ROW EXECUTE FU
       (object_name
         (identifier)
         (identifier)))
-    (identifier)
-    (object_name
-      (identifier))
     (invocation
       (object_name
         (identifier)
@@ -343,21 +332,20 @@ DELIMITER ;
         (object_name
           (identifier))))
     (routine_body
-      (block
-        (invocation
-          (object_name
-            (identifier)))
-        (object_reference
-          (object_name
-            (identifier)))
-        (object_reference
-          (object_name
-            (identifier)))
+      (invocation
         (object_name
-          (identifier))
-        (operator)
+          (identifier)))
+      (object_reference
         (object_name
-          (identifier)))))
+          (identifier)))
+      (object_reference
+        (object_name
+          (identifier)))
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
+        (identifier))))
   (custom_delimiter)
   (delimiter_directive))
 
@@ -392,9 +380,6 @@ END;
       (identifier)
       (identifier)
       (identifier))
-    (identifier)
-    (object_name
-      (identifier))
     (routine_body
       (object_name
         (identifier))
@@ -402,13 +387,12 @@ END;
         (object_name
           (identifier))
         (number))
-      (block
-        (object_name
-          (bind_variable)
-          (identifier))
-        (operator)
-        (object_name
-          (identifier)))))
+      (object_name
+        (bind_variable)
+        (identifier))
+      (operator)
+      (object_name
+        (identifier))))
   (slash_terminator))
 
 ================================================================================
@@ -485,3 +469,211 @@ DROP TABLE IF EXISTS old_orders;
     (identifier))
   (object_name
     (identifier)))
+
+================================================================================
+T-SQL routine without BEGIN goes on up to GO
+================================================================================
+
+CREATE PROCEDURE dbo.archive @days INT AS
+SET NOCOUNT ON;
+CREATE TABLE #gone (id INT);
+DELETE FROM dbo.orders WHERE age > @days;
+UPDATE dbo.stats SET archived = 1;
+GO
+SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (routine_definition
+    (object_name
+      (identifier)
+      (identifier))
+    (parameter_list
+      (parameter
+        (variable)
+        (object_name
+          (identifier))))
+    (routine_body
+      (object_name
+        (identifier))
+      (column_definitions
+        (column_definition
+          (identifier)
+          (object_name
+            (identifier))))
+      (object_reference
+        (object_name
+          (identifier)
+          (identifier)))
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
+        (variable))
+      (object_reference
+        (object_name
+          (identifier)
+          (identifier)))
+      (object_name
+        (identifier))
+      (operator)
+      (number)))
+  (batch_separator)
+  (number))
+
+================================================================================
+Single-statement routines of MySQL and PostgreSQL
+================================================================================
+
+CREATE FUNCTION twice(p_x INT) RETURNS INT DETERMINISTIC RETURN p_x * 2;
+CREATE TRIGGER touch BEFORE UPDATE ON items FOR EACH ROW SET NEW.updated_at = NOW();
+CREATE TRIGGER audit AFTER INSERT ON items FOR EACH ROW INSERT INTO item_log (id) VALUES (NEW.id);
+CREATE PROCEDURE list_items() SELECT * FROM items;
+CREATE FUNCTION add_one(i integer) RETURNS integer LANGUAGE sql IMMUTABLE RETURN i + 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier)
+        (object_name
+          (identifier))))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (routine_body
+      (object_name
+        (identifier))
+      (number)))
+  (routine_definition
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_reference
+      (object_name
+        (identifier)))
+    (routine_body
+      (object_name
+        (identifier)
+        (identifier))
+      (operator)
+      (invocation
+        (object_name
+          (identifier)))))
+  (routine_definition
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_reference
+      (object_name
+        (identifier)))
+    (routine_body
+      (object_reference
+        (object_name
+          (identifier)))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier)
+        (identifier))))
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list)
+    (routine_body
+      (object_reference
+        (object_name
+          (identifier)))))
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier)
+        (object_name
+          (identifier))))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (routine_body
+      (object_name
+        (identifier))
+      (operator)
+      (number))))
+
+================================================================================
+Oracle RETURN before the type is no single-statement body
+================================================================================
+
+CREATE OR REPLACE FUNCTION total(p_id NUMBER) RETURN NUMBER IS
+BEGIN
+  RETURN 0;
+END total;
+/
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier)
+        (object_name
+          (identifier))))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (routine_body
+      (object_name
+        (identifier))
+      (number)))
+  (slash_terminator))
+
+================================================================================
+PostgreSQL body in a string ends with its statement
+================================================================================
+
+CREATE FUNCTION add(integer, integer) RETURNS integer AS 'select $1 + $2;' LANGUAGE SQL IMMUTABLE;
+INSERT INTO log SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier))
+      (parameter
+        (identifier)))
+    (object_name
+      (identifier))
+    (routine_body
+      (string)
+      (object_name
+        (identifier))))
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (number))

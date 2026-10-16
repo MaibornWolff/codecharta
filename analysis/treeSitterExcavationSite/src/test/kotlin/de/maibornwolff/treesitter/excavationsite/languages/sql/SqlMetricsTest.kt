@@ -216,7 +216,7 @@ class SqlMetricsTest {
     }
 
     @Test
-    fun `should count the code lines of a routine body`() {
+    fun `should count the code lines of a routine body but not its END line`() {
         // Arrange
         val code = """
             CREATE PROCEDURE p
@@ -225,14 +225,14 @@ class SqlMetricsTest {
               SELECT 1;
               -- a comment
               SELECT 2;
-            END
+            END p;
         """.trimIndent()
 
         // Act
         val result = TreeSitterMetrics.parse(code, Language.SQL)
 
         // Assert
-        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(4.0)
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(3.0)
     }
 
     @Test

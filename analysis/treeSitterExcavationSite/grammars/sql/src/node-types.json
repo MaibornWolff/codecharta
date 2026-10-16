@@ -71,6 +71,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -87,6 +91,10 @@
           "named": true
         },
         {
+          "type": "exit_statement",
+          "named": true
+        },
+        {
           "type": "for_statement",
           "named": true
         },
@@ -100,6 +108,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -230,6 +242,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -312,6 +328,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -321,6 +341,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -337,6 +361,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -478,6 +506,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -583,6 +615,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -655,6 +691,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -736,6 +776,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -745,6 +789,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -761,6 +809,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -890,6 +942,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -899,6 +955,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -915,6 +975,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -1054,6 +1118,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -1063,6 +1131,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -1079,6 +1151,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -1220,6 +1296,10 @@
           "named": true
         },
         {
+          "type": "exit_statement",
+          "named": true
+        },
+        {
           "type": "for_statement",
           "named": true
         },
@@ -1233,6 +1313,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -1314,6 +1398,32 @@
     }
   },
   {
+    "type": "exit_statement",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "condition",
+            "named": true
+          }
+        ]
+      },
+      "label": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "for_statement",
     "named": true,
     "fields": {
@@ -1359,6 +1469,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -1368,6 +1482,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -1384,6 +1502,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -1528,6 +1650,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -1548,6 +1674,10 @@
           "named": true
         },
         {
+          "type": "exit_statement",
+          "named": true
+        },
+        {
           "type": "for_statement",
           "named": true
         },
@@ -1561,6 +1691,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -1655,6 +1789,85 @@
     }
   },
   {
+    "type": "iif_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
+          "type": "case_expression",
+          "named": true
+        },
+        {
+          "type": "common_table_expression",
+          "named": true
+        },
+        {
+          "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
+          "type": "invocation",
+          "named": true
+        },
+        {
+          "type": "logical_operator",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "object_name",
+          "named": true
+        },
+        {
+          "type": "object_reference",
+          "named": true
+        },
+        {
+          "type": "operator",
+          "named": true
+        },
+        {
+          "type": "parameter_marker",
+          "named": true
+        },
+        {
+          "type": "quoted_identifier",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "invocation",
     "named": true,
     "fields": {
@@ -1695,6 +1908,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -1781,6 +1998,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -1790,6 +2011,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -1806,6 +2031,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -2002,6 +2231,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -2127,6 +2360,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -2258,6 +2495,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -2267,6 +2508,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -2283,6 +2528,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -2412,6 +2661,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -2421,6 +2674,14 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exception_section",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -2437,6 +2698,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -2596,6 +2861,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -2722,6 +2991,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -2813,6 +3086,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -2833,6 +3110,10 @@
           "named": true
         },
         {
+          "type": "exit_statement",
+          "named": true
+        },
+        {
           "type": "for_statement",
           "named": true
         },
@@ -2846,6 +3127,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -3025,6 +3310,10 @@
           "named": true
         },
         {
+          "type": "iif_expression",
+          "named": true
+        },
+        {
           "type": "invocation",
           "named": true
         },
@@ -3145,6 +3434,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -3154,6 +3447,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -3170,6 +3467,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -3327,6 +3628,10 @@
           "named": true
         },
         {
+          "type": "exit_statement",
+          "named": true
+        },
+        {
           "type": "for_statement",
           "named": true
         },
@@ -3340,6 +3645,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -3457,6 +3766,10 @@
           "named": true
         },
         {
+          "type": "exit_statement",
+          "named": true
+        },
+        {
           "type": "for_statement",
           "named": true
         },
@@ -3470,6 +3783,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -3581,6 +3898,10 @@
           "named": true
         },
         {
+          "type": "column_definitions",
+          "named": true
+        },
+        {
           "type": "common_table_expression",
           "named": true
         },
@@ -3590,6 +3911,10 @@
         },
         {
           "type": "dollar_string",
+          "named": true
+        },
+        {
+          "type": "exit_statement",
           "named": true
         },
         {
@@ -3606,6 +3931,10 @@
         },
         {
           "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "iif_expression",
           "named": true
         },
         {
@@ -3816,6 +4145,10 @@
     "named": false
   },
   {
+    "type": "EACH",
+    "named": false
+  },
+  {
     "type": "ELSE",
     "named": false
   },
@@ -3893,6 +4226,10 @@
   },
   {
     "type": "IF",
+    "named": false
+  },
+  {
+    "type": "IIF",
     "named": false
   },
   {
@@ -4036,7 +4373,23 @@
     "named": false
   },
   {
+    "type": "RETURN",
+    "named": false
+  },
+  {
+    "type": "RETURNS",
+    "named": false
+  },
+  {
+    "type": "REVERSE",
+    "named": false
+  },
+  {
     "type": "REVOKE",
+    "named": false
+  },
+  {
+    "type": "ROW",
     "named": false
   },
   {
@@ -4045,6 +4398,10 @@
   },
   {
     "type": "SET",
+    "named": false
+  },
+  {
+    "type": "STATEMENT",
     "named": false
   },
   {
@@ -4176,6 +4533,11 @@
   },
   {
     "type": "inquiry_directive",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "label",
     "named": true,
     "extra": true
   },

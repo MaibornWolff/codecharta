@@ -134,29 +134,27 @@ end logger;
           (identifier))
         (object_name
           (identifier))
-        (block
+        (object_name
+          (identifier))
+        (operator)
+        (invocation
           (object_name
             (identifier))
-          (operator)
-          (invocation
+          (object_name
+            (identifier)))
+        (object_name
+          (identifier))
+        (object_name
+          (identifier))
+        (exception_section
+          (exception_handler
+            (condition
+              (object_name
+                (identifier)))
             (object_name
               (identifier))
             (object_name
-              (identifier)))
-          (object_name
-            (identifier))
-          (object_name
-            (identifier))
-          (exception_section
-            (exception_handler
-              (condition
-                (object_name
-                  (identifier)))
-              (object_name
-                (identifier))
-              (object_name
-                (identifier))))
-          (identifier))))
+              (identifier))))))
     (identifier))
   (slash_terminator))
 
@@ -184,8 +182,6 @@ $$;
     (object_name
       (identifier))
     (parameter_list)
-    (object_name
-      (identifier))
     (object_name
       (identifier))
     (object_name
@@ -251,63 +247,59 @@ DELIMITER ;
     (object_reference
       (object_name
         (identifier)))
-    (identifier)
-    (object_name
-      (identifier))
     (routine_body
-      (block
-        (variable_declaration
-          (identifier))
+      (variable_declaration
+        (identifier))
+      (object_name
+        (identifier))
+      (variable_declaration
+        (identifier))
+      (object_name
+        (identifier))
+      (invocation
         (object_name
-          (identifier))
-        (variable_declaration
-          (identifier))
+          (identifier)))
+      (object_reference
         (object_name
-          (identifier))
-        (invocation
-          (object_name
-            (identifier)))
-        (object_reference
-          (object_name
-            (identifier)))
-        (object_reference
-          (object_name
-            (identifier)))
+          (identifier)))
+      (object_reference
         (object_name
-          (identifier))
-        (operator)
+          (identifier)))
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
+        (identifier)
+        (identifier))
+      (object_name
+        (identifier))
+      (object_reference
         (object_name
-          (identifier)
-          (identifier))
+          (identifier)))
+      (object_reference
         (object_name
-          (identifier))
-        (object_reference
-          (object_name
-            (identifier)))
-        (object_reference
-          (object_name
-            (identifier)))
-        (object_name
-          (identifier))
-        (operator)
-        (object_name
-          (identifier)
-          (identifier))
-        (if_statement
-          (condition
-            (object_name
-              (identifier))
-            (operator)
-            (object_name
-              (identifier)))
-          (object_name
-            (identifier))
-          (object_name
-            (identifier))
-          (string)
+          (identifier)))
+      (object_name
+        (identifier))
+      (operator)
+      (object_name
+        (identifier)
+        (identifier))
+      (if_statement
+        (condition
           (object_name
             (identifier))
           (operator)
-          (string)))))
+          (object_name
+            (identifier)))
+        (object_name
+          (identifier))
+        (object_name
+          (identifier))
+        (string)
+        (object_name
+          (identifier))
+        (operator)
+        (string))))
   (custom_delimiter)
   (delimiter_directive))

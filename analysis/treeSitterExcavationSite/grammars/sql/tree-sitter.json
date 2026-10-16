@@ -11,7 +11,7 @@
     }
   ],
   "metadata": {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "BSD-3-Clause",
     "description": "Island grammar for SQL of all common dialects, exact for what CodeCharta measures",
     "authors": [{ "name": "MaibornWolff GmbH" }],

@@ -226,9 +226,7 @@ END;
         (identifier))
       (operator)
       (number))
-    (object_name
-      (identifier))
-    (operator)
+    (label)
     (loop_statement
       (object_name
         (identifier))
@@ -246,8 +244,6 @@ END;
         (identifier)))
     (for_statement
       (identifier)
-      (object_name
-        (identifier))
       (number)
       (operator)
       (number)
@@ -429,3 +425,50 @@ END;
     (object_name
       (identifier))
     (string)))
+
+================================================================================
+EXIT WHEN, CONTINUE WHEN and IIF
+================================================================================
+
+BEGIN
+  LOOP
+    CONTINUE outer_loop WHEN c1%NOTFOUND;
+    EXIT WHEN v_done;
+    EXIT;
+  END LOOP;
+  SELECT IIF(a > 1 AND b < 2, 'x', 'y'), iif FROM t;
+END;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (block
+    (loop_statement
+      (exit_statement
+        (identifier)
+        (condition
+          (object_name
+            (identifier))
+          (operator)
+          (object_name
+            (identifier))))
+      (exit_statement
+        (condition
+          (object_name
+            (identifier))))
+      (exit_statement))
+    (iif_expression
+      (object_name
+        (identifier))
+      (operator)
+      (number)
+      (logical_operator)
+      (object_name
+        (identifier))
+      (operator)
+      (number)
+      (string)
+      (string))
+    (object_reference
+      (object_name
+        (identifier)))))

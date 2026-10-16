@@ -9,6 +9,7 @@
  *   comments
  * - the conditional compilation of PL/SQL ($if ... $then, $else, $end) and its inquiry directives ($$plsql_unit),
  *   skipped like comments so that the code of every branch is parsed
+ * - a MySQL label glued to its colon (hunt:LOOP), which would otherwise read as a name and a bind variable
  */
 
 #include "tree_sitter/alloc.h"
@@ -29,6 +30,7 @@ enum TokenType {
     CONDITIONAL_COMPILATION,
     INQUIRY_DIRECTIVE,
     QUOTED_STRING,
+    LABEL,
     ERROR_SENTINEL,
 };
 
@@ -75,14 +77,6 @@ static bool is_at_line_start(TSLexer *lexer, Gap gap) {
     return lexer->get_column(lexer) == 0;
 }
 
-static bool consume_word(TSLexer *lexer, const char *word) {
-    for (const char *letter = word; *letter; letter++) {
-        if (towlower(lexer->lookahead) != *letter) return false;
-        advance(lexer);
-    }
-    return true;
-}
-
 static void skip_horizontal_space(TSLexer *lexer) {
     while (is_horizontal_space(lexer->lookahead)) advance(lexer);
 }
@@ -91,8 +85,7 @@ static void consume_rest_of_line(TSLexer *lexer) {
     while (!lexer->eof(lexer) && lexer->lookahead != '\n') advance(lexer);
 }
 
-static bool scan_batch_separator(TSLexer *lexer) {
-    if (!consume_word(lexer, "go")) return false;
+static bool finish_batch_separator(TSLexer *lexer) {
     lexer->mark_end(lexer);
     skip_horizontal_space(lexer);
     if (iswdigit(lexer->lookahead)) {
@@ -120,8 +113,7 @@ static bool scan_slash_terminator(TSLexer *lexer) {
     return true;
 }
 
-static bool scan_delimiter_directive(Scanner *scanner, TSLexer *lexer) {
-    if (!consume_word(lexer, "delimiter")) return false;
+static bool finish_delimiter_directive(Scanner *scanner, TSLexer *lexer) {
     if (!is_horizontal_space(lexer->lookahead)) return false;
     skip_horizontal_space(lexer);
     char delimiter[MAX_DELIMITER_LENGTH + 1];
@@ -275,35 +267,32 @@ static bool may_follow_closing_quote(TSLexer *lexer) {
            next == '=' || next == '<' || next == '>';
 }
 
-static bool closes_after_backslash(TSLexer *lexer, bool backslash_escapes) {
+static bool closes_after_backslash(TSLexer *lexer, bool backslash_escapes, bool starts_content) {
     advance(lexer);
     if (lexer->lookahead != '\'') {
         if (lexer->lookahead == '\\' || backslash_escapes) advance(lexer);
         return false;
     }
     advance(lexer);
-    // \'' is a backslash before a doubled quote in T-SQL, the more common reading than MySQL's quote string '\''
-    if (lexer->lookahead == '\'') {
-        advance(lexer);
-        return false;
-    }
-    return !backslash_escapes && may_follow_closing_quote(lexer);
+    if (backslash_escapes) return false;
+    if (lexer->lookahead != '\'') return may_follow_closing_quote(lexer);
+    // MySQL's quote '\'' closes; inside a T-SQL string \'' is a backslash and a quote: CHARINDEX(''\'', ...)
+    advance(lexer);
+    return starts_content && may_follow_closing_quote(lexer);
 }
 
 // A string in single quotes, where '' is a quote. A backslash escapes only in MySQL and in PostgreSQL's E'...',
 // while a T-SQL or Oracle string may end on it ('C:\'), so a backslash before a quote is told apart by what follows.
-static bool scan_quoted_string(TSLexer *lexer) {
-    int32_t prefix = towlower(lexer->lookahead);
-    bool has_prefix = prefix == 'n' || prefix == 'e' || prefix == 'b' || prefix == 'x';
-    if (has_prefix) advance(lexer);
-    if (lexer->lookahead != '\'') return false;
-    bool backslash_escapes = has_prefix && prefix == 'e';
+static bool scan_quoted_string(TSLexer *lexer, bool backslash_escapes) {
     advance(lexer);
+    bool starts_content = true;
     while (!lexer->eof(lexer)) {
         if (lexer->lookahead == '\\') {
-            if (closes_after_backslash(lexer, backslash_escapes)) break;
+            if (closes_after_backslash(lexer, backslash_escapes, starts_content)) break;
+            starts_content = false;
             continue;
         }
+        starts_content = false;
         bool is_quote = lexer->lookahead == '\'';
         advance(lexer);
         if (!is_quote) continue;
@@ -315,9 +304,8 @@ static bool scan_quoted_string(TSLexer *lexer) {
     return true;
 }
 
-static bool may_start_quoted_string(int32_t character) {
-    int32_t lower = towlower(character);
-    return character == '\'' || lower == 'n' || lower == 'e' || lower == 'b' || lower == 'x';
+static bool is_string_prefix(const char *word) {
+    return strcmp(word, "n") == 0 || strcmp(word, "e") == 0 || strcmp(word, "b") == 0 || strcmp(word, "x") == 0;
 }
 
 static const char *const SQLPLUS_COMMANDS[] = {"prompt", "rem", "remark", NULL};
@@ -325,34 +313,89 @@ static const char *const SQLCMD_COMMANDS[] = {"r",    "setvar", "on",   "connect
                                               "list", "reset",  "ed",   "help",    "serverlist", "perftrace", "xml",  "listvar",
                                               NULL};
 
-// A command of the client running the script, alone on its line: SQL*Plus PROMPT and REM, SQLCMD :r, psql \connect.
-static bool scan_client_command(TSLexer *lexer) {
-    int32_t first = lexer->lookahead;
-    bool is_psql_command = first == '\\';
-    bool is_sqlcmd_command = first == ':';
-    if (is_psql_command || is_sqlcmd_command) advance(lexer);
-    char word[MAX_TAG_LENGTH + 1];
-    size_t length = read_word(lexer, word);
-    bool is_known = is_psql_command     ? length > 0 || lexer->lookahead == '.'
-                    : is_sqlcmd_command ? is_one_of(word, SQLCMD_COMMANDS)
-                                        : is_one_of(word, SQLPLUS_COMMANDS);
-    if (!is_known) return false;
-    if (!is_psql_command && !is_horizontal_space(lexer->lookahead) && !is_line_end(lexer)) return false;
+static bool finish_client_command(TSLexer *lexer) {
     consume_rest_of_line(lexer);
     lexer->mark_end(lexer);
     lexer->result_symbol = CLIENT_COMMAND;
     return true;
 }
 
-static bool scan_line_start_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
-    int32_t first = towlower(lexer->lookahead);
-    if (first == 'g' && valid_symbols[BATCH_SEPARATOR]) return scan_batch_separator(lexer);
-    if (first == '/' && valid_symbols[SLASH_TERMINATOR]) return scan_slash_terminator(lexer);
-    if (first == 'd' && valid_symbols[DELIMITER_DIRECTIVE]) return scan_delimiter_directive(scanner, lexer);
-    if (valid_symbols[CLIENT_COMMAND]) return scan_client_command(lexer);
-    return false;
+static void skip_single_quoted(TSLexer *lexer) {
+    advance(lexer);
+    while (!lexer->eof(lexer) && lexer->lookahead != '\'') advance(lexer);
+    if (!lexer->eof(lexer)) advance(lexer);
 }
 
+// psql's \copy (SELECT ...) TO ... goes on over the lines its parentheses span
+static bool finish_psql_copy(TSLexer *lexer) {
+    int depth = 0;
+    while (!lexer->eof(lexer) && (lexer->lookahead != '\n' || depth > 0)) {
+        int32_t character = lexer->lookahead;
+        if (character == '\'') {
+            skip_single_quoted(lexer);
+            continue;
+        }
+        if (character == '(') depth++;
+        if (character == ')') depth--;
+        advance(lexer);
+    }
+    lexer->mark_end(lexer);
+    lexer->result_symbol = CLIENT_COMMAND;
+    return true;
+}
+
+// A command of SQLCMD (:r) or psql (\connect), alone on its line
+static bool scan_prefixed_client_command(TSLexer *lexer) {
+    bool is_psql_command = lexer->lookahead == '\\';
+    advance(lexer);
+    char word[MAX_TAG_LENGTH + 1];
+    size_t length = read_word(lexer, word);
+    if (is_psql_command && strcmp(word, "copy") == 0) return finish_psql_copy(lexer);
+    bool is_known = is_psql_command ? length > 0 || lexer->lookahead == '.' : is_one_of(word, SQLCMD_COMMANDS);
+    if (!is_known) return false;
+    if (!is_psql_command && !is_horizontal_space(lexer->lookahead) && !is_line_end(lexer)) return false;
+    return finish_client_command(lexer);
+}
+
+static bool scan_line_start_symbol(TSLexer *lexer, const bool *valid_symbols) {
+    if (lexer->lookahead == '/') return valid_symbols[SLASH_TERMINATOR] && scan_slash_terminator(lexer);
+    return valid_symbols[CLIENT_COMMAND] && scan_prefixed_client_command(lexer);
+}
+
+static const char *const LABELLED_STATEMENTS[] = {"begin", "loop", "repeat", "while", NULL};
+
+// hunt:LOOP; a colon before another colon or an equals sign is a cast (x::int) or an assignment (x:=1)
+static bool finish_label(TSLexer *lexer) {
+    advance(lexer);
+    if (lexer->lookahead == ':' || lexer->lookahead == '=') return false;
+    lexer->mark_end(lexer);
+    while (iswspace(lexer->lookahead)) advance(lexer);
+    char statement[MAX_TAG_LENGTH + 1];
+    read_word(lexer, statement);
+    if (!is_one_of(statement, LABELLED_STATEMENTS)) return false;
+    lexer->result_symbol = LABEL;
+    return true;
+}
+
+// Tokens that start with a word: N'...', GO, DELIMITER, PROMPT and REM at the start of a line, and labels
+static bool scan_word_led_token(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool at_line_start) {
+    char word[MAX_TAG_LENGTH + 1];
+    read_word(lexer, word);
+    if (lexer->lookahead == '\'' && is_string_prefix(word)) {
+        return valid_symbols[QUOTED_STRING] && scan_quoted_string(lexer, strcmp(word, "e") == 0);
+    }
+    if (at_line_start && strcmp(word, "go") == 0 && valid_symbols[BATCH_SEPARATOR]) return finish_batch_separator(lexer);
+    if (at_line_start && strcmp(word, "delimiter") == 0 && valid_symbols[DELIMITER_DIRECTIVE]) {
+        return finish_delimiter_directive(scanner, lexer);
+    }
+    bool is_sqlplus_command = at_line_start && is_one_of(word, SQLPLUS_COMMANDS);
+    if (is_sqlplus_command && valid_symbols[CLIENT_COMMAND] && (is_horizontal_space(lexer->lookahead) || is_line_end(lexer))) {
+        return finish_client_command(lexer);
+    }
+    return lexer->lookahead == ':' && valid_symbols[LABEL] && finish_label(lexer);
+}
+
+// Only these may start a token that must stand at the start of its line
 static bool may_start_line_token(int32_t character) {
     int32_t lower = towlower(character);
     return lower == 'g' || lower == '/' || lower == 'd' || lower == 'p' || lower == 'r' || lower == ':' || lower == '\\';
@@ -368,10 +411,11 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
     if (delimiter_starts_here && valid_symbols[CUSTOM_DELIMITER]) return scan_custom_delimiter(scanner, lexer);
 
     if (first == '$') return scan_dollar_quote(scanner, lexer, valid_symbols, in_error_recovery);
-    if (may_start_quoted_string(first) && valid_symbols[QUOTED_STRING]) return scan_quoted_string(lexer);
+    if (first == '\'') return valid_symbols[QUOTED_STRING] && scan_quoted_string(lexer, false);
 
-    if (may_start_line_token(first) && is_at_line_start(lexer, gap)) return scan_line_start_token(scanner, lexer, valid_symbols);
-    return false;
+    bool at_line_start = may_start_line_token(first) && is_at_line_start(lexer, gap);
+    if (is_tag_start(first)) return scan_word_led_token(scanner, lexer, valid_symbols, at_line_start);
+    return at_line_start && scan_line_start_symbol(lexer, valid_symbols);
 }
 
 void *tree_sitter_sql_island_external_scanner_create(void) {

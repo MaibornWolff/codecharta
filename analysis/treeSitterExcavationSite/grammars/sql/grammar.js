@@ -28,6 +28,16 @@ function commaSeparated1(rule) {
     return seq(rule, repeat(seq(",", rule)))
 }
 
+function routineHead($, kind) {
+    return seq(
+        choice($._create_prefix, kw("alter")),
+        field("kind", kind),
+        optional($._if_not_exists),
+        field("name", $.object_name),
+        optional($.parameter_list)
+    )
+}
+
 function escapeForRegExp(text) {
     return text.replace(/[\\^$.*+?()[\]{}|/-]/g, "\\$&")
 }
@@ -48,6 +58,9 @@ const ORACLE_QUOTE_DELIMITERS = [
 ]
 
 const ROUTINE_KINDS = ["procedure", "proc", "function", "trigger"]
+
+// Statements a routine body may consist of alone in MySQL, without BEGIN ... END
+const SINGLE_STATEMENT_STARTS = ["select", "insert", "delete", "replace"]
 
 // Keywords that close a FROM list, so that none of them is taken for the alias of a table.
 const CLAUSE_KEYWORDS = ["where", "group", "order", "having", "union", "intersect", "limit", "values"]
@@ -71,19 +84,31 @@ module.exports = grammar({
         $.conditional_compilation,
         $.inquiry_directive,
         $._quoted_string,
+        $.label,
         $._error_sentinel
     ],
 
-    extras: $ => [/[\s\uFEFF\u00A0]+/, $.comment, $.template_tag, $.client_command, $.conditional_compilation, $.inquiry_directive],
+    extras: $ => [
+        /[\s\uFEFF\u00A0]+/,
+        $.comment,
+        $.template_tag,
+        $.client_command,
+        $.conditional_compilation,
+        $.inquiry_directive,
+        $.label
+    ],
 
     conflicts: $ => [
         [$.block, $._begin_semicolon_transaction],
+        [$._body_block, $._begin_semicolon_transaction],
         [$._from_list],
         [$._reference_clause, $._loop_join_hint],
         [$.for_statement, $._for_flat],
         [$._for_flat],
         [$.common_table_expression, $._with_flat],
-        [$._with_flat]
+        [$._with_flat],
+        [$.loop_statement, $._loop_word],
+        [$.loop_statement, $._loop_word, $._loop_join_hint]
     ],
 
     rules: {
@@ -105,6 +130,7 @@ module.exports = grammar({
             choice(
                 $._soup_item,
                 ";",
+                $._temporary_table,
                 $.block,
                 $.routine_definition,
                 $.routine_declaration,
@@ -133,8 +159,10 @@ module.exports = grammar({
                 $._ddl_if_exists,
                 $.while_statement,
                 $.loop_statement,
+                $._loop_word,
                 $.for_statement,
                 $.repeat_statement,
+                $.exit_statement,
                 $._loop_join_hint,
                 $._privilege_statement,
                 $.handler_declaration,
@@ -149,6 +177,8 @@ module.exports = grammar({
             choice(
                 $._group,
                 $.case_expression,
+                $.iif_expression,
+                $._iif_word,
                 $.invocation,
                 $.anchored_type,
                 $.object_name,
@@ -219,8 +249,6 @@ module.exports = grammar({
                 $._then_flat
             ),
 
-        _routine_kind: $ => choice(...ROUTINE_KINDS.map(kw)),
-
         _routine_keyword: $ => prec(PREC.flatFallback, choice(...ROUTINE_KINDS.map(kw))),
 
         _when_flat: $ => prec(PREC.flatFallback, kw("when")),
@@ -260,19 +288,108 @@ module.exports = grammar({
 
         _if_not_exists: $ => seq(kw("if"), optional(kw("not")), kw("exists")),
 
-        _routine_head: $ =>
-            seq(
-                choice($._create_prefix, kw("alter")),
-                field("kind", $._routine_kind),
-                optional($._if_not_exists),
-                field("name", $.object_name)
+        _procedure_kind: $ => choice(kw("procedure"), kw("proc")),
+
+        // MySQL's single-statement bodies follow the parameters of a procedure, the RETURNS of a function and the
+        // FOR EACH ROW of a trigger; Oracle's RETURN before the type of a function has no RETURNS in front of it.
+        routine_definition: $ =>
+            choice(
+                prec.right(
+                    seq(
+                        routineHead($, $._procedure_kind),
+                        repeat($._procedure_header_item),
+                        field("body", choice($.routine_body, alias($._statement_body, $.routine_body)))
+                    )
+                ),
+                prec.right(seq(routineHead($, kw("function")), repeat($._header_item), field("body", $.routine_body))),
+                prec.right(
+                    seq(
+                        routineHead($, kw("function")),
+                        repeat($._header_item),
+                        $._returns_clause,
+                        field("body", choice($.routine_body, alias($._return_body, $.routine_body)))
+                    )
+                ),
+                prec.right(seq(routineHead($, kw("trigger")), repeat($._header_item), field("body", $.routine_body))),
+                prec.right(
+                    seq(
+                        routineHead($, kw("trigger")),
+                        repeat($._header_item),
+                        $._for_each_row_clause,
+                        field("body", choice($.routine_body, alias($._trigger_statement_body, $.routine_body)))
+                    )
+                )
             ),
 
-        _routine_signature: $ => prec.right(seq($._routine_head, optional($.parameter_list), repeat($._header_item))),
+        routine_declaration: $ =>
+            prec.right(
+                PREC.flatFallback,
+                choice(
+                    seq(routineHead($, $._procedure_kind), repeat($._procedure_header_item)),
+                    seq(routineHead($, kw("function")), repeat($._header_item), optional($._returns_clause)),
+                    seq(routineHead($, kw("trigger")), repeat($._header_item), optional($._for_each_row_clause))
+                )
+            ),
 
-        routine_definition: $ => prec.right(seq($._routine_signature, field("body", $.routine_body))),
+        // Options of a procedure never start like a statement, so that a MySQL procedure can do without BEGIN
+        _procedure_header_item: $ =>
+            choice(
+                $._group,
+                $.invocation,
+                $.anchored_type,
+                $.object_name,
+                $._literal,
+                $._punctuation,
+                $._for_flat,
+                $._routine_keyword,
+                kw("with"),
+                kw("execute"),
+                kw("set"),
+                kw("in"),
+                kw("not")
+            ),
 
-        routine_declaration: $ => prec.right(PREC.flatFallback, $._routine_signature),
+        _returns_clause: $ => prec.right(seq(kw("returns"), repeat($._header_item))),
+
+        // PostgreSQL: WHEN (...) EXECUTE FUNCTION f(); Oracle: WHEN (...), FOLLOWS other; MySQL: FOLLOWS other
+        _for_each_row_clause: $ =>
+            prec.right(
+                seq(
+                    kw("for"),
+                    kw("each"),
+                    choice(kw("row"), kw("statement")),
+                    repeat(
+                        choice(
+                            $._group,
+                            $.invocation,
+                            $.object_name,
+                            $._literal,
+                            $._punctuation,
+                            kw("when"),
+                            kw("execute"),
+                            $._routine_keyword
+                        )
+                    )
+                )
+            ),
+
+        _statement_body: $ => prec.right(seq($._single_statement_start, repeat($._soup_item))),
+
+        _single_statement_start: $ =>
+            choice(
+                ...SINGLE_STATEMENT_STARTS.map(kw),
+                seq(choice(kw("update"), kw("call")), $.object_reference),
+                $.if_statement,
+                $.case_expression,
+                $.while_statement,
+                $.loop_statement,
+                $.repeat_statement
+            ),
+
+        // A PostgreSQL option, SET search_path = ..., may follow the parameters of a procedure, but not FOR EACH ROW
+        _trigger_statement_body: $ => prec.right(seq(choice(kw("set"), $._single_statement_start), repeat($._soup_item))),
+
+        _return_body: $ => prec.right(seq(kw("return"), repeat($._soup_item))),
 
         // A routine of a package body or a declaration section: no CREATE in front of it.
         _nested_routine_signature: $ =>
@@ -333,32 +450,47 @@ module.exports = grammar({
                 choice(
                     seq(choice(kw("as"), kw("is")), optional($._body_sequence)),
                     seq(kw("as"), $._dollar_quoted_body),
+                    seq(kw("as"), $._string_body),
                     seq(kw("declare"), optional($._body_sequence)),
                     $._body_block
                 )
             ),
 
+        // A body in a string ends with its statement: AS 'SELECT 1' LANGUAGE sql, AS 'lib.so', 'symbol' LANGUAGE C
+        _string_body: $ => prec.right(PREC.preferredStructure, seq($.string, repeat($._header_item), optional(";"))),
+
         // PostgreSQL: the code between dollar quotes, then the rest of the header up to the end of the statement.
         _dollar_quoted_body: $ => prec.right(seq($._dollar_body, repeat($._header_item), optional(";"))),
 
-        _body_sequence: $ =>
-            prec.right(
-                choice(
-                    seq(repeat1($._body_item), repeat($._body_continuation), optional($._body_block)),
-                    seq(repeat1($._body_continuation), optional($._body_block)),
-                    $._body_block
+        // A T-SQL body without BEGIN goes on over its semicolons up to GO, the next CREATE or the end of the file;
+        // a PL/SQL declaration section up to its block.
+        _body_sequence: $ => prec.right(choice(seq(repeat1(choice($._body_item, ";")), optional($._body_block)), $._body_block)),
+
+        _body_item: $ => choice($._soup_item, $._nested_routine, $._temporary_table),
+
+        // A T-SQL temporary table, CREATE TABLE #t, is no object of the database and does not end a routine
+        _temporary_table: $ => prec.right(seq($._temporary_table_start, optional($.column_definitions))),
+
+        _temporary_table_start: $ => token(seq(caseInsensitive("create"), /\s+/, caseInsensitive("table"), /\s+#/, /[A-Za-z0-9_#@$]*/)),
+
+        // The block of a routine body ends with one token for END, its label and its semicolon, so that its line
+        // counts for the routine no more than a closing brace does.
+        _body_block: $ =>
+            prec.dynamic(
+                PREC.structure,
+                prec.right(
+                    seq(
+                        choice(kw("begin"), $._begin_semicolon),
+                        optional(seq(optional(kw("not")), kw("atomic"))),
+                        repeat($._statement_item),
+                        optional($.exception_section),
+                        alias($._body_end, "END")
+                    )
                 )
             ),
 
-        // After a semicolon a PL/SQL declaration section goes on with a name, a nested routine or the block.
-        _body_continuation: $ =>
-            prec.right(seq(";", optional(seq(choice($.identifier, $._nested_routine, kw("declare")), repeat($._declaration_item))))),
-
-        _body_item: $ => choice($._soup_item, $._nested_routine),
-
-        _declaration_item: $ => choice($._control_item_not_beginning_with_begin, $._flat_branch_keyword, $._nested_routine),
-
-        _body_block: $ => prec.right(seq($.block, optional(";"))),
+        _body_end: $ =>
+            token(seq(caseInsensitive("end"), optional(seq(/[ \t]+/, /[A-Za-z_][A-Za-z0-9_$#]*/)), optional(seq(/[ \t]*/, ";")))),
 
         package_definition: $ =>
             prec.right(
@@ -413,7 +545,9 @@ module.exports = grammar({
         column_definitions: $ =>
             seq("(", optional(seq(commaSeparated1(choice($.column_definition, $.table_constraint)), optional(","))), ")"),
 
-        column_definition: $ => prec.right(seq(field("name", choice($.identifier, $.quoted_identifier)), repeat($._column_item))),
+        // MySQL accepts the empty qualifier of (.a BIGINT)
+        column_definition: $ =>
+            prec.right(seq(optional("."), field("name", choice($.identifier, $.quoted_identifier)), repeat($._column_item))),
 
         table_constraint: $ =>
             prec.right(
@@ -569,21 +703,45 @@ module.exports = grammar({
                 )
             ),
 
-        loop_statement: $ => prec.right(seq(kw("loop"), repeat($._statement_item), kw("end"), kw("loop"), optional($.identifier))),
+        loop_statement: $ =>
+            prec.dynamic(
+                PREC.structure,
+                prec.right(seq(kw("loop"), repeat($._statement_item), kw("end"), kw("loop"), optional($.identifier)))
+            ),
 
-        for_statement: $ =>
+        // LOOP is a plain name in T-SQL (SELECT loop FROM t); the parser tries both and keeps the loop when it closes
+        _loop_word: $ => prec.dynamic(-PREC.structure, kw("loop")),
+
+        // PL/SQL and PL/pgSQL leave a loop (EXIT) or its iteration (CONTINUE), optionally when a condition holds
+        exit_statement: $ =>
             prec.right(
                 seq(
-                    choice(kw("for"), kw("foreach")),
-                    field("variable", $.identifier),
-                    kw("in"),
-                    repeat1($._expression_item),
-                    choice(
-                        seq(kw("loop"), repeat($._statement_item), kw("end"), kw("loop"), optional($.identifier)),
-                        seq(kw("do"), repeat($._statement_item), kw("end"), kw("for"), optional($.identifier))
+                    choice(kw("exit"), kw("continue")),
+                    optional(field("label", $.identifier)),
+                    optional(seq(kw("when"), field("condition", $.condition)))
+                )
+            ),
+
+        // Ahead of a FOR that is no loop, followed by a LOOP of its own
+        for_statement: $ =>
+            prec.dynamic(
+                PREC.preferredStructure,
+                prec.right(
+                    seq(
+                        choice(kw("for"), kw("foreach")),
+                        field("variable", $.identifier),
+                        kw("in"),
+                        repeat1($._iteration_item),
+                        choice(
+                            seq(kw("loop"), repeat($._statement_item), kw("end"), kw("loop"), optional($.identifier)),
+                            seq(kw("do"), repeat($._statement_item), kw("end"), kw("for"), optional($.identifier))
+                        )
                     )
                 )
             ),
+
+        // Oracle 21c iteration controls: FOR i IN 1, REPEAT i * 2 WHILE i < 64 WHEN MOD(i, 2) = 0 LOOP
+        _iteration_item: $ => choice($._expression_item, kw("repeat"), kw("while"), kw("when"), kw("reverse")),
 
         _for_flat: $ => seq(kw("for"), optional($.identifier)),
 
@@ -683,6 +841,11 @@ module.exports = grammar({
 
         invocation: $ => prec(PREC.structure, seq(field("name", $.object_name), $._group)),
 
+        // T-SQL's IIF(condition, then, else) branches like a CASE
+        iif_expression: $ => prec(PREC.structure, seq(kw("iif"), $._group)),
+
+        _iif_word: $ => prec(PREC.flatFallback, kw("iif")),
+
         _with_clause: $ =>
             prec.right(PREC.structure, seq(kw("with"), optional(kw("recursive")), commaSeparated1($.common_table_expression))),
 
@@ -697,7 +860,8 @@ module.exports = grammar({
 
         _with_flat: $ => seq(kw("with"), optional($.identifier)),
 
-        _group: $ => seq("(", repeat(choice($._expression_item, $.if_statement, $._with_clause)), ")"),
+        // OPENROWSET separates its provider string with semicolons
+        _group: $ => seq("(", repeat(choice($._expression_item, $.if_statement, $._with_clause, ";")), ")"),
 
         // ------------------------------------------------------------------ names and tokens
 
@@ -718,7 +882,8 @@ module.exports = grammar({
 
         identifier: $ => /[A-Za-z_\u00C0-\uFFFF#][A-Za-z0-9_#\u00C0-\uFFFF]*(\$+[A-Za-z0-9_#\u00C0-\uFFFF]+)*/,
 
-        quoted_identifier: $ => choice(/"([^"]|"")*"/, /`([^`]|``)*`/, /\[[^\[\]\n]*\]/),
+        // MySQL escapes a double quote with a backslash; T-SQL lets a bracketed name run over several lines
+        quoted_identifier: $ => choice(/"([^"\\]|""|\\(.|\n))*"/, /`([^`]|``)*`/, /\[[^\[\]]*\]/),
 
         variable: $ => /@@?[A-Za-z_\u00C0-\uFFFF#][A-Za-z0-9_#@$\u00C0-\uFFFF]*/,
 

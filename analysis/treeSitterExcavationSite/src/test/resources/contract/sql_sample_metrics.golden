@@ -14,13 +14,13 @@ rloc=39.0
 # Per-Function Metrics
 max_complexity_per_function=3.0
 max_parameters_per_function=2.0
-max_rloc_per_function=9.0
+max_rloc_per_function=8.0
 mean_complexity_per_function=2.0
 mean_parameters_per_function=1.0
-mean_rloc_per_function=7.0
+mean_rloc_per_function=6.33
 median_complexity_per_function=2.0
 median_parameters_per_function=1.0
 median_rloc_per_function=6.0
 min_complexity_per_function=1.0
 min_parameters_per_function=0.0
-min_rloc_per_function=6.0
+min_rloc_per_function=5.0

@@ -1,0 +1,169 @@
+================================================================================
+LOOP as a plain name next to a loop
+================================================================================
+
+SELECT loop FROM (SELECT 1 AS loop) t;
+BEGIN
+  LOOP EXIT; END LOOP;
+END;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (number)
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (block
+    (loop_statement
+      (exit_statement))))
+
+================================================================================
+Semicolons inside OPENROWSET and a bracketed name over two lines
+================================================================================
+
+SELECT a.* FROM OPENROWSET('Microsoft.Jet.OLEDB.4.0', 'C:\SAMPLES\Northwind.mdb'; 'admin'; 'password', Customers) AS a;
+SELECT ID FROM [schema].[tbl3
+GO]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (string)
+  (string)
+  (string)
+  (string)
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (quoted_identifier)
+      (quoted_identifier))))
+
+================================================================================
+Oracle 21c iteration controls
+================================================================================
+
+BEGIN
+  FOR power IN 2, REPEAT power * 2 WHILE power <= 64 WHEN MOD(power, 32) = 0 LOOP
+    DBMS_OUTPUT.PUT_LINE(power);
+  END LOOP;
+END;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (block
+    (for_statement
+      (identifier)
+      (number)
+      (object_name
+        (identifier))
+      (number)
+      (object_name
+        (identifier))
+      (operator)
+      (number)
+      (invocation
+        (object_name
+          (identifier))
+        (object_name
+          (identifier))
+        (number))
+      (operator)
+      (number)
+      (invocation
+        (object_name
+          (identifier)
+          (identifier))
+        (object_name
+          (identifier))))))
+
+================================================================================
+psql copy over several lines
+================================================================================
+
+\copy (
+    SELECT id, name
+    FROM mytable
+) TO '/path/to/out.csv' CSV HEADER;
+SELECT 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (client_command)
+  (number))
+
+================================================================================
+MySQL labels glued to their colon
+================================================================================
+
+body:BEGIN
+  hunt:LOOP
+    LEAVE hunt;
+  END LOOP hunt;
+END;
+SELECT price::text, :bind FROM t;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (label)
+  (block
+    (label)
+    (loop_statement
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (identifier)))
+  (object_name
+    (identifier))
+  (operator)
+  (object_name
+    (identifier))
+  (object_name
+    (bind_variable))
+  (object_reference
+    (object_name
+      (identifier))))
+
+================================================================================
+Backslashes in quotes of MySQL and T-SQL
+================================================================================
+
+SELECT '\'' AS quote, "a \"quoted\" word", "Spec\"s 23", 'C:\Backup\';
+EXEC('SELECT CHARINDEX(''\'', name) FROM t');
+CREATE TABLE tbl (.a BIGINT);
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (string)
+  (object_name
+    (identifier))
+  (object_name
+    (quoted_identifier))
+  (object_name
+    (quoted_identifier))
+  (string)
+  (string)
+  (table_definition
+    (object_name
+      (identifier))
+    (column_definitions
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier))))))

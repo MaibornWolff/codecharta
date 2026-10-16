@@ -281,6 +281,5 @@ END;
         (object_name
           (identifier))
         (type_anchor))
-      (block
-        (object_name
-          (identifier))))))
+      (object_name
+        (identifier)))))
