@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified
+package de.maibornwolff.codecharta.analysers.analyserinterface.failures
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

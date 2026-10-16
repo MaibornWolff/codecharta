@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.UndecodableFileName
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
@@ -11,7 +12,7 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
-import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -106,9 +107,8 @@ class ProjectScanner(
             collectMetricsForFile(file, verbose)
         } catch (cancellation: CancellationException) {
             throw cancellation
-        } catch (unavailable: GrammarUnavailableException) {
-            throw unavailable
         } catch (failure: Exception) {
+            if (isUnusableParser(failure)) throw failure
             val relativeFilePath = getRelativeFileName(file.toString())
             Logger.debug(failure) { "Failed to analyze $relativeFilePath: ${failure.message}" }
             failures.add(FailedFile(relativeFilePath, failure))

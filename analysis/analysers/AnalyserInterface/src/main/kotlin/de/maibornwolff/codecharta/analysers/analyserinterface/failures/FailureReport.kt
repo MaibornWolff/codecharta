@@ -1,4 +1,6 @@
-package de.maibornwolff.codecharta.analysers.parsers.unified
+package de.maibornwolff.codecharta.analysers.analyserinterface.failures
+
+import de.maibornwolff.codecharta.util.Logger
 
 /** A file whose analysis failed, relative to the analysed folder, with the reason it failed. */
 data class FailedFile(val path: String, val cause: Exception)
@@ -9,6 +11,8 @@ data class FailedFile(val path: String, val cause: Exception)
  */
 object FailureReport {
     private const val MAX_LISTED_FILES = 5
+
+    fun warnAbout(failures: List<FailedFile>) = warningsOf(failures).forEach { warning -> Logger.warn { warning } }
 
     fun warningsOf(failures: List<FailedFile>): List<String> = failures
         .groupBy { describe(it.cause) }
@@ -21,6 +25,16 @@ object FailureReport {
         val unlisted = paths.size - MAX_LISTED_FILES
         val andMore = if (unlisted > 0) " and $unlisted more" else ""
         return "$subject missing from the output ($cause): ${paths.take(MAX_LISTED_FILES).joinToString()}$andMore"
+    }
+
+    fun nothingAnalysed(failures: List<FailedFile>): String =
+        "No file could be analysed: all ${failures.size} failed, see the warnings above"
+
+    // A native library that cannot be loaded fails every language, a grammar that does not fit the core only its own
+    fun unusableParser(failure: Throwable): String = if (failure is LinkageError) {
+        "Cannot load the native tree-sitter libraries: ${failure.message}"
+    } else {
+        "Cannot parse the files of a language: ${failure.message}"
     }
 
     private fun describe(cause: Exception): String = listOfNotNull(cause::class.simpleName, cause.message).joinToString(": ")

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import kotlinx.coroutines.CancellationException

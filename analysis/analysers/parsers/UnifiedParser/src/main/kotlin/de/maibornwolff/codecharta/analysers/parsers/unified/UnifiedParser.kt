@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
 import de.maibornwolff.codecharta.analysers.analyserinterface.basefile.BaseFileResolver
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesDetector
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesResult
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
@@ -21,7 +23,7 @@ import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
-import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -39,23 +41,19 @@ class UnifiedParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
     private val baseFileHelper: BaseFileResolver = BaseFileResolver(),
-    private val fileMeasurer: FileMeasurer = CollectorMeasurer
+    private val fileMeasurer: FileMeasurer = CollectorMeasurer,
+    private val runExitCode: RunExitCode = RunExitCode()
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
     AttributeGenerator,
-    CommandLine.IExitCodeGenerator {
+    CommandLine.IExitCodeGenerator by runExitCode {
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
-        private const val FAILED_EXIT_CODE = 1
     }
 
     override val name = NAME
     override val description = DESCRIPTION
-
-    private var exitCode = 0
-
-    override fun getExitCode(): Int = exitCode
 
     override fun call(): Unit? {
         val inputFileIndex = extractNonPipedInputIndex(inputFiles)
@@ -91,17 +89,11 @@ class UnifiedParser(
     private fun scanInputProjectOrNull(inputFile: File): Project? {
         try {
             return scanInputProject(inputFile)
-        } catch (failure: GrammarUnavailableException) {
-            failWith("Cannot parse the files of a language: ${failure.message}")
-        } catch (failure: LinkageError) {
-            failWith("Cannot load the native tree-sitter libraries: ${failure.message}")
+        } catch (failure: Throwable) {
+            if (!isUnusableParser(failure)) throw failure
+            runExitCode.failWith(FailureReport.unusableParser(failure))
         }
         return null
-    }
-
-    private fun failWith(message: String) {
-        Logger.error { message }
-        exitCode = FAILED_EXIT_CODE
     }
 
     private fun scanInputProject(inputFile: File): Project? {
@@ -131,7 +123,7 @@ class UnifiedParser(
         reportGitIgnoreStatistics(projectScanner)
         reportFailedFiles(projectScanner)
         if (onlyFailuresFound(projectScanner)) {
-            failWith("No file could be analysed: all ${projectScanner.failures().size} failed, see the warnings above")
+            runExitCode.failWith(FailureReport.nothingAnalysed(projectScanner.failures()))
             return null
         }
         reportNoParsableFiles(projectScanner)
@@ -190,7 +182,7 @@ class UnifiedParser(
     }
 
     private fun reportFailedFiles(projectScanner: ProjectScanner) {
-        FailureReport.warningsOf(projectScanner.failures()).forEach { warning -> Logger.warn { warning } }
+        FailureReport.warnAbout(projectScanner.failures())
     }
 
     private fun onlyFailuresFound(projectScanner: ProjectScanner): Boolean =
