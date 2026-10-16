@@ -29,4 +29,16 @@ class NaturalPathOrderTest {
         // Assert
         assertThat(sorted).containsExactly(path("db", "1", "z.sql"), path("db", "2", "a.sql"))
     }
+
+    @Test
+    fun `should put Flyway's repeatable migrations after the versioned ones of their folder`() {
+        // Arrange
+        val paths = listOf(path("db", "R__views.sql"), path("db", "V10__report.sql"), path("db", "V1__init.sql"))
+
+        // Act
+        val sorted = paths.sortedWith(NaturalPathOrder)
+
+        // Assert
+        assertThat(sorted.map { it.last() }).containsExactly("V1__init.sql", "V10__report.sql", "R__views.sql")
+    }
 }

@@ -119,6 +119,8 @@ double quotes keeps its case (`"Orders"` is not `orders`), unless it is written 
 a view that migrations recreate, is one leaf per file, and a use points at the last of these files, the latest
 migration: paths are ordered folder by folder and name by name, with the numbers in them compared as numbers, so
 `V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an earlier one whatever the file names.
+Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of their folder, as Flyway runs them
+last.
 
 ### Usage and Parameters
 
