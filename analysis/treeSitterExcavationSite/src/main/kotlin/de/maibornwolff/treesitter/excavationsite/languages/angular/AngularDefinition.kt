@@ -12,8 +12,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
  * Angular template language definition: an HTML file with Angular's template syntax, which also covers plain HTML.
  */
 object AngularDefinition : LanguageDefinition {
-    private const val COMMENT = "comment"
-
     override val nodeMetrics: Map<String, Set<Metric>> = AngularMetricMapping.nodeMetrics
     override val nodeExtractions: Map<String, Extract> = AngularExtractionMapping.nodeExtractions
     override val dependencyMapping: LanguageDependencyMapping = AngularDependencyMapping.dependencyMapping

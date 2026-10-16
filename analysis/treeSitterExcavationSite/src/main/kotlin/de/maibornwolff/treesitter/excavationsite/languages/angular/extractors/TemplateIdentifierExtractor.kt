@@ -1,16 +1,18 @@
 package de.maibornwolff.treesitter.excavationsite.languages.angular.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.angular.BINDING_NAME
+import de.maibornwolff.treesitter.excavationsite.languages.angular.CLASS_BINDING
+import de.maibornwolff.treesitter.excavationsite.languages.angular.MEMBER_EXPRESSION
+import de.maibornwolff.treesitter.excavationsite.languages.angular.OPERATOR_FIELD
+import de.maibornwolff.treesitter.excavationsite.languages.angular.STRUCTURAL_ASSIGNMENT
+import de.maibornwolff.treesitter.excavationsite.languages.angular.STRUCTURAL_DIRECTIVE
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 
-private const val BINDING_NAME = "binding_name"
-private const val MEMBER_EXPRESSION = "member_expression"
-private const val STRUCTURAL_ASSIGNMENT = "structural_assignment"
-private const val OPERATOR_FIELD = "operator"
 private const val IMPLICIT_VARIABLE_PREFIX = "$"
 
 // The directive name of `*ngIf` and the `class` of `[class.lit]`
-private val NAMING_PARENTS = setOf("structural_directive", "class_binding")
+private val NAMING_PARENTS = setOf(STRUCTURAL_DIRECTIVE, CLASS_BINDING)
 
 /**
  * Extracts an identifier of a template expression. Left out are the names a binding targets (`[cave]`, `(click)`,

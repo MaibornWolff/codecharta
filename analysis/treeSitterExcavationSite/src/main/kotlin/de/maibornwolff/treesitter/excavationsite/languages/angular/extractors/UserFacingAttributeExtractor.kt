@@ -1,11 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.angular.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.angular.ATTRIBUTE
+import de.maibornwolff.treesitter.excavationsite.languages.angular.ATTRIBUTE_NAME
+import de.maibornwolff.treesitter.excavationsite.languages.angular.QUOTED_ATTRIBUTE_VALUE
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
-
-private const val ATTRIBUTE = "attribute"
-private const val ATTRIBUTE_NAME = "attribute_name"
-private const val QUOTED_ATTRIBUTE_VALUE = "quoted_attribute_value"
 
 /**
  * Extracts the value of a plain attribute that holds text a user reads, such as a `title` or a `hoverHint`. The values

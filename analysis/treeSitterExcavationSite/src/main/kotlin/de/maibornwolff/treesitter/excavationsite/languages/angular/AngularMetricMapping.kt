@@ -9,10 +9,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricMapping
  * control flow blocks, structural directives and binding expressions.
  */
 object AngularMetricMapping : MetricMapping {
-    private const val IDENTIFIER = "identifier"
-    private const val BINDING_NAME = "binding_name"
-    private const val ICU_CATEGORY = "icu_category"
-
     // The fallback of an ICU message, like the default of a switch
     private const val ICU_OTHER_CATEGORY = "other"
     private val STRUCTURAL_DIRECTIVES = setOf("ngIf", "ngFor", "ngSwitchCase")
@@ -27,16 +23,16 @@ object AngularMetricMapping : MetricMapping {
         put("case_statement", setOf(Metric.LogicComplexity))
         put("defer_statement", setOf(Metric.LogicComplexity))
         put(
-            "icu_case",
+            ICU_CASE,
             setOf(Metric.LogicComplexityConditional(MetricCondition.ChildTextDiffers(ICU_CATEGORY, setOf(ICU_OTHER_CATEGORY))))
         )
 
         put(
-            "structural_directive",
+            STRUCTURAL_DIRECTIVE,
             setOf(Metric.LogicComplexityConditional(MetricCondition.ChildTextMatches(IDENTIFIER, STRUCTURAL_DIRECTIVES)))
         )
         put(
-            "property_binding",
+            PROPERTY_BINDING,
             setOf(Metric.LogicComplexityConditional(MetricCondition.ChildTextMatches(BINDING_NAME, STRUCTURAL_DIRECTIVE_INPUTS)))
         )
 
@@ -44,14 +40,14 @@ object AngularMetricMapping : MetricMapping {
         put("ternary_expression", setOf(Metric.LogicComplexity))
         put("nullish_coalescing_expression", setOf(Metric.LogicComplexity))
         put(
-            "binary_expression",
+            BINARY_EXPRESSION,
             setOf(
                 Metric.LogicComplexityConditional(
-                    MetricCondition.ChildFieldMatches(fieldName = "operator", allowedValues = setOf("&&", "||"))
+                    MetricCondition.ChildFieldMatches(fieldName = OPERATOR_FIELD, allowedValues = setOf("&&", "||"))
                 )
             )
         )
 
-        put("comment", setOf(Metric.CommentLine))
+        put(COMMENT, setOf(Metric.CommentLine))
     }
 }

@@ -13,13 +13,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.StringFormats
  */
 object AngularExtractionMapping : ExtractionMapping {
     override val nodeExtractions: Map<String, Extract> = buildMap {
-        put("identifier", Extract.Identifier(customSingle = ::extractTemplateIdentifier))
+        put(IDENTIFIER, Extract.Identifier(customSingle = ::extractTemplateIdentifier))
 
-        put("comment", Extract.Comment(custom = ::extractTemplateComment))
+        put(COMMENT, Extract.Comment(custom = ::extractTemplateComment))
 
-        put("text", Extract.StringLiteral(format = StringFormats.Trimmed))
-        put("attribute_value", Extract.StringLiteral(custom = ::extractUserFacingAttributeText))
-        put("string", Extract.StringLiteral(format = StringFormats.Quoted(stripSingleQuotes = true)))
-        put("template_string", Extract.StringLiteral(format = StringFormats.Template))
+        put(TEXT, Extract.StringLiteral(format = StringFormats.Trimmed))
+        put(ATTRIBUTE_VALUE, Extract.StringLiteral(custom = ::extractUserFacingAttributeText))
+        put(STRING, Extract.StringLiteral(format = StringFormats.Quoted(stripSingleQuotes = true)))
+        put(TEMPLATE_STRING, Extract.StringLiteral(format = StringFormats.Template))
     }
 }

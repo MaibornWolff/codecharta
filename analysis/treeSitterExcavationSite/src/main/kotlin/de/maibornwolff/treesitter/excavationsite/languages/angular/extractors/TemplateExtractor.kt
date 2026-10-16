@@ -1,5 +1,10 @@
 package de.maibornwolff.treesitter.excavationsite.languages.angular.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.angular.IDENTIFIER
+import de.maibornwolff.treesitter.excavationsite.languages.angular.PIPE_CALL
+import de.maibornwolff.treesitter.excavationsite.languages.angular.SELF_CLOSING_TAG
+import de.maibornwolff.treesitter.excavationsite.languages.angular.START_TAG
+import de.maibornwolff.treesitter.excavationsite.languages.angular.TAG_NAME
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
@@ -12,11 +17,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * the name of every pipe. A template knows them only by their selector and pipe name, so these are its used types.
  */
 internal object TemplateExtractor {
-    private const val START_TAG = "start_tag"
-    private const val SELF_CLOSING_TAG = "self_closing_tag"
-    private const val TAG_NAME = "tag_name"
-    private const val PIPE_CALL = "pipe_call"
-    private const val IDENTIFIER = "identifier"
     private const val CUSTOM_ELEMENT_SEPARATOR = '-'
     private const val ANGULAR_ELEMENT_PREFIX = "ng-"
     private const val NO_NAME = ""
