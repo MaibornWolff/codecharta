@@ -91,22 +91,20 @@ class UnifiedParser(
     private fun scanInputProjectOrNull(inputFile: File): Project? {
         try {
             return scanInputProject(inputFile)
-        } catch (failure: NothingMeasuredException) {
-            return failWith(failure.message)
         } catch (failure: GrammarUnavailableException) {
-            return failWith("Cannot parse the files of a language: ${failure.message}")
+            failWith("Cannot parse the files of a language: ${failure.message}")
         } catch (failure: LinkageError) {
-            return failWith("Cannot load the native tree-sitter libraries: ${failure.message}")
+            failWith("Cannot load the native tree-sitter libraries: ${failure.message}")
         }
-    }
-
-    private fun failWith(message: String?): Project? {
-        Logger.error { message.orEmpty() }
-        exitCode = FAILED_EXIT_CODE
         return null
     }
 
-    private fun scanInputProject(inputFile: File): Project {
+    private fun failWith(message: String) {
+        Logger.error { message }
+        exitCode = FAILED_EXIT_CODE
+    }
+
+    private fun scanInputProject(inputFile: File): Project? {
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
         val baseFileNodeMap = baseFileHelper.loadBaseFileNodes(baseFile)
@@ -132,7 +130,10 @@ class UnifiedParser(
         reportIgnoredFileTypes(projectScanner)
         reportGitIgnoreStatistics(projectScanner)
         reportFailedFiles(projectScanner)
-        failIfOnlyFailuresFound(projectScanner)
+        if (onlyFailuresFound(projectScanner)) {
+            failWith("No file could be analysed: all ${projectScanner.failures().size} failed, see the warnings above")
+            return null
+        }
         reportNoParsableFiles(projectScanner)
 
         val executionTimeMs = System.currentTimeMillis() - startTime
@@ -192,11 +193,8 @@ class UnifiedParser(
         FailureReport.warningsOf(projectScanner.failures()).forEach { warning -> Logger.warn { warning } }
     }
 
-    private fun failIfOnlyFailuresFound(projectScanner: ProjectScanner) {
-        val failures = projectScanner.failures()
-        if (projectScanner.foundParsableFiles() || failures.isEmpty()) return
-        throw NothingMeasuredException("No file could be analysed: all ${failures.size} failed, see the warnings above")
-    }
+    private fun onlyFailuresFound(projectScanner: ProjectScanner): Boolean =
+        !projectScanner.foundParsableFiles() && projectScanner.failures().isNotEmpty()
 
     private fun reportNoParsableFiles(projectScanner: ProjectScanner) {
         if (!projectScanner.foundParsableFiles()) {
@@ -238,5 +236,3 @@ class UnifiedParser(
         }
     }
 }
-
-private class NothingMeasuredException(message: String) : IllegalStateException(message)
