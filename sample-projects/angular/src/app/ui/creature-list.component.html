@@ -1,0 +1,11 @@
+<!-- Rolls initiative for every creature in the dungeon before the encounter starts. -->
+<ul class="roster">
+  @for (creature of creatures; track creature.id; let position = $index) {
+    <li (click)="selected.emit(creature)" [class.wounded]="creature.isWounded()">
+      {{ position + 1 }}. {{ creature.name }} ({{ creature.hitPoints | hitPoints }})
+      <cc-speed-badge [speeds]="creature.speeds" />
+    </li>
+  } @empty {
+    <li>The stable is empty</li>
+  }
+</ul>

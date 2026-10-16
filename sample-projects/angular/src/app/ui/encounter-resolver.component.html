@@ -1,0 +1,34 @@
+<!--
+  Resolves an encounter between an attacker and a defender.
+  The template shows every branch of the resolution:
+  the early return, the speeds, the rounds,
+  the outcome and the initiative order.
+  It holds no functions of its own.
+-->
+<section class="encounter">
+  <!-- early return: no defender, no fight -->
+  @if (!defender) {
+    <p>No one to fight</p>
+  } @else if (roll === 20) {
+    <p>A critical hit</p>
+  } @else {
+    <p>The fight goes on</p>
+  }
+  <!-- the speeds of the attacker -->
+  @for (speed of attacker.speeds; track speed.type) {
+    @if (speed.feet > 30 && terrain !== 'swamp') {
+      <span>{{ speed.type }} outruns the defender</span>
+    }
+  }
+  @switch (outcome) {
+    @case ('hit') { <p>Hit for {{ damage }} damage</p> }
+    @case ('miss') { <p>Missed</p> }
+    @case ('fumble') { <p>Fumbled</p> }
+    @default { <p>Undecided</p> }
+  }
+  <p [class.bonus]="bonus > 0 ? true : false">{{ bonus || 0 }} bonus</p> <!-- a trailing comment -->
+  <!-- <p>{{ legacyOutcome }}</p> -->
+  <ol>
+    <li *ngFor="let creature of initiativeOrder">{{ creature.name }}</li>
+  </ol>
+</section>

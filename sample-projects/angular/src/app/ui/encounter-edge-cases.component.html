@@ -1,0 +1,23 @@
+<!-- Edge cases of the template syntax, one per line or block -->
+@let gold = treasure.gold ?? 0;
+<p>{{ gold > 100 ? 'A dragon hoard' : 'A few coins' }}</p>
+@defer (on viewport; prefetch on idle) {
+  <cc-treasure-chest [gold]="gold" />
+} @placeholder (minimum 500ms) {
+  <p>A closed chest</p>
+} @loading (after 100ms; minimum 1s) {
+  <p>Opening the chest</p>
+} @error {
+  <p>The chest is cursed</p>
+}
+<span i18n>{count, plural, =0 {no centaurs} =1 {one centaur} other {{{count}} centaurs}}</span>
+<p>{{ creature?.nickname }} {{ creature!.name }} {{ $any(creature).secret }}</p>
+<input [(ngModel)]="treasure.gold" #goldInput (keyup.enter)="rename(goldInput.value)" />
+<div (window:resize)="onResize()">Resizing the cellar</div>
+<p title="<!-- not a comment -->">{{ '<!-- not a comment either -->' }}</p>
+<ng-template [ngIf]="hidden"><p>Hidden passage</p></ng-template>
+<ng-content select="footer" />
+<mat-icon>pets</mat-icon>
+<script>if (dungeon && dragon) { console.log('never parsed as Angular'); }</script>
+<style>/* a cellar style */ .cellar { color: brown; }</style>
+@if (deep.a) { @if (deep.b) { @if (deep.c) { <p>Deep in the dungeon</p> } } }

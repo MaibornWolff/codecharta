@@ -19,14 +19,14 @@ sample-projects/
     <project files in the language's conventional layout>
 ```
 
-Language folders: `abl`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `javascript`, `kotlin`,
+Language folders: `abl`, `angular`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `javascript`, `kotlin`,
 `objectivec`, `php`, `python`, `ruby`, `rust`, `swift`, `typescript`, `vue`.
 
 | Parser | Languages |
 | --- | --- |
-| `unifiedparser` | every language except abl (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`) |
-| `dependencyparser` | php, csharp, typescript (+tsx), javascript, java, go, python, c and cpp (one C++ grammar), kotlin, vue, delphi, rust |
-| `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, abl, rust |
+| `unifiedparser` | every language except abl (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`, `.html`) |
+| `dependencyparser` | php, csharp, typescript (+tsx), javascript, java, go, python, c and cpp (one C++ grammar), kotlin, vue, delphi, rust, angular (templates) |
+| `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, abl, rust, angular (templates) |
 
 ## The shared domain model
 

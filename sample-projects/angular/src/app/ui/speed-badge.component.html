@@ -1,0 +1,12 @@
+<!-- Speeds of a creature, the old way: structural directives instead of control flow blocks -->
+<ul *ngIf="speeds.length > 0; else standingStill">
+  <li *ngFor="let speed of speeds; trackBy: bySpeedType; let fastest = first">
+    <ng-container [ngSwitch]="speed.type">
+      <span *ngSwitchCase="'flying'">Flies {{ speed.feet }} ft</span>
+      <span *ngSwitchCase="'swimming'">Swims {{ speed.feet }} ft</span>
+      <span *ngSwitchDefault>{{ fastest ? 'Dashes' : 'Walks' }} {{ speed.feet }} ft</span>
+    </ng-container>
+  </li>
+</ul>
+<ng-template #standingStill><p>Standing still in the stable</p></ng-template>
+<button (click)="dash.emit()" [disabled]="!speeds.length || exhausted">Dash</button>

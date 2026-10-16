@@ -1,0 +1,14 @@
+<!-- The cellar door: every expedition into the dungeon starts here -->
+<header>
+  <h1>{{ title | uppercase }}</h1>
+</header>
+<main>
+  <cc-creature-list [creatures]="creatures" (selected)="select($event)" />
+  @if (selected) {
+    <cc-creature-card [creature]="selected" />
+  }
+  <cc-zentaurenhoehle-panel />
+  <cc-encounter-resolver />
+  <cc-encounter-edge-cases />
+  <router-outlet />
+</main>
