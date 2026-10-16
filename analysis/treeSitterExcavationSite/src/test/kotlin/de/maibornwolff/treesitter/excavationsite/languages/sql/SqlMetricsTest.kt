@@ -83,6 +83,56 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count an IIF for complexity`() {
+        // Arrange
+        val code = "SELECT IIF(a > 1, 'x', 'y'), iif FROM t;"
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.complexity).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count an EXIT or CONTINUE with a condition but not one without for complexity`() {
+        // Arrange
+        val code = """
+            BEGIN
+              LOOP
+                CONTINUE outer_loop WHEN c1%NOTFOUND;
+                EXIT WHEN v_done;
+                EXIT;
+              END LOOP;
+            END;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.complexity).isEqualTo(3.0)
+    }
+
+    @Test
+    fun `should count a MySQL routine of a single statement as a function`() {
+        // Arrange
+        val code = """
+            CREATE FUNCTION grade(p_hp INT) RETURNS INT DETERMINISTIC RETURN CASE WHEN p_hp > 0 THEN 1 ELSE 0 END;
+            CREATE TRIGGER touch BEFORE UPDATE ON items FOR EACH ROW SET NEW.updated_at = NOW();
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfFunctions).isEqualTo(2.0)
+        assertThat(result.complexity).isEqualTo(3.0)
+        assertThat(result.perFunctionMetrics["max_complexity_per_function"]).isEqualTo(1.0)
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should count and and or but not the and of between for complexity`() {
         // Arrange
         val code = "SELECT * FROM t WHERE a = 1 AND b = 2 OR c BETWEEN 1 AND 5;"
