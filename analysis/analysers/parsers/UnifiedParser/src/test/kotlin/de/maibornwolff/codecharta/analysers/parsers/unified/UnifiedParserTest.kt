@@ -48,7 +48,8 @@ class UnifiedParserTest {
             Arguments.of("tsx", ".tsx"),
             Arguments.of("vue", ".vue"),
             Arguments.of("rust", ".rs"),
-            Arguments.of("angular", ".html")
+            Arguments.of("angular", ".html"),
+            Arguments.of("sql", ".sql")
         )
     }
 
