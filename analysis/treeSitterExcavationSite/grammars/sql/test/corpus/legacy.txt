@@ -492,3 +492,39 @@ SELECT 2 FROM u;
   (object_reference
     (object_name
       (identifier))))
+
+================================================================================
+SHOW and SET statements of MySQL and PostgreSQL are no client commands
+================================================================================
+
+SELECT 1;
+SHOW TABLES;
+SET @x = (SELECT COUNT(*) FROM orders);
+SET NAMES utf8mb4;
+SHOW search_path;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (number)
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_name
+    (variable))
+  (operator)
+  (invocation
+    (object_name
+      (identifier)))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (object_name
+    (identifier)))

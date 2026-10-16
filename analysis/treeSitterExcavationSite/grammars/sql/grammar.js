@@ -847,7 +847,7 @@ module.exports = grammar({
 
         // Inside a routine header ON names the table of a trigger; OR and AND list its events.
         _header_reference_clause: $ =>
-            choice(seq(kw("on"), $.object_reference), seq(kw("references"), $.object_reference), $._reference_keyword),
+            choice(seq(kw("on"), field("table", $.object_reference)), seq(kw("references"), $.object_reference), $._reference_keyword),
 
         referencing_clause: $ => prec.right(seq(kw("referencing"), repeat1(choice($.identifier, kw("as"), kw("table"))))),
 

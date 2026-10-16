@@ -6378,8 +6378,12 @@
               "value": "ON"
             },
             {
-              "type": "SYMBOL",
-              "name": "object_reference"
+              "type": "FIELD",
+              "name": "table",
+              "content": {
+                "type": "SYMBOL",
+                "name": "object_reference"
+              }
             }
           ]
         },

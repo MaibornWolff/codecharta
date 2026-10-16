@@ -351,7 +351,7 @@ static bool is_string_prefix(const char *word) {
 
 static const char *const SQLPLUS_COMMANDS[] = {"prompt", "rem",     "remark", "spool",  "column", "define", "undefine",
                                                "whenever", "accept", "pause", "host", "ttitle", "btitle", "clear",
-                                               "show",     "connect", "disconnect", NULL};
+                                               "connect",  "disconnect", NULL};
 // SET is a statement of SQL too; only SQL*Plus sets these options
 static const char *const SQLPLUS_SET_OPTIONS[] = {"serveroutput", "serverout", "linesize", "lines", "pagesize", "pages",
                                                   "verify",       "feedback",  "feed",     "echo",  "heading",  "termout",
