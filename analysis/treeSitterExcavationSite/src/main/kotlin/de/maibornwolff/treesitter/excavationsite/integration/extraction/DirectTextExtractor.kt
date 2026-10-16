@@ -38,7 +38,12 @@ internal class DirectTextExtractor(private val extractionNodeTypes: ExtractionNo
             is Extract.Identifier -> extractIdentifiers(node, extraction, results)
             is Extract.Comment -> extractComment(node, extraction, results)
             is Extract.StringLiteral -> extractString(node, extraction, results)
-            is Extract.Text -> extraction.custom(node)?.let { results.add(ExtractedText(it, ExtractionContext.TEXT)) }
+            // The text a user reads holds no escape sequences; an inline template's are resolved before it is parsed
+            is Extract.Text ->
+                extraction
+                    .custom(
+                        node
+                    )?.let { results.add(ExtractedText(it, ExtractionContext.TEXT, interpretsEscapes = false)) }
         }
     }
 

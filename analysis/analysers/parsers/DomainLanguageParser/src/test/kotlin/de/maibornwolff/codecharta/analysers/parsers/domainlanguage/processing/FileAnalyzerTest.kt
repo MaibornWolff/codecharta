@@ -224,6 +224,22 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should read the backslashes of a template's text as text, not as escapes`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "report.component.html")
+        template.writeText("""<p>C:\temp\newreports</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("temp" to 3, "newreports" to 3), words)
+    }
+
+    @Test
     fun `should keep the string weight of other languages`(
         @TempDir tempDirPath: Path
     ) {
