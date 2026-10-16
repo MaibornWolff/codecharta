@@ -76,6 +76,12 @@ The input may be a folder or a single source file. Either way the surrounding di
 analysis — `.dlcignore`, framework detection and the paths words are keyed by are relative to it. A run
 that finds no analysable file fails rather than writing an empty lens.
 
+### Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
+map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
+
 ### Examples
 
 Analyze a project folder and write a compressed cc.json:

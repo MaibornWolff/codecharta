@@ -64,6 +64,12 @@ and `id`. Its keywords are not: a keyword never comes out as a word, and one tha
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |
 | `-h, --help`                              | displays this help and exits                                                                    |
 
+## Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
+map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
+
 ## Examples
 
 Analyze a project folder and write a compressed cc.json:

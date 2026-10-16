@@ -163,6 +163,13 @@ dependencies and their weights alone, leaving every edge unflagged and the lens 
 timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to completion
 in the background.
 
+### Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them; a file that takes longer than `--file-timeout` is such a file,
+with the timeout as its cause. It ends with an error and exit code 1, and writes no map, when no file could be analysed
+at all, or when a grammar or the native tree-sitter library cannot be used.
+
 ### Known issues
 
 **Usage kinds are only reported for PHP.** The `usage` list on a leaf edge can name seven kinds, but every

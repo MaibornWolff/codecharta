@@ -108,6 +108,12 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
                           [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
 
+### Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
+map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
+
 ### Examples
 
 The Unified Parser can analyze either a single file or a project folder; here are some sample commands:

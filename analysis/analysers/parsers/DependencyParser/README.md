@@ -139,7 +139,7 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 - Every PHP grouped `use` contributes, not only the first in the file.
 - A Module Federation producer is looked up in name order, preferring a federation-name match over a
   directory-name match, so the result does not depend on how the file system lists directories.
-- A file that fails to parse or exceeds `--file-timeout` is reported in one warning naming the files;
+- A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
   a tsconfig or package.json that fails to parse is warned about as well.
 
 `script/compare_dependency_parsers.py` produces this comparison for any project: it runs both tools (or
@@ -256,6 +256,13 @@ levels.
 `--file-timeout` bounds a single file's parse. The parse itself is a blocking native call, so the
 timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to
 completion in the background.
+
+### Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them; a file that takes longer than `--file-timeout` is such a file,
+with the timeout as its cause. It ends with an error and exit code 1, and writes no map, when no file could be analysed
+at all, or when a grammar or the native tree-sitter library cannot be used.
 
 ## Examples
 
