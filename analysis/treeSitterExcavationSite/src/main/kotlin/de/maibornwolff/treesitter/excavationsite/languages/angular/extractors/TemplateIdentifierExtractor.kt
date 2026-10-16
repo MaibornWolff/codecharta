@@ -1,10 +1,14 @@
 package de.maibornwolff.treesitter.excavationsite.languages.angular.extractors
 
+import de.maibornwolff.treesitter.excavationsite.languages.angular.ALIAS_FIELD
 import de.maibornwolff.treesitter.excavationsite.languages.angular.BINDING_NAME
 import de.maibornwolff.treesitter.excavationsite.languages.angular.CALL_EXPRESSION
 import de.maibornwolff.treesitter.excavationsite.languages.angular.CLASS_BINDING
 import de.maibornwolff.treesitter.excavationsite.languages.angular.DEFER_TRIGGER_CONDITION
+import de.maibornwolff.treesitter.excavationsite.languages.angular.FUNCTION_FIELD
+import de.maibornwolff.treesitter.excavationsite.languages.angular.LET_KEYWORD
 import de.maibornwolff.treesitter.excavationsite.languages.angular.MEMBER_EXPRESSION
+import de.maibornwolff.treesitter.excavationsite.languages.angular.NAME_FIELD
 import de.maibornwolff.treesitter.excavationsite.languages.angular.OPERATOR_FIELD
 import de.maibornwolff.treesitter.excavationsite.languages.angular.PIPE_CALL
 import de.maibornwolff.treesitter.excavationsite.languages.angular.SPECIAL_KEYWORD
@@ -15,10 +19,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 private const val IMPLICIT_VARIABLE_PREFIX = "$"
-private const val NAME_FIELD = "name"
-private const val FUNCTION_FIELD = "function"
-private const val ALIAS_FIELD = "alias"
-private const val LET_KEYWORD = "let"
 
 // The directive name of `*ngIf`, the `class` of `[class.lit]` and the name of a pipe
 private val NAMING_PARENTS = setOf(STRUCTURAL_DIRECTIVE, CLASS_BINDING, PIPE_CALL)

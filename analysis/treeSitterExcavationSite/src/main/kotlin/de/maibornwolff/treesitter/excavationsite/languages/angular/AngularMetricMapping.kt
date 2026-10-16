@@ -13,15 +13,15 @@ object AngularMetricMapping : MetricMapping {
     private const val ICU_OTHER_CATEGORY = "other"
     private val STRUCTURAL_DIRECTIVES = setOf("ngIf", "ngFor", "ngSwitchCase")
 
-    // The inputs `*ngIf` and `*ngFor` desugar to, written out on an `<ng-template>`
+    // The inputs `*ngIf`, `*ngFor` and `*ngSwitchCase` desugar to, written out on an `<ng-template>`
     private val STRUCTURAL_DIRECTIVE_INPUTS = setOf("ngIf", "ngForOf", "ngSwitchCase")
 
     override val nodeMetrics: Map<String, Set<Metric>> = buildMap {
-        put("if_statement", setOf(Metric.LogicComplexity))
-        put("else_if_statement", setOf(Metric.LogicComplexity))
-        put("for_statement", setOf(Metric.LogicComplexity))
-        put("case_statement", setOf(Metric.LogicComplexity))
-        put("defer_statement", setOf(Metric.LogicComplexity))
+        put(IF_STATEMENT, setOf(Metric.LogicComplexity))
+        put(ELSE_IF_STATEMENT, setOf(Metric.LogicComplexity))
+        put(FOR_STATEMENT, setOf(Metric.LogicComplexity))
+        put(CASE_STATEMENT, setOf(Metric.LogicComplexity))
+        put(DEFER_STATEMENT, setOf(Metric.LogicComplexity))
         put(
             ICU_CASE,
             setOf(Metric.LogicComplexityConditional(MetricCondition.ChildTextDiffers(ICU_CATEGORY, setOf(ICU_OTHER_CATEGORY))))
@@ -36,9 +36,9 @@ object AngularMetricMapping : MetricMapping {
             setOf(Metric.LogicComplexityConditional(MetricCondition.ChildTextMatches(BINDING_NAME, STRUCTURAL_DIRECTIVE_INPUTS)))
         )
 
-        put("conditional_expression", setOf(Metric.LogicComplexity))
-        put("ternary_expression", setOf(Metric.LogicComplexity))
-        put("nullish_coalescing_expression", setOf(Metric.LogicComplexity))
+        put(CONDITIONAL_EXPRESSION, setOf(Metric.LogicComplexity))
+        put(TERNARY_EXPRESSION, setOf(Metric.LogicComplexity))
+        put(NULLISH_COALESCING_EXPRESSION, setOf(Metric.LogicComplexity))
         put(
             BINARY_EXPRESSION,
             setOf(
