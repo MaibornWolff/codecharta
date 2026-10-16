@@ -232,6 +232,68 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count the stored procedures a file defines, alone or in a package body`() {
+        // Arrange
+        val code = """
+            CREATE PROCEDURE dbo.archive AS BEGIN SELECT 1 END
+            GO
+            CREATE OR REPLACE PACKAGE billing AS
+              PROCEDURE charge(p_id IN NUMBER);
+            END billing;
+            /
+            CREATE OR REPLACE PACKAGE BODY billing AS
+              PROCEDURE charge(p_id IN NUMBER) IS BEGIN NULL; END charge;
+              PROCEDURE refund(p_id IN NUMBER) IS BEGIN NULL; END refund;
+              FUNCTION total RETURN NUMBER IS BEGIN RETURN 0; END total;
+            END billing;
+            /
+            ALTER PROCEDURE archive COMPILE;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(3.0)
+    }
+
+    @Test
+    fun `should count the triggers a file creates, with a body or calling a function`() {
+        // Arrange
+        val code = """
+            CREATE TRIGGER audit AFTER INSERT ON items FOR EACH ROW BEGIN INSERT INTO log VALUES (NEW.id); END;
+            CREATE TRIGGER touch BEFORE UPDATE ON items FOR EACH ROW EXECUTE FUNCTION touch();
+            ALTER TRIGGER audit DISABLE;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTriggers).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should count the views and tables a file creates but not temporary tables`() {
+        // Arrange
+        val code = """
+            CREATE TABLE orders (id INT);
+            CREATE TABLE IF NOT EXISTS items (id INT);
+            CREATE TABLE #scratch (id INT);
+            CREATE VIEW big_orders AS SELECT * FROM orders;
+            CREATE MATERIALIZED VIEW order_totals AS SELECT COUNT(*) FROM orders;
+            ALTER VIEW big_orders RENAME TO large_orders;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(2.0)
+        assertThat(result.numberOfViews).isEqualTo(2.0)
+    }
+
+    @Test
     fun `should count the parameters of each routine`() {
         // Arrange
         val code = """

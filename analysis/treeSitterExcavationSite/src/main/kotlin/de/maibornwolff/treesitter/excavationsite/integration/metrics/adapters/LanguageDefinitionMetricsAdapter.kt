@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.integration.metrics.adapters
 
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricCondition
@@ -23,6 +24,7 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
     override val functionParameterNodeTypes: TreeNodeTypes
     override val messageChainsNodeTypes: TreeNodeTypes
     override val messageChainsCallNodeTypes: TreeNodeTypes
+    override val countedNodeTypes: Map<AvailableFileMetrics, TreeNodeTypes>
 
     init {
         val logicSimple = mutableSetOf<String>()
@@ -37,6 +39,8 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
         val parameterSimple = mutableSetOf<String>()
         val chainSimple = mutableSetOf<String>()
         val chainCallSimple = mutableSetOf<String>()
+        val countedSimple = mutableMapOf<AvailableFileMetrics, MutableSet<String>>()
+        val countedNested = mutableMapOf<AvailableFileMetrics, MutableSet<NestedNodeType>>()
 
         for ((nodeType, metrics) in definition.nodeMetrics) {
             for (metric in metrics) {
@@ -61,6 +65,14 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
                     is Metric.Parameter -> parameterSimple.add(nodeType)
                     is Metric.MessageChain -> chainSimple.add(nodeType)
                     is Metric.MessageChainCall -> chainCallSimple.add(nodeType)
+                    is Metric.Counted -> {
+                        val nested = toNestedNodeType(nodeType, metric.condition)
+                        if (nested == null) {
+                            countedSimple.getOrPut(metric.fileMetric) { mutableSetOf() }.add(nodeType)
+                        } else {
+                            countedNested.getOrPut(metric.fileMetric) { mutableSetOf() }.add(nested)
+                        }
+                    }
                 }
             }
         }
@@ -85,6 +97,9 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
         functionParameterNodeTypes = TreeNodeTypes(parameterSimple)
         messageChainsNodeTypes = TreeNodeTypes(chainSimple)
         messageChainsCallNodeTypes = TreeNodeTypes(chainCallSimple)
+        countedNodeTypes = (countedSimple.keys + countedNested.keys).associateWith { fileMetric ->
+            TreeNodeTypes(countedSimple[fileMetric].orEmpty(), countedNested[fileMetric]?.takeIf { it.isNotEmpty() })
+        }
     }
 
     /**
@@ -116,6 +131,10 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
             baseNodeType = nodeType,
             childNodeTypes = setOf(condition.childType),
             childNodeTexts = condition.allowedTexts
+        )
+        is MetricCondition.AllOf -> NestedNodeType(
+            baseNodeType = nodeType,
+            allOf = condition.conditions.mapNotNull { toNestedNodeType(nodeType, it) }
         )
     }
 }

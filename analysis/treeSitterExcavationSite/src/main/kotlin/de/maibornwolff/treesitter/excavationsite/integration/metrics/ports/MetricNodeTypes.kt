@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.integration.metrics.ports
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
 
 interface MetricNodeTypes {
@@ -11,4 +12,5 @@ interface MetricNodeTypes {
     val functionParameterNodeTypes: TreeNodeTypes
     val messageChainsNodeTypes: TreeNodeTypes
     val messageChainsCallNodeTypes: TreeNodeTypes
+    val countedNodeTypes: Map<AvailableFileMetrics, TreeNodeTypes>
 }

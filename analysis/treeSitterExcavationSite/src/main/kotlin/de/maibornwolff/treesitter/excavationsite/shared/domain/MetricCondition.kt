@@ -52,4 +52,11 @@ sealed class MetricCondition {
      * @param allowedTypes The set of allowed node types
      */
     data class ParentMatches(val allowedTypes: Set<String>) : MetricCondition()
+
+    /**
+     * Matches when every one of the conditions matches.
+     *
+     * @param conditions The conditions that must all match
+     */
+    data class AllOf(val conditions: List<MetricCondition>) : MetricCondition()
 }

@@ -2,7 +2,7 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.1",
-    "checksum": "9d31a829b608d7c27d35919b6d9e8f80"
+    "checksum": "a69d5517637b8d1ce21021a05870b38a"
   },
   "files": [
     {
@@ -261,6 +261,50 @@
         "message_chains": {
           "title": "Message Chains",
           "description": "Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/unified",
+          "direction": -1,
+          "analyzers": [
+            "unifiedParser"
+          ]
+        },
+        "number_of_stored_procedures": {
+          "title": "Number of stored procedures",
+          "description": "The number of SQL stored procedures the file defines with a body, on their own or in an Oracle package body.",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/unified",
+          "direction": -1,
+          "analyzers": [
+            "unifiedParser"
+          ]
+        },
+        "number_of_triggers": {
+          "title": "Number of triggers",
+          "description": "The number of SQL triggers the file creates, with a body or calling a function.",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/unified",
+          "direction": -1,
+          "analyzers": [
+            "unifiedParser"
+          ]
+        },
+        "number_of_views": {
+          "title": "Number of views",
+          "description": "The number of SQL views the file defines, materialized ones included.",
+          "hintLowValue": "",
+          "hintHighValue": "",
+          "link": "https://codecharta.com/docs/parser/unified",
+          "direction": -1,
+          "analyzers": [
+            "unifiedParser"
+          ]
+        },
+        "number_of_tables": {
+          "title": "Number of tables",
+          "description": "The number of SQL tables the file creates, without T-SQL temporary tables (#name).",
           "hintLowValue": "",
           "hintHighValue": "",
           "link": "https://codecharta.com/docs/parser/unified",

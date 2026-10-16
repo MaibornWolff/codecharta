@@ -16,6 +16,7 @@ object NodeTypeMatcher {
         nestedTypes.any { nestedType -> nestedType.baseNodeType == nodeType && matches(node, nestedType) }
 
     private fun matches(node: SyntaxNode, nestedType: NestedNodeType): Boolean = when {
+        nestedType.allOf != null -> nestedType.allOf.all { matches(node, it) }
         nestedType.parentNodeTypes != null -> nestedType.parentNodeTypes.contains(node.parent.type)
         nestedType.childNodeTexts != null -> node.children().any { child ->
             nestedType.childNodeTypes.contains(child.type) && nestedType.childNodeTexts.contains(child.text)

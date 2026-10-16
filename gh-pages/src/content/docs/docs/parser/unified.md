@@ -47,6 +47,16 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | excessive_comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
 | comment_ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
 | message_chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
+| number_of_stored_procedures | SQL: the stored procedures the file defines with a body, on their own or in an Oracle package body; 0 in other languages                                                                                                |
+| number_of_triggers        | SQL: the triggers the file creates, with a body or calling a function; 0 in other languages                                                                                                                                |
+| number_of_views           | SQL: the views the file defines, materialized ones included; 0 in other languages                                                                                                                                          |
+| number_of_tables          | SQL: the tables the file creates, without T-SQL temporary tables (`#name`); 0 in other languages                                                                                                                           |
+
+A procedure declared in an Oracle package specification counts where its body is, in the package body, like
+`number_of_functions` counts only routines with a body: a specification and its body in one file count each procedure
+once, in two files only the body's file counts it. A T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a
+body defines the object as much as `CREATE` does and counts; Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t
+DISABLE` does not.
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
 
@@ -251,10 +261,12 @@ contribute to complexity:
 One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
 
 - **Control flow**: `if_statement`, `elsif_clause` (`ELSIF`, `ELSEIF`; a T-SQL `ELSE IF` is an `if_statement` of its own),
-  `when_clause` (each `WHEN` of a `CASE` expression or statement), `while_statement`, `loop_statement`, `for_statement`
-  (`FOR … LOOP`, `FOREACH`), `repeat_statement`, `exception_handler` (each `WHEN` after `EXCEPTION`), `catch_block`
-  (`BEGIN CATCH`), `handler_declaration` (MySQL `DECLARE … HANDLER`)
-- **Functions**: `routine_definition`: procedures, functions and triggers with a body, nested PL/SQL routines included
+  `when_clause` (each `WHEN` of a `CASE` expression or statement), `iif_expression` (T-SQL `IIF`), `while_statement`,
+  `loop_statement`, `for_statement` (`FOR … LOOP`, `FOREACH`), `repeat_statement`, `exit_statement` with a condition
+  (`EXIT WHEN`, `CONTINUE WHEN`), `exception_handler` (each `WHEN` after `EXCEPTION`), `catch_block` (`BEGIN CATCH`),
+  `handler_declaration` (MySQL `DECLARE … HANDLER`)
+- **Functions**: `routine_definition`: procedures, functions and triggers with a body, nested PL/SQL routines and MySQL's
+  single-statement routines included
 - **Logical operators**: `logical_operator` (`AND`, `OR`; the `AND` of `BETWEEN` is none)
 
 ##### Rust (.rs)
@@ -381,8 +393,11 @@ Function counting identifies different types of function definitions per languag
 ##### SQL (.sql, .pks, .pkb, .pls)
 
 - **Functions**: `routine_definition`: a procedure, function or trigger with a body after `AS`, `IS`, `DECLARE` or
-  `BEGIN`, also inside a PL/SQL package body. Forward declarations in a package specification, a PostgreSQL trigger
-  that only names its function and a MySQL routine whose body is a single statement are not counted.
+  `BEGIN`, also inside a PL/SQL package body, and a MySQL routine whose body is a single statement (after the
+  parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger). Forward declarations in
+  a package specification and a PostgreSQL trigger that only names its function are not counted. A body without
+  `BEGIN` (T-SQL) goes on up to `GO`, the next `CREATE` or the end of the file, and the `END` line of a body does not
+  count for the routine's rloc, like a closing brace.
 
 ##### Rust (.rs)
 

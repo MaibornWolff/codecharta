@@ -42,4 +42,7 @@ sealed class Metric {
 
     /** Node is an actual call in a method chain. */
     data object MessageChainCall : Metric()
+
+    /** Node counts once for [fileMetric], such as a table for the number of tables, when [condition] holds. */
+    data class Counted(val fileMetric: AvailableFileMetrics, val condition: MetricCondition = MetricCondition.Always) : Metric()
 }

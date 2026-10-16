@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.languages.sql
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricCondition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricMapping
@@ -9,6 +10,10 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricMapping
  */
 object SqlMetricMapping : MetricMapping {
     private const val CONDITION = "condition"
+    private const val KIND = "kind"
+    private const val TRIGGER = "TRIGGER"
+    private const val CREATE = "CREATE"
+    private val PROCEDURE_KINDS = setOf("PROCEDURE", "PROC")
 
     private val BRANCHES_AND_LOOPS = listOf(
         "if_statement",
@@ -33,7 +38,29 @@ object SqlMetricMapping : MetricMapping {
         put("exit_statement", setOf(Metric.LogicComplexityConditional(MetricCondition.ChildFieldMatches(CONDITION, setOf(CONDITION)))))
 
         // Procedures, functions and triggers with a body; a declaration without one is no function
-        put("routine_definition", setOf(Metric.FunctionComplexity, Metric.Function))
+        put(
+            "routine_definition",
+            setOf(
+                Metric.FunctionComplexity,
+                Metric.Function,
+                Metric.Counted(AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES, MetricCondition.ChildFieldMatches(KIND, PROCEDURE_KINDS)),
+                Metric.Counted(AvailableFileMetrics.NUMBER_OF_TRIGGERS, MetricCondition.ChildFieldMatches(KIND, setOf(TRIGGER)))
+            )
+        )
+        // A trigger that calls a function has no body of its own; ALTER TRIGGER t DISABLE creates none
+        put(
+            "routine_declaration",
+            setOf(
+                Metric.Counted(
+                    AvailableFileMetrics.NUMBER_OF_TRIGGERS,
+                    MetricCondition.AllOf(
+                        listOf(MetricCondition.ChildFieldMatches(KIND, setOf(TRIGGER)), MetricCondition.AnyChildMatches(setOf(CREATE)))
+                    )
+                )
+            )
+        )
+        put("view_definition", setOf(Metric.Counted(AvailableFileMetrics.NUMBER_OF_VIEWS)))
+        put("table_definition", setOf(Metric.Counted(AvailableFileMetrics.NUMBER_OF_TABLES)))
         put("routine_body", setOf(Metric.FunctionBody))
         put("parameter", setOf(Metric.Parameter))
 

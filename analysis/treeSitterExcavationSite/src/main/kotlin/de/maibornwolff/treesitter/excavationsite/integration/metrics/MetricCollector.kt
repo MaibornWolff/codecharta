@@ -95,6 +95,9 @@ internal class MetricCollector(private val grammar: FfmGrammar, private val defi
         result[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] =
             (metricValues[AvailableFileMetrics.REAL_LINES_OF_CODE] ?: 0).toDouble()
         result[AvailableFileMetrics.LINES_OF_CODE.metricName] = totalLines.toDouble()
+        AvailableFileMetrics.NODE_COUNTS.forEach { fileMetric ->
+            result[fileMetric.metricName] = (metricValues[fileMetric] ?: 0).toDouble()
+        }
 
         // Code smells
         val rlocPerFunction = calculatorsMap.realLinesOfCodeCalc.getMetricPerFunction()

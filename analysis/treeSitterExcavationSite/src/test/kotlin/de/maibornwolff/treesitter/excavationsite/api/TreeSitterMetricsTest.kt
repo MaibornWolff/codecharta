@@ -176,4 +176,20 @@ class TreeSitterMetricsTest {
         // Assert
         assertThat(result.messageChains).isEqualTo(1.0)
     }
+
+    @Test
+    fun `should report zero database objects for a language that has none, like every metric it has nothing for`() {
+        // Arrange
+        val javaCode = "class Orders { }"
+
+        // Act
+        val result = TreeSitterMetrics.parse(javaCode, Language.JAVA)
+
+        // Assert
+        assertThat(result.metrics)
+            .containsEntry("number_of_stored_procedures", 0.0)
+            .containsEntry("number_of_triggers", 0.0)
+            .containsEntry("number_of_views", 0.0)
+            .containsEntry("number_of_tables", 0.0)
+    }
 }

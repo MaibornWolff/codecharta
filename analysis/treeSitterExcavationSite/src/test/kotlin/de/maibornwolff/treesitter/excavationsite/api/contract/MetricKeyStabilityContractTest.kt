@@ -279,9 +279,9 @@ class MetricKeyStabilityContractTest {
     @Nested
     inner class AvailableMetricsEnumContract {
         @Test
-        fun `should have exactly 11 file metrics`() {
+        fun `should have exactly 15 file metrics`() {
             // Assert
-            assertThat(AvailableFileMetrics.entries).hasSize(11)
+            assertThat(AvailableFileMetrics.entries).hasSize(15)
         }
 
         @Test
@@ -348,6 +348,15 @@ class MetricKeyStabilityContractTest {
         fun `should have COMMENT_RATIO file metric`() {
             // Assert
             assertThat(AvailableFileMetrics.COMMENT_RATIO.metricName).isEqualTo("comment_ratio")
+        }
+
+        @Test
+        fun `should have the file metrics that count database objects`() {
+            // Assert
+            assertThat(AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES.metricName).isEqualTo("number_of_stored_procedures")
+            assertThat(AvailableFileMetrics.NUMBER_OF_TRIGGERS.metricName).isEqualTo("number_of_triggers")
+            assertThat(AvailableFileMetrics.NUMBER_OF_VIEWS.metricName).isEqualTo("number_of_views")
+            assertThat(AvailableFileMetrics.NUMBER_OF_TABLES.metricName).isEqualTo("number_of_tables")
         }
 
         @Test

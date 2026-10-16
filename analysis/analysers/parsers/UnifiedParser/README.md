@@ -30,8 +30,9 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | SQL          | .sql, .pks, .pkb, .pls                 |
 
 SQL covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL in one go, without choosing a dialect. Procedures,
-functions and triggers with a body count as functions; branches, loops, the `WHEN`s of a `CASE`, exception
-handlers and `AND`/`OR` add to the complexity.
+functions and triggers with a body count as functions, MySQL's single-statement routines included; branches, loops,
+the `WHEN`s of a `CASE`, `IIF`, `EXIT WHEN`, `CONTINUE WHEN`, exception handlers and `AND`/`OR` add to the
+complexity. The `END` line of a routine counts for its rloc no more than a closing brace does.
 
 ## Supported Metrics
 
@@ -48,6 +49,10 @@ handlers and `AND`/`OR` add to the complexity.
 | Excessive Comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
 | Comment Ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
 | Message Chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
+| Number of stored procedures | SQL: the stored procedures the file defines with a body, on their own or in an Oracle package body; 0 in other languages                                                                                                |
+| Number of triggers        | SQL: the triggers the file creates, with a body or calling a function; 0 in other languages                                                                                                                                |
+| Number of views           | SQL: the views the file defines, materialized ones included; 0 in other languages                                                                                                                                          |
+| Number of tables          | SQL: the tables the file creates, without T-SQL temporary tables (`#name`); 0 in other languages                                                                                                                           |
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
 

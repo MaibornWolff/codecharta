@@ -11,6 +11,7 @@ import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.Calc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationExtensions
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
 
 class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensions: CalculationExtensions) {
     val complexityCalc = ComplexityCalc(nodeTypeProvider)
@@ -21,7 +22,21 @@ class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensi
 
     val parametersPerFunctionCalc = ParametersPerFunctionCalc(nodeTypeProvider)
 
-    fun getPerFileMetricInfo(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> = mapOf(
+    private val nodeCountCalcs = AvailableFileMetrics.NODE_COUNTS.associateWith { fileMetric ->
+        NodeCountCalc(nodeTypeProvider.countedNodeTypes[fileMetric] ?: TreeNodeTypes(emptySet()))
+    }
+
+    fun getPerFileMetricInfo(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> =
+        codeMetricCalculators() + nodeCountCalculators()
+
+    private fun nodeCountCalculators(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> =
+        nodeCountCalcs.mapValues { (_, calc) ->
+            { node: SyntaxNode, nodeType: String, _: Int, _: Int ->
+                calc.calculateMetricForNode(CalculationContext(node, nodeType, shouldIgnoreNode = { _, _ -> false }))
+            }
+        }
+
+    private fun codeMetricCalculators(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> = mapOf(
         AvailableFileMetrics.COMPLEXITY to { node: SyntaxNode, nodeType: String, startRow: Int, endRow: Int ->
             complexityCalc.calculateFunctionComplexityForNode(
                 CalculationContext(

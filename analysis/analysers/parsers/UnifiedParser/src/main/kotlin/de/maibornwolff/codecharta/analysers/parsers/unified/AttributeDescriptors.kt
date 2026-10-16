@@ -169,6 +169,35 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
+        ),
+        "number_of_stored_procedures" to AttributeDescriptor(
+            title = "Number of stored procedures",
+            description = "The number of SQL stored procedures the file defines with a body, " +
+                "on their own or in an Oracle package body.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "number_of_triggers" to AttributeDescriptor(
+            title = "Number of triggers",
+            description = "The number of SQL triggers the file creates, with a body or calling a function.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "number_of_views" to AttributeDescriptor(
+            title = "Number of views",
+            description = "The number of SQL views the file defines, materialized ones included.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        "number_of_tables" to AttributeDescriptor(
+            title = "Number of tables",
+            description = "The number of SQL tables the file creates, without T-SQL temporary tables (#name).",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
         )
     )
 }

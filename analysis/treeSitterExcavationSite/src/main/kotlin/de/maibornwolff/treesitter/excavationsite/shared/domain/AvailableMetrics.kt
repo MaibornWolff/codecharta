@@ -12,7 +12,16 @@ enum class AvailableFileMetrics(val metricName: String) {
     LONG_PARAMETER_LIST("long_parameter_list"),
     EXCESSIVE_COMMENTS("excessive_comments"),
     COMMENT_RATIO("comment_ratio"),
-    LINES_OF_CODE("loc")
+    NUMBER_OF_STORED_PROCEDURES("number_of_stored_procedures"),
+    NUMBER_OF_TRIGGERS("number_of_triggers"),
+    NUMBER_OF_VIEWS("number_of_views"),
+    NUMBER_OF_TABLES("number_of_tables"),
+    LINES_OF_CODE("loc");
+
+    companion object {
+        /** Each the number of one kind of node, which a language marks with [Metric.Counted]; zero where it marks none. */
+        val NODE_COUNTS = listOf(NUMBER_OF_STORED_PROCEDURES, NUMBER_OF_TRIGGERS, NUMBER_OF_VIEWS, NUMBER_OF_TABLES)
+    }
 }
 
 // each of these metrics has max/min/mean/median and is calculated for each function/method in a file
