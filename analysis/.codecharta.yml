@@ -65,35 +65,47 @@ metrics:
   complexity:
     warning:
       max: 100
-      instruction: |
+      instruction: &complexity |
         This file does too much. Single Responsibility: one file, one reason to change.
         - Find the responsibilities mixed in here and move each one into a class of its own.
         - Have callers depend on small interfaces instead of this one large unit (Interface Segregation).
         - KISS: remove branches for cases that never happen instead of handling them.
+    error:  ## today's worst file, so nothing grows beyond it
+      max: 187
+      instruction: *complexity
   rloc:
     warning:
       max: 500
-      instruction: |
+      instruction: &rloc |
         This file has grown too long to read in one go.
         - Split it along its responsibilities (Single Responsibility), not at an arbitrary line.
         - Extract repeated logic into a shared helper (DRY: 3+ occurrences means extract).
         - Delete dead code and speculative extensions (KISS, YAGNI).
+    error:  ## today's worst file, so nothing grows beyond it
+      max: 577
+      instruction: *rloc
   max_complexity_per_function:
     warning:
       max: 20
-      instruction: |
+      instruction: &max_complexity_per_function |
         One function here has too many paths to understand or test.
         - Return early from error and edge cases (guard clauses) instead of nesting.
         - Extract each step into a small, well-named function that does one thing.
         - Replace long if/else or when chains on a type with polymorphism (Open/Closed).
+    error:  ## today's worst file, so nothing grows beyond it
+      max: 38
+      instruction: *max_complexity_per_function
   comment_lines:
     warning:
       max: 25
-      instruction: |
+      instruction: &comment_lines |
         Clean Code: code should explain itself, and comments go stale.
         - Replace a comment that says WHAT the code does with a better name, a named helper or a named constant.
         - Keep only comments that explain WHY: a constraint, a workaround with its issue, a deliberate trade-off.
         - Delete commented-out code. Git keeps the history.
+    error:  ## today's worst file, so nothing grows beyond it
+      max: 91
+      instruction: *comment_lines
 
 dependencies:  ## counted like the dependency view in the visualization
   cyclesBetweenFiles:  ## a warning until today's cycles are broken, then an error
