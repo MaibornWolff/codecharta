@@ -22,8 +22,9 @@ Angular templates (`.html`) and SQL.
 An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, but not the
 names Angular gives (pipe names, `@defer` triggers, the `index` or `trackBy` of `*ngFor`), its HTML
 comments, its text, and the values of the attributes that hold text a user reads: `title`, `alt`, `placeholder`,
-`label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose name ends in `hint`, `label`,
-`title`, `text`, `tooltip`, `placeholder`, `description` or `message` (`hoverHint`, `empty-message`). The values of
+`label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose last word, after a hyphen or
+at a capital letter, is `hint`, `label`, `title`, `text`, `tooltip`, `placeholder`, `description` or `message`
+(`hoverHint`, `empty-message`, but not `context`). The values of
 all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out. The text of a template
 and the values of its user-facing attributes weigh like its identifiers, with `--identifier-weight`, because they are
 what the user reads; `--string-weight=0` does not leave them out. The string literals of its expressions, such as

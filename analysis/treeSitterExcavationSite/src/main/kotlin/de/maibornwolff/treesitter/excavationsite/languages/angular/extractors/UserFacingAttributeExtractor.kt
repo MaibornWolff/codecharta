@@ -22,19 +22,27 @@ internal fun extractUserFacingAttributeText(attributeValue: SyntaxNode): String?
 
 /**
  * Whether an attribute name marks text a user reads: one of the standard text attributes of HTML and ARIA, or a name
- * that ends like one (`hoverHint`, `empty-message`, `pageTitle`). A name with an Angular prefix is no text: `i18n-title`
- * marks the `title` for translation, `bind-title` and `let-label` bind an expression, `bindLabel` names a property.
+ * whose last word is a text word, after a hyphen or at a capital letter (`hoverHint`, `empty-message`, `pageTitle`),
+ * so `context` or `subtitle` are no text. A name with an Angular prefix is no text: `i18n-title` marks the `title`
+ * for translation, `bind-title` and `let-label` bind an expression, `bindLabel` names a property.
  */
 internal object UserFacingTextAttribute {
-    private const val KEBAB_SEPARATOR = "-"
+    private const val KEBAB_SEPARATOR = '-'
     private val STANDARD_NAMES =
         setOf("title", "alt", "placeholder", "aria-label", "aria-description", "aria-placeholder", "label")
-    private val TEXT_SUFFIXES = listOf("hint", "label", "title", "text", "tooltip", "placeholder", "description", "message")
+    private val TEXT_WORDS = listOf("hint", "label", "title", "text", "tooltip", "placeholder", "description", "message")
     private val ANGULAR_PREFIXES = listOf("i18n", "bind", "on-", "let-", "ref-")
 
     fun matches(attributeName: String): Boolean {
         val name = attributeName.lowercase()
         if (ANGULAR_PREFIXES.any { name.startsWith(it) }) return false
-        return name in STANDARD_NAMES || TEXT_SUFFIXES.any { name.replace(KEBAB_SEPARATOR, "").endsWith(it) }
+        return name in STANDARD_NAMES || lastWordOf(attributeName).lowercase() in TEXT_WORDS
+    }
+
+    // The word after the last hyphen or before the last capital letter: `Hint` of `hoverHint`, `message` of `empty-message`
+    private fun lastWordOf(name: String): String {
+        val afterHyphen = name.substringAfterLast(KEBAB_SEPARATOR)
+        val lastCapital = afterHyphen.indexOfLast { it.isUpperCase() }
+        return if (lastCapital > 0) afterHyphen.substring(lastCapital) else afterHyphen
     }
 }

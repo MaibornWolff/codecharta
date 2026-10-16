@@ -256,6 +256,18 @@ class AngularExtractionTest {
         }
 
         @Test
+        fun `should not extract the value of an attribute whose name ends in a text word only inside a word`() {
+            // Arrange
+            val code = """<cc-card context="turquoise" subtitle="Lair" hint="Quiet"></cc-card>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.texts).containsExactly("Quiet")
+        }
+
+        @Test
         fun `should extract the text around an interpolation of a user-facing attribute without its padding`() {
             // Arrange
             val code = """<button title="Copy {{ path }} to the clipboard"></button>"""
