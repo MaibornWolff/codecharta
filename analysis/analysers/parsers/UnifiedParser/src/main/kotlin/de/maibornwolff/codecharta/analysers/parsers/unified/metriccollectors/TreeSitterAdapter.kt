@@ -13,6 +13,29 @@ import java.io.File
  * Adapter between TreesitterLibrary and CodeCharta's MutableNode format.
  */
 object TreeSitterAdapter {
+    private val languageByExtension: Map<FileExtension, Language> = mapOf(
+        FileExtension.JAVA to Language.JAVA,
+        FileExtension.KOTLIN to Language.KOTLIN,
+        FileExtension.TYPESCRIPT to Language.TYPESCRIPT,
+        FileExtension.TSX to Language.TSX,
+        FileExtension.JAVASCRIPT to Language.JAVASCRIPT,
+        FileExtension.PYTHON to Language.PYTHON,
+        FileExtension.GO to Language.GO,
+        FileExtension.PHP to Language.PHP,
+        FileExtension.RUBY to Language.RUBY,
+        FileExtension.SWIFT to Language.SWIFT,
+        FileExtension.BASH to Language.BASH,
+        FileExtension.CSHARP to Language.CSHARP,
+        FileExtension.CPP to Language.CPP,
+        FileExtension.C to Language.C,
+        FileExtension.OBJECTIVE_C to Language.OBJECTIVE_C,
+        FileExtension.VUE to Language.VUE,
+        FileExtension.DELPHI to Language.DELPHI,
+        FileExtension.RUST to Language.RUST,
+        FileExtension.HTML to Language.ANGULAR,
+        FileExtension.SQL to Language.SQL
+    )
+
     /**
      * Collects metrics for a file using TreesitterLibrary.
      */
@@ -47,29 +70,7 @@ object TreeSitterAdapter {
     /**
      * Maps a FileExtension to TreesitterLibrary's Language enum.
      */
-    fun getLanguageForExtension(fileExtension: FileExtension): Language? = when (fileExtension) {
-        FileExtension.JAVA -> Language.JAVA
-        FileExtension.KOTLIN -> Language.KOTLIN
-        FileExtension.TYPESCRIPT -> Language.TYPESCRIPT
-        FileExtension.TSX -> Language.TSX
-        FileExtension.JAVASCRIPT -> Language.JAVASCRIPT
-        FileExtension.PYTHON -> Language.PYTHON
-        FileExtension.GO -> Language.GO
-        FileExtension.PHP -> Language.PHP
-        FileExtension.RUBY -> Language.RUBY
-        FileExtension.SWIFT -> Language.SWIFT
-        FileExtension.BASH -> Language.BASH
-        FileExtension.CSHARP -> Language.CSHARP
-        FileExtension.CPP -> Language.CPP
-        FileExtension.C -> Language.C
-        FileExtension.OBJECTIVE_C -> Language.OBJECTIVE_C
-        FileExtension.VUE -> Language.VUE
-        FileExtension.DELPHI -> Language.DELPHI
-        FileExtension.RUST -> Language.RUST
-        FileExtension.HTML -> Language.ANGULAR
-        FileExtension.SQL -> Language.SQL
-        else -> null
-    }
+    fun getLanguageForExtension(fileExtension: FileExtension): Language? = languageByExtension[fileExtension]
 
     /**
      * Determines the Language for a file based on its extension.
