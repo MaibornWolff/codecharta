@@ -29,7 +29,7 @@ class AngularTemplateAnalyzerTest {
     }
 
     @Test
-    fun `should use the selectors and pipe names the template names`() {
+    fun `should use the elements and pipe names the template names`() {
         // Arrange
         val content = """
             <app-torch [lit]="isLit" />
@@ -40,6 +40,6 @@ class AngularTemplateAnalyzerTest {
         val report = analyze(content)
 
         // Assert
-        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly("app-torch", "goldCoins")
+        assertThat(report.nodes.single().usedTypes.map { it.name }).containsExactly("app-torch", "p", "goldCoins")
     }
 }

@@ -463,6 +463,33 @@ class DependencyParserTest {
         assertThat(fileEdgeNames(output)).doesNotContain("a.component.html" to "b2.component.ts")
     }
 
+    @Test
+    fun `should link a component selector without a hyphen but no html element to code of its name`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("src/app/views").createDirectories()
+        tempDir.resolve("src/app/creature.component.ts").writeText(
+            """
+            @Component({ selector: 'creature', template: '<p>creature</p>' })
+            export class CreatureComponent {}
+            @Component({ selector: 'app-host', templateUrl: 'views/host.html' })
+            export class HostComponent {}
+            """.trimIndent()
+        )
+        tempDir.resolve("src/app/views.ts").writeText("export function header() {}")
+        tempDir.resolve("src/app/views/host.html").writeText("<header><creature></creature></header>")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
+            "creature.component.ts" to "host.html",
+            "host.html" to "creature.component.ts"
+        )
+    }
+
     private fun edgeTargetFolders(output: String, sourceName: String): List<String> {
         val parentNamesById = HashMap<String, String>()
 

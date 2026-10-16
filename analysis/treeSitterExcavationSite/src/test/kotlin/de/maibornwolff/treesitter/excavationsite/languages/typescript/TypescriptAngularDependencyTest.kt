@@ -41,7 +41,7 @@ class TypescriptAngularDependencyTest {
             assertThat(embedded.map { it.owner to it.language })
                 .containsExactly("ChestComponent" to Language.ANGULAR, "LidComponent" to Language.ANGULAR)
             assertThat(embedded.map { template -> template.declarations.single().usedTypes.map { it.name } })
-                .containsExactly(listOf("app-torch", "goldCoins"), emptyList())
+                .containsExactly(listOf("app-torch", "goldCoins"), listOf("p"))
         }
 
         @Test

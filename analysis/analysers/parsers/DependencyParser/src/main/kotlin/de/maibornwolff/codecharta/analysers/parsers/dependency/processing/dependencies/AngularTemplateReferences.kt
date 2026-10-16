@@ -11,7 +11,8 @@ import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
  * written with its full path. A name one class declares means that class. A name several classes declare means the one
  * in the scope of the template's component, as Angular decides it: what the standalone component imports, or what the
  * module declaring the component declares and imports. An imported module adds what it exports, and a module it
- * exports adds what that one exports in turn. A name the scope does not decide stays unresolved.
+ * exports adds what that one exports in turn. A name no class declares, such as an HTML element or a library
+ * component, and a name the scope does not decide are dropped, so they cannot resolve to code that merely shares it.
  *
  * A decorator names classes by their simple name; several classes of that name mean the one the file of the decorator
  * imports, or else the one in that file.
@@ -28,11 +29,9 @@ internal class AngularTemplateReferences private constructor(nodes: List<Node>) 
     private val modules: List<Node> = angularNodes.filter { it.angularDeclaration().declarations.isNotEmpty() }
 
     private fun qualify(template: Node): Node = template.copy(
-        usedTypes = template.usedTypes
-            .map { type ->
-                val declaration = declarationOf(type.name, template)
-                if (declaration == null) type else type.copy(name = declaration.pathWithName.withDots())
-            }.toSet()
+        usedTypes = template.usedTypes.mapNotNullTo(LinkedHashSet()) { type ->
+            declarationOf(type.name, template)?.let { declaration -> type.copy(name = declaration.pathWithName.withDots()) }
+        }
     )
 
     private fun declarationOf(templateName: String, template: Node): Node? {
@@ -78,7 +77,7 @@ internal class AngularTemplateReferences private constructor(nodes: List<Node>) 
         private val NO_DECLARATION = AngularDeclaration()
 
         fun qualify(nodes: List<Node>): List<Node> {
-            if (nodes.none { it.angular != null }) return nodes
+            if (nodes.none { it.language == SupportedLanguage.ANGULAR }) return nodes
             val references = AngularTemplateReferences(nodes)
             return nodes.map { node -> if (node.language == SupportedLanguage.ANGULAR) references.qualify(node) else node }
         }

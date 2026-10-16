@@ -30,7 +30,7 @@ class AngularDependencyTest {
         @Test
         fun `should extract one nameless script declaration without package path and imports`() {
             // Arrange
-            val code = "<p>Welcome to the cellar</p>"
+            val code = "Welcome to the cellar"
 
             // Act
             val result = analyze(code)
@@ -46,7 +46,7 @@ class AngularDependencyTest {
     @Nested
     inner class UsedComponents {
         @Test
-        fun `should extract the custom elements of the template once each in source order`() {
+        fun `should extract the elements of the template once each in source order`() {
             // Arrange
             val code = """
                 <section>
@@ -60,11 +60,23 @@ class AngularDependencyTest {
             val usedNames = usedNamesOf(code)
 
             // Assert
-            assertThat(usedNames).containsExactly("app-cave-map", "app-torch")
+            assertThat(usedNames).containsExactly("section", "app-cave-map", "app-torch")
         }
 
         @Test
-        fun `should leave out html elements and the ng elements of angular itself`() {
+        fun `should extract an element without a hyphen, as a component selector needs none`() {
+            // Arrange
+            val code = "<creature [kind]=\"'centaur'\"></creature>"
+
+            // Act
+            val usedNames = usedNamesOf(code)
+
+            // Assert
+            assertThat(usedNames).containsExactly("creature")
+        }
+
+        @Test
+        fun `should leave out the ng elements of angular itself`() {
             // Arrange
             val code = """
                 <div><ng-container *ngIf="lit"><ng-template><span>Dark</span></ng-template></ng-container></div>
@@ -75,7 +87,7 @@ class AngularDependencyTest {
             val usedNames = usedNamesOf(code)
 
             // Assert
-            assertThat(usedNames).isEmpty()
+            assertThat(usedNames).containsExactly("div", "span")
         }
 
         @Test
@@ -114,7 +126,7 @@ class AngularDependencyTest {
             val usedNames = usedNamesOf(code)
 
             // Assert
-            assertThat(usedNames).containsExactly("goldCoins", "uppercase")
+            assertThat(usedNames).containsExactly("p", "goldCoins", "uppercase")
         }
 
         @Test

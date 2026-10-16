@@ -137,8 +137,9 @@ dependency gets.
   migration, are one declaration with an empty name next to the objects the file creates.
 - A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
   are the components its template names. The adapter names it after the file.
-- An Angular template is one `SCRIPT` with an empty name. Its used types are the selectors of the custom elements and
-  the names of the pipes it uses, which the adapter resolves to the components and pipes that declare them.
+- An Angular template is one `SCRIPT` with an empty name. Its used types are its elements, but for Angular's own
+  `ng-container`, `ng-template` and `ng-content`, and the names of the pipes it uses; the adapter resolves the ones a
+  component or pipe declares and drops the rest, such as plain HTML elements.
 
 ### Template names
 
@@ -304,7 +305,7 @@ A different concatenation order with the same types produces identical dependenc
 | **Python** | all identifiers in source order, then all attribute accesses in source order | `PythonAnalyzer.kt` |
 | **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
 | **Vue** | template components in source order; the script imports are imports, which the adapter appends as used types | `VueAnalyzer.kt` |
-| **Angular template** | custom elements and pipes in source order | N/A — TSE-native, no DC legacy |
+| **Angular template** | elements and pipes in source order | N/A — TSE-native, no DC legacy |
 | **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
 | **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
