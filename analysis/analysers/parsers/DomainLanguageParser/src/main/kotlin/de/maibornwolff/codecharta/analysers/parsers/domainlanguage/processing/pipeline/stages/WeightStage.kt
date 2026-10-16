@@ -1,13 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.pipeline.stages
 
-class WeightStage(private val weights: ExtractionWeights = ExtractionWeights()) {
-    fun weight(extractedTexts: List<ExtractedText>): List<WeightedText> = extractedTexts
-        .map { extracted -> WeightedText(extracted.text, weightOf(extracted.context), extracted.context, extracted.interpretsEscapes) }
-        .filter { it.weight > 0 }
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 
-    private fun weightOf(context: ExtractionContext): Int = when (context) {
-        ExtractionContext.IDENTIFIER -> weights.identifierWeight
-        ExtractionContext.COMMENT -> weights.commentWeight
-        ExtractionContext.STRING -> weights.stringWeight
-    }
+class WeightStage(private val weights: ExtractionWeights = ExtractionWeights(), private val language: Language? = null) {
+    fun weight(extractedTexts: List<ExtractedText>): List<WeightedText> = extractedTexts
+        .map { extracted ->
+            val weight = weights.weightOf(extracted.context, language?.textWeighsLikeIdentifiers == true)
+            WeightedText(extracted.text, weight, extracted.context, extracted.interpretsEscapes)
+        }.filter { it.weight > 0 }
 }

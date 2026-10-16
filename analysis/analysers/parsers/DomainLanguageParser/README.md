@@ -22,7 +22,9 @@ An Angular template contributes the identifiers of its bindings, interpolations 
 comments, its text, and the values of the attributes that hold text a user reads: `title`, `alt`, `placeholder`,
 `label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose name ends in `hint`, `label`,
 `title`, `text`, `tooltip`, `placeholder`, `description` or `message` (`hoverHint`, `empty-message`). The values of
-all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out.
+all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out. The text of a template
+weighs like its identifiers (`--identifier-weight`), because it is what the user reads; `--string-weight=0` still
+leaves it out. Every other language keeps the string weight for its strings.
 
 In SQL the keywords, types and built-in functions of every dialect are stop words, and so are the names of the
 dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`), the words of the catalog views

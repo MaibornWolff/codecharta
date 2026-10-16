@@ -2,7 +2,16 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.k
 
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
 
-enum class Language(val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>, private val keywordResource: String) {
+/**
+ * @property textWeighsLikeIdentifiers whether the text of the language weighs like its identifiers, as in a template,
+ * where the text is what the user reads and the identifiers bind it to the code
+ */
+enum class Language(
+    val libraryLanguage: LibraryLanguage,
+    internal val extensions: Set<String>,
+    private val keywordResource: String,
+    val textWeighsLikeIdentifiers: Boolean = false
+) {
     KOTLIN(LibraryLanguage.KOTLIN, setOf("kt", "kts"), "keywords/kotlin-keywords.txt"),
     TYPESCRIPT(LibraryLanguage.TYPESCRIPT, setOf("ts", "tsx", "cts", "mts"), "keywords/typescript-keywords.txt"),
     JAVASCRIPT(LibraryLanguage.JAVASCRIPT, setOf("js", "jsx", "mjs", "cjs"), "keywords/javascript-keywords.txt"),
@@ -20,7 +29,7 @@ enum class Language(val libraryLanguage: LibraryLanguage, internal val extension
     VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
     ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
     RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
-    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt"),
+    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt", textWeighsLikeIdentifiers = true),
     SQL(LibraryLanguage.SQL, setOf("sql", "pks", "pkb", "pls"), "keywords/sql-keywords.txt")
     ;
 
