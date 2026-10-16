@@ -32,7 +32,7 @@ object SqlMetricMapping : MetricMapping {
     private val OUTSIDE_ROUTINES = MetricCondition.NoAncestorMatches(setOf("routine_body", "do_block"))
 
     private fun countedOutsideRoutines(fileMetric: AvailableFileMetrics, vararg conditions: MetricCondition) =
-        Metric.Counted(fileMetric, MetricCondition.AllOf(conditions.toList() + OUTSIDE_ROUTINES))
+        Metric.Counted(fileMetric, MetricCondition.AllOf(conditions.toList() + OUTSIDE_ROUTINES), SqlObjectKeys::qualifiedName)
 
     override val nodeMetrics: Map<String, Set<Metric>> = buildMap {
         (BRANCHES_AND_LOOPS + EXCEPTION_HANDLERS).forEach { nodeType -> put(nodeType, setOf(Metric.LogicComplexity)) }

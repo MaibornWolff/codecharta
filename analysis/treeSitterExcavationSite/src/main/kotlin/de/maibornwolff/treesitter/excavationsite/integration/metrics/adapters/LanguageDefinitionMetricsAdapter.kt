@@ -1,10 +1,12 @@
 package de.maibornwolff.treesitter.excavationsite.integration.metrics.adapters
 
+import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.CountedNodeTypes
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricCondition
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
 
 /**
@@ -21,6 +23,7 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
     private val messageChains = NodeTypesBuilder()
     private val messageChainsCall = NodeTypesBuilder()
     private val counted = mutableMapOf<AvailableFileMetrics, NodeTypesBuilder>()
+    private val objectKeys = mutableMapOf<AvailableFileMetrics, MutableMap<String, (SyntaxNode) -> String?>>()
 
     init {
         for ((nodeType, metrics) in definition.nodeMetrics) {
@@ -36,7 +39,9 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
     override val functionParameterNodeTypes: TreeNodeTypes = functionParameter.build()
     override val messageChainsNodeTypes: TreeNodeTypes = messageChains.build()
     override val messageChainsCallNodeTypes: TreeNodeTypes = messageChainsCall.build()
-    override val countedNodeTypes: Map<AvailableFileMetrics, TreeNodeTypes> = counted.mapValues { (_, builder) -> builder.build() }
+    override val countedNodeTypes: Map<AvailableFileMetrics, CountedNodeTypes> = counted.mapValues { (fileMetric, builder) ->
+        CountedNodeTypes(builder.build(), objectKeys[fileMetric].orEmpty())
+    }
 
     private fun addToCategory(nodeType: String, metric: Metric) {
         when (metric) {
@@ -52,8 +57,13 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
             is Metric.Parameter -> functionParameter.add(nodeType)
             is Metric.MessageChain -> messageChains.add(nodeType)
             is Metric.MessageChainCall -> messageChainsCall.add(nodeType)
-            is Metric.Counted -> counted.getOrPut(metric.fileMetric) { NodeTypesBuilder() }.add(nodeType, metric.condition)
+            is Metric.Counted -> addToCount(nodeType, metric)
         }
+    }
+
+    private fun addToCount(nodeType: String, metric: Metric.Counted) {
+        counted.getOrPut(metric.fileMetric) { NodeTypesBuilder() }.add(nodeType, metric.condition)
+        objectKeys.getOrPut(metric.fileMetric) { mutableMapOf() }[nodeType] = metric.objectKey
     }
 
     private class NodeTypesBuilder {

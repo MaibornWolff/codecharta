@@ -44,9 +44,12 @@ sealed class Metric {
     data object MessageChainCall : Metric()
 
     /**
-     * Node counts for [fileMetric], such as a table for the number of tables, when [condition] holds. Nodes of one name
-     * count once per file, qualified by the names of the nodes around them: a view created and then altered is one
-     * view, a procedure of the same name in two packages two procedures.
+     * Node counts for [fileMetric], such as a table for the number of tables, when [condition] holds. Nodes with the
+     * same [objectKey] count once per file, as they define the same object; a node without a key counts on its own.
      */
-    data class Counted(val fileMetric: AvailableFileMetrics, val condition: MetricCondition = MetricCondition.Always) : Metric()
+    data class Counted(
+        val fileMetric: AvailableFileMetrics,
+        val condition: MetricCondition = MetricCondition.Always,
+        val objectKey: (SyntaxNode) -> String? = { null }
+    ) : Metric()
 }

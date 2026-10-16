@@ -25,8 +25,8 @@ class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensi
     val parametersPerFunctionCalc = ParametersPerFunctionCalc(nodeTypeProvider)
 
     // Only the counts the language declares, so that a language without database objects reports no table count
-    private val nodeCountCalcs = nodeTypeProvider.countedNodeTypes.mapValues { (_, countedNodeTypes) ->
-        NodeCountCalc(countedNodeTypes, countsDistinctNames = true)
+    private val nodeCountCalcs = nodeTypeProvider.countedNodeTypes.mapValues { (_, counted) ->
+        NodeCountCalc(counted.nodeTypes, counted.objectKeyByNodeType)
     }
 
     val countedMetrics: Set<AvailableFileMetrics> get() = nodeCountCalcs.keys

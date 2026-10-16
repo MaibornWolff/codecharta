@@ -12,5 +12,5 @@ interface MetricNodeTypes {
     val functionParameterNodeTypes: TreeNodeTypes
     val messageChainsNodeTypes: TreeNodeTypes
     val messageChainsCallNodeTypes: TreeNodeTypes
-    val countedNodeTypes: Map<AvailableFileMetrics, TreeNodeTypes>
+    val countedNodeTypes: Map<AvailableFileMetrics, CountedNodeTypes>
 }
