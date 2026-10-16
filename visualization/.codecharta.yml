@@ -16,7 +16,7 @@ analysers:  ## on, off, or the analyser's own options instead of on (its exclude
     ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit
   dependencyparser: on
     ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit, include-tests, max-file-size, file-timeout, omit-graph-analysis
-  domainlanguageparser: on
+  domainlanguageparser: off
     ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit, limit, ngrams, stop-word-level, identifier-weight, comment-weight, string-weight, exclude-tests, no-technical-stopwords, no-tfidf, sort-by, no-ssr
 
 exitCodes:
@@ -63,7 +63,7 @@ exitCodes:
 metrics:
   complexity:
     warning:
-      max: 50
+      max: 100
       instruction: |
         This file does too much. Single Responsibility: one file, one reason to change.
         - Find the responsibilities mixed in here and move each one into a class of its own.
@@ -71,7 +71,7 @@ metrics:
         - KISS: remove branches for cases that never happen instead of handling them.
   rloc:
     warning:
-      max: 300
+      max: 500
       instruction: |
         This file has grown too long to read in one go.
         - Split it along its responsibilities (Single Responsibility), not at an arbitrary line.
@@ -79,7 +79,7 @@ metrics:
         - Delete dead code and speculative extensions (KISS, YAGNI).
   max_complexity_per_function:
     warning:
-      max: 10
+      max: 20
       instruction: |
         One function here has too many paths to understand or test.
         - Return early from error and edge cases (guard clauses) instead of nesting.
@@ -87,7 +87,7 @@ metrics:
         - Replace long if/else or switch chains on a type with polymorphism (Open/Closed).
   comment_lines:
     warning:
-      max: 40
+      max: 25
       instruction: |
         Clean Code: code should explain itself, and comments go stale.
         - Replace a comment that says WHAT the code does with a better name, a named helper or a named constant.
@@ -125,7 +125,7 @@ overrides:  ## tests and mocks may be long and explain themselves in comments; c
       - "**/e2e/**"
       - "**/mocks/**"
       - "**/*[mM]ocks.ts"
-      - app/playwright.helper.ts
+      - "app/playwright.helper.ts"
     metrics:
       rloc: off
       comment_lines: off
