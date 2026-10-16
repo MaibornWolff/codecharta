@@ -12,22 +12,16 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
  * The inline template of a component is a source of its own, see [InlineTemplateExtractor].
  */
 internal object AngularDecoratorExtractor {
-    private const val ARGUMENTS = "arguments"
-    private const val OBJECT = "object"
-    private const val PAIR = "pair"
     private const val COMPONENT = "Component"
     private const val SELECTOR = "selector"
     private const val TEMPLATE_URL = "templateUrl"
     private const val TEMPLATE = "template"
-    private const val TEMPLATE_STRING = "template_string"
     private const val PIPE = "Pipe"
     private const val NG_MODULE = "NgModule"
     private const val IMPORTS = "imports"
     private const val DECLARATIONS = "declarations"
     private const val EXPORTS = "exports"
-    private const val ARRAY = "array"
     private const val PIPE_NAME = "name"
-    private const val VALUE_FIELD = "value"
     private const val SELECTOR_SEPARATOR = ","
     private val ELEMENT_SELECTOR = Regex("^[a-zA-Z][\\w-]*")
 
