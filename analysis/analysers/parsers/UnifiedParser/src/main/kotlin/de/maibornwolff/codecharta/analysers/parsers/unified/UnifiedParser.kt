@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
 import de.maibornwolff.codecharta.analysers.analyserinterface.basefile.BaseFileResolver
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesDetector
@@ -46,7 +47,7 @@ class UnifiedParser(
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
     AttributeGenerator,
-    CommandLine.IExitCodeGenerator by runExitCode {
+    FailableRun by runExitCode {
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"

@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
@@ -41,7 +42,7 @@ class DomainLanguageParser(
     private val runExitCode: RunExitCode = RunExitCode()
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
-    CommandLine.IExitCodeGenerator by runExitCode {
+    FailableRun by runExitCode {
     @CommandLine.Option(
         names = ["--limit"],
         description = [

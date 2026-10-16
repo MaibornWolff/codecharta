@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
@@ -44,7 +45,7 @@ class DependencyParser(
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
     AttributeGenerator,
-    CommandLine.IExitCodeGenerator by runExitCode {
+    FailableRun by runExitCode {
     @CommandLine.Option(
         names = ["--include-tests"],
         description = [
