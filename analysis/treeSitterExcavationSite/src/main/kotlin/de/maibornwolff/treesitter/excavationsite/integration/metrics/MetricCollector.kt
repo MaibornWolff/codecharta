@@ -57,7 +57,7 @@ internal class MetricCollector(private val grammar: FfmGrammar, private val defi
     private fun visitNode(
         node: SyntaxNode,
         nodeType: String,
-        perFileMetricInfo: Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int>,
+        perFileMetricInfo: Map<AvailableFileMetrics, PerFileCalculator>,
         metricValues: MutableMap<AvailableFileMetrics, Int>
     ) {
         if (nodeType == rootNodeType) return

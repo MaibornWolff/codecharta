@@ -66,12 +66,13 @@ internal object DeclarationExtractor {
         if (!isObjectOfScript && !isRoutineOfPackage) return null
         val nameParts =
             SqlNames.nameNodeOf(node)?.let { SqlNames.comparablePartsOf(it) }?.takeIf { it.isNotEmpty() } ?: return null
-        val parentPath = if (isRoutineOfPackage) listOf(owner.name) else schemaOf(nameParts)
+        val parentPath = if (isRoutineOfPackage) listOf(owner.name) else schemaPartOf(nameParts)
         return DeclarationBuilder(nameParts.last(), type, parentPath, isPackage = node.type == PACKAGE_DEFINITION)
     }
 
-    // The schema of dbo.orders, or nothing for an unqualified name
-    private fun schemaOf(nameParts: List<String>): List<String> = nameParts.dropLast(1).takeLast(1)
+    // The schema of dbo.orders, or nothing for an unqualified name; the database or server in front of a schema
+    // (warehouse.dbo.orders) is left out, as a use names an object by schema and name only
+    private fun schemaPartOf(nameParts: List<String>): List<String> = nameParts.dropLast(1).takeLast(1)
 
     // ALTER PROCEDURE p COMPILE names a routine created elsewhere
     private fun isCreated(routine: SyntaxNode): Boolean = routine.getChild(0).type == CREATE_KEYWORD

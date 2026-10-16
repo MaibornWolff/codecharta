@@ -13,6 +13,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationExtens
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
 
+/** Calculates a per-file metric for one node, given its type and its first and last row. */
+typealias PerFileCalculator = (SyntaxNode, String, Int, Int) -> Int
+
 class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensions: CalculationExtensions) {
     val complexityCalc = ComplexityCalc(nodeTypeProvider)
     val commentCalc = CommentLinesCalc(nodeTypeProvider)
@@ -26,17 +29,15 @@ class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensi
         NodeCountCalc(nodeTypeProvider.countedNodeTypes[fileMetric] ?: TreeNodeTypes(emptySet()))
     }
 
-    fun getPerFileMetricInfo(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> =
-        codeMetricCalculators() + nodeCountCalculators()
+    fun getPerFileMetricInfo(): Map<AvailableFileMetrics, PerFileCalculator> = codeMetricCalculators() + nodeCountCalculators()
 
-    private fun nodeCountCalculators(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> =
-        nodeCountCalcs.mapValues { (_, calc) ->
-            { node: SyntaxNode, nodeType: String, _: Int, _: Int ->
-                calc.calculateMetricForNode(CalculationContext(node, nodeType, shouldIgnoreNode = { _, _ -> false }))
-            }
+    private fun nodeCountCalculators(): Map<AvailableFileMetrics, PerFileCalculator> = nodeCountCalcs.mapValues { (_, calc) ->
+        { node: SyntaxNode, nodeType: String, _: Int, _: Int ->
+            calc.calculateMetricForNode(CalculationContext(node, nodeType, shouldIgnoreNode = { _, _ -> false }))
         }
+    }
 
-    private fun codeMetricCalculators(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> = mapOf(
+    private fun codeMetricCalculators(): Map<AvailableFileMetrics, PerFileCalculator> = mapOf(
         AvailableFileMetrics.COMPLEXITY to { node: SyntaxNode, nodeType: String, startRow: Int, endRow: Int ->
             complexityCalc.calculateFunctionComplexityForNode(
                 CalculationContext(

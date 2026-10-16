@@ -15,11 +15,8 @@ internal object SqlNames {
     private val QUOTE_PAIRS = listOf(DOUBLE_QUOTE to DOUBLE_QUOTE, "`" to "`", "[" to "]")
     private val VARIABLE_MARKERS = charArrayOf('@', ':')
 
-    /** The parts of a dotted name, unquoted; a SQL*Plus substitution variable (`&schema.`) is no part of it. */
-    fun partsOf(name: SyntaxNode): List<String> {
-        if (name.type != OBJECT_NAME) return listOf(unquoted(name.text))
-        return name.namedChildren().filter { it.type in NAME_PART_TYPES }.map { unquoted(it.text) }.toList()
-    }
+    /** The parts of a dotted name, unquoted. */
+    fun partsOf(name: SyntaxNode): List<String> = namePartTexts(name).map { unquoted(it) }
 
     /**
      * The parts of a dotted name as the database compares them. An unquoted name folds to lower case, and so does a
@@ -27,9 +24,12 @@ internal object SqlNames {
      * keeps its case, unless it is written all in one case: then it is what an unquoted name folds to, in lower case
      * in PostgreSQL and in upper case in Oracle, and matches that unquoted name.
      */
-    fun comparablePartsOf(name: SyntaxNode): List<String> {
-        if (name.type != OBJECT_NAME) return listOf(comparable(name.text))
-        return name.namedChildren().filter { it.type in NAME_PART_TYPES }.map { comparable(it.text) }.toList()
+    fun comparablePartsOf(name: SyntaxNode): List<String> = namePartTexts(name).map { comparable(it) }
+
+    // A SQL*Plus substitution variable (`&schema.`) is no part of a name
+    private fun namePartTexts(name: SyntaxNode): List<String> {
+        if (name.type != OBJECT_NAME) return listOf(name.text)
+        return name.namedChildren().filter { it.type in NAME_PART_TYPES }.map { it.text }.toList()
     }
 
     private fun comparable(text: String): String {
