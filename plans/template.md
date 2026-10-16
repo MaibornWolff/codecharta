@@ -1,6 +1,5 @@
 ---
 name: <name>
-issue: <#issueid>
 state: <todo | progress | complete>
 version: <version number>
 ---
