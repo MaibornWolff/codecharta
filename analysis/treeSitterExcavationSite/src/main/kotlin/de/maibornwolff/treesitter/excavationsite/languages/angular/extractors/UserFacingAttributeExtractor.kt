@@ -42,7 +42,8 @@ internal object UserFacingTextAttribute {
 
     // The word after the last hyphen, from its last capital letter on: `Hint` of `hoverHint`, `message` of `empty-message`
     private fun lastWordOf(name: String): String {
-        val afterHyphen = name.substringAfterLast(KEBAB_SEPARATOR)
+        // A name in capitals has no capital letter that starts a word: `TITLE` is one word
+        val afterHyphen = name.substringAfterLast(KEBAB_SEPARATOR).let { if (it.none(Char::isLowerCase)) it.lowercase() else it }
         val lastCapital = afterHyphen.indexOfLast { it.isUpperCase() }
         return if (lastCapital > 0) afterHyphen.substring(lastCapital) else afterHyphen
     }

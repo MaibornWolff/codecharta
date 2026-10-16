@@ -256,6 +256,18 @@ class AngularExtractionTest {
         }
 
         @Test
+        fun `should extract the value of a text attribute written in capitals`() {
+            // Arrange
+            val code = """<cc-card TITLE="Dragon" ARIA-LABEL="Lair" HOVERHINT="Quiet"></cc-card>"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.texts).containsExactly("Dragon", "Lair")
+        }
+
+        @Test
         fun `should not extract the value of an attribute whose name ends in a text word only inside a word`() {
             // Arrange
             val code = """<cc-card context="turquoise" subtitle="Lair" hint="Quiet"></cc-card>"""
