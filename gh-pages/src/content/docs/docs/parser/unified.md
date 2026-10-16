@@ -50,13 +50,15 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package body                                                                                                     |
 | number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
 | number_of_views           | Only in SQL files: the views the file defines, materialized ones included                                                                                                                                               |
-| number_of_tables          | Only in SQL files: the tables the file creates, without T-SQL temporary tables (`#name`)                                                                                                                                |
+| number_of_tables          | Only in SQL files: the tables the file creates, without temporary tables (`#name`, `TEMP`, `GLOBAL TEMPORARY`)                                                                                                                                |
 
 A procedure declared in an Oracle package specification counts where its body is, in the package body, like
 `number_of_functions` counts only routines with a body: a specification and its body in one file count each procedure
 once, in two files only the body's file counts it. A T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a
 body defines the object as much as `CREATE` does and counts; Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t
-DISABLE` does not.
+DISABLE` does not. Each count counts the distinct objects of a file: an object created and altered, or created twice,
+counts once, while a procedure of one name in two packages counts twice. What a routine creates when it runs, a
+table or a local procedure, counts for none of them.
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
 

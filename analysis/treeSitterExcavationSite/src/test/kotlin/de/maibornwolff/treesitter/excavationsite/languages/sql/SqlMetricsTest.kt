@@ -274,15 +274,14 @@ class SqlMetricsTest {
     }
 
     @Test
-    fun `should count the views and tables a file creates but not temporary tables`() {
+    fun `should count views, materialized ones included, and tables, but not a view a statement only renames`() {
         // Arrange
         val code = """
             CREATE TABLE orders (id INT);
             CREATE TABLE IF NOT EXISTS items (id INT);
-            CREATE TABLE #scratch (id INT);
             CREATE VIEW big_orders AS SELECT * FROM orders;
             CREATE MATERIALIZED VIEW order_totals AS SELECT COUNT(*) FROM orders;
-            ALTER VIEW big_orders RENAME TO large_orders;
+            ALTER VIEW order_totals RENAME TO order_sums;
         """.trimIndent()
 
         // Act
@@ -291,6 +290,112 @@ class SqlMetricsTest {
         // Assert
         assertThat(result.numberOfTables).isEqualTo(2.0)
         assertThat(result.numberOfViews).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should count no temporary table of any dialect and no table a routine creates`() {
+        // Arrange
+        val code = """
+            CREATE TABLE orders (id INT);
+            CREATE TABLE #scratch (id INT);
+            CREATE TEMPORARY TABLE tmp1 (id INT);
+            CREATE TEMP TABLE tmp2 AS SELECT 1;
+            CREATE GLOBAL TEMPORARY TABLE gtt (id INT) ON COMMIT DELETE ROWS;
+            CREATE FUNCTION load_staging() RETURNS void AS $$
+            BEGIN
+              CREATE TABLE staging_rows (id INT);
+            END;
+            $$ LANGUAGE plpgsql;
+            CREATE PROCEDURE dbo.rebuild AS
+            BEGIN
+              CREATE TABLE dbo.rebuilt (id INT);
+            END
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count an object created and then altered or created again in one file once`() {
+        // Arrange
+        val code = """
+            CREATE TABLE orders (id INT);
+            CREATE TABLE IF NOT EXISTS ORDERS (id INT);
+            CREATE VIEW big_orders AS SELECT * FROM orders;
+            GO
+            ALTER VIEW big_orders AS SELECT id FROM orders;
+            GO
+            CREATE PROCEDURE dbo.archive AS BEGIN SELECT 1 END
+            GO
+            ALTER PROCEDURE dbo.archive AS BEGIN SELECT 2 END
+            GO
+            CREATE TRIGGER dbo.touch ON dbo.orders AFTER UPDATE AS BEGIN SELECT 1 END
+            GO
+            ALTER TRIGGER dbo.touch ON dbo.orders AFTER UPDATE AS BEGIN SELECT 2 END
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(1.0)
+        assertThat(result.numberOfViews).isEqualTo(1.0)
+        assertThat(result.numberOfStoredProcedures).isEqualTo(1.0)
+        assertThat(result.numberOfTriggers).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count T-SQL objects that ALTER defines with a body`() {
+        // Arrange
+        val code = """
+            ALTER PROCEDURE dbo.archive @days INT AS BEGIN SELECT @days END
+            GO
+            ALTER VIEW dbo.big_orders AS SELECT id FROM dbo.orders
+            GO
+            CREATE TRIGGER dbo.audit ON dbo.orders AFTER INSERT, UPDATE AS
+            BEGIN
+              SET NOCOUNT ON;
+            END
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(1.0)
+        assertThat(result.numberOfViews).isEqualTo(1.0)
+        assertThat(result.numberOfTriggers).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count no local procedure of a routine as a stored procedure, and each package of one name apart`() {
+        // Arrange
+        val code = """
+            CREATE OR REPLACE PROCEDURE raise_salary IS
+              PROCEDURE log_raise IS BEGIN NULL; END log_raise;
+            BEGIN
+              log_raise;
+            END raise_salary;
+            /
+            CREATE OR REPLACE PACKAGE BODY billing AS
+              PROCEDURE charge IS BEGIN NULL; END charge;
+            END billing;
+            /
+            CREATE OR REPLACE PACKAGE BODY refunds AS
+              PROCEDURE charge IS BEGIN NULL; END charge;
+            END refunds;
+            /
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(3.0)
     }
 
     @Test

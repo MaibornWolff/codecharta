@@ -28,6 +28,12 @@ object SqlMetricMapping : MetricMapping {
 
     private val EXCEPTION_HANDLERS = listOf("exception_handler", "catch_block", "handler_declaration")
 
+    // What a routine or an anonymous block creates when it runs, a local procedure included, is no object of the schema
+    private val OUTSIDE_ROUTINES = MetricCondition.NoAncestorMatches(setOf("routine_body", "do_block"))
+
+    private fun countedOutsideRoutines(fileMetric: AvailableFileMetrics, vararg conditions: MetricCondition) =
+        Metric.Counted(fileMetric, MetricCondition.AllOf(conditions.toList() + OUTSIDE_ROUTINES))
+
     override val nodeMetrics: Map<String, Set<Metric>> = buildMap {
         (BRANCHES_AND_LOOPS + EXCEPTION_HANDLERS).forEach { nodeType -> put(nodeType, setOf(Metric.LogicComplexity)) }
 
@@ -43,24 +49,26 @@ object SqlMetricMapping : MetricMapping {
             setOf(
                 Metric.FunctionComplexity,
                 Metric.Function,
-                Metric.Counted(AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES, MetricCondition.ChildFieldMatches(KIND, PROCEDURE_KINDS)),
-                Metric.Counted(AvailableFileMetrics.NUMBER_OF_TRIGGERS, MetricCondition.ChildFieldMatches(KIND, setOf(TRIGGER)))
+                countedOutsideRoutines(
+                    AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES,
+                    MetricCondition.ChildFieldMatches(KIND, PROCEDURE_KINDS)
+                ),
+                countedOutsideRoutines(AvailableFileMetrics.NUMBER_OF_TRIGGERS, MetricCondition.ChildFieldMatches(KIND, setOf(TRIGGER)))
             )
         )
         // A trigger that calls a function has no body of its own; ALTER TRIGGER t DISABLE creates none
         put(
             "routine_declaration",
             setOf(
-                Metric.Counted(
+                countedOutsideRoutines(
                     AvailableFileMetrics.NUMBER_OF_TRIGGERS,
-                    MetricCondition.AllOf(
-                        listOf(MetricCondition.ChildFieldMatches(KIND, setOf(TRIGGER)), MetricCondition.AnyChildMatches(setOf(CREATE)))
-                    )
+                    MetricCondition.ChildFieldMatches(KIND, setOf(TRIGGER)),
+                    MetricCondition.AnyChildMatches(setOf(CREATE))
                 )
             )
         )
-        put("view_definition", setOf(Metric.Counted(AvailableFileMetrics.NUMBER_OF_VIEWS)))
-        put("table_definition", setOf(Metric.Counted(AvailableFileMetrics.NUMBER_OF_TABLES)))
+        put("view_definition", setOf(countedOutsideRoutines(AvailableFileMetrics.NUMBER_OF_VIEWS)))
+        put("table_definition", setOf(countedOutsideRoutines(AvailableFileMetrics.NUMBER_OF_TABLES)))
         put("routine_body", setOf(Metric.FunctionBody))
         put("parameter", setOf(Metric.Parameter))
 

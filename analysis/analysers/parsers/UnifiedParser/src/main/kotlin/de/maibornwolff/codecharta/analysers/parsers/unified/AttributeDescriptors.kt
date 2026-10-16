@@ -200,7 +200,7 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         ),
         "number_of_tables" to AttributeDescriptor(
             title = "Number of tables",
-            description = "The number of SQL tables the file creates, without T-SQL temporary tables (#name).",
+            description = "The number of SQL tables the file creates, without temporary tables and the tables a routine creates.",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName

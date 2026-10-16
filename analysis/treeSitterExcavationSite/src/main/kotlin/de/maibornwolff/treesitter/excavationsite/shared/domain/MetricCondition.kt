@@ -76,6 +76,12 @@ sealed class MetricCondition {
         override fun matches(node: SyntaxNode): Boolean = node.parent.type in allowedTypes
     }
 
+    /** Matches when no node around the node has one of the [excludedTypes], such as a table a routine creates. */
+    data class NoAncestorMatches(val excludedTypes: Set<String>) : MetricCondition() {
+        override fun matches(node: SyntaxNode): Boolean =
+            generateSequence(node.parent.orNull()) { it.parent.orNull() }.none { it.type in excludedTypes }
+    }
+
     /** Matches when every one of [conditions] matches. */
     data class AllOf(val conditions: List<MetricCondition>) : MetricCondition() {
         override fun matches(node: SyntaxNode): Boolean = conditions.all { it.matches(node) }
