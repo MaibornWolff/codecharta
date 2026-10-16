@@ -156,6 +156,10 @@ SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects
 | `long_parameter_list` | Functions with excessive parameters |
 | `excessive_comments` | Files with excessive commenting |
 | `comment_ratio` | Comments to code ratio |
+| `number_of_stored_procedures` | SQL only: stored procedures the file defines |
+| `number_of_triggers` | SQL only: triggers the file creates |
+| `number_of_views` | SQL only: views the file defines |
+| `number_of_tables` | SQL only: tables the file creates, without temporary ones |
 
 ### Per-Function Metrics
 

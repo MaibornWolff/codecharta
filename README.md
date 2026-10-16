@@ -127,7 +127,7 @@ There is no analytics, tracking or telemetry.
 
 | | |
 | --- | --- |
-| **Source code** | [Unified parser](https://maibornwolff.github.io/codecharta/docs/parser/unified): Java, Kotlin, TypeScript, JavaScript, Python, C#, C, C++, Go, Rust, PHP, Ruby, Swift, Objective-C, Vue, Bash, Delphi, Angular templates |
+| **Source code** | [Unified parser](https://maibornwolff.github.io/codecharta/docs/parser/unified): Java, Kotlin, TypeScript, JavaScript, Python, C#, C, C++, Go, Rust, PHP, Ruby, Swift, Objective-C, Vue, Bash, Delphi, Angular templates, SQL |
 | **Domain language** | [Domain language parser](https://maibornwolff.github.io/codecharta/docs/parser/domain-language): words and phrases with frequency and TF-IDF |
 | **Version control** | [Git log](https://maibornwolff.github.io/codecharta/docs/parser/git-log), [SVN log](https://maibornwolff.github.io/codecharta/docs/parser/svn-log) |
 | **Any text** | [Raw text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text): indentation levels for any language |
