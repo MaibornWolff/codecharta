@@ -26,6 +26,7 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Vue          | .vue                                   |
 | Delphi       | .pas, .dpr                             |
 | Rust         | .rs                                    |
+| Angular/HTML | .html                                  |
 
 ## Supported Metrics
 

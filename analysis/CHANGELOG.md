@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Switching off comments or strings**: `domainlanguageparser` accepts a comment or string weight of 0 to leave those
   words out.
 
+- **Angular templates**: `unifiedparser` reads `.html` files, so the templates of an Angular code base get their
+  complexity, comment lines and lines of code instead of zero.
+
 ### Changed
 
 - **Java 22 or newer (breaking)**: `ccsh` no longer starts on Java 17 or 21; the Docker image already ships a

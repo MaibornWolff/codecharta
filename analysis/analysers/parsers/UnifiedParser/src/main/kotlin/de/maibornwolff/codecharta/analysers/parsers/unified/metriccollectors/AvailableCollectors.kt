@@ -27,5 +27,6 @@ enum class AvailableCollectors(
     BASH(FileExtension.BASH, { TreeSitterLibraryCollector(Language.BASH) }),
     VUE(FileExtension.VUE, { TreeSitterLibraryCollector(Language.VUE) }),
     DELPHI(FileExtension.DELPHI, { TreeSitterLibraryCollector(Language.DELPHI) }),
-    RUST(FileExtension.RUST, { TreeSitterLibraryCollector(Language.RUST) })
+    RUST(FileExtension.RUST, { TreeSitterLibraryCollector(Language.RUST) }),
+    ANGULAR(FileExtension.HTML, { TreeSitterLibraryCollector(Language.ANGULAR) })
 }

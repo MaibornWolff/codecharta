@@ -66,6 +66,7 @@ object TreeSitterAdapter {
         FileExtension.VUE -> Language.VUE
         FileExtension.DELPHI -> Language.DELPHI
         FileExtension.RUST -> Language.RUST
+        FileExtension.HTML -> Language.ANGULAR
         else -> null
     }
 

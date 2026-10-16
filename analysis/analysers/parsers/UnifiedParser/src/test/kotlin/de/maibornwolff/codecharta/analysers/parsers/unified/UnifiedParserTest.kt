@@ -47,7 +47,8 @@ class UnifiedParserTest {
             Arguments.of("typescript", ".ts"),
             Arguments.of("tsx", ".tsx"),
             Arguments.of("vue", ".vue"),
-            Arguments.of("rust", ".rs")
+            Arguments.of("rust", ".rs"),
+            Arguments.of("angular", ".html")
         )
     }
 

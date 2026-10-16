@@ -32,5 +32,6 @@ enum class FileExtension(
     BASH(".sh"),
     VUE(".vue"),
     DELPHI(".pas", setOf(".dpr")),
-    RUST(".rs")
+    RUST(".rs"),
+    HTML(".html")
 }

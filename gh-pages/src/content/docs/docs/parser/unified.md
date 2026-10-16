@@ -29,6 +29,7 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | Vue          | .vue                                   |
 | Delphi       | .pas, .dpr                             |
 | Rust         | .rs                                    |
+| Angular/HTML | .html                                  |
 
 ### Supported Metrics
 
@@ -251,6 +252,15 @@ contribute to complexity:
 - **Functions**: `function_item`, `function_signature_item` (bodyless trait method signatures), `closure_expression`
 - **Logical operators**: `&&`, `||` in binary expressions
 
+##### Angular templates (.html)
+
+- **Control flow blocks**: `@if`, `@else if`, `@for`, each `@case` of `@switch`, `@defer` (`@else`, `@empty`, `@default` and
+  `@placeholder` are not counted, like a plain `else`)
+- **Structural directives**: `*ngIf`, `*ngFor`, `*ngSwitchCase`, and `[ngIf]`, `[ngForOf]`, `[ngSwitchCase]` on an
+  `<ng-template>`
+- **Logical operators**: `&&`, `||`, the ternary `? :` and `??` in bindings, event handlers and interpolations
+- **Functions**: a template has none, so its complexity is its logic complexity
+
 #### Comment Lines
 
 Comment lines are counted based on language-specific comment syntax:
@@ -269,6 +279,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Bash**: `comment`
 - **Delphi**: `comment` (covers `//` line, `{ }` brace, and `(* *)` star comments)
 - **Rust**: `line_comment`, `block_comment` (cover `//`, `///`, `//!` and `/* */`, `/** */`, `/*! */`)
+- **Angular templates**: `comment` (`<!-- -->`)
 
 #### Number of Functions
 
@@ -357,6 +368,10 @@ Function counting identifies different types of function definitions per languag
 - **Functions**: `function_item` (free functions, `impl` methods, trait default methods) and `function_signature_item`
   (bodyless trait method signatures). `closure_expression` contributes only to complexity and is not counted as a function.
 
+##### Angular templates (.html)
+
+- **Functions**: none, a template declares no functions
+
 #### Lines of Code (LOC)
 
 LOC is calculated as the total number of lines in the file, including empty lines and comments. This metric is language-independent and
@@ -392,6 +407,7 @@ Parameters per function counts the number of parameters declared for each functi
 - **Bash**: not counted, as Bash functions declare no parameters
 - **Delphi**: `declArg`
 - **Rust**: `parameter` (the `self` receiver is a distinct `self_parameter` node and is excluded)
+- **Angular templates**: not counted, as a template declares no functions
 
 #### Message Chains
 
@@ -482,6 +498,10 @@ Message chains are not applicable to Bash as it does not support method chaining
 
 - **Chain nodes**: `call_expression`, `field_expression`
 - **Call nodes**: `call_expression`
+
+##### Angular templates (.html)
+
+Message chains are not counted in templates.
 
 #### Code Smells
 
