@@ -1,0 +1,313 @@
+================================================================================
+T-SQL without semicolons (olahallengren/sql-server-maintenance-solution, MIT, (c) Ola Hallengren)
+================================================================================
+
+  SET @StartMessage = 'Command: ' + @CommandMasked
+  RAISERROR('%s',10,1,@StartMessage) WITH NOWAIT
+
+  IF @Comment IS NOT NULL
+  BEGIN
+    SET @StartMessage = 'Comment: ' + @Comment
+    RAISERROR('%s',10,1,@StartMessage) WITH NOWAIT
+  END
+
+  IF @LogToTable = 'Y'
+  BEGIN
+    INSERT INTO dbo.CommandLog (DatabaseName, Command, StartTime)
+    VALUES (@DatabaseName, @CommandMasked, @StartTime)
+
+    SET @ID = SCOPE_IDENTITY()
+  END
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (object_name
+    (variable))
+  (operator)
+  (string)
+  (operator)
+  (object_name
+    (variable))
+  (invocation
+    (object_name
+      (identifier))
+    (string)
+    (number)
+    (number)
+    (object_name
+      (variable)))
+  (identifier)
+  (if_statement
+    (condition
+      (object_name
+        (variable))
+      (object_name
+        (identifier)))
+    (block
+      (object_name
+        (variable))
+      (operator)
+      (string)
+      (operator)
+      (object_name
+        (variable))
+      (invocation
+        (object_name
+          (identifier))
+        (string)
+        (number)
+        (number)
+        (object_name
+          (variable)))
+      (identifier)))
+  (if_statement
+    (condition
+      (object_name
+        (variable))
+      (operator)
+      (string))
+    (block
+      (object_reference
+        (object_name
+          (identifier)
+          (identifier)))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (object_name
+        (variable))
+      (object_name
+        (variable))
+      (object_name
+        (variable))
+      (object_name
+        (variable))
+      (operator)
+      (invocation
+        (object_name
+          (identifier))))))
+
+================================================================================
+PL/SQL package function with an exception handler (OraOpenSource/Logger, MIT, (c) 2015 OraOpenSource)
+================================================================================
+
+create or replace package body logger
+as
+  function is_number(p_str in varchar2)
+    return boolean
+  as
+    l_num number;
+  begin
+    l_num := to_number(p_str);
+    return true;
+  exception
+    when others then
+      return false;
+  end is_number;
+end logger;
+/
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_definition
+    (object_name
+      (identifier))
+    (routine_definition
+      (object_name
+        (identifier))
+      (parameter_list
+        (parameter
+          (identifier)
+          (object_name
+            (identifier))))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (routine_body
+        (object_name
+          (identifier))
+        (object_name
+          (identifier))
+        (block
+          (object_name
+            (identifier))
+          (operator)
+          (invocation
+            (object_name
+              (identifier))
+            (object_name
+              (identifier)))
+          (object_name
+            (identifier))
+          (object_name
+            (identifier))
+          (exception_section
+            (exception_handler
+              (condition
+                (object_name
+                  (identifier)))
+              (object_name
+                (identifier))
+              (object_name
+                (identifier))))
+          (identifier))))
+    (identifier))
+  (slash_terminator))
+
+================================================================================
+PL/pgSQL trigger function (gitlabhq/gitlabhq db/structure.sql, MIT, (c) GitLab Inc.)
+================================================================================
+
+CREATE FUNCTION assign_ci_runner_machines_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_runner_machines_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list)
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (routine_body
+      (block
+        (if_statement
+          (condition
+            (object_name
+              (identifier)
+              (quoted_identifier))
+            (object_name
+              (identifier)))
+          (object_name
+            (identifier))
+          (object_name
+            (identifier))
+          (string))
+        (object_name
+          (identifier)
+          (quoted_identifier))
+        (operator)
+        (invocation
+          (object_name
+            (identifier))
+          (string)
+          (operator)
+          (object_name
+            (identifier)))
+        (object_name
+          (identifier))
+        (object_name
+          (identifier))))))
+
+================================================================================
+MySQL trigger (AlessandroFerrante/Event-Management-System, MIT, (c) 2026 Alessandro Ferrante)
+================================================================================
+
+DELIMITER //
+CREATE TRIGGER Check_Max_Seats
+BEFORE INSERT ON Registration
+FOR EACH ROW
+BEGIN
+    DECLARE current_count INT;
+    DECLARE max_capacity INT;
+    SELECT COUNT(*) INTO current_count FROM Registration WHERE ID_Event = NEW.ID_Event;
+    SELECT Max_Seats INTO max_capacity FROM Event WHERE ID_Event = NEW.ID_Event;
+    IF current_count >= max_capacity THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Evento SOLD OUT.';
+    END IF;
+END //
+DELIMITER ;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (delimiter_directive)
+  (routine_definition
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_reference
+      (object_name
+        (identifier)))
+    (identifier)
+    (object_name
+      (identifier))
+    (routine_body
+      (block
+        (variable_declaration
+          (identifier))
+        (object_name
+          (identifier))
+        (variable_declaration
+          (identifier))
+        (object_name
+          (identifier))
+        (invocation
+          (object_name
+            (identifier)))
+        (object_reference
+          (object_name
+            (identifier)))
+        (object_reference
+          (object_name
+            (identifier)))
+        (object_name
+          (identifier))
+        (operator)
+        (object_name
+          (identifier)
+          (identifier))
+        (object_name
+          (identifier))
+        (object_reference
+          (object_name
+            (identifier)))
+        (object_reference
+          (object_name
+            (identifier)))
+        (object_name
+          (identifier))
+        (operator)
+        (object_name
+          (identifier)
+          (identifier))
+        (if_statement
+          (condition
+            (object_name
+              (identifier))
+            (operator)
+            (object_name
+              (identifier)))
+          (object_name
+            (identifier))
+          (object_name
+            (identifier))
+          (string)
+          (object_name
+            (identifier))
+          (operator)
+          (string)))))
+  (custom_delimiter)
+  (delimiter_directive))

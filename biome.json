@@ -44,7 +44,8 @@
       "!**/gh-pages/**",
       "!**/*.gradle.kts",
       "!**/*.toml",
-      "!**/sample-projects/**"
+      "!**/sample-projects/**",
+      "!**/treeSitterExcavationSite/grammars/*/src/**"
     ]
   },
   "formatter": {
