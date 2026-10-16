@@ -28,8 +28,9 @@ object SqlMetricMapping : MetricMapping {
 
     private val EXCEPTION_HANDLERS = listOf("exception_handler", "catch_block", "handler_declaration")
 
-    // What a routine or an anonymous block creates when it runs, a local procedure included, is no object of the schema
-    private val OUTSIDE_ROUTINES = MetricCondition.NoAncestorMatches(setOf("routine_body", "do_block"))
+    // What a routine creates whenever it runs, a local procedure included, is no object of the schema; what a script
+    // creates in an anonymous block, as in a PostgreSQL DO block or a T-SQL IF ... BEGIN ... END, is one
+    private val OUTSIDE_ROUTINES = MetricCondition.NoAncestorMatches(setOf("routine_body"))
 
     private fun countedOutsideRoutines(fileMetric: AvailableFileMetrics, vararg conditions: MetricCondition) =
         Metric.Counted(fileMetric, MetricCondition.AllOf(conditions.toList() + OUTSIDE_ROUTINES), SqlObjectKeys::objectKey)

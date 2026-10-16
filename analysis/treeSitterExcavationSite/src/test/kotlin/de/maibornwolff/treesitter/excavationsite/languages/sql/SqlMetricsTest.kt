@@ -320,6 +320,31 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count a table that a script creates under a condition, in a DO block or a T-SQL block`() {
+        // Arrange
+        val code = """
+            DO $$
+            BEGIN
+              IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'pg_orders') THEN
+                CREATE TABLE pg_orders (id int);
+              END IF;
+            END
+            $$;
+            IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'ms_orders')
+            BEGIN
+              CREATE TABLE ms_orders (id int);
+            END
+            GO
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(2.0)
+    }
+
+    @Test
     fun `should count an object created and then altered or created again in one file once`() {
         // Arrange
         val code = """
