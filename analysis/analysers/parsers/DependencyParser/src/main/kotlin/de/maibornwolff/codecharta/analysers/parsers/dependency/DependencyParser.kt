@@ -3,8 +3,13 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.ExtractionPipeline
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.LanguageAnalyzerFactory
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.output.DependencyProjectGenerator
@@ -20,6 +25,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -30,10 +36,15 @@ import java.io.PrintStream
     description = [DependencyParser.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class DependencyParser(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) :
-    CommonAnalyserParameters(),
+class DependencyParser(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
+    private val runExitCode: RunExitCode = RunExitCode()
+) : CommonAnalyserParameters(),
     AnalyserInterface,
-    AttributeGenerator {
+    AttributeGenerator,
+    CommandLine.IExitCodeGenerator by runExitCode {
     @CommandLine.Option(
         names = ["--include-tests"],
         description = [
@@ -91,7 +102,7 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
 
         val context = resolveEffectiveInput(inputFile)
         try {
-            val project = analyse(context.inputDir)
+            val project = analyseOrNull(context.inputDir) ?: return null
             ProjectSerializer.serializeToFileOrStream(project, context.resolveOutputFile(outputFile), output, compress)
         } finally {
             context.worktreeManager?.cleanup()
@@ -100,7 +111,18 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
         return null
     }
 
-    private fun analyse(input: File): Project {
+    // A project nothing could be analysed in, or a parser that fits no file, ends the run with an error and no map
+    private fun analyseOrNull(input: File): Project? {
+        try {
+            return analyse(input)
+        } catch (failure: Throwable) {
+            if (!isUnusableParser(failure)) throw failure
+            runExitCode.failWith(FailureReport.unusableParser(failure))
+        }
+        return null
+    }
+
+    private fun analyse(input: File): Project? {
         val scanner =
             SourceFileScanner(
                 allowedExtensions = fileExtensionsToAnalyse.ifEmpty { SupportedLanguage.allSuffixes() },
@@ -110,9 +132,14 @@ class DependencyParser(private val input: InputStream = System.`in`, private val
             )
 
         return ProgressReporterFactory.create(quiet = false).use { progressReporter ->
-            val fileReports =
-                ExtractionPipeline(scanner, progressReporter, fileTimeoutSeconds = fileTimeoutSeconds)
+            val extraction =
+                ExtractionPipeline(scanner, progressReporter, fileTimeoutSeconds = fileTimeoutSeconds, createAnalyzer = createAnalyzer)
                     .run(input, bypassGitignore)
+            if (extraction.reports.isEmpty() && extraction.failures.isNotEmpty()) {
+                runExitCode.failWith(FailureReport.nothingAnalysed(extraction.failures))
+                return null
+            }
+            val fileReports = extraction.reports
             val graph = ProcessingPipeline.run(fileReports, omitGraphAnalysis)
             DependencyProjectGenerator().generate(graph, analysedFilePaths(fileReports), resolvePipedProject())
         }

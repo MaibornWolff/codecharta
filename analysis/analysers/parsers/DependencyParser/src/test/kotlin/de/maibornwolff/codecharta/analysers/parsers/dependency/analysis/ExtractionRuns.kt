@@ -15,5 +15,5 @@ import java.io.File
 fun extractFrom(rootDirectory: String, vararg languages: SupportedLanguage): List<FileReport> {
     val suffixes = languages.flatMap { it.suffixes }.ifEmpty { SupportedLanguage.allSuffixes() }
     val scanner = SourceFileScanner(allowedExtensions = suffixes)
-    return ExtractionPipeline(scanner, SilentProgressReporter).run(File(rootDirectory), bypassGitignore = true)
+    return ExtractionPipeline(scanner, SilentProgressReporter).run(File(rootDirectory), bypassGitignore = true).reports
 }

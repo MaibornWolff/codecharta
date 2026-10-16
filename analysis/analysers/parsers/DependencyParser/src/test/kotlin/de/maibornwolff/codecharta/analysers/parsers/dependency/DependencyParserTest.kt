@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -488,6 +489,40 @@ class DependencyParserTest {
             "creature.component.ts" to "host.html",
             "host.html" to "creature.component.ts"
         )
+    }
+
+    @Test
+    fun `should end with an error and write no map when every file fails`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+        val output = ByteArrayOutputStream()
+        val parser = DependencyParser(output = PrintStream(output), createAnalyzer = { throw IllegalStateException("broken extractor") })
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir, "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
+    }
+
+    @Test
+    fun `should end with an error and write no map when a grammar does not fit the core`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+        val output = ByteArrayOutputStream()
+        val parser = DependencyParser(output = PrintStream(output), createAnalyzer = { throw GrammarUnavailableException("incompatible") })
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir, "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
     }
 
     private fun edgeTargetFolders(output: String, sourceName: String): List<String> {
