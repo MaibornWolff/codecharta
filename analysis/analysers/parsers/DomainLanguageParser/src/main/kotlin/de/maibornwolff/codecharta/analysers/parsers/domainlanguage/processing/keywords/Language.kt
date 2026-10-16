@@ -1,6 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
+import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
+
+private fun suffixesOf(fileExtension: FileExtension): Set<String> =
+    (setOf(fileExtension.primaryExtension) + fileExtension.otherValidExtensions).map { it.removePrefix(".") }.toSet()
 
 /**
  * @property textWeighsLikeIdentifiers whether the text of the language weighs like its identifiers, as in a template,
@@ -30,7 +34,7 @@ enum class Language(
     ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
     RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
     ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt", textWeighsLikeIdentifiers = true),
-    SQL(LibraryLanguage.SQL, setOf("sql", "pks", "pkb", "pls"), "keywords/sql-keywords.txt")
+    SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), "keywords/sql-keywords.txt")
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`

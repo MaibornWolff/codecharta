@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.MetricsResult
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterMetrics
@@ -13,29 +12,6 @@ import java.io.File
  * Adapter between TreesitterLibrary and CodeCharta's MutableNode format.
  */
 object TreeSitterAdapter {
-    private val languageByExtension: Map<FileExtension, Language> = mapOf(
-        FileExtension.JAVA to Language.JAVA,
-        FileExtension.KOTLIN to Language.KOTLIN,
-        FileExtension.TYPESCRIPT to Language.TYPESCRIPT,
-        FileExtension.TSX to Language.TSX,
-        FileExtension.JAVASCRIPT to Language.JAVASCRIPT,
-        FileExtension.PYTHON to Language.PYTHON,
-        FileExtension.GO to Language.GO,
-        FileExtension.PHP to Language.PHP,
-        FileExtension.RUBY to Language.RUBY,
-        FileExtension.SWIFT to Language.SWIFT,
-        FileExtension.BASH to Language.BASH,
-        FileExtension.CSHARP to Language.CSHARP,
-        FileExtension.CPP to Language.CPP,
-        FileExtension.C to Language.C,
-        FileExtension.OBJECTIVE_C to Language.OBJECTIVE_C,
-        FileExtension.VUE to Language.VUE,
-        FileExtension.DELPHI to Language.DELPHI,
-        FileExtension.RUST to Language.RUST,
-        FileExtension.HTML to Language.ANGULAR,
-        FileExtension.SQL to Language.SQL
-    )
-
     /**
      * Collects metrics for a file using TreesitterLibrary.
      */
@@ -68,22 +44,12 @@ object TreeSitterAdapter {
     }
 
     /**
-     * Maps a FileExtension to TreesitterLibrary's Language enum.
-     */
-    fun getLanguageForExtension(fileExtension: FileExtension): Language? = languageByExtension[fileExtension]
-
-    /**
      * Determines the Language for a file based on its extension.
      */
     fun getLanguageForFile(file: File): Language? {
         val extension = "." + file.extension.lowercase()
         return Language.fromExtension(extension)
     }
-
-    /**
-     * Checks if a file extension is supported by TreesitterLibrary.
-     */
-    fun isSupported(fileExtension: FileExtension): Boolean = getLanguageForExtension(fileExtension) != null
 
     private fun convertToMutableNode(fileName: String, result: MetricsResult, checksum: String?): MutableNode {
         val attributes = mutableMapOf<String, Double>()

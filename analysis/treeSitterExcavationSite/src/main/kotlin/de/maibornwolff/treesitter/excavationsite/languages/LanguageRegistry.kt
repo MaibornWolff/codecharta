@@ -26,7 +26,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 
 object LanguageRegistry {
-    private val registrations: Map<Language, Registration> = mapOf(
+    private val registrationTable: Map<Language, Registration> = mapOf(
         Language.JAVA to Registration(GrammarLibrary("java"), JavaDefinition),
         Language.KOTLIN to Registration(GrammarLibrary("kotlin"), KotlinDefinition),
         Language.TYPESCRIPT to Registration(GrammarLibrary("typescript"), TypescriptDefinition),
@@ -49,6 +49,11 @@ object LanguageRegistry {
         Language.ANGULAR to Registration(GrammarLibrary("angular"), AngularDefinition),
         Language.SQL to Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition)
     )
+
+    // Built for every language when the registry loads, so that a language without a registration fails at once
+    private val registrations: Map<Language, Registration> = Language.entries.associateWith { language ->
+        registrationTable[language] ?: error("No grammar and definition registered for $language")
+    }
 
     fun getGrammarLibrary(language: Language): GrammarLibrary = registrations.getValue(language).grammarLibrary
 
