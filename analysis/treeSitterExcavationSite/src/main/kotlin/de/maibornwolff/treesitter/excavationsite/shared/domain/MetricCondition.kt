@@ -47,6 +47,15 @@ sealed class MetricCondition {
     data class ChildTextMatches(val childType: String, val allowedTexts: Set<String>) : MetricCondition()
 
     /**
+     * Matches when the node has a direct child of the given type and none of these children has one of the excluded
+     * texts, such as an ICU case that is not the `other` case.
+     *
+     * @param childType The type of the child node
+     * @param excludedTexts The set of texts of that child that keep the node from matching
+     */
+    data class ChildTextDiffers(val childType: String, val excludedTexts: Set<String>) : MetricCondition()
+
+    /**
      * Matches when the parent node has one of the allowed types.
      *
      * @param allowedTypes The set of allowed node types

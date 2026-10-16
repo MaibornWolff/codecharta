@@ -284,6 +284,7 @@ One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect ha
   `<ng-template>`
 - **Logical operators**: `&&`, `||`, the ternary `? :` and `??` in bindings, event handlers and interpolations, also
   in an interpolation inside a plain attribute value, such as `class="icon {{ done ? 'check' : 'copy' }}"`
+- **ICU messages**: each case of a `plural` or `select` message, but not its `other` case, like a `@default`
 - **Functions**: a template has none, so its complexity is its logic complexity
 
 #### Comment Lines

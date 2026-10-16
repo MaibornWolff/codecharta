@@ -18,14 +18,18 @@ object NodeTypeMatcher {
     private fun matches(node: SyntaxNode, nestedType: NestedNodeType): Boolean = when {
         nestedType.allOf != null -> nestedType.allOf.all { matches(node, it) }
         nestedType.parentNodeTypes != null -> nestedType.parentNodeTypes.contains(node.parent.type)
-        nestedType.childNodeTexts != null -> node.children().any { child ->
-            nestedType.childNodeTypes.contains(child.type) && nestedType.childNodeTexts.contains(child.text)
-        }
+        nestedType.childNodeTexts != null -> matchesChildTexts(node, nestedType, nestedType.childNodeTexts)
         nestedType.matchesAnyChild -> node.children().any { nestedType.childNodeTypes.contains(it.type) }
         nestedType.childNodePosition != null && nestedType.childNodeCount == node.childCount ->
             isAllowedChild(node.getChild(nestedType.childNodePosition), nestedType)
         nestedType.childNodeFieldName != null -> isAllowedChild(node.getChildByFieldName(nestedType.childNodeFieldName), nestedType)
         else -> false
+    }
+
+    private fun matchesChildTexts(node: SyntaxNode, nestedType: NestedNodeType, childTexts: Set<String>): Boolean {
+        val textsOfChildren = node.children().filter { nestedType.childNodeTypes.contains(it.type) }.map { it.text.trim() }.toList()
+        if (nestedType.excludesChildNodeTexts) return textsOfChildren.isNotEmpty() && textsOfChildren.none { it in childTexts }
+        return textsOfChildren.any { it in childTexts }
     }
 
     private fun isAllowedChild(childNode: SyntaxNode, nestedType: NestedNodeType): Boolean =

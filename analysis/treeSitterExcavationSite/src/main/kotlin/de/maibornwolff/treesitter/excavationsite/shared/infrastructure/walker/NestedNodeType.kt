@@ -17,6 +17,7 @@ package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker
  * @param childNodeTexts Set of allowed texts of a direct child of an allowed type, checked instead of its type alone
  * (optional)
  * @param allOf Patterns that must all match, checked instead of every other parameter (optional)
+ * @param excludesChildNodeTexts Whether [childNodeTexts] are the texts such a child must not have instead (optional)
  */
 class NestedNodeType(
     val baseNodeType: String,
@@ -27,5 +28,6 @@ class NestedNodeType(
     val matchesAnyChild: Boolean = false,
     val parentNodeTypes: Set<String>? = null,
     val childNodeTexts: Set<String>? = null,
-    val allOf: List<NestedNodeType>? = null
+    val allOf: List<NestedNodeType>? = null,
+    val excludesChildNodeTexts: Boolean = false
 )

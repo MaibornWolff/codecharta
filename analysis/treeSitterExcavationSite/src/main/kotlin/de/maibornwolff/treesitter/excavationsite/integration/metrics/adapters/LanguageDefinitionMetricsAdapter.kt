@@ -136,5 +136,11 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
             baseNodeType = nodeType,
             allOf = condition.conditions.mapNotNull { toNestedNodeType(nodeType, it) }
         )
+        is MetricCondition.ChildTextDiffers -> NestedNodeType(
+            baseNodeType = nodeType,
+            childNodeTypes = setOf(condition.childType),
+            childNodeTexts = condition.excludedTexts,
+            excludesChildNodeTexts = true
+        )
     }
 }

@@ -66,6 +66,21 @@ class AngularMetricsTest {
         }
 
         @Test
+        fun `should count each case of an ICU message but not its other case for logic complexity`() {
+            // Arrange
+            val code = """
+                <span i18n>{count, plural, =0 {no centaurs} =1 {one centaur} other {{{count}} centaurs}}</span>
+                <span i18n>{kind, select, dragon {a dragon} troll {a troll} other {a creature}}</span>
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterMetrics.parse(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.logicComplexity).isEqualTo(4.0)
+        }
+
+        @Test
         fun `should count defer block but not its placeholder for logic complexity`() {
             // Arrange
             val code = """

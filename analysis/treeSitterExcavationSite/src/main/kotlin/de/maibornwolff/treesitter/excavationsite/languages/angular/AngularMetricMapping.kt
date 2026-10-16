@@ -11,6 +11,10 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricMapping
 object AngularMetricMapping : MetricMapping {
     private const val IDENTIFIER = "identifier"
     private const val BINDING_NAME = "binding_name"
+    private const val ICU_CATEGORY = "icu_category"
+
+    // The fallback of an ICU message, like the default of a switch
+    private const val ICU_OTHER_CATEGORY = "other"
     private val STRUCTURAL_DIRECTIVES = setOf("ngIf", "ngFor", "ngSwitchCase")
 
     // The inputs `*ngIf` and `*ngFor` desugar to, written out on an `<ng-template>`
@@ -22,6 +26,10 @@ object AngularMetricMapping : MetricMapping {
         put("for_statement", setOf(Metric.LogicComplexity))
         put("case_statement", setOf(Metric.LogicComplexity))
         put("defer_statement", setOf(Metric.LogicComplexity))
+        put(
+            "icu_case",
+            setOf(Metric.LogicComplexityConditional(MetricCondition.ChildTextDiffers(ICU_CATEGORY, setOf(ICU_OTHER_CATEGORY))))
+        )
 
         put(
             "structural_directive",
