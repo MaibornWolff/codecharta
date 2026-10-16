@@ -24,7 +24,7 @@ object GoMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||")
+                        allowedTypes = setOf("&&", "||")
                     )
                 )
             )

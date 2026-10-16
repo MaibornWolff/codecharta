@@ -65,7 +65,7 @@ object PythonMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "right",
-                        allowedValues = setOf("lambda")
+                        allowedTypes = setOf("lambda")
                     )
                 )
             )

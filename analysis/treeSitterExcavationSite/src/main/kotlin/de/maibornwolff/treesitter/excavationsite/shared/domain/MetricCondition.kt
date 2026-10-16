@@ -15,10 +15,10 @@ sealed class MetricCondition {
      * Matches when the child at a field has one of the allowed types.
      *
      * @param fieldName The field name to look up the child node
-     * @param allowedValues The set of allowed node types
+     * @param allowedTypes The set of allowed node types
      */
-    data class ChildFieldMatches(val fieldName: String, val allowedValues: Set<String>) : MetricCondition() {
-        override fun matches(node: SyntaxNode): Boolean = hasType(node.getChildByFieldName(fieldName), allowedValues)
+    data class ChildFieldMatches(val fieldName: String, val allowedTypes: Set<String>) : MetricCondition() {
+        override fun matches(node: SyntaxNode): Boolean = hasType(node.getChildByFieldName(fieldName), allowedTypes)
     }
 
     /**
@@ -45,9 +45,6 @@ sealed class MetricCondition {
     /**
      * Matches when a direct child node of the given type has one of the allowed texts, such as the name of an
      * Angular structural directive.
-     *
-     * @param childType The type of the child node
-     * @param allowedTexts The set of allowed texts of that child
      */
     data class ChildTextMatches(val childType: String, val allowedTexts: Set<String>) : MetricCondition() {
         override fun matches(node: SyntaxNode): Boolean = textsOfChildren(node, childType).any { it in allowedTexts }
@@ -56,9 +53,6 @@ sealed class MetricCondition {
     /**
      * Matches when the node has a direct child of the given type and none of these children has one of the excluded
      * texts, such as an ICU case that is not the `other` case.
-     *
-     * @param childType The type of the child node
-     * @param excludedTexts The set of texts of that child that keep the node from matching
      */
     data class ChildTextDiffers(val childType: String, val excludedTexts: Set<String>) : MetricCondition() {
         override fun matches(node: SyntaxNode): Boolean {

@@ -24,7 +24,7 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
 
     init {
         for ((nodeType, metrics) in definition.nodeMetrics) {
-            metrics.forEach { metric -> sort(nodeType, metric) }
+            metrics.forEach { metric -> addToCategory(nodeType, metric) }
         }
     }
 
@@ -38,7 +38,7 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
     override val messageChainsCallNodeTypes: TreeNodeTypes = messageChainsCall.build()
     override val countedNodeTypes: Map<AvailableFileMetrics, TreeNodeTypes> = counted.mapValues { (_, builder) -> builder.build() }
 
-    private fun sort(nodeType: String, metric: Metric) {
+    private fun addToCategory(nodeType: String, metric: Metric) {
         when (metric) {
             is Metric.LogicComplexity -> logicComplexity.add(nodeType)
             is Metric.LogicComplexityConditional -> logicComplexity.add(nodeType, metric.condition)

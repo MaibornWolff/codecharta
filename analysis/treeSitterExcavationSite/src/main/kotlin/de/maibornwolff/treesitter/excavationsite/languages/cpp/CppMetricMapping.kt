@@ -27,7 +27,7 @@ object CppMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||", "and", "or", "xor")
+                        allowedTypes = setOf("&&", "||", "and", "or", "xor")
                     )
                 )
             )
@@ -49,7 +49,7 @@ object CppMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "value",
-                        allowedValues = setOf("lambda_expression")
+                        allowedTypes = setOf("lambda_expression")
                     )
                 )
             )

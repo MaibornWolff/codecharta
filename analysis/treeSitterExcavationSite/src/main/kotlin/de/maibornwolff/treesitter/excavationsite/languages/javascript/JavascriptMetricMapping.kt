@@ -29,7 +29,7 @@ object JavascriptMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||", "??")
+                        allowedTypes = setOf("&&", "||", "??")
                     )
                 )
             )
@@ -60,7 +60,7 @@ object JavascriptMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "value",
-                        allowedValues = setOf("arrow_function")
+                        allowedTypes = setOf("arrow_function")
                     )
                 )
             )

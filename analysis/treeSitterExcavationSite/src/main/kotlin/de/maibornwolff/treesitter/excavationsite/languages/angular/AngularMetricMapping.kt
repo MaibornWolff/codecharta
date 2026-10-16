@@ -43,7 +43,7 @@ object AngularMetricMapping : MetricMapping {
             BINARY_EXPRESSION,
             setOf(
                 Metric.LogicComplexityConditional(
-                    MetricCondition.ChildFieldMatches(fieldName = OPERATOR_FIELD, allowedValues = setOf("&&", "||"))
+                    MetricCondition.ChildFieldMatches(fieldName = OPERATOR_FIELD, allowedTypes = setOf("&&", "||"))
                 )
             )
         )
