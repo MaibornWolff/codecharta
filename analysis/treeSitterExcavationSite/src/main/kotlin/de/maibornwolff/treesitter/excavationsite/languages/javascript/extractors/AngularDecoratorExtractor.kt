@@ -3,6 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript.extractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
@@ -25,23 +26,26 @@ internal object AngularDecoratorExtractor {
     private const val SELECTOR_SEPARATOR = ","
     private val ELEMENT_SELECTOR = Regex("^[a-zA-Z][\\w-]*")
 
+    // The value of the template pair sits in the pair, its object, the call's arguments, the call, then the decorator
+    private const val DECORATOR_DEPTH_BELOW_TEMPLATE = 4
+
     // A class has one Angular decorator
     fun extract(decorators: Sequence<SyntaxNode>): AngularDeclaration? = decorators.firstNotNullOfOrNull { declarationOf(it) }
 
+    // Only the `template` of the decorator's own object: a `template` key nested deeper, in a provider, is a plain string
     fun isInlineTemplate(stringNode: SyntaxNode): Boolean {
-        val pair = stringNode.parent.takeIf { it.type == PAIR } ?: return false
-        if (TreeTraversal.findFirstChildTextByType(pair, PROPERTY_IDENTIFIER) != TEMPLATE) return false
-        val call = TreeTraversal.findAncestorOfType(pair, CALL_EXPRESSION) ?: return false
-        return call.parent.type == DECORATOR && TreeTraversal.findFirstChildTextByType(call, IDENTIFIER) == COMPONENT
+        val decorator = stringNode.ancestors().drop(DECORATOR_DEPTH_BELOW_TEMPLATE).firstOrNull() ?: return false
+        return decorator.type == DECORATOR && inlineTemplateValueOf(decorator) == stringNode
     }
 
     // The template the literal stands for, its escapes resolved; a `${}` substitution stays as it is written
-    fun inlineTemplateOf(decorator: SyntaxNode): String? = callOf(decorator)
+    fun inlineTemplateOf(decorator: SyntaxNode): String? =
+        inlineTemplateValueOf(decorator)?.text?.let { unescapeJavascript(it.substring(1, it.length - 1)) }
+
+    private fun inlineTemplateValueOf(decorator: SyntaxNode): SyntaxNode? = callOf(decorator)
         ?.takeIf { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER) == COMPONENT }
         ?.let { valueOf(it, TEMPLATE) }
         ?.takeIf { it.type == STRING || it.type == TEMPLATE_STRING }
-        ?.text
-        ?.let { unescapeJavascript(it.substring(1, it.length - 1)) }
 
     private fun callOf(decorator: SyntaxNode): SyntaxNode? = decorator.children().firstOrNull { it.type == CALL_EXPRESSION }
 

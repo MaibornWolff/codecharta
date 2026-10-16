@@ -8,6 +8,27 @@ import org.junit.jupiter.api.Test
 
 class AngularInlineTemplateExtractionTest {
     @Test
+    fun `should extract a template key nested in the decorator as a string of the component file`() {
+        // Arrange
+        val code = """
+            @Component({
+              selector: 'app-nested',
+              templateUrl: './nested.component.html',
+              providers: [{ provide: 'X', useValue: { template: 'ancient sorcery incantation' } }]
+            })
+            class NestedComponent {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterExtraction.extract(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.strings)
+            .containsExactly("app-nested", "./nested.component.html", "X", "ancient sorcery incantation")
+        assertThat(result.extractedTexts.filter { it.language == Language.ANGULAR }).isEmpty()
+    }
+
+    @Test
     fun `should not extract an inline template as a string of the component file`() {
         // Arrange
         val code = """
