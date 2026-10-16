@@ -303,6 +303,23 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count no temporary view, as it belongs to a session`() {
+        // Arrange
+        val code = """
+            CREATE TEMP VIEW recent_orders AS SELECT * FROM orders;
+            CREATE OR REPLACE TEMPORARY VIEW open_orders AS SELECT * FROM orders;
+            CREATE GLOBAL TEMPORARY VIEW shared_orders AS SELECT * FROM orders;
+            CREATE VIEW big_orders AS SELECT * FROM orders;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfViews).isEqualTo(1.0)
+    }
+
+    @Test
     fun `should count views, materialized ones included, and tables, but not a view a statement only renames`() {
         // Arrange
         val code = """

@@ -194,7 +194,7 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         ),
         AvailableFileMetrics.NUMBER_OF_VIEWS.metricName to AttributeDescriptor(
             title = "Number of views",
-            description = "The number of SQL views the file defines, materialized ones included.",
+            description = "The number of SQL views the file defines, materialized ones included, temporary ones not.",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName

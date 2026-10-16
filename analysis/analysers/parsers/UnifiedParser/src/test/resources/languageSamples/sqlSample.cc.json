@@ -2,7 +2,7 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.1",
-    "checksum": "4fe4f675172a6a1f69205cebbbb78718"
+    "checksum": "d453451e1b55e2aab1cd3916d25869bb"
   },
   "files": [
     {
@@ -332,7 +332,7 @@
         },
         "number_of_views": {
           "title": "Number of views",
-          "description": "The number of SQL views the file defines, materialized ones included.",
+          "description": "The number of SQL views the file defines, materialized ones included, temporary ones not.",
           "hintLowValue": "",
           "hintHighValue": "",
           "link": "https://codecharta.com/docs/parser/unified",

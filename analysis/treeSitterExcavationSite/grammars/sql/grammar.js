@@ -125,6 +125,7 @@ module.exports = grammar({
                 $._soup_item,
                 ";",
                 $._temporary_table,
+                $._temporary_view,
                 $.block,
                 $.routine_definition,
                 $.routine_declaration,
@@ -490,6 +491,17 @@ module.exports = grammar({
                 )
             ),
 
+        // A temporary view, PostgreSQL's or Spark's [GLOBAL] TEMP[ORARY] VIEW, belongs to a session as well; what its
+        // query uses counts for the statements around it
+        _temporary_view: $ =>
+            seq(
+                $._create_prefix,
+                choice($._temporary, seq(kw("global"), $._temporary)),
+                kw("view"),
+                optional($._if_not_exists),
+                $.object_name
+            ),
+
         // A T-SQL body without BEGIN may hold one; a CREATE TEMPORARY TABLE there would read every CREATE as its start
         _hash_temporary_table: $ => prec.right(seq($._temporary_table_start, optional($.column_definitions))),
 
@@ -552,7 +564,7 @@ module.exports = grammar({
         _view_signature: $ =>
             prec.right(
                 seq(
-                    choice(seq($._create_prefix, optional(seq(optional(kw("global")), $._temporary))), kw("alter")),
+                    choice($._create_prefix, kw("alter")),
                     kw("view"),
                     optional($._if_not_exists),
                     field("name", $.object_name),

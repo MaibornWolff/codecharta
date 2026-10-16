@@ -112,6 +112,24 @@ class SqlDependencyTest {
         }
 
         @Test
+        fun `should declare no temporary view, while what its query uses counts for the script`() {
+            // Arrange
+            val code = """
+                CREATE TABLE orders (id INT);
+                CREATE OR REPLACE TEMP VIEW recent_orders AS SELECT * FROM orders;
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(
+                Declaration("orders", DeclarationType.CLASS, usedTypes()),
+                Declaration("", DeclarationType.SCRIPT, usedTypes("orders"))
+            )
+        }
+
+        @Test
         fun `should declare a trigger without a body with its table and its function`() {
             // Arrange
             val code = "CREATE TRIGGER items_touch BEFORE UPDATE ON public.items FOR EACH ROW EXECUTE FUNCTION public.touch();"

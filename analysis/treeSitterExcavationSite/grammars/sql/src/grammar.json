@@ -141,6 +141,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_temporary_view"
+        },
+        {
+          "type": "SYMBOL",
           "name": "block"
         },
         {
@@ -3150,6 +3154,67 @@
         }
       ]
     },
+    "_temporary_view": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_create_prefix"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_temporary"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "[gG][lL][oO][bB][aA][lL]"
+                  },
+                  "named": false,
+                  "value": "GLOBAL"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_temporary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[vV][iI][eE][wW]"
+          },
+          "named": false,
+          "value": "VIEW"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_if_not_exists"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "object_name"
+        }
+      ]
+    },
     "_hash_temporary_table": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -3654,47 +3719,8 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_create_prefix"
-                  },
-                  {
-                    "type": "CHOICE",
-                    "members": [
-                      {
-                        "type": "SEQ",
-                        "members": [
-                          {
-                            "type": "CHOICE",
-                            "members": [
-                              {
-                                "type": "ALIAS",
-                                "content": {
-                                  "type": "PATTERN",
-                                  "value": "[gG][lL][oO][bB][aA][lL]"
-                                },
-                                "named": false,
-                                "value": "GLOBAL"
-                              },
-                              {
-                                "type": "BLANK"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "SYMBOL",
-                            "name": "_temporary"
-                          }
-                        ]
-                      },
-                      {
-                        "type": "BLANK"
-                      }
-                    ]
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "_create_prefix"
               },
               {
                 "type": "ALIAS",

@@ -341,3 +341,37 @@ SELECT * FROM a JOIN b ON commit_id = 1;
     (identifier))
   (operator)
   (number))
+
+================================================================================
+A temporary view is no view definition, while what its query uses is used
+================================================================================
+
+CREATE OR REPLACE TEMP VIEW recent_orders AS SELECT * FROM orders;
+CREATE TEMPORARY VIEW open_orders AS SELECT * FROM orders;
+CREATE GLOBAL TEMPORARY VIEW shared_orders AS SELECT * FROM orders;
+CREATE VIEW big_orders AS SELECT * FROM orders;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (view_definition
+    (object_name
+      (identifier))
+    (object_reference
+      (object_name
+        (identifier)))))
