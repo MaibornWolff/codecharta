@@ -1,24 +1,25 @@
 package de.maibornwolff.treesitter.excavationsite.languages
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
-import org.assertj.core.api.Assertions.assertThatCode
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class LanguageRegistryTest {
-    @ParameterizedTest
-    @EnumSource(Language::class)
-    fun `should register a grammar and a definition for every language`(language: Language) {
+    @Test
+    fun `should give languages that share or rename a grammar the library they load`() {
         // Arrange
-        val registry = LanguageRegistry
+        val languages = listOf(Language.VUE, Language.CSHARP, Language.DELPHI, Language.SQL)
 
         // Act
-        val lookUp = {
-            registry.getGrammarLibrary(language)
-            registry.getLanguageDefinition(language)
-        }
+        val libraries = languages.map { LanguageRegistry.getGrammarLibrary(it) }
 
         // Assert
-        assertThatCode { lookUp() }.doesNotThrowAnyException()
+        assertThat(libraries).containsExactly(
+            GrammarLibrary("javascript"),
+            GrammarLibrary("c-sharp", "c_sharp"),
+            GrammarLibrary("pascal"),
+            GrammarLibrary("sql-island", "sql_island")
+        )
     }
 }

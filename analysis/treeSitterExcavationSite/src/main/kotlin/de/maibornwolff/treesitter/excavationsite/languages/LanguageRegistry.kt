@@ -26,38 +26,34 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 
 object LanguageRegistry {
-    private val registrationTable: Map<Language, Registration> = mapOf(
-        Language.JAVA to Registration(GrammarLibrary("java"), JavaDefinition),
-        Language.KOTLIN to Registration(GrammarLibrary("kotlin"), KotlinDefinition),
-        Language.TYPESCRIPT to Registration(GrammarLibrary("typescript"), TypescriptDefinition),
-        Language.TSX to Registration(GrammarLibrary("tsx"), TsxDefinition),
-        Language.JAVASCRIPT to Registration(GrammarLibrary("javascript"), JavascriptDefinition),
-        Language.PYTHON to Registration(GrammarLibrary("python"), PythonDefinition),
-        Language.GO to Registration(GrammarLibrary("go"), GoDefinition),
-        Language.PHP to Registration(GrammarLibrary("php"), PhpDefinition),
-        Language.RUBY to Registration(GrammarLibrary("ruby"), RubyDefinition),
-        Language.SWIFT to Registration(GrammarLibrary("swift"), SwiftDefinition),
-        Language.BASH to Registration(GrammarLibrary("bash"), BashDefinition),
-        Language.CSHARP to Registration(GrammarLibrary("c-sharp", "c_sharp"), CSharpDefinition),
-        Language.CPP to Registration(GrammarLibrary("cpp"), CppDefinition),
-        Language.C to Registration(GrammarLibrary("c"), CDefinition),
-        Language.OBJECTIVE_C to Registration(GrammarLibrary("objc"), ObjectiveCDefinition),
-        Language.VUE to Registration(GrammarLibrary("javascript"), VueDefinition),
-        Language.ABL to Registration(GrammarLibrary("abl"), AblDefinition),
-        Language.DELPHI to Registration(GrammarLibrary("pascal"), DelphiDefinition),
-        Language.RUST to Registration(GrammarLibrary("rust"), RustDefinition),
-        Language.ANGULAR to Registration(GrammarLibrary("angular"), AngularDefinition),
-        Language.SQL to Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition)
-    )
+    fun getGrammarLibrary(language: Language): GrammarLibrary = registrationOf(language).grammarLibrary
 
-    // Built for every language when the registry loads, so that a language without a registration fails at once
-    private val registrations: Map<Language, Registration> = Language.entries.associateWith { language ->
-        registrationTable[language] ?: error("No grammar and definition registered for $language")
+    fun getLanguageDefinition(language: Language): LanguageDefinition = registrationOf(language).definition
+
+    // Exhaustive, so that a language without a grammar and a definition does not compile
+    private fun registrationOf(language: Language): Registration = when (language) {
+        Language.JAVA -> Registration(GrammarLibrary("java"), JavaDefinition)
+        Language.KOTLIN -> Registration(GrammarLibrary("kotlin"), KotlinDefinition)
+        Language.TYPESCRIPT -> Registration(GrammarLibrary("typescript"), TypescriptDefinition)
+        Language.TSX -> Registration(GrammarLibrary("tsx"), TsxDefinition)
+        Language.JAVASCRIPT -> Registration(GrammarLibrary("javascript"), JavascriptDefinition)
+        Language.PYTHON -> Registration(GrammarLibrary("python"), PythonDefinition)
+        Language.GO -> Registration(GrammarLibrary("go"), GoDefinition)
+        Language.PHP -> Registration(GrammarLibrary("php"), PhpDefinition)
+        Language.RUBY -> Registration(GrammarLibrary("ruby"), RubyDefinition)
+        Language.SWIFT -> Registration(GrammarLibrary("swift"), SwiftDefinition)
+        Language.BASH -> Registration(GrammarLibrary("bash"), BashDefinition)
+        Language.CSHARP -> Registration(GrammarLibrary("c-sharp", "c_sharp"), CSharpDefinition)
+        Language.CPP -> Registration(GrammarLibrary("cpp"), CppDefinition)
+        Language.C -> Registration(GrammarLibrary("c"), CDefinition)
+        Language.OBJECTIVE_C -> Registration(GrammarLibrary("objc"), ObjectiveCDefinition)
+        Language.VUE -> Registration(GrammarLibrary("javascript"), VueDefinition)
+        Language.ABL -> Registration(GrammarLibrary("abl"), AblDefinition)
+        Language.DELPHI -> Registration(GrammarLibrary("pascal"), DelphiDefinition)
+        Language.RUST -> Registration(GrammarLibrary("rust"), RustDefinition)
+        Language.ANGULAR -> Registration(GrammarLibrary("angular"), AngularDefinition)
+        Language.SQL -> Registration(GrammarLibrary("sql-island", "sql_island"), SqlDefinition)
     }
-
-    fun getGrammarLibrary(language: Language): GrammarLibrary = registrations.getValue(language).grammarLibrary
-
-    fun getLanguageDefinition(language: Language): LanguageDefinition = registrations.getValue(language).definition
 
     private data class Registration(val grammarLibrary: GrammarLibrary, val definition: LanguageDefinition)
 }
