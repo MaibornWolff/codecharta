@@ -46,7 +46,7 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
 
     protected open fun extraDependencies(declaration: Declaration): Set<Dependency> = emptySet()
 
-    protected open fun angularOf(declaration: Declaration): AngularMetadata? = declaration.angular?.toAngularMetadata()
+    protected open fun angularOf(declaration: Declaration): AngularMetadata? = declaration.angular?.let { AngularMetadata(it) }
 
     /** Nodes a declaration holds besides its own, such as the inline template of an Angular component. */
     protected open fun nodesWithin(declaration: Declaration, node: Node): List<Node> = emptyList()

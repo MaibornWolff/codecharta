@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Ty
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.build
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
+import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -341,10 +342,18 @@ class DependencyResolverServiceTest {
         val template = angularTemplate(usedNames = setOf("app-torch"))
         val cave = typescriptClass(
             listOf("src", "cave_component", "CaveComponent"),
-            AngularMetadata(templatePath = template.pathWithName, imports = setOf("DungeonTorch"))
+            AngularMetadata(AngularDeclaration(imports = listOf("DungeonTorch")), template.pathWithName)
         )
-        val torch = typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), AngularMetadata(setOf("app-torch")))
-        val dungeonTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), AngularMetadata(setOf("app-torch")))
+        val torch =
+            typescriptClass(
+                listOf("lantern", "torch_component", "TorchComponent"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+            )
+        val dungeonTorch =
+            typescriptClass(
+                listOf("dungeon", "torch_component", "DungeonTorch"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+            )
 
         // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, cave, torch, dungeonTorch))))
@@ -358,16 +367,37 @@ class DependencyResolverServiceTest {
     fun `should resolve a selector several classes declare to the one the module of its component declares or imports`() {
         // Arrange
         val template = angularTemplate(usedNames = setOf("app-torch", "app-lantern"))
-        val cave = typescriptClass(listOf("src", "cave_component", "CaveComponent"), AngularMetadata(templatePath = template.pathWithName))
+        val cave =
+            typescriptClass(listOf("src", "cave_component", "CaveComponent"), AngularMetadata(AngularDeclaration(), template.pathWithName))
         val cellarModule = typescriptClass(
             listOf("src", "cellar_module", "CellarModule"),
-            AngularMetadata(declarations = setOf("CaveComponent", "TorchComponent"), imports = setOf("LightModule"))
+            AngularMetadata(AngularDeclaration(declarations = listOf("CaveComponent", "TorchComponent"), imports = listOf("LightModule")))
         )
-        val lightModule = typescriptClass(listOf("light", "light_module", "LightModule"), AngularMetadata(exports = setOf("Lantern")))
-        val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), AngularMetadata(setOf("app-torch")))
-        val otherTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), AngularMetadata(setOf("app-torch")))
-        val lantern = typescriptClass(listOf("light", "lantern_component", "Lantern"), AngularMetadata(setOf("app-lantern")))
-        val otherLantern = typescriptClass(listOf("dungeon", "lantern_component", "OilLantern"), AngularMetadata(setOf("app-lantern")))
+        val lightModule =
+            typescriptClass(
+                listOf("light", "light_module", "LightModule"),
+                AngularMetadata(AngularDeclaration(exports = listOf("Lantern")))
+            )
+        val torch =
+            typescriptClass(
+                listOf("src", "torch_component", "TorchComponent"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+            )
+        val otherTorch =
+            typescriptClass(
+                listOf("dungeon", "torch_component", "DungeonTorch"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+            )
+        val lantern =
+            typescriptClass(
+                listOf("light", "lantern_component", "Lantern"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+            )
+        val otherLantern =
+            typescriptClass(
+                listOf("dungeon", "lantern_component", "OilLantern"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-lantern")))
+            )
         val nodes = listOf(template, cave, cellarModule, lightModule, torch, otherTorch, lantern, otherLantern)
 
         // Act
@@ -385,10 +415,18 @@ class DependencyResolverServiceTest {
         val template = angularTemplate(usedNames = setOf("app-torch"))
         val cave = typescriptClass(
             listOf("src", "cave_component", "CaveComponent"),
-            AngularMetadata(templatePath = template.pathWithName, imports = setOf("TorchComponent", "DungeonTorch"))
+            AngularMetadata(AngularDeclaration(imports = listOf("TorchComponent", "DungeonTorch")), template.pathWithName)
         )
-        val torch = typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), AngularMetadata(setOf("app-torch")))
-        val dungeonTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), AngularMetadata(setOf("app-torch")))
+        val torch =
+            typescriptClass(
+                listOf("lantern", "torch_component", "TorchComponent"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+            )
+        val dungeonTorch =
+            typescriptClass(
+                listOf("dungeon", "torch_component", "DungeonTorch"),
+                AngularMetadata(AngularDeclaration(templateNames = setOf("app-torch")))
+            )
 
         // Act
         val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, cave, torch, dungeonTorch))))
@@ -425,7 +463,7 @@ class DependencyResolverServiceTest {
     )
 
     private fun typescriptClass(pathWithName: List<String>, templateNames: Set<String>) =
-        typescriptClass(pathWithName, AngularMetadata(templateNames))
+        typescriptClass(pathWithName, AngularMetadata(AngularDeclaration(templateNames = templateNames)))
 
     private fun typescriptClass(pathWithName: List<String>, angular: AngularMetadata) = Node.build(
         pathWithName = Path(pathWithName),

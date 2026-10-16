@@ -1,12 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.TypeOfUsage
-import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.TypeUsage
@@ -31,13 +29,6 @@ fun ImportDeclaration.defaultImportPath(): List<String> {
     }
     return path
 }
-
-fun AngularDeclaration.toAngularMetadata(): AngularMetadata = AngularMetadata(
-    templateNames = templateNames,
-    imports = imports.toSet(),
-    declarations = declarations.toSet(),
-    exports = exports.toSet()
-)
 
 fun UsedType.toType(): Type = Type.generic(name, genericTypes.map { it.toType() }, usage.toTypeOfUsage())
 

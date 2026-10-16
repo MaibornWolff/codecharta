@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies
 
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 
 /**
  * A template names a component by its selector and a pipe by its pipe name, which only the class declaring it knows.
@@ -15,15 +15,21 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLa
  */
 internal class AngularTemplateReferences private constructor(nodes: List<Node>) {
     private val declarationsByTemplateName: Map<String, List<Node>> = nodes
-        .flatMap { node -> node.angular?.templateNames.orEmpty().map { templateName -> templateName to node } }
-        .groupBy({ it.first }, { it.second })
+        .flatMap { node ->
+            node.angular
+                ?.declaration
+                ?.templateNames
+                .orEmpty()
+                .map { templateName -> templateName to node }
+        }.groupBy({ it.first }, { it.second })
     private val componentsByTemplate: Map<Path, Node> = nodes
         .mapNotNull { node -> node.angular?.templatePath?.let { templatePath -> templatePath to node } }
         .toMap()
-    private val modulesByName: Map<String, AngularMetadata> = nodes
-        .mapNotNull { node -> node.angular?.takeIf { it.declarations.isNotEmpty() || it.exports.isNotEmpty() }?.let { node.name() to it } }
-        .toMap()
-    private val modules: Collection<AngularMetadata> = modulesByName.values
+    private val modulesByName: Map<String, AngularDeclaration> = nodes
+        .mapNotNull { node ->
+            node.angular?.declaration?.takeIf { it.declarations.isNotEmpty() || it.exports.isNotEmpty() }?.let { node.name() to it }
+        }.toMap()
+    private val modules: Collection<AngularDeclaration> = modulesByName.values
 
     private fun qualify(template: Node): Node = template.copy(
         usedTypes = template.usedTypes
@@ -42,12 +48,12 @@ internal class AngularTemplateReferences private constructor(nodes: List<Node>) 
     }
 
     private fun scopeOf(component: Node): Set<String> {
-        val ownImports = component.angular?.imports.orEmpty()
+        val ownImports = component.angular?.declaration?.imports.orEmpty()
         val declaringModules = modules.filter { component.name() in it.declarations }
         val moduleScope = declaringModules.flatMap { module ->
             module.declarations + module.imports + module.imports.flatMap { modulesByName[it]?.exports.orEmpty() }
         }
-        return ownImports + moduleScope
+        return (ownImports + moduleScope).toSet()
     }
 
     companion object {
