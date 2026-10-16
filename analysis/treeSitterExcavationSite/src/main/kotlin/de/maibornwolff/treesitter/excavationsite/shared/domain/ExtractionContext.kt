@@ -11,5 +11,8 @@ enum class ExtractionContext {
     COMMENT,
 
     /** String literal content */
-    STRING
+    STRING,
+
+    /** Text a user reads: the text content of a template and the values of its attributes that hold such text */
+    TEXT
 }

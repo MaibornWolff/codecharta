@@ -6,5 +6,6 @@ data class ExtractionWeights(val identifierWeight: Int = 3, val commentWeight: I
         ExtractionContext.IDENTIFIER -> identifierWeight
         ExtractionContext.COMMENT -> commentWeight
         ExtractionContext.STRING -> if (textWeighsLikeIdentifiers && stringWeight > 0) identifierWeight else stringWeight
+        ExtractionContext.TEXT -> if (stringWeight > 0) identifierWeight else stringWeight
     }
 }

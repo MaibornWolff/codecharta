@@ -180,7 +180,7 @@ class AngularExtractionTest {
     @Nested
     inner class Strings {
         @Test
-        fun `should extract text content and string literals of expressions`() {
+        fun `should extract text content as text and the string literals of expressions as strings`() {
             // Arrange
             val code = """
                 <p [title]="isLit ? 'Torch lit' : 'Darkness'">Beware of the dragon</p>
@@ -190,7 +190,8 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).containsExactly("Torch lit", "Darkness", "Beware of the dragon")
+            assertThat(result.strings).containsExactly("Torch lit", "Darkness")
+            assertThat(result.texts).containsExactly("Beware of the dragon")
         }
 
         @Test
@@ -205,7 +206,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).isEmpty()
+            assertThat(result.texts).isEmpty()
         }
 
         @Test
@@ -221,7 +222,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).containsExactly(
+            assertThat(result.texts).containsExactly(
                 "Copy path to clipboard",
                 "Close the cellar door",
                 "Descend",
@@ -244,7 +245,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).containsExactly(
+            assertThat(result.texts).containsExactly(
                 "Reveal the lair",
                 "No treasure here",
                 "Dungeon map",
@@ -263,7 +264,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).containsExactly("Copy", "to the clipboard")
+            assertThat(result.texts).containsExactly("Copy", "to the clipboard")
             assertThat(result.identifiers).containsExactly("path")
         }
 
@@ -276,7 +277,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).containsExactly("Dragon")
+            assertThat(result.texts).containsExactly("Dragon")
         }
 
         @Test
@@ -291,7 +292,7 @@ class AngularExtractionTest {
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
-            assertThat(result.strings).containsExactly("Open the vault")
+            assertThat(result.texts).containsExactly("Open the vault")
         }
     }
 }

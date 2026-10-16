@@ -458,9 +458,9 @@ class ApiSignatureContractTest {
     @Nested
     inner class ExtractionContextEnumContract {
         @Test
-        fun `should have exactly 3 context values`() {
+        fun `should have exactly 4 context values`() {
             // Assert
-            assertThat(ExtractionContext.entries).hasSize(3)
+            assertThat(ExtractionContext.entries).hasSize(4)
         }
 
         @Test
@@ -479,6 +479,12 @@ class ApiSignatureContractTest {
         fun `should contain STRING`() {
             // Assert
             assertThat(ExtractionContext.valueOf("STRING")).isEqualTo(ExtractionContext.STRING)
+        }
+
+        @Test
+        fun `should contain TEXT`() {
+            // Assert
+            assertThat(ExtractionContext.valueOf("TEXT")).isEqualTo(ExtractionContext.TEXT)
         }
     }
 }

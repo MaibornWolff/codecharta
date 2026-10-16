@@ -17,8 +17,8 @@ object AngularExtractionMapping : ExtractionMapping {
 
         put(COMMENT, Extract.Comment(custom = ::extractTemplateComment))
 
-        put(TEXT, Extract.StringLiteral(format = StringFormats.Trimmed))
-        put(ATTRIBUTE_VALUE, Extract.StringLiteral(custom = ::extractUserFacingAttributeText))
+        put(TEXT, Extract.Text { it.text.trim() })
+        put(ATTRIBUTE_VALUE, Extract.Text(::extractUserFacingAttributeText))
         put(STRING, Extract.StringLiteral(format = StringFormats.Quoted(stripSingleQuotes = true)))
         put(TEMPLATE_STRING, Extract.StringLiteral(format = StringFormats.Template))
     }

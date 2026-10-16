@@ -76,6 +76,7 @@ val result = TreeSitterExtraction.extract(code, Language.KOTLIN)
 println(result.identifiers)  // [add, a, b]
 println(result.comments)     // [Calculate sum of two numbers]
 println(result.strings)      // []
+println(result.texts)        // [], the text a user reads in a template
 
 // All items with context
 result.extractedTexts.forEach { item ->

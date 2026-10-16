@@ -37,7 +37,7 @@ class AngularInlineTemplateExtractionTest {
         // Assert
         val templateTexts = result.extractedTexts.filter { it.language == Language.ANGULAR }
         assertThat(templateTexts.map { it.text to it.context })
-            .containsExactly("Torch" to ExtractionContext.STRING, "flame" to ExtractionContext.IDENTIFIER)
+            .containsExactly("Torch" to ExtractionContext.TEXT, "flame" to ExtractionContext.IDENTIFIER)
     }
 
     @Test

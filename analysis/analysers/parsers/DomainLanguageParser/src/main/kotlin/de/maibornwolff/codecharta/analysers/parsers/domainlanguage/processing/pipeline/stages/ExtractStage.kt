@@ -21,6 +21,7 @@ class ExtractStage(private val language: Language) {
                         LibraryExtractionContext.IDENTIFIER -> ExtractionContext.IDENTIFIER
                         LibraryExtractionContext.COMMENT -> ExtractionContext.COMMENT
                         LibraryExtractionContext.STRING -> ExtractionContext.STRING
+                        LibraryExtractionContext.TEXT -> ExtractionContext.TEXT
                     },
                 interpretsEscapes = extracted.interpretsEscapes,
                 language = extracted.language?.let { DomainLanguage.ofLibraryLanguage(it) }

@@ -13,5 +13,6 @@ data class ExtractedText(
 enum class ExtractionContext {
     IDENTIFIER,
     COMMENT,
-    STRING
+    STRING,
+    TEXT
 }

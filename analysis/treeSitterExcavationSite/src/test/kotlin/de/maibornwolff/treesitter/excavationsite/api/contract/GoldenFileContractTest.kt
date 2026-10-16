@@ -173,6 +173,12 @@ class GoldenFileContractTest {
         builder.appendLine("# Strings")
         result.strings.sorted().forEach { builder.appendLine(it) }
 
+        if (result.texts.isNotEmpty()) {
+            builder.appendLine()
+            builder.appendLine("# Texts")
+            result.texts.sorted().forEach { builder.appendLine(it) }
+        }
+
         return builder.toString().trim()
     }
 

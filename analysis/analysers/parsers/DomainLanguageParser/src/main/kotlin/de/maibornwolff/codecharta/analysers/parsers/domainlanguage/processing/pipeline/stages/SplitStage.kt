@@ -17,7 +17,7 @@ class SplitStage(private val ngrams: Int = 1) {
             when (weighted.context) {
                 ExtractionContext.IDENTIFIER -> splitIdentifier(weighted.text)
                 ExtractionContext.COMMENT -> extractWords(weighted.text)
-                ExtractionContext.STRING -> extractWords(withoutEscapes(weighted))
+                ExtractionContext.STRING, ExtractionContext.TEXT -> extractWords(withoutEscapes(weighted))
             }
 
         val weightedWords = words.map { WeightedText(it, weighted.weight, weighted.context, language = weighted.language) }

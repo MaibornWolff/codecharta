@@ -47,6 +47,7 @@ internal class DirectTextExtractor(private val grammar: FfmGrammar, private val 
             is Extract.Identifier -> extractIdentifiers(node, extraction, results)
             is Extract.Comment -> extractComment(node, extraction, results)
             is Extract.StringLiteral -> extractString(node, extraction, results)
+            is Extract.Text -> extraction.custom(node)?.let { results.add(ExtractedText(it, ExtractionContext.TEXT)) }
         }
     }
 

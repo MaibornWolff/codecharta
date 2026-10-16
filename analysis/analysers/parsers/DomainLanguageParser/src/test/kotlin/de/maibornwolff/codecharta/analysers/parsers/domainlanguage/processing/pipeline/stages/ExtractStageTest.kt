@@ -406,9 +406,9 @@ class ExtractStageTest {
         // Assert
         val identifiers = result.filter { it.context == ExtractionContext.IDENTIFIER }.map { it.text }
         val comments = result.filter { it.context == ExtractionContext.COMMENT }.map { it.text }
-        val strings = result.filter { it.context == ExtractionContext.STRING }.map { it.text }
+        val texts = result.filter { it.context == ExtractionContext.TEXT }.map { it.text }
         assertEquals(listOf("vault", "isOpen"), identifiers)
         assertEquals(listOf("The treasure vault of the centaurs"), comments)
-        assertEquals(listOf("Gold glitters in the dark"), strings)
+        assertEquals(listOf("Gold glitters in the dark"), texts)
     }
 }
