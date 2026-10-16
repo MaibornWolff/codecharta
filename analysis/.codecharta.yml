@@ -1,0 +1,127 @@
+## Quality gate for `ccsh gate`: https://maibornwolff.github.io/codecharta/docs/analysis/quality-gate
+## Uncomment what you want to check, then run `ccsh gate --doctor`. Anything left commented out is not checked or
+## keeps its default; only the analysers listed as on run. Paths are relative to the project folder.
+
+# input: .
+# output: .codecharta-gate-output
+parallel: on
+
+exclude:  ## .gitignore patterns of files no rule checks; these are sample projects of other languages, not ours
+  - "**/src/test/resources/**"
+  - "test/data/**"
+
+analysers:  ## on, off, or the analyser's own options instead of on (its exclude takes regular expressions)
+  rawtextparser: on
+    ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit, metrics, tab-width, max-indentation-level, without-default-excludes
+  unifiedparser: on
+    ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit
+  dependencyparser: on
+    ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit, include-tests, max-file-size, file-timeout, omit-graph-analysis
+  domainlanguageparser: off
+    ## options: verbose, exclude, include-build-folders, file-extensions, base-file, bypass-gitignore, local-changes, commit, limit, ngrams, stop-word-level, identifier-weight, comment-weight, string-weight, exclude-tests, no-technical-stopwords, no-tfidf, sort-by, no-ssr
+
+exitCodes:
+  error: 1
+  warning: 0
+
+## Metrics found in this project, with the range of their values:
+##   comment_lines                   0 – 373     Comment lines
+##   comment_ratio                   0 – 4.12    Comment Ratio
+##   complexity                      0 – 187     Complexity
+##   excessive_comments              0 – 1       Excessive Comments
+##   incoming_dependencies           0 – 268     Incoming Dependencies
+##   indentation_level_0+            0 – 326919  Statements with indentation level greater or equal 0
+##   indentation_level_1+            0 – 19363   Statements with indentation level greater or equal 1
+##   indentation_level_10+           0 – 1440    Statements with indentation level greater or equal 10
+##   indentation_level_2+            0 – 19363   Statements with indentation level greater or equal 2
+##   indentation_level_3+            0 – 19363   Statements with indentation level greater or equal 3
+##   indentation_level_4+            0 – 19363   Statements with indentation level greater or equal 4
+##   indentation_level_5+            0 – 1984    Statements with indentation level greater or equal 5
+##   indentation_level_6+            0 – 1637    Statements with indentation level greater or equal 6
+##   indentation_level_7+            0 – 1637    Statements with indentation level greater or equal 7
+##   indentation_level_8+            0 – 1637    Statements with indentation level greater or equal 8
+##   indentation_level_9+            0 – 1452    Statements with indentation level greater or equal 9
+##   loc                             0 – 328434  Lines of Code
+##   logic_complexity                0 – 98      Logic complexity
+##   long_method                     0 – 66      Long Method
+##   long_parameter_list             0 – 4       Long Parameter List
+##   max_complexity_per_function     0 – 38      Maximum complexity per function
+##   max_parameters_per_function     0 – 13      Maximum parameters per function
+##   max_rloc_per_function           0 – 493     Maximum real lines of code in a function
+##   mean_complexity_per_function    0 – 19      Mean complexity per function
+##   mean_parameters_per_function    0 – 7       Mean parameters per function
+##   mean_rloc_per_function          0 – 168     Mean real lines of code in a function
+##   median_complexity_per_function  0 – 19      Median complexity per function
+##   median_parameters_per_function  0 – 7       Median parameters per function
+##   median_rloc_per_function        0 – 168     Median real lines of code in a function
+##   message_chains                  0 – 13      Message Chains
+##   min_complexity_per_function     0 – 19      Minimum complexity per function
+##   min_parameters_per_function     0 – 7       Minimum parameters per function
+##   min_rloc_per_function           0 – 168     Minimum real lines of code in a function
+##   number_of_functions             0 – 118     Number of functions
+##   outgoing_dependencies           0 – 37      Outgoing Dependencies
+##   rloc                            0 – 1393    Real Lines of Code
+metrics:
+  complexity:
+    warning:
+      max: 100
+      instruction: |
+        This file does too much. Single Responsibility: one file, one reason to change.
+        - Find the responsibilities mixed in here and move each one into a class of its own.
+        - Have callers depend on small interfaces instead of this one large unit (Interface Segregation).
+        - KISS: remove branches for cases that never happen instead of handling them.
+  rloc:
+    warning:
+      max: 500
+      instruction: |
+        This file has grown too long to read in one go.
+        - Split it along its responsibilities (Single Responsibility), not at an arbitrary line.
+        - Extract repeated logic into a shared helper (DRY: 3+ occurrences means extract).
+        - Delete dead code and speculative extensions (KISS, YAGNI).
+  max_complexity_per_function:
+    warning:
+      max: 20
+      instruction: |
+        One function here has too many paths to understand or test.
+        - Return early from error and edge cases (guard clauses) instead of nesting.
+        - Extract each step into a small, well-named function that does one thing.
+        - Replace long if/else or when chains on a type with polymorphism (Open/Closed).
+  comment_lines:
+    warning:
+      max: 25
+      instruction: |
+        Clean Code: code should explain itself, and comments go stale.
+        - Replace a comment that says WHAT the code does with a better name, a named helper or a named constant.
+        - Keep only comments that explain WHY: a constraint, a workaround with its issue, a deliberate trade-off.
+        - Delete commented-out code. Git keeps the history.
+
+dependencies:  ## counted like the dependency view in the visualization
+  cyclesBetweenFiles:  ## a warning until today's cycles are broken, then an error
+    severity: warning
+    instruction: |
+      These files depend on each other in a loop, so you cannot change, test or reuse one without the others.
+      - Move what both files need into a file of its own that both depend on (Single Responsibility).
+      - Or let the lower file own an interface and have the other file implement it (Dependency Inversion).
+      - KISS: if the files only make sense together, merge them instead of adding indirection.
+  cyclesInsideFiles:
+    severity: warning
+    instruction: |
+      Declarations in this file call each other in a loop, which hides the order the code runs in.
+      - Find the responsibilities tangled together here and give each one its own class (Single Responsibility).
+      - Pass the part one side needs as a parameter or callback instead of reaching back (Dependency Inversion).
+      - Unwind mutual recursion into a single function or a loop when that reads simpler (KISS).
+  upward:
+    severity: warning
+    instruction: |
+      A lower-level part depends on a part above it, so the layering points the wrong way and core code knows
+      about its callers.
+      - Let the lower level define the interface it needs and have the upper level implement it (Dependency Inversion).
+      - If the lower level really needs this code, move it down to where it belongs.
+      - Never import from the layer that uses you. Keep dependencies pointing one way (Open/Closed, KISS).
+
+overrides:  ## tests may be long and explain themselves in comments; complex test logic still counts
+  - paths:
+      - "**/src/test/**"
+    metrics:
+      rloc: off
+      comment_lines: off
