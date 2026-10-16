@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency
 
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -281,6 +282,61 @@ class DependencyParserTest {
         // Assert
         assertThat(exitCode).isZero()
         assertThat(outputStream.toString()).contains("InventoryService.kt")
+    }
+
+    @Test
+    fun `should draw an edge from an Angular template to each component and pipe it uses`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = angularFiles(tempDir)
+
+        // Act
+        val output = runParser(projectDir)
+
+        // Assert
+        val namesById = fileNamesById(output)
+        val edgeNames = dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
+            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
+        }
+        assertThat(edgeNames).containsExactlyInAnyOrder(
+            "cave.component.html" to "torch.component.ts",
+            "cave.component.html" to "gold-coins.pipe.ts"
+        )
+    }
+
+    private fun fileNamesById(output: String): Map<String, String> {
+        val namesById = HashMap<String, String>()
+
+        fun collect(node: JsonObject) {
+            namesById[node.get("id").asString] = node.get("name").asString
+            node.getAsJsonArray("children")?.forEach { collect(it.asJsonObject) }
+        }
+        JsonParser.parseString(output).asJsonObject.getAsJsonArray("files").forEach { collect(it.asJsonObject) }
+        return namesById
+    }
+
+    private fun angularFiles(tempDir: Path): String {
+        tempDir.resolve("cave.component.html").writeText(
+            """
+            <app-torch [lit]="isLit" />
+            <p>{{ treasure | goldCoins }}</p>
+            <router-outlet />
+            """.trimIndent()
+        )
+        tempDir.resolve("torch.component.ts").writeText(
+            """
+            @Component({ selector: 'app-torch', templateUrl: './torch.component.html' })
+            export class TorchComponent {}
+            """.trimIndent()
+        )
+        tempDir.resolve("gold-coins.pipe.ts").writeText(
+            """
+            @Pipe({ name: 'goldCoins' })
+            export class GoldCoinsPipe {}
+            """.trimIndent()
+        )
+        return tempDir.toString()
     }
 
     private fun dependingFiles(tempDir: Path): String {

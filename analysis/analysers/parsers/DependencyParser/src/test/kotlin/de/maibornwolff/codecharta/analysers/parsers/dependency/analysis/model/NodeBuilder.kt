@@ -9,7 +9,8 @@ fun Node.Companion.build(
     language: SupportedLanguage = SupportedLanguage.JAVA,
     dependencies: Set<Dependency> = setOf(),
     usedTypes: Set<Type> = setOf(),
-    resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf())
+    resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf()),
+    templateNames: Set<String> = setOf()
 ): Node = Node(
     pathWithName = pathWithName,
     physicalPath = physicalPath,
@@ -17,5 +18,6 @@ fun Node.Companion.build(
     language = language,
     dependencies = dependencies,
     usedTypes = usedTypes,
-    resolvedNodeDependencies = resolvedNodeDependencies
+    resolvedNodeDependencies = resolvedNodeDependencies,
+    templateNames = templateNames
 )

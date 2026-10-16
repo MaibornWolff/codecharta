@@ -11,6 +11,7 @@ class SupportedLanguageTest {
         assertThat(SupportedLanguage.ofFileName("Main.kt")).isEqualTo(SupportedLanguage.KOTLIN)
         assertThat(SupportedLanguage.ofFileName("main.go")).isEqualTo(SupportedLanguage.GO)
         assertThat(SupportedLanguage.ofFileName("App.vue")).isEqualTo(SupportedLanguage.VUE)
+        assertThat(SupportedLanguage.ofFileName("cave.component.html")).isEqualTo(SupportedLanguage.ANGULAR)
     }
 
     @Test

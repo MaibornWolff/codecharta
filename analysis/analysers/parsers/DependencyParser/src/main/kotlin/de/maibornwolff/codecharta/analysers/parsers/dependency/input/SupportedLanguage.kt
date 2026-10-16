@@ -23,7 +23,8 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     KOTLIN("Kotlin", listOf(FileExtension.KOTLIN)),
     VUE("Vue", listOf(FileExtension.VUE)),
     DELPHI("Delphi", listOf(FileExtension.DELPHI)),
-    RUST("Rust", listOf(FileExtension.RUST));
+    RUST("Rust", listOf(FileExtension.RUST)),
+    ANGULAR("Angular template", listOf(FileExtension.HTML));
 
     val lensName: String
         get() = name.lowercase().replace(ENUM_WORD_SEPARATOR, "")

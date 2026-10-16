@@ -42,6 +42,21 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
+    fun `should carry the selector of an Angular component as its template name`() {
+        // Arrange
+        val typescriptCode = """
+            @Component({ selector: 'app-torch', templateUrl: './torch.component.html' })
+            export class TorchComponent {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "torch.component.ts", typescriptCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.single().templateNames).containsExactly("app-torch")
+    }
+
+    @Test
     fun `should convert exported class to node with type CLASS`() {
         // Arrange
         val typescriptCode = """            

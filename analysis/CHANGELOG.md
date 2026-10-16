@@ -15,8 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Switching off comments or strings**: `domainlanguageparser` accepts a comment or string weight of 0 to leave those
   words out.
 
-- **Angular templates**: `unifiedparser` and `domainlanguageparser` read `.html` files, so the templates of an Angular
-  code base get their complexity, comment lines, lines of code and domain words instead of nothing.
+- **Angular templates**: `unifiedparser`, `domainlanguageparser` and `dependencyparser` read `.html` files, so the
+  templates of an Angular code base get their complexity, lines and domain words, and an edge to each component and
+  pipe they use.
 
 ### Changed
 

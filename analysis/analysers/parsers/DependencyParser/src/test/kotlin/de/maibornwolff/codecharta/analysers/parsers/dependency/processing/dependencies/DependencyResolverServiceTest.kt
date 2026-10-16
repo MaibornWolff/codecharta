@@ -304,6 +304,70 @@ class DependencyResolverServiceTest {
     }
 
     @Test
+    fun `should resolve a selector and a pipe name of an Angular template to the classes declaring them`() {
+        // Arrange
+        val template = angularTemplate(usedNames = setOf("app-torch", "goldCoins"))
+        val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), templateNames = setOf("app-torch"))
+        val goldCoins = typescriptClass(listOf("src", "pipes", "gold-coins_pipe", "GoldCoinsPipe"), templateNames = setOf("goldCoins"))
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, torch, goldCoins))))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies)
+            .containsExactlyInAnyOrder(Dependency(torch.pathWithName), Dependency(goldCoins.pathWithName))
+    }
+
+    @Test
+    fun `should not resolve a selector that several classes declare or none does`() {
+        // Arrange
+        val template = angularTemplate(usedNames = setOf("app-torch", "router-outlet"))
+        val torch = typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), templateNames = setOf("app-torch"))
+        val otherTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), templateNames = setOf("app-torch"))
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, torch, otherTorch))))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies).isEmpty()
+    }
+
+    @Test
+    fun `should not resolve a used type of other code by a template name`() {
+        // Arrange
+        val script = Node.build(
+            pathWithName = Path(listOf("src", "vault", "Vault")),
+            language = SupportedLanguage.TYPESCRIPT,
+            usedTypes = setOf(Type.simple("goldCoins"))
+        )
+        val goldCoins = typescriptClass(listOf("src", "gold-coins_pipe", "GoldCoinsPipe"), templateNames = setOf("goldCoins"))
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(script, goldCoins))))
+
+        // Assert
+        val resolvedScript = resolvedNodes.first { it.pathWithName.parts.last() == "Vault" }
+        assertThat(resolvedScript.resolvedNodeDependencies.internalDependencies).isEmpty()
+    }
+
+    private fun angularTemplate(usedNames: Set<String>) = Node.build(
+        pathWithName = Path(listOf("src", "cave_component_html")),
+        physicalPath = "src/cave.component.html",
+        nodeType = NodeType.SCRIPT,
+        language = SupportedLanguage.ANGULAR,
+        usedTypes = usedNames.map { Type.simple(it) }.toSet()
+    )
+
+    private fun typescriptClass(pathWithName: List<String>, templateNames: Set<String>) = Node.build(
+        pathWithName = Path(pathWithName),
+        physicalPath = pathWithName.dropLast(1).joinToString("/") + ".ts",
+        language = SupportedLanguage.TYPESCRIPT,
+        templateNames = templateNames
+    )
+
+    @Test
     fun `should map a node to its node information`() {
         // Arrange
         val node = Node.build(

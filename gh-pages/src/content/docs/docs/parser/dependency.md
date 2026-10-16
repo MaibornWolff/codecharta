@@ -70,7 +70,8 @@ declarations:
   PHP and C++. Everywhere else the file tree already is the hierarchy, so the leaf carries no
   `namespace` and no namespace is listed.
 - `namespaces` lists the packages with their level and their `parent`, the package containing them.
-- `language` is the language the declaration is written in, lower case, such as `java` or `typescript`.
+- `language` is the language the declaration is written in, lower case, such as `java` or `typescript`; an Angular
+  template is `angular`.
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
   extractor found, as in DependaCharta. Only PHP reports more than `usage` today; see
@@ -91,7 +92,11 @@ gzipped; output is gzipped by default.
 
 ### Supported Languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi and Rust.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust and Angular templates.
+
+An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
+names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
+class or more than one class declares, such as a library component, draws no edge.
 
 Imports are resolved through each language's own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.

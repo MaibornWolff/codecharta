@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.angular.AngularTemplateAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi.DelphiAnalyzer
@@ -31,6 +32,7 @@ class LanguageAnalyzerFactory {
             SupportedLanguage.VUE -> VueAnalyzer(fileInfo)
             SupportedLanguage.DELPHI -> DelphiAnalyzer(fileInfo)
             SupportedLanguage.RUST -> RustAnalyzer(fileInfo)
+            SupportedLanguage.ANGULAR -> AngularTemplateAnalyzer(fileInfo)
         }
     }
 }

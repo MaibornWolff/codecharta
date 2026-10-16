@@ -72,7 +72,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
 - **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,
-  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi` or `rust`.
+  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust` or `angular`.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
   `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
   kind, the first the extractor found, because a used type is identified by its name alone — the same
@@ -187,7 +187,11 @@ differ from the namespace levels in the logical layer — which are DependaChart
 
 ## Supported languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi and Rust.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust and Angular templates.
+
+An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
+names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
+class or more than one class declares, such as a library component, draws no edge.
 
 ## Usage and parameters
 

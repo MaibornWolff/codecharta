@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.angular.AngularTemplateAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi.DelphiAnalyzer
@@ -85,6 +86,11 @@ class LanguageAnalyzerFactoryTest {
                 physicalPath = "",
                 content = ""
             )
+            val angularFileInfo = FileInfo(
+                language = SupportedLanguage.ANGULAR,
+                physicalPath = "",
+                content = ""
+            )
             return listOf(
                 Arguments.of(javaFileInfo, JavaAnalyzer(javaFileInfo)),
                 Arguments.of(cSharpFileInfo, CSharpAnalyzer(cSharpFileInfo)),
@@ -97,7 +103,8 @@ class LanguageAnalyzerFactoryTest {
                 Arguments.of(cppFileInfo, CppAnalyzer(cppFileInfo)),
                 Arguments.of(vueFileInfo, VueAnalyzer(vueFileInfo)),
                 Arguments.of(delphiFileInfo, DelphiAnalyzer(delphiFileInfo)),
-                Arguments.of(rustFileInfo, RustAnalyzer(rustFileInfo))
+                Arguments.of(rustFileInfo, RustAnalyzer(rustFileInfo)),
+                Arguments.of(angularFileInfo, AngularTemplateAnalyzer(angularFileInfo))
             )
         }
     }
