@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -24,6 +25,24 @@ class ProjectScannerTest {
     private fun getParsedFilePaths(): List<String> {
         val project = projectBuilder.build()
         return project.rootNode.leaves.keys.map { it.edgesList.joinToString("/") }
+    }
+
+    @Test
+    fun `should skip a file it cannot read and measure the others`() {
+        // Arrange
+        File(rootDir, "Main.kt").writeText("fun main() {}")
+        val unreadable = File(rootDir, "Locked.kt")
+        unreadable.writeText("fun locked() {}")
+        unreadable.setReadable(false)
+        assumeFalse(unreadable.canRead(), "the file system lets this user read any file")
+        val scanner = ProjectScanner(root = rootDir, projectBuilder = projectBuilder, useGitignore = false)
+
+        // Act
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        assertThat(getParsedFilePaths()).containsExactly("Main.kt")
+        assertThat(scanner.failedFiles()).containsExactly("Locked.kt")
     }
 
     // ========== GITIGNORE EXCLUSION TESTS ==========

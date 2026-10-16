@@ -11,12 +11,14 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicLong
 
 class ProjectScanner(
@@ -34,6 +36,7 @@ class ProjectScanner(
     private val ignoredFileTypes = mutableSetOf<String>()
     private val filesSkipped = AtomicLong(0)
     private val filesAnalyzed = AtomicLong(0)
+    private val failedFiles = ConcurrentLinkedQueue<String>()
 
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
@@ -47,6 +50,9 @@ class ProjectScanner(
     fun measuredAttributes(): Set<String> = fileMetrics.values.flatMap { it.attributes.keys }.toSet()
 
     fun getIgnoredFiles(): Pair<Long, Set<String>> = Pair(ignoredFiles, ignoredFileTypes)
+
+    /** The files whose analysis failed, relative to the root; they are missing from the output. */
+    fun failedFiles(): List<String> = failedFiles.sorted()
 
     fun getGitIgnoreStatistics(): Pair<Int, List<String>> = if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
 
@@ -72,7 +78,7 @@ class ProjectScanner(
             parsableFiles.forEach { file ->
                 launch {
                     filesParsed++
-                    collectMetricsForFile(file, verbose)
+                    collectMetricsSkippingFailure(file, verbose)
                     if (!verbose) logProgress(file.name, filesParsed)
                 }
             }
@@ -89,6 +95,20 @@ class ProjectScanner(
             Logger.info { "Analysis of files complete, creating output file..." }
         }
         addAllNodesToProjectBuilder()
+    }
+
+    // A file that fails is left out, so one file cannot stop the analysis of a project; the failures are reported
+    // together afterwards, the cause of each only at debug level
+    private fun collectMetricsSkippingFailure(file: File, verbose: Boolean) {
+        try {
+            collectMetricsForFile(file, verbose)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (failure: Exception) {
+            val relativeFilePath = getRelativeFileName(file.toString())
+            Logger.debug(failure) { "Failed to analyze $relativeFilePath: ${failure.message}" }
+            failedFiles.add(relativeFilePath)
+        }
     }
 
     private fun collectMetricsForFile(file: File, verbose: Boolean) {

@@ -44,6 +44,7 @@ class UnifiedParser(
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
+        private const val MAX_LISTED_FAILED_FILES = 5
     }
 
     override val name = NAME
@@ -103,6 +104,7 @@ class UnifiedParser(
         reportIgnoredFileTypes(projectScanner)
         reportGitIgnoreStatistics(projectScanner)
         reportNoParsableFiles(projectScanner)
+        reportFailedFiles(projectScanner)
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
@@ -155,6 +157,15 @@ class UnifiedParser(
                 gitignoreFiles.forEach { System.err.println("  - $it") }
             }
         }
+    }
+
+    private fun reportFailedFiles(projectScanner: ProjectScanner) {
+        val failedFiles = projectScanner.failedFiles()
+        if (failedFiles.isEmpty()) return
+        val listed = failedFiles.take(MAX_LISTED_FAILED_FILES).joinToString()
+        val unlisted = failedFiles.size - MAX_LISTED_FAILED_FILES
+        val andMore = if (unlisted > 0) " and $unlisted more" else ""
+        Logger.warn { "${failedFiles.size} file(s) could not be analysed and are missing from the output: $listed$andMore" }
     }
 
     private fun reportNoParsableFiles(projectScanner: ProjectScanner) {
