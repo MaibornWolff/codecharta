@@ -55,13 +55,22 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
 - Every `.html` (plain pages, reports) is measured; exclude with `-e` where unwanted.
 
 ## Domain language parser
-- Expected words all files / templates only: creature 108/76, centaur 5/2, cellar 7/5, dungeon 6/6, armor 31/14, hit 40/21,
-  points 37/18, speed 51/30, damage 10/5, lair 3/1, initiative 10/7, encounter 10/4, treasure 12/6, hoard 1/1, stable 6/3,
+- Expected words all files / templates only: creature 109/77, centaur 5/2, cellar 8/6, dungeon 7/7, armor 31/14, hit 40/21,
+  points 37/18, speed 51/30, damage 10/5, lair 4/2, initiative 10/7, encounter 11/5, treasure 12/6, hoard 1/1, stable 6/3,
   dice 2/0, roll 29/9.
+- User-facing attribute values (second round, 2026-10-16): the values of `title`, `alt`, `placeholder`, `aria-label`,
+  `aria-description`, `aria-placeholder`, `label` and of every attribute whose name ends in hint, label, title, text, tooltip,
+  placeholder, description or message (`hoverHint`, `empty-message`, `pageTitle`) count as strings. Added to the sample:
+  `title="Creature of the cellar"` (with `i18n-title`) and `hoverHint="Dash to the lair before the dragon wakes"` in
+  creature-card, `aria-label="Dash away from the encounter"` (beside `type="button"`) in speed-badge,
+  `aria-label="Dungeon overview"` (beside `class="dungeon"`) in app. They add cellar +1, dungeon +1, lair +1, encounter +1,
+  creature +1, dragon +1, and `wakes`, `away`, `overview`; `i18n-title`, `type` and `class` add nothing. Line metrics and
+  dependency edges are unchanged.
 - German in templates: zentaurenhöhle 3, verlies 3, rüstungsklasse 1, trefferpunkte 1, kreatur 1, größe 1, höhle 1; stop
   words die/dem/unter/liegt/und/jeder leak. Missing: identifiers of `höhle.rüstungsklasse` (grammar is ASCII-only).
 - true/false and `emit` leaked in the first run, now in the template keyword list; length/value/class left in on purpose.
-- Not extracted by design: binding targets, ngIf/ngFor names, $event/$index, plain attribute values, control-flow keywords.
+- Not extracted by design: binding targets, ngIf/ngFor names, $event/$index, the values of attributes that hold no
+  user-facing text (`class`, `style`, `id`, `icon`, `type`, `href`, `src`, ...), `i18n-*` markers, control-flow keywords.
 
 ## Verdict
 Unified: Good – all templates measured, counts exact. Bad – every .html is measured. Missing – ICU cases not counted.

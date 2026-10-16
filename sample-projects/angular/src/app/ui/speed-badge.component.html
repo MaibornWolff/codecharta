@@ -9,4 +9,4 @@
   </li>
 </ul>
 <ng-template #standingStill><p>Standing still in the stable</p></ng-template>
-<button (click)="dash.emit()" [disabled]="!speeds.length || exhausted">Dash</button>
+<button (click)="dash.emit()" [disabled]="!speeds.length || exhausted" aria-label="Dash away from the encounter" type="button">Dash</button>

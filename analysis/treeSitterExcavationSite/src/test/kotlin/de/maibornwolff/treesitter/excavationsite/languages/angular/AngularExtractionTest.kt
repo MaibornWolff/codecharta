@@ -121,15 +121,91 @@ class AngularExtractionTest {
         }
 
         @Test
-        fun `should not extract plain attribute values`() {
+        fun `should not extract the values of attributes that hold no user-facing text`() {
             // Arrange
-            val code = """<section class="cave" id="entrance"></section>"""
+            val code = """
+                <section class="cave" id="entrance" style="color: brown" type="button" aria-labelledby="cave-title"></section>
+                <img icon="torch" src="torch.png" href="/cellar" data-testid="cave-image" />
+            """.trimIndent()
 
             // Act
             val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
 
             // Assert
             assertThat(result.strings).isEmpty()
+        }
+
+        @Test
+        fun `should extract the values of the standard user-facing attributes`() {
+            // Arrange
+            val code = """
+                <button title="Copy path to clipboard" aria-label="Close the cellar door" label="Descend"></button>
+                <img alt="A sleeping dragon" />
+                <input placeholder="Name your centaur" aria-placeholder="Centaur name" aria-description="The stable" />
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.strings).containsExactly(
+                "Copy path to clipboard",
+                "Close the cellar door",
+                "Descend",
+                "A sleeping dragon",
+                "Name your centaur",
+                "Centaur name",
+                "The stable"
+            )
+        }
+
+        @Test
+        fun `should extract the values of attributes whose name ends like user-facing text in camel and kebab case`() {
+            // Arrange
+            val code = """
+                <cc-button hoverHint="Reveal the lair" empty-message="No treasure here" pageTitle="Dungeon map" />
+                <cc-badge tooltip="Hit points" ariaLabel="Armor class" actionText="Roll initiative" />
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.strings).containsExactly(
+                "Reveal the lair",
+                "No treasure here",
+                "Dungeon map",
+                "Hit points",
+                "Armor class",
+                "Roll initiative"
+            )
+        }
+
+        @Test
+        fun `should extract an unquoted user-facing attribute value`() {
+            // Arrange
+            val code = """<img alt=Dragon />"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.strings).containsExactly("Dragon")
+        }
+
+        @Test
+        fun `should not extract i18n markers and attributes with an Angular binding prefix`() {
+            // Arrange
+            val code = """
+                <button i18n-title title="Open the vault" bind-title="vaultTitle" bindLabel="name"></button>
+                <ng-template let-label="label"><p>{{ label }}</p></ng-template>
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.strings).containsExactly("Open the vault")
         }
     }
 }

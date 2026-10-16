@@ -17,8 +17,13 @@ The `domain` lens payload keys its entries under `nodes`:
 ### Supported Languages
 
 Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, ABL, shell
-and Angular templates (`.html`: the identifiers of bindings, interpolations and control flow blocks, HTML comments
-and the text of the template).
+and Angular templates (`.html`).
+
+An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, its HTML
+comments, its text, and the values of the attributes that hold text a user reads: `title`, `alt`, `placeholder`,
+`label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose name ends in `hint`, `label`,
+`title`, `text`, `tooltip`, `placeholder`, `description` or `message` (`hoverHint`, `empty-message`). The values of
+all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out.
 
 ### Usage and Parameters
 

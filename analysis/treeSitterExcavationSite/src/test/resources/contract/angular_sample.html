@@ -2,7 +2,7 @@
 <section class="cave" [class.flooded]="cave.isFlooded && !cave.drained">
   <h2>{{ cave.name | titlecase }} ({{ cave.depth ?? 0 }} m)</h2>
   <app-cave-map [cave]="cave" (roomSelected)="enterRoom($event)"></app-cave-map>
-  <app-torch />
+  <app-torch title="Light the torch" hoverHint="Torches keep the trolls away" />
   @if (party.size > 3 || party.hasCentaur) {
     <p>Too crowded</p>
   } @else if (party.size === 0) {
@@ -29,6 +29,6 @@
   <ng-template #noExit><p>No exit</p></ng-template>
   <li *ngFor="let centaur of centaurs; trackBy: byName">{{ centaur.name }}</li>
   <div [ngSwitch]="mood"><span *ngSwitchCase="'grim'">Grim</span><span *ngSwitchDefault>Fine</span></div>
-  <input [(ngModel)]="explorer.name" (keyup.enter)="save() " />
+  <input [(ngModel)]="explorer.name" (keyup.enter)="save() " placeholder="Explorer name" i18n-placeholder class="name-input" />
   @let total = cave.gold + cave.silver;
 </section>

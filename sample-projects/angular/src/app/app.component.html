@@ -2,7 +2,7 @@
 <header>
   <h1>{{ title | uppercase }}</h1>
 </header>
-<main>
+<main aria-label="Dungeon overview" class="dungeon">
   <cc-creature-list [creatures]="creatures" (selected)="select($event)" />
   @if (selected) {
     <cc-creature-card [creature]="selected" />
