@@ -221,3 +221,66 @@ WITH XMLNAMESPACES('urn:x' AS p) SELECT 1;
   (object_name
     (identifier))
   (number))
+
+================================================================================
+Tables, synonyms and type anchors made from other objects
+================================================================================
+
+CREATE TABLE centaur (hoof_size INT) INHERITS (creature);
+CREATE TABLE orders_copy LIKE orders;
+CREATE OR REPLACE PUBLIC SYNONYM creature_entity FOR &owner..creature;
+CREATE PROCEDURE p(p_id IN orders.id%TYPE) IS
+  v_row orders%ROWTYPE;
+BEGIN
+  NULL;
+END;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (table_definition
+    (object_name
+      (identifier))
+    (column_definitions
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier))))
+    (object_reference
+      (object_name
+        (identifier))))
+  (table_definition
+    (object_name
+      (identifier))
+    (object_reference
+      (object_name
+        (identifier))))
+  (synonym_definition
+    (identifier)
+    (object_name
+      (identifier))
+    (object_reference
+      (object_name
+        (substitution_variable)
+        (identifier))))
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier)
+        (anchored_type
+          (object_name
+            (identifier)
+            (identifier))
+          (type_anchor))))
+    (routine_body
+      (object_name
+        (identifier))
+      (anchored_type
+        (object_name
+          (identifier))
+        (type_anchor))
+      (block
+        (object_name
+          (identifier))))))

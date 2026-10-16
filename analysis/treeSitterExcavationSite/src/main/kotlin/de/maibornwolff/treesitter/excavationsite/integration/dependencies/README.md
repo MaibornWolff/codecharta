@@ -324,7 +324,7 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 | PHP | `namespace` declaration, otherwise empty and the adapter uses the file path | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
 | Delphi | `unit` declaration | empty (top-level types only in v1) |
-| SQL | always empty: an object is used by its name alone, without imports | the package of a routine declared in a PL/SQL package body |
+| SQL | always empty: an object is used by its name alone, without imports | the schema an object is created in, or the package of a routine of a PL/SQL package body |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.
 

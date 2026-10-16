@@ -2,7 +2,7 @@
 T-SQL procedure with bare parameters and a block body
 ================================================================================
 
-CREATE PROCEDURE dbo.GetOrders @CustomerId INT, @Status NVARCHAR(10) = NULL
+CREATE PROCEDURE dbo.GetOrders @CustomerId INT, @Status NVARCHAR(10) = NULL, @Limit INT = 10
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -27,9 +27,14 @@ GO
         (invocation
           (object_name
             (identifier))
-          (number))))
-    (object_name
-      (identifier))
+          (number))
+        (object_name
+          (identifier)))
+      (parameter
+        (variable)
+        (object_name
+          (identifier))
+        (number)))
     (routine_body
       (block
         (object_name

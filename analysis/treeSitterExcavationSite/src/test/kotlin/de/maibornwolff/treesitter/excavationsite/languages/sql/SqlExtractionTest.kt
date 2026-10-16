@@ -79,6 +79,18 @@ class SqlExtractionTest {
     }
 
     @Test
+    fun `should extract the name of a synonym and of the object it stands for`() {
+        // Arrange
+        val code = "CREATE SYNONYM creature_entity FOR app.creature;"
+
+        // Act
+        val result = TreeSitterExtraction.extract(code, Language.SQL)
+
+        // Assert
+        assertThat(result.identifiers).containsExactly("creature_entity", "creature")
+    }
+
+    @Test
     fun `should extract comments without their markers`() {
         // Arrange
         val code = """

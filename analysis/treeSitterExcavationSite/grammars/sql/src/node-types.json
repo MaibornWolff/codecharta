@@ -1,5 +1,31 @@
 [
   {
+    "type": "anchored_type",
+    "named": true,
+    "fields": {
+      "anchor": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "type_anchor",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "object_name",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "block",
     "named": true,
     "fields": {
@@ -28,6 +54,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -133,6 +163,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -167,6 +201,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -257,6 +295,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -358,6 +400,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -407,6 +453,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -509,6 +559,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "case_expression",
           "named": true
         },
@@ -579,6 +633,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -662,6 +720,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -759,6 +821,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "synonym_definition",
           "named": true
         },
         {
@@ -808,6 +874,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -905,6 +975,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "synonym_definition",
           "named": true
         },
         {
@@ -964,6 +1038,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -1064,6 +1142,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -1109,6 +1191,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -1257,6 +1343,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -1357,6 +1447,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -1417,6 +1511,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -1526,6 +1624,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -1571,6 +1673,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -1658,6 +1764,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -1759,6 +1869,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -1810,6 +1924,10 @@
           "named": true
         },
         {
+          "type": "substitution_variable",
+          "named": true
+        },
+        {
           "type": "template_expression",
           "named": true
         },
@@ -1855,6 +1973,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -1983,6 +2105,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -2116,6 +2242,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -2213,6 +2343,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "synonym_definition",
           "named": true
         },
         {
@@ -2262,6 +2396,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -2359,6 +2497,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "synonym_definition",
           "named": true
         },
         {
@@ -2429,6 +2571,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -2552,6 +2698,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "case_expression",
           "named": true
         },
@@ -2642,6 +2792,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "batch_separator",
           "named": true
@@ -2759,6 +2913,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -2791,6 +2949,50 @@
     "fields": {}
   },
   {
+    "type": "synonym_definition",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "object_name",
+            "named": true
+          }
+        ]
+      },
+      "target": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "object_reference",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "quoted_identifier",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "table_constraint",
     "named": true,
     "fields": {},
@@ -2798,6 +3000,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -2889,6 +3095,10 @@
           "named": true
         },
         {
+          "type": "object_reference",
+          "named": true
+        },
+        {
           "type": "quoted_identifier",
           "named": true
         },
@@ -2918,6 +3128,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -3019,6 +3233,10 @@
           "named": true
         },
         {
+          "type": "synonym_definition",
+          "named": true
+        },
+        {
           "type": "table_definition",
           "named": true
         },
@@ -3084,6 +3302,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "case_expression",
           "named": true
@@ -3206,6 +3428,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "anchored_type",
+          "named": true
+        },
         {
           "type": "block",
           "named": true
@@ -3339,6 +3565,10 @@
       "required": false,
       "types": [
         {
+          "type": "anchored_type",
+          "named": true
+        },
+        {
           "type": "block",
           "named": true
         },
@@ -3436,6 +3666,10 @@
         },
         {
           "type": "string",
+          "named": true
+        },
+        {
+          "type": "synonym_definition",
           "named": true
         },
         {
@@ -3674,6 +3908,10 @@
     "named": false
   },
   {
+    "type": "INHERITS",
+    "named": false
+  },
+  {
     "type": "INOUT",
     "named": false
   },
@@ -3730,6 +3968,10 @@
     "named": false
   },
   {
+    "type": "OF",
+    "named": false
+  },
+  {
     "type": "ON",
     "named": false
   },
@@ -3747,6 +3989,10 @@
   },
   {
     "type": "PACKAGE",
+    "named": false
+  },
+  {
+    "type": "PARTITION",
     "named": false
   },
   {
@@ -3799,6 +4045,10 @@
   },
   {
     "type": "SET",
+    "named": false
+  },
+  {
+    "type": "SYNONYM",
     "named": false
   },
   {
@@ -3942,6 +4192,10 @@
     "named": true
   },
   {
+    "type": "substitution_variable",
+    "named": true
+  },
+  {
     "type": "template_expression",
     "named": true
   },
@@ -3949,6 +4203,10 @@
     "type": "template_tag",
     "named": true,
     "extra": true
+  },
+  {
+    "type": "type_anchor",
+    "named": true
   },
   {
     "type": "variable",

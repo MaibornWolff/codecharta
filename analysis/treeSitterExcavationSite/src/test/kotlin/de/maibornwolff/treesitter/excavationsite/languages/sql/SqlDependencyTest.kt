@@ -15,7 +15,7 @@ class SqlDependencyTest {
     @Nested
     inner class DeclarationExtraction {
         @Test
-        fun `should declare tables, views and routines with the objects they use`() {
+        fun `should declare tables, views and routines with the objects they use and their schema as parent`() {
             // Arrange
             val code = """
                 CREATE TABLE dbo.Orders (id INT, customer_id INT REFERENCES dbo.Customers(id));
@@ -28,7 +28,7 @@ class SqlDependencyTest {
 
             // Assert
             assertThat(result.declarations).containsExactly(
-                Declaration("orders", DeclarationType.CLASS, usedTypes("dbo.customers")),
+                Declaration("orders", DeclarationType.CLASS, usedTypes("dbo.customers"), listOf("dbo")),
                 Declaration("big_orders", DeclarationType.CLASS, usedTypes("dbo.orders")),
                 Declaration("archive_orders", DeclarationType.FUNCTION, usedTypes("orders", "dbo.log_archive"))
             )
@@ -83,6 +83,55 @@ class SqlDependencyTest {
             assertThat(result.declarations).containsExactly(
                 Declaration("items_touch", DeclarationType.FUNCTION, usedTypes("public.items", "public.touch"))
             )
+        }
+
+        @Test
+        fun `should make a table use the tables it inherits from or copies`() {
+            // Arrange
+            val code = """
+                CREATE TABLE centaur (hoof_size INT) INHERITS (creature);
+                CREATE TABLE orders_copy LIKE orders;
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(
+                Declaration("centaur", DeclarationType.CLASS, usedTypes("creature")),
+                Declaration("orders_copy", DeclarationType.CLASS, usedTypes("orders"))
+            )
+        }
+
+        @Test
+        fun `should declare a synonym that uses the object it stands for`() {
+            // Arrange
+            val code = "CREATE OR REPLACE PUBLIC SYNONYM creature_entity FOR &owner..creature;"
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(Declaration("creature_entity", DeclarationType.CLASS, usedTypes("creature")))
+        }
+
+        @Test
+        fun `should count the table a type is anchored to as used`() {
+            // Arrange
+            val code = """
+                CREATE PROCEDURE p(p_id IN orders.id%TYPE) IS
+                  v_row heroes%ROWTYPE;
+                  v_copy v_row%TYPE;
+                BEGIN
+                  NULL;
+                END;
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(Declaration("p", DeclarationType.FUNCTION, usedTypes("orders", "heroes")))
         }
 
         @Test

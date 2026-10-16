@@ -14,7 +14,7 @@ internal object SqlNames {
     private val QUOTE_PAIRS = listOf("\"" to "\"", "`" to "`", "[" to "]")
     private val VARIABLE_MARKERS = charArrayOf('@', ':')
 
-    /** The parts of a dotted name, unquoted. */
+    /** The parts of a dotted name, unquoted; a SQL*Plus substitution variable (`&schema.`) is no part of it. */
     fun partsOf(name: SyntaxNode): List<String> {
         if (name.type != OBJECT_NAME) return listOf(unquoted(name.text))
         return name.namedChildren().filter { it.type in NAME_PART_TYPES }.map { unquoted(it.text) }.toList()

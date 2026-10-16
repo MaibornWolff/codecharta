@@ -112,6 +112,7 @@ module.exports = grammar({
                 $.view_definition,
                 $._view_alteration,
                 $.table_definition,
+                $.synonym_definition,
                 $._create_other
             ),
 
@@ -149,6 +150,7 @@ module.exports = grammar({
                 $._group,
                 $.case_expression,
                 $.invocation,
+                $.anchored_type,
                 $.object_name,
                 $._reference_clause,
                 $.logical_operator,
@@ -168,6 +170,7 @@ module.exports = grammar({
                 $._group,
                 $.case_expression,
                 $.invocation,
+                $.anchored_type,
                 $.object_name,
                 $._header_reference_clause,
                 $.referencing_clause,
@@ -301,17 +304,21 @@ module.exports = grammar({
                 seq(
                     optional(field("mode", choice(kw("in"), kw("out"), kw("inout"), kw("variadic")))),
                     field("name", choice($.identifier, $.quoted_identifier, $.variable)),
-                    repeat($._parameter_item)
+                    optional($._parameter_type)
                 )
             ),
 
-        _bare_parameter: $ => prec.right(PREC.preferredStructure, seq(field("name", $.variable), repeat($._parameter_item))),
+        _bare_parameter: $ => prec.right(PREC.preferredStructure, seq(field("name", $.variable), optional($._parameter_type))),
+
+        // Without a precedence of its own, so that a default value such as = 10 stays with the parameter
+        _parameter_type: $ => prec.right(repeat1($._parameter_item)),
 
         _parameter_item: $ =>
             choice(
                 $._group,
                 $.object_name,
                 $.invocation,
+                $.anchored_type,
                 $._literal,
                 choice(".", "*", "=", $.operator),
                 kw("in"),
@@ -385,8 +392,23 @@ module.exports = grammar({
 
         table_definition: $ =>
             prec.right(
-                seq($._create_prefix, kw("table"), optional($._if_not_exists), field("name", $.object_name), optional($.column_definitions))
+                seq(
+                    $._create_prefix,
+                    kw("table"),
+                    optional($._if_not_exists),
+                    field("name", $.object_name),
+                    optional(choice($.column_definitions, $._table_copy)),
+                    optional($._table_inheritance)
+                )
             ),
+
+        // PostgreSQL's PARTITION OF parent and MySQL's LIKE other make a table out of another one
+        _table_copy: $ => choice(seq(kw("partition"), kw("of"), $.object_reference), seq(kw("like"), $.object_reference)),
+
+        _table_inheritance: $ => seq(kw("inherits"), "(", commaSeparated1($.object_reference), ")"),
+
+        synonym_definition: $ =>
+            seq($._create_prefix, kw("synonym"), field("name", $.object_name), kw("for"), field("target", $.object_reference)),
 
         column_definitions: $ =>
             seq("(", optional(seq(commaSeparated1(choice($.column_definition, $.table_constraint)), optional(","))), ")"),
@@ -417,6 +439,7 @@ module.exports = grammar({
                 $._group,
                 $.case_expression,
                 $.invocation,
+                $.anchored_type,
                 $.object_name,
                 $._reference_clause,
                 $.logical_operator,
@@ -653,6 +676,11 @@ module.exports = grammar({
 
         object_reference: $ => field("name", $.object_name),
 
+        // PL/SQL's orders%ROWTYPE takes the type of a table, orders.total%TYPE the type of one of its columns
+        anchored_type: $ => seq(field("name", $.object_name), field("anchor", $.type_anchor)),
+
+        type_anchor: $ => token(choice(/%[rR][oO][wW][tT][yY][pP][eE]/, /%[tT][yY][pP][eE]/)),
+
         invocation: $ => prec(PREC.structure, seq(field("name", $.object_name), $._group)),
 
         _with_clause: $ =>
@@ -676,7 +704,11 @@ module.exports = grammar({
         // The last part can be a star (t.*) or, in PostgreSQL's OPERATOR(pg_catalog.~), an operator.
         object_name: $ => prec.right(seq($._name_part, repeat(seq(".", choice($._name_part, "*", $.operator))))),
 
-        _name_part: $ => choice($.identifier, $.quoted_identifier, $.variable, $.bind_variable, $.template_expression),
+        _name_part: $ =>
+            choice($.identifier, $.quoted_identifier, $.variable, $.bind_variable, $.template_expression, $.substitution_variable),
+
+        // SQL*Plus replaces &name, or &name. before a dot, with a value before the statement runs: &schema..orders
+        substitution_variable: $ => /&&?[A-Za-z_][A-Za-z0-9_$#]*\.?/,
 
         // A placeholder of a template engine (Jinja, dbt, Go templates) that fills in a name: {{ ref('orders') }}
         template_expression: $ => /\{\{([^}]|\}[^}])*\}\}/,

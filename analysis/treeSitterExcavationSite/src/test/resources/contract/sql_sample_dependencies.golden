@@ -7,7 +7,7 @@
 CLASS:big_orders
 CLASS:customers
 CLASS:orders
-FUNCTION:archive_orders
+FUNCTION:archive_orders (parent: dbo)
 FUNCTION:order_label
 FUNCTION:touch
 

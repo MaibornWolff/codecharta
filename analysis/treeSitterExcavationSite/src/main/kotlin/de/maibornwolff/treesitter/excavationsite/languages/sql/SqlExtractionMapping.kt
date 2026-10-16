@@ -18,6 +18,7 @@ object SqlExtractionMapping : ExtractionMapping {
         "package_definition",
         "view_definition",
         "table_definition",
+        "synonym_definition",
         "column_definition",
         "parameter",
         "variable_declaration",

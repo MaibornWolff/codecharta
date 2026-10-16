@@ -204,6 +204,18 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count a parameter that follows one with a default value`() {
+        // Arrange
+        val code = "CREATE PROCEDURE edge_defaults @roll INT = 10, @result INT OUTPUT AS SELECT 1"
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_parameters_per_function"]).isEqualTo(2.0)
+    }
+
+    @Test
     fun `should count the code lines of a routine body`() {
         // Arrange
         val code = """
