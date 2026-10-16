@@ -55,9 +55,3 @@ interface LanguageDefinition :
     val embeddedSources: EmbeddedSourceMapping?
         get() = null
 }
-
-/**
- * Finds the sources in another language inside a file. Only a file that contains [marker] is parsed for them, which
- * spares the files without any a second parse.
- */
-data class EmbeddedSourceMapping(val marker: String, val extract: (SyntaxNode) -> List<EmbeddedSource>)

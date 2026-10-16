@@ -53,7 +53,8 @@ Source code string
 data class DependencyResult(
     val packagePath: List<String>,          // ["com", "example", "service"]
     val imports: List<ImportDeclaration>,
-    val declarations: List<Declaration>
+    val declarations: List<Declaration>,
+    val embedded: List<EmbeddedDeclarations> = [] // what the embedded sources of declarations declare, see below
 )
 
 data class ImportDeclaration(
@@ -75,8 +76,7 @@ data class Declaration(
     val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
     val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
-    val angular: AngularDeclaration? = null, // what an Angular decorator declares: templateNames, templateUrl, imports, ...
-    val embedded: List<EmbeddedDeclarations> = [] // what an embedded source of the declaration declares, see below
+    val angular: AngularDeclaration? = null // what an Angular decorator declares: templateNames, templateUrl, imports, ...
 )
 
 data class UsedType(
@@ -159,8 +159,8 @@ source in its own language:
 - A source without an owner, such as a script block, belongs to the file: its imports are appended to the imports of
   the file, and what it declares is dropped.
 - A source with an owner, such as an inline template, belongs to the declaration of that name: what it declares becomes
-  `Declaration.embedded`, an `EmbeddedDeclarations(language, declarations)`. The adapter makes the template a node of
-  its own inside the component, `<Component>.template`.
+  an `EmbeddedDeclarations(owner, language, declarations)` of `DependencyResult.embedded`. The adapter makes the
+  template a node of its own inside the component, `<Component>.template`.
 
 Metrics and text extraction parse only the script of a Vue file, with the JavaScript grammar and a preprocessor that
 cuts the script out. Dependency extraction needs the template as well, so `VueDependencyMapping` sets

@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
+import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 
 private const val JS_DEFAULT_EXPORT = "default"
@@ -34,7 +35,7 @@ class JavascriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
     }
 
     // A class with an Angular decorator is known to templates by its selector or pipe name
-    override fun nodesOf(declaration: Declaration, node: Node): List<Node> =
+    override fun nodesOf(declaration: Declaration, node: Node, embedded: List<EmbeddedDeclarations>): List<Node> =
         listOf(node.copy(angular = declaration.angular?.let { AngularMetadata(it) }))
 
     // TSE marks the default export/import with a sentinel name; JavaScript represents the default

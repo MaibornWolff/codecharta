@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -15,8 +16,10 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -75,25 +78,19 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         return imports.filter { it.path.isNotEmpty() && it.path.last() in reexportNames }
     }
 
-    // A component uses its template, which resolves by the full path of the template's node
-    override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
-        val templatePath = templatePathOf(declaration) ?: return declaration.usedTypes
-        return declaration.usedTypes + UsedType(templatePath.withDots())
-    }
-
-    override fun nodesOf(declaration: Declaration, node: Node): List<Node> {
+    override fun nodesOf(declaration: Declaration, node: Node, embedded: List<EmbeddedDeclarations>): List<Node> {
         val angular = declaration.angular ?: return listOf(node)
-        val component = node.copy(angular = AngularMetadata(angular, templatePathOf(declaration)))
-        return listOf(component) + inlineTemplatesOf(declaration).map { inlineTemplateNode(it.declarations, component) }
+        val inlineTemplates = embedded.filter { it.language == Language.ANGULAR }
+        val templatePath = if (inlineTemplates.isEmpty()) templateFilePathOf(angular) else inlineTemplatePath(node.pathWithName)
+        // A component uses its template, which resolves by the full path of the template's node
+        val usedTemplate = templatePath?.let { UsedType(it.withDots()).toType() }
+        val component = node.copy(angular = AngularMetadata(angular, templatePath), usedTypes = node.usedTypes + setOfNotNull(usedTemplate))
+        return listOf(component) + inlineTemplates.map { inlineTemplateNode(it.declarations, component) }
     }
 
-    private fun templatePathOf(declaration: Declaration): Path? {
-        val angular = declaration.angular ?: return null
-        if (inlineTemplatesOf(declaration).isNotEmpty()) return inlineTemplatePath(buildPathWithName(emptyList(), declaration))
-        return angular.templateUrl?.let { templateFilePath(it, fileInfo.physicalPath) }
+    private fun templateFilePathOf(angular: AngularDeclaration): Path? = angular.templateUrl?.let {
+        templateFilePath(it, fileInfo.physicalPath)
     }
-
-    private fun inlineTemplatesOf(declaration: Declaration) = declaration.embedded.filter { it.language == Language.ANGULAR }
 
     override fun extraDependencies(declaration: Declaration): Set<Dependency> {
         if (declaration.name != TSE_DEFAULT_EXPORT_NAME) return emptySet()
