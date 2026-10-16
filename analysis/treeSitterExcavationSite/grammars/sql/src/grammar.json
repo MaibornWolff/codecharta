@@ -375,6 +375,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_on_commit"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_literal"
         },
         {
@@ -1040,30 +1044,17 @@
                     "name": "_temporary"
                   },
                   {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "ALIAS",
-                        "content": {
-                          "type": "PATTERN",
-                          "value": "[gG][lL][oO][bB][aA][lL]"
-                        },
-                        "named": false,
-                        "value": "GLOBAL"
-                      },
-                      {
-                        "type": "CHOICE",
-                        "members": [
-                          {
-                            "type": "SYMBOL",
-                            "name": "_temporary"
-                          },
-                          {
-                            "type": "BLANK"
-                          }
-                        ]
-                      }
-                    ]
+                    "type": "SYMBOL",
+                    "name": "_global_temporary"
+                  },
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "PATTERN",
+                      "value": "[gG][lL][oO][bB][aA][lL]"
+                    },
+                    "named": false,
+                    "value": "GLOBAL"
                   }
                 ]
               },
@@ -3086,8 +3077,36 @@
                 "name": "_create_prefix"
               },
               {
-                "type": "SYMBOL",
-                "name": "_temporary"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_temporary"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "PATTERN",
+                          "value": "[gG][lL][oO][bB][aA][lL]"
+                        },
+                        "named": false,
+                        "value": "GLOBAL"
+                      },
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "PATTERN",
+                          "value": "[tT][eE][mM][pP]"
+                        },
+                        "named": false,
+                        "value": "TEMP"
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "type": "ALIAS",
@@ -3192,10 +3211,69 @@
           "value": "GLOBAL"
         },
         {
-          "type": "SYMBOL",
-          "name": "_temporary"
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[tT][eE][mM][pP][oO][rR][aA][rR][yY]"
+          },
+          "named": false,
+          "value": "TEMPORARY"
         }
       ]
+    },
+    "_on_commit": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "[oO][nN]"
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\s+"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[cC][oO][mM][mM][iI][tT]"
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\s+"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[dD][eE][lL][eE][tT][eE]"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[pP][rR][eE][sS][eE][rR][vV][eE]"
+              }
+            ]
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\s+"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[rR][oO][wW][sS]"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[dD][eE][fF][iI][nN][iI][tT][iI][oO][nN]"
+              }
+            ]
+          }
+        ]
+      }
     },
     "_temporary_table_start": {
       "type": "TOKEN",
@@ -3586,15 +3664,28 @@
                     "type": "CHOICE",
                     "members": [
                       {
-                        "type": "CHOICE",
+                        "type": "SEQ",
                         "members": [
                           {
-                            "type": "SYMBOL",
-                            "name": "_temporary"
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "ALIAS",
+                                "content": {
+                                  "type": "PATTERN",
+                                  "value": "[gG][lL][oO][bB][aA][lL]"
+                                },
+                                "named": false,
+                                "value": "GLOBAL"
+                              },
+                              {
+                                "type": "BLANK"
+                              }
+                            ]
                           },
                           {
                             "type": "SYMBOL",
-                            "name": "_global_temporary"
+                            "name": "_temporary"
                           }
                         ]
                       },

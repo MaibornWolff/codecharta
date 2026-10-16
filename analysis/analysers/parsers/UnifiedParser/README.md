@@ -57,7 +57,7 @@ than a closing brace does.
 | Number of stored procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package body                                                                                                     |
 | Number of triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
 | Number of views           | Only in SQL files: the views the file defines, materialized ones included                                                                                                                                               |
-| Number of tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
+| Number of tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
 

@@ -183,6 +183,7 @@ module.exports = grammar({
                 $._with_flat,
                 $._repeat_call,
                 $._not_exists,
+                $._on_commit,
                 $._literal,
                 $._flat_keyword,
                 $._punctuation
@@ -275,10 +276,7 @@ module.exports = grammar({
             ),
 
         _create_other: $ =>
-            prec(
-                PREC.flatFallback,
-                seq($._create_prefix, optional(choice(kw("type"), $._temporary, seq(kw("global"), optional($._temporary)))))
-            ),
+            prec(PREC.flatFallback, seq($._create_prefix, optional(choice(kw("type"), $._temporary, $._global_temporary, kw("global"))))),
 
         // GRANT CREATE PROCEDURE TO someone creates nothing.
         _privilege_statement: $ =>
@@ -475,14 +473,15 @@ module.exports = grammar({
         _body_item: $ => choice($._soup_item, $._nested_routine, $._hash_temporary_table),
 
         // The table of a session is no object of the database: T-SQL's CREATE TABLE #t, which does not end a routine
-        // either, MySQL's and PostgreSQL's CREATE TEMP[ORARY] TABLE and Oracle's CREATE PRIVATE TEMPORARY TABLE
+        // either, MySQL's and PostgreSQL's CREATE [GLOBAL] TEMP[ORARY] TABLE and Oracle's CREATE PRIVATE TEMPORARY TABLE.
+        // PostgreSQL ignores GLOBAL; GLOBAL TEMPORARY reads as Oracle's table of the schema, GLOBAL TEMP as a session's.
         _temporary_table: $ =>
             choice(
                 $._hash_temporary_table,
                 prec.right(
                     seq(
                         $._create_prefix,
-                        $._temporary,
+                        choice($._temporary, seq(kw("global"), kw("temp"))),
                         kw("table"),
                         optional($._if_not_exists),
                         $.object_name,
@@ -497,7 +496,22 @@ module.exports = grammar({
         _temporary: $ => choice(kw("temp"), kw("temporary")),
 
         // Oracle's global temporary table is an object of the schema; only its rows belong to a session
-        _global_temporary: $ => seq(kw("global"), $._temporary),
+        _global_temporary: $ => seq(kw("global"), kw("temporary")),
+
+        // ON COMMIT DELETE ROWS deletes from no table. One token, as ON may start T-SQL's ON [PRIMARY] and COMMIT a name
+        // like commit_id; ON COMMIT DROP names nothing either way.
+        _on_commit: $ =>
+            token(
+                seq(
+                    caseInsensitive("on"),
+                    /\s+/,
+                    caseInsensitive("commit"),
+                    /\s+/,
+                    choice(caseInsensitive("delete"), caseInsensitive("preserve")),
+                    /\s+/,
+                    choice(caseInsensitive("rows"), caseInsensitive("definition"))
+                )
+            ),
 
         _temporary_table_start: $ => token(seq(caseInsensitive("create"), /\s+/, caseInsensitive("table"), /\s+#/, /[A-Za-z0-9_#@$]*/)),
 
@@ -538,7 +552,7 @@ module.exports = grammar({
         _view_signature: $ =>
             prec.right(
                 seq(
-                    choice(seq($._create_prefix, optional(choice($._temporary, $._global_temporary))), kw("alter")),
+                    choice(seq($._create_prefix, optional(seq(optional(kw("global")), $._temporary))), kw("alter")),
                     kw("view"),
                     optional($._if_not_exists),
                     field("name", $.object_name),

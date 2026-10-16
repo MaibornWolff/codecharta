@@ -31,9 +31,11 @@ and the plain name side by side and keeps the loop when it closes, so `SELECT lo
 Legacy code gets the benefit of the doubt: a semicolon inside parentheses (`OPENROWSET('…'; 'admin'; …)`), a
 bracketed name over several lines and the empty qualifier of MySQL's `(.a BIGINT)` parse without an `ERROR` node. The
 temporary table of a session is no `table_definition`, as it is no object of the database: T-SQL's `CREATE TABLE #t`,
-MySQL's and PostgreSQL's `CREATE TEMP[ORARY] TABLE` and Oracle's `CREATE PRIVATE TEMPORARY TABLE`. Oracle's
-`CREATE GLOBAL TEMP[ORARY] TABLE` is one, as the table belongs to the schema and only its rows to a session.
-PostgreSQL's deprecated `GLOBAL` reads the same, though PostgreSQL ignores it and creates a table of the session.
+MySQL's and PostgreSQL's `CREATE TEMP[ORARY] TABLE`, PostgreSQL's `CREATE GLOBAL TEMP TABLE` and Oracle's
+`CREATE PRIVATE TEMPORARY TABLE`. Oracle's `CREATE GLOBAL TEMPORARY TABLE` is one, as the table belongs to the schema
+and only its rows to a session. That spelling is the one both dialects share: PostgreSQL ignores the deprecated
+`GLOBAL` and creates a table of the session, which the grammar can not tell apart. `ON COMMIT DELETE ROWS` deletes from
+no table, so it is one token, as `ON` alone may start T-SQL's `ON [PRIMARY]`.
 
 The external scanner (`src/scanner.c`) handles what a regular expression can not: PostgreSQL dollar quotes (a body
 or string closes only on its own tag, compared with its case, `$Q$` by `$Q$` and not by `$q$`; a tag longer than 32
@@ -107,20 +109,20 @@ Gradle 8.7 needs a JDK 17 or 21. The last build used tree-sitter-ng at commit `5
 # 1. The grammar as the source archive tree-sitter-ng downloads, with one top folder and an entry per folder
 cd analysis/treeSitterExcavationSite/grammars
 rm -rf /tmp/sql-island && mkdir -p /tmp/sql-island
-cp -r sql /tmp/sql-island/tree-sitter-sql-island-0.6.0
-(cd /tmp/sql-island && zip -qr tree-sitter-sql-island-0.6.0.zip tree-sitter-sql-island-0.6.0)
+cp -r sql /tmp/sql-island/tree-sitter-sql-island-0.7.0
+(cd /tmp/sql-island && zip -qr tree-sitter-sql-island-0.7.0.zip tree-sitter-sql-island-0.7.0)
 
 # 2. A subproject for the grammar, then the native libraries, then the jar (two runs: the jar task does not
 #    depend on buildNative)
 git clone https://github.com/bonede/tree-sitter-ng.git && cd tree-sitter-ng
-./gradlew gen --parser-name=sql-island --parser-version=0.6.0 \
-    --parser-zip=file:///tmp/sql-island/tree-sitter-sql-island-0.6.0.zip
+./gradlew gen --parser-name=sql-island --parser-version=0.7.0 \
+    --parser-zip=file:///tmp/sql-island/tree-sitter-sql-island-0.7.0.zip
 ./gradlew :tree-sitter-sql-island:buildNative \
     -PtreeSitterTargets=x86_64-windows,x86_64-macos,x86_64-linux-gnu,aarch64-linux-gnu,aarch64-macos
 ./gradlew :tree-sitter-sql-island:jar
 
 # 3. Into CodeCharta; raise the version in the file name and in treeSitterExcavationSite/build.gradle.kts together
-cp tree-sitter-sql-island/build/libs/tree-sitter-sql-island-0.6.0.jar <codecharta>/analysis/treeSitterExcavationSite/libs/
+cp tree-sitter-sql-island/build/libs/tree-sitter-sql-island-0.7.0.jar <codecharta>/analysis/treeSitterExcavationSite/libs/
 ```
 
 Where tree-sitter-ng can not reach the Zig mirrors, download `zig-<os>-<arch>-0.11.0` from ziglang.org into

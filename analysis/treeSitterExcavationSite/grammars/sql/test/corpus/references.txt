@@ -283,3 +283,61 @@ END;
         (type_anchor))
       (object_name
         (identifier)))))
+
+================================================================================
+ON COMMIT of a temporary table deletes from no table
+================================================================================
+
+CREATE GLOBAL TEMPORARY TABLE gtt (id INT) ON COMMIT DELETE ROWS;
+CREATE TEMP TABLE kept (id INT) on commit preserve rows;
+CREATE PRIVATE TEMPORARY TABLE ora$ptt (id INT) ON COMMIT PRESERVE DEFINITION;
+CREATE TABLE dbo.archive (id INT) ON [PRIMARY];
+SELECT * FROM a JOIN b ON commit_id = 1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (table_definition
+    (object_name
+      (identifier))
+    (column_definitions
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier)))))
+  (object_name
+    (identifier))
+  (column_definitions
+    (column_definition
+      (identifier)
+      (object_name
+        (identifier))))
+  (identifier)
+  (object_name
+    (identifier))
+  (column_definitions
+    (column_definition
+      (identifier)
+      (object_name
+        (identifier))))
+  (table_definition
+    (object_name
+      (identifier)
+      (identifier))
+    (column_definitions
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier)))))
+  (object_name
+    (quoted_identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (operator)
+  (number))

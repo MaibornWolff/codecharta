@@ -308,7 +308,7 @@ Tables of a session are no table definitions; Oracle's global temporary table is
 CREATE TEMPORARY TABLE tmp1 (id INT);
 CREATE TEMP TABLE tmp2 AS SELECT 1;
 CREATE GLOBAL TEMPORARY TABLE gtt (id INT) ON COMMIT DELETE ROWS;
-CREATE GLOBAL TEMP TABLE gtt2 (id INT);
+CREATE GLOBAL TEMP TABLE pg_scratch (id INT);
 CREATE PRIVATE TEMPORARY TABLE ora$ptt_rows (id INT) ON COMMIT DROP DEFINITION;
 CREATE TEMP SEQUENCE seq1;
 CREATE TABLE real_table (id INT);
@@ -336,17 +336,11 @@ CREATE TABLE real_table (id INT);
           (identifier)))))
   (object_name
     (identifier))
-  (object_reference
-    (object_name
-      (identifier)))
-  (table_definition
-    (object_name
-      (identifier))
-    (column_definitions
-      (column_definition
-        (identifier)
-        (object_name
-          (identifier)))))
+  (column_definitions
+    (column_definition
+      (identifier)
+      (object_name
+        (identifier))))
   (identifier)
   (object_name
     (identifier))

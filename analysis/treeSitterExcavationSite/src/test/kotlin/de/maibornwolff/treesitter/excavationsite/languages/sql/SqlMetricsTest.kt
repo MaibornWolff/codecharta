@@ -301,6 +301,7 @@ class SqlMetricsTest {
             CREATE TABLE ##shared_scratch (id INT);
             CREATE TEMPORARY TABLE tmp1 (id INT);
             CREATE TEMP TABLE tmp2 AS SELECT 1;
+            CREATE GLOBAL TEMP TABLE pg_scratch (id INT) ON COMMIT DROP;
             CREATE PRIVATE TEMPORARY TABLE ora${'$'}ptt_rows (id INT) ON COMMIT DROP DEFINITION;
             CREATE FUNCTION load_staging() RETURNS void AS $$
             BEGIN
@@ -325,7 +326,7 @@ class SqlMetricsTest {
         // Arrange
         val code = """
             CREATE GLOBAL TEMPORARY TABLE staging_orders (id NUMBER) ON COMMIT DELETE ROWS;
-            CREATE GLOBAL TEMP TABLE staging_items (id NUMBER);
+            CREATE GLOBAL TEMPORARY TABLE staging_items ON COMMIT PRESERVE ROWS AS SELECT * FROM items WHERE 1 = 0;
         """.trimIndent()
 
         // Act

@@ -126,7 +126,7 @@ class SqlDependencyTest {
         fun `should declare an Oracle global temporary table that routines use`() {
             // Arrange
             val code = """
-                CREATE GLOBAL TEMPORARY TABLE staging_orders (id NUMBER) ON COMMIT PRESERVE ROWS;
+                CREATE GLOBAL TEMPORARY TABLE staging_orders (id NUMBER) ON COMMIT DELETE ROWS;
                 CREATE OR REPLACE PROCEDURE load_orders IS BEGIN INSERT INTO staging_orders (id) VALUES (1); END;
             """.trimIndent()
 
