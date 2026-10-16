@@ -20,13 +20,13 @@ sample-projects/
 ```
 
 Language folders: `abl`, `angular`, `bash`, `c`, `cpp`, `csharp`, `delphi`, `go`, `java`, `javascript`, `kotlin`,
-`objectivec`, `php`, `python`, `ruby`, `rust`, `swift`, `typescript`, `vue`.
+`objectivec`, `php`, `python`, `ruby`, `rust`, `sql`, `swift`, `typescript`, `vue`.
 
 | Parser | Languages |
 | --- | --- |
-| `unifiedparser` | every language except abl (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`, `.html`) |
-| `dependencyparser` | php, csharp, typescript (+tsx), javascript, java, go, python, c and cpp (one C++ grammar), kotlin, vue, delphi, rust, angular (templates) |
-| `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, abl, rust, angular (templates) |
+| `unifiedparser` | every language except abl (extensions: `.js .cjs .mjs`, `.ts .cts .mts`, `.tsx`, `.java`, `.kt`, `.cs`, `.cpp .cc .cxx .c++ .hh .hpp .hxx`, `.c .h`, `.m`, `.py`, `.go`, `.php`, `.rb`, `.swift`, `.sh`, `.vue`, `.pas .dpr`, `.rs`, `.html`, `.sql .pks .pkb .pls`) |
+| `dependencyparser` | php, csharp, typescript (+tsx), javascript, java, go, python, c and cpp (one C++ grammar), kotlin, vue, delphi, rust, angular (templates), sql |
+| `domainlanguageparser` | kotlin, typescript, javascript, java, python, csharp, go, c, cpp, php, ruby, swift, bash, objectivec, vue, abl, rust, angular (templates), sql |
 
 ## The shared domain model
 
@@ -45,6 +45,11 @@ as sub-packages / folders. Use the language's conventional file and identifier c
 Keep the semantics of the DependaCharta examples: the facade creates a creature with speeds for all speed
 types, hit points and armor class and saves it through the service; `PersistedCreatures` maps entities to
 domain objects and throws `NoSuchCreatureException` when an id is unknown.
+
+SQL has neither packages nor classes: `sql/` keeps the layers as folders and turns the model types into tables,
+the services into procedures and functions, the port into a PL/SQL package specification and the barrel into a
+view, mixing ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL across its files. Its FINDINGS.md says what stands in for
+each stress construct.
 
 ## Stress constructs for the dependency parser
 
