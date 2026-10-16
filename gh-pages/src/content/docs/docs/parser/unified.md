@@ -67,7 +67,8 @@ Names compare as the dependency parser compares them, so `"Orders"` and `orders`
 counts per table it is on, as PostgreSQL names triggers per table. A procedure of one name in two packages counts
 twice, and so do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`,
 `p(text)`); parameter modes and default values make no overload, and neither do T-SQL's parameters, as T-SQL has no
-overloads. What a routine creates when it runs, a table or a local procedure, counts for none of them, while what a
+overloads. A MySQL procedure dropped and created again with other parameters counts twice, as its parameters can not
+be told from PostgreSQL's. What a routine creates when it runs, a table or a local procedure, counts for none of them, while what a
 script creates in an anonymous block, a PostgreSQL `DO` block or a T-SQL `IF … BEGIN … END`, counts like any of its
 objects.
 
