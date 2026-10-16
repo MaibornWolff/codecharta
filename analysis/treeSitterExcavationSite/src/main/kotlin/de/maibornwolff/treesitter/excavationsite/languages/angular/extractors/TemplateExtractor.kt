@@ -13,12 +13,13 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
 /**
  * A template declares nothing of its own, so it is one nameless script declaration. It uses the components and pipes
- * it names, in source order: every custom element, whose name has a hyphen, except Angular's own `ng-` elements, and
- * the name of every pipe. A template knows them only by their selector and pipe name, so these are its used types.
+ * it names, in source order: every custom element, whose name has a hyphen, except Angular's own `ng-container`,
+ * `ng-template` and `ng-content`, and the name of every pipe. A template knows them only by their selector and pipe
+ * name, so these are its used types.
  */
 internal object TemplateExtractor {
     private const val CUSTOM_ELEMENT_SEPARATOR = '-'
-    private const val ANGULAR_ELEMENT_PREFIX = "ng-"
+    private val ANGULAR_ELEMENTS = setOf("ng-container", "ng-template", "ng-content")
     private const val NO_NAME = ""
 
     fun extract(rootNode: SyntaxNode): List<Declaration> {
@@ -34,6 +35,5 @@ internal object TemplateExtractor {
         return TreeTraversal.findFirstChildTextByType(node, TAG_NAME)?.lowercase()?.takeIf { isComponentElement(it) }
     }
 
-    private fun isComponentElement(tagName: String): Boolean =
-        CUSTOM_ELEMENT_SEPARATOR in tagName && !tagName.startsWith(ANGULAR_ELEMENT_PREFIX)
+    private fun isComponentElement(tagName: String): Boolean = CUSTOM_ELEMENT_SEPARATOR in tagName && tagName !in ANGULAR_ELEMENTS
 }

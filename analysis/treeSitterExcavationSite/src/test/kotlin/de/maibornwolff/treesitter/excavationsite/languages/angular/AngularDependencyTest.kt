@@ -79,6 +79,18 @@ class AngularDependencyTest {
         }
 
         @Test
+        fun `should keep a component whose selector starts with ng like those of Angular itself`() {
+            // Arrange
+            val code = """<ng-select [items]="dragons"></ng-select><ng-container><ngx-charts-bar /></ng-container>"""
+
+            // Act
+            val usedNames = usedNamesOf(code)
+
+            // Assert
+            assertThat(usedNames).containsExactly("ng-select", "ngx-charts-bar")
+        }
+
+        @Test
         fun `should lowercase the element name the way html does`() {
             // Arrange
             val code = "<App-Torch></App-Torch>"
