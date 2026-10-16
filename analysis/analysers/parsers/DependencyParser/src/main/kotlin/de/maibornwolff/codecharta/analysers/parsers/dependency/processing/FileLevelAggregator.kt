@@ -69,7 +69,9 @@ object FileLevelAggregator {
             val filePath = filePathOf(node)
             val current = filePathByDeclaration[logicalPath]
             val replacesCurrent =
-                node.language.laterDefinitionReplacesEarlier && current != null && NaturalPathOrder.compare(filePath, current) > 0
+                node.language.laterDefinitionReplacesEarlier &&
+                    current != null &&
+                    NaturalPathOrder.compare(filePath.segments, current.segments) > 0
             if (current == null || replacesCurrent) filePathByDeclaration[logicalPath] = filePath
         }
         return filePathByDeclaration

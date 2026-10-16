@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class NaturalPathOrderTest {
-    private fun path(vararg segments: String) = FilePath(segments.toList())
+    private fun path(vararg segments: String) = segments.toList()
 
     @Test
     fun `should compare the numbers in names as numbers`() {
@@ -15,7 +15,7 @@ class NaturalPathOrderTest {
         val sorted = paths.sortedWith(NaturalPathOrder)
 
         // Assert
-        assertThat(sorted.map { it.segments.last() }).containsExactly("V1_1__a.sql", "V2__a.sql", "V9__a.sql", "V10__a.sql")
+        assertThat(sorted.map { it.last() }).containsExactly("V1_1__a.sql", "V2__a.sql", "V9__a.sql", "V10__a.sql")
     }
 
     @Test
