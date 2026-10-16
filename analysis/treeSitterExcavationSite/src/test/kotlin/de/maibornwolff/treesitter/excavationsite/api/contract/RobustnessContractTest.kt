@@ -454,9 +454,9 @@ class RobustnessContractTest {
         }
 
         @ParameterizedTest
-        @EnumSource(Language::class, names = ["ANGULAR"], mode = EnumSource.Mode.EXCLUDE)
+        @EnumSource(Language::class)
         fun `should return empty list for strings when none exist`(language: Language) {
-            // Arrange - Angular is excluded because the text content of a template is a string, and `x = 1` is text there
+            // Arrange
             val code = "x = 1"
 
             // Act

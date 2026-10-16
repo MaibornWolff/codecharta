@@ -101,6 +101,28 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
+    fun `should give each of two components in one file a template node with only the names of its own template`() {
+        // Arrange
+        val typescriptCode = """
+            @Component({ selector: 'app-torch', template: `<app-flame />` })
+            export class TorchComponent {}
+            @Component({ selector: 'app-lantern', template: `<app-wick />{{ oil | litres }}` })
+            export class LanternComponent {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "light.component.ts", typescriptCode)).analyze()
+
+        // Assert
+        val usedNamesByTemplate = report.nodes
+            .filter { it.language == SupportedLanguage.ANGULAR }
+            .associate { template -> template.pathWithName.parts[1] to template.usedTypes.map { it.name } }
+        assertThat(usedNamesByTemplate).isEqualTo(
+            mapOf("TorchComponent" to listOf("app-flame"), "LanternComponent" to listOf("app-wick", "litres"))
+        )
+    }
+
+    @Test
     fun `should convert exported class to node with type CLASS`() {
         // Arrange
         val typescriptCode = """            
