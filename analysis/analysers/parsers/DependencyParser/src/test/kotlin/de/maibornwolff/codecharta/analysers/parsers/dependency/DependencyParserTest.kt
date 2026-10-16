@@ -295,11 +295,7 @@ class DependencyParserTest {
         val output = runParser(projectDir)
 
         // Assert
-        val namesById = fileNamesById(output)
-        val edgeNames = dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
-            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
-        }
-        assertThat(edgeNames).containsExactlyInAnyOrder(
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
             "cave.component.html" to "torch.component.ts",
             "cave.component.html" to "gold-coins.pipe.ts"
         )
@@ -323,11 +319,7 @@ class DependencyParserTest {
         val output = runParser(tempDir.toString())
 
         // Assert
-        val namesById = fileNamesById(output)
-        val edgeNames = dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
-            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
-        }
-        assertThat(edgeNames).containsExactly("cave.component.ts" to "cave.component.html")
+        assertThat(fileEdgeNames(output)).containsExactly("cave.component.ts" to "cave.component.html")
     }
 
     @Test
@@ -348,14 +340,17 @@ class DependencyParserTest {
         val output = runParser(tempDir.toString())
 
         // Assert
-        val namesById = fileNamesById(output)
-        val edgeNames = dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
-            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
-        }
-        assertThat(edgeNames).containsExactlyInAnyOrder(
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
             "vault.component.ts" to "torch.component.ts",
             "vault.component.ts" to "gold-coins.pipe.ts"
         )
+    }
+
+    private fun fileEdgeNames(output: String): List<Pair<String, String>> {
+        val namesById = fileNamesById(output)
+        return dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
+            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
+        }
     }
 
     private fun fileNamesById(output: String): Map<String, String> {
