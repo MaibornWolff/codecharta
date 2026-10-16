@@ -3086,6 +3086,10 @@
           "named": true
         },
         {
+          "type": "client_command",
+          "named": true
+        },
+        {
           "type": "column_definitions",
           "named": true
         },
@@ -4413,6 +4417,14 @@
     "named": false
   },
   {
+    "type": "TEMP",
+    "named": false
+  },
+  {
+    "type": "TEMPORARY",
+    "named": false
+  },
+  {
     "type": "THEN",
     "named": false
   },
@@ -4502,8 +4514,7 @@
   },
   {
     "type": "client_command",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "comment",

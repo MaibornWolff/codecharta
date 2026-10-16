@@ -13,7 +13,7 @@ complexity) or cover one dialect each, which is why CodeCharta has its own.
 | Construct                         | Node types                                                                                 |
 |-----------------------------------|--------------------------------------------------------------------------------------------|
 | Routines                          | `routine_definition` (with `routine_body`), `routine_declaration` (no body), `parameter_list`, `parameter` |
-| Routine bodies                    | `AS`/`IS` up to the block that ends the body, or up to `GO`, the next `CREATE` or the end of the file when there is no block; `$$ … $$`; a string (`AS 'select 1'`); the single statement of a MySQL routine after the parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger |
+| Routine bodies                    | `AS`/`IS` up to the block that ends the body, or up to `GO`, the next `CREATE` or the end of the file when there is no block; `$$ … $$`, ending before its closing quote; a string (`AS 'select 1'`); the single statement of a MySQL routine after the parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger |
 | Packages, views, tables           | `package_definition`, `view_definition`, `table_definition`, `column_definition`, `table_constraint` |
 | Blocks                            | `block` (`BEGIN … END`, `BEGIN ATOMIC`, `$$ … $$` bodies), `do_block`                       |
 | Branches and loops                | `if_statement`, `elsif_clause`, `else_clause`, `case_expression`, `when_clause`, `iif_expression`, `while_statement`, `loop_statement`, `for_statement` (with Oracle 21c iteration controls), `repeat_statement`, `exit_statement` (`EXIT` and `CONTINUE`, with their `WHEN` condition) |
@@ -21,26 +21,29 @@ complexity) or cover one dialect each, which is why CodeCharta has its own.
 | Conditions                        | `condition`, `logical_operator` (`AND`, `OR`; the `AND` of `BETWEEN` is none)              |
 | What a statement reads or calls   | `object_reference` after `FROM` (with its comma list), `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `APPLY`, `EXEC`, `EXECUTE`, `CALL`, `PERFORM` and the `ON` of a trigger; `invocation` for `name(...)` |
 | Names                             | `object_name`, `identifier`, `quoted_identifier`, `variable`, `bind_variable`, `common_table_expression` |
-| Script structure                  | `batch_separator` (`GO`), `slash_terminator` (`/`), `delimiter_directive` and `custom_delimiter` (MySQL `DELIMITER`), `label` (MySQL `hunt: LOOP`, also glued to its colon) |
-| Skipped like comments             | `comment` (`--`, `/* */`, `#`), `client_command` (SQL*Plus `PROMPT`, SQLCMD `:r`, psql `\connect`, `\copy` over the lines its parentheses span), `conditional_compilation` and `inquiry_directive` (PL/SQL `$if`, `$$plsql_unit`), `template_tag` (`{% %}`) |
+| Script structure                  | `batch_separator` (`GO`), `slash_terminator` (`/`), `delimiter_directive` and `custom_delimiter` (MySQL `DELIMITER`), `label` (MySQL `hunt: LOOP`, also glued to its colon), `client_command` (SQL*Plus `PROMPT` and `REM`, SQLCMD `:r`, psql `\connect`, `\copy` over the lines its parentheses span), only where a statement may start: a column named `prompt` inside parentheses or a body stays a column |
+| Skipped like comments             | `comment` (`--`, `/* */`, `#` before a space or one of `!=*-`), `conditional_compilation` and `inquiry_directive` (PL/SQL `$if`, `$$plsql_unit`), `template_tag` (`{% %}`) |
 
 Keywords are case-insensitive. A word is a keyword only where the grammar expects that keyword, so `type`, `iif`
 or `comment` stay plain names elsewhere. Where a statement may start, `LOOP` is both: the parser follows the loop
 and the plain name side by side and keeps the loop when it closes, so `SELECT loop FROM t` is no loop.
 
 Legacy code gets the benefit of the doubt: a semicolon inside parentheses (`OPENROWSET('…'; 'admin'; …)`), a
-bracketed name over several lines, the empty qualifier of MySQL's `(.a BIGINT)` and a T-SQL temporary table
-(`CREATE TABLE #t`, which is no object of the database) parse without an `ERROR` node.
+bracketed name over several lines and the empty qualifier of MySQL's `(.a BIGINT)` parse without an `ERROR` node. A
+temporary table is no `table_definition`, as it is no object of the database: T-SQL's `CREATE TABLE #t`, MySQL's and
+PostgreSQL's `CREATE TEMP[ORARY] TABLE` and Oracle's `CREATE GLOBAL TEMPORARY TABLE`.
 
 The external scanner (`src/scanner.c`) handles what a regular expression can not: PostgreSQL dollar quotes (a body
-closes only on its own tag), the custom MySQL delimiter, `GO` and `/` alone on their line, client commands, PL/SQL
+or string closes only on its own tag, compared with its case, `$Q$` by `$Q$` and not by `$q$`; a tag longer than 32
+letters or with a letter beyond ASCII opens no quote), the custom MySQL delimiter, `GO` and `/` alone on their line, client commands, PL/SQL
 conditional compilation, MySQL labels glued to their colon, and single-quoted strings, where a backslash escapes
 in MySQL but may end a T-SQL string (`'C:\Backup\'`). `'\''` is MySQL's quote when it is the whole string, and a
 backslash and a quote inside a longer T-SQL string (`'… CHARINDEX(''\'', name) …'`). In double quotes a backslash
 always escapes (`"Spec\"s"`).
 
 The `END` of a routine body is one token with its label and semicolon (`END total;`), so that its line counts for
-the routine no more than a closing brace does in other languages.
+the routine no more than a closing brace does in other languages. A body in dollar quotes ends before its closing
+quote, so that the line `$$ LANGUAGE plpgsql;` does not count for the routine either.
 
 ## Known limits
 
@@ -51,7 +54,10 @@ the routine no more than a closing brace does in other languages.
   such as `SET search_path = …` at the same place.
 - In MySQL, `'abc\''` (a longer string that ends in an escaped quote) is read the T-SQL way and runs on; a T-SQL
   name in double quotes that ends in a backslash (`"C:\"`) runs on as well.
-- A PostgreSQL body in dollar quotes still counts the `END` line of its block for the routine.
+- A MySQL comment needs a space after `#` (`# note`); `#note` reads as a name, because T-SQL names its temporary
+  tables that way (`#orders`).
+- A client command is only recognised at the top level of a script, so a `PROMPT` inside a T-SQL body that runs up to
+  `GO` reads as plain words.
 
 ## Error rate on public code
 
@@ -95,20 +101,20 @@ Gradle 8.7 needs a JDK 17 or 21. The last build used tree-sitter-ng at commit `5
 # 1. The grammar as the source archive tree-sitter-ng downloads, with one top folder and an entry per folder
 cd analysis/treeSitterExcavationSite/grammars
 rm -rf /tmp/sql-island && mkdir -p /tmp/sql-island
-cp -r sql /tmp/sql-island/tree-sitter-sql-island-0.2.0
-(cd /tmp/sql-island && zip -qr tree-sitter-sql-island-0.2.0.zip tree-sitter-sql-island-0.2.0)
+cp -r sql /tmp/sql-island/tree-sitter-sql-island-0.3.0
+(cd /tmp/sql-island && zip -qr tree-sitter-sql-island-0.3.0.zip tree-sitter-sql-island-0.3.0)
 
 # 2. A subproject for the grammar, then the native libraries, then the jar (two runs: the jar task does not
 #    depend on buildNative)
 git clone https://github.com/bonede/tree-sitter-ng.git && cd tree-sitter-ng
-./gradlew gen --parser-name=sql-island --parser-version=0.2.0 \
-    --parser-zip=file:///tmp/sql-island/tree-sitter-sql-island-0.2.0.zip
+./gradlew gen --parser-name=sql-island --parser-version=0.3.0 \
+    --parser-zip=file:///tmp/sql-island/tree-sitter-sql-island-0.3.0.zip
 ./gradlew :tree-sitter-sql-island:buildNative \
     -PtreeSitterTargets=x86_64-windows,x86_64-macos,x86_64-linux-gnu,aarch64-linux-gnu,aarch64-macos
 ./gradlew :tree-sitter-sql-island:jar
 
 # 3. Into CodeCharta; raise the version in the file name and in treeSitterExcavationSite/build.gradle.kts together
-cp tree-sitter-sql-island/build/libs/tree-sitter-sql-island-0.2.0.jar <codecharta>/analysis/treeSitterExcavationSite/libs/
+cp tree-sitter-sql-island/build/libs/tree-sitter-sql-island-0.3.0.jar <codecharta>/analysis/treeSitterExcavationSite/libs/
 ```
 
 Where tree-sitter-ng can not reach the Zig mirrors, download `zig-<os>-<arch>-0.11.0` from ziglang.org into

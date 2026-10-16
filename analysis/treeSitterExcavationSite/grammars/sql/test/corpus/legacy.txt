@@ -167,3 +167,185 @@ CREATE TABLE tbl (.a BIGINT);
         (identifier)
         (object_name
           (identifier))))))
+
+================================================================================
+Dollar tags keep their case
+================================================================================
+
+SELECT $Q$hello$Q$, $q$it's $Q$ still$q$;
+CREATE FUNCTION f(p integer) RETURNS integer AS
+$BODY$
+BEGIN
+  EXECUTE format($Fmt$SELECT %s$Fmt$, p);
+  SELECT $body$ not the end $body$;
+  RETURN 1;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (dollar_string)
+  (dollar_string)
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier)
+        (object_name
+          (identifier))))
+    (object_name
+      (identifier))
+    (routine_body
+      (object_reference
+        (object_name
+          (identifier)))
+      (dollar_string)
+      (object_name
+        (identifier))
+      (dollar_string)
+      (object_name
+        (identifier))
+      (number))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))))
+
+================================================================================
+A dollar tag that is too long or not ASCII opens no quote
+================================================================================
+
+SELECT 1 $a_tag_that_is_longer_than_thirty_two_letters$ 2;
+SELECT 3 $tagä$ 4;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (number)
+  (operator)
+  (object_name
+    (identifier))
+  (operator)
+  (number)
+  (number)
+  (operator)
+  (object_name
+    (identifier))
+  (operator)
+  (number))
+
+================================================================================
+PROMPT and REMARK are columns inside parentheses and bodies
+================================================================================
+
+PROMPT creating the table
+CREATE TABLE chat_message (
+  id INT,
+  prompt TEXT NOT NULL,
+  remark VARCHAR(200)
+);
+REM done
+CREATE PROCEDURE ask(question TEXT)
+BEGIN
+  INSERT INTO chat_message (prompt, remark)
+  SELECT question, 'none';
+END;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (client_command)
+  (table_definition
+    (object_name
+      (identifier))
+    (column_definitions
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier)))
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier))
+        (object_name
+          (identifier)))
+      (column_definition
+        (identifier)
+        (invocation
+          (object_name
+            (identifier))
+          (number)))))
+  (client_command)
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list
+      (parameter
+        (identifier)
+        (object_name
+          (identifier))))
+    (routine_body
+      (object_reference
+        (object_name
+          (identifier)))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (string))))
+
+================================================================================
+Temporary tables of MySQL, PostgreSQL and Oracle are no table definitions
+================================================================================
+
+CREATE TEMPORARY TABLE tmp1 (id INT);
+CREATE TEMP TABLE tmp2 AS SELECT 1;
+CREATE GLOBAL TEMPORARY TABLE gtt (id INT) ON COMMIT DELETE ROWS;
+CREATE TEMP SEQUENCE seq1;
+CREATE TABLE real_table (id INT);
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (object_name
+    (identifier))
+  (column_definitions
+    (column_definition
+      (identifier)
+      (object_name
+        (identifier))))
+  (object_name
+    (identifier))
+  (number)
+  (identifier)
+  (object_name
+    (identifier))
+  (column_definitions
+    (column_definition
+      (identifier)
+      (object_name
+        (identifier))))
+  (object_name
+    (identifier))
+  (object_reference
+    (object_name
+      (identifier)))
+  (object_name
+    (identifier))
+  (object_name
+    (identifier))
+  (table_definition
+    (object_name
+      (identifier))
+    (column_definitions
+      (column_definition
+        (identifier)
+        (object_name
+          (identifier))))))

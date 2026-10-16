@@ -88,15 +88,7 @@ module.exports = grammar({
         $._error_sentinel
     ],
 
-    extras: $ => [
-        /[\s\uFEFF\u00A0]+/,
-        $.comment,
-        $.template_tag,
-        $.client_command,
-        $.conditional_compilation,
-        $.inquiry_directive,
-        $.label
-    ],
+    extras: $ => [/[\s\uFEFF\u00A0]+/, $.comment, $.template_tag, $.conditional_compilation, $.inquiry_directive, $.label],
 
     conflicts: $ => [
         [$.block, $._begin_semicolon_transaction],
@@ -114,9 +106,12 @@ module.exports = grammar({
     rules: {
         source_file: $ => repeat($._top_item),
 
+        // A command of the client running the script (PROMPT, \connect) stands where a statement may start, so that a
+        // column named prompt or remark inside parentheses or a body stays a column.
         _top_item: $ =>
             choice(
                 $._statement_item,
+                $.client_command,
                 $.batch_separator,
                 $.custom_delimiter,
                 $.delimiter_directive,
@@ -280,7 +275,7 @@ module.exports = grammar({
                 )
             ),
 
-        _create_other: $ => prec(PREC.flatFallback, seq($._create_prefix, optional(kw("type")))),
+        _create_other: $ => prec(PREC.flatFallback, seq($._create_prefix, optional(choice(kw("type"), $._temporary)))),
 
         // GRANT CREATE PROCEDURE TO someone creates nothing.
         _privilege_statement: $ =>
@@ -298,25 +293,25 @@ module.exports = grammar({
                     seq(
                         routineHead($, $._procedure_kind),
                         repeat($._procedure_header_item),
-                        field("body", choice($.routine_body, alias($._statement_body, $.routine_body)))
+                        choice($._routine_body_and_tail, field("body", alias($._statement_body, $.routine_body)))
                     )
                 ),
-                prec.right(seq(routineHead($, kw("function")), repeat($._header_item), field("body", $.routine_body))),
+                prec.right(seq(routineHead($, kw("function")), repeat($._header_item), $._routine_body_and_tail)),
                 prec.right(
                     seq(
                         routineHead($, kw("function")),
                         repeat($._header_item),
                         $._returns_clause,
-                        field("body", choice($.routine_body, alias($._return_body, $.routine_body)))
+                        choice($._routine_body_and_tail, field("body", alias($._return_body, $.routine_body)))
                     )
                 ),
-                prec.right(seq(routineHead($, kw("trigger")), repeat($._header_item), field("body", $.routine_body))),
+                prec.right(seq(routineHead($, kw("trigger")), repeat($._header_item), $._routine_body_and_tail)),
                 prec.right(
                     seq(
                         routineHead($, kw("trigger")),
                         repeat($._header_item),
                         $._for_each_row_clause,
-                        field("body", choice($.routine_body, alias($._trigger_statement_body, $.routine_body)))
+                        choice($._routine_body_and_tail, field("body", alias($._trigger_statement_body, $.routine_body)))
                     )
                 )
             ),
@@ -405,7 +400,7 @@ module.exports = grammar({
         _nested_routine: $ =>
             choice(alias($._nested_routine_definition, $.routine_definition), alias($._nested_routine_declaration, $.routine_declaration)),
 
-        _nested_routine_definition: $ => prec.right(seq($._nested_routine_signature, field("body", $.routine_body))),
+        _nested_routine_definition: $ => prec.right(seq($._nested_routine_signature, $._routine_body_and_tail)),
 
         _nested_routine_declaration: $ => prec.right(PREC.flatFallback, seq($._nested_routine_signature, ";")),
 
@@ -444,12 +439,23 @@ module.exports = grammar({
                 kw("table")
             ),
 
+        // A body in dollar quotes ends before its closing quote, so that the closing line, $$ LANGUAGE plpgsql;, counts
+        // for the routine no more than a closing brace does.
+        _routine_body_and_tail: $ =>
+            choice(
+                field("body", $.routine_body),
+                seq(field("body", alias($._dollar_routine_body, $.routine_body)), $._dollar_routine_tail)
+            ),
+
+        _dollar_routine_body: $ => prec.right(seq(kw("as"), $._dollar_body_start, optional($._body_sequence))),
+
+        _dollar_routine_tail: $ => prec.right(seq($._dollar_body_end, repeat($._header_item), optional(";"))),
+
         // The routine body: AS or IS, then statements or declarations, ending after the first block at its own level.
         routine_body: $ =>
             prec.right(
                 choice(
                     seq(choice(kw("as"), kw("is")), optional($._body_sequence)),
-                    seq(kw("as"), $._dollar_quoted_body),
                     seq(kw("as"), $._string_body),
                     seq(kw("declare"), optional($._body_sequence)),
                     $._body_block
@@ -459,17 +465,33 @@ module.exports = grammar({
         // A body in a string ends with its statement: AS 'SELECT 1' LANGUAGE sql, AS 'lib.so', 'symbol' LANGUAGE C
         _string_body: $ => prec.right(PREC.preferredStructure, seq($.string, repeat($._header_item), optional(";"))),
 
-        // PostgreSQL: the code between dollar quotes, then the rest of the header up to the end of the statement.
-        _dollar_quoted_body: $ => prec.right(seq($._dollar_body, repeat($._header_item), optional(";"))),
-
         // A T-SQL body without BEGIN goes on over its semicolons up to GO, the next CREATE or the end of the file;
         // a PL/SQL declaration section up to its block.
         _body_sequence: $ => prec.right(choice(seq(repeat1(choice($._body_item, ";")), optional($._body_block)), $._body_block)),
 
-        _body_item: $ => choice($._soup_item, $._nested_routine, $._temporary_table),
+        _body_item: $ => choice($._soup_item, $._nested_routine, $._hash_temporary_table),
 
-        // A T-SQL temporary table, CREATE TABLE #t, is no object of the database and does not end a routine
-        _temporary_table: $ => prec.right(seq($._temporary_table_start, optional($.column_definitions))),
+        // A temporary table is no object of the database: T-SQL's CREATE TABLE #t, which does not end a routine either,
+        // MySQL's and PostgreSQL's CREATE TEMP[ORARY] TABLE and Oracle's CREATE GLOBAL TEMPORARY TABLE
+        _temporary_table: $ =>
+            choice(
+                $._hash_temporary_table,
+                prec.right(
+                    seq(
+                        $._create_prefix,
+                        $._temporary,
+                        kw("table"),
+                        optional($._if_not_exists),
+                        $.object_name,
+                        optional($.column_definitions)
+                    )
+                )
+            ),
+
+        // A T-SQL body without BEGIN may hold one; a CREATE TEMPORARY TABLE there would read every CREATE as its start
+        _hash_temporary_table: $ => prec.right(seq($._temporary_table_start, optional($.column_definitions))),
+
+        _temporary: $ => choice(kw("temp"), kw("temporary")),
 
         _temporary_table_start: $ => token(seq(caseInsensitive("create"), /\s+/, caseInsensitive("table"), /\s+#/, /[A-Za-z0-9_#@$]*/)),
 
@@ -510,7 +532,7 @@ module.exports = grammar({
         _view_signature: $ =>
             prec.right(
                 seq(
-                    choice($._create_prefix, kw("alter")),
+                    choice(seq($._create_prefix, optional($._temporary)), kw("alter")),
                     kw("view"),
                     optional($._if_not_exists),
                     field("name", $.object_name),

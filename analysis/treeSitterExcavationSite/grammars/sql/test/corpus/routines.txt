@@ -261,22 +261,21 @@ $function$ SECURITY DEFINER;
     (object_name
       (identifier))
     (routine_body
-      (block
-        (object_name
-          (identifier)
-          (identifier))
-        (operator)
-        (invocation
-          (object_name
-            (identifier)))
-        (object_name
-          (identifier))
+      (object_name
+        (identifier)
+        (identifier))
+      (operator)
+      (invocation
         (object_name
           (identifier)))
       (object_name
         (identifier))
       (object_name
-        (identifier)))))
+        (identifier)))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))))
 
 ================================================================================
 PostgreSQL trigger without a body is a declaration that calls its function
@@ -677,3 +676,50 @@ INSERT INTO log SELECT 1;
     (object_name
       (identifier)))
   (number))
+
+================================================================================
+A PostgreSQL routine body ends at its closing dollar quote
+================================================================================
+
+CREATE FUNCTION f1() RETURNS int AS $$
+DECLARE
+  v int;
+BEGIN
+  RETURN 1;
+END;
+$$ LANGUAGE plpgsql;
+CREATE FUNCTION f2() RETURNS int LANGUAGE sql AS $$ SELECT 1; $$;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list)
+    (object_name
+      (identifier))
+    (routine_body
+      (variable_declaration
+        (identifier))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (number))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier)))
+  (routine_definition
+    (object_name
+      (identifier))
+    (parameter_list)
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (routine_body
+      (number))))

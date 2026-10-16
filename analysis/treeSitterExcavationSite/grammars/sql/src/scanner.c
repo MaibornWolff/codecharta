@@ -35,6 +35,7 @@ enum TokenType {
 };
 
 #define MAX_TAG_LENGTH 32
+#define INVALID_TAG (-1)
 #define MAX_BODY_DEPTH 8
 #define MAX_DELIMITER_LENGTH 16
 #define BYTE_ORDER_MARK 0xFEFF
@@ -229,13 +230,41 @@ static bool scan_inquiry_directive(TSLexer *lexer) {
     return true;
 }
 
+static bool is_ascii_letter(int32_t character) { return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z'); }
+
+static bool is_ascii_tag_part(int32_t character) { return is_ascii_letter(character) || iswdigit(character) || character == '_'; }
+
+// The tag of a dollar quote as written, as PostgreSQL compares it exactly: $Q$ is closed by $Q$ only. A tag that is
+// longer than the scanner keeps or holds a letter beyond ASCII opens no quote rather than a wrong one.
+static int read_dollar_tag(TSLexer *lexer, char *tag) {
+    int length = 0;
+    tag[0] = '\0';
+    if (!is_ascii_letter(lexer->lookahead) && lexer->lookahead != '_') return iswalpha(lexer->lookahead) ? INVALID_TAG : 0;
+    while (is_ascii_tag_part(lexer->lookahead)) {
+        if (length == MAX_TAG_LENGTH) return INVALID_TAG;
+        tag[length++] = (char)lexer->lookahead;
+        advance(lexer);
+    }
+    tag[length] = '\0';
+    return iswalnum(lexer->lookahead) ? INVALID_TAG : length;
+}
+
+static void copy_lowercase(const char *text, char *lowercase) {
+    size_t index = 0;
+    for (; text[index]; index++) lowercase[index] = (char)towlower(text[index]);
+    lowercase[index] = '\0';
+}
+
 static bool scan_dollar_quote(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool in_error_recovery) {
     advance(lexer);
     char tag[MAX_TAG_LENGTH + 1];
-    size_t tag_length = read_word(lexer, tag);
+    int tag_length = read_dollar_tag(lexer, tag);
+    if (tag_length == INVALID_TAG) return false;
     if (lexer->lookahead != '$') {
-        bool is_directive = tag_length > 0 && tag_length < MAX_TAG_LENGTH && is_one_of(tag, COMPILATION_DIRECTIVES);
-        return is_directive && scan_conditional_compilation(lexer, tag);
+        char directive[MAX_TAG_LENGTH + 1];
+        copy_lowercase(tag, directive);
+        bool is_directive = tag_length > 0 && is_one_of(directive, COMPILATION_DIRECTIVES);
+        return is_directive && scan_conditional_compilation(lexer, directive);
     }
     advance(lexer);
     lexer->mark_end(lexer);

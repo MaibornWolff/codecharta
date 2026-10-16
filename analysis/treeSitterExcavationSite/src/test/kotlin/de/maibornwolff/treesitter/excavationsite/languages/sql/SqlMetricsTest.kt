@@ -348,6 +348,25 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count neither the END line nor the closing dollar quote line of a PostgreSQL routine`() {
+        // Arrange
+        val code = """
+            CREATE FUNCTION f() RETURNS int AS $$
+            BEGIN
+              SELECT 1;
+              SELECT 2;
+            END;
+            $$ LANGUAGE plpgsql;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.perFunctionMetrics["max_rloc_per_function"]).isEqualTo(3.0)
+    }
+
+    @Test
     fun `should count comment lines of every comment style`() {
         // Arrange
         val code = """

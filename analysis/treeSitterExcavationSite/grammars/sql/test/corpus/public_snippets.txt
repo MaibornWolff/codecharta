@@ -187,34 +187,33 @@ $$;
     (object_name
       (identifier))
     (routine_body
-      (block
-        (if_statement
-          (condition
-            (object_name
-              (identifier)
-              (quoted_identifier))
-            (object_name
-              (identifier)))
+      (if_statement
+        (condition
           (object_name
-            (identifier))
-          (object_name
-            (identifier))
-          (string))
-        (object_name
-          (identifier)
-          (quoted_identifier))
-        (operator)
-        (invocation
-          (object_name
-            (identifier))
-          (string)
-          (operator)
+            (identifier)
+            (quoted_identifier))
           (object_name
             (identifier)))
         (object_name
           (identifier))
         (object_name
-          (identifier))))))
+          (identifier))
+        (string))
+      (object_name
+        (identifier)
+        (quoted_identifier))
+      (operator)
+      (invocation
+        (object_name
+          (identifier))
+        (string)
+        (operator)
+        (object_name
+          (identifier)))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier)))))
 
 ================================================================================
 MySQL trigger (AlessandroFerrante/Event-Management-System, MIT, (c) 2026 Alessandro Ferrante)
