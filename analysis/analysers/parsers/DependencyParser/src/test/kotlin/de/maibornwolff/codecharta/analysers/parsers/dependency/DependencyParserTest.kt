@@ -346,6 +346,52 @@ class DependencyParserTest {
         )
     }
 
+    @Test
+    fun `should resolve a pipe name to the same-named class the component imports from its file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("new").createDirectories()
+        tempDir.resolve("legacy").createDirectories()
+        tempDir.resolve("new/fmt.pipe.ts").writeText("@Pipe({ name: 'fmt', standalone: true })\nexport class FmtPipe {}")
+        tempDir.resolve("legacy/fmt.pipe.ts").writeText("@Pipe({ name: 'fmt', standalone: true })\nexport class FmtPipe {}")
+        tempDir.resolve("a.component.html").writeText("<p>{{ value | fmt }}</p>")
+        tempDir.resolve("a.component.ts").writeText(
+            """
+            import { FmtPipe } from './new/fmt.pipe';
+            @Component({ selector: 'app-a', standalone: true, imports: [FmtPipe], templateUrl: './a.component.html' })
+            export class AComponent {}
+            """.trimIndent()
+        )
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
+            "a.component.ts" to "fmt.pipe.ts",
+            "a.component.ts" to "a.component.html",
+            "a.component.html" to "fmt.pipe.ts"
+        )
+        assertThat(edgeTargetFolders(output, "a.component.html")).containsExactly("new")
+    }
+
+    private fun edgeTargetFolders(output: String, sourceName: String): List<String> {
+        val parentNamesById = HashMap<String, String>()
+
+        fun collect(node: JsonObject, parentName: String) {
+            parentNamesById[node.get("id").asString] = parentName
+            node.getAsJsonArray("children")?.forEach { collect(it.asJsonObject, node.get("name").asString) }
+        }
+        JsonParser.parseString(output).asJsonObject.getAsJsonArray("files").forEach { collect(it.asJsonObject, "") }
+        val namesById = fileNamesById(output)
+        return dependencyLensOf(output)
+            .getAsJsonArray("edges")
+            .map { it.asJsonObject }
+            .filter { namesById[it.get("fromId").asString] == sourceName }
+            .map { parentNamesById.getValue(it.get("toId").asString) }
+    }
+
     private fun fileEdgeNames(output: String): List<Pair<String, String>> {
         val namesById = fileNamesById(output)
         return dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
