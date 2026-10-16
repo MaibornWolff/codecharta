@@ -50,6 +50,6 @@ sealed class Metric {
     data class Counted(
         val fileMetric: AvailableFileMetrics,
         val condition: MetricCondition = MetricCondition.Always,
-        val objectKey: (SyntaxNode) -> String? = { null }
+        val objectKey: (SyntaxNode) -> ObjectKey? = { null }
     ) : Metric()
 }

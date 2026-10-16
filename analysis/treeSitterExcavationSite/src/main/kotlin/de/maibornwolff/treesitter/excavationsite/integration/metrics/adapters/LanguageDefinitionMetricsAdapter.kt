@@ -6,6 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetr
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricCondition
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ObjectKey
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
 
@@ -23,7 +24,7 @@ class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricN
     private val messageChains = NodeTypesBuilder()
     private val messageChainsCall = NodeTypesBuilder()
     private val counted = mutableMapOf<AvailableFileMetrics, NodeTypesBuilder>()
-    private val objectKeys = mutableMapOf<AvailableFileMetrics, MutableMap<String, (SyntaxNode) -> String?>>()
+    private val objectKeys = mutableMapOf<AvailableFileMetrics, MutableMap<String, (SyntaxNode) -> ObjectKey?>>()
 
     init {
         for ((nodeType, metrics) in definition.nodeMetrics) {

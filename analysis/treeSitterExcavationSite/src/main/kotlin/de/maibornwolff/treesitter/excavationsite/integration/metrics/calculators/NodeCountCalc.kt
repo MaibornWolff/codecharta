@@ -2,6 +2,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.metrics.calculator
 
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.CalculationContext
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ObjectKey
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.NodeTypeMatcher
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
@@ -9,9 +10,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.Tr
 /** Counts the nodes of the counted types; nodes with the same object key count once, see [Metric.Counted]. */
 class NodeCountCalc(
     private val countedNodeTypes: TreeNodeTypes,
-    private val objectKeyByNodeType: Map<String, (SyntaxNode) -> String?> = emptyMap()
+    private val objectKeyByNodeType: Map<String, (SyntaxNode) -> ObjectKey?> = emptyMap()
 ) : MetricPerFileCalc {
-    private val objectKeys = mutableListOf<String>()
+    private val objectKeys = mutableListOf<ObjectKey>()
 
     // A node without a key counts here; the nodes with a key count once the whole file is walked, see [countOfKeyedObjects]
     override fun calculateMetricForNode(nodeContext: CalculationContext): Int {
@@ -26,5 +27,5 @@ class NodeCountCalc(
         return 0
     }
 
-    fun countOfKeyedObjects(): Int = objectKeys.distinct().size
+    fun countOfKeyedObjects(): Int = ObjectKey.countDistinct(objectKeys)
 }

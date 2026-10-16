@@ -366,6 +366,112 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count PostgreSQL triggers of one name on different tables apart`() {
+        // Arrange
+        val code = """
+            CREATE TRIGGER set_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION touch();
+            CREATE TRIGGER set_timestamp BEFORE UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION touch();
+            CREATE TRIGGER set_timestamp BEFORE UPDATE ON public.invoices FOR EACH ROW EXECUTE FUNCTION touch();
+            CREATE OR REPLACE TRIGGER set_timestamp BEFORE UPDATE ON invoices FOR EACH ROW EXECUTE FUNCTION touch();
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTriggers).isEqualTo(3.0)
+    }
+
+    @Test
+    fun `should leave parameter modes and defaults out of an overload`() {
+        // Arrange
+        val code = """
+            CREATE PROCEDURE r(a IN NUMBER) IS BEGIN NULL; END;
+            /
+            CREATE OR REPLACE PROCEDURE r(a NUMBER DEFAULT 0) IS BEGIN NULL; END;
+            /
+            CREATE OR REPLACE PROCEDURE r(b IN OUT NOCOPY NUMBER) IS BEGIN NULL; END;
+            /
+            create procedure q(inout n int) as $$ begin n := 1; end; $$ language plpgsql;
+            create or replace procedure q(n int) as $$ begin n := 2; end; $$ language plpgsql;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should tell overloads with unnamed PostgreSQL parameters apart by their types`() {
+        // Arrange
+        val code = """
+            CREATE PROCEDURE p(int) AS $$ BEGIN NULL; END; $$ LANGUAGE plpgsql;
+            CREATE PROCEDURE p(text) AS $$ BEGIN NULL; END; $$ LANGUAGE plpgsql;
+            CREATE PROCEDURE p(varchar(10)) AS $$ BEGIN NULL; END; $$ LANGUAGE plpgsql;
+            CREATE OR REPLACE PROCEDURE p(v varchar(10)) AS $$ BEGIN NULL; END; $$ LANGUAGE plpgsql;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(3.0)
+    }
+
+    @Test
+    fun `should count a T-SQL procedure altered with other parameters once, as T-SQL has no overloads`() {
+        // Arrange
+        val code = """
+            CREATE PROCEDURE dbo.s @a INT AS BEGIN SELECT 1 END
+            GO
+            ALTER PROCEDURE dbo.s @a INT, @b INT AS BEGIN SELECT 2 END
+            GO
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count objects of one name in two schemas apart`() {
+        // Arrange
+        val code = """
+            CREATE TABLE public.orders (id int);
+            CREATE TABLE audit.orders (id int, changed_at timestamptz);
+            CREATE VIEW public.open_orders AS SELECT * FROM public.orders;
+            CREATE VIEW reporting.open_orders AS SELECT * FROM public.orders;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(2.0)
+        assertThat(result.numberOfViews).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should count an object without a schema apart when the file holds that name in several schemas`() {
+        // Arrange
+        val code = """
+            CREATE TABLE public.orders (id int);
+            CREATE TABLE audit.orders (id int);
+            CREATE TABLE IF NOT EXISTS orders (id int);
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(3.0)
+    }
+
+    @Test
     fun `should tell names apart the way the dependencies do, a quoted name in mixed case keeping its case`() {
         // Arrange
         val code = """

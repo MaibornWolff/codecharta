@@ -61,10 +61,13 @@ A procedure declared in an Oracle package specification counts where its body is
 once, in two files only the body's file counts it. A T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a
 body defines the object as much as `CREATE` does and counts; Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t
 DISABLE` does not. Each count counts the distinct objects of a file: an object created and altered, or created twice,
-counts once, also when only one of them names its schema (`dbo.p1`, `p1`). Names compare as the dependency parser
-compares them, so `"Orders"` and `orders` are two tables. A procedure of one name in two packages counts twice, and so
-do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`). What a routine
-creates when it runs, a table or a local procedure, counts for none of them.
+counts once. Objects of one name in two schemas (`public.orders`, `audit.orders`) count twice; one written without a
+schema is the object of that name in a schema when the file holds the name in exactly one schema (`dbo.p1`, `p1`).
+Names compare as the dependency parser compares them, so `"Orders"` and `orders` are two tables. A PostgreSQL trigger
+counts per table it is on, as PostgreSQL names triggers per table. A procedure of one name in two packages counts
+twice, and so do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`,
+`p(text)`); parameter modes and default values make no overload, and neither do T-SQL's parameters, as T-SQL has no
+overloads. What a routine creates when it runs, a table or a local procedure, counts for none of them.
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
 
