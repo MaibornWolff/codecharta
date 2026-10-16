@@ -6,6 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetr
 import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricsResult
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 /**
@@ -36,12 +37,10 @@ object MetricsFacade {
         val definition = LanguageRegistry.getLanguageDefinition(language)
         val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
         val processedContent = definition.preprocessor?.invoke(content) ?: content
-        val collector = MetricCollector(
-            grammar = NativeTreeSitter.grammar(grammarLibrary),
-            definition = definition
-        )
-        val metrics = collector.collectMetrics(processedContent)
-        return withComplexityOf(EmbeddedSourcesFacade.embeddedSources(content, grammarLibrary, definition), metrics)
+        return FfmSyntaxTree.parse(processedContent, NativeTreeSitter.grammar(grammarLibrary)).use { tree ->
+            val metrics = MetricCollector(definition).collectMetrics(tree, processedContent)
+            withComplexityOf(EmbeddedSourcesFacade.embeddedSources(tree, processedContent, definition), metrics)
+        }
     }
 
     // An embedded source, such as an inline template, adds its decisions to the file; its lines are the file's already

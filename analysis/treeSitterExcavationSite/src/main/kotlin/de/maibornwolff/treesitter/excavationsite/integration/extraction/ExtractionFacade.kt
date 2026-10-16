@@ -5,6 +5,7 @@ import de.maibornwolff.treesitter.excavationsite.integration.extraction.adapters
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 /**
@@ -26,13 +27,13 @@ object ExtractionFacade {
         val definition = LanguageRegistry.getLanguageDefinition(language)
         val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
         val processedContent = definition.preprocessor?.invoke(content) ?: content
-        val extractor = DirectTextExtractor(
-            grammar = NativeTreeSitter.grammar(grammarLibrary),
-            extractionNodeTypes = LanguageDefinitionExtractionAdapter(definition)
-        )
-        val embeddedTexts = EmbeddedSourcesFacade.embeddedSources(content, grammarLibrary, definition).flatMap { embedded ->
-            extract(embedded.content, embedded.language).map { it.copy(language = embedded.language) }
+        if (processedContent.isBlank()) return emptyList()
+        val extractor = DirectTextExtractor(LanguageDefinitionExtractionAdapter(definition))
+        return FfmSyntaxTree.parse(processedContent, NativeTreeSitter.grammar(grammarLibrary)).use { tree ->
+            val embeddedTexts = EmbeddedSourcesFacade.embeddedSources(tree, processedContent, definition).flatMap { embedded ->
+                extract(embedded.content, embedded.language).map { it.copy(language = embedded.language) }
+            }
+            extractor.extract(tree) + embeddedTexts
         }
-        return extractor.extract(processedContent) + embeddedTexts
     }
 }

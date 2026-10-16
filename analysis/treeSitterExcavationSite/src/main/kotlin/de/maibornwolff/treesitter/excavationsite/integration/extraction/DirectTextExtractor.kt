@@ -7,7 +7,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Extract
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractedText
 import de.maibornwolff.treesitter.excavationsite.shared.domain.ExtractionContext
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmGrammar
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 
 /**
@@ -16,27 +15,19 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSy
  * Walks the AST and looks up each node type in the port's nodeExtractions map
  * to determine what to extract.
  */
-internal class DirectTextExtractor(private val grammar: FfmGrammar, private val extractionNodeTypes: ExtractionNodeTypes) {
+internal class DirectTextExtractor(private val extractionNodeTypes: ExtractionNodeTypes) {
     private val commentExtractor = CommentExtractor(extractionNodeTypes.commentFormats)
     private val stringExtractor = StringExtractor(extractionNodeTypes.stringFormats)
 
     /**
-     * Extracts all text from the given source code.
+     * Extracts all text from the syntax tree of a source code.
      *
-     * @param content The source code content to analyze
+     * @param tree The syntax tree of the content to analyze
      * @return List of extracted text items with their contexts
      */
-    fun extract(content: String): List<ExtractedText> {
-        if (content.isBlank()) {
-            return emptyList()
-        }
-
+    fun extract(tree: FfmSyntaxTree): List<ExtractedText> {
         val results = mutableListOf<ExtractedText>()
-
-        FfmSyntaxTree.parse(content, grammar).use { tree ->
-            tree.walk { node, nodeType -> processNode(node, nodeType, results) }
-        }
-
+        tree.walk { node, nodeType -> processNode(node, nodeType, results) }
         return results
     }
 
