@@ -91,6 +91,27 @@ class SqlDependencyTest {
         }
 
         @Test
+        fun `should give the routines of an Oracle type body the type as parent`() {
+            // Arrange
+            val code = """
+                CREATE OR REPLACE TYPE BODY money_t AS
+                  MEMBER PROCEDURE book IS BEGIN INSERT INTO ledger (id) VALUES (1); END;
+                  STATIC FUNCTION zero RETURN money_t IS BEGIN RETURN money_t(0); END;
+                END;
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(
+                Declaration("money_t", DeclarationType.CLASS, usedTypes()),
+                Declaration("book", DeclarationType.FUNCTION, usedTypes("ledger"), listOf("money_t")),
+                Declaration("zero", DeclarationType.FUNCTION, usedTypes("money_t"), listOf("money_t"))
+            )
+        }
+
+        @Test
         fun `should declare a trigger without a body with its table and its function`() {
             // Arrange
             val code = "CREATE TRIGGER items_touch BEFORE UPDATE ON public.items FOR EACH ROW EXECUTE FUNCTION public.touch();"

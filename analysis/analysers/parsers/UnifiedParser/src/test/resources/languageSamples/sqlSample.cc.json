@@ -2,7 +2,7 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.1",
-    "checksum": "ce4f87780168b8975e65573574faf43d"
+    "checksum": "4fe4f675172a6a1f69205cebbbb78718"
   },
   "files": [
     {
@@ -310,7 +310,7 @@
         },
         "number_of_stored_procedures": {
           "title": "Number of stored procedures",
-          "description": "The number of SQL stored procedures the file defines with a body, on their own or in an Oracle package body.",
+          "description": "The number of SQL stored procedures the file defines with a body, on their own or in an Oracle package or type body.",
           "hintLowValue": "",
           "hintHighValue": "",
           "link": "https://codecharta.com/docs/parser/unified",

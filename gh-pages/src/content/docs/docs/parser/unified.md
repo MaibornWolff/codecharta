@@ -51,7 +51,7 @@ reports or documentation, with `-e`.
 | excessive_comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
 | comment_ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
 | message_chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
-| number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package body                                                                                                     |
+| number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package or type body                                                                                                     |
 | number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
 | number_of_views           | Only in SQL files: the views the file defines, materialized ones included                                                                                                                                               |
 | number_of_tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
@@ -64,8 +64,8 @@ DISABLE` does not. Each count counts the distinct objects of a file: an object c
 counts once. Objects of one name in two schemas (`public.orders`, `audit.orders`) count twice; one written without a
 schema is the object of that name in a schema when the file holds the name in exactly one schema (`dbo.p1`, `p1`).
 Names compare as the dependency parser compares them, so `"Orders"` and `orders` are two tables. A PostgreSQL trigger
-counts per table it is on, as PostgreSQL names triggers per table. A procedure of one name in two packages counts
-twice, and so do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`,
+counts per table it is on, as PostgreSQL names triggers per table. A procedure of one name in two packages or types
+counts twice, and so do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`,
 `p(text)`); parameter modes and default values make no overload, and neither do T-SQL's parameters, as T-SQL has no
 overloads. A MySQL procedure dropped and created again with other parameters counts twice, as its parameters can not
 be told from PostgreSQL's. What a routine creates when it runs, a table or a local procedure, counts for none of them, while what a
@@ -415,7 +415,7 @@ Function counting identifies different types of function definitions per languag
 ##### SQL (.sql, .pks, .pkb, .pls)
 
 - **Functions**: `routine_definition`: a procedure, function or trigger with a body after `AS`, `IS`, `DECLARE` or
-  `BEGIN`, also inside a PL/SQL package body, and a MySQL routine whose body is a single statement (after the
+  `BEGIN`, also inside a PL/SQL package or type body, and a MySQL routine whose body is a single statement (after the
   parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger). Forward declarations in
   a package specification and a PostgreSQL trigger that only names its function are not counted. A body without
   `BEGIN` (T-SQL) goes on up to `GO`, the next `CREATE` or the end of the file, unless a bare `BEGIN … END` stands in

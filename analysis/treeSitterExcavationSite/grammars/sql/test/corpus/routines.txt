@@ -723,3 +723,69 @@ CREATE FUNCTION f2() RETURNS int LANGUAGE sql AS $$ SELECT 1; $$;
       (identifier))
     (routine_body
       (number))))
+
+================================================================================
+The member and static routines of an Oracle type body are routines of the type
+================================================================================
+
+CREATE OR REPLACE TYPE BODY money_t AS
+  MEMBER PROCEDURE add_to(p_amount NUMBER) IS
+  BEGIN
+    self.amount := self.amount + p_amount;
+  END;
+  STATIC PROCEDURE reset IS BEGIN NULL; END;
+  MEMBER FUNCTION total RETURN NUMBER IS BEGIN RETURN self.amount; END;
+END;
+/
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (package_definition
+    (object_name
+      (identifier))
+    (object_name
+      (identifier))
+    (routine_definition
+      (object_name
+        (identifier))
+      (parameter_list
+        (parameter
+          (identifier)
+          (object_name
+            (identifier))))
+      (routine_body
+        (object_name
+          (identifier)
+          (identifier))
+        (operator)
+        (object_name
+          (identifier)
+          (identifier))
+        (operator)
+        (object_name
+          (identifier))))
+    (object_name
+      (identifier))
+    (routine_definition
+      (object_name
+        (identifier))
+      (routine_body
+        (object_name
+          (identifier))))
+    (object_name
+      (identifier))
+    (routine_definition
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (object_name
+        (identifier))
+      (routine_body
+        (object_name
+          (identifier))
+        (object_name
+          (identifier)
+          (identifier)))))
+  (slash_terminator))

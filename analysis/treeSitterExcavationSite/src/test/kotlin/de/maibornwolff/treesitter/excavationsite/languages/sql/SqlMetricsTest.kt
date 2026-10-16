@@ -258,6 +258,35 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count the member and static procedures of an Oracle type body as stored procedures`() {
+        // Arrange
+        val code = """
+            CREATE OR REPLACE TYPE BODY money_t AS
+              MEMBER PROCEDURE add_to(p_amount NUMBER) IS
+              BEGIN
+                self.amount := self.amount + p_amount;
+              END;
+              STATIC PROCEDURE reset IS
+              BEGIN
+                NULL;
+              END;
+              MEMBER FUNCTION total RETURN NUMBER IS
+              BEGIN
+                RETURN self.amount;
+              END;
+            END;
+            /
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(2.0)
+        assertThat(result.numberOfFunctions).isEqualTo(3.0)
+    }
+
+    @Test
     fun `should count the triggers a file creates, with a body or calling a function`() {
         // Arrange
         val code = """

@@ -14,7 +14,7 @@ complexity) or cover one dialect each, which is why CodeCharta has its own.
 |-----------------------------------|--------------------------------------------------------------------------------------------|
 | Routines                          | `routine_definition` (with `routine_body`), `routine_declaration` (no body), `parameter_list`, `parameter` |
 | Routine bodies                    | `AS`/`IS` up to the block that ends the body, or up to `GO`, the next `CREATE` or the end of the file when there is no block; `$$ … $$`, ending before its closing quote; a string (`AS 'select 1'`); the single statement of a MySQL routine after the parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger |
-| Packages, views, tables           | `package_definition`, `view_definition`, `table_definition`, `column_definition`, `table_constraint` |
+| Packages, type bodies, views, tables | `package_definition` (an Oracle `TYPE BODY` too), `view_definition`, `table_definition`, `column_definition`, `table_constraint` |
 | Blocks                            | `block` (`BEGIN … END`, `BEGIN ATOMIC`, `$$ … $$` bodies), `do_block`                       |
 | Branches and loops                | `if_statement`, `elsif_clause`, `else_clause`, `case_expression`, `when_clause`, `iif_expression`, `while_statement`, `loop_statement`, `for_statement` (with Oracle 21c iteration controls), `repeat_statement`, `exit_statement` (`EXIT` and `CONTINUE`, with their `WHEN` condition) |
 | Exception handling                | `try_block`, `catch_block`, `exception_section`, `exception_handler`, `handler_declaration` |

@@ -180,7 +180,7 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES.metricName to AttributeDescriptor(
             title = "Number of stored procedures",
             description = "The number of SQL stored procedures the file defines with a body, " +
-                "on their own or in an Oracle package body.",
+                "on their own or in an Oracle package or type body.",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName
