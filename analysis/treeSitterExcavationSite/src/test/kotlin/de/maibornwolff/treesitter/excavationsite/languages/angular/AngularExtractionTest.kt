@@ -268,6 +268,18 @@ class AngularExtractionTest {
         }
 
         @Test
+        fun `should extract the value of a text attribute with its html entities as spaces`() {
+            // Arrange
+            val code = """<input placeholder="Search&nbsp;creatures&#160;and&#xA0;dragons &amp; more" />"""
+
+            // Act
+            val result = TreeSitterExtraction.extract(code, Language.ANGULAR)
+
+            // Assert
+            assertThat(result.texts).containsExactly("Search creatures and dragons   more")
+        }
+
+        @Test
         fun `should not extract the value of an attribute whose name ends in a text word only inside a word`() {
             // Arrange
             val code = """<cc-card context="turquoise" subtitle="Lair" hint="Quiet"></cc-card>"""
