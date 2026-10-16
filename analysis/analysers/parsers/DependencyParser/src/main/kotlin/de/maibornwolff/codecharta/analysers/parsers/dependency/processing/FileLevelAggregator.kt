@@ -61,10 +61,7 @@ object FileLevelAggregator {
         }
     }
 
-    /**
-     * The file each logical path is joined to: the first declaration's, in the order the nodes arrive, which is path
-     * order. A SQL object created in several files is the last one's, as a later migration redefines it.
-     */
+    /** The file a logical path is joined to: its first declaration's in path order, for SQL the latest migration's. */
     fun filePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
         val filePathByDeclaration = LinkedHashMap<String, FilePath>()
         resolvedNodes.forEach { node ->

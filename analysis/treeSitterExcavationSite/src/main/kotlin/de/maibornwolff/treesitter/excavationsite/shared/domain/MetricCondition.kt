@@ -53,10 +53,6 @@ sealed class MetricCondition {
      */
     data class ParentMatches(val allowedTypes: Set<String>) : MetricCondition()
 
-    /**
-     * Matches when every one of the conditions matches.
-     *
-     * @param conditions The conditions that must all match
-     */
+    /** Matches when every one of [conditions] matches. */
     data class AllOf(val conditions: List<MetricCondition>) : MetricCondition()
 }
