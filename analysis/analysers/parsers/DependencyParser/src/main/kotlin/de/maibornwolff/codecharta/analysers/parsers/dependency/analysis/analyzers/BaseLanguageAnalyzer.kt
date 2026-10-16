@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.resolveImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
@@ -45,6 +46,8 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
 
     protected open fun extraDependencies(declaration: Declaration): Set<Dependency> = emptySet()
 
+    protected open fun angularOf(declaration: Declaration): AngularMetadata? = declaration.angular?.toAngularMetadata()
+
     /** Nodes a declaration holds besides its own, such as the inline template of an Angular component. */
     protected open fun nodesWithin(declaration: Declaration, node: Node): List<Node> = emptyList()
 
@@ -62,6 +65,6 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
         nodeType = declaration.type.toNodeType(),
         dependencies = dependencies,
         usedTypes = selectUsedTypes(declaration, imports).map { it.toType() }.toSet(),
-        angular = declaration.angular?.toAngularMetadata()
+        angular = angularOf(declaration)
     )
 }

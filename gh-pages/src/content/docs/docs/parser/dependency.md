@@ -95,10 +95,12 @@ gzipped; output is gzipped by default.
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
 
 An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
-names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
-class or more than one class declares, such as a library component, draws no edge. A component depends on the template
-file its `templateUrl` names; the inline `template` of a component is read like a template file, and its edges leave
-the `.ts` file of the component.
+names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
+declare means the one in the scope of the template's component, as Angular decides it: the `imports` of a standalone
+component, or the `declarations` and `imports` of the `@NgModule` that declares the component and the `exports` of the
+modules it imports. A name that no class declares, such as a library component, or that the scope does not decide draws
+no edge. A component depends on the template file its `templateUrl` names; the inline `template` of a component is read
+like a template file, and its edges leave the `.ts` file of the component.
 
 Imports are resolved through each language's own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.

@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toAngularMetadata
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
@@ -79,6 +81,9 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         val templatePath = templatePathOf(declaration) ?: return declaration.usedTypes
         return declaration.usedTypes + UsedType(templatePath.withDots())
     }
+
+    override fun angularOf(declaration: Declaration): AngularMetadata? =
+        declaration.angular?.toAngularMetadata()?.copy(templatePath = templatePathOf(declaration))
 
     override fun nodesWithin(declaration: Declaration, node: Node): List<Node> {
         val inlineTemplate = declaration.angular?.inlineTemplate ?: return emptyList()

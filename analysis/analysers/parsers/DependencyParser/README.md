@@ -190,10 +190,12 @@ differ from the namespace levels in the logical layer — which are DependaChart
 Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
 
 An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
-names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
-class or more than one class declares, such as a library component, draws no edge. A component depends on the template
-file its `templateUrl` names; the inline `template` of a component is read like a template file, and its edges leave
-the `.ts` file of the component.
+names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
+declare means the one in the scope of the template's component, as Angular decides it: the `imports` of a standalone
+component, or the `declarations` and `imports` of the `@NgModule` that declares the component and the `exports` of the
+modules it imports. A name that no class declares, such as a library component, or that the scope does not decide draws
+no edge. A component depends on the template file its `templateUrl` names; the inline `template` of a component is read
+like a template file, and its edges leave the `.ts` file of the component.
 
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, a name without one the

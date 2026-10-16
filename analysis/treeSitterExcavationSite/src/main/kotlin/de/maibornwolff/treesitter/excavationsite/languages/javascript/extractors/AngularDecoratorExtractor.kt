@@ -7,8 +7,9 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.orNull
 
 /**
  * What the Angular decorator of a class declares: the elements its `@Component` selector names and the name of its
- * `@Pipe`, the names a template refers to the class by, and the template file or inline template of a component. An
- * attribute or class selector names no element, so it is left out.
+ * `@Pipe`, the names a template refers to the class by, the template file or inline template of a component, and the
+ * classes a component or an `@NgModule` imports, declares and exports. An attribute or class selector names no element,
+ * so it is left out.
  */
 internal object AngularDecoratorExtractor {
     private const val ARGUMENTS = "arguments"
@@ -20,6 +21,11 @@ internal object AngularDecoratorExtractor {
     private const val TEMPLATE = "template"
     private const val TEMPLATE_STRING = "template_string"
     private const val PIPE = "Pipe"
+    private const val NG_MODULE = "NgModule"
+    private const val IMPORTS = "imports"
+    private const val DECLARATIONS = "declarations"
+    private const val EXPORTS = "exports"
+    private const val ARRAY = "array"
     private const val PIPE_NAME = "name"
     private const val VALUE_FIELD = "value"
     private const val SELECTOR_SEPARATOR = ","
@@ -40,6 +46,7 @@ internal object AngularDecoratorExtractor {
         return when (TreeTraversal.findFirstChildTextByType(call, IDENTIFIER)) {
             COMPONENT -> componentOf(call)
             PIPE -> AngularDeclaration(templateNames = setOfNotNull(stringPropertyOf(call, PIPE_NAME)))
+            NG_MODULE -> moduleOf(call)
             else -> null
         }
     }
@@ -47,8 +54,24 @@ internal object AngularDecoratorExtractor {
     private fun componentOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
         templateNames = stringPropertyOf(call, SELECTOR)?.let { elementsOf(it) }.orEmpty().toSet(),
         templateUrl = stringPropertyOf(call, TEMPLATE_URL),
-        inlineTemplate = inlineTemplateOf(call)
+        inlineTemplate = inlineTemplateOf(call),
+        imports = classesOf(call, IMPORTS)
     )
+
+    private fun moduleOf(call: SyntaxNode): AngularDeclaration = AngularDeclaration(
+        imports = classesOf(call, IMPORTS),
+        declarations = classesOf(call, DECLARATIONS),
+        exports = classesOf(call, EXPORTS)
+    )
+
+    // The classes an array names directly; a spread or a call such as forwardRef() names none
+    private fun classesOf(call: SyntaxNode, key: String): List<String> = valueOf(call, key)
+        ?.takeIf { it.type == ARRAY }
+        ?.children()
+        ?.filter { it.type == IDENTIFIER }
+        ?.map { it.text }
+        ?.toList()
+        .orEmpty()
 
     private fun stringPropertyOf(call: SyntaxNode, key: String): String? = valueOf(call, key)
         ?.takeIf { it.type == STRING }

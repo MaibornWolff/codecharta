@@ -57,6 +57,44 @@ class TypescriptAnalyzerTest {
     }
 
     @Test
+    fun `should carry the template file and the imports of an Angular component`() {
+        // Arrange
+        val typescriptCode = """
+            @Component({ selector: 'app-torch', templateUrl: '../views/torch.component.html', imports: [FlameComponent] })
+            export class TorchComponent {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "app/ui/torch.component.ts", typescriptCode)).analyze()
+
+        // Assert
+        val angular = report.nodes.single().angular
+        assertThat(angular?.templatePath).isEqualTo(Path(listOf("app", "views", "torch_component_html")))
+        assertThat(angular?.imports).containsExactly("FlameComponent")
+    }
+
+    @Test
+    fun `should add the inline template of an Angular component as a template node of the component file`() {
+        // Arrange
+        val typescriptCode = """
+            @Component({ selector: 'app-torch', template: `<app-flame />` })
+            export class TorchComponent {}
+        """.trimIndent()
+
+        // Act
+        val report = TypescriptAnalyzer(FileInfo(SupportedLanguage.TYPESCRIPT, "torch.component.ts", typescriptCode)).analyze()
+
+        // Assert
+        val template = report.nodes.single { it.language == SupportedLanguage.ANGULAR }
+        assertThat(template.pathWithName).isEqualTo(Path(listOf("torch_component", "TorchComponent", "template")))
+        assertThat(template.physicalPath).isEqualTo("torch.component.ts")
+        assertThat(template.usedTypes.map { it.name }).containsExactly("app-flame")
+        assertThat(
+            report.nodes.single { it.language == SupportedLanguage.TYPESCRIPT }.angular?.templatePath
+        ).isEqualTo(template.pathWithName)
+    }
+
+    @Test
     fun `should convert exported class to node with type CLASS`() {
         // Arrange
         val typescriptCode = """            

@@ -336,6 +336,69 @@ class DependencyResolverServiceTest {
     }
 
     @Test
+    fun `should resolve a selector several classes declare to the one its standalone component imports`() {
+        // Arrange
+        val template = angularTemplate(usedNames = setOf("app-torch"))
+        val cave = typescriptClass(
+            listOf("src", "cave_component", "CaveComponent"),
+            AngularMetadata(templatePath = template.pathWithName, imports = setOf("DungeonTorch"))
+        )
+        val torch = typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), AngularMetadata(setOf("app-torch")))
+        val dungeonTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), AngularMetadata(setOf("app-torch")))
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, cave, torch, dungeonTorch))))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies).containsExactly(Dependency(dungeonTorch.pathWithName))
+    }
+
+    @Test
+    fun `should resolve a selector several classes declare to the one the module of its component declares or imports`() {
+        // Arrange
+        val template = angularTemplate(usedNames = setOf("app-torch", "app-lantern"))
+        val cave = typescriptClass(listOf("src", "cave_component", "CaveComponent"), AngularMetadata(templatePath = template.pathWithName))
+        val cellarModule = typescriptClass(
+            listOf("src", "cellar_module", "CellarModule"),
+            AngularMetadata(declarations = setOf("CaveComponent", "TorchComponent"), imports = setOf("LightModule"))
+        )
+        val lightModule = typescriptClass(listOf("light", "light_module", "LightModule"), AngularMetadata(exports = setOf("Lantern")))
+        val torch = typescriptClass(listOf("src", "torch_component", "TorchComponent"), AngularMetadata(setOf("app-torch")))
+        val otherTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), AngularMetadata(setOf("app-torch")))
+        val lantern = typescriptClass(listOf("light", "lantern_component", "Lantern"), AngularMetadata(setOf("app-lantern")))
+        val otherLantern = typescriptClass(listOf("dungeon", "lantern_component", "OilLantern"), AngularMetadata(setOf("app-lantern")))
+        val nodes = listOf(template, cave, cellarModule, lightModule, torch, otherTorch, lantern, otherLantern)
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(nodes)))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies)
+            .containsExactlyInAnyOrder(Dependency(torch.pathWithName), Dependency(lantern.pathWithName))
+    }
+
+    @Test
+    fun `should leave a selector several classes declare unresolved when the scope of its component does not decide`() {
+        // Arrange
+        val template = angularTemplate(usedNames = setOf("app-torch"))
+        val cave = typescriptClass(
+            listOf("src", "cave_component", "CaveComponent"),
+            AngularMetadata(templatePath = template.pathWithName, imports = setOf("TorchComponent", "DungeonTorch"))
+        )
+        val torch = typescriptClass(listOf("lantern", "torch_component", "TorchComponent"), AngularMetadata(setOf("app-torch")))
+        val dungeonTorch = typescriptClass(listOf("dungeon", "torch_component", "DungeonTorch"), AngularMetadata(setOf("app-torch")))
+
+        // Act
+        val resolvedNodes = DependencyResolverService.resolveNodes(listOf(FileReport(listOf(template, cave, torch, dungeonTorch))))
+
+        // Assert
+        val resolvedTemplate = resolvedNodes.first { it.language == SupportedLanguage.ANGULAR }
+        assertThat(resolvedTemplate.resolvedNodeDependencies.internalDependencies).isEmpty()
+    }
+
+    @Test
     fun `should not resolve a used type of other code by a template name`() {
         // Arrange
         val script = Node.build(
@@ -361,11 +424,14 @@ class DependencyResolverServiceTest {
         usedTypes = usedNames.map { Type.simple(it) }.toSet()
     )
 
-    private fun typescriptClass(pathWithName: List<String>, templateNames: Set<String>) = Node.build(
+    private fun typescriptClass(pathWithName: List<String>, templateNames: Set<String>) =
+        typescriptClass(pathWithName, AngularMetadata(templateNames))
+
+    private fun typescriptClass(pathWithName: List<String>, angular: AngularMetadata) = Node.build(
         pathWithName = Path(pathWithName),
         physicalPath = pathWithName.dropLast(1).joinToString("/") + ".ts",
         language = SupportedLanguage.TYPESCRIPT,
-        angular = AngularMetadata(templateNames)
+        angular = angular
     )
 
     @Test

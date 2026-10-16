@@ -53,11 +53,17 @@ data class Declaration(
  * component and the name of a pipe
  * @property templateUrl the template file of a component, as its `templateUrl` writes it
  * @property inlineTemplate the template a component writes inline as its `template`, without the quotes around it
+ * @property imports the classes a standalone component or a module imports, as named in its `imports`
+ * @property declarations the classes a module declares
+ * @property exports the classes a module exports
  */
 data class AngularDeclaration(
     val templateNames: Set<String> = emptySet(),
     val templateUrl: String? = null,
-    val inlineTemplate: String? = null
+    val inlineTemplate: String? = null,
+    val imports: List<String> = emptyList(),
+    val declarations: List<String> = emptyList(),
+    val exports: List<String> = emptyList()
 )
 
 /** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */

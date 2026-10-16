@@ -32,7 +32,12 @@ fun ImportDeclaration.defaultImportPath(): List<String> {
     return path
 }
 
-fun AngularDeclaration.toAngularMetadata(): AngularMetadata = AngularMetadata(templateNames)
+fun AngularDeclaration.toAngularMetadata(): AngularMetadata = AngularMetadata(
+    templateNames = templateNames,
+    imports = imports.toSet(),
+    declarations = declarations.toSet(),
+    exports = exports.toSet()
+)
 
 fun UsedType.toType(): Type = Type.generic(name, genericTypes.map { it.toType() }, usage.toTypeOfUsage())
 

@@ -1256,6 +1256,45 @@ class TypescriptDependencyTest {
     }
 
     @Nested
+    inner class AngularScopes {
+        @Test
+        fun `should read the classes a standalone component imports`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-cave', imports: [TorchComponent, CommonModule, ...SHARED, forwardRef(() => Lid)] })
+                export class CaveComponent {}
+            """.trimIndent()
+
+            // Act
+            val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
+
+            // Assert
+            assertThat(angular?.imports).containsExactly("TorchComponent", "CommonModule")
+        }
+
+        @Test
+        fun `should read the declarations imports and exports of a module`() {
+            // Arrange
+            val code = """
+                @NgModule({
+                  declarations: [CaveComponent, TorchComponent],
+                  imports: [CommonModule, LanternModule],
+                  exports: [CaveComponent],
+                })
+                export class CellarModule {}
+            """.trimIndent()
+
+            // Act
+            val angular = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations.single().angular
+
+            // Assert
+            assertThat(angular?.declarations).containsExactly("CaveComponent", "TorchComponent")
+            assertThat(angular?.imports).containsExactly("CommonModule", "LanternModule")
+            assertThat(angular?.exports).containsExactly("CaveComponent")
+        }
+    }
+
+    @Nested
     inner class AngularTemplateNames {
         private fun templateNamesOf(code: String, className: String): Set<String> = TreeSitterDependencies
             .analyze(

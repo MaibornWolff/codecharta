@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depen
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Node
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.NodeType
-import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.cycledetection.model.NodeInformation
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.dependencies.dictionaries.CSharpStandardLibrary
@@ -17,7 +16,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depend
 class DependencyResolverService {
     companion object {
         fun resolveNodes(fileReports: Collection<FileReport>): Collection<Node> {
-            val nodes = qualifyTemplateReferences(applyRustReexportAliases(fileReports.flatMap { it.nodes }))
+            val nodes = AngularTemplateReferences.qualify(applyRustReexportAliases(fileReports.flatMap { it.nodes }))
             val dictionary = getDictionary(nodes)
             val knownNodePaths = getKnownNodePaths(nodes)
             return nodes.map { it.resolveTypes(dictionary, standardLibraryFor(it.language).get(), knownNodePaths) }
@@ -42,29 +41,6 @@ class DependencyResolverService {
             }
             return rest
         }
-
-        /**
-         * A template names a component by its selector and a pipe by its pipe name, which only the class declaring it
-         * knows. Each name that exactly one declaration carries is rewritten to the full path of that declaration, so it
-         * resolves like any type written with its full path; a name several declarations carry stays unresolved.
-         */
-        private fun qualifyTemplateReferences(nodes: List<Node>): List<Node> {
-            val declarationsByTemplateName = nodes
-                .flatMap { node -> node.angular?.templateNames.orEmpty().map { templateName -> templateName to node.pathWithName } }
-                .groupBy({ it.first }, { it.second })
-            if (declarationsByTemplateName.isEmpty()) return nodes
-            return nodes.map { node ->
-                if (node.language == SupportedLanguage.ANGULAR) node.withQualifiedUsedTypes(declarationsByTemplateName) else node
-            }
-        }
-
-        private fun Node.withQualifiedUsedTypes(declarationsByTemplateName: Map<String, List<Path>>): Node = copy(
-            usedTypes = usedTypes
-                .map { type ->
-                    val declaration = declarationsByTemplateName[type.name]?.singleOrNull()
-                    if (declaration == null) type else type.copy(name = declaration.withDots())
-                }.toSet()
-        )
 
         fun mapNodeInfo(node: Node) = NodeInformation(
             id = node.pathWithName.withDots(),
