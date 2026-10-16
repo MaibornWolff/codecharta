@@ -32,6 +32,10 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | Angular/HTML | .html                                  |
 | SQL          | .sql, .pks, .pkb, .pls                 |
 
+Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
+`domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
+reports or documentation, with `-e`.
+
 ### Supported Metrics
 
 | Metric                    | Description                                                                                                                                                                                                                |

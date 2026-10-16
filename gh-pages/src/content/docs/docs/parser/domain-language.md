@@ -29,8 +29,9 @@ all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` mark
 and the values of its user-facing attributes weigh like its identifiers, with `--identifier-weight`, because they are
 what the user reads; `--string-weight=0` does not leave them out. The string literals of its expressions, such as
 `'crimson'` in `class="{{ hurt ? 'crimson' : 'calm' }}"`, keep the string weight, like the strings of every other
-language. The inline `template` of a `@Component`
-in a `.ts` file is read the same way and counts for the `.ts` file.
+language. The inline `template` of a `@Component` in a `.ts` file is read the same way and counts for the `.ts` file.
+Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and `dependencyparser`; exclude
+the `.html` files that are no templates of an Angular application, such as reports or documentation, with `-e`.
 
 In SQL the types, built-in functions and system schemas of every dialect are stop words (`varchar`, `coalesce`,
 `dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)

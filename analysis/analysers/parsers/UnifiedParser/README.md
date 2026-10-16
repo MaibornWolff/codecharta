@@ -29,6 +29,10 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Angular/HTML | .html                                  |
 | SQL          | .sql, .pks, .pkb, .pls                 |
 
+Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
+`domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
+reports or documentation, with `-e`.
+
 SQL covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL in one go, without choosing a dialect. Procedures,
 functions and triggers with a body count as functions, MySQL's single-statement routines included; branches, loops,
 the `WHEN`s of a `CASE`, `IIF`, `EXIT WHEN`, `CONTINUE WHEN`, exception handlers and `AND`/`OR` add to the

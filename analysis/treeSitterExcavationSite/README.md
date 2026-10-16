@@ -200,7 +200,7 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 │   │   ├── adapters/              # Language definition adapters
 │   │   └── extractors/common/     # Shared extractors
 │   └── dependencies/              # Dependencies feature (facade and collector, no ports or adapters)
-├── languages/                     # Language definitions (20 languages and frameworks)
+├── languages/                     # Language definitions (21 languages and frameworks)
 │   └── <lang>/                    # Per-language directory
 │       ├── *Definition.kt         # Combines metric and extraction mappings
 │       ├── *MetricMapping.kt      # Metric node mappings
