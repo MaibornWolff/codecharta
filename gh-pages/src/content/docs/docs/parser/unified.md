@@ -61,8 +61,10 @@ A procedure declared in an Oracle package specification counts where its body is
 once, in two files only the body's file counts it. A T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a
 body defines the object as much as `CREATE` does and counts; Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t
 DISABLE` does not. Each count counts the distinct objects of a file: an object created and altered, or created twice,
-counts once, while a procedure of one name in two packages counts twice. What a routine creates when it runs, a
-table or a local procedure, counts for none of them.
+counts once, also when only one of them names its schema (`dbo.p1`, `p1`). Names compare as the dependency parser
+compares them, so `"Orders"` and `orders` are two tables. A procedure of one name in two packages counts twice, and so
+do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`). What a routine
+creates when it runs, a table or a local procedure, counts for none of them.
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
 

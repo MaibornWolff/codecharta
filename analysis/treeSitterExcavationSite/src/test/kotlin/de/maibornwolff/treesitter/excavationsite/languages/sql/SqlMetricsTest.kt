@@ -349,6 +349,61 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should count an object named with its schema and then without it once`() {
+        // Arrange
+        val code = """
+            CREATE PROCEDURE dbo.p1 AS BEGIN SELECT 1 END
+            GO
+            ALTER PROCEDURE p1 AS BEGIN SELECT 2 END
+            GO
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should tell names apart the way the dependencies do, a quoted name in mixed case keeping its case`() {
+        // Arrange
+        val code = """
+            CREATE TABLE dbo.Orders (id INT);
+            CREATE TABLE "Orders" (id INT);
+            CREATE TABLE [orders] (id INT);
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should count overloaded routines of different parameter types apart`() {
+        // Arrange
+        val code = """
+            CREATE OR REPLACE PACKAGE BODY pkg AS
+              PROCEDURE p(a NUMBER) IS BEGIN NULL; END p;
+              PROCEDURE p(a VARCHAR2) IS BEGIN NULL; END p;
+              PROCEDURE p(b NUMBER) IS BEGIN NULL; END p;
+            END pkg;
+            /
+            CREATE PROCEDURE pg_p(a int, b text) LANGUAGE plpgsql AS $$ BEGIN NULL; END $$;
+            CREATE PROCEDURE pg_p(a text) LANGUAGE plpgsql AS $$ BEGIN NULL; END $$;
+            CREATE OR REPLACE PROCEDURE pg_p(x INT, y TEXT = 'none') LANGUAGE plpgsql AS $$ BEGIN NULL; END $$;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfStoredProcedures).isEqualTo(4.0)
+    }
+
+    @Test
     fun `should count T-SQL objects that ALTER defines with a body`() {
         // Arrange
         val code = """
