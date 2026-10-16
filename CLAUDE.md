@@ -255,7 +255,7 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 ### Branching Strategy
 
 - Main branch: `main`
-- Branch naming: `<type>/<issue-id>/<name>` (e.g., `feature/123/add-dark-mode`)
+- Branch naming: `<type>/<name>` (e.g., `feature/add-dark-mode`)
 - Types: `feature`, `fix`, `docs`, `revert`, `codestyle`, `tech`
 - Always rebase on main: `git rebase main`
 - After rebase: `git push --force-with-lease`
@@ -263,7 +263,7 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 ### Commit Message Format
 
 ```
-<type>(<scope?>): <subject>(#<issue-number?>)
+<type>(<scope?>): <subject>
 
 <body-description?>
 ```
@@ -274,7 +274,7 @@ Each state slice has dedicated actions, reducers, and selectors. Effects (`state
 - Limit subject line to 72 characters
 - Breaking changes: Use `!` before `:` (e.g., `feat!: breaking change`)
 
-Example: `feat(visualization): add dark mode toggle (#123)`
+Example: `feat(visualization): add dark mode toggle`
 
 ### Checks Before Committing
 
