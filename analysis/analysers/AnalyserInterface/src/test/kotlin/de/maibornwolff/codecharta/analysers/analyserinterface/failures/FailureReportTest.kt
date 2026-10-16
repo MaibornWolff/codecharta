@@ -52,4 +52,37 @@ class FailureReportTest {
             "1 file could not be analysed and is missing from the output (IllegalStateException: one): a.kt"
         )
     }
+
+    @Test
+    fun `should name the one cause that made every file fail`() {
+        // Arrange
+        val failures = listOf(
+            FailedFile("a.kt", IllegalStateException("broken extractor")),
+            FailedFile("b.kt", IllegalStateException("broken extractor"))
+        )
+
+        // Act
+        val message = FailureReport.nothingAnalysed(failures)
+
+        // Assert
+        assertThat(message).isEqualTo("No file could be analysed: all 2 failed with IllegalStateException: broken extractor")
+    }
+
+    @Test
+    fun `should name the most frequent of several causes that made every file fail and point to the others`() {
+        // Arrange
+        val failures = listOf(
+            FailedFile("a.kt", IllegalStateException("one")),
+            FailedFile("b.kt", IllegalStateException("two")),
+            FailedFile("c.kt", IllegalStateException("two"))
+        )
+
+        // Act
+        val message = FailureReport.nothingAnalysed(failures)
+
+        // Assert
+        assertThat(message).isEqualTo(
+            "No file could be analysed: all 3 failed, 2 with IllegalStateException: two, the others as the warnings above say"
+        )
+    }
 }

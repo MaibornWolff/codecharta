@@ -14,11 +14,13 @@ object FailureReport {
 
     fun warnAbout(failures: List<FailedFile>) = warningsOf(failures).forEach { warning -> Logger.warn { warning } }
 
-    fun warningsOf(failures: List<FailedFile>): List<String> = failures
+    fun warningsOf(failures: List<FailedFile>): List<String> =
+        byCause(failures).map { (cause, failed) -> warningOf(cause, failed.map { it.path }.sorted()) }
+
+    private fun byCause(failures: List<FailedFile>): List<Pair<String, List<FailedFile>>> = failures
         .groupBy { describe(it.cause) }
-        .entries
-        .sortedByDescending { it.value.size }
-        .map { (cause, failed) -> warningOf(cause, failed.map { it.path }.sorted()) }
+        .toList()
+        .sortedByDescending { (_, failed) -> failed.size }
 
     private fun warningOf(cause: String, paths: List<String>): String {
         val subject = if (paths.size == 1) "1 file could not be analysed and is" else "${paths.size} files could not be analysed and are"
@@ -27,8 +29,14 @@ object FailureReport {
         return "$subject missing from the output ($cause): ${paths.take(MAX_LISTED_FILES).joinToString()}$andMore"
     }
 
-    fun nothingAnalysed(failures: List<FailedFile>): String =
-        "No file could be analysed: all ${failures.size} failed, see the warnings above"
+    // Names the cause itself, as the warnings may not be shown, such as by `ccsh gate --quiet`
+    fun nothingAnalysed(failures: List<FailedFile>): String {
+        val causes = byCause(failures)
+        val (mostFrequentCause, failedByIt) = causes.first()
+        val failedAll = "No file could be analysed: all ${failures.size} failed"
+        if (causes.size == 1) return "$failedAll with $mostFrequentCause"
+        return "$failedAll, ${failedByIt.size} with $mostFrequentCause, the others as the warnings above say"
+    }
 
     // A native library that cannot be loaded fails every language, a grammar that does not fit the core only its own
     fun unusableParser(failure: Throwable): String = if (failure is LinkageError) {
