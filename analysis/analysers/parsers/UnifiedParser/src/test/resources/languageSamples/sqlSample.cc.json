@@ -2,7 +2,7 @@
   "meta": {
     "projectName": "",
     "apiVersion": "2.1",
-    "checksum": "7834cfa8db222e61b5a0dccd8b87b3a8"
+    "checksum": "ce4f87780168b8975e65573574faf43d"
   },
   "files": [
     {
@@ -343,7 +343,7 @@
         },
         "number_of_tables": {
           "title": "Number of tables",
-          "description": "The number of SQL tables the file creates, without temporary tables and the tables a routine creates.",
+          "description": "The number of SQL tables the file creates, without temporary tables of a session and tables a routine creates.",
           "hintLowValue": "",
           "hintHighValue": "",
           "link": "https://codecharta.com/docs/parser/unified",

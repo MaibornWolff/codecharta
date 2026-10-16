@@ -123,6 +123,24 @@ class SqlDependencyTest {
         }
 
         @Test
+        fun `should declare an Oracle global temporary table that routines use`() {
+            // Arrange
+            val code = """
+                CREATE GLOBAL TEMPORARY TABLE staging_orders (id NUMBER) ON COMMIT PRESERVE ROWS;
+                CREATE OR REPLACE PROCEDURE load_orders IS BEGIN INSERT INTO staging_orders (id) VALUES (1); END;
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(
+                Declaration("staging_orders", DeclarationType.CLASS, usedTypes()),
+                Declaration("load_orders", DeclarationType.FUNCTION, usedTypes("staging_orders"))
+            )
+        }
+
+        @Test
         fun `should declare a synonym that uses the object it stands for`() {
             // Arrange
             val code = "CREATE OR REPLACE PUBLIC SYNONYM creature_entity FOR &owner..creature;"

@@ -1038,6 +1038,32 @@
                   {
                     "type": "SYMBOL",
                     "name": "_temporary"
+                  },
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "ALIAS",
+                        "content": {
+                          "type": "PATTERN",
+                          "value": "[gG][lL][oO][bB][aA][lL]"
+                        },
+                        "named": false,
+                        "value": "GLOBAL"
+                      },
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "_temporary"
+                          },
+                          {
+                            "type": "BLANK"
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               },
@@ -3153,6 +3179,24 @@
         }
       ]
     },
+    "_global_temporary": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[gG][lL][oO][bB][aA][lL]"
+          },
+          "named": false,
+          "value": "GLOBAL"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_temporary"
+        }
+      ]
+    },
     "_temporary_table_start": {
       "type": "TOKEN",
       "content": {
@@ -3542,8 +3586,17 @@
                     "type": "CHOICE",
                     "members": [
                       {
-                        "type": "SYMBOL",
-                        "name": "_temporary"
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "_temporary"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "_global_temporary"
+                          }
+                        ]
                       },
                       {
                         "type": "BLANK"
@@ -3648,6 +3701,18 @@
           {
             "type": "SYMBOL",
             "name": "_create_prefix"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_global_temporary"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
           },
           {
             "type": "ALIAS",

@@ -201,7 +201,7 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
         ),
         AvailableFileMetrics.NUMBER_OF_TABLES.metricName to AttributeDescriptor(
             title = "Number of tables",
-            description = "The number of SQL tables the file creates, without temporary tables and the tables a routine creates.",
+            description = "The number of SQL tables the file creates, without temporary tables of a session and tables a routine creates.",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName

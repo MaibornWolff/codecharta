@@ -293,14 +293,15 @@ class SqlMetricsTest {
     }
 
     @Test
-    fun `should count no temporary table of any dialect and no table a routine creates`() {
+    fun `should count no table of a session and no table a routine creates`() {
         // Arrange
         val code = """
             CREATE TABLE orders (id INT);
             CREATE TABLE #scratch (id INT);
+            CREATE TABLE ##shared_scratch (id INT);
             CREATE TEMPORARY TABLE tmp1 (id INT);
             CREATE TEMP TABLE tmp2 AS SELECT 1;
-            CREATE GLOBAL TEMPORARY TABLE gtt (id INT) ON COMMIT DELETE ROWS;
+            CREATE PRIVATE TEMPORARY TABLE ora${'$'}ptt_rows (id INT) ON COMMIT DROP DEFINITION;
             CREATE FUNCTION load_staging() RETURNS void AS $$
             BEGIN
               CREATE TABLE staging_rows (id INT);
@@ -317,6 +318,21 @@ class SqlMetricsTest {
 
         // Assert
         assertThat(result.numberOfTables).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should count an Oracle global temporary table, as only its rows belong to a session`() {
+        // Arrange
+        val code = """
+            CREATE GLOBAL TEMPORARY TABLE staging_orders (id NUMBER) ON COMMIT DELETE ROWS;
+            CREATE GLOBAL TEMP TABLE staging_items (id NUMBER);
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfTables).isEqualTo(2.0)
     }
 
     @Test

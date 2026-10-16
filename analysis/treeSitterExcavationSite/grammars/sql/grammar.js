@@ -274,7 +274,11 @@ module.exports = grammar({
                 )
             ),
 
-        _create_other: $ => prec(PREC.flatFallback, seq($._create_prefix, optional(choice(kw("type"), $._temporary)))),
+        _create_other: $ =>
+            prec(
+                PREC.flatFallback,
+                seq($._create_prefix, optional(choice(kw("type"), $._temporary, seq(kw("global"), optional($._temporary)))))
+            ),
 
         // GRANT CREATE PROCEDURE TO someone creates nothing.
         _privilege_statement: $ =>
@@ -470,8 +474,8 @@ module.exports = grammar({
 
         _body_item: $ => choice($._soup_item, $._nested_routine, $._hash_temporary_table),
 
-        // A temporary table is no object of the database: T-SQL's CREATE TABLE #t, which does not end a routine either,
-        // MySQL's and PostgreSQL's CREATE TEMP[ORARY] TABLE and Oracle's CREATE GLOBAL TEMPORARY TABLE
+        // The table of a session is no object of the database: T-SQL's CREATE TABLE #t, which does not end a routine
+        // either, MySQL's and PostgreSQL's CREATE TEMP[ORARY] TABLE and Oracle's CREATE PRIVATE TEMPORARY TABLE
         _temporary_table: $ =>
             choice(
                 $._hash_temporary_table,
@@ -491,6 +495,9 @@ module.exports = grammar({
         _hash_temporary_table: $ => prec.right(seq($._temporary_table_start, optional($.column_definitions))),
 
         _temporary: $ => choice(kw("temp"), kw("temporary")),
+
+        // Oracle's global temporary table is an object of the schema; only its rows belong to a session
+        _global_temporary: $ => seq(kw("global"), $._temporary),
 
         _temporary_table_start: $ => token(seq(caseInsensitive("create"), /\s+/, caseInsensitive("table"), /\s+#/, /[A-Za-z0-9_#@$]*/)),
 
@@ -531,7 +538,7 @@ module.exports = grammar({
         _view_signature: $ =>
             prec.right(
                 seq(
-                    choice(seq($._create_prefix, optional($._temporary)), kw("alter")),
+                    choice(seq($._create_prefix, optional(choice($._temporary, $._global_temporary))), kw("alter")),
                     kw("view"),
                     optional($._if_not_exists),
                     field("name", $.object_name),
@@ -547,6 +554,7 @@ module.exports = grammar({
             prec.right(
                 seq(
                     $._create_prefix,
+                    optional($._global_temporary),
                     kw("table"),
                     optional($._if_not_exists),
                     field("name", $.object_name),

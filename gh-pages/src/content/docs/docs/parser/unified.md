@@ -54,7 +54,7 @@ reports or documentation, with `-e`.
 | number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package body                                                                                                     |
 | number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
 | number_of_views           | Only in SQL files: the views the file defines, materialized ones included                                                                                                                                               |
-| number_of_tables          | Only in SQL files: the tables the file creates, without temporary tables (`#name`, `TEMP`, `GLOBAL TEMPORARY`)                                                                                                                                |
+| number_of_tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
 
 A procedure declared in an Oracle package specification counts where its body is, in the package body, like
 `number_of_functions` counts only routines with a body: a specification and its body in one file count each procedure

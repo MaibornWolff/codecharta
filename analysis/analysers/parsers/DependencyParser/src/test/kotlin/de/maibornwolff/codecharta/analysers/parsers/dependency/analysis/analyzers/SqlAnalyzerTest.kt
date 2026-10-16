@@ -50,6 +50,22 @@ class SqlAnalyzerTest {
     }
 
     @Test
+    fun `should resolve the use of an Oracle global temporary table to the file that creates it`() {
+        // Arrange
+        val schema = analyze("schema/gtt.sql", "CREATE GLOBAL TEMPORARY TABLE staging_orders (id NUMBER) ON COMMIT DELETE ROWS;")
+        val loader = analyze(
+            "load.sql",
+            "CREATE OR REPLACE PROCEDURE load_orders IS BEGIN INSERT INTO staging_orders (id) VALUES (1); END;"
+        )
+
+        // Act
+        val dependencies = resolvedDependenciesOf("load_orders", schema, loader)
+
+        // Assert
+        assertThat(dependencies).containsExactly("staging_orders")
+    }
+
+    @Test
     fun `should tell apart two objects of one name in two schemas`() {
         // Arrange
         val domainTable = analyze("schema/creature.sql", "CREATE TABLE creature (id INT);")

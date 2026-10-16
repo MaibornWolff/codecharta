@@ -4383,6 +4383,10 @@
     "named": false
   },
   {
+    "type": "GLOBAL",
+    "named": false
+  },
+  {
     "type": "GRANT",
     "named": false
   },
