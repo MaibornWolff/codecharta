@@ -79,7 +79,8 @@ class TreeSitterAdapterTest {
             FileExtension.VUE to Language.VUE,
             FileExtension.DELPHI to Language.DELPHI,
             FileExtension.RUST to Language.RUST,
-            FileExtension.HTML to Language.ANGULAR
+            FileExtension.HTML to Language.ANGULAR,
+            FileExtension.SQL to Language.SQL
         )
 
         // Act & Assert
@@ -166,7 +167,8 @@ class TreeSitterAdapterTest {
             FileExtension.VUE,
             FileExtension.DELPHI,
             FileExtension.RUST,
-            FileExtension.HTML
+            FileExtension.HTML,
+            FileExtension.SQL
         )
 
         // Act & Assert

@@ -33,5 +33,6 @@ enum class FileExtension(
     VUE(".vue"),
     DELPHI(".pas", setOf(".dpr")),
     RUST(".rs"),
-    HTML(".html")
+    HTML(".html"),
+    SQL(".sql", setOf(".pks", ".pkb", ".pls"))
 }

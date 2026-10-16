@@ -72,7 +72,7 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
 - **`namespaces`** lists the packages with their level and their `parent`, the package containing them.
   The hierarchy comes from `parent`, never from the dots of a key.
 - **`language`** is the language the declaration is written in, lower case: `java`, `kotlin`, `csharp`,
-  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust` or `angular`.
+  `cpp`, `go`, `php`, `python`, `typescript`, `javascript`, `vue`, `delphi`, `rust`, `angular` or `sql`.
 - **`usage`** names how the source declaration uses the target: `usage`, `inheritance`,
   `implementation`, `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one
   kind, the first the extractor found, because a used type is identified by its name alone — the same
@@ -187,11 +187,17 @@ differ from the namespace levels in the logical layer — which are DependaChart
 
 ## Supported languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust and Angular templates.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
 
 An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
 names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
 class or more than one class declares, such as a library component, draws no edge.
+
+SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
+in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, a name without one the
+object of the same schema first, then one created without a schema, then one of any schema; names compare without
+regard to case. An object created in several files, such as a view that migrations recreate, is one leaf per file,
+and a use points at the first of these files in path order.
 
 ## Usage and parameters
 

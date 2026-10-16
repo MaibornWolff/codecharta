@@ -12,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vue.VueAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -33,6 +34,7 @@ class LanguageAnalyzerFactory {
             SupportedLanguage.DELPHI -> DelphiAnalyzer(fileInfo)
             SupportedLanguage.RUST -> RustAnalyzer(fileInfo)
             SupportedLanguage.ANGULAR -> AngularTemplateAnalyzer(fileInfo)
+            SupportedLanguage.SQL -> SqlAnalyzer(fileInfo)
         }
     }
 }

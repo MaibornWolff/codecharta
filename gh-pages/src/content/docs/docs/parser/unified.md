@@ -30,6 +30,7 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | Delphi       | .pas, .dpr                             |
 | Rust         | .rs                                    |
 | Angular/HTML | .html                                  |
+| SQL          | .sql, .pks, .pkb, .pls                 |
 
 ### Supported Metrics
 
@@ -245,6 +246,17 @@ contribute to complexity:
 - **Functions**: `defProc` (procedure/function implementation), `lambda`
 - **Logical operators**: `kAnd`, `kOr`, `kXor` in `exprBinary`
 
+##### SQL (.sql, .pks, .pkb, .pls)
+
+One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
+
+- **Control flow**: `if_statement`, `elsif_clause` (`ELSIF`, `ELSEIF`; a T-SQL `ELSE IF` is an `if_statement` of its own),
+  `when_clause` (each `WHEN` of a `CASE` expression or statement), `while_statement`, `loop_statement`, `for_statement`
+  (`FOR … LOOP`, `FOREACH`), `repeat_statement`, `exception_handler` (each `WHEN` after `EXCEPTION`), `catch_block`
+  (`BEGIN CATCH`), `handler_declaration` (MySQL `DECLARE … HANDLER`)
+- **Functions**: `routine_definition`: procedures, functions and triggers with a body, nested PL/SQL routines included
+- **Logical operators**: `logical_operator` (`AND`, `OR`; the `AND` of `BETWEEN` is none)
+
 ##### Rust (.rs)
 
 - **Control flow**: `if_expression`, `while_expression`, `for_expression`, `loop_expression`, `match_arm` (the
@@ -282,6 +294,7 @@ Comment lines are counted based on language-specific comment syntax:
 - **Delphi**: `comment` (covers `//` line, `{ }` brace, and `(* *)` star comments)
 - **Rust**: `line_comment`, `block_comment` (cover `//`, `///`, `//!` and `/* */`, `/** */`, `/*! */`)
 - **Angular templates**: `comment` (`<!-- -->`)
+- **SQL**: `comment` (covers `--` line, `/* */` block and MySQL's `#` comments)
 
 #### Number of Functions
 
@@ -365,6 +378,12 @@ Function counting identifies different types of function definitions per languag
 - **Functions**: `defProc` (procedure/function implementation in the `implementation` section). Forward declarations in the `interface` section
   (`declProc`) are not counted, and `lambda` contributes only to complexity.
 
+##### SQL (.sql, .pks, .pkb, .pls)
+
+- **Functions**: `routine_definition`: a procedure, function or trigger with a body after `AS`, `IS`, `DECLARE` or
+  `BEGIN`, also inside a PL/SQL package body. Forward declarations in a package specification, a PostgreSQL trigger
+  that only names its function and a MySQL routine whose body is a single statement are not counted.
+
 ##### Rust (.rs)
 
 - **Functions**: `function_item` (free functions, `impl` methods, trait default methods) and `function_signature_item`
@@ -410,6 +429,7 @@ Parameters per function counts the number of parameters declared for each functi
 - **Delphi**: `declArg`
 - **Rust**: `parameter` (the `self` receiver is a distinct `self_parameter` node and is excluded)
 - **Angular templates**: not counted, as a template declares no functions
+- **SQL**: `parameter`, in parentheses or, in T-SQL, as a bare `@name type` list
 
 #### Message Chains
 
@@ -495,6 +515,10 @@ Message chains are not applicable to Bash as it does not support method chaining
 - **Chain nodes**: `exprCall`, `exprDot`
 - **Call nodes**: `exprCall`, `exprDot` (paren-less `Obj.M1.M2.M3.M4` chains). When `exprDot` is wrapped in `exprCall` (e.g.
   `Obj.M1().M2().M3().M4()`), only `exprCall` counts, preventing double-counting of message-chain calls.
+
+##### SQL (.sql, .pks, .pkb, .pls)
+
+Message chains are not applicable to SQL as it does not support method chaining.
 
 ##### Rust (.rs)
 

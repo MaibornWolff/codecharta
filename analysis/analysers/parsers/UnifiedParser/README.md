@@ -27,6 +27,11 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Delphi       | .pas, .dpr                             |
 | Rust         | .rs                                    |
 | Angular/HTML | .html                                  |
+| SQL          | .sql, .pks, .pkb, .pls                 |
+
+SQL covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL in one go, without choosing a dialect. Procedures,
+functions and triggers with a body count as functions; branches, loops, the `WHEN`s of a `CASE`, exception
+handlers and `AND`/`OR` add to the complexity.
 
 ## Supported Metrics
 

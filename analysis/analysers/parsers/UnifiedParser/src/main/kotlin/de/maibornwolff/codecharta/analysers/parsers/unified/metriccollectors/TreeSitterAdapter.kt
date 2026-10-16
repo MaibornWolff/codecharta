@@ -67,6 +67,7 @@ object TreeSitterAdapter {
         FileExtension.DELPHI -> Language.DELPHI
         FileExtension.RUST -> Language.RUST
         FileExtension.HTML -> Language.ANGULAR
+        FileExtension.SQL -> Language.SQL
         else -> null
     }
 

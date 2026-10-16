@@ -92,7 +92,7 @@ gzipped; output is gzipped by default.
 
 ### Supported Languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust and Angular templates.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
 
 An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
 names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A selector or pipe name that no
@@ -100,6 +100,12 @@ class or more than one class declares, such as a library component, draws no edg
 
 Imports are resolved through each language's own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.
+
+SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
+in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, a name without one the
+object of the same schema first, then one created without a schema, then one of any schema; names compare without
+regard to case. An object created in several files, such as a view that migrations recreate, is one leaf per file,
+and a use points at the first of these files in path order.
 
 ### Usage and Parameters
 

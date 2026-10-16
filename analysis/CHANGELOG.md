@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Angular templates**: `unifiedparser`, `domainlanguageparser` and `dependencyparser` read `.html` files, so the
   templates of an Angular code base get their complexity, lines and domain words, and an edge to each component and
   pipe they use.
+- **SQL**: `unifiedparser`, `dependencyparser` and `domainlanguageparser` read `.sql`, `.pks`, `.pkb` and `.pls` files
+  of ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, mixed freely, without being told the dialect.
 
 ### Changed
 

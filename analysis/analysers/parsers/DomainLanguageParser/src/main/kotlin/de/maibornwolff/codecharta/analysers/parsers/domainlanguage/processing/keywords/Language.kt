@@ -20,7 +20,8 @@ enum class Language(val libraryLanguage: LibraryLanguage, internal val extension
     VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
     ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
     RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
-    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt")
+    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt"),
+    SQL(LibraryLanguage.SQL, setOf("sql", "pks", "pkb", "pls"), "keywords/sql-keywords.txt")
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`

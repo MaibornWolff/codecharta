@@ -91,6 +91,7 @@ class DependencyResolverService {
             SupportedLanguage.DELPHI -> EmptyStandardLibrary()
             SupportedLanguage.RUST -> EmptyStandardLibrary()
             SupportedLanguage.ANGULAR -> EmptyStandardLibrary()
+            SupportedLanguage.SQL -> EmptyStandardLibrary()
         }
     }
 }

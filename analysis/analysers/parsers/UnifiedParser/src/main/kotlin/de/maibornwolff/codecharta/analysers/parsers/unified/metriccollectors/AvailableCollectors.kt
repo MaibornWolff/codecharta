@@ -28,5 +28,6 @@ enum class AvailableCollectors(
     VUE(FileExtension.VUE, { TreeSitterLibraryCollector(Language.VUE) }),
     DELPHI(FileExtension.DELPHI, { TreeSitterLibraryCollector(Language.DELPHI) }),
     RUST(FileExtension.RUST, { TreeSitterLibraryCollector(Language.RUST) }),
-    ANGULAR(FileExtension.HTML, { TreeSitterLibraryCollector(Language.ANGULAR) })
+    ANGULAR(FileExtension.HTML, { TreeSitterLibraryCollector(Language.ANGULAR) }),
+    SQL(FileExtension.SQL, { TreeSitterLibraryCollector(Language.SQL) })
 }

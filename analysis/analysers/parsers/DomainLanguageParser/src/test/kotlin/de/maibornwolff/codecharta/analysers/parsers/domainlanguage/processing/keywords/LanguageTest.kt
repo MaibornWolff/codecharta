@@ -132,6 +132,24 @@ class LanguageTest {
     }
 
     @Test
+    fun `should return SQL for the endings of scripts and Oracle packages`() {
+        // Arrange & Act
+        val languages = listOf("sql", "pks", "pkb", "pls").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.SQL, Language.SQL, Language.SQL, Language.SQL), languages)
+    }
+
+    @Test
+    fun `should have ResourceKeywords for SQL with the keywords of every dialect`() {
+        // Arrange & Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(listOf(true, true, true, true, true), listOf("select", "varchar", "nvarchar", "plpgsql", "dbo").map { it in keywords })
+    }
+
+    @Test
     fun `should handle uppercase extensions`() {
         // Arrange & Act
         val language = Language.fromExtension("KT")

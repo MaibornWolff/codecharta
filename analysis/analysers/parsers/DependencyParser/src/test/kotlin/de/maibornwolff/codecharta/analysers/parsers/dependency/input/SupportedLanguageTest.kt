@@ -15,6 +15,13 @@ class SupportedLanguageTest {
     }
 
     @Test
+    fun `should detect SQL from the endings of scripts and Oracle packages`() {
+        // Act & Assert
+        assertThat(listOf("schema.sql", "billing.pks", "billing.pkb", "audit.pls").map { SupportedLanguage.ofFileName(it) })
+            .containsExactly(SupportedLanguage.SQL, SupportedLanguage.SQL, SupportedLanguage.SQL, SupportedLanguage.SQL)
+    }
+
+    @Test
     fun `should detect a language regardless of how the extension is cased`() {
         // Act & Assert
         assertThat(SupportedLanguage.ofFileName("Main.KT")).isEqualTo(SupportedLanguage.KOTLIN)
