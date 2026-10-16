@@ -39,8 +39,7 @@ internal object AngularDecoratorExtractor {
     }
 
     // The template the literal stands for, its escapes resolved; a `${}` substitution stays as it is written
-    fun inlineTemplateOf(decorator: SyntaxNode): String? =
-        inlineTemplateValueOf(decorator)?.text?.let { unescapeJavascript(it.substring(1, it.length - 1)) }
+    fun inlineTemplateOf(decorator: SyntaxNode): String? = inlineTemplateValueOf(decorator)?.let { textOf(it) }
 
     private fun inlineTemplateValueOf(decorator: SyntaxNode): SyntaxNode? = callOf(decorator)
         ?.takeIf { TreeTraversal.findFirstChildTextByType(it, IDENTIFIER) == COMPONENT }
@@ -80,9 +79,20 @@ internal object AngularDecoratorExtractor {
         ?.toList()
         .orEmpty()
 
+    // A quoted string or a template string without substitutions
     private fun stringPropertyOf(call: SyntaxNode, key: String): String? = valueOf(call, key)
-        ?.takeIf { it.type == STRING }
-        ?.let { TreeTraversal.findFirstChildTextByType(it, STRING_FRAGMENT) }
+        ?.takeIf {
+            it.type == STRING ||
+                (
+                    it.type == TEMPLATE_STRING &&
+                        it.children().none { child ->
+                            child.type == TEMPLATE_SUBSTITUTION
+                        }
+                )
+        }?.let { textOf(it) }
+
+    // The text a string literal stands for, without its quotes and with its escapes resolved
+    private fun textOf(literal: SyntaxNode): String = literal.text.let { unescapeJavascript(it.substring(1, it.length - 1)) }
 
     private fun valueOf(call: SyntaxNode, key: String): SyntaxNode? = call
         .children()

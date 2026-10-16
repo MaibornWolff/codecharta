@@ -173,6 +173,29 @@ class TypescriptAngularDependencyTest {
         }
 
         @Test
+        fun `should read a selector, template file and pipe name written in backticks without substitutions`() {
+            // Arrange
+            val code = """
+                @Component({ selector: `app-vault`, templateUrl: `./vault.component.html` })
+                export class VaultComponent {}
+                @Pipe({ name: `goldCoins` })
+                export class GoldCoinsPipe {}
+                @Component({ selector: `app-${'$'}{kind}` })
+                export class KindComponent {}
+            """.trimIndent()
+
+            // Act
+            val declarations = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT).declarations
+
+            // Assert
+            assertThat(declarations.map { it.angular?.templateNames to it.angular?.templateUrl }).containsExactly(
+                setOf("app-vault") to "./vault.component.html",
+                setOf("goldCoins") to null,
+                emptySet<String>() to null
+            )
+        }
+
+        @Test
         fun `should not name classes without component or pipe decorator`() {
             // Arrange
             val code = """
