@@ -707,6 +707,14 @@ class RobustnessContractTest {
                         <p title="hello">{{ name }}</p>
                     }
             """.trimIndent()
+            Language.SQL -> """
+                    -- Comment
+                    CREATE PROCEDURE foo AS
+                    BEGIN
+                        SELECT 'hello';
+                        IF 1 = 1 SELECT 1;
+                    END
+            """.trimIndent()
         }
     }
 }

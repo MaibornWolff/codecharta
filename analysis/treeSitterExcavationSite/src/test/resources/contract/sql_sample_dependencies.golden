@@ -1,0 +1,27 @@
+# Package
+
+
+# Imports
+
+# Declarations
+CLASS:big_orders
+CLASS:customers
+CLASS:orders
+FUNCTION:archive_orders
+FUNCTION:order_label
+FUNCTION:touch
+
+# Used Types (per declaration)
+archive_orders
+  count
+  orders
+big_orders
+  customers
+  orders
+customers
+order_label
+orders
+  customers
+touch
+  log_change
+  orders

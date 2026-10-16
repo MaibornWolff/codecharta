@@ -4,7 +4,7 @@
 
 The dependencies feature extracts structural dependency information from source files: package declarations, imports, class/interface/enum declarations, and the types each declaration uses. This data is consumed by DependaCharta (DC) to build dependency graphs, detect cycles, and assign architectural levels.
 
-Java, Kotlin, C#, C++, TypeScript, JavaScript, Go, Python, PHP, Vue, Delphi, Rust, and Angular templates are implemented.
+Java, Kotlin, C#, C++, TypeScript, JavaScript, Go, Python, PHP, Vue, Delphi, Rust, Angular templates, and SQL are implemented.
 
 ## Architecture
 
@@ -132,6 +132,8 @@ dependency gets.
 
 - `DeclarationType.SCRIPT` (PHP): a file that declares nothing is one declaration with an empty name that carries
   what the whole file uses. The adapter names it `<file>.script`.
+- `DeclarationType.SCRIPT` (SQL): the statements outside any `CREATE` of a file, such as an `INSERT … SELECT` of a
+  migration, are one declaration with an empty name next to the objects the file creates.
 - A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
   are the components its template names. The adapter names it after the file.
 - An Angular template is one `SCRIPT` with an empty name. Its used types are the selectors of the custom elements and
@@ -295,6 +297,7 @@ A different concatenation order with the same types produces identical dependenc
 | **Angular template** | custom elements and pipes in source order | N/A — TSE-native, no DC legacy |
 | **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
+| **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
 
 ### JavaScript vs TypeScript: DEFAULT_EXPORT copy behavior
 
@@ -321,6 +324,7 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 | PHP | `namespace` declaration, otherwise empty and the adapter uses the file path | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
 | Delphi | `unit` declaration | empty (top-level types only in v1) |
+| SQL | always empty: an object is used by its name alone, without imports | the package of a routine declared in a PL/SQL package body |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.
 

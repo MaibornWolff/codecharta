@@ -313,7 +313,7 @@ class ApiSignatureContractTest {
         @Test
         fun `should have exactly 20 language values`() {
             // Assert
-            assertThat(Language.entries).hasSize(20)
+            assertThat(Language.entries).hasSize(21)
         }
 
         @Test
@@ -416,6 +416,12 @@ class ApiSignatureContractTest {
         fun `should contain ANGULAR`() {
             // Assert
             assertThat(Language.valueOf("ANGULAR")).isEqualTo(Language.ANGULAR)
+        }
+
+        @Test
+        fun `should contain SQL`() {
+            // Assert
+            assertThat(Language.valueOf("SQL")).isEqualTo(Language.SQL)
         }
 
         @Test

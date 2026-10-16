@@ -6,7 +6,7 @@ A Kotlin library for calculating code metrics and extracting text from source co
 
 - **Code Metrics**: Complexity, lines of code, comment lines, function counts, code smells, per-function aggregations
 - **Text Extraction**: Identifiers, comments, and string literals with context
-- **20 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, ABL, Delphi, Rust, Angular templates
+- **21 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, ABL, Delphi, Rust, Angular templates, SQL
 - **Zero External Dependencies**: Only the native tree-sitter libraries are required, loaded through Java's foreign function API
 
 ## Requirements
@@ -107,7 +107,7 @@ println(result.declarations)  // [Declaration(name=UserService, type=CLASS, used
 
 // Check language support
 println(TreeSitterDependencies.isDependencyAnalysisSupported(Language.JAVA))   // true
-println(TreeSitterDependencies.getSupportedLanguages())                        // [JAVA, KOTLIN, TYPESCRIPT, TSX, JAVASCRIPT, PYTHON, GO, PHP, CSHARP, CPP, VUE, DELPHI, RUST, ANGULAR]
+println(TreeSitterDependencies.getSupportedLanguages())                        // [JAVA, KOTLIN, TYPESCRIPT, TSX, JAVASCRIPT, PYTHON, GO, PHP, CSHARP, CPP, VUE, DELPHI, RUST, ANGULAR, SQL]
 ```
 
 ## Supported Languages and Frameworks
@@ -133,6 +133,10 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | Delphi | `.pas`, `.dpr` | Stable | Stable | Experimental |
 | Rust | `.rs` | Stable | Stable | Experimental |
 | Angular templates (and plain HTML) | `.html` | Experimental | Experimental | Experimental |
+| SQL (ANSI, T-SQL, PL/SQL, PL/pgSQL, MySQL) | `.sql`, `.pks`, `.pkb`, `.pls` | Experimental | Experimental | Experimental |
+
+SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects: see
+[grammars/sql](grammars/sql/README.md) for what it parses exactly and how its jar is built.
 
 ## Available Metrics
 

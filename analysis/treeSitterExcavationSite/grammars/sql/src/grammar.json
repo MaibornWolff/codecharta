@@ -219,7 +219,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "common_table_expression"
+          "name": "_with_clause"
         },
         {
           "type": "SYMBOL",
@@ -4756,7 +4756,7 @@
         ]
       }
     },
-    "common_table_expression": {
+    "_with_clause": {
       "type": "PREC_RIGHT",
       "value": 1,
       "content": {
@@ -4793,7 +4793,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_cte_part"
+                "name": "common_table_expression"
               },
               {
                 "type": "REPEAT",
@@ -4806,7 +4806,7 @@
                     },
                     {
                       "type": "SYMBOL",
-                      "name": "_cte_part"
+                      "name": "common_table_expression"
                     }
                   ]
                 }
@@ -4816,7 +4816,7 @@
         ]
       }
     },
-    "_cte_part": {
+    "common_table_expression": {
       "type": "SEQ",
       "members": [
         {
@@ -4941,7 +4941,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "common_table_expression"
+                "name": "_with_clause"
               }
             ]
           }
@@ -5257,7 +5257,7 @@
       "_for_flat"
     ],
     [
-      "_cte_part",
+      "common_table_expression",
       "_with_flat"
     ],
     [

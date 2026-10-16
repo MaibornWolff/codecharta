@@ -36,7 +36,8 @@ class LanguageSupportContractTest {
             ".m, OBJECTIVE_C",
             ".pas, DELPHI",
             ".rs, RUST",
-            ".html, ANGULAR"
+            ".html, ANGULAR",
+            ".sql, SQL"
         )
         fun `should map primary extension to correct language`(extension: String, expectedLanguage: String) {
             // Act
@@ -307,7 +308,8 @@ class LanguageSupportContractTest {
                     Language.PYTHON,
                     Language.PHP,
                     Language.VUE,
-                    Language.ANGULAR
+                    Language.ANGULAR,
+                    Language.SQL
                 )
         }
     }

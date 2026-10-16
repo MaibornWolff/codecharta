@@ -17,6 +17,7 @@ import de.maibornwolff.treesitter.excavationsite.languages.php.PhpDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.python.PythonDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.ruby.RubyDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.rust.RustDefinition
+import de.maibornwolff.treesitter.excavationsite.languages.sql.SqlDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.swift.SwiftDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.tsx.TsxDefinition
 import de.maibornwolff.treesitter.excavationsite.languages.vue.VueDefinition
@@ -46,6 +47,7 @@ object LanguageRegistry {
         Language.DELPHI -> GrammarLibrary("pascal")
         Language.RUST -> GrammarLibrary("rust")
         Language.ANGULAR -> GrammarLibrary("angular")
+        Language.SQL -> GrammarLibrary("sql-island", "sql_island")
     }
 
     fun getLanguageDefinition(language: Language): LanguageDefinition = when (language) {
@@ -69,5 +71,6 @@ object LanguageRegistry {
         Language.DELPHI -> DelphiDefinition
         Language.RUST -> RustDefinition
         Language.ANGULAR -> AngularDefinition
+        Language.SQL -> SqlDefinition
     }
 }

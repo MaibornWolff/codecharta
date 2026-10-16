@@ -200,7 +200,8 @@ WITH XMLNAMESPACES('urn:x' AS p) SELECT 1;
       (identifier))
     (object_reference
       (object_name
-        (identifier)))
+        (identifier))))
+  (common_table_expression
     (identifier)
     (object_name
       (identifier))

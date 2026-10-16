@@ -1,7 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 
 import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
-import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -33,7 +32,8 @@ class GrammarLoadingTest {
         "VUE, program",
         "ABL, source_file",
         "DELPHI, root",
-        "RUST, source_file"
+        "RUST, source_file",
+        "SQL, source_file"
     )
     fun `should load the native grammar and parse with it`(language: Language, expectedRootType: String) {
         // Arrange
@@ -44,20 +44,6 @@ class GrammarLoadingTest {
 
         // Assert
         assertThat(rootType).isEqualTo(expectedRootType)
-    }
-
-    @Test
-    fun `should load the bundled SQL island grammar and parse a procedure with it`() {
-        // Arrange
-        val grammar = NativeTreeSitter.grammar(GrammarLibrary("sql-island", "sql_island"))
-
-        // Act
-        val firstStatementType = FfmSyntaxTree.parse("CREATE PROCEDURE p AS BEGIN SELECT 1; END", grammar).use {
-            it.rootNode.getNamedChild(0).type
-        }
-
-        // Assert
-        assertThat(firstStatementType).isEqualTo("routine_definition")
     }
 
     @Test

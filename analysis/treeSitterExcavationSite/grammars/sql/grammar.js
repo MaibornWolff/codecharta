@@ -82,7 +82,7 @@ module.exports = grammar({
         [$._reference_clause, $._loop_join_hint],
         [$.for_statement, $._for_flat],
         [$._for_flat],
-        [$._cte_part, $._with_flat],
+        [$.common_table_expression, $._with_flat],
         [$._with_flat]
     ],
 
@@ -139,7 +139,7 @@ module.exports = grammar({
                 $.handler_declaration,
                 $.variable_declaration,
                 $.do_block,
-                $.common_table_expression,
+                $._with_clause,
                 $._routine_keyword
             ),
 
@@ -655,9 +655,10 @@ module.exports = grammar({
 
         invocation: $ => prec(PREC.structure, seq(field("name", $.object_name), $._group)),
 
-        common_table_expression: $ => prec.right(PREC.structure, seq(kw("with"), optional(kw("recursive")), commaSeparated1($._cte_part))),
+        _with_clause: $ =>
+            prec.right(PREC.structure, seq(kw("with"), optional(kw("recursive")), commaSeparated1($.common_table_expression))),
 
-        _cte_part: $ =>
+        common_table_expression: $ =>
             seq(
                 field("name", $.identifier),
                 optional($._group),
@@ -668,7 +669,7 @@ module.exports = grammar({
 
         _with_flat: $ => seq(kw("with"), optional($.identifier)),
 
-        _group: $ => seq("(", repeat(choice($._expression_item, $.if_statement, $.common_table_expression)), ")"),
+        _group: $ => seq("(", repeat(choice($._expression_item, $.if_statement, $._with_clause)), ")"),
 
         // ------------------------------------------------------------------ names and tokens
 

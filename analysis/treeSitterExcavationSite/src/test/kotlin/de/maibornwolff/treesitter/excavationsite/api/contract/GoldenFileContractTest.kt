@@ -44,7 +44,8 @@ class GoldenFileContractTest {
             Language.TSX to "tsx_sample.tsx",
             Language.DELPHI to "delphi_sample.pas",
             Language.RUST to "rust_sample.rs",
-            Language.ANGULAR to "angular_sample.html"
+            Language.ANGULAR to "angular_sample.html",
+            Language.SQL to "sql_sample.sql"
         )
 
         private val GOLDEN_BASE_NAMES = mapOf(
@@ -67,7 +68,8 @@ class GoldenFileContractTest {
             Language.TSX to "tsx_sample",
             Language.DELPHI to "delphi_sample",
             Language.RUST to "rust_sample",
-            Language.ANGULAR to "angular_sample"
+            Language.ANGULAR to "angular_sample",
+            Language.SQL to "sql_sample"
         )
     }
 
@@ -120,7 +122,7 @@ class GoldenFileContractTest {
     @Nested
     inner class DependenciesGoldenFileTests {
         @ParameterizedTest(name = "should match golden file for {0} dependencies")
-        @EnumSource(Language::class, names = ["DELPHI", "RUST"])
+        @EnumSource(Language::class, names = ["DELPHI", "RUST", "SQL"])
         fun `should match golden file for dependencies`(language: Language) {
             // Arrange
             val sampleFileName = SAMPLE_FILE_NAMES[language]
