@@ -472,6 +472,27 @@ class SqlMetricsTest {
     }
 
     @Test
+    fun `should go on measuring after a dollar quote whose tag has capitals`() {
+        // Arrange
+        val code = """
+            SELECT ${'$'}Q${'$'}hello${'$'}Q${'$'};
+            CREATE FUNCTION f() RETURNS int AS ${'$'}BODY${'$'}
+            BEGIN
+              IF 1 = 1 THEN RETURN 1; END IF;
+              RETURN ${'$'}body${'$'} not the end ${'$'}body${'$'};
+            END;
+            ${'$'}BODY${'$'} LANGUAGE plpgsql;
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.SQL)
+
+        // Assert
+        assertThat(result.numberOfFunctions).isEqualTo(1.0)
+        assertThat(result.complexity).isEqualTo(2.0)
+    }
+
+    @Test
     fun `should count comment lines of every comment style`() {
         // Arrange
         val code = """

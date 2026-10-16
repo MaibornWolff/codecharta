@@ -40,7 +40,7 @@ class SqlCollectorTest {
     }
 
     @Test
-    fun `should measure an Oracle package body file`() {
+    fun `should count the procedure and its exception handler and the comment of an Oracle package body file`() {
         // Arrange
         val input = createTestFile(
             """
