@@ -1,7 +1,7 @@
 # SQL
 
-Report of 2026-10-16 (second round). All numbers come from the runs in `output/` made that day with the CLI built
-from branch `fix/sql-gaps`.
+Report of 2026-10-16 (third round). All numbers come from the runs in `output/` made that day with the CLI built
+from branch `fix/review-1-sql`.
 
 ## Project
 - One project in five dialects, chosen per file as a real code base would mix them: ANSI SQL (`schema/creature.sql`,
@@ -171,11 +171,14 @@ from branch `fix/sql-gaps`.
 - Expected words, summed over the files: creature 209, centaur 6, cellar 4, dungeon 5, armor 11, hit 19, points 24,
   speed 30, damage 4, lair 3, initiative 11, encounter 10, treasure 11, hoard 12, stable 4, dice 30, roll 45. All 17
   appear.
-- Keyword leakage: none of `select`, `table`, `varchar`, `int`, `procedure`, `begin`, `end`, `sql`. `max` (from
-  `MAX_HIT_POINTS`) is gone too, as `MAX` is a SQL function; `class` (from `ArmorClass`) stays, right for SQL.
-- Leaks of the sample itself: `edge` 81 from the names of the edge case routines. The dialect names of the comments
-  (`postgre`, `oracle`, `ansi`), the words of the system views (`tables`, `objects`) and `id` are stop words now and
-  gone.
+- Stop words: types, built-in functions, system schemas, dialect names and `id` (`varchar`, `count`, `dbo`,
+  `postgres`). `max` (from `MAX_HIT_POINTS`) is gone, as `MAX` is a SQL function; `class` (from `ArmorClass`) stays,
+  right for SQL. SQL keywords are no stop words any more: they never come out as words, and one that is also an
+  English word names the domain (`order`, `statement`, `transaction`, `catalog`, `group` of a shop all count now).
+- Leaks of the sample itself: `edge` 81 from the names of the edge case routines; `tables` 9 and `objects` 3 from the
+  system views `information_schema.tables` and `sys.objects`, which are read like any table; `table` 7, `begin` 3,
+  `procedure` 2 and `select` 2 from comments that talk about SQL. `id` and the dialect names of the comments
+  (`postgre`, `oracle`, `ansi`) stay gone.
 - Identifier splitting: `walkingSpeed` and `walking_speed` -> walking, speed; `MAX_HIT_POINTS` -> hit, points;
   `ArmorClass` -> armor, class; `XPValue` -> xp, value; `d20Roll` -> 20, roll; `'centaur-stable'` -> centaur, stable.
 - What counts as an identifier for SQL: the names a script gives (tables, columns, views, synonyms, packages,
@@ -186,6 +189,18 @@ from branch `fix/sql-gaps`.
 - Test file: included; `[test should_save_creature_to_the_stable]` is split into its words.
 - German words: zentaurenhöhle 5, rüstungsklasse 5, höhle 4, kreatur 2, trefferpunkte 2, verlies 2, größe 1 all
   appear, umlauts intact. German stop words leak: die 2, unter 2, dem 2, und 2, jeder 2.
+
+## Changed since 2026-10-16 (second round)
+- Unified parser: the line with the closing `$$` of a PostgreSQL routine counts for its rloc no more than its `END`
+  line; the object counts appear for SQL files only, count each object of a file once (a view created and altered is
+  one view) and leave out temporary tables of every dialect and what a routine creates when it runs. The object
+  counts of this sample stay as they were; its PostgreSQL routines lose their closing line (max rloc per function of
+  `encounter_edge_cases_plpgsql.sql` 9 -> 8).
+- Dependency parser: migrations are ordered by the numbers in their names (`V10__` after `V9__`); unchanged here.
+- Domain language parser: SQL keywords are no stop words any more (see above): `tables`, `objects` and the SQL words
+  of comments count again, `order` or `transaction` of a domain count now.
+- Grammar 0.3.0: dollar quotes close only on their exact tag (`$Q$`, `$BODY$`), and a column named `prompt` or
+  `remark` inside parentheses or a body stays a column; no ERROR node in the public code or fixtures.
 
 ## Changed since 2026-10-16 (first round)
 - Unified parser: `IIF`, `EXIT WHEN` and `CONTINUE WHEN` count; MySQL's single statement routines are functions; a
@@ -201,9 +216,9 @@ from branch `fix/sql-gaps`.
 Unified parser:
 - Good: every routine of every dialect is found with its body, nested PL/SQL functions and MySQL single statement
   routines included; branches, loops, `CASE` arms, `IIF`, conditional exits, exception handlers and `AND`/`OR` count
-  as in the other languages; rloc per function leaves out the `END` line like a closing brace; procedures,
+  as in the other languages; rloc per function leaves out the `END` line and a closing `$$` like a closing brace;
+  procedures,
   triggers, views and tables are counted per file; no ERROR node in 23 files.
-- Bad: a PostgreSQL body in dollar quotes still counts the `END;` line of its block for the routine.
 
 Dependency parser:
 - Good: foreign keys, inheritance, synonyms, `%ROWTYPE`, calls, triggers and views resolve across files and
@@ -212,6 +227,7 @@ Dependency parser:
 - Bad: an object created in several files is still one leaf per file; uses point at the last of them.
 
 Domain language parser:
-- Good: all 17 domain words, German words with umlauts, SQL keywords, types, dialect names and catalog words
-  filtered.
-- Bad: German stop words (`die`, `und`, `unter`) count as domain words, as in every language.
+- Good: all 17 domain words, German words with umlauts; types, functions, dialect names and `id` filtered, while
+  English words that SQL uses as keywords stay domain words.
+- Bad: the words of the system views (`tables`, `objects`) and SQL words in comments count; German stop words
+  (`die`, `und`, `unter`) count as domain words, as in every language.
