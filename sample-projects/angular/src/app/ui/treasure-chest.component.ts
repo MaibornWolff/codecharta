@@ -2,13 +2,15 @@ import { Component, Input } from '@angular/core';
 import { RollPipe } from './pipes/dice/roll.pipe';
 import { SpeedBadgeComponent } from './speed-badge.component';
 
-// An inline template: what it uses reaches the dependency lens only through the imports of this file
+// An inline template: its decisions, words and the components and pipes it uses count for this file
 @Component({
   selector: 'cc-treasure-chest',
   standalone: true,
   imports: [RollPipe, SpeedBadgeComponent],
   template: `
-    <p>Counts the treasure hoard a creature guards: {{ gold | roll }}</p>
+    @if (gold > 100) {
+      <p>Counts the treasure hoard a creature guards: {{ gold | roll }}</p>
+    }
     <cc-speed-badge />
   `,
 })

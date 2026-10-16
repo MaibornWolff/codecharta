@@ -44,14 +44,12 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
 - All 13 expected template edges found, none extra, none cyclic or upwards. Template leaf: kind `script`, named after the
   file with ending (`creature-card_component_html`), language `angular`.
 - Unresolved as intended: router-outlet, mat-icon, uppercase, titlecase, ambiguous `roll`.
-- Gaps: attribute directives (`[ccGlow]`) and inline `template:` draw no edge; no compilation scope, so a selector declared
-  twice resolves to neither; no template↔own-component edge.
+- Gap: attribute directives (`[ccGlow]`) draw no edge.
 
 ## Unified parser
 - All 33 files analysed; all 9 HTML files match the expected table exactly; function metrics 0.
 - Comment markers inside attribute values/strings were lexed as comments by tree-sitter-angular 0.9.2 (first run: 2 comment
   lines in edge cases) — fixed on the branch.
-- Grammar limits, not fixed: `(window:resize)` is a local parse error; identifiers are ASCII only.
 - Every `.html` (plain pages, reports) is measured; exclude with `-e` where unwanted.
 
 ## Domain language parser
@@ -66,15 +64,31 @@ hitPoints, armorClass (not titlecase, ambiguous roll, [ccGlow]); panel→armorCl
   `aria-label="Dungeon overview"` (beside `class="dungeon"`) in app. They add cellar +1, dungeon +1, lair +1, encounter +1,
   creature +1, dragon +1, and `wakes`, `away`, `overview`; `i18n-title`, `type` and `class` add nothing. Line metrics and
   dependency edges are unchanged.
-- German in templates: zentaurenhöhle 3, verlies 3, rüstungsklasse 1, trefferpunkte 1, kreatur 1, größe 1, höhle 1; stop
-  words die/dem/unter/liegt/und/jeder leak. Missing: identifiers of `höhle.rüstungsklasse` (grammar is ASCII-only).
+- German in templates (first round): zentaurenhöhle 3, verlies 3, rüstungsklasse 1, trefferpunkte 1, kreatur 1, größe 1,
+  höhle 1; stop words die/dem/unter/liegt/und/jeder leak.
 - true/false and `emit` leaked in the first run, now in the template keyword list; length/value/class left in on purpose.
 - Not extracted by design: binding targets, ngIf/ngFor names, $event/$index, the values of attributes that hold no
   user-facing text (`class`, `style`, `id`, `icon`, `type`, `href`, `src`, ...), `i18n-*` markers, control-flow keywords.
 
+## Changed by the gap fixes (2026-10-16, tree-sitter-angular 0.9.2-codecharta.1)
+- Sample changes: `creature-card.component.html` got `class="creature-card {{ creature.isWounded() ? 'wounded' : 'healthy' }}"`
+  on its existing line, the inline template of `treasure-chest.component.ts` an `@if (gold > 100)` around its text.
+- Unified: an interpolation inside a plain attribute value is an expression (creature-card logic 6 -> 7); each ICU case
+  but `other` counts (encounter-edge-cases 7 -> 9: `=0` and `=1`); `(window:resize)` parses; the inline template adds its
+  decisions to `treasure-chest.component.ts` (complexity 0 -> 1). Templates in total: logic complexity 32 -> 35, lines
+  unchanged.
+- Dependency: 48 -> 56 file edges. Every component with a `templateUrl` points at its template (7 new `.ts -> .html`
+  edges); `roll`, declared by two pipes, now resolves through the imports of the component: `creature-card.component.html
+  -> pipes/dice/roll.pipe.ts` (template edges 13 -> 14), and the inline template of `treasure-chest.component.ts` reaches
+  the same pipe. `legacy/roll.pipe.ts` stays without incoming edge, as it should.
+- Domain: text weighs like identifiers in templates and inline templates (3 instead of 1), so the planted sentences and
+  attribute texts gain weight; identifiers beyond ASCII are read: `höhle` and `rüstungsklasse` 6 each in
+  `zentaurenhoehle-panel.component.html`. Expected words, templates only: creature 84, centaur 6, cellar 10, dungeon 13,
+  armor 14, hit 29, points 20, speed 30, damage 9, lair 6, initiative 7, encounter 7, treasure 6, hoard 3, stable 9, roll 9.
+  The inline template of `treasure-chest.component.ts` counts for that file: treasure 6, hoard 3, guards 3.
+
 ## Verdict
-Unified: Good – all templates measured, counts exact. Bad – every .html is measured. Missing – ICU cases not counted.
-Dependency: Good – 13/13 template edges, no false positive, ambiguous names stay unresolved. Missing – attribute directives,
-inline templates, compilation scope.
-Domain: Good – template vocabulary is the component's domain. Wrong – non-ASCII identifiers cut apart. Bad – German stop words
-leak.
+Unified: Good – all templates and inline templates measured, counts exact, ICU cases counted. Bad – every .html is measured.
+Dependency: Good – every template edge expected, a component points at its template, ambiguous names resolve through the
+component's imports or module. Missing – attribute directives.
+Domain: Good – template vocabulary is the component's domain, text weighs like identifiers. Bad – German stop words leak.

@@ -2,7 +2,7 @@
   A creature that roams the cellar.
   Centaurs, beasts and dragons all share hit points, armor class and speeds.
 -->
-<article class="creature-card" [class.dragon]="creature.type === 'dragon' || creature.type === 'fiend'">
+<article class="creature-card {{ creature.isWounded() ? 'wounded' : 'healthy' }}" [class.dragon]="creature.type === 'dragon' || creature.type === 'fiend'">
   <h2 ccGlow title="Creature of the cellar" i18n-title>{{ creature.name | titlecase }}</h2>
   @if (creature.hitPoints.current <= 0) {
     <p>Fallen in the dungeon</p>

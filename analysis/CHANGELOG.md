@@ -15,9 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - **Switching off comments or strings**: `domainlanguageparser` accepts a comment or string weight of 0 to leave those
   words out.
 
-- **Angular templates**: `unifiedparser`, `domainlanguageparser` and `dependencyparser` read `.html` files, so the
-  templates of an Angular code base get their complexity, lines and domain words, and an edge to each component and
-  pipe they use.
+- **Angular templates**: `unifiedparser`, `domainlanguageparser` and `dependencyparser` read `.html` files and the
+  inline templates of components, so the templates of an Angular code base get their complexity, lines and domain
+  words, an edge from their component and an edge to each component and pipe they use.
 - **SQL**: `unifiedparser`, `dependencyparser` and `domainlanguageparser` read `.sql`, `.pks`, `.pkb` and `.pls` files
   of ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, mixed freely and legacy code included, without being told the
   dialect, and `unifiedparser` counts the stored procedures, triggers, views and tables of each file.
