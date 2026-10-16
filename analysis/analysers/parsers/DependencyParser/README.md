@@ -195,9 +195,12 @@ class or more than one class declares, such as a library component, draws no edg
 
 SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
 in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, a name without one the
-object of the same schema first, then one created without a schema, then one of any schema; names compare without
-regard to case. An object created in several files, such as a view that migrations recreate, is one leaf per file,
-and a use points at the first of these files in path order.
+object of the same schema first, then one created without a schema, then one of any schema. Names compare without
+regard to case, like the database does with unquoted names and with names in brackets or backticks; a name in
+double quotes keeps its case (`"Orders"` is not `orders`), unless it is written all in one case (`"orders"`,
+`"ORDERS"`), which is how PostgreSQL and Oracle store an unquoted name. An object created in several files, such as
+a view that migrations recreate, is one leaf per file, and a use points at the last of these files in path order,
+the latest migration.
 
 ## Usage and parameters
 

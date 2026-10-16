@@ -10,8 +10,8 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
  * what the statements outside any definition use.
  *
  * SQL has no imports: an object is used by its name, which the dependency parser resolves across all files. Names
- * are lower case, as SQL compares unquoted names case-insensitively, and keep at most their last two parts, the
- * schema or package and the object. A created object has its schema as parent, a routine inside a package the
+ * are compared the way [SqlNames.comparablePartsOf] writes them and keep at most their last two parts, the schema or
+ * package and the object. A created object has its schema as parent, a routine inside a package the
  * package. A definition inside a routine (a temporary table, say) is part of the routine.
  */
 internal object DeclarationExtractor {
@@ -65,7 +65,7 @@ internal object DeclarationExtractor {
         val isRoutineOfPackage = owner.isPackage && node.type == ROUTINE_DEFINITION
         if (!isObjectOfScript && !isRoutineOfPackage) return null
         val nameParts =
-            SqlNames.nameNodeOf(node)?.let { SqlNames.partsOf(it) }?.map { it.lowercase() }?.takeIf { it.isNotEmpty() } ?: return null
+            SqlNames.nameNodeOf(node)?.let { SqlNames.comparablePartsOf(it) }?.takeIf { it.isNotEmpty() } ?: return null
         val parentPath = if (isRoutineOfPackage) listOf(owner.name) else schemaOf(nameParts)
         return DeclarationBuilder(nameParts.last(), type, parentPath, isPackage = node.type == PACKAGE_DEFINITION)
     }
@@ -78,7 +78,7 @@ internal object DeclarationExtractor {
 
     private fun record(node: SyntaxNode, scope: Scope) {
         when (node.type) {
-            COMMON_TABLE_EXPRESSION -> SqlNames.simpleNameOf(node)?.let { scope.owner.addLocalName(it.lowercase()) }
+            COMMON_TABLE_EXPRESSION -> SqlNames.nameNodeOf(node)?.let { scope.owner.addLocalName(SqlNames.comparablePartsOf(it).last()) }
             OBJECT_REFERENCE -> usedName(node)?.let { scope.owner.addUsedName(it) }
             ANCHORED_TYPE -> anchoredTable(node)?.let { scope.owner.addUsedName(it) }
             // The type of a column or a parameter, VARCHAR(100), reads like a call
@@ -88,20 +88,20 @@ internal object DeclarationExtractor {
 
     private fun usedName(node: SyntaxNode): String? {
         val nameNode = SqlNames.nameNodeOf(node) ?: return null
-        return usedNameOf(nameNode, SqlNames.partsOf(nameNode))
+        return usedNameOf(nameNode, SqlNames.comparablePartsOf(nameNode))
     }
 
     // orders%ROWTYPE is the type of the table orders, orders.total%TYPE that of its column; v_total%TYPE names no table
     private fun anchoredTable(node: SyntaxNode): String? {
         val nameNode = SqlNames.nameNodeOf(node) ?: return null
-        val parts = SqlNames.partsOf(nameNode)
+        val parts = SqlNames.comparablePartsOf(nameNode)
         val isRowType = node.getChildByFieldName(ANCHOR_FIELD).text.lowercase() == ROW_TYPE_ANCHOR
         return usedNameOf(nameNode, if (isRowType) parts else parts.dropLast(1))
     }
 
     private fun usedNameOf(nameNode: SyntaxNode, nameParts: List<String>): String? {
         if (nameParts.isEmpty() || PREFIXES_OF_NO_OBJECT.any { nameNode.text.startsWith(it) }) return null
-        return nameParts.takeLast(USED_NAME_PARTS).joinToString(NAME_PART_SEPARATOR).lowercase()
+        return nameParts.takeLast(USED_NAME_PARTS).joinToString(NAME_PART_SEPARATOR)
     }
 
     private class DeclarationBuilder(

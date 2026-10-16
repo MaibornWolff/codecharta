@@ -61,10 +61,20 @@ object FileLevelAggregator {
         }
     }
 
-    /** The file each logical path is joined to: the first declaration's, in the order the nodes arrive. */
+    /**
+     * The file each logical path is joined to: the first declaration's, in the order the nodes arrive, which is path
+     * order. A SQL object created in several files is the last one's, as a later migration redefines it.
+     */
     fun filePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
         val filePathByDeclaration = LinkedHashMap<String, FilePath>()
-        resolvedNodes.forEach { node -> filePathByDeclaration.putIfAbsent(node.pathWithName.withDots(), filePathOf(node)) }
+        resolvedNodes.forEach { node ->
+            val logicalPath = node.pathWithName.withDots()
+            if (node.language.laterDefinitionReplacesEarlier) {
+                filePathByDeclaration[logicalPath] = filePathOf(node)
+            } else {
+                filePathByDeclaration.putIfAbsent(logicalPath, filePathOf(node))
+            }
+        }
         return filePathByDeclaration
     }
 

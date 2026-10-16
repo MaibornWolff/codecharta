@@ -44,7 +44,26 @@ class SqlDependencyTest {
 
             // Assert
             assertThat(result.declarations).containsExactly(
-                Declaration("v", DeclarationType.CLASS, usedTypes("dbo.stock", "pricing.discount"))
+                Declaration("v", DeclarationType.CLASS, usedTypes("dbo.Stock", "pricing.discount"))
+            )
+        }
+
+        @Test
+        fun `should keep the case of a name quoted in mixed case and fold every other name to lower case`() {
+            // Arrange
+            val code = """
+                CREATE TABLE "Orders" (id INT);
+                CREATE VIEW v AS
+                  SELECT * FROM "Orders" JOIN ORDERS ON 1 = 1 JOIN "orders" ON 1 = 1 JOIN "ITEMS" ON 1 = 1 JOIN [Stock] ON 1 = 1;
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.SQL)
+
+            // Assert
+            assertThat(result.declarations).containsExactly(
+                Declaration("Orders", DeclarationType.CLASS, usedTypes()),
+                Declaration("v", DeclarationType.CLASS, usedTypes("Orders", "orders", "items", "stock"))
             )
         }
 

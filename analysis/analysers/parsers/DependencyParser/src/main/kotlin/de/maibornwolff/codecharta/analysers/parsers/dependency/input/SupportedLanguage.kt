@@ -33,6 +33,10 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     val declaresPackages: Boolean
         get() = this in PACKAGE_LANGUAGES
 
+    // Migrations create an object again in a later file to change it, so the last file holds its current definition
+    val laterDefinitionReplacesEarlier: Boolean
+        get() = this == SQL
+
     /** Extensions without the leading dot, the form file scanning and import stripping both use. */
     val suffixes: List<String>
         get() = fileExtensions.flatMap { listOf(it.primaryExtension) + it.otherValidExtensions }.map { it.removePrefix(".") }
