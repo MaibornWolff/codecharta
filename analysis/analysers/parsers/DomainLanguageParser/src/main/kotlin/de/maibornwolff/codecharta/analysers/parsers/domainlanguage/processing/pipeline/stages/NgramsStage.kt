@@ -21,7 +21,12 @@ class NgramsStage(private val ngrams: Int = 1, private val enableSsr: Boolean = 
         val largestNgram = ngrams.coerceAtMost(splitResult.sourceWords.size)
         return (SMALLEST_NGRAM..largestNgram).flatMap { ngramSize ->
             splitResult.sourceWords.windowed(ngramSize, partialWindows = false).map { window ->
-                WeightedText(window.joinToString(StatisticalSubstringReduction.WORD_SEPARATOR), splitResult.weight, splitResult.context)
+                WeightedText(
+                    window.joinToString(StatisticalSubstringReduction.WORD_SEPARATOR),
+                    splitResult.weight,
+                    splitResult.context,
+                    language = splitResult.language
+                )
             }
         }
     }

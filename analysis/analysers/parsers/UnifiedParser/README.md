@@ -26,6 +26,18 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Vue          | .vue                                   |
 | Delphi       | .pas, .dpr                             |
 | Rust         | .rs                                    |
+| Angular/HTML | .html                                  |
+| SQL          | .sql, .pks, .pkb, .pls                 |
+
+Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
+`domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
+reports or documentation, with `-e`.
+
+SQL covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL in one go, without choosing a dialect. Procedures,
+functions and triggers with a body count as functions, MySQL's single-statement routines included; branches, loops,
+the `WHEN`s of a `CASE`, `IIF`, `EXIT WHEN`, `CONTINUE WHEN`, exception handlers and `AND`/`OR` add to the
+complexity. The `END` line of a routine, and in PostgreSQL the line with the closing `$$`, counts for its rloc no more
+than a closing brace does.
 
 ## Supported Metrics
 
@@ -42,6 +54,10 @@ The Unified Parser is parser to generate code metrics from a source code file or
 | Excessive Comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
 | Comment Ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
 | Message Chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
+| Number of stored procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package or type body                                                                                                     |
+| Number of triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
+| Number of views           | Only in SQL files: the views the file defines, materialized ones included, temporary ones (`TEMP VIEW`) not                                                                                                                                               |
+| Number of tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file.
 
@@ -72,6 +88,12 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [-ibf] [-nc] [--verbose]
                           [-e=<specifiedExcludePatterns>]...
                           [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
+
+## Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
+map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
 
 ## Examples
 

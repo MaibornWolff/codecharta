@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -22,7 +24,7 @@ class CoroutineFileProcessor : FileProcessor {
     ): FileProcessingResult {
         val fileWordCounts = ConcurrentHashMap<String, Map<String, Int>>()
         val skippedExtensions = ConcurrentHashMap<String, Int>()
-        val failedFiles = ConcurrentLinkedQueue<String>()
+        val failedFiles = ConcurrentLinkedQueue<FailedFile>()
 
         // TreeSitter parsing is CPU-bound, so it belongs on Dispatchers.Default rather than the 64-thread
         // IO pool. The semaphore bounds how many files are read and held in memory at once.
@@ -43,8 +45,9 @@ class CoroutineFileProcessor : FileProcessor {
                         } catch (cancellation: CancellationException) {
                             throw cancellation
                         } catch (error: Exception) {
-                            failedFiles.add(relativePath)
-                            Logger.warn(error) { "Skipping file due to processing error: $relativePath" }
+                            if (isUnusableParser(error)) throw error
+                            failedFiles.add(FailedFile(relativePath, error))
+                            Logger.debug(error) { "Skipping file due to processing error: $relativePath" }
                         }
                         onFileProcessed?.invoke()
                     }
@@ -54,7 +57,7 @@ class CoroutineFileProcessor : FileProcessor {
         return FileProcessingResult(
             perFileWordCounts = fileWordCounts,
             skippedExtensions = skippedExtensions,
-            failedFiles = failedFiles.toList()
+            failedFiles = failedFiles.sortedBy { it.path }
         )
     }
 

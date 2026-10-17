@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.toRelativePath
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.common.utils.withoutFileSuffix
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.defaultImportPath
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.toType
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.AngularMetadata
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileReport
@@ -14,11 +16,14 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Type
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
+import de.maibornwolff.treesitter.excavationsite.api.AngularDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
 import de.maibornwolff.treesitter.excavationsite.api.DeclarationType
+import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
+import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import java.io.File
 
 class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
@@ -71,6 +76,20 @@ class TypescriptAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
         // imports whose last path segment matches a name being re-exported.
         val reexportNames = setOf(declaration.name) + declaration.usedTypes.map { it.name }
         return imports.filter { it.path.isNotEmpty() && it.path.last() in reexportNames }
+    }
+
+    override fun nodesOf(declaration: Declaration, node: Node, embedded: List<EmbeddedDeclarations>): List<Node> {
+        val angular = declaration.angular ?: return listOf(node)
+        val inlineTemplates = embedded.filter { it.language == Language.ANGULAR }
+        val templatePath = if (inlineTemplates.isEmpty()) templateFilePathOf(angular) else inlineTemplatePath(node.pathWithName)
+        // A component uses its template, which resolves by the full path of the template's node
+        val usedTemplate = templatePath?.let { UsedType(it.withDots()).toType() }
+        val component = node.copy(angular = AngularMetadata(angular, templatePath), usedTypes = node.usedTypes + setOfNotNull(usedTemplate))
+        return listOf(component) + inlineTemplates.map { inlineTemplateNode(it.declarations, component) }
+    }
+
+    private fun templateFilePathOf(angular: AngularDeclaration): Path? = angular.templateUrl?.let {
+        templateFilePath(it, fileInfo.physicalPath)
     }
 
     override fun extraDependencies(declaration: Declaration): Set<Dependency> {

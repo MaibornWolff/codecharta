@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 
 import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.treesitter.excavationsite.api.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import org.assertj.core.api.Assertions.assertThat
@@ -58,51 +57,6 @@ class TreeSitterAdapterTest {
     }
 
     @Test
-    fun `should map all supported FileExtensions to Languages`() {
-        // Arrange
-        val expectedMappings = mapOf(
-            FileExtension.JAVA to Language.JAVA,
-            FileExtension.KOTLIN to Language.KOTLIN,
-            FileExtension.TYPESCRIPT to Language.TYPESCRIPT,
-            FileExtension.TSX to Language.TSX,
-            FileExtension.JAVASCRIPT to Language.JAVASCRIPT,
-            FileExtension.PYTHON to Language.PYTHON,
-            FileExtension.GO to Language.GO,
-            FileExtension.PHP to Language.PHP,
-            FileExtension.RUBY to Language.RUBY,
-            FileExtension.SWIFT to Language.SWIFT,
-            FileExtension.BASH to Language.BASH,
-            FileExtension.CSHARP to Language.CSHARP,
-            FileExtension.CPP to Language.CPP,
-            FileExtension.C to Language.C,
-            FileExtension.OBJECTIVE_C to Language.OBJECTIVE_C,
-            FileExtension.VUE to Language.VUE,
-            FileExtension.DELPHI to Language.DELPHI,
-            FileExtension.RUST to Language.RUST
-        )
-
-        // Act & Assert
-        expectedMappings.forEach { (fileExtension, expectedLanguage) ->
-            val result = TreeSitterAdapter.getLanguageForExtension(fileExtension)
-            assertThat(result)
-                .describedAs("FileExtension.$fileExtension should map to Language.$expectedLanguage")
-                .isEqualTo(expectedLanguage)
-        }
-    }
-
-    @Test
-    fun `should return null for unsupported FileExtension`() {
-        // Arrange
-        val unsupportedExtension = FileExtension.JSON
-
-        // Act
-        val result = TreeSitterAdapter.getLanguageForExtension(unsupportedExtension)
-
-        // Assert
-        assertThat(result).isNull()
-    }
-
-    @Test
     fun `should detect language from file extension`() {
         // Arrange
         val javaFile = File("Test.java")
@@ -141,50 +95,6 @@ class TreeSitterAdapterTest {
 
         // Assert
         assertThat(result).isEqualTo(Language.JAVA)
-    }
-
-    @Test
-    fun `should return true for supported FileExtensions`() {
-        // Arrange
-        val supportedExtensions = listOf(
-            FileExtension.JAVA,
-            FileExtension.KOTLIN,
-            FileExtension.TYPESCRIPT,
-            FileExtension.TSX,
-            FileExtension.JAVASCRIPT,
-            FileExtension.PYTHON,
-            FileExtension.GO,
-            FileExtension.PHP,
-            FileExtension.RUBY,
-            FileExtension.SWIFT,
-            FileExtension.BASH,
-            FileExtension.CSHARP,
-            FileExtension.CPP,
-            FileExtension.C,
-            FileExtension.OBJECTIVE_C,
-            FileExtension.VUE,
-            FileExtension.DELPHI,
-            FileExtension.RUST
-        )
-
-        // Act & Assert
-        supportedExtensions.forEach { extension ->
-            assertThat(TreeSitterAdapter.isSupported(extension))
-                .describedAs("FileExtension.$extension should be supported")
-                .isTrue()
-        }
-    }
-
-    @Test
-    fun `should return false for unsupported FileExtensions`() {
-        // Arrange
-        val unsupportedExtension = FileExtension.JSON
-
-        // Act
-        val result = TreeSitterAdapter.isSupported(unsupportedExtension)
-
-        // Assert
-        assertThat(result).isFalse()
     }
 
     @Test

@@ -1,0 +1,24 @@
+{
+  "name": "cellars-and-centaurs-angular",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test"
+  },
+  "dependencies": {
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/forms": "^20.0.0",
+    "@angular/material": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@angular/cli": "^20.0.0",
+    "@angular/compiler-cli": "^20.0.0",
+    "typescript": "^5.8.0"
+  }
+}

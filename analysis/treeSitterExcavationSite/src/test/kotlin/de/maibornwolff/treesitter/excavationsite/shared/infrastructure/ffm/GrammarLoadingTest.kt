@@ -32,7 +32,9 @@ class GrammarLoadingTest {
         "VUE, program",
         "ABL, source_file",
         "DELPHI, root",
-        "RUST, source_file"
+        "RUST, source_file",
+        "SQL, source_file",
+        "ANGULAR, document"
     )
     fun `should load the native grammar and parse with it`(language: Language, expectedRootType: String) {
         // Arrange

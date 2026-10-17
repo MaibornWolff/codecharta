@@ -70,7 +70,8 @@ declarations:
   PHP and C++. Everywhere else the file tree already is the hierarchy, so the leaf carries no
   `namespace` and no namespace is listed.
 - `namespaces` lists the packages with their level and their `parent`, the package containing them.
-- `language` is the language the declaration is written in, lower case, such as `java` or `typescript`.
+- `language` is the language the declaration is written in, lower case, such as `java` or `typescript`; an Angular
+  template is `angular`.
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
   extractor found, as in DependaCharta. Only PHP reports more than `usage` today; see
@@ -91,10 +92,35 @@ gzipped; output is gzipped by default.
 
 ### Supported Languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi and Rust.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
+
+An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
+names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
+declare means the one in the scope of the template's component, as Angular decides it: the `imports` of a standalone
+component, or the `declarations` and `imports` of the `@NgModule` that declares the component, where an imported
+module adds what it exports, a module it exports in turn included. A class a decorator names is the one its file
+imports, so two classes of the same name in different folders are told apart. A name that no class declares, such as a
+library component, or that the scope does not decide draws no edge. A component depends on the template file its
+`templateUrl` names; the inline `template` of a component is read like a template file, and its edges leave the `.ts`
+file of the component. Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and
+`domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as reports or
+documentation, with `-e`.
 
 Imports are resolved through each language's own rules, plus tsconfig/jsconfig path aliases, bundler
 aliases (webpack, vite, vue.config) and Module Federation remotes.
+
+SQL has no imports: a table, view, synonym, package or routine is found by its name, whatever file creates it and
+in whatever dialect. A name with a schema (`dbo.orders`) finds the object of that schema, or else one created
+without a schema; a name without one finds the object of the same schema first, then one created without a schema,
+then one of any schema. Names compare without
+regard to case, like the database does with unquoted names and with names in brackets or backticks; a name in
+double quotes keeps its case (`"Orders"` is not `orders`), unless it is written all in one case (`"orders"`,
+`"ORDERS"`), which is how PostgreSQL and Oracle store an unquoted name. An object created in several files, such as
+a view that migrations recreate, is one leaf per file, and a use points at the last of these files, the latest
+migration: paths are ordered folder by folder and name by name, with the numbers in them compared as numbers, so
+`V10__orders.sql` comes after `V9__orders.sql`, and a later folder wins over an earlier one whatever the file names.
+Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of their folder, as Flyway runs them
+last.
 
 ### Usage and Parameters
 
@@ -136,6 +162,13 @@ dependencies and their weights alone, leaving every edge unflagged and the lens 
 `--file-timeout` bounds a single file's parse. The parse itself is a blocking native call, so the
 timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to completion
 in the background.
+
+### Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them; a file that takes longer than `--file-timeout` is such a file,
+with the timeout as its cause. It ends with an error and exit code 1, and writes no map, when no file could be analysed
+at all, or when a grammar or the native tree-sitter library cannot be used.
 
 ### Known issues
 

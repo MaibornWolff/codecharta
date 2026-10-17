@@ -14,6 +14,7 @@ import org.junit.jupiter.api.io.TempDir
 import picocli.CommandLine
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.PrintStream
 
 class GateToolTest {
@@ -306,6 +307,23 @@ class GateToolTest {
         assertThat(exitCode).isEqualTo(1)
         assertThat(analyserOutput.toString()).doesNotContain("Checking if UnifiedParser is applicable")
         assertThat(output.toString()).contains("Analysing ${projectFolder.path} with unifiedparser, dependencyparser", "ERROR  rloc > 1")
+    }
+
+    @Test
+    fun `should name why an analyser could analyse no file when quiet`() {
+        // Arrange
+        writeConfig("$ANALYSERS_SECTION\n  unifiedparser: on\n")
+        val unreadable = UnifiedParser(fileMeasurer = { file, _ -> throw FileNotFoundException("${'$'}{file.name} (Permission denied)") })
+        val tool = GateTool(PrintStream(output), createAnalysers = { listOf(unreadable) })
+
+        // Act
+        val exitCode = withSystemOut(ByteArrayOutputStream()) {
+            CommandLine(tool).apply { executionStrategy = CommandLine.RunAll() }.execute("--quiet", projectFolder.path)
+        }
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).contains("No file could be analysed: all 2 failed").contains("FileNotFoundException")
     }
 
     @Test

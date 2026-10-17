@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.LanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.angular.AngularTemplateAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.cpp.CppAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.csharp.CSharpAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.delphi.DelphiAnalyzer
@@ -11,6 +12,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.php.PhpAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.python.PythonAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.rust.RustAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.sql.SqlAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.typescript.TypescriptAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.vue.VueAnalyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
@@ -85,6 +87,16 @@ class LanguageAnalyzerFactoryTest {
                 physicalPath = "",
                 content = ""
             )
+            val angularFileInfo = FileInfo(
+                language = SupportedLanguage.ANGULAR,
+                physicalPath = "",
+                content = ""
+            )
+            val sqlFileInfo = FileInfo(
+                language = SupportedLanguage.SQL,
+                physicalPath = "",
+                content = ""
+            )
             return listOf(
                 Arguments.of(javaFileInfo, JavaAnalyzer(javaFileInfo)),
                 Arguments.of(cSharpFileInfo, CSharpAnalyzer(cSharpFileInfo)),
@@ -97,7 +109,9 @@ class LanguageAnalyzerFactoryTest {
                 Arguments.of(cppFileInfo, CppAnalyzer(cppFileInfo)),
                 Arguments.of(vueFileInfo, VueAnalyzer(vueFileInfo)),
                 Arguments.of(delphiFileInfo, DelphiAnalyzer(delphiFileInfo)),
-                Arguments.of(rustFileInfo, RustAnalyzer(rustFileInfo))
+                Arguments.of(rustFileInfo, RustAnalyzer(rustFileInfo)),
+                Arguments.of(angularFileInfo, AngularTemplateAnalyzer(angularFileInfo)),
+                Arguments.of(sqlFileInfo, SqlAnalyzer(sqlFileInfo))
             )
         }
     }

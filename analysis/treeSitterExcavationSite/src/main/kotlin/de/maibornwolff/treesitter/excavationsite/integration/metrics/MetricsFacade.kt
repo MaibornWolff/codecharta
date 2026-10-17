@@ -1,7 +1,12 @@
 package de.maibornwolff.treesitter.excavationsite.integration.metrics
 
-import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarLibrary
-import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
+import de.maibornwolff.treesitter.excavationsite.integration.embedded.EmbeddedSourcesFacade
+import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
+import de.maibornwolff.treesitter.excavationsite.shared.domain.EmbeddedSource
+import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
+import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricsResult
+import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.NativeTreeSitter
 
 /**
@@ -10,20 +15,39 @@ import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.Nativ
  * This object provides the interface for calculating code metrics.
  */
 object MetricsFacade {
+    private const val PER_FUNCTION_SUFFIX = "_per_function"
+    private val COMPLEXITY_METRICS =
+        listOf(AvailableFileMetrics.COMPLEXITY.metricName, AvailableFileMetrics.LOGIC_COMPLEXITY.metricName)
+
     /**
-     * Collects metrics for the given source code.
+     * Calculates the metrics of the given source code, those of the file apart from those per function.
      *
      * @param content The source code to analyze
-     * @param grammarLibrary The native grammar library to parse the content with
-     * @param definition The language definition containing metric mappings
-     * @return A map of metric names to their values
+     * @param language The language of the content
      */
-    fun collectMetrics(content: String, grammarLibrary: GrammarLibrary, definition: LanguageDefinition): Map<String, Double> {
-        val processedContent = definition.preprocessor?.invoke(content) ?: content
-        val collector = MetricCollector(
-            grammar = NativeTreeSitter.grammar(grammarLibrary),
-            definition = definition
+    fun parse(content: String, language: Language): MetricsResult {
+        val metrics = collectMetrics(content, language)
+        return MetricsResult(
+            metrics = metrics.filterKeys { !it.endsWith(PER_FUNCTION_SUFFIX) },
+            perFunctionMetrics = metrics.filterKeys { it.endsWith(PER_FUNCTION_SUFFIX) }
         )
-        return collector.collectMetrics(processedContent)
+    }
+
+    private fun collectMetrics(content: String, language: Language): Map<String, Double> {
+        val definition = LanguageRegistry.getLanguageDefinition(language)
+        val grammarLibrary = LanguageRegistry.getGrammarLibrary(language)
+        val processedContent = definition.preprocessor?.invoke(content) ?: content
+        return FfmSyntaxTree.parse(processedContent, NativeTreeSitter.grammar(grammarLibrary)).use { tree ->
+            val metrics = MetricCollector(definition).collectMetrics(tree, processedContent)
+            withComplexityOf(EmbeddedSourcesFacade.embeddedSources(tree, processedContent, definition), metrics)
+        }
+    }
+
+    // An embedded source, such as an inline template, adds its decisions to the file; its lines are the file's already
+    private fun withComplexityOf(embeddedSources: List<EmbeddedSource>, metrics: Map<String, Double>): Map<String, Double> {
+        if (embeddedSources.isEmpty()) return metrics
+        val embeddedMetrics = embeddedSources.map { collectMetrics(it.content, it.language) }
+        return metrics +
+            COMPLEXITY_METRICS.associateWith { metric -> metrics.getValue(metric) + embeddedMetrics.sumOf { it.getValue(metric) } }
     }
 }

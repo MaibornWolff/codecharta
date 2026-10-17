@@ -3,7 +3,7 @@ package de.maibornwolff.treesitter.excavationsite.integration.metrics
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.CommentLinesCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.ComplexityCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.MessageChainsCalc
-import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.NumberOfFunctionsCalc
+import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.NodeCountCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.ParametersPerFunctionCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.calculators.RealLinesOfCodeCalc
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.AvailableFileMetrics
@@ -12,16 +12,36 @@ import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.Metri
 import de.maibornwolff.treesitter.excavationsite.shared.domain.CalculationExtensions
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 
+/** Calculates a per-file metric for one node, given its type and its first and last row. */
+typealias PerFileCalculator = (SyntaxNode, String, Int, Int) -> Int
+
 class MetricsToCalculatorsMap(nodeTypeProvider: MetricNodeTypes, val calcExtensions: CalculationExtensions) {
     val complexityCalc = ComplexityCalc(nodeTypeProvider)
     val commentCalc = CommentLinesCalc(nodeTypeProvider)
-    val numberOfFunctionsCalc = NumberOfFunctionsCalc(nodeTypeProvider)
+    val numberOfFunctionsCalc = NodeCountCalc(nodeTypeProvider.numberOfFunctionsNodeTypes)
     val realLinesOfCodeCalc = RealLinesOfCodeCalc(nodeTypeProvider)
     val messageChainsCalc = MessageChainsCalc(nodeTypeProvider)
 
     val parametersPerFunctionCalc = ParametersPerFunctionCalc(nodeTypeProvider)
 
-    fun getPerFileMetricInfo(): Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int> = mapOf(
+    // Only the counts the language declares, so that a language without database objects reports no table count
+    private val nodeCountCalcs = nodeTypeProvider.countedNodeTypes.mapValues { (_, counted) ->
+        NodeCountCalc(counted.nodeTypes, counted.objectKeyByNodeType)
+    }
+
+    val countedMetrics: Set<AvailableFileMetrics> get() = nodeCountCalcs.keys
+
+    fun countOfKeyedObjects(fileMetric: AvailableFileMetrics): Int = nodeCountCalcs[fileMetric]?.countOfKeyedObjects() ?: 0
+
+    fun getPerFileMetricInfo(): Map<AvailableFileMetrics, PerFileCalculator> = codeMetricCalculators() + nodeCountCalculators()
+
+    private fun nodeCountCalculators(): Map<AvailableFileMetrics, PerFileCalculator> = nodeCountCalcs.mapValues { (_, calc) ->
+        { node: SyntaxNode, nodeType: String, _: Int, _: Int ->
+            calc.calculateMetricForNode(CalculationContext(node, nodeType, shouldIgnoreNode = { _, _ -> false }))
+        }
+    }
+
+    private fun codeMetricCalculators(): Map<AvailableFileMetrics, PerFileCalculator> = mapOf(
         AvailableFileMetrics.COMPLEXITY to { node: SyntaxNode, nodeType: String, startRow: Int, endRow: Int ->
             complexityCalc.calculateFunctionComplexityForNode(
                 CalculationContext(

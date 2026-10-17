@@ -27,7 +27,7 @@ object AblMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("AND", "OR", "and", "or")
+                        allowedTypes = setOf("AND", "OR", "and", "or")
                     )
                 )
             )

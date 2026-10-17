@@ -1,7 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
+import kotlinx.coroutines.CancellationException
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -24,6 +28,54 @@ class ProjectScannerTest {
     private fun getParsedFilePaths(): List<String> {
         val project = projectBuilder.build()
         return project.rootNode.leaves.keys.map { it.edgesList.joinToString("/") }
+    }
+
+    private fun failingFor(failingName: String, failure: Exception) = FileMeasurer { file, content ->
+        if (file.name == failingName) throw failure
+        CollectorMeasurer.measure(file, content)
+    }
+
+    @Test
+    fun `should skip a file whose measuring fails and measure the others`() {
+        // Arrange
+        File(rootDir, "Main.kt").writeText("fun main() {}")
+        File(rootDir, "Broken.kt").writeText("fun broken() {}")
+        val failure = IllegalStateException("broken extractor")
+        val scanner = ProjectScanner(rootDir, projectBuilder, useGitignore = false, fileMeasurer = failingFor("Broken.kt", failure))
+
+        // Act
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        assertThat(getParsedFilePaths()).containsExactly("Main.kt")
+        assertThat(scanner.failures()).containsExactly(FailedFile("Broken.kt", failure))
+    }
+
+    @Test
+    fun `should not count a file whose measuring is cancelled as failed`() {
+        // Arrange
+        File(rootDir, "Main.kt").writeText("fun main() {}")
+        File(rootDir, "Cancelled.kt").writeText("fun cancelled() {}")
+        val measurer = failingFor("Cancelled.kt", CancellationException("stopped"))
+        val scanner = ProjectScanner(rootDir, projectBuilder, useGitignore = false, fileMeasurer = measurer)
+
+        // Act
+        scanner.traverseInputProject(verbose = false)
+
+        // Assert
+        assertThat(getParsedFilePaths()).containsExactly("Main.kt")
+        assertThat(scanner.failures()).isEmpty()
+    }
+
+    @Test
+    fun `should stop at a grammar that does not fit the core instead of skipping its files`() {
+        // Arrange
+        File(rootDir, "Main.kt").writeText("fun main() {}")
+        val measurer = failingFor("Main.kt", GrammarUnavailableException("The grammar is incompatible"))
+        val scanner = ProjectScanner(rootDir, projectBuilder, useGitignore = false, fileMeasurer = measurer)
+
+        // Act & Assert
+        assertThatThrownBy { scanner.traverseInputProject(verbose = false) }.isInstanceOf(GrammarUnavailableException::class.java)
     }
 
     // ========== GITIGNORE EXCLUSION TESTS ==========

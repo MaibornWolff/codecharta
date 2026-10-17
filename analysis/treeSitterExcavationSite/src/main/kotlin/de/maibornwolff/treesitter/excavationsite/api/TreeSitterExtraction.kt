@@ -60,15 +60,7 @@ object TreeSitterExtraction {
             )
         }
 
-        val definition = LanguageRegistry.getLanguageDefinition(language)
-
-        val extractedTexts = ExtractionFacade.extract(
-            content = content,
-            grammarLibrary = LanguageRegistry.getGrammarLibrary(language),
-            definition = definition
-        )
-
-        return ExtractionResult(extractedTexts)
+        return ExtractionResult(ExtractionFacade.extract(content, language))
     }
 
     /**

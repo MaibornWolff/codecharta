@@ -10,7 +10,6 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterMetrics
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import java.io.File
@@ -44,7 +43,9 @@ class GoldenFileContractTest {
             Language.ABL to "abl_sample.p",
             Language.TSX to "tsx_sample.tsx",
             Language.DELPHI to "delphi_sample.pas",
-            Language.RUST to "rust_sample.rs"
+            Language.RUST to "rust_sample.rs",
+            Language.ANGULAR to "angular_sample.html",
+            Language.SQL to "sql_sample.sql"
         )
 
         private val GOLDEN_BASE_NAMES = mapOf(
@@ -66,7 +67,9 @@ class GoldenFileContractTest {
             Language.ABL to "abl_sample",
             Language.TSX to "tsx_sample",
             Language.DELPHI to "delphi_sample",
-            Language.RUST to "rust_sample"
+            Language.RUST to "rust_sample",
+            Language.ANGULAR to "angular_sample",
+            Language.SQL to "sql_sample"
         )
     }
 
@@ -118,30 +121,10 @@ class GoldenFileContractTest {
 
     @Nested
     inner class DependenciesGoldenFileTests {
-        @Test
-        fun `should match golden file for DELPHI dependencies`() {
+        @ParameterizedTest(name = "should match golden file for {0} dependencies")
+        @EnumSource(Language::class, names = ["DELPHI", "RUST", "SQL"])
+        fun `should match golden file for dependencies`(language: Language) {
             // Arrange
-            val language = Language.DELPHI
-            val sampleFileName = SAMPLE_FILE_NAMES[language]
-                ?: error("No sample file configured for $language")
-            val goldenBaseName = GOLDEN_BASE_NAMES[language]
-                ?: error("No golden base name configured for $language")
-            val samplePath = "$RESOURCES_PATH/$sampleFileName"
-            val goldenPath = "$RESOURCES_PATH/${goldenBaseName}_dependencies.golden"
-
-            // Act
-            val code = File(samplePath).readText()
-            val result = TreeSitterDependencies.analyze(code, language)
-            val actual = serializeDependencies(result)
-
-            // Assert
-            assertGoldenFile(goldenPath, actual)
-        }
-
-        @Test
-        fun `should match golden file for RUST dependencies`() {
-            // Arrange
-            val language = Language.RUST
             val sampleFileName = SAMPLE_FILE_NAMES[language]
                 ?: error("No sample file configured for $language")
             val goldenBaseName = GOLDEN_BASE_NAMES[language]
@@ -189,6 +172,12 @@ class GoldenFileContractTest {
         builder.appendLine()
         builder.appendLine("# Strings")
         result.strings.sorted().forEach { builder.appendLine(it) }
+
+        if (result.texts.isNotEmpty()) {
+            builder.appendLine()
+            builder.appendLine("# Texts")
+            result.texts.sorted().forEach { builder.appendLine(it) }
+        }
 
         return builder.toString().trim()
     }

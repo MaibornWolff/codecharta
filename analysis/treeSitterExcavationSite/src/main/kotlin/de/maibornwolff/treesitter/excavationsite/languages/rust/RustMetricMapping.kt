@@ -20,7 +20,7 @@ object RustMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||")
+                        allowedTypes = setOf("&&", "||")
                     )
                 )
             )

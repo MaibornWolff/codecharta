@@ -1,6 +1,15 @@
 package de.maibornwolff.treesitter.excavationsite.shared.domain
 
-data class DependencyResult(val packagePath: List<String>, val imports: List<ImportDeclaration>, val declarations: List<Declaration>)
+/** @property embedded what the sources in another language inside the declarations declare, see [EmbeddedSource.owner] */
+data class DependencyResult(
+    val packagePath: List<String>,
+    val imports: List<ImportDeclaration>,
+    val declarations: List<Declaration>,
+    val embedded: List<EmbeddedDeclarations> = emptyList()
+)
+
+/** The declarations of a source in another language inside the declaration named [owner], such as an inline template. */
+data class EmbeddedDeclarations(val owner: String, val language: Language, val declarations: List<Declaration>)
 
 enum class ImportKind {
     STANDARD,
@@ -37,11 +46,13 @@ enum class DeclarationType {
     UNKNOWN
 }
 
+/** @property angular what the Angular decorator of a class declares, null for a declaration without one */
 data class Declaration(
     val name: String,
     val type: DeclarationType,
     val usedTypes: Set<UsedType>,
-    val parentPath: List<String> = emptyList()
+    val parentPath: List<String> = emptyList(),
+    val angular: AngularDeclaration? = null
 )
 
 /** How a declaration uses a type, for the languages whose extractor tells the ways apart; [USAGE] is any other way. */

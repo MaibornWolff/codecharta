@@ -3,13 +3,19 @@ package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.ConfigurationBuilder
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.ParsedArguments
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.StopWordLevel
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.input.rootDirectoryOf
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainAnalysisResult
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output.DomainProjectGenerator
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.CoroutineFileProcessor
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessor
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.Language
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.ProgressReporterFactory
 import de.maibornwolff.codecharta.model.Project
@@ -18,6 +24,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -28,9 +35,14 @@ import java.io.PrintStream
     description = [DomainLanguageParser.DESCRIPTION],
     footer = [CodeChartaConstants.GENERIC_FOOTER]
 )
-class DomainLanguageParser(private val input: InputStream = System.`in`, private val output: PrintStream = System.out) :
-    CommonAnalyserParameters(),
-    AnalyserInterface {
+class DomainLanguageParser(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val fileProcessor: FileProcessor = CoroutineFileProcessor(),
+    private val runExitCode: RunExitCode = RunExitCode()
+) : CommonAnalyserParameters(),
+    AnalyserInterface,
+    FailableRun by runExitCode {
     @CommandLine.Option(
         names = ["--limit"],
         description = [
@@ -48,7 +60,10 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
     )
     private var stopWordLevel: StopWordLevel = StopWordLevel.MODERATE
 
-    @CommandLine.Option(names = ["--identifier-weight"], description = ["weight for identifier words (class/function/variable names)"])
+    @CommandLine.Option(
+        names = ["--identifier-weight"],
+        description = ["weight for identifier words (class/function/variable names) and the text of templates"]
+    )
     private var identifierWeight: Int = DEFAULT_IDENTIFIER_WEIGHT
 
     @CommandLine.Option(names = ["--comment-weight"], description = ["weight for words in comments (0 leaves comments out)"])
@@ -108,14 +123,7 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
 
         val context = resolveEffectiveInput(inputFile)
         try {
-            val inputPath = context.inputDir
-            val config = buildConfiguration(rootDirectoryOf(inputPath).path)
-
-            val analysisResult =
-                ProgressReporterFactory.create(quiet = false).use { progressReporter ->
-                    SourceAnalyzerFactory.create(config, progressReporter).analyze(inputPath.path)
-                }
-
+            val analysisResult = analyseOrNull(context.inputDir) ?: return null
             val project = DomainProjectGenerator().generate(analysisResult, resolvePipedProject())
 
             ProjectSerializer.serializeToFileOrStream(project, context.resolveOutputFile(outputFile), output, compress)
@@ -124,6 +132,26 @@ class DomainLanguageParser(private val input: InputStream = System.`in`, private
         }
 
         return null
+    }
+
+    // A project nothing could be analysed in, or a parser that fits no file, ends the run with an error and no map
+    private fun analyseOrNull(inputPath: File): DomainAnalysisResult? {
+        try {
+            val analysisResult = analyse(inputPath)
+            if (analysisResult.filePaths.isNotEmpty() || analysisResult.failedFiles.isEmpty()) return analysisResult
+            runExitCode.failWith(FailureReport.nothingAnalysed(analysisResult.failedFiles))
+        } catch (failure: Throwable) {
+            if (!isUnusableParser(failure)) throw failure
+            runExitCode.failWith(FailureReport.unusableParser(failure))
+        }
+        return null
+    }
+
+    private fun analyse(inputPath: File): DomainAnalysisResult {
+        val config = buildConfiguration(rootDirectoryOf(inputPath).path)
+        return ProgressReporterFactory.create(quiet = false).use { progressReporter ->
+            SourceAnalyzerFactory.create(config, progressReporter, fileProcessor).analyze(inputPath.path)
+        }
     }
 
     private fun resolvePipedProject(): Project? {

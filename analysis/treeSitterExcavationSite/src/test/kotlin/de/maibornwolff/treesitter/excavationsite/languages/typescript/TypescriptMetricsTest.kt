@@ -400,4 +400,55 @@ class TypescriptMetricsTest {
         assertThat(result.linesOfCode).isEqualTo(3.0)
         assertThat(result.realLinesOfCode).isEqualTo(3.0)
     }
+
+    @Test
+    fun `should add the logic complexity of an inline Angular template to its component`() {
+        // Arrange
+        val code = """
+            @Component({
+              selector: 'app-torch',
+              template: `@if (lit) { <p>{{ warm ? 'Glow' : 'Flame' }}</p> }`,
+            })
+            export class TorchComponent {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.logicComplexity).isEqualTo(2.0)
+        assertThat(result.complexity).isEqualTo(2.0)
+    }
+
+    @Test
+    fun `should read the escaped quotes of a quoted inline template as quotes`() {
+        // Arrange
+        val code = """
+            @Component({ selector: 'app-dq', template: "<div class=\"x\" *ngIf=\"ready && open\">{{ count }}</div>" })
+            export class DoubleQuotedComponent {}
+            @Component({ selector: 'app-sq', template: '<div title=\'Dragon hoard\'>{{ gold ? \'rich\' : \'poor\' }}</div>' })
+            export class SingleQuotedComponent {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.logicComplexity).isEqualTo(3.0)
+    }
+
+    @Test
+    fun `should add the logic complexity of a quoted inline template`() {
+        // Arrange
+        val code = """
+            @Component({ selector: 'app-torch', template: '<p *ngIf="lit && warm">Glow</p>' })
+            export class TorchComponent {}
+        """.trimIndent()
+
+        // Act
+        val result = TreeSitterMetrics.parse(code, Language.TYPESCRIPT)
+
+        // Assert
+        assertThat(result.logicComplexity).isEqualTo(2.0)
+    }
 }

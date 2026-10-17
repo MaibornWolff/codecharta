@@ -37,6 +37,13 @@ sealed class Extract {
     }
 
     /**
+     * Extract the text a user reads, such as the text content of a template, using a custom function.
+     *
+     * @param custom Custom function for text extraction, returning null to skip the node
+     */
+    data class Text(val custom: (SyntaxNode) -> String?) : Extract()
+
+    /**
      * Extract string literal content using a format or custom function.
      *
      * @param format The string format to use for parsing (optional)

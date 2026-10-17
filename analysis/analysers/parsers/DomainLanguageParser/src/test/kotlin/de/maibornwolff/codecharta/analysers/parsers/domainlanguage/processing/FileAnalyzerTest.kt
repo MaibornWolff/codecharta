@@ -160,6 +160,150 @@ class FileAnalyzerTest {
     }
 
     @Test
+    fun `should weigh the text of an Angular template like its identifiers`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "vault.component.html")
+        template.writeText("""<p title="Treasure">{{ dragon }}</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("treasure" to 3, "dragon" to 3), words)
+    }
+
+    @Test
+    fun `should weigh and filter the words of an inline template like those of an Angular template`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val component = File(tempDirPath.toFile(), "vault.component.ts")
+        component.writeText(
+            """
+            @Component({ selector: "cc-vault", template: `<p title="Treasure">{{ dragon | titlecase }}</p>` })
+            export class Vault {}
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(component, component.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(3, words["treasure"])
+        assertEquals(3, words["dragon"])
+        assertFalse(words.containsKey("titlecase"))
+    }
+
+    @Test
+    fun `should keep the words of a template's text that Angular also names pipes, triggers and loop values after`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "booking.component.html")
+        template.writeText(
+            """
+            <p title="Booking date">Choose the travel date, the currency and the timer of the odd booking</p>
+            @defer (on timer(5s)) { <p *ngFor="let fare of fares; let i = index; odd as isAlternate">{{ fare.price | currency }}</p> }
+            """.trimIndent()
+        )
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(6, words["date"])
+        assertEquals(3, words["currency"])
+        assertEquals(3, words["timer"])
+        assertEquals(3, words["odd"])
+        assertFalse(words.containsKey("index"))
+    }
+
+    @Test
+    fun `should read the backslashes of a template's text as text, not as escapes`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "report.component.html")
+        template.writeText("""<p>C:\temp\newreports</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("temp" to 3, "newreports" to 3), words)
+    }
+
+    @Test
+    fun `should keep a word of a template whole that a letter entity is part of`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "lair.component.html")
+        template.writeText("""<p title="Gr&ouml;&szlig;e">H&ouml;hle&nbsp;der caf&eacute;teria</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("größe" to 3, "höhle" to 3, "der" to 3, "caféteria" to 3), words)
+    }
+
+    @Test
+    fun `should keep the string weight of other languages`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val component = File(tempDirPath.toFile(), "vault.ts")
+        component.writeText("""const dragon = "treasure"""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(component, component.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("dragon" to 3, "treasure" to 1), words)
+    }
+
+    @Test
+    fun `should keep the string weight for the string literals of a template's expressions`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "card.component.html")
+        template.writeText("""<p class="card {{ wounded ? 'crimson' : 'emerald' }}" [ngClass]="'sapphire'">Goblin</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("wounded" to 3, "crimson" to 1, "emerald" to 1, "sapphire" to 1, "goblin" to 3), words)
+    }
+
+    @Test
+    fun `should weigh the text of an Angular template with the identifier weight, not the string weight`(
+        @TempDir tempDirPath: Path
+    ) {
+        // Arrange
+        val template = File(tempDirPath.toFile(), "vault.component.html")
+        template.writeText("""<!-- The cellar --><p title="Treasure">{{ dragon }}</p>""")
+        val analyzer = FileAnalyzer(StopWordFilter(emptyList()), ExtractionWeights(identifierWeight = 5, stringWeight = 0))
+
+        // Act
+        val words = analyzer.extractWordsFromFile(template, template.readText()).wordsOrEmpty()
+
+        // Assert
+        assertEquals(mapOf("cellar" to 2, "treasure" to 5, "dragon" to 5), words)
+    }
+
+    @Test
     fun `should return empty map when file has no extractable words`(
         @TempDir tempDirPath: Path
     ) {

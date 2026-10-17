@@ -1,0 +1,127 @@
+# Words of SQL that name no domain: types, built-in functions and system names of ANSI SQL, T-SQL, PL/SQL,
+# PL/pgSQL and MySQL, the names of the dialects and id. Keywords are never extracted as words, so a keyword that is
+# also an English word (order, group, transaction, check) stays out: it would only remove that word from names and
+# comments, where it names the domain.
+# One word per line. Entries are lowercased when loaded, so case here is cosmetic.
+# Comments start with #
+
+# Types
+bigint
+bigserial
+binary_integer
+bool
+boolean
+char
+clob
+datetime
+datetime2
+datetimeoffset
+decimal
+int
+integer
+json
+jsonb
+nchar
+nclob
+numeric
+nvarchar
+nvarchar2
+pls_integer
+rowtype
+serial
+smallint
+timestamp
+timestamptz
+tinyint
+uniqueidentifier
+uuid
+varbinary
+varchar
+varchar2
+
+# Built-in functions and system routines; nearly every statement calls some of them, so they are stop words even
+# where they are English words too (count, sum, round)
+abs
+avg
+cast
+ceil
+ceiling
+convert
+count
+extract
+floor
+length
+lower
+now
+round
+sum
+trim
+upper
+coalesce
+concat
+current_date
+current_timestamp
+current_user
+dateadd
+datediff
+generate_series
+getdate
+iif
+initcap
+isnull
+len
+ltrim
+max
+min
+nextval
+nullif
+nvl
+nvl2
+raise_application_error
+regclass
+row_number
+rtrim
+sp
+executesql
+substr
+substring
+sysdate
+systimestamp
+to_char
+to_date
+to_number
+unnest
+
+# System schemas and objects
+dbo
+dual
+information_schema
+pg_catalog
+sys
+sysobjects
+syscolumns
+sysindexes
+systables
+
+# Dialects and database products, as comments and names mention them
+ansi
+db2
+mariadb
+mssql
+mysql
+oracle
+pg
+pgsql
+plpgsql
+plsql
+postgre
+postgres
+postgresql
+sql
+sqlite
+sqlserver
+transact
+tsql
+
+# Technical columns
+id

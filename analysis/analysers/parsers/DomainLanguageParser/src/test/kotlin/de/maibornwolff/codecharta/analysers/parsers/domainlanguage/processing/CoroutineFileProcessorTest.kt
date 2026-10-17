@@ -1,9 +1,11 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class CoroutineFileProcessorTest {
@@ -26,7 +28,7 @@ class CoroutineFileProcessorTest {
 
         // Assert
         assertEquals(2, result.perFileWordCounts.size)
-        assertEquals(listOf("broken.kt"), result.failedFiles)
+        assertEquals(listOf("broken.kt"), result.failedFiles.map { it.path })
     }
 
     @Test
@@ -45,7 +47,18 @@ class CoroutineFileProcessorTest {
 
         // Assert
         assertEquals(1, result.perFileWordCounts.size)
-        assertEquals(listOf("unreadable.kt"), result.failedFiles)
+        assertEquals(listOf("unreadable.kt"), result.failedFiles.map { it.path })
+    }
+
+    @Test
+    fun `should stop at a grammar that does not fit the core instead of skipping its files`() {
+        // Arrange
+        val processor = CoroutineFileProcessor()
+        val files = listOf(File("a.kt"), File("b.kt"))
+        val wordExtractor: (File, String) -> FileResult = { _, _ -> throw GrammarUnavailableException("The grammar is incompatible") }
+
+        // Act & Assert
+        assertFailsWith<GrammarUnavailableException> { processor.processFilesIndividually(files, ".", { "content" }, wordExtractor) }
     }
 
     @Test

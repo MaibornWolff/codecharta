@@ -13,6 +13,21 @@ import org.junit.jupiter.api.Test
 
 class JavascriptAnalyzerTest {
     @Test
+    fun `should not read a decorated JavaScript class as an Angular component, as Angular is read for TypeScript only`() {
+        // Arrange
+        val javascriptCode = """
+            @Component({ selector: 'app-cave', templateUrl: './cave.component.html' })
+            export class CaveComponent {}
+        """.trimIndent()
+
+        // Act
+        val report = JavascriptAnalyzer(FileInfo(SupportedLanguage.JAVASCRIPT, "cave.component.js", javascriptCode)).analyze()
+
+        // Assert
+        assertThat(report.nodes.map { it.angular }).containsExactly(null)
+    }
+
+    @Test
     fun `should convert exported ES6 class to node with type CLASS`() {
         // Arrange
         val javascriptCode = """

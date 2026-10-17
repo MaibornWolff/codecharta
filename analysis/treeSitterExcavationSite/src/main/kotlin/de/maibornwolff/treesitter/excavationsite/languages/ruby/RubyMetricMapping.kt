@@ -28,7 +28,7 @@ object RubyMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||", "and", "or")
+                        allowedTypes = setOf("&&", "||", "and", "or")
                     )
                 )
             )
@@ -46,7 +46,7 @@ object RubyMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "right",
-                        allowedValues = setOf("lambda")
+                        allowedTypes = setOf("lambda")
                     )
                 )
             )

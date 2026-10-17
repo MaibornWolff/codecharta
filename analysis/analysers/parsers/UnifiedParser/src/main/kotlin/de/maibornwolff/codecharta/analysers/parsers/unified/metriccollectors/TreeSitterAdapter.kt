@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors
 import de.maibornwolff.codecharta.model.ChecksumCalculator
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.MetricsResult
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterMetrics
@@ -45,42 +44,12 @@ object TreeSitterAdapter {
     }
 
     /**
-     * Maps a FileExtension to TreesitterLibrary's Language enum.
-     */
-    fun getLanguageForExtension(fileExtension: FileExtension): Language? = when (fileExtension) {
-        FileExtension.JAVA -> Language.JAVA
-        FileExtension.KOTLIN -> Language.KOTLIN
-        FileExtension.TYPESCRIPT -> Language.TYPESCRIPT
-        FileExtension.TSX -> Language.TSX
-        FileExtension.JAVASCRIPT -> Language.JAVASCRIPT
-        FileExtension.PYTHON -> Language.PYTHON
-        FileExtension.GO -> Language.GO
-        FileExtension.PHP -> Language.PHP
-        FileExtension.RUBY -> Language.RUBY
-        FileExtension.SWIFT -> Language.SWIFT
-        FileExtension.BASH -> Language.BASH
-        FileExtension.CSHARP -> Language.CSHARP
-        FileExtension.CPP -> Language.CPP
-        FileExtension.C -> Language.C
-        FileExtension.OBJECTIVE_C -> Language.OBJECTIVE_C
-        FileExtension.VUE -> Language.VUE
-        FileExtension.DELPHI -> Language.DELPHI
-        FileExtension.RUST -> Language.RUST
-        else -> null
-    }
-
-    /**
      * Determines the Language for a file based on its extension.
      */
     fun getLanguageForFile(file: File): Language? {
         val extension = "." + file.extension.lowercase()
         return Language.fromExtension(extension)
     }
-
-    /**
-     * Checks if a file extension is supported by TreesitterLibrary.
-     */
-    fun isSupported(fileExtension: FileExtension): Boolean = getLanguageForExtension(fileExtension) != null
 
     private fun convertToMutableNode(fileName: String, result: MetricsResult, checksum: String?): MutableNode {
         val attributes = mutableMapOf<String, Double>()

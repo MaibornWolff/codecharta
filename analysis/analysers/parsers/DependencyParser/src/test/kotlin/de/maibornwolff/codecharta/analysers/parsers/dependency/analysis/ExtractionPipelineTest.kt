@@ -5,13 +5,16 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.codecharta.analysers.parsers.dependency.progress.SilentProgressReporter
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.io.PrintStream
 
 class ExtractionPipelineTest {
@@ -33,22 +36,25 @@ class ExtractionPipelineTest {
 
     private fun pipeline(
         fileTimeoutSeconds: Int = ExtractionPipeline.NO_FILE_TIMEOUT,
-        createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer
+        createAnalyzer: (FileInfo) -> LanguageAnalyzer = LanguageAnalyzerFactory::createAnalyzer,
+        readContent: (File) -> String = File::readText
     ) = ExtractionPipeline(
         SourceFileScanner(SupportedLanguage.allSuffixes()),
         SilentProgressReporter,
         fileTimeoutSeconds = fileTimeoutSeconds,
-        createAnalyzer = createAnalyzer
+        createAnalyzer = createAnalyzer,
+        readContent = readContent
     )
 
-    private fun analyzerThatFailsOn(fileName: String): (FileInfo) -> LanguageAnalyzer = { fileInfo ->
-        if (fileInfo.physicalPath ==
-            fileName
-        ) {
-            throw IllegalStateException("cannot parse")
-        } else {
-            LanguageAnalyzerFactory.createAnalyzer(fileInfo)
-        }
+    private fun unreadable(vararg fileNames: String): (File) -> String = { file ->
+        if (file.name in fileNames) throw IOException("Permission denied") else file.readText()
+    }
+
+    private fun analyzerThatFailsOn(
+        fileName: String,
+        failure: Exception = IllegalStateException("cannot parse")
+    ): (FileInfo) -> LanguageAnalyzer = { fileInfo ->
+        if (fileInfo.physicalPath == fileName) throw failure else LanguageAnalyzerFactory.createAnalyzer(fileInfo)
     }
 
     private fun analyzerThatStallsOn(fileName: String, millis: Long): (FileInfo) -> LanguageAnalyzer = { fileInfo ->
@@ -74,7 +80,7 @@ class ExtractionPipelineTest {
         writeSources()
 
         // Act
-        val reports = pipeline(fileTimeoutSeconds = 30).run(projectDirectory, bypassGitignore = true)
+        val reports = pipeline(fileTimeoutSeconds = 30).run(projectDirectory, bypassGitignore = true).reports
 
         // Assert
         assertThat(reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactlyInAnyOrder("shop.Item", "shop.Service")
@@ -86,7 +92,7 @@ class ExtractionPipelineTest {
         writeSources()
 
         // Act
-        val reports = pipeline().run(projectDirectory, bypassGitignore = true)
+        val reports = pipeline().run(projectDirectory, bypassGitignore = true).reports
 
         // Assert
         assertThat(reports.flatMap { it.nodes }).hasSize(2)
@@ -98,7 +104,7 @@ class ExtractionPipelineTest {
         writeSources()
 
         // Act
-        val reports = pipeline().run(File(projectDirectory, "Service.kt"), bypassGitignore = true)
+        val reports = pipeline().run(File(projectDirectory, "Service.kt"), bypassGitignore = true).reports
 
         // Assert
         assertThat(reports.flatMap { it.nodes }.map { it.physicalPath }).containsExactly("Service.kt")
@@ -110,23 +116,64 @@ class ExtractionPipelineTest {
         File(projectDirectory, "notes.txt").writeText("nothing to parse")
 
         // Act
-        val reports = pipeline().run(projectDirectory, bypassGitignore = true)
+        val reports = pipeline().run(projectDirectory, bypassGitignore = true).reports
 
         // Assert
         assertThat(reports).isEmpty()
     }
 
     @Test
-    fun `should leave out a file whose analysis fails and warn which one`() {
+    fun `should leave out a file whose analysis fails and warn which one and why`() {
         // Arrange
         writeSources()
 
         // Act
-        val reports = pipeline(createAnalyzer = analyzerThatFailsOn("Item.kt")).run(projectDirectory, bypassGitignore = true)
+        val extraction = pipeline(createAnalyzer = analyzerThatFailsOn("Item.kt")).run(projectDirectory, bypassGitignore = true)
 
         // Assert
-        assertThat(reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Service")
-        assertThat(errorStream.toString()).contains("1 file(s) could not be analysed").contains("Item.kt")
+        assertThat(extraction.reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Service")
+        assertThat(extraction.failures.map { it.path }).containsExactly("Item.kt")
+        assertThat(errorStream.toString())
+            .contains("1 file could not be analysed and is missing from the output (IllegalStateException: cannot parse): Item.kt")
+    }
+
+    @Test
+    fun `should leave out a file it cannot read and warn which one and why`() {
+        // Arrange
+        writeSources()
+
+        // Act
+        val extraction = pipeline(readContent = unreadable("Item.kt")).run(projectDirectory, bypassGitignore = true)
+
+        // Assert
+        assertThat(extraction.reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Service")
+        assertThat(extraction.failures.map { it.path }).containsExactly("Item.kt")
+        assertThat(errorStream.toString())
+            .contains("1 file could not be analysed and is missing from the output (IOException: Permission denied): Item.kt")
+    }
+
+    @Test
+    fun `should report every file as failed when it can read none`() {
+        // Arrange
+        writeSources()
+
+        // Act
+        val extraction = pipeline(readContent = unreadable("Item.kt", "Service.kt")).run(projectDirectory, bypassGitignore = true)
+
+        // Assert
+        assertThat(extraction.reports).isEmpty()
+        assertThat(extraction.failures.map { it.path }).containsExactly("Item.kt", "Service.kt")
+    }
+
+    @Test
+    fun `should stop at a grammar that does not fit the core instead of skipping its files`() {
+        // Arrange
+        writeSources()
+        val failing = analyzerThatFailsOn("Item.kt", GrammarUnavailableException("The grammar is incompatible"))
+
+        // Act & Assert
+        assertThatThrownBy { pipeline(createAnalyzer = failing).run(projectDirectory, bypassGitignore = true) }
+            .isInstanceOf(GrammarUnavailableException::class.java)
     }
 
     @Test
@@ -136,10 +183,11 @@ class ExtractionPipelineTest {
         val stalling = analyzerThatStallsOn("Item.kt", millis = 3000)
 
         // Act
-        val reports = pipeline(fileTimeoutSeconds = 1, createAnalyzer = stalling).run(projectDirectory, bypassGitignore = true)
+        val extraction = pipeline(fileTimeoutSeconds = 1, createAnalyzer = stalling).run(projectDirectory, bypassGitignore = true)
 
         // Assert
-        assertThat(reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Service")
-        assertThat(errorStream.toString()).contains("Timeout after 1s").contains("1 file(s) could not be analysed")
+        assertThat(extraction.reports.flatMap { it.nodes }.map { it.pathWithName.withDots() }).containsExactly("shop.Service")
+        assertThat(errorStream.toString())
+            .contains("1 file could not be analysed and is missing from the output (FileTimeoutException: Timeout after 1s): Item.kt")
     }
 }

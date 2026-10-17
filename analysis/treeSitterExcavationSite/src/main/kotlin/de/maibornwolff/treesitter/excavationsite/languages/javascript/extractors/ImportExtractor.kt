@@ -5,8 +5,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
 internal object ImportExtractor {
-    private const val ARGUMENTS = "arguments"
-    private const val TEMPLATE_STRING = "template_string"
     private const val IMPORT_KEYWORD = "import"
     private const val PATH_SEPARATOR = "/"
 

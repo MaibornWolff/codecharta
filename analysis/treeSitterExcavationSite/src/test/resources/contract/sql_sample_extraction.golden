@@ -1,0 +1,32 @@
+# Identifiers
+archive_orders
+big_orders
+customer_id
+customers
+customers
+customers
+days
+dry_run
+id
+id
+log_change
+name
+order_label
+orders
+orders
+orders
+orders
+orders
+p_total
+total
+touch
+
+# Comments
+Orders above a threshold
+Orders and their customers
+
+# Strings
+large
+medium
+small
+unknown

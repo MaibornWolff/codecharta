@@ -81,6 +81,22 @@ class ProjectAnalyserTest {
     }
 
     @Test
+    fun `should name why an analyser ended with an error instead of a map`() {
+        // Arrange
+        writeSource("src/App.kt", "fun main() {}\n")
+        val failingParser = UnifiedParser(fileMeasurer = { _, _ -> throw IllegalStateException("broken extractor") })
+
+        // Act
+        val failure = catchThrowable {
+            ProjectAnalyser().analyse(projectFolder, listOf(ConfiguredAnalyser(failingParser)), File(projectFolder, "out"))
+        }
+
+        // Assert
+        assertThat(failure).isInstanceOf(AnalysisException::class.java)
+        assertThat(failure).hasMessageContaining("The analyser unifiedparser failed on").hasMessageContaining("No file could be analysed")
+    }
+
+    @Test
     fun `should refuse to analyse with no analyser`() {
         // Arrange
         val analysers = emptyList<ConfiguredAnalyser>()

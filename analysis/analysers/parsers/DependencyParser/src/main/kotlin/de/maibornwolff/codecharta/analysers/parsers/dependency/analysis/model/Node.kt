@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 
+/** @property angular what the Angular decorator of the class declares, null for a node without one */
 data class Node(
     val pathWithName: Path,
     val physicalPath: String,
@@ -9,7 +10,8 @@ data class Node(
     val language: SupportedLanguage,
     val dependencies: Set<Dependency>,
     val usedTypes: Set<Type>,
-    val resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf())
+    val resolvedNodeDependencies: NodeDependencies = NodeDependencies(setOf(), setOf()),
+    val angular: AngularMetadata? = null
 ) {
     fun resolveTypes(
         projectDictionary: Map<String, List<Path>>,

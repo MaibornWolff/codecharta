@@ -14,7 +14,7 @@ internal class LogicalProjection(
     private val cyclicEdgesByDeclaration: Map<String, Set<String>>,
     private val namespaceTree: LevelizedNamespaceTree?
 ) {
-    private val firstFileByLogicalPath = FileLevelAggregator.firstFilePathByDeclaration(resolvedNodes)
+    private val fileByLogicalPath = FileLevelAggregator.filePathByDeclaration(resolvedNodes)
     private val keyByFileAndLogicalPath = uniqueKeysPerFile()
 
     fun addTo(physical: DependencyGraph): DependencyGraph {
@@ -84,7 +84,7 @@ internal class LogicalProjection(
     private fun edgeBetween(node: Node, dependency: Dependency): DeclarationEdge? {
         val sourcePath = node.pathWithName.withDots()
         val targetPath = dependency.withDots()
-        val targetFile = firstFileByLogicalPath[targetPath]
+        val targetFile = fileByLogicalPath[targetPath]
         if (targetFile == null || targetPath == sourcePath) return null
         val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         return DeclarationEdge(

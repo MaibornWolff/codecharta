@@ -2,6 +2,7 @@
 
 package de.maibornwolff.treesitter.excavationsite.api
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarUnavailableException
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 
 /**
@@ -11,3 +12,4 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
  * while the actual implementation lives in shared/domain.
  */
 typealias Language = Language
+typealias GrammarUnavailableException = GrammarUnavailableException

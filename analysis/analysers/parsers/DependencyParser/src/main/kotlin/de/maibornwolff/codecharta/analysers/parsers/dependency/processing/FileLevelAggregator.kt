@@ -27,13 +27,13 @@ data class FilePath(val segments: List<String>) {
  *
  * A declaration split across files (a C# partial class, a Go function name reused in a package) is one
  * leaf per file. Each part's dependencies count for the file they are written in, while a dependency *on*
- * the split declaration points at the file [firstFilePathByDeclaration] reports, the same part the leaf
+ * the split declaration points at the file [filePathByDeclaration] reports, the same part the leaf
  * edge targets. Cycles are found per logical path, so when two parts in different files reference the
  * same cyclic target, both file edges count as cyclic.
  */
 object FileLevelAggregator {
     fun aggregate(resolvedNodes: Collection<Node>, cyclicEdgesByDeclaration: Map<String, Set<String>>): List<AggregatedFileEdge> {
-        val filePathByDeclaration = firstFilePathByDeclaration(resolvedNodes)
+        val filePathByDeclaration = filePathByDeclaration(resolvedNodes)
 
         val weightByEndpoints = LinkedHashMap<Pair<FilePath, FilePath>, Int>()
         val cyclicEndpoints = HashSet<Pair<FilePath, FilePath>>()
@@ -61,10 +61,19 @@ object FileLevelAggregator {
         }
     }
 
-    /** The file each logical path is joined to: the first declaration's, in the order the nodes arrive. */
-    fun firstFilePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
+    /** The file a logical path is joined to: its first declaration's, for SQL the latest migration's in [NaturalPathOrder]. */
+    fun filePathByDeclaration(resolvedNodes: Collection<Node>): Map<String, FilePath> {
         val filePathByDeclaration = LinkedHashMap<String, FilePath>()
-        resolvedNodes.forEach { node -> filePathByDeclaration.putIfAbsent(node.pathWithName.withDots(), filePathOf(node)) }
+        resolvedNodes.forEach { node ->
+            val logicalPath = node.pathWithName.withDots()
+            val filePath = filePathOf(node)
+            val current = filePathByDeclaration[logicalPath]
+            val replacesCurrent =
+                node.language.laterDefinitionReplacesEarlier &&
+                    current != null &&
+                    NaturalPathOrder.compare(filePath.segments, current.segments) > 0
+            if (current == null || replacesCurrent) filePathByDeclaration[logicalPath] = filePath
+        }
         return filePathByDeclaration
     }
 

@@ -1,6 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords
 
+import de.maibornwolff.codecharta.util.FileExtension
 import de.maibornwolff.treesitter.excavationsite.api.Language as LibraryLanguage
+
+private fun suffixesOf(fileExtension: FileExtension): Set<String> =
+    (setOf(fileExtension.primaryExtension) + fileExtension.otherValidExtensions).map { it.removePrefix(".") }.toSet()
 
 enum class Language(val libraryLanguage: LibraryLanguage, internal val extensions: Set<String>, private val keywordResource: String) {
     KOTLIN(LibraryLanguage.KOTLIN, setOf("kt", "kts"), "keywords/kotlin-keywords.txt"),
@@ -19,7 +23,9 @@ enum class Language(val libraryLanguage: LibraryLanguage, internal val extension
     OBJC(LibraryLanguage.OBJECTIVE_C, setOf("m", "mm"), "keywords/objc-keywords.txt"),
     VUE(LibraryLanguage.VUE, setOf("vue"), "keywords/vue-keywords.txt"),
     ABL(LibraryLanguage.ABL, setOf("p", "cls", "w"), "keywords/abl-keywords.txt"),
-    RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt")
+    RUST(LibraryLanguage.RUST, setOf("rs"), "keywords/rust-keywords.txt"),
+    ANGULAR(LibraryLanguage.ANGULAR, setOf("html"), "keywords/angular-template-keywords.txt"),
+    SQL(LibraryLanguage.SQL, suffixesOf(FileExtension.SQL), "keywords/sql-keywords.txt")
     ;
 
     // Scoped per language rather than merged into one global set: a Kotlin file must not lose `func`
@@ -32,5 +38,7 @@ enum class Language(val libraryLanguage: LibraryLanguage, internal val extension
         }
 
         fun allExtensions(): List<String> = entries.flatMap { it.extensions.toList() }
+
+        fun ofLibraryLanguage(libraryLanguage: LibraryLanguage): Language? = entries.find { it.libraryLanguage == libraryLanguage }
     }
 }
