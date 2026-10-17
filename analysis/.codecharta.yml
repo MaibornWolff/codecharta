@@ -9,7 +9,6 @@ parallel: on
 exclude:  ## .gitignore patterns of files no rule checks; these are sample projects of other languages, not ours
   - "**/src/test/resources/**"
   - "test/data/**"
-  - "**/grammars/**"  ## tree-sitter grammars: a JavaScript DSL, hand-written C lexers and the code generated from them
 
 analysers:  ## on, off, or the analyser's own options instead of on (its exclude takes regular expressions)
   rawtextparser: on

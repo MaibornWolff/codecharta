@@ -25,6 +25,10 @@ Ideas/
 .codecharta-gate-output/
 .scannerwork
 
+# sources of the tree-sitter grammars CodeCharta builds itself; only their jars in
+# analysis/treeSitterExcavationSite/libs belong in the repo
+/tree-sitter-grammars/
+
 # claude
 /.claude
 

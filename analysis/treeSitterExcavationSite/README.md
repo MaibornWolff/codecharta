@@ -136,8 +136,8 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | Angular templates (and plain HTML) | `.html` | Experimental | Experimental | Experimental |
 | SQL (ANSI, T-SQL, PL/SQL, PL/pgSQL, MySQL) | `.sql`, `.pks`, `.pkb`, `.pls` | Experimental | Experimental | Experimental |
 
-SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects: see
-[grammars/sql](grammars/sql/README.md) for what it parses exactly and how its jar is built.
+SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects, bundled as
+`libs/tree-sitter-sql-island-*.jar`; its sources are kept outside this repository.
 
 ## Available Metrics
 

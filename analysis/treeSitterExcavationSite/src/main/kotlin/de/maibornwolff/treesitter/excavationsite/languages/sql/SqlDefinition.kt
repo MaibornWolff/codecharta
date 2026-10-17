@@ -6,7 +6,7 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDependenc
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 
 /**
- * SQL of all common dialects, parsed with CodeCharta's own island grammar (treeSitterExcavationSite/grammars/sql).
+ * SQL of all common dialects, parsed with CodeCharta's own island grammar (libs/tree-sitter-sql-island-*.jar).
  */
 object SqlDefinition : LanguageDefinition {
     override val nodeMetrics: Map<String, Set<Metric>> = SqlMetricMapping.nodeMetrics
