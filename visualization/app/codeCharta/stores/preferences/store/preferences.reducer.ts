@@ -1,7 +1,6 @@
 import { combineReducers } from "@ngrx/store"
 import { centerMapZoom, defaultCenterMapZoom } from "./centerMapZoom/centerMapZoom.reducer"
 import { defaultDependencyGraphSettings, dependencyGraph } from "./dependencyGraph/dependencyGraph.reducer"
-import { defaultDependencyViewEnabled, dependencyViewEnabled } from "./dependencyViewEnabled/dependencyViewEnabled.reducer"
 import { defaultScreenshotToClipboardEnabled, screenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.reducer"
 import {
     defaultIsColorMetricLinkedToHeightMetric,
@@ -31,8 +30,7 @@ export const preferences = combineReducers({
     radialFolderStyle,
     radialFolderTint,
     radialLevels,
-    dependencyGraph,
-    dependencyViewEnabled
+    dependencyGraph
 })
 
 export const defaultPreferences = {
@@ -47,6 +45,5 @@ export const defaultPreferences = {
     radialFolderStyle: defaultRadialFolderStyle,
     radialFolderTint: defaultRadialFolderTint,
     radialLevels: defaultRadialLevels,
-    dependencyGraph: defaultDependencyGraphSettings,
-    dependencyViewEnabled: defaultDependencyViewEnabled
+    dependencyGraph: defaultDependencyGraphSettings
 }

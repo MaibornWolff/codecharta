@@ -14,7 +14,7 @@ A tab only appears when the loaded map has something to show in it:
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Metric       | always                                                                                                                                                                                                         |
 | Domain       | the map was analysed with the [Domain Language parser](/docs/parser/domain-language)                                                                                                                           |
-| Dependencies | the map was analysed with the [Dependency parser](/docs/parser/dependency) **and** **Enable Dependency View (experimental)** is switched on in the [Settings](/docs/visualization/user-controls/settings) |
+| Dependencies | the map was analysed with the [Dependency parser](/docs/parser/dependency)                                                                                                                                     |
 
 ## The mode bar
 

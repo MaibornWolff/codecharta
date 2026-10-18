@@ -73,7 +73,6 @@ import { PreferencesReadWindow } from "../stores/preferences/preferences.read.fa
 import {
     setCenterMapZoom,
     setDependencyGraphSettings,
-    setDependencyViewEnabled,
     setIsColorMetricLinkedToHeightMetricAction,
     setMaxTreeMapFiles,
     setPresentationMode,
@@ -408,9 +407,6 @@ export class LoadInitialFileStore {
                 break
             case "dependencyGraph":
                 this.store.dispatch(setDependencyGraphSettings({ value }))
-                break
-            case "dependencyViewEnabled":
-                this.store.dispatch(setDependencyViewEnabled({ value }))
                 break
             default: {
                 throw new Error(`Unhandled key: ${key}`)

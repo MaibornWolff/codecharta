@@ -78,7 +78,6 @@ export interface Preferences {
     radialFolderTint: number
     radialLevels: number
     dependencyGraph: DependencyGraphSettings
-    dependencyViewEnabled: boolean
 }
 
 export interface SharedView {

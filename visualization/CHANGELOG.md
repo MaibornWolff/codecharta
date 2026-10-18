@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- **Dependency view**: the view is no longer experimental, so its tab appears for every map with dependency data without switching it on in the global configuration first.
 - **Focus in the dependency view**: focusing a folder or leaving it again keeps the boxes you opened and moved, and leaving it shows that folder where it lies in the whole graph.
 - **Edges shown in the dependency view**: the graph starts with the edges in cycles and those pointing upward, without the plain dependencies, a reset button brings that choice back, a checkbox holds the edges shown for the box under the pointer to that choice too, and the card shows the lines of the edges shown instead of their names.
 - **Tooltips in the dependency view**: the tooltip of a folder, file or package names it by its own name instead of its whole path.

@@ -14,7 +14,6 @@ Each of the following toggles switches a single global preference on or off:
 - **Reset camera when map layout changes** – when enabled, the camera position is reset to its default view whenever the map layout changes (for example after loading a new file). Disable it to keep your current camera angle and zoom.
 - **White Background** – switches the 3D scene background between the default dark background and a white background. The white background is useful for screenshots and printing.
 - **Screenshot to clipboard** – sets the default destination for screenshots. When enabled, the screenshot action copies the image to the clipboard; when disabled, it saves the image to a file. (Both destinations remain reachable via their respective screenshot hotkeys; this toggle only controls the default. Copying to the clipboard is not supported in Firefox.)
-- **Enable Dependency View (experimental)** – adds the **Dependencies** tab to the top bar for maps that carry dependency data. The view is still in development. See [Dependency View](/docs/visualization/user-controls/dependency-view).
 
 ## Resetting
 
