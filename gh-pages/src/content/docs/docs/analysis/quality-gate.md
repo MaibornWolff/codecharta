@@ -89,12 +89,21 @@ dependencies:
     instruction: Break the cycle by moving the shared part into its own file.
     ignore:                       # files or folders whose cycles are not reported
       - "**/generated/**"
+    accept:                       # single known cycles, by the exact files they run through
+      - files:
+          - src/tree/TreeLevel.ts
+          - src/tree/treeLevel.html
+        reason: The tree renders its next level with its own component.
   cyclesInsideFiles:
     severity: warning
   upward:
     severity: warning
     ignore:
       - src/legacy
+    accept:                       # single known upward dependencies, from one file to another
+      - from: src/model/Node.kt
+        to: src/model/MutableNode.kt
+        reason: A node converts itself to its mutable form.
 
 overrides:                        # other limits for the files the patterns match, applied in order
   - paths:
@@ -135,6 +144,11 @@ overrides:                        # other limits for the files the patterns matc
   `cyclesInsideFiles` report each loop through declarations: for every dependency the parser marks cyclic, the
   shortest way back, each loop once. `upward` reports each dependency between declarations that runs against the
   levels of its folder. A loop or an upward dependency that touches a file `ignore` matches is not reported.
+- **`accept`** lets through one known cycle or upward dependency and says why, where `ignore` would hide every one in
+  its folder. A cycle is accepted when it runs through exactly the listed `files`, in any order: two or more for
+  `cyclesBetweenFiles`, one for `cyclesInsideFiles`. An upward dependency is accepted from `from` to `to`, not the
+  other way. The paths are exact, relative to `input`, never patterns. An entry the analysis no longer finds is
+  reported as a warning, so it is removed once the cycle or dependency is gone.
 - **A rule for a metric the analysis did not produce** is reported at the worst severity the rule sets, with the
   closest metric name the analysis did produce, so a typo cannot let the gate pass.
 - **`--doctor`** reports every problem with its line: unknown keys, wrong values, patterns that are no valid

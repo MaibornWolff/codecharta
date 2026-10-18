@@ -27,5 +27,13 @@ object ConfigKeys {
 
     const val SEVERITY = "severity"
     const val IGNORE = "ignore"
-    val DEPENDENCY_RULE = listOf(SEVERITY, INSTRUCTION, IGNORE)
+    const val ACCEPT = "accept"
+    val DEPENDENCY_RULE = listOf(SEVERITY, INSTRUCTION, IGNORE, ACCEPT)
+
+    const val FILES = "files"
+    const val FROM = "from"
+    const val TO = "to"
+    const val REASON = "reason"
+    val ACCEPTED_CYCLE = listOf(FILES, REASON)
+    val ACCEPTED_UPWARD = listOf(FROM, TO, REASON)
 }

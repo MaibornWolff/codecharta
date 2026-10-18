@@ -9,6 +9,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.Limit
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.StaleAcceptance
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnmatchedPattern
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
@@ -231,6 +232,38 @@ class ReportTest {
         )
         assertThat(json["violations"].asJsonArray.single().toString()).isEqualTo(
             """{"rule":"unmatched-pattern","severity":"warning","setting":"exclude","pattern":"./src/**","instruction":"Check the patterns."}"""
+        )
+    }
+
+    @Test
+    fun `should list the accepted dependencies that no longer exist with the entry they are in`() {
+        // Arrange
+        val output = ByteArrayOutputStream()
+        val stale =
+            listOf(
+                StaleAcceptance(
+                    Severity.WARNING,
+                    "Remove these entries.",
+                    "dependencies.cyclesBetweenFiles.accept[0]",
+                    listOf("a/Foo.kt", "b/Bar.kt")
+                ),
+                StaleAcceptance(Severity.WARNING, "Remove these entries.", "dependencies.upward.accept[2]", listOf("a/Foo.kt", "c/Baz.kt"))
+            )
+
+        // Act
+        ConsoleReport(PrintStream(output), emptyList()).print(GateResult(stale, filesChecked = 3))
+        val json = JsonParser.parseString(JsonReport.render(GateResult(stale.take(1), filesChecked = 3), GateConfig())).asJsonObject
+
+        // Assert
+        assertThat(output.toString()).startsWith(
+            "WARN   2 accepted dependencies that no longer exist\n" +
+                "┌ Instruction ─────────\n│ Remove these entries.\n└──────────────────────\n" +
+                "  dependencies.cyclesBetweenFiles.accept[0]  a/Foo.kt, b/Bar.kt\n" +
+                "  dependencies.upward.accept[2]              a/Foo.kt, c/Baz.kt\n"
+        )
+        assertThat(json["violations"].asJsonArray.single().toString()).isEqualTo(
+            """{"rule":"stale-accept","severity":"warning","setting":"dependencies.cyclesBetweenFiles.accept[0]",""" +
+                """"members":["a/Foo.kt","b/Bar.kt"],"instruction":"Remove these entries."}"""
         )
     }
 

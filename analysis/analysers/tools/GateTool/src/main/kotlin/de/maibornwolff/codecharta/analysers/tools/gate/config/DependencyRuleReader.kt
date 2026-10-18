@@ -22,11 +22,14 @@ class DependencyRuleReader(private val nodes: YamlNodes) {
                 nodes
             ).read(it.value, YamlNodes.childPath(path, ConfigKeys.IGNORE))
         }
+        val accept = entries[ConfigKeys.ACCEPT]?.let {
+            AcceptedDependencyReader(nodes).read(it.value, YamlNodes.childPath(path, ConfigKeys.ACCEPT), entry.key)
+        }
         if (severityEntry == null || nodes.isEmpty(severityEntry.value)) {
             nodes.report(severityEntry?.value ?: entry.keyNode, "$severityPath needs one of: ${Severity.entries.joinToString { it.key }}")
             return null
         }
         val severity = nodes.severity(severityEntry.value, severityPath) ?: return null
-        return DependencyRule(severity, instruction, ignore ?: emptyList())
+        return DependencyRule(severity, instruction, ignore ?: emptyList(), accept ?: emptyList())
     }
 }
