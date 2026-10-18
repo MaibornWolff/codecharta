@@ -114,6 +114,11 @@ dependencies:  ## counted like the dependency view in the visualization
       - Move what both files need into a file of its own that both depend on (Single Responsibility).
       - Or let the lower file own an interface and have the other file implement it (Dependency Inversion).
       - KISS: if the files only make sense together, merge them instead of adding indirection.
+    accept:
+      - files:
+          - app/codeCharta/features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.component.ts
+          - app/codeCharta/features/sidebarExplorer/components/explorerTreeLevel/explorerTreeLevel.component.html
+        reason: A recursive component, its template renders the next tree level with its own selector.
   cyclesInsideFiles:
     severity: warning
     instruction: |
