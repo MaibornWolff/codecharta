@@ -5,11 +5,11 @@ import { State } from "@ngrx/store"
 import { provideMockStore } from "@ngrx/store/testing"
 import { fireEvent, render, screen } from "@testing-library/angular"
 import { locationStrategyProvider } from "../../../../../app.config"
+import { hasDependencyDataSelector } from "../../../../lenses/dependency/dependencyLens.facade"
 import { hasDomainDataSelector } from "../../../../lenses/domain/domainLens.facade"
 import { routeLinks, routePaths } from "../../../../routing/routePaths"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { defaultState } from "../../../../stores/rootStore/state.manager"
-import { isDependencyViewAvailableSelector } from "../../selectors/isDependencyViewAvailable.selector"
 import { FileSelectionModeService } from "../../services/fileSelectionMode.service"
 import { ViewSwitcherComponent } from "./viewSwitcher.component"
 
@@ -18,7 +18,7 @@ const deepLinkedUrl = "http://localhost:9009/index.html?file=fileOne.json&area=f
 const hrefOf = (routeLink: string) => `${deepLinkedUrl}#${routeLink}`
 
 describe("ViewSwitcherComponent", () => {
-    async function setup(hasDomainData: boolean, isDeltaState = false, isDependencyViewAvailable = false) {
+    async function setup(hasDomainData: boolean, isDeltaState = false, hasDependencyData = false) {
         return render(ViewSwitcherComponent, {
             providers: [
                 provideRouter([
@@ -32,7 +32,7 @@ describe("ViewSwitcherComponent", () => {
                     initialState: defaultState,
                     selectors: [
                         { selector: hasDomainDataSelector, value: hasDomainData },
-                        { selector: isDependencyViewAvailableSelector, value: isDependencyViewAvailable },
+                        { selector: hasDependencyDataSelector, value: hasDependencyData },
                         { selector: isDeltaStateSelector, value: isDeltaState }
                     ]
                 }),

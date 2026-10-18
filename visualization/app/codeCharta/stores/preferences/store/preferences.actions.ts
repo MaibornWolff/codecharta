@@ -1,6 +1,5 @@
 import { setCenterMapZoom } from "./centerMapZoom/centerMapZoom.actions"
 import { setDependencyGraphSettings } from "./dependencyGraph/dependencyGraph.actions"
-import { setDependencyViewEnabled } from "./dependencyViewEnabled/dependencyViewEnabled.actions"
 import { setScreenshotToClipboardEnabled } from "./enableClipboard/screenshotToClipboardEnabled.actions"
 import {
     setIsColorMetricLinkedToHeightMetricAction,
@@ -30,6 +29,5 @@ export const preferencesActions = [
     setRadialFolderStyle,
     setRadialFolderTint,
     setRadialLevels,
-    setDependencyGraphSettings,
-    setDependencyViewEnabled
+    setDependencyGraphSettings
 ]

@@ -1998,8 +1998,7 @@ export const STATE: CcState = {
             edgeWidth: { thickness: "byCount", factor: 1 },
             hierarchy: "folders",
             shownBoxBadges: ["betweenFiles", "insideFiles", "declaration", "upward"]
-        },
-        dependencyViewEnabled: false
+        }
     },
     mapState: {
         areaMetric: "rloc",
@@ -2082,8 +2081,7 @@ export const DEFAULT_STATE: CcState = {
             edgeWidth: { thickness: "byCount", factor: 1 },
             hierarchy: "folders",
             shownBoxBadges: ["betweenFiles", "insideFiles", "declaration", "upward"]
-        },
-        dependencyViewEnabled: false
+        }
     },
     mapState: {
         areaMetric: null,
