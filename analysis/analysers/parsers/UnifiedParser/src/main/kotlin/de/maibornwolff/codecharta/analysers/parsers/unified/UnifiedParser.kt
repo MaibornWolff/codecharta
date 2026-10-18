@@ -42,7 +42,7 @@ class UnifiedParser(
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
     private val baseFileHelper: BaseFileResolver = BaseFileResolver(),
-    private val fileMeasurer: FileMeasurer = CollectorMeasurer,
+    private val fileMeasurer: FileMeasurer = collectorMeasurer,
     private val runExitCode: RunExitCode = RunExitCode()
 ) : CommonAnalyserParameters(),
     AnalyserInterface,

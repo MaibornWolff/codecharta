@@ -32,7 +32,7 @@ class ProjectScannerTest {
 
     private fun failingFor(failingName: String, failure: Exception) = FileMeasurer { file, content ->
         if (file.name == failingName) throw failure
-        CollectorMeasurer.measure(file, content)
+        collectorMeasurer.measure(file, content)
     }
 
     @Test

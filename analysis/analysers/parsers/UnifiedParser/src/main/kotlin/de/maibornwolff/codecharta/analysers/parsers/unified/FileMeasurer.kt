@@ -10,11 +10,9 @@ fun interface FileMeasurer {
 }
 
 /** Measures a file with the collector of its language. */
-object CollectorMeasurer : FileMeasurer {
-    override fun measure(file: File, content: String): MutableNode {
-        val collector = requireNotNull(AvailableCollectors.forExtension(file.extension)) {
-            "Unexpectedly encountered an unsupported file at ${file.path}!"
-        }
-        return collector.collectorFactory().collectMetricsForFile(file, content)
+val collectorMeasurer = FileMeasurer { file, content ->
+    val collector = requireNotNull(AvailableCollectors.forExtension(file.extension)) {
+        "Unexpectedly encountered an unsupported file at ${file.path}!"
     }
+    collector.collectorFactory().collectMetricsForFile(file, content)
 }
