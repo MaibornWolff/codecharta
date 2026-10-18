@@ -31,7 +31,7 @@ class ProjectScanner(
     private val baseFileNodes: Map<String, Node> = emptyMap(),
     private val useGitignore: Boolean = true,
     private val localChangesFiles: Set<String> = emptySet(),
-    private val fileMeasurer: FileMeasurer = CollectorMeasurer
+    private val fileMeasurer: FileMeasurer = collectorMeasurer
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
