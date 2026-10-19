@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.model.NodeType
@@ -143,11 +144,116 @@ class AnalyseToolTest {
         assertThat(output.toString()).contains("does not exist")
     }
 
+    @Test
+    fun `should map with every default parser and the git history`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+        val tool = AnalyseTool(PrintStream(output), workingFolder, SvnLogWriter(listOf(MISSING_COMMAND)))
+
+        // Act
+        CommandLine(tool).execute("--quiet", projectFolder.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        assertThat(output.toString()).contains("rawtextparser, unifiedparser, dependencyparser, domainlanguageparser, git history")
+        assertThat(filesOf(readMap(mapFile)).getValue("src/App.kt")).containsKeys("complexity", "number_of_commits")
+    }
+
+    @Test
+    fun `should name why the git history is missing as the last line also when the analysers print their output`() {
+        // Arrange
+        writeSource("module/src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(File(projectFolder, "module").path, "--output-file=${mapFile.path}", quiet = false)
+
+        // Assert
+        assertThat(lastLine()).startsWith("No git history in the map:")
+    }
+
+    @Test
+    fun `should write the map and name why the git history is missing as the last line when the repository has no commits`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        git("init", "--quiet")
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        assertThat(exitCode).isZero()
+        assertThat(filesOf(readMap(mapFile)).keys).containsExactly("src/App.kt")
+        assertThat(lastLine()).startsWith("No git history in the map:")
+    }
+
+    @Test
+    fun `should not point to an enclosing git repository when the folder is an svn working copy of its own`() {
+        // Arrange
+        writeSource("module/src/App.kt", APP_SOURCE)
+        commitAll()
+        val module = File(projectFolder, "module").apply { File(this, ".svn").mkdirs() }
+
+        // Act
+        analyse(module.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        assertThat(output.toString()).doesNotContain("No git history")
+    }
+
+    @Test
+    fun `should take the log parser names and spaces after commas in without`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--without", "unifiedparser,", "gitlogparser")
+
+        // Assert
+        assertThat(exitCode).isZero()
+        assertThat(filesOf(readMap(mapFile)).getValue("src/App.kt")).doesNotContainKeys("complexity", "number_of_commits")
+    }
+
+    @Test
+    fun `should write the map uncompressed with not compressed`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+
+        // Act
+        analyse(projectFolder.path, "--not-compressed")
+
+        // Assert
+        val map = File(workingFolder, "shop.cc.json")
+        assertThat(map.readText()).startsWith("{")
+        assertThat(filesOf(readMap(map)).keys).containsExactly("src/App.kt")
+    }
+
+    @Test
+    fun `should fail without writing a map when a code parser fails`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        val failingParser = UnifiedParser(fileMeasurer = { _, _ -> throw IllegalStateException("broken extractor") })
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", parsers = { listOf(RawTextParser(), failingParser) })
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(mapFile).doesNotExist()
+        assertThat(output.toString()).contains("The analyser unifiedparser failed")
+    }
+
     private val mapFile get() = File(workspace, "out/map.cc.json.gz")
 
-    private fun analyse(vararg arguments: String, svnLogWriter: SvnLogWriter = SvnLogWriter(listOf(MISSING_COMMAND))): Int {
-        val tool = AnalyseTool(PrintStream(output), workingFolder, svnLogWriter) { listOf(RawTextParser(), UnifiedParser()) }
-        return CommandLine(tool).execute("--quiet", *arguments)
+    private fun analyse(
+        vararg arguments: String,
+        svnLogWriter: SvnLogWriter = SvnLogWriter(listOf(MISSING_COMMAND)),
+        parsers: () -> List<AnalyserInterface> = { listOf(RawTextParser(), UnifiedParser()) },
+        quiet: Boolean = true
+    ): Int {
+        val tool = AnalyseTool(PrintStream(output), workingFolder, svnLogWriter, parsers)
+        return CommandLine(tool).execute(*(listOfNotNull("--quiet".takeIf { quiet }) + arguments).toTypedArray())
     }
 
     private fun lastLine(): String = output.toString().trimEnd().lines().last()

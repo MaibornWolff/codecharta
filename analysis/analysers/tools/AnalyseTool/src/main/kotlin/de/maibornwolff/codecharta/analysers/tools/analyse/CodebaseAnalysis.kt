@@ -67,8 +67,9 @@ class CodebaseAnalysis(
     private fun analyse(request: AnalyseRequest, parsers: List<ConfiguredAnalyser>, histories: List<History>): MappedCodebase {
         val analysers = parsers + histories.map { it.analyser }
         val results = ProjectAnalyser().analyseEach(request.projectFolder, analysers, request.outputFile, request.parallel)
-        val code = merge(results.take(parsers.size).map { it.getOrThrow() })
-        val historyResults = histories.zip(results.drop(parsers.size))
+        val resultOf = analysers.zip(results).toMap()
+        val code = merge(parsers.map { resultOf.getValue(it).getOrThrow() })
+        val historyResults = histories.map { it to resultOf.getValue(it.analyser) }
         val historyProjects = historyResults.mapNotNull { (_, result) -> result.getOrNull() }.map { HistoryFilter.keepFilesOf(code, it) }
         val missingHistories = historyResults.mapNotNull { (history, result) ->
             result.exceptionOrNull()?.let { history.versionControl.missingHistory(it.message.orEmpty()) }

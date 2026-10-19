@@ -39,9 +39,13 @@ If the history cannot be included, the map is still written without it, and the 
 `Map:` line, say why. This happens when the folder lies inside a repository or working copy but not at its root
 (analyse the root instead), when `svn` is not installed, or when `svn log` or the git log fails.
 
+The svn history only matches the code when the working copy is a checkout of the trunk of a single-project
+repository. For a checkout of a branch or of a project inside a multi-project repository, the map has no svn metrics.
+
 ### Interactive mode
 
 Started without arguments, `ccsh` asks for a folder and then first offers to analyse everything with `ccsh analyse`,
 before the list of single analysers.
 
-`ccsh analyse` exits with 0 when the map is written and with 1 when the analysis fails.
+`ccsh analyse` exits with 0 when the map is written, with 1 when the analysis fails and with 2 when the command line
+cannot be parsed.

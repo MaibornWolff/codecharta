@@ -9,7 +9,7 @@ data class History(val versionControl: VersionControl, val analyser: ConfiguredA
 
 data class HistorySearch(val histories: List<History>, val hints: List<String>)
 
-class HistoryFinder(private val svnLogWriter: SvnLogWriter) {
+class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFolder: File = File(System.getProperty("user.home"))) {
     fun find(projectFolder: File, wanted: List<VersionControl>, workFolder: File): HistorySearch {
         val lookups = wanted.mapNotNull { lookUp(it, projectFolder, workFolder) }
         return HistorySearch(lookups.mapNotNull { it.history }, lookups.mapNotNull { it.hint })
@@ -19,7 +19,8 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter) {
 
     private fun lookUp(versionControl: VersionControl, projectFolder: File, workFolder: File): Lookup? {
         if (versionControl.isRootOf(projectFolder)) return historyOf(versionControl, projectFolder, workFolder)
-        val root = versionControl.enclosingRootOf(projectFolder) ?: return null
+        if (VersionControl.entries.any { it.isRootOf(projectFolder) }) return null
+        val root = versionControl.enclosingRootOf(projectFolder, homeFolder) ?: return null
         val reason =
             "${projectFolder.path} is inside the ${versionControl.label} ${versionControl.checkout} ${root.path}, not at its root. " +
                 "Analyse ${root.path} to include it."
