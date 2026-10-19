@@ -19,6 +19,7 @@ import de.maibornwolff.codecharta.analysers.parsers.gitlog.GitLogParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalyseTool
 import de.maibornwolff.codecharta.analysers.tools.convert.ConvertTool
 import de.maibornwolff.codecharta.analysers.tools.gate.GateTool
 import de.maibornwolff.codecharta.analysers.tools.inspection.InspectionTool
@@ -47,6 +48,7 @@ import kotlin.system.exitProcess
         InspectionTool::class,
         ConvertTool::class,
         GateTool::class,
+        AnalyseTool::class,
         MergeFilter::class,
         EdgeFilter::class,
         StructureModifier::class,

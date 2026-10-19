@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- **One-step analysis**: `ccsh analyse` maps a codebase with every parser that applies to it and its git or svn
+  history into one map, without any configuration.
+
 - **Quality gate (experimental)**: `ccsh gate` checks a project against the metric limits and dependency rules
   in its `.codecharta.yml`, which can accept single known cycles and upward dependencies, and reports every broken
   rule on the console, as JSON and through an exit code you choose.

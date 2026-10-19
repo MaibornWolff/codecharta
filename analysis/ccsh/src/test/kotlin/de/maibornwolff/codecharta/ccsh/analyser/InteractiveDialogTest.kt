@@ -5,6 +5,7 @@ import com.varabyte.kotter.runtime.RunScope
 import com.varabyte.kotter.runtime.terminal.inmemory.press
 import com.varabyte.kotter.runtime.terminal.inmemory.type
 import com.varabyte.kotterx.test.foundation.testSession
+import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askAnalyseEverything
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askAnalyserToExecute
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askApplicableAnalyser
 import de.maibornwolff.codecharta.ccsh.analyser.InteractiveDialog.Companion.askForMerge
@@ -104,6 +105,21 @@ class InteractiveDialogTest {
 
             assertThat(result).isFalse()
         }
+    }
+
+    @Test
+    fun `should ask whether to analyse the folder with everything at once and accept by default`() {
+        // Arrange
+        var result = false
+
+        // Act
+        testSession { terminal ->
+            every { InteractiveDialog.Companion.testCallback() } returns { terminal.press(Keys.ENTER) }
+            result = askAnalyseEverything(this, "src")
+        }
+
+        // Assert
+        assertThat(result).isTrue()
     }
 
     @Test

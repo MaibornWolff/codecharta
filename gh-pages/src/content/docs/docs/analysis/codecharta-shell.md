@@ -80,6 +80,11 @@ cat demo.cc.json | ccsh inspect --levels=2
 
 This behaviour is currently supported by `ccsh modify`, `ccsh inspect` and `ccsh convert`. `ccsh merge` and `ccsh edgefilter` need their input as files.
 
+### Mapping a codebase in one step
+
+`ccsh analyse` runs every code parser that applies to a folder, adds its git or svn history and merges the results
+into one map, without a config file (see [Analyse](/docs/analysis/analyse)).
+
 ### Checking a project against rules
 
 `ccsh gate` (experimental) analyses a project and checks it against the metric limits and dependency rules in its
