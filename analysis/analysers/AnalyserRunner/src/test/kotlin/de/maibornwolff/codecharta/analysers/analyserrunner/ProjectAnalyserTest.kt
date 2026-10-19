@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
@@ -139,6 +140,33 @@ class ProjectAnalyserTest {
         assertThat(slowAnalyser.hasFinished).isTrue()
     }
 
+    @Test
+    fun `should return a result for every analyser so one failure does not hide the other maps`() {
+        // Arrange
+        writeSource("src/App.kt", "fun main() {}\n")
+        val analysers = listOf(ConfiguredAnalyser(FailingAnalyser()), ConfiguredAnalyser(UnifiedParser()))
+
+        // Act
+        val results = ProjectAnalyser().analyseEach(projectFolder, analysers, File(projectFolder, "out"))
+
+        // Assert
+        assertThat(results.first().exceptionOrNull()).isInstanceOf(AnalysisException::class.java).hasMessageContaining("failingparser")
+        assertThat(filesOf(results.last().getOrThrow()).keys).containsExactly("src/App.kt")
+    }
+
+    @Test
+    fun `should hand an analyser that does not read the project folder only its own arguments and the output file`() {
+        // Arrange
+        val recordingAnalyser = RecordingAnalyser()
+        val analysers = listOf(ConfiguredAnalyser(recordingAnalyser, listOf("--repo-path", "repo"), readsProjectFolder = false))
+
+        // Act
+        ProjectAnalyser().analyseEach(projectFolder, analysers, File(projectFolder, "out"))
+
+        // Assert
+        assertThat(recordingAnalyser.arguments).containsExactly("--repo-path", "repo")
+    }
+
     private fun bothAnalysers() = listOf(ConfiguredAnalyser(RawTextParser()), ConfiguredAnalyser(UnifiedParser()))
 
     private fun filesOf(project: Project): Map<String, Map<String, Any>> = project.rootNode.nodes
@@ -179,6 +207,27 @@ class ProjectAnalyserTest {
         override fun call(): Unit? {
             Thread.sleep(SLOW_ANALYSIS_MILLISECONDS)
             hasFinished = true
+            return null
+        }
+
+        override fun getDialog(): AnalyserDialogInterface = mockk()
+
+        override fun isApplicable(resourceToBeParsed: String) = true
+    }
+
+    @CommandLine.Command(name = "recordingparser")
+    private class RecordingAnalyser : AnalyserInterface {
+        override val name = "recordingparser"
+        override val description = "records its arguments and writes an empty map"
+
+        @CommandLine.Option(names = ["--output-file"])
+        private var outputFile: String? = null
+
+        @CommandLine.Unmatched
+        var arguments: MutableList<String> = mutableListOf()
+
+        override fun call(): Unit? {
+            ProjectSerializer.serializeToFileOrStream(Project("recorded"), outputFile, System.out, true)
             return null
         }
 

@@ -4,10 +4,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
 import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisException
-import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
-import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
-import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
-import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
+import de.maibornwolff.codecharta.analysers.analyserrunner.CodeParsers
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.util.CodeChartaConstants
@@ -23,7 +20,7 @@ import java.io.PrintStream
 class GateTool(
     private val output: PrintStream = System.out,
     private val workingFolder: File = File("."),
-    private val createAnalysers: () -> List<AnalyserInterface> = ::defaultAnalysers
+    private val createAnalysers: () -> List<AnalyserInterface> = CodeParsers::create
 ) : AnalyserInterface,
     CommandLine.IExitCodeGenerator {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -111,8 +108,5 @@ class GateTool(
     companion object {
         const val NAME = "gate"
         const val DESCRIPTION = "[experimental] checks a project against the metric and cycle rules in its ${GateConfig.FILE_NAME}"
-
-        fun defaultAnalysers(): List<AnalyserInterface> =
-            listOf(RawTextParser(), UnifiedParser(), DependencyParser(), DomainLanguageParser())
     }
 }
