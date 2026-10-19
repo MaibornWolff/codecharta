@@ -1,10 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisException
-import de.maibornwolff.codecharta.analysers.analyserrunner.ConfiguredAnalyser
-import de.maibornwolff.codecharta.analysers.analyserrunner.ProjectAnalyser
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
 import de.maibornwolff.codecharta.model.NodeType

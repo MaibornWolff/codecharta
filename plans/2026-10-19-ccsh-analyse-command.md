@@ -13,7 +13,7 @@ No config file.
 ## Tasks
 
 ### 1. Share the gate's run-and-merge code (structural, commit first)
-- Move `ProjectAnalyser`/`ConfiguredAnalyser` out of GateTool into a shared module that both gate and analyse use
+- Move `ProjectAnalyser`/`ConfiguredAnalyser` out of GateTool into AnalyseTool, which the gate then depends on
 - Gate behaviour stays the same; existing gate tests stay green
 
 ### 2. AnalyseTool command
@@ -59,6 +59,8 @@ No config file.
 
 8. **Every skipped source is named**: after `Map:`, a "Not in the map:" block names each parser and history that did
    not run and why, including a folder in no repository and sources left out with `--without`
+9. **Module layout**: the runner lives in AnalyseTool instead of an `analysers/AnalyserRunner` module, as `analysers/`
+   only holds the categories and the shared interface
 
 ## Notes
 

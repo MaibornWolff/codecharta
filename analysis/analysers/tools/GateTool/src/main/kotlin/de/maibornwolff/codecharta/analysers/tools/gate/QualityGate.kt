@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalysisConsole
 import de.maibornwolff.codecharta.analysers.tools.gate.analysis.PicocliAnalyserCatalog
 import de.maibornwolff.codecharta.analysers.tools.gate.config.AnalyserSetting
 import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigReader

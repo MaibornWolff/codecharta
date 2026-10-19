@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.analyserrunner
+package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun

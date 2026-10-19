@@ -2,8 +2,11 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":dialogProvider"))
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":analysers:AnalyserRunner"))
     implementation(project(":analysers:filters:MergeFilter"))
+    implementation(project(":analysers:parsers:RawTextParser"))
+    implementation(project(":analysers:parsers:UnifiedParser"))
+    implementation(project(":analysers:parsers:DependencyParser"))
+    implementation(project(":analysers:parsers:DomainLanguageParser"))
     implementation(project(":analysers:parsers:GitLogParser"))
     implementation(project(":analysers:parsers:SVNLogParser"))
 
@@ -11,8 +14,6 @@ dependencies {
     implementation(libs.kotter)
 
     testImplementation(libs.kotter.test)
-    testImplementation(project(":analysers:parsers:RawTextParser"))
-    testImplementation(project(":analysers:parsers:UnifiedParser"))
 }
 
 tasks.test {

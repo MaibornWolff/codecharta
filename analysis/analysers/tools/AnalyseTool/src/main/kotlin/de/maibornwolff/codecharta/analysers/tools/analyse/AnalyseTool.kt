@@ -4,9 +4,6 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisException
-import de.maibornwolff.codecharta.analysers.analyserrunner.CodeParsers
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.FileExtension

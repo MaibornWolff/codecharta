@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisException
-import de.maibornwolff.codecharta.analysers.analyserrunner.CodeParsers
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalysisConsole
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalysisException
+import de.maibornwolff.codecharta.analysers.tools.analyse.CodeParsers
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.util.CodeChartaConstants

@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
-import de.maibornwolff.codecharta.analysers.analyserrunner.ConfiguredAnalyser
-import de.maibornwolff.codecharta.analysers.analyserrunner.ProjectAnalyser
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalysisConsole
+import de.maibornwolff.codecharta.analysers.tools.analyse.ConfiguredAnalyser
+import de.maibornwolff.codecharta.analysers.tools.analyse.ProjectAnalyser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.analysers.tools.gate.report.counted

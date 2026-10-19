@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.analysers.tools.analyse
 
-import de.maibornwolff.codecharta.analysers.analyserrunner.ConfiguredAnalyser
 import de.maibornwolff.codecharta.analysers.parsers.gitlog.RepoScanCommand
 import de.maibornwolff.codecharta.analysers.parsers.svnlog.SVNLogParser
 import java.io.File

@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.analyserrunner
+package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
