@@ -29,7 +29,9 @@ data class ConfiguredAnalyser(
 
 class ProjectAnalyser {
     fun analyse(projectFolder: File, analysers: List<ConfiguredAnalyser>, excludedOutput: File, parallel: Boolean = false): Project {
-        val projects = analyseEach(projectFolder, analysers, excludedOutput, parallel).map { it.getOrThrow() }
+        val projects = inWorkFolder(projectFolder, analysers, excludedOutput) { runOne ->
+            if (parallel) runInParallel(analysers, runOne).map { it.getOrThrow() } else analysers.map { runOne(it).getOrThrow() }
+        }
         return ProjectMerger(projects, MergeResolverStrategy.recursive()).merge()
     }
 
@@ -38,14 +40,22 @@ class ProjectAnalyser {
         analysers: List<ConfiguredAnalyser>,
         excludedOutput: File,
         parallel: Boolean = false
-    ): List<Result<Project>> {
+    ): List<Result<Project>> = inWorkFolder(projectFolder, analysers, excludedOutput) { runOne ->
+        if (parallel) runInParallel(analysers, runOne) else analysers.map(runOne)
+    }
+
+    private fun <T> inWorkFolder(
+        projectFolder: File,
+        analysers: List<ConfiguredAnalyser>,
+        excludedOutput: File,
+        runAll: (runOne: (ConfiguredAnalyser) -> Result<Project>) -> T
+    ): T {
         if (analysers.isEmpty()) throw AnalysisException("No analyser is switched on that applies to ${projectFolder.path}.")
 
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
         try {
             val excludePattern = excludePatternFor(projectFolder, excludedOutput)
-            val runOne = { analyser: ConfiguredAnalyser -> attempt { runAnalyser(analyser, projectFolder, workFolder, excludePattern) } }
-            return if (parallel) runInParallel(analysers, runOne) else analysers.map(runOne)
+            return runAll { analyser -> attempt { runAnalyser(analyser, projectFolder, workFolder, excludePattern) } }
         } finally {
             workFolder.deleteRecursively()
         }
