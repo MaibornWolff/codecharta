@@ -1,11 +1,12 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import java.io.File
 
 data class FileProcessingResult(
     val perFileWordCounts: Map<String, Map<String, Int>>,
     val skippedExtensions: Map<String, Int>,
-    val failedFiles: List<String> = emptyList()
+    val failedFiles: List<FailedFile> = emptyList()
 )
 
 interface FileProcessor {

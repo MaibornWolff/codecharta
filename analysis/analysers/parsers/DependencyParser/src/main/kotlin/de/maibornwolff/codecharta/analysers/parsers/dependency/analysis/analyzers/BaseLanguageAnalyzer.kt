@@ -8,6 +8,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.No
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
 import de.maibornwolff.treesitter.excavationsite.api.Declaration
+import de.maibornwolff.treesitter.excavationsite.api.EmbeddedDeclarations
 import de.maibornwolff.treesitter.excavationsite.api.ImportDeclaration
 import de.maibornwolff.treesitter.excavationsite.api.Language
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
@@ -20,7 +21,7 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
 
     override fun analyze(): FileReport {
         val result = TreeSitterDependencies.analyze(fileInfo.content, tseLanguage())
-        val nodes = result.declarations.map { declaration ->
+        val nodes = result.declarations.flatMap { declaration ->
             val selectedImports = selectImports(declaration, result.imports)
             val importDeps = selectedImports.flatMap { convertImport(it) }.toSet()
             val packageDep = if (result.packagePath.isNotEmpty()) {
@@ -29,7 +30,8 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
                 emptySet()
             }
             val dependencies = importDeps + packageDep + extraDependencies(declaration)
-            toNode(result.packagePath, dependencies, declaration, result.imports)
+            val embedded = result.embedded.filter { it.owner == declaration.name }
+            nodesOf(declaration, toNode(result.packagePath, dependencies, declaration, result.imports), embedded)
         }
         return FileReport(nodes)
     }
@@ -43,6 +45,9 @@ abstract class BaseLanguageAnalyzer(protected val fileInfo: FileInfo) : Language
     protected open fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path = Path(packagePath + declaration.name)
 
     protected open fun extraDependencies(declaration: Declaration): Set<Dependency> = emptySet()
+
+    /** The nodes a declaration becomes: its own node, and those of what it embeds, such as an inline template. */
+    protected open fun nodesOf(declaration: Declaration, node: Node, embedded: List<EmbeddedDeclarations>): List<Node> = listOf(node)
 
     protected open fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> = declaration.usedTypes
 

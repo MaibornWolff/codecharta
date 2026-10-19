@@ -11,6 +11,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.rules.Declaration
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.DependenciesNotChecked
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.GateResult
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.MetricViolation
+import de.maibornwolff.codecharta.analysers.tools.gate.rules.StaleAcceptance
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnknownMetric
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UnmatchedPattern
 import de.maibornwolff.codecharta.analysers.tools.gate.rules.UpwardViolation
@@ -46,6 +47,7 @@ object JsonReport {
         is UpwardViolation -> "upward-dependency"
         is DependenciesNotChecked -> "dependencies-not-checked"
         is UnmatchedPattern -> "unmatched-pattern"
+        is StaleAcceptance -> "stale-accept"
     }
 
     private fun addDetails(json: JsonObject, violation: Violation) {
@@ -70,6 +72,10 @@ object JsonReport {
             is UnmatchedPattern -> {
                 json.addProperty("setting", violation.setting)
                 json.addProperty("pattern", violation.pattern)
+            }
+            is StaleAcceptance -> {
+                json.addProperty("setting", violation.setting)
+                json.add("members", JsonArray().apply { violation.files.forEach(::add) })
             }
             is DependenciesNotChecked -> Unit
         }

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.rules
 
+import de.maibornwolff.codecharta.analysers.tools.gate.config.AcceptedDependency
 import de.maibornwolff.codecharta.analysers.tools.gate.config.DependencyRule
 import de.maibornwolff.codecharta.analysers.tools.gate.config.DependencyRules
 import de.maibornwolff.codecharta.analysers.tools.gate.config.Severity
@@ -138,7 +139,94 @@ class DependencyRuleEvaluatorTest {
         assertThat(violations).isEmpty()
     }
 
+    @Test
+    fun `should not report a cycle between files that an entry accepts by its files in any order`() {
+        // Arrange
+        val other = Declaration("c/Other.kt", "Other")
+        val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo), cyclic(foo, other), cyclic(other, foo)))
+        val rules = DependencyRules(cyclesBetweenFiles = cycleRule.copy(accept = listOf(accepted("b/Bar.kt", "a/Foo.kt"))))
+
+        // Act
+        val violations = DependencyRuleEvaluator(rules).evaluate(analysis)
+
+        // Assert
+        assertThat(violations.map { (it as CycleViolation).files }).containsExactly(listOf("a/Foo.kt", "c/Other.kt"))
+    }
+
+    @Test
+    fun `should not report a cycle inside the file an entry accepts`() {
+        // Arrange
+        val analysis = DependencyAnalysis(listOf(cyclic(bar, baz), cyclic(baz, bar)))
+        val rules = DependencyRules(cyclesInsideFiles = cycleRule.copy(accept = listOf(accepted("b/Bar.kt"))))
+
+        // Act
+        val violations = DependencyRuleEvaluator(rules).evaluate(analysis)
+
+        // Assert
+        assertThat(violations).isEmpty()
+    }
+
+    @Test
+    fun `should not report an accepted upward dependency but the one in the other direction`() {
+        // Arrange
+        val analysis = DependencyAnalysis(
+            listOf(plain(foo, bar), plain(bar, foo)),
+            mapOf(("a/Foo.kt" to "b/Bar.kt") to true, ("b/Bar.kt" to "a/Foo.kt") to true)
+        )
+        val rules = DependencyRules(upward = upwardRule.copy(accept = listOf(accepted("a/Foo.kt", "b/Bar.kt"))))
+
+        // Act
+        val violations = DependencyRuleEvaluator(rules).evaluate(analysis)
+
+        // Assert
+        assertThat(violations).containsExactly(UpwardViolation(Severity.WARNING, "Turn the dependency around.", bar, foo))
+    }
+
+    @Test
+    fun `should warn about each accepted dependency the analysis no longer finds with the setting of its entry`() {
+        // Arrange
+        val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo)))
+        val rules = DependencyRules(
+            cyclesBetweenFiles = cycleRule.copy(accept = listOf(accepted("a/Foo.kt", "b/Bar.kt"), accepted("a/Foo.kt", "c/Gone.kt"))),
+            upward = upwardRule.copy(accept = listOf(accepted("a/Foo.kt", "b/Bar.kt")))
+        )
+
+        // Act
+        val violations = DependencyRuleEvaluator(rules).evaluate(analysis)
+
+        // Assert
+        assertThat(violations).containsExactly(
+            StaleAcceptance(
+                Severity.WARNING,
+                STALE_INSTRUCTION,
+                "dependencies.cyclesBetweenFiles.accept[1]",
+                listOf("a/Foo.kt", "c/Gone.kt")
+            ),
+            StaleAcceptance(Severity.WARNING, STALE_INSTRUCTION, "dependencies.upward.accept[0]", listOf("a/Foo.kt", "b/Bar.kt"))
+        )
+    }
+
+    @Test
+    fun `should not call an accepted cycle stale while ignore skips it as well`() {
+        // Arrange
+        val analysis = DependencyAnalysis(listOf(cyclic(foo, bar), cyclic(bar, foo)))
+        val rule = cycleRule.copy(ignore = listOf("b/"), accept = listOf(accepted("a/Foo.kt", "b/Bar.kt")))
+
+        // Act
+        val violations = DependencyRuleEvaluator(DependencyRules(cyclesBetweenFiles = rule)).evaluate(analysis)
+
+        // Assert
+        assertThat(violations).isEmpty()
+    }
+
+    private fun accepted(vararg files: String) = AcceptedDependency(files.toList(), "Known and fine.")
+
     private fun cyclic(from: Declaration, to: Declaration) = DeclarationDependency(from, to, isCyclic = true)
 
     private fun plain(from: Declaration, to: Declaration) = DeclarationDependency(from, to)
+
+    companion object {
+        private const val STALE_INSTRUCTION =
+            "The analysis no longer finds these accepted dependencies: remove their entries from the config."
+    }
 }

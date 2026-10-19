@@ -16,7 +16,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.depend
 class DependencyResolverService {
     companion object {
         fun resolveNodes(fileReports: Collection<FileReport>): Collection<Node> {
-            val nodes = applyRustReexportAliases(fileReports.flatMap { it.nodes })
+            val nodes = AngularTemplateReferences.qualify(applyRustReexportAliases(fileReports.flatMap { it.nodes }))
             val dictionary = getDictionary(nodes)
             val knownNodePaths = getKnownNodePaths(nodes)
             return nodes.map { it.resolveTypes(dictionary, standardLibraryFor(it.language).get(), knownNodePaths) }
@@ -66,6 +66,8 @@ class DependencyResolverService {
             SupportedLanguage.VUE -> EmptyStandardLibrary()
             SupportedLanguage.DELPHI -> EmptyStandardLibrary()
             SupportedLanguage.RUST -> EmptyStandardLibrary()
+            SupportedLanguage.ANGULAR -> EmptyStandardLibrary()
+            SupportedLanguage.SQL -> EmptyStandardLibrary()
         }
     }
 }

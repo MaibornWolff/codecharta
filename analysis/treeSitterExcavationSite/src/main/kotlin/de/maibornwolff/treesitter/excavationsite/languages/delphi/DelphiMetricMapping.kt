@@ -32,7 +32,7 @@ object DelphiMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("kAnd", "kOr", "kXor")
+                        allowedTypes = setOf("kAnd", "kOr", "kXor")
                     )
                 )
             )

@@ -36,7 +36,6 @@ export class GlobalConfigurationDialogComponent {
     resetCameraIfNewFileIsLoaded = toSignal(this.preferencesReadWindow.resetCameraIfNewFileIsLoaded$, {
         requireSync: true
     })
-    dependencyViewEnabled = toSignal(this.preferencesReadWindow.dependencyViewEnabled$, { requireSync: true })
 
     open() {
         this.dialogElement().nativeElement.showModal()
@@ -60,9 +59,5 @@ export class GlobalConfigurationDialogComponent {
 
     handleScreenshotToClipboardEnabledChanged(checked: boolean) {
         this.globalSettingsWriteStore.setScreenshotToClipboard(checked)
-    }
-
-    handleDependencyViewEnabledChanged(checked: boolean) {
-        this.globalSettingsWriteStore.setDependencyViewEnabled(checked)
     }
 }

@@ -25,6 +25,10 @@ Ideas/
 .codecharta-gate-output/
 .scannerwork
 
+# sources of the tree-sitter grammars CodeCharta builds itself; only their jars in
+# analysis/treeSitterExcavationSite/libs belong in the repo
+/tree-sitter-grammars/
+
 # claude
 /.claude
 
@@ -149,7 +153,7 @@ fabric.properties
 # Package Files #
 *.jar
 !gradle-wrapper.jar
-# tree-sitter-tsx and tree-sitter-pascal are not published to Maven Central
+# tree-sitter-tsx, tree-sitter-pascal and tree-sitter-angular are not published to Maven Central
 !analysis/treeSitterExcavationSite/libs/*.jar
 *.war
 *.ear

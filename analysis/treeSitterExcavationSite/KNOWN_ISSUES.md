@@ -22,39 +22,6 @@ Circular dependencies exist between `languages/` and `features/extraction/extrac
 2. Make extractors injectable via the `LanguageDefinition` interface
 3. Define extraction strategies in `shared/domain/` and reference them from language definitions
 
-### API Layer Does More Than Pure Delegation
-
-**Severity: Low**
-
-`TreeSitterMetrics` and `TreeSitterExtraction` in `api/` do more than simple facade delegation:
-
-1. **Orchestration**: Both resolve language definitions via `LanguageRegistry` before calling feature facades
-2. **Result transformation**: `TreeSitterMetrics.parse()` filters metrics into `perFunctionMetrics` vs `fileMetrics` (lines 77-83)
-
-**Current pattern:**
-```kotlin
-fun parse(content: String, language: Language): MetricsResult {
-    val definition = LanguageRegistry.getLanguageDefinition(language)
-    val treeSitterLanguage = LanguageRegistry.getTreeSitterLanguage(language)
-    val metrics = MetricsFacade.collectMetrics(content, treeSitterLanguage, definition)
-    // ... filtering logic ...
-    return MetricsResult(fileMetrics, perFunctionMetrics)
-}
-```
-
-**Pure delegation would be:**
-```kotlin
-fun parse(content: String, language: Language): MetricsResult {
-    return MetricsFacade.parse(content, language)
-}
-```
-
-**Impact:** Minor. The orchestration is reasonable for an API layer, and keeps feature facades decoupled from the `Language` enum. However, metric filtering is business logic that belongs in `MetricsFacade`.
-
-**Proposed fix:** Move language resolution and result transformation into the feature facades, accepting `Language` directly.
-
----
-
 ---
 
 ## Accepted Limitations
@@ -75,7 +42,7 @@ See `plans/add-delphi-dependency-support.md` ("Accepted v1 limitations") for the
 
 The following issues were investigated but **not found**:
 
-- **Facades avoided**: Facades (`MetricsFacade`, `ExtractionFacade`) are correctly used. API layer delegates to facades (though with orchestration - see above).
+- **Facades avoided**: Facades (`MetricsFacade`, `ExtractionFacade`, `DependenciesFacade`) are correctly used. The API layer checks the language and delegates; the facades resolve the language and combine embedded sources.
 - **Magic values**: Constants are properly extracted to `companion object` blocks (e.g., `LONG_METHOD_THRESHOLD`, `MESSAGE_CHAINS_THRESHOLD`)
 - **Excessive comments**: Comments are appropriate and explain non-obvious logic
 - **Unused variables**: All declared variables are used

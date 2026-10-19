@@ -11,6 +11,14 @@ class SupportedLanguageTest {
         assertThat(SupportedLanguage.ofFileName("Main.kt")).isEqualTo(SupportedLanguage.KOTLIN)
         assertThat(SupportedLanguage.ofFileName("main.go")).isEqualTo(SupportedLanguage.GO)
         assertThat(SupportedLanguage.ofFileName("App.vue")).isEqualTo(SupportedLanguage.VUE)
+        assertThat(SupportedLanguage.ofFileName("cave.component.html")).isEqualTo(SupportedLanguage.ANGULAR)
+    }
+
+    @Test
+    fun `should detect SQL from the endings of scripts and Oracle packages`() {
+        // Act & Assert
+        assertThat(listOf("schema.sql", "billing.pks", "billing.pkb", "audit.pls").map { SupportedLanguage.ofFileName(it) })
+            .containsExactly(SupportedLanguage.SQL, SupportedLanguage.SQL, SupportedLanguage.SQL, SupportedLanguage.SQL)
     }
 
     @Test

@@ -1,3 +1,10 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage.output
 
-data class DomainAnalysisResult(val filePaths: List<String>, val wordsByPath: Map<String, List<WordFrequency>>)
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
+
+/** @property failedFiles the files that could not be analysed and are missing from [filePaths] */
+data class DomainAnalysisResult(
+    val filePaths: List<String>,
+    val wordsByPath: Map<String, List<WordFrequency>>,
+    val failedFiles: List<FailedFile> = emptyList()
+)

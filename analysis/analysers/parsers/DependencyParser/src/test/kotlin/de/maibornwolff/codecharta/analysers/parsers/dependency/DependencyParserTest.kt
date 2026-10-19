@@ -1,6 +1,8 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency
 
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import de.maibornwolff.treesitter.excavationsite.api.GrammarUnavailableException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -281,6 +283,303 @@ class DependencyParserTest {
         // Assert
         assertThat(exitCode).isZero()
         assertThat(outputStream.toString()).contains("InventoryService.kt")
+    }
+
+    @Test
+    fun `should draw an edge from an Angular template to each component and pipe it uses`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = angularFiles(tempDir)
+
+        // Act
+        val output = runParser(projectDir)
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
+            "cave.component.html" to "torch.component.ts",
+            "cave.component.html" to "gold-coins.pipe.ts"
+        )
+    }
+
+    @Test
+    fun `should draw an edge from an Angular component to its template file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("cave").createDirectories()
+        tempDir.resolve("cave/cave.component.html").writeText("<p>{{ name }}</p>")
+        tempDir.resolve("cave/cave.component.ts").writeText(
+            """
+            @Component({ selector: 'app-cave', templateUrl: './cave.component.html' })
+            export class CaveComponent {}
+            """.trimIndent()
+        )
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactly("cave.component.ts" to "cave.component.html")
+    }
+
+    @Test
+    fun `should draw an edge from an Angular component to the components and pipes of its inline template`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("vault.component.ts").writeText(
+            """
+            @Component({ selector: 'app-vault', template: `<app-torch />{{ gold | goldCoins }}` })
+            export class VaultComponent {}
+            """.trimIndent()
+        )
+        tempDir.resolve("torch.component.ts").writeText("@Component({ selector: 'app-torch' })\nexport class TorchComponent {}")
+        tempDir.resolve("gold-coins.pipe.ts").writeText("@Pipe({ name: 'goldCoins' })\nexport class GoldCoinsPipe {}")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
+            "vault.component.ts" to "torch.component.ts",
+            "vault.component.ts" to "gold-coins.pipe.ts"
+        )
+    }
+
+    @Test
+    fun `should resolve a pipe name to the same-named class the component imports from its file`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("new").createDirectories()
+        tempDir.resolve("legacy").createDirectories()
+        tempDir.resolve("new/fmt.pipe.ts").writeText("@Pipe({ name: 'fmt', standalone: true })\nexport class FmtPipe {}")
+        tempDir.resolve("legacy/fmt.pipe.ts").writeText("@Pipe({ name: 'fmt', standalone: true })\nexport class FmtPipe {}")
+        tempDir.resolve("a.component.html").writeText("<p>{{ value | fmt }}</p>")
+        tempDir.resolve("a.component.ts").writeText(
+            """
+            import { FmtPipe } from './new/fmt.pipe';
+            @Component({ selector: 'app-a', standalone: true, imports: [FmtPipe], templateUrl: './a.component.html' })
+            export class AComponent {}
+            """.trimIndent()
+        )
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
+            "a.component.ts" to "fmt.pipe.ts",
+            "a.component.ts" to "a.component.html",
+            "a.component.html" to "fmt.pipe.ts"
+        )
+        assertThat(edgeTargetFolders(output, "a.component.html")).containsExactly("new")
+    }
+
+    @Test
+    fun `should resolve the selectors of a standalone component through the exports of a module it imports`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("other").createDirectories()
+        tempDir
+            .resolve(
+                "b1.component.ts"
+            ).writeText("@Component({ selector: 'app-b', standalone: true, template: '<p>b1</p>' })\nexport class B1Component {}")
+        tempDir
+            .resolve(
+                "other/b2.component.ts"
+            ).writeText("@Component({ selector: 'app-b', standalone: true, template: '<p>b2</p>' })\nexport class B2Component {}")
+        tempDir.resolve("shared.module.ts").writeText(
+            """
+            import { B1Component } from './b1.component';
+            @NgModule({ imports: [B1Component], exports: [B1Component] })
+            export class SharedModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("a.component.ts").writeText(
+            """
+            import { SharedModule } from './shared.module';
+            @Component({ selector: 'app-a', standalone: true, imports: [SharedModule], template: '<app-b></app-b>' })
+            export class AComponent {}
+            """.trimIndent()
+        )
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).contains("a.component.ts" to "b1.component.ts")
+        assertThat(fileEdgeNames(output)).doesNotContain("a.component.ts" to "b2.component.ts")
+    }
+
+    @Test
+    fun `should resolve the selectors of a module's component through the exports its imported modules re-export`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("other").createDirectories()
+        tempDir
+            .resolve(
+                "b1.component.ts"
+            ).writeText("@Component({ selector: 'app-b', template: '<p>b1</p>' })\nexport class B1Component {}")
+        tempDir
+            .resolve(
+                "other/b2.component.ts"
+            ).writeText("@Component({ selector: 'app-b', template: '<p>b2</p>' })\nexport class B2Component {}")
+        tempDir.resolve("inner.module.ts").writeText(
+            """
+            import { B1Component } from './b1.component';
+            @NgModule({ declarations: [B1Component], exports: [B1Component] })
+            export class InnerModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("shared.module.ts").writeText(
+            """
+            import { InnerModule } from './inner.module';
+            @NgModule({ imports: [InnerModule], exports: [InnerModule] })
+            export class SharedModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("app.module.ts").writeText(
+            """
+            import { AComponent } from './a.component';
+            import { SharedModule } from './shared.module';
+            @NgModule({ declarations: [AComponent], imports: [SharedModule] })
+            export class AppModule {}
+            """.trimIndent()
+        )
+        tempDir.resolve("a.component.html").writeText("<app-b></app-b>")
+        tempDir
+            .resolve(
+                "a.component.ts"
+            ).writeText("@Component({ selector: 'app-a', templateUrl: './a.component.html' })\nexport class AComponent {}")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).contains("a.component.html" to "b1.component.ts")
+        assertThat(fileEdgeNames(output)).doesNotContain("a.component.html" to "b2.component.ts")
+    }
+
+    @Test
+    fun `should link a component selector without a hyphen but no html element to code of its name`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        tempDir.resolve("src/app/views").createDirectories()
+        tempDir.resolve("src/app/creature.component.ts").writeText(
+            """
+            @Component({ selector: 'creature', template: '<p>creature</p>' })
+            export class CreatureComponent {}
+            @Component({ selector: 'app-host', templateUrl: 'views/host.html' })
+            export class HostComponent {}
+            """.trimIndent()
+        )
+        tempDir.resolve("src/app/views.ts").writeText("export function header() {}")
+        tempDir.resolve("src/app/views/host.html").writeText("<header><creature></creature></header>")
+
+        // Act
+        val output = runParser(tempDir.toString())
+
+        // Assert
+        assertThat(fileEdgeNames(output)).containsExactlyInAnyOrder(
+            "creature.component.ts" to "host.html",
+            "host.html" to "creature.component.ts"
+        )
+    }
+
+    @Test
+    fun `should end with an error and write no map when every file fails`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+        val output = ByteArrayOutputStream()
+        val parser = DependencyParser(output = PrintStream(output), createAnalyzer = { throw IllegalStateException("broken extractor") })
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir, "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
+    }
+
+    @Test
+    fun `should end with an error and write no map when a grammar does not fit the core`(
+        @TempDir tempDir: Path
+    ) {
+        // Arrange
+        val projectDir = dependingFiles(tempDir)
+        val output = ByteArrayOutputStream()
+        val parser = DependencyParser(output = PrintStream(output), createAnalyzer = { throw GrammarUnavailableException("incompatible") })
+
+        // Act
+        val exitCode = CommandLine(parser).execute(projectDir, "-nc")
+
+        // Assert
+        assertThat(exitCode).isNotZero()
+        assertThat(output.toString()).isEmpty()
+    }
+
+    private fun edgeTargetFolders(output: String, sourceName: String): List<String> {
+        val parentNamesById = HashMap<String, String>()
+
+        fun collect(node: JsonObject, parentName: String) {
+            parentNamesById[node.get("id").asString] = parentName
+            node.getAsJsonArray("children")?.forEach { collect(it.asJsonObject, node.get("name").asString) }
+        }
+        JsonParser.parseString(output).asJsonObject.getAsJsonArray("files").forEach { collect(it.asJsonObject, "") }
+        val namesById = fileNamesById(output)
+        return dependencyLensOf(output)
+            .getAsJsonArray("edges")
+            .map { it.asJsonObject }
+            .filter { namesById[it.get("fromId").asString] == sourceName }
+            .map { parentNamesById.getValue(it.get("toId").asString) }
+    }
+
+    private fun fileEdgeNames(output: String): List<Pair<String, String>> {
+        val namesById = fileNamesById(output)
+        return dependencyLensOf(output).getAsJsonArray("edges").map { edge ->
+            namesById.getValue(edge.asJsonObject.get("fromId").asString) to namesById.getValue(edge.asJsonObject.get("toId").asString)
+        }
+    }
+
+    private fun fileNamesById(output: String): Map<String, String> {
+        val namesById = HashMap<String, String>()
+
+        fun collect(node: JsonObject) {
+            namesById[node.get("id").asString] = node.get("name").asString
+            node.getAsJsonArray("children")?.forEach { collect(it.asJsonObject) }
+        }
+        JsonParser.parseString(output).asJsonObject.getAsJsonArray("files").forEach { collect(it.asJsonObject) }
+        return namesById
+    }
+
+    private fun angularFiles(tempDir: Path): String {
+        tempDir.resolve("cave.component.html").writeText(
+            """
+            <app-torch [lit]="isLit" />
+            <p>{{ treasure | goldCoins }}</p>
+            <router-outlet />
+            """.trimIndent()
+        )
+        tempDir.resolve("torch.component.ts").writeText(
+            """
+            @Component({ selector: 'app-torch', templateUrl: './torch.component.html' })
+            export class TorchComponent {}
+            """.trimIndent()
+        )
+        tempDir.resolve("gold-coins.pipe.ts").writeText(
+            """
+            @Pipe({ name: 'goldCoins' })
+            export class GoldCoinsPipe {}
+            """.trimIndent()
+        )
+        return tempDir.toString()
     }
 
     private fun dependingFiles(tempDir: Path): String {

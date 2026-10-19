@@ -40,7 +40,14 @@ sealed interface MetricOverride {
 
 data class PathOverride(val paths: List<String>, val metrics: Map<String, MetricOverride>)
 
-data class DependencyRule(val severity: Severity, val instruction: String? = null, val ignore: List<String> = emptyList())
+data class AcceptedDependency(val files: List<String>, val reason: String)
+
+data class DependencyRule(
+    val severity: Severity,
+    val instruction: String? = null,
+    val ignore: List<String> = emptyList(),
+    val accept: List<AcceptedDependency> = emptyList()
+)
 
 data class DependencyRules(
     val cyclesBetweenFiles: DependencyRule? = null,

@@ -78,11 +78,16 @@ class SourceFileScanner(
     }
 
     fun readFileContent(file: File, charset: Charset = Charsets.UTF_8): Result<String> = runCatching {
-        require(file.exists()) { "File does not exist: ${file.absolutePath}" }
-        require(file.isFile) { "Path is not a file: ${file.absolutePath}" }
-        file.readText(charset).withoutByteOrderMarks()
+        readContent(file, charset)
     }.onFailure { error ->
         Logger.error(error) { "Failed to read file: ${file.absolutePath}" }
+    }
+
+    /** The text of a file without its byte order marks; a file it cannot read throws, for the caller to report. */
+    fun readContent(file: File, charset: Charset = Charsets.UTF_8): String {
+        require(file.exists()) { "File does not exist: ${file.absolutePath}" }
+        require(file.isFile) { "Path is not a file: ${file.absolutePath}" }
+        return file.readText(charset).withoutByteOrderMarks()
     }
 
     // TreeSitter treats a byte order mark as source text and mis-tokenizes the identifiers around it.

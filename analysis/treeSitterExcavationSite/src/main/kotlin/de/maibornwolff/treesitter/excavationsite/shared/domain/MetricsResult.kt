@@ -18,4 +18,8 @@ data class MetricsResult(val metrics: Map<String, Double>, val perFunctionMetric
     val excessiveComments: Double get() = metrics["excessive_comments"] ?: 0.0
     val commentRatio: Double get() = metrics["comment_ratio"] ?: 0.0
     val messageChains: Double get() = metrics["message_chains"] ?: 0.0
+    val numberOfStoredProcedures: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES.metricName] ?: 0.0
+    val numberOfTriggers: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_TRIGGERS.metricName] ?: 0.0
+    val numberOfViews: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_VIEWS.metricName] ?: 0.0
+    val numberOfTables: Double get() = metrics[AvailableFileMetrics.NUMBER_OF_TABLES.metricName] ?: 0.0
 }

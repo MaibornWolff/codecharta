@@ -23,13 +23,19 @@ enum class SupportedLanguage(val displayName: String, private val fileExtensions
     KOTLIN("Kotlin", listOf(FileExtension.KOTLIN)),
     VUE("Vue", listOf(FileExtension.VUE)),
     DELPHI("Delphi", listOf(FileExtension.DELPHI)),
-    RUST("Rust", listOf(FileExtension.RUST));
+    RUST("Rust", listOf(FileExtension.RUST)),
+    ANGULAR("Angular template", listOf(FileExtension.HTML)),
+    SQL("SQL", listOf(FileExtension.SQL));
 
     val lensName: String
         get() = name.lowercase().replace(ENUM_WORD_SEPARATOR, "")
 
     val declaresPackages: Boolean
         get() = this in PACKAGE_LANGUAGES
+
+    // Migrations create an object again in a later file to change it, so the last file holds its current definition
+    val laterDefinitionReplacesEarlier: Boolean
+        get() = this == SQL
 
     /** Extensions without the leading dot, the form file scanning and import stripping both use. */
     val suffixes: List<String>

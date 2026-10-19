@@ -1,116 +1,81 @@
 package de.maibornwolff.treesitter.excavationsite.integration.metrics.adapters
 
+import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.CountedNodeTypes
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
+import de.maibornwolff.treesitter.excavationsite.shared.domain.AvailableFileMetrics
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Metric
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricCondition
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.NestedNodeType
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ObjectKey
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.walker.TreeNodeTypes
-import kotlin.collections.iterator
 
 /**
- * Adapts a LanguageDefinition to the MetricNodeTypes interface.
- *
- * Builds TreeNodeTypes for each metric category by scanning the nodeMetrics map.
- * Converts feature-local MetricCondition to infrastructure-level NestedNodeType.
+ * Adapts a LanguageDefinition to the MetricNodeTypes interface by sorting the node types of its nodeMetrics map
+ * into one TreeNodeTypes per metric category.
  */
 class LanguageDefinitionMetricsAdapter(definition: LanguageDefinition) : MetricNodeTypes {
-    override val logicComplexityNodeTypes: TreeNodeTypes
-    override val functionComplexityNodeTypes: TreeNodeTypes
-    override val commentLineNodeTypes: TreeNodeTypes
-    override val numberOfFunctionsNodeTypes: TreeNodeTypes
-    override val functionBodyNodeTypes: TreeNodeTypes
-    override val functionParameterNodeTypes: TreeNodeTypes
-    override val messageChainsNodeTypes: TreeNodeTypes
-    override val messageChainsCallNodeTypes: TreeNodeTypes
+    private val logicComplexity = NodeTypesBuilder()
+    private val functionComplexity = NodeTypesBuilder()
+    private val commentLine = NodeTypesBuilder()
+    private val numberOfFunctions = NodeTypesBuilder()
+    private val functionBody = NodeTypesBuilder()
+    private val functionParameter = NodeTypesBuilder()
+    private val messageChains = NodeTypesBuilder()
+    private val messageChainsCall = NodeTypesBuilder()
+    private val counted = mutableMapOf<AvailableFileMetrics, NodeTypesBuilder>()
+    private val objectKeys = mutableMapOf<AvailableFileMetrics, MutableMap<String, (SyntaxNode) -> ObjectKey?>>()
 
     init {
-        val logicSimple = mutableSetOf<String>()
-        val logicNested = mutableSetOf<NestedNodeType>()
-        val functionComplexitySimple = mutableSetOf<String>()
-        val commentSimple = mutableSetOf<String>()
-        val commentNested = mutableSetOf<NestedNodeType>()
-        val functionSimple = mutableSetOf<String>()
-        val functionNested = mutableSetOf<NestedNodeType>()
-        val functionBodySimple = mutableSetOf<String>()
-        val functionBodyNested = mutableSetOf<NestedNodeType>()
-        val parameterSimple = mutableSetOf<String>()
-        val chainSimple = mutableSetOf<String>()
-        val chainCallSimple = mutableSetOf<String>()
-
         for ((nodeType, metrics) in definition.nodeMetrics) {
-            for (metric in metrics) {
-                when (metric) {
-                    is Metric.LogicComplexity -> logicSimple.add(nodeType)
-                    is Metric.LogicComplexityConditional -> {
-                        toNestedNodeType(nodeType, metric.condition)?.let { logicNested.add(it) }
-                    }
-                    is Metric.FunctionComplexity -> functionComplexitySimple.add(nodeType)
-                    is Metric.CommentLine -> commentSimple.add(nodeType)
-                    is Metric.CommentLineConditional -> {
-                        toNestedNodeType(nodeType, metric.condition)?.let { commentNested.add(it) }
-                    }
-                    is Metric.Function -> functionSimple.add(nodeType)
-                    is Metric.FunctionConditional -> {
-                        toNestedNodeType(nodeType, metric.condition)?.let { functionNested.add(it) }
-                    }
-                    is Metric.FunctionBody -> functionBodySimple.add(nodeType)
-                    is Metric.FunctionBodyConditional -> {
-                        toNestedNodeType(nodeType, metric.condition)?.let { functionBodyNested.add(it) }
-                    }
-                    is Metric.Parameter -> parameterSimple.add(nodeType)
-                    is Metric.MessageChain -> chainSimple.add(nodeType)
-                    is Metric.MessageChainCall -> chainCallSimple.add(nodeType)
-                }
-            }
+            metrics.forEach { metric -> addToCategory(nodeType, metric) }
         }
-
-        logicComplexityNodeTypes = TreeNodeTypes(
-            logicSimple,
-            logicNested.takeIf { it.isNotEmpty() }
-        )
-        functionComplexityNodeTypes = TreeNodeTypes(functionComplexitySimple)
-        commentLineNodeTypes = TreeNodeTypes(
-            commentSimple,
-            commentNested.takeIf { it.isNotEmpty() }
-        )
-        numberOfFunctionsNodeTypes = TreeNodeTypes(
-            functionSimple,
-            functionNested.takeIf { it.isNotEmpty() }
-        )
-        functionBodyNodeTypes = TreeNodeTypes(
-            functionBodySimple,
-            functionBodyNested.takeIf { it.isNotEmpty() }
-        )
-        functionParameterNodeTypes = TreeNodeTypes(parameterSimple)
-        messageChainsNodeTypes = TreeNodeTypes(chainSimple)
-        messageChainsCallNodeTypes = TreeNodeTypes(chainCallSimple)
     }
 
-    /**
-     * Converts a feature-local MetricCondition to an infrastructure-level NestedNodeType.
-     */
-    private fun toNestedNodeType(nodeType: String, condition: MetricCondition): NestedNodeType? = when (condition) {
-        is MetricCondition.Always -> null
-        is MetricCondition.ChildFieldMatches -> NestedNodeType(
-            baseNodeType = nodeType,
-            childNodeFieldName = condition.fieldName,
-            childNodeTypes = condition.allowedValues
-        )
-        is MetricCondition.ChildPositionMatches -> NestedNodeType(
-            baseNodeType = nodeType,
-            childNodeCount = condition.requiredChildCount,
-            childNodePosition = condition.position,
-            childNodeTypes = condition.allowedTypes
-        )
-        is MetricCondition.AnyChildMatches -> NestedNodeType(
-            baseNodeType = nodeType,
-            childNodeTypes = condition.allowedTypes,
-            matchesAnyChild = true
-        )
-        is MetricCondition.ParentMatches -> NestedNodeType(
-            baseNodeType = nodeType,
-            parentNodeTypes = condition.allowedTypes
-        )
+    override val logicComplexityNodeTypes: TreeNodeTypes = logicComplexity.build()
+    override val functionComplexityNodeTypes: TreeNodeTypes = functionComplexity.build()
+    override val commentLineNodeTypes: TreeNodeTypes = commentLine.build()
+    override val numberOfFunctionsNodeTypes: TreeNodeTypes = numberOfFunctions.build()
+    override val functionBodyNodeTypes: TreeNodeTypes = functionBody.build()
+    override val functionParameterNodeTypes: TreeNodeTypes = functionParameter.build()
+    override val messageChainsNodeTypes: TreeNodeTypes = messageChains.build()
+    override val messageChainsCallNodeTypes: TreeNodeTypes = messageChainsCall.build()
+    override val countedNodeTypes: Map<AvailableFileMetrics, CountedNodeTypes> = counted.mapValues { (fileMetric, builder) ->
+        CountedNodeTypes(builder.build(), objectKeys[fileMetric].orEmpty())
+    }
+
+    private fun addToCategory(nodeType: String, metric: Metric) {
+        when (metric) {
+            is Metric.LogicComplexity -> logicComplexity.add(nodeType)
+            is Metric.LogicComplexityConditional -> logicComplexity.add(nodeType, metric.condition)
+            is Metric.FunctionComplexity -> functionComplexity.add(nodeType)
+            is Metric.CommentLine -> commentLine.add(nodeType)
+            is Metric.CommentLineConditional -> commentLine.add(nodeType, metric.condition)
+            is Metric.Function -> numberOfFunctions.add(nodeType)
+            is Metric.FunctionConditional -> numberOfFunctions.add(nodeType, metric.condition)
+            is Metric.FunctionBody -> functionBody.add(nodeType)
+            is Metric.FunctionBodyConditional -> functionBody.add(nodeType, metric.condition)
+            is Metric.Parameter -> functionParameter.add(nodeType)
+            is Metric.MessageChain -> messageChains.add(nodeType)
+            is Metric.MessageChainCall -> messageChainsCall.add(nodeType)
+            is Metric.Counted -> addToCount(nodeType, metric)
+        }
+    }
+
+    private fun addToCount(nodeType: String, metric: Metric.Counted) {
+        counted.getOrPut(metric.fileMetric) { NodeTypesBuilder() }.add(nodeType, metric.condition)
+        objectKeys.getOrPut(metric.fileMetric) { mutableMapOf() }[nodeType] = metric.objectKey
+    }
+
+    private class NodeTypesBuilder {
+        private val simple = mutableSetOf<String>()
+        private val conditional = mutableMapOf<String, MutableList<MetricCondition>>()
+
+        fun add(nodeType: String, condition: MetricCondition = MetricCondition.Always) {
+            val isUnconditional = condition == MetricCondition.Always
+            if (isUnconditional) simple.add(nodeType) else conditional.getOrPut(nodeType) { mutableListOf() }.add(condition)
+        }
+
+        fun build(): TreeNodeTypes = TreeNodeTypes(simple, conditional)
     }
 }

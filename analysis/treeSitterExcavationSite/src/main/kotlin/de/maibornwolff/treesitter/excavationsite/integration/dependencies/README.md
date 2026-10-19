@@ -4,7 +4,7 @@
 
 The dependencies feature extracts structural dependency information from source files: package declarations, imports, class/interface/enum declarations, and the types each declaration uses. This data is consumed by DependaCharta (DC) to build dependency graphs, detect cycles, and assign architectural levels.
 
-Java, Kotlin, C#, C++, TypeScript, JavaScript, Go, Python, PHP, Vue, Delphi, and Rust are implemented.
+Java, Kotlin, C#, C++, TypeScript, JavaScript, Go, Python, PHP, Vue, Delphi, Rust, Angular templates, and SQL are implemented.
 
 ## Architecture
 
@@ -53,7 +53,8 @@ Source code string
 data class DependencyResult(
     val packagePath: List<String>,          // ["com", "example", "service"]
     val imports: List<ImportDeclaration>,
-    val declarations: List<Declaration>
+    val declarations: List<Declaration>,
+    val embedded: List<EmbeddedDeclarations> = [] // what the embedded sources of declarations declare, see below
 )
 
 data class ImportDeclaration(
@@ -74,7 +75,8 @@ data class Declaration(
     val name: String,                       // "MyService"
     val type: DeclarationType,              // CLASS, INTERFACE, ENUM, RECORD, ANNOTATION, FUNCTION, VARIABLE, REEXPORT, SCRIPT
     val usedTypes: Set<UsedType>,           // types referenced inside this declaration
-    val parentPath: List<String> = []       // namespace/package path: ["com", "example"]
+    val parentPath: List<String> = [],      // namespace/package path: ["com", "example"]
+    val angular: AngularDeclaration? = null // what an Angular decorator declares: templateNames, templateUrl, imports, ...
 )
 
 data class UsedType(
@@ -131,14 +133,35 @@ dependency gets.
 
 - `DeclarationType.SCRIPT` (PHP): a file that declares nothing is one declaration with an empty name that carries
   what the whole file uses. The adapter names it `<file>.script`.
+- `DeclarationType.SCRIPT` (SQL): the statements outside any `CREATE` of a file, such as an `INSERT … SELECT` of a
+  migration, are one declaration with an empty name next to the objects the file creates.
 - A Vue component is one `CLASS` named `DEFAULT_EXPORT`, like the default export of a JavaScript file. Its used types
   are the components its template names. The adapter names it after the file.
+- An Angular template is one `SCRIPT` with an empty name. Its used types are its elements, but for Angular's own
+  `ng-container`, `ng-template` and `ng-content`, and the names of the pipes it uses; the adapter resolves the ones a
+  component or pipe declares and drops the rest, such as plain HTML elements.
+
+### Template names
+
+An Angular template refers to a component by the element its selector names (`<app-cave-map>`) and to a pipe by its
+pipe name (`| goldCoins`), not by the class name. The TypeScript extractor reads them off the `@Component` and `@Pipe`
+decorators into `Declaration.angular.templateNames`: every element of a selector list, lowercased, and the pipe name. Attribute
+and class selectors name no element and are left out. The adapter matches the used types of a template against them.
 
 ### Embedded sources
 
-A Vue file holds JavaScript or TypeScript in its script blocks. `LanguageDependencyMapping.extractEmbeddedSources`
-returns them as `EmbeddedSource(content, language)`; `TreeSitterDependencies.analyze` analyses each one in its own
-language and appends its imports to the imports of the file. What an embedded source declares is dropped.
+A file can hold sources in another language: a Vue component its script blocks, an Angular component in TypeScript
+its inline template. An `EmbeddedSourceMapping` finds them as `EmbeddedSource(content, language, owner)`: the one of
+`LanguageDependencyMapping.embeddedSources`, or else the one of `LanguageDefinition.embeddedSources`. TypeScript
+registers its inline templates once, in the definition, so they count for metrics and text extraction as well; Vue
+registers its script blocks in the dependency mapping only, as its metrics and text extraction read the script through
+a preprocessor. `DependenciesFacade` analyses each source in its own language:
+
+- A source without an owner, such as a script block, belongs to the file: its imports are appended to the imports of
+  the file, and what it declares is dropped.
+- A source with an owner, such as an inline template, belongs to the declaration of that name: what it declares becomes
+  an `EmbeddedDeclarations(owner, language, declarations)` of `DependencyResult.embedded`. The adapter makes the
+  template a node of its own inside the component, `<Component>.template`.
 
 Metrics and text extraction parse only the script of a Vue file, with the JavaScript grammar and a preprocessor that
 cuts the script out. Dependency extraction needs the template as well, so `VueDependencyMapping` sets
@@ -282,8 +305,10 @@ A different concatenation order with the same types produces identical dependenc
 | **Python** | all identifiers in source order, then all attribute accesses in source order | `PythonAnalyzer.kt` |
 | **JavaScript** | Same as TypeScript (shared `UsedTypeExtractor`): typeIdentifiers, constructorCalls, memberAccesses, methodCalls, extensions, relevantIdentifiers, constraintTypes, typeAliasRhsTypes, jsxComponents. DC legacy was imports-only; TSE adds full used-type extraction. | `JavascriptAnalyzer.kt` |
 | **Vue** | template components in source order; the script imports are imports, which the adapter appends as used types | `VueAnalyzer.kt` |
+| **Angular template** | elements and pipes in source order | N/A — TSE-native, no DC legacy |
 | **Delphi** | inheritance, parameters, returnTypes, fieldTypes, propertyTypes, constTypes, variableTypes, constructorCalls, methodCalls, castTypes, attributeTypes, genericConstraintTypes | N/A — TSE-native, no DC legacy |
 | **Rust** | supertraits, fields (named + tuple), parameters, returnTypes, genericBounds, whereBounds, associatedBounds, typeAliasRhs, constStaticTypes; then per-target `impl` folding appends the impl'd trait followed by the impl method-signature types | N/A — TSE-native, no DC legacy |
+| **SQL** | the objects referenced (`FROM`, `JOIN`, `INTO`, `UPDATE`, `DELETE`, `MERGE`, `USING`, `INSERT`, `TRUNCATE`, `REFERENCES`, `EXEC`, `CALL`, `PERFORM`, the table of a trigger) and the routines called, in source order | N/A — TSE-native, no DC legacy |
 
 ### JavaScript vs TypeScript: DEFAULT_EXPORT copy behavior
 
@@ -310,6 +335,7 @@ One namespace per file. `packagePath` is authoritative; `parentPath` carries onl
 | PHP | `namespace` declaration, otherwise empty and the adapter uses the file path | empty |
 | Python / JavaScript / Vue | always empty; the adapter uses the file path | empty |
 | Delphi | `unit` declaration | empty (top-level types only in v1) |
+| SQL | always empty: an object is used by its name alone, without imports | the schema an object is created in, or the package of a routine of a PL/SQL package body |
 
 DC adapters for Class 1 build the node path as `packagePath + parentPath + name` (Kotlin) or `packagePath + name` (Java). The self-wildcard import is emitted once per file from `packagePath`.
 

@@ -1,6 +1,13 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
 import de.maibornwolff.codecharta.model.AttributeDescriptor
+import de.maibornwolff.treesitter.excavationsite.api.AvailableFileMetrics
+
+// Counts of database objects, which only the languages that have them report
+private val ATTRIBUTES_OF_SOME_LANGUAGES = AvailableFileMetrics.NODE_COUNTS.map { it.metricName }.toSet()
+
+internal fun getAttributeDescriptorsOfMeasured(measuredAttributes: Set<String>): Map<String, AttributeDescriptor> =
+    getAttributeDescriptors().filterKeys { it !in ATTRIBUTES_OF_SOME_LANGUAGES || it in measuredAttributes }
 
 internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
     val ghLink = "https://codecharta.com/docs/parser/unified"
@@ -166,6 +173,35 @@ internal fun getAttributeDescriptors(): Map<String, AttributeDescriptor> {
             title = "Message Chains",
             description = "Code smell showing occurrences of method call chains with 4 or more consecutive calls " +
                 "suggesting tight coupling",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        AvailableFileMetrics.NUMBER_OF_STORED_PROCEDURES.metricName to AttributeDescriptor(
+            title = "Number of stored procedures",
+            description = "The number of SQL stored procedures the file defines with a body, " +
+                "on their own or in an Oracle package or type body.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        AvailableFileMetrics.NUMBER_OF_TRIGGERS.metricName to AttributeDescriptor(
+            title = "Number of triggers",
+            description = "The number of SQL triggers the file creates, with a body or calling a function.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        AvailableFileMetrics.NUMBER_OF_VIEWS.metricName to AttributeDescriptor(
+            title = "Number of views",
+            description = "The number of SQL views the file defines, materialized ones included, temporary ones not.",
+            link = ghLink,
+            direction = -1,
+            analyzers = analyzerName
+        ),
+        AvailableFileMetrics.NUMBER_OF_TABLES.metricName to AttributeDescriptor(
+            title = "Number of tables",
+            description = "The number of SQL tables the file creates, without temporary tables of a session and tables a routine creates.",
             link = ghLink,
             direction = -1,
             analyzers = analyzerName

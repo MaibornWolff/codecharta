@@ -1,5 +1,6 @@
 package de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm
 
+import de.maibornwolff.treesitter.excavationsite.shared.domain.GrammarUnavailableException
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.SegmentAllocator
@@ -148,9 +149,9 @@ internal class FfmSyntaxTree private constructor(
         private fun parse(nullTerminatedSource: MemorySegment, grammar: FfmGrammar): MemorySegment {
             val parser = TreeSitterApi.parserNew()
             try {
-                check(
-                    TreeSitterApi.parserSetLanguage(parser, grammar.language)
-                ) { "The grammar is incompatible with the tree-sitter core library" }
+                if (!TreeSitterApi.parserSetLanguage(parser, grammar.language)) {
+                    throw GrammarUnavailableException("The grammar is incompatible with the tree-sitter core library")
+                }
                 val sourceLength = (nullTerminatedSource.byteSize() - 1).toInt()
                 val tree = TreeSitterApi.parserParseString(parser, nullTerminatedSource, sourceLength)
                 check(tree != MemorySegment.NULL) { "tree-sitter could not parse the source" }

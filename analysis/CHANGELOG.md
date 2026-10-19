@@ -10,10 +10,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - **Quality gate (experimental)**: `ccsh gate` checks a project against the metric limits and dependency rules
-  in its `.codecharta.yml` and reports every broken rule on the console, as JSON and through an exit code you choose.
+  in its `.codecharta.yml`, which can accept single known cycles and upward dependencies, and reports every broken
+  rule on the console, as JSON and through an exit code you choose.
 
 - **Switching off comments or strings**: `domainlanguageparser` accepts a comment or string weight of 0 to leave those
   words out.
+
+- **Angular templates**: `unifiedparser`, `domainlanguageparser` and `dependencyparser` measure Angular templates, in
+  `.html` files and inline, and link them to the components and pipes they use.
+
+- **SQL**: `unifiedparser`, `dependencyparser` and `domainlanguageparser` read `.sql`, `.pks`, `.pkb` and `.pls` files
+  of ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL without being told the dialect.
+
+- **SQL object counts**: `unifiedparser` shows for each SQL file how many stored procedures, triggers, views and
+  tables it creates.
 
 ### Changed
 
@@ -28,6 +38,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   cycle detection and levelling dominate, as on very large graphs, the gain is smaller.
 
 ### Fixed 🐞
+
+- **Strings of exported code**: `domainlanguageparser` reads the strings of exported JavaScript and TypeScript code.
+
+- **Files a parser cannot analyse**: `unifiedparser`, `dependencyparser` and `domainlanguageparser` skip a file they
+  cannot analyse with a warning that names the cause, and end with an error instead of an empty map when no file could
+  be analysed at all.
 
 - **Kotlin dependencies**: `dependencyparser` finds the Kotlin dependencies it missed, such as casts and type checks,
   caught exceptions, type bounds, lambda and function types, class literals, objects used as values, aliased imports,
@@ -139,6 +155,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   as well.
 
 ### Chore 👨‍💻 👩‍💻
+
+- **Grammar licenses**: `ccsh` ships the license notices of the Angular, HTML, TypeScript and Pascal grammars it
+  bundles.
 
 - **TreeSitterExcavationSite is now a module of the analysis build instead of an external library.** The code of
   `v0.12.0` moved into `analysis/treeSitterExcavationSite` unchanged, so the three parsers that use it compile

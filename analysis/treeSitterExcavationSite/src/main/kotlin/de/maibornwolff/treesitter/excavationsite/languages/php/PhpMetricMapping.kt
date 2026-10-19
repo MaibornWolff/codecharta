@@ -30,7 +30,7 @@ object PhpMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||", "??", "and", "or", "xor")
+                        allowedTypes = setOf("&&", "||", "??", "and", "or", "xor")
                     )
                 )
             )
@@ -51,7 +51,7 @@ object PhpMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "right",
-                        allowedValues = setOf("anonymous_function", "arrow_function", "lambda_expression")
+                        allowedTypes = setOf("anonymous_function", "arrow_function", "lambda_expression")
                     )
                 )
             )

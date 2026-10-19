@@ -101,6 +101,24 @@ class LanguageTest {
     }
 
     @Test
+    fun `should return ANGULAR for html extension`() {
+        // Arrange & Act
+        val language = Language.fromExtension("html")
+
+        // Assert
+        assertEquals(Language.ANGULAR, language)
+    }
+
+    @Test
+    fun `should have ResourceKeywords for ANGULAR with the literals and the output call of template syntax`() {
+        // Arrange & Act
+        val keywords = ResourceKeywords("keywords/angular-template-keywords.txt")
+
+        // Assert
+        assertEquals(setOf("true", "false", "null", "undefined", "emit"), keywords.getKeywords().toSet())
+    }
+
+    @Test
     fun `should have ResourceKeywords for RUST with Rust keywords`() {
         // Arrange & Act
         val keywords = ResourceKeywords("keywords/rust-keywords.txt")
@@ -111,6 +129,56 @@ class LanguageTest {
         assertTrue(keywords.getKeywords().contains("let"))
         assertTrue(keywords.getKeywords().contains("struct"))
         assertTrue(keywords.getKeywords().contains("impl"))
+    }
+
+    @Test
+    fun `should return SQL for the endings of scripts and Oracle packages`() {
+        // Arrange & Act
+        val languages = listOf("sql", "pks", "pkb", "pls").map { Language.fromExtension(it) }
+
+        // Assert
+        assertEquals(listOf(Language.SQL, Language.SQL, Language.SQL, Language.SQL), languages)
+    }
+
+    @Test
+    fun `should have ResourceKeywords for SQL with the types, built-in functions and system names of every dialect`() {
+        // Arrange
+        val words =
+            listOf("varchar", "nvarchar2", "bigint", "coalesce", "count", "nvl", "getdate", "dbo", "information_schema", "pg_catalog")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should have ResourceKeywords for SQL with the dialect names and id`() {
+        // Arrange
+        val words = listOf("postgre", "postgres", "postgresql", "oracle", "ansi", "mariadb", "sqlserver", "plpgsql", "id")
+
+        // Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(words, words.filter { it in keywords })
+    }
+
+    @Test
+    fun `should keep the words of a domain that SQL also uses as keywords out of the SQL stop words`() {
+        // Arrange
+        val domainWords = listOf(
+            "order", "statement", "transaction", "catalog", "package", "leave", "default", "views", "security", "group",
+            "case", "check", "sequence", "interval", "money", "character", "comment", "information", "objects", "tables",
+            "columns", "date", "time", "user", "key", "index", "trigger", "table"
+        )
+
+        // Act
+        val keywords = ResourceKeywords("keywords/sql-keywords.txt").getKeywords()
+
+        // Assert
+        assertEquals(emptyList<String>(), domainWords.filter { it in keywords })
     }
 
     @Test

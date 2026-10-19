@@ -26,7 +26,7 @@ object JavaMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||")
+                        allowedTypes = setOf("&&", "||")
                     )
                 )
             )
@@ -46,7 +46,7 @@ object JavaMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "value",
-                        allowedValues = setOf("lambda_expression")
+                        allowedTypes = setOf("lambda_expression")
                     )
                 )
             )

@@ -1,6 +1,7 @@
 package de.maibornwolff.treesitter.excavationsite.api.contract
 
 import de.maibornwolff.treesitter.excavationsite.api.Language
+import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterExtraction
 import de.maibornwolff.treesitter.excavationsite.api.TreeSitterMetrics
 import org.assertj.core.api.Assertions.assertThat
@@ -11,7 +12,7 @@ import org.junit.jupiter.params.provider.EnumSource
 
 /**
  * Contract tests for robustness, determinism, error handling, and zero-case behavior.
- * These tests ensure the library handles edge cases gracefully across all 19 languages.
+ * These tests ensure the library handles edge cases gracefully across all languages.
  */
 class RobustnessContractTest {
     @Nested
@@ -212,6 +213,25 @@ class RobustnessContractTest {
 
             // Assert
             assertThat(result.metrics).isNotNull
+        }
+
+        @Test
+        fun `should keep an escape beyond Unicode of an inline template as written`() {
+            // Arrange
+            val code = """
+                @Component({ selector: 'app-escape', template: '<p title="\u{110000} \u{FFFFFFFFFF} dragon">Lair</p>' })
+                export class EscapeComponent {}
+            """.trimIndent()
+
+            // Act
+            val metrics = TreeSitterMetrics.parse(code, Language.TYPESCRIPT)
+            val extraction = TreeSitterExtraction.extract(code, Language.TYPESCRIPT)
+            val dependencies = TreeSitterDependencies.analyze(code, Language.TYPESCRIPT)
+
+            // Assert
+            assertThat(metrics.metrics).isNotEmpty
+            assertThat(extraction.texts).containsExactly("\\u{110000} \\u{FFFFFFFFFF} dragon", "Lair")
+            assertThat(dependencies.embedded).hasSize(1)
         }
 
         @Test
@@ -700,6 +720,20 @@ class RobustnessContractTest {
                         let s = "hello";
                         if true {}
                     }
+            """.trimIndent()
+            Language.ANGULAR -> """
+                    <!-- Comment -->
+                    @if (visible) {
+                        <p title="hello">{{ name }}</p>
+                    }
+            """.trimIndent()
+            Language.SQL -> """
+                    -- Comment
+                    CREATE PROCEDURE foo AS
+                    BEGIN
+                        SELECT 'hello';
+                        IF 1 = 1 SELECT 1;
+                    END
             """.trimIndent()
         }
     }

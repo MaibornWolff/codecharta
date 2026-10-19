@@ -3,7 +3,6 @@
 package de.maibornwolff.treesitter.excavationsite.api
 
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.MetricsFacade
-import de.maibornwolff.treesitter.excavationsite.languages.LanguageRegistry
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Language
 import de.maibornwolff.treesitter.excavationsite.shared.domain.MetricsResult
 import java.io.File
@@ -50,32 +49,7 @@ object TreeSitterMetrics {
      * @param language The programming language of the content
      * @return MetricsResult containing all calculated metrics
      */
-    fun parse(content: String, language: Language): MetricsResult {
-        val definition = LanguageRegistry.getLanguageDefinition(language)
-
-        val metrics = MetricsFacade.collectMetrics(
-            content = content,
-            grammarLibrary = LanguageRegistry.getGrammarLibrary(language),
-            definition = definition
-        )
-
-        return toMetricsResult(metrics)
-    }
-
-    private fun toMetricsResult(metrics: Map<String, Double>): MetricsResult {
-        val perFunctionMetrics = metrics.filterKeys { key ->
-            key.endsWith("_per_function")
-        }
-
-        val fileMetrics = metrics.filterKeys { key ->
-            !key.endsWith("_per_function")
-        }
-
-        return MetricsResult(
-            metrics = fileMetrics,
-            perFunctionMetrics = perFunctionMetrics
-        )
-    }
+    fun parse(content: String, language: Language): MetricsResult = MetricsFacade.parse(content, language)
 
     /**
      * Returns whether the given file extension is supported.

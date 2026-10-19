@@ -30,7 +30,7 @@ object TsxMetricMapping : MetricMapping {
                 Metric.LogicComplexityConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "operator",
-                        allowedValues = setOf("&&", "||", "??")
+                        allowedTypes = setOf("&&", "||", "??")
                     )
                 )
             )
@@ -61,7 +61,7 @@ object TsxMetricMapping : MetricMapping {
                 Metric.FunctionConditional(
                     MetricCondition.ChildFieldMatches(
                         fieldName = "value",
-                        allowedValues = setOf("arrow_function")
+                        allowedTypes = setOf("arrow_function")
                     )
                 )
             )

@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.unified
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailedFile
 import de.maibornwolff.codecharta.analysers.analyserinterface.gitignore.GitignoreHandler
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.UndecodableFileName
 import de.maibornwolff.codecharta.analysers.parsers.unified.metriccollectors.AvailableCollectors
@@ -11,12 +12,15 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.progresstracker.ParsingUnit
 import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import de.maibornwolff.codecharta.util.Logger
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicLong
 
 class ProjectScanner(
@@ -26,7 +30,8 @@ class ProjectScanner(
     private val includeExtensions: List<String> = listOf(),
     private val baseFileNodes: Map<String, Node> = emptyMap(),
     private val useGitignore: Boolean = true,
-    private val localChangesFiles: Set<String> = emptySet()
+    private val localChangesFiles: Set<String> = emptySet(),
+    private val fileMeasurer: FileMeasurer = collectorMeasurer
 ) {
     private var totalFiles = 0L
     private var filesParsed = 0L
@@ -34,6 +39,7 @@ class ProjectScanner(
     private val ignoredFileTypes = mutableSetOf<String>()
     private val filesSkipped = AtomicLong(0)
     private val filesAnalyzed = AtomicLong(0)
+    private val failures = ConcurrentLinkedQueue<FailedFile>()
 
     private val parsingUnit = ParsingUnit.Files
     private val progressTracker = ProgressTracker()
@@ -44,7 +50,12 @@ class ProjectScanner(
 
     fun foundParsableFiles(): Boolean = fileMetrics.isNotEmpty()
 
+    fun measuredAttributes(): Set<String> = fileMetrics.values.flatMap { it.attributes.keys }.toSet()
+
     fun getIgnoredFiles(): Pair<Long, Set<String>> = Pair(ignoredFiles, ignoredFileTypes)
+
+    /** The files whose analysis failed, relative to the root; they are missing from the output. */
+    fun failures(): List<FailedFile> = failures.sortedBy { it.path }
 
     fun getGitIgnoreStatistics(): Pair<Int, List<String>> = if (useGitignore) gitignoreHandler.getStatistics() else Pair(0, emptyList())
 
@@ -70,7 +81,7 @@ class ProjectScanner(
             parsableFiles.forEach { file ->
                 launch {
                     filesParsed++
-                    collectMetricsForFile(file, verbose)
+                    collectMetricsSkippingFailure(file, verbose)
                     if (!verbose) logProgress(file.name, filesParsed)
                 }
             }
@@ -87,6 +98,21 @@ class ProjectScanner(
             Logger.info { "Analysis of files complete, creating output file..." }
         }
         addAllNodesToProjectBuilder()
+    }
+
+    // A file that fails is left out, so one file cannot stop the analysis of a project; the failures are reported
+    // together afterwards. A grammar that fits no file of its language stops the analysis instead.
+    private fun collectMetricsSkippingFailure(file: File, verbose: Boolean) {
+        try {
+            collectMetricsForFile(file, verbose)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (failure: Exception) {
+            if (isUnusableParser(failure)) throw failure
+            val relativeFilePath = getRelativeFileName(file.toString())
+            Logger.debug(failure) { "Failed to analyze $relativeFilePath: ${failure.message}" }
+            failures.add(FailedFile(relativeFilePath, failure))
+        }
     }
 
     private fun collectMetricsForFile(file: File, verbose: Boolean) {
@@ -117,10 +143,7 @@ class ProjectScanner(
     private fun applyLanguageSpecificCollector(file: File, fileContent: String, relativeFilePath: String, verbose: Boolean) {
         if (verbose) Logger.info { "Calculating metrics for file $relativeFilePath" }
 
-        val collector = findCollectorForFileType(file.extension)?.collectorFactory
-        require(collector != null) { "Unexpectedly encountered an unsupported file at $relativeFilePath!" }
-
-        fileMetrics[relativeFilePath] = collector().collectMetricsForFile(file, fileContent)
+        fileMetrics[relativeFilePath] = fileMeasurer.measure(file, fileContent)
         filesAnalyzed.incrementAndGet()
     }
 
@@ -147,7 +170,7 @@ class ProjectScanner(
 
         if (isPathExcluded(relativePath) || !isFileExtensionIncluded(file.extension)) return false
 
-        return if (findCollectorForFileType(file.extension) != null) {
+        return if (AvailableCollectors.forExtension(file.extension) != null) {
             true
         } else {
             ignoredFileTypes += file.extension
@@ -161,11 +184,6 @@ class ProjectScanner(
 
     private fun isFileExtensionIncluded(fileExtension: String): Boolean =
         includeExtensions.isEmpty() || includeExtensions.contains(fileExtension)
-
-    private fun findCollectorForFileType(fileExtension: String): AvailableCollectors? = AvailableCollectors.entries.find {
-        val extension = ".$fileExtension"
-        it.fileExtension.primaryExtension == extension || it.fileExtension.otherValidExtensions.contains(extension)
-    }
 
     private fun logProgress(fileName: String, parsedFiles: Long) {
         progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)

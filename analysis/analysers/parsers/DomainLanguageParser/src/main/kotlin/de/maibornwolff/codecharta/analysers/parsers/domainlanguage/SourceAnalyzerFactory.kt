@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileSca
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.CoroutineFileProcessor
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.FileProcessor
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.analysis.TfIdfCalculator
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.PathScopedKeywordProvider
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.processing.keywords.StopWordFilter
@@ -11,7 +12,11 @@ import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.Prog
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.progress.SilentProgressReporter
 
 object SourceAnalyzerFactory {
-    fun create(config: AnalysisConfiguration, progressReporter: ProgressReporter = SilentProgressReporter): SourceAnalyzer {
+    fun create(
+        config: AnalysisConfiguration,
+        progressReporter: ProgressReporter = SilentProgressReporter,
+        fileProcessor: FileProcessor = CoroutineFileProcessor()
+    ): SourceAnalyzer {
         val fileScanner = SourceFileScanner(config.allowedExtensions, config.excludePatterns, excludeTests = config.excludeTests)
         val pathScopedKeywordProvider = PathScopedKeywordProvider(config.frameworksByPath)
         val stopWordFilter =
@@ -32,7 +37,7 @@ object SourceAnalyzerFactory {
             config = config,
             fileScanner = fileScanner,
             fileAnalyzer = fileAnalyzer,
-            fileProcessor = CoroutineFileProcessor(),
+            fileProcessor = fileProcessor,
             tfIdfCalculator = TfIdfCalculator(),
             progressReporter = progressReporter
         )

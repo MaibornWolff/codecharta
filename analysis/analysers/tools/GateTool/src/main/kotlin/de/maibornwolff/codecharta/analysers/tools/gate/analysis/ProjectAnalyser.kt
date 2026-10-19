@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.gate.analysis
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
@@ -85,7 +86,10 @@ class ProjectAnalyser {
         commandLine.err = PrintWriter(errors)
         val exitCode = commandLine.execute(*arguments.toTypedArray())
         if (exitCode == 0) return null
-        return failureReason ?: errors.toString().lineSequence().firstOrNull { it.isNotBlank() } ?: "it ended with exit code $exitCode"
+        return failureReason
+            ?: (analyser as? FailableRun)?.failureMessage
+            ?: errors.toString().lineSequence().firstOrNull { it.isNotBlank() }
+            ?: "it ended with exit code $exitCode"
     }
 
     private fun excludePatternFor(projectFolder: File, outputFolder: File): String? {

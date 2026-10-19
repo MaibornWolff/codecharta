@@ -48,8 +48,7 @@ describe("FileExtensionBarSegment", () => {
             radialFolderStyle: RadialFolderStyle.Tinted,
             radialFolderTint: 0.5,
             radialLevels: 3,
-            dependencyGraph: defaultDependencyGraphSettings,
-            dependencyViewEnabled: false
+            dependencyGraph: defaultDependencyGraphSettings
         },
         sharedView: {
             focusedNodePath: [],

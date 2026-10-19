@@ -6,7 +6,6 @@ import de.maibornwolff.treesitter.excavationsite.integration.metrics.domain.Avai
 import de.maibornwolff.treesitter.excavationsite.integration.metrics.ports.MetricNodeTypes
 import de.maibornwolff.treesitter.excavationsite.shared.domain.LanguageDefinition
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
-import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmGrammar
 import de.maibornwolff.treesitter.excavationsite.shared.infrastructure.ffm.FfmSyntaxTree
 import kotlin.collections.iterator
 import kotlin.math.round
@@ -16,7 +15,7 @@ import kotlin.math.round
  *
  * Uses the restored calculator architecture with MetricsToCalculatorsMap.
  */
-internal class MetricCollector(private val grammar: FfmGrammar, private val definition: LanguageDefinition) {
+internal class MetricCollector(private val definition: LanguageDefinition) {
     companion object {
         private const val LONG_METHOD_THRESHOLD = 10
         private const val LONG_PARAMETER_LIST_THRESHOLD = 4
@@ -32,12 +31,13 @@ internal class MetricCollector(private val grammar: FfmGrammar, private val defi
     private var rootNodeType: String = ""
 
     /**
-     * Parses the given source code and collects metrics.
+     * Collects the metrics of the given source code from its syntax tree.
      *
+     * @param tree The syntax tree of the content
      * @param content The source code content to analyze
      * @return A map of metric names to their values
      */
-    fun collectMetrics(content: String): Map<String, Double> = FfmSyntaxTree.parse(content, grammar).use { tree ->
+    fun collectMetrics(tree: FfmSyntaxTree, content: String): Map<String, Double> {
         rootNodeType = tree.rootNode.type
 
         val metricValues = newMetricValues()
@@ -45,7 +45,7 @@ internal class MetricCollector(private val grammar: FfmGrammar, private val defi
 
         tree.walk { node, nodeType -> visitNode(node, nodeType, perFileMetricInfo, metricValues) }
 
-        buildMetricsResult(metricValues, totalLines(content, tree.rootNode.endRow))
+        return buildMetricsResult(metricValues, totalLines(content, tree.rootNode.endRow))
     }
 
     private fun newMetricValues(): MutableMap<AvailableFileMetrics, Int> {
@@ -57,7 +57,7 @@ internal class MetricCollector(private val grammar: FfmGrammar, private val defi
     private fun visitNode(
         node: SyntaxNode,
         nodeType: String,
-        perFileMetricInfo: Map<AvailableFileMetrics, (SyntaxNode, String, Int, Int) -> Int>,
+        perFileMetricInfo: Map<AvailableFileMetrics, PerFileCalculator>,
         metricValues: MutableMap<AvailableFileMetrics, Int>
     ) {
         if (nodeType == rootNodeType) return
@@ -95,6 +95,9 @@ internal class MetricCollector(private val grammar: FfmGrammar, private val defi
         result[AvailableFileMetrics.REAL_LINES_OF_CODE.metricName] =
             (metricValues[AvailableFileMetrics.REAL_LINES_OF_CODE] ?: 0).toDouble()
         result[AvailableFileMetrics.LINES_OF_CODE.metricName] = totalLines.toDouble()
+        calculatorsMap.countedMetrics.forEach { fileMetric ->
+            result[fileMetric.metricName] = ((metricValues[fileMetric] ?: 0) + calculatorsMap.countOfKeyedObjects(fileMetric)).toDouble()
+        }
 
         // Code smells
         val rlocPerFunction = calculatorsMap.realLinesOfCodeCalc.getMetricPerFunction()

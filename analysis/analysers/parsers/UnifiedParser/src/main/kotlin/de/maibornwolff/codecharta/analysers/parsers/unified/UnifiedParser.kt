@@ -4,6 +4,9 @@ import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInte
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.CommonAnalyserParameters
 import de.maibornwolff.codecharta.analysers.analyserinterface.basefile.BaseFileResolver
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.RunExitCode
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesDetector
 import de.maibornwolff.codecharta.analysers.analyserinterface.localchanges.LocalChangesResult
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeFilter
@@ -21,6 +24,7 @@ import de.maibornwolff.codecharta.util.CodeChartaConstants
 import de.maibornwolff.codecharta.util.InputHelper
 import de.maibornwolff.codecharta.util.Logger
 import de.maibornwolff.codecharta.util.ResourceSearchHelper
+import de.maibornwolff.treesitter.excavationsite.api.isUnusableParser
 import picocli.CommandLine
 import java.io.File
 import java.io.InputStream
@@ -37,10 +41,13 @@ class UnifiedParser(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err,
-    private val baseFileHelper: BaseFileResolver = BaseFileResolver()
+    private val baseFileHelper: BaseFileResolver = BaseFileResolver(),
+    private val fileMeasurer: FileMeasurer = collectorMeasurer,
+    private val runExitCode: RunExitCode = RunExitCode()
 ) : CommonAnalyserParameters(),
     AnalyserInterface,
-    AttributeGenerator {
+    AttributeGenerator,
+    FailableRun by runExitCode {
     companion object {
         const val NAME = "unifiedparser"
         const val DESCRIPTION = "generates cc.json from projects or source code files"
@@ -59,7 +66,7 @@ class UnifiedParser(
 
         val context = resolveEffectiveInput(inputFile)
         try {
-            var project = scanInputProject(context.inputDir)
+            var project = scanInputProjectOrNull(context.inputDir) ?: return null
 
             if (shouldProcessPipedInput(inputFiles)) {
                 val pipedProject = extractPipedProject(input)
@@ -78,7 +85,19 @@ class UnifiedParser(
         return null
     }
 
-    private fun scanInputProject(inputFile: File): Project {
+    // A project nothing could be measured in, or a grammar or native library that cannot be used, ends the run with an
+    // error and without a map, which would only show an empty project
+    private fun scanInputProjectOrNull(inputFile: File): Project? {
+        try {
+            return scanInputProject(inputFile)
+        } catch (failure: Throwable) {
+            if (!isUnusableParser(failure)) throw failure
+            runExitCode.failWith(FailureReport.unusableParser(failure))
+        }
+        return null
+    }
+
+    private fun scanInputProject(inputFile: File): Project? {
         val startTime = System.currentTimeMillis()
         val projectBuilder = ProjectBuilder()
         val baseFileNodeMap = baseFileHelper.loadBaseFileNodes(baseFile)
@@ -93,7 +112,8 @@ class UnifiedParser(
             fileExtensionsToAnalyse,
             baseFileNodeMap,
             useGitignore,
-            localChangesResult.changedFiles
+            localChangesResult.changedFiles,
+            fileMeasurer
         )
 
         projectScanner.traverseInputProject(verbose)
@@ -102,13 +122,18 @@ class UnifiedParser(
         reportNotFoundFileExtensions(projectScanner)
         reportIgnoredFileTypes(projectScanner)
         reportGitIgnoreStatistics(projectScanner)
+        reportFailedFiles(projectScanner)
+        if (onlyFailuresFound(projectScanner)) {
+            runExitCode.failWith(FailureReport.nothingAnalysed(projectScanner.failures()))
+            return null
+        }
         reportNoParsableFiles(projectScanner)
 
         val executionTimeMs = System.currentTimeMillis() - startTime
         val formattedTime = formatTime(executionTimeMs.milliseconds)
         System.err.println("UnifiedParser completed in $formattedTime, building project...")
 
-        projectBuilder.addAttributeDescriptions(getAttributeDescriptors())
+        projectBuilder.addAttributeDescriptions(getAttributeDescriptorsOfMeasured(projectScanner.measuredAttributes()))
 
         return projectBuilder.build()
     }
@@ -156,6 +181,13 @@ class UnifiedParser(
             }
         }
     }
+
+    private fun reportFailedFiles(projectScanner: ProjectScanner) {
+        FailureReport.warnAbout(projectScanner.failures())
+    }
+
+    private fun onlyFailuresFound(projectScanner: ProjectScanner): Boolean =
+        !projectScanner.foundParsableFiles() && projectScanner.failures().isNotEmpty()
 
     private fun reportNoParsableFiles(projectScanner: ProjectScanner) {
         if (!projectScanner.foundParsableFiles()) {

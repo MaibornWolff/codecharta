@@ -6,8 +6,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
-private const val CLASS_DECLARATION = "class_declaration"
-private const val ABSTRACT_CLASS_DECLARATION = "abstract_class_declaration"
 private const val INTERFACE_DECLARATION = "interface_declaration"
 private const val ENUM_DECLARATION = "enum_declaration"
 private const val FUNCTION_DECLARATION = "function_declaration"
@@ -16,7 +14,6 @@ private const val GENERATOR_FUNCTION_DECLARATION = "generator_function_declarati
 private const val LEXICAL_DECLARATION = "lexical_declaration"
 private const val VARIABLE_DECLARATION = "variable_declaration"
 
-private const val STRING_FRAGMENT = "string_fragment"
 private const val WILDCARD_REEXPORT = "*"
 
 private const val AMBIENT_DECLARATION = "ambient_declaration"
@@ -227,19 +224,27 @@ internal object DeclarationExtractor {
         hasSource(node) && !hasExportClause(node) ->
             listOf(Declaration(name = WILDCARD_REEXPORT, type = DeclarationType.REEXPORT, usedTypes = emptySet()))
 
-        else -> {
-            val decoratorUsedTypes = node
-                .children()
-                .filter { it.type == DECORATOR }
-                .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
-                .toSet()
-            node
-                .children()
-                .filter { it.type in DECLARATION_NODE_TYPES }
-                .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
-                .map { decl -> if (decoratorUsedTypes.isEmpty()) decl else decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes) }
-                .toList()
-        }
+        else -> extractDecoratedDeclarations(node, parentPath, aliasMap, localDeclarationNames)
+    }
+
+    // The decorators of an exported class are children of the export statement, not of the class declaration
+    private fun extractDecoratedDeclarations(
+        node: SyntaxNode,
+        parentPath: List<String>,
+        aliasMap: Map<String, String>,
+        localDeclarationNames: Set<String>
+    ): List<Declaration> {
+        val decorators = node.children().filter { it.type == DECORATOR }.toList()
+        val decoratorUsedTypes = decorators
+            .flatMap { UsedTypeExtractor.extract(it, aliasMap, localDeclarationNames).toList() }
+            .toSet()
+        val angular = AngularDecoratorExtractor.extract(decorators.asSequence())
+        return node
+            .children()
+            .filter { it.type in DECLARATION_NODE_TYPES }
+            .flatMap { extractFromNode(it, parentPath, aliasMap, localDeclarationNames) }
+            .map { decl -> decl.copy(usedTypes = decl.usedTypes + decoratorUsedTypes, angular = decl.angular ?: angular) }
+            .toList()
     }
 
     private fun extractReexportDeclarations(node: SyntaxNode): List<Declaration> {
@@ -298,7 +303,8 @@ internal object DeclarationExtractor {
             val name = extractName(node)
             val type = declarationType(node.type)
             val usedTypes = UsedTypeExtractor.extract(node, aliasMap, localDeclarationNames - name)
-            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath))
+            val angular = AngularDecoratorExtractor.extract(node.children().filter { it.type == DECORATOR })
+            listOf(Declaration(name = name, type = type, usedTypes = usedTypes, parentPath = parentPath, angular = angular))
         }
     }
 

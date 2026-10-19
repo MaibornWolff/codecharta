@@ -29,4 +29,11 @@ data class ExtractionResult(val extractedTexts: List<ExtractedText>) {
             .filter { it.context == ExtractionContext.STRING }
             .map { it.text }
     }
+
+    /** All extracted text a user reads */
+    val texts: List<String> by lazy {
+        extractedTexts
+            .filter { it.context == ExtractionContext.TEXT }
+            .map { it.text }
+    }
 }

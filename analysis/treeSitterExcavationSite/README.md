@@ -6,7 +6,7 @@ A Kotlin library for calculating code metrics and extracting text from source co
 
 - **Code Metrics**: Complexity, lines of code, comment lines, function counts, code smells, per-function aggregations
 - **Text Extraction**: Identifiers, comments, and string literals with context
-- **19 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, ABL, Delphi, Rust
+- **21 Languages and Frameworks**: Java, Kotlin, TypeScript, TSX, JavaScript, Python, Go, PHP, Ruby, Swift, Bash, C#, C++, C, Objective-C, Vue, ABL, Delphi, Rust, Angular templates, SQL
 - **Zero External Dependencies**: Only the native tree-sitter libraries are required, loaded through Java's foreign function API
 
 ## Requirements
@@ -76,6 +76,7 @@ val result = TreeSitterExtraction.extract(code, Language.KOTLIN)
 println(result.identifiers)  // [add, a, b]
 println(result.comments)     // [Calculate sum of two numbers]
 println(result.strings)      // []
+println(result.texts)        // [], the text a user reads in a template
 
 // All items with context
 result.extractedTexts.forEach { item ->
@@ -107,7 +108,7 @@ println(result.declarations)  // [Declaration(name=UserService, type=CLASS, used
 
 // Check language support
 println(TreeSitterDependencies.isDependencyAnalysisSupported(Language.JAVA))   // true
-println(TreeSitterDependencies.getSupportedLanguages())                        // [JAVA, KOTLIN, TYPESCRIPT, TSX, JAVASCRIPT, PYTHON, GO, PHP, CSHARP, CPP, VUE, DELPHI, RUST]
+println(TreeSitterDependencies.getSupportedLanguages())                        // [JAVA, KOTLIN, TYPESCRIPT, TSX, JAVASCRIPT, PYTHON, GO, PHP, CSHARP, CPP, VUE, DELPHI, RUST, ANGULAR, SQL]
 ```
 
 ## Supported Languages and Frameworks
@@ -132,6 +133,11 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | ABL | `.p`, `.cls`, `.w`, `.i` | Experimental | Experimental | — |
 | Delphi | `.pas`, `.dpr` | Stable | Stable | Experimental |
 | Rust | `.rs` | Stable | Stable | Experimental |
+| Angular templates (and plain HTML) | `.html` | Experimental | Experimental | Experimental |
+| SQL (ANSI, T-SQL, PL/SQL, PL/pgSQL, MySQL) | `.sql`, `.pks`, `.pkb`, `.pls` | Experimental | Experimental | Experimental |
+
+SQL is parsed with CodeCharta's own island grammar, one grammar for all dialects, bundled as
+`libs/tree-sitter-sql-island-*.jar`; its sources are kept outside this repository.
 
 ## Available Metrics
 
@@ -150,6 +156,10 @@ println(TreeSitterDependencies.getSupportedLanguages())                        /
 | `long_parameter_list` | Functions with excessive parameters |
 | `excessive_comments` | Files with excessive commenting |
 | `comment_ratio` | Comments to code ratio |
+| `number_of_stored_procedures` | SQL only: stored procedures the file defines |
+| `number_of_triggers` | SQL only: triggers the file creates |
+| `number_of_views` | SQL only: views the file defines, without temporary ones |
+| `number_of_tables` | SQL only: tables the file creates, without the temporary tables of a session |
 
 ### Per-Function Metrics
 
@@ -194,7 +204,7 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 │   │   ├── adapters/              # Language definition adapters
 │   │   └── extractors/common/     # Shared extractors
 │   └── dependencies/              # Dependencies feature (facade and collector, no ports or adapters)
-├── languages/                     # Language definitions (19 languages and frameworks)
+├── languages/                     # Language definitions (21 languages and frameworks)
 │   └── <lang>/                    # Per-language directory
 │       ├── *Definition.kt         # Combines metric and extraction mappings
 │       ├── *MetricMapping.kt      # Metric node mappings
@@ -210,3 +220,6 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 ## License
 
 BSD-3-Clause
+
+The grammars bundled in `libs/` and the tree-sitter core keep their own licenses, which lie in
+`src/main/resources/lib/` and so ship inside ccsh. A jar added to `libs/` brings its license there as well.

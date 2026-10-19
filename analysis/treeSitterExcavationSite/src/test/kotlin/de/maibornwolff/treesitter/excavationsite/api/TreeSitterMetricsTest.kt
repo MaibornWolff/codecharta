@@ -117,9 +117,9 @@ class TreeSitterMetricsTest {
             ".java", ".kt", ".kts", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
             ".py", ".go", ".php", ".rb", ".swift", ".sh", ".bash", ".cs",
             ".cpp", ".cc", ".cxx", ".hpp", ".hxx", ".h", ".c", ".m", ".mm",
-            ".vue", ".p", ".cls", ".w", ".i", ".pas", ".dpr", ".rs"
+            ".vue", ".p", ".cls", ".w", ".i", ".pas", ".dpr", ".rs", ".html", ".sql", ".pks", ".pkb", ".pls"
         )
-        assertThat(extensions).hasSize(34)
+        assertThat(extensions).hasSize(39)
     }
 
     @Test
@@ -175,5 +175,38 @@ class TreeSitterMetricsTest {
 
         // Assert
         assertThat(result.messageChains).isEqualTo(1.0)
+    }
+
+    @Test
+    fun `should leave out the database object counts for a language without database objects`() {
+        // Arrange
+        val javaCode = "class Orders { }"
+
+        // Act
+        val result = TreeSitterMetrics.parse(javaCode, Language.JAVA)
+
+        // Assert
+        assertThat(result.metrics).doesNotContainKeys(
+            "number_of_stored_procedures",
+            "number_of_triggers",
+            "number_of_views",
+            "number_of_tables"
+        )
+    }
+
+    @Test
+    fun `should report the database object counts for SQL, also when they are zero`() {
+        // Arrange
+        val sqlCode = "SELECT 1;"
+
+        // Act
+        val result = TreeSitterMetrics.parse(sqlCode, Language.SQL)
+
+        // Assert
+        assertThat(result.metrics)
+            .containsEntry("number_of_stored_procedures", 0.0)
+            .containsEntry("number_of_triggers", 0.0)
+            .containsEntry("number_of_views", 0.0)
+            .containsEntry("number_of_tables", 0.0)
     }
 }

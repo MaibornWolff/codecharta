@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.analysers.parsers.domainlanguage
 
+import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailureReport
 import de.maibornwolff.codecharta.analysers.analyserinterface.scan.SourceFileScanner
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.AnalysisConfiguration
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.cli.SortBy
@@ -36,12 +37,12 @@ class SourceAnalyzer(
         val perFileWordCounts = processingResult.perFileWordCounts
 
         logSkippedFiles(processingResult.skippedExtensions, perFileWordCounts.size)
-        logFailedFiles(processingResult.failedFiles)
+        FailureReport.warnAbout(processingResult.failedFiles)
 
         val tfidfScores = computeTfidfScores(perFileWordCounts)
         val wordsByPath = buildWordsByPath(perFileWordCounts, tfidfScores, config.limit, config.sortBy)
 
-        return DomainAnalysisResult(filePaths = perFileWordCounts.keys.toList(), wordsByPath = wordsByPath)
+        return DomainAnalysisResult(perFileWordCounts.keys.toList(), wordsByPath, processingResult.failedFiles)
     }
 
     private fun scanFiles(directoryPath: String): List<File> {
@@ -78,14 +79,6 @@ class SourceAnalyzer(
             }
         } else {
             Logger.info { "Analysis complete: $processedCount files processed" }
-        }
-    }
-
-    private fun logFailedFiles(failedFiles: List<String>) {
-        if (failedFiles.isEmpty()) return
-        Logger.warn {
-            "${failedFiles.size} file(s) dropped due to processing errors: " +
-                failedFiles.sorted().joinToString(", ")
         }
     }
 

@@ -1,0 +1,19 @@
+<!--
+  A creature that roams the cellar.
+  Centaurs, beasts and dragons all share hit points, armor class and speeds.
+-->
+<article class="creature-card {{ creature.isWounded() ? 'wounded' : 'healthy' }}" [class.dragon]="creature.type === 'dragon' || creature.type === 'fiend'">
+  <h2 ccGlow title="Creature of the cellar" i18n-title>{{ creature.name | titlecase }}</h2>
+  @if (creature.hitPoints.current <= 0) {
+    <p>Fallen in the dungeon</p>
+  } @else if (creature.isWounded() && !resting) {
+    <p>Hit points drop when the creature takes damage and recover when it rests in its lair.</p>
+  } @else {
+    <p>{{ creature.hitPoints | hitPoints }}</p>
+  }
+  <p [title]="creature.armorClass.value > 15 ? 'Heavily armored' : 'Lightly armored'">
+    {{ creature.armorClass | armorClass }} - {{ creature.nickname ?? 'centaur-stable' }}
+  </p>
+  <cc-speed-badge [speeds]="creature.speeds" (dash)="onDash()" hoverHint="Dash to the lair before the dragon wakes" />
+  <p>{{ creature.d20Roll | roll }}</p>
+</article>

@@ -4,18 +4,11 @@ title: "Dependency View"
 
 The **Dependencies** view draws the dependencies between the files and folders of a map as a graph, arranged by level: what a box depends on lies below it.
 
-:::caution[Experimental]
-The dependency view is still in development and is switched off by default. Its look and its controls may change.
-:::
-
 ![The dependency view with one folder opened](/assets/images/docs/visualization/user-controls/dependency-view.jpeg)
 
 ## Opening the view
 
-The **Dependencies** tab appears in the top bar when two things are true:
-
-1. The loaded map carries dependency data. Create it with the [Dependency parser](/docs/parser/dependency) (`ccsh dependencyparser`). The sample map and the [online demo](/docs/visualization/web-studio#try-it-online) include it.
-2. **Enable Dependency View (experimental)** is switched on in the [Settings](/docs/visualization/user-controls/settings).
+The **Dependencies** tab appears in the top bar when the loaded map carries dependency data. Create it with the [Dependency parser](/docs/parser/dependency) (`ccsh dependencyparser`). The sample map and the [online demo](/docs/visualization/web-studio#try-it-online) include it.
 
 ## Reading the graph
 

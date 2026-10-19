@@ -14,7 +14,6 @@ import { routeLinks, ViewId } from "../../../../routing/routePaths"
 import { ViewHandoffStore } from "../../../../routing/viewHandoff.store"
 import { isDeltaStateSelector } from "../../../../stores/fileStore/fileStore.facade"
 import { isRadialLayoutSelector } from "../../../../stores/mapState/mapState.read.facade"
-import { dependencyViewEnabledSelector } from "../../../../stores/preferences/preferences.read.facade"
 import { currentFocusedNodePathSelector, keptHighlightPathsSelector } from "../../../../stores/sharedView/sharedView.read.facade"
 import {
     addExcludedNodesIfNotResultsInEmptyMap,
@@ -70,7 +69,6 @@ describe("nodeContextMenu component", () => {
         pathsWithDomainWords?: ReadonlySet<string>
         isDeltaState?: boolean
         pathsWithDependencyLevels?: ReadonlySet<string>
-        isDependencyViewEnabled?: boolean
         isFlattened?: (node: CodeMapNode) => boolean
         isRadialLayout?: boolean
         keptHighlightPaths?: string[]
@@ -84,7 +82,6 @@ describe("nodeContextMenu component", () => {
         pathsWithDomainWords = new Set([folderNode.path, fileNode.path]),
         isDeltaState = false,
         pathsWithDependencyLevels = new Set<string>(),
-        isDependencyViewEnabled = true,
         isFlattened = () => false,
         isRadialLayout = false,
         keptHighlightPaths = [],
@@ -109,7 +106,6 @@ describe("nodeContextMenu component", () => {
                         { selector: pathsWithDomainWordsSelector, value: pathsWithDomainWords },
                         { selector: isDeltaStateSelector, value: isDeltaState },
                         { selector: pathsWithDependencyLevelsSelector, value: pathsWithDependencyLevels },
-                        { selector: dependencyViewEnabledSelector, value: isDependencyViewEnabled },
                         { selector: isRadialLayoutSelector, value: isRadialLayout },
                         { selector: keptHighlightPathsSelector, value: keptHighlightPaths }
                     ]
@@ -273,15 +269,6 @@ describe("nodeContextMenu component", () => {
     it("should hide the jump to the dependency view in compare mode, which the dependency view cannot show", async () => {
         // Arrange & Act
         await renderMenu({ isDeltaState: true, pathsWithDependencyLevels: new Set(["/root/src/RatingBean.java"]) })
-
-        // Assert
-        expect(screen.queryByText("Show in Dependencies")).toBe(null)
-        expect(screen.getByText("Show in Domain")).not.toBe(null)
-    })
-
-    it("should hide the jump to the dependency view while the dependency view is switched off", async () => {
-        // Arrange & Act
-        await renderMenu({ isDependencyViewEnabled: false, pathsWithDependencyLevels: new Set(["/root/src/RatingBean.java"]) })
 
         // Assert
         expect(screen.queryByText("Show in Dependencies")).toBe(null)

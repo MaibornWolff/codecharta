@@ -1,0 +1,34 @@
+<!-- The cave overview -->
+<section class="cave" [class.flooded]="cave.isFlooded && !cave.drained">
+  <h2>{{ cave.name | titlecase }} ({{ cave.depth ?? 0 }} m)</h2>
+  <app-cave-map [cave]="cave" (roomSelected)="enterRoom($event)"></app-cave-map>
+  <app-torch title="Light the torch" hoverHint="Torches keep the trolls away" />
+  @if (party.size > 3 || party.hasCentaur) {
+    <p>Too crowded</p>
+  } @else if (party.size === 0) {
+    <p>Empty</p>
+  } @else {
+    <p>{{ party.leader?.name }}</p>
+  }
+  @for (room of cave.rooms; track room.id; let i = $index) {
+    <li [title]="room.isLit ? 'lit' : 'dark'">{{ room.name | goldCoins: 2 }}</li>
+  } @empty {
+    <li>No rooms</li>
+  }
+  @switch (cave.danger) {
+    @case ('dragon') { <app-dragon /> }
+    @case ('troll') { <span>Troll</span> }
+    @default { <span>Calm</span> }
+  }
+  @defer (on viewport) {
+    <app-treasure-chest [gold]="cave.gold" />
+  } @placeholder {
+    <p>Loading</p>
+  }
+  <div *ngIf="cave.hasExit; else noExit">Exit</div>
+  <ng-template #noExit><p>No exit</p></ng-template>
+  <li *ngFor="let centaur of centaurs; trackBy: byName">{{ centaur.name }}</li>
+  <div [ngSwitch]="mood"><span *ngSwitchCase="'grim'">Grim</span><span *ngSwitchDefault>Fine</span></div>
+  <input [(ngModel)]="explorer.name" (keyup.enter)="save() " placeholder="Explorer name" i18n-placeholder class="name-input" />
+  @let total = cave.gold + cave.silver;
+</section>

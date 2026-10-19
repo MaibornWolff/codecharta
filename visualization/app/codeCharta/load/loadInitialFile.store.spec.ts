@@ -20,7 +20,6 @@ import {
 import { defaultPreferences } from "../stores/preferences/preferences.read.facade"
 import {
     setDependencyGraphSettings,
-    setDependencyViewEnabled,
     setRadialFolderStyle,
     setRadialFolderTint,
     setRadialFolderValue,
@@ -286,7 +285,7 @@ describe("LoadInitialFileStore", () => {
             expect(dispatchedActions()).toEqual([setDependencyGraphSettings({ value: dependencyGraph })])
         })
 
-        it("should restore the saved dependency view setting", () => {
+        it("should pass over a dependency view setting saved while the view could be switched off", () => {
             // Arrange
             setup()
             const savedPreferences = { ...defaultPreferences, dependencyViewEnabled: true }
@@ -296,7 +295,7 @@ describe("LoadInitialFileStore", () => {
 
             // Assert
             expect(missingKeys).toEqual([])
-            expect(dispatchedActions()).toEqual([setDependencyViewEnabled({ value: true })])
+            expect(dispatchedActions()).toEqual([])
         })
     })
 

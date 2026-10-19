@@ -29,6 +29,12 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | Vue          | .vue                                   |
 | Delphi       | .pas, .dpr                             |
 | Rust         | .rs                                    |
+| Angular/HTML | .html                                  |
+| SQL          | .sql, .pks, .pkb, .pls                 |
+
+Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
+`domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
+reports or documentation, with `-e`.
 
 ### Supported Metrics
 
@@ -45,6 +51,26 @@ CodeCharta. It generates a cc.json file (compressed by default, or uncompressed 
 | excessive_comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
 | comment_ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
 | message_chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
+| number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package or type body                                                                                                     |
+| number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
+| number_of_views           | Only in SQL files: the views the file defines, materialized ones included, temporary ones (`TEMP VIEW`) not                                                                                                                                               |
+| number_of_tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
+
+A procedure declared in an Oracle package specification counts where its body is, in the package body, like
+`number_of_functions` counts only routines with a body: a specification and its body in one file count each procedure
+once, in two files only the body's file counts it. A T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a
+body defines the object as much as `CREATE` does and counts; Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t
+DISABLE` does not. Each count counts the distinct objects of a file: an object created and altered, or created twice,
+counts once. Objects of one name in two schemas (`public.orders`, `audit.orders`) count twice; one written without a
+schema is the object of that name in a schema when the file holds the name in exactly one schema (`dbo.p1`, `p1`).
+Names compare as the dependency parser compares them, so `"Orders"` and `orders` are two tables. A PostgreSQL trigger
+counts per table it is on, as PostgreSQL names triggers per table. A procedure of one name in two packages or types
+counts twice, and so do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`,
+`p(text)`); parameter modes and default values make no overload, and neither do T-SQL's parameters, as T-SQL has no
+overloads. A MySQL procedure dropped and created again with other parameters counts twice, as its parameters can not
+be told from PostgreSQL's. What a routine creates when it runs, a table or a local procedure, counts for none of them, while what a
+script creates in an anonymous block, a PostgreSQL `DO` block or a T-SQL `IF … BEGIN … END`, counts like any of its
+objects.
 
 Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
 
@@ -81,6 +107,12 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
                           [-e=<specifiedExcludePatterns>]...
                           [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
+
+### Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
+map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
 
 ### Examples
 
@@ -244,12 +276,38 @@ contribute to complexity:
 - **Functions**: `defProc` (procedure/function implementation), `lambda`
 - **Logical operators**: `kAnd`, `kOr`, `kXor` in `exprBinary`
 
+##### SQL (.sql, .pks, .pkb, .pls)
+
+One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
+
+- **Control flow**: `if_statement`, `elsif_clause` (`ELSIF`, `ELSEIF`; a T-SQL `ELSE IF` is an `if_statement` of its own),
+  `when_clause` (each `WHEN` of a `CASE` expression or statement), `iif_expression` (T-SQL `IIF`), `while_statement`,
+  `loop_statement`, `for_statement` (`FOR … LOOP`, `FOREACH`), `repeat_statement`, `exit_statement` with a condition
+  (`EXIT WHEN`, `CONTINUE WHEN`), `exception_handler` (each `WHEN` after `EXCEPTION`), `catch_block` (`BEGIN CATCH`),
+  `handler_declaration` (MySQL `DECLARE … HANDLER`)
+- **Functions**: `routine_definition`: procedures, functions and triggers with a body, nested PL/SQL routines and MySQL's
+  single-statement routines included
+- **Logical operators**: `logical_operator` (`AND`, `OR`; the `AND` of `BETWEEN` is none)
+
 ##### Rust (.rs)
 
 - **Control flow**: `if_expression`, `while_expression`, `for_expression`, `loop_expression`, `match_arm` (the
   `if`/`while` nodes also cover `if let`/`while let`; the `_` wildcard arm counts like any other arm)
 - **Functions**: `function_item`, `function_signature_item` (bodyless trait method signatures), `closure_expression`
 - **Logical operators**: `&&`, `||` in binary expressions
+
+##### Angular templates (.html)
+
+- **Control flow blocks**: `@if`, `@else if`, `@for`, each `@case` of `@switch`, `@defer` (`@else`, `@empty`, `@default` and
+  `@placeholder` are not counted, like a plain `else`)
+- **Structural directives**: `*ngIf`, `*ngFor`, `*ngSwitchCase`, and `[ngIf]`, `[ngForOf]`, `[ngSwitchCase]` on an
+  `<ng-template>`
+- **Logical operators**: `&&`, `||`, the ternary `? :` and `??` in bindings, event handlers and interpolations, also
+  in an interpolation inside a plain attribute value, such as `class="icon {{ done ? 'check' : 'copy' }}"`
+- **ICU messages**: each case of a `plural` or `select` message, but not its `other` case, like a `@default`
+- **Functions**: a template has none, so its complexity is its logic complexity
+- **Inline templates**: the `template` of a `@Component` in a `.ts` file is measured the same way, and its complexity
+  adds to the complexity and logic complexity of the `.ts` file
 
 #### Comment Lines
 
@@ -269,6 +327,8 @@ Comment lines are counted based on language-specific comment syntax:
 - **Bash**: `comment`
 - **Delphi**: `comment` (covers `//` line, `{ }` brace, and `(* *)` star comments)
 - **Rust**: `line_comment`, `block_comment` (cover `//`, `///`, `//!` and `/* */`, `/** */`, `/*! */`)
+- **Angular templates**: `comment` (`<!-- -->`)
+- **SQL**: `comment` (covers `--` line, `/* */` block and MySQL's `#` comments)
 
 #### Number of Functions
 
@@ -352,10 +412,24 @@ Function counting identifies different types of function definitions per languag
 - **Functions**: `defProc` (procedure/function implementation in the `implementation` section). Forward declarations in the `interface` section
   (`declProc`) are not counted, and `lambda` contributes only to complexity.
 
+##### SQL (.sql, .pks, .pkb, .pls)
+
+- **Functions**: `routine_definition`: a procedure, function or trigger with a body after `AS`, `IS`, `DECLARE` or
+  `BEGIN`, also inside a PL/SQL package or type body, and a MySQL routine whose body is a single statement (after the
+  parameters of a procedure, the `RETURNS` of a function or the `FOR EACH ROW` of a trigger). Forward declarations in
+  a package specification and a PostgreSQL trigger that only names its function are not counted. A body without
+  `BEGIN` (T-SQL) goes on up to `GO`, the next `CREATE` or the end of the file, unless a bare `BEGIN … END` stands in
+  its middle: the body ends there. Neither the `END` line of a body nor, in PostgreSQL, the line with its closing
+  `$$` counts for the routine's rloc, like a closing brace.
+
 ##### Rust (.rs)
 
 - **Functions**: `function_item` (free functions, `impl` methods, trait default methods) and `function_signature_item`
   (bodyless trait method signatures). `closure_expression` contributes only to complexity and is not counted as a function.
+
+##### Angular templates (.html)
+
+- **Functions**: none, a template declares no functions
 
 #### Lines of Code (LOC)
 
@@ -392,6 +466,8 @@ Parameters per function counts the number of parameters declared for each functi
 - **Bash**: not counted, as Bash functions declare no parameters
 - **Delphi**: `declArg`
 - **Rust**: `parameter` (the `self` receiver is a distinct `self_parameter` node and is excluded)
+- **Angular templates**: not counted, as a template declares no functions
+- **SQL**: `parameter`, in parentheses or, in T-SQL, as a bare `@name type` list
 
 #### Message Chains
 
@@ -478,10 +554,18 @@ Message chains are not applicable to Bash as it does not support method chaining
 - **Call nodes**: `exprCall`, `exprDot` (paren-less `Obj.M1.M2.M3.M4` chains). When `exprDot` is wrapped in `exprCall` (e.g.
   `Obj.M1().M2().M3().M4()`), only `exprCall` counts, preventing double-counting of message-chain calls.
 
+##### SQL (.sql, .pks, .pkb, .pls)
+
+Message chains are not applicable to SQL as it does not support method chaining.
+
 ##### Rust (.rs)
 
 - **Chain nodes**: `call_expression`, `field_expression`
 - **Call nodes**: `call_expression`
+
+##### Angular templates (.html)
+
+Message chains are not counted in templates.
 
 #### Code Smells
 

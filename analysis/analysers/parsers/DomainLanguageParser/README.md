@@ -15,8 +15,30 @@ The `domain` lens payload keys its entries under `nodes`:
 
 ## Supported Languages
 
-Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Objective-C and shell
-(the full set of extensions handled by the underlying tree-sitter analysis).
+Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, Rust, Objective-C, Vue, ABL, shell,
+Angular templates (`.html`) and SQL.
+
+An Angular template contributes the identifiers of its bindings, interpolations and control flow blocks, but not the
+names Angular gives (pipe names, `@defer` triggers, the `index` or `trackBy` of `*ngFor`), its HTML
+comments, its text, and the values of the attributes that hold text a user reads: `title`, `alt`, `placeholder`,
+`label`, `aria-label`, `aria-description`, `aria-placeholder` and every attribute whose last word, after a hyphen or
+at a capital letter, is `hint`, `label`, `title`, `text`, `tooltip`, `placeholder`, `description` or `message`
+(`hoverHint`, `empty-message`, but not `context`). The values of
+all other attributes, such as `class`, `style`, `id` or `src`, and `i18n-*` markers are left out. An HTML entity in text
+or attribute values stands for its letter where it is a numeric one of a letter or a named one of a Latin-1 letter
+(`H&ouml;hle` is `Höhle`); any other entity, such as `&nbsp;`, `&mdash;` or a letter beyond Latin-1 written by name,
+separates words. The text of a template
+and the values of its user-facing attributes weigh like its identifiers, with `--identifier-weight`, because they are
+what the user reads; `--string-weight=0` does not leave them out. The string literals of its expressions, such as
+`'crimson'` in `class="{{ hurt ? 'crimson' : 'calm' }}"`, keep the string weight, like the strings of every other
+language. The inline `template` of a `@Component` in a `.ts` file is read the same way and counts for the `.ts` file.
+Every `.html` file is read as an Angular template, by this parser as by `unifiedparser` and `dependencyparser`; exclude
+the `.html` files that are no templates of an Angular application, such as reports or documentation, with `-e`.
+
+In SQL the types, built-in functions and system schemas of every dialect are stop words (`varchar`, `coalesce`,
+`dbo`), and so are the names of the dialects and database products (`postgres`, `oracle`, `mariadb`, `sqlserver`)
+and `id`. Its keywords are not: a keyword never comes out as a word, and one that is an English word (`order`,
+`group`, `transaction`) names the domain in a name or a comment.
 
 ## Usage and Parameters
 
@@ -36,11 +58,17 @@ Kotlin, Java, TypeScript, JavaScript, Python, C#, Go, C, C++, PHP, Ruby, Swift, 
 | `--sort-by=<FREQUENCY\|TFIDF>`            | sort words by frequency (default) or TF-IDF score                                              |
 | `--stop-word-level=<MINIMAL\|MODERATE\|AGGRESSIVE>` | technical stop word filtering level (default MODERATE)                               |
 | `--no-technical-stopwords`                | disable filtering of common technical words (e.g. `test`, `util`, `handler`)                  |
-| `--identifier-weight=<n>`                 | weight for identifier words (class/function/variable names; default 3)                         |
+| `--identifier-weight=<n>`                 | weight for identifier words (class/function/variable names) and template text (default 3)     |
 | `--comment-weight=<n>`                    | weight for words in comments (default 2; 0 leaves comments out)                                |
 | `--string-weight=<n>`                     | weight for words in string literals (default 1; 0 leaves strings out)                         |
 | `--no-tfidf`                              | disable TF-IDF scoring (enabled by default)                                                     |
 | `-h, --help`                              | displays this help and exits                                                                    |
+
+## Files that cannot be analysed
+
+A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
+the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
+map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
 
 ## Examples
 

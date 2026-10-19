@@ -10,11 +10,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class FileLevelAggregatorTest {
-    private fun declaration(name: String, file: String, dependsOn: List<String> = emptyList()) = Node(
+    private fun declaration(
+        name: String,
+        file: String,
+        dependsOn: List<String> = emptyList(),
+        language: SupportedLanguage = SupportedLanguage.KOTLIN
+    ) = Node(
         pathWithName = Path.fromStringWithDots(name),
         physicalPath = file,
         nodeType = NodeType.CLASS,
-        language = SupportedLanguage.KOTLIN,
+        language = language,
         dependencies = emptySet(),
         usedTypes = emptySet(),
         resolvedNodeDependencies =
@@ -165,6 +170,40 @@ class FileLevelAggregatorTest {
 
         // Assert
         assertThat(edges.single().to.segments).containsExactly("app", "FooA.kt")
-        assertThat(FileLevelAggregator.firstFilePathByDeclaration(nodes).getValue("app.Foo").segments).containsExactly("app", "FooA.kt")
+        assertThat(FileLevelAggregator.filePathByDeclaration(nodes).getValue("app.Foo").segments).containsExactly("app", "FooA.kt")
+    }
+
+    @Test
+    fun `should point a dependency on a SQL object created in several files at the last file, the latest migration`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("orders", "db/V1__orders.sql", language = SupportedLanguage.SQL),
+                declaration("orders", "db/V2__orders.sql", language = SupportedLanguage.SQL),
+                declaration("report", "db/report.sql", listOf("orders"), SupportedLanguage.SQL)
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().to.segments).containsExactly("db", "V2__orders.sql")
+        assertThat(FileLevelAggregator.filePathByDeclaration(nodes).getValue("orders").segments).containsExactly("db", "V2__orders.sql")
+    }
+
+    @Test
+    fun `should order migrations by the numbers in their names, so that V10 comes after V9`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("orders", "db/V10__orders.sql", language = SupportedLanguage.SQL),
+                declaration("orders", "db/V9__orders.sql", language = SupportedLanguage.SQL)
+            )
+
+        // Act
+        val filePath = FileLevelAggregator.filePathByDeclaration(nodes).getValue("orders")
+
+        // Assert
+        assertThat(filePath.segments).containsExactly("db", "V10__orders.sql")
     }
 }
