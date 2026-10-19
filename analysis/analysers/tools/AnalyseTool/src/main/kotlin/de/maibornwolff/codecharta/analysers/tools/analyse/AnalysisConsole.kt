@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.analyserrunner
+package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import java.io.OutputStream
 import java.io.PrintStream

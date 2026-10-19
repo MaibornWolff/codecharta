@@ -2,7 +2,7 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":dialogProvider"))
     implementation(project(":analysers:AnalyserInterface"))
-    implementation(project(":analysers:AnalyserRunner"))
+    implementation(project(":analysers:tools:AnalyseTool"))
 
     implementation(libs.picocli)
     implementation(libs.kotter)

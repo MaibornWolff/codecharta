@@ -9,7 +9,7 @@ on:
     paths:
       - 'visualization/**'
       - 'analysis/analysers/tools/GateTool/**'
-      - 'analysis/analysers/AnalyserRunner/**'
+      - 'analysis/analysers/tools/AnalyseTool/**'
       - '.github/workflows/quality_gate*.yml'
   pull_request:
     branches:
@@ -17,7 +17,7 @@ on:
     paths:
       - 'visualization/**'
       - 'analysis/analysers/tools/GateTool/**'
-      - 'analysis/analysers/AnalyserRunner/**'
+      - 'analysis/analysers/tools/AnalyseTool/**'
       - '.github/workflows/quality_gate*.yml'
 
 permissions:

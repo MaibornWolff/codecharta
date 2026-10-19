@@ -6,7 +6,7 @@ include("ccsh")
 include("dialogProvider")
 include("model")
 include("treeSitterExcavationSite")
-include("analysers:AnalyserInterface", "analysers:AnalyserRunner")
+include("analysers:AnalyserInterface")
 include("analysers:filters:MergeFilter", "analysers:filters:EdgeFilter", "analysers:filters:StructureModifier")
 include(
     "analysers:importers:CodeMaatImporter",
