@@ -1,9 +1,9 @@
-package de.maibornwolff.codecharta.analysers.tools.gate
+package de.maibornwolff.codecharta.analysers.analyserrunner
 
 import java.io.OutputStream
 import java.io.PrintStream
 
-class GateConsole(val output: PrintStream, private val quiet: Boolean) {
+class AnalysisConsole(val output: PrintStream, private val quiet: Boolean) {
     fun println(line: String = "") {
         output.println(line)
     }

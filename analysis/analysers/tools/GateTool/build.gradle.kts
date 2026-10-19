@@ -2,6 +2,7 @@ dependencies {
     implementation(project(":model"))
     implementation(project(":dialogProvider"))
     implementation(project(":analysers:AnalyserInterface"))
+    implementation(project(":analysers:AnalyserRunner"))
     implementation(project(":analysers:filters:MergeFilter"))
     implementation(project(":analysers:parsers:RawTextParser"))
     implementation(project(":analysers:parsers:UnifiedParser"))

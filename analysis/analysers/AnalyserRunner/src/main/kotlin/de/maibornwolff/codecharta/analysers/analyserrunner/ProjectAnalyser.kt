@@ -1,10 +1,9 @@
-package de.maibornwolff.codecharta.analysers.tools.gate.analysis
+package de.maibornwolff.codecharta.analysers.analyserrunner
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.failures.FailableRun
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.MergeResolverStrategy
 import de.maibornwolff.codecharta.analysers.filters.mergefilter.ProjectMerger
-import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
@@ -20,7 +19,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
 
-class AnalysisException(message: String) : GateException(message)
+class AnalysisException(message: String) : RuntimeException(message)
 
 data class ConfiguredAnalyser(val analyser: AnalyserInterface, val arguments: List<String> = emptyList())
 
@@ -100,6 +99,6 @@ class ProjectAnalyser {
 
     companion object {
         private const val FAILURE_EXIT_CODE = 1
-        private const val WORK_FOLDER_PREFIX = "codecharta-gate"
+        private const val WORK_FOLDER_PREFIX = "codecharta-analysis"
     }
 }

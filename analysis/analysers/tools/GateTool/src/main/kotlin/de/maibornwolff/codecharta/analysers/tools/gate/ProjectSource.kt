@@ -1,8 +1,9 @@
 package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
-import de.maibornwolff.codecharta.analysers.tools.gate.analysis.ConfiguredAnalyser
-import de.maibornwolff.codecharta.analysers.tools.gate.analysis.ProjectAnalyser
+import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
+import de.maibornwolff.codecharta.analysers.analyserrunner.ConfiguredAnalyser
+import de.maibornwolff.codecharta.analysers.analyserrunner.ProjectAnalyser
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateConfig
 import de.maibornwolff.codecharta.analysers.tools.gate.config.GateException
 import de.maibornwolff.codecharta.analysers.tools.gate.report.counted
@@ -19,7 +20,7 @@ class LoadedProject(val project: AnalysedProject, val analyserNames: List<String
 
 class ProjectSource(
     private val options: GateOptions,
-    private val console: GateConsole,
+    private val console: AnalysisConsole,
     private val createAnalysers: () -> List<AnalyserInterface>
 ) {
     fun load(config: GateConfig): LoadedProject = options.mapFile?.let(::readMap) ?: analyse(config)

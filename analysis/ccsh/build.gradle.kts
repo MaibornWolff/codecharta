@@ -44,6 +44,7 @@ dependencies {
             ":analysers:tools:ConvertTool",
             ":analysers:tools:GateTool",
             ":analysers:AnalyserInterface",
+            ":analysers:AnalyserRunner",
             ":analysers:parsers:UnifiedParser",
             ":dialogProvider",
             ":analysers:importers:SourceMonitorImporter",
