@@ -141,6 +141,21 @@ class ProjectAnalyserTest {
     }
 
     @Test
+    fun `should stop at the first failed analyser when they run one after another`() {
+        // Arrange
+        writeSource("src/App.kt", "fun main() {}\n")
+        val slowAnalyser = SlowAnalyser()
+        val analysers = listOf(ConfiguredAnalyser(FailingAnalyser()), ConfiguredAnalyser(slowAnalyser))
+
+        // Act
+        val failure = catchThrowable { ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "out")) }
+
+        // Assert
+        assertThat(failure).isInstanceOf(AnalysisException::class.java).hasMessageContaining("failingparser")
+        assertThat(slowAnalyser.hasFinished).isFalse()
+    }
+
+    @Test
     fun `should return a result for every analyser so one failure does not hide the other maps`() {
         // Arrange
         writeSource("src/App.kt", "fun main() {}\n")
