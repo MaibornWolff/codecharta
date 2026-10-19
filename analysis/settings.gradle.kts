@@ -30,7 +30,8 @@ include(
     "analysers:tools:ValidationTool",
     "analysers:tools:InspectionTool",
     "analysers:tools:ConvertTool",
-    "analysers:tools:GateTool"
+    "analysers:tools:GateTool",
+    "analysers:tools:AnalyseTool"
 )
 
 rootProject.name = "codecharta"

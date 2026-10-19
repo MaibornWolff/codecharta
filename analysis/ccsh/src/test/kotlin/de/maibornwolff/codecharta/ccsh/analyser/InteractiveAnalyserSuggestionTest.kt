@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.ccsh.analyser
 
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalyseTool
 import de.maibornwolff.codecharta.ccsh.Ccsh
 import de.maibornwolff.codecharta.ccsh.SessionMock.Companion.mockRunInTerminalSession
 import io.mockk.every
@@ -49,8 +50,9 @@ class InteractiveAnalyserSuggestionTest {
         unmockkAll()
     }
 
-    private fun mockPrepareInteractiveDialog() {
+    private fun mockPrepareInteractiveDialog(analyseEverything: Boolean = false) {
         mockkObject(InteractiveDialog)
+        every { InteractiveDialog.askAnalyseEverything(any(), any()) } returns analyseEverything
     }
 
     private fun mockDialogScannerPath(pathToReturn: String) {
@@ -155,5 +157,37 @@ class InteractiveAnalyserSuggestionTest {
         assertThat(selectedAnalysers).isNotNull
         assertThat(selectedAnalysers).isEmpty()
         assertThat(errContent.toString()).contains("Specified invalid or empty path to analyze! Aborting...")
+    }
+
+    @Test
+    fun `should configure only ccsh analyse for a folder when the user wants everything analysed at once`() {
+        // Arrange
+        mockPrepareInteractiveDialog(analyseEverything = true)
+        mockDialogScannerPath("src")
+        mockkObject(AnalyserService)
+
+        // Act
+        val configuredAnalysers = InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
+
+        // Assert
+        assertThat(configuredAnalysers).containsExactlyEntriesOf(mapOf(AnalyseTool.NAME to listOf("src")))
+        verify(exactly = 0) { AnalyserService.getAnalyserSuggestions(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should not offer to analyse everything for a single file`() {
+        // Arrange
+        mockPrepareInteractiveDialog(analyseEverything = true)
+        mockDialogScannerPath("src/test/resources/sampleproject/foo.java")
+        mockDialogApplicableAnalyserSelection(emptyList())
+        mockkObject(AnalyserService)
+        every { AnalyserService.getAnalyserSuggestions(any(), any(), any()) } returns listOf("dummyAnalyser")
+
+        // Act
+        val configuredAnalysers = InteractiveAnalyserSuggestion.offerAndGetAnalyserSuggestionsAndConfigurations(cmdLine)
+
+        // Assert
+        assertThat(configuredAnalysers).isEmpty()
+        verify(exactly = 0) { InteractiveDialog.askAnalyseEverything(any(), any()) }
     }
 }

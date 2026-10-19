@@ -28,6 +28,11 @@ class InteractiveDialog {
             )
         }
 
+        internal fun askAnalyseEverything(session: Session, folder: String): Boolean = session.promptConfirm(
+            message = "Map $folder with every applicable parser and its git or svn history in one go (ccsh analyse)?",
+            onInputReady = testCallback()
+        )
+
         internal fun askApplicableAnalyser(session: Session, applicableAnalysers: List<String>): List<String> = session.promptCheckbox(
             message = "Choose from this list of applicable analysers. You can select individual analysers by pressing spacebar.",
             choices = applicableAnalysers,

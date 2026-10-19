@@ -91,6 +91,7 @@ export default defineConfig({
 								'docs/analysis/example-sonar-qube',
 								'docs/analysis/local-changes',
 								'docs/analysis/commit-analysis',
+								'docs/analysis/analyse',
 								'docs/analysis/quality-gate',
 							],
 						},

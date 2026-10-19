@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.ccsh.analyser
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.runInTerminalSession
+import de.maibornwolff.codecharta.analysers.tools.analyse.AnalyseTool
 import de.maibornwolff.codecharta.ccsh.analyser.repository.PicocliAnalyserRepository
 import de.maibornwolff.codecharta.util.Logger
 import picocli.CommandLine
@@ -11,7 +12,10 @@ class InteractiveAnalyserSuggestion {
         const val NO_USABLE_ANALYSER_FOUND_MESSAGE = "No usable analyser was found for the input file path!"
 
         fun offerAndGetAnalyserSuggestionsAndConfigurations(commandLine: CommandLine): Map<String, List<String>> {
-            val applicableAnalysers = getApplicableAnalyser(commandLine)
+            val inputFilePath = askForInputPath() ?: return emptyMap()
+            if (wantsToAnalyseEverything(inputFilePath)) return analyseEverything(inputFilePath)
+
+            val applicableAnalysers = getApplicableAnalyser(commandLine, inputFilePath)
 
             if (applicableAnalysers.isEmpty()) {
                 return emptyMap()
@@ -28,15 +32,25 @@ class InteractiveAnalyserSuggestion {
             }
         }
 
-        private fun getApplicableAnalyser(commandLine: CommandLine): List<String> {
+        private fun askForInputPath(): String? {
             val inputFilePath: String = runInTerminalSession { InteractiveDialog.askForPath(this) }
-
-            val inputFile = File(inputFilePath)
-            if (inputFilePath == "" || !isInputFileOrDirectory(inputFile)) {
+            if (inputFilePath == "" || !isInputFileOrDirectory(File(inputFilePath))) {
                 Logger.error { "Specified invalid or empty path to analyze! Aborting..." }
-                return emptyList()
+                return null
             }
+            return inputFilePath
+        }
 
+        private fun wantsToAnalyseEverything(inputFilePath: String): Boolean =
+            File(inputFilePath).isDirectory && runInTerminalSession { InteractiveDialog.askAnalyseEverything(this, inputFilePath) }
+
+        private fun analyseEverything(inputFilePath: String): Map<String, List<String>> {
+            println("You can run the same command again by using the following command line arguments:")
+            println("ccsh ${AnalyseTool.NAME} \"$inputFilePath\"")
+            return mapOf(AnalyseTool.NAME to listOf(inputFilePath))
+        }
+
+        private fun getApplicableAnalyser(commandLine: CommandLine, inputFilePath: String): List<String> {
             val applicableAnalysers =
                 AnalyserService.getAnalyserSuggestions(commandLine, PicocliAnalyserRepository(), inputFilePath)
 

@@ -43,6 +43,7 @@ dependencies {
             ":analysers:tools:InspectionTool",
             ":analysers:tools:ConvertTool",
             ":analysers:tools:GateTool",
+            ":analysers:tools:AnalyseTool",
             ":analysers:AnalyserInterface",
             ":analysers:AnalyserRunner",
             ":analysers:parsers:UnifiedParser",
