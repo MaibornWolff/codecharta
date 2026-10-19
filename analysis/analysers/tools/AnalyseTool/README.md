@@ -21,10 +21,11 @@ Full documentation: https://maibornwolff.github.io/codecharta/docs/analysis/anal
 
 In a git repository it runs `gitlogparser repo-scan`; in an svn working copy it runs
 `svn log --verbose --non-interactive` itself and reads the log with `svnlogparser`. The history only adds metrics to
-the files the code parsers mapped. When the history cannot be included, for example because the folder lies inside a
-repository but not at its root, the map is still written and the last lines of the output say why. The svn history
-only matches the code when the working copy is a checkout of the trunk of a single-project repository; for a branch or
-a multi-project layout the map has no svn metrics.
+the files the code parsers mapped. The svn history only matches the code when the working copy is a checkout of the
+trunk of a single-project repository; for a branch or a multi-project layout the map has no svn metrics.
+
+The last lines of the output, after `Map:`, name every parser and history that is not in the map and why, for example
+a folder inside a repository but not at its root. The map is written either way.
 
 ```
 Usage: ccsh analyse [-hpq] [-nc] [-o=<outputFile>] [-e=<excludePatterns>]...

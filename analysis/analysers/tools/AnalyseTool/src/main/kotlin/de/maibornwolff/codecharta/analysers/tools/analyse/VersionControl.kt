@@ -15,7 +15,9 @@ enum class VersionControl(val label: String, val checkout: String, private val m
             .firstOrNull(::isRootOf)
     }
 
-    fun missingHistory(reason: String): String = "No $label history in the map: $reason"
+    val sourceName: String get() = "$label history"
+
+    fun skipped(reason: String): SkippedSource = SkippedSource(sourceName, reason)
 
     companion object {
         const val SVN_FOLDER_EXCLUDE_PATTERN = "(/|^)\\.svn(/|$)"

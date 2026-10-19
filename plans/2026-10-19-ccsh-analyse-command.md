@@ -57,6 +57,9 @@ No config file.
 7. Accepted as they are: svn branch paths, interactive tail lines, old maps in the project folder, message wording,
    svn log timeout, `String?` result of `SvnLogWriter`, repeated literals, `CodeParsers` location, Unix tools in tests
 
+8. **Every skipped source is named**: after `Map:`, a "Not in the map:" block names each parser and history that did
+   not run and why, including a folder in no repository and sources left out with `--without`
+
 ## Notes
 
 - Merge strategy: recursive, the same as the gate

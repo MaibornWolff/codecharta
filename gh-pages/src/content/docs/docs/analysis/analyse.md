@@ -33,11 +33,21 @@ back through it.
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
 | `-q, --quiet`              | keeps the output of the analysers off the console                                   |
 
-### When the history is missing
+### What is not in the map
 
-If the history cannot be included, the map is still written without it, and the last lines of the output, after the
-`Map:` line, say why. This happens when the folder lies inside a repository or working copy but not at its root
-(analyse the root instead), when `svn` is not installed, or when `svn log` or the git log fails.
+The last lines of the output, after the `Map:` line, name every parser and history that is not in the map, and why:
+
+```
+Map: ./shop.cc.json.gz
+Not in the map:
+  dependencyparser: found no file it reads in .
+  git history: . is inside the git repository /home/me/shop, not at its root. Analyse /home/me/shop to include it.
+  svn history: no svn working copy found for .
+```
+
+A history is missing when the folder is in no repository or working copy, when it lies inside one but not at its root
+(analyse the root instead), when `svn` is not installed, or when `svn log` or the git log fails. The map is written
+either way.
 
 The svn history only matches the code when the working copy is a checkout of the trunk of a single-project
 repository. For a checkout of a branch or of a project inside a multi-project repository, the map has no svn metrics.

@@ -64,7 +64,7 @@ class AnalyseToolTest {
     }
 
     @Test
-    fun `should write the map and name why the git history is missing as the last line when the folder is inside a repository`() {
+    fun `should write the map and say at the end why the git history is missing when the folder is inside a repository`() {
         // Arrange
         writeSource("module/src/App.kt", APP_SOURCE)
         commitAll()
@@ -75,7 +75,7 @@ class AnalyseToolTest {
         // Assert
         assertThat(exitCode).isZero()
         assertThat(filesOf(readMap(mapFile)).getValue("src/App.kt")).doesNotContainKey("number_of_commits")
-        assertThat(lastLine()).startsWith("No git history in the map:").contains("not at its root")
+        assertThat(skippedSources().single { it.startsWith("git history:") }).contains("not at its root")
     }
 
     @Test
@@ -94,7 +94,7 @@ class AnalyseToolTest {
     }
 
     @Test
-    fun `should write the map and name why the svn history is missing as the last line when svn cannot run`() {
+    fun `should write the map and say at the end why the svn history is missing when svn cannot run`() {
         // Arrange
         writeSource("src/App.kt", APP_SOURCE)
         File(projectFolder, ".svn").mkdirs()
@@ -105,7 +105,7 @@ class AnalyseToolTest {
         // Assert
         assertThat(exitCode).isZero()
         assertThat(mapFile).exists()
-        assertThat(lastLine()).isEqualTo("No svn history in the map: the $MISSING_COMMAND command is not installed or not on the PATH")
+        assertThat(skippedSources()).contains("svn history: the $MISSING_COMMAND command is not installed or not on the PATH")
     }
 
     @Test
@@ -119,6 +119,37 @@ class AnalyseToolTest {
 
         // Assert
         assertThat(filesOf(readMap(mapFile)).getValue("src/App.kt")).doesNotContainKeys("complexity", "number_of_commits")
+    }
+
+    @Test
+    fun `should say at the end that there is no git or svn history when the folder is in neither`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}")
+
+        // Assert
+        assertThat(skippedSources()).containsExactly(
+            "git history: no git repository found for ${projectFolder.path}",
+            "svn history: no svn working copy found for ${projectFolder.path}"
+        )
+    }
+
+    @Test
+    fun `should say at the end which parser found nothing to read and which were left out`() {
+        // Arrange
+        writeSource("notes.txt", "a note\n")
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--without=git,svn")
+
+        // Assert
+        assertThat(skippedSources()).containsExactly(
+            "unifiedparser: found no file it reads in ${projectFolder.path}",
+            "git history: left out with --without",
+            "svn history: left out with --without"
+        )
     }
 
     @Test
@@ -160,7 +191,7 @@ class AnalyseToolTest {
     }
 
     @Test
-    fun `should name why the git history is missing as the last line also when the analysers print their output`() {
+    fun `should say at the end why the git history is missing also when the analysers print their output`() {
         // Arrange
         writeSource("module/src/App.kt", APP_SOURCE)
         commitAll()
@@ -169,11 +200,11 @@ class AnalyseToolTest {
         analyse(File(projectFolder, "module").path, "--output-file=${mapFile.path}", quiet = false)
 
         // Assert
-        assertThat(lastLine()).startsWith("No git history in the map:")
+        assertThat(skippedSources()).anyMatch { it.startsWith("git history:") }
     }
 
     @Test
-    fun `should write the map and name why the git history is missing as the last line when the repository has no commits`() {
+    fun `should write the map and say at the end why the git history is missing when the repository has no commits`() {
         // Arrange
         writeSource("src/App.kt", APP_SOURCE)
         git("init", "--quiet")
@@ -184,7 +215,7 @@ class AnalyseToolTest {
         // Assert
         assertThat(exitCode).isZero()
         assertThat(filesOf(readMap(mapFile)).keys).containsExactly("src/App.kt")
-        assertThat(lastLine()).startsWith("No git history in the map:")
+        assertThat(skippedSources()).anyMatch { it.startsWith("git history:") }
     }
 
     @Test
@@ -198,7 +229,7 @@ class AnalyseToolTest {
         analyse(module.path, "--output-file=${mapFile.path}")
 
         // Assert
-        assertThat(output.toString()).doesNotContain("No git history")
+        assertThat(skippedSources()).contains("git history: ${module.path} keeps its history in svn")
     }
 
     @Test
@@ -256,7 +287,16 @@ class AnalyseToolTest {
         return CommandLine(tool).execute(*(listOfNotNull("--quiet".takeIf { quiet }) + arguments).toTypedArray())
     }
 
-    private fun lastLine(): String = output.toString().trimEnd().lines().last()
+    private fun skippedSources(): List<String> {
+        val linesAfterMap = output
+            .toString()
+            .trimEnd()
+            .lines()
+            .dropWhile { !it.startsWith("Map: ") }
+            .drop(1)
+        assertThat(linesAfterMap.firstOrNull()).isEqualTo("Not in the map:")
+        return linesAfterMap.drop(1).map { it.removePrefix("  ") }
+    }
 
     private fun readMap(file: File): Project = file.inputStream().use { ProjectDeserializer.deserializeProject(it) }
 
