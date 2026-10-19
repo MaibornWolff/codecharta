@@ -156,6 +156,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- **Grammar licenses**: `ccsh` ships the license notices of the Angular, HTML, TypeScript and Pascal grammars it
+  bundles.
+
 - **TreeSitterExcavationSite is now a module of the analysis build instead of an external library.** The code of
   `v0.12.0` moved into `analysis/treeSitterExcavationSite` unchanged, so the three parsers that use it compile
   against `project(":treeSitterExcavationSite")` rather than a JitPack artifact and its grammar versions are

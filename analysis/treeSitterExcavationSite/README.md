@@ -220,3 +220,6 @@ src/main/kotlin/de/maibornwolff/treesitter/excavationsite/
 ## License
 
 BSD-3-Clause
+
+The grammars bundled in `libs/` and the tree-sitter core keep their own licenses, which lie in
+`src/main/resources/lib/` and so ship inside ccsh. A jar added to `libs/` brings its license there as well.
