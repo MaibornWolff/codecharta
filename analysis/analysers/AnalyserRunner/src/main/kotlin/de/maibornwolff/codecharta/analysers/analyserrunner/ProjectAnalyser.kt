@@ -21,24 +21,43 @@ import kotlin.io.path.createTempDirectory
 
 class AnalysisException(message: String) : RuntimeException(message)
 
-data class ConfiguredAnalyser(val analyser: AnalyserInterface, val arguments: List<String> = emptyList())
+data class ConfiguredAnalyser(
+    val analyser: AnalyserInterface,
+    val arguments: List<String> = emptyList(),
+    val readsProjectFolder: Boolean = true
+)
 
 class ProjectAnalyser {
-    fun analyse(projectFolder: File, analysers: List<ConfiguredAnalyser>, outputFolder: File, parallel: Boolean = false): Project {
+    fun analyse(projectFolder: File, analysers: List<ConfiguredAnalyser>, excludedOutput: File, parallel: Boolean = false): Project {
+        val projects = analyseEach(projectFolder, analysers, excludedOutput, parallel).map { it.getOrThrow() }
+        return ProjectMerger(projects, MergeResolverStrategy.recursive()).merge()
+    }
+
+    fun analyseEach(
+        projectFolder: File,
+        analysers: List<ConfiguredAnalyser>,
+        excludedOutput: File,
+        parallel: Boolean = false
+    ): List<Result<Project>> {
         if (analysers.isEmpty()) throw AnalysisException("No analyser is switched on that applies to ${projectFolder.path}.")
 
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
         try {
-            val excludePattern = excludePatternFor(projectFolder, outputFolder)
-            val runOne = { analyser: ConfiguredAnalyser -> runAnalyser(analyser, projectFolder, workFolder, excludePattern) }
-            val projects = if (parallel) runInParallel(analysers, runOne) else analysers.map(runOne)
-            return ProjectMerger(projects, MergeResolverStrategy.recursive()).merge()
+            val excludePattern = excludePatternFor(projectFolder, excludedOutput)
+            val runOne = { analyser: ConfiguredAnalyser -> attempt { runAnalyser(analyser, projectFolder, workFolder, excludePattern) } }
+            return if (parallel) runInParallel(analysers, runOne) else analysers.map(runOne)
         } finally {
             workFolder.deleteRecursively()
         }
     }
 
-    private fun runInParallel(analysers: List<ConfiguredAnalyser>, runOne: (ConfiguredAnalyser) -> Project): List<Project> {
+    private fun attempt(run: () -> Project): Result<Project> = try {
+        Result.success(run())
+    } catch (exception: AnalysisException) {
+        Result.failure(exception)
+    }
+
+    private fun runInParallel(analysers: List<ConfiguredAnalyser>, runOne: (ConfiguredAnalyser) -> Result<Project>): List<Result<Project>> {
         val threadPool = Executors.newFixedThreadPool(minOf(analysers.size, Runtime.getRuntime().availableProcessors()))
         try {
             return analysers
@@ -50,7 +69,7 @@ class ProjectAnalyser {
         }
     }
 
-    private fun resultOf(future: Future<Project>): Project = try {
+    private fun resultOf(future: Future<Result<Project>>): Result<Project> = try {
         future.get()
     } catch (exception: ExecutionException) {
         throw exception.cause ?: exception
@@ -59,15 +78,18 @@ class ProjectAnalyser {
     private fun runAnalyser(configured: ConfiguredAnalyser, projectFolder: File, workFolder: File, excludePattern: String?): Project {
         val analyser = configured.analyser
         val mapFile = File(workFolder, analyser.name + FileExtension.CCJSON.primaryExtension)
-        val arguments =
-            listOf(projectFolder.path, "--output-file", mapFile.path) + configured.arguments +
-                listOfNotNull(excludePattern?.let { "--exclude=$it" })
+        val arguments = inputArguments(configured, projectFolder, excludePattern) + listOf("--output-file", mapFile.path)
         val failureReason = execute(analyser, arguments)
         val writtenFile = File(OutputFileHandler.checkAndFixFileExtension(mapFile.path, true, FileExtension.JSON))
         if (failureReason != null || !writtenFile.exists()) {
             throw AnalysisException("The analyser ${analyser.name} failed on ${projectFolder.path}: ${failureReason ?: "it wrote no map"}")
         }
         return writtenFile.inputStream().use { ProjectDeserializer.deserializeProject(it) }
+    }
+
+    private fun inputArguments(configured: ConfiguredAnalyser, projectFolder: File, excludePattern: String?): List<String> {
+        if (!configured.readsProjectFolder) return configured.arguments
+        return listOf(projectFolder.path) + configured.arguments + listOfNotNull(excludePattern?.let { "--exclude=$it" })
     }
 
     private fun execute(analyser: AnalyserInterface, arguments: List<String>): String? {
@@ -91,8 +113,8 @@ class ProjectAnalyser {
             ?: "it ended with exit code $exitCode"
     }
 
-    private fun excludePatternFor(projectFolder: File, outputFolder: File): String? {
-        val relativeOutput = outputFolder.absoluteFile.normalize().relativeToOrNull(projectFolder.absoluteFile.normalize()) ?: return null
+    private fun excludePatternFor(projectFolder: File, excludedOutput: File): String? {
+        val relativeOutput = excludedOutput.absoluteFile.normalize().relativeToOrNull(projectFolder.absoluteFile.normalize()) ?: return null
         if (relativeOutput.path.isEmpty() || relativeOutput.startsWith("..")) return null
         return "^/" + Regex.escape(relativeOutput.invariantSeparatorsPath) + "(/|$)"
     }
