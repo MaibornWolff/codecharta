@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.gate.analysis
+package de.maibornwolff.codecharta.analysers.analyserrunner
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
@@ -6,7 +6,8 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
 import de.maibornwolff.codecharta.analysers.parsers.unified.UnifiedParser
-import de.maibornwolff.codecharta.analysers.tools.gate.rules.AnalysedProject
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Project
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
@@ -32,7 +33,7 @@ class ProjectAnalyserTest {
         )
 
         // Assert
-        val metrics = AnalysedProject(project).files.single { it.path == "src/App.kt" }.metrics
+        val metrics = filesOf(project).getValue("src/App.kt")
         assertThat(metrics).containsKeys("indentation_level_1+", "complexity")
     }
 
@@ -50,7 +51,7 @@ class ProjectAnalyserTest {
         )
 
         // Assert
-        assertThat(AnalysedProject(project).files.map { it.path }).containsExactly("src/App.kt")
+        assertThat(filesOf(project).keys).containsExactly("src/App.kt")
     }
 
     @Test
@@ -64,7 +65,7 @@ class ProjectAnalyserTest {
         val project = ProjectAnalyser().analyse(projectFolder, analysers, File(projectFolder, "checks"))
 
         // Assert
-        assertThat(AnalysedProject(project).files.map { it.path }).containsExactly("src/checks/Kept.kt")
+        assertThat(filesOf(project).keys).containsExactly("src/checks/Kept.kt")
     }
 
     @Test
@@ -120,7 +121,7 @@ class ProjectAnalyserTest {
         val parallel = ProjectAnalyser().analyse(projectFolder, bothAnalysers(), outputFolder, parallel = true)
 
         // Assert
-        assertThat(AnalysedProject(parallel).files).containsExactlyInAnyOrderElementsOf(AnalysedProject(sequential).files)
+        assertThat(filesOf(parallel)).isEqualTo(filesOf(sequential))
     }
 
     @Test
@@ -139,6 +140,11 @@ class ProjectAnalyserTest {
     }
 
     private fun bothAnalysers() = listOf(ConfiguredAnalyser(RawTextParser()), ConfiguredAnalyser(UnifiedParser()))
+
+    private fun filesOf(project: Project): Map<String, Map<String, Any>> = project.rootNode.nodes
+        .filter { (_, node) -> node.type == NodeType.File }
+        .map { (path, node) -> path.edgesList.joinToString("/") to node.attributes }
+        .toMap()
 
     private fun writeSource(path: String, content: String) {
         File(projectFolder, path).apply { parentFile.mkdirs() }.writeText(content)

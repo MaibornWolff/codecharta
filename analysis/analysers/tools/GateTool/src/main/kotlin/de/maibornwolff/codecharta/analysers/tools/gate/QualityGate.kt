@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
 import de.maibornwolff.codecharta.analysers.tools.gate.analysis.PicocliAnalyserCatalog
 import de.maibornwolff.codecharta.analysers.tools.gate.config.AnalyserSetting
 import de.maibornwolff.codecharta.analysers.tools.gate.config.ConfigReader
@@ -18,7 +19,7 @@ import de.maibornwolff.codecharta.analysers.tools.gate.template.ConfigTemplate
 import de.maibornwolff.codecharta.analysers.tools.gate.template.MetricSummary
 import java.io.File
 
-class QualityGate(private val options: GateOptions, private val console: GateConsole, createAnalysers: () -> List<AnalyserInterface>) {
+class QualityGate(private val options: GateOptions, private val console: AnalysisConsole, createAnalysers: () -> List<AnalyserInterface>) {
     private val configFile = options.configFile ?: File(options.projectFolder, GateConfig.FILE_NAME)
     private val catalog = PicocliAnalyserCatalog(createAnalysers)
     private val projectSource = ProjectSource(options, console, createAnalysers)

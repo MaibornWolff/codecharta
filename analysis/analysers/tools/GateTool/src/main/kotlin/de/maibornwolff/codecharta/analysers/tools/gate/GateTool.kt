@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.analysers.tools.gate
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisConsole
+import de.maibornwolff.codecharta.analysers.analyserrunner.AnalysisException
 import de.maibornwolff.codecharta.analysers.parsers.dependency.DependencyParser
 import de.maibornwolff.codecharta.analysers.parsers.domainlanguage.DomainLanguageParser
 import de.maibornwolff.codecharta.analysers.parsers.rawtext.RawTextParser
@@ -67,7 +69,7 @@ class GateTool(
     private fun run(): Int {
         val folder = projectFolder ?: workingFolder
         usageProblem(folder)?.let { throw GateException(it) }
-        val gate = QualityGate(GateOptions(folder, configFile, parallel, mapFile), GateConsole(output, quiet), createAnalysers)
+        val gate = QualityGate(GateOptions(folder, configFile, parallel, mapFile), AnalysisConsole(output, quiet), createAnalysers)
         return when {
             init -> gate.init(force)
             doctor -> gate.doctor()
@@ -94,6 +96,8 @@ class GateTool(
     private fun guarded(action: () -> Int): Int = try {
         action()
     } catch (exception: GateException) {
+        failure(exception.message)
+    } catch (exception: AnalysisException) {
         failure(exception.message)
     } catch (exception: Exception) {
         failure("ccsh gate failed: ${exception.message ?: exception::class.simpleName}")

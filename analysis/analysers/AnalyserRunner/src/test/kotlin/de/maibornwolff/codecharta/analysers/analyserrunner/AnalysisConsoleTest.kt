@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.analysers.tools.gate
+package de.maibornwolff.codecharta.analysers.analyserrunner
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-class GateConsoleTest {
+class AnalysisConsoleTest {
     @Test
     fun `should give the console back to the analysers even when the analysis fails`() {
         // Arrange
-        val console = GateConsole(PrintStream(ByteArrayOutputStream()), quiet = true)
+        val console = AnalysisConsole(PrintStream(ByteArrayOutputStream()), quiet = true)
         val originalOut = System.out
         val originalErr = System.err
 
@@ -28,7 +28,7 @@ class GateConsoleTest {
         val analyserOutput = ByteArrayOutputStream()
         val originalOut = System.out
         System.setOut(PrintStream(analyserOutput))
-        val console = GateConsole(PrintStream(ByteArrayOutputStream()), quiet = true)
+        val console = AnalysisConsole(PrintStream(ByteArrayOutputStream()), quiet = true)
 
         // Act
         try {
