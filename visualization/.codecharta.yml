@@ -70,7 +70,7 @@ metrics:
         - Have callers depend on small interfaces instead of this one large unit (Interface Segregation).
         - KISS: remove branches for cases that never happen instead of handling them.
     error:  ## today's worst file, so nothing grows beyond it
-      max: 257
+      max: 176
       instruction: *complexity
   rloc:
     warning:
@@ -81,7 +81,7 @@ metrics:
         - Extract repeated logic into a shared helper (DRY: 3+ occurrences means extract).
         - Delete dead code and speculative extensions (KISS, YAGNI).
     error:  ## today's worst file, so nothing grows beyond it
-      max: 759
+      max: 634
       instruction: *rloc
   max_complexity_per_function:
     warning:
@@ -103,7 +103,7 @@ metrics:
         - Keep only comments that explain WHY: a constraint, a workaround with its issue, a deliberate trade-off.
         - Delete commented-out code. Git keeps the history.
     error:  ## today's worst file, so nothing grows beyond it
-      max: 68
+      max: 61
       instruction: *comment_lines
 
 dependencies:  ## counted like the dependency view in the visualization
