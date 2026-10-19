@@ -48,9 +48,10 @@ class AnalyseTool(
 
     @CommandLine.Option(
         names = ["--without"],
-        split = ",",
         paramLabel = "NAME",
-        description = ["comma-separated parsers or histories to leave out, such as dependencyparser,svn"]
+        description = ["comma-separated parsers or histories to leave out, such as dependencyparser,svn"],
+        converter = [CommaSeparatedStringToListConverter::class],
+        preprocessor = CommaSeparatedParameterPreprocessor::class
     )
     private var leftOut: List<String> = listOf()
 
@@ -76,19 +77,18 @@ class AnalyseTool(
     private fun run(): Int {
         val folder = projectFolder ?: workingFolder
         if (!folder.isDirectory) throw AnalysisException("The folder ${folder.path} does not exist.")
-        unknownSource()?.let {
-            throw AnalysisException(
-                "--without does not know $it. Leave out one of: ${leavableSources().joinToString()}"
-            )
-        }
-        val request = AnalyseRequest(folder, outputFileFor(folder), excludePatterns, leftOut.toSet(), parallel, !notCompressed)
+        val leftOutSources = leftOutSources()
+        val request = AnalyseRequest(folder, outputFileFor(folder), excludePatterns, leftOutSources, parallel, !notCompressed)
         CodebaseAnalysis(AnalysisConsole(output, quiet), svnLogWriter, createParsers).run(request)
         return SUCCESS
     }
 
-    private fun unknownSource(): String? = leftOut.firstOrNull { it !in leavableSources() }
-
-    private fun leavableSources(): List<String> = createParsers().map { it.name } + VersionControl.entries.map { it.label }
+    private fun leftOutSources(): Set<String> {
+        val leavableSources = createParsers().map { it.name } + VersionControl.entries.map { it.label }
+        val leftOutSources = leftOut.map(VersionControl::sourceNameOf).toSet()
+        val unknownSource = leftOutSources.firstOrNull { it !in leavableSources } ?: return leftOutSources
+        throw AnalysisException("--without does not know $unknownSource. Leave out one of: ${leavableSources.joinToString()}")
+    }
 
     private fun outputFileFor(folder: File): File {
         val chosen = outputFile ?: File(workingFolder, folder.absoluteFile.normalize().name.ifEmpty { DEFAULT_MAP_NAME }).path

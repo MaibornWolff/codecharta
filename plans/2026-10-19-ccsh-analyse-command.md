@@ -1,6 +1,6 @@
 ---
 name: ccsh analyse command
-state: progress
+state: complete
 version: 1
 ---
 
@@ -44,7 +44,18 @@ No config file.
 - [x] Complete Task 4: Interactive mode
 - [x] Complete Task 5: Docs and changelog
 - [x] Run `./gradlew ktlintCheck test integrationTest`
-- [ ] Review subagent, then the ccsh gate on analysis and visualization
+- [x] Review subagent, then the ccsh gate on analysis and visualization
+
+## Review Feedback Addressed
+
+1. **Gate fail-fast**: sequential `ProjectAnalyser.analyse` stops at the first failed analyser again
+2. **Enclosing-root hint**: no hint when another version control is rooted at the folder; the search stops at the home folder
+3. **`--without`**: takes spaces after commas like `-e`, and `gitlogparser`/`svnlogparser` for the histories
+4. **Results by analyser**: code and history results are matched by analyser, not by list position
+5. **Tests**: default parsers with git, hint last without `--quiet`, `-nc`, failing parser, repo without commits, Dialog
+6. **Docs**: exit code 2 and the svn trunk-only limitation
+7. Accepted as they are: svn branch paths, interactive tail lines, old maps in the project folder, message wording,
+   svn log timeout, `String?` result of `SvnLogWriter`, repeated literals, `CodeParsers` location, Unix tools in tests
 
 ## Notes
 
