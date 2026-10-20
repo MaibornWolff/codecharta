@@ -206,7 +206,7 @@ export async function setupSelected(selectedPath: string | null, declarations = 
     return setup({ tree: DECLARING_TREE, declarations, selectedPath })
 }
 
-export async function select(store: MockStore, fixture: { detectChanges: () => void }, path: string | null) {
+export function select(store: MockStore, fixture: { detectChanges: () => void }, path: string | null) {
     store.overrideSelector(selectedNodePathSelector, path)
     store.refreshState()
     fixture.detectChanges()

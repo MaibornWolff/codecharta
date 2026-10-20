@@ -49,7 +49,7 @@ describe("DependencyMapComponent", () => {
                 const withoutSelection = inspectorTitle()
 
                 // Act
-                await select(store, fixture, VIEW)
+                select(store, fixture, VIEW)
 
                 // Assert
                 expect(withoutSelection).toBeNull()
@@ -64,7 +64,7 @@ describe("DependencyMapComponent", () => {
                 const withoutSelection = isShown()
 
                 // Act
-                await select(store, fixture, VIEW)
+                select(store, fixture, VIEW)
                 const withSelection = isShown()
                 store.overrideSelector(isDeltaStateSelector, true)
                 store.refreshState()
@@ -82,7 +82,7 @@ describe("DependencyMapComponent", () => {
                 const whileClosed = isSlidOut()
 
                 // Act
-                await select(store, fixture, VIEW)
+                select(store, fixture, VIEW)
 
                 // Assert
                 expect([whileClosed, isSlidOut()]).toEqual([true, false])
@@ -105,7 +105,7 @@ describe("DependencyMapComponent", () => {
 
                 // Act
                 fireChartEvent("click", { seriesId: "graph", data: { isEdge: true, edgeId: EDGE_ID } })
-                await select(store, fixture, null)
+                select(store, fixture, null)
 
                 // Assert
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: null }))
@@ -118,7 +118,7 @@ describe("DependencyMapComponent", () => {
                 // Arrange
                 const { store, fixture } = await setupSelected(VIEW)
                 fireChartEvent("click", { seriesId: "graph", data: { isEdge: true, edgeId: EDGE_ID } })
-                await select(store, fixture, null)
+                select(store, fixture, null)
 
                 // Act
                 await userEvent.click(screen.getByRole("button", { name: "Unfold in graph" }))
@@ -151,7 +151,7 @@ describe("DependencyMapComponent", () => {
 
                 // Act
                 await userEvent.click(usedDeclaration)
-                await select(store, fixture, NODE)
+                select(store, fixture, NODE)
 
                 // Assert
                 expect(store.dispatch).toHaveBeenCalledWith(setSelectedNodePath({ value: NODE }))
@@ -221,7 +221,7 @@ describe("DependencyMapComponent", () => {
                 fixture.detectChanges()
                 const afterClosing = inspectorTitle()
                 clickBox(boxEvent(NODE))
-                await select(store, fixture, NODE)
+                select(store, fixture, NODE)
 
                 // Assert
                 expect(afterClosing).toBeNull()
@@ -271,7 +271,7 @@ describe("DependencyMapComponent", () => {
                 await userEvent.click(screen.getByRole("button", { name: "Close inspector" }))
                 fixture.detectChanges()
                 clickBox(boxEvent(NODE))
-                await select(store, fixture, NODE)
+                select(store, fixture, NODE)
 
                 // Assert
                 expect(inspectorTitle()).toBe("node.ts")
@@ -282,11 +282,11 @@ describe("DependencyMapComponent", () => {
                 // Arrange
                 const { store, fixture } = await setupSelected(VIEW)
                 fireChartEvent("click", { seriesId: "graph", data: { isEdge: true, edgeId: EDGE_ID } })
-                await select(store, fixture, null)
+                select(store, fixture, null)
 
                 // Act
-                await select(store, fixture, NODE)
-                await select(store, fixture, null)
+                select(store, fixture, NODE)
+                select(store, fixture, null)
 
                 // Assert
                 expect(inspectorTitle()).toBeNull()
@@ -299,8 +299,8 @@ describe("DependencyMapComponent", () => {
                 fixture.detectChanges()
 
                 // Act
-                await select(store, fixture, NODE)
-                await select(store, fixture, VIEW)
+                select(store, fixture, NODE)
+                select(store, fixture, VIEW)
 
                 // Assert
                 expect(inspectorTitle()).toBe("view.ts")
@@ -330,7 +330,7 @@ describe("DependencyMapComponent", () => {
 
                 // Act
                 await userEvent.click(within(usesRow).getByRole("button", { name: "Node" }))
-                await select(store, fixture, NODE)
+                select(store, fixture, NODE)
                 await screen.findByTestId("dependency-graph")
 
                 // Assert
