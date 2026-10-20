@@ -16,15 +16,9 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.leveli
 import de.maibornwolff.codecharta.analysers.parsers.dependency.processing.levelization.toGraphTree
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * Turns per-file extraction results into both projections of one dependency graph.
- *
- * Type resolution and cycle detection run at declaration level, where they are meaningful — two classes
- * in one file form a cycle only if they genuinely reference each other. That result is emitted twice:
- * once as the logical graph the code declares, levelized over the namespace tree, and once folded onto
- * the files the declarations live in and levelized over the physical folder tree, so every level and
- * every edge of the physical half addresses a node the cc.json file tree already has.
- */
+// Cycles are detected between declarations, since two classes in one file form a cycle only if they really reference
+// each other. The result is then folded onto the files, so every physical level and edge addresses a node of the
+// cc.json file tree, and kept per declaration for the logical graph over the namespace tree.
 object ProcessingPipeline {
     fun run(fileReports: List<FileReport>, omitGraphAnalysis: Boolean): DependencyGraph {
         val resolvedNodes = resolveDependencies(mergeIdenticalTypes(fileReports))
@@ -67,11 +61,7 @@ object ProcessingPipeline {
         return DependencyGraph(edges, collectLevels(levelizedRoots, filePaths))
     }
 
-    /**
-     * Levelizes the packages the declarations sit in, as the folder tree is levelized. The two
-     * levelizations are independent — folder levels are not a projection of namespace levels — so both
-     * run, which is why `--omit-graph-analysis` skips both.
-     */
+    // Folder levels are not a projection of namespace levels, so both levelizations run
     private fun levelizeNamespaceTree(resolvedNodes: Collection<Node>): LevelizedNamespaceTree =
         LevelizedNamespaceTree(Logger.timed("Leveling the namespace tree") { levelize(resolvedNodes.toGraphNodes()) })
 
@@ -89,12 +79,8 @@ object ProcessingPipeline {
             }.toGraphTree()
     }
 
-    /**
-     * Reads a level off every node of the levelized tree and pairs it with the unescaped path the node
-     * stands for. The graph escapes dots inside a segment so its dot-joined ids split cleanly, and that
-     * escaping is not reversible (a name may contain underscores of its own), so the true segments are
-     * recovered from the file paths that built the tree rather than from the ids.
-     */
+    // The graph ids escape the dots inside a segment, which cannot be reversed since a name may contain underscores
+    // of its own, so the true segments come from the file paths that built the tree
     private fun collectLevels(levelizedRoots: List<GraphNode>, filePaths: List<FilePath>): List<LevelizedPath> {
         val segmentsByGraphId = HashMap<String, List<String>>()
         filePaths.forEach { filePath ->
@@ -135,11 +121,8 @@ object ProcessingPipeline {
     private fun resolveDependencies(fileReports: List<FileReport>): Collection<Node> =
         Logger.timed("Resolving dependencies") { DependencyResolverService.resolveNodes(fileReports) }
 
-    /**
-     * C++ declares a type in a header and defines it in a source file, so the same type arrives twice —
-     * once per translation unit. Both halves are folded into one node so the type does not appear to
-     * depend on itself across the two files.
-     */
+    // C++ declares a type in a header and defines it in a source file, so the type arrives twice and would appear to
+    // depend on itself across the two files
     private fun mergeIdenticalTypes(fileReports: List<FileReport>): List<FileReport> {
         val nodes = fileReports.flatMap { it.nodes }
         val (mergeable, rest) = nodes.partition { it.language == SupportedLanguage.CPP }
@@ -151,8 +134,7 @@ object ProcessingPipeline {
     private fun mergeDuplicates(duplicates: List<Map.Entry<Path, List<Node>>>): List<Node> = duplicates.flatMap { duplicate ->
         val byName = duplicate.value.groupBy { it.pathWithName.getName() }
         val (sameName, differentNames) = byName.entries.partition { it.value.size > 1 }
-        // Sorted so the surviving node's file is the same on every run, whatever order the scan found
-        // the header and the source in.
+        // Sorted so the surviving node's file is the same on every run, whatever order the scan found the files in
         val merged = sameName.flatMap { it.value }.sortedBy { it.physicalPath }.reduce { first, second ->
             first.copy(
                 dependencies = first.dependencies + second.dependencies,
