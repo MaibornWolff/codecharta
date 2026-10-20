@@ -125,6 +125,10 @@ tasks.named<CreateStartScripts>("startScripts") {
     }
 }
 
+tasks.named<JavaExec>("run") {
+    classpath(launcher.output)
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
     systemProperty("minimumJavaVersion", minimumJavaVersion)
