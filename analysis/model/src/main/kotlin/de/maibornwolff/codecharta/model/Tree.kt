@@ -2,15 +2,8 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * tree structure
- *
- * @param <T> must satisfy T = Tree<T>
- */
+// T must be the implementing class itself (T = Tree<T>), because [asTreeNode] casts the tree to it
 abstract class Tree<T> {
-/**
-     * @return children of the present tree
-     */
     abstract val children: Set<Tree<T>>
 
     val isLeaf: Boolean
@@ -43,15 +36,9 @@ abstract class Tree<T> {
                     it.path to it.node
                 }.toMap()
 
-    /**
-     * @return size as number of leaves
-     */
     val size: Int
         get() = leaves.size
 
-    /**
-     * @return all leafs of object
-     */
     val leafObjects: List<T>
         get() =
             treeNodes
@@ -59,9 +46,6 @@ abstract class Tree<T> {
                     (it.node as Tree<*>).isLeaf
                 }.map { it.node }
 
-    /**
-     * @return all paths to leafs of object
-     */
     val pathsToLeaves: List<Path>
         get() =
             treeNodes
@@ -69,20 +53,10 @@ abstract class Tree<T> {
                     (it.node as Tree<*>).isLeaf
                 }.map { it.path }
 
-    /**
-     * get's the path of a given child, i.e. defines the edge to the child.
-     *
-     * @param child to be found
-     * @return path of child in this object
-     */
     abstract fun getPathOfChild(child: Tree<T>): Path
 
     private class TreeNode<out V>(val path: Path, val node: V)
 
-    /**
-     * @param path path in tree
-     * @return subtree under this path
-     */
     fun getNodeBy(path: Path): Tree<T>? = when {
         path.isTrivial -> this
         path.isSingle ->
@@ -100,7 +74,6 @@ abstract class Tree<T> {
         return asTreeNode()
     }
 
-    // attention!!! Tree<T> = T
     fun asTreeNode(): T {
         @Suppress("UNCHECKED_CAST")
         return this as T
