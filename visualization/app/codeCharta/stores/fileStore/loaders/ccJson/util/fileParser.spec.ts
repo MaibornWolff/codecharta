@@ -3,9 +3,10 @@ import packageJson from "../../../../../../../package.json"
 import { TEST_FILE_CONTENT_CC_JSON_2, TEST_FILE_DATA } from "../../../../../mocks/dataMocks"
 import { ExportCCFile } from "../../../../../model/codeCharta.api.model"
 import { CCFile } from "../../../../../model/codeCharta.model"
+import { getAsApiVersion } from "./apiVersion"
 import { getCCFile } from "./ccFileHelper"
 import { getNameDataPair } from "./fileParser"
-import { checkErrors, getAsApiVersion } from "./fileValidator"
+import { checkErrors } from "./fileValidator"
 
 describe("fileParser", () => {
     describe("getNameDataPair", () => {
