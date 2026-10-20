@@ -3,6 +3,8 @@ package de.maibornwolff.treesitter.excavationsite.languages.javascript
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.BundlerAliasExtractor
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DEFAULT_EXPORT
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DeclarationExtractor
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DefaultExport
+import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.DefaultExportClassifier
 import de.maibornwolff.treesitter.excavationsite.languages.javascript.extractors.ImportExtractor
 import de.maibornwolff.treesitter.excavationsite.shared.domain.BundlerAlias
 import de.maibornwolff.treesitter.excavationsite.shared.domain.Declaration
@@ -23,8 +25,8 @@ internal object JavascriptDependencyMapping {
     // TypeScript does NOT add the DEFAULT_EXPORT copy. This matches DC main's behavior per language.
     private fun extractJsDeclarations(rootNode: SyntaxNode): List<Declaration> {
         val declarations = DeclarationExtractor.extract(rootNode)
-        val shape = DeclarationExtractor.classifyDefaultExport(rootNode)
-        if (shape !is DeclarationExtractor.DefaultExport.Named) return declarations
+        val shape = DefaultExportClassifier.classify(rootNode)
+        if (shape !is DefaultExport.Named) return declarations
         val inlineDecl = declarations.firstOrNull { it.name == shape.name } ?: return declarations
         return declarations + inlineDecl.copy(name = DEFAULT_EXPORT)
     }
