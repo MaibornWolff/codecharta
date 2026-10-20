@@ -2,12 +2,8 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.util.Logger
 
-/**
- * The dependency graph of a project in both of its projections: the physical one between file nodes
- * ([edges], [nodes]) and the logical one the code declares ([namespaces], [leaves], [leafEdges]).
- * Everything but [edges] and [namespaces] is keyed by node id, so a filter that re-paths the tree has to
- * re-key the lens along with it — see [rekeyed].
- */
+// Everything but [edges] and [namespaces] is keyed by node id, so a filter that re-paths the tree has to re-key the
+// lens along with it, see [rekeyed]
 data class DependencyLens(
     val edges: List<Edge> = emptyList(),
     val attributeTypes: Map<String, AttributeType> = emptyMap(),
@@ -29,15 +25,12 @@ data class DependencyLens(
         leafEdges = mergeLeafEdges(leafEdges + other.leafEdges)
     )
 
-    // Fold edges that share a directed endpoint pair into one, unioning their attributes instead of
-    // dropping all but the first. The first edge wins on a conflicting key, matching the first-wins
-    // rule the attribute-type and descriptor merges already use.
+    // The first edge wins on a conflicting attribute, as in the attribute-type and descriptor merges
     private fun mergeEdges(allEdges: List<Edge>): List<Edge> = allEdges
         .groupBy { Pair(it.fromNodeName, it.toNodeName) }
         .map { (_, edgesForPair) -> edgesForPair.reduce(::unionAttributes) }
 
-    // The graph flags OR rather than take the first edge's value: an edge one input found cyclic is
-    // cyclic, the same rule that aggregates edges when a namespace collapses.
+    // An edge one input found cyclic is cyclic, the same rule that aggregates edges when a namespace collapses
     private fun unionAttributes(first: Edge, second: Edge): Edge = Edge(
         first.fromNodeName,
         first.toNodeName,
@@ -46,18 +39,15 @@ data class DependencyLens(
         first.isPointingUpwards || second.isPointingUpwards
     )
 
-    // A node both inputs levelized keeps the higher level, the way NodeMaxAttributeMerger reconciles a
-    // metric two inputs measured. Levels are only meaningful within one producer's graph, so this is a
-    // conservative reconciliation, not a recomputation — merging levelized projects and expecting exact
-    // levels means re-running the parser on the merged tree.
+    // Levels mean something only within one producer's graph, so keeping the higher level is a conservative
+    // reconciliation; exact levels of a merged project need the parser re-run on the merged tree
     private fun mergeNodes(otherNodes: Map<String, DependencyNode>): Map<String, DependencyNode> =
         mergeByKey(nodes, otherNodes) { _, existing, incoming -> existing.merge(incoming) }
 
     private fun mergeNamespaces(otherNamespaces: Map<String, DependencyNamespace>): Map<String, DependencyNamespace> =
         mergeByKey(namespaces, otherNamespaces) { _, existing, incoming -> existing.merge(incoming) }
 
-    // Two inputs declaring one key in one file describe the same declaration: the first description wins,
-    // the way CcJsonV2ToProjectMapper handles two file nodes claiming one id.
+    // Two inputs declaring one key in one file describe the same declaration, so the first description wins
     private fun mergeLeaves(otherLeaves: Map<String, Map<String, DependencyLeaf>>): Map<String, Map<String, DependencyLeaf>> =
         mergeByKey(leaves, otherLeaves) { nodeId, existingLeaves, incomingLeaves ->
             mergeByKey(existingLeaves, incomingLeaves) { leafKey, existing, incoming ->
@@ -87,11 +77,8 @@ data class DependencyLens(
         .groupBy { listOf(it.fromId, it.fromLeaf, it.toId, it.toLeaf) }
         .map { (_, edgesForEndpoints) -> edgesForEndpoints.reduce(LeafEdge::merge) }
 
-    /**
-     * Re-key the entries that address a file node onto a restructured tree; see [nodeIdRemapping] for how
-     * ids are recovered. The leaves of a file that did not survive go with it, and with them every leaf
-     * edge that touched them and every namespace no surviving leaf lives in.
-     */
+    // The leaves of a file that did not survive go with it, and with them their leaf edges and every namespace no
+    // surviving leaf lives in
     fun rekeyed(treeBeforeRestructuring: Node, treeAfterRestructuring: Node, remapSegments: SegmentRemapping): DependencyLens {
         if (!carriesNodeData) return this
         val newIdByOldId = nodeIdRemapping(treeBeforeRestructuring, treeAfterRestructuring, remapSegments)
@@ -112,11 +99,8 @@ data class DependencyLens(
     private fun inhabitedNamespaces(survivingLeaves: Map<String, Map<String, DependencyLeaf>>): Set<String> =
         withAncestors(survivingLeaves.values.flatMap { it.values }.mapNotNull { it.namespace }) { namespaces[it]?.parent }
 
-    /**
-     * Prefixes every namespace key with [segment], the way `merge --large` prefixes the file paths with the
-     * folder a project is wrapped in: two inputs declaring the same package must stay apart in the logical
-     * projection as they do in the physical one.
-     */
+    // Like `merge --large` wraps the files of a project in a folder: two inputs declaring the same package must stay
+    // apart in the logical projection as they do in the physical one
     fun underNamespace(segment: String): DependencyLens {
         fun prefixed(namespaceKey: String) = "$segment$NAMESPACE_SEPARATOR$namespaceKey"
         return copy(
@@ -136,10 +120,7 @@ data class DependencyLens(
     }
 }
 
-/**
- * One node's place in the dependency graph. An object rather than a bare level so per-node facts
- * (declaration kind, detected language) can be added later without a breaking change.
- */
+// An object rather than a bare level, so per-node facts can be added later without a breaking change
 data class DependencyNode(val level: Int) {
     fun merge(other: DependencyNode): DependencyNode = DependencyNode(maxOf(level, other.level))
 }
@@ -157,10 +138,8 @@ data class DependencyLeaf(
     val level: Int? = null
 )
 
-/**
- * A dependency between two declarations. A list of its own rather than a widened [Edge], because [Edge]
- * is what the edge-metric machinery, `edgefilter` and the 3D map read.
- */
+// A list of its own rather than a widened [Edge], because [Edge] is what the edge metrics, `edgefilter` and the
+// 3D map read
 data class LeafEdge(
     val fromId: String,
     val fromLeaf: String,
@@ -171,10 +150,8 @@ data class LeafEdge(
     val isCyclic: Boolean = false,
     val isPointingUpwards: Boolean = false
 ) {
-    // Attributes fold the way [Edge]s do in [DependencyLens.merge]: the first edge's value wins on a
-    // conflicting key. Two inputs carrying the same pair describe the same references, not disjoint ones,
-    // so adding the weights would double-count a project merged with itself, and the physical projection
-    // of the same dependency would disagree with the logical one.
+    // Two inputs carrying the same pair describe the same references, so adding the weights would double-count a
+    // project merged with itself
     fun merge(other: LeafEdge): LeafEdge = copy(
         attributes = other.attributes + attributes,
         usage = (usage + other.usage).distinct(),
