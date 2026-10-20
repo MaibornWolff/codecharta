@@ -1,28 +1,34 @@
 ---
 title: "Settings"
+description: "Set the global preferences of the CodeCharta Web Studio, such as background and screenshot target, and reset filters, settings or the whole session."
 ---
 
-The **Settings** dialog, titled **Global Configuration**, holds application-wide preferences that affect how the map is rendered, independent of which file is loaded. Open it from **Settings** at the right end of the top bar. Unlike per-map metric controls, the options here are remembered across sessions and apply to whatever map you view next.
+The **Global Configuration** dialog holds the preferences that apply to every map you open. Open it with **Settings** at
+the right end of the top bar. The Web Studio remembers these choices across sessions.
 
-![Global Configuration dialog](/assets/images/docs/visualization/user-controls/settings.jpeg)
+![The Global Configuration dialog with four toggles, three reset buttons and links](/assets/images/docs/visualization/user-controls/settings.jpeg)
 
-## Display and behavior options
+## Display and behavior
 
-Each of the following toggles switches a single global preference on or off:
-
-- **Hide Flattened Buildings** – when enabled, buildings that have been flattened (for example via the search/filter "hide" action) are removed from view instead of being shown as flattened, low blocks.
-- **Reset camera when map layout changes** – when enabled, the camera position is reset to its default view whenever the map layout changes (for example after loading a new file). Disable it to keep your current camera angle and zoom.
-- **White Background** – switches the 3D scene background between the default dark background and a white background. The white background is useful for screenshots and printing.
-- **Screenshot to clipboard** – sets the default destination for screenshots. When enabled, the screenshot action copies the image to the clipboard; when disabled, it saves the image to a file. (Both destinations remain reachable via their respective screenshot hotkeys; this toggle only controls the default. Copying to the clipboard is not supported in Firefox.)
+- **Hide Flattened Buildings**: removes buildings that are flattened, for example by a **Flatten** rule in the
+  [Explorer](/docs/visualization/user-controls/explorer), instead of drawing them as low gray blocks.
+- **Reset camera when map layout changes**: fits the camera to the map whenever it is laid out anew, for example
+  after you change the layout or load other maps. Switch it off to keep your camera angle and zoom. On by default.
+- **White Background**: switches the map background to white, which suits screenshots and printing.
+- **Screenshot to clipboard**: makes the **Screenshot** tool copy the picture instead of saving it as a file. The
+  [keyboard shortcuts](/docs/visualization/user-controls/keyboard-shortcuts) reach both targets either way. Firefox
+  does not support copying screenshots to the clipboard.
 
 ## Resetting
 
-The dialog provides three reset buttons with different scopes:
+- **Reset global settings**: restores the toggles above, plus the map layout and **Maximum TreeMap Files** of the
+  [layouts](/docs/visualization/user-controls/layouts). Maps and metrics stay as they are.
+- **Reset filters**: removes every flatten and exclude rule after a confirmation, so every file comes back onto the
+  map. Metrics, colors and the camera stay as they are. Disabled while there are no rules.
+- **Reset map to default**: resets the loaded maps, the selected metrics and all settings, after the confirmation
+  **Confirm reset map to default**.
 
-- **Reset global settings** – restores only the global preferences (hide flattened buildings, white background, reset-camera behavior, and the map layout and maximum treemap files chosen on the [metric bar](/docs/visualization/user-controls/metrics#layout)) to their defaults. The loaded map and selected metrics are left untouched.
-- **Reset filters** – removes every flatten and exclude rule and leaves the rest of the map — metrics, colors, camera — as it is. It asks for confirmation first and is disabled while there are no rules.
-- **Reset map to default** – performs a full reset: uploaded maps, selected metrics, and settings are all returned to their defaults. Because this is destructive, it first asks for confirmation ("Confirm reset map to default") before clearing your current session.
+## Links
 
-## External links
-
-At the bottom of the dialog are quick links to the project's **Website**, **Documentation**, and **GitHub** repository, which open in a new tab. Use the **Close** button to dismiss the dialog.
+The links at the bottom open the **Website**, the **Documentation** and the **Github** repository in a new tab.
+**Close** closes the dialog.

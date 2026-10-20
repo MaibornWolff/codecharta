@@ -1,15 +1,19 @@
 ---
-const webStudioLink =
-    'https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true';
+const demoLink =
+    'https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true';
 ---
 
 <section class="home-hero">
     <div class="home-hero__inner">
         <h1>CodeCharta</h1>
-        <p class="home-hero__tagline">Find the hotspots in your codebase and make them tangible.</p>
+        <p class="home-hero__tagline">See how your code is built, and what it is about.</p>
+        <p class="home-hero__lead">
+            Open-source code visualization: a 3D city of your code metrics, a map of your domain language and a graph of your
+            dependencies.
+        </p>
         <div class="home-hero__actions">
-            <a class="btn btn--primary" href="/docs/overview/getting-started">Quick Start</a>
-            <a class="btn btn--ghost" href={webStudioLink} target="_blank" rel="noopener noreferrer">Open Web Studio</a>
+            <a class="btn btn--primary" href="/docs/overview/getting-started">Get started</a>
+            <a class="btn btn--ghost" href={demoLink} target="_blank" rel="noopener noreferrer">Try the live demo</a>
         </div>
     </div>
 </section>
@@ -28,8 +32,8 @@ const webStudioLink =
         box-sizing: border-box;
         /* Dark overlay layered over the screenshot for readable white text */
         background:
-            linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-            url('/assets/images/cc_home.png') center / cover no-repeat;
+            linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+            url('/assets/images/cc_home.jpg') center / cover no-repeat;
         color: #fff;
     }
 
@@ -55,6 +59,14 @@ const webStudioLink =
         max-width: 40rem;
         color: #fff;
         text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    .home-hero__lead {
+        margin: 0;
+        font-size: clamp(1rem, 1.8vw, 1.2rem);
+        max-width: 38rem;
+        color: #fff;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
     }
 
     .home-hero__actions {

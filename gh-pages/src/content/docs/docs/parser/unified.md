@@ -1,89 +1,23 @@
 ---
 title: "Unified Parser"
+description: "Measure complexity, rloc, comment lines, functions and code smells for 20 languages with ccsh unifiedparser, without any other tool installed."
+sidebar:
+  label: "Unified"
 ---
 
-**Category**: Parser (takes in source code and outputs cc.json)
+The Unified Parser measures source code on its own, without any other tool: complexity, real lines of code,
+comments, functions and a few code smells, per file and per function. It reads 20 languages and frameworks with
+Tree-sitter grammars and is the parser behind most CodeCharta maps.
 
-The Unified Parser is a parser to generate code metrics from a source code file or a project folder without relying on tools other than
-CodeCharta. It generates a cc.json file (compressed by default, or uncompressed with `-nc`).
+## Quick start
 
-### Supported Languages
+```bash
+ccsh unifiedparser path/to/project -o project.cc.json
+```
 
-| Language     | Supported file extensions              |
-|--------------|----------------------------------------|
-| Javascript   | .js, .cjs, .mjs, .jsx                  |
-| Typescript   | .ts, .cts, .mts                        |
-| TSX          | .tsx                                   |
-| Java         | .java                                  |
-| Kotlin       | .kt, .kts                              |
-| C#           | .cs                                    |
-| C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
-| C            | .c, .h                                 |
-| Objective-C  | .m                                     |
-| Python       | .py                                    |
-| Go           | .go                                    |
-| PHP          | .php                                   |
-| Ruby         | .rb                                    |
-| Swift        | .swift                                 |
-| Bash         | .sh                                    |
-| Vue          | .vue                                   |
-| Delphi       | .pas, .dpr                             |
-| Rust         | .rs                                    |
-| Angular/HTML | .html                                  |
-| SQL          | .sql, .pks, .pkb, .pls                 |
+This writes `project.cc.json.gz`. Add `-nc` for an uncompressed file.
 
-Every `.html` file is read as an Angular template, by this parser as by `dependencyparser` and
-`domainlanguageparser`; exclude the `.html` files that are no templates of an Angular application, such as
-reports or documentation, with `-e`.
-
-### Supported Metrics
-
-| Metric                    | Description                                                                                                                                                                                                                |
-|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| complexity                | Complexity of the file based on the number of paths through the code. Also includes complexity introduced by definition of functions, classes, etc. (Represents the 'cognitive load' necessary to overlook the whole file) |
-| logic_complexity          | Complexity of the file based on number of paths through the code, similar to cyclomatic complexity (only counts complexity in code, not complexity introduced by definition of functions, classes, etc.)                   |
-| comment_lines             | The number of comment lines found in a file                                                                                                                                                                                |
-| number_of_functions       | The number of functions and methods in a file                                                                                                                                                                              |
-| loc (Lines of Code)       | Lines of code including empty lines and comments                                                                                                                                                                           |
-| rloc (Real lines of code) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
-| long_method               | Code smell showing the number of functions with more than 10 real lines of code (rloc)                                                                                                                                     |
-| long_parameter_list       | Code smell showing the number of functions with more than 4 parameters                                                                                                                                                     |
-| excessive_comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
-| comment_ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
-| message_chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
-| number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package or type body                                                                                                     |
-| number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
-| number_of_views           | Only in SQL files: the views the file defines, materialized ones included, temporary ones (`TEMP VIEW`) not                                                                                                                                               |
-| number_of_tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
-
-A procedure declared in an Oracle package specification counts where its body is, in the package body, like
-`number_of_functions` counts only routines with a body: a specification and its body in one file count each procedure
-once, in two files only the body's file counts it. A T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a
-body defines the object as much as `CREATE` does and counts; Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t
-DISABLE` does not. Each count counts the distinct objects of a file: an object created and altered, or created twice,
-counts once. Objects of one name in two schemas (`public.orders`, `audit.orders`) count twice; one written without a
-schema is the object of that name in a schema when the file holds the name in exactly one schema (`dbo.p1`, `p1`).
-Names compare as the dependency parser compares them, so `"Orders"` and `orders` are two tables. A PostgreSQL trigger
-counts per table it is on, as PostgreSQL names triggers per table. A procedure of one name in two packages or types
-counts twice, and so do overloads, routines of one name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`,
-`p(text)`); parameter modes and default values make no overload, and neither do T-SQL's parameters, as T-SQL has no
-overloads. A MySQL procedure dropped and created again with other parameters counts twice, as its parameters can not
-be told from PostgreSQL's. What a routine creates when it runs, a table or a local procedure, counts for none of them, while what a
-script creates in an anonymous block, a PostgreSQL `DO` block or a T-SQL `IF … BEGIN … END`, counts like any of its
-objects.
-
-Some metrics are calculated on a per-function basis rather than per-file. Each of these metrics has max, min, mean and median values for each file. The names of these metrics are prefixed by "max_", "min_", ...
-
-| Metric per function     | Description                                          |
-|-------------------------|------------------------------------------------------|
-| parameters_per_function | The number of parameters for each function           |
-| complexity_per_function | The complexity inside the body of a function         |
-| rloc_per_function       | The real lines of code inside the body of a function |
-
-A function nested in another one, such as a local function or a method of an object expression, is a function of its own: its
-parameters, complexity and lines count for it and not for the enclosing function.
-
-### Usage and Parameters
+## Options
 
 | Parameter                                 | Description                                                                                                                                       |
 |-------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -108,59 +42,105 @@ Usage: ccsh unifiedparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
                           [-fe=<fileExtensionsToAnalyse>]... FILE or FOLDER...
 ```
 
-### Files that cannot be analysed
+## Supported languages
 
-A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
-the number of files it hit and the first five of them. It ends with an error and exit code 1, and writes no
-map, when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot be used.
+| Language     | Supported file extensions              |
+|--------------|----------------------------------------|
+| Javascript   | .js, .cjs, .mjs, .jsx                  |
+| Typescript   | .ts, .cts, .mts                        |
+| TSX          | .tsx                                   |
+| Java         | .java                                  |
+| Kotlin       | .kt, .kts                              |
+| C#           | .cs                                    |
+| C++          | .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx |
+| C            | .c, .h                                 |
+| Objective-C  | .m                                     |
+| Python       | .py                                    |
+| Go           | .go                                    |
+| PHP          | .php                                   |
+| Ruby         | .rb                                    |
+| Swift        | .swift                                 |
+| Bash         | .sh                                    |
+| Vue          | .vue                                   |
+| Delphi       | .pas, .dpr                             |
+| Rust         | .rs                                    |
+| Angular/HTML | .html                                  |
+| SQL          | .sql, .pks, .pkb, .pls                 |
 
-### Examples
+Some languages need a word of explanation:
 
-The Unified Parser can analyze either a single file or a project folder; here are some sample commands:
+- **Vue**: the parser measures the first `<script>` block of a `.vue` file with the JavaScript rules. The template and
+  the styles count for no metric, `loc` and `rloc` included.
+- **Angular templates**: every `.html` file is read as an Angular template, by this parser as by `dependencyparser`
+  and `domainlanguageparser`. Exclude the `.html` files that are no templates of an Angular application, such as
+  reports or documentation, with `-e`. The inline `template` of a `@Component` in a `.ts` file is measured as well,
+  and its complexity adds to the complexity and logic complexity of the `.ts` file.
+- **SQL**: one grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
 
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json
-```
+## Metrics
 
-```
-ccsh unifiedparser src/test/resources/foo.ts -o foo.cc.json
-```
+| Metric                    | Description                                                                                                                                                                                                                |
+|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| complexity                | Complexity of the file based on the number of paths through the code. Also includes complexity introduced by definition of functions, classes, etc. (Represents the 'cognitive load' necessary to overlook the whole file) |
+| logic_complexity          | Complexity of the file based on number of paths through the code, similar to cyclomatic complexity (only counts complexity in code, not complexity introduced by definition of functions, classes, etc.)                   |
+| comment_lines             | The number of comment lines found in a file                                                                                                                                                                                |
+| number_of_functions       | The number of functions and methods in a file                                                                                                                                                                              |
+| loc (Lines of Code)       | Lines of code including empty lines and comments                                                                                                                                                                           |
+| rloc (Real lines of code) | Number of lines that contain at least one character which is neither a whitespace nor a tabulation nor part of a comment                                                                                                   |
+| long_method               | Code smell showing the number of functions with more than 10 real lines of code (rloc)                                                                                                                                     |
+| long_parameter_list       | Code smell showing the number of functions with more than 4 parameters                                                                                                                                                     |
+| excessive_comments        | Code smell showing whether a file has more than 10 comment lines                                                                                                                                                           |
+| comment_ratio             | The ratio of comment lines to real lines of code (rloc)                                                                                                                                                                    |
+| message_chains            | Code smell showing occurrences of method call chains with 4 or more consecutive calls suggesting tight coupling                                                                                                            |
+| number_of_stored_procedures | Only in SQL files: the stored procedures the file defines with a body, on their own or in an Oracle package or type body                                                                                                     |
+| number_of_triggers        | Only in SQL files: the triggers the file creates, with a body or calling a function                                                                                                                                     |
+| number_of_views           | Only in SQL files: the views the file defines, materialized ones included, temporary ones (`TEMP VIEW`) not                                                                                                                                               |
+| number_of_tables          | Only in SQL files: the tables the file creates, Oracle's global temporary tables included, without the temporary tables of a session (`#name`, `TEMP`, `GLOBAL TEMP`, `PRIVATE TEMPORARY`)                                                                                                                                |
 
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json -nc --verbose
-```
+Some metrics are calculated per function. For each of them, a file gets the maximum, minimum, mean and median over
+its functions, as `max_`, `min_`, `mean_` and `median_` metrics, such as `max_complexity_per_function`.
 
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=something -e=/.*\.foo
-```
+| Metric per function     | Description                                          |
+|-------------------------|------------------------------------------------------|
+| parameters_per_function | The number of parameters for each function           |
+| complexity_per_function | The complexity inside the body of a function         |
+| rloc_per_function       | The real lines of code inside the body of a function |
 
-```
-ccsh unifiedparser src/test/resources -o foo.cc.json --bypass-gitignore
-```
+A function nested in another one, such as a local function or a method of an object expression, is a function of its
+own: its parameters, complexity and lines count for it and not for the enclosing function.
 
-If a project is piped into the UnifiedParser, the results and the piped project are merged.
-The resulting project has the project name specified for the UnifiedParser.
+### How SQL objects are counted
 
-```
-cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.json
-```
+The four SQL metrics count the distinct objects a file defines:
 
-### Known issues
+- **Bodies**: a procedure declared in an Oracle package specification counts where its body is, in the package
+  body, like `number_of_functions` counts only routines with a body. A specification and its body in one file count
+  each procedure once; in two files only the body's file counts it.
+- **`ALTER`**: a T-SQL `ALTER PROCEDURE`, `ALTER VIEW` or `ALTER TRIGGER` with a body defines the object as much as
+  `CREATE` does and counts. Oracle's `ALTER PROCEDURE p COMPILE` or `ALTER TRIGGER t DISABLE` does not.
+- **Duplicates**: an object created and altered, or created twice, counts once.
+- **Schemas**: objects of one name in two schemas (`public.orders`, `audit.orders`) count twice. One written without a
+  schema is the object of that name in a schema when the file holds the name in exactly one schema (`dbo.p1`, `p1`).
+- **Names** compare as the [Dependency Parser](/docs/parser/dependency) compares them, so `"Orders"` and `orders` are
+  two tables.
+- **Triggers**: a PostgreSQL trigger counts per table it is on, as PostgreSQL names triggers per table.
+- **Overloads**: a procedure of one name in two packages or types counts twice, and so do overloads, routines of one
+  name with other parameter types (`p(a NUMBER)`, `p(a VARCHAR2)`, `p(int)`, `p(text)`). Parameter modes and default
+  values make no overload, and neither do T-SQL's parameters, as T-SQL has no overloads. A MySQL procedure dropped and
+  created again with other parameters counts twice, as its parameters can not be told from PostgreSQL's.
+- **Runtime objects**: what a routine creates when it runs, a table or a local procedure, counts for none of them.
+  What a script creates in an anonymous block, a PostgreSQL `DO` block or a T-SQL `IF … BEGIN … END`, counts like
+  any of its objects.
 
-- In ruby the 'lambda' keyword is not counted correctly for complexity and number of functions
-- In C/C++/ObjectiveC using `void` as a parameter counts as 1 for parameters per function
+## How the metrics are counted
 
-### Detailed Metric Calculation
+The parser reads each file with Tree-sitter and counts specific syntax nodes per metric and language.
 
-This section describes what is counted for each metric per language. The parser uses Tree-sitter to parse source code and identifies
-specific AST node types for each metric.
+### Complexity
 
-#### Complexity
+Complexity follows McCabe complexity and counts the paths through the code. These constructs add to it, per language:
 
-Complexity is calculated using McCabe Complexity, counting the number of paths through the code. Each language has specific constructs that
-contribute to complexity:
-
-##### JavaScript (.js, .cjs, .mjs, .jsx)
+#### JavaScript (.js, .cjs, .mjs, .jsx) and Vue (.vue)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `for_in_statement`, `ternary_expression`,
   `switch_case`, `switch_default`, `catch_clause`
@@ -168,7 +148,7 @@ contribute to complexity:
   `class_static_block`, `function_expression`
 - **Logical operators**: `&&`, `||`, `??` in binary expressions
 
-##### TypeScript (.ts, .cts, .mts)
+#### TypeScript and TSX (.ts, .cts, .mts, .tsx)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `for_in_statement`, `ternary_expression`,
   `conditional_type`, `switch_case`, `switch_default`, `catch_clause`
@@ -176,15 +156,8 @@ contribute to complexity:
   `class_static_block`, `function_expression`
 - **Logical operators**: `&&`, `||`, `??` in binary expressions
 
-##### TSX (.tsx)
 
-- **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `for_in_statement`, `ternary_expression`,
-  `conditional_type`, `switch_case`, `switch_default`, `catch_clause`
-- **Functions**: `function_declaration`, `generator_function_declaration`, `arrow_function`, `generator_function`, `method_definition`,
-  `class_static_block`, `function_expression`
-- **Logical operators**: `&&`, `||`, `??` in binary expressions
-
-##### Java (.java)
+#### Java (.java)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `enhanced_for_statement`, `ternary_expression`,
   `switch_label`, `catch_clause`
@@ -192,7 +165,7 @@ contribute to complexity:
   `compact_constructor_declaration`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### Kotlin (.kt, .kts)
+#### Kotlin (.kt, .kts)
 
 - **Control flow**: `if_expression`, `for_statement`, `while_statement`, `do_while_statement`, `elvis_expression`, `conjunction_expression`,
   `disjunction_expression`, `when_entry`, `catch_block`
@@ -200,47 +173,47 @@ contribute to complexity:
   `getter`
 - **Not counted**: a guard on a `when` branch (`is X if condition ->`), which the grammar does not parse
 
-##### C# (.cs)
+#### C# (.cs)
 
 - **Control flow**: `if_statement`, `do_statement`, `foreach_statement`, `for_statement`, `while_statement`, `conditional_expression`,
   `is_expression`, `and_pattern`, `or_pattern`, `switch_section`, `switch_expression_arm`, `catch_clause`
 - **Functions**: `constructor_declaration`, `method_declaration`, `lambda_expression`, `local_function_statement`, `accessor_declaration`
 - **Logical operators**: `&&`, `||`, `??` in binary expressions
 
-##### C++ (.cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
+#### C++ (.cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `for_range_loop`, `conditional_expression`,
   `case_statement`, `catch_clause`, `seh_except_clause`
 - **Functions**: `lambda_expression`, `function_definition`, `abstract_function_declarator`, `function_declarator`
 - **Logical operators**: `&&`, `||`, `and`, `or`, `xor` in binary expressions
 
-##### C (.c, .h)
+#### C (.c, .h)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `conditional_expression`, `case_statement`,
   `seh_except_clause`
 - **Functions**: `function_definition`, `abstract_function_declarator`, `function_declarator`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### Objective-C (.m)
+#### Objective-C (.m)
 
 - **Control flow**: `if_statement`, `do_statement`, `for_statement`, `while_statement`, `conditional_expression`, `case_statement`,
   `@catch`
 - **Functions**: `function_definition`, `block_expression`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### Python (.py)
+#### Python (.py)
 
 - **Control flow**: `if_statement`, `elif_clause`, `if_clause`, `for_statement`, `while_statement`, `for_in_clause`,
   `conditional_expression`, `list`, `boolean_operator`, `case_pattern`, `except_clause`
 - **Functions**: `function_definition`, lambda expressions (with specific nesting rules)
 
-##### Go (.go)
+#### Go (.go)
 
 - **Control flow**: `if_statement`, `for_statement`, `communication_case`, `expression_case`, `type_case`, `default_case`
 - **Functions**: `method_declaration`, `func_literal`, `function_declaration`, `method_spec`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### PHP (.php)
+#### PHP (.php)
 
 - **Control flow**: `if_statement`, `else_if_clause`, `do_statement`, `for_statement`, `while_statement`, `foreach_statement`,
   `conditional_expression`, `case_statement`, `default_statement`, `match_conditional_expression`, `match_default_expression`,
@@ -249,20 +222,20 @@ contribute to complexity:
   `function_static_declaration`
 - **Logical operators**: `&&`, `||`, `??`, `and`, `or`, `xor` in binary expressions
 
-##### Ruby (.rb)
+#### Ruby (.rb)
 
 - **Control flow**: `if`, `elsif`, `for`, `until`, `while`, `do_block`, `conditional`, `when`, `else`, `rescue`
 - **Functions**: `lambda`, `method`, `singleton_method`
 - **Logical operators**: `&&`, `||`, `and`, `or` in binary expressions
 
-##### Bash (.sh)
+#### Bash (.sh)
 
 - **Control flow**: `if_statement`, `elif_clause`, `for_statement`, `while_statement`, `c_style_for_statement`, `ternary_expression`,
   `list`, `case_item`
 - **Functions**: `function_definition`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### Swift (.swift)
+#### Swift (.swift)
 
 - **Control flow**: `if_statement`, `guard_statement`, `for_statement`, `while_statement`, `repeat_while_statement`, `switch_entry`,
   `catch_block`, `defer_statement`, `nil_coalescing_expression`, `ternary_expression`, `willset_clause`, `didset_clause`
@@ -270,13 +243,13 @@ contribute to complexity:
   `computed_getter`, `computed_setter`
 - **Logical operators**: `conjunction_expression`, `disjunction_expression`
 
-##### Delphi (.pas, .dpr)
+#### Delphi (.pas, .dpr)
 
 - **Control flow**: `if`, `ifElse`, `for`, `foreach`, `while`, `case`, `caseCase`, `repeat`, `try`, `exceptionHandler`
 - **Functions**: `defProc` (procedure/function implementation), `lambda`
 - **Logical operators**: `kAnd`, `kOr`, `kXor` in `exprBinary`
 
-##### SQL (.sql, .pks, .pkb, .pls)
+#### SQL (.sql, .pks, .pkb, .pls)
 
 One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect has to be chosen.
 
@@ -289,14 +262,14 @@ One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect ha
   single-statement routines included
 - **Logical operators**: `logical_operator` (`AND`, `OR`; the `AND` of `BETWEEN` is none)
 
-##### Rust (.rs)
+#### Rust (.rs)
 
 - **Control flow**: `if_expression`, `while_expression`, `for_expression`, `loop_expression`, `match_arm` (the
   `if`/`while` nodes also cover `if let`/`while let`; the `_` wildcard arm counts like any other arm)
 - **Functions**: `function_item`, `function_signature_item` (bodyless trait method signatures), `closure_expression`
 - **Logical operators**: `&&`, `||` in binary expressions
 
-##### Angular templates (.html)
+#### Angular templates (.html)
 
 - **Control flow blocks**: `@if`, `@else if`, `@for`, each `@case` of `@switch`, `@defer` (`@else`, `@empty`, `@default` and
   `@placeholder` are not counted, like a plain `else`)
@@ -309,11 +282,11 @@ One grammar covers ANSI SQL, T-SQL, PL/SQL, PL/pgSQL and MySQL, so no dialect ha
 - **Inline templates**: the `template` of a `@Component` in a `.ts` file is measured the same way, and its complexity
   adds to the complexity and logic complexity of the `.ts` file
 
-#### Comment Lines
+### Comment lines
 
-Comment lines are counted based on language-specific comment syntax:
+These nodes count as comment lines, per language:
 
-- **JavaScript/TypeScript/TSX**: `comment`, `html_comment`
+- **JavaScript/TypeScript/TSX/Vue**: `comment`, `html_comment`
 - **Java**: `block_comment`, `line_comment`
 - **Kotlin**: `line_comment`, `multiline_comment`
 - **C#**: `comment`
@@ -330,89 +303,81 @@ Comment lines are counted based on language-specific comment syntax:
 - **Angular templates**: `comment` (`<!-- -->`)
 - **SQL**: `comment` (covers `--` line, `/* */` block and MySQL's `#` comments)
 
-#### Number of Functions
+### Number of functions
 
-Function counting identifies different types of function definitions per language:
+These definitions count as functions, per language:
 
-##### JavaScript (.js, .cjs, .mjs, .jsx)
-
-- **Simple functions**: `function_declaration`, `generator_function_declaration`, `method_definition`, `function_expression`
-- **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
-
-##### TypeScript (.ts, .cts, .mts)
+#### JavaScript, TypeScript, TSX and Vue (.js, .cjs, .mjs, .jsx, .ts, .cts, .mts, .tsx, .vue)
 
 - **Simple functions**: `function_declaration`, `generator_function_declaration`, `method_definition`, `function_expression`
 - **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
 
-##### TSX (.tsx)
 
-- **Simple functions**: `function_declaration`, `generator_function_declaration`, `method_definition`, `function_expression`
-- **Arrow functions**: Assigned to variables (detected via `variable_declarator` with `arrow_function` value)
 
-##### Java (.java)
+#### Java (.java)
 
 - **Methods and constructors**: `method_declaration`, `constructor_declaration`, `compact_constructor_declaration`
 - **Lambda expressions**: Assigned to variables (detected via `variable_declarator` with `lambda_expression` value)
 
-##### Kotlin (.kt, .kts)
+#### Kotlin (.kt, .kts)
 
 - **Simple functions**: `secondary_constructor`, `setter`, `getter`
 - **Complex functions**: function declarations with a function body, whatever their signature holds (receiver, return type, modifiers,
   type parameters, `where` clause)
 - **Not counted**: lambda literals and anonymous functions, wherever they stand; they contribute only to complexity
 
-##### C# (.cs)
+#### C# (.cs)
 
 - **Methods and constructors**: `constructor_declaration`, `method_declaration`, `local_function_statement`, `accessor_declaration`
 - **Lambda expressions**: Assigned to variables (detected via `variable_declarator` with `lambda_expression` value)
 
-##### C++ (.cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
+#### C++ (.cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
 
 - **Functions**: `function_definition`
 - **Lambda expressions**: Assigned to variables (detected via `init_declarator` with `lambda_expression` value)
 
-##### C (.c, .h)
+#### C (.c, .h)
 
 - **Functions**: `function_definition`
 
-##### Objective-C (.m)
+#### Objective-C (.m)
 
 - **Functions**: `function_definition` (C functions), `method_definition` (Objective-C methods)
 
-##### Python (.py)
+#### Python (.py)
 
 - **Functions**: `function_definition`
 - **Lambda expressions**: Assigned to variables (detected via assignment with lambda value)
 
-##### Go (.go)
+#### Go (.go)
 
 - **Functions**: `method_declaration`, `func_literal`, `function_declaration`, `method_spec`
 
-##### PHP (.php)
+#### PHP (.php)
 
 - **Simple functions**: `method_declaration`, `function_definition`, `function_static_declaration`
 - **Anonymous functions**: Assigned to variables (detected via `assignment_expression` with `anonymous_function`, `arrow_function`, or
   `lambda_expression` value)
 
-##### Ruby (.rb)
+#### Ruby (.rb)
 
 - **Methods**: `method`, `singleton_method`
 - **Lambda expressions**: Assigned to variables (detected via assignment with lambda value)
 
-##### Bash (.sh)
+#### Bash (.sh)
 
 - **Functions**: `function_definition`
 
-##### Swift (.swift)
+#### Swift (.swift)
 
 - **Functions**: `function_declaration`, `init_declaration`, `deinit_declaration`, `computed_getter`, `computed_setter`
 
-##### Delphi (.pas, .dpr)
+#### Delphi (.pas, .dpr)
 
 - **Functions**: `defProc` (procedure/function implementation in the `implementation` section). Forward declarations in the `interface` section
   (`declProc`) are not counted, and `lambda` contributes only to complexity.
 
-##### SQL (.sql, .pks, .pkb, .pls)
+#### SQL (.sql, .pks, .pkb, .pls)
 
 - **Functions**: `routine_definition`: a procedure, function or trigger with a body after `AS`, `IS`, `DECLARE` or
   `BEGIN`, also inside a PL/SQL package or type body, and a MySQL routine whose body is a single statement (after the
@@ -422,21 +387,21 @@ Function counting identifies different types of function definitions per languag
   its middle: the body ends there. Neither the `END` line of a body nor, in PostgreSQL, the line with its closing
   `$$` counts for the routine's rloc, like a closing brace.
 
-##### Rust (.rs)
+#### Rust (.rs)
 
 - **Functions**: `function_item` (free functions, `impl` methods, trait default methods) and `function_signature_item`
   (bodyless trait method signatures). `closure_expression` contributes only to complexity and is not counted as a function.
 
-##### Angular templates (.html)
+#### Angular templates (.html)
 
 - **Functions**: none, a template declares no functions
 
-#### Lines of Code (LOC)
+### Lines of code (loc)
 
-LOC is calculated as the total number of lines in the file, including empty lines and comments. This metric is language-independent and
-simply counts from the first line to the last line of the file.
+LOC is the total number of lines in the file, including empty lines and comments, from the first line to the last.
+For a Vue file, it counts the lines of its script block.
 
-#### Real Lines of Code (RLOC)
+### Real lines of code (rloc)
 
 RLOC counts only lines that contain actual code, excluding:
 
@@ -446,11 +411,11 @@ RLOC counts only lines that contain actual code, excluding:
 
 This metric is calculated by counting all lines that are not identified as comment nodes by the Tree-sitter parser for each language.
 
-#### Parameters per Function
+### Parameters per function
 
-Parameters per function counts the number of parameters declared for each function. The metric identifies parameter nodes specific to each language:
+These nodes count as parameters, per language:
 
-- **JavaScript**: `identifier` parameters
+- **JavaScript/Vue**: `identifier` parameters
 - **TypeScript/TSX**: `required_parameter`
 - **Java**: `formal_parameter`
 - **Kotlin**: `parameter`
@@ -469,121 +434,139 @@ Parameters per function counts the number of parameters declared for each functi
 - **Angular templates**: not counted, as a template declares no functions
 - **SQL**: `parameter`, in parentheses or, in T-SQL, as a bare `@name type` list
 
-#### Message Chains
+### Message chains
 
 Message Chains is a code smell that detects method call chains with 4 or more consecutive calls (e.g., `obj.a().b().c().d()`), which
 can indicate tight coupling and violations of the Law of Demeter. The metric counts only method/function calls, not property accesses.
 
-##### JavaScript (.js, .cjs, .mjs, .jsx)
+#### JavaScript, TypeScript, TSX and Vue (.js, .cjs, .mjs, .jsx, .ts, .cts, .mts, .tsx, .vue)
 
 - **Chain nodes**: `call_expression`, `member_expression`
 - **Call nodes**: `call_expression`
 
-##### TypeScript (.ts, .cts, .mts)
 
-- **Chain nodes**: `call_expression`, `member_expression`
-- **Call nodes**: `call_expression`
 
-##### TSX (.tsx)
-
-- **Chain nodes**: `call_expression`, `member_expression`
-- **Call nodes**: `call_expression`
-
-##### Java (.java)
+#### Java (.java)
 
 - **Chain nodes**: `method_invocation`, `field_access`
 - **Call nodes**: `method_invocation`
 
-##### Kotlin (.kt, .kts)
+#### Kotlin (.kt, .kts)
 
 - **Chain nodes**: `call_expression`, `navigation_expression`
 - **Call nodes**: `call_expression`
 
-##### C# (.cs)
+#### C# (.cs)
 
 - **Chain nodes**: `invocation_expression`, `member_access_expression`
 - **Call nodes**: `invocation_expression`
 
-##### C++ (.cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
+#### C and C++ (.c, .h, .cpp, .cc, .cxx, .c++, .hh, .hpp, .hxx)
 
 - **Chain nodes**: `call_expression`, `field_expression`
 - **Call nodes**: `call_expression`
 
-##### C (.c, .h)
 
-- **Chain nodes**: `call_expression`, `field_expression`
-- **Call nodes**: `call_expression`
-
-##### Objective-C (.m)
+#### Objective-C (.m)
 
 - **Chain nodes**: `call_expression`, `field_expression`, `message_expression`
 - **Call nodes**: `call_expression`, `message_expression`
 
-##### Python (.py)
+#### Python (.py)
 
 - **Chain nodes**: `call`, `attribute`
 - **Call nodes**: `call`
 
-##### Go (.go)
+#### Go (.go)
 
 - **Chain nodes**: `call_expression`, `selector_expression`
 - **Call nodes**: `call_expression`
 
-##### PHP (.php)
+#### PHP (.php)
 
 - **Chain nodes**: `member_call_expression`, `scoped_call_expression`, `member_access_expression`
 - **Call nodes**: `member_call_expression`, `scoped_call_expression`
 
-##### Ruby (.rb)
+#### Ruby (.rb)
 
 - **Chain nodes**: `call`
 - **Call nodes**: `call`
 
-##### Bash (.sh)
+#### Bash (.sh)
 
 Message chains are not applicable to Bash as it does not support method chaining.
 
-##### Swift (.swift)
+#### Swift (.swift)
 
 - **Chain nodes**: `call_expression`, `navigation_expression`
 - **Call nodes**: `call_expression`
 
-##### Delphi (.pas, .dpr)
+#### Delphi (.pas, .dpr)
 
 - **Chain nodes**: `exprCall`, `exprDot`
 - **Call nodes**: `exprCall`, `exprDot` (paren-less `Obj.M1.M2.M3.M4` chains). When `exprDot` is wrapped in `exprCall` (e.g.
   `Obj.M1().M2().M3().M4()`), only `exprCall` counts, preventing double-counting of message-chain calls.
 
-##### SQL (.sql, .pks, .pkb, .pls)
+#### SQL (.sql, .pks, .pkb, .pls)
 
 Message chains are not applicable to SQL as it does not support method chaining.
 
-##### Rust (.rs)
+#### Rust (.rs)
 
 - **Chain nodes**: `call_expression`, `field_expression`
 - **Call nodes**: `call_expression`
 
-##### Angular templates (.html)
+#### Angular templates (.html)
 
 Message chains are not counted in templates.
 
-#### Code Smells
+### Code smells
 
-The following code smell metrics are derived from the base metrics and are calculated after the tree traversal:
+The code smell metrics are derived from the other metrics:
 
-##### Long Method
+#### Long method
 
 Counts the number of functions in a file that have more than 10 real lines of code (RLOC). This is a language-independent metric that uses the per-function RLOC values.
 
-##### Long Parameter List
+#### Long parameter list
 
 Counts the number of functions in a file that have more than 4 parameters. This is a language-independent metric that uses the per-function parameter counts.
 
-##### Excessive Comments
+#### Excessive comments
 
 Binary metric (0 or 1) that indicates whether a file has more than 10 comment lines. This threshold helps identify files that may be over-commented.
 
-##### Comment Ratio
+#### Comment ratio
 
 Calculates the ratio of comment lines to real lines of code (comment_lines / rloc). The result is rounded to two decimal places. If RLOC is 0, the ratio is 0.0.
 
+## Known issues
+
+- In Ruby the `lambda` keyword is not counted correctly for complexity and number of functions.
+- In C, C++ and Objective-C, `void` as a parameter counts as 1 for parameters per function.
+
+## Examples
+
+```bash
+ccsh unifiedparser src/test/resources/foo.ts -o foo.cc.json
+ccsh unifiedparser src/test/resources -o foo.cc.json -nc --verbose
+ccsh unifiedparser src/test/resources -o foo.cc.json --include-build-folders -e=something -e=/.*\.foo
+ccsh unifiedparser src/test/resources -o foo.cc.json --bypass-gitignore
+```
+
+To add the code metrics to another map, pipe it in and pass `-` as an extra argument. The merged project keeps the
+project name of the Unified Parser:
+
+```bash
+cat pipeInput.cc.json | ccsh unifiedparser src/test/resources - -o merged.cc.json
+```
+
+A file the parser cannot analyse is left out of the map; see
+[files a parser cannot analyse](/docs/analysis/codecharta-shell#files-a-parser-cannot-analyse).
+
+## Related
+
+- [Raw Text Parser](/docs/parser/raw-text)
+- [Analyse a project in one step](/docs/analysis/analyse)
+- [Analyse local changes](/docs/analysis/local-changes)
+- [Analyse a past commit](/docs/analysis/commit-analysis)

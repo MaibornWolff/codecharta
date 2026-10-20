@@ -1,93 +1,136 @@
 ---
 title: "Merge Filter"
+description: "Merge several cc.json files into one map, for example code metrics, git history and coverage, so you see all of them on the same buildings."
 ---
 
-**Category**: Filter (takes in multiple cc.json files and outputs single cc.json)
+The Merge Filter combines several cc.json files into one map. Each parser and importer delivers its own metrics; after
+the merge, every file carries all of them, for example `rloc` from the Unified Parser next to `number_of_commits` from
+the Git Log Parser and `line_coverage` from the Coverage Importer. That is what you need to spot hotspots: large,
+complex files that change often and lack tests.
 
-Reads the specified files and merges visualization data.
+## Quick start
 
-The first file with visualisation data is used as reference for the merging strategy and a base for the output. The visualisation data in the additional json files are fitted into this reference structure according to a specific strategy. All inputs must be in the current cc.json 2.0 format; if you have a legacy 1.x file, upgrade it first with [`ccsh convert`](/docs/filter/convert), otherwise `merge` reports it as legacy and points you at `convert`. Currently, there are two main strategies:
-
-- recursive (default): leave structure of additional files. This will also merge optional edges.
-- leaf (beta): fit leaf nodes into reference structure according to their name (and tail of their path),
-  either adding missing leaves (`--add-missing`) or ignoring them (default)
-
-Both strategies will merge the unique list entries for `attributeTypes` and `analyzers`. If multiple files contain the same metric, the max value will be used for the output.
-
-### Usage and Parameters
-
-| Parameters                       | Description                                                                      |
-|----------------------------------|----------------------------------------------------------------------------------|
-| `FILE`                           | files to merge                                                                   |
-| `-a, --add-missing`              | [Leaf Merging Strategy] enable adding missing nodes to reference                 |
-| `-h, --help`                     | displays help and exits                                                          |
-| `--ignore-case`                  | ignores case when checking node names                                            |
-| `--leaf`                         | use leaf merging strategy                                                        |
-| `-nc, --not-compressed`          | save uncompressed output File                                                    |
-| `-o, --output-file=<outputFile>` | output File (or empty for stdout; [MIMO mode] output folder)                     |
-| `--recursive`                    | use recursive merging strategy (default)                                         |
-| `--mimo`                         | merge multiple files with the same prefix into multiple output files             |
-| `-ld, --levenshtein-distance`    | [MIMO mode] levenshtein distance for name match suggestions (default: 3; 0 for no suggestions) |
-| `-f`                             | force merge non-overlapping modules at the top-level structure                   |
-| `--large`                        | merge multiple project files into one output file, separated by their dot-prefix |
-
+```bash
+ccsh merge code.cc.json.gz git.cc.json.gz -o merged.cc.json
 ```
+
+The output is gzip-compressed by default, so this writes `merged.cc.json.gz`.
+
+## Options
+
+| Option                                              | Description                                                                                   |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `FILE or FOLDER...`                                 | files to merge; folders are searched recursively                                              |
+| `--recursive`                                       | use the recursive merging strategy (default)                                                  |
+| `--leaf`                                            | use the leaf merging strategy                                                                 |
+| `-a, --add-missing`                                 | [leaf strategy] keep leaves that match nothing in the reference                               |
+| `--ignore-case`                                     | ignore case when comparing node names                                                         |
+| `-f`                                                | merge without asking when the inputs share no top-level folder                                |
+| `--mimo`                                            | merge files with the same prefix into one output file per prefix                              |
+| `-ld, --levenshtein-distance=<levenshteinDistance>` | [MIMO mode] Levenshtein distance for prefix suggestions (default: 3; 0 for no suggestions)     |
+| `--large`                                           | merge all inputs into one file, each in a folder named after its file's prefix                |
+| `-o, --output-file=<outputFile>`                    | output file, or empty for stdout; [MIMO mode] an existing output folder                       |
+| `-nc, --not-compressed`                             | write plain JSON instead of a gzip file                                                       |
+| `-h, --help`                                        | show the help and exit                                                                        |
+
+```text
 Usage: ccsh merge [-afh] [--ignore-case] [--large] [--leaf] [--mimo] [-nc]
-                  [--recursive] [-ld=<levenshteinDistance>]
-                  [-o=<outputFile>] FILE or FOLDER...
+                  [--recursive] [-ld=<levenshteinDistance>] [-o=<outputFile>]
+                  FILE or FOLDER...
 ```
 
-### Examples
+## What gets merged
 
-```
-ccsh merge file1.cc.json ../foo/file2.cc.json -o=test.cc.json
-```
+The first input is the reference: its structure is the base of the output, and the other inputs are fitted into it
+with one of two strategies.
 
-```
-ccsh merge file1.cc.json ../foo/file2.cc.json -o=test.cc.json --leaf --add-missing
-```
+- **Recursive** (default): the folder structures of all inputs are combined node by node, matched by name. Nodes that
+  exist in only one input are kept.
+- **Leaf**: only the files of the other inputs are placed into the reference structure. Use it when one input covers
+  the whole project and the others only parts of it, or name files by shorter paths.
 
-```
-ccsh merge file1.cc.json ../foo/ -o=test.cc.json
-```
+When several inputs carry the same metric for the same node, the output keeps the highest value.
 
-This last example inputs the folder foo, which will result in all project files in that folder being merged with the reference file (file1.cc.json).
+All lenses are merged as well:
 
-```
-ccsh merge myProjectFolder/ --mimo -ld 0 -f
-```
+- **Metrics lens**: metric types and descriptions of all inputs are combined.
+- **Dependency lens**: edges of all inputs are combined. Edges between the same two files become one edge with the
+  attributes of both.
+- **Domain lens**: the words of all inputs are combined. A word that two inputs describe keeps the higher frequency
+  and the higher tf-idf score.
+- **Other lenses**: a lens CodeCharta does not know is copied when it is identical in all inputs or only one input
+  carries it. If two inputs carry different content for such a lens, the merge fails.
 
-### MIMO Merge - Multiply Inputs Multiple Outputs
+All inputs must be cc.json 2.x files. A legacy 1.x file makes the merge fail with a hint to upgrade it with
+[`ccsh convert`](/docs/filter/convert).
 
-Matches multiple `cc.json` files based on their prefix (e.g. **myProject**.git.cc.json). Tries to match project names with typos and asks which to add to the output.
-If you want to use this in a CI/CD pipeline environment you may find it useful to specify `-ld` and `-f` to not prompt any user input.
-The output file name follows the following schema: `myProject.merge.cc.json`.
+When the inputs share no top-level folder at all, the merge warns and asks whether to go on. Pass `-f` to merge
+anyway without the question, for example in a CI pipeline.
 
-### Large Merge
+## Folders as input
 
-Merges multiple `.cc.json` files into one project, but separates them into sub-folders, with names defined through the dot-prefixes of the input files:
+A folder is searched recursively. Every file in it, except hidden files, is read; files that are not cc.json maps
+are skipped with a warning.
 
-```
-ccsh merge aa.cc.json bb.cc.json cc.cc.json --large -o myOutputFile -nc
-# myOutputFile.cc.json:
-# - root
-# - - aa
-# - - - *
-# - - bb
-# - - - *
-# - - cc
-# - - - *
+```bash
+ccsh merge reference.cc.json.gz ../reports/ -o merged.cc.json
 ```
 
-### Leaf Merging
+## Leaf merging
 
-Leaf merging can be used in cases when we have one `cc.json` representing a whole project and others representing only parts of it. This can happen for example when calculating basic metrics for the whole project using the UnifiedParser and generating coverage metrics using the CoverageImporter and a Jacoco report, which only contains package level information and not the whole filepaths.
+Leaf merging places every file of the other inputs into the reference structure. For each file it looks, in this
+order, for:
 
-In such cases it is possible to merge the coverage report into the main cc.json by using leaf merging:
+1. a reference file with the same path,
+2. a reference file with the same content checksum, when exactly one has it,
+3. the reference file whose path shares the longest tail with the file's path, when exactly one fits best.
 
+A file that matches nothing, or whose match another file claims as well, is dropped with a warning. Pass `-a` to keep
+such files at their own path instead.
+
+A typical case is a JaCoCo coverage report, which only knows packages and not the full file paths:
+
+```bash
+ccsh merge unified.cc.json.gz coverage.cc.json.gz --leaf --ignore-case -o merged.cc.json
 ```
-ccsh merge unifiedProject.cc.json testCoverage.cc.json -o=mergeResult --leaf --ignore-case
+
+The coverage metrics land on the files of `unified.cc.json.gz`.
+
+## MIMO merge: multiple inputs, multiple outputs
+
+`--mimo` groups the input files by their prefix, the part of the file name before the first dot, and merges each
+group into its own file `<prefix>.merge.cc.json.gz`. For example, `shop.code.cc.json.gz` and `shop.git.cc.json.gz`
+become `shop.merge.cc.json.gz`.
+
+```bash
+ccsh merge reports/ --mimo -ld 0 -f -o merged/
 ```
 
-This will insert the metrics of the `testCoverage.cc.json` into the project structure of the `unifiedProject.cc.json`.
+With `--mimo`, `-o` names an existing folder for the output files; without it, they go into the current directory.
+Prefixes that are close to each other, within the Levenshtein distance, are offered as one group and the command
+asks which files to include. Pass `-ld 0` and `-f` to run without questions.
 
+## Large merge
+
+`--large` merges several maps into one, each in its own top-level folder named after the prefix of its file name:
+
+```bash
+ccsh merge aa.cc.json.gz bb.cc.json.gz cc.cc.json.gz --large -o all.cc.json
+```
+
+```text
+root
+- aa
+- bb
+- cc
+```
+
+The prefixes must be unique across all inputs, otherwise the merge stops. The dependency and domain lenses move along
+into the new folders. An input that carries data in a lens CodeCharta does not know cannot be moved this way and
+stops the merge.
+
+## Related
+
+- [Convert Tool](/docs/filter/convert): upgrade legacy 1.x files before merging
+- [Coverage Importer](/docs/importer/coverage): coverage maps to merge with leaf merging
+- [Inspection Tool](/docs/filter/inspection-tool): check the folder structure of the merged map

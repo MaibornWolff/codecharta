@@ -1,99 +1,75 @@
 ---
 title: "Explorer"
+description: "Search the files of a CodeCharta map with gitignore patterns, and flatten or exclude generated code, tests or metric outliers by pattern or metric rule."
 ---
 
-The **Explorer** is the side panel on the left of the map. It lists the contents of the
-map (or maps) you have loaded as a searchable file and folder tree, and lets you filter that
-tree down to the buildings you care about. From a search pattern or a metric condition you can
-**flatten** buildings (de-emphasize them) or **exclude** them (remove them from the view) to
-focus on the rest of your codebase.
+The Explorer on the left lists the files and folders of the loaded maps as a tree. Search it with patterns, and turn
+patterns or metric conditions into rules that **flatten** code into the background or **exclude** it from the map, so
+the code you care about stands out.
 
-![Explorer panel](/assets/images/docs/visualization/user-controls/explorer.jpeg)
+![The Explorer with the SHOWN, FLATTENED and EXCLUDED counters, the search box and the file tree](/assets/images/docs/visualization/user-controls/explorer.jpeg)
 
-At the top, three counters summarize the current state of the map — **SHOWN**, **FLATTENED**
-and **EXCLUDED** — followed by the search box, the sort control and the file tree. Each row shows
-the share of the map it accounts for and its number of files. The overflow menu (⋮) next to the
-search box holds the **Flatten** and **Exclude** actions.
+At the top, the counters **SHOWN**, **FLATTENED** and **EXCLUDED** sum up the map. Below them are the search box with
+its ⋮ menu, the sort control and the tree. Each row shows its share of the area metric and its number of files.
 
-The panel can be resized by dragging its right edge (double-click the edge to reset the width) and
-collapsed with the `«` button in its header. Collapsed, it leaves a small strip with the search box
-at the top-left; the folder-tree button brings it back.
+- Drag the right edge of the Explorer to resize it, or focus the edge and use the arrow keys. A double-click on the
+  edge restores the default width.
+- **Collapse explorer** («) folds it into a small strip with the search box; the tree button brings it back.
+- While a folder is [focused](/docs/visualization/user-controls/code-map#focus), the Explorer lists that folder alone
+  under a **Focus mode** banner; **Show whole project** leaves the focus.
 
-Every [view](/docs/visualization/user-controls/views) has an Explorer and keeps its own search, sort
-order and width. The Dependencies view has no **FLATTENED** counter, and the
+Every [view](/docs/visualization/user-controls/views) has its own Explorer with its own search, sort order and width.
+The Dependencies view has no **FLATTENED** counter, and the
 [Domain view](/docs/visualization/user-controls/domain-view) switches its Explorer between files and words.
 
 ## Searching
 
-Type a pattern into the search box to filter the tree to the matching buildings. The search uses
-[.gitignore-style](https://git-scm.com/docs/gitignore) glob patterns, so the same syntax you use
-to ignore files in Git applies here. For example:
+Type a pattern into the search box. The search uses [.gitignore-style](https://git-scm.com/docs/gitignore) patterns:
 
-- `*.js` matches every JavaScript file in the map.
+- `*.js` matches every JavaScript file.
 - `**/app/*` matches everything directly inside any `app` folder.
 
-You can combine several patterns by separating them with commas (for example `*.js, **/app/*`,
-as shown in the placeholder). Use the clear button in the search box to reset the pattern and
-show the full tree again.
+Separate several patterns with commas, for example `*.js, **/app/*`. The clear button empties the search.
 
-On the map, buildings the search misses are greyed out. The search does not hide anything on its own.
+The search marks the matching files in the tree and grays out the rest on the map; **SHOWN** counts the matches. It
+hides nothing on its own.
 
 ## Sorting
 
-The sort control below the search box orders the tree by **Name**, **Number of Files** or
-**Area Size**; the arrow beside it switches between ascending and descending.
+The sort control orders the tree by **Name**, **Number of Files** or **Area Size**. The arrow next to it switches
+between ascending and descending.
 
 ## Flatten vs. Exclude
 
-There are two ways to act on buildings, with different effects on the map:
+- **Flatten** keeps the buildings on the map but lays them flat and grays them out. They recede into the background
+  and still give context, which suits generated or vendor code.
+- **Exclude** removes the buildings from the map, so they take no space. Use it for code that only adds noise, such
+  as test fixtures.
 
-- **Flatten** keeps the buildings in the map but flattens and greys them out, so they
-  recede into the background while still providing context. This is useful for code you want to
-  de-emphasize without losing sight of it entirely (for example generated or vendor code).
-- **Exclude** removes the buildings from the view entirely, so they no longer take up
-  space in the map. This is useful when large amounts of code (such as `node_modules` or test
-  fixtures) only add noise.
+The ⋮ menu next to the search box offers both in two forms:
 
-The overflow (⋮) menu next to the search box offers both, in two forms:
+- **Flatten** / **Exclude** turn the current search pattern into a rule. They are disabled while the search is empty.
+- **Flatten by metric…** / **Exclude by metric…** open an editor in which you pick a metric, a comparison
+  (**greater than**, **at least**, **less than**, **at most**, **equal to**, **between**) and a threshold. The editor
+  shows the distribution of the metric and how many files the condition matches before you add the rule.
 
-- **Flatten** / **Exclude** turn the current search pattern into a rule. They stay disabled until
-  you have entered a pattern.
-- **Flatten by metric…** / **Exclude by metric…** open an editor in which you pick a metric, a
-  comparison (greater than, at least, less than, at most, equal to, between) and a threshold. The
-  editor shows how the metric is distributed and how many files the condition matches before you
-  add the rule.
-
-A rule keeps applying as the map updates: a metric rule is re-applied whenever the loaded files or
-metrics change. A pattern containing wildcards becomes a reusable **RULE**; flattening or excluding
-a single file or folder from its [context menu](/docs/visualization/user-controls/explore#right-click-actions)
-creates a one-off **MANUAL** entry.
+A rule keeps applying when the map changes: a metric rule is evaluated again whenever the loaded maps or metrics
+change. A pattern with wildcards becomes a **RULE**; flattening or excluding a single file or folder from its
+[context menu](/docs/visualization/user-controls/code-map#context-menu) adds a **MANUAL** entry. The
+[distribution bar](/docs/visualization/user-controls/distribution-bar) flattens or excludes a whole file extension.
 
 ## Managing rules
 
-The three counters at the top of the Explorer reflect how the rules currently divide up the map's
-buildings:
+- **SHOWN**: buildings on the map that are neither flattened nor excluded. Large numbers are abbreviated, such as
+  `2.3K`. Hover the counter to see how many of them have no area in the current area metric.
+- **FLATTENED**: buildings flattened by a rule.
+- **EXCLUDED**: buildings excluded by a rule.
 
-- **SHOWN** — buildings that are visible in the map (neither flattened nor excluded). Large
-  numbers are abbreviated, e.g. `2.8K`. Hover the counter to see how many of them have no area in
-  the current area metric.
-- **FLATTENED** — buildings that are currently flattened by one or more flatten rules.
-- **EXCLUDED** — buildings that are currently excluded from the view.
+Click **FLATTENED** or **EXCLUDED** to list their rules, each marked **RULE** or **MANUAL** with the number of buildings
+it affects. The ✕ next to a rule removes it. Below the list you can add a rule by metric or clear the whole list.
 
-The **FLATTENED** and **EXCLUDED** counters are clickable. Selecting one opens a popup that lists
-every rule of that kind, each labelled **RULE** or **MANUAL**, together with the number of
-buildings it affects. Clicking the ✕ next to a rule removes it, restoring the affected buildings
-to the map. Below the list you can add a rule by metric, or clear the whole list in one step.
+![The exclusion rules list with one rule for *.html that excludes 184 buildings](/assets/images/docs/visualization/user-controls/explorer-exclusion-rules.jpeg)
 
-![Exclusion rules popup](/assets/images/docs/visualization/user-controls/explorer-exclusion-rules.jpeg)
+**Reset filters** in the [Settings](/docs/visualization/user-controls/settings) removes every flatten and exclude rule
+at once.
 
-In the example above, opening the **EXCLUDED** counter reveals a single rule, `*.spec.ts`, that
-currently excludes 544 buildings. Removing it would bring those buildings back into the map.
-
-To remove every flatten and exclude rule at once, use **Reset filters** in the
-[Settings](/docs/visualization/user-controls/settings).
-
-## Focus
-
-While you are [focused](/docs/visualization/user-controls/explore#focus) on a folder, the Explorer
-lists that folder alone under a **Focus mode** banner. **Show whole project** in the banner leaves
-the focus.

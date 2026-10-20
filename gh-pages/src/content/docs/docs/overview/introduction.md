@@ -1,55 +1,56 @@
 ---
 title: "Introduction"
+description: "What CodeCharta is, who it is for and how it turns a codebase into code maps of metrics, domain language and dependencies."
 ---
 
-CodeCharta is a **communication tool** that helps you understand and manage complex code bases.
-It turns metrics and your code base into a **city-like map** and makes your code **tangible**! A map where you can move around and find hotspots where your team has always had problems.
-So you can finally tackle the problems that have always been on your mind, but never talked about.
+CodeCharta is an open-source code visualization tool. It turns a codebase into a map you can explore: a 3D city of code
+metrics, a word cloud of its domain language and a graph of its dependencies. The map makes the shape of the code
+visible, so you can find the hotspots, show them to others and agree on what to change first.
 
-## Why did we develop CodeCharta?
+## Three views of one map
 
-CodeCharta was mainly developed by MaibornWolff to help us with our [Software Health Checks](https://www.maibornwolff.de/en/software-health-check/).
-We needed something to help us find potential issues to discuss with customers or to show the management where their teams are struggling.
-The latter has no connection or understanding of code at all, but CodeCharta makes it easy to understand and helps you map your
-understanding of code onto a visual and understandable map.
+- **[Metric view](/docs/visualization/user-controls/code-map)**: every file is a building, every folder a district. You
+  choose what area, height and color stand for, such as lines of code, complexity, number of commits or number of
+  authors.
+- **[Domain view](/docs/visualization/user-controls/domain-view)**: the words in identifiers, comments and strings,
+  sized by frequency or TF-IDF. It shows what a folder is about, not how big it is.
+- **[Dependencies view](/docs/visualization/user-controls/dependency-view)**: folders and files arranged by level, with
+  dependency cycles and dependencies that point against the layering marked.
 
-## Different parts of CodeCharta
+[Compare](/docs/visualization/user-controls/compare) puts two versions of a map side by side as one delta map, and
+[3D print](/docs/visualization/user-controls/3d-print) turns the city into a model you can hold.
 
-We split CodeCharta into two different parts. The CCSH (CodeCharta Shell) which is the base for extracting metrics and
-our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true) which is there to visualize these metrics as a city-like map.
-From here you can move around, look at metrics and even 3D print them.
+## Who it is for
 
-> Please note that CodeCharta runs only on your client. No metrics that you analyze or visualize will ever leave your computer unless you
-> distribute it yourself.
+CodeCharta is built for developers and tech leads who need to understand a codebase quickly or talk about it with
+people who do not read code. Typical questions it answers:
 
-## Getting started
+- Which files are large, complex and changed all the time?
+- Which parts of the code does only one person know?
+- Which files always change together, even without depending on each other?
+- What is this folder about, and where does a business term live in the code?
+- Where do the dependencies run in circles or against the architecture?
+- What changed between two releases?
 
-### Try our Web Studio
+MaibornWolff develops CodeCharta and uses it in its [Software Health Checks](/docs/overview/service-offerings), where
+the map helps teams and managers talk about the same parts of the code.
 
-You can use
-our [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true)
-to move around and check out our example maps that are already in place.
+## How it works
 
-### Docker
+CodeCharta has two parts:
 
-Both the Web Studio and the CodeCharta Shell are available as docker containers. For more information, see [Docker](/docs/overview/getting-started/docker).
+1. The **[CodeCharta Shell](/docs/analysis/codecharta-shell)** (`ccsh`) analyses your code, reads the git or svn
+   history, imports metrics from tools such as SonarQube, and writes the result into one `.cc.json` file.
+   `ccsh analyse` does all of this in one step.
+2. The **[Web Studio](/docs/visualization/web-studio)** opens that file and renders it as an interactive map. It runs
+   in your browser or as a desktop app.
 
-### Installation
+Both run on your machine. Your code and your metrics are not uploaded anywhere; see
+[Data privacy](/docs/overview/data-privacy).
 
-To install our [CodeCharta Shell](/docs/analysis/codecharta-shell), which is used to generate the code maps, simply install it via npm:
+## Next steps
 
-#### Requirements
-
-- Node **>= 22.19**
-- Java **>= 22**
-
-```bash
-# Install codecharta-analysis globally
-$ npm i -g codecharta-analysis
-# Check if installation was complete. Some terminals have to be restarted
-$ ccsh -h
-# done :)!
-```
-
-If you want to analyze your own project, [Getting Started](/docs/overview/getting-started) is a great place to start.
-
+- Try the [live demo](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true)
+  with CodeCharta's own code.
+- Map your own project with [Getting started](/docs/overview/getting-started).
+- Learn the interface in the [interface overview](/docs/visualization/user-controls).

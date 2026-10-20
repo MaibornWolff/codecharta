@@ -1,62 +1,55 @@
 ---
-title: "Local Changes Detection"
+title: "Analyse local changes"
+description: "Analyse only the files you changed since your last push with --local-changes, for fast code metrics on your work in progress."
+sidebar:
+  label: "Local changes"
 ---
 
-The `--local-changes` flag enables incremental analysis by only parsing files that differ from the remote tracking branch. This includes uncommitted, staged, unstaged, and untracked files. Deleted files are included with empty metrics so they can be visualized as absent in the treemap.
+`--local-changes` analyses only the files that differ from the remote tracking branch: committed but not pushed,
+staged, unstaged and untracked. On a large project that gives you the metrics of your work in progress in seconds.
+Deleted files are included with empty metrics, so they can show as absent in the map.
 
-This flag is available on the [UnifiedParser](/docs/parser/unified) and [RawTextParser](/docs/parser/raw-text). The [Dependency Parser](/docs/parser/dependency) rejects it, because the dependency graph needs every file of the project, and the [Domain Language Parser](/docs/parser/domain-language) accepts it without effect.
+The [Unified Parser](/docs/parser/unified) and the [Raw Text Parser](/docs/parser/raw-text) support the flag. The
+[Dependency Parser](/docs/parser/dependency) rejects it, because the dependency graph needs every file of the
+project, and the [Domain Language Parser](/docs/parser/domain-language) accepts it without effect.
 
-### How It Works
-
-When `--local-changes` is enabled, the parser:
-
-1. **Detects the upstream branch** via `git rev-parse --abbrev-ref @{upstream}`. If no upstream tracking branch is configured, the parser aborts with an error
-2. **Collects changed files** from multiple sources:
-   - Committed but not yet pushed changes (compared to upstream)
-   - Staged changes (`git add`)
-   - Unstaged modifications
-   - Untracked files
-3. **Collects deleted files** separately
-4. **Only analyzes changed files** with full metrics
-5. **Adds deleted files** to the output with empty metrics
-
-If no upstream tracking branch can be detected, the command fails with an error instructing you to set one (for example, `git branch --set-upstream-to=<remote>/<branch>`).
-
-### Usage
+## Quick start
 
 ```bash
-ccsh unifiedparser <project-dir> -o output.cc.json --local-changes
-
-ccsh rawtextparser <project-dir> -o output.cc.json --local-changes
-```
-
-The flag can be combined with other options like `--exclude`, `--file-extensions`, or `--bypass-gitignore`.
-
-### Output Behavior
-
-| File State | Behavior |
-|------------|----------|
-| Changed (staged, unstaged, untracked, committed but not pushed) | Analyzed with full metrics |
-| Deleted | Included with empty metrics `{}` |
-| Unchanged | Excluded from output |
-
-### Example Workflow
-
-Analyze only local changes and merge with a previous full analysis:
-
-```bash
-# Full analysis (run once or periodically)
-ccsh unifiedparser . -o full.cc.json
-
-# Incremental analysis of local changes only
 ccsh unifiedparser . -o changes.cc.json --local-changes
-
-# Merge both for a complete picture
-ccsh merge full.cc.json changes.cc.json -o merged.cc.json
+ccsh rawtextparser . -o changes.cc.json --local-changes
 ```
 
-### Requirements
+The flag combines with other options such as `--exclude`, `--file-extensions` or `--bypass-gitignore`, but not with
+`--commit`.
 
-- The project directory must be inside a **git repository**
-- Git must be available on the system PATH
+## What it analyses
 
+| File state                                                      | In the output              |
+| --------------------------------------------------------------- | -------------------------- |
+| Changed (staged, unstaged, untracked, committed but not pushed) | analysed with full metrics |
+| Deleted                                                         | included with empty metrics `{}` |
+| Unchanged                                                       | left out                   |
+
+The parser finds the upstream branch with `git rev-parse --abbrev-ref @{upstream}`. Without one it stops with an
+error that tells you how to set it, for example `git branch --set-upstream-to=<remote>/<branch>`.
+
+## Combine with a full analysis
+
+```bash
+ccsh unifiedparser . -o full.cc.json                       # full analysis, run once or now and then
+ccsh unifiedparser . -o changes.cc.json --local-changes    # only your changes
+ccsh merge full.cc.json.gz changes.cc.json.gz -o merged.cc.json
+```
+
+Output is gzip-compressed by default, so the merge reads the `.gz` files and writes `merged.cc.json.gz`.
+
+## Requirements
+
+- The project folder is inside a git repository.
+- `git` is on the `PATH`.
+
+## Related
+
+- [Analyse a past commit](/docs/analysis/commit-analysis)
+- [Merge Filter](/docs/filter/merge-filter)

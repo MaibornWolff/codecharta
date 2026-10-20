@@ -1,32 +1,62 @@
 ---
 title: "Compare"
+description: "Compare two CodeCharta maps, such as two releases, and see which files grew, shrank, appeared or disappeared, colored by the change of a code metric."
 ---
 
-**Compare** mode (also called **delta** mode) shows the difference between two loaded maps instead of a single map. Each building is rendered as the *delta* of its metrics, so you can see at a glance which files grew, shrank, were added, or stayed the same between the two maps.
+**Compare** shows the difference between two maps instead of a single one. Load two versions of a codebase, such as
+the last release and today, and every building is colored by how its metric changed, so growth, clean-ups, new and
+removed files stand out.
 
-To use Compare you need **at least two maps loaded** (load multiple `cc.json` files by holding _shift_ while selecting them, or merge them beforehand). Once two maps are available, switch on Compare from the **Compare** entry in the [mode bar](/docs/visualization/user-controls/views#the-mode-bar): hover the **Metric** tab in the top bar and pick **Compare**. Compare belongs to the Metric view and is not offered while the map layout is Sunburst or Radial TreeMap. When it is active, the top bar shows two map selectors with a swap control between them, and the map is recolored to show the delta.
+![Compare between two maps of CodeCharta, with grown files in green and shrunk or removed files in red](/assets/images/docs/visualization/user-controls/compare.jpeg)
 
-![Compare mode showing the delta between two maps](/assets/images/docs/visualization/user-controls/compare.jpeg)
+## Starting Compare
+
+1. Load at least two maps. Select several files at once in the file picker (Shift or Ctrl/Cmd click, as your
+   operating system offers), or open them one after the other. See
+   [Loading maps](/docs/visualization/user-controls/loading-maps).
+2. Point at the **Metric** tab and pick **Compare** in the [mode bar](/docs/visualization/user-controls/views#the-mode-bar).
+
+Compare belongs to the Metric view and is not offered while the map layout is Sunburst or Radial TreeMap. To link
+straight to a comparison, add `mode=Delta` to a URL with two `file` parameters; the first map becomes the reference.
+See [Open maps from a URL](/docs/visualization/user-controls/loading-maps#open-maps-from-a-url).
+
+**Explore** in the mode bar leaves Compare and shows the maps you had before.
 
 ## Selecting the two maps
 
-Compare works on two map slots shown side by side in the top bar:
+While Compare is on, the top bar shows two map selectors:
 
-- **Reference** (left slot) — the baseline map you compare *from*.
-- **Comparison** (right slot) — the map you compare *to*.
+- **Reference** (left): the map you compare from.
+- **Comparison** (right): the map you compare to.
 
-Each slot is a dropdown listing the maps you have loaded; pick the reference on the left and the comparison on the right. The delta is then computed as the difference between the comparison map and the reference map.
-
-Between the two slots is a **swap** button (the horizontal double-arrow icon). It exchanges the reference and comparison maps, which flips the direction of the comparison — what was previously an increase becomes a decrease and vice versa. The swap button is only enabled once a comparison map has been selected.
+The delta is the comparison minus the reference. The swap button between the selectors (**Switch reference and
+comparison file**) exchanges them, which turns every increase into a decrease. It is enabled once a comparison map is
+picked.
 
 ## Reading the delta
 
-In Compare mode the building colors no longer represent the color metric. Instead, each building is colored by how its **height metric** changed between the two maps:
+In Compare the building colors stand for the change of the **height metric**:
 
-- **Green** — the height metric **increased** (positive delta). This is the `positiveDelta` color (default `#64d051`).
-- **Red** — the height metric **decreased** (negative delta). This is the `negativeDelta` color (default `#ff0E0E`).
-- **Grey** — the building is **unchanged** (no delta), or it is flattened.
+- **Green**: the value increased.
+- **Red**: the value decreased.
+- **Gray**: unchanged, or flattened.
 
-These are the default semantics: by default an increase in the height metric is green and a decrease is red. You can flip them by inverting the delta colors in the color settings, in which case the meaning of green and red is reversed. The Color column of the metric bar is reduced to its settings in Compare mode. The legend reflects the current assignment, labeling the two colors **"+Δ positive delta"** and **"–Δ negative delta"**.
+**Invert colors** in the color settings swaps green and red, for a metric where more is better. The color settings
+in Compare offer only the two delta colors, and the [legend](/docs/visualization/user-controls/legend) shows them as
+**+Δ positive delta** and **–Δ negative delta**.
 
-At the bottom of the screen the **metric bar** shows the delta numerically. Alongside the summed metric value (`Σ`), each metric displays its delta with a `Δ` prefix — for example `Σ 193,199 Δ97,838` for the area metric and `Σ 30,668 Δ15,630` for the height metric in the screenshot above. These `Δ` values tell you, in absolute numbers, how much each selected metric changed between the reference and the comparison map.
+The [metric bar](/docs/visualization/user-controls/metrics) shows the change in numbers: next to the sum (Σ) of each
+metric comes its delta, for example `Σ 18,679 Δ11,506` for `complexity`.
+
+## Changes in the Inspector
+
+Click a building or a folder to see its changes in the [Inspector](/docs/visualization/user-controls/inspector):
+
+![The Inspector in Compare for a removed folder, with 29 removed files and negative deltas](/assets/images/docs/visualization/user-controls/compare-inspector.jpeg)
+
+- Every metric shows its change next to its value, such as `Δ-162`, in the delta colors.
+- A folder shows how many of its files were added, removed and changed, for example `Δ0 Δ-29 Δ0` for a folder whose
+  29 files were all removed.
+
+The [Dependencies view](/docs/visualization/user-controls/dependency-view) shows a single map, so it asks you to leave
+Compare first.

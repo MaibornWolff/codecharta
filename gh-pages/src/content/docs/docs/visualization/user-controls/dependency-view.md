@@ -1,51 +1,81 @@
 ---
-title: "Dependency View"
+title: "The dependency graph"
+description: "Find dependency cycles and upward dependencies in your architecture with the CodeCharta dependency graph, arranged by level, down to single declarations."
 ---
 
-The **Dependencies** view draws the dependencies between the files and folders of a map as a graph, arranged by level: what a box depends on lies below it.
+The **Dependencies** view draws the dependencies between the folders and files of a map as a graph arranged by level:
+what a box depends on lies below it. In a cleanly layered codebase every edge points down, so the edges that run in
+cycles or point upward are the ones that show where the architecture erodes.
 
-![The dependency view with one folder opened](/assets/images/docs/visualization/user-controls/dependency-view.jpeg)
+![The dependency graph of a Kotlin package, opened level by level, with cycle edges in blue and red](/assets/images/docs/visualization/user-controls/dependency-view.jpeg)
 
 ## Opening the view
 
-The **Dependencies** tab appears in the top bar when the loaded map carries dependency data. Create it with the [Dependency parser](/docs/parser/dependency) (`ccsh dependencyparser`). The sample map and the [online demo](/docs/visualization/web-studio#try-it-online) include it.
+The **Dependencies** tab appears when the loaded map carries dependency data. Create it with the
+[Dependency parser](/docs/parser/dependency) (`ccsh dependencyparser`), which [`ccsh analyse`](/docs/analysis/analyse)
+runs for you. The [online demo](/docs/visualization/web-studio#try-it-online) includes it.
+
+The view shows one map at a time; in [Compare](/docs/visualization/user-controls/compare) it asks you to leave
+compare mode.
 
 ## Reading the graph
 
-- **Boxes** are folders and files. A closed folder stands for everything inside it.
-- **Levels** stack the boxes of a folder: a box on a higher level depends on boxes on lower levels. Dashed lines separate the levels, each labelled at its left end.
-- **Edges** are dependencies. An edge between two closed folders stands for all dependencies between their contents, and by default it is drawn thicker the more of them it stands for.
+- **Boxes** are folders, files and, in an opened file, declarations. A closed folder stands for everything inside it.
+  A closed file that holds declarations is drawn as a small stack, with its number of declarations when there is more
+  than one.
+- **Levels** stack the boxes inside a folder: a box on a higher level depends on boxes on lower levels. Dashed lines
+  separate the levels, each labeled with its number.
+- **Edges** are dependencies. An edge between two closed folders stands for all dependencies between their contents,
+  and by default it is drawn thicker the more of them it stands for.
+- **Badges** on a closed box count what it hides: cycles between files, cycles inside a file and upward dependencies.
 
-In a cleanly layered codebase every edge points downward. The edges that do not are the interesting ones, and the **LEGEND** tab at the bottom right explains how they are marked:
+The graph starts with the edges that need attention, those **In a cycle** and those that **Point upward**, and leaves
+the plain dependencies out. The box under the pointer shows all of its edges. The **LEGEND** tab explains every line,
+badge and icon:
 
-![The legend of the dependency view](/assets/images/docs/visualization/user-controls/dependency-legend.jpeg)
+![The legend of the Dependencies view with the four edge types, the badges and the declaration kinds](/assets/images/docs/visualization/user-controls/dependency-legend.jpeg)
 
-- **Dependency** (grey) – follows the levels.
-- **In a cycle** (blue) – part of a dependency cycle, but still pointing downward.
-- **Points upward** (red, dashed) – a dependency between folders that goes against the levels.
-- **Points upward and closes a cycle** (red) – the dependency that closes a cycle.
+| Edge type                            | Line (default colors)  | Meaning                                                    |
+| ------------------------------------ | ---------------------- | ---------------------------------------------------------- |
+| **Dependency**                       | gray                   | Follows the levels.                                        |
+| **In a cycle**                       | blue                   | Part of a dependency cycle, but still pointing down.       |
+| **Points upward**                    | red, dashed            | A dependency between folders that goes against the levels. |
+| **Points upward and closes a cycle** | red                    | The dependency that closes a cycle.                        |
 
 ## Working with the graph
 
-- **Double-click** a folder to open it and see its contents level by level; double-click it again to close it.
-- **Hover** a box to see its path.
+- **Hover** a box to see its name, its level, the cycles and upward dependencies inside it and whether it can be
+  opened. Hover an edge to see what it connects, how many dependencies it stands for and its type.
+- **Click** a box or an edge to select it and show it in the [dependency inspector](/docs/visualization/user-controls/dependency-inspector).
+- **Double-click** a folder or package to open it level by level, and a file to open its classes, functions and other
+  declarations. Double-click again to close it. A box keeps its place on screen when it opens or closes, and an opened
+  box that does not fit is brought into view whole.
+- **Click a badge** to select its box and open its cycles or upward dependencies in the inspector.
 - **Drag** a box to move it out of the way. **Reset layout** in the tools tab puts every dragged box back.
-- **Right-click** a box for its context menu: **Show in Explorer**, **Show in Metrics** / **Show in Domain**, **Focus** (folders) and **Exclude**.
-- **Show whole graph** in the tools tab fits the graph back into the view, and **Screenshot** takes a picture of it. See [Map Tools](/docs/visualization/user-controls/map-tools).
+- **Mouse wheel** zooms. Drag the background, hold Space and drag, or drag with the right mouse button to pan; the
+  last two work from anywhere, also from a box.
+- **Right-click** a box for its context menu: copy its path, **Show in Explorer**, **Show in Metrics** /
+  **Show in Domain**, **Focus** (folders) and **Exclude**.
+- **Show whole graph** in the tools tab fits the graph into the view; **Screenshot** takes a picture of it. See
+  [Map tools](/docs/visualization/user-controls/map-tools).
 
-The [Explorer](/docs/visualization/user-controls/explorer) on the left lists the files that take part in the graph. Its search and its **Exclude** rules work as in the Metric view; exclusions and the [focus](/docs/visualization/user-controls/explore#focus) are shared with the other views.
+The boxes can also be reached from the keyboard: Tab moves into the graph, the arrow keys walk from box to box, Enter
+selects a box and Space opens or closes it.
 
-## The dependency bar
+![A Kotlin file opened into its functions and classes, next to closed files drawn as stacks](/assets/images/docs/visualization/user-controls/dependency-declarations.jpeg)
 
-The bar at the bottom controls which edges are drawn and how:
+The [Explorer](/docs/visualization/user-controls/explorer) on the left lists the files that take part in the graph.
+Its search and its **Exclude** rules work as in the Metric view; exclusions and the
+[focus](/docs/visualization/user-controls/code-map#focus) are shared with the other views. Focusing a folder or
+leaving the focus keeps the boxes you opened and moved, and leaving it shows the folder where it lies in the whole
+graph.
 
-- **Edges shown** – tick which kinds of edges are drawn, with **All**, **None** and **Invert** as shortcuts. With none ticked, only the edges of the box under the pointer show.
-- **Edge style** – how edges are routed:
-  - **Curved** – edges leave and enter each box square to its side.
-  - **Spread** – curved, each edge with its own spot on the box.
-  - **Upward aside** – upward edges bow out to the right of the boxes.
-  - **Straight** – a straight line from box to box.
+Select a box or an edge to see its details in the
+[dependency inspector](/docs/visualization/user-controls/dependency-inspector), and choose which edges are drawn and how
+with the [dependency bar](/docs/visualization/user-controls/dependency-bar).
 
-  **Start and end at the middle of the side** bundles the edges of a box at one point. The gear icon opens the line thickness — **By count**, **Thin**, **Uniform** or **Strong** — and a **Width factor**, plus **Reset edge style**.
-- **Edge metric** – which edge metric of the map the graph draws.
-- **Badges** – for a map with declarations, tick which badges the boxes carry, with **All**, **None** and **Invert** as shortcuts: the counts of the **Cycles between files** and the **Cycles inside a file** a box hides, the ring of a **Declaration in a cycle**, and the count of the **Upward dependencies inside** a closed box, outlined like the upward edges. A click on a badge selects its box and opens the cycles or upward dependencies in the inspector.
+## Related
+
+- [Dependency parser](/docs/parser/dependency)
+- [Quality gate](/docs/analysis/quality-gate)
+- [Keyboard and mouse shortcuts](/docs/visualization/user-controls/keyboard-shortcuts)

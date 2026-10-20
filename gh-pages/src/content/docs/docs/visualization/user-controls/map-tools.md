@@ -1,30 +1,54 @@
 ---
-title: "Map Tools"
+title: "Map tools and viewcube"
+description: "Center the CodeCharta map, highlight buildings for a presentation, take screenshots and turn the camera with the viewcube and the zoom slider."
+sidebar:
+  label: "Map tools"
 ---
 
-The small tab on the right edge of the bar at the bottom holds the tools of the current view. Each tool is an icon; point at it to see its name.
+The map tools sit in a small tab on the right edge of the bar at the bottom of each view. In the Metric view, the
+viewcube and the zoom slider in the top-right corner add control over the camera. Point at a tool to see its name.
 
-![The map tools tab on the metric bar](/assets/images/docs/visualization/user-controls/map-tools.jpeg)
+![The map tools tab with Center map, Flashlight and Screenshot](/assets/images/docs/visualization/user-controls/map-tools.jpeg)
 
 ## Tools of the Metric view
 
-- **Unfocus** (crosshairs) – only shown while you are [focused](/docs/visualization/user-controls/explore#focus) on a folder. Leaves the focus and shows every folder again.
-- **Center map** (compass) – recenters and re-fits the camera so the whole map is in view again. Use this whenever you have orbited or zoomed away and want a clean overview. Right-click the tool to set the zoom level it centers at: a slider, **Use current zoom** and **Reset**.
-- **Flashlight** (lightbulb) – toggles a hover effect for presenting: when enabled, hovering over the map lights up the buildings under the pointer. Click it again to turn the effect off.
-- **Screenshot** (camera) – takes a screenshot of the map. Depending on **Screenshot to clipboard** in the [Settings](/docs/visualization/user-controls/settings), it either saves the image as a file or copies it to the clipboard. The button briefly confirms with **Copied!** or **Saved!**, or warns when the screenshot could not be taken.
+- **Unfocus** (crosshairs): shown only while a folder is [focused](/docs/visualization/user-controls/code-map#focus).
+  Leaves the focus.
+- **Center map** (compass): fits the whole map into view again. Right-click it to set the zoom it centers at, with a
+  slider, **Use current zoom** and **Reset**.
+- **Flashlight** (light bulb): a hover effect for presentations that lights up the buildings under the pointer.
+  Click again to switch it off.
+- **Screenshot** (camera): takes a picture of the map. **Screenshot to clipboard** in the
+  [Settings](/docs/visualization/user-controls/settings) decides whether it is saved as a file or copied. The button
+  confirms with **Copied!** or **Saved!**.
 
-In the Sunburst and Radial TreeMap [layouts](/docs/visualization/user-controls/layouts) only **Unfocus** and **Screenshot** are available.
+In the Sunburst and Radial TreeMap [layouts](/docs/visualization/user-controls/layouts) only **Unfocus** and
+**Screenshot** are offered.
 
 ## Tools of the other views
 
-- **Domain view** – **Unfocus**, **Show whole cloud** (undoes zooming and panning of the word cloud) and **Screenshot**.
-- **Dependencies view** – **Unfocus**, **Reset layout** (puts every dragged box back in its place; shown once you have dragged one), **Show whole graph** and **Screenshot**.
+- **Domain view**: **Unfocus**, **Show whole cloud** (undoes zooming and moving the word cloud) and **Screenshot**.
+- **Dependencies view**: **Unfocus**, **Reset layout** (puts every dragged box back; shown once you have dragged
+  one), **Show whole graph** and **Screenshot**.
 
-## Screenshot shortcuts
+The screenshot is also available from the keyboard in every view: **Ctrl+Alt+S** saves it, **Ctrl+Alt+F** copies it.
+See [Keyboard and mouse shortcuts](/docs/visualization/user-controls/keyboard-shortcuts).
 
-The screenshot is also available from the keyboard, in whichever view is on screen:
+## Viewcube
 
-- **Ctrl+Alt+S** (macOS: **Control+Option+S**) — save the screenshot as a file
-- **Ctrl+Alt+F** (macOS: **Control+Option+F**) — copy the screenshot to the clipboard
+The viewcube in the top-right corner of the 3D map turns with the camera, so it always shows from which side you look
+at the map. Click it to snap the camera to a fixed angle:
 
-The shortcuts are the way to get an open [legend](/docs/visualization/user-controls/legend#legend-in-screenshots) into the picture.
+![The viewcube with the zoom slider and the zoom level below it](/assets/images/docs/visualization/user-controls/viewcube.jpeg)
+
+- **A face** gives a straight view, for example from the top or the front.
+- **An edge** gives the angled view between two faces.
+- **A corner** gives an isometric view from above and one side.
+
+The part under the pointer is highlighted before you click. Dragging the cube turns the map as dragging the map does.
+The flat Sunburst and Radial TreeMap layouts have no viewcube.
+
+## Zoom slider
+
+The slider next to the viewcube sets how close the camera is, from 10% to 200%. The current zoom is shown below it.
+Drag the handle, or click **+** and **-** to zoom in steps of 10%. The slider follows zooming with the mouse wheel.
