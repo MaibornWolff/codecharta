@@ -1,9 +1,12 @@
 ---
-title: "npm"
-description: "Install the CodeCharta Shell via npm"
+title: "Install with npm"
+description: "Install the CodeCharta Shell with npm, map your codebase with ccsh analyse and open the result in the Web Studio."
+sidebar:
+  label: npm
 ---
 
-The CodeCharta Shell (CCSH) is published on npm, so you can install it globally and run analyses straight from your terminal.
+The CodeCharta Shell (`ccsh`) is published on npm as `codecharta-analysis`. Install it once and you can analyse any
+project from your terminal.
 
 ## Prerequisites
 
@@ -12,47 +15,47 @@ The CodeCharta Shell (CCSH) is published on npm, so you can install it globally 
 
 ## Install the CodeCharta Shell
 
-Install the `codecharta-analysis` package globally and verify the installation:
-
 ```bash
-# Install the CodeCharta Shell globally
-npm install -g codecharta-analysis
-
-# Verify the installation (some terminals need to be restarted first)
+npm i -g codecharta-analysis
 ccsh -h
 ```
 
-## Analyze a project with CCSH
+`ccsh -h` lists every command. If your terminal does not find `ccsh` right after the install, open a new one.
 
-### Generate your first map
+## Map a project
 
-Every parser and importer produces its own metrics — see [CodeCharta Shell](/docs/analysis/codecharta-shell) for an overview of the available tools. In this example we use the [Unified Parser](/docs/parser/unified), as it works on nearly every codebase:
-
-```bash
-# -o      output file name
-# <path>  the project or file you want to analyze
-ccsh unifiedparser -o=tutorial <path/to/your/project>
-```
-
-This generates a `tutorial.cc.json.gz`, ready to be opened in the Web Studio.
-
-### Other ways to run CCSH
-
-If you are not sure which tool to use, run the shell in **interactive mode** — it suggests applicable parsers for a given path and guides you through the configuration:
+Run [`ccsh analyse`](/docs/analysis/analyse) in the project folder:
 
 ```bash
-# guided, interactive analysis
-ccsh -i
+cd my-project
+ccsh analyse
 ```
 
-You can also call any tool directly — for example an importer:
+It runs an opinionated selection of parsers and options to get you started, adds the git or svn history when the
+folder is the root of a repository, and merges everything into `my-project.cc.json.gz` in the current folder. To analyse another folder, pass
+its path; the map still lands in the current folder:
 
 ```bash
-ccsh csvimport example.csv -o=example
+ccsh analyse path/to/project -o project.cc.json.gz
 ```
 
-See [CodeCharta Shell](/docs/analysis/codecharta-shell) for interactive mode, parser suggestions, combining multiple metrics, and more.
+The last lines of the output name every parser or history that is not in the map, and why.
 
-## Open your map in the Web Studio
+### Run a single analyser
 
-Open the [Web Studio](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true) and load your `tutorial.cc.json.gz` with the folder-open button (**Load cc.json files**) in the top-left — see [Upload](/docs/visualization/user-controls/upload) for details. You can now explore your codebase to your heart's content.
+To control exactly which metrics end up in the map, run the analysers yourself and merge their results. For example,
+the [Unified Parser](/docs/parser/unified) alone:
+
+```bash
+ccsh unifiedparser . -o metrics.cc.json
+```
+
+Output is gzip-compressed by default, so this writes `metrics.cc.json.gz`. `ccsh -i` starts the interactive mode, which
+suggests the analysers that fit a folder and asks for their options. See
+[CodeCharta Shell](/docs/analysis/codecharta-shell) for every parser, importer and filter.
+
+## Open the map
+
+Open the [Web Studio](https://codecharta.com/visualization/app/index.html) and load `my-project.cc.json.gz` with the
+folder button (**Load cc.json files**) in the top bar. See
+[Loading maps](/docs/visualization/user-controls/loading-maps) for loading several maps at once.

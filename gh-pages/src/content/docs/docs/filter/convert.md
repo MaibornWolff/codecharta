@@ -1,46 +1,58 @@
 ---
-title: "Convert"
+title: "Convert Tool"
+description: "Upgrade a legacy cc.json 1.x file to the cc.json 2.x format with ccsh convert, so you can merge, modify and inspect it with the current shell."
 ---
 
-## Convert
+The Convert Tool (`ccsh convert`) upgrades a cc.json file in the legacy 1.x format to the 2.x `{ meta, files, lenses }`
+format. You need it for maps written by an older CodeCharta version: every other `ccsh` command reads 2.x only and
+stops on a 1.x file with this hint:
 
-`ccsh` now reads and writes the **cc.json 2.0** `{ meta, files, lenses }` format. The Convert tool is the on-ramp for older files: it upgrades a legacy 1.x `.cc.json` file to the 2.0 format.
-
-You need it whenever you have a `.cc.json` produced by an older CodeCharta version (or downloaded from an earlier showcase) and want to use it with the current shell. Every other command — `merge`, `edgefilter`, `modify`, `inspect` and the importers that combine projects — reads 2.0 only and will stop with a hint to run `convert` if you feed it a 1.x file:
-
-```
+```text
 This is a legacy cc.json 1.x file. Run `ccsh convert <file>` to upgrade it to the 2.0 format first.
 ```
 
-The visualization opens both old (1.x) and new (2.0) files directly, so you only need `convert` for the command-line tools.
+The visualization opens 1.x and 2.x files directly, so you only need `convert` for the command line.
 
-#### Usage and Parameters
+## Quick start
 
-| Parameters                       | Description                                              |
-|----------------------------------|---------------------------------------------------------|
-| `FILE`                           | input project file (1.5 or 2.0)                         |
-| `-o, --output-file=<outputFile>` | output File (or empty for stdout)                       |
-| `-nc, --not-compressed`          | save uncompressed output File                           |
-| `-h, --help`                     | displays help and exits                                 |
-
+```bash
+ccsh convert legacy.cc.json -o upgraded.cc.json
 ```
+
+The output is gzip-compressed by default, so this writes `upgraded.cc.json.gz`. Add `-nc` for a plain
+`upgraded.cc.json`.
+
+## Options
+
+| Option                           | Description                                                           |
+| -------------------------------- | --------------------------------------------------------------------- |
+| `[FILE]`                         | input project file (1.5 or 2.x); reads piped input when omitted      |
+| `-o, --output-file=<outputFile>` | output file; prints to stdout when omitted                            |
+| `-nc, --not-compressed`          | write plain JSON instead of a gzip file                               |
+| `-h, --help`                     | show the help and exit                                                |
+
+```text
 Usage: ccsh convert [-h] [-nc] [-o=<outputFile>] [FILE]
 ```
 
-### Examples
+## Piped input
 
-```
-ccsh convert legacy.cc.json -o=upgraded.cc.json
-```
+Instead of a file, pipe a map into the tool:
 
-### Piped input
-
-Instead of providing a file as input, a project can also be piped in:
-
-```
-cat legacy.cc.json | ccsh convert -o=upgraded.cc.json
+```bash
+cat legacy.cc.json | ccsh convert -o upgraded.cc.json
 ```
 
-### What is not carried over
+## What is not carried over
 
-`blacklist` and `markedPackages` are visualization view state that the 2.0 format does not carry. If the source file contains either, `convert` drops them and prints a warning so you know to re-apply that curation in the visualization after loading the converted file.
+`blacklist` and `markedPackages` are view settings of the visualization that the 2.x format does not hold. If the
+source file contains either, `convert` drops them and warns, so you know to apply them again in the visualization after
+loading the converted file.
+
+The warning about dropped `markedPackages` needs the source as a file argument. With piped input only the dropped
+`blacklist` entries are reported.
+
+## Related
+
+- [Validation Tool](/docs/filter/validation-tool): check the converted file
+- [Merge Filter](/docs/filter/merge-filter): merge the converted file with current maps

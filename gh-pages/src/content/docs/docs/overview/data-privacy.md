@@ -1,36 +1,38 @@
 ---
-title: "Data Privacy"
+title: "Data privacy"
+description: "CodeCharta analyses and visualizes your code on your own machine: no upload, no tracking, no telemetry. Here is what stays local and how to run offline."
 ---
 
-### Your Data Stays on Your Machine
+CodeCharta analyses and visualizes your code on your own machine. Your source code, its history and the metrics
+derived from it are not uploaded, shared or sent to any service unless you share them yourself.
 
-CodeCharta is designed with privacy as a core principle. **All analysis and visualization happens entirely on your machine.** No data is ever uploaded, shared, or transmitted to any external service without your explicit intent.
+## What stays on your machine
 
-#### What This Means
+- **Analysis**: the CodeCharta Shell (`ccsh`) reads your code and its git or svn history locally and writes the map to
+  a file on your disk.
+- **Visualization**: the Web Studio runs in your browser. When you use it at
+  [codecharta.com](https://codecharta.com/visualization/app/index.html), the `.cc.json` files you load are read in the
+  browser and not uploaded to a server.
+- **No tracking**: CodeCharta contains no analytics, telemetry or usage tracking. GitHub may apply its own analytics
+  when you visit the repository on GitHub; that is outside CodeCharta.
 
-- **Analysis (ccsh)**: When you run the CodeCharta Shell to analyze your code, all processing happens locally. Your source code, git history, and metrics never leave your computer.
+## Run offline
 
-- **Visualization (Web Studio)**: The web-based visualization runs entirely in your browser using client-side JavaScript. Even when you use the online version at [codecharta.com](https://codecharta.com), your `.cc.json` files are processed locally in your browser and never uploaded to any server.
+Both parts work without an internet connection once they are installed:
 
-- **No Tracking**: CodeCharta does not include any analytics, telemetry, or usage tracking. We don't collect any data about how you use the tool or what code you analyze. Note that when you visit our documentation or GitHub repository, GitHub's standard analytics may apply, but that is managed by GitHub, not by us.
+- **Analysis**: `npm i -g codecharta-analysis`, or the [Docker image](/docs/overview/getting-started/docker)
+- **Visualization**: the [desktop app](/docs/overview/getting-started/desktop), or the
+  [Web Studio Docker image](/docs/overview/getting-started/docker#host-the-web-studio) on your own server
 
-#### Running Completely Offline
+## When data leaves your machine
 
-Both the CodeCharta Shell and Web Studio can run completely offline:
+Data leaves your machine only when you choose to send it, for example when you:
 
-- **Analysis**: Install via `npm i -g codecharta-analysis` and use anywhere without an internet connection
-- **Visualization**: Install via `npm i -g codecharta-visualization` and use anywhere without an internet connection
+- share a `.cc.json` file with colleagues or commit it to version control
+- host maps on your own server for your team
+- send a link that loads a map from a URL: the link carries the file location and the settings, not the map itself
 
-#### Data You Choose to Share
+## Check it yourself
 
-The only times data might leave your machine are when **you explicitly choose** to. Examples include:
-
-- Share exported `.cc.json` files with colleagues
-- Upload maps to your own hosting for team access
-- Use the "Share URL" feature to send configurations (only settings are shared, not data)
-- Commit analysis results to version control
-
-#### Open Source Transparency
-
-CodeCharta is fully open source on [GitHub](https://github.com/MaibornWolff/codecharta). You can inspect the code yourself to verify these privacy guarantees, or run your own local instance with full control.
-
+CodeCharta is open source on [GitHub](https://github.com/MaibornWolff/codecharta). You can read the code to verify
+these points, or build and run your own instance from [source](/docs/overview/getting-started/local).

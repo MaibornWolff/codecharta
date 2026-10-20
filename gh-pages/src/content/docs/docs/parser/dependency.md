@@ -1,19 +1,52 @@
 ---
 title: "Dependency Parser"
+description: "Extract the dependency graph of a codebase with ccsh dependencyparser: file and declaration dependencies, cycles, levels and architecture violations."
+sidebar:
+  label: "Dependency"
 ---
 
-**Category**: Parser (takes in source code and outputs cc.json)
-
-:::caution
+:::caution[Experimental]
 This parser is experimental: its output and options may still change between releases.
 :::
 
-This parser extracts the *dependency graph* of a codebase: which file uses which, how often, where the
+The Dependency Parser extracts the dependency graph of a codebase: which file uses which, how often, where the
 dependencies run in circles, and which of them point against the architectural flow. It is a port of
-[DependaCharta](https://github.com/MaibornWolff/DependaCharta)'s analysis, writing into the cc.json 2.0
-**`dependency` lens**.
+[DependaCharta](https://github.com/MaibornWolff/DependaCharta)'s analysis and writes the `dependency` lens of the
+cc.json file, which the visualization shows in its [dependency view](/docs/visualization/user-controls/dependency-view).
 
-### What it produces
+## Quick start
+
+```bash
+ccsh dependencyparser path/to/project -o dependencies.cc.json
+```
+
+This writes `dependencies.cc.json.gz`.
+
+## Options
+
+| Parameter                                 | Description                                                                             |
+|-------------------------------------------|-----------------------------------------------------------------------------------------|
+| `FILE or FOLDER`                          | file/project to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument |
+| `-o, --output-file=<outputFile>`          | output file (or empty for stdout)                                                       |
+| `-nc, --not-compressed`                   | save uncompressed output file                                                           |
+| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of extensions to analyse only those files (default: all supported) |
+| `-e, --exclude=<patterns>`                | comma-separated list of regex patterns to exclude files/folders                         |
+| `-ibf, --include-build-folders`           | include build and common resource folders                                               |
+| `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion                                       |
+| `--commit=<ref>`                          | analyze the codebase at a specific git commit/tag/branch (creates a temporary worktree) |
+| `--verbose`                               | verbose mode                                                                            |
+| `--include-tests`                         | analyse test files too (excluded by default)                                            |
+| `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                              |
+| `--file-timeout=<seconds>`                | give up on a file after this many seconds (default: no timeout)                         |
+| `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                 |
+| `-h, --help`                              | displays this help and exits                                                            |
+
+`--base-file` and `--local-changes` are rejected: the dependency graph needs every file of the project, so
+there is no per-file result to skip or reuse. A single file is a legal input; it is analysed alone, with its
+directory as the project root. It is still judged by extension, size and the test-file rule, while `.gitignore`
+and the exclude patterns only apply to a directory walk.
+
+## What it produces
 
 **Edges**, one per ordered pair of files that depend on each other, addressed by node id:
 
@@ -90,9 +123,11 @@ projection of namespace levels, so both trees are levelized separately. The file
 size uncompressed (520 KB to 2.0 MB on this project's own frontend) and grows two and a half times
 gzipped; output is gzipped by default.
 
-### Supported Languages
+## Supported languages
 
-Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL.
+Java, Kotlin, C#, C/C++, Go, Python, PHP, TypeScript, JavaScript, Vue, Delphi, Rust, Angular templates and SQL, with
+the same file extensions as the [Unified Parser](/docs/parser/unified#supported-languages). C files (`.c`, `.h`) are
+read as C++.
 
 An Angular template (`.html`) depends on each component it names by the element of its selector and on each pipe it
 names, as the `@Component` and `@Pipe` decorators in the TypeScript files declare them. A name that several classes
@@ -122,55 +157,26 @@ migration: paths are ordered folder by folder and name by name, with the numbers
 Flyway's repeatable migrations (`R__views.sql`) come after the versioned ones of their folder, as Flyway runs them
 last.
 
-### Usage and Parameters
-
-| Parameter                                 | Description                                                                             |
-|-------------------------------------------|-----------------------------------------------------------------------------------------|
-| `FILE or FOLDER`                          | file/project to parse                                                                   |
-| `-o, --output-file=<outputFile>`          | output file (or empty for stdout)                                                       |
-| `-nc, --not-compressed`                   | save uncompressed output file                                                           |
-| `-fe, --file-extensions=<fileExtensions>` | comma-separated list of extensions to analyse only those files (default: all supported) |
-| `-e, --exclude=<patterns>`                | comma-separated list of regex patterns to exclude files/folders                         |
-| `-ibf, --include-build-folders`           | include build and common resource folders                                               |
-| `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion                                       |
-| `--commit=<ref>`                          | analyze the codebase at a specific git commit/tag/branch (creates a temporary worktree) |
-| `--verbose`                               | verbose mode                                                                            |
-| `--include-tests`                         | analyse test files too (excluded by default)                                            |
-| `--max-file-size=<kb>`                    | skip files of at least this size in KB (default: no limit)                              |
-| `--file-timeout=<seconds>`                | give up on a file after this many seconds (default: no timeout)                         |
-| `--omit-graph-analysis`                   | emit dependencies only, skipping cycle detection and both levelizations                 |
-| `-h, --help`                              | displays this help and exits                                                            |
-
-`--base-file` and `--local-changes` are rejected: the dependency graph needs every file of the project, so
-there is no per-file result to skip or reuse. A single file is a legal input; it is analysed alone, with its
-directory as the project root. It is still judged by extension, size and the test-file rule, while `.gitignore`
-and the exclude patterns only apply to a directory walk.
-
-### Tests are excluded by default
+## Tests are excluded by default
 
 A test depends on everything it exercises and nothing depends on it, so including tests shifts every
 level and every cycle. `--include-tests` opts back in. Test files are recognized by directory (`test`,
 `tests`, `__tests__`, `spec`, `specs`, matched on the path *inside* the project) and by each language's
 naming convention (`FooTest.java`, `foo_test.go`, `foo.spec.ts`, `test_foo.py`, …).
 
-### When the analysis does not finish
+## When the analysis does not finish
 
 Cycle detection and levelization are both superlinear in the size of the graph, and levelization runs
 twice — once per projection. On a repository where they do not finish, `--omit-graph-analysis` emits the
 dependencies and their weights alone, leaving every edge unflagged and the lens without levels.
 
 `--file-timeout` bounds a single file's parse. The parse itself is a blocking native call, so the
-timeout abandons *waiting* for it: the file is skipped with a warning while the parse runs to completion
-in the background.
+timeout abandons *waiting* for it: the file is skipped while the parse runs to completion in the background.
+The skipped file is reported like any other
+[file the parser cannot analyse](/docs/analysis/codecharta-shell#files-a-parser-cannot-analyse), with the timeout as
+its cause.
 
-### Files that cannot be analysed
-
-A file whose analysis fails is left out of the map. Once the analysis is over, the parser warns once per cause, with
-the number of files it hit and the first five of them; a file that takes longer than `--file-timeout` is such a file,
-with the timeout as its cause. It ends with an error and exit code 1, and writes no map, when no file could be analysed
-at all, or when a grammar or the native tree-sitter library cannot be used.
-
-### Known issues
+## Known issues
 
 **Usage kinds are only reported for PHP.** The `usage` list on a leaf edge can name seven kinds, but every
 language except PHP — which runs its own queries — reports only `usage`. The underlying extraction
@@ -178,22 +184,22 @@ language except PHP — which runs its own queries — reports only `usage`. The
 away in the type it hands back, so the distinction is lost before this parser sees it. DependaCharta has
 the same gap.
 
-### Examples
-
-Analyze a project folder and write a compressed cc.json:
-
-```
-ccsh dependencyparser foo/bar/project -o out.cc.json
-```
+## Examples
 
 Include the tests, and give up on any file that takes more than ten seconds:
 
-```
+```bash
 ccsh dependencyparser foo/bar/project --include-tests --file-timeout=10 -o out.cc.json
 ```
 
 If a project is piped into the DependencyParser, the results and the piped project are merged:
 
+```bash
+ccsh unifiedparser foo/bar/project | ccsh dependencyparser foo/bar/project - -o out.cc.json
 ```
-ccsh unifiedparser foo/bar/project -nc | ccsh dependencyparser foo/bar/project - -o out.cc.json
-```
+
+## Related
+
+- [Dependency view](/docs/visualization/user-controls/dependency-view)
+- [Quality gate](/docs/analysis/quality-gate): fail a build on cycles and upward dependencies
+- [DependaCharta Importer](/docs/importer/dependacharta)

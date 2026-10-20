@@ -1,100 +1,97 @@
 ---
-title: "Commit-Based Analysis"
+title: "Analyse a past commit"
+description: "Analyse your codebase at any commit, tag, branch or date with --commit, and compare code metrics between two points in time."
+sidebar:
+  label: "Commit analysis"
 ---
 
-The `--commit` option enables analyzing a codebase at any historical point in time without manually checking out that commit. It creates a temporary git worktree, runs the analysis against it, and cleans up automatically.
+`--commit` analyses the codebase as it was at any commit, tag, branch or date, without checking it out. Analyse two
+points in time and compare them in the visualization to see how the code changed. Your working copy stays as it is.
 
-This option is available on the [UnifiedParser](/docs/parser/unified), [RawTextParser](/docs/parser/raw-text), [Dependency Parser](/docs/parser/dependency), [Domain Language Parser](/docs/parser/domain-language), and [GitLogParser](/docs/parser/git-log) (repo-scan subcommand).
+The option works with the [Unified Parser](/docs/parser/unified), [Raw Text Parser](/docs/parser/raw-text),
+[Dependency Parser](/docs/parser/dependency), [Domain Language Parser](/docs/parser/domain-language) and the
+`repo-scan` command of the [Git Log Parser](/docs/parser/git-log).
 
-### How It Works
-
-When `--commit` is specified, the parser:
-
-1. **Resolves the commit reference** to a full SHA hash (supports hashes, tags, branches, and date expressions)
-2. **Creates a temporary git worktree** in the system temp directory using `git worktree add --detach`
-3. **Runs the analysis** against the worktree instead of the working directory
-4. **Prefixes the output filename** with the short commit hash (e.g. `abc1234.output.cc.json`)
-5. **Removes the worktree** after analysis completes
-
-No branches are created or modified. The original repository is never changed.
-
-### Usage
+## Quick start
 
 ```bash
-# Analyze at a specific commit hash
+ccsh unifiedparser . --commit v2.0.0 -o output.cc.json      # writes <short hash>.output.cc.json.gz
+```
+
+More references:
+
+```bash
 ccsh unifiedparser . --commit abc1234 -o output.cc.json
-
-# Analyze at a tag
-ccsh unifiedparser . --commit v2.0.0 -o output.cc.json
-
-# Analyze at a relative ref
 ccsh unifiedparser . --commit HEAD~10 -o output.cc.json
-
-# Analyze at a date
 ccsh unifiedparser . --commit "6 months ago" -o output.cc.json
-
-# RawTextParser
 ccsh rawtextparser . --commit v1.0.0 -o output.cc.json
-
-# GitLogParser repo-scan
 ccsh gitlogparser repo-scan --repo-path . --commit v1.0.0 -o output.cc.json
 ```
 
-### Supported Commit References
+## Supported references
 
-Any reference that git can resolve is supported:
+Any reference git can resolve works:
 
-| Reference Type | Example | Description |
-|----------------|---------|-------------|
-| Full hash | `--commit 6a7720314d71d909...` | Exact commit |
-| Short hash | `--commit abc1234` | Abbreviated commit hash |
-| Tag | `--commit v2.0.0` | Git tag |
-| Branch name | `--commit main` | Tip of a branch |
-| Relative ref | `--commit HEAD~5` | 5 commits before HEAD |
-| Parent ref | `--commit HEAD^` | Parent of HEAD |
-| Date expression | `--commit "2 years ago"` | Latest commit before that date |
-| ISO date | `--commit "2024-01-15"` | Latest commit before that date |
+| Reference type  | Example                        | Meaning                         |
+| --------------- | ------------------------------ | ------------------------------- |
+| Full hash       | `--commit 6a7720314d71d909...` | exact commit                    |
+| Short hash      | `--commit abc1234`             | abbreviated commit hash         |
+| Tag             | `--commit v2.0.0`              | git tag                         |
+| Branch name     | `--commit main`                | tip of a branch                 |
+| Relative ref    | `--commit HEAD~5`              | 5 commits before HEAD           |
+| Parent ref      | `--commit HEAD^`               | parent of HEAD                  |
+| Date expression | `--commit "2 years ago"`       | latest commit before that date  |
+| ISO date        | `--commit "2024-01-15"`        | latest commit before that date  |
 
-Date expressions use `git log --before` internally and find the most recent commit before the given date.
+A date goes through `git log --before` and picks the most recent commit before it.
 
-### Output Naming
+## How it works
 
-When both `--commit` and `-o` are specified, the output file is automatically prefixed with the abbreviated commit hash (typically 7 characters, though git may use more to keep it unambiguous):
+1. The parser resolves the reference to a full commit hash.
+2. It creates a temporary git worktree for that commit in the system temp folder (`git worktree add --detach`).
+3. It analyses the worktree instead of your working directory.
+4. It removes the worktree.
+
+No branch is created or changed.
+
+## Output name
+
+With `-o`, the output name gets the abbreviated commit hash as a prefix, usually 7 characters (git uses more when it
+needs them to stay unambiguous). Compression adds `.gz` as usual:
 
 ```bash
 ccsh unifiedparser . --commit v2.0.0 -o output.cc.json
-# produces: abc1234.output.cc.json
+# writes abc1234.output.cc.json.gz
 ```
 
-When `-o` is not specified, output goes to stdout as usual (no prefix).
+Without `-o`, the map goes to standard output with no prefix.
 
-### Comparing Commits
-
-Combine `--commit` with the [Merge Filter](/docs/filter/merge-filter) to compare two points in time:
+## Compare two commits
 
 ```bash
-# Analyze an old version
-ccsh unifiedparser . --commit v1.0.0 -o old.cc.json
-
-# Analyze the current version
-ccsh unifiedparser . -o current.cc.json
-
-# Load both in the visualization to use delta mode
+ccsh unifiedparser . --commit v1.0.0 -o old.cc.json    # writes <short hash>.old.cc.json.gz
+ccsh unifiedparser . -o current.cc.json                # writes current.cc.json.gz
 ```
 
-### Restrictions
+Load both files in the visualization and switch to [compare mode](/docs/visualization/user-controls/compare).
 
-- `--commit` and `--local-changes` are **mutually exclusive** — specifying both will produce an error
-- The project directory must be inside a **git repository**
-- Git must be available on the system PATH
-- The commit reference must point to an existing commit in the repository history
+## Restrictions
 
-### Cleanup
+- `--commit` and `--local-changes` exclude each other.
+- The project folder is inside a git repository, and `git` is on the `PATH`.
+- The reference points to an existing commit of the repository.
 
-The temporary worktree is automatically removed after analysis. If the process is interrupted, a JVM shutdown hook attempts cleanup. In rare cases where automatic cleanup fails, a warning is printed with the path for manual removal. You can also list and clean up orphaned worktrees with:
+## Cleanup
+
+The temporary worktree is removed after the analysis. If the process is interrupted, a shutdown hook tries to remove
+it. If that fails, a warning prints its path. You can also list and remove orphaned worktrees yourself:
 
 ```bash
 git worktree list
 git worktree prune
 ```
 
+## Related
+
+- [Analyse local changes](/docs/analysis/local-changes)
+- [Compare two maps](/docs/visualization/user-controls/compare)

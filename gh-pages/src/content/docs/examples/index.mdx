@@ -1,6 +1,6 @@
 ---
 title: Examples
-description: Explore real-world codebases visualized with CodeCharta — Apache OpenOffice, httpd, JUnit 4, JUnit 5 and NetBeans. Download the cc.json files and open them in the web visualization.
+description: "Explore Apache OpenOffice, httpd, JUnit 4, JUnit 5 and NetBeans as CodeCharta code maps: open them in the Web Studio or download the cc.json files."
 template: splash
 ---
 
@@ -8,6 +8,8 @@ import Showcase from '../../../components/Showcase.astro';
 
 # Examples
 
-We picked these projects to show different aspects of CodeCharta. The large projects come from the [Apache Language Treemap](https://projects.apache.org/statistics.html). You can download all files from the showcase and open them in the [web visualization](https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=sonar_complexity&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true).
+These open-source projects show CodeCharta on codebases from 30 thousand to 6 million lines of code. The large ones come from the [Apache Language Treemap](https://projects.apache.org/statistics.html).
+
+Each page opens its maps in the [Web Studio](https://codecharta.com/visualization/app/index.html) with one click, and projects with two snapshots open straight in **Compare**. You can also download the `.cc.json` files. The maps were made between 2016 and 2019 in the cc.json 1.x format, which the Web Studio opens directly; to use them with `ccsh`, upgrade them with [`ccsh convert`](/docs/filter/convert) first.
 
 <Showcase />

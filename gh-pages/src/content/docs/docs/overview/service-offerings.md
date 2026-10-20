@@ -1,5 +1,6 @@
 ---
 title: "Service offerings"
+description: "Get expert help with your codebase: the Software Health Check by MaibornWolff assesses your code and technical debt and shows you where to start."
 ---
 
 Your company has the dire need of understanding its code base and knowing how to move on? We at [MaibornWolff](https://www.maibornwolff.de/en) offer a lot of different services to help you with legacy and unmaintainable code.

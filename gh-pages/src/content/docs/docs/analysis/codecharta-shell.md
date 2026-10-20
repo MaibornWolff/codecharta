@@ -1,96 +1,146 @@
 ---
-title: "CodeCharta Shell"
+title: "CodeCharta Shell (ccsh)"
+description: "Install the CodeCharta Shell, map a codebase in one step and find every ccsh parser, importer, filter and tool for your code metrics."
+sidebar:
+  label: "Overview"
 ---
 
-While the main purpose of the CodeCharta Shell (ccsh) is to use its various tools to generate metrics from code, it also provides some functionality to help users achieve that, independently of the used tool.
+The CodeCharta Shell (`ccsh`) turns a codebase into a map you can open in the visualization. It measures source
+code, reads the git or svn history, imports metrics from tools such as SonarQube or a coverage report, and merges
+the results into one `.cc.json` file. Everything runs on your machine.
 
-### Installation
+## Install
 
-#### Requirements
-
-- Node **>= 22.19**
-- Java **>= 22**
-
-#### npm
-
-To install our CodeCharta Shell we use npm as follows:
+You need Node 22.19 or newer and Java 22 or newer.
 
 ```bash
-# Install codecharta-analysis globally
-$ npm i -g codecharta-analysis
-# Check if installation was complete. Some terminals have to be restarted
-$ ccsh -h
-# done :)!
+npm i -g codecharta-analysis
+ccsh -h
 ```
 
-### General usage
+`ccsh -h` lists every command and `ccsh -v` prints the installed version. If the shell does not find `ccsh` right
+after the install, open a new terminal. To run ccsh without installing Java and Node, use the
+[Docker image](/docs/overview/getting-started/docker).
 
-After the CodeCharta analysis has been installed, executing `ccsh -h` should show the help where all further commands are listed, and `ccsh -v` prints the installed version. Most often the CodeCharta shell is called with one of its tools to perform different actions. For example `ccsh csvimport example.csv` will use the [CSVImporter](/docs/importer/csv) to turn the given csv file into `cc.json` format. More information on how to use the CodeCharta Shell can be found in the pages of the individual analysis tools.
+## Quick start
 
-### The cc.json format
-
-Every parser, importer and filter reads and writes CodeCharta's `cc.json` format, now at version **2.1** (`{ meta, files, lenses }`). The shell reads and writes 2.x only. If you have an older 1.x `.cc.json` file, upgrade it once with [`ccsh convert`](/docs/filter/convert) before using it with the other tools — otherwise they stop with a hint pointing you at `convert`. The visualization opens both 1.x and 2.x files directly.
-
-### Interactive Shell
-
-The interactive shell aims to aid users when executing parsers by collecting all needed options and arguments for the corresponding parser.
-You can launch the interactive shell by calling `ccsh -i` or `ccsh --interactive`.
-There you are asked which parser you want to run and receive questions helping you configure that parser.
-
-Alternatively, you can directly run the interactive dialog for a parser by calling it without arguments, e.g. `ccsh sonarimport`.
-
-In the end, the full command to launch the parser in the configured way is output for future use and the configured parser is executed.
-
-### Parser Suggestions
-
-When launching CodeCharta Shell without any arguments and options, CodeCharta automatically tries to suggest applicable parsers to the user.
-To do this, a resource has to be entered which can be a path to a file, folder or a url.
-CodeCharta then automatically checks all parsers which support this feature and offers the user to select from a list of all parsers which have been identified as applicable.
-
-After choosing the parsers, a dry run to configure each parser is started using the Interactive Shell.
-When all parsers are configured, the user can either manually run the parsers by executing the command output by the Interactive Shell or run them together automatically.
-If the latter option is selected, all configured parsers are run in parallel.
-
-If every parser is run successfully, the shell offers the user to merge the result files.
-To do that, each parser's result `cc.json` has to be moved into the same folder.
-
-Every analyser is asked whether it is applicable to the entered resource, and all analysers that report themselves as applicable are offered for selection. Analysers that can currently identify an applicable resource include:
-
-- GitLogParser
-- SVNLogParser
-- SonarImporter
-- UnifiedParser
-- RawTextParser
-- CoverageImporter
-- DomainLanguageParser
-- DependaChartaImporter (deprecated, see the Dependency Parser)
-- DependencyParser (experimental)
-
-### Combining multiple metrics
-
-You can combine multiple metrics into one `.cc.json`. This allows users to analyze a codebase with multiple tools (e.g. the sonarimporter for code metrics like complexity and the gitlogparser for metadata like number of authors) and combine the results in a single file that can be visualized. This is done with the [Merge Filter](/docs/filter/merge-filter). Some importers support direct pipe-through, which means you don't need to use the merge filter. If these importers are missing a metric, please take a look at [Custom Metrics](/docs/importer/csv).
-
-### Piped input for filters
-
-Instead of providing a cc.json file as input, a project can also be piped to the filter:
-
-```
-cat demo.cc.json | ccsh inspect --levels=2
+```bash
+ccsh analyse path/to/project
 ```
 
-This behaviour is currently supported by `ccsh modify`, `ccsh inspect` and `ccsh convert`. `ccsh merge` and `ccsh edgefilter` need their input as files.
+[`ccsh analyse`](/docs/analysis/analyse) runs every code parser that applies to the folder, adds its git or svn
+history and writes `project.cc.json.gz` into the current folder. Open that file in the
+[Web Studio](https://codecharta.com/visualization/app/index.html).
 
-### Mapping a codebase in one step
+## Commands
 
-`ccsh analyse` runs every code parser that applies to a folder, adds its git or svn history and merges the results
-into one map, without a config file (see [Analyse](/docs/analysis/analyse)).
+Each command has its own `-h`, such as `ccsh unifiedparser -h`.
 
-### Checking a project against rules
+| Group     | Command                | What it does                                                                     |
+| --------- | ---------------------- | -------------------------------------------------------------------------------- |
+| Parsers   | `unifiedparser`        | [code metrics such as complexity and rloc for many languages](/docs/parser/unified) |
+|           | `rawtextparser`        | [lines and indentation of any text file](/docs/parser/raw-text)                  |
+|           | `domainlanguageparser` | [the domain vocabulary of the code](/docs/parser/domain-language)                |
+|           | `dependencyparser` (experimental) | [file and declaration dependencies, cycles and levels](/docs/parser/dependency) |
+|           | `gitlogparser`         | [history metrics from git](/docs/parser/git-log)                                 |
+|           | `svnlogparser`         | [history metrics from an svn log](/docs/parser/svn-log)                          |
+| Importers | `sonarimport`          | [metrics from a SonarQube server](/docs/importer/sonar)                          |
+|           | `tokeiimporter`        | [line counts from Tokei](/docs/importer/tokei)                                   |
+|           | `coverageimport`       | [test coverage from coverage reports](/docs/importer/coverage)                   |
+|           | `csvimport`            | [any metric from a CSV file](/docs/importer/csv)                                 |
+|           | `sourcemonitorimport`  | [metrics from SourceMonitor](/docs/importer/sourcemonitor)                       |
+|           | `codemaatimport`       | [temporal coupling from Code Maat](/docs/importer/code-maat)                     |
+|           | `dependachartaimport` (deprecated) | [DependaCharta `.dc.json` files](/docs/importer/dependacharta)       |
+| Filters   | `merge`                | [combines several maps into one](/docs/filter/merge-filter)                      |
+|           | `edgefilter`           | [adds edge attributes to the files they connect](/docs/filter/edge-filter)       |
+|           | `modify`               | [moves, removes or re-roots parts of a map](/docs/filter/structure-modifier)     |
+| Tools     | `analyse`              | [maps a codebase with an opinionated selection of parsers and options to get started](/docs/analysis/analyse) |
+|           | `gate` (experimental)  | [checks a project against the rules in its `.codecharta.yml`](/docs/analysis/quality-gate) |
+|           | `inspect`              | [prints the folder structure of a map](/docs/filter/inspection-tool)             |
+|           | `convert`              | [upgrades a 1.x file to the current format](/docs/filter/convert)                |
+|           | `check`                | [validates a `.cc.json` file](/docs/filter/validation-tool)                      |
+| Exporter  | `csvexport`            | [writes the metrics of a map to CSV](/docs/exporter/csv)                         |
 
-`ccsh gate` (experimental) analyses a project and checks it against the metric limits and dependency rules in its
-`.codecharta.yml`, with an exit code for builds, git hooks and AI agents (see [Quality Gate](/docs/analysis/quality-gate)).
+The metrics each command writes are listed on its page. For a short guide to the metrics worth starting with, see
+[Available metrics](/docs/analysis/metrics).
 
-### Validating cc.json files
+## Interactive mode
 
-CodeCharta also provides the `ccsh check` command, which can verify the syntax of a `cc.json` file (see [Validation Tool](/docs/filter/validation-tool)). This can be useful in case you want to manually create or modify a `cc.json` file. While it is possible, we advise against manually adjusting `cc.json` files. If you want to use metrics that are not available with our tools, it is much easier and safer to create them in CSV format and use our [CSVimporter](/docs/importer/csv).
+Started without arguments, `ccsh` asks for a file, folder or Sonar URL. For a folder it first offers to map
+everything with `ccsh analyse`. Decline, and it lists the analysers that apply to the path: the Git Log, SVN Log,
+Unified, Raw Text, Domain Language and Dependency Parsers, the Sonar and Coverage Importers, and the DependaCharta
+Importer. Pick any of them with the space bar and answer their questions.
 
+When every analyser is configured, `ccsh` prints the command line of each one for later use and offers to run them
+in parallel. When several ran and all of them succeeded, it offers to merge their results into `mergedResult.cc.json` in a
+folder you name, so write all results into that folder.
+
+`ccsh -i` skips the path and lets you pick any command from a list. A command called without arguments, such as
+`ccsh sonarimport`, asks for its own options.
+
+## Output files
+
+Every command writes the `.cc.json` 2.1 format (`{ meta, files, lenses }`), gzip-compressed by default: `-o
+project.cc.json` writes `project.cc.json.gz`, so later commands need the `.gz` name. Add `-nc` for an uncompressed
+file. Without `-o`, the result goes uncompressed to standard output.
+
+Importers and filters read 2.x files only and stop with a hint at `ccsh convert` when they get a 1.x file. Upgrade
+an old file once with [`ccsh convert`](/docs/filter/convert). The visualization opens both.
+
+## Combine metrics
+
+To see code metrics and history in one map, merge the results of several commands with
+[`ccsh merge`](/docs/filter/merge-filter):
+
+```bash
+ccsh unifiedparser . -o code.cc.json
+ccsh gitlogparser repo-scan --repo-path . -o history.cc.json
+ccsh merge code.cc.json.gz history.cc.json.gz -o project.cc.json
+```
+
+Some commands merge a project piped into them, so you can skip the files in between:
+
+- The Unified, Raw Text, Domain Language and Dependency Parsers merge a piped project when you add `-` as an extra
+  argument: `ccsh unifiedparser . | ccsh rawtextparser . - -o project.cc.json`.
+- The Git Log and SVN Log Parsers and the Sonar and Coverage Importers merge a piped project on their own.
+- `ccsh modify`, `ccsh inspect` and `ccsh convert` read a piped project when you give no file:
+  `cat project.cc.json | ccsh inspect --levels=2`.
+- `ccsh merge` and `ccsh edgefilter` read files only.
+
+For a metric no command produces, write it to a CSV file and import it with the
+[CSV Importer](/docs/importer/csv). That is safer than editing a `.cc.json` file by hand. If you do edit one,
+`ccsh check` validates it.
+
+## Files a parser cannot analyse
+
+The Unified, Dependency and Domain Language Parsers leave a file whose analysis fails out of the map. After the run
+they warn once per cause, with the number of files it hit and the first five of them. They stop with exit code 1
+and write no map when no file could be analysed at all, or when a grammar or the native tree-sitter library cannot
+be used.
+
+## Analyse with simplecc.sh
+
+The [Docker image](/docs/overview/getting-started/docker) ships `simplecc.sh`, a script that runs the Unified, Raw
+Text, Domain Language, Dependency and Git Log Parsers plus the external tools it finds (Tokei, `complexity` and,
+with a token, SonarQube) and merges everything into one map. Tools that are missing or do not apply are skipped and
+listed at the end. Run it from the folder that contains your project:
+
+```bash
+simplecc.sh my-project                          # writes my-project.cc.json.gz into the current folder
+simplecc.sh my-project sqp_1234567890abcdef     # also scans the project with SonarQube and imports its metrics
+```
+
+| Option              | Effect                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| `-l, --leaf-merge`  | merges with the leaf strategy instead of the recursive one                             |
+| `-s, --sonar-url`   | the SonarQube server (default: `http://localhost:9000`, or the `SONAR_URL` variable)   |
+
+The optional second argument is a SonarQube user token. Without it, the Sonar steps are skipped. The script needs
+`ccsh`; `git`, `tokei`, `complexity`, `sonar-scanner` and `jq` (for the SonarQube scan) are optional. Outside Docker, `ccsh analyse` covers the
+parsers without any extra tool.
+
+## Related
+
+- [Analyse a project in one step](/docs/analysis/analyse)
+- [Analysis examples](/docs/analysis/examples)
+- [Quality gate](/docs/analysis/quality-gate)

@@ -1,61 +1,103 @@
 ---
 title: "Structure Modifier"
+description: "Change the folder structure of a cc.json map: cut out a subfolder as the new root, remove or move nodes, or rename the mcc metric."
 ---
 
-**Category**: Filter (takes in cc.json and outputs cc.json)
+The Structure Modifier (`ccsh modify`) changes the folder structure of a cc.json map without analysing the code again.
+Cut out the part of a monorepo you care about, drop generated folders, move a folder to where it belongs, or rename
+the `mcc` metric so maps from different sources line up.
 
-The Structure Modifier is used to modify the structure of .cc.json files. It enables you to:
+## Quick start
 
-- Remove nodes from a project: The resulting project will not include these nodes and their children.
-- Declare a node as root: This means that the chosen node will become the root node of the resulting sub-project.
-- Move nodes within the project: All children of the source node will be transferred to the destination node.
-- Rename the mcc metric to complexity or sonar_complexity (revert the previous renaming to mcc).
-- Print the hierarchy of the project: Prints the hierarchy into the console in a human-readable format. (That feature was moved to the new command 'inspect')
-
-The edges associated with moved/removed nodes will be altered as well, while all attribute types will be copied.
-
-> Do not specify multiple actions in one command: the command then reports an error and performs none of them
-
-#### Usage and Parameters
-
-| Parameters                         | Description                                                                                                                      |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `FILE`                             | input project file                                                                                                               |
-| `-f, --move-from=<moveFrom>`       | move nodes in project folder ... (use paired with the `--move-to` parameter)                                                     |
-| `-h, --help`                       | displays help and exits                                                                                                          |
-| `-o, --output-file=<outputFile>`   | output File (or empty for stdout); the output is not compressed                                                                  |
-| `-p, --print-levels=<printLevels>` | show first x layers of project hierarchy (deprecated; use command 'inspect' instead)                                            |
-| `-r, --remove=<remove>`            | comma-separated list of nodes to be removed (when using powershell, the list either can't contain spaces or has to be in quotes) |
-| `--rename-mcc[=<renameMcc>]`       | renames the mcc metric to complexity. Optionally specify 'sonar' for the metric to be renamed to sonar_complexity                |
-| `-s, --set-root=<setRoot>`         | path within project to be extracted as the new root                                                                              |
-| `-t, --move-to=<moveTo>`           | ... move nodes to destination folder (use paired with `--move-from` parameter)                                                   |
-
+```bash
+ccsh modify project.cc.json.gz --set-root=/root/src -o src.cc.json
 ```
+
+The output of `modify` is always uncompressed, so this writes `src.cc.json`.
+
+## Options
+
+| Option                             | Description                                                                                                                      |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `[FILE]`                           | input project file; reads piped input when omitted                                                                               |
+| `-s, --set-root=<setRoot>`         | path within the project to be extracted as the new root                                                                          |
+| `-r, --remove=<remove>`            | comma-separated list of nodes to be removed (when using PowerShell, the list either can't contain spaces or has to be in quotes) |
+| `-f, --move-from=<moveFrom>`       | move the nodes in this folder ... (use paired with `--move-to`)                                                                  |
+| `-t, --move-to=<moveTo>`           | ... into this destination folder (use paired with `--move-from`)                                                                 |
+| `--rename-mcc[=<renameMcc>]`       | rename the `mcc` metric to `complexity`; with `sonar`, to `sonar_complexity`                                                     |
+| `-p, --print-levels=<printLevels>` | deprecated; use [`ccsh inspect`](/docs/filter/inspection-tool) instead                                                           |
+| `-o, --output-file=<outputFile>`   | output file, or empty for stdout; always uncompressed                                                                            |
+| `-h, --help`                       | show the help and exit                                                                                                           |
+
+```text
 Usage: ccsh modify [-h] [--rename-mcc[=<renameMcc>]] [-f=<moveFrom>]
                    [-o=<outputFile>] [-p=<printLevels>] [-s=<setRoot>]
                    [-t=<moveTo>] [-r=<remove>]... [FILE]
-
 ```
 
-### Examples
+Paths start with `/root`, the root folder of every map. Run [`ccsh inspect`](/docs/filter/inspection-tool) to see the
+paths of a map.
 
-```
-ccsh modify foo.cc.json --remove=/root/foo --remove=/root/bar/
-```
+## One action per run
 
-```
-ccsh modify foo.cc.json --move-from=/root/foo --move-to=/root/bar --output-file=project.cc.json
-```
+Each run performs one action. Combine `--set-root`, `--remove` and `--move-from`/`--move-to` and `modify` reports
+"More than one action specified" and writes nothing. Do not combine `--rename-mcc` with another action either: only
+one of them takes effect. To do several changes, chain runs:
 
-```
-ccsh modify foo.cc.json --set-root=/root/foo/
-```
-
-### Piped input
-
-Instead of providing a cc.json file as input, a project can also be piped to the filter:
-
-```
-cat demo.cc.json | ccsh modify --set-root=/root/foo/
+```bash
+ccsh modify project.cc.json.gz --remove=/root/generated | ccsh modify --set-root=/root/src -o src.cc.json
 ```
 
+## Actions
+
+### Set a new root
+
+`--set-root` keeps only the content of one folder, which becomes the new root:
+
+```bash
+ccsh modify project.cc.json.gz --set-root=/root/src/main -o main.cc.json
+```
+
+### Remove nodes
+
+`--remove` drops nodes together with everything below them. Pass a comma-separated list or repeat the option:
+
+```bash
+ccsh modify project.cc.json.gz --remove=/root/docs,/root/build -o trimmed.cc.json
+ccsh modify project.cc.json.gz --remove=/root/docs --remove=/root/build -o trimmed.cc.json
+```
+
+The root itself cannot be removed.
+
+### Move nodes
+
+`--move-from` together with `--move-to` moves everything inside the source folder into the destination folder. The
+destination is created when it does not exist, and the source folder disappears. A node that already exists in the
+destination with the same name and type is kept, and the moved one is dropped with a warning.
+
+```bash
+ccsh modify project.cc.json.gz --move-from=/root/src/lib --move-to=/root/libs -o moved.cc.json
+```
+
+### Rename `mcc`
+
+```bash
+ccsh modify project.cc.json.gz --rename-mcc -o renamed.cc.json
+ccsh modify project.cc.json.gz --rename-mcc=sonar -o renamed.cc.json
+```
+
+The first command renames `mcc` to `complexity`, the second to `sonar_complexity`. A map without `mcc` stays as it is.
+
+## Lenses and edges
+
+When you set a root, remove or move nodes, the edges follow the new paths. The dependency and domain lenses move
+along too: every remaining node keeps its entries, and the entries of removed nodes are dropped.
+
+If the map carries data in a lens CodeCharta does not know, `modify` cannot tell which nodes that data belongs to. It
+then refuses to set a root, remove or move nodes, writes nothing and exits with code 1. Restructure first and run the
+analyser that writes that lens afterwards.
+
+## Related
+
+- [Inspection Tool](/docs/filter/inspection-tool): print the folder structure of a map
+- [Merge Filter](/docs/filter/merge-filter): combine maps, or put several into one with `--large`

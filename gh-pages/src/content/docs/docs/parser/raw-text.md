@@ -1,25 +1,27 @@
 ---
 title: "Raw Text Parser"
+description: "Measure lines and indentation depth of any text file with ccsh rawtextparser, whatever the programming language, to spot deeply nested code."
+sidebar:
+  label: "Raw Text"
 ---
 
-**Category**: Parser (takes in source code and outputs cc.json)
+The Raw Text Parser measures every text file by its lines and their indentation, whatever the language. Deep
+indentation is a quick, language-independent hint at nested, hard-to-read code, so use this parser for languages the
+[Unified Parser](/docs/parser/unified) does not support, or next to it.
 
-This parser analyzes code, regardless of the programming language, to generate the metrics described below.
+## Quick start
 
-### Supported Languages
+```bash
+ccsh rawtextparser path/to/project -o project.cc.json
+```
 
-- any (only considers the raw text)
+This writes `project.cc.json.gz`.
 
-### Supported Metrics
-
-- Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
-- Lines of Code: The total number of lines in a file, including blank lines.
-
-### Usage and Parameters
+## Options
 
 | Parameter                                 | Description                                                                                                                                                                                          |
 |-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `FILE or FOLDER`                          | file/project to parse                                                                                                                                                                         |
+| `FILE or FOLDER`                          | file/project to parse. To merge the result with an existing project piped into STDIN, pass a '-' as an additional argument                                                                    |
 | `-bf, --base-file=<baseFile>`             | base cc.json file with checksums to skip unchanged files during analysis                                                                                                                             |
 | `--bypass-gitignore`                      | disable automatic .gitignore-based file exclusion (uses regex-based exclusion of common build folders)                                                                                               |
 | `-e, --exclude=<exclude>`                 | comma-separated list of regex patterns to exclude files/folders (applied in addition to .gitignore patterns)                                                                                         |
@@ -28,7 +30,7 @@ This parser analyzes code, regardless of the programming language, to generate t
 | `-h, --help`                              | displays this help and exits                                                                                                                                                                         |
 | `-ibf, --include-build-folders`           | include build folders (out, build, dist and target) and common resource folders (e.g. resources, node_modules or files/folders starting with '.')                                                    |
 | `--local-changes`                         | only analyze files that differ from the remote tracking branch (uncommitted, staged, unstaged, untracked). See [Local Changes](/docs/analysis/local-changes)                                        |
-| `-m, --metrics=metrics`                   | comma-separated list of metrics to be computed (all available metrics are computed if not specified)                                                                                                 |
+| `-m, --metrics=metrics`                   | comma-separated list of metrics to be computed: `IndentationLevel`, `LinesOfCode` (all available metrics are computed if not specified)                                                             |
 | `--max-indentation-level=<maxIndentLvl>`  | maximum Indentation Level (default 10)                                                                                                                                                               |
 | `-nc, --not-compressed`                   | save uncompressed output File                                                                                                                                                                        |
 | `-o, --output-file=<outputFile>`          | output File (or empty for stdout)                                                                                                                                                                    |
@@ -48,26 +50,36 @@ Usage: ccsh rawtextparser [-h] [--bypass-gitignore] [--commit=<ref>] [-ibf]
                           FILE or FOLDER...
 ```
 
-### Examples
+## Metrics
 
-The RawTextParser can analyze either a single file or a project folder; here are some sample commands:
+| Metric                   | Description                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| `loc`                    | all lines of the file, blank lines included                                                       |
+| `indentation_level_<n>+` | the non-blank lines indented by at least `n` levels, from `indentation_level_0+` up to the `--max-indentation-level` (default `indentation_level_10+`) |
 
-```
-ccsh rawtextparser foo/bar/project
-```
+`-m IndentationLevel` writes the indentation metrics, `-m LinesOfCode` writes `loc`. The names are case-sensitive.
 
-```
+A level is one tab or `--tab-width` spaces. Without `--tab-width`, the parser guesses the width per file from the
+spaces it finds. A line whose indentation is no multiple of the width counts for the next level.
+
+## Examples
+
+```bash
 ccsh rawtextparser foo.txt --max-indentation-level=6 --tab-width=4 --metrics=IndentationLevel,LinesOfCode
-```
-
-```
 ccsh rawtextparser foo -o out.cc.json --exclude='.*\.html' --exclude=bar
-```
-
-```
 ccsh rawtextparser foo -o out.cc.json --bypass-gitignore
 ```
 
-If a project is piped into the RawTextParser, the results and the piped project are merged.
-The resulting project has the project name specified for the RawTextParser.
+To add the raw text metrics to another map, pipe it in and pass `-` as an extra argument:
 
+```bash
+ccsh unifiedparser foo | ccsh rawtextparser foo - -o out.cc.json
+```
+
+The merged project keeps the project name of the Raw Text Parser.
+
+## Related
+
+- [Unified Parser](/docs/parser/unified)
+- [Analyse local changes](/docs/analysis/local-changes)
+- [Analyse a past commit](/docs/analysis/commit-analysis)

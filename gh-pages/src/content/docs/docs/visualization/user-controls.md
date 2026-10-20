@@ -1,34 +1,42 @@
 ---
-title: "User Controls"
+title: "Interface overview"
+description: "Find your way around the CodeCharta Web Studio: top bar, Explorer, code map, metric bar and legend, with a link to the page for each control."
 ---
 
-![User Controls](/assets/images/docs/visualization/user-controls.png)
+The Web Studio keeps the same frame in every view: the top bar, the Explorer on the left, the view itself in the
+middle and a settings bar at the bottom. The screenshot shows the **Metric** view; the
+[Domain](/docs/visualization/user-controls/domain-view) and
+[Dependencies](/docs/visualization/user-controls/dependency-view) views put their own content into the same frame.
 
-The controls that are available to you in the **Metric** view are listed below. Where a control has a dedicated page, follow the link for the full details. The [Domain](/docs/visualization/user-controls/domain-view) and [Dependencies](/docs/visualization/user-controls/dependency-view) views keep the same frame — top bar, Explorer, a settings bar at the bottom — with their own content.
+![The Metric view with numbered markers on each control listed below](/assets/images/docs/visualization/user-controls.png)
 
-| #   | Control             | What it does                                                                                                                                                                                                                    |
-| --- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Open / load maps    | The folder button next to the logo loads one or several `cc.json` maps. See [Upload](/docs/visualization/user-controls/upload).                                                                                                |
-| 2   | Map selector        | Choose which of the loaded maps is shown. The button shows the selected map's name (and a `+1` count when several are selected). See [Change Maps](/docs/visualization/user-controls/change-maps).                              |
-| 3   | View tabs           | Switch between the **Metric**, **Domain** and **Dependencies** views. A tab only appears when the loaded map carries data for it. See [Views](/docs/visualization/user-controls/views).                                         |
-| 4   | Mode bar            | Hover a view tab, or click the small handle below the tabs, to drop down the bar with **Explore**, **Compare** and **3D Print**. See [Views](/docs/visualization/user-controls/views).                                          |
-| 5   | Settings            | Open the **Global Configuration** dialog. See [Settings](/docs/visualization/user-controls/settings).                                                                                                                           |
-| 6   | Explorer counters   | **SHOWN**, **FLATTENED** and **EXCLUDED** summarize how the rules divide up the map. Clicking **FLATTENED** or **EXCLUDED** lists the rules and lets you remove them. See [Explorer](/docs/visualization/user-controls/explorer). |
-| 7   | Search & rules      | Search for files with [.gitignore-style](https://git-scm.com/docs/gitignore) patterns; the ⋮ menu turns the pattern, or a metric condition, into a **Flatten** or **Exclude** rule. See [Explorer](/docs/visualization/user-controls/explorer). |
-| 8   | Sort                | Order the file tree by name, number of files or area size, ascending or descending.                                                                                                                                             |
-| 9   | File tree           | The folders and files of the loaded map; each row shows its share of the map and its number of files. See [Explorer](/docs/visualization/user-controls/explorer).                                                               |
-| 10  | Code map            | The map itself. Hover a building to see its metrics, click it to open the [Inspector](/docs/visualization/user-controls/sidebar), right-click it for the context menu. See [Map](/docs/visualization/user-controls/map).         |
-| 11  | Viewcube            | Click a face, edge or corner of the cube to snap the camera to that perspective, or drag it to orbit. See [Viewcube](/docs/visualization/user-controls/viewcube).                                                               |
-| 12  | Zoom slider         | Zoom in and out, with the current zoom level shown below. See [Viewcube](/docs/visualization/user-controls/viewcube).                                                                                                           |
-| 13  | Layout              | The tab on the left edge of the metric bar names the map layout and switches between all five. See [Map Layouts](/docs/visualization/user-controls/layouts).                                                                    |
-| 14  | Map tools           | The tab on the right edge of the metric bar holds **Center map**, **Flashlight** and **Screenshot**, and **Unfocus** while you are focused on a folder. See [Map Tools](/docs/visualization/user-controls/map-tools).            |
-| 15  | Area metric         | Select the metric that drives each building's footprint. See [Metrics](/docs/visualization/user-controls/metrics).                                                                                                              |
-| 16  | Height metric       | Select the metric that drives each building's height. See [Metrics](/docs/visualization/user-controls/metrics).                                                                                                                 |
-| 17  | Link height & color | Tie the height and color dimensions to the **same** metric; click again to unlink. See [Metrics](/docs/visualization/user-controls/metrics).                                                                                    |
-| 18  | Color metric        | Select the metric that drives each building's color. See [Metrics](/docs/visualization/user-controls/metrics).                                                                                                                  |
-| 19  | Edge metric         | Shown when the map carries edges: select the edge metric and style the edges. See [Metrics](/docs/visualization/user-controls/metrics#edges).                                                                                   |
-| 20  | Labels              | Control which buildings are labelled on the map and how many. See [Labels](/docs/visualization/user-controls/labels).                                                                                                           |
-| 21  | Scenarios           | Save and apply preconfigured combinations of metrics and view settings. See [Scenarios](/docs/visualization/custom-views).                                                                                                      |
-| 22  | Legend              | Open the **LEGEND** panel, which decodes the current metric mapping and color ranges. See [Legend](/docs/visualization/user-controls/legend).                                                                                   |
-| 23  | Distribution bar    | Shows how the selected **area metric** is distributed across file extensions. See [File Extension Bar](/docs/visualization/user-controls/fileextensionbar).                                                                     |
-| 24  | Bottom bar          | Shows the path of the file or folder under the pointer on the left, and the CodeCharta version on the right.                                                                                                                    |
+| #   | Control             | What it does                                                                                                                        |
+| --- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Load cc.json files  | Opens one or several maps. See [Loading maps](/docs/visualization/user-controls/loading-maps).                                      |
+| 2   | Map selector        | Picks which of the loaded maps are shown. See [Loading maps](/docs/visualization/user-controls/loading-maps#choose-the-maps-shown). |
+| 3   | View tabs           | **Metric**, **Domain**, **Dependencies**. A tab appears only when the map carries data for it. See [Views](/docs/visualization/user-controls/views). |
+| 4   | Mode bar            | Point at a view tab or this handle to drop down **Explore**, **Compare** and **3D Print**. See [Views](/docs/visualization/user-controls/views#the-mode-bar). |
+| 5   | Settings            | Opens the **Global Configuration** dialog. See [Settings](/docs/visualization/user-controls/settings).                              |
+| 6   | Explorer counters   | **SHOWN**, **FLATTENED**, **EXCLUDED**. Click the last two to manage their rules. See [Explorer](/docs/visualization/user-controls/explorer#managing-rules). |
+| 7   | Search and ⋮ menu   | Search with [.gitignore-style](https://git-scm.com/docs/gitignore) patterns; the ⋮ menu turns a pattern or a metric condition into a rule. See [Explorer](/docs/visualization/user-controls/explorer). |
+| 8   | Sort                | Orders the tree by **Name**, **Number of Files** or **Area Size**.                                                                  |
+| 9   | File tree           | Folders and files of the map, each with its share of the area metric and its number of files.                                      |
+| 10  | Code map            | Hover, click, double-click or right-click a building. See [The code map](/docs/visualization/user-controls/code-map).               |
+| 11  | Viewcube            | Snaps the camera to a side, edge or corner view. See [Map tools and viewcube](/docs/visualization/user-controls/map-tools#viewcube). |
+| 12  | Zoom slider         | Zooms the map; the current zoom is shown below it.                                                                                  |
+| 13  | Layout              | Names the map layout and switches between the five layouts. See [Map layouts](/docs/visualization/user-controls/layouts).            |
+| 14  | Map tools           | **Center map**, **Flashlight**, **Screenshot**, and **Unfocus** while a folder is focused. See [Map tools](/docs/visualization/user-controls/map-tools). |
+| 15  | Area                | The metric behind each building's footprint. See [Metric bar](/docs/visualization/user-controls/metrics#area).                      |
+| 16  | Height              | The metric behind each building's height. See [Metric bar](/docs/visualization/user-controls/metrics#height).                       |
+| 17  | Link                | Ties height and color to the same metric. See [Metric bar](/docs/visualization/user-controls/metrics#linking-height-and-color).    |
+| 18  | Color               | The metric behind each building's color. See [Metric bar](/docs/visualization/user-controls/metrics#color).                         |
+| 19  | Edges               | Shown when the map carries edges: the edge metric and its settings. See [Metric bar](/docs/visualization/user-controls/metrics#edges). |
+| 20  | Labels              | Which buildings get a label. See [Labels](/docs/visualization/user-controls/labels).                                                |
+| 21  | Scenarios           | Saves and applies sets of settings. See [Scenarios](/docs/visualization/user-controls/scenarios).                                   |
+| 22  | Legend              | Opens the **LEGEND** panel. See [Legend](/docs/visualization/user-controls/legend).                                                 |
+| 23  | Distribution bar    | How the area metric splits across file extensions. See [Distribution bar](/docs/visualization/user-controls/distribution-bar).       |
+| 24  | Bottom bar          | The path of the file or folder under the pointer on the left, the CodeCharta version on the right.                                  |
+
+Clicking a building or a folder opens the [Inspector](/docs/visualization/user-controls/inspector) on the right, with
+every metric of that node. All keyboard and mouse shortcuts are listed on
+[Keyboard and mouse shortcuts](/docs/visualization/user-controls/keyboard-shortcuts).

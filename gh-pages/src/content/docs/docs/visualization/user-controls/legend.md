@@ -1,56 +1,48 @@
 ---
 title: "Legend"
+description: "Decode the CodeCharta map with the legend: which metric drives area, height and color, what each color band means, and how dependency edges are drawn."
 ---
 
-The **Legend** decodes the current visualization. It is opened from the **LEGEND** tab in the bottom-right corner of the map and explains what the Metric view's visuals mean: which metric is mapped to area, height, color and edges, how the color scale is divided into ranges, and which colors represent the different edge directions.
+The legend tells you what the map on screen means: which metric drives which dimension and which values each color
+stands for. Open it with the **LEGEND** tab at the bottom right; the same tab closes it, and so does a click anywhere
+outside the panel. The Metric and Dependencies views each have their own legend; the Domain view has none.
 
-![Legend panel](/assets/images/docs/visualization/user-controls/legend.jpeg)
+![The legend of the Metric view with the metric mapping, color scale and edge colors](/assets/images/docs/visualization/user-controls/legend.jpeg)
 
-The legend reflects the currently selected metrics, so its contents change whenever you pick different metrics in the [metrics controls](/docs/visualization/user-controls/metrics). The LEGEND tab toggles the panel open and closed.
+## Legend of the Metric view
 
-## Metric mapping
+The legend follows the metrics you pick in the [metric bar](/docs/visualization/user-controls/metrics).
 
-The top of the legend lists the four visual channels and the metric currently assigned to each:
+- **Area**, **Height**, **Color** and, while an edge metric is active, **Edge** name the metric of each dimension by
+  its full name, for example _Real Lines of Code_. Where the map describes a metric, hovering its name shows the
+  description.
+- **Color scale** lists the value range of the positive, neutral and negative band, for example `0 to 42`, `43 to 85`
+  and `86 to 128`. A band without buildings reads **– (no matching buildings)**.
+- **Selected** is the color of the selected building.
+- **Outgoing Edge** and **Incoming Edge** show the colors of the two edge directions while an edge metric is active.
 
-- **AREA** — the metric driving the footprint (ground area) of each building, e.g. _Real Lines of Code_.
-- **HEIGHT** — the metric driving how tall each building is, e.g. _Complexity_.
-- **COLOR** — the metric driving the building color, e.g. _Complexity_.
-- **EDGE** — the metric driving the edges drawn between buildings, e.g. _Dependencies_. This row only appears when an edge metric is active.
-
-Each row shows the metric's full, human-readable name. Where a description is available for a metric, the row exposes it as a tooltip on hover, giving the definition along with hints about what high and low values mean.
-
-## Color scale
-
-The **COLOR SCALE** section explains how the color metric's values map to building colors. It shows the configured ranges:
-
-- A **positive** band for the lower range of values (for example, `0 to 72`), shown in green.
-- A **neutral** band for the middle range (for example, `73 to 145`), shown in yellow.
-- A **negative** band for the highest values, shown in red.
-
-In the Sunburst and Radial TreeMap layouts an additional **folders** row says how folders are colored (neutral, or tinted by a value). In [Compare](/docs/visualization/user-controls/compare) mode the metric and color-scale sections are replaced by the two **delta colors**.
-
-When a band's range contains no buildings (this can apply to the positive, neutral, or negative band), that band is labelled **– (no matching buildings)**.
-
-The **selected** color indicates buildings that are currently selected (for example, via search or marking) and are highlighted regardless of their metric value.
-
-## Edges
-
-When an edge metric is active, the legend shows the colors used for the directional edges between buildings:
-
-- **Outgoing Edge** — edges leaving a building.
-- **Incoming Edge** — edges arriving at a building.
-
-## Legend in screenshots
-
-When the legend is open, it is included in exported screenshots of the map, so you can capture the metric mapping and color scale alongside the visualization.
-
-There is a catch: **clicking anywhere outside the legend closes it** — including the **Screenshot** button in the [map tools](/docs/visualization/user-controls/map-tools). Clicking it would dismiss the legend before the screenshot is taken, leaving it out of the image. To keep the legend in the screenshot, use the keyboard shortcuts instead:
-
-- **Ctrl+Alt+S** (macOS: **Control+Option+S**) — save the screenshot as a file
-- **Ctrl+Alt+F** (macOS: **Control+Option+F**) — copy the screenshot to the clipboard
-
-Open the legend, then press the shortcut without clicking elsewhere.
+In the Sunburst and Radial TreeMap [layouts](/docs/visualization/user-controls/layouts) a **folders** row says how
+folders are colored. In [Compare](/docs/visualization/user-controls/compare) the metric rows and the color scale make
+way for the two **Delta colors**.
 
 ## Legend of the Dependencies view
 
-The [Dependencies view](/docs/visualization/user-controls/dependency-view) has its own legend behind the same **LEGEND** tab. It explains the line styles of the dependency edges. The Domain view has no legend.
+The legend of the [Dependencies view](/docs/visualization/user-controls/dependency-view) explains every mark the
+graph uses:
+
+![The legend of the Dependencies view with edge types, badges and declaration kinds](/assets/images/docs/visualization/user-controls/dependency-legend.jpeg)
+
+- **Dependencies**: the line of each edge type, in the colors set under **Edges shown**: **Dependency**, **In a
+  cycle**, **Points upward** and **Points upward and closes a cycle**. With another edge metric than `dependencies`,
+  this section is called **Edges** and shows the plain edge.
+- **Kind of use**: shown when **Line style shows** is set to **Kind of use**. The dash pattern and arrowhead of each
+  kind, such as **Inherits from**, **Implements**, **Creates** or **Returns**.
+- **Badges**: the badges a closed box can carry, such as **Cycles between files** and **Upward dependencies inside**.
+- **Declarations**: the icon of each declaration kind, such as **Class**, **Interface** or **Function**, for a map with
+  declarations.
+
+## Legend in screenshots
+
+In the Metric view, an open legend is part of the screenshot. Because a click on the **Screenshot** button closes the legend first, take
+the screenshot with the keyboard instead: **Ctrl+Alt+S** saves it, **Ctrl+Alt+F** copies it. See
+[Keyboard and mouse shortcuts](/docs/visualization/user-controls/keyboard-shortcuts).

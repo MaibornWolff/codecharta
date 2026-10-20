@@ -1,5 +1,6 @@
 ---
 title: "3D Print"
+description: "Export the CodeCharta code map as a multi-color 3MF or a plain STL model for your 3D printer, with labels, a QR code and your own logo."
 ---
 
 The **3D Print** action in the [mode bar](/docs/visualization/user-controls/views#the-mode-bar) below the **Metric** tab exports the map that is currently
@@ -8,12 +9,14 @@ Map** dialog, where you configure the printer, the model size and the labels, wa
 live preview, and then download the model as a 3MF or STL file.
 
 The export always uses the map exactly as it looks in the scene: the same area, height
-and color metrics, the same color range, and the same blacklist. Adjust those in the
+and color metrics, the same color range, and the same flatten and exclude rules. Adjust those in the
 main view before opening this dialog.
 
 3D Print works on the 3D layouts of the Metric view; it is not offered while the map layout is Sunburst or Radial TreeMap. Started from another view, it first asks to switch to the Metric view.
 
-![The 3D Print CodeCharta Map dialog](/assets/images/docs/visualization/user-controls/3d-print.jpeg)
+The model takes the solid color bands of the **Absolute** [gradient mode](/docs/visualization/user-controls/metrics#gradient-mode). With another gradient mode, a dialog explains this; **Change and continue** switches to **Absolute** and opens the export.
+
+![The 3D Print CodeCharta Map dialog with printer preset, scale, labels and a live preview](/assets/images/docs/visualization/user-controls/3d-print.jpeg)
 
 ## Printer preset
 
@@ -21,9 +24,9 @@ The **Printer preset** dropdown picks the target printer. Each preset defines th
 volume and the number of colors (extruders/filaments) the printer can handle. The
 available presets are:
 
-- **Prusa MK3S (single color)** — build volume 24.5 × 20.5 × 20.5 cm, 1 color
-- **BambuLab A1 + AMS Lite** — build volume 25.1 × 25.1 × 25.1 cm, 4 colors
-- **Prusa XL (5 colors)** — build volume 35.5 × 33.5 × 35.5 cm, 5 colors (default)
+- **Prusa MK3S (single color)**: build volume 24.5 × 20.5 × 20.5 cm, 1 color
+- **BambuLab A1 + AMS Lite**: build volume 25.1 × 25.1 × 25.1 cm, 4 colors
+- **Prusa XL (5 colors)**: build volume 35.5 × 33.5 × 35.5 cm, 5 colors (default)
 
 The preset constrains the export in two ways:
 
@@ -51,17 +54,17 @@ re-fits the map.
 These controls add text and graphics to the front edge and base plate of the model. All
 of them update the preview immediately.
 
-- **Bottom center label text** — a single-line text rendered across the front of the
+- **Bottom center label text**: a single-line text rendered across the front of the
   base plate (shown as "FrontText" in the preview). It is empty by default, with
   `CodeCharta` shown as placeholder text.
-- **Second row center text** — toggle **Show second row text** to print a second line
+- **Second row center text**: toggle **Show second row text** to print a second line
   below the main label. When enabled, an input lets you edit it; it defaults to the
   current date.
-- **QR-Code** — toggle **Show QR-Code** to emboss a QR code onto the base plate. When
+- **QR-Code**: toggle **Show QR-Code** to emboss a QR code onto the base plate. When
   enabled, an input lets you set the encoded URL (it defaults to a maibornwolff.de link).
   The QR code needs enough surface area, so at very small scales it may be hidden
   automatically even when the toggle is on.
-- **Bottom left logo (SVG)** — upload your own logo via the file picker (SVG only). Once
+- **Bottom left logo (SVG)**: upload your own logo via the file picker (SVG only). Once
   a file is selected, additional controls appear to **Remove**, **Rotate** and **Flip**
   the logo and to change its **Color**.
 
@@ -70,12 +73,12 @@ of them update the preview immediately.
 Two download formats are offered, plus **Close** to dismiss the dialog without exporting.
 The file name is derived from the loaded map's name.
 
-- **Download 3MF** — the full, print-ready model. The 3MF package keeps the model split
+- **Download 3MF**: the full, print-ready model. The 3MF package keeps the model split
   into per-color volumes and maps each color to a separate extruder, so a multi-material
   printer (per the selected preset) prints the map in its CodeCharta colors. It is bundled
   in the PrusaSlicer/Slic3r 3MF layout (model, model config and content-type metadata),
   making it the recommended format for actually printing the map.
-- **Download minimal STL** — a binary STL of the bare map geometry only. STL carries no
+- **Download minimal STL**: a binary STL of the bare map geometry only. STL carries no
   color or multi-material information, so this is a single-body, "minimal" model. Use it
   when you only need the shape (single-color print, further editing in CAD, or sharing the
   geometry) and don't need the per-color split.

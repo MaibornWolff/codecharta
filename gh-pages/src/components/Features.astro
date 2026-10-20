@@ -1,63 +1,84 @@
 ---
+const features = [
+    {
+        title: 'Metric view',
+        href: '/docs/visualization/user-controls/code-map',
+        image: '/assets/images/features/metric-view.jpg',
+        width: 1168,
+        height: 730,
+        alt: "CodeCharta's own code as a 3D city: area is lines of code, height and color are complexity",
+        text: 'Every file is a building. You choose what area, height and color mean, such as lines of code, complexity or number of authors, and the hotspots stick out of the skyline.',
+    },
+    {
+        title: 'Domain view',
+        href: '/docs/visualization/user-controls/domain-view',
+        image: '/assets/images/features/domain-view.jpg',
+        width: 1200,
+        height: 750,
+        alt: "A word cloud of the domain vocabulary in CodeCharta's own code",
+        text: 'A word cloud of the identifiers, comments and strings in your code, scored by frequency and TF-IDF. Pick a folder and read what it is about.',
+    },
+    {
+        title: 'Dependencies view',
+        href: '/docs/visualization/user-controls/dependency-view',
+        image: '/assets/images/features/dependency-view.jpg',
+        width: 1200,
+        height: 800,
+        alt: 'The dependency graph of the analysis folder, arranged by level, with cycle and upward-dependency badges',
+        text: 'Folders and files arranged by level, so what a box depends on lies below it. Badges count the dependency cycles and the dependencies that point upward.',
+    },
+    {
+        title: 'Compare',
+        href: '/docs/visualization/user-controls/compare',
+        image: '/assets/images/features/compare.jpg',
+        width: 1168,
+        height: 755,
+        alt: 'Two versions of CodeCharta compared: green buildings grew, red ones shrank',
+        text: 'Load two versions of a map and see where the code grew (green) and where it shrank (red) between them.',
+    },
+    {
+        title: '3D print',
+        href: '/docs/visualization/user-controls/3d-print',
+        image: '/assets/images/features/3d-print.jpg',
+        width: 725,
+        height: 362,
+        alt: 'A 3D-printed CodeCharta city held in one hand',
+        text: 'Export the city as a 3MF or STL file and put your codebase on the table at the next architecture review.',
+    },
+    {
+        title: 'Your code stays local',
+        href: '/docs/overview/data-privacy',
+        image: '/assets/images/features/privacy.svg',
+        width: 640,
+        height: 640,
+        alt: 'A padlock',
+        icon: true,
+        text: 'Analysis and visualization run on your machine. Nothing is uploaded, and there is no tracking or telemetry.',
+    },
+];
 ---
 
-<div class="feature-row">
-    <div class="feature-item">
-        <a class="image-container" href="/docs/visualization/web-studio">
-            <img src="/assets/images/features/visualize.png" alt="Interactive Visualization" />
-        </a>
-        <h3>Interactive Visualization</h3>
-        <p>
-            Turn your codebase into a dynamic, city-like map. Navigate through your code with ease and uncover insights you’ve never seen
-            before.
-        </p>
-    </div>
-    <div class="feature-item">
-        <a class="image-container" href="/docs/visualization/user-controls/3d-print">
-            <img src="/assets/images/features/tangible.png" alt="Tangible Models" />
-        </a>
-        <h3>Tangible Models</h3>
-        <p>Bring your code to life! Print your codebase as a 3D model! Perfect for presentations.</p>
-    </div>
-    <div class="feature-item">
-        <a class="image-container" href="/docs/visualization/web-studio">
-            <img src="/assets/images/features/hotspots.png" alt="Hotspots" />
-        </a>
-        <h3>Find Hotspots</h3>
-        <p>See hotspots at a glance and see what is important to you.</p>
-    </div>
-    <div class="feature-item">
-        <a class="image-container" href="/docs/visualization/user-controls/compare">
-            <img src="/assets/images/features/history.png" alt="Track your changes" />
-        </a>
-        <h3>Track your changes</h3>
-        <p>See how your codebase has grown over time. Compare older maps to understand the impact your decisions had!</p>
-    </div>
-    <div class="feature-item">
-        <a class="image-container" href="/docs/analysis/codecharta-shell">
-            <img src="/assets/images/features/imports.png" alt="Seamless Import" />
-        </a>
-        <h3>Seamless Import</h3>
-        <p>You can get metrics from a lot of different parsers and importers.</p>
-    </div>
-    <div class="feature-item">
-        <a class="image-container" href="/docs/overview/data-privacy">
-            <img src="/assets/images/features/privacy.svg" alt="Your Data Stays Local" />
-        </a>
-        <h3>Your Data Stays Local</h3>
-        <p>
-            All analysis and visualization happens on your machine. No data is ever uploaded or shared without your explicit intent. Your
-            code stays private.
-        </p>
-    </div>
+<div class="feature-row not-content">
+    {
+        features.map((feature) => (
+            <div class="feature-item">
+                <a class:list={['image-container', { 'image-container--icon': feature.icon }]} href={feature.href}>
+                    <img src={feature.image} alt={feature.alt} width={feature.width} height={feature.height} loading="lazy" decoding="async" />
+                </a>
+                <h3>
+                    <a href={feature.href}>{feature.title}</a>
+                </h3>
+                <p>{feature.text}</p>
+            </div>
+        ))
+    }
 </div>
 
 <style>
     .feature-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        justify-content: center;
-        gap: 30px;
+        gap: 2rem;
         box-sizing: border-box;
     }
 
@@ -76,24 +97,54 @@
     .feature-item {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
     }
 
     .feature-item h3 {
-        margin-top: 15px;
+        margin-top: 1rem;
+        font-size: var(--sl-text-h4);
+    }
+
+    .feature-item h3 a {
+        color: var(--sl-color-white);
+        text-decoration: none;
+    }
+
+    .feature-item h3 a:hover {
+        color: var(--sl-color-accent-high);
     }
 
     .feature-item p {
-        margin-top: 10px;
-        color: #555;
+        margin-top: 0.5rem;
+        color: var(--sl-color-gray-2);
     }
 
     .image-container {
-        height: 300px;
+        display: block;
+        width: 100%;
+        aspect-ratio: 3 / 2;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        border: 1px solid var(--sl-color-gray-5);
+        background-color: #f3f3ee;
     }
 
     .image-container img {
-        height: 300px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .image-container--icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--sl-color-gray-6);
+    }
+
+    .image-container--icon img {
+        width: 40%;
+        height: 40%;
+        object-fit: contain;
     }
 </style>

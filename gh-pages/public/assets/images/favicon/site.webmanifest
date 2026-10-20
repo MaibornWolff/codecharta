@@ -1,6 +1,6 @@
 {
   "name": "CodeCharta",
-  "short_name": "CC",
+  "short_name": "CodeCharta",
   "icons": [
     {
       "src": "/assets/images/favicon/web-app-manifest-192x192.png",
@@ -15,7 +15,9 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#4a93c7",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "description": "Turn your codebase into an interactive 3D map of code metrics, domain language and dependencies.",
+  "start_url": "/"
 }

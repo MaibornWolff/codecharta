@@ -1,14 +1,58 @@
 ---
 title: "Git Log Parser"
+description: "Turn your git history into per-file code metrics such as commits, authors, age and temporal coupling with ccsh gitlogparser to find hotspots."
+sidebar:
+  label: "Git Log"
 ---
 
-**Category**: Parser (takes in git-log file (or git repository) and generates cc.json)
+The Git Log Parser turns the history of a git repository into metrics per file: how often it changed, how many
+people changed it, how old it is and which files change together with it. Merged with code metrics, that shows you
+the hotspots: complex files that change all the time.
 
-This parser generates visualisation data from a git repository log and a repository files list or direct access to a git repository.
+The parser follows a file across renames, also on feature branches before they are merged, so renamed files show up
+once, under their current name. A deletion that is reverted later is ignored.
 
-This parser specializes in tracking file changes across different file-versions on different feature-branches and then the merged main. Furthermore, special care is taken not to display non-existent files that might show up in normal Git histories due to renaming actions on feature branches. Note that file deletions that get reverted later on are ignored by this parser.
+## Quick start
 
-### Supported Metrics
+```bash
+ccsh gitlogparser repo-scan --repo-path path/to/repository -o history.cc.json
+```
+
+This writes `history.cc.json.gz`. [`ccsh analyse`](/docs/analysis/analyse) runs the same scan for you and merges it
+with the code metrics.
+
+## Options
+
+The parser has two commands: `repo-scan` reads the history of a local repository itself, `log-scan` reads a git log
+and a file list you created.
+
+| Parameters                           | Description                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| `log-scan`                           | use log-scan mode - generates cc.json from a given git-log file                     |
+| `repo-scan`                          | use repo-scan mode - generates cc.json from an automatically generated git-log file |
+| `--add-author`                       | add an array of authors to every file                                               |
+| `--commit=<ref>`                     | analyze the repository at a specific git commit, tag, branch, or date expression (creates a temporary worktree, repo-scan only). See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
+| `--git-log=FILE`                     | git-log file to parse (log-scan only, required)                                     |
+| `-h, --help`                         | displays help and exits                                                             |
+| `-nc, --not-compressed`              | save uncompressed output File                                                       |
+| `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                   |
+| `--repo-files=FILE`                  | list of all file names in current git project (log-scan only, required)             |
+| `--repo-path=DIRECTORY`              | root directory of the repository (repo-scan only; the scan fails without it)        |
+| `--silent`                           | suppress command line output during process                                         |
+
+```
+Usage for log-scan mode:
+ccsh gitlogparser log-scan [-h] [--add-author] [-nc] [--silent]
+                                --git-log=FILE [-o=<outputFilePath>]
+                                --repo-files=FILE
+
+Usage for repo-scan mode:
+ccsh gitlogparser repo-scan [-h] [--add-author] [--commit=<ref>] [-nc]
+                            [--silent] [-o=<outputFilePath>]
+                            --repo-path=DIRECTORY
+```
+
+## Metrics
 
 | Metric                          | Description                                                       |
 |---------------------------------|-------------------------------------------------------------------|
@@ -27,120 +71,60 @@ This parser specializes in tracking file changes across different file-versions 
 | `style_commits`                 | Number of commits starting with 'style' for this file.            |
 | `refactor_commits`              | Number of commits starting with 'refactor' for this file.         |
 | `test_commits`                  | Number of commits starting with 'test' for this file.             |
-| `hotfix_commits`                  | Number of commits containing the word 'hotfix' for this file.             |
-| `hotfix_commit_ratio`           | Ratio of hotfix commits (containing the 'hotfix' keyword) to total commits for this file.             |
-| `semantic_commit_ratio`         | Ratio of semantic commits (which start with feat, fix, docs, style, refactor or test) to total commits for this file.             |
+| `hotfix_commits`                | Number of commits containing the word 'hotfix' for this file.     |
+| `hotfix_commit_ratio`           | Ratio of hotfix commits (containing the 'hotfix' keyword) to total commits for this file. |
+| `semantic_commit_ratio`         | Ratio of semantic commits (which start with feat, fix, docs, style, refactor or test) to total commits for this file. |
 
-Additionally, the following Edge Metrics are calculated:
+The parser also writes one edge metric between files:
 
 | Metric              | Description                                               |
 | ------------------- | --------------------------------------------------------- |
 | `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
 
-The names of authors are saved when the `--add-author` flag is set.
+With `--add-author`, every file also gets the list of its authors' names.
 
-### Usage and Parameters
+## Scan a repository with repo-scan
 
-As this parser can generate metrics based on a given git-log file or given a git repository (where the git-log is then generated on the fly), some parameters are only available in the log-scan mode or the repo-scan mode.
+`repo-scan` writes a git log and the list of tracked files of the repository at `--repo-path` into your temp folder
+and parses them. Point `--repo-path` at the root of the repository.
 
-| Parameters                          | Description                                                                         |
-| ----------------------------------- | ----------------------------------------------------------------------------------- |
-| `log-scan`                          | use log-scan mode - generates cc.json from a given git-log file                     |
-| `repo-scan`                         | use repo-scan mode - generates cc.json from an automatically generated git-log file |
-| `--add-author`                      | add an array of authors to every file                                               |
-| `--commit=<ref>`                    | analyze the repository at a specific git commit, tag, branch, or date expression (creates a temporary worktree, repo-scan only). See [Commit-Based Analysis](/docs/analysis/commit-analysis) |
-| `--git-log=FILE`                    | git-log file to parse (only available for log-scan mode!)                           |
-| `-h, --help`                        | displays help and exits                                                             |
-| `-nc, --not-compressed`             | save uncompressed output File                                                       |
-| `-o, --output-file=<outputFilePath>` | output File (or empty for stdout)                                                   |
-| `--repo-files=FILE `                | list of all file names in current git project (only available for log-scan mode!)   |
-| `--repo-path=DIRECTORY`             | root directory of the repository (required and only available for repo-scan mode!)  |
-| `--silent`                          | suppress command line output during process                                         |
+## Parse your own log with log-scan
 
-```
-Usage:
-ccsh gitlogparser [-h] [COMMAND]
+`log-scan` parses a git log and a file list you created, for example on another machine or with anonymized authors.
+Create both in the root folder of the repository:
 
-Usage for log-scan mode:
-ccsh gitlogparser log-scan [-h] [--add-author] [-nc] [--silent]
-                                --git-log=FILE [-o=<outputFilePath>]
-                                --repo-files=FILE
-
-Usage for repo-scan mode:
-ccsh gitlogparser repo-scan [-h] [--add-author] [--commit=<ref>] [-nc]
-                            [--silent] [-o=<outputFilePath>]
-                            --repo-path=DIRECTORY
-
+```bash
+cd path/to/repository
+git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m > git.log
+git -c core.quotepath=off ls-files > file-name-list.txt
+ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o history.cc.json
 ```
 
-### Scan a local git repository on your machine
+`-c core.quotepath=off` keeps file names with non-ASCII characters unquoted. Use it for both commands, so the log and
+the file list spell such a name the same way.
 
-#### Creating required files on the fly with repo-scan
-
-See `ccsh gitlogparser repo-scan -h` for help. Standard usage:
-
-```
-ccsh gitlogparser repo-scan --repo-path <path>
-```
-
-With the sub command `repo-scan` you can parse a local git repository on your disk. During scanning a git log of the
-repository in the directory specified by `--repo-path` (the option is required) is created in your
-temp-Folder and parsed automatically. Furthermore, the parser creates another temporary file-name-list of files that are
-tracked by git automatically which is needed for the parsing process.
-
-The result is written as JSON to standard out or into an output file (if specified by `-o` option).
-
-If a project is piped into the GitLogParser, the results and the piped project are merged.
-The resulting project has the project name specified for the GitLogParser.
-
-##### Executing the repo-scan subcommand
-
-- `ccsh gitlogparser repo-scan --repo-path <path_to_my_git_project> -o output.cc.json.gz`
-- load `output.cc.json.gz` in visualization
-
-#### Manual creation of required files with log-scan
-
-See `ccsh gitlogparser log-scan -h` for help. Standard usage:
-
-```
-ccsh gitlogparser log-scan --git-log <path> --repo-files <path>
-```
-
-With the sub command `log-scan`, an existing git log and file name list are used for parsing.
-
-The result is written as JSON to standard out or into an output file (if specified by `-o` option).
-
-If a project is piped into the GitLogParser, the results and the piped project are merged.
-The resulting project has the project name specified for the GitLogParser.
-
-##### Creating the repository log for metric generation
+The log has to be in this format:
 
 | SCM | Log format                   | Command for log creation                                                  | tracks renames | ignores deleted files | supports code churn |
 | --- | ---------------------------- | ------------------------------------------------------------------------- | -------------- | --------------------- | ------------------- |
 | git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | no                  |
 
-You can also use the bash
-script [anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/analysers/parsers/GitLogParser/src/main/dist/anongit)
-which generates a git log with anonymized authors for usage with CodeCharta.
+To hide the authors, create the log with the
+[anongit](https://github.com/MaibornWolff/codecharta/blob/main/analysis/analysers/parsers/GitLogParser/src/main/dist/anongit)
+script instead (`anongit > git.log`). It replaces every author with `anon1`, `anon2` and so on, and keeps the mapping
+in `hashmap.authors` in the current folder.
 
-`-c core.quotepath=off` keeps file names with non-ASCII characters unquoted. Use it for the log and for the file list below, so both spell such a name the same way.
+## Piped input
 
-##### Creating the git files list of the repository for metric generation
+Both commands merge a project piped into them with their result, and the merged project keeps the project name of
+the Git Log Parser:
 
-```
-git -c core.quotepath=off ls-files > file-name-list.txt
-```
-
-Please make sure to execute this command in the root folder of your repository.
-
-##### Executing the log-scan subcommand
-
-```
-cd <my_git_project>
-git -c core.quotepath=off log --numstat --raw --topo-order --reverse -m > git.log (or anongit > git.log)
-git -c core.quotepath=off ls-files > file-name-list.txt
-ccsh gitlogparser log-scan --git-log git.log --repo-files file-name-list.txt -o output.cc.json.gz
+```bash
+ccsh unifiedparser path/to/repository | ccsh gitlogparser repo-scan --repo-path path/to/repository -o project.cc.json
 ```
 
-load `output.cc.json.gz` in visualization
+## Related
 
+- [SVN Log Parser](/docs/parser/svn-log)
+- [Analyse a project in one step](/docs/analysis/analyse)
+- [Analyse a past commit](/docs/analysis/commit-analysis)

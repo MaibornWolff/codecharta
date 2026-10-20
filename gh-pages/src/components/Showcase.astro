@@ -6,40 +6,50 @@ const projects = [
         title: 'Apache OpenOffice',
         excerpt: '6 145 332 RLoC',
         teaser: '/assets/images/showcase/aoo/aoo_2019-08-02_search_i18npool_rloc_rloc_rloc_more_than_1000.png',
+        width: 885,
+        height: 632,
     },
     {
         name: 'httpd',
         title: 'httpd',
         excerpt: '403 788 RLoC',
         teaser: '/assets/images/showcase/httpd/httpd_2016-10-24vs2019-10-27_rloc_abs_code_churn.png',
+        width: 882,
+        height: 653,
     },
     {
         name: 'junit4',
         title: 'JUnit 4',
         excerpt: '30 909 RLoC',
         teaser: '/assets/images/showcase/junit4/junit4_2019-10-26_rloc_mcc_mcc.png',
+        width: 727,
+        height: 650,
     },
     {
         name: 'junit5',
         title: 'JUnit 5',
         excerpt: '73 626 RLoC',
         teaser: '/assets/images/showcase/junit5/junit5_2019-10-26_rloc_mcc_mcc-white.png',
+        width: 687,
+        height: 555,
     },
     {
         name: 'netbeans',
         title: 'NetBeans',
         excerpt: '5 034 211 RLoC',
         teaser: '/assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight_rloc_mcc_mcc.png',
+        width: 826,
+        height: 604,
     },
 ];
 ---
 
-<div class="showcase-row">
+<div class="showcase-row not-content">
     {
         projects.map((project) => (
             <a class="showcase-item" href={`/examples/${project.name}`}>
                 <div class="image-container">
-                    <img src={project.teaser} alt={project.title} />
+                    <img src={project.teaser} alt={`${project.title} as a CodeCharta map`} width={project.width} height={project.height} loading="lazy" decoding="async" />
                 </div>
                 <h3>{project.title}</h3>
                 <p>{project.excerpt}</p>
@@ -80,11 +90,13 @@ const projects = [
 
     .showcase-item h3 {
         margin-top: 15px;
+        font-size: var(--sl-text-h4);
+        color: var(--sl-color-white);
     }
 
     .showcase-item p {
         margin-top: 10px;
-        color: #555;
+        color: var(--sl-color-gray-2);
     }
 
     .image-container {

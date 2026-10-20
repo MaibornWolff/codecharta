@@ -1,108 +1,112 @@
 ---
-title: "Metrics"
+title: "Metric bar"
+description: "Choose which code metrics drive the area, height and color of the buildings on the CodeCharta map, tune the color ranges and draw edges."
 ---
 
-The **metric bar** at the bottom of the CodeCharta Web Studio is where you decide which of your data's metrics drives each visual dimension of the map. Every building (file) and folder is sized and coloured according to the metrics you pick here, so the bar is the main lever for turning raw numbers into a readable 3D treemap.
+The metric bar at the bottom of the Metric view decides which metric drives each visual dimension of the
+[code map](/docs/visualization/user-controls/code-map). Pair a size metric with a quality metric, such as lines of code
+for the area and complexity for height and color, and the hotspots stand out on their own.
 
-![The metric bar at the bottom of the Web Studio](/assets/images/docs/visualization/user-controls/metrics-bar.jpeg)
+![The metric bar with the Area, Height, Color, Edges, Labels and Scenarios columns](/assets/images/docs/visualization/user-controls/metrics-bar.jpeg)
 
-The bar is split into columns, one per visual dimension:
+The bar has one column per dimension:
 
-- **Area** – the footprint (base size) of each building.
-- **Height** – how tall each building is.
-- **Color** – which colour each building is tinted with.
-- **Edges** – shown only when the map carries edges (see [Edges](#edges)).
-- **Labels** and **Scenarios** – covered on their own pages (see below).
+- **Area**: the footprint of each building.
+- **Height**: how tall each building is.
+- **Color**: the color of each building.
+- **Edges**: shown only when the map carries edges. See [Edges](#edges).
+- **Labels** and **Scenarios**: see [Labels](/docs/visualization/user-controls/labels) and
+  [Scenarios](/docs/visualization/user-controls/scenarios).
 
-Two small tabs sit on the top edge of the bar: **Layout** on the left (see [Layout](#layout)) and the [map tools](/docs/visualization/user-controls/map-tools) on the right.
+Each metric column shows the chosen metric and its sum (Σ) over the map; while a building is hovered or selected, it
+shows that building's value instead. Click the metric name to pick another one from a searchable list, or the gear
+icon for the settings of that dimension.
 
-Each metric column shows the chosen metric's name and the summed (Σ) value across the map. Click a column's name to open a searchable list and pick a different metric, or click its **gear icon** to open a settings popover that fine-tunes how that dimension behaves. The small **link icon** sitting between Height and Color ties those two dimensions to the same metric (see [Linking height and color](#linking-height-and-color)).
-
-## Layout
-
-The **Layout** tab on top of the bar names the current map layout. Click it to pick one of five layouts: **Squarified TreeMap** (the default), **StreetMap**, **TreeMapStreet**, **Sunburst** and **Radial TreeMap**.
-
-![The layout picker](/assets/images/docs/visualization/user-controls/metrics-layout.jpeg)
-
-Sunburst and Radial TreeMap are flat: height, edges and labels do not apply to them, so the bar hides those columns and shows a **Folders** column instead. The layouts and their extra controls are described on the [Map Layouts](/docs/visualization/user-controls/layouts) page.
+The tab on the left edge of the bar switches the map layout. See [Map layouts](/docs/visualization/user-controls/layouts).
+The tab on the right edge holds the [map tools](/docs/visualization/user-controls/map-tools).
 
 ## Area
 
-The Area metric sets the base footprint of every building – larger values produce larger buildings. A common choice is lines of code (`rloc`), so that bigger files become bigger buildings.
+The area metric sets the footprint of every building: larger values make larger buildings. Real lines of code
+(`rloc`) is a common choice.
 
-![The Area metric settings popover](/assets/images/docs/visualization/user-controls/metrics-area.jpeg)
+![The Area settings with Margin, Enable Floor Labels and Invert Area](/assets/images/docs/visualization/user-controls/metrics-area.jpeg)
 
-Open the gear icon on the Area column to adjust:
-
-- **Margin** – the amount of empty space between buildings, in percent (1–100). A larger margin spreads buildings apart so individual files are easier to distinguish; a smaller margin packs them tightly.
-- **Enable Floor Labels** – shows the names of folders ("floors") on the map, helping you orient yourself in the directory structure.
-- **Invert Area** – flips the mapping so that small metric values become large buildings and vice versa.
-- **Reset area metric settings** – restores all of the above to their defaults.
+- **Margin**: the space between buildings, in percent (1 to 100). A larger margin makes single files easier to tell
+  apart.
+- **Enable Floor Labels**: writes the folder names onto the floors of their districts.
+- **Invert Area**: small values become large buildings and the other way round.
+- **Reset area metric settings**: restores the defaults.
 
 ## Height
 
-The Height metric controls how tall each building rises. Pairing height with a different metric than area (for example complexity over lines of code) lets you spot, at a glance, files that are both large and problematic.
+The height metric decides how tall each building rises.
 
-![The Height metric settings popover](/assets/images/docs/visualization/user-controls/metrics-height.jpeg)
+![The Height settings with the height scaling slider and Invert Height](/assets/images/docs/visualization/user-controls/metrics-height.jpeg)
 
-Open the gear icon on the Height column to adjust:
-
-- **Height** – a scaling factor (1–25) that exaggerates or compresses the vertical scale of the whole map, making subtle height differences easier or harder to see.
-- **Invert Height** – flips the mapping so that low metric values become tall buildings and high values become short ones. (Hidden in Compare/delta mode.)
-- **Reset height metric settings** – restores these settings to their defaults.
+- **Height**: a scaling factor (1 to 25) that stretches or flattens the whole map.
+- **Invert Height**: low values become tall buildings. Not offered in [Compare](/docs/visualization/user-controls/compare).
+- **Reset height metric settings**: restores the defaults.
 
 ## Color
 
-The Color metric tints each building so you can categorize files by a metric without changing their size. The popover header reads **"Color by &lt;metric&gt;"** and gives you fine control over how values map to colours.
+The color metric tints each building on a scale from a positive (green) to a negative (red) color. The settings are
+headed **Color by** and the metric name.
 
-![The Color metric settings popover](/assets/images/docs/visualization/user-controls/metrics-color.jpeg)
+![The Color settings with the range slider, distribution chart, gradient modes, bands and folder overrides](/assets/images/docs/visualization/user-controls/metrics-color.jpeg)
 
 ### Color range and distribution
 
-At the top is a **range slider** with two thumbs that split the metric's values into three bands: a *positive* (good) band below the left thumb, a *neutral* band between the thumbs, and a *negative* (critical) band above the right thumb. The numeric inputs on either side let you set the thresholds precisely. Below it, the **Distribution** chart plots the metric across the codebase (value × quantile %), so you can see how files cluster and place the thresholds sensibly.
+The range slider has two thumbs that split the values into three bands: positive below the left thumb, neutral
+between the thumbs, negative above the right thumb. The number fields on both sides set the thresholds exactly, and
+the reset icon in the header puts them back. The **Distribution** chart below plots the metric over all files
+(value against quantile), so you can see where the values cluster before you place the thresholds.
 
 ### Gradient mode
 
-The **Gradient Mode** buttons control how colours are assigned between the thresholds:
+**Gradient Mode** decides how colors blend between the thresholds:
 
-- **Absolute** – hard, discrete bands: every building is exactly the positive, neutral, or negative colour with no blending in between.
-- **Focused** – a smooth gradient that blends colours only inside the selected range (between the two thumbs), while values outside snap to the solid positive or negative colour.
-- **Weighted** – a smooth gradient whose transition zones are derived from the range width, spreading the colour change more gradually around each threshold.
-- **Relative** – a continuous (true) gradient across the whole value range, blending positive → neutral → negative from the lowest to the highest value in the data.
+- **Absolute**: three solid bands without blending.
+- **Focused**: a gradient inside the selected range only; values outside take the solid positive or negative color.
+- **Weighted**: a gradient whose transitions widen with the range. The default.
+- **Relative**: one continuous gradient from the lowest to the highest value.
+
+[3D Print](/docs/visualization/user-controls/3d-print) needs **Absolute**.
 
 ### Bands, invert and reset
 
-The **Bands** list shows each colour band with the **count** of buildings that currently fall into it, plus the colour used for a selected building. Below that:
+**Bands** lists each band with its value range and the number of buildings in it, plus the color of a selected
+building. The swatch of each band changes its color.
 
-- **Invert colors** – swaps the positive and negative colours, so the band you treat as "good" becomes the other end of the scale.
-- **Reset colors** – restores the colour settings to their defaults.
+- **Invert colors**: swaps the positive and negative colors.
+- **Reset colors**: restores the default colors.
 
 ### Folder overrides
 
-Under **Folder Overrides** you can **Pin a folder color…** to tint a specific folder's floor with a fixed colour. The buildings inside still keep their metric-based colours. This is useful for highlighting a team's area or a subsystem on the map. Pinned folders are listed here with a count, and each can be recoloured or unpinned individually.
+**Pin a folder color…** under **Folder Overrides** tints the floor of a folder with a fixed color, for example to mark
+the area of one team. The buildings inside keep their metric colors. Pinned folders are listed here and can be
+recolored or unpinned one by one. The context menu of a folder offers the same colors. See
+[Context menu](/docs/visualization/user-controls/code-map#context-menu).
 
 ## Edges
 
-If your map contains **edges** (connections between buildings, for example dependencies or co-change relationships), an **Edges** column appears in the bar. Its name opens the list of edge metrics; the value below shows the number of incoming and outgoing edges. Hovering or selecting a building draws its edges for the selected edge metric.
+When the map contains edges, such as files that change together, an **Edges** column appears. Its name opens the list
+of edge metrics; the value below shows the incoming and outgoing edges. Hovering or selecting a building draws its
+edges for the selected edge metric.
 
-![The Edges settings popover](/assets/images/docs/visualization/user-controls/metrics-edges.jpeg)
+![The Edges settings with Preview, Height, edge colors and the edge options](/assets/images/docs/visualization/user-controls/metrics-edges.jpeg)
 
-Open the gear icon on the Edges column to adjust:
+- **Preview**: how many buildings have their edges drawn without being hovered, starting with those with the most
+  edges.
+- **Height**: how high the edge arcs rise above the map (1 to 9).
+- **Outgoing Edge** / **Incoming Edge**: the color of each direction, and **Show** to hide one of them.
+- **Only show nodes with edges**: hides every building without an edge for the selected metric.
+- **Disable edge metric**: switches the edges off and keeps the column.
+- **Reset edge metric settings**: restores the defaults.
 
-- **Preview** – how many buildings have their edges drawn without being hovered, starting with the buildings that have the most edges.
-- **Height** – how high the edge curves arch above the map (1–9).
-- **Outgoing Edge** / **Incoming Edge** – the color of each direction, and a **Show** checkbox to hide one of them.
-- **Only show nodes with edges** – hides every building that has no edge for the selected metric.
-- **Disable edge metric** – switches the edges off without removing the column.
-- **Reset edge metric settings** – restores these settings to their defaults.
+The [Dependencies view](/docs/visualization/user-controls/dependency-view) draws dependency edges as a graph instead.
 
 ## Linking height and color
 
-The **link icon** between the Height and Color columns ties both dimensions to the **same** metric. When linked (the icon is highlighted), changing either the height or the color metric updates the other automatically, so buildings that are tall are also coloured by the same value. Click the icon again to unlink them and choose height and color independently.
-
-## Labels and Scenarios
-
-The **Labels** and **Scenarios** columns in the metric bar have their own documentation:
-
-- [Labels](/docs/visualization/user-controls/labels) – control which buildings are labelled on the map and how many.
-- [Scenarios](/docs/visualization/custom-views) – save and apply preconfigured combinations of metric and view settings.
+The link button between **Height** and **Color** ties both to the same metric: changing one changes the other. Click it
+again to choose them separately.

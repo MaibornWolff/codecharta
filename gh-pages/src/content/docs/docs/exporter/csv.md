@@ -1,148 +1,63 @@
 ---
 title: "CSV Exporter"
+description: "Export the code metrics of a cc.json map to CSV, one row per file, to analyse them in a spreadsheet or feed them into your own tools."
 ---
 
-**Category**: Exporter (takes in cc.json and outputs .csv)
+The CSV exporter writes the metrics of a cc.json map as a CSV table: one row per file, one column per metric. Use it
+to sort and filter metrics in a spreadsheet, to compare runs with your own scripts or to hand numbers to a tool that
+does not read cc.json.
 
-Generates CSV file with header from visualization data (cc.json)
+## Quick start
 
-_Conventions for csv output:_
-
-- Every node with attributes contributes one line
-- Column named _path_ contains the hierarchical data of the node, separated via _/_
-- Column named _name_ contains the name of the node
-- Column named _type_ contains the type of the node
-- Columns named _dir0_, _dir1_, ... contain the split hierarchical data of the node for convenience
-- The other columns contain the attributes of the nodes
-
-### Usage and Parameters
-
-| Parameters                            | Description                                                                     |
-| ------------------------------------- | ------------------------------------------------------------------------------- |
-| `--depth-of-hierarchy=<maxHierarchy>` | Defines how many layers of the project structure should be listed (DEFAULT: 10) |
-| `FILE`                                | Input file                                                                      |
-| `-h, --help`                          | Displays help and exits                                                         |
-| `-o, --output-file=<outputFile>`      | Output File (or empty for stdout)                                               |
-
-```
-ccsh csvexport [-h] [--depth-of-hierarchy=<maxHierarchy>]
-               [-o=<outputFile>] FILE...
+```bash
+ccsh csvexport project.cc.json.gz -o project.csv
 ```
 
-### Examples
+Leave out `-o` to print the CSV to the console.
 
-Basic example with output in CLI:
+## Options
 
-```
-ccsh csvexport visual.cc.json
-```
+| Option                                | Description                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------- |
+| `FILE or FOLDER...`                   | one or more cc.json files, or folders that contain them                     |
+| `--depth-of-hierarchy=<maxHierarchy>` | number of `dir` columns that split up the path (default `10`, at least `0`) |
+| `-o, --output-file=<outputFile>`      | output file; `.csv` is added when missing; prints to stdout when omitted    |
+| `-h, --help`                          | show the help and exit                                                      |
 
-This example takes the rather large looking `sample1.cc.json` (see below) and converts it into a more compact format:
-
-```
-ccsh csvexport sample1.cc.json -o sample1.csv
-```
-
-**CSV Output (`sample1.csv`):**
-
-```
-path,name,type,rloc,functions,mcc,pairingRate,avgCommits,dir0,dir1,dir2,dir3,dir4,dir5,dir6,dir7,dir8,dir9
-ParentLeaf/otherSmallLeaf.ts,otherSmallLeaf.ts,File,70.0,1000.0,10.0,65.0,22.0,ParentLeaf,,,,,,,,,
-ParentLeaf/smallLeaf.html,smallLeaf.html,File,30.0,100.0,100.0,60.0,51.0,ParentLeaf,,,,,,,,,
-bigLeaf.ts,bigLeaf.ts,File,100.0,10.0,1.0,77.0,56.0,,,,,,,,,,
-sample1OnlyLeaf.scss,sample1OnlyLeaf.scss,File,400.0,10.0,100.0,32.0,17.0,,,,,,,,,,
+```text
+Usage: ccsh csvexport [-h] [--depth-of-hierarchy=<maxHierarchy>]
+                      [-o=<outputFile>] FILE or FOLDER...
 ```
 
-**cc.json Input (`sample1.cc.json`, formatted for readability, the `attributeDescriptors` are left out):**
+## Output
 
-```
-{
-  "meta": {
-    "projectName": "",
-    "apiVersion": "2.1",
-    "checksum": "f581ee7bc75ddf6bfc4dde6db72e2c6f"
-  },
-  "files": [
-    {
-      "id": "164ddff4bb1345e1",
-      "name": "root",
-      "type": "Folder",
-      "children": [
-        {
-          "id": "1ae98c1a93690d75",
-          "name": "ParentLeaf",
-          "type": "Folder",
-          "children": [
-            {
-              "id": "ea70504d5daa3547",
-              "name": "otherSmallLeaf.ts",
-              "type": "File",
-              "link": ""
-            },
-            {
-              "id": "120a1569e3556450",
-              "name": "smallLeaf.html",
-              "type": "File",
-              "link": ""
-            }
-          ],
-          "link": ""
-        },
-        {
-          "id": "7de6343f370ff7cf",
-          "name": "bigLeaf.ts",
-          "type": "File",
-          "link": ""
-        },
-        {
-          "id": "3d6521b0884ce9f4",
-          "name": "sample1OnlyLeaf.scss",
-          "type": "File",
-          "link": ""
-        }
-      ],
-      "link": ""
-    }
-  ],
-  "lenses": {
-    "metrics": {
-      "attributes": {
-        "ea70504d5daa3547": {
-          "rloc": 70.0,
-          "functions": 1000.0,
-          "mcc": 10.0,
-          "pairingRate": 65.0,
-          "avgCommits": 22.0
-        },
-        "120a1569e3556450": {
-          "rloc": 30.0,
-          "functions": 100.0,
-          "mcc": 100.0,
-          "pairingRate": 60.0,
-          "avgCommits": 51.0
-        },
-        "7de6343f370ff7cf": {
-          "rloc": 100.0,
-          "functions": 10.0,
-          "mcc": 1.0,
-          "pairingRate": 77.0,
-          "avgCommits": 56.0
-        },
-        "3d6521b0884ce9f4": {
-          "rloc": 400.0,
-          "functions": 10.0,
-          "mcc": 100.0,
-          "pairingRate": 32.0,
-          "avgCommits": 17.0
-        }
-      },
-      "attributeTypes": {}
-    },
-    "dependency": {
-      "edges": [],
-      "attributeTypes": {}
-    }
-  }
-}
+- Every node that carries at least one metric gets one row.
+- `path` holds the path of the node below the root, with `/` between folders, `name` its name and `type` whether it
+  is a `File` or a `Folder`.
+- One column per metric follows. A node without a value for a metric leaves that cell empty.
+- `dir0`, `dir1`, and so on hold the folders of the path one by one, so you can group rows by folder in a
+  spreadsheet. `--depth-of-hierarchy` sets how many of these columns there are. A negative value is rejected.
+
+```csv
+path,name,type,rloc,mcc,coverage,dir0,dir1
+README.md,README.md,File,3.0,,,,
+src/a.ts,a.ts,File,10.0,2.0,80.0,src,
+src/lib/b.ts,b.ts,File,20.0,5.0,,src,lib
 ```
 
+The example above comes from `--depth-of-hierarchy=2`.
+
+## Several inputs
+
+With several files, or a folder, each map is written one after another into the same CSV file, every map with its own
+header line. Pass `-o` for several inputs: printed to the console, only the first map appears.
+
+:::caution
+In a folder, the exporter picks up only files that end in `.cc.json`. Gzip files such as `project.cc.json.gz` are
+skipped there. Name them directly to export them, or write them with `-nc`.
+:::
+
+## Related
+
+- [CSV Importer](/docs/importer/csv): the way back, from CSV to cc.json
+- [Inspection Tool](/docs/filter/inspection-tool): look at the folder structure of a map in the console

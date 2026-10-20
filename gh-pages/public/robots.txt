@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /stg/
+Disallow: /visualization/coverage/
+
+Sitemap: https://codecharta.com/sitemap-index.xml
