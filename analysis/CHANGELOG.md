@@ -32,8 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- **Java 22 or newer (breaking)**: `ccsh` no longer starts on Java 17 or 21; the Docker image already ships a
-  newer Java.
+- **Java 22 or newer (breaking)**: `ccsh` no longer runs on Java 17 or 21 and says which Java it needs when started
+  on one; the Docker image already ships a newer Java.
 
 - **Faster `unifiedparser`**: the metrics of a code base are calculated many times faster, with unchanged results.
 
