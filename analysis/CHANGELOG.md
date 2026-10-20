@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.2.0] - 2026-10-20
+
 ### Added 🚀
 
 - **One-step analysis**: `ccsh analyse` maps a codebase with every parser that applies to it and its git or svn
