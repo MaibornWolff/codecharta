@@ -5,36 +5,6 @@ import de.maibornwolff.treesitter.excavationsite.shared.domain.DeclarationType
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.TreeTraversal
 
-/**
- * Extracts type declarations (classes, interfaces, records, enums, helpers) from a Delphi file.
- *
- * Pascal wraps every type declaration in a `declType` node:
- *   `TMyClass = class(Base, IFoo) ... end;`
- *   `TPoint = record X, Y: Integer; end;`
- *   `TColor = (Red, Green, Blue);`
- *
- * The inner `type` field distinguishes the variant:
- *   - `declClass` with keyword `kClass` / `kObject` / ObjC variants → CLASS
- *   - `declClass` with keyword `kRecord` → RECORD
- *   - `declIntf` (also covers `dispinterface`) → INTERFACE
- *   - `declHelper` → CLASS (class / record / type helpers)
- *   - `type` wrapper containing `declEnum` → ENUM
- *
- * Type aliases (`TInt = Integer;`), arrays, sets, and other non-declaration type
- * kinds are skipped. Forward declarations (`TFoo = class;`) are filtered so the
- * full definition is the unique entry for a given type name. Declarations whose
- * name cannot be resolved are also skipped (defensive extraction).
- *
- * Nested type declarations (`type TInner = class … end;` inside another type body)
- * are emitted as siblings of their enclosing type, with `parentPath` carrying the
- * outer-to-inner enclosing chain.
- *
- * Pascal splits classes across interface (declaration) and implementation (method
- * bodies) sections. Method implementations live in `defProc` nodes attached to
- * `implementation`, NOT inside the owning `declType`. Their used types are
- * therefore gathered separately and attributed back to the declaring class by
- * parsing the `TFoo.Method` prefix on `defProc.header.name`.
- */
 internal object DeclarationExtractor {
     private const val DECL_TYPE = "declType"
     private const val DECL_CLASS = "declClass"
@@ -47,6 +17,7 @@ internal object DeclarationExtractor {
     private const val NAME_FIELD = "name"
     private const val ENTITY_FIELD = "entity"
     private const val LHS_FIELD = "lhs"
+    private const val RHS_FIELD = "rhs"
     private const val IDENTIFIER = "identifier"
     private const val GENERIC_DOT = "genericDot"
     private const val GENERIC_TPL = "genericTpl"
@@ -62,9 +33,7 @@ internal object DeclarationExtractor {
 
     fun extract(rootNode: SyntaxNode): List<Declaration> {
         val defProcsByClass = collectDefProcsByClass(rootNode)
-        // Build the full declType→name lookup before filtering forward decls so that the parent-path
-        // walk can still resolve any ancestor that we don't end up emitting (e.g. an outer forward
-        // wrapper that the parser may produce).
+        // Names include forward declarations, so a parent path can resolve an ancestor that is not emitted.
         val allDeclTypes = TreeTraversal.findAllDescendantsOfType(rootNode, DECL_TYPE)
         val namesByStartByte = allDeclTypes.associate { it.startByte to extractDelphiDeclTypeName(it) }
         return allDeclTypes
@@ -85,10 +54,6 @@ internal object DeclarationExtractor {
             }
     }
 
-    /**
-     * Walks the AST parent chain collecting names of ancestor `declType` nodes, outer-to-inner.
-     * Mirrors the Kotlin/C# approach so nested-type declarations carry their enclosing-class chain.
-     */
     private fun findParentPath(declTypeNode: SyntaxNode, namesByStartByte: Map<Int, String?>): List<String> {
         val parents = mutableListOf<String>()
         var current = declTypeNode.parent
@@ -102,11 +67,6 @@ internal object DeclarationExtractor {
         return parents
     }
 
-    /**
-     * A forward declaration `TFoo = class;` parses as a `declType` whose `declClass` body contains
-     * only the kind keyword (`kClass` / `kRecord` / …) — no `kEnd`, no parent clause, no members.
-     * We skip these so the later full definition wins as the unique entry for the type name.
-     */
     private fun isForwardDeclaration(declTypeNode: SyntaxNode): Boolean {
         val typeFieldNode = declTypeNode.getChildByFieldName(TYPE_FIELD)
         if (typeFieldNode.isNull) return false
@@ -114,19 +74,8 @@ internal object DeclarationExtractor {
         return typeFieldNode.children().none { it.type == K_END }
     }
 
-    /**
-     * Groups every `defProc` by the class name it is implementing.
-     *
-     * `defProc.header.name` is a `genericDot` like `TFoo.Method` (or `TFoo<T>.Method`
-     * for generic classes); the `lhs` side is the class name. Free-standing procedures
-     * have a plain `identifier` name and are not associated with any class.
-     *
-     * Operator implementations (`class operator TAny.Implicit(…)`) keep the same shape:
-     * the method-name segment uses the regular `identifier` node (the AST does not wrap
-     * it in `operatorName`). Since [qualifiedNameClassPrefix] only inspects the LHS to
-     * resolve the owning class, operator implementations are bound just like any other
-     * method.
-     */
+    // Method bodies live in `implementation` apart from their class, bound back by the `TFoo.Method` name.
+    // Operator implementations (`class operator TAny.Implicit`) have the same name shape and bind alike.
     private fun collectDefProcsByClass(rootNode: SyntaxNode): Map<String, List<SyntaxNode>> {
         val result = mutableMapOf<String, MutableList<SyntaxNode>>()
         TreeTraversal.findAllDescendantsOfType(rootNode, DEF_PROC).forEach { defProc ->
@@ -146,35 +95,21 @@ internal object DeclarationExtractor {
         if (lhs.isNull) return null
         return when (lhs.type) {
             IDENTIFIER -> lhs.text
-            GENERIC_TPL -> {
-                val entity = lhs.getChildByFieldName(ENTITY_FIELD)
-                if (!entity.isNull && entity.type == IDENTIFIER) {
-                    entity.text
-                } else {
-                    null
-                }
-            }
-            GENERIC_DOT -> {
-                // Nested qualification (e.g. `Namespace.Class.Method`): take the penultimate
-                // segment as the class name, which is the rhs of the outer lhs.
-                val innerRhs = lhs.getChildByFieldName("rhs")
-                if (!innerRhs.isNull && innerRhs.type == IDENTIFIER) {
-                    innerRhs.text
-                } else {
-                    null
-                }
-            }
+            GENERIC_TPL -> identifierTextOrNull(lhs.getChildByFieldName(ENTITY_FIELD))
+            GENERIC_DOT -> penultimateSegmentOfNestedQualification(lhs)
             else -> null
         }
     }
+
+    private fun penultimateSegmentOfNestedQualification(outerLhs: SyntaxNode): String? =
+        identifierTextOrNull(outerLhs.getChildByFieldName(RHS_FIELD))
+
+    private fun identifierTextOrNull(node: SyntaxNode): String? = if (!node.isNull && node.type == IDENTIFIER) node.text else null
 
     private fun resolveDeclarationType(declTypeNode: SyntaxNode): DeclarationType? {
         val typeFieldNode = declTypeNode.getChildByFieldName(TYPE_FIELD)
         if (typeFieldNode.isNull) return null
 
-        // Unrecognised shapes (type aliases like `TInt = Integer;`, subranges, array / set / proc-ref
-        // types, and `type Integer`-style distinct-type aliases) return null and are skipped at the
-        // call site via `return@mapNotNull null`.
         return when (typeFieldNode.type) {
             DECL_CLASS -> classifyDeclClass(typeFieldNode)
             DECL_INTF -> DeclarationType.INTERFACE
@@ -184,11 +119,6 @@ internal object DeclarationExtractor {
         }
     }
 
-    /**
-     * `declClass` is shared between classes, records, and Pascal `object` types —
-     * the first keyword child (`kClass` / `kRecord` / `kObject` / ObjC variants)
-     * distinguishes them.
-     */
     private fun classifyDeclClass(declClassNode: SyntaxNode): DeclarationType {
         val keyword = declClassNode
             .children()
@@ -197,10 +127,6 @@ internal object DeclarationExtractor {
         return if (keyword.type == K_RECORD) DeclarationType.RECORD else DeclarationType.CLASS
     }
 
-    /**
-     * A `type` wrapper that contains a `declEnum` child is an enum declaration.
-     * Other wrapped types (arrays, sets, aliases, …) are not modelled as declarations.
-     */
     private fun classifyTypeWrapper(typeNode: SyntaxNode): DeclarationType? {
         val hasEnum = typeNode.children().any { it.type == DECL_ENUM }
         return if (hasEnum) DeclarationType.ENUM else null
