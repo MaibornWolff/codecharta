@@ -20,21 +20,11 @@ import de.maibornwolff.treesitter.excavationsite.api.TreeSitterDependencies
 import de.maibornwolff.treesitter.excavationsite.api.UsedType
 
 /**
- * Class-2 (multi-namespace) analyzer for Rust, modeled on [csharp.CSharpAnalyzer] but with a
- * Rust-specific twist: a `.rs` file's module path from the crate root is filesystem-derived (not
- * visible in the source TSE sees), so it is reconstructed here from [FileInfo.physicalPath] and
- * prepended to TSE's in-file inline-`mod` chain ([Declaration.parentPath]).
+ * A `.rs` file's module path is not written in its source but follows from where the file lies, so it is derived
+ * from the physical path and prefixed to the inline `mod` chain of each declaration.
  *
- * Imports keep TSE's verbatim leading `crate`/`self`/`super` segments; those are normalized here
- * against the file module path. `namespacePrefix` on qualified inline used types yields a synthetic
- * wildcard dependency per [cpp.CppAnalyzer].
- *
- * `pub use module::Type` re-exports (tagged [ImportKind.REEXPORT] by TSE) become [NodeType.REEXPORT]
- * carrier nodes `crate::Type` → `crate::module::Type`: a crate flattens its public API at `lib.rs`, so
- * consumers import the short `crate::Type` path. The resolver
- * ([processing.dependencies.DependencyResolverService]) folds each carrier into an alias on the real
- * definition node and drops the carrier, so a consumer's `crate::Type` reference resolves straight to
- * `crate::module::Type`.
+ * A `pub use module::Type` becomes a [NodeType.REEXPORT] carrier at `crate::Type`, because a crate flattens its
+ * public API at `lib.rs` and consumers import the short path. The dependency resolver folds it into an alias.
  */
 class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
     override fun analyze(): FileReport {
@@ -54,12 +44,8 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return FileReport(declarationNodes + reexportNodes)
     }
 
-    /**
-     * A `pub use module::Type` becomes a forwarding node at `crate::Type` (the path consumers use)
-     * that depends on the real definition `crate::module::Type`. Glob re-exports (`pub use foo::*`)
-     * are skipped — expanding them needs the re-exported module's contents (cross-file).
-     */
     private fun toReexportNode(import: ImportDeclaration, fileModulePath: List<String>, crateRoot: List<String>): Node? {
+        // Expanding `pub use foo::*` needs the contents of the re-exported module, which lie in another file
         if (import.isWildcard) return null
         val name = import.bindingName ?: import.path.lastOrNull() ?: return null
         val target = reexportTarget(import.path, fileModulePath, crateRoot)
@@ -74,11 +60,8 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         )
     }
 
-    /**
-     * The crate-rooted path a re-export points at. `crate`/`self`/`super` are normalized as usual;
-     * a bare leading segment is a crate-local module (the idiomatic `lib.rs` case, e.g.
-     * `pub use workshop::Workshop` in crate `domain` → `domain::workshop::Workshop`).
-     */
+    // A bare leading segment is a crate-local module: `pub use workshop::Workshop` in crate `domain` re-exports
+    // `domain::workshop::Workshop`
     private fun reexportTarget(path: List<String>, fileModulePath: List<String>, crateRoot: List<String>): List<String> {
         if (path.isEmpty()) return emptyList()
         return when (path.first()) {
@@ -118,14 +101,7 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return own + genericTypes.flatMap { it.collectNamespacePrefixes() }
     }
 
-    /**
-     * Resolves a path's leading `crate`/`self`/`super` segments against the file's module path:
-     * `crate` → the crate root (the crate-name prefix), `self` → the file module, each `super`
-     * strips one trailing segment. Paths starting with another crate name (`domain::…`,
-     * cross-crate) or a `use`-bound name are left untouched — they are already crate-rooted, which
-     * is exactly why node paths must also carry the crate name (see [deriveCrateRoot]) so the two
-     * sides match during resolution.
-     */
+    // A path starting with another crate's name is already crate-rooted and stays as it is
     private fun normalizePath(path: List<String>, fileModulePath: List<String>, crateRoot: List<String>): List<String> {
         if (path.isEmpty()) return path
         return when (path.first()) {
@@ -146,27 +122,16 @@ class RustAnalyzer(private val fileInfo: FileInfo) : LanguageAnalyzer {
         return base + path.drop(index)
     }
 
-    /**
-     * The crate-name prefix for node paths: the directory immediately before the last `src`
-     * (`.../crates/domain/src/workshop.rs` → `[domain]`). Empty when there is no enclosing crate
-     * directory (e.g. a bare `src/lib.rs` in tests, or a loose file). Including the crate name is
-     * what lets cross-crate imports (`use domain::workshop::Workshop`) resolve to the right node,
-     * since a Rust path is always rooted at a crate.
-     */
+    // Node paths carry the crate name, `crates/domain/src/workshop.rs` → `[domain]`, because a Rust path is always
+    // rooted at a crate and cross-crate imports like `use domain::workshop::Workshop` must match them
     private fun deriveCrateRoot(physicalPath: String): List<String> {
         val parts = splitNameToParts(physicalPath).filter { it != CURRENT_DIR }
         val srcIndex = parts.lastIndexOf(SRC_DIR)
         return if (srcIndex > 0) listOf(parts[srcIndex - 1]) else emptyList()
     }
 
-    /**
-     * The in-crate module path from a physical path using Rust 2018 rules: taken relative to the
-     * last `src` directory. `mod.rs` is a directory-module marker at any depth (`src/foo/mod.rs` →
-     * `[foo]`); `lib.rs`/`main.rs` are crate roots only at the crate root (`src/lib.rs` → `[]`) and
-     * otherwise behave like any file (`src/foo/lib.rs` → `[foo, lib]`); every other file becomes the
-     * final module segment (`src/foo/bar.rs` → `[foo, bar]`). The crate name is added separately by
-     * [deriveCrateRoot].
-     */
+    // Rust 2018: `mod.rs` marks a directory module at any depth, while `lib.rs` and `main.rs` are the crate root
+    // only directly below `src` and an ordinary module anywhere else
     private fun deriveInCrateModulePath(physicalPath: String): List<String> {
         val parts = splitNameToParts(physicalPath).filter { it != CURRENT_DIR }
         val relativeParts = stripToCrateRoot(parts)
