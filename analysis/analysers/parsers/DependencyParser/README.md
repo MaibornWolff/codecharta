@@ -142,16 +142,6 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 - A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
   a tsconfig or package.json that fails to parse is warned about as well.
 
-`script/compare_dependency_parsers.py` produces this comparison for any project: it runs both tools (or
-takes two existing output files) and diffs declarations, declaration edges, namespace levels and file
-edges by key, ignoring the self-edges unless asked to keep them. Declarations are matched by file and
-key, and only the namespaces this parser lists are compared. It needs the DependaCharta fat jar,
-found via `--dependacharta-jar` or `DEPENDACHARTA_JAR`, and a locally installed `ccsh`.
-
-```
-./script/compare_dependency_parsers.py path/to/project --dependacharta-jar dependacharta.jar
-```
-
 `script/ccjson_to_cgjson.py` converts the dependency lens of a cc.json back into a `.cg.json`, so the
 same graph can be opened in DependaCharta's Web Studio and compared by eye:
 
