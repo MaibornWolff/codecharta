@@ -8,15 +8,15 @@
   <h3>See how your code is built, and what it is about.</h3>
 
   <p>
-    CodeCharta turns any codebase into a 3D city of metrics and a map of its domain language.<br>
-    Spot hotspots in seconds. Show your team what you mean instead of explaining it.
+    CodeCharta turns any codebase into a 3D city of metrics, a map of its domain language and a graph of its dependencies.<br>
+    Find the hotspots in minutes, and show your team what you mean instead of explaining it.
   </p>
 
   <p>
     <a href="https://codecharta.com/visualization/app/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&currentFilesAreSampleFiles=true"><b>▶ Try the live demo</b></a> •
     <a href="https://codecharta.com/stg/visualization/index.html?file=codecharta_visualization.cc.json.gz&file=codecharta_analysis.cc.json.gz&area=rloc&height=functions&color=sonar_complexity&edge=dependencies&currentFilesAreSampleFiles=true">Staging demo</a> •
     <a href="#quickstart">Quickstart</a> •
-    <a href="https://maibornwolff.github.io/codecharta/">Documentation</a> •
+    <a href="https://codecharta.com/docs/overview/introduction">Documentation</a> •
     <a href="https://github.com/MaibornWolff/codecharta/releases">Releases</a>
   </p>
 
@@ -44,13 +44,7 @@
   </p>
 </div>
 
-<p align="center">
-  <img src="assets/hero-metric.png" alt="CodeCharta's own code as a 3D city: area is lines of code, height and color are complexity" width="49%">
-  <img src="assets/hero-domain.png" alt="CodeCharta's own domain vocabulary as a word cloud" width="49%">
-</p>
-<p align="center"><sub>CodeCharta analysing itself. <b>Left:</b> every building is a file, big and red means large and complex. <b>Right:</b> the words the code is written in.</sub></p>
-
-## Two views of one codebase
+## Three views of one codebase
 
 ### 🏙️ Metric view: find the hotspots
 
@@ -61,13 +55,14 @@ stick out of the skyline.
 - **Hotspots:** big + tall + red = large, complex and changed all the time
 - **Knowledge silos:** color by number of authors to find code only one person understands
 - **Temporal coupling:** edges connect files that always change together, even without an import
-- **Filter and focus:** search, flatten or exclude files, including by rule like `complexity > 50`
+- **Filter and focus:** search, flatten or exclude files, also by rule like `complexity > 50`
 - **Scenarios:** built-in and saved presets for complexity, code smells, authors and more
 - **3D print:** export the city as a 3D model and put your codebase on the table
 
 <p align="center">
-  <img src="assets/tour.gif" alt="Rotating the metric city of CodeCharta, then switching to the domain view" width="80%">
+  <img src="assets/metric.gif" alt="Hovering and selecting buildings in CodeCharta's metric city, focusing the visualization folder from the context menu and turning the map" width="90%">
 </p>
+<p align="center"><sub>Hover a building to see its values and dependencies, select it for all its metrics, focus a folder to zoom in.</sub></p>
 
 ### 🔤 Domain view: read what the code is about
 
@@ -84,12 +79,27 @@ scores every word by frequency and **TF-IDF**. The result is the vocabulary of y
 </p>
 <p align="center"><sub>Where does "commit" live? 95% in <code>analysis</code>, where the git log parser is.</sub></p>
 
-### 📈 Delta view: see what changed
+### 🔗 Dependencies view: see the structure
 
-Load two versions and compare them. Green grew, red shrank, and you see where a release actually happened.
+The dependency parser reads the imports of your code, and the graph stacks every folder by level: what a box depends
+on lies below it. In a cleanly layered codebase every edge points down, so the ones that don't stand out.
+
+- **Cycles and upward dependencies:** red edges and badges mark what breaks the layering
+- **Open what you need:** double-click a folder to see its contents, a file to see its declarations
+- **Uses and used by:** select a box and the inspector lists its dependencies in both directions
+- **Folders or packages:** arrange the graph by folder or by the packages the code declares
 
 <p align="center">
-  <img src="assets/delta.png" alt="Delta between CodeCharta 2.0 and 2.5: green buildings grew, red shrank" width="80%">
+  <img src="assets/dependencies.gif" alt="Opening the analysis and analysers folders in the dependency graph, hovering and selecting parsers to see its edges and inspector, then selecting filters and opening its Uses list" width="90%">
+</p>
+<p align="center"><sub>Open a folder, hover a box to see its edges, select it to see what it uses and what uses it.</sub></p>
+
+### 📈 Compare: see what changed
+
+Load two versions and compare them. Green grew, red shrank, and you see where the work actually happened.
+
+<p align="center">
+  <img src="assets/delta.png" alt="Delta between CodeCharta 2.0 and today: green buildings grew, red shrank" width="80%">
 </p>
 
 ## Quickstart
@@ -104,19 +114,32 @@ npm i -g codecharta-analysis
 
 ```bash
 cd my-project
+ccsh analyse    # opinionated selection of parsers and options to get started, merged into my-project.cc.json.gz
+```
+
+Want more control? Run the parsers one by one and merge their results:
+
+```bash
 ccsh unifiedparser . -o metrics.cc.json.gz                   # size, complexity, functions
 ccsh gitlogparser repo-scan --repo-path . -o git.cc.json.gz  # commits, authors, coupling
 ccsh domainlanguageparser . --ngrams=2 -o domain.cc.json.gz  # domain words and phrases
-ccsh merge metrics.cc.json.gz git.cc.json.gz domain.cc.json.gz -o my-project.cc.json.gz
+ccsh dependencyparser . -o deps.cc.json.gz                   # imports, cycles, layering
+ccsh merge metrics.cc.json.gz git.cc.json.gz domain.cc.json.gz deps.cc.json.gz -o my-project.cc.json.gz
 ```
 
-Or let [`simplecc.sh`](analysis/script/simplecc.sh) run every analysis available on your machine and merge the
-results for you. Not sure which command you need? `ccsh -i` asks you step by step.
+Not sure which command you need? `ccsh` without arguments suggests the analysers that fit the current folder, and
+`ccsh -i` walks you through any command step by step.
 
-**3. Open it** in the [Web Studio](https://codecharta.com/visualization/app/index.html): drag and drop the
-file, done.
+**3. Open it** in the [Web Studio](https://codecharta.com/visualization/app/index.html) with the folder button
+(**Load cc.json files**).
 
-Prefer a desktop app or Docker? See [Getting started](https://maibornwolff.github.io/codecharta/docs/overview/getting-started).
+Prefer Docker or the desktop app? See [Getting started](https://codecharta.com/docs/overview/getting-started).
+
+## Keep it in shape
+
+`ccsh gate` checks a project against your own limits per metric and against its dependency rules, and fails the build
+when one breaks. Run it in CI, in a git hook or after an AI agent. The gate is experimental; see the
+[quality gate](https://codecharta.com/docs/analysis/quality-gate).
 
 ## Your data stays local
 
@@ -127,23 +150,21 @@ There is no analytics, tracking or telemetry.
 
 | | |
 | --- | --- |
-| **Source code** | [Unified parser](https://maibornwolff.github.io/codecharta/docs/parser/unified): Java, Kotlin, TypeScript, JavaScript, Python, C#, C, C++, Go, Rust, PHP, Ruby, Swift, Objective-C, Vue, Bash, Delphi, Angular templates, SQL |
-| **Domain language** | [Domain language parser](https://maibornwolff.github.io/codecharta/docs/parser/domain-language): words and phrases with frequency and TF-IDF |
-| **Version control** | [Git log](https://maibornwolff.github.io/codecharta/docs/parser/git-log), [SVN log](https://maibornwolff.github.io/codecharta/docs/parser/svn-log) |
-| **Any text** | [Raw text](https://maibornwolff.github.io/codecharta/docs/parser/raw-text): indentation levels for any language |
-| **Your other tools** | [SonarQube](https://maibornwolff.github.io/codecharta/docs/importer/sonar), [Coverage](https://maibornwolff.github.io/codecharta/docs/importer/coverage), [DependaCharta](https://maibornwolff.github.io/codecharta/docs/importer/dependacharta), [Tokei](https://maibornwolff.github.io/codecharta/docs/importer/tokei), [Code Maat](https://maibornwolff.github.io/codecharta/docs/importer/code-maat), [SourceMonitor](https://maibornwolff.github.io/codecharta/docs/importer/sourcemonitor), [CSV](https://maibornwolff.github.io/codecharta/docs/importer/csv) |
+| **Source code** | [Unified parser](https://codecharta.com/docs/parser/unified): Java, Kotlin, TypeScript, JavaScript, Python, C#, C, C++, Go, Rust, PHP, Ruby, Swift, Objective-C, Vue, Bash, Delphi, Angular templates, SQL |
+| **Dependencies** | [Dependency parser](https://codecharta.com/docs/parser/dependency): imports between files, cycles and upward dependencies |
+| **Domain language** | [Domain language parser](https://codecharta.com/docs/parser/domain-language): words and phrases with frequency and TF-IDF |
+| **Version control** | [Git log](https://codecharta.com/docs/parser/git-log), [SVN log](https://codecharta.com/docs/parser/svn-log) |
+| **Any text** | [Raw text](https://codecharta.com/docs/parser/raw-text): indentation levels for any language |
+| **Your other tools** | [SonarQube](https://codecharta.com/docs/importer/sonar), [Coverage](https://codecharta.com/docs/importer/coverage), [Tokei](https://codecharta.com/docs/importer/tokei), [Code Maat](https://codecharta.com/docs/importer/code-maat), [SourceMonitor](https://codecharta.com/docs/importer/sourcemonitor), [CSV](https://codecharta.com/docs/importer/csv) |
 
-[Merge](https://maibornwolff.github.io/codecharta/docs/filter/merge-filter) any combination into one map,
-[reshape](https://maibornwolff.github.io/codecharta/docs/filter/structure-modifier) its folder tree, or
-[export it to CSV](https://maibornwolff.github.io/codecharta/docs/exporter/csv).
+[Merge](https://codecharta.com/docs/filter/merge-filter) any combination into one map,
+[reshape](https://codecharta.com/docs/filter/structure-modifier) its folder tree, or
+[export it to CSV](https://codecharta.com/docs/exporter/csv).
 
-## Get Involved
+## Get involved
 
-Do you have a **bug**, **feature request**, or question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new).
-Feedback is always welcome.
-
-Want **more information**? Check out our [documentation](https://maibornwolff.github.io/codecharta/)
-and [release notes](https://github.com/MaibornWolff/codecharta/releases).
+Found a **bug**, have a **feature request** or a question? Please open [a new issue](https://github.com/MaibornWolff/codecharta/issues/new).
+Feedback is always welcome, and so are pull requests: start with the [contributing guide](dev_docs/CONTRIBUTING.md).
 
 ## Service Offerings
 
@@ -156,10 +177,10 @@ more: [Software Health Check](https://www.maibornwolff.de/en/software-health-che
 
 ## Links
 
-- [Documentation](https://maibornwolff.github.io/codecharta/)
-- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/overview/getting-started)
+- [Documentation](https://codecharta.com/docs/overview/introduction)
+- [Getting started](https://codecharta.com/docs/overview/getting-started)
+- [Examples](https://codecharta.com/examples)
 - [Releases](https://github.com/MaibornWolff/codecharta/releases)
-- [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 - [Analysis - Changelog](analysis/CHANGELOG.md) | [Visualization - Changelog](visualization/CHANGELOG.md)
 - [Contributing](dev_docs/CONTRIBUTING.md)
 - [Code of Conduct](dev_docs/CODE_OF_CONDUCT.md)
