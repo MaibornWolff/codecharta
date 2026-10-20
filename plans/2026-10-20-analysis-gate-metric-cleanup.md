@@ -1,6 +1,6 @@
 ---
 name: Analysis gate metric cleanup
-state: progress
+state: complete
 version: 1
 ---
 
@@ -23,17 +23,18 @@ following the gate's instructions, without new dependency warnings, then tighten
 - Delete `compare_dependency_parsers.py` and `ccjson_to_cgjson.py` with their README references
 
 ### 4. Thresholds
-- Set each error max in `analysis/.codecharta.yml` to the new worst file
+- Set warning and error max in `analysis/.codecharta.yml` to the new worst file (the gate rejects error below warning)
 
 ## Steps
 
-- [ ] Complete Task 1: Test classes
-- [ ] Complete Task 2: Production code
-- [ ] Complete Task 3: Comment lines
-- [ ] Complete Task 4: Thresholds
-- [ ] Gate on analysis and visualization, ktlintCheck test, format:check
+- [x] Complete Task 1: Test classes
+- [x] Complete Task 2: Production code
+- [x] Complete Task 3: Comment lines
+- [x] Complete Task 4: Thresholds
+- [x] Gate on analysis and visualization, ktlintCheck test, format:check
 
 ## Notes
 
 - One commit per file, on `tech/analysis-gate-cleanup`
 - Dependency section of the gate must not get worse (17 cycles between files, 6 inside files, 30 upward)
+- New worst: complexity 99, rloc 483, max_complexity_per_function 19, comment_lines 23; dependency section unchanged
