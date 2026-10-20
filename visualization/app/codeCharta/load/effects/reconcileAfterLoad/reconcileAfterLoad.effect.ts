@@ -44,37 +44,20 @@ import { getMergedDomainWords } from "./utils/domainWords.merger"
 import { getMergedMarkedPackages } from "./utils/markedPackages.merger"
 import { getMergedNodeRules } from "./utils/nodeRules.merger"
 
-/**
- * A file set arrived (a load, or a file-panel change: delta switch, file removal, re-selection).
- * `provenance` is null for the latter — those carry no URL metrics and never force an autofit.
- */
+/** `provenance` is null for a file-panel change, which carries no URL metrics and never forces an autofit. */
 type FileSetTrigger = { kind: "fileSet"; provenance: FilesLoadedPayload | null }
 
-/** The derived metric data changed without a file-set change — an exclude rule removed a metric. */
+/** An exclude rule removed a metric without changing the file set. */
 type MetricDataTrigger = { kind: "metricData" }
 
 type ReconcileTrigger = FileSetTrigger | MetricDataTrigger
 
 /**
- * The single owner of "a file set changed → re-initialize". It replaces the loose cloud of effects
- * that each independently subscribed to the file selectors and reset one thing, in an emergent order.
+ * Camera autofit and clearing the loading indicator follow the same `filesLoaded` action but live in
+ * features/codeMap/, because they need the renderer.
  *
- * The sequence is deterministic and runs synchronously in one task:
- *
- *   1. merge the file settings (blacklist / markedPackages / attributeTypes / attributeDescriptors)
- *   1b. point the file root at the reference file
- *   2. derive the metric data — AFTER step 1, so it already sees the merged rules
- *   3. resolve the metric selection, precedence URL > persisted > computed default
- *   4. derive the color range from the resolved color metric — once
- *   5. unfocus the nodes, lower the top-label count to what the new map can carry
- *   6. apply the RESTORED session on top — persisted beats everything derived from the files
- *
- * Steps 7 (camera autofit) and 8 (clear the loading indicator) belong to the same sequence but live
- * in features/codeMap/, because they need the renderer. They key off the same `filesLoaded` action.
- *
- * Deriving the metric data from the snapshot in step 2 — rather than from a selector subscription —
- * is what removes the need for the `skip(1), take(1)` / `withLatestFrom` staleness workarounds the
- * old effects needed: by construction, everything read here is post-step-1.
+ * The metric data is derived from the snapshot instead of a selector subscription, so everything read
+ * here already sees the merged file settings without staleness workarounds.
  */
 @Injectable()
 export class ReconcileAfterLoadEffect {
@@ -100,16 +83,9 @@ export class ReconcileAfterLoadEffect {
     ).pipe(share())
 
     /**
-     * A load dispatches several file actions (each makes visibleFileStatesSelector emit) plus exactly
-     * one `filesLoaded`, all synchronously in one task. We buffer that whole burst and reconcile once,
-     * against the state it leaves behind.
-     *
-     * The burst is REDUCED, not merely debounced: `filesLoaded` is not necessarily the last thing in it
-     * (the restore branch sets the persisted file states afterwards), so taking the last trigger would
-     * silently drop the provenance and with it the URL metrics. Any `filesLoaded` in the burst wins.
-     *
-     * A pure file-panel change (delta switch, file removal, re-selection) emits only the selector, so
-     * the provenance stays null and the sequence runs without URL metrics and without forcing a fit.
+     * A load emits a synchronous burst of file actions plus one `filesLoaded`, which is not necessarily
+     * last (the restore branch sets the persisted file states afterwards). The burst is reduced so that
+     * any `filesLoaded` in it keeps its provenance, and with it the URL metrics.
      */
     private readonly fileSetChanged$ = this.fileSetTriggers$.pipe(
         buffer(this.fileSetTriggers$.pipe(debounceTime(0))),
@@ -133,12 +109,8 @@ export class ReconcileAfterLoadEffect {
     )
 
     /**
-     * An exclude rule can remove the metric that is currently selected. It changes the derived metric
-     * data without changing the file set, so it re-runs steps 2-4 only: it must NOT unfocus nodes or
-     * reset the top-label count, neither of which the old effects did on a rule change.
-     *
-     * On a load this fires too, right after the file-set trigger — and dispatches nothing, because the
-     * sequence is idempotent: the metrics are already resolved, so nothing has changed.
+     * A rule change must not unfocus nodes or reset the top-label count. On a load this fires too, but
+     * dispatches nothing because the metrics are already resolved.
      */
     reconcileMetricData$ = createEffect(
         () =>
@@ -192,15 +164,8 @@ export class ReconcileAfterLoadEffect {
     }
 
     /**
-     * Step 6 — the persisted session wins over everything the sequence derived from the files.
-     *
-     * This runs LAST on purpose. A user's exclusions, marked packages and focused node live ONLY in the
-     * persisted state — they are never written back into a file's own fileSettings — so step 1's merge and
-     * step 5's unfocus would erase them. Applying the persisted view after them states the precedence
-     * explicitly: **persisted > file-derived**.
-     *
-     * Each applier diffs against what the sequence just wrote and dispatches only the differences, so a
-     * fresh load (restoredSettings === null) costs nothing.
+     * Runs last on purpose: exclusions, marked packages and the focused node live only in the persisted
+     * state, so the file-settings merge and the unfocus would otherwise erase them.
      */
     private applyRestoredSettings(restoredSettings: RestoredSettings | null): void {
         if (!restoredSettings) {
@@ -212,8 +177,6 @@ export class ReconcileAfterLoadEffect {
         this.loadInitialFileStore.applyDomainLensSource(restoredSettings.domainLensSource)
         this.loadInitialFileStore.applySharedView(restoredSettings.sharedView)
     }
-
-    // ───────────────────────────── step 1: the file settings ─────────────────────────────
 
     private mergeFileSettings(): void {
         const files = this.fileStoreReadWindow.getFiles()
@@ -246,16 +209,12 @@ export class ReconcileAfterLoadEffect {
         )
     }
 
-    // ───────────────────── step 1b: the root path of the map ─────────────────────
-
     private updateFileRoot(): void {
         const referenceFile = this.fileStoreReadWindow.getReferenceFile()
         if (referenceFile) {
             fileRoot.updateRoot(referenceFile.map.name)
         }
     }
-
-    // ───────────────────────── step 3: the metric selection ─────────────────────────
 
     private currentSelection(): MetricSelection {
         const { areaMetric, heightMetric, colorMetric, edgeMetric, distributionMetric } = this.mapStateReadWindow.getMapState()
@@ -275,8 +234,6 @@ export class ReconcileAfterLoadEffect {
             this.store.dispatch(actionCreator({ value: next }))
         }
     }
-
-    // ───────────────────────────── step 5: the top labels ─────────────────────────────
 
     private updateVisibleTopLabels(): void {
         const codeMapNodes = codeMapNodesSelector(this.ccStateSnapshot.get())
