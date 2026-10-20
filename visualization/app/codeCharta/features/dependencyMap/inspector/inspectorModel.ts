@@ -1,4 +1,3 @@
-import { dependencyEdgeTypeOf, isDependencyEdgeMetric } from "../../../lenses/dependency/dependencyLens.facade"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { DependencyEdgeType, LineStyleMeaning } from "../../../model/dependencyGraph.model"
 import {
@@ -10,32 +9,26 @@ import {
     LeveledNode,
     LineStyle,
     lineStyleOfEdgeType,
-    lineStyleOfUsages,
-    nameOfPath,
     PLAIN_USAGE,
     usageLabelOf
 } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
-import { CycleChain, cyclesThrough } from "../declarations/cycleChains"
+import { CycleChain } from "../declarations/cycleChains"
 import { DeclarationIndex, fromPathOf, IndexedDeclaration, toPathOf } from "../declarations/declarationIndex"
-
-type InspectorReferenceKind = "folder" | "file" | "declaration"
-
-export interface InspectorReference {
-    path: string
-    name: string
-    kind: InspectorReferenceKind
-    declarationKind?: string
-}
+import { cycleBadge, declarationBadges, dependencyBadges, edgeBadges, fileBadges, InspectorBadge } from "./inspectorBadges"
+import { cyclesOf, InspectorCycles } from "./inspectorCycles"
+import {
+    declarationReference,
+    fileReference,
+    InspectorReference,
+    InspectorReferenceKind,
+    linkOf,
+    PointsUpward,
+    pathsOf
+} from "./inspectorReferences"
 
 /** What stands above the name and leads there: the box around the selection. */
 interface InspectorParent extends InspectorReference {
     shownAs: string
-}
-
-/** A short fact under the name; one about cycles is set off in the colour of the cycles. */
-interface InspectorBadge {
-    text: string
-    isAboutCycles?: boolean
 }
 
 export interface InspectorDependency {
@@ -90,23 +83,6 @@ interface InspectorDeclarations {
     hiddenCount: number
 }
 
-/** A declaration a cycle runs through, and how its dependency on the next one is drawn; the last leads back to the first. */
-interface InspectorCycleStep {
-    reference: InspectorReference
-    linkToNext: InspectorLink
-}
-
-export interface InspectorCycle {
-    steps: InspectorCycleStep[]
-    files: InspectorReference[]
-    declarationEdges: CycleChain
-}
-
-interface InspectorLink {
-    line: LineStyle
-    type: DependencyEdgeType
-}
-
 export interface InspectorUpwardDependency {
     dependency: InspectorDependency
     files: InspectorReference[]
@@ -114,7 +90,7 @@ export interface InspectorUpwardDependency {
 
 export type InspectorActionKind = "open" | "close" | "unfold"
 
-export interface InspectorModel {
+export interface InspectorModel extends InspectorCycles {
     kind: InspectorReferenceKind | "edge"
     title: string
     parent: InspectorParent | null
@@ -124,9 +100,6 @@ export interface InspectorModel {
     badges: InspectorBadge[]
     declarations: InspectorDeclarations | null
     sections: InspectorSection[]
-    /** The cycles running through the selection; a hub's are cut like its rows. */
-    cycles: InspectorCycle[]
-    cycleCount: number
     /** Those between the selection's own declarations, which a closed box hides; cut like its rows. */
     upwardDependencies: InspectorUpwardDependency[]
     upwardCount: number
@@ -152,7 +125,7 @@ export interface InspectorContext {
     rowLimit: number
     /** Whether a dependency is drawn pointing upward in the hierarchy shown: between two files the folders
      * decide that by the file edge, the packages by the dependency itself. */
-    pointsUpward: (declarationEdge: DependencyLeafEdge) => boolean
+    pointsUpward: PointsUpward
     /** Whether the graph's dashes tell the edge types or the kinds of use. */
     lineStyleShows: LineStyleMeaning
 }
@@ -204,15 +177,6 @@ function describeFile(file: LeveledNode, isOpen: boolean, context: InspectorCont
     }
 }
 
-function fileBadges(declarations: readonly IndexedDeclaration[]): InspectorBadge[] {
-    const packages = [...new Set(declarations.flatMap(({ leaf }) => (leaf.namespace === undefined ? [] : [leaf.namespace])))]
-    return [
-        { text: "file" },
-        ...packages.map(packageKey => ({ text: `package ${packageKey}` })),
-        { text: counted(declarations.length, "declaration") }
-    ]
-}
-
 function actionOf(declarations: readonly IndexedDeclaration[], isOpen: boolean): InspectorActionKind | null {
     if (declarations.length === 0) {
         return null
@@ -242,15 +206,6 @@ function describeDeclaration(node: LeveledNode, context: InspectorContext): Insp
     }
 }
 
-function declarationBadges(node: LeveledNode, declaration: IndexedDeclaration | undefined): InspectorBadge[] {
-    const { namespace, level } = declaration?.leaf ?? {}
-    return [
-        { text: declarationKindLabelOf(node.declarationKind ?? "") },
-        ...(namespace === undefined ? [] : [{ text: `package ${namespace}` }]),
-        ...(level === undefined ? [] : [{ text: `level ${level}` }])
-    ]
-}
-
 function describeFolder(folder: LeveledNode, context: InspectorContext): InspectorModel {
     const files = filesIn(folder)
     const declarations = files.flatMap(file => context.index.declarationsOfFile.get(file.path) ?? [])
@@ -267,7 +222,7 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
         badges: [
             { text: isPackage ? "package" : "folder" },
             { text: counted(files.length, "file") },
-            ...dependencyBadges(declarations.length, dependencies, context),
+            ...dependencyBadges(declarations.length, touchedBy(dependencies), context.pointsUpward),
             ...cycleBadge(cycles.cycleCount)
         ],
         declarations: null,
@@ -276,19 +231,6 @@ function describeFolder(folder: LeveledNode, context: InspectorContext): Inspect
         ...upwardOf(dependencies.inside, ownPaths, context),
         action: null
     }
-}
-
-function dependencyBadges(
-    declarationCount: number,
-    { inside, outgoing, incoming }: Dependencies,
-    context: InspectorContext
-): InspectorBadge[] {
-    const touching = [...inside, ...outgoing, ...incoming]
-    return [
-        { text: counted(declarationCount, "declaration") },
-        { text: `${touching.filter(edge => edge.isCyclic).length} cyclic` },
-        { text: `${touching.filter(context.pointsUpward).length} upward` }
-    ]
 }
 
 interface Uses {
@@ -323,7 +265,7 @@ function describeEdge(edge: GraphEdge, title: string, context: InspectorContext)
         parent: null,
         path: edge.id,
         copyText: null,
-        badges: [{ text: weightOf(edge, context.edgeMetric) }, ...usageCounts(indexedEdges)],
+        badges: edgeBadges(edge, indexedEdges, context.edgeMetric),
         declarations: null,
         sections: [section("standsFor", [{ heading: null, declarationEdges: indexedEdges }], new Set(), context)],
         cycles: [],
@@ -331,28 +273,6 @@ function describeEdge(edge: GraphEdge, title: string, context: InspectorContext)
         ...NO_UPWARD,
         action: indexedEdges.length > 0 && !isUnfolded ? "unfold" : null
     }
-}
-
-function weightOf(edge: GraphEdge, edgeMetric: string | null): string {
-    return isDependencyEdgeMetric(edgeMetric) ? counted(edge.weight, "dependency", "dependencies") : `${edgeMetric} ${edge.weight}`
-}
-
-function cycleBadge(cycleCount: number): InspectorBadge[] {
-    return cycleCount === 0 ? [] : [{ text: counted(cycleCount, "cycle"), isAboutCycles: true }]
-}
-
-function pathsOf(declarations: readonly IndexedDeclaration[]): ReadonlySet<string> {
-    return new Set(declarations.map(declaration => declaration.path))
-}
-
-function usageCounts(declarationEdges: readonly DependencyLeafEdge[]): InspectorBadge[] {
-    const counts = new Map<string, number>()
-    for (const usage of declarationEdges.flatMap(declarationEdge => declarationEdge.usage)) {
-        counts.set(usage, (counts.get(usage) ?? 0) + 1)
-    }
-    return [...counts]
-        .sort(([usageA, countA], [usageB, countB]) => countB - countA || usageA.localeCompare(usageB))
-        .map(([usage, count]) => ({ text: `${usageLabelOf(usage)} ${count}` }))
 }
 
 function declarationList(declarations: readonly IndexedDeclaration[], rowLimit: number): InspectorDeclarations {
@@ -381,6 +301,10 @@ function dependenciesOf(declarations: readonly IndexedDeclaration[], index: Decl
         outgoing: leaving.filter(edge => !paths.has(toPathOf(edge))),
         incoming: arriving.filter(edge => !paths.has(fromPathOf(edge)))
     }
+}
+
+function touchedBy({ inside, outgoing, incoming }: Dependencies): DependencyLeafEdge[] {
+    return [...inside, ...outgoing, ...incoming]
 }
 
 function hiddenCountOf(rows: readonly unknown[], rowLimit: number): number {
@@ -440,15 +364,8 @@ function dependencyOf(
         isFromOwn: ownPaths.has(fromPathOf(declarationEdge)),
         isToOwn: ownPaths.has(toPathOf(declarationEdge)),
         specificUsages: declarationEdge.usage.filter(usage => usage !== PLAIN_USAGE).map(usageLabelOf),
-        ...linkOf(declarationEdge, { pointsUpward }),
+        ...linkOf(declarationEdge, pointsUpward),
         declarationEdge
-    }
-}
-
-function linkOf(declarationEdge: DependencyLeafEdge, { pointsUpward }: Pick<InspectorContext, "pointsUpward">): InspectorLink {
-    return {
-        line: lineStyleOfUsages(declarationEdge.usage),
-        type: dependencyEdgeTypeOf({ isCyclic: declarationEdge.isCyclic, isPointingUpwards: pointsUpward(declarationEdge) })
     }
 }
 
@@ -500,52 +417,6 @@ function upwardOf(inside: readonly DependencyLeafEdge[], ownPaths: ReadonlySet<s
     return { upwardDependencies: upward.slice(0, context.rowLimit), upwardCount: upward.length }
 }
 
-type InspectorCycles = Pick<InspectorModel, "cycles" | "cycleCount">
-
-function cyclesOf(declarations: readonly IndexedDeclaration[], context: InspectorContext): InspectorCycles {
-    const { index, cycles, rowLimit } = context
-    const ownPaths = pathsOf(declarations)
-    const cyclesOfSelection = cyclesThrough(ownPaths, cycles).map((chain): InspectorCycle => {
-        const walked = startingAt(chain, ownPaths)
-        return {
-            steps: walked.map(declarationEdge => ({
-                reference: declarationReference(index.declarations.get(fromPathOf(declarationEdge))),
-                linkToNext: linkOf(declarationEdge, context)
-            })),
-            files: [...new Set(walked.map(declarationEdge => declarationEdge.fromNodeName))].map(fileReference),
-            declarationEdges: walked
-        }
-    })
-    return { cycleCount: cyclesOfSelection.length, cycles: cyclesOfSelection.toSorted(widestCycleFirst).slice(0, rowLimit) }
-}
-
-/** The cycle across the most files first, then the one through the most declarations: the widest tangle is the
- * one to see, and the one a cut list must not lose. */
-function widestCycleFirst(cycleA: InspectorCycle, cycleB: InspectorCycle): number {
-    return (
-        cycleB.files.length - cycleA.files.length ||
-        cycleB.steps.length - cycleA.steps.length ||
-        cycleA.steps[0].reference.name.localeCompare(cycleB.steps[0].reference.name)
-    )
-}
-
-/** A cycle has no first declaration; it is told from one of the selection's own, since that is where the reader stands. */
-function startingAt(chain: CycleChain, ownPaths: ReadonlySet<string>): CycleChain {
-    const start = Math.max(
-        0,
-        chain.findIndex(declarationEdge => ownPaths.has(fromPathOf(declarationEdge)))
-    )
-    return [...chain.slice(start), ...chain.slice(0, start)]
-}
-
 function filesIn(node: LeveledNode): LeveledNode[] {
     return node.kind === "file" ? [node] : node.children.flatMap(filesIn)
-}
-
-function declarationReference({ path, leaf }: IndexedDeclaration): InspectorReference {
-    return { path, name: leaf.name, kind: "declaration", declarationKind: leaf.kind }
-}
-
-function fileReference(path: string): InspectorReference {
-    return { path, name: nameOfPath(path), kind: "file" }
 }

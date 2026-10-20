@@ -4,14 +4,14 @@ import { DependencyLeafEdge } from "../../../../model/codeCharta.model"
 import { EDGE_TYPE_LABELS } from "../../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { CopyToClipboardService } from "../../../../util/copyToClipboard.service"
 import { InspectorResizeHandleComponent } from "../../../shared/facade"
+import { InspectorCycle } from "../../inspector/inspectorCycles"
 import {
     INSPECTOR_SECTION_TITLES,
     InspectorActionKind,
-    InspectorCycle,
-    InspectorReference,
     InspectorSectionId,
     InspectorUpwardDependency
 } from "../../inspector/inspectorModel"
+import { InspectorReference } from "../../inspector/inspectorReferences"
 import { DependencyInspectorStore } from "../../stores/dependencyInspector.store"
 import { DeclarationKindIconComponent } from "../declarationKindIcon/declarationKindIcon.component"
 import { LineStyleSampleComponent } from "../lineStyleSample/lineStyleSample.component"
