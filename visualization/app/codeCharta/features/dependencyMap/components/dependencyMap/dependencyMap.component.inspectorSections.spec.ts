@@ -91,7 +91,7 @@ describe("DependencyMapComponent", () => {
                     fireEvent.mouseEnter(screen.getAllByTestId("dependency-inspector-group-file")[0])
 
                     // Act
-                    await select(store, fixture, NODE)
+                    select(store, fixture, NODE)
                     TestBed.tick()
 
                     // Assert
@@ -124,7 +124,7 @@ describe("DependencyMapComponent", () => {
                     fixture.detectChanges()
 
                     // Act
-                    await select(store, fixture, NODE)
+                    select(store, fixture, NODE)
 
                     // Assert
                     expect(openTitles()).toEqual(["Uses"])
