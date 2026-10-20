@@ -1,7 +1,5 @@
 #!/bin/bash
 
-### Import helper functions and scripts #######################################
-
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
@@ -11,24 +9,16 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 . "$DIR/sonarqube_management.sh"
 . "$DIR/analysers.sh"
 
-### Default Configuration #####################################################
-
-# Default values for various variables
 PROJECT_KEY="maibornwolff-gmbh_codecharta_visualization"
-
-# PROJECT_NAME: The name of the project in SonarQube.
 PROJECT_NAME="CodeCharta Visualization"
-
-# NEW_SONAR_PASSWORD: The new password to set for the SonarQube admin user.
-# If the default 'admin' password is still in use, the script will change it to this value.
-NEW_SONAR_PASSWORD="newadminpassword"
-
-# PROJECT_BASEDIR: The directory containing the source code to be analyzed.
 PROJECT_BASEDIR="$(cd "$(dirname "$DIR")/../visualization" && pwd)"
 
-# Other variables with default values
-HOST_SONAR_URL="http://localhost:9000"   # URL used by the host machine to access the SonarQube server
-CONTAINER_SONAR_URL="http://sonarqube:9000"  # URL used by other Docker containers to access the SonarQube server
+# replaces the default 'admin' password while that is still in use
+NEW_SONAR_PASSWORD="newadminpassword"
+
+# SonarScanner and ccsh run in containers of their own, which reach SonarQube by its container name
+HOST_SONAR_URL="http://localhost:9000"
+CONTAINER_SONAR_URL="http://sonarqube:9000"
 DEFAULT_SONAR_USER="admin"
 DEFAULT_SONAR_PASSWORD="admin"
 SONARQUBE_TOKEN_NAME="codecharta_token"
@@ -36,16 +26,12 @@ SONARQUBE_TOKEN=""
 NETWORK_NAME="sonarnet"
 SONAR_CONTAINER_NAME="sonarqube"
 
-# Set to true to delete the existing SonarQube project
 RUN_PROJECT_CLEANUP=true
-# Set to true to run SonarScanner
 RUN_SONAR_SCANNER=true
-# Set to true to run the final cleanup of Docker containers and networks
 RUN_FINAL_CLEANUP=false
-# Timeout period in seconds for waiting on SonarQube data processing and startup
+# seconds to wait for SonarQube to start and to process the data
 TIMEOUT_PERIOD=10000
 
-# Flags to check if specific options were passed
 FLAG_PROJECT_KEY=false
 FLAG_PROJECT_NAME=false
 FLAG_NEW_SONAR_PASSWORD=false
@@ -53,8 +39,6 @@ FLAG_PROJECT_BASEDIR=false
 FLAG_HOST_SONAR_URL=false
 FLAG_SONARQUBE_TOKEN_NAME=false
 SKIP_PROMPT=false
-
-### Help Message ##############################################################
 
 show_help() {
     echo "Usage: ${0##*/} [-k <project_key>] [-n <project_name>] [-p <new_password>] [-d <project_basedir>] [-u <host_sonar_url>] [-t <sonar_token_name>] [-s] [-h]"
@@ -69,8 +53,6 @@ show_help() {
     echo "  -s                      Skip all prompts and use default values or passed flags"
     echo "  -h                      Show this help message and exit"
 }
-
-### Parse Flags ###############################################################
 
 while getopts ":k:n:p:d:u:t:sh" opt; do
   case ${opt} in
@@ -87,8 +69,6 @@ while getopts ":k:n:p:d:u:t:sh" opt; do
   esac
 done
 
-### Main Script ###############################################################
-
 echo -e "🔧 Welcome to the SonarQube & CodeCharta Automation Script 🔧"
 echo -e "------------------------------------------------------------"
 echo -e "This script automates the process of:"
@@ -97,7 +77,6 @@ echo -e "2. Running SonarScanner to analyze your project's source code."
 echo -e "3. Conducting a CodeCharta analysis of the scanned data."
 echo -e "------------------------------------------------------------\n"
 
-# Prompt for important variables only if they weren't provided via flags
 if [ "$SKIP_PROMPT" != true ]; then
     if [ "$FLAG_PROJECT_KEY" = false ]; then
         read -p "🔑 Enter the Project Key (default: $PROJECT_KEY): " input
@@ -120,44 +99,32 @@ if [ "$SKIP_PROMPT" != true ]; then
     fi
 fi
 
-# URL-encode PROJECT_KEY and PROJECT_NAME
 ENCODED_PROJECT_KEY=$(urlencode "$PROJECT_KEY")
 ENCODED_PROJECT_NAME=$(urlencode "$PROJECT_NAME")
 
-# Build reusable command
-cmd="./${0##*/}"
-cmd+=" -k \"$PROJECT_KEY\""
-cmd+=" -n \"$PROJECT_NAME\""
-cmd+=" -p \"$NEW_SONAR_PASSWORD\""
-cmd+=" -d \"$PROJECT_BASEDIR\""
-cmd+=" -u \"$HOST_SONAR_URL\""
-cmd+=" -t \"$SONARQUBE_TOKEN_NAME\""
+reusable_command="./${0##*/}"
+reusable_command+=" -k \"$PROJECT_KEY\""
+reusable_command+=" -n \"$PROJECT_NAME\""
+reusable_command+=" -p \"$NEW_SONAR_PASSWORD\""
+reusable_command+=" -d \"$PROJECT_BASEDIR\""
+reusable_command+=" -u \"$HOST_SONAR_URL\""
+reusable_command+=" -t \"$SONARQUBE_TOKEN_NAME\""
 
-### Default steps ###
-selected_steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
+all_steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
 
-# Ask if the user wants to select individual steps, unless the -s flag was passed
+selected_steps=("${all_steps[@]}")
 if [ "$SKIP_PROMPT" != true ]; then
     read -p "Would you like to select individual steps to run? (y/N): " select_steps
 
     if [[ "$select_steps" =~ ^[Yy]$ ]]; then
-        # Present a menu to the user to select which steps to run
-        steps=("Ensure SonarQube Running" "Reset SonarQube Password" "Clean Up Previous Project" "Revoke Token" "Create Project and Generate Token" "Run SonarScanner" "Run CodeCharta Analysis" "Final Cleanup")
-        preselected_indices=(0 1 2 3 4 5 6 7)  # By default, all steps are preselected
-
-        # Call the `show_menu` function from helpers.sh (ensure this is defined properly in helpers.sh)
-        show_menu "${#steps[@]}" "${steps[@]}" "${#preselected_indices[@]}" "${preselected_indices[@]}"
-
-        # Override the default steps with user-selected options
+        all_step_indices=("${!all_steps[@]}")
+        show_menu "${#all_steps[@]}" "${all_steps[@]}" "${#all_step_indices[@]}" "${all_step_indices[@]}"
         selected_steps=("${selected_options[@]}")
     fi
 fi
 
-### Run the steps #############################################################
-
 check_dependencies
 
-# Execute the steps based on user selection
 for step in "${selected_steps[@]}"; do
     case $step in
         "Ensure SonarQube Running")
@@ -188,7 +155,5 @@ for step in "${selected_steps[@]}"; do
     esac
 done
 
-### Print Reusable Command ####################################################
-
 echo -e "\nTo run this script again without prompts, use the following command:"
-echo "$cmd"
+echo "$reusable_command"
