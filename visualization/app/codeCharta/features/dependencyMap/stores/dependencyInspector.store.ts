@@ -3,18 +3,18 @@ import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop"
 import { DependencyLeafEdge } from "../../../model/codeCharta.model"
 import { edgeColorsAsDrawn, edgeIdOf } from "../../../renderer/dependencyGraph/dependencyGraph.facade"
 import { fromPathOf, toPathOf } from "../declarations/declarationIndex"
+import { InspectorCycle } from "../inspector/inspectorCycles"
 import {
     BadgeSectionId,
     describeSubject,
     INSPECTOR_ROW_LIMIT,
     InspectorActionKind,
-    InspectorCycle,
     InspectorModel,
-    InspectorReference,
     InspectorSectionId,
     InspectorSubject,
     InspectorUpwardDependency
 } from "../inspector/inspectorModel"
+import { InspectorReference } from "../inspector/inspectorReferences"
 import { DependencyGraphModelStore } from "./dependencyGraphModel.store"
 import { DependencyMapReadStore } from "./dependencyMap.read.store"
 import { DependencyMapWriteStore } from "./dependencyMap.write.store"
