@@ -14,8 +14,6 @@ export const CCSTATE_STATE_ID = 1001
 /** The loaded files live in their own record, so saving a setting does not re-write every loaded map. */
 const CCSTATE_FILES_ID = 1002
 
-/** The settings without the loaded files: a write structured-clones its value on the main thread, so a
- * setting change must not carry every loaded map along. */
 export async function writeCcState(state: CcState) {
     const database = await openCodeChartaDB()
     // Strict durability: the default (relaxed) reports success before the data reaches disk, so a
@@ -41,12 +39,8 @@ export async function writeCcState(state: CcState) {
     })
 }
 
-/**
- * Raise the spinner only for a write that carries the loaded maps: putting them structured-clones
- * every one of them on the main thread, which a reader feels. The settings are a handful of names
- * and flags — writing them is imperceptible, and a spinner over it reads as if a metric change had
- * cost something.
- */
+/** Only a write carrying the loaded maps is felt, as it structured-clones every one on the main thread. A spinner
+ * over an imperceptible settings write would read as if a metric change had cost something. */
 async function whileCopyingTheLoadedMaps(copiesTheLoadedMaps: boolean, write: () => Promise<void>) {
     if (!copiesTheLoadedMaps) {
         return write()
@@ -102,8 +96,6 @@ export async function readCcState(): Promise<CcState | null> {
     const filesRecord = await database.get(CCSTATE_STORE_NAME, CCSTATE_FILES_ID)
     const files = withSeededDependencyLens(filesRecord?.files ?? settingsRecord.state.files ?? [])
     persistedFiles = files
-    // A record written before the split still carries the derived word bank. It is dropped as it is read,
-    // because persisted beats file-derived: a stale bank would win over the rebuilt one.
     return { ...toPersistedSettings(settingsRecord.state), files }
 }
 
@@ -132,12 +124,8 @@ function withoutFiles(state: CcState): Omit<CcState, "files"> {
     return settings
 }
 
-/**
- * The settings as they are persisted, without the derived word bank the reconciliation rebuilds anyway.
- *
- * The key is OMITTED, never emptied: the restore applies the persisted lens source over the rebuilt bank,
- * so a `words: {}` present in the blob would wipe it, while an absent key is skipped.
- */
+/** Drops the derived word bank, also from a record read back, as a stale one would win over the rebuilt one. The key is
+ * omitted, never emptied: the restore applies the persisted lens source over the rebuilt bank, so `words: {}` wipes it. */
 function toPersistedSettings<T>(settings: T): T {
     if (!settings || typeof settings !== "object") {
         return settings
