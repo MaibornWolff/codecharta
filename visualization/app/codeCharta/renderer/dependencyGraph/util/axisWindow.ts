@@ -10,7 +10,6 @@ export interface Viewport {
 
 const FIT_SHARE = 0.94
 
-/** In layout units. */
 export interface AxisWindow {
     x: [number, number]
     y: [number, number]
@@ -23,7 +22,6 @@ export interface PannableView {
     viewport: Viewport
 }
 
-/** Where the zoom of each axis lies among the zooms of the chart. */
 const DATA_ZOOM_INDEX = { x: 0, y: 1 }
 
 /** The axes reach the laid-out graph plus this share of its size on every side, room that dragged boxes can
@@ -127,7 +125,6 @@ function freeHeightOf({ height, coveredBottom = 0 }: Viewport): number {
     return Math.max(height - coveredBottom, 0)
 }
 
-/** The part of a window that nothing is drawn over. */
 function freePartOf({ x, y }: AxisWindow, viewport: Viewport): AxisWindow {
     const freeShare = viewport.height > 0 ? freeHeightOf(viewport) / viewport.height : 1
     return { x, y: [y[0], y[0] + spanOf(y) * freeShare] }
