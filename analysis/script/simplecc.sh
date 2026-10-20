@@ -1,19 +1,8 @@
 #!/bin/bash
 
-# ccsh_analyze.sh - A resilient script to analyze codebases and generate CodeCharta cc.json files.
-#
-# This script runs multiple analysis tools and merges results. Tools that are not installed
-# or not applicable (e.g., git in a non-git directory) are gracefully skipped.
-#
-# USAGE: ./ccsh_analyze.sh [OPTIONS] <FolderName> [SonarUserToken]
-#
-# See ./ccsh_analyze.sh --help for full documentation.
-
-# --- Configuration ---
 SONAR_URL="${SONAR_URL:-http://localhost:9000}"
 FILE_EXTENSION="cc.json.gz"
 
-# --- State tracking ---
 declare -a SKIPPED_STEPS=()
 declare -a GENERATED_FILES=()
 declare -a AVAILABLE_TOOLS=()
@@ -21,12 +10,10 @@ declare -a MISSING_TOOLS=()
 TEMP_DIR=""
 WORKING_DIR=""
 
-# --- Options ---
 LEAF_MERGE=false
 PROJECT_DIR=""
 SONAR_TOKEN=""
 
-# --- Help ---
 show_help() {
     cat << 'EOF'
 USAGE:
@@ -98,7 +85,6 @@ TOOL INSTALLATION:
 EOF
 }
 
-# --- Tool detection ---
 check_tool() {
     local tool=$1
     if command -v "$tool" >/dev/null 2>&1; then
@@ -125,7 +111,6 @@ skip_step() {
     echo "   Skipping: $reason"
 }
 
-# --- Argument parsing ---
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -168,40 +153,69 @@ parse_arguments() {
     fi
 }
 
-# --- Main execution ---
 main() {
     parse_arguments "$@"
+    require_project_dir
+    require_ccsh
+    detect_optional_tools
+    resolve_project
 
-    # Validate project directory
+    print_header
+
+    TEMP_DIR=$(mktemp -d)
+    echo "  Temp directory: $TEMP_DIR"
+
+    cd "$PROJECT_DIR" || exit 1
+    chmod u+w . 2>/dev/null || true
+    remove_previous_target_file
+
+    run_sonar_analysis
+    run_unified_parser
+    run_complexity_analysis
+    run_tokei_analysis
+    run_git_analysis
+    run_rawtext_analysis
+    run_domain_language_analysis
+    run_dependency_analysis
+    run_sonar_import
+    run_merge
+    run_cleanup
+    print_summary
+}
+
+require_project_dir() {
     if [ ! -d "$PROJECT_DIR" ]; then
         echo "Error: Directory '$PROJECT_DIR' not found."
         echo "Please run this script from the parent directory containing '$PROJECT_DIR'."
         exit 1
     fi
+}
 
-    # Check mandatory tool
+require_ccsh() {
     if ! check_tool "ccsh"; then
         echo "Error: ccsh is required but not installed."
         echo "Install from: https://codecharta.com/docs/overview/getting-started#installation"
         exit 1
     fi
+}
 
-    # Check optional tools
+detect_optional_tools() {
     check_tool "jq"
     check_tool "complexity"
     check_tool "tokei"
     check_tool "git"
     check_tool "sonar-scanner"
+}
 
-    # Save the current working directory for output
+resolve_project() {
     WORKING_DIR=$(pwd)
-
-    # Resolve to absolute path and extract just the folder name for project key/name
     RESOLVED_PATH=$(cd "$PROJECT_DIR" && pwd)
     PROJECT_KEY=$(basename "$RESOLVED_PATH")
     PROJECT_NAME=$(basename "$RESOLVED_PATH")
     TARGET_FILE="${WORKING_DIR}/${PROJECT_KEY}.${FILE_EXTENSION}"
+}
 
+print_header() {
     echo ""
     echo "CodeCharta Analysis"
     echo "========================================"
@@ -217,56 +231,13 @@ main() {
     fi
     echo "========================================"
     echo ""
+}
 
-    # Create temp directory for intermediate files
-    TEMP_DIR=$(mktemp -d)
-    echo "  Temp directory: $TEMP_DIR"
-
-    # Navigate into project directory
-    cd "$PROJECT_DIR" || exit 1
-    chmod u+w . 2>/dev/null || true
-
-    # Clean up existing target file
+remove_previous_target_file() {
     if [ -f "$TARGET_FILE" ]; then
         echo "Warning: $TARGET_FILE already exists and will be overwritten."
         rm "$TARGET_FILE"
     fi
-
-    # --- SonarQube Analysis (optional) ---
-    run_sonar_analysis
-
-    # --- UnifiedParser (mandatory) ---
-    run_unified_parser
-
-    # --- Whitespace Complexity (optional) ---
-    run_complexity_analysis
-
-    # --- Tokei (optional) ---
-    run_tokei_analysis
-
-    # --- GitLogParser (optional) ---
-    run_git_analysis
-
-    # --- RawTextParser (mandatory with ccsh) ---
-    run_rawtext_analysis
-
-    # --- DomainLanguageParser (optional, needs a ccsh that ships it) ---
-    run_domain_language_analysis
-
-    # --- DependencyParser (optional, needs a ccsh that ships it) ---
-    run_dependency_analysis
-
-    # --- SonarImporter (optional) ---
-    run_sonar_import
-
-    # --- Merge all generated files ---
-    run_merge
-
-    # --- Cleanup ---
-    run_cleanup
-
-    # --- Summary ---
-    print_summary
 }
 
 run_sonar_analysis() {
@@ -451,7 +422,6 @@ run_domain_language_analysis() {
     echo "Domain Language Analysis"
     echo "========================"
 
-    # The domain lens is a newer analyser; older ccsh installations do not ship it.
     if ! ccsh domainlanguageparser --help >/dev/null 2>&1; then
         skip_step "Domain Language Analysis" "ccsh does not provide domainlanguageparser (update ccsh)"
         return
@@ -547,7 +517,6 @@ run_cleanup() {
     echo "Cleanup"
     echo "======="
 
-    # Clean up temp directory (contains all intermediate files)
     if [ -n "$TEMP_DIR" ] && [ -d "$TEMP_DIR" ]; then
         rm -rf "$TEMP_DIR"
     fi
@@ -588,5 +557,4 @@ print_summary() {
     echo ""
 }
 
-# Run main
 main "$@"
