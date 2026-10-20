@@ -20,7 +20,7 @@ plugins {
 }
 
 // The tree-sitter binding uses the foreign function and memory API, which is final from Java 22 on.
-val minimumJavaVersion = 22
+val minimumJavaVersion by extra(22)
 val buildJavaVersion = 25
 
 allprojects {
