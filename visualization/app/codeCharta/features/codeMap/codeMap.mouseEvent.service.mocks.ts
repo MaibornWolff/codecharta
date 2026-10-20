@@ -23,6 +23,10 @@ import { ViewCubeMouseEventsService } from "../viewCube/facade"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { CodeMapStore } from "./stores/codeMap.store"
 
+function withMockedWindow() {
+    window.open = jest.fn()
+}
+
 export function setUpCodeMapMouseEventService() {
     let codeMapMouseEventService: CodeMapMouseEventService
     let threeCameraService: ThreeCameraService
@@ -139,10 +143,6 @@ export function setUpCodeMapMouseEventService() {
 
         Object.defineProperty(codeMapMouseEventService, "oldMouse", { value: { x: 1, y: 1 }, writable: true, configurable: true })
         return codeMapMouseEventService
-    }
-
-    function withMockedWindow() {
-        window.open = jest.fn()
     }
 
     function withMockedThreeRendererService() {
