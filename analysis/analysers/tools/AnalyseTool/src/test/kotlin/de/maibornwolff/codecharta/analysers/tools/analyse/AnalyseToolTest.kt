@@ -275,6 +275,114 @@ class AnalyseToolTest {
         assertThat(output.toString()).contains("The analyser unifiedparser failed")
     }
 
+    @Test
+    fun `should map the code and the git history at the commit into a map prefixed with its short hash`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+        val shortHash = gitOutput("rev-parse", "--short", "HEAD")
+        writeSource("src/Later.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--commit=$shortHash")
+
+        // Assert
+        assertThat(exitCode).isZero()
+        val map = File(mapFile.parentFile, "$shortHash.map.cc.json.gz")
+        assertThat(filesOf(readMap(map)).keys).containsExactly("src/App.kt")
+        assertThat(filesOf(readMap(map)).getValue("src/App.kt")).containsKeys("complexity", "number_of_commits")
+    }
+
+    @Test
+    fun `should remove the worktree of the commit after the analysis`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--commit=HEAD")
+
+        // Assert
+        assertThat(gitOutput("worktree", "list").lines()).hasSize(1)
+    }
+
+    @Test
+    fun `should say at the end that the svn history is left out at a commit`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--commit=HEAD")
+
+        // Assert
+        assertThat(skippedSources()).containsExactly("svn history: left out with --commit, which reads a git commit")
+    }
+
+    @Test
+    fun `should fail when the folder is in no git repository at a commit`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--commit=HEAD")
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("Not a git repository")
+    }
+
+    @Test
+    fun `should refuse commit together with local changes`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--commit=HEAD", "--local-changes")
+
+        // Assert
+        assertThat(exitCode).isEqualTo(1)
+        assertThat(output.toString()).contains("--commit and --local-changes are mutually exclusive")
+    }
+
+    @Test
+    fun `should map only the locally changed files with their git history`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        writeSource("src/Unchanged.kt", APP_SOURCE)
+        commitAll()
+        pushToRemote()
+        writeSource("src/App.kt", APP_SOURCE + "\nfun later() = 1\n")
+
+        // Act
+        val exitCode = analyse(projectFolder.path, "--output-file=${mapFile.path}", "--local-changes")
+
+        // Assert
+        assertThat(exitCode).isZero()
+        assertThat(filesOf(readMap(mapFile)).keys).containsExactly("src/App.kt")
+        assertThat(filesOf(readMap(mapFile)).getValue("src/App.kt")).containsKeys("complexity", "number_of_commits")
+    }
+
+    @Test
+    fun `should say at the end that the parsers needing every file are left out with local changes`() {
+        // Arrange
+        writeSource("src/App.kt", APP_SOURCE)
+        commitAll()
+        pushToRemote()
+        writeSource("src/App.kt", APP_SOURCE + "\nfun later() = 1\n")
+
+        // Act
+        analyse(projectFolder.path, "--output-file=${mapFile.path}", "--local-changes", parsers = CodeParsers::create)
+
+        // Assert
+        assertThat(skippedSources()).contains(
+            "dependencyparser: left out with --local-changes, its dependency graph needs every file of the project",
+            "domainlanguageparser: left out with --local-changes, its TF-IDF scores compare every file of the project"
+        )
+    }
+
     private val mapFile get() = File(workspace, "out/map.cc.json.gz")
 
     private fun analyse(
@@ -313,6 +421,20 @@ class AnalyseToolTest {
         git("init", "--quiet")
         git("add", ".")
         git("-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "--quiet", "-m", "initial")
+    }
+
+    private fun pushToRemote() {
+        val remote = File(workspace, "remote.git")
+        git("init", "--quiet", "--bare", remote.path)
+        git("remote", "add", "origin", remote.path)
+        git("push", "--quiet", "--set-upstream", "origin", "HEAD")
+    }
+
+    private fun gitOutput(vararg arguments: String): String {
+        val process = ProcessBuilder(listOf("git") + arguments).directory(projectFolder).start()
+        val text = process.inputStream.bufferedReader().readText().trim()
+        check(process.waitFor() == 0) { "git ${arguments.joinToString(" ")} failed" }
+        return text
     }
 
     private fun git(vararg arguments: String) {

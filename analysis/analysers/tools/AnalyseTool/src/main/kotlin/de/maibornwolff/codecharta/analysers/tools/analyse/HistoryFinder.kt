@@ -9,22 +9,18 @@ data class History(val versionControl: VersionControl, val analyser: ConfiguredA
 data class HistorySearch(val histories: List<History>, val skipped: List<SkippedSource>)
 
 class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFolder: File = File(System.getProperty("user.home"))) {
-    fun find(projectFolder: File, leftOut: Set<String>, workFolder: File): HistorySearch {
-        val lookups = VersionControl.entries.map { versionControl ->
-            if (versionControl.label in leftOut) {
-                Lookup(skipped = versionControl.skipped(SkippedSource.LEFT_OUT_REASON))
-            } else {
-                lookUp(versionControl, projectFolder, workFolder)
-            }
-        }
+    fun find(request: AnalyseRequest, workFolder: File): HistorySearch {
+        val lookups = VersionControl.entries.map { versionControl -> lookUp(versionControl, request, workFolder) }
         return HistorySearch(lookups.mapNotNull { it.history }, lookups.mapNotNull { it.skipped })
     }
 
     private class Lookup(val history: History? = null, val skipped: SkippedSource? = null)
 
-    private fun lookUp(versionControl: VersionControl, projectFolder: File, workFolder: File): Lookup {
-        if (versionControl.isRootOf(projectFolder)) return historyOf(versionControl, projectFolder, workFolder)
-        return Lookup(skipped = versionControl.skipped(whyNotRootOf(versionControl, projectFolder)))
+    private fun lookUp(versionControl: VersionControl, request: AnalyseRequest, workFolder: File): Lookup = when {
+        versionControl.label in request.leftOut -> Lookup(skipped = versionControl.skipped(SkippedSource.LEFT_OUT_REASON))
+        request.commitHash != null && versionControl == VersionControl.SVN -> Lookup(skipped = versionControl.skipped(AT_COMMIT_REASON))
+        versionControl.isRootOf(request.projectFolder) -> historyOf(versionControl, request.analysedFolder, workFolder)
+        else -> Lookup(skipped = versionControl.skipped(whyNotRootOf(versionControl, request.projectFolder)))
     }
 
     private fun whyNotRootOf(versionControl: VersionControl, projectFolder: File): String {
@@ -55,5 +51,6 @@ class HistoryFinder(private val svnLogWriter: SvnLogWriter, private val homeFold
 
     companion object {
         private const val SVN_LOG_FILE_NAME = "svn.log"
+        private const val AT_COMMIT_REASON = "left out with --commit, which reads a git commit"
     }
 }

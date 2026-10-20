@@ -9,15 +9,6 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.File
 import kotlin.io.path.createTempDirectory
 
-data class AnalyseRequest(
-    val projectFolder: File,
-    val outputFile: File,
-    val excludePatterns: List<String> = emptyList(),
-    val leftOut: Set<String> = emptySet(),
-    val parallel: Boolean = false,
-    val compress: Boolean = true
-)
-
 private data class ParserSelection(val parsers: List<ConfiguredAnalyser>, val skipped: List<SkippedSource>)
 
 private data class MappedCodebase(val project: Project, val failedHistories: List<SkippedSource>)
@@ -31,7 +22,7 @@ class CodebaseAnalysis(
         val workFolder = createTempDirectory(WORK_FOLDER_PREFIX).toFile()
         try {
             val selection = console.whileAnalysing { selectParsers(request) }
-            val search = console.whileAnalysing { HistoryFinder(svnLogWriter).find(request.projectFolder, request.leftOut, workFolder) }
+            val search = console.whileAnalysing { HistoryFinder(svnLogWriter).find(request, workFolder) }
             val sources = (selection.parsers.map { it.analyser.name } + search.histories.map { it.versionControl.sourceName })
                 .joinToString()
             console.printInPlaceOfAnalyserOutput("Analysing ${request.projectFolder.path} with $sources ...")
@@ -50,24 +41,26 @@ class CodebaseAnalysis(
         val skipped = parsers.mapNotNull { parser -> whySkipped(parser, request)?.let { SkippedSource(parser.name, it) } }
         val applicable = parsers.filter { parser -> skipped.none { it.name == parser.name } }
         if (applicable.isEmpty()) throw AnalysisException("No parser applies to ${request.projectFolder.path}, so there is nothing to map.")
-        val excludeArguments = excludePatternsFor(request).map { "--exclude=$it" }
-        return ParserSelection(applicable.map { ConfiguredAnalyser(it, excludeArguments) }, skipped)
+        val arguments = excludePatternsFor(request).map { "--exclude=$it" } + listOfNotNull(LOCAL_CHANGES.takeIf { request.localChanges })
+        return ParserSelection(applicable.map { ConfiguredAnalyser(it, arguments) }, skipped)
     }
 
     private fun whySkipped(parser: AnalyserInterface, request: AnalyseRequest): String? = when {
         parser.name in request.leftOut -> SkippedSource.LEFT_OUT_REASON
-        !parser.isApplicable(request.projectFolder.path) -> "found no file it reads in ${request.projectFolder.path}"
+        request.localChanges && parser.name in CodeParsers.needingEveryFile ->
+            "left out with $LOCAL_CHANGES, ${CodeParsers.needingEveryFile.getValue(parser.name)}"
+        !parser.isApplicable(request.analysedFolder.path) -> "found no file it reads in ${request.projectFolder.path}"
         else -> null
     }
 
     private fun excludePatternsFor(request: AnalyseRequest): List<String> {
-        val svnFolder = VersionControl.SVN_FOLDER_EXCLUDE_PATTERN.takeIf { VersionControl.SVN.isRootOf(request.projectFolder) }
+        val svnFolder = VersionControl.SVN_FOLDER_EXCLUDE_PATTERN.takeIf { VersionControl.SVN.isRootOf(request.analysedFolder) }
         return request.excludePatterns + listOfNotNull(svnFolder)
     }
 
     private fun analyse(request: AnalyseRequest, parsers: List<ConfiguredAnalyser>, histories: List<History>): MappedCodebase {
         val analysers = parsers + histories.map { it.analyser }
-        val results = ProjectAnalyser().analyseEach(request.projectFolder, analysers, request.outputFile, request.parallel)
+        val results = ProjectAnalyser().analyseEach(request.analysedFolder, analysers, request.outputFile, request.parallel)
         val resultOf = analysers.zip(results).toMap()
         val code = merge(parsers.map { resultOf.getValue(it).getOrThrow() })
         val historyResults = histories.map { it to resultOf.getValue(it.analyser) }
@@ -111,5 +104,6 @@ class CodebaseAnalysis(
 
     companion object {
         private const val WORK_FOLDER_PREFIX = "codecharta-analyse"
+        private const val LOCAL_CHANGES = "--local-changes"
     }
 }
