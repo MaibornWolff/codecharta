@@ -142,19 +142,6 @@ edges on common project layouts; every item below is a bug in DependaCharta that
 - A file that fails to parse or exceeds `--file-timeout` is reported in a warning per cause naming the files;
   a tsconfig or package.json that fails to parse is warned about as well.
 
-`script/ccjson_to_cgjson.py` converts the dependency lens of a cc.json back into a `.cg.json`, so the
-same graph can be opened in DependaCharta's Web Studio and compared by eye:
-
-```
-./script/ccjson_to_cgjson.py out.cc.json -o out.cg.json
-```
-
-The tree it writes is deduplicated, where DependaCharta emits one node per declaration *occurrence*,
-and `.cg.json` records a single usage kind per pair where `leafEdges` may carry several. A `.cg.json`
-addresses a declaration by one dotted path, which the script rebuilds from the leaf's namespace, or from
-its file path where it has none — so for a language without packages the path keeps the file suffix
-DependaCharta strips, and such a file or folder takes its level from `nodes`.
-
 ## How it works
 
 1. **Extract.** Every source file is parsed with tree-sitter into the declarations it contains and the
