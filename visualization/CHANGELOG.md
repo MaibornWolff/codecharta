@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+## [2.9.0] - 2026-10-20
+
 ### Added 🚀
 
 - **Declarations in the dependency view**: a file of a map that carries declarations opens on a double click into its classes, functions and other declarations, and is drawn as a small stack while it is closed.
