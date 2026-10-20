@@ -197,10 +197,9 @@ export interface MapColors {
 
 export type HexMapColor = keyof Omit<MapColors, "labelColorAndAlpha" | "markingColors" | "isColorRangeInverted" | "areDeltaColorsInverted">
 
+/** A null bound means it is to be reset. */
 export interface ColorRange {
-    /** null means to be reset */
     from: number | null
-    /** null means to be reset */
     to: number | null
 }
 
@@ -260,10 +259,8 @@ export interface EdgeMetricCount {
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 
-/**
- * A rule matching nodes by path, in gitignore syntax. The list it belongs to says what it does to
- * the nodes it matches, so it carries no type of its own.
- */
+/** A rule matching nodes by path, in gitignore syntax. The list it belongs to says what it does to the nodes it
+ * matches, so it carries no type of its own. */
 export interface NodeRule {
     path: string
     nodeType?: NodeType
@@ -275,10 +272,8 @@ export type ExcludedNode = NodeRule
 /** A node the map draws short and grey, in the place it would otherwise occupy. */
 export type FlattenedNode = NodeRule
 
-/**
- * A node rule as a loaded cc.json carried it. The file format calls the list a blacklist and types
- * each entry, so the type survives here; the app splits the entries into its own two lists on load.
- */
+/** A node rule as a loaded cc.json carried it. The file format calls the list a blacklist and types each entry, so
+ * the type survives here; the app splits the entries into its own two lists on load. */
 export interface ImportedNodeRule extends NodeRule {
     type: RuleEffect
 }
@@ -289,12 +284,9 @@ export type RuleEffect = "flatten" | "exclude"
 
 export type MetricRuleOperator = "gt" | "gte" | "lt" | "lte" | "eq" | "between"
 
-/**
- * A flatten or exclude rule stated as a condition on a metric rather than a path. It stays a
- * condition in state and is re-evaluated on every render, so it keeps meaning the same thing when
- * newer data is loaded. It addresses files only — a folder's metrics are aggregates of its
- * contents, which is a different question from the one this rule asks.
- */
+/** A flatten or exclude rule stated as a condition on a metric rather than a path. It stays a condition in state and
+ * is re-evaluated on every render, so it keeps meaning the same thing when newer data is loaded. It addresses files
+ * only — a folder's metrics are aggregates of its contents, which is a different question from the one it asks. */
 export interface MetricRule {
     id: string
     metric: string
