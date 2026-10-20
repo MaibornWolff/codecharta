@@ -36,14 +36,6 @@ const MISSING_PROPERTIES_ERROR_TITLE =
 const RESTORING_SESSION_PHASE = "Restoring your session"
 const BUILDING_MAP_PHASE = "Building the map"
 
-/**
- * The single entry point for loading files. Every source — the ?file= URL, IndexedDB, the sample
- * files, a file-picker upload, the reset-map dialog — goes through here.
- *
- * It owns the decision tree around LoadFileService.loadFiles (which owns parse/validate/setFiles),
- * raises the loading indicator, and emits exactly one `filesLoaded` action per load carrying the
- * provenance the post-load reconciliation needs.
- */
 @Injectable({ providedIn: "root" })
 export class LoadFilesUseCase {
     constructor(
@@ -56,7 +48,6 @@ export class LoadFilesUseCase {
         private readonly ccStatePersistence: CcStatePersistence
     ) {}
 
-    /** Boot. Reads the persisted state exactly once and never rejects. */
     async loadOnBoot(): Promise<void> {
         this.store.dispatch(setIsLoadingFile({ value: true }))
         setLoadPhase(RESTORING_SESSION_PHASE)
@@ -66,10 +57,6 @@ export class LoadFilesUseCase {
         await (this.queryParamsService.hasFile() ? this.loadFromUrl(persisted) : this.loadFromIndexedDb(persisted))
     }
 
-    /**
-     * File-picker upload. The caller owns turning the picked files into name/data pairs (that is a
-     * DOM concern); the use-case owns the loading indicator around it and the commit.
-     */
     async loadFromUpload(readNameDataPairs: () => Promise<NameDataPair[]>): Promise<void> {
         this.store.dispatch(setIsLoadingFile({ value: true }))
 
@@ -90,7 +77,6 @@ export class LoadFilesUseCase {
         }
     }
 
-    /** Reset-map dialog. The caller has already wiped the persisted and in-memory state. */
     async reloadAfterReset(): Promise<void> {
         this.store.dispatch(setIsLoadingFile({ value: true }))
 
@@ -110,8 +96,6 @@ export class LoadFilesUseCase {
             this.loadSampleFiles(null, "reset")
         }
     }
-
-    // ───────────────────────────── the boot branches ─────────────────────────────
 
     private async loadFromUrl(persisted: PersistedCcStateRead): Promise<void> {
         const urlMetrics = this.urlMetrics()
@@ -136,8 +120,6 @@ export class LoadFilesUseCase {
             if (this.describeTheSameFiles(urlNameDataPairs, savedNameDataPairs)) {
                 this.applySettingsAndFilesFromSavedState(savedFileStates, savedCcState, "url", urlMetrics)
             } else {
-                // The old path only forced a fit when it restored the SAME files; a differing file
-                // set goes through the normal resetCameraIfNewFileIsLoaded gate.
                 this.applyAllSettings(savedCcState)
                 this.commit(urlNameDataPairs, this.provenance("url", { areSampleFiles: false, urlMetrics }))
             }
@@ -168,13 +150,7 @@ export class LoadFilesUseCase {
         }
     }
 
-    // ───────────────────────────── the shared sink ─────────────────────────────
-
-    /**
-     * Runs the load and emits `filesLoaded` LAST, synchronously, in the same task as the setFiles /
-     * setStandardByNames it triggers. The post-load reconciliation relies on that ordering to pick
-     * the provenance-carrying action out of the burst.
-     */
+    /** `filesLoaded` goes last, in the same task as the setFiles it triggers: the reconciliation picks it out of that burst. */
     private commit(nameDataPairs: NameDataPair[], provenance: FilesLoadedPayload): void {
         try {
             this.loadFileService.loadFiles(nameDataPairs)
@@ -183,8 +159,7 @@ export class LoadFilesUseCase {
                 // Nothing was written to the store. The caller falls back to the sample files.
                 throw error
             }
-            // FILES_ALREADY_LOADED: loadFiles HAS written the store before throwing, so this is a
-            // successful commit — swallow, and let the reconciliation run as it would otherwise.
+            // FILES_ALREADY_LOADED: loadFiles has written the store before throwing, so the commit succeeded.
         }
 
         this.store.dispatch(filesLoaded(provenance))
@@ -210,8 +185,6 @@ export class LoadFilesUseCase {
         this.loadInitialFileStore.setCurrentFilesAreSampleFiles(true)
     }
 
-    // ───────────────────────────── persisted settings ─────────────────────────────
-
     private applySettingsAndFilesFromSavedState(
         savedFileStates: FileState[],
         savedCcState: CcState,
@@ -220,22 +193,17 @@ export class LoadFilesUseCase {
     ): void {
         const missingProperties = []
 
-        // The very first map is fitted once even when the user turned the camera reset off — the
-        // autofit step reads this off the provenance.
+        // The very first map is fitted once even when the user turned the camera reset off.
         const forceAutoFit = !savedCcState.preferences.resetCameraIfNewFileIsLoaded
 
-        // Preferences and mapState are applied up front: the metric selection has to be in the store
-        // before the reconciliation resolves it, since the persisted selection is one of the candidates.
+        // Applied up front: the persisted metric selection has to be in the store before the reconciliation resolves it.
         missingProperties.push(
             ...this.loadInitialFileStore.applyPreferences(savedCcState.preferences),
             ...this.loadInitialFileStore.applyMapState(savedCcState.mapState),
             ...this.loadInitialFileStore.applyDomainState(savedCcState.domainState)
         )
 
-        // The view slices are NOT applied here. They are carried on the provenance and applied by the
-        // reconciliation AFTER its file-derived merge, because persisted beats file-derived: a user's
-        // exclusions, marked packages and focus exist only in the persisted state, so merging the files'
-        // own settings on top of them would erase them.
+        // The reconciliation applies the view slices after its file-derived merge, which would otherwise erase them.
         const restoredSettings: RestoredSettings = {
             sharedView: savedCcState.sharedView,
             metricsLensSource: savedCcState.metricsLensSource,
@@ -260,11 +228,9 @@ export class LoadFilesUseCase {
     /**
      * Restored files were already parsed, validated and decorated by the load that produced them, so they
      * are set directly: re-parsing would build a second copy of every map only to replace it with these.
-     * Keeps `commit`'s contract that `filesLoaded` is dispatched last and synchronously.
      */
     private commitRestoredFiles(savedFileStates: FileState[], provenance: FilesLoadedPayload): void {
         if (savedFileStates.length === 0) {
-            // Nothing reached the store. The caller falls back to the sample files.
             throw new Error(NO_FILES_LOADED_ERROR_MESSAGE)
         }
 
@@ -304,14 +270,10 @@ export class LoadFilesUseCase {
         this.showMissingPropertiesDialog(missingProperties)
     }
 
-    // ───────────────────────────── url ─────────────────────────────
-
     private urlMetrics(): UrlMetricSelection {
         return this.queryParamsService.getMetrics()
     }
 
-    // "Delta" is the only recognized value, and only with at least two loaded files.
-    // Anything else — including the removed single-file mode — falls through to the default state.
     private applyRenderModeFromUrl(): void {
         this.loadInitialFileStore.setRenderState(this.queryParamsService.getRenderMode())
     }
@@ -348,8 +310,6 @@ export class LoadFilesUseCase {
         const rightChecksums = right.map(pair => getContentChecksum(pair.content))
         return dequal(leftChecksums, rightChecksums)
     }
-
-    // ───────────────────────────── errors ─────────────────────────────
 
     private handleUrlLoadError(error: Error, savedCcState: CcState | null, urlMetrics: UrlMetricSelection): void {
         if (error.message !== NO_FILES_LOADED_ERROR_MESSAGE) {
