@@ -1,15 +1,15 @@
 import { Injectable, OnDestroy } from "@angular/core"
 import { Subject } from "rxjs"
-import { AmbientLight, DirectionalLight, Group, Material, Scene, Vector3 } from "three"
+import { AmbientLight, DirectionalLight, Group, Scene, Vector3 } from "three"
 import { CcState, LayoutAlgorithm, Node } from "../../model/codeCharta.model"
 import { isDeltaState } from "../../model/files/files.helper"
 import { getMarkingColor } from "../../util/codeMapHelper"
-import { ColorConverter } from "../../util/color/colorConverter"
 import { EventEmitter } from "../../util/EventEmitter"
 import { FileExtensionCalculator, NO_EXTENSION } from "../../util/fileExtension/fileExtensionCalculator"
 import { selectedColorMetricDataSelector } from "../renderModel/renderModel.facade"
 import { getBuildingColor, treeMapSize } from "./algorithm/treeMapLayout/treeMapHelper"
 import { FloorLabelDrawer } from "./floorLabels/floorLabelDrawer"
+import { FolderLabelMaterials } from "./folderLabelMaterials"
 import { IdToBuildingService } from "./idToBuilding.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CodeMapMesh } from "./rendering/codeMapMesh"
@@ -45,16 +45,12 @@ export class ThreeSceneService implements OnDestroy {
     private primaryHighlightedBuilding: CodeMapBuilding = null
     private readonly constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
-    // Hardcoded color values — no runtime theming system (CSS custom properties) exists in this project.
-    // These do not adapt to dark mode or theme changes.
-    private readonly folderLabelColorHighlighted = ColorConverter.convertHexToNumber("#FFFFFF")
-    private readonly folderLabelColorNotHighlighted = ColorConverter.convertHexToNumber("#7A7777")
+    private readonly folderLabelMaterials = new FolderLabelMaterials(() => this.mapGeometry)
     private folderLabelColorSelected: string
-    private numberSelectionColor: number
 
     private readonly subscription = this.threeSceneStore.mapColors$.subscribe(mapColors => {
         this.folderLabelColorSelected = mapColors.selected
-        this.numberSelectionColor = ColorConverter.convertHexToNumber(this.folderLabelColorSelected)
+        this.folderLabelMaterials.useSelectedColor(this.folderLabelColorSelected)
     })
 
     constructor(
@@ -124,15 +120,6 @@ export class ThreeSceneService implements OnDestroy {
         return this.constantHighlight
     }
 
-    private getMapMaterials(): Material[] | null {
-        const child = this.mapGeometry.children[0]
-        if (!child) {
-            return null
-        }
-        const mat = (child as unknown as { material: unknown }).material
-        return Array.isArray(mat) ? (mat as Material[]) : null
-    }
-
     applyHighlights() {
         const state = this.threeSceneStore.getState()
         this.getMapMesh().highlightBuilding(
@@ -142,11 +129,11 @@ export class ThreeSceneService implements OnDestroy {
             state,
             this.constantHighlight
         )
-        const materials = this.getMapMaterials()
-        if (materials) {
-            const constantHighlightedNodes = new Set<number>([...this.constantHighlight.values()].map(({ node }) => node.id))
-            this.highlightMaterial(materials, constantHighlightedNodes)
-        }
+        const constantHighlightedNodes = new Set<number>([...this.constantHighlight.values()].map(({ node }) => node.id))
+        this.folderLabelMaterials.highlight(
+            this.selected,
+            nodeId => this.highlightedNodeIds.has(nodeId) || constantHighlightedNodes.has(nodeId)
+        )
         this.threeRendererService.render()
     }
 
@@ -159,21 +146,6 @@ export class ThreeSceneService implements OnDestroy {
         this.threeRendererService.render()
     }
 
-    private selectMaterial(materials: Material[]) {
-        const selectedMaterial = materials.find(({ userData }) => userData.id === this.selected.node.id)
-        selectedMaterial?.["color"].setHex(this.numberSelectionColor)
-    }
-
-    private resetMaterial(materials: Material[]) {
-        const selectedID = this.selected ? this.selected.node.id : -1
-        for (const material of materials) {
-            const materialNodeId = material.userData.id
-            if (materialNodeId !== selectedID) {
-                material["color"]?.setHex(this.folderLabelColorHighlighted)
-            }
-        }
-    }
-
     scaleHeight() {
         const scale = this.threeSceneStore.getMapState().scaling
 
@@ -181,19 +153,6 @@ export class ThreeSceneService implements OnDestroy {
         this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
         this.mapGeometry.position.set(-treeMapSize * scale.x, 0, -treeMapSize * scale.z)
         this.mapMesh.setScale(scale)
-    }
-
-    private highlightMaterial(materials: Material[], constantHighlightedNodes: Set<number>) {
-        for (const material of materials) {
-            const materialNodeId = material.userData.id
-            if (this.selected && materialNodeId === this.selected.node.id) {
-                material["color"].setHex(this.numberSelectionColor)
-            } else if (this.highlightedNodeIds.has(materialNodeId) || constantHighlightedNodes.has(materialNodeId)) {
-                material["color"].setHex(this.folderLabelColorHighlighted)
-            } else {
-                material["color"]?.setHex(this.folderLabelColorNotHighlighted)
-            }
-        }
     }
 
     highlightSingleBuilding(building: CodeMapBuilding) {
@@ -232,10 +191,7 @@ export class ThreeSceneService implements OnDestroy {
             this.highlightedNodeIds.clear()
             this.primaryHighlightedBuilding = null
             this.constantHighlight.clear()
-            const materials = this.getMapMaterials()
-            if (materials) {
-                this.resetMaterial(materials)
-            }
+            this.folderLabelMaterials.reset(this.selected)
         }
     }
 
@@ -275,10 +231,7 @@ export class ThreeSceneService implements OnDestroy {
         this.applyHighlights()
 
         this.eventEmitter.emit("onBuildingSelected", { building: this.selected })
-        const materials = this.getMapMaterials()
-        if (materials) {
-            this.selectMaterial(materials)
-        }
+        this.folderLabelMaterials.select(this.selected)
     }
 
     /** Shows the highlight the store keeps, which another view can change while this mesh is not drawn. */
@@ -313,10 +266,7 @@ export class ThreeSceneService implements OnDestroy {
             this.applyHighlights()
             return
         }
-        const materials = this.getMapMaterials()
-        if (materials) {
-            this.resetMaterial(materials)
-        }
+        this.folderLabelMaterials.reset(this.selected)
         this.threeRendererService.render()
     }
 
@@ -353,10 +303,7 @@ export class ThreeSceneService implements OnDestroy {
         if (this.highlightedBuildingIds.size > 0) {
             this.applyHighlights()
         }
-        const materials = this.getMapMaterials()
-        if (materials) {
-            this.resetMaterial(materials)
-        }
+        this.folderLabelMaterials.reset(this.selected)
     }
 
     initLights() {
