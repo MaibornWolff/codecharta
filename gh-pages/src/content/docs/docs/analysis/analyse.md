@@ -37,6 +37,8 @@ back through it.
 | `-o, --output-file=<file>` | where to write the map (default: `<folder name>.cc.json.gz` in the current folder)  |
 | `-e, --exclude=<patterns>` | comma-separated regex patterns of files and folders that every code parser skips    |
 | `--without=NAME[,NAME...]` | parsers or histories to leave out, such as `--without=dependencyparser,svn`         |
+| `--local-changes`          | maps only the files that differ from the remote tracking branch                     |
+| `--commit=REF`             | maps the codebase at a git commit, tag, branch or date                              |
 | `-p, --parallel`           | runs the analysers at the same time                                                 |
 | `-nc, --not-compressed`    | writes the map uncompressed                                                         |
 | `-q, --quiet`              | keeps the output of the analysers off the console                                   |
@@ -44,6 +46,19 @@ back through it.
 `--without` takes the parser names `rawtextparser`, `unifiedparser`, `dependencyparser` and `domainlanguageparser`,
 and `git` and `svn` (or `gitlogparser` and `svnlogparser`) for the histories. An unknown name stops the command with
 a list of the names it accepts.
+
+## Local changes and past commits
+
+`--local-changes` maps only the files you changed since your last push, with their git history, as described in
+[Analyse local changes](/docs/analysis/local-changes). The Dependency Parser and the Domain Language Parser are left
+out, because they need every file of the project.
+
+`--commit` maps the codebase as it was at a commit, tag, branch or date, as described in
+[Analyse a past commit](/docs/analysis/commit-analysis). All parsers and the git history read one temporary worktree
+at that commit, the svn history is left out, and the map name starts with the short commit hash, such as
+`0907bc8.shop.cc.json.gz`.
+
+The two options cannot be combined.
 
 ## What is not in the map
 

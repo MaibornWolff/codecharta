@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased] (Added 🚀 | Changed | Removed  | Fixed 🐞 | Chore 👨‍💻 👩‍💻)
 
+### Added 🚀
+
+- **Local changes and past commits in one step**: `ccsh analyse` takes `--local-changes` to map only the files you
+  changed since your last push, and `--commit` to map the codebase as it was at a commit, tag, branch or date.
+
 ## [2.2.0] - 2026-10-20
 
 ### Added 🚀
