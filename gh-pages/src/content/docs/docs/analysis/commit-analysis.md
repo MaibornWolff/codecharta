@@ -10,7 +10,8 @@ points in time and compare them in the visualization to see how the code changed
 
 The option works with the [Unified Parser](/docs/parser/unified), [Raw Text Parser](/docs/parser/raw-text),
 [Dependency Parser](/docs/parser/dependency), [Domain Language Parser](/docs/parser/domain-language) and the
-`repo-scan` command of the [Git Log Parser](/docs/parser/git-log).
+`repo-scan` command of the [Git Log Parser](/docs/parser/git-log), and with [`ccsh analyse`](/docs/analysis/analyse),
+which runs all of them on one worktree.
 
 ## Quick start
 
@@ -26,6 +27,7 @@ ccsh unifiedparser . --commit HEAD~10 -o output.cc.json
 ccsh unifiedparser . --commit "6 months ago" -o output.cc.json
 ccsh rawtextparser . --commit v1.0.0 -o output.cc.json
 ccsh gitlogparser repo-scan --repo-path . --commit v1.0.0 -o output.cc.json
+ccsh analyse --commit v1.0.0                                 # writes <short hash>.<folder name>.cc.json.gz
 ```
 
 ## Supported references

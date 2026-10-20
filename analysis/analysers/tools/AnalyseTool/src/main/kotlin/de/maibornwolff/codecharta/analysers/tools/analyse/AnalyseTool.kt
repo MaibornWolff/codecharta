@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.analysers.tools.analyse
 
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserDialogInterface
 import de.maibornwolff.codecharta.analysers.analyserinterface.AnalyserInterface
+import de.maibornwolff.codecharta.analysers.analyserinterface.commit.CommitAnalysisContext
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedParameterPreprocessor
 import de.maibornwolff.codecharta.analysers.analyserinterface.util.CommaSeparatedStringToListConverter
 import de.maibornwolff.codecharta.serialization.OutputFileHandler
@@ -52,6 +53,19 @@ class AnalyseTool(
     )
     private var leftOut: List<String> = listOf()
 
+    @CommandLine.Option(
+        names = ["--local-changes"],
+        description = ["maps only the files that differ from the remote tracking branch (unpushed, staged, unstaged, untracked)"]
+    )
+    private var localChanges = false
+
+    @CommandLine.Option(
+        names = ["--commit"],
+        paramLabel = "REF",
+        description = ["maps the codebase as it was at this git commit, tag, branch or date (the map name starts with its short hash)"]
+    )
+    private var commit: String? = null
+
     @CommandLine.Option(names = ["-p", "--parallel"], description = ["runs the analysers at the same time"])
     private var parallel = false
 
@@ -75,9 +89,33 @@ class AnalyseTool(
         val folder = projectFolder ?: workingFolder
         if (!folder.isDirectory) throw AnalysisException("The folder ${folder.path} does not exist.")
         val leftOutSources = leftOutSources()
-        val request = AnalyseRequest(folder, outputFileFor(folder), excludePatterns, leftOutSources, parallel, !notCompressed)
-        CodebaseAnalysis(AnalysisConsole(output, quiet), svnLogWriter, createParsers).run(request)
+        val console = AnalysisConsole(output, quiet)
+        val commitRef = commitRef()
+        val checkout = console.whileAnalysing { CommitAnalysisContext.at(folder, commitRef) }
+        try {
+            CodebaseAnalysis(console, svnLogWriter, createParsers).run(requestFor(folder, checkout, leftOutSources))
+        } finally {
+            checkout.worktreeManager?.cleanup()
+        }
         return SUCCESS
+    }
+
+    private fun requestFor(folder: File, checkout: CommitAnalysisContext, leftOutSources: Set<String>) = AnalyseRequest(
+        projectFolder = folder,
+        outputFile = outputFileFor(folder, checkout),
+        excludePatterns = excludePatterns,
+        leftOut = leftOutSources,
+        parallel = parallel,
+        compress = !notCompressed,
+        analysedFolder = checkout.inputDir,
+        commitHash = checkout.shortHash,
+        localChanges = localChanges
+    )
+
+    private fun commitRef(): String? {
+        val commitRef = commit?.trim()?.ifEmpty { null }
+        if (commitRef != null && localChanges) throw AnalysisException("--commit and --local-changes are mutually exclusive.")
+        return commitRef
     }
 
     private fun leftOutSources(): Set<String> {
@@ -87,9 +125,10 @@ class AnalyseTool(
         throw AnalysisException("--without does not know $unknownSource. Leave out one of: ${leavableSources.joinToString()}")
     }
 
-    private fun outputFileFor(folder: File): File {
+    private fun outputFileFor(folder: File, checkout: CommitAnalysisContext): File {
         val chosen = outputFile ?: File(workingFolder, folder.absoluteFile.normalize().name.ifEmpty { DEFAULT_MAP_NAME }).path
-        return File(OutputFileHandler.checkAndFixFileExtension(chosen, !notCompressed, FileExtension.JSON))
+        val atCommit = checkout.resolveOutputFile(chosen) ?: chosen
+        return File(OutputFileHandler.checkAndFixFileExtension(atCommit, !notCompressed, FileExtension.JSON))
     }
 
     private fun guarded(action: () -> Int): Int = try {

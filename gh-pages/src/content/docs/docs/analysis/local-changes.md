@@ -12,12 +12,14 @@ Deleted files are included with empty metrics, so they can show as absent in the
 The [Unified Parser](/docs/parser/unified) and the [Raw Text Parser](/docs/parser/raw-text) support the flag. The
 [Dependency Parser](/docs/parser/dependency) rejects it, because the dependency graph needs every file of the
 project, and the [Domain Language Parser](/docs/parser/domain-language) accepts it without effect.
+[`ccsh analyse`](/docs/analysis/analyse) takes it too and leaves those two parsers out.
 
 ## Quick start
 
 ```bash
 ccsh unifiedparser . -o changes.cc.json --local-changes
 ccsh rawtextparser . -o changes.cc.json --local-changes
+ccsh analyse --local-changes
 ```
 
 The flag combines with other options such as `--exclude`, `--file-extensions` or `--bypass-gitignore`, but not with
