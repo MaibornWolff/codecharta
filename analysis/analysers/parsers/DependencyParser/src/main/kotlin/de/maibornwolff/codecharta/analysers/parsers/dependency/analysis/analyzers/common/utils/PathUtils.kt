@@ -6,25 +6,7 @@ import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzer
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import java.io.File
 
-/**
- * Resolves the path of an import relative to the file it is imported in.
- *
- * Example:
- * ```
- * import { myFunction } from "./myModule";
- * import { anotherFunction } from ../anotherModule;
- * ```
- * in a file located at /path/to/file.ts will resolve to
- * ```
- * /path/to/myModule and
- * /path/anotherModule respectively
- * ```
- *
- * @param import the import to resolve
- * @param filePath the path of the file the import is in
- * @return the resolved path
- */
-
+// `./myModule` imported in /path/to/file.ts resolves to /path/to/myModule, `../myModule` to /path/myModule
 fun resolveRelativePath(import: Import, filePath: Path): Path {
     if (import is DirectImport) {
         return Path(import.directPath.split("/"))
@@ -53,12 +35,7 @@ fun Path.withoutFileSuffix(fileSuffix: String): Path {
         }
 }
 
-/**
- * Strips known source file extensions from import paths to normalize them.
- * This ensures dependency paths match node paths which have extensions stripped.
- *
- * @return The path with the extension removed if it was a known source extension
- */
+// Node paths have their source extension stripped, so the import paths have to match them
 fun String.stripSourceFileExtension(): String {
     val extension = SOURCE_FILE_EXTENSIONS.firstOrNull { endsWith(it, ignoreCase = true) } ?: return this
     return dropLast(extension.length)
@@ -66,14 +43,6 @@ fun String.stripSourceFileExtension(): String {
 
 private val SOURCE_FILE_EXTENSIONS = listOf(".vue", ".tsx", ".jsx", ".mts", ".cts", ".mjs", ".cjs", ".ts", ".js")
 
-/**
- * Converts an absolute file path to a Path relative to the analysis root.
- *
- * @param absolutePath The absolute path to convert
- * @param analysisRoot The root directory of the analysis
- * @param stripExtension Whether to strip source file extensions from the result
- * @return A Path relative to the analysis root
- */
 fun toRelativePath(absolutePath: File, analysisRoot: File, stripExtension: Boolean = false): Path {
     val relativePath = makeRelativeToAnalysisRoot(absolutePath.canonicalFile, analysisRoot.canonicalFile)
     val finalPath = if (stripExtension) relativePath.stripSourceFileExtension() else relativePath
