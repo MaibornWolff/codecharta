@@ -1,6 +1,6 @@
 ---
 name: Clear the visualization gate warnings
-state: progress
+state: complete
 version: 1
 ---
 
@@ -30,12 +30,15 @@ comment_lines, one commit per file, then lower the error ceilings in `.codechart
 
 ## Steps
 
-- [ ] Complete Task 1: Complexity > 100
-- [ ] Complete Task 2: max_complexity_per_function > 20
-- [ ] Complete Task 3: rloc > 500
-- [ ] Complete Task 4: comment_lines > 25
-- [ ] Complete Task 5: Lower the error ceilings
+- [x] Complete Task 1: Complexity > 100
+- [x] Complete Task 2: max_complexity_per_function > 20
+- [x] Complete Task 3: rloc > 500
+- [x] Complete Task 4: comment_lines > 25
+- [x] Complete Task 5: Lower the error ceilings
 
 ## Notes
 
 - Checks per commit: format:check, related specs, tsc; full npm test, lint and both gates before the ceiling commit
+- Spec helpers are named `*.mocks.ts`: dependency-cruiser and the gate's rloc/comment override only exempt that suffix
+- Ceilings follow the analysis precedent: warning and error both at today's worst file (complexity 100, rloc 472,
+  max_complexity_per_function 14, comment_lines 24)
