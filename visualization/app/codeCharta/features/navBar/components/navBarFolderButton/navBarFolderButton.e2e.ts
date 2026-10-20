@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 import { clearIndexedDB, goto } from "../../../../../playwright.helper"
 import { DialogErrorPageObject } from "../../../../features/shared/components/errorDialog/errorDialog.component.po"
-import { ERROR_MESSAGES } from "../../../../stores/fileStore/loaders/ccJson/util/fileValidator"
+import { ERROR_MESSAGES } from "../../../../stores/fileStore/loaders/ccJson/util/fileValidationMessages"
 import { MapSelectorPageObject } from "../mapSelector/mapSelector.po"
 import { NavBarFolderButtonPageObject } from "./navBarFolderButton.po"
 

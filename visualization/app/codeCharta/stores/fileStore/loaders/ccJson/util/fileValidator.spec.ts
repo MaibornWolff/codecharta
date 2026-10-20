@@ -12,7 +12,8 @@ import { APIVersions, ExportCCFile, NameDataPair } from "../../../../../model/co
 import { CodeMapNode, NodeType } from "../../../../../model/codeCharta.model"
 import { fileWithFixedFolders, fileWithFixedOverlappingSubFolders } from "../../../../../resources/fixed-folders/fixed-folders-example"
 import { clone } from "../../../../../util/clone"
-import { checkErrors, checkWarnings, ERROR_MESSAGES, isCcJson2, removeAuthorsAttributes } from "./fileValidator"
+import { ERROR_MESSAGES } from "./fileValidationMessages"
+import { checkErrors, checkWarnings, isCcJson2, removeAuthorsAttributes } from "./fileValidator"
 
 describe("FileValidator", () => {
     let file: ExportCCFile
