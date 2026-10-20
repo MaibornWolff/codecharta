@@ -3,13 +3,6 @@ package de.maibornwolff.treesitter.excavationsite.languages.delphi.extractors
 import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
 import de.maibornwolff.treesitter.excavationsite.shared.domain.UsedType
 
-/**
- * Resolves tree-sitter-pascal type-reference nodes (`typeref`, `typerefTpl`, `typerefDot`,
- * `typerefPtr`) into [UsedType] instances.
- *
- * Kept separate from [UsedTypeExtractor] so the latter stays focused on extraction-category
- * orchestration rather than on the internals of the pascal type-ref grammar.
- */
 internal object TyperefResolver {
     private const val TYPEREF = "typeref"
     private const val TYPEREF_DOT = "typerefDot"
@@ -20,9 +13,6 @@ internal object TyperefResolver {
     private const val DECL_ARRAY = "declArray"
     private const val DECL_SET = "declSet"
 
-    // `TYPE_NODE` is the node-type string `"type"` (used to match a child's `.type`).
-    // `TYPE_FIELD` is the field name `"type"` (used with `getChildByFieldName`). They share
-    // the same literal value in tree-sitter-pascal but have different roles in traversal.
     private const val TYPE_NODE = "type"
     private const val TYPE_FIELD = "type"
 
@@ -33,13 +23,6 @@ internal object TyperefResolver {
     private val INNER_TYPES = setOf(IDENTIFIER, TYPEREF_DOT, TYPEREF_TPL, TYPEREF_PTR)
     private val TYPE_WRAPPER_INNER_TYPES = setOf(TYPEREF, DECL_ARRAY, DECL_SET)
 
-    /**
-     * `declVar.type` / `declArg.type` / `declField.type` / `declProp.type` / `declConst.type`
-     * wrap the actual type node in a `type` container. Inside that container we usually find
-     * a `typeref`, but `array of X` / `set of X` declarations wrap their element type in an
-     * additional `declArray` / `declSet` node — we descend into the inner element type so
-     * that `array of Byte` surfaces `Byte`.
-     */
     fun fromTypeWrapper(typeWrapper: SyntaxNode): UsedType? {
         if (typeWrapper.isNull) return null
         val inner = typeWrapper.children().firstOrNull { it.type in TYPE_WRAPPER_INNER_TYPES }
@@ -51,21 +34,12 @@ internal object TyperefResolver {
         }
     }
 
-    /**
-     * Both `declArray` and `declSet` carry their element type as an unnamed child of
-     * node-type `"type"` — a wrapper that itself contains a `typeref` (or another
-     * `declArray` / `declSet`, which the recursive descent into `fromTypeWrapper` unwraps
-     * for nested `array of array of X` / `array of set of X` shapes). Bounded arrays carry
-     * their range bounds as siblings; only the element type is captured.
-     */
+    // The range bounds of a bounded array are siblings of the element type and deliberately not captured.
     private fun fromArrayOrSetElement(node: SyntaxNode): UsedType? {
         val elementWrapper = node.children().firstOrNull { it.type == TYPE_NODE } ?: return null
         return fromTypeWrapper(elementWrapper)
     }
 
-    /**
-     * `declProc.type` (return type) may be either `type` (wrapper) or `typeref` directly.
-     */
     fun fromTypeWrapperOrTyperef(typeNode: SyntaxNode): UsedType? {
         if (typeNode.isNull) return null
         return when (typeNode.type) {
@@ -75,10 +49,6 @@ internal object TyperefResolver {
         }
     }
 
-    /**
-     * Converts a `typeref` (or sub-shape: `typerefTpl`, `typerefDot`, `typerefPtr`) into a
-     * [UsedType], capturing generic type arguments where present.
-     */
     fun toUsedType(node: SyntaxNode): UsedType? {
         if (node.isNull) return null
         return when (node.type) {
@@ -90,13 +60,7 @@ internal object TyperefResolver {
         }
     }
 
-    /**
-     * `typeref` wraps one of: identifier, typerefDot, typerefTpl, typerefPtr, …
-     *
-     * `typerefPtr` is an anonymous pointer type (`^TFoo`) whose operand is one of the same
-     * shapes (not wrapped in `typeref`); pointer indirection doesn't introduce a distinct
-     * used type, so both are resolved by unwrapping to the inner type.
-     */
+    // A pointer (`^TFoo`) introduces no used type of its own, so it unwraps like a typeref.
     private fun unwrapInnerType(node: SyntaxNode): UsedType? {
         val inner = node.children().firstOrNull { it.type in INNER_TYPES } ?: return null
         return toUsedType(inner)
@@ -114,23 +78,13 @@ internal object TyperefResolver {
         return UsedType(name = name, genericTypes = genericTypes)
     }
 
-    /**
-     * `typerefDot` represents a qualified type name like `System.Classes.TObject`.
-     *
-     * We capture the **simple** type name — the rightmost segment (`TObject`) — because that
-     * is how downstream resolvers match used types to project declarations. The intermediate
-     * namespace segments are discarded.
-     */
+    // Only the simple name (`TObject` of `System.Classes.TObject`), as downstream resolvers match by it.
     private fun qualifiedName(node: SyntaxNode): UsedType {
         val rhs = node.getChildByFieldName(RHS_FIELD)
         val name = if (!rhs.isNull) rightmostName(rhs) else ""
         return UsedType(name = name)
     }
 
-    /**
-     * Extracts the simple type name from a `typerefTpl.entity`, which may itself be
-     * `identifier`, `typerefDot`, or nested `typerefTpl`.
-     */
     private fun entityName(entity: SyntaxNode): String {
         if (entity.isNull) return ""
         return when (entity.type) {
@@ -147,10 +101,6 @@ internal object TyperefResolver {
         }
     }
 
-    /**
-     * Descends through chained `typerefDot` / `typerefTpl` nodes to the rightmost identifier —
-     * the simple type name of a qualified reference.
-     */
     private fun rightmostName(node: SyntaxNode): String {
         var current = node
         while (!current.isNull) {
