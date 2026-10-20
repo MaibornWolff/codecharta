@@ -11,12 +11,6 @@ private const val ENTITY_FIELD = "entity"
 private const val GENERIC_DOT = "genericDot"
 private const val GENERIC_TPL = "genericTpl"
 
-/**
- * Extracts the "leading" identifier from a name field — the first simple name segment.
- *
- * Used by declarations where a qualified name's leading segment is the declaration's own
- * identifier (e.g., `TFoo<T>` → `TFoo`, a bare `identifier` → itself).
- */
 private fun leadingNameIdentifier(nameNode: SyntaxNode): String? {
     if (nameNode.isNull) return null
     return when (nameNode.type) {
@@ -26,8 +20,6 @@ private fun leadingNameIdentifier(nameNode: SyntaxNode): String? {
             if (entity.isNull) null else leadingNameIdentifier(entity)
         }
         GENERIC_DOT -> {
-            // For a qualified declaration name like `Outer.Inner`, the leading segment is
-            // the lhs; typically not seen on top-level declTypes, but handle defensively.
             val lhs = nameNode.getChildByFieldName("lhs")
             if (lhs.isNull) null else leadingNameIdentifier(lhs)
         }
@@ -39,12 +31,6 @@ private fun leadingNameIdentifier(nameNode: SyntaxNode): String? {
     }
 }
 
-/**
- * Extracts the "trailing" identifier from a name field — the last simple name segment.
- *
- * Used for method names, where a qualified name like `TFoo.Create` carries the method's
- * own identifier (`Create`) as the rhs of a `genericDot`.
- */
 private fun trailingNameIdentifier(nameNode: SyntaxNode): String? {
     if (nameNode.isNull) return null
     return when (nameNode.type) {
@@ -61,35 +47,16 @@ private fun trailingNameIdentifier(nameNode: SyntaxNode): String? {
     }
 }
 
-/**
- * Extracts the type name from a `declType` node (class, interface, record, enum, helper).
- *
- * Top-level type declarations have simple `identifier` or `genericTpl` names; we return
- * the leading identifier.
- */
 internal fun extractDelphiDeclTypeName(node: SyntaxNode): String? {
     val nameNode = node.getChildByFieldName(NAME_FIELD)
     return leadingNameIdentifier(nameNode)
 }
 
-/**
- * Extracts the name from a `declProc` node (procedure / function / method declaration).
- *
- * `declProc` names can be either bare identifiers (interface-section method declarations:
- * `procedure Foo;`) or qualified `genericDot` (`TFoo.Method` in some contexts). For
- * extraction purposes we want the method's own identifier — the trailing segment.
- */
 internal fun extractDelphiDeclProcName(node: SyntaxNode): String? {
     val nameNode = node.getChildByFieldName(NAME_FIELD)
     return trailingNameIdentifier(nameNode)
 }
 
-/**
- * Extracts the name from a `defProc` node (procedure / function / method implementation).
- *
- * The name lives at `defProc.header.name`. For method implementations the name is typically
- * `TFoo.Create` — we want `Create` (the method's own name), not `TFoo` (the class prefix).
- */
 internal fun extractDelphiDefProcName(node: SyntaxNode): String? {
     val header = node.getChildByFieldName(HEADER_FIELD)
     if (header.isNull) return null
@@ -97,19 +64,8 @@ internal fun extractDelphiDefProcName(node: SyntaxNode): String? {
     return trailingNameIdentifier(nameNode)
 }
 
-/**
- * Extracts all identifiers declared by a node (declVar / declField / declArg).
- *
- * Pascal lets multiple names share a declaration: `var X, Y: Integer;`. All the
- * name identifiers appear as direct children preceding the `:` separator; the
- * type is wrapped in a `type` node and so is NOT a direct identifier child, so
- * simply filtering direct identifier children is safe here.
- *
- * For safety against other direct identifier children (e.g., default-value
- * expressions whose first identifier could leak in), we stop collecting once
- * we see a non-identifier / non-comma token — identifier lists are always
- * comma-separated at the front.
- */
+// `var X, Y: Integer;` lists its names up front; stopping at the first other token keeps identifiers of a
+// default-value expression out.
 internal fun extractDelphiMultipleNames(node: SyntaxNode): List<String> {
     val names = mutableListOf<String>()
     for (child in node.children()) {
