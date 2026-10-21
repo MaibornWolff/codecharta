@@ -385,12 +385,9 @@ class KotlinDependencyTest {
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
 
-            // Assert — ServiceFactory.create extracted from both call_expression and navigation_expression
+            // Assert
             val usedTypes = result.declarations.first().usedTypes
-            assertThat(usedTypes).containsExactlyInAnyOrder(
-                UsedType("ServiceFactory"),
-                UsedType("ServiceFactory.create")
-            )
+            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("ServiceFactory.create"))
         }
 
         @Test
@@ -488,8 +485,7 @@ class KotlinDependencyTest {
                 UsedType("DateTimeFormatBuilder.WithDate", usage = TypeUsage.INHERITANCE),
                 UsedType("DateTimeUnit.DateBased"),
                 UsedType("UnicodeFormat.Directive"),
-                UsedType("AbstractWith.Builder"),
-                UsedType("AbstractWith")
+                UsedType("AbstractWith.Builder")
             )
         }
 
@@ -534,16 +530,11 @@ class KotlinDependencyTest {
             // Act
             val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
 
-            // Assert — matches DC behavior: all navigation expression levels + full call text
+            // Assert
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
                 UsedType("DateTimeFormatBuilder.WithTime.create"),
-                UsedType("DateTimeFormatBuilder.WithTime"),
-                UsedType("DateTimeFormatBuilder"),
-                UsedType("UnicodeFormat.Directive.DateBased.format"),
-                UsedType("UnicodeFormat.Directive.DateBased"),
-                UsedType("UnicodeFormat.Directive"),
-                UsedType("UnicodeFormat")
+                UsedType("UnicodeFormat.Directive.DateBased.format")
             )
         }
 
@@ -569,9 +560,32 @@ class KotlinDependencyTest {
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
                 UsedType("Outer.Inner"),
-                UsedType("Outer"),
                 UsedType("MyClass")
             )
+        }
+
+        @Test
+        fun `should not report an imported class a call goes through as a use of its own`() {
+            // Arrange
+            val code = """
+            package com.example
+
+            import b.Outer
+            import b.Node
+
+            class Factory {
+                val inner = Outer.Inner()
+                val built = Node.build()
+                val constant = Outer.DEFAULT
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val usedTypes = result.declarations.first().usedTypes
+            assertThat(usedTypes).containsExactlyInAnyOrder(UsedType("Outer.Inner"), UsedType("Node.build"), UsedType("Outer"))
         }
 
         @Test
@@ -596,9 +610,7 @@ class KotlinDependencyTest {
             val usedTypes = result.declarations.first().usedTypes
             assertThat(usedTypes).containsExactlyInAnyOrder(
                 UsedType("Outer.Inner", listOf(UsedType("String"))),
-                UsedType("Outer"),
                 UsedType("Container.Builder", listOf(UsedType("String"), UsedType("Int"))),
-                UsedType("Container"),
                 UsedType("MyClass", listOf(UsedType("Boolean")))
             )
         }
@@ -1140,7 +1152,6 @@ class KotlinDependencyTest {
                 UsedType("Map", listOf(UsedType("SpeedType"), UsedType("Speed"))),
                 UsedType("ArmorClass"),
                 UsedType("List", listOf(UsedType("HitPoints"))),
-                UsedType("Logger"),
                 UsedType("Logger.info"),
                 UsedType("DamageCalculator"),
                 UsedType("emptyMap")

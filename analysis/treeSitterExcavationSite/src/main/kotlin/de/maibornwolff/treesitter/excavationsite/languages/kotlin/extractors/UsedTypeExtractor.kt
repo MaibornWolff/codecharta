@@ -20,6 +20,7 @@ internal object UsedTypeExtractor {
     private const val TYPE_PROJECTION = "type_projection"
 
     private val ALL_NODE_TYPES = setOf(USER_TYPE, CALL_EXPRESSION, NAVIGATION_EXPRESSION)
+    private val QUALIFIED_NAME_OWNERS = setOf(CALL_EXPRESSION, NAVIGATION_EXPRESSION)
 
     // Supertypes
     private const val DELEGATION_SPECIFIER = "delegation_specifier"
@@ -37,7 +38,10 @@ internal object UsedTypeExtractor {
             .filterNot { isTypeArgumentOfNamedType(it) }
             .mapNotNull { userType -> extractType(userType)?.copy(usage = supertypeUsage(userType, declaration)) }
         val constructorCallTypes = buckets[CALL_EXPRESSION].orEmpty().mapNotNull { extractCallType(it) }
-        val navigationTypes = buckets[NAVIGATION_EXPRESSION].orEmpty().mapNotNull { extractNavigationType(it) }
+        val navigationTypes = buckets[NAVIGATION_EXPRESSION]
+            .orEmpty()
+            .filterNot { isQualifierOfLongerName(it) }
+            .mapNotNull { extractNavigationType(it) }
         val valueReferences = ValueReferenceExtractor.extract(declaration, importedNames)
 
         return (writtenTypes + constructorCallTypes + navigationTypes + valueReferences).toSet()
@@ -60,6 +64,13 @@ internal object UsedTypeExtractor {
         val callSuffix = call.children().firstOrNull { it.type == CALL_SUFFIX }
         val genericTypes = callSuffix?.let { extractGenericTypesFromCallSuffix(it) } ?: emptyList()
         return UsedType(name = name, genericTypes = genericTypes)
+    }
+
+    // The callee of a call or the receiver of a longer navigation is reported whole, and the class it goes through is
+    // only the qualifier of that name, no use of its own
+    private fun isQualifierOfLongerName(navigation: SyntaxNode): Boolean {
+        val parent = navigation.parent
+        return parent.type in QUALIFIED_NAME_OWNERS && parent.getNamedChild(0) == navigation
     }
 
     private fun extractNavigationType(navigation: SyntaxNode): UsedType? =
