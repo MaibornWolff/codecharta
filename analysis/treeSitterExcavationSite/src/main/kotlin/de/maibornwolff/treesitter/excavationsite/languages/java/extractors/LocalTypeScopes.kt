@@ -1,8 +1,12 @@
-package de.maibornwolff.treesitter.excavationsite.shared.domain
+package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
+
+import de.maibornwolff.treesitter.excavationsite.shared.domain.SyntaxNode
+import de.maibornwolff.treesitter.excavationsite.shared.domain.ancestors
 
 /**
  * Where a written type name means a type of the code around it rather than a declaration another file can name: a type
- * parameter of an enclosing declaration, or a local class declared earlier in an enclosing block.
+ * parameter of an enclosing declaration, or a local class declared earlier in an enclosing block. Java and Kotlin share
+ * this rule, each with its own node types.
  */
 internal class LocalTypeScopes(
     private val typeParameterOwners: Set<String>,

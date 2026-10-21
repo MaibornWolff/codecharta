@@ -1,7 +1,5 @@
 package de.maibornwolff.treesitter.excavationsite.languages.java.extractors
 
-import de.maibornwolff.treesitter.excavationsite.shared.domain.LocalTypeScopes
-
 internal object JavaScopes {
     private val BLOCKS = setOf("block", "constructor_body")
 
