@@ -107,8 +107,8 @@ declarations:
   template is `angular`.
 - `usage` names how the source uses the target: `usage`, `inheritance`, `implementation`,
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
-  extractor found, as in DependaCharta. PHP reports every kind; Java reports `inheritance` and
-  `implementation`; see [known issues](#known-issues).
+  extractor found, as in DependaCharta. PHP reports every kind; Java and Kotlin report `inheritance`
+  and `implementation`; see [known issues](#known-issues).
 - A name declared in several files — a C# partial class, a Go function name reused within a package, two projects
   with the same package — is one leaf per file, with the same key and, where it has one, the same `namespace`. Each
   copy's dependencies leave the file they are written in, while a dependency *on* the name points at the file that
@@ -184,9 +184,9 @@ its cause.
 
 ## Known issues
 
-**Usage kinds are only reported for PHP and partly for Java.** The `usage` list on a leaf edge can name seven
+**Usage kinds are only reported for PHP and partly for Java and Kotlin.** The `usage` list on a leaf edge can name seven
 kinds, but every language except PHP — which runs its own queries — reports only `usage`, apart from `inheritance`
-and `implementation` in Java. The underlying extraction
+and `implementation` in Java and Kotlin. The underlying extraction
 (`TreeSitterExcavationSite`) does separate used types by the position they appear in, but flattens that
 away in the type it hands back, so the distinction is lost before this parser sees it. DependaCharta has
 the same gap.
