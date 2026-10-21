@@ -1,0 +1,3 @@
+# java.md, Java and Kotlin: a Java name can mean a Kotlin class
+file a/App.java -> b/Config.kt
+leaf a/App.java#App -> b/Config.kt#Config

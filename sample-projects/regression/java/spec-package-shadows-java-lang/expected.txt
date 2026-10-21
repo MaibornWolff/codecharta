@@ -1,0 +1,3 @@
+# java.md, rules 5 and 7: a type of the own package shadows java.lang
+file a/App.java -> a/String.java
+leaf a/App.java#App -> a/String.java#String

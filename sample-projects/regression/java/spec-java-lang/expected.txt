@@ -1,0 +1,1 @@
+# java.md, rule 7: java.lang is imported implicitly and draws no edge

@@ -1,0 +1,4 @@
+# A member type of the own type does not shadow a type of the own package
+missing leaf a/Outer.java#Outer -> a/Outer.java#Node
+extra file a/Outer.java -> a/Node.java
+extra leaf a/Outer.java#Outer -> a/Node.java#Node

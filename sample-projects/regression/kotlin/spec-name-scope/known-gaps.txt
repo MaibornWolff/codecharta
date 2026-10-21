@@ -1,0 +1,3 @@
+# A Kotlin name can mean a C++ declaration of the same logical path
+extra file a/App.kt -> a/widget.hpp
+extra leaf a/App.kt#App -> a/widget.hpp#Widget

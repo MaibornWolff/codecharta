@@ -1,0 +1,5 @@
+# kotlin.md, rule 4: an import alias names the imported declaration, and the plain name means the own package again
+file a/App.kt -> a/Config.kt
+file a/App.kt -> b/Config.kt
+leaf a/App.kt#App -> a/Config.kt#Config
+leaf a/App.kt#App -> b/Config.kt#Config

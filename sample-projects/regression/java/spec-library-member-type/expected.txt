@@ -1,0 +1,1 @@
+# java.md, qualified name: a member type of a library type draws no edge

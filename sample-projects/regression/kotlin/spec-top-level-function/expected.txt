@@ -1,0 +1,3 @@
+# kotlin.md, declarations: a top-level function is a target, named through an explicit import
+file b/App.kt -> a/Util.kt
+leaf b/App.kt#App -> a/Util.kt#helper

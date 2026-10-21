@@ -1,0 +1,1 @@
+# java.md, rule 6: two on-demand imports that both declare the name make it ambiguous

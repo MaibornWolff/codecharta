@@ -1,0 +1,4 @@
+# A nested class of the own class does not shadow a declaration of the own package
+missing leaf a/Outer.kt#Outer -> a/Outer.kt#Node
+extra file a/Outer.kt -> a/Node.kt
+extra leaf a/Outer.kt#Outer -> a/Node.kt#Node

@@ -1,0 +1,3 @@
+# kotlin.md, rules 5 and 7: a declaration of the own package shadows a default import
+file a/App.kt -> a/List.kt
+leaf a/App.kt#App -> a/List.kt#List

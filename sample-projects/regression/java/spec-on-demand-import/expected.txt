@@ -1,0 +1,3 @@
+# java.md, rule 6: a type-import-on-demand
+file a/App.java -> b/Config.java
+leaf a/App.java#App -> b/Config.java#Config

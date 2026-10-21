@@ -1,0 +1,1 @@
+# README.md, rule 1: a Java name never means a C++ declaration of the same path

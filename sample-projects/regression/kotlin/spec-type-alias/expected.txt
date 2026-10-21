@@ -1,0 +1,5 @@
+# kotlin.md, qualified name: a type alias is a target and depends on the type it stands for
+file a/Aliases.kt -> a/Config.kt
+file a/App.kt -> a/Aliases.kt
+leaf a/Aliases.kt#Settings -> a/Config.kt#Config
+leaf a/App.kt#App -> a/Aliases.kt#Settings

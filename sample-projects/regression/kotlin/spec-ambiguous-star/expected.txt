@@ -1,0 +1,1 @@
+# kotlin.md, rule 6: two star imports that both declare the name make it ambiguous

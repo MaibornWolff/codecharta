@@ -1,0 +1,3 @@
+# java.md, qualified name: a package-qualified name means exactly that type
+file a/App.java -> b/Config.java
+leaf a/App.java#App -> b/Config.java#Config

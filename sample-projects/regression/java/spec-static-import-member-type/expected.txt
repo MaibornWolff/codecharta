@@ -1,0 +1,3 @@
+# java.md, rule 4: a single static import of a member type
+file a/App.java -> b/Outer.java
+leaf a/App.java#App -> b/Outer.java#Node

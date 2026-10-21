@@ -29,10 +29,39 @@ Looked up in this order; the first match wins (§6.4.1, §7.5):
 - If the first segment of `Q` resolves as a type by the simple-name rules, `Q.N` is the member type `N` of that type,
   including inherited ones (`Map.Entry`, `Outer.Nested`).
 - Otherwise `Q` is a package and `Q.N` is exactly the type `N` of that package (`com.ex.Config`).
+- The qualifying type is no dependency of its own: `Order.Line` depends on `Line` only.
 
 ## Java and Kotlin
 
 Both compile to one class path, so a Java name can mean a Kotlin class and the other way round, by the same rules.
+
+## Probes
+
+Each rule is tested by a probe under `sample-projects/regression/java/`. "Gap" means the parser does not follow
+the rule yet; the probe's `known-gaps.txt` says how it deviates.
+
+| Rule | Probe | Today |
+| --- | --- | --- |
+| Declarations: a member type is a leaf of its own | `spec-member-type-own-leaf` | gap |
+| 1. type parameter | `spec-type-parameter` | gap |
+| 2. local class | `spec-local-class` | gap |
+| 3. member type of the own type | `spec-own-member-type` | gap |
+| 3. member type of an enclosing type | `spec-enclosing-member-type` | gap |
+| 3. inherited member type | `spec-inherited-member-type` | ok |
+| 4. single-type import over the own package | `spec-single-import-beats-package` | ok |
+| 4. single static import of a member type | `spec-static-import-member-type` | gap |
+| 5. own package over an on-demand import | `spec-package-beats-on-demand` | ok |
+| 6. on-demand import | `spec-on-demand-import` | ok |
+| 6. two on-demand imports: ambiguous | `spec-ambiguous-on-demand` | gap |
+| 7. `java.lang` | `spec-java-lang` | ok |
+| 5 and 7. own package over `java.lang` | `spec-package-shadows-java-lang` | ok |
+| Qualified through a type | `spec-qualified-by-imported-type` | gap |
+| Qualified through a package | `spec-fully-qualified` | ok |
+| Qualified through a library type | `spec-library-member-type` | gap |
+| Java and Kotlin | `spec-uses-kotlin` | ok |
+| Shared rule 1, name scope | `spec-name-scope` | gap |
+| Shared rule 2, copies | `r1-mono` | ok |
+| Shared rule 4, self | `spec-self` | ok |
 
 ## Not supported
 

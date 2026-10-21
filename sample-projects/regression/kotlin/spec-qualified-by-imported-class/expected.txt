@@ -1,0 +1,3 @@
+# kotlin.md, qualified name: Q.N through an imported class; the qualifier is no dependency of its own
+file a/App.kt -> b/Outer.kt
+leaf a/App.kt#App -> b/Outer.kt#Node
