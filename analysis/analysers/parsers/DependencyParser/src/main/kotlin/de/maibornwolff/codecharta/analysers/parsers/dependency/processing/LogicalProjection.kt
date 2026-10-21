@@ -14,7 +14,7 @@ internal class LogicalProjection(
     private val cyclicEdgesByDeclaration: Map<String, Set<String>>,
     private val namespaceTree: LevelizedNamespaceTree?
 ) {
-    private val fileByLogicalPath = FileLevelAggregator.filePathByDeclaration(resolvedNodes)
+    private val declaringFiles = DeclaringFiles.of(resolvedNodes)
     private val keyByFileAndLogicalPath = uniqueKeysPerFile()
 
     fun addTo(physical: DependencyGraph): DependencyGraph {
@@ -79,16 +79,17 @@ internal class LogicalProjection(
 
     // A used type is identified by its name, so a pair arrives once per node and weighs 1 as in
     // DependaCharta. A dependency whose declaration no analyzer produced (e.g. a node dropped as a Rust
-    // re-export carrier) has nothing to point at, and a target declared in several files is the first of
-    // them, the file [FileLevelAggregator] points the file edge at.
+    // re-export carrier) has nothing to point at, and a target declared in several files is the one
+    // [DeclaringFiles] picks for the using file, the file [FileLevelAggregator] points the file edge at.
     private fun edgeBetween(node: Node, dependency: Dependency): DeclarationEdge? {
         val sourcePath = node.pathWithName.withDots()
         val targetPath = dependency.withDots()
-        val targetFile = fileByLogicalPath[targetPath]
+        val sourceFile = FilePath.of(node)
+        val targetFile = declaringFiles.fileFor(targetPath, sourceFile)
         if (targetFile == null || targetPath == sourcePath) return null
         val isCyclic = targetPath in cyclicEdgesByDeclaration[sourcePath].orEmpty()
         return DeclarationEdge(
-            from = addressOf(FilePath.of(node), sourcePath),
+            from = addressOf(sourceFile, sourcePath),
             to = addressOf(targetFile, targetPath),
             weight = 1,
             usage = listOf(dependency.type.rawValue),

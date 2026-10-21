@@ -109,10 +109,11 @@ declarations:
   `instantiation`, `argument`, `return_value`, `constant_access`. A pair carries one kind, the first the
   extractor found, as in DependaCharta. Only PHP reports more than `usage` today; see
   [known issues](#known-issues).
-- A declaration split across files — a C# partial class, a Go function name reused within a package — is
-  one leaf per file, with the same key and, where it has one, the same `namespace`. Each part's dependencies leave the file they are
-  written in, while a dependency *on* the split declaration points at the first of its files as the scan
-  lists them (path order).
+- A name declared in several files — a C# partial class, a Go function name reused within a package, two projects
+  with the same package — is one leaf per file, with the same key and, where it has one, the same `namespace`. Each
+  copy's dependencies leave the file they are written in, while a dependency *on* the name points at the file that
+  shares the longest folder path with the file using it, and among equally near files at the first as the scan
+  lists them (path order); for SQL at the latest migration.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 
