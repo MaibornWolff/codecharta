@@ -31,15 +31,6 @@ extra file a/App.java -> a/Entry.java
 extra leaf a/App.java#App -> a/Entry.java#Entry
 ```
 
-## spec-local-class
-
-A local class does not shadow a type of the own package.
-
-```text
-extra file a/Service.java -> a/Helper.java
-extra leaf a/Service.java#Service -> a/Helper.java#Helper
-```
-
 ## spec-member-type-own-leaf
 
 Order.Line is taken for the top-level Line, and the outer type takes over the uses of its member type.
@@ -82,11 +73,3 @@ extra file a/App.java -> a/Node.java
 extra leaf a/App.java#App -> a/Node.java#Node
 ```
 
-## spec-type-parameter
-
-A type parameter does not shadow a type of the own package.
-
-```text
-extra file a/Box.java -> a/Config.java
-extra leaf a/Box.java#Box -> a/Config.java#Config
-```

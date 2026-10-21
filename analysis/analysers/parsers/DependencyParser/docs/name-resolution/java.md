@@ -43,8 +43,8 @@ the rule yet; `sample-projects/regression/java/known-gaps.md` says how it deviat
 | Rule | Probe | Today |
 | --- | --- | --- |
 | Declarations: a member type is a leaf of its own | `spec-member-type-own-leaf` | gap |
-| 1. type parameter | `spec-type-parameter` | gap |
-| 2. local class | `spec-local-class` | gap |
+| 1. type parameter | `spec-type-parameter` | ok |
+| 2. local class | `spec-local-class` | ok |
 | 3. member type of the own type | `spec-own-member-type` | gap |
 | 3. member type of an enclosing type | `spec-enclosing-member-type` | gap |
 | 3. inherited member type | `spec-inherited-member-type` | ok |

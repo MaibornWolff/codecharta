@@ -23,6 +23,7 @@ internal object DeclarationExtractor {
 
     fun extract(rootNode: SyntaxNode): List<Declaration> = TreeTraversal
         .findAllDescendantsOfType(rootNode, *DECLARATION_TYPES.toTypedArray())
+        .filterNot { JavaScopes.LOCAL_TYPES.isLocalClass(it) }
         .map { declarationNode ->
             val name = declarationNode.getChildByFieldName(NAME_FIELD).text
             val type = declarationType(declarationNode)

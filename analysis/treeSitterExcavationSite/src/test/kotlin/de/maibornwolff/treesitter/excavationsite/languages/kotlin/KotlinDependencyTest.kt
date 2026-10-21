@@ -807,8 +807,8 @@ class KotlinDependencyTest {
                 "a type check|class Holder { fun f(candidate: Any) = candidate is Target }|Any Target",
                 "a call type argument|class Holder { fun f() = emptyList<Target>() }|emptyList Target",
                 "a lambda parameter|class Holder { val reader = { roll: Target -> roll } }|Target",
-                "a where clause|class Holder { fun <T> f(items: List<T>): T? where T : Target = null }|List T Target",
-                "a type parameter bound of a function|class Holder { fun <T : Target> f(item: T) { } }|Target T",
+                "a where clause|class Holder { fun <T> f(items: List<T>): T? where T : Target = null }|List Target",
+                "a type parameter bound of a function|class Holder { fun <T : Target> f(item: T) { } }|Target",
                 "a type parameter bound of a class|class Holder<T : Target>|Target",
                 "a function type|class Holder { val visit: (Target) -> Unit = { } }|Target Unit",
                 "an extension receiver|class Holder { fun Target.run() { } }|Target",
@@ -1153,6 +1153,77 @@ class KotlinDependencyTest {
         fun `should report Kotlin as supported for dependency analysis`() {
             // Act & Assert
             assertThat(TreeSitterDependencies.isDependencyAnalysisSupported(Language.KOTLIN)).isTrue()
+        }
+    }
+
+    @Nested
+    inner class LocalTypeNames {
+        @Test
+        fun `should report no used type for a name that a type parameter of the class or function declares`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Box<Config> {
+                var value: Config? = null
+
+                fun <T> put(item: T, all: List<Config>) {}
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            val usedNames = result.declarations.single().usedTypes.flatMap {
+                listOf(it.name) +
+                    it.genericTypes.map { generic -> generic.name }
+            }
+            assertThat(usedNames).doesNotContain("Config", "T")
+        }
+
+        @Test
+        fun `should neither declare a local class nor report its name as a used type in its block`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Service {
+                fun run() {
+                    class Helper
+                    val helper: Helper = Helper()
+                }
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.map { it.name }).containsExactly("Service")
+            assertThat(result.declarations.single().usedTypes.map { it.name }).doesNotContain("Helper")
+        }
+
+        @Test
+        fun `should report the name of a local class as a used type outside its block`() {
+            // Arrange
+            val code = """
+            package a
+
+            class Service {
+                fun run() {
+                    class Helper
+                }
+
+                val other: Helper? = null
+            }
+            """.trimIndent()
+
+            // Act
+            val result = TreeSitterDependencies.analyze(code, Language.KOTLIN)
+
+            // Assert
+            assertThat(result.declarations.single().usedTypes.map { it.name }).containsExactly("Helper")
         }
     }
 }

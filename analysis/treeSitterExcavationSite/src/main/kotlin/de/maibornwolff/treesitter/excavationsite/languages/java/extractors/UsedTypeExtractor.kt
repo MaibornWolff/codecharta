@@ -28,6 +28,7 @@ internal object UsedTypeExtractor {
     private const val NAME_FIELD = "name"
     private const val OBJECT_FIELD = "object"
     private const val PARAMETERS_FIELD = "parameters"
+    private const val QUALIFIER_SEPARATOR = "."
 
     private val ALL_NODE_TYPES = setOf(
         ANNOTATION, MARKER_ANNOTATION,
@@ -127,6 +128,8 @@ internal object UsedTypeExtractor {
 
     private fun extractType(typeNode: SyntaxNode): UsedType? {
         if (typeNode.isNull) return null
+        val writtenName = if (typeNode.type == GENERIC_TYPE) typeNode.getNamedChild(0).text else typeNode.text
+        if (JavaScopes.LOCAL_TYPES.isLocal(typeNode, writtenName.trim().substringBefore(QUALIFIER_SEPARATOR))) return null
         if (typeNode.type == GENERIC_TYPE) {
             val typeIdentifier = typeNode.getNamedChild(0)
             val typeArguments = typeNode.getNamedChild(1)

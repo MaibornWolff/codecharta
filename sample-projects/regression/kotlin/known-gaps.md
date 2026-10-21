@@ -23,15 +23,6 @@ missing file a/App.kt -> a/Config.kt
 missing leaf a/App.kt#App -> a/Config.kt#Config
 ```
 
-## spec-local-class
-
-A local class does not shadow a declaration of the own package.
-
-```text
-extra file a/Service.kt -> a/Helper.kt
-extra leaf a/Service.kt#Service -> a/Helper.kt#Helper
-```
-
 ## spec-own-nested-class
 
 A nested class of the own class does not shadow a declaration of the own package.
@@ -60,11 +51,3 @@ missing leaf a/App.kt#App -> b/Outer.kt#Node
 extra leaf a/App.kt#App -> b/Outer.kt#Outer
 ```
 
-## spec-type-parameter
-
-A type parameter does not shadow a declaration of the own package.
-
-```text
-extra file a/Box.kt -> a/Config.kt
-extra leaf a/Box.kt#Box -> a/Config.kt#Config
-```
