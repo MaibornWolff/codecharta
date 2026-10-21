@@ -86,7 +86,8 @@ works in. `leaves` are the individual declarations, `namespaces` the packages co
   projects with the same package — is one leaf per file, with the same key and, where it has one, the same
   `namespace`. Each copy's dependencies leave the file they are written in, in both layers, while a dependency
   *on* the name points at the file that shares the longest folder path with the file using it, and among
-  equally near files at the first as the scan lists them (path order); for SQL at the latest migration.
+  equally near files at the first as the scan lists them (path order); for SQL at the latest migration, and
+  for C# at the first file.
 - `kind` is the declaration kind: `class`, `valueclass`, `interface`, `annotation`, `enum`, `function`,
   `variable`, `reexport`, `script` or `unknown`.
 - `leafEdges` is a list of its own rather than a widened `Edge`, because `edges` is what the edge-metric

@@ -51,7 +51,8 @@ script and the review findings are reused, its code is not copied wholesale.
 
 - One topic per commit, small enough to review in one sitting; each step's reviewer checks it against the spec
 - Acceptance per step: ktlintCheck test, all probes, distTar + integrationTest, format:check, gate on both parts,
-  diff against the last release explained
+  diff against the last release explained; until every language has its spec probes, also the checkpoint's 197 reviewer probes
+  (`git archive b4a6bb8af sample-projects/regression`): no probe may come out worse than with the release build
 - Questions the checkpoint reviews raised, to settle in the specs: does an outer class depend on what its nested
   class uses (Java and C# differ today); a Go module's root package at the analysed root; a Python package folder
   shadows a module file of the same name; `Clock::time_point` depends on the alias `Clock`; flags in `expected.txt`

@@ -190,6 +190,41 @@ class FileLevelAggregatorTest {
     }
 
     @Test
+    fun `should point a dependency on a C# declaration in several files at the first file, as long as C# has no rules of its own`() {
+        // Arrange: the second part of a partial class lies nearer to the using file.
+        val nodes =
+            listOf(
+                declaration("Shop.Order", "Gen/Order.g.cs", language = SupportedLanguage.C_SHARP),
+                declaration("Shop.Order", "Model/Order.cs", language = SupportedLanguage.C_SHARP),
+                declaration("Shop.Use", "Model/Use.cs", listOf("Shop.Order"), SupportedLanguage.C_SHARP)
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().to.segments).containsExactly("Gen", "Order.g.cs")
+    }
+
+    @Test
+    fun `should point a Java dependency at the nearest Java copy although a C# file declares the same path`() {
+        // Arrange
+        val nodes =
+            listOf(
+                declaration("a.Config", "far/a/Config.java", language = SupportedLanguage.JAVA),
+                declaration("a.Config", "cs/a/Config.cs", language = SupportedLanguage.C_SHARP),
+                declaration("a.Config", "near/a/Config.java", language = SupportedLanguage.JAVA),
+                declaration("a.App", "near/a/App.java", listOf("a.Config"), SupportedLanguage.JAVA)
+            )
+
+        // Act
+        val edges = FileLevelAggregator.aggregate(nodes, emptyMap())
+
+        // Assert
+        assertThat(edges.single().to.segments).containsExactly("near", "a", "Config.java")
+    }
+
+    @Test
     fun `should point a dependency only at a copy declared in a language of the using file's name scope`() {
         // Arrange: a C++ header nearer to the Java file declares the same logical path as a Java class.
         val nodes =

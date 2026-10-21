@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - **Same name in several places**: `dependencyparser` links a class that several files declare under one name to the
-  copy nearest to the file that uses it, instead of to whichever copy it read first.
+  copy nearest to the file that uses it, instead of to whichever copy it read first, in every language but C#.
 
 - **No links between unrelated languages**: in a repository with several languages, `dependencyparser` no longer
   links a name to a declaration of a language that cannot refer to it, such as a Python name to a SQL table.
