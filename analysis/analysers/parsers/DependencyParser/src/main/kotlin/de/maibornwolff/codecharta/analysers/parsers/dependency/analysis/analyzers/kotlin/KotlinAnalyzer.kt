@@ -30,9 +30,15 @@ class KotlinAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     // The full path, not only its last segment, as an alias often exists because another import shares that name
     private fun UsedType.withAliasesResolved(importedPathByAlias: Map<String, String>): UsedType = copy(
-        name = importedPathByAlias[name] ?: name,
+        name = nameWithAliasResolved(importedPathByAlias),
         genericTypes = genericTypes.map { it.withAliasesResolved(importedPathByAlias) }
     )
+
+    private fun UsedType.nameWithAliasResolved(importedPathByAlias: Map<String, String>): String {
+        val qualifier = name.substringBefore(PACKAGE_SEPARATOR)
+        val importedPath = importedPathByAlias[qualifier] ?: return name
+        return importedPath + name.removePrefix(qualifier)
+    }
 
     private fun nameOf(declaration: Declaration): String {
         if (declaration.type != DeclarationType.SCRIPT) return declaration.name
