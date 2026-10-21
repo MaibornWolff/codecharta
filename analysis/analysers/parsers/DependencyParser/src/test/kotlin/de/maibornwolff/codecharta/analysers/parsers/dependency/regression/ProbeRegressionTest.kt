@@ -17,6 +17,9 @@ class ProbeRegressionTest {
         @JvmStatic
         fun probes(): List<String> = RegressionProbe.namesBelow(probesRoot())
 
+        @JvmStatic
+        fun languages(): List<String> = probesRoot().listFiles { file -> file.isDirectory }.orEmpty().map { it.name }.sorted()
+
         private fun probesRoot(): File = generateSequence(File("").absoluteFile) { it.parentFile }
             .map { it.resolve(PROBES_FOLDER) }
             .first { it.isDirectory }
@@ -39,10 +42,23 @@ class ProbeRegressionTest {
         val drawnToday = probe.linesDrawnToday()
         assertThat(actual)
             .describedAs(
-                "missing: %s%nunexpected: %s%nknown gaps closed, delete these lines from known-gaps.txt: %s",
+                "missing: %s%nunexpected: %s%nknown gaps closed, delete these lines from known-gaps.md: %s",
                 drawnToday - actual.toSet(),
                 actual - drawnToday.toSet(),
                 probe.knownGaps.closedBy(actual)
             ).containsExactlyInAnyOrderElementsOf(drawnToday)
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("languages")
+    fun `should name only existing probes in a language's known gaps`(language: String) {
+        // Arrange
+        val languageFolder = probesRoot().resolve(language)
+
+        // Act
+        val probesWithGaps = RegressionProbe.gapsOfLanguage(languageFolder).keys
+
+        // Assert
+        assertThat(probesWithGaps).allMatch { languageFolder.resolve(it).isDirectory }
     }
 }

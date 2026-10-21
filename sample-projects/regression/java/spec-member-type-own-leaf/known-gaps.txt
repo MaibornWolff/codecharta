@@ -1,4 +1,0 @@
-# Order.Line is taken for the top-level Line, and the outer type takes over the uses of its member type
-missing file com/ex/Invoice.java -> com/ex/Order.java
-missing leaf com/ex/Invoice.java#Invoice -> com/ex/Order.java#Line
-extra leaf com/ex/Order.java#Order -> com/ex/Product.java#Product

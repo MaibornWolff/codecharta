@@ -42,7 +42,7 @@ Both compile to one class path, so a Kotlin name can mean a Java class and the o
 ## Probes
 
 Each rule is tested by a probe under `sample-projects/regression/kotlin/`. "Gap" means the parser does not follow
-the rule yet; the probe's `known-gaps.txt` says how it deviates.
+the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it deviates.
 
 | Rule | Probe | Today |
 | --- | --- | --- |

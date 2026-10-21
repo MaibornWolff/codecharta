@@ -1,5 +1,0 @@
-# A static import of a member type is not followed: the Node of the own package wins
-missing file a/App.java -> b/Outer.java
-missing leaf a/App.java#App -> b/Outer.java#Node
-extra file a/App.java -> a/Node.java
-extra leaf a/App.java#App -> a/Node.java#Node

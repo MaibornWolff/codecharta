@@ -1,3 +1,0 @@
-# A local class does not shadow a type of the own package
-extra file a/Service.java -> a/Helper.java
-extra leaf a/Service.java#Service -> a/Helper.java#Helper

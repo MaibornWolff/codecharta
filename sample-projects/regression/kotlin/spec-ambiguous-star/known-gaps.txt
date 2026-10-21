@@ -1,3 +1,0 @@
-# Two star imports that both declare the name are not ambiguous to the parser: the first one wins
-extra file a/App.kt -> b/Config.kt
-extra leaf a/App.kt#App -> b/Config.kt#Config

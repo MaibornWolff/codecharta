@@ -1,3 +1,0 @@
-# Two on-demand imports that both declare the name are not ambiguous to the parser: the first one wins
-extra file a/App.java -> b/Config.java
-extra leaf a/App.java#App -> b/Config.java#Config

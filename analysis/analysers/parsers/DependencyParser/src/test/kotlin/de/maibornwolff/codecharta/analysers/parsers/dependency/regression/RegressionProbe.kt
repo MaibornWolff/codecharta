@@ -12,7 +12,8 @@ import java.io.File
 
 /**
  * A small project a reviewer once found a wrong or missing edge in, with the edges it must have: `expected.txt` holds
- * one line per correct file edge and leaf edge, `known-gaps.txt` how today's output deviates from it (see [KnownGaps]),
+ * one line per correct file edge and leaf edge, the language folder's `known-gaps.md` how today's output deviates from
+ * it (see [KnownGaps]),
  * and lines starting with `#` say why. The sources lie in `src`, analysed like
  * `ccsh dependencyparser --include-tests --bypass-gitignore` does, build folders excluded unless `src` has a
  * `.gitignore`; a file that fails to analyse is a `failed` line.
@@ -24,7 +25,7 @@ internal class RegressionProbe(private val directory: File) {
         "no $EXPECTED_FILE".takeUnless { directory.resolve(EXPECTED_FILE).isFile }
     )
 
-    val knownGaps: KnownGaps by lazy { KnownGaps.parse(linesOf(KNOWN_GAPS_FILE)) }
+    val knownGaps: KnownGaps by lazy { gapsOfLanguage(directory.parentFile)[directory.name] ?: KnownGaps.NONE }
 
     fun expectedLines(): List<String> = linesOf(EXPECTED_FILE)
 
@@ -71,11 +72,17 @@ internal class RegressionProbe(private val directory: File) {
     companion object {
         private const val SOURCE_FOLDER = "src"
         private const val EXPECTED_FILE = "expected.txt"
-        private const val KNOWN_GAPS_FILE = "known-gaps.txt"
+        private const val KNOWN_GAPS_FILE = "known-gaps.md"
         private const val PLAIN_USAGE = "usage"
         private const val COMMENT_PREFIX = "#"
         private const val FAILED_PREFIX = "failed "
         private const val GITIGNORE_FILE = ".gitignore"
+
+        /** The known gaps of every probe of a language folder, by probe folder name. */
+        fun gapsOfLanguage(languageFolder: File): Map<String, KnownGaps> {
+            val file = languageFolder.resolve(KNOWN_GAPS_FILE)
+            return if (file.isFile) KnownGaps.sectionsOf(file.readLines()) else emptyMap()
+        }
 
         /** Every folder one level below a language folder, as its path from [root]; each one must be a probe. */
         fun namesBelow(root: File): List<String> = root

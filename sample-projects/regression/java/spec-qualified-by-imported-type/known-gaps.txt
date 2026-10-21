@@ -1,5 +1,0 @@
-# Outer.Node through an imported type is taken for the Node of the own package
-missing file a/App.java -> b/Outer.java
-missing leaf a/App.java#App -> b/Outer.java#Node
-extra file a/App.java -> a/Node.java
-extra leaf a/App.java#App -> a/Node.java#Node

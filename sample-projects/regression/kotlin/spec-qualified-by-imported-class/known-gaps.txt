@@ -1,3 +1,0 @@
-# Outer.Node is taken for Outer: only the first segment of a qualified name is used
-missing leaf a/App.kt#App -> b/Outer.kt#Node
-extra leaf a/App.kt#App -> b/Outer.kt#Outer
