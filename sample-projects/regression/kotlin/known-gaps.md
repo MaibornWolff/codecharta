@@ -5,15 +5,6 @@ The probes of this folder whose output deviates from their `expected.txt` today,
 expected line the parser does not draw yet and `extra <line>` a wrong line it draws; `ProbeRegressionTest` fails once a
 gap closes, and the closed lines are deleted here.
 
-## spec-import-alias
-
-With an import alias, the plain name still means the imported declaration instead of the own package's.
-
-```text
-missing file a/App.kt -> a/Config.kt
-missing leaf a/App.kt#App -> a/Config.kt#Config
-```
-
 ## spec-private-top-level
 
 A private top-level declaration is found from other files of its package.

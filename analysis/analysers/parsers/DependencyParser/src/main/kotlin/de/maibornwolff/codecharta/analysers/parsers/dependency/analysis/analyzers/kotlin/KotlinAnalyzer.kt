@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.kotlin
 
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.analyzers.BaseLanguageAnalyzer
+import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Dependency
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.FileInfo
 import de.maibornwolff.codecharta.analysers.parsers.dependency.analysis.model.Path
 import de.maibornwolff.codecharta.analysers.parsers.dependency.input.SupportedLanguage
@@ -15,6 +16,10 @@ class KotlinAnalyzer(fileInfo: FileInfo) : BaseLanguageAnalyzer(fileInfo) {
 
     override fun buildPathWithName(packagePath: List<String>, declaration: Declaration): Path =
         Path(packagePath + declaration.parentPath + nameOf(declaration))
+
+    // An aliased import names its declaration by the alias only, which selectUsedTypes replaces with the full path
+    override fun convertImport(import: ImportDeclaration): Set<Dependency> =
+        if (import.bindingName != null) emptySet() else super.convertImport(import)
 
     override fun selectUsedTypes(declaration: Declaration, imports: List<ImportDeclaration>): Set<UsedType> {
         val importedPathByAlias = imports
