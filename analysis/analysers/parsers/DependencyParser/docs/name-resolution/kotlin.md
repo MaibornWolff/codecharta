@@ -21,8 +21,8 @@ Looked up in this order; the first match wins:
 2. A local declaration `N` in an enclosing block: no edge (see above).
 3. A nested classifier `N` of the class the name is written in, then of its supertypes, then of each enclosing class
    outwards.
-4. An explicit import `import p.N` names `p.N`; an import with an alias `import p.M as N` names `p.M`, and that file
-   no longer names `p.M` as `M`.
+4. An explicit import `import p.N` names `p.N`; an import with an alias `import p.M as N` names `p.M`, also as the
+   qualifier of `N.Nested`, and that file no longer names `p.M` as `M`.
 5. A declaration `N` of the own package, in any file of the package; a `private` one only from its own file.
 6. A star import `import p.*`. Two of them that both declare `N` make the name ambiguous: no edge.
 7. A default import (`kotlin.*`, `kotlin.collections.*`, `kotlin.text.*` and the other default packages, and
@@ -58,6 +58,7 @@ the rule yet; `sample-projects/regression/kotlin/known-gaps.md` says how it devi
 | 3. nested class of a supertype | `spec-inherited-nested-class` | ok |
 | 4. explicit import over the own package | `spec-explicit-import-beats-package` | ok |
 | 4. import alias | `spec-import-alias` | ok |
+| 4. import alias as a qualifier | `spec-alias-as-qualifier` | ok |
 | 5. own package over a star import | `spec-package-beats-star` | ok |
 | 6. star import | `spec-star-import` | ok |
 | 6. two star imports: ambiguous | `spec-ambiguous-star` | ok |

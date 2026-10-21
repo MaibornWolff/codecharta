@@ -1702,6 +1702,28 @@ class KotlinAnalyzerTest {
     }
 
     @Test
+    fun `should resolve a nested class written through an import alias`() {
+        // Arrange
+        val app = kotlinFile(
+            "a/App.kt",
+            """
+            package a
+
+            import b.Config as RemoteConfig
+
+            class App { val section: RemoteConfig.Section? = null }
+            """
+        )
+        val config = kotlinFile("b/Config.kt", "package b\n\nclass Config { class Section }")
+
+        // Act
+        val targets = internalTargetsOf("App", app, config)
+
+        // Assert
+        assertThat(targets).containsExactly("b.Config.Section")
+    }
+
+    @Test
     fun `should resolve the plain name of an aliased import to the own package`() {
         // Arrange
         val app = kotlinFile(
